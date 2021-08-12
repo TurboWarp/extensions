@@ -1,3 +1,5 @@
 # Experimental Extensions
 
-We (I) have some plans. Hope to be ready soon.
+Learn more at https://docs.turbowarp.org/development/custom-extensions
+
+We're not entirely sure what this repository will contain in the future.
