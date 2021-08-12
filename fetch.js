@@ -1,8 +1,4 @@
 class Fetch {
-  constructor () {
-    this.lastResponse = null;
-  }
-
   getInfo () {
     return {
       id: 'fetch',
@@ -23,16 +19,8 @@ class Fetch {
     };
   }
 
-  _fetch (url) {
-    return fetch(url)
-      .then(r => {
-        this.lastResponse = r;
-        return r;
-      });
-  }
-
   get (args) {
-    return this._fetch(args.URL)
+    return fetch(args.URL)
       .then(r => r.text())
       .catch(() => '');
   }
