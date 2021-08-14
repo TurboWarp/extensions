@@ -1,5 +1,5 @@
-# Experimental Extensions
+# Experimental extensions
 
-Learn more at https://docs.turbowarp.org/development/custom-extensions
+Visit the website: https://extensions.turbowarp.org/
 
-We're not entirely sure what this repository will contain in the future.
+Developer documentation: https://docs.turbowarp.org/development/custom-extensions
