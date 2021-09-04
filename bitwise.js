@@ -1,9 +1,9 @@
 
 
-class BitwiseMath {
+class Bitwise {
 	getInfo() {
 		return {
-			id: "BitwiseMath",
+			id: "Bitwise",
 
 			color1: '#2dc4c4',
 			color2: '#2dc4b3',
@@ -11,9 +11,9 @@ class BitwiseMath {
 			
 			blocks: [
 				{
-					opcode: 'hasBitwiseMath',
+					opcode: 'hasBitwise',
 					blockType: Scratch.BlockType.BOOLEAN,
-					text: 'has BitwiseMath?'
+					text: 'has Bitwise?'
 				},
 				{
 					opcode: 'bitwiseLeftShift',
@@ -94,7 +94,7 @@ class BitwiseMath {
 		};
 	}
 	
-	hasBitwiseMath() {
+	hasBitwise() {
 		return true;
 	}
 	
