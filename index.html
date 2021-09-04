@@ -2,18 +2,21 @@
 <html>
   <head>
     <meta charset="utf8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TurboWarp Extensions</title>
     <style>
       body {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+        margin: 0;
+        padding: 0;
       }
       h1 {
         font-size: 2em;
       }
       footer {
         text-align: center;
+      }
+      button {
+        cursor: pointer;
       }
       section {
         border-top: 6px solid #ff4c4c;
@@ -28,14 +31,14 @@
       }
       .extension {
         border-color: #0FBD8C;
-        align-items: center;
       }
+
       .url {
         height: 32px;
         margin: 16px 0;
         display: flex;
+        align-items: center;
       }
-
       .url-value,
       .url-copy,
       .url-open {
@@ -52,7 +55,8 @@
         align-items: center;
       }
       .url-value {
-        padding: 1em;
+        padding: 4px;
+        margin: 0;
         border-radius: 32px 0 0 32px;
         user-select: all;
         -webkit-user-select: all;
@@ -64,40 +68,34 @@
         padding: 0 4px;
         border-radius: 0 32px 32px 0;
       }
-      
+
       .blocks {
-        border-radius: 2em;
-        padding: 0.25em;
-        background-color: whitesmoke;
+        margin: 16px 0;
       }
       .block {
-        width: max-content;
-        border-style: solid;
-        border-width: 0.25mm;
-        border-radius: 90px;
-        padding: 0.25em;
-        align-items: center;
-        white-space: nowrap;
-        display: flex;
         background-color: #0FBD8C;
-        border-color: #0B8E69;
-        margin: 0.5em;
+        border-radius: 14px;
+        padding: 3px 0 3px 3px;
+        margin: 0 3px 3px 0;
+        display: inline-flex;
+        align-items: center;
+        font-size: 9pt;
+        box-sizing: border-box;
+        white-space: nowrap;
+        height: 27px;
       }
       .block-text {
         color: white;
-        padding: 0.5em;
+        margin-right: 3px;
       }
       .block-input {
         height: 100%;
-        border-radius: 100em;
-        border-width: 0.25mm;
-        border-style: solid;
-        border-color: ghostwhite;
+        box-sizing: border-box;
         background: white;
         color: black;
-        padding: 0.5em;
-        min-width: 1.5em;
-        text-align: center;
+        border-radius: 14px;
+        margin-right: 3px;
+        padding: 3px;
       }
     </style>
   </head>
