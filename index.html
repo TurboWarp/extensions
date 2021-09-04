@@ -2,21 +2,18 @@
 <html>
   <head>
     <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TurboWarp Extensions</title>
     <style>
       body {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        margin: 0;
-        padding: 0;
+
       }
       h1 {
         font-size: 2em;
       }
       footer {
         text-align: center;
-      }
-      button {
-        cursor: pointer;
       }
       section {
         border-top: 6px solid #ff4c4c;
@@ -31,14 +28,14 @@
       }
       .extension {
         border-color: #0FBD8C;
+        align-items: center;
       }
-
       .url {
         height: 32px;
         margin: 16px 0;
         display: flex;
-        align-items: center;
       }
+
       .url-value,
       .url-copy,
       .url-open {
@@ -55,8 +52,7 @@
         align-items: center;
       }
       .url-value {
-        padding: 4px;
-        margin: 0;
+        padding: 1em;
         border-radius: 32px 0 0 32px;
         user-select: all;
         -webkit-user-select: all;
@@ -68,34 +64,40 @@
         padding: 0 4px;
         border-radius: 0 32px 32px 0;
       }
-
+      
       .blocks {
-        margin: 16px 0;
+        border-radius: 2em;
+        padding: 0.25em;
+        background-color: whitesmoke;
       }
       .block {
-        background-color: #0FBD8C;
-        border-radius: 14px;
-        padding: 3px 0 3px 3px;
-        margin: 0 3px 3px 0;
-        display: inline-flex;
+        width: max-content;
+        border-style: solid;
+        border-width: 0.25mm;
+        border-radius: 90px;
+        padding: 0.25em;
         align-items: center;
-        font-size: 9pt;
-        box-sizing: border-box;
         white-space: nowrap;
-        height: 27px;
+        display: flex;
+        background-color: #0FBD8C;
+        border-color: #0B8E69;
+        margin: 0.5em;
       }
       .block-text {
         color: white;
-        margin-right: 3px;
+        padding: 0.5em;
       }
       .block-input {
         height: 100%;
-        box-sizing: border-box;
+        border-radius: 100em;
+        border-width: 0.25mm;
+        border-style: solid;
+        border-color: ghostwhite;
         background: white;
         color: black;
-        border-radius: 14px;
-        margin-right: 3px;
-        padding: 3px;
+        padding: 0.5em;
+        min-width: 1.5em;
+        text-align: center;
       }
     </style>
   </head>
@@ -118,6 +120,42 @@
       </div>
       <div class="url">
         <div class="url-value">https://extensions.turbowarp.org/fetch.js</div>
+        <a class="url-open">Open Extension</a>
+      </div>
+    </section>
+
+    <section class="extension">
+      <h2>Fetch</h2>
+      <p>Make requests to the broader internet.</p>
+      <div class="blocks">
+        <div class="block">
+          <div class="block-input">2</div>
+          <div class="block-text">&lt;&lt;</div>
+          <div class="block-input">1</div>
+        </div>
+        <div class="block">
+          <div class="block-input">2</div>
+          <div class="block-text">&gt;&gt;</div>
+          <div class="block-input">1</div>
+        </div>
+        <div class="block">
+          <div class="block-input">3</div>
+          <div class="block-text">&amp;</div>
+          <div class="block-input">1</div>
+        </div>
+        <div class="block">
+          <div class="block-input">1</div>
+          <div class="block-text">|</div>
+          <div class="block-input">0</div>
+        </div>
+        <div class="block">
+          <div class="block-input">1</div>
+          <div class="block-text">^</div>
+          <div class="block-input">1</div>
+        </div>
+      </div>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/bitwise_math.js</div>
         <a class="url-open">Open Extension</a>
       </div>
     </section>
