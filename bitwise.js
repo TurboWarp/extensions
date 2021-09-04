@@ -119,4 +119,4 @@ class Bitwise {
 	}
 }
 
-Scratch.extensions.register(new BitwiseMath());
+Scratch.extensions.register(new Bitwise());
