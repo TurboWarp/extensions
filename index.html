@@ -30,6 +30,11 @@
         margin-bottom: 1em;
         box-shadow: 0 2px 0.5em 0.1em rgb(0 0 0 / 20%);
       }
+      summary {
+        max-width: 600px;
+        margin: auto;
+        cursor: pointer;
+      }
       .extension {
         border-color: #0FBD8C;
       }
@@ -105,67 +110,68 @@
 
   <body>
     <section class="header">
-      <h1>TurboWarp Extensions Beta</h1>
-      <p><b>Please don't use these yet.</b></p>
-      <p>A place to find and share custom extensions to unlock additional capabilities.</p>
-      <p>Custom extensions are an experimental feature. Projects that use custom extensions are incompatible with Scratch and must be loaded in TurboWarp with the same set of extensions already enabled.</p>
+      <h1>Do not use these extensions.</h1>
+      <p>Everything on this website is highly experimental and has <b>NO GUARANTEE OF WORKING IN THE FUTURE</b>. Please do not use these extensions if you are not an extension developer.</p>
+      <p>They have severe technical limitations that make them basically unusable for anything remotely serious.</p>
     </section>
 
-    <section class="extension">
-      <h2>Fetch</h2>
-      <p>Make requests to the broader internet.</p>
-      <div class="blocks">
-        <div class="block">
-          <div class="block-text">GET</div>
-          <div class="block-input">https://extensions.turbowarp.org/hello.txt</div>
+    <details>
+      <summary>
+        Click to show the extensions anyways...
+      </summary>
+      <section class="extension">
+        <h2>Fetch</h2>
+        <p>Make requests to the broader internet.</p>
+        <div class="blocks">
+          <div class="block">
+            <div class="block-text">GET</div>
+            <div class="block-input">https://extensions.turbowarp.org/hello.txt</div>
+          </div>
         </div>
-      </div>
-      <div class="url">
-        <div class="url-value">https://extensions.turbowarp.org/fetch.js</div>
-        <a class="url-open">Open Extension</a>
-      </div>
-    </section>
-
-    <section class="extension">
-      <h2>Bitwise</h2>
-      <p>Bitwise operations for Scratch.</p>
-      <div class="blocks">
-        <div class="block">
-          <div class="block-input">2</div>
-          <div class="block-text">&lt;&lt;</div>
-          <div class="block-input">1</div>
+        <div class="url">
+          <div class="url-value">https://extensions.turbowarp.org/fetch.js</div>
+          <a class="url-open">Open Extension</a>
         </div>
-        <div class="block">
-          <div class="block-input">2</div>
-          <div class="block-text">&gt;&gt;</div>
-          <div class="block-input">1</div>
+      </section>
+  
+      <section class="extension">
+        <h2>Bitwise</h2>
+        <p>Bitwise operations for Scratch.</p>
+        <div class="blocks">
+          <div class="block">
+            <div class="block-input">2</div>
+            <div class="block-text">&lt;&lt;</div>
+            <div class="block-input">1</div>
+          </div>
+          <div class="block">
+            <div class="block-input">2</div>
+            <div class="block-text">&gt;&gt;</div>
+            <div class="block-input">1</div>
+          </div>
+          <div class="block">
+            <div class="block-input">3</div>
+            <div class="block-text">&amp;</div>
+            <div class="block-input">1</div>
+          </div>
+          <div class="block">
+            <div class="block-input">1</div>
+            <div class="block-text">|</div>
+            <div class="block-input">0</div>
+          </div>
+          <div class="block">
+            <div class="block-input">1</div>
+            <div class="block-text">^</div>
+            <div class="block-input">1</div>
+          </div>
         </div>
-        <div class="block">
-          <div class="block-input">3</div>
-          <div class="block-text">&amp;</div>
-          <div class="block-input">1</div>
+        <div class="url">
+          <div class="url-value">https://extensions.turbowarp.org/bitwise.js</div>
+          <a class="url-open">Open Extension</a>
         </div>
-        <div class="block">
-          <div class="block-input">1</div>
-          <div class="block-text">|</div>
-          <div class="block-input">0</div>
-        </div>
-        <div class="block">
-          <div class="block-input">1</div>
-          <div class="block-text">^</div>
-          <div class="block-input">1</div>
-        </div>
-      </div>
-      <div class="url">
-        <div class="url-value">https://extensions.turbowarp.org/bitwise.js</div>
-        <a class="url-open">Open Extension</a>
-      </div>
-    </section>
+      </section>
+    </details>
 
     <footer>
-      <p>
-        <a href="https://github.com/TurboWarp/extensions/blob/master/CONTRIBUTING.md">Submit your extension</a>
-      </p>
       <p>
         <a href="https://github.com/TurboWarp/extensions">GitHub</a>
       </p>
