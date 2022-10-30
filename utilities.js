@@ -44,6 +44,21 @@
         menuIconURI: icon,
   
         blocks: [
+        {
+                    opcode: 'getFromJSONArray',
+                    blockType: "reporter",
+                    text: 'Get [NUM] from JSON array [ARRAY]',
+                    arguments: {
+                        NUM: {
+                            type: "number",
+                            defaultValue: 0,
+                        },
+                        ARRAY: {
+                            type: "string",
+                            defaultValue: '["Apple","Banana"]',
+                        }
+                    }
+                },
           {
             opcode: 'isExactly',
   
@@ -309,6 +324,20 @@
   
     regexReplace({STRING, REGEX, NEWSTRING}) {
       return STRING.toString().replace(new RegExp(REGEX, 'gi'), NEWSTRING);
+    }
+    getFromJSONArray({NUM, ARRAY}) {
+        var json_array = JSON.parse(ARRAY);
+        if (json_array[NUM] == "") {
+            return "";
+        } else {
+            let data = json_array[NUM];
+
+            if (typeof (data) == "object") {
+                data = JSON.stringify(data); // Make sure the json is safe for Scratch because there are issues
+            }
+
+            return data;
+        }
     }
   
   }
