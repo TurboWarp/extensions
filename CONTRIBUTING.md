@@ -1,5 +1,7 @@
-# Submitting extensions
+We are currently in transitionary period. Follow https://github.com/TurboWarp/scratch-gui/issues/633 for updates.
 
-We currently are not accepting new extensions.
+We are open to accepting new extensions. Exact guidelines to be determined later. The bar for an extension to be added here isn't particuarly high.
 
-Follow https://github.com/TurboWarp/scratch-gui/issues/633 for updates.
+Updates to existing extensions are also accepted as long as they don't break compatibility with projects already using the extension.
+
+More detailed guidelines will be figured out later.
