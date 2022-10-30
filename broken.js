@@ -1,30 +1,34 @@
-class Broken {
-  getInfo () {
-    return {
-      id: 'broken',
-      name: 'Broken Extension',
-      blocks: [
-        {
-          opcode: 'error',
-          blockType: Scratch.BlockType.REPORTER,
-          text: 'error'
-        },
-        {
-          opcode: 'returnUndefined',
-          blockType: Scratch.BlockType.REPORTER,
-          text: 'return undefined'
-        }
-      ]
-    };
-  }
+(function(Scratch) {
+  'use strict';
 
-  error () {
-    throw new Error("This is an error :(");
+  class Broken {
+    getInfo () {
+      return {
+        id: 'broken',
+        name: 'Broken Extension',
+        blocks: [
+          {
+            opcode: 'error',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'error'
+          },
+          {
+            opcode: 'returnUndefined',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'return undefined'
+          }
+        ]
+      };
+    }
+  
+    error () {
+      throw new Error("This is an error :(");
+    }
+    
+    returnUndefined () {
+      
+    }
   }
   
-  returnUndefined () {
-    
-  }
-}
-
-Scratch.extensions.register(new Broken());
+  Scratch.extensions.register(new Broken());
+});
