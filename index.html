@@ -20,15 +20,8 @@
         cursor: pointer;
       }
       section {
-        border-top: 6px solid #ff4c4c;
         max-width: 600px;
         margin: auto;
-        border-radius: 0.3em;
-        background-color: #fff;
-        padding: 1em;
-        margin-top: 1em;
-        margin-bottom: 1em;
-        box-shadow: 0 2px 0.5em 0.1em rgb(0 0 0 / 20%);
       }
       summary {
         max-width: 600px;
@@ -66,6 +59,7 @@
         border-radius: 32px 0 0 32px;
         user-select: all;
         -webkit-user-select: all;
+        border-right: none;
       }
       .url-copy {
         padding: 0 4px;
@@ -110,66 +104,89 @@
 
   <body>
     <section class="header">
-      <h1>Do not use these extensions.</h1>
-      <p>Everything on this website is highly experimental and has <b>NO GUARANTEE OF WORKING IN THE FUTURE</b>. Please do not use these extensions if you are not an extension developer.</p>
-      <p>They have severe technical limitations that make them basically unusable for anything remotely serious.</p>
+      <h1>TurboWarp Extensions</h1>
+      <p>This site is currently UNDER CONSTRUCTION. Some extensions may or may not work.</p>
+      <p>BACKWARDS INCOMPATIBLE CHANGES ARE POSSIBLE, so don't rely on these for anything important.</p>
+      <p>Follow <a href="https://github.com/TurboWarp/scratch-gui/issues/633">https://github.com/TurboWarp/scratch-gui/issues/633</a> for updates.</p>
     </section>
 
-    <details>
-      <summary>
-        Click to show the extensions anyways...
-      </summary>
-      <section class="extension">
-        <h2>Fetch</h2>
-        <p>Make requests to the broader internet.</p>
-        <div class="blocks">
-          <div class="block">
-            <div class="block-text">GET</div>
-            <div class="block-input">https://extensions.turbowarp.org/hello.txt</div>
-          </div>
+    <section class="extension">
+      <h2>Utilities</h2>
+      <p>A bunch of interesting blocks. Originally by Sheep_maker.</p>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/utilities.js</div>
+        <a class="url-open">Open Extension</a>
+      </div>
+    </section>
+
+    <section class="extension">
+      <h2>Fetch</h2>
+      <p>Make requests to the broader internet.</p>
+      <div class="blocks">
+        <div class="block">
+          <div class="block-text">GET</div>
+          <div class="block-input">https://extensions.turbowarp.org/hello.txt</div>
         </div>
-        <div class="url">
-          <div class="url-value">https://extensions.turbowarp.org/fetch.js</div>
-          <a class="url-open">Open Extension</a>
-        </div>
-      </section>
+      </div>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/fetch.js</div>
+        <a class="url-open">Open Extension</a>
+      </div>
+    </section>
   
-      <section class="extension">
-        <h2>Bitwise</h2>
-        <p>Bitwise operations for Scratch.</p>
-        <div class="blocks">
-          <div class="block">
-            <div class="block-input">2</div>
-            <div class="block-text">&lt;&lt;</div>
-            <div class="block-input">1</div>
-          </div>
-          <div class="block">
-            <div class="block-input">2</div>
-            <div class="block-text">&gt;&gt;</div>
-            <div class="block-input">1</div>
-          </div>
-          <div class="block">
-            <div class="block-input">3</div>
-            <div class="block-text">&amp;</div>
-            <div class="block-input">1</div>
-          </div>
-          <div class="block">
-            <div class="block-input">1</div>
-            <div class="block-text">|</div>
-            <div class="block-input">0</div>
-          </div>
-          <div class="block">
-            <div class="block-input">1</div>
-            <div class="block-text">^</div>
-            <div class="block-input">1</div>
-          </div>
+    <section class="extension">
+      <h2>Bitwise</h2>
+      <p>Bitwise operations for Scratch.</p>
+      <div class="blocks">
+        <div class="block">
+          <div class="block-input">2</div>
+          <div class="block-text">&lt;&lt;</div>
+          <div class="block-input">1</div>
         </div>
-        <div class="url">
-          <div class="url-value">https://extensions.turbowarp.org/bitwise.js</div>
-          <a class="url-open">Open Extension</a>
+        <div class="block">
+          <div class="block-input">2</div>
+          <div class="block-text">&gt;&gt;</div>
+          <div class="block-input">1</div>
         </div>
-      </section>
-    </details>
+        <div class="block">
+          <div class="block-input">3</div>
+          <div class="block-text">&amp;</div>
+          <div class="block-input">1</div>
+        </div>
+        <div class="block">
+          <div class="block-input">1</div>
+          <div class="block-text">|</div>
+          <div class="block-input">0</div>
+        </div>
+        <div class="block">
+          <div class="block-input">1</div>
+          <div class="block-text">^</div>
+          <div class="block-input">1</div>
+        </div>
+      </div>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/bitwise.js</div>
+        <a class="url-open">Open Extension</a>
+      </div>
+    </section>
+
+    <section class="extension">
+      <h2>Gamepad</h2>
+      <p>Directly access gamepads instead of just mapping buttons to keys.</p>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/gamepad.js</div>
+        <a class="url-open">Open Extension</a>
+      </div>
+    </section>
+
+    <section class="extension">
+      <h2>Box2D</h2>
+      <p>Two dimensional physics. Originally by griffpatch.</p>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/box2d-temporary-for-testing-only-dont-use-yet.js</div>
+        <a class="url-open">Open Extension</a>
+      </div>
+    </section>
 
     <footer>
       <p>
@@ -188,7 +205,7 @@
       }
       for (const link of document.querySelectorAll('.url-open')) {
         const url = link.parentNode.querySelector('.url-value').textContent.trim();
-        link.href = `https://turbowarp.org/editor?extension=${url}`;
+        link.href = `https://experiments.turbowarp.org/unsandboxed-extensions/editor?extension=${url}`;
         link.target = '_blank';
         link.rel = 'noopener';
       }
