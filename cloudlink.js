@@ -1,5 +1,7 @@
 // Copy of S4-0_nosuite.js as of 10/31/2022
 
+(function(Scratch) {
+
 var servers = {}; ; // Server list
 let mWS = null;
 
@@ -1698,15 +1700,8 @@ class CloudLink {
 	};
 };
 
-(function() {
-	var extensionClass = CloudLink;
-	if (typeof window === "undefined" || !window.vm) {
-		Scratch.extensions.register(new extensionClass());
-		console.log("CloudLink 4.0 loaded. Detecting sandboxed mode, performance will suffer. Please load CloudLink in Unsandboxed mode.");
-	} else {
-		var extensionInstance = new extensionClass(window.vm.extensionManager.runtime);
-		var serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance);
-		window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
-		console.log("CloudLink 4.0 loaded. Detecting unsandboxed mode.");
-	};
-})()
+console.log("CloudLink 4.0 loaded. Detecting unsandboxed mode.");
+Scratch.extensions.register(new CloudLink(Scratch.vm.runtime));
+
+})(Scratch);
+
