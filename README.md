@@ -4,4 +4,4 @@ https://extensions.turbowarp.org/
 
 This repository contains unsandboxed extensions for TurboWarp.
 
-See [CONTRIBUTING.md] for contribution guides.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guides.
