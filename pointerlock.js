@@ -34,7 +34,11 @@
 
   const mouseDevice = vm.runtime.ioDevices.mouse;
   const originalPostIOData = mouseDevice.postData.bind(mouseDevice);
-  mouseDevice.postData = () => {};
+  mouseDevice.postData = (data) => {
+    if (!isPointerLockEnabled) {
+      return originalPostIOData(data);
+    }
+  };
 
   document.addEventListener('mousedown', e => {
     if (canvas.contains(e.target)) {
