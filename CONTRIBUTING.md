@@ -19,7 +19,7 @@ While you can host your custom extensions on any website, submitting them to ext
 
 We accept almost any extensions that follow these guidelines:
 
- - You agree to make the source code available under an open source license (either MIT or Apache 2.0; decision pending)
+ - You agree to make the source code available under [the MIT License](LICENSE)
  - No `eval()`, `new Function()`, remote scripts, or similar arbitrary JS/CSS/HTML/etc.
 
 Just send a pull request adding an `extension.js` file with your extension's source code.
