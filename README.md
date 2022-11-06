@@ -1,5 +1,7 @@
-# Experimental extensions
+# Unsandboxed Extensions for TurboWarp
 
-Visit the website: https://extensions.turbowarp.org/
+https://extensions.turbowarp.org/
 
-Developer documentation: https://docs.turbowarp.org/development/custom-extensions
+This repository contains unsandboxed extensions for TurboWarp.
+
+See [CONTRIBUTING.md] for contribution guides.
