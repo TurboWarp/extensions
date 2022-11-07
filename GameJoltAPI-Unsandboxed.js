@@ -1,4 +1,5 @@
 /* Made by softed
+ * Unsandboxed for Turbowarp by GarboMuffin
  * Special thanks to:
  * Martin Mauersics or MausGames, Bruno Assarisse, MikeDev101, LukasStudioTV
  */
@@ -172,11 +173,10 @@
         }
         GJAPI.SendRequest("/trophies/?trophy_id=" + value, GJAPI.SEND_FOR_USER, pCallback);
     };
-
+    
     /* Scratch extension by softed
-     * Works on Turbowarp by GarboMuffin (Sandboxed and unsandboxed),
-     * SheepTester's Epicques (Unsandboxed),
-     * Ogadaki's Adacraft (Unsandboxed)
+     * Unsandboxed for Turbowarp by GarboMuffin by following the new unsandboxed extension format
+     * More info at https://docs.turbowarp.org/development/unsandboxed-extensions
      */
 
     /**
