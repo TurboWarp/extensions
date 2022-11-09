@@ -1,6 +1,10 @@
 (function(Scratch) {
   'use strict';
 
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error('pointerlock extension must be run unsandboxed');
+  }
+
   const vm = Scratch.vm;
 
   const canvas = vm.runtime.renderer.canvas;
