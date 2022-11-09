@@ -1,7 +1,9 @@
 (function(Scratch) {
   'use strict';
 
-  const vm = Scratch.vm;
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error('files extension must be run unsandboxed');
+  }
 
   const showFilePrompt = (accept) => new Promise((_resolve) => {
     // We can't reliably show an <input> picker without "user interaction" in all environments,
