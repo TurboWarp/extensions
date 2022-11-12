@@ -78,16 +78,16 @@
           },
           {
             opcode: 'axisValue',
-            blockType: 'reporter',
+            blockType: Scratch.BlockType.REPORTER,
             text: 'value of axis [b] on pad [i]',
             arguments: {
               b: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'axisMenu'
               },
               i: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               },
@@ -98,16 +98,16 @@
 
           {
             opcode: 'axisDirection',
-            blockType: 'reporter',
+            blockType: Scratch.BlockType.REPORTER,
             text: 'direction of axes [axis] on pad [pad]',
             arguments: {
               axis: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'axesGroupMenu'
               },
               pad: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               }
@@ -115,16 +115,16 @@
           },
           {
             opcode: 'axisMagnitude',
-            blockType: 'reporter',
+            blockType: Scratch.BlockType.REPORTER,
             text: 'magnitude of axes [axis] on pad [pad]',
             arguments: {
               axis: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'axesGroupMenu'
               },
               pad: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               }
@@ -134,20 +134,20 @@
           /*
           {
             opcode: 'buttonPressedReleased',
-            blockType: 'hat',
+            blockType: Scratch.BlockType.HAT,
             text: 'button [b] [pr] of pad [i]',
             arguments: {
               b: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1'
               },
               pr: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'pressReleaseMenu'
               },
               i: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               },
@@ -156,15 +156,15 @@
 
           {
             opcode: 'axisMoved',
-            blockType: 'hat',
+            blockType: Scratch.BlockType.HAT,
             text: 'axis [b] of pad [i] moved',
             arguments: {
               b: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1'
               },
               i: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               },
@@ -176,23 +176,23 @@
 
           {
             opcode: 'rumble',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'rumble strong [s] and weak [w] for [t] sec. on pad [i]',
             arguments: {
               s: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0.25'
               },
               w: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0.5'
               },
               t: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0.25'
               },
               i: {
-                type: 'number',
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               },
@@ -383,7 +383,9 @@
 
     rumble ({s, w, t, i}) {
       const gamepad = getGamepad(i);
+      // @ts-ignore
       if (!gamepad || !gamepad.vibrationActuator) return;
+      // @ts-ignore
       gamepad.vibrationActuator.playEffect('dual-rumble', {
         startDelay: 0,
         duration: t * 1000,

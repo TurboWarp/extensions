@@ -4,7 +4,8 @@
   class Bitwise {
     getInfo() {
       return {
-        id: "Bitwise",
+        id: 'Bitwise',
+        name: 'Bitwise',
         color1: '#2dc4c4',
         color2: '#2dc4b3',
         color3: '#29a395',

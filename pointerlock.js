@@ -18,7 +18,6 @@
   });
 
   const postMouseData = (e, isDown) => {
-    debugger;
     const {movementX, movementY} = e;
     const {width, height} = rect;
     const x = mouse._clientX + movementX;
@@ -99,7 +98,7 @@
             text: 'set pointer lock [enabled]',
             arguments: {
               enabled: {
-                type: Scratch.ArgumentType.TEXT,
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: 'true',
                 menu: 'enabled'
               }
