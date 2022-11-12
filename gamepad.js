@@ -7,17 +7,29 @@
   const DEADZONE = 0.1;
 
   /**
-   * @param {number} index 1-indexed index
-   * @returns {Gamepad|null}
+   * @param {number|'any'} index 1-indexed index
+   * @returns {Gamepad[]}
    */
-  const getGamepad = (index) => navigator.getGamepads()[index - 1];
+  const getGamepads = (index) => {
+    if (index === 'any') {
+      return navigator.getGamepads().filter(i => i);
+    }
+    const gamepad = navigator.getGamepads()[index - 1];
+    if (gamepad) {
+      return [gamepad];
+    }
+    return [];
+  };
 
   /**
-   * @param {Gamepad} gamepad 
-   * @param {number} buttonIndex 1-indexed index
+   * @param {Gamepad} gamepad
+   * @param {number|'any'} buttonIndex 1-indexed index
    * @returns {boolean} false if button does not exist
    */
   const isButtonPressed = (gamepad, buttonIndex) => {
+    if (buttonIndex === 'any') {
+      return gamepad.buttons.some(i => i.pressed);
+    }
     const button = gamepad.buttons[buttonIndex - 1];
     if (!button) {
       return false;
@@ -204,6 +216,10 @@
             acceptReporters: true,
             items: [
               {
+                text: 'any',
+                value: 'any'
+              },
+              {
                 text: '1',
                 value: '1'
               },
@@ -225,6 +241,10 @@
             acceptReporters: true,
             items: [
               // Based on an Xbox controller
+              {
+                text: 'any',
+                value: 'any'
+              },
               {
                 text: 'A (1)',
                 value: '1'
@@ -344,54 +364,74 @@
     }
 
     gamepadConnected ({pad}) {
-      const gamepad = getGamepad(pad);
-      return !!gamepad;
+      return getGamepads(pad).length > 0;
     }
 
     buttonDown ({b, i}) {
-      const gamepad = getGamepad(i);
-      if (!gamepad) return false;
-      return isButtonPressed(gamepad, b);
+      for (const gamepad of getGamepads(i)) {
+        if (isButtonPressed(gamepad, b)) {
+          return true;
+        }
+      }
+      return false;
     }
 
     axisValue ({b, i}) {
-      const gamepad = getGamepad(i);
-      if (!gamepad) return 0;
-      return getAxisValue(gamepad, b);
+      let greatestAxis = 0;
+      for (const gamepad of getGamepads(i)) {
+        const axis = getAxisValue(gamepad, b);
+        if (Math.abs(axis) > Math.abs(greatestAxis)) {
+          greatestAxis = axis;
+        }
+      }
+      return greatestAxis;
     }
 
     axisDirection ({axis, pad}) {
-      const gamepad = getGamepad(pad);
-      if (!gamepad) return 90;
-      const horizontalAxis = getAxisValue(gamepad, axis);
-      const verticalAxis = getAxisValue(gamepad, axis + 1);
-      const degrees = Math.atan2(verticalAxis, horizontalAxis) * 180 / Math.PI;
-      let scratchDirection = degrees + 90;
-      if (scratchDirection < 0) {
-        scratchDirection += 360;
+      let greatestMagnitude = 0;
+      let direction = 90;
+      for (const gamepad of getGamepads(pad)) {
+        const horizontalAxis = getAxisValue(gamepad, axis);
+        const verticalAxis = getAxisValue(gamepad, axis + 1);
+        const magnitude = Math.sqrt(horizontalAxis ** 2 + verticalAxis ** 2);
+        if (magnitude > greatestMagnitude) {
+          greatestMagnitude = magnitude;
+          direction = Math.atan2(verticalAxis, horizontalAxis) * 180 / Math.PI + 90;
+          if (direction < 0) {
+            direction += 360;
+          }
+        }
       }
-      return scratchDirection;
+      return direction;
     }
 
     axisMagnitude ({axis, pad}) {
-      const gamepad = getGamepad(pad);
-      if (!gamepad) return 0;
-      const horizontalAxis = getAxisValue(gamepad, axis);
-      const verticalAxis = getAxisValue(gamepad, axis + 1);
-      return Math.sqrt(horizontalAxis ** 2 + verticalAxis ** 2);
+      let greatestMagnitude = 0;
+      for (const gamepad of getGamepads(pad)) {
+        const horizontalAxis = getAxisValue(gamepad, axis);
+        const verticalAxis = getAxisValue(gamepad, axis + 1);
+        const magnitude = Math.sqrt(horizontalAxis ** 2 + verticalAxis ** 2);
+        if (magnitude > greatestMagnitude) {
+          greatestMagnitude = magnitude;
+        }
+      }
+      return greatestMagnitude;
     }
 
     rumble ({s, w, t, i}) {
-      const gamepad = getGamepad(i);
-      // @ts-ignore
-      if (!gamepad || !gamepad.vibrationActuator) return;
-      // @ts-ignore
-      gamepad.vibrationActuator.playEffect('dual-rumble', {
-        startDelay: 0,
-        duration: t * 1000,
-        weakMagnitude: w,
-        strongMagnitude: s
-      });
+      const gamepads = getGamepads(i);
+      for (const gamepad of gamepads) {
+        // @ts-ignore
+        if (gamepad.vibrationActuator) {
+          // @ts-ignore
+          gamepad.vibrationActuator.playEffect('dual-rumble', {
+            startDelay: 0,
+            duration: t * 1000,
+            weakMagnitude: w,
+            strongMagnitude: s
+          });
+        }
+      }
     }
   }
 
