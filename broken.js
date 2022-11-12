@@ -31,4 +31,4 @@
   }
   
   Scratch.extensions.register(new Broken());
-});
+})(Scratch);
