@@ -126,5 +126,10 @@ declare namespace Scratch {
 
   namespace extensions {
     function register(extensionObject: Extension): void;
+
+    /**
+     * True if the extension is running unsandboxed.
+     */
+    const unsandboxed: boolean;
   }
 }
