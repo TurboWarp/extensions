@@ -8,6 +8,7 @@
   const MODE_MODAL = 'modal';
   const MODE_IMMEDIATELY_SHOW_SELECTOR = 'selector';
   const MODE_ONLY_SELECTOR = 'only-selector';
+  const ALL_MODES = [MODE_MODAL, MODE_IMMEDIATELY_SHOW_SELECTOR, MODE_ONLY_SELECTOR];
 
   let openFileSelectorMode = MODE_MODAL;
 
@@ -247,7 +248,11 @@
     }
 
     setOpenMode (args) {
-      openFileSelectorMode = args.mode;
+      if (ALL_MODES.includes(args.mode)) {
+        openFileSelectorMode = args.mode;
+      } else {
+        console.warn(`unknown mode`, args.mode);
+      }
     }
   }
 
