@@ -5,6 +5,11 @@
     throw new Error('files extension must be run unsandboxed');
   }
 
+  const MODE_MODAL = 'modal';
+  const MODE_IMMEDIATELY_SHOW_SELECTOR = 'selector';
+
+  let openFileSelectorMode = MODE_MODAL;
+
   const showFilePrompt = (accept) => new Promise((_resolve) => {
     // We can't reliably show an <input> picker without "user interaction" in all environments,
     // so we have to show our own UI anyways. We may as well use this to implement some nice features
@@ -130,6 +135,10 @@
     modal.appendChild(subtitle);
 
     document.body.appendChild(outer);
+
+    if (openFileSelectorMode === MODE_IMMEDIATELY_SHOW_SELECTOR) {
+      input.click();
+    }
   });
 
   const download = (text, file) => {
@@ -184,8 +193,35 @@
                 defaultValue: 'save.txt'
               }
             }
+          },
+          {
+            opcode: 'setOpenMode',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set open file selector mode to [mode]',
+            arguments: {
+              mode: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: MODE_MODAL,
+                menu: 'automaticallyOpen'
+              }
+            }
           }
-        ]
+        ],
+        menus: {
+          automaticallyOpen: {
+            acceptReporters: true,
+            items: [
+              {
+                text: 'show modal',
+                value: MODE_MODAL
+              },
+              {
+                text: 'open selector immediately',
+                value: MODE_IMMEDIATELY_SHOW_SELECTOR
+              }
+            ]
+          }
+        }
       };
     }
 
@@ -199,6 +235,10 @@
 
     download (args) {
       download(args.text, args.file);
+    }
+
+    setOpenMode (args) {
+      openFileSelectorMode = args.mode;
     }
   }
 
