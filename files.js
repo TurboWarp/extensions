@@ -7,6 +7,8 @@
 
   const MODE_MODAL = 'modal';
   const MODE_IMMEDIATELY_SHOW_SELECTOR = 'selector';
+  const MODE_ONLY_SELECTOR = 'only-selector';
+  const ALL_MODES = [MODE_MODAL, MODE_IMMEDIATELY_SHOW_SELECTOR, MODE_ONLY_SELECTOR];
 
   let openFileSelectorMode = MODE_MODAL;
 
@@ -136,8 +138,16 @@
 
     document.body.appendChild(outer);
 
-    if (openFileSelectorMode === MODE_IMMEDIATELY_SHOW_SELECTOR) {
+    if (openFileSelectorMode === MODE_IMMEDIATELY_SHOW_SELECTOR || openFileSelectorMode === MODE_ONLY_SELECTOR) {
       input.click();
+    }
+
+    if (openFileSelectorMode === MODE_ONLY_SELECTOR) {
+      // Note that browser support for cancel is currently quite bad
+      input.addEventListener('cancel', () => {
+        callback('');
+      });
+      outer.remove();
     }
   });
 
@@ -238,7 +248,11 @@
     }
 
     setOpenMode (args) {
-      openFileSelectorMode = args.mode;
+      if (ALL_MODES.includes(args.mode)) {
+        openFileSelectorMode = args.mode;
+      } else {
+        console.warn(`unknown mode`, args.mode);
+      }
     }
   }
 
