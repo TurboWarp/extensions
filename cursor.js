@@ -2,9 +2,8 @@
     'use strict';
 
     class MouseCursor {
-        constructor(runtime) {
-            this.runtime = runtime;
-            this.stage = document.body.querySelector(".stage_stage_1fD7k.box_box_2jjDp");
+        constructor() {
+            this.canvas = Scratch.renderer.canvas;
         }
 
         getInfo() {
@@ -46,15 +45,15 @@
         }
 
         SwitchCur({ cur }) {
-            this.stage.style.cursor = cur;
+            this.canvas.style.cursor = cur;
         }
 
         hide() {
-            this.stage.style.cursor = "none";
+            this.canvas.style.cursor = "none";
         }
 
         GetCur() {
-            return this.stage.style.cursor || 'default';
+            return this.canvas.style.cursor || 'default';
         }
     }
 
