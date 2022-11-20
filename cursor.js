@@ -54,7 +54,7 @@
         }
 
         GetCur() {
-            return this.stage.style.cursor;
+            return this.stage.style.cursor || 'default';
         }
     }
 
