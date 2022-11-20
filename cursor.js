@@ -30,11 +30,6 @@
                         "text": "hide cursor",
                     },
                     {
-                        "opcode": "reset",
-                        "blockType": "command",
-                        "text": "reset cursor",
-                    },
-                    {
                         "opcode": "GetCur",
                         "blockType": "reporter",
                         "text": "cursor",
@@ -56,10 +51,6 @@
 
         hide() {
             this.stage.style.cursor = "none";
-        }
-
-        reset() {
-            this.stage.style.cursor = "auto";
         }
 
         GetCur() {
