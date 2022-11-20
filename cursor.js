@@ -1,6 +1,10 @@
 (function (Scratch) {
   'use strict';
 
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error('MouseCursor extension must be run unsandboxed');
+  }
+
   class MouseCursor {
     constructor() {
       this.canvas = Scratch.renderer.canvas;
@@ -8,7 +12,7 @@
 
     getInfo() {
       return {
-        id: 'mouseCursor',
+        id: 'MouseCursor',
         name: 'Mouse Cursor',
         blocks: [
           {
@@ -52,8 +56,8 @@
       };
     }
 
-    setCur({ cur }) {
-      this.canvas.style.cursor = cur;
+    setCur(args) {
+      this.canvas.style.cursor = args.cur;
     }
 
     hideCur() {
