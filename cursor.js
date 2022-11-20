@@ -13,11 +13,11 @@
               blocks: [
                 {
                   opcode: "SwitchCur",
-                  blockType: "command",
+                  blockType: Scratch.BlockType.COMMAND,
                   text: "switch cursor to [cur]",
                   arguments: {
                     cur: {
-                      type: "string",
+                      type: Scratch.ArgumentType.STRING,
                       defaultValue: "pointer",
                       menu: "cursors",
                     },
@@ -25,12 +25,12 @@
                 },
                 {
                   opcode: "hide",
-                  blockType: "command",
+                  blockType: Scratch.BlockType.COMMAND,
                   text: "hide cursor",
                 },
                 {
                   opcode: "GetCur",
-                  blockType: "reporter",
+                  blockType: Scratch.BlockType.REPORTER,
                   text: "cursor",
                 },
               ],
