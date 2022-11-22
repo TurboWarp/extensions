@@ -132,6 +132,27 @@
 	};
 	
 	
+	// Copy-pasting code from tw-frame-loop.js because I don't know how
+	// or even if it is possible to access already existing code
+	const _requestAnimationFrame = typeof requestAnimationFrame === 'function' ?
+		requestAnimationFrame :
+		(f => setTimeout(f, 1000 / 60));
+	const _cancelAnimationFrame = typeof requestAnimationFrame === 'function' ?
+		cancelAnimationFrame :
+		clearTimeout;
+	
+	const animationFrameWrapper = callback => {
+		let id;
+		const handle = () => {
+			id = _requestAnimationFrame(handle);
+			callback();
+		};
+		const cancel = () => _cancelAnimationFrame(id);
+		id = _requestAnimationFrame(handle);
+		return {
+			cancel
+		};
+	};
 	// Patching frameLoop to use xrSession.requestAnimationFrame
 	const xrAnimationFrameWrapper = (callback, fps=30) => {
 		const xrSessionBackup = xrSession;
