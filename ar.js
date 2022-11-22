@@ -93,9 +93,11 @@
 		}).then((hts) => {
 			xrHitTestSource = hts;
 		});
-		session.requestLightProbe().then((lightProbe) => {
-			xrLightProbe = lightProbe;
-		});
+		if(session.requestLightProbe) {
+			session.requestLightProbe().then((lightProbe) => {
+				xrLightProbe = lightProbe;
+			});
+		}
 		updateState();
 	};
 	const onError = function() {
