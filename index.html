@@ -106,14 +106,13 @@
     <section class="header">
       <h1>Unsandboxed Extensions for TurboWarp</h1>
       <p>TurboWarp will load extensions listed on this site without the sandbox. Unlike existing custom extensions, these extensions have no arbitrary limitations and have full access to all Scratch internals.</p>
-      <p>Unsandboxed extensions are currently restricted to <a href="https://experiments.turbowarp.org/unsandboxed-extensions/">the unsandboxed-extensions experiment</a>. We intend to merge the experiment into the main site around November 21.</p>
       <p>To protect user safety, extensions loaded from sites other than this one will continue to run in the sandbox.</p>
       <p>We commit to ensuring projects developed using extensions listed here will work forever. We will not make changes to these extensions that will break existing projects.</p>
       <p>Links for extension developers:</p>
       <ul>
         <li><a href="https://github.com/TurboWarp/scratch-gui/issues/633">Meta issue</a></li>
         <li><a href="https://docs.turbowarp.org/development/unsandboxed-extensions">Draft developer documentation</a></li>
-        <li><a href="https://github.com/TurboWarp/extensions/blob/master/CONTRIBUTING.md">Add your extension to this list</a> (We are not picky -- submit your extensions!)</li>
+        <li><a href="https://github.com/TurboWarp/extensions/blob/master/CONTRIBUTING.md">Add your extension to this list</a></li>
       </ul>
     </section>
 
@@ -238,7 +237,7 @@
       }
       for (const link of document.querySelectorAll('.url-open')) {
         const url = link.parentNode.querySelector('.url-value').textContent.trim();
-        link.href = `https://experiments.turbowarp.org/unsandboxed-extensions/editor?extension=${url}`;
+        link.href = `https://turbowarp.org/editor?extension=${url}`;
         link.target = '_blank';
         link.rel = 'noopener';
       }
