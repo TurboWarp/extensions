@@ -40,7 +40,6 @@
 	document.body.append(div);
 	const canvas = Scratch.vm.renderer.canvas;
 	const gl = Scratch.vm.renderer.gl;
-	gl.makeXRCompatible();
 	
 	
 	// Checking whether AR is supported.
@@ -54,6 +53,7 @@
 		arFail = "navigator.xr is not defined in the browser you are using";
 		console.error(arFail);
 	} else {
+		gl.makeXRCompatible();
 		navigator.xr.isSessionSupported("immersive-ar").then(
 			(supported) => {
 				if(!supported) {
