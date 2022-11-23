@@ -19,7 +19,9 @@ While you can host your custom extensions on any website, submitting them to ext
 
 We accept almost any extensions that follow these guidelines:
 
- - You agree to make the source code available under [the MIT License](LICENSE). Either you must have written the entirety of the extension, or whoever wrote it has released the code under a compatible open source license.
+ - You agree to make the source code available under an open source license, preferably [the MIT License](licenses/MIT.txt). For this to be legally possible, either you must have written the entire extension on your own or whoever wrote it has given you permission to use it under an open source license.
+   - If the license is not MIT, leave a comment at the top of each file indicating its license.
+   - We want to avoid copyleft licenses such as the GPL because the copyleft clause likely spreads to projects created using the extension, and we feel that is too far. LGPL, however, is probably okay.
  - No `eval()`, `new Function()`, remote scripts, or similar arbitrary JS/CSS/HTML/etc.
 
 Just send a pull request adding an `extension.js` file with your extension's source code.
