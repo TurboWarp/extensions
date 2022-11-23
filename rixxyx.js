@@ -123,21 +123,6 @@
             }
           },
           {
-            opcode: 'returnObject',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'JavaScript object [OBJ_NAME] with value [OBJ_VAL]',
-            arguments: {
-              OBJ_NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'String'
-              },
-              OBJ_VAL: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'RixxyX is cool, right?'
-              }
-            }
-          },
-          {
             opcode: 'isTheSameTypeAs',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[TEXT_1] is the same type as [TEXT_2]?',
@@ -306,17 +291,6 @@
             }
           },
           {
-            opcode: 'returnJsCode',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'execute JavaScript code [JS_CODE]',
-            arguments: {
-              JS_CODE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: '\"Ri\" + \"xx\" + \"yX\"'
-              }
-            }
-          },
-          {
             opcode: 'jsonParse',
             blockType: Scratch.BlockType.REPORTER,
             text: 'JSON.parse([TEXT])',
@@ -324,17 +298,6 @@
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: '\"RixxyX\"'
-              }
-            }
-          },
-          {
-            opcode: 'execJsCode',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'execute JavaScript code [JS_CODE]',
-            arguments: {
-              JS_CODE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: '\"Ri\" + \"xx\" + \"yX\"'
               }
             }
           },
@@ -400,13 +363,6 @@
     }
     returnString(args) {
       return args.TEXT.toString();
-    }
-    returnObject(args) {
-      try {
-        return eval("new " + args.OBJ_NAME + "(\"" + args.OBJ_VAL + "\");");
-      } catch(err) {
-        return err;
-      }
     }
     isTheSameTypeAs(args) {
       return (typeof args.TEXT_1 == typeof args.TEXT_2);
@@ -486,15 +442,8 @@
     repeatTxtTimes(args) {
       return args.TEXT.repeat(Math.floor(args.NUM));
     }
-    returnJsCode(args) {
-      var func = eval(args.JS_CODE);
-      return func;
-    }
     jsonParse(args) {
       return JSON.parse(args.TEXT.toString());
-    }
-    execJsCode(args) {
-      var func = new Function(args.JS_CODE);
     }
     returnENum(args) {
       return Math.E
