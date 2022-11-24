@@ -1,5 +1,4 @@
-/**
- * @license
+/*!
  * Originally created by https://scratch.mit.edu/users/RixTheTyrunt/
  * This file is available under an informal "use with credit" license.
  */
