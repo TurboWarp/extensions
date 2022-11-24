@@ -1,4 +1,6 @@
 (function (Scratch) {
+  'use strict';
+
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Runtime Options extension needs to be run unsandboxed');
   }
