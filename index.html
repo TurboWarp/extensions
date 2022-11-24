@@ -5,10 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Unsandboxed Extensions for TurboWarp</title>
     <style>
-      body {
+      :root {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color-scheme: light dark;
+      }
+      body {
         margin: 0;
         padding: 0;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color: #eee;
+          background: #111;
+        }
       }
       h1 {
         font-size: 2em;
@@ -32,26 +41,37 @@
         border-color: #0FBD8C;
       }
 
+      .warning {
+        padding: 8px;
+        margin: 8px 0;
+        border-radius: 8px;
+        background: rgba(255, 0, 0, 0.245);
+        border: 1px solid rgba(255, 0, 0, 0.604);
+      }
+
       .url {
         height: 32px;
         margin: 16px 0;
         display: flex;
         align-items: center;
       }
-      .url-value,
-      .url-copy,
-      .url-open {
+      .url-value, .url-copy, .url-open {
         height: 100%;
         margin: 0;
         box-sizing: border-box;
-        background: white;
-        color: black;
+        background: transparent;
+        color: inherit;
         border: 1px solid #ccc;
         font-size: inherit;
         text-decoration: none;
         display: block;
         display: flex;
         align-items: center;
+      }
+      @media (prefers-color-scheme: dark) {
+        .url-value, .url-copy, .url-open {
+          border-color: #555;
+        }
       }
       .url-value {
         padding: 4px;
@@ -68,111 +88,33 @@
         padding: 0 4px;
         border-radius: 0 32px 32px 0;
       }
-
-      .blocks {
-        margin: 16px 0;
-      }
-      .block {
-        background-color: #0FBD8C;
-        border-radius: 14px;
-        padding: 3px 0 3px 3px;
-        margin: 0 3px 3px 0;
-        display: inline-flex;
-        align-items: center;
-        font-size: 9pt;
-        box-sizing: border-box;
-        white-space: nowrap;
-        height: 27px;
-      }
-      .block-text {
-        color: white;
-        margin-right: 3px;
-      }
-      .block-input {
-        height: 100%;
-        box-sizing: border-box;
-        background: white;
-        color: black;
-        border-radius: 14px;
-        margin-right: 3px;
-        padding: 3px;
-        text-align: center;
-        min-width: 23px;
-      }
     </style>
   </head>
 
   <body>
     <section class="header">
       <h1>Unsandboxed Extensions for TurboWarp</h1>
-      <p>TurboWarp will load extensions listed on this site without the sandbox. Unlike existing custom extensions, these extensions have no arbitrary limitations and have full access to all Scratch internals.</p>
-      <p>To protect user safety, extensions loaded from sites other than this one will continue to run in the sandbox.</p>
-      <p>We commit to ensuring projects developed using extensions listed here will work forever. We will not make changes to these extensions that will break existing projects.</p>
-      <p>Links for extension developers:</p>
+      <p>Unlike other custom extensions, extensions listed on this site are unsandboxed, that is, they have full access to all Scratch internals, which lets them do some really powerful things.</p>
+      <p class="warning">Extensions on this site are not be compatible with Scratch. Projects that use these extensions cannot be uploaded to the Scratch website.</p>
+      <p class="warning">Most extensions listed on this site currently will not work until the next desktop app update (v1.7.0). We're not sure when that will be.</p>
+    </section>
+
+    <section>
+      <h2>Links for developers</h2>
+      <p>We're looking for people to help us make this site look a bit better.</p>
       <ul>
-        <li><a href="https://github.com/TurboWarp/scratch-gui/issues/633">Meta issue</a></li>
-        <li><a href="https://docs.turbowarp.org/development/unsandboxed-extensions">Draft developer documentation</a></li>
+        <li><a href="https://github.com/TurboWarp/extensions">GitHub repository</a></li>
+        <li><a href="https://docs.turbowarp.org/development/unsandboxed-extensions">Developer documentation draft</a></li>
         <li><a href="https://github.com/TurboWarp/extensions/blob/master/CONTRIBUTING.md">Add your extension to this list</a></li>
       </ul>
     </section>
 
     <section class="extension">
-      <h2>Utilities</h2>
-      <p>A bunch of interesting blocks. Originally by Sheep_maker.</p>
+      <h2>Box2D Physics</h2>
+      <p>Two dimensional physics. Originally by griffpatch.</p>
       <div class="url">
-        <div class="url-value">https://extensions.turbowarp.org/utilities.js</div>
-        <a class="url-open">Open Extension</a>
-      </div>
-    </section>
-
-    <section class="extension">
-      <h2>Fetch</h2>
-      <p>Make requests to the broader internet.</p>
-      <div class="blocks">
-        <div class="block">
-          <div class="block-text">GET</div>
-          <div class="block-input">https://extensions.turbowarp.org/hello.txt</div>
-        </div>
-      </div>
-      <div class="url">
-        <div class="url-value">https://extensions.turbowarp.org/fetch.js</div>
-        <a class="url-open">Open Extension</a>
-      </div>
-    </section>
-  
-    <section class="extension">
-      <h2>Bitwise</h2>
-      <p>Bitwise operations for Scratch.</p>
-      <div class="blocks">
-        <div class="block">
-          <div class="block-input">2</div>
-          <div class="block-text">&lt;&lt;</div>
-          <div class="block-input">1</div>
-        </div>
-        <div class="block">
-          <div class="block-input">2</div>
-          <div class="block-text">&gt;&gt;</div>
-          <div class="block-input">1</div>
-        </div>
-        <div class="block">
-          <div class="block-input">3</div>
-          <div class="block-text">&amp;</div>
-          <div class="block-input">1</div>
-        </div>
-        <div class="block">
-          <div class="block-input">1</div>
-          <div class="block-text">|</div>
-          <div class="block-input">0</div>
-        </div>
-        <div class="block">
-          <div class="block-input">1</div>
-          <div class="block-text">^</div>
-          <div class="block-input">1</div>
-        </div>
-      </div>
-      <div class="url">
-        <div class="url-value">https://extensions.turbowarp.org/bitwise.js</div>
-        <a class="url-open">Open Extension</a>
+        <div class="url-value">https://extensions.turbowarp.org/box2d.js</div>
+        <a class="url-open">Use Extension</a>
       </div>
     </section>
 
@@ -181,42 +123,79 @@
       <p>Directly access gamepads instead of just mapping buttons to keys.</p>
       <div class="url">
         <div class="url-value">https://extensions.turbowarp.org/gamepad.js</div>
-        <a class="url-open">Open Extension</a>
+        <a class="url-open">Use Extension</a>
       </div>
     </section>
 
     <section class="extension">
-      <h2>Box2D</h2>
-      <p>Two dimensional physics. Originally by griffpatch.</p>
+      <h2>Files</h2>
+      <p>Read and download files.</p>
       <div class="url">
-        <div class="url-value">https://extensions.turbowarp.org/box2d.js</div>
-        <a class="url-open">Open Extension</a>
+        <div class="url-value">https://extensions.turbowarp.org/files.js</div>
+        <a class="url-open">Use Extension</a>
+      </div>
+    </section>
+
+    <section class="extension">
+      <h2>Pointerlock</h2>
+      <p>Adds blocks to lock the mouse cursor. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the <a href="https://experiments.turbowarp.org/pointerlock/">pointerlock experiment</a>.</p>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/pointerlock.js</div>
+        <a class="url-open">Use Extension</a>
+      </div>
+    </section>
+
+    <section class="extension">
+      <h2>Utilities</h2>
+      <p>A bunch of interesting blocks. Originally by Sheep_maker.</p>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/utilities.js</div>
+        <a class="url-open">Use Extension</a>
+      </div>
+    </section>
+
+    <section class="extension">
+      <h2>Runtime Options</h2>
+      <p>Get and modify turbo mode, framerate, interpolation, clone limit, stage size, and more.</p>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/runtime-options.js</div>
+        <a class="url-open">Use Extension</a>
+      </div>
+    </section>
+
+    <section class="extension">
+      <h2>Cursor</h2>
+      <p>Use custom cursors or hide the cursor in your project.</p>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/cursor.js</div>
+        <a class="url-open">Use Extension</a>
+      </div>
+    </section>
+
+    <section class="extension">
+      <h2>Fetch</h2>
+      <p>Make requests to the broader internet.</p>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/fetch.js</div>
+        <a class="url-open">Use Extension</a>
+      </div>
+    </section>
+
+    <section class="extension">
+      <h2>Bitwise</h2>
+      <p>Bitwise operations.</p>
+      <div class="url">
+        <div class="url-value">https://extensions.turbowarp.org/bitwise.js</div>
+        <a class="url-open">Use Extension</a>
       </div>
     </section>
 
     <section class="extension">
       <h2>Cloudlink</h2>
+      <p>Powerful WebSocket extension for Scratch 3.</p>
       <div class="url">
         <div class="url-value">https://extensions.turbowarp.org/cloudlink.js</div>
-        <a class="url-open">Open Extension</a>
-      </div>
-    </section>
-
-    <section class="extension">
-      <h2>Pointerlock (BETA)</h2>
-      <p>Adds blocks to lock the mouse cursor. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the <a href="https://experiments.turbowarp.org/pointerlock/">pointerlock experiment</a>.</p>
-      <div class="url">
-        <div class="url-value">https://extensions.turbowarp.org/pointerlock.js</div>
-        <a class="url-open">Open Extension</a>
-      </div>
-    </section>
-
-    <section class="extension">
-      <h2>Files (BETA)</h2>
-      <p>Read and download files.</p>
-      <div class="url">
-        <div class="url-value">https://extensions.turbowarp.org/files.js</div>
-        <a class="url-open">Open Extension</a>
+        <a class="url-open">Use Extension</a>
       </div>
     </section>
 
