@@ -27,6 +27,7 @@
 	let xrCombinedMatrix;
 	let xrHitTestSource;
 	let hitPosition;
+	let hitPositionAvailible;
 	let oldWidth = 0;
 	let oldHeight = 0;
 	let xrNeedsResize = false;
@@ -71,6 +72,7 @@
 		xrViewSpace = null;
 		xrHitTestSource = null;
 		hitPosition = null;
+		hitPositionAvailible = false;
 		poseAvailible = false;
 		
 		session.updateRenderState({
@@ -237,9 +239,11 @@
 					];
 				}
 			}
+			hitPositionAvailible = false;
 			if(xrHitTestSource) {
 				const hitTestResults = frame.getHitTestResults(xrHitTestSource);
 				if(hitTestResults.length > 0) {
+					hitPositionAvailible = true;
 					hitPosition = hitTestResults[0].getPose(xrRefSpace).transform.position;
 				}
 			}
@@ -660,7 +664,7 @@
 				case "pose":
 					return poseAvailible;
 				case "hit position":
-					return !!hitPosition;
+					return hitPositionAvailible;
 				default:
 					return false;
 			}
