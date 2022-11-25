@@ -649,14 +649,6 @@
 			if(!hitPosition) return 0;
 			return hitPosition[args.POSITION_COMPONENT] || 0;
 		}
-		getLightDirection(args) {
-			if(!xrLightEstimate) return 0;
-			return xrLightEstimate.primaryLightDirection[args.POSITION_COMPONENT] || 0;
-		}
-		getLightIntensity(args) {
-			if(!xrLightEstimate) return 0;
-			return xrLightEstimate.primaryLightIntensity[args.COLOR_COMPONENT] || 0;
-		}
 		isFeatureAvailible(args) {
 			switch(args.FEATURE) {
 				case "ar":
