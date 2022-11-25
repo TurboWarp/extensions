@@ -27,8 +27,6 @@
 	let xrCombinedMatrix;
 	let xrHitTestSource;
 	let hitPosition;
-	let xrLightProbe;
-	let xrLightEstimate;
 	let oldWidth = 0;
 	let oldHeight = 0;
 	let xrNeedsResize = false;
@@ -73,8 +71,6 @@
 		xrViewSpace = null;
 		xrHitTestSource = null;
 		hitPosition = null;
-		xrLightProbe = null;
-		xrLightEstimate = null;
 		poseAvailible = false;
 		
 		session.updateRenderState({
@@ -93,11 +89,6 @@
 		}).then((hts) => {
 			xrHitTestSource = hts;
 		});
-		if(session.requestLightProbe) {
-			session.requestLightProbe().then((lightProbe) => {
-				xrLightProbe = lightProbe;
-			});
-		}
 		updateState();
 	};
 	const onError = function() {
@@ -251,9 +242,6 @@
 				if(hitTestResults.length > 0) {
 					hitPosition = hitTestResults[0].getPose(xrRefSpace).transform.position;
 				}
-			}
-			if(xrLightProbe) {
-				xrLightEstimate = frame.getLightEstimate(xrLightProbe);
 			}
 			callback();
 		};
@@ -468,31 +456,6 @@
 					},
 					"---",
 					{
-						opcode: "getLightDirection",
-						blockType: BlockType.REPORTER,
-						text: "light direction [POSITION_COMPONENT]",
-						arguments: {
-							POSITION_COMPONENT: {
-								type: ArgumentType.STRING,
-								menu: "positionComponent",
-								defaultValue: "x"
-							}
-						}
-					},
-					{
-						opcode: "getLightIntensity",
-						blockType: BlockType.REPORTER,
-						text: "light intensity [COLOR_COMPONENT]",
-						arguments: {
-							COLOR_COMPONENT: {
-								type: ArgumentType.STRING,
-								menu: "colorComponent",
-								defaultValue: "x"
-							}
-						}
-					},
-					"---",
-					{
 						opcode: "moveSpaceBy",
 						blockType: BlockType.COMMAND,
 						text: "move everything by x:[X] y:[Y] z:[Z]",
@@ -574,23 +537,6 @@
 							}
 						]
 					},
-					colorComponent: {
-						acceptReporters: false,
-						items: [
-							{
-								text: "r",
-								value: "x"
-							},
-							{
-								text: "g",
-								value: "y"
-							},
-							{
-								text: "b",
-								value: "z"
-							}
-						]
-					},
 					xrMatrix: {
 						acceptReporters: false,
 						items: [
@@ -605,8 +551,7 @@
 						items: [
 							"ar",
 							"pose",
-							"hit position",
-							"light estimate"
+							"hit position"
 						]
 					}
 				}
@@ -627,7 +572,6 @@
 					div.append(stageWrapper);
 					navigator.xr.requestSession("immersive-ar", {
 						requiredFeatures: ["hit-test", "dom-overlay"],
-						optionalFeatures: ["light-estimation"],
 						domOverlay: {root: div}
 					}).then(onSuccess, onError);
 				}
@@ -717,8 +661,6 @@
 					return poseAvailible;
 				case "hit position":
 					return !!hitPosition;
-				case "light estimate":
-					return !!xrLightEstimate;
 				default:
 					return false;
 			}
