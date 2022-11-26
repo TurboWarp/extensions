@@ -228,7 +228,8 @@
     GJAPI.sGameKey = "";
     GJAPI.bAutoLogin = true;
 
-    GJAPI.sAPI = "https://gamejolt.com/api/game/v1";
+    GJAPI.sAPI = "https://api.gamejolt.com/api/game/v1_2";
+    GJAPI.sAPIold = "https://gamejolt.com/api/game/v1"; // This is for fixing DataStoreFetch
     GJAPI.sLogName  = "[Game Jolt API]";
     GJAPI.iLogStack = 20;
 
@@ -284,7 +285,7 @@
     ) {
       // add main URL, game ID and format type
       sURL =
-        GJAPI.sAPI +
+        (sBodyData ? GJAPI.sAPIold : GJAPI.sAPI) +
         encodeURI(sURL) +
         (sURL.indexOf("/?") === -1 ? "?" : "&") +
         "game_id=" +
@@ -380,7 +381,7 @@
         GJAPI.SEND_FOR_USER,
         function (pResponse) {
           // check for success
-          if (pResponse.success) {
+          if (pResponse.success == "true") {
             // add automatic session ping and close
             GJAPI.iSessionHandle = window.setInterval(GJAPI.SessionPing, 30000);
             window.addEventListener("beforeunload", GJAPI.SessionClose, false);
@@ -445,7 +446,7 @@
         GJAPI.SEND_GENERAL,
         function (pResponse) {
           // check for success
-          if (pResponse.success) {
+          if (pResponse.success == "true") {
             // save login properties
             GJAPI.bLoggedIn = true;
             GJAPI.sUserName = sUserName;
@@ -533,7 +534,7 @@
         GJAPI.SEND_FOR_USER,
         function (pResponse) {
           // check for success
-          if (pResponse.success) {
+          if (pResponse.success == "true") {
             // save status
             GJAPI.abTrophyCache[iTrophyID] = true;
           }
@@ -850,7 +851,7 @@
     /**
      * SessionOpen and SessionClose combined
      */
-    GJAPI.SessionSetStatus = (isOpen) => {
+    GJAPI.SessionSetStatus = isOpen => {
       if (!GJAPI.bLoggedIn) {
         GJAPI.LogTrace(
           "SessionSetStatus(" + isOpen + ") failed: no user logged in"
