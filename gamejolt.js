@@ -851,14 +851,14 @@
     /**
      * SessionOpen and SessionClose combined
      */
-    GJAPI.SessionSetStatus = isOpen => {
+    GJAPI.SessionSetStatus = (isOpen) => {
       if (!GJAPI.bLoggedIn) {
         GJAPI.LogTrace(
           "SessionSetStatus(" + isOpen + ") failed: no user logged in"
         );
         return;
       }
-      GJAPI.bSessionActive = isOpen; // Remove this line if it isn't needed
+      GJAPI.bSessionActive = isOpen;
       if (isOpen) {
         if (GJAPI.iSessionHandle) {
           return;
