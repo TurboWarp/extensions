@@ -1041,15 +1041,6 @@
   };
 
   /**
-   * Useful for checking if the code is outdated or not
-   * It's a constant so you have to refresh the page to update the upToDate field
-   */
-  const version = {
-    current: '1.31.65\n',
-    upToDate: fetch('https://softedco.github.io/GameJolt-API-Scratch-extension/version').then(response => response.text(''))
-  };
-
-  /**
    * GameJolt icon by GameJolt
    * Other icons by softed
    * Can be used outside of this extension
@@ -1078,19 +1069,6 @@
         color3: "#CCFF00",
         menuIconURI: icons.GameJolt,
         blocks: [
-          {
-            opcode: "version",
-            blockIconURI: icons.GameJolt,
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Return [versionType] version",
-            arguments: {
-              versionType: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "versionTypes",
-                defaultValue: "current",
-              },
-            },
-          },
           {
             opcode: "gamejoltBool",
             blockIconURI: icons.GameJolt,
@@ -1540,12 +1518,6 @@
           },
         ],
         menus: {
-          versionTypes: {
-            items: [
-              { text: "current", value: "current" },
-              { text: "up to date", value: "upToDate" },
-            ],
-          },
           fetchTypes: {
             items: [
               { text: "username", value: "true" },
@@ -1638,9 +1610,6 @@
           },
         },
       };
-    }
-    version(args) {
-      return version[args.versionType];
     }
     gamejoltBool() {
       return GameJolt.bOnGJ;
