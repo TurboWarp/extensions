@@ -1,7 +1,7 @@
 (Scratch => {
 	'use strict';
 
-	/**
+	/*!
 	 * Itch.io JavaScript API reference from https://static.itch.io/api.js
 	 * Softed by softed
 	 */
@@ -42,7 +42,7 @@
 	/**
 	 * Used for storing the response object
 	 */
-	let gameData = {};
+	let data = {};
 
 	/**
 	 * Icon by itch.io
@@ -169,32 +169,31 @@
 				user: args.user,
 				game: args.game,
 				secret: args.secret,
-				onComplete: data => {
-					gameData = data;
-				}
-			});
+				onComplete: response => {
+					data = response;
+                }
+            });
 		}
 		returnGameData(args) {
-			if (!gameData[args.data]) return err;
-			return gameData[args.data];
+			if (!data[args.data]) return err;
+			return data[args.data];
 		}
 		returnGameRewards(args) {
-			if (!gameData.rewards) return err;
-			if (!gameData.rewards[args.index]) return err;
-			return gameData.rewards[args.index][args.rewards];
+			if (!data.rewards) return err;
+			if (!data.rewards[args.index]) return err;
+			return data.rewards[args.index][args.rewards];
 		}
 		rewardsBool() {
-			return gameData.rewards ? true : false;
+			return data.rewards ? true : false;
 		}
 		returnGameSale(args) {
-			if (!gameData.sale) return err;
-			if (!gameData.sale[args.sale]) return err;
-			return gameData.sale[args.sale];
+			if (!data.sale) return err;
+			if (!data.sale[args.sale]) return err;
+			return data.sale[args.sale];
 		}
 		saleBool() {
-			return gameData.sale ? true : false;
+			return data.sale ? true : false;
 		}
 	}
 	Scratch.extensions.register(new Itch());
-
 })(Scratch);
