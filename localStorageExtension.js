@@ -1,5 +1,8 @@
 (function(Scratch) {
     'use strict';
+    if (!Scratch.extensions.unsandboxed) {
+        throw new Error('Box2D must be run unsandboxed');
+    }
     class LocalStorageExt {
       getInfo () {
         return {
