@@ -6,7 +6,7 @@
 	 * Softed by softed
 	 */
 	(() => {
-		window.ItchIo = {};
+		ItchIo = {};
 		ItchIo.getGameData = opts => {
 			var domain, url, xhr;
 			opts = opts ?? {};
