@@ -6,8 +6,8 @@
 	 * Softed by softed
 	 */
 	(() => {
-		window.ItchRef = {};
-		ItchRef.getGameData = opts => {
+		window.ItchIo = {};
+		ItchIo.getGameData = opts => {
 			var domain, url, xhr;
 			opts = opts ?? {};
 			domain = opts.domain || "itch.io";
@@ -33,7 +33,7 @@
 					return typeof opts.onComplete === "function" ? opts.onComplete(game) : void 0;
 				};
 			})(this));
-		return xhr.send();
+			return xhr.send();
 		};
 	}).call(this);
 
@@ -165,14 +165,14 @@
 			};
 		}
 		getGameData(args) {
-			ItchRef.getGameData({
+			ItchIo.getGameData({
 				user: args.user,
 				game: args.game,
 				secret: args.secret,
 				onComplete: response => {
 					data = response;
-                }
-            });
+				}
+			});
 		}
 		returnGameData(args) {
 			if (!data[args.data]) return err;
