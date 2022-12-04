@@ -37,8 +37,7 @@
         }
 
         newNotification(args) {
-            const notification = new Notification(args.title)
-            return notification;
+            return new Notification(args.title);
         }
 
         notifcationsAllowed() {
