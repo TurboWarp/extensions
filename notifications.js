@@ -1,10 +1,6 @@
 (function(Scratch) {
     "use strict";
 
-    if (!Scratch.extensions.unsandboxed) {
-        throw new Error("Notifications must be run unsandboxed");
-    }
-
     class Notifications {
         getInfo() {
             return {
