@@ -33,11 +33,12 @@
         }
 
         requestPermission() {
-            Notification.requestPermission();
+            return Notification.requestPermission();
         }
 
         newNotification(args) {
-            new Notification(args.title);
+            const notification = new Notification(args.title)
+            return notification;
         }
 
         notifcationsAllowed() {
