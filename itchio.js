@@ -5,37 +5,34 @@
 	 * Itch.io JavaScript API reference from https://static.itch.io/api.js
 	 * Softed by softed
 	 */
-	(() => {
-		ItchIo = {};
-		ItchIo.getGameData = opts => {
-			var domain, url, xhr;
-			opts = opts ?? {};
-			domain = opts.domain || "itch.io";
-			if (!opts.user) {
-				console.error("Missing user");
-			}
-			if (!opts.game) {
-				console.error("Missing game");
-			}
-			url = "https://" + opts.user + "." + domain + "/" + opts.game + "/data.json";
-			if (opts.secret) {
-				url = url + "?secret=" + opts.secret;
-			}
-			xhr = new XMLHttpRequest();
-			xhr.open("GET", url);
-			xhr.addEventListener("readystatechange", (_this => {
-				return e => {
-					var game;
-					if (xhr.readyState !== 4) {
-						return;
-					}
-					game = JSON.parse(xhr.responseText);
-					return typeof opts.onComplete === "function" ? opts.onComplete(game) : void 0;
-				};
-			})(this));
-			return xhr.send();
-		};
-	}).call(this);
+	var getGameData = opts => {
+		var domain, url, xhr;
+		opts = opts ?? {};
+		domain = opts.domain || "itch.io";
+		if (!opts.user) {
+			console.error("Missing user");
+		}
+		if (!opts.game) {
+			console.error("Missing game");
+		}
+		url = "https://" + opts.user + "." + domain + "/" + opts.game + "/data.json";
+		if (opts.secret) {
+			url = url + "?secret=" + opts.secret;
+		}
+		xhr = new XMLHttpRequest();
+		xhr.open("GET", url);
+		xhr.addEventListener("readystatechange", (_this => {
+			return e => {
+				var game;
+				if (xhr.readyState !== 4) {
+					return;
+				}
+				game = JSON.parse(xhr.responseText);
+				return typeof opts.onComplete === "function" ? opts.onComplete(game) : void 0;
+			};
+		})(this));
+		return xhr.send();
+	};
 
 	let err = "Error.";
 
@@ -165,7 +162,7 @@
 			};
 		}
 		getGameData(args) {
-			ItchIo.getGameData({
+			getGameData({
 				user: args.user,
 				game: args.game,
 				secret: args.secret,
