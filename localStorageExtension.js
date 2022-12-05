@@ -10,7 +10,7 @@
             name: "Local Storage",
             blocks: [
                 {
-                    opcode: 'lse_load_reporter',
+                    opcode: 'load',
                     blockType: Scratch.BlockType.REPORTER,
                     text: 'get key [key]',
                     arguments: {
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    opcode: 'lse_set_block',
+                    opcode: 'set',
                     blockType: Scratch.BlockType.COMMAND,
                     text: 'set key [key] to [value]',
                     arguments: {
