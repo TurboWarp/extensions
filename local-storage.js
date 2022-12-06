@@ -38,10 +38,10 @@
         ],
       };
     }
-    lse_set_block(args) {
+    set(args) {
       localStorage.setItem('lse:' + args.key.toString(), args.value.toString());
     }
-    lse_load_reporter(args) {
+    load(args) {
       try {
         return localStorage.getItem('lse:' + args.key.toString()).toString();
       } catch (e) {
