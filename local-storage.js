@@ -3,6 +3,9 @@
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Local Storage must be run unsandboxed');
   }
+
+  const PREFIX = 'untrusted_local_storage_extension:';
+
   class LocalStorageExt {
     getInfo() {
       return {
@@ -39,14 +42,27 @@
       };
     }
     set(args) {
-      localStorage.setItem('lse:' + args.key.toString(), args.value.toString());
+      localStorage.setItem(PREFIX + args.key.toString(), JSON.stringify(args.value));
     }
     load(args) {
       try {
-        return localStorage.getItem('lse:' + args.key.toString()).toString();
+        const storedValue = localStorage.getItem(PREFIX + args.key.toString());
+        if (storedValue !== null) {
+          try {
+            const parsed = JSON.parse(storedValue);
+            if (typeof parsed === 'string' || typeof parsed === 'boolean' || typeof parsed === 'number') {
+              return parsed;
+            }
+          } catch (e) {
+            // JSON.parse failed, ignore
+          }
+          // Return the raw value as a string.
+          return storedValue;
+        }
       } catch (e) {
-        return '';
+        // localStorage.getItem failed, ignore
       }
+      return '';
     }
   }
   Scratch.extensions.register(new LocalStorageExt());
