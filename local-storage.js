@@ -38,6 +38,17 @@
               },
             },
           },
+          {
+            opcode: 'remove',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'remove key [key]',
+            arguments: {
+              key: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'example'
+              },
+            },
+          },
         ],
       };
     }
@@ -63,6 +74,9 @@
         // localStorage.getItem failed, ignore
       }
       return '';
+    }
+    remove(args) {
+      localStorage.removeItem(PREFIX + args.key.toString());
     }
   }
   Scratch.extensions.register(new LocalStorageExt());
