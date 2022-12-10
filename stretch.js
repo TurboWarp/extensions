@@ -1,80 +1,103 @@
 (function (Scratch) {
   'use strict';
 
+  const STRETCH_X = Symbol('stretch.x');
+  const STRETCH_Y = Symbol('stretch.y');
+
+  const vm = Scratch.vm;
+
+  /**
+   * @param {number} originalScale
+   * @param {number} stretchAmount
+   * @returns {number}
+   */
+  const applyStretch = (originalScale, stretchAmount) => {
+    if (stretchAmount === 0) {
+      return originalScale;
+    }
+    stretchAmount = Math.max(-100, stretchAmount);
+    return originalScale * ((stretchAmount / 100) + 1);
+  };
+
+  /**
+   * @param {VM.RenderedTarget} target
+   */
+  const implementStretchForTarget = (target) => {
+    target[STRETCH_X] = 0;
+    target[STRETCH_Y] = 0;
+
+    const original = target._getRenderedDirectionAndScale;
+    target._getRenderedDirectionAndScale = function () {
+      const result = original.call(this);
+
+      result.scale[0] = applyStretch(result.scale[0], this[STRETCH_X]);
+      result.scale[1] = applyStretch(result.scale[1], this[STRETCH_Y]);
+
+      return result;
+    };
+  };
+  vm.runtime.targets.forEach(implementStretchForTarget);
+  vm.runtime.on('targetWasCreated', implementStretchForTarget);
+
+  /**
+   * @param {VM.RenderedTarget} target
+   */
+  const forceUpdateDirectionAndScale = (target) => {
+    target.setDirection(target.direction);
+  };
+
   class Stretch {
     getInfo() {
       return {
-        id: 'moreScale',
+        id: 'stretch',
         name: 'Stretch',
         blocks: [
           {
             opcode: 'setStretch',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set stretch to width: [SIZEX] height: [SIZEY]',
+            text: 'set stretch to width: [X] height: [Y]',
             arguments: {
-              SIZEX: {
+              X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 100,
               },
-              SIZEY: {
+              Y: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100,
+                defaultValue: 0,
               },
             },
           },
           {
-            opcode: 'getWidth',
+            opcode: 'getX',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'width',
+            text: 'x stretch',
             disableMonitor: true,
           },
           {
-            opcode: 'getHeight',
+            opcode: 'getY',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'height',
+            text: 'y stretch',
             disableMonitor: true,
           },
         ],
       };
     }
-
     setStretch(args, util) {
-      util.target.scalex = args.SIZEX;
-      util.target.scaley = args.SIZEY;
-      if (util.target.renderer) {
-        let finalScale = [
-          (util.target.size * util.target.scalex) / 100,
-          (util.target.size * util.target.scaley) / 100,
-        ];
-        if (
-          util.target.rotationStyle === 'left-right' &&
-          util.target.direction < 0
-        ) {
-          finalScale[0] *= -1;
-        }
-        util.target.renderer.updateDrawableProperties(util.target.drawableID, {
-          scale: finalScale,
-        });
-
-        if (util.target.visible) {
-          util.target.runtime.requestRedraw();
-        }
-      }
+      util.target[STRETCH_X] = args.X;
+      util.target[STRETCH_Y] = args.Y;
+      forceUpdateDirectionAndScale(util.target);
     }
-
-    getWidth(args, util) {
-      if (typeof util.target.scalex == 'undefined') {
-        util.target.scalex = 100;
-        util.target.scaley = 100;
+    getX(args, util) {
+      if (typeof util.target[STRETCH_X] !== 'number') {
+        return 0;
       }
-      return util.target.scalex;
+      return util.target[STRETCH_X];
     }
-    getHeight(args, util) {
-      if (typeof util.target.scaley == 'undefined') {
-        util.target.scalex = 100;
-        util.target.scaley = 100;
+    getY(args, util) {
+      if (typeof util.target[STRETCH_Y] !== 'number') {
+        return 0;
       }
-      return util.target.scaley;
+      return util.target[STRETCH_Y];
     }
   }
 
