@@ -12,8 +12,6 @@
   /** @type {Map<string, CacheEntry>} */
   const computed = new Map();
 
-  // TODO: clear cache on NetworkInformation change
-
   /**
    * @param {string} uri
    * @returns {Promise<CacheEntry>}
