@@ -463,21 +463,17 @@
 			switch (textCase) {
 				case CaseParam.LOWERCASE:
 					return string.toLowerCase() === string;
-				break;
 				case CaseParam.UPPERCASE:
 					return string.toUpperCase() === string;
-				break;
 				case CaseParam.MIXEDCASE:
 					return (!(
 						string.toUpperCase() === string ||
 						string.toLowerCase() === string
 					));
-				break;
 				case CaseParam.TITLECASE:
 					return ![...string.matchAll(/\b./g)].some((match) => {
 						return match[0].toLowerCase() === match[0];
 					});
-				break;
 				default: return false;
 			}
 		}
@@ -488,17 +484,14 @@
 			switch (textCase) {
 				case CaseParam.LOWERCASE:
 					return string.toLowerCase();
-				break;
 				case CaseParam.UPPERCASE:
 					return string.toUpperCase();
-				break;
 				case CaseParam.MIXEDCASE:
 					return Array.from(string).map(
 						(char, index) => index % 2 === 0 ?
 							char.toUpperCase() :
 							char.toLowerCase()
 					).join("");
-				break;
 				case CaseParam.TITLECASE:
 					return string.split(/\b/g).map((str) => {
 						let chars = Array.from(str);
@@ -506,7 +499,6 @@
 						chars[0] = chars[0].toUpperCase();
 						return chars.join("");
 					}).join("");
-				break;
 				default: return string;
 			}
 		}
