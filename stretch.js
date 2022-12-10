@@ -88,15 +88,9 @@
       forceUpdateDirectionAndScale(util.target);
     }
     getX(args, util) {
-      if (typeof util.target[STRETCH_X] !== 'number') {
-        return 0;
-      }
       return util.target[STRETCH_X];
     }
     getY(args, util) {
-      if (typeof util.target[STRETCH_Y] !== 'number') {
-        return 0;
-      }
       return util.target[STRETCH_Y];
     }
   }
