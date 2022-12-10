@@ -10,33 +10,21 @@
    * @param {number} stretchAmount
    * @returns {number}
    */
-  const clampStretch = (stretchAmount) => Math.max(-100, stretchAmount);
-
-  /**
-   * @param {number} originalScale
-   * @param {number} stretchAmount already clamped by clampStretch()
-   * @returns {number}
-   */
-  const applyStretch = (originalScale, stretchAmount) => {
-    if (stretchAmount === 0) {
-      return originalScale;
-    }
-    return originalScale * ((stretchAmount / 100) + 1);
-  };
+  const clampStretch = (stretchAmount) => Math.max(0, stretchAmount);
 
   /**
    * @param {VM.RenderedTarget} target
    */
   const implementStretchForTarget = (target) => {
-    target[STRETCH_X] = 0;
-    target[STRETCH_Y] = 0;
+    target[STRETCH_X] = 100;
+    target[STRETCH_Y] = 100;
 
     const original = target._getRenderedDirectionAndScale;
     target._getRenderedDirectionAndScale = function () {
       const result = original.call(this);
 
-      result.scale[0] = applyStretch(result.scale[0], this[STRETCH_X]);
-      result.scale[1] = applyStretch(result.scale[1], this[STRETCH_Y]);
+      result.scale[0] *= this[STRETCH_X] / 100;
+      result.scale[1] *= this[STRETCH_Y] / 100;
 
       return result;
     };
@@ -68,7 +56,7 @@
               },
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+                defaultValue: 100,
               },
             },
           },
