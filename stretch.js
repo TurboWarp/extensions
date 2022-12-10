@@ -45,7 +45,7 @@
           {
             opcode: 'setStretch',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set stretch to width: [X] height: [Y]',
+            text: 'set stretch to x: [X] y: [Y]',
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
