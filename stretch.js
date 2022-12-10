@@ -7,15 +7,20 @@
   const vm = Scratch.vm;
 
   /**
-   * @param {number} originalScale
    * @param {number} stretchAmount
+   * @returns {number}
+   */
+  const clampStretch = (stretchAmount) => Math.max(-100, stretchAmount);
+
+  /**
+   * @param {number} originalScale
+   * @param {number} stretchAmount already clamped by clampStretch()
    * @returns {number}
    */
   const applyStretch = (originalScale, stretchAmount) => {
     if (stretchAmount === 0) {
       return originalScale;
     }
-    stretchAmount = Math.max(-100, stretchAmount);
     return originalScale * ((stretchAmount / 100) + 1);
   };
 
@@ -83,8 +88,8 @@
       };
     }
     setStretch(args, util) {
-      util.target[STRETCH_X] = args.X;
-      util.target[STRETCH_Y] = args.Y;
+      util.target[STRETCH_X] = clampStretch(args.X);
+      util.target[STRETCH_Y] = clampStretch(args.Y);
       forceUpdateDirectionAndScale(util.target);
     }
     getX(args, util) {
