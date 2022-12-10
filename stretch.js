@@ -38,6 +38,9 @@
       return {
         id: 'stretch',
         name: 'Stretch',
+        color1: '#4287f5',
+        color2: '#2b62ba',
+        color3: '#204785',
         blocks: [
           {
             opcode: 'setStretch',
