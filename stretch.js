@@ -7,12 +7,6 @@
   const vm = Scratch.vm;
 
   /**
-   * @param {number} stretchAmount
-   * @returns {number}
-   */
-  const clampStretch = (stretchAmount) => Math.max(0, stretchAmount);
-
-  /**
    * @param {VM.RenderedTarget} target
    */
   const implementStretchForTarget = (target) => {
@@ -76,8 +70,8 @@
       };
     }
     setStretch(args, util) {
-      util.target[STRETCH_X] = clampStretch(args.X);
-      util.target[STRETCH_Y] = clampStretch(args.Y);
+      util.target[STRETCH_X] = args.X;
+      util.target[STRETCH_Y] = args.Y;
       forceUpdateDirectionAndScale(util.target);
     }
     getX(args, util) {
