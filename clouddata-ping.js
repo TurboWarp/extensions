@@ -52,7 +52,7 @@
     clearTimeout(timeoutId);
 
     return {
-      expires: Date.now() + 1000,
+      expires: Date.now() + 60000,
       value: isUp
     };
   };
