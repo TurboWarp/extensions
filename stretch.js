@@ -26,11 +26,13 @@
             opcode: 'getWidth',
             blockType: Scratch.BlockType.REPORTER,
             text: 'width',
+            disableMonitor: true,
           },
           {
             opcode: 'getHeight',
             blockType: Scratch.BlockType.REPORTER,
             text: 'height',
+            disableMonitor: true,
           },
         ],
       };
