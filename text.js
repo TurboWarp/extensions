@@ -474,7 +474,7 @@
 					));
 				break;
 				case CaseParam.TITLECASE:
-					return !string.matchAll(/\b./g).some((match) => {
+					return ![...string.matchAll(/\b./g)].some((match) => {
 						return match[0].toLowerCase() === match[0];
 					});
 				break;
