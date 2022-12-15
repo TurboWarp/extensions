@@ -229,8 +229,7 @@
     GJAPI.bAutoLogin = true;
 
     GJAPI.sAPI = "https://api.gamejolt.com/api/game/v1_2";
-    GJAPI.sAPIold = "https://gamejolt.com/api/game/v1"; // This is for fixing DataStoreFetch
-    GJAPI.sLogName  = "[Game Jolt API]";
+    GJAPI.sLogName = "[Game Jolt API]";
     GJAPI.iLogStack = 20;
 
     GJAPI.asQueryParam = (function () {
@@ -285,7 +284,7 @@
     ) {
       // add main URL, game ID and format type
       sURL =
-        (sBodyData ? GJAPI.sAPIold : GJAPI.sAPI) +
+        GJAPI.sAPI +
         encodeURI(sURL) +
         (sURL.indexOf("/?") === -1 ? "?" : "&") +
         "game_id=" +
@@ -294,7 +293,7 @@
         sFormat;
 
       // add credentials of current user (for user-related operations)
-      if (GJAPI.bLoggedIn && bSendUser === GJAPI.SEND_FOR_USER) {
+      if (GJAPI.bLoggedIn && bSendUser) {
         sURL += "&username=" + GJAPI.sUserName + "&user_token=" + GJAPI.sUserToken;
       }
 
@@ -324,7 +323,6 @@
 
           default:
             pCallback(sResponse);
-            break;
         }
       });
     };
@@ -332,8 +330,8 @@
     // automatically retrieve and log in current user on Game Jolt
     GJAPI.bLoggedIn =
       GJAPI.bAutoLogin &&
-      GJAPI.asQueryParam["gjapi_username"] &&
-      GJAPI.asQueryParam["gjapi_token"]
+        GJAPI.asQueryParam["gjapi_username"] &&
+        GJAPI.asQueryParam["gjapi_token"]
         ? true
         : false;
     GJAPI.sUserName = GJAPI.bLoggedIn ? GJAPI.asQueryParam["gjapi_username"] : "";
@@ -343,23 +341,23 @@
     console.info(GJAPI.asQueryParam);
     console.info(
       GJAPI.sLogName +
-        (GJAPI.bOnGJ ? " E" : " Not e") +
-        "mbedded on Game Jolt <" +
-        window.location.origin +
-        window.location.pathname +
-        ">"
+      (GJAPI.bOnGJ ? " E" : " Not e") +
+      "mbedded on Game Jolt <" +
+      window.location.origin +
+      window.location.pathname +
+      ">"
     );
     console.info(
       GJAPI.sLogName +
-        (GJAPI.bLoggedIn ? " U" : " No u") +
-        "ser recognized <" +
-        GJAPI.sUserName +
-        ">"
+      (GJAPI.bLoggedIn ? " U" : " No u") +
+      "ser recognized <" +
+      GJAPI.sUserName +
+      ">"
     );
     if (!window.location.hostname)
       console.warn(
         GJAPI.sLogName +
-          " XMLHttpRequest may not work properly on a local environment"
+        " XMLHttpRequest may not work properly on a local environment"
       );
 
     // ****************************************************************
@@ -430,12 +428,12 @@
       if (GJAPI.bLoggedIn) {
         GJAPI.LogTrace(
           "UserLoginManual(" +
-            sUserName +
-            ", " +
-            sUserToken +
-            ") failed: user " +
-            GJAPI.sUserName +
-            " already logged in"
+          sUserName +
+          ", " +
+          sUserToken +
+          ") failed: user " +
+          GJAPI.sUserName +
+          " already logged in"
         );
         return;
       }
@@ -556,7 +554,7 @@
         iAchieved === GJAPI.TROPHY_ALL
           ? ""
           : "?achieved=" +
-            (iAchieved >= GJAPI.TROPHY_ONLY_ACHIEVED ? "true" : "false");
+          (iAchieved >= GJAPI.TROPHY_ONLY_ACHIEVED ? "true" : "false");
 
       // send fetch-trophy request
       GJAPI.SendRequest("/trophies/" + sTrophyData, GJAPI.SEND_FOR_USER, pCallback);
@@ -564,9 +562,7 @@
 
     GJAPI.TrophyFetchSingle = function (iTrophyID, pCallback) {
       if (!GJAPI.bLoggedIn) {
-        GJAPI.LogTrace(
-          "TrophyFetchSingle(" + iTrophyID + ") failed: no user logged in"
-        );
+        GJAPI.LogTrace("TrophyFetchSingle(" + iTrophyID + ") failed: no user logged in");
         return;
       }
 
@@ -593,12 +589,12 @@
       if (!GJAPI.bLoggedIn) {
         GJAPI.LogTrace(
           "ScoreAdd(" +
-            iScoreTableID +
-            ", " +
-            iScoreValue +
-            ", " +
-            sScoreText +
-            ") failed: no user logged in"
+          iScoreTableID +
+          ", " +
+          iScoreValue +
+          ", " +
+          sScoreText +
+          ") failed: no user logged in"
         );
         return;
       }
@@ -628,13 +624,13 @@
       // send add-score request
       GJAPI.SendRequest(
         "/scores/add/" +
-          "?sort=" +
-          iScoreValue +
-          "&score=" +
-          sScoreText +
-          (bIsGuest ? "&guest=" + sGuestName : "") +
-          (iScoreTableID ? "&table_id=" + iScoreTableID : "") +
-          (sExtraData ? "&extra_data=" + sExtraData : ""),
+        "?sort=" +
+        iScoreValue +
+        "&score=" +
+        sScoreText +
+        (bIsGuest ? "&guest=" + sGuestName : "") +
+        (iScoreTableID ? "&table_id=" + iScoreTableID : "") +
+        (sExtraData ? "&extra_data=" + sExtraData : ""),
         bIsGuest ? GJAPI.SEND_GENERAL : GJAPI.SEND_FOR_USER,
         pCallback
       );
@@ -644,12 +640,12 @@
       if (!GJAPI.bLoggedIn && bOnlyUser) {
         GJAPI.LogTrace(
           "ScoreFetch(" +
-            iScoreTableID +
-            ", " +
-            bOnlyUser +
-            ", " +
-            iLimit +
-            ") failed: no user logged in"
+          iScoreTableID +
+          ", " +
+          bOnlyUser +
+          ", " +
+          iLimit +
+          ") failed: no user logged in"
         );
         return;
       }
@@ -660,9 +656,9 @@
       // send fetch-score request
       GJAPI.SendRequest(
         "/scores/" +
-          "?limit=" +
-          iLimit +
-          (iScoreTableID ? "&table_id=" + iScoreTableID : ""),
+        "?limit=" +
+        iLimit +
+        (iScoreTableID ? "&table_id=" + iScoreTableID : ""),
         bFetchAll ? GJAPI.SEND_GENERAL : GJAPI.SEND_FOR_USER,
         pCallback
       );
@@ -670,27 +666,23 @@
 
     // ****************************************************************
     // data store functions
-    GJAPI.DATA_STORE_USER = 0;
-    GJAPI.DATA_STORE_GLOBAL = 1;
+    GJAPI.DATA_STORE_USER = true;
+    GJAPI.DATA_STORE_GLOBAL = false;
 
     GJAPI.DataStoreSet = function (iStore, sKey, sData, pCallback) {
       // send set-data request
-      GJAPI.SendRequestEx(
-        "/data-store/set/?key=" + sKey,
-        iStore === GJAPI.DATA_STORE_USER,
-        "json",
-        "data=" + sData,
+      GJAPI.SendRequest(
+        "/data-store/set/?key=" + sKey + "&data=" + sData,
+        iStore,
         pCallback
       );
     };
 
     GJAPI.DataStoreFetch = function (iStore, sKey, pCallback) {
       // send fetch-data request
-      GJAPI.SendRequestEx(
+      GJAPI.SendRequest(
         "/data-store/?key=" + sKey,
-        iStore === GJAPI.DATA_STORE_USER,
-        "dump",
-        "",
+        iStore,
         pCallback
       );
     };
@@ -699,13 +691,13 @@
       // send update-data request
       GJAPI.SendRequest(
         "/data-store/update/" +
-          "?key=" +
-          sKey +
-          "&operation=" +
-          sOperation +
-          "&value=" +
-          sValue,
-        iStore === GJAPI.DATA_STORE_USER,
+        "?key=" +
+        sKey +
+        "&operation=" +
+        sOperation +
+        "&value=" +
+        sValue,
+        iStore,
         pCallback
       );
     };
@@ -714,7 +706,7 @@
       // send remove-data request
       GJAPI.SendRequest(
         "/data-store/remove/?key=" + sKey,
-        iStore === GJAPI.DATA_STORE_USER,
+        iStore,
         pCallback
       );
     };
@@ -723,7 +715,7 @@
       // send get-keys request
       GJAPI.SendRequest(
         "/data-store/get-keys/",
-        iStore === GJAPI.DATA_STORE_USER,
+        iStore,
         pCallback
       );
     };
@@ -777,11 +769,11 @@
       }
       GJAPI.SendRequest(
         "/friends/?game_id=" +
-          GJAPI.iGameID +
-          "&username=" +
-          GJAPI.sUserName +
-          "&user_token=" +
-          GJAPI.sUserToken,
+        GJAPI.iGameID +
+        "&username=" +
+        GJAPI.sUserName +
+        "&user_token=" +
+        GJAPI.sUserToken,
         GJAPI.SEND_FOR_USER,
         pCallback
       );
@@ -797,13 +789,13 @@
       }
       GJAPI.SendRequest(
         "/trophies/remove-achieved/?game_id=" +
-          GJAPI.iGameID +
-          "&username=" +
-          GJAPI.sUserName +
-          "&user_token=" +
-          GJAPI.sUserToken +
-          "&trophy_id=" +
-          iTrophyID,
+        GJAPI.iGameID +
+        "&username=" +
+        GJAPI.sUserName +
+        "&user_token=" +
+        GJAPI.sUserToken +
+        "&trophy_id=" +
+        iTrophyID,
         GJAPI.SEND_FOR_USER,
         function (pResponse) {
           // Update trophy status if the response succeded
@@ -819,11 +811,11 @@
     GJAPI.ScoreGetRank = (iScoreTableID, iScoreValue, pCallback) => {
       GJAPI.SendRequest(
         "/scores/get-rank/?game_id=" +
-          GJAPI.iGameID +
-          "&sort=" +
-          iScoreValue +
-          "&table_id=" +
-          iScoreTableID,
+        GJAPI.iGameID +
+        "&sort=" +
+        iScoreValue +
+        "&table_id=" +
+        iScoreTableID,
         GJAPI.SEND_GENERAL,
         pCallback
       );
@@ -838,11 +830,11 @@
     GJAPI.SessionCheck = (pCallback) => {
       GJAPI.SendRequest(
         "/sessions/check/?game_id=" +
-          GJAPI.iGameID +
-          "&username=" +
-          GJAPI.sUserName +
-          "&user_token=" +
-          GJAPI.sUserToken,
+        GJAPI.iGameID +
+        "&username=" +
+        GJAPI.sUserName +
+        "&user_token=" +
+        GJAPI.sUserToken,
         GJAPI.SEND_GENERAL,
         pCallback
       );
@@ -853,9 +845,7 @@
      */
     GJAPI.SessionSetStatus = (isOpen) => {
       if (!GJAPI.bLoggedIn) {
-        GJAPI.LogTrace(
-          "SessionSetStatus(" + isOpen + ") failed: no user logged in"
-        );
+        GJAPI.LogTrace( "SessionSetStatus(" + isOpen + ") failed: no user logged in" );
         return;
       }
       GJAPI.bSessionActive = isOpen;
@@ -915,27 +905,27 @@
       if (!GJAPI.bLoggedIn && bOnlyUser) {
         GJAPI.LogTrace(
           "ScoreFetch(" +
-            iScoreTableID +
-            ", " +
-            bOnlyUser +
-            ", " +
-            iLimit +
-            ", " +
-            betterOrWorse +
-            ", " +
-            value +
-            ") failed: no user logged in"
+          iScoreTableID +
+          ", " +
+          bOnlyUser +
+          ", " +
+          iLimit +
+          ", " +
+          betterOrWorse +
+          ", " +
+          value +
+          ") failed: no user logged in"
         );
         return;
       }
       var bFetchAll = bOnlyUser == GJAPI.SCORE_ONLY_USER ? false : true;
       GJAPI.SendRequest(
         "/scores/" +
-          "?limit=" +
-          iLimit +
-          (iScoreTableID ? "&table_id=" + iScoreTableID : "") +
-          (betterOrWorse ? "&better_than=" : "&worse_than=") +
-          value,
+        "?limit=" +
+        iLimit +
+        (iScoreTableID ? "&table_id=" + iScoreTableID : "") +
+        (betterOrWorse ? "&better_than=" : "&worse_than=") +
+        value,
         bFetchAll ? GJAPI.SEND_GENERAL : GJAPI.SEND_FOR_USER,
         pCallback
       );
@@ -947,11 +937,11 @@
     GJAPI.ScoreFetchGuest = (iScoreTableID, name, iLimit, pCallback) => {
       GJAPI.SendRequest(
         "/scores/" +
-          "?limit=" +
-          iLimit +
-          (iScoreTableID ? "&table_id=" + iScoreTableID : "") +
-          "&guest=" +
-          name,
+        "?limit=" +
+        iLimit +
+        (iScoreTableID ? "&table_id=" + iScoreTableID : "") +
+        "&guest=" +
+        name,
         GJAPI.SEND_GENERAL,
         pCallback
       );
@@ -972,13 +962,13 @@
     ) => {
       GJAPI.SendRequest(
         "/scores/" +
-          "?limit=" +
-          iLimit +
-          (iScoreTableID ? "&table_id=" + iScoreTableID : "") +
-          "&guest=" +
-          name +
-          (betterOrWorse ? "&better_than=" : "&worse_than=") +
-          value,
+        "?limit=" +
+        iLimit +
+        (iScoreTableID ? "&table_id=" + iScoreTableID : "") +
+        "&guest=" +
+        name +
+        (betterOrWorse ? "&better_than=" : "&worse_than=") +
+        value,
         GJAPI.SEND_GENERAL,
         pCallback
       );
@@ -990,9 +980,7 @@
      */
     GJAPI.TrophyFetchComb = (isAll, value, pCallback) => {
       if (!GJAPI.bLoggedIn) {
-        GJAPI.LogTrace(
-          "TrophyFetchComb(" + isAll + ", " + value + ") failed: no user logged in"
-        );
+        GJAPI.LogTrace("TrophyFetchComb(" + isAll + ", " + value + ") failed: no user logged in");
         return;
       }
       if (isAll) {
@@ -1000,7 +988,7 @@
           value === GJAPI.TROPHY_ALL
             ? ""
             : "?achieved=" +
-              (value >= GJAPI.TROPHY_ONLY_ACHIEVED ? "true" : "false");
+            (value >= GJAPI.TROPHY_ONLY_ACHIEVED ? "true" : "false");
         GJAPI.SendRequest(
           "/trophies/" + sTrophyData,
           GJAPI.SEND_FOR_USER,
@@ -1014,6 +1002,40 @@
         pCallback
       );
     };
+
+    /**
+     * Modified UserLoginManual to login users automatically if their username and token are detected
+     */
+    GJAPI.UserLoginAuto = pCallback => {
+      if (!GJAPI.bOnGJ) {
+        GJAPI.LogTrace("UserLoginAuto() failed: No username or token detected");
+        return;
+      }
+      if (GJAPI.bLoggedIn) { GJAPI.LogTrace("UserLoginAuto() failed: user " + GJAPI.sUserName + " already logged in"); return; }
+      GJAPI.SendRequest("/users/auth/" + "?username=" + GJAPI.asQueryParam["gjapi_username"] +
+        "&user_token=" + GJAPI.asQueryParam["gjapi_token"],
+        GJAPI.SEND_GENERAL,
+        function (pResponse) {
+          if (pResponse.success) {
+            GJAPI.bLoggedIn = true;
+            GJAPI.sUserName = sUserName;
+            GJAPI.sUserToken = sUserToken;
+            GJAPI.SessionOpen();
+          }
+          if (typeof pCallback === "function") {
+            pCallback(pResponse);
+          }
+        }, false);
+    };
+
+    /**
+     * DataStoreGetKeys but with a pattern parameter
+     * The placeholder character for patterns is *
+     */
+    GJAPI.DataStoreGetKeysEx = (iStore, pattern, pCallback) => {
+      GJAPI.SendRequest("/data-store/get-keys/?pattern=" + pattern, iStore, pCallback);
+    };
+
     return GJAPI;
   })();
 
@@ -1021,8 +1043,11 @@
    * Used for storing API error messages
    */
   let err = {
-    get(code) {
-      return (err[code] == undefined) ? 'Error.' : 'Error: ' + err[code];
+    noLogin: 'No user logged in.',
+    noItem: 'Item not found.',
+    noIndex: 'Index not found.',
+    get: code => {
+      return err[code] ? 'Error: ' + err[code] : 'Error.';
     }
   };
 
@@ -1055,11 +1080,13 @@
     time: 'data:image/png;base64,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',
   };
 
+  const docs = 'https://softedco.github.io/GameJolt-API-Scratch-extension/DOCUMENTATION';
+
   /**
    * Mostly visual stuff for Scratch GUI
-   * The extensionManager only uses getInfo().id and other methods
+   * The loader only uses getInfo().id and other methods
    */
-   class GameJoltAPI {
+  class GameJoltAPI {
     getInfo() {
       return {
         id: "GameJoltAPI",
@@ -1068,6 +1095,7 @@
         color2: "#2A2731",
         color3: "#CCFF00",
         menuIconURI: icons.GameJolt,
+        docsURI: docs,
         blocks: [
           {
             opcode: "gamejoltBool",
@@ -1075,6 +1103,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "GameJolt?",
           },
+          "---",
           {
             opcode: "setGame",
             blockIconURI: icons.main,
@@ -1114,7 +1143,7 @@
             opcode: "sessionPing",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Ping the session",
+            text: "Ping session",
           },
           {
             opcode: "sessionBool",
@@ -1122,6 +1151,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Session?",
           },
+          "---",
           {
             opcode: "loginManual",
             blockIconURI: icons.user,
@@ -1139,6 +1169,18 @@
             },
           },
           {
+            opcode: "loginAuto",
+            blockIconURI: icons.user,
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Login automatically"
+          },
+          {
+            opcode: "loginAutoBool",
+            blockIconURI: icons.user,
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Autologin?"
+          },
+          {
             opcode: "logout",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
@@ -1149,6 +1191,12 @@
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Login?",
+          },
+          {
+            opcode: "loginUser",
+            blockIconURI: icons.user,
+            blockType: Scratch.BlockType.REPORTER,
+            text: "User logged in as"
           },
           {
             opcode: "userFetch",
@@ -1198,6 +1246,7 @@
               },
             },
           },
+          "---",
           {
             opcode: "trophyAchieve",
             blockIconURI: icons.trophy,
@@ -1244,6 +1293,7 @@
               },
             },
           },
+          "---",
           {
             opcode: "scoreAdd",
             blockIconURI: icons.score,
@@ -1309,12 +1359,12 @@
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "globalOrPerUser",
-                defaultValue: GameJolt.DATA_STORE_GLOBAL,
+                defaultValue: "false",
               },
               betterOrWorse: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "betterOrWorse",
-                defaultValue: String(GameJolt.BETTER_THAN),
+                defaultValue: "true",
               },
               value: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1343,7 +1393,7 @@
               betterOrWorse: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "betterOrWorse",
-                defaultValue: String(GameJolt.BETTER_THAN),
+                defaultValue: "true",
               },
               value: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1392,7 +1442,7 @@
             opcode: "scoreGetTables",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return table's [tableDataType] by index:[index]",
+            text: "Return table [tableDataType] by index:[index]",
             arguments: {
               tableDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1405,6 +1455,7 @@
               },
             },
           },
+          "---",
           {
             opcode: "dataStoreSet",
             blockIconURI: icons.store,
@@ -1414,7 +1465,7 @@
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "globalOrPerUser",
-                defaultValue: GameJolt.DATA_STORE_GLOBAL,
+                defaultValue: "false",
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -1435,7 +1486,7 @@
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "globalOrPerUser",
-                defaultValue: GameJolt.DATA_STORE_GLOBAL,
+                defaultValue: "false",
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -1452,7 +1503,7 @@
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "globalOrPerUser",
-                defaultValue: GameJolt.DATA_STORE_GLOBAL,
+                defaultValue: "false",
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -1478,7 +1529,7 @@
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "globalOrPerUser",
-                defaultValue: GameJolt.DATA_STORE_GLOBAL,
+                defaultValue: "false",
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -1490,12 +1541,16 @@
             opcode: "dataStoreGetKey",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get [globalOrPerUser] key by index:[index]",
+            text: "Fetch [globalOrPerUser] keys with pattern [pattern] by index:[index]",
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "globalOrPerUser",
-                defaultValue: GameJolt.DATA_STORE_GLOBAL,
+                defaultValue: "false",
+              },
+              pattern: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '*'
               },
               index: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1503,6 +1558,7 @@
               },
             },
           },
+          "---",
           {
             opcode: "timeFetch",
             blockIconURI: icons.time,
@@ -1592,8 +1648,8 @@
           },
           globalOrPerUser: {
             items: [
-              { text: "global", value: GameJolt.DATA_STORE_GLOBAL },
-              { text: "user", value: GameJolt.DATA_STORE_USER },
+              { text: "global", value: "false" },
+              { text: "user", value: "true" },
             ],
           },
           indexOrID: {
@@ -1615,8 +1671,7 @@
       return GameJolt.bOnGJ;
     }
     setGame(args) {
-      GameJolt.iGameID = args.ID;
-      GameJolt.sGameKey = args.key;
+      GameJolt.iGameID = args.ID; GameJolt.sGameKey = args.key;
     }
     session(args) {
       GameJolt.SessionSetStatus(args.openOrClose);
@@ -1629,20 +1684,14 @@
       GameJolt.SessionPing();
     }
     sessionBool() {
-      GameJolt.SessionCheck((pResponse) => {
-        if (pResponse.message) {
-          err.session = pResponse.message;
-          return;
-        }
-        if (pResponse.success == bool.f) {
-          data.session = false;
-          return;
-        } // Jesus Christ
+      GameJolt.SessionCheck(
+        pResponse =>
+      {
+        if (pResponse.message) { err.session = pResponse.message; return; }
+        if (pResponse.success == bool.f) { data.session = false; return; }
         data.session = true;
       });
-      if (data.session == undefined) {
-        return err.get("session");
-      }
+      if (!data.session) return err.get('session');
       return data.session;
     }
 
@@ -1650,7 +1699,20 @@
      * Not necessary since the library handles logging in for you
      */
     loginManual(args) {
-      GameJolt.UserLoginManual(args.username, args.token);
+      GameJolt.UserLoginManual(
+        args.username,
+        args.token
+      );
+    }
+
+    /**
+     * Not necessary since the library handles logging in for you
+     */
+    loginAuto() {
+      GameJolt.UserLoginAuto();
+    }
+    loginAutoBool() {
+      return Boolean(GameJolt.asQueryParam["gjapi_username"]);
     }
     logout() {
       GameJolt.UserLogout();
@@ -1658,48 +1720,43 @@
     loginBool() {
       return GameJolt.bLoggedIn;
     }
+    loginUser() {
+      return GameJolt.sUserName;
+    }
     userFetch(args) {
-      GameJolt.UserFetchComb(args.fetchType, args.usernameOrID, (pResponse) => {
-        if (!pResponse.users) {
-          err.user = pResponse.message;
-          return;
-        }
+      GameJolt.UserFetchComb(
+        args.fetchType,
+        args.usernameOrID,
+        pResponse =>
+      {
+        if (pResponse.success == bool.f) { err.user = pResponse.message; return; }
         data.user = pResponse.users[0];
       });
     }
     userFetchCurrent() {
-      GameJolt.UserFetchCurrent((pResponse) => {
-        if (!pResponse.users) {
-          err.user = pResponse.message;
-          return;
-        }
+      GameJolt.UserFetchCurrent(
+        pResponse =>
+      {
+        if (pResponse.success == bool.f) { err.user = pResponse.message; return; }
         data.user = pResponse.users[0];
       });
     }
     returnUserData(args) {
-      if (typeof data.user != "object") {
-        return err.get("user");
-      }
-      data.user[args.userDataType] =
-        data.user[args.userDataType] ?? err.get("user");
+      if (!data.user) return err.get('user');
+      data.user[args.userDataType] = data.user[args.userDataType] ?? err.get('noItem');
       return data.user[args.userDataType];
     }
     friendsFetch(args) {
-      GameJolt.FriendsFetch((pResponse) => {
-        if (pResponse.success == bool.f) {
-          err.friends = pResponse.message;
-          return;
-        }
+      if (!GameJolt.bLoggedIn) return err.get('noLogin');
+      GameJolt.FriendsFetch(
+        pResponse =>
+      {
+        if (pResponse.success == bool.f) { err.friends = pResponse.message; return; }
         data.friends = pResponse.friends;
       });
-      if (typeof data.friends != "object") {
-        return err.get("friends");
-      }
-      if (typeof data.friends[args.index] != "object") {
-        return err.get("friends");
-      }
-      data.friends[args.index].friend_id =
-        data.friends[args.index].friend_id ?? err.get("friends");
+      if (!data.friends) return err.get('friends');
+      if (!data.friends[args.index]) return err.get('noIndex');
+      data.friends[args.index].friend_id = data.friends[args.index].friend_id ?? err.get('noItem');
       return data.friends[args.index].friend_id;
     }
     trophyAchieve(args) {
@@ -1709,36 +1766,31 @@
       GameJolt.TrophyRemove(args.ID);
     }
     trophyFetch(args) {
+      if (!GameJolt.bLoggedIn) return err.get("noLogin");
       GameJolt.TrophyFetchComb(
         args.indexOrID,
         args.indexOrID ? GameJolt.TROPHY_ALL : args.value,
-        (pResponse) => {
-          if (!pResponse.trophies) {
-            err.trophies = pResponse.message;
-            return;
-          }
-          data.trophies = args.indexOrID
-            ? pResponse.trophies
-            : pResponse.trophies[0];
-        }
-      );
-      if (typeof data.trophies != "object") {
-        return err.get("trophies");
-      }
+        pResponse =>
+      {
+        if (pResponse.success == bool.f) { err.trophies = pResponse.message; return; }
+        data.trophies = args.indexOrID ? pResponse.trophies : pResponse.trophies[0];
+      });
+      if (!data.trophies) return err.get('trophies');
       if (args.indexOrID) {
-        if (typeof data.trophies[args.value] != "object") {
-          return err.get("trophies");
-        }
-        data.trophies[args.value][args.trophyDataType] =
-          data.trophies[args.value][args.trophyDataType] ?? err.get("trophies");
+        if (!data.trophies[args.value]) return err.get('noIndex');
+        data.trophies[args.value][args.trophyDataType] = data.trophies[args.value][args.trophyDataType] ?? err.get('noItem');
         return data.trophies[args.value][args.trophyDataType];
       }
-      data.trophies[args.trophyDataType] =
-        data.trophies[args.trophyDataType] ?? err.get("trophies");
+      data.trophies[args.trophyDataType] = data.trophies[args.trophyDataType] ?? err.get('noItem');
       return data.trophies[args.trophyDataType];
     }
     scoreAdd(args) {
-      GameJolt.ScoreAdd(args.ID, args.value, args.text, args.extraData);
+      GameJolt.ScoreAdd(
+        args.ID,
+        args.value,
+        args.text,
+        args.extraData
+      );
     }
     scoreAddGuest(args) {
       GameJolt.ScoreAddGuest(
@@ -1750,143 +1802,128 @@
       );
     }
     scoreFetch(args) {
+      if (args.globalOrPerUser == bool.t && !GameJolt.bLoggedIn) err.scores = err.noLogin;
       GameJolt.ScoreFetchEx(
         args.ID,
-        args.globalOrPerUser == GameJolt.DATA_STORE_GLOBAL
-          ? GameJolt.SCORE_ALL
-          : GameJolt.SCORE_ONLY_USER,
+        args.globalOrPerUser == bool.t ? GameJolt.SCORE_ONLY_USER : GameJolt.SCORE_ALL,
         args.amount,
         args.betterOrWorse,
         args.value,
-        (pResponse) => {
-          if (!pResponse.scores) {
-            err.scores = pResponse.message;
-            return;
-          }
-          data.scores = pResponse.scores;
-        }
-      );
+        pResponse =>
+      {
+        if (pResponse.success == bool.f) { err.scores = pResponse.message; return; }
+        data.scores = pResponse.scores;
+      });
     }
     scoreFetchGuest(args) {
       GameJolt.ScoreFetchGuestEx(
         args.ID,
-        args.username,
-        args.amount,
+        args.username, args.amount,
         args.betterOrWorse,
         args.value,
-        (pResponse) => {
-          if (!pResponse.scores) {
-            err.scores = pResponse.message;
-            return;
-          }
-          data.scores = pResponse.scores;
-        }
-      );
+        pResponse =>
+      {
+        if (pResponse.success == bool.f) { err.scores = pResponse.message; return; }
+        data.scores = pResponse.scores;
+      });
     }
     returnScoreData(args) {
-      if (typeof data.scores != "object") {
-        return err.get("scores");
-      }
-      if (typeof data.scores[args.index] != "object") {
-        return err.get("scores");
-      }
-      if (args.scoreDataType == "user") {
-        if (data.scores[args.index].user == "") {
-          data.scores[args.index].guest =
-            data.scores[args.index]?.guest ?? err.get("scores");
+      if (!data.scores) return err.get('scores');
+      if (!data.scores[args.index]) return err.get('noIndex');
+      if (args.scoreDataType == 'user') {
+        if (!data.scores[args.index].user) {
+          data.scores[args.index].guest = data.scores[args.index]?.guest ?? err.get('noItem');
           return data.scores[args.index].guest;
         }
       }
-      data.scores[args.index][args.scoreDataType] =
-        data.scores[args.index][args.scoreDataType] ?? err.get("scores");
+      data.scores[args.index][args.scoreDataType] = data.scores[args.index][args.scoreDataType] ?? err.get('noItem');
       return data.scores[args.index][args.scoreDataType];
     }
     scoreGetRank(args) {
-      GameJolt.ScoreGetRank(args.ID, args.value, (pResponse) => {
-        if (pResponse.success == bool.f) {
-          err.rank = pResponse.message;
-          return;
-        }
+      GameJolt.ScoreGetRank(
+        args.ID,
+        args.value,
+        pResponse =>
+      {
+        if (pResponse.success == bool.f) { err.rank = pResponse.message; return; }
         data.rank = pResponse.rank;
       });
-      data.rank = data.rank ?? err.get("rank");
+      data.rank = data.rank ?? err.get('rank');
       return data.rank;
     }
     scoreGetTables(args) {
-      GameJolt.ScoreGetTables((pResponse) => {
-        if (pResponse.success == bool.f) {
-          err.tables = pResponse.message;
-          return;
-        }
+      GameJolt.ScoreGetTables(
+        pResponse =>
+      {
+        if (pResponse.success == bool.f) { err.tables = pResponse.message; return; }
         data.tables = pResponse.tables;
       });
-      if (typeof data.tables != "object") {
-        return err.get("tables");
-      }
-      if (typeof data.tables[args.index] != "object") {
-        return err.get("tables");
-      }
-      data.tables[args.index][args.tableDataType] =
-        data.tables[args.index][args.tableDataType] ?? err.get("tables");
+      if (!data.tables) return err.get('tables');
+      if (!data.tables[args.index]) return err.get('noIndex');
+      data.tables[args.index][args.tableDataType] = data.tables[args.index][args.tableDataType] ?? err.get('noItem');
       return data.tables[args.index][args.tableDataType];
     }
     dataStoreSet(args) {
-      GameJolt.DataStoreSet(args.globalOrPerUser, args.key, args.data);
+      GameJolt.DataStoreSet(
+        args.globalOrPerUser == bool.t,
+        args.key,
+        args.data
+      );
     }
     dataStoreFetch(args) {
-      GameJolt.DataStoreFetch(args.globalOrPerUser, args.key, (pResponse) => {
-        if (pResponse.success == bool.f) {
-          err.store = pResponse.message;
-          return;
-        }
+      if (args.globalOrPerUser == bool.t && !GameJolt.bLoggedIn) return err.get('noLogin');
+      GameJolt.DataStoreFetch(
+        args.globalOrPerUser == bool.t,
+        args.key,
+        pResponse =>
+      {
+        if (pResponse.success == bool.f) { err.store = pResponse.message; return; }
         data.store = pResponse.data;
       });
-      data.store = data.store ?? err.get("store");
+      data.store = data.store ?? err.get('store');
       return data.store;
     }
     dataStoreUpdate(args) {
       GameJolt.DataStoreUpdate(
-        args.globalOrPerUser,
+        args.globalOrPerUser == bool.t,
         args.key,
         args.operationType,
         args.value
       );
     }
     dataStoreRemove(args) {
-      GameJolt.DataStoreRemove(args.globalOrPerUser, args.key);
+      GameJolt.DataStoreRemove(
+        args.globalOrPerUser == bool.t,
+        args.key
+      );
     }
     dataStoreGetKey(args) {
-      GameJolt.DataStoreGetKeys(args.globalOrPerUser, (pResponse) => {
-        if (!pResponse.keys) {
-          err.keys = pResponse.message;
-          return;
-        }
+      if (args.globalOrPerUser == bool.t && !GameJolt.bLoggedIn) return err.get('noLogin');
+      GameJolt.DataStoreGetKeysEx(
+        args.globalOrPerUser == bool.t,
+        args.pattern,
+        pResponse =>
+      {
+        if (pResponse.success == bool.f) { err.keys = pResponse.message; return; }
+        if (!pResponse.keys) { err.keys = err.noIndex; }
         data.keys = pResponse.keys;
       });
-      if (typeof data.keys != "object") {
-        return err.get("keys");
-      }
-      if (typeof data.keys[args.index] != "object") {
-        return err.get("keys");
-      }
-      data.keys[args.index].key = data.keys[args.index].key ?? err.get("keys");
+      if (!data.keys) return err.get('keys');
+      if (!data.keys[args.index]) return err.get('noIndex');
+      data.keys[args.index].key = data.keys[args.index].key ?? err.get('noItem');
       return data.keys[args.index].key;
     }
     timeFetch(args) {
-      GameJolt.TimeFetch((pResponse) => {
-        if (pResponse.success == bool.f) {
-          err.time = pResponse.message;
-          return;
-        }
+      GameJolt.TimeFetch(
+        pResponse =>
+      {
+        if (pResponse.success == bool.f) { err.time = pResponse.message; return; }
         data.time = pResponse;
       });
-      if (typeof data.time != "object") {
-        return err.get("time");
-      }
-      data.time[args.timeType] = data.time[args.timeType] ?? err.get("time");
+      if (!data.time) return err.get('time');
+      data.time[args.timeType] = data.time[args.timeType] ?? err.get('noItem');
       return data.time[args.timeType];
     }
   }
   Scratch.extensions.register(new GameJoltAPI());
-
 })(Scratch);
