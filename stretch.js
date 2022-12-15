@@ -73,8 +73,9 @@
       };
     }
     setStretch(args, util) {
-      util.target[STRETCH_X] = args.X;
-      util.target[STRETCH_Y] = args.Y;
+      // TODO: move to Scratch.Cast when it's merged
+      util.target[STRETCH_X] = +args.X || 0;
+      util.target[STRETCH_Y] = +args.Y || 0;
       forceUpdateDirectionAndScale(util.target);
     }
     getX(args, util) {
