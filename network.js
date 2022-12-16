@@ -67,7 +67,7 @@
     getInfo() {
       return {
 
-        id: 'Network',
+        id: 'network',
         name: 'Network',
         
         color1: '#146600',
