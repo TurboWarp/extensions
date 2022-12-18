@@ -81,29 +81,33 @@
 				color2: "#222222",
 				color3: "#FA5C5C",
 				blocks: [
-                    {
-                        opcode: "openGameWindow",
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: "Open [user][game] window with [width]width and [height]height",
-                        arguments: {
-                            user: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: "user" 
-                            },
-                            game: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: "game"
-                            },
-                            width: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "680"
-                            },
-                            height: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "400"
-                            }
-                        }
-                    },
+					{
+						opcode: "openGameWindow",
+						blockType: Scratch.BlockType.COMMAND,
+						text: "Open [user][domain][game] window with [width]width and [height]height",
+						arguments: {
+							user: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: "user" 
+							},
+							domain: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: "itch.io"
+							},
+							game: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: "game"
+							},
+							width: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: "680"
+							},
+							height: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: "400"
+							}
+						}
+					},
 					{
 						opcode: "getGameData",
 						blockType: Scratch.BlockType.COMMAND,
@@ -205,15 +209,16 @@
 			};
 		}
         openGameWindow(args) {
-            /* Passing just args will break this in the extension manager,
-             * probably because of explicit name collision.
-             */
-            openGameWindow({
-                user: args.user,
-                game: args.game,
-                width: args.width,
-                height: args.height
-            });
+		/* Passing just args will break this in the extension manager,
+		 * probably because of explicit name collision.
+		 */
+		openGameWindow({
+			user: args.user,
+			domain: args.domain,
+			game: args.game,
+			width: args.width,
+			height: args.height
+		});
         }
 		getGameData(args) {
 			getGameData({
