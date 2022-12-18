@@ -34,6 +34,26 @@
 		return xhr.send();
 	};
 
+	var openGameWindow = opts => {
+		var domain, height, left, top, width;
+		opts = opts ?? {};
+		domain = opts.domain || "itch.io";
+		width = opts.width || 680;
+		height = opts.height || 400;
+		top = (screen.height - height) / 2;
+		left = (screen.width - width) / 2;
+		if (!opts.user) {
+		    console.error("Missing user");
+		}
+		if (!opts.game) {
+		    console.error("Missing game");
+		}
+		var w = window.open("https://" + opts.user + "." + domain + "/" + opts.game + "/purchase?popup=1", "purchase", "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
+		if (typeof w.focus === "function") {
+		    w.focus();
+		}
+	};
+
 	let err = "Error.";
 
 	/**
@@ -61,6 +81,29 @@
 				color2: "#222222",
 				color3: "#FA5C5C",
 				blocks: [
+                    {
+                        opcode: "openGameWindow",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Open [user][game] window with [width]width and [height]height",
+                        arguments: {
+                            user: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "user" 
+                            },
+                            game: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "game"
+                            },
+                            width: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "680"
+                            },
+                            height: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "400"
+                            }
+                        }
+                    },
 					{
 						opcode: "getGameData",
 						blockType: Scratch.BlockType.COMMAND,
@@ -161,6 +204,17 @@
 				}
 			};
 		}
+        openGameWindow(args) {
+            /* Passing just args will break this in the extension manager,
+             * probably because of explicit name collision.
+             */
+            openGameWindow({
+                user: args.user,
+                game: args.game,
+                width: args.width,
+                height: args.height
+            });
+        }
 		getGameData(args) {
 			getGameData({
 				user: args.user,
