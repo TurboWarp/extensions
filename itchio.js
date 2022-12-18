@@ -208,18 +208,18 @@
 				}
 			};
 		}
-        openGameWindow(args) {
-		/* Passing just args will break this in the extension manager,
-		 * probably because of explicit name collision.
-		 */
-		openGameWindow({
-			user: args.user,
-			domain: args.domain,
-			game: args.game,
-			width: args.width,
-			height: args.height
-		});
-        }
+		openGameWindow(args) {
+			/* Passing just args will break this in the extension manager,
+			 * probably because of explicit name collision.
+			 */
+			openGameWindow({
+				user: args.user,
+				domain: args.domain,
+				game: args.game,
+				width: args.width,
+				height: args.height
+			});
+		}
 		getGameData(args) {
 			getGameData({
 				user: args.user,
