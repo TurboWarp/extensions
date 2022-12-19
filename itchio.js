@@ -84,15 +84,11 @@
 					{
 						opcode: "openGameWindow",
 						blockType: Scratch.BlockType.COMMAND,
-						text: "Open [user][domain][game] window with [width]width and [height]height",
+						text: "Open [user][game] window with [width]width and [height]height",
 						arguments: {
 							user: {
 								type: Scratch.ArgumentType.STRING,
 								defaultValue: "user" 
-							},
-							domain: {
-								type: Scratch.ArgumentType.STRING,
-								defaultValue: "itch.io"
 							},
 							game: {
 								type: Scratch.ArgumentType.STRING,
@@ -214,7 +210,6 @@
 			 */
 			openGameWindow({
 				user: args.user,
-				domain: args.domain,
 				game: args.game,
 				width: args.width,
 				height: args.height
