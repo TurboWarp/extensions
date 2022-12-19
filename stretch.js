@@ -9,9 +9,9 @@
   /**
    * @param {VM.RenderedTarget} target
    */
-  const implementStretchForTarget = (target) => {
-    target[STRETCH_X] = 100;
-    target[STRETCH_Y] = 100;
+  const implementStretchForTarget = (target, originalTarget) => {
+    target[STRETCH_X] = originalTarget ? originalTarget[STRETCH_X] : 100;
+    target[STRETCH_Y] = originalTarget ? originalTarget[STRETCH_Y] : 100;
 
     const original = target._getRenderedDirectionAndScale;
     target._getRenderedDirectionAndScale = function () {
@@ -23,8 +23,8 @@
       return result;
     };
   };
-  vm.runtime.targets.forEach(implementStretchForTarget);
-  vm.runtime.on('targetWasCreated', implementStretchForTarget);
+  vm.runtime.targets.forEach((target) => implementStretchForTarget(target));
+  vm.runtime.on('targetWasCreated', (target, originalTarget) => implementStretchForTarget(target, originalTarget));
 
   /**
    * @param {VM.RenderedTarget} target
