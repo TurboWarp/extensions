@@ -392,7 +392,7 @@
       let direction = 90;
       for (const gamepad of getGamepads(pad)) {
         const horizontalAxis = getAxisValue(gamepad, axis);
-        const verticalAxis = getAxisValue(gamepad, axis + 1);
+        const verticalAxis = getAxisValue(gamepad, +axis + 1);
         const magnitude = Math.sqrt(horizontalAxis ** 2 + verticalAxis ** 2);
         if (magnitude > greatestMagnitude) {
           greatestMagnitude = magnitude;
@@ -409,7 +409,7 @@
       let greatestMagnitude = 0;
       for (const gamepad of getGamepads(pad)) {
         const horizontalAxis = getAxisValue(gamepad, axis);
-        const verticalAxis = getAxisValue(gamepad, axis + 1);
+        const verticalAxis = getAxisValue(gamepad, +axis + 1);
         const magnitude = Math.sqrt(horizontalAxis ** 2 + verticalAxis ** 2);
         if (magnitude > greatestMagnitude) {
           greatestMagnitude = magnitude;
