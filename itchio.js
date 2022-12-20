@@ -9,24 +9,16 @@
 		var domain, url, xhr;
 		opts = opts ?? {};
 		domain = opts.domain || "itch.io";
-		if (!opts.user) {
-			console.error("Missing user");
-		}
-		if (!opts.game) {
-			console.error("Missing game");
-		}
+		if (!opts.user) console.error("Missing user");
+		if (!opts.game) console.error("Missing game");
 		url = "https://" + opts.user + "." + domain + "/" + opts.game + "/data.json";
-		if (opts.secret) {
-			url = url + "?secret=" + opts.secret;
-		}
+		if (opts.secret) url = url + "?secret=" + opts.secret;
 		xhr = new XMLHttpRequest();
 		xhr.open("GET", url);
 		xhr.addEventListener("readystatechange", (_this => {
 			return e => {
 				var game;
-				if (xhr.readyState !== 4) {
-					return;
-				}
+				if (xhr.readyState !== 4) return;
 				game = JSON.parse(xhr.responseText);
 				return typeof opts.onComplete === "function" ? opts.onComplete(game) : void 0;
 			};
@@ -35,23 +27,25 @@
 	};
 
 	var openGameWindow = opts => {
-		var domain, height, left, top, width;
+		var w, domain, height, left, top, width, page;
 		opts = opts ?? {};
 		domain = opts.domain || "itch.io";
 		width = opts.width || 680;
 		height = opts.height || 400;
+		page = opts.page || "purchase_page";
 		top = (screen.height - height) / 2;
 		left = (screen.width - width) / 2;
-		if (!opts.user) {
-		    console.error("Missing user");
+		if (!opts.user) console.error("Missing user");
+		if (!opts.game) console.error("Missing game");
+		switch (page) {
+			case "page":
+				w = window.open("https://" + opts.user + "." + domain + "/" + opts.game, "", "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
+				break;
+			case "purchase_page":
+				w = window.open("https://" + opts.user + "." + domain + "/" + opts.game + "/purchase", "", "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
+				break;
 		}
-		if (!opts.game) {
-		    console.error("Missing game");
-		}
-		var w = window.open("https://" + opts.user + "." + domain + "/" + opts.game + "/purchase?popup=1", "purchase", "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
-		if (typeof w.focus === "function") {
-		    w.focus();
-		}
+		if (typeof w.focus === "function") w.focus();
 	};
 
 	let err = "Error.";
@@ -84,7 +78,7 @@
 					{
 						opcode: "openGameWindow",
 						blockType: Scratch.BlockType.COMMAND,
-						text: "Open [user][game] window with [width]width and [height]height",
+						text: "Open [user][game][page] window with [width]width and [height]height",
 						arguments: {
 							user: {
 								type: Scratch.ArgumentType.STRING,
@@ -93,6 +87,11 @@
 							game: {
 								type: Scratch.ArgumentType.STRING,
 								defaultValue: "game"
+							},
+							page: {
+								type: Scratch.ArgumentType.STRING,
+								menu: "pageMenu",
+								defaultValue: "page"
 							},
 							width: {
 								type: Scratch.ArgumentType.NUMBER,
@@ -200,6 +199,12 @@
 							{ text: "end date", value: "end_date" },
 							{ text: "rate", value: "rate" }
 						]
+					},
+					pageMenu: {
+						items: [
+							{ text: "page", value: "page" },
+							{ text: "purchase page", value: "purchase_page" }
+						]
 					}
 				}
 			};
@@ -211,6 +216,7 @@
 			openGameWindow({
 				user: args.user,
 				game: args.game,
+				page: args.page,
 				width: args.width,
 				height: args.height
 			});
