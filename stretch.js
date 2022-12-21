@@ -25,6 +25,9 @@
   };
   vm.runtime.targets.forEach((target) => implementStretchForTarget(target));
   vm.runtime.on('targetWasCreated', (target, originalTarget) => implementStretchForTarget(target, originalTarget));
+  vm.runtime.on('PROJECT_LOADED', () => {
+    vm.runtime.targets.forEach((target) => implementStretchForTarget(target));
+  });
 
   /**
    * @param {VM.RenderedTarget} target
