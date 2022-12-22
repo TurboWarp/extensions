@@ -9,29 +9,33 @@
 		var domain, url, xhr;
 		opts = opts ?? {};
 		domain = opts.domain || "itch.io";
-		if (!opts.user) {
-			console.error("Missing user");
-		}
-		if (!opts.game) {
-			console.error("Missing game");
-		}
+		if (!opts.user) console.error("Missing user");
+		if (!opts.game) console.error("Missing game");
 		url = "https://" + opts.user + "." + domain + "/" + opts.game + "/data.json";
-		if (opts.secret) {
-			url = url + "?secret=" + opts.secret;
-		}
+		if (opts.secret) url = url + "?secret=" + opts.secret;
 		xhr = new XMLHttpRequest();
 		xhr.open("GET", url);
 		xhr.addEventListener("readystatechange", (_this => {
 			return e => {
 				var game;
-				if (xhr.readyState !== 4) {
-					return;
-				}
+				if (xhr.readyState !== 4) return;
 				game = JSON.parse(xhr.responseText);
 				return typeof opts.onComplete === "function" ? opts.onComplete(game) : void 0;
 			};
 		})(this));
 		return xhr.send();
+	};
+
+	var openItchWindow = opts => {
+		var w, domain, height, left, top, width;
+		opts = opts ?? {};
+		domain = opts.domain || "itch.io";
+		width = opts.width || 680;
+		height = opts.height || 400;
+		top = (screen.height - height) / 2;
+		left = (screen.width - width) / 2;
+		w = window.open("https://" + opts.prefix + (opts.prefix ? "." : "") + domain + "/" + opts.page, "", "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
+		if (typeof w.focus === "function") w.focus();
 	};
 
 	let err = "Error.";
@@ -61,6 +65,29 @@
 				color2: "#222222",
 				color3: "#FA5C5C",
 				blocks: [
+					{
+						opcode: "openItchWindow",
+						blockType: Scratch.BlockType.COMMAND,
+						text: "Open [prefix] itch.io [page] window with [width]width and [height]height",
+						arguments: {
+							prefix: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: "user"
+							},
+							page: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: "game"
+							},
+							width: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: "680"
+							},
+							height: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: "400"
+							}
+						}
+					},
 					{
 						opcode: "getGameData",
 						blockType: Scratch.BlockType.COMMAND,
@@ -160,6 +187,17 @@
 					}
 				}
 			};
+		}
+		openItchWindow(args) {
+			/* Passing just args will break this in the extension manager,
+			 * probably because of explicit name collision.
+			 */
+			openItchWindow({
+				prefix: args.prefix,
+				page: args.page,
+				width: args.width,
+				height: args.height
+			});
 		}
 		getGameData(args) {
 			getGameData({
