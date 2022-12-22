@@ -26,25 +26,15 @@
 		return xhr.send();
 	};
 
-	var openGameWindow = opts => {
-		var w, domain, height, left, top, width, page;
+	var openItchWindow = opts => {
+		var w, domain, height, left, top, width;
 		opts = opts ?? {};
 		domain = opts.domain || "itch.io";
 		width = opts.width || 680;
 		height = opts.height || 400;
-		page = opts.page || "purchase_page";
 		top = (screen.height - height) / 2;
 		left = (screen.width - width) / 2;
-		if (!opts.user) console.error("Missing user");
-		if (!opts.game) console.error("Missing game");
-		switch (page) {
-			case "page":
-				w = window.open("https://" + opts.user + "." + domain + "/" + opts.game, "", "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
-				break;
-			case "purchase_page":
-				w = window.open("https://" + opts.user + "." + domain + "/" + opts.game + "/purchase", "", "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
-				break;
-		}
+		w = window.open("https://" + opts.prefix + (opts.prefix ? "." : "") + domain + "/" + opts.page, "", "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
 		if (typeof w.focus === "function") w.focus();
 	};
 
@@ -76,22 +66,17 @@
 				color3: "#FA5C5C",
 				blocks: [
 					{
-						opcode: "openGameWindow",
+						opcode: "openItchWindow",
 						blockType: Scratch.BlockType.COMMAND,
-						text: "Open [user][game][page] window with [width]width and [height]height",
+						text: "Open [prefix] itch.io [page] window with [width]width and [height]height",
 						arguments: {
-							user: {
+							prefix: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: "user" 
-							},
-							game: {
-								type: Scratch.ArgumentType.STRING,
-								defaultValue: "game"
+								defaultValue: "user"
 							},
 							page: {
 								type: Scratch.ArgumentType.STRING,
-								menu: "pageMenu",
-								defaultValue: "page"
+								defaultValue: "game"
 							},
 							width: {
 								type: Scratch.ArgumentType.NUMBER,
@@ -199,23 +184,16 @@
 							{ text: "end date", value: "end_date" },
 							{ text: "rate", value: "rate" }
 						]
-					},
-					pageMenu: {
-						items: [
-							{ text: "page", value: "page" },
-							{ text: "purchase page", value: "purchase_page" }
-						]
 					}
 				}
 			};
 		}
-		openGameWindow(args) {
+		openItchWindow(args) {
 			/* Passing just args will break this in the extension manager,
 			 * probably because of explicit name collision.
 			 */
-			openGameWindow({
-				user: args.user,
-				game: args.game,
+			openItchWindow({
+				prefix: args.prefix,
 				page: args.page,
 				width: args.width,
 				height: args.height
