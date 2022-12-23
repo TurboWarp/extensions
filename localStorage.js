@@ -47,9 +47,14 @@ let localStorage_ID = undefined;
                     defaultValue: 'ID'
                 }
             }
-        },
+          },
           {
-              opcode: 'b',
+            opcode: 'b',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'local ID',
+          },
+          {
+              opcode: 'c',
               blockType: Scratch.BlockType.COMMAND,
               text: 'local set item[ONE][TWO]',
               arguments: {
@@ -64,7 +69,7 @@ let localStorage_ID = undefined;
               }
           },
           {
-              opcode: 'c',
+              opcode: 'd',
               blockType: Scratch.BlockType.REPORTER,
               text: 'local get Item[ONE]',
               arguments: {
@@ -75,7 +80,18 @@ let localStorage_ID = undefined;
               }
           },
           {
-            opcode: 'd',
+            opcode: 'e',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'local get Item[ONE]',
+            arguments: {
+                ONE: {
+                    type: Scratch.ArgumentType.STRING,
+                    defaultValue: 'KEY'
+                }
+            }
+        },
+          {
+            opcode: 'f',
             blockType: Scratch.BlockType.COMMAND,
             text: 'local remove item[ONE]',
             arguments: {
@@ -86,7 +102,7 @@ let localStorage_ID = undefined;
             }
         },
         {
-          opcode: 'e',
+          opcode: 'g',
           blockType: Scratch.BlockType.COMMAND,
           text: 'local remove ALL'
         }
@@ -94,20 +110,27 @@ let localStorage_ID = undefined;
       };
     }
     a(args){
-      localStorage_ID = args.ONE
+      localStorage_ID = args.ONE;
+      return;
     }
-    b(args) {
+    b(args){
+      return localStorage_ID;
+    }
+    c(args) {
       localStorage.setItem(localStorage_ID+args.ONE, args.TWO);
       return;
     }
-    c(args) {
-        return localStorage.getItem(localStorage_ID+args.ONE);
+    d(args) {
+      return localStorage.getItem(localStorage_ID+args.ONE);
     }
-    d(args){
+    e(args){
+      return localStorage.getItem(localStorage_ID+args.ONE);
+    }
+    f(args){
       localStorage.removeItem(localStorage_ID+args.ONE);
       return;
     }
-    e(){
+    g(){
       localStorage.clear();
       return;
     }
