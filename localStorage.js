@@ -137,8 +137,3 @@ let localStorage_ID = undefined;
   }
   Scratch.extensions.register(new MyExtension());
 })(Scratch);
-
-
-// Call Scratch.extensions.register to register your extension
-// Make sure to register each extension exactly once
-Scratch.extensions.register(new MyExtension());
