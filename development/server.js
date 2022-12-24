@@ -1,11 +1,12 @@
 const express = require('express');
-const pathUtil = require('path');
+const Builder = require('./builder');
+
+const builder = new Builder(false);
+builder.startWatcher();
 
 const app = express();
 app.set('strict routing', true);
 app.set('x-powered-by', false);
-
-const root = pathUtil.join(__dirname, '..', '/');
 
 app.use((req, res, next) => {
   // If we don't tell the browser not to cache files, it does by default, and people will get confused when
@@ -29,7 +30,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(root));
+app.use(express.static(builder.outputRoot));
 
 app.use((req, res) => {
   res.contentType('text/plain');
