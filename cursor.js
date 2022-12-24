@@ -76,7 +76,6 @@
               { text: 'ns-resize', value: 'ns-resize' },
               { text: 'nesw-resize', value: 'nesw-resize' },
               { text: 'nwse-resize', value: 'nwse-resize' },
-              { text: 'none', value: 'none' },
             ],
           },
         },
