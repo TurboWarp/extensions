@@ -6,7 +6,6 @@
 		throw new Error("AR extension must be run unsandboxed");
 	}
 	
-	const AR_RESOLUTION = 0.25;
 	
 	const ArgumentType = Scratch.ArgumentType;
 	const BlockType = Scratch.BlockType;
@@ -16,6 +15,8 @@
 	const runtime = vm.runtime;
 	const frameLoop = runtime.frameLoop;
 	const mouse = runtime.ioDevices.mouse;
+	
+	let arResolution = 1;
 	
 	let arFail = "uninitialized";
 	let xrSession = null;
@@ -77,7 +78,7 @@
 		poseAvailible = false;
 		
 		session.updateRenderState({
-			baseLayer: new XRWebGLLayer(session, gl, { framebufferScaleFactor: AR_RESOLUTION })
+			baseLayer: new XRWebGLLayer(session, gl, { framebufferScaleFactor: arResolution })
 		});
 		session.addEventListener("end", () => {
 			xrSession = null;
@@ -537,6 +538,18 @@
 							}
 						}
 					},
+					"---",
+					{
+						opcode: "setResolution",
+						blockType: BlockType.COMMAND,
+						text: "set resolution [RESOLUTION]",
+						arguments: {
+							RESOLUTION: {
+								type: ArgumentType.NUMBER,
+								defaultValue: 1
+							}
+						}
+					},
 				],
 				menus: {
 					positionComponent: {
@@ -699,6 +712,14 @@
 					return hitPositionAvailible;
 				default:
 					return false;
+			}
+		}
+		setResolution(args) {
+			arResolution = Math.max(0.1, Math.min(1, +args.RESOLUTION || 0));
+			if(xrSession) {
+				xrSession.updateRenderState({
+					baseLayer: new XRWebGLLayer(xrSession, gl, { framebufferScaleFactor: arResolution })
+				});
 			}
 		}
 	}
