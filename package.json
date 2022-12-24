@@ -4,7 +4,8 @@
   "description": "Unsandboxed extensions for TurboWarp",
   "scripts": {
     "dev": "node development/server.js",
-    "build": "node development/build-production.js"
+    "build": "node development/build-production.js",
+    "validate": "node development/validate.js"
   },
   "repository": {
     "type": "git",
