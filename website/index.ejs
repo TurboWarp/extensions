@@ -23,6 +23,9 @@
         a:active {
           color: red;
         }
+        .invert-dark {
+          filter: invert(100%);
+        }
       }
 
       h1 {
@@ -231,7 +234,7 @@
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/gamepad.svg">
+          <img loading="lazy" src="images/gamepad.svg" class="invert-dark">
           <h2>Gamepad</h2>
           <p>Directly access gamepads instead of just mapping buttons to keys.</p>
           <%- url("gamepad") %>
@@ -280,7 +283,7 @@
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/bitwise.svg">
+          <img loading="lazy" src="images/bitwise.svg" class="invert-dark">
           <h2>Bitwise</h2>
           <p>Blocks that operate on the binary representation of numbers in computers.</p>
           <%- url("bitwise") %>
