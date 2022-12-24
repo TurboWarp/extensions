@@ -1,13 +1,32 @@
 # Contributing
 
-We are currently in transitionary period. Follow https://github.com/TurboWarp/scratch-gui/issues/633 for updates.
-
 Before submitting new extensions or changes to extensions, please read:
 
  - https://docs.turbowarp.org/development/custom-extensions
  - https://docs.turbowarp.org/development/unsandboxed-extensions
 
-We're still figuring out how local development will work.
+## Local development server
+
+We provide a local development server:
+
+```bash
+# Install dependencies
+npm ci
+
+# Start development server
+npm run dev
+```
+
+This starts an HTTP server on `http://localhost:8000/` which TurboWarp treats as unsandboxed.
+
+If for some reason you can't set up our local development server, you can start any other HTTP server in the `extensions` folder. You won't get some of the nice things our server has, but it will be good enough. If you have Python 3 installed this is very simple:
+
+```bash
+cd extensions
+python3 -m http.server
+```
+
+After installing npm dependencies, TypeScript aware editors such as Visual Studio Code will give you smart autocomplete suggestions for most Scratch APIs based on [@turbowarp/types](https://github.com/TurboWarp/types). Note that these types are not 100% complete and are missing anything TurboWarp specific for now.
 
 ## New extensions
 
@@ -41,13 +60,19 @@ If the license is not MIT, leave a comment at the top of each file indicating it
  */
 ```
 
-Using `/*!` instead of just `/*` indicates to JavaScript minifiers that this comment contains license information and shouldn't be removed.
+And add a copy of the full license in the `licenses` folder if one isn't already in there. Using `/*!` instead of just `/*` for the license comment prevents JavaScript minifiers from removing the comment.
 
-The license must be compatible with the GNU General Public License v3 so we can include it in the desktop app. However, we don't want extensions to use the GPLv3 or AGPLv3 exclusively as our non-lawyer understanding of the copyleft clause indicates that it spreads to any projects that use the extension, which isn't what we want. LGPLv3 is acceptable. (if you don't know what this means then you can probably ignore it)
+The license must be compatible with the GNU General Public License v3 so we can include it in the desktop app. However, we don't want extensions to use the GPLv3 exclusively as our non-lawyer understanding of the copyleft clause suggests that it would spread to any projects that use the extension which isn't what we want. LGPLv3, however, is acceptable. (Do not interpret this paragraph as legal advice.)
 
-Extensions also must not use `eval()`, `new Function()`, untrusted `<script>` or `<iframe>` tags, or similar arbitrary JS/CSS/HTML/etc.
+Extensions must not use `eval()`, `new Function()`, untrusted `<script>` or `<iframe>` tags, or similar arbitrary JS/CSS/HTML/etc. It's best if extensions are entirely self-contained in one file.
 
-Just send a pull request adding an `extension.js` file with your extension's source code.
+### Actually writing the extension
+
+The extension's source code goes in the `extensions` folder.
+
+To add an extension to the website, see `website/index.ejs`.
+
+To add an image, see the `images` folder.
 
 ## Updates to extensions
 
