@@ -155,6 +155,10 @@
       <p class="warning">Extensions listed on this site <b>will not work in the desktop app</b> unless you install <a href="https://github.com/TurboWarp/desktop/releases/tag/v1.7.0-beta.0">v1.7.0-beta.0</a>.</p>
     </div>
 
+    <%
+    const getLinkToRun = (extensionPath) => `https://turbowarp.org/editor?extension=${host}${extensionPath}`;
+    %>
+
     <% if (!isProduction) { %>
       <div class="section">
         <div class="development-tools">
@@ -162,7 +166,7 @@
           <p>
             Most recently modified extensions:
             <% for (const extension of mostRecentExtensions) { %>
-              <a href="<%= extension %>"><%= extension %></a>
+              <a href="<%= getLinkToRun(extension) %>"><%= extension %></a>
             <% } %>
           </p>
         </div>
@@ -201,7 +205,7 @@
       const url = (extensionFile) => `
         <div class="buttons">
           <button class="copy" data-copy="${host}${extensionFile}.js">Copy URL</button>
-          <a href="https://turbowarp.org/editor?extension=${host}${extensionFile}.js" class="open">Open Extension</a>
+          <a href="${getLinkToRun(`${extensionFile}.js`)}" class="open">Open Extension</a>
         </div>
       `;
       %>
