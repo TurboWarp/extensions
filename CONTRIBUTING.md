@@ -72,7 +72,7 @@ The extension's source code goes in the `extensions` folder.
 
 To add an extension to the website, see `website/index.ejs`.
 
-To add an image, see the `images` folder.
+To add an image, add it to the `images` folder and update index.ejs. Images will be displayed in 2:1 aspect ratio. Bitmaps should be 600x300 in resolution. PNG, JPG, or SVG accepted. If the image includes assets not made by you, make sure to add attribution to `images/README.md`.
 
 ## Updates to extensions
 
