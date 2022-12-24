@@ -33,8 +33,8 @@
 	let xrNeedsResize = false;
 	let poseAvailible = false;
 	
-	const stageWrapper = document.querySelector("[class*='stage-wrapper_stage-canvas-wrapper']");
-	const stageWrapperParent = stageWrapper.parentElement;
+	let stageWrapper = document.querySelector("[class*='stage-wrapper_stage-canvas-wrapper']");
+	let stageWrapperParent = stageWrapper.parentElement;
 	const div = document.createElement("div");
 	document.body.append(div);
 	const canvas = Scratch.vm.renderer.canvas;
@@ -46,18 +46,19 @@
 	// develop AR projects on non-AR-capable devices and then
 	// test them on AR-capable mobile devices
 	if(!window.isSecureContext) {
-		arFail = "Window is not secure context. WebXR only works in secure context";
-		console.error(arFail);
+		console.error(arFail = "Window is not secure context. WebXR only works in secure context");
 	} else if(!navigator.xr) {
-		arFail = "navigator.xr is not defined in the browser you are using";
-		console.error(arFail);
+		console.error(arFail = "navigator.xr is not defined in the browser you are using");
 	} else {
-		gl.makeXRCompatible();
+		gl.makeXRCompatible().catch(
+			(error) => {
+				arFail = "gl.makeXRCompatible rejected with: "+error;
+			}
+		);
 		navigator.xr.isSessionSupported("immersive-ar").then(
 			(supported) => {
 				if(!supported) {
-					arFail = "WebXR exists in the browser you are using, but 'immersive-ar' session type is not supported";
-					console.error(arFail);
+					console.error(arFail = "WebXR exists in the browser you are using, but 'immersive-ar' session type is not supported");
 				} else {
 					arFail = null;
 				}
@@ -94,8 +95,9 @@
 		updateState();
 	};
 	const onError = function() {
-		arFailed = "Even though 'immersive-ar' is supported in your browser, requesting it failed";
-		throw new Error(arFailed);
+		// This shouldn't set arFail, because arFail is for cases when it permanently failed.
+		// This might fail once, but work on the next attempt.
+		console.error("Even though 'immersive-ar' is supported in your browser, requesting it failed");
 	};
 	const updateState = function() {
 		const state = !!xrSession;
@@ -120,15 +122,14 @@
 			stageWrapper.style = "";
 			stageWrapperParent.append(stageWrapper);
 			
-			// Adding delay to this reduces chances of losing WebGL
-			// context during exiting AR
-			setTimeout(() => runtime.setStageSize(oldWidth, oldHeight), 500);
+			canvas.style.opacity = "";
+			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		}
 	};
 	
 	
-	// Copy-pasting code from tw-frame-loop.js because I don't know how
-	// or even if it is possible to access already existing code
+	
+	// Code copied from tw-frame-loop.js because existing code can't be accesed
 	const _requestAnimationFrame = typeof requestAnimationFrame === 'function' ?
 		requestAnimationFrame :
 		(f => setTimeout(f, 1000 / 60));
@@ -148,36 +149,52 @@
 			cancel
 		};
 	};
-	// Patching frameLoop to use xrSession.requestAnimationFrame
+	
+	
+	
+	// Patching frameLoop to use xrSession.requestAnimationFrame when in AR mode
 	const xrAnimationFrameWrapper = (callback, fps=30) => {
 		const xrSessionBackup = xrSession;
 		let shouldTriggerAgain = false;
 		let id;
-		let idXR;
+		let idIsXR;
 		let interval;
 		const handle = (t, frame) => {
+			// If fps = 0, then run at screen's refresh rate
+			// and always use xr animation frame.
+			// In other cases keep using normal animation frame
+			// and waiting until shouldTriggerAgain gets set
+			// to true, and only then use xr animation frame
+			// once and resume waiting. shouldTriggerAgain is
+			// set to true on the interval located below.
 			if(fps === 0 || shouldTriggerAgain) {
 				shouldTriggerAgain = false;
 				id = xrSession.requestAnimationFrame(handle);
-				idXR = true;
+				idIsXR = true;
 			} else {
 				id = window.requestAnimationFrame(handle);
-				idXR = false;
+				idIsXR = false;
 			}
+			// Normal animation frames are just for waiting and
+			// shouldn't trigger callback()
 			if(!frame) return;
 			
 			if(xrNeedsResize) {
 				xrNeedsResize = false;
 				const bl = xrSession.renderState.baseLayer;
-				runtime.setStageSize(bl.framebufferWidth/bl.framebufferHeight*oldHeight, oldHeight);
+				const newWidth = Math.round(bl.framebufferWidth/bl.framebufferHeight*oldHeight);
+				if(runtime.stageWidth !== newWidth) {
+					runtime.setStageSize(newWidth, oldHeight);
+				}
 				
-				const scale = oldHeight / bl.framebufferHeight;
+				const scale = div.clientHeight / canvas.clientHeight;
 				stageWrapper.style = "transform-origin: top left; transform: scale("+scale+","+scale+")";
 				canvas.style.opacity = "0";
 				
 				const borderThing = stageWrapper.children[0].children[0].style;
 				borderThing["border"] = "none";
 				borderThing["border-radius"] = "0";
+				borderThing["transform"] = ""; // Removes translateX
 			}
 			poseAvailible = false;
 			if(xrRefSpace) {
@@ -250,7 +267,7 @@
 			callback();
 		};
 		const cancel = () => {
-			if(idXR) {
+			if(idIsXR) {
 				xrSessionBackup.cancelAnimationFrame(id);
 			} else {
 				cancelAnimationFrame(id);
@@ -306,21 +323,21 @@
 	// Patching renderer.draw() to draw to xr framebuffer instead of canvas
 	const drawOrig = renderer.draw.bind(renderer);
 	const drawXR = (function() {
-		this._doExitDrawRegion();
-
-		const gl = this._gl;
-
 		const bl = this.xr.renderState.baseLayer;                     // ADDED
 		if(!bl) return; // Should fix very rare crash during exiting  // ADDED
+		
+		this._doExitDrawRegion();
+		
+		const gl = this._gl;
+		
 		gl.bindFramebuffer(gl.FRAMEBUFFER, bl.framebuffer);           // CHANGED
 		gl.viewport(0, 0, bl.framebufferWidth, bl.framebufferHeight); // CHANGED
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
-
-		// I don't know how to access ShaderManager.DRAW_MODE.default
+		
 		this._drawThese(this._drawList, "default" /*ShaderManager.DRAW_MODE.default*/, this._projection, {
-			framebufferWidth: bl.framebufferWidth,
-			framebufferHeight: bl.framebufferHeight
+			framebufferWidth: bl.framebufferWidth,                    // CHANGED
+			framebufferHeight: bl.framebufferHeight                   // CHANGED
 		});
 		if (this._snapshotCallbacks.length > 0) {
 			const snapshot = gl.canvas.toDataURL();
@@ -332,7 +349,26 @@
 	
 	
 	
-	// Patching _pickTarget incorrect position bug
+	// Patching _pickTarget incorrect position bug:
+	//   When the canvas is scaled using transform:scale,
+	//   canvas.getBoundingClientRect is affected by it, but
+	//   canvas.clientWidth and canvas.clientHeight are not.
+	//
+	//   postData receives data.x and data.y, which are mouse position in
+	//   screen units. To be able to rescale it to usable scratch units
+	//   it also receives data.canvasWidth and data.canvasHeight
+	//   which are based on getBoundingClientRect. Based of that it
+	//   calculates this._scratchX and this._scratchY.
+	//   Even when canvas is scaled, those are calculated correctly and
+    //   as a result, blocks (mouse x) and (mouse y) report correct values.
+	//
+	//   Later, postData calls _pickTarget, while only passing data.x and data.y
+	//   without data.canvasWidth and data.canvasHeight. That method calls
+	//   runtime renderer.pick, which calls clientSpaceToScratchBounds, which
+	//   uses canvas.clientWidth and canvas.clientHeight to rescale mouse
+	//   position from screen units to scratch units. This ignores
+	//   transform:scale and as a result, sprites can't be clicked or dragged.
+    //   
 	// WARNING: Makes _pickTarget only work correctly when called from postData.
 	// If something else calls it directly, it may cause problems.
 	const postDataOriginal = mouse.postData.bind(mouse);
@@ -570,6 +606,10 @@
 				}
 			} else {
 				if(!xrSession && !arFail) {
+					// Entering and exiting editor recreates this element
+					stageWrapper = document.querySelector("[class*='stage-wrapper_stage-canvas-wrapper']"); 
+					stageWrapperParent = stageWrapper.parentElement;
+					
 					// css "transform" doesn't work directly on domOverlay element,
 					// but works on it's children. stageWrapper needs to have "transform: scale"
 					// on it, so that is why it is placed into another div
