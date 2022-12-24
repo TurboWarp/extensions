@@ -1,8 +1,11 @@
 const express = require('express');
 const Builder = require('./builder');
 
+let mostRecentBuild = null;
 const builder = new Builder(false);
-builder.startWatcher();
+builder.startWatcher((newBuild) => {
+  mostRecentBuild = newBuild;
+});
 
 const app = express();
 app.set('strict routing', true);
@@ -20,17 +23,36 @@ app.use((req, res, next) => {
   // We don't want this site to be embedded in frames.
   res.setHeader('X-Frame-Options', 'DENY');
 
-  // No need to leak referer headers.
+  // No need to leak Referer headers.
   res.setHeader('Referrer-Policy', 'no-referrer');
 
   // We want all resources used by the website to be local.
   // This CSP does *not* apply to the extensions, just the website.
-  res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:");
+  res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' data: blob:");
 
   next();
 });
 
-app.use(express.static(builder.outputRoot));
+app.get('/*', (req, res, next) => {
+  if (!mostRecentBuild) {
+    res.contentType('text/plain');
+    res.status(500);
+    res.send('Build Failed; See Console');
+    return;
+  }
+
+  const fileInBuild = mostRecentBuild.getFile(req.path);
+  if (!fileInBuild) {
+    return next();
+  }
+
+  if (fileInBuild.getDiskPath) {
+    res.sendFile(fileInBuild.getDiskPath());
+  } else {
+    res.contentType(fileInBuild.getType());
+    res.send(fileInBuild.read());
+  }
+});
 
 app.use((req, res) => {
   res.contentType('text/plain');

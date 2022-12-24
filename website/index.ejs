@@ -9,12 +9,6 @@
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         color-scheme: light dark;
       }
-      body {
-        margin: 0;
-        padding: 0;
-        max-width: 928px;
-        margin: auto;
-      }
       @media (prefers-color-scheme: dark) {
         :root {
           color: #eee;
@@ -27,6 +21,11 @@
       }
       h2, p {
         margin: 8px 0;
+      }
+
+      .section {
+        max-width: 928px;
+        margin: 16px auto;
       }
 
       .header h1 {
@@ -51,6 +50,17 @@
         border-radius: 8px;
         background: rgba(255, 0, 0, 0.245);
         border: 1px solid rgba(255, 0, 0, 0.604);
+      }
+
+      .development-tools {
+        padding: 8px;
+        margin: 8px 0;
+        border-radius: 8px;
+        background: rgba(200, 0, 255, 0.245);
+        border: 1px solid rgba(234, 0, 255, 0.604);
+      }
+      .development-tools h2 {
+        font-size: 1em;
       }
 
       .extensions {
@@ -115,7 +125,7 @@
   </head>
 
   <body>
-    <div class="header">
+    <div class="section header">
       <h1>
         <svg aria-hidden="true" viewBox="0 0 1024 1024">
           <path d="m64 174.86735v641.13265c0 35.34622 28.653776 64 64 64h113.30332c9.32935 0 18.19416 4.07135 24.27337 11.14807l67.26992 78.30776c12.15843 14.15343 29.88806 22.29614 48.54676 22.29614h261.21326c18.6587 0 36.38832-8.14271 48.54676-22.29614l67.26992-78.30776c6.07921-7.07672 14.94402-11.14807 24.27337-11.14807h113.30332c35.34622 0 64-28.65378 64-64v-654.84694c0-35.34622-28.65378-64-64-64-0.38091 0-0.76182 0.0034-1.14268 0.0102l-767.99999 13.71429c-34.89522 0.62313-62.85733 29.08902-62.85733 63.9898z" fill="#cc3c3c" fill-rule="evenodd"/>
@@ -145,6 +155,20 @@
       <p class="warning">Extensions listed on this site <b>will not work in the desktop app</b> unless you install <a href="https://github.com/TurboWarp/desktop/releases/tag/v1.7.0-beta.0">v1.7.0-beta.0</a>.</p>
     </div>
 
+    <% if (!isProduction) { %>
+      <div class="section">
+        <div class="development-tools">
+          <h2>Development Server Tools</h2>
+          <p>
+            Most recently modified extensions:
+            <% for (const extension of mostRecentExtensions) { %>
+              <a href="<%= extension %>"><%= extension %></a>
+            <% } %>
+          </p>
+        </div>
+      </div>
+    <% } %>
+
     <script>
       document.addEventListener('click', function (e) {
         var toCopy = e.target.getAttribute('data-copy');
@@ -172,7 +196,7 @@
       });
     </script>
 
-    <div class="extensions">
+    <div class="section">
       <%
       const url = (extensionFile) => `
         <div class="buttons">
@@ -182,92 +206,94 @@
       `;
       %>
 
-      <div class="extension">
-        <img src="images/box2d.png">
-        <h2>Box2D Physics</h2>
-        <p>Two dimensional physics. Originally by griffpatch.</p>
-        <%- url("box2d") %>
-      </div>
+      <div class="extensions">
+        <div class="extension">
+          <img src="images/box2d.png">
+          <h2>Box2D Physics</h2>
+          <p>Two dimensional physics. Originally by griffpatch.</p>
+          <%- url("box2d") %>
+        </div>
 
-      <div class="extension">
-        <img src="images/stretch.png">
-        <h2>Stretch</h2>
-        <p>Stretch sprites horizontally or vertically.</p>
-        <%- url("stretch") %>
-      </div>
+        <div class="extension">
+          <img src="images/stretch.png">
+          <h2>Stretch</h2>
+          <p>Stretch sprites horizontally or vertically.</p>
+          <%- url("stretch") %>
+        </div>
 
-      <div class="extension">
-        <img src="images/unknown.svg">
-        <h2>Gamepad</h2>
-        <p>Directly access gamepads instead of just mapping buttons to keys.</p>
-        <%- url("gamepad") %>
-      </div>
+        <div class="extension">
+          <img src="images/unknown.svg">
+          <h2>Gamepad</h2>
+          <p>Directly access gamepads instead of just mapping buttons to keys.</p>
+          <%- url("gamepad") %>
+        </div>
 
-      <div class="extension">
-        <img src="images/unknown.svg">
-        <h2>Files</h2>
-        <p>Read and download files.</p>
-        <%- url("files") %>
-      </div>
+        <div class="extension">
+          <img src="images/unknown.svg">
+          <h2>Files</h2>
+          <p>Read and download files.</p>
+          <%- url("files") %>
+        </div>
 
-      <div class="extension">
-        <img src="images/unknown.svg">
-        <h2>Pointerlock</h2>
-        <p>Adds blocks to lock the mouse cursor. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the <a href="https://experiments.turbowarp.org/pointerlock/">pointerlock experiment</a>.</p>
-        <%- url("pointerlock") %>
-      </div>
+        <div class="extension">
+          <img src="images/unknown.svg">
+          <h2>Pointerlock</h2>
+          <p>Adds blocks to lock the mouse cursor. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the <a href="https://experiments.turbowarp.org/pointerlock/">pointerlock experiment</a>.</p>
+          <%- url("pointerlock") %>
+        </div>
 
-      <div class="extension">
-        <img src="images/unknown.svg">
-        <h2>Utilities</h2>
-        <p>A bunch of interesting blocks. Originally by Sheep_maker.</p>
-        <%- url("utilities") %>
-      </div>
+        <div class="extension">
+          <img src="images/unknown.svg">
+          <h2>Utilities</h2>
+          <p>A bunch of interesting blocks. Originally by Sheep_maker.</p>
+          <%- url("utilities") %>
+        </div>
 
-      <div class="extension">
-        <img src="images/unknown.svg">
-        <h2>Runtime Options</h2>
-        <p>Get and modify turbo mode, framerate, interpolation, clone limit, stage size, and more.</p>
-        <%- url("runtime-options") %>
-      </div>
+        <div class="extension">
+          <img src="images/unknown.svg">
+          <h2>Runtime Options</h2>
+          <p>Get and modify turbo mode, framerate, interpolation, clone limit, stage size, and more.</p>
+          <%- url("runtime-options") %>
+        </div>
 
-      <div class="extension">
-        <img src="images/unknown.svg">
-        <h2>Cursor</h2>
-        <p>Use custom cursors or hide the cursor in your project.</p>
-        <%- url("cursor") %>
-      </div>
+        <div class="extension">
+          <img src="images/unknown.svg">
+          <h2>Cursor</h2>
+          <p>Use custom cursors or hide the cursor in your project.</p>
+          <%- url("cursor") %>
+        </div>
 
-      <div class="extension">
-        <img src="images/unknown.svg">
-        <h2>Fetch</h2>
-        <p>Make requests to the broader internet.</p>
-        <%- url("fetch") %>
-      </div>
+        <div class="extension">
+          <img src="images/unknown.svg">
+          <h2>Fetch</h2>
+          <p>Make requests to the broader internet.</p>
+          <%- url("fetch") %>
+        </div>
 
-      <div class="extension">
-        <img src="images/unknown.svg">
-        <h2>Bitwise</h2>
-        <p>Blocks that operate on the binary representation of numbers in computers.</p>
-        <%- url("bitwise") %>
-      </div>
+        <div class="extension">
+          <img src="images/unknown.svg">
+          <h2>Bitwise</h2>
+          <p>Blocks that operate on the binary representation of numbers in computers.</p>
+          <%- url("bitwise") %>
+        </div>
 
-      <div class="extension">
-        <img src="images/unknown.svg">
-        <h2>Cloudlink</h2>
-        <p>Powerful WebSocket extension for Scratch 3.</p>
-        <%- url("cloudlink") %>
-      </div>
+        <div class="extension">
+          <img src="images/unknown.svg">
+          <h2>Cloudlink</h2>
+          <p>Powerful WebSocket extension for Scratch 3.</p>
+          <%- url("cloudlink") %>
+        </div>
 
-      <div class="extension">
-        <img src="images/unknown.svg">
-        <h2>Ping Cloud Data</h2>
-        <p>Determine whether a cloud variable server is probably up.</p>
-        <%- url("clouddata-ping") %>
+        <div class="extension">
+          <img src="images/unknown.svg">
+          <h2>Ping Cloud Data</h2>
+          <p>Determine whether a cloud variable server is probably up.</p>
+          <%- url("clouddata-ping") %>
+        </div>
       </div>
     </div>
 
-    <footer>
+    <footer class="section">
       <p>TurboWarp is not affiliated with Scratch, the Scratch Team, or the Scratch Foundation.</p>
       <div class="links">
         <a href="https://github.com/TurboWarp/extensions">GitHub</a>
