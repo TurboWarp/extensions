@@ -38,7 +38,8 @@ class ExtensionFile extends DiskFile {
 
 class EJSFile {
   constructor (path, data) {
-    this.contents = ejsSyncRender(path, data);
+    this.path = path;
+    this.data = data;
   }
 
   getType () {
@@ -46,7 +47,7 @@ class EJSFile {
   }
 
   read () {
-    return this.contents;
+    return ejsSyncRender(this.path, this.data);
   }
 }
 
