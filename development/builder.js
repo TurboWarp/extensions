@@ -27,9 +27,16 @@ class Builder {
   }
 
   clean () {
-    fs.rmSync(this.outputRoot, {
-      recursive: true
-    });
+    try {
+      fs.rmSync(this.outputRoot, {
+        recursive: true
+      });
+    } catch (e) {
+      // If the folder just didn't exist, don't throw an error.
+      if (e.code !== 'ENOENT') {
+        throw e;
+      }
+    }
     fs.mkdirSync(this.outputRoot, {
       recursive: true
     });
