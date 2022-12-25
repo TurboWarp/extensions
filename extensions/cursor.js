@@ -8,6 +8,8 @@
   class MouseCursor {
     constructor() {
       this.canvas = Scratch.renderer.canvas;
+      this.intendedNativeCursor = 'default';
+      this.customCursorImageName = null;
     }
 
     getInfo() {
@@ -26,6 +28,18 @@
                 menu: 'cursors',
               },
             },
+          },
+          {
+            opcode: 'setCursorImage',
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set cursor to this sprite's costume at [position]",
+            arguments: {
+              position: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'top-left',
+                menu: 'imagePositions'
+              }
+            }
           },
           {
             opcode: 'hideCur',
@@ -78,20 +92,66 @@
               { text: 'nwse-resize', value: 'nwse-resize' },
             ],
           },
+          imagePositions: {
+            acceptReporters: true,
+            items: [
+              { text: 'top-left', value: 'top-left' },
+              { text: 'top-right', value: 'top-right' },
+              { text: 'bottom-left', value: 'bottom-left' },
+              { text: 'bottom-right', value: 'bottom-right' },
+              { text: 'center', value: 'center' },
+            ]
+          }
         },
       };
     }
 
     setCur(args) {
-      this.canvas.style.cursor = args.cur;
+      const cursor = args.cur;
+      this.intendedNativeCursor = cursor;
+      this.customCursorImageName = null;
+      this.canvas.style.cursor = cursor;
+    }
+
+    setCursorImage(args, util) {
+      // TODO: this isn't going to work in the packager/packaged runtime mode
+      const currentCostume = util.target.getCostumes()[util.target.currentCostume];
+      const costumeName = currentCostume.name;
+      const encodedCostume = currentCostume.asset.encodeDataURI();
+      const costumeSize = currentCostume.size; // [width, height]
+
+      const positionName = args.position;
+      const position = [0, 0]; // [x, y]
+      if (positionName === 'top-left') {
+        // initial value is already correct
+      } else if (positionName === 'top-right') {
+        position[0] = costumeSize[0];
+      } else if (positionName === 'bottom-left') {
+        position[1] = costumeSize[1];
+      } else if (positionName === 'bottom-right') {
+        position[0] = costumeSize[0];
+        position[1] = costumeSize[1];
+      } else if (positionName === 'center') {
+        position[0] = costumeSize[0] / 2;
+        position[1] = costumeSize[1] / 2;
+      }
+
+      this.customCursorImageName = costumeName;
+      this.canvas.style.cursor = `url("${encodedCostume}") ${position[0]} ${position[1]}, ${this.intendedNativeCursor}`;
     }
 
     hideCur() {
-      this.canvas.style.cursor = 'none';
+      this.setCur({
+        cur: 'none'
+      });
     }
 
     getCur() {
-      return this.canvas.style.cursor || 'default';
+      if (this.customCursorImageName !== null) {
+        // TODO: should we try to "decorate" this a bit more?
+        return this.customCursorImageName;
+      }
+      return this.intendedNativeCursor;
     }
   }
 
