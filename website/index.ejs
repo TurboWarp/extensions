@@ -51,8 +51,7 @@
       .header svg {
         width: 56px;
         height: 56px;
-        min-width: 56px;
-        min-height: 56px;
+        flex-shrink: 0;
         margin: 0 8px 0 0;
       }
 
@@ -78,9 +77,11 @@
       .extensions {
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
         margin: 16px -4px;
       }
       .extension {
+        flex-grow: 1;
         width: 300px;
         border: 2px solid #ccc;
         border-radius: 8px;
@@ -94,7 +95,8 @@
       }
       .extension img {
         width: 100%;
-        height: 150px;
+        /* TODO: see if there's another way to do this that works in older browsers too */
+        aspect-ratio: 2 / 1;
       }
       .extension > *:not(img) {
         margin: 8px;
