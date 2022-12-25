@@ -5,6 +5,98 @@
     throw new Error('MouseCursor extension must be run unsandboxed');
   }
 
+  const lazilyCreatedCanvas = () => {
+    /** @type {HTMLCanvasElement} */
+    let canvas = null;
+    /** @type {CanvasRenderingContext2D} */
+    let ctx = null;
+    /**
+     * @param {number} width
+     * @param {number} height
+     * @returns {[HTMLCanvasElement, CanvasRenderingContext2D]}
+     */
+    return (width, height) => {
+      if (!canvas) {
+        canvas = document.createElement('canvas');
+        // TODO: getContext() can fail
+        ctx = canvas.getContext('2d');
+      }
+      // This also automatically clears the canvas
+      canvas.width = width;
+      canvas.height = height;
+      return [canvas, ctx];
+    }
+  };
+  const getRawSkinCanvas = lazilyCreatedCanvas();
+  const getResizingCanvas = lazilyCreatedCanvas();
+
+  /**
+   * @param {RenderWebGL.Skin} skin
+   * @returns {HTMLCanvasElement}
+   */
+  const getRawImageFromSkin = (skin) => {
+    // TODO: be more resilient to weird edge cases, unloaded costumes, etc.
+    const silhouette = skin._silhouette;
+    // @ts-expect-error
+    if (silhouette.unlazy) {
+      // @ts-expect-error
+      silhouette.unlazy();
+    }
+    const colorData = silhouette._colorData;
+    const width = silhouette._width;
+    const height = silhouette._height;
+    const imageData = new ImageData(colorData, silhouette._width, silhouette._height);
+    const [canvas, ctx] = getRawSkinCanvas(width, height);
+    ctx.putImageData(imageData, 0, 0);
+    return canvas;
+  };
+
+  /**
+   * @param {RenderWebGL.Skin} skin
+   * @param {number} width
+   * @param {number} height
+   * @returns {string}
+   */
+  const encodeRendererSkin = (skin, width, height) => {
+    const rawSkin = getRawImageFromSkin(skin);
+    if (rawSkin.width === width && rawSkin.height === height) {
+      return rawSkin.toDataURL();
+    }
+    const [resizingCanvas, resizingCtx] = getResizingCanvas(width, height);
+    resizingCtx.drawImage(rawSkin, 0, 0, width, height);
+    return resizingCanvas.toDataURL();
+  };
+
+  /**
+   * @param {VM.Costume} costume
+   * @param {number} maxSize
+   * @returns {{encoded: string, width: number, height: number}}
+   */
+  const costumeToCursor = (costume, maxSize) => {
+    // @ts-expect-error
+    const skin = Scratch.vm.renderer._allSkins[costume.skinId];
+
+    let width = skin.size[0];
+    let height = skin.size[1];
+    if (width > maxSize || height > maxSize) {
+      if (width > height) {
+        height = Math.round(height * maxSize / width);
+        width = maxSize;
+      } else {
+        width = Math.round(width * maxSize / height);
+        height = maxSize;
+      }
+    }
+
+    const encoded = encodeRendererSkin(skin, width, height);
+
+    return {
+      encoded,
+      width,
+      height
+    };
+  };
+
   class MouseCursor {
     constructor() {
       this.canvas = Scratch.renderer.canvas;
@@ -32,12 +124,17 @@
           {
             opcode: 'setCursorImage',
             blockType: Scratch.BlockType.COMMAND,
-            text: "set cursor to this sprite's costume at [position]",
+            text: "set cursor to current costume center: [position] max size: [size]",
             arguments: {
               position: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'top-left',
                 menu: 'imagePositions'
+              },
+              size: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '32',
+                menu: 'imageSizes'
               }
             }
           },
@@ -101,6 +198,15 @@
               { text: 'bottom-right', value: 'bottom-right' },
               { text: 'center', value: 'center' },
             ]
+          },
+          imageSizes: {
+            acceptReporters: true,
+            items: [
+              { text: '16x16', value: '16' },
+              { text: '32x32', value: '32' },
+              { text: '48x48 (unreliable)', value: '48' },
+              { text: '64x64 (unreliable)', value: '64' },
+            ]
           }
         },
       };
@@ -114,30 +220,31 @@
     }
 
     setCursorImage(args, util) {
-      // TODO: this isn't going to work in the packager/packaged runtime mode
+      const maxSize = +args.size || 0;
+      const positionName = args.position;
+
       const currentCostume = util.target.getCostumes()[util.target.currentCostume];
       const costumeName = currentCostume.name;
-      const encodedCostume = currentCostume.asset.encodeDataURI();
-      const costumeSize = currentCostume.size; // [width, height]
+      const {encoded, width, height} = costumeToCursor(currentCostume, maxSize);
 
-      const positionName = args.position;
-      const position = [0, 0]; // [x, y]
+      let x = 0;
+      let y = 0;
       if (positionName === 'top-left') {
         // initial value is already correct
       } else if (positionName === 'top-right') {
-        position[0] = costumeSize[0];
+        x = width;
       } else if (positionName === 'bottom-left') {
-        position[1] = costumeSize[1];
+        y = height;
       } else if (positionName === 'bottom-right') {
-        position[0] = costumeSize[0];
-        position[1] = costumeSize[1];
+        x = width;
+        y = height;
       } else if (positionName === 'center') {
-        position[0] = costumeSize[0] / 2;
-        position[1] = costumeSize[1] / 2;
+        x = width / 2;
+        y = height / 2;
       }
 
       this.customCursorImageName = costumeName;
-      this.canvas.style.cursor = `url("${encodedCostume}") ${position[0]} ${position[1]}, ${this.intendedNativeCursor}`;
+      this.canvas.style.cursor = `url("${encoded}") ${x} ${y}, ${this.intendedNativeCursor}`;
     }
 
     hideCur() {
