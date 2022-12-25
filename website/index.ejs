@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TurboWarp Extensions</title>
+    <title>TurboWarp Extension Gallery</title>
     <style>
       :root {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -13,6 +13,18 @@
         :root {
           color: #eee;
           background: #111;
+        }
+        a {
+          color: #56b2ff;
+        }
+        a:visited {
+          color: #f192ff;
+        }
+        a:active {
+          color: red;
+        }
+        .invert-dark {
+          filter: invert(100%);
         }
       }
 
@@ -29,18 +41,18 @@
       }
 
       .header h1 {
-        font-size: 32px;
+        font-size: 2.3em;
         display: flex;
         align-items: center;
-        flex-direction: row;
+        justify-content: center;
         font-weight: normal;
         text-align: center;
       }
       .header svg {
-        width: 48px;
-        height: 48px;
-        min-width: 48px;
-        min-height: 48px;
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        min-height: 56px;
         margin: 0 8px 0 0;
       }
 
@@ -104,12 +116,13 @@
         border: none;
         font: inherit;
         cursor: pointer;
-        margin-right: 8px;
+        margin: 0 8px 0 0;
+        color: white;
       }
       .buttons .open {
         text-decoration: none;
-        color: inherit;
         background-color: #ff4c4c;
+        color: white;
       }
 
       footer {
@@ -141,12 +154,7 @@
            <path d="m108.34581 25.3789q-1.19093 5.210345-1.7864 11.313892-0.14887 1.637537 0.29773 4.168276 0.4466 2.97734 0.4466 4.168276 0 3.870542-5.06147 3.870542-3.275078 0-4.317148-1.935271-0.14887-3.275074 0.14887-8.93202 0.29773-6.699015 0.29773-8.93202-0.14886 0-0.4466-0.297734-13.84463 0.595468-26.05172 1.786404-0.29774 1.935271 0 4.763744l0.59546 5.359212q-0.59546 4.614877-0.59546 13.695765 0.4466 3.870542 0.4466 33.197344v10.86729q0 2.53074 0.74433 3.57281h9.22976q5.65694-0.74434 5.65694 4.76374 0 3.27508-3.1262 4.61488-1.93528 0.74434-6.84789 0.29774-2.97734-0.29774-6.99675-0.14887-5.50808 0.74433-13.39803 1.19093-8.03881 0.44661-9.825218-2.233-1.190936-1.7864 0-3.72168 2.084138-3.27507 10.867288-3.27507 4.61488 0 4.61488-2.53074 0-1.3398-0.14887-2.53074 0-3.72168 0.14887-6.55015 0.4466-8.03882 0-22.627784-0.59547-21.139115 0.4466-37.961086l-0.4466-0.446601q-4.61488 0.297734-17.268572-0.148867-0.595468 0-9.080887 0.595468 2.084138 14.291232 2.381872 20.394779 0 0-0.297734 4.01941-0.148867 2.233005-3.721676 2.233005-2.828473 0-4.763744-10.718425-0.893202-6.401281-1.786404-12.951429 0-1.042069-1.042069-3.572808-0.893202-2.679606-0.893202-4.019409 0-3.721675 5.656946-4.614877 0.446601 0 1.48867 0.148867t1.48867 0.148867h15.48217q21.43685 0 21.43685 0 13.69576-0.595468 26.49832-2.381872 0.89321-0.446601 2.679608-0.893202 3.12621-0.297735 5.35921 1.48867 2.23301 1.637537 1.48867 4.763744z" fill="#fff"/>
           </g>
         </svg>
-        <div>
-          TurboWarp Extensions
-          <% if (!isProduction) { %>
-            <%= "(Development Server)" %>
-          <% } %>
-        </div>
+        <div>TurboWarp Extension Gallery</div>
       </h1>
 
       <p>Unlike custom extensions on other websites, extensions listed here aren't limited by the extension sandbox, so they are a lot more powerful.</p>
@@ -212,84 +220,84 @@
 
       <div class="extensions">
         <div class="extension">
-          <img src="images/box2d.png">
+          <img loading="lazy" src="images/box2d.png">
           <h2>Box2D Physics</h2>
           <p>Two dimensional physics. Originally by griffpatch.</p>
           <%- url("box2d") %>
         </div>
 
         <div class="extension">
-          <img src="images/stretch.png">
+          <img loading="lazy" src="images/stretch.png">
           <h2>Stretch</h2>
           <p>Stretch sprites horizontally or vertically.</p>
           <%- url("stretch") %>
         </div>
 
         <div class="extension">
-          <img src="images/unknown.svg">
+          <img loading="lazy" src="images/gamepad.svg" class="invert-dark">
           <h2>Gamepad</h2>
           <p>Directly access gamepads instead of just mapping buttons to keys.</p>
           <%- url("gamepad") %>
         </div>
 
         <div class="extension">
-          <img src="images/unknown.svg">
+          <img loading="lazy" src="images/unknown.svg">
           <h2>Files</h2>
           <p>Read and download files.</p>
           <%- url("files") %>
         </div>
 
         <div class="extension">
-          <img src="images/unknown.svg">
+          <img loading="lazy" src="images/unknown.svg">
           <h2>Pointerlock</h2>
           <p>Adds blocks to lock the mouse cursor. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the <a href="https://experiments.turbowarp.org/pointerlock/">pointerlock experiment</a>.</p>
           <%- url("pointerlock") %>
         </div>
 
         <div class="extension">
-          <img src="images/unknown.svg">
+          <img loading="lazy" src="images/unknown.svg">
           <h2>Utilities</h2>
           <p>A bunch of interesting blocks. Originally by Sheep_maker.</p>
           <%- url("utilities") %>
         </div>
 
         <div class="extension">
-          <img src="images/unknown.svg">
+          <img loading="lazy" src="images/unknown.svg">
           <h2>Runtime Options</h2>
           <p>Get and modify turbo mode, framerate, interpolation, clone limit, stage size, and more.</p>
           <%- url("runtime-options") %>
         </div>
 
         <div class="extension">
-          <img src="images/unknown.svg">
+          <img loading="lazy" src="images/cursor.svg">
           <h2>Cursor</h2>
           <p>Use custom cursors or hide the cursor in your project.</p>
           <%- url("cursor") %>
         </div>
 
         <div class="extension">
-          <img src="images/unknown.svg">
+          <img loading="lazy" src="images/unknown.svg">
           <h2>Fetch</h2>
           <p>Make requests to the broader internet.</p>
           <%- url("fetch") %>
         </div>
 
         <div class="extension">
-          <img src="images/unknown.svg">
+          <img loading="lazy" src="images/bitwise.svg" class="invert-dark">
           <h2>Bitwise</h2>
           <p>Blocks that operate on the binary representation of numbers in computers.</p>
           <%- url("bitwise") %>
         </div>
 
         <div class="extension">
-          <img src="images/unknown.svg">
+          <img loading="lazy" src="images/unknown.svg">
           <h2>Cloudlink</h2>
           <p>Powerful WebSocket extension for Scratch 3.</p>
           <%- url("cloudlink") %>
         </div>
 
         <div class="extension">
-          <img src="images/unknown.svg">
+          <img loading="lazy" src="images/unknown.svg">
           <h2>Ping Cloud Data</h2>
           <p>Determine whether a cloud variable server is probably up.</p>
           <%- url("clouddata-ping") %>
@@ -300,6 +308,8 @@
     <footer class="section">
       <p>TurboWarp is not affiliated with Scratch, the Scratch Team, or the Scratch Foundation.</p>
       <div class="links">
+        <a href="https://github.com/TurboWarp/extensions/tree/master/images">Image Attribution</a>
+        -
         <a href="https://github.com/TurboWarp/extensions">GitHub</a>
         -
         <a href="https://docs.turbowarp.org/development/custom-extensions">Developer Documentation</a>
