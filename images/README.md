@@ -16,3 +16,6 @@ The gamepad image is from https://pixabay.com/vectors/controller-gamepad-video-g
 
 ## bitwise.svg
 The font used is DejaVu Sans Mono.
+
+## cloudlink.png
+Cloudlink extension icon from adacraft.org
