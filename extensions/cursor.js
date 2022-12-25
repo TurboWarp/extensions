@@ -97,13 +97,27 @@
     };
   };
 
-  class MouseCursor {
-    constructor() {
-      this.canvas = Scratch.renderer.canvas;
-      this.intendedNativeCursor = 'default';
-      this.customCursorImageName = null;
-    }
+  /** @type {string} */
+  let nativeCursor = 'default';
+  /** @type {null|string} */
+  let customCursorImageName = null;
 
+  const canvas = Scratch.renderer.canvas;
+  /** @type {string} */
+  let currentCanvasCursor = nativeCursor;
+  const updateCanvasCursor = () => {
+    if (canvas.style.cursor !== currentCanvasCursor) {
+      canvas.style.cursor = currentCanvasCursor;
+    }
+  };
+
+  // scratch-gui will sometimes reset the cursor when resizing the window or going in/out of fullscreen
+  new MutationObserver(updateCanvasCursor).observe(canvas, {
+    attributeFilter: ['style'],
+    attributes: true
+  });
+
+  class MouseCursor {
     getInfo() {
       return {
         id: 'MouseCursor',
@@ -213,10 +227,11 @@
     }
 
     setCur(args) {
-      const cursor = args.cur;
-      this.intendedNativeCursor = cursor;
-      this.customCursorImageName = null;
-      this.canvas.style.cursor = cursor;
+      const newCursor = args.cur;
+      nativeCursor = newCursor;
+      customCursorImageName = null;
+      currentCanvasCursor = newCursor;
+      updateCanvasCursor();
     }
 
     setCursorImage(args, util) {
@@ -243,8 +258,9 @@
         y = height / 2;
       }
 
-      this.customCursorImageName = costumeName;
-      this.canvas.style.cursor = `url("${encoded}") ${x} ${y}, ${this.intendedNativeCursor}`;
+      customCursorImageName = costumeName;
+      currentCanvasCursor = `url("${encoded}") ${x} ${y}, ${nativeCursor}`;
+      updateCanvasCursor();
     }
 
     hideCur() {
@@ -254,11 +270,11 @@
     }
 
     getCur() {
-      if (this.customCursorImageName !== null) {
+      if (customCursorImageName !== null) {
         // TODO: should we try to "decorate" this a bit more?
-        return this.customCursorImageName;
+        return customCursorImageName;
       }
-      return this.intendedNativeCursor;
+      return nativeCursor;
     }
   }
 
