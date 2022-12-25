@@ -16,3 +16,6 @@ The gamepad image is from https://pixabay.com/vectors/controller-gamepad-video-g
 
 ## bitwise.svg
 The font used is DejaVu Sans Mono.
+
+## cloudlink.svg
+The cloud icon is from the Cloudlink extension itself. The font used is Noto Sans.
