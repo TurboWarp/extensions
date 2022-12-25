@@ -5,7 +5,7 @@ The taco, apple, and banana are from the Scratch sprite library.
 
 The dango is from [Twemoji](https://twemoji.twitter.com/) and is licensed under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-## stretch.png
+## stretch.svg
 The dango is from [Twemoji](https://twemoji.twitter.com/) and is licensed under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## cursor.svg
