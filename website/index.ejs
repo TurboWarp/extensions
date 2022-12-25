@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TurboWarp Extension Gallery</title>
+    <meta name="theme-color" content="#ff4c4c">
+    <meta name="description" content="The official place to find powerful unsandboxed extensions for TurboWarp.">
     <style>
       :root {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -51,8 +53,7 @@
       .header svg {
         width: 56px;
         height: 56px;
-        min-width: 56px;
-        min-height: 56px;
+        flex-shrink: 0;
         margin: 0 8px 0 0;
       }
 
@@ -78,9 +79,11 @@
       .extensions {
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
         margin: 16px -4px;
       }
       .extension {
+        flex-grow: 1;
         width: 300px;
         border: 2px solid #ccc;
         border-radius: 8px;
@@ -94,7 +97,8 @@
       }
       .extension img {
         width: 100%;
-        height: 150px;
+        /* TODO: see if there's another way to do this that works in older browsers too */
+        aspect-ratio: 2 / 1;
       }
       .extension > *:not(img) {
         margin: 8px;
@@ -220,14 +224,14 @@
 
       <div class="extensions">
         <div class="extension">
-          <img loading="lazy" src="images/box2d.png">
+          <img loading="lazy" src="images/box2d.svg">
           <h2>Box2D Physics</h2>
           <p>Two dimensional physics. Originally by griffpatch.</p>
           <%- url("box2d") %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/stretch.png">
+          <img loading="lazy" src="images/stretch.svg">
           <h2>Stretch</h2>
           <p>Stretch sprites horizontally or vertically.</p>
           <%- url("stretch") %>
@@ -269,7 +273,7 @@
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/cursor.svg">
+          <img loading="lazy" src="images/cursor.svg" style="filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));">
           <h2>Cursor</h2>
           <p>Use custom cursors or hide the cursor in your project.</p>
           <%- url("cursor") %>
@@ -290,7 +294,7 @@
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/unknown.svg">
+          <img loading="lazy" src="images/cloudlink.svg">
           <h2>Cloudlink</h2>
           <p>Powerful WebSocket extension for Scratch 3.</p>
           <%- url("cloudlink") %>
