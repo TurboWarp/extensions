@@ -133,7 +133,8 @@
     modal.appendChild(title);
 
     const subtitle = document.createElement('div');
-    subtitle.textContent = `Accepted formats: ${accept}`;
+    const formattedAccept = accept || 'any';
+    subtitle.textContent = `Accepted formats: ${formattedAccept}`;
     modal.appendChild(subtitle);
 
     document.body.appendChild(outer);
