@@ -19,3 +19,6 @@ The font used is DejaVu Sans Mono.
 
 ## cloudlink.svg
 The cloud icon is from the Cloudlink extension itself. The font used is Noto Sans.
+
+## files.png
+Based on https://github.com/TurboWarp/extensions/issues/90#issuecomment-1365035479
