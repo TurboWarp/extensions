@@ -12792,7 +12792,7 @@
       return [
         { text: "this costume", value: SHAPE_TYPE_OPTIONS.COSTUME },
         { text: "this circle", value: SHAPE_TYPE_OPTIONS.CIRCLE },
-        { text: "this polygon", value: SHAPE_TYPE_OPTIONS.SVG_POLYGON },
+        // { text: "this polygon", value: SHAPE_TYPE_OPTIONS.SVG_POLYGON },
         { text: "all sprites", value: SHAPE_TYPE_OPTIONS.ALL },
       ];
     }

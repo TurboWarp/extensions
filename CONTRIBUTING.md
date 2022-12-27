@@ -1,13 +1,32 @@
 # Contributing
 
-We are currently in transitionary period. Follow https://github.com/TurboWarp/scratch-gui/issues/633 for updates.
-
 Before submitting new extensions or changes to extensions, please read:
 
  - https://docs.turbowarp.org/development/custom-extensions
  - https://docs.turbowarp.org/development/unsandboxed-extensions
 
-We're still figuring out how local development will work.
+## Local development server
+
+We provide a local development server:
+
+```bash
+# Install dependencies
+npm ci
+
+# Start development server
+npm run dev
+```
+
+This starts an HTTP server on `http://localhost:8000/` which TurboWarp treats as unsandboxed.
+
+If for some reason you can't set up our local development server, you can start any other HTTP server in the `extensions` folder. You won't get some of the nice things our server has, but it will be good enough. If you have Python 3 installed this is very simple:
+
+```bash
+cd extensions
+python3 -m http.server
+```
+
+After installing npm dependencies, TypeScript aware editors such as Visual Studio Code will give you smart autocomplete suggestions for most Scratch APIs based on [@turbowarp/types](https://github.com/TurboWarp/types). Note that these types are not 100% complete and are missing anything TurboWarp specific for now.
 
 ## New extensions
 
@@ -17,12 +36,43 @@ While you can host your custom extensions on any website, submitting them to ext
  - The extension can be loaded automatically, without a prompt
  - Improved discoverability
 
-We accept almost any extensions that follow these guidelines:
+### Guidelines
 
- - You agree to make the source code available under [the MIT License](LICENSE). Either you must have written the entirety of the extension, or whoever wrote it has released the code under a compatible open source license.
- - No `eval()`, `new Function()`, remote scripts, or similar arbitrary JS/CSS/HTML/etc.
+The source code of the extension and any libraries it uses must be available under an open source license that is compatible with the GNU General Public License v3. If unsure, use [the MIT License](licenses/MIT.txt). That's what most extensions here use. For this to be legally possible, either you must have written the entire extension yourself or obtained permission to use it under an open source license.
 
-Just send a pull request adding an `extension.js` file with your extension's source code.
+If the license is not MIT, leave a comment at the top of each file indicating its license, for example if it uses the Apache 2.0 license instead:
+
+```js
+/*!
+ * Copyright 20XX Name Here
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+```
+
+And add a copy of the full license in the `licenses` folder if one isn't already in there. Using `/*!` instead of just `/*` for the license comment prevents JavaScript minifiers from removing the comment.
+
+The license must be compatible with the GNU General Public License v3 so we can include it in the desktop app. However, we don't want extensions to use the GPLv3 exclusively as our non-lawyer understanding of the copyleft clause suggests that it would spread to any projects that use the extension which isn't what we want. LGPLv3, however, is acceptable. (Do not interpret this paragraph as legal advice.)
+
+Extensions must not use `eval()`, `new Function()`, untrusted `<script>` or `<iframe>` tags, or similar arbitrary JS/CSS/HTML/etc. It's best if extensions are entirely self-contained in one file.
+
+### Actually writing the extension
+
+The extension's source code goes in the `extensions` folder.
+
+To add an extension to the website, see `website/index.ejs`.
+
+To add an image, add it to the `images` folder and update index.ejs. Images will be displayed in 2:1 aspect ratio. Bitmaps should be 600x300 in resolution. PNG, JPG, or SVG accepted. If the image includes assets not made by you, make sure to add attribution to `images/README.md`.
 
 ## Updates to extensions
 
