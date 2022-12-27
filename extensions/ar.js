@@ -369,7 +369,7 @@
 	//   uses canvas.clientWidth and canvas.clientHeight to rescale mouse
 	//   position from screen units to scratch units. This ignores
 	//   transform:scale and as a result, sprites can't be clicked or dragged.
-    //   
+	//
 	// WARNING: Makes _pickTarget only work correctly when called from postData.
 	// If something else calls it directly, it may cause problems.
 	const postDataOriginal = mouse.postData.bind(mouse);
@@ -610,7 +610,7 @@
 				}
 			}
 		}
-		enterAR(args) {
+		enterAR() {
 			if(arFail) {
 				if(arFail !== "shown") {
 					// AR is used on mobile, where accessing browser console to see what's wrong can be an issue
