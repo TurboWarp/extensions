@@ -33,11 +33,9 @@
 
   /**
    * @param {RenderWebGL.Skin} skin
-   * @returns {string}
+   * @returns {string} A data: URI for the skin.
    */
   const encodeSkinToURL = (skin) => {
-    // TODO: be more resilient to weird edge cases, unloaded costumes, etc.
-
     const svgSkin = /** @type {RenderWebGL.SVGSkin} */ (skin);
     if (svgSkin._svgImage) {
       // This is an SVG skin
@@ -86,11 +84,18 @@
 
     const imageURI = encodeSkinToURL(skin);
 
-    // For high DPI displays, we want the browser to be able to show it at full resolution.
+    // We wrap the encoded image in an <svg>. This lets us do some clever things:
+    //  - We can resize the image without a canvas.
+    //  - We can give the browser an image with more raw pixels than its DPI independent size
+    // The latter is important so that cursors won't look horrible on high DPI displays. For
+    // example, if the cursor will display at 32x32 in DPI independent units on a 2x high DPI
+    // display, we actually need to send a 64x64 image for it to look good. This lets us do
+    // that automatically.
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">`;
     svg += `<image href="${imageURI}" width="${width}" height="${height}" />`;
     svg += '</svg>';
-    const svgURI = `data:image/svg+xml;base64,${btoa(svg)}`;
+    // URI encoding usually results in smaller string than base 64 for the types of data we get here.
+    const svgURI = `data:image/svg+xml;,${encodeURIComponent(svg)}`;
 
     return {
       uri: svgURI,
