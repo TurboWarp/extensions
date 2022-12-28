@@ -218,10 +218,17 @@
           imageSizes: {
             acceptReporters: true,
             items: [
+              // Some important numbers to keep in mind:
+              // Browsers ignore cursor images >128 in any dimension (https://searchfox.org/mozilla-central/rev/43ee5e789b079e94837a21336e9ce2420658fd19/widget/gtk/nsWindow.cpp#3393-3402)
+              // Browsers may refuse to display a cursor near window borders for images >32 in any dimension
+              { text: '4x4', value: '4' },
+              { text: '8x8', value: '8' },
+              { text: '12x12', value: '12' },
               { text: '16x16', value: '16' },
               { text: '32x32', value: '32' },
               { text: '48x48 (unreliable)', value: '48' },
               { text: '64x64 (unreliable)', value: '64' },
+              { text: '128x128 (unreliable)', value: '128' },
             ]
           }
         },
