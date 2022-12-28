@@ -30,23 +30,18 @@
     }
   };
   const getRawSkinCanvas = lazilyCreatedCanvas();
-  const getResizingCanvas = lazilyCreatedCanvas();
 
   /**
    * @param {RenderWebGL.Skin} skin
-   * @returns {HTMLCanvasElement|HTMLImageElement}
+   * @returns {string}
    */
-  const getRawImageFromSkin = (skin) => {
+  const encodeSkinToURL = (skin) => {
     // TODO: be more resilient to weird edge cases, unloaded costumes, etc.
 
     const svgSkin = /** @type {RenderWebGL.SVGSkin} */ (skin);
     if (svgSkin._svgImage) {
       // This is an SVG skin
-      // SVG skins load asynchronously, so it might not be loaded yet
-      if (svgSkin._svgImageLoaded) {
-        return svgSkin._svgImage;
-      }
-      throw new Error('SVG is not loaded yet');
+      return svgSkin._svgImage.src;
     }
 
     // It's probably a bitmap skin.
@@ -65,20 +60,7 @@
     const imageData = new ImageData(colorData, silhouette._width, silhouette._height);
     const [canvas, ctx] = getRawSkinCanvas(width, height);
     ctx.putImageData(imageData, 0, 0);
-    return canvas;
-  };
-
-  /**
-   * @param {RenderWebGL.Skin} skin
-   * @param {number} width
-   * @param {number} height
-   * @returns {string} data: URI for the skin
-   */
-  const encodeRendererSkin = (skin, width, height) => {
-    const rawSkin = getRawImageFromSkin(skin);
-    const [resizingCanvas, resizingCtx] = getResizingCanvas(width, height);
-    resizingCtx.drawImage(rawSkin, 0, 0, width, height);
-    return resizingCanvas.toDataURL();
+    return canvas.toDataURL();
   };
 
   /**
@@ -102,10 +84,16 @@
       }
     }
 
-    const uri = encodeRendererSkin(skin, width, height);
+    const imageURI = encodeSkinToURL(skin);
+
+    // For high DPI displays, we want the browser to be able to show it at full resolution.
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">`;
+    svg += `<image href="${imageURI}" width="${width}" height="${height}" />`;
+    svg += '</svg>';
+    const svgURI = `data:image/svg+xml;base64,${btoa(svg)}`;
 
     return {
-      uri,
+      uri: svgURI,
       width,
       height
     };
