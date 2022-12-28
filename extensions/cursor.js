@@ -63,26 +63,27 @@
 
   /**
    * @param {VM.Costume} costume
-   * @param {number} maxSize
+   * @param {number} maxWidth
+   * @param {number} maxHeight
    * @returns {{uri: string, width: number, height: number}}
    */
-  const costumeToCursor = (costume, maxSize) => {
+  const costumeToCursor = (costume, maxWidth, maxHeight) => {
     // @ts-expect-error
     const skin = Scratch.vm.renderer._allSkins[costume.skinId];
+    const imageURI = encodeSkinToURL(skin);
 
     let width = skin.size[0];
     let height = skin.size[1];
-    if (width > maxSize || height > maxSize) {
-      if (width > height) {
-        height = Math.round(height * maxSize / width);
-        width = maxSize;
-      } else {
-        width = Math.round(width * maxSize / height);
-        height = maxSize;
-      }
+    if (width > maxWidth) {
+      height = height * (maxWidth / width);
+      width = maxWidth;
     }
-
-    const imageURI = encodeSkinToURL(skin);
+    if (height > maxHeight) {
+      width = width * (maxHeight / height);
+      height = maxHeight;
+    }
+    width = Math.round(width);
+    height = Math.round(height);
 
     // We wrap the encoded image in an <svg>. This lets us do some clever things:
     //  - We can resize the image without a canvas.
@@ -124,6 +125,19 @@
     attributes: true
   });
 
+  /**
+   * Parse strings like "60x12" or "77,1"
+   * @param {string} string
+   * @returns {[number, number]}
+   */
+  const parseTuple = (string) => {
+    const [a, b] = ('' + string).split(/[ ,x]/);
+    return [
+      +a || 0,
+      +b || 0
+    ];
+  };
+
   class MouseCursor {
     getInfo() {
       return {
@@ -154,7 +168,7 @@
               },
               size: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '32',
+                defaultValue: '32x32',
                 menu: 'imageSizes'
               }
             }
@@ -227,14 +241,14 @@
               // Some important numbers to keep in mind:
               // Browsers ignore cursor images >128 in any dimension (https://searchfox.org/mozilla-central/rev/43ee5e789b079e94837a21336e9ce2420658fd19/widget/gtk/nsWindow.cpp#3393-3402)
               // Browsers may refuse to display a cursor near window borders for images >32 in any dimension
-              { text: '4x4', value: '4' },
-              { text: '8x8', value: '8' },
-              { text: '12x12', value: '12' },
-              { text: '16x16', value: '16' },
-              { text: '32x32', value: '32' },
-              { text: '48x48 (unreliable)', value: '48' },
-              { text: '64x64 (unreliable)', value: '64' },
-              { text: '128x128 (unreliable)', value: '128' },
+              { text: '4x4', value: '4x4' },
+              { text: '8x8', value: '8x4' },
+              { text: '12x12', value: '12x12' },
+              { text: '16x16', value: '16x16' },
+              { text: '32x32', value: '32x32' },
+              { text: '48x48 (unreliable)', value: '48x48' },
+              { text: '64x64 (unreliable)', value: '64x64' },
+              { text: '128x128 (unreliable)', value: '128x128' },
             ]
           }
         },
@@ -250,24 +264,23 @@
     }
 
     setCursorImage(args, util) {
-      const maxSize = +args.size || 0;
-      const positionName = args.position;
+      const [maxWidth, maxHeight] = parseTuple(args.size).map(i => Math.max(0, i));
 
       const currentCostume = util.target.getCostumes()[util.target.currentCostume];
       const costumeName = currentCostume.name;
 
       let encodedCostume;
       try {
-        encodedCostume = costumeToCursor(currentCostume, maxSize);
+        encodedCostume = costumeToCursor(currentCostume, maxWidth, maxHeight);
       } catch (e) {
         // This could happen for a variety of reasons.
         console.error(e);
       }
 
       if (encodedCostume) {
-        const [percentX, percentY] = ('' + positionName).split(',');
-        const x = Math.max(0, Math.min(100, +percentX || 0)) / 100 * encodedCostume.width;
-        const y = Math.max(0, Math.min(100, +percentY || 0)) / 100 * encodedCostume.height;
+        const [percentX, percentY] = parseTuple(args.position).map(i => Math.max(0, Math.min(100, i)) / 100);
+        const x = percentX * encodedCostume.width;
+        const y = percentY * encodedCostume.height;
 
         currentCanvasCursor = `url("${encodedCostume.uri}") ${x} ${y}, ${nativeCursor}`;
         updateCanvasCursor();
