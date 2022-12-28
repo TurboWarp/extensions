@@ -214,10 +214,10 @@
             acceptReporters: true,
             items: [
               // [x, y] where x is [0=left, 100=right] and y is [0=top, 100=bottom]
-              { text: 'top-left', value: '0,0' },
-              { text: 'top-right', value: '100,0' },
-              { text: 'bottom-left', value: '0,100' },
-              { text: 'bottom-right', value: '100,100' },
+              { text: 'top left', value: '0,0' },
+              { text: 'top right', value: '100,0' },
+              { text: 'bottom left', value: '0,100' },
+              { text: 'bottom right', value: '100,100' },
               { text: 'center', value: '50,50' },
             ]
           },
