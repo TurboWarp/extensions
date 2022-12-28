@@ -149,7 +149,7 @@
             arguments: {
               position: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'top-left',
+                defaultValue: '0,0',
                 menu: 'imagePositions'
               },
               size: {
@@ -213,11 +213,12 @@
           imagePositions: {
             acceptReporters: true,
             items: [
-              { text: 'top-left', value: 'top-left' },
-              { text: 'top-right', value: 'top-right' },
-              { text: 'bottom-left', value: 'bottom-left' },
-              { text: 'bottom-right', value: 'bottom-right' },
-              { text: 'center', value: 'center' },
+              // [x, y] where x is [0=left, 100=right] and y is [0=top, 100=bottom]
+              { text: 'top-left', value: '0,0' },
+              { text: 'top-right', value: '100,0' },
+              { text: 'bottom-left', value: '0,100' },
+              { text: 'bottom-right', value: '100,100' },
+              { text: 'center', value: '50,50' },
             ]
           },
           imageSizes: {
@@ -264,21 +265,9 @@
       }
 
       if (encodedCostume) {
-        let x = 0;
-        let y = 0;
-        if (positionName === 'top-left') {
-          // initial value is already correct
-        } else if (positionName === 'top-right') {
-          x = encodedCostume.width;
-        } else if (positionName === 'bottom-left') {
-          y = encodedCostume.height;
-        } else if (positionName === 'bottom-right') {
-          x = encodedCostume.width;
-          y = encodedCostume.height;
-        } else if (positionName === 'center') {
-          x = encodedCostume.width / 2;
-          y = encodedCostume.height / 2;
-        }
+        const [percentX, percentY] = ('' + positionName).split(',');
+        const x = Math.max(0, Math.min(100, +percentX || 0)) / 100 * encodedCostume.width;
+        const y = Math.max(0, Math.min(100, +percentY || 0)) / 100 * encodedCostume.height;
 
         currentCanvasCursor = `url("${encodedCostume.uri}") ${x} ${y}, ${nativeCursor}`;
         updateCanvasCursor();
