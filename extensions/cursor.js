@@ -18,10 +18,12 @@
     return (width, height) => {
       if (!canvas) {
         canvas = document.createElement('canvas');
-        // TODO: getContext() can fail
         ctx = canvas.getContext('2d');
+        if (!ctx) {
+          throw new Error('Could not get 2d rendering context');
+        }
       }
-      // This also automatically clears the canvas
+      // Setting canvas size also clears it
       canvas.width = width;
       canvas.height = height;
       return [canvas, ctx];
@@ -32,11 +34,26 @@
 
   /**
    * @param {RenderWebGL.Skin} skin
-   * @returns {HTMLCanvasElement}
+   * @returns {HTMLCanvasElement|HTMLImageElement}
    */
   const getRawImageFromSkin = (skin) => {
     // TODO: be more resilient to weird edge cases, unloaded costumes, etc.
+
+    const svgSkin = /** @type {RenderWebGL.SVGSkin} */ (skin);
+    if (svgSkin._svgImage) {
+      // This is an SVG skin
+      // SVG skins load asynchronously, so it might not be loaded yet
+      if (svgSkin._svgImageLoaded) {
+        return svgSkin._svgImage;
+      }
+      throw new Error('SVG is not loaded yet');
+    }
+
+    // It's probably a bitmap skin.
+    // The most reliable way to get the bitmap in every runtime is through the silhouette.
+    // This is very slow and could involve reading the texture from the GPU.
     const silhouette = skin._silhouette;
+    // unlazy() only exists in TW
     // @ts-expect-error
     if (silhouette.unlazy) {
       // @ts-expect-error
@@ -55,13 +72,10 @@
    * @param {RenderWebGL.Skin} skin
    * @param {number} width
    * @param {number} height
-   * @returns {string}
+   * @returns {string} data: URI for the skin
    */
   const encodeRendererSkin = (skin, width, height) => {
     const rawSkin = getRawImageFromSkin(skin);
-    if (rawSkin.width === width && rawSkin.height === height) {
-      return rawSkin.toDataURL();
-    }
     const [resizingCanvas, resizingCtx] = getResizingCanvas(width, height);
     resizingCtx.drawImage(rawSkin, 0, 0, width, height);
     return resizingCanvas.toDataURL();
@@ -70,7 +84,7 @@
   /**
    * @param {VM.Costume} costume
    * @param {number} maxSize
-   * @returns {{encoded: string, width: number, height: number}}
+   * @returns {{uri: string, width: number, height: number}}
    */
   const costumeToCursor = (costume, maxSize) => {
     // @ts-expect-error
@@ -88,10 +102,10 @@
       }
     }
 
-    const encoded = encodeRendererSkin(skin, width, height);
+    const uri = encodeRendererSkin(skin, width, height);
 
     return {
-      encoded,
+      uri,
       width,
       height
     };
@@ -240,27 +254,41 @@
 
       const currentCostume = util.target.getCostumes()[util.target.currentCostume];
       const costumeName = currentCostume.name;
-      const {encoded, width, height} = costumeToCursor(currentCostume, maxSize);
 
-      let x = 0;
-      let y = 0;
-      if (positionName === 'top-left') {
-        // initial value is already correct
-      } else if (positionName === 'top-right') {
-        x = width;
-      } else if (positionName === 'bottom-left') {
-        y = height;
-      } else if (positionName === 'bottom-right') {
-        x = width;
-        y = height;
-      } else if (positionName === 'center') {
-        x = width / 2;
-        y = height / 2;
+      let encodedCostume;
+      try {
+        encodedCostume = costumeToCursor(currentCostume, maxSize);
+      } catch (e) {
+        // This could happen for a variety of reasons.
+        console.error(e);
+      }
+
+      if (encodedCostume) {
+        let x = 0;
+        let y = 0;
+        if (positionName === 'top-left') {
+          // initial value is already correct
+        } else if (positionName === 'top-right') {
+          x = encodedCostume.width;
+        } else if (positionName === 'bottom-left') {
+          y = encodedCostume.height;
+        } else if (positionName === 'bottom-right') {
+          x = encodedCostume.width;
+          y = encodedCostume.height;
+        } else if (positionName === 'center') {
+          x = encodedCostume.width / 2;
+          y = encodedCostume.height / 2;
+        }
+
+        currentCanvasCursor = `url("${encodedCostume.uri}") ${x} ${y}, ${nativeCursor}`;
+        updateCanvasCursor();
+      } else {
+        // If for some reason the costume couldn't be encoded, we'll leave the cursor unchanged.
+        // This is the same behavior that would happen if we successfully encode a cursor but the browser
+        // is unable to parse it for some reason.
       }
 
       customCursorImageName = costumeName;
-      currentCanvasCursor = `url("${encoded}") ${x} ${y}, ${nativeCursor}`;
-      updateCanvasCursor();
     }
 
     hideCur() {
