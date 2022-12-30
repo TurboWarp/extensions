@@ -1785,11 +1785,11 @@
           {
             opcode: "precachetextures",
             blockType: Scratch.BlockType.COMMAND,
-            text: "precache texture [uri] clamp the texture? [clamp]",
+            text: "Start loading image from url: [uri] clamp the texture? [clamp]",
             arguments: {
               uri: {
                 type:  Scratch.ArgumentType.STRING,
-                defaultValue: "uri here"
+                defaultValue: EXAMPLE_IMAGE
               },
               clamp: {
                 type:  Scratch.ArgumentType.STRING,
