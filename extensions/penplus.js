@@ -1605,38 +1605,39 @@
     return deg * 0.0174533;
   }
 
-  function loadImageAndCreateTextureInfo(url,clamp) {
+  function loadImageAndCreateTextureInfo(url, clamp) {
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     // Fill the texture with a 1x1 blue pixel.
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
 
-    // let's assume all images are not a power of 2
-    if (clamp == 'true') {
+    // Let's assume all images are not a power of 2
+    if (clamp) {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    }
-    else{
+    } else {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
     }
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 
-    var textureInfo = {
-      width: 1,   // we don't know the size until it loads
+    const textureInfo = {
+      // we don't know the size until it loads
+      width: 1,
       height: 1,
       texture: tex,
     };
-    var img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.addEventListener('load', function() {
-      textureInfo.width = img.width;
-      textureInfo.height = img.height;
+
+    const image = new Image();
+    image.onload = function() {
+      textureInfo.width = image.width;
+      textureInfo.height = image.height;
 
       gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-    });
-    img.src = url;
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    };
+    image.crossOrigin = 'anonymous';
+    image.src = url;
 
     return textureInfo;
   }
@@ -2062,7 +2063,7 @@
     pendrawspritefromurl({url,x,y}) {
       var scaleMultiplier = canvas.width / screenWidth;
       if(!textures.hasOwnProperty(url)){
-        textures[url] = loadImageAndCreateTextureInfo(url,'true')
+        textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
       drawImage(textures[url].texture, stampWidth * scaleMultiplier, stampHeight * scaleMultiplier, (x) * scaleMultiplier, (y) * scaleMultiplier,stampRotation - 90);
       return "stamped"
@@ -2079,7 +2080,7 @@
     pendrawtexturedtrifromurl({url, trianglepoints, triangleuvs}) {
       var scalemultiplyer = canvas.width / screenWidth;
       if(!textures.hasOwnProperty(url)){
-        textures[url] = loadImageAndCreateTextureInfo(url,'true')
+        textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
       var pointsarray = trianglepoints.split(",");
       var pointslen = pointsarray.length;
@@ -2092,7 +2093,7 @@
     }
 
     precachetextures({uri,clamp}) {
-      coolcash(uri,clamp)
+      coolcash(uri, clamp === 'true')
     }
 
     setpenstrechandsquash({width,height}) {
@@ -2192,7 +2193,7 @@
   }
   async function coolcash(uri,clamp){
     if(!textures.hasOwnProperty(uri)){
-      textures[uri] = await loadImageAndCreateTextureInfo(uri,clamp)
+      textures[uri] = await loadImageAndCreateTextureInfo(uri, clamp)
     }
   }
 })(Scratch);
