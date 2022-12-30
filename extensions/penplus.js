@@ -168,10 +168,6 @@
     }
   }
 
-  function fetchFrom(URL) {
-    return fetch(URL).then(res => res.text()).catch(err => '');
-  }
-
   var canvaswidth = canvas.width;
   var canvasheight =  canvas.height;
 
@@ -432,17 +428,6 @@
     }
 
 
-    var getDataUri = function(url,callback) {
-      var tempimage = new Image();
-      tempimage.src = url;
-      tempimage.crossOrigin="anonymous"
-      console.log(url)
-      tempimage.onload = function() {
-        tempcanvas1.drawImage(this, 0, 0);
-        // ... or get as Data URI
-        callback(tempcanvas.toDataURL('image/png'));
-      }
-    }
     //end of cool drawing functions.
 
     class PenPlus {
@@ -618,17 +603,6 @@
                 }
               }
             },
-            /*{
-              opcode: "getimagefromurl",
-              blockType: Scratch.BlockType.REPORTER,
-              text: "Get data uri from url:[url]",
-              arguments: {
-                "url": {
-                  type:  Scratch.ArgumentType.STRING,
-                  defaultValue: "https://en.scratch-wiki.info/w/images/thumb/ScratchCat-Small.png/200px-ScratchCat-Small.png"
-                }
-              }
-            },*/
             {
               opcode: "pendrawtexturedtrifromurl",
               blockType: Scratch.BlockType.COMMAND,
@@ -848,13 +822,6 @@
         return c1 + "," + c2 + "," + c3 + "," + c4 + "," + c5 + "," + c6
       }
 
-      /*data:image/png;base64,' +
-      async getimagefromurl({url}) {
-        var result = await getdatafromimageuri(url)
-        return result
-      }*/
-      //scrapped till I figure this out fully!
-
       settripointcolour({pointmenu,color,T}) {
         if(pointmenu == "1") {
           tricolors[0] = hexToRgb(color).r / 255
@@ -920,13 +887,6 @@
         g: Math.floor(hex/256)%256,
         b: hex%256
       }
-    }
-
-    function getdatafromimageuri(url)
-    {
-      return getDataUri(url,function(b){
-        return b;
-      });
     }
 
     function getspritecostume(util,c)
