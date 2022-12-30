@@ -331,6 +331,7 @@
         texture: tex,
       };
       var img = new Image();
+      img.crossOrigin = 'anonymous';
       img.addEventListener('load', function() {
         textureInfo.width = img.width;
         textureInfo.height = img.height;
