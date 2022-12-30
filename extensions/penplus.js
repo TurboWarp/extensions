@@ -294,591 +294,590 @@
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     // Fill the texture with a 1x1 blue pixel.
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-      new Uint8Array([0, 0, 255, 255]));
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
 
-      // let's assume all images are not a power of 2
-      if (clamp == 'true') {
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      }
-      else{
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-      }
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-
-      var textureInfo = {
-        width: 1,   // we don't know the size until it loads
-        height: 1,
-        texture: tex,
-      };
-      var img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.addEventListener('load', function() {
-        textureInfo.width = img.width;
-        textureInfo.height = img.height;
-
-        gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-      });
-      img.src = url;
-
-      return textureInfo;
+    // let's assume all images are not a power of 2
+    if (clamp == 'true') {
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     }
-
-    function drawImage(tex, texWidth, texHeight, dstX, dstY ,stamprotation) {
-      gl.bindTexture(gl.TEXTURE_2D, tex);
-
-      // Tell WebGL to use our shader program pair
-      gl.useProgram(program);
-
-
-      gl.bindBuffer(gl.ARRAY_BUFFER, quadcolorBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadcolors), gl.STATIC_DRAW);
-      // Setup the attributes to pull data from our buffers
-      gl.bindBuffer(gl.ARRAY_BUFFER, quadpositionBuffer);
-      gl.enableVertexAttribArray(positionLocation);
-      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-      gl.bindBuffer(gl.ARRAY_BUFFER, quadtexcoordBuffer);
-      gl.enableVertexAttribArray(texcoordLocation);
-      gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
-      gl.bindBuffer(gl.ARRAY_BUFFER, quadcolorBuffer);
-      gl.enableVertexAttribArray(colorLocation); //
-      gl.vertexAttribPointer(colorLocation, 4, gl.FLOAT, false, 0, 0);
-
-      // this matrix will convert from pixels to clip space
-      var matrix = m4.orthographic(0, gl.canvas.width, gl.canvas.height, 0, -1, 1);
-
-      // this matrix will translate our quad to dstX, dstY
-      matrix = m4.translate(matrix, dstX, dstY, 0);
-
-      matrix = m4.zRotate(matrix,degtorad(stamprotation))
-
-      // this matrix will scale our 1 unit quad
-      // from 1 unit to texWidth, texHeight units
-      matrix = m4.scale(matrix, texWidth, texHeight, 1);
-
-      // Set the matrix.
-      gl.uniformMatrix4fv(matrixLocation, false, matrix);
-
-      // Tell the shader to get the texture from texture unit 0
-      gl.uniform1i(textureLocation, 0);
-
-      // draw the quad (2 triangles, 6 vertices)
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    else{
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
     }
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 
-    function drawTexturedTri(tex, trianglepoints, triangleuvs) {
-      gl.bindTexture(gl.TEXTURE_2D, tex);
+    var textureInfo = {
+      width: 1,   // we don't know the size until it loads
+      height: 1,
+      texture: tex,
+    };
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.addEventListener('load', function() {
+      textureInfo.width = img.width;
+      textureInfo.height = img.height;
 
+      gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    });
+    img.src = url;
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, triPosBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(trianglepoints), gl.STATIC_DRAW);
+    return textureInfo;
+  }
 
+  function drawImage(tex, texWidth, texHeight, dstX, dstY ,stamprotation) {
+    gl.bindTexture(gl.TEXTURE_2D, tex);
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, triUVBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleuvs), gl.STATIC_DRAW);
-
-      gl.bindBuffer(gl.ARRAY_BUFFER, tricolorBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(tricolors), gl.STATIC_DRAW);
-      // Tell WebGL to use our shader program pair
-      gl.useProgram(program);
-
-      // Setup the attributes to pull data from our buffers
-      gl.bindBuffer(gl.ARRAY_BUFFER, triPosBuffer);
-      gl.enableVertexAttribArray(positionLocation);
-      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-      gl.bindBuffer(gl.ARRAY_BUFFER, triUVBuffer);
-      gl.enableVertexAttribArray(texcoordLocation); //
-      gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
-      gl.bindBuffer(gl.ARRAY_BUFFER, tricolorBuffer);
-      gl.enableVertexAttribArray(colorLocation); //
-      gl.vertexAttribPointer(colorLocation, 4, gl.FLOAT, false, 0, 0);
-
-      // this matrix will convert from pixels to clip space
-      var matrix = m4.orthographic(0, gl.canvas.width, gl.canvas.height, 0, -1, 1);
-
-      // this matrix will translate our quad to dstX, dstY
-
-      // this matrix will scale our 1 unit quad
-      // from 1 unit to texWidth, texHeight units
-
-      // Set the matrix.
-      gl.uniformMatrix4fv(matrixLocation, false, matrix);
-
-      // Tell the shader to get the texture from texture unit 0
-      gl.uniform1i(textureLocation, 0);
-
-      // draw the quad (2 triangles, 6 vertices)
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-    }
+    // Tell WebGL to use our shader program pair
+    gl.useProgram(program);
 
 
-    //end of cool drawing functions.
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadcolorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadcolors), gl.STATIC_DRAW);
+    // Setup the attributes to pull data from our buffers
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadpositionBuffer);
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadtexcoordBuffer);
+    gl.enableVertexAttribArray(texcoordLocation);
+    gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadcolorBuffer);
+    gl.enableVertexAttribArray(colorLocation); //
+    gl.vertexAttribPointer(colorLocation, 4, gl.FLOAT, false, 0, 0);
 
-    class PenPlus {
-      getInfo () {
-        return {
-          id: "betterpen",
-          name: "Pen+",
-          color1: '#0e9a6b',
-          color2: '#0e9a6b',
-          color3: '#0e9a6b',
-          docsURI: 'https://www.youtube.com/playlist?list=PLdR2VVCBIN3CceUdgKWOUxFEEbLqWgCC9',
-          blockIconURI: "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzNy44NjkyMSIgaGVpZ2h0PSI0OC44NTI3MiIgdmlld0JveD0iMCwwLDM3Ljg2OTIxLDQ4Ljg1MjcyIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgY3g9IjIzNy41NDM0IiBjeT0iMTg0LjAwNTYiIHI9IjkuOTg1NDkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBpZD0iY29sb3ItMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2ZkNWU5Ii8+PC9yYWRpYWxHcmFkaWVudD48L2RlZnM+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIyMy4zMDE4MSwtMTYzLjc2MzA5KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMjUuMTYzNTYsMTkzLjIwMDIxYzAuNTYxNTMsLTEuMTA3NDYgMi4yMzQwNCwtMy4yODU4MyAyLjIzNDA0LC0zLjI4NTgzYzAsMCAwLjU5NDQyLDEuODIzOTEgMS4yMjQ0OSwyLjU5NTc1YzAuNjMyMTIsMC43NzQzNSAyLjA4ODc4LDEuNDc0ODQgMi4wODg3OCwxLjQ3NDg0YzAsMCAtMi4xOTQ0NiwxLjI4MTQxIC0zLjMyNDIxLDEuNzI2OTVjLTEuMTEwMzIsMC40Mzc4NyAtMy4zOTcsMC45MjM2NyAtMy4zOTcsMC45MjM2N2MwLDAgMC41OTk3NCwtMi4zMDI5OSAxLjE3MzksLTMuNDM1Mzh6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjI3LjYxMTMxLDE4OS4yOTIwM2wxNC45NTE1NCwtMTUuMjcxOTNjMCwwIDIuMjA2LDAuODk1MDUgMi45NTc3NiwxLjYzMDQ3YzAuODY4OCwwLjg0OTkxIDEuOTU0ODksMy4xNzUzOCAxLjk1NDg5LDMuMTc1MzhsLTE2LjEyNjMxLDE1LjE2NTE0YzAsMCAtMi4wMDYzOSwtMS4xMjc4NiAtMi42MDkyMSwtMS44ODU2OGMtMC42NDA4MiwtMC44MDU2IC0xLjEyODY4LC0yLjgxMzM3IC0xLjEyODY4LC0yLjgxMzM3eiIgZmlsbD0idXJsKCNjb2xvci0xKSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIzNy43NTY5OSwxNzIuOTUyMTNjMCwwIDAuOTg2MTksMS4wNTA2MiAyLjM5NjA4LC0wLjI3MDcyYzEuODAzLC0xLjY4OTc3IDQuMjMxMDUsLTUuOTAxNDcgNS40NDc0MywtNi41ODcwN2MxLjM3NDgsLTAuNzc0ODkgMy45MDQxNCwwLjIzNjM5IDMuOTA0MTQsMC4yMzYzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzYuMDc5ODEsMTcyLjMxMTM1YzAsLTAuNjkwMzYgMC41NTk2NCwtMS4yNSAxLjI1LC0xLjI1YzAuNjkwMzYsMCAxLjI1LDAuNTU5NjQgMS4yNSwxLjI1YzAsMC42OTAzNiAtMC41NTk2NCwxLjI1IC0xLjI1LDEuMjVjLTAuNjkwMzYsMCAtMS4yNSwtMC41NTk2NCAtMS4yNSwtMS4yNXoiIGZpbGw9IiM1NzVlNzUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTI1MC45OTk3OSwxNjQuNzI4NzdjMCwwIDEuOTEzOTYsLTEuMDUxOTMgNC4yMDAwOSwxLjMyMzU4YzIuNDI2ODUsMi41MjE3MyAwLjYwNTc2LDQuNDQzNDQgMC42MDU3Niw0LjQ0MzQ0bC04LjMzMDE0LDguMjIzMzVjMCwwIC0wLjc1MDQsLTIuMDcxMTIgLTEuNTYyNDksLTIuNzk0OTRjLTAuODI1MjQsLTAuNzM1NTUgLTMuMzUwMTYsLTEuNTgzNzMgLTMuMzUwMTYsLTEuNTgzNzN6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMzkuODkzMzcsMjAxLjcxMTE4KSBzY2FsZSgwLjg3MjM3LDAuODcyMzcpIiBmb250LXNpemU9IjQwIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjZThlYmY0IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iU2FucyBTZXJpZiIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHRzcGFuIHg9IjAiIGR5PSIwIj4rPC90c3Bhbj48L3RleHQ+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTYuNjk4MTkxNTI3MDE2NDYyOjE2LjIzNjkxNDk5OTk5OTk4Mi0tPg==",
+    // this matrix will convert from pixels to clip space
+    var matrix = m4.orthographic(0, gl.canvas.width, gl.canvas.height, 0, -1, 1);
 
-          blocks: [
-            {
-              opcode: "coordBlock",
-              blockType: Scratch.BlockType.REPORTER,
-              text: "[c1][c2][c3][c4][c5][c6]",
-              arguments: {
-                c1: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "0"
-                },
-                c2: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "0"
-                },
-                c3: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "0"
-                },
-                c4: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "0"
-                },
-                c5: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "0"
-                },
-                c6: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "0"
-                }
-              }
-            },
-            {
-              opcode: "precachetextures",
-              blockType: Scratch.BlockType.COMMAND,
-              text: "precache texture [uri] clamp the texture? [clamp]",
-              arguments: {
-                uri: {
-                  type:  Scratch.ArgumentType.STRING,
-                  defaultValue: "uri here"
-                },
-                clamp: {
-                  type:  Scratch.ArgumentType.STRING,
-                  menu: 'TFmenu'
-                }
-              }
-            },
-            {
-              opcode: "settargetsw",
-              blockType: Scratch.BlockType.COMMAND,
-              text: "Change the target screen size to width[width] and height[height]",
-              arguments: {
-                width: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "480"
-                },
-                height: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "360"
-                }
-              }
-            },
-            {
-              opcode: "pendrawspritefromurl",
-              blockType: Scratch.BlockType.COMMAND,
-              text: "Stamp the image from url:[url] at x:[x] y:[y]",
-              arguments: {
-                url: {
-                  type:  Scratch.ArgumentType.STRING,
-                  defaultValue: EXAMPLE_IMAGE
-                },
-                x: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "240"
-                },
-                y: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "180"
-                }
-              }
-            },
-            {
-              opcode: "rotateStamp",
-              blockType: Scratch.BlockType.COMMAND,
-              text: "Set stamp rotation to [ANGLE]",
-              arguments: {
-                ANGLE: {
-                  type:  Scratch.ArgumentType.ANGLE,
-                  defaultValue: "90"
-                }
-              }
-            },
-            {
-              opcode: "getstamprotation",
-              blockType: Scratch.BlockType.REPORTER,
-              text: "Stamp Rotation",
-              arguments: {
-                ANGLE: {
-                  type:  Scratch.ArgumentType.ANGLE,
-                  defaultValue: "90"
-                }
-              }
-            },
-            {
-              opcode: "setpenstrechandsquash",
-              blockType: Scratch.BlockType.COMMAND,
-              text: "Set stamp width to [width] and height to [height]",
-              arguments: {
-                width: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "64"
-                },
-                height: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "64"
-                }
-              }
-            },
-            {
-              opcode: "getstampwidth",
-              blockType: Scratch.BlockType.REPORTER,
-              text: "Stamp Width",
-              arguments: {
-              }
-            },
-            {
-              opcode: "getstampheight",
-              blockType: Scratch.BlockType.REPORTER,
-              text: "Stamp Height",
-              arguments: {
-              }
-            },
-            {
-              opcode: "setstampcolor",
-              blockType: Scratch.BlockType.COMMAND,
-              text: "Tint stamp by [color] and transparency[T](0-255)",
-              arguments: {
-                color: {
-                  type:  Scratch.ArgumentType.COLOR,
-                  defaultValue: '#ffffff'
-                },
-                T:{
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: '0'
-                }
-              }
-            },
-            {
-              opcode: "getcostumedata",
-              blockType: Scratch.BlockType.REPORTER,
-              text: "Get data uri of costume[costu]",
-              arguments: {
-                costu: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "1"
-                },
-                spr: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: "1"
-                }
-              }
-            },
-            {
-              opcode: "pendrawtexturedtrifromurl",
-              blockType: Scratch.BlockType.COMMAND,
-              text: "Draw a triangle with points at(seperated by commas)[trianglepoints] and the uvs of [triangleuvs] with the image from url:[url]",
-              arguments: {
-                url: {
-                  type:  Scratch.ArgumentType.STRING,
-                  defaultValue: EXAMPLE_IMAGE
-                },
-                trianglepoints: {
-                  type:  Scratch.ArgumentType.STRING,
-                  defaultValue: "0,0,10,10,0,10"
-                },
-                triangleuvs: {
-                  type:  Scratch.ArgumentType.STRING,
-                  defaultValue: "0,0,1,1,0,1"
-                }
-              }
-            },
-            {
-              opcode: "settripointcolour",
-              blockType: Scratch.BlockType.COMMAND,
-              text: "Tint point [pointmenu] by [color] and transparency[T](0-255)",
-              arguments: {
-                pointmenu: {
-                  type:  Scratch.ArgumentType.STRING,
-                  menu: 'pointmenu'
-                },
-                color: {
-                  type:  Scratch.ArgumentType.COLOR,
-                  defaultValue: '#ffffff'
-                },
-                T:{
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: '0'
-                }
-              }
-            },
-            {
-              opcode: "gettargetstagewidth",
-              blockType: Scratch.BlockType.REPORTER,
-              text: "Target Stage Width",
-              arguments: {
-              }
-            },
-            {
-              opcode: "gettargetstageheight",
-              blockType: Scratch.BlockType.REPORTER,
-              text: "Target Stage Height",
-              arguments: {
-              }
-            },
-            {
-              opcode: "converttocanvascoords",
-              blockType: Scratch.BlockType.REPORTER,
-              text: "Convert [scrcoord] to [coordTypes] units on the axis [coordmenu]",
-              arguments: {
-                coordmenu: {
-                  type:  Scratch.ArgumentType.STRING,
-                  menu: 'coordMenu'
-                },
-                scrcoord: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: '0'
-                },
-                coordTypes: {
-                  type:  Scratch.ArgumentType.STRING,
-                  menu: 'coordTypes'
-                }
-              }
-            },
-            {
-              opcode: "rgbtoSColor",
-              blockType: Scratch.BlockType.REPORTER,
-              text: "Convert R[R] G[G] B[B] to Hex",
-              arguments: {
-                R: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: '255'
-                },
-                G: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: '255'
-                },
-                B: {
-                  type:  Scratch.ArgumentType.NUMBER,
-                  defaultValue: '255'
-                }
+    // this matrix will translate our quad to dstX, dstY
+    matrix = m4.translate(matrix, dstX, dstY, 0);
+
+    matrix = m4.zRotate(matrix,degtorad(stamprotation))
+
+    // this matrix will scale our 1 unit quad
+    // from 1 unit to texWidth, texHeight units
+    matrix = m4.scale(matrix, texWidth, texHeight, 1);
+
+    // Set the matrix.
+    gl.uniformMatrix4fv(matrixLocation, false, matrix);
+
+    // Tell the shader to get the texture from texture unit 0
+    gl.uniform1i(textureLocation, 0);
+
+    // draw the quad (2 triangles, 6 vertices)
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+
+  function drawTexturedTri(tex, trianglepoints, triangleuvs) {
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, triPosBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(trianglepoints), gl.STATIC_DRAW);
+
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, triUVBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleuvs), gl.STATIC_DRAW);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, tricolorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(tricolors), gl.STATIC_DRAW);
+    // Tell WebGL to use our shader program pair
+    gl.useProgram(program);
+
+    // Setup the attributes to pull data from our buffers
+    gl.bindBuffer(gl.ARRAY_BUFFER, triPosBuffer);
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, triUVBuffer);
+    gl.enableVertexAttribArray(texcoordLocation); //
+    gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, tricolorBuffer);
+    gl.enableVertexAttribArray(colorLocation); //
+    gl.vertexAttribPointer(colorLocation, 4, gl.FLOAT, false, 0, 0);
+
+    // this matrix will convert from pixels to clip space
+    var matrix = m4.orthographic(0, gl.canvas.width, gl.canvas.height, 0, -1, 1);
+
+    // this matrix will translate our quad to dstX, dstY
+
+    // this matrix will scale our 1 unit quad
+    // from 1 unit to texWidth, texHeight units
+
+    // Set the matrix.
+    gl.uniformMatrix4fv(matrixLocation, false, matrix);
+
+    // Tell the shader to get the texture from texture unit 0
+    gl.uniform1i(textureLocation, 0);
+
+    // draw the quad (2 triangles, 6 vertices)
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+
+
+  //end of cool drawing functions.
+
+  class PenPlus {
+    getInfo () {
+      return {
+        id: "betterpen",
+        name: "Pen+",
+        color1: '#0e9a6b',
+        color2: '#0e9a6b',
+        color3: '#0e9a6b',
+        docsURI: 'https://www.youtube.com/playlist?list=PLdR2VVCBIN3CceUdgKWOUxFEEbLqWgCC9',
+        blockIconURI: "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzNy44NjkyMSIgaGVpZ2h0PSI0OC44NTI3MiIgdmlld0JveD0iMCwwLDM3Ljg2OTIxLDQ4Ljg1MjcyIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgY3g9IjIzNy41NDM0IiBjeT0iMTg0LjAwNTYiIHI9IjkuOTg1NDkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBpZD0iY29sb3ItMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2ZkNWU5Ii8+PC9yYWRpYWxHcmFkaWVudD48L2RlZnM+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIyMy4zMDE4MSwtMTYzLjc2MzA5KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMjUuMTYzNTYsMTkzLjIwMDIxYzAuNTYxNTMsLTEuMTA3NDYgMi4yMzQwNCwtMy4yODU4MyAyLjIzNDA0LC0zLjI4NTgzYzAsMCAwLjU5NDQyLDEuODIzOTEgMS4yMjQ0OSwyLjU5NTc1YzAuNjMyMTIsMC43NzQzNSAyLjA4ODc4LDEuNDc0ODQgMi4wODg3OCwxLjQ3NDg0YzAsMCAtMi4xOTQ0NiwxLjI4MTQxIC0zLjMyNDIxLDEuNzI2OTVjLTEuMTEwMzIsMC40Mzc4NyAtMy4zOTcsMC45MjM2NyAtMy4zOTcsMC45MjM2N2MwLDAgMC41OTk3NCwtMi4zMDI5OSAxLjE3MzksLTMuNDM1Mzh6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjI3LjYxMTMxLDE4OS4yOTIwM2wxNC45NTE1NCwtMTUuMjcxOTNjMCwwIDIuMjA2LDAuODk1MDUgMi45NTc3NiwxLjYzMDQ3YzAuODY4OCwwLjg0OTkxIDEuOTU0ODksMy4xNzUzOCAxLjk1NDg5LDMuMTc1MzhsLTE2LjEyNjMxLDE1LjE2NTE0YzAsMCAtMi4wMDYzOSwtMS4xMjc4NiAtMi42MDkyMSwtMS44ODU2OGMtMC42NDA4MiwtMC44MDU2IC0xLjEyODY4LC0yLjgxMzM3IC0xLjEyODY4LC0yLjgxMzM3eiIgZmlsbD0idXJsKCNjb2xvci0xKSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIzNy43NTY5OSwxNzIuOTUyMTNjMCwwIDAuOTg2MTksMS4wNTA2MiAyLjM5NjA4LC0wLjI3MDcyYzEuODAzLC0xLjY4OTc3IDQuMjMxMDUsLTUuOTAxNDcgNS40NDc0MywtNi41ODcwN2MxLjM3NDgsLTAuNzc0ODkgMy45MDQxNCwwLjIzNjM5IDMuOTA0MTQsMC4yMzYzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzYuMDc5ODEsMTcyLjMxMTM1YzAsLTAuNjkwMzYgMC41NTk2NCwtMS4yNSAxLjI1LC0xLjI1YzAuNjkwMzYsMCAxLjI1LDAuNTU5NjQgMS4yNSwxLjI1YzAsMC42OTAzNiAtMC41NTk2NCwxLjI1IC0xLjI1LDEuMjVjLTAuNjkwMzYsMCAtMS4yNSwtMC41NTk2NCAtMS4yNSwtMS4yNXoiIGZpbGw9IiM1NzVlNzUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTI1MC45OTk3OSwxNjQuNzI4NzdjMCwwIDEuOTEzOTYsLTEuMDUxOTMgNC4yMDAwOSwxLjMyMzU4YzIuNDI2ODUsMi41MjE3MyAwLjYwNTc2LDQuNDQzNDQgMC42MDU3Niw0LjQ0MzQ0bC04LjMzMDE0LDguMjIzMzVjMCwwIC0wLjc1MDQsLTIuMDcxMTIgLTEuNTYyNDksLTIuNzk0OTRjLTAuODI1MjQsLTAuNzM1NTUgLTMuMzUwMTYsLTEuNTgzNzMgLTMuMzUwMTYsLTEuNTgzNzN6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMzkuODkzMzcsMjAxLjcxMTE4KSBzY2FsZSgwLjg3MjM3LDAuODcyMzcpIiBmb250LXNpemU9IjQwIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjZThlYmY0IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iU2FucyBTZXJpZiIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHRzcGFuIHg9IjAiIGR5PSIwIj4rPC90c3Bhbj48L3RleHQ+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTYuNjk4MTkxNTI3MDE2NDYyOjE2LjIzNjkxNDk5OTk5OTk4Mi0tPg==",
+
+        blocks: [
+          {
+            opcode: "coordBlock",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[c1][c2][c3][c4][c5][c6]",
+            arguments: {
+              c1: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
+              },
+              c2: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
+              },
+              c3: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
+              },
+              c4: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
+              },
+              c5: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
+              },
+              c6: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
               }
             }
-          ],
-          menus: {
-            coordMenu: {
-              items: ['x', 'y']
-            },
-            coordTypes: {
-              items: ['Canvas', 'Scratch']
-            },
-            pointmenu: {
-              items: ['1', '2', '3']
-            },
-            TFmenu: {
-              items: ['true',"false"]
-            },
-            //Dynamic Menus
+          },
+          {
+            opcode: "precachetextures",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "precache texture [uri] clamp the texture? [clamp]",
+            arguments: {
+              uri: {
+                type:  Scratch.ArgumentType.STRING,
+                defaultValue: "uri here"
+              },
+              clamp: {
+                type:  Scratch.ArgumentType.STRING,
+                menu: 'TFmenu'
+              }
+            }
+          },
+          {
+            opcode: "settargetsw",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Change the target screen size to width[width] and height[height]",
+            arguments: {
+              width: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "480"
+              },
+              height: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "360"
+              }
+            }
+          },
+          {
+            opcode: "pendrawspritefromurl",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Stamp the image from url:[url] at x:[x] y:[y]",
+            arguments: {
+              url: {
+                type:  Scratch.ArgumentType.STRING,
+                defaultValue: EXAMPLE_IMAGE
+              },
+              x: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "240"
+              },
+              y: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "180"
+              }
+            }
+          },
+          {
+            opcode: "rotateStamp",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Set stamp rotation to [ANGLE]",
+            arguments: {
+              ANGLE: {
+                type:  Scratch.ArgumentType.ANGLE,
+                defaultValue: "90"
+              }
+            }
+          },
+          {
+            opcode: "getstamprotation",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Stamp Rotation",
+            arguments: {
+              ANGLE: {
+                type:  Scratch.ArgumentType.ANGLE,
+                defaultValue: "90"
+              }
+            }
+          },
+          {
+            opcode: "setpenstrechandsquash",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Set stamp width to [width] and height to [height]",
+            arguments: {
+              width: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "64"
+              },
+              height: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "64"
+              }
+            }
+          },
+          {
+            opcode: "getstampwidth",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Stamp Width",
+            arguments: {
+            }
+          },
+          {
+            opcode: "getstampheight",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Stamp Height",
+            arguments: {
+            }
+          },
+          {
+            opcode: "setstampcolor",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Tint stamp by [color] and transparency[T](0-255)",
+            arguments: {
+              color: {
+                type:  Scratch.ArgumentType.COLOR,
+                defaultValue: '#ffffff'
+              },
+              T:{
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              }
+            }
+          },
+          {
+            opcode: "getcostumedata",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Get data uri of costume[costu]",
+            arguments: {
+              costu: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "1"
+              },
+              spr: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: "1"
+              }
+            }
+          },
+          {
+            opcode: "pendrawtexturedtrifromurl",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Draw a triangle with points at(seperated by commas)[trianglepoints] and the uvs of [triangleuvs] with the image from url:[url]",
+            arguments: {
+              url: {
+                type:  Scratch.ArgumentType.STRING,
+                defaultValue: EXAMPLE_IMAGE
+              },
+              trianglepoints: {
+                type:  Scratch.ArgumentType.STRING,
+                defaultValue: "0,0,10,10,0,10"
+              },
+              triangleuvs: {
+                type:  Scratch.ArgumentType.STRING,
+                defaultValue: "0,0,1,1,0,1"
+              }
+            }
+          },
+          {
+            opcode: "settripointcolour",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Tint point [pointmenu] by [color] and transparency[T](0-255)",
+            arguments: {
+              pointmenu: {
+                type:  Scratch.ArgumentType.STRING,
+                menu: 'pointmenu'
+              },
+              color: {
+                type:  Scratch.ArgumentType.COLOR,
+                defaultValue: '#ffffff'
+              },
+              T:{
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              }
+            }
+          },
+          {
+            opcode: "gettargetstagewidth",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Target Stage Width",
+            arguments: {
+            }
+          },
+          {
+            opcode: "gettargetstageheight",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Target Stage Height",
+            arguments: {
+            }
+          },
+          {
+            opcode: "converttocanvascoords",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Convert [scrcoord] to [coordTypes] units on the axis [coordmenu]",
+            arguments: {
+              coordmenu: {
+                type:  Scratch.ArgumentType.STRING,
+                menu: 'coordMenu'
+              },
+              scrcoord: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
+              coordTypes: {
+                type:  Scratch.ArgumentType.STRING,
+                menu: 'coordTypes'
+              }
+            }
+          },
+          {
+            opcode: "rgbtoSColor",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Convert R[R] G[G] B[B] to Hex",
+            arguments: {
+              R: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: '255'
+              },
+              G: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: '255'
+              },
+              B: {
+                type:  Scratch.ArgumentType.NUMBER,
+                defaultValue: '255'
+              }
+            }
           }
-        };
-      }
+        ],
+        menus: {
+          coordMenu: {
+            items: ['x', 'y']
+          },
+          coordTypes: {
+            items: ['Canvas', 'Scratch']
+          },
+          pointmenu: {
+            items: ['1', '2', '3']
+          },
+          TFmenu: {
+            items: ['true',"false"]
+          },
+          //Dynamic Menus
+        }
+      };
+    }
 
-      rgbtoSColor({R,G,B}) {
-        return (((R * 256) + G) * 256) + B;
-      }
+    rgbtoSColor({R,G,B}) {
+      return (((R * 256) + G) * 256) + B;
+    }
 
-      getstampwidth({}) {
-        return stampWidth;
-      }
+    getstampwidth({}) {
+      return stampWidth;
+    }
 
-      getstampheight({}) {
-        return stampHeight;
-      }
+    getstampheight({}) {
+      return stampHeight;
+    }
 
-      converttocanvascoords({coordmenu,scrcoord,coordTypes}) {
-        if (coordTypes == 'Canvas')
+    converttocanvascoords({coordmenu,scrcoord,coordTypes}) {
+      if (coordTypes == 'Canvas')
+      {
+        if (coordmenu == "x")
         {
-          if (coordmenu == "x")
-          {
-            return scrcoord + (screenWidth/2)
-          }
-          else
-          {
-            return (scrcoord*-1) + (screenHeight/2)
-          }
+          return scrcoord + (screenWidth/2)
         }
         else
         {
-          if (coordmenu == "x")
-          {
-            return scrcoord - (screenWidth/2)
-          }
-          else
-          {
-            return (scrcoord*-1) - (screenHeight/2)
-          }
+          return (scrcoord*-1) + (screenHeight/2)
         }
       }
-
-      getstamprotation({}) {
-        return stampRotation
-      }
-
-      rotateStamp({ANGLE}) {
-        stampRotation = ANGLE
-        return "done"
-      }
-
-      pendrawspritefromurl({url,x,y}) {
-        var scaleMultiplier = canvas.width / screenWidth;
-        if(!textures.hasOwnProperty(url)){
-          textures[url] = loadImageAndCreateTextureInfo(url,'true')
+      else
+      {
+        if (coordmenu == "x")
+        {
+          return scrcoord - (screenWidth/2)
         }
-        drawImage(textures[url].texture, stampWidth * scaleMultiplier, stampHeight * scaleMultiplier, (x) * scaleMultiplier, (y) * scaleMultiplier,stampRotation - 90);
-        return "stamped"
-      }
-
-      gettargetstagewidth({}) {
-        return screenWidth
-      }
-
-      gettargetstageheight({}) {
-        return screenHeight
-      }
-
-      pendrawtexturedtrifromurl({url, trianglepoints, triangleuvs}) {
-        var scalemultiplyer = canvas.width / screenWidth;
-        if(!textures.hasOwnProperty(url)){
-          textures[url] = loadImageAndCreateTextureInfo(url,'true')
+        else
+        {
+          return (scrcoord*-1) - (screenHeight/2)
         }
-        var pointsarray = trianglepoints.split(",");
-        var pointslen = pointsarray.length;
-        for (var i = 0; i < pointslen; i++) {
-          pointsarray[i] = pointsarray[i] * scalemultiplyer;
-        }
-        var uvarray = triangleuvs.split(",");
-        drawTexturedTri(textures[url].texture, pointsarray, uvarray);
-        return "stamped"
-      }
-
-      precachetextures({uri,clamp}) {
-        coolcash(uri,clamp)
-      }
-
-      setpenstrechandsquash({width,height}) {
-        stampWidth = width;
-        stampHeight = height;
-        return "done"
-      }
-
-      settargetsw({width,height}) {
-        screenWidth = width;
-        screenHeight = height;
-        return "done"
-      }
-
-      getcostumedata({costu},util) {
-        let fileData = getspritecostume(util,costu)
-        return fileData;
-      }
-
-      coordBlock({c1,c2,c3,c4,c5,c6}) {
-        return c1 + "," + c2 + "," + c3 + "," + c4 + "," + c5 + "," + c6
-      }
-
-      settripointcolour({pointmenu,color,T}) {
-        if(pointmenu == "1") {
-          tricolors[0] = hexToRgb(color).r / 255
-          tricolors[1] = hexToRgb(color).g / 255
-          tricolors[2] = hexToRgb(color).b / 255
-          tricolors[3] = T / 255
-        }
-        else if (pointmenu == "2"){
-          tricolors[4] = hexToRgb(color).r / 255
-          tricolors[5] = hexToRgb(color).g / 255
-          tricolors[6] = hexToRgb(color).b / 255
-          tricolors[7] = T / 255
-        }
-        else{
-          tricolors[8] = hexToRgb(color).r / 255
-          tricolors[9] = hexToRgb(color).g / 255
-          tricolors[10] = hexToRgb(color).b / 255
-          tricolors[11] = T / 255
-        }
-
-        return "done"
-      }
-
-      setstampcolor({color,T}) {
-        let convertr = hexToRgb(color).r / 255
-        let convertg = hexToRgb(color).g / 255
-        let convertb = hexToRgb(color).b / 255
-        let converta = T / 255
-        quadcolors[0] = convertr
-        quadcolors[1] = convertg
-        quadcolors[2] = convertb
-        quadcolors[3] = converta
-        quadcolors[4] = convertr
-        quadcolors[5] = convertg
-        quadcolors[6] = convertb
-        quadcolors[7] = converta
-        quadcolors[8] = convertr
-        quadcolors[9] = convertg
-        quadcolors[10] = convertb
-        quadcolors[11] = converta
-
-        quadcolors[12] = convertr
-        quadcolors[13] = convertg
-        quadcolors[14] = convertb
-        quadcolors[15] = converta
-        quadcolors[16] = convertr
-        quadcolors[17] = convertg
-        quadcolors[18] = convertb
-        quadcolors[19] = converta
-        quadcolors[20] = convertr
-        quadcolors[21] = convertg
-        quadcolors[22] = convertb
-        quadcolors[23] = converta
-
-        return "done"
       }
     }
 
-    Scratch.extensions.register(new PenPlus());
-
-    function hexToRgb(hex) {
-      return {
-        r: Math.floor(hex/65536),
-        g: Math.floor(hex/256)%256,
-        b: hex%256
-      }
+    getstamprotation({}) {
+      return stampRotation
     }
 
-    function getspritecostume(util,c)
-    {
-      let ps_sp=util.target;
-      let ps_cs=ps_sp.sprite.costumes[c - 1].asset.encodeDataURI();
-      return ps_cs
+    rotateStamp({ANGLE}) {
+      stampRotation = ANGLE
+      return "done"
     }
-    async function coolcash(uri,clamp){
-      if(!textures.hasOwnProperty(uri)){
-        textures[uri] = await loadImageAndCreateTextureInfo(uri,clamp)
+
+    pendrawspritefromurl({url,x,y}) {
+      var scaleMultiplier = canvas.width / screenWidth;
+      if(!textures.hasOwnProperty(url)){
+        textures[url] = loadImageAndCreateTextureInfo(url,'true')
       }
+      drawImage(textures[url].texture, stampWidth * scaleMultiplier, stampHeight * scaleMultiplier, (x) * scaleMultiplier, (y) * scaleMultiplier,stampRotation - 90);
+      return "stamped"
     }
-  })(Scratch);
+
+    gettargetstagewidth({}) {
+      return screenWidth
+    }
+
+    gettargetstageheight({}) {
+      return screenHeight
+    }
+
+    pendrawtexturedtrifromurl({url, trianglepoints, triangleuvs}) {
+      var scalemultiplyer = canvas.width / screenWidth;
+      if(!textures.hasOwnProperty(url)){
+        textures[url] = loadImageAndCreateTextureInfo(url,'true')
+      }
+      var pointsarray = trianglepoints.split(",");
+      var pointslen = pointsarray.length;
+      for (var i = 0; i < pointslen; i++) {
+        pointsarray[i] = pointsarray[i] * scalemultiplyer;
+      }
+      var uvarray = triangleuvs.split(",");
+      drawTexturedTri(textures[url].texture, pointsarray, uvarray);
+      return "stamped"
+    }
+
+    precachetextures({uri,clamp}) {
+      coolcash(uri,clamp)
+    }
+
+    setpenstrechandsquash({width,height}) {
+      stampWidth = width;
+      stampHeight = height;
+      return "done"
+    }
+
+    settargetsw({width,height}) {
+      screenWidth = width;
+      screenHeight = height;
+      return "done"
+    }
+
+    getcostumedata({costu},util) {
+      let fileData = getspritecostume(util,costu)
+      return fileData;
+    }
+
+    coordBlock({c1,c2,c3,c4,c5,c6}) {
+      return c1 + "," + c2 + "," + c3 + "," + c4 + "," + c5 + "," + c6
+    }
+
+    settripointcolour({pointmenu,color,T}) {
+      if(pointmenu == "1") {
+        tricolors[0] = hexToRgb(color).r / 255
+        tricolors[1] = hexToRgb(color).g / 255
+        tricolors[2] = hexToRgb(color).b / 255
+        tricolors[3] = T / 255
+      }
+      else if (pointmenu == "2"){
+        tricolors[4] = hexToRgb(color).r / 255
+        tricolors[5] = hexToRgb(color).g / 255
+        tricolors[6] = hexToRgb(color).b / 255
+        tricolors[7] = T / 255
+      }
+      else{
+        tricolors[8] = hexToRgb(color).r / 255
+        tricolors[9] = hexToRgb(color).g / 255
+        tricolors[10] = hexToRgb(color).b / 255
+        tricolors[11] = T / 255
+      }
+
+      return "done"
+    }
+
+    setstampcolor({color,T}) {
+      let convertr = hexToRgb(color).r / 255
+      let convertg = hexToRgb(color).g / 255
+      let convertb = hexToRgb(color).b / 255
+      let converta = T / 255
+      quadcolors[0] = convertr
+      quadcolors[1] = convertg
+      quadcolors[2] = convertb
+      quadcolors[3] = converta
+      quadcolors[4] = convertr
+      quadcolors[5] = convertg
+      quadcolors[6] = convertb
+      quadcolors[7] = converta
+      quadcolors[8] = convertr
+      quadcolors[9] = convertg
+      quadcolors[10] = convertb
+      quadcolors[11] = converta
+
+      quadcolors[12] = convertr
+      quadcolors[13] = convertg
+      quadcolors[14] = convertb
+      quadcolors[15] = converta
+      quadcolors[16] = convertr
+      quadcolors[17] = convertg
+      quadcolors[18] = convertb
+      quadcolors[19] = converta
+      quadcolors[20] = convertr
+      quadcolors[21] = convertg
+      quadcolors[22] = convertb
+      quadcolors[23] = converta
+
+      return "done"
+    }
+  }
+
+  Scratch.extensions.register(new PenPlus());
+
+  function hexToRgb(hex) {
+    return {
+      r: Math.floor(hex/65536),
+      g: Math.floor(hex/256)%256,
+      b: hex%256
+    }
+  }
+
+  function getspritecostume(util,c)
+  {
+    let ps_sp=util.target;
+    let ps_cs=ps_sp.sprite.costumes[c - 1].asset.encodeDataURI();
+    return ps_cs
+  }
+  async function coolcash(uri,clamp){
+    if(!textures.hasOwnProperty(uri)){
+      textures[uri] = await loadImageAndCreateTextureInfo(uri,clamp)
+    }
+  }
+})(Scratch);
