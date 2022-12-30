@@ -1739,6 +1739,26 @@
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
+  function hexToRgb(hex) {
+    return {
+      r: Math.floor(hex/65536),
+      g: Math.floor(hex/256)%256,
+      b: hex%256
+    };
+  }
+
+  function getspritecostume(util, c) {
+    let target = util.target;
+    let dataURI = target.sprite.costumes[c - 1].asset.encodeDataURI();
+    return dataURI;
+  }
+
+  async function coolcash(uri, clamp){
+    if (!textures.hasOwnProperty(uri)) {
+      textures[uri] = await loadImageAndCreateTextureInfo(uri, clamp)
+    }
+  }
+
   class PenPlus {
     getInfo () {
       return {
@@ -1815,7 +1835,7 @@
           {
             opcode: "pendrawspritefromurl",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Stamp the image from url:[url] at x:[x] y:[y]",
+            text: "Stamp the image from url: [url] at x:[x] y:[y]",
             arguments: {
               url: {
                 type:  Scratch.ArgumentType.STRING,
@@ -2016,7 +2036,6 @@
           TFmenu: {
             items: ['true',"false"]
           },
-          //Dynamic Menus
         }
       };
     }
@@ -2034,25 +2053,16 @@
     }
 
     converttocanvascoords({coordmenu,scrcoord,coordTypes}) {
-      if (coordTypes == 'Canvas')
-      {
-        if (coordmenu == "x")
-        {
+      if (coordTypes == 'Canvas') {
+        if (coordmenu == "x") {
           return scrcoord + (screenWidth/2)
-        }
-        else
-        {
+        } else {
           return (scrcoord*-1) + (screenHeight/2)
         }
-      }
-      else
-      {
-        if (coordmenu == "x")
-        {
+      } else {
+        if (coordmenu == "x") {
           return scrcoord - (screenWidth/2)
-        }
-        else
-        {
+        } else {
           return (scrcoord*-1) - (screenHeight/2)
         }
       }
@@ -2064,7 +2074,6 @@
 
     rotateStamp({ANGLE}) {
       stampRotation = ANGLE
-      return "done"
     }
 
     pendrawspritefromurl({url,x,y}) {
@@ -2073,7 +2082,6 @@
         textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
       drawImage(textures[url].texture, stampWidth * scaleMultiplier, stampHeight * scaleMultiplier, (x) * scaleMultiplier, (y) * scaleMultiplier, stampRotation - 90);
-      return "stamped"
     }
 
     gettargetstagewidth({}) {
@@ -2096,7 +2104,6 @@
       }
       var uvarray = triangleuvs.split(",");
       drawTexturedTri(textures[url].texture, pointsarray, uvarray);
-      return "stamped"
     }
 
     precachetextures({uri,clamp}) {
@@ -2106,13 +2113,11 @@
     setpenstrechandsquash({width,height}) {
       stampWidth = width;
       stampHeight = height;
-      return "done"
     }
 
     settargetsw({width,height}) {
       screenWidth = width;
       screenHeight = height;
-      return "done"
     }
 
     getcostumedata({costu},util) {
@@ -2125,26 +2130,22 @@
     }
 
     settripointcolour({pointmenu,color,T}) {
-      if(pointmenu == "1") {
+      if (pointmenu == "1") {
         triangleColors[0] = hexToRgb(color).r / 255
         triangleColors[1] = hexToRgb(color).g / 255
         triangleColors[2] = hexToRgb(color).b / 255
         triangleColors[3] = T / 255
-      }
-      else if (pointmenu == "2"){
+      } else if (pointmenu == "2"){
         triangleColors[4] = hexToRgb(color).r / 255
         triangleColors[5] = hexToRgb(color).g / 255
         triangleColors[6] = hexToRgb(color).b / 255
         triangleColors[7] = T / 255
-      }
-      else{
+      } else{
         triangleColors[8] = hexToRgb(color).r / 255
         triangleColors[9] = hexToRgb(color).g / 255
         triangleColors[10] = hexToRgb(color).b / 255
         triangleColors[11] = T / 255
       }
-
-      return "done"
     }
 
     setstampcolor({color,T}) {
@@ -2177,30 +2178,8 @@
       quadColors[21] = convertg
       quadColors[22] = convertb
       quadColors[23] = converta
-
-      return "done"
     }
   }
 
   Scratch.extensions.register(new PenPlus());
-
-  function hexToRgb(hex) {
-    return {
-      r: Math.floor(hex/65536),
-      g: Math.floor(hex/256)%256,
-      b: hex%256
-    };
-  }
-
-  function getspritecostume(util, c) {
-    let target = util.target;
-    let dataURI = target.sprite.costumes[c - 1].asset.encodeDataURI();
-    return dataURI;
-  }
-
-  async function coolcash(uri, clamp){
-    if (!textures.hasOwnProperty(uri)) {
-      textures[uri] = await loadImageAndCreateTextureInfo(uri, clamp)
-    }
-  }
 })(Scratch);
