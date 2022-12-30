@@ -10,6 +10,11 @@
   const canvas = Scratch.renderer.canvas
   const gl = Scratch.renderer._gl
 
+  // TODO: see how these differ from Scratch, if at all
+  gl.enable(gl.BLEND);
+  gl.blendEquation(gl.FUNC_ADD);
+  gl.blendFunc(gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
   var stampWidth = 64;
   var stampHeight = 64;
 
@@ -1475,8 +1480,7 @@
 
   const textures = {};
 
-  //boring GLSL
-  var vertexshaderCode = [
+  var vertexShaderCode = [
     'attribute vec4 a_position;',
     'attribute vec2 a_texcoord;',
     'attribute vec4 aVertexColor;',
@@ -1493,7 +1497,7 @@
     '}'
   ].join('\n');
 
-  var fragmentshaderCode = [
+  var fragmentShaderCode = [
     'precision mediump float;',
     '',
     'varying vec2 v_texcoord;',
@@ -1506,7 +1510,7 @@
     '}',
   ].join('\n');
 
-  var quadpositions = [
+  var quadPositions = [
     0, 0,
     0, 1,
     1, 0,
@@ -1515,7 +1519,7 @@
     1, 1,
   ];
 
-  var quadcoords = [
+  var quadCoords = [
     0, 0,
     0, 1,
     1, 0,
@@ -1524,7 +1528,7 @@
     1, 1,
   ];
 
-  var quadcolors = [
+  var quadColors = [
     1.0,  1.0,  1.0,  1.0,
     1.0,  1.0,  1.0,  1.0,
     1.0,  1.0,  1.0,  1.0,
@@ -1533,81 +1537,89 @@
     1.0,  1.0,  1.0,  1.0
   ];
 
-  var tricolors = [
+  var triangleColors = [
     1.0,  1.0,  1.0,  1.0,
     1.0,  1.0,  1.0,  1.0,
     1.0,  1.0,  1.0,  1.0
   ];
-  var quadpositionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, quadpositionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadpositions), gl.STATIC_DRAW);
+  var quadPositionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, quadPositionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadPositions), gl.STATIC_DRAW);
 
-  var quadtexcoordBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, quadtexcoordBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadcoords), gl.STATIC_DRAW);
+  var quadTexCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, quadTexCoordBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadCoords), gl.STATIC_DRAW);
 
-  var quadcolorBuffer = gl.createBuffer();
+  var quadColorBuffer = gl.createBuffer();
 
   var triPosBuffer = gl.createBuffer();
   var triUVBuffer = gl.createBuffer();
   var tricolorBuffer = gl.createBuffer();
-  //end of stupid code
 
-  //compile glsl shaders
-  var vertexShader = gl.createShader(gl.VERTEX_SHADER)
-  var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
+  /**
+   * @param {string} code
+   * @param {number} type
+   * @returns {WebGLShader}
+   */
+  const compileShader = (code, type) => {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, code);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error(gl.getShaderInfoLog(shader));
+      throw new Error('Error compiling shader');
+    }
+    return shader;
+  };
 
-  gl.shaderSource(vertexShader, vertexshaderCode)
-  gl.shaderSource(fragmentShader, fragmentshaderCode)
+  /**
+   * @param {WebGLShader} vertexShader
+   * @param {WebGLShader} fragmentShader
+   * @returns {WebGLProgram}
+   */
+  const createProgram = (vertexShader, fragmentShader) => {
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error(gl.getProgramInfoLog(program));
+      throw new Error('Error linking program');
+    }
+    gl.validateProgram(program);
+    if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
+      console.error(gl.getProgramInfoLog(program));
+      throw new Error('Error validating program');
+    }
+    return program;
+  };
 
-  gl.enable( gl.BLEND );
-  gl.blendEquation( gl.FUNC_ADD );
-  gl.blendFunc( gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_SRC_ALPHA );
-
-  gl.compileShader(vertexShader);
-  if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
-    console.error('ERROR compiling vertex shader!', gl.getShaderInfoLog(vertexShader));
-  }
-  gl.compileShader(fragmentShader);
-  if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
-    console.error('ERROR compiling fragment shader!', gl.getShaderInfoLog(fragmentShader));
-  }
-  //done compiling them
-
-  //program data
-
-  var program = gl.createProgram();
-  gl.attachShader(program, vertexShader);
-  gl.attachShader(program, fragmentShader);
-  gl.linkProgram(program);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.error('ERROR linking program!', gl.getProgramInfoLog(program));
-  }
-  gl.validateProgram(program);
-  if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
-    console.error('ERROR validating program!', gl.getProgramInfoLog(program));
-  }
-
-  //end of program data
+  const vertexShader = compileShader(vertexShaderCode, gl.VERTEX_SHADER);
+  const fragmentShader = compileShader(fragmentShaderCode, gl.FRAGMENT_SHADER);
+  const program = createProgram(vertexShader, fragmentShader);
 
   // look up where the vertex data needs to go.
-  var positionLocation = gl.getAttribLocation(program, "a_position");
-  var texcoordLocation = gl.getAttribLocation(program, "a_texcoord");
-  var colorLocation = gl.getAttribLocation(program, "aVertexColor");
+  const positionLocation = gl.getAttribLocation(program, 'a_position');
+  const texcoordLocation = gl.getAttribLocation(program, 'a_texcoord');
+  const colorLocation = gl.getAttribLocation(program, 'aVertexColor');
 
   // lookup uniforms
-  var matrixLocation = gl.getUniformLocation(program, "u_matrix");
-  var textureLocation = gl.getUniformLocation(program, "u_texture");
+  const matrixLocation = gl.getUniformLocation(program, 'u_matrix');
+  const textureLocation = gl.getUniformLocation(program, 'u_texture');
 
   //cool drawing functions
 
-  function degtorad(deg) {
+  /**
+   * @param {number} deg
+   * @returns {number}
+   */
+  function degreesToRadians(deg) {
     return deg * 0.0174533;
   }
 
   function loadImageAndCreateTextureInfo(url, clamp) {
-    var tex = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, tex);
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
     // Fill the texture with a 1x1 blue pixel.
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
 
@@ -1625,7 +1637,7 @@
       // we don't know the size until it loads
       width: 1,
       height: 1,
-      texture: tex,
+      texture
     };
 
     const image = new Image();
@@ -1642,24 +1654,23 @@
     return textureInfo;
   }
 
-  function drawImage(tex, texWidth, texHeight, dstX, dstY ,stamprotation) {
+  function drawImage(tex, texWidth, texHeight, dstX, dstY, stampRotation) {
     gl.bindTexture(gl.TEXTURE_2D, tex);
 
     // Tell WebGL to use our shader program pair
     gl.useProgram(program);
 
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, quadcolorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadcolors), gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadColorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadColors), gl.STATIC_DRAW);
     // Setup the attributes to pull data from our buffers
-    gl.bindBuffer(gl.ARRAY_BUFFER, quadpositionBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadPositionBuffer);
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-    gl.bindBuffer(gl.ARRAY_BUFFER, quadtexcoordBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadTexCoordBuffer);
     gl.enableVertexAttribArray(texcoordLocation);
     gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
-    gl.bindBuffer(gl.ARRAY_BUFFER, quadcolorBuffer);
-    gl.enableVertexAttribArray(colorLocation); //
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadColorBuffer);
+    gl.enableVertexAttribArray(colorLocation);
     gl.vertexAttribPointer(colorLocation, 4, gl.FLOAT, false, 0, 0);
 
     // this matrix will convert from pixels to clip space
@@ -1668,7 +1679,7 @@
     // this matrix will translate our quad to dstX, dstY
     matrix = m4.translate(matrix, dstX, dstY, 0);
 
-    matrix = m4.zRotate(matrix,degtorad(stamprotation))
+    matrix = m4.zRotate(matrix,degreesToRadians(stampRotation))
 
     // this matrix will scale our 1 unit quad
     // from 1 unit to texWidth, texHeight units
@@ -1684,19 +1695,18 @@
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
 
-  function drawTexturedTri(tex, trianglepoints, triangleuvs) {
+  function drawTexturedTri(tex, trianglePoints, triangleUvs) {
     gl.bindTexture(gl.TEXTURE_2D, tex);
 
-
     gl.bindBuffer(gl.ARRAY_BUFFER, triPosBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(trianglepoints), gl.STATIC_DRAW);
-
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(trianglePoints), gl.STATIC_DRAW);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, triUVBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleuvs), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleUvs), gl.STATIC_DRAW);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, tricolorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(tricolors), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleColors), gl.STATIC_DRAW);
+
     // Tell WebGL to use our shader program pair
     gl.useProgram(program);
 
@@ -1728,9 +1738,6 @@
     // draw the quad (2 triangles, 6 vertices)
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
-
-
-  //end of cool drawing functions.
 
   class PenPlus {
     getInfo () {
@@ -2065,7 +2072,7 @@
       if(!textures.hasOwnProperty(url)){
         textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
-      drawImage(textures[url].texture, stampWidth * scaleMultiplier, stampHeight * scaleMultiplier, (x) * scaleMultiplier, (y) * scaleMultiplier,stampRotation - 90);
+      drawImage(textures[url].texture, stampWidth * scaleMultiplier, stampHeight * scaleMultiplier, (x) * scaleMultiplier, (y) * scaleMultiplier, stampRotation - 90);
       return "stamped"
     }
 
@@ -2119,22 +2126,22 @@
 
     settripointcolour({pointmenu,color,T}) {
       if(pointmenu == "1") {
-        tricolors[0] = hexToRgb(color).r / 255
-        tricolors[1] = hexToRgb(color).g / 255
-        tricolors[2] = hexToRgb(color).b / 255
-        tricolors[3] = T / 255
+        triangleColors[0] = hexToRgb(color).r / 255
+        triangleColors[1] = hexToRgb(color).g / 255
+        triangleColors[2] = hexToRgb(color).b / 255
+        triangleColors[3] = T / 255
       }
       else if (pointmenu == "2"){
-        tricolors[4] = hexToRgb(color).r / 255
-        tricolors[5] = hexToRgb(color).g / 255
-        tricolors[6] = hexToRgb(color).b / 255
-        tricolors[7] = T / 255
+        triangleColors[4] = hexToRgb(color).r / 255
+        triangleColors[5] = hexToRgb(color).g / 255
+        triangleColors[6] = hexToRgb(color).b / 255
+        triangleColors[7] = T / 255
       }
       else{
-        tricolors[8] = hexToRgb(color).r / 255
-        tricolors[9] = hexToRgb(color).g / 255
-        tricolors[10] = hexToRgb(color).b / 255
-        tricolors[11] = T / 255
+        triangleColors[8] = hexToRgb(color).r / 255
+        triangleColors[9] = hexToRgb(color).g / 255
+        triangleColors[10] = hexToRgb(color).b / 255
+        triangleColors[11] = T / 255
       }
 
       return "done"
@@ -2145,31 +2152,31 @@
       let convertg = hexToRgb(color).g / 255
       let convertb = hexToRgb(color).b / 255
       let converta = T / 255
-      quadcolors[0] = convertr
-      quadcolors[1] = convertg
-      quadcolors[2] = convertb
-      quadcolors[3] = converta
-      quadcolors[4] = convertr
-      quadcolors[5] = convertg
-      quadcolors[6] = convertb
-      quadcolors[7] = converta
-      quadcolors[8] = convertr
-      quadcolors[9] = convertg
-      quadcolors[10] = convertb
-      quadcolors[11] = converta
+      quadColors[0] = convertr
+      quadColors[1] = convertg
+      quadColors[2] = convertb
+      quadColors[3] = converta
+      quadColors[4] = convertr
+      quadColors[5] = convertg
+      quadColors[6] = convertb
+      quadColors[7] = converta
+      quadColors[8] = convertr
+      quadColors[9] = convertg
+      quadColors[10] = convertb
+      quadColors[11] = converta
 
-      quadcolors[12] = convertr
-      quadcolors[13] = convertg
-      quadcolors[14] = convertb
-      quadcolors[15] = converta
-      quadcolors[16] = convertr
-      quadcolors[17] = convertg
-      quadcolors[18] = convertb
-      quadcolors[19] = converta
-      quadcolors[20] = convertr
-      quadcolors[21] = convertg
-      quadcolors[22] = convertb
-      quadcolors[23] = converta
+      quadColors[12] = convertr
+      quadColors[13] = convertg
+      quadColors[14] = convertb
+      quadColors[15] = converta
+      quadColors[16] = convertr
+      quadColors[17] = convertg
+      quadColors[18] = convertb
+      quadColors[19] = converta
+      quadColors[20] = convertr
+      quadColors[21] = convertg
+      quadColors[22] = convertb
+      quadColors[23] = converta
 
       return "done"
     }
@@ -2182,17 +2189,17 @@
       r: Math.floor(hex/65536),
       g: Math.floor(hex/256)%256,
       b: hex%256
-    }
+    };
   }
 
-  function getspritecostume(util,c)
-  {
-    let ps_sp=util.target;
-    let ps_cs=ps_sp.sprite.costumes[c - 1].asset.encodeDataURI();
-    return ps_cs
+  function getspritecostume(util, c) {
+    let target = util.target;
+    let dataURI = target.sprite.costumes[c - 1].asset.encodeDataURI();
+    return dataURI;
   }
-  async function coolcash(uri,clamp){
-    if(!textures.hasOwnProperty(uri)){
+
+  async function coolcash(uri, clamp){
+    if (!textures.hasOwnProperty(uri)) {
       textures[uri] = await loadImageAndCreateTextureInfo(uri, clamp)
     }
   }
