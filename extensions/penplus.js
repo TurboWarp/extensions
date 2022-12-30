@@ -4,6 +4,8 @@
     throw new Error('Pen+ must be run unsandboxed');
   }
 
+  const EXAMPLE_IMAGE = 'https://extensions.turbowarp.org/dango.png';
+
   var canvas = Scratch.renderer.canvas
   var gl = Scratch.renderer._gl
 
@@ -510,7 +512,7 @@
               arguments: {
                 url: {
                   type:  Scratch.ArgumentType.STRING,
-                  defaultValue: "https://en.scratch-wiki.info/w/images/thumb/ScratchCat-Small.png/200px-ScratchCat-Small.png"
+                  defaultValue: EXAMPLE_IMAGE
                 },
                 x: {
                   type:  Scratch.ArgumentType.NUMBER,
@@ -610,7 +612,7 @@
               arguments: {
                 url: {
                   type:  Scratch.ArgumentType.STRING,
-                  defaultValue: "https://en.scratch-wiki.info/w/images/thumb/ScratchCat-Small.png/200px-ScratchCat-Small.png"
+                  defaultValue: EXAMPLE_IMAGE
                 },
                 trianglepoints: {
                   type:  Scratch.ArgumentType.STRING,
