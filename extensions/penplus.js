@@ -765,7 +765,6 @@
         var scalemultiplyer = canvaswidth/screenwidth
         if(!textures.hasOwnProperty(url)){
           textures[url] = loadImageAndCreateTextureInfo(url,'true')
-          console.log(textures[url])
         }
         drawImage(textures[url].texture, Penwidth * scalemultiplyer, PenHeight * scalemultiplyer, (x) * scalemultiplyer, (y) * scalemultiplyer,stamprotation - 90);
         return "stamped"
@@ -785,7 +784,6 @@
         var scalemultiplyer = canvaswidth/screenwidth
         if(!textures.hasOwnProperty(url)){
           textures[url] = loadImageAndCreateTextureInfo(url,'true')
-          console.log(textures[url])
         }
         var pointsarray = trianglepoints.split(",");
         var pointslen = pointsarray.length;
@@ -804,8 +802,6 @@
       setpenstrechandsquash({width,height}) {
         Penwidth = width;
         PenHeight = height;
-        console.log(Penwidth);
-        console.log(PenHeight);
         return "done"
       }
       settargetsw({width,height}) {
@@ -815,7 +811,6 @@
       }
       getcostumedata({costu},util) {
         let fileData = getspritecostume(util,costu)
-        console.log(fileData)
         return fileData;
       }
 
@@ -848,7 +843,6 @@
       }
 
       setstampcolor({color,T}) {
-        console.log(hexToRgb(color))
         let convertr = hexToRgb(color).r / 255
         let convertg = hexToRgb(color).g / 255
         let convertb = hexToRgb(color).b / 255
@@ -895,13 +889,11 @@
     {
       let ps_sp=util.target;
       let ps_cs=ps_sp.sprite.costumes[c - 1].asset.encodeDataURI();
-      console.log(ps_cs)
       return ps_cs
     }
     async function coolcash(uri,clamp){
       if(!textures.hasOwnProperty(uri)){
         textures[uri] = await loadImageAndCreateTextureInfo(uri,clamp)
-        console.log(textures[uri])
       }
     }
   })(Scratch);
