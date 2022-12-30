@@ -301,7 +301,6 @@
 
     getCur() {
       if (customCursorImageName !== null) {
-        // TODO: should we try to "decorate" this a bit more?
         return customCursorImageName;
       }
       return nativeCursor;
