@@ -75,7 +75,7 @@ declare namespace Scratch {
 
   interface ExtensionMenu {
     acceptReporters?: boolean;
-    items: Array<{
+    items: Array<string | {
       text: string;
       value: string;
     }>;
