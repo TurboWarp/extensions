@@ -30,6 +30,9 @@ app.use((req, res, next) => {
   // This CSP does *not* apply to the extensions, just the website.
   res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' data: blob:");
 
+  // Allows loading cross-origin example images and matches GitHub pages.
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
   next();
 });
 
