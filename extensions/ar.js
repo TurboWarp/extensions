@@ -53,7 +53,7 @@
 	} else {
 		gl.makeXRCompatible().catch(
 			(error) => {
-				arFail = "gl.makeXRCompatible rejected with: "+error;
+				console.error(arFail = "gl.makeXRCompatible rejected with: "+error);
 			}
 		);
 		navigator.xr.isSessionSupported("immersive-ar").then(
@@ -167,7 +167,7 @@
 			// and waiting until shouldTriggerAgain gets set
 			// to true, and only then use xr animation frame
 			// once and resume waiting. shouldTriggerAgain is
-			// set to true on the interval located below.
+			// set to true by the interval located below.
 			if(fps === 0 || shouldTriggerAgain) {
 				shouldTriggerAgain = false;
 				id = xrSession.requestAnimationFrame(handle);
@@ -361,7 +361,7 @@
 	//   which are based on getBoundingClientRect. Based of that it
 	//   calculates this._scratchX and this._scratchY.
 	//   Even when canvas is scaled, those are calculated correctly and
-    //   as a result, blocks (mouse x) and (mouse y) report correct values.
+	//   as a result, blocks (mouse x) and (mouse y) report correct values.
 	//
 	//   Later, postData calls _pickTarget, while only passing data.x and data.y
 	//   without data.canvasWidth and data.canvasHeight. That method calls
@@ -618,7 +618,7 @@
 					arFail = "shown";
 				}
 			} else {
-				if(!xrSession && !arFail) {
+				if(!xrSession) {
 					// Entering and exiting editor recreates this element
 					stageWrapper = document.querySelector("[class*='stage-wrapper_stage-canvas-wrapper']"); 
 					stageWrapperParent = stageWrapper.parentElement;
@@ -684,7 +684,7 @@
 			const i = +args.I || 0;
 			const j = +args.J || 0;
 			const k = +args.K || 0;
-			const len = r*r + i*i + j*j + k*k;
+			const len = Math.sqrt(r*r + i*i + j*j + k*k);
 			if(!isFinite(len)) return;
 			if(len === 0) len = r = 1;
 			const offsetTransform = new XRRigidTransform({x:0, y:0, z:0}, {x:i/len, y:j/len, z:k/len, w:r/len});
