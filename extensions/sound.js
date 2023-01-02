@@ -98,13 +98,21 @@
 
   /**
    * @param {string} url
+   * @param {VM.Target} target
    * @returns {Promise<void>}
    */
-  const playWithAudioElement = (url) => new Promise((resolve, reject) => {
+  const playWithAudioElement = (url, target) => new Promise((resolve, reject) => {
     // Unfortunately, we can't play all sounds with the audio engine.
     // For these sounds, fall back to a primitive <audio>-based solution that will work for all
     // sounds, even those without CORS.
     const mediaElement = new Audio(url);
+
+    // Make a minimal effort to simulate Scratch's sound effects.
+    // We can get pretty close for volumes <100%.
+    // playbackRate does not have enough range for simulating pitch.
+    // There is no way for us to pan left or right.
+    mediaElement.volume = target.volume / 100;
+
     mediaElement.onended = () => {
       resolve();
     };
@@ -126,7 +134,7 @@
     try {
       const success = await playWithAudioEngine(url, target);
       if (!success) {
-      return await playWithAudioElement(url);
+        return await playWithAudioElement(url, target);
       }
     } catch (e) {
       console.warn(`All attempts to play ${url} failed`, e);
