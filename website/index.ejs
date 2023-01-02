@@ -77,14 +77,22 @@
       }
 
       .extensions {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        display: -ms-grid;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
         margin: 16px -4px;
       }
+      @media (max-width: 944px) {
+        .extensions {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 650px) {
+        .extensions {
+          grid-template-columns: 1fr;
+        }
+      }
       .extension {
-        flex-grow: 1;
-        width: 300px;
         border: 2px solid #ccc;
         border-radius: 8px;
         margin: 4px;
