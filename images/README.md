@@ -28,3 +28,9 @@ The image is based on TurboWarp's advanced settings menu. Idea from https://gith
 
 ## clouddata-ping.svg
 Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367719189
+
+## fetch.svg
+Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367714480. The font is Noto Sans.
+
+## penplus.svg
+Created by @David-Orangemoon  in https://github.com/TurboWarp/extensions/pull/103. The font is Noto Sans.
