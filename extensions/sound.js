@@ -14,7 +14,7 @@
 						arguments: {
 							path: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: "https://extensions.turbowarp.org/sound.mp3"
+								defaultValue: "https://extensions.turbowarp.org/meow.mp3"
 							}
 						}
 					},
@@ -25,7 +25,7 @@
 						arguments: {
 							path: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: "https://extensions.turbowarp.org/sound.mp3"
+								defaultValue: "https://extensions.turbowarp.org/meow.mp3"
 							}
 						}
 					}
