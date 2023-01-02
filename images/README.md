@@ -18,10 +18,25 @@ The gamepad image is from https://pixabay.com/vectors/controller-gamepad-video-g
 The font used is DejaVu Sans Mono.
 
 ## cloudlink.svg
-The cloud icon is from the Cloudlink extension itself. The font used is Noto Sans.
+The cloud icon is from the Cloudlink extension itself and is licensed under [MIT](https://github.com/MikeDev101/cloudlink/blob/f0c08f1e926a4179018649c6faa692c65d3b1c70/LICENSE). The font used is Noto Sans.
 
 ## files.png
 Based on https://github.com/TurboWarp/extensions/issues/90#issuecomment-1365035479
 
 ## runtime-options.svg
-The image is based on TurboWarp's advanced settings menu. Idea from https://github.com/TurboWarp/extensions/issues/90#issuecomment-1366314834. Font is Arial. The check icon is from https://akaricons.com/ licensed under [MIT](https://raw.githubusercontent.com/artcoholic/akar-icons/master/LICENSE).
+The image is based on TurboWarp's advanced settings menu. Idea from https://github.com/TurboWarp/extensions/issues/90#issuecomment-1366314834. Font is Noto Sans. The check icon is from https://akaricons.com/ licensed under [MIT](https://raw.githubusercontent.com/artcoholic/akar-icons/master/LICENSE).
+
+## clouddata-ping.svg
+Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367719189
+
+## fetch.svg
+Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367714480. The font is Noto Sans.
+
+## penplus.svg
+Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/pull/103. The font is Noto Sans.
+
+## pointerlock.svg
+Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367723798. The font is Noto Sans.
+
+## utilities.svg
+Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367709835. The font is Deja Vu Sans.
