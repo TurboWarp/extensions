@@ -35,15 +35,20 @@
 		}
 
 		play({path}) {
-			let sound = new Audio(path);
+			const sound = new Audio(path);
 			sound.play();
 		}
 
 		playUntilDone({path}) {
 			return new Promise(resolve => {
-				let sound = new Audio(path);
+				const sound = new Audio(path);
 				sound.play();
-				sound.onended = resolve;
+				sound.onended = () => {
+					resolve();
+				};
+				sound.onerror = () => {
+					resolve();
+				};
 			});
 		}
 	}
