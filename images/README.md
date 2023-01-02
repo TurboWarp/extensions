@@ -33,4 +33,4 @@ Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/9
 Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367714480. The font is Noto Sans.
 
 ## penplus.svg
-Created by @David-Orangemoon  in https://github.com/TurboWarp/extensions/pull/103. The font is Noto Sans.
+Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/pull/103. The font is Noto Sans.
