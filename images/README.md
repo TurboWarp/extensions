@@ -34,3 +34,6 @@ Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/9
 
 ## penplus.svg
 Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/pull/103. The font is Noto Sans.
+
+## pointerlock.svg
+Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367723798. The font is Noto Sans.
