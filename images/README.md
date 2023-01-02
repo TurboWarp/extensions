@@ -25,3 +25,6 @@ Based on https://github.com/TurboWarp/extensions/issues/90#issuecomment-13650354
 
 ## runtime-options.svg
 The image is based on TurboWarp's advanced settings menu. Idea from https://github.com/TurboWarp/extensions/issues/90#issuecomment-1366314834. Font is Arial. The check icon is from https://akaricons.com/ licensed under [MIT](https://raw.githubusercontent.com/artcoholic/akar-icons/master/LICENSE).
+
+## clouddata-ping.svg
+Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367719189
