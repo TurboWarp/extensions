@@ -42,7 +42,7 @@ The extension's source code goes in the `extensions` folder. If you name the fil
 
 To add an extension to the website, see `website/index.ejs`. Copy one of the existing sections.
 
-To add an image, add it to the `images` folder with the same filename (but different extension) as the extension's source code and update `website/index.ejs`. See existing extensions for examples. Images will be displayed in 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. If the image includes assets not made by you, make sure to add attribution to `images/README.md`.
+To add an image, add it to the `images` folder with the same filename (but different extension) as the extension's source code. If you set up `website/index.ejs` with the template correctly, the image will automatically update. See existing extensions for examples. Images will be displayed in 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. If the image includes assets not made by you, make sure to add attribution to `images/README.md`.
 
 ## Extension Guidelines
 
