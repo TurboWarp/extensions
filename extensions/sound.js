@@ -1,41 +1,44 @@
 (Scratch => {
-	"use strict";
+	'use strict';
 
 	class Sound {
 		getInfo() {
 			return {
-				id: "notSound", // Intentional
-				name: "Sound",
+				// 'sound' would conflict with normal Scratch
+				id: 'notSound',
+				name: 'Sound',
 				blocks: [
 					{
 						opcode: 'play',
 						blockType: Scratch.BlockType.COMMAND,
-						text: "Play sound from url:[path]",
+						text: 'Play sound from url:[path]',
 						arguments: {
 							path: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: "https://extensions.turbowarp.org/meow.mp3"
+								defaultValue: 'https://extensions.turbowarp.org/meow.mp3'
 							}
 						}
 					},
 					{
 						opcode: 'playUntilDone',
 						blockType: Scratch.BlockType.COMMAND,
-						text: "Play sound from url:[path] until done",
+						text: 'Play sound from url:[path] until done',
 						arguments: {
 							path: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: "https://extensions.turbowarp.org/meow.mp3"
+								defaultValue: 'https://extensions.turbowarp.org/meow.mp3'
 							}
 						}
 					}
 				]
 			};
 		}
+
 		play({path}) {
 			let sound = new Audio(path);
 			sound.play();
 		}
+
 		playUntilDone({path}) {
 			return new Promise(resolve => {
 				let sound = new Audio(path);
@@ -44,5 +47,6 @@
 			});
 		}
 	}
+
 	Scratch.extensions.register(new Sound());
 })(Scratch);
