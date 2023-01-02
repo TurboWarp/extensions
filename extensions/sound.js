@@ -27,21 +27,64 @@
   });
 
   /**
-   * @param {string} url
-   * @param {VM.Target} target
-   * @returns {Promise<void>}
+   * @type {Map<string, {sound: AudioEngine.SoundPlayer | null, error: unknown}>}
    */
-  const playWithAudioEngine = async (url, target) => {
-    const soundBank = target.sprite.soundBank;
+  const soundPlayerCache = new Map();
 
+  /**
+   * @param {string} url
+   * @returns {Promise<AudioEngine.SoundPlayer>}
+   */
+  const decodeSoundPlayer = async (url) => {
+    const cached = soundPlayerCache.get(url);
+    if (cached) {
+      if (cached.sound) {
+        return cached.sound;
+      }
+      throw cached.error;
+    }
+
+    try {
     const arrayBuffer = await fetchAsArrayBufferWithTimeout(url);
     const soundPlayer = await audioEngine.decodeSoundPlayer({
       data: {
         buffer: arrayBuffer
       }
     });
-    soundBank.addSoundPlayer(soundPlayer);
+      soundPlayerCache.set(url, {
+        sound: soundPlayer,
+        error: null
+      });
+      return soundPlayer;
+    } catch (e) {
+      soundPlayerCache.set(url, {
+        sound: null,
+        error: e
+      });
+      throw e;
+    }
+  };
 
+  /**
+   * @param {string} url
+   * @param {VM.Target} target
+   * @returns {Promise<boolean>} true if the sound could be played, false if the sound could not be decoded
+   */
+  const playWithAudioEngine = async (url, target) => {
+    const soundBank = target.sprite.soundBank;
+
+    /** @type {AudioEngine.SoundPlayer} */
+    let soundPlayer;
+    try {
+      const originalSoundPlayer = await decodeSoundPlayer(url);
+      // @ts-expect-error
+      soundPlayer = originalSoundPlayer.take();
+    } catch (e) {
+      console.warn('Could not fetch audio; falling back to primitive approach', e);
+      return false;
+    }
+
+    soundBank.addSoundPlayer(soundPlayer);
     await soundBank.playSound(target, soundPlayer.id);
 
     delete soundBank.soundPlayers[soundPlayer.id];
@@ -49,6 +92,8 @@
     soundBank.playerTargets.delete(soundPlayer.id);
     // @ts-expect-error
     soundBank.soundEffects.delete(soundPlayer.id);
+
+    return true;
   };
 
   /**
@@ -73,29 +118,18 @@
   });
 
   /**
-   * A list of URLs that have previously failed to play using the audio engine.
-   * @type {string[]}
-   */
-  const failedToPlayWithAudioEngine = [];
-
-  /**
    * @param {string} url
    * @param {VM.Target} target
    * @returns {Promise<void>}
    */
   const playSound = async (url, target) => {
     try {
-      if (!failedToPlayWithAudioEngine.includes(url)) {
-        try {
-          return await playWithAudioEngine(url, target);
-        } catch (e) {
-          console.warn(`Attempt to play ${url} with audio engine failed -- falling back to more primitive approach`);
-          failedToPlayWithAudioEngine.push(url);
-        }
-      }
+      const success = await playWithAudioEngine(url, target);
+      if (!success) {
       return await playWithAudioElement(url);
+      }
     } catch (e) {
-      console.warn(`Attempt to play ${url} failed`, e);
+      console.warn(`All attempts to play ${url} failed`, e);
     }
   };
 
