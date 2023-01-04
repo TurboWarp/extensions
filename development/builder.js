@@ -95,9 +95,14 @@ class Builder {
   build () {
     const build = new Build();
 
+    const images = {};
     for (const [imageFilename, path] of iterateDirectory(this.imagesRoot)) {
       if (!IMAGE_EXTENSIONS.some(extension => imageFilename.endsWith(`.${extension}`))) {
         continue;
+      }
+      const extensionId = imageFilename.split('.')[0];
+      if (extensionId !== 'unknown') {
+        images[extensionId] = imageFilename;
       }
       build.files[`/images/${imageFilename}`] = new DiskFile(path);
     }
@@ -120,7 +125,8 @@ class Builder {
     const ejsData = {
       isProduction: this.isProduction,
       host: this.isProduction ? 'https://extensions.turbowarp.org/' : 'http://localhost:8000/',
-      mostRecentExtensions: mostRecentExtensions
+      mostRecentExtensions: mostRecentExtensions,
+      extensionImages: images
     };
 
     for (const [websiteFilename, path] of iterateDirectory(this.websiteRoot)) {
