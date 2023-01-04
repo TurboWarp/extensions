@@ -45,12 +45,12 @@
     }
 
     try {
-    const arrayBuffer = await fetchAsArrayBufferWithTimeout(url);
-    const soundPlayer = await audioEngine.decodeSoundPlayer({
-      data: {
-        buffer: arrayBuffer
-      }
-    });
+      const arrayBuffer = await fetchAsArrayBufferWithTimeout(url);
+      const soundPlayer = await audioEngine.decodeSoundPlayer({
+        data: {
+          buffer: arrayBuffer
+        }
+      });
       soundPlayerCache.set(url, {
         sound: soundPlayer,
         error: null
