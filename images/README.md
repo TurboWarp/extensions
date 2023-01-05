@@ -40,3 +40,6 @@ Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/9
 
 ## utilities.svg
 Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367709835. The font is Deja Vu Sans.
+
+## sound.svg
+Created by @softedco in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1369138404.
