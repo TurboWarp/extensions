@@ -23,7 +23,7 @@
 				blocks: [
 					{
 						opcode: 'twitterSearch',
-						text: '获取关于 [TOPIC] 的第 [INDEX] 项推文',
+						text: 'get the [INDEX] most recent tweet about [TOPIC]',
 						blockType: Scratch.BlockType.REPORTER,
 						arguments: {
 							TOPIC: {
