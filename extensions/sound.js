@@ -151,7 +151,7 @@
           {
             opcode: 'play',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Play sound from url:[path]',
+            text: 'start sound from url: [path]',
             arguments: {
               path: {
                 type: Scratch.ArgumentType.STRING,
@@ -162,7 +162,7 @@
           {
             opcode: 'playUntilDone',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Play sound from url:[path] until done',
+            text: 'play sound from url: [path] until done',
             arguments: {
               path: {
                 type: Scratch.ArgumentType.STRING,
