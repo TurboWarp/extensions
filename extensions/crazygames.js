@@ -1,5 +1,7 @@
 (Scratch => {
 	"use strict";
+	
+	if (!Scratch.extensions.unsandboxed) throw new Error("CrazyGames SDK Extension must be run unsandboxed.");
 
 	/* CrazyGames SDK from https://sdk.crazygames.com/crazygames-sdk-v1.js
 	 * Docs at https://docs.crazygames.com/sdk/html5
