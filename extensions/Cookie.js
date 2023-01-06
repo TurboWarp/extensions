@@ -57,13 +57,6 @@
                             }                  
                         },
                         {
-                            "opcode": "readallcookies",
-                            "blockType": "reporter",
-                            "text": "read all cookies",
-                            "arguments": {
-                            }
-                        },
-                        {
                             "opcode": "readcookieofname",
                             "blockType": "reporter",
                             "text": "read cookie by the name of [c]",
@@ -105,19 +98,15 @@
         }
         
         makecookie({b,v,e}) {
-            return document.cookie = b + "=" + v + "; expires=" + e;
+            return document.cookie = "CookieExtensionScratch"+b + "=" + v + "; expires=" + e;
         }
     
         makecookiepath({b,v,e,p}) {
-            return document.cookie = b + "=" + v + "; expires=" + e + "; path=/" + p;
-        }
-    
-        readallcookies({}) {
-            return document.cookie;
+            return document.cookie = "CookieExtensionScratch"+b + "=" + v + "; expires=" + e + "; path=/" + p;
         }
     
         readcookieofname({c}) {
-            let name = c + "=";
+            let name = "CookieExtensionScratch"+c + "=";
             let decodedCookie = decodeURIComponent(document.cookie);
             let ca = decodedCookie.split(';');
             for(let i = 0; i <ca.length; i++) {
@@ -133,7 +122,7 @@
         }
     
         doescookieexist({c}) {
-            let name = c + "=";
+            let name = "CookieExtensionScratch"+c + "=";
             let decodedCookie = decodeURIComponent(document.cookie);
             let ca = decodedCookie.split(';');
             for(let i = 0; i <ca.length; i++) {
@@ -148,7 +137,7 @@
             return "false"
         }
         delcookie({b,p}) {
-            return document.cookie = b + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/" + p;
+            return document.cookie = "CookieExtensionScratch"+b + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/" + p;
         }
     }
 
@@ -223,19 +212,16 @@
         }
         //Local Storage Update :)
         lssetitem({i,v}) {
-            return localStorage.setItem(i, v);
-        }
-        lsclearstor({}) {
-            return localStorage.clear();
+            return localStorage.setItem("LocalStorageExtension-Scratch-"+i, v);
         }
         lsgetitem({n}) {
-            return localStorage.getItem(n)
+            return localStorage.getItem("LocalStorageExtension-Scratch-"+n)
         }
         lsremoveitem({i}) {
-            return localStorage.removeItem(i);
+            return localStorage.removeItem("LocalStorageExtension-Scratch-"+i);
         }
         lsdoesitemexist({i}) {
-            let name = localStorage.getItem(i);
+            let name = localStorage.getItem("LocalStorageExtension-Scratch-"+i);
     
             if(name){
                 return true;
@@ -245,18 +231,6 @@
         }
         lslength({}) {
             return localStorage.length;
-        }
-        lsgetall({}) {
-    
-            let archive = [],
-            keys = Object.keys(localStorage),
-            i = 0, key;
-            
-            for (; key = keys[i]; i++) {
-                archive.push( key + '=' + localStorage.getItem(key));
-            }
-            
-            return archive;
         }
     }
 
