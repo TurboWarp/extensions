@@ -36,7 +36,7 @@
 		for (let i = 1; true; i++)
 			if (data.errors[i]) output += ", " + data.errors[i];
 			else return output + ".";
-	}
+	};
 
 	/**
 	 * Icon by itch.io
@@ -255,13 +255,13 @@
 			try { return data.rewards[index][rewards]; } catch (e) { return err(); }
 		}
 		rewardsLenght() {
-			try { return data.rewards.lenght; } catch (e) { return 0; }
+			return data.rewards ? data.rewards.lenght:0;
 		}
 		rewardsBool() {
 			return data.rewards ? true:false;
 		}
 		returnGameSale({sale}) {
-			try { return data.sale[sale]; } catch (e) { return err(); }
+			return data.sale ? data.sale[sale]:err();
 		}
 		saleBool() {
 			return data.sale ? true:false;
