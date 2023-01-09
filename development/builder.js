@@ -1,7 +1,6 @@
 const ejs = require('ejs');
 const fs = require('fs');
 const pathUtil = require('path');
-const chokidar = require('chokidar');
 
 const IMAGE_EXTENSIONS = ['png', 'jpg', 'svg'];
 
@@ -158,6 +157,8 @@ class Builder {
   }
 
   startWatcher (callback) {
+    // Load chokidar lazily.
+    const chokidar = require('chokidar');
     callback(this.tryBuild());
     chokidar.watch([
       `${this.extensionsRoot}/**/*`,
