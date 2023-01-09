@@ -9,7 +9,7 @@ Before submitting new extensions or changes to extensions, please read:
 
 ```bash
 # Clone the repository
-git clone https://github.com/TurboWarp/extensions.git
+git clone https://github.com/TinyPatch/extensions.git
 cd extensions
 
 # Install dependencies
@@ -19,9 +19,9 @@ npm ci
 npm run dev
 ```
 
-This starts an HTTP server on http://localhost:8000/ which is one of the domains that TurboWarp treats as unsandboxed.
+This starts an HTTP server on http://localhost:8000/ which is one of the domains that TinyPatch treats as unsandboxed.
 
-After installing npm dependencies, TypeScript aware editors such as Visual Studio Code will give you smart autocomplete suggestions for most Scratch APIs based on [@turbowarp/types](https://github.com/TurboWarp/types). Note that these types are not complete and are currently missing anything TurboWarp specific.
+After installing npm dependencies, TypeScript aware editors such as Visual Studio Code will give you smart autocomplete suggestions for most Scratch APIs based on [@turbowarp/types](https://github.com/TinyPatch/types). Note that these types are not complete and are currently missing anything TinyPatch specific.
 
 Chances are you will encounter TypeScript errors. In general, as long as you understand the error, feel free to add `// @ts-ignore`, `// @ts-expect-error`, or just ignore the error entirely.
 

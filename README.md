@@ -1,4 +1,4 @@
-# TurboWarp Extensions
+# TinyPatch Extensions
 
 https://extensions.turbowarp.org/
 

@@ -1,7 +1,7 @@
 {
   "name": "@turbowarp/extensions",
   "version": "0.0.1",
-  "description": "Unsandboxed extensions for TurboWarp",
+  "description": "Unsandboxed extensions for TinyPatch",
   "scripts": {
     "dev": "node development/server.js",
     "build": "node development/build-production.js",
@@ -13,9 +13,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TurboWarp/extensions/issues"
+    "url": "https://github.com/TinyPatch/extensions/issues"
   },
-  "homepage": "https://github.com/TurboWarp/extensions#readme",
+  "homepage": "https://github.com/TinyPatch/extensions#readme",
   "dependencies": {
     "@turbowarp/types": "^0.0.4",
     "chokidar": "^3.5.3",
