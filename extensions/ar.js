@@ -698,8 +698,7 @@
 			const j = +args.J || 0;
 			const k = +args.K || 0;
 			const len = Math.sqrt(r*r + i*i + j*j + k*k);
-			if(!isFinite(len)) return;
-			if(len === 0) len = r = 1;
+			if(!isFinite(len) || len === 0) return;
 			const offsetTransform = new XRRigidTransform({x:0, y:0, z:0}, {x:i/len, y:j/len, z:k/len, w:r/len});
 			xrRefSpace = xrRefSpace.getOffsetReferenceSpace(offsetTransform);
 		}
