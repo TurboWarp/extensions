@@ -136,6 +136,9 @@
         background-color: #ff4c4c;
         color: white;
       }
+      .buttons :disabled {
+        opacity: 0.5;
+      }
 
       footer {
         opacity: 0.8;
@@ -195,15 +198,6 @@
 
     <script>
       document.addEventListener('click', function (e) {
-        // For desktop app
-        var toLoad = e.target.getAttribute('data-load');
-        if (toLoad) {
-          e.target.classList.add('loading');
-          TWD.extensions.loadExtension(toLoad).then(() => {
-            e.target.classList.remove('loading');
-          });
-        }
-
         var toCopy = e.target.getAttribute('data-copy');
         if (toCopy) {
           if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -228,6 +222,47 @@
         }
       });
     </script>
+
+    <% if (mode === 'desktop') { %>
+    <script>
+      // Mock API for testing outside of desktop app
+      if (typeof TWD === 'undefined') {
+        var TWD = {
+          extensions: {
+            loadExtension: (url) => new Promise((resolve, reject) => {
+              console.log(`MOCK: Loading ${url}...`);
+              setTimeout(() => {
+                console.log(`MOCK: Loaded ${url}`);
+                if (Math.random() > 0.5) {
+                  resolve();
+                } else {
+                  reject(new Error('Demo error'));
+                }
+              }, Math.random() * 1000 + 50);
+            }),
+          },
+        };
+      }
+
+      document.addEventListener('click', (e) => {
+        var toLoad = e.target.getAttribute('data-load');
+        if (toLoad) {
+          e.target.classList.add('loading');
+          e.target.disabled = true;
+          TWD.extensions.loadExtension(toLoad)
+            .then(() => {
+              e.target.disabled = false;
+              e.target.classList.remove('loading');
+            })
+            .catch((error) => {
+              alert(error);
+              e.target.disabled = false;
+              e.target.classList.remove('loading');
+            });
+        }
+      });
+    </script>
+    <% } %>
 
     <div class="section">
       <%
