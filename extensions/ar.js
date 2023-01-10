@@ -17,6 +17,7 @@
 	const mouse = runtime.ioDevices.mouse;
 	
 	let arResolution = 1;
+	let isPackaged = false;
 	
 	let arFail = "uninitialized";
 	let xrSession = null;
@@ -34,8 +35,8 @@
 	let xrNeedsResize = false;
 	let poseAvailible = false;
 	
-	let stageWrapper = document.querySelector("[class*='stage-wrapper_stage-canvas-wrapper']");
-	let stageWrapperParent = stageWrapper.parentElement;
+	let stageWrapper;
+	let stageWrapperParent;
 	const div = document.createElement("div");
 	document.body.append(div);
 	const canvas = Scratch.vm.renderer.canvas;
@@ -117,9 +118,11 @@
 			oldWidth  = runtime.stageWidth;
 			oldHeight = runtime.stageHeight;
 		} else {
-			const borderThing = stageWrapper.children[0].children[0].style;
-			borderThing["border"] = "";
-			borderThing["border-radius"] = "";
+			if(!isPackaged) {
+				const borderThing = stageWrapper.children[0].children[0].style;
+				borderThing["border"] = "";
+				borderThing["border-radius"] = "";
+			}
 			stageWrapper.style = "";
 			stageWrapperParent.append(stageWrapper);
 			
@@ -192,10 +195,12 @@
 				stageWrapper.style = "transform-origin: top left; transform: scale("+scale+","+scale+")";
 				canvas.style.opacity = "0";
 				
-				const borderThing = stageWrapper.children[0].children[0].style;
-				borderThing["border"] = "none";
-				borderThing["border-radius"] = "0";
-				borderThing["transform"] = ""; // Removes translateX
+				if(!isPackaged) {
+					const borderThing = stageWrapper.children[0].children[0].style;
+					borderThing["border"] = "none";
+					borderThing["border-radius"] = "0";
+					borderThing["transform"] = ""; // Removes translateX
+				}
 			}
 			poseAvailible = false;
 			if(xrRefSpace) {
@@ -620,7 +625,15 @@
 			} else {
 				if(!xrSession) {
 					// Entering and exiting editor recreates this element
-					stageWrapper = document.querySelector("[class*='stage-wrapper_stage-canvas-wrapper']"); 
+					stageWrapper = document.querySelector("[class*='stage-wrapper_stage-canvas-wrapper']");
+					if(!stageWrapper) {
+						stageWrapper = document.querySelector("[class='sc-root']");
+						if(!stageWrapper) {
+							console.error(arFail = "Failed to get the div element of the stage");
+							return;
+						}
+						isPackaged = true;
+					}
 					stageWrapperParent = stageWrapper.parentElement;
 					
 					// css "transform" doesn't work directly on domOverlay element,
