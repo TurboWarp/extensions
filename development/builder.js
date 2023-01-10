@@ -83,7 +83,17 @@ class Builder {
    * @param {Mode} mode
    */
   constructor (mode) {
-    this.mode = mode;
+    if (process.argv.includes('--production')) {
+      this.mode = 'production';
+    } else if (process.argv.includes('--development')) {
+      this.mode = 'development';
+    } else if (process.argv.includes('--desktop')) {
+      this.mode = 'desktop';
+    } else {
+      /** @type {Mode} */
+      this.mode = mode;
+    }
+
     this.extensionsRoot = pathUtil.join(__dirname, '..', 'extensions');
     this.websiteRoot = pathUtil.join(__dirname, '..', 'website');
     this.imagesRoot = pathUtil.join(__dirname, '..', 'images');
