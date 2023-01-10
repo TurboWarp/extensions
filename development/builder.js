@@ -2,6 +2,10 @@ const fs = require('fs');
 const pathUtil = require('path');
 const renderTemplate = require('./render-template');
 
+/**
+ * @typedef {'development'|'production'|'desktop'} Mode
+ */
+
 const IMAGE_EXTENSIONS = ['png', 'jpg', 'svg'];
 
 const iterateDirectory = (directory) => fs.readdirSync(directory)
@@ -76,10 +80,10 @@ class Build {
 
 class Builder {
   /**
-   * @param {boolean} isProduction True if this is a production build, false for development.
+   * @param {Mode} mode
    */
-  constructor (isProduction) {
-    this.isProduction = isProduction;
+  constructor (mode) {
+    this.mode = mode;
     this.extensionsRoot = pathUtil.join(__dirname, '..', 'extensions');
     this.websiteRoot = pathUtil.join(__dirname, '..', 'website');
     this.imagesRoot = pathUtil.join(__dirname, '..', 'images');
@@ -116,8 +120,8 @@ class Builder {
       .map((file) => pathUtil.basename(file.getDiskPath()));
 
     const ejsData = {
-      isProduction: this.isProduction,
-      host: this.isProduction ? 'https://extensions.turbowarp.org/' : 'http://localhost:8000/',
+      mode: this.mode,
+      host: this.mode === 'development' ? 'http://localhost:8000/' : 'https://extensions.turbowarp.org/',
       mostRecentExtensions: mostRecentExtensions,
       extensionImages: images
     };

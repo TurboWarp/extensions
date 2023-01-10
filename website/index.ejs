@@ -179,7 +179,7 @@
     const getLinkToRun = (extensionPath) => `https://turbowarp.org/editor?extension=${host}${extensionPath}`;
     %>
 
-    <% if (!isProduction) { %>
+    <% if (mode === "development") { %>
       <div class="section">
         <div class="development-tools">
           <h2>Development Server Tools</h2>
