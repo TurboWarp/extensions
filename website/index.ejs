@@ -120,19 +120,19 @@
         padding: 8px;
         background-color: #4c97ff;
         border-radius: 8px;
+        border: none;
+        font: inherit;
+        cursor: pointer;
+        color: white;
+        text-decoration: none;
       }
       .buttons > *:active {
         opacity: 0.8;
       }
       .buttons .copy {
-        border: none;
-        font: inherit;
-        cursor: pointer;
         margin: 0 8px 0 0;
-        color: white;
       }
       .buttons .open {
-        text-decoration: none;
         background-color: #ff4c4c;
         color: white;
       }
@@ -179,7 +179,7 @@
     const getLinkToRun = (extensionPath) => `https://turbowarp.org/editor?extension=${host}${extensionPath}`;
     %>
 
-    <% if (!isProduction) { %>
+    <% if (mode === "development") { %>
       <div class="section">
         <div class="development-tools">
           <h2>Development Server Tools</h2>
@@ -195,6 +195,15 @@
 
     <script>
       document.addEventListener('click', function (e) {
+        // For desktop app
+        var toLoad = e.target.getAttribute('data-load');
+        if (toLoad) {
+          e.target.classList.add('loading');
+          TWD.extensions.loadExtension(toLoad).then(() => {
+            e.target.classList.remove('loading');
+          });
+        }
+
         var toCopy = e.target.getAttribute('data-copy');
         if (toCopy) {
           if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -225,7 +234,11 @@
       const url = (extensionFile) => `
         <div class="buttons">
           <button class="copy" data-copy="${host}${extensionFile}.js">Copy URL</button>
-          <a href="${getLinkToRun(`${extensionFile}.js`)}" class="open">Open Extension</a>
+          ${mode === "desktop" ? (`
+            <button class="open" data-load="${host}${extensionFile}.js">Add Extension</button>
+          `) : (`
+            <a href="${getLinkToRun(`${extensionFile}.js`)}" class="open">Open Extension</a>
+          `)}
         </div>
       `;
 

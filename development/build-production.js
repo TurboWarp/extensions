@@ -3,7 +3,7 @@ const Builder = require('./builder');
 
 const outputDirectory = pathUtil.join(__dirname, '..', 'build');
 
-const builder = new Builder(true);
+const builder = new Builder('production');
 const build = builder.build();
 build.export(outputDirectory);
 
