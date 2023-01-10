@@ -2,7 +2,7 @@ const express = require('express');
 const Builder = require('./builder');
 
 let mostRecentBuild = null;
-const builder = new Builder(false);
+const builder = new Builder('development');
 builder.startWatcher((newBuild) => {
   mostRecentBuild = newBuild;
 });
@@ -29,6 +29,9 @@ app.use((req, res, next) => {
   // We want all resources used by the website to be local.
   // This CSP does *not* apply to the extensions, just the website.
   res.setHeader('Content-Security-Policy', "default-src 'self' 'unsafe-inline' data: blob:");
+
+  // Allows loading cross-origin example images and matches GitHub pages.
+  res.setHeader('Access-Control-Allow-Origin', '*');
 
   next();
 });

@@ -77,14 +77,22 @@
       }
 
       .extensions {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        display: -ms-grid;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
         margin: 16px -4px;
       }
+      @media (max-width: 944px) {
+        .extensions {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 650px) {
+        .extensions {
+          grid-template-columns: 1fr;
+        }
+      }
       .extension {
-        flex-grow: 1;
-        width: 300px;
         border: 2px solid #ccc;
         border-radius: 8px;
         margin: 4px;
@@ -112,21 +120,24 @@
         padding: 8px;
         background-color: #4c97ff;
         border-radius: 8px;
+        border: none;
+        font: inherit;
+        cursor: pointer;
+        color: white;
+        text-decoration: none;
       }
       .buttons > *:active {
         opacity: 0.8;
       }
       .buttons .copy {
-        border: none;
-        font: inherit;
-        cursor: pointer;
         margin: 0 8px 0 0;
-        color: white;
       }
       .buttons .open {
-        text-decoration: none;
         background-color: #ff4c4c;
         color: white;
+      }
+      .buttons :disabled {
+        opacity: 0.5;
       }
 
       footer {
@@ -171,7 +182,7 @@
     const getLinkToRun = (extensionPath) => `https://turbowarp.org/editor?extension=${host}${extensionPath}`;
     %>
 
-    <% if (!isProduction) { %>
+    <% if (mode === "development") { %>
       <div class="section">
         <div class="development-tools">
           <h2>Development Server Tools</h2>
@@ -212,99 +223,163 @@
       });
     </script>
 
+    <% if (mode === 'desktop') { %>
+    <script>
+      // Mock API for testing outside of desktop app
+      if (typeof TWD === 'undefined') {
+        var TWD = {
+          extensions: {
+            loadExtension: (url) => new Promise((resolve, reject) => {
+              console.log(`MOCK: Loading ${url}...`);
+              setTimeout(() => {
+                console.log(`MOCK: Loaded ${url}`);
+                if (Math.random() > 0.5) {
+                  resolve();
+                } else {
+                  reject(new Error('Demo error'));
+                }
+              }, Math.random() * 1000 + 50);
+            }),
+          },
+        };
+      }
+
+      document.addEventListener('click', (e) => {
+        var toLoad = e.target.getAttribute('data-load');
+        if (toLoad) {
+          e.target.classList.add('loading');
+          e.target.disabled = true;
+          TWD.extensions.loadExtension(toLoad)
+            .then(() => {
+              e.target.disabled = false;
+              e.target.classList.remove('loading');
+            })
+            .catch((error) => {
+              alert(error);
+              e.target.disabled = false;
+              e.target.classList.remove('loading');
+            });
+        }
+      });
+    </script>
+    <% } %>
+
     <div class="section">
       <%
       const url = (extensionFile) => `
         <div class="buttons">
           <button class="copy" data-copy="${host}${extensionFile}.js">Copy URL</button>
-          <a href="${getLinkToRun(`${extensionFile}.js`)}" class="open">Open Extension</a>
+          ${mode === "desktop" ? (`
+            <button class="open" data-load="${host}${extensionFile}.js">Add Extension</button>
+          `) : (`
+            <a href="${getLinkToRun(`${extensionFile}.js`)}" class="open">Open Extension</a>
+          `)}
         </div>
       `;
+
+      const img = (extensionFile) => {
+        if (extensionImages[extensionFile]) return `images/${extensionImages[extensionFile]}`;
+        return 'images/unknown.svg';
+      };
       %>
 
       <div class="extensions">
         <div class="extension">
-          <img loading="lazy" src="images/box2d.svg">
+          <img loading="lazy" src="<%= img('box2d') %>">
           <h2>Box2D Physics</h2>
           <p>Two dimensional physics. Originally by griffpatch.</p>
-          <%- url("box2d") %>
+          <%- url('box2d') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/stretch.svg">
+          <img loading="lazy" src="<%= img('stretch') %>">
           <h2>Stretch</h2>
           <p>Stretch sprites horizontally or vertically.</p>
-          <%- url("stretch") %>
+          <%- url('stretch') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/gamepad.svg" class="invert-dark">
+          <img loading="lazy" src="<%= img('gamepad') %>">
           <h2>Gamepad</h2>
           <p>Directly access gamepads instead of just mapping buttons to keys.</p>
-          <%- url("gamepad") %>
+          <%- url('gamepad') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/unknown.svg">
+          <img loading="lazy" src="<%= img('files') %>">
           <h2>Files</h2>
           <p>Read and download files.</p>
-          <%- url("files") %>
+          <%- url('files') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/unknown.svg">
+          <img loading="lazy" src="<%= img('pointerlock') %>">
           <h2>Pointerlock</h2>
           <p>Adds blocks to lock the mouse cursor. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the <a href="https://experiments.turbowarp.org/pointerlock/">pointerlock experiment</a>.</p>
-          <%- url("pointerlock") %>
+          <%- url('pointerlock') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/unknown.svg">
+          <img loading="lazy" src="<%= img('utilities') %>">
           <h2>Utilities</h2>
           <p>A bunch of interesting blocks. Originally by Sheep_maker.</p>
-          <%- url("utilities") %>
+          <%- url('utilities') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/unknown.svg">
+          <img loading="lazy" src="<%= img('runtime-options') %>">
           <h2>Runtime Options</h2>
           <p>Get and modify turbo mode, framerate, interpolation, clone limit, stage size, and more.</p>
-          <%- url("runtime-options") %>
+          <%- url('runtime-options') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/cursor.svg" style="filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));">
-          <h2>Cursor</h2>
-          <p>Use custom cursors or hide the cursor in your project.</p>
-          <%- url("cursor") %>
+          <img loading="lazy" src="<%= img('cursor') %>" style="filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));">
+          <h2>Mouse Cursor</h2>
+          <p>Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.</p>
+          <%- url('cursor') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/unknown.svg">
+          <img loading="lazy" src="<%= img('fetch') %>">
           <h2>Fetch</h2>
           <p>Make requests to the broader internet.</p>
-          <%- url("fetch") %>
+          <%- url('fetch') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/bitwise.svg" class="invert-dark">
+          <img loading="lazy" src="<%= img('bitwise') %>" class="invert-dark">
           <h2>Bitwise</h2>
           <p>Blocks that operate on the binary representation of numbers in computers.</p>
-          <%- url("bitwise") %>
+          <%- url('bitwise') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/cloudlink.svg">
+          <img loading="lazy" src="<%= img('cloudlink') %>">
           <h2>Cloudlink</h2>
           <p>Powerful WebSocket extension for Scratch 3.</p>
-          <%- url("cloudlink") %>
+          <%- url('cloudlink') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="images/unknown.svg">
+          <img loading="lazy" src="<%= img('clouddata-ping') %>">
           <h2>Ping Cloud Data</h2>
           <p>Determine whether a cloud variable server is probably up.</p>
-          <%- url("clouddata-ping") %>
+          <%- url('clouddata-ping') %>
+        </div>
+
+        <div class="extension">
+          <img loading="lazy" src="<%= img('penplus') %>">
+          <h2>Pen Plus</h2>
+          <p>Advanced rendering capabilities.</p>
+          <%- url('penplus') %>
+        </div>
+
+        <div class="extension">
+          <img loading="lazy" src="<%= img('sound') %>">
+          <h2>Sound</h2>
+          <p>Play sounds from URLs.</p>
+          <%- url('sound') %>
         </div>
       </div>
     </div>
