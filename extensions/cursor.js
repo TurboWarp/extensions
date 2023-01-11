@@ -68,7 +68,6 @@
    * @returns {{uri: string, width: number, height: number}}
    */
   const costumeToCursor = (costume, maxWidth, maxHeight) => {
-    // @ts-expect-error
     const skin = Scratch.vm.renderer._allSkins[costume.skinId];
     const imageURI = encodeSkinToURL(skin);
 

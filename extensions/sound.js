@@ -77,7 +77,6 @@
     let soundPlayer;
     try {
       const originalSoundPlayer = await decodeSoundPlayer(url);
-      // @ts-expect-error
       soundPlayer = originalSoundPlayer.take();
     } catch (e) {
       console.warn('Could not fetch audio; falling back to primitive approach', e);
@@ -88,9 +87,7 @@
     await soundBank.playSound(target, soundPlayer.id);
 
     delete soundBank.soundPlayers[soundPlayer.id];
-    // @ts-expect-error
     soundBank.playerTargets.delete(soundPlayer.id);
-    // @ts-expect-error
     soundBank.soundEffects.delete(soundPlayer.id);
 
     return true;

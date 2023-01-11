@@ -39,7 +39,7 @@
 
       const reader = new FileReader();
       reader.onload = () => {
-        callback(reader.result);
+        callback(/** @type {string} */ (reader.result));
       };
       reader.onerror = () => {
         console.error('Failed to read file as text', reader.error);
@@ -120,6 +120,7 @@
     input.type = 'file';
     input.accept = accept;
     input.addEventListener('change', (e) => {
+      // @ts-expect-error
       const file = e.target.files[0];
       if (file) {
         readFile(file);
