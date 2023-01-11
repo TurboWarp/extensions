@@ -1,3 +1,5 @@
+/* eslint-disable no-empty-pattern */
+/* eslint-disable no-prototype-builtins */
 (function(Scratch) {
     'use strict';
   
@@ -9,8 +11,8 @@
 
     const DEPRACATED_BLOCK = "data:image/png;base64,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";
   
-    const canvas = Scratch.renderer.canvas
-    const gl = Scratch.renderer._gl
+    const canvas = Scratch.renderer.canvas;
+    const gl = Scratch.renderer._gl;
   
     // TODO: see how these differ from Scratch, if at all
     gl.enable(gl.BLEND);
@@ -1538,7 +1540,7 @@
       1,
       1,
       1
-    ]
+    ];
   
     var quadColors = [
       1.0,  1.0,  1.0,  1.0,
@@ -1553,7 +1555,7 @@
       1,
       1,
       1
-    ]
+    ];
   
     var triangleColors = [
       1.0,  1.0,  1.0,  1.0,
@@ -1707,7 +1709,7 @@
       // this matrix will translate our quad to dstX, dstY
       matrix = m4.translate(matrix, dstX, dstY, 0);
   
-      matrix = m4.zRotate(matrix,degreesToRadians(stampRotation))
+      matrix = m4.zRotate(matrix,degreesToRadians(stampRotation));
   
       // this matrix will scale our 1 unit quad
       // from 1 unit to texWidth, texHeight units
@@ -1733,7 +1735,7 @@
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleUvs), gl.STATIC_DRAW);
       
       gl.bindBuffer(gl.ARRAY_BUFFER, triZBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(TriangleZPositionArray), gl.STATIC_DRAW)
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(TriangleZPositionArray), gl.STATIC_DRAW);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, tricolorBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleColors), gl.STATIC_DRAW);
@@ -1789,7 +1791,7 @@
   
     async function coolcash(uri, clamp){
       if (!textures.hasOwnProperty(uri)) {
-        textures[uri] = await loadImageAndCreateTextureInfo(uri, clamp)
+        textures[uri] = await loadImageAndCreateTextureInfo(uri, clamp);
       }
     }
   
@@ -2115,25 +2117,25 @@
       converttocanvascoords({coordmenu,scrcoord,coordTypes}) {
         if (coordTypes == 'Canvas') {
           if (coordmenu == "x") {
-            return scrcoord + (Scratch.vm.runtime.stageWidth/2)
+            return scrcoord + (Scratch.vm.runtime.stageWidth/2);
           } else {
-            return (scrcoord*-1) + (Scratch.vm.runtime.stageHeight/2)
+            return (scrcoord*-1) + (Scratch.vm.runtime.stageHeight/2);
           }
         } else {
           if (coordmenu == "x") {
-            return scrcoord - (Scratch.vm.runtime.stageWidth/2)
+            return scrcoord - (Scratch.vm.runtime.stageWidth/2);
           } else {
-            return (scrcoord*-1) - (Scratch.vm.runtime.stageHeight/2)
+            return (scrcoord*-1) - (Scratch.vm.runtime.stageHeight/2);
           }
         }
       }
   
       getstamprotation({}) {
-        return stampRotation
+        return stampRotation;
       }
   
       rotateStamp({ANGLE}) {
-        stampRotation = ANGLE
+        stampRotation = ANGLE;
       }
   
       pendrawspritefromurl({url,x,y}) {
@@ -2145,11 +2147,11 @@
       }
   
       gettargetstagewidth({}) {
-        return screenWidth
+        return screenWidth;
       }
   
       gettargetstageheight({}) {
-        return screenHeight
+        return screenHeight;
       }
   
       pendrawtexturedtrifromurl({url, trianglepoints, triangleuvs}) {
@@ -2167,7 +2169,7 @@
       }
   
       precachetextures({uri,clamp}) {
-        coolcash(uri, clamp === 'true')
+        coolcash(uri, clamp === 'true');
       }
   
       setpenstrechandsquash({width,height}) {
@@ -2181,73 +2183,73 @@
       }
   
       getcostumedata({costu},util) {
-        let fileData = getspritecostume(util,costu)
+        let fileData = getspritecostume(util,costu);
         return fileData;
       }
   
       coordBlock({c1,c2,c3,c4,c5,c6}) {
-        return c1 + "," + c2 + "," + c3 + "," + c4 + "," + c5 + "," + c6
+        return c1 + "," + c2 + "," + c3 + "," + c4 + "," + c5 + "," + c6;
       }
   
       settripointcolour({pointmenu,color,T}) {
         if (pointmenu == "1") {
-          triangleColors[0] = hexToRgb(color).r / 255
-          triangleColors[1] = hexToRgb(color).g / 255
-          triangleColors[2] = hexToRgb(color).b / 255
-          triangleColors[3] = T / 255
+          triangleColors[0] = hexToRgb(color).r / 255;
+          triangleColors[1] = hexToRgb(color).g / 255;
+          triangleColors[2] = hexToRgb(color).b / 255;
+          triangleColors[3] = T / 255;
         } else if (pointmenu == "2"){
-          triangleColors[4] = hexToRgb(color).r / 255
-          triangleColors[5] = hexToRgb(color).g / 255
-          triangleColors[6] = hexToRgb(color).b / 255
-          triangleColors[7] = T / 255
+          triangleColors[4] = hexToRgb(color).r / 255;
+          triangleColors[5] = hexToRgb(color).g / 255;
+          triangleColors[6] = hexToRgb(color).b / 255;
+          triangleColors[7] = T / 255;
         } else{
-          triangleColors[8] = hexToRgb(color).r / 255
-          triangleColors[9] = hexToRgb(color).g / 255
-          triangleColors[10] = hexToRgb(color).b / 255
-          triangleColors[11] = T / 255
+          triangleColors[8] = hexToRgb(color).r / 255;
+          triangleColors[9] = hexToRgb(color).g / 255;
+          triangleColors[10] = hexToRgb(color).b / 255;
+          triangleColors[11] = T / 255;
         }
       }
 
       setTriPointZ({pointmenu,Z}) {
         if (pointmenu == "1") {
-          TriangleZPositionArray[0] = Z
+          TriangleZPositionArray[0] = Z;
         } else if (pointmenu == "2"){
-          TriangleZPositionArray[1] = Z
+          TriangleZPositionArray[1] = Z;
         } else{
-          TriangleZPositionArray[2] = Z
+          TriangleZPositionArray[2] = Z;
         }
       }
   
       setstampcolor({color,T}) {
-        let convertr = hexToRgb(color).r / 255
-        let convertg = hexToRgb(color).g / 255
-        let convertb = hexToRgb(color).b / 255
-        let converta = T / 255
-        quadColors[0] = convertr
-        quadColors[1] = convertg
-        quadColors[2] = convertb
-        quadColors[3] = converta
-        quadColors[4] = convertr
-        quadColors[5] = convertg
-        quadColors[6] = convertb
-        quadColors[7] = converta
-        quadColors[8] = convertr
-        quadColors[9] = convertg
-        quadColors[10] = convertb
-        quadColors[11] = converta
+        let convertr = hexToRgb(color).r / 255;
+        let convertg = hexToRgb(color).g / 255;
+        let convertb = hexToRgb(color).b / 255;
+        let converta = T / 255;
+        quadColors[0] = convertr;
+        quadColors[1] = convertg;
+        quadColors[2] = convertb;
+        quadColors[3] = converta;
+        quadColors[4] = convertr;
+        quadColors[5] = convertg;
+        quadColors[6] = convertb;
+        quadColors[7] = converta;
+        quadColors[8] = convertr;
+        quadColors[9] = convertg;
+        quadColors[10] = convertb;
+        quadColors[11] = converta;
   
-        quadColors[12] = convertr
-        quadColors[13] = convertg
-        quadColors[14] = convertb
-        quadColors[15] = converta
-        quadColors[16] = convertr
-        quadColors[17] = convertg
-        quadColors[18] = convertb
-        quadColors[19] = converta
-        quadColors[20] = convertr
-        quadColors[21] = convertg
-        quadColors[22] = convertb
-        quadColors[23] = converta
+        quadColors[12] = convertr;
+        quadColors[13] = convertg;
+        quadColors[14] = convertb;
+        quadColors[15] = converta;
+        quadColors[16] = convertr;
+        quadColors[17] = convertg;
+        quadColors[18] = convertb;
+        quadColors[19] = converta;
+        quadColors[20] = convertr;
+        quadColors[21] = convertg;
+        quadColors[22] = convertb;
+        quadColors[23] = converta;
       }
     }
   

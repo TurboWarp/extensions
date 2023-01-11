@@ -27,7 +27,7 @@
       canvas.width = width;
       canvas.height = height;
       return [canvas, ctx];
-    }
+    };
   };
   const getRawSkinCanvas = lazilyCreatedCanvas();
 

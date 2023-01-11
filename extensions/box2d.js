@@ -2,6 +2,8 @@
  * This is based on https://github.com/griffpatch/scratch-vm/tree/box2d/src/extensions/scratch3_griffpatch
  */
 
+/* eslint-disable */
+
 (function(Scratch) {
   'use strict';
 
@@ -13,7 +15,7 @@
   // It's not currently advised to load more scripts in custom extensions, so we copied and pasted
   // the source code below. Yes, this is really ugly.
 
-   /*!
+  /*!
     * Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
     *
     * This software is provided 'as-is', without any express or implied
