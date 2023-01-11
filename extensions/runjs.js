@@ -1,3 +1,4 @@
+//Run JS
 (function(Scratch) {
   'use strict';
   class JSExtension {
@@ -25,15 +26,17 @@
     };
   }
   runJS(args){
-	// function name and parameters to pass
-	var fnstring = args.ONE;
-	var fnparams = [args.TWO];
+	if(args.ONE != "eval"){ //make shure no eval
+		// function name and parameters to pass
+		var fnstring = args.ONE;
+		var fnparams = [args.TWO];
 
-	// find object
-	var fn = window[fnstring];
+		// find object
+		var fn = window[fnstring];
 
-	// is object a function?
-	if (typeof fn === "function") fn.apply(null, fnparams);
+		// is object a function?
+		if (typeof fn === "function") fn.apply(null, fnparams);
+	}
   };
 }
 
