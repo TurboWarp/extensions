@@ -1,18 +1,15 @@
-const ejs = require('ejs');
 const fs = require('fs');
 const pathUtil = require('path');
-const chokidar = require('chokidar');
+const renderTemplate = require('./render-template');
+
+/**
+ * @typedef {'development'|'production'|'desktop'} Mode
+ */
 
 const IMAGE_EXTENSIONS = ['png', 'jpg', 'svg'];
 
 const iterateDirectory = (directory) => fs.readdirSync(directory)
   .map(filename => [filename, pathUtil.join(directory, filename)]);
-
-const ejsSyncRender = (path, data) => {
-  const inputEJS = fs.readFileSync(path, 'utf-8');
-  const outputHTML = ejs.render(inputEJS, data);
-  return outputHTML;
-};
 
 class DiskFile {
   constructor (path) {
@@ -36,7 +33,7 @@ class ExtensionFile extends DiskFile {
   // TODO: we can add some code to eg. show a message when the extension was modified on disk?
 }
 
-class EJSFile {
+class HTMLFile {
   constructor (path, data) {
     this.path = path;
     this.data = data;
@@ -47,7 +44,7 @@ class EJSFile {
   }
 
   read () {
-    return ejsSyncRender(this.path, this.data);
+    return renderTemplate(this.path, this.data);
   }
 }
 
@@ -83,10 +80,20 @@ class Build {
 
 class Builder {
   /**
-   * @param {boolean} isProduction True if this is a production build, false for development.
+   * @param {Mode} mode
    */
-  constructor (isProduction) {
-    this.isProduction = isProduction;
+  constructor (mode) {
+    if (process.argv.includes('--production')) {
+      this.mode = 'production';
+    } else if (process.argv.includes('--development')) {
+      this.mode = 'development';
+    } else if (process.argv.includes('--desktop')) {
+      this.mode = 'desktop';
+    } else {
+      /** @type {Mode} */
+      this.mode = mode;
+    }
+
     this.extensionsRoot = pathUtil.join(__dirname, '..', 'extensions');
     this.websiteRoot = pathUtil.join(__dirname, '..', 'website');
     this.imagesRoot = pathUtil.join(__dirname, '..', 'images');
@@ -123,8 +130,8 @@ class Builder {
       .map((file) => pathUtil.basename(file.getDiskPath()));
 
     const ejsData = {
-      isProduction: this.isProduction,
-      host: this.isProduction ? 'https://extensions.turbowarp.org/' : 'http://localhost:8000/',
+      mode: this.mode,
+      host: this.mode === 'development' ? 'http://localhost:8000/' : 'https://extensions.turbowarp.org/',
       mostRecentExtensions: mostRecentExtensions,
       extensionImages: images
     };
@@ -132,7 +139,7 @@ class Builder {
     for (const [websiteFilename, path] of iterateDirectory(this.websiteRoot)) {
       if (websiteFilename.endsWith('.ejs')) {
         const realFilename = websiteFilename.replace('.ejs', '.html');
-        build.files[`/${realFilename}`] = new EJSFile(path, ejsData);
+        build.files[`/${realFilename}`] = new HTMLFile(path, ejsData);
       } else {
         build.files[`/${websiteFilename}`] = new DiskFile(path);
       }
@@ -158,6 +165,8 @@ class Builder {
   }
 
   startWatcher (callback) {
+    // Load chokidar lazily.
+    const chokidar = require('chokidar');
     callback(this.tryBuild());
     chokidar.watch([
       `${this.extensionsRoot}/**/*`,
