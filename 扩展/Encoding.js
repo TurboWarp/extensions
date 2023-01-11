@@ -2,12 +2,12 @@
     'use strict';
     const icon = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMzcuNzk1MDYiIGhlaWdodD0iMTM0LjIzNzA3IiB2aWV3Qm94PSIwLDAsMTM3Ljc5NTA2LDEzNC4yMzcwNyI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE1Mi44OTU4NiwtMTMwLjM3OTg5KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0xOTkuMzA5MDgsMjE5LjYyMDExdi03OS4yNDAyMmg4MS4zODE4NHY3OS4yNDAyMnoiLz48cGF0aCBkPSJNMTYyLjg5NTg2LDI1NC42MTY5NnYtNzkuMjQwMjJoODEuMzgxODR2NzkuMjQwMjJ6Ii8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6ODcuMTA0MTQwMTg0NTE2NDQ6NDkuNjIwMTA4MzQwNzA3OTYtLT4=';
     const icon2 = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI4MS44ODUzOSIgaGVpZ2h0PSI4MC42MDMwNyIgdmlld0JveD0iMCwwLDgxLjg4NTM5LDgwLjYwMzA3Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTk5LjA1NzMsLTEzOS42OTg0NikiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTI4MC45NDI3LDE4MGMwLDIyLjI1NzkyIC0xOC4zMzA2Nyw0MC4zMDE1NCAtNDAuOTQyNyw0MC4zMDE1NGMtMjIuNjEyMDMsMCAtNDAuOTQyNywtMTguMDQzNjEgLTQwLjk0MjcsLTQwLjMwMTU0YzAsLTIyLjI1NzkyIDE4LjMzMDY3LC00MC4zMDE1NCA0MC45NDI3LC00MC4zMDE1NGMyMi42MTIwMywwIDQwLjk0MjcsMTguMDQzNjEgNDAuOTQyNyw0MC4zMDE1NHoiIGZpbGw9IiM2NDk1ZWQiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTIzMS44MTg3NiwxODcuOTc2MDh2LTI4Ljc2NzE1aDI5LjczNDExdjI4Ljc2NzE1eiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjYiLz48cGF0aCBkPSJNMjE4LjQ0NzEzLDIwMC43OTEwN3YtMjguNzY3MTVoMjkuNzM0MTF2MjguNzY3MTV6IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNiIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjQwLjk0MjY5NjA1MzgwMTE0OjQwLjMwMTUzNTI2NTQ4NjcwNi0tPg==';
-    class Calculation {
+    class Encoding {
         constructor () {}
         getInfo() {
             return {
-                id: 'Calculation',
-                name: 'Calculation',
+                id: 'Encoding',
+                name: 'Encoding',
                 color1: '#6495ed',
                 color2: '#739fee',
                 color3: '#83aaf0',
@@ -17,11 +17,11 @@
                     {
                         opcode: 'encode',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Encode [string] with [code]',
+                        text: 'Encode [string] in [code]',
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'turbowarp'
+                                defaultValue: 'TurboWarp'
                             },
                             code: {
                                 type: Scratch.ArgumentType.STRING,
@@ -37,7 +37,7 @@
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'dHVyYm93YXJw'
+                                defaultValue: 'VHVyYm9XYXJw'
                             },
                             code: {
                                 type: Scratch.ArgumentType.STRING,
@@ -53,7 +53,7 @@
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'turbowarp'
+                                defaultValue: 'TurboWarp'
                             }
                         }
                     },
@@ -71,7 +71,23 @@
                             },
                             CodeList: {
                                 type: Scratch.ArgumentType.STRING,
-                                menu: "Codemenu",
+                                menu: "Code",
+                                defaultValue: 'UNICODE'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'Restorecode',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: '[string] corresponding to the [CodeList] character',
+                        arguments: {
+                            string: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '65'
+                            },
+                            CodeList: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "Code",
                                 defaultValue: 'UNICODE'
                             }
                         }
@@ -93,7 +109,7 @@
                     {
                         opcode: 'Fontgenerationstring',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Use [wordbank] to generate [position] bit strings',
+                        text: 'Use [wordbank] to generate a random [position] bit string',
                         arguments: {
                             wordbank: {
                                 type: Scratch.ArgumentType.STRING,
@@ -105,47 +121,16 @@
                             }
                         }
                     },
-
-                    '---',
-
-                    {
-                        opcode: 'Timestamp',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Current Timestamp',
-                        arguments: {}
-                    },
-                    {
-                        opcode: 'TimestampToTime',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Convert [timestamp] to datetime',
-                        arguments: {
-                            timestamp: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: '1145141980000'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'TimeToTimestamp',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Convert [time] to a timestamp',
-                        arguments: {
-                            time: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: '2006-04-16 06:59:40'
-                            }
-                        }
-                    },
                 ],
 				menus: {
-					Codemenu: {
+					Code: {
 						acceptReporters: true,
 						items: ['UNICODE']
 					},
                     encode: {
                         acceptReporters: true,
                         items: ['Base64','URL']
-                    }
+                    },
 				}
             };
         }
@@ -175,6 +160,12 @@
                     return String(args.string).charCodeAt()
             }
 		}
+        Restorecode(args) {
+            switch (args.CodeList) {
+                case 'UNICODE':
+                    return String.fromCharCode(args.string)
+            }
+		}
         Randomstrings({position}) {	
             position = position || 32;
             let t = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678";
@@ -195,25 +186,6 @@
             }
             return string;
         }
-        Timestamp() {
-            return Date.now();
-        }
-        TimestampToTime({ timestamp }) {
-            timestamp = timestamp ? timestamp : null;
-            let date = new Date(timestamp);
-            let Y = date.getFullYear() + '-';
-            let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-            let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' ';
-            let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
-            let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
-            let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-            return Y + M + D + h + m + s;
-        }
-        TimeToTimestamp({ time }) {
-            let data = time;
-            let timestamp = Date.parse(data);
-            return timestamp;
-        }
     }
-    Scratch.extensions.register(new Calculation());
+    Scratch.extensions.register(new Encoding());
 })(Scratch);
