@@ -8,8 +8,28 @@ const renderTemplate = require('./render-template');
 
 const IMAGE_EXTENSIONS = ['png', 'jpg', 'svg'];
 
-const iterateDirectory = (directory) => fs.readdirSync(directory)
-  .map(filename => [filename, pathUtil.join(directory, filename)]);
+/**
+ * Recursively read a directory.
+ * @param {string} directory
+ * @returns {Array<[string, string]>} List of tuples [name, absolutePath].
+ * The return result includes files in subdirectories, but not the subdirectories themselves.
+ */
+const readDirectory = (directory) => {
+  const result = [];
+  for (const name of fs.readdirSync(directory)) {
+    const absolutePath = pathUtil.join(directory, name);
+    const stat = fs.statSync(absolutePath);
+    if (stat.isDirectory()) {
+      for (const [relativeToChildName, childAbsolutePath] of readDirectory(absolutePath)) {
+        // This always needs to use / on all systems
+        result.push([`${name}/${relativeToChildName}`, childAbsolutePath]);
+      }
+    } else {
+      result.push([name, absolutePath]);
+    }
+  }
+  return result;
+};
 
 class DiskFile {
   constructor (path) {
@@ -30,6 +50,11 @@ class DiskFile {
 }
 
 class ExtensionFile extends DiskFile {
+  constructor (relativePath, path) {
+    super(path);
+    this.relativePath = relativePath;
+  }
+
   // TODO: we can add some code to eg. show a message when the extension was modified on disk?
 }
 
@@ -103,7 +128,7 @@ class Builder {
     const build = new Build();
 
     const images = {};
-    for (const [imageFilename, path] of iterateDirectory(this.imagesRoot)) {
+    for (const [imageFilename, path] of readDirectory(this.imagesRoot)) {
       if (!IMAGE_EXTENSIONS.some(extension => imageFilename.endsWith(`.${extension}`))) {
         continue;
       }
@@ -115,11 +140,11 @@ class Builder {
     }
 
     const extensionFiles = [];
-    for (const [extensionFilename, path] of iterateDirectory(this.extensionsRoot)) {
+    for (const [extensionFilename, path] of readDirectory(this.extensionsRoot)) {
       if (!extensionFilename.endsWith('.js')) {
         continue;
       }
-      const file = new ExtensionFile(path);
+      const file = new ExtensionFile(extensionFilename, path);
       extensionFiles.push(file);
       build.files[`/${extensionFilename}`] = file;
     }
@@ -127,7 +152,7 @@ class Builder {
     const mostRecentExtensions = extensionFiles
       .sort((a, b) => b.getLastModified() - a.getLastModified())
       .slice(0, 5)
-      .map((file) => pathUtil.basename(file.getDiskPath()));
+      .map((file) => file.relativePath);
 
     const ejsData = {
       mode: this.mode,
@@ -136,7 +161,7 @@ class Builder {
       extensionImages: images
     };
 
-    for (const [websiteFilename, path] of iterateDirectory(this.websiteRoot)) {
+    for (const [websiteFilename, path] of readDirectory(this.websiteRoot)) {
       if (websiteFilename.endsWith('.ejs')) {
         const realFilename = websiteFilename.replace('.ejs', '.html');
         build.files[`/${realFilename}`] = new HTMLFile(path, ejsData);
