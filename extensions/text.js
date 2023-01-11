@@ -309,7 +309,7 @@
 		identical(args, util) {
 			// Purposefully no casting, because
 			// types ARE differentiated in this block
-			return args.OPERAND1 === args.OPERAND2
+			return args.OPERAND1 === args.OPERAND2;
 		}
 		
 		unicodeof(args, util) {

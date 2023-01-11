@@ -74,6 +74,18 @@ The license must be compatible with the GNU General Public License v3 so we can 
 
 Extensions must not use `eval()`, `new Function()`, untrusted `<script>` or `<iframe>` tags, or similar arbitrary JS/CSS/HTML/etc. It's best if extensions are entirely self-contained in one file.
 
+## Code style
+
+Our preferred code style is:
+
+ - Indent with 2 spaces
+ - Single quotes
+ - Use semicolons
+
+These guidelines will (in the future) be automatically enforced by eslint when pull requests are made.
+
+When including third-party or vendored code, use [`/* eslint-disable*/` and `/* eslint-enable */`](https://eslint.org/docs/latest/user-guide/configuring/rules#disabling-rules) markers.
+
 ## Updates to extensions
 
 When updating extensions, you MUST retain compatibility with projects made with older versions of the extension. There are no exception to this rule. Specifically, this means:
