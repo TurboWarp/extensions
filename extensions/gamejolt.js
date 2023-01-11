@@ -458,8 +458,7 @@
 
           // execute nested callback
           if (typeof pCallback === "function") pCallback(pResponse);
-        },
-        false
+        }
       );
     };
 
@@ -859,7 +858,7 @@
           "/sessions/open/",
           GJAPI.SEND_FOR_USER,
           function (pResponse) {
-            if (pResponse.success) {
+            if (pResponse.success == "true") {
               GJAPI.iSessionHandle = window.setInterval(GJAPI.SessionPing, 30000);
               window.addEventListener("beforeunload", GJAPI.SessionClose, false);
             }
@@ -1018,16 +1017,16 @@
         "&user_token=" + GJAPI.asQueryParam["gjapi_token"],
         GJAPI.SEND_GENERAL,
         function (pResponse) {
-          if (pResponse.success) {
+          if (pResponse.success == "true") {
             GJAPI.bLoggedIn = true;
-            GJAPI.sUserName = sUserName;
-            GJAPI.sUserToken = sUserToken;
+            GJAPI.sUserName = GJAPI.asQueryParam["gjapi_username"];
+            GJAPI.sUserToken = GJAPI.asQueryParam["gjapi_token"];
             GJAPI.SessionOpen();
           }
           if (typeof pCallback === "function") {
             pCallback(pResponse);
           }
-        }, false);
+        });
     };
 
     /**
