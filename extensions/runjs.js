@@ -3,17 +3,21 @@
   class JSExtension {
   getInfo() {
   return {
-      id: 'js', // change this if you make an actual extension!
+      id: 'js',
       name: 'JS',
       blocks: [
         {
           opcode: 'runJS',
           blockType: Scratch.BlockType.COMMAND,
-          text: '[ONE]',
+          text: 'Execute [ONE] With the Paramater [TWO]',
           arguments: {
             ONE: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'alert("hello!");'
+              defaultValue: 'alert'
+            },
+            TWO: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'hello!'
             }
           }
         }
@@ -21,7 +25,15 @@
     };
   }
   runJS(args){
-	eval(args.ONE);
+	// function name and parameters to pass
+	var fnstring = args.ONE;
+	var fnparams = [args.TWO];
+
+	// find object
+	var fn = window[fnstring];
+
+	// is object a function?
+	if (typeof fn === "function") fn.apply(null, fnparams);
   };
 }
 
