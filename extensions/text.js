@@ -407,7 +407,7 @@
           new RegExp(args.REGEX, args.FLAGS),
           args.REPLACE
         );
-      } catch(e) {
+      } catch (e) {
         console.error(e);
         return "";
       }
@@ -438,7 +438,7 @@
           };
         }
         return matchCache.arr[args.ITEM - 1] || "";
-      } catch(e) {
+      } catch (e) {
         console.error(e);
         return "";
       }
@@ -451,7 +451,7 @@
         args.FLAGS = args.FLAGS.toString();
 
         return new RegExp(args.REGEX, args.FLAGS).test(args.STRING);
-      } catch(e) {
+      } catch (e) {
         console.error(e);
         return false;
       }

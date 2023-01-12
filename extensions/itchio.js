@@ -12,11 +12,13 @@
       if (!game) callback.errors.push("missing game argument");
       return onComplete(callback);
     }
-    let url = "https://" + user + ".itch.io/" + game + "/data.json" + (secret ? "?secret=" + secret:"");
+    let url = "https://" + user + ".itch.io/" + game + "/data.json" + (secret ? "?secret=" + secret : "");
     let xhr = new XMLHttpRequest();
     xhr.open("GET", url);
     xhr.addEventListener("readystatechange", (_this => {
-      return () => { if (xhr.readyState == 4 && typeof onComplete == "function") onComplete(JSON.parse(xhr.responseText)); };
+      return () => {
+        if (xhr.readyState == 4 && typeof onComplete == "function") onComplete(JSON.parse(xhr.responseText));
+      };
     })(this));
     return xhr.send();
   };
@@ -31,7 +33,7 @@
    */
   let err = () => {
     if (!data.errors) return "Error.";
-    let output = data.errors[1] ? "Errors: ":"Error: ";
+    let output = data.errors[1] ? "Errors: " : "Error: ";
     output += data.errors[0].charAt(0).toUpperCase() + data.errors[0].slice(1);
     for (let i = 1; true; i++)
       if (data.errors[i]) output += ", " + data.errors[i];
@@ -223,7 +225,7 @@
     openItchWindow({prefix, page, width, height}) {
       let top = (screen.height - height) / 2;
       let left = (screen.width - width) / 2;
-      let w = window.open("https://" + prefix + (prefix ? ".":"") + "itch.io/" + page, "", "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
+      let w = window.open("https://" + prefix + (prefix ? "." : "") + "itch.io/" + page, "", "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
       if (typeof w.focus === "function") w.focus();
     }
     getGameData({user, game, secret}) {
@@ -249,22 +251,26 @@
       return data[game.data] || err();
     }
     gameBool() {
-      return data.id ? true:false;
+      return data.id ? true : false;
     }
     returnGameRewards({index, rewards}) {
-      try { return data.rewards[index][rewards]; } catch (e) { return err(); }
+      try {
+        return data.rewards[index][rewards];
+      } catch (e) {
+        return err();
+      }
     }
     rewardsLenght() {
-      return data.rewards ? data.rewards.lenght:0;
+      return data.rewards ? data.rewards.lenght : 0;
     }
     rewardsBool() {
-      return data.rewards ? true:false;
+      return data.rewards ? true : false;
     }
     returnGameSale({sale}) {
-      return data.sale ? data.sale[sale]:err();
+      return data.sale ? data.sale[sale] : err();
     }
     saleBool() {
-      return data.sale ? true:false;
+      return data.sale ? true : false;
     }
   }
   Scratch.extensions.register(new Itch());

@@ -1777,9 +1777,9 @@
 
   function hexToRgb(hex) {
     return {
-      r: Math.floor(hex/65536),
-      g: Math.floor(hex/256)%256,
-      b: hex%256
+      r: Math.floor(hex / 65536),
+      g: Math.floor(hex / 256) % 256,
+      b: hex % 256
     };
   }
 
@@ -1815,11 +1815,11 @@
             text: "Start loading image from url: [uri] clamp the texture? [clamp]",
             arguments: {
               uri: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: EXAMPLE_IMAGE
               },
               clamp: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 menu: 'TFmenu'
               }
             }
@@ -1830,27 +1830,27 @@
             text: "[c1][c2][c3][c4][c5][c6]",
             arguments: {
               c1: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "0"
               },
               c2: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "0"
               },
               c3: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "0"
               },
               c4: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "0"
               },
               c5: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "0"
               },
               c6: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "0"
               }
             }
@@ -1861,15 +1861,15 @@
             text: "Convert [scrcoord] to [coordTypes] units on the axis [coordmenu]",
             arguments: {
               coordmenu: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 menu: 'coordMenu'
               },
               scrcoord: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               },
               coordTypes: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 menu: 'coordTypes'
               }
             }
@@ -1880,15 +1880,15 @@
             text: "Convert R[R] G[G] B[B] to Hex",
             arguments: {
               R: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '255'
               },
               G: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '255'
               },
               B: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '255'
               }
             }
@@ -1899,11 +1899,11 @@
             text: "Get data uri of costume[costu]",
             arguments: {
               costu: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "1"
               },
               spr: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "1"
               }
             }
@@ -1916,15 +1916,15 @@
             text: "Stamp the image from url: [url] at x:[x] y:[y]",
             arguments: {
               url: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: EXAMPLE_IMAGE
               },
               x: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "240"
               },
               y: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "180"
               }
             }
@@ -1935,7 +1935,7 @@
             text: "Set stamp rotation to [ANGLE]",
             arguments: {
               ANGLE: {
-                type:  Scratch.ArgumentType.ANGLE,
+                type: Scratch.ArgumentType.ANGLE,
                 defaultValue: "90"
               }
             }
@@ -1946,7 +1946,7 @@
             text: "Stamp Rotation",
             arguments: {
               ANGLE: {
-                type:  Scratch.ArgumentType.ANGLE,
+                type: Scratch.ArgumentType.ANGLE,
                 defaultValue: "90"
               }
             }
@@ -1957,11 +1957,11 @@
             text: "Set stamp width to [width] and height to [height]",
             arguments: {
               width: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "64"
               },
               height: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "64"
               }
             }
@@ -1986,11 +1986,11 @@
             text: "Tint stamp by [color] and transparency[T](0-255)",
             arguments: {
               color: {
-                type:  Scratch.ArgumentType.COLOR,
+                type: Scratch.ArgumentType.COLOR,
                 defaultValue: '#ffffff'
               },
-              T:{
-                type:  Scratch.ArgumentType.NUMBER,
+              T: {
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
             }
@@ -2003,15 +2003,15 @@
             text: "Draw a triangle with points at(seperated by commas)[trianglepoints] and the uvs of [triangleuvs] with the image from url:[url]",
             arguments: {
               url: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: EXAMPLE_IMAGE
               },
               trianglepoints: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "0,0,10,10,0,10"
               },
               triangleuvs: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "0,0,1,1,0,1"
               }
             }
@@ -2022,15 +2022,15 @@
             text: "Tint point [pointmenu] by [color] and transparency[T](0-255)",
             arguments: {
               pointmenu: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 menu: 'pointmenu'
               },
               color: {
-                type:  Scratch.ArgumentType.COLOR,
+                type: Scratch.ArgumentType.COLOR,
                 defaultValue: '#ffffff'
               },
-              T:{
-                type:  Scratch.ArgumentType.NUMBER,
+              T: {
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
             }
@@ -2041,11 +2041,11 @@
             text: "Set point [pointmenu]'s depth to [Z]",
             arguments: {
               pointmenu: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 menu: 'pointmenu'
               },
-              Z:{
-                type:  Scratch.ArgumentType.NUMBER,
+              Z: {
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1'
               }
             }
@@ -2059,11 +2059,11 @@
             text: "Change the target screen size to width[width] and height[height]",
             arguments: {
               width: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "480"
               },
               height: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "360"
               }
             }
@@ -2117,15 +2117,15 @@
     converttocanvascoords({coordmenu,scrcoord,coordTypes}) {
       if (coordTypes == 'Canvas') {
         if (coordmenu == "x") {
-          return scrcoord + (Scratch.vm.runtime.stageWidth/2);
+          return scrcoord + (Scratch.vm.runtime.stageWidth / 2);
         } else {
-          return (scrcoord*-1) + (Scratch.vm.runtime.stageHeight/2);
+          return (scrcoord * -1) + (Scratch.vm.runtime.stageHeight / 2);
         }
       } else {
         if (coordmenu == "x") {
-          return scrcoord - (Scratch.vm.runtime.stageWidth/2);
+          return scrcoord - (Scratch.vm.runtime.stageWidth / 2);
         } else {
-          return (scrcoord*-1) - (Scratch.vm.runtime.stageHeight/2);
+          return (scrcoord * -1) - (Scratch.vm.runtime.stageHeight / 2);
         }
       }
     }
@@ -2140,7 +2140,7 @@
 
     pendrawspritefromurl({url,x,y}) {
       var scaleMultiplier = canvas.width / Scratch.vm.runtime.stageWidth;
-      if(!textures.hasOwnProperty(url)){
+      if (!textures.hasOwnProperty(url)){
         textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
       drawImage(textures[url].texture, stampWidth * scaleMultiplier, stampHeight * scaleMultiplier, (x) * scaleMultiplier, (y) * scaleMultiplier, stampRotation - 90);
@@ -2156,7 +2156,7 @@
 
     pendrawtexturedtrifromurl({url, trianglepoints, triangleuvs}) {
       var scalemultiplyer = canvas.width / Scratch.vm.runtime.stageWidth;
-      if(!textures.hasOwnProperty(url)){
+      if (!textures.hasOwnProperty(url)){
         textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
       var pointsarray = trianglepoints.split(",");
@@ -2202,7 +2202,7 @@
         triangleColors[5] = hexToRgb(color).g / 255;
         triangleColors[6] = hexToRgb(color).b / 255;
         triangleColors[7] = T / 255;
-      } else{
+      } else {
         triangleColors[8] = hexToRgb(color).r / 255;
         triangleColors[9] = hexToRgb(color).g / 255;
         triangleColors[10] = hexToRgb(color).b / 255;
@@ -2215,7 +2215,7 @@
         TriangleZPositionArray[0] = Z;
       } else if (pointmenu == "2"){
         TriangleZPositionArray[1] = Z;
-      } else{
+      } else {
         TriangleZPositionArray[2] = Z;
       }
     }
