@@ -6,7 +6,7 @@
     "dev": "node development/server.js",
     "build": "node development/build-production.js",
     "validate": "node development/validate.js",
-    "lint": "eslint development/** extensions/**"
+    "lint": "eslint development extensions"
   },
   "repository": {
     "type": "git",
