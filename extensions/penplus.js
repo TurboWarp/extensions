@@ -2,31 +2,31 @@
 /* eslint-disable no-prototype-builtins */
 (function(Scratch) {
     'use strict';
-  
+
     if (!Scratch.extensions.unsandboxed) {
       throw new Error('Pen+ must be run unsandboxed');
     }
-  
+
     const EXAMPLE_IMAGE = 'https://extensions.turbowarp.org/dango.png';
 
     const DEPRACATED_BLOCK = "data:image/png;base64,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";
-  
+
     const canvas = Scratch.renderer.canvas;
     const gl = Scratch.renderer._gl;
-  
+
     // TODO: see how these differ from Scratch, if at all
     gl.enable(gl.BLEND);
     gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-  
+
     var stampWidth = 64;
     var stampHeight = 64;
-  
+
     var screenWidth = 480;
     var screenHeight = 360;
-  
+
     var stampRotation = 90;
-  
+
     const m4 = (function() {
       /*!
        * 4x4 matrix operation code is from https://webglfundamentals.org/webgl/resources/m4.js
@@ -64,28 +64,28 @@
        * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
        * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        */
-  
+
       /**
        * An array or typed array with 3 values.
        * @typedef {number[]|Float32Array} Vector3
        * @memberOf module:webgl-3d-math
        */
-  
+
       /**
        * An array or typed array with 4 values.
        * @typedef {number[]|Float32Array} Vector4
        * @memberOf module:webgl-3d-math
        */
-  
+
       /**
        * An array or typed array with 16 values.
        * @typedef {number[]|Float32Array} Matrix4
        * @memberOf module:webgl-3d-math
        */
-  
-  
+
+
       let MatType = Float32Array;
-  
+
       /**
        * Sets the type this library creates for a Mat4
        * @param {Float32ArrayConstructor} Ctor the constructor for the type. Either `Float32Array` or `Array`
@@ -96,7 +96,7 @@
         MatType = Ctor;
         return OldType;
       }
-  
+
       /**
        * Takes two 4-by-4 matrices, a and b, and computes the product in the order
        * that pre-composes b with a.  In other words, the matrix returned will
@@ -160,8 +160,8 @@
         dst[15] = b30 * a03 + b31 * a13 + b32 * a23 + b33 * a33;
         return dst;
       }
-  
-  
+
+
       /**
        * adds 2 vectors3s
        * @param {Vector3} a a
@@ -177,7 +177,7 @@
         dst[2] = a[2] + b[2];
         return dst;
       }
-  
+
       /**
        * subtracts 2 vectors3s
        * @param {Vector3} a a
@@ -193,7 +193,7 @@
         dst[2] = a[2] - b[2];
         return dst;
       }
-  
+
       /**
        * scale vectors3
        * @param {Vector3} v vector
@@ -209,7 +209,7 @@
         dst[2] = v[2] * s;
         return dst;
       }
-  
+
       /**
        * normalizes a vector.
        * @param {Vector3} v vector to normalize
@@ -228,7 +228,7 @@
         }
         return dst;
       }
-  
+
       /**
        * Computes the length of a vector
        * @param {Vector3} v vector to take length of
@@ -237,7 +237,7 @@
       function length(v) {
         return Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
       }
-  
+
       /**
        * Computes the length squared of a vector
        * @param {Vector3} v vector to take length of
@@ -246,7 +246,7 @@
       function lengthSq(v) {
         return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
       }
-  
+
       /**
        * Computes the cross product of 2 vectors3s
        * @param {Vector3} a a
@@ -262,7 +262,7 @@
         dst[2] = a[0] * b[1] - a[1] * b[0];
         return dst;
       }
-  
+
       /**
        * Computes the dot product of two vectors; assumes both vectors have
        * three entries.
@@ -274,7 +274,7 @@
       function dot(a, b) {
         return (a[0] * b[0]) + (a[1] * b[1]) + (a[2] * b[2]);
       }
-  
+
       /**
        * Computes the distance squared between 2 points
        * @param {Vector3} a
@@ -287,7 +287,7 @@
         const dz = a[2] - b[2];
         return dx * dx + dy * dy + dz * dz;
       }
-  
+
       /**
        * Computes the distance between 2 points
        * @param {Vector3} a
@@ -297,7 +297,7 @@
       function distance(a, b) {
         return Math.sqrt(distanceSq(a, b));
       }
-  
+
       /**
        * Makes an identity matrix.
        * @param {Matrix4} [dst] optional matrix to store result
@@ -306,7 +306,7 @@
        */
       function identity(dst) {
         dst = dst || new MatType(16);
-  
+
         dst[ 0] = 1;
         dst[ 1] = 0;
         dst[ 2] = 0;
@@ -323,10 +323,10 @@
         dst[13] = 0;
         dst[14] = 0;
         dst[15] = 1;
-  
+
         return dst;
       }
-  
+
       /**
        * Transposes a matrix.
        * @param {Matrix4} m matrix to transpose.
@@ -336,7 +336,7 @@
        */
       function transpose(m, dst) {
         dst = dst || new MatType(16);
-  
+
         dst[ 0] = m[0];
         dst[ 1] = m[4];
         dst[ 2] = m[8];
@@ -353,10 +353,10 @@
         dst[13] = m[7];
         dst[14] = m[11];
         dst[15] = m[15];
-  
+
         return dst;
       }
-  
+
       /**
        * Creates a lookAt matrix.
        * This is a world matrix for a camera. In other words it will transform
@@ -374,7 +374,7 @@
         var zAxis = normalize(subtractVectors(cameraPosition, target));
         var xAxis = normalize(cross(up, zAxis));
         var yAxis = normalize(cross(zAxis, xAxis));
-  
+
         dst[ 0] = xAxis[0];
         dst[ 1] = xAxis[1];
         dst[ 2] = xAxis[2];
@@ -391,10 +391,10 @@
         dst[13] = cameraPosition[1];
         dst[14] = cameraPosition[2];
         dst[15] = 1;
-  
+
         return dst;
       }
-  
+
       /**
        * Computes a 4-by-4 perspective transformation matrix given the angular height
        * of the frustum, the aspect ratio, and the near and far clipping planes.  The
@@ -418,7 +418,7 @@
         dst = dst || new MatType(16);
         var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
         var rangeInv = 1.0 / (near - far);
-  
+
         dst[ 0] = f / aspect;
         dst[ 1] = 0;
         dst[ 2] = 0;
@@ -435,10 +435,10 @@
         dst[13] = 0;
         dst[14] = near * far * rangeInv * 2;
         dst[15] = 0;
-  
+
         return dst;
       }
-  
+
       /**
        * Computes a 4-by-4 orthographic projection matrix given the coordinates of the
        * planes defining the axis-aligned, box-shaped viewing volume.  The matrix
@@ -459,7 +459,7 @@
        */
       function orthographic(left, right, bottom, top, near, far, dst) {
         dst = dst || new MatType(16);
-  
+
         dst[ 0] = 2 / (right - left);
         dst[ 1] = 0;
         dst[ 2] = 0;
@@ -476,10 +476,10 @@
         dst[13] = (bottom + top) / (bottom - top);
         dst[14] = (near + far) / (near - far);
         dst[15] = 1;
-  
+
         return dst;
       }
-  
+
       /**
        * Computes a 4-by-4 perspective transformation matrix given the left, right,
        * top, bottom, near and far clipping planes. The arguments define a frustum
@@ -501,11 +501,11 @@
        */
       function frustum(left, right, bottom, top, near, far, dst) {
         dst = dst || new MatType(16);
-  
+
         var dx = right - left;
         var dy = top - bottom;
         var dz = far - near;
-  
+
         dst[ 0] = 2 * near / dx;
         dst[ 1] = 0;
         dst[ 2] = 0;
@@ -522,10 +522,10 @@
         dst[13] = 0;
         dst[14] = -2 * near * far / dz;
         dst[15] = 0;
-  
+
         return dst;
       }
-  
+
       /**
        * Makes a translation matrix
        * @param {number} tx x translation.
@@ -537,7 +537,7 @@
        */
       function translation(tx, ty, tz, dst) {
         dst = dst || new MatType(16);
-  
+
         dst[ 0] = 1;
         dst[ 1] = 0;
         dst[ 2] = 0;
@@ -554,10 +554,10 @@
         dst[13] = ty;
         dst[14] = tz;
         dst[15] = 1;
-  
+
         return dst;
       }
-  
+
       /**
        * Multiply by translation matrix.
        * @param {Matrix4} m matrix to multiply
@@ -572,7 +572,7 @@
         // This is the optimized version of
         // return multiply(m, translation(tx, ty, tz), dst);
         dst = dst || new MatType(16);
-  
+
         var m00 = m[0];
         var m01 = m[1];
         var m02 = m[2];
@@ -589,7 +589,7 @@
         var m31 = m[3 * 4 + 1];
         var m32 = m[3 * 4 + 2];
         var m33 = m[3 * 4 + 3];
-  
+
         if (m !== dst) {
           dst[ 0] = m00;
           dst[ 1] = m01;
@@ -604,15 +604,15 @@
           dst[10] = m22;
           dst[11] = m23;
         }
-  
+
         dst[12] = m00 * tx + m10 * ty + m20 * tz + m30;
         dst[13] = m01 * tx + m11 * ty + m21 * tz + m31;
         dst[14] = m02 * tx + m12 * ty + m22 * tz + m32;
         dst[15] = m03 * tx + m13 * ty + m23 * tz + m33;
-  
+
         return dst;
       }
-  
+
       /**
        * Makes an x rotation matrix
        * @param {number} angleInRadians amount to rotate
@@ -624,7 +624,7 @@
         dst = dst || new MatType(16);
         var c = Math.cos(angleInRadians);
         var s = Math.sin(angleInRadians);
-  
+
         dst[ 0] = 1;
         dst[ 1] = 0;
         dst[ 2] = 0;
@@ -641,10 +641,10 @@
         dst[13] = 0;
         dst[14] = 0;
         dst[15] = 1;
-  
+
         return dst;
       }
-  
+
       /**
        * Multiply by an x rotation matrix
        * @param {Matrix4} m matrix to multiply
@@ -657,7 +657,7 @@
         // this is the optimized version of
         // return multiply(m, xRotation(angleInRadians), dst);
         dst = dst || new MatType(16);
-  
+
         var m10 = m[4];
         var m11 = m[5];
         var m12 = m[6];
@@ -668,7 +668,7 @@
         var m23 = m[11];
         var c = Math.cos(angleInRadians);
         var s = Math.sin(angleInRadians);
-  
+
         dst[4]  = c * m10 + s * m20;
         dst[5]  = c * m11 + s * m21;
         dst[6]  = c * m12 + s * m22;
@@ -677,7 +677,7 @@
         dst[9]  = c * m21 - s * m11;
         dst[10] = c * m22 - s * m12;
         dst[11] = c * m23 - s * m13;
-  
+
         if (m !== dst) {
           dst[ 0] = m[ 0];
           dst[ 1] = m[ 1];
@@ -688,10 +688,10 @@
           dst[14] = m[14];
           dst[15] = m[15];
         }
-  
+
         return dst;
       }
-  
+
       /**
        * Makes an y rotation matrix
        * @param {number} angleInRadians amount to rotate
@@ -703,7 +703,7 @@
         dst = dst || new MatType(16);
         var c = Math.cos(angleInRadians);
         var s = Math.sin(angleInRadians);
-  
+
         dst[ 0] = c;
         dst[ 1] = 0;
         dst[ 2] = -s;
@@ -720,10 +720,10 @@
         dst[13] = 0;
         dst[14] = 0;
         dst[15] = 1;
-  
+
         return dst;
       }
-  
+
       /**
        * Multiply by an y rotation matrix
        * @param {Matrix4} m matrix to multiply
@@ -736,7 +736,7 @@
         // this is the optimized version of
         // return multiply(m, yRotation(angleInRadians), dst);
         dst = dst || new MatType(16);
-  
+
         var m00 = m[0 * 4 + 0];
         var m01 = m[0 * 4 + 1];
         var m02 = m[0 * 4 + 2];
@@ -747,7 +747,7 @@
         var m23 = m[2 * 4 + 3];
         var c = Math.cos(angleInRadians);
         var s = Math.sin(angleInRadians);
-  
+
         dst[ 0] = c * m00 - s * m20;
         dst[ 1] = c * m01 - s * m21;
         dst[ 2] = c * m02 - s * m22;
@@ -756,7 +756,7 @@
         dst[ 9] = c * m21 + s * m01;
         dst[10] = c * m22 + s * m02;
         dst[11] = c * m23 + s * m03;
-  
+
         if (m !== dst) {
           dst[ 4] = m[ 4];
           dst[ 5] = m[ 5];
@@ -767,10 +767,10 @@
           dst[14] = m[14];
           dst[15] = m[15];
         }
-  
+
         return dst;
       }
-  
+
       /**
        * Makes an z rotation matrix
        * @param {number} angleInRadians amount to rotate
@@ -782,7 +782,7 @@
         dst = dst || new MatType(16);
         var c = Math.cos(angleInRadians);
         var s = Math.sin(angleInRadians);
-  
+
         dst[ 0] = c;
         dst[ 1] = s;
         dst[ 2] = 0;
@@ -799,10 +799,10 @@
         dst[13] = 0;
         dst[14] = 0;
         dst[15] = 1;
-  
+
         return dst;
       }
-  
+
       /**
        * Multiply by an z rotation matrix
        * @param {Matrix4} m matrix to multiply
@@ -815,7 +815,7 @@
         // This is the optimized version of
         // return multiply(m, zRotation(angleInRadians), dst);
         dst = dst || new MatType(16);
-  
+
         var m00 = m[0 * 4 + 0];
         var m01 = m[0 * 4 + 1];
         var m02 = m[0 * 4 + 2];
@@ -826,7 +826,7 @@
         var m13 = m[1 * 4 + 3];
         var c = Math.cos(angleInRadians);
         var s = Math.sin(angleInRadians);
-  
+
         dst[ 0] = c * m00 + s * m10;
         dst[ 1] = c * m01 + s * m11;
         dst[ 2] = c * m02 + s * m12;
@@ -835,7 +835,7 @@
         dst[ 5] = c * m11 - s * m01;
         dst[ 6] = c * m12 - s * m02;
         dst[ 7] = c * m13 - s * m03;
-  
+
         if (m !== dst) {
           dst[ 8] = m[ 8];
           dst[ 9] = m[ 9];
@@ -846,10 +846,10 @@
           dst[14] = m[14];
           dst[15] = m[15];
         }
-  
+
         return dst;
       }
-  
+
       /**
        * Makes an rotation matrix around an arbitrary axis
        * @param {Vector3} axis axis to rotate around
@@ -860,7 +860,7 @@
        */
       function axisRotation(axis, angleInRadians, dst) {
         dst = dst || new MatType(16);
-  
+
         var x = axis[0];
         var y = axis[1];
         var z = axis[2];
@@ -874,7 +874,7 @@
         var c = Math.cos(angleInRadians);
         var s = Math.sin(angleInRadians);
         var oneMinusCosine = 1 - c;
-  
+
         dst[ 0] = xx + (1 - xx) * c;
         dst[ 1] = x * y * oneMinusCosine + z * s;
         dst[ 2] = x * z * oneMinusCosine - y * s;
@@ -891,10 +891,10 @@
         dst[13] = 0;
         dst[14] = 0;
         dst[15] = 1;
-  
+
         return dst;
       }
-  
+
       /**
        * Multiply by an axis rotation matrix
        * @param {Matrix4} m matrix to multiply
@@ -908,7 +908,7 @@
         // This is the optimized version of
         // return multiply(m, axisRotation(axis, angleInRadians), dst);
         dst = dst || new MatType(16);
-  
+
         var x = axis[0];
         var y = axis[1];
         var z = axis[2];
@@ -922,7 +922,7 @@
         var c = Math.cos(angleInRadians);
         var s = Math.sin(angleInRadians);
         var oneMinusCosine = 1 - c;
-  
+
         var r00 = xx + (1 - xx) * c;
         var r01 = x * y * oneMinusCosine + z * s;
         var r02 = x * z * oneMinusCosine - y * s;
@@ -932,7 +932,7 @@
         var r20 = x * z * oneMinusCosine + y * s;
         var r21 = y * z * oneMinusCosine - x * s;
         var r22 = zz + (1 - zz) * c;
-  
+
         var m00 = m[0];
         var m01 = m[1];
         var m02 = m[2];
@@ -945,7 +945,7 @@
         var m21 = m[9];
         var m22 = m[10];
         var m23 = m[11];
-  
+
         dst[ 0] = r00 * m00 + r01 * m10 + r02 * m20;
         dst[ 1] = r00 * m01 + r01 * m11 + r02 * m21;
         dst[ 2] = r00 * m02 + r01 * m12 + r02 * m22;
@@ -958,17 +958,17 @@
         dst[ 9] = r20 * m01 + r21 * m11 + r22 * m21;
         dst[10] = r20 * m02 + r21 * m12 + r22 * m22;
         dst[11] = r20 * m03 + r21 * m13 + r22 * m23;
-  
+
         if (m !== dst) {
           dst[12] = m[12];
           dst[13] = m[13];
           dst[14] = m[14];
           dst[15] = m[15];
         }
-  
+
         return dst;
       }
-  
+
       /**
        * Makes a scale matrix
        * @param {number} sx x scale.
@@ -980,7 +980,7 @@
        */
       function scaling(sx, sy, sz, dst) {
         dst = dst || new MatType(16);
-  
+
         dst[ 0] = sx;
         dst[ 1] = 0;
         dst[ 2] = 0;
@@ -997,10 +997,10 @@
         dst[13] = 0;
         dst[14] = 0;
         dst[15] = 1;
-  
+
         return dst;
       }
-  
+
       /**
        * Multiply by a scaling matrix
        * @param {Matrix4} m matrix to multiply
@@ -1015,7 +1015,7 @@
         // This is the optimized version of
         // return multiply(m, scaling(sx, sy, sz), dst);
         dst = dst || new MatType(16);
-  
+
         dst[ 0] = sx * m[0 * 4 + 0];
         dst[ 1] = sx * m[0 * 4 + 1];
         dst[ 2] = sx * m[0 * 4 + 2];
@@ -1028,17 +1028,17 @@
         dst[ 9] = sz * m[2 * 4 + 1];
         dst[10] = sz * m[2 * 4 + 2];
         dst[11] = sz * m[2 * 4 + 3];
-  
+
         if (m !== dst) {
           dst[12] = m[12];
           dst[13] = m[13];
           dst[14] = m[14];
           dst[15] = m[15];
         }
-  
+
         return dst;
       }
-  
+
       /**
        * creates a matrix from translation, quaternion, scale
        * @param {Number[]} translation [x, y, z] translation
@@ -1049,58 +1049,58 @@
        */
       function compose(translation, quaternion, scale, dst) {
         dst = dst || new MatType(16);
-  
+
         const x = quaternion[0];
         const y = quaternion[1];
         const z = quaternion[2];
         const w = quaternion[3];
-  
+
         const x2 = x + x;
         const y2 = y + y;
         const z2 = z + z;
-  
+
         const xx = x * x2;
         const xy = x * y2;
         const xz = x * z2;
-  
+
         const yy = y * y2;
         const yz = y * z2;
         const zz = z * z2;
-  
+
         const wx = w * x2;
         const wy = w * y2;
         const wz = w * z2;
-  
+
         const sx = scale[0];
         const sy = scale[1];
         const sz = scale[2];
-  
+
         dst[0] = (1 - (yy + zz)) * sx;
         dst[1] = (xy + wz) * sx;
         dst[2] = (xz - wy) * sx;
         dst[3] = 0;
-  
+
         dst[4] = (xy - wz) * sy;
         dst[5] = (1 - (xx + zz)) * sy;
         dst[6] = (yz + wx) * sy;
         dst[7] = 0;
-  
+
         dst[ 8] = (xz + wy) * sz;
         dst[ 9] = (yz - wx) * sz;
         dst[10] = (1 - (xx + yy)) * sz;
         dst[11] = 0;
-  
+
         dst[12] = translation[0];
         dst[13] = translation[1];
         dst[14] = translation[2];
         dst[15] = 1;
-  
+
         return dst;
       }
-  
+
       function quatFromRotationMatrix(m, dst) {
         // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
-  
+
         // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
         const m11 = m[0];
         const m12 = m[4];
@@ -1111,9 +1111,9 @@
         const m31 = m[2];
         const m32 = m[6];
         const m33 = m[10];
-  
+
         const trace = m11 + m22 + m33;
-  
+
         if (trace > 0) {
           const s = 0.5 / Math.sqrt(trace + 1);
           dst[3] = 0.25 / s;
@@ -1140,48 +1140,48 @@
           dst[2] = 0.25 * s;
         }
       }
-  
+
       function decompose(mat, translation, quaternion, scale) {
         let sx = length(mat.slice(0, 3));
         const sy = length(mat.slice(4, 7));
         const sz = length(mat.slice(8, 11));
-  
+
         // if determinate is negative, we need to invert one scale
         const det = determinate(mat);
         if (det < 0) {
           sx = -sx;
         }
-  
+
         translation[0] = mat[12];
         translation[1] = mat[13];
         translation[2] = mat[14];
-  
+
         // scale the rotation part
         const matrix = copy(mat);
-  
+
         const invSX = 1 / sx;
         const invSY = 1 / sy;
         const invSZ = 1 / sz;
-  
+
         matrix[0] *= invSX;
         matrix[1] *= invSX;
         matrix[2] *= invSX;
-  
+
         matrix[4] *= invSY;
         matrix[5] *= invSY;
         matrix[6] *= invSY;
-  
+
         matrix[8] *= invSZ;
         matrix[9] *= invSZ;
         matrix[10] *= invSZ;
-  
+
         quatFromRotationMatrix(matrix, quaternion);
-  
+
         scale[0] = sx;
         scale[1] = sy;
         scale[2] = sz;
       }
-  
+
       function determinate(m) {
         var m00 = m[0 * 4 + 0];
         var m01 = m[0 * 4 + 1];
@@ -1211,7 +1211,7 @@
         var tmp_9  = m22 * m03;
         var tmp_10 = m02 * m13;
         var tmp_11 = m12 * m03;
-  
+
         var t0 = (tmp_0 * m11 + tmp_3 * m21 + tmp_4 * m31) -
             (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
         var t1 = (tmp_1 * m01 + tmp_6 * m21 + tmp_9 * m31) -
@@ -1220,10 +1220,10 @@
             (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
         var t3 = (tmp_5 * m01 + tmp_8 * m11 + tmp_11 * m21) -
             (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
-  
+
         return 1.0 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3);
       }
-  
+
       /**
        * Computes the inverse of a matrix.
        * @param {Matrix4} m matrix to compute inverse of
@@ -1273,7 +1273,7 @@
         var tmp_21 = m20 * m01;
         var tmp_22 = m00 * m11;
         var tmp_23 = m10 * m01;
-  
+
         var t0 = (tmp_0 * m11 + tmp_3 * m21 + tmp_4 * m31) -
             (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
         var t1 = (tmp_1 * m01 + tmp_6 * m21 + tmp_9 * m31) -
@@ -1282,9 +1282,9 @@
             (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
         var t3 = (tmp_5 * m01 + tmp_8 * m11 + tmp_11 * m21) -
             (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
-  
+
         var d = 1.0 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3);
-  
+
         dst[0] = d * t0;
         dst[1] = d * t1;
         dst[2] = d * t2;
@@ -1313,10 +1313,10 @@
               (tmp_22 * m32 + tmp_14 * m02 + tmp_19 * m12));
         dst[15] = d * ((tmp_22 * m22 + tmp_16 * m02 + tmp_21 * m12) -
               (tmp_20 * m12 + tmp_23 * m22 + tmp_17 * m02));
-  
+
         return dst;
       }
-  
+
       /**
        * Takes a  matrix and a vector with 4 entries, transforms that vector by
        * the matrix, and returns the result as a vector with 4 entries.
@@ -1336,7 +1336,7 @@
         }
         return dst;
       }
-  
+
       /**
        * Takes a 4-by-4 matrix and a vector with 3 entries,
        * interprets the vector as a point, transforms that point by the matrix, and
@@ -1353,14 +1353,14 @@
         var v1 = v[1];
         var v2 = v[2];
         var d = v0 * m[0 * 4 + 3] + v1 * m[1 * 4 + 3] + v2 * m[2 * 4 + 3] + m[3 * 4 + 3];
-  
+
         dst[0] = (v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0] + m[3 * 4 + 0]) / d;
         dst[1] = (v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1] + m[3 * 4 + 1]) / d;
         dst[2] = (v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2] + m[3 * 4 + 2]) / d;
-  
+
         return dst;
       }
-  
+
       /**
        * Takes a 4-by-4 matrix and a vector with 3 entries, interprets the vector as a
        * direction, transforms that direction by the matrix, and returns the result;
@@ -1376,18 +1376,18 @@
        */
       function transformDirection(m, v, dst) {
         dst = dst || new MatType(3);
-  
+
         var v0 = v[0];
         var v1 = v[1];
         var v2 = v[2];
-  
+
         dst[0] = v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0];
         dst[1] = v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1];
         dst[2] = v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2];
-  
+
         return dst;
       }
-  
+
       /**
        * Takes a 4-by-4 matrix m and a vector v with 3 entries, interprets the vector
        * as a normal to a surface, and computes a vector which is normal upon
@@ -1409,17 +1409,17 @@
         var v0 = v[0];
         var v1 = v[1];
         var v2 = v[2];
-  
+
         dst[0] = v0 * mi[0 * 4 + 0] + v1 * mi[0 * 4 + 1] + v2 * mi[0 * 4 + 2];
         dst[1] = v0 * mi[1 * 4 + 0] + v1 * mi[1 * 4 + 1] + v2 * mi[1 * 4 + 2];
         dst[2] = v0 * mi[2 * 4 + 0] + v1 * mi[2 * 4 + 1] + v2 * mi[2 * 4 + 2];
-  
+
         return dst;
       }
-  
+
       function copy(src, dst) {
         dst = dst || new MatType(16);
-  
+
         dst[ 0] = src[ 0];
         dst[ 1] = src[ 1];
         dst[ 2] = src[ 2];
@@ -1436,10 +1436,10 @@
         dst[13] = src[13];
         dst[14] = src[14];
         dst[15] = src[15];
-  
+
         return dst;
       }
-  
+
       return {
         copy: copy,
         lookAt: lookAt,
@@ -1481,9 +1481,9 @@
         setDefaultType: setDefaultType,
       };
     }());
-  
+
     const textures = {};
-  
+
     var vertexShaderCode = [
       'attribute vec4 a_position;',
       'attribute vec2 a_texcoord;',
@@ -1501,7 +1501,7 @@
       'vColor = aVertexColor;',
       '}'
     ].join('\n');
-  
+
     var fragmentShaderCode = [
       'precision mediump float;',
       '',
@@ -1514,7 +1514,7 @@
       'gl_FragColor = texture2D(u_texture, v_texcoord) * vColor;',
       '}',
     ].join('\n');
-  
+
     var quadPositions = [
       0, 0,
       0, 1,
@@ -1523,7 +1523,7 @@
       0, 1,
       1, 1,
     ];
-  
+
     var quadCoords = [
       0, 0,
       0, 1,
@@ -1541,7 +1541,7 @@
       1,
       1
     ];
-  
+
     var quadColors = [
       1.0,  1.0,  1.0,  1.0,
       1.0,  1.0,  1.0,  1.0,
@@ -1556,7 +1556,7 @@
       1,
       1
     ];
-  
+
     var triangleColors = [
       1.0,  1.0,  1.0,  1.0,
       1.0,  1.0,  1.0,  1.0,
@@ -1567,18 +1567,18 @@
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadPositions), gl.STATIC_DRAW);
 
     var quadZPositionBuffer = gl.createBuffer();
-  
+
     var quadTexCoordBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, quadTexCoordBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadCoords), gl.STATIC_DRAW);
-  
+
     var quadColorBuffer = gl.createBuffer();
-  
+
     var triPosBuffer = gl.createBuffer();
     var triUVBuffer = gl.createBuffer();
     var tricolorBuffer = gl.createBuffer();
     var triZBuffer = gl.createBuffer();
-  
+
     /**
      * @param {string} code
      * @param {number} type
@@ -1594,7 +1594,7 @@
       }
       return shader;
     };
-  
+
     /**
      * @param {WebGLShader} vertexShader
      * @param {WebGLShader} fragmentShader
@@ -1616,23 +1616,23 @@
       }
       return program;
     };
-  
+
     const vertexShader = compileShader(vertexShaderCode, gl.VERTEX_SHADER);
     const fragmentShader = compileShader(fragmentShaderCode, gl.FRAGMENT_SHADER);
     const program = createProgram(vertexShader, fragmentShader);
-  
+
     // look up where the vertex data needs to go.
     const positionLocation = gl.getAttribLocation(program, 'a_position');
     const texcoordLocation = gl.getAttribLocation(program, 'a_texcoord');
     const zLocation = gl.getAttribLocation(program, 'a_zOffset');
     const colorLocation = gl.getAttribLocation(program, 'aVertexColor');
-  
+
     // lookup uniforms
     const matrixLocation = gl.getUniformLocation(program, 'u_matrix');
     const textureLocation = gl.getUniformLocation(program, 'u_texture');
-  
+
     //cool drawing functions
-  
+
     /**
      * @param {number} deg
      * @returns {number}
@@ -1640,13 +1640,13 @@
     function degreesToRadians(deg) {
       return deg * 0.0174533;
     }
-  
+
     function loadImageAndCreateTextureInfo(url, clamp) {
       const texture = gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, texture);
       // Fill the texture with a 1x1 blue pixel.
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
-  
+
       // Let's assume all images are not a power of 2
       if (clamp) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -1656,40 +1656,40 @@
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
       }
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-  
+
       const textureInfo = {
         // we don't know the size until it loads
         width: 1,
         height: 1,
         texture
       };
-  
+
       const image = new Image();
       image.onload = function() {
         textureInfo.width = image.width;
         textureInfo.height = image.height;
-  
+
         gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
       };
       image.crossOrigin = 'anonymous';
       image.src = url;
-  
+
       return textureInfo;
     }
-  
+
     function drawImage(tex, texWidth, texHeight, dstX, dstY, stampRotation) {
       gl.bindTexture(gl.TEXTURE_2D, tex);
-  
+
       // Tell WebGL to use our shader program pair
       gl.useProgram(program);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, quadZPositionBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadZPositionArray), gl.STATIC_DRAW);
-  
+
       gl.bindBuffer(gl.ARRAY_BUFFER, quadColorBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadColors), gl.STATIC_DRAW);
-      // Setup the attributes to pull data from our buffers 
+      // Setup the attributes to pull data from our buffers
       gl.bindBuffer(gl.ARRAY_BUFFER, quadPositionBuffer);
       gl.enableVertexAttribArray(positionLocation);
       gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
@@ -1702,47 +1702,47 @@
       gl.bindBuffer(gl.ARRAY_BUFFER, quadColorBuffer);
       gl.enableVertexAttribArray(colorLocation);
       gl.vertexAttribPointer(colorLocation, 4, gl.FLOAT, false, 0, 0);
-  
+
       // this matrix will convert from pixels to clip space
       var matrix = m4.orthographic(0, gl.canvas.width, gl.canvas.height, 0, -1, 1);
-  
+
       // this matrix will translate our quad to dstX, dstY
       matrix = m4.translate(matrix, dstX, dstY, 0);
-  
+
       matrix = m4.zRotate(matrix,degreesToRadians(stampRotation));
-  
+
       // this matrix will scale our 1 unit quad
       // from 1 unit to texWidth, texHeight units
       matrix = m4.scale(matrix, texWidth, texHeight, 1);
-  
+
       // Set the matrix.
       gl.uniformMatrix4fv(matrixLocation, false, matrix);
-  
+
       // Tell the shader to get the texture from texture unit 0
       gl.uniform1i(textureLocation, 0);
-  
+
       // draw the quad (2 triangles, 6 vertices)
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
-  
+
     function drawTexturedTri(tex, trianglePoints, triangleUvs) {
       gl.bindTexture(gl.TEXTURE_2D, tex);
-  
+
       gl.bindBuffer(gl.ARRAY_BUFFER, triPosBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(trianglePoints), gl.STATIC_DRAW);
-      
+
       gl.bindBuffer(gl.ARRAY_BUFFER, triUVBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleUvs), gl.STATIC_DRAW);
-      
+
       gl.bindBuffer(gl.ARRAY_BUFFER, triZBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(TriangleZPositionArray), gl.STATIC_DRAW);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, tricolorBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleColors), gl.STATIC_DRAW);
-  
+
       // Tell WebGL to use our shader program pair
       gl.useProgram(program);
-  
+
       // Setup the attributes to pull data from our buffers
       gl.bindBuffer(gl.ARRAY_BUFFER, triPosBuffer);
       gl.enableVertexAttribArray(positionLocation);
@@ -1756,25 +1756,25 @@
       gl.bindBuffer(gl.ARRAY_BUFFER, tricolorBuffer);
       gl.enableVertexAttribArray(colorLocation); //
       gl.vertexAttribPointer(colorLocation, 4, gl.FLOAT, false, 0, 0);
-  
+
       // this matrix will convert from pixels to clip space
       var matrix = m4.orthographic(0, gl.canvas.width, gl.canvas.height, 0, -1, 1);
-  
+
       // this matrix will translate our quad to dstX, dstY
-  
+
       // this matrix will scale our 1 unit quad
       // from 1 unit to texWidth, texHeight units
-  
+
       // Set the matrix.
       gl.uniformMatrix4fv(matrixLocation, false, matrix);
-  
+
       // Tell the shader to get the texture from texture unit 0
       gl.uniform1i(textureLocation, 0);
-  
+
       // draw the quad (2 triangles, 6 vertices)
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     }
-  
+
     function hexToRgb(hex) {
       return {
         r: Math.floor(hex/65536),
@@ -1782,19 +1782,19 @@
         b: hex%256
       };
     }
-  
+
     function getspritecostume(util, c) {
       let target = util.target;
       let dataURI = target.sprite.costumes[c - 1].asset.encodeDataURI();
       return dataURI;
     }
-  
+
     async function coolcash(uri, clamp){
       if (!textures.hasOwnProperty(uri)) {
         textures[uri] = await loadImageAndCreateTextureInfo(uri, clamp);
       }
     }
-  
+
     class PenPlus {
       getInfo () {
         return {
@@ -1805,7 +1805,7 @@
           color3: '#096647',
           docsURI: 'https://www.youtube.com/playlist?list=PLdR2VVCBIN3CceUdgKWOUxFEEbLqWgCC9',
           blockIconURI: "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzNy44NjkyMSIgaGVpZ2h0PSI0OC44NTI3MiIgdmlld0JveD0iMCwwLDM3Ljg2OTIxLDQ4Ljg1MjcyIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgY3g9IjIzNy41NDM0IiBjeT0iMTg0LjAwNTYiIHI9IjkuOTg1NDkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBpZD0iY29sb3ItMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2ZkNWU5Ii8+PC9yYWRpYWxHcmFkaWVudD48L2RlZnM+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIyMy4zMDE4MSwtMTYzLjc2MzA5KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMjUuMTYzNTYsMTkzLjIwMDIxYzAuNTYxNTMsLTEuMTA3NDYgMi4yMzQwNCwtMy4yODU4MyAyLjIzNDA0LC0zLjI4NTgzYzAsMCAwLjU5NDQyLDEuODIzOTEgMS4yMjQ0OSwyLjU5NTc1YzAuNjMyMTIsMC43NzQzNSAyLjA4ODc4LDEuNDc0ODQgMi4wODg3OCwxLjQ3NDg0YzAsMCAtMi4xOTQ0NiwxLjI4MTQxIC0zLjMyNDIxLDEuNzI2OTVjLTEuMTEwMzIsMC40Mzc4NyAtMy4zOTcsMC45MjM2NyAtMy4zOTcsMC45MjM2N2MwLDAgMC41OTk3NCwtMi4zMDI5OSAxLjE3MzksLTMuNDM1Mzh6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjI3LjYxMTMxLDE4OS4yOTIwM2wxNC45NTE1NCwtMTUuMjcxOTNjMCwwIDIuMjA2LDAuODk1MDUgMi45NTc3NiwxLjYzMDQ3YzAuODY4OCwwLjg0OTkxIDEuOTU0ODksMy4xNzUzOCAxLjk1NDg5LDMuMTc1MzhsLTE2LjEyNjMxLDE1LjE2NTE0YzAsMCAtMi4wMDYzOSwtMS4xMjc4NiAtMi42MDkyMSwtMS44ODU2OGMtMC42NDA4MiwtMC44MDU2IC0xLjEyODY4LC0yLjgxMzM3IC0xLjEyODY4LC0yLjgxMzM3eiIgZmlsbD0idXJsKCNjb2xvci0xKSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIzNy43NTY5OSwxNzIuOTUyMTNjMCwwIDAuOTg2MTksMS4wNTA2MiAyLjM5NjA4LC0wLjI3MDcyYzEuODAzLC0xLjY4OTc3IDQuMjMxMDUsLTUuOTAxNDcgNS40NDc0MywtNi41ODcwN2MxLjM3NDgsLTAuNzc0ODkgMy45MDQxNCwwLjIzNjM5IDMuOTA0MTQsMC4yMzYzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzYuMDc5ODEsMTcyLjMxMTM1YzAsLTAuNjkwMzYgMC41NTk2NCwtMS4yNSAxLjI1LC0xLjI1YzAuNjkwMzYsMCAxLjI1LDAuNTU5NjQgMS4yNSwxLjI1YzAsMC42OTAzNiAtMC41NTk2NCwxLjI1IC0xLjI1LDEuMjVjLTAuNjkwMzYsMCAtMS4yNSwtMC41NTk2NCAtMS4yNSwtMS4yNXoiIGZpbGw9IiM1NzVlNzUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTI1MC45OTk3OSwxNjQuNzI4NzdjMCwwIDEuOTEzOTYsLTEuMDUxOTMgNC4yMDAwOSwxLjMyMzU4YzIuNDI2ODUsMi41MjE3MyAwLjYwNTc2LDQuNDQzNDQgMC42MDU3Niw0LjQ0MzQ0bC04LjMzMDE0LDguMjIzMzVjMCwwIC0wLjc1MDQsLTIuMDcxMTIgLTEuNTYyNDksLTIuNzk0OTRjLTAuODI1MjQsLTAuNzM1NTUgLTMuMzUwMTYsLTEuNTgzNzMgLTMuMzUwMTYsLTEuNTgzNzN6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMzkuODkzMzcsMjAxLjcxMTE4KSBzY2FsZSgwLjg3MjM3LDAuODcyMzcpIiBmb250LXNpemU9IjQwIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjZThlYmY0IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iU2FucyBTZXJpZiIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHRzcGFuIHg9IjAiIGR5PSIwIj4rPC90c3Bhbj48L3RleHQ+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTYuNjk4MTkxNTI3MDE2NDYyOjE2LjIzNjkxNDk5OTk5OTk4Mi0tPg==",
-  
+
           blocks: [
             //Utility
             '---',
@@ -2101,19 +2101,19 @@
           }
         };
       }
-  
+
       rgbtoSColor({R,G,B}) {
         return (((R * 256) + G) * 256) + B;
       }
-  
+
       getstampwidth({}) {
         return stampWidth;
       }
-  
+
       getstampheight({}) {
         return stampHeight;
       }
-  
+
       converttocanvascoords({coordmenu,scrcoord,coordTypes}) {
         if (coordTypes == 'Canvas') {
           if (coordmenu == "x") {
@@ -2129,15 +2129,15 @@
           }
         }
       }
-  
+
       getstamprotation({}) {
         return stampRotation;
       }
-  
+
       rotateStamp({ANGLE}) {
         stampRotation = ANGLE;
       }
-  
+
       pendrawspritefromurl({url,x,y}) {
         var scaleMultiplier = canvas.width / Scratch.vm.runtime.stageWidth;
         if(!textures.hasOwnProperty(url)){
@@ -2145,15 +2145,15 @@
         }
         drawImage(textures[url].texture, stampWidth * scaleMultiplier, stampHeight * scaleMultiplier, (x) * scaleMultiplier, (y) * scaleMultiplier, stampRotation - 90);
       }
-  
+
       gettargetstagewidth({}) {
         return screenWidth;
       }
-  
+
       gettargetstageheight({}) {
         return screenHeight;
       }
-  
+
       pendrawtexturedtrifromurl({url, trianglepoints, triangleuvs}) {
         var scalemultiplyer = canvas.width / Scratch.vm.runtime.stageWidth;
         if(!textures.hasOwnProperty(url)){
@@ -2167,30 +2167,30 @@
         var uvarray = triangleuvs.split(",");
         drawTexturedTri(textures[url].texture, pointsarray, uvarray);
       }
-  
+
       precachetextures({uri,clamp}) {
         coolcash(uri, clamp === 'true');
       }
-  
+
       setpenstrechandsquash({width,height}) {
         stampWidth = width;
         stampHeight = height;
       }
-  
+
       settargetsw({width,height}) {
         screenWidth = width;
         screenHeight = height;
       }
-  
+
       getcostumedata({costu},util) {
         let fileData = getspritecostume(util,costu);
         return fileData;
       }
-  
+
       coordBlock({c1,c2,c3,c4,c5,c6}) {
         return c1 + "," + c2 + "," + c3 + "," + c4 + "," + c5 + "," + c6;
       }
-  
+
       settripointcolour({pointmenu,color,T}) {
         if (pointmenu == "1") {
           triangleColors[0] = hexToRgb(color).r / 255;
@@ -2219,7 +2219,7 @@
           TriangleZPositionArray[2] = Z;
         }
       }
-  
+
       setstampcolor({color,T}) {
         let convertr = hexToRgb(color).r / 255;
         let convertg = hexToRgb(color).g / 255;
@@ -2237,7 +2237,7 @@
         quadColors[9] = convertg;
         quadColors[10] = convertb;
         quadColors[11] = converta;
-  
+
         quadColors[12] = convertr;
         quadColors[13] = convertg;
         quadColors[14] = convertb;
@@ -2252,6 +2252,6 @@
         quadColors[23] = converta;
       }
     }
-  
+
     Scratch.extensions.register(new PenPlus());
   })(Scratch);

@@ -4,7 +4,7 @@
 
 (function(Scratch) {
   "use strict";
-  
+
   const CaseParam = {
     LOWERCASE: "lowercase",
     UPPERCASE: "uppercase",
@@ -14,10 +14,10 @@
 
   let splitCache;
   let matchCache;
-  
+
   class StringsExt {
     constructor () {}
-    
+
     _initCaseMenu () {
       return [
         {
@@ -38,7 +38,7 @@
         }
       ];
     }
-    
+
     getInfo () {
       return {
         // id "text" could conflict with Scratch Lab's Animated Text
@@ -114,9 +114,9 @@
               }
             }
           },
-          
+
           "---",
-          
+
           {
             opcode: "replace",
             blockType: Scratch.BlockType.REPORTER,
@@ -151,9 +151,9 @@
               }
             }
           },
-          
+
           "---",
-          
+
           {
             opcode: "unicodeof",
             blockType: Scratch.BlockType.REPORTER,
@@ -176,7 +176,7 @@
               }
             }
           },
-          
+
           "---",
           {
             opcode: "replaceRegex",
@@ -243,9 +243,9 @@
               }
             }
           },
-          
+
           "---",
-          
+
           {
             opcode: "identical",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -261,9 +261,9 @@
               }
             }
           },
-          
+
           "---",
-          
+
           {
             opcode: "isCase",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -305,49 +305,49 @@
         }
       };
     }
-      
+
     identical(args, util) {
       // Purposefully no casting, because
       // types ARE differentiated in this block
       return args.OPERAND1 === args.OPERAND2;
     }
-    
+
     unicodeof(args, util) {
       const chars = Array.from(args.STRING.toString());
       return chars.map((char) => char.charCodeAt(0)).join(" ");
     }
-    
+
     unicodefrom(args, util) {
       return String.fromCharCode(Number(args.NUM) || 0);
     }
-    
+
     letters_of(args, util) {
       args.STRING = args.STRING.toString();
       args.LETTER1 = Number(args.LETTER1) || 0;
       args.LETTER2 = Number(args.LETTER2) || 0;
       return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);
     }
-    
+
     count(args, util) {
       //.toLowerCase() for case insensitivity
       args.STRING = args.STRING.toString().toLowerCase();
       args.SUBSTRING = args.SUBSTRING.toString().toLowerCase();
-      
+
       return args.STRING.split(args.SUBSTRING).length - 1;
     }
-    
+
     _caseInsensitiveRegex(str) {
       return new RegExp(
         str.replaceAll(/[^a-zA-Z0-9]/g, "\\$&"),
         "gi"
       );
     }
-    
+
     split(args, util) {
       args.STRING = args.STRING.toString();
       args.SPLIT = args.SPLIT.toString();
       args.ITEM = Number(args.ITEM) || 0;
-      
+
       // Cache the last split
       if (!(
         splitCache &&
@@ -355,7 +355,7 @@
         splitCache.split === args.SPLIT
       )) {
         const regex = this._caseInsensitiveRegex(args.SPLIT);
-        
+
         splitCache = {
           string: args.STRING,
           split: args.SPLIT,
@@ -364,45 +364,45 @@
       }
       return splitCache.arr[args.ITEM - 1] || "";
     }
-    
+
     replace(args, util) {
       args.STRING = args.STRING.toString();
       args.SUBSTRING = args.SUBSTRING.toString();
-      
+
       args.REPLACE = args.REPLACE.toString();
-      
+
       const regex = this._caseInsensitiveRegex(args.SUBSTRING);
-      
+
       return args.STRING.replace(regex, args.REPLACE);
     }
-    
+
     indexof(args, util) {
       // .toLowerCase() for case insensitivity
       args.STRING = args.STRING.toString().toLowerCase();
       args.SUBSTRING = args.SUBSTRING.toString().toLowerCase();
-      
+
       // Since both arguments are casted to strings beforehand,
       // we don't have to worry about type differences
       // like in the item number of in list block
       const found = args.STRING.indexOf(args.SUBSTRING);
-      
+
       // indexOf returns -1 when no matches are found
       return found === -1 ? 0 : found + 1;
     }
-    
+
     repeat(args, util) {
       args.STRING = args.STRING.toString();
       args.REPEAT = Number(args.REPEAT) || 0;
       return args.STRING.repeat(args.REPEAT);
     }
-    
+
     replaceRegex(args, util) {
       try {
         args.STRING = args.STRING.toString();
         args.REPLACE = args.REPLACE.toString();
         args.REGEX = args.REGEX.toString();
         args.FLAGS = args.FLAGS.toString();
-        
+
         return args.STRING.replace(
           new RegExp(args.REGEX, args.FLAGS),
           args.REPLACE
@@ -412,14 +412,14 @@
         return "";
       }
     }
-    
+
     matchRegex(args, util) {
       try {
         args.STRING = args.STRING.toString();
         args.REGEX = args.REGEX.toString();
         args.FLAGS = args.FLAGS.toString();
         args.ITEM = Number(args.ITEM) || 0;
-        
+
         // Cache the last matched string
         if (!(
           matchCache &&
@@ -429,7 +429,7 @@
         )) {
           const newFlags = args.FLAGS.includes("g") ? args.FLAGS : args.FLAGS + "g";
           const regex = new RegExp(args.REGEX, newFlags);
-          
+
           matchCache = {
             string: args.STRING,
             regex: args.REGEX,
@@ -443,20 +443,20 @@
         return "";
       }
     }
-    
+
     testRegex(args, util) {
       try {
         args.STRING = args.STRING.toString();
         args.REGEX = args.REGEX.toString();
         args.FLAGS = args.FLAGS.toString();
-        
+
         return new RegExp(args.REGEX, args.FLAGS).test(args.STRING);
       } catch(e) {
         console.error(e);
         return false;
       }
     }
-    
+
     isCase(args, util) {
       const string = args.STRING.toString();
       const textCase = args.TEXTCASE.toString();
@@ -477,7 +477,7 @@
         default: return false;
       }
     }
-    
+
     toCase(args, util) {
       const string = args.STRING.toString();
       const textCase = args.TEXTCASE.toString();
@@ -503,6 +503,6 @@
       }
     }
   }
-  
+
   Scratch.extensions.register(new StringsExt());
 })(Scratch);
