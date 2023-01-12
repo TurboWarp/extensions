@@ -45,7 +45,7 @@
         ws.close();
       }, 5000);
     });
-    
+
     ws.close();
     clearTimeout(timeoutId);
 
