@@ -49,7 +49,7 @@
                     {
                         opcode: 'encodeMD5',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Encrypt [string] with MD5',
+                        text: 'Hash [string] with MD5',
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
