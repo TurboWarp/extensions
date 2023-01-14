@@ -21,7 +21,7 @@
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'TurboWarp'
+                                defaultValue: 'apple'
                             },
                             code: {
                                 type: Scratch.ArgumentType.STRING,
@@ -53,7 +53,7 @@
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'TurboWarp'
+                                defaultValue: 'apple'
                             },
                             hash: {
                                 type: Scratch.ArgumentType.STRING,
