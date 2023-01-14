@@ -12,7 +12,7 @@
                 color2: '#739fee',
                 color3: '#83aaf0',
                 menuIconURI: icon2,
-				blockIconURI: icon,
+                blockIconURI: icon,
                 blocks: [
                     {
                         opcode: 'encode',
@@ -127,11 +127,11 @@
                         }
                     },
                 ],
-				menus: {
-					Code: {
-						acceptReporters: true,
-						items: ['UNICODE']
-					},
+                menus: {
+                    Code: {
+                        acceptReporters: true,
+                        items: ['UNICODE']
+                    },
                     encode: {
                         acceptReporters: true,
                         items: ['Base64','URL']
@@ -140,7 +140,7 @@
                         acceptReporters: true,
                         items: ['MD5']
                     }
-				}
+                }
             };
         }
         encode(args) {
@@ -178,15 +178,15 @@
                     return String(args.string).charCodeAt(0);
             }
             return 0;
-		}
+        }
         Restorecode(args) {
             switch (args.CodeList) {
                 case 'UNICODE':
                     return String.fromCharCode(args.string)
             }
             return '';
-		}
-        Randomstrings({position}) {	
+        }
+        Randomstrings({position}) {    
             position = position || 32;
             let t = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
             let a = t.length;
@@ -196,7 +196,7 @@
             }
             return string;
         }
-        Fontgenerationstring({wordbank,position}) {	
+        Fontgenerationstring({wordbank,position}) {    
             position = position || 32;
             let t = String(wordbank);
             let a = t.length;
