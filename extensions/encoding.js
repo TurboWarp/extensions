@@ -103,7 +103,7 @@
                     {
                         opcode: 'Randomstrings',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Randomly generated [position] bit string',
+                        text: 'Randomly generated [position] character string',
                         arguments: {
                             position: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -114,7 +114,7 @@
                     {
                         opcode: 'Fontgenerationstring',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Use [wordbank] to generate a random [position] bit string',
+                        text: 'Use [wordbank] to generate a random [position] character string',
                         arguments: {
                             wordbank: {
                                 type: Scratch.ArgumentType.STRING,
