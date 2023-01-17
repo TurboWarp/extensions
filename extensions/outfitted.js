@@ -85,7 +85,7 @@
       setUriSize({Size},util){
         UriSize = Size
       }
-      getSpriteData({},util)
+      getSpriteData(vars,util)
       {
         let target = util.target;
         let dataURI = target.sprite.costumes[target.currentCostume].asset.encodeDataURI();
