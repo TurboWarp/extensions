@@ -120,21 +120,24 @@
         padding: 8px;
         background-color: #4c97ff;
         border-radius: 8px;
+        border: none;
+        font: inherit;
+        cursor: pointer;
+        color: white;
+        text-decoration: none;
       }
       .buttons > *:active {
         opacity: 0.8;
       }
       .buttons .copy {
-        border: none;
-        font: inherit;
-        cursor: pointer;
         margin: 0 8px 0 0;
-        color: white;
       }
       .buttons .open {
-        text-decoration: none;
         background-color: #ff4c4c;
         color: white;
+      }
+      .buttons :disabled {
+        opacity: 0.5;
       }
 
       footer {
@@ -172,14 +175,14 @@
       <p>Unlike custom extensions on other websites, extensions listed here aren't limited by the extension sandbox, so they are a lot more powerful.</p>
       <p>Every extension here has been reviewed by the TurboWarp developers for security and quality.</p>
       <p class="warning">Extensions on this site are not compatible with Scratch. Projects that use these extensions cannot be uploaded to the Scratch website.</p>
-      <p class="warning">Extensions listed on this site <b>will not work in the desktop app</b> unless you install <a href="https://github.com/TurboWarp/desktop/releases/tag/v1.7.0-beta.0">v1.7.0-beta.0</a>.</p>
+      <p class="warning">Extensions listed on this site <b>will not work in the desktop app</b> unless you install <a href="https://github.com/TurboWarp/desktop/releases/tag/v1.7.0-beta.2">v1.7.0-beta.2</a>.</p>
     </div>
 
     <%
     const getLinkToRun = (extensionPath) => `https://turbowarp.org/editor?extension=${host}${extensionPath}`;
     %>
 
-    <% if (!isProduction) { %>
+    <% if (mode === "development") { %>
       <div class="section">
         <div class="development-tools">
           <h2>Development Server Tools</h2>
@@ -220,12 +223,57 @@
       });
     </script>
 
+    <% if (mode === 'desktop') { %>
+    <script>
+      // Mock API for testing outside of desktop app
+      if (typeof TWD === 'undefined') {
+        var TWD = {
+          extensions: {
+            loadExtension: (url) => new Promise((resolve, reject) => {
+              console.log(`MOCK: Loading ${url}...`);
+              setTimeout(() => {
+                console.log(`MOCK: Loaded ${url}`);
+                if (Math.random() > 0.5) {
+                  resolve();
+                } else {
+                  reject(new Error('Demo error'));
+                }
+              }, Math.random() * 1000 + 50);
+            }),
+          },
+        };
+      }
+
+      document.addEventListener('click', (e) => {
+        var toLoad = e.target.getAttribute('data-load');
+        if (toLoad) {
+          e.target.classList.add('loading');
+          e.target.disabled = true;
+          TWD.extensions.loadExtension(toLoad)
+            .then(() => {
+              e.target.disabled = false;
+              e.target.classList.remove('loading');
+            })
+            .catch((error) => {
+              alert(error);
+              e.target.disabled = false;
+              e.target.classList.remove('loading');
+            });
+        }
+      });
+    </script>
+    <% } %>
+
     <div class="section">
       <%
       const url = (extensionFile) => `
         <div class="buttons">
           <button class="copy" data-copy="${host}${extensionFile}.js">Copy URL</button>
-          <a href="${getLinkToRun(`${extensionFile}.js`)}" class="open">Open Extension</a>
+          ${mode === "desktop" ? (`
+            <button class="open" data-load="${host}${extensionFile}.js">Add Extension</button>
+          `) : (`
+            <a href="${getLinkToRun(`${extensionFile}.js`)}" class="open">Open Extension</a>
+          `)}
         </div>
       `;
 
@@ -251,7 +299,7 @@
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('gamepad') %>" class="invert-dark">
+          <img loading="lazy" src="<%= img('gamepad') %>">
           <h2>Gamepad</h2>
           <p>Directly access gamepads instead of just mapping buttons to keys.</p>
           <%- url('gamepad') %>
@@ -287,7 +335,7 @@
 
         <div class="extension">
           <img loading="lazy" src="<%= img('cursor') %>" style="filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));">
-          <h2>Cursor</h2>
+          <h2>Mouse Cursor</h2>
           <p>Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.</p>
           <%- url('cursor') %>
         </div>
@@ -332,6 +380,13 @@
           <h2>Sound</h2>
           <p>Play sounds from URLs.</p>
           <%- url('sound') %>
+        </div>
+
+        <div class="extension">
+          <img loading="lazy" src="<%= img('text') %>">
+          <h2>Text</h2>
+          <p>Manipulate characters and text.</p>
+          <%- url('text') %>
         </div>
       </div>
     </div>

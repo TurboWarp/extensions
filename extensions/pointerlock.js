@@ -23,8 +23,10 @@
     const x = mouse._clientX + movementX;
     const y = mouse._clientY - movementY;
     mouse._clientX = x;
+    // @ts-expect-error
     mouse._scratchX = mouse.runtime.stageWidth * ((x / width) - 0.5);
     mouse._clientY = y;
+    // @ts-expect-error
     mouse._scratchY = mouse.runtime.stageWidth * ((y / height) - 0.5);
     if (typeof isDown === 'boolean') {
       const data = {
@@ -44,6 +46,7 @@
   };
 
   document.addEventListener('mousedown', e => {
+    // @ts-expect-error
     if (canvas.contains(e.target)) {
       if (isLocked) {
         postMouseData(e, true);
@@ -55,6 +58,7 @@
   document.addEventListener('mouseup', e => {
     if (isLocked) {
       postMouseData(e, false);
+      // @ts-expect-error
     } else if (isPointerLockEnabled && canvas.contains(e.target)) {
       canvas.requestPointerLock();
     }
