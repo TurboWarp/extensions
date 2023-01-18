@@ -391,6 +391,16 @@
 			y / this._canvasHeight * canvas.clientHeight
 		);
 	}.bind(mouse);
+	
+	// This is used by <touching [mouse-pointer v]?>.
+	// It is also broken in a similar way.
+	mouse.getClientX = function() {
+		return this._clientX / this._canvasWidth * canvas.clientWidth
+	}.bind(mouse);
+	
+	mouse.getClientY = function() {
+		return this._clientY / this._canvasHeight * canvas.clientHeight
+	}.bind(mouse);
 	// END OF WARNING
 	
 	
