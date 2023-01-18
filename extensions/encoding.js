@@ -189,7 +189,7 @@
                 case 'Base64':
                     return btoa(encodeURIComponent(args.string));
                 case 'URL':
-                    return encodeURIComponent(args.string)
+                    return encodeURIComponent(args.string);
             }
             return '';
         }
@@ -220,11 +220,11 @@
         Restorecode(args) {
             switch (args.CodeList) {
                 case 'UNICODE':
-                    return String.fromCharCode(args.string)
+                    return String.fromCharCode(args.string);
             }
             return '';
         }
-        Randomstrings({position}) {    
+        Randomstrings({position}) {
             position = position || 32;
             let t = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
             let a = t.length;
@@ -234,7 +234,7 @@
             }
             return string;
         }
-        Fontgenerationstring({wordbank,position}) {    
+        Fontgenerationstring({wordbank,position}) {
             position = position || 32;
             let t = String(wordbank);
             let a = t.length;
