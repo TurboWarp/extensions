@@ -1,4 +1,6 @@
 (function () {
+  'use strict';
+
   const ext = {};
 
   ext._getStatus = () => ({
@@ -10,7 +12,7 @@
 
   ext.testReporterWait = (delay, callback) => {
     setTimeout(() => {
-      callback(Math.random())
+      callback(Math.random());
     }, delay * 1000);
   };
 

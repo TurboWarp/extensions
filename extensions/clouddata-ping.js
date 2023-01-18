@@ -33,7 +33,7 @@
       ws.onopen = () => {
         setTimeout(() => {
           resolve(true);
-        }, 2000)
+        }, 2000);
       };
       ws.onclose = () => {
         resolve(false);
@@ -45,7 +45,7 @@
         ws.close();
       }, 5000);
     });
-    
+
     ws.close();
     clearTimeout(timeoutId);
 

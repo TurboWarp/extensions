@@ -1,3 +1,5 @@
+/* eslint-disable no-empty-pattern */
+/* eslint-disable no-prototype-builtins */
 (function(Scratch) {
   'use strict';
 
@@ -7,8 +9,10 @@
 
   const EXAMPLE_IMAGE = 'https://extensions.turbowarp.org/dango.png';
 
-  const canvas = Scratch.renderer.canvas
-  const gl = Scratch.renderer._gl
+  const DEPRACATED_BLOCK = "data:image/png;base64,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";
+
+  const canvas = Scratch.renderer.canvas;
+  const gl = Scratch.renderer._gl;
 
   // TODO: see how these differ from Scratch, if at all
   gl.enable(gl.BLEND);
@@ -25,41 +29,41 @@
 
   const m4 = (function() {
     /*!
-     * 4x4 matrix operation code is from https://webglfundamentals.org/webgl/resources/m4.js
-     * We have made some changes:
-     *  - Fixed type errors
-     *  - Changed code formatting
-     *  - Removed unused functions
-     *
-     * Copyright 2021 GFXFundamentals.
-     * All rights reserved.
-     *
-     * Redistribution and use in source and binary forms, with or without
-     * modification, are permitted provided that the following conditions are
-     * met:
-     *
-     *     * Redistributions of source code must retain the above copyright
-     * notice, this list of conditions and the following disclaimer.
-     *     * Redistributions in binary form must reproduce the above
-     * copyright notice, this list of conditions and the following disclaimer
-     * in the documentation and/or other materials provided with the
-     * distribution.
-     *     * Neither the name of GFXFundamentals. nor the names of his
-     * contributors may be used to endorse or promote products derived from
-     * this software without specific prior written permission.
-     *
-     * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-     * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-     * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-     * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-     * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-     * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-     * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-     * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-     * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-     * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-     * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-     */
+      * 4x4 matrix operation code is from https://webglfundamentals.org/webgl/resources/m4.js
+      * We have made some changes:
+      *  - Fixed type errors
+      *  - Changed code formatting
+      *  - Removed unused functions
+      *
+      * Copyright 2021 GFXFundamentals.
+      * All rights reserved.
+      *
+      * Redistribution and use in source and binary forms, with or without
+      * modification, are permitted provided that the following conditions are
+      * met:
+      *
+      *     * Redistributions of source code must retain the above copyright
+      * notice, this list of conditions and the following disclaimer.
+      *     * Redistributions in binary form must reproduce the above
+      * copyright notice, this list of conditions and the following disclaimer
+      * in the documentation and/or other materials provided with the
+      * distribution.
+      *     * Neither the name of GFXFundamentals. nor the names of his
+      * contributors may be used to endorse or promote products derived from
+      * this software without specific prior written permission.
+      *
+      * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+      * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+      * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+      * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+      * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+      * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+      * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+      * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+      * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+      * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+      * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+      */
 
     /**
      * An array or typed array with 3 values.
@@ -1483,6 +1487,7 @@
   var vertexShaderCode = [
     'attribute vec4 a_position;',
     'attribute vec2 a_texcoord;',
+    'attribute float a_zOffset;',
     'attribute vec4 aVertexColor;',
     '',
     'uniform mat4 u_matrix;',
@@ -1491,7 +1496,7 @@
     'varying vec4 vColor;',
     '',
     'void main() {',
-    'gl_Position = u_matrix * a_position;',
+    'gl_Position = u_matrix * (a_position * a_zOffset * float(128)) + vec4(0,0,1,a_zOffset);',
     'v_texcoord = a_texcoord;',
     'vColor = aVertexColor;',
     '}'
@@ -1528,6 +1533,15 @@
     1, 1,
   ];
 
+  var quadZPositionArray = [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ];
+
   var quadColors = [
     1.0,  1.0,  1.0,  1.0,
     1.0,  1.0,  1.0,  1.0,
@@ -1535,6 +1549,12 @@
     1.0,  1.0,  1.0,  1.0,
     1.0,  1.0,  1.0,  1.0,
     1.0,  1.0,  1.0,  1.0
+  ];
+
+  var TriangleZPositionArray = [
+    1,
+    1,
+    1
   ];
 
   var triangleColors = [
@@ -1546,6 +1566,8 @@
   gl.bindBuffer(gl.ARRAY_BUFFER, quadPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadPositions), gl.STATIC_DRAW);
 
+  var quadZPositionBuffer = gl.createBuffer();
+
   var quadTexCoordBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, quadTexCoordBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadCoords), gl.STATIC_DRAW);
@@ -1555,6 +1577,7 @@
   var triPosBuffer = gl.createBuffer();
   var triUVBuffer = gl.createBuffer();
   var tricolorBuffer = gl.createBuffer();
+  var triZBuffer = gl.createBuffer();
 
   /**
    * @param {string} code
@@ -1601,6 +1624,7 @@
   // look up where the vertex data needs to go.
   const positionLocation = gl.getAttribLocation(program, 'a_position');
   const texcoordLocation = gl.getAttribLocation(program, 'a_texcoord');
+  const zLocation = gl.getAttribLocation(program, 'a_zOffset');
   const colorLocation = gl.getAttribLocation(program, 'aVertexColor');
 
   // lookup uniforms
@@ -1660,12 +1684,18 @@
     // Tell WebGL to use our shader program pair
     gl.useProgram(program);
 
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadZPositionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadZPositionArray), gl.STATIC_DRAW);
+
     gl.bindBuffer(gl.ARRAY_BUFFER, quadColorBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadColors), gl.STATIC_DRAW);
     // Setup the attributes to pull data from our buffers
     gl.bindBuffer(gl.ARRAY_BUFFER, quadPositionBuffer);
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadZPositionBuffer);
+    gl.enableVertexAttribArray(zLocation);
+    gl.vertexAttribPointer(zLocation, 1, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, quadTexCoordBuffer);
     gl.enableVertexAttribArray(texcoordLocation);
     gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
@@ -1679,7 +1709,7 @@
     // this matrix will translate our quad to dstX, dstY
     matrix = m4.translate(matrix, dstX, dstY, 0);
 
-    matrix = m4.zRotate(matrix,degreesToRadians(stampRotation))
+    matrix = m4.zRotate(matrix,degreesToRadians(stampRotation));
 
     // this matrix will scale our 1 unit quad
     // from 1 unit to texWidth, texHeight units
@@ -1704,6 +1734,9 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, triUVBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleUvs), gl.STATIC_DRAW);
 
+    gl.bindBuffer(gl.ARRAY_BUFFER, triZBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(TriangleZPositionArray), gl.STATIC_DRAW);
+
     gl.bindBuffer(gl.ARRAY_BUFFER, tricolorBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleColors), gl.STATIC_DRAW);
 
@@ -1717,6 +1750,9 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, triUVBuffer);
     gl.enableVertexAttribArray(texcoordLocation); //
     gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, triZBuffer);
+    gl.enableVertexAttribArray(zLocation); //
+    gl.vertexAttribPointer(zLocation, 1, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, tricolorBuffer);
     gl.enableVertexAttribArray(colorLocation); //
     gl.vertexAttribPointer(colorLocation, 4, gl.FLOAT, false, 0, 0);
@@ -1741,9 +1777,9 @@
 
   function hexToRgb(hex) {
     return {
-      r: Math.floor(hex/65536),
-      g: Math.floor(hex/256)%256,
-      b: hex%256
+      r: Math.floor(hex / 65536),
+      g: Math.floor(hex / 256) % 256,
+      b: hex % 256
     };
   }
 
@@ -1755,7 +1791,7 @@
 
   async function coolcash(uri, clamp){
     if (!textures.hasOwnProperty(uri)) {
-      textures[uri] = await loadImageAndCreateTextureInfo(uri, clamp)
+      textures[uri] = await loadImageAndCreateTextureInfo(uri, clamp);
     }
   }
 
@@ -1771,82 +1807,124 @@
         blockIconURI: "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzNy44NjkyMSIgaGVpZ2h0PSI0OC44NTI3MiIgdmlld0JveD0iMCwwLDM3Ljg2OTIxLDQ4Ljg1MjcyIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgY3g9IjIzNy41NDM0IiBjeT0iMTg0LjAwNTYiIHI9IjkuOTg1NDkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBpZD0iY29sb3ItMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2ZkNWU5Ii8+PC9yYWRpYWxHcmFkaWVudD48L2RlZnM+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIyMy4zMDE4MSwtMTYzLjc2MzA5KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMjUuMTYzNTYsMTkzLjIwMDIxYzAuNTYxNTMsLTEuMTA3NDYgMi4yMzQwNCwtMy4yODU4MyAyLjIzNDA0LC0zLjI4NTgzYzAsMCAwLjU5NDQyLDEuODIzOTEgMS4yMjQ0OSwyLjU5NTc1YzAuNjMyMTIsMC43NzQzNSAyLjA4ODc4LDEuNDc0ODQgMi4wODg3OCwxLjQ3NDg0YzAsMCAtMi4xOTQ0NiwxLjI4MTQxIC0zLjMyNDIxLDEuNzI2OTVjLTEuMTEwMzIsMC40Mzc4NyAtMy4zOTcsMC45MjM2NyAtMy4zOTcsMC45MjM2N2MwLDAgMC41OTk3NCwtMi4zMDI5OSAxLjE3MzksLTMuNDM1Mzh6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjI3LjYxMTMxLDE4OS4yOTIwM2wxNC45NTE1NCwtMTUuMjcxOTNjMCwwIDIuMjA2LDAuODk1MDUgMi45NTc3NiwxLjYzMDQ3YzAuODY4OCwwLjg0OTkxIDEuOTU0ODksMy4xNzUzOCAxLjk1NDg5LDMuMTc1MzhsLTE2LjEyNjMxLDE1LjE2NTE0YzAsMCAtMi4wMDYzOSwtMS4xMjc4NiAtMi42MDkyMSwtMS44ODU2OGMtMC42NDA4MiwtMC44MDU2IC0xLjEyODY4LC0yLjgxMzM3IC0xLjEyODY4LC0yLjgxMzM3eiIgZmlsbD0idXJsKCNjb2xvci0xKSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIzNy43NTY5OSwxNzIuOTUyMTNjMCwwIDAuOTg2MTksMS4wNTA2MiAyLjM5NjA4LC0wLjI3MDcyYzEuODAzLC0xLjY4OTc3IDQuMjMxMDUsLTUuOTAxNDcgNS40NDc0MywtNi41ODcwN2MxLjM3NDgsLTAuNzc0ODkgMy45MDQxNCwwLjIzNjM5IDMuOTA0MTQsMC4yMzYzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzYuMDc5ODEsMTcyLjMxMTM1YzAsLTAuNjkwMzYgMC41NTk2NCwtMS4yNSAxLjI1LC0xLjI1YzAuNjkwMzYsMCAxLjI1LDAuNTU5NjQgMS4yNSwxLjI1YzAsMC42OTAzNiAtMC41NTk2NCwxLjI1IC0xLjI1LDEuMjVjLTAuNjkwMzYsMCAtMS4yNSwtMC41NTk2NCAtMS4yNSwtMS4yNXoiIGZpbGw9IiM1NzVlNzUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTI1MC45OTk3OSwxNjQuNzI4NzdjMCwwIDEuOTEzOTYsLTEuMDUxOTMgNC4yMDAwOSwxLjMyMzU4YzIuNDI2ODUsMi41MjE3MyAwLjYwNTc2LDQuNDQzNDQgMC42MDU3Niw0LjQ0MzQ0bC04LjMzMDE0LDguMjIzMzVjMCwwIC0wLjc1MDQsLTIuMDcxMTIgLTEuNTYyNDksLTIuNzk0OTRjLTAuODI1MjQsLTAuNzM1NTUgLTMuMzUwMTYsLTEuNTgzNzMgLTMuMzUwMTYsLTEuNTgzNzN6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMzkuODkzMzcsMjAxLjcxMTE4KSBzY2FsZSgwLjg3MjM3LDAuODcyMzcpIiBmb250LXNpemU9IjQwIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjZThlYmY0IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iU2FucyBTZXJpZiIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHRzcGFuIHg9IjAiIGR5PSIwIj4rPC90c3Bhbj48L3RleHQ+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTYuNjk4MTkxNTI3MDE2NDYyOjE2LjIzNjkxNDk5OTk5OTk4Mi0tPg==",
 
         blocks: [
-          {
-            opcode: "coordBlock",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "[c1][c2][c3][c4][c5][c6]",
-            arguments: {
-              c1: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              },
-              c2: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              },
-              c3: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              },
-              c4: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              },
-              c5: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              },
-              c6: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              }
-            }
-          },
+          //Utility
+          '---',
           {
             opcode: "precachetextures",
             blockType: Scratch.BlockType.COMMAND,
             text: "Start loading image from url: [uri] clamp the texture? [clamp]",
             arguments: {
               uri: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: EXAMPLE_IMAGE
               },
               clamp: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 menu: 'TFmenu'
               }
             }
           },
           {
-            opcode: "settargetsw",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Change the target screen size to width[width] and height[height]",
+            opcode: "coordBlock",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[c1][c2][c3][c4][c5][c6]",
             arguments: {
-              width: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: "480"
+              c1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
               },
-              height: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: "360"
+              c2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
+              },
+              c3: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
+              },
+              c4: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
+              },
+              c5: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
+              },
+              c6: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0"
               }
             }
           },
+          {
+            opcode: "converttocanvascoords",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Convert [scrcoord] to [coordTypes] units on the axis [coordmenu]",
+            arguments: {
+              coordmenu: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'coordMenu'
+              },
+              scrcoord: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
+              coordTypes: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'coordTypes'
+              }
+            }
+          },
+          {
+            opcode: "rgbtoSColor",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Convert R[R] G[G] B[B] to Hex",
+            arguments: {
+              R: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '255'
+              },
+              G: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '255'
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '255'
+              }
+            }
+          },
+          {
+            opcode: "getcostumedata",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Get data uri of costume[costu]",
+            arguments: {
+              costu: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "1"
+              },
+              spr: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "1"
+              }
+            }
+          },
+          //Stamps
+          '---',
           {
             opcode: "pendrawspritefromurl",
             blockType: Scratch.BlockType.COMMAND,
             text: "Stamp the image from url: [url] at x:[x] y:[y]",
             arguments: {
               url: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: EXAMPLE_IMAGE
               },
               x: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "240"
               },
               y: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "180"
               }
             }
@@ -1857,7 +1935,7 @@
             text: "Set stamp rotation to [ANGLE]",
             arguments: {
               ANGLE: {
-                type:  Scratch.ArgumentType.ANGLE,
+                type: Scratch.ArgumentType.ANGLE,
                 defaultValue: "90"
               }
             }
@@ -1868,7 +1946,7 @@
             text: "Stamp Rotation",
             arguments: {
               ANGLE: {
-                type:  Scratch.ArgumentType.ANGLE,
+                type: Scratch.ArgumentType.ANGLE,
                 defaultValue: "90"
               }
             }
@@ -1879,11 +1957,11 @@
             text: "Set stamp width to [width] and height to [height]",
             arguments: {
               width: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "64"
               },
               height: {
-                type:  Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "64"
               }
             }
@@ -1908,45 +1986,32 @@
             text: "Tint stamp by [color] and transparency[T](0-255)",
             arguments: {
               color: {
-                type:  Scratch.ArgumentType.COLOR,
+                type: Scratch.ArgumentType.COLOR,
                 defaultValue: '#ffffff'
               },
-              T:{
-                type:  Scratch.ArgumentType.NUMBER,
+              T: {
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
             }
           },
-          {
-            opcode: "getcostumedata",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Get data uri of costume[costu]",
-            arguments: {
-              costu: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: "1"
-              },
-              spr: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: "1"
-              }
-            }
-          },
+          //Triangles
+          "---",
           {
             opcode: "pendrawtexturedtrifromurl",
             blockType: Scratch.BlockType.COMMAND,
             text: "Draw a triangle with points at(seperated by commas)[trianglepoints] and the uvs of [triangleuvs] with the image from url:[url]",
             arguments: {
               url: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: EXAMPLE_IMAGE
               },
               trianglepoints: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "0,0,10,10,0,10"
               },
               triangleuvs: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "0,0,1,1,0,1"
               }
             }
@@ -1957,20 +2022,54 @@
             text: "Tint point [pointmenu] by [color] and transparency[T](0-255)",
             arguments: {
               pointmenu: {
-                type:  Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.STRING,
                 menu: 'pointmenu'
               },
               color: {
-                type:  Scratch.ArgumentType.COLOR,
+                type: Scratch.ArgumentType.COLOR,
                 defaultValue: '#ffffff'
               },
-              T:{
-                type:  Scratch.ArgumentType.NUMBER,
+              T: {
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
             }
           },
           {
+            opcode: "setTriPointZ",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Set point [pointmenu]'s depth to [Z]",
+            arguments: {
+              pointmenu: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'pointmenu'
+              },
+              Z: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '1'
+              }
+            }
+          },
+          //Depracated!
+          "---",
+          {
+            blockIconURI: DEPRACATED_BLOCK,
+            opcode: "settargetsw",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Change the target screen size to width[width] and height[height]",
+            arguments: {
+              width: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "480"
+              },
+              height: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "360"
+              }
+            }
+          },
+          {
+            blockIconURI: DEPRACATED_BLOCK,
             opcode: "gettargetstagewidth",
             blockType: Scratch.BlockType.REPORTER,
             text: "Target Stage Width",
@@ -1978,50 +2077,13 @@
             }
           },
           {
+            blockIconURI: DEPRACATED_BLOCK,
             opcode: "gettargetstageheight",
             blockType: Scratch.BlockType.REPORTER,
             text: "Target Stage Height",
             arguments: {
             }
           },
-          {
-            opcode: "converttocanvascoords",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Convert [scrcoord] to [coordTypes] units on the axis [coordmenu]",
-            arguments: {
-              coordmenu: {
-                type:  Scratch.ArgumentType.STRING,
-                menu: 'coordMenu'
-              },
-              scrcoord: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: '0'
-              },
-              coordTypes: {
-                type:  Scratch.ArgumentType.STRING,
-                menu: 'coordTypes'
-              }
-            }
-          },
-          {
-            opcode: "rgbtoSColor",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Convert R[R] G[G] B[B] to Hex",
-            arguments: {
-              R: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: '255'
-              },
-              G: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: '255'
-              },
-              B: {
-                type:  Scratch.ArgumentType.NUMBER,
-                defaultValue: '255'
-              }
-            }
-          }
         ],
         menus: {
           coordMenu: {
@@ -2055,46 +2117,46 @@
     converttocanvascoords({coordmenu,scrcoord,coordTypes}) {
       if (coordTypes == 'Canvas') {
         if (coordmenu == "x") {
-          return scrcoord + (screenWidth/2)
+          return scrcoord + (Scratch.vm.runtime.stageWidth / 2);
         } else {
-          return (scrcoord*-1) + (screenHeight/2)
+          return (scrcoord * -1) + (Scratch.vm.runtime.stageHeight / 2);
         }
       } else {
         if (coordmenu == "x") {
-          return scrcoord - (screenWidth/2)
+          return scrcoord - (Scratch.vm.runtime.stageWidth / 2);
         } else {
-          return (scrcoord*-1) - (screenHeight/2)
+          return (scrcoord * -1) - (Scratch.vm.runtime.stageHeight / 2);
         }
       }
     }
 
     getstamprotation({}) {
-      return stampRotation
+      return stampRotation;
     }
 
     rotateStamp({ANGLE}) {
-      stampRotation = ANGLE
+      stampRotation = ANGLE;
     }
 
     pendrawspritefromurl({url,x,y}) {
-      var scaleMultiplier = canvas.width / screenWidth;
-      if(!textures.hasOwnProperty(url)){
+      var scaleMultiplier = canvas.width / Scratch.vm.runtime.stageWidth;
+      if (!textures.hasOwnProperty(url)){
         textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
       drawImage(textures[url].texture, stampWidth * scaleMultiplier, stampHeight * scaleMultiplier, (x) * scaleMultiplier, (y) * scaleMultiplier, stampRotation - 90);
     }
 
     gettargetstagewidth({}) {
-      return screenWidth
+      return screenWidth;
     }
 
     gettargetstageheight({}) {
-      return screenHeight
+      return screenHeight;
     }
 
     pendrawtexturedtrifromurl({url, trianglepoints, triangleuvs}) {
-      var scalemultiplyer = canvas.width / screenWidth;
-      if(!textures.hasOwnProperty(url)){
+      var scalemultiplyer = canvas.width / Scratch.vm.runtime.stageWidth;
+      if (!textures.hasOwnProperty(url)){
         textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
       var pointsarray = trianglepoints.split(",");
@@ -2107,7 +2169,7 @@
     }
 
     precachetextures({uri,clamp}) {
-      coolcash(uri, clamp === 'true')
+      coolcash(uri, clamp === 'true');
     }
 
     setpenstrechandsquash({width,height}) {
@@ -2121,63 +2183,73 @@
     }
 
     getcostumedata({costu},util) {
-      let fileData = getspritecostume(util,costu)
+      let fileData = getspritecostume(util,costu);
       return fileData;
     }
 
     coordBlock({c1,c2,c3,c4,c5,c6}) {
-      return c1 + "," + c2 + "," + c3 + "," + c4 + "," + c5 + "," + c6
+      return c1 + "," + c2 + "," + c3 + "," + c4 + "," + c5 + "," + c6;
     }
 
     settripointcolour({pointmenu,color,T}) {
       if (pointmenu == "1") {
-        triangleColors[0] = hexToRgb(color).r / 255
-        triangleColors[1] = hexToRgb(color).g / 255
-        triangleColors[2] = hexToRgb(color).b / 255
-        triangleColors[3] = T / 255
+        triangleColors[0] = hexToRgb(color).r / 255;
+        triangleColors[1] = hexToRgb(color).g / 255;
+        triangleColors[2] = hexToRgb(color).b / 255;
+        triangleColors[3] = T / 255;
       } else if (pointmenu == "2"){
-        triangleColors[4] = hexToRgb(color).r / 255
-        triangleColors[5] = hexToRgb(color).g / 255
-        triangleColors[6] = hexToRgb(color).b / 255
-        triangleColors[7] = T / 255
-      } else{
-        triangleColors[8] = hexToRgb(color).r / 255
-        triangleColors[9] = hexToRgb(color).g / 255
-        triangleColors[10] = hexToRgb(color).b / 255
-        triangleColors[11] = T / 255
+        triangleColors[4] = hexToRgb(color).r / 255;
+        triangleColors[5] = hexToRgb(color).g / 255;
+        triangleColors[6] = hexToRgb(color).b / 255;
+        triangleColors[7] = T / 255;
+      } else {
+        triangleColors[8] = hexToRgb(color).r / 255;
+        triangleColors[9] = hexToRgb(color).g / 255;
+        triangleColors[10] = hexToRgb(color).b / 255;
+        triangleColors[11] = T / 255;
+      }
+    }
+
+    setTriPointZ({pointmenu,Z}) {
+      if (pointmenu == "1") {
+        TriangleZPositionArray[0] = Z;
+      } else if (pointmenu == "2"){
+        TriangleZPositionArray[1] = Z;
+      } else {
+        TriangleZPositionArray[2] = Z;
       }
     }
 
     setstampcolor({color,T}) {
-      let convertr = hexToRgb(color).r / 255
-      let convertg = hexToRgb(color).g / 255
-      let convertb = hexToRgb(color).b / 255
-      let converta = T / 255
-      quadColors[0] = convertr
-      quadColors[1] = convertg
-      quadColors[2] = convertb
-      quadColors[3] = converta
-      quadColors[4] = convertr
-      quadColors[5] = convertg
-      quadColors[6] = convertb
-      quadColors[7] = converta
-      quadColors[8] = convertr
-      quadColors[9] = convertg
-      quadColors[10] = convertb
-      quadColors[11] = converta
+      let convertr = hexToRgb(color).r / 255;
+      let convertg = hexToRgb(color).g / 255;
+      let convertb = hexToRgb(color).b / 255;
+      let converta = T / 255;
+      quadColors[0] = convertr;
+      quadColors[1] = convertg;
+      quadColors[2] = convertb;
+      quadColors[3] = converta;
+      quadColors[4] = convertr;
+      quadColors[5] = convertg;
+      quadColors[6] = convertb;
+      quadColors[7] = converta;
+      quadColors[8] = convertr;
+      quadColors[9] = convertg;
+      quadColors[10] = convertb;
+      quadColors[11] = converta;
 
-      quadColors[12] = convertr
-      quadColors[13] = convertg
-      quadColors[14] = convertb
-      quadColors[15] = converta
-      quadColors[16] = convertr
-      quadColors[17] = convertg
-      quadColors[18] = convertb
-      quadColors[19] = converta
-      quadColors[20] = convertr
-      quadColors[21] = convertg
-      quadColors[22] = convertb
-      quadColors[23] = converta
+      quadColors[12] = convertr;
+      quadColors[13] = convertg;
+      quadColors[14] = convertb;
+      quadColors[15] = converta;
+      quadColors[16] = convertr;
+      quadColors[17] = convertg;
+      quadColors[18] = convertb;
+      quadColors[19] = converta;
+      quadColors[20] = convertr;
+      quadColors[21] = convertg;
+      quadColors[22] = convertb;
+      quadColors[23] = converta;
     }
   }
 
