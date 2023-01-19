@@ -34,6 +34,7 @@
 	let oldHeight = 0;
 	let xrNeedsResize = false;
 	let poseAvailible = false;
+	let enterARDone = [];
 	
 	let stageWrapper;
 	let stageWrapperParent;
@@ -95,11 +96,20 @@
 			xrHitTestSource = hts;
 		});
 		updateState();
+		
+		// [enter AR] blocks should continue after success
+		enterARDone.forEach(fn => fn());
+		enterARDone = [];
 	};
-	const onError = function() {
+	const onError = function(error) {
 		// This shouldn't set arFail, because arFail is for cases when it permanently failed.
 		// This might fail once, but work on the next attempt.
 		console.error("Even though 'immersive-ar' is supported in your browser, requesting it failed");
+		console.error(error);
+		
+		// [enter AR] blocks should continue after failure
+		enterARDone.forEach(fn => fn());
+		enterARDone = [];
 	};
 	const updateState = function() {
 		const state = !!xrSession;
@@ -113,7 +123,13 @@
 			frameLoop.stop();
 			frameLoop.start();
 		}
+		canvas.removeEventListener("click", enterAR);
 		if(state) {
+			// css "transform" doesn't work directly on domOverlay element,
+			// but works on it's children. stageWrapper needs to have "transform: scale"
+			// on it, so that is why it is placed into another div
+			div.append(stageWrapper);
+			
 			xrNeedsResize = true;
 			oldWidth  = runtime.stageWidth;
 			oldHeight = runtime.stageHeight;
@@ -393,7 +409,7 @@
 	}.bind(mouse);
 	
 	// This is used by <touching [mouse-pointer v]?>.
-	// It is also broken in a similar way.
+	// It was also broken in a similar way.
 	mouse.getClientX = function() {
 		return this._clientX / this._canvasWidth * canvas.clientWidth
 	}.bind(mouse);
@@ -402,6 +418,31 @@
 		return this._clientY / this._canvasHeight * canvas.clientHeight
 	}.bind(mouse);
 	// END OF WARNING
+	
+	
+	const enterAR = function(event) {
+		if(!xrSession) {
+			// Entering and exiting editor recreates this element
+			stageWrapper = document.querySelector("[class*='stage-wrapper_stage-canvas-wrapper']");
+			if(!stageWrapper) {
+				stageWrapper = document.querySelector("[class='sc-root']");
+				if(!stageWrapper) {
+					console.error(arFail = "Failed to get the div element of the stage");
+					return;
+				}
+				isPackaged = true;
+			}
+			stageWrapperParent = stageWrapper.parentElement;
+			
+			const noop = () => {};
+			navigator.xr.requestSession("immersive-ar", {
+				requiredFeatures: ["hit-test", "dom-overlay"],
+				domOverlay: {root: div}
+			}).then(onSuccess, event ? onError : noop);
+			// If (event) is defined, it was from click, so something went wrong.
+			// If (event) is null, it was called directly, and might've been rejected due to lack of user interaction.
+		}
+	}
 	
 	
 	
@@ -634,28 +675,10 @@
 					arFail = "shown";
 				}
 			} else {
-				if(!xrSession) {
-					// Entering and exiting editor recreates this element
-					stageWrapper = document.querySelector("[class*='stage-wrapper_stage-canvas-wrapper']");
-					if(!stageWrapper) {
-						stageWrapper = document.querySelector("[class='sc-root']");
-						if(!stageWrapper) {
-							console.error(arFail = "Failed to get the div element of the stage");
-							return;
-						}
-						isPackaged = true;
-					}
-					stageWrapperParent = stageWrapper.parentElement;
-					
-					// css "transform" doesn't work directly on domOverlay element,
-					// but works on it's children. stageWrapper needs to have "transform: scale"
-					// on it, so that is why it is placed into another div
-					div.append(stageWrapper);
-					navigator.xr.requestSession("immersive-ar", {
-						requiredFeatures: ["hit-test", "dom-overlay"],
-						domOverlay: {root: div}
-					}).then(onSuccess, onError);
-				}
+				enterAR(null);
+				canvas.removeEventListener("click", enterAR);
+				canvas.addEventListener("click", enterAR, {once: true});
+				return new Promise(resolve => enterARDone.push(resolve));
 			}
 		}
 		exitAR() {
