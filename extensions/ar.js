@@ -1,24 +1,24 @@
 (function(Scratch) {
 	"use strict";
-	
-	
-	if(!Scratch.extensions.unsandboxed) {
+
+
+	if (!Scratch.extensions.unsandboxed) {
 		throw new Error("AR extension must be run unsandboxed");
 	}
-	
-	
+
+
 	const ArgumentType = Scratch.ArgumentType;
 	const BlockType = Scratch.BlockType;
-	
+
 	const vm = Scratch.vm;
 	const renderer = vm.renderer;
 	const runtime = vm.runtime;
 	const frameLoop = runtime.frameLoop;
 	const mouse = runtime.ioDevices.mouse;
-	
+
 	let arResolution = 1;
 	let isPackaged = false;
-	
+
 	let arFail = "uninitialized";
 	let xrSession = null;
 	let xrState = false;
@@ -35,32 +35,32 @@
 	let xrNeedsResize = false;
 	let poseAvailible = false;
 	let enterARDone = [];
-	
+
 	let stageWrapper;
 	let stageWrapperParent;
 	const div = document.createElement("div");
 	document.body.append(div);
 	const canvas = Scratch.vm.renderer.canvas;
 	const gl = Scratch.vm.renderer.gl;
-	
-	
+
+
 	// Checking whether AR is supported.
 	// If not, extension should still load, to let people
 	// develop AR projects on non-AR-capable devices and then
 	// test them on AR-capable mobile devices
-	if(!window.isSecureContext) {
+	if (!window.isSecureContext) {
 		console.error(arFail = "Window is not secure context. WebXR only works in secure context");
-	} else if(!navigator.xr) {
+	} else if (!navigator.xr) {
 		console.error(arFail = "navigator.xr is not defined in the browser you are using");
 	} else {
 		gl.makeXRCompatible().catch(
 			(error) => {
-				console.error(arFail = "gl.makeXRCompatible rejected with: "+error);
+				console.error(arFail = "gl.makeXRCompatible rejected with: " + error);
 			}
 		);
 		navigator.xr.isSessionSupported("immersive-ar").then(
 			(supported) => {
-				if(!supported) {
+				if (!supported) {
 					console.error(arFail = "WebXR exists in the browser you are using, but 'immersive-ar' session type is not supported");
 				} else {
 					arFail = null;
@@ -68,8 +68,8 @@
 			}
 		);
 	}
-	
-	
+
+
 	const onSuccess = function(session) {
 		xrSession = session;
 		xrRefSpace = null;
@@ -78,7 +78,7 @@
 		hitPosition = null;
 		hitPositionAvailible = false;
 		poseAvailible = false;
-		
+
 		session.updateRenderState({
 			baseLayer: new XRWebGLLayer(session, gl, { framebufferScaleFactor: arResolution })
 		});
@@ -96,7 +96,7 @@
 			xrHitTestSource = hts;
 		});
 		updateState();
-		
+
 		// [enter AR] blocks should continue after success
 		enterARDone.forEach(fn => fn());
 		enterARDone = [];
@@ -106,49 +106,49 @@
 		// This might fail once, but work on the next attempt.
 		console.error("Even though 'immersive-ar' is supported in your browser, requesting it failed");
 		console.error(error);
-		
+
 		// [enter AR] blocks should continue after failure
 		enterARDone.forEach(fn => fn());
 		enterARDone = [];
 	};
 	const updateState = function() {
 		const state = !!xrSession;
-		if(state === xrState) return;
-		
+		if (state === xrState) return;
+
 		xrState = state;
 		renderer.draw = state ? drawXR : drawOrig;
 		renderer.xr = xrSession;
 		frameLoop.inXR = state;
-		if(frameLoop.running) {
+		if (frameLoop.running) {
 			frameLoop.stop();
 			frameLoop.start();
 		}
 		canvas.removeEventListener("pointerup", enterAR);
-		if(state) {
+		if (state) {
 			// css "transform" doesn't work directly on domOverlay element,
 			// but works on it's children. stageWrapper needs to have "transform: scale"
 			// on it, so that is why it is placed into another div
 			div.append(stageWrapper);
-			
+
 			xrNeedsResize = true;
 			oldWidth  = runtime.stageWidth;
 			oldHeight = runtime.stageHeight;
 		} else {
-			if(!isPackaged) {
+			if (!isPackaged) {
 				const borderThing = stageWrapper.children[0].children[0].style;
 				borderThing["border"] = "";
 				borderThing["border-radius"] = "";
 			}
 			stageWrapper.style = "";
 			stageWrapperParent.append(stageWrapper);
-			
+
 			canvas.style.opacity = "";
 			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 		}
 	};
-	
-	
-	
+
+
+
 	// Code copied from tw-frame-loop.js because existing code can't be accesed
 	const _requestAnimationFrame = typeof requestAnimationFrame === 'function' ?
 		requestAnimationFrame :
@@ -156,7 +156,7 @@
 	const _cancelAnimationFrame = typeof requestAnimationFrame === 'function' ?
 		cancelAnimationFrame :
 		clearTimeout;
-	
+
 	const animationFrameWrapper = callback => {
 		let id;
 		const handle = () => {
@@ -169,11 +169,11 @@
 			cancel
 		};
 	};
-	
-	
-	
+
+
+
 	// Patching frameLoop to use xrSession.requestAnimationFrame when in AR mode
-	const xrAnimationFrameWrapper = (callback, fps=30) => {
+	const xrAnimationFrameWrapper = (callback, fps = 30) => {
 		const xrSessionBackup = xrSession;
 		let shouldTriggerAgain = false;
 		let id;
@@ -187,7 +187,7 @@
 			// to true, and only then use xr animation frame
 			// once and resume waiting. shouldTriggerAgain is
 			// set to true by the interval located below.
-			if(fps === 0 || shouldTriggerAgain) {
+			if (fps === 0 || shouldTriggerAgain) {
 				shouldTriggerAgain = false;
 				id = xrSession.requestAnimationFrame(handle);
 				idIsXR = true;
@@ -197,21 +197,21 @@
 			}
 			// Normal animation frames are just for waiting and
 			// shouldn't trigger callback()
-			if(!frame) return;
-			
-			if(xrNeedsResize) {
+			if (!frame) return;
+
+			if (xrNeedsResize) {
 				xrNeedsResize = false;
 				const bl = xrSession.renderState.baseLayer;
-				const newWidth = Math.round(bl.framebufferWidth/bl.framebufferHeight*oldHeight);
-				if(runtime.stageWidth !== newWidth) {
+				const newWidth = Math.round(bl.framebufferWidth / bl.framebufferHeight * oldHeight);
+				if (runtime.stageWidth !== newWidth) {
 					runtime.setStageSize(newWidth, oldHeight);
 				}
-				
+
 				const scale = div.clientHeight / canvas.clientHeight;
-				stageWrapper.style = "transform-origin: top left; transform: scale("+scale+","+scale+")";
+				stageWrapper.style = "transform-origin: top left; transform: scale(" + scale + "," + scale + ")";
 				canvas.style.opacity = "0";
-				
-				if(!isPackaged) {
+
+				if (!isPackaged) {
 					const borderThing = stageWrapper.children[0].children[0].style;
 					borderThing["border"] = "none";
 					borderThing["border-radius"] = "0";
@@ -219,9 +219,9 @@
 				}
 			}
 			poseAvailible = false;
-			if(xrRefSpace) {
+			if (xrRefSpace) {
 				const pose = frame.getViewerPose(xrRefSpace);
-				if(pose) {
+				if (pose) {
 					poseAvailible = true;
 					xrProjectionMatrix = pose.views[0].projectionMatrix;
 					xrTransform = pose.views[0].transform;
@@ -279,9 +279,9 @@
 				}
 			}
 			hitPositionAvailible = false;
-			if(xrHitTestSource) {
+			if (xrHitTestSource) {
 				const hitTestResults = frame.getHitTestResults(xrHitTestSource);
-				if(hitTestResults.length > 0) {
+				if (hitTestResults.length > 0) {
 					hitPositionAvailible = true;
 					hitPosition = hitTestResults[0].getPose(xrRefSpace).transform.position;
 				}
@@ -289,17 +289,17 @@
 			callback();
 		};
 		const cancel = () => {
-			if(idIsXR) {
+			if (idIsXR) {
 				xrSessionBackup.cancelAnimationFrame(id);
 			} else {
 				cancelAnimationFrame(id);
 			}
-			if(interval) {
+			if (interval) {
 				clearInterval(interval);
 			}
-		}
+		};
 		id = xrSession.requestAnimationFrame(handle);
-		if(fps > 0) {
+		if (fps > 0) {
 			interval = setInterval(() => {
 				shouldTriggerAgain = true;
 			}, 1000 / fps);
@@ -339,24 +339,24 @@
 	frameLoop.xrAnimationFrameWrapper = xrAnimationFrameWrapper.bind(frameLoop);
 	frameLoop.start = start.bind(frameLoop);
 	frameLoop.inXR = false;
-	
-	
-	
+
+
+
 	// Patching renderer.draw() to draw to xr framebuffer instead of canvas
 	const drawOrig = renderer.draw.bind(renderer);
 	const drawXR = (function() {
 		const bl = this.xr.renderState.baseLayer;                     // ADDED
-		if(!bl) return; // Should fix very rare crash during exiting  // ADDED
-		
+		if (!bl) return; // Should fix very rare crash during exiting  // ADDED
+
 		this._doExitDrawRegion();
-		
+
 		const gl = this._gl;
-		
+
 		gl.bindFramebuffer(gl.FRAMEBUFFER, bl.framebuffer);           // CHANGED
 		gl.viewport(0, 0, bl.framebufferWidth, bl.framebufferHeight); // CHANGED
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
-		
+
 		this._drawThese(this._drawList, "default" /*ShaderManager.DRAW_MODE.default*/, this._projection, {
 			framebufferWidth: bl.framebufferWidth,                    // CHANGED
 			framebufferHeight: bl.framebufferHeight                   // CHANGED
@@ -368,9 +368,9 @@
 		}
 	}).bind(renderer);
 	renderer.draw = drawOrig;
-	
-	
-	
+
+
+
 	// Patching _pickTarget incorrect position bug:
 	//   When the canvas is scaled using transform:scale,
 	//   canvas.getBoundingClientRect is affected by it, but
@@ -399,7 +399,7 @@
 		this._canvasHeight = data.canvasHeight;
 		postDataOriginal(data);
 	}.bind(mouse);
-	
+
 	const _pickTargetOriginal = mouse._pickTarget.bind(mouse);
 	mouse._pickTarget = function (x, y) {
 		return _pickTargetOriginal(
@@ -407,33 +407,33 @@
 			y / this._canvasHeight * canvas.clientHeight
 		);
 	}.bind(mouse);
-	
+
 	// This is used by <touching [mouse-pointer v]?>.
 	// It was also broken in a similar way.
 	mouse.getClientX = function() {
-		return this._clientX / this._canvasWidth * canvas.clientWidth
+		return this._clientX / this._canvasWidth * canvas.clientWidth;
 	}.bind(mouse);
-	
+
 	mouse.getClientY = function() {
-		return this._clientY / this._canvasHeight * canvas.clientHeight
+		return this._clientY / this._canvasHeight * canvas.clientHeight;
 	}.bind(mouse);
 	// END OF WARNING
-	
-	
+
+
 	const enterAR = function(event) {
-		if(!xrSession) {
+		if (!xrSession) {
 			// Entering and exiting editor recreates this element
 			stageWrapper = document.querySelector("[class*='stage-wrapper_stage-canvas-wrapper']");
-			if(!stageWrapper) {
+			if (!stageWrapper) {
 				stageWrapper = document.querySelector("[class='sc-root']");
-				if(!stageWrapper) {
+				if (!stageWrapper) {
 					console.error(arFail = "Failed to get the div element of the stage");
 					return;
 				}
 				isPackaged = true;
 			}
 			stageWrapperParent = stageWrapper.parentElement;
-			
+
 			const noop = () => {};
 			navigator.xr.requestSession("immersive-ar", {
 				requiredFeatures: ["hit-test", "dom-overlay"],
@@ -442,10 +442,10 @@
 			// If (event) is defined, it was from click, so something went wrong.
 			// If (event) is null, it was called directly, and might've been rejected due to lack of user interaction.
 		}
-	}
-	
-	
-	
+	};
+
+
+
 	class ARExtension {
 		getInfo() {
 			return {
@@ -665,17 +665,17 @@
 						]
 					}
 				}
-			}
+			};
 		}
 		enterAR() {
-			if(arFail) {
-				if(arFail !== "shown") {
+			if (arFail) {
+				if (arFail !== "shown") {
 					// AR is used on mobile, where accessing browser console to see what's wrong can be an issue
-					alert("Project attempted to start AR even though it's not avalible. The reason: "+arFail+". This message will only be shown once.");
+					alert("Project attempted to start AR even though it's not avalible. The reason: " + arFail + ". This message will only be shown once.");
 					arFail = "shown";
 				}
 			} else {
-				if(!xrSession) {
+				if (!xrSession) {
 					enterAR(null);
 					canvas.removeEventListener("pointerup", enterAR);
 					canvas.addEventListener("pointerup", enterAR, {once: true});
@@ -684,7 +684,7 @@
 			}
 		}
 		exitAR() {
-			if(xrSession) {
+			if (xrSession) {
 				xrSession.end();
 			}
 		}
@@ -699,9 +699,9 @@
 		}
 		getMatrixItem(args) {
 			let item = args.ITEM | 0;
-			if(item < 1 && item > 16) return "";
+			if (item < 1 && item > 16) return "";
 			let matrix = null;
-			switch(args.MATRIX) {
+			switch (args.MATRIX) {
 				case "combined":
 					matrix = xrCombinedMatrix;
 					break;
@@ -715,43 +715,43 @@
 					matrix = xrTransform?.inverse?.matrix;
 					break;
 			}
-			if(!matrix) return 0;
-			return matrix[item-1] || 0;
+			if (!matrix) return 0;
+			return matrix[item - 1] || 0;
 		}
 		moveSpaceBy(args) {
-			if(!xrRefSpace) return;
+			if (!xrRefSpace) return;
 			const x = +args.X || 0;
 			const y = +args.Y || 0;
 			const z = +args.Z || 0;
-			if(!isFinite(x+y+z)) return;
-			const offsetTransform = new XRRigidTransform({x:x, y:y, z:z}, {x:0, y:0, z:0, w:1});
+			if (!isFinite(x + y + z)) return;
+			const offsetTransform = new XRRigidTransform({x: x, y: y, z: z}, {x: 0, y: 0, z: 0, w: 1});
 			xrRefSpace = xrRefSpace.getOffsetReferenceSpace(offsetTransform);
 		}
 		turnSpaceBy(args) {
-			if(!xrRefSpace) return;
+			if (!xrRefSpace) return;
 			const r = +args.R || 0;
 			const i = +args.I || 0;
 			const j = +args.J || 0;
 			const k = +args.K || 0;
-			const len = Math.sqrt(r*r + i*i + j*j + k*k);
-			if(!isFinite(len) || len === 0) return;
-			const offsetTransform = new XRRigidTransform({x:0, y:0, z:0}, {x:i/len, y:j/len, z:k/len, w:r/len});
+			const len = Math.sqrt(r * r + i * i + j * j + k * k);
+			if (!isFinite(len) || len === 0) return;
+			const offsetTransform = new XRRigidTransform({x: 0, y: 0, z: 0}, {x: i / len, y: j / len, z: k / len, w: r / len});
 			xrRefSpace = xrRefSpace.getOffsetReferenceSpace(offsetTransform);
 		}
 		getPosition(args) {
-			if(!xrTransform) return 0;
+			if (!xrTransform) return 0;
 			return xrTransform.position[args.POSITION_COMPONENT] || 0;
 		}
 		getOrientation(args) {
-			if(!xrTransform) return 0;
+			if (!xrTransform) return 0;
 			return xrTransform.orientation[args.ORIENTATION_COMPONENT] || 0;
 		}
 		getHitPosition(args) {
-			if(!hitPosition) return 0;
+			if (!hitPosition) return 0;
 			return hitPosition[args.POSITION_COMPONENT] || 0;
 		}
 		isFeatureAvailible(args) {
-			switch(args.FEATURE) {
+			switch (args.FEATURE) {
 				case "ar":
 					return !arFail;
 				case "pose":
@@ -764,13 +764,13 @@
 		}
 		setResolution(args) {
 			arResolution = Math.max(0.1, Math.min(1, +args.RESOLUTION || 0));
-			if(xrSession) {
+			if (xrSession) {
 				xrSession.updateRenderState({
 					baseLayer: new XRWebGLLayer(xrSession, gl, { framebufferScaleFactor: arResolution })
 				});
 			}
 		}
 	}
-	
+
 	Scratch.extensions.register(new ARExtension());
 })(Scratch);
