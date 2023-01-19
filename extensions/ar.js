@@ -123,7 +123,7 @@
 			frameLoop.stop();
 			frameLoop.start();
 		}
-		canvas.removeEventListener("click", enterAR);
+		canvas.removeEventListener("pointerup", enterAR);
 		if(state) {
 			// css "transform" doesn't work directly on domOverlay element,
 			// but works on it's children. stageWrapper needs to have "transform: scale"
@@ -676,8 +676,8 @@
 				}
 			} else {
 				enterAR(null);
-				canvas.removeEventListener("click", enterAR);
-				canvas.addEventListener("click", enterAR, {once: true});
+				canvas.removeEventListener("pointerup", enterAR);
+				canvas.addEventListener("pointerup", enterAR, {once: true});
 				return new Promise(resolve => enterARDone.push(resolve));
 			}
 		}
