@@ -1841,7 +1841,7 @@ Other various small fixes
         g: parseInt(splitHex[2], 16),
         b: parseInt(splitHex[3], 16)
       };
-    };
+    }
     return {
       r: Math.floor(hex / 65536),
       g: Math.floor(hex / 256) % 256,
@@ -2569,12 +2569,12 @@ Other various small fixes
       var scalemultiplyer = canvas.width / ScratchRuntime.stageWidth;
       if (!textures.hasOwnProperty(url)) {
         textures[url] = loadImageAndCreateTextureInfo(url, true);
-      };
+      }
       var pointsarray = trianglepoints.split(",");
       var pointslen = pointsarray.length;
       for (var i = 0; i < pointslen; i++) {
         pointsarray[i] = pointsarray[i] * scalemultiplyer;
-      };
+      }
       var uvarray = triangleuvs.split(",");
       drawTexturedTri(textures[url].texture, pointsarray, uvarray);
     }
