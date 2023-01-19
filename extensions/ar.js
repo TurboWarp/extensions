@@ -675,10 +675,12 @@
 					arFail = "shown";
 				}
 			} else {
-				enterAR(null);
-				canvas.removeEventListener("pointerup", enterAR);
-				canvas.addEventListener("pointerup", enterAR, {once: true});
-				return new Promise(resolve => enterARDone.push(resolve));
+				if(!xrSession) {
+					enterAR(null);
+					canvas.removeEventListener("pointerup", enterAR);
+					canvas.addEventListener("pointerup", enterAR, {once: true});
+					return new Promise(resolve => enterARDone.push(resolve));
+				}
 			}
 		}
 		exitAR() {
