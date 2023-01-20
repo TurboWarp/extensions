@@ -16,6 +16,7 @@
     const runtime = vm.runtime;
     const frameLoop = runtime.frameLoop;
     const mouse = runtime.ioDevices.mouse;
+    const video = runtime.ioDevices.video;
 
     let arResolution = 1;
     let isPackaged = false;
@@ -39,11 +40,13 @@
 
     let stageWrapper;
     let stageWrapperParent;
+    let scLayers;
+    let scControlsBar;
     const div = document.createElement("div");
     document.body.append(div);
     const canvas = Scratch.vm.renderer.canvas;
     const gl = Scratch.vm.renderer.gl;
-
+    const enableVideoOriginal = video.enableVideo;
 
     // Checking whether AR is supported.
     // If not, extension should still load, to let people
@@ -112,6 +115,11 @@
         enterARDone.forEach(fn => fn());
         enterARDone = [];
     };
+    const onErrorTryTap = function(error) {
+        canvas.removeEventListener("pointerup", enterAR);
+        canvas.addEventListener("pointerup", enterAR, {once: true});
+    };
+
     const updateState = function() {
         const state = !!xrSession;
         if (state === xrState) return;
@@ -126,6 +134,9 @@
         }
         canvas.removeEventListener("pointerup", enterAR);
         if (state) {
+            video.disableVideo(); // Hiding it, since it freezes anyways
+            video.enableVideo = () => null;
+
             // css "transform" doesn't work directly on domOverlay element,
             // but works on it's children. stageWrapper needs to have "transform: scale"
             // on it, so that is why it is placed into another div
@@ -135,10 +146,18 @@
             oldWidth  = runtime.stageWidth;
             oldHeight = runtime.stageHeight;
         } else {
+            video.enableVideo = enableVideoOriginal; // After exiting AR, video sensing can be used again
+
             if (!isPackaged) {
                 const borderThing = stageWrapper.children[0].children[0].style;
                 borderThing["border"] = "";
                 borderThing["border-radius"] = "";
+            } else {
+                scControlsBar.style["display"] = null;
+                scLayers.style["transform"] = null;
+                stageWrapper.style["align-items"] = null;
+                stageWrapper.style["justify-content"] = null;
+                runtime.setStageSize(oldWidth, oldHeight);
             }
             stageWrapper.style = "";
             stageWrapperParent.append(stageWrapper);
@@ -202,6 +221,15 @@
 
             if (xrNeedsResize) {
                 xrNeedsResize = false;
+
+                // This needs to run before setStageSize
+                if (isPackaged) {
+                    scControlsBar.style["display"] = "none";
+                    scLayers.style["transform"] = "translate(0px, 0px)";
+                    stageWrapper.style["align-items"] = "normal";
+                    stageWrapper.style["justify-content"] = "flex-start";
+                }
+
                 const bl = xrSession.renderState.baseLayer;
                 const newWidth = Math.round(bl.framebufferWidth / bl.framebufferHeight * oldHeight);
                 if (runtime.stageWidth !== newWidth) {
@@ -427,6 +455,8 @@
             stageWrapper = document.querySelector("[class*='stage-wrapper_stage-canvas-wrapper']");
             if (!stageWrapper) {
                 stageWrapper = document.querySelector("[class='sc-root']");
+                scControlsBar = document.querySelector("[class='sc-controls-bar']");
+                scLayers = document.querySelector("[class='sc-layers']");
                 if (!stageWrapper) {
                     console.error(arFail = "Failed to get the div element of the stage");
                     return;
@@ -439,7 +469,7 @@
             navigator.xr.requestSession("immersive-ar", {
                 requiredFeatures: ["hit-test", "dom-overlay"],
                 domOverlay: {root: div}
-            }).then(onSuccess, event ? onError : noop);
+            }).then(onSuccess, event ? onError : onErrorTryTap);
             // If (event) is defined, it was from click, so something went wrong.
             // If (event) is null, it was called directly, and might've been rejected due to lack of user interaction.
         }
@@ -677,9 +707,7 @@
                 }
             } else {
                 if (!xrSession) {
-                    enterAR(null);
-                    canvas.removeEventListener("pointerup", enterAR);
-                    canvas.addEventListener("pointerup", enterAR, {once: true});
+                    if (enterARDone.length === 0) enterAR(null);
                     return new Promise(resolve => enterARDone.push(resolve));
                 }
             }
