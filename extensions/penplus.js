@@ -65,9 +65,9 @@ Other various small fixes
   }
 
   const vm = Scratch.vm;
-  const ScratchRuntime = vm.runtime;
-  const canvas = ScratchRuntime.renderer.canvas;
-  const gl = ScratchRuntime.renderer._gl;
+  const runtime = vm.runtime;
+  const canvas = runtime.renderer.canvas;
+  const gl = runtime.renderer._gl;
 
   const EXAMPLE_IMAGE = 'https://extensions.turbowarp.org/dango.png';
 
@@ -1778,8 +1778,8 @@ Other various small fixes
     if (coordinateSpace == "Canvas") {
       matrix = m4.translate(matrix, dstX, dstY, 0);
     } else {
-      var scalemultiplyer = canvas.width / ScratchRuntime.stageWidth;
-      matrix = m4.translate(matrix, ScratchRuntime.stageWidth / 2 * scalemultiplyer, ScratchRuntime.stageHeight / 2 * scalemultiplyer, 0);
+      var scalemultiplyer = canvas.width / runtime.stageWidth;
+      matrix = m4.translate(matrix, runtime.stageWidth / 2 * scalemultiplyer, runtime.stageHeight / 2 * scalemultiplyer, 0);
       matrix = m4.translate(matrix, dstX, -dstY, 0);
     }
 
@@ -1843,8 +1843,8 @@ Other various small fixes
     // from 1 unit to texWidth, texHeight units
 
     if (coordinateSpace == "Scratch") {
-      var scalemultiplyer = canvas.width / ScratchRuntime.stageWidth;
-      matrix = m4.translate(matrix, ScratchRuntime.stageWidth / 2 * scalemultiplyer, ScratchRuntime.stageHeight / 2 * scalemultiplyer, 0);
+      var scalemultiplyer = canvas.width / runtime.stageWidth;
+      matrix = m4.translate(matrix, runtime.stageWidth / 2 * scalemultiplyer, runtime.stageHeight / 2 * scalemultiplyer, 0);
     }
 
     // Set the matrix.
@@ -2448,15 +2448,15 @@ Other various small fixes
     converttocanvascoords({ coordmenu, scrcoord, coordTypes }) {
       if (coordTypes == 'Canvas') {
         if (coordmenu == "x") {
-          return scrcoord + (ScratchRuntime.stageWidth / 2);
+          return scrcoord + (runtime.stageWidth / 2);
         } else {
-          return (scrcoord * -1) + (ScratchRuntime.stageHeight / 2);
+          return (scrcoord * -1) + (runtime.stageHeight / 2);
         }
       } else {
         if (coordmenu == "x") {
-          return scrcoord - (ScratchRuntime.stageWidth / 2);
+          return scrcoord - (runtime.stageWidth / 2);
         } else {
-          return (scrcoord * -1) - (ScratchRuntime.stageHeight / 2);
+          return (scrcoord * -1) - (runtime.stageHeight / 2);
         }
       }
     }
@@ -2482,7 +2482,7 @@ Other various small fixes
     }
 
     pendrawspritefromurl({ url, x, y }) {
-      var scaleMultiplier = canvas.width / ScratchRuntime.stageWidth;
+      var scaleMultiplier = canvas.width / runtime.stageWidth;
       if (!textures.hasOwnProperty(url)) {
         textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
@@ -2501,7 +2501,7 @@ Other various small fixes
     }
 
     drawLine({ x1, y1, x2, y2 }) {
-      var scalemultiplyer = canvas.width / ScratchRuntime.stageWidth;
+      var scalemultiplyer = canvas.width / runtime.stageWidth;
       let tempColors = triangleColors;
       triangleColors = [
         lineColor.r, lineColor.g, lineColor.b, lineColor.a,
@@ -2544,7 +2544,7 @@ Other various small fixes
     }
 
     pendrawtexturedtrifromurl({ url, trianglepoints, triangleuvs }) {
-      var scalemultiplyer = canvas.width / ScratchRuntime.stageWidth;
+      var scalemultiplyer = canvas.width / runtime.stageWidth;
       if (!textures.hasOwnProperty(url)) {
         textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
