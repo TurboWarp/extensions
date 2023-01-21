@@ -33,14 +33,12 @@ Other various small fixes
       if (!Scratch.extensions.unsandboxed) {
         throw new Error('Pen+ must be run unsandboxed');
       }
-    }
-    else {
+    } else {
       canvas = document.querySelector("canvas");
       gl = canvas.getContext("webgl");
     }
-  }
-  //if we can't detect scratch alert the user
-  else {
+  } else {
+    //if we can't detect scratch alert the user
     alert("Pen+ must be ran in a scratch based enviornment!");
   }
 
@@ -1585,7 +1583,7 @@ Other various small fixes
     1,
     1,
     1
-  ]
+  ];
 
   var quadColors = [
     1.0, 1.0, 1.0, 1.0,
@@ -1600,7 +1598,7 @@ Other various small fixes
     1,
     1,
     1
-  ]
+  ];
 
   var triangleColors = [
     1.0, 1.0, 1.0, 1.0,
@@ -1752,8 +1750,7 @@ Other various small fixes
     var matrix = m4.orthographic(0, gl.canvas.width, gl.canvas.height, 0, -1, 1);
     if (coordinateSpace == "Canvas") {
       matrix = m4.translate(matrix, dstX, dstY, 0);
-    }
-    else {
+    } else {
       var scalemultiplyer = canvas.width / ScratchRuntime.stageWidth;
       matrix = m4.translate(matrix, ScratchRuntime.stageWidth / 2 * scalemultiplyer, ScratchRuntime.stageHeight / 2 * scalemultiplyer, 0);
       matrix = m4.translate(matrix, dstX, -dstY, 0);
@@ -1766,7 +1763,7 @@ Other various small fixes
     // this matrix will scale our 1 unit quad
     // from 1 unit to texWidth, texHeight units
     matrix = m4.scale(matrix, texWidth, texHeight, 1);
-    matrix = m4.translate(matrix, stampOffset[0], stampOffset[1], 0)
+    matrix = m4.translate(matrix, stampOffset[0], stampOffset[1], 0);
 
     // Set the matrix.
     gl.uniformMatrix4fv(matrixLocation, false, matrix);
@@ -1788,7 +1785,7 @@ Other various small fixes
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleUvs), gl.STATIC_DRAW);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, triZBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(TriangleZPositionArray), gl.STATIC_DRAW)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(TriangleZPositionArray), gl.STATIC_DRAW);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, tricolorBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleColors), gl.STATIC_DRAW);
@@ -2430,20 +2427,16 @@ Other various small fixes
       if (H >= 0 && H < 60) {
         Primes[0] = C;
         Primes[1] = X;
-      }
-      else if (H >= 60 && H < 120) {
+      } else if (H >= 60 && H < 120) {
         Primes[0] = X;
         Primes[1] = C;
-      }
-      else if (H >= 120 && H < 180) {
+      } else if (H >= 120 && H < 180) {
         Primes[1] = C;
         Primes[2] = X;
-      }
-      else if (H >= 180 && H < 240) {
+      } else if (H >= 180 && H < 240) {
         Primes[1] = X;
         Primes[2] = C;
-      }
-      else if (H >= 240 && H < 300) {
+      } else if (H >= 240 && H < 300) {
         Primes[0] = X;
         Primes[2] = C;
       }
@@ -2468,21 +2461,21 @@ Other various small fixes
     converttocanvascoords({ coordmenu, scrcoord, coordTypes }) {
       if (coordTypes == 'Canvas') {
         if (coordmenu == "x") {
-          return scrcoord + (ScratchRuntime.stageWidth / 2)
+          return scrcoord + (ScratchRuntime.stageWidth / 2);
         } else {
-          return (scrcoord * -1) + (ScratchRuntime.stageHeight / 2)
+          return (scrcoord * -1) + (ScratchRuntime.stageHeight / 2);
         }
       } else {
         if (coordmenu == "x") {
-          return scrcoord - (ScratchRuntime.stageWidth / 2)
+          return scrcoord - (ScratchRuntime.stageWidth / 2);
         } else {
-          return (scrcoord * -1) - (ScratchRuntime.stageHeight / 2)
+          return (scrcoord * -1) - (ScratchRuntime.stageHeight / 2);
         }
       }
     }
 
     offsetStamp({ Anchor }) {
-      stampOffset = Anchor.split(",")
+      stampOffset = Anchor.split(",");
     }
 
     setCoordSpace({ space }) {
@@ -2498,7 +2491,7 @@ Other various small fixes
     }
 
     rotateStamp({ ANGLE }) {
-      stampRotation = ANGLE
+      stampRotation = ANGLE;
     }
 
     pendrawspritefromurl({ url, x, y }) {
@@ -2512,11 +2505,9 @@ Other various small fixes
     setLineWidth({ Width, point }) {
       if (point === 'All') {
         lineWidth = [Width, Width];
-      }
-      else if (point === 'Starting') {
+      } else if (point === 'Starting') {
         lineWidth[0] = Width;
-      }
-      else {
+      } else {
         lineWidth[1] = Width;
       }
 
@@ -2529,7 +2520,7 @@ Other various small fixes
         lineColor.r, lineColor.g, lineColor.b, lineColor.a,
         lineColor.r, lineColor.g, lineColor.b, lineColor.a,
         lineColor.r, lineColor.g, lineColor.b, lineColor.a
-      ]
+      ];
       let vectorLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
       let vectorDir = { X: (x2 - x1) / vectorLength, Y: (y2 - y1) / vectorLength };
       let triangleDir = { X1: -vectorDir.Y * lineWidth[0], Y1: vectorDir.X * lineWidth[0], X2: -vectorDir.Y * lineWidth[1], Y2: vectorDir.X * lineWidth[1] };
@@ -2544,7 +2535,7 @@ Other various small fixes
         (y1 - triangleDir.Y1) * scalemultiplyer,
         (x2 + triangleDir.X2) * scalemultiplyer,
         (y2 + triangleDir.Y2) * scalemultiplyer], [0.5, 0.5, 0.5, 0.6, 0.6, 0.6]
-      )
+      );
 
       drawTexturedTri(textures[blankImage].texture, [
         (x1 - triangleDir.X1) * scalemultiplyer,
@@ -2553,7 +2544,7 @@ Other various small fixes
         (y2 - triangleDir.Y2) * scalemultiplyer,
         (x2 + triangleDir.X2) * scalemultiplyer,
         (y2 + triangleDir.Y2) * scalemultiplyer], [0.5, 0.5, 0.5, 0.6, 0.6, 0.6]
-      )
+      );
       triangleColors = tempColors;
     }
 
@@ -2676,8 +2667,7 @@ Other various small fixes
       var serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance);
       window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
     })();
-  }
-  else {
+  } else {
     Scratch.extensions.register(new PenPlus());
   }
 
