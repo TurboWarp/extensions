@@ -22,6 +22,6 @@
       ['R', 'test reporter 2 %n', 'testReporterWait', '1'],
     ],
   };
-  
+
   ScratchExtensions.register('ScratchX Test', descriptor, ext);
 }());
