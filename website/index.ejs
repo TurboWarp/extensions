@@ -175,7 +175,11 @@
       <p>Unlike custom extensions on other websites, extensions listed here aren't limited by the extension sandbox, so they are a lot more powerful.</p>
       <p>Every extension here has been reviewed by the TurboWarp developers for security and quality.</p>
       <p class="warning">Extensions on this site are not compatible with Scratch. Projects that use these extensions cannot be uploaded to the Scratch website.</p>
-      <p class="warning">Extensions listed on this site <b>will not work in the desktop app</b> unless you install <a href="https://github.com/TurboWarp/desktop/releases/tag/v1.7.0-beta.2">v1.7.0-beta.2</a>.</p>
+      <% if (mode === 'desktop') { %>
+        <p class="warning">TurboWarp Desktop loads extensions from an offline copy of extensions.turbowarp.org instead of the live website.</p>
+      <% } else { %>
+        <p class="warning">Extensions listed on this site <b>will not work in the desktop app</b> unless you install <a href="https://github.com/TurboWarp/desktop/releases/tag/v1.7.0-beta.2">v1.7.0-beta.2</a>.</p>
+      <% } %>
     </div>
 
     <%
