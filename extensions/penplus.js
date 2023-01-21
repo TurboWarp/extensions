@@ -1,20 +1,80 @@
 /* eslint-disable no-empty-pattern */
 /* eslint-disable no-prototype-builtins */
-(function(Scratch) {
+/*
+Pen+ Version 5
+Author ObviousAlexC
+
+Special Thanks to Garbo for helping me with this new version.
+
+Changelog:
+Added Line blocks
+Fixed Color Blocks
+Seperated Blocks into catagories just so I could edit them in the future without having to dig through a large blocks array!
+Fixed support for the Plugin Loader
+Made cross platform with the same file by using conditional assignments!
+Confirmed some doubts (see line 52) 
+Learned that javascript had C++ like conditional assignments
+Depracated spacial transformation block
+Added spacial changing block
+Other various small fixes
+*/
+(function (Scratch) {
   'use strict';
+
+  // This is for compatibility with plugin loaders that don't implement window.Scratch.
+  // This is a one-time exception. Similar code like this WILL NOT be accepted in new extensions without
+  // significant justification.
+  if (!Scratch) {
+    Scratch = {
+      // @ts-expect-error
+      BlockType: {
+        COMMAND: 'command',
+        REPORTER: 'reporter',
+        BOOLEAN: 'Boolean',
+        HAT: 'hat'
+      },
+      // @ts-expect-error
+      ArgumentType: {
+        STRING: 'string',
+        NUMBER: 'number',
+        COLOR: 'color',
+        ANGLE: 'angle',
+        BOOLEAN: 'Boolean',
+        MATRIX: 'matrix',
+        NOTE: 'note'
+      },
+      // @ts-expect-error
+      vm: window.vm,
+      extensions: {
+        unsandboxed: true,
+        register: (object) => {
+          // @ts-expect-error
+          const serviceName = vm.extensionManager._registerInternalExtension(object);
+          // @ts-expect-error
+          vm.extensionManager._loadedExtensions.set(object.getInfo().id, serviceName);
+        }
+      }
+    };
+    if (!Scratch.vm) {
+      throw new Error('The VM does not exist');
+    }
+  }
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Pen+ must be run unsandboxed');
   }
 
+  const vm = Scratch.vm;
+  const runtime = vm.runtime;
+  const canvas = runtime.renderer.canvas;
+  const gl = runtime.renderer._gl;
+
   const EXAMPLE_IMAGE = 'https://extensions.turbowarp.org/dango.png';
 
-  const DEPRACATED_BLOCK = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKIAAACiCAYAAADC8hYbAAAAAXNSR0IArs4c6QAACAFJREFUeF7t3Tty1EwUBeAjAiIyAoipYi1AADvAG+BlQqCIKCDERcEG8A5IgLVQRYwDMiIC5q82I//jsWbU6ud9HEJb6r597ufWSMIwYOLPCrgN4CaASwB+APg2AH+mjuXXmMC+BFbAZQC3ANwA8BfA9wH4un3OsPmFFfAAwEsA17YO/A3g7QC8YexMIDaBFfAcwDMAV7bOOQHwagA+jl8/g7gC3gE4nJnkeAAOYgvhcX4TWAGfANyfSeBoAJ6GY04hrnfCD5GxEWNkUF4Pi0Q4xvMw7IwjxJ8Tl+N9ORKjV2Uz616IMIx2MgDXh/WNyZeEXIkxITTLpyQgHOO4EyA+AvA+MSBiTAzO2mkZCEMUjwPEJwCOMoIhxozwLJyaiTBEcBgg3gXwOTMQYswMUOvpBRCGpd8LEMMDx18Tz3qWZkOMSxNTfnwhhOEZ9dXxrjk8eHxdIBdiLBCihiEKIQxLfRFelGw+0I55ABmTETHGpKT4mIIIz6xsv+IjRsVAWpReA2Go+xzE8IVaE7UIiXPUTaCmjQsQibFuM7WOXhPh5I44BlV7Yq0N8Vh3CwuTOyIxeuQ2veYWCPfuiMRIjK0QRkHkZ0afIFsijIZIjL4wtka4CCIx+sDYA+FiiMRoG2MvhEkQidEmxp4IkyESoy2MvRFmQSRGGxglIMyGSIy6MUpBWAQiMerEKAlhMYjEqAujNIRFIRKjDowSERaHSIyyMUpFWAUiMcrEKBlhNYjEKAujdIRVIRKjDIwaEFaHSIx9MWpB2AQiMfbBqAlhM4jE2BajNoRNIRJjG4waETaHSIx1MWpF2AUiMdbBqBlhN4jEWBajdoRdIRJjGYwWEHaHSIx5GK0gFAGRGNMwWkIoBiIxLsNoDaEoiMQYh9EiQnEQiXE/RqsIRUIkxmmMlhGKhUiM5zFaRygaIjH+w+gBoXiInhoxdUH2glAFRK8YPSFUA9EbRm8IVUH0gtEjQnUQrWP0ilAlRKsYPSNUC9EaRu8IVUO0gpEI/z242vsf/ux/8ynju5obqbn20t1XD1HrzkiE5ymbgKgNIxFe3E/NQNSCkQinL+qmIErHSIS7P1magygVIxHuv70xCVEaRiKcv8c2C1EKRiKcR2jiOeLcMntC6Dn3XC7Svm96RxzD7gGix5zScC2pxwXE1pdpIlxC0MgrviVLbgGkxRxL1qzlWDc7YovLNBGms3cHsdZlmgjTEbq4a94VT0k46znu57Xi9OzjATgoMI66IVzuiBUu0yUa7xah6x1RGEbXCAlxrbHgZTplZ3SPkBA32HTCSITrHrj+jLi9fTXGSIQbDSDELY2NMBLhVu6EOPGprjJGIpzInBB33F5UwkiEO/ImxD33uYUxEuGerAmREFMeORU/hxB5aS6OKmVAQuTNSoqb4ucQIh/fFEeVMiAh9nu7wpsXPtC++DNb+A45dlMgRr7i+99KJ4RjAcRo4Z+li916dh3XGSExckcs+p/p5P48hPNd74xub1YK7oTHa4X8VYGMH0eXEEsiHH/HpMaYGX1Vd6o7iDXB1BxbnayFBbuC2AJKizkW9ljF4W4gtgTSci4VyiKKdAGxB4wec0b0W+wh5iH2BNFzbrHidhRmGqIECBJq0IDSLERJACTVIhWlSYgSGy+xJkkozUGU3HDJtfVGaQqihkZrqLEHSjMQNTVYU62tUJqAqLGxGmuuiVI9RM0N1Vx7aZSqIVpopIU1lECpFqKlBlpaSypKlRAtNs7impagVAfRcsMsr20OpSqIHhrlYY1TKNVA9NQgT2sdUaqA6LEx3tYsHqK3hmxetjytXTRET43Y9WHeSwZiIXppwNzdZPi+hyxEQvQQfAxAT5dpcRCJcDdRy9mIgmg56KU7oLfPjGIgEmE8VYtZiYBoMdh4VmlHWsusO0RrgaaxSjvLUnZdIVoKMo1S/llWMuwG0UqA+ZTyR7CQZReIFoLL51N2BO2ZNoeoPbCyfMqOpjnbphA1B1WWTL3RtGbcDKLWgOqRqTeyxqybQNQYTD0mbUbWlnl1iNoCacOkzSyasq8KUVMQbWi0n0VLD6pB1BJAexrtZ9TQiyoQNSy8PYe+M0rvSXGI0hfcl0Pf2SX3pihEyQvtS0DO7FJ7VAyi1AXKISCnEom9KgJR4sLktF1mJdJ6lg1R2oJktl1mVZJ6lwVR0kJktlp+VVJ6mAxRygLkt1p+hRJ6mQRRQuHy26urwt49XQyxd8G62qur2p69XQSxZ6G6Wqq32l49jobYq0C9LdVbeY9eR0HsUZjeNtqovHXPZyG2LshGG22somXv90JsWYiN1tlbRSsDOyG2KsBe6+ytqIWFSYgtJrbXLtsrqm3iAsTaE9pul+3V1bRxDmLNiWy3yM/qahk5g1hrAj8t8rPSGlZOIa6A5wBeF4jyeAAOCozDIYQnUBDjiwF4M6yAywB+AbiSuXYizAxQ2+mFMP4GcDVAvAvgc2YIRJgZoNbTC2G8FyA+AXCUEQQRZoRn4dQCGA8DxEcA3icGQoSJwVk7LRPj4wDxNoAvCcEQYUJolk/JwHhnvGv+CeDagpCIcEFYng5NwHgyANdHiA8AfIgMjAgjg/J62EKMDwfg4+YD7XcADmfCI0KvuhauOxLj0QA8DUNvv+ILO+PLict0eNbzNjx4XFgPD3ecwPpFybOJZ9QnAF6FnXCMZ9ffvgk3MDcBXALwA8C3AfjjOFMuPTGB9QuTWwBuAPgL4PsAfN0e7j9sUpW0TD+35QAAAABJRU5ErkJggg==";
-
-  const canvas = Scratch.renderer.canvas;
-  const gl = Scratch.renderer._gl;
+  const blankImage = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAABRJREFUGFdj/P///38GBgYGRhgDAFfVB/vDfnUlAAAAAElFTkSuQmCC";
 
   // TODO: see how these differ from Scratch, if at all
+  // Note to Garbo or any code checker it does it uses bilinear filtering!
   gl.enable(gl.BLEND);
   gl.blendEquation(gl.FUNC_ADD);
   gl.blendFunc(gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -22,48 +82,58 @@
   var stampWidth = 64;
   var stampHeight = 64;
 
+  var lineWidth = [1, 1];
+  var lineColor = {
+    r: 1,
+    g: 1,
+    b: 1,
+    a: 1
+  };
+
   var screenWidth = 480;
   var screenHeight = 360;
+  var coordinateSpace = "Canvas";
 
   var stampRotation = 90;
+  var stampOffset = [0, 0];
 
-  const m4 = (function() {
+  const m4 = (function () {
     /*!
-      * 4x4 matrix operation code is from https://webglfundamentals.org/webgl/resources/m4.js
-      * We have made some changes:
-      *  - Fixed type errors
-      *  - Changed code formatting
-      *  - Removed unused functions
-      *
-      * Copyright 2021 GFXFundamentals.
-      * All rights reserved.
-      *
-      * Redistribution and use in source and binary forms, with or without
-      * modification, are permitted provided that the following conditions are
-      * met:
-      *
-      *     * Redistributions of source code must retain the above copyright
-      * notice, this list of conditions and the following disclaimer.
-      *     * Redistributions in binary form must reproduce the above
-      * copyright notice, this list of conditions and the following disclaimer
-      * in the documentation and/or other materials provided with the
-      * distribution.
-      *     * Neither the name of GFXFundamentals. nor the names of his
-      * contributors may be used to endorse or promote products derived from
-      * this software without specific prior written permission.
-      *
-      * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-      * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-      * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-      * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-      * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-      * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-      * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-      * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-      * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-      * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-      * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-      */
+     * 4x4 matrix operation code is from https://webglfundamentals.org/webgl/resources/m4.js
+     * We have made some changes:
+     *  - Fixed type errors
+     *  - Changed code formatting
+     *  - Removed unused functions
+     *
+     * Copyright 2021 GFXFundamentals.
+     * All rights reserved.
+     *
+     * Redistribution and use in source and binary forms, with or without
+     * modification, are permitted provided that the following conditions are
+     * met:
+     *
+     *     * Redistributions of source code must retain the above copyright
+     * notice, this list of conditions and the following disclaimer.
+     *     * Redistributions in binary form must reproduce the above
+     * copyright notice, this list of conditions and the following disclaimer
+     * in the documentation and/or other materials provided with the
+     * distribution.
+     *     * Neither the name of GFXFundamentals. nor the names of his
+     * contributors may be used to endorse or promote products derived from
+     * this software without specific prior written permission.
+     *
+     * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+     * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+     * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+     * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+     * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+     * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+     * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+     * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+     * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+     * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+     * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+     */
 
     /**
      * An array or typed array with 3 values.
@@ -142,16 +212,16 @@
       var a31 = a[3 * 4 + 1];
       var a32 = a[3 * 4 + 2];
       var a33 = a[3 * 4 + 3];
-      dst[ 0] = b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30;
-      dst[ 1] = b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31;
-      dst[ 2] = b00 * a02 + b01 * a12 + b02 * a22 + b03 * a32;
-      dst[ 3] = b00 * a03 + b01 * a13 + b02 * a23 + b03 * a33;
-      dst[ 4] = b10 * a00 + b11 * a10 + b12 * a20 + b13 * a30;
-      dst[ 5] = b10 * a01 + b11 * a11 + b12 * a21 + b13 * a31;
-      dst[ 6] = b10 * a02 + b11 * a12 + b12 * a22 + b13 * a32;
-      dst[ 7] = b10 * a03 + b11 * a13 + b12 * a23 + b13 * a33;
-      dst[ 8] = b20 * a00 + b21 * a10 + b22 * a20 + b23 * a30;
-      dst[ 9] = b20 * a01 + b21 * a11 + b22 * a21 + b23 * a31;
+      dst[0] = b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30;
+      dst[1] = b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31;
+      dst[2] = b00 * a02 + b01 * a12 + b02 * a22 + b03 * a32;
+      dst[3] = b00 * a03 + b01 * a13 + b02 * a23 + b03 * a33;
+      dst[4] = b10 * a00 + b11 * a10 + b12 * a20 + b13 * a30;
+      dst[5] = b10 * a01 + b11 * a11 + b12 * a21 + b13 * a31;
+      dst[6] = b10 * a02 + b11 * a12 + b12 * a22 + b13 * a32;
+      dst[7] = b10 * a03 + b11 * a13 + b12 * a23 + b13 * a33;
+      dst[8] = b20 * a00 + b21 * a10 + b22 * a20 + b23 * a30;
+      dst[9] = b20 * a01 + b21 * a11 + b22 * a21 + b23 * a31;
       dst[10] = b20 * a02 + b21 * a12 + b22 * a22 + b23 * a32;
       dst[11] = b20 * a03 + b21 * a13 + b22 * a23 + b23 * a33;
       dst[12] = b30 * a00 + b31 * a10 + b32 * a20 + b33 * a30;
@@ -307,16 +377,16 @@
     function identity(dst) {
       dst = dst || new MatType(16);
 
-      dst[ 0] = 1;
-      dst[ 1] = 0;
-      dst[ 2] = 0;
-      dst[ 3] = 0;
-      dst[ 4] = 0;
-      dst[ 5] = 1;
-      dst[ 6] = 0;
-      dst[ 7] = 0;
-      dst[ 8] = 0;
-      dst[ 9] = 0;
+      dst[0] = 1;
+      dst[1] = 0;
+      dst[2] = 0;
+      dst[3] = 0;
+      dst[4] = 0;
+      dst[5] = 1;
+      dst[6] = 0;
+      dst[7] = 0;
+      dst[8] = 0;
+      dst[9] = 0;
       dst[10] = 1;
       dst[11] = 0;
       dst[12] = 0;
@@ -337,16 +407,16 @@
     function transpose(m, dst) {
       dst = dst || new MatType(16);
 
-      dst[ 0] = m[0];
-      dst[ 1] = m[4];
-      dst[ 2] = m[8];
-      dst[ 3] = m[12];
-      dst[ 4] = m[1];
-      dst[ 5] = m[5];
-      dst[ 6] = m[9];
-      dst[ 7] = m[13];
-      dst[ 8] = m[2];
-      dst[ 9] = m[6];
+      dst[0] = m[0];
+      dst[1] = m[4];
+      dst[2] = m[8];
+      dst[3] = m[12];
+      dst[4] = m[1];
+      dst[5] = m[5];
+      dst[6] = m[9];
+      dst[7] = m[13];
+      dst[8] = m[2];
+      dst[9] = m[6];
       dst[10] = m[10];
       dst[11] = m[14];
       dst[12] = m[3];
@@ -375,16 +445,16 @@
       var xAxis = normalize(cross(up, zAxis));
       var yAxis = normalize(cross(zAxis, xAxis));
 
-      dst[ 0] = xAxis[0];
-      dst[ 1] = xAxis[1];
-      dst[ 2] = xAxis[2];
-      dst[ 3] = 0;
-      dst[ 4] = yAxis[0];
-      dst[ 5] = yAxis[1];
-      dst[ 6] = yAxis[2];
-      dst[ 7] = 0;
-      dst[ 8] = zAxis[0];
-      dst[ 9] = zAxis[1];
+      dst[0] = xAxis[0];
+      dst[1] = xAxis[1];
+      dst[2] = xAxis[2];
+      dst[3] = 0;
+      dst[4] = yAxis[0];
+      dst[5] = yAxis[1];
+      dst[6] = yAxis[2];
+      dst[7] = 0;
+      dst[8] = zAxis[0];
+      dst[9] = zAxis[1];
       dst[10] = zAxis[2];
       dst[11] = 0;
       dst[12] = cameraPosition[0];
@@ -419,16 +489,16 @@
       var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
       var rangeInv = 1.0 / (near - far);
 
-      dst[ 0] = f / aspect;
-      dst[ 1] = 0;
-      dst[ 2] = 0;
-      dst[ 3] = 0;
-      dst[ 4] = 0;
-      dst[ 5] = f;
-      dst[ 6] = 0;
-      dst[ 7] = 0;
-      dst[ 8] = 0;
-      dst[ 9] = 0;
+      dst[0] = f / aspect;
+      dst[1] = 0;
+      dst[2] = 0;
+      dst[3] = 0;
+      dst[4] = 0;
+      dst[5] = f;
+      dst[6] = 0;
+      dst[7] = 0;
+      dst[8] = 0;
+      dst[9] = 0;
       dst[10] = (near + far) * rangeInv;
       dst[11] = -1;
       dst[12] = 0;
@@ -460,16 +530,16 @@
     function orthographic(left, right, bottom, top, near, far, dst) {
       dst = dst || new MatType(16);
 
-      dst[ 0] = 2 / (right - left);
-      dst[ 1] = 0;
-      dst[ 2] = 0;
-      dst[ 3] = 0;
-      dst[ 4] = 0;
-      dst[ 5] = 2 / (top - bottom);
-      dst[ 6] = 0;
-      dst[ 7] = 0;
-      dst[ 8] = 0;
-      dst[ 9] = 0;
+      dst[0] = 2 / (right - left);
+      dst[1] = 0;
+      dst[2] = 0;
+      dst[3] = 0;
+      dst[4] = 0;
+      dst[5] = 2 / (top - bottom);
+      dst[6] = 0;
+      dst[7] = 0;
+      dst[8] = 0;
+      dst[9] = 0;
       dst[10] = 2 / (near - far);
       dst[11] = 0;
       dst[12] = (left + right) / (left - right);
@@ -506,16 +576,16 @@
       var dy = top - bottom;
       var dz = far - near;
 
-      dst[ 0] = 2 * near / dx;
-      dst[ 1] = 0;
-      dst[ 2] = 0;
-      dst[ 3] = 0;
-      dst[ 4] = 0;
-      dst[ 5] = 2 * near / dy;
-      dst[ 6] = 0;
-      dst[ 7] = 0;
-      dst[ 8] = (left + right) / dx;
-      dst[ 9] = (top + bottom) / dy;
+      dst[0] = 2 * near / dx;
+      dst[1] = 0;
+      dst[2] = 0;
+      dst[3] = 0;
+      dst[4] = 0;
+      dst[5] = 2 * near / dy;
+      dst[6] = 0;
+      dst[7] = 0;
+      dst[8] = (left + right) / dx;
+      dst[9] = (top + bottom) / dy;
       dst[10] = -(far + near) / dz;
       dst[11] = -1;
       dst[12] = 0;
@@ -538,16 +608,16 @@
     function translation(tx, ty, tz, dst) {
       dst = dst || new MatType(16);
 
-      dst[ 0] = 1;
-      dst[ 1] = 0;
-      dst[ 2] = 0;
-      dst[ 3] = 0;
-      dst[ 4] = 0;
-      dst[ 5] = 1;
-      dst[ 6] = 0;
-      dst[ 7] = 0;
-      dst[ 8] = 0;
-      dst[ 9] = 0;
+      dst[0] = 1;
+      dst[1] = 0;
+      dst[2] = 0;
+      dst[3] = 0;
+      dst[4] = 0;
+      dst[5] = 1;
+      dst[6] = 0;
+      dst[7] = 0;
+      dst[8] = 0;
+      dst[9] = 0;
       dst[10] = 1;
       dst[11] = 0;
       dst[12] = tx;
@@ -591,16 +661,16 @@
       var m33 = m[3 * 4 + 3];
 
       if (m !== dst) {
-        dst[ 0] = m00;
-        dst[ 1] = m01;
-        dst[ 2] = m02;
-        dst[ 3] = m03;
-        dst[ 4] = m10;
-        dst[ 5] = m11;
-        dst[ 6] = m12;
-        dst[ 7] = m13;
-        dst[ 8] = m20;
-        dst[ 9] = m21;
+        dst[0] = m00;
+        dst[1] = m01;
+        dst[2] = m02;
+        dst[3] = m03;
+        dst[4] = m10;
+        dst[5] = m11;
+        dst[6] = m12;
+        dst[7] = m13;
+        dst[8] = m20;
+        dst[9] = m21;
         dst[10] = m22;
         dst[11] = m23;
       }
@@ -625,16 +695,16 @@
       var c = Math.cos(angleInRadians);
       var s = Math.sin(angleInRadians);
 
-      dst[ 0] = 1;
-      dst[ 1] = 0;
-      dst[ 2] = 0;
-      dst[ 3] = 0;
-      dst[ 4] = 0;
-      dst[ 5] = c;
-      dst[ 6] = s;
-      dst[ 7] = 0;
-      dst[ 8] = 0;
-      dst[ 9] = -s;
+      dst[0] = 1;
+      dst[1] = 0;
+      dst[2] = 0;
+      dst[3] = 0;
+      dst[4] = 0;
+      dst[5] = c;
+      dst[6] = s;
+      dst[7] = 0;
+      dst[8] = 0;
+      dst[9] = -s;
       dst[10] = c;
       dst[11] = 0;
       dst[12] = 0;
@@ -669,20 +739,20 @@
       var c = Math.cos(angleInRadians);
       var s = Math.sin(angleInRadians);
 
-      dst[4]  = c * m10 + s * m20;
-      dst[5]  = c * m11 + s * m21;
-      dst[6]  = c * m12 + s * m22;
-      dst[7]  = c * m13 + s * m23;
-      dst[8]  = c * m20 - s * m10;
-      dst[9]  = c * m21 - s * m11;
+      dst[4] = c * m10 + s * m20;
+      dst[5] = c * m11 + s * m21;
+      dst[6] = c * m12 + s * m22;
+      dst[7] = c * m13 + s * m23;
+      dst[8] = c * m20 - s * m10;
+      dst[9] = c * m21 - s * m11;
       dst[10] = c * m22 - s * m12;
       dst[11] = c * m23 - s * m13;
 
       if (m !== dst) {
-        dst[ 0] = m[ 0];
-        dst[ 1] = m[ 1];
-        dst[ 2] = m[ 2];
-        dst[ 3] = m[ 3];
+        dst[0] = m[0];
+        dst[1] = m[1];
+        dst[2] = m[2];
+        dst[3] = m[3];
         dst[12] = m[12];
         dst[13] = m[13];
         dst[14] = m[14];
@@ -704,16 +774,16 @@
       var c = Math.cos(angleInRadians);
       var s = Math.sin(angleInRadians);
 
-      dst[ 0] = c;
-      dst[ 1] = 0;
-      dst[ 2] = -s;
-      dst[ 3] = 0;
-      dst[ 4] = 0;
-      dst[ 5] = 1;
-      dst[ 6] = 0;
-      dst[ 7] = 0;
-      dst[ 8] = s;
-      dst[ 9] = 0;
+      dst[0] = c;
+      dst[1] = 0;
+      dst[2] = -s;
+      dst[3] = 0;
+      dst[4] = 0;
+      dst[5] = 1;
+      dst[6] = 0;
+      dst[7] = 0;
+      dst[8] = s;
+      dst[9] = 0;
       dst[10] = c;
       dst[11] = 0;
       dst[12] = 0;
@@ -748,20 +818,20 @@
       var c = Math.cos(angleInRadians);
       var s = Math.sin(angleInRadians);
 
-      dst[ 0] = c * m00 - s * m20;
-      dst[ 1] = c * m01 - s * m21;
-      dst[ 2] = c * m02 - s * m22;
-      dst[ 3] = c * m03 - s * m23;
-      dst[ 8] = c * m20 + s * m00;
-      dst[ 9] = c * m21 + s * m01;
+      dst[0] = c * m00 - s * m20;
+      dst[1] = c * m01 - s * m21;
+      dst[2] = c * m02 - s * m22;
+      dst[3] = c * m03 - s * m23;
+      dst[8] = c * m20 + s * m00;
+      dst[9] = c * m21 + s * m01;
       dst[10] = c * m22 + s * m02;
       dst[11] = c * m23 + s * m03;
 
       if (m !== dst) {
-        dst[ 4] = m[ 4];
-        dst[ 5] = m[ 5];
-        dst[ 6] = m[ 6];
-        dst[ 7] = m[ 7];
+        dst[4] = m[4];
+        dst[5] = m[5];
+        dst[6] = m[6];
+        dst[7] = m[7];
         dst[12] = m[12];
         dst[13] = m[13];
         dst[14] = m[14];
@@ -783,16 +853,16 @@
       var c = Math.cos(angleInRadians);
       var s = Math.sin(angleInRadians);
 
-      dst[ 0] = c;
-      dst[ 1] = s;
-      dst[ 2] = 0;
-      dst[ 3] = 0;
-      dst[ 4] = -s;
-      dst[ 5] = c;
-      dst[ 6] = 0;
-      dst[ 7] = 0;
-      dst[ 8] = 0;
-      dst[ 9] = 0;
+      dst[0] = c;
+      dst[1] = s;
+      dst[2] = 0;
+      dst[3] = 0;
+      dst[4] = -s;
+      dst[5] = c;
+      dst[6] = 0;
+      dst[7] = 0;
+      dst[8] = 0;
+      dst[9] = 0;
       dst[10] = 1;
       dst[11] = 0;
       dst[12] = 0;
@@ -827,18 +897,18 @@
       var c = Math.cos(angleInRadians);
       var s = Math.sin(angleInRadians);
 
-      dst[ 0] = c * m00 + s * m10;
-      dst[ 1] = c * m01 + s * m11;
-      dst[ 2] = c * m02 + s * m12;
-      dst[ 3] = c * m03 + s * m13;
-      dst[ 4] = c * m10 - s * m00;
-      dst[ 5] = c * m11 - s * m01;
-      dst[ 6] = c * m12 - s * m02;
-      dst[ 7] = c * m13 - s * m03;
+      dst[0] = c * m00 + s * m10;
+      dst[1] = c * m01 + s * m11;
+      dst[2] = c * m02 + s * m12;
+      dst[3] = c * m03 + s * m13;
+      dst[4] = c * m10 - s * m00;
+      dst[5] = c * m11 - s * m01;
+      dst[6] = c * m12 - s * m02;
+      dst[7] = c * m13 - s * m03;
 
       if (m !== dst) {
-        dst[ 8] = m[ 8];
-        dst[ 9] = m[ 9];
+        dst[8] = m[8];
+        dst[9] = m[9];
         dst[10] = m[10];
         dst[11] = m[11];
         dst[12] = m[12];
@@ -875,16 +945,16 @@
       var s = Math.sin(angleInRadians);
       var oneMinusCosine = 1 - c;
 
-      dst[ 0] = xx + (1 - xx) * c;
-      dst[ 1] = x * y * oneMinusCosine + z * s;
-      dst[ 2] = x * z * oneMinusCosine - y * s;
-      dst[ 3] = 0;
-      dst[ 4] = x * y * oneMinusCosine - z * s;
-      dst[ 5] = yy + (1 - yy) * c;
-      dst[ 6] = y * z * oneMinusCosine + x * s;
-      dst[ 7] = 0;
-      dst[ 8] = x * z * oneMinusCosine + y * s;
-      dst[ 9] = y * z * oneMinusCosine - x * s;
+      dst[0] = xx + (1 - xx) * c;
+      dst[1] = x * y * oneMinusCosine + z * s;
+      dst[2] = x * z * oneMinusCosine - y * s;
+      dst[3] = 0;
+      dst[4] = x * y * oneMinusCosine - z * s;
+      dst[5] = yy + (1 - yy) * c;
+      dst[6] = y * z * oneMinusCosine + x * s;
+      dst[7] = 0;
+      dst[8] = x * z * oneMinusCosine + y * s;
+      dst[9] = y * z * oneMinusCosine - x * s;
       dst[10] = zz + (1 - zz) * c;
       dst[11] = 0;
       dst[12] = 0;
@@ -946,16 +1016,16 @@
       var m22 = m[10];
       var m23 = m[11];
 
-      dst[ 0] = r00 * m00 + r01 * m10 + r02 * m20;
-      dst[ 1] = r00 * m01 + r01 * m11 + r02 * m21;
-      dst[ 2] = r00 * m02 + r01 * m12 + r02 * m22;
-      dst[ 3] = r00 * m03 + r01 * m13 + r02 * m23;
-      dst[ 4] = r10 * m00 + r11 * m10 + r12 * m20;
-      dst[ 5] = r10 * m01 + r11 * m11 + r12 * m21;
-      dst[ 6] = r10 * m02 + r11 * m12 + r12 * m22;
-      dst[ 7] = r10 * m03 + r11 * m13 + r12 * m23;
-      dst[ 8] = r20 * m00 + r21 * m10 + r22 * m20;
-      dst[ 9] = r20 * m01 + r21 * m11 + r22 * m21;
+      dst[0] = r00 * m00 + r01 * m10 + r02 * m20;
+      dst[1] = r00 * m01 + r01 * m11 + r02 * m21;
+      dst[2] = r00 * m02 + r01 * m12 + r02 * m22;
+      dst[3] = r00 * m03 + r01 * m13 + r02 * m23;
+      dst[4] = r10 * m00 + r11 * m10 + r12 * m20;
+      dst[5] = r10 * m01 + r11 * m11 + r12 * m21;
+      dst[6] = r10 * m02 + r11 * m12 + r12 * m22;
+      dst[7] = r10 * m03 + r11 * m13 + r12 * m23;
+      dst[8] = r20 * m00 + r21 * m10 + r22 * m20;
+      dst[9] = r20 * m01 + r21 * m11 + r22 * m21;
       dst[10] = r20 * m02 + r21 * m12 + r22 * m22;
       dst[11] = r20 * m03 + r21 * m13 + r22 * m23;
 
@@ -981,16 +1051,16 @@
     function scaling(sx, sy, sz, dst) {
       dst = dst || new MatType(16);
 
-      dst[ 0] = sx;
-      dst[ 1] = 0;
-      dst[ 2] = 0;
-      dst[ 3] = 0;
-      dst[ 4] = 0;
-      dst[ 5] = sy;
-      dst[ 6] = 0;
-      dst[ 7] = 0;
-      dst[ 8] = 0;
-      dst[ 9] = 0;
+      dst[0] = sx;
+      dst[1] = 0;
+      dst[2] = 0;
+      dst[3] = 0;
+      dst[4] = 0;
+      dst[5] = sy;
+      dst[6] = 0;
+      dst[7] = 0;
+      dst[8] = 0;
+      dst[9] = 0;
       dst[10] = sz;
       dst[11] = 0;
       dst[12] = 0;
@@ -1016,16 +1086,16 @@
       // return multiply(m, scaling(sx, sy, sz), dst);
       dst = dst || new MatType(16);
 
-      dst[ 0] = sx * m[0 * 4 + 0];
-      dst[ 1] = sx * m[0 * 4 + 1];
-      dst[ 2] = sx * m[0 * 4 + 2];
-      dst[ 3] = sx * m[0 * 4 + 3];
-      dst[ 4] = sy * m[1 * 4 + 0];
-      dst[ 5] = sy * m[1 * 4 + 1];
-      dst[ 6] = sy * m[1 * 4 + 2];
-      dst[ 7] = sy * m[1 * 4 + 3];
-      dst[ 8] = sz * m[2 * 4 + 0];
-      dst[ 9] = sz * m[2 * 4 + 1];
+      dst[0] = sx * m[0 * 4 + 0];
+      dst[1] = sx * m[0 * 4 + 1];
+      dst[2] = sx * m[0 * 4 + 2];
+      dst[3] = sx * m[0 * 4 + 3];
+      dst[4] = sy * m[1 * 4 + 0];
+      dst[5] = sy * m[1 * 4 + 1];
+      dst[6] = sy * m[1 * 4 + 2];
+      dst[7] = sy * m[1 * 4 + 3];
+      dst[8] = sz * m[2 * 4 + 0];
+      dst[9] = sz * m[2 * 4 + 1];
       dst[10] = sz * m[2 * 4 + 2];
       dst[11] = sz * m[2 * 4 + 3];
 
@@ -1085,8 +1155,8 @@
       dst[6] = (yz + wx) * sy;
       dst[7] = 0;
 
-      dst[ 8] = (xz + wy) * sz;
-      dst[ 9] = (yz - wx) * sz;
+      dst[8] = (xz + wy) * sz;
+      dst[9] = (yz - wx) * sz;
       dst[10] = (1 - (xx + yy)) * sz;
       dst[11] = 0;
 
@@ -1199,27 +1269,27 @@
       var m31 = m[3 * 4 + 1];
       var m32 = m[3 * 4 + 2];
       var m33 = m[3 * 4 + 3];
-      var tmp_0  = m22 * m33;
-      var tmp_1  = m32 * m23;
-      var tmp_2  = m12 * m33;
-      var tmp_3  = m32 * m13;
-      var tmp_4  = m12 * m23;
-      var tmp_5  = m22 * m13;
-      var tmp_6  = m02 * m33;
-      var tmp_7  = m32 * m03;
-      var tmp_8  = m02 * m23;
-      var tmp_9  = m22 * m03;
+      var tmp_0 = m22 * m33;
+      var tmp_1 = m32 * m23;
+      var tmp_2 = m12 * m33;
+      var tmp_3 = m32 * m13;
+      var tmp_4 = m12 * m23;
+      var tmp_5 = m22 * m13;
+      var tmp_6 = m02 * m33;
+      var tmp_7 = m32 * m03;
+      var tmp_8 = m02 * m23;
+      var tmp_9 = m22 * m03;
       var tmp_10 = m02 * m13;
       var tmp_11 = m12 * m03;
 
       var t0 = (tmp_0 * m11 + tmp_3 * m21 + tmp_4 * m31) -
-          (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
+        (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
       var t1 = (tmp_1 * m01 + tmp_6 * m21 + tmp_9 * m31) -
-          (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31);
+        (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31);
       var t2 = (tmp_2 * m01 + tmp_7 * m11 + tmp_10 * m31) -
-          (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
+        (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
       var t3 = (tmp_5 * m01 + tmp_8 * m11 + tmp_11 * m21) -
-          (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
+        (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
 
       return 1.0 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3);
     }
@@ -1249,16 +1319,16 @@
       var m31 = m[3 * 4 + 1];
       var m32 = m[3 * 4 + 2];
       var m33 = m[3 * 4 + 3];
-      var tmp_0  = m22 * m33;
-      var tmp_1  = m32 * m23;
-      var tmp_2  = m12 * m33;
-      var tmp_3  = m32 * m13;
-      var tmp_4  = m12 * m23;
-      var tmp_5  = m22 * m13;
-      var tmp_6  = m02 * m33;
-      var tmp_7  = m32 * m03;
-      var tmp_8  = m02 * m23;
-      var tmp_9  = m22 * m03;
+      var tmp_0 = m22 * m33;
+      var tmp_1 = m32 * m23;
+      var tmp_2 = m12 * m33;
+      var tmp_3 = m32 * m13;
+      var tmp_4 = m12 * m23;
+      var tmp_5 = m22 * m13;
+      var tmp_6 = m02 * m33;
+      var tmp_7 = m32 * m03;
+      var tmp_8 = m02 * m23;
+      var tmp_9 = m22 * m03;
       var tmp_10 = m02 * m13;
       var tmp_11 = m12 * m03;
       var tmp_12 = m20 * m31;
@@ -1275,13 +1345,13 @@
       var tmp_23 = m10 * m01;
 
       var t0 = (tmp_0 * m11 + tmp_3 * m21 + tmp_4 * m31) -
-          (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
+        (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
       var t1 = (tmp_1 * m01 + tmp_6 * m21 + tmp_9 * m31) -
-          (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31);
+        (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31);
       var t2 = (tmp_2 * m01 + tmp_7 * m11 + tmp_10 * m31) -
-          (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
+        (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
       var t3 = (tmp_5 * m01 + tmp_8 * m11 + tmp_11 * m21) -
-          (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
+        (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
 
       var d = 1.0 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3);
 
@@ -1290,29 +1360,29 @@
       dst[2] = d * t2;
       dst[3] = d * t3;
       dst[4] = d * ((tmp_1 * m10 + tmp_2 * m20 + tmp_5 * m30) -
-            (tmp_0 * m10 + tmp_3 * m20 + tmp_4 * m30));
+        (tmp_0 * m10 + tmp_3 * m20 + tmp_4 * m30));
       dst[5] = d * ((tmp_0 * m00 + tmp_7 * m20 + tmp_8 * m30) -
-            (tmp_1 * m00 + tmp_6 * m20 + tmp_9 * m30));
+        (tmp_1 * m00 + tmp_6 * m20 + tmp_9 * m30));
       dst[6] = d * ((tmp_3 * m00 + tmp_6 * m10 + tmp_11 * m30) -
-            (tmp_2 * m00 + tmp_7 * m10 + tmp_10 * m30));
+        (tmp_2 * m00 + tmp_7 * m10 + tmp_10 * m30));
       dst[7] = d * ((tmp_4 * m00 + tmp_9 * m10 + tmp_10 * m20) -
-            (tmp_5 * m00 + tmp_8 * m10 + tmp_11 * m20));
+        (tmp_5 * m00 + tmp_8 * m10 + tmp_11 * m20));
       dst[8] = d * ((tmp_12 * m13 + tmp_15 * m23 + tmp_16 * m33) -
-            (tmp_13 * m13 + tmp_14 * m23 + tmp_17 * m33));
+        (tmp_13 * m13 + tmp_14 * m23 + tmp_17 * m33));
       dst[9] = d * ((tmp_13 * m03 + tmp_18 * m23 + tmp_21 * m33) -
-            (tmp_12 * m03 + tmp_19 * m23 + tmp_20 * m33));
+        (tmp_12 * m03 + tmp_19 * m23 + tmp_20 * m33));
       dst[10] = d * ((tmp_14 * m03 + tmp_19 * m13 + tmp_22 * m33) -
-            (tmp_15 * m03 + tmp_18 * m13 + tmp_23 * m33));
+        (tmp_15 * m03 + tmp_18 * m13 + tmp_23 * m33));
       dst[11] = d * ((tmp_17 * m03 + tmp_20 * m13 + tmp_23 * m23) -
-            (tmp_16 * m03 + tmp_21 * m13 + tmp_22 * m23));
+        (tmp_16 * m03 + tmp_21 * m13 + tmp_22 * m23));
       dst[12] = d * ((tmp_14 * m22 + tmp_17 * m32 + tmp_13 * m12) -
-            (tmp_16 * m32 + tmp_12 * m12 + tmp_15 * m22));
+        (tmp_16 * m32 + tmp_12 * m12 + tmp_15 * m22));
       dst[13] = d * ((tmp_20 * m32 + tmp_12 * m02 + tmp_19 * m22) -
-            (tmp_18 * m22 + tmp_21 * m32 + tmp_13 * m02));
+        (tmp_18 * m22 + tmp_21 * m32 + tmp_13 * m02));
       dst[14] = d * ((tmp_18 * m12 + tmp_23 * m32 + tmp_15 * m02) -
-            (tmp_22 * m32 + tmp_14 * m02 + tmp_19 * m12));
+        (tmp_22 * m32 + tmp_14 * m02 + tmp_19 * m12));
       dst[15] = d * ((tmp_22 * m22 + tmp_16 * m02 + tmp_21 * m12) -
-            (tmp_20 * m12 + tmp_23 * m22 + tmp_17 * m02));
+        (tmp_20 * m12 + tmp_23 * m22 + tmp_17 * m02));
 
       return dst;
     }
@@ -1420,16 +1490,16 @@
     function copy(src, dst) {
       dst = dst || new MatType(16);
 
-      dst[ 0] = src[ 0];
-      dst[ 1] = src[ 1];
-      dst[ 2] = src[ 2];
-      dst[ 3] = src[ 3];
-      dst[ 4] = src[ 4];
-      dst[ 5] = src[ 5];
-      dst[ 6] = src[ 6];
-      dst[ 7] = src[ 7];
-      dst[ 8] = src[ 8];
-      dst[ 9] = src[ 9];
+      dst[0] = src[0];
+      dst[1] = src[1];
+      dst[2] = src[2];
+      dst[3] = src[3];
+      dst[4] = src[4];
+      dst[5] = src[5];
+      dst[6] = src[6];
+      dst[7] = src[7];
+      dst[8] = src[8];
+      dst[9] = src[9];
       dst[10] = src[10];
       dst[11] = src[11];
       dst[12] = src[12];
@@ -1543,12 +1613,12 @@
   ];
 
   var quadColors = [
-    1.0,  1.0,  1.0,  1.0,
-    1.0,  1.0,  1.0,  1.0,
-    1.0,  1.0,  1.0,  1.0,
-    1.0,  1.0,  1.0,  1.0,
-    1.0,  1.0,  1.0,  1.0,
-    1.0,  1.0,  1.0,  1.0
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0
   ];
 
   var TriangleZPositionArray = [
@@ -1558,9 +1628,9 @@
   ];
 
   var triangleColors = [
-    1.0,  1.0,  1.0,  1.0,
-    1.0,  1.0,  1.0,  1.0,
-    1.0,  1.0,  1.0,  1.0
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0
   ];
   var quadPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, quadPositionBuffer);
@@ -1665,7 +1735,7 @@
     };
 
     const image = new Image();
-    image.onload = function() {
+    image.onload = function () {
       textureInfo.width = image.width;
       textureInfo.height = image.height;
 
@@ -1689,7 +1759,7 @@
 
     gl.bindBuffer(gl.ARRAY_BUFFER, quadColorBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadColors), gl.STATIC_DRAW);
-    // Setup the attributes to pull data from our buffers
+    // Setup the attributes to pull data from our buffers 
     gl.bindBuffer(gl.ARRAY_BUFFER, quadPositionBuffer);
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
@@ -1705,15 +1775,22 @@
 
     // this matrix will convert from pixels to clip space
     var matrix = m4.orthographic(0, gl.canvas.width, gl.canvas.height, 0, -1, 1);
+    if (coordinateSpace == "Canvas") {
+      matrix = m4.translate(matrix, dstX, dstY, 0);
+    } else {
+      var scalemultiplyer = canvas.width / runtime.stageWidth;
+      matrix = m4.translate(matrix, runtime.stageWidth / 2 * scalemultiplyer, runtime.stageHeight / 2 * scalemultiplyer, 0);
+      matrix = m4.translate(matrix, dstX, -dstY, 0);
+    }
 
     // this matrix will translate our quad to dstX, dstY
-    matrix = m4.translate(matrix, dstX, dstY, 0);
 
-    matrix = m4.zRotate(matrix,degreesToRadians(stampRotation));
+    matrix = m4.zRotate(matrix, degreesToRadians(stampRotation));
 
     // this matrix will scale our 1 unit quad
     // from 1 unit to texWidth, texHeight units
     matrix = m4.scale(matrix, texWidth, texHeight, 1);
+    matrix = m4.translate(matrix, stampOffset[0], stampOffset[1], 0);
 
     // Set the matrix.
     gl.uniformMatrix4fv(matrixLocation, false, matrix);
@@ -1765,6 +1842,11 @@
     // this matrix will scale our 1 unit quad
     // from 1 unit to texWidth, texHeight units
 
+    if (coordinateSpace == "Scratch") {
+      var scalemultiplyer = canvas.width / runtime.stageWidth;
+      matrix = m4.translate(matrix, runtime.stageWidth / 2 * scalemultiplyer, runtime.stageHeight / 2 * scalemultiplyer, 0);
+    }
+
     // Set the matrix.
     gl.uniformMatrix4fv(matrixLocation, false, matrix);
 
@@ -1776,6 +1858,14 @@
   }
 
   function hexToRgb(hex) {
+    if (typeof hex === 'string') {
+      const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return {
+        r: parseInt(splitHex[1], 16),
+        g: parseInt(splitHex[2], 16),
+        b: parseInt(splitHex[3], 16)
+      };
+    }
     return {
       r: Math.floor(hex / 65536),
       g: Math.floor(hex / 256) % 256,
@@ -1789,14 +1879,445 @@
     return dataURI;
   }
 
-  async function coolcash(uri, clamp){
+  async function coolcash(uri, clamp) {
     if (!textures.hasOwnProperty(uri)) {
       textures[uri] = await loadImageAndCreateTextureInfo(uri, clamp);
     }
   }
 
+
+  //Split Blocks Function
+  function splitBlockCatagories(Catagories) {
+    let returnedArray = [];
+    Catagories.forEach(Catagory => {
+      Catagory.blocks.forEach(Block => {
+        if ((!Block.blockIconURI) && Catagory.icon) {
+          Block.blockIconURI = Catagory.icon;
+        }
+        returnedArray.push(Block);
+      });
+      returnedArray.push('---');
+    });
+
+    return returnedArray;
+  }
+
+  const BlankIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABZCAYAAAC+PDOsAAAAAXNSR0IArs4c6QAAAihJREFUeF7t3VtuwyAQBdB4Cd1S19XPrqtb6hJakcQOJtjmMQPzuPwgJGuAoyt+LMFye7S/Z792SzLGsFMggKbIcUmAdwLHyd2gP36+b7+fX2lpYBNgb4kOyGsDNoFs5iy+JzqGDmNg02JnE41k0yKHaqfQSDYd+CU0sGmwi6CB3Y9dDA3sPuwqaGC3Y1dDA7sNuwka2PXYzdDArsPuggZ2OXY3NLDLsEmggX2NTQYN7HNsUmhgH2OTQwM7j80CDex3bDZoYO+xWaGB/cJmhwb2A3sINLAHQnvHHpbo9bTy+nd9OLTXZE+B9og9Ddob9lRoT9jTob1gi4D2gC0G2jq2KGjL2OKgrWKLhLaILRbaGrZoaEvY4qGtYKuAtoCtBlo7tipozdjqoLViq4TWiK0WWhu2amhN2OqhtWCbgNaAbQZaOrYpaMnY5qClYpuElohtFloatmloSdjmoaVgu4CWgO0Geja2K+iZ2O6gZ2G7hJ6B7RZ6NLZr6JHY7qFHYQM6SA+4ixXQT2hubEBH0JzYgE6gubABnYHmwAb0ATQ1NqBPoCmxAX0BTYUN6AJoCmxAF0L3YgO6AroHG9CV0K3YgG6AbsEGdCN0LTagO6BrsAHdCV2KDWgC6BJsQBNBX2EDmhD6DBvQxNBH2Bt0+CB905BhDW5KJjdWLgE6tN1zqG40mDcaY79BM8/ttvwKvUu1Ww2+jW9HR26Ks2es+ZZko3Ic4PuO/gGXQ1VnDpD+gwAAAABJRU5ErkJggg==";
+  const CoordsIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGIAAABgCAYAAADmbacFAAAAAXNSR0IArs4c6QAAA2xJREFUeF7tncFxwyAQRe0S0pKLSDWZHDKpJkWkpZSQDJKxkAwsYtfMRn65OaBl+U8fMLLx+bT++72+PG/+X3oZ64fy3DVSeWMzx68WxUsFi72WYEjXSOXHV3dHD4PYk2Av35+3y34ubxKMWeSP16Wp96/0Gql8R4rPUXUCkUKI3b7CKLnidwUhXrTAWENal0tOew7lN72UQJTH/tQNadAII1c+lwEic6v1g9gOTeldX4cEiCEgSgPLeg55yuGn1uleR4SY9xNyrSWGperNNwYEbhBHAA2INlcAQYQQVzC15WvLKie/lL1f0jJJV5BoHSG7grlhiCPkCZuhyQmIkAauEGFohibZDcwTIoBYYQwIXCEC6QXR7gZcIULQLF/LS9YwH7DX1CR+WqnfEey+7hb7EXtNPI8wxTA/G+h5Zy09gZPKjbvx/8P1gljeUa81SLcxeGa94/7QgIjNBMFr+0hS+Y50j1vVAsRx1RnYM0AMFPsRqyYn6R8nDRzhhCUgAOFEASdp4AhAOFHASRo4AhBOFHCSBo4AhBMFnKSBIwDhRAEnaeAIQDhRwEkaOAIQThRwkgaOAIQTBZykgSMA4UQBJ2ngCEA4UcBJGjgCEE4UcJIGjgCEEwWcpIEjAOFEASdp4AhAOFHASRo4AhBOFHCSBo4AhBMF7NJoPfU5Ww9H2IDIfYM2RN5+ybP4TVtA6EHkzyW5Pxqp+t1zQFiAKB82HF1RPkTmCgwQjwIR4kpHdC91zoCwABFi1F0hntgDiEeCiHe8dJLP6YQj9BymCOqDxHCEEYkJRunOz7WxOf0TEJYgSnPFto3MEayAsAPRPkQBwlb1TDR5rigcSIwj7NnUYRQOIwbESBCV47kBYQuiyw23fZDKr27ldhBtUz9WtPp5uHNftzuyt3/2nHJ5LPlsetPtBhxhAyBG6XYDIOxAqNwACEsQDRt7teZYNelhSA99mhY8gLAAoXQDQ5Mewry/JD8qFVvCEaJEYoXahweahiUcIWrcXGGBkT6n3vFLxTiiWWux4vYzS9l30KUogBD1HVMBEGN0FlsBhCjRmAqAGKOz2EoLCDEIFVQKTJN6EYQqNBc3KfBzeYv1yh8wa4pEJbUCEQaOUEupDxBgAEKvozoCINQS6gOshiZ9OCIoFZgna2UQLu9X4LYf9Qeqxh17SNwkIgAAAABJRU5ErkJggg==";
+  const SpriteIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABeCAYAAADc6BHlAAAAAXNSR0IArs4c6QAABItJREFUeF7tncuN2zAQhu0SctmCAuSQDnLZAlLCAjkG2BJSwF62gxwWSEG5pIQEFJYKRQ5f8+BzfLSoMfV/8yIl2/db+PrrvXUHxti3/LGJobeUndR5Sx9zRUmJWTquVCyF8a4UKOzj89Pt5em5VMxj3Idf34Pxfz5+y9nYHoQV4PR+I777ioGABM+pHQGyNYRqABjhfTAAiG0hRAH4ns8hvIIIc0RRcZUQ307Fi4btIiELQFJ8hXALevNLK9pC/N0h+CF/Amgp/s4QFECudxY+DtaAHt6/axQoAGEPz5kP1gE9vR+IguXb0tEBGCZLQ7gAGMH7jeI7Lc6GBOBB0AjIFRKJ404UKAAJgXM2dwLQdfUbA7ETAKPBAWGUIgwUYpfTUilpmCJccPsyFixTA+kOgCC8D2RKEN0AQMI//n7L1ebz+MvDpyUiostK2Be/RnhIdQDGNNHQFAC38C6MSEQMDyLYDZXqhCTFT4CYD4BUO+oCoKacXKHwomFoCOAdMe4oaCm+hTMLBPFbkj3EnwkCFJ5sWxM9xTcQZoiCWH5kgdAbwAwQsgAoRdkCkC66FUV5uIKcmhDpIa0RvH+GWpDzCDSEUbx/9DSUA3BuVbthnmtTR/J+IApKrjmX1diO10wG/ApT7psxvfP/SgDstdR8Me82IABzHTWOx+btkCHKRIpAKIA0PwoAyHIARQG0BXBJU6OIP3InxB0BQZ3oDSFx54w7JaNqxZIAKkXvemtzKQAp4b/8/BH10NfPX1PeK6XR8ZmSxo+C3CoFQeKnRI8pHoEhppOYYfuwlzQAX3iM6BAMAISIViJG3y/o/88fVDxuUlPJpMR35yANYloALcS3IDwIrJqxGgO8VywKXABcaScVfVIQpgTQWnzJSJAGYObOGgW9xJeC0AIAKwQLoEXaKeiOyPqRDRR2LZdNOmxr2tv7JaKgFYBLFGAXaL29f3YAJAijeD8AgeTEpJML048/DHXPYGAApC2dHgCCLWv7Rqo2jJJ+uNNQTwBBSoIiykJRAMh8U3ha0f1lY6tX+5lpSdGOjD6xUFjMsCQMBYCRlH7OCUUB0MXEWFAAGNWYzzkgaAQwq1phbigAXNvTIxbhGJNmAFxxYxG3LQDJNBR7OgKCoAAqclfJ0MyjKUHtccaTsgjp5JILYx4jloasoKn/T7CRwOX9pE0kZmFLzYm0o66gPgAzMfen/A2EnQGc+0ec7WgOgA/B8RZyBiEbKHVdxnFdoiACgawf2QCjsDWm2CH4RRhKRQAEsn5kAzWqMY69bNhxpaMeEGYFcNYCC3VWCDMDWALC7ACmh7ACAJuFWOpCakUsUZhXAhBEQ019yG1FWFvcEFYDAEYDsvtytbk+2ef93aO17/35XZG2RYOQFzDCacU3+wtWtyIQVgcQcwIjJuba2SFgJjGCZ/ecAysEBYBDyQZBAeAABB0XtjtSAHgALBAUAA0AGYICoAMgQVAAPADQEBQAHwAMhLsC4AVQBMHdslAA/ACyEBwAGgEy+h9WwcWav2GnESBIwIcAfJRGgKz+YST4u67/APKrBHxjStmdAAAAAElFTkSuQmCC";
+  const ColorIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF4AAABeCAYAAACq0qNuAAAAAXNSR0IArs4c6QAABTFJREFUeF7t3b2KFEEUBeAecBVkk8nERBSMBEGMTDcxN/IhfATDRdinMDSaV5gn8REEo40MlBqoobrmVtWtqvtzWnYzd3tmer46ffrOr7tlOz9/mbu6Y27nuhniTnKBe+Gg7ivKzmhhlxbH/X577UAT+smnD81EP3r9vLnN/d2huc2yLOYO1jdYBOdA54Ic+PwyjYUw87C6IRJ8BDuFHIFPL19ZBHUX9RtYluUCfRY84s3Cx+spLICqjeaVq4FLw3ssgAa8OrgWvOUCSMOv0KUqpTSWSFVN6fqJChLzEruivMu10QOWNny4DS18CXjTlEtONZwBv1I/U3ZTF/ZIuRe8dPpn4N2Srn1yrR0JUtUzCu+ObtXx1CJI4I/AQ6B7wkvUTi88DLo3/Cz+MLzFuNiaOizGydY+ZLXD9mRvmE4wCOgIiS+MmixT1kaI6EjwRO00XZsboKKjwffiP8C3Srzj7z1934I/TzEove75yJWzBlx8FjwiOmLVECfbom8N/pz26xfPlj/vX3IW3HQbhHGS8ciWNC7Br9DTK0daAET4xx/fnbh+33xN2S6cu+HDtaHgI8FH8Kg9Al9Me35YeS8AAnwOnhrV8KnEs+HjjXgtgCf8/d1htz/eVt+Y1QPfje6J7wVfS3neCiX8PPHD8B4LYA3fA97qehI+jI+zPxb1YwU/Al7o+rO3GrzF9GMBP4uejZYk/HTNlI4SrfRrwkuA1+omTfwJXqJmrBZAA14SvFY3pvDS9SMJrwVOpP5kHuHVakYz/VLw2ujUUwhu8BLj5yy8BXip51fwmv3eGk9HTsCj8JbgpZ6HgR/p/154L3Cq56Hge+unB94bPZ/nIeG5C8CBRwAvJd58omn1ffr3WvfX4JHAqRNsSDw0fC39FDwi+KbhqQXI4ZHR81l+M4mn6ifCo4P/F4lPF+Dq+5ee04X7tumLIptMfBC8un663Pz4dsI8/vrpjsrZgU3DB/D4E+Hjv9EXYJPwKXgJHj39m4On0ANynvj0cEdM/2bgS+C1xOddi7QAOXzYV/VXnzgnn9XEknR56bK1xCOmP4HfwT1X00p5CsqFRzn5QsL3gPdUDXW0eNUPHPwIeuvk2qo2D/wifNhZy1ehRsFnE+/R//lb+Vxec50Fl4S36v8SvNlkI4U+WzXW3Z/WTLhts/fVSIJrJF67fprw0j2vAa4NL10/1Fu1Vd+0qomuUTVa9ZOnPa8asZ7XBrdKvFT9sOFH68YK3AN+tH7UPxFijW5VNbP1w4U/1w039R7gnonvqZ+eD5+x4T3BUeBb9dML38RHQPesGqp+wu/S539S9P3xNnzSezVBdn2yGwUcLfFU/Yx8sjtez+odZmjoiImPcIe3n89rQaWdmuPzo+iEv3/zqnR0uf6+94UQq51N4E+f/s5rhg2Pio8In6a99n+PtL4oaHWiRUs+GjwXnZP4B/iOfpKGh8VHSnwPOjfxF1MOSuWgwPei98LDJR8BfgR9Ch5h0vGGz9C7PDlTDTnbx1961o4n/Ax61wpl+quvhPLC94KfRZ+BX/W9V+14wEugz8K741vDS6FLwLviW8JLokvBX8z5VtVjAS8NHrFGpprag2jTk642vBa6dOLJ5GumXwueABe3kk58ejRcfAup9NgpDW8BrlU1VA2pLYAUvCW4JfzF5CP1qHcWvgAuXitUGjWrhpX+mUUYga9gm4BbJ776fA+1QpzzAQe+Ae3mYJ340iha/Trw2vw6+Df3++2+AwSc1iJA3VeonWmkl7sgm7hP/wDwgcxktVR5CQAAAABJRU5ErkJggg==";
+  const LineStyleIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE4AAABOCAYAAACOqiAdAAAAAXNSR0IArs4c6QAAAkxJREFUeF7t2m1OBCEMBmDnCF7Jc/nTc3klj7CG0TFIgLbsQD9498cmm2kUn22BgscLXpTAowg40ufzDa+mQIl2BR6Aa2fNifb6+fEv4uvt/fwMuDpcFS2FAk6YaVc44ISZBrjBTMvLNE1xmON+IJtzWplp17oAuAE0rKqDaLvDicsznx53LdWn0HbNuKfRAFfZmlwbXKqr2rFUyXaKQkPGZRnHzbS/45FNj5Sax0Vcj+ilWj2E/MXpPSP9IsM9nVU9vahw3UNIzuRPpVxEuFtWzd3guptb6cq5S6ne0hFQmRZtO7IULcoGeDlaBDgVNO9wamie4VTRvMKpo3mEM4HmDc4Mmic4U2he4MyhuYEr/9Uqb4vu7D+57ZZ7OC0013CaaG7g0kDzctVG8wKXxlk7Blc9hFX95cVkzMFJMSbGbGIQeUalkrRQitQKawFu+sUKhTDyXBuOc0egPcaqq+agOGhmFzAtOJNtlKRkNeDco2mUQQi01XBh0FbChUJbBRcObQVcSLTZcGHRZsKFRpsFFx5tBtwWaFPgLF6sSFopbuzdLdejBefhjI2LtizjoqFNgbN4sSLJJG7s3aVq8mKFiyGJG4UrL1ZGf45krKZiR/7g2m3UjLI3BVUORgrn8mJlxjcggWtubiOumhQ2F871xQqFMPKcA7dNGyUBpOCA1tDswQGtk4ItOKARdVuDAxpjsivhgMZAK3f7QGOi5XBAE6BdcEATorHgdmynOI5pcUAPypEqYppwyLS+5rUdwRmbMOvyfdz2p7oSu299qhZaTMEypAAAAABJRU5ErkJggg==";
+
+
+  //Block Catagories in pen+ version 5.0
+  const UtilityBlocks = {
+    blocks: [
+      {
+        blockIconURI: SpriteIcon,
+        opcode: "precachetextures",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Start loading image from url: [uri] clamp the texture? [clamp]",
+        arguments: {
+          uri: {
+            type: Scratch.ArgumentType.STRING,
+            defaultValue: EXAMPLE_IMAGE
+          },
+          clamp: {
+            type: Scratch.ArgumentType.STRING,
+            menu: 'TFmenu'
+          }
+        }
+      },
+      {
+        blockIconURI: SpriteIcon,
+        opcode: "getcostumedata",
+        blockType: Scratch.BlockType.REPORTER,
+        text: "Get data uri of costume[costu]",
+        arguments: {
+          costu: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "1"
+          },
+          spr: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "1"
+          }
+        }
+      },
+      {
+        blockIconURI: BlankIcon,
+        opcode: "SolidColorRet",
+        blockType: Scratch.BlockType.REPORTER,
+        text: "Solid Color",
+        disableMonitor: true
+      },
+      {
+        blockIconURI: ColorIcon,
+        opcode: "rgbtoSColor",
+        blockType: Scratch.BlockType.REPORTER,
+        text: "Convert R[R] G[G] B[B] to Hex",
+        arguments: {
+          R: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: '255'
+          },
+          G: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: '255'
+          },
+          B: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: '255'
+          }
+        }
+      },
+      {
+        blockIconURI: ColorIcon,
+        opcode: "hsvtoSColor",
+        blockType: Scratch.BlockType.REPORTER,
+        text: "Convert Hue[H] Saturation[S] Value[V] to Hex",
+        arguments: {
+          H: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: '0'
+          },
+          S: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: '100'
+          },
+          V: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: '100'
+          }
+        }
+      },
+      {
+        blockIconURI: CoordsIcon,
+        opcode: "setCoordSpace",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Set the coordinate space to [space]",
+        arguments: {
+          space: {
+            type: Scratch.ArgumentType.STRING,
+            menu: 'coordTypes'
+          }
+        }
+      },
+      {
+        blockIconURI: CoordsIcon,
+        opcode: "coordBlock",
+        blockType: Scratch.BlockType.REPORTER,
+        text: "[c1][c2][c3][c4][c5][c6]",
+        arguments: {
+          c1: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "0"
+          },
+          c2: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "0"
+          },
+          c3: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "0"
+          },
+          c4: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "0"
+          },
+          c5: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "0"
+          },
+          c6: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "0"
+          }
+        }
+      }
+    ]
+  };
+
+  const StampBlocks = {
+    icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGIAAABYCAYAAAAORCLFAAAAAXNSR0IArs4c6QAAArZJREFUeF7tnDFSwzAQRe2SgoIr0XCTlJyAkhNQ5iY0XImCghLGmcijmBjLWe3qJ35UDCPtrv7T1yrG0HfxXz/xKVdn7FfPME6ITngNEHJJw/QJS9R13QmEu92TcQ/5TP/ev28HhCqERKAFjHBHqEMYYNwyiPFYugYQExghmzUkSd4fAHG+twFipudnx1OIRiFJcMTyDQ8QOGJ5l7QcwdHUUv0sNyAA4aoAnyMW5KVZ06xdHWgOTo8wS1gnACDq6GiOAgizhHUCAKKOjuYogDBLWCcAIOroaI4CCLOEdQIAoo6O5ig3D8KsUHyAkKcPIUmmr9LEa2nKGKJRSJIVMhweDt6/7f6d8vW8XxFydqjU2qWKSc5ZAnEphQlAqbVLFQOIS7dY/XlFR5MlbeYKqU0oVYy3IwaAgCjbxjiiTCf3UYBwl7gsASDKdHIfBQh3icsSAKJMJ/dRkSCGxcjcGmUKOSIGhPteL0sAiDKdXEeNbwN6PWuafKDjaJrBCQjXfV4ePASE6mMOpWYNiPJN6zoSEK7ylgcHRLlWriPdr66pesXf1Mn1CM+rKyDKjIQjynRyHxUGQvEKq3I0hTXqM8eThAYSReQvoEX0CBwxf7qFHkuKz5zmHNHkX75FuWHm9uTeBI8Jzmqe/7CJ+PnqNwIiX/Kof/qmKYRoALkSld6jtbqpH0CcQGgpinU11zR/+un+BAQQYlHmMEYQQIiFML0wAKKN/mPW5ApAAKKxAiLpcQQgRBQQKQNHAEJEAZEycAQgRBQQKQNHAEJEAZEycAQgRBQQKQNHAEJEAZEycAQgRBQQKQNHqIIQqWuzZfx5i2OzSjReOCAaA0jpRxAPH68iJW2rjM/Hl8OCAdGYOyAaA0jpAQEIEQVEysARqiCGurg5xdJJbji5NcWWQLapAhJ/qAKWrv8Fl7tFSQcWbxYAAAAASUVORK5CYII=",
+    blocks: [
+      {
+        opcode: "pendrawspritefromurl",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Stamp the image from url: [url] at x:[x] y:[y]",
+        arguments: {
+          url: {
+            type: Scratch.ArgumentType.STRING,
+            defaultValue: EXAMPLE_IMAGE
+          },
+          x: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "240"
+          },
+          y: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "180"
+          }
+        }
+      },
+      {
+        opcode: "rotateStamp",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Set stamp rotation to [ANGLE]",
+        arguments: {
+          ANGLE: {
+            type: Scratch.ArgumentType.ANGLE,
+            defaultValue: "90"
+          }
+        }
+      },
+      {
+        opcode: "getstamprotation",
+        blockType: Scratch.BlockType.REPORTER,
+        text: "Stamp Rotation",
+        arguments: {
+          ANGLE: {
+            type: Scratch.ArgumentType.ANGLE,
+            defaultValue: "90"
+          }
+        }
+      },
+      {
+        opcode: "setpenstrechandsquash",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Set stamp width to [width] and height to [height]",
+        arguments: {
+          width: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "64"
+          },
+          height: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "64"
+          }
+        }
+      },
+      {
+        opcode: "getstampwidth",
+        blockType: Scratch.BlockType.REPORTER,
+        text: "Stamp Width",
+        arguments: {
+        }
+      },
+      {
+        opcode: "getstampheight",
+        blockType: Scratch.BlockType.REPORTER,
+        text: "Stamp Height",
+        arguments: {
+        }
+      },
+      {
+        opcode: "setstampcolor",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Tint stamp by [color] and transparency[T](0-255)",
+        arguments: {
+          color: {
+            type: Scratch.ArgumentType.COLOR,
+            defaultValue: '#ffffff'
+          },
+          T: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: '0'
+          }
+        }
+      },
+      {
+        opcode: "offsetStamp",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Set stamp anchorPoint to [Anchor]",
+        arguments: {
+          Anchor: {
+            menu: "AnchorPointMenu",
+            type: Scratch.ArgumentType.STRING,
+            defaultValue: [0, 0]
+          }
+        }
+      }
+    ]
+  };
+
+  const TriangleBlocks = {
+    icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGIAAABiCAYAAACrpQYOAAAAAXNSR0IArs4c6QAABGtJREFUeF7tncGxEzEMhpMZrhwogAYog2a4UAJHSuBCM5TxGqAADlyZgXGIg+Pd9UqyJP82yuXNvHi9sj7/siUnm+sF//X7buIV31S5heiDyxDyCNHtFZNAHlgNYWkYqCAeEF5/+XAD8PPj13K2odq9nCIChBip7oU3EFkNueuVVYEo8Y0aMohX795efrz/tORaAQuiVkPyfgUi/QvRflFsQBvIoRoyiPS3UMUyMAKEaP7qXwQJ4s23z5dfL983o02hKb9WUwUSiEdYooCoQhTSOERyQRrADUSCkF5nilhtrUAB8aQGKoiVYAQIUSDRvwgBxEYNHEWsoooAoT+5RT3CgNjLpDkjmr0ONRpEM5PmgEhtZ4YBAaJXDStUZ0eCUFXD7DACBDf+GbUfDiJn0r3jKzPxGdeKUSB2c4ceGHVJpIAxaoys4Ywy8qmuxLL4oHEDxBRnFiNAqKvhKBOfKUQFCA05KvThDcJEDa3a1CwHSAFCYTZrdDEEhNaWtXRA6yBpBlV4gjALS5SyOTqMAKERVxT68AJhqgaKItAPkNxBaFVaJZMQOa9wBTESAnp11gOESblboogdGB7jJ5nqYcjuR+xJ1hk1QgxR1iDg1IAaotxAUJM4yif8NISClldYghBtWb1AoG1nA8Q/eVn64lTEljcXHf54KgJJFVYgRGGJmiGfTi9mA4T1IkCAfBXMAoRYDaMUgRCiAsQ9jI0OT2YgqHlDHc69F+vy/iNhaIPoCksjQ1MGMuoL9SYgpGoAA5HM0fbP4X5O80bdakAAMWrhNgGBcO7ATCWemo+ozqqDmB3CqOqsFgjYcreSMrT8ZL5GwB3+9AAYoQoN0kuqIcHwfCyRGYjyASYas5PSh0Uy6JXk9YJoPm2M4jzNNhYgvLazAYIwEzxUoQLi6LFvhDGqNrFShIcqekCQHvum6umTzixBWMPoBkF9yJUHkP8RBPtpYyuAsFSFVBEB4u/MkvpvMy+lHbEf+7aKIqxUIQEhfuybNQzrNaK0X/sASQyiPPzxdEALpqcd2rkFF8SydSWJWjXPLQKEhMD9mlEgQg070LRgcBQRIJBAHGXSHQqf9tJc6tdYuKmKUPmExpHHPXc7Z9SltvTCCBAVGWQQpmpIfpAO/mx2S97vsaVHFRRFBIjidytacF1A9HyM8mxm9szCs7657/faIoVxpghzNawUmjJ0SR2KBMJSDYuDIJfKWyBc1LAiCEmpPEAobV/rtYi7VhyBcFPDqorgqiJAGClCFYT1Ip190Ltl5G5RPQ+XqCFqTxFRZdUkS/yBkQCh7PS97ihnFjWIUIMRmDMYAcLI8XW3IhCrfA/Oycfk27RglIpg5Q4oO53Z7DiqQ21AULesszmAPG2FDan+ONrOZhAsNSBlw1QHCP1Lvoxjxx6MAEF2dbuhKghqWApFbKFwQOyVP5Ii2GEpQPSDqGBcA8SA0JRvWa4VTyBSA2p44kpRabybbma2owaRBvcIT1YOi37bHthN6MJp7h64/gHORJl+nCcCdQAAAABJRU5ErkJggg==",
+    blocks: [
+      {
+        opcode: "pendrawtexturedtrifromurl",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Draw a triangle with points at(seperated by commas)[trianglepoints] and the uvs of [triangleuvs] with the image from url:[url]",
+        arguments: {
+          url: {
+            type: Scratch.ArgumentType.STRING,
+            defaultValue: EXAMPLE_IMAGE
+          },
+          trianglepoints: {
+            type: Scratch.ArgumentType.STRING,
+            defaultValue: "0,0,10,10,0,10"
+          },
+          triangleuvs: {
+            type: Scratch.ArgumentType.STRING,
+            defaultValue: "0,0,1,1,0,1"
+          }
+        }
+      },
+      {
+        opcode: "settripointcolour",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Tint point [pointmenu] by [color] and transparency[T](0-255)",
+        arguments: {
+          pointmenu: {
+            type: Scratch.ArgumentType.STRING,
+            menu: 'pointmenu'
+          },
+          color: {
+            type: Scratch.ArgumentType.COLOR,
+            defaultValue: '#ffffff'
+          },
+          T: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: '0'
+          }
+        }
+      },
+      {
+        opcode: "setTriPointZ",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Set point [pointmenu]'s depth to [Z]",
+        arguments: {
+          pointmenu: {
+            type: Scratch.ArgumentType.STRING,
+            menu: 'pointmenu'
+          },
+          Z: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: '1'
+          }
+        }
+      }
+    ]
+  };
+
+  const LineBlocks = {
+    icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE4AAABOCAYAAACOqiAdAAAAAXNSR0IArs4c6QAAAclJREFUeF7t3EFuxCAMBdDmCL1Sz9XlnGuu1CO0IjNIFIUEiAF/+7OIhORI6MU2ysbbB9eVwG8WsIX9/uAqCuRoMXAjXDlrdrTP5+NfxM/X974n3DHcIVoIJVxjpsVwwjVmGuE6My0t09Di2ONekMWelmdavBcI14HGW7UTzTtcc3mm7dFrqd5C85pxt9E8womgeYMTQ/MEJ4rmBU4czQPcEDTrcMPQLMMNRbMKNxzNItwUNGtw09AswU1FswI3Hc0C3BI0dLhlaMhwS9FQ4ZajIcKpQEODU4OGBKcKDQVOHRoCnEo07XBq0TTDqUbTCqceTSMcBJo2OBg0TXBQaFrg4NA0wEGirYaDRVsJB422Cg4ebQWcCbTZcGbQZsKZQpsFZw5tBpxJtNFwZtFGwplGGwVnHm0EnAs0aTg3aJJwrtCk4NyhScC5RLsL5xbtDpxrtF4492g9cEQLao0jgoj2RmuBI1qCVgtHtAytBo5oB2hXcEQroJ3BEe0ErQRHtAu0IziiVaDlcESrREvhiNaAFuGI1ohWBReHaTb+nnUcBeuVMAatmHFEK3/MIhzRzisgDt7bs67jlwyrvgRPm04szPG8TjOs4v0Dp6EsWljkur0AAAAASUVORK5CYII=",
+    blocks: [
+      {
+        opcode: "drawLine",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Draw a line from:[x1][y1] to:[x2][y2]",
+        arguments: {
+          x1: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: 0
+          },
+          y1: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: 0
+          },
+          x2: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: 25
+          },
+          y2: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: 25
+          }
+        }
+      },
+      {
+        opcode: "setLineWidth",
+        blockIconURI: LineStyleIcon,
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Set line the:[point] point's width to:[Width]",
+        arguments: {
+          Width: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: 10
+          },
+          point: {
+            type: Scratch.ArgumentType.STRING,
+            defaultValue: "All",
+            menu: "linePointsmenu"
+          }
+        }
+      },
+      {
+        opcode: "setLineColor",
+        blockIconURI: LineStyleIcon,
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Set line color to:[color] and transparency to:[Alpha]",
+        arguments: {
+          color: {
+            type: Scratch.ArgumentType.COLOR,
+            defaultValue: '#ffffff'
+          },
+          Alpha: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: '255'
+          }
+        }
+      }
+    ]
+  };
+
+  const DepracatedBlocks = {
+    icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE4AAABOCAYAAACOqiAdAAAAAXNSR0IArs4c6QAAAphJREFUeF7t20lywyAQBdB4lQvlFjlvbpELZZUUqqKMCFM3PXzA3liyLQTPH4Fk+fH2fPwmy2Hxka2fulp0iTj5mxHpdLyqS4C53nz//Lgl6ufr+3S8pksVLqgdjFdES02acIfiVdFIcIfhNdFyuLA+vMHGoy3JIB01SRtuNjchtz2fbpAL2ACQ1ebSPI1V0KKA7LbWJrjsAhcCnGpj68xgqmBwwOm29U6ppncACCjSph7cblMVETTKFRCxHTomULQNI4mLbRXdsTGgeN0pcKt2W3E0SldNA6JSEaUEqtWVmriVuq0aGjdxK+Cpos3CoR7z1NEk4NDwTNCk4FDwzNAk4bzxTNGk4bzwzNE04KzxXNC04Kzw3NA04bTxXNG04bTw3NEs4KTxINCs4KTwYNAs4WbxoNCs4bh4cGgecFS860pMfgtavDwTnr3uqOJej0vrzlkeThEimlfiInQXr/WNeCUt1skrcVN43mjeiWPhIaChwA0NGJ4DQemQ4d1VSalDSRtK4kiDBAqed+JIaDGeCHiecCw0FDwvuC5aTNVrAvwcmobR4iaIeNaJo6Dd/meGhmcJx0Ebnq5YDxhWcDNokHgWcBJocHjacJJoUHiacBpoMHhacJpoEHgacBZo7njScJZorniScB5obnhScJ5oLngScAho5nizcEhopngzcIhoZnhcOGQ0EzwO3Apo6nhUuJXQVPEocCuiqeGNwq2MpoI3ArcDmjheD24nNFG8FtyOaGJ4Nbid0UTwSnAnoE3j5XAnoU3hpXAnorHxoH8tL93Qp/gaKTgBjrSBYsURih626MJZ31oAoNfEix5NuAPRuse8LtzBaE28FC588Ipn4dE7JQPoWapVqLr8m44k1Tgd7Za83OUPGEk0ZW66HHQAAAAASUVORK5CYII=",
+    blocks: [
+      {
+        opcode: "settargetsw",
+        blockType: Scratch.BlockType.COMMAND,
+        text: "Change the target screen size to width[width] and height[height]",
+        arguments: {
+          width: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "480"
+          },
+          height: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: "360"
+          }
+        }
+      },
+      {
+        opcode: "gettargetstagewidth",
+        blockType: Scratch.BlockType.REPORTER,
+        text: "Target Stage Width",
+        disableMonitor: true
+      },
+      {
+        opcode: "gettargetstageheight",
+        blockType: Scratch.BlockType.REPORTER,
+        text: "Target Stage Height",
+        disableMonitor: true
+      },
+      {
+        opcode: "converttocanvascoords",
+        blockType: Scratch.BlockType.REPORTER,
+        text: "Convert [scrcoord] to [coordTypes] units on the axis [coordmenu]",
+        arguments: {
+          coordmenu: {
+            type: Scratch.ArgumentType.STRING,
+            menu: 'coordMenu'
+          },
+          scrcoord: {
+            type: Scratch.ArgumentType.NUMBER,
+            defaultValue: '0'
+          },
+          coordTypes: {
+            type: Scratch.ArgumentType.STRING,
+            menu: 'coordTypes'
+          }
+        }
+      }
+    ]
+  };
+
+  //Stamps
+
   class PenPlus {
-    getInfo () {
+    getInfo() {
       return {
         id: "betterpen",
         name: "Pen+",
@@ -1804,359 +2325,227 @@
         color2: '#0b7f58',
         color3: '#096647',
         docsURI: 'https://www.youtube.com/playlist?list=PLdR2VVCBIN3CceUdgKWOUxFEEbLqWgCC9',
-        blockIconURI: "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzNy44NjkyMSIgaGVpZ2h0PSI0OC44NTI3MiIgdmlld0JveD0iMCwwLDM3Ljg2OTIxLDQ4Ljg1MjcyIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgY3g9IjIzNy41NDM0IiBjeT0iMTg0LjAwNTYiIHI9IjkuOTg1NDkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBpZD0iY29sb3ItMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2ZkNWU5Ii8+PC9yYWRpYWxHcmFkaWVudD48L2RlZnM+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIyMy4zMDE4MSwtMTYzLjc2MzA5KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMjUuMTYzNTYsMTkzLjIwMDIxYzAuNTYxNTMsLTEuMTA3NDYgMi4yMzQwNCwtMy4yODU4MyAyLjIzNDA0LC0zLjI4NTgzYzAsMCAwLjU5NDQyLDEuODIzOTEgMS4yMjQ0OSwyLjU5NTc1YzAuNjMyMTIsMC43NzQzNSAyLjA4ODc4LDEuNDc0ODQgMi4wODg3OCwxLjQ3NDg0YzAsMCAtMi4xOTQ0NiwxLjI4MTQxIC0zLjMyNDIxLDEuNzI2OTVjLTEuMTEwMzIsMC40Mzc4NyAtMy4zOTcsMC45MjM2NyAtMy4zOTcsMC45MjM2N2MwLDAgMC41OTk3NCwtMi4zMDI5OSAxLjE3MzksLTMuNDM1Mzh6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjI3LjYxMTMxLDE4OS4yOTIwM2wxNC45NTE1NCwtMTUuMjcxOTNjMCwwIDIuMjA2LDAuODk1MDUgMi45NTc3NiwxLjYzMDQ3YzAuODY4OCwwLjg0OTkxIDEuOTU0ODksMy4xNzUzOCAxLjk1NDg5LDMuMTc1MzhsLTE2LjEyNjMxLDE1LjE2NTE0YzAsMCAtMi4wMDYzOSwtMS4xMjc4NiAtMi42MDkyMSwtMS44ODU2OGMtMC42NDA4MiwtMC44MDU2IC0xLjEyODY4LC0yLjgxMzM3IC0xLjEyODY4LC0yLjgxMzM3eiIgZmlsbD0idXJsKCNjb2xvci0xKSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIzNy43NTY5OSwxNzIuOTUyMTNjMCwwIDAuOTg2MTksMS4wNTA2MiAyLjM5NjA4LC0wLjI3MDcyYzEuODAzLC0xLjY4OTc3IDQuMjMxMDUsLTUuOTAxNDcgNS40NDc0MywtNi41ODcwN2MxLjM3NDgsLTAuNzc0ODkgMy45MDQxNCwwLjIzNjM5IDMuOTA0MTQsMC4yMzYzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzYuMDc5ODEsMTcyLjMxMTM1YzAsLTAuNjkwMzYgMC41NTk2NCwtMS4yNSAxLjI1LC0xLjI1YzAuNjkwMzYsMCAxLjI1LDAuNTU5NjQgMS4yNSwxLjI1YzAsMC42OTAzNiAtMC41NTk2NCwxLjI1IC0xLjI1LDEuMjVjLTAuNjkwMzYsMCAtMS4yNSwtMC41NTk2NCAtMS4yNSwtMS4yNXoiIGZpbGw9IiM1NzVlNzUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTI1MC45OTk3OSwxNjQuNzI4NzdjMCwwIDEuOTEzOTYsLTEuMDUxOTMgNC4yMDAwOSwxLjMyMzU4YzIuNDI2ODUsMi41MjE3MyAwLjYwNTc2LDQuNDQzNDQgMC42MDU3Niw0LjQ0MzQ0bC04LjMzMDE0LDguMjIzMzVjMCwwIC0wLjc1MDQsLTIuMDcxMTIgLTEuNTYyNDksLTIuNzk0OTRjLTAuODI1MjQsLTAuNzM1NTUgLTMuMzUwMTYsLTEuNTgzNzMgLTMuMzUwMTYsLTEuNTgzNzN6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMzkuODkzMzcsMjAxLjcxMTE4KSBzY2FsZSgwLjg3MjM3LDAuODcyMzcpIiBmb250LXNpemU9IjQwIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjZThlYmY0IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iU2FucyBTZXJpZiIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHRzcGFuIHg9IjAiIGR5PSIwIj4rPC90c3Bhbj48L3RleHQ+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTYuNjk4MTkxNTI3MDE2NDYyOjE2LjIzNjkxNDk5OTk5OTk4Mi0tPg==",
-
-        blocks: [
-          //Utility
-          '---',
-          {
-            opcode: "precachetextures",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Start loading image from url: [uri] clamp the texture? [clamp]",
-            arguments: {
-              uri: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: EXAMPLE_IMAGE
-              },
-              clamp: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'TFmenu'
-              }
-            }
-          },
-          {
-            opcode: "coordBlock",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "[c1][c2][c3][c4][c5][c6]",
-            arguments: {
-              c1: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              },
-              c2: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              },
-              c3: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              },
-              c4: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              },
-              c5: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              },
-              c6: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              }
-            }
-          },
-          {
-            opcode: "converttocanvascoords",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Convert [scrcoord] to [coordTypes] units on the axis [coordmenu]",
-            arguments: {
-              coordmenu: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'coordMenu'
-              },
-              scrcoord: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '0'
-              },
-              coordTypes: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'coordTypes'
-              }
-            }
-          },
-          {
-            opcode: "rgbtoSColor",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Convert R[R] G[G] B[B] to Hex",
-            arguments: {
-              R: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '255'
-              },
-              G: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '255'
-              },
-              B: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '255'
-              }
-            }
-          },
-          {
-            opcode: "getcostumedata",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Get data uri of costume[costu]",
-            arguments: {
-              costu: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "1"
-              },
-              spr: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "1"
-              }
-            }
-          },
-          //Stamps
-          '---',
-          {
-            opcode: "pendrawspritefromurl",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Stamp the image from url: [url] at x:[x] y:[y]",
-            arguments: {
-              url: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: EXAMPLE_IMAGE
-              },
-              x: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "240"
-              },
-              y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "180"
-              }
-            }
-          },
-          {
-            opcode: "rotateStamp",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Set stamp rotation to [ANGLE]",
-            arguments: {
-              ANGLE: {
-                type: Scratch.ArgumentType.ANGLE,
-                defaultValue: "90"
-              }
-            }
-          },
-          {
-            opcode: "getstamprotation",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Stamp Rotation",
-            arguments: {
-              ANGLE: {
-                type: Scratch.ArgumentType.ANGLE,
-                defaultValue: "90"
-              }
-            }
-          },
-          {
-            opcode: "setpenstrechandsquash",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Set stamp width to [width] and height to [height]",
-            arguments: {
-              width: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "64"
-              },
-              height: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "64"
-              }
-            }
-          },
-          {
-            opcode: "getstampwidth",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Stamp Width",
-            arguments: {
-            }
-          },
-          {
-            opcode: "getstampheight",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Stamp Height",
-            arguments: {
-            }
-          },
-          {
-            opcode: "setstampcolor",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Tint stamp by [color] and transparency[T](0-255)",
-            arguments: {
-              color: {
-                type: Scratch.ArgumentType.COLOR,
-                defaultValue: '#ffffff'
-              },
-              T: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '0'
-              }
-            }
-          },
-          //Triangles
-          "---",
-          {
-            opcode: "pendrawtexturedtrifromurl",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Draw a triangle with points at(seperated by commas)[trianglepoints] and the uvs of [triangleuvs] with the image from url:[url]",
-            arguments: {
-              url: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: EXAMPLE_IMAGE
-              },
-              trianglepoints: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "0,0,10,10,0,10"
-              },
-              triangleuvs: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "0,0,1,1,0,1"
-              }
-            }
-          },
-          {
-            opcode: "settripointcolour",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Tint point [pointmenu] by [color] and transparency[T](0-255)",
-            arguments: {
-              pointmenu: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'pointmenu'
-              },
-              color: {
-                type: Scratch.ArgumentType.COLOR,
-                defaultValue: '#ffffff'
-              },
-              T: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '0'
-              }
-            }
-          },
-          {
-            opcode: "setTriPointZ",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Set point [pointmenu]'s depth to [Z]",
-            arguments: {
-              pointmenu: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'pointmenu'
-              },
-              Z: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1'
-              }
-            }
-          },
-          //Depracated!
-          "---",
-          {
-            blockIconURI: DEPRACATED_BLOCK,
-            opcode: "settargetsw",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Change the target screen size to width[width] and height[height]",
-            arguments: {
-              width: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "480"
-              },
-              height: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "360"
-              }
-            }
-          },
-          {
-            blockIconURI: DEPRACATED_BLOCK,
-            opcode: "gettargetstagewidth",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Target Stage Width",
-            arguments: {
-            }
-          },
-          {
-            blockIconURI: DEPRACATED_BLOCK,
-            opcode: "gettargetstageheight",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Target Stage Height",
-            arguments: {
-            }
-          },
-        ],
+        menuIconURI: "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzNy44NjkyMSIgaGVpZ2h0PSI0OC44NTI3MiIgdmlld0JveD0iMCwwLDM3Ljg2OTIxLDQ4Ljg1MjcyIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgY3g9IjIzNy41NDM0IiBjeT0iMTg0LjAwNTYiIHI9IjkuOTg1NDkiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBpZD0iY29sb3ItMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjY2ZkNWU5Ii8+PC9yYWRpYWxHcmFkaWVudD48L2RlZnM+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIyMy4zMDE4MSwtMTYzLjc2MzA5KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMjUuMTYzNTYsMTkzLjIwMDIxYzAuNTYxNTMsLTEuMTA3NDYgMi4yMzQwNCwtMy4yODU4MyAyLjIzNDA0LC0zLjI4NTgzYzAsMCAwLjU5NDQyLDEuODIzOTEgMS4yMjQ0OSwyLjU5NTc1YzAuNjMyMTIsMC43NzQzNSAyLjA4ODc4LDEuNDc0ODQgMi4wODg3OCwxLjQ3NDg0YzAsMCAtMi4xOTQ0NiwxLjI4MTQxIC0zLjMyNDIxLDEuNzI2OTVjLTEuMTEwMzIsMC40Mzc4NyAtMy4zOTcsMC45MjM2NyAtMy4zOTcsMC45MjM2N2MwLDAgMC41OTk3NCwtMi4zMDI5OSAxLjE3MzksLTMuNDM1Mzh6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjI3LjYxMTMxLDE4OS4yOTIwM2wxNC45NTE1NCwtMTUuMjcxOTNjMCwwIDIuMjA2LDAuODk1MDUgMi45NTc3NiwxLjYzMDQ3YzAuODY4OCwwLjg0OTkxIDEuOTU0ODksMy4xNzUzOCAxLjk1NDg5LDMuMTc1MzhsLTE2LjEyNjMxLDE1LjE2NTE0YzAsMCAtMi4wMDYzOSwtMS4xMjc4NiAtMi42MDkyMSwtMS44ODU2OGMtMC42NDA4MiwtMC44MDU2IC0xLjEyODY4LC0yLjgxMzM3IC0xLjEyODY4LC0yLjgxMzM3eiIgZmlsbD0idXJsKCNjb2xvci0xKSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIzNy43NTY5OSwxNzIuOTUyMTNjMCwwIDAuOTg2MTksMS4wNTA2MiAyLjM5NjA4LC0wLjI3MDcyYzEuODAzLC0xLjY4OTc3IDQuMjMxMDUsLTUuOTAxNDcgNS40NDc0MywtNi41ODcwN2MxLjM3NDgsLTAuNzc0ODkgMy45MDQxNCwwLjIzNjM5IDMuOTA0MTQsMC4yMzYzOSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzYuMDc5ODEsMTcyLjMxMTM1YzAsLTAuNjkwMzYgMC41NTk2NCwtMS4yNSAxLjI1LC0xLjI1YzAuNjkwMzYsMCAxLjI1LDAuNTU5NjQgMS4yNSwxLjI1YzAsMC42OTAzNiAtMC41NTk2NCwxLjI1IC0xLjI1LDEuMjVjLTAuNjkwMzYsMCAtMS4yNSwtMC41NTk2NCAtMS4yNSwtMS4yNXoiIGZpbGw9IiM1NzVlNzUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwLjUiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTI1MC45OTk3OSwxNjQuNzI4NzdjMCwwIDEuOTEzOTYsLTEuMDUxOTMgNC4yMDAwOSwxLjMyMzU4YzIuNDI2ODUsMi41MjE3MyAwLjYwNTc2LDQuNDQzNDQgMC42MDU3Niw0LjQ0MzQ0bC04LjMzMDE0LDguMjIzMzVjMCwwIC0wLjc1MDQsLTIuMDcxMTIgLTEuNTYyNDksLTIuNzk0OTRjLTAuODI1MjQsLTAuNzM1NTUgLTMuMzUwMTYsLTEuNTgzNzMgLTMuMzUwMTYsLTEuNTgzNzN6IiBmaWxsPSIjNGM5N2ZmIiBzdHJva2U9IiM1NzVlNzUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48dGV4dCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMzkuODkzMzcsMjAxLjcxMTE4KSBzY2FsZSgwLjg3MjM3LDAuODcyMzcpIiBmb250LXNpemU9IjQwIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjZThlYmY0IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iU2FucyBTZXJpZiIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHRzcGFuIHg9IjAiIGR5PSIwIj4rPC90c3Bhbj48L3RleHQ+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTYuNjk4MTkxNTI3MDE2NDYyOjE2LjIzNjkxNDk5OTk5OTk4Mi0tPg==",
+        blocks: splitBlockCatagories([UtilityBlocks, StampBlocks, TriangleBlocks, LineBlocks, DepracatedBlocks]),
         menus: {
           coordMenu: {
+            acceptReporters: true,
             items: ['x', 'y']
           },
           coordTypes: {
+            acceptReporters: true,
             items: ['Canvas', 'Scratch']
           },
           pointmenu: {
+            acceptReporters: true,
             items: ['1', '2', '3']
           },
           TFmenu: {
-            items: ['true',"false"]
+            acceptReporters: true,
+            items: ['true', "false"]
           },
+          AnchorPointMenu: {
+            acceptReporters: true,
+            items: [
+              {
+                text: 'Top Left',
+                value: [0, 0]
+              },
+              {
+                text: 'Top',
+                value: [-0.5, 0]
+              },
+              {
+                text: 'Top Right',
+                value: [-1, 0]
+              },
+              {
+                text: 'Middle Left',
+                value: [0, -0.5]
+              },
+              {
+                text: 'Middle',
+                value: [-0.5, -0.5]
+              },
+              {
+                text: 'Middle Right',
+                value: [-1, -0.5]
+              },
+              {
+                text: 'Bottom Left',
+                value: [0, -1]
+              },
+              {
+                text: 'Bottom',
+                value: [-0.5, -1]
+              },
+              {
+                text: 'Bottom Right',
+                value: [-1, -1]
+              }
+            ]
+          },
+          linePointsmenu: {
+            acceptReporters: true,
+            items: ['All', 'Starting', 'Ending']
+          }
         }
       };
     }
 
-    rgbtoSColor({R,G,B}) {
-      return (((R * 256) + G) * 256) + B;
+    rgbtoSColor({ R, G, B }) {
+      R = Math.min(Math.max(R, 0), 255);
+      G = Math.min(Math.max(G, 0), 255);
+      B = Math.min(Math.max(B, 0), 255);
+      return (((Math.floor(R) * 256) + Math.floor(G)) * 256) + Math.floor(B);
     }
 
-    getstampwidth({}) {
+    hsvtoSColor({ H, S, V }) {
+      // Formula taken from https://www.rapidtables.com/convert/color/hsv-to-rgb.html and converted into javascipt by OAC
+      S = S / 100;
+      V = V / 100;
+      S = Math.min(Math.max(S, 0), 1);
+      V = Math.min(Math.max(V, 0), 1);
+      H = H % 360;
+      const C = V * S;
+      const X = C * (1 - Math.abs((H / 60) % 2 - 1));
+      const M = V - C;
+      let Primes = [0, 0, 0];
+      if (H >= 0 && H < 60) {
+        Primes[0] = C;
+        Primes[1] = X;
+      } else if (H >= 60 && H < 120) {
+        Primes[0] = X;
+        Primes[1] = C;
+      } else if (H >= 120 && H < 180) {
+        Primes[1] = C;
+        Primes[2] = X;
+      } else if (H >= 180 && H < 240) {
+        Primes[1] = X;
+        Primes[2] = C;
+      } else if (H >= 240 && H < 300) {
+        Primes[0] = X;
+        Primes[2] = C;
+      }
+      if (H >= 300 && H < 360) {
+        Primes[0] = C;
+        Primes[2] = X;
+      }
+      Primes[0] = (Primes[0] + M) * 255;
+      Primes[1] = (Primes[1] + M) * 255;
+      Primes[2] = (Primes[2] + M) * 255;
+      return this.rgbtoSColor({ R: Primes[0], G: Primes[1], B: Primes[2] });
+    }
+
+    getstampwidth({ }) {
       return stampWidth;
     }
 
-    getstampheight({}) {
+    getstampheight({ }) {
       return stampHeight;
     }
 
-    converttocanvascoords({coordmenu,scrcoord,coordTypes}) {
+    converttocanvascoords({ coordmenu, scrcoord, coordTypes }) {
       if (coordTypes == 'Canvas') {
         if (coordmenu == "x") {
-          return scrcoord + (Scratch.vm.runtime.stageWidth / 2);
+          return scrcoord + (runtime.stageWidth / 2);
         } else {
-          return (scrcoord * -1) + (Scratch.vm.runtime.stageHeight / 2);
+          return (scrcoord * -1) + (runtime.stageHeight / 2);
         }
       } else {
         if (coordmenu == "x") {
-          return scrcoord - (Scratch.vm.runtime.stageWidth / 2);
+          return scrcoord - (runtime.stageWidth / 2);
         } else {
-          return (scrcoord * -1) - (Scratch.vm.runtime.stageHeight / 2);
+          return (scrcoord * -1) - (runtime.stageHeight / 2);
         }
       }
     }
 
-    getstamprotation({}) {
+    offsetStamp({ Anchor }) {
+      stampOffset = Anchor.split(",");
+    }
+
+    setCoordSpace({ space }) {
+      coordinateSpace = space;
+    }
+
+    SolidColorRet() {
+      return blankImage;
+    }
+
+    getstamprotation({ }) {
       return stampRotation;
     }
 
-    rotateStamp({ANGLE}) {
+    rotateStamp({ ANGLE }) {
       stampRotation = ANGLE;
     }
 
-    pendrawspritefromurl({url,x,y}) {
-      var scaleMultiplier = canvas.width / Scratch.vm.runtime.stageWidth;
-      if (!textures.hasOwnProperty(url)){
+    pendrawspritefromurl({ url, x, y }) {
+      var scaleMultiplier = canvas.width / runtime.stageWidth;
+      if (!textures.hasOwnProperty(url)) {
         textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
       drawImage(textures[url].texture, stampWidth * scaleMultiplier, stampHeight * scaleMultiplier, (x) * scaleMultiplier, (y) * scaleMultiplier, stampRotation - 90);
     }
 
-    gettargetstagewidth({}) {
+    setLineWidth({ Width, point }) {
+      if (point === 'All') {
+        lineWidth = [Width, Width];
+      } else if (point === 'Starting') {
+        lineWidth[0] = Width;
+      } else {
+        lineWidth[1] = Width;
+      }
+
+    }
+
+    drawLine({ x1, y1, x2, y2 }) {
+      var scalemultiplyer = canvas.width / runtime.stageWidth;
+      let tempColors = triangleColors;
+      triangleColors = [
+        lineColor.r, lineColor.g, lineColor.b, lineColor.a,
+        lineColor.r, lineColor.g, lineColor.b, lineColor.a,
+        lineColor.r, lineColor.g, lineColor.b, lineColor.a
+      ];
+      let vectorLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+      let vectorDir = { X: (x2 - x1) / vectorLength, Y: (y2 - y1) / vectorLength };
+      let triangleDir = { X1: -vectorDir.Y * lineWidth[0], Y1: vectorDir.X * lineWidth[0], X2: -vectorDir.Y * lineWidth[1], Y2: vectorDir.X * lineWidth[1] };
+
+      if (!textures.hasOwnProperty(blankImage)) {
+        textures[blankImage] = loadImageAndCreateTextureInfo(blankImage, true);
+      }
+      drawTexturedTri(textures[blankImage].texture, [
+        (x1 + triangleDir.X1) * scalemultiplyer,
+        (y1 + triangleDir.Y1) * scalemultiplyer,
+        (x1 - triangleDir.X1) * scalemultiplyer,
+        (y1 - triangleDir.Y1) * scalemultiplyer,
+        (x2 + triangleDir.X2) * scalemultiplyer,
+        (y2 + triangleDir.Y2) * scalemultiplyer], [0.5, 0.5, 0.5, 0.6, 0.6, 0.6]
+      );
+
+      drawTexturedTri(textures[blankImage].texture, [
+        (x1 - triangleDir.X1) * scalemultiplyer,
+        (y1 - triangleDir.Y1) * scalemultiplyer,
+        (x2 - triangleDir.X2) * scalemultiplyer,
+        (y2 - triangleDir.Y2) * scalemultiplyer,
+        (x2 + triangleDir.X2) * scalemultiplyer,
+        (y2 + triangleDir.Y2) * scalemultiplyer], [0.5, 0.5, 0.5, 0.6, 0.6, 0.6]
+      );
+      triangleColors = tempColors;
+    }
+
+    gettargetstagewidth({ }) {
       return screenWidth;
     }
 
-    gettargetstageheight({}) {
+    gettargetstageheight({ }) {
       return screenHeight;
     }
 
-    pendrawtexturedtrifromurl({url, trianglepoints, triangleuvs}) {
-      var scalemultiplyer = canvas.width / Scratch.vm.runtime.stageWidth;
-      if (!textures.hasOwnProperty(url)){
+    pendrawtexturedtrifromurl({ url, trianglepoints, triangleuvs }) {
+      var scalemultiplyer = canvas.width / runtime.stageWidth;
+      if (!textures.hasOwnProperty(url)) {
         textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
       var pointsarray = trianglepoints.split(",");
@@ -2168,36 +2557,36 @@
       drawTexturedTri(textures[url].texture, pointsarray, uvarray);
     }
 
-    precachetextures({uri,clamp}) {
+    precachetextures({ uri, clamp }) {
       coolcash(uri, clamp === 'true');
     }
 
-    setpenstrechandsquash({width,height}) {
+    setpenstrechandsquash({ width, height }) {
       stampWidth = width;
       stampHeight = height;
     }
 
-    settargetsw({width,height}) {
+    settargetsw({ width, height }) {
       screenWidth = width;
       screenHeight = height;
     }
 
-    getcostumedata({costu},util) {
-      let fileData = getspritecostume(util,costu);
+    getcostumedata({ costu }, util) {
+      let fileData = getspritecostume(util, costu);
       return fileData;
     }
 
-    coordBlock({c1,c2,c3,c4,c5,c6}) {
+    coordBlock({ c1, c2, c3, c4, c5, c6 }) {
       return c1 + "," + c2 + "," + c3 + "," + c4 + "," + c5 + "," + c6;
     }
 
-    settripointcolour({pointmenu,color,T}) {
+    settripointcolour({ pointmenu, color, T }) {
       if (pointmenu == "1") {
         triangleColors[0] = hexToRgb(color).r / 255;
         triangleColors[1] = hexToRgb(color).g / 255;
         triangleColors[2] = hexToRgb(color).b / 255;
         triangleColors[3] = T / 255;
-      } else if (pointmenu == "2"){
+      } else if (pointmenu == "2") {
         triangleColors[4] = hexToRgb(color).r / 255;
         triangleColors[5] = hexToRgb(color).g / 255;
         triangleColors[6] = hexToRgb(color).b / 255;
@@ -2210,17 +2599,24 @@
       }
     }
 
-    setTriPointZ({pointmenu,Z}) {
+    setLineColor({ color, Alpha }) {
+      lineColor.r = hexToRgb(color).r / 255;
+      lineColor.g = hexToRgb(color).g / 255;
+      lineColor.b = hexToRgb(color).b / 255;
+      lineColor.a = Alpha / 255;
+    }
+
+    setTriPointZ({ pointmenu, Z }) {
       if (pointmenu == "1") {
         TriangleZPositionArray[0] = Z;
-      } else if (pointmenu == "2"){
+      } else if (pointmenu == "2") {
         TriangleZPositionArray[1] = Z;
       } else {
         TriangleZPositionArray[2] = Z;
       }
     }
 
-    setstampcolor({color,T}) {
+    setstampcolor({ color, T }) {
       let convertr = hexToRgb(color).r / 255;
       let convertg = hexToRgb(color).g / 255;
       let convertb = hexToRgb(color).b / 255;
@@ -2237,7 +2633,6 @@
       quadColors[9] = convertg;
       quadColors[10] = convertb;
       quadColors[11] = converta;
-
       quadColors[12] = convertr;
       quadColors[13] = convertg;
       quadColors[14] = convertb;
@@ -2254,4 +2649,4 @@
   }
 
   Scratch.extensions.register(new PenPlus());
-})(Scratch);
+})(window.Scratch); // use window.Scratch so it doesn't throw error in plugin loaders
