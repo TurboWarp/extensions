@@ -18,29 +18,56 @@ Depracated spacial transformation block
 Added spacial changing block
 Other various small fixes
 */
-(function (Scratch, isPlugin) {
+(function (Scratch) {
   'use strict';
 
-  let canvas = null;
-  let gl = null;
-
-  const ScratchRuntime = (isPlugin) ? Scratch.runtime : Scratch.vm.runtime;
-  //Detect if we are using the plugin loader or extensions.turbowarp.org!
-  if (Scratch) {
-    if (!isPlugin) {
-      canvas = Scratch.renderer.canvas;
-      gl = Scratch.renderer._gl;
-      if (!Scratch.extensions.unsandboxed) {
-        throw new Error('Pen+ must be run unsandboxed');
+  // This is for compatibility with plugin loaders that don't implement window.Scratch.
+  // This is a one-time exception. Similar code like this WILL NOT be accepted in new extensions without
+  // significant justification.
+  if (!Scratch) {
+    Scratch = {
+      // @ts-expect-error
+      BlockType: {
+        COMMAND: 'command',
+        REPORTER: 'reporter',
+        BOOLEAN: 'Boolean',
+        HAT: 'hat'
+      },
+      // @ts-expect-error
+      ArgumentType: {
+        STRING: 'string',
+        NUMBER: 'number',
+        COLOR: 'color',
+        ANGLE: 'angle',
+        BOOLEAN: 'Boolean',
+        MATRIX: 'matrix',
+        NOTE: 'note'
+      },
+      // @ts-expect-error
+      vm: window.vm,
+      extensions: {
+        unsandboxed: true,
+        register: (object) => {
+          // @ts-expect-error
+          const serviceName = vm.extensionManager._registerInternalExtension(object);
+          // @ts-expect-error
+          vm.extensionManager._loadedExtensions.set(object.getInfo().id, serviceName);
+        }
       }
-    } else {
-      canvas = document.querySelector("canvas");
-      gl = canvas.getContext("webgl");
+    };
+    if (!Scratch.vm) {
+      throw new Error('The VM does not exist');
     }
-  } else {
-    //if we can't detect scratch alert the user
-    alert("Pen+ must be ran in a scratch based enviornment!");
   }
+
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error('Pen+ must be run unsandboxed');
+  }
+
+  const vm = Scratch.vm;
+  const ScratchRuntime = vm.runtime;
+  const canvas = ScratchRuntime.renderer.canvas;
+  const gl = ScratchRuntime.renderer._gl;
 
   const EXAMPLE_IMAGE = 'https://extensions.turbowarp.org/dango.png';
 
@@ -1875,46 +1902,6 @@ Other various small fixes
     return returnedArray;
   }
 
-  //Block Icons for Utility Blocks and Special Blocks!
-  const TWTypes = (isPlugin) ?
-    //PluginLoader
-    {
-      BlockType: {
-        COMMAND: 'command',
-        REPORTER: 'reporter',
-        BOOLEAN: 'boolean',
-        HAT: 'hat'
-      },
-      ArgumentType: {
-        STRING: 'string',
-        NUMBER: 'number',
-        COLOR: 'color',
-        ANGLE: 'angle',
-        BOOLEAN: 'boolean',
-        MATRIX: 'matrix',
-        NOTE: 'note'
-      }
-    }
-    :
-    //Extensions.Turbowarp.org
-    {
-      BlockType: {
-        COMMAND: Scratch.BlockType.COMMAND,
-        REPORTER: Scratch.BlockType.REPORTER,
-        BOOLEAN: Scratch.BlockType.BOOLEAN,
-        HAT: Scratch.BlockType.HAT
-      },
-      ArgumentType: {
-        STRING: Scratch.ArgumentType.STRING,
-        NUMBER: Scratch.ArgumentType.NUMBER,
-        COLOR: Scratch.ArgumentType.COLOR,
-        ANGLE: Scratch.ArgumentType.ANGLE,
-        BOOLEAN: Scratch.ArgumentType.BOOLEAN,
-        MATRIX: Scratch.ArgumentType.MATRIX,
-        NOTE: Scratch.ArgumentType.NOTE
-      }
-    };
-
   const BlankIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABZCAYAAAC+PDOsAAAAAXNSR0IArs4c6QAAAihJREFUeF7t3VtuwyAQBdB4Cd1S19XPrqtb6hJakcQOJtjmMQPzuPwgJGuAoyt+LMFye7S/Z792SzLGsFMggKbIcUmAdwLHyd2gP36+b7+fX2lpYBNgb4kOyGsDNoFs5iy+JzqGDmNg02JnE41k0yKHaqfQSDYd+CU0sGmwi6CB3Y9dDA3sPuwqaGC3Y1dDA7sNuwka2PXYzdDArsPuggZ2OXY3NLDLsEmggX2NTQYN7HNsUmhgH2OTQwM7j80CDex3bDZoYO+xWaGB/cJmhwb2A3sINLAHQnvHHpbo9bTy+nd9OLTXZE+B9og9Ddob9lRoT9jTob1gi4D2gC0G2jq2KGjL2OKgrWKLhLaILRbaGrZoaEvY4qGtYKuAtoCtBlo7tipozdjqoLViq4TWiK0WWhu2amhN2OqhtWCbgNaAbQZaOrYpaMnY5qClYpuElohtFloatmloSdjmoaVgu4CWgO0Geja2K+iZ2O6gZ2G7hJ6B7RZ6NLZr6JHY7qFHYQM6SA+4ixXQT2hubEBH0JzYgE6gubABnYHmwAb0ATQ1NqBPoCmxAX0BTYUN6AJoCmxAF0L3YgO6AroHG9CV0K3YgG6AbsEGdCN0LTagO6BrsAHdCV2KDWgC6BJsQBNBX2EDmhD6DBvQxNBH2Bt0+CB905BhDW5KJjdWLgE6tN1zqG40mDcaY79BM8/ttvwKvUu1Ww2+jW9HR26Ks2es+ZZko3Ic4PuO/gGXQ1VnDpD+gwAAAABJRU5ErkJggg==";
   const CoordsIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGIAAABgCAYAAADmbacFAAAAAXNSR0IArs4c6QAAA2xJREFUeF7tncFxwyAQRe0S0pKLSDWZHDKpJkWkpZSQDJKxkAwsYtfMRn65OaBl+U8fMLLx+bT++72+PG/+X3oZ64fy3DVSeWMzx68WxUsFi72WYEjXSOXHV3dHD4PYk2Av35+3y34ubxKMWeSP16Wp96/0Gql8R4rPUXUCkUKI3b7CKLnidwUhXrTAWENal0tOew7lN72UQJTH/tQNadAII1c+lwEic6v1g9gOTeldX4cEiCEgSgPLeg55yuGn1uleR4SY9xNyrSWGperNNwYEbhBHAA2INlcAQYQQVzC15WvLKie/lL1f0jJJV5BoHSG7grlhiCPkCZuhyQmIkAauEGFohibZDcwTIoBYYQwIXCEC6QXR7gZcIULQLF/LS9YwH7DX1CR+WqnfEey+7hb7EXtNPI8wxTA/G+h5Zy09gZPKjbvx/8P1gljeUa81SLcxeGa94/7QgIjNBMFr+0hS+Y50j1vVAsRx1RnYM0AMFPsRqyYn6R8nDRzhhCUgAOFEASdp4AhAOFHASRo4AhBOFHCSBo4AhBMFnKSBIwDhRAEnaeAIQDhRwEkaOAIQThRwkgaOAIQTBZykgSMA4UQBJ2ngCEA4UcBJGjgCEE4UcJIGjgCEEwWcpIEjAOFEASdp4AhAOFHASRo4AhBOFHCSBo4AhBMF7NJoPfU5Ww9H2IDIfYM2RN5+ybP4TVtA6EHkzyW5Pxqp+t1zQFiAKB82HF1RPkTmCgwQjwIR4kpHdC91zoCwABFi1F0hntgDiEeCiHe8dJLP6YQj9BymCOqDxHCEEYkJRunOz7WxOf0TEJYgSnPFto3MEayAsAPRPkQBwlb1TDR5rigcSIwj7NnUYRQOIwbESBCV47kBYQuiyw23fZDKr27ldhBtUz9WtPp5uHNftzuyt3/2nHJ5LPlsetPtBhxhAyBG6XYDIOxAqNwACEsQDRt7teZYNelhSA99mhY8gLAAoXQDQ5Mewry/JD8qFVvCEaJEYoXahweahiUcIWrcXGGBkT6n3vFLxTiiWWux4vYzS9l30KUogBD1HVMBEGN0FlsBhCjRmAqAGKOz2EoLCDEIFVQKTJN6EYQqNBc3KfBzeYv1yh8wa4pEJbUCEQaOUEupDxBgAEKvozoCINQS6gOshiZ9OCIoFZgna2UQLu9X4LYf9Qeqxh17SNwkIgAAAABJRU5ErkJggg==";
   const SpriteIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABeCAYAAADc6BHlAAAAAXNSR0IArs4c6QAABItJREFUeF7tncuN2zAQhu0SctmCAuSQDnLZAlLCAjkG2BJSwF62gxwWSEG5pIQEFJYKRQ5f8+BzfLSoMfV/8yIl2/db+PrrvXUHxti3/LGJobeUndR5Sx9zRUmJWTquVCyF8a4UKOzj89Pt5em5VMxj3Idf34Pxfz5+y9nYHoQV4PR+I777ioGABM+pHQGyNYRqABjhfTAAiG0hRAH4ns8hvIIIc0RRcZUQ307Fi4btIiELQFJ8hXALevNLK9pC/N0h+CF/Amgp/s4QFECudxY+DtaAHt6/axQoAGEPz5kP1gE9vR+IguXb0tEBGCZLQ7gAGMH7jeI7Lc6GBOBB0AjIFRKJ404UKAAJgXM2dwLQdfUbA7ETAKPBAWGUIgwUYpfTUilpmCJccPsyFixTA+kOgCC8D2RKEN0AQMI//n7L1ebz+MvDpyUiostK2Be/RnhIdQDGNNHQFAC38C6MSEQMDyLYDZXqhCTFT4CYD4BUO+oCoKacXKHwomFoCOAdMe4oaCm+hTMLBPFbkj3EnwkCFJ5sWxM9xTcQZoiCWH5kgdAbwAwQsgAoRdkCkC66FUV5uIKcmhDpIa0RvH+GWpDzCDSEUbx/9DSUA3BuVbthnmtTR/J+IApKrjmX1diO10wG/ApT7psxvfP/SgDstdR8Me82IABzHTWOx+btkCHKRIpAKIA0PwoAyHIARQG0BXBJU6OIP3InxB0BQZ3oDSFx54w7JaNqxZIAKkXvemtzKQAp4b/8/BH10NfPX1PeK6XR8ZmSxo+C3CoFQeKnRI8pHoEhppOYYfuwlzQAX3iM6BAMAISIViJG3y/o/88fVDxuUlPJpMR35yANYloALcS3IDwIrJqxGgO8VywKXABcaScVfVIQpgTQWnzJSJAGYObOGgW9xJeC0AIAKwQLoEXaKeiOyPqRDRR2LZdNOmxr2tv7JaKgFYBLFGAXaL29f3YAJAijeD8AgeTEpJML048/DHXPYGAApC2dHgCCLWv7Rqo2jJJ+uNNQTwBBSoIiykJRAMh8U3ha0f1lY6tX+5lpSdGOjD6xUFjMsCQMBYCRlH7OCUUB0MXEWFAAGNWYzzkgaAQwq1phbigAXNvTIxbhGJNmAFxxYxG3LQDJNBR7OgKCoAAqclfJ0MyjKUHtccaTsgjp5JILYx4jloasoKn/T7CRwOX9pE0kZmFLzYm0o66gPgAzMfen/A2EnQGc+0ec7WgOgA/B8RZyBiEbKHVdxnFdoiACgawf2QCjsDWm2CH4RRhKRQAEsn5kAzWqMY69bNhxpaMeEGYFcNYCC3VWCDMDWALC7ACmh7ACAJuFWOpCakUsUZhXAhBEQ019yG1FWFvcEFYDAEYDsvtytbk+2ef93aO17/35XZG2RYOQFzDCacU3+wtWtyIQVgcQcwIjJuba2SFgJjGCZ/ecAysEBYBDyQZBAeAABB0XtjtSAHgALBAUAA0AGYICoAMgQVAAPADQEBQAHwAMhLsC4AVQBMHdslAA/ACyEBwAGgEy+h9WwcWav2GnESBIwIcAfJRGgKz+YST4u67/APKrBHxjStmdAAAAAElFTkSuQmCC";
@@ -1928,15 +1915,15 @@ Other various small fixes
       {
         blockIconURI: SpriteIcon,
         opcode: "precachetextures",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Start loading image from url: [uri] clamp the texture? [clamp]",
         arguments: {
           uri: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             defaultValue: EXAMPLE_IMAGE
           },
           clamp: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             menu: 'TFmenu'
           }
         }
@@ -1944,15 +1931,15 @@ Other various small fixes
       {
         blockIconURI: SpriteIcon,
         opcode: "getcostumedata",
-        blockType: TWTypes.BlockType.REPORTER,
+        blockType: Scratch.BlockType.REPORTER,
         text: "Get data uri of costume[costu]",
         arguments: {
           costu: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "1"
           },
           spr: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "1"
           }
         }
@@ -1960,26 +1947,26 @@ Other various small fixes
       {
         blockIconURI: BlankIcon,
         opcode: "SolidColorRet",
-        blockType: TWTypes.BlockType.REPORTER,
+        blockType: Scratch.BlockType.REPORTER,
         text: "Solid Color",
         disableMonitor: true
       },
       {
         blockIconURI: ColorIcon,
         opcode: "rgbtoSColor",
-        blockType: TWTypes.BlockType.REPORTER,
+        blockType: Scratch.BlockType.REPORTER,
         text: "Convert R[R] G[G] B[B] to Hex",
         arguments: {
           R: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: '255'
           },
           G: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: '255'
           },
           B: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: '255'
           }
         }
@@ -1987,19 +1974,19 @@ Other various small fixes
       {
         blockIconURI: ColorIcon,
         opcode: "hsvtoSColor",
-        blockType: TWTypes.BlockType.REPORTER,
+        blockType: Scratch.BlockType.REPORTER,
         text: "Convert Hue[H] Saturation[S] Value[V] to Hex",
         arguments: {
           H: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: '0'
           },
           S: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: '100'
           },
           V: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: '100'
           }
         }
@@ -2007,11 +1994,11 @@ Other various small fixes
       {
         blockIconURI: CoordsIcon,
         opcode: "setCoordSpace",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Set the coordinate space to [space]",
         arguments: {
           space: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             menu: 'coordTypes'
           }
         }
@@ -2019,31 +2006,31 @@ Other various small fixes
       {
         blockIconURI: CoordsIcon,
         opcode: "coordBlock",
-        blockType: TWTypes.BlockType.REPORTER,
+        blockType: Scratch.BlockType.REPORTER,
         text: "[c1][c2][c3][c4][c5][c6]",
         arguments: {
           c1: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "0"
           },
           c2: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "0"
           },
           c3: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "0"
           },
           c4: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "0"
           },
           c5: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "0"
           },
           c6: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "0"
           }
         }
@@ -2056,97 +2043,97 @@ Other various small fixes
     blocks: [
       {
         opcode: "pendrawspritefromurl",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Stamp the image from url: [url] at x:[x] y:[y]",
         arguments: {
           url: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             defaultValue: EXAMPLE_IMAGE
           },
           x: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "240"
           },
           y: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "180"
           }
         }
       },
       {
         opcode: "rotateStamp",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Set stamp rotation to [ANGLE]",
         arguments: {
           ANGLE: {
-            type: TWTypes.ArgumentType.ANGLE,
+            type: Scratch.ArgumentType.ANGLE,
             defaultValue: "90"
           }
         }
       },
       {
         opcode: "getstamprotation",
-        blockType: TWTypes.BlockType.REPORTER,
+        blockType: Scratch.BlockType.REPORTER,
         text: "Stamp Rotation",
         arguments: {
           ANGLE: {
-            type: TWTypes.ArgumentType.ANGLE,
+            type: Scratch.ArgumentType.ANGLE,
             defaultValue: "90"
           }
         }
       },
       {
         opcode: "setpenstrechandsquash",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Set stamp width to [width] and height to [height]",
         arguments: {
           width: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "64"
           },
           height: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "64"
           }
         }
       },
       {
         opcode: "getstampwidth",
-        blockType: TWTypes.BlockType.REPORTER,
+        blockType: Scratch.BlockType.REPORTER,
         text: "Stamp Width",
         arguments: {
         }
       },
       {
         opcode: "getstampheight",
-        blockType: TWTypes.BlockType.REPORTER,
+        blockType: Scratch.BlockType.REPORTER,
         text: "Stamp Height",
         arguments: {
         }
       },
       {
         opcode: "setstampcolor",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Tint stamp by [color] and transparency[T](0-255)",
         arguments: {
           color: {
-            type: TWTypes.ArgumentType.COLOR,
+            type: Scratch.ArgumentType.COLOR,
             defaultValue: '#ffffff'
           },
           T: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: '0'
           }
         }
       },
       {
         opcode: "offsetStamp",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Set stamp anchorPoint to [Anchor]",
         arguments: {
           Anchor: {
             menu: "AnchorPointMenu",
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             defaultValue: [0, 0]
           }
         }
@@ -2159,53 +2146,53 @@ Other various small fixes
     blocks: [
       {
         opcode: "pendrawtexturedtrifromurl",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Draw a triangle with points at(seperated by commas)[trianglepoints] and the uvs of [triangleuvs] with the image from url:[url]",
         arguments: {
           url: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             defaultValue: EXAMPLE_IMAGE
           },
           trianglepoints: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             defaultValue: "0,0,10,10,0,10"
           },
           triangleuvs: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             defaultValue: "0,0,1,1,0,1"
           }
         }
       },
       {
         opcode: "settripointcolour",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Tint point [pointmenu] by [color] and transparency[T](0-255)",
         arguments: {
           pointmenu: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             menu: 'pointmenu'
           },
           color: {
-            type: TWTypes.ArgumentType.COLOR,
+            type: Scratch.ArgumentType.COLOR,
             defaultValue: '#ffffff'
           },
           T: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: '0'
           }
         }
       },
       {
         opcode: "setTriPointZ",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Set point [pointmenu]'s depth to [Z]",
         arguments: {
           pointmenu: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             menu: 'pointmenu'
           },
           Z: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: '1'
           }
         }
@@ -2218,23 +2205,23 @@ Other various small fixes
     blocks: [
       {
         opcode: "drawLine",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Draw a line from:[x1][y1] to:[x2][y2]",
         arguments: {
           x1: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: 0
           },
           y1: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: 0
           },
           x2: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: 25
           },
           y2: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: 25
           }
         }
@@ -2242,15 +2229,15 @@ Other various small fixes
       {
         opcode: "setLineWidth",
         blockIconURI: LineStyleIcon,
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Set line the:[point] point's width to:[Width]",
         arguments: {
           Width: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: 10
           },
           point: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             defaultValue: "All",
             menu: "linePointsmenu"
           }
@@ -2259,15 +2246,15 @@ Other various small fixes
       {
         opcode: "setLineColor",
         blockIconURI: LineStyleIcon,
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Set line color to:[color] and transparency to:[Alpha]",
         arguments: {
           color: {
-            type: TWTypes.ArgumentType.COLOR,
+            type: Scratch.ArgumentType.COLOR,
             defaultValue: '#ffffff'
           },
           Alpha: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: '255'
           }
         }
@@ -2280,46 +2267,46 @@ Other various small fixes
     blocks: [
       {
         opcode: "settargetsw",
-        blockType: TWTypes.BlockType.COMMAND,
+        blockType: Scratch.BlockType.COMMAND,
         text: "Change the target screen size to width[width] and height[height]",
         arguments: {
           width: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "480"
           },
           height: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: "360"
           }
         }
       },
       {
         opcode: "gettargetstagewidth",
-        blockType: TWTypes.BlockType.REPORTER,
+        blockType: Scratch.BlockType.REPORTER,
         text: "Target Stage Width",
         disableMonitor: true
       },
       {
         opcode: "gettargetstageheight",
-        blockType: TWTypes.BlockType.REPORTER,
+        blockType: Scratch.BlockType.REPORTER,
         text: "Target Stage Height",
         disableMonitor: true
       },
       {
         opcode: "converttocanvascoords",
-        blockType: TWTypes.BlockType.REPORTER,
+        blockType: Scratch.BlockType.REPORTER,
         text: "Convert [scrcoord] to [coordTypes] units on the axis [coordmenu]",
         arguments: {
           coordmenu: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             menu: 'coordMenu'
           },
           scrcoord: {
-            type: TWTypes.ArgumentType.NUMBER,
+            type: Scratch.ArgumentType.NUMBER,
             defaultValue: '0'
           },
           coordTypes: {
-            type: TWTypes.ArgumentType.STRING,
+            type: Scratch.ArgumentType.STRING,
             menu: 'coordTypes'
           }
         }
@@ -2661,14 +2648,5 @@ Other various small fixes
     }
   }
 
-  if (isPlugin) {
-    (function () {
-      var extensionInstance = new PenPlus();
-      var serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance);
-      window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
-    })();
-  } else {
-    Scratch.extensions.register(new PenPlus());
-  }
-
-})((typeof Scratch === 'undefined') ? window.vm : Scratch, typeof Scratch === 'undefined');
+  Scratch.extensions.register(new PenPlus());
+})(window.Scratch); // use window.Scratch so it doesn't throw error in plugin loaders
