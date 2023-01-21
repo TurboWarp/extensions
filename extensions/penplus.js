@@ -2663,7 +2663,7 @@ Other various small fixes
 
   if (isPlugin) {
     (function () {
-      var extensionInstance = new PenPlus(window.vm.extensionManager.runtime);
+      var extensionInstance = new PenPlus();
       var serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance);
       window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
     })();
