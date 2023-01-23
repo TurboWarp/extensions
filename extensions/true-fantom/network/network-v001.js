@@ -3,84 +3,57 @@
 
   const icon = 'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwLDAsMjI1LjM1NDgsMjI1LjM1NDgiIGhlaWdodD0iMjI1LjM1NDgiIHdpZHRoPSIyMjUuMzU0OCIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTI3LjMyMjc0LC02Ny4zMjI2KSI+PGcgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZT0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iPjxwYXRoIHN0cm9rZS13aWR0aD0iMCIgZmlsbD0iIzE0NjYwMCIgZD0iTTEyNy4zMjI3NSwxODBjMCwtNjIuMjMwMDEgNTAuNDQ3MzksLTExMi42Nzc0IDExMi42Nzc0LC0xMTIuNjc3NGM2Mi4yMzAwMSwwIDExMi42Nzc0LDUwLjQ0NzM5IDExMi42Nzc0LDExMi42Nzc0YzAsNjIuMjMwMDEgLTUwLjQ0NzM5LDExMi42Nzc0IC0xMTIuNjc3NCwxMTIuNjc3NGMtNjIuMjMwMDEsMCAtMTEyLjY3NzQsLTUwLjQ0NzM5IC0xMTIuNjc3NCwtMTEyLjY3NzR6Ij48L3BhdGg+PGcgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSIjZmZmZmZmIj48cGF0aCBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgZD0iTTI2MS4zNjIzNSwxNDYuNjIzNTlsLTUuMTUwOTcsNS4yNzQ2MmwtMTMuMTg1NTEsLTEyLjIzOTg5bDE5LjIzNjg5LC0xOS40OTU4OWMxMC41OTE0NywtMTAuNTkxNDcgMjcuNzU4NCwtMTAuNTkxNDcgMzguMzQxMTIsMGwxMi43ODAzOCwxMi43ODAzOGMxMC41OTE0NywxMC41ODI3MSAxMC41OTE0NywyNy43NDk2NSAwLDM4LjM0MTEybC0zOC4zNDExMiwzOC4zNDExMmMtMTAuNTkxNDcsMTAuNTg2OTUgLTI3Ljc0OTY1LDEwLjU4Njk1IC0zOC4zNDExMiwwbC0xMi43ODAzNywtMTIuNzgwMzdsLTEyLjY3Mzc4LC0xMy4yMjYxMmwxMi4yNjMwNCwtMTIuNDMzbDI1Ljk3MTQ5LDI1LjY1OTEyYzMuNTIxNzQsMy41MjE3NCA5LjI1ODY0LDMuNTIxNzQgMTIuNzgwMzgsMGwzOC4zNDExMiwtMzguMzQxMTJjMy41MzA0OSwtMy41MzA0OSAzLjUzMDQ5LC05LjI1ODY0IDAsLTEyLjc4MDM4bC0xMi43ODAzNywtMTIuNzgwMzdjLTMuNTIxNzQsLTMuNTIxNzMgLTkuMjQ5ODgsLTMuNTMwNDkgLTEyLjc4MDM4LDBsLTEzLjY4MDc5LDEzLjY4MDc5eiI+PC9wYXRoPjxwYXRoIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBkPSJNMjE4LjYzNzczLDIxMy4zNzY0bDUuMTUwOTcsLTUuMjc0NjJsMTMuMTg1NTEsMTIuMjM5ODlsLTE5LjIzNjg5LDE5LjQ5NTg5Yy0xMC41OTE0NywxMC41OTE0NyAtMjcuNzU4NCwxMC41OTE0NyAtMzguMzQxMTIsMGwtMTIuNzgwMzgsLTEyLjc4MDM4Yy0xMC41OTE0NywtMTAuNTgyNzEgLTEwLjU5MTQ3LC0yNy43NDk2NSAwLC0zOC4zNDExMWwzOC4zNDExMiwtMzguMzQxMTJjMTAuNTkxNDcsLTEwLjU4Njk1IDI3Ljc0OTY1LC0xMC41ODY5NSAzOC4zNDExMiwwbDEyLjc4MDM3LDEyLjc4MDM3bDEyLjY3Mzc4LDEzLjIyNjEybC0xMi4yNjMwNSwxMi40MzNsLTI1Ljk3MTQ4LC0yNS42NTkxMmMtMy41MjE3NCwtMy41MjE3NCAtOS4yNTg2NCwtMy41MjE3NCAtMTIuNzgwMzgsMGwtMzguMzQxMTIsMzguMzQxMTJjLTMuNTMwNDksMy41MzA0OSAtMy41MzA0OSw5LjI1ODY0IDAsMTIuNzgwMzhsMTIuNzgwMzcsMTIuNzgwMzdjMy41MjE3NCwzLjUyMTczIDkuMjQ5ODgsMy41MzA0OSAxMi43ODAzOCwwbDEzLjY4MDc5LC0xMy42ODA3OXoiPjwvcGF0aD48L2c+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTEyLjY3NzI1NToxMTIuNjc3NDA1LS0+';
 
-  const computing = new Map();
-  const computed = new Map();
+  const main_protocols = ['https:', 'http:', 'data:', 'file:', 'blob:', 'ftp:', 'ftps:', 'mailto:', 'news:', 'irc:', 'gopher:', 'nntp:', 'feed:', 'telnet:', 'mms:', 'rtsp:', 'svn:', 'tel:', 'fax:', 'xmpp:'];
+  const browser_protocols = ['chrome:', 'edge:', 'brave:', 'browser:', 'about:', 'extension:', 'chrome-extension:'];
+  const special_protocols = ['steam:', 'spotify:', 'zoommtg:', 'zoomus:', 'viber:', 'slack:', 'trueconf:', 'rdar:', 'msteams:', 'teamspeak:', 'magnet:', 'streamdeck:', 'skype:', 'sms:', 'comgooglemaps:', 'comgooglemapsurl:', 'comgooglemaps-x-callback:'];
+  const ms_protocols = ['ms-help:', 'ms-settings', 'ms-settings-airplanemode:', 'ms-settings-bluetooth:', 'ms-settings-camera:', 'ms-settings-cellular:', 'ms-settings-cloudstorage:', 'ms-settings-emailandaccounts:', 'ms-settings-language:', 'ms-settings-location:', 'ms-settings-lock:', 'ms-settings-nfctransactions:', 'ms-settings-notifications:', 'ms-settings-power:', 'ms-settings-privacy:', 'ms-settings-proximity:', 'ms-settings-screenrotation:', 'ms-settings-wifi:', 'ms-settings-workplace:', 'ms-access:', 'ms-excel:', 'ms-infopath:', 'ms-powerpoint:', 'ms-project:', 'ms-publisher:', 'ms-spd:', 'ms-visio:', 'ms-word:', 'ms-clock:', 'ms-calculator:', 'ms-windows-store:'];
+  const protocols = [...main_protocols, ...browser_protocols, ...special_protocols, ...ms_protocols];
 
-  const ping_web_socket = async (SERVER) => {
-    let ws = new WebSocket(SERVER);
-    let timeout_id;
-    const isUp = await new Promise(resolve => {
-      ws.onopen = () => setTimeout(() => resolve(true), 2000);
-      ws.onclose = () => resolve(false);
-      ws.onerror = () => resolve(false);
-      timeout_id = setTimeout(() => resolve(false), 5000);
-    });
-    ws.close();
-    clearTimeout(timeout_id);
-    return {
-      expires: Date.now() + 60000,
-      value: isUp
-    };
-  };
-
-  const cached_ping_web_socket = (SERVER) => {
-    const computing_entry = computing.get(SERVER);
-    if (computing_entry) {
-      return computing_entry.then(entry => entry.value);
-    }
-    const computed_entry = computed.get(SERVER);
-    if (computed_entry && Date.now() < computed_entry.expires) {
-      return computed_entry.value;
-    }
-    const promise = ping_web_socket(SERVER);
-    computing.set(SERVER, promise);
-    return promise.then(entry => {
-      computing.delete(SERVER);
-      computed.set(SERVER, entry);
-      return entry.value;
-    });
-  };
-  
-  const fetch_url = ({URL, BODY, CONTENT_TYPE, RESPONSE_TYPE}, METHOD) => {
-    RESPONSE_TYPE = Number(RESPONSE_TYPE); CONTENT_TYPE = Number(CONTENT_TYPE);
-    return fetch(URL, {
+  const fetch_url = ({USER_URL, BODY, CONTENT_TYPE, RESPONSES_TYPES, SPLIT}, METHOD) => {
+    SPLIT = String(SPLIT);
+    CONTENT_TYPE = Number(CONTENT_TYPE);
+    RESPONSES_TYPES = String(RESPONSES_TYPES).split(' ').filter(word => word !== '').length >= 1 ? String(RESPONSES_TYPES).split(' ').filter(word => word !== '') : ['9'];
+    let single = METHOD === 'GET' || METHOD === 'DELETE';
+    return fetch(String(USER_URL), {
       method: METHOD,
-      headers: METHOD === 'GET' || METHOD === 'DELETE' ? {} : {'Content-Type': CONTENT_TYPE == 1 ? CONTENT_TYPE:2},
-      redirect: 'follow',
-      body: CONTENT_TYPE === 2 ? JSON.stringify(BODY) : String(BODY)})
-    .then(response => {
-      switch (RESPONSE_TYPE) {
-        case 1:
-          return response.text();
-        case 2:
-          return response.json();
-        case 3:
-          return response.ok;
-        case 4:
-          return response.status;
-        case 5:
-          return response.statusText;
-        case 6:
-          return response.type;
-        case 7:
-          return response.redirected;
-        case 8:
-          return response.url;
-        case 9: default:
-          return response.bodyUsed;
+      headers: single ? {} : {'Content-Type': CONTENT_TYPE === 1 ? 'text/plain' : 'application/json'},
+      redirect: single ? 'follow' : 'follow',
+      body: CONTENT_TYPE === 1 ? String(BODY) : JSON.stringify(BODY)})
+    .then(res => {
+      const responses = [];
+      for (let i = 0; i <= RESPONSES_TYPES.length - 1; i++) {
+        switch (Number(RESPONSES_TYPES[i])) {
+          case 1: responses.push(res.text()); break;
+          case 2: responses.push(JSON.stringify(res.json())); break;
+          case 3: responses.push(String(res.ok)); break;
+          case 4: responses.push(res.status); break;
+          case 5: responses.push(res.statusText); break;
+          case 6: responses.push(res.type); break;
+          case 7: responses.push(String(res.redirected)); break;
+          case 8: responses.push(res.url); break;
+          case 9: default: responses.push(single ? res.url : String(res.bodyUsed)); break;
+        }
       }
+      return Promise.all(responses);
     })
-    .catch(() => '');
+    .then(arr => {
+      let responses = '';
+      for (let i = 0; i <= RESPONSES_TYPES.length - 1; i++) {
+        responses += SPLIT + arr[i];
+      }
+      return SPLIT === '' ? responses : responses.slice(1);
+    })
+    .catch(err => '');
   };
-  
+
   class Network {
-    
+
     getInfo() {
       return {
-        
-        id: 'network001',
+
+        id: 'network',
         name: 'Network',
-        
+
         color1: '#146600',
         color2: '#125C00',
         color3: '#105200',
@@ -128,59 +101,55 @@
             text: 'downlink max speed in mb/s'
           },
           {
-            opcode: 'network_rtt_block',
+            opcode: 'rtt_block',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'network rtt in ms'
-          },
-          '---',
-          {
-            opcode: 'ping_block',
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is cloud data server up [SERVER] ?',
-            arguments: {
-              SERVER: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'wss://clouddata.turbowarp.org',
-              }
-            }
+            text: 'rtt in ms'
           },
           '---',
           {
             opcode: 'get_block',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'get [URL] respond [RESPONSE_TYPE]',
+            text: 'get [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]',
             arguments: {
-              URL: {
+              USER_URL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'https://httpbin.org/get'
               },
-              RESPONSE_TYPE: {
+              RESPONSES_TYPES: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'only_url_response_type'
+              },
+              SPLIT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: ' '
               }
             }
           },
           {
             opcode: 'delete_block',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'delete [URL] respond [RESPONSE_TYPE]',
+            text: 'delete [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]',
             arguments: {
-              URL: {
+              USER_URL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'https://httpbin.org/delete'
               },
-              RESPONSE_TYPE: {
+              RESPONSES_TYPES: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'only_url_response_type'
+              },
+              SPLIT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: ' '
               }
             }
           },
           {
             opcode: 'post_block',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'post [CONTENT_TYPE] [BODY] to [URL] respond [RESPONSE_TYPE]',
+            text: 'post [CONTENT_TYPE] [BODY] to [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]',
             arguments: {
-              URL: {
+              USER_URL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'https://httpbin.org/post'
               },
@@ -192,18 +161,22 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'content_type'
               },
-              RESPONSE_TYPE: {
+              RESPONSES_TYPES: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'response_type'
+              },
+              SPLIT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: ' '
               }
             }
           },
           {
             opcode: 'put_block',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'put [CONTENT_TYPE] [BODY] to [URL] respond [RESPONSE_TYPE]',
+            text: 'put [CONTENT_TYPE] [BODY] to [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]',
             arguments: {
-              URL: {
+              USER_URL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'https://httpbin.org/put'
               },
@@ -215,18 +188,22 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'content_type'
               },
-              RESPONSE_TYPE: {
+              RESPONSES_TYPES: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'response_type'
+              },
+              SPLIT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: ' '
               }
             }
           },
           {
             opcode: 'patch_block',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'patch [CONTENT_TYPE] [BODY] to [URL] respond [RESPONSE_TYPE]',
+            text: 'patch [CONTENT_TYPE] [BODY] to [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]',
             arguments: {
-              URL: {
+              USER_URL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'https://httpbin.org/patch'
               },
@@ -238,9 +215,13 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'content_type'
               },
-              RESPONSE_TYPE: {
+              RESPONSES_TYPES: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'response_type'
+              },
+              SPLIT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: ' '
               }
             }
           },
@@ -248,9 +229,9 @@
           {
             opcode: 'open_link_block',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'open [URL] in new tab',
+            text: 'open [USER_URL] in new tab',
             arguments: {
-              URL: {
+              USER_URL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'https://extensions.turbowarp.org'
               }
@@ -259,9 +240,9 @@
           {
             opcode: 'open_window_block',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'open [URL] in new window with width: [WIDTH] height: [HEIGHT] left: [LEFT] top: [TOP]',
+            text: 'open [USER_URL] in new window with width: [WIDTH] height: [HEIGHT] left: [LEFT] top: [TOP]',
             arguments: {
-              URL: {
+              USER_URL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'https://extensions.turbowarp.org'
               },
@@ -286,16 +267,16 @@
           {
             opcode: 'redirect_link_block',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'redirect this tab to [URL]',
+            text: 'redirect this tab to [USER_URL]',
             arguments: {
-              URL: {
+              USER_URL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'https://extensions.turbowarp.org'
               }
             }
           }
         ],
-        
+
         menus: {
           content_type: { 
             acceptReporters: true,
@@ -334,8 +315,16 @@
                 value: '5'
               },
               {
+                text: '(5 1) status text and text',
+                value: '5 1'
+              },
+              {
                 text: '(6) type',
                 value: '6'
+              },
+              {
+                text: '(6 4) type and status',
+                value: '6 4'
               },
               {
                 text: '(7) redirected?',
@@ -371,8 +360,16 @@
                 value: '5'
               },
               {
+                text: '(5 1) status text and text',
+                value: '5 1'
+              },
+              {
                 text: '(6) type',
                 value: '6'
+              },
+              {
+                text: '(6 4) type and status',
+                value: '6 4'
               },
               {
                 text: '(7) redirected?',
@@ -400,78 +397,107 @@
         }
       }
     }
-    
+
     connected_to_internet_block() {
-      return navigator.onLine;
+      try {return navigator.onLine} catch(err) {return false}
     }
     browser_block() {
-      let has = input => navigator.userAgent.includes(input);
-      if (has('Firefox')) return 'Firefox';
-      if (has('SamsungBrowser')) return 'Samsung Internet';
-      if ((has('Opera') || has('OPR')) && has('GX')) return 'Opera GX';
-      if (has('Opera') || has('OPR')) return 'Opera';
-      if (has('Trident')) return 'Internet Explorer';
-      if (has('Edge')) return 'Edge Legacy';
-      if (has('Edg')) return 'Edge Chromium';
-      if (has('YaBrowser') || has('YaSearchBrowser')) return 'Yandex';
-      if (has('Miui')) return 'Mi Browser';
-      if (has('UBrowser')) return 'UC Browser';
-      if (has('Chrome')) return 'Chromium';
-      if (has('Safari')) return 'Safari';
-      return '';
+      try {
+        let has = input => navigator.userAgent.includes(input);
+        if (has('Firefox')) return 'firefox';
+        if (has('SamsungBrowser')) return 'samsung internet';
+        if ((has('Opera') || has('OPR')) && has('GX')) return 'opera gx';
+        if (has('Opera') || has('OPR')) return 'opera';
+        if (has('Trident')) return 'internet explorer';
+        if (has('Edge')) return 'legacy';
+        if (has('Edg')) return 'edge';
+        if (has('YaBrowser') || has('YaSearchBrowser')) return 'yandex';
+        if (has('Miui')) return 'mi browser';
+        if (has('UBrowser')) return 'uc browser';
+        if (has('Chrome')) return 'chromium';
+        if (has('Safari')) return 'safari';
+        return '';
+      } catch(err) {return ''}
     }
     current_url_block() {
-      return document.URL || '';
+      try {return document.URL || ''} catch(err) {return ''}
     }
     network_type_block() {
-      let type = navigator.connection.type;
-      return type === undefined || type === 'none' || type === 'unknown' ? '' : type;
+      try {
+        switch (navigator.connection.type) {
+          case 'bluetooth': return 'bluetooth';
+          case 'cellular': return 'cellular';
+          case 'ethernet': return 'ethernet';
+          case 'wifi': return 'wi-fi';
+          case 'wimax': return 'wimax';
+          default: return '';
+        }
+      } catch(err) {return ''}
     }
     network_generation_block() {
-      return navigator.connection.effectiveType || '';
+      try {
+        switch (navigator.connection.effectiveType) {
+          case 'slow-2g': case '2g': return '2g';
+          case '3g': return '3g';
+          case '4g': return '4g';
+          default: return '';
+        }
+      } catch(err) {return ''}
     }
     downlink_speed_block() {
-      return navigator.connection.downlink || '';
+      try {return navigator.connection.downlink || ''} catch(err) {return ''}
     }
     downlink_max_speed_block() {
-      return navigator.connection.downlinkMax || '';
+      try {return navigator.connection.downlinkMax || ''} catch(err) {return ''}
     }
-    network_rtt_block() {
-      return navigator.connection.rtt || '';
-    }
-    ping_block({SERVER}) {
-      return cached_ping_web_socket(String(SERVER));
+    rtt_block() {
+      try {return navigator.connection.rtt || ''} catch(err) {return ''}
     }
     get_block(args) {
-      return fetch_url(args, 'GET');
+      try {return fetch_url(args, 'GET')} catch(err) {return ''}
     }
     delete_block(args) {
-      return fetch_url(args, 'DELETE');
+      try {return fetch_url(args, 'DELETE')} catch(err) {return ''}
     }
     post_block(args) {
-      return fetch_url(args, 'POST');
+      try {return fetch_url(args, 'POST')} catch(err) {return ''}
     }
     put_block(args) {
-      return fetch_url(args, 'PUT');
+      try {return fetch_url(args, 'PUT')} catch(err) {return ''}
     }
     patch_block(args) {
-      return fetch_url(args, 'PATCH');
+      try {return fetch_url(args, 'PATCH')} catch(err) {return ''}
     }
-    open_link_block({URL}) {
-      window.open(URL, '_blank');
+    open_link_block({USER_URL}) {
+      try {
+        const url = new URL(String(USER_URL));
+        if (protocols.includes(url.protocol)) {
+          window.open(String(USER_URL), '_blank');
+        }
+      } catch(err) {}
     }
-    open_window_block({URL,WIDTH,HEIGHT,LEFT,TOP}) {
-      let params = 'popup=1';
-      params += isNaN(WIDTH) ? '' : `,width=${Number(WIDTH) < 100 ? 100 : Number(WIDTH) > window.screen.width ? window.screen.width : Number(WIDTH)}`;
-      params += isNaN(HEIGHT) ? '' : `,height=${Number(HEIGHT) < 100 ? 100 : Number(HEIGHT) > window.screen.height ? window.screen.height : Number(HEIGHT)}`;
-      params += isNaN(LEFT) ? '' : `,left=${Number(LEFT) < 0 ? 0 : Number(LEFT) > window.screen.width ? window.screen.width : Number(LEFT)}`;
-      params += isNaN(TOP) ? '' : `,top=${Number(TOP) < 0 ? 0 : Number(TOP) > window.screen.height ? window.screen.height : Number(TOP)}`;
-      window.open(URL, '_blank', params);
+    open_window_block({USER_URL,WIDTH,HEIGHT,LEFT,TOP}) {
+      try {
+        const url = new URL(String(USER_URL));
+        if (protocols.includes(url.protocol)) {
+          let params = 'popup=1';
+          params += isNaN(WIDTH) ? '' : `,width=${Number(WIDTH) < 100 ? 100 : Number(WIDTH) > window.screen.width ? window.screen.width : Number(WIDTH)}`;
+          params += isNaN(HEIGHT) ? '' : `,height=${Number(HEIGHT) < 100 ? 100 : Number(HEIGHT) > window.screen.height ? window.screen.height : Number(HEIGHT)}`;
+          params += isNaN(LEFT) ? '' : `,left=${Number(LEFT) < 0 ? 0 : Number(LEFT) > window.screen.width ? window.screen.width : Number(LEFT)}`;
+          params += isNaN(TOP) ? '' : `,top=${Number(TOP) < 0 ? 0 : Number(TOP) > window.screen.height ? window.screen.height : Number(TOP)}`;
+          window.open(String(USER_URL), '_blank', params);
+        }
+      } catch(err) {}
     }
-    redirect_link_block({URL}) {
-      window.open(URL, '_self');
+    redirect_link_block({USER_URL}) {
+      try {
+        const url = new URL(String(USER_URL));
+        if (protocols.includes(url.protocol)) {
+          window.open(String(USER_URL), '_self');
+        }
+      } catch(err) {}
     }
   }
-  
+
   Scratch.extensions.register(new Network());
 })(Scratch);
