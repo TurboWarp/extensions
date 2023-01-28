@@ -254,17 +254,17 @@
     }
 
     showPicker () {
-      dataurloutput = false
+      dataurloutput = false;
       return showFilePrompt('');
     }
 
     showPickerExtensions (args) {
-      dataurloutput = false
+      dataurloutput = false;
       return showFilePrompt(args.extension);
     }
 
     makedataurl (args) {
-      dataurloutput = true
+      dataurloutput = true;
       return showFilePrompt(args.extension);
     }
 
