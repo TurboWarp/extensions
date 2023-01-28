@@ -9,11 +9,8 @@
   const MODE_IMMEDIATELY_SHOW_SELECTOR = 'selector';
   const MODE_ONLY_SELECTOR = 'only-selector';
   const ALL_MODES = [MODE_MODAL, MODE_IMMEDIATELY_SHOW_SELECTOR, MODE_ONLY_SELECTOR];
-
   let openFileSelectorMode = MODE_MODAL;
-
-  var dataurloutput = null
-  
+  var dataurloutput = null;
   const showFilePrompt = (accept) => new Promise((_resolve) => {
     // We can't reliably show an <input> picker without "user interaction" in all environments,
     // so we have to show our own UI anyways. We may as well use this to implement some nice features
