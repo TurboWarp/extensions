@@ -12,6 +12,8 @@
 
   let openFileSelectorMode = MODE_MODAL;
 
+  var dataurloutput = null
+  
   const showFilePrompt = (accept) => new Promise((_resolve) => {
     // We can't reliably show an <input> picker without "user interaction" in all environments,
     // so we have to show our own UI anyways. We may as well use this to implement some nice features
@@ -45,7 +47,12 @@
         console.error('Failed to read file as text', reader.error);
         callback('');
       };
+      if (dataurloutput) {
+        reader.readAsDataURL(file);
+      } else {
       reader.readAsText(file);
+      }
+      //console.log(dataurloutput)
     };
 
     /** @param {KeyboardEvent} e */
@@ -153,6 +160,7 @@
     }
   });
 
+
   const download = (text, file) => {
     const blob = new Blob([text]);
     const url = URL.createObjectURL(blob);
@@ -217,6 +225,17 @@
                 menu: 'automaticallyOpen'
               }
             }
+          },
+          {
+            opcode: 'makedataurl',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Open a [extension] file as data url',
+            arguments: {
+              extension: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '.png'
+              }
+            }
           }
         ],
         menus: {
@@ -238,10 +257,17 @@
     }
 
     showPicker () {
+      dataurloutput = false
       return showFilePrompt('');
     }
 
     showPickerExtensions (args) {
+      dataurloutput = false
+      return showFilePrompt(args.extension);
+    }
+
+    makedataurl (args) {
+      dataurloutput = true
       return showFilePrompt(args.extension);
     }
 
