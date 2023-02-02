@@ -206,6 +206,34 @@
               }
             }
           },
+
+          {
+            opcode: 'showPickerAs',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'open a file as [as]',
+            arguments: {
+              as: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'encoding'
+              }
+            }
+          },
+          {
+            opcode: 'showPickerExtensionsAs',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'open a [extension] file as [as]',
+            arguments: {
+              extension: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '.txt'
+              },
+              as: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'encoding'
+              }
+            }
+          },
+
           {
             opcode: 'download',
             blockType: Scratch.BlockType.COMMAND,
@@ -232,20 +260,22 @@
                 menu: 'automaticallyOpen'
               }
             }
-          },
-          {
-            opcode: 'makedataurl',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'Open a [extension] file as data url',
-            arguments: {
-              extension: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: '.png'
-              }
-            }
           }
         ],
         menus: {
+          encoding: {
+            acceptReporters: true,
+            items: [
+              {
+                text: 'text',
+                value: AS_TEXT
+              },
+              {
+                text: 'data: URL',
+                value: AS_DATA_URL
+              }
+            ]
+          },
           automaticallyOpen: {
             acceptReporters: true,
             items: [
@@ -271,8 +301,12 @@
       return showFilePrompt(args.extension, AS_TEXT);
     }
 
-    makedataurl (args) {
-      return showFilePrompt(args.extension, AS_DATA_URL);
+    showPickerAs (args) {
+      return showFilePrompt('', args.as);
+    }
+
+    showPickerExtensionsAs (args) {
+      return showFilePrompt(args.extension, args.as);
     }
 
     download (args) {
