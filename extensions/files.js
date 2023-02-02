@@ -10,8 +10,16 @@
   const MODE_ONLY_SELECTOR = 'only-selector';
   const ALL_MODES = [MODE_MODAL, MODE_IMMEDIATELY_SHOW_SELECTOR, MODE_ONLY_SELECTOR];
   let openFileSelectorMode = MODE_MODAL;
-  var dataurloutput = null;
-  const showFilePrompt = (accept) => new Promise((_resolve) => {
+
+  const AS_TEXT = 'text';
+  const AS_DATA_URL = 'url';
+
+  /**
+   * @param {string} accept See MODE_ constants above
+   * @param {string} as See AS_ constants above
+   * @returns {Promise<string>} format given by as parameter
+   */
+  const showFilePrompt = (accept, as) => new Promise((_resolve) => {
     // We can't reliably show an <input> picker without "user interaction" in all environments,
     // so we have to show our own UI anyways. We may as well use this to implement some nice features
     // that native file pickers don't have:
@@ -44,12 +52,11 @@
         console.error('Failed to read file as text', reader.error);
         callback('');
       };
-      if (dataurloutput) {
-        reader.readAsDataURL(file);
+      if (as === AS_TEXT) {
+        reader.readAsText(file);
       } else {
-      reader.readAsText(file);
+        reader.readAsDataURL(file);
       }
-      //console.log(dataurloutput)
     };
 
     /** @param {KeyboardEvent} e */
@@ -157,7 +164,10 @@
     }
   });
 
-
+  /**
+   * @param {string} text Text to download
+   * @param {string} file Name of the file
+   */
   const download = (text, file) => {
     const blob = new Blob([text]);
     const url = URL.createObjectURL(blob);
@@ -254,18 +264,15 @@
     }
 
     showPicker () {
-      dataurloutput = false;
-      return showFilePrompt('');
+      return showFilePrompt('', AS_TEXT);
     }
 
     showPickerExtensions (args) {
-      dataurloutput = false;
-      return showFilePrompt(args.extension);
+      return showFilePrompt(args.extension, AS_TEXT);
     }
 
     makedataurl (args) {
-      dataurloutput = true;
-      return showFilePrompt(args.extension);
+      return showFilePrompt(args.extension, AS_DATA_URL);
     }
 
     download (args) {
