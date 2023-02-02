@@ -204,7 +204,7 @@
 
           blockType: Scratch.BlockType.REPORTER,
 
-          text: "\\n",
+          text: "Newline",
           arguments: {}
         },
           {
