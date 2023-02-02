@@ -202,9 +202,9 @@
         {
           opcode: 'newline',
 
-          blockType: Scratch.BlockType.BOOLEAN,
+          blockType: Scratch.BlockType.REPORTER,
 
-          text: 'new line',
+          text: "\\n",
           arguments: {}
         },
           {
