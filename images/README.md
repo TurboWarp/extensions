@@ -38,6 +38,9 @@ Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/pull/103
 ## pointerlock.svg
 Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367723798. The font is Noto Sans.
 
+## unicodeencoding.svg
+The image is from https://www.svgrepo.com/svg/306906/unicode
+
 ## utilities.svg
 Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367709835. The font is Deja Vu Sans.
 
