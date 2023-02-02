@@ -319,7 +319,7 @@
       return STRING.toString().replace(new RegExp(REGEX, 'gi'), NEWSTRING);
     }
   newline(){
-    return '\n'
+    return '\n';
   }
 
   }
