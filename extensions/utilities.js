@@ -199,6 +199,14 @@
               }
             }
           },
+        {
+          opcode: 'newline',
+
+          blockType: Scratch.BlockType.BOOLEAN,
+
+          text: 'new line',
+          arguments: {}
+        },
           {
             opcode: 'stringToBoolean',
 
@@ -310,6 +318,9 @@
     regexReplace({STRING, REGEX, NEWSTRING}) {
       return STRING.toString().replace(new RegExp(REGEX, 'gi'), NEWSTRING);
     }
+  newline(){
+    return '\n'
+  }
 
   }
 
