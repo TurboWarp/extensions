@@ -2,7 +2,7 @@ const express = require('express');
 const Builder = require('./builder');
 
 let mostRecentBuild = null;
-const builder = new Builder(false);
+const builder = new Builder('development');
 builder.startWatcher((newBuild) => {
   mostRecentBuild = newBuild;
 });

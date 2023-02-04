@@ -1,4 +1,6 @@
 (function () {
+  'use strict';
+
   const ext = {};
 
   ext._getStatus = () => ({
@@ -10,7 +12,7 @@
 
   ext.testReporterWait = (delay, callback) => {
     setTimeout(() => {
-      callback(Math.random())
+      callback(Math.random());
     }, delay * 1000);
   };
 
@@ -20,6 +22,6 @@
       ['R', 'test reporter 2 %n', 'testReporterWait', '1'],
     ],
   };
-  
+
   ScratchExtensions.register('ScratchX Test', descriptor, ext);
 }());

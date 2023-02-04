@@ -18,7 +18,7 @@
             text: 'browser'
           }
         ]
-      }
+      };
     }
 
     getOS () {
