@@ -33,17 +33,17 @@
       h1 {
         margin: 16px 0;
       }
-      h2, p {
+      h2, h3, p {
         margin: 8px 0;
       }
 
       .section {
         max-width: 928px;
-        margin: 16px auto;
+        margin: 24px auto;
       }
 
       .header h1 {
-        font-size: 2.3em;
+        font-size: 2.5em;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -61,8 +61,8 @@
         padding: 8px;
         margin: 8px 0;
         border-radius: 8px;
-        background: rgba(255, 0, 0, 0.245);
-        border: 1px solid rgba(255, 0, 0, 0.604);
+        background: rgba(0, 195, 255, 0.245);
+        border: 1px solid rgba(0, 187, 255, 0.604);
       }
 
       .development-tools {
@@ -74,6 +74,11 @@
       }
       .development-tools h2 {
         font-size: 1em;
+      }
+
+      .extensions-outer h2 {
+        font-size: 2em;
+        margin: 16px 0 8px 0;
       }
 
       .extensions {
@@ -92,6 +97,7 @@
           grid-template-columns: 1fr;
         }
       }
+
       .extension {
         border: 2px solid #ccc;
         border-radius: 8px;
@@ -102,6 +108,9 @@
         .extension {
           border-color: #333;
         }
+      }
+      .extension h3 {
+        font-size: 1.5em;
       }
       .extension img {
         width: 100%;
@@ -173,13 +182,12 @@
       </h1>
 
       <p>Unlike custom extensions on other websites, extensions listed here aren't limited by the extension sandbox, so they are a lot more powerful.</p>
-      <p>Every extension here has been reviewed by the TurboWarp developers for security and quality.</p>
       <p class="warning">Extensions on this site are not compatible with Scratch. Projects that use these extensions cannot be uploaded to the Scratch website.</p>
       <% if (mode === 'desktop') { %>
         <p class="warning">TurboWarp Desktop loads extensions from an offline copy of extensions.turbowarp.org instead of the live website.</p>
       <% } else { %>
         <p class="warning">
-          To use these in the desktop app, <a href="https://desktop.turbowarp.org/">download v1.7.1</a> (released January 26).
+          To use these in the desktop app, <a href="https://desktop.turbowarp.org/">download v1.7.1</a> (released January 24, 2023) or later.
           Note that the desktop app uses an offline copy of these extensions instead of downloading them from the website, so some extensions may be outdated or missing.
         </p>
       <% } %>
@@ -271,136 +279,167 @@
     </script>
     <% } %>
 
-    <div class="section">
-      <%
-      const url = (extensionFile) => `
-        <div class="buttons">
-          <button class="copy" data-copy="${host}${extensionFile}.js">Copy URL</button>
-          ${mode === "desktop" ? (`
-            <button class="open" data-load="${host}${extensionFile}.js">Add Extension</button>
-          `) : (`
-            <a href="${getLinkToRun(`${extensionFile}.js`)}" class="open">Open Extension</a>
-          `)}
-        </div>
-      `;
+    <%
+    const url = (extensionFile) => `
+      <div class="buttons">
+        <button class="copy" data-copy="${host}${extensionFile}.js">Copy URL</button>
+        ${mode === "desktop" ? (`
+          <button class="open" data-load="${host}${extensionFile}.js">Add Extension</button>
+        `) : (`
+          <a href="${getLinkToRun(`${extensionFile}.js`)}" class="open">Open Extension</a>
+        `)}
+      </div>
+    `;
 
-      const img = (extensionFile) => {
-        if (extensionImages[extensionFile]) return `images/${extensionImages[extensionFile]}`;
-        return 'images/unknown.svg';
-      };
-      %>
+    const img = (extensionFile) => {
+      if (extensionImages[extensionFile]) return `images/${extensionImages[extensionFile]}`;
+      return 'images/unknown.svg';
+    };
+    %>
+
+    <div class="section extensions-outer">
+      <h2>Official Extensions</h2>
+      <p>These extensions are maintained by the TurboWarp developers.</p>
 
       <div class="extensions">
         <div class="extension">
-          <img loading="lazy" src="<%= img('box2d') %>">
-          <h2>Box2D Physics</h2>
-          <p>Two dimensional physics. Originally by griffpatch.</p>
-          <%- url('box2d') %>
-        </div>
-
-        <div class="extension">
           <img loading="lazy" src="<%= img('stretch') %>">
-          <h2>Stretch</h2>
+          <h3>Stretch</h3>
           <p>Stretch sprites horizontally or vertically.</p>
           <%- url('stretch') %>
         </div>
 
         <div class="extension">
           <img loading="lazy" src="<%= img('gamepad') %>">
-          <h2>Gamepad</h2>
+          <h3>Gamepad</h3>
           <p>Directly access gamepads instead of just mapping buttons to keys.</p>
           <%- url('gamepad') %>
         </div>
 
         <div class="extension">
           <img loading="lazy" src="<%= img('files') %>">
-          <h2>Files</h2>
+          <h3>Files</h3>
           <p>Read and download files.</p>
           <%- url('files') %>
         </div>
 
         <div class="extension">
           <img loading="lazy" src="<%= img('pointerlock') %>">
-          <h2>Pointerlock</h2>
+          <h3>Pointerlock</h3>
           <p>Adds blocks to lock the mouse cursor. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the <a href="https://experiments.turbowarp.org/pointerlock/">pointerlock experiment</a>.</p>
           <%- url('pointerlock') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('utilities') %>">
-          <h2>Utilities</h2>
-          <p>A bunch of interesting blocks. Originally by Sheep_maker.</p>
-          <%- url('utilities') %>
-        </div>
-
-        <div class="extension">
           <img loading="lazy" src="<%= img('runtime-options') %>">
-          <h2>Runtime Options</h2>
+          <h3>Runtime Options</h3>
           <p>Get and modify turbo mode, framerate, interpolation, clone limit, stage size, and more.</p>
           <%- url('runtime-options') %>
         </div>
 
         <div class="extension">
           <img loading="lazy" src="<%= img('cursor') %>" style="filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));">
-          <h2>Mouse Cursor</h2>
+          <h3>Mouse Cursor</h3>
           <p>Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.</p>
           <%- url('cursor') %>
         </div>
 
         <div class="extension">
           <img loading="lazy" src="<%= img('fetch') %>">
-          <h2>Fetch</h2>
+          <h3>Fetch</h3>
           <p>Make requests to the broader internet.</p>
           <%- url('fetch') %>
         </div>
 
         <div class="extension">
           <img loading="lazy" src="<%= img('bitwise') %>" class="invert-dark">
-          <h2>Bitwise</h2>
+          <h3>Bitwise</h3>
           <p>Blocks that operate on the binary representation of numbers in computers.</p>
           <%- url('bitwise') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('cloudlink') %>">
-          <h2>Cloudlink</h2>
-          <p>Powerful WebSocket extension for Scratch 3.</p>
-          <%- url('cloudlink') %>
-        </div>
-
-        <div class="extension">
           <img loading="lazy" src="<%= img('clouddata-ping') %>">
-          <h2>Ping Cloud Data</h2>
+          <h3>Ping Cloud Data</h3>
           <p>Determine whether a cloud variable server is probably up.</p>
           <%- url('clouddata-ping') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('penplus') %>">
-          <h2>Pen Plus</h2>
-          <p>Advanced rendering capabilities.</p>
-          <%- url('penplus') %>
-        </div>
-
-        <div class="extension">
           <img loading="lazy" src="<%= img('sound') %>">
-          <h2>Sound</h2>
+          <h3>Sound</h3>
           <p>Play sounds from URLs.</p>
           <%- url('sound') %>
         </div>
 
         <div class="extension">
           <img loading="lazy" src="<%= img('text') %>">
-          <h2>Text</h2>
+          <h3>Text</h3>
           <p>Manipulate characters and text.</p>
           <%- url('text') %>
         </div>
 
         <div class="extension">
+          <img loading="lazy" src="<%= img('navigator') %>">
+          <h3>Navigator</h3>
+          <p>Details about the user's browser and operating system.</p>
+          <%- url('navigator') %>
+        </div>
+      </div>
+    </div>
+
+    <div class="section extensions-outer">
+      <h2>Community Extensions</h2>
+      <p>These extensions were submitted by members of the community.</p>
+
+      <div class="extensions">
+        <div class="extension">
+          <img loading="lazy" src="<%= img('penplus') %>">
+          <h3>Pen Plus</h3>
+          <p>Advanced rendering capabilities.</p>
+          <%- url('penplus') %>
+        </div>
+
+        <div class="extension">
+          <img loading="lazy" src="<%= img('box2d') %>">
+          <h3>Box2D Physics</h3>
+          <p>Two dimensional physics. Originally by griffpatch.</p>
+          <%- url('box2d') %>
+        </div>
+
+        <div class="extension">
+          <img loading="lazy" src="<%= img('cloudlink') %>">
+          <h3>Cloudlink</h3>
+          <p>Powerful WebSocket extension for Scratch 3.</p>
+          <%- url('cloudlink') %>
+        </div>
+
+        <div class="extension">
           <img loading="lazy" src="<%= img('ar') %>">
-          <h2>Augmented Reality</h2>
+          <h3>Augmented Reality</h3>
           <p>Shows image from camera and performs motion tracking, allowing 3D projects to correctly overlay virtual objects on real world.</p>
           <%- url('ar') %>
+        </div>
+
+        <div class="extension">
+          <img loading="lazy" src="<%= img('utilities') %>">
+          <h3>Utilities</h3>
+          <p>A bunch of interesting blocks. Originally by Sheep_maker.</p>
+          <%- url('utilities') %>
+        </div>
+
+        <div class="extension">
+          <img loading="lazy" src="<%= img('encoding') %>">
+          <h3>Encoding</h3>
+          <p>Encode and decode strings into their unicode numbers, base 64, or URLs.</p>
+          <%- url('encoding') %>
+        </div>
+
+        <div class="extension">
+          <img loading="lazy" src="<%= img('true-fantom/network') %>">
+          <h3>True-Fantom's Network</h3>
+          <p>Various blocks for interacting with the network.</p>
+          <%- url('true-fantom/network') %>
         </div>
       </div>
     </div>
