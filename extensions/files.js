@@ -207,6 +207,8 @@
             }
           },
 
+          '---',
+
           {
             opcode: 'showPickerAs',
             blockType: Scratch.BlockType.REPORTER,
@@ -233,6 +235,8 @@
               }
             }
           },
+
+          '---',
 
           {
             opcode: 'download',
