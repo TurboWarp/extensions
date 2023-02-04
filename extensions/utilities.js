@@ -199,14 +199,13 @@
               }
             }
           },
-        {
-          opcode: 'newline',
-
-          blockType: Scratch.BlockType.REPORTER,
-
-          text: "Newline",
-          arguments: {}
-        },
+          {
+            opcode: 'newline',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'newline character',
+            disableMonitor: true,
+            arguments: {}
+          },
           {
             opcode: 'stringToBoolean',
 
@@ -311,6 +310,10 @@
       }
     }
 
+    newline() {
+      return '\n';
+    }
+
     stringToBoolean({STRING}) {
       return STRING;
     }
@@ -318,10 +321,6 @@
     regexReplace({STRING, REGEX, NEWSTRING}) {
       return STRING.toString().replace(new RegExp(REGEX, 'gi'), NEWSTRING);
     }
-  newline(){
-    return '\n';
-  }
-
   }
 
   Scratch.extensions.register(new Utilities());
