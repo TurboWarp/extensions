@@ -99,11 +99,11 @@
       }
 
       .extension {
-        position: relative;
         border: 2px solid #ccc;
         border-radius: 8px;
         margin: 4px;
         overflow: hidden;
+        padding: 8px;
       }
       @media (prefers-color-scheme: dark) {
         .extension {
@@ -113,28 +113,33 @@
       .extension h3 {
         font-size: 1.5em;
       }
-      .extension img {
+      .extension-banner {
+        position: relative;
+        margin: -8px;
+      }
+      .extension-image {
         width: 100%;
         /* TODO: see if there's another way to do this that works in older browsers too */
         aspect-ratio: 2 / 1;
       }
-      .extension > *:not(img) {
-        margin: 8px;
-      }
 
-      .buttons {
+      .extension-buttons {
         position: absolute;
         top: 0;
         left: 0;
         display: flex;
         width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
         opacity: 0;
         transition: opacity .2s;
+        background: rgba(0, 0, 0, 0.5);
       }
-      .extension:hover .buttons, .extension:focus-within .buttons {
+      .extension:hover .extension-buttons, .extension:focus-within .extension-buttons {
         opacity: 1;
       }
-      .buttons > * {
+      .extension-buttons > * {
         padding: 8px;
         background-color: #4c97ff;
         border-radius: 8px;
@@ -144,17 +149,17 @@
         color: white;
         text-decoration: none;
       }
-      .buttons > *:active {
+      .extension-buttons > *:active {
         opacity: 0.8;
       }
-      .buttons .copy {
+      .extension-buttons .copy {
         margin: 0 8px 0 0;
       }
-      .buttons .open {
+      .extension-buttons .open {
         background-color: #ff4c4c;
         color: white;
       }
-      .buttons :disabled {
+      .extension-buttons :disabled {
         opacity: 0.5;
       }
 
@@ -297,16 +302,23 @@
     <% } %>
 
     <%
-    const url = (extensionFile) => `
-      <div class="buttons">
-        <button class="copy" data-copy="${host}${extensionFile}.js">Copy URL</button>
-        ${mode === "desktop" ? (`
-          <button class="open" data-load="${host}${extensionFile}.js">Add Extension</button>
-        `) : (`
-          <a href="${getLinkToRun(`${extensionFile}.js`)}" class="open">Open Extension</a>
-        `)}
-      </div>
-    `;
+    const banner = (extensionFile, options = {}) => {
+      const imageSource = extensionImages[extensionFile] ? `images/${extensionImages[extensionFile]}` : 'images/unknown.svg';
+      const imageClasses = ["extension-image"];
+      if (options.invertDark) imageClasses.push("invert-dark");
+      return `
+      <div class="extension-banner">
+        <img loading="lazy" src="${imageSource}" class="${imageClasses.join(' ')}">
+        <div class="extension-buttons">
+          <button class="copy" data-copy="${host}${extensionFile}.js">Copy URL</button>
+          ${mode === "desktop" ? (`
+            <button class="open" data-load="${host}${extensionFile}.js">Add Extension</button>
+          `) : (`
+            <a href="${getLinkToRun(`${extensionFile}.js`)}" class="open">Open Extension</a>
+          `)}
+        </div>
+      </div>`
+    };
 
     const img = (extensionFile) => {
       if (extensionImages[extensionFile]) return `images/${extensionImages[extensionFile]}`;
@@ -320,87 +332,75 @@
 
       <div class="extensions">
         <div class="extension">
-          <img loading="lazy" src="<%= img('stretch') %>">
+          <%- banner('stretch') %>
           <h3>Stretch</h3>
           <p>Stretch sprites horizontally or vertically.</p>
-          <%- url('stretch') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('gamepad') %>">
+          <%- banner('gamepad') %>
           <h3>Gamepad</h3>
           <p>Directly access gamepads instead of just mapping buttons to keys.</p>
-          <%- url('gamepad') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('files') %>">
+          <%- banner('files') %>
           <h3>Files</h3>
           <p>Read and download files.</p>
-          <%- url('files') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('pointerlock') %>">
+          <%- banner('pointerlock') %>
           <h3>Pointerlock</h3>
           <p>Adds blocks to lock the mouse cursor. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the <a href="https://experiments.turbowarp.org/pointerlock/">pointerlock experiment</a>.</p>
-          <%- url('pointerlock') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('runtime-options') %>">
+          <%- banner('runtime-options') %>
           <h3>Runtime Options</h3>
           <p>Get and modify turbo mode, framerate, interpolation, clone limit, stage size, and more.</p>
-          <%- url('runtime-options') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('cursor') %>" style="filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));">
+          <%- banner('cursor') %>
           <h3>Mouse Cursor</h3>
           <p>Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.</p>
-          <%- url('cursor') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('fetch') %>">
+          <%- banner('fetch') %>
           <h3>Fetch</h3>
           <p>Make requests to the broader internet.</p>
-          <%- url('fetch') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('bitwise') %>" class="invert-dark">
+          <%- banner('bitwise', {invertDark: true}) %>
           <h3>Bitwise</h3>
           <p>Blocks that operate on the binary representation of numbers in computers.</p>
-          <%- url('bitwise') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('clouddata-ping') %>">
+          <%- banner('clouddata-ping') %>
           <h3>Ping Cloud Data</h3>
           <p>Determine whether a cloud variable server is probably up.</p>
-          <%- url('clouddata-ping') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('sound') %>">
+          <%- banner('sound') %>
           <h3>Sound</h3>
           <p>Play sounds from URLs.</p>
-          <%- url('sound') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('text') %>">
+          <%- banner('text') %>
           <h3>Text</h3>
           <p>Manipulate characters and text.</p>
-          <%- url('text') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('navigator') %>">
+          <%- banner('navigator') %>
           <h3>Navigator</h3>
           <p>Details about the user's browser and operating system.</p>
-          <%- url('navigator') %>
         </div>
       </div>
     </div>
@@ -411,52 +411,45 @@
 
       <div class="extensions">
         <div class="extension">
-          <img loading="lazy" src="<%= img('penplus') %>">
+          <%- banner('penplus') %>
           <h3>Pen Plus</h3>
           <p>Advanced rendering capabilities.</p>
-          <%- url('penplus') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('box2d') %>">
+          <%- banner('box2d') %>
           <h3>Box2D Physics</h3>
           <p>Two dimensional physics. Originally by griffpatch.</p>
-          <%- url('box2d') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('cloudlink') %>">
+          <%- banner('cloudlink') %>
           <h3>Cloudlink</h3>
           <p>Powerful WebSocket extension for Scratch 3.</p>
-          <%- url('cloudlink') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('ar') %>">
+          <%- banner('ar') %>
           <h3>Augmented Reality</h3>
           <p>Shows image from camera and performs motion tracking, allowing 3D projects to correctly overlay virtual objects on real world.</p>
-          <%- url('ar') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('utilities') %>">
+          <%- banner('utilities') %>
           <h3>Utilities</h3>
           <p>A bunch of interesting blocks. Originally by Sheep_maker.</p>
-          <%- url('utilities') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('encoding') %>">
+          <%- banner('encoding') %>
           <h3>Encoding</h3>
           <p>Encode and decode strings into their unicode numbers, base 64, or URLs.</p>
-          <%- url('encoding') %>
         </div>
 
         <div class="extension">
-          <img loading="lazy" src="<%= img('true-fantom/network') %>">
+          <%- banner('true-fantom/network') %>
           <h3>True-Fantom's Network</h3>
           <p>Various blocks for interacting with the network.</p>
-          <%- url('true-fantom/network') %>
         </div>
       </div>
     </div>
