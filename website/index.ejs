@@ -99,6 +99,7 @@
       }
 
       .extension {
+        position: relative;
         border: 2px solid #ccc;
         border-radius: 8px;
         margin: 4px;
@@ -122,8 +123,16 @@
       }
 
       .buttons {
+        position: absolute;
+        top: 0;
+        left: 0;
         display: flex;
         width: 100%;
+        opacity: 0;
+        transition: opacity .2s;
+      }
+      .extension:hover .buttons, .extension:focus-within .buttons {
+        opacity: 1;
       }
       .buttons > * {
         padding: 8px;
