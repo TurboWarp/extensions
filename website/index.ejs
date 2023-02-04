@@ -251,6 +251,7 @@
     <script>
       // Mock API for testing outside of desktop app
       if (typeof TWD === 'undefined') {
+        console.log('MOCK: Desktop API object does not exist -- using a mock instead');
         var TWD = {
           extensions: {
             loadExtension: (url) => new Promise((resolve, reject) => {
@@ -268,12 +269,19 @@
         };
       }
 
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
       document.addEventListener('click', (e) => {
         var toLoad = e.target.getAttribute('data-load');
         if (toLoad) {
           e.target.classList.add('loading');
           e.target.disabled = true;
-          TWD.extensions.loadExtension(toLoad)
+          Promise.all([
+            TWD.extensions.loadExtension(toLoad),
+            sleep(500),
+          ])
             .then(() => {
               e.target.disabled = false;
               e.target.classList.remove('loading');
