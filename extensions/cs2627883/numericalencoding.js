@@ -2,16 +2,16 @@
 
 (function(Scratch) {
   'use strict';
-  class UnicodeEncodingExtension {
+  class NumericalEncodingExtension {
     maxcharlength = 6; // There are 149,186 unicode characters, so the maximum character code length is 6
     encoded = 0;
     decoded = 0;
     getInfo() {
       return {
-        id: 'cs2627883UnicodeEncoding',
-        name: 'Unicode Encoding',
+        id: 'cs2627883NumericalEncoding',
+        name: 'Numerical Encoding',
         blocks: [{
-          opcode: 'UnicodeEncode',
+          opcode: 'NumericalEncode',
           blockType: Scratch.BlockType.COMMAND,
           text: 'Encode [DATA] to numbers',
           arguments: {
@@ -22,7 +22,7 @@
           }
         },
           {
-            opcode: 'UnicodeDecode',
+            opcode: 'NumericalDecode',
             blockType: Scratch.BlockType.COMMAND,
             text: 'Decode [ENCODED] back to text',
             arguments: {
@@ -33,19 +33,19 @@
             }
           },
           {
-            opcode: 'GetUnicodeEncoded',
+            opcode: 'GetNumericalEncoded',
             blockType: Scratch.BlockType.REPORTER,
             text: 'encoded',
           },
           {
-            opcode: 'GetUnicodeDecoded',
+            opcode: 'GetNumericalDecoded',
             blockType: Scratch.BlockType.REPORTER,
             text: 'decoded',
           }
         ]
       };
     }
-    UnicodeEncode(args) {
+    NumericalEncode(args) {
       const toencode = String(args.DATA);
       var encoded = "";
       for (let i = 0; i < toencode.length; ++i) {
@@ -57,7 +57,7 @@
       }
       this.encoded = encoded;
     }
-    UnicodeDecode(args) {
+    NumericalDecode(args) {
       const todecode = String(args.ENCODED);
       if (todecode == "") {
         this.decoded = "";
@@ -75,22 +75,22 @@
       }
       this.decoded = decoded;
     }
-    GetUnicodeEncoded(args) {
+    GetNumericalEncoded(args) {
       return this.encoded;
     }
-    GetUnicodeDecoded(args) {
+    GetNumericalDecoded(args) {
       return this.decoded;
     }
   }
 
   // Test Code
   /*
-  encoding = new UnicodeEncodingExtension();
-  encoding.UnicodeEncode({"DATA": 'Hello!'});
-  console.log(encoding.GetUnicodeEncoded())
-  encoding.UnicodeDecode({"ENCODED": encoding.GetUnicodeEncoded()});
-  console.log(encoding.GetUnicodeDecoded());
+  encoding = new NumericalEncodingExtension();
+  encodingNumericalEncode({"DATA": 'Hello!'});
+  console.log(encoding.GetNumericalEncoded())
+  encoding.NumericalDecode({"ENCODED": encoding.GetNumericalEncoded()});
+  console.log(encoding.GetNumericalDecoded());
   */
 
-  Scratch.extensions.register(new UnicodeEncodingExtension());
+  Scratch.extensions.register(new NumericalEncodingExtension());
 })(Scratch);
