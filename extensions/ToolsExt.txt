@@ -1,0 +1,31 @@
+(function(Scratch) {
+  'use strict';
+
+  class Tools {
+    getInfo () {
+      return {
+        id: 'tools',
+        name: 'Tools',
+        blocks: [
+          {
+            opcode: 'read',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Reading [TEXT]',
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Hello'
+              }
+            }
+          }
+        ]
+      };
+    }
+
+    read (args) {
+      speechSynthesis.speak(new SpeechSynthesisUtterance(args.TEXT));
+    }
+  }
+
+  Scratch.extensions.register(new Tools());
+})(Scratch);
