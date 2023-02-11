@@ -43,6 +43,3 @@ Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/9
 
 ## sound.svg
 Created by @softedco in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1369138404.
-
-## cs2627883/numericalencoding.svg
-The image is from https://svgsilh.com/image/34613.html
