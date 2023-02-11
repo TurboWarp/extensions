@@ -79,6 +79,8 @@
       .extensions-outer h2 {
         font-size: 2em;
         margin: 16px 0 8px 0;
+        text-align: center;
+        font-weight: normal;
       }
 
       .extensions {
@@ -115,9 +117,10 @@
       }
       .extension-banner {
         position: relative;
-        margin: -8px;
+        margin: -8px -8px 0 -8px;
       }
       .extension-image {
+        display: block;
         width: 100%;
         /* TODO: see if there's another way to do this that works in older browsers too */
         aspect-ratio: 2 / 1;
@@ -135,6 +138,7 @@
         opacity: 0;
         transition: opacity .2s;
         background: rgba(0, 0, 0, 0.5);
+        pointer-events: none;
       }
       .extension:hover .extension-buttons, .extension:focus-within .extension-buttons {
         opacity: 1;
@@ -148,6 +152,7 @@
         cursor: pointer;
         color: white;
         text-decoration: none;
+        pointer-events: auto;
       }
       .extension-buttons > *:active {
         opacity: 0.8;
@@ -196,6 +201,8 @@
       </h1>
 
       <p>Unlike custom extensions on other websites, extensions listed here aren't limited by the extension sandbox, so they are a lot more powerful.</p>
+      <p>To use these extensions in TurboWarp, copy the extensions URL (ends with .js), then go to the editor, open the extension library, then find the "Custom Extension" option and load the copied URL. Some of these extensions may work in other Scratch mods while others will not.</p>
+
       <p class="warning">Extensions on this site are not compatible with Scratch. Projects that use these extensions cannot be uploaded to the Scratch website.</p>
       <% if (mode === 'desktop') { %>
         <p class="warning">TurboWarp Desktop loads extensions from an offline copy of extensions.turbowarp.org instead of the live website.</p>
@@ -327,8 +334,7 @@
     %>
 
     <div class="section extensions-outer">
-      <h2>Official Extensions</h2>
-      <p>These extensions are maintained by the TurboWarp developers.</p>
+      <h2>Featured Extensions</h2>
 
       <div class="extensions">
         <div class="extension">
@@ -407,9 +413,14 @@
 
     <div class="section extensions-outer">
       <h2>Community Extensions</h2>
-      <p>These extensions were submitted by members of the community.</p>
 
       <div class="extensions">
+        <div class="extension">
+          <%- banner('box2d') %>
+          <h3>Box2D Physics</h3>
+          <p>Two dimensional physics. Originally created by <a href="https://scratch.mit.edu/users/griffpatch/">griffpatch</a>.</p>
+        </div>
+
         <div class="extension">
           <%- banner('penplus') %>
           <h3>Pen Plus</h3>
@@ -417,9 +428,9 @@
         </div>
 
         <div class="extension">
-          <%- banner('box2d') %>
-          <h3>Box2D Physics</h3>
-          <p>Two dimensional physics. Originally by griffpatch.</p>
+          <%- banner('utilities') %>
+          <h3>Utilities</h3>
+          <p>A bunch of interesting blocks. Originally created by <a href="https://scratch.mit.edu/users/Sheep_maker/">Sheep_maker</a>.</p>
         </div>
 
         <div class="extension">
@@ -431,13 +442,7 @@
         <div class="extension">
           <%- banner('ar') %>
           <h3>Augmented Reality</h3>
-          <p>Shows image from camera and performs motion tracking, allowing 3D projects to correctly overlay virtual objects on real world.</p>
-        </div>
-
-        <div class="extension">
-          <%- banner('utilities') %>
-          <h3>Utilities</h3>
-          <p>A bunch of interesting blocks. Originally by Sheep_maker.</p>
+          <p>Shows image from camera and performs motion tracking, allowing 3D projects to correctly overlay virtual objects on real world. Created by <a href="https://scratch.mit.edu/users/Vadik1/">Vadik1</a>.</p>
         </div>
 
         <div class="extension">
@@ -448,8 +453,14 @@
 
         <div class="extension">
           <%- banner('true-fantom/network') %>
-          <h3>True-Fantom's Network</h3>
-          <p>Various blocks for interacting with the network.</p>
+          <h3>Network</h3>
+          <p>Various blocks for interacting with the network. Created by <a href="https://scratch.mit.edu/users/TrueFantom/">TrueFantom</a></p>
+        </div>
+
+        <div class="extension">
+          <%- banner('cs2627883/numericalencoding') %>
+          <h3>Numerical Encoding</h3>
+          <p>Encode strings as numbers for cloud variables. Created by <a href="https://scratch.mit.edu/users/cs2627883/">cs2627883</a>.</p>
         </div>
       </div>
     </div>
