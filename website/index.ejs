@@ -155,10 +155,10 @@
         text-decoration: none;
         pointer-events: auto;
       }
-      .extension-buttons button:active {
+      .extension-buttons *:active {
         opacity: 0.8;
       }
-      .extension-buttons button:disabled {
+      .extension-buttons *:disabled {
         opacity: 0.5;
       }
       .extension-buttons .copy {
@@ -205,17 +205,22 @@
       </h1>
 
       <p>Unlike custom extensions on other websites, extensions listed here aren't limited by the extension sandbox, so they are a lot more powerful.</p>
-      <p>To use these extensions in TurboWarp, copy the extensions URL (ends with .js), then go to the editor, open the extension library, then find the "Custom Extension" option and load the copied URL. Some of these extensions may work in other Scratch mods while others will not.</p>
+      <p>To use these extensions in TurboWarp, hover over an extension to copy its URL, then go to the editor, open the extension chooser, then choose the "Custom Extension" option and input the copied URL. Some of these extensions may work in other Scratch mods while others will not.</p>
 
-      <p class="warning">Extensions on this site are not compatible with Scratch. Projects that use these extensions cannot be uploaded to the Scratch website.</p>
       <% if (mode === 'desktop') { %>
-        <p class="warning">TurboWarp Desktop loads extensions from an offline copy of extensions.turbowarp.org instead of the live website.</p>
+        <p>TurboWarp Desktop loads extensions from an offline copy of extensions.turbowarp.org instead of the live website.</p>
       <% } else { %>
-        <p class="warning">
+        <p>
           To use these in the desktop app, <a href="https://desktop.turbowarp.org/">download v1.7.1</a> (released January 24, 2023) or later.
           Note that the desktop app uses an offline copy of these extensions instead of downloading them from the website, so some extensions may be outdated or missing.
         </p>
       <% } %>
+
+      <p class="warning">
+        These extensions are not compatible with Scratch.
+        Projects that use these extensions can't be uploaded to the Scratch website.
+        They can, however, be used in <a href="https://packager.turbowarp.org/">the packager</a>.
+      </p>
     </div>
 
     <%
