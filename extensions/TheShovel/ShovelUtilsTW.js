@@ -91,7 +91,7 @@ tempVAR = null;
           arguments: {
             TEXT: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'https://theshovel.github.io/Bullet-Hell/Bullet Hell.sb3',
+              defaultValue: 'https://theshovel.github.io/the-lazy-cook/Source.wsp',
             }
          }
          },
