@@ -726,7 +726,10 @@
     function __CreateAjax(sUrl, sBodyData, pCallback) {
       if (typeof sBodyData !== "string") sBodyData = "";
 
-      if (window.XMLHttpRequest) {
+      Scratch.canFetch(sUrl).then((allowed) => {
+        if (!allowed) {
+          return;
+        }
         var pRequest = new XMLHttpRequest();
 
         // bind callback function
@@ -746,7 +749,7 @@
           pRequest.open("GET", sUrl);
           pRequest.send();
         }
-      } else console.error(GJAPI.sLogName + " XMLHttpRequest not supported");
+      });
     };
 
     GJAPI.BETTER_THAN = true;
