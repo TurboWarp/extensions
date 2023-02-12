@@ -17,6 +17,13 @@
    * @returns {Promise<CacheEntry>}
    */
   const pingWebSocket = async (uri) => {
+    if (!await Scratch.canFetch(uri)) {
+      return {
+        expires: 0,
+        value: false
+      };
+    }
+
     /** @type {WebSocket} */
     let ws;
     try {

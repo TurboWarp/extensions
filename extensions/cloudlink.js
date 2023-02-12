@@ -8,7 +8,7 @@ let mWS = null;
 
 // Get the server URL list
 try {
-	fetch('https://mikedev101.github.io/cloudlink/serverlist.json').then(response => {
+	Scratch.fetch('https://mikedev101.github.io/cloudlink/serverlist.json').then(response => {
 		return response.text();
 	}).then(data => {
 		servers = JSON.parse(data);
@@ -931,19 +931,19 @@ class CloudLink {
 	};
 	
 	fetchURL(args) {
-		return fetch(args.url, {
+		return Scratch.fetch(args.url, {
 			method: "GET"
 		}).then(response => response.text());
 	};
 	
 	requestURL(args) {
 		if (args.method == "GET" || args.method == "HEAD") {
-			return fetch(args.url, {
+			return Scratch.fetch(args.url, {
 				method: args.method,
 				headers: JSON.parse(args.headers)
 			}).then(response => response.text());
 		} else {
-			return fetch(args.url, {
+			return Scratch.fetch(args.url, {
 				method: args.method,
 				headers: JSON.parse(args.headers),
 				body: JSON.parse(args.data)
@@ -1096,9 +1096,13 @@ class CloudLink {
 		return find_id(ID, this.socketData.ulist);
 	};
 	
-	openSocket({IP}) {
+	async openSocket({IP}) {
 		const self = this;
 		if (!self.isRunning) {
+			if (!await Scratch.canFetch(IP)) {
+				return;
+			}
+
 			console.log("Starting socket.");
 			self.link_status = 1;
 			
