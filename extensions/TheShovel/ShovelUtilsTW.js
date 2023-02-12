@@ -50,11 +50,11 @@ var tempVAR = {};
           arguments: {
             TEXT: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'MyList',
+              defaultValue: '[1,2]',
             },
             NAME: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: '[1,2]',
+              defaultValue: 'MyList',
             }
          }
          },
