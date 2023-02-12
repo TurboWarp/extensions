@@ -3,6 +3,11 @@
 
   const audioEngine = Scratch.vm.runtime.audioEngine;
 
+  /**
+   * This method assumes that the caller has already requested permission to fetch the URL.
+   * @param {string} url 
+   * @returns {Promise<ArrayBuffer>}
+   */
   const fetchAsArrayBufferWithTimeout = (url) => new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     let timeout = setTimeout(() => {
@@ -94,6 +99,7 @@
   };
 
   /**
+   * This method assumes that the caller has already requested permission to fetch the URL.
    * @param {string} url
    * @param {VM.Target} target
    * @returns {Promise<void>}
@@ -129,6 +135,10 @@
    */
   const playSound = async (url, target) => {
     try {
+      if (!await Scratch.canFetch(url)) {
+        throw new Error(`Permission to fetch ${url} denied`);
+      }
+
       const success = await playWithAudioEngine(url, target);
       if (!success) {
         return await playWithAudioElement(url, target);
