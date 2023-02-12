@@ -144,6 +144,9 @@
       .extension:hover .extension-buttons, .extension:focus-within .extension-buttons {
         opacity: 1;
       }
+      .extension:hover .extension-buttons {
+        backdrop-filter: blur(0.6px);
+      }
       .extension-buttons > * {
         padding: 8px;
         background-color: #4c97ff;
@@ -154,6 +157,12 @@
         color: white;
         text-decoration: none;
         pointer-events: auto;
+        transition: 0.15s;
+        filter: drop-shadow(0px 1px 3px #00000075);
+      }
+      .extension-buttons > *:hover {
+        filter: drop-shadow(0px 1px 7px black);
+        z-index: 1;
       }
       .extension-buttons *:active {
         opacity: 0.8;
