@@ -1,7 +1,6 @@
-console.log("ShovelUtils v1.1")
-
 (function(Scratch) {
 'use strict';
+console.log("ShovelUtils v1.1")
 var tempImageLoad = {};
 var string = '';
 var temp = {};
