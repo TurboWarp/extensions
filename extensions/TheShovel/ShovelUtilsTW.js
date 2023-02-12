@@ -1,12 +1,10 @@
 console.log("ShovelUtils v1.1")
+(function(Scratch) {
 var tempImageLoad = {};
 var string = '';
 var temp = {};
 var tempVAR = {};
 
-
-
-(function(Scratch) {
   'use strict';
   const vm = Scratch.vm;
   class ShovelUtils {
