@@ -154,8 +154,11 @@
         text-decoration: none;
         pointer-events: auto;
       }
-      .extension-buttons > *:active {
+      .extension-buttons button:active {
         opacity: 0.8;
+      }
+      .extension-buttons button:disabled {
+        opacity: 0.5;
       }
       .extension-buttons .copy {
         margin: 0 8px 0 0;
@@ -315,7 +318,7 @@
       if (options.invertDark) imageClasses.push("invert-dark");
       return `
       <div class="extension-banner">
-        <img loading="lazy" src="${imageSource}" class="${imageClasses.join(' ')}">
+        <img loading="lazy" src="${imageSource}" class="${imageClasses.join(' ')}" style="${options.style || ''}">
         <div class="extension-buttons">
           <button class="copy" data-copy="${host}${extensionFile}.js">Copy URL</button>
           ${mode === "desktop" ? (`
@@ -368,7 +371,7 @@
         </div>
 
         <div class="extension">
-          <%- banner('cursor') %>
+          <%- banner('cursor', {style: 'filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));'}) %>
           <h3>Mouse Cursor</h3>
           <p>Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.</p>
         </div>

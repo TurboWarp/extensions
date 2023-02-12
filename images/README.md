@@ -45,7 +45,7 @@ Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/issues/9
 Created by @softedco in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1369138404.
 
 ## encoding.svg
-Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1396819269
+Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1396819269. The font is Noto Sans.
 
 ## true-fantom/network.svg
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/122#issue-1524383752
