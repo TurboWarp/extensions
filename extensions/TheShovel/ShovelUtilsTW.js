@@ -220,7 +220,7 @@ loadExtension({TEXT}){
 }
 
 getlist({TEXT}){
-  return vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, 'list').value.toString()
+  return "["+vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, 'list').value.toString()+"]"
 }
 setlist({TEXT,NAME}){
   temp = JSON.parse(TEXT)
