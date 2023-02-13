@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "node development/server.js",
     "build": "node development/build-production.js",
-    "validate": "node development/validate.js"
+    "validate": "node development/validate.js",
+    "lint": "eslint development extensions",
+    "fix": "npm run lint -- --fix"
   },
   "repository": {
     "type": "git",
@@ -17,10 +19,13 @@
   },
   "homepage": "https://github.com/TurboWarp/extensions#readme",
   "dependencies": {
-    "@turbowarp/types": "^0.0.4",
+    "@turbowarp/types": "^0.0.5",
     "chokidar": "^3.5.3",
     "ejs": "^3.1.8",
     "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.34.0"
   },
   "private": true
 }

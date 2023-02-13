@@ -9,10 +9,17 @@
   const MODE_IMMEDIATELY_SHOW_SELECTOR = 'selector';
   const MODE_ONLY_SELECTOR = 'only-selector';
   const ALL_MODES = [MODE_MODAL, MODE_IMMEDIATELY_SHOW_SELECTOR, MODE_ONLY_SELECTOR];
-
   let openFileSelectorMode = MODE_MODAL;
 
-  const showFilePrompt = (accept) => new Promise((_resolve) => {
+  const AS_TEXT = 'text';
+  const AS_DATA_URL = 'url';
+
+  /**
+   * @param {string} accept See MODE_ constants above
+   * @param {string} as See AS_ constants above
+   * @returns {Promise<string>} format given by as parameter
+   */
+  const showFilePrompt = (accept, as) => new Promise((_resolve) => {
     // We can't reliably show an <input> picker without "user interaction" in all environments,
     // so we have to show our own UI anyways. We may as well use this to implement some nice features
     // that native file pickers don't have:
@@ -39,13 +46,17 @@
 
       const reader = new FileReader();
       reader.onload = () => {
-        callback(reader.result);
+        callback(/** @type {string} */ (reader.result));
       };
       reader.onerror = () => {
         console.error('Failed to read file as text', reader.error);
         callback('');
       };
-      reader.readAsText(file);
+      if (as === AS_TEXT) {
+        reader.readAsText(file);
+      } else {
+        reader.readAsDataURL(file);
+      }
     };
 
     /** @param {KeyboardEvent} e */
@@ -120,6 +131,7 @@
     input.type = 'file';
     input.accept = accept;
     input.addEventListener('change', (e) => {
+      // @ts-expect-error
       const file = e.target.files[0];
       if (file) {
         readFile(file);
@@ -152,6 +164,10 @@
     }
   });
 
+  /**
+   * @param {string} text Text to download
+   * @param {string} file Name of the file
+   */
   const download = (text, file) => {
     const blob = new Blob([text]);
     const url = URL.createObjectURL(blob);
@@ -190,6 +206,38 @@
               }
             }
           },
+
+          '---',
+
+          {
+            opcode: 'showPickerAs',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'open a file as [as]',
+            arguments: {
+              as: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'encoding'
+              }
+            }
+          },
+          {
+            opcode: 'showPickerExtensionsAs',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'open a [extension] file as [as]',
+            arguments: {
+              extension: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '.txt'
+              },
+              as: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'encoding'
+              }
+            }
+          },
+
+          '---',
+
           {
             opcode: 'download',
             blockType: Scratch.BlockType.COMMAND,
@@ -219,6 +267,19 @@
           }
         ],
         menus: {
+          encoding: {
+            acceptReporters: true,
+            items: [
+              {
+                text: 'text',
+                value: AS_TEXT
+              },
+              {
+                text: 'data: URL',
+                value: AS_DATA_URL
+              }
+            ]
+          },
           automaticallyOpen: {
             acceptReporters: true,
             items: [
@@ -237,11 +298,19 @@
     }
 
     showPicker () {
-      return showFilePrompt('');
+      return showFilePrompt('', AS_TEXT);
     }
 
     showPickerExtensions (args) {
-      return showFilePrompt(args.extension);
+      return showFilePrompt(args.extension, AS_TEXT);
+    }
+
+    showPickerAs (args) {
+      return showFilePrompt('', args.as);
+    }
+
+    showPickerExtensionsAs (args) {
+      return showFilePrompt(args.extension, args.as);
     }
 
     download (args) {

@@ -6,9 +6,9 @@
 (function() {
   'use strict';
 
-  var count = 0
-  var isMeasure = false
-  var time = 0
+  var count = 0;
+  var isMeasure = false;
+  var time = 0;
 
   class RixxyX {
     getInfo() {
@@ -296,7 +296,7 @@
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '\"RixxyX\"'
+                defaultValue: '"RixxyX"'
               }
             }
           },
@@ -325,7 +325,7 @@
             arguments: {}
           }
         ]
-      }
+      };
     }
     notEquals(args) {
       var isEquals = args.TEXT_1 != args.TEXT_2;
@@ -445,20 +445,20 @@
       return JSON.parse(args.TEXT.toString());
     }
     returnENum(args) {
-      return Math.E
+      return Math.E;
     }
     startTime(args) {
-      time = 0
-      isMeasure = true
+      time = 0;
+      isMeasure = true;
     }
     endTime(args) {
-      isMeasure = false
+      isMeasure = false;
     }
     returnTime(args) {
       if (isMeasure == true) {
-        time += 1
+        time += 1;
       }
-      return time
+      return time;
     }
   }
   Scratch.extensions.register(new RixxyX());

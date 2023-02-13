@@ -74,6 +74,30 @@ The license must be compatible with the GNU General Public License v3 so we can 
 
 Extensions must not use `eval()`, `new Function()`, untrusted `<script>` or `<iframe>` tags, or similar arbitrary JS/CSS/HTML/etc. It's best if extensions are entirely self-contained in one file.
 
+## Code style
+
+Our preferred code style is:
+
+ - Indent with 2 spaces
+ - Use semicolons
+ - We don't care which type of quotes you use; just be consistent
+
+These guidelines (and others) may be enforced by ESLint when pull requests are made. You can run our ESLint rules locally with:
+
+```bash
+npm run lint
+```
+
+And you can run ESLint's automatic fixes which can fix a vast majority of minor style issues by running:
+
+```bash
+npm run fix
+```
+
+When including third-party code, especially minified code, you may use [`/* eslint-disable*/` and `/* eslint-enable */`](https://eslint.org/docs/latest/user-guide/configuring/rules#disabling-rules) markers to disable linting for that section.
+
+The goal of using ESLint is to prevent common mistakes and ensure the code is *somewhat* cohesive. It is not intended to be overbearing. If one of the rules is getting in your way, feel free to just disable it for that line, section, etc.
+
 ## Updates to extensions
 
 When updating extensions, you MUST retain compatibility with projects made with older versions of the extension. There are no exception to this rule. Specifically, this means:

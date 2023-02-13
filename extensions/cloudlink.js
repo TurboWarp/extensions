@@ -1,4 +1,5 @@
 // Copy of S4-0_nosuite.js as of 10/31/2022
+/* eslint-disable */
 
 (function(Scratch) {
 
