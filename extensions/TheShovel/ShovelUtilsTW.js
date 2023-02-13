@@ -212,8 +212,9 @@ restartProject(){
 vm.greenFlag()
 }
 
-loadExtension({TEXT}){
-  vm.extensionManager.loadExtensionURL(TEXT)
+    async loadExtension({TEXT}){
+  if (await vm.securityManager.canLoadExtensionFromProject(TEXT)) {
+  vm.extensionManager.loadExtensionURL(TEXT)}
 }
 
 getlist({TEXT}){
