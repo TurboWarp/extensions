@@ -6,7 +6,7 @@
         constructor () {}
         getInfo() {
             return {
-                id: 'Time',
+                id: 'sipctime',
                 name: 'Time',
                 color1: '#ff8000',
                 color2: '#804000',
