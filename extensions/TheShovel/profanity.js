@@ -217,10 +217,11 @@
     "e3:x"
   ].map(decode);
 
-  // Generate the regex. We put the longest words first so that if "test" and "tests" are in the word list,
-  // redacting "tests" will give "***" instead of "***s"
-  const sorted = NAUGHTY_WORDS.sort((a, b) => b.length - a.length);
-  const regex = new RegExp(sorted.join('|'), 'gi');
+  // Put the longest words first so that if "test" and "tests" are in the word list in
+  // that order, redacting "tests" will give "***" instead of "***s"
+  NAUGHTY_WORDS.sort((a, b) => b.length - a.length);
+
+  const regex = new RegExp(NAUGHTY_WORDS.join('|'), 'gi');
 
   class Profanity {
     getInfo () {
