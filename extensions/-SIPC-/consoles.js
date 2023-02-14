@@ -6,7 +6,7 @@
         constructor () {}
         getInfo() {
             return {
-                id: 'Consoles',
+                id: 'sipcconsole',
                 name: 'Consoles',
                 color1: '#808080',
                 color2: '#8c8c8c',
@@ -71,7 +71,7 @@
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'TurboWarp'
+                                defaultValue: 'Benchmark'
                             }
                         }
                     },
@@ -82,7 +82,7 @@
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'TurboWarp'
+                                defaultValue: 'Benchmark'
                             }
                         }
                     },
@@ -93,7 +93,7 @@
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'TurboWarp'
+                                defaultValue: 'Benchmark'
                             }
                         }
                     },
