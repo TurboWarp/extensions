@@ -328,6 +328,9 @@
 
     <%
     const banner = (extensionFile, options = {}) => {
+      if (extensionFile.endsWith('.js')) {
+        return `Do not add .js when calling banner(): ${extensionFile}`;
+      }
       const imageSource = extensionImages[extensionFile] ? `images/${extensionImages[extensionFile]}` : 'images/unknown.svg';
       const imageClasses = ["extension-image"];
       if (options.invertDark) imageClasses.push("invert-dark");
@@ -452,7 +455,7 @@
         <div class="extension">
           <%- banner('encoding') %>
           <h3>Encoding</h3>
-          <p>Encode and decode strings into their unicode numbers, base 64, or URLs. Created by SIPC.</p>
+          <p>Encode and decode strings into their unicode numbers, base 64, or URLs. Created by -SIPC-.</p>
         </div>
 
         <div class="extension">
@@ -477,6 +480,18 @@
           <%- banner('rixxyx') %>
           <h3>RixxyX</h3>
           <p>Various utility blocks. Created by <a href="https://scratch.mit.edu/users/RixTheTyrunt/">RixTheTyrunt</a>.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('-SIPC-/time') %>
+          <h3>Time</h3>
+          <p>Blocks for interacting with unix timestamps and other date strings. Created by -SIPC-.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('-SIPC-/consoles') %>
+          <h3>Consoles</h3>
+          <p>Blocks that interact the JavaScript console built in to your browser's developer tools. Created by -SIPC-.</p>
         </div>
       </div>
     </div>
