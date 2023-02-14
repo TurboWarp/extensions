@@ -21,7 +21,7 @@ var tempVAR = {};
           arguments: {
            TEXT: {
              type: Scratch.ArgumentType.STRING,
-             defaultValue: 'https://packager.turbowarp.org/assets/default-icon.290e09e569a1cab8e61ba93b0d23863f.png',
+             defaultValue: 'https://extensions.turbowarp.org/dango.png',
            },
            NAME: {
              type: Scratch.ArgumentType.STRING,
