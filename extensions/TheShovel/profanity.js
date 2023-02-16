@@ -227,7 +227,7 @@
     getInfo () {
       return {
         id: 'theshovelprofanity',
-        name: 'Profanity',
+        name: 'Bad Word Remover',
         color1: '#cf6a3c',
         color2: '#cf6a3c',
         color3: '#cf6a3c',
@@ -235,7 +235,7 @@
           {
             opcode: 'checkProfanity',
             blockType: Scratch.BlockType.REPORTER,
-            text: "Replace profanity from [TEXT] with [REPLACEMENT]",
+            text: 'replace bad words in [TEXT] with [REPLACEMENT]',
             arguments: {
               REPLACEMENT: {
                 type: Scratch.ArgumentType.STRING,
@@ -243,7 +243,7 @@
               },
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Bad word here',
+                defaultValue: 'Hello!',
               }
             }
           },
