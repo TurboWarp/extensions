@@ -216,7 +216,7 @@
     }
 
     getlist({ TEXT }) {
-      return "[" + vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, 'list').value.toString() + "]";
+      return JSON.stringify(vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, 'list').value);
     }
     setlist({ TEXT, NAME }) {
       const temp = JSON.parse(TEXT);
