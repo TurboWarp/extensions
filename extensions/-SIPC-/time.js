@@ -11,7 +11,7 @@
                 color2: '#804000',
                 color3: '#804000',
                 menuIconURI: icon,
-				blockIconURI: icon2,
+                blockIconURI: icon2,
                 blocks: [
                     {
                         opcode: 'Timestamp',
@@ -70,7 +70,7 @@
                         items: ['year', 'month', 'day', 'hour', 'minute', 'second']
                     },
                 }
-            }
+            };
         }
         Timestamp() {
             return Date.now();
