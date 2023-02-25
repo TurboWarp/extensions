@@ -86,7 +86,7 @@
 
     // We wrap the encoded image in an <svg>. This lets us do some clever things:
     //  - We can resize the image without a canvas.
-    //  - We can give the browser an image with more raw pixels than its DPI independent size
+    //  - We can give the browser an image with more raw pixels than its DPI independent size.
     // The latter is important so that cursors won't look horrible on high DPI displays. For
     // example, if the cursor will display at 32x32 in DPI independent units on a 2x high DPI
     // display, we actually need to send a 64x64 image for it to look good. This lets us do

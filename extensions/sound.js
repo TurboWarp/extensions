@@ -3,7 +3,14 @@
 
   const audioEngine = Scratch.vm.runtime.audioEngine;
 
+  /**
+   * This method assumes that the caller has already requested permission to fetch the URL.
+   * @param {string} url 
+   * @returns {Promise<ArrayBuffer>}
+   */
   const fetchAsArrayBufferWithTimeout = (url) => new Promise((resolve, reject) => {
+    // Permission is checked in playSound()
+    // eslint-disable-next-line no-restricted-syntax
     const xhr = new XMLHttpRequest();
     let timeout = setTimeout(() => {
       xhr.abort();
@@ -94,6 +101,7 @@
   };
 
   /**
+   * This method assumes that the caller has already requested permission to fetch the URL.
    * @param {string} url
    * @param {VM.Target} target
    * @returns {Promise<void>}
@@ -102,6 +110,8 @@
     // Unfortunately, we can't play all sounds with the audio engine.
     // For these sounds, fall back to a primitive <audio>-based solution that will work for all
     // sounds, even those without CORS.
+    // Permission is checked in playSound()
+    // eslint-disable-next-line no-restricted-syntax
     const mediaElement = new Audio(url);
 
     // Make a minimal effort to simulate Scratch's sound effects.
@@ -129,6 +139,10 @@
    */
   const playSound = async (url, target) => {
     try {
+      if (!await Scratch.canFetch(url)) {
+        throw new Error(`Permission to fetch ${url} denied`);
+      }
+
       const success = await playWithAudioEngine(url, target);
       if (!success) {
         return await playWithAudioElement(url, target);

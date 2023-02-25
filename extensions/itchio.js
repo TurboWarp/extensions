@@ -3,24 +3,27 @@
 
   /*!
    * Itch.io JavaScript API reference from https://static.itch.io/api.js
-   * Softed by softed
+   * Modified by Softed
    */
-  var getGameData = (user, game, secret, onComplete) => {
+
+  const getGameData = (user, game, secret, onComplete) => {
     if (!user || !game) {
       let callback = { errors: [] };
       if (!user) callback.errors.push("missing user argument");
       if (!game) callback.errors.push("missing game argument");
       return onComplete(callback);
     }
-    let url = "https://" + user + ".itch.io/" + game + "/data.json" + (secret ? "?secret=" + secret : "");
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", url);
-    xhr.addEventListener("readystatechange", (_this => {
-      return () => {
-        if (xhr.readyState == 4 && typeof onComplete == "function") onComplete(JSON.parse(xhr.responseText));
-      };
-    })(this));
-    return xhr.send();
+    const url = "https://" + user + ".itch.io/" + game + "/data.json" + (secret ? "?secret=" + secret : "");
+    return Scratch.fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        onComplete(data);
+      })
+      .catch((error) => {
+        onComplete({
+          errors: ['' + error]
+        });
+      });
   };
 
   /**
@@ -225,8 +228,7 @@
     openItchWindow({prefix, page, width, height}) {
       let top = (screen.height - height) / 2;
       let left = (screen.width - width) / 2;
-      let w = window.open("https://" + prefix + (prefix ? "." : "") + "itch.io/" + page, "", "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
-      if (typeof w.focus === "function") w.focus();
+      Scratch.openWindow("https://" + prefix + (prefix ? "." : "") + "itch.io/" + page, "scrollbars=1, resizable=no, width=" + width + ", height=" + height + ", top=" + top + ", left=" + left);
     }
     getGameData({user, game, secret}) {
       return new Promise(resolve => {

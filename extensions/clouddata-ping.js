@@ -17,9 +17,18 @@
    * @returns {Promise<CacheEntry>}
    */
   const pingWebSocket = async (uri) => {
+    if (!await Scratch.canFetch(uri)) {
+      return {
+        expires: 0,
+        value: false
+      };
+    }
+
     /** @type {WebSocket} */
     let ws;
     try {
+      // Permission is checked earlier.
+      // eslint-disable-next-line no-restricted-syntax
       ws = new WebSocket(uri);
     } catch (e) {
       return {

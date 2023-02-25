@@ -143,7 +143,7 @@
     }
 
     importImage({ TEXT, NAME }) {
-      fetch(TEXT)
+      Scratch.fetch(TEXT)
         .then((r) => r.arrayBuffer())
         .then((arrayBuffer) => {
           const storage = vm.runtime.storage;
@@ -161,7 +161,7 @@
     }
 
     importSprite({ TEXT }) {
-      fetch(TEXT)
+      Scratch.fetch(TEXT)
         .then(r => r.arrayBuffer())
         .then(buffer => vm.addSprite(buffer))
         .then(() => {
@@ -173,7 +173,7 @@
     }
 
     importSound({ TEXT, NAME }) {
-      fetch(TEXT)
+      Scratch.fetch(TEXT)
         .then((r) => r.arrayBuffer())
         .then((arrayBuffer) => {
           const storage = vm.runtime.storage;
@@ -193,7 +193,7 @@
     }
 
     importProject({ TEXT }) {
-      fetch(TEXT)
+      Scratch.fetch(TEXT)
         .then(r => r.arrayBuffer())
         .then(buffer => vm.loadProject(buffer))
         .then(() => {

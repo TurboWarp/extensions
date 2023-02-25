@@ -1734,16 +1734,23 @@ Other various small fixes
       texture
     };
 
-    const image = new Image();
-    image.onload = function () {
-      textureInfo.width = image.width;
-      textureInfo.height = image.height;
+    Scratch.canFetch(url).then(allowed => {
+      if (!allowed) {
+        return;
+      }
+      // Permission is checked earlier.
+      // eslint-disable-next-line no-restricted-syntax
+      const image = new Image();
+      image.onload = function () {
+        textureInfo.width = image.width;
+        textureInfo.height = image.height;
 
-      gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    };
-    image.crossOrigin = 'anonymous';
-    image.src = url;
+        gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+      };
+      image.crossOrigin = 'anonymous';
+      image.src = url;
+    });
 
     return textureInfo;
   }

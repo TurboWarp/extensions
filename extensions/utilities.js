@@ -285,7 +285,7 @@
     }
 
     fetchFrom({URL}) {
-      return fetch(URL).then(res => res.text())
+      return Scratch.fetch(URL).then(res => res.text())
         .catch(err => '');
     }
 
