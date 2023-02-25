@@ -57,14 +57,22 @@
             text: 'rtt in ms'
           }
         ]
-      }
+      };
     }
 
     connected_to_internet_block() {
-      try {return navigator.onLine} catch(err) {return false}
+      try {
+        return navigator.onLine;
+      } catch (err) {
+        return false;
+      }
     }
     current_url_block() {
-      try {return document.URL || ''} catch(err) {return ''}
+      try {
+        return document.URL || '';
+      } catch (err) {
+        return '';
+      }
     }
     network_type_block() {
       try {
@@ -76,7 +84,9 @@
           case 'wimax': return 'wimax';
           default: return '';
         }
-      } catch(err) {return ''}
+      } catch (err) {
+        return '';
+      }
     }
     network_generation_block() {
       try {
@@ -86,16 +96,30 @@
           case '4g': return '4g';
           default: return '';
         }
-      } catch(err) {return ''}
+      } catch (err) {
+        return '';
+      }
     }
     downlink_speed_block() {
-      try {return navigator.connection.downlink || ''} catch(err) {return ''}
+      try {
+        return navigator.connection.downlink || '';
+      } catch (err) {
+        return '';
+      }
     }
     downlink_max_speed_block() {
-      try {return navigator.connection.downlinkMax || ''} catch(err) {return ''}
+      try {
+        return navigator.connection.downlinkMax || '';
+      } catch (err) {
+        return '';
+      }
     }
     rtt_block() {
-      try {return navigator.connection.rtt || ''} catch(err) {return ''}
+      try {
+        return navigator.connection.rtt || '';
+      } catch (err) {
+        return '';
+      }
     }
   }
 
