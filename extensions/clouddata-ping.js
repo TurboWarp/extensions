@@ -27,6 +27,8 @@
     /** @type {WebSocket} */
     let ws;
     try {
+      // Permission is checked earlier.
+      // eslint-disable-next-line no-restricted-syntax
       ws = new WebSocket(uri);
     } catch (e) {
       return {
