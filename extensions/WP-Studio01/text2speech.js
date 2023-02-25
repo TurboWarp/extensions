@@ -5,7 +5,7 @@
     getInfo () {
       return {
         id: 'wpstudio01tts',
-        name: 'Text To Speech',
+        name: 'System Text To Speech',
         blocks: [
           {
             opcode: 'speak',
