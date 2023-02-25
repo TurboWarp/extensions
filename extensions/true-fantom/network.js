@@ -37,7 +37,10 @@
       }
       return SPLIT === '' ? responses : responses.slice(1);
     })
-    .catch(err => '');
+    .catch(err => {
+      console.error(err);
+      return '';
+    });
   };
 
   class Network {
@@ -474,39 +477,19 @@
       }
     }
     get_block(args) {
-      try {
-        return fetch_url(args, 'GET');
-      } catch (err) {
-        return '';
-      }
+      return fetch_url(args, 'GET');
     }
     delete_block(args) {
-      try {
-        return fetch_url(args, 'DELETE');
-      } catch (err) {
-        return '';
-      }
+      return fetch_url(args, 'DELETE');
     }
     post_block(args) {
-      try {
-        return fetch_url(args, 'POST');
-      } catch (err) {
-        return '';
-      }
+      return fetch_url(args, 'POST');
     }
     put_block(args) {
-      try {
-        return fetch_url(args, 'PUT');
-      } catch (err) {
-        return '';
-      }
+      return fetch_url(args, 'PUT');
     }
     patch_block(args) {
-      try {
-        return fetch_url(args, 'PATCH');
-      } catch (err) {
-        return '';
-      }
+      return fetch_url(args, 'PATCH');
     }
     open_link_block({USER_URL}) {
       Scratch.openWindow(USER_URL);
