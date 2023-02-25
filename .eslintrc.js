@@ -78,9 +78,16 @@ module.exports = {
     // Require each extension to use strict mode
     'strict': ['error', 'function'],
     // Disallow APIs that are replaced by Scratch.* APIs
+    // This is not comprehensive, but it should be enough to prevent the most common ways for these to be written.
+    'no-restricted-globals': [
+      'error',
+      {
+        name: 'vm',
+        message: 'Use Scratch.vm instead of the global vm object. You also can use const vm = Scratch.vm;'
+      }
+    ],
     'no-restricted-syntax': [
       'error',
-      // This is not comprehensive, but it should be enough to prevent the most common ways for these to be written.
       {
         selector: 'CallExpression[callee.name=fetch]',
         message: 'Use Scratch.fetch() instead of fetch()'
