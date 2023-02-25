@@ -306,7 +306,7 @@
             {
               opcode: 'json_array_create',
               blockType: Scratch.BlockType.REPORTER,
-              text: 'create array by [text] with delimeter [d]',
+              text: 'create array by [text] with delimiter [d]',
               arguments: {
                 text: {
                   type: Scratch.ArgumentType.STRING,
@@ -321,7 +321,7 @@
             {
               opcode: 'json_array_join',
               blockType: Scratch.BlockType.REPORTER,
-              text: 'join string by array [json] with delimeter [d]',
+              text: 'join string by array [json] with delimiter [d]',
               arguments: {
                 json: {
                   type: Scratch.ArgumentType.STRING,
