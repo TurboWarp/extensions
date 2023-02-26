@@ -1,10 +1,10 @@
 (function(Scratch) {
     'use strict';
-  
+    const vm = Scratch.vm;
     class JSONS {
       getInfo() {
         return {
-          id: 'JSONextensions',
+          id: 'skyhigh173JSON',
           name: 'JSON',
           color1: '#2dc4c4',
           color2: '#2dc4b3',
@@ -374,10 +374,10 @@
 
 
       getLists () {
-        let globalList = Object.values(vm.runtime.getTargetForStage().variables).filter(x => x.type=='list');    // get list id&name from vm and filter with list
-        globalList = globalList.map(x => {return {name:x.name,id:x.id,father:vm.runtime.getTargetForStage().id,local:false}});    // list that can access from stage
+        let globalList = Object.values(vm.runtime.getTargetForStage().variables).filter(x => x.type == 'list');    // get list id&name from vm and filter with list
+        globalList = globalList.map(x => {return {name:x.name, id:x.id, father:vm.runtime.getTargetForStage().id, local:false}});    // list that can access from stage
         let localList = Object.values(vm.editingTarget.variables).filter(x => x.type=='list');    // get local list from sprite
-        localList = localList.map(x => {return {name:x.name,id:x.id,father:vm.editingTarget.id,local:true}}); // list that cant access from stage
+        localList = localList.map(x => {return {name:x.name, id:x.id, father:vm.editingTarget.id, local:true}}); // list that cant access from stage
         let lists = localList.concat(globalList);
         lists = lists.filter(function(item,pos,self){
           return (self.map(x=>x.id)).indexOf(item.id) == pos;    // remove duplicates by their id
@@ -526,7 +526,7 @@
         try {
           json = JSON.parse(json);
           item = this.json_valid_return(item);
-          let result = JSON.stringify(json.indexOf(item)+1);
+          let result = JSON.stringify(json.indexOf(item) + 1);
           return result;
         } catch {
           return ' ';
@@ -558,7 +558,7 @@
         try {
           json = JSON.parse(json);
           item = this.json_valid_return(item);
-          json.splice(pos-1,0,item);
+          json.splice(pos - 1, 0, item);
           return JSON.stringify(json);
         } catch {
           return ' ';
@@ -578,7 +578,7 @@
       json_array_delete({ item, json }) {
         try {
           json = JSON.parse(json);
-          json.splice(item-1,1);
+          json.splice(item - 1, 1);
           return JSON.stringify(json);
         } catch {
           return ' ';
