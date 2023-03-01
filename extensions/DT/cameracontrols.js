@@ -9,6 +9,60 @@
 
   const vm = Scratch.vm;
 
+  var vertexShader = `#version 330
+ 
+// an attribute is an input (in) to a vertex shader.
+// It will receive data from a buffer
+in vec4 a_position;
+ 
+// all shaders have a main function
+void main() {
+ 
+  // gl_Position is a special variable a vertex shader
+  // is responsible for setting
+  gl_Position = a_position;
+}
+
+`;
+
+var fragmentShader = `#version 330
+
+out vec4 fragColor;
+
+void main()
+{
+  fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+
+`
+
+  function createShader(gl, type, source) {
+    var shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+    if (success) {
+      return shader;
+    }
+
+    console.log(gl.getShaderInfoLog(shader));
+    gl.deleteShader(shader);
+  }
+
+  function createProgram(gl, vertexShader, fragmentShader) {
+	var program = gl.createProgram();
+	gl.attachShader(program, vertexShader);
+	gl.attachShader(program, fragmentShader);
+	gl.linkProgram(program);
+	var success = gl.getProgramParameter(program, gl.LINK_STATUS);
+	if (success) {
+	  return program;
+	}
+   
+	console.log(gl.getProgramInfoLog(program));
+	gl.deleteProgram(program);
+  }
+
   let cameraX = 0;
   let cameraY = 0;
   let cameraZoom = 100;
@@ -25,14 +79,6 @@
       vm.runtime.stageHeight/2+cameraY
     );
     vm.renderer._projection[15] = 100/cameraZoom;
-    /*
-    vm.renderer._backgroundColor4f = [
-      parseInt(cameraBG.substring(1,3),16)/255,
-      parseInt(cameraBG.substring(3,5),16)/255,
-      parseInt(cameraBG.substring(5,7),16)/255,
-      1
-    ]
-    */
   }
 
   // tell resize to update camera as well
@@ -153,6 +199,17 @@
           },
           '---',
           {
+            opcode: 'setCol',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set background color to [val]',
+            arguments: {
+              val: {
+                type: 'color'
+              }
+            }
+          },
+		  "---",
+          {
             opcode: 'getX',
             blockType: Scratch.BlockType.REPORTER,
             text: 'camera x',
@@ -167,18 +224,6 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'camera zoom',
           },
-          /*  REMOVED - touching color still returns white
-          {
-            opcode: 'setCol',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'set background color to [val]',
-            arguments: {
-              val: {
-                type: 'color'
-              }
-            }
-          },
-          */
         ]
       }
     }
@@ -222,8 +267,12 @@
       return cameraZoom;
     }
     setCol(ARGS) {
-      cameraBG = ARGS.val;
-      doFix();
+	  cameraBG = ARGS.val
+      Scratch.vm.renderer.setBackgroundColor(
+		parseInt(cameraBG.substring(1,3),16)/255,
+		parseInt(cameraBG.substring(3,5),16)/255,
+		parseInt(cameraBG.substring(5,7),16)/255
+	  )
     }
   }
 
