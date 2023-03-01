@@ -131,7 +131,7 @@
     getInfo() {
       return {
         id: 'xeltalliveffects',
-        name: 'Effects+',
+        name: 'Effects',
         color1: '#9966FF',
         color2: '#855CD6',
         color3: '#774DCB',
@@ -167,7 +167,21 @@
             filter: [Scratch.TargetType.SPRITE]
           },
           {
-            opcode: 'additiveBlend',
+            opcode: 'getClipbox',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'clipping box [PROP]',
+            arguments: {
+              PROP: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'min x',
+                menu: 'props'
+              }
+            },
+            filter: [Scratch.TargetType.SPRITE]
+          },
+          '---',
+          {
+            opcode: 'setAdditiveBlend',
             blockType: Scratch.BlockType.COMMAND,
             text: 'turn additive blending [STATE]',
             arguments: {
@@ -179,12 +193,22 @@
             },
             filter: [Scratch.TargetType.SPRITE]
           },
+          {
+            opcode: 'getAdditiveBlend',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'is additive blending on?',
+            filter: [Scratch.TargetType.SPRITE]
+          },
         ],
         menus: {
           states: {
             acceptReporters: true,
             items: ['on', 'off']
-          }
+          },
+          props: {
+            acceptReporters: true,
+            items: ['min x', 'min y', 'max x', 'max y', 'width', 'height']
+          },
         }
       };
     }
@@ -219,7 +243,7 @@
       }
     }
 
-    additiveBlend ({STATE}, {target}) {
+    setAdditiveBlend ({STATE}, {target}) {
       let newValue = null;
       if (STATE === 'on') newValue = true;
       if (STATE === 'off') newValue = false;
@@ -234,6 +258,22 @@
         target.runtime.requestRedraw();
         target.runtime.requestTargetsUpdate(target);
       }
+    }
+
+    getClipbox ({PROP}, {target}) {
+      const clipbox = target.clipbox;
+      if (!clipbox) return '';
+      if (PROP === 'min x') return clipbox.x;
+      if (PROP === 'min y') return clipbox.y;
+      if (PROP === 'max x') return clipbox.x + clipbox.w;
+      if (PROP === 'max y') return clipbox.y + clipbox.h;
+      if (PROP === 'width') return clipbox.w;
+      if (PROP === 'height') return clipbox.h;
+      return '';
+    }
+
+    getAdditiveBlend (args, {target}) {
+      return target.additiveBlend ?? false;
     }
   }
 
