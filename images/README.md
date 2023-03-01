@@ -51,4 +51,4 @@ Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomme
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/122#issue-1524383752
 
 ## DT/cameracontrols.svg
-Created from scratch by @DT-is-not-available.
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/207#issuecomment-1446304560
