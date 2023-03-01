@@ -1,6 +1,11 @@
 (function(Scratch) {
   'use strict';
 
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error("Effects extension must be run unsandboxed");
+  }
+
+
   let toCorrectThing = null;
   let active = false;
   let flipY = false;
@@ -263,13 +268,15 @@
     getClipbox ({PROP}, {target}) {
       const clipbox = target.clipbox;
       if (!clipbox) return '';
-      if (PROP === 'min x') return clipbox.x;
-      if (PROP === 'min y') return clipbox.y;
-      if (PROP === 'max x') return clipbox.x + clipbox.w;
-      if (PROP === 'max y') return clipbox.y + clipbox.h;
-      if (PROP === 'width') return clipbox.w;
-      if (PROP === 'height') return clipbox.h;
-      return '';
+      switch (PROP) {
+        case 'min x': return clipbox.x;
+        case 'min y': return clipbox.y;
+        case 'max x': return clipbox.x + clipbox.w;
+        case 'max y': return clipbox.y + clipbox.h;
+        case 'width': return clipbox.w;
+        case 'height': return clipbox.h;
+        default: return '';
+      }
     }
 
     getAdditiveBlend (args, {target}) {
