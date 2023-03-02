@@ -49,3 +49,6 @@ Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomme
 
 ## true-fantom/network.svg
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/122#issue-1524383752
+
+## xeltalliv/effects.svg
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/210#issuecomment-1448765453

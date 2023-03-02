@@ -6,6 +6,18 @@
   }
 
 
+  // Simplified remake of an icon by True-Fantom
+  const icon = 'data:image/svg+xml,' + encodeURIComponent(`
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0,0,360,360">
+      <circle cx="180" cy="180" r="180" fill="#9966FF"/>
+      <path d="M180,350
+       c-25,-85  -77,-137 -162,-162
+       c 85,-25  137, -77  162,-162
+       c 25, 85   77, 137  162, 162
+       c-85, 25 -137,  77 -162, 162z" stroke-width="0" fill="#ffffff"/>
+    </svg>`);
+
+
   let toCorrectThing = null;
   let active = false;
   let flipY = false;
@@ -140,6 +152,7 @@
         color1: '#9966FF',
         color2: '#855CD6',
         color3: '#774DCB',
+        menuIconURI: icon,
         blocks: [
           {
             opcode: 'setClipbox',
@@ -178,7 +191,7 @@
             arguments: {
               PROP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'min x',
+                defaultValue: 'width',
                 menu: 'props'
               }
             },
@@ -212,7 +225,7 @@
           },
           props: {
             acceptReporters: true,
-            items: ['min x', 'min y', 'max x', 'max y', 'width', 'height']
+            items: ['width', 'height', 'min x', 'min y', 'max x', 'max y']
           },
         }
       };
@@ -269,12 +282,12 @@
       const clipbox = target.clipbox;
       if (!clipbox) return '';
       switch (PROP) {
+        case 'width': return clipbox.w;
+        case 'height': return clipbox.h;
         case 'min x': return clipbox.x;
         case 'min y': return clipbox.y;
         case 'max x': return clipbox.x + clipbox.w;
         case 'max y': return clipbox.y + clipbox.h;
-        case 'width': return clipbox.w;
-        case 'height': return clipbox.h;
         default: return '';
       }
     }
