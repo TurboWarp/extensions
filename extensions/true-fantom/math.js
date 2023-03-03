@@ -52,7 +52,7 @@
     return n1 - n2;
   };
 
-  const toNaNNumber = (value) => {
+  const toNaNNumber = value => {
     // If value is already a number we don't need to coerce it with
     // Number().
     if (typeof value === 'number') {
@@ -66,7 +66,7 @@
     return n;
   };
 
-  const isTrueInt = (val) => {
+  const isTrueInt = val => {
     // Values that are already numbers.
     if (typeof val === 'number') {
       if (isNaN(val)) { // NaN is considered an integer.
@@ -87,6 +87,15 @@
       return n === Math.floor(n);
     }
     return false;
+  };
+
+  const trunc2 = (val, count) => {
+    //No sense to work with integers
+    if (!isTrueInt(val)) {
+      const arr = cast.toString(val).split('.');
+      return cast.toNumber(arr[0] + '.' + arr[1].substr(0, count));
+    }
+    return val;
   };
 
   class ScratchMath {
@@ -290,6 +299,33 @@
           },
           '---',
           {
+            opcode: 'trunc2_block',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'trunc of [A] with [B] digits after dot',
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: ''
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: ''
+              }
+            }
+          },
+          {
+            opcode: 'trunc_block',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'trunc of [A]',
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: ''
+              }
+            }
+          },
+          '---',
+          {
             opcode: 'is_multiple_of_block',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[A] is multiple of [B] ?',
@@ -384,6 +420,18 @@
           },
           '---',
           {
+            opcode: 'is_safe_number_block',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'is safe number [A] ?',
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: ''
+              }
+            }
+          },
+          '---',
+          {
             opcode: 'is_number_block',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'is number [A] ?',
@@ -470,6 +518,12 @@
     exactly_cont_block({A, B}) {
       return cast.toString(A).includes(cast.toString(B));
     }
+    trunc2_block({A, B}) {
+      return trunc2(cast.toNumber(A), cast.toNumber(B));
+    }
+    trunc_block({A}) {
+      return trunc2(cast.toNumber(A), 0);
+    }
     is_multiple_of_block({A, B}) {
       return cast.toNumber(A) % cast.toNumber(B) === 0;
     }
@@ -519,6 +573,9 @@
     }
     infinity_block() {
       return Infinity;
+    }
+    is_safe_number_block({A}) {
+      return Number.isSafeInteger(cast.toNumber(A));
     }
     is_number_block({A}) {
       return !Number.isNaN(toNaNNumber(A));
