@@ -52,6 +52,37 @@
     return n1 - n2;
   };
 
+  const almostCompare = (v1, v2) => {
+    let n1 = Number(v1);
+    let n2 = Number(v2);
+    if (n1 === 0 && isNotActuallyZero(v1)) {
+      n1 = NaN;
+    } else if (n2 === 0 && isNotActuallyZero(v2)) {
+      n2 = NaN;
+    }
+    if (isNaN(n1) || isNaN(n2)) {
+      // At least one argument can't be converted to a number.
+      // Scratch compares strings as case insensitive, but it shouldn't be here
+      const s1 = String(v1);
+      const s2 = String(v2);
+      if (s1 < s2) {
+        return -1;
+      } else if (s1 > s2) {
+        return 1;
+      }
+      return 0;
+    }
+    // Handle the special case of Infinity
+    if (
+      (n1 === Infinity && n2 === Infinity) ||
+      (n1 === -Infinity && n2 === -Infinity)
+    ) {
+      return 0;
+    }
+    // Compare as numbers, but it almost here
+    return Math.round(n1) - Math.round(n2);
+  };
+
   const toNaNNumber = value => {
     // If value is already a number we don't need to coerce it with
     // Number().
@@ -118,11 +149,11 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           },
@@ -133,11 +164,11 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           },
@@ -148,7 +179,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           },
@@ -160,7 +191,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: '\n'
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -175,7 +206,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: '\n'
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -190,7 +221,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: '\n'
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -205,7 +236,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: '\n'
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -220,7 +251,37 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: '\n'
+              },
+              B: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 50
+              }
+            }
+          },
+          { 
+            opcode: 'almost_equal_block',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: '[A] ≈ [B]',
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '\n'
+              },
+              B: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 50
+              }
+            }
+          },
+          { 
+            opcode: 'not_almost_equal_block',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: '[A] ≉ [B]',
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '\n'
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -305,11 +366,11 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '1'
               }
             }
           },
@@ -320,7 +381,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           },
@@ -332,11 +393,11 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           },
@@ -348,7 +409,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -363,11 +424,11 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           },
@@ -383,7 +444,7 @@
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           },
@@ -398,7 +459,7 @@
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           },
@@ -426,7 +487,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           },
@@ -438,7 +499,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           },
@@ -449,7 +510,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           },
@@ -460,7 +521,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ''
+                defaultValue: '\n'
               }
             }
           }
@@ -502,6 +563,12 @@
     }
     not_exactly_equal_block({A, B}) {
       return exactlyCompare(A, B) !== 0;
+    }
+    almost_equal_block({A, B}) {
+      return almostCompare(A, B) === 0;
+    }
+    not_almost_equal_block({A, B}) {
+      return almostCompare(A, B) !== 0;
     }
     nand_block({A, B}) {
       return !(cast.toBoolean(A) && cast.toBoolean(B));
