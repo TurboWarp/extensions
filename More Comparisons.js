@@ -211,10 +211,43 @@ class StrictEqualityExtension {
     return false;
   }
   bool(args){
-    return args.a;
+      if (typeof args.a === 'boolean') {
+        return args.a;
+    }
+    if (typeof args.a === 'string') {
+        if ((args.a === '') ||
+            (args.a === '0') ||
+            (args.a.toLowerCase() === 'false')) {
+            return false;
+        }
+        return true;
+    }
+    return Boolean(args.a);
   }
   R_bool(args){
-    return args.a * 1;
+    if (typeof args.a === 'boolean') {
+      if(args.a){
+        return 1;
+      }
+      else{
+        return 0;
+      }
+    }
+    if (typeof args.a === 'string') {
+        if ((args.a === '') ||
+            (args.a === '0') ||
+            (args.a.toLowerCase() === 'false')) {
+            return 0;
+        }
+        return 1;
+    }
+    if(Number(args.a) == 0){
+      return 0;
+    }
+    else{
+      return 1;
+    }
+    return 0;
   }
   equal(args) {
     return (args.a == args.b);
@@ -266,4 +299,3 @@ class StrictEqualityExtension {
   }
 }
 Scratch.extensions.register(new StrictEqualityExtension());
-//BY NOname
