@@ -27,7 +27,7 @@
     
     
         checkProfanity({TEXT}) {
-            return fetch("https://www.purgomalum.com/service/plain?text="+TEXT)
+            return Scratch.fetch("https://www.purgomalum.com/service/plain?text="+TEXT)
             .then(r => r.text())
             .catch(() => '');
       }
