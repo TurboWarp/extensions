@@ -120,15 +120,6 @@
     return false;
   };
 
-  const trunc2 = (val, count) => {
-    //No sense to work with integers
-    if (!isTrueInt(val)) {
-      const arr = cast.toString(val).split('.');
-      return cast.toNumber(arr[0] + '.' + arr[1].substr(0, count));
-    }
-    return val;
-  };
-
   class ScratchMath {
 
     getInfo() {
@@ -586,10 +577,11 @@
       return cast.toString(A).includes(cast.toString(B));
     }
     trunc2_block({A, B}) {
-      return trunc2(cast.toNumber(A), cast.toNumber(B));
+      const n = Math.floor(cast.toNumber(B)) >= 1 ? 10 ** Math.floor(cast.toNumber(B)) : 1;
+      return Math.trunc(cast.toNumber(A) * n) / n;
     }
     trunc_block({A}) {
-      return trunc2(cast.toNumber(A), 0);
+      return Math.trunc(cast.toNumber(A));
     }
     is_multiple_of_block({A, B}) {
       return cast.toNumber(A) % cast.toNumber(B) === 0;
