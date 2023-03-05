@@ -52,37 +52,6 @@
     return n1 - n2;
   };
 
-  const almostCompare = (v1, v2) => {
-    let n1 = Number(v1);
-    let n2 = Number(v2);
-    if (n1 === 0 && isNotActuallyZero(v1)) {
-      n1 = NaN;
-    } else if (n2 === 0 && isNotActuallyZero(v2)) {
-      n2 = NaN;
-    }
-    if (isNaN(n1) || isNaN(n2)) {
-      // At least one argument can't be converted to a number.
-      // Scratch compares strings as case insensitive.
-      const s1 = String(v1).toLowerCase();
-      const s2 = String(v2).toLowerCase();
-      if (s1 < s2) {
-        return -1;
-      } else if (s1 > s2) {
-        return 1;
-      }
-      return 0;
-    }
-    // Handle the special case of Infinity
-    if (
-      (n1 === Infinity && n2 === Infinity) ||
-      (n1 === -Infinity && n2 === -Infinity)
-    ) {
-      return 0;
-    }
-    // Compare as numbers, but it almost here
-    return Math.round(n1) - Math.round(n2);
-  };
-
   const toNaNNumber = value => {
     // If value is already a number we don't need to coerce it with
     // Number().
@@ -408,52 +377,6 @@
               }
             }
           },
-          {
-            opcode: 'atan2_block',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'atan2 of [A] and [B]',
-            arguments: {
-              A: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '\n'
-              },
-              B: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '\n'
-              }
-            }
-          },
-          '---',
-          {
-            opcode: 'trigonometric_functions_block',
-            blockType: Scratch.BlockType.REPORTER,
-            text: '[A] of [B]',
-            arguments: {
-              A: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'trigonometric_functions_menu'
-              },
-              B: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '\n'
-              }
-            }
-          },
-          {
-            opcode: 'reciprocal_trigonometric_functions_block',
-            blockType: Scratch.BlockType.REPORTER,
-            text: '[A] of [B]',
-            arguments: {
-              A: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'reciprocal_trigonometric_functions_menu'
-              },
-              B: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '\n'
-              }
-            }
-          },
           '---',
           {
             opcode: 'pi_block',
@@ -516,26 +439,15 @@
               }
             }
           }
-        ],
-
-        menus: {
-          trigonometric_functions_menu: {
-            acceptReporters: false,
-            items: ['sinh', 'cosh', 'tanh', 'asinh', 'acosh', 'atanh']
-          },
-          reciprocal_trigonometric_functions_menu: {
-            acceptReporters: false,
-            items: ['csc', 'sec', 'cot', 'acsc', 'asec', 'acot', 'csch', 'sech', 'coth', 'acsch', 'asech', 'acoth']
-          }
-        }
+        ]
       }
     }
 
     exponent_block({A, B}) {
-      return cast.toNumber(A) ** cast.toNumber(B);
+      return Math.pow(cast.toNumber(A), cast.toNumber(B));
     }
     root_block({A, B}) {
-      return cast.toNumber(B) ** (1 / cast.toNumber(A));
+      return Math.pow(cast.toNumber(B), (1 / cast.toNumber(A)));
     }
     negative_block({A}) {
       return 0 - cast.toNumber(A);
@@ -556,10 +468,12 @@
       return exactlyCompare(A, B) !== 0;
     }
     almost_equal_block({A, B}) {
-      return almostCompare(A, B) === 0;
+      const c = cast.compare(A, B);
+      return c <= 0.5 && c >= -0.5;
     }
     not_almost_equal_block({A, B}) {
-      return almostCompare(A, B) !== 0;
+      const c = cast.compare(A, B);
+      return !(c <= 0.5 && c >= -0.5);
     }
     nand_block({A, B}) {
       return !(cast.toBoolean(A) && cast.toBoolean(B));
@@ -588,41 +502,6 @@
     }
     log_with_base_block({A, B}) {
       return Math.log(cast.toNumber(A)) / Math.log(cast.toNumber(B));
-    }
-    atan2_block({A, B}) {
-      return Math.atan2(cast.toNumber(A), cast.toNumber(B));
-    }
-    trigonometric_functions_block({A, B}) {
-      const operator = cast.toString(A).toLowerCase();
-      const n = cast.toNumber(B);
-      switch (operator) {
-      case 'sinh': return Math.sinh(n);
-      case 'cosh': return Math.cosh(n);
-      case 'tanh': return Math.tanh(n);
-      case 'asinh': return Math.asinh(n);
-      case 'acosh': return Math.acosh(n);
-      case 'atanh': return Math.atanh(n);
-      }
-      return 0;
-    }
-    reciprocal_trigonometric_functions_block({A, B}) {
-      const operator = cast.toString(A).toLowerCase();
-      const n = cast.toNumber(B);
-      switch (operator) {
-      case 'csc': return 1 / Math.sin(n);
-      case 'sec': return 1 / Math.cos(n);
-      case 'cot': return 1 / Math.tan(n);
-      case 'acsc': return Math.asin(1 / n);
-      case 'asec': return Math.acos(1 / n);
-      case 'acot': return Math.atan(1 / n);
-      case 'csch': return 1 / Math.sinh(n);
-      case 'sech': return 1 / Math.cosh(n);
-      case 'coth': return 1 / Math.tanh(n);
-      case 'acsch': return Math.asinh(1 / n);
-      case 'asech': return Math.acosh(1 / n);
-      case 'acoth': return Math.atanh(1 / n);
-      }
-      return 0;
     }
     pi_block() {
       return Math.PI;
