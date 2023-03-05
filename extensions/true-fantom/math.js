@@ -440,7 +440,7 @@
             }
           }
         ]
-      }
+      };
     }
 
     exponent_block({A, B}) {
