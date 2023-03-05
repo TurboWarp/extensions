@@ -147,7 +147,7 @@
   class Extension {
     getInfo() {
       return {
-        id: 'xeltalliveffects',
+        id: 'xeltallivclipblend',
         name: 'Clipping, blending',
         color1: '#9966FF',
         color2: '#855CD6',
