@@ -363,32 +363,41 @@
           ],
           menus: {
             get_all: {
-                items: ['keys','values','datas']
+              items: ['keys','values','datas']
             },
             get_list: {
               items: 'getLists'
             }
-        }
+          }
         };
       }
 
-
       getLists () {
-        let globalList = Object.values(vm.runtime.getTargetForStage().variables).filter(x => x.type == 'list');    // get list id&name from vm and filter with list
-        globalList = globalList.map(x => {return {name:x.name, id:x.id, father:vm.runtime.getTargetForStage().id, local:false}});    // list that can access from stage
-        let localList = Object.values(vm.editingTarget.variables).filter(x => x.type=='list');    // get local list from sprite
-        localList = localList.map(x => {return {name:x.name, id:x.id, father:vm.editingTarget.id, local:true}}); // list that cant access from stage
+        // get list id&name from vm and filter with list
+        let globalList = Object.values(vm.runtime.getTargetForStage().variables).filter(x => x.type == 'list');
+        globalList = globalList.map(x => {
+          return {name: x.name, id: x.id, father: vm.runtime.getTargetForStage().id, local: false};
+        });
+
+        // get local list from sprite
+        let localList = Object.values(vm.editingTarget.variables).filter(x => x.type == 'list');
+        localList = localList.map(x => {
+          return {name: x.name, id: x.id, father: vm.editingTarget.id, local: true};
+        });
+
         let lists = localList.concat(globalList);
-        lists = lists.filter(function(item,pos,self){
-          return (self.map(x=>x.id)).indexOf(item.id) == pos;    // remove duplicates by their id
-        })
+        lists = lists.filter((item, pos, self) => {
+          // remove duplicates by their id
+          return (self.map(x=>x.id)).indexOf(item.id) == pos;
+        });
+
         if (lists.length == 0) return [{text: '-', value: '-'}];
         return lists.map(x => ({
           text: x.name,
           value: JSON.stringify(x)
-        }))
+        }));
     }
-  
+
       json_is_valid({ json }) {
         if (typeof json != 'string') {
           return false;
@@ -430,20 +439,20 @@
 
       json_has_key({ json, key }) {
         try {
-          return key in JSON.parse(json)
+          return key in JSON.parse(json);
         } catch {
           return false;
         }
       }
 
       json_has_value({ json, value }) {
-        try{
+        try {
           json = JSON.parse(json);
           value = this.json_valid_return(value);
           return json.includes(value);
         } catch {
-            return false;
-        } 
+          return false;
+        }
       }
 
       json_get_all({ Stype,json }) {
@@ -605,7 +614,7 @@
 
       json_array_fromto({ json, item, item2 }) {
         try {
-          return JSON.stringify(JSON.parse(json).slice(item-1,item2));
+          return JSON.stringify(JSON.parse(json).slice(item - 1,item2));
         } catch {
           return ' ';
         }
@@ -641,7 +650,7 @@
 
       json_vm_getlist({ lists },utils) {
         try {
-          lists = JSON.parse(lists); 
+          lists = JSON.parse(lists);
           if (lists.local){
             lists.father = utils.thread.target.id; // get clone's id instead of sprite's id
           }
@@ -654,11 +663,11 @@
       json_vm_setlist({ lists, json },utils) {
         try {
           json = JSON.parse(json);
-          json = json.map(x=>{
+          json = json.map(x => {
             if (typeof x == 'object') return JSON.stringify(x);
             return x;
           });
-          lists = JSON.parse(lists); 
+          lists = JSON.parse(lists);
           if (lists.local){
             lists.father = utils.thread.target.id; // get clone's id instead of sprite's id
           }
