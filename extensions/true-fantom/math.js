@@ -174,7 +174,7 @@
               }
             }
           },
-          { 
+          {
             opcode: 'not_equal_block',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[A] ≠ [B]',
@@ -189,7 +189,7 @@
               }
             }
           },
-          { 
+          {
             opcode: 'exactly_equal_block',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[A] ≡ [B]',
@@ -204,7 +204,7 @@
               }
             }
           },
-          { 
+          {
             opcode: 'not_exactly_equal_block',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[A] ≢ [B]',
@@ -219,7 +219,7 @@
               }
             }
           },
-          { 
+          {
             opcode: 'almost_equal_block',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[A] ≈ [B]',
@@ -234,7 +234,7 @@
               }
             }
           },
-          { 
+          {
             opcode: 'not_almost_equal_block',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[A] ≉ [B]',

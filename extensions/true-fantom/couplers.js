@@ -49,7 +49,7 @@
             }
           }
         ]
-      }
+      };
     }
 
     value_in_boolean_block({VALUE}) {
