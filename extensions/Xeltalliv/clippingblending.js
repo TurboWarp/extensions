@@ -148,7 +148,7 @@
     getInfo() {
       return {
         id: 'xeltalliveffects',
-        name: 'Effects',
+        name: 'Clipping, blending',
         color1: '#9966FF',
         color2: '#855CD6',
         color3: '#774DCB',
