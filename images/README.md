@@ -52,3 +52,12 @@ Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/122#issu
 
 ## DT/cameracontrols.svg
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/207#issuecomment-1446304560
+
+## true-fantom/math.svg
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/219#issue-1607102376
+
+## true-fantom/couplers.svg
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/219#issue-1607102376
+
+## xeltalliv/clippingblending.svg
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/210#issuecomment-1448765453
