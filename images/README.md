@@ -61,3 +61,6 @@ Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/219#issu
 
 ## xeltalliv/clippingblending.svg
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/210#issuecomment-1448765453
+
+## files.svg
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
