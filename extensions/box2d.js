@@ -12417,6 +12417,7 @@
                 defaultValue: "normal",
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
           // {
           //     opcode: 'setPhysics',
@@ -12481,6 +12482,7 @@
                 defaultValue: "world",
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
 
           "---",
@@ -12506,6 +12508,7 @@
                 defaultValue: 0,
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
           {
             opcode: "changeVelocity",
@@ -12525,6 +12528,7 @@
                 defaultValue: 0,
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
           {
             opcode: "getVelocityX",
@@ -12534,6 +12538,7 @@
               description: "get the x velocity",
             }),
             blockType: BlockType.REPORTER,
+            filter: [Scratch.TargetType.SPRITE],
           },
           {
             opcode: "getVelocityY",
@@ -12543,6 +12548,7 @@
               description: "get the y velocity",
             }),
             blockType: BlockType.REPORTER,
+            filter: [Scratch.TargetType.SPRITE],
           },
 
           "---",
@@ -12565,6 +12571,7 @@
                 defaultValue: 0,
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
           {
             opcode: "applyAngForce",
@@ -12580,6 +12587,7 @@
                 defaultValue: 500,
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
 
           "---",
@@ -12599,6 +12607,7 @@
                 defaultValue: "static",
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
           // {
           //     opcode: 'setDensity',
@@ -12641,6 +12650,7 @@
                 defaultValue: 20,
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
           // {
           //     opcode: 'pinSprite',
@@ -12679,6 +12689,7 @@
                 defaultValue: "any",
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
 
           // Scene Scrolling -------------------
