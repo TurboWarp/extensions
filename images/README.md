@@ -70,3 +70,6 @@ Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomme
 
 ## -SIPC-/time.svg
 Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669. The font is Noto Sans.
+
+## text.svg
+Created by https://scratch.mit.edu/users/JoshsAccount
