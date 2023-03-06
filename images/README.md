@@ -67,3 +67,6 @@ Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
 
 ## -SIPC-/consoles.svg
 Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669. The font is Noto Sans.
+
+## -SIPC-/time.svg
+Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669. The font is Noto Sans.
