@@ -12,7 +12,7 @@ The dango is from [Twemoji](https://twemoji.twitter.com/) and is licensed under 
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
 
 ## gamepad.svg
-Created by @DNin01 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1374365379. The gamepad art is adapted from [DNin01/icons](https://github.com/DNin01/icons) and is licensed under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
 
 ## bitwise.svg
 The font used is DejaVu Sans Mono.
