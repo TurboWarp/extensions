@@ -73,3 +73,6 @@ Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomme
 
 ## text.svg
 Created by https://scratch.mit.edu/users/JoshsAccount
+
+## Skyhigh173/json.svg
+Created by @Skyhigh173 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1457973080
