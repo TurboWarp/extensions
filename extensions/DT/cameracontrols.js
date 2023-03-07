@@ -170,6 +170,11 @@
               }
             }
           },
+          {
+            opcode: 'getCol',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'background color',
+          },
         ]
       }
     }
@@ -220,6 +225,9 @@
 		parseInt(cameraBG.substring(5,7),16)/255
 	  )
     }
+	getCol() {
+	  return cameraBG;
+	}
   }
 
   Scratch.extensions.register(new Camera());
