@@ -1,4 +1,6 @@
 (function (Scratch) {
+    'use strict';
+
     Scratch.extensions.register({
         getInfo: () => ({
             id: 'testcjk',
