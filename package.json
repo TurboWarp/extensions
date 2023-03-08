@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Unsandboxed extensions for TurboWarp",
   "scripts": {
+    "start": "node development/server.js",
     "dev": "node development/server.js",
     "build": "node development/build-production.js",
     "validate": "node development/validate.js",
