@@ -7,7 +7,7 @@ Before you submit extensions, please read the NEW custom extension tutorial in f
 Please pay special attention to:
 
  - Unsandboxed extensions: https://docs.turbowarp.org/development/extensions/unsandboxed
- - Maintaining backwards compatibility: https://docs.turbowarp.org/development/extensions/compatibility
+ - Maintaining backward compatibility: https://docs.turbowarp.org/development/extensions/compatibility
  - A better development server: https://docs.turbowarp.org/development/extensions/better-development-server
 
 Pull requests that don't follow the guidelines outlined in these documents tend to take much longer to be reviewed and merged.
@@ -28,7 +28,7 @@ npm ci
 npm run dev
 ```
 
-This starts an HTTP server on [http://localhost:8000/](http://localhost:8000/) in development mode which adds a couple extra tools to the homepage.
+This starts an HTTP server on [http://localhost:8000/](http://localhost:8000/) in development mode which adds a couple of extra tools to the homepage.
 
 After installing npm dependencies, TypeScript aware editors such as Visual Studio Code will give you smart autocomplete suggestions for many Scratch and extension APIs based on [@turbowarp/types](https://github.com/TurboWarp/types). Note that these types are not complete and are currently missing anything TurboWarp specific.
 
@@ -43,7 +43,7 @@ cd extensions
 python3 -m http.server
 ```
 
-Note that browsers tend to aggressively cache JavaScript files that don't opt out if caching as our development server does, so you may have to do hard reloads to ensure that changes to your scripts are applied.
+Note that browsers tend to aggressively cache JavaScript files that don't opt out of caching as our development server does, so you may have to do hard reloads to ensure that changes to your scripts are applied.
 
 ## Types of extensions we accept
 
@@ -68,11 +68,11 @@ Extension source code goes in the `extensions` folder. For example, an extension
 
 We ask that new extensions be added in a user-specific folder. For example, if your GitHub username is "TestMuffin", you could make a `TestMuffin` folder inside of the `extensions` folder and put your extensions inside there. You could then access a file placed at `extensions/TestMuffin/hello-world.js` at [http://localhost:8000/TestMuffin/hello-world.js](http://localhost:8000/TestMuffin/hello-world.js). We're lenient on what you choose to name your folder -- it can be your GitHub username, Scratch username, or whatever you want it to be (within reason).
 
-Static resources go in the `website` folder. This is where some example resources used by extensions such as fetch are placed. It works similar to the `extensions` folder.
+Static resources go in the `website` folder. This is where some example resources used by extensions such as fetch are placed. It works similarly to the `extensions` folder.
 
 To add an extension to the website homepage, modify `website/index.ejs`. It should be easy to understand if you copy one of the existing extensions. New extensions should generally be added to the end of the list.
 
-To add an image for your extension on the homepage, put a file in the `images` folder with the same name and directory structure (but different file extension) as the extension's source code. The homepage generator will automatically update the image if you did it correctly. Images will be displayed in 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md`.
+To add an image for your extension on the homepage, put a file in the `images` folder with the same name and directory structure (but a different file extension) as the extension's source code. The homepage generator will automatically update the image if you did it correctly. Images will be displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md`.
 
 ## License
 
@@ -80,11 +80,11 @@ To add an image for your extension on the homepage, put a file in the `images` f
 
 The source code of the extension and any libraries it uses must be available under an open source license that is compatible with the GNU General Public License v3 so that we can include it in the desktop app. If unsure, use [the MIT License](licenses/MIT.txt) as that's what most extensions here use. For this to be legally possible, either you must have written the entire extension yourself or have permission to use all of its components under an open source license.
 
-If the license is not MIT, leave a comment at the top of each file indicating its license. For example, if it uses the Apache 2.0 license, add a comment like this:
+If you use a different license than MIT, leave a comment at the top of each file indicating its license. For example, if it uses the Apache 2.0 license instead, add a comment like this:
 
 ```js
 /*!
- * Copyright 2023 Name Here
+ * Copyright 2023 Your Name Here
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,9 @@ If the license is not MIT, leave a comment at the top of each file indicating it
  */
 ```
 
-And add a copy of the full license as plain text in the `licenses` folder if one doesn't already exist. You should use `/*!` instead of `/*` for the license comment so that JavaScript minifiers will not remove it.
+Please update the copyright year and name appropriately. Pseudonyms are accepted.
+
+Add a copy of the full plain text license in the `licenses` folder if one doesn't already exist. You should use `/*!` instead of `/*` for the license comment so that JavaScript minifiers will not remove it.
 
 We don't want extension code to be GPLv3 exclusively as our non-lawyer understanding of the copyleft clause suggests that it would spread to any projects that use the extension. That isn't what we want.
 
@@ -138,7 +140,7 @@ When including third-party code, especially minified code, you may use [`/* esli
 
 ## Updating extensions
 
-Please make note of everything in this page: https://docs.turbowarp.org/development/extensions/compatibility
+Please make note of everything on this page: https://docs.turbowarp.org/development/extensions/compatibility
 
 When editing extensions made by other people, please ping the person who owns its user folder, if it's in one.
 
