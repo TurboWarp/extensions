@@ -216,19 +216,28 @@
     }
 
     getlist({ TEXT }) {
-      return JSON.stringify(vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, 'list').value);
+      try{return JSON.stringify(vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, 'list').value);}
+      catch(error){
+        return ""
+      }
     }
     setlist({ TEXT, NAME }) {
-      const temp = JSON.parse(TEXT);
-      vm.runtime.getTargetForStage().lookupVariableByNameAndType(NAME, 'list').value = temp;
+      try{const temp = JSON.parse(TEXT);
+      vm.runtime.getTargetForStage().lookupVariableByNameAndType(NAME, 'list').value = temp;}
+      catch(error){
+        return ""
+      }
     }
 
     setedtarget({ NAME }) {
       //I know this might cause sprites called "stage" to be ignored. But lets be real, who names their sprite "stage"?
-      if (NAME.toLowerCase() === "stage"){ 
+      try{if (NAME.toLowerCase() === "stage"){ 
         vm.setEditingTarget(vm.runtime.getTargetForStage().id);}
       else
-      {vm.setEditingTarget(vm.runtime.getSpriteTargetByName(NAME).id);}
+      {vm.setEditingTarget(vm.runtime.getSpriteTargetByName(NAME).id);}}
+      catch(error){
+        return ""
+      }
     }
 
     /**
