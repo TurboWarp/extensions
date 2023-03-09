@@ -1,32 +1,13 @@
-/*!
-* Copyright 20XX Name Here
-* 
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
-
 (function(Scratch) {
   "use strict";
   class codegioExtension {
-
     getInfo () {
       return {
         id: "utilitiesCodegio",
-        name: "Everything",
+        name: "Utilities",
         color1: "#0fbd8c",
 
-        blocks:
-        [
+        blocks: [
           {
             opcode: "newline",
             blockType: Scratch.BlockType.REPORTER,
@@ -37,15 +18,12 @@
             opcode: "strict_equality",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Strict Equality | [one]=[two]",
-            arguments:
-            {
-              one:
-              {
+            arguments: {
+              one: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: ""
               },
-              two:
-              {
+              two: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: ""
               }
@@ -84,10 +62,8 @@
             opcode: "color",
             blockType: Scratch.BlockType.REPORTER,
             text: "Hex [color]",
-            arguments:
-            {
-              color:
-              {
+            arguments: {
+              color: {
                 type: Scratch.ArgumentType.COLOR,
                 defaultValue: "#96ccff"
               }
@@ -122,10 +98,8 @@
             opcode: "alert_ext",
             blockType: Scratch.BlockType.COMMAND,
             text: "Alert | Text: [one]",
-            arguments:
-            {
-              one:
-              {
+            arguments: {
+              one: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Alert..."
               }
@@ -136,10 +110,8 @@
             opcode: "confirm_ext",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Confirm | Text: [one]",
-            arguments:
-            {
-              one:
-              {
+            arguments: {
+              one: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Confirm..."
               }
@@ -150,15 +122,12 @@
             opcode: "prompt_ext",
             blockType: Scratch.BlockType.REPORTER,
             text: "Prompt | Text: [one] Default: [two]",
-            arguments:
-            {
-              one:
-              {
+            arguments: {
+              one: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Enter Username:"
               },
-              two:
-              {
+              two: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "griffpatch"
               },
@@ -169,12 +138,10 @@
             opcode: "open_link",
             blockType: Scratch.BlockType.COMMAND,
             text: "Open | Link: [one]",
-            arguments:
-            {
-              one:
-              {
+            arguments: {
+              one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "https://scratch.mit.edu/users/codeGIO"
+                defaultValue: "https://turbowarp.org/"
               }
             }
           },
@@ -183,12 +150,10 @@
             opcode: "redirect",
             blockType: Scratch.BlockType.COMMAND,
             text: "Redirect | Link: [one]",
-            arguments:
-            {
-              one:
-              {
+            arguments: {
+              one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "https://scratch.mit.edu/users/codeGIO"
+                defaultValue: "https://turbowarp.org/"
               }
             }
           },
@@ -209,10 +174,8 @@
             opcode: "set_clipboard",
             blockType: Scratch.BlockType.COMMAND,
             text: "Set clipboard | Text: [one]",
-            arguments:
-            {
-              one:
-              {
+            arguments: {
+              one: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: ""
               }
@@ -241,26 +204,21 @@
             opcode: "consoleLog",
             blockType: Scratch.BlockType.COMMAND,
             text: "Console | Log: [input] Font: [font] Size [size] Color [color]",
-            arguments:
-            {
-              input:
-              {
+            arguments: {
+              input: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Hello World!",
               },
-              font:
-              {
+              font: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Monospace",
                 menu: "consoleFonts"
               },
-              size:
-              {
+              size: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "8",
               },
-              color:
-              {
+              color: {
                 type: Scratch.ArgumentType.COLOR,
                 defaultValue: "#000000",
               },
@@ -272,7 +230,6 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "Console | Clear"
           },
-
         ],
         menus: {
           consoleFonts: {
@@ -389,26 +346,25 @@
       } else if (userAgent.match(/safari/i)){
         return "Safari";
       } else if (userAgent.match(/opr\//i)){
-      return "Opera";
-    } else if (userAgent.match(/edg/i)){
-      return "Edge";
-    } else {
-      return "No browser detection";
+        return "Opera";
+      } else if (userAgent.match(/edg/i)){
+        return "Edge";
+      } else {
+        return "No browser detection";
+      }
+    }
+
+    get_os() {
+      return window.navigator.platform;
+    }
+
+    consoleLog(args) {
+      console.log(`%c${args.input}`, `color:${args.color}; font-family:${args.font}; font-size: ${args.size}px;`);
+    }
+
+    consoleClear() {
+      console.clear();
     }
   }
-
-  get_os() {
-    return window.navigator.platform;
-  }
-
-  consoleLog(args) {
-    console.log(`%c${args.input}`, `color:${args.color}; font-family:${args.font}; font-size: ${args.size}px;`);
-  }
-
-  consoleClear() {
-    console.clear();
-  }
-
-}
-Scratch.extensions.register(new codegioExtension());
+  Scratch.extensions.register(new codegioExtension());
 })(Scratch);
