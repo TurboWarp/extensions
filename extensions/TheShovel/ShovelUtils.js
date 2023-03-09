@@ -85,7 +85,7 @@
           arguments: {
             TEXT: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'https://theshovel.github.io/the-lazy-cook/Source.wsp',
+              defaultValue: 'https://theshovel.github.io/Bullet-Hell/Bullet%20Hell',
             }
           }
         },
