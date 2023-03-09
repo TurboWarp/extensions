@@ -47,9 +47,7 @@
     // This is very slow and could involve reading the texture from the GPU.
     const silhouette = skin._silhouette;
     // unlazy() only exists in TW
-    // @ts-expect-error
     if (silhouette.unlazy) {
-      // @ts-expect-error
       silhouette.unlazy();
     }
     const colorData = silhouette._colorData;
