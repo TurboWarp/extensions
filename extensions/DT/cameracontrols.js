@@ -12,27 +12,30 @@
   let cameraX = 0;
   let cameraY = 0;
   let cameraZoom = 100;
+  let cameraDirection = 90;
   let cameraBG = '#ffffff';
 
   vm.runtime.runtimeOptions.fencing = false;
   vm.renderer.offscreenTouching = true;
 
-  function updateCamera() {
-    vm.renderer.setStageSize(
-      vm.runtime.stageWidth / -2 + cameraX,
-      vm.runtime.stageWidth / 2 + cameraX,
-      vm.runtime.stageHeight / -2 + cameraY,
-      vm.runtime.stageHeight / 2 + cameraY
-    );
-    vm.renderer._projection[15] = 100 / cameraZoom;
+  function updateCamera(x = cameraX, y = cameraY, scale = cameraZoom/100, rot = -cameraDirection + 90) {
+    rot = rot / 180 * Math.PI;
+    let s = Math.sin(rot) * scale;
+    let c = Math.cos(rot) * scale;
+	let w = vm.runtime.stageWidth/2
+	let h = vm.runtime.stageHeight/2
+    vm.renderer._projection = 
+    [
+      c/w,			-s/h,			0,		0,
+      s/w,			c/h,			0,		0,
+      0,			0,				-1,		0,
+      (c*-x+s*y)/w,	(c*y-s*-x)/h,	0,		1
+    ];
+    vm.renderer.dirty = true;
   }
 
   // tell resize to update camera as well
   vm.runtime.on('STAGE_SIZE_CHANGED', _=>updateCamera());
-
-  function doFix() {
-    vm.runtime.emit('STAGE_SIZE_CHANGED', vm.runtime.stageWidth, vm.runtime.stageHeight);
-  }
 
   // fix mouse positions
   let oldSX = vm.runtime.ioDevices.mouse.getScratchX;
@@ -145,6 +148,40 @@
           },
           "---",
           {
+            opcode: 'setDirection',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set camera direction to [val]',
+            arguments: {
+              val: {
+                type: Scratch.ArgumentType.ANGLE,
+                defaultValue: 90
+              }
+            }
+          },
+          {
+            opcode: 'rotateCW',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'turn camera clockwise [val] degrees',
+            arguments: {
+              val: {
+                type: Scratch.ArgumentType.ANGLE,
+                defaultValue: 15
+              }
+            }
+          },
+          {
+            opcode: 'rotateCCW',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'turn camera counter-clockwise [val] degrees',
+            arguments: {
+              val: {
+                type: Scratch.ArgumentType.ANGLE,
+                defaultValue: 15
+              }
+            }
+          },
+          "---",
+          {
             opcode: 'getX',
             blockType: Scratch.BlockType.REPORTER,
             text: 'camera x',
@@ -158,6 +195,11 @@
             opcode: 'getZoom',
             blockType: Scratch.BlockType.REPORTER,
             text: 'camera zoom',
+          },
+          {
+            opcode: 'getDirection',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'camera direction',
           },
           '---',
           {
@@ -182,32 +224,44 @@
     setBoth(ARGS) {
       cameraX = +ARGS.x;
       cameraY = +ARGS.y;
-      doFix();
+      updateCamera();
     }
     changeZoom(ARGS) {
       cameraZoom += +ARGS.val;
-      doFix();
+      updateCamera();
     }
     setZoom(ARGS) {
       cameraZoom = +ARGS.val;
-      doFix();
+      updateCamera();
     }
     changeX(ARGS) {
       cameraX += +ARGS.val;
-      doFix();
+      updateCamera();
     }
     setX(ARGS) {
       cameraX = +ARGS.val;
-      doFix();
+      updateCamera();
     }
     changeY(ARGS) {
       cameraY += +ARGS.val;
-      doFix();
+      updateCamera();
     }
     setY(ARGS) {
       cameraY = +ARGS.val;
-      doFix();
+      updateCamera();
     }
+	setDirection(ARGS) {
+	  cameraDirection = +ARGS.val; 
+	  updateCamera();
+	}
+	rotateCW(ARGS) {
+	  cameraDirection = cameraDirection + +ARGS.val;
+	  updateCamera();
+	}
+	rotateCCW(ARGS) {
+	  cameraDirection = cameraDirection - +ARGS.val;
+	  updateCamera();
+	}
     getX() {
       return cameraX;
     }
@@ -217,6 +271,9 @@
     getZoom() {
       return cameraZoom;
     }
+	getDirection() {
+	  return cameraDirection;
+	}
     setCol(ARGS) {
       cameraBG = ARGS.val;
       Scratch.vm.renderer.setBackgroundColor(
