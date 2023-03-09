@@ -1,6 +1,5 @@
 (function(Scratch) {
   'use strict';
-  const vm = Scratch.vm;
   class Broadcast2 {
     getInfo() {
       return {
@@ -54,13 +53,13 @@
       };
     }
     // highlight-start
-    broadcast({EVENT}) {
-      vm.runtime.startHats('broadcast2example_whenReceived', {
+    broadcast({EVENT}, util) {
+      util.startHats('broadcast2example_whenReceived', {
         EVENT_OPTION: EVENT
       });
     }
-    broadcastAll() {
-      vm.runtime.startHats('broadcast2example_whenReceived');
+    broadcastAll(args, util) {
+      util.startHats('broadcast2example_whenReceived');
     }
     // highlight-end
   }

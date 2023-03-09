@@ -1,6 +1,5 @@
 (function(Scratch) {
   'use strict';
-  const vm = Scratch.vm;
   class Broadcast4 {
     getInfo() {
       return {
@@ -65,7 +64,7 @@
       if (TARGET === 'this sprite') targetFilter = util.target;
       if (TARGET === 'the stage') targetFilter = util.runtime.getTargetForStage();
 
-      vm.runtime.startHats('broadcast4example_whenReceived', argumentFilter, targetFilter);
+      util.startHats('broadcast4example_whenReceived', argumentFilter, targetFilter);
     }
     // highlight-end
   }

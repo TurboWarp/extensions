@@ -1,6 +1,5 @@
 (function(Scratch) {
   'use strict';
-  const vm = Scratch.vm;
   class Broadcast5 {
     getInfo() {
       return {
@@ -23,6 +22,7 @@
             opcode: 'broadcast',
             blockType: Scratch.BlockType.REPORTER,
             text: 'broadcast [EVENT]',
+            disableMonitor: true,
             arguments: {
               EVENT: {
                 type: Scratch.ArgumentType.STRING,
@@ -45,7 +45,7 @@
     }
     broadcast({EVENT, TARGET}, util) {
       // highlight-start
-      const threads = vm.runtime.startHats('broadcast5example_whenReceived', {
+      const threads = util.startHats('broadcast5example_whenReceived', {
         EVENT_OPTION: EVENT
       });
       return `Started ${threads.length} new threads!`;
