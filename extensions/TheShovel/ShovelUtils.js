@@ -1,6 +1,6 @@
 (function (Scratch) {
   'use strict';
-  console.log("ShovelUtils v1.1");
+  console.log("ShovelUtils v1.2");
   const vm = Scratch.vm;
 
   class ShovelUtils {
@@ -224,7 +224,11 @@
     }
 
     setedtarget({ NAME }) {
-      vm.setEditingTarget(vm.runtime.getSpriteTargetByName(NAME).id);
+      //I know this might cause sprites called "stage" to be ignored. But lets be real, who names their sprite "stage"?
+      if (NAME.toLowerCase() === "stage"){ 
+        vm.setEditingTarget(vm.runtime.getTargetForStage().id);}
+      else
+      {vm.setEditingTarget(vm.runtime.getSpriteTargetByName(NAME).id);}
     }
 
     /**
@@ -249,4 +253,5 @@
   }
 
   Scratch.extensions.register(new ShovelUtils());
+// @ts-ignore
 })(Scratch);
