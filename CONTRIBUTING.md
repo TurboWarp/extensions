@@ -30,9 +30,9 @@ npm run dev
 
 This starts an HTTP server on [http://localhost:8000/](http://localhost:8000/) in development mode which adds a couple of extra tools to the homepage.
 
-After installing npm dependencies, TypeScript aware editors such as Visual Studio Code will give you smart autocomplete suggestions for many Scratch and extension APIs based on [@turbowarp/types](https://github.com/TurboWarp/types). Note that these types are not complete and are currently missing anything TurboWarp specific.
+After installing npm dependencies, TypeScript aware editors such as Visual Studio Code will give you smart autocomplete suggestions for most Scratch and extension APIs based on [@turbowarp/types](https://github.com/TurboWarp/types) and [@turbowarp/types-tw](https://github.com/TurboWarp/types-tw). Note that these types are not perfect; some methods are missing or incorrect. Please report any issues you find.
 
-Chances are you will encounter TypeScript errors. In general, as long as you understand the error, feel free to add `// @ts-ignore`, `// @ts-expect-error`, or just ignore the error entirely. We currently do not enforce TypeScript errors.
+If you encounter a TypeScript error, as long as you understand the error, feel free to add `// @ts-ignore`, `// @ts-expect-error`, or just ignore the error entirely. We currently do not require extensions to pass type checking.
 
 ## Alternative development server
 
