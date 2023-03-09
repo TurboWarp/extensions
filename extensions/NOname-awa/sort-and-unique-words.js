@@ -20,7 +20,8 @@
                 defaultValue: 'movie dog restaurant book school television game music clothing fruit'
               },
             }
-          },{
+          },
+          {
             opcode: 'sortAndUniqueWords_cn',
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
