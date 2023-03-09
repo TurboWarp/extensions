@@ -191,13 +191,10 @@
       if (thing === TURBO_MODE) {
         return Scratch.vm.runtime.turboMode;
       } else if (thing === INTERPOLATION) {
-        // @ts-expect-error
         return Scratch.vm.runtime.interpolationEnabled;
       } else if (thing === REMOVE_FENCING) {
-        // @ts-expect-error
         return !Scratch.vm.runtime.runtimeOptions.fencing;
       } else if (thing === REMOVE_MISC_LIMITS) {
-        // @ts-expect-error
         return !Scratch.vm.runtime.runtimeOptions.miscLimits;
       }
       return false;
@@ -209,15 +206,12 @@
       if (thing === TURBO_MODE) {
         Scratch.vm.setTurboMode(enabled);
       } else if (thing === INTERPOLATION) {
-        // @ts-expect-error
         Scratch.vm.setInterpolation(enabled);
       } else if (thing === REMOVE_FENCING) {
-        // @ts-expect-error
         Scratch.vm.setRuntimeOptions({
           fencing: !enabled
         });
       } else if (thing === REMOVE_MISC_LIMITS) {
-        // @ts-expect-error
         Scratch.vm.setRuntimeOptions({
           miscLimits: !enabled
         });
@@ -225,24 +219,20 @@
     }
 
     getFramerate () {
-      // @ts-expect-error
       return Scratch.vm.runtime.frameLoop.framerate;
     }
 
     setFramerate ({ fps }) {
       fps = +fps || 0;
-      // @ts-expect-error
       Scratch.vm.setFramerate(fps);
     }
 
     getCloneLimit () {
-      // @ts-expect-error
       return Scratch.vm.runtime.runtimeOptions.maxClones;
     }
 
     setCloneLimit ({ limit }) {
       limit = +limit || 0;
-      // @ts-expect-error
       Scratch.vm.setRuntimeOptions({
         maxClones: limit
       });
@@ -250,10 +240,8 @@
 
     getDimension ({ dimension }) {
       if (dimension === 'width') {
-        // @ts-expect-error
         return Scratch.vm.runtime.stageWidth;
       } else if (dimension === 'height') {
-        // @ts-expect-error
         return Scratch.vm.runtime.stageHeight;
       }
       return 0;
@@ -262,7 +250,6 @@
     setDimensions ({ width, height }) {
       width = +width || 0;
       height = +height || 0;
-      // @ts-expect-error
       Scratch.vm.setStageSize(width, height);
     }
   }
