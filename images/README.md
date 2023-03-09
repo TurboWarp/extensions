@@ -6,13 +6,13 @@ The taco, apple, and banana are from the Scratch sprite library.
 The dango is from [Twemoji](https://twemoji.twitter.com/) and is licensed under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## stretch.svg
-The dango is from [Twemoji](https://twemoji.twitter.com/) and is licensed under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
 
 ## cursor.svg
-The cursors based on the [Adwaita icon theme](https://gitlab.gnome.org/30butlerj/adwaita-icon-theme/-/tree/master/Adwaita/cursors) created by the GNOME project licensed under [CC-BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) or [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html). We use SVG versions from https://github.com/manu-mannattil/adwaita-cursors.
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
 
 ## gamepad.svg
-Created by @DNin01 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1374365379. The gamepad art is adapted from [DNin01/icons](https://github.com/DNin01/icons) and is licensed under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
 
 ## bitwise.svg
 The font used is DejaVu Sans Mono.
@@ -59,5 +59,20 @@ Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/219#issu
 ## true-fantom/couplers.svg
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/219#issue-1607102376
 
-## xeltalliv/clippingblending.svg
-Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/210#issuecomment-1448765453
+## Xeltalliv/clippingblending.svg
+Created by @True-Fantom and @Xeltalliv in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1460388495
+
+## files.svg
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
+
+## -SIPC-/consoles.svg
+Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669. The font is Noto Sans.
+
+## -SIPC-/time.svg
+Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669. The font is Noto Sans.
+
+## text.svg
+Created by https://scratch.mit.edu/users/JoshsAccount
+
+## Skyhigh173/json.svg
+Created by @Skyhigh173 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1457973080
