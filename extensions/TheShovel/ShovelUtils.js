@@ -192,6 +192,12 @@
     }
 
     importProject({ TEXT }) {
+      if (typeof ScratchBlocks !== 'undefined') {
+        // We are in the editor. Ask before loading a new project to avoid unrecoverable data loss.
+        if (!confirm(`Do you want to import a project from "${TEXT}"? Everything in the current project will be permanently deleted.`)) {
+          return;
+        }
+      }
       Scratch.fetch(TEXT)
         .then(r => r.arrayBuffer())
         .then(buffer => vm.loadProject(buffer))
