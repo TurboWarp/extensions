@@ -149,7 +149,7 @@
     getInfo() {
       return {
         id: 'xeltallivclipblend',
-        name: 'Clipping & blending',
+        name: 'Clipping & Blending',
         color1: '#9966FF',
         color2: '#855CD6',
         color3: '#774DCB',
