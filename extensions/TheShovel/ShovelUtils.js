@@ -223,13 +223,30 @@
       }
     }
     setlist({ TEXT, NAME }) {
-      try{const temp = JSON.parse(TEXT);
-        if (Array.isArray(JSON.parse(TEXT))){
-      vm.runtime.getTargetForStage().lookupVariableByNameAndType(NAME, 'list').value = temp;}
-    else{return ""}}
-      catch(error){
-        return ""
+      let parsed;
+      try {
+        parsed = JSON.parse(TEXT);
+      } catch(e) {
+        return; // JSON was invalid
       }
+
+      if (!Array.isArray(parsed)) {
+        return; // it's not an array
+      }
+
+      for(const element of parsed) {
+        const type = typeof element;
+        if(type != "string" && type != "number" && type != "boolean") {
+          return; // One of the elements has a disallowed type
+        }
+      }
+
+      const list = vm.runtime.getTargetForStage().lookupVariableByNameAndType(NAME, 'list');
+      if (!list) {
+        return; // List was not found
+      }
+
+      list.value = parsed;
     }
 
     setedtarget({ NAME }) {
