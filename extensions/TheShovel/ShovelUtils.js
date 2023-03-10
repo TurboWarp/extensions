@@ -215,9 +215,11 @@
     }
 
     getlist({ TEXT }) {
-      try{return JSON.stringify(vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, 'list').value);}
-      catch(error){
-        return ""
+      const list = vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, 'list');
+      if (list) {
+        return JSON.stringify(list.value);
+      } else {
+        return "";
       }
     }
     setlist({ TEXT, NAME }) {
