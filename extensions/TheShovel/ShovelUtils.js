@@ -2,7 +2,7 @@
   'use strict';
   console.log("ShovelUtils v1.2");
   const vm = Scratch.vm;
-
+  var testJson =1;
   class ShovelUtils {
     getInfo() {
       return {
@@ -223,7 +223,9 @@
     }
     setlist({ TEXT, NAME }) {
       try{const temp = JSON.parse(TEXT);
+        if (Array.isArray(JSON.parse(TEXT))){
       vm.runtime.getTargetForStage().lookupVariableByNameAndType(NAME, 'list').value = temp;}
+    else{return ""}}
       catch(error){
         return ""
       }
@@ -257,8 +259,10 @@
         m = color.match(/(\d+){3}/g);
         if (m) r = m[0], g = m[1], b = m[2];
       }
-      if (typeof r != "undefined") return ((r * 299) + (g * 587) + (b * 114)) / 1000;
+      if(Number.isNaN(((r * 299) + (g * 587) + (b * 114)) / 1000)){return "";}
+    else {return ((r * 299) + (g * 587) + (b * 114)) / 1000;}
     }
+    
   }
 
   Scratch.extensions.register(new ShovelUtils());
