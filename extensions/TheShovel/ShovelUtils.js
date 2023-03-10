@@ -250,13 +250,16 @@
     }
 
     setedtarget({ NAME }) {
+      let target;
+
       //I know this might cause sprites called "stage" to be ignored. But lets be real, who names their sprite "stage"?
-      try{if (NAME.toLowerCase() === "stage"){ 
-        vm.setEditingTarget(vm.runtime.getTargetForStage().id);}
-      else
-      {vm.setEditingTarget(vm.runtime.getSpriteTargetByName(NAME).id);}}
-      catch(error){
-        return ""
+      if (NAME.toLowerCase() === "stage") { 
+        target = vm.runtime.getTargetForStage();
+      } else {
+        target = vm.runtime.getSpriteTargetByName(NAME);
+      }
+      if (target) {
+        vm.setEditingTarget(target.id);
       }
     }
 
