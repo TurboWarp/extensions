@@ -184,7 +184,7 @@
             true
           );
           vm.addSound({
-            md5: NAME + '.mp3',
+            md5: asset.assetId + '.' + asset.dataFormat,
             asset: asset,
             name: NAME
           });
