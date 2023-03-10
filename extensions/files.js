@@ -193,7 +193,8 @@
             opcode: 'showPicker',
             blockType: Scratch.BlockType.REPORTER,
             text: 'open a file',
-            disableMonitor: true
+            disableMonitor: true,
+            hideFromPalette: true
           },
           {
             opcode: 'showPickerExtensions',
@@ -204,10 +205,9 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: '.txt'
               }
-            }
+            },
+            hideFromPalette: true
           },
-
-          '---',
 
           {
             opcode: 'showPickerAs',
