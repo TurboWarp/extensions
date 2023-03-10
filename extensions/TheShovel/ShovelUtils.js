@@ -2,7 +2,6 @@
   'use strict';
   console.log("ShovelUtils v1.2");
   const vm = Scratch.vm;
-  var testJson =1;
   class ShovelUtils {
     getInfo() {
       return {
