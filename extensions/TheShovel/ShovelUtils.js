@@ -226,7 +226,7 @@
       let parsed;
       try {
         parsed = JSON.parse(TEXT);
-      } catch(e) {
+      } catch (e) {
         return; // JSON was invalid
       }
 
@@ -234,9 +234,9 @@
         return; // it's not an array
       }
 
-      for(const element of parsed) {
+      for (const element of parsed) {
         const type = typeof element;
-        if(type != "string" && type != "number" && type != "boolean") {
+        if (type !== "string" && type !== "number" && type !== "boolean") {
           return; // One of the elements has a disallowed type
         }
       }
@@ -253,7 +253,7 @@
       let target;
 
       //I know this might cause sprites called "stage" to be ignored. But lets be real, who names their sprite "stage"?
-      if (NAME.toLowerCase() === "stage") { 
+      if (NAME.toLowerCase() === "stage") {
         target = vm.runtime.getTargetForStage();
       } else {
         target = vm.runtime.getSpriteTargetByName(NAME);
@@ -280,10 +280,12 @@
         m = color.match(/(\d+){3}/g);
         if (m) r = m[0], g = m[1], b = m[2];
       }
-      if(Number.isNaN(((r * 299) + (g * 587) + (b * 114)) / 1000)){return "";}
-    else {return ((r * 299) + (g * 587) + (b * 114)) / 1000;}
+      if (Number.isNaN(((r * 299) + (g * 587) + (b * 114)) / 1000)){
+        return "";
+      } else {
+        return ((r * 299) + (g * 587) + (b * 114)) / 1000;
+      }
     }
-    
   }
 
   Scratch.extensions.register(new ShovelUtils());
