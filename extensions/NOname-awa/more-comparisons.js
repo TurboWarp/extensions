@@ -3,7 +3,7 @@
   class StrictEqualityExtension {
     getInfo() {
       return {
-        id: 'Comparisons',
+        id: 'nonameawacomparisons',
         name: 'More Comparisons',
         color1: '#00a889',
         color2: '#1e8c76',
