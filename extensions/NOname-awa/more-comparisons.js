@@ -10,19 +10,19 @@
         color3: '#1e8c76',
         blocks: [
           {
-            opcode: 't',
+            opcode: 'true',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'true',
             arguments: {}
           },
           {
-            opcode: 'f',
+            opcode: 'false',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'false',
             arguments: {},
           },
           {
-            opcode: 'bool',
+            opcode: 'boolean',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a]',
             arguments: {
@@ -33,7 +33,7 @@
             }
           },
           {
-            opcode: 'R_bool',
+            opcode: 'booleanToInt',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a]',
             arguments: {
@@ -59,7 +59,7 @@
             }
           },
           {
-            opcode: 'equal_negative',
+            opcode: 'equalNegative',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] =- [b]',
             arguments: {
@@ -74,7 +74,7 @@
             }
           },
           {
-            opcode: 'equal_PON',
+            opcode: 'equalPlusMinus',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] =± [b]',
             arguments: {
@@ -89,7 +89,7 @@
             }
           },
           {
-            opcode: 'not equal',
+            opcode: 'notEqual',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] ≠ [b]',
             arguments: {
@@ -104,22 +104,9 @@
             }
           },
           {
-            opcode: 'XOR',
+            opcode: 'almostEqual',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[a] ^ [b]',
-            arguments: {
-              a: {
-                type: Scratch.ArgumentType.BOOLEAN,
-              },
-              b: {
-                type: Scratch.ArgumentType.BOOLEAN,
-              },
-            }
-          },
-          {
-            opcode: 'equal_almost',
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: '[a] ≈ [b] ／ [c]',
+            text: '[a] ≈ [b] ± [c]',
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -135,9 +122,22 @@
               },
             }
           },
+          {
+            opcode: 'xor',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: '[a] ^ [b]',
+            arguments: {
+              a: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+              b: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+            }
+          },
           '---',
           {
-            opcode: 'equal_GTOE',
+            opcode: 'equalOrGreater',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] ≥ [b]',
             arguments: {
@@ -152,7 +152,7 @@
             }
           },
           {
-            opcode: 'equal_LTOE',
+            opcode: 'equalOrLess',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] ≤ [b]',
             arguments: {
@@ -167,7 +167,7 @@
             }
           },
           {
-            opcode: 'DL',
+            opcode: 'between',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] < [b] < [c]',
             arguments: {
@@ -186,7 +186,7 @@
             }
           },
           {
-            opcode: 'DLE',
+            opcode: 'betweenEqual',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] ≤ [b] ≤ [c]',
             arguments: {
@@ -223,16 +223,16 @@
         ]
       };
     }
-    t(args){
+    true(){
       return true;
     }
-    f(args){
+    false(){
       return false;
     }
-    bool(args){
+    boolean(args){
       return Scratch.Cast.toBoolean(args.a);
     }
-    R_bool(args){
+    booleanToInt(args){
       if (Scratch.Cast.toBoolean(args.a)) {
         return 1;
       }
@@ -241,39 +241,39 @@
     equal(args) {
       return (args.a == args.b);
     }
-    equal_negative(args) {
+    equalNegative(args) {
       if (isNaN(args.a) || isNaN(args.b)){
         return false;
       } else {
         return (args.a == (0 - args.b));
       }
     }
-    equal_PON(args) {
+    equalPlusMinus(args) {
       if (isNaN(args.a) || isNaN(args.b)){
         return false;
       } else {
         return (args.a == (0 - args.b)) || (args.a == args.b);
       }
     }
-    equal_almost(args) {
+    almostEqual(args) {
       return (Math.abs(args.a - args.b) <= args.c);
     }
-    DL(args) {
+    between(args) {
       return (args.a < args.b) && (args.b < args.c);
     }
-    DLE(args) {
+    betweenEqual(args) {
       return (args.a <= args.b) && (args.b <= args.c);
     }
-    'not equal'(args){
+    notEqual(args){
       return (args.a != args.b);
     }
-    'XOR'(args){
+    xor(args){
       return Scratch.Cast.toBoolean(args.a) !== Scratch.Cast.toBoolean(args.b);
     }
-    equal_GTOE(args) {
+    equalOrGreater(args) {
       return (args.a >= args.b);
     }
-    equal_LTOE(args) {
+    equalOrLess(args) {
       return (args.a <= args.b);
     }
     vertical(args) {
