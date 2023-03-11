@@ -28,7 +28,7 @@
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '\n'
+                defaultValue: ''
               },
             }
           },
@@ -230,54 +230,27 @@
       return false;
     }
     bool(args){
-      if (typeof args.a === 'boolean') {
-        return args.a;
-      }
-      if (typeof args.a === 'string') {
-        if ((args.a === '') ||
-            (args.a === '0') ||
-            (args.a.toLowerCase() === 'false')) {
-          return false;
-        }
-        return true;
-      }
-      return Boolean(args.a);
+      return Scratch.Cast.toBoolean(args.a);
     }
     R_bool(args){
-      if (typeof args.a === 'boolean') {
-        if (args.a){
-          return 1;
-        } else {
-          return 0;
-        }
-      }
-      if (typeof args.a === 'string') {
-        if ((args.a === '') ||
-            (args.a === '0') ||
-            (args.a.toLowerCase() === 'false')) {
-          return 0;
-        }
+      if (Scratch.Cast.toBoolean(args.a)) {
         return 1;
       }
-      if (Number(args.a) == 0){
-        return 0;
-      } else {
-        return 1;
-      }
+      return 0;
     }
     equal(args) {
       return (args.a == args.b);
     }
     equal_negative(args) {
       if (isNaN(args.a) || isNaN(args.b)){
-        return "NaN";
+        return false;
       } else {
         return (args.a == (0 - args.b));
       }
     }
     equal_PON(args) {
       if (isNaN(args.a) || isNaN(args.b)){
-        return "NaN";
+        return false;
       } else {
         return (args.a == (0 - args.b)) || (args.a == args.b);
       }
@@ -295,7 +268,7 @@
       return (args.a != args.b);
     }
     'XOR'(args){
-      return Boolean(Boolean(args.a) !== Boolean(args.b));
+      return Scratch.Cast.toBoolean(args.a) !== Scratch.Cast.toBoolean(args.b);
     }
     equal_GTOE(args) {
       return (args.a >= args.b);
@@ -305,7 +278,7 @@
     }
     vertical(args) {
       if (isNaN(args.a) || isNaN(args.b)){
-        return "NaN";
+        return false;
       } else {
         return ((args.a - (args.b - 90)) % 180) == 0;
       }
