@@ -30,7 +30,20 @@
   let height = 0;
   let scratchUnitWidth = 480;
   let scratchUnitHeight = 360;
-
+  
+  var blendMode = {
+     ZERO: 0,
+     ONE: 1,
+     SRC_COLOR: 0x0300,
+     ONE_MINUS_SRC_COLOR: 0x0301,
+     SRC_ALPHA: 0x0302,
+     ONE_MINUS_SRC_ALPHA: 0x0303,
+     DST_ALPHA: 0x0304,
+     ONE_MINUS_DST_ALPHA: 0x0305,
+     DST_COLOR: 0x0306,
+     ONE_MINUS_DST_COLOR: 0x0307,
+     SRC_ALPHA_SATURATE: 0x0308,
+  }
 
   renderer._drawThese = function (drawables, drawMode, projection, opts) {
     active = true;
@@ -91,7 +104,12 @@
       if (this.additiveBlend) {
         gl.blendFunc(gl.ONE, gl.ONE);
       } else {
-        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        if (this.customBlend){
+          gl.blendFunc(this.customBlend[0], this.customBlend[1])
+        }else{
+          gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        }
+        
       }
     }
     return gu.call(this);
@@ -101,6 +119,9 @@
   };
   DrawableProto.updateAdditiveBlend = function (enabled) {
     this.additiveBlend = enabled;
+  };
+  DrawableProto.updateCustomBlend = function (modes) {
+    this.customBlend = modes;
   };
 
 
@@ -116,6 +137,12 @@
     drawable.updateAdditiveBlend(enabled);
   };
 
+  renderer.updateDrawableCustomBlend = function (drawableID, modes) {
+    const drawable = this._allDrawables[drawableID];
+    if (!drawable) return;
+    drawable.updateCustomBlend(modes);
+  };
+
 
   // Reset on stop & clones inherit effects
   const regTargetStuff = function (args) {
@@ -126,16 +153,19 @@
       proto.onStopAll = function () {
         this.renderer.updateDrawableClipBox.call(renderer, this.drawableID, null);
         this.renderer.updateDrawableAdditiveBlend.call(renderer, this.drawableID, false);
+        this.renderer.updateDrawableCustomBlend.call(renderer, this.drawableID, null);
         osa.call(this);
       };
       const mc = proto.makeClone;
       proto.makeClone = function () {
         const newTarget = mc.call(this);
-        if (this.clipbox) {
+        if (this.clipbox || this.additiveBlend || this.customBlend) {
           newTarget.clipbox = Object.assign({}, this.clipbox);
           newTarget.additiveBlend = this.additiveBlend;
+          newTarget.customBlend = this.customBlend;
           renderer.updateDrawableClipBox.call(renderer, newTarget.drawableID, this.clipbox);
           renderer.updateDrawableAdditiveBlend.call(renderer, newTarget.drawableID, this.additiveBlend);
+          renderer.updateDrawableCustomBlend.call(renderer, newTarget.drawableID, this.customBlend);
         }
         return newTarget;
       };
@@ -217,11 +247,50 @@
             text: 'is additive blending on?',
             filter: [Scratch.TargetType.SPRITE]
           },
+          {
+            opcode: 'setCustomBlend',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set blend mode to [sblendModeMenu] and [fblendModeMenu]',
+            arguments: {
+              sblendModeMenu: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'ONE',
+                menu: 'blendmodes'
+              },
+              fblendModeMenu: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'ONE_MINUS_SRC_ALPHA',
+                menu: 'blendmodes'
+              }
+            },
+            filter: [Scratch.TargetType.SPRITE]
+          },
+          {
+            opcode: 'getCustomblend',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'get custom blend [PROP]',
+            arguments: {
+              PROP: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'sfactor',
+                menu: 'props2'
+              }
+            },
+            filter: [Scratch.TargetType.SPRITE]
+          },
         ],
         menus: {
           states: {
             acceptReporters: true,
             items: ['on', 'off']
+          },
+          blendmodes:{
+            acceptReporters:true,
+            items: ['ZERO', 'ONE', 'ONE_MINUS_SRC_COLOR','DST_COLOR','ONE_MINUS_DST_COLOR','SRC_ALPHA','ONE_MINUS_SRC_ALPHA','DST_ALPHA','ONE_MINUS_DST_ALPHA','CONSTANT_COLOR','ONE_MINUS_CONSTANT_COLOR','CONSTANT_ALPHA','ONE_MINUS_CONSTANT_ALPHA','SRC_ALPHA_SATURATE']
+          },
+          props2:{
+            acceptReporters: true,
+            items: ["sfactor","dfactor"]
           },
           props: {
             acceptReporters: true,
@@ -277,7 +346,22 @@
         target.runtime.requestTargetsUpdate(target);
       }
     }
-
+    setCustomBlend ({fblendModeMenu,sblendModeMenu}, {target}) {
+      let newValue = null;
+      let newValue2 = null;
+      newValue = Object.values(blendMode)[Object.keys(blendMode).indexOf(sblendModeMenu)]
+      newValue2 = Object.values(blendMode)[Object.keys(blendMode).indexOf(fblendModeMenu)]
+      if (newValue === null || newValue2 == null) return;
+      if (target.isStage) return;
+      target.customBlend = [newValue,newValue2];
+      renderer.updateDrawableCustomBlend.call(renderer, target.drawableID, target.customBlend);
+      if (target.visible) {
+        renderer.dirty = true;
+        target.emitVisualChange();
+        target.runtime.requestRedraw();
+        target.runtime.requestTargetsUpdate(target);
+      }
+    }
     getClipbox ({PROP}, {target}) {
       const clipbox = target.clipbox;
       if (!clipbox) return '';
@@ -291,7 +375,16 @@
         default: return '';
       }
     }
-
+    getCustomblend ({PROP}, {target}) {
+      const customBlend = target.customBlend;
+      if (!customBlend) return '';
+      switch (PROP) {
+        case 'sfactor': return Object.keys(blendMode)[Object.values(blendMode).indexOf(customBlend[0])];
+        case 'dfactor': return Object.keys(blendMode)[Object.values(blendMode).indexOf(customBlend[1])];        
+        default: return '';
+      }
+      return '';
+    }
     getAdditiveBlend (args, {target}) {
       return target.additiveBlend ?? false;
     }
