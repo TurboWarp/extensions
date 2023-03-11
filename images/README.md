@@ -6,13 +6,21 @@ The taco, apple, and banana are from the Scratch sprite library.
 The dango is from [Twemoji](https://twemoji.twitter.com/) and is licensed under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## stretch.svg
-Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
+ - Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
+ - Arrow icon from https://icon-icons.com/ru/%D0%B7%D0%BD%D0%B0%D1%87%D0%BE%D0%BA/%D0%A0%D0%B0%D0%B7%D0%BC%D0%B5%D1%80-%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BA%D0%B8/83819 under CC-BY 4.0
+ - Dango icon from Twemoji under CC-BY 4.0
+ - Background is from https://haikei.app/
 
 ## cursor.svg
-Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
+ - Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
+ - Background is from https://app.haikei.app/
+ - One cursor from https://commons.wikimedia.org/wiki/File:%D0%9A%D1%83%D1%80%D1%81%D0%BE%D1%80_%22%D0%97%D0%B0%D0%BD%D1%8F%D1%82%22.png under CC-BY-SA 4.0
+ - Two other cursors from https://commons.wikimedia.org/wiki/File:Mouse-cursor-hand-pointer.svg under CC-BY 2.5
 
 ## gamepad.svg
-Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
+ - Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
+ - Gamepad icon from https://icon-icons.com/icon/appliances-console-controller-dualshock-gamepad-games-videogame/106553 under CC-BY 4.0
+ - Background from https://app.haikei.app/
 
 ## bitwise.svg
 The font used is DejaVu Sans Mono.
@@ -51,19 +59,35 @@ Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomme
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/122#issue-1524383752
 
 ## DT/cameracontrols.svg
-Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/207#issuecomment-1446304560
+ - Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/207#issuecomment-1446304560
+ - https://icon-icons.com/ru/%D0%B7%D0%BD%D0%B0%D1%87%D0%BE%D0%BA/%D0%BF%D1%80%D0%B8-%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B8-%D0%A7%D0%B5%D1%80%D0%BD%D1%8B%D0%B9-%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82-%D0%BA%D0%BD%D0%BE%D0%BF%D0%BA%D0%B0-%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81-%D0%B7%D0%BD%D0%B0%D1%87%D0%BE%D0%BA/73101 under CC-BY 4.0
+ - Dango from Twemoji under CC-BY 4.0
+ - https://commons.wikimedia.org/wiki/File:Camera-icon-estilizado.svg
+ - Background from https://bgjar.com/animated-shape
 
 ## true-fantom/math.svg
-Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/219#issue-1607102376
+ - Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/219#issue-1607102376
+ - https://svgsilh.com/ru/image/1295632.html
+ - https://svgsilh.com/ru/image/1299312.html
+ - https://svgsilh.com/ru/image/154075.html
+ - Background pattern from https://superdesigner.co/tools/patterns
 
 ## true-fantom/couplers.svg
-Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/219#issue-1607102376
+ - Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/219#issue-1607102376
+ - https://www.svgrepo.com/svg/278922/chip-microchip under CC 0
+ - https://commons.wikimedia.org/wiki/File:US_0.svg
+ - https://ru.wikipedia.org/wiki/%D0%A4%D0%B0%D0%B9%D0%BB:Eo_circle_red_number-1.svg
+ - https://bgjar.com/circuit-board
 
 ## Xeltalliv/clippingblending.svg
-Created by @True-Fantom and @Xeltalliv in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1460388495
+ - Created by @True-Fantom and @Xeltalliv in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1460388495
+ - Dango based on Twemoji under CC-BY 4.0
+ - https://icon-icons.com/ru/%D0%B7%D0%BD%D0%B0%D1%87%D0%BE%D0%BA/%D0%B7%D0%B2%D0%B5%D0%B7%D0%B4%D0%B0/64489 under CC-BY 4.0
+ - https://icon-icons.com/ru/%D0%B7%D0%BD%D0%B0%D1%87%D0%BE%D0%BA/%D1%8D%D0%BA%D1%80%D0%B0%D0%BD-%D0%B2%D1%8B%D1%80%D0%B5%D0%B7%D0%B0%D1%82%D1%8C-%D0%B7%D0%B0%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9/199719 under MIT
+ - https://uxwing.com/and-icon/
 
 ## files.svg
-Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/204. File icons are from https://icon-icons.com/ru/%D0%B7%D0%BD%D0%B0%D1%87%D0%BE%D0%BA/%D1%84%D0%B0%D0%B9%D0%BB-%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%82-PDF/153412 under CC-BY 4.0. Folder icon is based on https://fontawesome.com/icons/folder-open?s=regular&f=classic under CC-BY 4.0. Background is from https://bgjar.com/rect-light under CC-BY 4.0.
 
 ## -SIPC-/consoles.svg
 Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669. The font is Noto Sans.
