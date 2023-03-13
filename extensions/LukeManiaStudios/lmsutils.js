@@ -4,7 +4,7 @@
   const text = navigator.clipboard.readText();
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('Unsanbox this shit');
+    throw new Error('This extension must run unsandboxed');
   }
 
   class LMSUtils {
