@@ -19,8 +19,7 @@
         color2: '#00bfa3',
         color3: '#00cca3',
         blockIconURI: blockIconURI,
-        docsURI: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-          blocks: [
+        blocks: [
           {
             opcode: 'whenBooleanHat',
             blockType: Scratch.BlockType.HAT,
