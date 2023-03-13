@@ -1,7 +1,25 @@
 (function (Scratch) {
   'use strict';
-  console.log("ShovelUtils v1.2");
+  console.log("ShovelUtils v1.3");
   const vm = Scratch.vm;
+
+//Code from https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html
+const times = [];
+let fps;
+
+function refreshLoop() {
+  window.requestAnimationFrame(() => {
+    const now = performance.now();
+    while (times.length > 0 && times[0] <= now - 1000) {
+      times.shift();
+    }
+    times.push(now);
+    fps = times.length;
+    refreshLoop();
+  });
+}
+
+refreshLoop();
   class ShovelUtils {
     getInfo() {
       return {
@@ -134,7 +152,13 @@
             }
           }
         },
-
+        {
+          opcode: 'getfps',
+          blockType: Scratch.BlockType.REPORTER,
+          text: "Fps",
+          arguments: {
+          }
+        },
 
 
         ]
@@ -192,6 +216,7 @@
     }
 
     importProject({ TEXT }) {
+      // @ts-ignore
       if (typeof ScratchBlocks !== 'undefined') {
         // We are in the editor. Ask before loading a new project to avoid unrecoverable data loss.
         if (!confirm(`Do you want to import a project from "${TEXT}"? Everything in the current project will be permanently deleted.`)) {
@@ -278,6 +303,9 @@
       // https://www.w3.org/TR/AERT/#color-contrast
       const {r, g, b} = Scratch.Cast.toRgbColorObject(color);
       return ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    }
+    getfps(){
+      return fps
     }
   }
 
