@@ -305,7 +305,7 @@ refreshLoop();
       return ((r * 299) + (g * 587) + (b * 114)) / 1000;
     }
     getfps(){
-      return fps
+      return fps;
     }
   }
 
