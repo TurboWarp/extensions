@@ -18,33 +18,32 @@
   vm.runtime.runtimeOptions.fencing = false;
   vm.renderer.offscreenTouching = true;
 
-  function updateCamera(x = cameraX, y = cameraY, scale = cameraZoom/100, rot = -cameraDirection + 90) {
+  function updateCamera(x = cameraX, y = cameraY, scale = cameraZoom / 100, rot = -cameraDirection + 90) {
     rot = rot / 180 * Math.PI;
     let s = Math.sin(rot) * scale;
     let c = Math.cos(rot) * scale;
-	let w = vm.runtime.stageWidth/2
-	let h = vm.runtime.stageHeight/2
-    vm.renderer._projection = 
-    [
-      c/w,			-s/h,			0,		0,
-      s/w,			c/h,			0,		0,
-      0,			0,				-1,		0,
-      (c*-x+s*y)/w,	(c*y-s*-x)/h,	0,		1
+    let w = vm.runtime.stageWidth / 2
+    let h = vm.runtime.stageHeight / 2
+    vm.renderer._projection = [
+      c / w, -s / h, 0, 0,
+      s / w, c / h, 0, 0,
+      0, 0, -1, 0,
+      (c * -x + s * y) / w, (c * y - s * -x) / h, 0, 1
     ];
     vm.renderer.dirty = true;
   }
 
   // tell resize to update camera as well
-  vm.runtime.on('STAGE_SIZE_CHANGED', _=>updateCamera());
+  vm.runtime.on('STAGE_SIZE_CHANGED', _ => updateCamera());
 
   // fix mouse positions
   let oldSX = vm.runtime.ioDevices.mouse.getScratchX;
   let oldSY = vm.runtime.ioDevices.mouse.getScratchY;
 
-  vm.runtime.ioDevices.mouse.getScratchX = function(...a){
+  vm.runtime.ioDevices.mouse.getScratchX = function(...a) {
     return (oldSX.apply(this, a) + cameraX) / cameraZoom * 100;
   };
-  vm.runtime.ioDevices.mouse.getScratchY = function(...a){
+  vm.runtime.ioDevices.mouse.getScratchY = function(...a) {
     return (oldSY.apply(this, a) + cameraY) / cameraZoom * 100;
   };
 
@@ -62,8 +61,7 @@
 
         menuIconURI: icon,
 
-        blocks: [
-          {
+        blocks: [{
             opcode: 'setBoth',
             blockType: Scratch.BlockType.COMMAND,
             text: 'set camera to x: [x] y: [y]',
@@ -250,18 +248,18 @@
       cameraY = +ARGS.val;
       updateCamera();
     }
-  	setDirection(ARGS) {
-	    cameraDirection = +ARGS.val; 
-	    updateCamera();
-  	}
-   	rotateCW(ARGS) {
-  	  cameraDirection = cameraDirection + +ARGS.val;
-  	  updateCamera();
-	  }
-  	rotateCCW(ARGS) {
-  	  cameraDirection = cameraDirection - +ARGS.val;
-  	  updateCamera();
-  	}
+    setDirection(ARGS) {
+      cameraDirection = +ARGS.val;
+      updateCamera();
+    }
+    rotateCW(ARGS) {
+      cameraDirection = cameraDirection + +ARGS.val;
+      updateCamera();
+    }
+    rotateCCW(ARGS) {
+      cameraDirection = cameraDirection - +ARGS.val;
+      updateCamera();
+    }
     getX() {
       return cameraX;
     }
@@ -271,15 +269,15 @@
     getZoom() {
       return cameraZoom;
     }
-	  getDirection() {
-	    return cameraDirection;
-	  }
+    getDirection() {
+      return cameraDirection;
+    }
     setCol(ARGS) {
       cameraBG = ARGS.val;
       Scratch.vm.renderer.setBackgroundColor(
-        parseInt(cameraBG.substring(1,3),16) / 255,
-        parseInt(cameraBG.substring(3,5),16) / 255,
-        parseInt(cameraBG.substring(5,7),16) / 255
+        parseInt(cameraBG.substring(1, 3), 16) / 255,
+        parseInt(cameraBG.substring(3, 5), 16) / 255,
+        parseInt(cameraBG.substring(5, 7), 16) / 255
       );
     }
     getCol() {
