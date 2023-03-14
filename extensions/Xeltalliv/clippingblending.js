@@ -8,13 +8,14 @@
 
   // Simplified remake of an icon by True-Fantom
   const icon = 'data:image/svg+xml,' + encodeURIComponent(`
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0,0,360,360">
-      <circle cx="180" cy="180" r="180" fill="#9966FF"/>
-      <path d="M180,350
-       c-25,-85  -77,-137 -162,-162
-       c 85,-25  137, -77  162,-162
-       c 25, 85   77, 137  162, 162
-       c-85, 25 -137,  77 -162, 162z" stroke-width="0" fill="#ffffff"/>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0,0,200,200">
+      <circle r="100" cx="100" cy="100" fill="#9966ff"/>
+      <path d="M122,61v-4a12,12 0,0,0 -12,-12h-4m-17,0h-16m-17,0h-4a12,12 0,0,0 -12,12v4m0,17v16m0,17v4a12,12 0,0,0 12,12h4" stroke="#ffffff" stroke-width="11" stroke-linecap="round" fill="none"/>
+      <g fill="#ffffff" stroke="#9966ff" stroke-width="7.5">
+        <circle r="32" cx="118" cy="102"/>
+        <circle r="32" cx="96" cy="137"/>
+        <circle r="32" cx="140" cy="137"/>
+      </g>
     </svg>`);
 
 
@@ -148,7 +149,7 @@
     getInfo() {
       return {
         id: 'xeltallivclipblend',
-        name: 'Clipping, blending',
+        name: 'Clipping & Blending',
         color1: '#9966FF',
         color2: '#855CD6',
         color3: '#774DCB',

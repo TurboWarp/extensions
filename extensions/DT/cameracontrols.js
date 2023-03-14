@@ -250,18 +250,18 @@
       cameraY = +ARGS.val;
       updateCamera();
     }
-	setDirection(ARGS) {
-	  cameraDirection = +ARGS.val; 
-	  updateCamera();
-	}
-	rotateCW(ARGS) {
-	  cameraDirection = cameraDirection + +ARGS.val;
-	  updateCamera();
-	}
-	rotateCCW(ARGS) {
-	  cameraDirection = cameraDirection - +ARGS.val;
-	  updateCamera();
-	}
+  	setDirection(ARGS) {
+	    cameraDirection = +ARGS.val; 
+	    updateCamera();
+  	}
+   	rotateCW(ARGS) {
+  	  cameraDirection = cameraDirection + +ARGS.val;
+  	  updateCamera();
+	  }
+  	rotateCCW(ARGS) {
+  	  cameraDirection = cameraDirection - +ARGS.val;
+  	  updateCamera();
+  	}
     getX() {
       return cameraX;
     }
@@ -271,9 +271,9 @@
     getZoom() {
       return cameraZoom;
     }
-	getDirection() {
-	  return cameraDirection;
-	}
+	  getDirection() {
+	    return cameraDirection;
+	  }
     setCol(ARGS) {
       cameraBG = ARGS.val;
       Scratch.vm.renderer.setBackgroundColor(

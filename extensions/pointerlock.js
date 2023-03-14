@@ -23,10 +23,8 @@
     const x = mouse._clientX + movementX;
     const y = mouse._clientY - movementY;
     mouse._clientX = x;
-    // @ts-expect-error
     mouse._scratchX = mouse.runtime.stageWidth * ((x / width) - 0.5);
     mouse._clientY = y;
-    // @ts-expect-error
     mouse._scratchY = mouse.runtime.stageWidth * ((y / height) - 0.5);
     if (typeof isDown === 'boolean') {
       const data = {

@@ -1,8 +1,7 @@
 (function (Scratch) {
   'use strict';
-  console.log("ShovelUtils v1.1");
+  console.log("ShovelUtils v1.2");
   const vm = Scratch.vm;
-
   class ShovelUtils {
     getInfo() {
       return {
@@ -85,7 +84,7 @@
           arguments: {
             TEXT: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'https://theshovel.github.io/the-lazy-cook/Source.wsp',
+              defaultValue: 'https://theshovel.github.io/Bullet-Hell/Bullet%20Hell',
             }
           }
         },
@@ -185,7 +184,7 @@
             true
           );
           vm.addSound({
-            md5: NAME + '.mp3',
+            md5: asset.assetId + '.' + asset.dataFormat,
             asset: asset,
             name: NAME
           });
@@ -193,6 +192,12 @@
     }
 
     importProject({ TEXT }) {
+      if (typeof ScratchBlocks !== 'undefined') {
+        // We are in the editor. Ask before loading a new project to avoid unrecoverable data loss.
+        if (!confirm(`Do you want to import a project from "${TEXT}"? Everything in the current project will be permanently deleted.`)) {
+          return;
+        }
+      }
       Scratch.fetch(TEXT)
         .then(r => r.arrayBuffer())
         .then(buffer => vm.loadProject(buffer))
@@ -216,15 +221,52 @@
     }
 
     getlist({ TEXT }) {
-      return JSON.stringify(vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, 'list').value);
+      const list = vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, 'list');
+      if (list) {
+        return JSON.stringify(list.value);
+      } else {
+        return "";
+      }
     }
     setlist({ TEXT, NAME }) {
-      const temp = JSON.parse(TEXT);
-      vm.runtime.getTargetForStage().lookupVariableByNameAndType(NAME, 'list').value = temp;
+      let parsed;
+      try {
+        parsed = JSON.parse(TEXT);
+      } catch (e) {
+        return; // JSON was invalid
+      }
+
+      if (!Array.isArray(parsed)) {
+        return; // it's not an array
+      }
+
+      for (const element of parsed) {
+        const type = typeof element;
+        if (type !== "string" && type !== "number" && type !== "boolean") {
+          return; // One of the elements has a disallowed type
+        }
+      }
+
+      const list = vm.runtime.getTargetForStage().lookupVariableByNameAndType(NAME, 'list');
+      if (!list) {
+        return; // List was not found
+      }
+
+      list.value = parsed;
     }
 
     setedtarget({ NAME }) {
-      vm.setEditingTarget(vm.runtime.getSpriteTargetByName(NAME).id);
+      let target;
+
+      //I know this might cause sprites called "stage" to be ignored. But lets be real, who names their sprite "stage"?
+      if (NAME.toLowerCase() === "stage") {
+        target = vm.runtime.getTargetForStage();
+      } else {
+        target = vm.runtime.getSpriteTargetByName(NAME);
+      }
+      if (target) {
+        vm.setEditingTarget(target.id);
+      }
     }
 
     /**
@@ -233,20 +275,12 @@
      * @returns (Number) The brightness value (dark) 0 ... 255 (light)
      */
     brightnessByColor({ color }) {
-      color = "" + color;
-      var isHEX = color.indexOf("#") == 0, isRGB = color.indexOf("rgb") == 0;
-      if (isHEX) {
-        const hasFullSpec = color.length == 7;
-        var m = color.substr(1).match(hasFullSpec ? /(\S{2})/g : /(\S{1})/g);
-        if (m) var r = parseInt(m[0] + (hasFullSpec ? '' : m[0]), 16), g = parseInt(m[1] + (hasFullSpec ? '' : m[1]), 16), b = parseInt(m[2] + (hasFullSpec ? '' : m[2]), 16);
-      }
-      if (isRGB) {
-        m = color.match(/(\d+){3}/g);
-        if (m) r = m[0], g = m[1], b = m[2];
-      }
-      if (typeof r != "undefined") return ((r * 299) + (g * 587) + (b * 114)) / 1000;
+      // https://www.w3.org/TR/AERT/#color-contrast
+      const {r, g, b} = Scratch.Cast.toRgbColorObject(color);
+      return ((r * 299) + (g * 587) + (b * 114)) / 1000;
     }
   }
 
   Scratch.extensions.register(new ShovelUtils());
+// @ts-ignore
 })(Scratch);

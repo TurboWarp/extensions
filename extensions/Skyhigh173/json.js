@@ -577,7 +577,7 @@
     json_array_set({ item, pos, json }) {
       try {
         json = JSON.parse(json);
-        json[pos] = this.json_valid_return(item);
+        json[pos - 1] = this.json_valid_return(item);
         return JSON.stringify(json);
       } catch {
         return ' ';
