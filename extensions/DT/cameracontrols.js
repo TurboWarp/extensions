@@ -219,46 +219,56 @@
       };
     }
 
-    setBoth(ARGS) {
+    setBoth(ARGS, util) {
       cameraX = +ARGS.x;
       cameraY = +ARGS.y;
       updateCamera();
+      vm.runtime.requestRedraw();
     }
-    changeZoom(ARGS) {
+    changeZoom(ARGS, util) {
       cameraZoom += +ARGS.val;
       updateCamera();
+      vm.runtime.requestRedraw();
     }
-    setZoom(ARGS) {
+    setZoom(ARGS, util) {
       cameraZoom = +ARGS.val;
       updateCamera();
+      vm.runtime.requestRedraw();
     }
-    changeX(ARGS) {
+    changeX(ARGS, util) {
       cameraX += +ARGS.val;
       updateCamera();
+      vm.runtime.requestRedraw();
     }
-    setX(ARGS) {
+    setX(ARGS, util) {
       cameraX = +ARGS.val;
       updateCamera();
+      vm.runtime.requestRedraw();
     }
-    changeY(ARGS) {
+    changeY(ARGS, util) {
       cameraY += +ARGS.val;
       updateCamera();
+      vm.runtime.requestRedraw();
     }
-    setY(ARGS) {
+    setY(ARGS, util) {
       cameraY = +ARGS.val;
       updateCamera();
+      vm.runtime.requestRedraw();
     }
-    setDirection(ARGS) {
+    setDirection(ARGS, util) {
       cameraDirection = +ARGS.val;
       updateCamera();
+      vm.runtime.requestRedraw();
     }
-    rotateCW(ARGS) {
+    rotateCW(ARGS, util) {
       cameraDirection = cameraDirection + +ARGS.val;
       updateCamera();
+      vm.runtime.requestRedraw();
     }
-    rotateCCW(ARGS) {
+    rotateCCW(ARGS, util) {
       cameraDirection = cameraDirection - +ARGS.val;
       updateCamera();
+      vm.runtime.requestRedraw();
     }
     getX() {
       return cameraX;
@@ -272,7 +282,7 @@
     getDirection() {
       return cameraDirection;
     }
-    setCol(ARGS) {
+    setCol(ARGS, util) {
       cameraBG = ARGS.val;
       Scratch.vm.renderer.setBackgroundColor(
         parseInt(cameraBG.substring(1, 3), 16) / 255,
