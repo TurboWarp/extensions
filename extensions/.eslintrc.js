@@ -80,6 +80,10 @@ module.exports = {
       {
         selector: 'NewExpression[callee.name=Audio]',
         message: 'Ensure that `await Scratch.canFetch(url)` is checked first, then add // eslint-disable-next-line no-restricted-syntax'
+      },
+      {
+        selector: 'Program > :not(ExpressionStatement[expression.type=CallExpression][expression.callee.type=/FunctionExpression/])',
+        message: 'All extension code must be within (function (Scratch) { ... })(Scratch);'
       }
     ]
   }
