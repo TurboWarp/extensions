@@ -3,23 +3,19 @@
   console.log("ShovelUtils v1.3");
   const vm = Scratch.vm;
 
-  //Code from https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html
+  // Based on from https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html
   const times = [];
-  let fps;
-
-  function refreshLoop() {
-    window.requestAnimationFrame(() => {
-      const now = performance.now();
-      while (times.length > 0 && times[0] <= now - 1000) {
-        times.shift();
-      }
-      times.push(now);
-      fps = times.length;
-      refreshLoop();
-    });
-  }
-
-  refreshLoop();
+  let fps = vm.runtime.frameLoop.framerate;
+  const oldStep = vm.runtime._step;
+  vm.runtime._step = function () {
+    oldStep.call(this);
+    const now = performance.now();
+    while (times.length > 0 && times[0] <= now - 1000) {
+      times.shift();
+    }
+    times.push(now);
+    fps = times.length;
+  };
 
   class ShovelUtils {
     getInfo() {
