@@ -284,11 +284,8 @@
     }
     setCol(ARGS, util) {
       cameraBG = ARGS.val;
-      Scratch.vm.renderer.setBackgroundColor(
-        parseInt(cameraBG.substring(1, 3), 16) / 255,
-        parseInt(cameraBG.substring(3, 5), 16) / 255,
-        parseInt(cameraBG.substring(5, 7), 16) / 255
-      );
+      const [r, g, b] = Scratch.Cast.toRgbColorList(cameraBG);
+      Scratch.vm.renderer.setBackgroundColor(r / 255, g / 255, b / 255);
     }
     getCol() {
       return cameraBG;
