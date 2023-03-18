@@ -17,6 +17,10 @@ const IMAGE_EXTENSIONS = ['png', 'jpg', 'svg'];
 const readDirectory = (directory) => {
   const result = [];
   for (const name of fs.readdirSync(directory)) {
+    if (name.startsWith('.')) {
+      // Ignore .eslintrc.js, .DS_Store, etc.
+      continue;
+    }
     const absolutePath = pathUtil.join(directory, name);
     const stat = fs.statSync(absolutePath);
     if (stat.isDirectory()) {
