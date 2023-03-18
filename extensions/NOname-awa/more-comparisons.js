@@ -1,7 +1,7 @@
 (function(Scratch) {
   'use strict';
   const quadrilateral = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI3Ny4wMjc4MSIgaGVpZ2h0PSI1NC44MDY1NCIgdmlld0JveD0iMCwwLDc3LjAyNzgxLDU0LjgwNjU0Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjAxLjUwNDMsLTE1Mi4yMTk3MykiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjI4LjE3ODc4LDE1NS40NzM3NGw0Ni40MDEwMywxOS44ODYxNmwtMjIuNTM3NjQsMjkuMTY2MzZoLTQ2LjYyMTk5eiIvPjwvZz48L2c+PC9zdmc+";
-  class comparisons {
+  class MoreComparisons {
     getInfo() {
       return {
         id: 'nonameawacomparisons',
@@ -504,12 +504,12 @@
       let area = 0;
       let n = points.length;
       for (let i = 0; i < n; i++) {
-          let x1 = points[i][0];
-          let y1 = points[i][1];
-          let x2 = points[(i+1) % n][0];
-          let y2 = points[(i+1) % n][1];
-          area += x1 * y2;
-          area -= x2 * y1;
+        let x1 = points[i][0];
+        let y1 = points[i][1];
+        let x2 = points[(i + 1) % n][0];
+        let y2 = points[(i + 1) % n][1];
+        area += x1 * y2;
+        area -= x2 * y1;
       }
       area = Math.abs(area) / 2;
       return Math.round(area) == args.n;
@@ -519,16 +519,16 @@
       let area = 0;
       let n = points.length;
       for (let i = 0; i < n; i++) {
-          let x1 = points[i][0];
-          let y1 = points[i][1];
-          let x2 = points[(i+1) % n][0];
-          let y2 = points[(i+1) % n][1];
-          area += x1 * y2;
-          area -= x2 * y1;
+        let x1 = points[i][0];
+        let y1 = points[i][1];
+        let x2 = points[(i + 1) % n][0];
+        let y2 = points[(i + 1) % n][1];
+        area += x1 * y2;
+        area -= x2 * y1;
       }
       area = Math.abs(area) / 2;
       return (area);
     }
   }
-  Scratch.extensions.register(new comparisons());
+  Scratch.extensions.register(new MoreComparisons());
 })(Scratch);
