@@ -25,139 +25,137 @@
         color1: '#f54242',
         color2: '#f54242',
         color3: '#f54242',
-        blocks: [{
-          opcode: 'importImage',
-          blockType: Scratch.BlockType.COMMAND,
-          text: "Import image from [TEXT] name [NAME]",
-          arguments: {
-            TEXT: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: 'https://extensions.turbowarp.org/dango.png',
-            },
-            NAME: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: 'Apple',
+        blocks: [
+          {
+            opcode: 'importImage',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Import image from [TEXT] name [NAME]',
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'https://extensions.turbowarp.org/dango.png',
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Apple',
+              }
             }
-          }
-        },
-        {
-          opcode: 'getlist',
-          blockType: Scratch.BlockType.REPORTER,
-          text: "Get list [TEXT]",
-          arguments: {
-            TEXT: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: 'MyList',
+          },
+          {
+            opcode: 'getlist',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Get list [TEXT]',
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'MyList',
+              }
             }
-          }
-        },
-        {
-          opcode: 'setlist',
-          blockType: Scratch.BlockType.COMMAND,
-          text: "Set list [NAME] to [TEXT]",
-          arguments: {
-            TEXT: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: '[1,2]',
-            },
-            NAME: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: 'MyList',
+          },
+          {
+            opcode: 'setlist',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Set list [NAME] to [TEXT]',
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '[1,2]',
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'MyList',
+              }
             }
-          }
-        },
-        {
-          opcode: 'importSprite',
-          blockType: Scratch.BlockType.COMMAND,
-          text: "Import sprite from [TEXT]",
-          arguments: {
-            TEXT: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: 'Link or data uri here',
+          },
+          {
+            opcode: 'importSprite',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Import sprite from [TEXT]',
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Link or data uri here',
+              }
             }
-          }
-        },
-        {
-          opcode: 'importSound',
-          blockType: Scratch.BlockType.COMMAND,
-          text: "Import sound from [TEXT] name [NAME]",
-          arguments: {
-            TEXT: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: 'https://theshovel.github.io/kewlab-data/char%20edit.mp3',
-            },
-            NAME: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: 'Apple',
+          },
+          {
+            opcode: 'importSound',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Import sound from [TEXT] name [NAME]',
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'https://theshovel.github.io/kewlab-data/char%20edit.mp3',
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Apple',
+              }
             }
-          }
-        },
-        {
-          opcode: 'importProject',
-          blockType: Scratch.BlockType.COMMAND,
-          text: "Import project from [TEXT]",
-          arguments: {
-            TEXT: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: 'https://theshovel.github.io/Bullet-Hell/Bullet%20Hell',
+          },
+          {
+            opcode: 'importProject',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Import project from [TEXT]',
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'https://theshovel.github.io/Bullet-Hell/Bullet%20Hell',
+              }
             }
-          }
-        },
-        {
-          opcode: 'loadExtension',
-          blockType: Scratch.BlockType.COMMAND,
-          text: "Load extension from [TEXT]",
-          arguments: {
-            TEXT: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: 'https://extensions.turbowarp.org/utilities.js',
+          },
+          {
+            opcode: 'loadExtension',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Load extension from [TEXT]',
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'https://extensions.turbowarp.org/utilities.js',
+              }
             }
-          }
-        },
+          },
 
-        {
-          opcode: 'restartProject',
-          blockType: Scratch.BlockType.COMMAND,
-          text: "Restart project",
-          arguments: {
-            TEXT: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: '0',
+          {
+            opcode: 'restartProject',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Restart project',
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '0',
+              }
             }
-          }
-        },
-        {
-          opcode: 'setedtarget',
-          blockType: Scratch.BlockType.COMMAND,
-          text: "Set editing target to [NAME]",
-          arguments: {
-            NAME: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: 'Sprite1',
+          },
+          {
+            opcode: 'setedtarget',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Set editing target to [NAME]',
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Sprite1',
+              }
             }
-          }
-        },
+          },
 
-        {
-          opcode: 'brightnessByColor',
-          blockType: Scratch.BlockType.REPORTER,
-          text: "Get brightness of [color]",
-          arguments: {
-            color: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: '#ffffff',
+          {
+            opcode: 'brightnessByColor',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Get brightness of [color]',
+            arguments: {
+              color: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '#ffffff',
+              }
             }
-          }
-        },
-        {
-          opcode: 'getfps',
-          blockType: Scratch.BlockType.REPORTER,
-          text: "Fps",
-          arguments: {
-          }
-        },
+          },
 
-
+          {
+            opcode: 'getfps',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Fps'
+          },
         ]
       };
     }
@@ -301,6 +299,7 @@
       const {r, g, b} = Scratch.Cast.toRgbColorObject(color);
       return ((r * 299) + (g * 587) + (b * 114)) / 1000;
     }
+
     getfps(){
       return fps;
     }
