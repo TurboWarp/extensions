@@ -7,7 +7,7 @@
     "dev": "node development/server.js",
     "build": "node development/build-production.js",
     "validate": "node development/validate.js",
-    "lint": "eslint development extensions",
+    "lint": "eslint development extensions --max-warnings=0",
     "fix": "npm run lint -- --fix"
   },
   "repository": {
