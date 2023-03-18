@@ -22,8 +22,8 @@
     rot = rot / 180 * Math.PI;
     let s = Math.sin(rot) * scale;
     let c = Math.cos(rot) * scale;
-    let w = vm.runtime.stageWidth / 2
-    let h = vm.runtime.stageHeight / 2
+    let w = vm.runtime.stageWidth / 2;
+    let h = vm.runtime.stageHeight / 2;
     vm.renderer._projection = [
       c / w, -s / h, 0, 0,
       s / w, c / h, 0, 0,
