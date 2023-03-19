@@ -1166,7 +1166,7 @@
     }
 
     commentBool(args) {
-      return args.INPUTB;
+      return Scratch.Cast.toBoolean(args.INPUTB);
     }
   }
   Scratch.extensions.register(new LMSUtils());
