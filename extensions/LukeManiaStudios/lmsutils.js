@@ -14,9 +14,9 @@
       return {
         id: 'lmsutilsblocks',
         name: 'LMS Utilities',
-        color1: '#00e8ba',
-        color2: '#00bfa3',
-        color3: '#00cca3',
+        color1: '#1cd6ff',
+        color2: '#1cbbff',
+        color3: '#1cbbff',
         blockIconURI: blockIconURI,
         blocks: [
           {
