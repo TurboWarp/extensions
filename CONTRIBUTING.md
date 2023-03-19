@@ -111,8 +111,6 @@ Our preferred code style is:
  - Use semicolons
  - We don't care which type of quotes you use
 
-If we dislike your style choices we will just fix it ourselves.
-
 ## Automated linting
 
 We use ESLint to automatically find problems in pull requests. To run our linting rules locally:
