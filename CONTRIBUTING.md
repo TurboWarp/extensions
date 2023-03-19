@@ -59,9 +59,13 @@ Extensions end up in one of these categories depending on various qualities:
 
 Extension source code goes in the `extensions` folder. For example, an extension placed at `extensions/hello-world.js` would be accessible at [http://localhost:8000/hello-world.js](http://localhost:8000/hello-world.js).
 
-We ask that new extensions be added in a user-specific folder. For example, if your GitHub username is "TestMuffin", you could make a `TestMuffin` folder inside of the `extensions` folder and put your extensions inside there. You could then access a file placed at `extensions/TestMuffin/hello-world.js` at [http://localhost:8000/TestMuffin/hello-world.js](http://localhost:8000/TestMuffin/hello-world.js). We're lenient on what you choose to name your folder -- it can be your GitHub username, Scratch username, or whatever you want it to be (within reason).
+New extensions should be added in a user folder. You can name your folder your GitHub username, your Scratch username, or something else. For example, if your GitHub username is "TestMuffin", you could make a `TestMuffin` folder inside of the `extensions` folder and put your extensions inside there. You could then access a file placed at `extensions/TestMuffin/hello-world.js` at [http://localhost:8000/TestMuffin/hello-world.js](http://localhost:8000/TestMuffin/hello-world.js).
 
 Static resources go in the `website` folder. This is where some example resources used by extensions such as fetch are placed. It works similarly to the `extensions` folder.
+
+Extensions must not use `eval()`, `new Function()`, untrusted `<script>` or `<iframe>` tags, or similar arbitrary JS/CSS/HTML/etc.
+
+Extensions must be self-contained. All libraries and hardcoded resources it needs should be embedded into the extension's JavaScript file. If you include minified code, please link where to find the unminified code.
 
 To add an extension to the website homepage, modify `website/index.ejs`. It should be easy to understand if you copy one of the existing extensions. New extensions should generally be added to the end of the list.
 
@@ -71,9 +75,9 @@ To add an image for your extension on the homepage, put a file in the `images` f
 
 **We are not lawyers. This section should not be interpreted as legal advice.**
 
-The source code of the extension and any libraries it uses must be available under an open source license that is compatible with the GNU General Public License v3 so that we can include it in the desktop app. If unsure, use [the MIT License](licenses/MIT.txt) as that's what most extensions here use. For this to be legally possible, either you must have written the entire extension yourself or have permission to use all of its components under an open source license.
+The source code of the extension and any libraries it uses must be available under a permissive open source license that is compatible with the [GNU General Public License version 3](licenses/GPL-3.0.txt) so that we can include it in the desktop app. If unsure, use the [MIT License](licenses/MIT.txt). For this to be legally possible, either you must have written the entire extension yourself or have permission to use all of its components under an open source license.
 
-If you use a different license than MIT, leave a comment at the top of each file indicating its license. For example, if it uses the Apache 2.0 license instead, add a comment like this:
+If you use a license other than MIT, leave a comment at the top of each file indicating its license. For example, if you prefer to use Apache 2.0, add a comment like the one below. Extensions using the default MIT License do not need to include this type of comment, but you can include one if you want.
 
 ```js
 /*!
@@ -93,15 +97,9 @@ If you use a different license than MIT, leave a comment at the top of each file
  */
 ```
 
-Please update the copyright year and name appropriately. Pseudonyms are accepted.
+Please update the copyright year and name appropriately. Pseudonyms are accepted. Add a copy of the full plain text license in the `licenses` folder if a copy doesn't already exist. You should use `/*!` instead of `/*` for license comments so that JavaScript minifiers won't remove it.
 
-Add a copy of the full plain text license in the `licenses` folder if one doesn't already exist. You should use `/*!` instead of `/*` for the license comment so that JavaScript minifiers will not remove it.
-
-We don't want extension code to be GPLv3 exclusively as our non-lawyer understanding of the copyleft clause suggests that it would spread to any projects that use the extension. That isn't what we want.
-
-Extensions must not use `eval()`, `new Function()`, untrusted `<script>` or `<iframe>` tags, or similar arbitrary JS/CSS/HTML/etc.
-
-Extensions must be self-contained. All libraries and hardcoded resources it needs should be embedded into the extension's JavaScript file.
+We don't want extension code to use the GPLv3 or LGPLv3 licenses exclusively. Our non-lawyer understanding suggests that the copyleft could extend to projects that use the extension and to any packaged projects, neither of which we want.
 
 ## Suggested code style
 
