@@ -337,9 +337,9 @@
           {
             opcode: 'json_vm_getlist',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'get list [lists] as array',
+            text: 'get list [list] as array',
             arguments: {
-              lists: {
+              list: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'get_list'
               },
@@ -348,9 +348,9 @@
           {
             opcode: 'json_vm_setlist',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set list [lists] to content [json]',
+            text: 'set list [list] to content [json]',
             arguments: {
-              lists: {
+              list: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'get_list'
               },
@@ -366,6 +366,7 @@
             items: ['keys','values','datas']
           },
           get_list: {
+            acceptReporters: true,
             items: 'getLists'
           }
         }
@@ -373,30 +374,22 @@
     }
 
     getLists () {
-      // get list id&name from vm and filter with list
-      let globalList = Object.values(vm.runtime.getTargetForStage().variables).filter(x => x.type == 'list');
-      globalList = globalList.map(x => {
-        return {name: x.name, id: x.id, father: vm.runtime.getTargetForStage().id, local: false};
-      });
-
-      // get local list from sprite
-      let localList = Object.values(vm.editingTarget.variables).filter(x => x.type == 'list');
-      localList = localList.map(x => {
-        return {name: x.name, id: x.id, father: vm.editingTarget.id, local: true};
-      });
-
-      let lists = localList.concat(globalList);
-      lists = lists.filter((item, pos, self) => {
-        // remove duplicates by their id
-        return (self.map(x=>x.id)).indexOf(item.id) == pos;
-      });
-
-      if (lists.length == 0) return [{text: '-', value: '-'}];
-      return lists.map(x => ({
-        text: x.name,
-        value: JSON.stringify(x)
+      const globalLists = Object.values(vm.runtime.getTargetForStage().variables).filter(x => x.type == 'list');
+      const localLists = Object.values(vm.editingTarget.variables).filter(x => x.type == 'list');
+      const uniqueLists = [...new Set([...globalLists, ...localLists])];
+      if (uniqueLists.length === 0) {
+        return [
+          {
+            text: '-',
+            value: '-'
+          }
+        ];
+      }
+      return uniqueLists.map(i => ({
+        text: i.name,
+        value: i.id
       }));
-  }
+    }
 
     json_is_valid({ json }) {
       if (typeof json != 'string') {
@@ -648,33 +641,34 @@
       }
     }
 
-    json_vm_getlist({ lists },utils) {
+    json_vm_getlist({ list }, util) {
       try {
-        lists = JSON.parse(lists);
-        if (lists.local){
-          lists.father = utils.thread.target.id; // get clone's id instead of sprite's id
+        const listVariable = util.target.lookupVariableById(list);
+        if (listVariable) {
+          return JSON.stringify(listVariable.value);
         }
-        let get = vm.getVariableValue(lists.father,lists.id);  // sprite id, variable id
-        return JSON.stringify(get);
-      } catch {
-        return ' ';
+      } catch (e) {
+        // ignore
       }
+      return '';
     }
-    json_vm_setlist({ lists, json },utils) {
+    json_vm_setlist({ list, json }, util) {
       try {
-        json = JSON.parse(json);
-        json = json.map(x => {
-          if (typeof x == 'object') return JSON.stringify(x);
-          return x;
-        });
-        lists = JSON.parse(lists);
-        if (lists.local){
-          lists.father = utils.thread.target.id; // get clone's id instead of sprite's id
+        const listVariable = util.target.lookupVariableById(list);
+        if (listVariable) {
+          const array = JSON.parse(json);
+          if (Array.isArray(array)) {
+            const safeArray = array.map(i => {
+              if (typeof i === 'object') return JSON.stringify(i);
+              return i;
+            });
+            listVariable.value = safeArray;
+          }
         }
-        vm.setVariableValue(lists.father,lists.id,json);  // sprite id, variable id, value
-      } catch {
-        return ' ';
+      } catch (e) {
+        // ignore
       }
+      return '';
     }
   }
   Scratch.extensions.register(new JSONS());
