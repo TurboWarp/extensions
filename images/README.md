@@ -104,4 +104,4 @@ Created by https://scratch.mit.edu/users/JoshsAccount
 Created by @Skyhigh173 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1457973080
 
 ## text.svg
-Based on an image created by [@JoshsAccount](https://scratch.mit.edu/users/JoshsAccount/) under the GNU General Public License version 3. Originaly version is https://github.com/ScratchCE/scratch-gui/blob/develop/src/lib/libraries/extensions/strings/strings.png.
+Based on an image created by [@JoshsAccount](https://scratch.mit.edu/users/JoshsAccount/) under the GNU General Public License version 3. Original version is https://github.com/ScratchCE/scratch-gui/blob/develop/src/lib/libraries/extensions/strings/strings.png.
