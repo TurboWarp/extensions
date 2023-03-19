@@ -67,9 +67,9 @@ Extensions must not use `eval()`, `new Function()`, untrusted `<script>` or `<if
 
 Extensions must be self-contained. All libraries and hardcoded resources it needs should be embedded into the extension's JavaScript file. If you include minified code, please link where to find the unminified code.
 
-To add an extension to the website homepage, modify `website/index.ejs`. It should be easy to understand if you copy one of the existing extensions. New extensions should generally be added to the end of the list.
+To add an extension to the website homepage, modify `website/index.ejs`. Copy one of the existing extensions. New extensions should usually be added to the end of the list.
 
-To add an image for your extension on the homepage, put a file in the `images` folder with the same name and directory structure (but a different file extension) as the extension's source code. The homepage generator will automatically update the image if you did it correctly. Images will be displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md`.
+To add an image for your extension on the homepage, put a file in the `images` folder with the same name and directory structure (but a different file extension) as the extension's source code. The homepage generator will automatically update the image if you did it correctly. Images will be displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you.
 
 ## License
 
