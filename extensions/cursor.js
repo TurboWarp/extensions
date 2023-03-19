@@ -185,12 +185,12 @@
           cursors: {
             acceptReporters: true,
             items: [
-                'default', 'pointer', 'move', 'grab', 'grabbing', 'text', 
-                'vertical-text', 'wait', 'progress', 'help', 'context-menu', 
-                'zoom-in', 'zoom-out', 'crosshair', 'cell', 'not-allowed', 
-                'copy', 'alias', 'no-drop', 'all-scroll', 'col-resize', 
-                'row-resize', 'n-resize', 'e-resize', 's-resize', 'w-resize', 
-                'ne-resize', 'nw-resize', 'se-resize', 'sw-resize', 
+                'default', 'pointer', 'move', 'grab', 'grabbing', 'text',
+                'vertical-text', 'wait', 'progress', 'help', 'context-menu',
+                'zoom-in', 'zoom-out', 'crosshair', 'cell', 'not-allowed',
+                'copy', 'alias', 'no-drop', 'all-scroll', 'col-resize',
+                'row-resize', 'n-resize', 'e-resize', 's-resize', 'w-resize',
+                'ne-resize', 'nw-resize', 'se-resize', 'sw-resize',
                 'ew-resize', 'ns-resize', 'nesw-resize', 'nwse-resize'
             ],
           },
