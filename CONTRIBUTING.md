@@ -101,6 +101,18 @@ Please update the copyright year and name appropriately. Pseudonyms are accepted
 
 We don't want extension code to use the GPLv3 or LGPLv3 licenses exclusively. Our non-lawyer understanding suggests that the copyleft could extend to projects that use the extension and to any packaged projects, neither of which we want.
 
+Extension images in the [images](images) directory are instead licensed under the [GNU General Public version 3](licenses/GPL-3.0.txt).
+
+Please avoid code and image assets that are under these licenses as they are not compatible with the GPLv3:
+
+ - Creative Commons Attribution-ShareAlike licenses prior to version 4.0
+   - User-generated content on the Scratch website uses version 2.0 of this license.
+   - StackOverflow uses [different versions of this license depending on what when the post was made](https://stackoverflow.com/help/licensing).
+ - Creative Commons Attribution-NoDerivs and similar "no derivatives" licenses
+ - Creative Commons Attribution-NonCommercial and similar "non commercial" licenses
+ - This list is non-comprehensive
+ - More information: https://www.gnu.org/licenses/license-list.en.html
+
 ## Suggested code style
 
 Our preferred code style is:
