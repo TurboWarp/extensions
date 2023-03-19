@@ -47,20 +47,13 @@ Note that browsers tend to aggressively cache JavaScript files that don't opt ou
 
 ## Types of extensions we accept
 
-We strive to be tolerant of accepting almost any extension that:
+We strive to be tolerant of accepting almost any extension, including one-use novelty extensions or extensions that are similar to ones that already exist.
 
- - Does not contain security bugs such as arbitrary code execution/XSS
- - Does not threaten the safety of our users
-
-We are willing to accept one-use novelty extensions or extensions that are similar to ones that already exist. They just might not get listed on the website.
-
-There are effectively three categories of extensions:
+Extensions end up in one of these categories depending on various qualities:
 
  - Extensions that are in the repository, but not listed on the website
  - Extensions that are listed on the website
  - Extensions that are listed in the editor's builtin extension library
-
-Qualities such as uniqueness, quality, and bugginess may be factors in the decision of each extension's category.
 
 ## Writing extensions
 
