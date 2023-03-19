@@ -115,19 +115,19 @@ If we dislike your style choices we will just fix it ourselves.
 
 ## Automated linting
 
-We use ESLint. You can run our linting rules locally with:
+We use ESLint to automatically find problems in pull requests. To run our linting rules locally:
 
 ```bash
 npm run lint
 ```
 
-And you can run ESLint's automatic fixes can fix many issues automatically by running:
+To run ESLint's automatic fixes for common style issues:
 
 ```bash
 npm run fix
 ```
 
-The goal of our linting is to prevent common mistakes and ensure the code is *somewhat* cohesive. It is not intended to be overbearing. If one of the rules is getting in your way, feel free to just disable it for that line, section, etc.
+Our linting is not intended to be overbearing -- we just want to prevent common mistakes and encourage writing readable code. If one of the rules is getting in your way, feel free to just disable it for that line or section.
 
 When including third-party code, especially minified code, you may use [`/* eslint-disable*/` and `/* eslint-enable */`](https://eslint.org/docs/latest/user-guide/configuring/rules#disabling-rules) markers to disable linting for that section.
 
