@@ -835,14 +835,6 @@
       return util.ioQuery('keyboard', 'getKeyIsDown', [args.KEY_OPTION]);
     }
 
-    spriteClicked(util) {
-      if ((util.target.isTouchingObject('_mouse_')) && (util.ioQuery('mouse', 'getMouseDown'))) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
     equalsExactly(args) {
       return args.ONE === args.TWO;
     }
@@ -937,7 +929,7 @@
     }
 
     encodeToBlock(args) {
-      if (args.STRING === ''); {
+      if (args.STRING === '') {
         return '';
       }
       if (args.DROPDOWN === 'base64') {
@@ -951,7 +943,7 @@
     }
 
     decodeFromBlock(args) {
-      if (args.STRING === ''); {
+      if (args.STRING === '') {
         return '';
       }
       if (args.DROPDOWN === 'base64') {
