@@ -957,19 +957,11 @@
 
     trueFalseBoolean(args) {
       if (args.TRUEFALSE === 'random') {
-        var min = 1;
-        var max = 2;
-        var random = Math.floor(Math.random() * (max - min + 1) + min);
-        if (random == '2') {
-          return true;
-        } else {
-          return false;
-        }
+        return Math.random() > 0.5;
       }
       if (args.TRUEFALSE === 'true') {
         return true;
-      }
-      if (args.TRUEFALSE === 'false') {
+      } else {
         return false;
       }
     }
