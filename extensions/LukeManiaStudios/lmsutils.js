@@ -504,7 +504,7 @@
             opcode: 'negativeReporter',
             blockType: Scratch.BlockType.REPORTER,
             text: '- [INPUT]',
-            disableMonitor: true, 
+            disableMonitor: true,
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -558,7 +558,7 @@
           {
             opcode: 'clampNumber',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'clamp [INPUTA] between [INPUTB] and [INPUTC]',  
+            text: 'clamp [INPUTA] between [INPUTB] and [INPUTC]',
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -569,7 +569,7 @@
                 defaultValue: '25'
               },
               INPUTC: {
-                type: Scratch.ArgumentType.NUMBER, 
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '50'
               }
             }
