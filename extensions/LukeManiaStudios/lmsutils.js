@@ -190,18 +190,18 @@
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Turbowarp is brilliant!'
+                defaultValue: 'brilliant'
               },
               INPUTB: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'brilliant'
+                defaultValue: 'Turbowarp is brilliant!'
               }
             }
           },
           {
             opcode: 'itemOfFromString',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'index [INPUTA] of [INPUTB] split by [INPUTC]',
+            text: 'item [INPUTA] of [INPUTB] split by [INPUTC]',
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.NUMBER,
