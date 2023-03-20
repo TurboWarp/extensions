@@ -1,0 +1,44 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="599.99999" height="300.00001" viewBox="0,0,599.99999,300.00001">
+    <g transform="translate(60,-29.99999)">
+        <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill-rule="nonzero" stroke="none"
+            stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
+            stroke-dasharray="" stroke-dashoffset="0" style="mix-blend-mode: normal">
+            <path d="M-60,329.99999v-300h599.99999v300z" data-paper-data="{&quot;index&quot;:null}"
+                fill="#000252" />
+            <path
+                d="M539.99999,30v300h-370.99999v-33h82v-34h16v-33h-4v-33h-252.99999v-34h49v-33h173v-33h-42v-34h-167v-33h110z"
+                data-paper-data="{&quot;index&quot;:null}" fill="#2d00d1" />
+            <path
+                d="M539.99999,30v300h-379.99999v-33h-39v-34h12v-33h58v-33h53v-34h-91v-33h116v-33h-104v-34h34v-33h-79z"
+                data-paper-data="{&quot;index&quot;:null}" fill="#b300ab" />
+            <path
+                d="M539.99999,30v300h-344.99999v-33h-36v-34h-61v-33h109v-33h25v-34h-39v-33h97l-0.33333,-27.08226l-161,0.08226l0.33333,-40h101v-33h14z"
+                data-paper-data="{&quot;index&quot;:null}" fill="#0600de" />
+            <path
+                d="M539.99999,30v300h-355.99999v-33h64v-34h89v-33h-41v-33h35v-34h-127v-33h44v-33h-50v-34h-38v-33h33z"
+                data-paper-data="{&quot;index&quot;:null}" fill="#3900d1" />
+            <path
+                d="M539.99998,30v300h-318.99999v-33h64v-34h-85v-33h135v-33h50v-34h-44.91666l-4.98426,1.27969l-69.01574,-0.61302l-4.5,-0.66667h-63.58333v-33h142v-33h-50v-34h-40v-33h70z"
+                data-paper-data="{&quot;index&quot;:null}" fill="#9700e6" />
+            <path
+                d="M539.99998,30v300h-220v-33h84v-34h-147v-33h135v-33h-144.99999v-34h16.75l6.05556,1.05556l33.641,-0.19238l36.13678,-0.86318h65.41667v-33h-40v-33h-55v-34h-24v-33h55z"
+                data-paper-data="{&quot;index&quot;:null}" fill="#5b00c4" />
+            <path
+                d="M538.4985,30v300h-218.99999v-33h7v-34h-31v-33h80v-33h-13v-34h-21.08334l-6.5,1.66667l-34.11516,-0.29601l-0.16969,-34.08657l26.86818,-0.28409v-33h-32v-34h25v-33h36z"
+                data-paper-data="{&quot;index&quot;:null}" fill="#8300b8" />
+            <path
+                d="M539.99999,30v300h-132v-33h-9v-34h27v-33h-80v-33h112v-34h-69v-33h61v-33h-75v-34h95v-33h-5z"
+                data-paper-data="{&quot;index&quot;:null}" fill="#c900c3" />
+            <path
+                d="M539.99999,30v300h-132v-33h41v-34h5v-33h30v-33h5v-34h-38v-33h6v-33h-40v-34h-2v-33h26z"
+                data-paper-data="{&quot;index&quot;:null}" fill="#9e0071" />
+            <path
+                d="M539.99999,30v300h-60v-33h38v-34h10v-33h-18v-33h-69v-34h75v-33h-15v-33h-19v-34h48v-33h7z"
+                data-paper-data="{&quot;index&quot;:null}" fill="#910006" />
+            <path
+                d="M239.99995,128.26221h68.98365c9.52483,0 17.24609,7.72127 17.24609,17.24586v86.22974c0,9.52459 -7.72127,17.24586 -17.24609,17.24586h-137.96729c-9.52483,0 -17.24598,-7.72127 -17.24598,-17.24586v-103.47562c0,-9.57148 7.67449,-17.24586 17.24598,-17.24586h51.73777z"
+                fill="#ffb900" />
+        </g>
+    </g>
+</svg><!--rotationCenter:300:150.00000999999992-->
