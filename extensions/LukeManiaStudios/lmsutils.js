@@ -1434,13 +1434,11 @@
     findIndexOfString (args) {
       var input1 = args.INPUTA;
       var input2 = args.INPUTB;
-      var output = '';
       if (input2.includes(input1)) {
-        var output = (input2.indexOf(input1) + 1);
+        return (input2.indexOf(input1) + 1);
       } else {
-        var output = '';
+        return '';
       }
-      return output;
     }
 
     itemOfFromString (args, util) {
