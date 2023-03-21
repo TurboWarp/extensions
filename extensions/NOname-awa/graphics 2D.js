@@ -229,22 +229,22 @@
         }
     }
     triangle(args) {
-      if(args.CS == 's'){
+      if (args.CS == 's'){
         let points = [[args.x1,args.y1], [args.x2,args.y2], [args.x3,args.y3]];
         let area = 0;
         let n = points.length;
         for (let i = 0; i < n; i++) {
             let x1 = points[i][0];
             let y1 = points[i][1];
-            let x2 = points[(i+1) % n][0];
-            let y2 = points[(i+1) % n][1];
+            let x2 = points[(i + 1) % n][0];
+            let y2 = points[(i + 1) % n][1];
             area += x1 * y2;
             area -= x2 * y1;
         }
         area = Math.abs(area) / 2;
         return (area);
       }
-      if(args.CS == 'c'){
+      if (args.CS == 'c'){
         let i = 0;
         i += Math.sqrt(Math.pow(args.x1 - args.x2, 2) + Math.pow(args.y1 - args.y2, 2));
         i += Math.sqrt(Math.pow(args.x2 - args.x3, 2) + Math.pow(args.y2 - args.y3, 2));
@@ -259,22 +259,22 @@
       return area;
     }
     quadrilateral(args) {
-      if(args.CS == 's'){
+      if (args.CS == 's'){
         let points = [[args.x1,args.y1], [args.x2,args.y2], [args.x3,args.y3], [args.x4,args.y4]];
         let area = 0;
         let n = points.length;
         for (let i = 0; i < n; i++) {
             let x1 = points[i][0];
             let y1 = points[i][1];
-            let x2 = points[(i+1) % n][0];
-            let y2 = points[(i+1) % n][1];
+            let x2 = points[(i + 1) % n][0];
+            let y2 = points[(i + 1) % n][1];
             area += x1 * y2;
             area -= x2 * y1;
         }
         area = Math.abs(area) / 2;
         return (area);
       }
-      if(args.CS == 'c'){
+      if (args.CS == 'c'){
         let i = 0;
         i += Math.sqrt(Math.pow(args.x1 - args.x2, 2) + Math.pow(args.y1 - args.y2, 2));
         i += Math.sqrt(Math.pow(args.x2 - args.x3, 2) + Math.pow(args.y2 - args.y3, 2));
@@ -287,20 +287,20 @@
     graph(args) {
       let points = JSON.parse (args.graph);
       let n = points.length;
-      if(args.CS == 's'){
+      if (args.CS == 's'){
         let area = 0;
         for (let i = 0; i < n; i++) {
           let x1 = points[i][0];
           let y1 = points[i][1];
-          let x2 = points[(i+1) % n][0];
-          let y2 = points[(i+1) % n][1];
+          let x2 = points[(i + 1) % n][0];
+          let y2 = points[(i + 1) % n][1];
           area += x1 * y2;
           area -= x2 * y1;
         }
         area = Math.abs(area) / 2;
         return (area);
       }
-      if(args.CS == 'c'){
+      if (args.CS == 'c'){
         let x1, x2, y1, y2;
         let j = 0;
         j = 0;
@@ -321,11 +321,11 @@
       return 0;
     }
     round(args) {
-        if(args.CS == 'c'){
-            return 2 * Math.PI * (args.rd == 'r' ? args.a : args.a/2);
+        if (args.CS == 'c'){
+            return 2 * Math.PI * (args.rd == 'r' ? args.a : args.a / 2);
         }
-        if(args.CS == 's'){
-            return Math.PI * ((args.rd == 'r' ? args.a : args.a/2) ** 2);
+        if (args.CS == 's'){
+            return Math.PI * ((args.rd == 'r' ? args.a : args.a / 2) ** 2);
         }
     }
     pi() {
