@@ -17,9 +17,8 @@ const wenj = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRw
     class rxFS {
         getInfo() {
             return {
-                id: 'rxfs',
+                id: '0832rxfs',
                 name: 'rxFS',
-                docsURI: 'https://0832k12.github.io/rxFS/',
                 color1: '#2bdab7',
                 blocks: [
                     {
