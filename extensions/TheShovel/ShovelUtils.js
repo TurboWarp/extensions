@@ -1,6 +1,6 @@
 (function (Scratch) {
   'use strict';
-  console.log("ShovelUtils v1.3");
+  console.log("ShovelUtils v1.4");
   const vm = Scratch.vm;
 
   // Based on from https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html
@@ -156,6 +156,40 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'Fps'
           },
+                  {
+          opcode: 'deletecostume',
+          blockType: Scratch.BlockType.COMMAND,
+          text: "Delete costume [NAME]",
+          arguments: {
+            NAME: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: '',
+            }
+          }
+        },
+        {
+          opcode: 'deletesound',
+          blockType: Scratch.BlockType.COMMAND,
+          text: "Delete sound [NAME]",
+          arguments: {
+            NAME: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: '',
+            }
+          }
+        },
+        {
+          opcode: 'deletesprite',
+          blockType: Scratch.BlockType.COMMAND,
+          text: "Delete sprite [TEXT]",
+          arguments: {
+            TEXT: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'Sprite 1',
+            }
+          }
+        },
+
         ]
       };
     }
@@ -302,6 +336,16 @@
 
     getfps(){
       return fps;
+    }
+    deletesprite({NAME}){
+      vm.deleteSprite(vm.runtime.getSpriteTargetByName(NAME).id);
+
+    }
+    deletesound({NAME}){
+      vm.deleteSound(NAME);
+    }
+    deletecostume({NAME}){
+      vm.deleteCostume(NAME);
     }
   }
 
