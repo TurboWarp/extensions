@@ -21,7 +21,6 @@ const wenj = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRw
             return {
                 id: 'rxfs',
                 name: '0832rxfs',
-                docsURI: 'https://0832k12.github.io/rxFS/',
                 color1: '#2bdab7',
                 blocks: [
                     {
