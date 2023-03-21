@@ -26,6 +26,17 @@
           }
         },
         {
+          opcode: 'deletecostume',
+          blockType: Scratch.BlockType.COMMAND,
+          text: "Delete costume [NAME]",
+          arguments: {
+            NAME: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: '',
+            }
+          }
+        },
+        {
           opcode: 'getlist',
           blockType: Scratch.BlockType.REPORTER,
           text: "Get list [TEXT]",
@@ -85,6 +96,17 @@
             NAME: {
               type: Scratch.ArgumentType.STRING,
               defaultValue: 'Apple',
+            }
+          }
+        },
+        {
+          opcode: 'deletesound',
+          blockType: Scratch.BlockType.COMMAND,
+          text: "Delete sound [NAME]",
+          arguments: {
+            NAME: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: '',
             }
           }
         },
