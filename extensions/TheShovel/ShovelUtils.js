@@ -63,6 +63,17 @@
           }
         },
         {
+          opcode: 'deletesprite',
+          blockType: Scratch.BlockType.COMMAND,
+          text: "Delete sprite [TEXT]",
+          arguments: {
+            TEXT: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'Sprite 1',
+            }
+          }
+        },
+        {
           opcode: 'importSound',
           blockType: Scratch.BlockType.COMMAND,
           text: "Import sound from [TEXT] name [NAME]",
@@ -192,6 +203,7 @@
     }
 
     importProject({ TEXT }) {
+      // @ts-ignore
       if (typeof ScratchBlocks !== 'undefined') {
         // We are in the editor. Ask before loading a new project to avoid unrecoverable data loss.
         if (!confirm(`Do you want to import a project from "${TEXT}"? Everything in the current project will be permanently deleted.`)) {
@@ -268,7 +280,16 @@
         vm.setEditingTarget(target.id);
       }
     }
+    deletesprite({NAME}){
+      vm.deleteSprite(vm.runtime.getSpriteTargetByName(NAME).id);
 
+    }
+    deletesound({NAME}){
+      vm.deleteSound(NAME);
+    }
+    deletecostume({NAME}){
+      vm.deleteCostume(NAME);
+    }
     /**
      * Calculate brightness value by RGB or HEX color.
      * @param color (String) The color value in RGB or HEX (for example: #000000 || #000 || rgb(0,0,0) || rgba(0,0,0,0))
