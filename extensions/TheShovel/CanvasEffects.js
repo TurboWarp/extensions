@@ -27,11 +27,11 @@
               blockType: Scratch.BlockType.COMMAND,
               text: 'Set Canvas [EFFECT] to [NUMBER]',
               arguments: {
-                EFFECT:{
+                EFFECT: {
                     type: Scratch.ArgumentType.STRING,
                     menu: 'EFFECTMENU'
                 },
-                NUMBER:{
+                NUMBER: {
                     type: Scratch.ArgumentType.NUMBER
                 }
               },
@@ -62,27 +62,26 @@
                 blockType: Scratch.BlockType.REPORTER,
                 text: 'Get Canvas property [EFFECT]',
                 arguments: {
-                    EFFECT:{
+                    EFFECT: {
                         type: Scratch.ArgumentType.STRING,
                         menu: 'EFFECTGETMENU'
                     }
                 }
             },
             {
-                opcode:'renderscale',
+                opcode: 'renderscale',
                 blockType: Scratch.BlockType.COMMAND,
                 text: 'Set Canvas render size to x:[X] y:[Y]',
-                arguments:{
-                    X:{
+                arguments: {
+                    X: {
                         type: Scratch.ArgumentType.NUMBER,
                         defaultValue: 100
                     },
-                    Y:{
+                    Y: {
                         type: Scratch.ArgumentType.NUMBER,
                         defaultValue: 100
                     }
                 }
-
             },
           ],
           menus: {
