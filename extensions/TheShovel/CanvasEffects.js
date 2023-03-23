@@ -1,7 +1,7 @@
 (function(Scratch) {
     'use strict';
     function setcss (){
-        vm.renderer.canvas.style.filter = 'blur('+blur+'px) contrast('+contrast+') saturate('+saturation+'%) hue-rotate('+color+'deg) brightness('+brightness+'%) invert('+invert+'%)';
+        vm.renderer.canvas.style.filter = 'blur(' + blur + 'px) contrast(' + contrast + ') saturate(' + saturation + '%) hue-rotate(' + color + 'deg) brightness(' + brightness + '%) invert(' + invert + '%)';
         vm.renderer.canvas.style.imageRendering = rendermode;
     }
     var blur = 0;
