@@ -1,94 +1,76 @@
 (function(Scratch) {
-    'use strict';
-    function setcss (){
-        vm.renderer.canvas.style.filter = 'blur(' + blur + 'px) contrast(' + contrast + ') saturate(' + saturation + '%) hue-rotate(' + color + 'deg) brightness(' + brightness + '%) invert(' + invert + '%)';
-        vm.renderer.canvas.style.imageRendering = rendermode;
-    }
-    var blur = 0;
-    var contrast = 1;
-    var saturation = 100;
-    var color = 0;
-    var brightness = 100;
-    var invert = 0;
-    var rendermode = 'Default';
-    const vm = Scratch.vm;
-
-    if (!Scratch.extensions.unsandboxed) {
-      throw new Error('This extension must run unsandboxed');
-    }
-    class CanvasEffects {
-      getInfo() {
-        return {
-          id: 'CanvasEffects',
-          name: 'CanvasEffects',
-          blocks: [
-            {
-              opcode: 'seteffect',
-              blockType: Scratch.BlockType.COMMAND,
-              text: 'Set Canvas [EFFECT] to [NUMBER]',
-              arguments: {
-                EFFECT: {
-                    type: Scratch.ArgumentType.STRING,
-                    menu: 'EFFECTMENU'
-                },
-                NUMBER: {
-                    type: Scratch.ArgumentType.NUMBER
-                }
-              },
-            },
-            {
-                opcode: 'setrendermode',
-                blockType: Scratch.BlockType.COMMAND,
-                text: 'Set Canvas render mode [EFFECT]',
-                arguments: {
-                  EFFECT: {
-                      type: Scratch.ArgumentType.STRING,
-                      menu: 'RENDERMODE'
-                  }
-                },
-              },
-            {
-                opcode: 'cleareffects',
-                blockType: Scratch.BlockType.COMMAND,
-                text: 'Clear Canvas effects'
-            },
-            {
-                opcode: 'refreshcheck',
-                blockType: Scratch.BlockType.BOOLEAN,
-                text: 'Is Canvas clear?'
-            },
-            {
-                opcode: 'geteffect',
-                blockType: Scratch.BlockType.REPORTER,
-                text: 'Get Canvas property [EFFECT]',
-                arguments: {
-                    EFFECT: {
-                        type: Scratch.ArgumentType.STRING,
-                        menu: 'EFFECTGETMENU'
-                    }
-                }
-            },
-            {
-                opcode: 'renderscale',
-                blockType: Scratch.BlockType.COMMAND,
-                text: 'Set Canvas render size to x:[X] y:[Y]',
-                arguments: {
-                    X: {
-                        type: Scratch.ArgumentType.NUMBER,
-                        defaultValue: 100
-                    },
-                    Y: {
-                        type: Scratch.ArgumentType.NUMBER,
-                        defaultValue: 100
-                    }
-                }
-            },
-          ],
-          menus: {
+'use strict';
+function setcss (){
+vm.renderer.canvas.style.filter = 'blur(' + blur + 'px) contrast(' + contrast + ') saturate(' + saturation + '%) hue-rotate(' + color + 'deg) brightness(' + brightness + '%) invert(' + invert + '%)';
+vm.renderer.canvas.style.imageRendering = rendermode;}
+var blur = 0;
+var contrast = 1;
+var saturation = 100;
+var color = 0;
+var brightness = 100;
+var invert = 0;
+var rendermode = 'Default';
+const vm = Scratch.vm;
+if (!Scratch.extensions.unsandboxed) {
+throw new Error('This extension must run unsandboxed');}
+class CanvasEffects {
+getInfo() {
+return {
+id: 'CanvasEffects',
+name: 'CanvasEffects',
+blocks: [
+{
+opcode: 'seteffect',
+blockType: Scratch.BlockType.COMMAND,
+text: 'Set Canvas [EFFECT] to [NUMBER]',
+arguments: {
+EFFECT: {
+type: Scratch.ArgumentType.STRING,
+menu: 'EFFECTMENU'},
+NUMBER: {
+type: Scratch.ArgumentType.NUMBER}},},
+{
+opcode: 'setrendermode',
+blockType: Scratch.BlockType.COMMAND,
+text: 'Set Canvas render mode [EFFECT]',
+arguments: {
+EFFECT: {
+type: Scratch.ArgumentType.STRING,
+menu: 'RENDERMODE'
+}},},
+{
+opcode: 'cleareffects',
+blockType: Scratch.BlockType.COMMAND,
+text: 'Clear Canvas effects'},
+{
+opcode: 'refreshcheck',
+blockType: Scratch.BlockType.BOOLEAN,
+text: 'Is Canvas clear?'},
+{
+opcode: 'geteffect',
+blockType: Scratch.BlockType.REPORTER,
+text: 'Get Canvas property [EFFECT]',
+arguments: {
+EFFECT: {
+type: Scratch.ArgumentType.STRING,
+menu: 'EFFECTGETMENU'
+}}},
+{
+opcode: 'renderscale',
+blockType: Scratch.BlockType.COMMAND,
+text: 'Set Canvas render size to x:[X] y:[Y]',
+arguments: {
+X: {
+type: Scratch.ArgumentType.NUMBER,
+defaultValue: 100},
+Y: {
+type: Scratch.ArgumentType.NUMBER,
+defaultValue: 100}}},],
+menus: {
 EFFECTMENU: {
 acceptReporters: true,
 items: ['Blur','Contrast','Saturation','Color','Brightness','Invert'] 
-            },
+},
             RENDERMODE: {
                 acceptReporters: true,
                 items: ['Pixelated','Auto']
