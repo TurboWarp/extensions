@@ -87,111 +87,73 @@
           menus: {
 EFFECTMENU: {
 acceptReporters: true,
-items: ['Blur', 'Contrast', 'Saturation', 'Color', 'Brightness', 'Invert'] 
+items: ['Blur','Contrast','Saturation','Color','Brightness','Invert'] 
             },
             RENDERMODE: {
                 acceptReporters: true,
-                items: ['Pixelated', 'Auto']
+                items: ['Pixelated','Auto']
             },
 EFFECTGETMENU: {
 acceptReporters: true,
-items: ['Blur', 'Contrast', 'Saturation', 'Color', 'Brightness', 'Invert','Render mode'] 
+items: ['Blur','Contrast','Saturation','Color','Brightness','Invert','Render mode'] 
             }
           }
         };
       }
-      geteffect({EFFECT}){
-        if (EFFECT == 'Blur'){
-            return blur;}
-        else {
-            if (EFFECT == 'Contrast'){
-                return contrast;}
-            else {
-                if (EFFECT == 'Saturation'){
-                    return saturation;}
-                else {
-                    if (EFFECT == 'Color'){
-                        return color;}
-                    else {
-                        if (EFFECT == 'Brightness'){
-                            return brightness;}
-                        else {
-                            if (EFFECT == 'Invert'){
-                                return invert;}
-                            else {
-                                if (EFFECT == 'Render mode'){
-                                    return rendermode;}
-                                else {
-                                    return ''
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-      }
-      setrendermode({EFFECT}){
-        rendermode = EFFECT;
-        setcss();
-      }
-      seteffect({EFFECT, NUMBER}) {
-        if (EFFECT == 'Blur'){
-            blur = NUMBER;
-        }
-        else{
-            if (EFFECT == 'Contrast'){
-                contrast = NUMBER;
-            }
-            else{
-                if (EFFECT == 'Saturation'){
-                    saturation = NUMBER;
-                }
-                else{
-                    if (EFFECT == 'Color'){
-                        color = NUMBER;
-                    }
-                    else{
-                        if (EFFECT == 'Brightness'){
-                            brightness = NUMBER;
-                        }
-                        else{
-                            if (EFFECT == 'Invert'){
-                                invert = NUMBER;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        setcss();
-      }
-    cleareffects(){
-        blur = 0;
-        contrast = 1;
-        saturation = 100;
-        color = 0;
-        brightness = 100;
-        invert = 0;
-        rendermode = 'Default';
-        vm.renderer.canvas.style.filter = '';
-        vm.renderer.canvas.style.imageRendering = '';
-        
-
-    }
-    //people can use this to detect if Scratch refreshed the canvas css values, and reapply them
-    refreshcheck(){
-        if (vm.renderer.canvas.style.filter == '' & vm.renderer.canvas.style.imageRendering == '' ){
-            return true
-        }
-        else
-        {
-            return false
-        }
-    }
-    renderscale({X,Y}){
-        vm.renderer.resize(X,Y);
-    }
-    }
-    Scratch.extensions.register(new CanvasEffects());
-  })(Scratch);
+geteffect({EFFECT}){
+if (EFFECT == 'Blur'){return blur;}
+else {
+if (EFFECT == 'Contrast'){return contrast;}
+else {
+if (EFFECT == 'Saturation'){return saturation;}
+else {
+if (EFFECT == 'Color'){return color;}
+else {
+if (EFFECT == 'Brightness'){return brightness;}
+else {
+if (EFFECT == 'Invert'){
+return invert;}
+else {
+if (EFFECT == 'Render mode'){return rendermode;}
+else {return ''}}}}}}}}
+setrendermode({EFFECT}){
+rendermode = EFFECT;
+setcss();}
+seteffect({EFFECT, NUMBER}) {
+if (EFFECT == 'Blur'){
+blur = NUMBER;}
+else{if (EFFECT == 'Contrast'){
+contrast = NUMBER;}
+else{
+if (EFFECT == 'Saturation'){
+saturation = NUMBER;}
+else{
+if (EFFECT == 'Color'){
+color = NUMBER;}
+else{
+if (EFFECT == 'Brightness'){
+brightness = NUMBER;}
+else{
+if (EFFECT == 'Invert'){
+invert = NUMBER;}}}}}}
+setcss();}
+cleareffects(){
+blur = 0;
+contrast = 1;
+saturation = 100;
+color = 0;
+brightness = 100;
+invert = 0;
+rendermode = 'Default';
+vm.renderer.canvas.style.filter = '';
+vm.renderer.canvas.style.imageRendering = '';}
+//people can use this to detect if Scratch refreshed the canvas css values, and reapply them
+refreshcheck(){
+if (vm.renderer.canvas.style.filter == '' & vm.renderer.canvas.style.imageRendering == '' ){
+return true}
+else{
+return false}}
+renderscale({X,Y}){
+vm.renderer.resize(X,Y);}}
+Scratch.extensions.register(new CanvasEffects());
+})(Scratch);
