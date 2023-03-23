@@ -13,7 +13,6 @@
     var invert = 0;
     var rendermode = 'Default';
     const vm = Scratch.vm;
-
     if (!Scratch.extensions.unsandboxed) {
         throw new Error('This extension must run unsandboxed');
     }
@@ -82,7 +81,6 @@
                                 defaultValue: 100
                             }
                         }
-
                     },
                 ],
                 menus: {
@@ -106,33 +104,25 @@
         }) {
             if (EFFECT == 'Blur') {
                 return blur;
-            }
-            else {
+            } else {
                 if (EFFECT == 'Contrast') {
                     return contrast;
-                }
-                else {
+                } else {
                     if (EFFECT == 'Saturation') {
                         return saturation;
-                    }
-                    else {
+                    } else {
                         if (EFFECT == 'Color') {
                             return color;
-                        }
-                        else {
+                        } else {
                             if (EFFECT == 'Brightness') {
                                 return brightness;
-                            }
-                            else {
+                            } else {
                                 if (EFFECT == 'Invert') {
                                     return invert;
-                                }
-                                else {
+                                } else {
                                     if (EFFECT == 'Render mode') {
                                         return rendermode;
-
-                                    }
-                                    else {
+                                    } else {
                                         return ''
                                     }
                                 }
@@ -154,24 +144,19 @@
         }) {
             if (EFFECT == 'Blur') {
                 blur = NUMBER;
-            }
-            else {
+            } else {
                 if (EFFECT == 'Contrast') {
                     contrast = NUMBER;
-                }
-                else {
+                } else {
                     if (EFFECT == 'Saturation') {
                         saturation = NUMBER;
-                    }
-                    else {
+                    } else {
                         if (EFFECT == 'Color') {
                             color = NUMBER;
-                        }
-                        else {
+                        } else {
                             if (EFFECT == 'Brightness') {
                                 brightness = NUMBER;
-                            }
-                            else {
+                            } else {
                                 if (EFFECT == 'Invert') {
                                     invert = NUMBER;
                                 }
@@ -192,16 +177,13 @@
             rendermode = 'Default';
             vm.renderer.canvas.style.filter = '';
             vm.renderer.canvas.style.imageRendering = '';
-
-
         }
         //people can use this to detect if Scratch refreshed the canvas css values, and reapply them
         refreshcheck() {
             if (vm.renderer.canvas.style.filter == '' & vm.renderer.canvas.style.imageRendering == '') {
-                return true
-            }
-            else {
-                return false
+                return true;
+            } else {
+                return false;
             }
         }
         renderscale({
