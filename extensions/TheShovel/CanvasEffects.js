@@ -97,7 +97,7 @@
                         items: ['Blur', 'Contrast', 'Saturation', 'Color', 'Brightness', 'Invert', 'Render mode']
                     }
                 }
-            }
+            };
         }
         geteffect({
             EFFECT
@@ -123,7 +123,7 @@
                                     if (EFFECT == 'Render mode') {
                                         return rendermode;
                                     } else {
-                                        return ''
+                                        return '';
                                     }
                                 }
                             }
