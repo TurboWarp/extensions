@@ -41,7 +41,7 @@
                 blockType: Scratch.BlockType.COMMAND,
                 text: 'Set Canvas render mode [EFFECT]',
                 arguments: {
-                  EFFECT:{
+                  EFFECT: {
                       type: Scratch.ArgumentType.STRING,
                       menu: 'RENDERMODE'
                   }
@@ -85,51 +85,43 @@
             },
           ],
           menus: {
-            EFFECTMENU: {
-            acceptReporters: true,
-            items: ['Blur', 'Contrast', 'Saturation', 'Color', 'Brightness', 'Invert'] 
+EFFECTMENU: {
+acceptReporters: true,
+items: ['Blur', 'Contrast', 'Saturation', 'Color', 'Brightness', 'Invert'] 
             },
             RENDERMODE: {
                 acceptReporters: true,
                 items: ['Pixelated', 'Auto']
             },
-            EFFECTGETMENU: {
-                acceptReporters: true,
-                items: ['Blur', 'Contrast', 'Saturation', 'Color', 'Brightness', 'Invert','Render mode'] 
+EFFECTGETMENU: {
+acceptReporters: true,
+items: ['Blur', 'Contrast', 'Saturation', 'Color', 'Brightness', 'Invert','Render mode'] 
             }
           }
-        }
+        };
       }
       geteffect({EFFECT}){
         if (EFFECT == 'Blur'){
-            return blur;
-        }
-        else{
+            return blur;}
+        else {
             if (EFFECT == 'Contrast'){
-                return contrast;
-            }
-            else{
+                return contrast;}
+            else {
                 if (EFFECT == 'Saturation'){
-                    return saturation;
-                }
-                else{
+                    return saturation;}
+                else {
                     if (EFFECT == 'Color'){
-                        return color;
-                    }
-                    else{
+                        return color;}
+                    else {
                         if (EFFECT == 'Brightness'){
-                            return brightness;
-                        }
-                        else{
+                            return brightness;}
+                        else {
                             if (EFFECT == 'Invert'){
-                                return invert;
-                            }
-                            else{
+                                return invert;}
+                            else {
                                 if (EFFECT == 'Render mode'){
-                                    return rendermode;
-                                    
-                                }
-                                else{
+                                    return rendermode;}
+                                else {
                                     return ''
                                 }
                             }
