@@ -11,6 +11,7 @@
     var brightness = 100;
     var invert = 0;
     var rendermode = 'Default';
+    const vm = Scratch.vm;
 
     if (!Scratch.extensions.unsandboxed) {
       throw new Error('This extension must run unsandboxed');
