@@ -47,40 +47,37 @@ Note that browsers tend to aggressively cache JavaScript files that don't opt ou
 
 ## Types of extensions we accept
 
-We strive to be tolerant of accepting almost any extension that:
+We strive to be tolerant of accepting almost any extension, including one-use novelty extensions or extensions that are similar to ones that already exist.
 
- - Does not contain security bugs such as arbitrary code execution/XSS
- - Does not threaten the safety of our users
-
-We are willing to accept one-use novelty extensions or extensions that are similar to ones that already exist. They just might not get listed on the website.
-
-There are effectively three categories of extensions:
+Extensions end up in one of these categories depending on various qualities:
 
  - Extensions that are in the repository, but not listed on the website
  - Extensions that are listed on the website
  - Extensions that are listed in the editor's builtin extension library
 
-Qualities such as uniqueness, quality, and bugginess may be factors in the decision of each extension's category.
-
 ## Writing extensions
 
 Extension source code goes in the `extensions` folder. For example, an extension placed at `extensions/hello-world.js` would be accessible at [http://localhost:8000/hello-world.js](http://localhost:8000/hello-world.js).
 
-We ask that new extensions be added in a user-specific folder. For example, if your GitHub username is "TestMuffin", you could make a `TestMuffin` folder inside of the `extensions` folder and put your extensions inside there. You could then access a file placed at `extensions/TestMuffin/hello-world.js` at [http://localhost:8000/TestMuffin/hello-world.js](http://localhost:8000/TestMuffin/hello-world.js). We're lenient on what you choose to name your folder -- it can be your GitHub username, Scratch username, or whatever you want it to be (within reason).
+New extensions should be added in a user folder. You can name your folder your GitHub username, your Scratch username, or something else. For example, if your GitHub username is "TestMuffin", you could make a `TestMuffin` folder inside of the `extensions` folder and put your extensions inside there. You could then access a file placed at `extensions/TestMuffin/hello-world.js` at [http://localhost:8000/TestMuffin/hello-world.js](http://localhost:8000/TestMuffin/hello-world.js).
 
 Static resources go in the `website` folder. This is where some example resources used by extensions such as fetch are placed. It works similarly to the `extensions` folder.
 
-To add an extension to the website homepage, modify `website/index.ejs`. It should be easy to understand if you copy one of the existing extensions. New extensions should generally be added to the end of the list.
+Extensions must not use `eval()`, `new Function()`, untrusted `<script>` or `<iframe>` tags, or similar arbitrary JS/CSS/HTML/etc.
 
-To add an image for your extension on the homepage, put a file in the `images` folder with the same name and directory structure (but a different file extension) as the extension's source code. The homepage generator will automatically update the image if you did it correctly. Images will be displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md`.
+Extensions must be self-contained. All libraries and hardcoded resources it needs should be embedded into the extension's JavaScript file. If you include minified code, please link where to find the unminified code.
+
+To add an extension to the website homepage, modify `website/index.ejs`. Copy one of the existing extensions. New extensions should usually be added to the end of the list.
+
+To add an image for your extension on the homepage, put a file in the `images` folder with the same name and directory structure (but a different file extension) as the extension's source code. The homepage generator will automatically update the image if you did it correctly. Images will be displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you.
 
 ## License
 
 **We are not lawyers. This section should not be interpreted as legal advice.**
 
-The source code of the extension and any libraries it uses must be available under an open source license that is compatible with the GNU General Public License v3 so that we can include it in the desktop app. If unsure, use [the MIT License](licenses/MIT.txt) as that's what most extensions here use. For this to be legally possible, either you must have written the entire extension yourself or have permission to use all of its components under an open source license.
+The source code of the extension and any libraries it uses must be available under a permissive open source license that is compatible with the [GNU General Public License version 3](licenses/GPL-3.0.txt) so that we can include it in the desktop app. If unsure, use the [MIT License](licenses/MIT.txt). For this to be legally possible, either you must have written the entire extension yourself or have permission to use all of its components under an open source license.
 
-If you use a different license than MIT, leave a comment at the top of each file indicating its license. For example, if it uses the Apache 2.0 license instead, add a comment like this:
+If you use a license other than MIT, leave a comment at the top of each file indicating its license. For example, if you prefer to use Apache 2.0, add a comment like the one below. Extensions using the default MIT License do not need to include this type of comment, but you can include one if you want.
 
 ```js
 /*!
@@ -100,15 +97,21 @@ If you use a different license than MIT, leave a comment at the top of each file
  */
 ```
 
-Please update the copyright year and name appropriately. Pseudonyms are accepted.
+Please update the copyright year and name appropriately. Pseudonyms are accepted. Add a copy of the full plain text license in the `licenses` folder if a copy doesn't already exist. You should use `/*!` instead of `/*` for license comments so that JavaScript minifiers won't remove it.
 
-Add a copy of the full plain text license in the `licenses` folder if one doesn't already exist. You should use `/*!` instead of `/*` for the license comment so that JavaScript minifiers will not remove it.
+We don't want extension code to use the GPLv3 or LGPLv3 licenses exclusively. Our non-lawyer understanding suggests that the copyleft could extend to projects that use the extension and to any packaged projects, neither of which we want.
 
-We don't want extension code to be GPLv3 exclusively as our non-lawyer understanding of the copyleft clause suggests that it would spread to any projects that use the extension. That isn't what we want.
+Extension images in the [images](images) directory are instead licensed under the [GNU General Public version 3](licenses/GPL-3.0.txt).
 
-Extensions must not use `eval()`, `new Function()`, untrusted `<script>` or `<iframe>` tags, or similar arbitrary JS/CSS/HTML/etc.
+Please avoid code and image assets that are under these licenses as they are not compatible with the GPLv3:
 
-Extensions must be self-contained. All libraries and hardcoded resources it needs should be embedded into the extension's JavaScript file.
+ - Creative Commons Attribution-ShareAlike licenses prior to version 4.0
+   - User-generated content on the Scratch website uses version 2.0 of this license.
+   - StackOverflow uses [different versions of this license depending on what when the post was made](https://stackoverflow.com/help/licensing).
+ - Creative Commons Attribution-NoDerivs and similar "no derivatives" licenses
+ - Creative Commons Attribution-NonCommercial and similar "non commercial" licenses
+ - This list is non-comprehensive
+ - More information: https://www.gnu.org/licenses/license-list.en.html
 
 ## Suggested code style
 
@@ -118,23 +121,21 @@ Our preferred code style is:
  - Use semicolons
  - We don't care which type of quotes you use
 
-If we dislike your style choices we will just fix it ourselves.
-
 ## Automated linting
 
-We use ESLint. You can run our linting rules locally with:
+We use ESLint to automatically find problems in pull requests. To run our linting rules locally:
 
 ```bash
 npm run lint
 ```
 
-And you can run ESLint's automatic fixes can fix many issues automatically by running:
+To run ESLint's automatic fixes for common style issues:
 
 ```bash
 npm run fix
 ```
 
-The goal of our linting is to prevent common mistakes and ensure the code is *somewhat* cohesive. It is not intended to be overbearing. If one of the rules is getting in your way, feel free to just disable it for that line, section, etc.
+Our linting is not intended to be overbearing -- we just want to prevent common mistakes and encourage writing readable code. If one of the rules is getting in your way, feel free to just disable it for that line or section.
 
 When including third-party code, especially minified code, you may use [`/* eslint-disable*/` and `/* eslint-enable */`](https://eslint.org/docs/latest/user-guide/configuring/rules#disabling-rules) markers to disable linting for that section.
 

@@ -67,14 +67,14 @@
 	vm.runtime.on('STAGE_SIZE_CHANGED', _ => updateCamera());
 
 	// fix mouse positions
-	let oldSX = vm.runtime.ioDevices.mouse.getScratchX;
-	let oldSY = vm.runtime.ioDevices.mouse.getScratchY;
+	let oldGetScratchX = vm.runtime.ioDevices.mouse.getScratchX;
+	let oldGetScratchY = vm.runtime.ioDevices.mouse.getScratchY;
 
-	vm.runtime.ioDevices.mouse.getScratchX = function(...a) {
-		return (oldSX.apply(this, a) + cameraX) / cameraZoom * 100;
+	vm.runtime.ioDevices.mouse.getScratchX = function(...a)  {
+		return (oldGetScratchX.apply(this, a) + cameraX) / cameraZoom * 100;
 	};
-	vm.runtime.ioDevices.mouse.getScratchY = function(...a) {
-		return (oldSY.apply(this, a) + cameraY) / cameraZoom * 100;
+	vm.runtime.ioDevices.mouse.getScratchY = function(...a)  {
+		return (oldGetScratchY.apply(this, a) + cameraY) / cameraZoom * 100;
 	};
 >>>>>>> Stashed changes
 

@@ -1,5 +1,7 @@
 # Image attribution
 
+All images in this folder are licensed under the [GNU General Public License version 3](../licenses/GPL-3.0.txt). Please see the below list for additional attribution information.
+
 ## box2d.svg
 The taco, apple, and banana are from the Scratch sprite library.
 
@@ -100,3 +102,9 @@ Created by https://scratch.mit.edu/users/JoshsAccount
 
 ## Skyhigh173/json.svg
 Created by @Skyhigh173 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1457973080
+
+## text.svg
+Based on an image created by [@JoshsAccount](https://scratch.mit.edu/users/JoshsAccount/) under the GNU General Public License version 3. Original version is https://github.com/ScratchCE/scratch-gui/blob/develop/src/lib/libraries/extensions/strings/strings.png.
+
+## LukeManiaStudios/lmsutils.svg
+Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545
