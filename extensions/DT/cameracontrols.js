@@ -22,8 +22,8 @@
     rot = rot / 180 * Math.PI;
     let s = Math.sin(rot) * scale;
     let c = Math.cos(rot) * scale;
-    let w = vm.runtime.stageWidth / 2
-    let h = vm.runtime.stageHeight / 2
+    let w = vm.runtime.stageWidth / 2;
+    let h = vm.runtime.stageHeight / 2;
     vm.renderer._projection = [
       c / w, -s / h, 0, 0,
       s / w, c / h, 0, 0,
@@ -266,7 +266,7 @@
       let sprites = ["mouse-pointer"];
       Scratch.vm.runtime.targets.forEach(e=>{
         if (e.isOriginal && !e.isStage) sprites.push(e.sprite.name);
-      })
+      });
       return sprites;
     }
 
@@ -345,7 +345,7 @@
       return cameraBG;
     }
     moveSteps(ARGS) {
-      let dir = (-cameraDirection+90) * Math.PI / 180;
+      let dir = (-cameraDirection + 90) * Math.PI / 180;
       cameraX += ARGS.val * Math.cos(dir);
       cameraY += ARGS.val * Math.sin(dir);
       updateCamera();
