@@ -23,6 +23,7 @@
   let active = false;
   let flipY = false;
   const vm = Scratch.vm;
+  const runtime = vm.runtime;
   const renderer = vm.renderer;
   const _drawThese = renderer._drawThese;
   const gl = renderer._gl;
@@ -72,33 +73,37 @@
   const DrawableProto = renderer._allDrawables[dr].__proto__;
   renderer.destroyDrawable(dr, 'background');
 
+  function setupModes(clipbox, blendMode, flipY) {
+    if (clipbox) {
+      gl.enable(gl.SCISSOR_TEST);
+      let x = (clipbox.x / scratchUnitWidth + 0.5) * width;
+      let y = (clipbox.y / scratchUnitHeight + 0.5) * height;
+      let w = (clipbox.w / scratchUnitWidth) * width;
+      let h = (clipbox.h / scratchUnitHeight) * height;
+      if (flipY) {
+        y = (-(clipbox.y + clipbox.h) / scratchUnitHeight + 0.5) * height;
+      }
+      gl.scissor(x, y, w, h);
+    } else {
+      gl.disable(gl.SCISSOR_TEST);
+    }
+    switch (blendMode) {
+      case 'additive':
+        gl.blendFunc(gl.ONE, gl.ONE);
+        break;
+      case 'multiply':
+        gl.blendFunc(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA);
+        break;
+      default:
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    }
+  }
+
   // Modifying and expanding Drawable
   const gu = DrawableProto.getUniforms;
   DrawableProto.getUniforms = function () {
     if (active && toCorrectThing) {
-      if (this.clipbox) {
-        gl.enable(gl.SCISSOR_TEST);
-        let x = (this.clipbox.x / scratchUnitWidth + 0.5) * width;
-        let y = (this.clipbox.y / scratchUnitHeight + 0.5) * height;
-        let w = (this.clipbox.w / scratchUnitWidth) * width;
-        let h = (this.clipbox.h / scratchUnitHeight) * height;
-        if (flipY) {
-          y = (-(this.clipbox.y + this.clipbox.h) / scratchUnitHeight + 0.5) * height;
-        }
-        gl.scissor(x, y, w, h);
-      } else {
-        gl.disable(gl.SCISSOR_TEST);
-      }
-      switch (this.blendMode) {
-        case 'additive':
-          gl.blendFunc(gl.ONE, gl.ONE);
-          break;
-        case 'multiply':
-          gl.blendFunc(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA);
-          break;
-        default:
-          gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-      }
+      setupModes(this.clipbox, this.blendMode, flipY);
     }
     return gu.call(this);
   };
@@ -127,7 +132,7 @@
   const regTargetStuff = function (args) {
     if (args.editingTarget) {
       vm.removeListener('targetsUpdate', regTargetStuff);
-      const proto = vm.runtime.targets[0].__proto__;
+      const proto = args.editingTarget.__proto__;
       const osa = proto.onStopAll;
       proto.onStopAll = function () {
         this.renderer.updateDrawableClipBox.call(renderer, this.drawableID, null);
@@ -149,6 +154,86 @@
   };
   vm.on('targetsUpdate', regTargetStuff);
 
+
+  // Pen lines support
+  let emptyObject = {};
+  let lastTarget = emptyObject;
+  let lastClipbox = {};
+  let lastBlendMode = "default";
+  function patchPen(skin) {
+    const ext_pen = runtime.ext_pen;
+    skin._lineOnBufferDrawRegionId.exit = () => {
+      skin._exitDrawLineOnBuffer();
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      gl.disable(gl.SCISSOR_TEST);
+      lastTarget = emptyObject;
+      lastClipbox = null;
+      lastBlendMode = "default";
+    };
+    const willDrawPenWithTarget = function(target) {
+      const clipbox = target.clipbox;
+      if ((!lastClipbox ^ !clipbox) ||
+          (lastBlendMode != target.blendMode) ||
+          (clipbox && (clipbox.x != lastClipbox.x || clipbox.y != lastClipbox.y || clipbox.w != lastClipbox.w || clipbox.h != lastClipbox.h))) {
+        if (skin.a_lineColorIndex) {
+          skin._flushLines();
+        }
+        lastTarget = target;
+        if (clipbox) {
+          lastClipbox = {
+            x: clipbox.x,
+            y: clipbox.y,
+            w: clipbox.w,
+            h: clipbox.h
+          };
+        } else {
+          lastClipbox = null;
+        }
+        lastBlendMode = target.blendMode;
+      }
+    };
+    // onTargetMoved function of pen draws a line.
+    // When drawing a line it is important to know the target.
+    // This saves target.
+    const onTargetMoved = ext_pen._onTargetMoved;
+    ext_pen._onTargetMoved = function(target, oldX, oldY, isForce) {
+      willDrawPenWithTarget(target);
+      onTargetMoved.call(this, target, oldX, oldY, isForce);
+    };
+    // Existing tragets may still have old onTargetMoved
+    for (let target in runtime.tragets) {
+      if (target.onTargetMoved == onTargetMoved) {
+        target.onTargetMoved = ext_pen._onTargetMoved;
+      }
+    }
+    // When drawing a dot it is important to know the target.
+    // This saves target.
+    const penDown = ext_pen._penDown;
+    ext_pen._penDown = function(target) {
+      willDrawPenWithTarget(target);
+      penDown.call(this, target);
+    };
+    // Set up correct clipping/blending before drawing
+    const flushLines = skin.__proto__._flushLines;
+    skin.__proto__._flushLines = function() {
+      setupModes(lastClipbox, lastBlendMode, true);
+      flushLines.call(this);
+    };
+  }
+  if (renderer._allSkins[renderer._penSkinId]) {
+    // If pen skin already exists, things can be patched
+    patchPen(renderer._allSkins[renderer._penSkinId]);
+  } else {
+    // If pen skin does not exist, wait until it will,
+    // trigger code once, and return everything as it was
+    const createPenSkin = renderer.createPenSkin;
+    renderer.createPenSkin = function() {
+      let skinId = createPenSkin.call(this);
+      patchPen(renderer._allSkins[skinId]);
+      renderer.createPenSkin = createPenSkin;
+      return skinId;
+    };
+  }
 
   class Extension {
     getInfo() {
@@ -293,7 +378,6 @@
         target.runtime.requestTargetsUpdate(target);
       }
     }
-
 
     getClipbox ({PROP}, {target}) {
       const clipbox = target.clipbox;
