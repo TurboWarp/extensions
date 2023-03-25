@@ -14,7 +14,7 @@
     const xhr = new XMLHttpRequest();
     let timeout = setTimeout(() => {
       xhr.abort();
-      throw new Error('Timed out');
+      reject(new Error('Timed out'));
     }, 5000);
     xhr.onload = () => {
       clearTimeout(timeout);
