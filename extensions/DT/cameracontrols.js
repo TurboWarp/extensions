@@ -18,36 +18,6 @@
 	vm.runtime.runtimeOptions.fencing = false;
 	vm.renderer.offscreenTouching = true;
 
-<<<<<<< Updated upstream
-  function updateCamera(x = cameraX, y = cameraY, scale = cameraZoom / 100, rot = -cameraDirection + 90) {
-    rot = rot / 180 * Math.PI;
-    let s = Math.sin(rot) * scale;
-    let c = Math.cos(rot) * scale;
-    let w = vm.runtime.stageWidth / 2;
-    let h = vm.runtime.stageHeight / 2;
-    vm.renderer._projection = [
-      c / w, -s / h, 0, 0,
-      s / w, c / h, 0, 0,
-      0, 0, -1, 0,
-      (c * -x + s * y) / w, (c * y - s * -x) / h, 0, 1
-    ];
-    vm.renderer.dirty = true;
-  }
-
-  // tell resize to update camera as well
-  vm.runtime.on('STAGE_SIZE_CHANGED', () => updateCamera());
-
-  // fix mouse positions
-  let oldGetScratchX = vm.runtime.ioDevices.mouse.getScratchX;
-  let oldGetScratchY = vm.runtime.ioDevices.mouse.getScratchY;
-
-  vm.runtime.ioDevices.mouse.getScratchX = function(...a) {
-    return (oldGetScratchX.apply(this, a) + cameraX) / cameraZoom * 100;
-  };
-  vm.runtime.ioDevices.mouse.getScratchY = function(...a) {
-    return (oldGetScratchY.apply(this, a) + cameraY) / cameraZoom * 100;
-  };
-=======
 	function updateCamera(x = cameraX, y = cameraY, scale = cameraZoom / 100, rot = -cameraDirection + 90) {
 		rot = rot / 180 * Math.PI;
 		let s = Math.sin(rot) * scale;
@@ -67,16 +37,15 @@
 	vm.runtime.on('STAGE_SIZE_CHANGED', _ => updateCamera());
 
 	// fix mouse positions
-	let oldGetScratchX = vm.runtime.ioDevices.mouse.getScratchX;
-	let oldGetScratchY = vm.runtime.ioDevices.mouse.getScratchY;
+	let oldSX = vm.runtime.ioDevices.mouse.getScratchX;
+	let oldSY = vm.runtime.ioDevices.mouse.getScratchY;
 
-	vm.runtime.ioDevices.mouse.getScratchX = function(...a)  {
-		return (oldGetScratchX.apply(this, a) + cameraX) / cameraZoom * 100;
+	vm.runtime.ioDevices.mouse.getScratchX = function(...a) {
+		return (oldSX.apply(this, a) + cameraX) / cameraZoom * 100;
 	};
-	vm.runtime.ioDevices.mouse.getScratchY = function(...a)  {
-		return (oldGetScratchY.apply(this, a) + cameraY) / cameraZoom * 100;
+	vm.runtime.ioDevices.mouse.getScratchY = function(...a) {
+		return (oldSY.apply(this, a) + cameraY) / cameraZoom * 100;
 	};
->>>>>>> Stashed changes
 
 	class Camera {
 
@@ -98,81 +67,6 @@
 						acceptReporters: true,
 					}
 				},
-
-<<<<<<< Updated upstream
-    setBoth(ARGS, util) {
-      cameraX = +ARGS.x;
-      cameraY = +ARGS.y;
-      updateCamera();
-      vm.runtime.requestRedraw();
-    }
-    changeZoom(ARGS, util) {
-      cameraZoom += +ARGS.val;
-      updateCamera();
-      vm.runtime.requestRedraw();
-    }
-    setZoom(ARGS, util) {
-      cameraZoom = +ARGS.val;
-      updateCamera();
-      vm.runtime.requestRedraw();
-    }
-    changeX(ARGS, util) {
-      cameraX += +ARGS.val;
-      updateCamera();
-      vm.runtime.requestRedraw();
-    }
-    setX(ARGS, util) {
-      cameraX = +ARGS.val;
-      updateCamera();
-      vm.runtime.requestRedraw();
-    }
-    changeY(ARGS, util) {
-      cameraY += +ARGS.val;
-      updateCamera();
-      vm.runtime.requestRedraw();
-    }
-    setY(ARGS, util) {
-      cameraY = +ARGS.val;
-      updateCamera();
-      vm.runtime.requestRedraw();
-    }
-    setDirection(ARGS, util) {
-      cameraDirection = +ARGS.val;
-      updateCamera();
-      vm.runtime.requestRedraw();
-    }
-    rotateCW(ARGS, util) {
-      cameraDirection = cameraDirection + +ARGS.val;
-      updateCamera();
-      vm.runtime.requestRedraw();
-    }
-    rotateCCW(ARGS, util) {
-      cameraDirection = cameraDirection - +ARGS.val;
-      updateCamera();
-      vm.runtime.requestRedraw();
-    }
-    getX() {
-      return cameraX;
-    }
-    getY() {
-      return cameraY;
-    }
-    getZoom() {
-      return cameraZoom;
-    }
-    getDirection() {
-      return cameraDirection;
-    }
-    setCol(ARGS, util) {
-      cameraBG = ARGS.val;
-      const [r, g, b] = Scratch.Cast.toRgbColorList(cameraBG);
-      Scratch.vm.renderer.setBackgroundColor(r / 255, g / 255, b / 255);
-    }
-    getCol() {
-      return cameraBG;
-    }
-  }
-=======
 				blocks: [
 					{
 						opcode: 'moveSteps',
@@ -367,7 +261,6 @@
 				]
 			};
 		}
->>>>>>> Stashed changes
 
 		getSprites(){
 			let sprites = ["mouse-pointer"]
