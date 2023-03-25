@@ -89,10 +89,15 @@
       } else {
         gl.disable(gl.SCISSOR_TEST);
       }
-      if (this.additiveBlend) {
-        gl.blendFunc(gl.ONE, gl.ONE);
-      } else {
-        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      switch (this.blendMode) {
+        case 'additive':
+          gl.blendFunc(gl.ONE, gl.ONE);
+          break;
+        case 'multiply':
+          gl.blendFunc(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA);
+          break;
+        default:
+          gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       }
     }
     return gu.call(this);
@@ -100,8 +105,8 @@
   DrawableProto.updateClipBox = function (clipbox) {
     this.clipbox = clipbox;
   };
-  DrawableProto.updateAdditiveBlend = function (enabled) {
-    this.additiveBlend = enabled;
+  DrawableProto.updateBlendMode = function (blendMode) {
+    this.blendMode = blendMode;
   };
 
 
@@ -111,10 +116,10 @@
     if (!drawable) return;
     drawable.updateClipBox(clipbox);
   };
-  renderer.updateDrawableAdditiveBlend = function (drawableID, enabled) {
+  renderer.updateDrawableBlendMode = function (drawableID, blendMode) {
     const drawable = this._allDrawables[drawableID];
     if (!drawable) return;
-    drawable.updateAdditiveBlend(enabled);
+    drawable.updateBlendMode(blendMode);
   };
 
 
@@ -134,9 +139,9 @@
         const newTarget = mc.call(this);
         if (this.clipbox) {
           newTarget.clipbox = Object.assign({}, this.clipbox);
-          newTarget.additiveBlend = this.additiveBlend;
+          newTarget.blendMode = this.blendMode;
           renderer.updateDrawableClipBox.call(renderer, newTarget.drawableID, this.clipbox);
-          renderer.updateDrawableAdditiveBlend.call(renderer, newTarget.drawableID, this.additiveBlend);
+          renderer.updateDrawableBlendMode.call(renderer, newTarget.drawableID, this.blendMode);
         }
         return newTarget;
       };
@@ -200,6 +205,27 @@
           },
           '---',
           {
+            opcode: 'setBlend',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'use [BLENDMODE] blending ',
+            arguments: {
+              BLENDMODE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'default',
+                menu: 'blends'
+              }
+            },
+            filter: [Scratch.TargetType.SPRITE]
+          },
+          {
+            opcode: 'getBlend',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'blending',
+            filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true
+          },
+          '---',
+          {
             opcode: 'setAdditiveBlend',
             blockType: Scratch.BlockType.COMMAND,
             text: 'turn additive blending [STATE]',
@@ -210,19 +236,25 @@
                 menu: 'states'
               }
             },
-            filter: [Scratch.TargetType.SPRITE]
+            filter: [Scratch.TargetType.SPRITE],
+            hideFromPalette: true
           },
           {
             opcode: 'getAdditiveBlend',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'is additive blending on?',
-            filter: [Scratch.TargetType.SPRITE]
+            filter: [Scratch.TargetType.SPRITE],
+            hideFromPalette: true
           },
         ],
         menus: {
           states: {
             acceptReporters: true,
             items: ['on', 'off']
+          },
+          blends: {
+            acceptReporters: true,
+            items: ['default', 'additive', 'multiply']
           },
           props: {
             acceptReporters: true,
@@ -262,22 +294,6 @@
       }
     }
 
-    setAdditiveBlend ({STATE}, {target}) {
-      let newValue = null;
-      if (STATE === 'on') newValue = true;
-      if (STATE === 'off') newValue = false;
-      if (newValue === null) return;
-
-      if (target.isStage) return;
-      target.additiveBlend = newValue;
-      renderer.updateDrawableAdditiveBlend.call(renderer, target.drawableID, newValue);
-      if (target.visible) {
-        renderer.dirty = true;
-        target.emitVisualChange();
-        target.runtime.requestRedraw();
-        target.runtime.requestTargetsUpdate(target);
-      }
-    }
 
     getClipbox ({PROP}, {target}) {
       const clipbox = target.clipbox;
@@ -293,8 +309,39 @@
       }
     }
 
+    setBlend ({BLENDMODE}, {target}) {
+      let newValue = null;
+      switch (BLENDMODE) {
+        case 'default':
+        case 'additive':
+        case 'multiply':
+          newValue = BLENDMODE;
+          break;
+        default:
+          return;
+      }
+      if (target.isStage) return;
+      target.blendMode = newValue;
+      renderer.updateDrawableBlendMode.call(renderer, target.drawableID, newValue);
+      if (target.visible) {
+        renderer.dirty = true;
+        target.emitVisualChange();
+        target.runtime.requestRedraw();
+        target.runtime.requestTargetsUpdate(target);
+      }
+    }
+
+    getBlend (args, {target}) {
+      return target.blendMode ?? 'default';
+    }
+
+    setAdditiveBlend ({STATE}, util) {
+      if (STATE === 'on') this.setBlend ({BLENDMODE: 'additive'}, util);
+      if (STATE === 'off') this.setBlend ({BLENDMODE: 'default'}, util);
+    }
+
     getAdditiveBlend (args, {target}) {
-      return target.additiveBlend ?? false;
+      return target.blendMode === 'additive';
     }
   }
 
