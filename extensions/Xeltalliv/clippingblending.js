@@ -32,6 +32,7 @@
   let height = 0;
   let scratchUnitWidth = 480;
   let scratchUnitHeight = 360;
+  let penDirty = false;
 
 
   renderer._drawThese = function (drawables, drawMode, projection, opts) {
@@ -171,6 +172,9 @@
       lastBlendMode = "default";
     };
     const willDrawPenWithTarget = function(target) {
+      if (!penDirty && target == lastTarget) return;
+      penDirty = false;
+
       const clipbox = target.clipbox;
       if ((!lastClipbox ^ !clipbox) ||
           (lastBlendMode != target.blendMode) ||
@@ -357,6 +361,7 @@
         w: Math.max(X1, X2) - Math.min(X1, X2),
         h: Math.max(Y1, Y2) - Math.min(Y1, Y2)
       };
+      penDirty = true;
       target.clipbox = newClipbox;
       renderer.updateDrawableClipBox.call(renderer, target.drawableID, newClipbox);
       if (target.visible) {
@@ -370,6 +375,7 @@
     clearClipbox (args, {target}) {
       if (target.isStage) return;
       target.clipbox = null;
+      penDirty = true;
       renderer.updateDrawableClipBox.call(renderer, target.drawableID, null);
       if (target.visible) {
         renderer.dirty = true;
@@ -405,6 +411,7 @@
           return;
       }
       if (target.isStage) return;
+      penDirty = true;
       target.blendMode = newValue;
       renderer.updateDrawableBlendMode.call(renderer, target.drawableID, newValue);
       if (target.visible) {
