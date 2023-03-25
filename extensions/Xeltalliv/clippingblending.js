@@ -77,12 +77,14 @@
   function setupModes(clipbox, blendMode, flipY) {
     if (clipbox) {
       gl.enable(gl.SCISSOR_TEST);
-      let x = (clipbox.x / scratchUnitWidth + 0.5) * width;
-      let y = (clipbox.y / scratchUnitHeight + 0.5) * height;
-      let w = (clipbox.w / scratchUnitWidth) * width;
-      let h = (clipbox.h / scratchUnitHeight) * height;
+      let x = (clipbox.x / scratchUnitWidth + 0.5) * width | 0;
+      let y = (clipbox.y / scratchUnitHeight + 0.5) * height | 0;
+      let x2 = ((clipbox.x + clipbox.w) / scratchUnitWidth + 0.5) * width | 0;
+      let y2 = ((clipbox.y + clipbox.h) / scratchUnitHeight + 0.5) * height | 0;
+      let w = x2 - x;
+      let h = y2 - y;
       if (flipY) {
-        y = (-(clipbox.y + clipbox.h) / scratchUnitHeight + 0.5) * height;
+        y = (-(clipbox.y + clipbox.h) / scratchUnitHeight + 0.5) * height | 0;
       }
       gl.scissor(x, y, w, h);
     } else {
@@ -133,17 +135,17 @@
   const regTargetStuff = function (args) {
     if (args.editingTarget) {
       vm.removeListener('targetsUpdate', regTargetStuff);
-      const proto = args.editingTarget.__proto__;
+      const proto = vm.runtime.targets[0].__proto__;
       const osa = proto.onStopAll;
       proto.onStopAll = function () {
         this.renderer.updateDrawableClipBox.call(renderer, this.drawableID, null);
-        this.renderer.updateDrawableAdditiveBlend.call(renderer, this.drawableID, false);
+        this.renderer.updateDrawableBlendMode.call(renderer, this.drawableID, null);
         osa.call(this);
       };
       const mc = proto.makeClone;
       proto.makeClone = function () {
         const newTarget = mc.call(this);
-        if (this.clipbox) {
+        if (this.clipbox || this.blendMode) {
           newTarget.clipbox = Object.assign({}, this.clipbox);
           newTarget.blendMode = this.blendMode;
           renderer.updateDrawableClipBox.call(renderer, newTarget.drawableID, this.clipbox);
