@@ -111,3 +111,7 @@ Based on an image created by [@JoshsAccount](https://scratch.mit.edu/users/Joshs
 
 ## LukeManiaStudios/lmsutils.svg
 Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545
+
+## 0832/rxFS.svg
+ - Created by @0832k12 in https://github.com/TurboWarp/extensions/pull/291
+ - Background from https://app.haikei.app/
