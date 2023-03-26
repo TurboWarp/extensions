@@ -1,7 +1,8 @@
 (Scratch => {
   'use strict';
 
-  const audioEngine = Scratch.vm.runtime.audioEngine;
+  const vm = Scratch.vm;
+  const audioEngine = vm.runtime.audioEngine;
 
   /**
    * This method assumes that the caller has already requested permission to fetch the URL.
@@ -160,6 +161,27 @@
         name: 'Sound',
         blocks: [
           {
+            opcode: 'playSimultaneously',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'start sound [sound] simultaneously',
+            arguments: {
+              sound: {
+                type: Scratch.ArgumentType.SOUND
+              }
+            }
+          },
+          {
+            opcode: 'playSimultaneouslyUntilDone',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'play sound [sound] simultaneously until done',
+            arguments: {
+              sound: {
+                type: Scratch.ArgumentType.SOUND
+              }
+            }
+          },
+          '---',
+          {
             opcode: 'play',
             blockType: Scratch.BlockType.COMMAND,
             text: 'start sound from url: [path]',
@@ -183,6 +205,45 @@
           }
         ]
       };
+    }
+
+    playSimultaneously(args, util) {
+      // do not return so the block resolves immediately
+      this.playSimultaneouslyUntilDone(args, util);
+    }
+
+    playSimultaneouslyUntilDone({ sound }, util) {
+      // prevent forever { start sound simultaneously } from being worse than it needs to be
+      util.runtime.requestRedraw();
+
+      // @ts-expect-error
+      const index = vm.runtime.ext_scratch3_sound._getSoundIndex(sound, util);
+      if (index !== -1) {
+        /** @type {VM.Target} */
+        const target = util.target;
+        const sprite = target.sprite;
+        const sound = sprite.sounds[index];
+        const soundId = sound.soundId;
+        const soundBank = sprite.soundBank;
+        const soundPlayer = soundBank.soundPlayers[soundId];
+
+        const effects = soundBank.getSoundEffects(soundId);
+        const originalPlayer = soundBank.getSoundPlayer(soundId);
+
+        /** @type {AudioEngine.SoundPlayer} */
+        // @ts-expect-error
+        const newPlayer = new originalPlayer.constructor(soundPlayer.audioEngine, soundPlayer);
+        effects.addSoundPlayer(originalPlayer);
+        effects.setEffectsFromTarget(target);
+        // @ts-expect-error
+        newPlayer.connect(effects);
+        return new Promise(resolve => {
+          newPlayer.on('stop', () => {
+            resolve();
+          });
+          newPlayer.play();
+        });
+      }
     }
 
     play({ path }, util) {
