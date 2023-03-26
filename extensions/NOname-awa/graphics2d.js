@@ -4,32 +4,32 @@
     getInfo() {
       return {
         id: 'nonameawagraph',
-        name: 'Graph 2D',
+        name: 'Graphics 2D',
         color1: '#ff976c',
         color2: '#cc7956',
         color3: '#e58861',
         blocks: [
-           {
-             opcode: 'line_section',
-             blockType: Scratch.BlockType.REPORTER,
-             text: 'line section ([x1],[y1]) to ([x2],[y2])',
-             arguments: {
-             x1: {
-                 type: Scratch.ArgumentType.NUMBER,
-                 defaultValue: '-100'
-             },
-             y1: {
-                 type: Scratch.ArgumentType.NUMBER,
-                 defaultValue: '0'
-             },
-             x2: {
-                 type: Scratch.ArgumentType.NUMBER,
-                 defaultValue: '0'
-             },
-             y2: {
-                 type: Scratch.ArgumentType.NUMBER,
-                 defaultValue: '0'
-               },
+          {
+            opcode: 'line_section',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'line section ([x1],[y1]) to ([x2],[y2])',
+            arguments: {
+              x1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '-100'
+              },
+              y1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
+              x2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
+              y2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
             }
           },
           {
@@ -103,130 +103,130 @@
             },
           },
           {
-              opcode: 'quadrilateral',
-              blockType: Scratch.BlockType.REPORTER,
-              text: 'quadrangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) ([x4],[y4]) \'s [CS]',
-              arguments: {
-                x1: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: '0'
-                },
-                y1: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: '10'
-                },
-                x2: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: '10'
-                },
-                y2: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: '10'
-                },
-                x3: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: '10'
-                },
-                y3: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: '0'
-                },
-                x4: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: '0'
-                },
-                y4: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: '0'
-                },
-                CS: {
-                  type: Scratch.ArgumentType.STRING,
-                  menu: 'cs'
-                },
+            opcode: 'quadrilateral',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'quadrangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) ([x4],[y4]) \'s [CS]',
+            arguments: {
+              x1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
+              y1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '10'
+              },
+              x2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '10'
+              },
+              y2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '10'
+              },
+              x3: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '10'
+              },
+              y3: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
+              x4: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
+              y4: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
+              CS: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'cs'
               },
             },
-            {
-              opcode: 'graph',
-              blockType: Scratch.BlockType.REPORTER,
-              text: 'graph [graph] \'s [CS]',
-              arguments: {
-                graph: {
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: '[[0,0], [10,0], [10,-10], [0,-10]]'
-                },
-                CS: {
-                  type: Scratch.ArgumentType.STRING,
-                  menu: 'cs'
-                },
+          },
+          {
+            opcode: 'graph',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'graph [graph] \'s [CS]',
+            arguments: {
+              graph: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '[[0,0], [10,0], [10,-10], [0,-10]]'
+              },
+              CS: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'cs'
               },
             },
-            '---',
-            {
-              opcode: 'round',
-              blockType: Scratch.BlockType.REPORTER,
-              text: 'round: [rd][a] \'s [CS]',
-              arguments: {
-                rd: {
-                  type: Scratch.ArgumentType.STRING,
-                  menu: 'rd'
-                },
-                a: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: '10'
-                },
-                CS: {
-                    type: Scratch.ArgumentType.STRING,
-                    menu: 'cs'
-                  },
+          },
+          '---',
+          {
+            opcode: 'round',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'round: [rd][a] \'s [CS]',
+            arguments: {
+              rd: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'rd'
+              },
+              a: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '10'
+              },
+              CS: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'cs'
               },
             },
-            '---',
-            {
-              opcode: 'pi',
-              disableMonitor: true,
-              blockType: Scratch.BlockType.REPORTER,
-              text: '𝜋',
-            },
-         ],
-         menus: {
-            rd: {
-              acceptReporters: true,
-              items: [
-                {
-                  text: 'radius',
-                  value: 'r'
-                },
-                {
-                  text: 'diameter',
-                  value: 'd'
-                }
-              ]
-            },
-            cs: {
-                acceptReporters: true,
-                items: [
-                  {
-                    text: 'square',
-                    value: 's'
-                  },
-                  {
-                    text: 'circumference',
-                    value: 'c'
-                  }
-                ]
+          },
+          '---',
+          {
+            opcode: 'pi',
+            disableMonitor: true,
+            blockType: Scratch.BlockType.REPORTER,
+            text: '𝜋',
+          },
+        ],
+        menus: {
+          rd: {
+            acceptReporters: true,
+            items: [
+              {
+                text: 'radius',
+                value: 'r'
+              },
+              {
+                text: 'diameter',
+                value: 'd'
               }
+            ]
+          },
+          cs: {
+            acceptReporters: true,
+            items: [
+              {
+                text: 'square',
+                value: 's'
+              },
+              {
+                text: 'circumference',
+                value: 'c'
+              }
+            ]
           }
+        }
       };
     }
     line_section(args) {
       return Math.sqrt(Math.pow(args.x1 - args.x2, 2) + Math.pow(args.y1 - args.y2, 2));
     }
     vertical(args) {
-        if (isNaN(args.a) || isNaN(args.b)){
-          return false;
-        } else {
-          return ((args.a - (args.b - 90)) % 180) == 0;
-        }
+      if (isNaN(args.a) || isNaN(args.b)){
+        return false;
+      } else {
+        return ((args.a - (args.b - 90)) % 180) == 0;
+      }
     }
     triangle(args) {
       if (args.CS == 's'){
@@ -234,12 +234,12 @@
         let area = 0;
         let n = points.length;
         for (let i = 0; i < n; i++) {
-            let x1 = points[i][0];
-            let y1 = points[i][1];
-            let x2 = points[(i + 1) % n][0];
-            let y2 = points[(i + 1) % n][1];
-            area += x1 * y2;
-            area -= x2 * y1;
+          let x1 = points[i][0];
+          let y1 = points[i][1];
+          let x2 = points[(i + 1) % n][0];
+          let y2 = points[(i + 1) % n][1];
+          area += x1 * y2;
+          area -= x2 * y1;
         }
         area = Math.abs(area) / 2;
         return (area);
@@ -264,12 +264,12 @@
         let area = 0;
         let n = points.length;
         for (let i = 0; i < n; i++) {
-            let x1 = points[i][0];
-            let y1 = points[i][1];
-            let x2 = points[(i + 1) % n][0];
-            let y2 = points[(i + 1) % n][1];
-            area += x1 * y2;
-            area -= x2 * y1;
+          let x1 = points[i][0];
+          let y1 = points[i][1];
+          let x2 = points[(i + 1) % n][0];
+          let y2 = points[(i + 1) % n][1];
+          area += x1 * y2;
+          area -= x2 * y1;
         }
         area = Math.abs(area) / 2;
         return (area);
@@ -321,15 +321,15 @@
       return 0;
     }
     round(args) {
-        if (args.CS == 'c'){
-            return 2 * Math.PI * (args.rd == 'r' ? args.a : args.a / 2);
-        }
-        if (args.CS == 's'){
-            return Math.PI * ((args.rd == 'r' ? args.a : args.a / 2) ** 2);
-        }
+      if (args.CS == 'c'){
+        return 2 * Math.PI * (args.rd == 'r' ? args.a : args.a / 2);
+      }
+      if (args.CS == 's'){
+        return Math.PI * ((args.rd == 'r' ? args.a : args.a / 2) ** 2);
+      }
     }
     pi() {
-        return Math.PI;
+      return Math.PI;
     }
   }
   Scratch.extensions.register(new graph());
