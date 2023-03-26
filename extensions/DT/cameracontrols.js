@@ -28,23 +28,23 @@
       c / w, -s / h, 0, 0,
       s / w, c / h, 0, 0,
       0, 0, -1, 0,
-      (c * -x + s * y) / w, (c * y - s * -x) / h, 0, 1
+      (c * -x + s * -y) / w, (c * -y - s * -x) / h, 0, 1
     ];
     vm.renderer.dirty = true;
   }
 
   // tell resize to update camera as well
-  vm.runtime.on('STAGE_SIZE_CHANGED', () => updateCamera());
+  vm.runtime.on('STAGE_SIZE_CHANGED', _ => updateCamera());
 
   // fix mouse positions
-  let oldGetScratchX = vm.runtime.ioDevices.mouse.getScratchX;
-  let oldGetScratchY = vm.runtime.ioDevices.mouse.getScratchY;
+  let oldSX = vm.runtime.ioDevices.mouse.getScratchX;
+  let oldSY = vm.runtime.ioDevices.mouse.getScratchY;
 
   vm.runtime.ioDevices.mouse.getScratchX = function(...a) {
-    return (oldGetScratchX.apply(this, a) + cameraX) / cameraZoom * 100;
+    return (oldSX.apply(this, a) + cameraX) / cameraZoom * 100;
   };
   vm.runtime.ioDevices.mouse.getScratchY = function(...a) {
-    return (oldGetScratchY.apply(this, a) + cameraY) / cameraZoom * 100;
+    return (oldSY.apply(this, a) + cameraY) / cameraZoom * 100;
   };
 
   class Camera {
@@ -61,7 +61,60 @@
 
         menuIconURI: icon,
 
-        blocks: [{
+        menus: {
+          sprites: {
+            items: 'getSprites',
+            acceptReporters: true,
+          }
+        },
+        blocks: [
+          {
+            opcode: 'moveSteps',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'move camera [val] steps',
+            arguments: {
+              val: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10
+              },
+            }
+          },
+          {
+            opcode: 'rotateCW',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'turn camera clockwise [val] degrees',
+            arguments: {
+              val: {
+                type: Scratch.ArgumentType.ANGLE,
+                defaultValue: 15
+              }
+            }
+          },
+          {
+            opcode: 'rotateCCW',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'turn camera counter-clockwise [val] degrees',
+            arguments: {
+              val: {
+                type: Scratch.ArgumentType.ANGLE,
+                defaultValue: 15
+              }
+            }
+          },
+          '---',
+          /* {
+            opcode: 'goTo',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'move camera to [sprite]',
+            arguments: {
+              sprite: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "mouse-pointer",
+                menu: "sprites",
+              },
+            }
+          }, */
+          {
             opcode: 'setBoth',
             blockType: Scratch.BlockType.COMMAND,
             text: 'set camera to x: [x] y: [y]',
@@ -76,29 +129,30 @@
               },
             }
           },
-          '---',
+          "---",
           {
-            opcode: 'changeZoom',
+            opcode: 'setDirection',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'change camera zoom by [val]',
+            text: 'set camera direction to [val]',
             arguments: {
               val: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 10
+                type: Scratch.ArgumentType.ANGLE,
+                defaultValue: 90
               }
             }
           },
-          {
-            opcode: 'setZoom',
+          /* {
+            opcode: 'pointTowards',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set camera zoom to [val] %',
+            text: 'point camera towards [sprite]',
             arguments: {
-              val: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100
-              }
+              sprite: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "mouse-pointer",
+                menu: "sprites",
+              },
             }
-          },
+          }, */
           '---',
           {
             opcode: 'changeX',
@@ -146,40 +200,6 @@
           },
           "---",
           {
-            opcode: 'setDirection',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'set camera direction to [val]',
-            arguments: {
-              val: {
-                type: Scratch.ArgumentType.ANGLE,
-                defaultValue: 90
-              }
-            }
-          },
-          {
-            opcode: 'rotateCW',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'turn camera clockwise [val] degrees',
-            arguments: {
-              val: {
-                type: Scratch.ArgumentType.ANGLE,
-                defaultValue: 15
-              }
-            }
-          },
-          {
-            opcode: 'rotateCCW',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'turn camera counter-clockwise [val] degrees',
-            arguments: {
-              val: {
-                type: Scratch.ArgumentType.ANGLE,
-                defaultValue: 15
-              }
-            }
-          },
-          "---",
-          {
             opcode: 'getX',
             blockType: Scratch.BlockType.REPORTER,
             text: 'camera x',
@@ -190,14 +210,37 @@
             text: 'camera y',
           },
           {
-            opcode: 'getZoom',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'camera zoom',
-          },
-          {
             opcode: 'getDirection',
             blockType: Scratch.BlockType.REPORTER,
             text: 'camera direction',
+          },
+          '---',
+          {
+            opcode: 'changeZoom',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'change camera zoom by [val]',
+            arguments: {
+              val: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10
+              }
+            }
+          },
+          {
+            opcode: 'setZoom',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set camera zoom to [val] %',
+            arguments: {
+              val: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100
+              }
+            }
+          },
+          {
+            opcode: 'getZoom',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'camera zoom',
           },
           '---',
           {
@@ -217,6 +260,14 @@
           },
         ]
       };
+    }
+
+    getSprites(){
+      let sprites = ["mouse-pointer"];
+      Scratch.vm.runtime.targets.forEach(e=>{
+        if (e.isOriginal && !e.isStage) sprites.push(e.sprite.name);
+      });
+      return sprites;
     }
 
     setBoth(ARGS, util) {
@@ -284,11 +335,27 @@
     }
     setCol(ARGS, util) {
       cameraBG = ARGS.val;
-      const [r, g, b] = Scratch.Cast.toRgbColorList(cameraBG);
-      Scratch.vm.renderer.setBackgroundColor(r / 255, g / 255, b / 255);
+      Scratch.vm.renderer.setBackgroundColor(
+        parseInt(cameraBG.substring(1, 3), 16) / 255,
+        parseInt(cameraBG.substring(3, 5), 16) / 255,
+        parseInt(cameraBG.substring(5, 7), 16) / 255
+      );
     }
     getCol() {
       return cameraBG;
+    }
+    moveSteps(ARGS) {
+      let dir = (-cameraDirection + 90) * Math.PI / 180;
+      cameraX += ARGS.val * Math.cos(dir);
+      cameraY += ARGS.val * Math.sin(dir);
+      updateCamera();
+      vm.runtime.requestRedraw();
+    }
+    goTo() {
+
+    }
+    pointTowards() {
+
     }
   }
 
