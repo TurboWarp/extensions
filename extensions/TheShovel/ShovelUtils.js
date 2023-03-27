@@ -127,6 +127,19 @@
               }
             }
           },
+          
+          {
+          opcode: 'deleteSprite',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'Delete sprite [TEXT]',
+          arguments: {
+            SPRITE: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'Sprite1',
+              }
+            }
+          },
+
           {
             opcode: 'setedtarget',
             blockType: Scratch.BlockType.COMMAND,
@@ -188,6 +201,10 @@
         .catch((error) => {
           console.log("Error", error);
         });
+    }
+    
+    deleteSprite({ TEXT }) {
+  vm.deleteSprite(vm.runtime.getSpriteTargetByName(TEXT).id);
     }
 
     importSound({ TEXT, NAME }) {
