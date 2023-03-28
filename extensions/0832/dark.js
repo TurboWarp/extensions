@@ -3,7 +3,7 @@
     class Dark {
       getInfo () {
         return {
-          id: 'dark',
+          id: '0832/dark',
           name: 'Dark?',
           color1: '#192d50',
           blocks: [
