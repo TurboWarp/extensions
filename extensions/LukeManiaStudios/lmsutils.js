@@ -666,7 +666,8 @@
           {
             opcode: 'setSpriteSVG',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'reolace SVG data for costume [INPUTA] with [INPUTB]',
+            text: 'replace SVG data for costume [INPUTA] with [INPUTB]',
+
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.NUMBER,
