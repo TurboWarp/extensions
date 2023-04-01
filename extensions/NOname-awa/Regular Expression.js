@@ -165,23 +165,23 @@
                             },
                             {
                                 text: 'numeric integer',
-                                value: '^-?[1-9]/\d*$'
+                                value: '^-?[1-9]\d*$' // eslint-disable-line
                             },
                             {
                                 text: 'positive integer',
-                                value: '^[1-9]/\d*$'
+                                value: '^[1-9]\d*$' // eslint-disable-line
                             },
                             {
                                 text: 'negative integer',
-                                value: '^-[1-9]/\d*$'
+                                value: '^-[1-9]\d*$' // eslint-disable-line
                             },
                             {
                                 text: 'non-negative integers',
-                                value: '^[1-9]/\d*|0$'
+                                value: '^[1-9]\d*|0$' // eslint-disable-line
                             },
                             {
                                 text: 'non-positive integer',
-                                value: '^-[1-9]/\d*|0$'
+                                value: '^-[1-9]\d*|0$' // eslint-disable-line
                             },
                             {
                                 text: 'chinese',
