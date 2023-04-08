@@ -12,7 +12,7 @@
           {
             opcode: 'line_section',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'line section ([x1],[y1]) to ([x2],[y2])',
+            text: 'length from ([x1],[y1]) to ([x2],[y2])',
             arguments: {
               x1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -86,7 +86,7 @@
           {
             opcode: 'triangle_s',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'triangle [s1] [s2] [s3] \'s square',
+            text: 'triangle [s1] [s2] [s3] \'s area',
             arguments: {
               s1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -164,7 +164,7 @@
           {
             opcode: 'round',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'round: [rd][a] \'s [CS]',
+            text: 'circle of [rd][a]\'s [CS]',
             arguments: {
               rd: {
                 type: Scratch.ArgumentType.STRING,
@@ -185,7 +185,7 @@
             opcode: 'pi',
             disableMonitor: true,
             blockType: Scratch.BlockType.REPORTER,
-            text: '𝜋',
+            text: 'pi',
           },
         ],
         menus: {
@@ -206,7 +206,7 @@
             acceptReporters: true,
             items: [
               {
-                text: 'square',
+                text: 'area',
                 value: 's'
               },
               {
