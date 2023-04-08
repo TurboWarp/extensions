@@ -20,7 +20,7 @@
           {
             opcode: 'getMemory',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'device memory'
+            text: 'device memory in GB'
           }
         ]
       };
@@ -55,12 +55,15 @@
       }
       return 'Other';
     }
-    getMemory(){
+
+    getMemory () {
+      // @ts-expect-error
       if (navigator.deviceMemory == undefined) {
         return 'Unsupported';
-    } else {
+      } else {
+        // @ts-expect-error
         return navigator.deviceMemory;
-    }
+      }
     }
   }
 
