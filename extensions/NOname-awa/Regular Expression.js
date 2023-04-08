@@ -13,7 +13,7 @@
                     {
                         opcode: 'set',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'set [one] [two] [three]',
+                        text: 'set a: [one] b: [two] c: [three]',
                         arguments: {
                             one: {
                                 type: Scratch.ArgumentType.STRING,
@@ -32,7 +32,7 @@
                     {
                         opcode: 'matchText',
                         blockType: Scratch.BlockType.BOOLEAN,
-                        text: 'matchText [flags]',
+                        text: 'matchText： b in a [flags]',
                         arguments: {
                             flags: {
                                 type: Scratch.ArgumentType.STRING,
@@ -43,12 +43,12 @@
                     {
                         opcode: 'searchText',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'searchText',
+                        text: 'searchText： b in a',
                     },
                     {
                         opcode: 'replaceText',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'replaceText',
+                        text: 'replaceText： b in a with c',
                     }, '---',
                     {
                         opcode: 'matchTextWithPattern',
@@ -117,17 +117,17 @@
                     {
                         opcode: 'text',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'text',
+                        text: 'a',
                     },
                     {
                         opcode: 'pattern',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'pattern',
+                        text: 'b',
                     },
                     {
                         opcode: 'attach',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'attach',
+                        text: 'c',
                     }
                 ],
                 menus: {
