@@ -16,6 +16,11 @@
             opcode: 'getBrowser',
             blockType: Scratch.BlockType.REPORTER,
             text: 'browser'
+          },
+          {
+            opcode: 'getMemory',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'device memory in GB'
           }
         ]
       };
@@ -49,6 +54,16 @@
         return 'Safari';
       }
       return 'Other';
+    }
+
+    getMemory () {
+      // @ts-expect-error
+      if (navigator.deviceMemory == undefined) {
+        return 'Unsupported';
+      } else {
+        // @ts-expect-error
+        return navigator.deviceMemory;
+      }
     }
   }
 
