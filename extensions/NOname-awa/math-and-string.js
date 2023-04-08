@@ -6,8 +6,8 @@
                 color1: '#5ac900',
                 color2: '#48a100',
                 color3: '#48a100',
-                id: 'MathAndString',
-                name: 'math and string',
+                id: 'nonameawamathandstring',
+                name: 'Math And String',
                 blocks: [
                     {
                         opcode: 'exponent',
