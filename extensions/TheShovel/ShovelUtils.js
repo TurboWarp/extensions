@@ -128,6 +128,17 @@
             }
           },
           {
+            opcode: 'deleteSprite',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Delete sprite [SPRITE]',
+            arguments: {
+              SPRITE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Sprite1',
+              }
+            }
+          },
+          {
             opcode: 'setedtarget',
             blockType: Scratch.BlockType.COMMAND,
             text: 'Set editing target to [NAME]',
@@ -188,6 +199,20 @@
         .catch((error) => {
           console.log("Error", error);
         });
+    }
+
+    deleteSprite({ SPRITE }) {
+      const target = vm.runtime.getSpriteTargetByName(SPRITE);
+      if (!target || target.isStage) {
+        return;
+      }
+      // @ts-expect-error
+      if (typeof ScratchBlocks !== 'undefined') {
+        if (!confirm(`Do you want to delete the sprite "${SPRITE}"? This cannot be undone.`)) {
+          return;
+        }
+      }
+      vm.deleteSprite(target.id);
     }
 
     importSound({ TEXT, NAME }) {
