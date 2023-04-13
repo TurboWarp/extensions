@@ -20,7 +20,7 @@
         "back",
         "elastic",
         "bounce"
-    ]
+    ];
 
     const BlockType = Scratch.BlockType;
     const ArgumentType = Scratch.ArgumentType;
