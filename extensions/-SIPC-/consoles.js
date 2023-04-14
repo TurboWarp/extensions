@@ -6,13 +6,13 @@
         constructor () {}
         getInfo() {
             return {
-                id: 'Consoles',
+                id: 'sipcconsoles',
                 name: 'Consoles',
                 color1: '#808080',
                 color2: '#8c8c8c',
                 color3: '#999999',
                 menuIconURI: icon,
-				blockIconURI: icon2,
+		blockIconURI: icon2,
                 blocks: [
                     {
                         opcode: 'Emptying',
