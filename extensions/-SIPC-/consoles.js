@@ -144,22 +144,22 @@
             }
         }
         Emptying () {
-            console.clear()
+            console.clear();
         }
         Information ({string}) {
-            console.info(string)
+            console.info(string);
         }
         Journal ({string}) {
-            console.log(string)
+            console.log(string);
         }
         Warning ({string}) {
-            console.warn(string)
+            console.warn(string);
         }
         Error ({string}) {
-            console.error(string)
+            console.error(string);
         }
         debug ({string}) {
-            console.debug(string)
+            console.debug(string);
         }
         group({string}) {
             console.group(string);
@@ -171,13 +171,13 @@
             console.groupEnd();
         }
         Timeron ({string}) {
-            console.time(string)
+            console.time(string);
         }
         Timerlog ({string}) {
-            console.timeLog(string)
+            console.timeLog(string);
         }
         Timeroff ({string}) {
-            console.timeEnd(string)
+            console.timeEnd(string);
         }
 
     }
