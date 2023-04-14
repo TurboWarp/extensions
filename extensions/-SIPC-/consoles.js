@@ -141,7 +141,7 @@
                         }
                     },
                 ]
-            }
+            };
         }
         Emptying () {
             console.clear();
