@@ -6,18 +6,18 @@
         constructor () {}
         getInfo() {
             return {
-                id: 'sipcconsole',
+                id: 'Consoles',
                 name: 'Consoles',
                 color1: '#808080',
                 color2: '#8c8c8c',
                 color3: '#999999',
                 menuIconURI: icon,
-                blockIconURI: icon2,
+				blockIconURI: icon2,
                 blocks: [
                     {
                         opcode: 'Emptying',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Clear the console',
+                        text: 'Clear Console',
                         arguments: {}
                     },
                     {
@@ -65,65 +65,121 @@
                         }
                     },
                     {
+                        opcode: 'debug',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Debug [string]',
+                        arguments: {
+                            string: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'Debug'
+                            }
+                        }
+                    },
+
+
+                    '---',
+                    {
+                        opcode: 'group',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Create a group named [string]',
+                        arguments: {
+                            string: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'group'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'groupCollapsed',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Create a collapsed group named [string]',
+                        arguments: {
+                            string: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'group'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'groupEnd',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Exit the current group',
+                        arguments: {}
+                    },
+                    '---',
+                    {
                         opcode: 'Timeron',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Start a timer named [string]',
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'Benchmark'
+                                defaultValue: 'Time'
                             }
                         }
                     },
                     {
                         opcode: 'Timerlog',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Prints the time that the timer named [string] runs',
+                        text: 'Print the time run by the timer named [string]',
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'Benchmark'
+                                defaultValue: 'Time'
                             }
                         }
                     },
                     {
                         opcode: 'Timeroff',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Ends a timer named [string] and prints the time it took from start to finish',
+                        text: 'End the timer named [string] and print the time elapsed from start to end',
                         arguments: {
                             string: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'Benchmark'
+                                defaultValue: 'Time'
                             }
                         }
                     },
                 ]
-            };
+            }
         }
         Emptying () {
-            console.clear();
+            console.clear()
         }
         Information ({string}) {
-            console.info(string);
+            console.info(string)
         }
         Journal ({string}) {
-            console.log(string);
+            console.log(string)
         }
         Warning ({string}) {
-            console.warn(string);
+            console.warn(string)
         }
         Error ({string}) {
-            console.error(string);
+            console.error(string)
+        }
+        debug ({string}) {
+            console.debug(string)
+        }
+        group({string}) {
+            console.group(string);
+        }
+        groupCollapsed({string}) {
+            console.groupCollapsed(string);
+        }
+        groupEnd() {
+            console.groupEnd();
         }
         Timeron ({string}) {
-            console.time(string);
+            console.time(string)
         }
         Timerlog ({string}) {
-            console.timeLog(string);
+            console.timeLog(string)
         }
         Timeroff ({string}) {
-            console.timeEnd(string);
+            console.timeEnd(string)
         }
+
     }
     Scratch.extensions.register(new Consoles());
 })(Scratch);
