@@ -7,7 +7,6 @@
   let gy = [0];
   let gr = [90];
   let gs = [100];
-  screen = 0;
   class Global_Coordinate {
     getInfo() {
       return {
@@ -299,11 +298,11 @@
       if (isNaN(args.s)) {
         args.s = 0;
       }
-      target.setSize((args.s / 100) * gs[args.screen -  1]);
-      target.setDirection((- ((args.r - (gr[args.screen -  1] - 90) - 90))) + 90);
+      target.setSize((args.s / 100) * gs[args.screen - 1]);
+      target.setDirection((- ((args.r - (gr[args.screen - 1] - 90) - 90))) + 90);
       target.setXY(
-        (gs[args.screen -  1] / 100) * ((- (args.x + gx[args.screen -  1])) * Math.cos((((- ((gr[args.screen -  1] - 90 - 90))) + 90)) / 180 * Math.PI) - (- (args.y + gy[args.screen -  1])) * Math.sin((((- ((gr[args.screen -  1] - 90 - 90))) + 90)) / 180 * Math.PI)),
-        (gs[args.screen -  1] / 100) * ((- (args.x + gx[args.screen -  1])) * Math.sin((((- ((gr[args.screen -  1] - 90 - 90))) + 90)) / 180 * Math.PI) + (- (args.y + gy[args.screen -  1])) * Math.cos((((- ((gr[args.screen -  1] - 90 - 90))) + 90)) / 180 * Math.PI)),
+        (gs[args.screen - 1] / 100) * ((- (args.x + gx[args.screen - 1])) * Math.cos((((- ((gr[args.screen - 1] - 90 - 90))) + 90)) / 180 * Math.PI) - (- (args.y + gy[args.screen - 1])) * Math.sin((((- ((gr[args.screen - 1] - 90 - 90))) + 90)) / 180 * Math.PI)),
+        (gs[args.screen - 1] / 100) * ((- (args.x + gx[args.screen - 1])) * Math.sin((((- ((gr[args.screen - 1] - 90 - 90))) + 90)) / 180 * Math.PI) + (- (args.y + gy[args.screen - 1])) * Math.cos((((- ((gr[args.screen - 1] - 90 - 90))) + 90)) / 180 * Math.PI)),
         true
       )
     }
