@@ -76,7 +76,9 @@
       } else {
         if (j != 1) {
           k = String(Number2).slice((-(j - 1))).charAt(0);
-          i = String(i) + String(k == 0 ? '零' : C_Number[([k].reduce(function (x, y) { return x + y; }) - 1)]);
+          i = String(i) + String(k == 0 ? '零' : C_Number[([k].reduce(function (x, y) {
+            return x + y;
+          }) - 1)]);
         }
       }
     }
@@ -84,7 +86,7 @@
       return i.trim().slice(1, 3);
     }
     return i.trim();
-  }
+  };
 
   const CN_NUMBER = (Number_in, uppercase) => {
     if (String(Math.abs(Number_in >= 0 ? Math.floor(Number_in) : Math.ceil(Number_in))).length > 20) {
@@ -114,7 +116,7 @@
       o = [m.length == n ? '' : unit[((n + 4) - 1)], main(m.slice((-n))[0], m.length == n, true), o].join('');
     }
     return [Number_in < 0 ? '负' : '', o, Number_in % 1 != 0 ? '点' + String(main(After_decimal_point, false, false)) : ''].join('');
-  }
+  };
 
   Scratch.extensions.register(new CNNUMBER());
 })(Scratch);
