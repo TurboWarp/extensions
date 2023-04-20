@@ -32,7 +32,7 @@
                     {
                         opcode: 'matchText',
                         blockType: Scratch.BlockType.BOOLEAN,
-                        text: 'matchText： b in a [flags]',
+                        text: 'matchText: b in a [flags]',
                         arguments: {
                             flags: {
                                 type: Scratch.ArgumentType.STRING,
@@ -43,12 +43,12 @@
                     {
                         opcode: 'searchText',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'searchText： b in a',
+                        text: 'searchText: b in a',
                     },
                     {
                         opcode: 'replaceText',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'replaceText： b in a with c',
+                        text: 'replaceText: b in a with c',
                     }, '---',
                     {
                         opcode: 'matchTextWithPattern',
@@ -135,11 +135,11 @@
                         acceptReporters: false,
                         items: [
                             {
-                                text: 'global（g）',
+                                text: 'global (g)',
                                 value: 'g'
                             },
                             {
-                                text: 'ignore case（i）',
+                                text: 'ignore case (i)',
                                 value: 'i'
                             }
                         ]
