@@ -6,7 +6,7 @@
         constructor () {}
         getInfo() {
             return {
-                id: 'sipcconsoles',
+                id: 'sipcconsole',
                 name: 'Consoles',
                 color1: '#808080',
                 color2: '#8c8c8c',
