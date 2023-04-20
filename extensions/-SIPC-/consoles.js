@@ -12,7 +12,7 @@
                 color2: '#8c8c8c',
                 color3: '#999999',
                 menuIconURI: icon,
-		blockIconURI: icon2,
+                blockIconURI: icon2,
                 blocks: [
                     {
                         opcode: 'Emptying',
