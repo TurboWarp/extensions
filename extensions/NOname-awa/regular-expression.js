@@ -7,7 +7,7 @@
                 color1: '#0081d3',
                 color2: '#0067a9',
                 color3: '#0067a9',
-                id: 'RegularExpression',
+                id: 'nonameawaregex',
                 name: 'Regular Expression',
                 blocks: [
                     {
