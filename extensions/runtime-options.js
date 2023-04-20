@@ -9,6 +9,7 @@
   const INTERPOLATION = 'interpolation';
   const REMOVE_FENCING = 'remove fencing';
   const REMOVE_MISC_LIMITS = 'remove misc limits';
+  const HIGH_QUALITY_PEN = 'high quality pen';
 
   class RuntimeOptions {
     getInfo () {
@@ -138,6 +139,10 @@
               {
                 text: 'remove misc limits',
                 value: REMOVE_MISC_LIMITS
+              },
+              {
+                text: 'high quality pen',
+                value: HIGH_QUALITY_PEN
               }
             ]
           },
@@ -196,12 +201,14 @@
         return !Scratch.vm.runtime.runtimeOptions.fencing;
       } else if (thing === REMOVE_MISC_LIMITS) {
         return !Scratch.vm.runtime.runtimeOptions.miscLimits;
+      } else if (thing === HIGH_QUALITY_PEN) {
+        return Scratch.renderer.useHighQualityRender;
       }
       return false;
     }
 
     setEnabled ({ thing, enabled }) {
-      enabled = enabled === 'true';
+      enabled = Scratch.Cast.toBoolean(enabled);
 
       if (thing === TURBO_MODE) {
         Scratch.vm.setTurboMode(enabled);
@@ -215,6 +222,8 @@
         Scratch.vm.setRuntimeOptions({
           miscLimits: !enabled
         });
+      } else if (thing === HIGH_QUALITY_PEN) {
+        Scratch.renderer.setUseHighQualityRender(enabled);
       }
     }
 
