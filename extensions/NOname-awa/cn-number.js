@@ -6,7 +6,7 @@
   class CNNUMBER {
     getInfo() {
       return {
-        id: 'CNNUMBER',
+        id: 'nonameawacnnumber',
         name: '中文数字',
         color1: '#cb0000',
         color2: '#a20000',
