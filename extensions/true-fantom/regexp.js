@@ -15,7 +15,9 @@
     return JSON.parse(val);
   };
   const toJsonString = val => {
-    return JSON.stringify(val, (key, value) => {return value === undefined ? '' : value}, 0);
+    return JSON.stringify(val, (key, value) => {
+      return value === undefined ? '' : value;
+    }, 0);
   };
 
   const isNotPrimitiveData = val => {
@@ -32,7 +34,7 @@
     return isArray(val) ? val : isObject(val) ? Object.values(val) : [val];
   };
   const toObject = val => {
-    return isObject(val) ? val : isArray(val) ? val.reduce((array, currentValue, currentIndex) => ({...array, [currentIndex + 1] : currentValue}), {}) : {'1':val};
+    return isObject(val) ? val : isArray(val) ? val.reduce((array, currentValue, currentIndex) => ({...array, [currentIndex + 1]: currentValue}), {}) : {'1': val};
   };
 
   const dataValues = val => {
@@ -321,12 +323,16 @@
         let restr = cast.toString(A);
         let redat = toRegExpData(restr);
         return RegExpCompare(redat, restr);
-      } catch(err) {return false}
+      } catch (err) {
+        return false;
+      }
     }
     regexp_block({A, B}) {
       try {
         return toRegExpString(new RegExp(cast.toString(A), cast.toString(B)));
-      } catch(err) {return ''}
+      } catch (err) {
+        return '';
+      }
     }
     regexp_contains_flags_block({A, B}) {
       try {
@@ -335,11 +341,17 @@
         if (RegExpCompare(redat, restr)) {
           let output = true;
           let flags = Array.from(redat.flags);
-          Array.from(cast.toString(B)).forEach(flag => flags.includes(flag) ? flags.splice(flags.indexOf(flag), 1) : output = false);
+          Array.from(cast.toString(B)).forEach(flag =>
+            flags.includes(flag)
+              ? flags.splice(flags.indexOf(flag), 1)
+              : (output = false)
+          );
           return output;
         }
         return false;
-      } catch(err) {return false}
+      } catch (err) {
+        return false;
+      }
     }
     regexp_components_block({A, B}) {
       try {
@@ -348,12 +360,16 @@
         if (RegExpCompare(redat, restr)) {
           const components = cast.toString(B).toLowerCase();
           switch (components) {
-            case 'pattern': return redat.source;
-            case 'flags': return redat.flags;
+            case 'pattern':
+              return redat.source;
+            case 'flags':
+              return redat.flags;
           }
         }
         return '';
-      } catch(err) {return ''}
+      } catch (err) {
+        return '';
+      }
     }
     regexp_set_pattern_flags_block({A, B, C}) {
       try {
@@ -362,12 +378,16 @@
         if (RegExpCompare(redat, restr)) {
           const components = cast.toString(B).toLowerCase();
           switch (components) {
-            case 'pattern': return toRegExpString(new RegExp(cast.toString(C), redat.flags));
-            case 'flags': return toRegExpString(new RegExp(redat.source, cast.toString(C)));
+            case 'pattern':
+              return toRegExpString(new RegExp(cast.toString(C), redat.flags));
+            case 'flags':
+              return toRegExpString(new RegExp(redat.source, cast.toString(C)));
           }
         }
         return '';
-      } catch(err) {return ''}
+      } catch (err) {
+        return '';
+      }
     }
     regexp_add_flags_block({A, B}) {
       try {
@@ -376,11 +396,15 @@
         if (RegExpCompare(redat, restr)) {
           let flagtest = new RegExp('test', cast.toString(B));
           let flags = Array.from(redat.flags);
-          Array.from(cast.toString(B)).forEach(flag => flags.includes(flag) ? void(0) : flags.push(flag));
+          Array.from(cast.toString(B)).forEach(flag =>
+            flags.includes(flag) ? void 0 : flags.push(flag)
+          );
           return toRegExpString(new RegExp(redat.source, flags.join('')));
         }
         return '';
-      } catch(err) {return ''}
+      } catch (err) {
+        return '';
+      }
     }
     regexp_delete_flags_block({A, B}) {
       try {
@@ -389,35 +413,51 @@
         if (RegExpCompare(redat, restr)) {
           let flagtest = new RegExp('test', cast.toString(B));
           let flags = Array.from(redat.flags);
-          Array.from(cast.toString(B)).forEach(flag => flags.includes(flag) ? flags.splice(flags.indexOf(flag), 1) : void(0));
+          Array.from(cast.toString(B)).forEach(flag =>
+            flags.includes(flag) ? flags.splice(flags.indexOf(flag), 1) : void 0
+          );
           return toRegExpString(new RegExp(redat.source, flags.join('')));
         }
         return '';
-      } catch(err) {return ''}
+      } catch (err) {
+        return '';
+      }
     }
     regexp_test_block({A, B}) {
       try {
         let restr = cast.toString(B);
         let redat = toRegExpData(restr);
-        if (RegExpCompare(redat, restr)) {return redat.test(cast.toString(A))}
+        if (RegExpCompare(redat, restr)) {
+          return redat.test(cast.toString(A));
+        }
         return false;
-      } catch(err) {return false}
+      } catch (err) {
+        return false;
+      }
     }
     regexp_replace_block({A, B, C}) {
       try {
         let restr = cast.toString(B);
         let redat = toRegExpData(restr);
-        if (RegExpCompare(redat, restr)) {return cast.toString(A).replace(redat, cast.toString(C))}
+        if (RegExpCompare(redat, restr)) {
+          return cast.toString(A).replace(redat, cast.toString(C));
+        }
         return '';
-      } catch(err) {return ''}
+      } catch (err) {
+        return '';
+      }
     }
     regexp_split_block({A, B}) {
       try {
         let restr = cast.toString(B);
         let redat = toRegExpData(restr);
-        if (RegExpCompare(redat, restr)) {return toJsonString(cast.toString(A).split(redat) || [])}
+        if (RegExpCompare(redat, restr)) {
+          return toJsonString(cast.toString(A).split(redat) || []);
+        }
         return '';
-      } catch(err) {return ''}
+      } catch (err) {
+        return '';
+      }
     }
     regexp_match_block({A, B, C}) {
       try {
@@ -425,7 +465,9 @@
         let redat = toRegExpData(restr);
         let str = cast.toString(A);
         if (RegExpCompare(redat, restr)) {
-          const gredat = redat.global ? redat : new RegExp(redat.source, redat.flags + 'g');
+          const gredat = redat.global
+            ? redat
+            : new RegExp(redat.source, redat.flags + 'g');
           const match = cast.toString(C).toLowerCase();
           let data;
           switch (match) {
@@ -433,29 +475,58 @@
               data = str.match(redat) || [];
               return toJsonString(data);
             case 'keys':
-              data = Array.from(str.matchAll(gredat)).map(val => String(val.index + 1));
-              return toJsonString(redat.global ? data : data[0] ? [data[0]] : []);
+              data = Array.from(str.matchAll(gredat)).map(val =>
+                String(val.index + 1)
+              );
+              return toJsonString(
+                redat.global ? data : data[0] ? [data[0]] : []
+              );
             case 'pairs':
-              data = Array.from(str.matchAll(gredat)).reduce((obj, val) => (obj[val.index + 1] = val[0], obj), {});
-              return toJsonString(redat.global ? data : Object.keys(data)[0] ? {[Object.keys(data)[0]] : Object.values(data)[0]} : {});
+              data = Array.from(str.matchAll(gredat)).reduce(
+                (obj, val) => ((obj[val.index + 1] = val[0]), obj),
+                {}
+              );
+              return toJsonString(
+                redat.global
+                  ? data
+                  : Object.keys(data)[0]
+                  ? { [Object.keys(data)[0]]: Object.values(data)[0] }
+                  : {}
+              );
             case 'map':
-              data = Array.from(str.matchAll(gredat)).map(val => [String(val.index + 1), val[0]]);
-              return toJsonString(redat.global ? data : data[0] ? [data[0]] : []);
+              data = Array.from(str.matchAll(gredat)).map(val => [
+                String(val.index + 1),
+                val[0],
+              ]);
+              return toJsonString(
+                redat.global ? data : data[0] ? [data[0]] : []
+              );
           }
         }
         return '';
-      } catch(err) {return ''}
+      } catch (err) {
+        return '';
+      }
     }
     regexp_match_all_block({A, B}) {
       try {
         let restr = cast.toString(B);
         let redat = toRegExpData(restr);
         if (RegExpCompare(redat, restr)) {
-          if (redat.global) {return toJsonString(Array.from(cast.toString(A).matchAll(redat)).map(val => val.index + 1))} 
-          else {return toJsonString([cast.toString(A).search(redat) + 1])}
+          if (redat.global) {
+            return toJsonString(
+              Array.from(cast.toString(A).matchAll(redat)).map(
+                val => val.index + 1
+              )
+            );
+          } else {
+            return toJsonString([cast.toString(A).search(redat) + 1]);
+          }
         }
         return '';
-      } catch(err) {return ''}
+      } catch (err) {
+        return '';
+      }
     }
   }
 
