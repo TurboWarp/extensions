@@ -110,6 +110,13 @@
             },
           },
           {
+            opcode: "imageID",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "current image ID",
+            arguments: {},
+            disableMonitor: true,
+          },
+          {
             opcode: "resetCostume",
             blockType: Scratch.BlockType.COMMAND,
             text: "switch back to costume",
@@ -176,6 +183,7 @@
     }
 
     async getImage({ IMAGEURL }) {
+    IMAGEURL = Scratch.Cast.toString(IMAGEURL);
       try {
         const resp = await Scratch.fetch(IMAGEURL);
         const type = resp.headers.get("Content-Type");
@@ -249,6 +257,7 @@
 
     deleteImage({ IMG }) {
       try {
+      IMG = Scratch.Cast.toNumber(IMG);
         if (!this.render._allSkins[IMG] || !this.createdImages.has(IMG)) return;
 
         const targetsToReset = [];
@@ -292,6 +301,7 @@
     }
 
     switchToImage({ IMG }, util) {
+    IMG = Scratch.Cast.toNumber(IMG);
       if (!this.render._allSkins[IMG] || !this.validImages.has(IMG)) return;
 
       const drawableID = util.target.drawableID;
@@ -302,7 +312,7 @@
     }
 
     imageID(_args, util) {
-      const drawable = this.render._allDrawables(util.target.drawableID);
+      const drawable = this.render._allDrawables[util.target.drawableID];
       if (!drawable || !drawable.skin) return "";
 
       const skinID = drawable.skin.id;
@@ -312,6 +322,8 @@
 
     queryImage({ QUERY, IMG }) {
       if (!this.render._allSkins[IMG] || !this.validImages.has(IMG)) return "";
+
+    IMG = Scratch.Cast.toNumber(IMG);
 
       let returnValue = 0;
       let drawableID = null;
