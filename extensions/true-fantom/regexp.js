@@ -376,7 +376,7 @@
         if (RegExpCompare(redat, restr)) {
           let flagtest = new RegExp('test', cast.toString(B));
           let flags = Array.from(redat.flags);
-          Array.from(cast.toString(B)).forEach(flag => flags.includes(flag) ? flags = flags : flags.push(flag));
+          Array.from(cast.toString(B)).forEach(flag => flags.includes(flag) ? void(0) : flags.push(flag));
           return toRegExpString(new RegExp(redat.source, flags.join('')));
         }
         return '';
@@ -389,7 +389,7 @@
         if (RegExpCompare(redat, restr)) {
           let flagtest = new RegExp('test', cast.toString(B));
           let flags = Array.from(redat.flags);
-          Array.from(cast.toString(B)).forEach(flag => flags.includes(flag) ? flags.splice(flags.indexOf(flag), 1) : flags = flags);
+          Array.from(cast.toString(B)).forEach(flag => flags.includes(flag) ? flags.splice(flags.indexOf(flag), 1) : void(0));
           return toRegExpString(new RegExp(redat.source, flags.join('')));
         }
         return '';
@@ -427,19 +427,20 @@
         if (RegExpCompare(redat, restr)) {
           const gredat = redat.global ? redat : new RegExp(redat.source, redat.flags + 'g');
           const match = cast.toString(C).toLowerCase();
+          let data;
           switch (match) {
             case 'values':
-              let values = str.match(redat) || [];
-              return toJsonString(values);
+              data = str.match(redat) || [];
+              return toJsonString(data);
             case 'keys':
-              let keys = Array.from(str.matchAll(gredat)).map(val => String(val.index + 1));
-              return toJsonString(redat.global ? keys : keys[0] ? [keys[0]] : []);
+              data = Array.from(str.matchAll(gredat)).map(val => String(val.index + 1));
+              return toJsonString(redat.global ? data : data[0] ? [data[0]] : []);
             case 'pairs':
-              let pairs = Array.from(str.matchAll(gredat)).reduce((obj, val) => (obj[val.index + 1] = val[0], obj), {});
-              return toJsonString(redat.global ? pairs : Object.keys(pairs)[0] ? {[Object.keys(pairs)[0]] : Object.values(pairs)[0]} : {});
+              data = Array.from(str.matchAll(gredat)).reduce((obj, val) => (obj[val.index + 1] = val[0], obj), {});
+              return toJsonString(redat.global ? data : Object.keys(data)[0] ? {[Object.keys(data)[0]] : Object.values(data)[0]} : {});
             case 'map':
-              let map = Array.from(str.matchAll(gredat)).map(val => [String(val.index + 1), val[0]]);
-              return toJsonString(redat.global ? map : map[0] ? [map[0]] : []);
+              data = Array.from(str.matchAll(gredat)).map(val => [String(val.index + 1), val[0]]);
+              return toJsonString(redat.global ? data : data[0] ? [data[0]] : []);
           }
         }
         return '';
