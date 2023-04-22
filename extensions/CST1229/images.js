@@ -38,7 +38,7 @@
             },
             disableMonitor: true,
           },
-		  
+
           // hidden because of bugs
           {
             opcode: "penTrailsImage",
@@ -47,7 +47,7 @@
             arguments: {},
             hideFromPalette: true,
           },
-		  
+
           {
             opcode: "queryImage",
             blockType: Scratch.BlockType.REPORTER,
@@ -177,7 +177,7 @@
 
     async getImage({ IMAGEURL }) {
       try {
-        const resp = await fetch(IMAGEURL);
+        const resp = await Scratch.fetch(IMAGEURL);
         const type = resp.headers.get("Content-Type");
 
         if (!resp.ok) {
@@ -194,6 +194,8 @@
           case "image/bmp":
           case "image/jpeg":
             {
+              if (!await Scratch.canFetch(IMAGEURL)) return;
+              // eslint-disable-next-line no-restricted-syntax
               const image = new Image();
               image.crossOrigin = "anonymous";
               image.src = IMAGEURL;
@@ -362,7 +364,7 @@
       return Math.round(returnValue / 0.01) * 0.01;
     }
   }
-  
+
   if (!Scratch.extensions.unsandboxed) throw new Error("This extension cannot run in sandboxed mode.");
   Scratch.extensions.register(new ImagesExt(Scratch.vm));
 })(globalThis.Scratch);
