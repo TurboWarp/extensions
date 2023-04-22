@@ -183,7 +183,7 @@
     }
 
     async getImage({ IMAGEURL }) {
-    IMAGEURL = Scratch.Cast.toString(IMAGEURL);
+      IMAGEURL = Scratch.Cast.toString(IMAGEURL);
       try {
         const resp = await Scratch.fetch(IMAGEURL);
         const type = resp.headers.get("Content-Type");
@@ -257,7 +257,7 @@
 
     deleteImage({ IMG }) {
       try {
-      IMG = Scratch.Cast.toNumber(IMG);
+        IMG = Scratch.Cast.toNumber(IMG);
         if (!this.render._allSkins[IMG] || !this.createdImages.has(IMG)) return;
 
         const targetsToReset = [];
@@ -301,7 +301,7 @@
     }
 
     switchToImage({ IMG }, util) {
-    IMG = Scratch.Cast.toNumber(IMG);
+      IMG = Scratch.Cast.toNumber(IMG);
       if (!this.render._allSkins[IMG] || !this.validImages.has(IMG)) return;
 
       const drawableID = util.target.drawableID;
@@ -323,7 +323,7 @@
     queryImage({ QUERY, IMG }) {
       if (!this.render._allSkins[IMG] || !this.validImages.has(IMG)) return "";
 
-    IMG = Scratch.Cast.toNumber(IMG);
+      IMG = Scratch.Cast.toNumber(IMG);
 
       let returnValue = 0;
       let drawableID = null;
