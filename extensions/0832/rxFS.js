@@ -1,7 +1,8 @@
 /*!
 * Made by 0832
-* License: rxLi Version 2
-* https://0832k12.github.io/rxLi/
+* License: rxLi Version 2.1
+* https://0832k12.github.io/rxLi/2.1/
+* Specific compatibility method: directly compatible with MIT license
 */
 
 
