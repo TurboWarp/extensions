@@ -115,3 +115,6 @@ Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/27
 ## 0832/rxFS.svg
  - Created by @0832k12 in https://github.com/TurboWarp/extensions/pull/291
  - Background from https://app.haikei.app/
+
+## NOname/math&string.svg
+Created by @NOname in https://github.com/NOname-awa
