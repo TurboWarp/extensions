@@ -93,6 +93,26 @@
           },
           '---',
           {
+            opcode: 'regexp_equal_block',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: '[IMAGE] [A] = [IMAGE] [B]',
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '/apple/gi'
+              },
+              B: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '/apple/ig'
+              },
+              IMAGE: {
+                type: Scratch.ArgumentType.IMAGE,
+                dataURI: miniRegExp
+              }
+            }
+          },
+          '---',
+          {
             opcode: 'regexp_block',
             blockType: Scratch.BlockType.REPORTER,
             text: '[IMAGE] with pattern [A] and flags [B]',
@@ -323,6 +343,20 @@
         let restr = cast.toString(A);
         let redat = toRegExpData(restr);
         return RegExpCompare(redat, restr);
+      } catch (err) {
+        return false;
+      }
+    }
+    regexp_equal_block({A, B}) {
+      try {
+        let restr1 = cast.toString(A);
+        let redat1 = toRegExpData(restr1);
+        let restr2 = cast.toString(B);
+        let redat2 = toRegExpData(restr2);
+        if (RegExpCompare(redat1, restr1) && RegExpCompare(redat2, restr2)) {
+          return redat1.source === redat2.source && redat1.flags === redat2.flags;
+        }
+        return false;
       } catch (err) {
         return false;
       }
