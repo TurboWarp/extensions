@@ -77,14 +77,14 @@
   function setupModes(clipbox, blendMode, flipY) {
     if (clipbox) {
       gl.enable(gl.SCISSOR_TEST);
-      let x = (clipbox.x / scratchUnitWidth + 0.5) * width | 0;
-      let y = (clipbox.y / scratchUnitHeight + 0.5) * height | 0;
-      let x2 = ((clipbox.x + clipbox.w) / scratchUnitWidth + 0.5) * width | 0;
-      let y2 = ((clipbox.y + clipbox.h) / scratchUnitHeight + 0.5) * height | 0;
+      let x = (clipbox.x_min / scratchUnitWidth + 0.5) * width | 0;
+      let y = (clipbox.y_min / scratchUnitHeight + 0.5) * height | 0;
+      let x2 = (clipbox.x_max / scratchUnitWidth + 0.5) * width | 0;
+      let y2 = (clipbox.y_max / scratchUnitHeight + 0.5) * height | 0;
       let w = x2 - x;
       let h = y2 - y;
       if (flipY) {
-        y = (-(clipbox.y + clipbox.h) / scratchUnitHeight + 0.5) * height | 0;
+        y = (-(clipbox.y_max) / scratchUnitHeight + 0.5) * height | 0;
       }
       gl.scissor(x, y, w, h);
     } else {
@@ -180,17 +180,17 @@
       const clipbox = target.clipbox;
       if ((!lastClipbox ^ !clipbox) ||
           (lastBlendMode != target.blendMode) ||
-          (clipbox && (clipbox.x != lastClipbox.x || clipbox.y != lastClipbox.y || clipbox.w != lastClipbox.w || clipbox.h != lastClipbox.h))) {
+          (clipbox && (clipbox.x_min != lastClipbox.x_min || clipbox.y_min != lastClipbox.y_min || clipbox.x_max != lastClipbox.x_max || clipbox.y_max != lastClipbox.y_max))) {
         if (skin.a_lineColorIndex) {
           skin._flushLines();
         }
         lastTarget = target;
         if (clipbox) {
           lastClipbox = {
-            x: clipbox.x,
-            y: clipbox.y,
-            w: clipbox.w,
-            h: clipbox.h
+            x_min: clipbox.x_min,
+            y_min: clipbox.y_min,
+            x_max: clipbox.x_max,
+            y_max: clipbox.y_max
           };
         } else {
           lastClipbox = null;
@@ -358,10 +358,10 @@
     setClipbox ({X1, Y1, X2, Y2}, {target}) {
       if (target.isStage) return;
       const newClipbox = {
-        x: Math.min(X1, X2),
-        y: Math.min(Y1, Y2),
-        w: Math.max(X1, X2) - Math.min(X1, X2),
-        h: Math.max(Y1, Y2) - Math.min(Y1, Y2)
+        x_min: Math.min(X1, X2),
+        y_min: Math.min(Y1, Y2),
+        x_max: Math.max(X1, X2),
+        y_max: Math.max(Y1, Y2)
       };
       penDirty = true;
       target.clipbox = newClipbox;
@@ -391,12 +391,12 @@
       const clipbox = target.clipbox;
       if (!clipbox) return '';
       switch (PROP) {
-        case 'width': return clipbox.w;
-        case 'height': return clipbox.h;
-        case 'min x': return clipbox.x;
-        case 'min y': return clipbox.y;
-        case 'max x': return clipbox.x + clipbox.w;
-        case 'max y': return clipbox.y + clipbox.h;
+        case 'width': return clipbox.x_max - clipbox.x_min;
+        case 'height': return clipbox.y_max - clipbox.y_min;
+        case 'min x': return clipbox.x_min;
+        case 'min y': return clipbox.y_min;
+        case 'max x': return clipbox.x_max;
+        case 'max y': return clipbox.y_max;
         default: return '';
       }
     }
