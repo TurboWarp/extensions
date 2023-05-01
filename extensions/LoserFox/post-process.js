@@ -348,7 +348,8 @@
                 Y: {
                   type: Scratch.ArgumentType.NUMBER,
                   defaultValue: 8
-              }
+              },
+              hideFromPalette: true
             },
             },
             {
@@ -365,6 +366,7 @@
                     defaultValue: 0
                 }
               },
+              hideFromPalette: true
             },
             {
               opcode: 'opcodeChangePostProcess',
