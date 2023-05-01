@@ -140,6 +140,7 @@
         };
       }
       async usergrab(args) {
+        try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/user/info/'+args.WHO);
         const jsonData = await response.json();
         if (args.WHAT === 'follower') {
@@ -149,8 +150,12 @@
         } else {
           return '';
         }
+        } catch (error){
+        return '';
+        }
       }
       async rankusergrab(args) {
+        try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/user/info/'+args.WHO);
         const jsonData = await response.json();
         if (args.WHAT === 'follower') {
@@ -164,8 +169,12 @@
         } else {
           return '';
         }
+        } catch (error){
+        return '';
+        }
       }
       async usergrab2(args) {
+        try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/user/info/'+args.WHO);
         const jsonData = await response.json();
         if (args.WHAT === 'about me') {
@@ -179,8 +188,12 @@
         } else {
           return '';
         }
+        } catch (error){
+        return '';
+        }
       }
       async projectgrab(args) {
+        try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/project/info/'+args.WHO);
         const jsonData = await response.json();
         if (args.WHAT === 'love') {
@@ -192,8 +205,12 @@
         } else {
           return '';
         }
+        } catch (error){
+        return '';
+        }
       }
       async rankprojectgrab(args) {
+        try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/project/info/'+args.WHO);
         const jsonData = await response.json();
         if (args.WHAT === 'love') {
@@ -205,16 +222,27 @@
         } else {
           return '';
         }
+        } catch (error){
+        return '';
+        }
       }
       async idtoname(args) {
+        try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/project/info/'+args.WHO);
         const jsonData = await response.json();
         return jsonData.title;
+        } catch (error){
+        return '';
+        }
       }
       async idtoowner(args) {
+        try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/project/info/'+args.WHO);
         const jsonData = await response.json();
         return jsonData.username;
+        } catch (error){
+        return '';
+        }
       }
     }
     Scratch.extensions.register(new SGrab());
