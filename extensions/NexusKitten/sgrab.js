@@ -32,21 +32,6 @@
               }
             },
             {
-                opcode: 'usergrab2',
-                blockType: Scratch.BlockType.REPORTER,
-                text: '[WHAT] of user [WHO]',
-                arguments: {
-                  WHAT: {
-                    type: Scratch.ArgumentType.STRING,
-                    menu: 'WHAT5'
-                  },
-                  WHO: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: 'john'
-                  }
-                }
-              },
-            {
               opcode:'rankusergrab',
               blockType: Scratch.BlockType.REPORTER,
               text: 'global [WHAT] ranking for [WHO]',
@@ -54,6 +39,21 @@
                 WHAT: {
                   type: Scratch.ArgumentType.STRING,
                   menu: 'WHAT2'
+                },
+                WHO: {
+                  type: Scratch.ArgumentType.STRING,
+                  defaultValue: 'john'
+                }
+              }
+            },
+            {
+              opcode: 'usergrab2',
+              blockType: Scratch.BlockType.REPORTER,
+              text: '[WHAT] of user [WHO]',
+              arguments: {
+                WHAT: {
+                  type: Scratch.ArgumentType.STRING,
+                  menu: 'WHAT5'
                 },
                 WHO: {
                   type: Scratch.ArgumentType.STRING,
@@ -146,6 +146,8 @@
           return jsonData.statistics.followers;
         } else if (args.WHAT === 'following') {
           return jsonData.statistics.following;
+        } else {
+          return '';
         }
       }
       async rankusergrab(args) {
@@ -159,6 +161,8 @@
           return jsonData.statistics.ranks.favorites;
         } else if (args.WHAT === 'view') {
           return jsonData.statistics.ranks.views;
+        } else {
+          return '';
         }
       }
       async usergrab2(args) {
@@ -172,6 +176,8 @@
           return jsonData.country;
         } else if (args.WHAT === 'status') {
           return jsonData.status;
+        } else {
+          return '';
         }
       }
       async projectgrab(args) {
@@ -183,6 +189,8 @@
           return jsonData.statistics.favorites;
         } else if (args.WHAT === 'view') {
           return jsonData.statistics.views;
+        } else {
+          return '';
         }
       }
       async rankprojectgrab(args) {
@@ -194,6 +202,8 @@
           return jsonData.statistics.ranks.favorites;
         } else if (args.WHAT === 'view') {
           return jsonData.statistics.ranks.views;
+        } else {
+          return '';
         }
       }
       async idtoname(args) {
