@@ -174,7 +174,7 @@
       return programs;
     });
 
-
+    
     var uniformLocationBuffer = {};
 
 
@@ -198,20 +198,6 @@
 
       gl.uniform1i(textureLocation, framebuffertexture);
 
-    /*
-      
-      const BlockSizeLocation = gl.getUniformLocation(drawprogram, '_BlockSize');
-      const AmplitudeLocation = gl.getUniformLocation(drawprogram, '_Amplitude');
-      const TimeLocation = gl.getUniformLocation(drawprogram, '_Time');
-      const direction_rLocation = gl.getUniformLocation(drawprogram, 'direction_r');
-      const direction_gLocation = gl.getUniformLocation(drawprogram, 'direction_g');
-      const direction_bLocation = gl.getUniformLocation(drawprogram, 'direction_b'):
-      */
-    // lookup uniforms
-    /*
-    const matrixLocation = gl.getUniformLocation(drawprogram, 'u_matrix');
-    const projectionLocation = gl.getUniformLocation(drawprogram, 'u_projectionMatrix');
-    */
 
 
     //check framebuffer & buffer status
@@ -277,8 +263,6 @@
           gl.enableVertexAttribArray(texcoordLocation);
           gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
 
-
-          // draw the quad (2 triangles, 6 vertices)
           gl.drawArrays(gl.TRIANGLES, 0, 6);
     }).bind(renderer);
 
@@ -313,6 +297,8 @@
       }).bind(renderer);
 
     renderer.draw = draw;
+
+    //resize framebuffer when stage size changed
     vm.runtime.on('STAGE_SIZE_CHANGED',_ => updateFrameBuffer());
     function updateFrameBuffer(){
       console.log('is pain the only way to get stronger?');
@@ -332,53 +318,6 @@
           id: 'postprocessing',
           name: 'Post-Processing',
           blocks: [
-            {
-              opcode: 'opcodeUniform2fv',
-              text: 'uniform2fv Name:[NAME] Value:[X] [Y]',
-              blockType: Scratch.BlockType.COMMAND,
-              arguments: {
-                NAME: {
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: "_BlockSize"
-                },
-                X: {
-                    type: Scratch.ArgumentType.NUMBER,
-                    defaultValue: 8
-                },
-                Y: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 8
-              },
-              hideFromPalette: true
-            },
-            },
-            {
-              opcode: 'opcodeUniform1f',
-              text: 'uniform1f Name:[NAME] Value:[X]',
-              blockType: Scratch.BlockType.COMMAND,
-              arguments: {
-                NAME: {
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: "_Time"
-                },
-                X: {
-                    type: Scratch.ArgumentType.NUMBER,
-                    defaultValue: 0
-                }
-              },
-              hideFromPalette: true
-            },
-            {
-              opcode: 'opcodeChangePostProcess',
-              text: 'change effect to [Menu]',
-              blockType: Scratch.BlockType.COMMAND,
-              arguments: {
-                Menu: {
-                  type: Scratch.ArgumentType.STRING,
-                  menu: 'PostProcess'
-                },
-              },
-            },
             {
               opcode: 'opcodeChangeGlitch',
               text: 'Glitch Amplitude:[Amplitude]%, BlockSize X:[BlockSize_X] Y:[BlockSize_Y], Time:[Time]',
@@ -425,8 +364,76 @@
                 }
               },
             },
-
-
+          {
+            opcode: 'opcodeGetPostProcess',
+            text: 'Post-Process Mode',
+            blockType: Scratch.BlockType.REPORTER,
+            arguments: {}
+          },
+          {
+            opcode: 'opcodeUniform2fv',
+            text: 'uniform2fv Name:[NAME] Value:[X] [Y]',
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "_BlockSize"
+              },
+              X: {
+                  type: Scratch.ArgumentType.NUMBER,
+                  defaultValue: 8
+              },
+              Y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 8
+            },
+          },
+          hideFromPalette: true
+          },
+          //THEY BLOCKS WAS VERY DANGEROUS, SHOULDN'T BE USED BY NORMAL USERS. JUST FOR THE PRO.
+          {
+            opcode: 'opcodeUniform1f',
+            text: 'uniform1f Name:[NAME] Value:[X]',
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "_Time"
+              },
+              X: {
+                  type: Scratch.ArgumentType.NUMBER,
+                  defaultValue: 0
+              }
+            },
+            hideFromPalette: true
+          },
+          {
+            opcode: 'opcodeReplaceShader',
+            text: 'post-process VS:[VS] FS:[FS]',
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              VS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "attribute vec4 a_position;attribute vec2 a_texcoord;varying vec2 v_texcoord;void main() {gl_Position = vec4(a_position.x, a_position.y, a_position.z, 1);v_texcoord = a_texcoord;}"
+              },
+              FS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "varying vec2 v_texcoord;varying vec4 vColor;uniform sampler2D u_texture;void main() {gl_FragColor=texture2D(u_texture,v_texcoord);}"
+              }
+            },
+            hideFromPalette: true
+          },
+          {
+            opcode: 'opcodeChangePostProcess',
+            text: 'change effect to [Menu]',
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              Menu: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'PostProcess'
+              },
+            },
+          },
 
           ],
           menus: {
@@ -495,7 +502,21 @@
         setUniform2fv(gl,"_BlockSize", BlockSize_X,BlockSize_Y);
 
       }
+      opcodeGetPostProcess() {
+        return drawprogram_mode;
+      }
+      //VERY DANGEROUS, SHOULDN'T BE USED BY NORMAL USERS. JUST FOR THE PRO.
+      opcodeReplaceShader({VS,FS}) {
+        drawprogram = createProgram(gl,VS,FS);
+        if (gl.isProgram(drawprogram) == false){
+          console.error('postprocess program not is valid.');
+        }
+        positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
+        texcoordLocation = gl.getAttribLocation(drawprogram, 'a_texcoord');
+       textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
 
+      gl.uniform1i(textureLocation, framebuffertexture);
+    }
       opcodeUniform2fv({NAME,X,Y}) {
         setUniform2fv(gl,NAME,X,Y);
 
