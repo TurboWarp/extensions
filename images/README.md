@@ -84,6 +84,10 @@ Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/122#issu
  - https://bgjar.com/circuit-board
  - https://github.com/Templarian/MaterialDesign/blob/0a46ed9cccbe3738b904f5a1f014549dbae1f639/svg/function.svg under Apache 2.0
 
+## true-fantom/regexp.svg
+ - Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/354#issue-1679601525
+ - Background pattern from https://bgjar.com/wave-line
+
 ## Xeltalliv/clippingblending.svg
  - Created by @True-Fantom and @Xeltalliv in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1460388495
  - Dango based on Twemoji under CC-BY 4.0
