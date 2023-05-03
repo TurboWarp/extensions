@@ -177,7 +177,7 @@
         .then((arrayBuffer) => {
           const storage = vm.runtime.storage;
           vm.addCostume(NAME + '.PNG', {
-            name: NAME,
+            name: NAME + '',
             asset: new storage.Asset(
               storage.AssetType.ImageBitmap,
               null, // asset id, doesn't need to be set here because of `true` at the end will make Scratch generate it for you
@@ -230,7 +230,7 @@
           vm.addSound({
             md5: asset.assetId + '.' + asset.dataFormat,
             asset: asset,
-            name: NAME
+            name: NAME + ''
           });
         });
     }
