@@ -3,7 +3,7 @@
 
   /*!
   The following code is from NewgroundsIO-JS
-  The original code is available under https://github.com/PsychoGoldfishNG/NewgroundsIO-JS
+  The original code is available at https://github.com/PsychoGoldfishNG/NewgroundsIO-JS
 
   We use it under the following license:
 
