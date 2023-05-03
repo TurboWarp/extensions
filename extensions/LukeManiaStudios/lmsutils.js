@@ -20,7 +20,7 @@
         color1: '#1cd6ff',
         color2: '#1cbbff',
         color3: '#1cbbff',
-        blockIconURI: menuIconURI,
+        menuIconURI: menuIconURI,
         blocks: [
           {
             opcode: 'whenBooleanHat',
