@@ -37,7 +37,7 @@
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Apple',
+                defaultValue: 'Dango',
               }
             }
           },
@@ -85,11 +85,11 @@
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'https://theshovel.github.io/kewlab-data/char%20edit.mp3',
+                defaultValue: 'https://extensions.turbowarp.org/meow.mp3',
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Apple',
+                defaultValue: 'Meow',
               }
             }
           },
