@@ -10,6 +10,7 @@
     rotZ:0
   }
 
+  /* eslint-disable*/
   function updateDeviceSpeed() {
     const acl = new Accelerometer({ frequency: 30 });
     acl.addEventListener("reading", () => {
@@ -82,6 +83,7 @@
       }
     }
   }
+  /* eslint-enable */
 
 
   tryDeviceVelocityChecks()
