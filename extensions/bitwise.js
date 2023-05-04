@@ -156,7 +156,7 @@
                 defaultValue: '\n'
               }
             }
-          }, 
+          },
           '---',
           {
             opcode: 'bitwiseAnd',
