@@ -656,7 +656,7 @@
       }
       if (varNames.length > 0){
         return varNames;
-      } else{
+      } else {
         return [{text: "", value: 0}];
       }
     }
