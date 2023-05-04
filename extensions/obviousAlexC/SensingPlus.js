@@ -69,7 +69,6 @@
           console.log("Cannot connect to the sensor.");
         }
       });
-      gyro.addEventListener("reading", () => reloadOnShake(accelerometer));
       updateDeviceRotation();
     } catch (error) {
       // Handle construction errors.
