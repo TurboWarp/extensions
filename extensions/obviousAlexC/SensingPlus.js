@@ -163,7 +163,18 @@
 
   let fingersDown = 0;
 
-  const defaultPositions = [];
+  const defaultPositions = [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+  ];
 
   let fingerPositions = defaultPositions;
 
@@ -173,27 +184,42 @@
 
   function touchProcess(event) {
     event.preventDefault();
+    const changedTouches = event.changedTouches;
+    const changedTouchesKeys = Object.keys(changedTouches);
+    console.log(changedTouches);
     const canvasPos = canvas.getBoundingClientRect();
     fingersDown = event.touches.length;
-    fingerPositions = [];
-    for (let i = 0; i < event.touches.length; i++) {
-      const curTouch = event.touches[i];
-      fingerPositions.push([
-        curTouch.clientX - canvasPos.left,
-        curTouch.clientY - canvasPos.top,
-      ]);
-    }
+
+    changedTouchesKeys.forEach((touch) => {
+      defaultPositions[changedTouches[touch].identifier] = [
+        changedTouches[touch].clientX - canvasPos.left,
+        changedTouches[touch].clientY - canvasPos.top,
+      ];
+    });
   }
 
   function moveProcess(event) {
     event.preventDefault();
+    const changedTouches = event.changedTouches;
     const canvasPos = canvas.getBoundingClientRect();
+    const changedTouchesKeys = Object.keys(changedTouches);
     fingersDown = event.touches.length;
-    for (let i = 0; i < event.touches.length; i++) {
-      const curTouch = event.touches[i];
-      fingerPositions[i][0] = curTouch.clientX - canvasPos.left;
-      fingerPositions[i][1] = curTouch.clientY - canvasPos.top;
-    }
+    changedTouchesKeys.forEach((touch) => {
+      defaultPositions[changedTouches[touch].identifier] = [
+        changedTouches[touch].clientX - canvasPos.left,
+        changedTouches[touch].clientY - canvasPos.top,
+      ];
+    });
+  }
+
+  function touchEnd(event) {
+    event.preventDefault();
+    const changedTouches = event.changedTouches;
+    const changedTouchesKeys = Object.keys(changedTouches);
+    fingersDown = event.touches.length;
+    changedTouchesKeys.forEach((touch) => {
+      defaultPositions[changedTouches[touch].identifier] = null;
+    });
   }
 
   const ico =
@@ -211,8 +237,8 @@
 
   canvas.addEventListener("touchstart", touchProcess, false);
   canvas.addEventListener("touchmove", moveProcess, false);
-  canvas.addEventListener("touchcancel", touchProcess, false);
-  canvas.addEventListener("touchend", touchProcess, false);
+  canvas.addEventListener("touchcancel", touchEnd, false);
+  canvas.addEventListener("touchend", touchEnd, false);
 
   class SensingPlus {
     getInfo() {
@@ -557,6 +583,10 @@
 
     fingerPosition({ ID, PositionType }) {
       if (fingerPositions[parseInt(ID) - 1]) {
+        const fingerPos = fingerPositions[parseInt(ID) - 1];
+        if (fingerPos == null) {
+          return 0;
+        }
         const positionIndex = PositionType == "x" ? 0 : 1;
         const finger = [
           fingerPositions[parseInt(ID) - 1][0],
