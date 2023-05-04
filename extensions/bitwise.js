@@ -16,10 +16,10 @@
   };
 
   const circularRightShift = (number, k) => {
-    return (number >>> k) | (number << (32-k));
+    return (number >>> k) | (number << (32 - k));
   };
   const circularLeftShift = (number, k) => {
-    return (number << k) | (number >>> (32-k));
+    return (number << k) | (number >>> (32 - k));
   };
 
   class Bitwise {
