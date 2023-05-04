@@ -29,19 +29,16 @@
           filter: invert(100%);
         }
       }
-
       h1 {
         margin: 16px 0;
       }
       h2, h3, p {
         margin: 8px 0;
       }
-
       .section {
         max-width: 928px;
         margin: 24px auto;
       }
-
       .header h1 {
         font-size: 2.5em;
         display: flex;
@@ -64,7 +61,6 @@
           margin: 0 0 8px 0;
         }
       }
-
       .warning {
         padding: 8px;
         margin: 8px 0;
@@ -72,7 +68,6 @@
         background: rgba(0, 195, 255, 0.245);
         border: 1px solid rgba(0, 187, 255, 0.604);
       }
-
       .development-tools {
         padding: 8px;
         margin: 8px 0;
@@ -83,7 +78,6 @@
       .development-tools h2 {
         font-size: 1em;
       }
-
       .extensions {
         display: -ms-grid;
         display: grid;
@@ -100,7 +94,6 @@
           grid-template-columns: 1fr;
         }
       }
-
       .extension {
         border: 2px solid #ccc;
         border-radius: 8px;
@@ -126,7 +119,6 @@
         /* TODO: see if there's another way to do this that works in older browsers too */
         aspect-ratio: 2 / 1;
       }
-
       .extension-buttons {
         position: absolute;
         top: 0;
@@ -180,7 +172,6 @@
       .extension-buttons :disabled {
         opacity: 0.5;
       }
-
       footer {
         opacity: 0.8;
         width: 100%;
@@ -298,11 +289,9 @@
           },
         };
       }
-
       function sleep(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
       }
-
       document.addEventListener('click', (e) => {
         var toLoad = e.target.getAttribute('data-load');
         if (toLoad) {
@@ -347,7 +336,6 @@
         </div>
       </div>`
     };
-
     const img = (extensionFile) => {
       if (extensionImages[extensionFile]) return `images/${extensionImages[extensionFile]}`;
       return 'images/unknown.svg';
@@ -429,9 +417,9 @@
         </div>
 
         <div class="extension">
-          <%- banner('navigator') %>
-          <h3>Navigator</h3>
-          <p>Details about the user's browser and operating system.</p>
+          <%- banner('utilities') %>
+          <h3>Utilities</h3>
+          <p>A bunch of interesting blocks. Originally created by <a href="https://scratch.mit.edu/users/Sheep_maker/">Sheep_maker</a>.</p>
         </div>
 
         <div class="extension">
@@ -441,9 +429,15 @@
         </div>
 
         <div class="extension">
-          <%- banner('utilities') %>
-          <h3>Utilities</h3>
-          <p>A bunch of interesting blocks. Originally created by <a href="https://scratch.mit.edu/users/Sheep_maker/">Sheep_maker</a>.</p>
+          <%- banner('clonesplus') %>
+          <h3>Clones Plus</h3>
+          <p>Expansion of Scratch's clone features. Created by <a href="https://scratch.mit.edu/users/LukeManiaStudios/">LukeManiaStudios</a>.</p>
+        </div>
+        
+        <div class="extension">
+          <%- banner('navigator') %>
+          <h3>Navigator</h3>
+          <p>Details about the user's browser and operating system.</p>
         </div>
 
         <div class="extension">
