@@ -346,7 +346,7 @@
 
     whenCloneStartsWithVar(args, util) {
       if (!args.INPUTA) {
-        return ''; 
+        return '';
       }
       const variableObj = JSON.parse(this.getVariableObj(args.INPUTA, util.target));
       var expectedVar = args.INPUTB;
@@ -357,8 +357,8 @@
     }
 
     createCloneWithVar(args, util) {
-      if (!args.INPUTA) { 
-        return ''; 
+      if (!args.INPUTA) {
+        return '';
       }
       try {
         const variableObj = JSON.parse(this.getVariableObj(args.INPUTA, util.target));
@@ -451,7 +451,7 @@
 
     cloneExists(args, util) {
       const clone = this.getCloneFromVariable(args.INPUTA, args.INPUTB, util.target.sprite.clones, 'obj');
-      if(clone) {
+      if (clone) {
         return true;
       } else {
         return false;
@@ -624,15 +624,14 @@
           const jsonOBJ = {
             text: display,
             value: curTarget.name
-          }
+          };
           spriteNames.push(jsonOBJ);
         }
       }
-      if(spriteNames.length > 0) {
+      if (spriteNames.length > 0) {
         return spriteNames;
-      }
-      else {
-        return [{text: "", value:0}]; //this should never happen but it's a failsafe
+      } else {
+        return [{text: "", value: 0}]; //this should never happen but it's a failsafe
       }
     }
 
@@ -647,19 +646,18 @@
       const localKeys = Object.keys(localVars);
       if (localKeys.length > 0) {
         for (let index = 0; index < localKeys.length; index++) {
-          const curVariable = localVars[localKeys[index]]
+          const curVariable = localVars[localKeys[index]];
           const jsonOBJ = {
-            text: curVariable.name, 
+            text: curVariable.name,
             value: curVariable.name
-          }
+          };
           varNames.push(jsonOBJ);
         }
       }
-      if(varNames.length > 0){
+      if (varNames.length > 0){
         return varNames;
-      }
-      else{
-        return [{text: "", value:0}];
+      } else{
+        return [{text: "", value: 0}];
       }
     }
 
