@@ -28,7 +28,8 @@ The dango is from [Twemoji](https://twemoji.twitter.com/) and is licensed under 
  - Background from https://app.haikei.app/
 
 ## bitwise.svg
-The font used is DejaVu Sans Mono.
+- Created by @True-Fantom in https://github.com/TurboWarp/extensions/pull/381#issue-1696559620
+- Background from https://www.svgbackgrounds.com/
 
 ## cloudlink.svg
 The cloud icon is from the Cloudlink extension itself and is licensed under [MIT](https://github.com/MikeDev101/cloudlink/blob/f0c08f1e926a4179018649c6faa692c65d3b1c70/LICENSE). The font used is Noto Sans.
