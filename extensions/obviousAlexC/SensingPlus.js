@@ -45,7 +45,6 @@
           console.log("Cannot connect to the sensor.");
         }
       });
-      accelerometer.addEventListener("reading", () => reloadOnShake(accelerometer));
       updateDeviceSpeed();
     } catch (error) {
       // Handle construction errors.
@@ -454,22 +453,7 @@
 
     getClipBoard(){
       return new Promise((resolve) => {
-        navigator.permissions.query({ name: "clipboard-read" }).then((result) => {
-          if (result.state === "granted") {
-            resolve(navigator.clipboard.readText());
-          } else if (result.state === "prompt") {
-            resolve("");
-            permissions.request("clipboard-read")
-          } else if (result.state === "denied") {
-            resolve("");
-          }
-          result.addEventListener("change", () => {
-            resolve(navigator.clipboard.readText());
-          });
-        }).catch((resolve) => {
-          return "";
-        });
-        
+        resolve(navigator.clipboard.readText() || "");
       })
     }
 
@@ -515,7 +499,7 @@
         return (lists.length > 0) ? lists : ["No local lists exist"];  
     }
 
-    touchingFinger({},util){
+    touchingFinger(args,util){
       for (let index = 0; index < fingerPositions.length; index++) {
         const fingerPos = fingerPositions[index];
         if (fingerPos != null){
@@ -537,7 +521,7 @@
         return false
     }
 
-    getTouchingFingerID({},util){
+    getTouchingFingerID(args,util){
       for (let index = 0; index < fingerPositions.length; index++) {
         const fingerPos = fingerPositions[index];
         if (fingerPos != null){
@@ -597,7 +581,7 @@
       const items = variable.value;
 
       const itemNumber = Math.floor(Number(index));
-      if(itemNumber < 1 || itemNumber > items.length || typeof itemNumber == "Number"){
+      if(itemNumber < 1 || itemNumber > items.length || typeof itemNumber === "Number"){
         return "";
       }
       return items[itemNumber - 1];
