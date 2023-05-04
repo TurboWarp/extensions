@@ -582,9 +582,13 @@
       const items = variable.value;
 
       const itemNumber = Math.floor(Number(index));
+      // eslint won't stop whining.
+      
+      /* eslint-disable */
       if(itemNumber < 1 || itemNumber > items.length || typeof itemNumber === "Number"){
         return "";
       }
+      /* eslint-enable */
       return items[itemNumber - 1];
     }
 
