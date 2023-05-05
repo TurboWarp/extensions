@@ -59,6 +59,7 @@
       uniform float _Amplitude;
       uniform float _Time;
       uniform vec2 _BlockSize;
+      uniform bool _Rgb;
       float randomNoise(vec2 seed)
       {
           return fract(sin(dot(seed *_Time , vec2(17.13, 3.71))) * 43758.5453123);
@@ -66,14 +67,53 @@
       void main() {
         float block = randomNoise(floor(v_texcoord * _BlockSize));
         float displaceNoise = pow(block, 8.0) * pow(block, 3.0);
-        float ColorR = texture2D(u_texture,v_texcoord).r;
-        float ColorG = texture2D(u_texture,v_texcoord + vec2(displaceNoise * _Amplitude * randomNoise(vec2(7)),0.0)).g;
-        float ColorB = texture2D(u_texture,v_texcoord - vec2(displaceNoise * _Amplitude * randomNoise(vec2(13)),0.0)).b;
-        gl_FragColor=vec4(ColorR,ColorG,ColorB,1.0);
+        if (_Rgb){
+          float ColorR = texture2D(u_texture,v_texcoord).r;
+          float ColorG = texture2D(u_texture,v_texcoord + vec2(displaceNoise * _Amplitude * randomNoise(vec2(7)),0.0)).g;
+          float ColorB = texture2D(u_texture,v_texcoord - vec2(displaceNoise * _Amplitude * randomNoise(vec2(13)),0.0)).b;
+          gl_FragColor=vec4(ColorR,ColorG,ColorB,1.0);
+        }else{
+          vec2 offset = vec2(displaceNoise * _Amplitude * randomNoise(vec2(7)),0.0);
+          vec4 Color = texture2D(u_texture,vec2(fract(v_texcoord.x+offset.x),fract(v_texcoord.y+offset.y)));
+          gl_FragColor=Color;
+        }
+        
 
       }
     `;
+    var GrayShaderCode =
+    `
+      precision mediump float;
+      
+      varying vec2 v_texcoord;
+      varying vec4 vColor;      
+      uniform sampler2D u_texture;
+      uniform vec3 _color;
+      void main() {
 
+        vec4 Color = texture2D(u_texture,v_texcoord);
+        float gray = (Color.r + Color.g + Color.b) / 3.0;
+        
+        gl_FragColor=vec4(vec3(gray) * (_color/255.0),1.0);
+
+      }
+    `;
+    var ReverseShaderCode =
+    `
+      precision mediump float;
+      
+      varying vec2 v_texcoord;
+      varying vec4 vColor;      
+      uniform sampler2D u_texture;
+
+      void main() {
+
+        vec4 Color = texture2D(u_texture,v_texcoord);
+
+        gl_FragColor=vec4(1.0-Color.r,1.0-Color.g,1.0-Color.b,1.0);
+
+      }
+    `;
     var quadPositions = [
       -1, -1,
       -1, 1,
@@ -165,11 +205,17 @@
       var programs = {
         none: null,
         glitch: null,
-        dispersion: null
+        dispersion: null,
+        gray: null,
+        reverse: null
+
       };
       programs.none = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,noneShaderCode));
       programs.glitch = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,GlitchShaderCode));
       programs.dispersion = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,dispersionShaderCode));
+      programs.gray = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,GrayShaderCode));
+      programs.reverse = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,ReverseShaderCode));
+
       return programs;
     }
 
@@ -298,7 +344,9 @@
       }).bind(renderer);
 
     renderer.draw = draw;
-    vm.runtime.on("PROJECT_LOADED",_ => {rendererDrawPrefix();});
+    vm.runtime.on("PROJECT_LOADED",_ => {
+rendererDrawPrefix();
+});
     //resize framebuffer when stage size changed
     vm.runtime.on('STAGE_SIZE_CHANGED',_ => updateFrameBuffer());
     function updateFrameBuffer(){
@@ -327,7 +375,7 @@
           blocks: [
             {
               opcode: 'opcodeChangeGlitch',
-              text: 'Glitch Amplitude:[Amplitude]%, BlockSize X:[BlockSize_X] Y:[BlockSize_Y], Time:[Time]',
+              text: 'Glitch Amplitude:[Amplitude]%, BlockSize X:[BlockSize_X] Y:[BlockSize_Y], Time:[Time], IsRGB:[IsRGB]',
               blockType: Scratch.BlockType.COMMAND,
               arguments: {
                 Amplitude: {
@@ -345,6 +393,10 @@
                 Time: {
                   type: Scratch.ArgumentType.NUMBER,
                   defaultValue: 0
+                },
+                IsRGB: {
+                  type: Scratch.ArgumentType.BOOLEAN,
+                  defaultValue: false
                 }
               },
             },
@@ -371,6 +423,25 @@
                 }
               },
             },
+            {
+              opcode: 'opcodeChangeGray',
+              text: 'Gray Color:[COLOR]',
+              blockType: Scratch.BlockType.COMMAND,
+              arguments: {
+                COLOR: {
+                  type: Scratch.ArgumentType.COLOR,
+                  defaultValue: "#FFFFFF"
+                }
+
+              },
+            },
+          {
+            opcode: 'opcodeRequestReDraw',
+            text: 'redraw post-process',
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {}
+
+          },
           {
             opcode: 'opcodeGetPostProcess',
             text: 'Post-Process Mode',
@@ -449,6 +520,8 @@
               items: [
                 "glitch",
                 "dispersion",
+                "gray",
+                "reverse",
                 "none",
               ]
             }
@@ -466,6 +539,12 @@
           if (Menu ==  "none"){
             drawprogram = shaderPrograms.none;
           }
+          if (Menu ==  "gray"){
+            drawprogram = shaderPrograms.gray;
+          }
+          if (Menu ==  "reverse"){
+            drawprogram = shaderPrograms.reverse;
+          }
 
           if (Menu ==  "dispersion"){
             drawprogram = shaderPrograms.dispersion;
@@ -474,7 +553,7 @@
             setUniform2fv(gl,"direction_b",  -0.7, -0.3);
           }
 
-        vm.runtime.redrawRequested = true;
+        vm.runtime.requestRedraw();
         drawprogram_mode = Menu;
         uniformLocationBuffer = {};
         if (gl.isProgram(drawprogram) == false){
@@ -497,15 +576,29 @@
         setUniform2fv(gl,"direction_b", Math.cos(deg2rad(Direction_B)),Math.sin(deg2rad(Direction_B)) );
 
       }
-      opcodeChangeGlitch({Amplitude,Time,BlockSize_X,BlockSize_Y}){
+      opcodeChangeGlitch({Amplitude,Time,BlockSize_X,BlockSize_Y,IsRGB}){
         if (drawprogram_mode != "glitch" ){
           console.log("post-process mode not glitch, change to it.");
           this.opcodeChangePostProcess({Menu: "glitch"});
         }
-        setUniform1f(gl,"_Amplitude", Amplitude / 100.0);
-        setUniform1f(gl,"_Time", Time);
-        setUniform2fv(gl,"_BlockSize", BlockSize_X,BlockSize_Y);
+        setUniform1f(gl,"_Amplitude", Scratch.Cast.toNumber(Amplitude) / 100.0);
+        setUniform1f(gl,"_Time", Scratch.Cast.toNumber(Time));
+        setUniform2fv(gl,"_BlockSize", Scratch.Cast.toNumber(BlockSize_X),Scratch.Cast.toNumber(BlockSize_Y));
+        gl.getUniformLocation(drawprogram, '_Rgb');
+        gl.uniform1i(getUniformLocation(gl,"_Rgb"), IsRGB);
 
+      }
+      opcodeChangeGray({COLOR}){
+        if (drawprogram_mode != "gray" ){
+          console.log("post-process mode not gray, change to it.");
+          this.opcodeChangePostProcess({Menu: "gray"});
+        }
+        var location =  gl.getUniformLocation(shaderPrograms.gray, '_color');
+        gl.uniform3fv(location, Scratch.Cast.toRgbColorList(COLOR));
+      }
+      // not must. but it can make sure the post-process effect is correct (?)
+      opcodeRequestReDraw(){
+        vm.runtime.requestRedraw();
       }
       opcodeGetPostProcess() {
         return drawprogram_mode;
