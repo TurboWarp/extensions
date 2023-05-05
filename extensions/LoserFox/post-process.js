@@ -357,7 +357,6 @@ rendererDrawPrefix();
       }
     }
     vm.runtime.on('PROJECT_RUN_START',_ => {
-      console.log("hello");
       positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
       texcoordLocation = gl.getAttribLocation(drawprogram, 'a_texcoord');
       textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
