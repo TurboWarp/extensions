@@ -9,7 +9,7 @@
   };
 
   const number2bits = number => {
-    return Array.from(Array.from('00000000000000000000000000000000' + (number >>> 0).toString(2)).reverse().join('').substring(0, 32)).reverse().join('');
+    return (number >>> 0).toString(2).padStart(32, '0');
   };
   const bits2number = bits => {
     return /^[0-1]{32}$/.test(bits) ? parseInt(bits, 2) << 0 : 0;
