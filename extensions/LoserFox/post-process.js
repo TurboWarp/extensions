@@ -37,12 +37,11 @@
       varying vec2 v_texcoord;
       varying vec4 vColor;      
       uniform sampler2D u_texture;
-      uniform float _Amplitude;
+      uniform float _Amplitude ;
       uniform vec2 direction_r ;
       uniform vec2 direction_g ;
       uniform vec2 direction_b ;
       void main() {
-
         float ColorR = texture2D(u_texture,v_texcoord + normalize( direction_r )*_Amplitude).r ;
         float ColorG = texture2D(u_texture,v_texcoord + normalize( direction_g )*_Amplitude).g;
         float ColorB = texture2D(u_texture,v_texcoord + normalize( direction_b )*_Amplitude).b;
@@ -162,7 +161,7 @@
       gl.deleteProgram(program);
     }
 
-    var initializationShader =  (function(){
+    function initializationShader(){
       var programs = {
         none: null,
         glitch: null,
@@ -172,9 +171,9 @@
       programs.glitch = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,GlitchShaderCode));
       programs.dispersion = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,dispersionShaderCode));
       return programs;
-    });
+    }
 
-    
+
     var uniformLocationBuffer = {};
 
 
@@ -189,7 +188,6 @@
 
       var framebuffertexture = null;
       var shaderPrograms = initializationShader();
-      console.log(shaderPrograms);
       var drawprogram = shaderPrograms.none;
       var drawprogram_mode = "none";
       var  positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
@@ -252,7 +250,10 @@
           gl.clearColor(...this._backgroundColor4f);
           gl.clear(gl.COLOR_BUFFER_BIT);
           gl.bindTexture(gl.TEXTURE_2D, framebuffertexture);
-
+          positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
+          texcoordLocation = gl.getAttribLocation(drawprogram, 'a_texcoord');
+          textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
+          gl.uniform1i(textureLocation, framebuffertexture);
           gl.useProgram(drawprogram);
 
           gl.bindBuffer(gl.ARRAY_BUFFER, quadPositionBuffer);
@@ -297,17 +298,23 @@
       }).bind(renderer);
 
     renderer.draw = draw;
-
+    vm.runtime.on("PROJECT_LOADED",_ => {rendererDrawPrefix();});
     //resize framebuffer when stage size changed
     vm.runtime.on('STAGE_SIZE_CHANGED',_ => updateFrameBuffer());
     function updateFrameBuffer(){
-      console.log('is pain the only way to get stronger?');
       if (framebuffertexture != null){
-        console.log('never thought of it.');
+        console.log('STAGE_SIZE_CHANGED. resize the post-process framebuffer.');
         gl.bindTexture(gl.TEXTURE_2D, framebuffertexture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
       }
     }
+    vm.runtime.on('PROJECT_RUN_START',_ => {
+      console.log("hello");
+      positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
+      texcoordLocation = gl.getAttribLocation(drawprogram, 'a_texcoord');
+      textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
+      gl.uniform1i(textureLocation, framebuffertexture);
+    });
     function deg2rad(degrees) {
       //scratch always change degrees by -90
       return (degrees - 90) * Math.PI / 180;
@@ -456,7 +463,6 @@
             setUniform2fv(gl,"_BlockSize", 8, 8);
           }
 
-
           if (Menu ==  "none"){
             drawprogram = shaderPrograms.none;
           }
@@ -468,22 +474,21 @@
             setUniform2fv(gl,"direction_b",  -0.7, -0.3);
           }
 
-
+        vm.runtime.redrawRequested = true;
         drawprogram_mode = Menu;
         uniformLocationBuffer = {};
         if (gl.isProgram(drawprogram) == false){
           console.error('postprocess program not is valid.');
         }
-          positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
-          texcoordLocation = gl.getAttribLocation(drawprogram, 'a_texcoord');
-         textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
-
+        positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
+        texcoordLocation = gl.getAttribLocation(drawprogram, 'a_texcoord');
+        textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
         gl.uniform1i(textureLocation, framebuffertexture);
       }
       opcodeChangeDispersion({Amplitude,Direction_R,Direction_G,Direction_B}){
         if (drawprogram_mode != "dispersion" ){
-          console.log("you're say lie. you're not using dispersion effect.");
-          return;
+          console.log("post-process mode not dispersion, change to it.");
+          this.opcodeChangePostProcess({Menu: "dispersion"});
         }
 
         setUniform1f(gl,"_Amplitude", Amplitude / 100.0);
@@ -494,8 +499,8 @@
       }
       opcodeChangeGlitch({Amplitude,Time,BlockSize_X,BlockSize_Y}){
         if (drawprogram_mode != "glitch" ){
-          console.log("you're say lie. you're not using glitch effect.");
-          return;
+          console.log("post-process mode not glitch, change to it.");
+          this.opcodeChangePostProcess({Menu: "glitch"});
         }
         setUniform1f(gl,"_Amplitude", Amplitude / 100.0);
         setUniform1f(gl,"_Time", Time);
@@ -514,7 +519,7 @@
         positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
         texcoordLocation = gl.getAttribLocation(drawprogram, 'a_texcoord');
        textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
-
+      drawprogram_mode = "custom";
       gl.uniform1i(textureLocation, framebuffertexture);
     }
       opcodeUniform2fv({NAME,X,Y}) {
