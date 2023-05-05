@@ -374,6 +374,18 @@ rendererDrawPrefix();
           name: 'Post-Processing',
           blocks: [
             {
+              opcode: 'opcodeChangePostProcess',
+              text: 'change effect to [Menu]',
+              blockType: Scratch.BlockType.COMMAND,
+              arguments: {
+                Menu: {
+                  type: Scratch.ArgumentType.STRING,
+                  menu: 'PostProcess'
+                },
+              },
+            },
+            {
+              
               opcode: 'opcodeChangeGlitch',
               text: 'Glitch Amplitude:[Amplitude]%, BlockSize X:[BlockSize_X] Y:[BlockSize_Y], Time:[Time], IsRGB:[IsRGB]',
               blockType: Scratch.BlockType.COMMAND,
@@ -501,17 +513,7 @@ rendererDrawPrefix();
             },
             hideFromPalette: true
           },
-          {
-            opcode: 'opcodeChangePostProcess',
-            text: 'change effect to [Menu]',
-            blockType: Scratch.BlockType.COMMAND,
-            arguments: {
-              Menu: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'PostProcess'
-              },
-            },
-          },
+          
 
           ],
           menus: {
