@@ -554,7 +554,7 @@
             opcode: "getDeviceSpeed",
             blockIconURI: deviceVelIco,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get the [type] speed on the [axis] axis.",
+            text: "Get the [type] speed on the [axis] axis",
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
