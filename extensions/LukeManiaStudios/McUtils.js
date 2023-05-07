@@ -1,3 +1,7 @@
+/*!
+ * Credit to NexusKitten (NamelessCat) for the idea
+ */
+
 (function(Scratch) {
   'use strict';
 
