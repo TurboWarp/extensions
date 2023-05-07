@@ -58,7 +58,7 @@
           }
         ],
         menus: {
-          iceCreamMenu:{
+          iceCreamMenu: {
             acceptReporters: true,
             items: [
               {
@@ -72,7 +72,7 @@
             ]
           }
         }
-      }
+      };
     }
 
     managerReporter(args, util) {
