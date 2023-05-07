@@ -1,6 +1,55 @@
 (function (Scratch) {
   "use strict";
 
+  class notSupportedPart {
+    constructor() {
+      console.warn(
+        "Something is not supported in your browser! \n This is probably speech to text!"
+      );
+    }
+
+    onresult() {
+      console.warn("What");
+    }
+
+    start() {
+      console.warn("Your Browser does not support this.");
+    }
+
+    stop() {
+      return;
+    }
+
+    addEventListener() {
+      return;
+    }
+  }
+
+  const recognizer =
+    typeof webkitSpeechRecognition !== "undefined"
+      ? window.webkitSpeechRecognition
+      : typeof SpeechRecognition !== "undefined"
+      ? window.SpeechRecognition
+      : notSupportedPart;
+
+  let recognizedSpeech = "";
+  let recording = false;
+
+  const recognition = new recognizer();
+
+  recognition.addEventListener("result", (event) => {
+    recognizedSpeech = Array.from(event.results)
+      .map((result) => result[0])
+      .map((result) => result.transcript)
+      .join("");
+  });
+
+  recognition.addEventListener("end", () => {
+    if (recording) {
+      recognition.start();
+    }
+  });
+
   const deviceTransforms = {
     x: 0,
     y: 0,
@@ -11,29 +60,30 @@
   };
 
   /* eslint-disable*/
-  function updateDeviceSpeed() {
-    const acl = new Accelerometer({ frequency: 30 });
-    acl.addEventListener("reading", () => {
-      deviceTransforms.x = acl.x;
-      deviceTransforms.y = acl.y;
-      deviceTransforms.z = acl.z;
-    });
-
-    acl.start();
-  }
-
-  function updateDeviceRotation() {
-    const gyro = new Gyroscope({ frequency: 30 });
-
-    gyro.addEventListener("reading", (e) => {
-      deviceTransforms.rotX = gyro.x;
-      deviceTransforms.rotY = gyro.y;
-      deviceTransforms.rotZ = gyro.z;
-    });
-    gyro.start();
-  }
 
   function tryDeviceVelocityChecks() {
+    function updateDeviceSpeed() {
+      const acl = new Accelerometer({ frequency: 30 });
+      acl.addEventListener("reading", () => {
+        deviceTransforms.x = acl.x;
+        deviceTransforms.y = acl.y;
+        deviceTransforms.z = acl.z;
+      });
+
+      acl.start();
+    }
+
+    function updateDeviceRotation() {
+      const gyro = new Gyroscope({ frequency: 30 });
+
+      gyro.addEventListener("reading", (e) => {
+        deviceTransforms.rotX = gyro.x;
+        deviceTransforms.rotY = gyro.y;
+        deviceTransforms.rotZ = gyro.z;
+      });
+      gyro.start();
+    }
+
     //Accelerometer
     try {
       let accelerometer = null; //Accelorametor from MDN docs for fun.
@@ -86,6 +136,7 @@
   /* eslint-enable */
 
   tryDeviceVelocityChecks();
+
   if (!Scratch) {
     Scratch = {
       TargetType: {
@@ -125,11 +176,20 @@
     }
   }
 
+  //VM SURFER
+  //To use the module just paste this into your extension code before declaring the extension class.
+  //This module is made by obviousAlexC so please give some credit if you use it.
   const vmSurfer = {
+    globalVariables: {},
+    globalLists: {},
+    stage: {},
     sprites: {},
+    clones: [],
+    clonesOfType: {},
     refreshJSON() {
       const targets = Scratch.vm.runtime.targets;
       this.sprites = {}; //Refresh the JSON object so that we don't have to do redunant checks to see if a variable no longer exists.
+      this.clonesOfType = {};
       for (let index = 0; index < targets.length; index++) {
         // We start from 1 so we don't grab the stage.
         const target = targets[index];
@@ -153,6 +213,53 @@
               this.sprites[target.id].variables[variable.id] = variable; //Add the current "Variable" to the variables array;
             }
           }
+        } else if (target.isStage) {
+          //Add the stage to VM SURFER so that we can surf the stage for global things.
+          this.stage = {
+            id: target.id,
+            name: sprite.name,
+            originalOBJ: target,
+          };
+          const vars = target.variables;
+          const varKeys = Object.keys(vars);
+          for (let V = 0; V < varKeys.length; V++) {
+            const variable = vars[varKeys[V]];
+            if (variable.type == "list") {
+              this.globalLists[variable.id] = variable; //Add the current "Variable" to the lists array;
+            } else {
+              this.globalVariables[variable.id] = variable; //Add the current "Variable" to the variables array;
+            }
+          }
+        } else if (!target.isOriginal) {
+          const cloneDat = {
+            //Declare the sprite to the JSON object for later use.
+            id: target.id,
+            name: sprite.name,
+            originalOBJ: target,
+            lists: {},
+            variables: {},
+          };
+
+          this.clonesOfType[cloneDat.name] = this.clonesOfType[cloneDat.name]
+            ? this.clonesOfType[cloneDat.name] + 1
+            : 1;
+
+          const vars = target.variables;
+          const varKeys = Object.keys(vars);
+          for (let V = 0; V < varKeys.length; V++) {
+            const variable = vars[varKeys[V]];
+            if (variable.type == "list") {
+              cloneDat.lists[variable.id] = variable; //Add the current "Variable" to the lists array;
+            } else {
+              cloneDat.variables[variable.id] = variable; //Add the current "Variable" to the variables array;
+            }
+          }
+
+          this.clones.push(cloneDat);
+        } else {
+          console.warn(
+            "An object of an unknown type is inside of the target's JSON Object"
+          );
         }
       }
     },
@@ -234,6 +341,8 @@
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI3Mi44NjY0OCIgaGVpZ2h0PSI2MC43NDUyNSIgdmlld0JveD0iMCwwLDcyLjg2NjQ4LDYwLjc0NTI1Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjA0LjY0MTEzLC0xNDkuNjI3MzgpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMjMuNTMwMDgsMTk4LjI2ODZjLTAuNzcxMDEsLTAuMjEzNCAtMS4zNjU2MiwtMC42ODkyNSAtMS43ODM4MywtMS40Mjc1NmMtMC40MTgyMSwtMC43MzgzMSAtMC41MjA2MSwtMS40OTI5NyAtMC4zMDcyMSwtMi4yNjM5OGwxMC4xMzY0OSwtMzYuNjIzMWMwLjIxMzQsLTAuNzcxMDEgMC42ODkyNSwtMS4zNjU2MiAxLjQyNzU2LC0xLjc4MzgzYzAuNzM4MzEsLTAuNDE4MjEgMS40OTI5NywtMC41MjA2MSAyLjI2Mzk4LC0wLjMwNzIxbDIxLjIwMjg1LDUuODY4NWMwLjc3MTAxLDAuMjEzNCAxLjM2NTYyLDAuNjg5MjUgMS43ODM4MywxLjQyNzU2YzAuNDE4MjEsMC43MzgzMSAwLjUyMDYxLDEuNDkyOTcgMC4zMDcyMSwyLjI2Mzk4bC0xMC4xMzY0OSwzNi42MjMxYy0wLjIxMzQsMC43NzEwMSAtMC42ODkyNSwxLjM2NTYyIC0xLjQyNzU2LDEuNzgzODNjLTAuNzM4MzEsMC40MTgyMSAtMS40OTI5NywwLjUyMDYxIC0yLjI2Mzk4LDAuMzA3MjF6TTIyNC43MzA0NSwxOTMuOTMxNjVsLTAuNDAwMTIsMS40NDU2NWwyMS4yMDI4NSw1Ljg2ODVsMC40MDAxMiwtMS40NDU2NXpNMjI1LjUzMDcsMTkxLjA0MDM2bDIxLjIwMjg1LDUuODY4NWw3LjczNTc1LC0yNy45NDkyMWwtMjEuMjAyODUsLTUuODY4NXpNMjM0LjA2NjcsMTYwLjE5OTg1bDIxLjIwMjg1LDUuODY4NWwwLjQwMDEyLC0xLjQ0NTY1bC0yMS4yMDI4NSwtNS44Njg1ek0yMzQuMDY2NywxNjAuMTk5ODVsMC40MDAxMiwtMS40NDU2NXpNMjI0LjczMDQ1LDE5My45MzE2NWwtMC40MDAxMiwxLjQ0NTY1eiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjI2LjQ4NTU2LDE1NC40NzkwMWM0LjAzMjEsLTIuMTM5NiA4LjYzMTczLC0zLjM1MTYzIDEzLjUxNDQ0LC0zLjM1MTYzYzE1Ljk0NTkxLDAgMjguODcyNjIsMTIuOTI2NzEgMjguODcyNjIsMjguODcyNjJjMCwwLjg5Mjc3IC0wLjA0MDUyLDEuNzc2MDcgLTAuMTE5ODIsMi42NDgxNyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjMiLz48cGF0aCBkPSJNMjYwLjI2NzExLDIwMC41NjM4N2MtNS4yMTI3Myw1LjEzNzk3IC0xMi4zNjk2Myw4LjMwODc1IC0yMC4yNjcxMSw4LjMwODc1Yy0xNS45NDU5MSwwIC0yOC44NzI2MiwtMTIuOTI2NzEgLTI4Ljg3MjYyLC0yOC44NzI2MmMwLC0zLjgzOTY1IDAuNzQ5NSwtNy41MDQyNSAyLjExMDE5LC0xMC44NTU0NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjMiLz48cGF0aCBkPSJNMjA0LjY0MTEzLDE2Ni4zNzdsMTEuNjQ1NjgsLTUuMzEyMDdsNS4zMTIwNywxMS42NDU2OHoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTI3Ny41MDc2MSwxODIuNjQ0MDFsLTkuODAyNDMsOC4yMzExOGwtOC4yMzExOCwtOS44MDI0M3oiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIwIi8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MzUuMzU4ODczODM5ODgwOTc6MzAuMzcyNjIzNTE2MTc0OTk3LS0+";
   const clipboardIco =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzNy41IiBoZWlnaHQ9IjQxLjUiIHZpZXdCb3g9IjAuNSwwLjUsMzcuNSw0MS41Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjIwLjc1LC0xNTguNzUpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGw9IiNmZmZmZmYiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMjUsMjAwYy0wLjg2NjY3LDAgLTEuNTgzMzQsLTAuMjgzMzMgLTIuMTUsLTAuODVjLTAuNTY2NjcsLTAuNTY2NjcgLTAuODUsLTEuMjgzMzQgLTAuODUsLTIuMTV2LTMwYzAsLTAuODY2NjcgMC4yODMzMywtMS41ODMzNCAwLjg1LC0yLjE1YzAuNTY2NjcsLTAuNTY2NjcgMS4yODMzMywtMC44NSAyLjE1LC0wLjg1aDEwLjFjMC4yMzMzMywtMS4xNjY2NiAwLjgwODMzLC0yLjEyNSAxLjcyNSwtMi44NzVjMC45MTY2NiwtMC43NSAxLjk3NSwtMS4xMjUgMy4xNzUsLTEuMTI1YzEuMiwwIDIuMjU4MzMsMC4zNzUgMy4xNzUsMS4xMjVjMC45MTY2NiwwLjc1IDEuNDkxNjYsMS43MDgzMyAxLjcyNSwyLjg3NWgxMC4xYzAuODY2NjcsMCAxLjU4MzMzLDAuMjgzMzMgMi4xNSwwLjg1YzAuNTY2NjcsMC41NjY2NyAwLjg1LDEuMjgzMzMgMC44NSwyLjE1djMwYzAsMC44NjY2NyAtMC4yODMzNCwxLjU4MzM0IC0wLjg1LDIuMTVjLTAuNTY2NjcsMC41NjY2NyAtMS4yODMzMywwLjg1IC0yLjE1LDAuODV6TTIyNSwxOTdoMzB2LTMwaC0zdjQuNWgtMjR2LTQuNWgtM3pNMjQwLDE2N2MwLjU2NjY3LDAgMS4wNDE2NiwtMC4xOTE2NyAxLjQyNSwtMC41NzVjMC4zODMzMywtMC4zODMzMyAwLjU3NSwtMC44NTgzMyAwLjU3NSwtMS40MjVjMCwtMC41NjY2NyAtMC4xOTE2NywtMS4wNDE2NiAtMC41NzUsLTEuNDI1Yy0wLjM4MzM0LC0wLjM4MzMzIC0wLjg1ODM0LC0wLjU3NSAtMS40MjUsLTAuNTc1Yy0wLjU2NjY3LDAgLTEuMDQxNjcsMC4xOTE2NyAtMS40MjUsMC41NzVjLTAuMzgzMzMsMC4zODMzNCAtMC41NzUsMC44NTgzNCAtMC41NzUsMS40MjVjMCwwLjU2NjY3IDAuMTkxNjcsMS4wNDE2NiAwLjU3NSwxLjQyNWMwLjM4MzMzLDAuMzgzMzQgMC44NTgzNCwwLjU3NSAxLjQyNSwwLjU3NXoiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjoxOS4yNToyMS4yNDk5OTk5OTk5OTk5Ny0tPg==";
+  const speechIco =
+    "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzNi45NzQzOCIgaGVpZ2h0PSIzMy43NTAxIiB2aWV3Qm94PSIwLDAsMzYuOTc0MzgsMzMuNzUwMSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIyMS4wNjQ0OSwtMTYyLjA0MzU5KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTI0OC41MzI4MywxOTUuNzkzNjlsLTAuODI4NzUsLTIuOTg3MTdjMi44NjYxMywtMS43NjM3NiA0LjkzMjY3LC00LjE5NjQzIDYuMTk5NjEsLTcuMjk4MDJjMS4yNjY5NCwtMy4xMDE1OSAxLjQ1MDM5LC02LjI3NDQ1IDAuNTUwMzUsLTkuNTE4NThjLTAuOTAwMDQsLTMuMjQ0MTMgLTIuNjg2MTcsLTUuODc5MiAtNS4zNTg0LC03LjkwNTIyYy0yLjY3MjIzLC0yLjAyNjAyIC01LjcwMjUzLC0zLjAzNiAtOS4wOTA5LC0zLjAyOTkzbC0wLjgyODc1LC0yLjk4NzE3YzQuMjMyNDEsLTAuMjA1NjQgOC4wMzU3MiwwLjkwOTg2IDExLjQwOTk0LDMuMzQ2NDljMy4zNzQyMiwyLjQzNjYzIDUuNjI3MTksNS42OTQ1NyA2Ljc1ODkyLDkuNzczODJjMS4xMzE3Myw0LjA3OTI1IDAuODc5MzQsOC4wMzIyNyAtMC43NTcxOCwxMS44NTkwNmMtMS42MzY1MiwzLjgyNjc5IC00LjMyMTQ2LDYuNzQyMzYgLTguMDU0ODQsOC43NDY3MnpNMjI0LjI3MjU1LDE5MC42NDE4OWwtMy4yMDgwNiwtMTEuNTYzMjNsNy43MDg4MiwtMi4xMzg3MWw2Ljk2MjY0LC0xMi4zMDk0MWw4LjU1NDgzLDMwLjgzNTI5bC0xMi4zMDk0MSwtNi45NjI2NHpNMjQ1LjE0OTgyLDE4Ny4zNDA0M2wtNC41MDQ2NSwtMTYuMjM2NzFjMS45MTgxLDAuMDU1OTIgMy42MDg1MSwwLjY5MzkgNS4wNzEyNCwxLjkxMzkyYzEuNDYyNzMsMS4yMjAwMyAyLjQ1MjUzLDIuNzYxNTIgMi45NjkzOCw0LjYyNDQ5YzAuNTA3OTQsMS44MzA4NSAwLjQ0MTM1LDMuNjQ4MTMgLTAuMTk5NzksNS40NTE4NGMtMC42NDExMywxLjgwMzcyIC0xLjc1MzIsMy4yMTkyIC0zLjMzNjE5LDQuMjQ2NDV6Ii8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTguOTM1NTEyMTkxNzQ1NzQ0OjE3Ljk1NjQwNjY2OTY5MDQxLS0+";
 
   canvas.addEventListener("touchstart", touchProcess, false);
   canvas.addEventListener("touchmove", moveProcess, false);
@@ -404,6 +513,19 @@
               },
             },
           },
+          {
+            opcode: "clonesOfSprite",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "# of clones of [Sprite]",
+            blockIconURI: catIco,
+            filter: [Scratch.TargetType.SPRITE],
+            arguments: {
+              Sprite: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "spriteMenu",
+              },
+            },
+          },
           "---",
           {
             opcode: "getClipBoard",
@@ -437,6 +559,25 @@
               },
             },
           },
+          "---",
+          {
+            opcode: "recording",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Turn speech recording [toggle]",
+            blockIconURI: speechIco,
+            arguments: {
+              toggle: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "toggleMenu",
+              },
+            },
+          },
+          {
+            opcode: "returnWords",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Recognized Words",
+            blockIconURI: speechIco,
+          },
         ],
         menus: {
           fingerIDMenu: {
@@ -452,8 +593,39 @@
           listMenu: {
             items: "getLists",
           },
+          toggleMenu: {
+            items: ["on", "off"],
+          },
         },
       };
+    }
+
+    clonesOfSprite({ Sprite }) {
+      vmSurfer.refreshJSON();
+      const DesiredSprite = objDat[Sprite];
+      const SpriteName = vmSurfer.sprites[DesiredSprite].name;
+      console.log(SpriteName);
+      console.log(vmSurfer.clones);
+      return vmSurfer.clonesOfType[SpriteName] || 0;
+    }
+
+    recording({ toggle }) {
+      if (toggle == "on") {
+        if (!recording) {
+          recognition.start();
+          recognizedSpeech = "";
+          recording = true;
+        }
+      } else {
+        if (recording) {
+          recognition.stop();
+          recording = false;
+        }
+      }
+    }
+
+    returnWords() {
+      return recognizedSpeech;
     }
 
     getDeviceSpeed({ type, axis }) {
