@@ -77,23 +77,23 @@
     }
 
     average(args) {
-      const numbers = args.NUMBERS.split(' ').map(Number);
+      const numbers = Scratch.Cast.toString(args.NUMBERS).split(' ').map(Number);
       const sum = numbers.reduce((a, b) => a + b, 0);
       return sum / numbers.length;
     }
 
     maximum(args) {
-      const numbers = args.NUMBERS.split(' ').map(Number);
+      const numbers = Scratch.Cast.toString(args.NUMBERS).split(' ').map(Number);
       return Math.max(...numbers);
     }
 
     minimum(args) {
-      const numbers = args.NUMBERS.split(' ').map(Number);
+      const numbers = Scratch.Cast.toString(args.NUMBERS).split(' ').map(Number);
       return Math.min(...numbers);
     }
 
     median(args) {
-      const numbers = args.NUMBERS.split(' ').map(Number);
+      const numbers = Scratch.Cast.toString(args.NUMBERS).split(' ').map(Number);
       const sorted = numbers.sort((a, b) => a - b);
       const middle = Math.floor(sorted.length / 2);
       if (sorted.length % 2 === 0) {
@@ -104,7 +104,7 @@
     }
 
     mode(args) {
-      const numbers = args.NUMBERS.split(' ').map(Number);
+      const numbers = Scratch.Cast.toString(args.NUMBERS).split(' ').map(Number);
       const counts = new Map();
       let maxCount = 0;
       let mode = null;
@@ -121,7 +121,7 @@
     }
 
     variance(args) {
-      const numbers = args.NUMBERS.split(' ').map(Number);
+      const numbers = Scratch.Cast.toString(args.NUMBERS).split(' ').map(Number);
       const mean = this.average(args);
       const squaredDifferences = numbers.map(x => (x - mean) ** 2);
       const sum = squaredDifferences.reduce((a, b) => a + b, 0);
