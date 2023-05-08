@@ -114,6 +114,31 @@
 
       }
     `;
+    var PointillismShaderCode = `
+    precision mediump float;
+
+    uniform sampler2D u_texture;
+    uniform float u_size; // Point size
+    uniform float u_threshold; // Threshold for black and white dots
+    uniform vec2 u_resolution; // Resolution of the canvas
+    
+    varying vec2 v_texcoord;
+    
+    void main() {
+      // Sample the color from the texture
+      vec4 texColor = texture2D(u_texture, v_texcoord);
+      
+      // Convert the color to grayscale
+      float gray = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
+      
+      // Quantize the grayscale value to either black or white
+      float threshold = u_threshold * (1.0 + 0.2 * (sin(v_texcoord.y * u_resolution.y * 10.0) + sin(v_texcoord.x * u_resolution.x * 10.0)));
+      float quantized = step(threshold, gray);
+      
+      // Combine the dot pattern with the quantized color
+      gl_FragColor = vec4(vec3( quantized), 1.0);
+    }
+    `;
     var quadPositions = [
       -1, -1,
       -1, 1,
@@ -207,15 +232,15 @@
         glitch: null,
         dispersion: null,
         gray: null,
-        reverse: null
-
+        reverse: null,
+        pointillism: null
       };
       programs.none = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,noneShaderCode));
       programs.glitch = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,GlitchShaderCode));
       programs.dispersion = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,dispersionShaderCode));
       programs.gray = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,GrayShaderCode));
       programs.reverse = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,ReverseShaderCode));
-
+      programs.pointillism = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,PointillismShaderCode));
       return programs;
     }
 
@@ -354,6 +379,9 @@ rendererDrawPrefix();
         console.log('STAGE_SIZE_CHANGED. resize the post-process framebuffer.');
         gl.bindTexture(gl.TEXTURE_2D, framebuffertexture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        if (drawprogram_mode ==  "pointillism"){
+          setUniform2fv(gl,"u_resolution", gl.canvas.width, gl.canvas.height);
+        }
       }
     }
     vm.runtime.on('PROJECT_RUN_START',_ => {
@@ -477,7 +505,7 @@ rendererDrawPrefix();
                 defaultValue: 8
             },
           },
-          hideFromPalette: true
+          hideFromPalette: false
           },
           //THEY BLOCKS WAS VERY DANGEROUS, SHOULDN'T BE USED BY NORMAL USERS. JUST FOR THE PRO.
           {
@@ -494,7 +522,7 @@ rendererDrawPrefix();
                   defaultValue: 0
               }
             },
-            hideFromPalette: true
+            hideFromPalette: false
           },
           {
             opcode: 'opcodeReplaceShader',
@@ -523,6 +551,7 @@ rendererDrawPrefix();
                 "dispersion",
                 "gray",
                 "reverse",
+                "pointillism",
                 "none",
               ]
             }
@@ -553,7 +582,12 @@ rendererDrawPrefix();
             setUniform2fv(gl,"direction_g", 0.4, 1.0 );
             setUniform2fv(gl,"direction_b",  -0.7, -0.3);
           }
-
+          if (Menu ==  "pointillism"){
+            drawprogram = shaderPrograms.pointillism;
+            setUniform1f(gl,"u_size", 0.0001);
+            setUniform1f(gl,"u_threshold", 0.1);
+            setUniform2fv(gl,"u_resolution", gl.canvas.width, gl.canvas.height);
+          }
         vm.runtime.requestRedraw();
         drawprogram_mode = Menu;
         uniformLocationBuffer = {};
