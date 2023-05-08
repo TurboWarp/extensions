@@ -210,7 +210,6 @@
                 blocks: [
                     {
                         opcode: 'strictlyequal',
-                        hideFromPalette: true,
                         blockType: Scratch.BlockType.BOOLEAN,
                         text: '[TEXT1] ≡ [TEXT2]',
                         arguments: {
@@ -226,7 +225,6 @@
                     },
                     {
                         opcode: 'quasiequal',
-                        hideFromPalette: true,
                         blockType: Scratch.BlockType.BOOLEAN,
                         text: '[TEXT1] ≈ [TEXT2]',
                         arguments: {
@@ -243,7 +241,6 @@
                     '---',
                     {
                         opcode: 'changecase',
-                        hideFromPalette: true,
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'convert [TEXT] to case [FORMAT]',
                         arguments: {
@@ -259,7 +256,6 @@
                     },
                     {
                         opcode: 'getcase',
-                        hideFromPalette: true,
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'get case from [TEXT]',
                         arguments: {
@@ -271,7 +267,6 @@
                     },
                     {
                         opcode: 'iscase',
-                        hideFromPalette: true,
                         blockType: Scratch.BlockType.BOOLEAN,
                         text: 'is [TEXT] [FORMAT]',
                         arguments: {
@@ -288,7 +283,6 @@
                     '---',
                     {
                         opcode: 'glitch',
-                        hideFromPalette: true,
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'glitch [TEXT] level [PROBA]%',
                         arguments: {
