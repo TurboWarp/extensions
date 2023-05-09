@@ -663,9 +663,11 @@
             items: "getLists",
           },
           toggleMenu: {
+            acceptReporters: true,
             items: ["on", "off"],
           },
           effectMenu: {
+            acceptReporters: true,
             items: [
               "color",
               "fisheye",
