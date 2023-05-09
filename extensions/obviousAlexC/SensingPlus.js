@@ -565,6 +565,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "# of clones of [Sprite]",
             blockIconURI: catIco,
+            disableMonitor: true,
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               Sprite: {
