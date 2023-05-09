@@ -452,7 +452,7 @@
 			else {
 				gs[screen - 1] = 0;
 			}
-			if (gs < 0) {
+			if (gs[screen - 1] < 0) {
 				gs[screen - 1] = 0;
 			}
 		}
