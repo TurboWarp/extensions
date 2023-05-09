@@ -695,7 +695,7 @@
     }
 
     getEffect({ effect }, util) {
-      return util.target.effects[effect];
+      return util.target.effects[effect] || 0;
     }
 
     isPackaged() {
