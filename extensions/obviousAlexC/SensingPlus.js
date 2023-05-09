@@ -577,6 +577,25 @@
           },
           "---",
           {
+            opcode: "recording",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Turn speech recording [toggle]",
+            blockIconURI: speechIco,
+            arguments: {
+              toggle: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "toggleMenu",
+              },
+            },
+          },
+          {
+            opcode: "returnWords",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Recognized Words",
+            blockIconURI: speechIco,
+          },
+          "---",
+          {
             opcode: "getClipBoard",
             blockType: Scratch.BlockType.REPORTER,
             text: "Copied Contents",
