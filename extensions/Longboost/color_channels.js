@@ -1,4 +1,5 @@
 (function(Scratch) {
+'use strict';
 const renderer = Scratch.vm.renderer;
 const gl = renderer._gl;
 var channel_array = [true, true, true, true];
@@ -116,7 +117,7 @@ class LBdrawtest {
     } else if (COLOR == 'green') {
         channel_array = [false, true, false, true];
     } else {
-    channel_array = [false, false, true, true];    
+    channel_array = [false, false, true, true];
     }
     gl.colorMask(channel_array[0],channel_array[1],channel_array[2],channel_array[3]);
     Scratch.vm.renderer.dirty = true;
