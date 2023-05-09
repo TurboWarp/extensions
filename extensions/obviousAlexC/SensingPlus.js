@@ -278,7 +278,7 @@
 
   let fingersDown = 0;
 
-  const defaultPositions = [
+  const lastFingerPositions = [
     null,
     null,
     null,
@@ -291,7 +291,18 @@
     null,
   ];
 
-  let fingerPositions = defaultPositions;
+  const fingerPositions = [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+  ];
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -305,7 +316,11 @@
     fingersDown = event.touches.length;
 
     changedTouchesKeys.forEach((touch) => {
-      defaultPositions[changedTouches[touch].identifier] = [
+      lastFingerPositions[changedTouches[touch].identifier] = [
+        changedTouches[touch].clientX - canvasPos.left,
+        changedTouches[touch].clientY - canvasPos.top,
+      ];
+      fingerPositions[changedTouches[touch].identifier] = [
         changedTouches[touch].clientX - canvasPos.left,
         changedTouches[touch].clientY - canvasPos.top,
       ];
@@ -319,7 +334,11 @@
     const changedTouchesKeys = Object.keys(changedTouches);
     fingersDown = event.touches.length;
     changedTouchesKeys.forEach((touch) => {
-      defaultPositions[changedTouches[touch].identifier] = [
+      lastFingerPositions[changedTouches[touch].identifier] = [
+        fingerPositions[changedTouches[touch].identifier][0],
+        fingerPositions[changedTouches[touch].identifier][1],
+      ];
+      fingerPositions[changedTouches[touch].identifier] = [
         changedTouches[touch].clientX - canvasPos.left,
         changedTouches[touch].clientY - canvasPos.top,
       ];
@@ -332,7 +351,8 @@
     const changedTouchesKeys = Object.keys(changedTouches);
     fingersDown = event.touches.length;
     changedTouchesKeys.forEach((touch) => {
-      defaultPositions[changedTouches[touch].identifier] = null;
+      lastFingerPositions[changedTouches[touch].identifier] = null;
+      fingerPositions[changedTouches[touch].identifier] = null;
     });
   }
 
@@ -680,6 +700,20 @@
           },
         },
       };
+    }
+
+    getFingerSpeed({ ID }) {
+      const fingerPos = fingerPositions[ID - 1];
+      const fingerLastPos = lastFingerPositions[ID - 1];
+      if (fingerPos == null) {
+        return 0;
+      }
+      const speed = Math.sqrt(
+        Math.pow(fingerPos[0] - fingerLastPos[0], 2),
+        Math.pow(fingerPos[1] - fingerLastPos[1], 2)
+      );
+      lastFingerPositions[ID - 1] = [fingerPos[0], fingerPos[1]];
+      return speed;
     }
 
     getSpriteLayer(args, util) {
