@@ -557,7 +557,7 @@
           {
             opcode: "getEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get this sprite's [effect]",
+            text: "Get this sprite's [effect] effect",
             blockIconURI: effectIco,
             disableMonitor: true,
             arguments: {
