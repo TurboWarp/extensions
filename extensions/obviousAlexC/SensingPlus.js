@@ -1,6 +1,8 @@
 (function (Scratch) {
   "use strict";
 
+  console.log("Thank you for using SENSING+ for turbowarp.");
+
   class notSupportedPart {
     constructor() {
       console.warn(
@@ -300,7 +302,6 @@
     event.preventDefault();
     const changedTouches = event.changedTouches;
     const changedTouchesKeys = Object.keys(changedTouches);
-    console.log(changedTouches);
     const canvasPos = canvas.getBoundingClientRect();
     fingersDown = event.touches.length;
 
@@ -625,8 +626,6 @@
       vmSurfer.refreshJSON();
       const DesiredSprite = objDat[Sprite];
       const SpriteName = vmSurfer.sprites[DesiredSprite].name;
-      console.log(SpriteName);
-      console.log(vmSurfer.clones);
       return vmSurfer.clonesOfType[SpriteName] || 0;
     }
 
