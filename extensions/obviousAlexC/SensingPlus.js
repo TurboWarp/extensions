@@ -439,6 +439,18 @@
               },
             },
           },
+          {
+            opcode: "getFingerSpeed",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Finger [ID] speed",
+            blockIconURI: touchIco,
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.NUMBER,
+                menu: "fingerIDMenu",
+              },
+            },
+          },
           "---",
           {
             opcode: "listInSprite",
@@ -545,7 +557,7 @@
           {
             opcode: "getEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get the value of [effect]",
+            text: "Get this sprite's [effect]",
             blockIconURI: effectIco,
             disableMonitor: true,
             arguments: {
@@ -669,9 +681,7 @@
     }
 
     getSpriteLayer(args, util) {
-      console.log(
-        util.target.renderer["_drawList"].indexOf(util.target.drawableID)
-      );
+      return util.target.renderer["_drawList"].indexOf(util.target.drawableID);
     }
 
     getRotationStyle(arg, util) {
