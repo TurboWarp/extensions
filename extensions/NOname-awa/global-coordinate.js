@@ -313,7 +313,7 @@
                 ],
                 menus: {
                     rotation_mode: {
-                        acceptReporters: 0,
+                        acceptReporters: true,
                         items: [
                             {
                                 text: 'center of stage',
@@ -450,7 +450,7 @@
             if (!isNaN(s)) {
                 gs[screen - 1] += s;
             }
-            if (gs < 0) {
+            if (gs[screen - 1] < 0) {
                 gs[screen - 1] = 0;
             }
         }
