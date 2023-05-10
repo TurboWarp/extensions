@@ -131,3 +131,6 @@ Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/90#iss
 
 ## TheShovel/CanvasEffects.svg
 Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1526886264
+
+## cs2627883/numericalencoding.svg
+Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1534022176
