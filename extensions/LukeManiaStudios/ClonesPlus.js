@@ -346,44 +346,39 @@
     }
 
     whenCloneStartsWithVar(args, util) {
-      // TODO: need to review
-      if (!args.INPUTA) {
-        return '';
-      }
       const variableObj = this.getVariableObj(args.INPUTA, util.target);
-      var expectedVar = args.INPUTB;
-      var cloneVar = util.target.lookupOrCreateVariable(variableObj.id, variableObj.name).value;
-      if (cloneVar == expectedVar) {
-        return (Scratch.vm.runtime._events.targetWasCreated);
+      if (!variableObj) {
+        return false;
       }
+      // TODO: this is not ideal, will run when it shouldn't, would love for it to be not edge-activated
+      const expectedVar = args.INPUTB;
+      const cloneVar = util.target.lookupOrCreateVariable(variableObj.id, variableObj.name).value;
+      return Scratch.Cast.compare(cloneVar, expectedVar) === 0;
     }
 
     createCloneWithVar(args, util) {
-      if (!args.INPUTA) {
-        return '';
-      }
-      try {
-        const variableObj = this.getVariableObj(args.INPUTA, util.target);
-        const clones = util.target.sprite.clones;
-        Scratch.vm.runtime.ext_scratch3_control._createClone(util.target.sprite.name, util.target);
-        const cloneNum = (clones.length - 1);
-        const cloneVariable = clones[cloneNum].lookupOrCreateVariable(variableObj.id, variableObj.name);
+      const clones = util.target.sprite.clones;
+      // @ts-expect-error
+      Scratch.vm.runtime.ext_scratch3_control._createClone(util.target.sprite.name, util.target);
+      const cloneNum = (clones.length - 1);
+
+      const originalVariable = this.getVariableObj(args.INPUTA, util.target);
+      if (originalVariable) {
+        const cloneVariable = clones[cloneNum].lookupOrCreateVariable(originalVariable.id, originalVariable.name);
         cloneVariable.value = args.INPUTB;
-      } catch (error) {
-        return '';
       }
     }
 
     touchingCloneWithVar(args, util) {
-      if (!args.INPUTA) {
+      const variableObj = this.getVariableObj(args.INPUTA, util.target);
+      if (!variableObj) {
         return false;
       }
-      const variableObj = this.getVariableObj(args.INPUTA, util.target);
+      /** @type {VM.Target[]} */
       const clones = util.target.sprite.clones;
-      const drawableCandidates = clones.filter(clone =>
-        clone.lookupOrCreateVariable(variableObj.id, variableObj.name).value === args.INPUTB)
+      const drawableCandidates = clones.filter(clone => clone.lookupOrCreateVariable(variableObj.id, variableObj.name).value === args.INPUTB)
         .map(clone => clone.drawableID);
-      if (!drawableCandidates) {
+      if (drawableCandidates.length === 0) {
         return false;
       }
       return Scratch.vm.renderer.isTouchingDrawables(util.target.drawableID, drawableCandidates);
@@ -399,21 +394,22 @@
     }
 
     setVariableOfClone(args, util) {
-      if (!args.INPUTA) {
-        return '';
-      }
-      if (!args.INPUTC) {
-        return '';
-      }
-      const variableToEdit = this.getVariableObj(args.INPUTA, util.target);
       const newVariableValue = args.INPUTB;
-      const cloneVariableObj = this.getVariableObj(args.INPUTC, util.target);
+      const variableToEdit = this.getVariableObj(args.INPUTA, util.target);
+      if (!variableToEdit) {
+        return;
+      }
       const expectedVarValue = args.INPUTD;
-      const targetClone = util.target.sprite.clones;
-      for (let index = 1; index < targetClone.length; index++) {
-        const cloneVarValue = targetClone[index].lookupOrCreateVariable(cloneVariableObj.id, cloneVariableObj.name).value;
-        if (cloneVarValue == expectedVarValue) {
-          targetClone[index].lookupOrCreateVariable(variableToEdit.id, variableToEdit.name).value = newVariableValue;
+      const cloneVariableObj = this.getVariableObj(args.INPUTC, util.target);
+      if (!cloneVariableObj) {
+        return;
+      }
+      const clones = util.target.sprite.clones;
+      for (let index = 1; index < clones.length; index++) {
+        const cloneVarValue = clones[index].lookupOrCreateVariable(cloneVariableObj.id, cloneVariableObj.name).value;
+        if (Scratch.Cast.compare(expectedVarValue, cloneVarValue) === 0) {
+          clones[index].lookupOrCreateVariable(variableToEdit.id, variableToEdit.name).value = newVariableValue;
+          // TODO: might be multiple clones with this value; should we break at this point?
         }
       }
     }
@@ -422,7 +418,7 @@
       if (!args.INPUTB) {
         return '';
       }
-      const clone = this.getCloneFromVariable(args.INPUTB, args.INPUTC, util.target.sprite.clones, 'obj');
+      const clone = this.getCloneFromVariable(args.INPUTB, args.INPUTC, util.target.sprite.clones);
       if (!clone) {
         return '';
       }
@@ -435,33 +431,27 @@
     }
 
     setVariableOfMainSprite(args, util) {
-      if (!args.INPUTA) {
-        return;
-      }
       const variableObj = this.getVariableObj(args.INPUTA, util.target);
-      util.target.sprite.clones[0].lookupOrCreateVariable(variableObj.id, variableObj.name).value = args.INPUTB;
-      return;
+      if (variableObj) {
+        util.target.sprite.clones[0].lookupOrCreateVariable(variableObj.id, variableObj.name).value = args.INPUTB;
+      }
     }
 
     getVariableOfMainSprite(args, util) {
-      if (!args.INPUT) {
-        return;
-      }
       const variableObj = this.getVariableObj(args.INPUT, util.target);
-      return util.target.sprite.clones[0].lookupOrCreateVariable(variableObj.id, variableObj.name).value;
+      if (variableObj) {
+        return util.target.sprite.clones[0].lookupOrCreateVariable(variableObj.id, variableObj.name).value;
+      }
+      return '';
     }
 
     cloneExists(args, util) {
-      const clone = this.getCloneFromVariable(args.INPUTA, args.INPUTB, util.target.sprite.clones, 'obj');
-      if (clone) {
-        return true;
-      } else {
-        return false;
-      }
+      const clone = this.getCloneFromVariable(args.INPUTA, args.INPUTB, util.target.sprite.clones);
+      return !!clone;
     }
 
     getThingOfClone(args, util) {
-      const clone = this.getCloneFromVariable(args.INPUTB, args.INPUTC, util.target.sprite.clones, 'obj');
+      const clone = this.getCloneFromVariable(args.INPUTB, args.INPUTC, util.target.sprite.clones);
       if (!clone) {
         return '';
       }
@@ -486,6 +476,8 @@
       if (args.INPUTA === 'volume') {
         return clone.volume;
       }
+      // should never happen
+      return '';
     }
 
     getThingOfMainSprite(args, util) {
@@ -511,14 +503,14 @@
       if (args.INPUT === 'volume') {
         return main.volume;
       }
+      // should never happen
+      return '';
     }
 
     stopScriptsInSprite(args) {
-      try {
-        const targetObj = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+      const targetObj = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+      if (targetObj) {
         Scratch.vm.runtime.stopForTarget(targetObj);
-      } catch (error) {
-        return '';
       }
     }
 
@@ -527,41 +519,38 @@
     }
 
     stopScriptsInClone(args, util) {
-      if (!args.INPUTA) {
-        return '';
-      }
       const variableObj = this.getVariableObj(args.INPUTA, util.target);
+      if (!variableObj) {
+        return;
+      }
       const clones = util.target.sprite.clones;
-      var expectedVar = args.INPUTB;
-      var clone = '';
+      let expectedVar = args.INPUTB;
       for (let index = 1; index < clones.length; index++) {
         const cloneVariable = clones[index].lookupOrCreateVariable(variableObj.id, variableObj.name);
-        var cloneVariableValue = cloneVariable.value;
-        if (cloneVariableValue == expectedVar) {
+        const cloneVariableValue = cloneVariable.value;
+        if (Scratch.Cast.compare(cloneVariableValue, expectedVar) === 0) {
           Scratch.vm.runtime.stopForTarget(clones[index]);
+          // TODO: should we break?
         }
       }
     }
 
     deleteClonesInSprite(args, util) {
-      try {
-        const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
-        const clones = target.sprite.clones;
-        const cloneLength = Scratch.Cast.toNumber(clones.length);
-        for (let index = cloneLength; index > 0; index--) {
-          Scratch.vm.runtime.disposeTarget(clones[index]);
-        }
-      } catch (error) {
+      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+      if (!target) {
         return;
+      }
+      const clones = target.sprite.clones;
+      for (let index = clones.length - 1; index > 0; index--) {
+        Scratch.vm.runtime.disposeTarget(clones[index]);
       }
     }
 
     deleteCloneWithVar(args, util) {
       const clones = util.target.sprite.clones;
-      const cloneLength = Scratch.Cast.toNumber(clones.length - 1);
       const variableObj = this.getVariableObj(args.INPUTA, util.target);
       const expectedVar = args.INPUTB;
-      for (let index = cloneLength; index > 0; index--) {
+      for (let index = clones.length - 1; index > 0; index--) {
         const cloneVar = clones[index].lookupOrCreateVariable(variableObj.id, variableObj.name).value;
         if (cloneVar === expectedVar) {
           Scratch.vm.runtime.disposeTarget(clones[index]);
@@ -570,11 +559,7 @@
     }
 
     isClone(args, util) {
-      if (util.target.isOriginal) {
-        return false;
-      } else {
-        return true;
-      }
+      return !util.target.isOriginal;
     }
 
     cloneCount(args, util) {
@@ -586,36 +571,30 @@
         const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
         return (target.sprite.clones.length - 1);
       } catch (error) {
-        return '0';
+        return 0;
       }
     }
 
-    getCloneFromVariable(variableObject, cloneVarValue, targetClones, returnOption) {
-      try {
-        const variableObj = this.getVariableObj(variableObject, Scratch.vm.runtime.getEditingTarget());
-        var clone = '';
-        for (let index = 1; index < targetClones.length; index++) {
-          const cloneVariable = targetClones[index].lookupOrCreateVariable(variableObj.id, variableObj.name);
-          const expectedVar = cloneVarValue;
-          if (cloneVariable.value == expectedVar) {
-            clone = targetClones[index];
-            break;
-          }
+    /**
+     * @param {string} variableName
+     * @param {unknown} expectedValue
+     * @param {VM.Target[]} clones
+     * @returns {VM.Target|null}
+     */
+    getCloneFromVariable(variableName, expectedValue, clones) {
+      for (let index = 1; index < clones.length; index++) {
+        const cloneVariable = clones[index].lookupVariableByNameAndType(variableName, '');
+        if (cloneVariable && Scratch.Cast.compare(cloneVariable.value, expectedValue) === 0) {
+          return clones[index];
         }
-        if (clone) {
-          return clone;
-        } else {
-          return '';
-        }
-      } catch (error) {
-        return '';
       }
+      return null;
     }
 
     getSprites() {
       let spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
-      const myself = window.vm.runtime._editingTarget.sprite.name;
+      const myself = Scratch.vm.runtime.getEditingTarget().sprite.name;
       for (let index = 1; index < targets.length; index++) {
         const curTarget = targets[index].sprite;
         let display = curTarget.name;
@@ -663,6 +642,11 @@
       }
     }
 
+    /**
+     * @param {string} name
+     * @param {VM.Target} target
+     * @returns {VM.Variable|undefined}
+     */
     getVariableObj(name, target) {
       const variableObj = target.lookupVariableByNameAndType(name, '');
       return variableObj;
