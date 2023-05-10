@@ -349,8 +349,7 @@
 					(gy[args.screen - 1] / 100 * gs[args.screen - 1]) + (gs[args.screen - 1] / 100) * ((- (args.x)) * Math.sin((((- ((gr[args.screen - 1] - 90 - 90))) + 90)) / 180 * Math.PI) + (- (args.y)) * Math.cos((((- ((gr[args.screen - 1] - 90 - 90))) + 90)) / 180 * Math.PI)),
 					true
 				);
-			}
-			else {
+			} else {
 				target.setXY(
 					(gs[args.screen - 1] / 100) * ((- (args.x + gx[args.screen - 1])) * Math.cos((((- ((gr[args.screen - 1] - 90 - 90))) + 90)) / 180 * Math.PI) - (- (args.y + gy[args.screen - 1])) * Math.sin((((- ((gr[args.screen - 1] - 90 - 90))) + 90)) / 180 * Math.PI)),
 					(gs[args.screen - 1] / 100) * ((- (args.x + gx[args.screen - 1])) * Math.sin((((- ((gr[args.screen - 1] - 90 - 90))) + 90)) / 180 * Math.PI) + (- (args.y + gy[args.screen - 1])) * Math.cos((((- ((gr[args.screen - 1] - 90 - 90))) + 90)) / 180 * Math.PI)),
@@ -364,26 +363,22 @@
 		set({ x, y, r, s, screen }) {
 			if (!isNaN(x)) {
 				gx[screen - 1] = x;
-			}
-			else {
+			} else {
 				gx[screen - 1] = 0;
 			}
 			if (!isNaN(y)) {
 				gy[screen - 1] = y;
-			}
-			else {
+			} else {
 				gy[screen - 1] = 0;
 			}
 			if (!isNaN(r)) {
 				gr[screen - 1] = r;
-			}
-			else {
+			} else {
 				gr[screen - 1] = 0;
 			}
 			if (!isNaN(s)) {
 				gs[screen - 1] = s;
-			}
-			else {
+			} else {
 				gs[screen - 1] = 0;
 			}
 		}
@@ -391,8 +386,7 @@
 			if (!isNaN(x + y)) {
 				gx[screen - 1] = x;
 				gy[screen - 1] = y;
-			}
-			else {
+			} else {
 				if (isNaN(x)) {
 					x = 0;
 				}
@@ -404,16 +398,14 @@
 		Set_GX({ x, screen }) {
 			if (!isNaN(x)) {
 				gx[screen - 1] = x;
-			}
-			else {
+			} else {
 				gx[screen - 1] = 0;
 			}
 		}
 		Set_GY({ y, screen }) {
 			if (!isNaN(y)) {
 				gy[screen - 1] = y;
-			}
-			else {
+			} else {
 				gy[screen - 1] = 0;
 			}
 		}
@@ -430,8 +422,7 @@
 		Set_GR({ r, screen }) {
 			if (!isNaN(r)) {
 				gr[screen - 1] = r;
-			}
-			else {
+			} else {
 				gr[screen - 1] = 0;
 			}
 		}
@@ -448,8 +439,7 @@
 		Set_si({ s, screen }) {
 			if (!isNaN(s)) {
 				gs[screen - 1] = s;
-			}
-			else {
+			} else {
 				gs[screen - 1] = 0;
 			}
 			if (gs[screen - 1] < 0) {
