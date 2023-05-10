@@ -125,3 +125,6 @@ Created by @NOname in https://github.com/NOname-awa
 
 ## NOname-awa/more-comparisons.svg
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1479376273
+
+## JeremyGamer13/tween.svg
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1536373649
