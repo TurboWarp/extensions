@@ -603,6 +603,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Hidden?",
             blockIconURI: effectIco,
+            filter: [Scratch.TargetType.SPRITE],
           },
           {
             opcode: "getRotationStyle",
@@ -610,6 +611,7 @@
             text: "Rotation Style",
             blockIconURI: rotationIco,
             disableMonitor: true,
+            filter: [Scratch.TargetType.SPRITE],
           },
           {
             opcode: "getSpriteLayer",
@@ -617,6 +619,7 @@
             text: "Sprite Layer",
             blockIconURI: layerIco,
             disableMonitor: true,
+            filter: [Scratch.TargetType.SPRITE],
           },
           "---",
           {
