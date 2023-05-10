@@ -380,15 +380,16 @@
     }
 
     whenCloneStartsWithVar(args, util) {
-      // TODO
-      // const variableObj = this.getVariableObj(args.INPUTA, util.target);
-      // if (!variableObj) {
-      //   return false;
-      // }
-      // TODO: this is not ideal, will run when it shouldn't, would love for it to be not edge-activated
-      // const expectedVar = args.INPUTB;
-      // const cloneVar = util.target.lookupOrCreateVariable(variableObj.id, variableObj.name).value;
-      // return Scratch.Cast.compare(cloneVar, expectedVar) === 0;
+      // TODO: this is really not ideal. this should be an event-based hat ideally, but we don't have a good
+      // way to do that right now...
+      if (util.target.isOriginal) {
+        return false;
+      }
+      const variable = util.target.lookupVariableById(args.INPUTA);
+      const expectedValue = args.INPUTB;
+      if (variable) {
+        return Scratch.Cast.compare(variable.value, expectedValue) === 0;
+      }
       return false;
     }
 
