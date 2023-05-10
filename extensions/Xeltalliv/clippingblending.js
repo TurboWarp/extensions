@@ -23,6 +23,7 @@
   let active = false;
   let flipY = false;
   const vm = Scratch.vm;
+  const runtime = vm.runtime;
   const renderer = vm.renderer;
   const _drawThese = renderer._drawThese;
   const gl = renderer._gl;
@@ -31,6 +32,7 @@
   let height = 0;
   let scratchUnitWidth = 480;
   let scratchUnitHeight = 360;
+  let penDirty = false;
 
 
   renderer._drawThese = function (drawables, drawMode, projection, opts) {
@@ -72,36 +74,47 @@
   const DrawableProto = renderer._allDrawables[dr].__proto__;
   renderer.destroyDrawable(dr, 'background');
 
+  function setupModes(clipbox, blendMode, flipY) {
+    if (clipbox) {
+      gl.enable(gl.SCISSOR_TEST);
+      let x = (clipbox.x_min / scratchUnitWidth + 0.5) * width | 0;
+      let y = (clipbox.y_min / scratchUnitHeight + 0.5) * height | 0;
+      let x2 = (clipbox.x_max / scratchUnitWidth + 0.5) * width | 0;
+      let y2 = (clipbox.y_max / scratchUnitHeight + 0.5) * height | 0;
+      let w = x2 - x;
+      let h = y2 - y;
+      if (flipY) {
+        y = (-(clipbox.y_max) / scratchUnitHeight + 0.5) * height | 0;
+      }
+      gl.scissor(x, y, w, h);
+    } else {
+      gl.disable(gl.SCISSOR_TEST);
+    }
+    switch (blendMode) {
+      case 'additive':
+        gl.blendFunc(gl.ONE, gl.ONE);
+        break;
+      case 'multiply':
+        gl.blendFunc(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA);
+        break;
+      default:
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    }
+  }
+
   // Modifying and expanding Drawable
   const gu = DrawableProto.getUniforms;
   DrawableProto.getUniforms = function () {
     if (active && toCorrectThing) {
-      if (this.clipbox) {
-        gl.enable(gl.SCISSOR_TEST);
-        let x = (this.clipbox.x / scratchUnitWidth + 0.5) * width;
-        let y = (this.clipbox.y / scratchUnitHeight + 0.5) * height;
-        let w = (this.clipbox.w / scratchUnitWidth) * width;
-        let h = (this.clipbox.h / scratchUnitHeight) * height;
-        if (flipY) {
-          y = (-(this.clipbox.y + this.clipbox.h) / scratchUnitHeight + 0.5) * height;
-        }
-        gl.scissor(x, y, w, h);
-      } else {
-        gl.disable(gl.SCISSOR_TEST);
-      }
-      if (this.additiveBlend) {
-        gl.blendFunc(gl.ONE, gl.ONE);
-      } else {
-        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-      }
+      setupModes(this.clipbox, this.blendMode, flipY);
     }
     return gu.call(this);
   };
   DrawableProto.updateClipBox = function (clipbox) {
     this.clipbox = clipbox;
   };
-  DrawableProto.updateAdditiveBlend = function (enabled) {
-    this.additiveBlend = enabled;
+  DrawableProto.updateBlendMode = function (blendMode) {
+    this.blendMode = blendMode;
   };
 
 
@@ -111,10 +124,10 @@
     if (!drawable) return;
     drawable.updateClipBox(clipbox);
   };
-  renderer.updateDrawableAdditiveBlend = function (drawableID, enabled) {
+  renderer.updateDrawableBlendMode = function (drawableID, blendMode) {
     const drawable = this._allDrawables[drawableID];
     if (!drawable) return;
-    drawable.updateAdditiveBlend(enabled);
+    drawable.updateBlendMode(blendMode);
   };
 
 
@@ -126,17 +139,17 @@
       const osa = proto.onStopAll;
       proto.onStopAll = function () {
         this.renderer.updateDrawableClipBox.call(renderer, this.drawableID, null);
-        this.renderer.updateDrawableAdditiveBlend.call(renderer, this.drawableID, false);
+        this.renderer.updateDrawableBlendMode.call(renderer, this.drawableID, null);
         osa.call(this);
       };
       const mc = proto.makeClone;
       proto.makeClone = function () {
         const newTarget = mc.call(this);
-        if (this.clipbox) {
+        if (this.clipbox || this.blendMode) {
           newTarget.clipbox = Object.assign({}, this.clipbox);
-          newTarget.additiveBlend = this.additiveBlend;
+          newTarget.blendMode = this.blendMode;
           renderer.updateDrawableClipBox.call(renderer, newTarget.drawableID, this.clipbox);
-          renderer.updateDrawableAdditiveBlend.call(renderer, newTarget.drawableID, this.additiveBlend);
+          renderer.updateDrawableBlendMode.call(renderer, newTarget.drawableID, this.blendMode);
         }
         return newTarget;
       };
@@ -144,6 +157,89 @@
   };
   vm.on('targetsUpdate', regTargetStuff);
 
+
+  // Pen lines support
+  let emptyObject = {};
+  let lastTarget = emptyObject;
+  let lastClipbox = {};
+  let lastBlendMode = "default";
+  function patchPen(skin) {
+    const ext_pen = runtime.ext_pen;
+    skin._lineOnBufferDrawRegionId.exit = () => {
+      skin._exitDrawLineOnBuffer();
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      gl.disable(gl.SCISSOR_TEST);
+      lastTarget = emptyObject;
+      lastClipbox = null;
+      lastBlendMode = "default";
+    };
+    const willDrawPenWithTarget = function(target) {
+      if (!penDirty && target == lastTarget) return;
+      penDirty = false;
+
+      const clipbox = target.clipbox;
+      if ((!lastClipbox ^ !clipbox) ||
+          (lastBlendMode != target.blendMode) ||
+          (clipbox && (clipbox.x_min != lastClipbox.x_min || clipbox.y_min != lastClipbox.y_min || clipbox.x_max != lastClipbox.x_max || clipbox.y_max != lastClipbox.y_max))) {
+        if (skin.a_lineColorIndex) {
+          skin._flushLines();
+        }
+        lastTarget = target;
+        if (clipbox) {
+          lastClipbox = {
+            x_min: clipbox.x_min,
+            y_min: clipbox.y_min,
+            x_max: clipbox.x_max,
+            y_max: clipbox.y_max
+          };
+        } else {
+          lastClipbox = null;
+        }
+        lastBlendMode = target.blendMode;
+      }
+    };
+    // onTargetMoved function of pen draws a line.
+    // When drawing a line it is important to know the target.
+    // This saves target.
+    const onTargetMoved = ext_pen._onTargetMoved;
+    ext_pen._onTargetMoved = function(target, oldX, oldY, isForce) {
+      willDrawPenWithTarget(target);
+      onTargetMoved.call(this, target, oldX, oldY, isForce);
+    };
+    // Existing tragets may still have old onTargetMoved
+    for (let target in runtime.tragets) {
+      if (target.onTargetMoved == onTargetMoved) {
+        target.onTargetMoved = ext_pen._onTargetMoved;
+      }
+    }
+    // When drawing a dot it is important to know the target.
+    // This saves target.
+    const penDown = ext_pen._penDown;
+    ext_pen._penDown = function(target) {
+      willDrawPenWithTarget(target);
+      penDown.call(this, target);
+    };
+    // Set up correct clipping/blending before drawing
+    const flushLines = skin.__proto__._flushLines;
+    skin.__proto__._flushLines = function() {
+      setupModes(lastClipbox, lastBlendMode, true);
+      flushLines.call(this);
+    };
+  }
+  if (renderer._allSkins[renderer._penSkinId]) {
+    // If pen skin already exists, things can be patched
+    patchPen(renderer._allSkins[renderer._penSkinId]);
+  } else {
+    // If pen skin does not exist, wait until it will,
+    // trigger code once, and return everything as it was
+    const createPenSkin = renderer.createPenSkin;
+    renderer.createPenSkin = function() {
+      let skinId = createPenSkin.call(this);
+      patchPen(renderer._allSkins[skinId]);
+      renderer.createPenSkin = createPenSkin;
+      return skinId;
+    };
+  }
 
   class Extension {
     getInfo() {
@@ -200,6 +296,27 @@
           },
           '---',
           {
+            opcode: 'setBlend',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'use [BLENDMODE] blending ',
+            arguments: {
+              BLENDMODE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'default',
+                menu: 'blends'
+              }
+            },
+            filter: [Scratch.TargetType.SPRITE]
+          },
+          {
+            opcode: 'getBlend',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'blending',
+            filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true
+          },
+          '---',
+          {
             opcode: 'setAdditiveBlend',
             blockType: Scratch.BlockType.COMMAND,
             text: 'turn additive blending [STATE]',
@@ -210,19 +327,25 @@
                 menu: 'states'
               }
             },
-            filter: [Scratch.TargetType.SPRITE]
+            filter: [Scratch.TargetType.SPRITE],
+            hideFromPalette: true
           },
           {
             opcode: 'getAdditiveBlend',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'is additive blending on?',
-            filter: [Scratch.TargetType.SPRITE]
+            filter: [Scratch.TargetType.SPRITE],
+            hideFromPalette: true
           },
         ],
         menus: {
           states: {
             acceptReporters: true,
             items: ['on', 'off']
+          },
+          blends: {
+            acceptReporters: true,
+            items: ['default', 'additive', 'multiply']
           },
           props: {
             acceptReporters: true,
@@ -235,11 +358,12 @@
     setClipbox ({X1, Y1, X2, Y2}, {target}) {
       if (target.isStage) return;
       const newClipbox = {
-        x: Math.min(X1, X2),
-        y: Math.min(Y1, Y2),
-        w: Math.max(X1, X2) - Math.min(X1, X2),
-        h: Math.max(Y1, Y2) - Math.min(Y1, Y2)
+        x_min: Math.min(X1, X2),
+        y_min: Math.min(Y1, Y2),
+        x_max: Math.max(X1, X2),
+        y_max: Math.max(Y1, Y2)
       };
+      penDirty = true;
       target.clipbox = newClipbox;
       renderer.updateDrawableClipBox.call(renderer, target.drawableID, newClipbox);
       if (target.visible) {
@@ -253,24 +377,8 @@
     clearClipbox (args, {target}) {
       if (target.isStage) return;
       target.clipbox = null;
+      penDirty = true;
       renderer.updateDrawableClipBox.call(renderer, target.drawableID, null);
-      if (target.visible) {
-        renderer.dirty = true;
-        target.emitVisualChange();
-        target.runtime.requestRedraw();
-        target.runtime.requestTargetsUpdate(target);
-      }
-    }
-
-    setAdditiveBlend ({STATE}, {target}) {
-      let newValue = null;
-      if (STATE === 'on') newValue = true;
-      if (STATE === 'off') newValue = false;
-      if (newValue === null) return;
-
-      if (target.isStage) return;
-      target.additiveBlend = newValue;
-      renderer.updateDrawableAdditiveBlend.call(renderer, target.drawableID, newValue);
       if (target.visible) {
         renderer.dirty = true;
         target.emitVisualChange();
@@ -283,18 +391,50 @@
       const clipbox = target.clipbox;
       if (!clipbox) return '';
       switch (PROP) {
-        case 'width': return clipbox.w;
-        case 'height': return clipbox.h;
-        case 'min x': return clipbox.x;
-        case 'min y': return clipbox.y;
-        case 'max x': return clipbox.x + clipbox.w;
-        case 'max y': return clipbox.y + clipbox.h;
+        case 'width': return clipbox.x_max - clipbox.x_min;
+        case 'height': return clipbox.y_max - clipbox.y_min;
+        case 'min x': return clipbox.x_min;
+        case 'min y': return clipbox.y_min;
+        case 'max x': return clipbox.x_max;
+        case 'max y': return clipbox.y_max;
         default: return '';
       }
     }
 
+    setBlend ({BLENDMODE}, {target}) {
+      let newValue = null;
+      switch (BLENDMODE) {
+        case 'default':
+        case 'additive':
+        case 'multiply':
+          newValue = BLENDMODE;
+          break;
+        default:
+          return;
+      }
+      if (target.isStage) return;
+      penDirty = true;
+      target.blendMode = newValue;
+      renderer.updateDrawableBlendMode.call(renderer, target.drawableID, newValue);
+      if (target.visible) {
+        renderer.dirty = true;
+        target.emitVisualChange();
+        target.runtime.requestRedraw();
+        target.runtime.requestTargetsUpdate(target);
+      }
+    }
+
+    getBlend (args, {target}) {
+      return target.blendMode ?? 'default';
+    }
+
+    setAdditiveBlend ({STATE}, util) {
+      if (STATE === 'on') this.setBlend ({BLENDMODE: 'additive'}, util);
+      if (STATE === 'off') this.setBlend ({BLENDMODE: 'default'}, util);
+    }
+
     getAdditiveBlend (args, {target}) {
-      return target.additiveBlend ?? false;
+      return target.blendMode === 'additive';
     }
   }
 
