@@ -192,12 +192,11 @@
     globalLists: {},
     stage: {},
     sprites: {},
-    clones: [],
-    clonesOfType: {},
+    clones: {},
     refreshJSON() {
       const targets = Scratch.vm.runtime.targets;
       this.sprites = {}; //Refresh the JSON object so that we don't have to do redunant checks to see if a variable no longer exists.
-      this.clonesOfType = {};
+      this.clones = {};
       for (let index = 0; index < targets.length; index++) {
         // We start from 1 so we don't grab the stage.
         const target = targets[index];
@@ -211,6 +210,12 @@
             lists: {},
             variables: {},
           };
+          if (!this.clones[sprite.name]) {
+            this.clones[sprite.name] = {
+              count: 0,
+              objects: [],
+            };
+          }
           const vars = target.variables;
           const varKeys = Object.keys(vars);
           for (let V = 0; V < varKeys.length; V++) {
@@ -248,9 +253,14 @@
             variables: {},
           };
 
-          this.clonesOfType[cloneDat.name] = this.clonesOfType[cloneDat.name]
-            ? this.clonesOfType[cloneDat.name] + 1
-            : 1;
+          if (!this.clones[cloneDat.name]) {
+            this.clones[cloneDat.name] = {
+              count: 0,
+              objects: [],
+            };
+          }
+
+          this.clones[cloneDat.name].count += 1;
 
           const vars = target.variables;
           const varKeys = Object.keys(vars);
@@ -263,7 +273,7 @@
             }
           }
 
-          this.clones.push(cloneDat);
+          this.clones[cloneDat.name].objects.push(cloneDat);
         } else {
           console.warn(
             "An object of an unknown type is inside of the target's JSON Object"
@@ -741,7 +751,7 @@
       vmSurfer.refreshJSON();
       const DesiredSprite = objDat[Sprite];
       const SpriteName = vmSurfer.sprites[DesiredSprite].name;
-      return vmSurfer.clonesOfType[SpriteName] || 0;
+      return vmSurfer.clones[SpriteName].count || 0;
     }
 
     recording({ toggle }) {
