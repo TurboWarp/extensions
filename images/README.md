@@ -122,3 +122,6 @@ Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/27
 
 ## NOname/math&string.svg
 Created by @NOname in https://github.com/NOname-awa
+
+## NOname-awa/more-comparisons.svg
+Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1479376273
