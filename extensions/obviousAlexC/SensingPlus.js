@@ -274,9 +274,6 @@
     },
   };
 
-  const listDat = {};
-  const objDat = {};
-
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const canvas = runtime.renderer.canvas;
@@ -340,6 +337,26 @@
   canvas.addEventListener("touchmove", handleTouchMove, false);
   canvas.addEventListener("touchcancel", handleTouchEnd, false);
   canvas.addEventListener("touchend", handleTouchEnd, false);
+
+  /**
+   * @param {string} listData
+   * @returns {VM.ListVariable|null}
+   */
+  const getListFromMenu = (listData) => {
+    try {
+      const parsed = JSON.parse(listData);
+      if (parsed && parsed.variableId && parsed.targetName) {
+        const target = Scratch.vm.runtime.getSpriteTargetByName(parsed.targetName);
+        const variable = target.variables[parsed.variableId];
+        if (variable && variable.type === 'list') {
+          return variable;
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+    return null;
+  };
 
   const ico =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyOC44NjYwNyIgaGVpZ2h0PSIyOC44NjYwNyIgdmlld0JveD0iMCwwLDI4Ljg2NjA3LDI4Ljg2NjA3Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjI1LjA2Njk3LC0xNjUuMDY2OTcpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIyNS4wNjY5NywxNzkuNWMwLC03Ljk3MTE0IDYuNDYxODksLTE0LjQzMzAzIDE0LjQzMzAzLC0xNC40MzMwM2M3Ljk3MTE0LDAgMTQuNDMzMDMsNi40NjE4OSAxNC40MzMwMywxNC40MzMwM2MwLDcuOTcxMTQgLTYuNDYxODksMTQuNDMzMDMgLTE0LjQzMzAzLDE0LjQzMzAzYy03Ljk3MTE0LDAgLTE0LjQzMzAzLC02LjQ2MTg5IC0xNC40MzMwMywtMTQuNDMzMDN6IiBmaWxsPSIjNWNiMWQ2IiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjM0LjUsMTc1YzAsLTIuNDkgMi4wMSwtNC41IDQuNSwtNC41YzIuNDksMCA0LjUsMi4wMSA0LjUsNC41YzAsMS41NiAtMC43OSwyLjkzIC0yLDMuNzR2LTMuNzRjMCwtMS4zODA3MSAtMS4xMTkyOSwtMi41IC0yLjUsLTIuNWMtMS4zODA3MSwwIC0yLjUsMS4xMTkyOSAtMi41LDIuNXYzLjc0Yy0xLjIxLC0wLjgxIC0yLC0yLjE4IC0yLC0zLjc0ek0yNDcuMjUsMTg0Ljc1YzAsMC4wNiAtMC4wMSwwLjEzIC0wLjAyLDAuMmwtMC43NSw1LjI3Yy0wLjExLDAuNzMgLTAuNjksMS4yOCAtMS40NCwxLjI4aC02Ljc5Yy0wLjQxLDAgLTAuNzksLTAuMTcgLTEuMDYsLTAuNDRsLTQuOTQsLTQuOTRsMC43OSwtMC44YzAuMiwtMC4yIDAuNDgsLTAuMzMgMC43OSwtMC4zM2MwLjEzLDAgMC4wNywtMC4wMSAzLjY3LDAuNzV2LTEwLjc0YzAsLTAuODMgMC42NywtMS41IDEuNSwtMS41YzAuODMsMCAxLjUsMC42NyAxLjUsMS41djZoMC43NmMwLjE5LDAgMC4zNywwLjA0IDAuNTQsMC4xMWw0LjU0LDIuMjZjMC41MywwLjIyIDAuOTEsMC43NiAwLjkxLDEuMzh6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjI3LjUsMTY3LjVoMjR2MjRoLTI0eiIgZmlsbC1vcGFjaXR5PSIwIiBmaWxsPSIjMDAwMDAwIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiPjxwYXRoIGQ9Ik0yNDQuNTAyMTEsMTc4LjgyNzU5aDUuNDk1NzkiLz48cGF0aCBkPSJNMjQ3LjI1LDE4MS41NzU0OGwwLC01LjQ5NTc4Ii8+PC9nPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjE0LjkzMzAzNDcxNTI2MTk4MjoxNC45MzMwMzQ3MTUyNjE5NTQtLT4=";
@@ -615,13 +632,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "Copied Contents",
             blockIconURI: clipboardIco,
-            disableMonitor: true,
-            arguments: {
-              Sprite: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "spriteMenu",
-              },
-            },
+            disableMonitor: true
           },
           {
             opcode: "getDeviceSpeed",
@@ -730,10 +741,11 @@
     }
 
     clonesOfSprite({ Sprite }) {
-      vmSurfer.refreshJSON();
-      const DesiredSprite = objDat[Sprite];
-      const SpriteName = vmSurfer.sprites[DesiredSprite].name;
-      return vmSurfer.clones[SpriteName].count || 0;
+      const originalTarget = vm.runtime.getSpriteTargetByName(Sprite);
+      if (!originalTarget) {
+        return 0;
+      }
+      return originalTarget.sprite.clones.length - 1;
     }
 
     recording({ toggle }) {
@@ -787,53 +799,48 @@
     }
 
     getSprites() {
-      let spriteNames = [];
-      const targets = Scratch.vm.runtime.targets;
-      const myself = Scratch.vm.runtime.getEditingTarget().sprite.name;
-      for (let index = 0; index < targets.length; index++) {
-        // We start from 1 so we don't grab the stage.
-        const sprite = targets[index].sprite; //Don't put name so that we can do other stuff with the sprites if we want to.
-        if (targets[index].isOriginal && !targets[index].isStage) {
-          spriteNames.push(sprite.name);
-          objDat[sprite.name] = targets[index].id;
+      const sprites = [];
+      for (const target of vm.runtime.targets) {
+        if (target.isOriginal && !target.isStage) {
+          sprites.push(target.getName());
         }
       }
-      if (spriteNames.length === 0) {
-        spriteNames.push({ text: "No other sprites", value: null });
+      if (sprites.length === 0) {
+        return [
+          {
+            text: 'No sprites exist',
+            value: ' '
+          }
+        ];
       }
-      return spriteNames;
+      return sprites;
     }
 
     getLists(myID) {
-      vmSurfer.refreshJSON();
-      const keynames = Object.keys(vmSurfer.sprites);
-
-      let lists = [];
-      for (
-        let currentSprite = 0;
-        currentSprite < keynames.length;
-        currentSprite++
-      ) {
-        const sprite = vmSurfer.sprites[keynames[currentSprite]];
-        if (myID != sprite.id) {
-          const listKeys = Object.keys(sprite.lists);
-          for (
-            let currentList = 0;
-            currentList < listKeys.length;
-            currentList++
-          ) {
-            const list = sprite.lists[listKeys[currentList]];
-            const objName = sprite.name + " : " + list.name;
-            listDat[objName] = {
-              text: sprite.name + " : " + list.name,
-              value: JSON.stringify({ sprID: currentSprite, listid: list.id }),
+      const lists = [];
+      for (const target of Scratch.vm.runtime.targets) {
+        if (!target.isStage && target.isOriginal && target.id !== myID) {
+          for (const [listId, listVar] of Object.entries(target.variables)) {
+            const listData = {
+              targetName: target.getName(),
+              variableId: listId
             };
-            lists.push(objName);
+            lists.push({
+              text: `${target.getName()}: ${listVar.name}`,
+              value: JSON.stringify(listData)
+            });
           }
         }
       }
-
-      return lists.length > 0 ? lists : ["No local lists exist"];
+      if (lists.length === 0) {
+        return [
+          {
+            text: 'No local lists in other sprites',
+            value: 'null'
+          }
+        ];
+      }
+      return lists;
     }
 
     touchingFinger(args, util) {
@@ -914,90 +921,76 @@
     }
 
     listInSprite({ index, List }) {
-      if (List === "No local lists exist") {
-        return "";
+      const variable = getListFromMenu(List);
+      if (!variable) {
+        return '';
       }
-      const DesiredList = JSON.parse(listDat[List].value);
-      const SpriteID = DesiredList.sprID;
-      const ListID = DesiredList.listid;
-      const keys = Object.keys(vmSurfer.sprites);
-      const variable = vmSurfer.sprites[keys[SpriteID]].lists[ListID];
-      const items = variable.value;
-
-      const itemNumber = Math.floor(Number(index));
-
-      if (
-        itemNumber < 1 ||
-        itemNumber > items.length ||
-        typeof itemNumber !== "number"
-      ) {
-        return "";
+      const casted = Scratch.Cast.toListIndex(index, variable.value.length, false);
+      if (casted === 'INVALID') {
+        return '';
       }
-      return items[itemNumber - 1];
+      // @ts-expect-error - this will never be "ANY" due to false in toListIndex above
+      return variable.value[casted - 1];
     }
 
     listContains({ term, List }) {
-      if (List == "No local lists exist") {
-        return false;
+      const variable = getListFromMenu(List);
+      if (!variable) {
+        return '';
       }
-      const DesiredList = JSON.parse(listDat[List].value);
-      const SpriteID = DesiredList.sprID;
-      const ListID = DesiredList.listid;
-      const keys = Object.keys(vmSurfer.sprites);
-      const variable = vmSurfer.sprites[keys[SpriteID]].lists[ListID];
-      const items = variable.value;
-
-      return items.includes(term);
+      const list = variable.value;
+      for (let i = 0; i < list.length; i++) {
+        if (Scratch.Cast.compare(list[i], term) === 0) {
+          return true;
+        }
+      }
+      return false;
     }
 
     lengthOfListInSprite({ List }) {
-      if (List == "No local lists exist") {
-        return 0;
+      const variable = getListFromMenu(List);
+      if (!variable) {
+        return '';
       }
-      const DesiredList = JSON.parse(listDat[List].value);
-      const SpriteID = DesiredList.sprID;
-      const ListID = DesiredList.listid;
-      const keys = Object.keys(vmSurfer.sprites);
-      const variable = vmSurfer.sprites[keys[SpriteID]].lists[ListID];
-      const items = variable.value;
-      return items.length;
+      return variable.value.length;
     }
 
     itemNumberInList({ term, List }) {
-      if (List == "No local lists exist") {
-        return "";
+      const variable = getListFromMenu(List);
+      if (!variable) {
+        return '';
       }
-      const DesiredList = JSON.parse(listDat[List].value);
-      const SpriteID = DesiredList.sprID;
-      const ListID = DesiredList.listid;
-      const keys = Object.keys(vmSurfer.sprites);
-      const variable = vmSurfer.sprites[keys[SpriteID]].lists[ListID];
-      const items = variable.value;
-
-      return items.indexOf(term) == -1 ? "" : items.indexOf(term) + 1;
+      const list = variable.value;
+      for (let i = 0; i < list.length; i++) {
+        if (Scratch.Cast.compare(list[i], term) === 0) {
+          return i + 1;
+        }
+      }
+      return 0;
     }
 
     touchingOriginal({ Sprite }, util) {
-      const DesiredSprite = objDat[Sprite];
+      const target = vm.runtime.getSpriteTargetByName(Sprite);
+      if (!target) {
+        return false;
+      }
       return Scratch.vm.renderer.isTouchingDrawables(util.target.drawableID, [
-        vmSurfer.sprites[DesiredSprite].originalOBJ.drawableID,
+        target.drawableID,
       ]);
     }
 
     touchingClone({ Sprite }, util) {
-      const DesiredSprite = objDat[Sprite];
-      const DesieredClones = vmSurfer.sprites[
-        DesiredSprite
-      ].originalOBJ.sprite.clones
-        .filter((clone) => !clone.isOriginal)
-        .map((clone) => clone.drawableID);
-      if (DesieredClones.length > 0) {
-        return Scratch.vm.renderer.isTouchingDrawables(
-          util.target.drawableID,
-          DesieredClones
-        );
+      const parentTarget = vm.runtime.getSpriteTargetByName(Sprite);
+      if (!parentTarget) {
+        return false;
       }
-      return false;
+      const drawablesIds = parentTarget.sprite.clones
+        .filter(i => !i.isOriginal)
+        .map(i => i.drawableID);
+      if (drawablesIds.length === 0) {
+        return false;
+      }
+      return Scratch.renderer.isTouchingDrawables(util.target.drawableID, drawablesIds);
     }
   }
   Scratch.extensions.register(new SensingPlus());
