@@ -819,7 +819,9 @@
     getLists(myID) {
       const lists = [];
       for (const target of Scratch.vm.runtime.targets) {
-        if (!target.isStage && target.isOriginal && target.id !== myID) {
+        // TODO: should filter out variables from myID, but some editor bugs make that
+        // cause JSON to be seen by user by just switching sprites. yuck!
+        if (!target.isStage && target.isOriginal) {
           for (const [listId, listVar] of Object.entries(target.variables)) {
             const listData = {
               targetName: target.getName(),
