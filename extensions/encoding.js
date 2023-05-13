@@ -88,6 +88,17 @@
                         }
                     },
                     {
+                        opcode: 'isBase64',
+                        blockType: Scratch.BlockType.BOOLEAN,
+                        text: 'Is [string] Base64?',
+                        arguments: {
+                            string: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'VHVyYm9XYXJw'
+                            }
+                        }
+                    },
+                    {
                         opcode: 'hash',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Hash [string] with [hash]',
@@ -243,6 +254,15 @@
                 string += t.charAt(Math.floor(Math.random() * a));
             }
             return string;
+        }
+
+        isBase64(args) {
+            if (args.string ==='' || args.string.trim() ===''){ return false; }
+            try {
+                return btoa(atob(args.string)) == args.string;
+            } catch (err) {
+                return false;
+            }
         }
     }
     Scratch.extensions.register(new Encoding());
