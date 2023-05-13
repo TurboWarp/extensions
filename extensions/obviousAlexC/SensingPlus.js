@@ -1,8 +1,6 @@
 (function (Scratch) {
   "use strict";
 
-  console.log("Thank you for using SENSING+ for turbowarp.");
-
   class notSupportedPart {
     constructor() {
       console.warn(
@@ -27,7 +25,6 @@
     }
   }
 
-  /* eslint-disable*/
   const recognizer =
     typeof webkitSpeechRecognition !== "undefined"
       ? window.webkitSpeechRecognition
@@ -37,9 +34,6 @@
 
   let recognizedSpeech = "";
   let recording = false;
-
-  /* eslint-enable */
-  //These are some shenanagins that ES lint doesn't like because of 'unproperly formatted assignments'.
 
   const recognition = new recognizer();
 
@@ -64,8 +58,6 @@
     rotY: 0,
     rotZ: 0,
   };
-
-  /* eslint-disable*/
 
   function tryDeviceVelocityChecks() {
     function updateDeviceSpeed() {
@@ -139,7 +131,6 @@
       }
     }
   }
-  /* eslint-enable */
 
   tryDeviceVelocityChecks();
 
@@ -401,8 +392,8 @@
         color1: "#5cb1d6",
         color2: "#3ba2ce",
         color3: "#2e8eb8",
-        id: "sensingPlus",
-        name: "Sensing +",
+        id: "obviousalexsensing",
+        name: "Sensing+",
         blocks: [
           {
             opcode: "getFingersTouching",
@@ -576,7 +567,6 @@
             text: "# of clones of [Sprite]",
             blockIconURI: catIco,
             disableMonitor: true,
-            filter: [Scratch.TargetType.SPRITE],
             arguments: {
               Sprite: {
                 type: Scratch.ArgumentType.STRING,
@@ -646,7 +636,6 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "Copied Contents",
             blockIconURI: clipboardIco,
-            filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
               Sprite: {
@@ -660,7 +649,6 @@
             blockIconURI: deviceVelIco,
             blockType: Scratch.BlockType.REPORTER,
             text: "Get the [type] speed on the [axis] axis",
-            filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
               type: {
@@ -678,7 +666,6 @@
             blockIconURI: packagedIco,
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Is Packaged?",
-            filter: [Scratch.TargetType.SPRITE],
             disableMonitor: false,
           },
         ],
@@ -687,10 +674,20 @@
             acceptReporters: true,
             items: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
           },
-          coordmenu: ["x", "y"],
-          axismenu: ["x", "y", "z"],
-          velocitymenu: ["positional", "rotational"],
+          coordmenu: {
+            acceptReporters: true,
+            items: ['x', 'y']
+          },
+          axismenu: {
+            acceptReporters: true,
+            items: ['x', 'y', 'z']
+          },
+          velocitymenu: {
+            acceptReporters: true,
+            items: ["positional", "rotational"]
+          },
           spriteMenu: {
+            acceptReporters: true,
             items: "getSprites",
           },
           listMenu: {
@@ -951,17 +948,14 @@
       const items = variable.value;
 
       const itemNumber = Math.floor(Number(index));
-      // eslint won't stop whining.
 
-      /* eslint-disable */
       if (
         itemNumber < 1 ||
         itemNumber > items.length ||
-        typeof itemNumber === "Number"
+        typeof itemNumber === "number"
       ) {
         return "";
       }
-      /* eslint-enable */
       return items[itemNumber - 1];
     }
 
