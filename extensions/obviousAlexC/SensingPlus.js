@@ -789,9 +789,10 @@
     }
 
     getClipBoard() {
-      return new Promise((resolve) => {
-        resolve(navigator.clipboard.readText() || "");
-      });
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        return navigator.clipboard.readText();
+      }
+      return '';
     }
 
     getFingersTouching() {
