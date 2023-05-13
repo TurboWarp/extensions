@@ -173,7 +173,7 @@
     }
   }
 
-  const packaged = Scratch.vm.runtime.isPackaged;
+  const isPackaged = Scratch.vm.runtime.isPackaged;
 
   //VM SURFER
   //To use the module just paste this into your extension code before declaring the extension class.
@@ -282,11 +282,11 @@
   const canvas = runtime.renderer.canvas;
 
   let fingersDown = 0;
-
   const lastFingerPositions = [];
   const fingerPositions = [];
 
-  function touchProcess(event) {
+  /** @param {TouchEvent} event */
+  function handleTouchStart(event) {
     event.preventDefault();
     const changedTouches = event.changedTouches;
     const changedTouchesKeys = Object.keys(changedTouches);
@@ -305,7 +305,8 @@
     });
   }
 
-  function moveProcess(event) {
+  /** @param {TouchEvent} event */
+  function handleTouchMove(event) {
     event.preventDefault();
     const changedTouches = event.changedTouches;
     const canvasPos = canvas.getBoundingClientRect();
@@ -323,7 +324,8 @@
     });
   }
 
-  function touchEnd(event) {
+  /** @param {TouchEvent} event */
+  function handleTouchEnd(event) {
     event.preventDefault();
     const changedTouches = event.changedTouches;
     const changedTouchesKeys = Object.keys(changedTouches);
@@ -334,10 +336,10 @@
     });
   }
 
-  canvas.addEventListener("touchstart", touchProcess, false);
-  canvas.addEventListener("touchmove", moveProcess, false);
-  canvas.addEventListener("touchcancel", touchEnd, false);
-  canvas.addEventListener("touchend", touchEnd, false);
+  canvas.addEventListener("touchstart", handleTouchStart, false);
+  canvas.addEventListener("touchmove", handleTouchMove, false);
+  canvas.addEventListener("touchcancel", handleTouchEnd, false);
+  canvas.addEventListener("touchend", handleTouchEnd, false);
 
   const ico =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyOC44NjYwNyIgaGVpZ2h0PSIyOC44NjYwNyIgdmlld0JveD0iMCwwLDI4Ljg2NjA3LDI4Ljg2NjA3Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjI1LjA2Njk3LC0xNjUuMDY2OTcpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIyNS4wNjY5NywxNzkuNWMwLC03Ljk3MTE0IDYuNDYxODksLTE0LjQzMzAzIDE0LjQzMzAzLC0xNC40MzMwM2M3Ljk3MTE0LDAgMTQuNDMzMDMsNi40NjE4OSAxNC40MzMwMywxNC40MzMwM2MwLDcuOTcxMTQgLTYuNDYxODksMTQuNDMzMDMgLTE0LjQzMzAzLDE0LjQzMzAzYy03Ljk3MTE0LDAgLTE0LjQzMzAzLC02LjQ2MTg5IC0xNC40MzMwMywtMTQuNDMzMDN6IiBmaWxsPSIjNWNiMWQ2IiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjM0LjUsMTc1YzAsLTIuNDkgMi4wMSwtNC41IDQuNSwtNC41YzIuNDksMCA0LjUsMi4wMSA0LjUsNC41YzAsMS41NiAtMC43OSwyLjkzIC0yLDMuNzR2LTMuNzRjMCwtMS4zODA3MSAtMS4xMTkyOSwtMi41IC0yLjUsLTIuNWMtMS4zODA3MSwwIC0yLjUsMS4xMTkyOSAtMi41LDIuNXYzLjc0Yy0xLjIxLC0wLjgxIC0yLC0yLjE4IC0yLC0zLjc0ek0yNDcuMjUsMTg0Ljc1YzAsMC4wNiAtMC4wMSwwLjEzIC0wLjAyLDAuMmwtMC43NSw1LjI3Yy0wLjExLDAuNzMgLTAuNjksMS4yOCAtMS40NCwxLjI4aC02Ljc5Yy0wLjQxLDAgLTAuNzksLTAuMTcgLTEuMDYsLTAuNDRsLTQuOTQsLTQuOTRsMC43OSwtMC44YzAuMiwtMC4yIDAuNDgsLTAuMzMgMC43OSwtMC4zM2MwLjEzLDAgMC4wNywtMC4wMSAzLjY3LDAuNzV2LTEwLjc0YzAsLTAuODMgMC42NywtMS41IDEuNSwtMS41YzAuODMsMCAxLjUsMC42NyAxLjUsMS41djZoMC43NmMwLjE5LDAgMC4zNywwLjA0IDAuNTQsMC4xMWw0LjU0LDIuMjZjMC41MywwLjIyIDAuOTEsMC43NiAwLjkxLDEuMzh6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjI3LjUsMTY3LjVoMjR2MjRoLTI0eiIgZmlsbC1vcGFjaXR5PSIwIiBmaWxsPSIjMDAwMDAwIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiPjxwYXRoIGQ9Ik0yNDQuNTAyMTEsMTc4LjgyNzU5aDUuNDk1NzkiLz48cGF0aCBkPSJNMjQ3LjI1LDE4MS41NzU0OGwwLC01LjQ5NTc4Ii8+PC9nPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjE0LjkzMzAzNDcxNTI2MTk4MjoxNC45MzMwMzQ3MTUyNjE5NTQtLT4=";
@@ -693,7 +695,7 @@
     getFingerSpeed({ ID }) {
       const fingerPos = fingerPositions[ID - 1];
       const fingerLastPos = lastFingerPositions[ID - 1];
-      if (fingerPos == null) {
+      if (!fingerPos || !fingerLastPos) {
         return 0;
       }
       const speed = Math.sqrt(
@@ -705,7 +707,7 @@
     }
 
     getSpriteLayer(args, util) {
-      return util.target.renderer["_drawList"].indexOf(util.target.drawableID);
+      return util.target.renderer._drawList.indexOf(util.target.drawableID);
     }
 
     getRotationStyle(arg, util) {
@@ -717,11 +719,14 @@
     }
 
     getEffect({ effect }, util) {
-      return util.target.effects[effect] || 0;
+      if (Object.prototype.hasOwnProperty.call(util.target.effects, effect)) {
+        return util.target.effects[effect];
+      }
+      return 0;
     }
 
     isPackaged() {
-      return packaged;
+      return isPackaged;
     }
 
     clonesOfSprite({ Sprite }) {
@@ -732,7 +737,7 @@
     }
 
     recording({ toggle }) {
-      if (toggle == "on") {
+      if (toggle === "on") {
         if (!recording) {
           recognition.start();
           recognizedSpeech = "";
@@ -751,20 +756,20 @@
     }
 
     getDeviceSpeed({ type, axis }) {
-      if (type == "positional") {
-        if (axis == "x") {
+      if (type === "positional") {
+        if (axis === "x") {
           return deviceTransforms.x;
-        } else if (axis == "y") {
+        } else if (axis === "y") {
           return deviceTransforms.y;
-        } else if (axis == "z") {
+        } else if (axis === "z") {
           return deviceTransforms.z;
         }
-      } else if (type == "rotational") {
-        if (axis == "x") {
+      } else if (type === "rotational") {
+        if (axis === "x") {
           return deviceTransforms.rotX;
-        } else if (axis == "y") {
+        } else if (axis === "y") {
           return deviceTransforms.rotY;
-        } else if (axis == "z") {
+        } else if (axis === "z") {
           return deviceTransforms.rotZ;
         }
       }
@@ -793,7 +798,7 @@
           objDat[sprite.name] = targets[index].id;
         }
       }
-      if (spriteNames.length == 0) {
+      if (spriteNames.length === 0) {
         spriteNames.push({ text: "No other sprites", value: null });
       }
       return spriteNames;
@@ -840,7 +845,7 @@
             fingerPos[1]
           );
           if (touching) {
-            return touching;
+            return true;
           }
         }
       }
@@ -876,21 +881,19 @@
     }
 
     fingerPosition({ ID, PositionType }) {
-      if (fingerPositions[parseInt(ID) - 1]) {
-        const fingerPos = fingerPositions[parseInt(ID) - 1];
-        if (fingerPos == null) {
-          return 0;
-        }
-        const positionIndex = PositionType == "x" ? 0 : 1;
+      const index = Scratch.Cast.toNumber(ID) - 1;
+      const fingerPos = fingerPositions[index];
+      if (fingerPos) {
+        const positionIndex = PositionType === "x" ? 0 : 1;
         const finger = [
-          fingerPositions[parseInt(ID) - 1][0],
-          fingerPositions[parseInt(ID) - 1][1],
+          fingerPos[0],
+          fingerPos[1],
         ];
         let scratchCoords = finger;
         const runtime = Scratch.vm.runtime;
 
         const canvasRect = canvas.getBoundingClientRect();
-        if (PositionType == "x") {
+        if (PositionType === "x") {
           const clientWidth = canvasRect.right - canvasRect.left;
           const toScratch = runtime.stageWidth / clientWidth;
           scratchCoords[0] *= toScratch;
@@ -907,14 +910,11 @@
     }
 
     isFingerDown({ ID }) {
-      if (fingerPositions[parseInt(ID) - 1] != null) {
-        return true;
-      }
-      return false;
+      return !!fingerPositions[Scratch.Cast.toNumber(ID) - 1];
     }
 
     listInSprite({ index, List }) {
-      if (List == "No local lists exist") {
+      if (List === "No local lists exist") {
         return "";
       }
       const DesiredList = JSON.parse(listDat[List].value);
@@ -929,7 +929,7 @@
       if (
         itemNumber < 1 ||
         itemNumber > items.length ||
-        typeof itemNumber === "number"
+        typeof itemNumber !== "number"
       ) {
         return "";
       }
