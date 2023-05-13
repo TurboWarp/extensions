@@ -333,7 +333,7 @@
     }
 
     costumeWidthHeight(args, util) {
-      const costume = util.target.getCostumeIndexByName(args.INPUTB)
+      const costume = util.target.getCostumeIndexByName(args.INPUTB);
       if (args.INPUTA === 'height') {
         return Math.ceil(Scratch.Cast.toNumber(util.target.sprite.costumes[costume].size[1]));
       } else {
@@ -412,7 +412,7 @@
     uriToPNG(content) {
       try {
         var dataURI = content;
-        var png = atob(dataURI.replace(/data:image\/png\;base64,/, ''));
+        var png = atob(dataURI.replace(/data:image\/png;base64,/, ''));
         return png;
       } catch (error){
         return '';
@@ -433,14 +433,14 @@
           const jsonOBJ = {
             text: display,
             value: curTarget.name
-          }
+          };
           spriteNames.push(jsonOBJ);
         }
       }
       if (spriteNames.length > 0) {
         return spriteNames;
       } else {
-        return [{text: "", value:0}]; //this should never happen but it's a failsafe
+        return [{text: "", value: 0}]; //this should never happen but it's a failsafe
       }
     }
   }
