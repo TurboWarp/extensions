@@ -1,138 +1,90 @@
 (function (Scratch) {
   "use strict";
 
-  class notSupportedPart {
-    constructor() {
-      console.warn(
-        "Something is not supported in your browser! \n This is probably speech to text!"
-      );
-    }
-
-    onresult() {
-      console.warn("What");
-    }
-
-    start() {
-      console.warn("Your Browser does not support this.");
-    }
-
-    stop() {
-      return;
-    }
-
-    addEventListener() {
-      return;
-    }
-  }
-
-  const recognizer =
+  const SpeechRecognition =
     typeof webkitSpeechRecognition !== "undefined"
       ? window.webkitSpeechRecognition
       : typeof SpeechRecognition !== "undefined"
       ? window.SpeechRecognition
-      : notSupportedPart;
+      : null;
 
   let recognizedSpeech = "";
   let recording = false;
 
-  const recognition = new recognizer();
+  let speechRecognition = null;
+  if (SpeechRecognition) {
+    speechRecognition = new SpeechRecognition();
+    speechRecognition.addEventListener("result", (event) => {
+      console.log(event);
+      recognizedSpeech = Array.from(event.results)
+        .map((result) => result[0])
+        .map((result) => result.transcript)
+        .join("");
+    });
+    speechRecognition.addEventListener("end", () => {
+      if (recording) {
+        speechRecognition.start();
+      }
+    });
+  }
 
-  recognition.addEventListener("result", (event) => {
-    recognizedSpeech = Array.from(event.results)
-      .map((result) => result[0])
-      .map((result) => result.transcript)
-      .join("");
-  });
-
-  recognition.addEventListener("end", () => {
-    if (recording) {
-      recognition.start();
-    }
-  });
-
-  const deviceTransforms = {
+  let initializedSensors = false;
+  const deviceVelocity = {
     x: 0,
     y: 0,
     z: 0,
-    rotX: 0,
-    rotY: 0,
-    rotZ: 0,
+    rotationX: 0,
+    rotationY: 0,
+    rotationZ: 0,
   };
 
-  function tryDeviceVelocityChecks() {
-    function updateDeviceSpeed() {
-      const acl = new Accelerometer({ frequency: 30 });
-      acl.addEventListener("reading", () => {
-        deviceTransforms.x = acl.x;
-        deviceTransforms.y = acl.y;
-        deviceTransforms.z = acl.z;
-      });
-
-      acl.start();
+  const initializeSensors = () => {
+    if (initializedSensors) {
+      return;
     }
+    initializedSensors = true;
 
-    function updateDeviceRotation() {
-      const gyro = new Gyroscope({ frequency: 30 });
-
-      gyro.addEventListener("reading", (e) => {
-        deviceTransforms.rotX = gyro.x;
-        deviceTransforms.rotY = gyro.y;
-        deviceTransforms.rotZ = gyro.z;
-      });
-      gyro.start();
-    }
-
-    //Accelerometer
-    try {
-      let accelerometer = null; //Accelorametor from MDN docs for fun.
-      accelerometer = new Accelerometer({ referenceFrame: "device" });
-      accelerometer.addEventListener("error", (event) => {
-        // Handle runtime errors.
-        if (event.error.name === "NotAllowedError") {
-          // Branch to code for requesting permission.
-        } else if (event.error.name === "NotReadableError") {
-          console.log("Cannot connect to the sensor.");
-        }
-      });
-      updateDeviceSpeed();
-    } catch (error) {
-      // Handle construction errors.
-      if (error.name === "SecurityError") {
-        // See the note above about permissions policy.
-        console.log("Sensor construction was blocked by a permissions policy.");
-      } else if (error.name === "ReferenceError") {
-        console.log("Sensor is not supported by the User Agent.");
-      } else {
-        throw error;
+    if (typeof Accelerometer !== 'function') {
+      try {
+        const accelerometer = new Accelerometer({
+          referenceFrame: "device"
+        });
+        accelerometer.addEventListener("error", (e) => {
+          console.error("accelerometer error", e.error);
+        });
+        accelerometer.addEventListener("reading", () => {
+          deviceVelocity.x = accelerometer.x;
+          deviceVelocity.y = accelerometer.y;
+          deviceVelocity.z = accelerometer.z;
+        });
+        accelerometer.start();
+      } catch (e) {
+        console.error('error setting up accelerometer', e);
       }
+    } else {
+      console.warn('accelerometer API is not supported in this browser');
     }
-    //Gyro
-    try {
-      let gyro = null; //Accelorametor from MDN docs for fun.
-      gyro = new Gyroscope({ referenceFrame: "device" });
-      gyro.addEventListener("error", (event) => {
-        // Handle runtime errors.
-        if (event.error.name === "NotAllowedError") {
-          // Branch to code for requesting permission.
-        } else if (event.error.name === "NotReadableError") {
-          console.log("Cannot connect to the sensor.");
-        }
-      });
-      updateDeviceRotation();
-    } catch (error) {
-      // Handle construction errors.
-      if (error.name === "SecurityError") {
-        // See the note above about permissions policy.
-        console.log("Sensor construction was blocked by a permissions policy.");
-      } else if (error.name === "ReferenceError") {
-        console.log("Sensor is not supported by the User Agent.");
-      } else {
-        throw error;
-      }
-    }
-  }
 
-  tryDeviceVelocityChecks();
+    if (typeof Gyro !== 'undefined') {
+      try {
+        const gyro = new Gyro({
+          frequency: 30
+        });
+        gyro.addEventListener("error", (e) => {
+          console.error("gyro error", e.error);
+        });
+        gyro.addEventListener("reading", () => {
+          deviceVelocity.rotationX = gyro.x;
+          deviceVelocity.rotationY = gyro.y;
+          deviceVelocity.rotationZ = gyro.z;
+        });
+      } catch (e) {
+        console.error('error setting up gyro', e);
+      }
+    } else {
+      console.warn('gyro API is not supported in this browser');
+    }
+  };
 
   if (!Scratch) {
     Scratch = {
@@ -749,15 +701,19 @@
     }
 
     recording({ toggle }) {
+      if (!speechRecognition) {
+        console.warn('Speech recognotion blocks are not supported in this browser');
+        return;
+      }
       if (toggle === "on") {
         if (!recording) {
-          recognition.start();
+          speechRecognition.start();
           recognizedSpeech = "";
           recording = true;
         }
       } else {
         if (recording) {
-          recognition.stop();
+          speechRecognition.stop();
           recording = false;
         }
       }
@@ -768,23 +724,25 @@
     }
 
     getDeviceSpeed({ type, axis }) {
+      initializeSensors();
       if (type === "positional") {
         if (axis === "x") {
-          return deviceTransforms.x;
+          return deviceVelocity.x;
         } else if (axis === "y") {
-          return deviceTransforms.y;
+          return deviceVelocity.y;
         } else if (axis === "z") {
-          return deviceTransforms.z;
+          return deviceVelocity.z;
         }
       } else if (type === "rotational") {
         if (axis === "x") {
-          return deviceTransforms.rotX;
+          return deviceVelocity.rotationX;
         } else if (axis === "y") {
-          return deviceTransforms.rotY;
+          return deviceVelocity.rotationY;
         } else if (axis === "z") {
-          return deviceTransforms.rotZ;
+          return deviceVelocity.rotationZ;
         }
       }
+      // should never happen
       return 0;
     }
 
