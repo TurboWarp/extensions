@@ -1,4 +1,5 @@
 (function (Scratch) {
+  'use strict';
 
   class CommentBlocks {
     getInfo() {
