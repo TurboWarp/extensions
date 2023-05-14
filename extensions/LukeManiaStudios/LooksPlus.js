@@ -6,7 +6,7 @@
   class LooksPlus {
     getInfo() {
       return {
-        id: 'lmsLooksPlus',
+        id: 'lmsLooksPlusTest',
         name: 'Looks+',
         color1: '#9966FF',
         color2: '#855CD6',
@@ -293,18 +293,30 @@
     }
 
     showSprite(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
-      return target.setVisible(true);
+      try {
+        const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+        return target.setVisible(true);
+      } catch (error) {
+        return;
+      }
     }
 
     hideSprite(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
-      return target.setVisible(false);
+      try {
+        const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+        return target.setVisible(false);
+      } catch (error) {
+        return;
+      }
     }
 
     spriteVisible(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
-      return Scratch.Cast.toBoolean(target.visible);
+      try {
+        const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+        return Scratch.Cast.toBoolean(target.visible);
+      } catch (error) {
+        return false;
+      }
     }
 
     effectValue(args, util) {
@@ -319,8 +331,12 @@
     }
 
     spriteLayerNumber(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
-      return target.getLayerOrder();
+      try {
+        const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+        return target.getLayerOrder();
+      } catch (error) {
+        return 0;
+      }
     }
 
     numberOfCostumes(args, util) {
@@ -333,11 +349,15 @@
     }
 
     costumeWidthHeight(args, util) {
-      const costume = util.target.getCostumeIndexByName(args.INPUTB);
-      if (args.INPUTA === 'height') {
-        return Math.ceil(Scratch.Cast.toNumber(util.target.sprite.costumes[costume].size[1]));
-      } else {
-        return Math.ceil(Scratch.Cast.toNumber(util.target.sprite.costumes[costume].size[0]));
+      try {
+        const costume = util.target.getCostumeIndexByName(args.INPUTB);
+        if (args.INPUTA === 'height') {
+          return Math.ceil(Scratch.Cast.toNumber(util.target.sprite.costumes[costume].size[1]));
+        } else {
+          return Math.ceil(Scratch.Cast.toNumber(util.target.sprite.costumes[costume].size[0]));
+        }
+      } catch (error) {
+        return 0;
       }
     }
 
@@ -381,10 +401,14 @@
     }
 
     restoreSVGcontent(args, util) {
-      const costumeIndex = util.target.getCostumeIndexByName(args.INPUT);
-      let costumeData = util.target.sprite.costumes[costumeIndex].asset.encodeDataURI();
-      costumeData = this.uriToSVG(costumeData);
-      Scratch.vm.runtime.renderer.updateSVGSkin(util.target.sprite.costumes[costumeIndex].skinId,costumeData);
+      try {
+        const costumeIndex = util.target.getCostumeIndexByName(args.INPUT);
+        let costumeData = util.target.sprite.costumes[costumeIndex].asset.encodeDataURI();
+        costumeData = this.uriToSVG(costumeData);
+        Scratch.vm.runtime.renderer.updateSVGSkin(util.target.sprite.costumes[costumeIndex].skinId,costumeData);
+      } catch (error){
+        return '';
+      }
     }
 
     replaceColors(args, util) {
