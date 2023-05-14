@@ -83,7 +83,7 @@
             disableMonitor: true,
           }
         ]
-      }
+      };
     }
 
     getVariable (args) {
