@@ -257,13 +257,15 @@
         }
 
         isBase64(args) {
-            if (args.string ==='' || args.string.trim() ===''){ return false; }
-            try {
-                return btoa(atob(args.string)) == args.string;
-            } catch (err) {
-                return false;
-            }
-        }
+    if (args.string === '' || args.string.trim() === '') {
+        return false;
+    }
+    try {
+        return btoa(atob(args.string)) == args.string;
+    } catch (err) {
+        return false;
+    }
+}
     }
     Scratch.extensions.register(new Encoding());
 })(Scratch);
