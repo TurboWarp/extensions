@@ -10,7 +10,7 @@
     return Scratch.Cast.toNumber(number).toString(2);
   };
   const bits2number = bits => {
-    return /^-?[01]+$/.test(bits) ? parseInt(bits, 2) : 0;
+    return /^-?[01]+$/.test(bits) ? (parseInt(bits, 2) || 0) : 0;
   };
 
   const circularRightShift = (number, k) => {
