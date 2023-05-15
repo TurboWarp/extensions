@@ -542,41 +542,33 @@
     }
     encode(args) {
       switch (args.code) {
-        case 'Base64':
-        return btoa(encodeURIComponent(args.string));
-        case 'URL':
-        return encodeURIComponent(args.string);
+        case 'Base64': return btoa(encodeURIComponent(args.string));
+        case 'URL': return encodeURIComponent(args.string);
       }
       return '';
     }
     decode(args) {
       switch (args.code) {
-        case 'Base64':
-        return decodeURIComponent(atob(args.string));
-        case 'URL':
-        return decodeURIComponent(args.string);
+        case 'Base64': return decodeURIComponent(atob(args.string));
+        case 'URL': return decodeURIComponent(args.string);
       }
       return '';
     }
     hash({ string, hash }) {
       switch (hash) {
-        case 'MD5': {
-          return md5(encodeURIComponent(string));
-        }
+        case 'MD5': return md5(encodeURIComponent(string));
       }
       return '';
     }
     Conversioncodes(args) {
       switch (args.CodeList) {
-        case 'UNICODE':
-        return String(args.string).charCodeAt(0);
+        case 'UNICODE': return String(args.string).charCodeAt(0);
       }
       return 0;
     }
     Restorecode(args) {
       switch (args.CodeList) {
-        case 'UNICODE':
-        return String.fromCharCode(args.string);
+        case 'UNICODE': return String.fromCharCode(args.string);
       }
       return '';
     }
