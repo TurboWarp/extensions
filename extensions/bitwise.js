@@ -37,7 +37,7 @@
           {
             opcode: 'isNumberBits',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is [CENTRAL] binary?',
+            text: 'is number bits [CENTRAL] number bits?',
             arguments: {
               CENTRAL: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -49,7 +49,7 @@
           {
             opcode: 'toNumberBits',
             blockType: Scratch.BlockType.REPORTER,
-            text: '[CENTRAL] to binary',
+            text: '[CENTRAL] to number bits',
             arguments: {
               CENTRAL: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -60,7 +60,7 @@
           {
             opcode: 'ofNumberBits',
             blockType: Scratch.BlockType.REPORTER,
-            text: '[CENTRAL] to number',
+            text: '[CENTRAL] of number bits',
             arguments: {
               CENTRAL: {
                 type: Scratch.ArgumentType.NUMBER,
