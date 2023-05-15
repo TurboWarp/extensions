@@ -1,83 +1,151 @@
 (function (Scratch) {
   'use strict';
+
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Local Storage must be run unsandboxed');
   }
 
-  const PREFIX = 'untrusted_localstorage:';
+  const PREFIX = 'extensions.turbowarp.org/local-storage:';
+  let namespace = '';
+  const getFullStorageKey = () => `${PREFIX}${namespace}`;
 
-  class LocalStorageExt {
+  const readFromStorage = () => {
+    try {
+      // localStorage could throw if unsupported
+      const data = localStorage.getItem(getFullStorageKey());
+      if (data) {
+        // JSON.parse could throw if data is invalid
+        const parsed = JSON.parse(data);
+        if (parsed && parsed.data) {
+          // Remove invalid values from the JSON
+          const processed = {};
+          for (const [key, value] of Object.entries(parsed.data)) {
+            if (typeof value === 'number' || typeof value === 'string' || typeof value === 'boolean') {
+              processed[key] = value;
+            }
+          }
+          return processed;
+        }
+      }
+    } catch (error) {
+      console.error('error reading from local storage', error);
+    }
+    return {};
+  };
+
+  const saveToLocalStorage = (data) => {
+    try {
+      if (Object.keys(data).length > 0) {
+        localStorage.setItem(getFullStorageKey(), JSON.stringify({
+          time: Math.round(Date.now() / 1000),
+          data
+        }));
+      } else {
+        localStorage.removeItem(getFullStorageKey());
+      }
+    } catch (error) {
+      console.error('error saving to locacl storage', error);
+    }
+  };
+
+  class LocalStorage {
     getInfo() {
       return {
         id: 'localstorage',
         name: 'Local Storage',
         blocks: [
           {
-            opcode: 'load',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'get key [key]',
+            opcode: 'setProjectId',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set storage namespace ID to [ID]',
             arguments: {
-              key: {
+              ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'example',
+                defaultValue: 'project title'
+              }
+            }
+          },
+          {
+            opcode: 'get',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'get key [KEY]',
+            arguments: {
+              KEY: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'score',
               },
             },
           },
           {
             opcode: 'set',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set key [key] to [value]',
+            text: 'set key [KEY] to [VALUE]',
             arguments: {
-              key: {
+              KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'example',
+                defaultValue: 'score',
               },
-              value: {
+              VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '1234',
+                defaultValue: '1000',
               },
             },
           },
           {
             opcode: 'remove',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'remove key [key]',
+            text: 'delete key [KEY]',
             arguments: {
-              key: {
+              KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'example'
+                defaultValue: 'score'
               },
             },
           },
+          {
+            opcode: 'removeAll',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'delete all keys'
+          }
         ],
       };
     }
-    set(args) {
-      localStorage.setItem(PREFIX + args.key.toString(), JSON.stringify(args.value));
+    setProjectId({ ID }) {
+      namespace = Scratch.Cast.toString(ID);
     }
-    load(args) {
-      try {
-        const storedValue = localStorage.getItem(PREFIX + args.key.toString());
-        if (storedValue !== null) {
-          try {
-            const parsed = JSON.parse(storedValue);
-            if (typeof parsed === 'string' || typeof parsed === 'boolean' || typeof parsed === 'number') {
-              return parsed;
-            }
-          } catch (e) {
-            // JSON.parse failed, ignore
-          }
-          // Return the raw value as a string.
-          return storedValue;
-        }
-      } catch (e) {
-        // localStorage.getItem failed, ignore
+    get({ KEY }) {
+      if (!namespace) {
+        return 'must use "set storage namespace ID to ..." block first';
       }
-      return '';
+      const storage = readFromStorage();
+      KEY = Scratch.Cast.toString(KEY);
+      if (Object.prototype.hasOwnProperty.call(storage, KEY)) {
+        return storage[KEY];
+      }
+      return 'key does not exist';
     }
-    remove(args) {
-      localStorage.removeItem(PREFIX + args.key.toString());
+    set({ KEY, VALUE }) {
+      if (!namespace) {
+        return;
+      }
+      const storage = readFromStorage();
+      storage[Scratch.Cast.toString(KEY)] = VALUE;
+      saveToLocalStorage(storage);
+    }
+    remove({ KEY }) {
+      if (!namespace) {
+        return;
+      }
+      const storage = readFromStorage();
+      delete storage[Scratch.Cast.toString(KEY)];
+      saveToLocalStorage(storage);
+    }
+    removeAll() {
+      if (!namespace) {
+        return;
+      }
+      saveToLocalStorage({});
     }
   }
-  Scratch.extensions.register(new LocalStorageExt());
+  Scratch.extensions.register(new LocalStorage());
 })(Scratch);
