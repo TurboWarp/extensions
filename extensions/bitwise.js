@@ -117,7 +117,7 @@
          {
             opcode: 'bitwiseCircularRightShift',
             blockType: Scratch.BlockType.REPORTER,
-            text: '[LEFT] >>>> [RIGHT]',
+            text: '[LEFT] ↻ [RIGHT]',
             arguments: {
               LEFT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -132,7 +132,7 @@
           {
             opcode: 'bitwiseCircularLeftShift',
             blockType: Scratch.BlockType.REPORTER,
-            text: '[LEFT] <<<< [RIGHT]',
+            text: '[LEFT] ↺ [RIGHT]',
             arguments: {
               LEFT: {
                 type: Scratch.ArgumentType.NUMBER,
