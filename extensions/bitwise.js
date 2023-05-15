@@ -72,7 +72,7 @@
           {
             opcode: 'bitwiseRightShift',
             blockType: Scratch.BlockType.REPORTER,
-            text: '[LEFT] ⇉ [RIGHT]',
+            text: '[LEFT] >> [RIGHT]',
             arguments: {
               LEFT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -87,7 +87,7 @@
           {
             opcode: 'bitwiseLeftShift',
             blockType: Scratch.BlockType.REPORTER,
-            text: '[LEFT] ⇇ [RIGHT]',
+            text: '[LEFT] << [RIGHT]',
             arguments: {
               LEFT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -102,7 +102,7 @@
           {
             opcode: 'bitwiseLogicalRightShift',
             blockType: Scratch.BlockType.REPORTER,
-            text: '[LEFT] ⇶ [RIGHT]',
+            text: '[LEFT] >>> [RIGHT]',
             arguments: {
               LEFT: {
                 type: Scratch.ArgumentType.NUMBER,
