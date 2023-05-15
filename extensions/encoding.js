@@ -560,7 +560,13 @@
     }
     decode(args) {
       switch (args.code) {
-        case 'Base64': return atob(args.string);
+        case 'Base64':
+          try {
+            return atob(args.string);
+          } catch (error) {
+            console.error('invalid base 64', error);
+            return '';
+          }
         case 'URL': return decodeURIComponent(args.string);
       }
       return '';
