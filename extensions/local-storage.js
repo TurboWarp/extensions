@@ -4,7 +4,7 @@
     throw new Error('Local Storage must be run unsandboxed');
   }
 
-  const PREFIX = 'untrusted_local_storage_extension:';
+  const PREFIX = 'untrusted_localstorage:';
 
   class LocalStorageExt {
     getInfo() {
