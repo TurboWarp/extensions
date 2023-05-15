@@ -48,6 +48,12 @@
     }
   };
 
+  window.addEventListener('storage', (event) => {
+    if (event.key === getFullStorageKey() && event.storageArea === localStorage) {
+      Scratch.vm.runtime.startHats('localstorage_whenChanged');
+    }
+  });
+
   class LocalStorage {
     getInfo() {
       return {
@@ -106,6 +112,12 @@
             opcode: 'removeAll',
             blockType: Scratch.BlockType.COMMAND,
             text: 'delete all keys'
+          },
+          {
+            opcode: 'whenChanged',
+            blockType: Scratch.BlockType.HAT,
+            text: 'when another window changes storage',
+            isEdgeActivated: false
           }
         ],
       };
