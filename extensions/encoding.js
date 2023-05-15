@@ -88,6 +88,17 @@
                         }
                     },
                     {
+                        opcode: 'isBase64',
+                        blockType: Scratch.BlockType.BOOLEAN,
+                        text: 'Is [string] Base64?',
+                        arguments: {
+                            string: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'VHVyYm9XYXJw'
+                            }
+                        }
+                    },
+                    {
                         opcode: 'hash',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Hash [string] with [hash]',
@@ -201,6 +212,17 @@
                     return decodeURIComponent(args.string);
             }
             return '';
+        }
+        isBase64({ string }) {
+            string = Scratch.Cast.toString(string);
+            if (string.trim() === '') {
+                return false;
+            }
+            try {
+                return btoa(atob(string)) === string;
+            } catch (err) {
+                return false;
+            }
         }
         hash({ string, hash }) {
             switch (hash) {
