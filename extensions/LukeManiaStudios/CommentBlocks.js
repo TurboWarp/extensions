@@ -13,9 +13,10 @@
           {
             opcode: 'commentHat',
             blockType: Scratch.BlockType.HAT,
-            text: '// [INPUT]',
+            text: '// [COMMENT]',
+            isEdgeActivated: false,
             arguments: {
-              INPUT: {
+              COMMENT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'comment'
               }
@@ -24,9 +25,9 @@
           {
             opcode: 'commentCommand',
             blockType: Scratch.BlockType.COMMAND,
-            text: '// [INPUT]',
+            text: '// [COMMENT]',
             arguments: {
-              INPUT: {
+              COMMENT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'comment'
               }
@@ -35,13 +36,13 @@
           {
             opcode: 'commentReporter',
             blockType: Scratch.BlockType.REPORTER,
-            text: '[INPUTB] // [INPUTA]',
+            text: '[INPUT] // [COMMENT]',
             arguments: {
-              INPUTA: {
+              COMMENT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'comment'
               },
-              INPUTB: {
+              INPUT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: ''
               }
@@ -50,13 +51,13 @@
           {
             opcode: 'commentBoolean',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[INPUTB] // [INPUTA]',
+            text: '[INPUT] // [COMMENT]',
             arguments: {
-              INPUTA: {
+              COMMENT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'comment'
               },
-              INPUTB: {
+              INPUT: {
                 type: Scratch.ArgumentType.BOOLEAN,
                 defaultValue: ''
               }
@@ -67,27 +68,19 @@
     }
 
     commentHat () {
-      return;
+      // no-op
     }
 
     commentCommand () {
-      return;
+      // no-op
     }
 
     commentReporter (args) {
-      if (!args.INPUTB) {
-        return '';
-      } else {
-        return args.INPUTB;
-      }
+      return args.INPUT;
     }
 
     commentBoolean (args) {
-      if (!args.INPUTB) {
-        return 'false';
-      } else {
-        return args.INPUTB;
-      }
+      return args.INPUT || false;
     }
   }
   Scratch.extensions.register(new CommentBlocks());
