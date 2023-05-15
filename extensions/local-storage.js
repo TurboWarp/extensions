@@ -9,6 +9,14 @@
   let namespace = '';
   const getFullStorageKey = () => `${PREFIX}${namespace}`;
 
+  const validNamespace = () => {
+    const valid = !!namespace;
+    if (!valid) {
+      alert('Local Storage extension: project must run the "set storage namespace ID" block before it can use other blocks');
+    }
+    return valid;
+  };
+
   const readFromStorage = () => {
     try {
       // localStorage could throw if unsupported
@@ -49,7 +57,7 @@
   };
 
   window.addEventListener('storage', (event) => {
-    if (event.key === getFullStorageKey() && event.storageArea === localStorage) {
+    if (namespace && event.key === getFullStorageKey() && event.storageArea === localStorage) {
       Scratch.vm.runtime.startHats('localstorage_whenChanged');
     }
   });
@@ -126,35 +134,35 @@
       namespace = Scratch.Cast.toString(ID);
     }
     get({ KEY }) {
-      if (!namespace) {
-        return 'must use "set storage namespace ID to ..." block first';
+      if (!validNamespace()) {
+        return '';
       }
       const storage = readFromStorage();
       KEY = Scratch.Cast.toString(KEY);
-      if (Object.prototype.hasOwnProperty.call(storage, KEY)) {
-        return storage[KEY];
+      if (!Object.prototype.hasOwnProperty.call(storage, KEY)) {
+        return '';
       }
-      return 'key does not exist';
+      return storage[KEY];
     }
     set({ KEY, VALUE }) {
-      if (!namespace) {
-        return;
+      if (!validNamespace()) {
+        return '';
       }
       const storage = readFromStorage();
       storage[Scratch.Cast.toString(KEY)] = VALUE;
       saveToLocalStorage(storage);
     }
     remove({ KEY }) {
-      if (!namespace) {
-        return;
+      if (!validNamespace()) {
+        return '';
       }
       const storage = readFromStorage();
       delete storage[Scratch.Cast.toString(KEY)];
       saveToLocalStorage(storage);
     }
     removeAll() {
-      if (!namespace) {
-        return;
+      if (!validNamespace()) {
+        return '';
       }
       saveToLocalStorage({});
     }
