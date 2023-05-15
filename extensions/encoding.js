@@ -551,46 +551,50 @@
         }
       };
     }
-    encode(args) {
-      switch (args.code) {
-        case 'Base64': return btoa(args.string);
-        case 'URL': return encodeURIComponent(args.string);
+    encode({ string, code }) {
+      string = Scratch.Cast.toString(string);
+      switch (code) {
+        case 'Base64': return btoa(string);
+        case 'URL': return encodeURIComponent(string);
       }
       return '';
     }
-    decode(args) {
-      switch (args.code) {
+    decode({ string, code }) {
+      string = Scratch.Cast.toString(string);
+      switch (code) {
         case 'Base64':
           try {
-            return atob(args.string);
+            return atob(string);
           } catch (error) {
             console.error('invalid base 64', error);
             return '';
           }
-        case 'URL': return decodeURIComponent(args.string);
+        case 'URL': return decodeURIComponent(string);
       }
       return '';
     }
     hash({ string, hash }) {
+      string = Scratch.Cast.toString(string);
       switch (hash) {
-        case 'MD5': return md5(Scratch.Cast.toString(string));
+        case 'MD5': return md5(string);
       }
       return '';
     }
-    Conversioncodes(args) {
-      switch (args.CodeList) {
-        case 'UNICODE': return String(args.string).charCodeAt(0);
+    Conversioncodes({ string, CodeList }) {
+      string = Scratch.Cast.toString(string);
+      switch (CodeList) {
+        case 'UNICODE': return string.charCodeAt(0);
       }
       return 0;
     }
-    Restorecode(args) {
-      switch (args.CodeList) {
-        case 'UNICODE': return String.fromCharCode(args.string);
+    Restorecode({ string, CodeList}) {
+      switch (CodeList) {
+        case 'UNICODE': return String.fromCharCode(string);
       }
       return '';
     }
-    Randomstrings({position}) {
-      position = position || 32;
+    Randomstrings({ position }) {
+      position = Scratch.Cast.toNumber(position) || 32;
       let t = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
       let a = t.length;
       let string = '';
@@ -599,8 +603,8 @@
       }
       return string;
     }
-    Fontgenerationstring({wordbank,position}) {
-      position = position || 32;
+    Fontgenerationstring({ wordbank, position }) {
+      position = Scratch.Cast.toNumber(position) || 32;
       let t = String(wordbank);
       let a = t.length;
       let string = '';
