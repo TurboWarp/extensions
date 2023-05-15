@@ -33,6 +33,8 @@
 
         menuIconURI: icon,
 
+        docsURI: 'https://hackmd.io/@vJu6RuV8RCKRkItVMFOkpA/B1iL_fgH3',
+
         blocks: [
           {
             opcode: 'isNumberBits',
