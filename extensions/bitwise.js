@@ -37,7 +37,7 @@
           {
             opcode: 'isNumberBits',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is number bits [CENTRAL] number bits?',
+            text: 'is number bits [CENTRAL] ?',
             arguments: {
               CENTRAL: {
                 type: Scratch.ArgumentType.NUMBER,
