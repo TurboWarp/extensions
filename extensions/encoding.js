@@ -213,6 +213,17 @@
             }
             return '';
         }
+        isBase64({ string }) {
+            string = Scratch.Cast.toString(string);
+            if (string.trim() === '') {
+                return false;
+            }
+            try {
+                return btoa(atob(string)) === string;
+            } catch (err) {
+                return false;
+            }
+        }
         hash({ string, hash }) {
             switch (hash) {
                 case 'MD5': {
@@ -254,17 +265,6 @@
                 string += t.charAt(Math.floor(Math.random() * a));
             }
             return string;
-        }
-
-        isBase64(args) {
-            if (args.string === '' || args.string.trim() === '') {
-                return false;
-            }
-            try {
-                return btoa(atob(args.string)) === args.string;
-            } catch (err) {
-                return false;
-            }
         }
     }
     Scratch.extensions.register(new Encoding());
