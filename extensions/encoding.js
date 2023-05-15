@@ -527,11 +527,22 @@
         menus: {
           Code: {
             acceptReporters: true,
-            items: ['UNICODE']
+            items: [
+              {
+                text: 'Unicode',
+                value: 'UNICODE'
+              }
+            ]
           },
           encode: {
             acceptReporters: true,
-            items: ['Base64','URL']
+            items: [
+              {
+                text: 'Base 64',
+                value: 'Base64'
+              },
+              'URL'
+            ]
           },
           hash: {
             acceptReporters: true,
