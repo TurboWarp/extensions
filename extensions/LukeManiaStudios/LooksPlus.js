@@ -50,6 +50,17 @@
           '---',
 
           {
+            opcode: 'colorHex',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'hex of [INPUT]',
+            arguments: {
+              INPUT: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: '#FFD983'
+              }
+            }
+          },
+          {
             opcode: 'effectValue',
             blockType: Scratch.BlockType.REPORTER,
             text: '[INPUT] effect',
@@ -169,17 +180,6 @@
 
           '---',
 
-          {
-            opcode: 'colorHex',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'hex of [INPUT]',
-            arguments: {
-              INPUT: {
-                type: Scratch.ArgumentType.COLOR,
-                defaultValue: '#FFD983'
-              }
-            }
-          },
           {
             opcode: 'replaceColors',
             blockType: Scratch.BlockType.REPORTER,
