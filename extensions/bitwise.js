@@ -41,7 +41,7 @@
             arguments: {
               CENTRAL: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '00000000000000000000000000100000'
+                defaultValue: '0000000000100000'
               }
             }
           },
@@ -64,7 +64,7 @@
             arguments: {
               CENTRAL: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '00000000000000000000000000100000'
+                defaultValue: '0000000000100000'
               }
             }
           },
