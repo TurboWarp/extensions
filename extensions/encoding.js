@@ -542,14 +542,14 @@
     }
     encode(args) {
       switch (args.code) {
-        case 'Base64': return btoa(encodeURIComponent(args.string));
+        case 'Base64': return btoa(args.string);
         case 'URL': return encodeURIComponent(args.string);
       }
       return '';
     }
     decode(args) {
       switch (args.code) {
-        case 'Base64': return decodeURIComponent(atob(args.string));
+        case 'Base64': return atob(args.string);
         case 'URL': return decodeURIComponent(args.string);
       }
       return '';
