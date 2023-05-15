@@ -58,8 +58,7 @@
                 defaultValue: 'comment'
               },
               INPUT: {
-                type: Scratch.ArgumentType.BOOLEAN,
-                defaultValue: ''
+                type: Scratch.ArgumentType.BOOLEAN
               }
             }
           }
