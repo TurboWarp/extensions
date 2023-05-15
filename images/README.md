@@ -27,6 +27,9 @@ The dango is from [Twemoji](https://twemoji.twitter.com/) and is licensed under 
  - Gamepad icon from https://icon-icons.com/icon/appliances-console-controller-dualshock-gamepad-games-videogame/106553 under CC-BY 4.0
  - Background from https://app.haikei.app/
 
+## base.svg
+ - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/418#issue-1710765685
+
 ## bitwise.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/381#issue-1696559620
  - Arrow from https://icon-icons.com/icon/redo-arrow/99565 under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)
