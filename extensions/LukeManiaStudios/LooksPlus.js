@@ -170,6 +170,17 @@
           '---',
 
           {
+            opcode: 'colorHex',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'hex of [INPUT]',
+            arguments: {
+              INPUT: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: '#FFD983'
+              }
+            }
+          },
+          {
             opcode: 'replaceColors',
             blockType: Scratch.BlockType.REPORTER,
             text: 'replace [INPUTA] with [INPUTB] in [INPUTC]',
@@ -409,6 +420,10 @@
       } catch (error){
         return '';
       }
+    }
+
+    colorHex(args, util) {
+      return args.INPUT;
     }
 
     replaceColors(args, util) {
