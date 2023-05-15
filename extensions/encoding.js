@@ -556,7 +556,7 @@
     }
     hash({ string, hash }) {
       switch (hash) {
-        case 'MD5': return md5(encodeURIComponent(string));
+        case 'MD5': return md5(Scratch.Cast.toString(string));
       }
       return '';
     }
