@@ -495,6 +495,12 @@
             text: "Recognized Words",
             blockIconURI: speechIco,
           },
+          {
+            opcode: "isrecording",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Recording?",
+            blockIconURI: speechIco,
+          },
           "---",
           {
             opcode: "getClipBoard",
@@ -638,6 +644,10 @@
 
     returnWords() {
       return recognizedSpeech;
+    }
+
+    isrecording() {
+      return recording;
     }
 
     getDeviceSpeed({ type, axis }) {
