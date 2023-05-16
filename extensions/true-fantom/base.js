@@ -68,6 +68,7 @@
       if (bases.includes(cast.toString(B))) {
         return new RegExp('^[' + chars.substring(0, cast.toNumber(B)) + ']+$').test(cast.toString(A));
       }
+      return false;
     }
     base_block({A, B, C}) {
       if (bases.includes(cast.toString(B)) && bases.includes(cast.toString(C))) {
