@@ -4,29 +4,45 @@
   const SpeechRecognition =
     typeof webkitSpeechRecognition !== "undefined"
       ? window.webkitSpeechRecognition
-      : typeof SpeechRecognition !== "undefined"
+      : typeof window.SpeechRecognition !== "undefined"
       ? window.SpeechRecognition
       : null;
 
   let recognizedSpeech = "";
   let recording = false;
-
+  let initializedSpeechRecognition = false;
   let speechRecognition = null;
-  if (SpeechRecognition) {
+  const initializeSpeechRecognition = () => {
+    if (initializedSpeechRecognition) {
+      return;
+    }
+    initializedSpeechRecognition = true;
+
+    if (!SpeechRecognition) {
+      console.warn('Speech recognotion blocks are not supported in this browser');
+      recognizedSpeech = `error (unsupported in this browser)`;
+      return;
+    }
+
     speechRecognition = new SpeechRecognition();
     speechRecognition.addEventListener("result", (event) => {
-      console.log(event);
       recognizedSpeech = Array.from(event.results)
         .map((result) => result[0])
         .map((result) => result.transcript)
         .join("");
+    });
+    speechRecognition.addEventListener("error", (event) => {
+      console.error('Speech recognition error', event.error);
+      recording = false;
+      speechRecognition.stop();
+      recognizedSpeech = `error (${event.error})`;
     });
     speechRecognition.addEventListener("end", () => {
       if (recording) {
         speechRecognition.start();
       }
     });
-  }
+  };
 
   let initializedSensors = false;
   const deviceVelocity = {
@@ -602,8 +618,8 @@
     }
 
     recording({ toggle }) {
+      initializeSpeechRecognition();
       if (!speechRecognition) {
-        console.warn('Speech recognotion blocks are not supported in this browser');
         return;
       }
       if (toggle === "on") {
