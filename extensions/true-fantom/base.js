@@ -57,7 +57,7 @@
         ],
         menus: {
           base_menu: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: bases
           }
         }
@@ -65,11 +65,15 @@
     }
 
     is_base_block({A, B}) {
-      return new RegExp('^[' + chars.substring(0, cast.toNumber(B)) + ']+$').test(cast.toString(A));
+      if (bases.contains(cast.toString(B))) {
+        return new RegExp('^[' + chars.substring(0, cast.toNumber(B)) + ']+$').test(cast.toString(A));
+      }
     }
     base_block({A, B, C}) {
-      if (new RegExp('^[' + chars.substring(0, cast.toNumber(B)) + ']+$').test(cast.toString(A))) {
-        return parseInt(cast.toString(A), cast.toNumber(B)).toString(cast.toNumber(C)).toUpperCase() || '0';
+      if (bases.contains(cast.toString(B)) && bases.contains(cast.toString(C))) {
+        if (new RegExp('^[' + chars.substring(0, cast.toNumber(B)) + ']+$').test(cast.toString(A))) {
+          return parseInt(cast.toString(A), cast.toNumber(B)).toString(cast.toNumber(C)).toUpperCase() || '0';
+        }
       }
       return '0';
     }
