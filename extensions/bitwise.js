@@ -214,6 +214,7 @@
           },
           // UNUSED
           {
+            hideFromPalette: true,
             opcode: 'isNumberBits',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'is [CENTRAL] binary?',
@@ -225,6 +226,7 @@
             }
           },
           {
+            hideFromPalette: true,
             opcode: 'toNumberBits',
             blockType: Scratch.BlockType.REPORTER,
             text: '[CENTRAL] to binary',
@@ -236,6 +238,7 @@
             }
           },
           {
+            hideFromPalette: true,
             opcode: 'ofNumberBits',
             blockType: Scratch.BlockType.REPORTER,
             text: '[CENTRAL] to number',
