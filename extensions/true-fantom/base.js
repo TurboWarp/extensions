@@ -70,7 +70,7 @@
       }
     }
     base_block({A, B, C}) {
-      if (bases.includes(cast.toString(B)) && bases.contains(cast.toString(C))) {
+      if (bases.includes(cast.toString(B)) && bases.includes(cast.toString(C))) {
         if (new RegExp('^[' + chars.substring(0, cast.toNumber(B)) + ']+$').test(cast.toString(A))) {
           return parseInt(cast.toString(A), cast.toNumber(B)).toString(cast.toNumber(C)).toUpperCase() || '0';
         }
