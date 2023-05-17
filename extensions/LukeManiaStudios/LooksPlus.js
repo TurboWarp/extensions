@@ -439,8 +439,8 @@
 
     uriToSVG(content) {
       try {
-        var dataURI = content;
-        var svg = atob(dataURI.replace(/data:image\/svg\+xml;base64,/, ''));
+        const dataURI = content;
+        const svg = atob(dataURI.replace(/data:image\/svg\+xml;base64,/, ''));
         return svg;
       } catch (error){
         return '';
@@ -449,8 +449,8 @@
 
     uriToPNG(content) {
       try {
-        var dataURI = content;
-        var png = atob(dataURI.replace(/data:image\/png;base64,/, ''));
+        const dataURI = content;
+        const png = atob(dataURI.replace(/data:image\/png;base64,/, ''));
         return png;
       } catch (error){
         return '';
@@ -458,20 +458,20 @@
     }
 
     getSprites() {
-      let spriteNames = [];
+      const spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
       const myself = Scratch.vm.runtime.getEditingTarget().getName();
       for (let index = 1; index < targets.length; index++) {
-        const target = targets[index];
-        if (target.getName() === myself) {
+        const targetName = targets[index].getName();
+        if (targetName === myself) {
           spriteNames.unshift({
             text: 'this sprite',
-            value: target.getName()
+            value: targetName
           });
         } else {
           spriteNames.push({
-            text: target.getName(),
-            value: target.getName()
+            text: targetName,
+            value: targetName
           });
         }
       }
