@@ -702,7 +702,7 @@
     json_vm_getlist({ list }, util) {
       try {
         const listVariable = util.target.lookupVariableById(list);
-        if (listVariable) {
+        if (listVariable && listVariable.type === 'list') {
           return JSON.stringify(listVariable.value);
         }
       } catch (e) {
@@ -713,7 +713,7 @@
     json_vm_setlist({ list, json }, util) {
       try {
         const listVariable = util.target.lookupVariableById(list);
-        if (listVariable) {
+        if (listVariable && listVariable.type === 'list') {
           const array = JSON.parse(json);
           if (Array.isArray(array)) {
             const safeArray = array.map(i => {
