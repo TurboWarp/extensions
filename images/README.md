@@ -134,3 +134,6 @@ Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#
 
 ## cs2627883/numericalencoding.svg
 Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1534022176
+
+## LukeManiaStudios/TempVariables.svg
+Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/410
