@@ -150,3 +150,6 @@ Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/41
 
 ## LukeManiaStudios/ClonesPlus.svg
 Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/382
+
+## LukeManiaStudios/TempVariables.svg
+Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/410
