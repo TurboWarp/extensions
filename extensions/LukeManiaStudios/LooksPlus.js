@@ -129,6 +129,7 @@
             opcode: 'snapshotStage',
             blockType: Scratch.BlockType.REPORTER,
             text: 'snapshot stage',
+            disableMonitor: true
           },
 
           '---',
@@ -305,34 +306,35 @@
     }
 
     showSprite(args, util) {
-      try {
-        const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
-        return target.setVisible(true);
-      } catch (error) {
-        return;
+      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+      if (target) {
+        target.setVisible(true);
       }
     }
 
     hideSprite(args, util) {
-      try {
-        const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
-        return target.setVisible(false);
-      } catch (error) {
-        return;
+      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+      if (target) {
+        target.setVisible(false);
       }
     }
 
     spriteVisible(args, util) {
-      try {
-        const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
-        return Scratch.Cast.toBoolean(target.visible);
-      } catch (error) {
+      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+      if (!target) {
         return false;
       }
+      return Scratch.Cast.toBoolean(target.visible);
     }
 
     effectValue(args, util) {
-      return util.target.effects[args.INPUT];
+      const effects = util.target.effects;
+      const name = Scratch.Cast.toString(args.INPUT);
+      if (Object.prototype.hasOwnProperty.call(effects, name)) {
+        return effects[name];
+      }
+      // should never happen
+      return 0;
     }
 
     setLayerTo(args, util) {
@@ -343,38 +345,37 @@
     }
 
     spriteLayerNumber(args, util) {
-      try {
-        const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
-        return target.getLayerOrder();
-      } catch (error) {
+      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+      if (!target) {
         return 0;
       }
+      return target.getLayerOrder();
     }
 
     numberOfCostumes(args, util) {
-      try {
-        const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
-        return Scratch.Cast.toNumber(target.sprite.costumes.length);
-      } catch (error) {
+      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUT);
+      if (!target) {
         return 0;
       }
+      return Scratch.Cast.toNumber(target.sprite.costumes.length);
     }
 
     costumeWidthHeight(args, util) {
-      try {
-        const costume = util.target.getCostumeIndexByName(args.INPUTB);
-        if (args.INPUTA === 'height') {
-          return Math.ceil(Scratch.Cast.toNumber(util.target.sprite.costumes[costume].size[1]));
-        } else {
-          return Math.ceil(Scratch.Cast.toNumber(util.target.sprite.costumes[costume].size[0]));
-        }
-      } catch (error) {
+      const costumeIndex = util.target.getCostumeIndexByName(args.INPUTB);
+      const costume = util.target.sprite.costumes[costumeIndex];
+      if (!costume) {
         return 0;
+      }
+      if (args.INPUTA === 'height') {
+        return Math.ceil(Scratch.Cast.toNumber(costume.size[1]));
+      } else {
+        return Math.ceil(Scratch.Cast.toNumber(costume.size[0]));
       }
     }
 
     snapshotStage(args, util) {
       return new Promise(resolve => {
+        // TODO need to make sure VM handles skin privacy with screenshots
         Scratch.vm.runtime.renderer.requestSnapshot(uri => {
           resolve(uri);
         });
@@ -383,43 +384,40 @@
 
     costumeSvgUri(args, util) {
       const format = args.INPUTA;
-      let costume = '';
-      let target = '';
-      try {
-        target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUTC);
-        costume = target.sprite.costumes[(args.INPUTB - 1)].asset.encodeDataURI();
-      } catch (error){
+      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUTC);
+      if (!target) {
         return '';
       }
+      const costume = target.sprite.costumes[(args.INPUTB - 1)];
+      if (!costume) {
+        return '';
+      }
+      const dataURI = costume.asset.encodeDataURI();
       if (format === 'SVG') {
-        let output = this.uriToSVG(costume);
-        return output;
+        return this.uriToSVG(dataURI);
       } else if (format === 'PNG') {
-        let output = this.uriToPNG(costume);
-        return output;
+        return this.uriToPNG(dataURI);
       } else {
-        return costume;
+        return dataURI;
       }
     }
 
     replaceSVGcontent(args, util) {
-      try {
-        const costumeIndex = util.target.getCostumeIndexByName(args.INPUTA);
-        Scratch.vm.runtime.renderer.updateSVGSkin(util.target.sprite.costumes[costumeIndex].skinId,args.INPUTB);
-      } catch (error){
-        return '';
+      const costumeIndex = util.target.getCostumeIndexByName(args.INPUTA);
+      const costume = util.target.sprite.costumes[costumeIndex];
+      if (costume) {
+        Scratch.vm.runtime.renderer.updateSVGSkin(costume.skinId, Scratch.Cast.toString(args.INPUTB));
+        Scratch.vm.emitTargetsUpdate();
       }
-      Scratch.vm.emitTargetsUpdate();
     }
 
     restoreSVGcontent(args, util) {
-      try {
-        const costumeIndex = util.target.getCostumeIndexByName(args.INPUT);
-        let costumeData = util.target.sprite.costumes[costumeIndex].asset.encodeDataURI();
-        costumeData = this.uriToSVG(costumeData);
-        Scratch.vm.runtime.renderer.updateSVGSkin(util.target.sprite.costumes[costumeIndex].skinId,costumeData);
-      } catch (error){
-        return '';
+      const costumeIndex = util.target.getCostumeIndexByName(args.INPUTA);
+      const costume = util.target.sprite.costumes[costumeIndex];
+      if (costume) {
+        const dataURI = costume.asset.encodeDataURI();
+        const svg = this.uriToSVG(dataURI);
+        Scratch.vm.runtime.renderer.updateSVGSkin(costume.skinId, svg);
       }
     }
 
