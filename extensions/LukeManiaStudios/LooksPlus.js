@@ -63,21 +63,29 @@
           {
             opcode: 'effectValue',
             blockType: Scratch.BlockType.REPORTER,
-            text: '[INPUT] effect',
+            text: '[INPUTA] effect of [INPUTB]',
             arguments: {
-              INPUT: {
+              INPUTA: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'color',
                 menu: 'effectMenu'
+              },
+              INPUTB: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'spriteMenu'
               }
             }
           },
           {
             opcode: 'setLayerTo',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set layer to [INPUT]',
+            text: 'set layer # of [INPUTA] to [INPUTB]',
             arguments: {
-              INPUT: {
+              INPUTA: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'spriteMenu'
+              },
+              INPUTB: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1'
               }
@@ -328,8 +336,12 @@
     }
 
     effectValue(args, util) {
-      const effects = util.target.effects;
-      const name = Scratch.Cast.toString(args.INPUT);
+      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUTB);
+      if (!target) {
+        return 0;
+      }
+      const effects = target.effects;
+      const name = Scratch.Cast.toString(args.INPUTA);
       if (Object.prototype.hasOwnProperty.call(effects, name)) {
         return effects[name];
       }
@@ -338,10 +350,14 @@
     }
 
     setLayerTo(args, util) {
-      const layerOrder = util.target.getLayerOrder();
-      const newLayer = (args.INPUT - layerOrder);
-      const drawableID = util.target.drawableID;
-      util.target.renderer.setDrawableOrder(drawableID, newLayer, 'sprite', true);
+      const target = Scratch.vm.runtime.getSpriteTargetByName(args.INPUTA);
+      if (!target) {
+        return;
+      }
+      const layerOrder = target.getLayerOrder();
+      const newLayer = (args.INPUTB - layerOrder);
+      const drawableID = target.drawableID;
+      target.renderer.setDrawableOrder(drawableID, newLayer, 'sprite', true);
     }
 
     spriteLayerNumber(args, util) {
