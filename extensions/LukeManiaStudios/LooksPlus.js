@@ -224,7 +224,7 @@
             items: 'getAnimGroups'
           },
           uriSvgMenu: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: [
               {
                 text: 'dataURI',
@@ -241,7 +241,7 @@
             ]
           },
           svgPngMenu: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: [
               {
                 text: 'SVG',
@@ -254,6 +254,7 @@
             ]
           },
           effectMenu: {
+            // false for Scratch parity
             acceptReporters: false,
             items: [
               {
@@ -287,7 +288,7 @@
             ]
           },
           widthHeightMenu: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: [
               {
                 text: 'width',
