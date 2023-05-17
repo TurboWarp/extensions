@@ -460,19 +460,19 @@
     getSprites() {
       let spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
-      const myself = Scratch.vm.runtime.getEditingTarget().sprite.name;
+      const myself = Scratch.vm.runtime.getEditingTarget().getName();
       for (let index = 1; index < targets.length; index++) {
-        const curTarget = targets[index].sprite;
-        let display = curTarget.name;
-        if (myself === curTarget.name) {
-          display = 'this sprite';
-        }
-        if (targets[index].isOriginal) {
-          const jsonOBJ = {
-            text: display,
-            value: curTarget.name
-          };
-          spriteNames.push(jsonOBJ);
+        const target = targets[index];
+        if (target.getName() === myself) {
+          spriteNames.unshift({
+            text: 'this sprite',
+            value: target.getName()
+          });
+        } else {
+          spriteNames.push({
+            text: target.getName(),
+            value: target.getName()
+          });
         }
       }
       if (spriteNames.length > 0) {
