@@ -28,7 +28,8 @@ The dango is from [Twemoji](https://twemoji.twitter.com/) and is licensed under 
  - Background from https://app.haikei.app/
 
 ## bitwise.svg
-The font used is DejaVu Sans Mono.
+ - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/381#issue-1696559620
+ - Arrow from https://icon-icons.com/icon/redo-arrow/99565 under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ## cloudlink.svg
 The cloud icon is from the Cloudlink extension itself and is licensed under [MIT](https://github.com/MikeDev101/cloudlink/blob/f0c08f1e926a4179018649c6faa692c65d3b1c70/LICENSE). The font used is Noto Sans.
@@ -116,12 +117,12 @@ Based on an image created by [@JoshsAccount](https://scratch.mit.edu/users/Joshs
 ## LukeManiaStudios/lmsutils.svg
 Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545
 
-## 0832/rxFS.svg
+## 0832/rxFS2.svg
  - Created by @0832k12 in https://github.com/TurboWarp/extensions/pull/291
  - Background from https://app.haikei.app/
 
-## NOname/math&string.svg
-Created by @NOname in https://github.com/NOname-awa
+## NOname-awa/math-and-string.svg
+Created by @NOname in https://github.com/TurboWarp/extensions/pull/316
 
 ## NOname-awa/more-comparisons.svg
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1479376273
@@ -134,6 +135,21 @@ Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#
 
 ## cs2627883/numericalencoding.svg
 Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1534022176
+
+## NOname-awa/graphics2d.svg
+Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1550426448
+
+## gamejolt.svg
+Created by @LukeManiaStudioss. The GameJolt logo is probably a trademark.
+
+## NexusKitten/sgrab.svg
+Created by @NexusKitten in https://github.com/TurboWarp/extensions/pull/371. The "S" logo is a trademark of the Scratch Foundation.
+
+## LukeManiaStudios/CommentBlocks.svg
+Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/412
+
+## LukeManiaStudios/ClonesPlus.svg
+Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/382
 
 ## LukeManiaStudios/TempVariables.svg
 Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/410
