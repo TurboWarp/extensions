@@ -461,7 +461,7 @@
     getSprites() {
       let spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
-      const myself = window.vm.runtime._editingTarget.sprite.name;
+      const myself = Scratch.vm.runtime.getEditingTarget().sprite.name;
       for (let index = 1; index < targets.length; index++) {
         const curTarget = targets[index].sprite;
         let display = curTarget.name;
