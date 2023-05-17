@@ -3,8 +3,8 @@
 
   const menuIconURI = '';
 
-  var vars = {};
-  vars['variables'] = {};
+  // Object.create(null) prevents "variable [toString]" from returning a function
+  let variables = Object.create(null);
 
   class TempVars {
     getInfo() {
@@ -87,43 +87,37 @@
     }
 
     getVariable (args) {
-      if (args.INPUT in vars['variables']) {
-        return (vars['variables'][args.INPUT]);
+      if (args.INPUT in variables) {
+        return (variables[args.INPUT]);
       } else {
         return '';
       }
     }
 
     setVariableTo (args) {
-      vars['variables'][args.INPUTA] = args.INPUTB;
+      variables[args.INPUTA] = args.INPUTB;
     }
 
     changeVariableBy (args) {
-      if (args.INPUTA in vars['variables']) {
-        var prev = vars['variables'][args.INPUTA];
-        var next = args.INPUTB;
-        vars['variables'][args.INPUTA] = (prev + next);
+      if (args.INPUTA in variables) {
+        const prev = Scratch.Cast.toNumber(variables[args.INPUTA]);
+        const next = Scratch.Cast.toNumber(args.INPUTB);
+        variables[args.INPUTA] = (prev + next);
       } else {
-        vars['variables'][args.INPUTA] = args.INPUTB;
+        variables[args.INPUTA] = args.INPUTB;
       }
     }
 
     listVariables (args, util) {
-      if (Object.keys(vars['variables']).length) {
-        var output = Object.keys(vars['variables']);
-        return output;
-      } else {
-        return;
-      }
+      return Object.keys(variables).join(',');
     }
 
     deleteVariable (args) {
-      Reflect.deleteProperty(vars['variables'], args.INPUT);
+      Reflect.deleteProperty(variables, args.INPUT);
     }
 
     deleteAllVariables () {
-      Reflect.deleteProperty(vars, 'variables');
-      vars['variables'] = {};
+      variables = Object.create(null);
     }
   }
   Scratch.extensions.register(new TempVars());
