@@ -6,7 +6,7 @@
   class LooksPlus {
     getInfo() {
       return {
-        id: 'lmsLooksPlusTest',
+        id: 'lmsLooksPlus',
         name: 'Looks+',
         color1: '#9966FF',
         color2: '#855CD6',
