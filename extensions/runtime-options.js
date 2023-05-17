@@ -73,11 +73,6 @@
           '---',
 
           {
-            opcode: 'getCloneCount',
-            text: 'get clone #',
-            blockType: Scratch.BlockType.REPORTER
-          },
-          {
             opcode: 'getCloneLimit',
             text: 'get clone limit',
             blockType: Scratch.BlockType.REPORTER
@@ -264,10 +259,6 @@
     setFramerate ({ fps }) {
       fps = +fps || 0;
       Scratch.vm.setFramerate(fps);
-    }
-
-    getCloneCount () {
-      return Scratch.vm.runtime._cloneCounter;
     }
 
     getCloneLimit () {
