@@ -487,10 +487,10 @@
             return JSON.stringify(Object.keys(json).map(key => json[key]));
           case 'datas':
             return JSON.stringify(Object.keys(json).map(key => [key,json[key]]));
-          default: return ' ';
+          default: return '';
         }
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -504,7 +504,7 @@
           return result;
         }
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -524,7 +524,7 @@
         json[item] = value;
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -534,19 +534,19 @@
         delete json[item];
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
     json_jlength({ json }) {
       // same function
-      return this.json_length(json);
+      return this.json_length({ json: json });
     }
 
     json_array_get({ item, json }) {
       // 1...length : array content, -1...-length : reverse array content, 0 : ERROR
       try {
-        if (item == 0) return ' ';
+        if (item == 0) return '';
         if (item > 0) {
           item--;
         }
@@ -563,7 +563,7 @@
           return result;
         }
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -574,7 +574,7 @@
         let result = JSON.stringify(json.indexOf(item) + 1);
         return result;
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -584,7 +584,7 @@
         json2 = JSON.parse(json2);
         return JSON.stringify(json.concat(json2));
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -595,7 +595,7 @@
         json.push(item);
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -606,7 +606,7 @@
         json.splice(pos - 1, 0, item);
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -616,7 +616,7 @@
         json[pos - 1] = this._fixInvalids(this.json_valid_return(item));
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -626,7 +626,7 @@
         json.splice(item - 1, 1);
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -644,7 +644,7 @@
         }
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -652,7 +652,7 @@
       try {
         return JSON.stringify(JSON.parse(json).slice(item - 1,item2));
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -660,7 +660,7 @@
       try {
         return JSON.stringify(JSON.parse(json).reverse());
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -668,7 +668,7 @@
       try {
         return JSON.stringify(JSON.parse(json).flat(depth));
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -680,7 +680,7 @@
       try {
         return JSON.parse(json).join(d);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
