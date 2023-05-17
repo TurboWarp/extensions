@@ -1,7 +1,3 @@
-/*
-* v2
-* changed block colors, new blocks, fix NaN problems, rearrange blocks
-*/
 (function(Scratch) {
   'use strict';
   const vm = Scratch.vm;
@@ -461,7 +457,7 @@
 
     json_has_key({ json, key }) {
       try {
-        return this._fixInvalids(this.json_valid_return(key)) in JSON.parse(json);
+        return this._fixInvalidJSONValues(this.json_valid_return(key)) in JSON.parse(json);
       } catch {
         return false;
       }
@@ -486,7 +482,7 @@
           case 'values':
             return JSON.stringify(Object.keys(json).map(key => json[key]));
           case 'datas':
-            return JSON.stringify(Object.keys(json).map(key => [key,json[key]]));
+            return JSON.stringify(Object.keys(json).map(key => [key, json[key]]));
           default: return '';
         }
       } catch {
@@ -508,11 +504,11 @@
       }
     }
 
-    _fixInvalids(value) {
-      // fix NaN, infinity values
-      if (value !== value) value = 'NaN';
-      if (value === Infinity) value = 'Infinity';
-      if (value === -Infinity) value = '-Infinity';
+    _fixInvalidJSONValues(value) {
+      // JSON does not support these values, so convert to string.
+      if (Number.isNaN(value)) return 'NaN';
+      if (value === Infinity) return 'Infinity';
+      if (value === -Infinity) return '-Infinity';
       return value;
     }
 
@@ -520,7 +516,7 @@
       try {
         json = JSON.parse(json);
         value = this.json_valid_return(value);
-        value = this._fixInvalids(value);
+        value = this._fixInvalidJSONValues(value);
         json[item] = value;
         return JSON.stringify(json);
       } catch {
@@ -570,7 +566,7 @@
     json_array_itemH({ item, json }) {
       try {
         json = JSON.parse(json);
-        item = this._fixInvalids(this.json_valid_return(item));
+        item = this._fixInvalidJSONValues(this.json_valid_return(item));
         let result = JSON.stringify(json.indexOf(item) + 1);
         return result;
       } catch {
@@ -591,7 +587,7 @@
     json_array_push({ item, json }) {
       try {
         json = JSON.parse(json);
-        item = this._fixInvalids(this.json_valid_return(item));
+        item = this._fixInvalidJSONValues(this.json_valid_return(item));
         json.push(item);
         return JSON.stringify(json);
       } catch {
@@ -602,7 +598,7 @@
     json_array_insert({ item, pos, json }) {
       try {
         json = JSON.parse(json);
-        item = this._fixInvalids(this.json_valid_return(item));
+        item = this._fixInvalidJSONValues(this.json_valid_return(item));
         json.splice(pos - 1, 0, item);
         return JSON.stringify(json);
       } catch {
@@ -613,7 +609,7 @@
     json_array_set({ item, pos, json }) {
       try {
         json = JSON.parse(json);
-        json[pos - 1] = this._fixInvalids(this.json_valid_return(item));
+        json[pos - 1] = this._fixInvalidJSONValues(this.json_valid_return(item));
         return JSON.stringify(json);
       } catch {
         return '';
@@ -633,7 +629,7 @@
     json_array_remove_all({ item, json }) {
       try {
         json = JSON.parse(json);
-        item = this._fixInvalids(this.json_valid_return(item));
+        item = this._fixInvalidJSONValues(this.json_valid_return(item));
         let i = 0;
         while (i < json.length) {
           if (json[i] === item) {
