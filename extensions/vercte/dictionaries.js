@@ -1,10 +1,20 @@
-window.dictionaries = new Map();
+(function(Scratch) {
+'use strict';
+let dictionaries = new Map();
 class DictionaryExtension {
   getInfo() {
     return {
       id: 'verctedictionaries',
       name: 'Dictionaries',
+      color1: '#008cff',
+      color2: '#0073d1',
+      color3: '#0066ba',
       blocks: [
+        {
+          opcode: 'dict_list',
+          blockType: Scratch.BlockType.REPORTER,
+          text: 'list of dictionaries'
+        },
         {
           opcode: 'dict_stringify',
           blockType: Scratch.BlockType.REPORTER,
@@ -25,9 +35,9 @@ class DictionaryExtension {
            DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' }
           }
         },
-        
+
         '---',
-        
+
         {
           opcode: 'dict_get',
           blockType: Scratch.BlockType.REPORTER,
@@ -55,9 +65,15 @@ class DictionaryExtension {
            DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
           }
         },
-        
+        {
+          opcode: 'dict_primitive_null',
+          blockType: Scratch.BlockType.REPORTER,
+          text: 'null',
+          disableMonitor: true
+        },
+
         '---',
-        
+
         {
           opcode: 'dict_set',
           blockType: Scratch.BlockType.COMMAND,
@@ -77,9 +93,33 @@ class DictionaryExtension {
            DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
              BY: { type: Scratch.ArgumentType.NUMBER, defaultValue: '1' }
           }
-        }
+        },
+
+        '---',
+
+        {
+          opcode: 'dict_delete',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'remove dictionary [DICT]',
+          arguments: {
+            DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
+          }
+        },
+        {
+          opcode: 'dict_delete_key',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'remove key [KEY] from dictionary [DICT]',
+          arguments: {
+            KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'bar' },
+           DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
+          }
+        },
       ]
     };
+  }
+
+  dict_list() {
+    return Array.from(dictionaries.keys()).join(" ");
   }
 
   dict_stringify({ DICT }) {
@@ -89,54 +129,69 @@ class DictionaryExtension {
         return obj;
       }, {});
     };
-    if(!window.dictionaries.get(DICT)) return "{}";
-    return JSON.stringify(mapToObj(window.dictionaries.get(DICT)));
+    if (!dictionaries.get(DICT)) return "{}";
+    return JSON.stringify(mapToObj(dictionaries.get(DICT)));
   }
-  
+
   dict_parse({ OBJ, DICT }) {
     let dict = null;
     try {
       dict = JSON.parse(OBJ);
-    } catch(e) {
+    } catch (e) {
       dict = {"error": String(e)};
     }
-    window.dictionaries.set(DICT, new Map(Object.entries(dict)));
+    dictionaries.set(DICT, new Map(Object.entries(dict)));
   }
-  
+
   dict_get({ KEY, DICT }) {
-    if(!window.dictionaries.get(DICT)) return "null";
-    let dict = window.dictionaries.get(DICT);
-    return dict.get(KEY) ? dict.get(KEY) : null; 
+    if (!dictionaries.get(DICT)) return "null";
+    let dict = dictionaries.get(DICT);
+    return dict.get(KEY) ? dict.get(KEY) : null;
   }
-  
+
   dict_property_defined({ KEY, DICT }) {
-    if(!window.dictionaries.get(DICT)) return false;
-    let dict = window.dictionaries.get(DICT);
+    if (!dictionaries.get(DICT)) return false;
+    let dict = dictionaries.get(DICT);
     return dict.get(KEY) === undefined ? false : true;
   }
-  
+
   dict_property_null({ KEY, DICT }) {
-    if(!window.dictionaries.get(DICT)) return false;
-    let dict = window.dictionaries.get(DICT);
+    if (!dictionaries.get(DICT)) return false;
+    let dict = dictionaries.get(DICT);
     return dict.get(KEY) === null ? true : false;
   }
-  
+
   dict_set({ KEY, DICT, VAL }) {
-    if(!window.dictionaries.get(DICT)) {
-       window.dictionaries.set(DICT, new Map());
+    if (!dictionaries.get(DICT)) {
+       dictionaries.set(DICT, new Map());
     }
-    let dict = window.dictionaries.get(DICT);
-    dict.set(KEY, VAL); 
+    let dict = dictionaries.get(DICT);
+    dict.set(KEY, VAL);
   }
-  
+
   dict_change({ KEY, DICT, BY }) {
-    if(!window.dictionaries.get(DICT)) {
-       window.dictionaries.set(DICT, new Map());
+    if (!dictionaries.get(DICT)) {
+       dictionaries.set(DICT, new Map());
     }
-    let dict = window.dictionaries.get(DICT);
-    if(isNaN(+dict.get(KEY))) dict.set(KEY, 0);
-    dict.set(KEY, dict.get(KEY) + BY); 
+    let dict = dictionaries.get(DICT);
+    if (isNaN(+dict.get(KEY))) dict.set(KEY, 0);
+    dict.set(KEY, dict.get(KEY) + BY);
   }
+
+  dict_delete({ DICT }) {
+    if (dictionaries.has(DICT)) dictionaries.delete(DICT);
+  }
+
+  dict_delete_key({ KEY, DICT }) {
+    if (dictionaries.has(DICT)) {
+      dictionaries.get(DICT).delete(KEY);
+    }
+  }
+
+  dict_primitive_null() {
+ return null;
+}
 }
 
 Scratch.extensions.register(new DictionaryExtension());
+})(Scratch);
