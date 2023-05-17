@@ -1,6 +1,7 @@
 (function(Scratch) {
   'use strict';
   const vm = Scratch.vm;
+  const hasOwn = (obj, property) => Object.prototype.hasOwnProperty.call(obj, property);
   class JSONS {
     getInfo() {
       return {
@@ -493,15 +494,18 @@
     json_get({ item, json }) {
       try {
         json = JSON.parse(json);
-        let result = json[item];
-        if (typeof result == 'object') {
-          return JSON.stringify(result);
-        } else {
-          return result;
+        if (hasOwn(json, item)) {
+          const result = json[item];
+          if (typeof result === 'object') {
+            return JSON.stringify(result);
+          } else {
+            return result;
+          }
         }
       } catch {
-        return '';
+        // ignore
       }
+      return '';
     }
 
     _fixInvalidJSONValues(value) {
@@ -542,6 +546,7 @@
     json_array_get({ item, json }) {
       // 1...length : array content, -1...-length : reverse array content, 0 : ERROR
       try {
+        item = Scratch.Cast.toNumber(item);
         if (item == 0) return '';
         if (item > 0) {
           item--;
@@ -683,7 +688,12 @@
     json_array_filter({ key, json }) {
       try {
         json = JSON.parse(json);
-        return JSON.stringify(json.map(x => x[key]));
+        return JSON.stringify(json.map(x => {
+          if (hasOwn(x, key)) {
+            return x[key];
+          }
+          return null;
+        }));
       } catch (e) {
         return '';
       }
