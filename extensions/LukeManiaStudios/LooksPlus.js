@@ -171,9 +171,9 @@
           {
             opcode: 'restoreSVGcontent',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'reset SVG for [INPUT]',
+            text: 'reset SVG for [COSTUME]',
             arguments: {
-              INPUT: {
+              COSTUME: {
                 type: Scratch.ArgumentType.COSTUME
               }
             }
@@ -412,7 +412,7 @@
     }
 
     restoreSVGcontent(args, util) {
-      const costumeIndex = util.target.getCostumeIndexByName(args.INPUTA);
+      const costumeIndex = util.target.getCostumeIndexByName(args.COSTUME);
       const costume = util.target.sprite.costumes[costumeIndex];
       if (costume) {
         const dataURI = costume.asset.encodeDataURI();
