@@ -135,3 +135,6 @@ Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#
 
 ## cs2627883/numericalencoding.svg
 Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1534022176
+
+## NOname-awa/graphics2d.svg
+Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1550426448
