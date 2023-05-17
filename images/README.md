@@ -121,8 +121,8 @@ Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/27
  - Created by @0832k12 in https://github.com/TurboWarp/extensions/pull/291
  - Background from https://app.haikei.app/
 
-## NOname/math&string.svg
-Created by @NOname in https://github.com/NOname-awa
+## NOname-awa/math-and-string.svg
+Created by @NOname in https://github.com/TurboWarp/extensions/pull/316
 
 ## NOname-awa/more-comparisons.svg
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1479376273
