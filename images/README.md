@@ -117,12 +117,12 @@ Based on an image created by [@JoshsAccount](https://scratch.mit.edu/users/Joshs
 ## LukeManiaStudios/lmsutils.svg
 Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545
 
-## 0832/rxFS.svg
+## 0832/rxFS2.svg
  - Created by @0832k12 in https://github.com/TurboWarp/extensions/pull/291
  - Background from https://app.haikei.app/
 
-## NOname/math&string.svg
-Created by @NOname in https://github.com/NOname-awa
+## NOname-awa/math-and-string.svg
+Created by @NOname in https://github.com/TurboWarp/extensions/pull/316
 
 ## NOname-awa/more-comparisons.svg
 Created by @True-Fantom in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1479376273
@@ -135,3 +135,18 @@ Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#
 
 ## cs2627883/numericalencoding.svg
 Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1534022176
+
+## NOname-awa/graphics2d.svg
+Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1550426448
+
+## gamejolt.svg
+Created by @LukeManiaStudioss. The GameJolt logo is probably a trademark.
+
+## NexusKitten/sgrab.svg
+Created by @NexusKitten in https://github.com/TurboWarp/extensions/pull/371. The "S" logo is a trademark of the Scratch Foundation.
+
+## LukeManiaStudios/CommentBlocks.svg
+Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/412
+
+## LukeManiaStudios/ClonesPlus.svg
+Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/382
