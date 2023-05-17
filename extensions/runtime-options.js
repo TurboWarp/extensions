@@ -257,7 +257,7 @@
     }
 
     setFramerate ({ fps }) {
-      fps = +fps || 0;
+      fps = Scratch.Cast.toNumber(fps);
       Scratch.vm.setFramerate(fps);
     }
 
@@ -266,7 +266,7 @@
     }
 
     setCloneLimit ({ limit }) {
-      limit = +limit || 0;
+      limit = Scratch.Cast.toNumber(limit);
       Scratch.vm.setRuntimeOptions({
         maxClones: limit
       });
@@ -282,8 +282,8 @@
     }
 
     setDimensions ({ width, height }) {
-      width = +width || 0;
-      height = +height || 0;
+      width = Scratch.Cast.toNumber(width);
+      height = Scratch.Cast.toNumber(height);
       Scratch.vm.setStageSize(width, height);
     }
 
