@@ -20,7 +20,6 @@
 
     if (!SpeechRecognition) {
       console.warn('Speech recognotion blocks are not supported in this browser');
-      recognizedSpeech = `error (unsupported in this browser)`;
       return;
     }
 
@@ -32,10 +31,14 @@
         .join("");
     });
     speechRecognition.addEventListener("error", (event) => {
-      console.error('Speech recognition error', event.error);
-      recording = false;
-      speechRecognition.stop();
-      recognizedSpeech = `error (${event.error})`;
+      if (event.error === 'no-speech') {
+        // this is fine, just ignore it
+        // it will be restarted in the end handler
+      } else {
+        console.error('Speech recognition error', event.error);
+        recording = false;
+        speechRecognition.stop();
+      }
     });
     speechRecognition.addEventListener("end", () => {
       if (recording) {
