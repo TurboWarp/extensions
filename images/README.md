@@ -143,7 +143,7 @@ Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#
 Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1550426448
 
 ## gamejolt.svg
-Created by @LukeManiaStudioss. The GameJolt logo is probably a trademark.
+Created by @LukeManiaStudioss. The GameJolt logo is probably a trademark. The blurred scripts are from https://scratch.mit.edu/projects/60917032/
 
 ## NexusKitten/sgrab.svg
 Created by @NexusKitten in https://github.com/TurboWarp/extensions/pull/371. The "S" logo is a trademark of the Scratch Foundation.
