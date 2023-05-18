@@ -1,14 +1,13 @@
 (function(Scratch) {
   'use strict';
   const vm = Scratch.vm;
+  const hasOwn = (obj, property) => Object.prototype.hasOwnProperty.call(obj, property);
   class JSONS {
     getInfo() {
       return {
         id: 'skyhigh173JSON',
         name: 'JSON',
-        color1: '#2dc4c4',
-        color2: '#2dc4b3',
-        color3: '#29a395',
+        color1: '#3271D0',
         blocks: [
           {
             opcode: 'json_is_valid',
@@ -22,9 +21,25 @@
             }
           },
           {
+            opcode: 'json_get_all',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'get all [Stype] in [json]',
+            arguments: {
+              Stype: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'get_all'
+              },
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"key":"value","key2":"value2"}'
+              }
+            }
+          },
+          '---',
+          {
             opcode: 'json_has_key',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'json [json] contains key [key]?',
+            text: '[json] contains key [key]?',
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -39,7 +54,7 @@
           {
             opcode: 'json_has_value',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'array [json] contains [value]?',
+            text: '[json] contains value [value]?',
             arguments: {
               value: {
                 type: Scratch.ArgumentType.STRING,
@@ -51,15 +66,12 @@
               }
             }
           },
+          "---",
           {
-            opcode: 'json_get_all',
+            opcode: 'json_jlength',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'get all [Stype] from [json]',
+            text: 'length of json [json]',
             arguments: {
-              Stype: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'get_all'
-              },
               json: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: '{"key":"value","key2":"value2"}'
@@ -67,21 +79,9 @@
             }
           },
           {
-            opcode: 'json_length',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'length of array [json]',
-            arguments: {
-              json: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: '[1,2,3]'
-              }
-            }
-          },
-          "---",
-          {
             opcode: 'json_get',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'get [item] from [json]',
+            text: 'get [item] in [json]',
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -96,7 +96,7 @@
           {
             opcode: 'json_set',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'set [item] to [value] from [json]',
+            text: 'set [item] to [value] in [json]',
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -115,7 +115,7 @@
           {
             opcode: 'json_delete',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'delete [item] from [json]',
+            text: 'delete [item] in [json]',
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -128,6 +128,17 @@
             }
           },
           "---",
+          {
+            opcode: 'json_length',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'length of array [json]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '[1,2,3]'
+              }
+            }
+          },
           {
             opcode: 'json_array_get',
             blockType: Scratch.BlockType.REPORTER,
@@ -144,36 +155,6 @@
             }
           },
           {
-            opcode: 'json_array_itemH',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'item # of [item] in array [json]',
-            arguments: {
-              item: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'scratch'
-              },
-              json: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: '["scratch","TurboWarp"]'
-              }
-            }
-          },
-          {
-            opcode: 'json_array_concat',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'array concat [json] [json2]',
-            arguments: {
-              json: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: '["a","b"]'
-              },
-              json2: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: '["c","d"]'
-              }
-            }
-          },
-          {
             opcode: 'json_array_push',
             blockType: Scratch.BlockType.REPORTER,
             text: 'add [item] to array [json]',
@@ -185,6 +166,21 @@
               json: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: '["scratch"]'
+              }
+            }
+          },
+          {
+            opcode: 'json_array_itemH',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'item # of [item] in array [json]',
+            arguments: {
+              item: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'scratch'
+              },
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '["scratch","TurboWarp"]'
               }
             }
           },
@@ -244,7 +240,7 @@
           {
             opcode: 'json_array_remove_all',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'delete every [item] from array [json]',
+            text: 'delete all [item] in array [json]',
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -299,6 +295,36 @@
               depth: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 2
+              }
+            }
+          },
+          {
+            opcode: 'json_array_concat',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'array concat [json] [json2]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '["a","b"]'
+              },
+              json2: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '["c","d"]'
+              }
+            }
+          },
+          {
+            opcode: 'json_array_filter',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'filter all [key] in array [json]',
+            arguments: {
+              key: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'id'
+              },
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '[{"id":12},{"id":24}]'
               }
             }
           },
@@ -380,8 +406,8 @@
       if (uniqueLists.length === 0) {
         return [
           {
-            text: '-',
-            value: '-'
+            text: 'select a list',
+            value: 'select a list'
           }
         ];
       }
@@ -432,7 +458,7 @@
 
     json_has_key({ json, key }) {
       try {
-        return key in JSON.parse(json);
+        return this._fixInvalidJSONValues(this.json_valid_return(key)) in JSON.parse(json);
       } catch {
         return false;
       }
@@ -457,36 +483,48 @@
           case 'values':
             return JSON.stringify(Object.keys(json).map(key => json[key]));
           case 'datas':
-            return JSON.stringify(Object.keys(json).map(key => [key,json[key]]));
-          default: return ' ';
+            return JSON.stringify(Object.keys(json).map(key => [key, json[key]]));
+          default: return '';
         }
       } catch {
-        return ' ';
+        return '';
       }
     }
 
     json_get({ item, json }) {
       try {
         json = JSON.parse(json);
-        let result = json[item];
-        if (typeof result == 'object') {
-          return JSON.stringify(result);
-        } else {
-          return result;
+        if (hasOwn(json, item)) {
+          const result = json[item];
+          if (typeof result === 'object') {
+            return JSON.stringify(result);
+          } else {
+            return result;
+          }
         }
       } catch {
-        return ' ';
+        // ignore
       }
+      return '';
+    }
+
+    _fixInvalidJSONValues(value) {
+      // JSON does not support these values, so convert to string.
+      if (Number.isNaN(value)) return 'NaN';
+      if (value === Infinity) return 'Infinity';
+      if (value === -Infinity) return '-Infinity';
+      return value;
     }
 
     json_set({ item, value, json }) {
       try {
         json = JSON.parse(json);
         value = this.json_valid_return(value);
+        value = this._fixInvalidJSONValues(value);
         json[item] = value;
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -496,14 +534,20 @@
         delete json[item];
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
+    }
+
+    json_jlength({ json }) {
+      // same function
+      return this.json_length({ json: json });
     }
 
     json_array_get({ item, json }) {
       // 1...length : array content, -1...-length : reverse array content, 0 : ERROR
       try {
-        if (item == 0) return ' ';
+        item = Scratch.Cast.toNumber(item);
+        if (item == 0) return '';
         if (item > 0) {
           item--;
         }
@@ -520,18 +564,18 @@
           return result;
         }
       } catch {
-        return ' ';
+        return '';
       }
     }
 
     json_array_itemH({ item, json }) {
       try {
         json = JSON.parse(json);
-        item = this.json_valid_return(item);
+        item = this._fixInvalidJSONValues(this.json_valid_return(item));
         let result = JSON.stringify(json.indexOf(item) + 1);
         return result;
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -541,39 +585,39 @@
         json2 = JSON.parse(json2);
         return JSON.stringify(json.concat(json2));
       } catch {
-        return ' ';
+        return '';
       }
     }
 
     json_array_push({ item, json }) {
       try {
         json = JSON.parse(json);
-        item = this.json_valid_return(item);
+        item = this._fixInvalidJSONValues(this.json_valid_return(item));
         json.push(item);
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
     json_array_insert({ item, pos, json }) {
       try {
         json = JSON.parse(json);
-        item = this.json_valid_return(item);
+        item = this._fixInvalidJSONValues(this.json_valid_return(item));
         json.splice(pos - 1, 0, item);
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
     json_array_set({ item, pos, json }) {
       try {
         json = JSON.parse(json);
-        json[pos - 1] = this.json_valid_return(item);
+        json[pos - 1] = this._fixInvalidJSONValues(this.json_valid_return(item));
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -583,14 +627,14 @@
         json.splice(item - 1, 1);
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
     json_array_remove_all({ item, json }) {
       try {
         json = JSON.parse(json);
-        item = this.json_valid_return(item);
+        item = this._fixInvalidJSONValues(this.json_valid_return(item));
         let i = 0;
         while (i < json.length) {
           if (json[i] === item) {
@@ -601,7 +645,7 @@
         }
         return JSON.stringify(json);
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -609,7 +653,7 @@
       try {
         return JSON.stringify(JSON.parse(json).slice(item - 1,item2));
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -617,7 +661,7 @@
       try {
         return JSON.stringify(JSON.parse(json).reverse());
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -625,7 +669,7 @@
       try {
         return JSON.stringify(JSON.parse(json).flat(depth));
       } catch {
-        return ' ';
+        return '';
       }
     }
 
@@ -637,14 +681,28 @@
       try {
         return JSON.parse(json).join(d);
       } catch {
-        return ' ';
+        return '';
+      }
+    }
+
+    json_array_filter({ key, json }) {
+      try {
+        json = JSON.parse(json);
+        return JSON.stringify(json.map(x => {
+          if (hasOwn(x, key)) {
+            return x[key];
+          }
+          return null;
+        }));
+      } catch (e) {
+        return '';
       }
     }
 
     json_vm_getlist({ list }, util) {
       try {
         const listVariable = util.target.lookupVariableById(list);
-        if (listVariable) {
+        if (listVariable && listVariable.type === 'list') {
           return JSON.stringify(listVariable.value);
         }
       } catch (e) {
@@ -655,7 +713,7 @@
     json_vm_setlist({ list, json }, util) {
       try {
         const listVariable = util.target.lookupVariableById(list);
-        if (listVariable) {
+        if (listVariable && listVariable.type === 'list') {
           const array = JSON.parse(json);
           if (Array.isArray(array)) {
             const safeArray = array.map(i => {

@@ -4,7 +4,8 @@
 (function(Scratch) {
   'use strict';
 
-  const DEADZONE = 0.1;
+  const AXIS_DEADZONE = 0.1;
+  const BUTTON_DEADZONE = 0.05;
 
   /**
    * @param {number|'any'} index 1-indexed index
@@ -39,6 +40,23 @@
 
   /**
    * @param {Gamepad} gamepad
+   * @param {number} buttonIndex 1-indexed index
+   * @returns {number} 0 if button does not exist
+   */
+  const getButtonValue = (gamepad, buttonIndex) => {
+    const button = gamepad.buttons[buttonIndex - 1];
+    if (!button) {
+      return 0;
+    }
+    const value = button.value;
+    if (value < BUTTON_DEADZONE) {
+      return 0;
+    }
+    return value;
+  };
+
+  /**
+   * @param {Gamepad} gamepad
    * @param {number} axisIndex 1-indexed index
    * @returns {number} 0 if axis does not exist
    */
@@ -47,7 +65,7 @@
     if (typeof axisValue !== 'number') {
       return 0;
     }
-    if (Math.abs(axisValue) < DEADZONE) {
+    if (Math.abs(axisValue) < AXIS_DEADZONE) {
       return 0;
     }
     return axisValue;
@@ -74,7 +92,24 @@
           {
             opcode: 'buttonDown',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'button [b] of pad [i] pressed?',
+            text: 'button [b] on pad [i] pressed?',
+            arguments: {
+              b: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '1',
+                menu: 'buttonMenu'
+              },
+              i: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '1',
+                menu: 'padMenu'
+              }
+            }
+          },
+          {
+            opcode: 'buttonValue',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'value of button [b] on pad [i]',
             arguments: {
               b: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -374,6 +409,17 @@
         }
       }
       return false;
+    }
+
+    buttonValue ({b, i}) {
+      let greatestButton = 0;
+      for (const gamepad of getGamepads(i)) {
+        const value = getButtonValue(gamepad, b);
+        if (value > greatestButton) {
+          greatestButton = value;
+        }
+      }
+      return greatestButton;
     }
 
     axisValue ({b, i}) {
