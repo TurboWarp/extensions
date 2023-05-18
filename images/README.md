@@ -156,3 +156,6 @@ Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/38
 
 ## LukeManiaStudios/TempVariables.svg
 Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/410
+
+## obviousAlexC/SensingPlus.svg
+Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/pull/379. Font is Deja Vu Sans. Scratch Cat is a trademark of the Scratch Foundation.
