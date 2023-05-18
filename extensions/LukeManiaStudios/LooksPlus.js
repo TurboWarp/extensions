@@ -377,7 +377,7 @@
     }
 
     costumeWidthHeight(args, util) {
-      const costumeIndex = util.target.getCostumeIndexByName(args.INPUTB);
+      const costumeIndex = this.getCostumeInput(args.INPUTB, util.target);
       const costume = util.target.sprite.costumes[costumeIndex];
       if (!costume) {
         return 0;
@@ -419,7 +419,7 @@
     }
 
     replaceSVGcontent(args, util) {
-      const costumeIndex = util.target.getCostumeIndexByName(args.INPUTA);
+      const costumeIndex = this.getCostumeInput(args.INPUTA, util.target);
       const costume = util.target.sprite.costumes[costumeIndex];
       if (costume) {
         Scratch.vm.runtime.renderer.updateSVGSkin(costume.skinId, Scratch.Cast.toString(args.INPUTB));
@@ -428,7 +428,7 @@
     }
 
     restoreSVGcontent(args, util) {
-      const costumeIndex = util.target.getCostumeIndexByName(args.COSTUME);
+      const costumeIndex = this.getCostumeInput(args.COSTUME, util.target);
       const costume = util.target.sprite.costumes[costumeIndex];
       if (costume) {
         const dataURI = costume.asset.encodeDataURI();
@@ -451,6 +451,24 @@
       } else {
         return this.uriToPNG(args.INPUTA);
       }
+    }
+
+    getCostumeInput(costume, target) {
+      if (typeof costume === 'number') {
+        costume = Math.round(costume - 1);
+        if (costume === Infinity || costume === -Infinity || !costume) {
+          costume = 0;
+        }
+        costume = this.wrapClamp(costume, 0, target.sprite.costumes.length - 1);
+        return costume;
+      } else {
+        return target.getCostumeIndexByName(Scratch.Cast.toString(costume));
+      }
+    }
+
+    wrapClamp(n, min, max) {
+      const range = (max - min) + 1;
+      return n - (Math.floor((n - min) / range) * range);
     }
 
     uriToSVG(content) {
