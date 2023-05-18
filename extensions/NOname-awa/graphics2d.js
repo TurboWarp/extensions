@@ -285,12 +285,12 @@
       return 0;
     }
     graph(args) {
-    try {
-      let points = JSON.parse(args.graph);
-    }
-    catch (error) {
-      return 0;
-    }
+      try {
+        let points = JSON.parse(args.graph);
+      }
+      catch (error) {
+        return 0;
+      }
       let points = JSON.parse (args.graph);
       let n = points.length;
       if (args.CS == 's'){
