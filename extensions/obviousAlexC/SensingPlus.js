@@ -515,6 +515,19 @@
             disableMonitor: true
           },
           {
+            opcode: "setClipBoard",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Set clipboard to [TEXT]",
+            blockIconURI: clipboardIco,
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: ""
+              }
+            }
+          },
+          "---",
+          {
             opcode: "getDeviceSpeed",
             blockIconURI: deviceVelIco,
             blockType: Scratch.BlockType.REPORTER,
@@ -683,6 +696,12 @@
         return navigator.clipboard.readText();
       }
       return '';
+    }
+
+    async setClipBoard({ TEXT }) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(Scratch.Cast.toString(TEXT));
+      }
     }
 
     getFingersTouching() {
