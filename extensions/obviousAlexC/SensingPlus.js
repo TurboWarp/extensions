@@ -1,6 +1,8 @@
 (function (Scratch) {
   "use strict";
 
+  /* globals Accelerometer, Gyro */
+
   const SpeechRecognition =
     typeof webkitSpeechRecognition !== "undefined"
       ? window.webkitSpeechRecognition
