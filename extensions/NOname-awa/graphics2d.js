@@ -285,13 +285,15 @@
       return 0;
     }
     graph(args) {
+      let points;
       try {
-        let points = JSON.parse(args.graph);
-      }
-      catch (error) {
+        points = JSON.parse(args.graph);
+      } catch (error) {
         return 0;
       }
-      let points = JSON.parse (args.graph);
+      if (!Array.isArray(points)) {
+        return 0;
+      }
       let n = points.length;
       if (args.CS == 's'){
         let area = 0;
