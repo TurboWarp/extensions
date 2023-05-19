@@ -65,12 +65,6 @@ class DictionaryExtension {
            DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
           }
         },
-        {
-          opcode: 'dict_primitive_null',
-          blockType: Scratch.BlockType.REPORTER,
-          text: 'null',
-          disableMonitor: true
-        },
 
         '---',
 
@@ -146,7 +140,8 @@ class DictionaryExtension {
   dict_get({ KEY, DICT }) {
     if (!dictionaries.get(DICT)) return "null";
     let dict = dictionaries.get(DICT);
-    return dict.get(KEY) ? dict.get(KEY) : null;
+    return dict.get(KEY) ? dict.get(KEY) :
+              dict.get(KEY) === null ? "null" : "undefined";
   }
 
   dict_property_defined({ KEY, DICT }) {
@@ -187,10 +182,6 @@ class DictionaryExtension {
       dictionaries.get(DICT).delete(KEY);
     }
   }
-
-  dict_primitive_null() {
- return null;
-}
 }
 
 Scratch.extensions.register(new DictionaryExtension());
