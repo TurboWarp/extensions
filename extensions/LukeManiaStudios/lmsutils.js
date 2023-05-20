@@ -742,6 +742,7 @@
             opcode: 'goToLink',
             blockType: Scratch.BlockType.COMMAND,
             text: 'open link [INPUT] in new tab',
+            hideFromPalette: true,
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -753,6 +754,7 @@
             opcode: 'redirectToLink',
             blockType: Scratch.BlockType.COMMAND,
             text: 'redirect to link [INPUT]',
+            hideFromPalette: true,
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -767,6 +769,7 @@
             opcode: 'setClipboard',
             blockType: Scratch.BlockType.COMMAND,
             text: 'set [STRING] to clipboard',
+            hideFromPalette: true,
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -777,7 +780,8 @@
           {
             opcode: 'readClipboard',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'clipboard'
+            text: 'clipboard',
+            hideFromPalette: true
           },
 
           '---',
