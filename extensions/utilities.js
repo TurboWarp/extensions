@@ -302,7 +302,11 @@
     }
 
     clamp({INPUT, MIN, MAX}) {
-      return Math.min(Math.max(INPUT, MIN), MAX);
+      if (MIN > MAX) {
+        return Math.min(Math.max(INPUT, MAX), MIN);
+      } else {
+        return Math.min(Math.max(INPUT, MIN), MAX);
+      }
     }
 
     currentMillisecond() {
