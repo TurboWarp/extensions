@@ -111,9 +111,13 @@
   };
 
   class TextCostumeSkin extends Skin {
-    constructor (id) {
+    constructor (id, drawable) {
       // @ts-expect-error - constructors not typed yet
       super(id, renderer);
+
+      /** @type {RenderWebGL.Drawable} */
+      this.drawable = drawable;
+      this._previousDrawableScale = 1;
 
       this.canvas = document.createElement('canvas');
       this.canvas.width = 0;
@@ -125,8 +129,6 @@
       this.textWidth = DEFAULT_WIDTH;
       this.fontFamily = DEFAULT_FONT;
       this.baseFontSize = DEFAULT_FONT_SIZE;
-      this.lineHeight = this.baseFontSize * 8 / 7;
-      this.verticalPadding = this.baseFontSize * 0.25;
       this.align = DEFAULT_ALIGN;
 
       /** @type {Array<{text: string; width: number;}>} */
@@ -135,7 +137,12 @@
       this._size = [0, 0];
       /** @type {[number, number]} */
       this._rotationCenter = [0, 0];
-      this.calculatedFontSize = this.baseFontSize;
+
+      // Updated in _updateFontDimensions
+      this.calculatedFontSize = 0;
+      this.lineHeight = 0;
+      this.verticalPadding = 0;
+      this.wrapWidth = 0;
 
       this._textDirty = false;
       this._textureDirty = false;
@@ -175,23 +182,39 @@
     }
 
     // Part of Skin API
-    get volatile () {
-      return this.isRainbow || this.isZooming;
-    }
-
-    // Part of Skin API
     useNearest () {
       return false;
     }
 
-    _calculateFontSize () {
+    // Part of Skin API
+    get volatile () {
+      return this.isRainbow || this.isZooming || this._getDrawableScale() !== this._previousDrawableScale
+    }
+
+    _needsReflow () {
+      return (
+        this._textDirty ||
+        this.isZooming ||
+        this._getDrawableScale() !== this._previousDrawableScale
+      );
+    }
+
+    _getDrawableScale () {
+      return Math.max(this.drawable.scale[0], this.drawable.scale[1]) / 100;
+    }
+
+    _updateFontDimensions () {
+      this.calculatedFontSize = this.baseFontSize;
       if (this.isZooming) {
         // TODO: it looks like Scratch's animation always starts at least a little visible
         const time = Date.now() - this.zoomStartTime;
         const progress = Math.max(0, Math.min(1, time / ZOOM_DURATION));
-        return this.baseFontSize * progress;
+        this.calculatedFontSize *= progress;
       }
-      return this.baseFontSize;
+      this.lineHeight = this.baseFontSize * 8 / 7;
+      // Always use the base size for padding. This makes the zoom animation look better.
+      this.verticalPadding = this.baseFontSize / 7;
+      this.wrapWidth = this.textWidth / this._getDrawableScale();
     }
 
     _getFontStyle () {
@@ -201,10 +224,11 @@
     _reflowText () {
       console.log('Reflowing!');
 
+      this._previousDrawableScale = this._getDrawableScale();
       this._textDirty = false;
       this._textureDirty = true;
 
-      this.calculatedFontSize = this._calculateFontSize();
+      this._updateFontDimensions();
       this.ctx.font = this._getFontStyle();
 
       // need to make new ones each time to avoid caching incorrectly across fonts
@@ -214,7 +238,7 @@
       // @ts-expect-error - createTextWrapper not typed yet
       const textWrapper = renderer.createTextWrapper(measurementProvider);
 
-      const lines = textWrapper.wrapText(this.textWidth, this.text);
+      const lines = textWrapper.wrapText(this.wrapWidth, this.text);
       this.lines = lines.map(line => {
         const trimmed = line.trimEnd();
         return {
@@ -223,8 +247,8 @@
         };
       });
 
-      this._size[0] = Math.ceil(this.textWidth);
-      this._size[1] = Math.ceil(this.lines.length * this.lineHeight + 2 * this.verticalPadding);
+      this._size[0] = this.wrapWidth;
+      this._size[1] = this.lines.length * this.lineHeight + 2 * this.verticalPadding;
 
       // Centered horizontally
       this._rotationCenter[0] = this._size[0] / 2;
@@ -232,30 +256,19 @@
       this._rotationCenter[1] = this.calculatedFontSize * 0.9 + this.verticalPadding;
     }
 
-    _invalidateTexture () {
-      this._textureDirty = true;
-      this.emitWasAltered();
-    }
-
-    _invalidateText () {
-      this._textDirty = true;
-      this._textureDirty = true;
-      this.emitWasAltered();
-    }
-
     _renderAtScale (requestedScale) {
       console.log('Rerendering!', requestedScale);
 
+      this._renderedAtScale = requestedScale;
       this._textureDirty = false;
 
-      const canvasWidth = this._size[0];
-      const canvasHeight = this._size[1];
+      const scratchWidth = this._size[0];
+      const scratchHeight = this._size[1];
 
       // Renderer's requested scale is accounted for at this point. Do not touch `requestedScale`
       // ever after this point.
-      this.canvas.width = Math.ceil(canvasWidth * requestedScale);
-      this.canvas.height = Math.ceil(canvasHeight * requestedScale);
-      this._renderedAtScale = requestedScale;
+      this.canvas.width = Math.ceil(scratchWidth * requestedScale);
+      this.canvas.height = Math.ceil(scratchHeight * requestedScale);
       this.ctx.scale(requestedScale, requestedScale);
 
       const rainbowOffset = this.isRainbow ? (Date.now() - this.rainbowStartTime) / RAINBOW_TIME_PER : 0;
@@ -270,9 +283,9 @@
         if (this.align === ALIGN_LEFT) {
           // already correct
         } else if (this.align === ALIGN_CENTER) {
-          xOffset = Math.round((this.textWidth - lineWidth) / 2);
+          xOffset = (this.wrapWidth - lineWidth) / 2;
         } else {
-          xOffset = this.textWidth - lineWidth;
+          xOffset = this.wrapWidth - lineWidth;
         }
 
         if (this.isRainbow) {
@@ -285,7 +298,7 @@
         this.ctx.fillText(
           text,
           xOffset,
-          Math.round(this.verticalPadding + i * this.lineHeight + this.baseFontSize)
+          this.verticalPadding + i * this.lineHeight + this.baseFontSize
         );
       }
 
@@ -296,6 +309,20 @@
         });
       }
       this._setTexture(this.canvas);
+
+      // TODO: we should not need to do this ...
+      this._silhouette.unlazy();
+    }
+
+    _invalidateTexture () {
+      this._textureDirty = true;
+      this.emitWasAltered();
+    }
+
+    _invalidateText () {
+      this._textDirty = true;
+      this._textureDirty = true;
+      this.emitWasAltered();
     }
 
     setText (text) {
@@ -414,13 +441,13 @@
     // Part of Skin API
     getTexture (scale) {
       const MAX_SCALE = 10;
-      const scaleMax = scale ? Math.max(Math.abs(scale[0]), Math.abs(scale[1])) : 100;
-      const calculatedScale = Math.min(MAX_SCALE, scaleMax / 100);
+      const upperScale = scale ? Math.max(Math.abs(scale[0]), Math.abs(scale[1])) : 100;
+      const calculatedScale = Math.min(MAX_SCALE, upperScale / 100);
 
-      if (this._textDirty || this.isZooming || calculatedScale !== this._renderedAtScale) {
+      if (this._needsReflow()) {
         this._reflowText();
       }
-      if (this._textureDirty || this.isRainbow) {
+      if (this._textureDirty || this.isRainbow || calculatedScale !== this._renderedAtScale) {
         this._renderAtScale(calculatedScale);
       }
 
@@ -428,10 +455,16 @@
     }
   }
 
-  const createTextCostumeSkin = () => {
-    const renderer = Scratch.vm.renderer;
+  /**
+   * Note that the returned skin is only usable by the given target. Things will break if another
+   * target tries to use it.
+   * @param {VM.Target} target
+   * @returns {TextCostumeSkin}
+   */
+  const createTextCostumeSkin = (target) => {
+    const drawable = renderer._allDrawables[target.drawableID];
     const id = renderer._nextDrawableId++;
-    const skin = new TextCostumeSkin(id);
+    const skin = new TextCostumeSkin(id, drawable);
     renderer._allSkins[id] = skin;
     return skin;
   };
@@ -583,7 +616,7 @@
       if (!state) {
         /** @type {TextState} */
         const newState = {
-          skin: createTextCostumeSkin()
+          skin: createTextCostumeSkin(target)
         };
         target[CUSTOM_STATE_KEY] = newState;
         return newState;
