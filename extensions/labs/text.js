@@ -280,8 +280,8 @@
       this.emitWasAltered();
     }
 
-    setMaxWidth (maxWidth) {
-      this.textWidth = maxWidth;
+    setWidth (width) {
+      this.textWidth = width;
       this.emitWasAltered();
     }
 
@@ -392,7 +392,7 @@
           newSkin.setAlign(originalSkin.align);
           newSkin.setColor(originalSkin.color);
           newSkin.setFontFamily(originalSkin.fontFamily);
-          newSkin.setMaxWidth(originalSkin.textWidth);
+          newSkin.setWidth(originalSkin.textWidth);
           newSkin.setText(originalSkin.text);
           if (renderer._allDrawables[originalTarget.drawableID].skin instanceof TextCostumeSkin) {
             renderer.updateDrawableSkinId(newTarget.drawableID, newSkin.id);
@@ -621,7 +621,7 @@
         // TODO: test what scratch does here
       }
 
-      state.skin.setMaxWidth(Scratch.Cast.toNumber(WIDTH));
+      state.skin.setWidth(Scratch.Cast.toNumber(WIDTH));
     }
   }
 
