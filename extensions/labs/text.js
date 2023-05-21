@@ -62,6 +62,9 @@
       /** @type {Array<{text: string; width: number;}>} */
       this.lines = [];
       this.longestLineWidth = 0;
+
+      this.maxDisplayableCharacters = Infinity;
+      this.typeAnimationInterval = null;
     }
 
     // Part of Skin API
@@ -117,11 +120,17 @@
 
       this.ctx.fillStyle = this.color;
       this.ctx.font = this._getFontStyle();
+      this.ctx.textBaseline = 'bottom';
+
+      let displayedCharacters = 0;
 
       for (let i = 0; i < this.lines.length; i++) {
         const line = this.lines[i];
         const text = line.text;
         const lineWidth = line.width;
+
+        const displayedText = text.substring(0, this.maxDisplayableCharacters - displayedCharacters);
+        displayedCharacters += text.length;
 
         let xOffset = 0;
         if (this.align === ALIGN_LEFT) {
@@ -132,8 +141,9 @@
           xOffset = this.longestLineWidth - lineWidth;
         }
 
+        // TODO: something here is wrong
         this.ctx.fillText(
-          text,
+          displayedText,
           xOffset,
           i * (this.fontSize + this.lineSpacing) + this.fontSize * 0.9
         );
@@ -169,6 +179,26 @@
 
     setFontFamily (font) {
       this.fontFamily = font;
+      this.emitWasAltered();
+    }
+
+    startTypeAnimation () {
+      this.maxDisplayableCharacters = 0;
+      this.typeAnimationInterval = setInterval(() => {
+        if (this.maxDisplayableCharacters >= this.text.length) {
+          this.maxDisplayableCharacters = Infinity;
+          clearInterval(this.typeAnimationInterval);
+        } else {
+          this.maxDisplayableCharacters++;
+        }
+        this.emitWasAltered();
+      }, 75);
+    }
+
+    cancelAnimation () {
+      this.maxDisplayableCharacters = Infinity;
+      clearInterval(this.typeAnimationInterval);
+
       this.emitWasAltered();
     }
 
@@ -319,6 +349,7 @@
      * @param {TextState} state 
      */
     _renderText (target, state) {
+      state.skin.cancelAnimation();
       renderer.updateDrawableSkinId(target.drawableID, state.skin.id);
     }
 
@@ -330,13 +361,24 @@
     }
 
     animateText ({ ANIMATE, TEXT }, util) {
-      // TODO
+      const state = this._getState(util.target);
+      this._renderText(util.target, state);
+
+      state.skin.setText(Scratch.Cast.toString(TEXT));
+      state.skin.cancelAnimation();
+
+      if (ANIMATE === 'type') {
+        state.skin.startTypeAnimation();
+      }
+
+      // TODO: this needs to return a promise
     }
 
     clearText (args, util) {
-      /** @type {VM.Target} */
-      const target = util.target;
-      target.setCostume(target.currentCostume);
+      // TODO: this will create state when it doesn't need to!
+      const state = this._getState(util.target);
+      state.skin.cancelAnimation();
+      util.target.setCostume(util.target.currentCostume);
     }
 
     setFont ({ FONT }, util) {
