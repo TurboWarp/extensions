@@ -2,11 +2,13 @@
   'use strict';
 
   // This extension was created by making projects with https://lab.scratch.mit.edu/text/
-  // then extracting project.json, and implementing the blocks according to the JSON.
-  // This is not, in any way, based on the source code of the website as it is
-  // not open source at this time.
+  // To determine block and argument IDs, we extracted project.json and examined the result.
+  // To determine block behaviors we simply experiment with Scratch Labs and made sure our
+  // blocks do the same things.
+  // This is extension's code is not based on the source code of Scratch Labs. It is
+  // completely independent and open source.
 
-  const CUSTOM_STATE_KEY = 'tw/labs/text';
+  const CUSTOM_STATE_KEY = Symbol();
 
   const ALIGN_LEFT = 0;
   const ALIGN_RIGHT = 1;
@@ -30,23 +32,14 @@
   const DEFAULT_WIDTH = vm.runtime.stageWidth;
   const DEFAULT_ALIGN = ALIGN_CENTER;
   const DEFAULT_FONT_SIZE = 24;
-  const DEFAULT_SPACE_BETWEEN_LINES = 2;
+  const DEFAULT_SPACE_BETWEEN_LINES = 3;
 
-  const TYPE_DELAY = 75; // TODO: wrong
+  const TYPE_DELAY = 1000 / 30;
 
-  const RAINBOW_TIME_PER = 1000; // TODO: wrong
-  const RAINBOW_DURATION = 5000; // TODO: wrong
-  const RAINBOW_COLORS = [
-    // TODO: need to lerp this better
-    '#ff0000',
-    '#ffff00',
-    '#00ff00',
-    '#00ffff',
-    '#0000ff',
-    '#ff00ff'
-  ];
+  const RAINBOW_TIME_PER = 1000;
+  const RAINBOW_DURATION = 2000;
 
-  const ZOOM_DURATION = 500; // TODO: wrong
+  const ZOOM_DURATION = 500;
 
   /**
    * @typedef TextState
@@ -62,8 +55,61 @@
   // @ts-expect-error - exports not typed yet
   const twgl = renderer.exports.twgl;
 
-  // TODO:
-  // clones, green flag, stop sign
+  /**
+   * @param {number} c
+   * @returns {string}
+   */
+  const formatComponent = (c) => Math.round(c).toString(16).padStart(2, '0');
+
+  /**
+   * @param {[number, number, number]} color
+   * @returns {string}
+   */
+  const formatColor = (color) => `#${formatComponent(color[0])}${formatComponent(color[1])}${formatComponent(color[2])}`;
+
+  /**
+   * @param {number} h hue from 0-1. must be positive
+   * @param {number} s saturation from 0-1
+   * @param {number} v value from 0-1
+   * @returns {[number, number, number]} RGB channels from 0-255
+   */
+  const hsvToRGB = (h, s, v) => {
+    // https://en.wikipedia.org/wiki/HSL_and_HSV
+    var r, g, b;
+    var i = Math.floor(h * 6);
+    var f = h * 6 - i;
+    var p = v * (1 - s);
+    var q = v * (1 - f * s);
+    var t = v * (1 - (1 - f) * s);
+    switch (i % 6) {
+      case 0: r = v, g = t, b = p; break;
+      case 1: r = q, g = v, b = p; break;
+      case 2: r = p, g = v, b = t; break;
+      case 3: r = p, g = q, b = v; break;
+      case 4: r = t, g = p, b = v; break;
+      case 5: r = v, g = p, b = q; break;
+    }
+    return [r * 255 | 0, g * 255 | 0, b * 255 | 0];
+  };
+
+  /**
+   * @param {CanvasGradient} gradient
+   * @param {number} offset number of cycles to offset by
+   */
+  const addRainbowStops = (gradient, offset) => {
+    // Scratch's gradient still looks better for some reason.
+    const NUMBER_STOPS = 20;
+    for (let i = 0; i < NUMBER_STOPS; i++) {
+      const exactPosition = i / NUMBER_STOPS;
+      let offsetPosition = (exactPosition - offset) % 1;
+      if (offsetPosition < 0) {
+        offsetPosition += 1;
+      }
+      const rgb = hsvToRGB(offsetPosition, 1, 1);
+      gradient.addColorStop(exactPosition, formatColor(rgb));
+      gradient.addColorStop(exactPosition, formatColor(rgb));
+    }
+  };
 
   class TextCostumeSkin extends Skin {
     constructor (id) {
@@ -94,9 +140,14 @@
 
       this.isRainbow = false;
       this.rainbowStartTime = 0;
+      this.rainbowTimeout = null;
 
       this.isZooming = false;
       this.zoomStartTime = 0;
+      this.zoomTimeout = null;
+
+      /** @type {(() => void)|null} */
+      this.resolveOngoingAnimation = null;
     }
 
     // Part of Skin API
@@ -107,6 +158,11 @@
     // Part of Skin API
     get volatile () {
       return this.isRainbow || this.isZooming;
+    }
+
+    // Part of Skin API
+    dispose () {
+      // TODO
     }
 
     _calculateDimensions () {
@@ -132,7 +188,7 @@
 
       // TODO: this is wrong. rotation center should actually be horizontally centered at the bottom of the first line?
       this._rotationCenter[0] = this._size[0] / 2;
-      this._rotationCenter[1] = this._size[1] / 2;
+      this._rotationCenter[1] = this.calculatedFontSize;
     }
 
     _getFontStyle () {
@@ -141,7 +197,7 @@
 
     _calculateFontSize () {
       if (this.isZooming) {
-        // TODO: it looks like Scratch might be always making sure part of the text is visible?
+        // TODO: it looks like Scratch's animation always starts at least a little visible
         const time = Date.now() - this.zoomStartTime;
         const progress = Math.max(0, Math.min(1, time / ZOOM_DURATION));
         return this.baseFontSize * progress;
@@ -192,13 +248,10 @@
       if (this.isRainbow) {
         // TODO: it looks like scratch does a separate rainbow per line of text. that's a bit silly if you ask me.
         this.ctx.globalCompositeOperation = 'source-in';
-        const gradient = this.ctx.createLinearGradient(0, 0, canvasWidth, 0);
 
-        const timeOffset = (Date.now() - this.rainbowStartTime) / RAINBOW_TIME_PER;
-        for (let i = 0; i < RAINBOW_COLORS.length; i++) {
-          const offset = ((i / RAINBOW_COLORS.length) + timeOffset) % 1;
-          gradient.addColorStop(offset, RAINBOW_COLORS[i]);
-        }
+        const gradient = this.ctx.createLinearGradient(0, 0, canvasWidth, 0);
+        const offsetIntervals = (Date.now() - this.rainbowStartTime) / RAINBOW_TIME_PER;
+        addRainbowStops(gradient, offsetIntervals);
 
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -237,44 +290,68 @@
       this.emitWasAltered();
     }
 
+    _oneAnimationAtATime (newCallback) {
+      this.cancelAnimation();
+      return new Promise(resolve => {
+        // @ts-expect-error - signature of function does not really matter here.
+        this.resolveOngoingAnimation = resolve;
+        newCallback(resolve);
+      });
+    }
+
     startTypeAnimation () {
-      this.maxDisplayableCharacters = 0;
-      this.typeAnimationInterval = setInterval(() => {
-        if (this.maxDisplayableCharacters >= this.text.length) {
-          this.maxDisplayableCharacters = Infinity;
-          clearInterval(this.typeAnimationInterval);
-        } else {
+      return this._oneAnimationAtATime(resolve => {
+        this.maxDisplayableCharacters = 0;
+
+        this.typeAnimationInterval = setInterval(() => {
           this.maxDisplayableCharacters++;
-        }
-        this.emitWasAltered();
-      }, TYPE_DELAY);
+          if (this.maxDisplayableCharacters >= this.text.length) {
+            this.maxDisplayableCharacters = Infinity;
+            clearInterval(this.typeAnimationInterval);
+            resolve();
+          }
+          this.emitWasAltered();
+        }, TYPE_DELAY);
+      });
     }
 
     startRainbowAnimation () {
-      this.isRainbow = true;
-      this.rainbowStartTime = Date.now();
-      setTimeout(() => {
-        this.isRainbow = false;
-        this.emitWasAltered();
-      }, RAINBOW_DURATION);
+      return this._oneAnimationAtATime(resolve => {
+        this.isRainbow = true;
+        this.rainbowStartTime = Date.now();
+        this.rainbowTimeout = setTimeout(() => {
+          this.isRainbow = false;
+          resolve();
+          this.emitWasAltered();
+        }, RAINBOW_DURATION);
+      });
     }
 
     startZoomAnimation () {
-      this.isZooming = true;
-      this.zoomStartTime = Date.now();
-      setTimeout(() => {
-        this.isZooming = false;
-        this.emitWasAltered();
-      }, ZOOM_DURATION);
+      return this._oneAnimationAtATime(resolve => {
+        this.isZooming = true;
+        this.zoomStartTime = Date.now();
+        this.zoomTimeout = setTimeout(() => {
+          this.isZooming = false;
+          resolve();
+          this.emitWasAltered();
+        }, ZOOM_DURATION);
+      });
     }
 
     cancelAnimation () {
+      if (this.resolveOngoingAnimation) {
+        this.resolveOngoingAnimation();
+      }
+
       this.maxDisplayableCharacters = Infinity;
       clearInterval(this.typeAnimationInterval);
 
       this.isRainbow = false;
+      clearTimeout(this.rainbowTimeout);
 
       this.isZooming = false;
+      clearTimeout(this.zoomTimeout);
 
       this.emitWasAltered();
     }
@@ -298,6 +375,39 @@
   };
 
   class AnimatedText {
+    constructor () {
+      vm.runtime.on('PROJECT_START', () => {
+        this._hideAllText();
+      });
+
+      vm.runtime.on('PROJECT_STOP_ALL', () => {
+        this._hideAllText();
+      });
+
+      vm.runtime.on('targetWasCreated', (newTarget, originalTarget) => {
+        if (originalTarget && this._hasState(originalTarget)) {
+          // TODO: creates much unneeded state
+          const originalSkin = this._getState(originalTarget).skin;
+          const newSkin = this._getState(newTarget).skin;
+          newSkin.setAlign(originalSkin.align);
+          newSkin.setColor(originalSkin.color);
+          newSkin.setFontFamily(originalSkin.fontFamily);
+          newSkin.setMaxWidth(originalSkin.textWidth);
+          newSkin.setText(originalSkin.text);
+          if (renderer._allDrawables[originalTarget.drawableID].skin instanceof TextCostumeSkin) {
+            renderer.updateDrawableSkinId(newTarget.drawableID, newSkin.id);
+          }
+        }
+      });
+
+      vm.runtime.on('targetWasRemoved', (target) => {
+        if (this._hasState(target)) {
+          const state = this._getState(target);
+          renderer.destroySkin(state.skin.id);
+        }
+      });
+    }
+
     getInfo() {
       return {
         id: 'text',
@@ -406,28 +516,50 @@
      * @returns {TextState}
      */
     _getState (target) {
-      // @ts-expect-error
-      const state = target.getCustomState(CUSTOM_STATE_KEY);
+      const state = target[CUSTOM_STATE_KEY];
       if (!state) {
         /** @type {TextState} */
         const newState = {
           skin: createTextCostumeSkin()
         };
-        // @ts-expect-error
-        target.setCustomState(CUSTOM_STATE_KEY, newState);
+        target[CUSTOM_STATE_KEY] = newState;
         return newState;
       }
-      // @ts-expect-error
       return state;
     }
 
     /**
-     * @param {VM.Target} target 
-     * @param {TextState} state 
+     * @param {VM.Target} target
+     * @returns {boolean}
+     */
+    _hasState (target) {
+      return !!target[CUSTOM_STATE_KEY];
+    }
+
+    _hideAllText () {
+      for (const target of vm.runtime.targets) {
+        if (this._hasState(target)) {
+          this._hideText(target, this._getState(target));
+        }
+      }
+    }
+
+    /**
+     * @param {VM.Target} target
+     * @param {TextState} state
      */
     _renderText (target, state) {
       state.skin.cancelAnimation();
       renderer.updateDrawableSkinId(target.drawableID, state.skin.id);
+    }
+
+    /**
+     * @param {VM.Target} target
+     * @param {TextState} state
+     */
+    _hideText (target, state) {
+      state.skin.cancelAnimation();
+      target.setCostume(target.currentCostume);
     }
 
     setText ({ TEXT }, util) {
@@ -444,21 +576,22 @@
       state.skin.setText(Scratch.Cast.toString(TEXT));
       state.skin.cancelAnimation();
 
-      // TODO: this needs to actually return a promise
       if (ANIMATE === 'type') {
         return state.skin.startTypeAnimation();
       } else if (ANIMATE === 'rainbow') {
         return state.skin.startRainbowAnimation();
       } else if (ANIMATE === 'zoom') {
         return state.skin.startZoomAnimation();
+      } else {
+        // TODO: test what Scratch does here
       }
     }
 
     clearText (args, util) {
-      // TODO: this will create state when it doesn't need to!
-      const state = this._getState(util.target);
-      state.skin.cancelAnimation();
-      util.target.setCostume(util.target.currentCostume);
+      if (this._hasState(util.target)) {
+        const state = this._getState(util.target);
+        this._hideText(util.target, state);
+      }
     }
 
     setFont ({ FONT }, util) {
