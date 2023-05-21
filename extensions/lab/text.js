@@ -195,7 +195,7 @@
     }
 
     _getFontStyle () {
-      return `${this.calculatedFontSize}px "${this.fontFamily}"`;
+      return `${this.calculatedFontSize}px "${this.fontFamily}", sans-serif`;
     }
 
     _reflowText () {
@@ -663,7 +663,9 @@
     setFont ({ FONT }, util) {
       const state = this._getState(util.target);
       if (FONT === 'Random') {
-        state.skin.setFontFamily(NATIVE_FONTS[Math.floor(Math.random() * NATIVE_FONTS.length)]);
+        // Random font always switches to a new font, never the same one
+        const possibleFonts = NATIVE_FONTS.filter(i => i !== state.skin.fontFamily);
+        state.skin.setFontFamily(possibleFonts[Math.floor(Math.random() * possibleFonts.length)]);
       } else {
         state.skin.setFontFamily(Scratch.Cast.toString(FONT));
       }
