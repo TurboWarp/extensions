@@ -25,7 +25,9 @@
     initializedSpeechRecognition = true;
 
     if (!SpeechRecognition) {
-      console.warn('Speech recognotion blocks are not supported in this browser');
+      console.warn(
+        "Speech recognotion blocks are not supported in this browser"
+      );
       return;
     }
 
@@ -37,11 +39,11 @@
         .join("");
     });
     speechRecognition.addEventListener("error", (event) => {
-      if (event.error === 'no-speech') {
+      if (event.error === "no-speech") {
         // this is fine, just ignore it
         // it will be restarted in the end handler
       } else {
-        console.error('Speech recognition error', event.error);
+        console.error("Speech recognition error", event.error);
         recording = false;
         speechRecognition.stop();
       }
@@ -69,10 +71,10 @@
     }
     initializedSensors = true;
 
-    if (typeof Accelerometer !== 'function') {
+    if (typeof Accelerometer !== "function") {
       try {
         const accelerometer = new Accelerometer({
-          referenceFrame: "device"
+          referenceFrame: "device",
         });
         accelerometer.addEventListener("error", (e) => {
           console.error("accelerometer error", e.error);
@@ -84,16 +86,16 @@
         });
         accelerometer.start();
       } catch (e) {
-        console.error('error setting up accelerometer', e);
+        console.error("error setting up accelerometer", e);
       }
     } else {
-      console.warn('accelerometer API is not supported in this browser');
+      console.warn("accelerometer API is not supported in this browser");
     }
 
-    if (typeof Gyro !== 'undefined') {
+    if (typeof Gyro !== "undefined") {
       try {
         const gyro = new Gyro({
-          frequency: 30
+          frequency: 30,
         });
         gyro.addEventListener("error", (e) => {
           console.error("gyro error", e.error);
@@ -104,10 +106,10 @@
           deviceVelocity.rotationZ = gyro.z;
         });
       } catch (e) {
-        console.error('error setting up gyro', e);
+        console.error("error setting up gyro", e);
       }
     } else {
-      console.warn('gyro API is not supported in this browser');
+      console.warn("gyro API is not supported in this browser");
     }
   };
 
@@ -176,7 +178,7 @@
   /** @param {TouchEvent} event */
   function handleTouchStart(event) {
     if (hackyTouchFix) {
-      event.stopPropagation(); 
+      event.stopPropagation();
     }
     event.preventDefault();
     const changedTouches = event.changedTouches;
@@ -199,7 +201,7 @@
   /** @param {TouchEvent} event */
   function handleTouchMove(event) {
     if (hackyTouchFix) {
-      event.stopPropagation(); 
+      event.stopPropagation();
     }
     event.preventDefault();
     const changedTouches = event.changedTouches;
@@ -221,7 +223,7 @@
   /** @param {TouchEvent} event */
   function handleTouchEnd(event) {
     if (hackyTouchFix) {
-      event.stopPropagation(); 
+      event.stopPropagation();
     }
     event.preventDefault();
     const changedTouches = event.changedTouches;
@@ -246,9 +248,11 @@
     try {
       const parsed = JSON.parse(listData);
       if (parsed && parsed.variableId && parsed.targetName) {
-        const target = Scratch.vm.runtime.getSpriteTargetByName(parsed.targetName);
+        const target = Scratch.vm.runtime.getSpriteTargetByName(
+          parsed.targetName
+        );
         const variable = target.variables[parsed.variableId];
-        if (variable && variable.type === 'list') {
+        if (variable && variable.type === "list") {
           return variable;
         }
       }
@@ -282,32 +286,42 @@
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI0NS45NzY4OCIgaGVpZ2h0PSI0Ni40NzQ2NiIgdmlld0JveD0iMCwwLDQ1Ljk3Njg4LDQ2LjQ3NDY2Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjE1LjAzOTI5LC0xNTguOTgzODMpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxnIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggZD0iTTIzOS4xODkyOSwxNjUuNDc3MjNjMC4xNSwtMC4xIDAuNCwtMC4wNSAwLjQ1LDAuMTVsMS4zLDUuMzVjMCwwIDMuMiwyLjM1IDQuMTUsNGMxLjYsMi43NSAxLjY1LDUgMS42NSw1YzAsMCAzLjU1LDEuMDUgNC4xNSwzLjljMC42LDIuODUgLTEuNiw4LjI1IC0xMSwxMC4xYy05LjQsMS44NSAtMTYuOTUsLTAuNyAtMjAuNSwtNi40Yy0zLjU1LC01LjcgMi4wNSwtMTIuNSAxLjc1LC0xMi4xbC0xLjA1LC04Ljk1Yy0wLjA1LC0wLjIgMC4yLC0wLjM1IDAuNCwtMC4yNWw2LjA1LDMuOTVjMCwwIDIuMjUsLTAuODUgNC42LC0wLjk1YzEuNCwtMC4xIDIuNiwwIDMuNzUsMC4yeiIgZmlsbD0iIzNiYTJjZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjQ2LjU4OTI5LDE4MC4xNzcyM2MwLDAgMy40NSwwLjkgNC4wNSwzLjc1YzAuNiwyLjg1IC0xLjgsOCAtMTEuMSw5LjhjLTEyLjEsMi41IC0xNy44NSwtNC43IC0xNC41LC0xMGMzLjM1LC01LjM1IDkuMSwtMC44IDEzLjMsLTEuMWMzLjYsLTAuMjUgNCwtMy40IDguMjUsLTIuNDV6IiBmaWxsPSIjYTdlMmZiIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjU1Ljc4OTI5LDE4MC43MjcyM2MtMi4zNSwxLjkgLTUuOTUsMS45NSAtNS45NSwxLjk1IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjU1LjEzOTI5LDE4Ni4zMjcyM2MtMy4xNSwwLjI1IC01LjEsLTAuNyAtNS4xLC0wLjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFiNTU2ZSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzguMTM5MjksMTgxLjMyNzIzYzEuMDUsMCAyLjE1LDAuMSAyLjIsMC40NWMwLjA1LDAuNyAtMC43LDIuMSAtMS41LDIuMTVjLTAuOSwwLjEgLTMsLTEuMTUgLTMsLTEuOTVjLTAuMDUsLTAuNiAxLjMsLTAuNjUgMi4zLC0wLjY1eiIgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxNS42MzkyOSwxODAuNTc3MjNjMCwwIDQuMywxLjQgNi4wNSwyLjk1IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjIxLjgzOTI5LDE4NS4yNzcyM2MtMi4xNSwwLjg1IC01Ljg1LDAuMyAtNS44NSwwLjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFiNTU2ZSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxnIGZpbGw9IiMxYjU1NmUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciI+PHBhdGggZD0iTTI0My44MzkyOSwxNzguMzI3MjNjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAgMC45LDAuNDUgMC45LDEiLz48L2c+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjMxLjMzOTI5LDE3OS43NzcyM2MwLDAuNTUgLTAuNCwxIC0wLjksMWMtMC41LDAgLTAuOSwtMC40NSAtMC45LC0xYzAsLTAuNTUgMC40LC0xIDAuOSwtMWMwLjUsMC4wNSAwLjksMC40NSAwLjksMSIvPjwvZz48L2c+PHBhdGggZD0iTTIxOC45ODM4MywyMDEuMDE2MTl2LTQyLjAzMjM1aDQyLjAzMjM1djQyLjAzMjM1eiIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yNDMuNDc1LDE3NS43NjI5NWMwLjE1LC0wLjEgMC40LC0wLjA1IDAuNDUsMC4xNWwxLjMsNS4zNWMwLDAgMy4yLDIuMzUgNC4xNSw0YzEuNiwyLjc1IDEuNjUsNSAxLjY1LDVjMCwwIDMuNTUsMS4wNSA0LjE1LDMuOWMwLjYsMi44NSAtMS42LDguMjUgLTExLDEwLjFjLTkuNCwxLjg1IC0xNi45NSwtMC43IC0yMC41LC02LjRjLTMuNTUsLTUuNyAyLjA1LC0xMi41IDEuNzUsLTEyLjFsLTEuMDUsLTguOTVjLTAuMDUsLTAuMiAwLjIsLTAuMzUgMC40LC0wLjI1bDYuMDUsMy45NWMwLDAgMi4yNSwtMC44NSA0LjYsLTAuOTVjMS40LC0wLjEgMi42LDAgMy43NSwwLjJ6IiBmaWxsPSIjM2JhMmNlIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yNTAuODc1LDE5MC40NjI5NWMwLDAgMy40NSwwLjkgNC4wNSwzLjc1YzAuNiwyLjg1IC0xLjgsOCAtMTEuMSw5LjhjLTEyLjEsMi41IC0xNy44NSwtNC43IC0xNC41LC0xMGMzLjM1LC01LjM1IDkuMSwtMC44IDEzLjMsLTEuMWMzLjYsLTAuMjUgNCwtMy40IDguMjUsLTIuNDV6IiBmaWxsPSIjYTdlMmZiIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjYwLjA3NSwxOTEuMDEyOTVjLTIuMzUsMS45IC01Ljk1LDEuOTUgLTUuOTUsMS45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI1OS40MjUsMTk2LjYxMjk1Yy0zLjE1LDAuMjUgLTUuMSwtMC43IC01LjEsLTAuNyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI0Mi40MjUsMTkxLjYxMjk1YzEuMDUsMCAyLjE1LDAuMSAyLjIsMC40NWMwLjA1LDAuNyAtMC43LDIuMSAtMS41LDIuMTVjLTAuOSwwLjEgLTMsLTEuMTUgLTMsLTEuOTVjLTAuMDUsLTAuNiAxLjMsLTAuNjUgMi4zLC0wLjY1eiIgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxOS45MjUsMTkwLjg2Mjk1YzAsMCA0LjMsMS40IDYuMDUsMi45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIyNi4xMjUsMTk1LjU2Mjk1Yy0yLjE1LDAuODUgLTUuODUsMC4zIC01Ljg1LDAuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjQ4LjEyNSwxODguNjEyOTVjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAgMC45LDAuNDUgMC45LDEiLz48L2c+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjM1LjYyNSwxOTAuMDYyOTVjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAuMDUgMC45LDAuNDUgMC45LDEiLz48L2c+PC9nPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjI0Ljk2MDcwOTI4NTcxNDMzOjIxLjAxNjE2NS0tPg==";
 
   const userAgent = navigator.userAgent;
-  if (userAgent.includes('Safari') || userAgent.includes('iPhone') || userAgent.includes('iPod') || userAgent.includes('iPad')) { //* <-- Its a problem with all IOS browsers from what I see.
+  if (
+    userAgent.includes("Safari") ||
+    userAgent.includes("iPhone") ||
+    userAgent.includes("iPod") ||
+    userAgent.includes("iPad")
+  ) {
+    //* <-- Its a problem with all IOS browsers from what I see.
     hackyTouchFix = true;
   }
-  if (userAgent.includes('Windows') || userAgent.includes('Mac OS') || userAgent.includes('Linux')) { //* <-- Most chrome OS devices support touch events with up to 10 fingers.
-    notMobile = true
+  if (
+    userAgent.includes("Windows") ||
+    userAgent.includes("Mac OS") ||
+    userAgent.includes("Linux")
+  ) {
+    //* <-- Most chrome OS devices support touch events with up to 10 fingers.
+    notMobile = true;
   }
-  
+
   const maxTouchPoints = navigator.maxTouchPoints;
-  
-  function makeArrayOfTouches(){
+
+  function makeArrayOfTouches() {
     let TPArray = [];
-    if (maxTouchPoints == 0 || notMobile){ //*For non touch compatible devices
+    if (maxTouchPoints == 0 || notMobile) {
+      //*For non touch compatible devices
       for (let TP = 0; TP < 10; TP++) {
-        TPArray.push(Scratch.Cast.toString(TP + 1));    
+        TPArray.push(Scratch.Cast.toString(TP + 1));
       }
-    }
-    else{
+    } else {
       for (let TP = 0; TP < maxTouchPoints; TP++) {
-        TPArray.push(Scratch.Cast.toString(TP + 1));    
+        TPArray.push(Scratch.Cast.toString(TP + 1));
       }
     }
     return TPArray;
   }
-  
-  const touchPointsArray = makeArrayOfTouches(); //* <-- Do this for devices that really can't support that many touches.
 
+  const touchPointsArray = makeArrayOfTouches(); //* <-- Do this for devices that really can't support that many touches.
 
   class SensingPlus {
     getInfo() {
@@ -573,7 +587,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "Copied Contents",
             blockIconURI: clipboardIco,
-            disableMonitor: true
+            disableMonitor: true,
           },
           {
             opcode: "setClipBoard",
@@ -583,9 +597,9 @@
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ""
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           "---",
           {
@@ -620,15 +634,15 @@
           },
           coordmenu: {
             acceptReporters: true,
-            items: ["x", "y"]
+            items: ["x", "y"],
           },
           axismenu: {
             acceptReporters: true,
-            items: ["x", "y", "z"]
+            items: ["x", "y", "z"],
           },
           velocitymenu: {
             acceptReporters: true,
-            items: ["positional", "rotational"]
+            items: ["positional", "rotational"],
           },
           spriteMenu: {
             acceptReporters: true,
@@ -669,7 +683,7 @@
       }
       const speed = Math.sqrt(
         Math.pow(fingerPos[0] - fingerLastPos[0], 2) +
-        Math.pow(fingerPos[1] - fingerLastPos[1], 2)
+          Math.pow(fingerPos[1] - fingerLastPos[1], 2)
       );
       lastFingerPositions[ID - 1] = [fingerPos[0], fingerPos[1]];
       return speed;
@@ -760,7 +774,7 @@
       if (navigator.clipboard && navigator.clipboard.readText) {
         return navigator.clipboard.readText();
       }
-      return '';
+      return "";
     }
 
     async setClipBoard({ TEXT }) {
@@ -783,9 +797,9 @@
       if (sprites.length === 0) {
         return [
           {
-            text: 'No sprites exist',
-            value: ' '
-          }
+            text: "No sprites exist",
+            value: " ",
+          },
         ];
       }
       return sprites;
@@ -800,11 +814,11 @@
           for (const [listId, listVar] of Object.entries(target.variables)) {
             const listData = {
               targetName: target.getName(),
-              variableId: listId
+              variableId: listId,
             };
             lists.push({
               text: `${target.getName()}: ${listVar.name}`,
-              value: JSON.stringify(listData)
+              value: JSON.stringify(listData),
             });
           }
         }
@@ -812,9 +826,9 @@
       if (lists.length === 0) {
         return [
           {
-            text: 'No local lists in other sprites',
-            value: 'null'
-          }
+            text: "No local lists in other sprites",
+            value: "null",
+          },
         ];
       }
       return lists;
@@ -869,10 +883,7 @@
       const fingerPos = fingerPositions[index];
       if (fingerPos) {
         const positionIndex = PositionType === "x" ? 0 : 1;
-        const finger = [
-          fingerPos[0],
-          fingerPos[1],
-        ];
+        const finger = [fingerPos[0], fingerPos[1]];
         let scratchCoords = finger;
         const runtime = Scratch.vm.runtime;
 
@@ -900,11 +911,15 @@
     listInSprite({ index, List }) {
       const variable = getListFromMenu(List);
       if (!variable) {
-        return '';
+        return "";
       }
-      const casted = Scratch.Cast.toListIndex(index, variable.value.length, false);
-      if (casted === 'INVALID') {
-        return '';
+      const casted = Scratch.Cast.toListIndex(
+        index,
+        variable.value.length,
+        false
+      );
+      if (casted === "INVALID") {
+        return "";
       }
       // @ts-expect-error - this will never be "ANY" due to false in toListIndex above
       return variable.value[casted - 1];
@@ -913,7 +928,7 @@
     listContains({ term, List }) {
       const variable = getListFromMenu(List);
       if (!variable) {
-        return '';
+        return "";
       }
       const list = variable.value;
       for (let i = 0; i < list.length; i++) {
@@ -927,7 +942,7 @@
     lengthOfListInSprite({ List }) {
       const variable = getListFromMenu(List);
       if (!variable) {
-        return '';
+        return "";
       }
       return variable.value.length;
     }
@@ -935,7 +950,7 @@
     itemNumberInList({ term, List }) {
       const variable = getListFromMenu(List);
       if (!variable) {
-        return '';
+        return "";
       }
       const list = variable.value;
       for (let i = 0; i < list.length; i++) {
@@ -962,12 +977,15 @@
         return false;
       }
       const drawablesIds = parentTarget.sprite.clones
-        .filter(i => !i.isOriginal)
-        .map(i => i.drawableID);
+        .filter((i) => !i.isOriginal)
+        .map((i) => i.drawableID);
       if (drawablesIds.length === 0) {
         return false;
       }
-      return Scratch.renderer.isTouchingDrawables(util.target.drawableID, drawablesIds);
+      return Scratch.renderer.isTouchingDrawables(
+        util.target.drawableID,
+        drawablesIds
+      );
     }
   }
   Scratch.extensions.register(new SensingPlus());
