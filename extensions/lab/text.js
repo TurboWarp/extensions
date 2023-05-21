@@ -188,7 +188,7 @@
 
     // Part of Skin API
     get volatile () {
-      return this.isRainbow || this.isZooming || this._getDrawableScale() !== this._previousDrawableScale
+      return this.isRainbow || this.isZooming || this._getDrawableScale() !== this._previousDrawableScale;
     }
 
     _needsReflow () {
