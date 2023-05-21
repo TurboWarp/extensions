@@ -165,6 +165,11 @@
     }
 
     // Part of Skin API
+    useNearest () {
+      return false;
+    }
+
+    // Part of Skin API
     dispose () {
       if (this._texture) {
         gl.deleteTexture(this._texture);
