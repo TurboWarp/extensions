@@ -1,6 +1,10 @@
 (function (Scratch) {
   "use strict";
 
+  //put these back here so I don't have to define scratch.cast again.
+  let hackyTouchFix = false; //! IOS specific issue.
+  let notMobile = false;
+
   /* globals Accelerometer, Gyro */
 
   const SpeechRecognition =
@@ -128,6 +132,19 @@
         MATRIX: "matrix",
         NOTE: "note",
       },
+      Cast: {
+        toNumber: (input) => {
+          return Number(input);
+        },
+
+        toString: (input) => {
+          return String(input);
+        },
+
+        toBoolean: (input) => {
+          return Boolean(input);
+        },
+      },
       vm: window.vm,
       extensions: {
         unsandboxed: true,
@@ -158,6 +175,9 @@
 
   /** @param {TouchEvent} event */
   function handleTouchStart(event) {
+    if (hackyTouchFix) {
+      event.stopPropagation(); 
+    }
     event.preventDefault();
     const changedTouches = event.changedTouches;
     const changedTouchesKeys = Object.keys(changedTouches);
@@ -178,6 +198,9 @@
 
   /** @param {TouchEvent} event */
   function handleTouchMove(event) {
+    if (hackyTouchFix) {
+      event.stopPropagation(); 
+    }
     event.preventDefault();
     const changedTouches = event.changedTouches;
     const canvasPos = canvas.getBoundingClientRect();
@@ -197,6 +220,9 @@
 
   /** @param {TouchEvent} event */
   function handleTouchEnd(event) {
+    if (hackyTouchFix) {
+      event.stopPropagation(); 
+    }
     event.preventDefault();
     const changedTouches = event.changedTouches;
     const changedTouchesKeys = Object.keys(changedTouches);
@@ -255,6 +281,34 @@
   const layerIco =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI0NS45NzY4OCIgaGVpZ2h0PSI0Ni40NzQ2NiIgdmlld0JveD0iMCwwLDQ1Ljk3Njg4LDQ2LjQ3NDY2Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjE1LjAzOTI5LC0xNTguOTgzODMpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxnIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggZD0iTTIzOS4xODkyOSwxNjUuNDc3MjNjMC4xNSwtMC4xIDAuNCwtMC4wNSAwLjQ1LDAuMTVsMS4zLDUuMzVjMCwwIDMuMiwyLjM1IDQuMTUsNGMxLjYsMi43NSAxLjY1LDUgMS42NSw1YzAsMCAzLjU1LDEuMDUgNC4xNSwzLjljMC42LDIuODUgLTEuNiw4LjI1IC0xMSwxMC4xYy05LjQsMS44NSAtMTYuOTUsLTAuNyAtMjAuNSwtNi40Yy0zLjU1LC01LjcgMi4wNSwtMTIuNSAxLjc1LC0xMi4xbC0xLjA1LC04Ljk1Yy0wLjA1LC0wLjIgMC4yLC0wLjM1IDAuNCwtMC4yNWw2LjA1LDMuOTVjMCwwIDIuMjUsLTAuODUgNC42LC0wLjk1YzEuNCwtMC4xIDIuNiwwIDMuNzUsMC4yeiIgZmlsbD0iIzNiYTJjZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjQ2LjU4OTI5LDE4MC4xNzcyM2MwLDAgMy40NSwwLjkgNC4wNSwzLjc1YzAuNiwyLjg1IC0xLjgsOCAtMTEuMSw5LjhjLTEyLjEsMi41IC0xNy44NSwtNC43IC0xNC41LC0xMGMzLjM1LC01LjM1IDkuMSwtMC44IDEzLjMsLTEuMWMzLjYsLTAuMjUgNCwtMy40IDguMjUsLTIuNDV6IiBmaWxsPSIjYTdlMmZiIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjU1Ljc4OTI5LDE4MC43MjcyM2MtMi4zNSwxLjkgLTUuOTUsMS45NSAtNS45NSwxLjk1IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjU1LjEzOTI5LDE4Ni4zMjcyM2MtMy4xNSwwLjI1IC01LjEsLTAuNyAtNS4xLC0wLjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFiNTU2ZSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzguMTM5MjksMTgxLjMyNzIzYzEuMDUsMCAyLjE1LDAuMSAyLjIsMC40NWMwLjA1LDAuNyAtMC43LDIuMSAtMS41LDIuMTVjLTAuOSwwLjEgLTMsLTEuMTUgLTMsLTEuOTVjLTAuMDUsLTAuNiAxLjMsLTAuNjUgMi4zLC0wLjY1eiIgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxNS42MzkyOSwxODAuNTc3MjNjMCwwIDQuMywxLjQgNi4wNSwyLjk1IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjIxLjgzOTI5LDE4NS4yNzcyM2MtMi4xNSwwLjg1IC01Ljg1LDAuMyAtNS44NSwwLjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFiNTU2ZSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxnIGZpbGw9IiMxYjU1NmUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciI+PHBhdGggZD0iTTI0My44MzkyOSwxNzguMzI3MjNjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAgMC45LDAuNDUgMC45LDEiLz48L2c+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjMxLjMzOTI5LDE3OS43NzcyM2MwLDAuNTUgLTAuNCwxIC0wLjksMWMtMC41LDAgLTAuOSwtMC40NSAtMC45LC0xYzAsLTAuNTUgMC40LC0xIDAuOSwtMWMwLjUsMC4wNSAwLjksMC40NSAwLjksMSIvPjwvZz48L2c+PHBhdGggZD0iTTIxOC45ODM4MywyMDEuMDE2MTl2LTQyLjAzMjM1aDQyLjAzMjM1djQyLjAzMjM1eiIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yNDMuNDc1LDE3NS43NjI5NWMwLjE1LC0wLjEgMC40LC0wLjA1IDAuNDUsMC4xNWwxLjMsNS4zNWMwLDAgMy4yLDIuMzUgNC4xNSw0YzEuNiwyLjc1IDEuNjUsNSAxLjY1LDVjMCwwIDMuNTUsMS4wNSA0LjE1LDMuOWMwLjYsMi44NSAtMS42LDguMjUgLTExLDEwLjFjLTkuNCwxLjg1IC0xNi45NSwtMC43IC0yMC41LC02LjRjLTMuNTUsLTUuNyAyLjA1LC0xMi41IDEuNzUsLTEyLjFsLTEuMDUsLTguOTVjLTAuMDUsLTAuMiAwLjIsLTAuMzUgMC40LC0wLjI1bDYuMDUsMy45NWMwLDAgMi4yNSwtMC44NSA0LjYsLTAuOTVjMS40LC0wLjEgMi42LDAgMy43NSwwLjJ6IiBmaWxsPSIjM2JhMmNlIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yNTAuODc1LDE5MC40NjI5NWMwLDAgMy40NSwwLjkgNC4wNSwzLjc1YzAuNiwyLjg1IC0xLjgsOCAtMTEuMSw5LjhjLTEyLjEsMi41IC0xNy44NSwtNC43IC0xNC41LC0xMGMzLjM1LC01LjM1IDkuMSwtMC44IDEzLjMsLTEuMWMzLjYsLTAuMjUgNCwtMy40IDguMjUsLTIuNDV6IiBmaWxsPSIjYTdlMmZiIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjYwLjA3NSwxOTEuMDEyOTVjLTIuMzUsMS45IC01Ljk1LDEuOTUgLTUuOTUsMS45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI1OS40MjUsMTk2LjYxMjk1Yy0zLjE1LDAuMjUgLTUuMSwtMC43IC01LjEsLTAuNyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI0Mi40MjUsMTkxLjYxMjk1YzEuMDUsMCAyLjE1LDAuMSAyLjIsMC40NWMwLjA1LDAuNyAtMC43LDIuMSAtMS41LDIuMTVjLTAuOSwwLjEgLTMsLTEuMTUgLTMsLTEuOTVjLTAuMDUsLTAuNiAxLjMsLTAuNjUgMi4zLC0wLjY1eiIgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxOS45MjUsMTkwLjg2Mjk1YzAsMCA0LjMsMS40IDYuMDUsMi45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIyNi4xMjUsMTk1LjU2Mjk1Yy0yLjE1LDAuODUgLTUuODUsMC4zIC01Ljg1LDAuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjQ4LjEyNSwxODguNjEyOTVjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAgMC45LDAuNDUgMC45LDEiLz48L2c+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjM1LjYyNSwxOTAuMDYyOTVjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAuMDUgMC45LDAuNDUgMC45LDEiLz48L2c+PC9nPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjI0Ljk2MDcwOTI4NTcxNDMzOjIxLjAxNjE2NS0tPg==";
 
+  const userAgent = navigator.userAgent;
+  if (userAgent.includes('Safari') || userAgent.includes('iPhone') || userAgent.includes('iPod') || userAgent.includes('iPad')) { //* <-- Its a problem with all IOS browsers from what I see.
+    hackyTouchFix = true;
+  }
+  if (userAgent.includes('Windows') || userAgent.includes('Mac OS') || userAgent.includes('Linux')) { //* <-- Most chrome OS devices support touch events with up to 10 fingers.
+    notMobile = true
+  }
+  
+  const maxTouchPoints = navigator.maxTouchPoints;
+  
+  function makeArrayOfTouches(){
+    let TPArray = [];
+    if (maxTouchPoints == 0 || notMobile){ //*For non touch compatible devices
+      for (let TP = 0; TP < 10; TP++) {
+        TPArray.push(Scratch.Cast.toString(TP + 1));    
+      }
+    }
+    else{
+      for (let TP = 0; TP < maxTouchPoints; TP++) {
+        TPArray.push(Scratch.Cast.toString(TP + 1));    
+      }
+    }
+    return TPArray;
+  }
+  
+  const touchPointsArray = makeArrayOfTouches(); //* <-- Do this for devices that really can't support that many touches.
+
+
   class SensingPlus {
     getInfo() {
       return {
@@ -265,6 +319,13 @@
         id: "obviousalexsensing",
         name: "Sensing+",
         blocks: [
+          {
+            opcode: "getMaxTouches",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "# of simultaneous possible",
+            blockIconURI: touchIco,
+            arguments: {},
+          },
           {
             opcode: "getFingersTouching",
             blockType: Scratch.BlockType.REPORTER,
@@ -555,7 +616,7 @@
         menus: {
           fingerIDMenu: {
             acceptReporters: true,
-            items: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+            items: touchPointsArray,
           },
           coordmenu: {
             acceptReporters: true,
@@ -594,6 +655,10 @@
           },
         },
       };
+    }
+
+    getMaxTouches() {
+      return maxTouchPoints;
     }
 
     getFingerSpeed({ ID }) {
