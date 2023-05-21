@@ -138,7 +138,6 @@
       this._textureDirty = false;
       this._renderedAtScale = 1;
 
-      this.maxDisplayableCharacters = Infinity;
       this.typeAnimationInterval = null;
 
       this.isRainbow = false;
@@ -259,14 +258,10 @@
       const rainbowOffset = this.isRainbow ? (Date.now() - this.rainbowStartTime) / RAINBOW_TIME_PER : 0;
       this.ctx.fillStyle = this.color;
       this.ctx.font = this._getFontStyle();
-      let displayedCharacters = 0;
       for (let i = 0; i < this.lines.length; i++) {
         const line = this.lines[i];
         const text = line.text;
         const lineWidth = line.width;
-
-        const displayedText = text.substring(0, this.maxDisplayableCharacters - displayedCharacters);
-        displayedCharacters += text.length;
 
         let xOffset = 0;
         if (this.align === ALIGN_LEFT) {
@@ -285,7 +280,7 @@
 
         // TODO: something here is wrong
         this.ctx.fillText(
-          displayedText,
+          text,
           xOffset,
           Math.round(i * (this.baseFontSize + this.spaceBetweenLines) + this.baseFontSize * 0.9)
         );
@@ -385,7 +380,6 @@
         this.resolveOngoingAnimation();
         this.resolveOngoingAnimation = null;
 
-        this.maxDisplayableCharacters = Infinity;
         clearInterval(this.typeAnimationInterval);
 
         this.isRainbow = false;
