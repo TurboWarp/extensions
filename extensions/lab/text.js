@@ -5,8 +5,7 @@
   // To determine block and argument IDs, we extracted project.json and examined the result.
   // To determine block behaviors we simply experiment with Scratch Labs and made sure our
   // blocks do the same things.
-  // This is extension's code is not based on the source code of Scratch Labs. It is
-  // completely independent and open source.
+  // This extension's code is not based on the source code of Scratch Labs.
 
   const CUSTOM_STATE_KEY = Symbol();
 
@@ -162,33 +161,13 @@
 
     // Part of Skin API
     dispose () {
-      // TODO
-    }
-
-    _calculateDimensions () {
-      this.calculatedFontSize = this._calculateFontSize();
-
-      // need to make new ones each time to avoid caching incorrectly across fonts
-      // @ts-expect-error - constructors not typed yet
-      const measurementProvider = new CanvasMeasurementProvider(this.ctx);
-      /** @type {RenderWebGL.TextWrapper} */
-      // @ts-expect-error - createTextWrapper not typed yet
-      const textWrapper = renderer.createTextWrapper(measurementProvider);
-
-      this.ctx.font = this._getFontStyle();
-      const lines = textWrapper.wrapText(this.textWidth, this.text);
-      this.lines = lines.map(line => ({
-        text: line,
-        width: measurementProvider.measureText(line)
-      }));
-
-      // TODO: we need a lot more padding
-      this._size[0] = this.textWidth;
-      this._size[1] = this.lines.length * (this.baseFontSize + this.spaceBetweenLines);
-
-      // TODO: this is wrong. rotation center should actually be horizontally centered at the bottom of the first line?
-      this._rotationCenter[0] = this._size[0] / 2;
-      this._rotationCenter[1] = this.calculatedFontSize;
+      if (this._texture) {
+        gl.deleteTexture(this._texture);
+        this._texture = null;
+      }
+      this.canvas = null;
+      this.ctx = null;
+      super.dispose();
     }
 
     _getFontStyle () {
@@ -205,6 +184,35 @@
       return this.baseFontSize;
     }
 
+    _calculateDimensions () {
+      this.calculatedFontSize = this._calculateFontSize();
+      this.ctx.font = this._getFontStyle();
+
+      // need to make new ones each time to avoid caching incorrectly across fonts
+      // @ts-expect-error - constructors not typed yet
+      const measurementProvider = new CanvasMeasurementProvider(this.ctx);
+      /** @type {RenderWebGL.TextWrapper} */
+      // @ts-expect-error - createTextWrapper not typed yet
+      const textWrapper = renderer.createTextWrapper(measurementProvider);
+
+      const lines = textWrapper.wrapText(this.textWidth, this.text);
+      this.lines = lines.map(line => {
+        const trimmed = line.trimEnd();
+        return {
+          text: trimmed,
+          width: measurementProvider.measureText(trimmed)
+        };
+      });
+
+      // TODO: we need a lot more padding
+      this._size[0] = Math.round(this.textWidth);
+      this._size[1] = Math.round(this.lines.length * (this.baseFontSize + this.spaceBetweenLines));
+
+      // TODO: this is wrong. rotation center should actually be horizontally centered at the bottom of the first line?
+      this._rotationCenter[0] = this._size[0] / 2;
+      this._rotationCenter[1] = this.calculatedFontSize * 0.8;
+    }
+
     _renderAtScale (requestedScale) {
       this._calculateDimensions();
 
@@ -217,6 +225,7 @@
       this.canvas.height = Math.ceil(canvasHeight * requestedScale);
       this.ctx.scale(requestedScale, requestedScale);
 
+      const rainbowOffset = this.isRainbow ? (Date.now() - this.rainbowStartTime) / RAINBOW_TIME_PER : 0;
       this.ctx.fillStyle = this.color;
       this.ctx.font = this._getFontStyle();
       let displayedCharacters = 0;
@@ -232,29 +241,23 @@
         if (this.align === ALIGN_LEFT) {
           // already correct
         } else if (this.align === ALIGN_CENTER) {
-          xOffset = (this.textWidth - lineWidth) / 2;
+          xOffset = Math.round((this.textWidth - lineWidth) / 2);
         } else {
           xOffset = this.textWidth - lineWidth;
+        }
+
+        if (this.isRainbow) {
+          const gradient = this.ctx.createLinearGradient(xOffset, 0, xOffset + lineWidth, 0);
+          addRainbowStops(gradient, rainbowOffset);
+          this.ctx.fillStyle = gradient;
         }
 
         // TODO: something here is wrong
         this.ctx.fillText(
           displayedText,
           xOffset,
-          i * (this.baseFontSize + this.spaceBetweenLines) + this.baseFontSize * 0.9
+          Math.round(i * (this.baseFontSize + this.spaceBetweenLines) + this.baseFontSize * 0.9)
         );
-      }
-
-      if (this.isRainbow) {
-        // TODO: it looks like scratch does a separate rainbow per line of text. that's a bit silly if you ask me.
-        this.ctx.globalCompositeOperation = 'source-in';
-
-        const gradient = this.ctx.createLinearGradient(0, 0, canvasWidth, 0);
-        const offsetIntervals = (Date.now() - this.rainbowStartTime) / RAINBOW_TIME_PER;
-        addRainbowStops(gradient, offsetIntervals);
-
-        this.ctx.fillStyle = gradient;
-        this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
       }
 
       // TODO: don't recreate when not needed
@@ -267,6 +270,7 @@
 
     setText (text) {
       this.text = text;
+      this._calculateDimensions();
       this.emitWasAltered();
     }
 
@@ -277,16 +281,19 @@
 
     setAlign (align) {
       this.align = align;
+      this._calculateDimensions();
       this.emitWasAltered();
     }
 
     setWidth (width) {
       this.textWidth = width;
+      this._calculateDimensions();
       this.emitWasAltered();
     }
 
     setFontFamily (font) {
       this.fontFamily = font;
+      this._calculateDimensions();
       this.emitWasAltered();
     }
 
@@ -564,9 +571,10 @@
 
     setText ({ TEXT }, util) {
       const state = this._getState(util.target);
-      state.skin.setText(Scratch.Cast.toString(TEXT));
       this._renderText(util.target, state);
-      // TODO: Scratch might force 1 frame delay here? we probably shouldn't copy that though
+      state.skin.setText(Scratch.Cast.toString(TEXT));
+      // Scratch forces 1 frame delay by returning promise. I think that's silly.
+      util.runtime.requestRedraw();
     }
 
     animateText ({ ANIMATE, TEXT }, util) {
@@ -592,6 +600,8 @@
         const state = this._getState(util.target);
         this._hideText(util.target, state);
       }
+      // Scratch forces 1 frame delay by returning promise. I think that's silly.
+      util.runtime.requestRedraw();
     }
 
     setFont ({ FONT }, util) {
@@ -611,14 +621,13 @@
     setWidth ({ WIDTH, ALIGN }, util) {
       const state = this._getState(util.target);
 
-      if (ALIGN === 'left') {
-        state.skin.setAlign(ALIGN_LEFT);
-      } else if (ALIGN === 'center') {
+      if (ALIGN === 'center') {
         state.skin.setAlign(ALIGN_CENTER);
       } else if (ALIGN === 'right') {
         state.skin.setAlign(ALIGN_RIGHT);
       } else {
-        // TODO: test what scratch does here
+        // Scratch treats unknown values as left alignment.
+        state.skin.setAlign(ALIGN_LEFT);
       }
 
       state.skin.setWidth(Scratch.Cast.toNumber(WIDTH));
