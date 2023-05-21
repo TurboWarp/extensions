@@ -31,7 +31,6 @@
   const DEFAULT_WIDTH = vm.runtime.stageWidth;
   const DEFAULT_ALIGN = ALIGN_CENTER;
   const DEFAULT_FONT_SIZE = 24;
-  const DEFAULT_SPACE_BETWEEN_LINES = 3;
 
   const TYPE_DELAY = 1000 / 15;
 
@@ -123,7 +122,8 @@
       this.textWidth = DEFAULT_WIDTH;
       this.fontFamily = DEFAULT_FONT;
       this.baseFontSize = DEFAULT_FONT_SIZE;
-      this.spaceBetweenLines = DEFAULT_SPACE_BETWEEN_LINES;
+      this.lineHeight = this.baseFontSize * 8 / 7;
+      this.verticalPadding = this.baseFontSize * 0.25;
       this.align = DEFAULT_ALIGN;
 
       /** @type {Array<{text: string; width: number;}>} */
@@ -220,13 +220,13 @@
         };
       });
 
-      // TODO: we need a lot more padding
-      this._size[0] = Math.round(this.textWidth);
-      this._size[1] = Math.round(this.lines.length * (this.baseFontSize + this.spaceBetweenLines));
+      this._size[0] = Math.ceil(this.textWidth);
+      this._size[1] = Math.ceil(this.lines.length * this.lineHeight + 2 * this.verticalPadding);
 
-      // TODO: this is wrong. rotation center should actually be horizontally centered at the bottom of the first line?
+      // Centered horizontally
       this._rotationCenter[0] = this._size[0] / 2;
-      this._rotationCenter[1] = this.calculatedFontSize * 0.8;
+      // Vertical center is roughly below the first line of text
+      this._rotationCenter[1] = this.calculatedFontSize * 0.9 + this.verticalPadding;
     }
 
     _invalidateTexture () {
@@ -282,7 +282,7 @@
         this.ctx.fillText(
           text,
           xOffset,
-          Math.round(i * (this.baseFontSize + this.spaceBetweenLines) + this.baseFontSize * 0.9)
+          Math.round(this.verticalPadding + i * this.lineHeight + this.baseFontSize)
         );
       }
 
@@ -633,7 +633,7 @@
       } else if (ANIMATE === 'zoom') {
         return state.skin.startZoomAnimation();
       } else {
-        // TODO: test what Scratch does here
+        // Scratch dooes nothing here
       }
     }
 
