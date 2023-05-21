@@ -33,7 +33,7 @@
   const DEFAULT_FONT_SIZE = 24;
   const DEFAULT_SPACE_BETWEEN_LINES = 3;
 
-  const TYPE_DELAY = 1000 / 30;
+  const TYPE_DELAY = 1000 / 15;
 
   const RAINBOW_TIME_PER = 1000;
   const RAINBOW_DURATION = 2000;
@@ -67,7 +67,7 @@
   const formatColor = (color) => `#${formatComponent(color[0])}${formatComponent(color[1])}${formatComponent(color[2])}`;
 
   /**
-   * @param {number} h hue from 0-1. must be positive
+   * @param {number} h hue from 0-1
    * @param {number} s saturation from 0-1
    * @param {number} v value from 0-1
    * @returns {[number, number, number]} RGB channels from 0-255
@@ -96,7 +96,6 @@
    * @param {number} offset number of cycles to offset by
    */
   const addRainbowStops = (gradient, offset) => {
-    // Scratch's gradient still looks better for some reason.
     const NUMBER_STOPS = 20;
     for (let i = 0; i < NUMBER_STOPS; i++) {
       const exactPosition = i / NUMBER_STOPS;
@@ -105,7 +104,6 @@
         offsetPosition += 1;
       }
       const rgb = hsvToRGB(offsetPosition, 1, 1);
-      gradient.addColorStop(exactPosition, formatColor(rgb));
       gradient.addColorStop(exactPosition, formatColor(rgb));
     }
   };
@@ -136,6 +134,7 @@
       this._rotationCenter = [0, 0];
       this.calculatedFontSize = this.baseFontSize;
 
+      this._textDirty = false;
       this._textureDirty = false;
       this._renderedAtScale = 1;
 
@@ -155,7 +154,21 @@
     }
 
     // Part of Skin API
+    dispose () {
+      if (this._texture) {
+        gl.deleteTexture(this._texture);
+        this._texture = null;
+      }
+      this.canvas = null;
+      this.ctx = null;
+      super.dispose();
+    }
+
+    // Part of Skin API
     get size () {
+      if (this._textDirty) {
+        this._reflowText();
+      }
       return this._size;
     }
 
@@ -169,21 +182,6 @@
       return false;
     }
 
-    // Part of Skin API
-    dispose () {
-      if (this._texture) {
-        gl.deleteTexture(this._texture);
-        this._texture = null;
-      }
-      this.canvas = null;
-      this.ctx = null;
-      super.dispose();
-    }
-
-    _getFontStyle () {
-      return `${this.calculatedFontSize}px "${this.fontFamily}"`;
-    }
-
     _calculateFontSize () {
       if (this.isZooming) {
         // TODO: it looks like Scratch's animation always starts at least a little visible
@@ -194,7 +192,16 @@
       return this.baseFontSize;
     }
 
-    _calculateDimensions () {
+    _getFontStyle () {
+      return `${this.calculatedFontSize}px "${this.fontFamily}"`;
+    }
+
+    _reflowText () {
+      console.log('Reflowing!');
+
+      this._textDirty = false;
+      this._textureDirty = true;
+
       this.calculatedFontSize = this._calculateFontSize();
       this.ctx.font = this._getFontStyle();
 
@@ -221,15 +228,21 @@
       // TODO: this is wrong. rotation center should actually be horizontally centered at the bottom of the first line?
       this._rotationCenter[0] = this._size[0] / 2;
       this._rotationCenter[1] = this.calculatedFontSize * 0.8;
+    }
 
+    _invalidateTexture () {
+      this._textureDirty = true;
+      this.emitWasAltered();
+    }
+
+    _invalidateText () {
+      this._textDirty = true;
       this._textureDirty = true;
       this.emitWasAltered();
     }
 
     _renderAtScale (requestedScale) {
-      if (this.isZooming) {
-        this._calculateDimensions();
-      }
+      console.log('Rerendering!', requestedScale);
 
       this._textureDirty = false;
 
@@ -289,51 +302,56 @@
 
     setText (text) {
       this.text = text;
-      this._calculateDimensions();
+      this._invalidateText();
     }
 
     setColor (color) {
       this.color = color;
-      this.emitWasAltered();
+      this._invalidateTexture();
     }
 
     setAlign (align) {
       this.align = align;
-      this._calculateDimensions();
+      this._invalidateTexture();
     }
 
     setWidth (width) {
       this.textWidth = width;
-      this._calculateDimensions();
+      this._invalidateText();
     }
 
     setFontFamily (font) {
       this.fontFamily = font;
-      this._calculateDimensions();
+      this._invalidateText();
     }
 
     _oneAnimationAtATime (newCallback) {
       this.cancelAnimation();
       return new Promise(resolve => {
-        // @ts-expect-error - signature of function does not really matter here.
-        this.resolveOngoingAnimation = resolve;
-        newCallback(resolve);
+        this.resolveOngoingAnimation = () => {
+          this.resolveOngoingAnimation = null;
+          resolve();
+        };
+        newCallback(this.resolveOngoingAnimation);
       });
     }
 
     startTypeAnimation () {
-      // TODO: this is implemented wrong
       return this._oneAnimationAtATime(resolve => {
-        this.maxDisplayableCharacters = 0;
+        const originalText = this.text;
+        let i = 1;
+        const update = () => {
+          this.setText(originalText.substring(0, i));
+        };
+        update();
 
         this.typeAnimationInterval = setInterval(() => {
-          this.maxDisplayableCharacters++;
-          if (this.maxDisplayableCharacters >= this.text.length) {
-            this.maxDisplayableCharacters = Infinity;
+          i++;
+          update();
+          if (i >= originalText.length) {
             clearInterval(this.typeAnimationInterval);
             resolve();
           }
-          this._calculateDimensions();
         }, TYPE_DELAY);
       });
     }
@@ -345,7 +363,7 @@
         this.rainbowTimeout = setTimeout(() => {
           this.isRainbow = false;
           resolve();
-          this.emitWasAltered();
+          this._invalidateTexture();
         }, RAINBOW_DURATION);
       });
     }
@@ -357,7 +375,7 @@
         this.zoomTimeout = setTimeout(() => {
           this.isZooming = false;
           resolve();
-          this._calculateDimensions();
+          this._invalidateText();
         }, ZOOM_DURATION);
       });
     }
@@ -365,18 +383,25 @@
     cancelAnimation () {
       if (this.resolveOngoingAnimation) {
         this.resolveOngoingAnimation();
+        this.resolveOngoingAnimation = null;
+
+        this.maxDisplayableCharacters = Infinity;
+        clearInterval(this.typeAnimationInterval);
+
+        this.isRainbow = false;
+        clearTimeout(this.rainbowTimeout);
+
+        this.isZooming = false;
+        clearTimeout(this.zoomTimeout);
+
+        // TODO: sometimes we only need to invalidate the texture at this point
+        this._invalidateText();
       }
+    }
 
-      this.maxDisplayableCharacters = Infinity;
-      clearInterval(this.typeAnimationInterval);
-
-      this.isRainbow = false;
-      clearTimeout(this.rainbowTimeout);
-
-      this.isZooming = false;
-      clearTimeout(this.zoomTimeout);
-
-      this.emitWasAltered();
+    // Part of Skin API
+    updateSilhouette (scale) {
+      this.getTexture(scale);
     }
 
     // Part of Skin API
@@ -384,9 +409,14 @@
       const MAX_SCALE = 10;
       const scaleMax = scale ? Math.max(Math.abs(scale[0]), Math.abs(scale[1])) : 100;
       const calculatedScale = Math.min(MAX_SCALE, scaleMax / 100);
-      if (this._textureDirty || this.volatile || calculatedScale !== this._renderedAtScale) {
+
+      if (this._textDirty || this.isZooming || calculatedScale !== this._renderedAtScale) {
+        this._reflowText();
+      }
+      if (this._textureDirty || this.isRainbow) {
         this._renderAtScale(calculatedScale);
       }
+
       return this._texture;
     }
   }
