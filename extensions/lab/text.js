@@ -116,6 +116,8 @@
       super(id, renderer);
 
       this.canvas = document.createElement('canvas');
+      this.canvas.width = 0;
+      this.canvas.height = 0;
       this.ctx = this.canvas.getContext('2d');
 
       this.text = '';
@@ -133,6 +135,9 @@
       /** @type {[number, number]} */
       this._rotationCenter = [0, 0];
       this.calculatedFontSize = this.baseFontSize;
+
+      this._textureDirty = false;
+      this._renderedAtScale = 1;
 
       this.maxDisplayableCharacters = Infinity;
       this.typeAnimationInterval = null;
@@ -211,10 +216,17 @@
       // TODO: this is wrong. rotation center should actually be horizontally centered at the bottom of the first line?
       this._rotationCenter[0] = this._size[0] / 2;
       this._rotationCenter[1] = this.calculatedFontSize * 0.8;
+
+      this._textureDirty = true;
+      this.emitWasAltered();
     }
 
     _renderAtScale (requestedScale) {
-      this._calculateDimensions();
+      if (this.isZooming) {
+        this._calculateDimensions();
+      }
+
+      this._textureDirty = false;
 
       const canvasWidth = this._size[0];
       const canvasHeight = this._size[1];
@@ -223,6 +235,7 @@
       // ever after this point.
       this.canvas.width = Math.ceil(canvasWidth * requestedScale);
       this.canvas.height = Math.ceil(canvasHeight * requestedScale);
+      this._renderedAtScale = requestedScale;
       this.ctx.scale(requestedScale, requestedScale);
 
       const rainbowOffset = this.isRainbow ? (Date.now() - this.rainbowStartTime) / RAINBOW_TIME_PER : 0;
@@ -260,18 +273,18 @@
         );
       }
 
-      // TODO: don't recreate when not needed
-      this._texture = twgl.createTexture(gl, {
-        auto: false,
-        wrap: gl.CLAMP_TO_EDGE
-      });
+      if (!this._texture) {
+        this._texture = twgl.createTexture(gl, {
+          auto: false,
+          wrap: gl.CLAMP_TO_EDGE
+        });
+      }
       this._setTexture(this.canvas);
     }
 
     setText (text) {
       this.text = text;
       this._calculateDimensions();
-      this.emitWasAltered();
     }
 
     setColor (color) {
@@ -282,19 +295,16 @@
     setAlign (align) {
       this.align = align;
       this._calculateDimensions();
-      this.emitWasAltered();
     }
 
     setWidth (width) {
       this.textWidth = width;
       this._calculateDimensions();
-      this.emitWasAltered();
     }
 
     setFontFamily (font) {
       this.fontFamily = font;
       this._calculateDimensions();
-      this.emitWasAltered();
     }
 
     _oneAnimationAtATime (newCallback) {
@@ -307,6 +317,7 @@
     }
 
     startTypeAnimation () {
+      // TODO: this is implemented wrong
       return this._oneAnimationAtATime(resolve => {
         this.maxDisplayableCharacters = 0;
 
@@ -317,7 +328,7 @@
             clearInterval(this.typeAnimationInterval);
             resolve();
           }
-          this.emitWasAltered();
+          this._calculateDimensions();
         }, TYPE_DELAY);
       });
     }
@@ -341,7 +352,7 @@
         this.zoomTimeout = setTimeout(() => {
           this.isZooming = false;
           resolve();
-          this.emitWasAltered();
+          this._calculateDimensions();
         }, ZOOM_DURATION);
       });
     }
@@ -368,7 +379,9 @@
       const MAX_SCALE = 10;
       const scaleMax = scale ? Math.max(Math.abs(scale[0]), Math.abs(scale[1])) : 100;
       const calculatedScale = Math.min(MAX_SCALE, scaleMax / 100);
-      this._renderAtScale(calculatedScale);
+      if (this._textureDirty || this.volatile || calculatedScale !== this._renderedAtScale) {
+        this._renderAtScale(calculatedScale);
+      }
       return this._texture;
     }
   }
