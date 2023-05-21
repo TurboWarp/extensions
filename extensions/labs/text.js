@@ -25,6 +25,29 @@
     'Pixel',
   ];
 
+  const DEFAULT_COLOR = '#575E75';
+  const DEFAULT_FONT = 'Handwriting';
+  const DEFAULT_WIDTH = vm.runtime.stageWidth;
+  const DEFAULT_ALIGN = ALIGN_CENTER;
+  const DEFAULT_FONT_SIZE = 24;
+  const DEFAULT_SPACE_BETWEEN_LINES = 2;
+
+  const TYPE_DELAY = 75; // TODO: wrong
+
+  const RAINBOW_TIME_PER = 1000; // TODO: wrong
+  const RAINBOW_DURATION = 5000; // TODO: wrong
+  const RAINBOW_COLORS = [
+    // TODO: need to lerp this better
+    '#ff0000',
+    '#ffff00',
+    '#00ff00',
+    '#00ffff',
+    '#0000ff',
+    '#ff00ff'
+  ];
+
+  const ZOOM_DURATION = 500; // TODO: wrong
+
   /**
    * @typedef TextState
    * @property {TextCostumeSkin} skin
@@ -39,6 +62,9 @@
   // @ts-expect-error - exports not typed yet
   const twgl = renderer.exports.twgl;
 
+  // TODO:
+  // clones, green flag, stop sign
+
   class TextCostumeSkin extends Skin {
     constructor (id) {
       // @ts-expect-error - constructors not typed yet
@@ -47,24 +73,30 @@
       this.canvas = document.createElement('canvas');
       this.ctx = this.canvas.getContext('2d');
 
-      /** @type {[number, number]} [width, height] */
-      this._size = [100, 100];
-      this._rotationCenter = [this._size[0] / 2, this._size[1] / 2];
-
       this.text = '';
-      this.color = '#575E75';
-      this.maxWidth = 480;
-      this.fontFamily = 'Handwriting';
-      this.fontSize = 24;
-      this.lineSpacing = 2;
-      this.align = ALIGN_LEFT;
+      this.color = DEFAULT_COLOR;
+      this.textWidth = DEFAULT_WIDTH;
+      this.fontFamily = DEFAULT_FONT;
+      this.baseFontSize = DEFAULT_FONT_SIZE;
+      this.spaceBetweenLines = DEFAULT_SPACE_BETWEEN_LINES;
+      this.align = DEFAULT_ALIGN;
 
       /** @type {Array<{text: string; width: number;}>} */
       this.lines = [];
-      this.longestLineWidth = 0;
+      /** @type {[number, number]} */
+      this._size = [0, 0];
+      /** @type {[number, number]} */
+      this._rotationCenter = [0, 0];
+      this.calculatedFontSize = this.baseFontSize;
 
       this.maxDisplayableCharacters = Infinity;
       this.typeAnimationInterval = null;
+
+      this.isRainbow = false;
+      this.rainbowStartTime = 0;
+
+      this.isZooming = false;
+      this.zoomStartTime = 0;
     }
 
     // Part of Skin API
@@ -72,7 +104,14 @@
       return this._size;
     }
 
+    // Part of Skin API
+    get volatile () {
+      return this.isRainbow || this.isZooming;
+    }
+
     _calculateDimensions () {
+      this.calculatedFontSize = this._calculateFontSize();
+
       // need to make new ones each time to avoid caching incorrectly across fonts
       // @ts-expect-error - constructors not typed yet
       const measurementProvider = new CanvasMeasurementProvider(this.ctx);
@@ -81,49 +120,50 @@
       const textWrapper = renderer.createTextWrapper(measurementProvider);
 
       this.ctx.font = this._getFontStyle();
-      const lines = textWrapper.wrapText(this.maxWidth, this.text);
+      const lines = textWrapper.wrapText(this.textWidth, this.text);
       this.lines = lines.map(line => ({
         text: line,
         width: measurementProvider.measureText(line)
       }));
 
-      this.longestLineWidth = 0;
-      for (const line of this.lines) {
-        if (line.width > this.longestLineWidth) {
-          this.longestLineWidth = line.width;
-        }
-      }
-
       // TODO: we need a lot more padding
-      this._size[0] = this.longestLineWidth;
-      this._size[1] = this.lines.length * (this.fontSize + this.lineSpacing);
+      this._size[0] = this.textWidth;
+      this._size[1] = this.lines.length * (this.baseFontSize + this.spaceBetweenLines);
 
-      // TODO: this is wrong
+      // TODO: this is wrong. rotation center should actually be horizontally centered at the bottom of the first line?
       this._rotationCenter[0] = this._size[0] / 2;
       this._rotationCenter[1] = this._size[1] / 2;
     }
 
     _getFontStyle () {
-      return `${this.fontSize}px "${this.fontFamily}"`;
+      return `${this.calculatedFontSize}px "${this.fontFamily}"`;
     }
 
-    _renderText (scale) {
+    _calculateFontSize () {
+      if (this.isZooming) {
+        // TODO: it looks like Scratch might be always making sure part of the text is visible?
+        const time = Date.now() - this.zoomStartTime;
+        const progress = Math.max(0, Math.min(1, time / ZOOM_DURATION));
+        return this.baseFontSize * progress;
+      }
+      return this.baseFontSize;
+    }
+
+    _renderAtScale (requestedScale) {
       this._calculateDimensions();
 
-      this.canvas.width = this._size[0] * scale;
-      this.canvas.height = this._size[1] * scale;
-      this.ctx.scale(scale, scale);
+      const canvasWidth = this._size[0];
+      const canvasHeight = this._size[1];
 
-      // TODO: remove
-      // this.ctx.fillStyle = 'purple';
-      // this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      // Renderer's requested scale is accounted for at this point. Do not touch `requestedScale`
+      // ever after this point.
+      this.canvas.width = Math.ceil(canvasWidth * requestedScale);
+      this.canvas.height = Math.ceil(canvasHeight * requestedScale);
+      this.ctx.scale(requestedScale, requestedScale);
 
       this.ctx.fillStyle = this.color;
       this.ctx.font = this._getFontStyle();
-      this.ctx.textBaseline = 'bottom';
-
       let displayedCharacters = 0;
-
       for (let i = 0; i < this.lines.length; i++) {
         const line = this.lines[i];
         const text = line.text;
@@ -136,17 +176,32 @@
         if (this.align === ALIGN_LEFT) {
           // already correct
         } else if (this.align === ALIGN_CENTER) {
-          xOffset = (this.longestLineWidth - lineWidth) / 2;
+          xOffset = (this.textWidth - lineWidth) / 2;
         } else {
-          xOffset = this.longestLineWidth - lineWidth;
+          xOffset = this.textWidth - lineWidth;
         }
 
         // TODO: something here is wrong
         this.ctx.fillText(
           displayedText,
           xOffset,
-          i * (this.fontSize + this.lineSpacing) + this.fontSize * 0.9
+          i * (this.baseFontSize + this.spaceBetweenLines) + this.baseFontSize * 0.9
         );
+      }
+
+      if (this.isRainbow) {
+        // TODO: it looks like scratch does a separate rainbow per line of text. that's a bit silly if you ask me.
+        this.ctx.globalCompositeOperation = 'source-in';
+        const gradient = this.ctx.createLinearGradient(0, 0, canvasWidth, 0);
+
+        const timeOffset = (Date.now() - this.rainbowStartTime) / RAINBOW_TIME_PER;
+        for (let i = 0; i < RAINBOW_COLORS.length; i++) {
+          const offset = ((i / RAINBOW_COLORS.length) + timeOffset) % 1;
+          gradient.addColorStop(offset, RAINBOW_COLORS[i]);
+        }
+
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
       }
 
       // TODO: don't recreate when not needed
@@ -173,7 +228,7 @@
     }
 
     setMaxWidth (maxWidth) {
-      this.maxWidth = maxWidth;
+      this.textWidth = maxWidth;
       this.emitWasAltered();
     }
 
@@ -192,12 +247,34 @@
           this.maxDisplayableCharacters++;
         }
         this.emitWasAltered();
-      }, 75);
+      }, TYPE_DELAY);
+    }
+
+    startRainbowAnimation () {
+      this.isRainbow = true;
+      this.rainbowStartTime = Date.now();
+      setTimeout(() => {
+        this.isRainbow = false;
+        this.emitWasAltered();
+      }, RAINBOW_DURATION);
+    }
+
+    startZoomAnimation () {
+      this.isZooming = true;
+      this.zoomStartTime = Date.now();
+      setTimeout(() => {
+        this.isZooming = false;
+        this.emitWasAltered();
+      }, ZOOM_DURATION);
     }
 
     cancelAnimation () {
       this.maxDisplayableCharacters = Infinity;
       clearInterval(this.typeAnimationInterval);
+
+      this.isRainbow = false;
+
+      this.isZooming = false;
 
       this.emitWasAltered();
     }
@@ -207,7 +284,7 @@
       const MAX_SCALE = 10;
       const scaleMax = scale ? Math.max(Math.abs(scale[0]), Math.abs(scale[1])) : 100;
       const calculatedScale = Math.min(MAX_SCALE, scaleMax / 100);
-      this._renderText(calculatedScale);
+      this._renderAtScale(calculatedScale);
       return this._texture;
     }
   }
@@ -367,11 +444,14 @@
       state.skin.setText(Scratch.Cast.toString(TEXT));
       state.skin.cancelAnimation();
 
+      // TODO: this needs to actually return a promise
       if (ANIMATE === 'type') {
-        state.skin.startTypeAnimation();
+        return state.skin.startTypeAnimation();
+      } else if (ANIMATE === 'rainbow') {
+        return state.skin.startRainbowAnimation();
+      } else if (ANIMATE === 'zoom') {
+        return state.skin.startZoomAnimation();
       }
-
-      // TODO: this needs to return a promise
     }
 
     clearText (args, util) {
