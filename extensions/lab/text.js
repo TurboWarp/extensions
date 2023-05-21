@@ -299,28 +299,38 @@
     }
 
     setText (text) {
-      this.text = text;
-      this._invalidateText();
+      if (text !== this.text) {
+        this.text = text;
+        this._invalidateText();
+      }
     }
 
     setColor (color) {
-      this.color = color;
-      this._invalidateTexture();
+      if (color !== this.color) {
+        this.color = color;
+        this._invalidateTexture();
+      }
     }
 
     setAlign (align) {
-      this.align = align;
-      this._invalidateTexture();
+      if (align !== this.align) {
+        this.align = align;
+        this._invalidateTexture();
+      }
     }
 
     setWidth (width) {
-      this.textWidth = width;
-      this._invalidateText();
+      if (width !== this.textWidth) {
+        this.textWidth = width;
+        this._invalidateText();
+      }
     }
 
     setFontFamily (font) {
-      this.fontFamily = font;
-      this._invalidateText();
+      if (font !== this.fontFamily) {
+        this.fontFamily = font;
+        this._invalidateText();
+      }
     }
 
     _oneAnimationAtATime (newCallback) {
