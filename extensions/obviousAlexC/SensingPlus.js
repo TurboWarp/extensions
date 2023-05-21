@@ -178,7 +178,7 @@
   /** @param {TouchEvent} event */
   function handleTouchStart(event) {
     if (hackyTouchFix) {
-      event.stopPropagation();
+      event.stopImmediatePropagation();
     }
     event.preventDefault();
     const changedTouches = event.changedTouches;
@@ -201,7 +201,7 @@
   /** @param {TouchEvent} event */
   function handleTouchMove(event) {
     if (hackyTouchFix) {
-      event.stopPropagation();
+      event.stopImmediatePropagation();
     }
     event.preventDefault();
     const changedTouches = event.changedTouches;
@@ -223,7 +223,7 @@
   /** @param {TouchEvent} event */
   function handleTouchEnd(event) {
     if (hackyTouchFix) {
-      event.stopPropagation();
+      event.stopImmediatePropagation();
     }
     event.preventDefault();
     const changedTouches = event.changedTouches;
