@@ -816,10 +816,12 @@
               targetName: target.getName(),
               variableId: listId,
             };
-            lists.push({
-              text: `${target.getName()}: ${listVar.name}`,
-              value: JSON.stringify(listData),
-            });
+            if (listVar.type == "list"){
+              lists.push({
+                text: `${target.getName()}: ${listVar.name}`,
+                value: JSON.stringify(listData),
+              });
+            }
           }
         }
       }
