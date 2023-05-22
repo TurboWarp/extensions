@@ -309,9 +309,6 @@
         });
       }
       this._setTexture(this.canvas);
-
-      // TODO: we should not need to do this ...
-      this._silhouette.unlazy();
     }
 
     _invalidateTexture () {
@@ -436,6 +433,7 @@
     // Part of Skin API
     updateSilhouette (scale) {
       this.getTexture(scale);
+      this._silhouette.unlazy();
     }
 
     // Part of Skin API
