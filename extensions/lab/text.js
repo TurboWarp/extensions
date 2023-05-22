@@ -463,7 +463,7 @@
    */
   const createTextCostumeSkin = (target) => {
     const drawable = renderer._allDrawables[target.drawableID];
-    const id = renderer._nextDrawableId++;
+    const id = renderer._nextSkinId++;
     const skin = new TextCostumeSkin(id, drawable);
     renderer._allSkins[id] = skin;
     return skin;
