@@ -222,8 +222,6 @@
     }
 
     _reflowText () {
-      console.log('Reflowing!');
-
       this._previousDrawableScale = this._getDrawableScale();
       this._textDirty = false;
       this._textureDirty = true;
@@ -257,8 +255,6 @@
     }
 
     _renderAtScale (requestedScale) {
-      console.log('Rerendering!', requestedScale);
-
       this._renderedAtScale = requestedScale;
       this._textureDirty = false;
 
