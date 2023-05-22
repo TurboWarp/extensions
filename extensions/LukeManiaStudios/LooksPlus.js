@@ -228,10 +228,6 @@
             acceptReporters: true,
             items: 'getSprites'
           },
-          animGroupMenu: {
-            acceptReporters: true,
-            items: 'getAnimGroups'
-          },
           uriSvgMenu: {
             acceptReporters: true,
             items: [
