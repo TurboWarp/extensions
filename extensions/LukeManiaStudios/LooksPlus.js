@@ -476,7 +476,7 @@
       const color2 = args.COLOR2;
       return svg.replace(new RegExp(color1, 'gi'), color2);
     }
-    
+
     colorHex(args, util) {
       return args.INPUT;
     }
