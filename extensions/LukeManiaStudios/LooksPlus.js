@@ -478,7 +478,7 @@
     }
 
     colorHex(args, util) {
-      return args.INPUT;
+      return args.COLOR;
     }
 
     getCostumeInput(costume, target) {
