@@ -17,6 +17,11 @@
   let recording = false;
   let initializedSpeechRecognition = false;
   let speechRecognition = null;
+
+  const deviceStatus = {
+    gyroscope: false,
+    accelerometer: false,
+  };
   const initializeSpeechRecognition = () => {
     if (initializedSpeechRecognition) {
       return;
@@ -77,11 +82,13 @@
         });
         accelerometer.addEventListener("error", (e) => {
           console.error("accelerometer error", e.error);
+          deviceStatus.accelerometer = false;
         });
         accelerometer.addEventListener("reading", () => {
           deviceVelocity.x = accelerometer.x;
           deviceVelocity.y = accelerometer.y;
           deviceVelocity.z = accelerometer.z;
+          deviceStatus.accelerometer = true;
         });
         accelerometer.start();
       } catch (e) {
@@ -98,11 +105,13 @@
         });
         gyro.addEventListener("error", (e) => {
           console.error("gyro error", e.error);
+          deviceStatus.gyroscope = false;
         });
         gyro.addEventListener("reading", () => {
           deviceVelocity.rotationX = gyro.x;
           deviceVelocity.rotationY = gyro.y;
           deviceVelocity.rotationZ = gyro.z;
+          deviceStatus.gyroscope = true;
         });
       } catch (e) {
         console.error("error setting up gyro", e);
@@ -277,7 +286,10 @@
 
   const userAgent = navigator.userAgent;
   let supportsTouches = true;
-  if (userAgent.includes("Safari") && /^((?!chrome|android).)*safari/i.test(userAgent)) {
+  if (
+    userAgent.includes("Safari") &&
+    /^((?!chrome|android).)*safari/i.test(userAgent)
+  ) {
     //* Its a problem with all safari browsers from what I see now which is odd since apple says its supported?
     supportsTouches = false;
   } else if (
@@ -309,6 +321,8 @@
   }
 
   const touchPointsArray = makeArrayOfTouches(); //* <-- Do this for devices that really can't support that many touches.
+
+  const alreadyTapped = {};
 
   class SensingPlus {
     getInfo() {
@@ -408,6 +422,25 @@
             opcode: "getFingerSpeed",
             blockType: Scratch.BlockType.REPORTER,
             text: "Finger [ID] speed",
+            blockIconURI: touchIco,
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.NUMBER,
+                menu: "fingerIDMenu",
+              },
+            },
+          },
+          {
+            opcode: "onTapped",
+            blockType: Scratch.BlockType.HAT,
+            text: "On tapped",
+            blockIconURI: touchIco,
+            arguments: {},
+          },
+          {
+            opcode: "onTappedBySpecificFinger",
+            blockType: Scratch.BlockType.HAT,
+            text: "On tapped by finger [ID]",
             blockIconURI: touchIco,
             arguments: {
               ID: {
@@ -557,6 +590,34 @@
           },
           "---",
           {
+            opcode: "getClipBoard",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Copied Contents",
+            blockIconURI: clipboardIco,
+            disableMonitor: true,
+          },
+          {
+            opcode: "setClipBoard",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Set clipboard to [TEXT]",
+            blockIconURI: clipboardIco,
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "",
+              },
+            },
+          },
+          "---",
+          {
+            opcode: "isPackaged",
+            blockIconURI: packagedIco,
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Is Packaged?",
+            disableMonitor: false,
+          },
+          "---",
+          {
             opcode: "emptyFunctionForLabels",
             blockType: "label",
             text: "Google Chrome Exclusive",
@@ -587,29 +648,21 @@
           },
           "---",
           {
-            opcode: "getClipBoard",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Copied Contents",
-            blockIconURI: clipboardIco,
-            disableMonitor: true,
-          },
-          {
-            opcode: "setClipBoard",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Set clipboard to [TEXT]",
-            blockIconURI: clipboardIco,
-            arguments: {
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "",
-              },
-            },
-          },
-          "---",
-          {
             opcode: "emptyFunctionForLabels",
             blockType: "label",
             text: "Needs a gyroscope or accelerometer",
+          },
+          {
+            opcode: "hasDevice",
+            blockIconURI: deviceVelIco,
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Has a [device]?",
+            arguments: {
+              device: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "deviceMenu",
+              },
+            },
           },
           {
             opcode: "getDeviceSpeed",
@@ -628,18 +681,15 @@
               },
             },
           },
-          {
-            opcode: "isPackaged",
-            blockIconURI: packagedIco,
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "Is Packaged?",
-            disableMonitor: false,
-          },
         ],
         menus: {
           fingerIDMenu: {
             acceptReporters: true,
             items: touchPointsArray,
+          },
+          deviceMenu: {
+            acceptReporters: true,
+            items: ["gyroscope", "accelerometer"],
           },
           coordmenu: {
             acceptReporters: true,
@@ -678,6 +728,97 @@
           },
         },
       };
+    }
+
+    _touchUtil = {
+      blankExpression: () => {},
+      isTouchingAnyFinger(util, success, fail) {
+        success = success || this.blankExpression;
+        if (success == null) {
+          success = this.blankExpression;
+        }
+        fail = fail || this.blankExpression;
+        if (fail == null) {
+          fail = this.blankExpression;
+        }
+
+        for (let index = 0; index < fingerPositions.length; index++) {
+          const fingerPos = fingerPositions[index];
+          if (fingerPos != null) {
+            const touching = util.target.isTouchingPoint(
+              fingerPos[0],
+              fingerPos[1]
+            );
+            if (touching) {
+              success(index);
+              return true;
+            }
+          }
+        }
+        fail(-1);
+        return false;
+      },
+
+      isTouchingSpecificFinger(id, util, success, fail) {
+        success = success || this.blankExpression;
+        if (success == null) {
+          success = this.blankExpression;
+        }
+        fail = fail || this.blankExpression;
+        if (fail == null) {
+          fail = this.blankExpression;
+        }
+
+        const fingerPos = fingerPositions[Scratch.Cast.toNumber(id) - 1];
+        if (fingerPos != null) {
+          const touching = util.target.isTouchingPoint(
+            fingerPos[0],
+            fingerPos[1]
+          );
+          if (touching) {
+            success(id);
+            return true;
+          }
+        }
+        fail(id);
+        return false;
+      },
+    };
+
+    onTapped(args, util) {
+      let returnedArg = false;
+      if (
+        !alreadyTapped[util.target.id] ||
+        alreadyTapped[util.target.id] == false
+      ) {
+        this._touchUtil.isTouchingAnyFinger(util, () => {
+          alreadyTapped[util.target.id] = true;
+          returnedArg = true;
+        });
+      } else {
+        this._touchUtil.isTouchingAnyFinger(util, null, () => {
+          alreadyTapped[util.target.id] = false;
+        });
+      }
+      return returnedArg;
+    }
+
+    onTappedBySpecificFinger({ ID }, util) {
+      let returnedArg = false;
+      if (
+        !alreadyTapped[util.target.id] ||
+        alreadyTapped[util.target.id] == false
+      ) {
+        this._touchUtil.isTouchingSpecificFinger(ID, util, () => {
+          alreadyTapped[util.target.id] = true;
+          returnedArg = true;
+        });
+      } else {
+        this._touchUtil.isTouchingSpecificFinger(ID, util, null, () => {
+          alreadyTapped[util.target.id] = false;
+        });
+      }
+      return returnedArg;
     }
 
     emptyFunctionForLabels() {
@@ -762,6 +903,13 @@
 
     isrecording() {
       return recording;
+    }
+
+    hasDevice({ device }) {
+      if (deviceStatus[device]) {
+        return deviceStatus[device];
+      }
+      return false;
     }
 
     getDeviceSpeed({ type, axis }) {
@@ -854,47 +1002,19 @@
     }
 
     touchingFinger(args, util) {
-      for (let index = 0; index < fingerPositions.length; index++) {
-        const fingerPos = fingerPositions[index];
-        if (fingerPos != null) {
-          const touching = util.target.isTouchingPoint(
-            fingerPos[0],
-            fingerPos[1]
-          );
-          if (touching) {
-            return true;
-          }
-        }
-      }
-      return false;
+      return this._touchUtil.isTouchingAnyFinger(util);
     }
 
     touchingSpecificFinger({ ID }, util) {
-      const fingerPos = fingerPositions[ID];
-      if (fingerPos != null) {
-        const touching = util.target.isTouchingPoint(
-          fingerPos[0],
-          fingerPos[1]
-        );
-        return touching;
-      }
-      return false;
+      return this._touchUtil.isTouchingSpecificFinger(ID, util);
     }
 
     getTouchingFingerID(args, util) {
-      for (let index = 0; index < fingerPositions.length; index++) {
-        const fingerPos = fingerPositions[index];
-        if (fingerPos != null) {
-          const touching = util.target.isTouchingPoint(
-            fingerPos[0],
-            fingerPos[1]
-          );
-          if (touching) {
-            return index + 1;
-          }
-        }
-      }
-      return 0;
+      let TouchingFingerID = 0;
+      this._touchUtil.isTouchingAnyFinger(util, (FID) => {
+        TouchingFingerID = FID + 1;
+      });
+      return TouchingFingerID;
     }
 
     fingerPosition({ ID, PositionType }) {
