@@ -277,7 +277,7 @@
 
   const userAgent = navigator.userAgent;
   let supportsTouches = true;
-  if (userAgent.includes("Safari")) {
+  if (userAgent.includes("Safari") && /^((?!chrome|android).)*safari/i.test(userAgent)) {
     //* Its a problem with all safari browsers from what I see now which is odd since apple says its supported?
     supportsTouches = false;
   } else if (
