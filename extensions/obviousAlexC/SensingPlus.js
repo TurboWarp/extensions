@@ -430,25 +430,6 @@
               },
             },
           },
-          {
-            opcode: "onTapped",
-            blockType: Scratch.BlockType.HAT,
-            text: "On tapped",
-            blockIconURI: touchIco,
-            arguments: {},
-          },
-          {
-            opcode: "onTappedBySpecificFinger",
-            blockType: Scratch.BlockType.HAT,
-            text: "On tapped by finger [ID]",
-            blockIconURI: touchIco,
-            arguments: {
-              ID: {
-                type: Scratch.ArgumentType.NUMBER,
-                menu: "fingerIDMenu",
-              },
-            },
-          },
           "---",
           {
             opcode: "listInSprite",
@@ -784,42 +765,6 @@
         return false;
       },
     };
-
-    onTapped(args, util) {
-      let returnedArg = false;
-      if (
-        !alreadyTapped[util.target.id] ||
-        alreadyTapped[util.target.id] == false
-      ) {
-        this._touchUtil.isTouchingAnyFinger(util, () => {
-          alreadyTapped[util.target.id] = true;
-          returnedArg = true;
-        });
-      } else {
-        this._touchUtil.isTouchingAnyFinger(util, null, () => {
-          alreadyTapped[util.target.id] = false;
-        });
-      }
-      return returnedArg;
-    }
-
-    onTappedBySpecificFinger({ ID }, util) {
-      let returnedArg = false;
-      if (
-        !alreadyTapped[util.target.id] ||
-        alreadyTapped[util.target.id] == false
-      ) {
-        this._touchUtil.isTouchingSpecificFinger(ID, util, () => {
-          alreadyTapped[util.target.id] = true;
-          returnedArg = true;
-        });
-      } else {
-        this._touchUtil.isTouchingSpecificFinger(ID, util, null, () => {
-          alreadyTapped[util.target.id] = false;
-        });
-      }
-      return returnedArg;
-    }
 
     emptyFunctionForLabels() {
       return null;
