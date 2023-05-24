@@ -65,6 +65,6 @@ app.use((req, res) => {
 
 // The port the server runs on matters. The editor only treats port 8000 as unsandboxed.
 const PORT = 8000;
-app.listen(8000, () => {
+app.listen(PORT, () => {
   console.log(`Development server is ready on http://localhost:${PORT}/`);
 });
