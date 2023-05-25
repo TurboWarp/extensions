@@ -789,7 +789,7 @@
     }
     json_vm_setlist({ list, json }, util) {
       try {
-        const listVariable = util.target.lookupVariableById(list);
+        let listVariable = util.target.lookupVariableById(list);
 
         if (listVariable == undefined) {
           listVariable = this.getListsID(util).filter(x => x.text === list)[0].value;
