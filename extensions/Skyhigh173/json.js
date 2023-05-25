@@ -1,13 +1,13 @@
 (function(Scratch) {
   'use strict';
   const vm = Scratch.vm;
-  
+
   const hasOwn = (obj, property) => Object.prototype.hasOwnProperty.call(obj, property);
 
   const makeLabel = (text) => ({
     blockType: 'label',
     text: text
-  })
+  });
 
   class JSONS {
     getInfo() {
@@ -531,11 +531,11 @@
       try {
         json1 = JSON.parse(json1);
         json2 = JSON.parse(json2);
-        
+
         const keys1 = Object.keys(json1);
         const keys2 = Object.keys(json2);
 
-        return keys1.length === keys2.length && Object.keys(json1).every(key=>json1[key]===json2[key])
+        return keys1.length === keys2.length && Object.keys(json1).every(key=>json1[key] === json2[key]);
       } catch {
         return false;
       }
