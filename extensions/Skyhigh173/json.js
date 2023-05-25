@@ -1,7 +1,14 @@
 (function(Scratch) {
   'use strict';
   const vm = Scratch.vm;
+  
   const hasOwn = (obj, property) => Object.prototype.hasOwnProperty.call(obj, property);
+
+  const makeLabel = (text) => ({
+    blockType: 'label',
+    text: text
+  })
+
   class JSONS {
     getInfo() {
       return {
@@ -9,6 +16,7 @@
         name: 'JSON',
         color1: '#3271D0',
         blocks: [
+          makeLabel("General Utils"),
           {
             opcode: 'json_is_valid',
             blockType: Scratch.BlockType.BOOLEAN,
@@ -23,7 +31,7 @@
           {
             opcode: 'json_get_all',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'get all [Stype] in [json]',
+            text: 'get all [Stype] of [json]',
             arguments: {
               Stype: {
                 type: Scratch.ArgumentType.STRING,
@@ -66,7 +74,38 @@
               }
             }
           },
-          "---",
+          '---',
+          {
+            opcode: 'json_equal',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: '[json1] = [json2]',
+            arguments: {
+              json1: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"a":0,"b":1}'
+              },
+              json2: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"b":1,"a":0}'
+              }
+            }
+          },
+          {
+            opcode: 'json_nequal',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: '[json1] ≠ [json2]',
+            arguments: {
+              json1: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"a":0,"b":1}'
+              },
+              json2: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"b":1,"a":0}'
+              }
+            }
+          },
+          makeLabel("JSON Strings"),
           {
             opcode: 'json_jlength',
             blockType: Scratch.BlockType.REPORTER,
@@ -127,7 +166,7 @@
               }
             }
           },
-          "---",
+          makeLabel("Array"),
           {
             opcode: 'json_length',
             blockType: Scratch.BlockType.REPORTER,
@@ -166,21 +205,6 @@
               json: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: '["scratch"]'
-              }
-            }
-          },
-          {
-            opcode: 'json_array_itemH',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'item # of [item] in array [json]',
-            arguments: {
-              item: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'scratch'
-              },
-              json: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: '["scratch","TurboWarp"]'
               }
             }
           },
@@ -254,6 +278,22 @@
           },
           "---",
           {
+            opcode: 'json_array_itemH',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'item # of [item] in array [json]',
+            arguments: {
+              item: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'scratch'
+              },
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '["scratch","TurboWarp"]'
+              }
+            }
+          },
+          makeLabel("Advanced"),
+          {
             opcode: 'json_array_fromto',
             blockType: Scratch.BlockType.REPORTER,
             text: 'array [json] from item [item] to [item2]',
@@ -316,7 +356,7 @@
           {
             opcode: 'json_array_filter',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'filter all [key] in array [json]',
+            text: 'get all value with key [key] in array [json]',
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -359,7 +399,7 @@
               }
             }
           },
-          "---",
+          makeLabel("VM"),
           {
             opcode: 'json_vm_getlist',
             blockType: Scratch.BlockType.REPORTER,
@@ -411,6 +451,19 @@
           }
         ];
       }
+      return uniqueLists.map(i => ({
+        text: i.name,
+        value: i.id
+      }));
+    }
+
+    getListsID(util) {
+      // vm set list and get list bug (fixes here):
+      // when you use get list [join(list)(name)] or similar
+      // it won't work properly
+      const globalLists = Object.values(vm.runtime.getTargetForStage().variables).filter(x => x.type == 'list');
+      const localLists = Object.values(util.target.variables).filter(x => x.type == 'list');
+      const uniqueLists = [...new Set([...globalLists, ...localLists])];
       return uniqueLists.map(i => ({
         text: i.name,
         value: i.id
@@ -472,6 +525,24 @@
       } catch {
         return false;
       }
+    }
+
+    json_equal({ json1, json2 }) {
+      try {
+        json1 = JSON.parse(json1);
+        json2 = JSON.parse(json2);
+        
+        const keys1 = Object.keys(json1);
+        const keys2 = Object.keys(json2);
+
+        return keys1.length === keys2.length && Object.keys(json1).every(key=>json1[key]===json2[key])
+      } catch {
+        return false;
+      }
+    }
+
+    json_nequal({ json1, json2 }) {
+      return !this.json_equal({json1: json1, json2: json2});
     }
 
     json_get_all({ Stype,json }) {
@@ -701,7 +772,13 @@
 
     json_vm_getlist({ list }, util) {
       try {
-        const listVariable = util.target.lookupVariableById(list);
+        let listVariable = util.target.lookupVariableById(list);
+
+        if (listVariable == undefined) {
+          listVariable = this.getListsID(util).filter(x => x.text === list)[0].value;
+          listVariable = util.target.lookupVariableById(listVariable);
+        }
+
         if (listVariable && listVariable.type === 'list') {
           return JSON.stringify(listVariable.value);
         }
@@ -713,6 +790,12 @@
     json_vm_setlist({ list, json }, util) {
       try {
         const listVariable = util.target.lookupVariableById(list);
+
+        if (listVariable == undefined) {
+          listVariable = this.getListsID(util).filter(x => x.text === list)[0].value;
+          listVariable = util.target.lookupVariableById(listVariable);
+        }
+
         if (listVariable && listVariable.type === 'list') {
           const array = JSON.parse(json);
           if (Array.isArray(array)) {
