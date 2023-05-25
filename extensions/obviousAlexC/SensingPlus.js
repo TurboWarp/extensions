@@ -337,7 +337,7 @@
           {
             opcode: "emptyFunctionForLabels",
             blockType: "label",
-            text: "Safari does not support touch events!",
+            text: "Safari Based browsers do not support touch events!",
           },
           {
             opcode: "supportsTouches",
