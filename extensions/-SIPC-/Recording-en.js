@@ -1,5 +1,8 @@
 (function (Scratch) {
   'use strict';
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error('Recording must be run unsandboxed');
+  }
   let mediaRecorder;
   let recordedChunks = [];
   let isRecording = false;
@@ -39,10 +42,10 @@
             arguments: {}
           },
         ]
-      }
+      };
     }
     startRecording() {
-      recordedChunks = []
+      recordedChunks = [];
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         console.error('The recording function is not supported by the browser');
         return;
