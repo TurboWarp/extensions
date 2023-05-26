@@ -561,7 +561,7 @@
     }
 
     json_is({ json, types }) {
-      if (!this.json_is_valid({json:json})) return false;
+      if (!this.json_is_valid({json: json})) return false;
       try {
         json = JSON.parse(json);
         switch (types) {
