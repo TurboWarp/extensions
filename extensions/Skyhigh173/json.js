@@ -1,7 +1,11 @@
 (function(Scratch) {
   'use strict';
-  const vm = Scratch.vm;
+  /*
+  * JSON extension v2.5 by skyhigh173 (English Version)
+  * Do not remove this comment
+  */
 
+  const vm = Scratch.vm;
   const hasOwn = (obj, property) => Object.prototype.hasOwnProperty.call(obj, property);
 
   const makeLabel = (text) => ({
@@ -567,6 +571,7 @@
         switch (types) {
         case 'JSON': return !Array.isArray(json);
         case 'Array': return Array.isArray(json);
+        default: return false;
         }
       } catch {
         return false;
