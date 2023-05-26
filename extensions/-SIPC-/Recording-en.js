@@ -34,7 +34,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: 'Stop recording and download with [name] as filename',
             arguments: {
-              name:{
+              name: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'recording.wav'
               }
@@ -46,7 +46,6 @@
             text: 'Recording?',
             arguments: {}
           },
-          
         ]
       };
     }
