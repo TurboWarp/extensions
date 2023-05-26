@@ -32,8 +32,13 @@
           {
             opcode: 'stopRecordingAndDownload',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Stop recording and download waw',
-            arguments: {}
+            text: 'Stop recording and download with [name] as filename',
+            arguments: {
+              name:{
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'recording.wav'
+              }
+            }
           },
           {
             opcode: 'isRecording',
@@ -41,6 +46,7 @@
             text: 'Recording?',
             arguments: {}
           },
+          
         ]
       };
     }
@@ -73,7 +79,7 @@
       mediaRecorder.stop();
       console.log('Stop recording');
     }
-    stopRecordingAndDownload() {
+    stopRecordingAndDownload({name}) {
       if (!mediaRecorder) {
         console.error('Recording not started');
         return;
@@ -89,7 +95,7 @@
         const url = URL.createObjectURL(blob);
         const downloadLink = document.createElement('a');
         downloadLink.href = url;
-        downloadLink.download = 'recording.wav';
+        downloadLink.download = name;
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
