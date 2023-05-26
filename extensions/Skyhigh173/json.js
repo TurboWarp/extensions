@@ -20,7 +20,7 @@
           {
             opcode: 'json_is_valid',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is json [json] valid',
+            text: 'is JSON [json] valid',
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -28,6 +28,23 @@
               }
             }
           },
+          {
+            opcode: 'json_is',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'is [json] [types]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"key":"value"}'
+              },
+              types: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'JSON',
+                menu: 'types'
+              },
+            }
+          },
+          '---',
           {
             opcode: 'json_get_all',
             blockType: Scratch.BlockType.REPORTER,
@@ -40,6 +57,18 @@
               json: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: '{"key":"value","key2":"value2"}'
+              }
+            }
+          },
+          {
+            opcode: 'json_new',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'new [json]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'JSON',
+                menu: 'types'
               }
             }
           },
@@ -246,6 +275,7 @@
               }
             }
           },
+          '---',
           {
             opcode: 'json_array_delete',
             blockType: Scratch.BlockType.REPORTER,
@@ -293,6 +323,17 @@
             }
           },
           makeLabel('Advanced'),
+          {
+            opcode: 'json_array_from',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'array from text [json]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'abcd'
+              }
+            }
+          },
           {
             opcode: 'json_array_fromto',
             blockType: Scratch.BlockType.REPORTER,
@@ -368,6 +409,21 @@
               }
             }
           },
+          {
+            opcode: 'json_array_setlen',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'set length of array [json] to [len]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '["a","b","c"]'
+              },
+              len: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 2
+              }
+            }
+          },
           '---',
           {
             opcode: 'json_array_create',
@@ -434,6 +490,10 @@
           get_list: {
             acceptReporters: true,
             items: 'getLists'
+          },
+          types: {
+            acceptReporters: true,
+            items: ['JSON','Array']
           }
         }
       };
@@ -500,12 +560,33 @@
       }
     }
 
+    json_is({ json, types }) {
+      if (!this.json_is_valid({json:json})) return false;
+      try {
+        json = JSON.parse(json);
+        switch (types) {
+        case 'JSON': return !Array.isArray(json);
+        case 'Array': return Array.isArray(json);
+        }
+      } catch {
+        return false;
+      }
+    }
+
     json_length({ json }) {
       try {
         json = JSON.parse(json);
         return Object.keys(json).length;
       } catch {
         return ' ';
+      }
+    }
+
+    json_new({ json }) {
+      switch (json) {
+      case 'JSON': return '{}';
+      case 'Array': return '[]';
+      default: return '';
       }
     }
 
@@ -650,6 +731,14 @@
       }
     }
 
+    json_array_from({ json }) {
+      try {
+        return JSON.stringify(Array.from(String(json)));
+      } catch {
+        return '';
+      }
+    }
+
     json_array_concat({ json, json2 }) {
       try {
         json = JSON.parse(json);
@@ -770,6 +859,16 @@
       }
     }
 
+    json_array_setlen({ json, len }) {
+      try {
+        json = JSON.parse(json);
+        json.length = len;
+        return JSON.stringify(json);
+      } catch {
+        return '';
+      }
+    }
+
     json_vm_getlist({ list }, util) {
       try {
         let listVariable = util.target.lookupVariableById(list);
@@ -813,4 +912,5 @@
     }
   }
   Scratch.extensions.register(new JSONS());
+  // eslint-disable-next-line no-undef
 })(Scratch);
