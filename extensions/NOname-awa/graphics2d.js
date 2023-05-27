@@ -25,7 +25,7 @@
             round: '[rd] 为 [a] 的圆的 [CS]',
             pi: '派',
             radius: '半径',
-            radius: '直径',
+            diameter: '直径',
             area: '面积',
             circumference: '周长',
         }
