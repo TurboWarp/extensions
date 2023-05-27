@@ -178,7 +178,6 @@
                     {
                         opcode: 'graph',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'graph [graph] \'s [CS]',
                         text: Scratch.translate({ id: 'graph', default: 'graph [graph] \'s [CS]' }),
                         arguments: {
                             graph: {
@@ -224,7 +223,6 @@
                         acceptReporters: true,
                         items: [
                             {
-                                text: 'radius',
                                 text: Scratch.translate({ id: 'radius', default: 'radius' }),
                                 value: 'r'
                             },
