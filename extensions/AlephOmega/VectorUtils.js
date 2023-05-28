@@ -1,10 +1,3 @@
-//this took like 7 hours
-//5 hours took i dont think ill be making any extensions soon this is the only one im making for now
-//yoylasers yoylasers yoylasers yoylasers yoylasers yoylasers yoylasers yoylasers
-//if i get another error ill just go to sleep and forget abotu this probably 
-//LETS GO DISTANCE FINALLY WORKS 23 revisions later BUT IT WORKS
-//it did not work, well at least it shows up correctly
-//its a single error i will just rewrite the distance script instead of going to sleep idc anymore if i have to spend 100 hours awake doing this i will do it i cant take it anymore i just want this to end please
 (function (Scratch) {
   'use strict';
   if (!Scratch.extensions.unsandboxed) {
@@ -266,10 +259,6 @@ class VectorExtension {
           }
         },
         {
-          //i hope this is the last block my brain wants to make i have no braincells left to continu
-          //REMINDER : use V1 and V2 when doing operators on 2 vectors so i dont go instane with multiple vector names
-          // is it supposed to look like a command? why is it a reporter its a reporter WHY DOES IT WORK LIKE A COMMAND ITS A REPORTER
-          //i put type instead of blocktype im so dumb
           opcode : "Distance",
           blockType : Scratch.BlockType.REPORTER,
           text : "distance between [V1] and [V2]",
@@ -294,7 +283,6 @@ class VectorExtension {
   }
 
   Distance(args) {
-    //shoutout to my boy chatgpt
     var { V1, V2 } = args;
       V1 = JSON.parse(V1);
       V2 = JSON.parse(V2);
@@ -315,7 +303,6 @@ class VectorExtension {
     //Make the matrix multiplication in the Z axis
     var z = (VEC.z*ZV.x)+(VEC.y*ZV.y)+(VEC.y*ZV.y);
     return JSON.stringify({"x":x,"y":y,"z":z})
-    //i tought this part would be much longer
   }
 
   lerp(args) {
@@ -349,10 +336,6 @@ class VectorExtension {
     VEC.z *= scalingfactor;
     return JSON.stringify(VEC);
   }
-
-  //i am going insane fixing the times i forgot to add JSON.parse()
-  //and adding semicolons to all 400 ish lines or more i dont know anymore
-  //i mean 500 ish
   Reflect(args) {
     var {Vector, Normal} = args;
     Vector = JSON.parse(Vector);
@@ -559,7 +542,3 @@ class VectorExtension {
 
 Scratch.extensions.register(new VectorExtension()); 
 })(Scratch);
-//i am going insane :D
-//thats it
-//atleast i hope so
-//where is the error im so done with this
