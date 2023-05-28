@@ -126,7 +126,8 @@
 
       /** @type {RenderWebGL.Drawable} */
       this.drawable = drawable;
-      this._previousDrawableScale = 1;
+      /** @type {[number, number]} */
+      this._previousDrawableScale = [100, 100];
 
       this.canvas = document.createElement('canvas');
       this.canvas.width = 0;
@@ -201,12 +202,9 @@
       return (
         this._textDirty ||
         (this.isZooming && this._reflowTime !== globalFrameTime) ||
-        this._getDrawableScale() !== this._previousDrawableScale
+        this._previousDrawableScale[0] !== this.drawable.scale[0] ||
+        this._previousDrawableScale[1] !== this.drawable.scale[1]
       );
-    }
-
-    _getDrawableScale () {
-      return Math.max(this.drawable.scale[0], this.drawable.scale[1]) / 100;
     }
 
     _updateFontDimensions () {
@@ -220,7 +218,8 @@
       this.lineHeight = this.baseFontSize * 8 / 7;
       // Always use the base size for padding. This makes the zoom animation look better.
       this.verticalPadding = this.baseFontSize / 7;
-      this.wrapWidth = this.textWidth / this._getDrawableScale();
+      // Only use horizontal scale for wrap width for compatibility with stretch extension.
+      this.wrapWidth = this.textWidth / (this.drawable.scale[0] / 100);
     }
 
     _getFontStyle () {
@@ -228,10 +227,11 @@
     }
 
     _reflowText () {
-      this._previousDrawableScale = this._getDrawableScale();
       this._textDirty = false;
       this._textureDirty = true;
       this._reflowTime = globalFrameTime;
+      this._previousDrawableScale[0] = this.drawable.scale[0];
+      this._previousDrawableScale[1] = this.drawable.scale[1];
 
       this._updateFontDimensions();
       this.ctx.font = this._getFontStyle();
