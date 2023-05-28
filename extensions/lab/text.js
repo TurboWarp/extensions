@@ -126,8 +126,8 @@
 
       /** @type {RenderWebGL.Drawable} */
       this.drawable = drawable;
-      /** @type {[number, number]} */
-      this._previousDrawableScale = [100, 100];
+      /** @type {number} */
+      this._previousDrawableXScale = 100;
 
       this.canvas = document.createElement('canvas');
       this.canvas.width = 0;
@@ -202,8 +202,7 @@
       return (
         this._textDirty ||
         (this.isZooming && this._reflowTime !== globalFrameTime) ||
-        this._previousDrawableScale[0] !== this.drawable.scale[0] ||
-        this._previousDrawableScale[1] !== this.drawable.scale[1]
+        this._previousDrawableXScale !== this.drawable.scale[0]
       );
     }
 
@@ -230,8 +229,7 @@
       this._textDirty = false;
       this._textureDirty = true;
       this._reflowTime = globalFrameTime;
-      this._previousDrawableScale[0] = this.drawable.scale[0];
-      this._previousDrawableScale[1] = this.drawable.scale[1];
+      this._previousDrawableXScale = this.drawable.scale[0];
 
       this._updateFontDimensions();
       this.ctx.font = this._getFontStyle();
