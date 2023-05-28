@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 55.597 600 300" style="shape-rendering: crispedges;" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <path d="M -0.391 301.29 L -0.391 1.29 L 599.609 1.29 L 599.609 301.29 L -0.391 301.29 Z" style="mix-blend-mode: normal; fill-rule: nonzero; stroke-linejoin: miter; stroke-miterlimit: 10; stroke-dasharray: none; stroke-dashoffset: 0; fill: rgb(115, 162, 255);"/>
+  <path d="M 357.401 211.226 L 539.401 219.226 L 466.401 41.226 L 357.401 211.226 Z" style="fill: rgb(70,103,248);"/>
+  <path d="M 231.401 327.226 L 354.401 324.226 L 357.401 211.226 L 231.401 327.226 Z" style="fill: rgb(75,121,248);"/>
+  <path d="M 357.401 211.226 L 354.401 324.226 L 539.401 219.226 L 357.401 211.226 Z" style="fill: rgb(78,144,246);"/>
+  <path d="M 231.401 327.226 L 357.401 211.226 L 316.401 135.226 L 231.401 327.226 Z" style="fill: rgb(66,88,251);"/>
+  <path d="M 555.401 333.226 L 631.401 217.226 L 539.401 219.226 L 555.401 333.226 Z" style="fill: rgb(71,164,243);"/>
+  <path d="M 354.401 324.226 L 555.401 333.226 L 539.401 219.226 L 354.401 324.226 Z" style="fill: rgb(71,169,242);"/>
+  <path d="M 87.401 213.226 L 231.401 327.226 L 316.401 135.226 L 87.401 213.226 Z" style="fill: rgb(63,87,248);"/>
+  <path d="M 354.401 324.226 L 367.438 373.226 L 486.601 373.226 L 555.401 333.226 L 354.401 324.226 Z" style="fill: rgb(63,112,246);"/>
+  <path d="M 334.801 373.226 L 367.438 373.226 L 354.401 324.226 L 334.801 373.226 Z" style="fill: rgb(46,79,249);"/>
+  <path d="M 555.401 333.226 L 681.401 286.226 L 631.401 217.226 L 555.401 333.226 Z" style="fill: rgb(68,163,242);"/>
+  <path d="M 600.172 373.226 L 679.171 373.226 L 681.401 286.226 L 555.401 333.226 L 600.172 373.226 Z" style="fill: rgb(58,116,245);"/>
+  <path d="M 486.601 373.226 L 547.566 373.226 L 555.401 333.226 L 486.601 373.226 Z" style="fill: rgb(64,125,245);"/>
+  <path d="M 165.687 373.226 L 253.898 373.226 L 231.401 327.226 L 165.687 373.226 Z" style="fill: rgb(26,62,247);"/>
+  <path d="M 231.401 327.226 L 253.898 373.226 L 334.801 373.226 L 354.401 324.226 L 231.401 327.226 Z" style="fill: rgb(31,62,250);"/>
+  <path d="M 87.401 213.226 L 103.401 325.226 L 231.401 327.226 L 87.401 213.226 Z" style="fill: rgb(69,127,239);"/>
+  <path d="M 16.401 344.226 L 51.507 373.226 L 68.875 373.226 L 103.401 325.226 L 16.401 344.226 Z" style="fill: rgb(52,104,235);"/>
+  <path d="M 547.566 373.226 L 600.172 373.226 L 555.401 333.226 L 547.566 373.226 Z" style="fill: rgb(58,116,245);"/>
+  <path d="M 103.401 325.226 L 114.338 373.226 L 165.687 373.226 L 231.401 327.226 L 103.401 325.226 Z" style="fill: rgb(49,88,242);"/>
+  <path d="M 68.875 373.226 L 114.338 373.226 L 103.401 325.226 L 68.875 373.226 Z" style="fill: rgb(42,86,238);"/>
+  <path d="M 16.401 344.226 L 103.401 325.226 L 87.401 213.226 L 16.401 344.226 Z" style="fill: rgb(64,135,234);"/>
+  <path d="M -28.599 185.226 L 16.401 344.226 L 87.401 213.226 L -28.599 185.226 Z" style="fill: rgb(65,135,232);"/>
+  <path d="M -28.599 185.226 L -73.599 339.226 L 16.401 344.226 L -28.599 185.226 Z" style="fill: rgb(64,138,233);"/>
+  <path d="M -14.792 373.226 L 51.507 373.226 L 16.401 344.226 L -14.792 373.226 Z" style="fill: rgb(42,93,234);"/>
+  <path d="M -73.599 339.226 L -84.018 373.226 L -14.792 373.226 L 16.401 344.226 L -73.599 339.226 Z" style="fill: rgb(40,85,238);"/>
+  <rect x="131.631" y="-19.26" width="58.621" height="380.285" style="stroke: rgb(0, 0, 0); fill-rule: nonzero; stroke-opacity: 0; fill: rgb(0, 157, 255);" transform="matrix(1, 0, -0.6655, 1, -90.338676, 3.544922)"/>
+  <rect x="131.631" y="-19.26" width="58.621" height="380.285" style="stroke: rgb(0, 0, 0); fill-rule: nonzero; stroke-opacity: 0; fill: rgb(0, 157, 255);" transform="matrix(1, 0, -0.6655, 1, 43.437813, 3.047672)"/>
+  <rect x="131.631" y="-19.26" width="58.621" height="380.285" style="stroke: rgb(0, 0, 0); fill-rule: nonzero; stroke-opacity: 0; fill: rgb(0, 157, 255);" transform="matrix(1, 0, -0.6655, 1, 176.965622, 4.047493)"/>
+  <rect x="131.631" y="-19.26" width="58.621" height="380.285" style="stroke: rgb(0, 0, 0); fill-rule: nonzero; stroke-opacity: 0; fill: rgb(0, 157, 255);" transform="matrix(1, 0, -0.6655, 1, 310.890656, 3.796215)"/>
+  <rect x="131.631" y="-19.26" width="58.621" height="380.285" style="stroke: rgb(0, 0, 0); fill-rule: nonzero; stroke-opacity: 0; fill: rgb(0, 157, 255);" transform="matrix(1, 0, -0.6655, 1, 444.418488, 4.796036)"/>
+  <rect x="131.631" y="-19.26" width="58.621" height="380.285" style="stroke: rgb(0, 0, 0); fill-rule: nonzero; stroke-opacity: 0; fill: rgb(0, 157, 255);" transform="matrix(1, 0, -0.6655, 1, 579.473938, 3.925037)"/>
+  <text style="white-space: pre; fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 17.4px;" x="92.643" y="106.269"> </text>
+  <path style="fill: rgb(255, 255, 255); stroke-linecap: round; stroke: rgb(34, 0, 255); stroke-width: 8px;" d="M 177.686 280.848 L 398.894 140.072" transform="matrix(0.988657, -0.150193, 0.150193, 0.988657, -28.339451, 45.68644)"/>
+  <path style="fill: rgb(255, 255, 255); stroke-linecap: round; stroke: rgb(0, 255, 34); stroke-width: 7px;" d="M 172.29 294.187 L 206.43 71.332" transform="matrix(0.988657, -0.150193, 0.150193, 0.988657, -25.301222, 30.513632)"/>
+  <path style="fill: rgb(255, 255, 255); stroke-linecap: round; stroke: rgb(255, 0, 0); stroke-width: 7px;" d="M 391.228 312.135 L 190.635 281.875" transform="matrix(0.988657, -0.150193, 0.150193, 0.988657, -41.307934, 47.064877)"/>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 24.8px; white-space: pre;" x="389.943" y="264.454" bx:origin="6.993 1.143">X</text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 24.8px; white-space: pre;" x="181.966" y="58.437" bx:origin="6.993 1.143">Y</text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 24.8px; white-space: pre;" x="387.458" y="114.464" bx:origin="6.993 1.143">Z</text>
+</svg>
