@@ -42,10 +42,19 @@
 
   const ZOOM_DURATION = 500;
 
+  let globalFrameTime = 0;
+
   /**
    * @typedef TextState
    * @property {TextCostumeSkin} skin
    */
+
+  // temporary
+  // @ts-expect-error
+  if (!renderer.exports || !renderer.exports.Skin) {
+    alert('VM is too old for animated text extension, it is being worked on!');
+    throw new Error('VM is too old');
+  }
 
   /** @type {typeof RenderWebGL.Skin} */
   // @ts-expect-error - exports not typed yet
@@ -147,6 +156,8 @@
       this._textDirty = false;
       this._textureDirty = false;
       this._renderedAtScale = 1;
+      this._renderTime = 0;
+      this._reflowTime = 0;
 
       this.typeAnimationInterval = null;
 
@@ -175,7 +186,7 @@
 
     // Part of Skin API
     get size () {
-      if (this._textDirty) {
+      if (this._needsReflow()) {
         this._reflowText();
       }
       return this._size;
@@ -186,15 +197,10 @@
       return false;
     }
 
-    // Part of Skin API
-    get volatile () {
-      return this.isRainbow || this.isZooming || this._getDrawableScale() !== this._previousDrawableScale;
-    }
-
     _needsReflow () {
       return (
         this._textDirty ||
-        this.isZooming ||
+        (this.isZooming && this._reflowTime !== globalFrameTime) ||
         this._getDrawableScale() !== this._previousDrawableScale
       );
     }
@@ -207,7 +213,7 @@
       this.calculatedFontSize = this.baseFontSize;
       if (this.isZooming) {
         // TODO: it looks like Scratch's animation always starts at least a little visible
-        const time = Date.now() - this.zoomStartTime;
+        const time = globalFrameTime - this.zoomStartTime;
         const progress = Math.max(0, Math.min(1, time / ZOOM_DURATION));
         this.calculatedFontSize *= progress;
       }
@@ -225,6 +231,7 @@
       this._previousDrawableScale = this._getDrawableScale();
       this._textDirty = false;
       this._textureDirty = true;
+      this._reflowTime = globalFrameTime;
 
       this._updateFontDimensions();
       this.ctx.font = this._getFontStyle();
@@ -257,6 +264,7 @@
     _renderAtScale (requestedScale) {
       this._renderedAtScale = requestedScale;
       this._textureDirty = false;
+      this._renderTime = globalFrameTime;
 
       const scratchWidth = this._size[0];
       const scratchHeight = this._size[1];
@@ -267,7 +275,7 @@
       this.canvas.height = Math.ceil(scratchHeight * requestedScale);
       this.ctx.scale(requestedScale, requestedScale);
 
-      const rainbowOffset = this.isRainbow ? (Date.now() - this.rainbowStartTime) / RAINBOW_TIME_PER : 0;
+      const rainbowOffset = this.isRainbow ? (globalFrameTime - this.rainbowStartTime) / RAINBOW_TIME_PER : 0;
       this.ctx.fillStyle = this.color;
       this.ctx.font = this._getFontStyle();
       for (let i = 0; i < this.lines.length; i++) {
@@ -309,12 +317,14 @@
 
     _invalidateTexture () {
       this._textureDirty = true;
+      this._renderTime = 0;
       this.emitWasAltered();
     }
 
     _invalidateText () {
       this._textDirty = true;
       this._textureDirty = true;
+      this._reflowTime = 0;
       this.emitWasAltered();
     }
 
@@ -388,6 +398,7 @@
       return this._oneAnimationAtATime(resolve => {
         this.isRainbow = true;
         this.rainbowStartTime = Date.now();
+        this._invalidateTexture();
         this.rainbowTimeout = setTimeout(() => {
           this.isRainbow = false;
           resolve();
@@ -400,6 +411,7 @@
       return this._oneAnimationAtATime(resolve => {
         this.isZooming = true;
         this.zoomStartTime = Date.now();
+        this._invalidateText();
         this.zoomTimeout = setTimeout(() => {
           this.isZooming = false;
           resolve();
@@ -441,7 +453,11 @@
       if (this._needsReflow()) {
         this._reflowText();
       }
-      if (this._textureDirty || this.isRainbow || calculatedScale !== this._renderedAtScale) {
+      if (
+        this._textureDirty ||
+        (this.isRainbow && this._renderTime !== globalFrameTime) ||
+        calculatedScale !== this._renderedAtScale
+      ) {
         this._renderAtScale(calculatedScale);
       }
 
@@ -462,6 +478,18 @@
     renderer._allSkins[id] = skin;
     return skin;
   };
+
+  // @ts-expect-error - not typed yet
+  vm.runtime.on('BEFORE_EXECUTE', () => {
+    globalFrameTime = Date.now();
+
+    for (let i = 0; i < renderer._allSkins.length; i++) {
+      const skin = renderer._allSkins[i];
+      if (skin instanceof TextCostumeSkin && (skin.isRainbow || skin.isZooming)) {
+        skin.emitWasAltered();
+      }
+    }
+  });
 
   class AnimatedText {
     constructor () {
