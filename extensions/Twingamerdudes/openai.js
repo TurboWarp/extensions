@@ -51,7 +51,7 @@
           {
             opcode: 'requestChatOpenAI',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Request Chat Generation from [MODEL] with the system prompt [SPROMPT], user prompt [PROMPT], and key [KEY]',
+            text: 'Request Chat Generation from [MODEL] with the system prompt [SPROMPT] user prompt [PROMPT] and key [KEY]',
             arguments: {
               MODEL: {
                 type: Scratch.ArgumentType.STRING,
