@@ -51,8 +51,8 @@
 
   // temporary
   // @ts-expect-error
-  if (!renderer.exports || !renderer.exports.Skin) {
-    alert('VM is too old for animated text extension, it is being worked on!');
+  if (!renderer.exports || !renderer.exports.Skin || !vm.exports) {
+    alert('VM is too old for animated text extension');
     throw new Error('VM is too old');
   }
 
@@ -64,6 +64,8 @@
   const CanvasMeasurementProvider = renderer.exports.CanvasMeasurementProvider;
   // @ts-expect-error - exports not typed yet
   const twgl = renderer.exports.twgl;
+  // @ts-expect-error - exports not typed yet
+  const RenderedTarget = vm.exports.RenderedTarget;
 
   /**
    * @param {number} c
@@ -499,21 +501,26 @@
         this._hideAllText();
       });
 
-      vm.runtime.on('targetWasCreated', (newTarget, originalTarget) => {
-        if (originalTarget && this._hasState(originalTarget)) {
+      // targetWasCreated does not work because it runs before the Drawable is set up
+      const extension = this;
+      const originalMakeClone = RenderedTarget.prototype.makeClone;
+      RenderedTarget.prototype.makeClone = function () {
+        const newClone = originalMakeClone.call(this);
+        if (extension._hasState(this)) {
           // TODO: creates much unneeded state
-          const originalSkin = this._getState(originalTarget).skin;
-          const newSkin = this._getState(newTarget).skin;
+          const originalSkin = extension._getState(this).skin;
+          const newSkin = extension._getState(newClone).skin;
           newSkin.setAlign(originalSkin.align);
           newSkin.setColor(originalSkin.color);
           newSkin.setFontFamily(originalSkin.fontFamily);
           newSkin.setWidth(originalSkin.textWidth);
           newSkin.setText(originalSkin.text);
-          if (renderer._allDrawables[originalTarget.drawableID].skin instanceof TextCostumeSkin) {
-            renderer.updateDrawableSkinId(newTarget.drawableID, newSkin.id);
+          if (renderer._allDrawables[this.drawableID].skin instanceof TextCostumeSkin) {
+            renderer.updateDrawableSkinId(newClone.drawableID, newSkin.id);
           }
         }
-      });
+        return newClone;
+      };
 
       vm.runtime.on('targetWasRemoved', (target) => {
         if (this._hasState(target)) {
