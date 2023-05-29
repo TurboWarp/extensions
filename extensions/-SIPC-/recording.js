@@ -11,7 +11,7 @@
   class Recording {
     getInfo() {
       return {
-        id: 'Recording',
+        id: 'sipcrecording',
         name: 'Recording',
         color1: '#696969',
         menuIconURI: icon,
