@@ -79,6 +79,7 @@
       console.log('Stop recording');
       mediaRecorder.stop();
       mediaRecorder = null;
+      recordedChunks = [];
     }
     stopRecordingAndDownload({name}) {
       if (!mediaRecorder) {
@@ -96,6 +97,7 @@
         downloadLink.click();
         document.body.removeChild(downloadLink);
         URL.revokeObjectURL(url);
+        recordedChunks = [];
       });
       mediaRecorder.stop();
       mediaRecorder = null;
