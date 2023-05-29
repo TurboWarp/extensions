@@ -487,7 +487,7 @@
           types: {
             acceptReporters: true,
             items: ['Object', 'Array']
-          }
+          },
           equal: {
             acceptReporters: true,
             items: ['=','≠']
