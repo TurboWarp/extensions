@@ -162,3 +162,6 @@ Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/pull/379
 
 ## lab/text.svg
 Created by @LukeManiaStudioss
+
+## Twingamerdudes/openai.png
+The image is the OpenAI logo, which is a registered trademark of OpenAI.
