@@ -11,20 +11,6 @@
     'use strict';
 
     Scratch.translate.setup({
-        en: {
-            start: 'Create [STR]',
-            folder: 'Set [STR] to [STR2]',
-            folder_default: '大主教大祭司 Ruler of the World!',
-            sync: 'Change the location of [STR] to [STR2]',
-            del: 'Delete [STR]',
-            webin: 'Load [STR] from the web',
-            open: 'Open [STR]',
-            clean: 'Clear the file system',
-            in: 'Import file system from [STR]',
-            out: 'Export file system',
-            list: 'List all files under [STR]',
-            search: 'Search [STR]'
-        },
         zh: {
             start: '新建 [STR] ',
             folder: '设置 [STR] 为 [STR2] ',
