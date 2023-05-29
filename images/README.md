@@ -27,6 +27,9 @@ The dango is from [Twemoji](https://twemoji.twitter.com/) and is licensed under 
  - Gamepad icon from https://icon-icons.com/icon/appliances-console-controller-dualshock-gamepad-games-videogame/106553 under CC-BY 4.0
  - Background from https://app.haikei.app/
 
+## base.svg
+ - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/418#issue-1710765685
+
 ## bitwise.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/381#issue-1696559620
  - Arrow from https://icon-icons.com/icon/redo-arrow/99565 under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)
@@ -140,7 +143,7 @@ Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#
 Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1550426448
 
 ## gamejolt.svg
-Created by @LukeManiaStudioss. The GameJolt logo is probably a trademark.
+Created by @LukeManiaStudioss. The GameJolt logo is probably a trademark. The blurred scripts are from https://scratch.mit.edu/projects/60917032/
 
 ## NexusKitten/sgrab.svg
 Created by @NexusKitten in https://github.com/TurboWarp/extensions/pull/371. The "S" logo is a trademark of the Scratch Foundation.
@@ -150,3 +153,9 @@ Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/41
 
 ## LukeManiaStudios/ClonesPlus.svg
 Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/382
+
+## LukeManiaStudios/TempVariables.svg
+Created by @LukeManiaStudioss in https://github.com/TurboWarp/extensions/pull/410
+
+## obviousAlexC/SensingPlus.svg
+Created by @David-Orangemoon in https://github.com/TurboWarp/extensions/pull/379. Font is Deja Vu Sans. Scratch Cat is a trademark of the Scratch Foundation.

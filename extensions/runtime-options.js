@@ -5,6 +5,7 @@
     throw new Error('Runtime Options extension needs to be run unsandboxed');
   }
 
+  const greenFlagURI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAABFFBMVEUAAACAgABVqlVJkklAn0BNmTNLljxGlzpDmzdFmjpGmzxHmz9Fmj1FmT5Emj1GmT1GmD1EmDxGmTxEmT1GmjxGmT1FmDxEmT5EmTxGmT5FmD1GmT5FmT1Gmj1EmT5FmT1FmT1FmDxGmT1FmjxLs09LtE9Jr0xJsk1Js05JtVBKtU5KtVBKtlBJrkpJsE1KtlFIrEpIsExLt1FLuFJKuVNIqkhLulNIp0VJqkhKtlJLvVRMvFNFmT5GpUVFmT1HpEVHokNMvlVFmT1Ho0NFmTxLvlVGoUFMvlVLvlVGn0BFmT1Nv1ZEmz5FmTxFmTxFmT1NvlZFmz9FmT5FnT9FnD5GnT9Mv1ZMv1ZMv1ZFmT1Mv1b////70P2GAAAAWXRSTlMAAgMHCAoRFhcwMz0/RkdQVGFmaWpxcnh7gIGEhZKZo6eprLq/v8DAwMDAwMDBwcHCwsPDxcbIysrLzM3Pz9DQ1NTV1dfZ29vg4uXm5+jp6ens7fDx9Pv8/nPb5aAAAAABYktHRFt0vJU0AAAAsUlEQVQoz2NgwA3YhNiwS4hHykoou9goCrKiSUhGhqhZe7gbm3rxQwQ4BJihEupRYODooMDFyMAu6uMsgyoRFW5kHxjkqeuhL4cmAQM4JXRwSWjjktDEJaGFS0IVIeFtZuIaAZdQgUmY2/oqyTu5WcEkNGAS/kJMQJrbySAAJBxmGSoIlYAoYGCR8rPVM7QItuNlQJVgYGDlE5MU5kSErhz2+KCihEikNHYJJh5mBhIAADBcR/r5OJzCAAAAAElFTkSuQmCC';
   const TURBO_MODE = 'turbo mode';
   const INTERPOLATION = 'interpolation';
   const REMOVE_FENCING = 'remove fencing';
@@ -16,10 +17,9 @@
       return {
         id: 'runtimeoptions',
         name: 'Runtime Options',
-        color1: '#3467eb',
-        color2: '#4e7bed',
-        color3: '#2d53b3',
-
+        color1: '#8c9abf',
+        color2: '#7d8aab',
+        color3: '#6f7b99',
         blocks: [
           {
             opcode: 'getEnabled',
@@ -55,12 +55,12 @@
 
           {
             opcode: 'getFramerate',
-            text: 'get framerate',
+            text: 'get framerate limit',
             blockType: Scratch.BlockType.REPORTER
           },
           {
             opcode: 'setFramerate',
-            text: 'set framerate to [fps]',
+            text: 'set framerate limit to [fps]',
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               fps: {
@@ -116,6 +116,31 @@
               height: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '360'
+              }
+            }
+          },
+
+          '---',
+
+          {
+            opcode: 'setUsername',
+            text: 'set username to [username]',
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              username: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: ''
+              }
+            }
+          },
+          {
+            opcode: 'greenFlag',
+            text: 'run green flag [flag]',
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              flag: {
+                type: Scratch.ArgumentType.IMAGE,
+                dataURI: greenFlagURI
               }
             }
           }
@@ -232,7 +257,7 @@
     }
 
     setFramerate ({ fps }) {
-      fps = +fps || 0;
+      fps = Scratch.Cast.toNumber(fps);
       Scratch.vm.setFramerate(fps);
     }
 
@@ -241,7 +266,7 @@
     }
 
     setCloneLimit ({ limit }) {
-      limit = +limit || 0;
+      limit = Scratch.Cast.toNumber(limit);
       Scratch.vm.setRuntimeOptions({
         maxClones: limit
       });
@@ -257,9 +282,17 @@
     }
 
     setDimensions ({ width, height }) {
-      width = +width || 0;
-      height = +height || 0;
+      width = Scratch.Cast.toNumber(width);
+      height = Scratch.Cast.toNumber(height);
       Scratch.vm.setStageSize(width, height);
+    }
+
+    setUsername ({ username }) {
+      Scratch.vm.runtime.ioDevices.userData._username = Scratch.Cast.toString(username);
+    }
+
+    greenFlag () {
+      Scratch.vm.runtime.greenFlag();
     }
   }
 

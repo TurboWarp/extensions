@@ -52,7 +52,7 @@
             arguments: {
               CENTRAL: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 32
+                defaultValue: '32'
               }
             }
           },

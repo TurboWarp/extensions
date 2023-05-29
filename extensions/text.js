@@ -471,8 +471,10 @@
             string.toLowerCase() === string
           ));
         case CaseParam.TITLECASE:
-          return ![...string.matchAll(/\b./g)].some((match) => {
-            return match[0].toLowerCase() === match[0];
+          return string.split(/\b/g).every((word) => {
+            if (!word) return true;
+            const titleCased = word[0].toUpperCase() + word.substring(1);
+            return word === titleCased;
           });
         default: return false;
       }
