@@ -87,7 +87,7 @@
           {
             opcode: "count",
             blockType: Scratch.BlockType.REPORTER,
-            text: "count number of [SUBSTRING]s in [STRING]",
+            text: "count [SUBSTRING] in [STRING]",
             arguments: {
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -225,6 +225,25 @@
             }
           },
           {
+            opcode: "countRegex",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "count regex /[REGEX]/[FLAGS] in [STRING]",
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello world!"
+              },
+              REGEX: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "[AEIOU]"
+              },
+              FLAGS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "i"
+              }
+            }
+          },
+          {
             opcode: "testRegex",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "[STRING] matches regex /[REGEX]/[FLAGS]?",
@@ -328,14 +347,6 @@
       return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);
     }
 
-    count(args, util) {
-      //.toLowerCase() for case insensitivity
-      args.STRING = args.STRING.toString().toLowerCase();
-      args.SUBSTRING = args.SUBSTRING.toString().toLowerCase();
-
-      return args.STRING.split(args.SUBSTRING).length - 1;
-    }
-
     _caseInsensitiveRegex(str) {
       return new RegExp(
         str.replaceAll(/[^a-zA-Z0-9]/g, "\\$&"),
@@ -344,8 +355,8 @@
     }
 
     split(args, util) {
-      args.STRING = args.STRING.toString();
-      args.SPLIT = args.SPLIT.toString();
+      args.STRING = (args.STRING ?? "").toString();
+      args.SPLIT = (args.SPLIT ?? "").toString();
       args.ITEM = Number(args.ITEM) || 0;
 
       // Cache the last split
@@ -365,6 +376,16 @@
       return splitCache.arr[args.ITEM - 1] || "";
     }
 
+    count(args, util) {
+      // Fill cache
+      this.split({
+        SPLIT: args.SUBSTRING,
+        STRING: args.STRING,
+        ITEM: 0
+      }, util);
+      return (splitCache.arr.length - 1) || 0;
+    }
+
     replace(args, util) {
       args.STRING = args.STRING.toString();
       args.SUBSTRING = args.SUBSTRING.toString();
@@ -378,16 +399,16 @@
 
     indexof(args, util) {
       // .toLowerCase() for case insensitivity
-      args.STRING = args.STRING.toString().toLowerCase();
-      args.SUBSTRING = args.SUBSTRING.toString().toLowerCase();
+      args.STRING = (args.STRING ?? "").toString().toLowerCase();
+      args.SUBSTRING = (args.SUBSTRING ?? "").toString().toLowerCase();
 
       // Since both arguments are casted to strings beforehand,
       // we don't have to worry about type differences
       // like in the item number of in list block
       const found = args.STRING.indexOf(args.SUBSTRING);
 
-      // indexOf returns -1 when no matches are found
-      return found === -1 ? 0 : found + 1;
+      // indexOf returns -1 when no matches are found, we can just +1
+      return found + 1;
     }
 
     repeat(args, util) {
@@ -415,9 +436,9 @@
 
     matchRegex(args, util) {
       try {
-        args.STRING = args.STRING.toString();
-        args.REGEX = args.REGEX.toString();
-        args.FLAGS = args.FLAGS.toString();
+        args.STRING = (args.STRING ?? "").toString();
+        args.REGEX = (args.REGEX ?? "").toString();
+        args.FLAGS = (args.FLAGS ?? "").toString();
         args.ITEM = Number(args.ITEM) || 0;
 
         // Cache the last matched string
@@ -434,7 +455,7 @@
             string: args.STRING,
             regex: args.REGEX,
             flags: args.FLAGS,
-            arr: args.STRING.match(regex)
+            arr: args.STRING.match(regex) || []
           };
         }
         return matchCache.arr[args.ITEM - 1] || "";
@@ -442,6 +463,14 @@
         console.error(e);
         return "";
       }
+    }
+
+    countRegex(args, util) {
+      // Fill cache
+      // (ITEM is casted into 0,
+      // but we don't care about the return value)
+      this.matchRegex(args, util);
+      return matchCache.arr.length || 0;
     }
 
     testRegex(args, util) {
