@@ -614,7 +614,7 @@
         const keys2 = Object.keys(json2);
         const result = keys1.length === keys2.length && Object.keys(json1).every(key=>json1[key] === json2[key]);
         if (equal === '=') return result;
-        if (eaual === '≠') return !result;
+        if (equal === '≠') return !result;
       } catch {
         // ignore
       }
