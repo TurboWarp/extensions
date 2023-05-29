@@ -107,11 +107,10 @@
               }
             }
           },
-          '---',
           {
             opcode: 'json_equal',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[json1] = [json2]',
+            text: '[json1] [equal] [json2]',
             arguments: {
               json1: {
                 type: Scratch.ArgumentType.STRING,
@@ -120,21 +119,11 @@
               json2: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: '{"b":1,"a":0}'
-              }
-            }
-          },
-          {
-            opcode: 'json_nequal',
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: '[json1] ≠ [json2]',
-            arguments: {
-              json1: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"a":0,"b":1}'
               },
-              json2: {
+              equal: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"b":1,"a":0}'
+                defaultValue: '=',
+                menu: 'equal'
               }
             }
           },
@@ -499,6 +488,10 @@
             acceptReporters: true,
             items: ['Object', 'Array']
           }
+          equal: {
+            acceptReporters: true,
+            items: ['=','≠']
+          }
         }
       };
     }
@@ -612,23 +605,22 @@
       }
     }
 
-    json_equal({ json1, json2 }) {
+    json_equal({ json1, equal, json2 }) {
       try {
         json1 = JSON.parse(json1);
         json2 = JSON.parse(json2);
 
         const keys1 = Object.keys(json1);
         const keys2 = Object.keys(json2);
-
-        return keys1.length === keys2.length && Object.keys(json1).every(key=>json1[key] === json2[key]);
+        const result = keys1.length === keys2.length && Object.keys(json1).every(key=>json1[key] === json2[key]);
+        if (equal === '=') return result;
+        if (eaual === '≠') return !result;
       } catch {
-        return false;
+        // ignore
       }
+      return false;
     }
 
-    json_nequal({ json1, json2 }) {
-      return !this.json_equal({json1: json1, json2: json2});
-    }
 
     json_get_all({ Stype,json }) {
       try {
