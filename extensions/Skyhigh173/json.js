@@ -521,17 +521,16 @@
       }));
     }
 
-    getListsID(util) {
-      // vm set list and get list bug (fixes here):
-      // when you use get list [join(list)(name)] or similar
-      // it won't work properly
-      const globalLists = Object.values(vm.runtime.getTargetForStage().variables).filter(x => x.type == 'list');
-      const localLists = Object.values(util.target.variables).filter(x => x.type == 'list');
-      const uniqueLists = [...new Set([...globalLists, ...localLists])];
-      return uniqueLists.map(i => ({
-        text: i.name,
-        value: i.id
-      }));
+    lookupList(list, util) {
+      const byId = util.target.lookupVariableById(list);
+      if (byId && byId.type === 'list') {
+        return byId;
+      }
+      const byName = util.target.lookupVariableByNameAndType(list, 'list');
+      if (byName) {
+        return byName;
+      }
+      return null;
     }
 
     json_is_valid({ json }) {
@@ -876,14 +875,8 @@
 
     json_vm_getlist({ list }, util) {
       try {
-        let listVariable = util.target.lookupVariableById(list);
-
-        if (listVariable == undefined) {
-          listVariable = this.getListsID(util).filter(x => x.text === list)[0].value;
-          listVariable = util.target.lookupVariableById(listVariable);
-        }
-
-        if (listVariable && listVariable.type === 'list') {
+        let listVariable = this.lookupList(list, util);
+        if (listVariable) {
           return JSON.stringify(listVariable.value);
         }
       } catch (e) {
@@ -893,14 +886,8 @@
     }
     json_vm_setlist({ list, json }, util) {
       try {
-        let listVariable = util.target.lookupVariableById(list);
-
-        if (listVariable == undefined) {
-          listVariable = this.getListsID(util).filter(x => x.text === list)[0].value;
-          listVariable = util.target.lookupVariableById(listVariable);
-        }
-
-        if (listVariable && listVariable.type === 'list') {
+        let listVariable = this.lookupList(list, util);
+        if (listVariable) {
           const array = JSON.parse(json);
           if (Array.isArray(array)) {
             const safeArray = array.map(i => {
