@@ -204,7 +204,7 @@
       return (
         this._textDirty ||
         (this.isZooming && this._reflowTime !== globalFrameTime) ||
-        this._previousDrawableXScale !== this.drawable.scale[0]
+        this._previousDrawableXScale !== Math.abs(this.drawable.scale[0])
       );
     }
 
@@ -231,7 +231,7 @@
       this._textDirty = false;
       this._textureDirty = true;
       this._reflowTime = globalFrameTime;
-      this._previousDrawableXScale = this.drawable.scale[0];
+      this._previousDrawableXScale = Math.abs(this.drawable.scale[0]);
 
       this._updateFontDimensions();
       this.ctx.font = this._getFontStyle();
