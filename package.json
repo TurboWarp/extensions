@@ -2,6 +2,14 @@
   "name": "@turbowarp/extensions",
   "version": "0.0.1",
   "description": "Unsandboxed extensions for TurboWarp",
+  "scripts": {
+    "start": "node development/server.js",
+    "dev": "node development/server.js",
+    "build": "node development/build-production.js",
+    "validate": "node development/validate.js",
+    "lint": "eslint development extensions --max-warnings=0",
+    "fix": "npm run lint -- --fix"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TurboWarp/extensions.git"
@@ -11,8 +19,14 @@
     "url": "https://github.com/TurboWarp/extensions/issues"
   },
   "homepage": "https://github.com/TurboWarp/extensions#readme",
-  "private": true,
   "dependencies": {
-    "@turbowarp/types": "0.0.4"
-  }
+    "@turbowarp/types-tw": "^0.0.6",
+    "chokidar": "^3.5.3",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.41.0"
+  },
+  "private": true
 }
