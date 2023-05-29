@@ -1,7 +1,18 @@
 (function(Scratch) {
   'use strict';
+  /*
+  * JSON extension v2.5 by skyhigh173 (English Version)
+  * Do not remove this comment
+  */
+
   const vm = Scratch.vm;
   const hasOwn = (obj, property) => Object.prototype.hasOwnProperty.call(obj, property);
+
+  const makeLabel = (text) => ({
+    blockType: 'label',
+    text: text
+  });
+
   class JSONS {
     getInfo() {
       return {
@@ -9,10 +20,11 @@
         name: 'JSON',
         color1: '#3271D0',
         blocks: [
+          makeLabel('General Utils'),
           {
             opcode: 'json_is_valid',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is json [json] valid',
+            text: 'is JSON [json] valid',
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -21,9 +33,26 @@
             }
           },
           {
+            opcode: 'json_is',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'is [json] [types]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"key":"value"}'
+              },
+              types: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object',
+                menu: 'types'
+              },
+            }
+          },
+          '---',
+          {
             opcode: 'json_get_all',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'get all [Stype] in [json]',
+            text: 'get all [Stype] of [json]',
             arguments: {
               Stype: {
                 type: Scratch.ArgumentType.STRING,
@@ -32,6 +61,18 @@
               json: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: '{"key":"value","key2":"value2"}'
+              }
+            }
+          },
+          {
+            opcode: 'json_new',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'new [json]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object',
+                menu: 'types'
               }
             }
           },
@@ -66,7 +107,27 @@
               }
             }
           },
-          "---",
+          {
+            opcode: 'json_equal',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: '[json1] [equal] [json2]',
+            arguments: {
+              json1: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"a":0,"b":1}'
+              },
+              json2: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"b":1,"a":0}'
+              },
+              equal: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '=',
+                menu: 'equal'
+              }
+            }
+          },
+          makeLabel('JSON Strings'),
           {
             opcode: 'json_jlength',
             blockType: Scratch.BlockType.REPORTER,
@@ -127,7 +188,7 @@
               }
             }
           },
-          "---",
+          makeLabel('Array'),
           {
             opcode: 'json_length',
             blockType: Scratch.BlockType.REPORTER,
@@ -170,21 +231,6 @@
             }
           },
           {
-            opcode: 'json_array_itemH',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'item # of [item] in array [json]',
-            arguments: {
-              item: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'scratch'
-              },
-              json: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: '["scratch","TurboWarp"]'
-              }
-            }
-          },
-          {
             opcode: 'json_array_set',
             blockType: Scratch.BlockType.REPORTER,
             text: 'replace item [pos] of [json] to [item]',
@@ -222,6 +268,7 @@
               }
             }
           },
+          '---',
           {
             opcode: 'json_array_delete',
             blockType: Scratch.BlockType.REPORTER,
@@ -252,7 +299,34 @@
               }
             }
           },
-          "---",
+          '---',
+          {
+            opcode: 'json_array_itemH',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'item # of [item] in array [json]',
+            arguments: {
+              item: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'scratch'
+              },
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '["scratch","TurboWarp"]'
+              }
+            }
+          },
+          makeLabel('Advanced'),
+          {
+            opcode: 'json_array_from',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'array from text [json]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'abcd'
+              }
+            }
+          },
           {
             opcode: 'json_array_fromto',
             blockType: Scratch.BlockType.REPORTER,
@@ -316,7 +390,7 @@
           {
             opcode: 'json_array_filter',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'filter all [key] in array [json]',
+            text: 'get all value with key [key] in array [json]',
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -328,7 +402,22 @@
               }
             }
           },
-          "---",
+          {
+            opcode: 'json_array_setlen',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'set length of array [json] to [len]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '["a","b","c"]'
+              },
+              len: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 2
+              }
+            }
+          },
+          '---',
           {
             opcode: 'json_array_create',
             blockType: Scratch.BlockType.REPORTER,
@@ -359,7 +448,7 @@
               }
             }
           },
-          "---",
+          makeLabel('Lists'),
           {
             opcode: 'json_vm_getlist',
             blockType: Scratch.BlockType.REPORTER,
@@ -394,6 +483,14 @@
           get_list: {
             acceptReporters: true,
             items: 'getLists'
+          },
+          types: {
+            acceptReporters: true,
+            items: ['Object', 'Array']
+          },
+          equal: {
+            acceptReporters: true,
+            items: ['=','≠']
           }
         }
       };
@@ -415,6 +512,18 @@
         text: i.name,
         value: i.id
       }));
+    }
+
+    lookupList(list, util) {
+      const byId = util.target.lookupVariableById(list);
+      if (byId && byId.type === 'list') {
+        return byId;
+      }
+      const byName = util.target.lookupVariableByNameAndType(list, 'list');
+      if (byName) {
+        return byName;
+      }
+      return null;
     }
 
     json_is_valid({ json }) {
@@ -447,12 +556,34 @@
       }
     }
 
+    json_is({ json, types }) {
+      if (!this.json_is_valid({json: json})) return false;
+      try {
+        json = JSON.parse(json);
+        switch (types) {
+        case 'Object': return !Array.isArray(json);
+        case 'Array': return Array.isArray(json);
+        default: return false;
+        }
+      } catch {
+        return false;
+      }
+    }
+
     json_length({ json }) {
       try {
         json = JSON.parse(json);
         return Object.keys(json).length;
       } catch {
         return ' ';
+      }
+    }
+
+    json_new({ json }) {
+      switch (json) {
+      case 'Object': return '{}';
+      case 'Array': return '[]';
+      default: return '';
       }
     }
 
@@ -474,17 +605,34 @@
       }
     }
 
+    json_equal({ json1, equal, json2 }) {
+      try {
+        json1 = JSON.parse(json1);
+        json2 = JSON.parse(json2);
+
+        const keys1 = Object.keys(json1);
+        const keys2 = Object.keys(json2);
+        const result = keys1.length === keys2.length && Object.keys(json1).every(key=>json1[key] === json2[key]);
+        if (equal === '=') return result;
+        if (equal === '≠') return !result;
+      } catch {
+        // ignore
+      }
+      return false;
+    }
+
+
     json_get_all({ Stype,json }) {
       try {
         json = JSON.parse(json);
         switch (Stype) {
-          case 'keys':
-            return JSON.stringify(Object.keys(json).map(key => key));
-          case 'values':
-            return JSON.stringify(Object.keys(json).map(key => json[key]));
-          case 'datas':
-            return JSON.stringify(Object.keys(json).map(key => [key, json[key]]));
-          default: return '';
+        case 'keys':
+          return JSON.stringify(Object.keys(json).map(key => key));
+        case 'values':
+          return JSON.stringify(Object.keys(json).map(key => json[key]));
+        case 'datas':
+          return JSON.stringify(Object.keys(json).map(key => [key, json[key]]));
+        default: return '';
         }
       } catch {
         return '';
@@ -574,6 +722,14 @@
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
         let result = JSON.stringify(json.indexOf(item) + 1);
         return result;
+      } catch {
+        return '';
+      }
+    }
+
+    json_array_from({ json }) {
+      try {
+        return JSON.stringify(Array.from(String(json)));
       } catch {
         return '';
       }
@@ -699,10 +855,20 @@
       }
     }
 
+    json_array_setlen({ json, len }) {
+      try {
+        json = JSON.parse(json);
+        json.length = len;
+        return JSON.stringify(json);
+      } catch {
+        return '';
+      }
+    }
+
     json_vm_getlist({ list }, util) {
       try {
-        const listVariable = util.target.lookupVariableById(list);
-        if (listVariable && listVariable.type === 'list') {
+        let listVariable = this.lookupList(list, util);
+        if (listVariable) {
           return JSON.stringify(listVariable.value);
         }
       } catch (e) {
@@ -712,8 +878,8 @@
     }
     json_vm_setlist({ list, json }, util) {
       try {
-        const listVariable = util.target.lookupVariableById(list);
-        if (listVariable && listVariable.type === 'list') {
+        let listVariable = this.lookupList(list, util);
+        if (listVariable) {
           const array = JSON.parse(json);
           if (Array.isArray(array)) {
             const safeArray = array.map(i => {
