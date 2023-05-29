@@ -220,7 +220,7 @@
       // Always use the base size for padding. This makes the zoom animation look better.
       this.verticalPadding = this.baseFontSize / 7;
       // Only use horizontal scale for wrap width for compatibility with stretch extension.
-      this.wrapWidth = this.textWidth / (this.drawable.scale[0] / 100);
+      this.wrapWidth = this.textWidth / (Math.abs(this.drawable.scale[0]) / 100);
     }
 
     _getFontStyle () {
