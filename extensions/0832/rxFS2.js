@@ -95,7 +95,7 @@
                             },
                             STR2: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: Scratch.translate({ id: 'folder_default', default: '大主教大祭司 Ruler of the World!' }),
+                                defaultValue: Scratch.translate({ id: 'folder_default', default: 'rxFS is good!' }),
                             }
                         }
                     },
