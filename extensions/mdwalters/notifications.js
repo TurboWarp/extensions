@@ -1,6 +1,31 @@
 (function(Scratch) {
   'use strict';
 
+  let denied = false;
+  let notification = null;
+
+  const askForNotificationPermission = async () => {
+    try {
+      // @ts-expect-error - canNotify is too old.
+      const allowedByVM = await Scratch.canNotify();
+      if (!allowedByVM) {
+        throw new Error('Denied by VM');
+      }
+
+      const allowedByBrowser = await Notification.requestPermission();
+      if (!allowedByBrowser) {
+        throw new Error('Denied by browser');
+      }
+
+      denied = false;
+      return true;
+    } catch (e) {
+      denied = true;
+      console.warn('Could not request notification permissions', e);
+      return false;
+    }
+  };
+
   class Notifications {
     getInfo() {
       return {
@@ -10,7 +35,12 @@
           {
             opcode: 'requestPermission',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'request notifications permission'
+            text: 'request notification permission'
+          },
+          {
+            opcode: 'hasPermission',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'has notification permission'
           },
           {
             opcode: 'showNotification',
@@ -27,32 +57,27 @@
       };
     }
 
-    async requestPermission() {
-      try {
-        // @ts-expect-error - canNotify is too old.
-        const allowedByVM = await Scratch.canNotify();
-        if (!allowedByVM) {
-          throw new Error('Denied by VM');
-        }
+    requestPermission() {
+      return askForNotificationPermission();
+    }
 
-        const allowedByBrowser = await Notification.requestPermission();
-        if (!allowedByBrowser) {
-          throw new Error('Denied by browser');
-        }
-
-        return true;
-      } catch (e) {
-        console.warn('Could not request notification permissions', e);
+    hasPermission() {
+      if (denied) {
         return false;
+      }
+      return askForNotificationPermission();
+    }
+
+    async _showNotification(text) {
+      if (await this.hasPermission()) {
+        notification = new Notification('Notification from project', {
+          body: text
+        });
       }
     }
 
-    async showNotification(args) {
-      if (await this.requestPermission()) {
-        const notification = new Notification('Notification from project', {
-          body: Scratch.Cast.toString(args.text)
-        });
-      }
+    showNotification(args) {
+      this._showNotification(Scratch.Cast.toString(args.text));
     }
   }
 
