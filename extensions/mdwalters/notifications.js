@@ -2,6 +2,7 @@
   'use strict';
 
   let denied = false;
+  /** @type {Notification|null} */
   let notification = null;
 
   const askForNotificationPermission = async () => {
@@ -52,6 +53,11 @@
                 defaultValue: 'Hello, world!'
               }
             }
+          },
+          {
+            opcode: 'closeNotification',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'close notification'
           }
         ]
       };
@@ -78,6 +84,12 @@
 
     showNotification(args) {
       this._showNotification(Scratch.Cast.toString(args.text));
+    }
+
+    closeNotification() {
+      if (notification) {
+        notification.close();
+      }
     }
   }
 
