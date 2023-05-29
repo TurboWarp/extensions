@@ -13,41 +13,44 @@
                       text: "request notifications permission"
                     },
                     {
-                        opcode: "newNotification",
+                        opcode: "showNotification",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "create a notification with title [title]",
+                        text: "create notification with text [text]",
                         arguments: {
-                            title: {
+                            text: {
                               type: Scratch.ArgumentType.STRING,
                               defaultValue: "Hello, world!"
                             }
                         }
-                    },
-                    {
-                        opcode: "notificationsAllowed",
-                        blockType: Scratch.BlockType.BOOLEAN,
-                        text: "is notifications allowed?"
                     }
                 ]
             };
         }
 
-        requestPermission() {
-            let notification = Notification.requestPermission();
-            return notification;
-        }
+        async requestPermission() {
+            try {
+                // @ts-expect-error - canNotify is too old.
+                const allowedByVM = await Scratch.canNotify();
+                if (!allowedByVM) {
+                    throw new Error('Denied by VM');
+                }
 
-        newNotification(args) {
-            const notification = new Notification(args.title);
-            return notification;
-        }
+                const allowedByBrowser = await Notification.requestPermission();
+                if (!allowedByBrowser) {
+                    throw new Error('Denied by browser');
+                }
 
-        notifcationsAllowed() {
-            if (Notification.permission === "granted") {
                 return true;
-            } else {
+            } catch (e) {
+                console.warn('Could not request notification permissions', e);
                 return false;
             }
+        }
+
+        showNotification(args) {
+            const notification = new Notification('Notification from project', {
+                body: Scratch.Cast.toString(args.text)
+            });
         }
     }
 
