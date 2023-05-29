@@ -18,7 +18,7 @@
   let recording = false;
   let initializedSpeechRecognition = false;
   let speechRecognition = null;
-  const initializeSpeechRecognition = () => {
+  const initializeSpeechRecognition = async () => {
     if (initializedSpeechRecognition) {
       return;
     }
@@ -28,6 +28,11 @@
       console.warn(
         "Speech recognotion blocks are not supported in this browser"
       );
+      return;
+    }
+
+    // @ts-expect-error - not typed yet
+    if (!await Scratch.canRecordAudio()) {
       return;
     }
 
@@ -772,7 +777,13 @@
 
     getClipBoard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        return navigator.clipboard.readText();
+        // @ts-expect-error - not typed yet
+        return Scratch.canReadClipboard().then(allowed => {
+          if (allowed) {
+            return navigator.clipboard.readText();
+          }
+          return '';
+        });
       }
       return "";
     }
