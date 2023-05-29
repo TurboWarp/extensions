@@ -917,5 +917,4 @@
     }
   }
   Scratch.extensions.register(new JSONS());
-  // eslint-disable-next-line no-undef
 })(Scratch);
