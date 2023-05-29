@@ -43,7 +43,7 @@
               },
               types: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'JSON',
+                defaultValue: 'Object',
                 menu: 'types'
               },
             }
@@ -71,7 +71,7 @@
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'JSON',
+                defaultValue: 'Object',
                 menu: 'types'
               }
             }
@@ -497,7 +497,7 @@
           },
           types: {
             acceptReporters: true,
-            items: ['JSON','Array']
+            items: ['Object', 'Array']
           }
         }
       };
@@ -569,7 +569,7 @@
       try {
         json = JSON.parse(json);
         switch (types) {
-        case 'JSON': return !Array.isArray(json);
+        case 'Object': return !Array.isArray(json);
         case 'Array': return Array.isArray(json);
         default: return false;
         }
@@ -589,7 +589,7 @@
 
     json_new({ json }) {
       switch (json) {
-      case 'JSON': return '{}';
+      case 'Object': return '{}';
       case 'Array': return '[]';
       default: return '';
       }
