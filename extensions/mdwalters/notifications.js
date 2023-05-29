@@ -47,10 +47,12 @@
       }
     }
 
-    showNotification(args) {
-      const notification = new Notification('Notification from project', {
-        body: Scratch.Cast.toString(args.text)
-      });
+    async showNotification(args) {
+      if (await this.requestPermission()) {
+        const notification = new Notification('Notification from project', {
+          body: Scratch.Cast.toString(args.text)
+        });
+      }
     }
   }
 
