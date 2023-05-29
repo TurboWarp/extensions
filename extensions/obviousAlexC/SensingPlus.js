@@ -573,18 +573,21 @@
                 menu: "toggleMenu",
               },
             },
+            hideFromPalette: true,
           },
           {
             opcode: "returnWords",
             blockType: Scratch.BlockType.REPORTER,
             text: "Recognized Words",
             blockIconURI: speechIco,
+            hideFromPalette: true,
           },
           {
             opcode: "isrecording",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Recording?",
             blockIconURI: speechIco,
+            hideFromPalette: true,
           },
           "---",
           {
