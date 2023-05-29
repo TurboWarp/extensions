@@ -140,8 +140,14 @@
     dict_get({ KEY, DICT }) {
       if (!dictionaries.get(DICT)) return "null";
       let dict = dictionaries.get(DICT);
-      return dict.get(KEY) ? dict.get(KEY) :
-                dict.get(KEY) === null ? "null" : "undefined";
+      let value = dict.get(KEY);
+      if (typeof value === 'number' || typeof value === 'string' || typeof value === 'boolean') {
+        return value;
+      }
+      if (value === undefined) {
+        return 'undefined';
+      }
+      return JSON.stringify(value);
     }
 
     dict_property_defined({ KEY, DICT }) {
