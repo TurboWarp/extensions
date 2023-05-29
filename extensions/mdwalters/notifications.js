@@ -4,7 +4,7 @@
     class Notifications {
         getInfo() {
             return {
-                id: "notifications",
+                id: "mdwaltersnotifications",
                 name: "Notifications",
                 blocks: [
                     {
@@ -29,7 +29,7 @@
                         text: "is notifications allowed?"
                     }
                 ]
-            }
+            };
         }
 
         requestPermission() {
