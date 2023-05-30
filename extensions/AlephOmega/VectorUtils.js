@@ -269,6 +269,33 @@ class VectorExtension {
               type: Scratch.ArgumentType.STRING
             }
           }
+        },
+        {
+          opcode: "Set",
+          blockType: Scratch.blockType.REPORTER,
+          text: "Set [SET] of [OF] to [TO]",
+          arguments: {
+            SET: {
+              type: Scratch.ArgumentType.STRING,
+              menu : "VAL"
+            },
+            OF: {
+              type: Scratch.ArgumentType.STRING
+            },
+            TO: {
+              type: Scratch.ArgumentType.NUMBER
+            }
+          }
+        },
+        {
+          opcode: "Abs",
+          blockType: Scratch.blockType.REPORTER,
+          text: "Absolute value of all axis in [V1]",
+          arguments: {
+            V1: {
+              type:Scratch.ArgumentType.STRING
+            }
+          }
         }
       ],
       menus: {
@@ -278,6 +305,29 @@ class VectorExtension {
         }
       }
     };
+  }
+
+  Abs(args) {
+    var V1 = JSON.parse(args.V1);
+    V1.X = Math.abs(V1.X);
+    V1.Y = Math.abs(V1.Y);
+    V1.Z = Math.abs(V1.Z);
+    return JSON.stringify(V1);
+  }
+
+  Set(args) {
+   var {SET, OF, TO} = args
+   OF = JSON.parse(OF);
+   if (SET == "X") {
+     OF.X = TO 
+   }
+   if (SET == "Y") {
+    OF.Y = TO 
+  }
+  if (SET == "Z") {
+    OF.Z = TO 
+  }
+   return JSON.stringify(OF);
   }
 
   Distance(args) {
@@ -294,14 +344,10 @@ class VectorExtension {
 
   Mat(args) {
     var {VEC, XV , YV , ZV} = args;
-    //Make the matrix multiplication in the X axis
     var x = (VEC.x * XV.x) + (VEC.y * XV.y) + (VEC.y * XV.y);
-    //Make the matrix multiplication in the Y axis
     var y = (VEC.x * YV.x) + (VEC.y * YV.y) + (VEC.y * YV.y);
-    //Make the matrix multiplication in the Z axis
     var z = (VEC.z * ZV.x) + (VEC.y * ZV.y) + (VEC.y * ZV.y);
     return JSON.stringify({"x": x,"y": y,"z": z});
-    //i tought this part would be much longer
   }
 
   lerp(args) {
@@ -447,24 +493,21 @@ class VectorExtension {
     const { Vector, VEC } = args;
     var vector = JSON.parse(VEC);
     var angle = JSON.parse(Vector);
-    // Perform x-axis rotation
     angle.x *= Math.PI / 180;
     angle.y *= Math.PI / 180;
     angle.z *= Math.PI / 180;
     var rx = (vector.x * Math.cos(angle.y)) + (vector.z * Math.sin(angle.y));
     vector.z = (vector.z * Math.cos(angle.y)) - (vector.x * Math.sin(angle.y));
     vector.x = rx;
-    // Perform y-axis rotation
     var ry = (vector.y * Math.cos(angle.y)) + (vector.z * Math.sin(angle.y));
     vector.z = (vector.z * Math.cos(angle.y)) - (vector.y * Math.sin(angle.y));
     vector.y = ry;
-    // Perform z-axis rotation
     var rz = (vector.x * Math.cos(angle.z)) - (vector.y * Math.sin(angle.z));
     vector.y = (vector.y * Math.cos(angle.z)) + (vector.x * Math.sin(angle.z));
     vector.x = rz;
     return JSON.stringify(vector);
   }
-  
+
   getVector(args) {
     const { x, y, z } = args;
     const vector = { x, y, z };
