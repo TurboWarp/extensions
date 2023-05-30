@@ -56,17 +56,11 @@
         name: 'Camera',
 
         color1: '#ff4da7',
-        color2: '#b93778',
-        color3: '#b93778',
+        color2: '#de4391',
+        color3: '#c83c82',
 
         menuIconURI: icon,
 
-        menus: {
-          sprites: {
-            items: 'getSprites',
-            acceptReporters: true,
-          }
-        },
         blocks: [
           {
             opcode: 'moveSteps',
@@ -102,18 +96,17 @@
             }
           },
           '---',
-          /* {
+          {
             opcode: 'goTo',
             blockType: Scratch.BlockType.COMMAND,
             text: 'move camera to [sprite]',
             arguments: {
               sprite: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "mouse-pointer",
                 menu: "sprites",
               },
             }
-          }, */
+          },
           {
             opcode: 'setBoth',
             blockType: Scratch.BlockType.COMMAND,
@@ -129,7 +122,7 @@
               },
             }
           },
-          "---",
+          '---',
           {
             opcode: 'setDirection',
             blockType: Scratch.BlockType.COMMAND,
@@ -141,18 +134,17 @@
               }
             }
           },
-          /* {
+          {
             opcode: 'pointTowards',
             blockType: Scratch.BlockType.COMMAND,
             text: 'point camera towards [sprite]',
             arguments: {
               sprite: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "mouse-pointer",
                 menu: "sprites",
               },
             }
-          }, */
+          },
           '---',
           {
             opcode: 'changeX',
@@ -198,7 +190,7 @@
               }
             }
           },
-          "---",
+          '---',
           {
             opcode: 'getX',
             blockType: Scratch.BlockType.REPORTER,
@@ -258,12 +250,18 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'background color',
           },
-        ]
+        ],
+        menus: {
+          sprites: {
+            items: 'getSprites',
+            acceptReporters: true,
+          }
+        },
       };
     }
 
     getSprites(){
-      let sprites = ["mouse-pointer"];
+      let sprites = [];
       Scratch.vm.runtime.targets.forEach(e=>{
         if (e.isOriginal && !e.isStage) sprites.push(e.sprite.name);
       });
@@ -351,11 +349,29 @@
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    goTo() {
-
+    goTo(ARGS, util) {
+      const target = Scratch.Cast.toString(ARGS.sprite);
+      const sprite = vm.runtime.getSpriteTargetByName(target);
+      if (!sprite) return;
+      cameraX = Math.round(sprite.x);
+      cameraY = Math.round(sprite.y);
+      updateCamera();
+      vm.runtime.requestRedraw();
     }
-    pointTowards() {
-
+    pointTowards(ARGS, util) {
+      const target = Scratch.Cast.toString(ARGS.sprite);
+      const sprite = vm.runtime.getSpriteTargetByName(target);
+      if (!sprite) return;
+      let targetX = sprite.x;
+      let targetY = sprite.y;
+      const dx = targetX - cameraX;
+      const dy = targetY - cameraY;
+      cameraDirection = 90 - this.radToDeg(Math.atan2(dy, dx));
+      updateCamera();
+      vm.runtime.requestRedraw();
+    }
+    radToDeg(rad) {
+      return rad * 180 / Math.PI;
     }
   }
 
