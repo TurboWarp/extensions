@@ -362,7 +362,7 @@
         this._invalidateText();
       }
     }
-    
+
     getFontFamily () {
       return this.fontFamily;
     }
