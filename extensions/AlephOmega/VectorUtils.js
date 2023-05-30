@@ -1,3 +1,4 @@
+//I HATE ESLING I HATE ESLIN I HATE ESLINT I HAVE ESLINT I HATE ESLING I HATE SLINT I HAVE TO REWRITE THE ENTIRE PROGRAM
 (function (Scratch) {
   'use strict';
   if (!Scratch.extensions.unsandboxed) {
@@ -203,7 +204,7 @@ class VectorExtension {
           text: "Reflect vector [Vector] onto plane with [Normal] as its normal",
           arguments: {
             Vector: {
-              type : Scratch.ArgumentType.STRING
+              type: Scratch.ArgumentType.STRING
             },
               type: Scratch.ArgumentType.STRING
           }
@@ -292,14 +293,14 @@ class VectorExtension {
   }
 
   Mat(args) {
-    var {VEC, XV , YV , ZV} = args
+    var {VEC, XV , YV , ZV} = args;
     //Make the matrix multiplication in the X axis
     var x = (VEC.x * XV.x) + (VEC.y * XV.y) + (VEC.y * XV.y);
     //Make the matrix multiplication in the Y axis
     var y = (VEC.x * YV.x) + (VEC.y * YV.y) + (VEC.y * YV.y);
     //Make the matrix multiplication in the Z axis
-    var z = (VEC.z * ZV.x) + (VEC.y * ZV.y) + (VEC.y*ZV.y);
-    return JSON.stringify({"x":x,"y":y,"z":z});
+    var z = (VEC.z * ZV.x) + (VEC.y * ZV.y) + (VEC.y * ZV.y);
+    return JSON.stringify({"x": x,"y": y,"z": z});
     //i tought this part would be much longer
   }
 
@@ -339,14 +340,14 @@ class VectorExtension {
     Vector = JSON.parse(Vector);
     Normal = JSON.parse(Normal);
    var dot = (
-    (Vector.x*Normal.x) +
-    (Vector.y*Normal.y) +
-    (Vector.z*Normal.z)
+    (Vector.x * Normal.x) +
+    (Vector.y * Normal.y) +
+    (Vector.z * Normal.z)
   );
    var scaled = Normal;
-   scaled.x *= dot*2;
-   scaled.y *= dot*2;
-   scaled.z *= dot*2;
+   scaled.x *= dot * 2;
+   scaled.y *= dot * 2;
+   scaled.z *= dot * 2;
 
    var reflected = Vector;
    reflected.x -= scaled.x;
@@ -375,9 +376,9 @@ class VectorExtension {
     var V2 = JSON.parse(args.V2);
 
     const dot = (
-     (V2.x*V1.x) +
-     (V2.y*V1.y) +
-     (V2.z*V1.z)
+     (V2.x * V1.x) +
+     (V2.y * V1.y) +
+     (V2.z * V1.z)
    );
    var Pfrom = V1;
    Pfrom.x *= dot;
@@ -407,9 +408,9 @@ class VectorExtension {
   }
 
   Angle(args) {
-    var {V1, V2} = args
-    V1 = JSON.parse(V1)
-    V2 = JSON.parse(V2)
+    var {V1, V2} = args;
+    V1 = JSON.parse(V1);
+    V2 = JSON.parse(V2);
     const mag1 =  Math.sqrt(
       (V1.x * V1.x) +
       (V1.y * V1.y) +
@@ -424,8 +425,8 @@ class VectorExtension {
       (V2.x * V1.x) +
       (V2.y * V1.y) +
       (V2.z * V1.z)
-    )
-    return Math.acos(dot/(mag1*mag2))*(180/Math.PI);
+    );
+    return Math.acos(dot / (mag1 * mag2)) * (180 / Math.PI);
   }
 
   Normalize(args) {
@@ -439,14 +440,13 @@ class VectorExtension {
     vec.x /= magnitude;
     vec.y /= magnitude;
     vec.z /= magnitude;
-    return JSON.stringify(vec)
+    return JSON.stringify(vec);
   }
 
   Rotate(args) {
     const { Vector, VEC } = args;
     var vector = JSON.parse(VEC);
     var angle = JSON.parse(Vector);
-  
     // Perform x-axis rotation
     angle.x *= Math.PI / 180;
     angle.y *= Math.PI / 180;
@@ -462,9 +462,8 @@ class VectorExtension {
     var rz = (vector.x * Math.cos(angle.z)) - (vector.y * Math.sin(angle.z));
     vector.y = (vector.y * Math.cos(angle.z)) + (vector.x * Math.sin(angle.z));
     vector.x = rz;
-    return JSON.stringify(vector)
+    return JSON.stringify(vector);
   }
-  
   
   getVector(args) {
     const { x, y, z } = args;
@@ -535,6 +534,5 @@ class VectorExtension {
     return JSON.stringify(result);
   }
 }
-
 Scratch.extensions.register(new VectorExtension()); 
 })(Scratch);
