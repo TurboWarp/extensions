@@ -134,7 +134,7 @@
           {
             opcode: 'replaceCostumeContent',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set [TYPE] for [COSTUME] with [CONTENT]',
+            text: 'set [TYPE] for [COSTUME] to [CONTENT]',
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
