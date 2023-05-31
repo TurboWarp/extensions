@@ -12642,8 +12642,8 @@
             opcode: 'getStatic',
             text: formatMessage({
                 id: 'griffpatch.getStatic',
-                default: 'Static?',
-                description: 'get whether this sprite is static'
+                default: 'fixed?',
+                description: 'get whether this sprite is fixed'
             }),
             blockType: BlockType.BOOLEAN
           },
