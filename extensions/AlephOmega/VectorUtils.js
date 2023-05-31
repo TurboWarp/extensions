@@ -308,9 +308,9 @@ class VectorExtension {
 
   Abs(args) {
     var V1 = JSON.parse(args.V1);
-    V1.X = Math.abs(V1.X);
-    V1.Y = Math.abs(V1.Y);
-    V1.Z = Math.abs(V1.Z);
+    V1.x = Math.abs(V1.X);
+    V1.y = Math.abs(V1.Y);
+    V1.z = Math.abs(V1.Z);
     return JSON.stringify(V1);
   }
 
@@ -318,13 +318,13 @@ class VectorExtension {
    var {SET, OF, TO} = args
    OF = JSON.parse(OF);
    if (SET == "X") {
-     OF.X = TO 
+     OF.x = TO; 
    }
    if (SET == "Y") {
-    OF.Y = TO 
+    OF.y = TO;
   }
   if (SET == "Z") {
-    OF.Z = TO 
+    OF.z = TO;
   }
    return JSON.stringify(OF);
   }
