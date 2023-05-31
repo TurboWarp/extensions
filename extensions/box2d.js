@@ -13383,7 +13383,7 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      return body.GetFixtureList().GetDensity();
+      return body.GetFixtureList().GetDensity() * 100;
     }
 
     setTargetFriction(args, util) {
@@ -13402,7 +13402,7 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      return body.GetFixtureList().GetFriction();
+      return body.GetFixtureList().GetFriction() * 100;
     }
 
     setTargetRestitution(args, util) {
@@ -13421,7 +13421,7 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      return body.GetFixtureList().GetRestitution();
+      return body.GetFixtureList().GetRestitution() * 100;
     }
 
     setProperties(args, util) {
