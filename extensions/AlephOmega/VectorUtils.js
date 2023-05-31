@@ -271,7 +271,7 @@ class VectorExtension {
         },
         {
           opcode: "Set",
-          blockType: Scratch.blockType.REPORTER,
+          blockType: Scratch.BlockType.REPORTER,
           text: "Set [SET] of [OF] to [TO]",
           arguments: {
             SET: {
@@ -288,7 +288,7 @@ class VectorExtension {
         },
         {
           opcode: "Abs",
-          blockType: Scratch.blockType.REPORTER,
+          blockType: Scratch.BlockType.REPORTER,
           text: "Absolute value of all axis in [V1]",
           arguments: {
             V1: {
