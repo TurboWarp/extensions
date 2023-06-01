@@ -265,7 +265,7 @@ function clamp(a,b,c) {
             {
                 opcode: "round_merge",
                 blockType: Scratch.BlockType.REPORTER,
-                text: "[A] round merhe [B] with radius [K] ",
+                text: "[A] round merge [B] with radius [K] ",
                 arguments: {
 
                     A: {
