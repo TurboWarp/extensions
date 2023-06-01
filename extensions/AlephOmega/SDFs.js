@@ -8,6 +8,9 @@
     class SDF {
       getInfo() {
         return {
+          color1: "#ad0090",
+          color2: "#6e145f",
+          color3: "#3b0932",
           id: 'SDF',
           name: 'SDFs',
           blocks: [
