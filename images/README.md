@@ -132,7 +132,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## NOname-awa/more-comparisons.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1479376273.
 
-## NOname-awa/global-coordinate.js.svg
+## NOname-awa/global-coordinate.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in ---.
  - Square from https://icon-icons.com/icon/adding-black-square-button-interface-symbol/73101 under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
  - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
