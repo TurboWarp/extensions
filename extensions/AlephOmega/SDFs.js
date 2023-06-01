@@ -429,10 +429,10 @@ function clamp(a,b,c) {
         };
       }
 
-     warning() {
+    Warning() {
      return "This extension works with VectorUtils" 
      }
-     
+
       Onioning({A, B}) {
         return abs(A) - B;
       }
