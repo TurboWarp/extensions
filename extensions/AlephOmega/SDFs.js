@@ -19,7 +19,6 @@ function min(a,b) {
 function clamp(a,b,c) {
  return max(min(a,b),c)   
 }
-
 (function(Scratch) {
     'use strict';
   
@@ -37,7 +36,7 @@ function clamp(a,b,c) {
           name: 'SDFs',
           blocks: [
             {
-              opcode: "Sphere",
+              opcode: 'Sphere',
               blockType: Scratch.BlockType.REPORTER,
               text: 'Get distance from [P] to sphere at [A] with radius [R]',
               arguments: {
