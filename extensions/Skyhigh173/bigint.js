@@ -1,6 +1,5 @@
 (function(Scratch){
   'use strict';
-  /* global Scratch */
 
   const bi = x => {
     try {
