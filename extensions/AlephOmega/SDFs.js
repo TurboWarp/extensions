@@ -5,7 +5,7 @@
       throw new Error('This extension must run unsandboxed');
     }
   
-    class HelloWorld {
+    class SDF {
       getInfo() {
         return {
           id: 'SDF',
@@ -592,5 +592,5 @@
         return dist + min(max(qx,max(qy,qz)),0)-R
       }
     }
-    Scratch.extensions.register(new HelloWorld());
+    Scratch.extensions.register(new SDF());
   })(Scratch);
