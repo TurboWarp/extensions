@@ -35,8 +35,13 @@ function clamp(a,b,c) {
           id: 'SDF',
           name: 'SDFs',
           blocks: [
+           {
+            opcode: "Warning",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Warning,
+           },
             {
-              opcode: 'Sphere',
+              opcode: "Sphere",
               blockType: Scratch.BlockType.REPORTER,
               text: 'Get distance from [P] to sphere at [A] with radius [R]',
               arguments: {
@@ -424,6 +429,10 @@ function clamp(a,b,c) {
         };
       }
 
+     warning() {
+     return "This extension works with VectorUtils" 
+     }
+     
       Onioning({A, B}) {
         return abs(A) - B;
       }
