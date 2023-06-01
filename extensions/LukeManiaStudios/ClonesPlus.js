@@ -637,7 +637,7 @@
       res.json.extensions.push(...blockInfo.extensions);
     }
     return res;
-  }
+  };
 
   Scratch.extensions.register(new ClonesPlus());
 })(Scratch);
