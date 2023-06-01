@@ -154,7 +154,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in ---.
  - GameJolt logo based on https://commons.wikimedia.org/wiki/File:LogoGameJolt.png under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-## itch.io.svg
+## itchio.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in ---.
  - Itch.io logo based on https://commons.wikimedia.org/wiki/File:Itch.io_logo.svg.
 
