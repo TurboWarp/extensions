@@ -1377,12 +1377,20 @@
     }
 
     setClipboard(args) {
-      navigator.clipboard.writeText(args.STRING);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(args.STRING);
+      }
     }
 
     readClipboard(args) {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        return navigator.clipboard.readText();
+        // @ts-expect-error - not typed yet
+        return Scratch.canReadClipboard().then(allowed => {
+          if (allowed) {
+            return navigator.clipboard.readText();
+          }
+          return '';
+        });
       }
       return '';
     }
