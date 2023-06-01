@@ -1,3 +1,24 @@
+function max(a,b) {
+ if(a>b) {
+     return a;
+ }
+    else {
+   return b;     
+ }
+}
+
+function min(a,b) {
+ if(a>b) {
+     return b;
+ }
+    else {
+   return a;     
+ }
+}
+
+function clamp(a,b,c) {
+ return max(min(a,b),c)   
+}
 (function(Scratch) {
     'use strict';
   
