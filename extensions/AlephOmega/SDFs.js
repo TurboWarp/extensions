@@ -1,3 +1,26 @@
+function vecSub(v1, v2) {
+  return { x: v1.x - v2.x, y: v1.y - v2.y, z: v1.z - v2.z };
+}
+
+function vecAdd(v1, v2) {
+  return { x: v1.x + v2.x, y: v1.y + v2.y, z: v1.z + v2.z };
+}
+
+function vecMult(v, s) {
+  return { x: v.x * s, y: v.y * s, z: v.z * s };
+}
+
+function dot(v1, v2) {
+  return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
+function vecDist(v1, v2) {
+  var dx = v1.x - v2.x;
+  var dy = v1.y - v2.y;
+  var dz = v1.z - v2.z;
+  return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+
 function max(a,b) {
  if(a>b) {
      return a;
@@ -402,9 +425,26 @@ function clamp(a,b,c) {
                         type: Scratch.ArgumentType.NUMBER
                     }
                 }
+            },
+                {
+                opcode: "Edge",
+                blockType: Scratch.BlockType.REPORTER,
+                text: "[A] Get edge with thickness [B]",
+                arguments: {
+                    A: {
+                        type: Scratch.ArgumentType.NUMBER
+                    },
+                    B: {
+                        type: Scratch.ArgumentType.NUMBER
+                    }
+                }
             }
           ]
         };
+      }
+
+      Edge({A, B}) {
+        return abs(A + B) - B;
       }
 
       Onioning({A, B}) {
@@ -412,22 +452,19 @@ function clamp(a,b,c) {
       }
 
       Round({A, B}) {
-          return abs(A + B) - B;
+          return A - B;
       }
 
       Smoothint({A, B, K}) {
-        var h = clamp(0.5 - 0.5 * (A - B) / K, 0 ,1);
-        return (A * h) + (B * (1 - h)) + K * h * (1-h)
+        return A * (1 - Math.exp(-B/K));
       }
 
       Smoothsub({A, B, K}) {
-        var h = clamp(0.5 - 0.5 * (A + B) / K, 0 ,1);
-        return (A * h) + (B * (1 - h)) + K * h * (1-h)
+        return A * Math.exp(-B/K);
       }
 
       Smoothunion({A, B, K}) {
-        var h = clamp(0.5 + 0.5 * (A - B) / K, 0 ,1);
-        return (A * h) + (B * (1 - h)) + K * h * (1-h)
+        return A + B - (A * B)/(A + B) * (1 - Math.exp(-(A + B)/K));
       }
 
       Scale({A, B}) {
@@ -518,38 +555,26 @@ function clamp(a,b,c) {
         return min(A, B);
       }
 
-      Capsule({P, A, B, R}) {
-        P = JSON.parse(P);
-        A = JSON.parse(A);
-        B = JSON.parse(B)
-        var pax = P.x - A.x;
-        var pay = P.y - A.y;
-        var paz = P.z - A.z;
-        var bax = B.x - A.x;
-        var bay = B.y - A.y;
-        var baz = B.z - A.z;
-        var dotpaba = (
-          pax * bax + 
-          pay * bay +
-          paz * baz
-        );
-        var dotbaba = (
-            bax * bax + 
-            bay * bay +
-            baz * baz
-        );
-        var h = clamp(dotpaba/dotbaba,0,1);
-        var bahx = bax*h;
-        var bahy = bay*h;
-        var bahz = baz*h;
-        var ax = pax-bahx;
-        var ay = pay-bahy;
-        var az = paz-bahz;
-        var dist = Math.sqrt(
-            ax * ax + ay * ay + az * az
-        );
-        return dist-R;
-      }
+     Capsule({P, A, B, R}) {
+  P = JSON.parse(P);
+  A = JSON.parse(A);
+  B = JSON.parse(B);
+
+  var AP = vecSub(P, A);
+  var AB = vecSub(B, A);
+
+  var t = Math.max(0, Math.min(1, dot(AP, AB) / dot(AB, AB)));
+
+  var closestPoint = vecAdd(A, vecMult(AB, t));
+  var distToClosest = vecDist(P, closestPoint);
+
+  if (t === 0 || t === 1) {
+    return distToClosest - R;
+  } else {
+    var distToAxis = vecDist(P, A) - R;
+    return Math.sqrt(distToClosest * distToClosest + distToAxis * distToAxis);
+  }
+}
 
       Sphere({P, A, R}) {
         P = JSON.parse(P);
