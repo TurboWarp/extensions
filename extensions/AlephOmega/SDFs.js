@@ -19,6 +19,7 @@ function min(a,b) {
 function clamp(a,b,c) {
  return max(min(a,b),c)   
 }
+
 (function(Scratch) {
     'use strict';
   
@@ -35,11 +36,6 @@ function clamp(a,b,c) {
           id: 'SDF',
           name: 'SDFs',
           blocks: [
-           {
-            opcode: "Warning",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Warning,
-           },
             {
               opcode: "Sphere",
               blockType: Scratch.BlockType.REPORTER,
@@ -428,10 +424,6 @@ function clamp(a,b,c) {
           ]
         };
       }
-
-    Warning() {
-     return "This extension works with VectorUtils" 
-     }
 
       Onioning({A, B}) {
         return abs(A) - B;
