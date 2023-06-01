@@ -51,6 +51,7 @@
             opcode: 'whenCloneStartsWithVar',
             blockType: Scratch.BlockType.HAT,
             text: 'when I start as a clone with [INPUTA] set to [INPUTB]',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -67,6 +68,7 @@
             opcode: 'createCloneWithVar',
             blockType: Scratch.BlockType.COMMAND,
             text: 'create clone with [INPUTA] set to [INPUTB]',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -86,6 +88,7 @@
             opcode: 'touchingCloneWithVar',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'touching clone with [INPUTA] set to [INPUTB]?',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -102,6 +105,7 @@
             opcode: 'touchingMainSprite',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'touching main sprite?',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE]
           },
 
@@ -111,6 +115,7 @@
             opcode: 'setVariableOfClone',
             blockType: Scratch.BlockType.COMMAND,
             text: 'set variable [INPUTA] to [INPUTB] for clones with [INPUTC] set to [INPUTD]',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -135,6 +140,7 @@
             opcode: 'getVariableOfClone',
             blockType: Scratch.BlockType.REPORTER,
             text: 'variable [INPUTA] of clone with [INPUTB] set to [INPUTC]',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
@@ -156,6 +162,7 @@
             opcode: 'setVariableOfMainSprite',
             blockType: Scratch.BlockType.COMMAND,
             text: 'set variable [INPUTA] to [INPUTB] for main sprite',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -172,6 +179,7 @@
             opcode: 'getVariableOfMainSprite',
             blockType: Scratch.BlockType.REPORTER,
             text: 'variable [INPUT] of main sprite',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
@@ -188,6 +196,7 @@
             opcode: 'cloneExists',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'clone with [INPUTA] set to [INPUTB] exists?',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -204,6 +213,7 @@
             opcode: 'getThingOfClone',
             blockType: Scratch.BlockType.REPORTER,
             text: '[INPUTA] of clone with [INPUTB] set to [INPUTC]',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
@@ -226,6 +236,7 @@
             opcode: 'getThingOfMainSprite',
             blockType: Scratch.BlockType.REPORTER,
             text: '[INPUT] of main sprite',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
@@ -243,6 +254,7 @@
             opcode: 'stopScriptsInSprite',
             blockType: Scratch.BlockType.COMMAND,
             text: 'stop scripts in [INPUT]',
+            extensions: ['colours_control'],
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -254,6 +266,7 @@
             opcode: 'stopScriptsInClone',
             blockType: Scratch.BlockType.COMMAND,
             text: 'stop scripts in clones with [INPUTA] set to [INPUTB]',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -270,6 +283,7 @@
             opcode: 'stopScriptsInMainSprite',
             blockType: Scratch.BlockType.COMMAND,
             text: 'stop scripts in main sprite',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE]
           },
 
@@ -279,6 +293,7 @@
             opcode: 'deleteClonesInSprite',
             blockType: Scratch.BlockType.COMMAND,
             text: 'delete clones in [INPUT]',
+            extensions: ['colours_control'],
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -290,6 +305,7 @@
             opcode: 'deleteCloneWithVar',
             blockType: Scratch.BlockType.COMMAND,
             text: 'delete clones with [INPUTA] set to [INPUTB]',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -309,6 +325,7 @@
             opcode: 'isClone',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'is clone?',
+            extensions: ['colours_control'],
             filter: [Scratch.TargetType.SPRITE]
           },
 
@@ -317,12 +334,14 @@
           {
             opcode: 'cloneCount',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'clone count'
+            text: 'clone count',
+            extensions: ['colours_control']
           },
           {
             opcode: 'spriteCloneCount',
             blockType: Scratch.BlockType.REPORTER,
             text: 'clone count of [INPUT]',
+            extensions: ['colours_control'],
             disableMonitor: true,
             arguments: {
               INPUT: {
@@ -607,5 +626,18 @@
       }
     }
   }
+
+  // "Extension" option reimplementation by Xeltalliv
+  const runtime = Scratch.vm.runtime;
+  const cbfsb = runtime._convertBlockForScratchBlocks.bind(runtime);
+  runtime._convertBlockForScratchBlocks = function(blockInfo, categoryInfo) {
+    const res = cbfsb(blockInfo, categoryInfo);
+    if (blockInfo.extensions) {
+      if (!res.json.extensions) res.json.extensions = [];
+      res.json.extensions.push(...blockInfo.extensions);
+    }
+    return res;
+  }
+
   Scratch.extensions.register(new ClonesPlus());
 })(Scratch);
