@@ -417,17 +417,17 @@ function clamp(a,b,c) {
 
       Smoothint({A, B, K}) {
         var h = clamp(0.5 - 0.5 * (A - B) / K, 0 ,1);
-        return this.Lerp({"A": A, "B": 0 - B, "T": h}) + K * h * (1 - h);
+        return (A * h) + (B * (1 - h)) + K * h * (1-h)
       }
 
       Smoothsub({A, B, K}) {
         var h = clamp(0.5 - 0.5 * (A + B) / K, 0 ,1);
-        return this.Lerp({"A": A, "B": 0 - B, "T": h}) + K * h * (1 - h);
+        return (A * h) + (B * (1 - h)) + K * h * (1-h)
       }
 
       Smoothunion({A, B, K}) {
         var h = clamp(0.5 + 0.5 * (A - B) / K, 0 ,1);
-        return this.Lerp({"A": A, "B": B, "T": h}) + K * h * (1 - h);
+        return (A * h) + (B * (1 - h)) + K * h * (1-h)
       }
 
       Scale({A, B}) {
@@ -569,34 +569,34 @@ function clamp(a,b,c) {
         var dx = P.x - A.x;
         var dy = P.y - A.y;
         var dz = P.z - A.z;
-        var qx = Math.abs(dx)-S.x;
-        var qy = Math.abs(dy)-S.y;
-        var qz = Math.abs(dz)-S.z;
-        var Zerominx = max(qx,0);
-        var Zerominy = max(qy,0);
-        var Zerominz = max(qz,0);
+        dx = Math.abs(dx)-S.x;
+        dy = Math.abs(dy)-S.y;
+        dz = Math.abs(dz)-S.z;
+        dx = max(dx,0);
+        dy = max(dy,0);
+        dz = max(dz,0);
         var dist = Math.sqrt(
-            Zerominx*Zerominx + Zerominy*Zerominy + Zerominz*Zerominz
+            dx*dx+dy*dy+dz*dz
         );
-        return dist + min(max(qx,max(qy,qz)),0)
+        return dist+min(max(dx,max(dy,dz)),0);
       }
 
       Box2({P, A, S, R}) {
-        P = JSON.parse(P);
+                P = JSON.parse(P);
         A = JSON.parse(A);
         var dx = P.x - A.x;
         var dy = P.y - A.y;
         var dz = P.z - A.z;
-        var qx = Math.abs(dx)-S.x;
-        var qy = Math.abs(dy)-S.y;
-        var qz = Math.abs(dz)-S.z;
-        var Zerominx = max(qx,0);
-        var Zerominy = max(qy,0);
-        var Zerominz = max(qz,0);
+        dx = Math.abs(dx)-S.x;
+        dy = Math.abs(dy)-S.y;
+        dz = Math.abs(dz)-S.z;
+        dx = max(dx,0)
+        dy = max(dy,0)
+        dz = max(dz,0)
         var dist = Math.sqrt(
-            Zerominx*Zerominx + Zerominy*Zerominy + Zerominz*Zerominz
+            dx*dx+dy*dy+dz*dz
         );
-        return dist + min(max(qx,max(qy,qz)),0)-R
+        return dist+min(max(dx,max(dy,dz)),0)-R
       }
     }
     Scratch.extensions.register(new SDF());
