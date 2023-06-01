@@ -314,23 +314,6 @@ function clamp(a,b,c) {
                 }
             },
             {
-                opcode: "round_subtract",
-                blockType: Scratch.BlockType.REPORTER,
-                text: "[A] round subtract [B] with radius [K] ",
-                arguments: {
-
-                    A: {
-                        type: Scratch.ArgumentType.NUMBER
-                    },
-                    B: {
-                        type: Scratch.ArgumentType.NUMBER
-                    },
-                    K: {
-                        type: Scratch.ArgumentType.NUMBER
-                    }
-                }
-            },
-            {
                 opcode: "Smoothunion",
                 blockType: Scratch.BlockType.REPORTER,
                 text: "[A] Smootly merge [B] with a coefficient of [K] ",
