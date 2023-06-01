@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 300 600 300" width="300px" height="600px" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <rect x="-14.782" y="290.864" width="663.268" height="337.713" style="stroke: rgb(0, 0, 0);"/>
+  <g transform="matrix(1, 0, 0, 1, -17.44862, -12.967016)">
+    <text style="fill: none; fill-rule: evenodd; font-family: Arial, sans-serif; font-size: 113.6px; paint-order: stroke; stroke: rgb(34, 0, 0); stroke-dashoffset: 25px; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 1; stroke-width: 200px; white-space: pre;" x="45.466" y="550.565" bx:origin="0 0.000002">SDF</text>
+    <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 200px; stroke: rgb(34, 0, 0);" cx="375.402" cy="423.845" rx="77.342" ry="77.342"/>
+    <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 200px; stroke: rgb(34, 0, 0);" transform="matrix(0.993502, 0.113814, -0.113814, 0.993502, 244.970245, 379.789154)"/>
+  </g>
+  <g transform="matrix(1, 0, 0, 1, -17.116037, -12.117466)">
+    <text style="fill: none; fill-rule: evenodd; font-family: Arial, sans-serif; font-size: 113.6px; paint-order: stroke; stroke: rgb(58, 0, 0); stroke-dashoffset: 25px; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 1; stroke-width: 150px; white-space: pre;" x="45.466" y="550.565" bx:origin="0 0.000002">SDF</text>
+    <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 150px; stroke: rgb(58, 0, 0);" cx="375.402" cy="423.845" rx="77.342" ry="77.342"/>
+    <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 150px; stroke: rgb(58, 0, 0);" transform="matrix(0.993502, 0.113814, -0.113814, 0.993502, 244.970245, 379.789154)"/>
+  </g>
+  <g transform="matrix(1, 0, 0, 1, -12.335494, -12.143744)">
+    <text style="fill: none; fill-rule: evenodd; font-family: Arial, sans-serif; font-size: 113.6px; paint-order: stroke; stroke: rgb(80, 0, 0); stroke-dashoffset: 25px; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 1; stroke-width: 100px; white-space: pre;" x="45.466" y="550.565" bx:origin="0 0.000002">SDF</text>
+    <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 100px; stroke: rgb(80, 0, 0);" cx="375.402" cy="423.845" rx="77.342" ry="77.342"/>
+    <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 100px; stroke: rgb(80, 0, 0);" transform="matrix(0.993502, 0.113814, -0.113814, 0.993502, 244.970245, 379.789154)"/>
+  </g>
+  <g transform="matrix(1, 0, 0, 1, -12.157664, -10.131387)">
+    <text style="fill: none; fill-rule: evenodd; font-family: Arial, sans-serif; font-size: 113.6px; paint-order: stroke; stroke: rgb(140, 0, 0); stroke-dashoffset: 25px; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 1; stroke-width: 70px; white-space: pre;" x="45.466" y="550.565" bx:origin="0 0.000002">SDF</text>
+    <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke: rgb(140, 0, 0); stroke-width: 70px;" cx="375.402" cy="423.845" rx="77.342" ry="77.342"/>
+    <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke: rgb(140, 0, 0); stroke-width: 70px;" transform="matrix(0.993502, 0.113814, -0.113814, 0.993502, 244.970245, 379.789154)"/>
+  </g>
+  <g>
+    <text style="fill: rgb(0, 255, 21); fill-rule: evenodd; font-family: Arial, sans-serif; font-size: 113.6px; paint-order: stroke; stroke: rgb(255, 0, 0); stroke-dashoffset: 25px; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 1; stroke-width: 27px; white-space: pre;" x="34.158" y="540.817" bx:origin="0 0.000002">SDF</text>
+    <ellipse style="stroke: rgb(255, 0, 0); stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: rgb(34, 255, 0); stroke-width: 37px;" cx="364.094" cy="414.097" rx="77.342" ry="77.342"/>
+    <rect x="233.436" y="74.827" width="112.901" height="87.985" style="fill: rgb(0, 255, 13); stroke: rgb(255, 0, 0); stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; stroke-width: 33px;" transform="matrix(0.993502, 0.113814, -0.113814, 0.993502, 233.662399, 370.040924)"/>
+  </g>
+</svg>
