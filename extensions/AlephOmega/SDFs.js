@@ -401,11 +401,11 @@
       }
 
       Onioning({A, B}) {
-        return abs(A) - B
+        return abs(A) - B;
       }
 
       Round({A, B}) {
-          return abs(A + B) - B
+          return abs(A + B) - B;
       }
 
       Smoothint({A, B, K}) {
