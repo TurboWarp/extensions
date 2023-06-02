@@ -40,7 +40,7 @@
         temperature: conf.temp / 100,
       })
     });
-    if (!resp.ok) throw new Error('Request failed! Please check your network!');
+    if (!resp.ok) throw new Error((await resp.json()).message);
     return (await resp.json()).choices[0].text;
   }
   async function request_chat(text) {
@@ -62,7 +62,7 @@
         temperature: conf.temp / 100,
       })
     });
-    if (!resp.ok) throw new Error('Request failed! Please check your network!');
+    if (!resp.ok) throw new Error((await resp.json()).message);
     return (await resp.json()).choices[0].message.content;
   }
   async function request(text) {
@@ -73,7 +73,7 @@
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({data: text})
       });
-      if (!resp.ok) throw new Error((await resp.json()).message);
+      if (!resp.ok) throw new Error('Request failed! Please check your network!');
       const message = (await resp.json()).message;
       cache[text] = message;
       return message;
