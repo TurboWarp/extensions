@@ -5,10 +5,10 @@
   let getBatteryPromise = null;
   /** @type {BatteryManager|null} */
   let cachedBattery = null;
-  /** @type {Error|null} */
-  let cachedBatteryError = null;
+  /** @type {boolean} */
+  let batteryError = false;
   const withBattery = (callback) => {
-    if (!navigator.getBattery || cachedBatteryError) {
+    if (!navigator.getBattery || batteryError) {
       return callback(null);
     }
     if (cachedBattery) {
@@ -23,7 +23,7 @@
         })
         .catch(error => {
           console.error('Could not get battery', error);
-          cachedBatteryError = error;
+          batteryError = true;
           return null;
         });
     }
