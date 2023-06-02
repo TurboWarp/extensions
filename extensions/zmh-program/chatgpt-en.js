@@ -126,8 +126,8 @@
             },
           },
           {
-            opcode: 'donate',
-            blockType: Scratch.BlockType.COMMAND,
+            func: 'donate',
+            blockType: Scratch.BlockType.BUTTON,
             text: 'donate'
           },
         ],
