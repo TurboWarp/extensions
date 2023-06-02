@@ -8,6 +8,8 @@
   /** @type {boolean} */
   let batteryError = false;
   const withBattery = (callback) => {
+    // This is made slightly complicated because getting the BatteryManager is async the first time,
+    // but we want these blocks to not return a promise when they don't need to.
     if (!navigator.getBattery || batteryError) {
       return callback(null);
     }
@@ -22,6 +24,7 @@
           return cachedBattery;
         })
         .catch(error => {
+          getBatteryPromise = null;
           console.error('Could not get battery', error);
           batteryError = true;
           return null;
