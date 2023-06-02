@@ -21,6 +21,20 @@
         .then(battery => {
           getBatteryPromise = null;
           cachedBattery = battery;
+
+          cachedBattery.addEventListener('chargingchange', () => {
+            Scratch.vm.runtime.startHats('battery_chargingChanged');
+          });
+          cachedBattery.addEventListener('levelchange', () => {
+            Scratch.vm.runtime.startHats('battery_levelChanged');
+          });
+          cachedBattery.addEventListener('chargingtimechange', () => {
+            Scratch.vm.runtime.startHats('battery_chargeTimeChanged');
+          });
+          cachedBattery.addEventListener('dischargingtimechange', () => {
+            Scratch.vm.runtime.startHats('battery_dischargeTimeChanged');
+          });
+
           return cachedBattery;
         })
         .catch(error => {
@@ -47,20 +61,44 @@
             text: 'charging?'
           },
           {
-            opcode: 'getCharge',
+            opcode: 'level',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'battery percent'
+            text: 'battery level'
           },
           {
-            opcode: 'timeUntilCharged',
+            opcode: 'chargeTime',
             blockType: Scratch.BlockType.REPORTER,
             text: 'seconds until charged'
           },
           {
-            opcode: 'timeUntilDischarged',
+            opcode: 'dischargeTime',
             blockType: Scratch.BlockType.REPORTER,
             text: 'seconds until empty'
-          }
+          },
+          {
+            opcode: 'chargingChanged',
+            blockType: Scratch.BlockType.HAT,
+            text: 'when charging changed',
+            isEdgeActivated: false
+          },
+          {
+            opcode: 'levelChanged',
+            blockType: Scratch.BlockType.HAT,
+            text: 'when battery level changed',
+            isEdgeActivated: false
+          },
+          {
+            opcode: 'chargeTimeChanged',
+            blockType: Scratch.BlockType.HAT,
+            text: 'when time until charged changed',
+            isEdgeActivated: false
+          },
+          {
+            opcode: 'dischargeTimeChanged',
+            blockType: Scratch.BlockType.HAT,
+            text: 'when time until empty changed',
+            isEdgeActivated: false
+          },
         ]
       };
     }
@@ -70,19 +108,19 @@
         return battery.charging;
       });
     }
-    getCharge () {
+    level () {
       return withBattery(battery => {
         if (!battery) return 100;
         return battery.level * 100;
       });
     }
-    timeUntilCharged () {
+    chargeTime () {
       return withBattery(battery => {
         if (!battery) return 0;
         return battery.chargingTime;
       });
     }
-    timeUntilDischarged () {
+    dischargeTime () {
       return withBattery(battery => {
         if (!battery) return Infinity;
         return battery.dischargingTime;
