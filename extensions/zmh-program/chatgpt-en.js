@@ -66,7 +66,6 @@
     return (await resp.json()).choices[0].message.content;
   }
   async function request(text) {
-    console.log(conf, conf.model, all_completions, conf.model in all_completions)
     if (!conf.apikey) {
       // eslint-disable-next-line no-restricted-syntax
       const resp = await fetch('https://chatgpt.deeptrain.net/gpt', {
