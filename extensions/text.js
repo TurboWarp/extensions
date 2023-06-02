@@ -9,7 +9,8 @@
     LOWERCASE: "lowercase",
     UPPERCASE: "uppercase",
     MIXEDCASE: "mixedcase",
-    TITLECASE: "titlecase"
+    TITLECASE: "titlecase",
+    EXACTTITLECASE: "exacttitlecase"
   };
 
   let splitCache;
@@ -31,6 +32,10 @@
         {
           text: "Title Case",
           value: CaseParam.TITLECASE
+        },
+        {
+          text: "Exactly Title Case",
+          value: CaseParam.EXACTTITLECASE
         },
         {
           text: "MiXeD CaSe",
@@ -505,6 +510,12 @@
             const titleCased = word[0].toUpperCase() + word.substring(1);
             return word === titleCased;
           });
+        case CaseParam.EXACTTITLECASE:
+          return string.split(/\b/g).every((word) => {
+            if (!word) return true;
+            const titleCased = word[0].toUpperCase() + word.substring(1).toLowerCase();
+            return word === titleCased;
+          });
         default: return false;
       }
     }
@@ -524,11 +535,14 @@
               char.toLowerCase()
           ).join("");
         case CaseParam.TITLECASE:
-          return string.split(/\b/g).map((str) => {
-            let chars = Array.from(str);
-            if (chars.length < 1) return "";
-            chars[0] = chars[0].toUpperCase();
-            return chars.join("");
+          return string.split(/\b/g).map((word) => {
+            if (!word) return '';
+            return word[0].toUpperCase() + word.substring(1);
+          }).join("");
+        case CaseParam.EXACTTITLECASE:
+          return string.split(/\b/g).map((word) => {
+            if (!word) return '';
+            return word[0].toUpperCase() + word.substring(1).toLowerCase();
           }).join("");
         default: return string;
       }

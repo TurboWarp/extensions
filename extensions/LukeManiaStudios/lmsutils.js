@@ -17,15 +17,15 @@
       return {
         id: 'lmsutilsblocks',
         name: 'LMS Utilities',
-        color1: '#1cd6ff',
-        color2: '#1cbbff',
-        color3: '#1cbbff',
+        color1: '#3bb2ed',
+        color2: '#37a1de',
+        color3: '#3693d9',
         menuIconURI: menuIconURI,
         blocks: [
           {
             opcode: 'whenBooleanHat',
             blockType: Scratch.BlockType.HAT,
-            text: 'when [INPUT]',
+            text: 'when [INPUT] is true',
             isEdgeActivated: true,
             arguments: {
               INPUT: {
@@ -324,6 +324,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: '[STRING]',
             disableMonitor: true,
+            hideFromPalette: true,
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -335,6 +336,7 @@
             opcode: 'colourHex',
             blockType: Scratch.BlockType.REPORTER,
             text: 'color [COLOUR]',
+            hideFromPalette: true,
             arguments: {
               COLOUR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -346,6 +348,7 @@
             opcode: 'angleReporter',
             blockType: Scratch.BlockType.REPORTER,
             text: 'angle [ANGLE]',
+            hideFromPalette: true,
             arguments: {
               ANGLE: {
                 type: Scratch.ArgumentType.ANGLE,
@@ -357,6 +360,7 @@
             opcode: 'matrixReporter',
             blockType: Scratch.BlockType.REPORTER,
             text: 'matrix [MATRIX]',
+            hideFromPalette: true,
             arguments: {
               MATRIX: {
                 type: Scratch.ArgumentType.MATRIX,
@@ -368,6 +372,7 @@
             opcode: 'noteReporter',
             blockType: Scratch.BlockType.REPORTER,
             text: 'note [NOTE]',
+            hideFromPalette: true,
             arguments: {
               NOTE: {
                 type: Scratch.ArgumentType.NOTE,
@@ -379,6 +384,7 @@
             opcode: 'newlineCharacter',
             blockType: Scratch.BlockType.REPORTER,
             text: 'newline character',
+            hideFromPalette: true,
             disableMonitor: true
           },
 
@@ -468,6 +474,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'encode [STRING] to [DROPDOWN]',
             disableMonitor: true,
+            hideFromPalette: true,
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -485,6 +492,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'decode [STRING] from [DROPDOWN]',
             disableMonitor: true,
+            hideFromPalette: true,
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -581,6 +589,7 @@
             opcode: 'setVariableTo',
             blockType: Scratch.BlockType.COMMAND,
             text: 'set variable [INPUTA] to [INPUTB]',
+            hideFromPalette: true,
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -596,6 +605,7 @@
             opcode: 'changeVariableBy',
             blockType: Scratch.BlockType.COMMAND,
             text: 'change variable [INPUTA] by [INPUTB]',
+            hideFromPalette: true,
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -612,6 +622,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'variable [INPUT]',
             disableMonitor: true,
+            hideFromPalette: true,
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -623,6 +634,7 @@
             opcode: 'deleteVariable',
             blockType: Scratch.BlockType.COMMAND,
             text: 'delete variable [INPUT]',
+            hideFromPalette: true,
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -634,12 +646,14 @@
             opcode: 'deleteAllVariables',
             blockType: Scratch.BlockType.COMMAND,
             text: 'delete all variables',
+            hideFromPalette: true
           },
           {
             opcode: 'listVariables',
             blockType: Scratch.BlockType.REPORTER,
             text: 'list active variables',
             disableMonitor: true,
+            hideFromPalette: true
           },
 
           '---',
@@ -648,11 +662,13 @@
             opcode: 'greenFlag',
             blockType: Scratch.BlockType.COMMAND,
             text: 'green flag',
+            hideFromPalette: true
           },
           {
             opcode: 'setUsername',
             blockType: Scratch.BlockType.COMMAND,
             text: 'set username to [INPUT]',
+            hideFromPalette: true,
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -667,7 +683,7 @@
             opcode: 'setSpriteSVG',
             blockType: Scratch.BlockType.COMMAND,
             text: 'replace SVG data for costume [INPUTA] with [INPUTB]',
-
+            hideFromPalette: true,
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -686,6 +702,7 @@
             opcode: 'alertBlock',
             blockType: Scratch.BlockType.COMMAND,
             text: 'alert [STRING]',
+            hideFromPalette: true,
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -697,6 +714,7 @@
             opcode: 'inputPromptBlock',
             blockType: Scratch.BlockType.REPORTER,
             text: 'prompt [STRING]',
+            hideFromPalette: true,
             disableMonitor: true,
             arguments: {
               STRING: {
@@ -709,6 +727,7 @@
             opcode: 'confirmationBlock',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'confirm [STRING]',
+            hideFromPalette: true,
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -723,6 +742,7 @@
             opcode: 'goToLink',
             blockType: Scratch.BlockType.COMMAND,
             text: 'open link [INPUT] in new tab',
+            hideFromPalette: true,
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -734,6 +754,7 @@
             opcode: 'redirectToLink',
             blockType: Scratch.BlockType.COMMAND,
             text: 'redirect to link [INPUT]',
+            hideFromPalette: true,
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -748,6 +769,7 @@
             opcode: 'setClipboard',
             blockType: Scratch.BlockType.COMMAND,
             text: 'set [STRING] to clipboard',
+            hideFromPalette: true,
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -758,7 +780,8 @@
           {
             opcode: 'readClipboard',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'clipboard'
+            text: 'clipboard',
+            hideFromPalette: true
           },
 
           '---',
@@ -797,7 +820,7 @@
           {
             opcode: 'osBrowserDetails',
             blockType: Scratch.BlockType.REPORTER,
-            text: '[DROPDOWN]',
+            text: 'get [DROPDOWN] of user',
             disableMonitor: true,
             arguments: {
               DROPDOWN: {
@@ -821,6 +844,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: 'console [DROPDOWN] [INPUT]',
             disableMonitor: true,
+            hideFromPalette: true,
             arguments: {
               DROPDOWN: {
                 type: Scratch.ArgumentType.STRING,
@@ -836,7 +860,8 @@
           {
             opcode: 'clearConsole',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'clear console'
+            text: 'clear console',
+            hideFromPalette: true
           },
 
           '---',
@@ -845,6 +870,7 @@
             opcode: 'commentHat',
             blockType: Scratch.BlockType.HAT,
             text: '// [STRING]',
+            hideFromPalette: true,
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -856,6 +882,7 @@
             opcode: 'commentCommand',
             blockType: Scratch.BlockType.COMMAND,
             text: '// [STRING]',
+            hideFromPalette: true,
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -868,6 +895,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: '// [INPUTA] [INPUTB]',
             disableMonitor: true,
+            hideFromPalette: true,
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -883,6 +911,7 @@
             opcode: 'commentBool',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '// [INPUTA] [INPUTB]',
+            hideFromPalette: true,
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -1047,8 +1076,119 @@
       return util.ioQuery('keyboard', 'getKeyIsDown', [args.KEY_OPTION]);
     }
 
-    equalsExactly(args) {
-      return args.ONE === args.TWO;
+    keyStringPressed(args, util) {
+      return util.ioQuery('keyboard', 'getKeyIsDown', [args.KEY_OPTION]);
+    }
+
+    trueFalseBoolean(args) {
+      if (args.TRUEFALSE === 'random') {
+        return Math.random() > 0.5;
+      }
+      if (args.TRUEFALSE === 'true') {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    stringIf(args) {
+      if (args.BOOLEAN) {
+        return args.INPUTA;
+      } else {
+        return '';
+      }
+    }
+
+    stringIfElse(args) {
+      if (args.BOOLEAN) {
+        return args.INPUTA;
+      } else {
+        return args.INPUTB;
+      }
+    }
+
+    getEffectValue (args, util) {
+      return util.target.effects[args.INPUT];
+    }
+
+    clonesBeingUsed(args, util) {
+      return Scratch.vm.runtime._cloneCounter;
+    }
+
+    isClone(args, util) {
+      if (util.target.isOriginal) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+    spriteClicked(args, util) {
+      return (util.ioQuery('mouse', 'getIsDown') && util.target.isTouchingObject('_mouse_'));
+    }
+
+    lettersToOf(args) {
+      var string = args.STRING.toString();
+      var input1 = args.INPUTA - 1;
+      var input2 = args.INPUTB;
+      return string.slice(input1, input2);
+    }
+
+    replaceWords(args) {
+      var input1 = args.INPUTA;
+      var input2 = args.INPUTB;
+      var string = args.STRING;
+      return string.replace(input1, input2);
+    }
+
+    findIndexOfString (args) {
+      var input1 = args.INPUTA;
+      var input2 = args.INPUTB;
+      if (input2.includes(input1)) {
+        return (input2.indexOf(input1) + 1);
+      } else {
+        return '';
+      }
+    }
+
+    itemOfFromString (args, util) {
+      var input1 = (args.INPUTA - 1);
+      var input2 = String(args.INPUTB);
+      var input3 = args.INPUTC;
+      var output = input2.split(input3)[input1] || '';
+      return output;
+    }
+
+    stringToUpperCase(args) {
+      return args.STRING.toUpperCase();
+    }
+
+    stringToLowerCase(args) {
+      return args.STRING.toLowerCase();
+    }
+
+    reverseString(args) {
+      var input = args.STRING;
+      var splitInput = input.split('');
+      var reversedInput = splitInput.reverse();
+      var joinedArray = reversedInput.join('');
+      return joinedArray;
+    }
+
+    norBoolean(args) {
+      return !(args.INPUTA || args.INPUTB);
+    }
+
+    xorBoolean(args) {
+      return (args.INPUTA !== args.INPUTB);
+    }
+
+    xnorBoolean(args) {
+      return (args.INPUTA === args.INPUTB);
+    }
+
+    nandBoolean(args) {
+      return !(args.INPUTA && args.INPUTB);
     }
 
     stringReporter(args) {
@@ -1075,127 +1215,8 @@
       return '\n';
     }
 
-    stringIf(args) {
-      if (args.BOOLEAN) {
-        return args.INPUTA;
-      } else {
-        return '';
-      }
-    }
-
-    stringIfElse(args) {
-      if (args.BOOLEAN) {
-        return args.INPUTA;
-      } else {
-        return args.INPUTB;
-      }
-    }
-
-    lettersToOf(args) {
-      var string = args.STRING.toString();
-      var input1 = args.INPUTA - 1;
-      var input2 = args.INPUTB;
-      return string.slice(input1, input2);
-    }
-
-    replaceWords(args) {
-      var input1 = args.INPUTA;
-      var input2 = args.INPUTB;
-      var string = args.STRING;
-      return string.replace(input1, input2);
-    }
-
-    exponentBlock(args) {
-      return Math.pow(args.INPUTA, args.INPUTB);
-    }
-
-    rootBlock(args) {
-      return Math.pow(args.INPUTB, 1 / args.INPUTA);
-    }
-
-    normaliseValue(args) {
-      var input1 = args.INPUT;
-      var input2 = Math.abs(input1);
-      var output = (input1 / input2);
-      if (isNaN(output)) {
-        return '0';
-      } else {
-        return output;
-      }
-    }
-
-    stringToUpperCase(args) {
-      return args.STRING.toUpperCase();
-    }
-
-    stringToLowerCase(args) {
-      return args.STRING.toLowerCase();
-    }
-
-    reverseString(args) {
-      var input = args.STRING;
-      var splitInput = input.split('');
-      var reversedInput = splitInput.reverse();
-      var joinedArray = reversedInput.join('');
-      return joinedArray;
-    }
-
-    encodeToBlock(args) {
-      if (args.STRING === '') {
-        return '';
-      }
-      if (args.DROPDOWN === 'base64') {
-        return btoa(args.STRING);
-      }
-      if (args.DROPDOWN === 'binary') {
-        return args.STRING.split('').map(function (char) {
-          return char.charCodeAt(0).toString(2);
-        }).join(' ');
-      }
-    }
-
-    decodeFromBlock(args) {
-      if (args.STRING === '') {
-        return '';
-      }
-      if (args.DROPDOWN === 'base64') {
-         return atob(args.STRING);
-      }
-      if (args.DROPDOWN === 'binary') {
-         var output = args.STRING.toString();
-         return output.split(' ').map((x) => x = String.fromCharCode(parseInt(x, 2))).join('');
-      }
-    }
-
-    trueFalseBoolean(args) {
-      if (args.TRUEFALSE === 'random') {
-        return Math.random() > 0.5;
-      }
-      if (args.TRUEFALSE === 'true') {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    isClone(args, util) {
-      if (util.target.isOriginal) {
-        return false;
-      } else {
-        return true;
-      }
-    }
-
-    clonesBeingUsed(args, util) {
-      return Scratch.vm.runtime._cloneCounter;
-    }
-
-    keyStringPressed(args, util) {
-      return util.ioQuery('keyboard', 'getKeyIsDown', [args.KEY_OPTION]);
-    }
-
-    spriteClicked(args, util) {
-      return (util.ioQuery('mouse', 'getIsDown') && util.target.isTouchingObject('_mouse_'));
+    equalsExactly(args) {
+      return args.ONE === args.TWO;
     }
 
     notEqualTo(args) {
@@ -1226,20 +1247,156 @@
       }
     }
 
-    norBoolean(args) {
-      return !(args.INPUTA || args.INPUTB);
+    encodeToBlock(args) {
+      if (args.STRING === '') {
+        return '';
+      }
+      if (args.DROPDOWN === 'base64') {
+        return btoa(args.STRING);
+      }
+      if (args.DROPDOWN === 'binary') {
+        return args.STRING.split('').map(function (char) {
+          return char.charCodeAt(0).toString(2);
+        }).join(' ');
+      }
     }
 
-    xorBoolean(args) {
-      return (args.INPUTA !== args.INPUTB);
+    decodeFromBlock(args) {
+      if (args.STRING === '') {
+        return '';
+      }
+      if (args.DROPDOWN === 'base64') {
+         return atob(args.STRING);
+      }
+      if (args.DROPDOWN === 'binary') {
+         var output = args.STRING.toString();
+         return output.split(' ').map((x) => x = String.fromCharCode(parseInt(x, 2))).join('');
+      }
     }
 
-    xnorBoolean(args) {
-      return (args.INPUTA === args.INPUTB);
+    negativeReporter (args) {
+      return (args.INPUT * -1);
     }
 
-    nandBoolean(args) {
-      return !(args.INPUTA && args.INPUTB);
+    exponentBlock(args) {
+      return Math.pow(args.INPUTA, args.INPUTB);
+    }
+
+    rootBlock(args) {
+      return Math.pow(args.INPUTB, 1 / args.INPUTA);
+    }
+
+    normaliseValue(args) {
+      var input1 = args.INPUT;
+      var input2 = Math.abs(input1);
+      var output = (input1 / input2);
+      if (isNaN(output)) {
+        return '0';
+      } else {
+        return output;
+      }
+    }
+
+    clampNumber (args) {
+      var input1 = args.INPUTA;
+      var input2 = args.INPUTB;
+      var input3 = args.INPUTC;
+      return Math.min(Math.max(input1, input2), input3);
+    }
+
+    setVariableTo (args) {
+      vars['variables'][args.INPUTA] = args.INPUTB;
+    }
+
+    changeVariableBy (args) {
+      if (args.INPUTA in vars['variables']) {
+        var prev = vars['variables'][args.INPUTA];
+        var next = args.INPUTB;
+        vars['variables'][args.INPUTA] = (prev + next);
+      } else {
+        vars['variables'][args.INPUTA] = args.INPUTB;
+      }
+    }
+
+    getVariable (args) {
+      if (args.INPUT in vars['variables']) {
+        return (vars['variables'][args.INPUT]);
+      } else {
+        return '';
+      }
+    }
+
+    deleteVariable (args) {
+      Reflect.deleteProperty(vars['variables'], args.INPUT);
+    }
+
+    deleteAllVariables () {
+      Reflect.deleteProperty(vars, 'variables');
+      vars['variables'] = {};
+    }
+
+    greenFlag(args, util) {
+      util.runtime.greenFlag();
+    }
+
+    setUsername(args, util) {
+      util.runtime.ioDevices.userData._username = args.INPUT;
+    }
+
+    setSpriteSVG (args, util) {
+      try {
+        Scratch.vm.runtime.renderer.updateSVGSkin(util.target.sprite.costumes[args.INPUTA - 1].skinId,args.INPUTB);
+      } catch (error){
+        return;
+      }
+      Scratch.vm.emitTargetsUpdate();
+    }
+
+    alertBlock(args) {
+      alert(args.STRING);
+    }
+
+    inputPromptBlock(args) {
+      return prompt(args.STRING);
+    }
+
+    confirmationBlock(args) {
+      if (confirm(args.STRING)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    goToLink(args) {
+      Scratch.openWindow(args.INPUT);
+    }
+
+    redirectToLink(args) {
+      Scratch.redirect(args.INPUT);
+    }
+
+    setClipboard(args) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(args.STRING);
+      }
+    }
+
+    readClipboard(args) {
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        // @ts-expect-error - not typed yet
+        return Scratch.canReadClipboard().then(allowed => {
+          if (allowed) {
+            return navigator.clipboard.readText();
+          }
+          return '';
+        });
+      }
+      return '';
+    }
+
+    isUserMobile (args, util) {
+      return navigator.userAgent.includes('Mobile');
     }
 
     screenReporter(args) {
@@ -1296,9 +1453,6 @@
         if (user.includes('MSIE')) {
           return 'Internet Explorer';
         }
-        if (user.includes('rv:')) {
-          return 'Internet Explorer';
-        }
         if (user.includes('Firefox')) {
           return 'Firefox';
         }
@@ -1311,22 +1465,6 @@
 
     projectURL() {
       return window.location.href;
-    }
-
-    goToLink(args) {
-      Scratch.openWindow(args.INPUT);
-    }
-
-    redirectToLink(args) {
-      Scratch.redirect(args.INPUT);
-    }
-
-    greenFlag(args, util) {
-      util.runtime.greenFlag();
-    }
-
-    setUsername(args, util) {
-      util.runtime.ioDevices.userData._username = args.INPUT;
     }
 
     consoleLog(args) {
@@ -1343,33 +1481,6 @@
       console.clear();
     }
 
-    setClipboard(args) {
-      navigator.clipboard.writeText(args.STRING);
-    }
-
-    readClipboard(args) {
-      if (navigator.clipboard && navigator.clipboard.readText) {
-        return navigator.clipboard.readText();
-      }
-      return '';
-    }
-
-    alertBlock(args) {
-      alert(args.STRING);
-    }
-
-    inputPromptBlock(args) {
-      return prompt(args.STRING);
-    }
-
-    confirmationBlock(args) {
-      if (confirm(args.STRING)) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
     commentHat(args, util) {
       return args.INPUT;
     }
@@ -1383,92 +1494,6 @@
 
     commentBool(args) {
       return Scratch.Cast.toBoolean(args.INPUTB);
-    }
-
-    getVariable (args) {
-      if (args.INPUT in vars['variables']) {
-        return (vars['variables'][args.INPUT]);
-      } else {
-        return '';
-      }
-    }
-
-    setVariableTo (args) {
-      vars['variables'][args.INPUTA] = args.INPUTB;
-    }
-
-    changeVariableBy (args) {
-      if (args.INPUTA in vars['variables']) {
-        var prev = vars['variables'][args.INPUTA];
-        var next = args.INPUTB;
-        vars['variables'][args.INPUTA] = (prev + next);
-      } else {
-        vars['variables'][args.INPUTA] = args.INPUTB;
-      }
-    }
-
-    listVariables (args, util) {
-      if (Object.keys(vars['variables']).length) {
-        var output = Object.keys(vars['variables']);
-        return output;
-      } else {
-        return;
-      }
-    }
-
-    deleteVariable (args) {
-      Reflect.deleteProperty(vars['variables'], args.INPUT);
-    }
-
-    deleteAllVariables () {
-      Reflect.deleteProperty(vars, 'variables');
-      vars['variables'] = {};
-    }
-
-    clampNumber (args) {
-      var input1 = args.INPUTA;
-      var input2 = args.INPUTB;
-      var input3 = args.INPUTC;
-      return Math.min(Math.max(input1, input2), input3);
-    }
-
-    findIndexOfString (args) {
-      var input1 = args.INPUTA;
-      var input2 = args.INPUTB;
-      if (input2.includes(input1)) {
-        return (input2.indexOf(input1) + 1);
-      } else {
-        return '';
-      }
-    }
-
-    itemOfFromString (args, util) {
-      var input1 = (args.INPUTA - 1);
-      var input2 = String(args.INPUTB);
-      var input3 = args.INPUTC;
-      var output = input2.split(input3)[input1] || '';
-      return output;
-    }
-
-    isUserMobile (args, util) {
-      return navigator.userAgent.includes('Mobile');
-    }
-
-    getEffectValue (args, util) {
-      return util.target.effects[args.INPUT];
-    }
-
-    negativeReporter (args) {
-      return (args.INPUT * -1);
-    }
-
-    setSpriteSVG (args, util) {
-      try {
-        Scratch.vm.runtime.renderer.updateSVGSkin(util.target.sprite.costumes[args.INPUTA - 1].skinId,args.INPUTB);
-      } catch (error){
-        return;
-      }
-      Scratch.vm.emitTargetsUpdate();
     }
   }
   Scratch.extensions.register(new LMSUtils());
