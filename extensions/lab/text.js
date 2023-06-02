@@ -619,6 +619,11 @@
           },
           '---',
           {
+            opcode: 'labelNewBlocks',
+            blockType: Scratch.BlockType.LABEL,
+            text: 'New Blocks'
+          },
+          {
             opcode: 'textActive',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'text active?'
