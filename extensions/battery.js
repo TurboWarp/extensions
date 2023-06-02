@@ -63,7 +63,7 @@
     }
     charging () {
       return withBattery(battery => {
-        if (!battery) return false;
+        if (!battery) return true;
         return battery.charging;
       });
     }
