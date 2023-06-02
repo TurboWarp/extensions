@@ -167,7 +167,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - The "S" logo is a trademark of the Scratch Foundation.
 
 ## LukeManiaStudios/CommentBlocks.svg
- - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) and [@LukeManiaStudioss](https://scratch.mit.edu/users/LukeManiaStudios/) in ---.
+ - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) and [@LukeManiaStudioss](https://scratch.mit.edu/users/LukeManiaStudios/) in https://github.com/TurboWarp/extensions/pull/498.
 
 ## LukeManiaStudios/ClonesPlus.svg
  - Created by [@LukeManiaStudioss](https://scratch.mit.edu/users/LukeManiaStudios/) in https://github.com/TurboWarp/extensions/pull/382.
