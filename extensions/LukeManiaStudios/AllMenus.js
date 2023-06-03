@@ -8,7 +8,7 @@
   class allmenus {
     constructor () {
       Scratch.vm.runtime.on('EXTENSION_ADDED', () => {
-        refreshMenus()
+        refreshMenus();
       });
 
     }
@@ -22,12 +22,12 @@
             blockType: Scratch.BlockType.BUTTON
           }
         ]
-      }
+      };
     }
     menureset() {
       refreshMenus();
     }
-  };
+  }
 
   Scratch.vm.addListener('BLOCKSINFO_UPDATE', refreshMenus);
   refreshMenus();
@@ -39,9 +39,11 @@
 
     // Based on code by @Xeltaliv
     let blockMenu = [];
+    // @ts-expect-error - ScratchBlocks not typed yet
+    // eslint-disable-next-line no-undef
     let allBlocks = Object.keys(ScratchBlocks.Blocks);
     allBlocks = allBlocks.filter(item => item.includes('menu') && !blacklist.includes(item));
-    allBlocks.forEach(item => blockMenu.push('<block id="' + item + '" type="' + item + '"/>'))
+    allBlocks.forEach(item => blockMenu.push('<block id="' + item + '" type="' + item + '"/>'));
     blockMenu = blockMenu.join('');
     console.log(blockMenu);
 
@@ -52,7 +54,7 @@
           ${categorySeparator}
       </category>
       `;
-    }
+    };
 
     const vm = Scratch.vm;
     const runtime = vm.runtime;
@@ -70,7 +72,7 @@
         }
       });
       return res;
-    }
+    };
     Scratch.vm.extensionManager.refreshBlocks();
   }
 
