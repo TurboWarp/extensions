@@ -12,6 +12,29 @@
         name: 'More Timers',
         blocks: [
           {
+            opcode: 'whenTimerOp',
+            blockType: Scratch.BlockType.HAT,
+            extensions: ['colours_sensing'],
+            text: 'when timer [TIMER] [OP] [NUM]',
+            arguments: {
+              TIMER: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'timer'
+              },
+              OP: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'operation'
+              },
+              NUM: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '5'
+              }
+            }
+          },
+
+          '---',
+
+          {
             opcode: 'startTimer',
             blockType: Scratch.BlockType.COMMAND,
             extensions: ['colours_sensing'],
@@ -124,6 +147,14 @@
           }
         ]
       };
+    }
+
+    whenTimerOp(args) {
+      const value = (Date.now() - timers[args.TIMER]) / 1000;
+      if (!value) return console.log('fuck');
+      if (args.OP === '>') return (value > args.NUM) ? true : null;
+      if (args.OP === '<') return (value < args.NUM) ? true : null;
+      return;
     }
 
     startTimer(args) {
