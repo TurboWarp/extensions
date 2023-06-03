@@ -57,7 +57,6 @@
         return;
       }
       try {
-        // @ts-expect-error - not typed yet
         if (!await Scratch.canRecordAudio()) {
           throw new Error('VM denied permission');
         }
