@@ -2,7 +2,8 @@
   'use strict';
 
   const blacklist = [
-  'looks_costumenumbername'
+    'looks_costumenumbername',
+    'extension_wedo_tilt_menu'
   ];
 
   class allmenus {
