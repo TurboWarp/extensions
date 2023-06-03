@@ -47,8 +47,8 @@
 
     const menu = function (isInitialSetup, isStage, targetId) {
       return `
-      <category name="All Menus" id="menublocks" colour="#4C97FF" secondaryColour="#3373CC">
-          ${`<button text="Refresh Blocks" callbackKey="EXTENSION_CALLBACK" callbackData="menublocks_menureset"></button>` + blockMenu}
+      <category name="All Menus" id="lmsAllMenus" colour="#4C97FF" secondaryColour="#3373CC">
+          ${`<button text="Refresh Blocks" callbackKey="EXTENSION_CALLBACK" callbackData="lmsAllMenus_menureset"></button>` + blockMenu}
           ${categorySeparator}
       </category>
       `;
@@ -62,7 +62,7 @@
       const categoryInfo = this._blockInfo;
       const res = gbx(target);
       res.forEach((elem, idx) => {
-        if (categoryInfo[idx].id === "menublocks") {
+        if (categoryInfo[idx].id === "lmsAllMenus") {
           let {editingTarget: target, runtime} = vm;
           const stage = runtime.getTargetForStage();
           if (!target) target = stage;
