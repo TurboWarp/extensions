@@ -1,6 +1,6 @@
 (function (Scratch) {
   'use strict';
-  
+
   let timers = Object.create(null);
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -123,7 +123,7 @@
             disableMonitor: false
           }
         ]
-      }
+      };
     }
 
     startTimer(args) {
@@ -131,25 +131,25 @@
     }
 
     resetTimer(args) {
-      if (!timers[args.TIMER]) return; 
+      if (!timers[args.TIMER]) return;
       timers[args.TIMER] = Date.now();
     }
-    
+
     valueOfTimer(args) {
-      if (!timers[args.TIMER]) return ''; 
+      if (!timers[args.TIMER]) return '';
       return (Date.now() - timers[args.TIMER]) / 1000;
     }
 
     setTimer(args) {
-      if (!timers[args.TIMER]) return; 
+      if (!timers[args.TIMER]) return;
       timers[args.TIMER] = Date.now() - (args.NUM * 1000);
     }
 
     changeTimer(args) {
-      if (!timers[args.TIMER]) return; 
+      if (!timers[args.TIMER]) return;
       timers[args.TIMER] = (timers[args.TIMER] - (args.NUM * 1000));
     }
-        
+
     removeTimers(args) {
       timers = Object.create(null);
     }
@@ -178,7 +178,7 @@
       res.json.extensions.push(...blockInfo.extensions);
     }
     return res;
-  }
+  };
 
   Scratch.extensions.register(new Timers());
 })(Scratch);
