@@ -8,8 +8,9 @@
   /** @type {boolean} */
   let batteryError = false;
   const withBattery = (callback) => {
-    // This is made slightly complicated because getting the BatteryManager is async the first time,
-    // but we want these blocks to not return a promise when they don't need to.
+    // Getting the BatteryManager is async the first time. Usually it's very fast, but we shouldn't assume that it is.
+    // All the logic here lets us return values immediately when we have already got the battery instead of forcing
+    // a delay by returning a promise.
     if (!navigator.getBattery || batteryError) {
       return callback(null);
     }
@@ -48,6 +49,9 @@
       return callback(battery);
     });
   };
+
+  // Try to get the battery immediately so that event blocks work.
+  withBattery(() => {});
 
   class BatteryExtension {
     getInfo () {
