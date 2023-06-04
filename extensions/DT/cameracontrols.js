@@ -281,54 +281,54 @@
       return sprites;
     }
 
-    setBoth(ARGS, util) {
-      cameraX = +ARGS.x;
-      cameraY = +ARGS.y;
+    setBoth(args, util) {
+      cameraX = +args.x;
+      cameraY = +args.y;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    changeZoom(ARGS, util) {
-      cameraZoom += +ARGS.val;
+    changeZoom(args, util) {
+      cameraZoom += +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    setZoom(ARGS, util) {
-      cameraZoom = +ARGS.val;
+    setZoom(args, util) {
+      cameraZoom = +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    changeX(ARGS, util) {
-      cameraX += +ARGS.val;
+    changeX(args, util) {
+      cameraX += +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    setX(ARGS, util) {
-      cameraX = +ARGS.val;
+    setX(args, util) {
+      cameraX = +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    changeY(ARGS, util) {
-      cameraY += +ARGS.val;
+    changeY(args, util) {
+      cameraY += +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    setY(ARGS, util) {
-      cameraY = +ARGS.val;
+    setY(args, util) {
+      cameraY = +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    setDirection(ARGS, util) {
-      cameraDirection = +ARGS.val;
+    setDirection(args, util) {
+      cameraDirection = +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    rotateCW(ARGS, util) {
-      cameraDirection = cameraDirection + +ARGS.val;
+    rotateCW(args, util) {
+      cameraDirection = cameraDirection + +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    rotateCCW(ARGS, util) {
-      cameraDirection = cameraDirection - +ARGS.val;
+    rotateCCW(args, util) {
+      cameraDirection = cameraDirection - +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
@@ -344,8 +344,8 @@
     getDirection() {
       return cameraDirection;
     }
-    setCol(ARGS, util) {
-      cameraBG = ARGS.val;
+    setCol(args, util) {
+      cameraBG = args.val;
       Scratch.vm.renderer.setBackgroundColor(
         parseInt(cameraBG.substring(1, 3), 16) / 255,
         parseInt(cameraBG.substring(3, 5), 16) / 255,
@@ -355,15 +355,15 @@
     getCol() {
       return cameraBG;
     }
-    moveSteps(ARGS) {
+    moveSteps(args) {
       let dir = (-cameraDirection + 90) * Math.PI / 180;
-      cameraX += ARGS.val * Math.cos(dir);
-      cameraY += ARGS.val * Math.sin(dir);
+      cameraX += args.val * Math.cos(dir);
+      cameraY += args.val * Math.sin(dir);
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    goTo(ARGS, util) {
-      const target = Scratch.Cast.toString(ARGS.sprite);
+    goTo(args, util) {
+      const target = Scratch.Cast.toString(args.sprite);
       const sprite = vm.runtime.getSpriteTargetByName(target);
       if (!sprite) return;
       cameraX = Math.round(sprite.x);
@@ -371,8 +371,8 @@
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    pointTowards(ARGS, util) {
-      const target = Scratch.Cast.toString(ARGS.sprite);
+    pointTowards(args, util) {
+      const target = Scratch.Cast.toString(args.sprite);
       const sprite = vm.runtime.getSpriteTargetByName(target);
       if (!sprite) return;
       let targetX = sprite.x;
