@@ -31,7 +31,6 @@
       return;
     }
 
-    // @ts-expect-error - not typed yet
     if (!await Scratch.canRecordAudio()) {
       return;
     }
@@ -573,18 +572,21 @@
                 menu: "toggleMenu",
               },
             },
+            hideFromPalette: true,
           },
           {
             opcode: "returnWords",
             blockType: Scratch.BlockType.REPORTER,
             text: "Recognized Words",
             blockIconURI: speechIco,
+            hideFromPalette: true,
           },
           {
             opcode: "isrecording",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Recording?",
             blockIconURI: speechIco,
+            hideFromPalette: true,
           },
           "---",
           {
@@ -777,7 +779,6 @@
 
     getClipBoard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        // @ts-expect-error - not typed yet
         return Scratch.canReadClipboard().then(allowed => {
           if (allowed) {
             return navigator.clipboard.readText();

@@ -165,6 +165,27 @@
             }
           },
           {
+            opcode: 'clamp',
+
+            blockType: Scratch.BlockType.REPORTER,
+
+            text: 'clamp [INPUT] between [MIN] and [MAX]',
+            arguments: {
+              INPUT: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 30
+              },
+              MIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 25
+              },
+              MAX: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 40
+              }
+            }
+          },
+          {
             opcode: 'currentMillisecond',
             blockType: Scratch.BlockType.REPORTER,
             text: 'current millisecond'
@@ -278,6 +299,14 @@
 
     letters({STRING, START, END}) {
       return STRING.slice(Math.max(1, START) - 1, Math.min(STRING.length, END));
+    }
+
+    clamp({INPUT, MIN, MAX}) {
+      if (MIN > MAX) {
+        return Scratch.Cast.toNumber(Math.min(Math.max(INPUT, MAX), MIN));
+      } else {
+        return Scratch.Cast.toNumber(Math.min(Math.max(INPUT, MIN), MAX));
+      }
     }
 
     currentMillisecond() {
