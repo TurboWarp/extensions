@@ -145,7 +145,14 @@
             text: 'list existing timers',
             disableMonitor: false
           }
-        ]
+        ],
+        menus: {
+          operation: {
+            // false for Scratch parity
+            acceptReporters: false,
+            items: ['>','<']
+          }
+        }
       };
     }
 
