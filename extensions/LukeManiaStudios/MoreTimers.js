@@ -7,10 +7,9 @@
 
   class Timers {
     constructor() {
-      vm.runtime.on('PROJECT_STOP_ALL', () => {
+      vm.runtime.on('PROJECT_START', () => {
         timers = Object.create(null);
       });
-    }
 
     getInfo() {
       return {
