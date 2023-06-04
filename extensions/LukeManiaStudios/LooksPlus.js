@@ -393,7 +393,6 @@
 
     snapshotStage(args, util) {
       return new Promise(resolve => {
-        // TODO need to make sure VM handles skin privacy with screenshots
         Scratch.vm.runtime.renderer.requestSnapshot(uri => {
           resolve(uri);
         });
