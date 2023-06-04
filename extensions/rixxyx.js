@@ -400,13 +400,14 @@
       }
     }
     toUppercase(args) {
-      return args.TEXT.toUpperCase();
+      return Scratch.Cast.toString(args.TEXT).toUpperCase();
     }
     toLowercase(args) {
-      return args.TEXT.toLowerCase();
+      return Scratch.Cast.toString(args.TEXT).toLowerCase();
     }
     toCapitalize(args) {
-      return args.TEXT.charAt(0).toUpperCase() + args.TEXT.slice(1);
+      const text = Scratch.Cast.toString(args.TEXT);
+      return text.charAt(0).toUpperCase() + text.slice(1);
     }
     isJsNan(args) {
       return isNaN(args.OBJ);
