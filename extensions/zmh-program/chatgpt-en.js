@@ -26,7 +26,6 @@
   const all_completions = [...completions, ...chat_completions];
   async function request_completions() {
     // see https://platform.openai.com/docs/api-reference/completions/create
-    // eslint-disable-next-line no-restricted-syntax
     const resp = await fetch(`https://api.openai.com/v1/completions`, {
       method: 'POST',
       headers: {
@@ -45,7 +44,6 @@
   }
   async function request_chat(text) {
     // see https://platform.openai.com/docs/api-reference/chat/create
-    // eslint-disable-next-line no-restricted-syntax
     const resp = await fetch(`https://api.openai.com/v1/chat/completions`, {
       method: 'POST',
       headers: {
@@ -67,7 +65,6 @@
   }
   async function request(text) {
     if (!conf.apikey) {
-      // eslint-disable-next-line no-restricted-syntax
       const resp = await fetch('https://chatgpt.deeptrain.net/gpt', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -152,7 +149,6 @@
       return 'The openai apikey has been set. Note that customizing the apikey is risky!';
     }
     donate () {
-      // eslint-disable-next-line no-restricted-syntax
       window.open('https://afdian.net/@zmh-program');
     }
   }
