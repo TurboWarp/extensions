@@ -13,7 +13,7 @@
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(`SGC-Utils must run unsandboxed\nSGC-Utils v${_SGCUtils.version}`);
   }
-  const vm = structuredClone(Scratch.vm);
+  const vm = Scratch.vm;
   /* eslint-disable */
   const icon = "" //removed cause I am making a new one.
   function hashFnv32a(str, asString, seed) {
