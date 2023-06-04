@@ -1,18 +1,18 @@
 (function(Scratch) {
   'use strict';
-  
+
   const menuIconURI = '';
-  
+
   // Object.create(null) prevents "variable [toString]" from returning a function
   let runtimeVariables = Object.create(null);
-   
+
   // Credit to skyhigh173 for the idea of this
   const label = (name, hidden) => ({
     blockType: Scratch.BlockType.LABEL,
     text: name,
     hideFromPalette: hidden
   });
-  
+
   function resetRuntimeVariables() {
     console.log('runtime variables cleared');
     runtimeVariables = Object.create(null);
@@ -267,7 +267,7 @@
     }
 
     /* RUNTIME VARIABLES */
-    
+
     setRuntimeVariable (args) {
       runtimeVariables[args.VAR] = args.STRING;
     }
