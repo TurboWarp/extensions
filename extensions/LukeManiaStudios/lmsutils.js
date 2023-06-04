@@ -5,7 +5,8 @@
   let hideLegacyBlocks = true;
 
   var vars = {};
-  vars['variables'] = {};
+  vars['variables'] = Object.create(null);
+
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('This extension must run unsandboxed');
