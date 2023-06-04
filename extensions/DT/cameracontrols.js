@@ -78,9 +78,9 @@
           {
             opcode: 'rotateCW',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'turn camera [dir] [val] degrees',
+            text: 'turn camera [image] [val] degrees',
             arguments: {
-              dir: {
+              image: {
                 type: Scratch.ArgumentType.IMAGE,
                 dataURI: CW
               },
@@ -93,9 +93,9 @@
           {
             opcode: 'rotateCCW',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'turn camera [dir] [val] degrees',
+            text: 'turn camera [image] [val] degrees',
             arguments: {
-              dir: {
+              image: {
                 type: Scratch.ArgumentType.IMAGE,
                 dataURI: CCW
               },
