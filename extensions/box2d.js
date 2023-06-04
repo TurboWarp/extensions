@@ -12958,7 +12958,6 @@
           FrictionTypes: this.FRICTION_TYPE_MENU,
           RestitutionTypes: this.RESTITUTION_TYPE_MENU,
           DensityTypes: this.DENSITY_TYPE_MENU,
-          PropertyTypes: this.PROPERTY_TYPE_MENU,
         },
       };
     }
@@ -13038,14 +13037,6 @@
         { text: "quite bouncy", value: "40" },
         { text: "very bouncy", value: "70" },
         { text: "unstable", value: "100" },
-      ];
-    }
-
-    get PROPERTY_TYPE_MENU() {
-      return [
-        { text: "density", value: "density" },
-        { text: "friction", value: "friction" },
-        { text: "bounce", value: "bounce" },
       ];
     }
 
