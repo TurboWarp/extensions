@@ -31,7 +31,6 @@
       return;
     }
 
-    // @ts-expect-error - not typed yet
     if (!await Scratch.canRecordAudio()) {
       return;
     }
@@ -780,7 +779,6 @@
 
     getClipBoard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        // @ts-expect-error - not typed yet
         return Scratch.canReadClipboard().then(allowed => {
           if (allowed) {
             return navigator.clipboard.readText();

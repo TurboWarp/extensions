@@ -50,21 +50,14 @@
    */
 
   // temporary
-  // @ts-expect-error
   if (!renderer.exports || !renderer.exports.Skin || !vm.exports) {
     alert('VM is too old for animated text extension');
     throw new Error('VM is too old');
   }
 
-  /** @type {typeof RenderWebGL.Skin} */
-  // @ts-expect-error - exports not typed yet
   const Skin = renderer.exports.Skin;
-  /** @type {typeof RenderWebGL.CanvasMeasurementProvider} */
-  // @ts-expect-error - exports not typed yet
   const CanvasMeasurementProvider = renderer.exports.CanvasMeasurementProvider;
-  // @ts-expect-error - exports not typed yet
   const twgl = renderer.exports.twgl;
-  // @ts-expect-error - exports not typed yet
   const RenderedTarget = vm.exports.RenderedTarget;
 
   /**
@@ -123,7 +116,6 @@
 
   class TextCostumeSkin extends Skin {
     constructor (id, drawable) {
-      // @ts-expect-error - constructors not typed yet
       super(id, renderer);
 
       /** @type {RenderWebGL.Drawable} */
@@ -237,10 +229,8 @@
       this.ctx.font = this._getFontStyle();
 
       // need to make new ones each time to avoid caching incorrectly across fonts
-      // @ts-expect-error - constructors not typed yet
       const measurementProvider = new CanvasMeasurementProvider(this.ctx);
       /** @type {RenderWebGL.TextWrapper} */
-      // @ts-expect-error - createTextWrapper not typed yet
       const textWrapper = renderer.createTextWrapper(measurementProvider);
 
       const lines = textWrapper.wrapText(this.wrapWidth, this.text);
@@ -307,6 +297,7 @@
       }
 
       if (!this._texture) {
+        // @ts-expect-error - twgl not typed yet
         this._texture = twgl.createTexture(gl, {
           auto: false,
           wrap: gl.CLAMP_TO_EDGE
@@ -479,7 +470,6 @@
     return skin;
   };
 
-  // @ts-expect-error - not typed yet
   vm.runtime.on('BEFORE_EXECUTE', () => {
     globalFrameTime = Date.now();
 
