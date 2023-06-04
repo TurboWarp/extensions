@@ -996,6 +996,25 @@
             }
           }
         }, {
+          opcode: 'deleteCostume',
+          blockType: Scratch.BlockType.COMMAND,
+          text: '(ShovelUtils) Delete costume [COSNAME] in [SPRITE]',
+          arguments: {
+            COSNAME: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'costume1'
+            },
+            SPRITE: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'Sprite1'
+            }
+          }
+        }, {
+          opcode: "emptyFunctionForLabels",
+          blockType: "label",
+          text: "Library Imports",
+          hideFromPalette: allowUnsafe
+        }, {
           hideFromPalette: allowUnsafe,
           opcode: 'Setup',
           blockType: Scratch.BlockType.COMMAND,
@@ -1339,6 +1358,13 @@
         return;
       }
       vm.deleteSprite(target.id);
+    }
+    deleteCostume(args) {
+      const target = vm.runtime.getSpriteTargetByName(args.SPRITE);
+      if (!target || target.isStage) {
+        return;
+      }
+      target.deleteCostume(target.getCostumeIndexByName(args.COSNAME));
     }
     //CUSTOM BROADCASTS
     broadcast({
