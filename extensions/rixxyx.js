@@ -415,19 +415,9 @@
       return Math.floor(args.NUM);
     }
     returnBool(args) {
-      try {
-        if ((JSON.parse(args.BOOL).toString() == "true") || (JSON.parse(args.BOOL).toString() == "false")) {
-          return JSON.parse(args.BOOL);
-        } else if (JSON.parse(args.BOOL).toString() == "1") {
-          return true;
-        } else if (JSON.parse(args.BOOL).toString() == "0") {
-          return false;
-        } else {
-          return "";
-        }
-      } catch (err) {
-        return err;
-      }
+      // The original version of this block was quite broken. It would return empty string for
+      // values other than true/false/1/0, which I think does not make sense at all.
+      return Scratch.Cast.toBoolean(args.BOOL);
     }
     binToTxt(args) {
       var binary = args.BIN.toString();
