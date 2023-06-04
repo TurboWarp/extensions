@@ -1,10 +1,10 @@
 (function(Scratch) {
   'use strict';
-  class varandlist {
+  class VarAndList {
     getInfo() {
       return {
-        id: 'varandlist',
-        name: 'var and list',
+        id: 'qxsckvarandlist',
+        name: 'Var and List',
         blocks: [
           {
             opcode: 'getVar',
@@ -381,5 +381,5 @@
       }
     }
   }
-  Scratch.extensions.register(new varandlist());
+  Scratch.extensions.register(new VarAndList());
 }(Scratch));
