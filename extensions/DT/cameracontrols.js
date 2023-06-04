@@ -275,6 +275,9 @@
       Scratch.vm.runtime.targets.forEach(e=>{
         if (e.isOriginal && !e.isStage) sprites.push(e.sprite.name);
       });
+      if (sprites.length === 0) {
+        sprites.push('no sprites exist');
+      }
       return sprites;
     }
 
