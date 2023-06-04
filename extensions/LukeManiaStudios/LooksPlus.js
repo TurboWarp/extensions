@@ -470,10 +470,15 @@
     }
 
     replaceColors(args, util) {
-      const svg = args.SVG;
+      const svg = Scratch.Cast.toString(args.SVG);
       const color1 = args.COLOR1;
       const color2 = args.COLOR2;
-      return svg.replace(new RegExp(color1, 'gi'), color2);
+      try {
+        return svg.replace(new RegExp(color1, 'gi'), color2);
+      } catch (e) {
+        // regex was invalid, don't replace anything
+        return svg;
+      }
     }
 
     colorHex(args, util) {
