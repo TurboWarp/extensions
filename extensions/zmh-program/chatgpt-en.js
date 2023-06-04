@@ -26,7 +26,7 @@
   const all_completions = [...completions, ...chat_completions];
   async function request_completions() {
     // see https://platform.openai.com/docs/api-reference/completions/create
-    const resp = await fetch(`https://api.openai.com/v1/completions`, {
+    const resp = await Scratch.fetch(`https://api.openai.com/v1/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -65,7 +65,7 @@
   }
   async function request(text) {
     if (!conf.apikey) {
-      const resp = await fetch('https://chatgpt.deeptrain.net/gpt', {
+      const resp = await Scratch.fetch('https://chatgpt.deeptrain.net/gpt', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({data: text})
