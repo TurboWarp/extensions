@@ -1268,7 +1268,6 @@
 
     readClipboard(args) {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        // @ts-expect-error - not typed yet
         return Scratch.canReadClipboard().then(allowed => {
           if (allowed) {
             return navigator.clipboard.readText();
