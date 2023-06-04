@@ -604,8 +604,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: '0tils version'
           }, {
-            opcode: "emptyFunctionForLabels",
-            blockType: "label",
+            blockType: Scratch.BlockType.LABEL,
             text: "Encryption",
             hideFromPalette: showLabels
           }, {
@@ -650,8 +649,7 @@
             }
           }
         }, {
-          opcode: "emptyFunctionForLabels",
-          blockType: "label",
+          blockType: Scratch.BlockType.LABEL,
           text: "Hashing",
           hideFromPalette: showLabels
         }, {
@@ -668,8 +666,7 @@
             }
           }
         }, {
-          opcode: "emptyFunctionForLabels",
-          blockType: "label",
+          blockType: Scratch.BlockType.LABEL,
           text: "Encoders",
           hideFromPalette: showLabels
         }, {
@@ -707,8 +704,7 @@
             }
           }
         }, {
-          opcode: "emptyFunctionForLabels",
-          blockType: "label",
+          blockType: Scratch.BlockType.LABEL,
           text: "Math",
           hideFromPalette: showLabels
         }, {
@@ -763,8 +759,7 @@
             }
           }
         }, {
-          opcode: "emptyFunctionForLabels",
-          blockType: "label",
+          blockType: Scratch.BlockType.LABEL,
           text: "Coupling and symbols",
           hideFromPalette: showLabels
         }, {
@@ -803,8 +798,7 @@
           },
           hideFromPalette: allowDuplicates
         }, {
-          opcode: "emptyFunctionForLabels",
-          blockType: "label",
+          blockType: Scratch.BlockType.LABEL,
           text: "Localstorage",
           hideFromPalette: allowDuplicates || showLabels
         }, {
@@ -846,7 +840,7 @@
           hideFromPalette: allowDuplicates
         }, {
           opcode: "emptyFunctionForLabels",
-          blockType: "label",
+          blockType: Scratch.BlockType.LABEL,
           text: "Networking",
           hideFromPalette: showLabels
         }, {
@@ -865,8 +859,7 @@
             }
           }
         }, {
-          opcode: "emptyFunctionForLabels",
-          blockType: "label",
+          blockType: Scratch.BlockType.LABEL,
           text: "Stage variables",
           hideFromPalette: showLabels,
           filter: [Scratch.TargetType.STAGE]
@@ -911,8 +904,7 @@
           },
           filter: [Scratch.TargetType.STAGE]
         }, {
-          opcode: "emptyFunctionForLabels",
-          blockType: "label",
+          blockType: Scratch.BlockType.LABEL,
           text: "Events (custom)",
           hideFromPalette: showLabels
         }, {
@@ -942,8 +934,7 @@
           blockType: Scratch.BlockType.COMMAND,
           text: 'reset onetime'
         }, {
-          opcode: "emptyFunctionForLabels",
-          blockType: "label",
+          blockType: Scratch.BlockType.LABEL,
           text: "Files",
           hideFromPalette: showLabels
         }, {
@@ -1002,8 +993,7 @@
             }
           }
         }, {
-          opcode: "emptyFunctionForLabels",
-          blockType: "label",
+          blockType: Scratch.BlockType.LABEL,
           text: "Extended Extensions",
           hideFromPalette: showLabels
         }, {
@@ -1031,8 +1021,7 @@
             }
           }
         }, {
-          opcode: "emptyFunctionForLabels",
-          blockType: "label",
+          blockType: Scratch.BlockType.LABEL,
           text: "Library Imports",
           hideFromPalette: allowUnsafe || showLabels
         }, {
@@ -1470,9 +1459,6 @@
 
 
     /* USED FOR DISPLAY IN MENU, SO THESE ARE NOT MEANT TO BE RAN */
-    emptyFunctionForLabels() {
-      console.log("(0Tils) THIS IS NOT SUPPOSED TO BE RAN!!")
-    }
     emptyFunctionForButtons() {
       /*
       button example
