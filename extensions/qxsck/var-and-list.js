@@ -360,11 +360,10 @@
         if (list_.type == 'list' && list_.name == listname) haveList = 1,listvalue = list_.value;
       }
       if (haveList == 1){
-        var indexs = [];
         for (var i = 0;i < listvalue.length;i++){
-          if (listvalue[i] == value) return 1 === 1;
+          if (listvalue[i] == value) return true;
         }
-        return 1 === 0;
+        return false;
       }
     }
     copyList(args){
