@@ -996,11 +996,6 @@
               defaultValue: false
             }
           }
-        }, {
-          opcode: "emptyFunctionForButtons",
-          blockType: "button",
-          text: "CREDITS",
-          func: "button_credits"
         }],
         menus: {
           EVENT_FIELD: {
@@ -1422,12 +1417,16 @@
       console.log("(0Tils) THIS IS NOT SUPPOSED TO BE RAN!!")
     }
     emptyFunctionForButtons() {
+      /*
+      button example
+       {
+          opcode: "emptyFunctionForButtons",
+          blockType: "button",
+          text: "BUTTON TEST",
+          func: "FUNCTION TO CALL WHEN BUTTON IS RAN"
+        }
+      */
       console.log("(0Tils) THIS IS NOT SUPPOSED TO BE RAN!!")
-    }
-
-    /* BUTTONS */
-    async button_credits() {
-      await Scratch.redirect("https://survexe1pc.github.io/0tils/credits");
     }
   }
   setInterval(() => {
