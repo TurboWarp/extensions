@@ -83,7 +83,7 @@
           {
             opcode: 'clearList',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'clear [LIST]',
+            text: 'delete all of [LIST]',
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -252,57 +252,57 @@
       return variable.value[index - 1];
     }
     seriListsToJson(args, util) {
-      var liststart = Scratch.Cast.toString(args.START),listlist = {},vars = Scratch.vm.runtime.getTargetForStage().variables;
-      for (var key in vars) {
-        var list_ = vars[key];
-        if (list_.type == 'list' && list_.name.startsWith(liststart)) listlist[list_.name] = list_.value;
+      const start = Scratch.Cast.toString(args.START);
+      const serialized = {};
+      for (const variable of Object.values(util.runtime.getTargetForStage().variables)) {
+        if (variable.type === 'list' && variable.name.startsWith(start)) {
+          serialized[variable.name] = variable.value;
+        }
       }
-      return JSON.stringify(listlist);
+      for (const variable of Object.values(util.target.variables)) {
+        if (variable.type === 'list' && variable.name.startsWith(start)) {
+          serialized[variable.name] = variable.value;
+        }
+      }
+      return JSON.stringify(serialized);
     }
     clearList(args, util) {
-      var listname = Scratch.Cast.toString(args.LIST),haveList = 0,vars = Scratch.vm.runtime.getTargetForStage().variables;
-      for (var key in vars) {
-        var list_ = vars[key];
-        if (list_.type == 'list' && list_.name == listname) haveList = 1;
+      /** @type {VM.ListVariable} */
+      const variable = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST), 'list');
+      if (variable) {
+        variable.value = [];
       }
-      if (haveList == 1) Scratch.vm.runtime.getTargetForStage().lookupVariableByNameAndType(listname,'list').value = [];
     }
     deleteOfList(args, util) {
-      var listname = Scratch.Cast.toString(args.LIST),index = Scratch.Cast.toNumber(args.INDEX),haveList = 0,listvalue = [],vars = Scratch.vm.runtime.getTargetForStage().variables;
-      for (var key in vars) {
-        var list_ = vars[key];
-        if (list_.type == 'list' && list_.name == listname) haveList = 1,listvalue = list_.value;
-      }
-      if (haveList == 1) {
-        var newvalue = [];
-        for (var i = 0;i < listvalue.length;i++) {
-          if (i != (index - 1)) newvalue.push(listvalue[i]);
+      /** @type {VM.ListVariable} */
+      const variable = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST), 'list');
+      if (variable) {
+        const index = Scratch.Cast.toListIndex(args.INDEX, variable.value.length, true);
+        if (index === 'ALL') {
+          variable.value = [];
+        } else if (index !== 'INVALID') {
+          variable.value.splice(index - 1, 1);
+          variable._monitorUpToDate = false;
         }
-        Scratch.vm.runtime.getTargetForStage().lookupVariableByNameAndType(listname,'list').value = newvalue;
       }
     }
     addValueInList(args, util) {
-      var listname = Scratch.Cast.toString(args.LIST),haveList = 0,listvalue = [],vars = Scratch.vm.runtime.getTargetForStage().variables;
-      for (var key in vars) {
-        var list_ = vars[key];
-        if (list_.type == 'list' && list_.name == listname) haveList = 1,listvalue = list_.value;
+      /** @type {VM.ListVariable} */
+      const variable = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST), 'list');
+      if (variable) {
+        variable.value.push(args.VALUE);
+        variable._monitorUpToDate = false;
       }
-      listvalue.push(Scratch.Cast.toString(args.VALUE));
-      if (haveList == 1) Scratch.vm.runtime.getTargetForStage().lookupVariableByNameAndType(listname,'list').value = listvalue;
     }
     replaceOfList(args, util) {
-      var listname = Scratch.Cast.toString(args.LIST),index = Scratch.Cast.toNumber(args.INDEX),value = Scratch.Cast.toString(args.VALUE),haveList = 0,listvalue = [],vars = Scratch.vm.runtime.getTargetForStage().variables;
-      for (var key in vars) {
-        var list_ = vars[key];
-        if (list_.type == 'list' && list_.name == listname) haveList = 1,listvalue = list_.value;
-      }
-      if (haveList == 1) {
-        var newvalue = [];
-        for (var i = 0;i < listvalue.length;i++) {
-          if (i == (index - 1)) newvalue.push(value);
-          else newvalue.push(listvalue[i]);
+      /** @type {VM.ListVariable} */
+      const variable = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST), 'list');
+      if (variable) {
+        const index = Scratch.Cast.toListIndex(args.INDEX, variable.value.length, false);
+        if (index !== 'INVALID') {
+          variable.value[index - 1] = args.VALUE;
+          variable._monitorUpToDate = false;
         }
-        Scratch.vm.runtime.getTargetForStage().lookupVariableByNameAndType(listname,'list').value = newvalue;
       }
     }
     getIndexOfList(args, util) {
