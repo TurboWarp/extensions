@@ -6,7 +6,7 @@
   // Object.create(null) prevents "variable [toString]" from returning a function
   let runtimeVariables = Object.create(null);
   let variables = Object.create(null);
- 
+
   // Credit to skyhigh173 for the idea of this
   const label = (name, hidden) => ({
     blockType: Scratch.BlockType.LABEL,
@@ -38,7 +38,7 @@
         color2: '#E15D00',
         menuIconURI: menuIconURI,
         blocks: [
-          
+
           label('Thread Variables', false),
 
           {
@@ -351,7 +351,7 @@
     }
 
     /* RUNTIME VARIABLES */
-    
+
     setRuntimeVariable (args) {
       runtimeVariables[args.VAR] = args.STRING;
     }
