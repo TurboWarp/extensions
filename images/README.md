@@ -195,3 +195,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## battery.svg
  - Created by [@Martinelplayz](https://github.com/Martinelplayz) in https://github.com/TurboWarp/extensions/pull/504#issuecomment-1574243161
+
+## Longboost/color_channels.svg
+ - Created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575091575
