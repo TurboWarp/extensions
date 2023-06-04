@@ -7,6 +7,7 @@
    * @typedef Timer
    * @property {number} startTime
    * @property {number} pauseTime
+   * @property {boolean} paused
    */
 
   /** @type {Record<string, Timer>} */
@@ -17,7 +18,7 @@
    * @return {number}
    */
   const timerValue = timer => {
-    return (Date.now() - timer.startTime + timer.pauseTime) / 1000;
+    return ((timer.paused ? 0 : (Date.now() - timer.startTime)) + timer.pauseTime) / 1000;
   };
 
   class Timers {
@@ -87,6 +88,33 @@
             blockType: Scratch.BlockType.REPORTER,
             extensions: ['colours_sensing'],
             text: 'timer [TIMER]',
+            arguments: {
+              TIMER: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'timer'
+              }
+            }
+          },
+
+          '---',
+
+          {
+            opcode: 'pauseTimer',
+            blockType: Scratch.BlockType.COMMAND,
+            extensions: ['colours_sensing'],
+            text: 'pause timer [TIMER]',
+            arguments: {
+              TIMER: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'timer'
+              }
+            }
+          },
+          {
+            opcode: 'resumeTimer',
+            blockType: Scratch.BlockType.COMMAND,
+            extensions: ['colours_sensing'],
+            text: 'resume timer [TIMER]',
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
@@ -191,17 +219,33 @@
     startTimer(args) {
       if (timers[args.TIMER]) return;
       timers[args.TIMER] = {
+        startTime: Date.now(),
         pauseTime: 0,
-        startTime: Date.now()
+        paused: false
       };
     }
 
     resetTimer(args) {
       if (!timers[args.TIMER]) return;
       timers[args.TIMER] = {
+        startTime: Date.now(),
         pauseTime: 0,
-        startTime: Date.now()
+        paused: false
       };
+    }
+
+    pauseTimer(args) {
+      const timer = timers[args.TIMER];
+      if (!timer) return;
+      timer.pauseTime = timerValue(timer) * 1000;
+      timer.paused = true;
+    }
+
+    resumeTimer(args) {
+      const timer = timers[args.TIMER];
+      if (!timer) return;
+      timer.paused = false;
+      timer.startTime = Date.now();
     }
 
     valueOfTimer(args) {
