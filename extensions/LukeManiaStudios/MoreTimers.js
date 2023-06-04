@@ -163,11 +163,11 @@
     }
 
     whenTimerOp(args) {
+      if (!timers[args.TIMER]) return false;
       const value = (Date.now() - timers[args.TIMER]) / 1000;
-      if (!value) return console.log('fuck');
-      if (args.OP === '>') return (value > args.NUM) ? true : null;
-      if (args.OP === '<') return (value < args.NUM) ? true : null;
-      return;
+      if (args.OP === '>') return value > args.NUM;
+      if (args.OP === '<') return value < args.NUM;
+      return false;
     }
 
     startTimer(args) {
