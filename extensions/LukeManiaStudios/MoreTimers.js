@@ -1,9 +1,24 @@
 (function (Scratch) {
   'use strict';
 
-  let timers = Object.create(null);
   const vm = Scratch.vm;
-  const runtime = vm.runtime;
+
+  /**
+   * @typedef Timer
+   * @property {number} startTime
+   * @property {number} pauseTime
+   */
+
+  /** @type {Record<string, Timer>} */
+  let timers = Object.create(null);
+
+  /**
+   * @param {Timer} timer
+   * @return {number}
+   */
+  const timerValue = timer => {
+    return (Date.now() - timer.startTime + timer.pauseTime) / 1000;
+  };
 
   class Timers {
     constructor() {
@@ -16,6 +31,9 @@
       return {
         id: 'lmsTimers',
         name: 'More Timers',
+        color1: '#5cb1d6',
+        color2: '#428faf',
+        color3: '#3281a3',
         blocks: [
           {
             opcode: 'whenTimerOp',
@@ -164,7 +182,7 @@
 
     whenTimerOp(args) {
       if (!timers[args.TIMER]) return false;
-      const value = (Date.now() - timers[args.TIMER]) / 1000;
+      const value = timerValue(timers[args.TIMER]);
       if (args.OP === '>') return value > args.NUM;
       if (args.OP === '<') return value < args.NUM;
       return false;
@@ -172,27 +190,36 @@
 
     startTimer(args) {
       if (timers[args.TIMER]) return;
-      timers[args.TIMER] = Date.now();
+      timers[args.TIMER] = {
+        pauseTime: 0,
+        startTime: Date.now()
+      };
     }
 
     resetTimer(args) {
       if (!timers[args.TIMER]) return;
-      timers[args.TIMER] = Date.now();
+      timers[args.TIMER] = {
+        pauseTime: 0,
+        startTime: Date.now()
+      };
     }
 
     valueOfTimer(args) {
       if (!timers[args.TIMER]) return '';
-      return (Date.now() - timers[args.TIMER]) / 1000;
+      return timerValue(timers[args.TIMER]);
     }
 
     setTimer(args) {
       if (!timers[args.TIMER]) return;
-      timers[args.TIMER] = Date.now() - (args.NUM * 1000);
+      timers[args.TIMER] = {
+        startTime: Date.now(),
+        pauseTime: Scratch.Cast.toNumber(args.NUM) * 1000
+      };
     }
 
     changeTimer(args) {
       if (!timers[args.TIMER]) return;
-      timers[args.TIMER] = (timers[args.TIMER] - (args.NUM * 1000));
+      timers[args.TIMER].pauseTime += Scratch.Cast.toNumber(args.NUM) * 1000;
     }
 
     removeTimers(args) {
@@ -204,7 +231,7 @@
     }
 
     timerExists(args) {
-      return (timers[args.TIMER]) ? true : false;
+      return !!timers[args.TIMER];
     }
 
     listExistingTimers(args) {
