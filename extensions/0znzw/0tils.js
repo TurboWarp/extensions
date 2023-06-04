@@ -1,5 +1,5 @@
 /*!
- * VERSION 8.0
+ * VERSION 8.2
  * Originally created by https://scratch.mit.edu/users/0znzw/
  * This file is available under an informal "use with credit" license.
  * DO NOT REMOVE THIS COMMENT
@@ -7,7 +7,7 @@
 (function(Scratch) {
   'use strict';
   var _SGCUtils = {
-    version: '8.0',
+    version: '8.2',
     ids: {}
   };
   if (!Scratch.extensions.unsandboxed) {
@@ -578,9 +578,16 @@
   const zips = [];
   const stageVariablesDisplay = ['my variable'];
 
-  const allowDuplicates = urlParams.has("0tils-disableDuplicates");
+  const allowDuplicates = !urlParams.has("0tils-enableDuplicates");
   const allowUnsafe = !urlParams.has("0tils-allowUnsafe");
-
+  const showParenSpam = urlParams.has("0tils-showParenSpam");
+  const showLabels = !urlParams.has("0tils-showExtraLabels");
+  
+  function addLPlabel(text) {
+    if (showParenSpam) return `(${text}) `;
+    return '';
+  }
+  
   class SGCUtils {
     getInfo() {
       return {
@@ -592,6 +599,7 @@
         color2: '#D882EE', // border+dropdown color
         color3: '#D882EE', // input color
         blocks: [{
+            hideFromPalette: showLabels,
             opcode: 'getVersion',
             blockType: Scratch.BlockType.REPORTER,
             text: '0tils version'
@@ -599,10 +607,11 @@
             opcode: "emptyFunctionForLabels",
             blockType: "label",
             text: "Encryption",
+            hideFromPalette: showLabels
           }, {
           opcode: 'doAES',
           blockType: Scratch.BlockType.REPORTER,
-          text: '(AES) [mode] [data] with password: [pwd] and [bytes] bytes.',
+          text: addLPlabel("AES")+'[mode] [data] with password: [pwd] and [bytes] bytes.',
           arguments: {
             mode: {
               type: Scratch.ArgumentType.STRING,
@@ -625,7 +634,7 @@
           hideFromPalette: allowUnsafe,
           opcode: 'doRSA',
           blockType: Scratch.BlockType.REPORTER,
-          text: '(RSA) [mode] [data] with key: [key].',
+          text: addLPlabel("RSA")+'[mode] [data] with key: [key].',
           arguments: {
             mode: {
               type: Scratch.ArgumentType.STRING,
@@ -644,6 +653,7 @@
           opcode: "emptyFunctionForLabels",
           blockType: "label",
           text: "Hashing",
+          hideFromPalette: showLabels
         }, {
           opcode: 'hashMe',
           blockType: Scratch.BlockType.REPORTER,
@@ -661,6 +671,7 @@
           opcode: "emptyFunctionForLabels",
           blockType: "label",
           text: "Encoders",
+          hideFromPalette: showLabels
         }, {
           opcode: 'encoder',
           blockType: Scratch.BlockType.REPORTER,
@@ -681,7 +692,7 @@
         }, {
           opcode: 'i36encoder',
           blockType: Scratch.BlockType.REPORTER,
-          text: '(i36) [mode] [value] as type [type]',
+          text: addLPlabel("i36")+'[mode] [value] as type [type]',
           arguments: {
             mode: {
               type: Scratch.ArgumentType.STRING,
@@ -699,6 +710,7 @@
           opcode: "emptyFunctionForLabels",
           blockType: "label",
           text: "Math",
+          hideFromPalette: showLabels
         }, {
           opcode: 'pwrOf',
           blockType: Scratch.BlockType.REPORTER,
@@ -725,7 +737,8 @@
             str2: {
               type: Scratch.ArgumentType.STRING,
               defaultValue: 'hello'
-            }
+            },
+            hideFromPalette: allowDuplicates
           }
         }, { // This works like a reporter coupler, cause it accepts reporter/boolean input
           hideFromPalette: true, // Hidden due to a bug that for some reason freezes the page.
@@ -753,6 +766,7 @@
           opcode: "emptyFunctionForLabels",
           blockType: "label",
           text: "Coupling and symbols",
+          hideFromPalette: showLabels
         }, {
           opcode: 'boolCoupler',
           blockType: Scratch.BlockType.BOOLEAN,
@@ -768,7 +782,8 @@
           opcode: 'newline',
           blockType: Scratch.BlockType.REPORTER,
           text: 'newline',
-          disableMonitor: true
+          disableMonitor: true,
+          hideFromPalette: allowDuplicates
         }, {
           opcode: 'ifString',
           blockType: Scratch.BlockType.REPORTER,
@@ -785,12 +800,13 @@
               type: Scratch.ArgumentType.STRING,
               defaultValue: 'false'
             }
-          }
+          },
+          hideFromPalette: allowDuplicates
         }, {
           opcode: "emptyFunctionForLabels",
           blockType: "label",
           text: "Localstorage",
-          hideFromPalette: allowDuplicates
+          hideFromPalette: allowDuplicates || showLabels
         }, {
           opcode: 'getLSitem',
           blockType: Scratch.BlockType.REPORTER,
@@ -832,6 +848,7 @@
           opcode: "emptyFunctionForLabels",
           blockType: "label",
           text: "Networking",
+          hideFromPalette: showLabels
         }, {
           opcode: 'linkopen',
           blockType: Scratch.BlockType.COMMAND,
@@ -851,6 +868,7 @@
           opcode: "emptyFunctionForLabels",
           blockType: "label",
           text: "Stage variables",
+          hideFromPalette: showLabels,
           filter: [Scratch.TargetType.STAGE]
         }, {
           //hideFromPalette: true,
@@ -896,6 +914,7 @@
           opcode: "emptyFunctionForLabels",
           blockType: "label",
           text: "Events (custom)",
+          hideFromPalette: showLabels
         }, {
           opcode: 'whenReceived',
           blockType: Scratch.BlockType.HAT,
@@ -926,6 +945,7 @@
           opcode: "emptyFunctionForLabels",
           blockType: "label",
           text: "Files",
+          hideFromPalette: showLabels
         }, {
           hideFromPalette: true,
           opcode: 'newZip',
@@ -970,7 +990,7 @@
         }, {
           opcode: 'download',
           blockType: Scratch.BlockType.COMMAND,
-          text: '(raw) download [text] as [file]',
+          text: addLPlabel("RAW")+'download [text] as [file]',
           arguments: {
             text: {
               type: Scratch.ArgumentType.STRING,
@@ -985,10 +1005,11 @@
           opcode: "emptyFunctionForLabels",
           blockType: "label",
           text: "Extended Extensions",
+          hideFromPalette: showLabels
         }, {
           opcode: 'deleteSpriteNoConfirm',
           blockType: Scratch.BlockType.COMMAND,
-          text: '(ShovelUtils) Delete sprite [SPRITE] | No Confirmation',
+          text: addLPlabel("ShovelUtils")+'Delete sprite [SPRITE] | No Confirmation',
           arguments: {
             SPRITE: {
               type: Scratch.ArgumentType.STRING,
@@ -998,7 +1019,7 @@
         }, {
           opcode: 'deleteCostume',
           blockType: Scratch.BlockType.COMMAND,
-          text: '(ShovelUtils) Delete costume [COSNAME] in [SPRITE]',
+          text: addLPlabel("ShovelUtils")+'Delete costume [COSNAME] in [SPRITE]',
           arguments: {
             COSNAME: {
               type: Scratch.ArgumentType.STRING,
@@ -1013,7 +1034,7 @@
           opcode: "emptyFunctionForLabels",
           blockType: "label",
           text: "Library Imports",
-          hideFromPalette: allowUnsafe
+          hideFromPalette: allowUnsafe || showLabels
         }, {
           hideFromPalette: allowUnsafe,
           opcode: 'Setup',
