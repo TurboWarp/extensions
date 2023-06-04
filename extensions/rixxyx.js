@@ -431,7 +431,16 @@
       return args.TEXT.repeat(Math.floor(args.NUM));
     }
     jsonParse(args) {
-      return JSON.parse(args.TEXT.toString());
+      try {
+        const parsed = JSON.parse(args.TEXT);
+        if (typeof parsed === 'string' || typeof parsed === 'number' || typeof parsed === 'boolean') {
+          return parsed;
+        }
+        return Scratch.Cast.toString(parsed);
+      } catch (e) {
+        console.error(e);
+        return Scratch.Cast.toString((e && e.message) || e);
+      }
     }
     returnENum(args) {
       return Math.E;
