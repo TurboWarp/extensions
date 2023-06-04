@@ -1143,6 +1143,7 @@
       if (dropdown === 'number') return !isNaN(input);
       if (dropdown === 'uppercase') return (input == input.toUpperCase());
       if (dropdown === 'lowercase') return (input == input.toLowerCase());
+      return false;
     }
 
     encodeToBlock(args) {
@@ -1153,6 +1154,7 @@
           return char.charCodeAt(0).toString(2);
         }).join(' ');
       }
+      return '';
     }
 
     decodeFromBlock(args) {
@@ -1162,6 +1164,7 @@
          var output = args.STRING.toString();
          return output.split(' ').map((x) => x = String.fromCharCode(parseInt(x, 2))).join('');
       }
+      return '';
     }
 
     negativeReporter (args) {
@@ -1282,11 +1285,13 @@
     screenReporter(args) {
       if (args.DROPDOWN === 'width') return screen.width;
       if (args.DROPDOWN === 'height') return screen.height;
+      return '';
     }
 
     windowReporter(args) {
       if (args.DROPDOWN === 'width') return window.innerWidth;
       if (args.DROPDOWN === 'height') return window.innerHeight;
+      return '';
     }
 
     osBrowserDetails(args) {
