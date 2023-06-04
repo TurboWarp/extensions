@@ -13344,7 +13344,7 @@
       if (!body) {
         return 0;
       }
-      const vel = body.GetAngularVelocity();
+      const vel = -body.GetAngularVelocity();
       return vel;
     }
 
