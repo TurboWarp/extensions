@@ -192,7 +192,3 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/498.
  - File icons based on https://icon-icons.com/icon/file-pdf/153412 under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
  - Background based on https://bgjar.com/contour-line under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-
-## LukeManiaStudios/MoreTimers.svg
-- Created by 
-- Timer SVG based from https://www.svgrepo.com/svg/2045/stopwatch under CC0.
