@@ -429,7 +429,7 @@
       return Array.from(text).map((each)=>each.charCodeAt(0).toString(2)).join(" ");
     }
     repeatTxtTimes(args) {
-      return args.TEXT.repeat(Math.floor(args.NUM));
+      return Scratch.Cast.toString(args.TEXT).repeat(Math.floor(args.NUM));
     }
     jsonParse(args) {
       try {
