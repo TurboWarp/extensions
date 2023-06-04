@@ -17,7 +17,6 @@
         color2: "#5f3000",
         id: "RixxyX",
         name: "RixxyX",
-        description: '[deleted]',
         blocks: [
           {
             opcode: 'notEquals',
