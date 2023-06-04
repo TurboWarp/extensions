@@ -10,6 +10,7 @@
       vm.runtime.on('PROJECT_START', () => {
         timers = Object.create(null);
       });
+    }
 
     getInfo() {
       return {
