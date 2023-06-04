@@ -368,7 +368,7 @@
     reverseTxt(args) {
       var emptyStr = "";
       var txt = args.TEXT.toString();
-      var localCount = args.TEXT.length - 1;
+      var localCount = txt.length - 1;
       while (localCount != -1) {
         emptyStr = emptyStr + txt.charAt(localCount);
         localCount -= 1;
