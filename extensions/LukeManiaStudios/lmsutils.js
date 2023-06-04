@@ -1029,7 +1029,7 @@
     }
 
     isClone(args, util) {
-      return util.target.isOriginal;
+      return util.target.isOriginal ? false : true;
     }
 
     spriteClicked(args, util) {
