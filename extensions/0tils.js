@@ -1,13 +1,17 @@
 /*!
- * VERSION 6.2
+ * VERSION 7.0
  * Originally created by https://scratch.mit.edu/users/0znzw/
  * This file is available under an informal "use with credit" license.
  * DO NOT REMOVE THIS COMMENT
  */
 (function(Scratch) {
   'use strict';
+  var _SGCUtils = {
+    version: 7.0,
+    ids: {}
+  };
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('SGC-Utils must run unsandboxed\nSGC-Utils v6.0');
+    throw new Error(`SGC-Utils must run unsandboxed\nSGC-Utils v${_SGCUtils.version}`);
   }
   const vm = Scratch.vm;
   /* eslint-disable */
@@ -538,10 +542,6 @@
     return (download);
   })();
   /* eslint-enable */
-  var _SGCUtils = {
-    version: 6.2,
-    ids: {}
-  };
   _SGCUtils.ids.getTarget = function(sprite) {
     sprite = sprite || "";
     const target = vm.runtime.getTargetById(sprite == "" ? vm.runtime.getTargetForStage()
@@ -581,7 +581,7 @@
         id: 'SGCUtils',
         name: '0 Utilities',
         menuIconURI: icon,
-        docsURI: 'http://github.com/SurvExE1Pc/SGC-Utils',
+        docsURI: 'https://survexe1pc.github.io/0tils',
         color1: '#9D8CA1', // block color
         color2: '#9D8CA8', // border+dropdown color
         color3: '#81717A', // input color
@@ -589,6 +589,10 @@
             opcode: 'getVersion',
             blockType: Scratch.BlockType.REPORTER,
             text: '0tils version'
+          }, {
+            opcode: "emptyFunctionForLabels",
+            blockType: "label",
+            text: "Encryption",
           }, {
           opcode: 'doAES',
           blockType: Scratch.BlockType.REPORTER,
@@ -631,6 +635,10 @@
             }
           }
         }, {
+          opcode: "emptyFunctionForLabels",
+          blockType: "label",
+          text: "Hashing",
+        }, {
           opcode: 'hashMe',
           blockType: Scratch.BlockType.REPORTER,
           text: 'hash [value] with [hash]',
@@ -643,6 +651,10 @@
               type: Scratch.ArgumentType.STRING
             }
           }
+        }, {
+          opcode: "emptyFunctionForLabels",
+          blockType: "label",
+          text: "Encoders",
         }, {
           opcode: 'encoder',
           blockType: Scratch.BlockType.REPORTER,
@@ -677,7 +689,11 @@
               menu: 'i36modes'
             }
           }
-        }, '---', {
+        }, {
+          opcode: "emptyFunctionForLabels",
+          blockType: "label",
+          text: "Math",
+        }, {
           opcode: 'pwrOf',
           blockType: Scratch.BlockType.REPORTER,
           text: '[base] ^ [n]',
@@ -718,6 +734,20 @@
             }
           }
         }, {
+          opcode: 'digitGen',
+          blockType: Scratch.BlockType.REPORTER,
+          text: 'random [len] digit int',
+          arguments: {
+            len: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 8
+            }
+          }
+        }, {
+          opcode: "emptyFunctionForLabels",
+          blockType: "label",
+          text: "Coupling and symbols",
+        }, {
           opcode: 'boolCoupler',
           blockType: Scratch.BlockType.BOOLEAN,
           text: '[value]',
@@ -751,16 +781,10 @@
             }
           }
         }, {
-          opcode: 'digitGen',
-          blockType: Scratch.BlockType.REPORTER,
-          text: 'random [len] digit int',
-          arguments: {
-            len: {
-              type: Scratch.ArgumentType.NUMBER,
-              defaultValue: 8
-            }
-          }
-        }, '---', {
+          opcode: "emptyFunctionForLabels",
+          blockType: "label",
+          text: "Localstorage",
+        }, {
           opcode: 'getLSitem',
           blockType: Scratch.BlockType.REPORTER,
           text: '(LocalStorage) Get [name]',
@@ -794,7 +818,11 @@
               defaultValue: 'hello'
             }
           }
-        }, '---', {
+        }, {
+          opcode: "emptyFunctionForLabels",
+          blockType: "label",
+          text: "Networking",
+        }, {
           opcode: 'linkopen',
           blockType: Scratch.BlockType.COMMAND,
           text: 'open [url] with [target] as target',
@@ -809,7 +837,12 @@
               defaultValue: '_self'
             }
           }
-        }, '---', {
+        }, {
+          opcode: "emptyFunctionForLabels",
+          blockType: "label",
+          text: "Stage variables",
+          filter: [Scratch.TargetType.STAGE]
+        }, {
           //hideFromPalette: true,
           opcode: 'stageNewVariable',
           blockType: Scratch.BlockType.COMMAND,
@@ -849,7 +882,11 @@
             }
           },
           filter: [Scratch.TargetType.STAGE]
-        }, '---', {
+        }, {
+          opcode: "emptyFunctionForLabels",
+          blockType: "label",
+          text: "Events (custom)",
+        }, {
           opcode: 'whenReceived',
           blockType: Scratch.BlockType.HAT,
           text: '(special) when I receive [EVENT_OPTION]',
@@ -875,7 +912,11 @@
           opcode: 'resetOnetime',
           blockType: Scratch.BlockType.COMMAND,
           text: 'reset onetime'
-        }, '---', {
+        }, {
+          opcode: "emptyFunctionForLabels",
+          blockType: "label",
+          text: "Files",
+        }, {
           hideFromPalette: true,
           opcode: 'newZip',
           blockType: Scratch.BlockType.COMMAND,
@@ -930,7 +971,11 @@
               defaultValue: 'save.txt'
             }
           }
-        }, '---', {
+        }, {
+          opcode: "emptyFunctionForLabels",
+          blockType: "label",
+          text: "Extended Extensions",
+        }, {
           opcode: 'deleteSpriteNoConfirm',
           blockType: Scratch.BlockType.COMMAND,
           text: '(ShovelUtils) Delete sprite [SPRITE] | No Confirmation',
@@ -940,7 +985,7 @@
               defaultValue: 'Sprite1'
             }
           }
-        }, '---', {
+        }, {
           hideFromPalette: true,
           opcode: 'Setup',
           blockType: Scratch.BlockType.COMMAND,
@@ -951,6 +996,11 @@
               defaultValue: false
             }
           }
+        }, {
+          opcode: "emptyFunctionForButtons",
+          blockType: "button",
+          text: "CREDITS",
+          func: "button_credits"
         }],
         menus: {
           EVENT_FIELD: {
@@ -1364,6 +1414,20 @@
     }
     newline() {
       return "\n";
+    }
+
+
+    /* USED FOR DISPLAY IN MENU, SO THESE ARE NOT MEANT TO BE RAN */
+    emptyFunctionForLabels() {
+      console.log("(0Tils) THIS IS NOT SUPPOSED TO BE RAN!!")
+    }
+    emptyFunctionForButtons() {
+      console.log("(0Tils) THIS IS NOT SUPPOSED TO BE RAN!!")
+    }
+
+    /* BUTTONS */
+    async button_credits() {
+      await Scratch.redirect("https://survexe1pc.github.io/0tils/credits");
     }
   }
   setInterval(() => {
