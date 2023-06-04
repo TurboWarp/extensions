@@ -29,7 +29,7 @@
     'Pixel',
   ];
 
-  const DEFAULT_COLOR = '#575E75';
+  const DEFAULT_COLOR = '#575e75';
   const DEFAULT_FONT = 'Handwriting';
   const DEFAULT_WIDTH = vm.runtime.stageWidth;
   const DEFAULT_ALIGN = ALIGN_CENTER;
@@ -617,16 +617,15 @@
               }
             }
           },
-          '---',
           {
             opcode: 'labelNewBlocks',
             blockType: Scratch.BlockType.LABEL,
-            text: 'New Blocks'
+            text: 'Incompatible with Scratch Lab:'
           },
           {
             opcode: 'textActive',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'text active?'
+            text: 'is showing text?'
           },
           {
             opcode: 'getTextAttribute',
@@ -637,7 +636,8 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: 'attribute'
               }
-            }
+            },
+            disableMonitor: true
           }
         ],
         menus: {
@@ -796,23 +796,22 @@
     textActive (args, util) {
       const drawableID = util.target.drawableID;
       const skin = renderer._allDrawables[drawableID].skin;
-      if (skin instanceof TextCostumeSkin) return true;
-      return false;
+      return skin instanceof TextCostumeSkin;
     }
 
     getTextAttribute (args, util) {
       const state = this._getState(util.target);
       const attrib = args.ATTRIBUTE;
-      let output = '';
       if (attrib === 'font') {
-        output = state.skin.getFontFamily();
+        return state.skin.getFontFamily();
       } else if (attrib === 'color') {
-        output = state.skin.getColor();
+        return state.skin.getColor();
+      } else if (attrib === 'width') {
+        return state.skin.getWidth();
       } else {
-        output = Scratch.Cast.toString(state.skin.getWidth());
+        // should never happen
+        return '';
       }
-      if (!output) return '';
-      return output;
     }
   }
 
