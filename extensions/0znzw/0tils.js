@@ -1,5 +1,5 @@
 /*!
- * VERSION 8.2
+ * VERSION 8.6
  * Originally created by https://scratch.mit.edu/users/0znzw/
  * This file is available under an informal "use with credit" license.
  * DO NOT REMOVE THIS COMMENT
@@ -7,7 +7,7 @@
 (function(Scratch) {
   'use strict';
   var _SGCUtils = {
-    version: '8.2',
+    version: '8.6',
     ids: {}
   };
   if (!Scratch.extensions.unsandboxed) {
@@ -720,7 +720,8 @@
               type: Scratch.ArgumentType.NUMBER,
               defaultValue: 3
             }
-          }
+          },
+          hideFromPalette: allowDuplicates
         }, {
           opcode: 'strictEqual',
           blockType: Scratch.BlockType.BOOLEAN,
@@ -734,8 +735,8 @@
               type: Scratch.ArgumentType.STRING,
               defaultValue: 'hello'
             },
-            hideFromPalette: allowDuplicates
-          }
+          },
+          hideFromPalette: allowDuplicates
         }, { // This works like a reporter coupler, cause it accepts reporter/boolean input
           hideFromPalette: true, // Hidden due to a bug that for some reason freezes the page.
           disableMonitor: true,
@@ -761,7 +762,7 @@
         }, {
           blockType: Scratch.BlockType.LABEL,
           text: "Coupling and symbols",
-          hideFromPalette: showLabels
+          hideFromPalette: showLabels || allowDuplicates
         }, {
           opcode: 'boolCoupler',
           blockType: Scratch.BlockType.BOOLEAN,
@@ -772,7 +773,8 @@
               menu: 'bools',
               defaultValue: true
             }
-          }
+          },
+          hideFromPalette: allowDuplicates
         }, {
           opcode: 'newline',
           blockType: Scratch.BlockType.REPORTER,
