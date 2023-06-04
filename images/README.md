@@ -195,3 +195,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## battery.svg
  - Created by [@Martinelplayz](https://github.com/Martinelplayz) in https://github.com/TurboWarp/extensions/pull/504#issuecomment-1574243161
+
+## LukeManiaStudios/MoreTimers.svg
+- Created by 
+- Timer SVG based from https://www.svgrepo.com/svg/2045/stopwatch under CC0.
