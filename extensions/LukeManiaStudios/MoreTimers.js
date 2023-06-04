@@ -6,6 +6,16 @@
   const runtime = vm.runtime;
 
   class Timers {
+    constructor() {
+      vm.runtime.on('PROJECT_START', () => {
+        timers = Object.create(null);
+      });
+
+      vm.runtime.on('PROJECT_STOP_ALL', () => {
+        timers = Object.create(null);
+      });
+    }
+
     getInfo() {
       return {
         id: 'lmsTimers',
