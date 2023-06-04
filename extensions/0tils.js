@@ -582,10 +582,9 @@
         name: '0 Utilities',
         //menuIconURI: icon,
         docsURI: 'https://survexe1pc.github.io/0tils',
-        //REMOVED COLORS FOR NOW CAUSE THEY WERE UGLY
-        //color1: '#9D8CA1', // block color
-        //color2: '#9D8CA8', // border+dropdown color
-        //color3: '#81717A', // input color
+        color1: '#BE3DC0', // block color
+        color2: '#D882EE', // border+dropdown color
+        color3: '#D882EE', // input color
         blocks: [{
             opcode: 'getVersion',
             blockType: Scratch.BlockType.REPORTER,
