@@ -13345,7 +13345,7 @@
       if (!body) {
         body = this.setPhysicsFor(util.target);
       }
-      body.SetAngularVelocity(args.force);
+      body.SetAngularVelocity(-Cast.toNumber(args.force));
     }
 
     angVelocity(args, util) {
