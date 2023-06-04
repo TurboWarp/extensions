@@ -7948,7 +7948,7 @@
     getInfo() {
       return {
         id: 'NGIO',
-        name: 'Newgrounds!',
+        name: 'Newgrounds',
 
         color1: '#EB7522',
         color2: '#4F280E',
