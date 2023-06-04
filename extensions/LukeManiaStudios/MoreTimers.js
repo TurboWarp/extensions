@@ -158,6 +158,7 @@
     }
 
     startTimer(args) {
+      if (timers[args.TIMER]) return;
       timers[args.TIMER] = Date.now();
     }
 
