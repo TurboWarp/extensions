@@ -198,3 +198,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Longboost/color_channels.svg
  - Created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575091575
+
+## qxsck/data-analysis.svg
+ - Based on image created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575100933
