@@ -44,7 +44,7 @@
   }
   async function request_chat(text) {
     // see https://platform.openai.com/docs/api-reference/chat/create
-    const resp = await fetch(`https://api.openai.com/v1/chat/completions`, {
+    const resp = await Scratch.fetch(`https://api.openai.com/v1/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
