@@ -149,7 +149,7 @@
       return 'The openai apikey has been set. Note that customizing the apikey is risky!';
     }
     donate () {
-      window.open('https://afdian.net/@zmh-program');
+      Scratch.openWindow('https://afdian.net/@zmh-program');
     }
   }
 
