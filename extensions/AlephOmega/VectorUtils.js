@@ -8,7 +8,7 @@
 class VectorExtension {
   getInfo() {
     return {
-      id: 'vector',
+      id: 'AlephOmegaVectors',
       name: 'VectorUtils',
       color1: '#4286f4',
       color2: '#63a8f5',
