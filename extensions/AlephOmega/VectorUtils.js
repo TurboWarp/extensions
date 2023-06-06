@@ -276,7 +276,7 @@ class VectorExtension {
           arguments: {
             SET: {
               type: Scratch.ArgumentType.STRING,
-              menu : "VAL"
+              menu: "VAL"
             },
             OF: {
               type: Scratch.ArgumentType.STRING
@@ -292,7 +292,7 @@ class VectorExtension {
           text: "Absolute value of all axis in [V1]",
           arguments: {
             V1: {
-              type:Scratch.ArgumentType.STRING
+              type: Scratch.ArgumentType.STRING
             }
           }
         }
@@ -315,10 +315,10 @@ class VectorExtension {
   }
 
   Set(args) {
-   var {SET, OF, TO} = args
+   var {SET, OF, TO} = args;
    OF = JSON.parse(OF);
    if (SET == "X") {
-     OF.x = TO; 
+     OF.x = TO;
    }
    if (SET == "Y") {
     OF.y = TO;
@@ -576,5 +576,5 @@ class VectorExtension {
     return JSON.stringify(result);
   }
 }
-Scratch.extensions.register(new VectorExtension()); 
+Scratch.extensions.register(new VectorExtension());
 })(Scratch);
