@@ -244,6 +244,7 @@
     resumeTimer(args) {
       const timer = timers[args.TIMER];
       if (!timer) return;
+      if (timer.paused === false) return;
       timer.paused = false;
       timer.startTime = Date.now();
     }
