@@ -3,32 +3,7 @@
     if (!Scratch.extensions.unsandboxed) throw 'can not load out side unsandboxed mode';
 
     const {vm} = Scratch;
-    const {runtime, extensionManager} = vm;
-
-    // inject comments bc yes
-    // @ts-ignore
-    const oldConvert = runtime._convertForScratchBlocks.bind(runtime);
-    const createComment = blockInfo => ({
-        info: blockInfo,
-        xml: `<label text="${blockInfo.slice(3)}"></label>`
-    });
-    // @ts-ignore
-    runtime._convertForScratchBlocks = (blockInfo, categoryInfo) => {
-        if (typeof blockInfo === 'string' &&
-            blockInfo.startsWith('---') &&
-            blockInfo.length > 3) {
-            return createComment(blockInfo);
-        }
-        return oldConvert(blockInfo, categoryInfo);
-    };
-    // @ts-ignore
-    const oldPrepare = extensionManager._prepareBlockInfo.bind(extensionManager);
-    // @ts-ignore
-    extensionManager._prepareBlockInfo = (serviceName, blockInfo) => {
-        if (typeof blockInfo === 'string' && blockInfo.startsWith('---'))
-            return blockInfo;
-        return oldPrepare(serviceName, blockInfo);
-    };
+    const {runtime} = vm;
 
     // the funny class to make event blocks look better
     class Events {
@@ -120,7 +95,7 @@
         }
         getInfo() {
             return {
-                id: 'extawebrequestsHTTP',
+                id: 'gsaHTTPRequests',
                 name: 'http/https',
                 color1: '#307eff',
                 color2: '#2c5eb0',
@@ -130,7 +105,10 @@
                         blockType: BlockType.COMMAND,
                         text: 'clear current data'
                     },
-                    "---response",
+                    {
+                        blockType: Scratch.BlockType.LABEL,
+                        text: "response"
+                    },
                     {
                         opcode: 'error',
                         blockType: BlockType.REPORTER,
@@ -190,7 +168,10 @@
                         isEdgeActivated: false,
                         text: 'when a request fails'
                     },
-                    "---request",
+                    {
+                        blockType: Scratch.BlockType.LABEL,
+                        text: "request"
+                    },
                     {
                         opcode: 'setMimeType',
                         blockType: BlockType.COMMAND,

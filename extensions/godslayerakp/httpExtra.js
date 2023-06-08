@@ -111,7 +111,7 @@
     class HTTPPatches {
         getInfo() {
             return {
-                id: 'httpPatches',
+                id: 'gsaHttpPatches',
                 name: 'http/https extra',
                 color1: '#307eff',
                 color2: '#2c5eb0',
