@@ -17,7 +17,6 @@
         color2: "#5f3000",
         id: "RixxyX",
         name: "RixxyX",
-        description: '[deleted]',
         blocks: [
           {
             opcode: 'notEquals',
@@ -369,7 +368,7 @@
     reverseTxt(args) {
       var emptyStr = "";
       var txt = args.TEXT.toString();
-      var localCount = args.TEXT.length - 1;
+      var localCount = txt.length - 1;
       while (localCount != -1) {
         emptyStr = emptyStr + txt.charAt(localCount);
         localCount -= 1;
@@ -401,13 +400,14 @@
       }
     }
     toUppercase(args) {
-      return args.TEXT.toUpperCase();
+      return Scratch.Cast.toString(args.TEXT).toUpperCase();
     }
     toLowercase(args) {
-      return args.TEXT.toLowerCase();
+      return Scratch.Cast.toString(args.TEXT).toLowerCase();
     }
     toCapitalize(args) {
-      return args.TEXT.charAt(0).toUpperCase() + args.TEXT.slice(1);
+      const text = Scratch.Cast.toString(args.TEXT);
+      return text.charAt(0).toUpperCase() + text.slice(1);
     }
     isJsNan(args) {
       return isNaN(args.OBJ);
@@ -416,19 +416,9 @@
       return Math.floor(args.NUM);
     }
     returnBool(args) {
-      try {
-        if ((JSON.parse(args.BOOL).toString() == "true") || (JSON.parse(args.BOOL).toString() == "false")) {
-          return JSON.parse(args.BOOL);
-        } else if (JSON.parse(args.BOOL).toString() == "1") {
-          return true;
-        } else if (JSON.parse(args.BOOL).toString() == "0") {
-          return false;
-        } else {
-          return "";
-        }
-      } catch (err) {
-        return err;
-      }
+      // The original version of this block was quite broken. It would return empty string for
+      // values other than true/false/1/0, which I think does not make sense at all.
+      return Scratch.Cast.toBoolean(args.BOOL);
     }
     binToTxt(args) {
       var binary = args.BIN.toString();
@@ -439,10 +429,19 @@
       return Array.from(text).map((each)=>each.charCodeAt(0).toString(2)).join(" ");
     }
     repeatTxtTimes(args) {
-      return args.TEXT.repeat(Math.floor(args.NUM));
+      return Scratch.Cast.toString(args.TEXT).repeat(Math.floor(args.NUM));
     }
     jsonParse(args) {
-      return JSON.parse(args.TEXT.toString());
+      try {
+        const parsed = JSON.parse(args.TEXT);
+        if (typeof parsed === 'string' || typeof parsed === 'number' || typeof parsed === 'boolean') {
+          return parsed;
+        }
+        return Scratch.Cast.toString(parsed);
+      } catch (e) {
+        console.error(e);
+        return Scratch.Cast.toString((e && e.message) || e);
+      }
     }
     returnENum(args) {
       return Math.E;

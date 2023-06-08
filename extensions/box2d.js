@@ -12567,7 +12567,7 @@
                 defaultValue: 25,
               },
               dir: {
-                type: ArgumentType.NUMBER,
+                type: ArgumentType.ANGLE,
                 defaultValue: 0,
               },
             },
@@ -12590,6 +12590,35 @@
             filter: [Scratch.TargetType.SPRITE],
           },
 
+          '---',
+
+          {
+            opcode: "setAngVelocity",
+            blockType: BlockType.COMMAND,
+            text: formatMessage({
+              id: "griffpatch.setAngVelocity",
+              default: "set angular velocity to [force]",
+              description: "Set the angular velocity of the sprite",
+            }),
+            arguments: {
+              force: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 30,
+              },
+            },
+            filter: [Scratch.TargetType.SPRITE],
+          },
+          {
+            opcode: "getAngVelocity",
+            blockType: BlockType.REPORTER,
+            text: formatMessage({
+              id: "griffpatch.getAngVelocity",
+              default: "angular velocity",
+              description: "Get the angular velocity of the sprite",
+            }),
+            filter: [Scratch.TargetType.SPRITE],
+          },
+            
           "---",
 
           {
@@ -12609,28 +12638,166 @@
             },
             filter: [Scratch.TargetType.SPRITE],
           },
-          // {
-          //     opcode: 'setDensity',
-          //     blockType: BlockType.COMMAND,
-          //     text: formatMessage({
-          //         id: 'griffpatch.setDensity',
-          //         default: 'set density [density]',
-          //         description: 'Set the density of the object'
-          //     }),
-          //     arguments: {
-          //         density: {
-          //             type: ArgumentType.NUMBER,
-          //             defaultValue: 1
-          //         }
-          //     }
-          // },
+          {
+            opcode: "getStatic",
+            text: formatMessage({
+              id: "griffpatch.getStatic",
+              default: "fixed?",
+              description: "get whether this sprite is fixed"
+            }),
+            blockType: BlockType.BOOLEAN,
+            filter: [Scratch.TargetType.SPRITE]
+          },
+
+          "---",
+
+          {
+            opcode: "setDensity",
+            blockType: BlockType.COMMAND,
+            text: formatMessage({
+              id: "griffpatch.setDensity",
+              default: "set density [density]",
+              description: "Set the density of the object"
+            }),
+            arguments: {
+              density: {
+                type: ArgumentType.NUMBER,
+                menu: "DensityTypes",
+                defaultValue: 100,
+              },
+            },
+            filter: [Scratch.TargetType.SPRITE],
+          },
+          {
+            opcode: "setDensityValue",
+            func: "setDensity",
+            blockType: BlockType.COMMAND,
+            text: formatMessage({
+              id: "griffpatch.setDensityValue",
+              default: "set density to [density]",
+              description: "Set the density of the object"
+            }),
+            arguments: {
+              density: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 100
+              }
+            },
+            filter: [Scratch.TargetType.SPRITE],
+          },
+          {
+            opcode: "getDensity",
+            blockType: BlockType.REPORTER,
+            text: formatMessage({
+              id: "griffpatch.getDensity",
+              default: "density",
+              description: "Get the density of the object",
+            }),
+            filter: [Scratch.TargetType.SPRITE],
+          },
+
+          "---",
+
+          {
+            opcode: "setFriction",
+            blockType: BlockType.COMMAND,
+            text: formatMessage({
+              id: "griffpatch.setFriction",
+              default: "set friction [friction]",
+              description: "Set the friction of the object",
+            }),
+            arguments: {
+              friction: {
+                type: ArgumentType.NUMBER,
+                menu: "FrictionTypes",
+                defaultValue: 50,
+              },
+            },
+            filter: [Scratch.TargetType.SPRITE],
+          },
+          {
+            opcode: "setFrictionValue",
+            func: "setFriction",
+            blockType: BlockType.COMMAND,
+            text: formatMessage({
+              id: "griffpatch.setFrictionValue",
+              default: "set friction to [friction]",
+              description: "Set the friction value of the object",
+            }),
+            arguments: {
+              friction: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 50,
+              },
+            },
+            filter: [Scratch.TargetType.SPRITE],
+          },
+          {
+            opcode: "getFriction",
+            blockType: BlockType.REPORTER,
+            text: formatMessage({
+              id: "griffpatch.getFriction",
+              default: "friction",
+              description: "Get the friction of the object",
+            }),
+            filter: [Scratch.TargetType.SPRITE],
+          },
+
+          "---",
+
+          {
+            opcode: "setRestitution",
+            blockType: BlockType.COMMAND,
+            text: formatMessage({
+              id: "griffpatch.setRestitution",
+              default: "set bounce [restitution]",
+              description: "Set the bounce of the object",
+            }),
+            arguments: {
+              restitution: {
+                type: ArgumentType.NUMBER,
+                menu: "RestitutionTypes",
+                defaultValue: 20,
+              },
+            },
+            filter: [Scratch.TargetType.SPRITE],
+          },
+          {
+            opcode: "setRestitutionValue",
+            func: "setRestitution",
+            blockType: BlockType.COMMAND,
+            text: formatMessage({
+              id: "griffpatch.setRestitutionValue",
+              default: "set bounce to [restitution]",
+              description: "Set the bounce value of the object",
+            }),
+            arguments: {
+              restitution: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 20,
+              },
+            },
+            filter: [Scratch.TargetType.SPRITE],
+          },
+          {
+            opcode: "getRestitution",
+            blockType: BlockType.REPORTER,
+            text: formatMessage({
+              id: "griffpatch.getRestitution",
+              default: "bounce",
+              description: "Get the bounce value of the object",
+            }),
+            filter: [Scratch.TargetType.SPRITE],
+          },
+
+          "---",
+
           {
             opcode: "setProperties",
             blockType: BlockType.COMMAND,
             text: formatMessage({
               id: "griffpatch.setProperties",
-              default:
-                "set density [density] roughness [friction] bounce [restitution]",
+              default: "set density [density] roughness [friction] bounce [restitution]",
               description: "Set the density of the object",
             }),
             arguments: {
@@ -12651,6 +12818,7 @@
               },
             },
             filter: [Scratch.TargetType.SPRITE],
+            hideFromPalette: true,
           },
           // {
           //     opcode: 'pinSprite',
@@ -12751,17 +12919,7 @@
               description: "get the y scroll",
             }),
             blockType: BlockType.REPORTER,
-          },
-
-          // {
-          //     opcode: 'getStatic',
-          //     text: formatMessage({
-          //         id: 'griffpatch.getStatic',
-          //         default: 'Static?',
-          //         description: 'get whether this sprite is static'
-          //     }),
-          //     blockType: BlockType.BOOLEAN
-          // }
+          }
         ],
 
         menus: {
@@ -13147,14 +13305,78 @@
       body.ApplyTorque(-Cast.toNumber(args.force));
     }
 
+    setAngVelocity(args, util) {
+      let body = bodies[util.target.id];
+      if (!body) {
+        body = this.setPhysicsFor(util.target);
+      }
+      body.SetAngularVelocity(-Cast.toNumber(args.force));
+    }
+
+    getAngVelocity(args, util) {
+      const body = bodies[util.target.id];
+      if (!body) {
+        return 0;
+      }
+      const vel = -body.GetAngularVelocity();
+      return vel;
+    }
+
     setDensity(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
         body = this.setPhysicsFor(util.target);
       }
 
-      body.GetFixtureList().SetDensity(Cast.toNumber(args.density));
+      body.GetFixtureList().SetDensity(Cast.toNumber(args.density) / 100.0);
       body.ResetMassData();
+    }
+    
+    getDensity(args, util) {
+      let body = bodies[util.target.id];
+      if (!body) {
+        body = this.setPhysicsFor(util.target);
+      }
+
+      return body.GetFixtureList().GetDensity() * 100;
+    }
+
+    setFriction(args, util) {
+      let body = bodies[util.target.id];
+      if (!body) {
+        body = this.setPhysicsFor(util.target);
+      }
+
+      body.GetFixtureList().SetFriction(Cast.toNumber(args.friction) / 100.0);
+      body.ResetMassData();
+    }
+
+    getFriction(args, util) {
+      let body = bodies[util.target.id];
+      if (!body) {
+        body = this.setPhysicsFor(util.target);
+      }
+
+      return body.GetFixtureList().GetFriction() * 100;
+    }
+
+    setRestitution(args, util) {
+      let body = bodies[util.target.id];
+      if (!body) {
+        body = this.setPhysicsFor(util.target);
+      }
+
+      body.GetFixtureList().SetRestitution(Cast.toNumber(args.restitution) / 100.0);
+      body.ResetMassData();
+    }
+
+    getRestitution(args, util) {
+      let body = bodies[util.target.id];
+      if (!body) {
+        body = this.setPhysicsFor(util.target);
+      }
+
+      return body.GetFixtureList().GetRestitution() * 100;
     }
 
     setProperties(args, util) {
@@ -13165,9 +13387,7 @@
 
       body.GetFixtureList().SetDensity(Cast.toNumber(args.density) / 100.0);
       body.GetFixtureList().SetFriction(Cast.toNumber(args.friction) / 100.0);
-      body
-        .GetFixtureList()
-        .SetRestitution(Cast.toNumber(args.restitution) / 100.0);
+      body.GetFixtureList().SetRestitution(Cast.toNumber(args.restitution) / 100.0);
       body.ResetMassData();
     }
 

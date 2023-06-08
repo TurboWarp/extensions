@@ -157,7 +157,7 @@
         color: white;
         text-decoration: none;
         pointer-events: auto;
-        transition: 0.15s;
+        transition: filter 0.15s;
         filter: drop-shadow(0px 1px 3px #00000075);
       }
       .extension-buttons > *:hover {
@@ -165,7 +165,7 @@
         z-index: 1;
       }
       .extension-buttons *:active {
-        opacity: 0.8;
+        filter: brightness(0.85) drop-shadow(0px 1px 2px #00000075);
       }
       .extension-buttons *:disabled {
         opacity: 0.5;
@@ -357,6 +357,12 @@
     <div class="section extensions-outer">
       <div class="extensions">
         <div class="extension">
+          <%- banner('lab/text') %>
+          <h3>Animated Text</h3>
+          <p>An easy way to display and animate text. Compatible with Scratch Lab's Animated Text experiment.</p>
+        </div>
+
+        <div class="extension">
           <%- banner('stretch') %>
           <h3>Stretch</h3>
           <p>Stretch sprites horizontally or vertically.</p>
@@ -413,7 +419,7 @@
         <div class="extension">
           <%- banner('local-storage') %>
           <h3>Local Storage</h3>
-          <p>Store data persistently.</p>
+          <p>Store data persistently. Like cookies, but better.</p>
         </div>
 
         <div class="extension">
@@ -465,9 +471,27 @@
         </div>
 
         <div class="extension">
+          <%- banner('LukeManiaStudios/LooksPlus') %>
+          <h3>Looks Plus</h3>
+          <p>Expands upon the looks category, allowing you to show/hide, get costume data and edit SVG skins on sprites. Created by <a href="https://scratch.mit.edu/users/LukeManiaStudios/">LukeManiaStudios</a>.</p>
+        </div>
+
+        <div class="extension">
           <%- banner('navigator') %>
           <h3>Navigator</h3>
           <p>Details about the user's browser and operating system.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('battery') %>
+          <h3>Battery</h3>
+          <p>Access information about the battery of phones or laptops. May not work on all devices and browsers.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('mdwalters/notifications') %>
+          <h3>Notifications</h3>
+          <p>Display notifications.</p>
         </div>
 
         <div class="extension">
@@ -567,12 +591,6 @@
         </div>
 
         <div class="extension">
-          <%- banner('LukeManiaStudios/lmsutils') %>
-          <h3>LMS Utilities</h3>
-          <p>Adds utility blocks. Created by <a href="https://scratch.mit.edu/users/LukeManiaStudios/">LukeManiaStudios</a>.</p>
-        </div>
-
-        <div class="extension">
           <%- banner('LukeManiaStudios/TempVariables') %>
           <h3>Temporary Variables</h3>
           <p>Allows you to create temporary variables. Created by <a href="https://scratch.mit.edu/users/LukeManiaStudios/">LukeManiaStudios</a>.</p>
@@ -618,6 +636,12 @@
           <%- banner('qxsck/data-analysis') %>
           <h3>Data Analysis</h3>
           <p>Blocks to compute means, medians, maximums, minimums, variances, and modes. Created by qxsck.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('vercte/dictionaries') %>
+          <h3>Dictionaries</h3>
+          <p>Use the power of dictionaries in your project. Created by <a href="https://scratch.mit.edu/users/lolecksdeehaha/">Vercte</a>.</p>
         </div>
 
         <div class="extension">
