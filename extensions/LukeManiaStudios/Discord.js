@@ -30,7 +30,7 @@
     if (!url) {
       return;
     }
-    const webhookData = await fetch(url);
+    const webhookData = await Scratch.fetch(url);
     const jsonData = await webhookData.json();
     const webhookName = jsonData['name'];
     webhooks[name] = {URL: url,USERNAME: webhookName,AVATAR: ''};
@@ -396,7 +396,7 @@
         content = args.STRING;
       } 
       try {
-        fetch(webhookURL, {
+        Scratch.fetch(webhookURL, {
           method: "POST",
           headers: {
             'Content-type': 'application/json'
@@ -469,7 +469,7 @@
         content = args.STRING;
       } 
       try {
-        fetch(webhookURL, {
+        Scratch.fetch(webhookURL, {
           method: "POST",
           headers: {
             'Content-type': 'application/json'
