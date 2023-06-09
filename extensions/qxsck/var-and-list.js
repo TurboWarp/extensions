@@ -42,12 +42,12 @@
     getInfo() {
       return {
         id: 'varandlist',
-        name: Scratch.translate({ id:'name',default:'Var and list' }),
+        name: Scratch.translate({ id:'name', default:'Var and list' }),
         blocks: [
           {
             opcode: 'getVar',
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id:'getVar',default:'value of [VAR]' }),
+            text: Scratch.translate({ id:'getVar', default:'value of [VAR]' }),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -58,7 +58,7 @@
           {
             opcode: 'seriVarsToJson',
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id:'seriVarsToJson',default:'convert all variables starting with [START] to json' }),
+            text: Scratch.translate({ id:'seriVarsToJson', default:'convert all variables starting with [START] to json' }),
             arguments: {
               START: {
                 type: Scratch.ArgumentType.STRING,
@@ -69,7 +69,7 @@
           {
             opcode: 'setVar',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id:'setVar',default:'set the value of [VAR] to [VALUE]' }),
+            text: Scratch.translate({ id:'setVar', default:'set the value of [VAR] to [VALUE]' }),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -84,7 +84,7 @@
           {
             opcode: 'getList',
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id:'getList',default:'value of [LIST]' }),
+            text: Scratch.translate({ id:'getList', default:'value of [LIST]' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -95,7 +95,7 @@
           {
             opcode: 'getValueOfList',
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id:'getValueOfList',default:'item [INDEX] of [LIST]' }),
+            text: Scratch.translate({ id:'getValueOfList', default:'item [INDEX] of [LIST]' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -110,7 +110,7 @@
           {
             opcode: 'seriListsToJson',
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id:'seriListsToJson',default:'convert all lists starting with [START] to json' }),
+            text: Scratch.translate({ id:'seriListsToJson', default:'convert all lists starting with [START] to json' }),
             arguments: {
               START: {
                 type: Scratch.ArgumentType.STRING,
@@ -121,7 +121,7 @@
           {
             opcode: 'clearList',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id:'clearList',default:'delete all of [LIST]' }),
+            text: Scratch.translate({ id:'clearList', default:'delete all of [LIST]' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -132,7 +132,7 @@
           {
             opcode: 'deleteOfList',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id:'deleteOfList',default:'delete [INDEX] of [LIST]' }),
+            text: Scratch.translate({ id:'deleteOfList', default:'delete [INDEX] of [LIST]' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -147,7 +147,7 @@
           {
             opcode: 'addValueInList',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id:'addValueInList',default:'add [VALUE] to [LIST]' }),
+            text: Scratch.translate({ id:'addValueInList', default:'add [VALUE] to [LIST]' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -162,7 +162,7 @@
           {
             opcode: 'replaceOfList',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id:'replaceOfList',default:'replace item [INDEX] of [LIST] with [VALUE]' }),
+            text: Scratch.translate({ id:'replaceOfList', default:'replace item [INDEX] of [LIST] with [VALUE]' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -181,7 +181,7 @@
           {
             opcode: 'getIndexOfList',
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id:'getIndexOfList',default:'first index of [VALUE] in [LIST]' }),
+            text: Scratch.translate({ id:'getIndexOfList', default:'first index of [VALUE] in [LIST]' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -196,7 +196,7 @@
           {
             opcode: 'getIndexsOfList',
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id:'getIndexsOfList',default:'indexs of [LIST] in [VALUE]' }),
+            text: Scratch.translate({ id:'getIndexsOfList', default:'indexs of [LIST] in [VALUE]' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -211,7 +211,7 @@
           {
             opcode: 'length',
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id:'length',default:'length of [LIST]' }),
+            text: Scratch.translate({ id:'length', default:'length of [LIST]' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -222,7 +222,7 @@
           {
             opcode: 'listHaveValue',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate({ id:'listHaveValue',default:'[LIST] have [VALUE] ?' }),
+            text: Scratch.translate({ id:'listHaveValue', default:'[LIST] have [VALUE] ?' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -237,7 +237,7 @@
           {
             opcode: 'copyList',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id:'copyList',default:'copy [LIST] to [LIST2]' }),
+            text: Scratch.translate({ id:'copyList', default:'copy [LIST] to [LIST2]' }),
             arguments: {
               LIST1: {
                 type: Scratch.ArgumentType.STRING,
