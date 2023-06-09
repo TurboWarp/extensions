@@ -17,9 +17,6 @@
             text: "webhook data: [hookDATA] webhook url: [hookURL]",
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
-              hookDATA: {
-                type: Scratch.ArgumentType.BOOLEAN
-              },
               hookURL: {
                 type: Scratch.ArgumentType.STRING
               }
@@ -27,7 +24,7 @@
           },
           {
             opcode: "params",
-            blockType: Scratch.BlockType.BOOLEAN,
+            blockType: Scratch.BlockType.REPORTER,
             text: "[MENU] [DATA]",
             arguments: {
               MENU: {
@@ -41,16 +38,8 @@
           },
           {
             opcode: "connector",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "[BOOLEAN1] , [BOOLEAN2]",
-            arguments: {
-              BOOLEAN1: {
-                type: Scratch.ArgumentType.BOOLEAN
-              },
-              BOOLEAN2: {
-                type: Scratch.ArgumentType.BOOLEAN
-              }
-            }
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[STRING1] , [STRING2]"
           }
         ],
         menus: {
@@ -170,8 +159,8 @@
         }
         return false;
     }
-    connector ({BOOLEAN1,BOOLEAN2}) {
-      return `${BOOLEAN1}{,}${BOOLEAN2}`
+    connector ({STRING1,STRING2}) {
+      return `${STRING1}{,}${STRING2}`
     }
   }
 
