@@ -33,7 +33,6 @@
     const webhookData = await fetch(url);
     const jsonData = await webhookData.json();
     const webhookName = jsonData['name'];
-    console.log(webhookName);
     webhooks[name] = {URL: url,USERNAME: webhookName,AVATAR: ''};
     webhookHidden = false;
     Scratch.vm.extensionManager.refreshBlocks();
@@ -52,7 +51,6 @@
       "author": null,
       "image": {"url": null},
       "thumbnail": {"url": null}};
-    console.log(embeds);
     embedHidden = false;
     Scratch.vm.extensionManager.refreshBlocks();
   }
@@ -390,7 +388,6 @@
         if (embeds[args.EMBED]) {
           mappedEmbeds = [embeds[args.EMBED]];
         }
-        console.log(mappedEmbeds);
         let defaultData = {
           content: args.STRING
         }
@@ -456,20 +453,17 @@
       const webhookURL = webhooks[args.WEBHOOK]['URL'];
       const webhookUsername = webhooks[args.WEBHOOK]['USERNAME'];
       const webhookAvatar = webhooks[args.WEBHOOK]['AVATAR'];
-      console.log(webhookUsername);
       let content = '';
       if (args.TYPE === 'text') {
         let mappedEmbeds = []
         if (embeds[args.EMBED]) {
           mappedEmbeds = [embeds[args.EMBED]];
         }
-        console.log(mappedEmbeds);
         let defaultData = {
           username: webhookUsername,
           avatar_url: webhookAvatar,
           content: args.STRING,
           embeds: mappedEmbeds};
-        console.log(defaultData);
         content = JSON.stringify(defaultData);
       } else {
         content = args.STRING;
@@ -518,12 +512,9 @@
     }
 
     setEmbedAttribute(args) {
-      console.log(args.EMBED);
-      console.log(embeds[args.EMBED]);
       if (!embeds[args.EMBED]) {
         return;
       }
-      console.log(embeds);
       if (args.ATTRIBUTE === 'title') {
         embeds[args.EMBED]['title'] = args.STRING;
       } else if (args.ATTRIBUTE === 'description') {
@@ -569,7 +560,6 @@
       if (!embeds[args.EMBED]) {
         return '';
       }
-      console.log(embeds);
       if (args.ATTRIBUTE === 'title') {
         return embeds[args.EMBED]['title'];
       } else if (args.ATTRIBUTE === 'description') {
