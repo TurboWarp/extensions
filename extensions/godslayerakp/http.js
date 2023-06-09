@@ -143,6 +143,11 @@
                         text: "response"
                     },
                     {
+                        opcode: 'resData',
+                        blockType: BlockType.REPORTER,
+                        text: 'response'
+                    },
+                    {
                         opcode: 'error',
                         blockType: BlockType.REPORTER,
                         text: 'error'
@@ -339,6 +344,10 @@
         }
 
         /* ------- DATA READING -------- */
+
+        resData() {
+            return this.response.text;
+        }
 
         error() {
             return this.response.error;
