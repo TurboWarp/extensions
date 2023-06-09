@@ -432,8 +432,10 @@
                     this.response.statusText = res.statusText;
                     if (res.ok) {
                         this.request.success = true;
+                        this.request.events.activate('reqSuccess');
                     } else {
                         this.request.fail = true;
+                        this.request.events.activate('reqFail');
                     }
                     this.request.end = true;
                     return res.text();
@@ -444,6 +446,7 @@
                     console.warn('request failed with error', err);
                     this.request.fail = true;
                     this.request.end = true;
+                    this.request.events.activate('reqFail');
                 });
         }
     }
