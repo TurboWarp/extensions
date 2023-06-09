@@ -15,7 +15,7 @@
         }
 
         /**
-         * adds a event name listner
+         * adds a event name listner for a block
          * @param {string} name name of the event
          * @param {string} [block] a block to run when trigered
          */
@@ -24,28 +24,6 @@
                 if (!this.blocks[name]) this.blocks[name] = [];
                 this.blocks[name].push(block);
             }
-            this.events[name] = false;
-        }
-
-        /**
-         * gets if a event has been trigered or not
-         * does not reset the value unlike check
-         * @param {string} name name of the event
-         * @returns {boolean}
-         */
-        peek(name) {
-            return this.events[name];
-        }
-
-        /**
-         * gets if a event has been trigered or not
-         * @param {string} name name of the event
-         * @returns {boolean}
-         */
-        check(name) {
-            const state = this.events[name];
-            this.events[name] = false;
-            return state;
         }
 
         /**
@@ -98,10 +76,12 @@
                 },
                 get body() {
                     return this.options.body;
-                }
+                },
+                end: false,
+                fail: false,
+                success: false
             };
 
-            defaultRequest.events.add('reqEnd');
             defaultRequest.events.add('reqSuccess', createBlockId('onResponse'));
             defaultRequest.events.add('reqFail', createBlockId('onFail'));
 
@@ -162,6 +142,7 @@
                         blockType: BlockType.REPORTER,
                         text: 'status text'
                     },
+                    "---",
                     {
                         opcode: 'getHeaderJSON',
                         blockType: BlockType.REPORTER,
@@ -178,6 +159,7 @@
                         },
                         text: 'get [name] from header'
                     },
+                    "---",
                     {
                         opcode: 'requestComplete',
                         blockType: BlockType.BOOLEAN,
@@ -358,15 +340,15 @@
         }
 
         requestComplete() {
-            return this.request.events.peek('reqEnd');
+            return this.request.end;
         }
 
         requestFail() {
-            return this.request.events.peek('reqFail');
+            return this.request.fail;
         }
 
         requestSuccess() {
-            return this.request.events.peek('reqSuccess');
+            return this.request.success;
         }
 
         statusText() {
@@ -437,28 +419,31 @@
         // eslint-disable-next-line require-await
         async sendRequest(args) {
             const url = Cast.toString(args.url);
-            const {request, response} = this;
 
             this.clearAll();
 
-            response.url = url;
+            this.response.url = url;
             // @ts-ignore
-            Scratch.fetch(url, request.options)
+            Scratch.fetch(url, this.request.options)
                 .then(res => {
                     // @ts-ignore
-                    response.status = res.status;
-                    response.headers = res.headers;
-                    response.statusText = res.statusText;
-                    request.events.activate(res.ok ? 'reqSuccess' : 'reqFail');
-                    request.events.activate('reqEnd');
+                    this.response.status = res.status;
+                    this.response.headers = res.headers;
+                    this.response.statusText = res.statusText;
+                    if (res.ok) {
+                        this.request.success = true;
+                    } else {
+                        this.request.fail = true;
+                    }
+                    this.request.end = true;
                     return res.text();
                 })
-                .then(body => response.text = body)
+                .then(body => this.response.text = body)
                 .catch(err => {
-                    response.error = String(err);
+                    this.response.error = String(err);
                     console.warn('request failed with error', err);
-                    request.events.activate('reqFail');
-                    request.events.activate('reqEnd');
+                    this.request.fail = true;
+                    this.request.end = true;
                 });
         }
     }
