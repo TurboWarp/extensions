@@ -374,7 +374,7 @@
             ]
           },
         }
-      }
+      };
     }
 
     sendBasicMessage(args) {
@@ -384,17 +384,17 @@
       const webhookURL = args.WEBHOOK;
       let content = '';
       if (args.TYPE === 'text') {
-        let mappedEmbeds = []
+        let mappedEmbeds = [];
         if (embeds[args.EMBED]) {
           mappedEmbeds = [embeds[args.EMBED]];
         }
         let defaultData = {
           content: args.STRING
-        }
+        };
         content = JSON.stringify(defaultData);
       } else {
         content = args.STRING;
-      } 
+      }
       try {
         Scratch.fetch(webhookURL, {
           method: "POST",
@@ -409,7 +409,7 @@
     }
 
     enableExperimental() {
-      let confirmMsg = 'Warning: While these features are fully functional, custom webhooks/embeds currently do not save to projects. \n \n Do you wish to continue?'
+      let confirmMsg = 'Warning: While these features are fully functional, custom webhooks/embeds currently do not save to projects. \n \n Do you wish to continue?';
       if (confirm(confirmMsg)) {
         experimentsDisabled = false;
         Scratch.vm.extensionManager.refreshBlocks();
@@ -440,7 +440,7 @@
       if (args.ATTRIBUTE === 'url') {
         webhooks[args.WEBHOOK]['URL'] = args.STRING;
       } else if (args.ATTRIBUTE === 'avatar') {
-        webhooks[args.WEBHOOK]['AVATAR'] = args.STRING; 
+        webhooks[args.WEBHOOK]['AVATAR'] = args.STRING;
       } else {
         webhooks[args.WEBHOOK]['USERNAME'] = args.STRING;
       }
@@ -455,7 +455,7 @@
       const webhookAvatar = webhooks[args.WEBHOOK]['AVATAR'];
       let content = '';
       if (args.TYPE === 'text') {
-        let mappedEmbeds = []
+        let mappedEmbeds = [];
         if (embeds[args.EMBED]) {
           mappedEmbeds = [embeds[args.EMBED]];
         }
@@ -467,7 +467,7 @@
         content = JSON.stringify(defaultData);
       } else {
         content = args.STRING;
-      } 
+      }
       try {
         Scratch.fetch(webhookURL, {
           method: "POST",
@@ -488,7 +488,7 @@
       if (args.ATTRIBUTE === 'url') {
         return webhooks[args.WEBHOOK]['URL'];
       } else if (args.ATTRIBUTE === 'avatar') {
-        return webhooks[args.WEBHOOK]['AVATAR']; 
+        return webhooks[args.WEBHOOK]['AVATAR'];
       } else {
         return webhooks[args.WEBHOOK]['USERNAME'];
       }
@@ -535,7 +535,7 @@
       }
       let color = args.COLOR;
       color = color.substring(1, 7);
-      color = Scratch.Cast.toNumber("0x"+color);
+      color = Scratch.Cast.toNumber("0x" + color);
       embeds[args.EMBED]['color'] = color;
     }
 
