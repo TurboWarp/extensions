@@ -1,0 +1,179 @@
+(function (Scratch) {
+  "use strict";
+
+  const icon = "https://raw.githubusercontent.com/CubesterYT/dependencies/main/TurboWarp%20Extensions/ScratchHook/Logo.png"
+
+  class ScratchHook {
+    getInfo() {
+      return {
+        id: "scratchhook",
+        name: "ScratchHook",
+        color1: "#5865F2",
+        menuIconURI: icon,
+
+        blocks: [
+          {
+            opcode: "webhook",
+            text: "webhook data: [hookDATA] webhook url: [hookURL]",
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              hookDATA: {
+                type: Scratch.ArgumentType.BOOLEAN
+              },
+              hookURL: {
+                type: Scratch.ArgumentType.STRING
+              }
+            }
+          },
+          {
+            opcode: "params",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "[MENU] [DATA]",
+            arguments: {
+              MENU: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "PARAMS"
+              },
+              DATA: {
+                type: Scratch.ArgumentType.STRING
+              }
+            }
+          },
+          {
+            opcode: "connector",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "[BOOLEAN1] , [BOOLEAN2]",
+            arguments: {
+              BOOLEAN1: {
+                type: Scratch.ArgumentType.BOOLEAN
+              },
+              BOOLEAN2: {
+                type: Scratch.ArgumentType.BOOLEAN
+              }
+            }
+          }
+        ],
+        menus: {
+          PARAMS: {
+            acceptReporters: true,
+            items: ["content","name","icon"]
+          }
+        }
+      };
+    }
+
+    webhook ({hookDATA,hookURL}) {
+      const arrayDATA = hookDATA.split("{,}")
+      if (hookDATA.includes("content") && hookDATA.includes("username") && hookDATA.includes("avatar_url")) {
+        if (arrayDATA[0].includes("content") && arrayDATA[1].includes("username") && arrayDATA[2].includes("avatar_url")) {
+          Scratch.fetch(hookURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({content: `${arrayDATA[0].substr(9)}`, username: `${arrayDATA[1].substr(10)}`, avatar_url: `${arrayDATA[2].substr(12)}`})
+          });
+        } else if (arrayDATA[0].includes("content") && arrayDATA[1].includes("avatar_url") && arrayDATA[2].includes("username")) {
+          Scratch.fetch(hookURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({content: `${arrayDATA[0].substr(9)}`, username: `${arrayDATA[2].substr(10)}`, avatar_url: `${arrayDATA[1].substr(12)}`})
+          });
+        } else if (arrayDATA[0].includes("username") && arrayDATA[1].includes("content") && arrayDATA[2].includes("avatar_url")) {
+          Scratch.fetch(hookURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({content: `${arrayDATA[1].substr(9)}`, username: `${arrayDATA[0].substr(10)}`, avatar_url: `${arrayDATA[2].substr(12)}`})
+          });
+        } else if (arrayDATA[0].includes("username") && arrayDATA[1].includes("avatar_url") && arrayDATA[2].includes("content")) {
+          Scratch.fetch(hookURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({content: `${arrayDATA[2].substr(9)}`, username: `${arrayDATA[0].substr(10)}`, avatar_url: `${arrayDATA[1].substr(12)}`})
+          });
+        } else if (arrayDATA[0].includes("avatar_url") && arrayDATA[1].includes("content") && arrayDATA[2].includes("username")) {
+          Scratch.fetch(hookURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({content: `${arrayDATA[1].substr(9)}`, username: `${arrayDATA[2].substr(10)}`, avatar_url: `${arrayDATA[0].substr(12)}`})
+          });
+        } else if (arrayDATA[0].includes("avatar_url") && arrayDATA[1].includes("username") && arrayDATA[2].includes("content")) {
+          Scratch.fetch(hookURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({content: `${arrayDATA[2].substr(9)}`, username: `${arrayDATA[1].substr(10)}`, avatar_url: `${arrayDATA[0].substr(12)}`})
+          });
+        }
+      } else if (hookDATA.includes("content") && hookDATA.includes("username")) {
+        if (arrayDATA[0].includes("content") && arrayDATA[1].includes("username")) {
+          Scratch.fetch(hookURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({content: `${arrayDATA[0].substr(9)}`, username: `${arrayDATA[1].substr(10)}`})
+          });
+        } else if (arrayDATA[0].includes("username") && arrayDATA[1].includes("content")) {
+          Scratch.fetch(hookURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({content: `${arrayDATA[1].substr(9)}`, username: `${arrayDATA[0].substr(10)}`})
+          });
+        } 
+      } else if (hookDATA.includes("content") && hookDATA.includes("avatar_url")) {
+        if (arrayDATA[0].includes("content") && arrayDATA[1].includes("avatar_url")) {
+          Scratch.fetch(hookURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({content: `${arrayDATA[0].substr(9)}`, avatar_url: `${arrayDATA[1].substr(12)}`})
+          });
+        } else if (arrayDATA[0].includes("avatar_url") && arrayDATA[1].includes("content")) {
+          Scratch.fetch(hookURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({content: `${arrayDATA[1].substr(9)}`, avatar_url: `${arrayDATA[0].substr(12)}`})
+          });
+        }
+      } else if (hookDATA.includes("content")) {
+        Scratch.fetch(hookURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({content: `${arrayDATA[0].substr(9)}`})
+        });
+      }
+    }
+    params ({MENU,DATA}) {
+      if (MENU == "content") {
+        return `content: ${DATA}`;
+        } else if (MENU == "name") {
+          return `username: ${DATA}`;
+        } else if (MENU == "icon") {
+          return `avatar_url: ${DATA}`;
+        }
+        return false;
+    }
+    connector ({BOOLEAN1,BOOLEAN2}) {
+      return `${BOOLEAN1}{,}${BOOLEAN2}`
+    }
+  }
+
+  Scratch.extensions.register(new ScratchHook());
+})(Scratch);
