@@ -5,30 +5,63 @@
     const {vm} = Scratch;
     const {runtime} = vm;
 
+    const extensionId = 'gsaHTTPRequests';
+
     // the funny class to make event blocks look better
     class Events {
         constructor() {
             this.events = {};
+            this.blocks = {};
         }
 
-        add(name) {
+        /**
+         * adds a event name listner
+         * @param {string} name name of the event
+         * @param {string} [block] a block to run when trigered
+         */
+        add(name, block) {
+            if (block) {
+                if (!this.blocks[name]) this.blocks[name] = [];
+                this.blocks[name].push(block);
+            }
             this.events[name] = false;
         }
 
+        /**
+         * gets if a event has been trigered or not
+         * does not reset the value unlike check
+         * @param {string} name name of the event
+         * @returns {boolean}
+         */
         peek(name) {
             return this.events[name];
         }
 
+        /**
+         * gets if a event has been trigered or not
+         * @param {string} name name of the event
+         * @returns {boolean}
+         */
         check(name) {
             const state = this.events[name];
             this.events[name] = false;
             return state;
         }
 
+        /**
+         * activate an event
+         * @param {string} name name of the event
+         */
         activate(name) {
             this.events[name] = true;
+            if (this.blocks[name]) {
+                for (const block of this.blocks[name]) {
+                    runtime.startHats(block);
+                }
+            }
         }
     }
+    const createBlockId = block => `${extensionId}_${block}`;
 
     /* ------- BLOCKS -------- */
     const {BlockType, Cast, ArgumentType} = Scratch;
@@ -69,8 +102,8 @@
             };
 
             defaultRequest.events.add('reqEnd');
-            defaultRequest.events.add('reqSuccess');
-            defaultRequest.events.add('reqFail');
+            defaultRequest.events.add('reqSuccess', createBlockId('onResponse'));
+            defaultRequest.events.add('reqFail', createBlockId('onFail'));
 
             return defaultRequest;
         }
@@ -95,7 +128,7 @@
         }
         getInfo() {
             return {
-                id: 'gsaHTTPRequests',
+                id: extensionId,
                 name: 'http/https',
                 color1: '#307eff',
                 color2: '#2c5eb0',
@@ -347,13 +380,13 @@
         /* -------- EVENTS -------- */
 
         onResponse() {
-            const { events } = this.request;
-            return events.check('reqEnd');
+            // filer olo
+            return false;
         }
 
         onFail() {
-            const { events } = this.request;
-            return events.check('reqFail');
+            // filer olo
+            return false;
         }
 
         /* -------- CONTROL --------- */
@@ -397,6 +430,8 @@
             const url = Cast.toString(args.url);
             const {request, response} = this;
 
+            this.clearAll();
+
             response.url = url;
             // @ts-ignore
             Scratch.fetch(url, request.options)
@@ -423,4 +458,5 @@
     Scratch.extensions.register(instance);
     // @ts-ignore
     runtime.ext_http = instance;
+// @ts-ignore
 })(Scratch);
