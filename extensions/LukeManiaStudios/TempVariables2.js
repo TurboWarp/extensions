@@ -214,14 +214,14 @@
 
     setThreadVariable(args, util) {
       const thread = util.thread;
-      if (!thread.variables) thread.variables = {};
+      if (!thread.variables) thread.variables = Object.create(null);
       const vars = thread.variables;
       vars[args.VAR] = args.STRING;
     }
 
     changeThreadVariable(args, util) {
       const thread = util.thread;
-      if (!thread.variables) thread.variables = {};
+      if (!thread.variables) thread.variables = Object.create(null);
       const vars = thread.variables;
       const prev = Scratch.Cast.toNumber(vars[args.VAR]);
       const next = Scratch.Cast.toNumber(args.NUM);
@@ -230,7 +230,7 @@
 
     getThreadVariable (args, util) {
       const thread = util.thread;
-      if (!thread.variables) thread.variables = {};
+      if (!thread.variables) thread.variables = Object.create(null);
       const vars = thread.variables;
       const varValue = vars[args.VAR];
       if (typeof varValue === 'undefined') return '';
@@ -239,7 +239,7 @@
 
     threadVariableExists (args, util) {
       const thread = util.thread;
-      if (!thread.variables) thread.variables = {};
+      if (!thread.variables) thread.variables = Object.create(null);
       const vars = thread.variables;
       const varValue = vars[args.VAR];
       return !(typeof varValue === 'undefined');
@@ -247,7 +247,7 @@
 
     forEachThreadVariable(args, util) {
       const thread = util.thread;
-      if (!thread.variables) thread.variables = {};
+      if (!thread.variables) thread.variables = Object.create(null);
       const vars = thread.variables;
       if (typeof util.stackFrame.index === 'undefined') {
         util.stackFrame.index = 0;
@@ -261,7 +261,7 @@
 
     listThreadVariables(args, util) {
       const thread = util.thread;
-      if (!thread.variables) thread.variables = {};
+      if (!thread.variables) thread.variables = Object.create(null);
       const vars = thread.variables;
       return Object.keys(vars).join(',');
     }
