@@ -60,22 +60,10 @@
           '---',
 
           {
-            opcode: 'startTimer',
+            opcode: 'startResetTimer',
             blockType: Scratch.BlockType.COMMAND,
             extensions: ['colours_sensing'],
-            text: 'start timer [TIMER]',
-            arguments: {
-              TIMER: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'timer'
-              }
-            }
-          },
-          {
-            opcode: 'resetTimer',
-            blockType: Scratch.BlockType.COMMAND,
-            extensions: ['colours_sensing'],
-            text: 'reset timer [TIMER]',
+            text: 'start/reset timer [TIMER]',
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
@@ -216,17 +204,7 @@
       return false;
     }
 
-    startTimer(args) {
-      if (timers[args.TIMER]) return;
-      timers[args.TIMER] = {
-        startTime: Date.now(),
-        pauseTime: 0,
-        paused: false
-      };
-    }
-
-    resetTimer(args) {
-      if (!timers[args.TIMER]) return;
+    startResetTimer(args) {
       timers[args.TIMER] = {
         startTime: Date.now(),
         pauseTime: 0,
