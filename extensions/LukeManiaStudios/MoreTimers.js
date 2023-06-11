@@ -233,7 +233,7 @@
     }
 
     setTimer(args) {
-      if (timers[args.TIMER]) {
+      if (!timers[args.TIMER]) {
         timers[args.TIMER] = {
           startTime: Date.now(),
           pauseTime: 0,
