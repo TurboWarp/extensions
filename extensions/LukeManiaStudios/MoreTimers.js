@@ -255,7 +255,13 @@
     }
 
     setTimer(args) {
-      if (!timers[args.TIMER]) return;
+      if (timers[args.TIMER]) {
+        timers[args.TIMER] = {
+          startTime: Date.now(),
+          pauseTime: 0,
+          paused: false
+        };
+      }
       timers[args.TIMER] = {
         startTime: Date.now(),
         pauseTime: Scratch.Cast.toNumber(args.NUM) * 1000
