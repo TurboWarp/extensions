@@ -1875,6 +1875,7 @@
 
         Scratch.canFetch(this.GATEWAY_URI).then(allowed => {
           if (!allowed) return callback(null);
+          // eslint-disable-next-line no-restricted-syntax
           var xhr = new XMLHttpRequest();
           xhr.onreadystatechange = function () {
             if (xhr.readyState == 4) {
@@ -5232,6 +5233,7 @@
 
         Scratch.canFetch(this.url).then(allowed => {
           if (!allowed) return callback(null);
+          // eslint-disable-next-line no-restricted-syntax
           var xhr = new XMLHttpRequest();
           xhr.onreadystatechange = function () {
             if (xhr.readyState == 4) {
