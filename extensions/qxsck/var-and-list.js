@@ -41,7 +41,7 @@
   class VarAndList {
     getInfo() {
       return {
-        id: 'varandlist',
+        id: 'qxsckvarandlist',
         name: Scratch.translate({ id:'name', default:'Var and list' }),
         blocks: [
           {
