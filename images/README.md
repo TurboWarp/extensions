@@ -201,3 +201,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## qxsck/data-analysis.svg
  - Based on image created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575100933
+
+## mdwalters/notifications.svg
+ - Created by [@Juenjos](https://github.com/Juenjos) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1573040329
