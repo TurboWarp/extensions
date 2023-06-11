@@ -7,7 +7,6 @@
 
   const askForNotificationPermission = async () => {
     try {
-      // @ts-expect-error - canNotify is too old.
       const allowedByVM = await Scratch.canNotify();
       if (!allowedByVM) {
         throw new Error('Denied by VM');
@@ -25,6 +24,15 @@
       console.warn('Could not request notification permissions', e);
       return false;
     }
+  };
+
+  const isAndroid = () => navigator.userAgent.includes('Android');
+
+  const getServiceWorkerRegistration = () => {
+    if (!('serviceWorker' in navigator)) return null;
+    // This is only needed on Android
+    if (!isAndroid()) return null;
+    return navigator.serviceWorker.getRegistration();
   };
 
   class Notifications {
@@ -76,9 +84,25 @@
 
     async _showNotification(text) {
       if (await this.hasPermission()) {
-        notification = new Notification('Notification from project', {
+        const title = 'Notification from project';
+        const options = {
           body: text
-        });
+        };
+        try {
+          notification = new Notification(title, options);
+        } catch (e) {
+          // On Android we need to go through the service worker.
+          const registration = await getServiceWorkerRegistration();
+          if (registration) {
+            try {
+              await registration.showNotification(title, options);
+            } catch (e2) {
+              console.error('Could not show notification', e, e2);
+            }
+          } else {
+            console.error('Could not show notification', e);
+          }
+        }
       }
     }
 
@@ -86,10 +110,22 @@
       this._showNotification(Scratch.Cast.toString(args.text));
     }
 
-    closeNotification() {
+    async _closeNotification() {
       if (notification) {
         notification.close();
       }
+
+      const registration = await getServiceWorkerRegistration();
+      if (registration) {
+        const notifications = await registration.getNotifications();
+        for (const notification of notifications) {
+          notification.close();
+        }
+      }
+    }
+
+    closeNotification() {
+      this._closeNotification();
     }
   }
 
