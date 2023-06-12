@@ -204,3 +204,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## mdwalters/notifications.svg
  - Created by [@Juenjos](https://github.com/Juenjos) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1573040329
+
+## LukeManiaStudios/MoreTimers.svg
+- Created by LUkeManiaStudios
+- Timer SVG based from https://www.svgrepo.com/svg/2045/stopwatch under CC0.
