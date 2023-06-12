@@ -6,9 +6,9 @@
   class ScratchHook {
     getInfo() {
       return {
-        id: "scratchhook",
+        id: "cubesterScratchHook",
         name: "ScratchHook",
-        color1: "#5865F2",
+        color1: "#3843B0",
         menuIconURI: icon,
 
         blocks: [
