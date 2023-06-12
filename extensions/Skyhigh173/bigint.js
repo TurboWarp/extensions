@@ -47,7 +47,7 @@
         color1: '#59C093',
         blocks: [
           {
-            opcode: 'bigint_from',
+            opcode: 'from',
             blockType: Scratch.BlockType.REPORTER,
             text: 'To BigInt [text]',
             arguments: {
@@ -58,7 +58,7 @@
             }
           },
           {
-            opcode: 'bigint_as',
+            opcode: 'as',
             blockType: Scratch.BlockType.REPORTER,
             text: 'As BigInt [text]',
             arguments: {
@@ -69,7 +69,7 @@
             }
           },
           {
-            opcode: 'bigint_to',
+            opcode: 'to',
             blockType: Scratch.BlockType.REPORTER,
             text: 'To Number [text]',
             arguments: {
@@ -81,7 +81,7 @@
           },
           makeLabel('Arithmetic'),
           {
-            opcode: 'bigint_add',
+            opcode: 'add',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] + [b]',
             arguments: {
@@ -96,7 +96,7 @@
             }
           },
           {
-            opcode: 'bigint_sub',
+            opcode: 'sub',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] - [b]',
             arguments: {
@@ -111,7 +111,7 @@
             }
           },
           {
-            opcode: 'bigint_mul',
+            opcode: 'mul',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] * [b]',
             arguments: {
@@ -126,7 +126,7 @@
             }
           },
           {
-            opcode: 'bigint_div',
+            opcode: 'div',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] / [b]',
             arguments: {
@@ -141,7 +141,7 @@
             }
           },
           {
-            opcode: 'bigint_pow',
+            opcode: 'pow',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] ** [b]',
             arguments: {
@@ -156,7 +156,7 @@
             }
           },
           {
-            opcode: 'bigint_mod',
+            opcode: 'mod',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] mod [b]',
             arguments: {
@@ -171,7 +171,7 @@
             }
           },
           {
-            opcode: 'bigint_select',
+            opcode: 'select',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] [sel] [b]',
             arguments: {
@@ -192,7 +192,7 @@
           },
           makeLabel('Logic'),
           {
-            opcode: 'bigint_lt',
+            opcode: 'lt',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] < [b]',
             arguments: {
@@ -207,7 +207,7 @@
             }
           },
           {
-            opcode: 'bigint_le',
+            opcode: 'le',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] ≤ [b]',
             arguments: {
@@ -222,7 +222,7 @@
             }
           },
           {
-            opcode: 'bigint_eq',
+            opcode: 'eq',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] = [b]',
             arguments: {
@@ -237,7 +237,7 @@
             }
           },
           {
-            opcode: 'bigint_neq',
+            opcode: 'neq',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] ≠ [b]',
             arguments: {
@@ -252,7 +252,7 @@
             }
           },
           {
-            opcode: 'bigint_ge',
+            opcode: 'ge',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] ≥ [b]',
             arguments: {
@@ -267,7 +267,7 @@
             }
           },
           {
-            opcode: 'bigint_gt',
+            opcode: 'gt',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[a] > [b]',
             arguments: {
@@ -283,7 +283,7 @@
           },
           makeLabel('Bitwise'),
           {
-            opcode: 'bigint_and',
+            opcode: 'and',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] & [b]',
             arguments: {
@@ -298,7 +298,7 @@
             }
           },
           {
-            opcode: 'bigint_or',
+            opcode: 'or',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] | [b]',
             arguments: {
@@ -313,7 +313,7 @@
             }
           },
           {
-            opcode: 'bigint_xor',
+            opcode: 'xor',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] ^ [b]',
             arguments: {
@@ -328,7 +328,7 @@
             }
           },
           {
-            opcode: 'bigint_ls',
+            opcode: 'ls',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] << [b]',
             arguments: {
@@ -343,7 +343,7 @@
             }
           },
           {
-            opcode: 'bigint_rs',
+            opcode: 'rs',
             blockType: Scratch.BlockType.REPORTER,
             text: '[a] >> [b]',
             arguments: {
@@ -358,7 +358,7 @@
             }
           },
           {
-            opcode: 'bigint_not',
+            opcode: 'not',
             blockType: Scratch.BlockType.REPORTER,
             text: '~ [a]',
             arguments: {
@@ -377,56 +377,56 @@
         }
       };
     }
-    bigint_from({ text }) {
+    from({ text }) {
       return bi(text);
     }
-    bigint_as({ text }) {
+    as({ text }) {
       return bi(text) + 'n';
     }
-    bigint_to({ text }) {
+    to({ text }) {
       return Number(bi(text));
     }
-    bigint_add({ a, b }) {
+    add({ a, b }) {
       return (bi(a) + bi(b)).toString();
     }
-    bigint_sub({ a, b }) {
+    sub({ a, b }) {
       return (bi(a) - bi(b)).toString();
     }
-    bigint_mul({ a, b }) {
+    mul({ a, b }) {
       return (bi(a) * bi(b)).toString();
     }
-    bigint_div({ a, b }) {
+    div({ a, b }) {
       if (Number(b) == 0) return 'NaN';
       return (bi(a) / bi(b)).toString();
     }
-    bigint_pow({ a, b }) {
+    pow({ a, b }) {
       return (bi(a) ** bi(b)).toString();
     }
-    bigint_mod({ a, b }) {
+    mod({ a, b }) {
       if (Number(b) == 0) return 'NaN';
       return (bi(a) % bi(b)).toString();
     }
 
-    bigint_and({ a, b }) {
+    and({ a, b }) {
       return (bi(a) & bi(b)).toString();
     }
-    bigint_or({ a, b }) {
+    or({ a, b }) {
       return (bi(a) | bi(b)).toString();
     }
-    bigint_xor({ a, b }) {
+    xor({ a, b }) {
       return (bi(a) ^ bi(b)).toString();
     }
-    bigint_ls({ a, b }) {
+    ls({ a, b }) {
       return (bi(a) << bi(b)).toString();
     }
-    bigint_rs({ a, b }) {
+    rs({ a, b }) {
       return (bi(a) >> bi(b)).toString();
     }
-    bigint_not({ a }) {
+    not({ a }) {
       return (~bi(a)).toString();
     }
 
-    bigint_select({ a, sel, b }) {
+    select({ a, sel, b }) {
       switch (sel) {
       case '+': return (bi(a) + bi(b)).toString();
       case '-': return (bi(a) - bi(b)).toString();
@@ -438,22 +438,22 @@
       }
     }
 
-    bigint_lt({ a, b }) {
+    lt({ a, b }) {
       return bi(a) < bi(b);
     }
-    bigint_gt({ a, b }) {
+    gt({ a, b }) {
       return bi(a) > bi(b);
     }
-    bigint_eq({ a, b }) {
+    eq({ a, b }) {
       return bi(a) === bi(b);
     }
-    bigint_neq({ a, b }) {
+    neq({ a, b }) {
       return bi(a) != bi(b);
     }
-    bigint_le({ a, b }) {
+    le({ a, b }) {
       return bi(a) <= bi(b);
     }
-    bigint_ge({ a, b }) {
+    ge({ a, b }) {
       return bi(a) >= bi(b);
     }
   }
