@@ -58,17 +58,6 @@
             }
           },
           {
-            opcode: 'as',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'As BigInt [text]',
-            arguments: {
-              text: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
-          },
-          {
             opcode: 'to',
             blockType: Scratch.BlockType.REPORTER,
             text: 'To Number [text]',
@@ -379,9 +368,6 @@
     }
     from({ text }) {
       return bi(text);
-    }
-    as({ text }) {
-      return bi(text) + 'n';
     }
     to({ text }) {
       return Number(bi(text));
