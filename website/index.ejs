@@ -229,11 +229,16 @@
 
       <div class="infobox">
         <% if (mode === 'desktop') { %>
-          For compatibility, security, and offline support, the desktop app includes an offline copy of extensions.turbowarp.org from this update's release date.
+          <div class="infobox-title">Some extensions may be outdated or missing.</div>
+          <%
+            const now = new Date();
+            const date = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+          %>
+          For compatibility, security, and offline support, TurboWarp Desktop includes an offline copy of extensions.turbowarp.org from this update's release date (<%= date %>).
           Compared to the live website, some extensions may be missing or outdated.
         <% } else { %>
-          <div class="infobox-title">Some extensions may not work in the desktop app.</div>
-          For compatibility, security, and offline support, each desktop app update contains an offline copy of these extensions from its release date.
+          <div class="infobox-title">Some extensions may not work in TurboWarp Desktop.</div>
+          For compatibility, security, and offline support, each <a href="https://desktop.turbowarp.org/">desktop app update</a> contains an offline copy of these extensions from its release date.
           The desktop app is currently very far behind, so many extensions will be missing or outdated. We are working on it!
         <% } %>
       </div>
