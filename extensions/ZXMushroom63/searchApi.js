@@ -98,7 +98,7 @@
     setsearchparam({ ID, VAL }) {
       var s = new URLSearchParams(location.search);
       s.set(ID.toString(), VAL.toString());
-      location.search = "?" + s.toString();
+      history.replaceState("","","?"+s.toString());
     }
 
     searchparamslength() {
@@ -110,7 +110,7 @@
     deletesearchparam({ ID }) {
       var s = new URLSearchParams(location.search);
       s.delete(ID.toString());
-      location.search = "?" + s.toString();
+      history.replaceState("","","?"+s.toString());
     }
 
     hassearchparam({ ID }) {
