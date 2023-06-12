@@ -1013,7 +1013,6 @@
       if (casted === "INVALID") {
         return "";
       }
-      // @ts-expect-error - this will never be "ANY" due to false in toListIndex above
       return variable.value[casted - 1];
     }
 
