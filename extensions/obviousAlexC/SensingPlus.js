@@ -336,7 +336,11 @@
         blocks: [
           {
             blockType: "label",
-            text: "Safari Based browsers do not support touch events!",
+            text: "Touch blocks are broken in Safari.",
+          },
+          {
+            blockType: "label",
+            text: "We will try to fix them soon.",
           },
           {
             opcode: "supportsTouches",
