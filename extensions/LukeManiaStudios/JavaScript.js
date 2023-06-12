@@ -33,13 +33,13 @@
           {
             func: 'enableDangerousJS',
             blockType: Scratch.BlockType.BUTTON,
-            text: 'Enable Dangeous JS Code',
+            text: 'Enable Dangerous JS Code',
             hideFromPalette: allowJSCode
           },
           {
             func: 'disableDangerousJS',
             blockType: Scratch.BlockType.BUTTON,
-            text: 'Disable Dangeous JS Code',
+            text: 'Disable Dangerous JS Code',
             hideFromPalette: !allowJSCode
           },
           {
