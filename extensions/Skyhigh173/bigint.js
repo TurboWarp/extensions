@@ -7,7 +7,7 @@
    */
   const bi = x => {
     if (typeof x === 'string') {
-      // try to parse 8n
+      // Try to parse things like '8n'
       if (x.charAt(x.length - 1) === 'n') {
         try {
           return BigInt(x.slice(0, -1));
@@ -360,7 +360,7 @@
         ],
         menus: {
           op: {
-            items: ['+','-','*','/','%','^'],
+            items: ['+', '-', '*', '/', '%', '^'],
             acceptReporters: true
           }
         }
@@ -417,10 +417,16 @@
       case '+': return (bi(a) + bi(b)).toString();
       case '-': return (bi(a) - bi(b)).toString();
       case '*': return (bi(a) * bi(b)).toString();
-      case '/': if (Number(b) == 0) { return 'NaN'; } return (bi(a) / bi(b)).toString();
-      case '%': if (Number(b) == 0) { return 'NaN'; } return (bi(a) % bi(b)).toString();
+      case '/': {
+        if (Number(b) == 0) return 'NaN';
+        return (bi(a) / bi(b)).toString();
+      }
+      case '%': {
+        if (Number(b) == 0) return 'NaN';
+        return (bi(a) % bi(b)).toString();
+      }
       case '^': case '**': return (bi(a) ** bi(b)).toString();
-      default: return 0;
+      default: return '0';
       }
     }
 
