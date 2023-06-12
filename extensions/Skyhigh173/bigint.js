@@ -1,18 +1,36 @@
 (function(Scratch){
   'use strict';
 
+  /**
+   * @param {unknown} x
+   * @returns {bigint}
+   */
   const bi = x => {
-    try {
-      if (x.slice(-1) == 'n') {
-        return BigInt(x.slice(0, -1));
+    if (typeof x === 'string') {
+      // try to parse 8n
+      if (x.charAt(x.length - 1) === 'n') {
+        try {
+          return BigInt(x.slice(0, -1));
+        } catch (e) {
+          // ignore
+        }
       }
-      return BigInt(x);
-    } catch {
+      // Must remove decimal using string operations. Math.trunc will convert to float
+      // which ruins the point of using bigints. 
+      const decimalIndex = x.indexOf('.');
+      const withoutDecimal = decimalIndex === -1 ? x : x.substring(0, decimalIndex);
       try {
-        return BigInt(Math.trunc(Number(x)));
-      } catch {
+        return BigInt(withoutDecimal);
+      } catch (e) {
         return 0n;
       }
+    }
+    try {
+      // Here we can use Math.trunc because it's a boolean or number.
+      // @ts-expect-error
+      return BigInt(Math.trunc(x));
+    } catch (e) {
+      return 0n;
     }
   };
 
@@ -20,7 +38,6 @@
     blockType: 'label',
     text: text
   });
-
 
   class BigIntExtension {
     getInfo() {
@@ -360,22 +377,11 @@
         }
       };
     }
-    
     bigint_from({ text }) {
-      // allows values such as '0x123A'
-      try {
-        return BigInt(text).toString();
-      } catch {
-        return '';
-      }
+      return bi(text);
     }
     bigint_as({ text }) {
-      // allows values such as '0x123A'
-      try {
-        return BigInt(text).toString() + 'n';
-      } catch {
-        return '';
-      }
+      return bi(text) + 'n';
     }
     bigint_to({ text }) {
       return Number(bi(text));
