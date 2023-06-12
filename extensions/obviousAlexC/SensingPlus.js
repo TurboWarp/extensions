@@ -17,12 +17,7 @@
   let recording = false;
   let initializedSpeechRecognition = false;
   let speechRecognition = null;
-
-  const deviceStatus = {
-    gyroscope: false,
-    accelerometer: false,
-  };
-  const initializeSpeechRecognition = () => {
+  const initializeSpeechRecognition = async () => {
     if (initializedSpeechRecognition) {
       return;
     }
@@ -32,6 +27,10 @@
       console.warn(
         "Speech recognotion blocks are not supported in this browser"
       );
+      return;
+    }
+
+    if (!await Scratch.canRecordAudio()) {
       return;
     }
 
@@ -616,18 +615,21 @@
                 menu: "toggleMenu",
               },
             },
+            hideFromPalette: true,
           },
           {
             opcode: "returnWords",
             blockType: Scratch.BlockType.REPORTER,
             text: "Recognized Words",
             blockIconURI: speechIco,
+            hideFromPalette: true,
           },
           {
             opcode: "isrecording",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Recording?",
             blockIconURI: speechIco,
+            hideFromPalette: true,
           },
           "---",
           {
@@ -879,7 +881,12 @@
 
     getClipBoard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        return navigator.clipboard.readText();
+        return Scratch.canReadClipboard().then(allowed => {
+          if (allowed) {
+            return navigator.clipboard.readText();
+          }
+          return '';
+        });
       }
       return "";
     }

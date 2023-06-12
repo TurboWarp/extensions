@@ -92,12 +92,23 @@
     }
     switch (blendMode) {
       case 'additive':
+        gl.blendEquation(gl.FUNC_ADD);
+        gl.blendFunc(gl.ONE, gl.ONE);
+        break;
+      case 'subtract':
+        gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT);
         gl.blendFunc(gl.ONE, gl.ONE);
         break;
       case 'multiply':
+        gl.blendEquation(gl.FUNC_ADD);
         gl.blendFunc(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA);
         break;
+      case 'invert':
+        gl.blendEquation(gl.FUNC_ADD);
+        gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR);
+        break;
       default:
+        gl.blendEquation(gl.FUNC_ADD);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     }
   }
@@ -345,7 +356,7 @@
           },
           blends: {
             acceptReporters: true,
-            items: ['default', 'additive', 'multiply']
+            items: ['default', 'additive', 'subtract', 'multiply', 'invert']
           },
           props: {
             acceptReporters: true,
@@ -406,7 +417,9 @@
       switch (BLENDMODE) {
         case 'default':
         case 'additive':
+        case 'subtract':
         case 'multiply':
+        case 'invert':
           newValue = BLENDMODE;
           break;
         default:
