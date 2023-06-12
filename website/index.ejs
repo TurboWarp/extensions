@@ -65,20 +65,25 @@
         }
       }
 
-      .warning {
+      .infobox, .development-tools {
         padding: 8px;
         margin: 8px 0;
         border-radius: 8px;
         background: rgba(0, 195, 255, 0.245);
         border: 1px solid rgba(0, 187, 255, 0.604);
       }
+      .infobox-warning {
+        background-color: rgba(255, 0, 0, 0.245);
+        border-color: rgba(255, 0, 0, 0.446);
+      }
+      .infobox-title {
+        font-weight: bold;
+        margin-bottom: 4px;
+      }
 
       .development-tools {
-        padding: 8px;
-        margin: 8px 0;
-        border-radius: 8px;
-        background: rgba(200, 0, 255, 0.245);
-        border: 1px solid rgba(234, 0, 255, 0.604);
+        background-color: rgba(200, 0, 255, 0.245);
+        border-color: rgba(234, 0, 255, 0.604);
       }
       .development-tools h2 {
         font-size: 1em;
@@ -213,23 +218,25 @@
         <div>TurboWarp Extension Gallery</div>
       </h1>
 
-      <p>Unlike custom extensions on other websites, extensions listed here aren't limited by the extension sandbox, so they are a lot more powerful.</p>
-      <p>To use these extensions in TurboWarp, hover over an extension to copy its URL, then go to the editor, open the extension chooser, then choose the "Custom Extension" option and input the copied URL. Some of these extensions may work in other Scratch mods while others will not.</p>
+      <p>Unlike custom extensions on other websites, these aren't limited by the extension sandbox, so they are a lot more powerful. All extensions are reviewed for safety.</p>
+      <p>To use multiple of these extensions in TurboWarp, hover over the extension and press the button to copy its URL. Then go to the editor, open the extension chooser, then choose the "Custom Extension" option at the bottom, and enter the URL.</p>
 
-      <% if (mode === 'desktop') { %>
-        <p>TurboWarp Desktop loads extensions from an offline copy of extensions.turbowarp.org instead of the live website.</p>
-      <% } else { %>
-        <p>
-          To use these in the desktop app, <a href="https://desktop.turbowarp.org/">download v1.7.1</a> (released January 24, 2023) or later.
-          Note that the desktop app uses an offline copy of these extensions instead of downloading them from the website, so some extensions may be outdated or missing.
-        </p>
-      <% } %>
-
-      <p class="warning">
-        These extensions are not compatible with Scratch.
+      <div class="infobox infobox-warning">
+        <div class="infobox-title">These extensions are not compatible with Scratch.</div>
         Projects that use these extensions can't be uploaded to the Scratch website.
         They can, however, be used in <a href="https://packager.turbowarp.org/">the packager</a>.
-      </p>
+      </div>
+
+      <div class="infobox">
+        <% if (mode === 'desktop') { %>
+          For compatibility, security, and offline support, the desktop app includes an offline copy of extensions.turbowarp.org from this update's release date.
+          Compared to the live website, some extensions may be missing or outdated.
+        <% } else { %>
+          <div class="infobox-title">Some extensions may not work in the desktop app.</div>
+          For compatibility, security, and offline support, each desktop app update contains an offline copy of these extensions from its release date.
+          The desktop app is currently very far behind, so many extensions will be missing or outdated. We are working on it!
+        <% } %>
+      </div>
     </div>
 
     <%
