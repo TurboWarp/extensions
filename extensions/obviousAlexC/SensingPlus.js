@@ -67,6 +67,10 @@
     rotationY: 0,
     rotationZ: 0,
   };
+  const deviceStatus = {
+    gyroscope: false,
+    accelerometer: false,
+  };
 
   const initializeSensors = () => {
     if (initializedSensors) {
