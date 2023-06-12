@@ -241,7 +241,7 @@
     }
 
     changeTimer(args) {
-      if (!timers[args.TIMER]) return;
+      if (!timers[args.TIMER]) this.startResetTimer(args);
       timers[args.TIMER].pauseTime += Scratch.Cast.toNumber(args.NUM) * 1000;
     }
 
