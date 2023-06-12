@@ -335,7 +335,6 @@
         name: "Sensing+",
         blocks: [
           {
-            opcode: "emptyFunctionForLabels",
             blockType: "label",
             text: "Safari Based browsers do not support touch events!",
           },
@@ -599,7 +598,6 @@
           },
           "---",
           {
-            opcode: "emptyFunctionForLabels",
             blockType: "label",
             text: "Google Chrome Exclusive",
           },
@@ -629,7 +627,6 @@
           },
           "---",
           {
-            opcode: "emptyFunctionForLabels",
             blockType: "label",
             text: "Needs a gyroscope or accelerometer",
           },
@@ -765,10 +762,6 @@
         return false;
       },
     };
-
-    emptyFunctionForLabels() {
-      return null;
-    }
 
     supportsTouches() {
       return supportsTouches;
