@@ -580,12 +580,12 @@
   const allowDuplicates = !urlParams.has("0tils-enableDuplicates");
   const showParenSpam = urlParams.has("0tils-showParenSpam");
   const showLabels = !urlParams.has("0tils-showExtraLabels");
-  
+
   function addLPlabel(text) {
     if (showParenSpam) return `(${text}) `;
     return '';
   }
-  
+
   class SGCUtils {
     getInfo() {
       return {
@@ -608,7 +608,7 @@
           }, {
           opcode: 'doAES',
           blockType: Scratch.BlockType.REPORTER,
-          text: addLPlabel("AES")+'[mode] [data] with password: [pwd] and [bytes] bytes.',
+          text: addLPlabel("AES") + '[mode] [data] with password: [pwd] and [bytes] bytes.',
           arguments: {
             mode: {
               type: Scratch.ArgumentType.STRING,
@@ -631,7 +631,7 @@
           hideFromPalette: true,
           opcode: 'doRSA',
           blockType: Scratch.BlockType.REPORTER,
-          text: addLPlabel("RSA")+'[mode] [data] with key: [key].',
+          text: addLPlabel("RSA") + '[mode] [data] with key: [key].',
           arguments: {
             mode: {
               type: Scratch.ArgumentType.STRING,
@@ -981,7 +981,7 @@
         }, {
           opcode: 'download',
           blockType: Scratch.BlockType.COMMAND,
-          text: addLPlabel("RAW")+'download [text] as [file]',
+          text: addLPlabel("RAW") + 'download [text] as [file]',
           arguments: {
             text: {
               type: Scratch.ArgumentType.STRING,
@@ -999,7 +999,7 @@
         }, {
           opcode: 'deleteSpriteNoConfirm',
           blockType: Scratch.BlockType.COMMAND,
-          text: addLPlabel("ShovelUtils")+'Delete sprite [SPRITE] | No Confirmation',
+          text: addLPlabel("ShovelUtils") + 'Delete sprite [SPRITE] | No Confirmation',
           arguments: {
             SPRITE: {
               type: Scratch.ArgumentType.STRING,
@@ -1009,7 +1009,7 @@
         }, {
           opcode: 'deleteCostume',
           blockType: Scratch.BlockType.COMMAND,
-          text: addLPlabel("ShovelUtils")+'Delete costume [COSNAME] in [SPRITE]',
+          text: addLPlabel("ShovelUtils") + 'Delete costume [COSNAME] in [SPRITE]',
           arguments: {
             COSNAME: {
               type: Scratch.ArgumentType.STRING,
@@ -1132,24 +1132,13 @@
       return _SGCUtils.version;
     }
     Setup(args) {
-      if (false) {//(this.JSEncrypt == undefined) {
-        var RSAscript = document.createElement('script');
-        RSAscript.src = "https://cdn.jsdelivr.net/gh/travist/jsencrypt@master/bin/jsencrypt.min.js";
-        RSAscript.crossOrigin = "anonymous";
-        window.document.body.appendChild(RSAscript);
-        this.JSEncrypt = JSEncrypt; // eslint-disable-line
-        RSAscript.remove(); // CLEANUP OF OUR MESS SO THAT THERE IS NO LEAKS ANYMORE
-      } else { return( 'This is currently underdevelopment.' ) }// else if (args.log) alert("Already Imported");
+      console.log(args);
+      return 'This is currently underdevelopment.';
     }
     //AES AND RSA ENCRYPTION + DECRYPTION
     doRSA(args) {
-      return( 'This is currently underdevelopment.' )
-      var crypt = new this.JSEncrypt();
-      crypt.setKey(args.key);
-      var ciphertext = null;
-      if (args.mode == 'Encrypt') ciphertext = crypt.encrypt(args.data);
-      if (args.mode == 'Decrypt') ciphertext = crypt.decrypt(args.data);
-      return ciphertext;
+      console.log(args);
+      return 'This is currently underdevelopment.';
     }
     doAES(args) {
       var ciphertext = null;
@@ -1425,7 +1414,7 @@
         });
     }
     //REDIRECTION
-    async linkopen(args) {
+    linkopen(args) {
       /*
       I am confused, the point of this block was to allow more than the normal (open in new tab)
       and (redirect this tab), I responded on github.
