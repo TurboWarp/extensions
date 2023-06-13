@@ -1,13 +1,12 @@
 /*!
- * VERSION 8.6
- * Originally created by https://scratch.mit.edu/users/0znzw/
- * This file is available under an informal "use with credit" license.
+ * VERSION 8.8
+ * Originally created by https://scratch.mit.edu/users/0znzw/ | Licenced Under the MIT License
  * DO NOT REMOVE THIS COMMENT
  */
 (function(Scratch) {
   'use strict';
   var _SGCUtils = {
-    version: '8.6',
+    version: '8.8',
     ids: {}
   };
   if (!Scratch.extensions.unsandboxed) {
@@ -579,7 +578,6 @@
   const stageVariablesDisplay = ['my variable'];
 
   const allowDuplicates = !urlParams.has("0tils-enableDuplicates");
-  const allowUnsafe = !urlParams.has("0tils-allowUnsafe");
   const showParenSpam = urlParams.has("0tils-showParenSpam");
   const showLabels = !urlParams.has("0tils-showExtraLabels");
   
@@ -630,7 +628,7 @@
             }
           }
         }, {
-          hideFromPalette: allowUnsafe,
+          hideFromPalette: true,
           opcode: 'doRSA',
           blockType: Scratch.BlockType.REPORTER,
           text: addLPlabel("RSA")+'[mode] [data] with key: [key].',
@@ -689,7 +687,7 @@
         }, {
           opcode: 'i36encoder',
           blockType: Scratch.BlockType.REPORTER,
-          text: addLPlabel("i36")+'[mode] [value] as type [type]',
+          text: '(i36) [mode] [value] as type [type]',
           arguments: {
             mode: {
               type: Scratch.ArgumentType.STRING,
@@ -1025,9 +1023,9 @@
         }, {
           blockType: Scratch.BlockType.LABEL,
           text: "Library Imports",
-          hideFromPalette: allowUnsafe || showLabels
+          hideFromPalette: true || showLabels
         }, {
-          hideFromPalette: allowUnsafe,
+          hideFromPalette: true,
           opcode: 'Setup',
           blockType: Scratch.BlockType.COMMAND,
           text: 'Setup Librarys | [log]',
@@ -1133,22 +1131,19 @@
     getVersion() {
       return _SGCUtils.version;
     }
-    //SETUP OF EXTERNAL LIBRARYS!! (hidden but still usable)
-    /* eslint-disable */
     Setup(args) {
-      // YES WE KNOW, IT LEAKED A SCRIPT TO GLOBAL SCOPE, BUT WE COULD NOT GET IT TO WORK OUTSIDE ITS OWN SCRIPT TAG, SORRY.
-      if (this.JSEncrypt == undefined) {
+      if (false) {//(this.JSEncrypt == undefined) {
         var RSAscript = document.createElement('script');
         RSAscript.src = "https://cdn.jsdelivr.net/gh/travist/jsencrypt@master/bin/jsencrypt.min.js";
         RSAscript.crossOrigin = "anonymous";
         window.document.body.appendChild(RSAscript);
         this.JSEncrypt = JSEncrypt; // eslint-disable-line
         RSAscript.remove(); // CLEANUP OF OUR MESS SO THAT THERE IS NO LEAKS ANYMORE
-      } else if (args.log) alert("Already Imported");
+      } else { return( 'This is currently underdevelopment.' ) }// else if (args.log) alert("Already Imported");
     }
-    /* eslint-enable */
     //AES AND RSA ENCRYPTION + DECRYPTION
     doRSA(args) {
+      return( 'This is currently underdevelopment.' )
       var crypt = new this.JSEncrypt();
       crypt.setKey(args.key);
       var ciphertext = null;
@@ -1181,7 +1176,7 @@
       return args.sym;
     }
     //LOCALSTORAGE
-    //If you just want localstorage use: https://extensions.turbowarp.org/local-storage.js
+    //If you just want localstorage use: https://extensions.turbowarp.org/local-storage.js  //kept for compatibility but block(s) were hidden
     setLSitem(args) {
       localStorage.setItem(args.name, args.value);
     }
@@ -1192,17 +1187,17 @@
       localStorage.removeItem(args.name);
     }
     //COUPLERS
-    ifString(args) {
+    ifString(args) { //kept for compatibility but block(s) were hidden
       if (args.bool) {
         return args.true;
       } else {
         return args.false;
       }
     }
-    strictEqual(args) {
+    strictEqual(args) { //kept for compatibility but block(s) were hidden
       return (args.str1 === args.str2);
     }
-    boolCoupler(args) {
+    boolCoupler(args) { //kept for compatibility but block(s) were hidden
       var bool = Scratch.Cast.toBoolean(args.value);
       return bool;
     }
@@ -1430,8 +1425,11 @@
         });
     }
     //REDIRECTION
-    async linkopen(args) {// eslint-disable-line
-      //YEAH IK I AM SUPPOSED TO USE "await Scratch.redirect(url);" but it did not do what I expected.
+    async linkopen(args) {
+      /*
+      I am confused, the point of this block was to allow more than the normal (open in new tab)
+      and (redirect this tab), I responded on github.
+      */
       if (args.target == "_self") {
         window.location.href = args.url;// eslint-disable-line
       }
@@ -1457,21 +1455,6 @@
     }
     newline() {
       return "\n";
-    }
-
-
-    /* USED FOR DISPLAY IN MENU, SO THESE ARE NOT MEANT TO BE RAN */
-    emptyFunctionForButtons() {
-      /*
-      button example
-       {
-          opcode: "emptyFunctionForButtons",
-          blockType: "button",
-          text: "BUTTON TEST",
-          func: "FUNCTION TO CALL WHEN BUTTON IS RAN"
-        }
-      */
-      console.log("(0Tils) THIS IS NOT SUPPOSED TO BE RAN!!")
     }
   }
   setInterval(() => {
