@@ -14,9 +14,9 @@
       addValueInList: '在列表 [LIST] 末尾添加 [VALUE]',
       replaceOfList: '替换列表 [LIST] 的第 [INDEX] 项为 [VALUE]',
       getIndexOfList: '列表 [LIST] 中第一个 [VALUE] 的位置',
-      getIndexsOfList: '列表 [LIST] 中 [VALUE] 的位置',
+      getIndexesOfList: '列表 [LIST] 中 [VALUE] 的位置',
       length: '列表 [LIST] 的长度',
-      listHaveValue: '列表 [LIST] 包括 [VALUE] 吗？',
+      listContains: '列表 [LIST] 包括 [VALUE] 吗？',
       copyList: '将列表 [LIST1] 复制到列表 [LIST2]',
     }
 });
@@ -176,9 +176,9 @@
             }
           },
           {
-            opcode: 'getIndexsOfList',
+            opcode: 'getIndexesOfList',
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id: 'getIndexsOfList', default: 'indexs of [LIST] in [VALUE]' }),
+            text: Scratch.translate({ id: 'getIndexesOfList', default: 'indexes of [LIST] in [VALUE]' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -202,9 +202,9 @@
             }
           },
           {
-            opcode: 'listHaveValue',
+            opcode: 'listContains',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate({ id: 'listHaveValue', default: '[LIST] have [VALUE] ?' }),
+            text: Scratch.translate({ id: 'listContains', default: '[LIST] contains [VALUE] ?' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -219,7 +219,7 @@
           {
             opcode: 'copyList',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id: 'copyList', default: 'copy [LIST] to [LIST2]' }),
+            text: Scratch.translate({ id: 'copyList', default: 'copy [LIST1] to [LIST2]' }),
             arguments: {
               LIST1: {
                 type: Scratch.ArgumentType.STRING,
@@ -330,24 +330,24 @@
       const variable = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST), 'list');
       const value = Scratch.Cast.toString(args.VALUE);
       if (variable) {
-        for (var i = 0;i < variable.value.length;i++) {
-          if (variable.value[i] == value) return i + 1;
+        for (var i = 0; i < variable.value.length; i++) {
+          if (Scratch.Cast.compare(variable.value[i], value) === 0) return i + 1;
         }
-        return 0;
       }
+      return 0;
     }
-    getIndexsOfList(args, util) {
+    getIndexesOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST), 'list');
       const value = Scratch.Cast.toString(args.VALUE);
       if (variable) {
-        var indexs = [];
-        for (var i = 0;i < variable.value.length;i++) {
-          if (variable.value[i] == value) indexs.push(i + 1);
+        var indexes = [];
+        for (var i = 0; i < variable.value.length; i++) {
+          if (Scratch.Cast.compare(variable.value[i], value) === 0) indexes.push(i + 1);
         }
-        if (indexs.length > 0) return indexs.toString();
-        else return 0;
+        if (indexes.length > 0) return indexes.toString();
       }
+      return '0';
     }
     length(args, util) {
       /** @type {VM.ListVariable} */
@@ -355,17 +355,18 @@
       if (variable) {
         return variable.value.length;
       }
+      return 0;
     }
-    listHaveValue(args, util) {
+    listContains(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST), 'list');
       const value = Scratch.Cast.toString(args.VALUE);
       if (variable) {
         for (var i = 0;i < variable.value.length;i++) {
-          if (variable.value[i] == value) return 1;
+          if (Scratch.Cast.compare(variable.value[i], value) === 0) return true;
         }
-        return 0;
       }
+      return false;
     }
     copyList(args, util) {
       /** @type {VM.ListVariable} */
@@ -373,7 +374,6 @@
       const list2 = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST2), 'list');
       if (list1 && list2) {
         list2.value = list1.value;
-        list2._monitorUpToDate = false;
       }
     }
   }
