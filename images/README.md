@@ -209,3 +209,9 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Lily/MoreTimers.svg
 - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).
 - Timer SVG based from https://www.svgrepo.com/svg/2045/stopwatch under CC0.
+
+## rixxyx.svg
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
+
+## Skyhigh173/bigint.svg
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1593886519
