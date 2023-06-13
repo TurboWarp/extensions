@@ -1,7 +1,7 @@
 (function (Scratch) {
   "use strict";
 
-  const icon = "https://raw.githubusercontent.com/CubesterYT/dependencies/main/TurboWarp%20Extensions/ScratchHook/Logo.png"
+  const icon = "https://raw.githubusercontent.com/CubesterYT/dependencies/main/TurboWarp%20Extensions/ScratchHook/Logo.png";
 
   class ScratchHook {
     getInfo() {
@@ -52,7 +52,7 @@
     }
 
     webhook ({hookDATA,hookURL}) {
-      const arrayDATA = hookDATA.split("{,}")
+      const arrayDATA = hookDATA.split("{,}");
       if (hookDATA.includes("content") && hookDATA.includes("username") && hookDATA.includes("avatar_url")) {
         if (arrayDATA[0].includes("content") && arrayDATA[1].includes("username") && arrayDATA[2].includes("avatar_url")) {
           Scratch.fetch(hookURL, {
@@ -120,7 +120,7 @@
             },
             body: JSON.stringify({content: `${arrayDATA[1].substr(9)}`, username: `${arrayDATA[0].substr(10)}`})
           });
-        } 
+        }
       } else if (hookDATA.includes("content") && hookDATA.includes("avatar_url")) {
         if (arrayDATA[0].includes("content") && arrayDATA[1].includes("avatar_url")) {
           Scratch.fetch(hookURL, {
@@ -160,7 +160,7 @@
         return false;
     }
     connector ({STRING1,STRING2}) {
-      return `${STRING1}{,}${STRING2}`
+      return `${STRING1}{,}${STRING2}`;
     }
   }
 
