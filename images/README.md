@@ -40,7 +40,8 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Green flag icon is from the Scratch Foundation.
 
 ## clouddata-ping.svg
- - Created by [@David-Orangemoon](https://scratch.mit.edu/users/pinksheep2917/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367719189.
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1586210422
+ - Based on work by [@David-Orangemoon](https://scratch.mit.edu/users/pinksheep2917/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367719189
 
 ## fetch.svg
  - Created by [@David-Orangemoon](https://scratch.mit.edu/users/pinksheep2917/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367714480.
@@ -57,8 +58,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Background based on https://app.haikei.app/.
 
 ## utilities.svg
- - Created by [@David-Orangemoon](https://scratch.mit.edu/users/pinksheep2917/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367709835.
- - Font is Deja Vu Sans.
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1586464191
 
 ## sound.svg
  - Created by [@softedco](https://scratch.mit.edu/users/softed/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1369138404.
@@ -194,4 +194,18 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Background based on https://bgjar.com/contour-line under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## battery.svg
- - Created by [@Martinelplayz](https://github.com/Martinelplayz) in https://github.com/TurboWarp/extensions/pull/504#issuecomment-1574243161
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1586143227
+ - Based on image created by [@Martinelplayz](https://scratch.mit.edu/users/MARTINELPLAYZ/) in https://github.com/TurboWarp/extensions/pull/504#issuecomment-1574243161
+
+## Longboost/color_channels.svg
+ - Created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575091575
+
+## qxsck/data-analysis.svg
+ - Based on image created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575100933
+
+## mdwalters/notifications.svg
+ - Created by [@Juenjos](https://github.com/Juenjos) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1573040329
+
+## LukeManiaStudios/MoreTimers.svg
+- Created by LUkeManiaStudios
+- Timer SVG based from https://www.svgrepo.com/svg/2045/stopwatch under CC0.
