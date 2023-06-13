@@ -12395,21 +12395,21 @@
             },
           },
           {
-              opcode: "getGravityX",
-              blockType: BlockType.REPORTER,
-              text: formatMessage({
-                id: "griffpatch.getGravityX",
-                default: "gravity x",
-                description: "Get the gravity's x value",
+            opcode: "getGravityX",
+            blockType: BlockType.REPORTER,
+            text: formatMessage({
+              id: "griffpatch.getGravityX",
+              default: "gravity x",
+              description: "Get the gravity's x value",
             }),
           },
           {
-              opcode: "getGravityY",
-              blockType: BlockType.REPORTER,
-              text: formatMessage({
-                id: "griffpatch.getGravityY",
-                default: "gravity y",
-                description: "Get the gravity's y value",
+            opcode: "getGravityY",
+            blockType: BlockType.REPORTER,
+            text: formatMessage({
+              id: "griffpatch.getGravityY",
+              default: "gravity y",
+              description: "Get the gravity's y value",
             }),
           },
 
