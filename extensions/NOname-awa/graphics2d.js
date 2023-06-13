@@ -1,20 +1,6 @@
 (function (Scratch) {
     'use strict';
     Scratch.translate.setup({
-        en: {
-            name: 'Graphics 2D',
-            line_section: 'length from ([x1],[y1]) to ([x2],[y2])',
-            triangle: 'triangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) \'s [CS]',
-            triangle_s: 'triangle [s1] [s2] [s3] \'s area',
-            quadrilateral: 'quadrangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) ([x4],[y4]) \'s [CS]',
-            graph: 'graph [graph] \'s [CS]',
-            round: 'circle of [rd][a]\'s [CS]',
-            pi: 'pi',
-            radius: 'radius',
-            diameter: 'diameter',
-            area: 'area',
-            circumference: 'circumference',
-        },
         zh: {
             name: '图形 2D',
             line_section: '线段（[x1],[y1]）到（[x2],[y2]）',
