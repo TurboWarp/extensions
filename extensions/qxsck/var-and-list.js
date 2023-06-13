@@ -178,7 +178,7 @@
           {
             opcode: 'getIndexesOfList',
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id: 'getIndexesOfList', default: 'indexes of [LIST] in [VALUE]' }),
+            text: Scratch.translate({ id: 'getIndexesOfList', default: 'indexes of [VALUE] in [LIST]' }),
             arguments: {
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -328,7 +328,7 @@
     getIndexOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST), 'list');
-      const value = Scratch.Cast.toString(args.VALUE);
+      const value = args.VALUE;
       if (variable) {
         for (var i = 0; i < variable.value.length; i++) {
           if (Scratch.Cast.compare(variable.value[i], value) === 0) return i + 1;
@@ -339,7 +339,7 @@
     getIndexesOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST), 'list');
-      const value = Scratch.Cast.toString(args.VALUE);
+      const value = args.VALUE;
       if (variable) {
         var indexes = [];
         for (var i = 0; i < variable.value.length; i++) {
@@ -360,7 +360,7 @@
     listContains(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST), 'list');
-      const value = Scratch.Cast.toString(args.VALUE);
+      const value = args.VALUE;
       if (variable) {
         for (var i = 0;i < variable.value.length;i++) {
           if (Scratch.Cast.compare(variable.value[i], value) === 0) return true;
@@ -373,7 +373,7 @@
       const list1 = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST1), 'list');
       const list2 = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST2), 'list');
       if (list1 && list2) {
-        list2.value = list1.value;
+        list2.value = list1.value.slice();
       }
     }
   }
