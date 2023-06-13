@@ -57,8 +57,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Background based on https://app.haikei.app/.
 
 ## utilities.svg
- - Created by [@David-Orangemoon](https://scratch.mit.edu/users/pinksheep2917/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367709835.
- - Font is Deja Vu Sans.
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1586464191
 
 ## sound.svg
  - Created by [@softedco](https://scratch.mit.edu/users/softed/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1369138404.
