@@ -10,7 +10,7 @@
         name: "ScratchHook",
         color1: "#3843B0",
         menuIconURI: icon,
-        docsURI: "https://github.com/CubesterYT/dependencies/blob/main/TurboWarp%20Extensions/ScratchHook/ScratchHook.md",
+        docsURI: "https://extensions.turbowarp.org/scratchhook.html",
 
         blocks: [
           {
