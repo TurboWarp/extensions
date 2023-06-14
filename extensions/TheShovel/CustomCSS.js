@@ -36,6 +36,7 @@ try {
 	var monitorrowvalueouter = '.sc-monitor-row-value-outer'
 	var monitorrowsinner = '.sc-monitor-rows-inner'
 	var monitorrowindex = '.sc-monitor-row-index'
+	var monitorvaluelarge = '.sc-monitor-large-value'
 } catch (err) {
 	console.log('CustomCSS - Using editor index')
 	ineditor = true
