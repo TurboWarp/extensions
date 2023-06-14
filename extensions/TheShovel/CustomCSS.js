@@ -63,6 +63,8 @@ function setvariableposition(X, Y, NAME) {
 	try {
 		if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).children.item(0).children.item(0).textContent == NAME) {
 			document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.transform = 'translate(' + X + 'px,' + Y + 'px)'
+			document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.left = '0px'
+			document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.top = '0px'
 		} else {
 			itterationtestvarpos = itterationtestvarpos + 1
 			setvariableposition(X, Y, NAME)
@@ -91,6 +93,8 @@ function setlistposition(X, Y, NAME) {
 		if (ineditor == true) {
 			if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).children.item(0).textContent == NAME) {
 				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.transform = 'translate(' + X + 'px,' + Y + 'px)'
+				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.left = '0px'
+				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.top = '0px'
 			} else {
 				itterationtestvarpos = itterationtestvarpos + 1
 				setlistposition(X, Y, NAME)
@@ -98,6 +102,8 @@ function setlistposition(X, Y, NAME) {
 		} else {
 			if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).textContent == NAME) {
 				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.transform = 'translate(' + X + 'px,' + Y + 'px)'
+				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.left = '0px'
+				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.top = '0px'
 			} else {
 				itterationtestvarpos = itterationtestvarpos + 1
 				setlistposition(X, Y, NAME)
@@ -429,20 +435,12 @@ class CustomCSS {
 	}
 	setvarpos(args) {
 		itterationtestvarpos = 0
-		if (ineditor == false) {
-			setvariableposition(args.X + 240, 180 - args.Y, args.NAME)
-		} else {
-			setvariableposition(args.X, 0 - args.Y, args.NAME)
-		}
+			setvariableposition(args.X + vm.runtime.stageWidth/2, vm.runtime.stageHeight/2 - args.Y, args.NAME)
 	}
 
 	setlistpos(args) {
 		itterationtestvarpos = 0
-		if (ineditor == false) {
-			setlistposition(args.X + 240, 180 - args.Y, args.NAME)
-		} else {
-			setlistposition(args.X, 0 - args.Y, args.NAME)
-		}
+			setlistposition(args.X + vm.runtime.stageWidth/2, vm.runtime.stageHeight/2 - args.Y, args.NAME)
 	}
 }
 Scratch.extensions.register(new CustomCSS());
