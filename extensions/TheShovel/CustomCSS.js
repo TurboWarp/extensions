@@ -34,30 +34,30 @@ var ineditor = false;
 var itterationtest = 0;
 
 try {
-	scaffolding;
-	console.log('CustomCSS - Using packaged index');
-	ineditor = false;
-	monitorroot = '.sc-monitor-root';
-	monitorroot2 = '.sc-monitor-root[opcode^="data_"] .sc-monitor-value-color';
-	monitorvalue = '.sc-monitor-value';
-	monitorlistlabel = '.sc-monitor-list-label';
-	monitorlistfooter = '.sc-monitor-list-footer';
-	monitorrowvalueouter = '.sc-monitor-row-value-outer';
-	monitorrowsinner = '.sc-monitor-rows-inner';
-	monitorrowindex = '.sc-monitor-row-index';
-	monitorvaluelarge = '.sc-monitor-large-value';
+scaffolding;
+console.log('CustomCSS - Using packaged index');
+ineditor = false;
+monitorroot = '.sc-monitor-root';
+monitorroot2 = '.sc-monitor-root[opcode^="data_"] .sc-monitor-value-color';
+monitorvalue = '.sc-monitor-value';
+monitorlistlabel = '.sc-monitor-list-label';
+monitorlistfooter = '.sc-monitor-list-footer';
+monitorrowvalueouter = '.sc-monitor-row-value-outer';
+monitorrowsinner = '.sc-monitor-rows-inner';
+monitorrowindex = '.sc-monitor-row-index';
+monitorvaluelarge = '.sc-monitor-large-value';
 } catch (err) {
-	console.log('CustomCSS - Using editor index');
-	ineditor = true;
-	monitorroot = '.monitor_monitor-container_2J9gl';
-	monitorroot2 = '.monitor_value_3Yexa';
-	monitorvalue = '.monitor_value_3Yexa';
-	monitorlistlabel = '.monitor_list-header_-cp0o';
-	monitorlistfooter = '.monitor_list-footer_2HyG8';
-	monitorrowvalueouter = '.monitor_list-value_1zGfI';
-	monitorrowsinner = '.monitor_list-body_2OFZ6';
-	monitorrowindex = '.monitor_list-index_7tKdl';
-	monitorvaluelarge = '.monitor_large-value_P-rAm';
+console.log('CustomCSS - Using editor index');
+ineditor = true;
+monitorroot = '.monitor_monitor-container_2J9gl';
+monitorroot2 = '.monitor_value_3Yexa';
+monitorvalue = '.monitor_value_3Yexa';
+monitorlistlabel = '.monitor_list-header_-cp0o';
+monitorlistfooter = '.monitor_list-footer_2HyG8';
+monitorrowvalueouter = '.monitor_list-value_1zGfI';
+monitorrowsinner = '.monitor_list-body_2OFZ6';
+monitorrowindex = '.monitor_list-index_7tKdl';
+monitorvaluelarge = '.monitor_large-value_P-rAm';
 }
 
 const ColorIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE4AAABOCAYAAACOqiAdAAABbmlDQ1BpY2MAACiRdZE7SwNBFIW/xEfEBym0ELHYQiVFAqIglhqLNEEkKhi1ScZsIiRx2U2QYCvYWAgWoo2vwn+grWCrIAiKIGJn76sRWe8kQoIkM8zej7NzLnfPgjeaVTmneQJy+YIdi4SNhfii4XullS7ZAXwJ5ViTMzNRGq6vezy63oV0r8b36q6OlZSjwNMmPKYsuyAs0xBdL1iat4V7VCaxInwkHLRlQOFrrScr/KI5XeEPzfZcbAq8uqeRruFkDauMnRMOCA/kskX1N4/+ks5Ufn5Wap+cfhxiRAhjkKTIKlkKhKTmJbP6vuGyb5o18Sh5WpSwxZEmI96gqEXpmpJqip6SnaWkc/+fp2OOjlS6d4ah5dl13wfBtws/O677fey6PyfQ9ASX+ap/TXIa/xR9p6oNHIJ/E86vqlpyDy62oPfRStiJstQkx2ua8HYGXXHovoX2pUpWf+85fYC5DflFN7B/AENy37/8C97bZ/ptCpHvAAAACXBIWXMAAAsSAAALEgHS3X78AAADqUlEQVR4Xu2Z23LcMAxDN53+/y+ncWedehVJAHiTvXXfUlMkeATdZh+P+99N4CZwE3hfAh8Xbu3Tqd3Vu2uwU7hnuBfaqDbNgw70dBk8NgvaUSbkAgOCm/amq4C2a5yy+eXtpHB8JTTY1lUctwrakM9viPYaAaoB3BOhFlyBETUZ0cOoxjD3lfa43qRFQDOZ4ezgZm5bBm0jfXZwJjdUDLoquKVuO7vj0KEQZSxTnas6LgqaOc8NbozubZ5c1BvSbCFx4FkdZ9p3xN63cHOd6ieXWagBSuqQimM9G5anB/mpVbVfZENrXaVAdL1KzrrHWZfZBqNkspQZUpuhG2gDg0X10rnclvlyMENTZ4eIT3HhKZfqiPpOgJ6VV6r7MLfbtrQZ1xFjX3PvtEmPfwtLO0xbtOOQMKpHKujAOWgtSmWjwc1s0xXW/qekvqkWBJDYNh8Pj862gLJ3IGf+EC8PeGYgGyTD/smKcpzalyyUskEniHShqj/McYrbju1RgqkgkiyYMXpCIxzn6YsWSnKBYUAs3YsXHCrEgGFiIBAlgFy+05RecPIpOhhQDm/TMZh1ZIa/LXjAUQUEJwzhbR+KycLerC8HlDilz2NSJECYMFOox3GjginQ5KPYhONl0HRuLOBWTzaFJHv2LOCiDgQKgCcoE54KznrR9fS/jV1wPswlq+C8ANB4ZJKP6H3Cmk8Bt9JtCHj5d+t1JFMocl1mbTo367hVbqMbSQicTuAZHedm8NVx+l2Zcdz/6DY4eQw4mKQyoHHTj9Loe09rxxlwn/WAg8krgU7efyk6PeCWcRm5yuK2ThMU6EuCez4lvhvcgHmhqRdhdKqq+Upd6IVldds27rKOK52hTjEEjlrvq5uIqv+1vOgVhsBFaXq7PIyjll+Ae05Q9jfFSe3BM5pxr+Noa1stN2pagPHJuEPVx4BDdSN+plR1s/FpE8uAe7oXak0TCSv3A8x6GDez4FjtZrFsgbPEKeDQkt17OsPSTZ9ABRy7ZEsATk7VdGgqiHaVqAJZx/5Yje2eY4WmCEbXHXMzz+4ULTsQb83RNge1wIBDZgROXaqtaMvvnfseqPSBzgQmV+iERSZjxCMAFj1M3e+8zFWDeT1YhKLmmUZQjt536w8wLz0y4NAy9R4OqPksgKju8XvXGAjeanDHa4nSbFTsdDWN4DHQsh3nvb54AGZsQS960gsMus9cxiU9lRQhrBMBsrSX0mIEQPVyexX9jtbvoTeBm4CDwB/Fgod+niXXXwAAAABJRU5ErkJggg==';
@@ -68,389 +68,389 @@ const miscIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE4AAABOCAYAAACO
 
 ///
 function setvariableposition(X, Y, NAME) {
-	//console.log('Checking for variable position')
-	try {
-		if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).children.item(0).children.item(0).textContent == NAME) {
-			document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.transform = 'translate(' + X + 'px,' + Y + 'px)';
-			document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.left = '0px';
-			document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.top = '0px';
-		} else {
-			itterationtestvarpos = itterationtestvarpos + 1;
-			setvariableposition(X, Y, NAME);
-		}
-	} catch (err) {
-		try {
-			if (ineditor == false) {
-				if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).className == monitorlistlabel) {
-					itterationtestvarpos = itterationtestvarpos + 1;
-					setvariableposition(X, Y, NAME);
-				}
-			} else {
-				if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).className == 'monitor_list-monitor_1FdIj') {
-					itterationtestvarpos = itterationtestvarpos + 1;
-					setvariableposition(X, Y, NAME);
-				}
-			}
+//console.log('Checking for variable position')
+try {
+if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).children.item(0).children.item(0).textContent == NAME) {
+document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.transform = 'translate(' + X + 'px,' + Y + 'px)';
+document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.left = '0px';
+document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.top = '0px';
+} else {
+itterationtestvarpos = itterationtestvarpos + 1;
+setvariableposition(X, Y, NAME);
+}
+} catch (err) {
+try {
+if (ineditor == false) {
+if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).className == monitorlistlabel) {
+itterationtestvarpos = itterationtestvarpos + 1;
+setvariableposition(X, Y, NAME);
+}
+} else {
+if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).className == 'monitor_list-monitor_1FdIj') {
+itterationtestvarpos = itterationtestvarpos + 1;
+setvariableposition(X, Y, NAME);
+}
+}
 
-		} catch (err) {}
-	}
+} catch (err) {}
+}
 }
 ///
 function setlistposition(X, Y, NAME) {
-	//console.log('Checking for variable position')
-	try {
-		if (ineditor == true) {
-			if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).children.item(0).textContent == NAME) {
-				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.transform = 'translate(' + X + 'px,' + Y + 'px)';
-				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.left = '0px';
-				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.top = '0px';
-			} else {
-				itterationtestvarpos = itterationtestvarpos + 1;
-				setlistposition(X, Y, NAME);
-			}
-		} else {
-			if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).textContent == NAME) {
-				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.transform = 'translate(' + X + 'px,' + Y + 'px)';
-				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.left = '0px';
-				document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.top = '0px';
-			} else {
-				itterationtestvarpos = itterationtestvarpos + 1;
-				setlistposition(X, Y, NAME);
-			}
-		}
-	} catch (err) {
-		try {
-			if (ineditor == false) {
-				if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).className == 'sc-monitor-inner') {
-					itterationtestvarpos = itterationtestvarpos + 1;
-					setlistposition(X, Y, NAME);
-				}
-			} else {
+//console.log('Checking for variable position')
+try {
+if (ineditor == true) {
+if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).children.item(0).textContent == NAME) {
+document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.transform = 'translate(' + X + 'px,' + Y + 'px)';
+document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.left = '0px';
+document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.top = '0px';
+} else {
+itterationtestvarpos = itterationtestvarpos + 1;
+setlistposition(X, Y, NAME);
+}
+} else {
+if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).textContent == NAME) {
+document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.transform = 'translate(' + X + 'px,' + Y + 'px)';
+document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.left = '0px';
+document.querySelectorAll(monitorroot).item(itterationtestvarpos).style.top = '0px';
+} else {
+itterationtestvarpos = itterationtestvarpos + 1;
+setlistposition(X, Y, NAME);
+}
+}
+} catch (err) {
+try {
+if (ineditor == false) {
+if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).className == 'sc-monitor-inner') {
+itterationtestvarpos = itterationtestvarpos + 1;
+setlistposition(X, Y, NAME);
+}
+} else {
 
-				if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).className == 'monitor_default-monitor_2vCcZ') {
-					itterationtestvarpos = itterationtestvarpos + 1;
-					setlistposition(X, Y, NAME);
-				}
-			}
-		} catch (err) {}
-	}
+if (document.querySelectorAll(monitorroot).item(itterationtestvarpos).children.item(0).className == 'monitor_default-monitor_2vCcZ') {
+itterationtestvarpos = itterationtestvarpos + 1;
+setlistposition(X, Y, NAME);
+}
+}
+} catch (err) {}
+}
 }
 ///
 function applyCSS() {
-	//console.log(variablestyle1)
-	try {
-		variablestyle1 = document.querySelectorAll(monitorroot).item(itterationtest).style;
-		variablestyle1.color = generaltextcolor;
-		if (ineditor == true) {
-			try {
-				document.querySelectorAll(monitorlistfooter).item(itterationtest).style.color = generaltextcolor;
-				document.querySelectorAll(monitorlistlabel).item(itterationtest).style.color = generaltextcolor;
-			} catch (err) {}
-		}
-		variablestyle1.background = variableboxcolor;
-		if (ineditor == true) {
-			try {
-				document.querySelectorAll(monitorrowsinner).item(itterationtest).style.background = variableboxcolor;
-			} catch (err) {}
-		}
-		variablestyle1.border = bordersize + 'px solid' + generalbordercolor;
-		variablestyle1.borderRadius = generalcornerradius + 'px';
-	} catch (err) {}
-	try {
-		variablestyle2 = document.querySelectorAll(monitorroot2).item(itterationtest).style;
-		variablestyle2.background = variablevalueboxcolor;
+//console.log(variablestyle1)
+try {
+variablestyle1 = document.querySelectorAll(monitorroot).item(itterationtest).style;
+variablestyle1.color = generaltextcolor;
+if (ineditor == true) {
+try {
+document.querySelectorAll(monitorlistfooter).item(itterationtest).style.color = generaltextcolor;
+document.querySelectorAll(monitorlistlabel).item(itterationtest).style.color = generaltextcolor;
+} catch (err) {}
+}
+variablestyle1.background = variableboxcolor;
+if (ineditor == true) {
+try {
+document.querySelectorAll(monitorrowsinner).item(itterationtest).style.background = variableboxcolor;
+} catch (err) {}
+}
+variablestyle1.border = bordersize + 'px solid' + generalbordercolor;
+variablestyle1.borderRadius = generalcornerradius + 'px';
+} catch (err) {}
+try {
+variablestyle2 = document.querySelectorAll(monitorroot2).item(itterationtest).style;
+variablestyle2.background = variablevalueboxcolor;
 
-	} catch (err) {}
-	try {
-		variablestyle3 = document.querySelectorAll(monitorvalue).item(itterationtest).style;
-		variablestyle3.color = variablevaluetextcolor;
-		variablestyle3.borderRadius = variablebalueboxcornerradius + 'px';
+} catch (err) {}
+try {
+variablestyle3 = document.querySelectorAll(monitorvalue).item(itterationtest).style;
+variablestyle3.color = variablevaluetextcolor;
+variablestyle3.borderRadius = variablebalueboxcornerradius + 'px';
 
-	} catch (err) {}
-	try {
-		variablestyle4 = document.querySelectorAll(monitorlistlabel).item(itterationtest).style;
-		variablestyle4.background = listlabelcolor;
+} catch (err) {}
+try {
+variablestyle4 = document.querySelectorAll(monitorlistlabel).item(itterationtest).style;
+variablestyle4.background = listlabelcolor;
 
-	} catch (err) {}
-	try {
-		variablestyle5 = document.querySelectorAll(monitorlistfooter).item(itterationtest).style;
-		variablestyle5.background = listfootercolor;
+} catch (err) {}
+try {
+variablestyle5 = document.querySelectorAll(monitorlistfooter).item(itterationtest).style;
+variablestyle5.background = listfootercolor;
 
-	} catch (err) {}
-	try {
-		variablestyle6 = document.querySelectorAll(monitorrowvalueouter).item(itterationtest).style;
-		variablestyle6.background = listvalueboxcolor;
-		variablestyle6.color = listvaluetextcolor;
-		variablestyle6.borderRadius = listvalueboxcornerradius + 'px';
+} catch (err) {}
+try {
+variablestyle6 = document.querySelectorAll(monitorrowvalueouter).item(itterationtest).style;
+variablestyle6.background = listvalueboxcolor;
+variablestyle6.color = listvaluetextcolor;
+variablestyle6.borderRadius = listvalueboxcornerradius + 'px';
 
-	} catch (err) {}
-	try {
-		if (ineditor == true) {
-			document.querySelectorAll(monitorrowsinner).item(itterationtest).children.item(0).style.overflow = scrollrule;
-		} else {
-			document.querySelectorAll(monitorrowsinner).item(itterationtest).style.overflow = scrollrule;
-		}
-	} catch (err) {}
-	///Doing this because the lists in the editor have the wrong padding
-	try {
-		if (ineditor == true) {
-			document.querySelectorAll(monitorlistfooter).item(itterationtest).style.padding = '5px';
-		}
-	} catch (err) {}
-	try {
-		document.querySelector(monitorroot).style;
-	} catch (err) {}
-	try {
-		document.querySelectorAll(monitorrowindex).item(itterationtest).style.color = generaltextcolor;
-	} catch (err) {}
-	try{document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.color = variablevaluetextcolor;}catch(err){}
-	try{document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.background = variablevalueboxcolor;}catch(err){}
-	itterationtest = itterationtest + 1;
-	if (document.querySelectorAll(monitorroot).item(itterationtest) !== null || document.querySelectorAll(monitorrowvalueouter).item(itterationtest) !== null) {
-		applyCSS();
-	} else {
-		itterationtest = 0;
-		setTimeout(function() {
-			applyCSS();
-		}, 0);
-	}
+} catch (err) {}
+try {
+if (ineditor == true) {
+document.querySelectorAll(monitorrowsinner).item(itterationtest).children.item(0).style.overflow = scrollrule;
+} else {
+document.querySelectorAll(monitorrowsinner).item(itterationtest).style.overflow = scrollrule;
+}
+} catch (err) {}
+///Doing this because the lists in the editor have the wrong padding
+try {
+if (ineditor == true) {
+document.querySelectorAll(monitorlistfooter).item(itterationtest).style.padding = '5px';
+}
+} catch (err) {}
+try {
+document.querySelector(monitorroot).style;
+} catch (err) {}
+try {
+document.querySelectorAll(monitorrowindex).item(itterationtest).style.color = generaltextcolor;
+} catch (err) {}
+try{document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.color = variablevaluetextcolor;}catch(err){}
+try{document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.background = variablevalueboxcolor;}catch(err){}
+itterationtest = itterationtest + 1;
+if (document.querySelectorAll(monitorroot).item(itterationtest) !== null || document.querySelectorAll(monitorrowvalueouter).item(itterationtest) !== null) {
+applyCSS();
+} else {
+itterationtest = 0;
+setTimeout(function() {
+applyCSS();
+}, 0);
+}
 
 }
 
 applyCSS();
 
 class CustomCSS {
-	getInfo() {
-		return {
-			id: 'CustomCSS',
-			name: 'CSS',
-			menuIconURI: extensionIcon,
-			color1: '#0072d6',
-			blocks: [{
-					blockIconURI: ColorIcon,
-					opcode: 'changecss',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set CSS color of [COLORABLE] to [COLOR]',
-					arguments: {
-						COLORABLE: {
-							type: Scratch.ArgumentType.STRING,
-							menu: 'COLORABLE_MENU'
-						},
-						COLOR: {
-							type: Scratch.ArgumentType.COLOR,
-							defaultValue: '#ff0000'
-						}
-					}
-				},
-				{
-					blockIconURI: GradientIcon,
-					opcode: 'gradientAngle',
-					blockType: Scratch.BlockType.REPORTER,
-					text: 'Make a CSS gradient with [COLOR1] and [COLOR2] at angle [ANGLE]',
-					arguments: {
-						COLOR1: {
-							type: Scratch.ArgumentType.COLOR,
-							defaultValue: '#ff0000'
-						},
-						COLOR2: {
-							type: Scratch.ArgumentType.COLOR,
-							defaultValue: '#6ed02d'
-						},
-						ANGLE: {
-							type: Scratch.ArgumentType.ANGLE,
-							defaultValue: '90'
-						}
-					}
-				},
-				{
-					blockIconURI: BorderIcon,
-					opcode: 'setbordersize',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set CSS border size to [SIZE]',
-					arguments: {
-						SIZE: {
-							type: Scratch.ArgumentType.NUMBER,
-							defaultValue: '2'
-						}
-					}
-				},
-				{
-					blockIconURI: BorderIcon,
-					opcode: 'setborderradius',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set CSS roundness of [CORNER] to [SIZE]',
-					arguments: {
-						SIZE: {
-							type: Scratch.ArgumentType.NUMBER,
-							defaultValue: '4'
-						},
-						CORNER: {
-							type: Scratch.ArgumentType.STRING,
-							menu: 'BORDER_MENU'
-						}
-					}
-				},
-				{
-					blockIconURI: miscIcon,
-					opcode: 'allowscrollrule',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set CSS list scroll rule to [SCROLLRULE]',
-					arguments: {
-						SCROLLRULE: {
-							type: Scratch.ArgumentType.STRING,
-							menu: 'SCROLL_MENU'
-						}
-					}
-				},
-				{
-					blockIconURI: miscIcon,
-					opcode: 'setvarpos',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set CSS position of variable with label [NAME] to x:[X] y:[Y]',
-					arguments: {
-						X: {
-							type: Scratch.ArgumentType.NUMBER,
-							defaultValue: 0
-						},
-						Y: {
-							type: Scratch.ArgumentType.NUMBER,
-							defaultValue: 0
-						},
-						NAME: {
-							type: Scratch.ArgumentType.STRING,
-							defaultValue: 'my variable'
-						}
-					}
-				},
-				{
-					blockIconURI: miscIcon,
-					opcode: 'setlistpos',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set CSS position of list with label [NAME] to x:[X] y:[Y]',
-					arguments: {
-						X: {
-							type: Scratch.ArgumentType.NUMBER,
-							defaultValue: 0
-						},
-						Y: {
-							type: Scratch.ArgumentType.NUMBER,
-							defaultValue: 0
-						},
-						NAME: {
-							type: Scratch.ArgumentType.STRING,
-							defaultValue: 'my variable'
-						}
-					}
-				},
-			],
-			menus: {
-				COLORABLE_MENU: {
-					acceptReporters: false,
-					items: ['general text',
-						'general background',
-						'general border',
-						'variable value box',
-						'varibale value text',
-						'list label',
-						'list footer',
-						'list value box',
-						'list value text'
-					]
-				},
-				BORDER_MENU: {
-					acceptReporters: false,
-					items: ['general borders ',
-						'variable value box borders',
-						'list value box borders'
-					]
-				},
-				SCROLL_MENU: {
-					acceptReporters: false,
-					items: ['auto',
-						'hidden'
-					]
-				}
-			}
-		};
-	}
-	changecss(args) {
-		if (args.COLORABLE == 'general text') {
-			generaltextcolor = args.COLOR;
-		} else {
-			if (args.COLORABLE == 'general background') {
-				variableboxcolor = args.COLOR;
-			} else {
-				if (args.COLORABLE == 'variable value box') {
-					variablevalueboxcolor = args.COLOR;
-				} else {
-					if (args.COLORABLE == 'varibale value text') {
-						variablevaluetextcolor = args.COLOR;
-					} else {
-						if (args.COLORABLE == 'list label') {
-							listlabelcolor = args.COLOR;
-						} else {
-							if (args.COLORABLE == 'list footer') {
-								listfootercolor = args.COLOR;
-							} else {
-								if (args.COLORABLE == 'list value box') {
-									listvalueboxcolor = args.COLOR;
-								} else {
-									if (args.COLORABLE == 'list value text') {
-										listvaluetextcolor = args.COLOR;
-									} else {
-										if (args.COLORABLE == 'general border') {
-											generalbordercolor = args.COLOR;
-										} else {
-											return ''
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+getInfo() {
+return {
+id: 'CustomCSS',
+name: 'CSS',
+menuIconURI: extensionIcon,
+color1: '#0072d6',
+blocks: [{
+blockIconURI: ColorIcon,
+opcode: 'changecss',
+blockType: Scratch.BlockType.COMMAND,
+text: 'Set CSS color of [COLORABLE] to [COLOR]',
+arguments: {
+COLORABLE: {
+type: Scratch.ArgumentType.STRING,
+menu: 'COLORABLE_MENU'
+},
+COLOR: {
+type: Scratch.ArgumentType.COLOR,
+defaultValue: '#ff0000'
+}
+}
+},
+{
+blockIconURI: GradientIcon,
+opcode: 'gradientAngle',
+blockType: Scratch.BlockType.REPORTER,
+text: 'Make a CSS gradient with [COLOR1] and [COLOR2] at angle [ANGLE]',
+arguments: {
+COLOR1: {
+type: Scratch.ArgumentType.COLOR,
+defaultValue: '#ff0000'
+},
+COLOR2: {
+type: Scratch.ArgumentType.COLOR,
+defaultValue: '#6ed02d'
+},
+ANGLE: {
+type: Scratch.ArgumentType.ANGLE,
+defaultValue: '90'
+}
+}
+},
+{
+blockIconURI: BorderIcon,
+opcode: 'setbordersize',
+blockType: Scratch.BlockType.COMMAND,
+text: 'Set CSS border size to [SIZE]',
+arguments: {
+SIZE: {
+type: Scratch.ArgumentType.NUMBER,
+defaultValue: '2'
+}
+}
+},
+{
+blockIconURI: BorderIcon,
+opcode: 'setborderradius',
+blockType: Scratch.BlockType.COMMAND,
+text: 'Set CSS roundness of [CORNER] to [SIZE]',
+arguments: {
+SIZE: {
+type: Scratch.ArgumentType.NUMBER,
+defaultValue: '4'
+},
+CORNER: {
+type: Scratch.ArgumentType.STRING,
+menu: 'BORDER_MENU'
+}
+}
+},
+{
+blockIconURI: miscIcon,
+opcode: 'allowscrollrule',
+blockType: Scratch.BlockType.COMMAND,
+text: 'Set CSS list scroll rule to [SCROLLRULE]',
+arguments: {
+SCROLLRULE: {
+type: Scratch.ArgumentType.STRING,
+menu: 'SCROLL_MENU'
+}
+}
+},
+{
+blockIconURI: miscIcon,
+opcode: 'setvarpos',
+blockType: Scratch.BlockType.COMMAND,
+text: 'Set CSS position of variable with label [NAME] to x:[X] y:[Y]',
+arguments: {
+X: {
+type: Scratch.ArgumentType.NUMBER,
+defaultValue: 0
+},
+Y: {
+type: Scratch.ArgumentType.NUMBER,
+defaultValue: 0
+},
+NAME: {
+type: Scratch.ArgumentType.STRING,
+defaultValue: 'my variable'
+}
+}
+},
+{
+blockIconURI: miscIcon,
+opcode: 'setlistpos',
+blockType: Scratch.BlockType.COMMAND,
+text: 'Set CSS position of list with label [NAME] to x:[X] y:[Y]',
+arguments: {
+X: {
+type: Scratch.ArgumentType.NUMBER,
+defaultValue: 0
+},
+Y: {
+type: Scratch.ArgumentType.NUMBER,
+defaultValue: 0
+},
+NAME: {
+type: Scratch.ArgumentType.STRING,
+defaultValue: 'my variable'
+}
+}
+},
+],
+menus: {
+COLORABLE_MENU: {
+acceptReporters: false,
+items: ['general text',
+'general background',
+'general border',
+'variable value box',
+'varibale value text',
+'list label',
+'list footer',
+'list value box',
+'list value text'
+]
+},
+BORDER_MENU: {
+acceptReporters: false,
+items: ['general borders ',
+'variable value box borders',
+'list value box borders'
+]
+},
+SCROLL_MENU: {
+acceptReporters: false,
+items: ['auto',
+'hidden'
+]
+}
+}
+};
+}
+changecss(args) {
+if (args.COLORABLE == 'general text') {
+generaltextcolor = args.COLOR;
+} else {
+if (args.COLORABLE == 'general background') {
+variableboxcolor = args.COLOR;
+} else {
+if (args.COLORABLE == 'variable value box') {
+variablevalueboxcolor = args.COLOR;
+} else {
+if (args.COLORABLE == 'varibale value text') {
+variablevaluetextcolor = args.COLOR;
+} else {
+if (args.COLORABLE == 'list label') {
+listlabelcolor = args.COLOR;
+} else {
+if (args.COLORABLE == 'list footer') {
+listfootercolor = args.COLOR;
+} else {
+if (args.COLORABLE == 'list value box') {
+listvalueboxcolor = args.COLOR;
+} else {
+if (args.COLORABLE == 'list value text') {
+listvaluetextcolor = args.COLOR;
+} else {
+if (args.COLORABLE == 'general border') {
+generalbordercolor = args.COLOR;
+} else {
+return '';
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
 
-	gradientAngle(args) {
-		return 'linear-gradient(' + args.ANGLE + 'deg,' + args.COLOR1 + ',' + args.COLOR2 + ')';
-	}
+gradientAngle(args) {
+return 'linear-gradient(' + args.ANGLE + 'deg,' + args.COLOR1 + ',' + args.COLOR2 + ')';
+}
 
-	setbordersize(args) {
-		bordersize = args.SIZE;
-	}
+setbordersize(args) {
+bordersize = args.SIZE;
+}
 
-	setborderradius(args) {
-		//console.log(args.CORNER)
-		if (args.CORNER == 'general borders ') {
-			//console.log('test')
-			generalcornerradius = args.SIZE;
-		} else {
-			if (args.CORNER == 'variable value box borders') {
-				variablebalueboxcornerradius = args.SIZE;
-			} else {
-				if (args.CORNER == 'list value box borders') {
-					listvalueboxcornerradius = args.SIZE;
-				} else {
-					return '';
-				}
-			}
-		}
-	}
+setborderradius(args) {
+//console.log(args.CORNER)
+if (args.CORNER == 'general borders ') {
+//console.log('test')
+generalcornerradius = args.SIZE;
+} else {
+if (args.CORNER == 'variable value box borders') {
+variablebalueboxcornerradius = args.SIZE;
+} else {
+if (args.CORNER == 'list value box borders') {
+listvalueboxcornerradius = args.SIZE;
+} else {
+return '';
+}
+}
+}
+}
 
-	allowscrollrule(args) {
-		scrollrule = args.SCROLLRULE;
-	}
-	setvarpos(args) {
-		itterationtestvarpos = 0;
-			setvariableposition(args.X + Scratch.vm.runtime.stageWidth/2, Scratch.vm.runtime.stageHeight/2 - args.Y, args.NAME);
-	}
+allowscrollrule(args) {
+scrollrule = args.SCROLLRULE;
+}
+setvarpos(args) {
+itterationtestvarpos = 0;
+setvariableposition(args.X + Scratch.vm.runtime.stageWidth/2, Scratch.vm.runtime.stageHeight/2 - args.Y, args.NAME);
+}
 
-	setlistpos(args) {
-		itterationtestvarpos = 0;
-			setlistposition(args.X + Scratch.vm.runtime.stageWidth/2, Scratch.vm.runtime.stageHeight/2 - args.Y, args.NAME);
-	}
+setlistpos(args) {
+itterationtestvarpos = 0;
+setlistposition(args.X + Scratch.vm.runtime.stageWidth/2, Scratch.vm.runtime.stageHeight/2 - args.Y, args.NAME);
+}
 }
 Scratch.extensions.register(new CustomCSS());
 })(Scratch);
