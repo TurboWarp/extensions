@@ -234,7 +234,7 @@ blockIconURI: ColorIcon,
 opcode: 'changecss',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS color of [COLORABLE] to [COLOR]',
-extensions: ['colours_control'],
+extensions: ['colours_looks'],
 arguments: {
 COLORABLE: {
 type: Scratch.ArgumentType.STRING,
@@ -251,7 +251,7 @@ blockIconURI: GradientIcon,
 opcode: 'gradientAngle',
 blockType: Scratch.BlockType.REPORTER,
 text: 'Make a CSS gradient with [COLOR1] and [COLOR2] at angle [ANGLE]',
-extensions: ['colours_control'],
+extensions: ['colours_looks'],
 arguments: {
 COLOR1: {
 type: Scratch.ArgumentType.COLOR,
@@ -272,7 +272,7 @@ blockIconURI: BorderIcon,
 opcode: 'setbordersize',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS border size to [SIZE]',
-extensions: ['colours_control'],
+extensions: ['colours_looks'],
 arguments: {
 SIZE: {
 type: Scratch.ArgumentType.NUMBER,
@@ -285,7 +285,7 @@ blockIconURI: BorderIcon,
 opcode: 'setborderradius',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS roundness of [CORNER] to [SIZE]',
-extensions: ['colours_control'],
+extensions: ['colours_looks'],
 arguments: {
 SIZE: {
 type: Scratch.ArgumentType.NUMBER,
@@ -302,7 +302,7 @@ blockIconURI: miscIcon,
 opcode: 'allowscrollrule',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS list scroll rule to [SCROLLRULE]',
-extensions: ['colours_control'],
+extensions: ['colours_sensing'],
 arguments: {
 SCROLLRULE: {
 type: Scratch.ArgumentType.STRING,
@@ -315,7 +315,7 @@ blockIconURI: miscIcon,
 opcode: 'setvarpos',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS position of variable with label [NAME] to x:[X] y:[Y]',
-extensions: ['colours_control'],
+extensions: ['colours_motion'],
 arguments: {
 X: {
 type: Scratch.ArgumentType.NUMBER,
@@ -336,7 +336,7 @@ blockIconURI: miscIcon,
 opcode: 'setlistpos',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS position of list with label [NAME] to x:[X] y:[Y]',
-extensions: ['colours_control'],
+extensions: ['colours_motion'],
 arguments: {
 X: {
 type: Scratch.ArgumentType.NUMBER,
