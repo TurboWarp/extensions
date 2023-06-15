@@ -205,10 +205,10 @@ document.querySelectorAll(monitorrowindex).item(itterationtest).style.color = ge
 } catch (err) {}
 try {
 document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.color = variablevaluetextcolor;
-} catch(err) {}
+} catch (err) {}
 try {
 document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.background = variablevalueboxcolor;
-} catch(err) {}
+} catch (err) {}
 itterationtest = itterationtest + 1;
 if (document.querySelectorAll(monitorroot).item(itterationtest) !== null || document.querySelectorAll(monitorrowvalueouter).item(itterationtest) !== null) {
 applyCSS();
