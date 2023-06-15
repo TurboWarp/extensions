@@ -675,7 +675,7 @@
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'LukeManiaStudios'
+                defaultValue: 'LilyMakesThings'
               }
             }
           },
