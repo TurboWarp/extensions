@@ -33,8 +33,7 @@ var bordersize = 1;
 var ineditor = false;
 var itterationtest = 0;
 
-try {
-scaffolding;
+if (Scratch.vm.runtime.isPackaged == true) {
 console.log('CustomCSS - Using packaged index');
 ineditor = false;
 monitorroot = '.sc-monitor-root';
@@ -46,7 +45,7 @@ monitorrowvalueouter = '.sc-monitor-row-value-outer';
 monitorrowsinner = '.sc-monitor-rows-inner';
 monitorrowindex = '.sc-monitor-row-index';
 monitorvaluelarge = '.sc-monitor-large-value';
-} catch (err) {
+} else {
 console.log('CustomCSS - Using editor index');
 ineditor = true;
 monitorroot = '.monitor_monitor-container_2J9gl';
