@@ -234,6 +234,7 @@ blockIconURI: ColorIcon,
 opcode: 'changecss',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS color of [COLORABLE] to [COLOR]',
+extensions: ['colours_control'],
 arguments: {
 COLORABLE: {
 type: Scratch.ArgumentType.STRING,
@@ -250,6 +251,7 @@ blockIconURI: GradientIcon,
 opcode: 'gradientAngle',
 blockType: Scratch.BlockType.REPORTER,
 text: 'Make a CSS gradient with [COLOR1] and [COLOR2] at angle [ANGLE]',
+extensions: ['colours_control'],
 arguments: {
 COLOR1: {
 type: Scratch.ArgumentType.COLOR,
@@ -270,6 +272,7 @@ blockIconURI: BorderIcon,
 opcode: 'setbordersize',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS border size to [SIZE]',
+extensions: ['colours_control'],
 arguments: {
 SIZE: {
 type: Scratch.ArgumentType.NUMBER,
@@ -282,6 +285,7 @@ blockIconURI: BorderIcon,
 opcode: 'setborderradius',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS roundness of [CORNER] to [SIZE]',
+extensions: ['colours_control'],
 arguments: {
 SIZE: {
 type: Scratch.ArgumentType.NUMBER,
@@ -298,6 +302,7 @@ blockIconURI: miscIcon,
 opcode: 'allowscrollrule',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS list scroll rule to [SCROLLRULE]',
+extensions: ['colours_control'],
 arguments: {
 SCROLLRULE: {
 type: Scratch.ArgumentType.STRING,
@@ -310,6 +315,7 @@ blockIconURI: miscIcon,
 opcode: 'setvarpos',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS position of variable with label [NAME] to x:[X] y:[Y]',
+extensions: ['colours_control'],
 arguments: {
 X: {
 type: Scratch.ArgumentType.NUMBER,
@@ -330,6 +336,7 @@ blockIconURI: miscIcon,
 opcode: 'setlistpos',
 blockType: Scratch.BlockType.COMMAND,
 text: 'Set CSS position of list with label [NAME] to x:[X] y:[Y]',
+extensions: ['colours_control'],
 arguments: {
 X: {
 type: Scratch.ArgumentType.NUMBER,
@@ -455,5 +462,18 @@ itterationtestvarpos = 0;
 setlistposition(args.X + Scratch.vm.runtime.stageWidth / 2, Scratch.vm.runtime.stageHeight / 2 - args.Y, args.NAME);
 }
 }
+
+// "Extension" option reimplementation by Xeltalliv
+const runtime = Scratch.vm.runtime;
+const cbfsb = runtime._convertBlockForScratchBlocks.bind(runtime);
+runtime._convertBlockForScratchBlocks = function(blockInfo, categoryInfo) {
+const res = cbfsb(blockInfo, categoryInfo);
+if (blockInfo.extensions) {
+if (!res.json.extensions) res.json.extensions = [];
+res.json.extensions.push(...blockInfo.extensions);
+}
+return res;
+};
+
 Scratch.extensions.register(new CustomCSS());
 })(Scratch);
