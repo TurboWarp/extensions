@@ -203,8 +203,8 @@ document.querySelector(monitorroot).style;
 try {
 document.querySelectorAll(monitorrowindex).item(itterationtest).style.color = generaltextcolor;
 } catch (err) {}
-try{document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.color = variablevaluetextcolor;}catch(err){}
-try{document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.background = variablevalueboxcolor;}catch(err){}
+try {document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.color = variablevaluetextcolor;} catch(err) {}
+try {document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.background = variablevalueboxcolor;} catch(err) {}
 itterationtest = itterationtest + 1;
 if (document.querySelectorAll(monitorroot).item(itterationtest) !== null || document.querySelectorAll(monitorrowvalueouter).item(itterationtest) !== null) {
 applyCSS();
@@ -444,12 +444,12 @@ scrollrule = args.SCROLLRULE;
 }
 setvarpos(args) {
 itterationtestvarpos = 0;
-setvariableposition(args.X + Scratch.vm.runtime.stageWidth/2, Scratch.vm.runtime.stageHeight/2 - args.Y, args.NAME);
+setvariableposition(args.X + Scratch.vm.runtime.stageWidth / 2, Scratch.vm.runtime.stageHeight / 2 - args.Y, args.NAME);
 }
 
 setlistpos(args) {
 itterationtestvarpos = 0;
-setlistposition(args.X + Scratch.vm.runtime.stageWidth/2, Scratch.vm.runtime.stageHeight/2 - args.Y, args.NAME);
+setlistposition(args.X + Scratch.vm.runtime.stageWidth / 2, Scratch.vm.runtime.stageHeight / 2 - args.Y, args.NAME);
 }
 }
 Scratch.extensions.register(new CustomCSS());
