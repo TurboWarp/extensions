@@ -444,12 +444,12 @@ class CustomCSS {
 	}
 	setvarpos(args) {
 		itterationtestvarpos = 0
-			setvariableposition(args.X + vm.runtime.stageWidth/2, vm.runtime.stageHeight/2 - args.Y, args.NAME)
+			setvariableposition(args.X + Scratch.vm.runtime.stageWidth/2, Scratch.vm.runtime.stageHeight/2 - args.Y, args.NAME)
 	}
 
 	setlistpos(args) {
 		itterationtestvarpos = 0
-			setlistposition(args.X + vm.runtime.stageWidth/2, vm.runtime.stageHeight/2 - args.Y, args.NAME)
+			setlistposition(args.X + Scratch.vm.runtime.stageWidth/2, Scratch.vm.runtime.stageHeight/2 - args.Y, args.NAME)
 	}
 }
 Scratch.extensions.register(new CustomCSS());
