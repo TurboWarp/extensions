@@ -203,8 +203,12 @@ document.querySelector(monitorroot).style;
 try {
 document.querySelectorAll(monitorrowindex).item(itterationtest).style.color = generaltextcolor;
 } catch (err) {}
-try {document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.color = variablevaluetextcolor;} catch(err) {}
-try {document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.background = variablevalueboxcolor;} catch(err) {}
+try {
+document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.color = variablevaluetextcolor;
+} catch(err) {}
+try {
+document.querySelectorAll(monitorvaluelarge).item(itterationtest).style.background = variablevalueboxcolor;
+} catch(err) {}
 itterationtest = itterationtest + 1;
 if (document.querySelectorAll(monitorroot).item(itterationtest) !== null || document.querySelectorAll(monitorrowvalueouter).item(itterationtest) !== null) {
 applyCSS();
