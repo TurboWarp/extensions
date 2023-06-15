@@ -237,6 +237,11 @@ name: 'CSS',
 menuIconURI: extensionIcon,
 color1: '#0072d6',
 blocks: [
+{
+func: 'plshelpimlost',
+blockType: Scratch.BlockType.BUTTON,
+text: 'How to use',
+},
 label('Looks blocks', false),
 {
 blockIconURI: ColorIcon,
@@ -472,6 +477,11 @@ setlistpos(args) {
 itterationtestvarpos = 0;
 setlistposition(args.X + Scratch.vm.runtime.stageWidth / 2, Scratch.vm.runtime.stageHeight / 2 - args.Y, args.NAME);
 }
+
+plshelpimlost() {
+alert("\nThis is a short introduction to how to use the CSS extension!\n\n𝗟𝗼𝗼𝗸𝘀 𝗯𝗹𝗼𝗰𝗸𝘀\nThese blocks change the appearance of the variable and list didsplays. You can use the drop-down menu to select what component you want to modify. 𝙏𝙝𝙚 𝙘𝙤𝙡𝙤𝙧 𝙗𝙡𝙤𝙘𝙠 modifieas the color of a component. You can use the 𝙜𝙧𝙖𝙙𝙞𝙚𝙣𝙩 block inside the color input, to create gradients instead of solid colors. 𝙏𝙝𝙚 𝙜𝙧𝙖𝙙𝙞𝙚𝙣𝙩 𝙤𝙣𝙡𝙮 𝙬𝙤𝙧𝙠𝙨 𝙤𝙣 𝙘𝙚𝙧𝙩𝙖𝙞𝙣 𝙘𝙤𝙢𝙥𝙤𝙣𝙚𝙣𝙩𝙨! The 𝙗𝙤𝙧𝙙𝙚𝙧 𝙗𝙡𝙤𝙘𝙠𝙨 modify the borders of certain components.\n\n𝗦𝗲𝗻𝘀𝗶𝗻𝗴 𝗯𝗹𝗼𝗰𝗸𝘀\nThese blocks can change the behaviour of certain components. The 𝙨𝙘𝙧𝙤𝙡𝙡 𝙧𝙪𝙡𝙚 block change the behaviour for lists. On 'auto' they will show the scroll bar, and allow you to school, but on 'hidden', they won't let you do that, and the scroll bar will be hidden.\n\n𝗠𝗼𝘁𝗶𝗼𝗻 𝗯𝗹𝗼𝗰𝗸𝘀\nThese blocks allow you to move variable and list displays around. You need to use their 𝙡𝙖𝙗𝙚𝙡 𝙣𝙖𝙢𝙚. The label name is the text that displays on the display. For example, a public variable will be like 'my variable', and a 'for this sprite only variable' will be like 'Sprite1: my variable'.")
+}
+
 }
 
 // "Extension" option reimplementation by Xeltalliv
