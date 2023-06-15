@@ -1,6 +1,9 @@
 (function (Scratch) {
   'use strict';
 
+  const vm = Scratch.vm;
+  const runtime = vm.runtime;
+
   const blacklist = [
     'looks_costumenumbername',
     'extension_wedo_tilt_menu'
@@ -8,7 +11,7 @@
 
   class allmenus {
     constructor () {
-      Scratch.vm.runtime.on('EXTENSION_ADDED', () => {
+      runtime.on('EXTENSION_ADDED', () => {
         refreshMenus();
       });
 
@@ -30,15 +33,15 @@
     }
   }
 
-  Scratch.vm.addListener('BLOCKSINFO_UPDATE', refreshMenus);
+  vm.addListener('BLOCKSINFO_UPDATE', refreshMenus);
   refreshMenus();
 
   function refreshMenus() {
     if (!window.ScratchBlocks) return;
 
-    Scratch.vm.removeListener('BLOCKSINFO_UPDATE', refreshMenus);
+    vm.removeListener('BLOCKSINFO_UPDATE', refreshMenus);
 
-    // Based on code by @Xeltaliv
+    // Based on code by @Xeltalliv
     let blockMenu = [];
     // @ts-expect-error - ScratchBlocks not typed yet
     // eslint-disable-next-line no-undef
@@ -57,8 +60,6 @@
       `;
     };
 
-    const vm = Scratch.vm;
-    const runtime = vm.runtime;
     const categorySeparator = '<sep gap="36"/>';
     const gbx = runtime.getBlocksXML.bind(runtime);
     runtime.getBlocksXML = function(target) {
@@ -74,7 +75,7 @@
       });
       return res;
     };
-    Scratch.vm.extensionManager.refreshBlocks();
+    vm.extensionManager.refreshBlocks();
   }
 
 Scratch.extensions.register(new allmenus());
