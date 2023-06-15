@@ -1,5 +1,5 @@
 (function (Scratch) {
-    'use strict';
+'use strict';
 var generaltextcolor;
 var generalbordercolor = '#c5cbd8';
 var variablestyle1;
@@ -32,6 +32,13 @@ var scrollrule = 'allowed';
 var bordersize = 1;
 var ineditor = false;
 var itterationtest = 0;
+
+// Credit to skyhigh173 for the idea of this
+const label = (name, hidden) => ({
+blockType: Scratch.BlockType.LABEL,
+text: name,
+hideFromPalette: hidden
+});
 
 if (Scratch.vm.runtime.isPackaged == true) {
 console.log('CustomCSS - Using packaged index');
@@ -229,7 +236,9 @@ id: 'CustomCSS',
 name: 'CSS',
 menuIconURI: extensionIcon,
 color1: '#0072d6',
-blocks: [{
+blocks: [
+label('Looks blocks', false),
+{
 blockIconURI: ColorIcon,
 opcode: 'changecss',
 blockType: Scratch.BlockType.COMMAND,
@@ -297,6 +306,7 @@ menu: 'BORDER_MENU'
 }
 }
 },
+label('Sensing blocks', false),
 {
 blockIconURI: miscIcon,
 opcode: 'allowscrollrule',
@@ -310,6 +320,7 @@ menu: 'SCROLL_MENU'
 }
 }
 },
+label('Motion blocks', false),
 {
 blockIconURI: miscIcon,
 opcode: 'setvarpos',
