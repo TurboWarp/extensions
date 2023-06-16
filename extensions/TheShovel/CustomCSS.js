@@ -33,14 +33,16 @@ var bordersize = 1;
 var ineditor = false;
 var itterationtest = 0;
 
-// Credit to skyhigh173 for the idea of this
+// Credit to LilyMakesThings
 const label = (name, hidden) => ({
 blockType: Scratch.BlockType.LABEL,
 text: name,
 hideFromPalette: hidden
 });
 
-if (Scratch.vm.runtime.isPackaged == true) {
+try {
+// @ts-ignore
+scaffolding;
 console.log('CustomCSS - Using packaged index');
 ineditor = false;
 monitorroot = '.sc-monitor-root';
@@ -52,7 +54,7 @@ monitorrowvalueouter = '.sc-monitor-row-value-outer';
 monitorrowsinner = '.sc-monitor-rows-inner';
 monitorrowindex = '.sc-monitor-row-index';
 monitorvaluelarge = '.sc-monitor-large-value';
-} else {
+} catch (err) {
 console.log('CustomCSS - Using editor index');
 ineditor = true;
 monitorroot = 'div[class^="monitor_monitor-container"]';
@@ -497,4 +499,5 @@ return res;
 };
 
 Scratch.extensions.register(new CustomCSS());
+// @ts-ignore
 })(Scratch);
