@@ -218,3 +218,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Lily/McUtils.png
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
+
+## TheShovel/ShovelUtils.png
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
