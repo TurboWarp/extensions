@@ -71,50 +71,35 @@
 		</div>
 		<div class="inbox">
 			<h2>About this extension</h2>
-			<ul>
-				<li>This extension allows you use Webhooks from any site or program that use the normal Webhook API format.</li>
-				<br>
-				<li>This extension is also fully modular, meaning you can use the Data Sets in any order you want without being restricted. This is to make it easier for those who are not familiar with how Webhooks work.</li>
-			</ul>
-			
+			<p>This extension allows you post to webhooks from some common third-party websites or programs.</p>
+
 			<hr>
 
 			<h2>Blocks</h2>
 			<h3>Webhook Block</h3>
-			<p>Handles the Webhook system.</p>
+			<p>Posts a message to a webhook.</p>
 			<img src="webhook.png" width="242.25" height="57"/>
-			<p>The Nulled String (Empty Area) is where you insert the Data Reporter and/or Connector Reporter. The String area is where you put your Webhook Link.</p>
-			
+			<p>The empty area is where you insert the data reporter and/or connector reporter. The string area is where you put your webhook's URL.</p>
+
 			<hr>
-			
+
 			<h3>Data Reporter</h3>
 			<p>The Menu area of the Data Reporter currently has three options, ("content","name","icon").</p>
 			<h4>Content</h4>
 			<img src="content.png" width="112.875" height="45"/>
-			<p>When choosing "content", you will type in the text you want to send to the string part of the reporter.</p>
+			<p>When choosing "content", you can type in the text you want to send as the body of the webhook.</p>
 			<h4>Name</h4>
 			<img src="name.png" width="103.5" height="45"/>
-			<p>When choosing "name", you will type in the name of the webhook you want to set to the string part of the reporter.</p>
+			<p>When choosing "name", you can type in the name of the name you want the webhook to display as on the third-party website.</p>
 			<h4>Icon</h4>
 			<img src="icon.png" width="95.625" height="45"/>
-			<p>When choosing "icon", you will type in the link to the image you want to set as the profile picture of the webhook to the string part of the reporter.</p>
-			<p><strong>Note: "name" AND "icon" ARE NOT NECESSARY TO BE SENT, YOU NEED TO AT LEAST HAVE "content" AS A DATA SET!</strong></p>
-			
+			<p>When choosing "icon", you can type in a URL to the image you want to set as the profile picture of the webhook.</p>
+
 			<hr>
-			
+
 			<h3>Connector Reporter</h3>
 			<img src="connector.png" width="93.375" height="45"/>
-			<p>This reporter connects two <em>different</em> Data Reporters together and/or another Connector Reporter so you can send multiple pieces of data to the webhook.</p>
-			<p><strong>Note: You can only have one of each option from the menu, such as: [ content, name, icon ] in any variation but not: [ content, icon, name, name, content ], as there can be one of each option.</strong></p>
-				
-			<hr>
-			
-			<h2>TurboHook Future Additions</h2>
-			<ul>
-				<li>TurboHook currently supports normal webhook messages, but will soon support fully modular embeds as well.</li>
-				<br>
-				<li>TurboHook might soon add a rate limited proxy link to parse the specified Webhook URL as there is a big possibility of this Extension being abused and used to potentially, either intentionally or unintentionally, DDOS the servers of the Webhook provider, causing problems and ip blocking. So TurboHook may soon have a Webhook Proxy to rate limit requests for security.</li>
-			</ul>
+			<p>This reporter connects two different data reporters together and/or another connector reporter so you can send multiple pieces of data to the webhook.</p>
 		</div>
 	</body>
 </html>
