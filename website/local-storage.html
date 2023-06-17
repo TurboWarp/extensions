@@ -82,11 +82,19 @@
 			
 			<h3>Namespaces</h3>
 			
-			<p>The namespace is basically like the file you want to read and write to. Each project should set this to something unique, such as <span class="box">developer</span>/<span class="box">project title</span> so each project gets its own storage space.</p>
+			<p>The namespace is basically like the file you want to read and write to. Each project should set this to something unique, such as <span class="box">developer/project title</span> so each project gets its own storage space. If two different projects use the same namespace, they will overwrite eachother's data and cause very bad things!</p>
 			
 			<p>You can set which namespace to use with this block:</p>
 			
 			<div class="imgBox"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="224.775" height="39.150000000000006" viewBox="0 0 224.775 39.150000000000006"><g style="transform: scale(0.675)"><g transform="translate(0 0)"><g transform="translate(2 1)"><path class="sb3-" d="M 0 4&#10;      A 4 4 0 0 1 4 0&#10;      H 12 c 2 0 3 1 4 2&#10;      l 4 4&#10;      c 1 1 2 2 4 2&#10;      h 12&#10;      c 2 0 3 -1 4 -2&#10;      l 4 -4&#10;      c 1 -1 2 -2 4 -2&#10;      L 325 0&#10;      a 4 4 0 0 1 4 4 L 329 44 a 4 4 0 0 1 -4 4 L 48 48 c -2 0 -3 1 -4 2 l -4 4 c -1 1 -2 2 -4 2 h -12 c -2 0 -3 -1 -4 -2 l -4 -4 c -1 -1 -2 -2 -4 -2 L 4 48 a 4 4 0 0 1 -4 -4 Z" fill="#0fbd8c" stroke="rgba(0, 0, 0, 0.2)"/><text class="sb3-label sb3-" x="0" y="13" transform="translate(8 17)">set</text><text class="sb3-label sb3-" x="0" y="13" transform="translate(34 17)">storage</text><text class="sb3-label sb3-" x="0" y="13" transform="translate(92 17)">namespace</text><text class="sb3-label sb3-" x="0" y="13" transform="translate(180 17)">ID</text><text class="sb3-label sb3-" x="0" y="13" transform="translate(201 17)">to</text><g transform="translate(222 8)"><rect rx="16" ry="16" x="0" y="0" width="99" height="32" class="sb3- sb3-input sb3-input-string"/><text class="sb3-label sb3-literal-string" x="0" y="13" transform="translate(11 9)">project title</text></g></g></g></g></svg></div>
+
+			<p>Some example namespaces:</p>
+			<ul>
+				<li><span class="box">griffpatch/Paper Minecraft</span></li>
+				<li><span class="box">Untitled-37 by TestMuffin</span></li>
+			</ul>
+
+			<p>The format isn't important -- it just needs to be unique. Don't include a version number like "v1.4" in the namespace unless you want to discard data from old versions of your project.</p>
 			
 			<h3>Reading and writing</h3>
 			
@@ -166,7 +174,9 @@
 			
 			<h3>Local storage limits</h3>
 			
-			<p>This extension uses the browser's local storage API, which limits each website to 5 MiB or 5,242,800 bytes of local storage data, so if we want local storage to be able to hold data for many projects, each one should stay well below this limit. We recommend only storing small files such as game save data or settings in local storage.</p>
+			<p>This extension uses the browser's local storage API, which limits each website to around 5 MiB or 5,242,800 bytes of local storage data, so if we want local storage to be able to hold data for many projects, each one should stay well below this limit. We recommend only storing small files such as game save data or settings in local storage.</p>
+
+			<p>In rare instances, such as when a system is running out of disk space, the browser may delete our data to make room for something else. We, unfortunately, cannot influence when this happens.</p>
 			
 			<h2>Credits</h2>
 			
