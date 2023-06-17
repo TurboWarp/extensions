@@ -163,8 +163,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Newgrounds logo based on https://logos.fandom.com/wiki/Newgrounds/Other under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 ## NexusKitten/sgrab.svg
- - Created by @NexusKitten in https://github.com/TurboWarp/extensions/pull/371.
- - The "S" logo is a trademark of the Scratch Foundation.
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595280195
 
 ## Lily/CommentBlocks.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) and [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/498.
@@ -198,7 +197,8 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Based on image created by [@Martinelplayz](https://scratch.mit.edu/users/MARTINELPLAYZ/) in https://github.com/TurboWarp/extensions/pull/504#issuecomment-1574243161
 
 ## Longboost/color_channels.svg
- - Created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575091575
+ - Created by [@CST1229](https://github.com/CST1229) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595238491
+ - Based on image created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595164040
 
 ## qxsck/data-analysis.svg
  - Based on image created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575100933
@@ -209,3 +209,18 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Lily/MoreTimers.svg
 - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).
 - Timer SVG based from https://www.svgrepo.com/svg/2045/stopwatch under CC0.
+
+## rixxyx.svg
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
+
+## Skyhigh173/bigint.svg
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1593886519
+
+## Lily/McUtils.png
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
+
+## TheShovel/ShovelUtils.png
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
+
+## navigator.svg
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1593886519
