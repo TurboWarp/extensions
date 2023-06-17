@@ -15,26 +15,11 @@
           {
             opcode: "searchparam",
             blockType: Scratch.BlockType.REPORTER,
-            text: "search parameter of id [ID]",
+            text: "value of search parameter [ID]",
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "x",
-              },
-            },
-          },
-          {
-            opcode: "indexedsearchparam",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "number [I] of search parameters with id [ID]",
-            arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "x",
-              },
-              I: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
               },
             },
           },
@@ -50,13 +35,13 @@
             },
           },
           {
-            opcode: "searchparamatindex",
+            opcode: "indexedsearchparam",
             blockType: Scratch.BlockType.REPORTER,
-            text: "search [PARAM] at index [I]",
+            text: "index [I] of search parameters [ID]",
             arguments: {
-              PARAM: {
+              ID: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "PARAM",
+                defaultValue: "x",
               },
               I: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -121,11 +106,26 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "length of search parameters",
           },
+          {
+            opcode: "searchparamatindex",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "search parameter [PARAM] at index [I]",
+            arguments: {
+              PARAM: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "PARAM",
+              },
+              I: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+            },
+          },
         ],
         menus: {
           PARAM: {
             acceptReporters: true,
-            items: ["parameter", "key"],
+            items: ["value", "name"],
           },
         },
       };
@@ -140,7 +140,7 @@
     }
 
     indexedsearchparam({ ID, I }) {
-      return new URLSearchParams(location.search).getAll(ID.toString())[parseInt(I)-1] || "";
+      return new URLSearchParams(location.search).getAll(ID.toString())[parseInt(I) - 1] || "";
     }
 
     setsearchparam({ ID, VAL }) {
@@ -176,7 +176,7 @@
       var index = parseInt(I) - 1 || 0;
       index = Math.max(0, index);
       var s = new URLSearchParams(location.search);
-      var values = PARAM.toString() === "parameter" ? s.values() : s.keys();
+      var values = PARAM.toString() === "value" ? s.values() : s.keys();
       var i = 0;
       for (const value of values) {
         if (i === index) {
