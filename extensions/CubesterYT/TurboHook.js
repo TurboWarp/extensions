@@ -8,9 +8,11 @@
       return {
         id: "cubesterTurboHook",
         name: "TurboHook",
-        color1: "#3843B0",
+        color1: "#3c48c2",
+        color2: "#2f39a1",
+        color3: "#28318f",
         menuIconURI: icon,
-        docsURI: "https://extensions.turbowarp.org/CubesterYT/turbohook.html",
+        docsURI: "https://extensions.turbowarp.org/CubesterYT/TurboHook.html",
 
         blocks: [
           {
@@ -46,13 +48,13 @@
         menus: {
           PARAMS: {
             acceptReporters: true,
-            items: ["content","name","icon"]
+            items: ["content", "name", "icon"]
           }
         }
       };
     }
 
-    webhook ({hookDATA,hookURL}) {
+    webhook ({hookDATA, hookURL}) {
       const arrayDATA = hookDATA.split("{,}");
       if (hookDATA.includes("content") && hookDATA.includes("username") && hookDATA.includes("avatar_url")) {
         if (arrayDATA[0].includes("content") && arrayDATA[1].includes("username") && arrayDATA[2].includes("avatar_url")) {
@@ -150,7 +152,7 @@
         });
       }
     }
-    params ({MENU,DATA}) {
+    params ({MENU, DATA}) {
       if (MENU == "content") {
         return `content: ${DATA}`;
       } else if (MENU == "name") {
@@ -160,7 +162,7 @@
       }
       return false;
     }
-    connector ({STRING1,STRING2}) {
+    connector ({STRING1, STRING2}) {
       return `${STRING1}{,}${STRING2}`;
     }
   }
