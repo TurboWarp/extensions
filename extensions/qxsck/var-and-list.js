@@ -244,12 +244,12 @@
       const serialized = {};
       for (const variable of Object.values(util.runtime.getTargetForStage().variables)) {
         if (variable.type === '' && variable.name.startsWith(start)) {
-          serialized[variable.name] = variable.value;
+          serialized[variable.name.replace(start, '')] = variable.value;
         }
       }
       for (const variable of Object.values(util.target.variables)) {
         if (variable.type === '' && variable.name.startsWith(start)) {
-          serialized[variable.name] = variable.value;
+          serialized[variable.name.replace(start, '')] = variable.value;
         }
       }
       return JSON.stringify(serialized);
@@ -276,12 +276,12 @@
       const serialized = {};
       for (const variable of Object.values(util.runtime.getTargetForStage().variables)) {
         if (variable.type === 'list' && variable.name.startsWith(start)) {
-          serialized[variable.name] = variable.value;
+          serialized[variable.name.replace(start, '')] = variable.value;
         }
       }
       for (const variable of Object.values(util.target.variables)) {
         if (variable.type === 'list' && variable.name.startsWith(start)) {
-          serialized[variable.name] = variable.value;
+          serialized[variable.name.replace(start, '')] = variable.value;
         }
       }
       return JSON.stringify(serialized);
