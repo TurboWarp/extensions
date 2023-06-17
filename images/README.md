@@ -215,3 +215,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Skyhigh173/bigint.svg
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1593886519
+
+## Lily/McUtils.png
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
