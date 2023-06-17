@@ -24,6 +24,47 @@
             },
           },
           {
+            opcode: "indexedsearchparam",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "number [I] of search parameters with id [ID]",
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "x",
+              },
+              I: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+            },
+          },
+          {
+            opcode: "occurencesofsearchparam",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "occurences of search parameter [ID]",
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "x",
+              },
+            },
+          },
+          {
+            opcode: "searchparamatindex",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "search [PARAM] at index [I]",
+            arguments: {
+              PARAM: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "PARAM",
+              },
+              I: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+            },
+          },
+          {
             opcode: "setsearchparam",
             blockType: Scratch.BlockType.COMMAND,
             text: "set search parameter [ID] to [VAL]",
@@ -50,24 +91,17 @@
             },
           },
           {
-            opcode: "searchparamatindex",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "search parameter at index [I]",
+            opcode: "appendsearchparam",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "append search parameter [ID] with value [VAL]",
             arguments: {
-              I: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "x",
               },
-            },
-          },
-          {
-            opcode: "searchkeyatindex",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "search key at index [I]",
-            arguments: {
-              I: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
+              VAL: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "15",
               },
             },
           },
@@ -88,6 +122,12 @@
             text: "length of search parameters",
           },
         ],
+        menus: {
+          PARAM: {
+            acceptReporters: true,
+            items: ["parameter", "key"],
+          },
+        },
       };
     }
 
@@ -95,49 +135,48 @@
       return new URLSearchParams(location.search).get(ID.toString()) || "";
     }
 
+    occurencesofsearchparam({ ID }) {
+      return new URLSearchParams(location.search).getAll(ID.toString()).length || 0;
+    }
+
+    indexedsearchparam({ ID, I }) {
+      return new URLSearchParams(location.search).getAll(ID.toString())[parseInt(I)-1] || "";
+    }
+
     setsearchparam({ ID, VAL }) {
       var s = new URLSearchParams(location.search);
       s.set(ID.toString(), VAL.toString());
-      history.replaceState("","","?"+s.toString());
+      history.replaceState("", "", "?" + s.toString());
     }
 
     searchparamslength() {
       var s = new URLSearchParams(location.search);
       // @ts-ignore
-      return s.size;
+      return typeof s.size !== "object" ? s.size : 0;
     }
 
     deletesearchparam({ ID }) {
       var s = new URLSearchParams(location.search);
       s.delete(ID.toString());
-      history.replaceState("","","?"+s.toString());
+      history.replaceState("", "", "?" + s.toString());
+    }
+
+    appendsearchparam({ ID, VAL }) {
+      var s = new URLSearchParams(location.search);
+      s.append(ID.toString(), VAL.toString());
+      history.replaceState("", "", "?" + s.toString());
     }
 
     hassearchparam({ ID }) {
       var s = new URLSearchParams(location.search);
-      return s.has(ID.toString());
+      return s.has(ID.toString()) || false;
     }
 
-    searchparamatindex({ I }) {
+    searchparamatindex({ PARAM, I }) {
       var index = parseInt(I) - 1 || 0;
       index = Math.max(0, index);
       var s = new URLSearchParams(location.search);
-      var values = s.values();
-      var i = 0;
-      for (const value of values) {
-        if (i === index) {
-          return value;
-        }
-        i++;
-      }
-      return "";
-    }
-
-    searchkeyatindex({ I }) {
-      var index = parseInt(I) - 1 || 0;
-      index = Math.max(0, index);
-      var s = new URLSearchParams(location.search);
-      var values = s.keys();
+      var values = PARAM.toString() === "parameter" ? s.values() : s.keys();
       var i = 0;
       for (const value of values) {
         if (i === index) {
