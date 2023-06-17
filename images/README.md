@@ -119,8 +119,8 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## text.svg
  - Based on https://github.com/ScratchCE/scratch-gui/blob/develop/src/lib/libraries/extensions/strings/strings.png by [@JoshsAccount](https://scratch.mit.edu/users/JoshsAccount/) under [The GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html).
 
-## LukeManiaStudios/lmsutils.svg
- - Created by [@LukeManiaStudioss](https://scratch.mit.edu/users/LukeManiaStudios/) in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545.
+## Lily/lmsutils.svg
+ - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545.
 
 ## 0832/rxFS2.svg
  - Created by @0832k12 in https://github.com/TurboWarp/extensions/pull/291.
@@ -163,18 +163,17 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Newgrounds logo based on https://logos.fandom.com/wiki/Newgrounds/Other under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 ## NexusKitten/sgrab.svg
- - Created by @NexusKitten in https://github.com/TurboWarp/extensions/pull/371.
- - The "S" logo is a trademark of the Scratch Foundation.
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595280195
 
-## LukeManiaStudios/CommentBlocks.svg
- - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) and [@LukeManiaStudioss](https://scratch.mit.edu/users/LukeManiaStudios/) in https://github.com/TurboWarp/extensions/pull/498.
+## Lily/CommentBlocks.svg
+ - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) and [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/498.
 
-## LukeManiaStudios/ClonesPlus.svg
- - Created by [@LukeManiaStudioss](https://scratch.mit.edu/users/LukeManiaStudios/) in https://github.com/TurboWarp/extensions/pull/382.
+## Lily/ClonesPlus.svg
+ - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/382.
  - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-## LukeManiaStudios/TempVariables.svg
- - Created by [@LukeManiaStudioss](https://scratch.mit.edu/users/LukeManiaStudios/) in https://github.com/TurboWarp/extensions/pull/410.
+## Lily/TempVariables.svg
+ - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/410.
 
 ## obviousAlexC/SensingPlus.svg
  - Created by [@David-Orangemoon](https://scratch.mit.edu/users/pinksheep2917/) in https://github.com/TurboWarp/extensions/pull/379.
@@ -182,7 +181,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Font is Deja Vu Sans.
 
 ## lab/text.svg
- - Created by [@LukeManiaStudioss](https://scratch.mit.edu/users/LukeManiaStudios/).
+ - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).
 
 ## ar.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/498.
@@ -198,7 +197,8 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Based on image created by [@Martinelplayz](https://scratch.mit.edu/users/MARTINELPLAYZ/) in https://github.com/TurboWarp/extensions/pull/504#issuecomment-1574243161
 
 ## Longboost/color_channels.svg
- - Created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575091575
+ - Created by [@CST1229](https://github.com/CST1229) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595238491
+ - Based on image created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595164040
 
 ## qxsck/data-analysis.svg
  - Based on image created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575100933
@@ -206,6 +206,21 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## mdwalters/notifications.svg
  - Created by [@Juenjos](https://github.com/Juenjos) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1573040329
 
-## LukeManiaStudios/MoreTimers.svg
-- Created by LUkeManiaStudios
+## Lily/MoreTimers.svg
+- Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).
 - Timer SVG based from https://www.svgrepo.com/svg/2045/stopwatch under CC0.
+
+## rixxyx.svg
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
+
+## Skyhigh173/bigint.svg
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1593886519
+
+## Lily/McUtils.png
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
+
+## TheShovel/ShovelUtils.png
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
+
+## navigator.svg
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1593886519
