@@ -119,7 +119,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## text.svg
  - Based on https://github.com/ScratchCE/scratch-gui/blob/develop/src/lib/libraries/extensions/strings/strings.png by [@JoshsAccount](https://scratch.mit.edu/users/JoshsAccount/) under [The GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html).
 
-## LukeManiaStudios/lmsutils.svg
+## Lily/lmsutils.svg
  - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545.
 
 ## 0832/rxFS2.svg
@@ -166,14 +166,14 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by @NexusKitten in https://github.com/TurboWarp/extensions/pull/371.
  - The "S" logo is a trademark of the Scratch Foundation.
 
-## LukeManiaStudios/CommentBlocks.svg
+## Lily/CommentBlocks.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) and [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/498.
 
-## LukeManiaStudios/ClonesPlus.svg
+## Lily/ClonesPlus.svg
  - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/382.
  - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-## LukeManiaStudios/TempVariables.svg
+## Lily/TempVariables.svg
  - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/410.
 
 ## obviousAlexC/SensingPlus.svg
@@ -206,6 +206,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## mdwalters/notifications.svg
  - Created by [@Juenjos](https://github.com/Juenjos) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1573040329
 
-## LukeManiaStudios/MoreTimers.svg
+## Lily/MoreTimers.svg
 - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).
 - Timer SVG based from https://www.svgrepo.com/svg/2045/stopwatch under CC0.
