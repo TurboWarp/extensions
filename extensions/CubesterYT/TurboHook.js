@@ -10,7 +10,7 @@
         name: "TurboHook",
         color1: "#3843B0",
         menuIconURI: icon,
-        docsURI: "https://extensions.turbowarp.org/turbohook.html",
+        docsURI: "https://extensions.turbowarp.org/CubesterYT/turbohook.html",
 
         blocks: [
           {
