@@ -153,12 +153,12 @@
     params ({MENU,DATA}) {
       if (MENU == "content") {
         return `content: ${DATA}`;
-        } else if (MENU == "name") {
-          return `username: ${DATA}`;
-        } else if (MENU == "icon") {
-          return `avatar_url: ${DATA}`;
-        }
-        return false;
+      } else if (MENU == "name") {
+        return `username: ${DATA}`;
+      } else if (MENU == "icon") {
+        return `avatar_url: ${DATA}`;
+      }
+      return false;
     }
     connector ({STRING1,STRING2}) {
       return `${STRING1}{,}${STRING2}`;
