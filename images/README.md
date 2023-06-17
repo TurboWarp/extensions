@@ -198,7 +198,8 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Based on image created by [@Martinelplayz](https://scratch.mit.edu/users/MARTINELPLAYZ/) in https://github.com/TurboWarp/extensions/pull/504#issuecomment-1574243161
 
 ## Longboost/color_channels.svg
- - Created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575091575
+ - Created by [@CST1229](https://github.com/CST1229) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595238491
+ - Based on image created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595164040
 
 ## qxsck/data-analysis.svg
  - Based on image created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575100933
