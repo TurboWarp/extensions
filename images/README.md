@@ -163,8 +163,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Newgrounds logo based on https://logos.fandom.com/wiki/Newgrounds/Other under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 ## NexusKitten/sgrab.svg
- - Created by @NexusKitten in https://github.com/TurboWarp/extensions/pull/371.
- - The "S" logo is a trademark of the Scratch Foundation.
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595280195
 
 ## Lily/CommentBlocks.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) and [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/498.
