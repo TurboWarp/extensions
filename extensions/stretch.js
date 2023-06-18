@@ -116,7 +116,7 @@
             arguments: {
               DX: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: 10
               }
             }
           },
@@ -127,7 +127,7 @@
             arguments: {
               DY: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: 10
               }
             }
           },
