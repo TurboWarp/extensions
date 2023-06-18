@@ -31,8 +31,6 @@
             opcode: 'typeOf',
             blockType: Scratch.BlockType.REPORTER,
             text: 'type of [INPUT]',
-            isDynamic: true,
-            output: null,
             disableMonitor: true,
             arguments: {
               INPUT: {
@@ -45,7 +43,7 @@
         menus: {
           type: {
             acceptReporters: true,
-            items: ['number', 'string', 'boolean']
+            items: ['number', 'string', 'boolean', 'default']
           }
         }
       };
