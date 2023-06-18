@@ -1,12 +1,12 @@
 /*!
- * VERSION 8.9
+ * VERSION 9.0
  * Originally created by https://scratch.mit.edu/users/0znzw/ | Licenced Under the MIT License
  * DO NOT REMOVE THIS COMMENT
  */
 (function(Scratch) {
   'use strict';
   var _SGCUtils = {
-    version: '8.9',
+    version: '9.0',
     ids: {}
   };
   if (!Scratch.extensions.unsandboxed) {
@@ -580,11 +580,14 @@
   const allowDuplicates = !urlParams.has("0tils-enableDuplicates");
   const showParenSpam = urlParams.has("0tils-showParenSpam");
   const showLabels = !urlParams.has("0tils-showExtraLabels");
+  const hideDumbThings = !urlParams.has("0tils-showDumbStuff");
 
   function addLPlabel(text) {
     if (showParenSpam) return `(${text}) `;
     return '';
   }
+
+  const brokenBlockMsg = 'I dont know how you did it but you broke the block.';
 
   class SGCUtils {
     getInfo() {
@@ -685,6 +688,7 @@
             }
           }
         }, {
+          hideFromPalette: true,
           opcode: 'i36encoder',
           blockType: Scratch.BlockType.REPORTER,
           text: '(i36) [mode] [value] as type [type]',
@@ -745,6 +749,20 @@
             sym: {
               type: Scratch.ArgumentType.STRING,
               menu: 'mathnos'
+            }
+          }
+        }, {
+          hideFromPalette: hideDumbThings,
+          isDynamic: true,
+          output: null,
+          disableMonitor: true,
+          opcode: 'reporterBooleanThing',
+          blockType: Scratch.BlockType.REPORTER,
+          text: 'omg its a boolean block reporter thing: [data]',
+          arguments: {
+            data: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'wow so cool'
             }
           }
         }, {
@@ -1052,14 +1070,17 @@
           geomodes: {
             items: ['Latitude', 'Longitude']
           },
-          i36modes: {
-            items: ['text', 'number']
-          },
           encodings: {
             items: [{
               text: 'base64(browser)',
               value: 'base64_old'
-            }, 'unicode', 'binary', 'cloud']
+            }, 'unicode', 'binary', 'cloud', {
+              text: '(I36) Text',
+              value: 'i36_text'
+            }, {
+              text: '(I36) Number',
+              value: 'i36_number'
+            }]
           },
           hashes: {
             items: ['md5', 'sha1',
@@ -1077,6 +1098,9 @@
           },
           recodes: {
             items: ['Encode', 'Decode']
+          },
+          i36modes: {
+            items: ['text', 'number']
           },
           bools: {
             acceptReporters: true,
@@ -1193,7 +1217,10 @@
     //ENCODING + HASHING
     hashMe(args) {
       const val = Scratch.Cast.toString(args.value);
-
+      const TSH = s => { //TinySimpleHash
+        for (var i = 0, h = 9; i < s.length;) h = Math.imul(h ^ s.charCodeAt(i++), 9 ** 9);
+        return h ^ h >>> 9;
+      };
       function getHash(str, algo = "SHA-256") {
         let strBuf = new TextEncoder()
           .encode(str);
@@ -1210,142 +1237,176 @@
             return result;
           });
       }
-      if (args.hash == "md5") {
-        return md5(val); //You can also use https://extensions.turbowarp.org/encoding.js by -SIPC-
-      } else if (args.hash == "sha1") {
-        console.log("SHA-1 is insecure and is considered a security ");
-        return getHash(val, 'SHA-1')
+      const cyrb53 = (str, seed = 0) => {
+        let h1 = 0xdeadbeef ^ seed,
+          h2 = 0x41c6ce57 ^ seed;
+        for (let i = 0, ch; i < str.length; i++) {
+          ch = str.charCodeAt(i);
+          h1 = Math.imul(h1 ^ ch, 2654435761);
+          h2 = Math.imul(h2 ^ ch, 1597334677);
+        }
+        h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+        h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+        h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+        h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+        return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+      };
+
+      switch (args.hash) {
+        case "md5":
+          return md5(val); //You can also use https://extensions.turbowarp.org/encoding.js by -SIPC-
+        case "sha1":
+          console.log("SHA-1 is insecure and is considered a security vulnerability.");
+          return getHash(val, 'SHA-1')
+            .then(hash => {
+              return hash;
+            });
+        case "sha128":
+          alert("I am broken :(");
+          console.log("I am broken :(");
+          return "I am broken :(";
+        case "sha256":
+          return getHash(val, 'SHA-256')
           .then(hash => {
             return hash;
           });
-      } else if (args.hash == "sha128") {
-        alert("I am broken :(");
-        console.log("I am broken :(");
-        return "I am broken :(";
-      } else if (args.hash == "sha256") {
-        return getHash(val, 'SHA-256')
+        case "sha512":
+          return getHash(val, 'SHA-512')
           .then(hash => {
             return hash;
           });
-      } else if (args.hash == "sha512") {
-        return getHash(val, 'SHA-512')
-          .then(hash => {
-            return hash;
-          });
-      } else if (args.hash == "TinySimpleHash") {
-        const TSH = s => {
-          for (var i = 0, h = 9; i < s.length;) h = Math.imul(h ^ s.charCodeAt(i++), 9 ** 9);
-          return h ^ h >>> 9;
-        };
-        return TSH(val);
-      } else if (args.hash == "Fnv32") {
-        return hashFnv32a(val, true);
-      } else if (args.hash == "cyrb53") {
-        const cyrb53 = (str, seed = 0) => {
-          let h1 = 0xdeadbeef ^ seed,
-            h2 = 0x41c6ce57 ^ seed;
-          for (let i = 0, ch; i < str.length; i++) {
-            ch = str.charCodeAt(i);
-            h1 = Math.imul(h1 ^ ch, 2654435761);
-            h2 = Math.imul(h2 ^ ch, 1597334677);
-          }
-          h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
-          h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-          h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
-          h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-          return 4294967296 * (2097151 & h2) + (h1 >>> 0);
-        };
-        return cyrb53(val, 0);
-      } else if (args.hash == "147030016") {
-        const hashCode = s => s.split('')
+        case "TinySimpleHash":
+          return TSH(val);
+        case "Fnv32":
+          return hashFnv32a(val, true);
+        case "cyrb53":
+          return cyrb53(val, 0);
+        case "147030016":
+          // eslint-disable-next-line
+          var hashCode = s => s.split('')
           .reduce((a, b) => {
             a = ((a << 5) - a) + b.charCodeAt(0);
             return a & a;
-          }, 0);
-        return hashCode(val);
-      } else if (args.hash == "1964351488") {
-        const hashCode = s => s.split('')
-          .reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0);
-        return hashCode(val);
-      } else {
-        alert("Unknown Hash");
-        return "Unknown Hash";
-      }
-    }
-    i36encoder(args) {
-      //Some stupid thing I made all by myself.
-      const i36 = S => {
-        return ((((S << 7616461 << 834) >> 5) << 36) < 0 ? (Math.round(Math.abs((((S << 7616461 << 834) >> 5) << 36)) ^ 0.1)) : ((((S << 7616461 << 834) >> 5) << 36)));
-      };
-      const h36 = S => {
-        return i36(S)
-          .toString(36);
-      };
-      const ri36 = E => {
-        return ((((E >> 36) >>> 5) >> (836 >> 7616461)) / 32);
-      };
-      const rh36 = E => {
-        return ri36(parseInt(E, 36));
-      };
-      Number.prototype.toI36 = function() {
-        const prim = this.valueOf();
-        var str = h36(prim);
-        return (str);
-      };
-      String.prototype.fromI36 = function() {
-        const prim = this.valueOf();
-        var str = rh36(prim);
-        return (str);
-      };
-      var val = args.value;
-      if (args.mode == "Encode") {
-        if (args.type == "text") {
-          return Array.from(val)
-            .map((each) => each.charCodeAt(0)
-              .toI36())
-            .join(" ");
-        } else if (args.type == "number") {
-          val = parseInt(val, 10);
-          return h36(val);
-        }
-      } else if (args.mode == "Decode") {
-        if (args.type == "text") {
-          return val.split(" ")
-            .map(
-              (x) => x = String.fromCharCode(x.toString()
-                .fromI36()))
-            .join("");
-        } else if (args.type == "number") {
-          return rh36(val);
-        }
+          }, 0); //no-redeclare
+          return hashCode(val);
+        case "1964351488":
+          // eslint-disable-next-line
+          var hashCode = s => s.split('')
+            .reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0); //no-redeclare
+          return hashCode(val);
+        default:
+          return brokenBlockMsg;
       }
     }
     encoder(args) {
       const val = args.value;
-      if (args.encoding == "cloud") return "Currently Broken\nUse the \"Numerical Encoding\" extension.";
-      if (args.mode == "Encode") {
-        if (args.encoding == "base64_old") {
-          return btoa(val);
-        } else if (args.encoding == "unicode") {
-          return val.charCodeAt(0);
-        } else if (args.encoding == "binary") {
-          return Array.from(val)
-            .map((each) => each.charCodeAt(0)
-              .toString(2))
-            .join(" ");
-        }
-      } else if (args.mode == "Decode") {
-        if (args.encoding == "base64_old") {
-          return atob(val);
-        } else if (args.encoding == "unicode") {
-          return String.fromCharCode(val);
-        } else if (args.encoding == "binary") {
-          return val.split(" ")
-            .map(
-              (x) => x = String.fromCharCode(parseInt(x, 2)))
-            .join("");
-        }
+
+      //START I36 Block
+            //Some stupid thing I made all by myself.
+            const i36 = S => {
+              return ((((S << 7616461 << 834) >> 5) << 36) < 0 ? (Math.round(Math.abs((((S << 7616461 << 834) >> 5) << 36)) ^ 0.1)) : ((((S << 7616461 << 834) >> 5) << 36)));
+            };
+            const h36 = S => {
+              return i36(S)
+                .toString(36);
+            };
+            const ri36 = E => {
+              return ((((E >> 36) >>> 5) >> (836 >> 7616461)) / 32);
+            };
+            const rh36 = E => {
+              return ri36(parseInt(E, 36));
+            };
+            const oldProtos = {
+              num: Number.prototype,
+              str: String.prototype
+            };
+            function addi36() {
+              Number.prototype.toI36 = function() {
+                const prim = this.valueOf();
+                var str = h36(prim);
+                return (str);
+              };
+              String.prototype.fromI36 = function() {
+                const prim = this.valueOf();
+                var str = rh36(prim);
+                return (str);
+              };
+            }
+            function restoreOldPrototypes() {
+              //String.prototype = oldProtos.str;
+              //Number.prototype = oldProtos.num;
+              delete String.prototype.fromI36;
+              delete String.prototype.toI36;
+            }
+      //END I36 Block
+
+      switch (args.mode) {
+        case "Encode":
+          switch (args.encoding) {
+            case "base64_old":
+              return btoa(val);
+            case "unicode":
+              return String.fromCharCode(val);
+            case "binary":
+              return Array.from(val).map((each) => each.charCodeAt(0).toString(2)).join(" "); // Oneliner is cool 😎
+            case "cloud":
+              return "Currently Broken\nUse the \"Numerical Encoding\" extension.";
+            case "i36_text":
+              addi36();
+              // eslint-disable-next-line
+              var ret = Array.from(val).map((each) => each.charCodeAt(0).toI36()).join(" "); //no-redeclare
+              restoreOldPrototypes();
+              return ret;
+            case "i36_number":
+              addi36();
+              // eslint-disable-next-line
+              var ret = h36(parseInt(val, 10)); //no-redeclare
+              restoreOldPrototypes();
+              return ret;
+            default:
+              break;
+          }
+          return "Invalid encoding";
+        case "Decode":
+          switch (args.encoding) {
+            case "base64_old":
+              return atob(val);
+            case "unicode":
+              return String.fromCharCode(val);
+            case "binary":
+              return val.split(" ").map((x) => x = String.fromCharCode(parseInt(x, 2))).join(""); // Oneliner is cool, but its still readable
+            case "cloud":
+              return "Currently Broken\nUse the \"Numerical Encoding\" extension.";
+            case "i36_text":
+              addi36();
+              // eslint-disable-next-line
+              var ret = val.split(" ").map((x) => x = String.fromCharCode(x.toString().fromI36())).join(""); //no-redeclare
+              restoreOldPrototypes();
+              return ret;
+            case "i36_number":
+              addi36();
+              // eslint-disable-next-line
+              var ret = rh36(val); //no-redeclare
+              restoreOldPrototypes();
+              return ret;
+            default:
+              break;
+          }
+          return 'Invalid encoding';
+        default:
+          return brokenBlockMsg;
       }
+    }
+    i36encoder(args) { //kept for compatibility
+      const mappings = {
+        text: 'i36_text',
+        number: 'i36_number'
+      };
+      return this.encoder({
+        encoding: mappings[args.type],
+        mode: args.mode,
+        value: args.value
+      }); //<-- Manual passing of paramaters
     }
     deleteSpriteNoConfirm(args) {
       //TAKEN FROM SHOVEL UTILS, 
@@ -1363,20 +1424,20 @@
       target.deleteCostume(target.getCostumeIndexByName(args.COSNAME));
     }
     //CUSTOM BROADCASTS
-    broadcast({
-      EVENT
-    }, util) {
-      if (EVENT == "onetime") {
-        if (this.ranOnce == undefined) {
+    broadcast({ EVENT }, util) {
+      switch (EVENT) {
+        case "onetime":
+          if (typeof variable == 'undefined') {
+            util.startHats('SGCUtils_whenReceived', {
+              EVENT_OPTION: "onetime"
+            });
+            this.ranOnce = true;
+          }
+          break;
+        default: //eslint-disable no-fallthrough
           util.startHats('SGCUtils_whenReceived', {
-            EVENT_OPTION: "onetime"
+            EVENT_OPTION: EVENT
           });
-          this.ranOnce = true;
-        }
-      } else {
-        util.startHats('SGCUtils_whenReceived', {
-          EVENT_OPTION: EVENT
-        });
       }
     }
     //RESET ONETIME
@@ -1387,6 +1448,7 @@
     download(args) {
       rawDownload(args.text, args.file);
     }
+    //THIS IS NOT DONEEEEEEEEEEEEEEE
     newZip(args) {
       var zip = new JSZip(); // eslint-disable-line
       if (zips.includes(args.name)) return;
@@ -1419,6 +1481,7 @@
       I am confused, the point of this block was to allow more than the normal (open in new tab)
       and (redirect this tab), I responded on github.
       */
+     //Garbo Read above ^^
       if (!await Scratch.canOpenWindow(args.url)) return;
       if (args.target == "_self") {
         window.location.href = args.url;// eslint-disable-line
@@ -1446,13 +1509,18 @@
     newline() {
       return "\n";
     }
+    //Idk tbh its just a random block
+    reporterBooleanThing(args) {
+      console.log('why did I add this?, because I wanted to.');
+      return args.data;
+    }
   }
   setInterval(() => {
     const startedThreads = Scratch.vm.runtime.startHats('SGCUtils_whenReceived', {
       EVENT_OPTION: "every second"
     });
   }, 1000);
-  Scratch.extensions.register(new SGCUtils());
+  Scratch.extensions.register(new SGCUtils()); //eslint: disable-line
 })(Scratch);
 /*!
 LocalStorage extension: https://extensions.turbowarp.org/local-storage.js (TURBOWARP)
