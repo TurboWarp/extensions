@@ -40,9 +40,7 @@
     hideFromPalette: hidden
   });
 
-  try {
-    // @ts-ignore
-    scaffolding;
+  if (typeof scaffolding !== 'undefined') {
     console.log('CustomCSS - Using packaged index');
     ineditor = false;
     monitorroot = '.sc-monitor-root';
@@ -54,7 +52,7 @@
     monitorrowsinner = '.sc-monitor-rows-inner';
     monitorrowindex = '.sc-monitor-row-index';
     monitorvaluelarge = '.sc-monitor-large-value';
-  } catch (err) {
+  } else {
     console.log('CustomCSS - Using editor index');
     ineditor = true;
     monitorroot = 'div[class^="monitor_monitor-container"]';
@@ -75,7 +73,6 @@
   const miscIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE4AAABOCAYAAACOqiAdAAABb2lDQ1BpY2MAACiRdZE5SwNRFIW/JGpEEwIqKGKRIi6FAVEQS41FmiASFYzaJJNNyDLMJEiwFWwsAhaijVvhP9BWsFUQBEUQsbN3aySM9yVCgsQ3vLkf571zuXMG7KGMljVbpiGbKxjhYMC7HFnxOl9pw00Xw/RGNVOfmZ8P8e/6usem6p1f9fr/XtPVGU+YGtjahSc13SgIyzSENgq64h3hHi0djQsfCY8aMqDwtdJjNX5RnKrxh2JjMTwLdtXTm2rgWANraSMrPCLsy2aK2u886ktcidzSgtR+2QOYhAkSwEuMIutkKOCXmpPMmvvGqr458uLR5K1TwhBHirR4R0UtSteE1KToCXkylFTuf/M0kxPjte6uALQ+W9b7IDh3oVK2rO9jy6qcgOMJLnN1f15ymvoUvVzXfIfg2YLzq7oW24OLbeh71KNGtCo5ZNuTSXg7A3cEum+hY7WW1e85pw+wuCm/6Ab2D2BI7nvWfgAKMGgOw1QnnAAAAAlwSFlzAAALEgAACxIB0t1+/AAAAy9JREFUeF7tm1lOwzAQhikgxCLEYThen3tiHpAQFMaRE7Uhjme1nXgiRRVgz/LN7yUOPdxUvk6n0+3xeDzD5wuEch/D+Yi/u4OfD3Cfw8+VQ23DPYAKkH4JdxuBxyhCNYtfUWU/Usdg5wlsfMMdVPsltbeF/hSlkdsC0CqCMAUf1EYYnmRoM9tmudSqTABS4jLLL1R/z5dZgfYOzkwUxcHBHPdqlk1Bw8XBQW7ibUhBPklXDo5ZBbNVZyUeswk74dMkxxqKY9aY1c0EWojEFBwsBA9wv5XalLLQttQpACv4dLD2dGGGRVvKpecvDJghRyjmM3x8wmFAczFKnyst+0+A47MyBrhtm3gSYZm0lm1VEKaLg2qkcmOqQ1RjjlMNSM4na0Ej5+XtSO7MbDwo3OiBoUqhl+irGM7WvW4Dsequ5riNKohTgiVxkPaD4+u40Xl4RdfbhRlhY5tJqXPJYoz0Bnae78Csp+2IasEncM3sqFXTszN2qbhHOze7sjxMZ5dznM9v+PoefI7Dw7pqOSrO1UYEeBsPHYndvHlQnKuNoQOf4xjQfAPMhObgBODmD/kCU+pdU0c/TczJrc5xa+dl4rM0jRK3CA4DBtNGg0/SRmvgKEAobdUhtgSuKggq2ZbAUWOv2r4VcJtSm+/jBJptRXGcvRmnjwDVdddpiMRXg+GrPeErPjUuynCtCi0cAGOCLRlkLp6SsaTEM8SYC3TsXDLglv+7IPleNUW5JLga00TO579itvyQn0umxN+TI7KVVbUEBFUfDo6J08EZg8OuvswwttctqzjYGL9vLy2ViFfFQlFSb1uSVTZZxanUbodGHByzqNih6sN0BhijuN6goTSYU1yP0HJMBrAYxaEqsKNGKLGs0UUZ2BGweSq+HWEWd1U4PlSZVB2cg2MSYHZzxTk4JoF0N/aqitoIqoe7EYNYOL3t6bJcsg0uBNALPBQTyuIQDKKMMkfbYD9+i3H0tfTJNI/qhs4P3XDmVlt9lDi0fY+pUWIQKUgrAVLAMUst38Ecxz+vk6L6WEGDfw1wXN9D+qLOCgAl/jnwJP6u0lUzxBhCWr4xALV8TfD+AIvYJ9qOjwVzAAAAAElFTkSuQmCC';
   const TransparentIcon = 'data:image/png;base64,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';
 
-  ///
   function setvariableposition(X, Y, NAME) {
     //console.log('Checking for variable position')
     try {
@@ -104,7 +101,6 @@
       } catch (err) { }
     }
   }
-  ///
   function setlistposition(X, Y, NAME) {
     //console.log('Checking for variable position')
     try {
@@ -144,9 +140,7 @@
       } catch (err) { }
     }
   }
-  ///
   function applyCSS() {
-    //console.log(variablestyle1)
     try {
       variablestyle1 = document.querySelectorAll(monitorroot).item(itterationtest).style;
       variablestyle1.color = generaltextcolor;
@@ -339,11 +333,11 @@
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: '0'
               },
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: '0'
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -359,11 +353,11 @@
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: '0'
               },
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: '0'
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -375,7 +369,8 @@
         menus: {
           COLORABLE_MENU: {
             acceptReporters: false,
-            items: ['general text',
+            items: [
+              'general text',
               'general background',
               'general border',
               'variable value box',
@@ -388,14 +383,16 @@
           },
           BORDER_MENU: {
             acceptReporters: false,
-            items: ['general borders ',
+            items: [
+              'general borders ',
               'variable value box borders',
               'list value box borders'
             ]
           },
           SCROLL_MENU: {
             acceptReporters: false,
-            items: ['auto',
+            items: [
+              'auto',
               'hidden'
             ]
           }
