@@ -9,7 +9,7 @@
             color1: "#ad0090",
             color2: "#6e145f",
             color3: "#3b0932",
-            id: 'AlephOmegaSDFS"
+            id: "AlephOmegaSDFS"
             name: 'SDFs',
             blocks: [
               {
