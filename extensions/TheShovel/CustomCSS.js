@@ -236,7 +236,7 @@
   class CustomCSS {
     getInfo() {
       return {
-        id: 'CustomCSS',
+        id: 'shovelcss',
         name: 'CSS',
         menuIconURI: extensionIcon,
         color1: '#0072d6',
