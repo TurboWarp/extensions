@@ -219,7 +219,13 @@
       </h1>
 
       <p>Unlike custom extensions on other websites, these aren't limited by the extension sandbox, so they are a lot more powerful. All extensions are reviewed for safety.</p>
-      <p>To use multiple of these extensions in TurboWarp, hover over the extension and press the button to copy its URL. Then go to the editor, open the extension chooser, then choose the "Custom Extension" option at the bottom, and enter the URL.</p>
+      <p>
+        <% if (mode === 'desktop') { %>
+          To use these extensions in TurboWarp Desktop, hover over the extension and press the add button.
+        <% } else { %>
+          To use multiple of these extensions in TurboWarp, hover over the extension and press the button to copy its URL. Then go to the editor, open the extension chooser, then choose the "Custom Extension" option at the bottom, and enter the URL.
+        <% } %>
+      </p>
 
       <div class="infobox infobox-warning">
         <div class="infobox-title">These extensions are not compatible with Scratch.</div>
