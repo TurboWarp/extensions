@@ -73,7 +73,7 @@
       css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${generalTextColor}; }`;
     }
     if (generalbackgroundColor) {
-      css += `${monitorRoot}, ${monitorRowsInner} { background-color: ${generalbackgroundColor}; }`;
+      css += `${monitorRoot}, ${monitorRowsInner} { background: ${generalbackgroundColor}; }`;
     }
     if (generalBorderColor) {
       css += `${monitorRoot} { border-color: ${generalBorderColor}; }`;
@@ -85,7 +85,7 @@
       css += `${monitorRoot} { border-radius: ${generalBorderRadius}px; }`;
     }
     if (variableValueBoxColor) {
-      css += `${monitorRoot2}, ${monitorValueLarge} { background-color: ${variableValueBoxColor} !important; }`;
+      css += `${monitorRoot2}, ${monitorValueLarge} { background: ${variableValueBoxColor} !important; }`;
     }
     if (variableValueTextColor) {
       css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor}; }`;
@@ -94,13 +94,13 @@
       css += `${monitorValue} { border-radius: ${variableValueBoxCornerRadius}px; }`;
     }
     if (listHeaderColor) {
-      css += `${monitorListHeader} { background-color: ${listHeaderColor}; }`;
+      css += `${monitorListHeader} { background: ${listHeaderColor}; }`;
     }
     if (listFooterColor) {
-      css += `${monitorListFooter} { background-color: ${listHeaderColor}; }`;
+      css += `${monitorListFooter} { background: ${listHeaderColor}; }`;
     }
     if (listValueBoxColor) {
-      css += `${monitorRowValueOuter} { background-color: ${listValueBoxColor} !important; }`;
+      css += `${monitorRowValueOuter} { background: ${listValueBoxColor} !important; }`;
     }
     if (listValueTextColor) {
       css += `${monitorRowValueOuter} { color: ${listValueTextColor}; }`;
@@ -336,7 +336,8 @@
       };
     }
     changecss(args) {
-      const color = args.COLOR; // TODO sanitize?
+      // TODO: we MUST sanitize this
+      const color = args.COLOR;
       if (args.COLORABLE == 'general text') {
         generalTextColor = color;
       } else if (args.COLORABLE == 'general background') {
