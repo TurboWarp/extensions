@@ -61,10 +61,12 @@
 
     typeOf(args) {
       const input = args.INPUT;
-      if (typeof input === 'number') return 'number';
-      if (typeof input === 'string') return 'string';
-      if (typeof input === 'boolean') return 'boolean';
-      return '';
+      switch (typeof input) {
+        case ('number'): return 'number';
+        case ('string'): return 'string';
+        case ('boolean'): return 'boolean';
+        default: return '';
+      }
     }
   }
 
