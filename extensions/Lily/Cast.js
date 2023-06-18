@@ -26,6 +26,20 @@
                 menu: 'type'
               }
             }
+          },
+          {
+            opcode: 'typeOf',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'type of [INPUT]',
+            isDynamic: true,
+            output: null,
+            disableMonitor: true,
+            arguments: {
+              INPUT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'apple'
+              }
+            }
           }
         ],
         menus: {
@@ -45,6 +59,14 @@
         case ('boolean'): return Cast.toBoolean(input);
         default: return input;
       }
+    }
+
+    typeOf(args) {
+      const input = args.INPUT;
+      if (typeof input === 'number') return 'number';
+      if (typeof input === 'string') return 'string';
+      if (typeof input === 'boolean') return 'boolean';
+      return '';
     }
   }
 
