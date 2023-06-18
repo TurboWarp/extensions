@@ -224,3 +224,10 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## navigator.svg
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1593886519
+
+## qxsck/var-and-list.svg
+ - Created by [@CST1229](https://github.com/CST1229) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595642879
+ - Based on icons: [list_icon.svg](https://github.com/ScratchAddons/ScratchAddons/blob/master/addons/block-palette-icons/icons/list_icon.svg) and [variables_icon.svg](https://github.com/ScratchAddons/ScratchAddons/blob/master/addons/block-palette-icons/icons/variables_icon.svg)
+
+## ZXMushroom63/searchApi.svg
+ - Created by [@CST1229](https://github.com/CST1229) and [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1596177193
