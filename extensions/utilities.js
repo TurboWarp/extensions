@@ -35,7 +35,7 @@
     getInfo() {
       return {
         id: 'utilities',
-        name: 'Utlities',
+        name: 'Utilities',
 
         color1: '#8BC34A',
         color2: '#7CB342',
