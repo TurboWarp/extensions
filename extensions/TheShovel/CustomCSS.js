@@ -2,33 +2,32 @@
   'use strict';
 
   // Styles
-  var generalTextColor = '';
-  var generalBorderColor = '';
-  var generalbackgroundColor = '';
-  var variableValueBoxColor = '';
-  var variableValueTextColor = '';
-  var listFooterColor = '';
-  var listHeaderColor = '';
-  var listValueTextColor = '';
-  var listValueBoxColor = '';
-  var listValueBoxCornerRadius = -1;
-  var variableValueBoxCornerRadius = -1;
-  var generalBorderRadius = -1;
-  var allowScrolling = true;
-  var borderSize = -1;
+  let generalTextColor = '';
+  let generalBorderColor = '';
+  let generalbackgroundColor = '';
+  let variableValueBoxColor = '';
+  let variableValueTextColor = '';
+  let listFooterColor = '';
+  let listHeaderColor = '';
+  let listValueTextColor = '';
+  let listValueBoxColor = '';
+  let listValueBoxCornerRadius = -1;
+  let variableValueBoxCornerRadius = -1;
+  let generalBorderRadius = -1;
+  let allowScrolling = true;
+  let borderSize = -1;
 
   // CSS selectors
-  var monitorRoot;
-  var monitorRoot2;
-  var monitorValue;
-  var monitorListHeader;
-  var monitorListFooter;
-  var monitorRowValueOuter;
-  var monitorRowsInner;
-  var monitorRowsScroller;
-  var monitorRowIndex;
-  var monitorValueLarge;
-
+  let monitorRoot;
+  let monitorRoot2;
+  let monitorValue;
+  let monitorListHeader;
+  let monitorListFooter;
+  let monitorRowValueOuter;
+  let monitorRowsInner;
+  let monitorRowsScroller;
+  let monitorRowIndex;
+  let monitorValueLarge;
   if (typeof scaffolding !== 'undefined') {
     monitorRoot = '.sc-monitor-root';
     monitorRoot2 = '.sc-monitor-root[data-opcode^="data_"] .sc-monitor-value-color';
@@ -65,74 +64,7 @@
   // end of <body> for higher precedence than other sheets
   document.body.appendChild(stylesheet);
 
-  // function setVariablePosition(X, Y, NAME) {
-  //   //console.log('Checking for variable position')
-  //   try {
-  //     if (document.querySelectorAll(monitorRoot).item(iterationTestVarPos).children.item(0).children.item(0).children.item(0).textContent == NAME) {
-  //       document.querySelectorAll(monitorRoot).item(iterationTestVarPos).style.transform = 'translate(' + X + 'px,' + Y + 'px)';
-  //       document.querySelectorAll(monitorRoot).item(iterationTestVarPos).style.left = '0px';
-  //       document.querySelectorAll(monitorRoot).item(iterationTestVarPos).style.top = '0px';
-  //     } else {
-  //       iterationTestVarPos = iterationTestVarPos + 1;
-  //       setVariablePosition(X, Y, NAME);
-  //     }
-  //   } catch (err) {
-  //     try {
-  //       if (ineditor == false) {
-  //         if (document.querySelectorAll(monitorRoot).item(iterationTestVarPos).children.item(0).className == monitorListLabel) {
-  //           iterationTestVarPos = iterationTestVarPos + 1;
-  //           setVariablePosition(X, Y, NAME);
-  //         }
-  //       } else {
-  //         if (document.querySelectorAll(monitorRoot).item(iterationTestVarPos).children.item(0).className == 'monitor_list-monitor_1FdIj') {
-  //           iterationTestVarPos = iterationTestVarPos + 1;
-  //           setVariablePosition(X, Y, NAME);
-  //         }
-  //       }
-
-  //     } catch (err) { }
-  //   }
-  // }
-  // function setListPosition(X, Y, NAME) {
-  //   //console.log('Checking for variable position')
-  //   try {
-  //     if (ineditor == true) {
-  //       if (document.querySelectorAll(monitorRoot).item(iterationTestVarPos).children.item(0).children.item(0).textContent == NAME) {
-  //         document.querySelectorAll(monitorRoot).item(iterationTestVarPos).style.transform = 'translate(' + X + 'px,' + Y + 'px)';
-  //         document.querySelectorAll(monitorRoot).item(iterationTestVarPos).style.left = '0px';
-  //         document.querySelectorAll(monitorRoot).item(iterationTestVarPos).style.top = '0px';
-  //       } else {
-  //         iterationTestVarPos = iterationTestVarPos + 1;
-  //         setListPosition(X, Y, NAME);
-  //       }
-  //     } else {
-  //       if (document.querySelectorAll(monitorRoot).item(iterationTestVarPos).children.item(0).textContent == NAME) {
-  //         document.querySelectorAll(monitorRoot).item(iterationTestVarPos).style.transform = 'translate(' + X + 'px,' + Y + 'px)';
-  //         document.querySelectorAll(monitorRoot).item(iterationTestVarPos).style.left = '0px';
-  //         document.querySelectorAll(monitorRoot).item(iterationTestVarPos).style.top = '0px';
-  //       } else {
-  //         iterationTestVarPos = iterationTestVarPos + 1;
-  //         setListPosition(X, Y, NAME);
-  //       }
-  //     }
-  //   } catch (err) {
-  //     try {
-  //       if (ineditor == false) {
-  //         if (document.querySelectorAll(monitorRoot).item(iterationTestVarPos).children.item(0).className == 'sc-monitor-inner') {
-  //           iterationTestVarPos = iterationTestVarPos + 1;
-  //           setListPosition(X, Y, NAME);
-  //         }
-  //       } else {
-
-  //         if (document.querySelectorAll(monitorRoot).item(iterationTestVarPos).children.item(0).className == 'monitor_default-monitor_2vCcZ') {
-  //           iterationTestVarPos = iterationTestVarPos + 1;
-  //           setListPosition(X, Y, NAME);
-  //         }
-  //       }
-  //     } catch (err) { }
-  //   }
-  // }
-  function applyCSS() {
+  const applyCSS = () => {
     let css = '';
 
     // We assume all values are sanitized when they are set, so then we can just use them as-is here.
@@ -181,7 +113,47 @@
     }
 
     stylesheet.textContent = css;
-  }
+  };
+
+  const getMonitorRoot = (id) => {
+    const allMonitors = document.querySelectorAll(monitorRoot);
+    for (const monitor of allMonitors) {
+      if (monitor.dataset.id === id) {
+        return monitor;
+      }
+    }
+    return null;
+  };
+
+  /**
+   * @param {string} id
+   * @param {number} x
+   * @param {number} y
+   */
+  const setMonitorPosition = (id, x, y) => {
+    const root = getMonitorRoot(id);
+    if (root) {
+      root.style.transform = `translate(${x}px, ${y}px)`;
+      root.style.left = '0px';
+      root.style.top = '0px';
+    }
+  };
+
+  /**
+   * @param {VM.Target} target
+   * @param {string} name
+   * @param {VM.VariableType} type
+   * @param {number} x
+   * @param {number} y
+   */
+  const setVariableMonitorPosition = (target, name, type, x, y) => {
+    // @ts-expect-error
+    const variable = target.lookupVariableByNameAndType(name, type);
+    if (variable) {
+      // @ts-expect-error
+      setMonitorPosition(variable.id, x, y);
+    }
+  };
 
   // Credit to LilyMakesThings
   const label = (name, hidden) => ({
@@ -413,19 +385,23 @@
       applyCSS();
     }
 
-    setvarpos(args) {
-      setVariablePosition(
+    setvarpos(args, util) {
+      setVariableMonitorPosition(
+        util.target,
+        args.NAME,
+        '',
         Scratch.Cast.toNumber(args.X) + Scratch.vm.runtime.stageWidth / 2,
-        Scratch.vm.runtime.stageHeight / 2 - Scratch.Cast.toNumber(args.Y),
-        args.NAME
+        Scratch.vm.runtime.stageHeight / 2 - Scratch.Cast.toNumber(args.Y)
       );
     }
 
-    setlistpos(args) {
-      setListPosition(
+    setlistpos(args, util) {
+      setVariableMonitorPosition(
+        util.target,
+        args.NAME,
+        'list',
         Scratch.Cast.toNumber(args.X) + Scratch.vm.runtime.stageWidth / 2,
-        Scratch.vm.runtime.stageHeight / 2 - Scratch.Cast.toNumber(args.Y),
-        args.NAME
+        Scratch.vm.runtime.stageHeight / 2 - Scratch.Cast.toNumber(args.Y)
       );
     }
 
