@@ -19,12 +19,12 @@
       listContains: '列表 [LIST] 包括 [VALUE] 吗？',
       copyList: '将列表 [LIST1] 复制到列表 [LIST2]',
     }
-});
+  });
   class VarAndList {
     getInfo() {
       return {
         id: 'qxsckvarandlist',
-        name: Scratch.translate({ id: 'name', default: 'Var and list' }),
+        name: Scratch.translate({ id: 'name', default: 'Variable and list' }),
         blocks: [
           {
             opcode: 'getVar',
