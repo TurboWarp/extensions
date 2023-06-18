@@ -24,7 +24,7 @@
     getInfo() {
       return {
         id: 'qxsckvarandlist',
-        name: Scratch.translate({ id: 'name', default: 'Var and list' }),
+        name: Scratch.translate({ id: 'name', default: 'Variable and list' }),
         blocks: [
           {
             opcode: 'getVar',
