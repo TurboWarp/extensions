@@ -30,7 +30,7 @@
       return;
     }
 
-    if (!await Scratch.canRecordAudio()) {
+    if (!(await Scratch.canRecordAudio())) {
       return;
     }
 
@@ -204,8 +204,10 @@
         changedTouches[touch].clientY - canvasPos.top,
       ];
     });
+    runtime.startHats("obviousalexsensing_onTapped");
   }
 
+  let movedFingers = []
   /** @param {TouchEvent} event */
   function handleTouchMove(event) {
     event.preventDefault();
@@ -213,7 +215,9 @@
     const canvasPos = canvas.getBoundingClientRect();
     const changedTouchesKeys = Object.keys(changedTouches);
     fingersDown = event.touches.length;
+    movedFingers = [];
     changedTouchesKeys.forEach((touch) => {
+      movedFingers.push(changedTouches[touch].identifier + 1)
       lastFingerPositions[changedTouches[touch].identifier] = [
         fingerPositions[changedTouches[touch].identifier][0],
         fingerPositions[changedTouches[touch].identifier][1],
@@ -223,6 +227,7 @@
         changedTouches[touch].clientY - canvasPos.top,
       ];
     });
+    runtime.startHats("obviousalexsensing_onFingerMoved");
   }
 
   /** @param {TouchEvent} event */
@@ -237,10 +242,34 @@
     });
   }
 
+  let realMousePosition = [0, 0];
+
+  function getActualMousePos(event) {
+    const canvasPos = canvas.getBoundingClientRect();
+    let calculated = [event.clientX,event.clientY]
+    if (calculated[0] <= canvasPos.left){
+      calculated[0] = canvasPos.left;
+    } 
+    else if (calculated[0] >= canvasPos.right){
+      calculated[0] = canvasPos.right;
+    }
+
+    if (calculated[1] <= canvasPos.top){
+      calculated[1] = canvasPos.top;
+    } 
+    else if (calculated[1] >= canvasPos.bottom){
+      calculated[1] = canvasPos.bottom;
+    }
+
+    realMousePosition[0] = calculated[0] - canvasPos.left;
+    realMousePosition[1] = calculated[1] - canvasPos.top;
+  }
+
   canvas.addEventListener("touchstart", handleTouchStart, false);
   canvas.addEventListener("touchmove", handleTouchMove, false);
   canvas.addEventListener("touchcancel", handleTouchEnd, false);
   canvas.addEventListener("touchend", handleTouchEnd, false);
+  document.addEventListener("mousemove", getActualMousePos);
 
   /**
    * @param {string} listData
@@ -286,6 +315,8 @@
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI0OC42Mjg2IiBoZWlnaHQ9IjQ0LjU3MzgzIiB2aWV3Qm94PSIwLDAsNDguNjI4Niw0NC41NzM4MyI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIxNC4yMjg1NywtMTU4LjI5MDQpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxnIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggZD0iTTI0My40NzUwMSwxNjUuNDc3MjRjMC4xNSwtMC4xIDAuNCwtMC4wNSAwLjQ1LDAuMTVsMS4zLDUuMzVjMCwwIDMuMiwyLjM1IDQuMTUsNGMxLjYsMi43NSAxLjY1LDUgMS42NSw1YzAsMCAzLjU1LDEuMDUgNC4xNSwzLjljMC42LDIuODUgLTEuNiw4LjI1IC0xMSwxMC4xYy05LjQsMS44NSAtMTYuOTUsLTAuNyAtMjAuNSwtNi40Yy0zLjU1LC01LjcgMi4wNSwtMTIuNSAxLjc1LC0xMi4xbC0xLjA1LC04Ljk1Yy0wLjA1LC0wLjIgMC4yLC0wLjM1IDAuNCwtMC4yNWw2LjA1LDMuOTVjMCwwIDIuMjUsLTAuODUgNC42LC0wLjk1YzEuNCwtMC4xIDIuNiwwIDMuNzUsMC4yeiIgZmlsbD0iIzNiYTJjZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjUwLjg3NTAxLDE4MC4xNzcyNGMwLDAgMy40NSwwLjkgNC4wNSwzLjc1YzAuNiwyLjg1IC0xLjgsOCAtMTEuMSw5LjhjLTEyLjEsMi41IC0xNy44NSwtNC43IC0xNC41LC0xMGMzLjM1LC01LjM1IDkuMSwtMC44IDEzLjMsLTEuMWMzLjYsLTAuMjUgNCwtMy40IDguMjUsLTIuNDV6IiBmaWxsPSIjYTdlMmZiIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjYwLjA3NSwxODAuNzI3MjRjLTIuMzUsMS45IC01Ljk1LDEuOTUgLTUuOTUsMS45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI1OS40MjUwMSwxODYuMzI3MjRjLTMuMTUsMC4yNSAtNS4xLC0wLjcgLTUuMSwtMC43IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjQyLjQyNTAxLDE4MS4zMjcyNGMxLjA1LDAgMi4xNSwwLjEgMi4yLDAuNDVjMC4wNSwwLjcgLTAuNywyLjEgLTEuNSwyLjE1Yy0wLjksMC4xIC0zLC0xLjE1IC0zLC0xLjk1Yy0wLjA1LC0wLjYgMS4zLC0wLjY1IDIuMywtMC42NXoiIGZpbGw9IiMxYjU1NmUiIHN0cm9rZT0iIzFiNTU2ZSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMTkuOTI1MDEsMTgwLjU3NzI0YzAsMCA0LjMsMS40IDYuMDUsMi45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIyNi4xMjUwMSwxODUuMjc3MjRjLTIuMTUsMC44NSAtNS44NSwwLjMgLTUuODUsMC4zIiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48ZyBmaWxsPSIjMWI1NTZlIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiPjxwYXRoIGQ9Ik0yNDguMTI1MDEsMTc4LjMyNzI0YzAsMC41NSAtMC40LDEgLTAuOSwxYy0wLjUsMCAtMC45LC0wLjQ1IC0wLjksLTFjMCwtMC41NSAwLjQsLTEgMC45LC0xYzAuNSwwIDAuOSwwLjQ1IDAuOSwxIi8+PC9nPjxnIGZpbGw9IiMxYjU1NmUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciI+PHBhdGggZD0iTTIzNS42MjUwMSwxNzkuNzc3MjRjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAuMDUgMC45LDAuNDUgMC45LDEiLz48L2c+PC9nPjxwYXRoIGQ9Ik0yMTguOTgzODMsMjAxLjAxNjE5di00Mi4wMzIzNWg0Mi4wMzIzNXY0Mi4wMzIzNXoiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciI+PHBhdGggZD0iTTI1OC45NDI4NSwxNzAuNTc1ODNjMCwwIDAuMTYxMzEsLTEwLjgwNzI0IC0xOS45MTI1NiwtMTEuMjg1NzFjLTE3Ljk4MDQ4LC0wLjQyODU3IC0yMC4wNjgxMiwxMS4yODU3MSAtMjAuMDY4MTIsMTEuMjg1NzEiIHN0cm9rZT0iIzFiNTU2ZSIvPjxwYXRoIGQ9Ik0yMTUuMjI4NTcsMTY1Ljg2MTU0bDMuMjY2OSw1LjcxNDI5bDUuNDQ0ODQsLTMiIHN0cm9rZT0iIzFiNTU2ZSIvPjwvZz48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjU4LjEyMzU2LDE5MC41NjcwNWMwLDAgLTIuMDg3NjQsMTEuNzE0MjggLTIwLjA2ODEyLDExLjI4NTcxYy0yMC4wNzM4NywtMC40Nzg0NyAtMTkuOTEyNTYsLTExLjI4NTcxIC0xOS45MTI1NiwtMTEuMjg1NzEiLz48cGF0aCBkPSJNMjUzLjE0NTQyLDE5Mi41NjcwNWw1LjQ0NDg0LC0zbDMuMjY2OSw1LjcxNDI5Ii8+PC9nPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjI1Ljc3MTQyOTg3OTMyNDc1NjoyMS43MDk1OTc0OTgwNDAwOTctLT4=";
   const layerIco =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI0NS45NzY4OCIgaGVpZ2h0PSI0Ni40NzQ2NiIgdmlld0JveD0iMCwwLDQ1Ljk3Njg4LDQ2LjQ3NDY2Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjE1LjAzOTI5LC0xNTguOTgzODMpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxnIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggZD0iTTIzOS4xODkyOSwxNjUuNDc3MjNjMC4xNSwtMC4xIDAuNCwtMC4wNSAwLjQ1LDAuMTVsMS4zLDUuMzVjMCwwIDMuMiwyLjM1IDQuMTUsNGMxLjYsMi43NSAxLjY1LDUgMS42NSw1YzAsMCAzLjU1LDEuMDUgNC4xNSwzLjljMC42LDIuODUgLTEuNiw4LjI1IC0xMSwxMC4xYy05LjQsMS44NSAtMTYuOTUsLTAuNyAtMjAuNSwtNi40Yy0zLjU1LC01LjcgMi4wNSwtMTIuNSAxLjc1LC0xMi4xbC0xLjA1LC04Ljk1Yy0wLjA1LC0wLjIgMC4yLC0wLjM1IDAuNCwtMC4yNWw2LjA1LDMuOTVjMCwwIDIuMjUsLTAuODUgNC42LC0wLjk1YzEuNCwtMC4xIDIuNiwwIDMuNzUsMC4yeiIgZmlsbD0iIzNiYTJjZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjQ2LjU4OTI5LDE4MC4xNzcyM2MwLDAgMy40NSwwLjkgNC4wNSwzLjc1YzAuNiwyLjg1IC0xLjgsOCAtMTEuMSw5LjhjLTEyLjEsMi41IC0xNy44NSwtNC43IC0xNC41LC0xMGMzLjM1LC01LjM1IDkuMSwtMC44IDEzLjMsLTEuMWMzLjYsLTAuMjUgNCwtMy40IDguMjUsLTIuNDV6IiBmaWxsPSIjYTdlMmZiIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjU1Ljc4OTI5LDE4MC43MjcyM2MtMi4zNSwxLjkgLTUuOTUsMS45NSAtNS45NSwxLjk1IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjU1LjEzOTI5LDE4Ni4zMjcyM2MtMy4xNSwwLjI1IC01LjEsLTAuNyAtNS4xLC0wLjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFiNTU2ZSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzguMTM5MjksMTgxLjMyNzIzYzEuMDUsMCAyLjE1LDAuMSAyLjIsMC40NWMwLjA1LDAuNyAtMC43LDIuMSAtMS41LDIuMTVjLTAuOSwwLjEgLTMsLTEuMTUgLTMsLTEuOTVjLTAuMDUsLTAuNiAxLjMsLTAuNjUgMi4zLC0wLjY1eiIgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxNS42MzkyOSwxODAuNTc3MjNjMCwwIDQuMywxLjQgNi4wNSwyLjk1IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjIxLjgzOTI5LDE4NS4yNzcyM2MtMi4xNSwwLjg1IC01Ljg1LDAuMyAtNS44NSwwLjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFiNTU2ZSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxnIGZpbGw9IiMxYjU1NmUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciI+PHBhdGggZD0iTTI0My44MzkyOSwxNzguMzI3MjNjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAgMC45LDAuNDUgMC45LDEiLz48L2c+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjMxLjMzOTI5LDE3OS43NzcyM2MwLDAuNTUgLTAuNCwxIC0wLjksMWMtMC41LDAgLTAuOSwtMC40NSAtMC45LC0xYzAsLTAuNTUgMC40LC0xIDAuOSwtMWMwLjUsMC4wNSAwLjksMC40NSAwLjksMSIvPjwvZz48L2c+PHBhdGggZD0iTTIxOC45ODM4MywyMDEuMDE2MTl2LTQyLjAzMjM1aDQyLjAzMjM1djQyLjAzMjM1eiIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yNDMuNDc1LDE3NS43NjI5NWMwLjE1LC0wLjEgMC40LC0wLjA1IDAuNDUsMC4xNWwxLjMsNS4zNWMwLDAgMy4yLDIuMzUgNC4xNSw0YzEuNiwyLjc1IDEuNjUsNSAxLjY1LDVjMCwwIDMuNTUsMS4wNSA0LjE1LDMuOWMwLjYsMi44NSAtMS42LDguMjUgLTExLDEwLjFjLTkuNCwxLjg1IC0xNi45NSwtMC43IC0yMC41LC02LjRjLTMuNTUsLTUuNyAyLjA1LC0xMi41IDEuNzUsLTEyLjFsLTEuMDUsLTguOTVjLTAuMDUsLTAuMiAwLjIsLTAuMzUgMC40LC0wLjI1bDYuMDUsMy45NWMwLDAgMi4yNSwtMC44NSA0LjYsLTAuOTVjMS40LC0wLjEgMi42LDAgMy43NSwwLjJ6IiBmaWxsPSIjM2JhMmNlIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yNTAuODc1LDE5MC40NjI5NWMwLDAgMy40NSwwLjkgNC4wNSwzLjc1YzAuNiwyLjg1IC0xLjgsOCAtMTEuMSw5LjhjLTEyLjEsMi41IC0xNy44NSwtNC43IC0xNC41LC0xMGMzLjM1LC01LjM1IDkuMSwtMC44IDEzLjMsLTEuMWMzLjYsLTAuMjUgNCwtMy40IDguMjUsLTIuNDV6IiBmaWxsPSIjYTdlMmZiIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjYwLjA3NSwxOTEuMDEyOTVjLTIuMzUsMS45IC01Ljk1LDEuOTUgLTUuOTUsMS45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI1OS40MjUsMTk2LjYxMjk1Yy0zLjE1LDAuMjUgLTUuMSwtMC43IC01LjEsLTAuNyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI0Mi40MjUsMTkxLjYxMjk1YzEuMDUsMCAyLjE1LDAuMSAyLjIsMC40NWMwLjA1LDAuNyAtMC43LDIuMSAtMS41LDIuMTVjLTAuOSwwLjEgLTMsLTEuMTUgLTMsLTEuOTVjLTAuMDUsLTAuNiAxLjMsLTAuNjUgMi4zLC0wLjY1eiIgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxOS45MjUsMTkwLjg2Mjk1YzAsMCA0LjMsMS40IDYuMDUsMi45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIyNi4xMjUsMTk1LjU2Mjk1Yy0yLjE1LDAuODUgLTUuODUsMC4zIC01Ljg1LDAuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjQ4LjEyNSwxODguNjEyOTVjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAgMC45LDAuNDUgMC45LDEiLz48L2c+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjM1LjYyNSwxOTAuMDYyOTVjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAuMDUgMC45LDAuNDUgMC45LDEiLz48L2c+PC9nPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjI0Ljk2MDcwOTI4NTcxNDMzOjIxLjAxNjE2NS0tPg==";
+  const mouseIco =
+    "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMTAuMzUyNTgiIGhlaWdodD0iMTEwLjM1MjU4IiB2aWV3Qm94PSIwLDAsMTEwLjM1MjU4LDExMC4zNTI1OCI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE4NC44MjM3MSwtMTI0LjgyMzcxKSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIwNC45Njk4MiwyMTUuNzIzMzl2LTgzLjI5MDY0bDYwLjQzODMzLDY2LjE1MTQxbC0yNC42Njc5NCwtMy4wNzY2N2w5LjUzMzQ5LDI2LjMwOTA0bC0xNy4yNDE2Miw1Ljc1MDcxbC05LjYwMzkzLC0yNy42MjIzNnoiIGZpbGw9IiNmZmZmZmYiLz48cGF0aCBkPSJNMTg0LjgyMzcxLDIzNS4xNzYyOXYtMTEwLjM1MjU4aDExMC4zNTI1OHYxMTAuMzUyNTh6IiBmaWxsPSJub25lIi8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6NTUuMTc2Mjg4OTYzNTUzNjQ1OjU1LjE3NjI4ODk2MzU1MzU5LS0+";
 
   const userAgent = navigator.userAgent;
   let supportsTouches = true;
@@ -344,6 +375,41 @@
           {
             blockType: "label",
             text: "We will try to fix them soon.",
+          },
+          {
+            opcode: "onFingerMoved",
+            blockType: Scratch.BlockType.HAT,
+            text: "On finger moved",
+            blockIconURI: touchIco,
+            arguments: {},
+            isEdgeActivated: false
+          },
+          {
+            opcode: "onTapped",
+            blockType: Scratch.BlockType.HAT,
+            text: "On Tapped",
+            blockIconURI: touchIco,
+            arguments: {},
+            isEdgeActivated: false
+          },
+          {
+            opcode: "onTappedBySpecificFinger",
+            blockType: Scratch.BlockType.HAT,
+            text: "On tapped by finger [ID]",
+            blockIconURI: touchIco,
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.NUMBER,
+                menu: "fingerIDMenu",
+              },
+            },
+          },
+          {
+            opcode: "isMobile",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Mobile?",
+            blockIconURI: touchIco,
+            arguments: {},
           },
           {
             opcode: "supportsTouches",
@@ -433,6 +499,19 @@
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
                 menu: "fingerIDMenu",
+              },
+            },
+          },
+          "---",
+          {
+            opcode: "getRealMousePos",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Mouse [axis]",
+            blockIconURI: mouseIco,
+            arguments: {
+              axis: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "coordmenu",
               },
             },
           },
@@ -770,6 +849,62 @@
       },
     };
 
+    onFingerMoved() {
+      return true;
+    }
+
+    onTapped(args,util) {
+      let returnedArg = false;
+      if (
+        !alreadyTapped[util.target.id] ||
+        alreadyTapped[util.target.id] == false
+      ) {
+        this._touchUtil.isTouchingAnyFinger(util, () => {
+          alreadyTapped[util.target.id] = true;
+          returnedArg = true;
+        });
+      } else {
+        this._touchUtil.isTouchingAnyFinger(util, null, () => {
+          alreadyTapped[util.target.id] = false;
+        });
+      }
+      return returnedArg;
+    }
+
+    onTappedBySpecificFinger({ ID }, util) {
+      let returnedArg = false;
+      if (
+        !alreadyTapped[util.target.id] ||
+        alreadyTapped[util.target.id] == false
+      ) {
+        this._touchUtil.isTouchingSpecificFinger(ID, util, () => {
+          alreadyTapped[util.target.id] = true;
+          returnedArg = true;
+        });
+      } else {
+        this._touchUtil.isTouchingSpecificFinger(ID, util, null, () => {
+          alreadyTapped[util.target.id] = false;
+        });
+      }
+      return returnedArg;
+    }
+
+    getRealMousePos({ axis }) {
+      const canvasRect = canvas.getBoundingClientRect();
+      if (axis == "x") {
+        const clientWidth = canvasRect.right - canvasRect.left;
+        const toScratch = runtime.stageWidth / clientWidth;
+        return realMousePosition[0] * toScratch - runtime.stageWidth / 2;
+      }
+      const clientheight = canvasRect.bottom - canvasRect.top;
+      const toScratch = runtime.stageHeight / clientheight;
+      return runtime.stageHeight / 2 - realMousePosition[1] * toScratch;
+    }
+
+    isMobile() {
+      return !notMobile;
+    }
+
     supportsTouches() {
       return supportsTouches;
     }
@@ -882,11 +1017,11 @@
 
     getClipBoard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        return Scratch.canReadClipboard().then(allowed => {
+        return Scratch.canReadClipboard().then((allowed) => {
           if (allowed) {
             return navigator.clipboard.readText();
           }
-          return '';
+          return "";
         });
       }
       return "";
