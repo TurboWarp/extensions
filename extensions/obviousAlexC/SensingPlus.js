@@ -261,6 +261,8 @@
 
     realMousePosition[0] = calculated[0] - canvasPos.left;
     realMousePosition[1] = calculated[1] - canvasPos.top;
+
+    runtime.startHats("obviousalexsensing_onMouseMoved");
   }
 
   canvas.addEventListener("touchstart", handleTouchStart, false);
@@ -501,6 +503,14 @@
             },
           },
           "---",
+          {
+            opcode: "onMouseMoved",
+            blockType: Scratch.BlockType.HAT,
+            text: "On Mouse Moved",
+            blockIconURI: mouseIco,
+            arguments: {},
+            isEdgeActivated: false,
+          },
           {
             opcode: "getRealMousePos",
             blockType: Scratch.BlockType.REPORTER,
@@ -848,6 +858,10 @@
     };
 
     onFingerMoved() {
+      return true;
+    }
+
+    onMouseMoved() {
       return true;
     }
 
