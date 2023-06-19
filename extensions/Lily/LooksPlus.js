@@ -527,17 +527,20 @@
       const targets = Scratch.vm.runtime.targets;
       const myself = Scratch.vm.runtime.getEditingTarget().getName();
       for (let index = 1; index < targets.length; index++) {
-        const targetName = targets[index].getName();
-        if (targetName === myself) {
-          spriteNames.unshift({
-            text: 'this sprite',
-            value: targetName
-          });
-        } else {
-          spriteNames.push({
-            text: targetName,
-            value: targetName
-          });
+        const target = targets[index];
+        if (target.isOriginal) {
+          const targetName = target.getName();
+          if (targetName === myself) {
+            spriteNames.unshift({
+              text: 'this sprite',
+              value: targetName
+            });
+          } else {
+            spriteNames.push({
+              text: targetName,
+              value: targetName
+            });
+          }
         }
       }
       if (spriteNames.length > 0) {
