@@ -181,6 +181,7 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const canvas = runtime.renderer.canvas;
+  const mouseButtonsDown = [false, false, false, false, false, false];
 
   let fingersDown = 0;
   const lastFingerPositions = [];
@@ -265,11 +266,34 @@
     runtime.startHats("obviousalexsensing_onMouseMoved");
   }
 
+  canvas.onmousedown = (event) => {
+    event.preventDefault();
+    mouseButtonsDown[event.button] = true;
+  };
+
+  canvas.onmouseup = (event) => {
+    mouseButtonsDown[event.button] = false;
+  };
+
+  canvas.onmouseleave = (event) => {
+    mouseButtonsDown[event.button] = false;
+  };
+
+  let mouseSpeed = [0, 0];
+
+  function onScrolled(event) {
+    event.preventDefault();
+    mouseSpeed = [event.deltaX / -125, event.deltaY / -125];
+  }
+
+  canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
   canvas.addEventListener("touchstart", handleTouchStart, false);
   canvas.addEventListener("touchmove", handleTouchMove, false);
   canvas.addEventListener("touchcancel", handleTouchEnd, false);
   canvas.addEventListener("touchend", handleTouchEnd, false);
   document.addEventListener("mousemove", getActualMousePos);
+  canvas.addEventListener("wheel", onScrolled);
 
   /**
    * @param {string} listData
@@ -523,6 +547,42 @@
               },
             },
           },
+          {
+            opcode: "getIfTouchingMouse",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Touching Mouse",
+            blockIconURI: mouseIco,
+            arguments: {
+              axis: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "coordmenu",
+              },
+            },
+          },
+          {
+            opcode: "isMouseDown",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Mouse button [ID] down",
+            blockIconURI: mouseIco,
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "mouseButton",
+              },
+            },
+          },
+          {
+            opcode: "getMouseScroll",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Mouse [direction] scroll",
+            blockIconURI: mouseIco,
+            arguments: {
+              direction: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "directionmenu",
+              },
+            },
+          },
           "---",
           {
             opcode: "listInSprite",
@@ -755,6 +815,31 @@
           },
         ],
         menus: {
+          mouseButton: {
+            acceptReporters: true,
+            items: [
+              {
+                text: "Left",
+                value: "1",
+              },
+              {
+                text: "Right",
+                value: "3",
+              },
+              {
+                text: "Middle",
+                value: "2",
+              },
+              {
+                text: "Back",
+                value: "4",
+              },
+              {
+                text: "Forward",
+                value: "5",
+              },
+            ],
+          },
           fingerIDMenu: {
             acceptReporters: true,
             items: touchPointsArray,
@@ -797,6 +882,10 @@
               "brightness",
               "ghost",
             ],
+          },
+          directionmenu: {
+            acceptReporters: true,
+            items: ["Horizontal", "Vertical"],
           },
         },
       };
@@ -857,6 +946,21 @@
       },
     };
 
+    getMouseScroll({ direction }) {
+      if (direction == "Horizontal") {
+        let speed = Scratch.Cast.toNumber(mouseSpeed[0]);
+        mouseSpeed[0] = 0;
+        return speed;
+      }
+      let speed = Scratch.Cast.toNumber(mouseSpeed[1]);
+      mouseSpeed[1] = 0;
+      return speed;
+    }
+
+    isMouseDown({ ID }) {
+      return mouseButtonsDown[Scratch.Cast.toNumber(ID) - 1];
+    }
+
     onFingerMoved() {
       return true;
     }
@@ -911,6 +1015,20 @@
       const clientheight = canvasRect.bottom - canvasRect.top;
       const toScratch = runtime.stageHeight / clientheight;
       return runtime.stageHeight / 2 - realMousePosition[1] * toScratch;
+    }
+
+    getIfTouchingMouse(args, util) {
+      const canvasRect = canvas.getBoundingClientRect();
+      const clientWidth = canvasRect.right - canvasRect.left;
+      let toScratch = runtime.stageWidth / clientWidth;
+
+      const clientheight = canvasRect.bottom - canvasRect.top;
+      toScratch = runtime.stageHeight / clientheight;
+
+      return util.target.isTouchingPoint(
+        realMousePosition[0],
+        realMousePosition[1]
+      );
     }
 
     isMobile() {
