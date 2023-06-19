@@ -207,7 +207,7 @@
     runtime.startHats("obviousalexsensing_onTapped");
   }
 
-  let movedFingers = []
+  let movedFingers = [];
   /** @param {TouchEvent} event */
   function handleTouchMove(event) {
     event.preventDefault();
@@ -217,7 +217,7 @@
     fingersDown = event.touches.length;
     movedFingers = [];
     changedTouchesKeys.forEach((touch) => {
-      movedFingers.push(changedTouches[touch].identifier + 1)
+      movedFingers.push(changedTouches[touch].identifier + 1);
       lastFingerPositions[changedTouches[touch].identifier] = [
         fingerPositions[changedTouches[touch].identifier][0],
         fingerPositions[changedTouches[touch].identifier][1],
@@ -246,18 +246,16 @@
 
   function getActualMousePos(event) {
     const canvasPos = canvas.getBoundingClientRect();
-    let calculated = [event.clientX,event.clientY]
-    if (calculated[0] <= canvasPos.left){
+    let calculated = [event.clientX, event.clientY];
+    if (calculated[0] <= canvasPos.left) {
       calculated[0] = canvasPos.left;
-    } 
-    else if (calculated[0] >= canvasPos.right){
+    } else if (calculated[0] >= canvasPos.right) {
       calculated[0] = canvasPos.right;
     }
 
-    if (calculated[1] <= canvasPos.top){
+    if (calculated[1] <= canvasPos.top) {
       calculated[1] = canvasPos.top;
-    } 
-    else if (calculated[1] >= canvasPos.bottom){
+    } else if (calculated[1] >= canvasPos.bottom) {
       calculated[1] = canvasPos.bottom;
     }
 
@@ -382,7 +380,7 @@
             text: "On finger moved",
             blockIconURI: touchIco,
             arguments: {},
-            isEdgeActivated: false
+            isEdgeActivated: false,
           },
           {
             opcode: "onTapped",
@@ -390,7 +388,7 @@
             text: "On Tapped",
             blockIconURI: touchIco,
             arguments: {},
-            isEdgeActivated: false
+            isEdgeActivated: false,
           },
           {
             opcode: "onTappedBySpecificFinger",
@@ -853,7 +851,7 @@
       return true;
     }
 
-    onTapped(args,util) {
+    onTapped(args, util) {
       let returnedArg = false;
       if (
         !alreadyTapped[util.target.id] ||
