@@ -185,9 +185,18 @@
       return {
         id: 'files',
         name: 'Files',
-        color1: '#fcb103',
-        color2: '#db9a37',
-        color3: '#db8937',
+        colors: {
+          default: {
+            color1: '#fcb103',
+            color2: '#db9a37',
+            color3: '#db8937',
+          },
+          highcontrast: {
+            color1: '#ffce8b',
+            color2: '#bf7f27',
+            color3: '#bf7f27',
+          }
+        },
         blocks: [
           {
             opcode: 'showPicker',

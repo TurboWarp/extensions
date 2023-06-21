@@ -97,7 +97,15 @@
         id: 'truefantommath',
         name: 'Math',
 
-        color1: '#59c059',
+        colors: {
+          default: {
+            color1: '#59c059',
+          },
+          highcontrast: {
+            color1: '#7ece7e',
+            color3: '#389438',
+          }
+        },
 
         menuIconURI: icon,
 

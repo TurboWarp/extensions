@@ -44,7 +44,15 @@
       return {
         id: 'skyhigh173BigInt',
         name: 'BigInt',
-        color1: '#59C093',
+        colors: {
+          default: {
+            color1: '#59C093',
+          },
+          highcontrast: {
+            color1: '#98F7CE',
+            color3: '#41B985',
+          }
+        },
         blocks: [
           {
             opcode: 'from',

@@ -10,8 +10,16 @@
       return {
         id: 'lmsmcutils',
         name: 'McUtils',
-        color1: '#ec2020',
-        color3: '#ffe427',
+        colors: {
+          default: {
+            color1: '#ec2020',
+            color3: '#ffe427',
+          },
+          highcontrast: {
+            color1: '#ff6a6a',
+            color3: '#dbc000',
+          }
+        },
         blocks: [
           {
             opcode: 'managerReporter',

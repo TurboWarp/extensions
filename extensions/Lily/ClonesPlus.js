@@ -42,9 +42,18 @@
       return {
         id: 'lmsclonesplus',
         name: 'Clones+',
-        color1: '#FFAB19',
-        color2: '#EC9C13',
-        color3: '#CF8B17',
+        colors: {
+          default: {
+            color1: '#FFAB19',
+            color2: '#EC9C13',
+            color3: '#CF8B17',
+          },
+          highcontrast: {
+            color1: '#FFBE4C',
+            color2: '#CF8B17',
+            color3: '#CF8B17',
+          }
+        },
         menuIconURI: menuIconURI,
         blocks: [
           {

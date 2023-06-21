@@ -32,9 +32,18 @@
       return {
         id: 'lmsTimers',
         name: 'More Timers',
-        color1: '#5cb1d6',
-        color2: '#428faf',
-        color3: '#3281a3',
+        colors: {
+          default: {
+            color1: '#5cb1d6',
+            color2: '#428faf',
+            color3: '#3281a3',
+          },
+          highcontrast: {
+            color1: '#85c4e0',
+            color2: '#2e8eb8',
+            color3: '#2e8eb8',
+          }
+        },
         blocks: [
           {
             opcode: 'whenTimerOp',

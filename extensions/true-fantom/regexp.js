@@ -71,7 +71,15 @@
         id: 'truefantomregexp',
         name: 'RegExp',
 
-        color1: '#e6282a',
+        colors: {
+          default: {
+            color1: '#e6282a',
+          },
+          highcontrast: {
+            color1: '#fb9393',
+            color3: '#db1d1c',
+          }
+        },
 
         menuIconURI: icon,
 

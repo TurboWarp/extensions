@@ -6,9 +6,18 @@
       return {
         id: 'lmscomments',
         name: 'Comment Blocks',
-        color1: '#e4db8c',
-        color2: '#c6be79',
-        color3: '#a8a167',
+        colors: {
+          default: {
+            color1: '#e4db8c',
+            color2: '#c6be79',
+            color3: '#a8a167',
+          },
+          highcontrast: {
+            color1: '#f7f0ab',
+            color2: '#bdb574',
+            color3: '#bdb574',
+          }
+        },
         blocks: [
           {
             opcode: 'commentHat',

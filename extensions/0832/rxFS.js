@@ -23,7 +23,18 @@
             return {
                 id: '0832rxfs',
                 name: 'rxFS',
-                color1: '#2bdab7',
+                colors: {
+                    default: {
+                        color1: '#2bdab7',
+                        color2: '#2bdab7',
+                        color3: '#2bdab7',
+                    },
+                    highcontrast: {
+                        color1: '#7b91b9',
+                        color2: '#273f6b',
+                        color3: '#273f6b',
+                    }
+                },
                 blocks: [
                     {
                         blockIconURI: wenj,

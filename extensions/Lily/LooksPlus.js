@@ -29,9 +29,18 @@
       return {
         id: 'lmsLooksPlus',
         name: 'Looks+',
-        color1: '#9966FF',
-        color2: '#855CD6',
-        color3: '#774DCB',
+        colors: {
+          default: {
+            color1: '#9966FF',
+            color2: '#855CD6',
+            color3: '#774DCB',
+          },
+          highcontrast: {
+            color1: '#CCB3FF',
+            color2: '#774DCB',
+            color3: '#774DCB',
+          }
+        },
         menuIconURI: menuIconURI,
         blocks: [
           {

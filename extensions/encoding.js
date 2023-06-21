@@ -405,9 +405,18 @@
       return {
         id: 'Encoding',
         name: 'Encoding',
-        color1: '#6495ed',
-        color2: '#739fee',
-        color3: '#83aaf0',
+        colors: {
+          default: {
+            color1: '#6495ed',
+            color2: '#739fee',
+            color3: '#83aaf0',
+          },
+          highcontrast: {
+            color1: '#a7c3f5',
+            color2: '#406bb7',
+            color3: '#406bb7',
+          }
+        },
         menuIconURI: icon2,
         blockIconURI: icon,
         blocks: [

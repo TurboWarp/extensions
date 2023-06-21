@@ -8359,9 +8359,18 @@
         id: "NGIO",
         name: "Newgrounds",
 
-        color1: "#EB7522",
-        color2: "#4F280E",
-        color3: "#1B1717",
+        colors: {
+          default: {
+            color1: "#EB7522",
+            color2: "#4F280E",
+            color3: "#1B1717",
+          },
+          highcontrast: {
+            color1: "#FF9D57",
+            color2: "#4D2408",
+            color3: "#4D2408",
+          }
+        },
 
         menuIconURI: menuIco,
 

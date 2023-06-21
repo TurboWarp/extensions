@@ -13,9 +13,18 @@
       return {
         id: "zxmushroom63searchparams",
         name: "Search Params",
-        color1: "#b4b4b4",
-        color2: "#9c9c9c",
-        color3: "#646464",
+        colors: {
+          default: {
+            color1: "#b4b4b4",
+            color2: "#9c9c9c",
+            color3: "#646464",
+          },
+          highcontrast: {
+            color1: "#cbcbcb",
+            color2: "#717171",
+            color3: "#717171",
+          }
+        },
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,

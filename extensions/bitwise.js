@@ -28,7 +28,15 @@
         id: 'Bitwise',
         name: 'Bitwise',
 
-        color1: '#17cde6',
+        colors: {
+          default: {
+            color1: '#17cde6',
+          },
+          highcontrast: {
+            color1: '#85f0ff',
+            color3: '#1b94ad',
+          }
+        },
 
         docsURI: "https://extensions.turbowarp.org/bitwise.html",
         menuIconURI: icon,

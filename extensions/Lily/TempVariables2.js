@@ -33,8 +33,16 @@
       return {
         id: 'lmsTempVars2',
         name: 'Temporary Variables',
-        color1: '#FF791A',
-        color2: '#E15D00',
+        colors: {
+          default: {
+            color1: '#FF791A',
+            color2: '#E15D00',
+          },
+          highcontrast: {
+            color1: '#FF934C',
+            color2: '#DB5900',
+          }
+        },
         menuIconURI: menuIconURI, // I intend on making one later
         blocks: [
 

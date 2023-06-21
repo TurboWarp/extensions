@@ -13,7 +13,15 @@
         id: 'truefantomcouplers',
         name: 'Couplers',
 
-        color1: '#404040',
+        colors: {
+          default: {
+            color1: '#404040',
+          },
+          highcontrast: {
+            color1: '#a1a1a1',
+            color3: '#595959',
+          }
+        },
 
         menuIconURI: icon,
 

@@ -22,9 +22,18 @@
       return {
         id: 'ShovelUtils',
         name: 'ShovelUtils',
-        color1: '#f54242',
-        color2: '#f54242',
-        color3: '#f54242',
+        colors: {
+          default: {
+            color1: '#f54242',
+            color2: '#f54242',
+            color3: '#f54242',
+          },
+          highcontrast: {
+            color1: '#ff9c9c',
+            color2: '#dd1e1d',
+            color3: '#dd1e1d',
+          }
+        },
         blocks: [
           {
             opcode: 'importImage',

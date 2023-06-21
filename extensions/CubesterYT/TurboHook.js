@@ -17,9 +17,18 @@
       return {
         id: "cubesterTurboHook",
         name: "TurboHook",
-        color1: "#3c48c2",
-        color2: "#2f39a1",
-        color3: "#28318f",
+        colors: {
+          default: {
+            color1: "#3c48c2",
+            color2: "#2f39a1",
+            color3: "#28318f",
+          },
+          highcontrast: {
+            color1: "#9ea7f5",
+            color2: "#444dad",
+            color3: "#444dad",
+          }
+        },
         menuIconURI: icon,
         docsURI: "https://extensions.turbowarp.org/CubesterYT/TurboHook.html",
 

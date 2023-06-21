@@ -13,8 +13,17 @@
   class RixxyX {
     getInfo() {
       return {
-        color1: "#773c00",
-        color2: "#5f3000",
+        colors: {
+          default: {
+            color1: "#773c00",
+            color2: "#5f3000",
+          },
+          highcontrast: {
+            color1: "#dd9b57",
+            color2: "#895015",
+            color3: "#895015",
+          }
+        },
         id: "RixxyX",
         name: "RixxyX",
         blocks: [

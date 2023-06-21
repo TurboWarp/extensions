@@ -18,7 +18,15 @@
       return {
         id: 'skyhigh173JSON',
         name: 'JSON',
-        color1: '#3271D0',
+        colors: {
+          default: {
+            color1: '#3271D0',
+          },
+          highcontrast: {
+            color1: '#83acff',
+            color3: '#3b65d5',
+          }
+        },
         blocks: [
           makeLabel('General Utils'),
           {

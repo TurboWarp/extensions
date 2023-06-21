@@ -57,9 +57,18 @@
         id: 'DTcameracontrols',
         name: 'Camera',
 
-        color1: '#ff4da7',
-        color2: '#de4391',
-        color3: '#c83c82',
+        colors: {
+          default: {
+            color1: '#ff4da7',
+            color2: '#de4391',
+            color3: '#c83c82',
+          },
+          highcontrast: {
+            color1: '#ff9bcd',
+            color2: '#d13c87',
+            color3: '#d13c87',
+          }
+        },
 
         menuIconURI: icon,
 

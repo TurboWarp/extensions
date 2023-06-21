@@ -481,9 +481,18 @@
         getInfo() {
             return {
                 id: "AR",
-                color1: "#d10000",
-                color2: "#bd0000",
-                color3: "#af0100",
+                colors: {
+                    default: {
+                        color1: "#d10000",
+                        color2: "#bd0000",
+                        color3: "#af0100",
+                    },
+                    highcontrast: {
+                        color1: "#ff8989",
+                        color2: "#e11211",
+                        color3: "#e11211",
+                    }
+                },
                 docsURI: "https://extensions.turbowarp.org/ar.html",
                 blocks: [
                     {

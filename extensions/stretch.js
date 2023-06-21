@@ -47,9 +47,18 @@
       return {
         id: 'stretch',
         name: 'Stretch',
-        color1: '#4287f5',
-        color2: '#2b62ba',
-        color3: '#204785',
+        colors: {
+          default: {
+            color1: '#4287f5',
+            color2: '#2b62ba',
+            color3: '#204785',
+          },
+          highcontrast: {
+            color1: '#95beff',
+            color2: '#3266b9',
+            color3: '#3266b9',
+          }
+        },
         blocks: [
           {
             opcode: 'setStretch',

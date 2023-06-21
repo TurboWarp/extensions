@@ -7,9 +7,18 @@
             return {
                 id: 'sipctime',
                 name: 'Time',
-                color1: '#ff8000',
-                color2: '#804000',
-                color3: '#804000',
+                colors: {
+                    default: {
+                        color1: '#ff8000',
+                        color2: '#804000',
+                        color3: '#804000',
+                    },
+                    highcontrast: {
+                        color1: '#ffb870',
+                        color2: '#975410',
+                        color3: '#975410',
+                    }
+                },
                 menuIconURI: icon,
                 blockIconURI: icon2,
                 blocks: [

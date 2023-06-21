@@ -17,7 +17,15 @@
         id: 'truefantombase',
         name: 'Base',
 
-        color1: '#e200ca',
+        colors: {
+          default: {
+            color1: '#e200ca',
+          },
+          highcontrast: {
+            color1: '#f994ef',
+            color3: '#bb11a9',
+          }
+        },
 
         menuIconURI: icon,
 

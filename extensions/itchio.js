@@ -59,9 +59,18 @@
         name: "itch.io",
         menuIconURI: icon,
         blockIconURI: icon,
-        color1: "#858585",
-        color2: "#222222",
-        color3: "#FA5C5C",
+        colors: {
+          default: {
+            color1: "#858585",
+            color2: "#222222",
+            color3: "#FA5C5C",
+          },
+          highcontrast: {
+            color1: "#CBCBCB",
+            color2: "#717171",
+            color3: "#FF3030",
+          }
+        },
         blocks: [
           {
             opcode: "openItchWindow",

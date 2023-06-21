@@ -51,9 +51,18 @@
         id: 'truefantomnetwork',
         name: 'Network',
 
-        color1: '#146600',
-        color2: '#125C00',
-        color3: '#105200',
+        colors: {
+          default: {
+            color1: '#146600',
+            color2: '#125C00',
+            color3: '#105200',
+          },
+          highcontrast: {
+            color1: '#64D14A',
+            color2: '#276D15',
+            color3: '#276D15',
+          }
+        },
 
         menuIconURI: icon,
 

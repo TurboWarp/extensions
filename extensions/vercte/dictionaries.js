@@ -6,9 +6,18 @@
       return {
         id: 'verctedictionaries',
         name: 'Dictionaries',
-        color1: '#008cff',
-        color2: '#0073d1',
-        color3: '#0066ba',
+        colors: {
+          default: {
+            color1: '#008cff',
+            color2: '#0073d1',
+            color3: '#0066ba',
+          },
+          highcontrast: {
+            color1: '#87c9ff',
+            color2: '#1783db',
+            color3: '#1783db',
+          }
+        },
         blocks: [
           {
             opcode: 'dict_list',

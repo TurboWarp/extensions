@@ -67,9 +67,18 @@
             return {
                 id: '0832rxfs2',
                 name: 'rxFS',
-                color1: '#192d50',
-                color2: '#192d50',
-                color3: '#192d50',
+                colors: {
+                    default: {
+                        color1: '#192d50',
+                        color2: '#192d50',
+                        color3: '#192d50',
+                    },
+                    highcontrast: {
+                        color1: '#7b91b9',
+                        color2: '#273f6b',
+                        color3: '#273f6b',
+                    }
+                },
                 blocks: [
                     {
                         blockIconURI: file,

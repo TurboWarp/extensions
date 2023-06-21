@@ -331,9 +331,18 @@
     getInfo() {
       return {
         menuIconURI: ico,
-        color1: "#5cb1d6",
-        color2: "#3ba2ce",
-        color3: "#2e8eb8",
+        colors: {
+          default: {
+            color1: "#5cb1d6",
+            color2: "#3ba2ce",
+            color3: "#2e8eb8",
+          },
+          highcontrast: {
+            color1: "#85c4e0",
+            color2: "#2e8eb8",
+            color3: "#2e8eb8",
+          }
+        },
         id: "obviousalexsensing",
         name: "Sensing+",
         blocks: [

@@ -8,9 +8,18 @@
             return {
                 id: 'sipcconsole',
                 name: 'Consoles',
-                color1: '#808080',
-                color2: '#8c8c8c',
-                color3: '#999999',
+                colors: {
+                    default: {
+                        color1: '#808080',
+                        color2: '#8c8c8c',
+                        color3: '#999999',
+                    },
+                    highcontrast: {
+                        color1: '#b7b7b7',
+                        color2: '#6d6d6d',
+                        color3: '#6d6d6d',
+                    }
+                },
                 menuIconURI: icon,
                 blockIconURI: icon2,
                 blocks: [

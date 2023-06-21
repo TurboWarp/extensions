@@ -6,9 +6,18 @@
       return {
         id: 'nonameawacomparisons',
         name: 'More Comparisons',
-        color1: '#00a889',
-        color2: '#1e8c76',
-        color3: '#1e8c76',
+        colors: {
+          default: {
+            color1: '#00a889',
+            color2: '#1e8c76',
+            color3: '#1e8c76',
+          },
+          highcontrast: {
+            color1: '#5cefd1',
+            color2: '#2da387',
+            color3: '#2da387',
+          }
+        },
         blocks: [
           {
             opcode: 'true',

@@ -1095,9 +1095,18 @@
       return {
         id: "GameJoltAPI",
         name: "GameJolt API",
-        color1: "#2F7F6F",
-        color2: "#2A2731",
-        color3: "#CCFF00",
+        colors: {
+          default: {
+            color1: "#2F7F6F",
+            color2: "#2A2731",
+            color3: "#CCFF00",
+          },
+          highcontrast: {
+            color1: "#5CD5BD",
+            color2: "#717171",
+            color3: "#A5CB0E",
+          }
+        },
         menuIconURI: icons.GameJolt,
         docsURI: docs,
         blocks: [

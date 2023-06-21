@@ -21,9 +21,18 @@
       return {
         id: 'nonameawagraph',
         name: Scratch.translate({ id: 'name', default: 'Graphics 2D' }),
-        color1: '#ff976c',
-        color2: '#cc7956',
-        color3: '#e58861',
+        colors: {
+          default: {
+            color1: '#ff976c',
+            color2: '#cc7956',
+            color3: '#e58861',
+          },
+          highcontrast: {
+            color1: '#ffa883',
+            color2: '#cd6438',
+            color3: '#cd6438',
+          }
+        },
         blocks: [
           {
             opcode: 'line_section',

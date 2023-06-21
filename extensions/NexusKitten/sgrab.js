@@ -13,8 +13,16 @@
         id: 'nexuskittensgrab',
         name: 'S-Grab',
         menuIconURI: icon,
-        color1: '#ECA90B',
-        color2: '#EBAF00',
+        colors: {
+          default: {
+            color1: '#ECA90B',
+            color2: '#EBAF00',
+          },
+          highcontrast: {
+            color1: '#FFCE57',
+            color2: '#BB8812',
+          }
+        },
         blocks: [
           {
             opcode: 'usergrab',

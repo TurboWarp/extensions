@@ -17,9 +17,18 @@
       return {
         id: 'runtimeoptions',
         name: 'Runtime Options',
-        color1: '#8c9abf',
-        color2: '#7d8aab',
-        color3: '#6f7b99',
+        colors: {
+          default: {
+            color1: '#8c9abf',
+            color2: '#7d8aab',
+            color3: '#6f7b99',
+          },
+          highcontrast: {
+            color1: '#ced9e7',
+            color2: '#6c80a9',
+            color3: '#6c80a9',
+          }
+        },
         blocks: [
           {
             opcode: 'getEnabled',

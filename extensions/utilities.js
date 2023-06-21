@@ -37,9 +37,18 @@
         id: 'utilities',
         name: 'Utilities',
 
-        color1: '#8BC34A',
-        color2: '#7CB342',
-        color3: '#689F38',
+        colors: {
+          default: {
+            color1: '#8BC34A',
+            color2: '#7CB342',
+            color3: '#689F38',
+          },
+          highcontrast: {
+            color1: '#B4E976',
+            color2: '#6AA934',
+            color3: '#6AA934',
+          }
+        },
 
         menuIconURI: icon,
 
