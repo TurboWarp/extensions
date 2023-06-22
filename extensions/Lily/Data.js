@@ -4,7 +4,7 @@
   /* -- SETUP -- */
   const vm = Scratch.vm;
   const runtime = Scratch.vm.runtime;
-  const ArgumentType = Scratch.ArgumentType
+  const ArgumentType = Scratch.ArgumentType;
   ArgumentType.VARIABLE = 'variable';
 
   /* Credit to skyhigh173 for the idea of this */
@@ -23,11 +23,11 @@
     if (listObject) return listObject;
     listObject = target.lookupVariableByNameAndType(name, type);
     if (listObject) return listObject;
-  }
+  };
 
   const cloneObj = function (original) {
     return JSON.parse(JSON.stringify(original));
-  }
+  };
 
   const arraysEqual = function (a, b) {
     if (a === b) return true;
@@ -37,7 +37,7 @@
       if (a[i] !== b[i]) return false;
     }
     return true;
-  }
+  };
 
 
   class Data {
@@ -459,8 +459,8 @@
     deleteAllOfItem(args, util) {
       const list = getVarObjectFromName(args.LIST, util, 'list');
       if (!list) return;
-      const newList = list.value.filter(function(model) { 
-        return model !== args.ITEM 
+      const newList = list.value.filter(function(model) {
+        return model !== args.ITEM;
       });
       list.value = newList;
       list._monitorUpToDate = false;
@@ -484,7 +484,7 @@
       list.value = newList;
       list._monitorUpToDate = false;
     }
-    
+
     repeatList(args, util) {
       const list1 = getVarObjectFromName(args.LIST1, util, 'list');
       if (!list1) return;
@@ -558,7 +558,7 @@
         const randomised = list.value
           .map(value => ({ value, sort: Math.random() }))
           .sort((a, b) => a.sort - b.sort)
-          .map(({ value }) => value)
+          .map(({ value }) => value);
         list.value = randomised;
       } else if (args.ORDER === 'ascending') {
         list.value.sort();
@@ -575,7 +575,7 @@
       if (!list2) return;
       list1.value = list2.value;
     }
-    
+
     joinLists(args, util) {
       const list1 = getVarObjectFromName(args.LIST1, util, 'list');
       if (!list1) return;
@@ -634,7 +634,7 @@
       list.value = newArray;
       list._monitorUpToDate = false;
     }
-    
+
     getListArray(args, util) {
       const list = getVarObjectFromName(args.LIST, util, 'list');
       if (!list) return '';
@@ -652,15 +652,15 @@
     const argInfo = context.blockInfo.arguments[placeholder] || {};
     const argsName = `args${context.outLineNum}`;
     const blockArgs = context.blockJSON[argsName];
-    const argJSON = blockArgs[blockArgs.length-1];
-    
+    const argJSON = blockArgs[blockArgs.length - 1];
+
     if (argInfo.type === ArgumentType.VARIABLE) {
       argJSON.type = 'field_variable';
       argJSON.variableTypes = [argInfo.variableType ?? ''];
       if (argInfo.variable) argJSON.variable = argInfo.variable;
     }
     return retVal;
-  }
+  };
 
   Scratch.extensions.register(new Data());
 })(Scratch);
