@@ -517,7 +517,12 @@
           indexes.push(index);
         }
       }
-      return indexes[args.INDEX - 1];
+      switch(args.INDEX) {
+        case '_first_': return indexes[0] + 1;
+        case '_last_': return indexes[indexes.length - 1] + 1;
+        case '_random_': return indexes[Math.floor(Math.random() * indexes.length)] + 1;
+        default: return indexes[args.INDEX - 1] + 1;
+      }
     }
 
     listIsEmpty(args, util) {
