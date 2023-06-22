@@ -230,8 +230,8 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
       return filtStren;
     }
     setFilterStrength({ STRENGTH }) {
-      const fStren= cast.toNumber(STRENGTH)
-      if (fStren <= 1) {filtStren = 1} else if (fStren >= maxFiltStren) {filtStren = maxFiltStren} else {filtStren = fStren}
+      const fStren= cast.toNumber(STRENGTH);
+      if (fStren <= 1) {filtStren = 1} else if (fStren >= maxFiltStren) {filtStren = maxFiltStren} else {filtStren = fStren};
     }
 //========== Block Function/Return Sections END ==========//
 
