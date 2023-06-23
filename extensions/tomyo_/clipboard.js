@@ -57,7 +57,7 @@ const extensionicon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAY
             opcode: 'clipboard',
             blockType: Scratch.BlockType.REPORTER,
             text: 'clipboard'
-          }
+          } //clipboard
         ],
       };
     }
@@ -74,6 +74,7 @@ const extensionicon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAY
 
     set_clipboard(args) {
       navigator.clipboard.writeText(args.TEXTE);
+      window.alert("Copied in your clipboard: "+args.TEXTE); //prevent malicious copied
     }
 
     clipboard() {
