@@ -32,6 +32,7 @@
     nfcRead() {
       return new Promise((resolve, reject) => {
         console.log("Approach NFC Tag");
+        // eslint-disable-line
         const ndef = new NDEFReader();
         ndef.scan()
           .then(() => {
