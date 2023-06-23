@@ -11,7 +11,6 @@
         color1: '#ff0000',
         color2: '#800000',
         color3: '#990033',
-        docsURI: 'https://docs.turbowarp.org/development/extensions/nfcwarp',
         menuIconURI: blocksIcon,
         blockIconURI: blocksIcon,
         blocks: [{
