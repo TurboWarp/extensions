@@ -107,21 +107,22 @@
         }
 
         async loadplay({ URL }) {
-            if (await Scratch.canFetch(URL))
-            {new Audio(URL).play();}
+            if (await Scratch.canFetch(URL)) {// eslint-disable-next-line no-restricted-syntax no-restricted-syntax
+                new Audio(URL).play();
+            }
         }
 
         load({ URL, TEXT }) {
             const vara = vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, '');
-            if (!vara) 
-            {return;};
+            if (!vara) { return; }
             vara.value = URL;
         }
 
         async play({ MUSIC }) {
             const vara = vm.runtime.getTargetForStage().lookupVariableByNameAndType(MUSIC, '');
-            if (await Scratch.canFetch(vara.value))
-            {var varb = new Audio(vara.value);}
+            if (await Scratch.canFetch(vara.value)) {// eslint-disable-next-line no-restricted-syntax no-restricted-syntax
+                var varb = new Audio(vara.value);
+            }
             vara.value = varb;
             varb.play();
         }
