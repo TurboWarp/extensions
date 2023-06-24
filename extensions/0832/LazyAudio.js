@@ -102,38 +102,39 @@
         }
         //动态菜单
         _getMusic() {
-            const vars = vm.runtime.getAllVarNamesOfType('')
-            return vars.length == 0 ? [" "] : vars
+            const vars = vm.runtime.getAllVarNamesOfType('');
+            return vars.length == 0 ? [" "] : vars;
         }
 
-        loadplay({ URL }) {
-            new Audio(URL).play();
+        async loadplay({ URL }) {
+            if (await Scratch.canFetch(URL))
+            {new Audio(URL).play();}
         }
 
         load({ URL, TEXT }) {
             const vara = vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, '');
-            if (!vara) { return; }
+            if (!vara) 
+            {return;};
             vara.value = URL;
         }
 
-        play({ MUSIC }) {
+        async play({ MUSIC }) {
             const vara = vm.runtime.getTargetForStage().lookupVariableByNameAndType(MUSIC, '');
-            var varb = new Audio(vara.value)
-            vara.value = varb
+            if (await Scratch.canFetch(vara.value))
+            {var varb = new Audio(vara.value);}
+            vara.value = varb;
             varb.play();
         }
         playjx({ MUSIC }) {
             const vara = vm.runtime.getTargetForStage().lookupVariableByNameAndType(MUSIC, '');
-            var varb = vara.value
+            var varb = vara.value;
             varb.play();
         }
         pause({ MUSIC }) {
             const vara = vm.runtime.getTargetForStage().lookupVariableByNameAndType(MUSIC, '');
-            var varb = vara.value
+            var varb = vara.value;
             varb.pause();
         }
-
     }
-
     Scratch.extensions.register(new 懒音乐());
 })(Scratch);
