@@ -117,7 +117,11 @@
         color2: '#E6AC00',
         color3: '#CC9900',
         blocks: [
-          /*
+          /** 
+           * I have a feeling this won't work unless there's an
+           * event specifically to detect the stop button
+           * being clicked. I'm still going to work on this as
+           * I'm sure there's a way to prevent the recursion.
           {
             opcode: 'whenStopClicked',
             blockType: Scratch.BlockType.HAT,
