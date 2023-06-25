@@ -100,10 +100,6 @@
         });
       });
 
-      runtime.on('RUNTIME_OPTIONS_CHANGED', () => {
-        runtime.startHats('lmsMoreEvents_whenAnyRuntimeOptionChanged');
-      });
-
       runtime.on('EXTENSION_ADDED', () => {
         runtime.startHats('lmsMoreEvents_whenExtensionAdded');
       });
@@ -219,12 +215,6 @@
                 menu: 'runtimeOptions'
               }
             }
-          },
-          {
-            opcode: 'whenAnyRuntimeOptionChanged',
-            blockType: Scratch.BlockType.HAT,
-            text: 'when runtime options changed',
-            isEdgeActivated: false
           },
           {
             opcode: 'whenExtensionAdded',
