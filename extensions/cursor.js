@@ -145,6 +145,12 @@
     'ew-resize', 'ns-resize', 'nesw-resize', 'nwse-resize'
   ];
 
+  let mouseDownInterval = {};
+  mouseDownInterval['any'] = 0;
+  mouseDownInterval[0] = 0;
+  mouseDownInterval[1] = 0;
+  mouseDownInterval[2] = 0;
+
   class MouseCursor {
     getInfo() {
       return {
@@ -190,6 +196,43 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'cursor',
           },
+          '---',
+          {
+            opcode: 'mouseWheel',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'mouse wheel scrolled [direction]?',
+            arguments: {
+              direction: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'wheelDirections'
+              }
+            }
+          },
+          {
+            opcode: 'mouseWheelDirection',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'mouse wheel scroll direction'
+          },
+          {
+            opcode: 'mouseButton',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: '[button] mouse [action]?',
+            arguments: {
+              button: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'mouseButtons'
+              },
+              action: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'mouseActions'
+              }
+            }
+          },
+          {
+            opcode: 'mouseClicked',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'mouse clicked?'
+          }
         ],
         menus: {
           cursors: {
@@ -222,7 +265,26 @@
               { text: '64x64 (unreliable)', value: '64x64' },
               { text: '128x128 (unreliable)', value: '128x128' },
             ]
-          }
+          },
+          wheelDirections: {
+            acceptReporters: true,
+            items: ['up', 'down']
+          },
+          mouseButtons: {
+            acceptReporters: true,
+            items: [
+              // Some important numbers to keep in mind:
+              // Browsers ignore cursor images >128 in any dimension (https://searchfox.org/mozilla-central/rev/43ee5e789b079e94837a21336e9ce2420658fd19/widget/gtk/nsWindow.cpp#3393-3402)
+              // Browsers may refuse to display a cursor near window borders for images >32 in any dimension
+              { text: 'primary', value: '0' },
+              { text: 'middle', value: '1' },
+              { text: 'secondary', value: '2' }
+            ]
+          },
+          mouseActions: {
+            acceptReporters: true,
+            items: ['down', 'clicked']
+          },
         },
       };
     }
@@ -279,6 +341,43 @@
         return customCursorImageName;
       }
       return nativeCursor;
+    }
+
+    mouseWheel(args, util) {
+      const scroll = util.ioQuery('mouseWheel', 'getScrollY');
+      if (args.direction === 'up') return scroll < 0;
+      if (args.direction === 'down') return scroll > 0;
+      return false;
+    }
+
+    mouseWheelDirection(args, util) {
+      const scroll = util.ioQuery('mouseWheel', 'getScrollY');
+      return Scratch.Cast.toNumber(scroll) / 100;
+    }
+
+    mouseButton(args, util) {
+      const button = Scratch.Cast.toNumber(args.button);
+      const mouseDown = util.ioQuery('mouse', 'getButtonIsDown', [button]);
+      if (args.action === 'down') {
+        return mouseDown;
+      } else {
+        if (mouseDown) {
+          mouseDownInterval[button]++;
+        } else {
+          mouseDownInterval[button] = 0;
+        }
+        return mouseDownInterval[button] === 1;
+      }
+    }
+
+    mouseClicked(args, util) {
+      const mouseDown = util.ioQuery('mouse', 'getIsDown');
+      if (mouseDown) {
+        mouseDownInterval['any']++;
+      } else {
+        mouseDownInterval['any'] = 0;
+      }
+      return mouseDownInterval['any'] === 1;
     }
   }
 
