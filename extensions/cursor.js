@@ -151,6 +151,20 @@
   mouseDownInterval[1] = 0;
   mouseDownInterval[2] = 0;
 
+  let scrollX = 0;
+  let scrollY = 0;
+  canvas.addEventListener('wheel', updateScrollValues);
+  function updateScrollValues(event) {
+    scrollX = event.deltaX;
+    scrollY = event.deltaY;
+    Scratch.vm.runtime.startHats('MouseCursor_whenMouseWheel', {direction: 'any'});
+    if (scrollY > 0) {
+      Scratch.vm.runtime.startHats('MouseCursor_whenMouseWheel', {direction: 'down'});
+    } else if (scrollY < 0) {
+      Scratch.vm.runtime.startHats('MouseCursor_whenMouseWheel', {direction: 'up'});
+    }
+  }
+
   class MouseCursor {
     getInfo() {
       return {
@@ -198,6 +212,18 @@
           },
           '---',
           {
+            opcode: 'whenMouseWheel',
+            blockType: Scratch.BlockType.HAT,
+            text: 'when mouse wheel scrolled [direction]',
+            isEdgeActivated: false,
+            arguments: {
+              direction: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'wheelDirectionsHat'
+              }
+            }
+          },
+          {
             opcode: 'mouseWheel',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'mouse wheel scrolled [direction]?',
@@ -213,6 +239,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'mouse wheel scroll direction'
           },
+          '---',
           {
             opcode: 'mouseButton',
             blockType: Scratch.BlockType.BOOLEAN,
@@ -269,6 +296,11 @@
           wheelDirections: {
             acceptReporters: true,
             items: ['up', 'down']
+          },
+          wheelDirectionsHat: {
+            // must be "acceptReporters: false" due to the nature of event-based hats
+            acceptReporters: false,
+            items: ['up', 'down', 'any']
           },
           mouseButtons: {
             acceptReporters: true,
@@ -344,15 +376,23 @@
     }
 
     mouseWheel(args, util) {
-      const scroll = util.ioQuery('mouseWheel', 'getScrollY');
-      if (args.direction === 'up') return scroll < 0;
-      if (args.direction === 'down') return scroll > 0;
+      // This is why I wanted to run it as an ioQuery.
+      // If the cursor was scrolled at any point before checking, then
+      // this will return true on the first frame every time.
+      // 
+      // There's no reason why I couldn't make this more resilient, I
+      // just don't know how.
+      const oldScrollY = scrollY;
+      scrollY = 0;
+      if (args.direction === 'up') return (oldScrollY < 0);
+      if (args.direction === 'down') return (oldScrollY > 0);
       return false;
     }
 
-    mouseWheelDirection(args, util) {
-      const scroll = util.ioQuery('mouseWheel', 'getScrollY');
-      return Scratch.Cast.toNumber(scroll) / 100;
+    mouseWheelDirection() {
+      const oldScrollY = scrollY;
+      scrollY = 0;
+      return Scratch.Cast.toNumber(oldScrollY) / 100;
     }
 
     mouseButton(args, util) {
