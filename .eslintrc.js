@@ -10,7 +10,9 @@ module.exports = {
     ecmaVersion: 'latest'
   },
   globals: {
-    Scratch: 'readonly'
+    Scratch: 'readonly',
+    ScratchExtensions: 'readonly',
+    scaffolding: 'readonly'
   },
   rules: {
     // Here is where we enforce rules to have somewhat consistent code style without being overbearing

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const pathUtil = require('path');
 const renderTemplate = require('./render-template');
+const compatibilityAliases = require('./compatibility-aliases');
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -151,6 +152,10 @@ class Builder {
       const file = new ExtensionFile(extensionFilename, path);
       extensionFiles.push(file);
       build.files[`/${extensionFilename}`] = file;
+    }
+
+    for (const [oldPath, newPath] of Object.entries(compatibilityAliases)) {
+      build.files[oldPath] = build.files[newPath];
     }
 
     const mostRecentExtensions = extensionFiles
