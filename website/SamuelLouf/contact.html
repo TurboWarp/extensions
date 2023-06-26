@@ -1,0 +1,143 @@
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Contact docs</title>
+		<style>
+			.inbox {
+				text-align: left;
+				display: inline-block;
+				background-color: #ffffff;
+				max-width: 600px;
+				width: 100%;
+				border: 1px solid #e2e2e2;
+				border-radius: 5px;
+				margin: 30px 0 0 0;
+				padding: 10px 15px 15px 15px;
+				overflow: hidden;
+			}
+			body {
+				background-color: #f2f2f2;
+				text-align: center;
+				margin: 0;
+				padding: 0;
+				font-family: Arial, Helvetica, sans-serif;
+				transition: all 100ms ease-out;
+			}
+			.title {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			.uppertext {
+				display: flex;
+				justify-content: center;
+				background-color: /*#4d97ff;*/ #ff4d4d;
+				min-height: 150px;
+				text-align: center;
+				font-size: 45px;
+				width: 100%;
+				font-weight: bold;
+				color: white;
+			}
+			.hidden {
+				display: none;
+			}
+			.box {
+				background-color: #eeeeee;
+				padding: 0 0.2em;
+				border-radius: 3px;
+				color: #222222;
+			}
+			.code {
+				background-color: #f0f0f0;
+				border-radius: 3px;
+				resize: none;
+				width: 100%;
+			}
+			.imgBox {
+				width: 100%;
+				overflow: auto;
+			}
+			* {
+				box-sizing: border-box;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="uppertext">
+			<span class="title">Contact extension documentation</title>
+		</div>
+		<div class="inbox">
+			<h2>About this extension</h2>
+			<p>This extension allows you to send e-mails, call people, and use Skype.</p>
+
+			<hr>
+
+			<h2>Blocks</h2>
+            <hr>
+			<h3>Skype Blocks</h3>
+            <br>
+            <img src="contact_skype_call_block.png" height="40%" width="40%"/>
+			<p>Calls an user on Skype.</p>
+			<p>The string area is where you put the person you want to call's username.</p>
+			<hr>
+            <br>
+            <img src="contact_skype_chat_block.png" height="40%" width="40%"/>
+			<p>Starts a chat discussion with an user on Skype.</p>
+			<p>The string area is where you put the person you want to chat with's username.</p>
+			<hr>
+            <br>
+            <img src="contact_skype_show_user_info_block.png" height="46%" width="46%"/>
+			<p>Shows the information page of an user on Skype.</p>
+			<p>The string area is where you put the person you want to see the information page's username.</p>
+			<hr>
+            <br>
+            <img src="contact_skype_send_file_block.png" height="40%" width="40%"/>
+			<p>Sends a file to an user on Skype.</p>
+			<p>The string area is where you put the person you want to send a file to's username.</p>
+			<hr>
+            <br>
+            <img src="contact_skype_add_to_contacts_block.png" height="40%" width="40%"/>
+			<p>Add an user to contacts on Skype.</p>
+			<p>The string area is where you put the person you want to add to your contacts's username.</p>
+			<hr>
+            <br>
+            <img src="contact_skype_send_voice_mail_block.png" height="40%" width="40%"/>
+			<p>Send a voice mail to an user on Skype.</p>
+			<p>The string area is where you put the person you want to send a voice mail to's username.</p>
+            <br>
+            <hr>
+			<h3>Phone and mail Blocks</h3>
+			<hr>
+            <br>
+            <img src="contact_mail_block.png"/>
+			<p>Send a e-mail.</p>
+			<p>The first string area is where you can put the name of the e-mail. <br>The second string area is where you put the adress of the e-mail's destinator.<br> The third string area is where you can put the e-mail's content.</p>
+            <br>
+			<hr>
+            <br>
+            <img src="contact_mail_contact_block.png"/>
+			<p>This block is used to adress someone personally.</p>
+			<p>The first string area is where you put the name of the person.<br>The first string area is where you put the e-mail adress of the person.</p>
+            <br>
+            <br>
+			<hr>
+            <br>
+            <img src="contact_mail_combine_persons_block.png"/>
+			<p>This block can be used to send an e-mail to multiple persons.</p>
+			<p>The string areas are where you put the destinators of the e-mail.</p>
+            <p>Tip: You can put the "person named..." blocks in the string areas.</p>
+            <br>
+            <br>
+			<hr>
+            <br>
+            <img src="contact_call_block.png"/>
+			<p>Pass a call.</p>
+			<p>The string area is where you put the phone number to call.</p>
+            <br>
+		</div>
+	</body>
+</html>
