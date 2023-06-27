@@ -90,7 +90,8 @@
         runtime.shouldExecuteStopClicked = false;
       });
       runtime.on('PROJECT_STOP_ALL', () => {
-        queueMicrotask(() => runtime.startHats('lmsMoreEvents_whenStopClicked'));
+        if (runtime.shouldExecuteStopClicked)
+          queueMicrotask(() => runtime.startHats('lmsMoreEvents_whenStopClicked'));
       });
       runtime.on('AFTER_EXECUTE', () => {
         runtime.shouldExecuteStopClicked = true;
