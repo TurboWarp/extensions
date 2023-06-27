@@ -96,6 +96,11 @@
       runtime.on('AFTER_EXECUTE', () => {
         runtime.shouldExecuteStopClicked = true;
       });
+      const originalGreenFlag = vm.greenFlag;
+      vm.greenFlag = function() {
+        runtime.shouldExecuteStopClicked = false;
+        originalGreenFlag.call(this);
+      };
 
       runtime.on('STAGE_SIZE_CHANGED', () => {
         runtime.startHats('lmsMoreEvents_whenRuntimeOptionChanged', {
