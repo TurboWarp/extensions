@@ -132,8 +132,7 @@
                   defaultValue: 1
                 }
               }
-          }
-          ,
+          },
           {
             opcode: 'variableTrue',
             blockType: Scratch.BlockType.BOOLEAN,
@@ -144,6 +143,17 @@
                 menu: 'variablesMenu'
               }
             }
+          },
+          {
+            opcode: 'getDirectionKey',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'Is Direction Key [KEY] Pressed?',
+            arguments: {
+              KEY: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'DirectionKeys'
+              }
+            }
           }
         ],
         menus: {
@@ -151,6 +161,10 @@
                 acceptReporters: false,
                 items: 'getVariables'
             },
+            DirectionKeys: {
+              acceptReporters: false,
+              items: ['up', 'down', 'left', 'right']
+            }
         }
       };
     }
@@ -158,6 +172,20 @@
 
     variableTrue(args, util){
       return Scratch.Cast.toBoolean(vm.getVariableValue(util.target.id, args.VARIABLE));
+    }
+
+    getDirectionKey(args, util){
+      switch(args.KEY){
+        case 'up':
+          return util.ioQuery('keyboard', 'getKeyIsDown', ["up arrow"]) || util.ioQuery('keyboard', 'getKeyIsDown', ["w"]);
+        case 'down':
+          return util.ioQuery('keyboard', 'getKeyIsDown', ["down arrow"]) || util.ioQuery('keyboard', 'getKeyIsDown', ["s"]);
+        case 'left':
+          return util.ioQuery('keyboard', 'getKeyIsDown', ["left arrow"]) || util.ioQuery('keyboard', 'getKeyIsDown', ["a"]);
+        case 'right':
+          return util.ioQuery('keyboard', 'getKeyIsDown', ["right arrow"]) || util.ioQuery('keyboard', 'getKeyIsDown', ["d"]);
+      }
+      return false;
     }
     greenFlag(){
         vm.greenFlag();
