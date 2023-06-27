@@ -41,7 +41,6 @@
 
     vm.removeListener('BLOCKSINFO_UPDATE', refreshMenus);
 
-    // Based on code by @Xeltalliv
     let blockMenu = [];
     // @ts-expect-error - ScratchBlocks not typed yet
     // eslint-disable-next-line no-undef
@@ -51,6 +50,7 @@
     blockMenu = blockMenu.join('');
     console.log(blockMenu);
 
+    // Based on code by @Xeltalliv
     const menu = function (isInitialSetup, isStage, targetId) {
       return `
       <category name="All Menus" id="lmsAllMenus" colour="#4C97FF" secondaryColour="#3373CC">
