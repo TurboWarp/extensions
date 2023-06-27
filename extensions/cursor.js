@@ -135,6 +135,16 @@
     ];
   };
 
+  const cursors = [
+    'default', 'pointer', 'move', 'grab', 'grabbing', 'text',
+    'vertical-text', 'wait', 'progress', 'help', 'context-menu',
+    'zoom-in', 'zoom-out', 'crosshair', 'cell', 'not-allowed',
+    'copy', 'alias', 'no-drop', 'all-scroll', 'col-resize',
+    'row-resize', 'n-resize', 'e-resize', 's-resize', 'w-resize',
+    'ne-resize', 'nw-resize', 'se-resize', 'sw-resize',
+    'ew-resize', 'ns-resize', 'nesw-resize', 'nwse-resize'
+  ];
+
   class MouseCursor {
     getInfo() {
       return {
@@ -184,15 +194,7 @@
         menus: {
           cursors: {
             acceptReporters: true,
-            items: [
-                'default', 'pointer', 'move', 'grab', 'grabbing', 'text',
-                'vertical-text', 'wait', 'progress', 'help', 'context-menu',
-                'zoom-in', 'zoom-out', 'crosshair', 'cell', 'not-allowed',
-                'copy', 'alias', 'no-drop', 'all-scroll', 'col-resize',
-                'row-resize', 'n-resize', 'e-resize', 's-resize', 'w-resize',
-                'ne-resize', 'nw-resize', 'se-resize', 'sw-resize',
-                'ew-resize', 'ns-resize', 'nesw-resize', 'nwse-resize'
-            ],
+            items: cursors,
           },
           imagePositions: {
             acceptReporters: true,
@@ -226,11 +228,14 @@
     }
 
     setCur(args) {
-      const newCursor = args.cur;
-      nativeCursor = newCursor;
-      customCursorImageName = null;
-      currentCanvasCursor = newCursor;
-      updateCanvasCursor();
+      const newCursor = Scratch.Cast.toString(args.cur);
+      // Prevent setting cursor to "url(...), default" from causing fetch.
+      if (cursors.includes(newCursor) || newCursor === 'none') {
+        nativeCursor = newCursor;
+        customCursorImageName = null;
+        currentCanvasCursor = newCursor;
+        updateCanvasCursor();
+      }
     }
 
     setCursorImage(args, util) {

@@ -169,7 +169,7 @@
           {
             opcode: 'replaceWords',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'replace [INPUTA] with [INPUTB] in [STRING]',
+            text: 'replace first [INPUTA] with [INPUTB] in [STRING]',
             disableMonitor: true,
             arguments: {
               INPUTA: {
@@ -675,7 +675,7 @@
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'LukeManiaStudios'
+                defaultValue: 'LilyMakesThings'
               }
             }
           },
