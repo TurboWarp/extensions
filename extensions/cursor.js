@@ -146,10 +146,6 @@
   ];
 
   let mouseDownInterval = {};
-  mouseDownInterval['any'] = 0;
-  mouseDownInterval[0] = 0;
-  mouseDownInterval[1] = 0;
-  mouseDownInterval[2] = 0;
 
   let scrollX = 0;
   let scrollY = 0;
@@ -395,29 +391,47 @@
       return Scratch.Cast.toNumber(oldScrollY) / 100;
     }
 
-    mouseButton(args, util) {
+    mouseButton(args, blockInfo) {
       const button = Scratch.Cast.toNumber(args.button);
-      const mouseDown = util.ioQuery('mouse', 'getButtonIsDown', [button]);
+      const blockId = blockInfo.thread.topBlock;
+      const mouseDown = Scratch.vm.runtime.ioDevices.mouse.getButtonIsDown(button);
+
+      if (!mouseDownInterval[blockId]) {
+        mouseDownInterval[blockId] = {
+          'any': 0, 0: 0, 1: 0, 2: 0
+        };
+      }
+      const mouseInterval = mouseDownInterval[blockId];
+
       if (args.action === 'down') {
         return mouseDown;
       } else {
         if (mouseDown) {
-          mouseDownInterval[button]++;
+          mouseInterval[button]++;
         } else {
-          mouseDownInterval[button] = 0;
+          mouseInterval[button] = 0;
         }
-        return mouseDownInterval[button] === 1;
+        return mouseInterval[button] === 1;
       }
     }
 
-    mouseClicked(args, util) {
-      const mouseDown = util.ioQuery('mouse', 'getIsDown');
-      if (mouseDown) {
-        mouseDownInterval['any']++;
-      } else {
-        mouseDownInterval['any'] = 0;
+    mouseClicked(args, blockInfo) {
+      const blockId = blockInfo.thread.topBlock;
+      const mouseDown = Scratch.vm.runtime.ioDevices.mouse.getIsDown();
+
+      if (!mouseDownInterval[blockId]) {
+        mouseDownInterval[blockId] = {
+          'any': 0, 0: 0, 1: 0, 2: 0
+        };
       }
-      return mouseDownInterval['any'] === 1;
+
+      const mouseInterval = mouseDownInterval[blockId];
+      if (mouseDown) {
+        mouseInterval['any']++;
+      } else {
+        mouseInterval['any'] = 0;
+      }
+      return mouseInterval['any'] === 1;
     }
   }
 
