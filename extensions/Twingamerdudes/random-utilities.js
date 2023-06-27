@@ -72,6 +72,7 @@
             opcode: 'inputModalValue',
             blockType: Scratch.BlockType.REPORTER,
             text: 'Input Modal Value',
+            disableMonitor: true
           },
           {
             opcode: 'IsModalOpen',
