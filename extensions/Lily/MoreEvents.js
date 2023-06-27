@@ -11,12 +11,11 @@
   // https://github.com/TurboWarp/scratch-blocks/blob/develop/blocks_vertical/event.js
   const validKeyboardInputs = [
     // Special Inputs
-    { text: 'any', value: '_any_' },
     { text: 'space', value: 'space' },
-    { text: 'left arrow', value: 'left arrow' },
     { text: 'up arrow', value: 'up arrow' },
-    { text: 'right arrow', value: 'right arrow' },
     { text: 'down arrow', value: 'down arrow' },
+    { text: 'right arrow', value: 'right arrow' },
+    { text: 'left arrow', value: 'left arrow' },
     { text: 'enter', value: 'enter' },
     // TW: Extra Special Inputs
     { text: 'backspace', value: 'backspace' },
@@ -75,13 +74,20 @@
     runtime.startHats('lmsMoreEvents_always', {
       CONDITION: 'true'
     });
+
     runtime.startHats('lmsMoreEvents_whileTurboMode', {
       STATE: (runtime.turboMode) ? 'enabled' : 'disabled'
     });
   });
 
+  var lastValues = {};
+
   class MoreEvents {
     constructor() {
+      runtime.on('PROJECT_RUN_STOP', () => {
+        runtime.startHats('lmsMoreEvents_whenStopClicked');
+      });
+
       runtime.on('STAGE_SIZE_CHANGED', () => {
         runtime.startHats('lmsMoreEvents_whenRuntimeOptionChanged', {
           OPTION: 'stage size'
@@ -113,11 +119,7 @@
         color2: '#E6AC00',
         color3: '#CC9900',
         blocks: [
-          /** 
-           * I have a feeling this won't work unless there's an
-           * event specifically to detect the stop button
-           * being clicked. I'm still going to work on this as
-           * I'm sure there's a way to prevent the recursion.
+          /*
           {
             opcode: 'whenStopClicked',
             blockType: Scratch.BlockType.HAT,
@@ -132,25 +134,28 @@
           },
           */
           {
-            opcode: 'whenTrue',
+            opcode: 'whenTrueFalse',
             blockType: Scratch.BlockType.HAT,
-            text: 'when [CONDITION] is true',
+            text: 'when [CONDITION] is [STATE]',
             isEdgeActivated: true,
             arguments: {
               CONDITION: {
                 type: Scratch.ArgumentType.BOOLEAN
+              },
+              STATE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'boolean'
               }
             }
           },
           {
-            opcode: 'whenKeyStringPressed',
+            opcode: 'whenValueChanged',
             blockType: Scratch.BlockType.HAT,
-            text: 'when [KEY_OPTION] key pressed',
+            text: 'when [INPUT] changed',
             isEdgeActivated: true,
             arguments: {
-              KEY_OPTION: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'space'
+              INPUT: {
+                type: Scratch.ArgumentType.STRING
               }
             }
           },
@@ -163,6 +168,26 @@
               CONDITION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'boolean'
+              }
+            }
+          },
+
+          '---',
+
+          {
+            opcode: 'whenKeyAction',
+            blockType: Scratch.BlockType.HAT,
+            text: 'when [KEY_OPTION] key [ACTION]',
+            isEdgeActivated: true,
+            arguments: {
+              KEY_OPTION: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'space',
+                menu: 'keyboardButtons'
+              },
+              ACTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'action'
               }
             }
           },
@@ -268,14 +293,18 @@
             acceptReporters: true,
             items: '_getBroadcastMsgs'
           },
+          keyboardButtons: {
+            acceptReporters: true,
+            items: validKeyboardInputs
+          },
           // Attributes have acceptReporters: false
+          action: {
+            acceptReporters: false,
+            items: ['hit', 'released']
+          },
           boolean: {
             acceptReporters: false,
             items: ['true', 'false']
-          },
-          keyboardButtons: { // This isn't used just yet
-            acceptReporters: false,
-            items: validKeyboardInputs
           },
           state: {
             acceptReporters: false,
@@ -293,13 +322,23 @@
       };
     }
 
-    whenKeyStringPressed(args, util) {
-      const pressed = util.ioQuery('keyboard', 'getKeyIsDown', [args.KEY_OPTION]);
-      return pressed;
+    whenTrueFalse(args) {
+      return (args.STATE === 'true') ? args.CONDITION : !args.CONDITION;
     }
 
-    whenTrue(args) {
-      return args.CONDITION;
+    whenValueChanged(args, blockInfo) {
+      const blockId = blockInfo.thread.topBlock;
+      if (!lastValues[blockId]) lastValues[blockId] = Scratch.Cast.toString(args.INPUT);
+      if (lastValues[blockId] !== Scratch.Cast.toString(args.INPUT)) {
+        lastValues[blockId] = Scratch.Cast.toString(args.INPUT);
+        return true;
+      }
+      return false;
+    }
+
+    whenKeyAction(args, util) {
+      const pressed = util.ioQuery('keyboard', 'getKeyIsDown', [args.KEY_OPTION]);
+      return (args.ACTION === 'released') ? !pressed : pressed;
     }
 
     broadcastToTarget(args, util) {
