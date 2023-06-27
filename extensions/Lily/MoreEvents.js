@@ -149,6 +149,7 @@
             }
           },
           {
+            /* Credit to @mark-alex2004 for the idea */
             opcode: 'whenValueChanged',
             blockType: Scratch.BlockType.HAT,
             text: 'when [INPUT] changed',
