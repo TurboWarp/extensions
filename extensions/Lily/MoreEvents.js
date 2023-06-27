@@ -84,8 +84,16 @@
 
   class MoreEvents {
     constructor() {
-      runtime.on('PROJECT_RUN_STOP', () => {
-        runtime.startHats('lmsMoreEvents_whenStopClicked');
+      // Stop Sign Clicked contributed by @CST1229
+      runtime.shouldExecuteStopClicked = true;
+      runtime.on('BEFORE_EXECUTE', () => {
+        runtime.shouldExecuteStopClicked = false;
+      });
+      runtime.on('PROJECT_STOP_ALL', () => {
+        queueMicrotask(() => runtime.startHats('lmsMoreEvents_whenStopClicked'));
+      });
+      runtime.on('AFTER_EXECUTE', () => {
+        runtime.shouldExecuteStopClicked = true;
       });
 
       runtime.on('STAGE_SIZE_CHANGED', () => {
@@ -119,7 +127,6 @@
         color2: '#E6AC00',
         color3: '#CC9900',
         blocks: [
-          /*
           {
             opcode: 'whenStopClicked',
             blockType: Scratch.BlockType.HAT,
@@ -132,7 +139,6 @@
               }
             }
           },
-          */
           {
             opcode: 'whenTrueFalse',
             blockType: Scratch.BlockType.HAT,
@@ -149,7 +155,6 @@
             }
           },
           {
-            /* Credit to @mark-alex2004 for the idea */
             opcode: 'whenValueChanged',
             blockType: Scratch.BlockType.HAT,
             text: 'when [INPUT] changed',
