@@ -133,6 +133,18 @@
                 }
               }
           }
+          ,
+          {
+            opcode: 'variableTrue',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: '[VARIABLE]',
+            arguments: {
+              VARIABLE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'variablesMenu'
+              }
+            }
+          }
         ],
         menus: {
             variablesMenu: {
@@ -143,6 +155,10 @@
       };
     }
 
+
+    variableTrue(args, util){
+      return Scratch.Cast.toBoolean(vm.getVariableValue(util.target.id, args.VARIABLE));
+    }
     greenFlag(){
         vm.greenFlag();
     }
