@@ -349,6 +349,7 @@
     }
 
     whenKeyAction(args, util) {
+      const key = Scratch.Cast.toString(args.KEY_OPTION).toLowerCase();
       const pressed = util.ioQuery('keyboard', 'getKeyIsDown', [args.KEY_OPTION]);
       return (args.ACTION === 'released') ? !pressed : pressed;
     }
