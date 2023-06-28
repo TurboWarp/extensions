@@ -265,9 +265,9 @@
 
         //Create Modal
         var modal = document.createElement("dialog");
-        var span = document.createElement("span");
-        span.innerHTML = args.TEXT;
-        modal.appendChild(span);
+        var text = document.createElement("p");
+        text.textContent = args.TEXT;
+        modal.appendChild(text);
         document.body.appendChild(modal);
 
         //Create Close Button
@@ -309,9 +309,9 @@
 
       //Create Modal
       var modal = document.createElement("dialog");
-      var span = document.createElement("span");
-      span.innerHTML = args.TEXT;
-      modal.appendChild(span);
+      var text = document.createElement("p");
+      text.textContent = args.TEXT;
+      modal.appendChild(text);
       document.body.appendChild(modal);
 
       //Create input
