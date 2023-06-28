@@ -154,6 +154,25 @@
                 menu: 'DirectionKeys'
               }
             }
+          },
+          {
+            opcode: 'normalizeValue',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Normalize [VALUE] between [MIN] and [MAX]',
+            arguments: {
+              VALUE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0
+              },
+              MIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0
+              },
+              MAX: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100
+              }
+            }
           }
         ],
         menus: {
@@ -172,6 +191,11 @@
 
     variableTrue(args, util){
       return Scratch.Cast.toBoolean(vm.getVariableValue(util.target.id, args.VARIABLE));
+    }
+
+    normalizeValue(args, util){
+      const divisor = args.MAX - args.MIN;
+      return (args.VALUE - args.MIN) / divisor;
     }
 
     getDirectionKey(args, util){
