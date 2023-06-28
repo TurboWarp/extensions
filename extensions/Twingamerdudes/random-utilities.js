@@ -162,7 +162,7 @@
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: 100
               },
               MIN: {
                 type: Scratch.ArgumentType.NUMBER,
