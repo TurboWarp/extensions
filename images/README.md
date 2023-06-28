@@ -231,3 +231,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## ZXMushroom63/searchApi.svg
  - Created by [@CST1229](https://github.com/CST1229) and [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1596177193
+
+## veggiecan/LongmanDictionary.svg 
+- Created by [veggiecan](https://github.com/veggiecan0419) using the turbowarp costume editor
+- The ship is [this](https://www.ldoceonline.com/external/images/logo_home_smartphone.svg?version=1.2.61) logo from the [ldoceonline](https://www.ldoceonline.com/) website, just coloured black
