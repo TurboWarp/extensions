@@ -277,6 +277,7 @@
             util.startHats('randomutilities_modalClose');
             isModalOpen = false;
             modal.close();
+            modal.remove();
         });
 
         //CSS Hell
@@ -346,6 +347,7 @@
           util.startHats('randomutilities_modalClose');
           isModalOpen = false;
           modal.close();
+          modal.remove();
       });
 
       //More CSS Hell
@@ -372,6 +374,7 @@
         // @ts-ignore
         modalInput = input.value;
         modal.close();
+        modal.remove();
       });
 
       //More CSS Hell
