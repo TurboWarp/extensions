@@ -1,15 +1,27 @@
 (function(Scratch) {
   'use strict';
-  class DataAnalysis {
+  Scratch.translate.setup({
+    zh: {
+      name: '数据分析',
+      average: '[NUMBERS] 的平均数',
+      maximum: '[NUMBERS] 的最大数',
+      minimum: '[NUMBERS] 的最小数',
+      median: '[NUMBERS] 的中位数',
+      mode: '[NUMBERS] 的众数',
+      variance: '[NUMBERS] 的方差',
+    }
+  });
+
+  class dataAnalysis {
     getInfo() {
       return {
         id: 'qxsckdataanalysis',
-        name: 'Data Analysis',
+        name: Scratch.translate({ id: 'name', default: 'Data Analysis' }),
         blocks: [
           {
             opcode: 'average',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'average of [NUMBERS]',
+            text: Scratch.translate({ id: 'average', default: 'average of [NUMBERS]' }),
             arguments: {
               NUMBERS: {
                 type: Scratch.ArgumentType.STRING,
@@ -20,7 +32,7 @@
           {
             opcode: 'maximum',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'maximum of [NUMBERS]',
+            text: Scratch.translate({ id: 'maximum', default: 'maximum of [NUMBERS]' }),
             arguments: {
               NUMBERS: {
                 type: Scratch.ArgumentType.STRING,
@@ -31,7 +43,7 @@
           {
             opcode: 'minimum',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'minimum of [NUMBERS]',
+            text: Scratch.translate({ id: 'minimum', default: 'minimum of [NUMBERS]' }),
             arguments: {
               NUMBERS: {
                 type: Scratch.ArgumentType.STRING,
@@ -42,7 +54,7 @@
           {
             opcode: 'median',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'median of [NUMBERS]',
+            text: Scratch.translate({ id: 'median', default: 'median of [NUMBERS]' }),
             arguments: {
               NUMBERS: {
                 type: Scratch.ArgumentType.STRING,
@@ -53,7 +65,7 @@
           {
             opcode: 'mode',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'mode of [NUMBERS]',
+            text: Scratch.translate({ id: 'mode', default: 'mode of [NUMBERS]' }),
             arguments: {
               NUMBERS: {
                 type: Scratch.ArgumentType.STRING,
@@ -64,7 +76,7 @@
           {
             opcode: 'variance',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'variance of [NUMBERS]',
+            text: Scratch.translate({ id: 'variance', default: 'variance of [NUMBERS]' }),
             arguments: {
               NUMBERS: {
                 type: Scratch.ArgumentType.STRING,
@@ -128,5 +140,6 @@
       return sum / numbers.length;
     }
   }
-  Scratch.extensions.register(new DataAnalysis());
-}(Scratch));
+
+  Scratch.extensions.register(new dataAnalysis());
+})(Scratch);
