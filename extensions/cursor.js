@@ -230,7 +230,7 @@
     setCur(args) {
       const newCursor = Scratch.Cast.toString(args.cur);
       // Prevent setting cursor to "url(...), default" from causing fetch.
-      if (cursors.includes(newCursor)) {
+      if (cursors.includes(newCursor) || newCursor === 'none') {
         nativeCursor = newCursor;
         customCursorImageName = null;
         currentCanvasCursor = newCursor;
