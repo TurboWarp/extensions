@@ -82,6 +82,58 @@
               }
             }
           },
+
+          '---',
+
+          {
+            opcode: 'setStretchX',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set stretch x to [X]',
+            arguments: {
+              X: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100,
+              }
+            },
+            filter: [Scratch.TargetType.SPRITE],
+          },
+          {
+            opcode: 'setStretchY',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set stretch y to [Y]',
+            arguments: {
+              Y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100,
+              }
+            },
+            filter: [Scratch.TargetType.SPRITE],
+          },
+          {
+            opcode: 'changeStretchX',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'change stretch x by [DX]',
+            arguments: {
+              DX: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10
+              }
+            }
+          },
+          {
+            opcode: 'changeStretchY',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'change stretch y by [DY]',
+            arguments: {
+              DY: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10
+              }
+            }
+          },
+
+          '---',
+
           {
             opcode: 'getX',
             blockType: Scratch.BlockType.REPORTER,
@@ -106,6 +158,22 @@
     }
     changeStretch(args, util) {
       util.target[STRETCH_X] += Scratch.Cast.toNumber(args.DX);
+      util.target[STRETCH_Y] += Scratch.Cast.toNumber(args.DY);
+      forceUpdateDirectionAndScale(util.target);
+    }
+    setStretchX(args, util) {
+      util.target[STRETCH_X] = Scratch.Cast.toNumber(args.X);
+      forceUpdateDirectionAndScale(util.target);
+    }
+    setStretchY(args, util) {
+      util.target[STRETCH_Y] = Scratch.Cast.toNumber(args.Y);
+      forceUpdateDirectionAndScale(util.target);
+    }
+    changeStretchX(args, util) {
+      util.target[STRETCH_X] += Scratch.Cast.toNumber(args.DX);
+      forceUpdateDirectionAndScale(util.target);
+    }
+    changeStretchY(args, util) {
       util.target[STRETCH_Y] += Scratch.Cast.toNumber(args.DY);
       forceUpdateDirectionAndScale(util.target);
     }
