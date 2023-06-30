@@ -310,7 +310,7 @@
               'general background',
               'general border',
               'variable value box',
-              'varibale value text',
+              'variable value text',
               'list header',
               'list footer',
               'list value box',
@@ -344,7 +344,7 @@
         generalbackgroundColor = color;
       } else if (args.COLORABLE == 'variable value box') {
         variableValueBoxColor = color;
-      } else if (args.COLORABLE == 'varibale value text') {
+      } else if (args.COLORABLE == 'variable value text') {
         variableValueTextColor = color;
       } else if (args.COLORABLE == 'list header') {
         listHeaderColor = color;
