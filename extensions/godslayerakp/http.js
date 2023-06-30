@@ -274,7 +274,8 @@
                             'DELETE',
                             'HEAD',
                             'OPTIONS'
-                        ]
+                        ],
+                        acceptReporters: true
                     },
                     mimeType: {
                         items: [
@@ -312,7 +313,8 @@
                             'number',
                             'boolean',
                             'object'
-                        ]
+                        ],
+                        acceptReporters: true
                     }
                 }
             };
