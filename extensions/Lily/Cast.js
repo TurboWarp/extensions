@@ -13,8 +13,7 @@
             opcode: 'toType',
             blockType: Scratch.BlockType.REPORTER,
             text: 'cast [INPUT] to [TYPE]',
-            isDynamic: true,
-            output: null,
+            allowDropAnywhere: true,
             disableMonitor: true,
             arguments: {
               INPUT: {
