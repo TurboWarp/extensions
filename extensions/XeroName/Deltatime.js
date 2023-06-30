@@ -1,6 +1,7 @@
 // TurboWarp Extension : Deltatime by XeroName
 // First generation at 2023-06-21 KST
-// v1.1.0
+// Latest update at 2023-06-23 KST
+// v1.2.0
 
 
 
@@ -99,6 +100,17 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
             }
             // , hideFromPalette: true
           },
+//==================== Static FPS Detection Blocks ====================//
+          {
+            // Variable "vmFPS" gets the round value of actual FPS.
+            // So at the situations ultra-low FPS like freeze screen, the FPS may goes 0, which means the Dt will be "Infinite" value.
+            // Using Dt with multiplying this boolean block can prevent "Infinite Delta" situation.
+            // But in basically, you should not make your computer gets freeze that long...
+            opcode: 'isFPSposi',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'FPS > 0'
+            // , hideFromPalette: true
+          },
 //==================== Calculator Blocks ====================//
           {
             blockType: "label",
@@ -146,7 +158,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
                 defaultValue: '8'
               }
             }
-            // , hideFromPalette: true
           },
           {
             opcode: 'getFilterStrength',
@@ -214,6 +225,10 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
         case 'fps' : return vmFPS;
       }
     }
+//========== Return of <Is FPS greater than 0 ?> ==========//
+    isFPSposi() {
+      return (vmFPS > 0);
+    }
 //========== Calculators ==========//
     setCalculatorStandard({ FPS }) {
       calcStandFPS = cast.toNumber(FPS);
@@ -231,7 +246,7 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
     }
     setFilterStrength({ STRENGTH }) {
       const fStren= cast.toNumber(STRENGTH);
-      if (fStren <= 1) {filtStren = 1} else if (fStren >= maxFiltStren) {filtStren = maxFiltStren} else {filtStren = fStren};
+      if (fStren <= 1) {filtStren = 1;} else if (fStren >= maxFiltStren) {filtStren = maxFiltStren;} else {filtStren = fStren;};
     }
 //========== Block Function/Return Sections END ==========//
 
