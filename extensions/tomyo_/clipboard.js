@@ -30,9 +30,6 @@
 
 
   class Extensionclipboard {
-    constructor() {
-      this.poppup = 'false'
-    }
 
     getInfo() {
       return {
