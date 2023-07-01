@@ -69,6 +69,17 @@
             }
           },
           {
+            opcode: 'addTextToModal',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Add [TEXT] to the current modal',
+            arguments: {
+                TEXT: {
+                    type: Scratch.ArgumentType.STRING,
+                    defaultValue: 'Hello World!'
+                }
+            }
+          },
+          {
             opcode: 'inputModalValue',
             blockType: Scratch.BlockType.REPORTER,
             text: 'Input Modal Value',
@@ -198,6 +209,19 @@
       return (args.VALUE - args.MIN) / divisor;
     }
 
+    addTextToModal(args, util){
+      if(isModalOpen){
+        const text = args.TEXT;
+
+        //select the first <dialog> element
+        var modal = document.querySelector("dialog");
+        var textNode = document.createTextNode(text);
+        var breakNode = document.createElement("br");
+        modal.appendChild(breakNode);
+        modal.appendChild(textNode);
+      }
+    }
+
     getDirectionKey(args, util){
       switch(args.KEY){
         case 'up':
@@ -262,14 +286,13 @@
       return newText;
     }
     showModal(args, util){
-
-        //Create Modal
+      //Create Modal
+      if(!isModalOpen){
         var modal = document.createElement("dialog");
         var text = document.createElement("p");
         text.textContent = args.TEXT;
         modal.appendChild(text);
         document.body.appendChild(modal);
-
         //Create Close Button
         var close = document.createElement("button");
         close.innerHTML = "X";
@@ -279,7 +302,6 @@
             modal.close();
             modal.remove();
         });
-
         //CSS Hell
         close.style.position = "absolute";
         close.style.top = "0";
@@ -293,7 +315,6 @@
         close.style.transformOrigin = "50% 50%";
         close.style.zIndex = "100";
         close.style.borderRadius = "0 0 0 5px";
-
         //Finish Modal
         modal.style.width = "300px";
         modal.style.padding = "20px 30px";
@@ -304,10 +325,12 @@
         modal.showModal();
         isModalOpen = true;
         util.startHats('randomutilities_modalOpen');
+      }
     }
 
     showModalWithInput(args, util){
 
+      if(!isModalOpen){
       //Create Modal
       var modal = document.createElement("dialog");
       var text = document.createElement("p");
@@ -402,7 +425,8 @@
       isModalOpen = true;
       modal.showModal();
       util.startHats('randomutilities_modalOpen');
+    }
   }
-  }
-  Scratch.extensions.register(new RandomUtils());
+}
+Scratch.extensions.register(new RandomUtils());
 })(Scratch);
