@@ -1,3 +1,7 @@
+# Changes
+
+Added 5 new extensions.
+
 # TurboWarp Extension Gallery
 
 User-contributed unsandboxed extension gallery for TurboWarp.
