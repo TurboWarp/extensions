@@ -106,7 +106,15 @@
       }
 
       clipboard() {
-        return navigator.clipboard.readText();
+        if (navigator.clipboard && navigator.clipboard.readText) {
+        return Scratch.canReadClipboard().then(allowed => {
+          if (allowed) {
+            return navigator.clipboard.readText();
+          }
+          return '';
+        });
+      }
+      return '';
       }
 
       getLastPastedText() {
