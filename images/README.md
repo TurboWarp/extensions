@@ -231,3 +231,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## ZXMushroom63/searchApi.svg
  - Created by [@CST1229](https://github.com/CST1229) and [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1596177193
+
+## Clipboard.svg
+ - Created by [@AdamMady](https://github.com/AdamMady/)
