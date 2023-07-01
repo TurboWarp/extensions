@@ -16,7 +16,7 @@
 
 (function(Scratch) {
     'use strict';
-    
+
 
     if (!Scratch.extensions.unsandboxed) {
       throw new Error('Clipboard must run unsandboxed');
@@ -114,6 +114,6 @@
         return pastedText;
       }
     }
-  
+
     Scratch.extensions.register(new clipboardExtension());
   })(Scratch);
