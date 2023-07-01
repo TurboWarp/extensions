@@ -74,9 +74,42 @@
             text: 'Add [TEXT] to the current modal',
             arguments: {
                 TEXT: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: 'Hello World!'
+                  type: Scratch.ArgumentType.STRING,
+                  defaultValue: 'Hello World!'
                 }
+            }
+          },
+          {
+            opcode: 'changeDefaultModalText',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Change default modal text to [TEXT]',
+            arguments: {
+                TEXT: {
+                  type: Scratch.ArgumentType.STRING,
+                  defaultValue: 'Hello World!'
+                }
+            }
+          },
+          {
+            opcode: 'changeDefaultModalColor',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Change modal background color to [COLOR]',
+            arguments: {
+              COLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: '#696969'
+              }
+            }
+          },
+          {
+            opcode: 'changeDefaultModalTextColor',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Change modal text color to [COLOR]',
+            arguments: {
+              COLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: '#ffffff'
+              }
             }
           },
           {
@@ -214,12 +247,31 @@
         const text = args.TEXT;
 
         //select the first <dialog> element
-        var modal = document.querySelector("dialog");
-        var textNode = document.createTextNode(text);
-        var breakNode = document.createElement("br");
+        const modal = document.querySelector("dialog");
+        const textNode = document.createTextNode(text);
+        const breakNode = document.createElement("br");
         modal.appendChild(breakNode);
         modal.appendChild(textNode);
       }
+    }
+
+    changeDefaultModalText(args, util){
+      const defaultModalText = args.TEXT;
+      const modal = document.querySelector("dialog");
+      const text = document.getElementById("randomutilities_modalText");
+      text.textContent = defaultModalText;
+    }
+
+    changeDefaultModalColor(args, util){
+      const defaultModalColor = args.COLOR;
+      const modal = document.querySelector("dialog");
+      modal.style.backgroundColor = defaultModalColor;
+    }
+
+    changeDefaultModalTextColor(args, util){
+      const defaultModalTextColor = args.COLOR;
+      const modal = document.querySelector("dialog");
+      modal.style.color = defaultModalTextColor;
     }
 
     getDirectionKey(args, util){
@@ -290,6 +342,7 @@
       if(!isModalOpen){
         var modal = document.createElement("dialog");
         var text = document.createElement("p");
+        text.id = "randomutilities_modalText";
         text.textContent = args.TEXT;
         modal.appendChild(text);
         document.body.appendChild(modal);
@@ -334,6 +387,7 @@
       //Create Modal
       var modal = document.createElement("dialog");
       var text = document.createElement("p");
+      text.id = "randomutilities_modalText";
       text.textContent = args.TEXT;
       modal.appendChild(text);
       document.body.appendChild(modal);
