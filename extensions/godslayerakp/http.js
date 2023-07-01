@@ -206,7 +206,7 @@
          */
         constructor() {
             this.clearAll();
-            this.showingExtra = false
+            this.showingExtra = false;
         }
         getInfo() {
             return {
