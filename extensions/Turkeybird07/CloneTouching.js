@@ -1,21 +1,15 @@
 (function(Scratch) {
     'use strict';
 
-    const menuico = "";
     function getVariableByName(name, type) {
-        // loop through all sprites
         for (const target of Scratch.vm.runtime.targets) {
-            // ignore clones
             if (!target.isOriginal) continue;
-            // loop through all variables in that sprite
             for (const variable of Object.values(target.variables)) {
-                // check if the variable's name and type matches
                 if (variable.name === name && variable.type === type) {
                     return {target, variable};
                 }
             }
         }
-        // if no variable was found, return null
         return null;
     }
 
@@ -29,7 +23,6 @@
                 color1: '#FFAB19',
                 color2: '#EC9C13',
                 color3: '#CF8B17',
-                menuIconURI: menuico,
                 blocks: [
                     {
                         opcode: 'touchclonewithvar',
