@@ -201,8 +201,6 @@
       this._toggleSoundState(args, util, false);
     }
 
-		// Scratch.vm.runtime.targets[1].sprite.soundBank.audioEngine.audioContext.resume()
-
     _toggleSoundState(args, util, state) {
       const sprite = util.target.sprite;
       const audioContext = sprite.soundBank.audioEngine.audioContext;
