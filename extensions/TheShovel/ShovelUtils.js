@@ -354,15 +354,14 @@
       return fps;
     }
 
-    //survexe1pc
     deleteSpriteNoConfirm(args) {
-      //TAKEN FROM SHOVEL UTILS, 
       const target = vm.runtime.getSpriteTargetByName(args.SPRITE);
       if (!target || target.isStage) {
         return;
       }
       vm.deleteSprite(target.id);
     }
+    //survexe1pc
     deleteCostume(args) {
       const target = vm.runtime.getSpriteTargetByName(args.SPRITE);
       if (!target || target.isStage) {
