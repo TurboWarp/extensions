@@ -45,6 +45,12 @@
 
         blocks: [
           {
+            opcode: 'always',
+            blockType: Scratch.BlockType.HAT,
+            text: 'loop script without stopping',
+            isEdgeActivated: false
+          },
+          {
             opcode: 'isExactly',
 
             blockType: Scratch.BlockType.BOOLEAN,
@@ -351,6 +357,8 @@
       return STRING.toString().replace(new RegExp(REGEX, 'gi'), NEWSTRING);
     }
   }
-
+setInterval(() => {
+    const startedThreads = Scratch.vm.runtime.startHats('utilities_always');
+  }, 10);
   Scratch.extensions.register(new Utilities());
 })(Scratch);
