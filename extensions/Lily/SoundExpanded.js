@@ -25,7 +25,7 @@
         color1: "#CF63CF",
         name: "Sound Expanded",
         blocks: [
-					{
+          {
             opcode: 'startSoundOnLoop',
             blockType: Scratch.BlockType.COMMAND,
             text: 'start sound [SOUND] on loop',
@@ -162,7 +162,7 @@
             items: '_getTargets'
           }
         }
-      }
+      };
     }
 
     startSoundOnLoop(args, util) {
