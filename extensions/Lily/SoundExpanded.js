@@ -151,7 +151,7 @@
         menus: {
           attribute: {
             acceptReporters: false,
-            items: ['length', 'channels', 'sample rate', 'current time']
+            items: ['length', 'channels', 'sample rate']
           },
           effect: {
             acceptReporters: false,
@@ -276,8 +276,6 @@
           return soundBuffer.numberOfChannels;
         case ('sample rate'):
           return soundBuffer.sampleRate;
-        case ('current time'):
-          return soundPlayer.audioEngine.audioContext.currentTime;
       }
     }
 
