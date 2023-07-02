@@ -139,6 +139,31 @@
             }
           },
           {
+            opcode: 'deleteSpriteNoConfirm',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Delete sprite [SPRITE] | No Confirmation',
+            arguments: {
+              SPRITE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Sprite1'
+              }
+            }
+          }, {
+            opcode: 'deleteCostume',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Delete costume [COSNAME] in [SPRITE]',
+            arguments: {
+              COSNAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'costume1'
+              },
+              SPRITE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Sprite1'
+              }
+            }
+          },
+          {
             opcode: 'setedtarget',
             blockType: Scratch.BlockType.COMMAND,
             text: 'Set editing target to [NAME]',
@@ -327,6 +352,23 @@
 
     getfps(){
       return fps;
+    }
+
+    //survexe1pc
+    deleteSpriteNoConfirm(args) {
+      //TAKEN FROM SHOVEL UTILS, 
+      const target = vm.runtime.getSpriteTargetByName(args.SPRITE);
+      if (!target || target.isStage) {
+        return;
+      }
+      vm.deleteSprite(target.id);
+    }
+    deleteCostume(args) {
+      const target = vm.runtime.getSpriteTargetByName(args.SPRITE);
+      if (!target || target.isStage) {
+        return;
+      }
+      target.deleteCostume(target.getCostumeIndexByName(args.COSNAME));
     }
   }
 
