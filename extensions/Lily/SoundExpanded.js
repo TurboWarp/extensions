@@ -26,10 +26,9 @@
         name: "Sound Expanded",
         blocks: [
 					{
-            opcode: 'startSoundAtSeconds',
+            opcode: 'startSoundOnLoop',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'start sound [SOUND] from [START] seconds',
-            hideFromPalette: true,
+            text: 'start sound [SOUND] on loop',
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND
@@ -37,55 +36,6 @@
               START: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 0
-              }
-            }
-          },
-          {
-            opcode: 'playSoundAtSecondsUntilDone',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'play sound [SOUND] at [START] seconds until done',
-            hideFromPalette: true,
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND
-              },
-              START: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
-              }
-            }
-          },
-          {
-            opcode: 'startSoundAndStopAtSeconds',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'start sound [SOUND] and stop at [END] seconds',
-            hideFromPalette: true,
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND
-              },
-              END: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 3
-              }
-            }
-          },
-          {
-            opcode: 'startSoundDuringTimeframe',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'start sound [SOUND] from [START] and stop at [END] seconds',
-            hideFromPalette: true,
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND
-              },
-              START: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
-              },
-              END: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 3
               }
             }
           },
@@ -106,7 +56,6 @@
             opcode: 'pauseSound',
             blockType: Scratch.BlockType.COMMAND,
             text: 'pause sound [SOUND]',
-            hideFromPalette: true,
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND
@@ -117,29 +66,6 @@
             opcode: 'resumeSound',
             blockType: Scratch.BlockType.COMMAND,
             text: 'resume sound [SOUND]',
-            hideFromPalette: true,
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND
-              }
-            }
-          },
-          {
-            opcode: 'pauseAllSounds',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'pause all sounds',
-            hideFromPalette: true,
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND
-              }
-            }
-          },
-          {
-            opcode: 'resumeAllSounds',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'resume all sounds',
-            hideFromPalette: true,
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND
@@ -149,32 +75,38 @@
 
           '---',
 
-					{
-						opcode: 'setLooping',
-						blockType: Scratch.BlockType.COMMAND,
-						text: 'set looping on [SOUND] to [STATE]',
-						arguments: {
-							SOUND: {
-								type: Scratch.ArgumentType.SOUND
-							},
-							STATE: {
-								type: Scratch.ArgumentType.STRING,
-								menu: 'state'
-							}
-						}
-					},
-					{
-						opcode: 'isLooping',
-						blockType: Scratch.BlockType.BOOLEAN,
-						text: '[SOUND] is looping?',
-						arguments: {
-							SOUND: {
-								type: Scratch.ArgumentType.SOUND
-							}
-						}
-					},
+          {
+            opcode: 'startLooping',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'start looping [SOUND]',
+            arguments: {
+              SOUND: {
+                type: Scratch.ArgumentType.SOUND
+              }
+            }
+          },
+          {
+            opcode: 'stopLooping',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'stop looping [SOUND]',
+            arguments: {
+              SOUND: {
+                type: Scratch.ArgumentType.SOUND
+              }
+            }
+          },
+          {
+            opcode: 'isLooping',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: '[SOUND] is looping?',
+            arguments: {
+              SOUND: {
+                type: Scratch.ArgumentType.SOUND
+              }
+            }
+          },
 
-					'---',
+          '---',
 
           {
             opcode: 'isSoundPlaying',
@@ -217,10 +149,6 @@
           }
         ],
         menus: {
-          state: {
-            acceptReporters: false,
-            items: ['enabled', 'disabled']
-          },
           attribute: {
             acceptReporters: false,
             items: ['length', 'channels', 'sample rate', 'current time']
@@ -237,7 +165,7 @@
       }
     }
 
-    startSoundAtSeconds(args, util) {
+    startSoundOnLoop(args, util) {
       const index = this._getSoundIndex(args.SOUND, util);
       if (index < 0) return 0;
       const target = util.target;
@@ -246,7 +174,12 @@
 
       const soundId = sprite.sounds[index].soundId;
       soundCategory._addWaitingSound(target.id, soundId);
-      sprite.soundBank.playSound(util.target, soundId, duration);
+      sprite.soundBank.playSound(util.target, soundId);
+
+      const soundPlayer = sprite.soundBank.soundPlayers[soundId];
+
+      if (!soundPlayer.outputNode) return;
+      soundPlayer.outputNode.loop = true;
     }
 
     stopSound(args, util) {
@@ -260,7 +193,33 @@
       soundBank.stop(target, soundId);
     }
 
-		setLooping(args, util) {
+    pauseSound(args, util) {
+      this._toggleSoundState(args, util, true);
+    }
+
+    resumeSound(args, util) {
+      this._toggleSoundState(args, util, false);
+    }
+
+    _toggleSoundState(args, util, state) {
+      const index = this._getSoundIndex(args.SOUND, util);
+      if (index < 0) return false;
+      const sprite = util.target.sprite;
+
+      const soundId = sprite.sounds[index].soundId;
+      const soundPlayer = sprite.soundBank.soundPlayers[soundId];
+      const audioContext = soundPlayer.audioEngine.audioContext;
+
+      if (state) {
+        audioContext.suspend();
+        return;
+      } else {
+        audioContext.resume();
+        return;
+      }
+    }
+
+    startLooping(args, util) {
       const index = this._getSoundIndex(args.SOUND, util);
       if (index < 0) return false;
       const sprite = util.target.sprite;
@@ -268,10 +227,11 @@
       const soundId = sprite.sounds[index].soundId;
       const soundPlayer = sprite.soundBank.soundPlayers[soundId];
 
-			soundPlayer.outputNode.loop = (args.STATE === 'enabled') ? true : false;
-		}
+      if (!soundPlayer.outputNode) return;
+      soundPlayer.outputNode.loop = true;
+    }
 
-		isLooping(args, util) {
+    stopLooping(args, util) {
       const index = this._getSoundIndex(args.SOUND, util);
       if (index < 0) return false;
       const sprite = util.target.sprite;
@@ -279,8 +239,21 @@
       const soundId = sprite.sounds[index].soundId;
       const soundPlayer = sprite.soundBank.soundPlayers[soundId];
 
-			return soundPlayer.outputNode.loop;
-		}
+      if (!soundPlayer.outputNode) return;
+      soundPlayer.outputNode.loop = false;
+    }
+
+    isLooping(args, util) {
+      const index = this._getSoundIndex(args.SOUND, util);
+      if (index < 0) return false;
+      const sprite = util.target.sprite;
+
+      const soundId = sprite.sounds[index].soundId;
+      const soundPlayer = sprite.soundBank.soundPlayers[soundId];
+
+      if (!soundPlayer.outputNode) return false;
+      return soundPlayer.outputNode.loop;
+    }
 
     isSoundPlaying(args, util) {
       const index = this._getSoundIndex(args.SOUND, util);
@@ -308,8 +281,8 @@
           return soundBuffer.numberOfChannels;
         case ('sample rate'):
           return soundBuffer.sampleRate;
-				case ('current time'):
-					return soundPlayer.audioEngine.audioContext.currentTime;
+        case ('current time'):
+          return soundPlayer.audioEngine.audioContext.currentTime;
       }
     }
 
