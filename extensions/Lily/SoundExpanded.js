@@ -25,7 +25,7 @@
         color1: "#CF63CF",
         name: "Sound Expanded",
         blocks: [
-          {
+					{
             opcode: 'startSoundOnLoop',
             blockType: Scratch.BlockType.COMMAND,
             text: 'start sound [SOUND] on loop',
@@ -53,9 +53,9 @@
           '---',
 
           {
-            opcode: 'pauseSound',
+            opcode: 'pauseSounds',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'pause sound [SOUND]',
+            text: 'pause all sounds',
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND
@@ -63,9 +63,9 @@
             }
           },
           {
-            opcode: 'resumeSound',
+            opcode: 'resumeSounds',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'resume sound [SOUND]',
+            text: 'resume all sounds',
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND
@@ -162,7 +162,7 @@
             items: '_getTargets'
           }
         }
-      };
+      }
     }
 
     startSoundOnLoop(args, util) {
@@ -193,11 +193,11 @@
       soundBank.stop(target, soundId);
     }
 
-    pauseSound(args, util) {
+    pauseSounds(args, util) {
       this._toggleSoundState(args, util, true);
     }
 
-    resumeSound(args, util) {
+    resumeSounds(args, util) {
       this._toggleSoundState(args, util, false);
     }
 
@@ -205,10 +205,7 @@
       const index = this._getSoundIndex(args.SOUND, util);
       if (index < 0) return false;
       const sprite = util.target.sprite;
-
-      const soundId = sprite.sounds[index].soundId;
-      const soundPlayer = sprite.soundBank.soundPlayers[soundId];
-      const audioContext = soundPlayer.audioEngine.audioContext;
+      const audioContext = sprite.soundBank.audioEngine.audioContext;
 
       if (state) {
         audioContext.suspend();
