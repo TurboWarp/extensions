@@ -18,11 +18,6 @@
         color3: '#6d1212',
         blocks: [
           {
-            opcode: 'greenFlag',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Green Flag',
-          },
-          {
             opcode: 'showModal',
             blockType: Scratch.BlockType.COMMAND,
             text: 'Show Modal [TEXT] with the background [COLOR] and text color [TCOLOR]',
@@ -134,112 +129,9 @@
             blockType: Scratch.BlockType.HAT,
             text: 'When a modal is closed',
             isEdgeActivated: false
-          },
-          {
-            opcode: 'setVariableIfElse',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Set [VARIABLE] to [VALUE] if [CONDITION] else [ELSE]',
-            arguments: {
-                VARIABLE: {
-                    type: Scratch.ArgumentType.STRING,
-                    menu: 'variablesMenu'
-                },
-                VALUE: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: 'Hello World!'
-                },
-                CONDITION: {
-                    type: Scratch.ArgumentType.BOOLEAN,
-                    defaultValue: true
-                },
-                ELSE: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: 'Goodbye World!'
-                }
-            }
-          },
-          {
-            opcode: 'swapLetters',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'Swap letters in [TEXT] at index [INDEX1] and [INDEX2]',
-            arguments: {
-                TEXT: {
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: 'Hello World!'
-                },
-                INDEX1: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 0
-                },
-                INDEX2: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 1
-                }
-              }
-          },
-          {
-            opcode: 'variableTrue',
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: '[VARIABLE]',
-            arguments: {
-              VARIABLE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'variablesMenu'
-              }
-            }
-          },
-          {
-            opcode: 'getDirectionKey',
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: 'Is Direction Key [KEY] Pressed?',
-            arguments: {
-              KEY: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'DirectionKeys'
-              }
-            }
-          },
-          {
-            opcode: 'normalizeValue',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'Normalize [VALUE] between [MIN] and [MAX]',
-            arguments: {
-              VALUE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100
-              },
-              MIN: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
-              },
-              MAX: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100
-              }
-            }
           }
-        ],
-        menus: {
-            variablesMenu: {
-                acceptReporters: false,
-                items: 'getVariables'
-            },
-            DirectionKeys: {
-              acceptReporters: false,
-              items: ['up', 'down', 'left', 'right']
-            }
-        }
+        ]
       };
-    }
-
-
-    variableTrue(args, util){
-      return Scratch.Cast.toBoolean(vm.getVariableValue(util.target.id, args.VARIABLE));
-    }
-
-    normalizeValue(args, util){
-      const divisor = args.MAX - args.MIN;
-      return (args.VALUE - args.MIN) / divisor;
     }
 
     addTextToModal(args, util){
@@ -274,68 +166,12 @@
       modal.style.color = defaultModalTextColor;
     }
 
-    getDirectionKey(args, util){
-      switch(args.KEY){
-        case 'up':
-          return util.ioQuery('keyboard', 'getKeyIsDown', ["up arrow"]) || util.ioQuery('keyboard', 'getKeyIsDown', ["w"]);
-        case 'down':
-          return util.ioQuery('keyboard', 'getKeyIsDown', ["down arrow"]) || util.ioQuery('keyboard', 'getKeyIsDown', ["s"]);
-        case 'left':
-          return util.ioQuery('keyboard', 'getKeyIsDown', ["left arrow"]) || util.ioQuery('keyboard', 'getKeyIsDown', ["a"]);
-        case 'right':
-          return util.ioQuery('keyboard', 'getKeyIsDown', ["right arrow"]) || util.ioQuery('keyboard', 'getKeyIsDown', ["d"]);
-      }
-      return false;
-    }
-    greenFlag(){
-        vm.greenFlag();
-    }
-
     IsModalOpen(){
         return isModalOpen;
     }
 
-    setVariableIfElse(args, util){
-        vm.setVariableValue(util.target.id, args.VARIABLE, args.CONDITION ? args.VALUE : args.ELSE);
-    }
-
     inputModalValue(){
         return modalInput;
-    }
-
-    //Get variables made by LilyMakesThings
-    getVariables() {
-        // @ts-expect-error - Blockly not typed yet
-        // eslint-disable-next-line no-undef
-        const variables = typeof Blockly === 'undefined' ? [] : Blockly.getMainWorkspace()
-          .getVariableMap()
-          .getVariablesOfType('')
-          .map(model => ({
-            text: model.name,
-            value: model.getId()
-          }));
-        if (variables.length > 0) {
-          return variables;
-        } else {
-          return [{ text: "", value: "" }];
-        }
-    }
-
-    swapLetters(args){
-      //Get arguments
-      const text = args.TEXT;
-      const index1 = args.INDEX1;
-      const index2 = args.INDEX2;
-
-      //Swap letters
-      let newText = text.split('');
-      let temp = newText[index1];
-      newText[index1] = newText[index2];
-      newText[index2] = temp;
-
-      //Return new text
-      newText = newText.join('');
-      return newText;
     }
     showModal(args, util){
       //Create Modal
