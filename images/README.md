@@ -207,6 +207,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## mdwalters/notifications.svg
  - Created by [@NexusKitten](https://scratch.mit.edu/users/namelesscat/).
+ - Modified by [JeremyGamer13](https://scratch.mit.edu/users/JeremyGamer13/).
 
 ## Lily/MoreTimers.svg
 - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).
