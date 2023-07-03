@@ -1,7 +1,7 @@
 // TurboWarp Extension : Deltatime by XeroName
 // First generation at 2023-06-21 KST
-// Latest update at 2023-06-23 KST
-// v1.2.1
+// Latest update at 2023-07-04 KST
+// v1.2.2
 
 
 
@@ -96,8 +96,8 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
                 type: Scratch.ArgumentType.STRING,
                 menu: 'target_menu'
               }
-            }
-            // , hideFromPalette: true
+            },
+            hideFromPalette: true
           },
 //==================== Static FPS Detection Blocks ====================//
           {
@@ -133,7 +133,7 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
           {
             opcode: 'calcMultiplyValue',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Multiply value to Move/Rotate [DISTANCE]',
+            text: 'Value to Move/Rotate [DISTANCE]',
             arguments: {
               DISTANCE: {
                 type: Scratch.ArgumentType.NUMBER,
