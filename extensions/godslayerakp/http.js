@@ -387,7 +387,7 @@
                             },
                             value: {
                                 type: ArgumentType.STRING,
-                                defaultValue: 'your mom :trel:'
+                                defaultValue: 'data'
                             }
                         },
                         text: 'set [path] to [value] in request options',
