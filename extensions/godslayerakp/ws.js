@@ -30,7 +30,7 @@
                         },
                         text: 'connect to [URL]'
                     },
-                    "---",
+                    '---',
                     {
                         opcode: 'onError',
                         blockType: BlockType.HAT,
@@ -42,7 +42,7 @@
                         blockType: BlockType.BOOLEAN,
                         text: 'has connection errored?'
                     },
-                    "---",
+                    '---',
                     {
                         opcode: 'onOpen',
                         blockType: BlockType.HAT,
@@ -54,7 +54,7 @@
                         blockType: BlockType.BOOLEAN,
                         text: 'is connection connected?'
                     },
-                    "---",
+                    '---',
                     {
                         opcode: 'onMessage',
                         blockType: BlockType.HAT,
@@ -83,7 +83,7 @@
                         },
                         text: 'send message [PAYLOAD]'
                     },
-                    "---",
+                    '---',
                     {
                         opcode: 'onClose',
                         blockType: BlockType.HAT,
