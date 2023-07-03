@@ -123,8 +123,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545.
 
 ## 0832/rxFS2.svg
- - Created by @0832k12 in https://github.com/TurboWarp/extensions/pull/291.
- - Background from https://app.haikei.app/.
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1604175329.
 
 ## NOname-awa/math-and-string.svg
  - Created by @NOname in https://github.com/TurboWarp/extensions/pull/316.
