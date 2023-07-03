@@ -223,7 +223,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
 
 ## navigator.svg
- - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1593886519
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1602552989
 
 ## qxsck/var-and-list.svg
  - Created by [@CST1229](https://github.com/CST1229) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595642879
