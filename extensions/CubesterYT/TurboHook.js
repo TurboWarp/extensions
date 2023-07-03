@@ -17,6 +17,10 @@
     }
   };
 
+  function hexToDecimal(hex) {
+          return parseInt(hex.replace("#",""), 16);
+        }
+
   class TurboHook {
     getInfo() {
       return {
@@ -105,11 +109,12 @@
       hookURL = Scratch.Cast.toString(hookURL);
       let data = parseOrEmptyObject(hookDATA);
       if (data.embeds) {
+        //left empty on purpose
       } else if (hookDATA.includes("json ")) {
         const jsonFix = hookDATA.replace("json ", "");
         data = JSON.parse(jsonFix);
       } else if (!data.content) {
-        data.content = "(empty)";
+        data.content = "(empty)"
       };
       Scratch.fetch(hookURL, {
         method: "POST",
@@ -176,9 +181,6 @@
       } else if (MENU1 == "timestamp" && MENU2 == "empty") {
         return JSON.stringify({ timestamp: DATA });
       } else if (MENU1 == "color" && MENU2 == "empty") {
-        function hexToDecimal(hex) {
-          return parseInt(hex.replace("#",""), 16);
-        }
         const color = JSON.stringify(hexToDecimal(DATA));
         return JSON.stringify({ color: color });
       } else {
