@@ -244,7 +244,7 @@
                         blockType: BlockType.REPORTER,
                         text: 'status text'
                     },
-                    "---",
+                    '---',
                     {
                         opcode: 'getHeaderJSON',
                         blockType: BlockType.REPORTER,
@@ -261,7 +261,7 @@
                         },
                         text: 'get [name] from header'
                     },
-                    "---",
+                    '---',
                     {
                         opcode: 'requestComplete',
                         blockType: BlockType.BOOLEAN,
@@ -277,7 +277,7 @@
                         blockType: BlockType.BOOLEAN,
                         text: 'request succeeded?'
                     },
-                    "---",
+                    '---',
                     {
                         opcode: 'onResponse',
                         blockType: BlockType.HAT,
@@ -292,7 +292,7 @@
                     },
                     {
                         blockType: Scratch.BlockType.LABEL,
-                        text: "Request"
+                        text: 'Request'
                     },
                     {
                         opcode: 'setMimeType',
@@ -457,31 +457,31 @@
                     },
                     mimeType: {
                         items: [
-                            "application/javascript",
-                            "application/ogg",
-                            "application/pdf",
-                            "application/json",
-                            "application/ld+json",
-                            "application/xml",
-                            "application/zip",
-                            "audio/mpeg",
-                            "image/gif",
-                            "image/jpeg",
-                            "image/png",
-                            "image/tiff",
-                            "image/x-icon",
-                            "image/svg+xml",
-                            "text/css",
-                            "text/csv",
-                            "text/html",
-                            "text/plain",
-                            "text/xml",
-                            "video/mpeg",
-                            "video/mp4",
-                            "video/x-ms-wmv",
-                            "video/x-msvideo",
-                            "video/x-flv",
-                            "video/webm"
+                            'application/javascript',
+                            'application/ogg',
+                            'application/pdf',
+                            'application/json',
+                            'application/ld+json',
+                            'application/xml',
+                            'application/zip',
+                            'audio/mpeg',
+                            'image/gif',
+                            'image/jpeg',
+                            'image/png',
+                            'image/tiff',
+                            'image/x-icon',
+                            'image/svg+xml',
+                            'text/css',
+                            'text/csv',
+                            'text/html',
+                            'text/plain',
+                            'text/xml',
+                            'video/mpeg',
+                            'video/mp4',
+                            'video/x-ms-wmv',
+                            'video/x-msvideo',
+                            'video/x-flv',
+                            'video/webm'
                         ],
                         acceptReporters: true
                     }
