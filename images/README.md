@@ -168,11 +168,11 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) and [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/498.
 
 ## Lily/ClonesPlus.svg
- - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/382.
+ - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/656.
  - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-## Lily/TempVariables.svg
- - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/410.
+## Lily/TempVariables2.svg
+ - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/656.
 
 ## obviousAlexC/SensingPlus.svg
  - Created by [@David-Orangemoon](https://scratch.mit.edu/users/pinksheep2917/) in https://github.com/TurboWarp/extensions/pull/379.
@@ -206,7 +206,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@Juenjos](https://github.com/Juenjos) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1573040329
 
 ## Lily/MoreTimers.svg
-- Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).
+- Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/656.
 - Timer SVG based from https://www.svgrepo.com/svg/2045/stopwatch under CC0.
 
 ## rixxyx.svg
@@ -230,3 +230,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## ZXMushroom63/searchApi.svg
  - Created by [@CST1229](https://github.com/CST1229) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1596158611
+
+## Lily/LooksPlus.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
