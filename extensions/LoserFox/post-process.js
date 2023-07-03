@@ -421,7 +421,7 @@ rendererDrawPrefix();
       switch (drawprogram_mode){
         case "glitch":
           gl.useProgram(drawprogram);
-          setUniform1f(gl,"_Time", Date.now() / 1000.0);
+          setUniform1f(gl,"_Time", Math.random());
       }
     }
     class postprocessing {
