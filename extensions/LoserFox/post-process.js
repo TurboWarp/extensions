@@ -157,6 +157,7 @@
       1, 1,
     ];
     function getUniformLocation(gl,uname){
+      gl.useProgram(drawprogram);
       if (uniformLocationBuffer[uname] == null){
         uniformLocationBuffer[uname] = gl.getUniformLocation(drawprogram, uname);
       }
@@ -164,6 +165,10 @@
   }
       function setUniform1f(gl,uname,value){
         gl.uniform1f(getUniformLocation(gl,uname),value);
+
+      }
+      function setUniform1i(gl,uname,value){
+        gl.uniform1i(getUniformLocation(gl,uname),value);
 
       }
     function setUniform2fv (gl,uname,value1,value2){
@@ -226,7 +231,7 @@
       gl.deleteProgram(program);
     }
 
-    function initializationShader(){
+    function initShader(){
       var programs = {
         none: null,
         glitch: null,
@@ -243,7 +248,24 @@
       programs.pointillism = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,PointillismShaderCode));
       return programs;
     }
-
+    function initShaderUniform(programs){
+      gl.useProgram(programs.glitch);
+      gl.uniform2fv( gl.getUniformLocation(programs.glitch,"_BlockSize"),[16,16]);
+      gl.uniform1f( gl.getUniformLocation(programs.glitch, "_Amplitude"), 0.1);
+      gl.uniform1f( gl.getUniformLocation(programs.glitch, "_Time"), 0);
+      gl.uniform1i( gl.getUniformLocation(programs.glitch, "_Rgb"), 0);
+      gl.useProgram(programs.pointillism);
+      gl.uniform1f( gl.getUniformLocation(programs.pointillism, "u_size"), 0.0001);
+      gl.uniform1f( gl.getUniformLocation(programs.pointillism, "u_threshold"), 0.7);
+      gl.uniform2fv( gl.getUniformLocation(programs.pointillism, "u_resolution"), [gl.canvas.width, gl.canvas.height]);
+      gl.useProgram(programs.dispersion);
+      gl.uniform2fv( gl.getUniformLocation(programs.dispersion, "direction_r"), [1.0, 0.0]);
+      gl.uniform2fv( gl.getUniformLocation(programs.dispersion, "direction_g"), [0.4, 1.0]);
+      gl.uniform2fv( gl.getUniformLocation(programs.dispersion, "direction_b"), [-0.7, -0.3]);
+      gl.uniform1f( gl.getUniformLocation(programs.dispersion, "_Amplitude"), 0.01);
+      gl.useProgram(programs.gray);
+      gl.uniform3fv(gl.getUniformLocation(programs.gray,"_color"),[255,255,255]);
+    }
 
     var uniformLocationBuffer = {};
 
@@ -258,13 +280,14 @@
       };
 
       var framebuffertexture = null;
-      var shaderPrograms = initializationShader();
+      var shaderPrograms = initShader();
       var drawprogram = shaderPrograms.none;
       var drawprogram_mode = "none";
       var  positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
       var  texcoordLocation = gl.getAttribLocation(drawprogram, 'a_texcoord');
       var textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
-
+      initShaderUniform(shaderPrograms);
+      gl.useProgram(drawprogram);
       gl.uniform1i(textureLocation, framebuffertexture);
 
 
@@ -311,11 +334,13 @@
         canvas.width,
         canvas.height
         );
+
       }
 
     }).bind(renderer);
     //draw framebuffer texture in screen
     const rendererDrawPostfix = (function(){
+          timeUniform();
           bindFramebufferInfo(gl, null); //modified
           gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
           gl.clearColor(...this._backgroundColor4f);
@@ -324,8 +349,9 @@
           positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
           texcoordLocation = gl.getAttribLocation(drawprogram, 'a_texcoord');
           textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
-          gl.uniform1i(textureLocation, framebuffertexture);
           gl.useProgram(drawprogram);
+          gl.uniform1i(textureLocation, framebuffertexture);
+          
 
           gl.bindBuffer(gl.ARRAY_BUFFER, quadPositionBuffer);
           gl.enableVertexAttribArray(positionLocation);
@@ -388,11 +414,15 @@ rendererDrawPrefix();
       positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
       texcoordLocation = gl.getAttribLocation(drawprogram, 'a_texcoord');
       textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
-      gl.uniform1i(textureLocation, framebuffertexture);
+
     });
-    function deg2rad(degrees) {
-      //scratch always change degrees by -90
-      return (degrees - 90) * Math.PI / 180;
+
+    function timeUniform(){
+      switch (drawprogram_mode){
+        case "glitch":
+          gl.useProgram(drawprogram);
+          setUniform1f(gl,"_Time", Date.now() / 1000.0);
+      }
     }
     class postprocessing {
       getInfo() {
@@ -412,53 +442,25 @@ rendererDrawPrefix();
               },
             },
             {
-              
+
               opcode: 'opcodeChangeGlitch',
-              text: 'Glitch Amplitude:[Amplitude]%, BlockSize X:[BlockSize_X] Y:[BlockSize_Y], Time:[Time], IsRGB:[IsRGB]',
+              text: 'Glitch Amplitude:[Amplitude]%,',
               blockType: Scratch.BlockType.COMMAND,
               arguments: {
                 Amplitude: {
                   type: Scratch.ArgumentType.NUMBER,
                   defaultValue: 1
-                },
-                BlockSize_X: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 8
-                },
-                BlockSize_Y: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 8
-                },
-                Time: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 0
-                },
-                IsRGB: {
-                  type: Scratch.ArgumentType.BOOLEAN,
-                  defaultValue: false
                 }
               },
             },
             {
               opcode: 'opcodeChangeDispersion',
-              text: 'Dispersion Amplitude:[Amplitude]%, Direction R:[Direction_R]° G:[Direction_G]° B:[Direction_B]°',
+              text: 'Dispersion Amplitude:[Amplitude]%',
               blockType: Scratch.BlockType.COMMAND,
               arguments: {
                 Amplitude: {
                   type: Scratch.ArgumentType.NUMBER,
                   defaultValue: 1
-                },
-                Direction_R: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 120
-                },
-                Direction_G: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 240
-                },
-                Direction_B: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 360
                 }
               },
             },
@@ -470,6 +472,18 @@ rendererDrawPrefix();
                 COLOR: {
                   type: Scratch.ArgumentType.COLOR,
                   defaultValue: "#FFFFFF"
+                }
+
+              },
+            },
+            {
+              opcode: 'opcodeChangePointillism',
+              text: 'Pointillism Threshold:[threshold]%',
+              blockType: Scratch.BlockType.COMMAND,
+              arguments: {
+                threshold: {
+                  type: Scratch.ArgumentType.NUMBER,
+                  defaultValue: 70
                 }
 
               },
@@ -540,7 +554,7 @@ rendererDrawPrefix();
             },
             hideFromPalette: true
           },
-          
+
 
           ],
           menus: {
@@ -563,7 +577,6 @@ rendererDrawPrefix();
 
           if (Menu == "glitch"){
             drawprogram = shaderPrograms.glitch;
-            setUniform2fv(gl,"_BlockSize", 8, 8);
           }
 
           if (Menu ==  "none"){
@@ -578,17 +591,12 @@ rendererDrawPrefix();
 
           if (Menu ==  "dispersion"){
             drawprogram = shaderPrograms.dispersion;
-            setUniform2fv(gl,"direction_r", 1.0, 0.0);
-            setUniform2fv(gl,"direction_g", 0.4, 1.0 );
-            setUniform2fv(gl,"direction_b",  -0.7, -0.3);
           }
           if (Menu ==  "pointillism"){
             drawprogram = shaderPrograms.pointillism;
-            setUniform1f(gl,"u_size", 0.0001);
-            setUniform1f(gl,"u_threshold", 0.1);
-            setUniform2fv(gl,"u_resolution", gl.canvas.width, gl.canvas.height);
           }
         vm.runtime.requestRedraw();
+        vm.renderer.dirty = true;
         drawprogram_mode = Menu;
         uniformLocationBuffer = {};
         if (gl.isProgram(drawprogram) == false){
@@ -597,31 +605,22 @@ rendererDrawPrefix();
         positionLocation = gl.getAttribLocation(drawprogram, 'a_position');
         texcoordLocation = gl.getAttribLocation(drawprogram, 'a_texcoord');
         textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
-        gl.uniform1i(textureLocation, framebuffertexture);
       }
-      opcodeChangeDispersion({Amplitude,Direction_R,Direction_G,Direction_B}){
+      opcodeChangeDispersion({Amplitude}){
         if (drawprogram_mode != "dispersion" ){
           console.log("post-process mode not dispersion, change to it.");
           this.opcodeChangePostProcess({Menu: "dispersion"});
         }
-
         setUniform1f(gl,"_Amplitude", Amplitude / 100.0);
-        setUniform2fv(gl,"direction_r", Math.cos(deg2rad(Direction_R)),Math.sin(deg2rad(Direction_R)) );
-        setUniform2fv(gl,"direction_g", Math.cos(deg2rad(Direction_G)),Math.sin(deg2rad(Direction_G)) );
-        setUniform2fv(gl,"direction_b", Math.cos(deg2rad(Direction_B)),Math.sin(deg2rad(Direction_B)) );
-
+        vm.renderer.dirty = true;
       }
-      opcodeChangeGlitch({Amplitude,Time,BlockSize_X,BlockSize_Y,IsRGB}){
+      opcodeChangeGlitch({Amplitude}){
         if (drawprogram_mode != "glitch" ){
           console.log("post-process mode not glitch, change to it.");
           this.opcodeChangePostProcess({Menu: "glitch"});
         }
         setUniform1f(gl,"_Amplitude", Scratch.Cast.toNumber(Amplitude) / 100.0);
-        setUniform1f(gl,"_Time", Scratch.Cast.toNumber(Time));
-        setUniform2fv(gl,"_BlockSize", Scratch.Cast.toNumber(BlockSize_X),Scratch.Cast.toNumber(BlockSize_Y));
-        gl.getUniformLocation(drawprogram, '_Rgb');
-        gl.uniform1i(getUniformLocation(gl,"_Rgb"), IsRGB);
-
+        vm.renderer.dirty = true;
       }
       opcodeChangeGray({COLOR}){
         if (drawprogram_mode != "gray" ){
@@ -630,10 +629,21 @@ rendererDrawPrefix();
         }
         var location =  gl.getUniformLocation(shaderPrograms.gray, '_color');
         gl.uniform3fv(location, Scratch.Cast.toRgbColorList(COLOR));
+        vm.renderer.dirty = true;
+      }
+      opcodeChangePointillism({threshold}){
+        if (drawprogram_mode != "pointillism" ){
+          console.log("post-process mode not pointillism, change to it.");
+          this.opcodeChangePostProcess({Menu: "pointillism"});
+        }
+        setUniform1f(gl,"u_threshold", Scratch.Cast.toNumber(threshold) / 100.0);
+        vm.renderer.dirty = true;
       }
       // not must. but it can make sure the post-process effect is correct (?)
-      opcodeRequestReDraw(){
-        vm.runtime.requestRedraw();
+      opcodeRequestReDraw(args,util){
+        util.renderer.dirty = true;
+        util.runtime.requestRedraw();
+        
       }
       opcodeGetPostProcess() {
         return drawprogram_mode;
@@ -649,13 +659,15 @@ rendererDrawPrefix();
        textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
       drawprogram_mode = "custom";
       gl.uniform1i(textureLocation, framebuffertexture);
+      vm.renderer.dirty = true;
     }
       opcodeUniform2fv({NAME,X,Y}) {
         setUniform2fv(gl,NAME,X,Y);
-
+        vm.renderer.dirty = true;
       }
       opcodeUniform1f({NAME,X}) {
         setUniform1f(gl,NAME,X);
+        vm.renderer.dirty = true;
 
       }
     }
