@@ -106,12 +106,12 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Background based on https://bgjar.com/rect-light under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## -SIPC-/consoles.svg
- - Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669.
- - Font is Noto Sans.
+ - Created by [@SharkPool](https://scratch.mit.edu/users/DemonX5/)
+ - Based on an image by [@SIPC](https://github.com/SIPC) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669
 
 ## -SIPC-/time.svg
- - Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669.
- - Font is Noto Sans.
+ - Created by [@SharkPool](https://scratch.mit.edu/users/DemonX5/)
+ - Based on an image by [@SIPC](https://github.com/SIPC) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669.
 
 ## Skyhigh173/json.svg
  - Created by @Skyhigh173 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1457973080.
@@ -123,8 +123,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545.
 
 ## 0832/rxFS2.svg
- - Created by @0832k12 in https://github.com/TurboWarp/extensions/pull/291.
- - Background from https://app.haikei.app/.
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1604175329.
 
 ## NOname-awa/math-and-string.svg
  - Created by @NOname in https://github.com/TurboWarp/extensions/pull/316.
@@ -169,11 +168,11 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) and [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/498.
 
 ## Lily/ClonesPlus.svg
- - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/382.
+ - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/656.
  - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-## Lily/TempVariables.svg
- - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/410.
+## Lily/TempVariables2.svg
+ - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/656.
 
 ## obviousAlexC/SensingPlus.svg
  - Created by [@David-Orangemoon](https://scratch.mit.edu/users/pinksheep2917/) in https://github.com/TurboWarp/extensions/pull/379.
@@ -207,7 +206,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@Juenjos](https://github.com/Juenjos) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1573040329
 
 ## Lily/MoreTimers.svg
-- Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).
+- Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/656.
 - Timer SVG based from https://www.svgrepo.com/svg/2045/stopwatch under CC0.
 
 ## rixxyx.svg
@@ -223,14 +222,17 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity)
 
 ## navigator.svg
- - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1593886519
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1602552989
 
 ## qxsck/var-and-list.svg
  - Created by [@CST1229](https://github.com/CST1229) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595642879
  - Based on icons: [list_icon.svg](https://github.com/ScratchAddons/ScratchAddons/blob/master/addons/block-palette-icons/icons/list_icon.svg) and [variables_icon.svg](https://github.com/ScratchAddons/ScratchAddons/blob/master/addons/block-palette-icons/icons/variables_icon.svg)
 
 ## ZXMushroom63/searchApi.svg
- - Created by [@CST1229](https://github.com/CST1229) and [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1596177193
+ - Created by [@CST1229](https://github.com/CST1229) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1596158611
+
+## Lily/LooksPlus.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
 
 ## XeroName/Deltatime.svg
-- Created by [@XeroName](https://scratch.mit.edu/users/plant2014/).
+- Created by [@XeroName](https://scratch.mit.edu/users/plant2014/)
