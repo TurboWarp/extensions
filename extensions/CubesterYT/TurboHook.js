@@ -114,8 +114,8 @@
         const jsonFix = hookDATA.replace("json ", "");
         data = JSON.parse(jsonFix);
       } else if (!data.content) {
-        data.content = "(empty)"
-      };
+        data.content = "(empty)";
+      }
       Scratch.fetch(hookURL, {
         method: "POST",
         headers: {
@@ -218,7 +218,7 @@
           ...parseOrEmptyObject(STRING2)
         })}}`;
       } else {
-        return "{}"
+        return "{}";
       }
     }
     connector ({STRING1, STRING2}) {
