@@ -110,8 +110,8 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Based on an image by [@SIPC](https://github.com/SIPC) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669
 
 ## -SIPC-/time.svg
- - Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669.
- - Font is Noto Sans.
+ - Created by SharkPool
+ - Based on an image by [@SIPC](https://github.com/SIPC) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669.
 
 ## Skyhigh173/json.svg
  - Created by @Skyhigh173 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1457973080.
