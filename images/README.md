@@ -106,11 +106,11 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Background based on https://bgjar.com/rect-light under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## -SIPC-/consoles.svg
- - Created by SharkPool
+ - Created by [@SharkPool](https://scratch.mit.edu/users/DemonX5/)
  - Based on an image by [@SIPC](https://github.com/SIPC) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669
 
 ## -SIPC-/time.svg
- - Created by SharkPool
+ - Created by [@SharkPool](https://scratch.mit.edu/users/DemonX5/)
  - Based on an image by [@SIPC](https://github.com/SIPC) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669.
 
 ## Skyhigh173/json.svg
