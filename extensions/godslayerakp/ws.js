@@ -185,24 +185,24 @@
                 websocket.onopen = e => {
                     instance.state = 'opened';
                     instance.isOpen = true;
-                    utils.startHats('onOpen', {}, utils.target);
+                    utils.startHats('websocket_onOpen', null, utils.target);
                 };
                 websocket.onclose = e => {
                     instance.state = 'closed';
                     instance.isClosed = true;
                     instance.closeMessage = e.reason || '';
                     instance.closeCode = Cast.toString(e.code) || '';
-                    utils.startHats('onClose', {}, utils.target);
+                    utils.startHats('websocket_onClose', null, utils.target);
                 };
                 websocket.onerror = e => {
                     instance.state = 'errored';
                     instance.isErrored = true;
-                    utils.startHats('onError', {}, utils.target);
+                    utils.startHats('websocket_onError', null, utils.target);
                 };
                 websocket.onmessage = e => {
                     instance.data = e.data;
                     instance.gottenMessage = true;
-                    utils.startHats('onMessage', {}, utils.target);
+                    utils.startHats('websocket_onMessage', null, utils.target);
                 };
                 this.instances[utils.target.id] = instance;
             } catch (err) {
