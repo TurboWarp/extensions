@@ -1,6 +1,6 @@
 (function(Scratch) {
     'use strict';
-    if (!Scratch.extensions.unsandboxed) throw 'can not load out side unsandboxed mode';
+    if (!Scratch.extensions.unsandboxed) throw new Error('can not load out side unsandboxed mode');
 
     const pathRegex = /[^.]+/g;
     const setType = (value, type) => {
@@ -211,7 +211,7 @@
         getInfo() {
             return {
                 id: extensionId,
-                name: 'http/https',
+                name: 'HTTP',
                 color1: '#307eff',
                 color2: '#2c5eb0',
                 blocks: [
@@ -222,7 +222,7 @@
                     },
                     {
                         blockType: Scratch.BlockType.LABEL,
-                        text: "response"
+                        text: 'Response'
                     },
                     {
                         opcode: 'resData',
@@ -292,7 +292,7 @@
                     },
                     {
                         blockType: Scratch.BlockType.LABEL,
-                        text: "request"
+                        text: "Request"
                     },
                     {
                         opcode: 'setMimeType',
@@ -360,7 +360,7 @@
                         arguments: {
                             url: {
                                 type: ArgumentType.STRING,
-                                defaultValue: 'https://dummyurl.com'
+                                defaultValue: 'https://extensions.turbowarp.org/hello.txt'
                             }
                         },
                         text: 'send request to [url]'
@@ -368,13 +368,13 @@
                     {
                         func: 'showExtra',
                         blockType: BlockType.BUTTON,
-                        text: 'show extra',
+                        text: 'Show Extra',
                         hideFromPalette: this.showingExtra
                     },
                     {
                         func: 'hideExtra',
                         blockType: BlockType.BUTTON,
-                        text: 'hide extra',
+                        text: 'Hide Extra',
                         hideFromPalette: !this.showingExtra
                     },
                     {
@@ -594,7 +594,6 @@
             this.clearAll();
 
             this.response.url = url;
-            // @ts-ignore
             Scratch.fetch(url, this.request.options)
                 .then(res => {
                     // @ts-ignore
@@ -670,5 +669,4 @@
 
     const instance = new WebRequests();
     Scratch.extensions.register(instance);
-// @ts-ignore
 })(Scratch);
