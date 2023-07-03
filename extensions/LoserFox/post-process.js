@@ -351,7 +351,7 @@
           textureLocation = gl.getUniformLocation(drawprogram, 'u_texture');
           gl.useProgram(drawprogram);
           gl.uniform1i(textureLocation, framebuffertexture);
-          
+
 
           gl.bindBuffer(gl.ARRAY_BUFFER, quadPositionBuffer);
           gl.enableVertexAttribArray(positionLocation);
@@ -643,7 +643,7 @@ rendererDrawPrefix();
       opcodeRequestReDraw(args,util){
         util.renderer.dirty = true;
         util.runtime.requestRedraw();
-        
+
       }
       opcodeGetPostProcess() {
         return drawprogram_mode;
