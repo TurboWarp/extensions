@@ -1,5 +1,6 @@
 const fs = require('fs');
 const pathUtil = require('path');
+const sizeOfImage = require('image-size');
 const renderTemplate = require('./render-template');
 const compatibilityAliases = require('./compatibility-aliases');
 
@@ -82,18 +83,31 @@ class HTMLFile extends DiskFile {
   }
 }
 
-class SVGFile extends DiskFile {
+class ImageFile extends DiskFile {
+  validate () {
+    const contents = this.read();
+    const {width, height} = sizeOfImage(contents);
+    const aspectRatio = width / height;
+    if (aspectRatio !== 2) {
+      throw new Error(`Aspect ratio must be exactly 2, but found ${aspectRatio.toFixed(4)} (${width}x${height})`);
+    }
+  }
+}
+
+class SVGFile extends ImageFile {
   validate () {
     const contents = this.read();
     if (contents.includes('<text')) {
       throw new Error('SVG must not contain <text> elements -- please convert the text to a path. This ensures it will display correctly on all devices.');
     }
+
+    super.validate();
   }
 }
 
 const IMAGE_FORMATS = new Map();
-IMAGE_FORMATS.set('.png', DiskFile);
-IMAGE_FORMATS.set('.jpg', DiskFile);
+IMAGE_FORMATS.set('.png', ImageFile);
+IMAGE_FORMATS.set('.jpg', ImageFile);
 IMAGE_FORMATS.set('.svg', SVGFile);
 
 class Build {
