@@ -29,6 +29,7 @@
           {
             opcode: 'getVar',
             blockType: Scratch.BlockType.REPORTER,
+            extensions: ['colours_data'],
             text: Scratch.translate({ id: 'getVar', default: 'value of [VAR]' }),
             arguments: {
               VAR: {
@@ -40,6 +41,7 @@
           {
             opcode: 'seriVarsToJson',
             blockType: Scratch.BlockType.REPORTER,
+            extensions: ['colours_data'],
             text: Scratch.translate({ id: 'seriVarsToJson', default: 'convert all variables starting with [START] to json' }),
             arguments: {
               START: {
@@ -51,6 +53,7 @@
           {
             opcode: 'setVar',
             blockType: Scratch.BlockType.COMMAND,
+            extensions: ['colours_data'],
             text: Scratch.translate({ id: 'setVar', default: 'set the value of [VAR] to [VALUE]' }),
             arguments: {
               VAR: {
@@ -66,6 +69,7 @@
           {
             opcode: 'getList',
             blockType: Scratch.BlockType.REPORTER,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'getList', default: 'value of [LIST]' }),
             arguments: {
               LIST: {
@@ -77,6 +81,7 @@
           {
             opcode: 'getValueOfList',
             blockType: Scratch.BlockType.REPORTER,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'getValueOfList', default: 'item [INDEX] of [LIST]' }),
             arguments: {
               LIST: {
@@ -92,6 +97,7 @@
           {
             opcode: 'seriListsToJson',
             blockType: Scratch.BlockType.REPORTER,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'seriListsToJson', default: 'convert all lists starting with [START] to json' }),
             arguments: {
               START: {
@@ -103,6 +109,7 @@
           {
             opcode: 'clearList',
             blockType: Scratch.BlockType.COMMAND,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'clearList', default: 'delete all of [LIST]' }),
             arguments: {
               LIST: {
@@ -114,6 +121,7 @@
           {
             opcode: 'deleteOfList',
             blockType: Scratch.BlockType.COMMAND,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'deleteOfList', default: 'delete [INDEX] of [LIST]' }),
             arguments: {
               LIST: {
@@ -129,6 +137,7 @@
           {
             opcode: 'addValueInList',
             blockType: Scratch.BlockType.COMMAND,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'addValueInList', default: 'add [VALUE] to [LIST]' }),
             arguments: {
               LIST: {
@@ -144,6 +153,7 @@
           {
             opcode: 'replaceOfList',
             blockType: Scratch.BlockType.COMMAND,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'replaceOfList', default: 'replace item [INDEX] of [LIST] with [VALUE]' }),
             arguments: {
               LIST: {
@@ -163,6 +173,7 @@
           {
             opcode: 'getIndexOfList',
             blockType: Scratch.BlockType.REPORTER,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'getIndexOfList', default: 'first index of [VALUE] in [LIST]' }),
             arguments: {
               LIST: {
@@ -178,6 +189,7 @@
           {
             opcode: 'getIndexesOfList',
             blockType: Scratch.BlockType.REPORTER,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'getIndexesOfList', default: 'indexes of [VALUE] in [LIST]' }),
             arguments: {
               LIST: {
@@ -193,6 +205,7 @@
           {
             opcode: 'length',
             blockType: Scratch.BlockType.REPORTER,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'length', default: 'length of [LIST]' }),
             arguments: {
               LIST: {
@@ -204,6 +217,7 @@
           {
             opcode: 'listContains',
             blockType: Scratch.BlockType.BOOLEAN,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'listContains', default: '[LIST] contains [VALUE] ?' }),
             arguments: {
               LIST: {
@@ -219,6 +233,7 @@
           {
             opcode: 'copyList',
             blockType: Scratch.BlockType.COMMAND,
+            extensions: ['colours_data_lists'],
             text: Scratch.translate({ id: 'copyList', default: 'copy [LIST1] to [LIST2]' }),
             arguments: {
               LIST1: {
@@ -362,7 +377,7 @@
       const variable = util.target.lookupVariableByNameAndType(Scratch.Cast.toString(args.LIST), 'list');
       const value = args.VALUE;
       if (variable) {
-        for (var i = 0;i < variable.value.length;i++) {
+        for (var i = 0; i < variable.value.length; i++) {
           if (Scratch.Cast.compare(variable.value[i], value) === 0) return true;
         }
       }
@@ -377,5 +392,15 @@
       }
     }
   }
+  const runtime = Scratch.vm.runtime;
+  const cbfsb = runtime._convertBlockForScratchBlocks.bind(runtime);
+  runtime._convertBlockForScratchBlocks = function(blockInfo, categoryInfo) {
+    const res = cbfsb(blockInfo, categoryInfo);
+    if (blockInfo.extensions) {
+      if (!res.json.extensions) res.json.extensions = [];
+      res.json.extensions.push(...blockInfo.extensions);
+    }
+    return res;
+  };
   Scratch.extensions.register(new VarAndList());
 }(Scratch));
