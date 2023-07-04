@@ -271,6 +271,23 @@
                 defaultValue: 'https://extensions.turbowarp.org'
               }
             }
+          },
+          {
+            opcode: 'linkopen',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'open [url] with [target] as target',
+            arguments: {
+              url: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'https://turbowarp.org/'
+              },
+              target: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'opentargets',
+                defaultValue: '_self'
+              }
+            },
+            hideFromPalette: true
           }
         ],
 
@@ -390,6 +407,16 @@
                 value: 'default'
               }
             ]
+          },
+          //survexe1pc
+          opentargets: {
+            items: [{
+              text: 'newtab',
+              value: '_blank'
+            }, {
+              text: 'this tab (redirect)',
+              value: '_self'
+            }, '_parent', '_top']
           }
         }
       };
@@ -504,6 +531,19 @@
     }
     redirect_link_block({USER_URL}) {
       Scratch.redirect(USER_URL);
+    }
+    //survexe1pc
+    async linkopen(args) {
+      /*
+      I am confused, the point of this block was to allow more than the normal (open in new tab)
+      and (redirect this tab), I responded on github.
+      */
+     //Garbo Read above ^^
+      if (!await Scratch.canOpenWindow(args.url)) return;
+      if (args.target == "_self") {
+        window.location.href = args.url;// eslint-disable-line
+      }
+      window.open(args.url, args.target);// eslint-disable-line
     }
   }
 
