@@ -378,11 +378,9 @@
       const value = args.VALUE;
       if (variable) {
         for (var i = 0;i < variable.value.length;i++) {
-          for (var i = 0; i < variable.value.length; i++) {
-            if (Scratch.Cast.compare(variable.value[i], value) === 0) return true;
-          }
+          if (Scratch.Cast.compare(variable.value[i], value) === 0) return true;
         }
-        return false;
+      return false;
       }
     }
     copyList(args, util) {
