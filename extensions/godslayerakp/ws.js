@@ -78,7 +78,7 @@
                         arguments: {
                             PAYLOAD: {
                                 type: ArgumentType.STRING,
-                                default: 'hello!'
+                                defaultValue: 'hello!'
                             }
                         },
                         text: 'send message [PAYLOAD]'
