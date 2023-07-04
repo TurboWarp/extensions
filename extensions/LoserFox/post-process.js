@@ -628,6 +628,7 @@ rendererDrawPrefix();
           this.opcodeChangePostProcess({Menu: "gray"});
         }
         var location =  gl.getUniformLocation(shaderPrograms.gray, '_color');
+        gl.useProgram(shaderPrograms.gray);
         gl.uniform3fv(location, Scratch.Cast.toRgbColorList(COLOR));
         vm.renderer.dirty = true;
       }
@@ -640,10 +641,9 @@ rendererDrawPrefix();
         vm.renderer.dirty = true;
       }
       // not must. but it can make sure the post-process effect is correct (?)
-      opcodeRequestReDraw(args,util){
-        util.renderer.dirty = true;
-        util.runtime.requestRedraw();
-
+      opcodeRequestReDraw(args){
+        vm.renderer.dirty = true;
+        vm.runtime.requestRedraw();
       }
       opcodeGetPostProcess() {
         return drawprogram_mode;
