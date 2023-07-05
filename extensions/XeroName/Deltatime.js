@@ -1,7 +1,7 @@
 // TurboWarp Extension : Deltatime by XeroName
 // First generation at 2023-06-21 KST
 // Latest update at 2023-07-06 KST
-// v2.2.0
+// v2.2.1
 
 
 
@@ -60,7 +60,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
     } else {
       vmDt = 0; // Prevent situation of "DIV/0"
     }
-    
     last = now;
   };
 //==================== "Deltatime Watcher" Zone END ====================//
@@ -245,11 +244,9 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
 
       if (fStren <= 1) {
         filtStren = 1;
-      }
-      else if (fStren >= maxFiltStren) {
+      } else if (fStren >= maxFiltStren) {
         filtStren = maxFiltStren;
-      }
-      else {
+      } else {
         filtStren = fStren;
       }
 
