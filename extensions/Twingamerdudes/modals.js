@@ -2,7 +2,7 @@
   'use strict';
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('Models must run unsandboxed');
+    throw new Error('Modals must run unsandboxed');
   }
 
   const vm = Scratch.vm;
@@ -11,8 +11,8 @@
   class RandomUtils {
     getInfo() {
       return {
-        id: 'models',
-        name: 'Models',
+        id: 'modals',
+        name: 'Modals',
         color1: '#a01c1c',
         color2: '#861515',
         color3: '#6d1212',
@@ -20,7 +20,7 @@
           {
             opcode: 'showModal',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Show Modal [TEXT] with the background [COLOR] and text color [TCOLOR]',
+            text: 'show modal [TEXT] with the background [COLOR] and text color [TCOLOR]',
             arguments: {
                 TEXT: {
                     type: Scratch.ArgumentType.STRING,
@@ -39,7 +39,7 @@
           {
             opcode: 'showModalWithInput',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Show Input Modal [TEXT] with the background [COLOR] secondary color [SCOLOR], text color [TCOLOR], and placeholder [PLACEHOLDER]',
+            text: 'show input modal [TEXT] with the background [COLOR] secondary color [SCOLOR], text color [TCOLOR], and placeholder [PLACEHOLDER]',
             arguments: {
                 TEXT: {
                     type: Scratch.ArgumentType.STRING,
@@ -66,7 +66,7 @@
           {
             opcode: 'addTextToModal',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Add [TEXT] to the current modal',
+            text: 'add [TEXT] to the current modal',
             arguments: {
                 TEXT: {
                   type: Scratch.ArgumentType.STRING,
@@ -77,7 +77,7 @@
           {
             opcode: 'changeDefaultModalText',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Change default modal text to [TEXT]',
+            text: 'change default modal text to [TEXT]',
             arguments: {
                 TEXT: {
                   type: Scratch.ArgumentType.STRING,
@@ -88,7 +88,7 @@
           {
             opcode: 'changeDefaultModalColor',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Change modal background color to [COLOR]',
+            text: 'change modal background color to [COLOR]',
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -99,7 +99,7 @@
           {
             opcode: 'changeDefaultModalTextColor',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Change modal text color to [COLOR]',
+            text: 'change modal text color to [COLOR]',
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -110,24 +110,24 @@
           {
             opcode: 'inputModalValue',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Input Modal Value',
+            text: 'input modal value',
             disableMonitor: true
           },
           {
             opcode: 'IsModalOpen',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'Is Modal Open?',
+            text: 'is modal open?',
           },
           {
             opcode: 'modalOpen',
             blockType: Scratch.BlockType.HAT,
-            text: 'When a modal is opened',
+            text: 'when a modal is opened',
             isEdgeActivated: false
           },
           {
             opcode: 'modalClose',
             blockType: Scratch.BlockType.HAT,
-            text: 'When a modal is closed',
+            text: 'when a modal is closed',
             isEdgeActivated: false
           }
         ]
@@ -149,7 +149,7 @@
       if (isModalOpen){
         const defaultModalText = args.TEXT;
         const modal = document.querySelector("dialog");
-        const text = document.getElementById("models_modalText");
+        const text = document.getElementById("modals_modalText");
         text.textContent = defaultModalText;
       }
     }
@@ -182,7 +182,7 @@
       if (!isModalOpen){
         var modal = document.createElement("dialog");
         var text = document.createElement("p");
-        text.id = "models_modalText";
+        text.id = "modals_modalText";
         text.textContent = args.TEXT;
         modal.appendChild(text);
         document.body.appendChild(modal);
@@ -190,7 +190,7 @@
         var close = document.createElement("button");
         close.innerHTML = "X";
         close.addEventListener("click", function(){
-            util.startHats('models_modalClose');
+            util.startHats('modals_modalClose');
             isModalOpen = false;
             modal.close();
             modal.remove();
@@ -217,7 +217,7 @@
         modal.appendChild(close);
         modal.showModal();
         isModalOpen = true;
-        util.startHats('models_modalOpen');
+        util.startHats('modals_modalOpen');
       }
     }
 
@@ -226,7 +226,7 @@
         //Create Modal
         var modal = document.createElement("dialog");
         var text = document.createElement("p");
-        text.id = "models_modalText";
+        text.id = "modals_modalText";
         text.textContent = args.TEXT;
         modal.appendChild(text);
         document.body.appendChild(modal);
@@ -237,7 +237,7 @@
 
         //CSS Hell
         input.type = "text";
-        input.id = "models_modalInput";
+        input.id = "modals_modalInput";
         input.style.width = "100%";
         input.style.margin = "10px 0";
         input.style.padding = "5px";
@@ -251,7 +251,7 @@
         input.style.color = args.TCOLOR;
 
         //WHY DO I HAVE TO DO THIS!?!?!?!?!?!?
-        var pcss = "#models_modalInput::placeholder { color: " + args.TCOLOR + "; opacity: 0.5; }";
+        var pcss = "#modals_modalInput::placeholder { color: " + args.TCOLOR + "; opacity: 0.5; }";
         var styleElement = document.createElement("style");
         styleElement.appendChild(document.createTextNode(pcss));
         document.head.appendChild(styleElement);
@@ -260,7 +260,7 @@
         var close = document.createElement("button");
         close.innerHTML = "X";
         close.addEventListener("click", function(){
-            util.startHats('models_modalClose');
+            util.startHats('modals_modalClose');
             isModalOpen = false;
             modal.close();
             modal.remove();
@@ -284,8 +284,8 @@
         var submit = document.createElement("button");
         submit.innerHTML = "Submit";
         submit.addEventListener("click", function(){
-          util.startHats('models_modalClose');
-          const input = document.getElementById("models_modalInput");
+          util.startHats('modals_modalClose');
+          const input = document.getElementById("modals_modalInput");
           isModalOpen = false;
           // @ts-ignore
           modalInput = input.value;
@@ -317,7 +317,7 @@
         modal.appendChild(submit);
         isModalOpen = true;
         modal.showModal();
-        util.startHats('models_modalOpen');
+        util.startHats('modals_modalOpen');
       }
   }
 }
