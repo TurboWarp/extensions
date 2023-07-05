@@ -330,7 +330,7 @@ I learned how to use "Runtime Steps" of Scratch VM through that code. (XeroName)
     }
 //========== Filter Strength ==========//
     setFilterStrength({ STRENGTH }) {
-      fStren = Math.min(Math.max(1, cast.toNumber(STRENGTH)), maxFiltStren);
+      filtStren = Math.min(Math.max(1, cast.toNumber(STRENGTH)), maxFiltStren);
     }
     getFilterStrength() {
       return filtStren;
