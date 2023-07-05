@@ -231,3 +231,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## ZXMushroom63/searchApi.svg
  - Created by [@CST1229](https://github.com/CST1229) and [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1596177193
+
+## BlueDome/WindowUtils.svg
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/pull/699
+ - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
