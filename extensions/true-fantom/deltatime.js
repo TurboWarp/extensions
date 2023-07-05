@@ -266,10 +266,8 @@ I learned how to use "Runtime Steps" of Scratch VM through that code. (XeroName)
                 value: 'fps'
               }
             ]
-          }
-        },
+          },
 
-        menus: {
           pause_menu: {
             acceptReporters: true,
             items: ['enabled', 'disabled']
