@@ -2,7 +2,7 @@
   'use strict';
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('Random Utils must run unsandboxed');
+    throw new Error('Modals must run unsandboxed');
   }
 
   const vm = Scratch.vm;
@@ -11,8 +11,8 @@
   class RandomUtils {
     getInfo() {
       return {
-        id: 'randomutilities',
-        name: 'Random Utilities',
+        id: 'modals',
+        name: 'Modals',
         color1: '#a01c1c',
         color2: '#861515',
         color3: '#6d1212',
@@ -133,8 +133,7 @@
         ]
       };
     }
-
-    addTextToModal(args, util){
+    addTextToModal(args){
       if (isModalOpen){
         const text = args.TEXT;
         //select the first <dialog> element
@@ -146,16 +145,16 @@
       }
     }
 
-    changeDefaultModalText(args, util){
+    changeDefaultModalText(args){
       if (isModalOpen){
         const defaultModalText = args.TEXT;
         const modal = document.querySelector("dialog");
-        const text = document.getElementById("randomutilities_modalText");
+        const text = document.getElementById("modals_modalText");
         text.textContent = defaultModalText;
       }
     }
 
-    changeDefaultModalColor(args, util){
+    changeDefaultModalColor(args){
       if (isModalOpen){
         const defaultModalColor = args.COLOR;
         const modal = document.querySelector("dialog");
@@ -163,7 +162,7 @@
       }
     }
 
-    changeDefaultModalTextColor(args, util){
+    changeDefaultModalTextColor(args){
       if (isModalOpen){
         const defaultModalTextColor = args.COLOR;
         const modal = document.querySelector("dialog");
@@ -183,7 +182,7 @@
       if (!isModalOpen){
         var modal = document.createElement("dialog");
         var text = document.createElement("p");
-        text.id = "randomutilities_modalText";
+        text.id = "modals_modalText";
         text.textContent = args.TEXT;
         modal.appendChild(text);
         document.body.appendChild(modal);
@@ -191,7 +190,7 @@
         var close = document.createElement("button");
         close.innerHTML = "X";
         close.addEventListener("click", function(){
-            util.startHats('randomutilities_modalClose');
+            util.startHats('modals_modalClose');
             isModalOpen = false;
             modal.close();
             modal.remove();
@@ -218,7 +217,7 @@
         modal.appendChild(close);
         modal.showModal();
         isModalOpen = true;
-        util.startHats('randomutilities_modalOpen');
+        util.startHats('modals_modalOpen');
       }
     }
 
@@ -227,7 +226,7 @@
         //Create Modal
         var modal = document.createElement("dialog");
         var text = document.createElement("p");
-        text.id = "randomutilities_modalText";
+        text.id = "modals_modalText";
         text.textContent = args.TEXT;
         modal.appendChild(text);
         document.body.appendChild(modal);
@@ -238,7 +237,7 @@
 
         //CSS Hell
         input.type = "text";
-        input.id = "randomutilities_modalInput";
+        input.id = "modals_modalInput";
         input.style.width = "100%";
         input.style.margin = "10px 0";
         input.style.padding = "5px";
@@ -252,7 +251,7 @@
         input.style.color = args.TCOLOR;
 
         //WHY DO I HAVE TO DO THIS!?!?!?!?!?!?
-        var pcss = "#randomutilities_modalInput::placeholder { color: " + args.TCOLOR + "; opacity: 0.5; }";
+        var pcss = "#modals_modalInput::placeholder { color: " + args.TCOLOR + "; opacity: 0.5; }";
         var styleElement = document.createElement("style");
         styleElement.appendChild(document.createTextNode(pcss));
         document.head.appendChild(styleElement);
@@ -261,7 +260,7 @@
         var close = document.createElement("button");
         close.innerHTML = "X";
         close.addEventListener("click", function(){
-            util.startHats('randomutilities_modalClose');
+            util.startHats('modals_modalClose');
             isModalOpen = false;
             modal.close();
             modal.remove();
@@ -285,8 +284,8 @@
         var submit = document.createElement("button");
         submit.innerHTML = "Submit";
         submit.addEventListener("click", function(){
-          util.startHats('randomutilities_modalClose');
-          const input = document.getElementById("randomutilities_modalInput");
+          util.startHats('modals_modalClose');
+          const input = document.getElementById("modals_modalInput");
           isModalOpen = false;
           // @ts-ignore
           modalInput = input.value;
@@ -318,7 +317,7 @@
         modal.appendChild(submit);
         isModalOpen = true;
         modal.showModal();
-        util.startHats('randomutilities_modalOpen');
+        util.startHats('modals_modalOpen');
       }
   }
 }
