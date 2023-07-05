@@ -338,8 +338,10 @@
       return (args.STATE === 'true') ? args.CONDITION : !args.CONDITION;
     }
 
-    whenValueChanged(args, blockInfo) {
-      const blockId = blockInfo.thread.topBlock;
+    whenValueChanged(args, util) {
+      // I've come to realise that this is NOT the way to get the blockId.
+      // However, considering that the hat block will ALWAYS be the top block, it works fine.
+      const blockId = util.thread.topBlock;
       if (!lastValues[blockId]) lastValues[blockId] = Scratch.Cast.toString(args.INPUT);
       if (lastValues[blockId] !== Scratch.Cast.toString(args.INPUT)) {
         lastValues[blockId] = Scratch.Cast.toString(args.INPUT);
