@@ -113,9 +113,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
           },
 //==================== Static FPS Detection Blocks ====================//
           {
-            // Variable "vmFPS" gets the round value of actual FPS.
-            // So at the situations ultra-low FPS like freeze screen, the FPS may goes 0, which means the Dt will be "Infinite" value.
-            // Using Dt with multiplying this boolean block can prevent "Infinite Delta" situation.
             opcode: 'isFPSposi',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'FPS > 0',
