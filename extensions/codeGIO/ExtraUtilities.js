@@ -326,12 +326,19 @@
     }
 
     set_clipboard(args) {
-      navigator.clipboard.writeText(args.one);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(args.one);
+      }
     }
 
     get_clipboard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        return navigator.clipboard.readText();
+        return Scratch.canReadClipboard().then(allowed => {
+          if (allowed) {
+            return navigator.clipboard.readText();
+          }
+          return '';
+        });
       }
       return '';
     }
