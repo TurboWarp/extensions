@@ -2,7 +2,7 @@
   'use strict';
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('Modals must run unsandboxed');
+    throw new Error('Models must run unsandboxed');
   }
 
   const vm = Scratch.vm;
@@ -11,8 +11,8 @@
   class RandomUtils {
     getInfo() {
       return {
-        id: 'modals',
-        name: 'Modals',
+        id: 'models',
+        name: 'Models',
         color1: '#a01c1c',
         color2: '#861515',
         color3: '#6d1212',
@@ -149,7 +149,7 @@
       if (isModalOpen){
         const defaultModalText = args.TEXT;
         const modal = document.querySelector("dialog");
-        const text = document.getElementById("modals_modalText");
+        const text = document.getElementById("models_modalText");
         text.textContent = defaultModalText;
       }
     }
@@ -182,7 +182,7 @@
       if (!isModalOpen){
         var modal = document.createElement("dialog");
         var text = document.createElement("p");
-        text.id = "modals_modalText";
+        text.id = "models_modalText";
         text.textContent = args.TEXT;
         modal.appendChild(text);
         document.body.appendChild(modal);
@@ -190,7 +190,7 @@
         var close = document.createElement("button");
         close.innerHTML = "X";
         close.addEventListener("click", function(){
-            util.startHats('modals_modalClose');
+            util.startHats('models_modalClose');
             isModalOpen = false;
             modal.close();
             modal.remove();
@@ -217,7 +217,7 @@
         modal.appendChild(close);
         modal.showModal();
         isModalOpen = true;
-        util.startHats('modals_modalOpen');
+        util.startHats('models_modalOpen');
       }
     }
 
@@ -226,7 +226,7 @@
         //Create Modal
         var modal = document.createElement("dialog");
         var text = document.createElement("p");
-        text.id = "modals_modalText";
+        text.id = "models_modalText";
         text.textContent = args.TEXT;
         modal.appendChild(text);
         document.body.appendChild(modal);
@@ -237,7 +237,7 @@
 
         //CSS Hell
         input.type = "text";
-        input.id = "modals_modalInput";
+        input.id = "models_modalInput";
         input.style.width = "100%";
         input.style.margin = "10px 0";
         input.style.padding = "5px";
@@ -251,7 +251,7 @@
         input.style.color = args.TCOLOR;
 
         //WHY DO I HAVE TO DO THIS!?!?!?!?!?!?
-        var pcss = "#modals_modalInput::placeholder { color: " + args.TCOLOR + "; opacity: 0.5; }";
+        var pcss = "#models_modalInput::placeholder { color: " + args.TCOLOR + "; opacity: 0.5; }";
         var styleElement = document.createElement("style");
         styleElement.appendChild(document.createTextNode(pcss));
         document.head.appendChild(styleElement);
@@ -260,7 +260,7 @@
         var close = document.createElement("button");
         close.innerHTML = "X";
         close.addEventListener("click", function(){
-            util.startHats('modals_modalClose');
+            util.startHats('models_modalClose');
             isModalOpen = false;
             modal.close();
             modal.remove();
@@ -284,8 +284,8 @@
         var submit = document.createElement("button");
         submit.innerHTML = "Submit";
         submit.addEventListener("click", function(){
-          util.startHats('modals_modalClose');
-          const input = document.getElementById("modals_modalInput");
+          util.startHats('models_modalClose');
+          const input = document.getElementById("models_modalInput");
           isModalOpen = false;
           // @ts-ignore
           modalInput = input.value;
@@ -317,7 +317,7 @@
         modal.appendChild(submit);
         isModalOpen = true;
         modal.showModal();
-        util.startHats('modals_modalOpen');
+        util.startHats('models_modalOpen');
       }
   }
 }
