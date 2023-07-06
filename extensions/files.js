@@ -268,6 +268,9 @@
               }
             }
           },
+
+          '---',
+
           {
             opcode: 'setOpenMode',
             blockType: Scratch.BlockType.COMMAND,
