@@ -3,7 +3,7 @@
 
   // Settings
   let allowURL = false;
-
+  let color = '';
   // Styles
   let generalTextColor = '';
   let generalBorderColor = '';
