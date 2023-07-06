@@ -359,7 +359,7 @@
                       allowURL = true;
                       color = args.COLOR;
                   } else {
-                      color = "#ffffff";
+                      color = "";
                   }
               } else {
                   color = args.COLOR;
