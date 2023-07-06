@@ -165,11 +165,11 @@
   });
 
   /**
-   * @param {string|Blob} text Text or blob to download
+   * @param {string|Blob} data Text or blob to download
    * @param {string} file Name of the file
    */
-  const download = (text, file) => {
-    const blob = !(text instanceof Blob) ? new Blob([text]) : text;
+  const download = (data, file) => {
+    const blob = data instanceof Blob ? data : new Blob([data]);
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
