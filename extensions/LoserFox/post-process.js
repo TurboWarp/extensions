@@ -30,6 +30,22 @@
       gl_FragColor=texture2D(u_texture,v_texcoord);
     }
     `;
+    var clipShaderCode = `
+    precision mediump float;
+      
+    varying vec2 v_texcoord;
+    varying vec4 vColor;      
+    uniform sampler2D u_texture;
+    uniform vec2 u_pos1;
+    uniform vec2 u_pos2;
+    void main() {
+      if (v_texcoord.x > u_pos1.x && v_texcoord.x < u_pos2.x && v_texcoord.y > u_pos1.y && v_texcoord.y < u_pos2.y){
+        gl_FragColor=texture2D(u_texture,v_texcoord);
+      }else{
+        discard;
+      }
+    }
+    `;
     var dispersionShaderCode =
     `
       precision mediump float;
@@ -60,6 +76,9 @@
       uniform float _Time;
       uniform vec2 _BlockSize;
       uniform bool _Rgb;
+      uniform vec2 u_pos1;
+      uniform vec2 u_pos2;
+      uniform vec2 u_dir;
       float randomNoise(vec2 seed)
       {
           return fract(sin(dot(seed *_Time , vec2(17.13, 3.71))) * 43758.5453123);
@@ -73,9 +92,14 @@
           float ColorB = texture2D(u_texture,v_texcoord - vec2(displaceNoise * _Amplitude * randomNoise(vec2(13)),0.0)).b;
           gl_FragColor=vec4(ColorR,ColorG,ColorB,1.0);
         }else{
-          vec2 offset = vec2(displaceNoise * _Amplitude * randomNoise(vec2(7)),0.0);
+          if (v_texcoord.x > u_pos1.x && v_texcoord.x < u_pos2.x && v_texcoord.y > u_pos1.y && v_texcoord.y < u_pos2.y){
+          float offset_s = displaceNoise * _Amplitude * randomNoise(vec2(7)) ;
+          vec2 offset = vec2(offset_s * u_dir.x,offset_s * u_dir.y);
           vec4 Color = texture2D(u_texture,vec2(fract(v_texcoord.x+offset.x),fract(v_texcoord.y+offset.y)));
           gl_FragColor=Color;
+          }else{
+            gl_FragColor= texture2D(u_texture,v_texcoord);
+          }
         }
         
 
@@ -181,11 +205,18 @@
 
     var quadTexCoordBuffer;
 
+      /*
+        Since clippingblending duck punching gl.bindFramebuffer will stop
+        working when using custom framebuffer,  no reason is known at the
+        moment. Use this method to bypass the duck punching it to achieve 
+        compatibility.
 
-
+        https://github.com/TurboWarp/extensions/blob/master/extensions/Xeltalliv/clippingblending.js#L48
+      */
     function bindFramebufferInfo(gl, framebufferInfo, target) {
         target = target || gl.FRAMEBUFFER;
-        gl.bindFramebuffer(target, framebufferInfo ? framebufferInfo.framebuffer : null);
+        var nativeBindFramebuffer = WebGLRenderingContext.prototype.bindFramebuffer;
+        nativeBindFramebuffer.call(gl, target,  framebufferInfo ? framebufferInfo.framebuffer : null);
       }
     function createFramebuffer(gl, attachments, width, height, target) {
         target = target || gl.FRAMEBUFFER;
@@ -199,6 +230,7 @@
         if (status !== gl.FRAMEBUFFER_COMPLETE) {
           return null;
         }
+        gl.bindFramebuffer(target, null);
         return {
           framebuffer: framebuffer,
           attachments: attachments,
@@ -238,7 +270,8 @@
         dispersion: null,
         gray: null,
         reverse: null,
-        pointillism: null
+        pointillism: null,
+        cliping: null
       };
       programs.none = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,noneShaderCode));
       programs.glitch = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,GlitchShaderCode));
@@ -246,6 +279,7 @@
       programs.gray = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,GrayShaderCode));
       programs.reverse = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,ReverseShaderCode));
       programs.pointillism = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,PointillismShaderCode));
+      programs.cliping = createProgram(gl,createshader(gl,gl.VERTEX_SHADER,vertexShaderCode),createshader(gl,gl.FRAGMENT_SHADER,clipShaderCode));
       return programs;
     }
     function initShaderUniform(programs){
@@ -254,6 +288,9 @@
       gl.uniform1f( gl.getUniformLocation(programs.glitch, "_Amplitude"), 0.1);
       gl.uniform1f( gl.getUniformLocation(programs.glitch, "_Time"), 0);
       gl.uniform1i( gl.getUniformLocation(programs.glitch, "_Rgb"), 0);
+      gl.uniform2fv( gl.getUniformLocation(programs.glitch,"u_pos1"),[0,0]);
+      gl.uniform2fv( gl.getUniformLocation(programs.glitch,"u_pos2"),[1,1]);
+      gl.uniform2fv( gl.getUniformLocation(programs.glitch,"u_dir"),[1,1]);
       gl.useProgram(programs.pointillism);
       gl.uniform1f( gl.getUniformLocation(programs.pointillism, "u_size"), 0.0001);
       gl.uniform1f( gl.getUniformLocation(programs.pointillism, "u_threshold"), 0.7);
@@ -265,6 +302,9 @@
       gl.uniform1f( gl.getUniformLocation(programs.dispersion, "_Amplitude"), 0.01);
       gl.useProgram(programs.gray);
       gl.uniform3fv(gl.getUniformLocation(programs.gray,"_color"),[255,255,255]);
+      gl.useProgram(programs.cliping);
+      gl.uniform2fv( gl.getUniformLocation(programs.cliping, "u_pos1"), [0,0]);
+      gl.uniform2fv( gl.getUniformLocation(programs.cliping, "u_pos2"), [1,1]);
     }
 
     var uniformLocationBuffer = {};
@@ -418,6 +458,7 @@ rendererDrawPrefix();
     });
 
     function timeUniform(){
+
       switch (drawprogram_mode){
         case "glitch":
           gl.useProgram(drawprogram);
@@ -484,6 +525,30 @@ rendererDrawPrefix();
                 threshold: {
                   type: Scratch.ArgumentType.NUMBER,
                   defaultValue: 70
+                }
+
+              },
+            },
+            {
+              opcode: 'opcodeChangeCliping',
+              text: 'Clip Start: X:[x1],Y:[y1] To: X:[x2],Y:[y2]',
+              blockType: Scratch.BlockType.COMMAND,
+              arguments: {
+                x1: {
+                  type: Scratch.ArgumentType.NUMBER,
+                  defaultValue: 0
+                },
+                y1: {
+                  type: Scratch.ArgumentType.NUMBER,
+                  defaultValue: 0
+                },
+                x2: {
+                  type: Scratch.ArgumentType.NUMBER,
+                  defaultValue: 1
+                },
+                y2: {
+                  type: Scratch.ArgumentType.NUMBER,
+                  defaultValue: 1
                 }
 
               },
@@ -566,6 +631,7 @@ rendererDrawPrefix();
                 "gray",
                 "reverse",
                 "pointillism",
+                "cliping",
                 "none",
               ]
             }
@@ -594,6 +660,9 @@ rendererDrawPrefix();
           }
           if (Menu ==  "pointillism"){
             drawprogram = shaderPrograms.pointillism;
+          }
+          if (Menu == "cliping"){
+            drawprogram = shaderPrograms.cliping;
           }
         vm.runtime.requestRedraw();
         vm.renderer.dirty = true;
@@ -638,6 +707,15 @@ rendererDrawPrefix();
           this.opcodeChangePostProcess({Menu: "pointillism"});
         }
         setUniform1f(gl,"u_threshold", Scratch.Cast.toNumber(threshold) / 100.0);
+        vm.renderer.dirty = true;
+      }
+      opcodeChangeCliping({x1,y1,x2,y2}){
+        if (drawprogram_mode != "cliping" ){
+          console.log("post-process mode not cliping, change to it.");
+          this.opcodeChangePostProcess({Menu: "cliping"});
+        }
+        setUniform2fv(gl,"u_pos1",x1,y1 );
+        setUniform2fv(gl,"u_pos2",x2,y2);
         vm.renderer.dirty = true;
       }
       // not must. but it can make sure the post-process effect is correct (?)
