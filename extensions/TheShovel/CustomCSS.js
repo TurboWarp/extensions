@@ -1,3 +1,5 @@
+// Thanks LilyMakesThings for the awesome banner!
+
 (function(Scratch) {
   'use strict';
 
