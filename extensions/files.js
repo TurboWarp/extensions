@@ -165,11 +165,11 @@
   });
 
   /**
-   * @param {string} text Text to download
+   * @param {string|Blob} text Text or blob to download
    * @param {string} file Name of the file
    */
   const download = (text, file) => {
-    const blob = new Blob([text]);
+    const blob = !(text instanceof Blob) ? new Blob([text]) : text;
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -254,6 +254,21 @@
             }
           },
           {
+            opcode: 'downloadDataUrl',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'download data: URL [url] as [file]',
+            arguments: {
+              url: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'data:text/plain;base64,SGVsbG8sIHdvcmxkIQ=='
+              },
+              file: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'save.txt'
+              }
+            }
+          },
+          {
             opcode: 'setOpenMode',
             blockType: Scratch.BlockType.COMMAND,
             text: 'set open file selector mode to [mode]',
@@ -315,6 +330,16 @@
 
     download (args) {
       download(args.text, args.file);
+    }
+
+    async downloadDataUrl (args) {
+      try {
+        args.url = Scratch.Cast.toString(args.url);
+        if (new URL(args.url).protocol !== "data:") return;
+        const resp = await Scratch.fetch(args.url);
+        const blob = await resp.blob();
+        download(blob, args.file);
+      } catch (e) { }
     }
 
     setOpenMode (args) {
