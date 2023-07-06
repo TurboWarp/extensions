@@ -1,4 +1,3 @@
-//I HATE ESLING I HATE ESLIN I HATE ESLINT I HAVE ESLINT I HATE ESLING I HATE SLINT I HAVE TO REWRITE THE ENTIRE PROGRAM
 (function (Scratch) {
   'use strict';
   if (!Scratch.extensions.unsandboxed) {
