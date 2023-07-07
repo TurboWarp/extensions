@@ -1,3 +1,8 @@
+/*!
+ * TurboHook (V.1.1.0)
+ * Made by CubesterYT
+ */
+
 (function (Scratch) {
   "use strict";
 
@@ -11,6 +16,10 @@
       return {};
     }
   };
+
+  function hexToDecimal(hex) {
+          return parseInt(hex.replace("#",""), 16);
+        }
 
   class TurboHook {
     getInfo() {
@@ -48,6 +57,36 @@
               }
             }
           },
+
+          "---",
+
+          {
+            opcode: "embedParams",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[MENU1] [MENU2] [DATA]",
+            arguments: {
+              MENU1: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "EMBEDPARAMS"
+              },
+              MENU2: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "EMBEDSUBPARAMS",
+                defaultValue: "name"
+              },
+              DATA: {
+                type: Scratch.ArgumentType.STRING
+              }
+            }
+          },
+          {
+            opcode: "embedConnector",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "sub options: [STRING1] & [STRING2]"
+          },
+
+          "---",
+
           {
             opcode: "connector",
             blockType: Scratch.BlockType.REPORTER,
@@ -57,16 +96,30 @@
         menus: {
           PARAMS: {
             acceptReporters: true,
-            items: ["content", "name", "icon"]
+            items: ["content", "name", "icon", "embed", "json"]
+          },
+          EMBEDPARAMS: {
+            acceptReporters: true,
+            items: ["author", "title", "url", "description", "fields", "thumbnail", "image", "footer", "timestamp", "color"]
+          },
+          EMBEDSUBPARAMS: {
+            acceptReporters: true,
+            items: ["empty", "name", "url", "icon url", "text", "value", "inline"]
           }
         }
       };
     }
 
     webhook ({hookDATA, hookURL}) {
-      const data = parseOrEmptyObject(hookDATA);
-      if (!data.content) {
-        // Typically this can't be empty, so put something there if they forgot to
+      hookDATA = Scratch.Cast.toString(hookDATA);
+      hookURL = Scratch.Cast.toString(hookURL);
+      let data = parseOrEmptyObject(hookDATA);
+      if (data.embeds) {
+        //left empty on purpose
+      } else if (hookDATA.includes("json ")) {
+        const jsonFix = hookDATA.replace("json ", "");
+        data = JSON.parse(jsonFix);
+      } else if (!data.content) {
         data.content = "(empty)";
       }
       Scratch.fetch(hookURL, {
@@ -85,8 +138,94 @@
         return JSON.stringify({ username: DATA });
       } else if (MENU == "icon") {
         return JSON.stringify({ avatar_url: DATA });
+      } else if (MENU == "embed") {
+        const embedDATA = JSON.stringify({ embeds: ["!"] });
+        return embedDATA.replace('"!"', DATA);
+      } else if (MENU == "json") {
+        return `json ${DATA}`;
       }
       return "{}";
+    }
+    embedParams ({MENU1, MENU2, DATA}) {
+      DATA = Scratch.Cast.toString(DATA);
+      if (MENU1 == "author") {
+        if (MENU2 == "name") {
+          return JSON.stringify({ author: { name: DATA } });
+        } else if (MENU2 == "url") {
+          return JSON.stringify({ author: { url: DATA } });
+        } else if (MENU2 == "icon url") {
+          return JSON.stringify({ author: { icon_url: DATA } });
+        }
+      } else if (MENU1 == "title" && MENU2 == "empty") {
+        return JSON.stringify({ title: DATA });
+      } else if (MENU1 == "url" && MENU2 == "empty") {
+        return JSON.stringify({ url: DATA });
+      } else if (MENU1 == "description" && MENU2 == "empty") {
+        return JSON.stringify({ description: DATA });
+      } else if (MENU1 == "fields") {
+        if (MENU2 == "name") {
+          return JSON.stringify({ fields: [ { name: DATA } ] });
+        } else if (MENU2 == "value") {
+          return JSON.stringify({ fields: [ { value: DATA } ] });
+        } else if (MENU2 == "inline") {
+          return JSON.stringify({ fields: [ { inline: DATA } ] });
+        }
+      } else if (MENU1 == "thumbnail") {
+        if (MENU2 == "url") {
+          return JSON.stringify({ thumbnail: { url: DATA } });
+        }
+      } else if (MENU1 == "image") {
+        if (MENU2 == "url") {
+          return JSON.stringify({ image: { url: DATA } });
+        }
+      } else if (MENU1 == "footer") {
+        if (MENU2 == "text") {
+          return JSON.stringify({ footer: { text: DATA } });
+        } else if (MENU2 == "icon url") {
+          return JSON.stringify({ footer: { icon_url: DATA } });
+        }
+      } else if (MENU1 == "timestamp" && MENU2 == "empty") {
+        return JSON.stringify({ timestamp: DATA });
+      } else if (MENU1 == "color" && MENU2 == "empty") {
+        const color = JSON.stringify(hexToDecimal(DATA));
+        return JSON.stringify({ color: color });
+      } else {
+        return "{}";
+      }
+    }
+    embedConnector ({STRING1, STRING2}) {
+      STRING1 = Scratch.Cast.toString(STRING1);
+      STRING2 = Scratch.Cast.toString(STRING2);
+      if (STRING1.includes("author") && STRING2.includes("author")) {
+        STRING1 = STRING1.replace('{"author":', "");
+        STRING1 = STRING1.slice(0,-1);
+        STRING2 = STRING2.replace('{"author":', "");
+        STRING2 = STRING2.slice(0,-1);
+        return `{"author":${JSON.stringify({
+          ...parseOrEmptyObject(STRING1),
+          ...parseOrEmptyObject(STRING2)
+        })}}`;
+      } else if (STRING1.includes("fields") && STRING2.includes("fields")) {
+        STRING1 = STRING1.replace('{"fields":[', "");
+        STRING1 = STRING1.slice(0,-2);
+        STRING2 = STRING2.replace('{"fields":[', "");
+        STRING2 = STRING2.slice(0,-2);
+        return `{"fields":[${JSON.stringify({
+          ...parseOrEmptyObject(STRING1),
+          ...parseOrEmptyObject(STRING2)
+        })}]}`;
+      } else if (STRING1.includes("footer") && STRING2.includes("footer")) {
+        STRING1 = STRING1.replace('{"footer":', "");
+        STRING1 = STRING1.slice(0,-1);
+        STRING2 = STRING2.replace('{"footer":', "");
+        STRING2 = STRING2.slice(0,-1);
+        return `{"footer":${JSON.stringify({
+          ...parseOrEmptyObject(STRING1),
+          ...parseOrEmptyObject(STRING2)
+        })}}`;
+      } else {
+        return "{}";
+      }
     }
     connector ({STRING1, STRING2}) {
       return JSON.stringify({
