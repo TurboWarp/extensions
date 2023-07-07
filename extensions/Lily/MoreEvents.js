@@ -339,9 +339,7 @@
     }
 
     whenValueChanged(args, util) {
-      // I've come to realise that this is NOT the way to get the blockId.
-      // However, considering that the hat block will ALWAYS be the top block, it works fine.
-      const blockId = util.thread.topBlock;
+      const blockId = util.thread.peekStack();
       if (!lastValues[blockId]) lastValues[blockId] = Scratch.Cast.toString(args.INPUT);
       if (lastValues[blockId] !== Scratch.Cast.toString(args.INPUT)) {
         lastValues[blockId] = Scratch.Cast.toString(args.INPUT);
@@ -360,8 +358,10 @@
       if (!args.BROADCAST_OPTION) return;
       const broadcastVar = util.runtime.getTargetForStage().lookupBroadcastMsg(args.BROADCAST_OPTION);
       if (!broadcastVar) return;
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
-      util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, target);
+      const spriteTarget = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      const cloneTargets = spriteTarget.sprite.clones;
+      cloneTargets.forEach(model => util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, model));
+      util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, spriteTarget);
     }
 
     broadcastAll(args, util) {
@@ -382,13 +382,9 @@
       const targets = Scratch.vm.runtime.targets;
       const myself = Scratch.vm.runtime.getEditingTarget().getName();
       for (let index = 1; index < targets.length; index++) {
-        const targetName = targets[index].getName();
-        if (targetName === myself) {
-          spriteNames.unshift({
-            text: 'this sprite',
-            value: targetName
-          });
-        } else {
+        const target = targets[index];
+        if (target.isOriginal) {
+          const targetName = target.getName();
           spriteNames.push({
             text: targetName,
             value: targetName
