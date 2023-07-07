@@ -10,7 +10,8 @@
   // https://github.com/Stuk/jszip
   // using it under the MIT license
 
-  // fold this, otherwise you're gonna have a bad time
+  // minified code from: https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js
+  // in a function for code folding
   function jsZip() {
     /*!
   
@@ -34,7 +35,7 @@
 
   const extIcon = "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2230%22%20height%3D%2230%22%3E%3Cg%20style%3D%22transform%3A%20translateY(-2px)%3B%22%3E%3Crect%20width%3D%2223%22%20height%3D%2220%22%20x%3D%226%22%20y%3D%223%22%20rx%3D%224%22%20ry%3D%224%22%20style%3D%22font-variation-settings%3Anormal%3Bfill%3A%23d8d86c%3Bfill-opacity%3A1%3Bstroke%3A%237d7d23%3Bstroke-width%3A2%3Bstroke-linecap%3Abutt%3Bstroke-linejoin%3Amiter%3Bstroke-miterlimit%3A4%3Bstroke-dasharray%3Anone%3Bstroke-dashoffset%3A0%3Bstroke-opacity%3A1%3Bpaint-order%3Astroke%20markers%20fill%3Bstop-color%3A%23000%22%2F%3E%3Crect%20width%3D%2228%22%20height%3D%2220%22%20x%3D%221%22%20y%3D%228%22%20rx%3D%224%22%20ry%3D%224%22%20style%3D%22font-variation-settings%3Anormal%3Bopacity%3A1%3Bfill%3A%23d8d86c%3Bfill-opacity%3A1%3Bstroke%3A%237d7d23%3Bstroke-width%3A2%3Bstroke-linecap%3Abutt%3Bstroke-linejoin%3Amiter%3Bstroke-miterlimit%3A4%3Bstroke-dasharray%3Anone%3Bstroke-dashoffset%3A0%3Bstroke-opacity%3A1%3Bpaint-order%3Astroke%20markers%20fill%3Bstop-color%3A%23000%3Bstop-opacity%3A1%22%2F%3E%3Cpath%20fill%3D%22%237d7d23%22%20d%3D%22M5%2012V8h4v4Zm3%204v-4h4v4Zm-3%204v-4h4v4Zm3%204v-4h4v4zm-3%204v-4h4v4Z%22%20style%3D%22mix-blend-mode%3Anormal%22%2F%3E%3Cpath%20fill%3D%22%237d7d23%22%20stroke%3D%22%237d7d23%22%20stroke-width%3D%22.1%22%20d%3D%22M10%207V5h2v2zm1-2V3h2v2z%22%20style%3D%22mix-blend-mode%3Anormal%22%2F%3E%3Ctext%20xml%3Aspace%3D%22preserve%22%20x%3D%2214.5%22%20y%3D%2224.8%22%20style%3D%22font-weight%3A700%3Bfont-size%3A19.4304px%3Bfont-family%3AConsolas%3B-inkscape-font-specification%3A%26quot%3BConsolas%2C%20Bold%26quot%3B%3Bfont-variation-settings%3Anormal%3Bopacity%3A1%3Bfill%3A%23fff%3Bfill-opacity%3A1%3Bstroke%3A%237d7d23%3Bstroke-width%3A2%3Bstroke-linecap%3Abutt%3Bstroke-linejoin%3Amiter%3Bstroke-miterlimit%3A4%3Bstroke-dasharray%3Anone%3Bstroke-dashoffset%3A0%3Bstroke-opacity%3A1%3Bpaint-order%3Astroke%20markers%20fill%3Bstop-color%3A%23000%3Bstop-opacity%3A1%22%20transform%3D%22scale(1.033%20.968)%22%3E%3Ctspan%20x%3D%2214.5%22%20y%3D%2224.8%22%20style%3D%22stroke-width%3A2%22%3EZ%3C%2Ftspan%3E%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fsvg%3E";
 
-  class ZIPExt {
+  class ZipExt {
     constructor() {
       this.zip = null;
       // jszip has its own "go to directory" system, but it sucks
@@ -45,7 +46,9 @@
     getInfo() {
       return {
         id: "cst1229zip",
-        name: "ZIP",
+        name: "Zip",
+        // docsURI: "http://localhost:8000/CST1229/zip.html",
+        docsURI: "https://extensions.turbowarp.org/CST1229/zip.html",
 
         blockIconURI: extIcon,
 
@@ -72,8 +75,8 @@
               },
               DATA: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "http:/localhost:8000/hello.zip",
-                // defaultValue: "https://extensions.turbowarp.org/hello.zip",
+                // defaultValue: "http:/localhost:8000/hello.zip",
+                defaultValue: "https://extensions.turbowarp.org/hello.zip",
               },
             },
           },
@@ -122,22 +125,6 @@
             },
           },
           {
-            opcode: "getFile",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "file [FILE] as [TYPE]",
-            arguments: {
-              FILE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "hello.txt"
-              },
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "text",
-                menu: "getFileType"
-              },
-            },
-          },
-          {
             opcode: "writeFile",
             blockType: Scratch.BlockType.COMMAND,
             text: "write file [FILE] content [CONTENT] type [TYPE]",
@@ -157,20 +144,90 @@
               },
             },
           },
+          {
+            opcode: "renameFile",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "rename [FROM] to [TO]",
+            arguments: {
+              FROM: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello.txt",
+              },
+              TO: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello renamed.txt",
+              },
+            },
+          },
+          {
+            opcode: "deleteFile",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "delete [FILE]",
+            arguments: {
+              FILE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello.txt",
+              },
+            },
+          },
+          {
+            opcode: "getFile",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "file [FILE] as [TYPE]",
+            arguments: {
+              FILE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello.txt"
+              },
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "text",
+                menu: "getFileType"
+              },
+            },
+          },
 
           "---",
 
           {
-            opcode: "goToDir",
+            opcode: "setFileMeta",
             blockType: Scratch.BlockType.COMMAND,
-            text: "go to directory [DIR]",
+            text: "set [META] of [FILE] to [VALUE]",
             arguments: {
-              DIR: {
+              META: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "folder"
-              }
+                defaultValue: "modified days since 2000",
+                menu: "setFileMeta"
+              },
+              FILE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "folder/dango.png"
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "0"
+              },
             },
           },
+          {
+            opcode: "getFileMeta",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[META] of [FILE]",
+            arguments: {
+              META: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "name",
+                menu: "fileMeta"
+              },
+              FILE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "folder/dango.png"
+              },
+            },
+          },
+
+          "---",
+
           {
             opcode: "createDir",
             blockType: Scratch.BlockType.COMMAND,
@@ -183,10 +240,15 @@
             },
           },
           {
-            opcode: "goToRoot",
+            opcode: "goToDir",
             blockType: Scratch.BlockType.COMMAND,
-            text: "return to root",
-            arguments: {},
+            text: "go to directory [DIR]",
+            arguments: {
+              DIR: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "folder"
+              }
+            },
           },
           {
             opcode: "getDir",
@@ -202,10 +264,31 @@
           {
             opcode: "currentDir",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current directory"
+            text: "current directory path"
           },
 
           "---",
+
+          {
+            opcode: "setComment",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set archive comment to [COMMENT]",
+            arguments: {
+              COMMENT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "any text"
+              },
+            },
+          },
+          {
+            opcode: "getComment",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "archive comment",
+            arguments: {},
+          },
+
+          "---",
+
 
           {
             opcode: "normalizePath",
@@ -246,12 +329,34 @@
               { text: "8", value: 8 },
               { text: "9 (slowest, smallest)", value: 9 },
             ],
-          }
+          },
+          fileMeta: {
+            acceptReporters: true,
+            items: [
+              "name",
+              "path",
+              "folder",
+              "modification date",
+              "long modification date",
+              "modified days since 2000",
+              "unix modified timestamp",
+              "comment",
+            ],
+          },
+          setFileMeta: {
+            acceptReporters: true,
+            items: [
+              "modified days since 2000",
+              "unix modified timestamp",
+              "comment",
+            ],
+          },
         }
       };
     }
 
-    // Other utilities
+    /// Utilities
+
     normalize(origin, path) {
       path = path.toString().replaceAll(/\\/g, "/");
       origin = origin.toString().replaceAll(/\\/g, "/");
@@ -293,30 +398,31 @@
       }
       return arr;
     }
-
-    // Zip utilities
-    _getDir(zip) {
-      const arr = [];
-      zip.forEach((path, obj) => arr.push({ path, obj }));
-      return arr;
-    }
+    // get a file/folder by path
     getObj(path) {
-      if (!this.zip) return null;
+      // JSZip.prototype.files seems to be a null-prototype object
+      // it should be safe doing this
+      return this.zip.files[path.substring(1)] || this.zip.files[path];
+    }
+    // create folders up to a certain path
+    createFolders(path) {
       try {
-        const normalized = path.substring(1);
+        path = this.normalize(path, ".");
 
-        // The root directory does exist
-        if (normalized === "") return true;
-
-        return Object.values(this.zip.files).find(obj => (
-          obj.name === normalized
-        ));
+        let currentPath = "";
+        for (const folder of path.split("/")) {
+          if (folder === "") continue;
+          if (currentPath !== "") currentPath += "/";
+          currentPath += folder;
+          this.zip.folder(currentPath);
+        }
       } catch (e) {
-        return null;
+        console.error(`Zip extension: Error creating folders for ${path}:`, e);
       }
     }
 
-    // Blocks
+    /// Blocks
+
     createEmpty() {
       this.close();
 
@@ -337,7 +443,7 @@
         this.zip = await JSZip.loadAsync(DATA, { createFolders: true });
         this.zipPath = "/";
       } catch (e) {
-        console.error("ZIP extension: Could not open zip file.", e);
+        console.error("Zip extension: Could not open zip file.", e);
       }
     }
     async getZip({ TYPE, COMPRESSION }) {
@@ -382,7 +488,7 @@
           default: return "";
         }
       } catch (e) {
-        console.error(`ZIP extension: Error creating zip with type ${TYPE} compression ${COMPRESSION}:`, e);
+        console.error(`Zip extension: Error creating zip with type ${TYPE} compression ${COMPRESSION}:`, e);
       }
     }
     close() {
@@ -400,18 +506,6 @@
         return false;
       }
     }
-
-    normalizePath({ ORIGIN, PATH }) {
-      try {
-        return this.normalize(
-          Scratch.Cast.toString(ORIGIN),
-          Scratch.Cast.toString(PATH)
-        );
-      } catch (e) {
-        return "";
-      }
-    }
-
     async getFile({ FILE, TYPE }) {
       if (!this.zip) return "";
 
@@ -444,11 +538,10 @@
           default: return "";
         }
       } catch (e) {
-        console.error(`ZIP extension: Error getting file ${FILE} with type ${TYPE}:`, e);
+        console.error(`Zip extension: Error getting file ${FILE} with type ${TYPE}:`, e);
         return "";
       }
     }
-
     writeFile({ FILE, CONTENT, TYPE }) {
       if (!this.zip) return;
 
@@ -458,10 +551,11 @@
       try {
         let path = this.normalize(this.zipPath, FILE);
         if (path.endsWith("/")) return;
-        if (path.startsWith("/")) path = path.substring(1);
 
         const obj = this.getObj(path);
         if (obj && obj.dir) return;
+
+        if (path.startsWith("/")) path = path.substring(1);
 
         switch (TYPE) {
           case "text":
@@ -498,51 +592,188 @@
           default: return "";
         }
       } catch (e) {
-        console.error(`ZIP extension: Error writing to file ${FILE} type ${TYPE}:`, e);
+        console.error(`Zip extension: Error writing to file ${FILE} type ${TYPE}:`, e);
       }
+    }
+    renameFile({ FROM, TO }) {
+      if (!this.zip) return;
 
+      const renameOne = (from, to) => {
+        const obj = this.zip.files[from];
+        this.zip.files[to] = obj;
+        obj.name = to;
+        delete this.zip.files[from];
+      };
+
+      FROM = Scratch.Cast.toString(FROM);
+      TO = Scratch.Cast.toString(TO);
+      try {
+        let fromPath = this.normalize(this.zipPath, FROM);
+        let fromObj = this.getObj(fromPath);
+        if (!fromObj && !fromPath.endsWith("/")) {
+          fromPath += "/";
+          fromObj = this.getObj(fromPath);
+        }
+        if (!fromObj) return;
+        let toPath = this.normalize(this.zipPath, TO);
+        const replacedTo = TO.replaceAll(/\\/g, "/");
+        const slashes = replacedTo.split("/").length - 1;
+        if (slashes <= +fromObj.dir && (slashes === 0 || replacedTo.endsWith("/"))) {
+          // this is a name-only change
+          toPath = this.normalize(fromPath, "../" + replacedTo);
+          if (fromObj.dir) {
+            if (!fromPath.endsWith("/")) fromPath += "/";
+          } else {
+            if (fromPath.endsWith("/")) return;
+          }
+        }
+
+        if (fromPath.startsWith("/")) fromPath = fromPath.substring(1);
+        if (toPath.startsWith("/")) toPath = toPath.substring(1);
+
+        // If this is a file, just renaming this one is enough
+        if (!fromObj.dir) {
+          renameOne(fromPath, toPath);
+          return;
+        }
+
+        // Otherwise, we need to rename this object
+        // and everything else in it
+        if (!toPath.endsWith("/")) toPath += "/";
+
+        // Move current directory
+        if (this.zipPath.substring(1).startsWith(fromPath)) {
+          this.zipPath =
+            "/" + toPath + (this.zipPath.substring(1).substring(fromPath.length));
+        }
+
+        for (const path in this.zip.files) {
+          if (!path.startsWith(fromPath)) continue;
+          const extraPath = path.substring(fromPath.length);
+          renameOne(path, toPath + extraPath);
+        }
+        this.createFolders(toPath);
+      } catch (e) {
+        console.error(`Zip extension: Error renaming ${FROM} to ${TO}:`, e);
+      }
+    }
+    deleteFile({ FILE }) {
+      if (!this.zip) return;
+
+      FILE = Scratch.Cast.toString(FILE);
+      try {
+        let path = this.normalize(this.zipPath, FILE);
+        if (!this.getObj(path)) return;
+        if (path === "/") return;
+
+        const shouldGoBack = this.getObj(path).dir && this.zipPath.startsWith(path);
+        if (path.startsWith("/")) path = path.substring(1);
+
+
+        this.zip.remove(path);
+
+        if (shouldGoBack) {
+          // Go back until we are in a directory that exists
+          const split = this.zipPath.split("/");
+          this.zipPath = "";
+
+          let i = 0;
+          while (i < split.length) {
+            if (split[i] === "") {
+              i++;
+              continue;
+            }
+            const newPath = this.zipPath + split[i] + "/";
+            if (!this.getObj(newPath)) break;
+            this.zipPath = newPath;
+            i++;
+          }
+          if (this.zipPath === "") this.zipPath = "/";
+        }
+      } catch (e) {
+        console.error(`Zip extension: Error deleting file ${FILE}:`, e);
+      }
     }
 
-    getDir({ DIR }) {
-      if (!this.zip) return "";
+    setFileMeta({ META, FILE, VALUE }) {
+      if (!this.zip) return;
+
+      META = Scratch.Cast.toString(META);
+      FILE = Scratch.Cast.toString(FILE);
+      VALUE = Scratch.Cast.toString(VALUE);
       try {
-        DIR = Scratch.Cast.toString(DIR);
-        if (!DIR.endsWith("/")) DIR += "/";
-
-        const normalized = this.normalize(this.zipPath, DIR);
-        if (!this.getObj(normalized)) return "";
-        const dir = normalized.substring(1);
-        const length = dir.length;
-
-        return JSON.stringify(Object.values(this.zip.files).filter((obj) => {
-          // Above the current directory
-          if (!obj.name.startsWith(dir)) return false;
-          // Below the current directory
-          if (obj.name.substring(length).split("/").length > (obj.dir + 1)) return false;
-          // Is the current directory
-          if (obj.name === dir) return false;
-          return true;
-        }).map(obj => obj.name.substring(length)));
+        const normalized = this.normalize(this.zipPath, FILE);
+        const obj = this.getObj(normalized);
+        if (!obj) return "";
+        switch (META) {
+          case "modified days since 2000": {
+            const msPerDay = 24 * 60 * 60 * 1000;
+            const start = +(new Date(2000, 0, 1));
+            obj.date = new Date(start + (Scratch.Cast.toNumber(VALUE) * msPerDay));
+          } break;
+          case "unix modified timestamp":
+            obj.date = new Date(Scratch.Cast.toNumber(VALUE));
+            break;
+          case "comment":
+            obj.comment = VALUE;
+            break;
+          default: return;
+        }
       } catch (e) {
-        console.error(`ZIP extension: Could not get directory ${DIR}:`, e);
+        console.log(`Zip extension: Error getting ${META} of ${FILE}:`, e);
         return "";
       }
     }
-    currentDir() {
-      return this.zipPath || "";
-    }
-    goToDir({ DIR }) {
-      if (!this.zip) return;
-      DIR = Scratch.Cast.toString(DIR);
+    getFileMeta({ META, FILE }) {
+      if (!this.zip) return "";
+
+      META = Scratch.Cast.toString(META);
+      FILE = Scratch.Cast.toString(FILE);
       try {
-        let newPath = this.normalize(this.zipPath, DIR);
-        if (!newPath.endsWith("/")) newPath += "/";
-        if (!this.getObj(newPath)) return;
-        this.zipPath = newPath;
+        const normalized = this.normalize(this.zipPath, FILE);
+        const obj = this.getObj(normalized);
+        if (!obj) return "";
+        switch (META) {
+          case "name": {
+            const splitPath = obj.name.split("/");
+            // Directories have an extra slash at the end
+            // (obj.dir is casted to 0 or 1)
+            return splitPath[splitPath.length - 1 - +obj.dir] || "";
+          }
+          case "path":
+            return "/" + obj.name;
+          case "folder": {
+            /** @type {Array} */
+            const splitPath = obj.name.split("/");
+            const folders = (splitPath.slice(
+              0, splitPath.length - 1 - +obj.dir
+            ).join("/"));
+            return "/" + folders + (folders === "" ? "" : "/");
+          }
+          case "modification date":
+            return obj.date.toLocaleString(navigator.language);
+          case "long modification date":
+            return new Date().toLocaleString(
+              navigator.language,
+              { dateStyle: "full", timeStyle: "medium" }
+            );
+          case "modified days since 2000": {
+            const msPerDay = 24 * 60 * 60 * 1000;
+            const start = +(new Date(2000, 0, 1));
+            return (+obj.date - start) / msPerDay;
+          }
+          case "unix modified timestamp":
+            return +obj.date;
+          case "comment":
+            return obj.comment || "";
+          default: return "";
+        }
       } catch (e) {
-        console.log(`Error going to directory ${DIR}:`, e);
+        console.log(`Zip extension: Error getting ${META} of ${FILE}:`, e);
+        return "";
       }
     }
+
     createDir({ DIR }) {
       if (!this.zip) return;
       DIR = Scratch.Cast.toString(DIR);
@@ -556,16 +787,68 @@
         console.log(`Error creating directory ${DIR}:`, e);
       }
     }
-    goToRoot() {
+    goToDir({ DIR }) {
       if (!this.zip) return;
-      this.zipPath = "/";
+      DIR = Scratch.Cast.toString(DIR);
+      try {
+        let newPath = this.normalize(this.zipPath, DIR);
+        if (!newPath.endsWith("/")) newPath += "/";
+        if (!this.getObj(newPath)) return;
+        this.zipPath = newPath;
+      } catch (e) {
+        console.log(`Error going to directory ${DIR}:`, e);
+      }
+    }
+    getDir({ DIR }) {
+      if (!this.zip) return "";
+      try {
+        DIR = Scratch.Cast.toString(DIR);
+        if (!DIR.endsWith("/")) DIR += "/";
+
+        const normalized = this.normalize(this.zipPath, DIR);
+        if (!this.getObj(normalized) && normalized !== "/") return "";
+        const dir = normalized.substring(1);
+        const length = dir.length;
+
+        return JSON.stringify(Object.values(this.zip.files).filter((obj) => {
+          // Above the current directory
+          if (!obj.name.startsWith(dir)) return false;
+          // Below the current directory
+          if (obj.name.substring(length).split("/").length > (obj.dir + 1)) return false;
+          // Is the current directory
+          if (obj.name === dir) return false;
+          return true;
+        }).map(obj => obj.name.substring(length)));
+      } catch (e) {
+        console.error(`Zip extension: Could not get directory ${DIR}:`, e);
+        return "";
+      }
+    }
+    currentDir() {
+      return this.zipPath || "";
+    }
+
+    setComment({ COMMENT }) {
+      if (!this.zip) return;
+      this.zip.comment = Scratch.Cast.toString(COMMENT);
+    }
+    getComment({ COMMENT }) {
+      if (!this.zip) return "";
+      return this.zip.comment || "";
+    }
+
+    normalizePath({ ORIGIN, PATH }) {
+      try {
+        return this.normalize(
+          Scratch.Cast.toString(ORIGIN),
+          Scratch.Cast.toString(PATH)
+        );
+      } catch (e) {
+        return "";
+      }
     }
   }
 
-
-  const zipExt = new ZIPExt();
   // @ts-ignore
-  window.zipExt = zipExt;
-  // @ts-ignore
-  Scratch.extensions.register(zipExt);
+  Scratch.extensions.register(new ZipExt());
 })(globalThis.Scratch);
