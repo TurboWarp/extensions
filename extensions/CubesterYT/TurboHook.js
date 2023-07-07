@@ -57,6 +57,9 @@
               }
             }
           },
+
+          "---",
+
           {
             opcode: "embedParams",
             blockType: Scratch.BlockType.REPORTER,
@@ -81,6 +84,9 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "sub options: [STRING1] & [STRING2]"
           },
+
+          "---",
+
           {
             opcode: "connector",
             blockType: Scratch.BlockType.REPORTER,
