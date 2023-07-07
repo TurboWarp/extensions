@@ -358,6 +358,10 @@
       if (!args.BROADCAST_OPTION) return;
       const broadcastVar = util.runtime.getTargetForStage().lookupBroadcastMsg(args.BROADCAST_OPTION);
       if (!broadcastVar) return;
+      if (args.TARGET = '_stage_') {
+        util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, runtime.getTargetForStage());
+        return;
+      }
       const spriteTarget = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
       const cloneTargets = spriteTarget.sprite.clones;
       cloneTargets.forEach(model => util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, model));
@@ -378,7 +382,7 @@
     }
 
     _getTargets() {
-      const spriteNames = [];
+      const spriteNames = [{text: 'Stage', value: '_stage_'}];
       const targets = Scratch.vm.runtime.targets;
       const myself = Scratch.vm.runtime.getEditingTarget().getName();
       for (let index = 1; index < targets.length; index++) {
