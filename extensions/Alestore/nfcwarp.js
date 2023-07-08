@@ -30,7 +30,6 @@
         return '';
       }
       return new Promise((resolve, reject) => {
-        // eslint-disable-next-line
         const ndef = new NDEFReader();
         ndef.scan()
           .then(() => {
