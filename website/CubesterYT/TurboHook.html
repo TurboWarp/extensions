@@ -71,7 +71,7 @@
 		</div>
 		<div class="inbox">
 			<h2>About this extension</h2>
-			<p>This extension allows you to post to webhooks from some common third-party websites or programs.</p>
+			<p>This extension allows you to post to webhooks from some common third-party websites or programs. It can also post to webhooks for any other site and program using JSON.</p>
 
 			<hr>
 
@@ -84,22 +84,98 @@
 			<hr>
 
 			<h3>Data Reporter</h3>
-			<p>The Menu area of the Data Reporter currently has three options, ("content","name","icon").</p>
+			<p>The menu area of the Data Reporter has five options, <strong>("content", "name", "icon", "embed", "json")</strong>.</p>
 			<h4>Content</h4>
 			<img src="content.png" width="112.875" height="45"/>
 			<p>When choosing "content", you can type in the text you want to send as the body of the webhook.</p>
 			<h4>Name</h4>
 			<img src="name.png" width="103.5" height="45"/>
-			<p>When choosing "name", you can type in the name of the name you want the webhook to display as on the third-party website.</p>
+			<p>When choosing "name", you can type in the name of the webhook you want to display as on the third-party website.</p>
 			<h4>Icon</h4>
 			<img src="icon.png" width="95.625" height="45"/>
 			<p>When choosing "icon", you can type in a URL to the image you want to set as the profile picture of the webhook.</p>
+			<h4>Embed</h4>
+			<img src="embed.png" width="110.25" height="45"/>
+			<p>When choosing "embed", you can insert embed data reporters and/or embed connector reporters to send an embed to your webhook.</p>
+			<h4>JSON</h4>
+			<img src="json.png" width="95.625" height="45"/>
+			<p>When choosing "json", you can type in your own data to send to your webhook. When using "json", the format should be:</p>
+			<textarea readonly class=code rows=3 wrap=off>
+{"Key":"Value"}
+ or if multiple values:
+{"Key1":"Value1","Key2":"Value2"}
+			</textarea>
+
+			<hr>
+
+			<h3>Embed Data Reporter</h3>
+			<p>The first menu area of the Embed Data Reporter has ten options, <strong>("author", "title", "url", "description", "fields", "thumbnail", "image", "footer", "timestamp", "color")</strong>.</p>
+			<p>The second menu area of the Embed Data Reporter has seven options, <strong>("empty", "name", "url", "icon url", "text", "value", "inline")</strong>.</p>
+			<p><strong>Note: Embed Data Reporters use a system to make the second menu area dependent on the first menu as a failsafe. Such as those listed below with "empty" as a second option, then it should be set to empty.</strong></p>
+			<h4>Author</h4>
+			<p>The "author" option has three sub options:</p>
+			<h5>Name</h5>
+			<img src="author_name.png" width="175.125" height="45"/>
+			<p>When choosing "name", you can type in the text you want to send as the name of the author in the embed.</p>
+			<h5>URL</h5>
+			<img src="author_url.png" width="158.25" height="45"/>
+			<p>When choosing "url", you can type in the URL you want to send as the link of the author in the embed.</p>
+			<h5>Icon URL</h5>
+			<img src="author_iconurl.png" width="183.75" height="45"/>
+			<p>When choosing "icon url", you can type in the URL you want to send as the icon of the author in the embed.</p>
+			<h4>Title</h4>
+			<img src="title_empty.png" width="162.375" height="45"/>
+			<p>When choosing "title", you can type in the text you want to send as the title of the embed.</p>
+			<h4>URL</h4>
+			<img src="url_empty.png" width="157.125" height="45"/>
+			<p>When choosing "url", you can type in the URL you want to send as the link of the title of the embed.</p>
+			<h4>Description</h4>
+			<img src="description_empty.png" width="201.75" height="45"/>
+			<p>When choosing "description", you can type in the text you want to send as the description of the embed.</p>
+			<h4>Fields</h4>
+			<p>The "fields" option has three sub options:</p>
+			<h5>Name</h5>
+			<img src="fields_name.png" width="169.125" height="45"/>
+			<p>When choosing "name", you can type in the text you want to send as the name of the field in the embed.</p>
+			<h5>Value</h5>
+			<img src="fields_value.png" width="167.625" height="45"/>
+			<p>When choosing "value", you can type in the text you want to send as the value of the field in the embed.</p>
+			<h5>Inline</h5>
+			<img src="fields_inline.png" width="166.875" height="45"/>
+			<p>When choosing "inline", you can type in either "true" or "false". "false" is the default, but if "true", then sets field objects in same line, but if you have more than 3 objects with enabled inline or just too long you will get rows with 3 fields in each one or with 2 fields if you used thumbnail objects.</p>
+			<h4>Thumbnail</h4>
+			<img src="thumbnail_url.png" width="176.25" height="45"/>
+			<p>When choosing "thumbnail", you can type in the URL you want to send as the thumbnail of the embed.</p>
+			<h4>Image</h4>
+			<img src="image_url.png" width="157.125" height="45"/>
+			<p>When choosing "image", you can type in the URL you want to send as the image next to the title of the embed.</p>
+			<h4>Footer</h4>
+			<p>The "footer" option has two sub options:</p>
+			<h5>Text</h5>
+			<img src="footer_text.png" width="160.875" height="45"/>
+			<p>When choosing "text", you can type in the text you want to send as the footer of the embed.</p>
+			<h5>Icon URL</h5>
+			<img src="footer_iconurl.png" width="180.375" height="45"/>
+			<p>When choosing "icon url", you can type in the URL you want to send as the icon of the footer in the embed.</p>
+			<h4>Timestamp</h4>
+			<img src="timestamp_empty.png" width="199.125" height="45"/>
+			<p>When choosing "timestamp", you can type in the ISO-8601 format of the date you want to send as the date of the embed in the footer area. The format is:</p>
+			<textarea readonly class=code rows=1 wrap=off>YYYY-MM-DDTHH:MM:SS.MSSZ</textarea>
+			<h4>Color</h4>
+			<img src="color_empty.png" width="169.875" height="45"/>
+			<p>When choosing "color", you can type in the hex code you want to send as the color of the embed.</p>
+
+			<hr>
+
+			<h3>Embed Data Connector Reporter</h3>
+			<img src="sub_options.png" width="174.75" height="45"/>
+			<p>This reporter connects two same embed data reporters (that have sub options) together.</p>
 
 			<hr>
 
 			<h3>Connector Reporter</h3>
 			<img src="connector.png" width="93.375" height="45"/>
-			<p>This reporter connects two different data reporters together and/or another connector reporter so you can send multiple pieces of data to the webhook.</p>
+			<p>This reporter connects two different data reporters together and/or another connector reporter and/or embed data reporters and/or embed data connector reporters so you can send multiple pieces of data to the webhook.</p>
 		</div>
 	</body>
 </html>
