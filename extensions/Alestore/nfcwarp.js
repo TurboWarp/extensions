@@ -16,12 +16,14 @@
         color3: '#990033',
         menuIconURI: extIcon,
         blockIconURI: blocksIcon,
-        blocks: [{
-          opcode: 'nfcRead',
-          blockType: Scratch.BlockType.REPORTER,
-          text: 'Read NFC Tag',
-          disableMonitor: true
-        }]
+        blocks: [
+          {
+            opcode: 'nfcRead',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Read NFC Tag',
+            disableMonitor: true
+          }
+        ]
       };
     }
 
@@ -39,7 +41,7 @@
             };
             ndef.onreading = evt => {
               const decoder = new TextDecoder();
-              let record = evt.message.records[0];
+              const record = evt.message.records[0];
               console.log('Record type: ' + record.recordType);
               console.log('Record encoding: ' + record.encoding);
               console.log('Record data: ' + decoder.decode(record.data));
@@ -47,7 +49,7 @@
             };
           })
           .catch(err => {
-            console.log('Scan error' + err.message);
+            console.log('Scan error', err);
             reject(err);
           });
       });
