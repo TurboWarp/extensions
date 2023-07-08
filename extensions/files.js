@@ -342,7 +342,9 @@
         const resp = await Scratch.fetch(args.url);
         const blob = await resp.blob();
         download(blob, args.file);
-      } catch (e) { }
+      } catch (e) {
+        // ignore
+      }
     }
 
     setOpenMode (args) {
