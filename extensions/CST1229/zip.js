@@ -1,6 +1,10 @@
 (function (Scratch) {
   "use strict";
 
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error("The Zip extension must be run unsandboxed");
+  }
+
   // Tricking JSZip into thinking it's running as a CommonJS module
   // is probably better than letting it overwrite globals
   const exports = {};
