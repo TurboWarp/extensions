@@ -10,10 +10,12 @@ const md = new MarkdownIt({
 
 md.renderer.rules.fence = function (tokens, idx, options, env, self) {
   const token = tokens[idx];
+
   if (token.info === 'scratch') {
-    // Don't put scratchblocks in a <code> or <pre>
+    env.usesScratchBlocks = true;
     return `<div class="render-scratchblocks">${md.utils.escapeHtml(token.content)}</div>`;
   }
+
   // By default markdown-it will use a strange combination of <code> and <pre>; we'd rather it
   // just use <pre>
   return `<pre class="language-${md.utils.escapeHtml(token.info)}">${md.utils.escapeHtml(token.content)}</pre>`;
@@ -24,7 +26,8 @@ md.renderer.rules.fence = function (tokens, idx, options, env, self) {
  * @returns {string} HTML source code
  */
 const renderDocs = (markdownSource) => {
-  const tokens = md.parse(markdownSource, {});
+  const env = {};
+  const tokens = md.parse(markdownSource, env);
 
   // Extract the header
   let headerHTML = '## file did not contain header ##';
@@ -37,18 +40,20 @@ const renderDocs = (markdownSource) => {
     // Discard the header tokens themselves, but render the HTML title with any formatting
     headerTokens.shift();
     headerTokens.pop();
-    headerHTML = md.renderer.render(headerTokens, md.options, {});
+    headerHTML = md.renderer.render(headerTokens, md.options, env);
 
-    // We also need a no-formatting page
+    // We also need a no-formatting version for the title
     const justTextTokens = headerTokens.filter(token => token.type === 'inline');
-    headerText = md.renderer.render(justTextTokens, md.options, {});
+    headerText = md.renderer.render(justTextTokens, md.options, env);
   }
 
-  const bodyHTML = md.renderer.render(tokens, md.options, {});
+  const bodyHTML = md.renderer.render(tokens, md.options, env);
+
   return renderTemplate(path.join(__dirname, 'docs-template.ejs'), {
     headerHTML,
     headerText,
-    bodyHTML
+    bodyHTML,
+    usesScratchBlocks: !!env.usesScratchBlocks
   });
 };
 

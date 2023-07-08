@@ -34,6 +34,10 @@
         padding: 0;
       }
 
+      noscript {
+        font-weight: bold;
+      }
+
       header {
         width: 100%;
         background-color: #ff4c4c;
@@ -104,7 +108,12 @@
       <hr>
 
       <footer>
-        <p>This page is <a href="https://github.com/TurboWarp/extensions/tree/master/docs">open source</a>. Blocks rendered with <a href="https://scratchblocks.github.io/">scratchblocks</a>.</p>
+        <p>
+          This page is <a href="https://github.com/TurboWarp/extensions/tree/master/docs">open source</a>.
+          <% if (usesScratchBlocks) { %>
+            Blocks rendered with <a href="https://scratchblocks.github.io/">scratchblocks</a>.
+          <% } %>
+        </p>
         <p>TurboWarp is not affiliated with Scratch, the Scratch Team, or the Scratch Foundation.</p>
       </footer>
     </div>
