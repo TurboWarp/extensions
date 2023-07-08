@@ -18,6 +18,10 @@
         blockIconURI: blocksIcon,
         blocks: [
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: 'Only works in Chrome on Android'
+          },
+          {
             opcode: 'supported',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'NFC supported?'
