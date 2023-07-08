@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      :root {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color: #eee;
+          background: #111;
+        }
+        a {
+          color: #56b2ff;
+        }
+        a:visited {
+          color: #f192ff;
+        }
+        a:active {
+          color: red;
+        }
+      }
+      body {
+        margin: 0;
+        font-size: 16px;
+      }
+
+      h1 {
+
+      }
+      main {
+				max-width: 600px;
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <%- generatedHTML %>
+    </main>
+    <script src="/docs-internal/scratchblocks.js"></script>
+    <script>
+      scratchblocks.renderMatching('.language-scratch', {
+        style: 'scratch3'
+      });
+    </script>
+  </body>
+</html>
