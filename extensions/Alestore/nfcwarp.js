@@ -33,7 +33,7 @@
     }
 
     supported () {
-      return typeof NFEFReader !== 'undefined';
+      return typeof NDEFReader !== 'undefined';
     }
 
     nfcRead() {
