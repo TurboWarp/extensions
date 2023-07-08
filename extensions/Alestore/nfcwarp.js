@@ -38,15 +38,15 @@
 
     nfcRead() {
       if (!this.supported()) {
-        return '';
+        return 'NFC not supported';
       }
       return new Promise((resolve, reject) => {
         const ndef = new NDEFReader();
         ndef.scan()
           .then(() => {
-            ndef.onreadingerror = err => {
-              console.log('Reading error', err);
-              reject(err);
+            ndef.onreadingerror = event => {
+              console.log('Reading error', event);
+              resolve('Tag not supported');
             };
             ndef.onreading = evt => {
               const decoder = new TextDecoder();
@@ -57,9 +57,9 @@
               resolve(decoder.decode(record.data));
             };
           })
-          .catch(err => {
-            console.log('Scan error', err);
-            reject(err);
+          .catch(error => {
+            console.log('Scan error', error);
+            resolve(`Error: ${error}`);
           });
       });
     }
