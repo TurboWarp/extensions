@@ -165,19 +165,28 @@
   });
 
   /**
-   * @param {string|Blob} data Text or blob to download
+   * @param {string} data Text to download
    * @param {string} file Name of the file
    */
-  const download = (data, file) => {
-    const blob = data instanceof Blob ? data : new Blob([data]);
+  const downloadText = (data, file) => {
+    const blob = new Blob([data]);
     const url = URL.createObjectURL(blob);
+    downloadURL(url, file);
+    URL.revokeObjectURL(url);
+  };
+
+  /**
+   * Assumes that permission to fetch the URL has already been granted.
+   * @param {string} url
+   * @param {string} file
+   */
+  const downloadURL = (url, file) => {
     const link = document.createElement('a');
     link.href = url;
     link.download = file;
     document.body.appendChild(link);
     link.click();
     link.remove();
-    URL.revokeObjectURL(url);
   };
 
   class Files {
@@ -254,9 +263,9 @@
             }
           },
           {
-            opcode: 'downloadDataUrl',
+            opcode: 'downloadURL',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'download data: URL [url] as [file]',
+            text: 'download URL [url] as [file]',
             arguments: {
               url: {
                 type: Scratch.ArgumentType.STRING,
@@ -332,19 +341,11 @@
     }
 
     download (args) {
-      download(args.text, args.file);
+      downloadText(Scratch.Cast.toString(args.text), Scratch.Cast.toString(args.file));
     }
 
-    async downloadDataUrl (args) {
-      try {
-        args.url = Scratch.Cast.toString(args.url);
-        if (new URL(args.url).protocol !== "data:") return;
-        const resp = await Scratch.fetch(args.url);
-        const blob = await resp.blob();
-        download(blob, args.file);
-      } catch (e) {
-        // ignore
-      }
+    downloadURL (args) {
+      downloadURL(Scratch.Cast.toString(args.url), Scratch.Cast.toString(args.file));
     }
 
     setOpenMode (args) {
