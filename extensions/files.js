@@ -165,19 +165,7 @@
   });
 
   /**
-   * @param {string} data Text to download
-   * @param {string} file Name of the file
-   */
-  const downloadText = (data, file) => {
-    const blob = new Blob([data]);
-    const url = URL.createObjectURL(blob);
-    downloadURL(url, file);
-    URL.revokeObjectURL(url);
-  };
-
-  /**
-   * Assumes that permission to fetch the URL has already been granted.
-   * @param {string} url
+   * @param {string} url a data:, blob:, or same-origin URL
    * @param {string} file
    */
   const downloadURL = (url, file) => {
@@ -187,6 +175,43 @@
     document.body.appendChild(link);
     link.click();
     link.remove();
+  };
+
+  /**
+   * @param {Blob} blob Data to download
+   * @param {string} file Name of the file
+   */
+  const downloadBlob = (blob, file) => {
+    const url = URL.createObjectURL(blob);
+    downloadURL(url, file);
+    URL.revokeObjectURL(url);
+  };
+
+  /**
+   * @param {string} url
+   * @returns {boolean}
+   */
+  const isDataURL = (url) => {
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === 'data:';
+    } catch (e) {
+      return false;
+    }
+  };
+
+  /**
+   * @param {string} url
+   * @param {string} file
+   */
+  const downloadUntrustedURL = async (url, file) => {
+    if (isDataURL(url)) {
+      downloadURL(url, file);
+    } else {
+      const response = await Scratch.fetch(url);
+      const blob = await response.blob();
+      downloadBlob(blob, file);
+    }
   };
 
   class Files {
@@ -341,11 +366,11 @@
     }
 
     download (args) {
-      downloadText(Scratch.Cast.toString(args.text), Scratch.Cast.toString(args.file));
+      downloadBlob(new Blob([Scratch.Cast.toString(args.text)]), Scratch.Cast.toString(args.file));
     }
 
     downloadURL (args) {
-      downloadURL(Scratch.Cast.toString(args.url), Scratch.Cast.toString(args.file));
+      downloadUntrustedURL(Scratch.Cast.toString(args.url), Scratch.Cast.toString(args.file));
     }
 
     setOpenMode (args) {
