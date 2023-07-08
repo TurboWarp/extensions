@@ -74,15 +74,6 @@ Example: `3` → `00000000000000000000000000000011` → `10000000000000000000000
 
 ---
 
-<style>
-  .language-example {
-    display: block;
-    border-radius: 3px;
-    resize: none;
-    width: 100%;
-  }
-</style>
-
 ```scratch
 ([x] and [y] :: #17cde6)
 ```

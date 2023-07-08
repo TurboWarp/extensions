@@ -7,12 +7,16 @@
       :root {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         color-scheme: light dark;
+        font-size: 16px;
       }
       @media (prefers-color-scheme: dark) {
         :root {
           color: #eee;
           background: #111;
         }
+      }
+
+      @media (prefers-color-scheme: dark) {
         a {
           color: #56b2ff;
         }
@@ -23,29 +27,85 @@
           color: red;
         }
       }
+
       body {
         margin: 0;
-        font-size: 16px;
+        padding: 0;
       }
 
+      header {
+        width: 100%;
+        background-color: #ff4c4c;
+        color: white;
+        text-align: center;
+        padding: 20px 0;
+        font-size: 24px;
+      }
       h1 {
-
+        margin: 0;
+        padding: 0;
       }
-      main {
-				max-width: 600px;
+
+      .container {
+        max-width: 600px;
         margin: auto;
       }
+      hr {
+        border: none;
+        border-top: 1px solid #ccc;
+      }
+      @media (prefers-color-scheme: dark) {
+        hr {
+          border-color: #444;
+        }
+      }
+
+      code {
+        background-color: #eee;
+        border-radius: 4px;
+        padding: 0 2px;
+      }
+      pre {
+        background-color: #eee;
+        border-radius: 4px;
+        padding: 4px;
+      }
+      @media (prefers-color-scheme: dark) {
+        code, pre {
+          background-color: #223;
+        }
+      }
+
+      footer {
+        margin: 16px 0;
+        font-size: small;
+      }
     </style>
+    <title><%= headerText %></title>
   </head>
   <body>
-    <main>
-      <%- generatedHTML %>
-    </main>
+    <header>
+      <h1><%- headerHTML %></h1>
+    </header>
+
+    <div class="container">
+      <noscript><p>Enable JavaScript for blocks to render.</p></noscript>
+      <h2>About this extension</h2>
+      <%- bodyHTML %>
+
+      <hr>
+
+      <footer>
+        <p>This page is <a href="https://github.com/TurboWarp/extensions/tree/master/docs">open source</a>. Blocks rendered with <a href="https://scratchblocks.github.io/">scratchblocks</a>.</p>
+        <p>TurboWarp is not affiliated with Scratch, the Scratch Team, or the Scratch Foundation.</p>
+      </footer>
+    </div>
+
     <script src="/docs-internal/scratchblocks.js"></script>
     <script>
-      scratchblocks.renderMatching('.language-scratch', {
-        style: 'scratch3'
-      });
+        scratchblocks.renderMatching('.render-scratchblocks', {
+          style: 'scratch3'
+        });
     </script>
   </body>
 </html>
