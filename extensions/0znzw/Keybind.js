@@ -24,33 +24,7 @@
     function addKeybind(name, keys) {
         keybinds.push({name, keys});
     }
-    function bindAllKeybinds() {
-        var keybind;
-        for (keybind in keybinds) {
-            keybind = keybinds[keybind];
-            const bindName = keybind.name;
-            console.log(keybind);
-            var key;
-            const new_keys = structuredClone(keybind.keys);
-            for (key in new_keys) {
-                const old_key = key;
-                key = new_keys[key];
-                if (['ctrl', 'shift', 'alt'].includes(key)) {
-                    key += "+";
-                } else {
-                    key += " ";
-                }
-                new_keys[old_key] = key;
-            }
-            var keys_joined = new_keys.join('').trimEnd();
-            console.log(keys_joined);
-            Mousetrap.bind(keys_joined, function(){
-                //console.log(bindName);
-                lastKeybind = Scratch.Cast.toString(bindName);
-                events[Scratch.Cast.toString(bindName)] = true;
-            });
-        }
-    }
+
     if (!Scratch.extensions.unsandboxed) {
         throw new Error(`Keybinds must run unsandboxed`);
     }
@@ -81,6 +55,35 @@
             }
             return -1;
         };
+
+        function bindAllKeybinds() {
+            var keybind;
+            for (keybind in keybinds) {
+                const old_keybind = keybind;
+                keybind = keybinds[keybind];
+                const bindName = keybind.name;
+                console.log(keybind);
+                var key;
+                const new_keys = structuredClone(keybind.keys);
+                for (key in new_keys) {
+                    const old_key = key;
+                    key = new_keys[key];
+                    if (['ctrl', 'shift', 'alt'].includes(key)) {
+                        key += "+";
+                    } else {
+                        key += " ";
+                    }
+                    new_keys[old_key] = key;
+                }
+                var keys_joined = new_keys.join('').trimEnd();
+                console.log(keys_joined);
+                Mousetrap.bind(keys_joined, function(){
+                    keybinds[old_keybind].pressed = true;
+                    lastKeybind = Scratch.Cast.toString(bindName);
+                    events[Scratch.Cast.toString(bindName)] = true;
+                }, 'keyup');
+            }
+        }
 
         // null-prototype object so that `when (toString)` doesn't break stuff
         const events = Object.create(null);
@@ -190,6 +193,17 @@
                         disableMonitor: true
                     },
                     {
+                        opcode: 'isKeybindPressed',
+                        blockType: Scratch.BlockType.BOOLEAN,
+                        text: 'keybind [name] was just ran?',
+                        arguments: {
+                            name: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'keybind1'
+                            }
+                        }
+                    },
+                    {
                         opcode: 'getLatestKeybind',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'last keybind',
@@ -223,7 +237,8 @@
                     {
                         opcode: 'refreshKeybinds',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Refresh All Keybinds'
+                        text: 'Refresh All Keybinds',
+                        hideFromPalette: true
                     },
                 ],
                 menus: {
@@ -288,6 +303,21 @@
                 if (myUtils.hasObjectWithValueAs(keybinds, 'name', name)) return;
                 keys = keys.split(' ');
                 keybinds.push({name: name, keys});
+                this.refreshKeybinds();
+            }
+
+            isKeybindPressed({ name }) {
+                if (myUtils.hasObjectWithValueAs(keybinds, 'name', name)) {
+                    const item = myUtils.getObjectIndexInListWithValueAs(keybinds, 'name', name);
+                    const pressed = keybinds[item].pressed;
+                    if (pressed) {
+                        keybinds[item].pressed = false;
+                        return pressed;
+                    } else {
+                        return false;
+                    }
+                };
+                return false; 
             }
 
             deleteKeybind({ name }) {
@@ -296,6 +326,7 @@
                     //@ts-expect-error
                     keybinds.pop(item);
                 }
+                this.refreshKeybinds();
             }
 
             editKeybind({ mode, name, value }) {
@@ -341,16 +372,9 @@
             }
             /* end */
 
-            /* start LarsIsHere */
-            latestKey() {
-                return new Promise(resolve => {
-                    window.addEventListener('keydown', event => {
-                        const key = event.key;
-                        resolve(key);
-                    });
-                });
+            latestKey(util) {
+                return Scratch.vm.runtime.ioDevices.keyboard.lastKeyPressed;
             }
-            /* end */
         }
         Scratch.extensions.register(new KeybindExt());
       })(Scratch);
