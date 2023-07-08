@@ -204,13 +204,16 @@
    * @param {string} url
    * @param {string} file
    */
-  const downloadUntrustedURL = async (url, file) => {
+  const downloadUntrustedURL = (url, file) => {
+    // Don't want to return a Promise here when not actually needed
     if (isDataURL(url)) {
       downloadURL(url, file);
     } else {
-      const response = await Scratch.fetch(url);
-      const blob = await response.blob();
-      downloadBlob(blob, file);
+      return Scratch.fetch(url)
+        .then(res => res.blob())
+        .then(blob => {
+          downloadBlob(blob, file);
+        });
     }
   };
 
@@ -370,7 +373,7 @@
     }
 
     downloadURL (args) {
-      downloadUntrustedURL(Scratch.Cast.toString(args.url), Scratch.Cast.toString(args.file));
+      return downloadUntrustedURL(Scratch.Cast.toString(args.url), Scratch.Cast.toString(args.file));
     }
 
     setOpenMode (args) {
