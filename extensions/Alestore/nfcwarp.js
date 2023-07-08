@@ -18,17 +18,26 @@
         blockIconURI: blocksIcon,
         blocks: [
           {
+            opcode: 'supported',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'NFC supported?'
+          },
+          {
             opcode: 'nfcRead',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Read NFC Tag',
+            text: 'read NFC tag',
             disableMonitor: true
           }
         ]
       };
     }
 
+    supported () {
+      return typeof NFEFReader !== 'undefined';
+    }
+
     nfcRead() {
-      if (typeof NDEFReader === 'undefined') {
+      if (!this.supported()) {
         return '';
       }
       return new Promise((resolve, reject) => {
