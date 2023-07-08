@@ -4,7 +4,8 @@ const renderTemplate = require('./render-template');
 
 const md = new MarkdownIt({
   html: true,
-  linkify: true
+  linkify: true,
+  breaks: true
 });
 
 md.renderer.rules.fence = function (tokens, idx, options, env, self) {

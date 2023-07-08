@@ -1,7 +1,8 @@
 # Bitwise
 
- - This extension allows you to perform bit shifts and logic operations on integers as if they were encoded in binary. These operations can be used to create programmer calculators and more.
- - The extension uses signed 32-bit integers, which can range from -2,147,483,648 to 2,147,483,647.
+This extension allows you to perform bit shifts and logic operations on integers as if they were encoded in binary. These operations can be used to create programmer calculators and more.
+
+The extension uses signed 32-bit integers, which can range from -2,147,483,648 to 2,147,483,647.
 
 ## Blocks
 
@@ -81,7 +82,7 @@ Logically ANDs the binary representation of the inputs together and returns the 
 
 Example:
 
-```example
+```
     14        1110
 AND 7     AND 0111
 ——————————————————
@@ -98,7 +99,7 @@ Logically ORs the binary representation of the inputs together and returns the r
 
 Example:
 
-```example
+```
     14        1110
 OR  7     OR  0111
 ——————————————————
@@ -115,7 +116,7 @@ Flips all bits of the binary representation of x and returns the result.
 
 Example:
 
-```example
+```
 NOT 42    NOT ...00101010
 —————————————————————————
     -43       ...11010101

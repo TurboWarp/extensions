@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= headerText %> - TurboWarp Extension Documentation</title>
     <style>
       :root {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -67,13 +68,21 @@
       }
       pre {
         background-color: #eee;
+        border: 1px solid #ccc;
         border-radius: 4px;
         padding: 4px;
+        overflow-x: auto;
       }
       @media (prefers-color-scheme: dark) {
         code, pre {
           background-color: #223;
+          border-color: #334;
         }
+      }
+
+      .render-scratchblocks {
+        width: 100%;
+        overflow-x: auto;
       }
 
       footer {
@@ -81,7 +90,6 @@
         font-size: small;
       }
     </style>
-    <title><%= headerText %></title>
   </head>
   <body>
     <header>
@@ -90,7 +98,7 @@
 
     <div class="container">
       <noscript><p>Enable JavaScript for blocks to render.</p></noscript>
-      <h2>About this extension</h2>
+
       <%- bodyHTML %>
 
       <hr>
