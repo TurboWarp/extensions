@@ -115,7 +115,7 @@
                     {
                         opcode: 'runKeybind',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'broadcast keybind [EVENT]',
+                        text: 'execute keybind [EVENT]',
                         arguments: {
                             EVENT: {
                                 type: Scratch.ArgumentType.STRING,
