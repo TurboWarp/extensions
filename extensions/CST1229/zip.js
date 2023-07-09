@@ -307,21 +307,21 @@
           },
         ],
         menus: {
-          fileType: {
+          fileType: { // used in the open zip block
             acceptReporters: true,
             items: ["URL", "base64", "hex", "binary", "string"],
           },
-          writeFileType: {
+          zipFileType: { // used in the output zip block
             acceptReporters: true,
-            items: ["text", "URL", "base64", "hex", "binary"],
+            items: ["data: URL", "base64", "hex", "binary", "string"],
           },
-          getFileType: {
+          getFileType: { // used in the get file block
             acceptReporters: true,
             items: ["text", "data: URL", "base64", "hex", "binary"],
           },
-          zipFileType: {
+          writeFileType: { // used in the write file block
             acceptReporters: true,
-            items: ["data: URL", "base64", "hex", "binary", "string"],
+            items: ["text", "URL", "base64", "hex", "binary"],
           },
           compressionLevel: {
             acceptReporters: true,
@@ -588,7 +588,7 @@
             });
             break;
           case "base64":
-          case "data: URL": {
+          case "data: URL": { // compatibility
             if (TYPE === "data: URL")
               CONTENT = CONTENT.substring(CONTENT.indexOf(","));
             this.zip.file(path, CONTENT, {
