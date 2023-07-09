@@ -225,7 +225,9 @@ class Builder {
       build.files[oldPath] = build.files[newPath];
     }
 
-    build.files['/sitemap.xml'] = new SitemapFile(build);
+    if (this.mode !== 'desktop') {
+      build.files['/sitemap.xml'] = new SitemapFile(build);
+    }
 
     const mostRecentExtensions = extensionFiles
       .sort((a, b) => b.getLastModified() - a.getLastModified())
