@@ -40,7 +40,7 @@
       return {
         id: 'clipboard',
         name: 'Clipboard',
-        menuIconURI: extensionicon,
+        blockIconURI: extensionicon,
         color1: '#008080',
         color2: '#006666',
         blocks: [
