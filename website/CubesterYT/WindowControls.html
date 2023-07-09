@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Window Controls docs</title>
+		<style>
+			.inbox {
+				text-align: left;
+				display: inline-block;
+				background-color: #ffffff;
+				max-width: 600px;
+				width: 100%;
+				border: 1px solid #e2e2e2;
+				border-radius: 5px;
+				margin: 30px 0 0 0;
+				padding: 10px 15px 15px 15px;
+				overflow: hidden;
+			}
+			body {
+				background-color: #f2f2f2;
+				text-align: center;
+				margin: 0;
+				padding: 0;
+				font-family: Arial, Helvetica, sans-serif;
+				transition: all 100ms ease-out;
+			}
+			.title {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			.uppertext {
+				display: flex;
+				justify-content: center;
+				background-color: /*#4d97ff;*/ #ff4d4d;
+				min-height: 150px;
+				text-align: center;
+				font-size: 45px;
+				width: 100%;
+				font-weight: bold;
+				color: white;
+			}
+			.hidden {
+				display: none;
+			}
+			.box {
+				background-color: #eeeeee;
+				padding: 0 0.2em;
+				border-radius: 3px;
+				color: #222222;
+			}
+			.code {
+				background-color: #f0f0f0;
+				border-radius: 3px;
+				resize: none;
+				width: 100%;
+			}
+			.imgBox {
+				width: 100%;
+				overflow: auto;
+			}
+			* {
+				box-sizing: border-box;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="uppertext">
+			<span class="title">Window Controls extension documentation</title>
+		</div>
+		<div class="inbox">
+			<h2>About this extension</h2>
+			<p>This extension provides a set of blocks that gives you greater control over the Program Window.</p>
+			<p><strong>Note: Most of these blocks only work in electron packaged projects. Blocks that still work outside of electron will be specified.</strong></p>
+
+			<hr>
+
+			<h2>Blocks</h2>
+			<h3>Move Window Block</h3>
+			<img src="images/WindowControls/move_window.png" width="198" height="57"/>
+			<p>Moves the Program Window to the defined "x" and "y" coordinate on the screen.</p>
+
+			<hr>
+
+			<h3>Move Window to Preset Block</h3>
+			<p>Moves the Program Window to a preset.</p>
+			<p>The menu area has nine options, <strong>("center", "right", "left", "top", "bottom", "top right", "top left", "bottom right", "bottom left")</strong></p>
+			<h4>Center</h4>
+			<img src="images/WindowControls/move_window_center.png" width="189" height="57"/>
+			<p>When choosing "center", it will move the Program Window to the center of the screen.</p>
+			<h4>Right</h4>
+			<img src="images/WindowControls/move_window_right.png" width="178.875" height="57"/>
+			<p>When choosing "right", it will move the Program Window to the right of the screen.</p>
+			<h4>Left</h4>
+			<img src="images/WindowControls/move_window_left.png" width="171.75" height="57"/>
+			<p>When choosing "left", it will move the Program Window to the left of the screen.</p>
+			<h4>Top</h4>
+			<img src="images/WindowControls/move_window_top.png" width="172.125" height="57"/>
+			<p>When choosing "top", it will move the Program Window to the top of the screen.</p>
+			<h4>Bottom</h4>
+			<img src="images/WindowControls/move_window_bottom.png" width="192.375" height="57"/>
+			<p>When choosing "bottom", it will move the Program Window to the bottom of the screen.</p>
+			<h4>Top Right</h4>
+			<img src="images/WindowControls/move_window_top_right.png" width="198.75" height="57"/>
+			<p>When choosing "top right", it will move the Program Window to the top right of the screen.</p>
+			<h4>Top Left</h4>
+			<img src="images/WindowControls/move_window_top_left.png" width="191.625" height="57"/>
+			<p>When choosing "top left", it will move the Program Window to the top left of the screen.</p>
+			<h4>Bottom Right</h4>
+			<img src="images/WindowControls/move_window_bottom_right.png" width="219" height="57"/>
+			<p>When choosing "bottom right", it will move the Program Window to the bottom right of the screen.</p>
+			<h4>Bottom Left</h4>
+			<img src="images/WindowControls/move_window_bottom_left.png" width="211.5" height="57"/>
+			<p>When choosing "bottom left", it will move the Program Window to the bottom left of the screen.</p>
+
+			<hr>
+
+			<h3>Change "x" Block</h3>
+			<img src="images/WindowControls/change_x.png" width="156" height="57"/>
+			<p>Dynamically changes the "x" position of the Program Window on the screen.</p>
+
+			<hr>
+
+			<h3>Set "x" Block</h3>
+			<img src="images/WindowControls/set_x.png" width="136.5" height="57"/>
+			<p>Statically changes the "x" position of the Program Window on the screen.</p>
+
+			<hr>
+
+			<h3>Change "y" Block</h3>
+			<img src="images/WindowControls/change_y.png" width="156" height="57"/>
+			<p>Dynamically changes the "y" position of the Program Window on the screen.</p>
+
+			<hr>
+
+			<h3>Set "y" Block</h3>
+			<img src="images/WindowControls/set_y.png" width="136.5" height="57"/>
+			<p>Statically changes the "y" position of the Program Window on the screen.</p>
+
+			<hr>
+
+			<h3>Window "x" Reporter</h3>
+			<img src="images/WindowControls/window_x.png" width="67.5" height="45"/>
+			<p>This reporter returns the "x" position of the Program Window.</p>
+			<p><strong>This is supported outside of Electron.</strong></p>
+
+			<hr>
+
+			<h3>Window "y" Reporter</h3>
+			<img src="images/WindowControls/window_y.png" width="67.5" height="45"/>
+			<p>This reporter returns the "y" position of the Program Window.</p>
+			<p><strong>This is supported outside of Electron.</strong></p>
+
+			<hr>
+
+			<h3>Resize Window Block</h3>
+			<img src="images/WindowControls/resize.png" width="230.625" height="57"/>
+			<p>Resizes the Program Window to the defined "w" (width) and "h" (height) values.</p>
+
+			<hr>
+
+			<h3>Change Width Block</h3>
+			<img src="images/WindowControls/change_w.png" width="178.125" height="57"/>
+			<p>Dynamically changes the width of the Program Window.</p>
+
+			<hr>
+
+			<h3>Set Width Block</h3>
+			<img src="images/WindowControls/set_w.png" width="165.375" height="57"/>
+			<p>Statically changes the width of the Program Window.</p>
+
+			<hr>
+
+			<h3>Change Height Block</h3>
+			<img src="images/WindowControls/change_h.png" width="182.625" height="57"/>
+			<p>Dynamically changes the height of the Program Window.</p>
+
+			<hr>
+
+			<h3>Set Height Block</h3>
+			<img src="images/WindowControls/set_h.png" width="169.875" height="57"/>
+			<p>Statically changes the height of the Program Window.</p>
+
+			<hr>
+
+			<h3>Match Stage Size Block</h3>
+			<img src="images/WindowControls/match.png" width="102" height="57"/>
+			<p>Resizes the Program Window to match the aspect ratio of the stage. Works best when the stage is dynamically changed.</p>
+			<p><strong>Example: When using runtime options to change the stage size, using this block can help you readapt to the new stage size.</strong></p>
+
+			<hr>
+
+			<h3>Window Width Reporter</h3>
+			<img src="images/WindowControls/window_width.png" width="89.25" height="45"/>
+			<p>This reporter returns the width of the Program Window.</p>
+			<p><strong>This is supported outside of Electron.</strong></p>
+
+			<hr>
+
+			<h3>Window Height Reporter</h3>
+			<img src="images/WindowControls/window_height.png" width="94.125" height="45"/>
+			<p>This reporter returns the height of the Program Window.</p>
+			<p><strong>This is supported outside of Electron.</strong></p>
+
+			<hr>
+
+			<h3>Screen Width Reporter</h3>
+			<img src="images/WindowControls/screen_width.png" width="85.5" height="45"/>
+			<p>This reporter returns the width of the Screen.</p>
+			<p><strong>This is supported outside of Electron.</strong></p>
+
+			<hr>
+
+			<h3>Screen Height Reporter</h3>
+			<img src="images/WindowControls/screen_height.png" width="90" height="45"/>
+			<p>This reporter returns the height of the Screen.</p>
+			<p><strong>This is supported outside of Electron.</strong></p>
+
+			<hr>
+
+			<h3>Set Window Title Block</h3>
+			<img src="images/WindowControls/set_title.png" width="194.25" height="57"/>
+			<p>Changes the title of the Program Window.</p>
+			<p><strong>This is supported outside of Electron.</strong></p>
+
+			<hr>
+
+			<h3>Window Title Reporter</h3>
+			<img src="images/WindowControls/window_title.png" width="79.875" height="45"/>
+			<p>This reporter returns the title of the Program Window.</p>
+			<p><strong>This is supported outside of Electron.</strong></p>
+
+			<hr>
+
+			<h3>Enter Fullscreen Block</h3>
+			<img src="images/WindowControls/enter_fullscreen.png" width="94.125" height="57"/>
+			<p>Makes the Program Window enter Fullscreen.</p>
+			<p><strong>This is supported outside of Electron.</strong></p>
+
+			<hr>
+
+			<h3>Exit Fullscreen Block</h3>
+			<img src="images/WindowControls/exit_fullscreen.png" width="85.5" height="57"/>
+			<p>Makes the Program Window exit Fullscreen.</p>
+			<p><strong>This is supported outside of Electron.</strong></p>
+
+			<hr>
+
+			<h3>Close Window Block</h3>
+			<img src="images/WindowControls/close_window.png" width="83.25" height="57"/>
+			<p>Closes the Program Window.</p>
+			<p><strong>This is supported outside of Electron.</strong></p>
+
+			<hr>
+
+			<h2>Credits</h2>
+			<p><strong>This extension is a collaboration between <a href="https://scratch.mit.edu/users/CubesterYT/">CubesterYT</a> and <a href="https://github.com/BlueDome77/">BlueDome</a>.</strong></p>
+			<p>Extension Icon, Color scheme, majority of blocks, and more made by CubesterYT.</p>
+			<p>Extension Thumbnail, Color scheme, and some base code, and more made by BlueDome.</p>
+		</div>
+	</body>
+</html>
