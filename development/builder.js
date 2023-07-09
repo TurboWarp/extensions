@@ -105,6 +105,39 @@ class SVGFile extends ImageFile {
   }
 }
 
+class SitemapFile extends DiskFile {
+  constructor (build) {
+    super(null);
+    this.getDiskPath = null;
+    this.build = build;
+  }
+
+  getType () {
+    return '.xml';
+  }
+
+  read () {
+    let xml = '';
+    xml += '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+
+    xml += Object.keys(this.build.files)
+      .filter(file => file.endsWith('.html'))
+      .map(file => file.replace('index.html', '').replace('.html', ''))
+      .sort((a, b) => {
+        if (a.length < b.length) return -1;
+        if (a.length > b.length) return 1;
+        return a - b;
+      })
+      .map(path => `https://extensions.turbowarp.org${path}`)
+      .map(absoluteURL => `<url><loc>${absoluteURL}</loc></url>`)
+      .join('\n');
+
+    xml += '</urlset>\n';
+    return xml;
+  }
+}
+
 const IMAGE_FORMATS = new Map();
 IMAGE_FORMATS.set('.png', ImageFile);
 IMAGE_FORMATS.set('.jpg', ImageFile);
@@ -116,7 +149,7 @@ class Build {
   }
 
   getFile (path) {
-    return this.files[path] || this.files[`${path}index.html`] || null;
+    return this.files[path] || this.files[`${path}.html`] || this.files[`${path}index.html`] || null;
   }
 
   export (root) {
@@ -191,6 +224,8 @@ class Builder {
     for (const [oldPath, newPath] of Object.entries(compatibilityAliases)) {
       build.files[oldPath] = build.files[newPath];
     }
+
+    build.files['/sitemap.xml'] = new SitemapFile(build);
 
     const mostRecentExtensions = extensionFiles
       .sort((a, b) => b.getLastModified() - a.getLastModified())
