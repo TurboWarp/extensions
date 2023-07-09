@@ -149,7 +149,7 @@ class Build {
   }
 
   getFile (path) {
-    return this.files[path] || this.files[`${path}index.html`] || null;
+    return this.files[path] || this.files[`${path}.html`] || this.files[`${path}index.html`] || null;
   }
 
   export (root) {
