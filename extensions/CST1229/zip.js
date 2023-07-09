@@ -88,7 +88,7 @@
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "data: URL",
-                menu: "getFileType",
+                menu: "zipFileType",
               },
               COMPRESSION: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -136,7 +136,7 @@
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "text",
-                menu: "getFileType",
+                menu: "writeFileType",
               },
               CONTENT: {
                 type: Scratch.ArgumentType.STRING,
@@ -309,11 +309,19 @@
         menus: {
           fileType: {
             acceptReporters: true,
-            items: ["URL", "string"],
+            items: ["URL", "base64", "hex", "binary", "string"],
+          },
+          writeFileType: {
+            acceptReporters: true,
+            items: ["text", "URL", "base64", "hex", "binary"],
           },
           getFileType: {
             acceptReporters: true,
-            items: ["text", "base64", "data: URL", "hex", "binary"],
+            items: ["text", "data: URL", "base64", "hex", "binary"],
+          },
+          zipFileType: {
+            acceptReporters: true,
+            items: ["data: URL", "base64", "hex", "binary", "string"],
           },
           compressionLevel: {
             acceptReporters: true,
@@ -432,12 +440,27 @@
     async open({ TYPE, DATA }) {
       this.close();
       try {
-        if (TYPE !== "string" && TYPE !== "URL") return;
-
         DATA = Scratch.Cast.toString(DATA);
-        if (TYPE === "URL") {
-          const resp = await Scratch.fetch(DATA);
-          DATA = await resp.blob();
+
+        switch (TYPE) {
+          case "base64":
+          case "data: URL":
+          case "URL": {
+            if (TYPE === "base64")
+              DATA = "data:application/zip;base64," + DATA;
+            const resp = await Scratch.fetch(DATA);
+            DATA = await resp.blob();
+          } break;
+          case "hex": {
+            if (!/^(?:[0-9A-F]{2})*$/i.test(DATA)) return;
+            const dataArr = this.splitIntoParts(DATA, 2);
+            DATA = Uint8Array.from(dataArr.map(o => parseInt(o, 16)));
+          } break;
+          case "binary": {
+            if (!/^(?:[01]{8})*$/i.test(DATA)) return;
+            const dataArr = this.splitIntoParts(DATA, 8);
+            DATA = Uint8Array.from(dataArr.map(o => parseInt(o, 2)));
+          } break;
         }
 
         this.zip = await JSZip.loadAsync(DATA, { createFolders: true });
@@ -457,6 +480,7 @@
 
         switch (TYPE) {
           case "text":
+          case "string":
             return await this.zip.generateAsync({
               type: "binarystring",
               ...options
@@ -542,7 +566,7 @@
         return "";
       }
     }
-    writeFile({ FILE, CONTENT, TYPE }) {
+    async writeFile({ FILE, CONTENT, TYPE }) {
       if (!this.zip) return;
 
       FILE = Scratch.Cast.toString(FILE);
@@ -573,8 +597,15 @@
             });
             break;
           }
+          case "URL": {
+            const resp = await Scratch.fetch(CONTENT);
+            this.zip.file(path, await resp.blob(), {
+              base64: true,
+              createFolders: true,
+            });
+          } break;
           case "hex": {
-            if (!CONTENT.test(/^(?:[0-9A-F]{2})*$/i)) return "";
+            if (!/^(?:[0-9A-F]{2})*$/i.test(CONTENT)) return "";
             const dataArr = this.splitIntoParts(CONTENT, 2);
             const data = Uint8Array.from(dataArr.map(o => parseInt(o, 16)));
             this.zip.file(path, data, {
@@ -582,7 +613,7 @@
             });
           } break;
           case "binary": {
-            if (!CONTENT.test(/^(?:[01]{8})*$/i)) return "";
+            if (!/^(?:[01]{8})*$/i.test(CONTENT)) return "";
             const dataArr = this.splitIntoParts(CONTENT, 8);
             const data = Uint8Array.from(dataArr.map(o => parseInt(o, 2)));
             this.zip.file(path, data, {
@@ -720,7 +751,7 @@
           default: return;
         }
       } catch (e) {
-        console.log(`Zip extension: Error getting ${META} of ${FILE}:`, e);
+        console.error(`Zip extension: Error getting ${META} of ${FILE}:`, e);
         return "";
       }
     }
@@ -769,7 +800,7 @@
           default: return "";
         }
       } catch (e) {
-        console.log(`Zip extension: Error getting ${META} of ${FILE}:`, e);
+        console.error(`Zip extension: Error getting ${META} of ${FILE}:`, e);
         return "";
       }
     }
@@ -784,7 +815,7 @@
         if (this.getObj(newPath)) return;
         this.zip.folder(newPath);
       } catch (e) {
-        console.log(`Error creating directory ${DIR}:`, e);
+        console.error(`Error creating directory ${DIR}:`, e);
       }
     }
     goToDir({ DIR }) {
@@ -796,7 +827,7 @@
         if (!this.getObj(newPath)) return;
         this.zipPath = newPath;
       } catch (e) {
-        console.log(`Error going to directory ${DIR}:`, e);
+        console.error(`Error going to directory ${DIR}:`, e);
       }
     }
     getDir({ DIR }) {

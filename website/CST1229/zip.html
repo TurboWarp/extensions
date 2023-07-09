@@ -181,15 +181,29 @@
     </h3>
     <p>
       Opens a .zip (or .sb3 or .sprite3...) file.
-      <br />
+    </p>
+    <p>
       The type can be one of the following:
     </p>
     <ul>
       <li>
-        <b>URL:</b> A URL that leads to the zip data. Can be either a data or web URL.
+        <b>URL:</b> A URL, which can be either a web URL or data: URL. Recommended.
       </li>
       <li>
-        <b>string:</b> The raw zip data, as plain text.
+        <b>base64:</b> A base64 string without the data URL header.
+      </li>
+      <li>
+        <b>hex:</b> A sequence of hexadecimal bytes
+        (like <code>101A1B1C</code>),
+        without a separator.
+      </li>
+      <li>
+        <b>binary:</b> A sequence of binary bytes
+        (like <code>000000010010101001101011</code>),
+        without a separator.
+      </li>
+      <li>
+        <b>string:</b> Plain text.
         <b>Not recommended!</b>
         Text encoding behavior will likely break it, as it's a binary file.
       </li>
@@ -229,7 +243,7 @@
         without a separator.
       </li>
       <li>
-        <b>text:</b> Plain text.
+        <b>string:</b> Plain text.
         <b>Not recommended!</b>
         Text encoding behavior will likely break it, as it's a binary file.
       </li>
@@ -296,8 +310,8 @@
         <b>text:</b> Plain text.
       </li>
       <li>
-        <b>data: URL:</b> A base64-encoded data URL.
-        Best for binary data (like other .zip files).
+        <b>URL:</b> A URL, which can be either a web URL or data: URL.
+        Best for binary data (like other zip files).
       </li>
       <li>
         <b>base64:</b> A base64 string without the data URL header.
@@ -336,15 +350,37 @@
       be set to the closest existing parent directory.
     </p>
 
-    <h3 id="file">
+    <h3 id="get-file">
       <img alt="file [hello.txt] as [text]" src="./images/zip-file.svg">
       <span class="heading-link">(<a href="#file">link</a>)</span>
     </h3>
     <p>
       Get the contents of a file.
-      The type has the same options as in the
-      <a href="#write-file"><code>write file</code> block</a>.
     </p>
+    <p>
+      The type can be one of the following:
+    </p>
+    <ul>
+      <li>
+        <b>text:</b> Plain text.
+      </li>
+      <li>
+        <b>data: URL:</b> A base64-encoded data URL.
+      </li>
+      <li>
+        <b>base64:</b> A base64 string without the data URL header.
+      </li>
+      <li>
+        <b>hex:</b> A sequence of hexadecimal bytes
+        (like <code>101A1B1C</code>),
+        without a separator.
+      </li>
+      <li>
+        <b>binary:</b> A sequence of binary bytes
+        (like <code>000000010010101001101011</code>),
+        without a separator.
+      </li>
+    </ul>
 
     <h2 id="file-info">
       File info blocks
