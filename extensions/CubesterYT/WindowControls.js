@@ -283,9 +283,9 @@
         const bottom = (screen.height - window.outerHeight);
         window.moveTo(0, bottom);
       } else if (args.PRESETS == "random position") {
-        const randomX = getRandomInt(0, screen.width)
-        const randomY = getRandomInt(0, screen.height)
-        window.moveTo(randomX, randomY)
+        const randomX = getRandomInt(0, screen.width);
+        const randomY = getRandomInt(0, screen.height);
+        window.moveTo(randomX, randomY);
       }
     }
     changeX (args) {
