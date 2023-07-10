@@ -234,6 +234,9 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Lily/LooksPlus.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
 
+## clipboard.svg
+ - Created by [@AdamMady](https://github.com/AdamMady/)
+
 ## Clay/upload.png
  - Created by [@ClaytonTDM](https://github.com/ClaytonTDM)
  - Upload icon based on https://icons8.com/icon/367/upload
