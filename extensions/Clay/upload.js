@@ -1,3 +1,4 @@
+(function (Scratch) {
 class Upload {
     getInfo() {
       return {
@@ -19,7 +20,7 @@ class Upload {
       };
     }
   
-    upload(args) {
+  upload(args) {
       return new Promise((resolve, reject) => {
         const inputElement = document.createElement("input");
         inputElement.type = "file";
@@ -32,34 +33,32 @@ class Upload {
           if (this.files && this.files[0]) {
             const formData = new FormData();
             formData.append("file", this.files[0], this.files[0].name);
-  
-            const url = args.url;
-  
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", url, true);
-  
-            xhr.onload = function() {
-              if (xhr.readyState === 4 && xhr.status === 200) {
-                resolve(xhr.responseText);
-                inputElement.remove();
-              } else {
-                reject("Upload failed");
-                inputElement.remove();
-                // throw 'Upload failed';
-              }
+
+            const options = {
+              body: formData,
+              method: 'POST',
+              mode: 'cors',
             };
   
-            xhr.onerror = function() {
-              reject("Upload failed");
-              inputElement.remove();
-              // throw 'Upload failed';
-            };
-  
-            xhr.send(formData);
+            Scratch.fetch(args.url, options)
+              .then(response => {
+                if (response.ok) {
+                  return response.text();
+                } else {
+                  throw new Error("Upload failed");
+                }
+              })
+              .then(text => {
+                resolve(text);
+                inputElement.remove();
+              })
+              .catch(error => {
+                reject(error.message);
+                inputElement.remove();
+              });
           } else {
             reject("No file chosen");
             inputElement.remove();
-            // throw 'No file chosen';
           }
         });
       });
@@ -67,3 +66,4 @@ class Upload {
   }
   
   Scratch.extensions.register(new Upload());
+})(Scratch);
