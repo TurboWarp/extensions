@@ -12,6 +12,42 @@
     blockType: 'label',
     text: text
   });
+  
+  // sorting
+  
+  function sortArray(array, order) {
+    if (array.every(item => typeof item === 'number')) {
+      if (order === 'ascending') {
+        array.sort((a, b) => a - b);
+      } else if (order === 'descending') {
+        array.sort((a, b) => b - a);
+      }
+    } else {
+      if (order === 'ascending') {
+        array.sort();
+      } else if (order === 'descending') {
+        array.sort().reverse();
+      }
+    }
+    
+    return array;
+  }
+  
+  function gradeArray(array, order) {
+    array = array.reduce((acc, current, index) => {
+          acc[index + 1] = current;
+          return acc;
+    }, {});
+    const sortedKeys = Object.entries(array)
+    .sort((a, b) => {
+      if (order === "ascending") {
+        return a[1] - b[1];
+      } else {
+        return b[1] - a[1];
+      }
+    }).map(pair => pair[0]);
+    return sortedKeys.map(Number);
+  }
 
   class JSONS {
     getInfo() {
@@ -448,6 +484,21 @@
               }
             }
           },
+          '---',
+          {
+            opcode: 'convertType',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'convert all values in [json] to [TYPE]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+              },
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'valuetypes'
+              }
+            }
+          },
           makeLabel('Lists'),
           {
             opcode: 'json_vm_getlist',
@@ -475,6 +526,35 @@
               },
             }
           },
+          makeLabel('Sorting'),
+          {
+            opcode: 'sortJSON',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'sort JSON: [json] in [ORDER] order',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+              },
+              ORDER: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'order'
+              }
+            }
+          },
+          {
+            opcode: 'gradeJSON',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'grade JSON: [json] in [ORDER] order',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+              },
+              ORDER: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'order'
+              }
+            }
+          },
         ],
         menus: {
           get_all: {
@@ -491,6 +571,14 @@
           equal: {
             acceptReporters: true,
             items: ['=','≠']
+          },
+          order: {
+            acceptReporters: true,
+            items: ["ascending", "descending"]
+          },
+          valuetypes: {
+            acceptReporters: true,
+            items: ['string', 'number', 'bool']
           }
         }
       };
@@ -891,6 +979,69 @@
         }
       } catch (e) {
         // ignore
+      }
+      return '';
+    }
+    
+    sortJSON({ json, ORDER }) {
+      try {
+        json = JSON.parse(json);
+        if (Array.isArray(json)) {
+          return JSON.stringify(sortArray(json, ORDER));
+        } else if (typeof json === 'object') {
+          const sortedKeys = Object.keys(json).sort((a, b) => { // i need someone to tell me how the => syntax works
+            if (ORDER === 'ascending') {
+              return json[a] - json[b];
+            } else if (ORDER === 'descending') {
+              return json[b] - json[a];
+            }
+          });
+
+          const sortedObject = {};
+          sortedKeys.forEach(key => {
+            sortedObject[key] = json[key];
+          });
+
+          return JSON.stringify(sortedObject);
+        }
+      } catch (e) {
+        // console.log(e)
+        // skill issue
+      }
+      return '';
+    }
+    
+    gradeJSON({ json, ORDER }) {
+      try {
+        json = JSON.parse(json)
+        let arrayToSort;
+        if (Array.isArray(json)) {
+          arrayToSort = json;
+        } else if (typeof json === 'object') {
+          arrayToSort = Object.values(json);
+        }
+        return JSON.stringify(gradeArray(arrayToSort, ORDER));
+      } catch (e) {
+        // console.log(e)
+        // bad programmer moment
+      }
+      return '';
+    }
+    
+    convertType({ json, TYPE }) {
+      try {
+        json = JSON.parse(json);
+        let type = (TYPE == "number") ? Number : (TYPE == "bool") ? Boolean : String;
+        if (Array.isArray(json) === true) {
+          return JSON.stringify(json.map(type));
+        }
+        const newObj = {};
+        Object.entries(json).forEach(([key, value]) => {
+          newObj[key] = type(value);
+        });
+        return JSON.stringify(newObj);
+      } catch {
+        // sadness
       }
       return '';
     }
