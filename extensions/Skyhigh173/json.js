@@ -38,14 +38,29 @@
           acc[index + 1] = current;
           return acc;
     }, {});
-    const sortedKeys = Object.entries(array)
-    .sort((a, b) => {
-      if (order === "ascending") {
-        return a[1] - b[1];
-      } else {
-        return b[1] - a[1];
-      }
-    }).map(pair => pair[0]);
+    var sortedKeys;
+    if (Object.values(array).every(item => typeof item === 'number')) {
+      sortedKeys = Object.entries(array)
+      .sort((a, b) => {
+        if (order === "ascending") {
+          return a[1] - b[1];
+        } else {
+          return b[1] - a[1];
+        }
+      }).map(pair => pair[0]);
+    } else {
+      sortedKeys = Object.entries(array)
+      .sort((a, b) => {
+        const valueA = a[1];
+        const valueB = b[1];
+
+        if (order === 'ascending') {
+          return String(valueA).localeCompare(String(valueB)); // Compare as alphanumeric strings
+        } else {
+          return String(valueB).localeCompare(String(valueA)); // Compare as alphanumeric strings
+        }
+      }).map(pair => pair[0]);
+    }
     return sortedKeys.map(Number);
   }
 
@@ -989,13 +1004,27 @@
         if (Array.isArray(json)) {
           return JSON.stringify(sortArray(json, ORDER));
         } else if (typeof json === 'object') {
-          const sortedKeys = Object.keys(json).sort((a, b) => { // i need someone to tell me how the => syntax works
-            if (ORDER === 'ascending') {
-              return json[a] - json[b];
-            } else if (ORDER === 'descending') {
-              return json[b] - json[a];
-            }
-          });
+          var sortedKeys;
+          if (Object.values(json).every(item => typeof item === 'number')) {
+            sortedKeys = Object.keys(json).sort((a, b) => {
+              if (ORDER === 'ascending') {
+                return json[a] - json[b];
+              } else {
+                return json[b] - json[a];
+              }
+            });
+          } else {
+            sortedKeys = Object.keys(json).sort((a, b) => {
+              const valueA = json[a];
+              const valueB = json[b];
+
+              if (ORDER === 'ascending') {
+                return String(valueA).localeCompare(String(valueB)); // Compare as alphanumeric strings
+              } else {
+                return String(valueB).localeCompare(String(valueA)); // Compare as alphanumeric strings
+              }
+            });
+          }
 
           const sortedObject = {};
           sortedKeys.forEach(key => {
@@ -1005,7 +1034,7 @@
           return JSON.stringify(sortedObject);
         }
       } catch (e) {
-        // console.log(e)
+        console.log(e)
         // skill issue
       }
       return '';
@@ -1022,7 +1051,7 @@
         }
         return JSON.stringify(gradeArray(arrayToSort, ORDER));
       } catch (e) {
-        // console.log(e)
+        console.log(e)
         // bad programmer moment
       }
       return '';
