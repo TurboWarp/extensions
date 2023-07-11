@@ -355,8 +355,8 @@
       return (document.hasFocus());
     }
     isTouchingEdge () {
-      const edgeX = screen.width - window.outerWidth
-      const edgeY = screen.height - window.outerHeight
+      const edgeX = screen.width - window.outerWidth;
+      const edgeY = screen.height - window.outerHeight;
       return (window.screenLeft <= 0 || window.screenTop <= 0 || window.screenLeft >= edgeX || window.screenTop >= edgeY);
     }
     enterFullscreen () {
