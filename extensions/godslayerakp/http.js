@@ -591,7 +591,7 @@
         async sendRequest(args) {
             const url = Cast.toString(args.url);
             const options = this.request.options;
-            
+
             this.clearAll();
 
             this.response.url = url;
