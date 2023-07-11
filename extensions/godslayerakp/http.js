@@ -590,13 +590,13 @@
         // eslint-disable-next-line require-await
         async sendRequest(args) {
             const url = Cast.toString(args.url);
-            const options = this.request.options
+            const options = this.request.options;
             
-            this.clearAll()
+            this.clearAll();
 
             this.response.url = url;
             try {
-                const res = await Scratch.fetch(url, options)
+                const res = await Scratch.fetch(url, options);
                 // @ts-ignore
                 this.response.status = res.status;
                 this.response.headers = res.headers;
@@ -609,8 +609,8 @@
                     this.request.events.activate('reqFail');
                 }
                 this.request.end = true;
-                const body = await res.text()
-                this.response.text = body
+                const body = await res.text();
+                this.response.text = body;
             } catch (err) {
                 this.response.error = String(err);
                 console.warn('request failed with error', err);
