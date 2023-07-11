@@ -1,7 +1,7 @@
 // TurboWarp Extension : Deltatime by XeroName
 // First generation at 2023-06-21 KST
-// Latest update at 2023-07-06 KST
-// v2.2.1
+// Latest update at 2023-07-12 KST
+// v2.2.2
 
 
 
@@ -141,7 +141,7 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
 //==================== Calculator Blocks ====================//
           {
             blockType: "label",
-            text: "Calculator"
+            text: "Calculating"
           },
           {
             opcode: 'setCalculatorStandard',
