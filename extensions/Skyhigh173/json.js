@@ -1034,7 +1034,7 @@
           return JSON.stringify(sortedObject);
         }
       } catch (e) {
-        console.log(e)
+        // console.log(e)
         // skill issue
       }
       return '';
@@ -1051,7 +1051,7 @@
         }
         return JSON.stringify(gradeArray(arrayToSort, ORDER));
       } catch (e) {
-        console.log(e)
+        // console.log(e)
         // bad programmer moment
       }
       return '';
