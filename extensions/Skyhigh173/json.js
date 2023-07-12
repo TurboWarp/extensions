@@ -1025,13 +1025,15 @@
               }
             });
           }
-
+          // for objects such as {"1": 2, "3": 1, "2": 3} it will automatically reorder itself based on its keys which would ruin it
+          /*
           const sortedObject = {};
           sortedKeys.forEach(key => {
             sortedObject[key] = json[key];
           });
-
-          return JSON.stringify(sortedObject);
+          */
+          // return JSON.stringify(sortedObject);
+          return JSON.stringify(sortedKeys);
         }
       } catch (e) {
         // console.log(e)
