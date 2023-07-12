@@ -179,7 +179,7 @@
         }
       };
     }
-    
+
   changexy (args, util) {
     const x = Scratch.Cast.toNumber(args.X);
     const y = Scratch.Cast.toNumber(args.Y);
@@ -187,7 +187,7 @@
   }
 
   fence (util) {
-    util.target.setXY(Math.min(Math.max(util.target.x, -Scratch.vm.runtime.stageWidth/2), Scratch.vm.runtime.stageWidth/2), Math.min(Math.max(util.target.y, -Scratch.vm.runtime.stageHeight/2), Scratch.vm.runtime.stageHeight/2));
+    util.target.setXY(Math.min(Math.max(util.target.x, -Scratch.vm.runtime.stageWidth / 2), Scratch.vm.runtime.stageWidth / 2), Math.min(Math.max(util.target.y, -Scratch.vm.runtime.stageHeight / 2), Scratch.vm.runtime.stageHeight / 2));
   }
 
   // LORAX APPROVED
@@ -195,9 +195,9 @@
     const x = Scratch.Cast.toNumber(args.X);
     const y = Scratch.Cast.toNumber(args.Y);
     if (util.target.y > y) {
-      util.target.setDirection(((180/Math.PI)*Math.atan((x - util.target.x)/(y - util.target.y))) + 180);
+      util.target.setDirection(((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))) + 180);
     } else {
-      util.target.setDirection(((180/Math.PI)*Math.atan((x - util.target.x)/(y - util.target.y))));
+      util.target.setDirection(((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))));
     }
   }
 
@@ -205,9 +205,9 @@
     const x = Scratch.Cast.toNumber(args.X);
     const y = Scratch.Cast.toNumber(args.Y);
     if (util.target.y > y) {
-      return ((180/Math.PI)*Math.atan((x - util.target.x)/(y - util.target.y))) + 180;
+      return ((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))) + 180;
     } else {
-      return ((180/Math.PI)*Math.atan((x - util.target.x)/(y - util.target.y)));
+      return ((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y)));
     }
   }
 
@@ -215,15 +215,15 @@
     const x = Scratch.Cast.toNumber(args.X);
     const y = Scratch.Cast.toNumber(args.Y);
     // Shoutout to Pythagoras!
-    return Math.sqrt(((x - util.target.x)**2) + ((y - util.target.y)**2));
+    return Math.sqrt(((x - util.target.x) ** 2) + ((y - util.target.y) ** 2));
   }
 
   steptowards (args, util) {
     const x = Scratch.Cast.toNumber(args.X);
     const y = Scratch.Cast.toNumber(args.Y);
     const steps = Scratch.Cast.toNumber(args.STEPS);
-    const val = steps / (Math.sqrt(((x - util.target.x)**2) + ((y - util.target.y)**2)))
-    util.target.setXY(((x - util.target.x)*(val)) + util.target.x, ((y - util.target.y)*(val)) + util.target.y);
+    const val = steps / (Math.sqrt(((x - util.target.x) ** 2) + ((y - util.target.y) ** 2)));
+    util.target.setXY(((x - util.target.x) * (val)) + util.target.x, ((y - util.target.y) * (val)) + util.target.y);
   }
 
   tweentowards (args, util) {
@@ -231,7 +231,7 @@
     const y = Scratch.Cast.toNumber(args.Y);
     const val = Scratch.Cast.toNumber(args.PERCENT);
     // Essentially a smooth glide script.
-    util.target.setXY(((x - util.target.x)*(val/100)) + util.target.x, ((y - util.target.y)*(val/100)) + util.target.y);
+    util.target.setXY(((x - util.target.x) * (val / 100)) + util.target.x, ((y - util.target.y) * (val / 100)) + util.target.y);
   }
 
   inbetween (args, util) {
@@ -256,7 +256,7 @@
     console.log(width);
     console.log(height);
 
-    return x >= util.target.x - (width/2) && util.target.x + (width/2) >= x && y >= util.target.y - (height/2) && util.target.y + (height/2) >= y;
+    return x >= util.target.x - (width / 2) && util.target.x + (width / 2) >= x && y >= util.target.y - (height / 2) && util.target.y + (height / 2) >= y;
   }
 
   spritewh (args, util) {
