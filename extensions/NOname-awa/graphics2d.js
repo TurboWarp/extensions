@@ -4,6 +4,7 @@
     zh: {
       name: '图形 2D',
       line_section: '线段（[x1],[y1]）到（[x2],[y2]）',
+      ray_direction: '线方向（[x1],[y1]）到（[x2],[y2]）',
       triangle: '三角形（[x1],[y1]）（[x2],[y2]）（[x3],[y3]）的 [CS]',
       triangle_s: '三角形 [s1] [s2] [s3] 的面积',
       quadrilateral: '四边形（[x1],[y1]）（[x2],[y2]）（[x3],[y3]）（[x4],[y4]）的 [CS]',
@@ -41,6 +42,29 @@
               x2: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
+              },
+              y2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
+            }
+          },
+          {
+            opcode: 'ray_direction',
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({ id: 'ray_direction', default: 'direction from ([x1],[y1]) to ([x2],[y2])' }),
+            arguments: {
+              x1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
+              y1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '0'
+              },
+              x2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '100'
               },
               y2: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -236,6 +260,15 @@
     }
     line_section(args) {
       return Math.sqrt(Math.pow(args.x1 - args.x2, 2) + Math.pow(args.y1 - args.y2, 2));
+    }
+    ray_direction(args) {
+      // Added by NexusKitten
+      // 由 NexusKitten 添加
+      if (args.y1 > args.y2) {
+        return ((180 / Math.PI) * Math.atan((args.x2 - args.x1) / (args.y2 - args.y1))) + 180;
+      } else {
+        return ((180 / Math.PI) * Math.atan((args.x2 - args.x1) / (args.y2 - args.y1)));
+      }
     }
     vertical(args) {
       if (isNaN(args.a) || isNaN(args.b)) {
