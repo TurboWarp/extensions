@@ -125,4 +125,4 @@
     }
 
     Scratch.extensions.register(new f());
-})(Scratch);      
+})(Scratch);
