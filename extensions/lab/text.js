@@ -40,7 +40,7 @@
     'Brush Script MT',
     'Impact',
     'Comic Sans MS'
-  ]
+  ];
 
   const DEFAULT_COLOR = '#575e75';
   const DEFAULT_FONT = 'Handwriting';
@@ -903,7 +903,7 @@
       state.skin.cancelAnimation();
       target.setCostume(target.currentCostume);
     }
-    
+
     _compatibleFonts() {
       if (compatibilityMode) {
         return [
@@ -912,7 +912,7 @@
             text: 'random font',
             value: 'Random'
           }
-        ]
+        ];
       } else {
         return [
           ...NATIVE_FONTS,
@@ -921,7 +921,7 @@
             text: 'random font',
             value: 'Random'
           }
-        ]
+        ];
       }
     }
 
@@ -999,7 +999,7 @@
         + '\n' +
         'These blocks and features DO NOT WORK with the official Scratch Lab.'
         + '\n' + '\n' +
-        'Do you wish to continue?']
+        'Do you wish to continue?'];
       if (confirm (popup.join())) compatibilityMode = false;
       Scratch.vm.extensionManager.refreshBlocks();
     }
