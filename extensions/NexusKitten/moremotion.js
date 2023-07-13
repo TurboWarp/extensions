@@ -205,8 +205,7 @@
       const y = Scratch.Cast.toNumber(args.Y);
       if (util.target.y > y) {
         util.target.setDirection(((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))) + 180);
-      }
-      else {
+      } else {
         util.target.setDirection(((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))));
       }
     }
@@ -216,8 +215,7 @@
       const y = Scratch.Cast.toNumber(args.Y);
       if (util.target.y > y) {
         return ((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))) + 180;
-      }
-      else {
+      } else {
         return ((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y)));
       }
     }
@@ -275,8 +273,7 @@
       const costume = util.target.sprite.costumes[costumeIndex];
       if (args.WHAT === 'width') {
         return Math.ceil(Scratch.Cast.toNumber(costume.size[0]));
-      }
-      else {
+      } else {
         return Math.ceil(Scratch.Cast.toNumber(costume.size[1]));
       }
     }
