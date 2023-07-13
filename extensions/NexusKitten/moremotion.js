@@ -1,36 +1,28 @@
-(function(Scratch)
-{
+(function(Scratch) {
   'use strict';
 
-  if (!Scratch.extensions.unsandboxed)
-  {
+  if (!Scratch.extensions.unsandboxed) {
     throw new Error('More Motion must run unsandboxed');
   }
 
-  class nkmoremotion
-  {
-    getInfo()
-    {
+  class nkmoremotion {
+    getInfo() {
       return {
         id: 'nkmoremotion',
         name: 'More Motion',
         color1: '#4c97ff',
         color2: '#3373cc',
-        blocks: [
-          {
+        blocks: [{
             filter: [Scratch.TargetType.SPRITE],
             opcode: 'changexy',
             blockType: Scratch.BlockType.COMMAND,
             text: 'change x: [X] y: [Y]',
-            arguments:
-            {
-              X:
-              {
+            arguments: {
+              X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               },
-              Y:
-              {
+              Y: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
@@ -41,15 +33,12 @@
             opcode: 'pointto',
             blockType: Scratch.BlockType.COMMAND,
             text: 'point towards x: [X] y: [Y]',
-            arguments:
-            {
-              X:
-              {
+            arguments: {
+              X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               },
-              Y:
-              {
+              Y: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
@@ -68,20 +57,16 @@
             opcode: 'steptowards',
             blockType: Scratch.BlockType.COMMAND,
             text: 'move [STEPS] steps towards x: [X] y: [Y]',
-            arguments:
-            {
-              STEPS:
-              {
+            arguments: {
+              STEPS: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '10'
               },
-              X:
-              {
+              X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               },
-              Y:
-              {
+              Y: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
@@ -92,20 +77,16 @@
             opcode: 'tweentowards',
             blockType: Scratch.BlockType.COMMAND,
             text: 'move [PERCENT]% of the way to x: [X] y: [Y]',
-            arguments:
-            {
-              PERCENT:
-              {
+            arguments: {
+              PERCENT: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '10'
               },
-              X:
-              {
+              X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               },
-              Y:
-              {
+              Y: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
@@ -117,15 +98,12 @@
             opcode: 'directionto',
             blockType: Scratch.BlockType.REPORTER,
             text: 'direction to x: [X] y: [Y]',
-            arguments:
-            {
-              X:
-              {
+            arguments: {
+              X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               },
-              Y:
-              {
+              Y: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
@@ -136,15 +114,12 @@
             opcode: 'distanceto',
             blockType: Scratch.BlockType.REPORTER,
             text: 'distance from x: [X] y: [Y]',
-            arguments:
-            {
-              X:
-              {
+            arguments: {
+              X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               },
-              Y:
-              {
+              Y: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
@@ -156,10 +131,8 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'sprite [WHAT]',
             disableMonitor: true,
-            arguments:
-            {
-              WHAT:
-              {
+            arguments: {
+              WHAT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'WHAT'
               }
@@ -171,15 +144,12 @@
             opcode: 'touchingxy',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'touching x: [X] y: [Y]?',
-            arguments:
-            {
-              X:
-              {
+            arguments: {
+              X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               },
-              Y:
-              {
+              Y: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
@@ -190,35 +160,28 @@
             opcode: 'inbetween',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'in-between x1: [X1] y1: [Y1] x2: [X2] y2: [Y2]?',
-            arguments:
-            {
-              X1:
-              {
+            arguments: {
+              X1: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '-100'
               },
-              Y1:
-              {
+              Y1: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '-100'
               },
-              X2:
-              {
+              X2: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '100'
               },
-              Y2:
-              {
+              Y2: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '100'
               }
             }
           },
         ],
-        menus:
-        {
-          WHAT:
-          {
+        menus: {
+          WHAT: {
             acceptreporters: false,
             items: ['width', 'height']
           }
@@ -226,57 +189,47 @@
       };
     }
 
-    changexy(args, util)
-    {
+    changexy(args, util) {
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
       util.target.setXY(util.target.x + x, util.target.y + y);
     }
 
-    fence(util)
-    {
+    fence(util) {
       util.target.setXY(Math.min(Math.max(util.target.x, -Scratch.vm.runtime.stageWidth / 2), Scratch.vm.runtime.stageWidth / 2), Math.min(Math.max(util.target.y, -Scratch.vm.runtime.stageHeight / 2), Scratch.vm.runtime.stageHeight / 2));
     }
 
     // LORAX APPROVED
-    pointto(args, util)
-    {
+    pointto(args, util) {
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
-      if (util.target.y > y)
-      {
+      if (util.target.y > y) {
         util.target.setDirection(((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))) + 180);
       }
-      else
-      {
+      else {
         util.target.setDirection(((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))));
       }
     }
 
-    directionto(args, util)
-    {
+    directionto(args, util) {
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
-      if (util.target.y > y)
-      {
+      if (util.target.y > y) {
         return ((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))) + 180;
       }
-      else
-      {
+      else {
         return ((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y)));
       }
     }
 
-    distanceto(args, util)
-    {
+    distanceto(args, util) {
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
       // Shoutout to Pythagoras!
       return Math.sqrt(((x - util.target.x) ** 2) + ((y - util.target.y) ** 2));
     }
 
-    steptowards(args, util)
-    {
+    steptowards(args, util) {
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
       const steps = Scratch.Cast.toNumber(args.STEPS);
@@ -284,8 +237,7 @@
       util.target.setXY(((x - util.target.x) * (val)) + util.target.x, ((y - util.target.y) * (val)) + util.target.y);
     }
 
-    tweentowards(args, util)
-    {
+    tweentowards(args, util) {
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
       const val = Scratch.Cast.toNumber(args.PERCENT);
@@ -293,8 +245,7 @@
       util.target.setXY(((x - util.target.x) * (val / 100)) + util.target.x, ((y - util.target.y) * (val / 100)) + util.target.y);
     }
 
-    inbetween(args, util)
-    {
+    inbetween(args, util) {
       const x = Scratch.Cast.toNumber(args.X1);
       const y = Scratch.Cast.toNumber(args.Y1);
       const x2 = Scratch.Cast.toNumber(args.X2);
@@ -302,8 +253,7 @@
       return x <= util.target.x && util.target.x <= x2 && y <= util.target.y && util.target.y <= y2;
     }
 
-    touchingxy(args, util)
-    {
+    touchingxy(args, util) {
       // I can tell this is not the most efficient way to do this. I still don't feel like fixing it.
       // This method also doesn't account for rotation or non-square shapes. I'm not sure if there's a workaround for this.
       const x = Scratch.Cast.toNumber(args.X);
@@ -320,16 +270,13 @@
       return x >= util.target.x - (width / 2) && util.target.x + (width / 2) >= x && y >= util.target.y - (height / 2) && util.target.y + (height / 2) >= y;
     }
 
-    spritewh(args, util)
-    {
+    spritewh(args, util) {
       const costumeIndex = util.target.getCostumeIndexByName(Scratch.Cast.toString(util.target.getCostumes()[util.target.currentCostume].name));
       const costume = util.target.sprite.costumes[costumeIndex];
-      if (args.WHAT === 'width')
-      {
+      if (args.WHAT === 'width') {
         return Math.ceil(Scratch.Cast.toNumber(costume.size[0]));
       }
-      else
-      {
+      else {
         return Math.ceil(Scratch.Cast.toNumber(costume.size[1]));
       }
     }
