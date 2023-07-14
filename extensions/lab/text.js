@@ -383,6 +383,10 @@
       return this._size[0];
     }
 
+    getAlign () {
+      return this.align;
+    }
+
     _oneAnimationAtATime (newCallback) {
       this.cancelAnimation();
       return new Promise(resolve => {
@@ -679,6 +683,25 @@
           },
           '---',
           {
+            opcode: 'addLine',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'add line [TEXT]',
+            hideFromPalette: compatibilityMode,
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'TurboWarp is great!'
+              }
+            }
+          },
+          {
+            opcode: 'getLines',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '# of lines',
+            hideFromPalette: compatibilityMode
+          },
+          '---',
+          {
             opcode: 'startAnimate',
             blockType: Scratch.BlockType.COMMAND,
             text: 'start [ANIMATE] animation',
@@ -705,9 +728,9 @@
             }
           },
           {
-            opcode: 'currentlyAnimating',
+            opcode: 'isAnimating',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'currently animating?',
+            text: 'is animating?',
             hideFromPalette: compatibilityMode
           },
           '---',
@@ -829,7 +852,8 @@
             items: [
               'font',
               'color',
-              'width'
+              'width',
+              'alignment'
             ]
           },
           // TurboWarp menus (acceptReporters: true)
@@ -1027,6 +1051,28 @@
       state.skin.setWidth(DEFAULT_WIDTH);
     }
 
+    addLine (args, util) {
+      const drawableID = util.target.drawableID;
+      const skin = renderer._allDrawables[drawableID].skin;
+      if (!(skin instanceof TextCostumeSkin)) return;
+
+      const state = this._getState(util.target);
+      const originalText = state.skin.text;
+      state.skin.setText(originalText + '\n' + Scratch.Cast.toString(args.TEXT));
+      // Scratch forces 1 frame delay by returning promise. I think that's silly.
+      util.runtime.requestRedraw();
+    }
+
+    getLines (args, util) {
+      const drawableID = util.target.drawableID;
+      const skin = renderer._allDrawables[drawableID].skin;
+      if (!(skin instanceof TextCostumeSkin)) return 0;
+
+      const state = this._getState(util.target);
+      const text = state.skin.text;
+      return text.split('\n').length;
+    }
+
     startAnimate (args, util) {
       const drawableID = util.target.drawableID;
       const skin = renderer._allDrawables[drawableID].skin;
@@ -1066,7 +1112,7 @@
       }
     }
 
-    currentlyAnimating (args, util) {
+    isAnimating (args, util) {
       const skin = this._getState(util.target).skin;
       return (skin.isTyping || skin.isRainbow || skin.isZooming);
     }
@@ -1144,6 +1190,10 @@
         return state.skin.getColor();
       } else if (attrib === 'width') {
         return state.skin.getWidth();
+      } else if (attrib === 'alignment') {
+        switch (state.skin.getAlign()) {
+          case (0): 
+        }
       } else {
         // should never happen
         return '';
