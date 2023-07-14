@@ -1192,7 +1192,9 @@
         return state.skin.getWidth();
       } else if (attrib === 'alignment') {
         switch (state.skin.getAlign()) {
-          case (0): 
+          case (0): return 'left';
+          case (1): return 'right';
+          case (2): return 'center';
         }
       } else {
         // should never happen
