@@ -35,12 +35,16 @@
     'Scratch',
     'Arial',
     'Arial Black',
+    'Helvetica Neue',
+    'Calibri',
     'Garamond',
     'Times New Roman',
     'Courier New',
     'Brush Script MT',
     'Impact',
-    'Comic Sans MS'
+    'Comic Sans MS',
+    'Consolas',
+    'Lucida Console'
   ];
 
   const DEFAULT_COLOR = '#575e75';
