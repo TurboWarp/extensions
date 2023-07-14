@@ -12,7 +12,8 @@
         name: 'More Motion',
         color1: '#4c97ff',
         color2: '#3373cc',
-        blocks: [{
+        blocks: [
+          {
             filter: [Scratch.TargetType.SPRITE],
             opcode: 'changexy',
             blockType: Scratch.BlockType.COMMAND,
@@ -44,6 +45,12 @@
               }
             }
           },
+					{
+						filter: [Scratch.TargetType.SPRITE],
+						opcode: 'rotationStyle',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'rotation style'
+					},
           '---',
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -195,10 +202,6 @@
       util.target.setXY(util.target.x + x, util.target.y + y);
     }
 
-    fence(util) {
-      util.target.setXY(Math.min(Math.max(util.target.x, -Scratch.vm.runtime.stageWidth / 2), Scratch.vm.runtime.stageWidth / 2), Math.min(Math.max(util.target.y, -Scratch.vm.runtime.stageHeight / 2), Scratch.vm.runtime.stageHeight / 2));
-    }
-
     // LORAX APPROVED
     pointto(args, util) {
       const x = Scratch.Cast.toNumber(args.X);
@@ -208,6 +211,14 @@
       } else {
         util.target.setDirection(((180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))));
       }
+    }
+
+		rotationStyle(args, util) {
+			return util.target.rotationStyle;
+		}
+
+    fence(util) {
+      util.target.setXY(Math.min(Math.max(util.target.x, -Scratch.vm.runtime.stageWidth / 2), Scratch.vm.runtime.stageWidth / 2), Math.min(Math.max(util.target.y, -Scratch.vm.runtime.stageHeight / 2), Scratch.vm.runtime.stageHeight / 2));
     }
 
     directionto(args, util) {
