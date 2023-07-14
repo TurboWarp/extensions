@@ -32,6 +32,7 @@
   ];
 
   const COMPATIBLE_FONTS = [
+    'Scratch',
     'Arial',
     'Arial Black',
     'Garamond',
