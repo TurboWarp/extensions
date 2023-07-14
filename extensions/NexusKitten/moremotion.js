@@ -45,12 +45,12 @@
               }
             }
           },
-					{
-						filter: [Scratch.TargetType.SPRITE],
-						opcode: 'rotationStyle',
-						blockType: Scratch.BlockType.REPORTER,
-						text: 'rotation style'
-					},
+	  {
+	    filter: [Scratch.TargetType.SPRITE],
+	    opcode: 'rotationStyle',
+	    blockType: Scratch.BlockType.REPORTER,
+	    text: 'rotation style'
+	  },
           '---',
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -213,9 +213,9 @@
       }
     }
 
-		rotationStyle(args, util) {
-			return util.target.rotationStyle;
-		}
+    rotationStyle(args, util) {
+    return util.target.rotationStyle;
+    }
 
     fence(util) {
       util.target.setXY(Math.min(Math.max(util.target.x, -Scratch.vm.runtime.stageWidth / 2), Scratch.vm.runtime.stageWidth / 2), Math.min(Math.max(util.target.y, -Scratch.vm.runtime.stageHeight / 2), Scratch.vm.runtime.stageHeight / 2));
