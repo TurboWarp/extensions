@@ -2,7 +2,15 @@
     'use strict';
     var b = false;
     var c;
-
+    Scratch.translate.setup({
+        zh: {
+            name: '弹窗',
+            d: '显示弹窗',
+            e: '隐藏弹窗',
+            j: '设置弹窗标题为 [L]',
+            l: '设置弹窗内容为 [M]',
+        },
+    });
     function d() {
         c = document.createElement("div");
         c.style.position = "fixed";
@@ -85,22 +93,22 @@
         getInfo() {
             return {
                 id: 'tc',
-                name: '弹窗',
+                name: Scratch.translate({ id: 'name', default: 'SuperAlert' }),
                 blocks: [
                     {
                         opcode: 'd',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: '显示弹窗',
+                        text: Scratch.translate({ id: 'd', default: 'Show alert' })
                     },
                     {
                         opcode: 'e',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: '隐藏弹窗',
+                        text: Scratch.translate({ id: 'e', default: 'Hide alert' })
                     },
                     {
                         opcode: 'j',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: '设置弹窗标题为 [L]',
+                        text: Scratch.translate({ id: 'j', default: 'Set the alert title to [L]' }),
                         arguments: {
                             L: {
                                 type: Scratch.ArgumentType.STRING,
@@ -111,7 +119,7 @@
                     {
                         opcode: 'l',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: '设置弹窗内容为 [M]',
+                        text: Scratch.translate({ id: 'l', default: 'Set the alert content to [M]' }),
                         arguments: {
                             M: {
                                 type: Scratch.ArgumentType.STRING,
