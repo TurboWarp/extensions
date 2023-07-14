@@ -45,12 +45,12 @@
               }
             }
           },
-	  {
-	    filter: [Scratch.TargetType.SPRITE],
-	    opcode: 'rotationStyle',
-	    blockType: Scratch.BlockType.REPORTER,
-	    text: 'rotation style'
-	  },
+          {
+            filter: [Scratch.TargetType.SPRITE],
+            opcode: 'rotationStyle',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'rotation style'
+          },
           '---',
           {
             filter: [Scratch.TargetType.SPRITE],
