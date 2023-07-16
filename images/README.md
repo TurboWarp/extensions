@@ -238,3 +238,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## clipboard.svg
  - Created by [@AdamMady](https://github.com/AdamMady/)
+
+## godslayerakp/http.svg
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636912111
