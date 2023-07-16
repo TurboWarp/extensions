@@ -64,8 +64,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@softedco](https://scratch.mit.edu/users/softed/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1369138404.
 
 ## encoding.svg
- - Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1396819269.
- - Font is Noto Sans.
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1632625905
 
 ## true-fantom/network.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/122#issue-1524383752.
