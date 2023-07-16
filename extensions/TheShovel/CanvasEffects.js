@@ -10,11 +10,11 @@
 
     const updateStyle = () => {
         //Gotta keep the translation to % because of the stage size, window size and so on
-        const transform = `rotate(${rotation}deg) scale(${scale}%) skew(${skewX}deg, ${skewY}deg) translate(${offsetX}%, ${0-offsetY}%)`;
-        const filter = `blur(${blur}px) contrast(${contrast / 100}) saturate(${saturation}%) hue-rotate(${color}deg) brightness(${brightness}%) invert(${invert}%) sepia(${sepia}%) opacity(${100-transparency}%)`;
+        const transform = `rotate(${rotation}deg) scale(${scale}%) skew(${skewX}deg, ${skewY}deg) translate(${offsetX}%, ${0 - offsetY}%)`;
+        const filter = `blur(${blur}px) contrast(${contrast / 100}) saturate(${saturation}%) hue-rotate(${color}deg) brightness(${brightness}%) invert(${invert}%) sepia(${sepia}%) opacity(${100 - transparency}%)`;
         
         if (canvas.style.borderRadius !== borderRadius) {
-            canvas.style.borderRadius = borderRadius+'%';
+            canvas.style.borderRadius = borderRadius + '%';
         }
         if (canvas.style.transform !== transform) {
             canvas.style.transform = transform;
