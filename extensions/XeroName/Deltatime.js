@@ -1,9 +1,4 @@
 // TurboWarp Extension : Deltatime by XeroName
-// First generation at 2023-06-21 KST
-// Latest update at 2023-07-12 KST
-// v2.2.2
-
-
 
 /*
 Referenced articles :
@@ -15,20 +10,14 @@ Thanks to the "TheShovel", one of the TurboWarp Extension's developer named "Sho
 I learned how to use "Runtime Steps" of Scratch VM through that code.
 */
 
-
-
-//==================== Scratch Zone ====================//
 (function (Scratch) {
   'use strict';
-  console.log("Deltatime by XeroName"); // Prints log message to console
 
   const icon = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDYwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjMwMCIgY3k9IjMwMCIgcj0iMzAwIiBmaWxsPSIjMjAyMDIwIi8+CjxwYXRoIGQ9Ik04Ny44NjggNTEyLjEzMkM2MC4wMTA0IDQ4NC4yNzQgMzcuOTEyNSA0NTEuMjAzIDIyLjgzNjEgNDE0LjgwNUM3Ljc1OTcyIDM3OC40MDcgLTMuNDQ0MTZlLTA2IDMzOS4zOTcgMCAzMDBDMy40NDQxNmUtMDYgMjYwLjYwMyA3Ljc1OTc0IDIyMS41OTMgMjIuODM2MiAxODUuMTk1QzM3LjkxMjYgMTQ4Ljc5NyA2MC4wMTA0IDExNS43MjYgODcuODY4IDg3Ljg2NzlDMTE1LjcyNiA2MC4wMTA0IDE0OC43OTcgMzcuOTEyNSAxODUuMTk1IDIyLjgzNjFDMjIxLjU5MyA3Ljc1OTcxIDI2MC42MDQgLTkuODYyNjZlLTA2IDMwMCAwQzMzOS4zOTcgOS44NjI2OGUtMDYgMzc4LjQwNyA3Ljc1OTc1IDQxNC44MDUgMjIuODM2MkM0NTEuMjAzIDM3LjkxMjYgNDg0LjI3NSA2MC4wMTA0IDUxMi4xMzIgODcuODY4TDMwMCAzMDBMODcuODY4IDUxMi4xMzJaIiBmaWxsPSIjMzAzMDMwIi8+CjxwYXRoIGQ9Ik0zMzAgNDM1TDIzMCAxODUiIHN0cm9rZT0iIzYxMjM2MSIgc3Ryb2tlLXdpZHRoPSIzMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxwYXRoIGQ9Ik0zMjAgMTg1SDQyME01MjAgMTg1SDQyME00MjAgMTg1VjQzNU0yOTkuNDUxIDQzMy42MjlMMjAwLjkyOCAxODcuMzIxQzIwMC41OTMgMTg2LjQ4MyAxOTkuNDA3IDE4Ni40ODMgMTk5LjA3MiAxODcuMzIxTDEwMC41NDkgNDMzLjYyOUMxMDAuMjg2IDQzNC4yODUgMTAwLjc3IDQzNSAxMDEuNDc3IDQzNUgyOTguNTIzQzI5OS4yMyA0MzUgMjk5LjcxNCA0MzQuMjg1IDI5OS40NTEgNDMzLjYyOVoiIHN0cm9rZT0iIzYwNjA2MCIgc3Ryb2tlLXdpZHRoPSIzMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxwYXRoIGQ9Ik0zMTAgNDE1TDIxMCAxNjUiIHN0cm9rZT0iI0ZGNUNGRiIgc3Ryb2tlLXdpZHRoPSIzMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxwYXRoIGQ9Ik0zMDAgMTY1SDQwME01MDAgMTY1SDQwME00MDAgMTY1VjQxNU0yNzkuNDUxIDQxMy42MjlMMTgwLjkyOCAxNjcuMzIxQzE4MC41OTMgMTY2LjQ4MyAxNzkuNDA3IDE2Ni40ODMgMTc5LjA3MiAxNjcuMzIxTDgwLjU0ODYgNDEzLjYyOUM4MC4yODU4IDQxNC4yODUgODAuNzY5NiA0MTUgODEuNDc3IDQxNUgyNzguNTIzQzI3OS4yMyA0MTUgMjc5LjcxNCA0MTQuMjg1IDI3OS40NTEgNDEzLjYyOVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMzIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K';
 
-//==================== Error Unsandboxed Message ====================//
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Deltatime by XeroName : This extension must run unsandboxed');
   }
-//==================== Error Unsandboxed Message END ====================//
 
   const vm = Scratch.vm;
   const cast = Scratch.Cast;
@@ -37,7 +26,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
   let filtStren = 8; // Default value of Filter Strength = 8
   let calcStandFPS = 30; // Standard value of Calculator
 
-//==================== "Deltatime Watcher" Zone ====================//
   let fT = 0, last = performance.now(), rawFPS, vmFPS, vmDt;
   const oldStep = vm.runtime._step;
 
@@ -62,16 +50,10 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
     }
     last = now;
   };
-//==================== "Deltatime Watcher" Zone END ====================//
 
-
-
-//==================== Extension Zone ====================//
   class Dt {
-
     getInfo() {
       return {
-
         id: 'dtbyxeroname',
         name: 'Deltatime',
         docsURI: 'https://xeroname.github.io/dtbyxeroname/',
@@ -79,9 +61,7 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
         color2: '#444444',
         color3: '#ffffff',
         menuIconURI: icon,
-
         blocks: [
-//==================== "Resources from Scratch VM" Blocks ====================//
           {
             opcode: 'getDt_vm',
             blockType: Scratch.BlockType.REPORTER,
@@ -92,7 +72,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
             blockType: Scratch.BlockType.REPORTER,
             text: 'FPS'
           },
-//==================== "Selectable Menu" Blocks ====================//
           {
             opcode: 'getTimeRes',
             blockType: Scratch.BlockType.REPORTER,
@@ -110,14 +89,12 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
             },
             hideFromPalette: true
           },
-//==================== Static FPS Detection Blocks ====================//
           {
             opcode: 'isFPSposi',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'FPS > 0',
             hideFromPalette: true
           },
-//==================== Time Filter Blocks ====================//
           {
             blockType: "label",
             text: "Filtering"
@@ -138,7 +115,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
             blockType: Scratch.BlockType.REPORTER,
             text: 'Filter Strength'
           },
-//==================== Calculator Blocks ====================//
           {
             blockType: "label",
             text: "Calculating"
@@ -171,9 +147,7 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
               }
             }
           }
-//==================== Block Sections END ====================//
         ],
-//==================== Menu Zone ====================//
         menus: {
           target_menu: {
             acceptReporters: true,
@@ -192,7 +166,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
                 text: 'ΔT',
                 value: 'dt'
               },
-
               {
                 text: 'FPS',
                 value: 'fps'
@@ -200,18 +173,15 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
             ]
           }
         }
-//==================== Menu Zone END ====================//
       };
     }
 
-//========== Return of "Resources from Scratch VM" ==========//
     getDt_vm() {
       return vmDt;
     }
     getFPS_vm() {
       return vmFPS;
     }
-//========== Return of "Selectable Menu" ==========//
     getTimeRes({ TYPE, TARGET }) {
       const resTyp = cast.toString(TYPE).toLowerCase();
       const targetRes = cast.toString(TARGET).toLowerCase();
@@ -220,11 +190,9 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
         case 'fps' : return vmFPS;
       }
     }
-//========== Return of <Is FPS greater than 0 ?> ==========//
     isFPSposi() {
       return (vmFPS > 0);
     }
-//========== Calculators ==========//
     setCalculatorStandard({ FPS }) {
       calcStandFPS = cast.toNumber(FPS);
     }
@@ -235,7 +203,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
       const moveDist = cast.toNumber(DISTANCE);
       return moveDist * calcStandFPS;
     }
-//========== Filter Strength ==========//
     getFilterStrength() {
       return filtStren;
     }
@@ -249,13 +216,8 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
       } else {
         filtStren = fStren;
       }
-
     }
-//========== Block Function/Return Sections END ==========//
-
   }
-//==================== Extension Zone  END ====================//
 
   Scratch.extensions.register(new Dt());
 })(Scratch);
-//==================== Scratch Zone  END ====================//
