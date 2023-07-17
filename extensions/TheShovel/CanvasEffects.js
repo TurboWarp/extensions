@@ -7,24 +7,25 @@
     const canvas = Scratch.renderer.canvas;
 
     const updateStyle = () => {
-        //Gotta keep the translation to % because of the stage size, window size and so on
+        // Gotta keep the translation to % because of the stage size, window size and so on
         const transform = `rotate(${rotation}deg) scale(${scale}%) skew(${skewX}deg, ${skewY}deg) translate(${offsetX}%, ${0 - offsetY}%)`;
-        const filter = `blur(${blur}px) contrast(${contrast / 100}) saturate(${saturation}%) hue-rotate(${color}deg) brightness(${brightness}%) invert(${invert}%) sepia(${sepia}%) opacity(${100 - transparency}%)`;
-        if (canvas.style.borderRadius !== borderRadius) {
-            canvas.style.borderRadius = borderRadius + '%';
-        }
         if (canvas.style.transform !== transform) {
             canvas.style.transform = transform;
         }
+        const filter = `blur(${blur}px) contrast(${contrast / 100}) saturate(${saturation}%) hue-rotate(${color}deg) brightness(${brightness}%) invert(${invert}%) sepia(${sepia}%) opacity(${100 - transparency}%)`;
         if (canvas.style.filter !== filter) {
             canvas.style.filter = filter;
+        }
+        const cssBorderRadius = borderRadius === 0 ? '' : `${borderRadius}%`;
+        if (canvas.style.borderRadius !== cssBorderRadius) {
+            canvas.style.borderRadius = cssBorderRadius;
         }
         const imageRendering = resizeMode === 'pixelated' ? 'pixelated' : '';
         if (canvas.style.imageRendering !== imageRendering) {
             canvas.style.imageRendering = imageRendering;
         }
     };
-    // scratch-gui will sometimes reset the cursor when resizing the window or going in/out of fullscreen
+    // scratch-gui may reset canvas styles when resizing the window or going in/out of fullscreen
     new MutationObserver(updateStyle).observe(canvas, {
       attributeFilter: ['style'],
       attributes: true
@@ -40,7 +41,6 @@
     // Thanks SharkPool for telling me about these
     let transparency = 0;
     let sepia = 0;
-    //
     let blur = 0;
     let contrast = 100;
     let saturation = 100;
