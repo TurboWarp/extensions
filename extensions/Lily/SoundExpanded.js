@@ -280,7 +280,9 @@
     }
 
     getSoundEffect(args, util) {
-      const target = getSpriteTargetByName(util, args.TARGET);
+      let target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      if (args.TARGET === '_myself_') target = util.target;
+      if (args.TARGET === '_stage_') target = runtime.getTargetForStage();
       const effects = target.soundEffects;
       if (!effects) return 0;
       return effects[args.EFFECT];
@@ -320,33 +322,26 @@
     }
 
     _getTargets() {
-      const spriteNames = [];
-      const targets = runtime.targets;
-      const myself = runtime.getEditingTarget().getName();
+      const spriteNames = [
+        {text: 'myself', value: '_myself_'},
+        {text: 'Stage', value: '_stage_'}
+      ];
+      const targets = Scratch.vm.runtime.targets;
+      const myself = Scratch.vm.runtime.getEditingTarget().getName();
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) {
           const targetName = target.getName();
-          if (targetName === myself) {
-            spriteNames.unshift({
-              text: 'myself',
-              value: targetName
-            });
-          } else {
-            spriteNames.push({
-              text: targetName,
-              value: targetName
-            });
-          }
+          spriteNames.push({
+            text: targetName,
+            value: targetName
+          });
         }
       }
       if (spriteNames.length > 0) {
         return spriteNames;
       } else {
-        return [{
-          text: "",
-          value: 0
-        }]; //this should never happen but it's a failsafe
+        return [{text: "", value: 0}]; //this should never happen but it's a failsafe
       }
     }
   }
