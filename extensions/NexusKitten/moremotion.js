@@ -56,7 +56,7 @@
             filter: [Scratch.TargetType.SPRITE],
             opcode: 'fence',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'if fencing disabled, fence anyways'
+            text: 'manually fence'
           },
           '---',
           {
@@ -220,8 +220,7 @@
     fence(args, util) {
       const newx = '';
       const newy = '';
-      const newpos = true ?
-        Scratch.vm.renderer.getFencedPositionOfDrawable(util.target.drawableID, [util.target.x, util.target.y]) :
+      const newpos = Scratch.vm.renderer.getFencedPositionOfDrawable(util.target.drawableID, [util.target.x, util.target.y]) :
         [newx, newy];
       util.target.setXY(newpos[0], newpos[1]);
     }
