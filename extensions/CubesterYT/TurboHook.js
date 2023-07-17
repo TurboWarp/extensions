@@ -18,8 +18,8 @@
   };
 
   function hexToDecimal(hex) {
-          return parseInt(hex.replace("#",""), 16);
-        }
+    return parseInt(hex.replace("#", ""), 16);
+  }
 
   class TurboHook {
     getInfo() {
