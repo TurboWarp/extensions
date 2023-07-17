@@ -218,9 +218,7 @@
     }
 
     fence(args, util) {
-      const newx = '';
-      const newy = '';
-      const newpos = Scratch.vm.renderer.getFencedPositionOfDrawable(util.target.drawableID, [util.target.x, util.target.y]) : [newx, newy];
+      const newpos = Scratch.vm.renderer.getFencedPositionOfDrawable(util.target.drawableID, [util.target.x, util.target.y]);
       util.target.setXY(newpos[0], newpos[1]);
     }
 
