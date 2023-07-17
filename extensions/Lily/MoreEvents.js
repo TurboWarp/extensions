@@ -70,15 +70,15 @@
     { text: '9', value: '9' },
   ];
 
-  setInterval(() => {
+  vm.runtime.on('BEFORE_EXECUTE', () => {
     runtime.startHats('lmsMoreEvents_always', {
       CONDITION: 'true'
     });
-
+    
     runtime.startHats('lmsMoreEvents_whileTurboMode', {
       STATE: (runtime.turboMode) ? 'enabled' : 'disabled'
     });
-  });
+  })
 
   var lastValues = {};
 
@@ -101,28 +101,6 @@
         runtime.shouldExecuteStopClicked = false;
         originalGreenFlag.call(this);
       };
-
-      runtime.on('STAGE_SIZE_CHANGED', () => {
-        runtime.startHats('lmsMoreEvents_whenRuntimeOptionChanged', {
-          OPTION: 'stage size'
-        });
-      });
-
-      runtime.on('FRAMERATE_CHANGED', () => {
-        runtime.startHats('lmsMoreEvents_whenRuntimeOptionChanged', {
-          OPTION: 'framerate'
-        });
-      });
-
-      runtime.on('INTERPOLATION_CHANGED', () => {
-        runtime.startHats('lmsMoreEvents_whenRuntimeOptionChanged', {
-          OPTION: 'interpolation'
-        });
-      });
-
-      runtime.on('EXTENSION_ADDED', () => {
-        runtime.startHats('lmsMoreEvents_whenExtensionAdded');
-      });
     }
 
     getInfo() {
@@ -203,6 +181,18 @@
               }
             }
           },
+          {
+            opcode: 'whileTurboMode',
+            blockType: Scratch.BlockType.HAT,
+            text: 'while turbo mode is [STATE]',
+            isEdgeActivated: false,
+            arguments: {
+              STATE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'state'
+              }
+            }
+          },
 
           '---',
 
@@ -225,45 +215,6 @@
             opcode: 'broadcastAll',
             blockType: Scratch.BlockType.COMMAND,
             text: 'broadcast everything'
-          },
-
-          '---',
-
-          {
-            opcode: 'whileTurboMode',
-            blockType: Scratch.BlockType.HAT,
-            text: 'while turbo mode is [STATE]',
-            isEdgeActivated: false,
-            arguments: {
-              STATE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'state'
-              }
-            }
-          },
-          {
-            opcode: 'whenRuntimeOptionChanged',
-            blockType: Scratch.BlockType.HAT,
-            text: 'when [OPTION] is changed',
-            isEdgeActivated: false,
-            arguments: {
-              OPTION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'runtimeOptions'
-              }
-            }
-          },
-          {
-            opcode: 'whenExtensionAdded',
-            blockType: Scratch.BlockType.HAT,
-            text: 'when extension added',
-            isEdgeActivated: false,
-            arguments: {
-              EXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'utilities'
-              }
-            }
           },
 
           '---',
