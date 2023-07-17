@@ -214,13 +214,13 @@
     }
 
     rotationStyle(args, util) {
-    return util.target.rotationStyle;
+      return util.target.rotationStyle;
     }
 
     fence(args, util) {
       const newx = '';
       const newy = '';
-      var newpos = true ?
+      const newpos = true ?
         Scratch.vm.renderer.getFencedPositionOfDrawable(util.target.drawableID, [util.target.x, util.target.y]) :
         [newx, newy];
       util.target.setXY(newpos[0], newpos[1]);
@@ -250,7 +250,6 @@
       const val = steps / (Math.sqrt(((x - util.target.x) ** 2) + ((y - util.target.y) ** 2)));
       if (val >= 1) {
         util.target.setXY(x, y);
-        console.log(val);
       } else {
         util.target.setXY(((x - util.target.x) * (val)) + util.target.x, ((y - util.target.y) * (val)) + util.target.y);
       }
