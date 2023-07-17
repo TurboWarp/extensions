@@ -220,7 +220,7 @@
     fence(args, util) {
       const newx = '';
       const newy = '';
-      const newpos = true ?
+      var newpos = true ?
         Scratch.vm.renderer.getFencedPositionOfDrawable(util.target.drawableID, [util.target.x, util.target.y]) :
         [newx, newy];
       util.target.setXY(newpos[0], newpos[1]);
