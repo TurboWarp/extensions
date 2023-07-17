@@ -1,4 +1,4 @@
-// TurboWarp Extension : Deltatime by XeroName
+// TurboWarp Extension : Deltatime by XeroName v3.2.3
 
 /*
 Referenced articles :
@@ -22,7 +22,7 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
   const vm = Scratch.vm;
   const cast = Scratch.Cast;
 
-  let maxFiltStren = 907; // Max value of Filter Strength
+  let maxFiltStren = Number.MAX_VALUE; // Max value of Filter Strength
   let filtStren = 8; // Default value of Filter Strength = 8
   let calcStandFPS = 30; // Standard value of Calculator
 
@@ -30,7 +30,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
   const oldStep = vm.runtime._step;
 
   vm.runtime._step = function () {
-    oldStep.call(this);
     const now = performance.now();
     let thisFT = now - last;
     fT += (thisFT - fT) / filtStren;
@@ -49,18 +48,22 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
       vmDt = 0; // Prevent situation of "DIV/0"
     }
     last = now;
+    oldStep.call(this);
   };
 
   class Dt {
+
     getInfo() {
       return {
+
         id: 'dtbyxeroname',
         name: 'Deltatime',
-        docsURI: 'https://xeroname.github.io/dtbyxeroname/',
+        docsURI: 'https://extensions.turbowarp.org/XeroName/Deltatime.html',
         color1: '#333333',
         color2: '#444444',
         color3: '#ffffff',
         menuIconURI: icon,
+
         blocks: [
           {
             opcode: 'getDt_vm',
@@ -71,29 +74,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
             opcode: 'getFPS_vm',
             blockType: Scratch.BlockType.REPORTER,
             text: 'FPS'
-          },
-          {
-            opcode: 'getTimeRes',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'Get [TYPE] of [TARGET]',
-            arguments: {
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'type_menu'
-              },
-
-              TARGET: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'target_menu'
-              }
-            },
-            hideFromPalette: true
-          },
-          {
-            opcode: 'isFPSposi',
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: 'FPS > 0',
-            hideFromPalette: true
           },
           {
             blockType: "label",
@@ -139,7 +119,7 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
           {
             opcode: 'calcMultiplyValue',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Calc [DISTANCE]',
+            text: 'Value to Move [DISTANCE] with ΔT',
             arguments: {
               DISTANCE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -148,31 +128,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
             }
           }
         ],
-        menus: {
-          target_menu: {
-            acceptReporters: true,
-            items: [
-              {
-                text: 'This Project',
-                value: 'vm'
-              }
-            ]
-          },
-
-          type_menu: {
-            acceptReporters: true,
-            items: [
-              {
-                text: 'ΔT',
-                value: 'dt'
-              },
-              {
-                text: 'FPS',
-                value: 'fps'
-              }
-            ]
-          }
-        }
       };
     }
 
@@ -181,17 +136,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
     }
     getFPS_vm() {
       return vmFPS;
-    }
-    getTimeRes({ TYPE, TARGET }) {
-      const resTyp = cast.toString(TYPE).toLowerCase();
-      const targetRes = cast.toString(TARGET).toLowerCase();
-      switch (resTyp) {
-        case 'dt' : return vmDt;
-        case 'fps' : return vmFPS;
-      }
-    }
-    isFPSposi() {
-      return (vmFPS > 0);
     }
     setCalculatorStandard({ FPS }) {
       calcStandFPS = cast.toNumber(FPS);
@@ -208,7 +152,6 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
     }
     setFilterStrength({ STRENGTH }) {
       const fStren = cast.toNumber(STRENGTH);
-
       if (fStren <= 1) {
         filtStren = 1;
       } else if (fStren >= maxFiltStren) {
@@ -217,6 +160,7 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
         filtStren = fStren;
       }
     }
+
   }
 
   Scratch.extensions.register(new Dt());
