@@ -64,8 +64,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@softedco](https://scratch.mit.edu/users/softed/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1369138404.
 
 ## encoding.svg
- - Created by @SIPC in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1396819269.
- - Font is Noto Sans.
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1632625905
 
 ## true-fantom/network.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/122#issue-1524383752.
@@ -144,7 +143,9 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1526886264.
 
 ## cs2627883/numericalencoding.svg
- - Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1534022176.
+ - Created by [@NexusKitten](https://scratch.mit.edu/users/namelesscat/).
+ - Silkscreen font used under [Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
+ - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## NOname-awa/graphics2d.svg
  - Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1550426448.
@@ -203,7 +204,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Based on image created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575100933
 
 ## mdwalters/notifications.svg
- - Created by [@Juenjos](https://github.com/Juenjos) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1573040329
+ - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1637077987
 
 ## Lily/MoreTimers.svg
 - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/656.
@@ -236,6 +237,12 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## clipboard.svg
  - Created by [@AdamMady](https://github.com/AdamMady/)
+
+## godslayerakp/http.svg
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636912111
+
+## Alestore/nfcwarp.svg
+ - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636726352
 
 ## XeroName/Deltatime.svg
  - Created by [@XeroName](https://scratch.mit.edu/users/plant2014/) in https://github.com/TurboWarp/extensions/pull/622
