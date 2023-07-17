@@ -166,7 +166,7 @@
             filter: [Scratch.TargetType.SPRITE],
             opcode: 'inbetween',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'in-between x1: [X1] y1: [Y1] x2: [X2] y2: [Y2]?',
+            text: 'in rectangle x1: [X1] y1: [Y1] x2: [X2] y2: [Y2]?',
             arguments: {
               X1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -189,7 +189,7 @@
         ],
         menus: {
           WHAT: {
-            acceptreporters: false,
+            acceptreporters: true,
             items: ['width', 'height']
           }
         }
@@ -217,8 +217,13 @@
     return util.target.rotationStyle;
     }
 
-    fence(util) {
-      util.target.setXY(Math.min(Math.max(util.target.x, -Scratch.vm.runtime.stageWidth / 2), Scratch.vm.runtime.stageWidth / 2), Math.min(Math.max(util.target.y, -Scratch.vm.runtime.stageHeight / 2), Scratch.vm.runtime.stageHeight / 2));
+    fence(args, util) {
+      const newx = '';
+      const newy = '';
+      const newpos = true ?
+        Scratch.vm.renderer.getFencedPositionOfDrawable(util.target.drawableID, [util.target.x, util.target.y]) :
+        [newx, newy];
+      util.target.setXY(newpos[0], newpos[1]);
     }
 
     directionto(args, util) {
@@ -243,7 +248,12 @@
       const y = Scratch.Cast.toNumber(args.Y);
       const steps = Scratch.Cast.toNumber(args.STEPS);
       const val = steps / (Math.sqrt(((x - util.target.x) ** 2) + ((y - util.target.y) ** 2)));
-      util.target.setXY(((x - util.target.x) * (val)) + util.target.x, ((y - util.target.y) * (val)) + util.target.y);
+      if (val >= 1) {
+        util.target.setXY(x, y);
+        console.log(val);
+      } else {
+        util.target.setXY(((x - util.target.x) * (val)) + util.target.x, ((y - util.target.y) * (val)) + util.target.y);
+      }
     }
 
     tweentowards(args, util) {
