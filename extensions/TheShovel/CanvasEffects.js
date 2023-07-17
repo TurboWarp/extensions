@@ -1,5 +1,3 @@
-//Credits to my parrot for pooping on my keyboard while making this
-
 (function(Scratch) {
     'use strict';
     if (!Scratch.extensions.unsandboxed) {
@@ -167,6 +165,7 @@
             return '';
         }
         seteffect({EFFECT, NUMBER}) {
+            NUMBER = Scratch.Cast.toNumber(NUMBER);
             if (EFFECT === 'blur') {
                 blur = NUMBER;
             } else if (EFFECT === 'contrast') {
