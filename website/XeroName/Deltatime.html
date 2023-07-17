@@ -1,0 +1,78 @@
+<h1 id="documenation-of-deltatime">Documenation of Deltatime</h1>
+<ul>
+<li>Supports en-US Guide.</li>
+<li>한국어 도움말을 지원합니다.</li>
+</ul>
+<hr>
+<h1 id="-en-us-english-guide">[en-US] English Guide</h1>
+<h2 id="introduction">Introduction</h2>
+<ul>
+<li><strong>Deltatime</strong>(aka dtbx) is a <a href="https://turbowarp.org/">TurboWarp</a> extension which provides soft, precision Delta timing blocks.</li>
+<li>Guidance of v3.2.x</li>
+</ul>
+<h2 id="basic-knoledgement">Basic knoledgement</h2>
+<ul>
+<li>Note that FPS and ΔT are in directly-impactable relationship, so even mentioning only &quot;FPS&quot; or &quot;ΔT&quot; normally means both of them.</li>
+<li>ΔT means the &quot;Delta Time&quot;.</li>
+</ul>
+<h2 id="fps-t">FPS &amp; ΔT</h2>
+<p><code>FPS</code> and <code>ΔT</code> value of <strong>dtbx</strong> have following properties :</p>
+<ul>
+<li><code>FPS</code> block returns roundary integer value of <strong>current Framerate</strong> using <code>Math.round()</code>.</li>
+<li>When Framerate goes down to &lt; 0.5, <code>FPS</code> block starts to return real number of <strong>current Framerate</strong> by 2 decimal places using <code>.toFixed(2)</code>.</li>
+<li>If the <code>FPS</code> value is not grater than 0, <code>ΔT</code> value will be also set to 0 until <code>FPS</code> grater than 0.</li>
+</ul>
+<h2 id="filtering">Filtering</h2>
+<ul>
+<li><strong>Filtering</strong> blocks are purposed to stablize FPS.   </li>
+<li><code>Filter Strength</code>(aka strength) is a value that directly determines the performance and stability of FPS. Cannot be smaller than 1 and also bigger than 907.</li>
+<li>When filter strength has been set to higher value :<ul>
+<li>FPS and ΔT will be less fluctuate.</li>
+<li>Updating time of FPS and ΔT will be increase. That means small variation of FPS may be ignored as strength arises.</li>
+</ul>
+</li>
+</ul>
+<h2 id="calculating">Calculating</h2>
+<ul>
+<li><strong>Calculating</strong> blocks can be used to simplize calculations using with ΔT.</li>
+<li><code>Set Calculator Standard to (NUM) FPS</code> block sets the standard FPS value that Calculator refers.</li>
+<li><code>Standard FPS of Calculator</code> block returns the standard FPS value of Calculator. Default set to 30.</li>
+<li><code>Value to Move (NUM) with ΔT</code> block returns multiply value of require value to move or rotate at <code>Standard FPS of Calculator</code>, which equals to NUM*CalcStandardFPS.</li>
+</ul>
+<hr>
+<h1 id="-ko-kr-">[ko-KR] 한국어 도움말</h1>
+<h2 id="-">소개</h2>
+<ul>
+<li><strong>Deltatime</strong>(일명 dtbx)은 부드럽고 보다 정확한 델타 시간계 값을 제공하는 <a href="https://turbowarp.org/">TurboWarp</a>의 확장 기능입니다.</li>
+<li>v3.2.x 기준</li>
+</ul>
+<h2 id="-">개념 설명</h2>
+<ul>
+<li><strong>FPS</strong>는 특정 환경에서 화면이 초당 새로고침되는 횟수(일명 주사율)를 숫자로 나타낸 값입니다. 예시로 60 FPS는 <strong>화면이 1초에 60번 바뀌는 것</strong>을 의미합니다.</li>
+<li><strong>ΔT</strong>는 &quot;델타 타임&quot; 또는 &quot;델타 시간계&quot;를 의미합니다. 1을 FPS 값으로 나누어 얻을 수 있는 값입니다.</li>
+<li>FPS와 ΔT는 상호 간의 직접적인 영향을 받는 값입니다. 따라서 해당 문서에서 &quot;FPS&quot; 나 &quot;ΔT&quot; 중 한 가지만 언급하였더라도 보통은 두 가지 모두를 의미하는 것으로 간주할 수 있습니다.</li>
+</ul>
+<h2 id="fps-t">FPS 및 ΔT</h2>
+<p><strong>dtbx</strong>의 <code>FPS</code>와 <code>ΔT</code> 값은 다음과 같은 속성을 가집니다.</p>
+<ul>
+<li><code>FPS</code> 블럭은 JS의 <code>Math.round()</code> 함수를 사용하여 <strong>현재 주사율</strong>을 정수로 반올림한 값을 반환합니다.</li>
+<li>주사율이 0.5 미만으로 떨어질 경우, <code>FPS</code> 블럭은 <strong>현재 주사율</strong>의 소수 이하 2번째 자릿수 까지의 실수 값을 반환하기 시작합니다. 해당 상황에서는 JS의 <code>.toFixed(2)</code> 함수를 사용합니다.</li>
+<li>만약 <code>FPS</code> 값이 0보다 크지 않을 경우, <code>FPS</code> 값이 0보다 커질 때까지 <code>ΔT</code> 값 또한 0으로 설정됩니다.</li>
+</ul>
+<h2 id="-">필터링</h2>
+<ul>
+<li><strong>Filtering</strong> 탭에 있는 블록들은 FPS를 안정화하는 데 사용됩니다.</li>
+<li><code>Filter Strength</code>(일명 필터 강도)는 FPS의 안정성 및 성능을 직접적으로 결정하는 값입니다. 1보다 작거나 907보다 클 수 없습니다.</li>
+<li>필터 강도가 증가하면 <code>FPS</code> 및 <code>ΔT</code> 값에 다음과 같은 변화가 일어나게 됩니다.<ul>
+<li>해당 값들이 비교적 덜 요동치게 됩니다.</li>
+<li>주사율의 실제 값이 반영되기까지 더 많은 시간이 걸리게 됩니다. 따라서 필터 강도가 증가함에 따라 실제 주사율 값의 작은 변동이 무시될 수 있습니다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="-">계산</h2>
+<ul>
+<li><strong>Calculating</strong> 탭에 있는 블록들은 ΔT 블록과 함께 사용하여 계산을 간소화하는데 사용할 수 있습니다.</li>
+<li><code>Set Calculator Standard to (NUM) FPS</code> 블록은 계산기가 참조할 FPS의 표준 값을 설정합니다.</li>
+<li><code>Standard FPS of Calculator</code> 블록은 계산기의 설정된 표준 FPS 값을 반환합니다. 기본값은 30입니다.</li>
+<li><code>Value to Move (NUM) with ΔT</code> 블록은 표준 FPS값에서 ΔT 곱했을 때 일정하게 움직이거나 회전할 수 있는 값을 계산하여 반환합니다. 이 값은 NUM*CalcStandardFPS와 같습니다.</li>
+</ul>
