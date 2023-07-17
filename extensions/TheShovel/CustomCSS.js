@@ -109,7 +109,7 @@
             css += `${monitorRoot} { border-radius: ${generalBorderRadius}px; }`;
         }
         if (variableValueBoxColor) {
-            css += `${monitorRoot2}, ${monitorValueLarge} { background: ${variableValueBoxColor} !important; }`;
+            css += `${monitorValue}, ${monitorValueLarge} { background: ${variableValueBoxColor} !important; }`;
         }
         if (variableValueTextColor) {
             css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor}; }`;
