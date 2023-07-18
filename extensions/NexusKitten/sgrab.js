@@ -1,3 +1,7 @@
+/*
+* Original Extension by NexusKitten, updated by SharkPool
+* Do not remove this comment
+*/
 (function(Scratch) {
   'use strict';
 
@@ -16,20 +20,109 @@
         color1: '#ECA90B',
         color2: '#EBAF00',
         blocks: [
+          { //First 7 Blocks are made by SharkPool
+            opcode: 'profilePictureGrab',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[MENU] profile picture URL of user [WHO]',
+            arguments: {
+              MENU: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'MENU',
+              },
+              WHO: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'john',
+              },
+            },
+          },
           {
+            opcode: 'isFollowing',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'is user [FOLLOWER] is following [FOLLOWED]? (max: 20 users)',
+            arguments: {
+              FOLLOWER: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'alice',
+              },
+              FOLLOWED: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'bob',
+              },
+            },
+          },
+          {
+            opcode: 'getFollowingUsers',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'users that [USERNAME] is following (max: 20 users)',
+            arguments: {
+              USERNAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'john',
+              },
+            },
+          },
+          {
+            opcode: 'getFollowers',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'users following [USERNAME] (max: 20 users)',
+            arguments: {
+              USERNAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'john',
+              },
+            },
+          },
+          {
+            opcode: 'recentlySharedProject',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'most recent shared project from user [USERNAME]',
+            arguments: {
+              USERNAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'john',
+              },
+            },
+          },
+          {
+            opcode: 'getAllProjects',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'titles of projects made by user [USERNAME] (max: 20 titles)',
+            arguments: {
+              USERNAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'john',
+              },
+            },
+          },
+          {
+            opcode: 'getProjectID',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'get ID of project titled [TITLE] that is made by [USERNAME]',
+            arguments: {
+              USERNAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'DemonX5',
+              },
+              TITLE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Flappy Bird +',
+              },
+            },
+          },
+          { //The rest of these blocks are made by NexusKitten
             opcode: 'usergrab',
             blockType: Scratch.BlockType.REPORTER,
             text: 'grab [WHAT] count of user [WHO]',
             arguments: {
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'WHAT'
+                menu: 'WHAT',
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'john'
-              }
-            }
+                defaultValue: 'john',
+              },
+            },
           },
           {
             opcode: 'rankusergrab',
@@ -38,13 +131,13 @@
             arguments: {
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'WHAT2'
+                menu: 'WHAT2',
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'john'
-              }
-            }
+                defaultValue: 'john',
+              },
+            },
           },
           {
             opcode: 'usergrab2',
@@ -53,15 +146,14 @@
             arguments: {
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'WHAT5'
+                menu: 'WHAT5',
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'john'
-              }
-            }
+                defaultValue: 'john',
+              },
+            },
           },
-          '---',
           {
             opcode: 'projectgrab',
             blockType: Scratch.BlockType.REPORTER,
@@ -69,13 +161,13 @@
             arguments: {
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'WHAT3'
+                menu: 'WHAT3',
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '717954208'
-              }
-            }
+                defaultValue: '717954208',
+              },
+            },
           },
           {
             opcode: 'rankprojectgrab',
@@ -84,13 +176,13 @@
             arguments: {
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'WHAT4'
+                menu: 'WHAT4',
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '717954208'
-              }
-            }
+                defaultValue: '717954208',
+              },
+            },
           },
           {
             opcode: 'idtoname',
@@ -99,9 +191,9 @@
             arguments: {
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '717954208'
-              }
-            }
+                defaultValue: '717954208',
+              },
+            },
           },
           {
             opcode: 'idtoowner',
@@ -110,35 +202,156 @@
             arguments: {
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '717954208'
-              }
-            }
+                defaultValue: '717954208',
+              },
+            },
           },
         ],
         menus: {
+          MENU: {
+            acceptReporters: true,
+            items: ['original', 'importable'],
+          },
           WHAT: {
             acceptReporters: true,
-            items: ['follower', 'following']
+            items: ['follower', 'following'],
           },
           WHAT2: {
             acceptReporters: true,
-            items: ['follower', 'love', 'favorite', 'view']
+            items: ['follower', 'love', 'favorite', 'view'],
           },
           WHAT3: {
             acceptReporters: true,
-            items: ['love', 'favorite', 'view']
+            items: ['love', 'favorite', 'view'],
           },
           WHAT4: {
             acceptReporters: true,
-            items: ['love', 'favorite', 'view']
+            items: ['love', 'favorite', 'view'],
           },
           WHAT5: {
             acceptReporters: true,
-            items: ['about me', 'wiwo', 'location', 'status']
-          }
-        }
+            items: ['about me', 'wiwo', 'location', 'status'],
+          },
+        },
       };
     }
+
+    async profilePictureGrab(args) {
+      try {
+        if (args.MENU == 'original') {
+          const corsProxy = 'https://corsproxy.io/?';
+          const url = corsProxy + 'https://api.scratch.mit.edu/users/' + args.WHO;
+          const response = await Scratch.fetch(url);
+          const jsonData = await response.json();
+          let fixedJSON = jsonData.profile.images['90x90'];
+          fixedJSON = fixedJSON.replace('cdn2', 'uploads');
+          return fixedJSON;
+        } else if (args.MENU == 'importable') {
+          const corsProxy = 'https://corsproxy.io/?';
+          const url = corsProxy + 'https://api.scratch.mit.edu/users/' + args.WHO;
+          const response = await Scratch.fetch(url);
+          const jsonData = await response.json();
+          let fixedJSON = jsonData.profile.images['90x90'];
+          fixedJSON = 'https://corsproxy.io/?' + fixedJSON.replace('cdn2', 'uploads');
+          return fixedJSON;
+        }
+      } catch (error) {
+        return '';
+      }
+    }
+
+    async isFollowing(args) {
+      try {
+        const corsProxy = 'https://corsproxy.io/?';
+        const followerUrl = corsProxy + 'https://api.scratch.mit.edu/users/' + args.FOLLOWER + '/following';
+        const response = await Scratch.fetch(followerUrl);
+        const followingData = await response.json();
+        const followedUser = args.FOLLOWED.toLowerCase();
+
+        return followingData.some((user) => user.username.toLowerCase() === followedUser);
+      } catch (error) {
+        return false;
+      }
+    }
+
+    async getFollowingUsers(args) {
+      try {
+        const corsProxy = 'https://corsproxy.io/?';
+        const followingUrl = corsProxy + 'https://api.scratch.mit.edu/users/' + args.USERNAME + '/following';
+        const response = await Scratch.fetch(followingUrl);
+        const followingData = await response.json();
+
+        const followingUsers = followingData.slice(0, 20).map((user) => user.username);
+        return followingUsers;
+      } catch (error) {
+        return [];
+      }
+    }
+
+    async getFollowers(args) {
+      try {
+        const corsProxy = 'https://corsproxy.io/?';
+        const followersUrl = corsProxy + 'https://api.scratch.mit.edu/users/' + args.USERNAME + '/followers';
+        const response = await Scratch.fetch(followersUrl);
+        const followersData = await response.json();
+
+        const followers = followersData.slice(0, 20).map((user) => user.username);
+        return followers;
+      } catch (error) {
+        return [];
+      }
+    }
+
+    async recentlySharedProject(args) {
+      try {
+        const corsProxy = 'https://corsproxy.io/?';
+        const projectUrl = corsProxy + 'https://api.scratch.mit.edu/users/' + args.USERNAME + '/projects';
+        const response = await Scratch.fetch(projectUrl);
+        const projectsData = await response.json();
+
+        if (projectsData.length === 0) {
+          return '';
+        }
+
+        const mostRecentProject = projectsData[0];
+        return mostRecentProject.title;
+      } catch (error) {
+        return '';
+      }
+    }
+
+    async getAllProjects(args) {
+      try {
+        const corsProxy = 'https://corsproxy.io/?';
+        const projectUrl = corsProxy + 'https://api.scratch.mit.edu/users/' + args.USERNAME + '/projects';
+        const response = await Scratch.fetch(projectUrl);
+        const projectsData = await response.json();
+
+        const projectTitles = projectsData.map((project) => project.title);
+        return projectTitles;
+      } catch (error) {
+        return [];
+      }
+    }
+
+    async getProjectID(args) {
+      try {
+        const corsProxy = 'https://corsproxy.io/?';
+        const projectUrl = corsProxy + 'https://api.scratch.mit.edu/users/' + args.USERNAME + '/projects';
+        const response = await Scratch.fetch(projectUrl);
+        const projectsData = await response.json();
+
+        const project = projectsData.find((project) => project.title === args.TITLE);
+        if (project) {
+          return project.id;
+        } else {
+          return '';
+        }
+      } catch (error) {
+        return '';
+      }
+    }
+
     async usergrab(args) {
       try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/user/info/' + args.WHO);
@@ -150,13 +363,14 @@
         } else {
           return '';
         }
-      } catch (error){
+      } catch (error) {
         return '';
       }
     }
+
     async rankusergrab(args) {
       try {
-      const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/user/info/' + args.WHO);
+        const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/user/info/' + args.WHO);
         const jsonData = await response.json();
         if (args.WHAT === 'follower') {
           return jsonData.statistics.ranks.followers;
@@ -169,10 +383,11 @@
         } else {
           return '';
         }
-      } catch (error){
+      } catch (error) {
         return '';
       }
     }
+
     async usergrab2(args) {
       try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/user/info/' + args.WHO);
@@ -188,10 +403,11 @@
         } else {
           return '';
         }
-      } catch (error){
+      } catch (error) {
         return '';
       }
     }
+
     async projectgrab(args) {
       try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/project/info/' + args.WHO);
@@ -205,10 +421,11 @@
         } else {
           return '';
         }
-      } catch (error){
+      } catch (error) {
         return '';
       }
     }
+
     async rankprojectgrab(args) {
       try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/project/info/' + args.WHO);
@@ -222,28 +439,31 @@
         } else {
           return '';
         }
-      } catch (error){
+      } catch (error) {
         return '';
       }
     }
+
     async idtoname(args) {
       try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/project/info/' + args.WHO);
         const jsonData = await response.json();
         return jsonData.title;
-      } catch (error){
+      } catch (error) {
         return '';
       }
     }
+
     async idtoowner(args) {
       try {
         const response = await Scratch.fetch('https://scratchdb.lefty.one/v3/project/info/' + args.WHO);
         const jsonData = await response.json();
         return jsonData.username;
-      } catch (error){
+      } catch (error) {
         return '';
       }
     }
   }
+
   Scratch.extensions.register(new nexuskittensgrab());
 })(Scratch);
