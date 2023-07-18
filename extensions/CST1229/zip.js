@@ -824,7 +824,7 @@
       try {
         let newPath = this.normalize(this.zipPath, DIR);
         if (!newPath.endsWith("/")) newPath += "/";
-        if (!this.getObj(newPath)) return;
+        if (!this.getObj(newPath) && newPath !== "/") return;
         this.zipPath = newPath;
       } catch (e) {
         console.error(`Error going to directory ${DIR}:`, e);
