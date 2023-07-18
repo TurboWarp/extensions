@@ -18,12 +18,12 @@
     return util.runtime.getSpriteTargetByName(nameString);
   };
 
-  class SoundPlus {
+  class SoundExpanded {
     getInfo() {
       return {
-        id: 'lmsSoundPlus',
+        id: 'lmsSoundExpanded',
         color1: "#CF63CF",
-        name: "Sound Plus",
+        name: "Sound Expanded",
         blocks: [
           {
             opcode: 'startSoundOnLoop',
@@ -346,5 +346,5 @@
     }
   }
 
-  Scratch.extensions.register(new SoundPlus());
+  Scratch.extensions.register(new SoundExpanded());
 })(Scratch);
