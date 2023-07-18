@@ -78,7 +78,7 @@
           {
             opcode: 'startLooping',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'start looping [SOUND]',
+            text: 'begin looping [SOUND]',
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND
@@ -88,7 +88,7 @@
           {
             opcode: 'stopLooping',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'stop looping [SOUND]',
+            text: 'end looping [SOUND]',
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND
