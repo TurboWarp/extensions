@@ -201,6 +201,7 @@
       }
 
       const skinId = await this._createURLSkin(url);
+      if (skinId < 0) return;
       createdSkins[skinName] = skinId;
 
       if (oldSkinId) {
@@ -219,6 +220,7 @@
       }
 
       const skinId = await this._createURLSkin(url);
+      if (skinId < 0) return;
       createdSkins[skinName] = skinId;
 
       if (oldSkinId) {
@@ -318,6 +320,8 @@
     }
 
     async _createURLSkin (URL) {
+      if (!Scratch.canFetch) return -1;
+      // eslint-disable-next-line no-restricted-syntax
       const imageData = await Scratch.fetch(URL);
       const contentType = imageData.headers.get("Content-Type");
       if (contentType === 'image/svg+xml') {
@@ -348,11 +352,7 @@
           });
         }
       }
-      if (spriteNames.length > 0) {
-        return spriteNames;
-      } else {
-        return [{text: "", value: 0}]; //this should never happen but it's a failsafe
-      }
+      return spriteNames;
     }
 
   }
