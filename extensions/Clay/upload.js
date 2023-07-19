@@ -1,9 +1,9 @@
 (function(Scratch) {
     'use strict';
-    
+
     const getGofileServer = async () => {
         try {
-            const response = await fetch('https://api.gofile.io/getServer');
+            const response = await Scratch.fetch('https://api.gofile.io/getServer');
             if (!response.ok) {
                 throw new Error('HTTP error ' + response.status);
             }
@@ -13,7 +13,7 @@
             console.error('Failed to fetch Gofile server: ', error);
         }
     }
-    
+
     class Upload {
         getInfo() {
             return {
@@ -29,10 +29,10 @@
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "https://store1.gofile.io/uploadFile",
                             },
-                        }
+                        },
                     },
                     {
-                        opcode: "uploadToGofile",
+                        opcode: "uploadToWebsite",
                         blockType: Scratch.BlockType.REPORTER,
                         text: "upload file to [url]",
                         arguments: {
@@ -47,24 +47,30 @@
                 menus: {
                     websites: {
                         acceptReporters: false,
-                        items: ["gofile.io"]
+                        items: ["gofile.io", "file.io"]
                     }
                 }
             };
         }
 
         upload(args) {
-            return this.performUpload(args.url);
+            return this.performUpload(args.url, true);
         }
 
-        async uploadToGofile(args) {
-            if (args.url.toLowerCase() === 'gofile.io') {
-                args.url = await getGofileServer();
+        async uploadToWebsite(args) {
+            let url;
+            switch(args.url.toLowerCase()){
+                case 'gofile.io':
+                    url = await getGofileServer();
+                    break;
+                case 'file.io':
+                    url = 'https://file.io/';
+                    break;
             }
-            return this.performUpload(args.url);
+            return this.performUpload(url, false);
         }
 
-        performUpload(url) {
+        performUpload(url, rawJson = false) {
             return new Promise((resolve, reject) => {
                 const inputElement = document.createElement("input");
                 inputElement.type = "file";
@@ -84,17 +90,17 @@
                             mode: 'cors',
                         };
 
-                        // @ts-ignore
                         Scratch.fetch(url, options)
                             .then(response => {
                                 if (response.ok) {
-                                    return response.text();
+                                    return response.json();
                                 } else {
                                     throw new Error("Upload failed");
                                 }
                             })
-                            .then(text => {
-                                resolve(text);
+                            .then(data => {
+                                const result = rawJson ? JSON.stringify(data) : data.link || data.data.downloadPage;
+                                resolve(result);
                                 inputElement.remove();
                             })
                             .catch(error => {
