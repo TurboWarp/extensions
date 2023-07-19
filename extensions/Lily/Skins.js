@@ -20,10 +20,6 @@
             blockType: Scratch.BlockType.COMMAND,
             text: 'create SVG skin [SVG] as [NAME]',
             arguments: {
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'contentType'
-              },
               SVG: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: '<svg />'
@@ -153,19 +149,6 @@
           targetMenu: {
             acceptReporters: true,
             items: '_getTargets'
-          },
-          // Attributes have acceptReporters: false
-          contentType: {
-            acceptReporters: false,
-            items: ['SVG', 'dataURI']
-          },
-          skinSetAttributes: {
-            acceptReporters: false,
-            items: ['width', 'height', 'rotation center x', 'rotation center y']
-          },
-          skinGetAttributes: {
-            acceptReporters: false,
-            items: ['dataURI', 'width', 'height', 'format', 'rotation center x', 'rotation center y']
           }
         }
       };
@@ -348,11 +331,7 @@
           });
         }
       }
-      if (spriteNames.length > 0) {
-        return spriteNames;
-      } else {
-        return [{text: "", value: 0}]; //this should never happen but it's a failsafe
-      }
+      return spriteNames;
     }
 
   }
