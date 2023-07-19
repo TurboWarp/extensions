@@ -5,8 +5,6 @@
   const vm = Scratch.vm;
   const runtime = Scratch.vm.runtime;
   const ArgumentType = Scratch.ArgumentType;
-  ArgumentType.VARIABLE = 'variable';
-
   /* Credit to skyhigh173 for the idea of this */
   const label = (name, hidden) => ({
     blockType: Scratch.BlockType.LABEL,
@@ -63,9 +61,8 @@
                 defaultValue: '3'
               },
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           },
@@ -79,9 +76,8 @@
                 defaultValue: 'thing'
               },
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           },
@@ -99,9 +95,8 @@
                 defaultValue: 'banana'
               },
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           },
@@ -111,14 +106,12 @@
             text: 'repeat [LIST1] [NUM] times in [LIST2]',
             arguments: {
               LIST1: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               },
               LIST2: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               },
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -136,9 +129,8 @@
             disableMonitor: true,
             arguments: {
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               },
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -157,9 +149,8 @@
                 defaultValue: 'thing'
               },
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           },
@@ -178,9 +169,8 @@
                 defaultValue: 'thing'
               },
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           },
@@ -194,9 +184,8 @@
             disableMonitor: true,
             arguments: {
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           },
@@ -211,9 +200,8 @@
                 defaultValue: '1'
               },
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           },
@@ -224,9 +212,8 @@
             disableMonitor: true,
             arguments: {
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               },
               ORDER: {
                 type: Scratch.ArgumentType.STRING,
@@ -244,9 +231,8 @@
             disableMonitor: true,
             arguments: {
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               },
               ORDER: {
                 type: Scratch.ArgumentType.STRING,
@@ -261,14 +247,12 @@
             text: 'set items of [LIST1] to [LIST2]',
             arguments: {
               LIST1: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               },
               LIST2: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           },
@@ -278,14 +262,12 @@
             text: 'merge [LIST1] onto [LIST2]',
             arguments: {
               LIST1: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               },
               LIST2: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           },
@@ -339,9 +321,8 @@
             disableMonitor: true,
             arguments: {
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               },
               ARRAY: {
                 type: Scratch.ArgumentType.STRING,
@@ -356,9 +337,8 @@
             disableMonitor: true,
             arguments: {
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           }
@@ -431,6 +411,10 @@
                 value: 'random'
               }
             ]
+          },
+          lists: {
+            acceptReporters: true,
+            items: '_getLists'
           }
         }
       };
@@ -645,27 +629,21 @@
       if (!list) return '';
       return JSON.stringify(list.value);
     }
-  }
 
-  // From Xeltalliv's example:
-  // https://github.com/Xeltalliv/extensions/blob/examples/examples/other-default-field-types.js
-
-  const cp = runtime._convertPlaceholders.bind(runtime);
-  runtime._convertPlaceholders = function(context, match, placeholder) {
-    const retVal = cp(context, match, placeholder);
-
-    const argInfo = context.blockInfo.arguments[placeholder] || {};
-    const argsName = `args${context.outLineNum}`;
-    const blockArgs = context.blockJSON[argsName];
-    const argJSON = blockArgs[blockArgs.length - 1];
-
-    if (argInfo.type === ArgumentType.VARIABLE) {
-      argJSON.type = 'field_variable';
-      argJSON.variableTypes = [argInfo.variableType ?? ''];
-      if (argInfo.variable) argJSON.variable = argInfo.variable;
+    _getLists() {
+      // @ts-expect-error - Blockly not typed yet
+      // eslint-disable-next-line no-undef
+      const lists = typeof Blockly === 'undefined' ? [] : Blockly.getMainWorkspace()
+        .getVariableMap()
+        .getVariablesOfType('list')
+        .map(model => (model.name));
+      console.log(lists);
+      if (lists.length > 0) {
+        return lists;
+      } else {
+        return [''];
+      }
     }
-    return retVal;
-  };
-
+  }
   Scratch.extensions.register(new Data());
 })(Scratch);
