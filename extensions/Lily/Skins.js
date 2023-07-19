@@ -127,46 +127,7 @@
                 menu: 'targetMenu'
               }
             }
-          },
-
-          '---',
-
-          /*
-          {
-            opcode: 'setAttributeOfSkin',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'set [ATTRIBUTE] of skin [NAME] to [VALUE]',
-            arguments: {
-              ATTRIBUTE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'skinSetAttributes'
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my skin'
-              },
-              VALUE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 88
-              }
-            }
-          },
-          {
-            opcode: 'getAttributeOfSkin',
-            blockType: Scratch.BlockType.REPORTER,
-            text: '[ATTRIBUTE] of skin [NAME]',
-            arguments: {
-              ATTRIBUTE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'skinGetAttributes'
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my skin'
-              }
-            }
-          },
-          */
+          }
 
           '---',
 
@@ -295,42 +256,6 @@
       const skinName = this._getSkinNameFromID(skinId);
       return (skinName) ? skinName : '';
     }
-
-    /*
-    setAttributeOfSkin (args, util) {
-      const skinName = args.NAME;
-      const value = Cast.toNumber(args.VALUE);
-      const attribute = args.ATTRIBUTE;
-      if (!createdSkins[skinName]) return '';
-      
-      const skinId = createdSkins[skinName];
-      const skin = renderer._allSkins[skinId];
-
-      if (attribute === 'width') (skin._size) ? skin._size[0] = value : skin._textureSize[0] = value;
-      if (attribute === 'height') (skin._size) ? skin._size[1] = value : skin._textureSize[1] = value;
-      if (attribute === 'rotation center x') skin._rotationCenter[0] = value;
-      if (attribute === 'rotation center y') skin._rotationCenter[1] = value;
-
-      this._refreshTargetsFromID(skinId);
-    }
-
-    getAttributeOfSkin (args, util) {
-      const skinName = args.NAME;
-      if (!createdSkins[skinName]) return '';
-      
-      const skinID = createdSkins[skinName];
-      const skin = renderer._allSkins[skinID];
-
-      switch(args.ATTRIBUTE) {
-        case ('dataURI'): return (skin._svgImage) ? skin._svgImage.src : '';
-        case ('width'): return Math.ceil(skin.size[0]);
-        case ('height'): return Math.ceil(skin.size[1]);
-        case ('rotation center x'): return Math.ceil(skin.rotationCenter[0]);
-        case ('rotation center y'): return Math.ceil(skin.rotationCenter[1]);
-        default: return '';
-      }
-    }
-    */
 
     deleteSkin (args, util) {
       const skinName = args.NAME;
