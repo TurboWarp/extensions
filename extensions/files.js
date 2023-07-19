@@ -165,19 +165,56 @@
   });
 
   /**
-   * @param {string} text Text to download
-   * @param {string} file Name of the file
+   * @param {string} url a data:, blob:, or same-origin URL
+   * @param {string} file
    */
-  const download = (text, file) => {
-    const blob = new Blob([text]);
-    const url = URL.createObjectURL(blob);
+  const downloadURL = (url, file) => {
     const link = document.createElement('a');
     link.href = url;
     link.download = file;
     document.body.appendChild(link);
     link.click();
     link.remove();
+  };
+
+  /**
+   * @param {Blob} blob Data to download
+   * @param {string} file Name of the file
+   */
+  const downloadBlob = (blob, file) => {
+    const url = URL.createObjectURL(blob);
+    downloadURL(url, file);
     URL.revokeObjectURL(url);
+  };
+
+  /**
+   * @param {string} url
+   * @returns {boolean}
+   */
+  const isDataURL = (url) => {
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === 'data:';
+    } catch (e) {
+      return false;
+    }
+  };
+
+  /**
+   * @param {string} url
+   * @param {string} file
+   */
+  const downloadUntrustedURL = (url, file) => {
+    // Don't want to return a Promise here when not actually needed
+    if (isDataURL(url)) {
+      downloadURL(url, file);
+    } else {
+      return Scratch.fetch(url)
+        .then(res => res.blob())
+        .then(blob => {
+          downloadBlob(blob, file);
+        });
+    }
   };
 
   class Files {
@@ -254,6 +291,24 @@
             }
           },
           {
+            opcode: 'downloadURL',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'download URL [url] as [file]',
+            arguments: {
+              url: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'data:text/plain;base64,SGVsbG8sIHdvcmxkIQ=='
+              },
+              file: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'save.txt'
+              }
+            }
+          },
+
+          '---',
+
+          {
             opcode: 'setOpenMode',
             blockType: Scratch.BlockType.COMMAND,
             text: 'set open file selector mode to [mode]',
@@ -314,7 +369,11 @@
     }
 
     download (args) {
-      download(args.text, args.file);
+      downloadBlob(new Blob([Scratch.Cast.toString(args.text)]), Scratch.Cast.toString(args.file));
+    }
+
+    downloadURL (args) {
+      return downloadUntrustedURL(Scratch.Cast.toString(args.url), Scratch.Cast.toString(args.file));
     }
 
     setOpenMode (args) {
