@@ -4,19 +4,11 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const renderer = runtime.renderer;
+  const Cast = Scratch.Cast;
 
   var createdSkins = [];
 
   class Skins {
-    constructor() {
-      runtime.on('PROJECT_START', () => {
-        this._refreshTargets();
-      });
-
-      runtime.on('PROJECT_STOP_ALL', () => {
-        this._refreshTargets();
-      });
-    }
     getInfo() {
       return {
         id: 'lmsSkins',
@@ -139,6 +131,45 @@
 
           '---',
 
+          /*
+          {
+            opcode: 'setAttributeOfSkin',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set [ATTRIBUTE] of skin [NAME] to [VALUE]',
+            arguments: {
+              ATTRIBUTE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'skinSetAttributes'
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'my skin'
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 88
+              }
+            }
+          },
+          {
+            opcode: 'getAttributeOfSkin',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[ATTRIBUTE] of skin [NAME]',
+            arguments: {
+              ATTRIBUTE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'skinGetAttributes'
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'my skin'
+              }
+            }
+          },
+          */
+
+          '---',
+
           {
             opcode: 'deleteSkin',
             blockType: Scratch.BlockType.COMMAND,
@@ -166,6 +197,14 @@
           contentType: {
             acceptReporters: false,
             items: ['SVG', 'dataURI']
+          },
+          skinSetAttributes: {
+            acceptReporters: false,
+            items: ['width', 'height', 'rotation center x', 'rotation center y']
+          },
+          skinGetAttributes: {
+            acceptReporters: false,
+            items: ['dataURI', 'width', 'height', 'format', 'rotation center x', 'rotation center y']
           }
         }
       };
@@ -201,7 +240,6 @@
       }
 
       const skinId = await this._createURLSkin(url);
-      if (skinId < 0) return;
       createdSkins[skinName] = skinId;
 
       if (oldSkinId) {
@@ -220,7 +258,6 @@
       }
 
       const skinId = await this._createURLSkin(url);
-      if (skinId < 0) return;
       createdSkins[skinName] = skinId;
 
       if (oldSkinId) {
@@ -259,6 +296,42 @@
       return (skinName) ? skinName : '';
     }
 
+    /*
+    setAttributeOfSkin (args, util) {
+      const skinName = args.NAME;
+      const value = Cast.toNumber(args.VALUE);
+      const attribute = args.ATTRIBUTE;
+      if (!createdSkins[skinName]) return '';
+      
+      const skinId = createdSkins[skinName];
+      const skin = renderer._allSkins[skinId];
+
+      if (attribute === 'width') (skin._size) ? skin._size[0] = value : skin._textureSize[0] = value;
+      if (attribute === 'height') (skin._size) ? skin._size[1] = value : skin._textureSize[1] = value;
+      if (attribute === 'rotation center x') skin._rotationCenter[0] = value;
+      if (attribute === 'rotation center y') skin._rotationCenter[1] = value;
+
+      this._refreshTargetsFromID(skinId);
+    }
+
+    getAttributeOfSkin (args, util) {
+      const skinName = args.NAME;
+      if (!createdSkins[skinName]) return '';
+      
+      const skinID = createdSkins[skinName];
+      const skin = renderer._allSkins[skinID];
+
+      switch(args.ATTRIBUTE) {
+        case ('dataURI'): return (skin._svgImage) ? skin._svgImage.src : '';
+        case ('width'): return Math.ceil(skin.size[0]);
+        case ('height'): return Math.ceil(skin.size[1]);
+        case ('rotation center x'): return Math.ceil(skin.rotationCenter[0]);
+        case ('rotation center y'): return Math.ceil(skin.rotationCenter[1]);
+        default: return '';
+      }
+    }
+    */
+
     deleteSkin (args, util) {
       const skinName = args.NAME;
       if (!createdSkins[skinName]) return;
@@ -271,7 +344,7 @@
 
     deleteAllSkins (args, util) {
       this._refreshTargets();
-      for (let i = 0; i > createdSkins.length; i++) renderer.destroySkin(createdSkins[i]);
+      for (let i = 0; i < createdSkins.length; i++) renderer.destroySkin(createdSkins[i]);
       createdSkins = [];
     }
 
@@ -320,8 +393,6 @@
     }
 
     async _createURLSkin (URL) {
-      if (!Scratch.canFetch) return -1;
-      // eslint-disable-next-line no-restricted-syntax
       const imageData = await Scratch.fetch(URL);
       const contentType = imageData.headers.get("Content-Type");
       if (contentType === 'image/svg+xml') {
@@ -352,7 +423,11 @@
           });
         }
       }
-      return spriteNames;
+      if (spriteNames.length > 0) {
+        return spriteNames;
+      } else {
+        return [{text: "", value: 0}]; //this should never happen but it's a failsafe
+      }
     }
 
   }
