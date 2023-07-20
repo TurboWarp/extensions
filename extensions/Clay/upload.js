@@ -12,7 +12,7 @@
         } catch (error) {
             console.error('Failed to fetch Gofile server: ', error);
         }
-    }
+    };
 
     class Upload {
         getInfo() {
@@ -59,7 +59,7 @@
 
         async uploadToWebsite(args) {
             let url;
-            switch(args.url.toLowerCase()){
+            switch (args.url.toLowerCase()){
                 case 'gofile.io':
                     url = await getGofileServer();
                     break;
