@@ -637,7 +637,6 @@
         .getVariableMap()
         .getVariablesOfType('list')
         .map(model => (model.name));
-      console.log(lists);
       if (lists.length > 0) {
         return lists;
       } else {
