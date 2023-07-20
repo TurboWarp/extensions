@@ -50,9 +50,25 @@
                         }
                     },
                     {
+                        opcode: 'tweenBlock',
+                        text: 'tween [VAR] from [START] to [END] over [SEC] seconds using [MODE] ease [DIRECTION]',
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            VAR: { type: ArgumentType.STRING, menu: 'vars' },
+                            START: { type: ArgumentType.NUMBER, defaultValue: 0 },
+                            END: { type: ArgumentType.NUMBER, defaultValue: 100 },
+                            SEC: { type: ArgumentType.NUMBER, defaultValue: 1 },
+                            MODE: { type: ArgumentType.STRING, menu: 'modes' },
+                            DIRECTION: { type: ArgumentType.STRING, menu: 'direction' },
+                        }
+                    },
+                    // old version of PR had this
+                    // just want to be safe
+                    {
                         opcode: 'tweenBlockAsync',
                         text: 'tween [VAR] from [START] to [END] over [SEC] seconds using [MODE] ease [DIRECTION]',
                         blockType: BlockType.COMMAND,
+                        hideFromPalette: true,
                         arguments: {
                             VAR: { type: ArgumentType.STRING, menu: 'vars' },
                             START: { type: ArgumentType.NUMBER, defaultValue: 0 },
@@ -167,10 +183,10 @@
             return this.multiplierToNormalNumber(tweened, start, end);
         }
         tweenBlockAsync(...args) {
-            // just dont return the promise
+            // "redirect" to new block
             this.tweenBlock(...args);
         }
-        async tweenBlock(args, util) {
+        tweenBlock(args, util) {
             const easeMethod = Cast.toString(args.MODE);
             const easeDirection = Cast.toString(args.DIRECTION);
 
@@ -193,19 +209,40 @@
 
             // start tweening
             const fpsDifference = Scratch.vm.runtime.frameLoop.framerate / 30;
-            const stepCount = Math.floor((30 * seconds) * fpsDifference);
-            for (let i = 0; i < stepCount; i++) {
-                const progress = (i / (stepCount - 1));
-                const tween = this[easeMethod](progress, easeDirection);
-                const value = this.multiplierToNormalNumber(tween, start, end);
-                this.setRealMenuOptionValue(option, value, util);
-                await this.nextStep();
-            }
+            let stepCount = Math.floor((30 * seconds) * fpsDifference);
+            let lastFps = Scratch.vm.runtime.frameLoop.framerate;
+            let startingIdx = 0;
 
-            // go to end
-            const endingTween = this[easeMethod](1, easeDirection);
-            const endingValue = this.multiplierToNormalNumber(endingTween, start, end);
-            this.setRealMenuOptionValue(option, endingValue, util);
+            // loop
+            const recursiveLoop = async () => {
+                for (let i = startingIdx; i < stepCount; i++) {
+                    // make sure fps isnt different
+                    // if it is, redo the loop
+                    const currentFps = Scratch.vm.runtime.frameLoop.framerate;
+                    if (currentFps !== lastFps) {
+                        // fps has updated
+                        const fpsDifference = Scratch.vm.runtime.frameLoop.framerate / 30;
+                        const newStepCount = Math.floor((30 * seconds) * fpsDifference);
+                        const newIndex = (i / stepCount) * newStepCount;
+                        stepCount = newStepCount;
+                        startingIdx = Math.round(newIndex);
+                        lastFps = currentFps;
+                        return recursiveLoop();
+                    }
+                    // update
+                    const progress = (i / (stepCount - 1));
+                    const tween = this[easeMethod](progress, easeDirection);
+                    const value = this.multiplierToNormalNumber(tween, start, end);
+                    this.setRealMenuOptionValue(option, value, util);
+                    await this.nextStep();
+                }
+
+                // go to end
+                const endingTween = this[easeMethod](1, easeDirection);
+                const endingValue = this.multiplierToNormalNumber(endingTween, start, end);
+                this.setRealMenuOptionValue(option, endingValue, util);
+            };
+            recursiveLoop();
         }
 
         // easing functions (placed below blocks for organization)
