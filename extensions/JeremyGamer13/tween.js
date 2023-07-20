@@ -19,6 +19,17 @@
     const ArgumentType = Scratch.ArgumentType;
     const Cast = Scratch.Cast;
 
+    // simply not precise enough
+    // wait block ends before tween finishes
+    // so we use steps instead
+    // const delay = (ms) => {
+    //     return new Promise((resolve) => {
+    //         setTimeout(() => {
+    //             resolve();
+    //         }, ms);
+    //     });
+    // };
+
     class Tween {
         getInfo() {
             return {
@@ -37,9 +48,23 @@
                             END: { type: ArgumentType.NUMBER, defaultValue: 100 },
                             AMOUNT: { type: ArgumentType.NUMBER, defaultValue: 50 },
                         }
+                    },
+                    {
+                        opcode: 'tweenBlockAsync',
+                        text: 'tween [VAR] from [START] to [END] over [SEC] seconds using [MODE] ease [DIRECTION]',
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            VAR: { type: ArgumentType.STRING, menu: 'vars' },
+                            START: { type: ArgumentType.NUMBER, defaultValue: 0 },
+                            END: { type: ArgumentType.NUMBER, defaultValue: 100 },
+                            SEC: { type: ArgumentType.NUMBER, defaultValue: 1 },
+                            MODE: { type: ArgumentType.STRING, menu: 'modes' },
+                            DIRECTION: { type: ArgumentType.STRING, menu: 'direction' },
+                        }
                     }
                 ],
                 menus: {
+                    vars: 'getVariables',
                     modes: {
                         acceptReporters: true,
                         items: EasingMethods.map(item => ({ text: item, value: item }))
@@ -56,11 +81,71 @@
             };
         }
 
+        // menus
+        getVariables() {
+            const emptyMenu = [{ text: '', value: '' }];
+            // get targets to look through
+            // we can use editingTarget since menus are only opened in the editor
+            const stage = Scratch.vm.runtime.getTargetForStage();
+            const target = Scratch.vm.editingTarget;
+
+            const stageVariables = Object.values(stage.variables);
+            const targetVariables = Object.values(target.variables);
+            const allVariables = [].concat(stageVariables, targetVariables);
+
+            // add to list
+            const menu = [];
+            for (const variable of allVariables) {
+                menu.push({ text: variable.name, value: variable.id });
+            }
+
+            // return empty menu if we found no variables
+            if (menu.length <= 0) {
+                return emptyMenu;
+            }
+
+            return menu;
+        }
+
+        // internal tools
+        _stepListeners = [];
+        _attachOneTimeStepListener(cb) {
+            this._stepListeners.push(cb);
+        }
+        _onStep() {
+            for (const callback of this._stepListeners) {
+                callback();
+            }
+        }
+
+        // extra class functions
+        nextStep() {
+            return new Promise((resolve) => {
+                this._attachOneTimeStepListener(() => {
+                    resolve();
+                });
+            });
+        }
+
         // utilities
         multiplierToNormalNumber(mul, start, end) {
             const multiplier = end - start;
             const result = (mul * multiplier) + start;
             return result;
+        }
+        setRealMenuOptionValue(option, newValue, util) {
+            const variableId = Cast.toString(option);
+
+            const currentTarget = util.target;
+            const stageTarget = Scratch.vm.runtime.getTargetForStage();
+
+            let variable = stageTarget.lookupVariableById(variableId);
+            if (!variable) {
+                variable = currentTarget.lookupVariableById(variableId);
+            }
+            if (!variable) return;
+
+            variable.value = newValue;
         }
 
         // blocks
@@ -80,6 +165,47 @@
 
             const tweened = this[easeMethod](progress, easeDirection);
             return this.multiplierToNormalNumber(tweened, start, end);
+        }
+        tweenBlockAsync(...args) {
+            // just dont return the promise
+            this.tweenBlock(...args);
+        }
+        async tweenBlock(args, util) {
+            const easeMethod = Cast.toString(args.MODE);
+            const easeDirection = Cast.toString(args.DIRECTION);
+
+            const option = Cast.toString(args.VAR);
+
+            const start = Cast.toNumber(args.START);
+            const end = Cast.toNumber(args.END);
+
+            const seconds = Cast.toNumber(args.SEC);
+
+            // easing method does not exist, return starting number
+            if (!EasingMethods.includes(easeMethod)) return start;
+            // easing method is not implemented, return starting number
+            if (!this[easeMethod]) return start;
+
+            // go to start
+            const startingTween = this[easeMethod](0, easeDirection);
+            const startingValue = this.multiplierToNormalNumber(startingTween, start, end);
+            this.setRealMenuOptionValue(option, startingValue, util);
+
+            // start tweening
+            const fpsDifference = Scratch.vm.runtime.frameLoop.framerate / 30;
+            const stepCount = Math.floor((30 * seconds) * fpsDifference);
+            for (let i = 0; i < stepCount; i++) {
+                const progress = (i / (stepCount - 1));
+                const tween = this[easeMethod](progress, easeDirection);
+                const value = this.multiplierToNormalNumber(tween, start, end);
+                this.setRealMenuOptionValue(option, value, util);
+                await this.nextStep();
+            }
+
+            // go to end
+            const endingTween = this[easeMethod](1, easeDirection);
+            const endingValue = this.multiplierToNormalNumber(endingTween, start, end);
+            this.setRealMenuOptionValue(option, endingValue, util);
         }
 
         // easing functions (placed below blocks for organization)
@@ -300,5 +426,11 @@
         }
     }
 
-    Scratch.extensions.register(new Tween());
+    const instance = new Tween();
+    const oldStep = Scratch.vm.runtime._step;
+    Scratch.vm.runtime._step = function (...args) {
+        oldStep.call(this, ...args);
+        instance._onStep();
+    };
+    Scratch.extensions.register(instance);
 })(Scratch);
