@@ -234,7 +234,7 @@
                                 defaultValue: 'Title',
                             },
                             C: {
-                                type: Scratch.ArgumentType.STRING,
+                                type: Scratch.ArgumentType.COLOR,
                                 defaultValue: '#FFFFFF',
                             },
                         },
