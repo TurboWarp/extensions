@@ -1,15 +1,12 @@
-/*
-Experimental extension for Scratch.
-*/
 (function (Scratch) {
+  'use strict';
+
+  // TODO: Object.create(null)
+  let contexList = [];
+  let contextBindings = {};
+  let assetSourceList = {};
+
   class AudioStream {
-    constructor() {
-      this.runtime = Scratch.vm.runtime;
-      this.vm = Scratch.vm;
-      this.contextList = [];
-      this.contextBindings = {};
-      this.assetSourceList = {};
-    }
     getInfo() {
       return {
         id: 'audiostr',
@@ -349,48 +346,62 @@ Experimental extension for Scratch.
         }
       };
     }
+
     getProjectSounds() {
-      let sounds = this.vm.runtime.targets.map(s => s.sprite.sounds.map(a => {
-        a.spriteName = s.sprite.name; return a;
-      })).flat(1).map(s=>{
-        return {text: s.spriteName + ' - ' + s.name,value: s.assetId};
-      });
-      return sounds?.length ? sounds : [{ text: 'empty', value: 'empty' }];
+      const sounds = Scratch.vm.runtime.targets
+        .filter(s => s.isOriginal)
+        .map(s => s.sprite.sounds.map(snd => ({
+          text: `${s.sprite.name} - ${snd.name}`,
+          value: snd.assetId
+        })))
+        .flat();
+      return sounds.length ? sounds : [{ text: 'empty', value: 'empty' }];
     }
+
     getSprites(){
-      return this.vm.runtime.targets.map(s=>{
-        return {text: s.sprite.name,value: s.id};
-      }).flat(1);
+      return Scratch.vm.runtime.targets
+        .filter(s => s.isOriginal)
+        .map(s => ({
+          text: s.sprite.name,
+          value: s.id
+        }));
     }
-    //the 'am' prefix is a remenant from the original (sandboxed) extension 'AudioManager' made by me some time back, that i based this enhanced version off.
-    getContext(id,opt){
-      if (this.contextBindings[id] && id != this.contextBindings[id]) return this.getContext(this.contextBindings[id],opt);
-      return this.contextList.find(c=>c.id == id) || (()=>{
-        return this.newContext(id,opt);
-      })();
+
+    // the 'am' prefix is a remenant from the original (sandboxed) extension 'AudioManager' made by me some time back, that i based this enhanced version off.
+
+    getContext(id, opt){
+      // TODO: infinite recursion
+      if (contextBindings[id] && id !== contextBindings[id]) {
+        return this.getContext(contextBindings[id], opt);
+      }
+      const foundContext = contexList.find(c => c.id === id);
+      if (foundContext) {
+        return foundContext;
+      }
+      return this.newContext(id, opt);
     }
-    getEditingContext(){}
-    newContext(id,opt){
+
+    newContext(id, opt){
       if (!opt) opt = {};
       let ctx = {
-        id: id || this.contextList.length,
+        id: id || contexList.length,
         isSimple: !!opt?.simple,
         source: document.createElement('audio'),
         effects: {},
         filters: {},
         volume: 1
       };
-      if (opt?.src)ctx.source.src = opt.src;
+      if (opt?.src) ctx.source.src = opt.src;
       ctx.source.crossOrigin = 'anonymous';
       ctx.source.preservesPitch = false;
       ctx.source.id = 'AudioStreamSource_' + id;
       document.body.appendChild(ctx.source);
       if (!opt?.simple){
-        ctx.audio = new(window.AudioContext || window.webkitAudioContext)();
+        ctx.audio = new AudioContext();
         ctx.track = ctx.audio.createMediaElementSource(ctx.source);
         ctx.effects.gain = ctx.audio.createGain();
         ctx.effects.panner = new StereoPannerNode(ctx.audio,{pan: 0});
-        ['lowpass','highpass','bandpass','lowshelf','highshelf','peaking','notch','allpass'].forEach(f=>{
+        ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'].forEach(f => {
           let bf = ctx.audio.createBiquadFilter();
           bf.type = f;
           ctx.filters[f] = bf;
@@ -400,63 +411,67 @@ Experimental extension for Scratch.
         ctx.dataArray = new Uint8Array(ctx.analyser.frequencyBinCount);
         ctx.track.connect(ctx.effects.gain).connect(ctx.effects.panner).connect(ctx.analyser).connect(ctx.audio.destination);
       }
-      this.contextList.push(ctx);
+      contexList.push(ctx);
       return ctx;
     }
-    am_usecontext({SPRITE},u){
-      this.contextBindings[u.target.id] = SPRITE;
-      console.log(this.contextBindings);
+
+    am_usecontext({SPRITE},util){
+      contextBindings[util.target.id] = SPRITE;
+      console.log(contextBindings);
     }
-    // am_unbind({},u){
-    //  this.contextBindings[u.target.id]=u.target.id;
-    // }
-    am_loadasset({SRC},u){
-      let ctx = (!u?.source?.id) ? this.getContext(u.target.id) : u;
-      if (this.assetSourceList[SRC]){
-        ctx.source.src = this.assetSourceList[SRC];return;
+
+    am_loadasset({SRC}, util){
+      let ctx = (!util?.source?.id) ? this.getContext(util.target.id) : util;
+      if (assetSourceList[SRC]){
+        ctx.source.src = assetSourceList[SRC];
+        return;
       }
-      let asset = vm.assets.find(e=>e.assetId == SRC);
+      let asset = Scratch.vm.assets.find(e => e.assetId === SRC);
       if (!asset){
         console.log('[AudioStream] Media error: ',asset);return;
       }
-      let src = URL.createObjectURL(new Blob([asset.data],{'type': asset.assetType.contentType}));
+      let src = URL.createObjectURL(new Blob([asset.data], {'type': asset.assetType.contentType}));
       ctx.source.src = src;
-      this.assetSourceList[SRC] = src;
-      console.log(this.assetSourceList);
+      assetSourceList[SRC] = src;
+      console.log(assetSourceList);
     }
-    am_playfromurl({URL},u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_playfromurl({URL},util) {
+      let ctx = this.getContext(util.target.id);
       ctx.source.src = URL;
     }
-    am_isloaded(){
-      return;
-    }
-    am_stopthis({},u){
-      let ctx = this.getContext(u.target.id);
+
+    am_stopthis(args, util){
+      let ctx = this.getContext(util.target.id);
       ctx.source.currentTime = 9e20;
     }
+
     am_stophim({SPRITE}){
       let ctx = this.getContext(SPRITE);
       ctx.source.currentTime = 9e20;
     }
+
     am_stop(){
-      this.contextList.forEach(ctx=>{
+      contexList.forEach(ctx=>{
         ctx.source.currentTime = 9e20;
       });
     }
-    am_play(args, u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_play(args, util) {
+      let ctx = this.getContext(util.target.id);
       ctx.source.currentTime = 0.001;
       ctx.source.play();
     }
-    am_playandwait(args, u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_playandwait(args, util) {
+      let ctx = this.getContext(util.target.id);
       return new Promise(r => {
         ctx.source.currentTime = 0.001;
         ctx.source.play();
         ctx.source.addEventListener('ended',r);
       });
     }
+
     am_playnew({SRC}){
       let id = btoa((Math.random() * 1e17).toString());
       let ctx = this.newContext(id,{simple: true});
@@ -465,28 +480,33 @@ Experimental extension for Scratch.
       ctx.source.play();
       ctx.source.addEventListener('ended',()=>{
         ctx.source.remove();
-        this.contextList = this.contextList.filter(c=>c.id != id);
+        contexList = contexList.filter(c=>c.id != id);
       });
     }
-    am_resume(args, u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_resume(args, util) {
+      let ctx = this.getContext(util.target.id);
       ctx.source.play();
     }
-    am_pause(args, u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_pause(args, util) {
+      let ctx = this.getContext(util.target.id);
       ctx.source.pause();
     }
-    am_skipToTime({VAL},u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_skipToTime({VAL}, util) {
+      let ctx = this.getContext(util.target.id);
       ctx.source.currentTime = VAL;
     }
-    am_setpitch({VAL},u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_setpitch({VAL}, util) {
+      let ctx = this.getContext(util.target.id);
       /*Calculate the pitch value to be closer to original Scratch*/
       ctx.source.playbackRate = ctx.source.defaultPlaybackRate = VAL < 0 ? VAL < -659 ? 0.1 : Math.abs(VAL) / 700 : VAL > 700 ? 15 : VAL / 50 + 1;
     }
-    am_setvolume({VAL},u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_setvolume({VAL}, util) {
+      let ctx = this.getContext(util.target.id);
       ctx.volume = +VAL;
       if (ctx.volume > 1){
         ctx.source.volume = 1;
@@ -496,20 +516,24 @@ Experimental extension for Scratch.
         ctx.source.volume = ctx.volume;
       }
     }
-    am_getvolume(args, u){
-      let ctx = this.getContext(u.target.id);
+
+    am_getvolume(args, util){
+      let ctx = this.getContext(util.target.id);
       return ctx.volume;
     }
-    am_setstereo({VAL},u){
-      let ctx = this.getContext(u.target.id);
+
+    am_setstereo({VAL}, util){
+      let ctx = this.getContext(util.target.id);
       ctx.effects.panner.pan.value = VAL;
     }
-    am_setppitch({VAL,u}){
-      let ctx = this.getContext(u.target.id);
+
+    am_setppitch({VAL}, util){
+      let ctx = this.getContext(util.target.id);
       ctx.source.preservesPitch = VAL;
     }
-    am_setfilter({FIL,FQ,Q},u){
-      let ctx = this.getContext(u.target.id);
+
+    am_setfilter({FIL,FQ, Q}, util){
+      let ctx = this.getContext(util.target.id);
       if (FIL === 'lowpass') {
         filter1.frequency.value = FQ;
         filter1.Q.value = Q;
@@ -536,8 +560,9 @@ Experimental extension for Scratch.
         filter8.Q.value = Q;
       }
     }
-    am_toglefilter({FIL,STATE},u){
-      let ctx = this.getContext(u.target.id);
+
+    am_toglefilter({FIL, STATE}, util){
+      let ctx = this.getContext(util.target.id);
       if (FIL === 'lowpass') {
         if (STATE === 'connect') {
           track.connect(filter1);
@@ -588,8 +613,9 @@ Experimental extension for Scratch.
         }
       }
     }
-    am_freset({},u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_freset({FQ}, util) {
+      let ctx = this.getContext(util.target.id);
       filter1.frequency.value = FQ;
       filter1.Q.value = 0;
       filter2.frequency.value = FQ;
@@ -607,45 +633,54 @@ Experimental extension for Scratch.
       filter8.frequency.value = FQ;
       filter8.Q.value = 0;
     }
-    am_connect({STRING},u) {
+
+    am_connect({STRING}, util) {
       var utl2_theInstructions = 'return ' + STRING;
       var F = new Function(utl2_theInstructions);
       track.connect(F());
     }
-    am_disconnect({STRING},u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_disconnect({STRING}, util) {
+      let ctx = this.getContext(util.target.id);
       var utl2_theInstructions = 'return ' + STRING;
       var F = new Function(utl2_theInstructions);
       F().disconnect;
     }
-    am_analyserfft({VAL},u){
-      let ctx = this.getContext(u.target.id);
+
+    am_analyserfft({VAL}, util){
+      let ctx = this.getContext(util.target.id);
       ctx.analyser.fftSize = VAL;
     }
-    am_songDuration(args, u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_songDuration(args, util) {
+      let ctx = this.getContext(util.target.id);
       return ctx.source.duration;
     }
-    am_getanalyser(args, u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_getanalyser(args, util) {
+      let ctx = this.getContext(util.target.id);
       ctx.analyser.getByteTimeDomainData(ctx.dataArray);
       return JSON.stringify(ctx.dataArray);
     }
-    am_getanalyserindex({INDEX},u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_getanalyserindex({INDEX}, util) {
+      let ctx = this.getContext(util.target.id);
       ctx.analyser.getByteTimeDomainData(ctx.dataArray);
       return ctx.dataArray[INDEX];
     }
-    am_songCurrent(args, u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_songCurrent(args, util) {
+      let ctx = this.getContext(util.target.id);
       return ctx.source.currentTime;
     }
-    am_hasStopped(args, u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_hasStopped(args, util) {
+      let ctx = this.getContext(util.target.id);
       return ctx.source.ended;
     }
-    am_isPaused(args, u) {
-      let ctx = this.getContext(u.target.id);
+
+    am_isPaused(args, util) {
+      let ctx = this.getContext(util.target.id);
       return ctx.source.paused;
     }
   }
