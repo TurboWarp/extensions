@@ -14,7 +14,6 @@
   });
 
   function resetRuntimeVariables() {
-    console.log('runtime variables cleared');
     runtimeVariables = Object.create(null);
   }
 

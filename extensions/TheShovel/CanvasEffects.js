@@ -69,7 +69,7 @@
                     {
                         opcode: 'renderscale',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'set canvas render size to x:[X] y:[Y]',
+                        text: 'set canvas render size to width:[X] height:[Y]',
                         arguments: {
                             X: {
                                 type: Scratch.ArgumentType.NUMBER,
