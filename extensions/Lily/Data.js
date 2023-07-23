@@ -569,7 +569,7 @@
       if (!list1) return;
       const list2 = getVarObjectFromName(args.LIST2, util, 'list');
       if (!list2) return;
-      list1.value = list1.value.concat(list2.value);
+      list2.value = list2.value.concat(list1.value);
     }
 
     forEachListItem(args, util) {
