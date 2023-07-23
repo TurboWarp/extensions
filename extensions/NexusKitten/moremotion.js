@@ -170,9 +170,9 @@
           },
           {
             filter: [Scratch.TargetType.SPRITE],
-            opcode: 'inbetween',
+            opcode: 'touchingrect',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'in rectangle x1: [X1] y1: [Y1] x2: [X2] y2: [Y2]?',
+            text: 'touching rectangle x1: [X1] y1: [Y1] x2: [X2] y2: [Y2]?',
             arguments: {
               X1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -270,12 +270,59 @@
       util.target.setXY(((x - util.target.x) * (val / 100)) + util.target.x, ((y - util.target.y) * (val / 100)) + util.target.y);
     }
 
-    inbetween(args, util) {
-      const x = Scratch.Cast.toNumber(args.X1);
-      const y = Scratch.Cast.toNumber(args.Y1);
-      const x2 = Scratch.Cast.toNumber(args.X2);
-      const y2 = Scratch.Cast.toNumber(args.Y2);
-      return x <= util.target.x && util.target.x <= x2 && y <= util.target.y && util.target.y <= y2;
+    touchingrect(args, util) {
+      let left = Scratch.Cast.toNumber(args.X1);
+      let right = Scratch.Cast.toNumber(args.X2);
+      let bottom = Scratch.Cast.toNumber(args.Y1);
+      let top = Scratch.Cast.toNumber(args.Y2);
+
+      // Fix argument order if they got it backwards
+      if (left > right) {
+        let temp = left;
+        left = right;
+        right = temp;
+      }
+      if (bottom > top) {
+        let temp = bottom;
+        bottom = top;
+        bottom = temp;
+      }
+
+      const drawable = Scratch.vm.renderer._allDrawables[util.target.drawableID];
+      if (!drawable) {
+        return false;
+      }
+
+      // See renderer.isTouchingDrawables
+
+      const drawableBounds = drawable.getFastBounds();
+      drawableBounds.snapToInt();
+
+      // This is bad, need to rewrite this when renderer exports Rectangle
+      const Rectangle = Object.getPrototypeOf(drawableBounds).constructor;
+
+      /** @type {RenderWebGL.Rectangle} */
+      const containsBounds = new Rectangle();
+      containsBounds.initFromBounds(left, right, bottom, top);
+      containsBounds.snapToInt();
+
+      if (!containsBounds.intersects(drawableBounds)) {
+        return false;
+      }
+
+      drawable.updateCPURenderAttributes();
+
+      /** @type {RenderWebGL.Rectangle} */
+      const intersectingBounds = Rectangle.intersect(drawableBounds, containsBounds);
+      for (let x = intersectingBounds.left; x < intersectingBounds.right; x++) {
+        for (let y = intersectingBounds.bottom; y < intersectingBounds.top; y++) {
+          // technically should be a twgl vec3, but does not actually need to be
+          if (drawable.isTouching([x, y])) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
 
     touchingxy(args, util) {
