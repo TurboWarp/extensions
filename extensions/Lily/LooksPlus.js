@@ -11,6 +11,19 @@
     return true;
   };
 
+  /**
+   * @param {VM.BlockUtility} util
+   * @param {unknown} targetName
+   */
+  const getSpriteTargetByName = (util, targetName) => {
+    const nameString = Scratch.Cast.toString(targetName);
+    const target = util.target;
+    if (target.getName() === nameString) {
+      return target;
+    }
+    return util.runtime.getSpriteTargetByName(nameString);
+  };
+
   class LooksPlus {
     getInfo() {
       return {
@@ -313,21 +326,21 @@
     }
 
     showSprite(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      const target = getSpriteTargetByName(util, args.TARGET);
       if (target) {
         target.setVisible(true);
       }
     }
 
     hideSprite(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      const target = getSpriteTargetByName(util, args.TARGET);
       if (target) {
         target.setVisible(false);
       }
     }
 
     spriteVisible(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      const target = getSpriteTargetByName(util, args.TARGET);
       if (!target) {
         return false;
       }
@@ -335,7 +348,7 @@
     }
 
     setLayerTo(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      const target = getSpriteTargetByName(util, args.TARGET);
       if (!target) {
         return;
       }
@@ -346,7 +359,7 @@
     }
 
     spriteLayerNumber(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      const target = getSpriteTargetByName(util, args.TARGET);
       if (!target) {
         return 0;
       }
@@ -354,7 +367,7 @@
     }
 
     effectValue(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      const target = getSpriteTargetByName(util, args.TARGET);
       if (!target) {
         return 0;
       }
@@ -395,7 +408,7 @@
     }
 
     targetCostumeNumber(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      const target = getSpriteTargetByName(util, args.TARGET);
       if (!target) {
         return 0;
       }
@@ -464,7 +477,7 @@
     }
 
     costumeContent(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      const target = getSpriteTargetByName(util, args.TARGET);
       if (!target) {
         console.error('Target does not exist');
         return '';
@@ -527,17 +540,20 @@
       const targets = Scratch.vm.runtime.targets;
       const myself = Scratch.vm.runtime.getEditingTarget().getName();
       for (let index = 1; index < targets.length; index++) {
-        const targetName = targets[index].getName();
-        if (targetName === myself) {
-          spriteNames.unshift({
-            text: 'this sprite',
-            value: targetName
-          });
-        } else {
-          spriteNames.push({
-            text: targetName,
-            value: targetName
-          });
+        const target = targets[index];
+        if (target.isOriginal) {
+          const targetName = target.getName();
+          if (targetName === myself) {
+            spriteNames.unshift({
+              text: 'this sprite',
+              value: targetName
+            });
+          } else {
+            spriteNames.push({
+              text: targetName,
+              value: targetName
+            });
+          }
         }
       }
       if (spriteNames.length > 0) {

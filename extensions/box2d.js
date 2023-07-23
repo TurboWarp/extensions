@@ -12395,6 +12395,24 @@
               },
             },
           },
+          {
+            opcode: "getGravityX",
+            blockType: BlockType.REPORTER,
+            text: formatMessage({
+              id: "griffpatch.getGravityX",
+              default: "gravity x",
+              description: "Get the gravity's x value",
+            }),
+          },
+          {
+            opcode: "getGravityY",
+            blockType: BlockType.REPORTER,
+            text: formatMessage({
+              id: "griffpatch.getGravityY",
+              default: "gravity y",
+              description: "Get the gravity's y value",
+            }),
+          },
 
           "---",
 
@@ -13778,6 +13796,14 @@
       for (const bodyID in bodies) {
         bodies[bodyID].SetAwake(true);
       }
+    }
+
+    getGravityX() {
+      return world.GetGravity().x;
+    }
+
+    getGravityY() {
+      return world.GetGravity().y;
     }
   }
 
