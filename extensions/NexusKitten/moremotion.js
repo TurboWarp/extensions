@@ -283,9 +283,6 @@
       const width = Math.ceil(Scratch.Cast.toNumber(costume.size[0]));
       const height = Math.ceil(Scratch.Cast.toNumber(costume.size[1]));
 
-      console.log(width);
-      console.log(height);
-
       return x >= util.target.x - (width / 2) && util.target.x + (width / 2) >= x && y >= util.target.y - (height / 2) && util.target.y + (height / 2) >= y;
     }
 
@@ -298,7 +295,7 @@
         return Math.ceil(Scratch.Cast.toNumber(costume.size[1]));
       }
     }
-
   }
+
   Scratch.extensions.register(new nkmoremotion());
 })(Scratch);
