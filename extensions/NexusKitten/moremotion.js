@@ -195,7 +195,12 @@
         menus: {
           WHAT: {
             acceptreporters: true,
-            items: ['width', 'height']
+            items: [
+              'width',
+              'height',
+              'costume width',
+              'costume height'
+            ]
           }
         }
       };
@@ -287,12 +292,20 @@
     }
 
     spritewh(args, util) {
-      const costumeIndex = util.target.getCostumeIndexByName(Scratch.Cast.toString(util.target.getCostumes()[util.target.currentCostume].name));
-      const costume = util.target.sprite.costumes[costumeIndex];
-      if (args.WHAT === 'width') {
-        return Math.ceil(Scratch.Cast.toNumber(costume.size[0]));
-      } else {
-        return Math.ceil(Scratch.Cast.toNumber(costume.size[1]));
+      if (args.WHAT === 'width' || args.WHAT === 'height') {
+        const bounds = Scratch.vm.renderer.getBounds(util.target.drawableID);
+        if (args.WHAT === 'width') {
+          return Math.ceil(bounds.width);
+        } else {
+          return Math.ceil(bounds.height);
+        }
+      } else if (args.WHAT === 'costume width' || args.WHAT === 'costume height') {
+        const costume = util.target.sprite.costumes[util.target.currentCostume];
+        if (args.WHAT === 'costume width') {
+          return Math.ceil(costume.size[0]);
+        } else {
+          return Math.ceil(costume.size[1]);
+        }
       }
     }
   }
