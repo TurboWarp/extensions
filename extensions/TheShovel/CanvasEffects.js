@@ -123,6 +123,7 @@
                     },
                     EFFECTGETMENU: {
                         acceptReporters: true,
+                        // this contains 'resize rendering mode', EFFECTMENU does not
                         items: ['blur', 'contrast', 'saturation', 'color shift', 'brightness', 'invert', 'resize rendering mode', 'sepia', 'transparency', 'scale', 'skew X', 'skew Y', 'offset X', 'offset Y', 'rotation', 'border radius']
                     }
                 }
