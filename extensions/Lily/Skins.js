@@ -306,6 +306,7 @@
       if (contentType === 'image/svg+xml') {
         return renderer.createSVGSkin(await imageData.text());
       } else if (contentType === 'image/png' || contentType === 'image/jpeg' || contentType === 'image/bmp') {
+        // eslint-disable-next-line no-restricted-syntax
         const output = new Image();
         output.src = URL;
         output.crossOrigin = 'anonymous';
