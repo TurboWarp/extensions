@@ -65,20 +65,25 @@
         }
       }
 
-      .warning {
+      .infobox, .development-tools {
         padding: 8px;
         margin: 8px 0;
         border-radius: 8px;
         background: rgba(0, 195, 255, 0.245);
         border: 1px solid rgba(0, 187, 255, 0.604);
       }
+      .infobox-warning {
+        background-color: rgba(255, 0, 0, 0.245);
+        border-color: rgba(255, 0, 0, 0.446);
+      }
+      .infobox-title {
+        font-weight: bold;
+        margin-bottom: 4px;
+      }
 
       .development-tools {
-        padding: 8px;
-        margin: 8px 0;
-        border-radius: 8px;
-        background: rgba(200, 0, 255, 0.245);
-        border: 1px solid rgba(234, 0, 255, 0.604);
+        background-color: rgba(200, 0, 255, 0.245);
+        border-color: rgba(234, 0, 255, 0.604);
       }
       .development-tools h2 {
         font-size: 1em;
@@ -213,23 +218,36 @@
         <div>TurboWarp Extension Gallery</div>
       </h1>
 
-      <p>Unlike custom extensions on other websites, extensions listed here aren't limited by the extension sandbox, so they are a lot more powerful.</p>
-      <p>To use these extensions in TurboWarp, hover over an extension to copy its URL, then go to the editor, open the extension chooser, then choose the "Custom Extension" option and input the copied URL. Some of these extensions may work in other Scratch mods while others will not.</p>
+      <p>Unlike custom extensions on other websites, these aren't limited by the extension sandbox, so they are a lot more powerful. All extensions are reviewed for safety.</p>
+      <p>
+        <% if (mode === 'desktop') { %>
+          To use these extensions in TurboWarp Desktop, hover over the extension and press the add button.
+        <% } else { %>
+          To use multiple of these extensions in TurboWarp, hover over the extension and press the button to copy its URL. Then go to the editor, open the extension chooser, then choose the "Custom Extension" option at the bottom, and enter the URL.
+        <% } %>
+      </p>
 
-      <% if (mode === 'desktop') { %>
-        <p>TurboWarp Desktop loads extensions from an offline copy of extensions.turbowarp.org instead of the live website.</p>
-      <% } else { %>
-        <p>
-          To use these in the desktop app, <a href="https://desktop.turbowarp.org/">download v1.7.1</a> (released January 24, 2023) or later.
-          Note that the desktop app uses an offline copy of these extensions instead of downloading them from the website, so some extensions may be outdated or missing.
-        </p>
-      <% } %>
-
-      <p class="warning">
-        These extensions are not compatible with Scratch.
+      <div class="infobox infobox-warning">
+        <div class="infobox-title">These extensions are not compatible with Scratch.</div>
         Projects that use these extensions can't be uploaded to the Scratch website.
         They can, however, be used in <a href="https://packager.turbowarp.org/">the packager</a>.
-      </p>
+      </div>
+
+      <div class="infobox">
+        <% if (mode === 'desktop') { %>
+          <div class="infobox-title">Some extensions may be outdated or missing.</div>
+          <%
+            const now = new Date();
+            const date = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+          %>
+          For compatibility, security, and offline support, TurboWarp Desktop includes an offline copy of extensions.turbowarp.org from this update's release date (<%= date %>).
+          Compared to the live website, some extensions may be missing or outdated.
+        <% } else { %>
+          <div class="infobox-title">Some extensions may not work in TurboWarp Desktop.</div>
+          For compatibility, security, and offline support, each <a href="https://desktop.turbowarp.org/">TurboWarp Desktop</a> update contains an offline copy of these extensions from its release date, so some extensions may be outdated or missing.
+          Use the latest update for best results.
+        <% } %>
+      </div>
     </div>
 
     <%
@@ -419,13 +437,7 @@
         <div class="extension">
           <%- banner('local-storage') %>
           <h3>Local Storage</h3>
-          <p>Store data persistently.</p>
-        </div>
-
-        <div class="extension">
-          <%- banner('clouddata-ping') %>
-          <h3>Ping Cloud Data</h3>
-          <p>Determine whether a cloud variable server is probably up. Originally created by TheShovel.</p>
+          <p>Store data persistently. Like cookies, but better.</p>
         </div>
 
         <div class="extension">
@@ -441,6 +453,12 @@
         </div>
 
         <div class="extension">
+          <%- banner('Skyhigh173/bigint') %>
+          <h3>BigInt</h3>
+          <p>Math blocks that work on infinitely large integers (no decimals). Created by Skyhigh173.</p>
+        </div>
+
+        <div class="extension">
           <%- banner('utilities') %>
           <h3>Utilities</h3>
           <p>A bunch of interesting blocks. Originally created by <a href="https://scratch.mit.edu/users/Sheep_maker/">Sheep_maker</a>.</p>
@@ -450,6 +468,18 @@
           <%- banner('sound') %>
           <h3>Sound</h3>
           <p>Play sounds from URLs.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('Xeltalliv/clippingblending') %>
+          <h3>Clipping &amp; Blending</h3>
+          <p>Clipping outside of a specified rectangular area and additive color blending. Created by <a href="https://scratch.mit.edu/users/Vadik1/">Vadik1</a>.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('clipboard') %>
+          <h3>Clipboard</h3>
+          <p>Read and write from the system clipboard.</p>
         </div>
 
         <div class="extension">
@@ -465,15 +495,27 @@
         </div>
 
         <div class="extension">
-          <%- banner('LukeManiaStudios/ClonesPlus') %>
+          <%- banner('Lily/ClonesPlus') %>
           <h3>Clones Plus</h3>
-          <p>Expansion of Scratch's clone features. Created by <a href="https://scratch.mit.edu/users/LukeManiaStudios/">LukeManiaStudios</a>.</p>
+          <p>Expansion of Scratch's clone features. Created by <a href="https://scratch.mit.edu/users/LilyMakesThings/">LilyMakesThings</a>.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('Lily/LooksPlus') %>
+          <h3>Looks Plus</h3>
+          <p>Expands upon the looks category, allowing you to show/hide, get costume data and edit SVG skins on sprites. Created by <a href="https://scratch.mit.edu/users/LilyMakesThings/">LilyMakesThings</a>.</p>
         </div>
 
         <div class="extension">
           <%- banner('navigator') %>
           <h3>Navigator</h3>
           <p>Details about the user's browser and operating system.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('battery') %>
+          <h3>Battery</h3>
+          <p>Access information about the battery of phones or laptops. May not work on all devices and browsers.</p>
         </div>
 
         <div class="extension">
@@ -495,6 +537,18 @@
         </div>
 
         <div class="extension">
+          <%- banner('Lily/MoreTimers') %>
+          <h3>More Timers</h3>
+          <p>Control several timers at once. Created by <a href="https://scratch.mit.edu/users/LilyMakesThings/">LilyMakesThings</a>.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('clouddata-ping') %>
+          <h3>Ping Cloud Data</h3>
+          <p>Determine whether a cloud variable server is probably up. Originally created by TheShovel.</p>
+        </div>
+
+        <div class="extension">
           <%- banner('cloudlink') %>
           <h3>Cloudlink</h3>
           <p>Powerful WebSocket extension for Scratch 3. Created by MikeDEV.</p>
@@ -513,21 +567,21 @@
         </div>
 
         <div class="extension">
-          <%- banner('true-fantom/couplers') %>
-          <h3>Couplers</h3>
-          <p>A few adapter blocks. Created by <a href="https://scratch.mit.edu/users/TrueFantom/">TrueFantom</a>.</p>
-        </div>
-
-        <div class="extension">
           <%- banner('true-fantom/regexp') %>
           <h3>RegExp</h3>
           <p>Full interface for working with <a href="https://en.wikipedia.org/wiki/Regular_expression">Regular Expressions</a>. Created by <a href="https://scratch.mit.edu/users/TrueFantom/">TrueFantom</a>.</p>
         </div>
 
         <div class="extension">
-          <%- banner('cs2627883/numericalencoding') %>
-          <h3>Numerical Encoding</h3>
-          <p>Encode strings as numbers for cloud variables. Created by <a href="https://scratch.mit.edu/users/cs2627883/">cs2627883</a>.</p>
+          <%- banner('true-fantom/couplers') %>
+          <h3>Couplers</h3>
+          <p>A few adapter blocks. Created by <a href="https://scratch.mit.edu/users/TrueFantom/">TrueFantom</a>.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('Lily/Cast') %>
+          <h3>Cast</h3>
+          <p>Convert values between types. Created by <a href="https://scratch.mit.edu/users/LilyMakesThings/">LilyMakesThings</a></p>
         </div>
 
         <div class="extension">
@@ -543,6 +597,12 @@
         </div>
 
         <div class="extension">
+          <%- banner('ZXMushroom63/searchApi') %>
+          <h3>Search Params</h3>
+          <p>Interact with URL search parameters: the part of the URL after a question mark. Created by ZXMushroom63.</p>
+        </div>
+
+        <div class="extension">
           <%- banner('TheShovel/ShovelUtils') %>
           <h3>ShovelUtils</h3>
           <p>A bunch of miscellaneous blocks. Created by TheShovel.</p>
@@ -555,9 +615,9 @@
         </div>
 
         <div class="extension">
-          <%- banner('Xeltalliv/clippingblending') %>
-          <h3>Clipping &amp; Blending</h3>
-          <p>Clipping outside of a specified rectangular area and additive color blending. Created by <a href="https://scratch.mit.edu/users/Vadik1/">Vadik1</a>.</p>
+          <%- banner('cs2627883/numericalencoding') %>
+          <h3>Numerical Encoding</h3>
+          <p>Encode strings as numbers for cloud variables. Created by <a href="https://scratch.mit.edu/users/cs2627883/">cs2627883</a>.</p>
         </div>
 
         <div class="extension">
@@ -579,15 +639,15 @@
         </div>
 
         <div class="extension">
-          <%- banner('LukeManiaStudios/lmsutils') %>
-          <h3>LMS Utilities</h3>
-          <p>Adds utility blocks. Created by <a href="https://scratch.mit.edu/users/LukeManiaStudios/">LukeManiaStudios</a>.</p>
+          <%- banner('Lily/TempVariables2') %>
+          <h3>Temporary Variables</h3>
+          <p>Create disposable runtime or thread variables. Created by <a href="https://scratch.mit.edu/users/LilyMakesThings/">LilyMakesThings</a>.</p>
         </div>
 
         <div class="extension">
-          <%- banner('LukeManiaStudios/TempVariables') %>
-          <h3>Temporary Variables</h3>
-          <p>Allows you to create temporary variables. Created by <a href="https://scratch.mit.edu/users/LukeManiaStudios/">LukeManiaStudios</a>.</p>
+          <%- banner('CST1229/zip') %>
+          <h3>Zip</h3>
+          <p>Create and edit .zip format files, including .sb3 files. Created by <a href="https://scratch.mit.edu/users/CST1229/">CST1229</a>.</p>
         </div>
 
         <div class="extension">
@@ -633,39 +693,63 @@
         </div>
 
         <div class="extension">
+          <%- banner('qxsck/var-and-list') %>
+          <h3>Variable and list</h3>
+          <p>More blocks related to variables and lists. Created by qxsck.</p>
+        </div>
+
+        <div class="extension">
           <%- banner('vercte/dictionaries') %>
           <h3>Dictionaries</h3>
           <p>Use the power of dictionaries in your project. Created by <a href="https://scratch.mit.edu/users/lolecksdeehaha/">Vercte</a>.</p>
         </div>
 
         <div class="extension">
-          <%- banner('LukeManiaStudios/CommentBlocks') %>
+          <%- banner('godslayerakp/http') %>
+          <h3>HTTP</h3>
+          <p>Comprehensive extension for interacting with external websites. Created by <a href="https://scratch.mit.edu/users/RedMan13/">RedMan13</a>.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('Lily/CommentBlocks') %>
           <h3>Comment Blocks</h3>
-          <p>Annotate your scripts. Created by <a href="https://scratch.mit.edu/users/LukeManiaStudios/">LukeManiaStudios</a>.</p>
+          <p>Annotate your scripts. Created by <a href="https://scratch.mit.edu/users/LilyMakesThings/">LilyMakesThings</a>.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('CubesterYT/TurboHook') %>
+          <h3>TurboHook</h3>
+          <p>Allows you to use webhooks. Created by <a href="https://scratch.mit.edu/users/CubesterYT/">CubesterYT</a>.</p>
+        </div>
+
+        <div class="extension">
+          <%- banner('Alestore/nfcwarp') %>
+          <h3>NFCWarp</h3>
+          <p>Allows reading data from NFC (NDEF) devices. Only works in Chrome on Android. Created by <a href="https://scratch.mit.edu/users/aleb2005/">Alestore Games</a>.</p>
         </div>
 
         <div class="extension">
           <%- banner('itchio') %>
           <h3>itch.io</h3>
-          <p>Blocks that interact with the itch.io website. Created by softed.</p>
+          <p>Blocks that interact with the itch.io website. Unofficial. Created by softed.</p>
         </div>
 
         <div class="extension">
           <%- banner('gamejolt') %>
           <h3>GameJolt</h3>
-          <p>Blocks that allow games to interact with the GameJolt API. Created by softed.</p>
+          <p>Blocks that allow games to interact with the GameJolt API. Unofficial. Created by softed.</p>
         </div>
 
         <div class="extension">
           <%- banner('obviousAlexC/newgroundsIO') %>
           <h3>Newgrounds</h3>
-          <p>Blocks that allow games to interact with the Newgrounds API. Created by <a href="https://scratch.mit.edu/users/pinksheep2917/">ObviousAlexC</a>.</p>
+          <p>Blocks that allow games to interact with the Newgrounds API. Unofficial. Created by <a href="https://scratch.mit.edu/users/pinksheep2917/">ObviousAlexC</a>.</p>
         </div>
 
         <div class="extension">
-          <%- banner('LukeManiaStudios/McUtils') %>
+          <%- banner('Lily/McUtils') %>
           <h3>McUtils</h3>
-          <p>Helpful utilities for any fast food employee. Created by <a href="https://scratch.mit.edu/users/LukeManiaStudios/">LukeManiaStudios</a>.</p>
+          <p>Helpful utilities for any fast food employee. Created by <a href="https://scratch.mit.edu/users/LilyMakesThings/">LilyMakesThings</a>.</p>
         </div>
 
         <div class="extension">

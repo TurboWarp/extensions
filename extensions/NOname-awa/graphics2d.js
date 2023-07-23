@@ -1,10 +1,26 @@
-(function(Scratch) {
+(function (Scratch) {
   'use strict';
+  Scratch.translate.setup({
+    zh: {
+      name: '图形 2D',
+      line_section: '线段（[x1],[y1]）到（[x2],[y2]）',
+      triangle: '三角形（[x1],[y1]）（[x2],[y2]）（[x3],[y3]）的 [CS]',
+      triangle_s: '三角形 [s1] [s2] [s3] 的面积',
+      quadrilateral: '四边形（[x1],[y1]）（[x2],[y2]）（[x3],[y3]）（[x4],[y4]）的 [CS]',
+      graph: '图形 [graph] 的 [CS]',
+      round: '[rd] 为 [a] 的圆的 [CS]',
+      pi: '派',
+      radius: '半径',
+      diameter: '直径',
+      area: '面积',
+      circumference: '周长',
+    }
+  });
   class graph {
     getInfo() {
       return {
         id: 'nonameawagraph',
-        name: 'Graphics 2D',
+        name: Scratch.translate({ id: 'name', default: 'Graphics 2D' }),
         color1: '#ff976c',
         color2: '#cc7956',
         color3: '#e58861',
@@ -12,7 +28,7 @@
           {
             opcode: 'line_section',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'length from ([x1],[y1]) to ([x2],[y2])',
+            text: Scratch.translate({ id: 'line_section', default: 'length from ([x1],[y1]) to ([x2],[y2])' }),
             arguments: {
               x1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -51,7 +67,7 @@
           {
             opcode: 'triangle',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'triangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) \'s [CS]',
+            text: Scratch.translate({ id: 'triangle', default: 'triangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) \'s [CS]' }),
             arguments: {
               x1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -86,7 +102,7 @@
           {
             opcode: 'triangle_s',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'triangle [s1] [s2] [s3] \'s area',
+            text: Scratch.translate({ id: 'triangle_s', default: 'triangle [s1] [s2] [s3] \'s area' }),
             arguments: {
               s1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -105,7 +121,7 @@
           {
             opcode: 'quadrilateral',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'quadrangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) ([x4],[y4]) \'s [CS]',
+            text: Scratch.translate({ id: 'quadrilateral', default: 'quadrangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) ([x4],[y4]) \'s [CS]' }),
             arguments: {
               x1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -148,11 +164,11 @@
           {
             opcode: 'graph',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'graph [graph] \'s [CS]',
+            text: Scratch.translate({ id: 'graph', default: 'graph [graph] \'s [CS]' }),
             arguments: {
               graph: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '[[0,0], [10,0], [10,-10], [0,-10]]'
+                defaultValue: '[[0,0], [0,2], [2,4], [4,2], [4,0]]'
               },
               CS: {
                 type: Scratch.ArgumentType.STRING,
@@ -164,7 +180,7 @@
           {
             opcode: 'round',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'circle of [rd][a]\'s [CS]',
+            text: Scratch.translate({ id: 'round', default: 'circle of [rd][a]\'s [CS]' }),
             arguments: {
               rd: {
                 type: Scratch.ArgumentType.STRING,
@@ -185,7 +201,7 @@
             opcode: 'pi',
             disableMonitor: true,
             blockType: Scratch.BlockType.REPORTER,
-            text: 'pi',
+            text: Scratch.translate({ id: 'pi', default: 'pi' }),
           },
         ],
         menus: {
@@ -193,11 +209,11 @@
             acceptReporters: true,
             items: [
               {
-                text: 'radius',
+                text: Scratch.translate({ id: 'radius', default: 'radius' }),
                 value: 'r'
               },
               {
-                text: 'diameter',
+                text: Scratch.translate({ id: 'diameter', default: 'diameter' }),
                 value: 'd'
               }
             ]
@@ -206,11 +222,11 @@
             acceptReporters: true,
             items: [
               {
-                text: 'area',
+                text: Scratch.translate({ id: 'area', default: 'area' }),
                 value: 's'
               },
               {
-                text: 'circumference',
+                text: Scratch.translate({ id: 'circumference', default: 'circumference' }),
                 value: 'c'
               }
             ]
@@ -222,15 +238,15 @@
       return Math.sqrt(Math.pow(args.x1 - args.x2, 2) + Math.pow(args.y1 - args.y2, 2));
     }
     vertical(args) {
-      if (isNaN(args.a) || isNaN(args.b)){
+      if (isNaN(args.a) || isNaN(args.b)) {
         return false;
       } else {
         return ((args.a - (args.b - 90)) % 180) == 0;
       }
     }
     triangle(args) {
-      if (args.CS == 's'){
-        let points = [[args.x1,args.y1], [args.x2,args.y2], [args.x3,args.y3]];
+      if (args.CS == 's') {
+        let points = [[args.x1, args.y1], [args.x2, args.y2], [args.x3, args.y3]];
         let area = 0;
         let n = points.length;
         for (let i = 0; i < n; i++) {
@@ -244,7 +260,7 @@
         area = Math.abs(area) / 2;
         return (area);
       }
-      if (args.CS == 'c'){
+      if (args.CS == 'c') {
         let i = 0;
         i += Math.sqrt(Math.pow(args.x1 - args.x2, 2) + Math.pow(args.y1 - args.y2, 2));
         i += Math.sqrt(Math.pow(args.x2 - args.x3, 2) + Math.pow(args.y2 - args.y3, 2));
@@ -259,8 +275,8 @@
       return area;
     }
     quadrilateral(args) {
-      if (args.CS == 's'){
-        let points = [[args.x1,args.y1], [args.x2,args.y2], [args.x3,args.y3], [args.x4,args.y4]];
+      if (args.CS == 's') {
+        let points = [[args.x1, args.y1], [args.x2, args.y2], [args.x3, args.y3], [args.x4, args.y4]];
         let area = 0;
         let n = points.length;
         for (let i = 0; i < n; i++) {
@@ -274,7 +290,7 @@
         area = Math.abs(area) / 2;
         return (area);
       }
-      if (args.CS == 'c'){
+      if (args.CS == 'c') {
         let i = 0;
         i += Math.sqrt(Math.pow(args.x1 - args.x2, 2) + Math.pow(args.y1 - args.y2, 2));
         i += Math.sqrt(Math.pow(args.x2 - args.x3, 2) + Math.pow(args.y2 - args.y3, 2));
@@ -295,7 +311,7 @@
         return 0;
       }
       let n = points.length;
-      if (args.CS == 's'){
+      if (args.CS == 's') {
         let area = 0;
         for (let i = 0; i < n; i++) {
           let x1 = points[i][0];
@@ -308,7 +324,7 @@
         area = Math.abs(area) / 2;
         return (area);
       }
-      if (args.CS == 'c'){
+      if (args.CS == 'c') {
         let x1, x2, y1, y2;
         let j = 0;
         j = 0;
@@ -329,10 +345,10 @@
       return 0;
     }
     round(args) {
-      if (args.CS == 'c'){
+      if (args.CS == 'c') {
         return 2 * Math.PI * (args.rd == 'r' ? args.a : args.a / 2);
       }
-      if (args.CS == 's'){
+      if (args.CS == 's') {
         return Math.PI * ((args.rd == 'r' ? args.a : args.a / 2) ** 2);
       }
     }

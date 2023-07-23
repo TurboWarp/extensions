@@ -6,6 +6,8 @@
   }
 
   const icon = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyMjUuMzU0OCIgaGVpZ2h0PSIyMjUuMzU0OCIgdmlld0JveD0iMCwwLDIyNS4zNTQ4LDIyNS4zNTQ4Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTg3LjMyMjkzLC0zNy4zMjI1OSkiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMTg3LjMyMjk0LDE1MGMwLC02Mi4yMzAwMSA1MC40NDczOSwtMTEyLjY3NzQgMTEyLjY3NzQsLTExMi42Nzc0YzYyLjIzMDAxLDAgMTEyLjY3NzQsNTAuNDQ3MzkgMTEyLjY3NzQsMTEyLjY3NzRjMCw2Mi4yMzAwMSAtNTAuNDQ3MzksMTEyLjY3NzQgLTExMi42Nzc0LDExMi42Nzc0Yy02Mi4yMzAwMSwwIC0xMTIuNjc3NCwtNTAuNDQ3MzkgLTExMi42Nzc0LC0xMTIuNjc3NHoiIGZpbGw9IiNmZjRkYTciIHN0cm9rZS13aWR0aD0iMCIvPjxnPjxwYXRoIGQ9Ik0zMTcuMTAyOSw4MC44MTA4N2MyMS44OTI0LDAgMzkuNjYyMDcsMTcuNzM3MjMgMzkuNjYyMDcsMzkuNjM0NGMwLDEyLjMwNTE3IC01LjYxMTQ4LDIzLjI5NjIyIC0xNC40MDA4OCwzMC41NjgyNGg4Ljc3MDMydjY4LjE3NTYzaC0xMTQuMTMzMjV2LTU1Ljc5ODg5Yy0xNC4zMzQwOCwtMy41MjgxNyAtMjQuOTYxNTMsLTE2LjQ1NzQ3IC0yNC45NjE1MywtMzEuODgwNDRjMCwtMTguMTM5IDE0LjY5NjczLC0zMi44MzQ3OCAzMi44MzQ3OCwtMzIuODM0NzhjMTIuMDM3OTUsMCAyMi41NTY2MSw2LjQ3ODAxIDI4LjI3MjExLDE2LjEzMzk1bDQuODYxMzcsLTAuOTI0NzVjMy4xMjkyNiwtMTguNzY2OTYgMTkuNDM5NzYsLTMzLjA3MzM2IDM5LjA5OTAyLC0zMy4wNzMzNnpNMjc2LjIxODUxLDE0MS4yOTE3MWMtMS4xMDAzNSwzLjUzMzg5IC0yLjc2OTQ3LDYuODEyMDMgLTQuOTIwNTQsOS43MjE3OWgyMC41NDc3NGMtMy42ODc1NCwtMy4wNDgxNCAtNi44MDI0OCwtNi43NjUyNyAtOS4xODU0NSwtMTAuOTQ0Mjl6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMzM2LjU3NTI5LDExOS41MjgxNWMwLDExLjA2ODM1IC04Ljk3MjY0LDIwLjA0MDk5IC0yMC4wNDA5OSwyMC4wNDA5OWMtMTEuMDY4MzUsMCAtMjAuMDQwOTksLTguOTcyNjQgLTIwLjA0MDk5LC0yMC4wNDA5OWMwLC0xMS4wNjgzNSA4Ljk3MjY0LC0yMC4wNDA5OSAyMC4wNDA5OSwtMjAuMDQwOTljMTEuMDY4MzUsMCAyMC4wNDA5OSw4Ljk3MjY0IDIwLjA0MDk5LDIwLjA0MDk5eiIgZmlsbD0iI2ZmNGRhNyIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48cGF0aCBkPSJNMjYxLjE4MywxMzAuMDI1ODFjMCw4Ljk2MDA0IC03LjI2MzYyLDE2LjIyMzY2IC0xNi4yMjM2NiwxNi4yMjM2NmMtOC45NjAwNCwwIC0xNi4yMjM2NiwtNy4yNjM2MiAtMTYuMjIzNjYsLTE2LjIyMzY2YzAsLTguOTYwMDQgNy4yNjM2MiwtMTYuMjIzNjYgMTYuMjIzNjYsLTE2LjIyMzY2YzguOTYwMDQsMCAxNi4yMjM2Niw3LjI2MzYyIDE2LjIyMzY2LDE2LjIyMzY2eiIgZmlsbD0iI2ZmNGRhNyIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48cGF0aCBkPSJNMzg3Ljk2MDM5LDE0NS44NTcyNHY2MC41MTA0M2wtMjEuNjAzMjYsLTEzLjQ3MjE3aC0xNi44OTgzNHYtMzMuNTY2MDdoMTYuODk4MzRsMjEuNTk5MTcsLTEzLjQ3MTEyeiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9nPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjExMi42NzcwNjU6MTEyLjY3NzQwNS0tPg==';
+  const CW = 'data:image/png;base64,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';
+  const CCW = 'data:image/png;base64,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';
 
   const vm = Scratch.vm;
 
@@ -17,6 +19,7 @@
 
   vm.runtime.runtimeOptions.fencing = false;
   vm.renderer.offscreenTouching = true;
+  vm.setInterpolation(false);
 
   function updateCamera(x = cameraX, y = cameraY, scale = cameraZoom / 100, rot = -cameraDirection + 90) {
     rot = rot / 180 * Math.PI;
@@ -56,17 +59,11 @@
         name: 'Camera',
 
         color1: '#ff4da7',
-        color2: '#b93778',
-        color3: '#b93778',
+        color2: '#de4391',
+        color3: '#c83c82',
 
         menuIconURI: icon,
 
-        menus: {
-          sprites: {
-            items: 'getSprites',
-            acceptReporters: true,
-          }
-        },
         blocks: [
           {
             opcode: 'moveSteps',
@@ -82,8 +79,12 @@
           {
             opcode: 'rotateCW',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'turn camera clockwise [val] degrees',
+            text: 'turn camera [image] [val] degrees',
             arguments: {
+              image: {
+                type: Scratch.ArgumentType.IMAGE,
+                dataURI: CW
+              },
               val: {
                 type: Scratch.ArgumentType.ANGLE,
                 defaultValue: 15
@@ -93,8 +94,12 @@
           {
             opcode: 'rotateCCW',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'turn camera counter-clockwise [val] degrees',
+            text: 'turn camera [image] [val] degrees',
             arguments: {
+              image: {
+                type: Scratch.ArgumentType.IMAGE,
+                dataURI: CCW
+              },
               val: {
                 type: Scratch.ArgumentType.ANGLE,
                 defaultValue: 15
@@ -102,18 +107,17 @@
             }
           },
           '---',
-          /* {
+          {
             opcode: 'goTo',
             blockType: Scratch.BlockType.COMMAND,
             text: 'move camera to [sprite]',
             arguments: {
               sprite: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "mouse-pointer",
                 menu: "sprites",
               },
             }
-          }, */
+          },
           {
             opcode: 'setBoth',
             blockType: Scratch.BlockType.COMMAND,
@@ -129,7 +133,7 @@
               },
             }
           },
-          "---",
+          '---',
           {
             opcode: 'setDirection',
             blockType: Scratch.BlockType.COMMAND,
@@ -141,18 +145,17 @@
               }
             }
           },
-          /* {
+          {
             opcode: 'pointTowards',
             blockType: Scratch.BlockType.COMMAND,
             text: 'point camera towards [sprite]',
             arguments: {
               sprite: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "mouse-pointer",
                 menu: "sprites",
               },
             }
-          }, */
+          },
           '---',
           {
             opcode: 'changeX',
@@ -198,7 +201,7 @@
               }
             }
           },
-          "---",
+          '---',
           {
             opcode: 'getX',
             blockType: Scratch.BlockType.REPORTER,
@@ -258,66 +261,75 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'background color',
           },
-        ]
+        ],
+        menus: {
+          sprites: {
+            items: 'getSprites',
+            acceptReporters: true,
+          }
+        },
       };
     }
 
     getSprites(){
-      let sprites = ["mouse-pointer"];
+      let sprites = [];
       Scratch.vm.runtime.targets.forEach(e=>{
         if (e.isOriginal && !e.isStage) sprites.push(e.sprite.name);
       });
+      if (sprites.length === 0) {
+        sprites.push('no sprites exist');
+      }
       return sprites;
     }
 
-    setBoth(ARGS, util) {
-      cameraX = +ARGS.x;
-      cameraY = +ARGS.y;
+    setBoth(args, util) {
+      cameraX = +args.x;
+      cameraY = +args.y;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    changeZoom(ARGS, util) {
-      cameraZoom += +ARGS.val;
+    changeZoom(args, util) {
+      cameraZoom += +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    setZoom(ARGS, util) {
-      cameraZoom = +ARGS.val;
+    setZoom(args, util) {
+      cameraZoom = +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    changeX(ARGS, util) {
-      cameraX += +ARGS.val;
+    changeX(args, util) {
+      cameraX += +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    setX(ARGS, util) {
-      cameraX = +ARGS.val;
+    setX(args, util) {
+      cameraX = +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    changeY(ARGS, util) {
-      cameraY += +ARGS.val;
+    changeY(args, util) {
+      cameraY += +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    setY(ARGS, util) {
-      cameraY = +ARGS.val;
+    setY(args, util) {
+      cameraY = +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    setDirection(ARGS, util) {
-      cameraDirection = +ARGS.val;
+    setDirection(args, util) {
+      cameraDirection = +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    rotateCW(ARGS, util) {
-      cameraDirection = cameraDirection + +ARGS.val;
+    rotateCW(args, util) {
+      cameraDirection = cameraDirection + +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    rotateCCW(ARGS, util) {
-      cameraDirection = cameraDirection - +ARGS.val;
+    rotateCCW(args, util) {
+      cameraDirection = cameraDirection - +args.val;
       updateCamera();
       vm.runtime.requestRedraw();
     }
@@ -333,29 +345,44 @@
     getDirection() {
       return cameraDirection;
     }
-    setCol(ARGS, util) {
-      cameraBG = ARGS.val;
-      Scratch.vm.renderer.setBackgroundColor(
-        parseInt(cameraBG.substring(1, 3), 16) / 255,
-        parseInt(cameraBG.substring(3, 5), 16) / 255,
-        parseInt(cameraBG.substring(5, 7), 16) / 255
-      );
+    setCol(args, util) {
+      const rgb = Scratch.Cast.toRgbColorList(args.val);
+      Scratch.vm.renderer.setBackgroundColor(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
+      cameraBG = args.val;
     }
     getCol() {
       return cameraBG;
     }
-    moveSteps(ARGS) {
+    moveSteps(args) {
       let dir = (-cameraDirection + 90) * Math.PI / 180;
-      cameraX += ARGS.val * Math.cos(dir);
-      cameraY += ARGS.val * Math.sin(dir);
+      cameraX += args.val * Math.cos(dir);
+      cameraY += args.val * Math.sin(dir);
       updateCamera();
       vm.runtime.requestRedraw();
     }
-    goTo() {
-
+    goTo(args, util) {
+      const target = Scratch.Cast.toString(args.sprite);
+      const sprite = vm.runtime.getSpriteTargetByName(target);
+      if (!sprite) return;
+      cameraX = Math.round(sprite.x);
+      cameraY = Math.round(sprite.y);
+      updateCamera();
+      vm.runtime.requestRedraw();
     }
-    pointTowards() {
-
+    pointTowards(args, util) {
+      const target = Scratch.Cast.toString(args.sprite);
+      const sprite = vm.runtime.getSpriteTargetByName(target);
+      if (!sprite) return;
+      let targetX = sprite.x;
+      let targetY = sprite.y;
+      const dx = targetX - cameraX;
+      const dy = targetY - cameraY;
+      cameraDirection = 90 - this.radToDeg(Math.atan2(dy, dx));
+      updateCamera();
+      vm.runtime.requestRedraw();
+    }
+    radToDeg(rad) {
+      return rad * 180 / Math.PI;
     }
   }
 

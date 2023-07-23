@@ -2,7 +2,6 @@
   "use strict";
 
   //put these back here so I don't have to define scratch.cast again.
-  let hackyTouchFix = false; //! IOS specific issue.
   let notMobile = false;
 
   /* globals Accelerometer, Gyro */
@@ -31,7 +30,6 @@
       return;
     }
 
-    // @ts-expect-error - not typed yet
     if (!await Scratch.canRecordAudio()) {
       return;
     }
@@ -69,6 +67,10 @@
     rotationY: 0,
     rotationZ: 0,
   };
+  const deviceStatus = {
+    gyroscope: false,
+    accelerometer: false,
+  };
 
   const initializeSensors = () => {
     if (initializedSensors) {
@@ -83,11 +85,13 @@
         });
         accelerometer.addEventListener("error", (e) => {
           console.error("accelerometer error", e.error);
+          deviceStatus.accelerometer = false;
         });
         accelerometer.addEventListener("reading", () => {
           deviceVelocity.x = accelerometer.x;
           deviceVelocity.y = accelerometer.y;
           deviceVelocity.z = accelerometer.z;
+          deviceStatus.accelerometer = true;
         });
         accelerometer.start();
       } catch (e) {
@@ -104,11 +108,13 @@
         });
         gyro.addEventListener("error", (e) => {
           console.error("gyro error", e.error);
+          deviceStatus.gyroscope = false;
         });
         gyro.addEventListener("reading", () => {
           deviceVelocity.rotationX = gyro.x;
           deviceVelocity.rotationY = gyro.y;
           deviceVelocity.rotationZ = gyro.z;
+          deviceStatus.gyroscope = true;
         });
       } catch (e) {
         console.error("error setting up gyro", e);
@@ -182,9 +188,6 @@
 
   /** @param {TouchEvent} event */
   function handleTouchStart(event) {
-    if (hackyTouchFix) {
-      event.stopImmediatePropagation();
-    }
     event.preventDefault();
     const changedTouches = event.changedTouches;
     const changedTouchesKeys = Object.keys(changedTouches);
@@ -205,9 +208,6 @@
 
   /** @param {TouchEvent} event */
   function handleTouchMove(event) {
-    if (hackyTouchFix) {
-      event.stopImmediatePropagation();
-    }
     event.preventDefault();
     const changedTouches = event.changedTouches;
     const canvasPos = canvas.getBoundingClientRect();
@@ -227,9 +227,6 @@
 
   /** @param {TouchEvent} event */
   function handleTouchEnd(event) {
-    if (hackyTouchFix) {
-      event.stopImmediatePropagation();
-    }
     event.preventDefault();
     const changedTouches = event.changedTouches;
     const changedTouchesKeys = Object.keys(changedTouches);
@@ -291,22 +288,22 @@
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI0NS45NzY4OCIgaGVpZ2h0PSI0Ni40NzQ2NiIgdmlld0JveD0iMCwwLDQ1Ljk3Njg4LDQ2LjQ3NDY2Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjE1LjAzOTI5LC0xNTguOTgzODMpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxnIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggZD0iTTIzOS4xODkyOSwxNjUuNDc3MjNjMC4xNSwtMC4xIDAuNCwtMC4wNSAwLjQ1LDAuMTVsMS4zLDUuMzVjMCwwIDMuMiwyLjM1IDQuMTUsNGMxLjYsMi43NSAxLjY1LDUgMS42NSw1YzAsMCAzLjU1LDEuMDUgNC4xNSwzLjljMC42LDIuODUgLTEuNiw4LjI1IC0xMSwxMC4xYy05LjQsMS44NSAtMTYuOTUsLTAuNyAtMjAuNSwtNi40Yy0zLjU1LC01LjcgMi4wNSwtMTIuNSAxLjc1LC0xMi4xbC0xLjA1LC04Ljk1Yy0wLjA1LC0wLjIgMC4yLC0wLjM1IDAuNCwtMC4yNWw2LjA1LDMuOTVjMCwwIDIuMjUsLTAuODUgNC42LC0wLjk1YzEuNCwtMC4xIDIuNiwwIDMuNzUsMC4yeiIgZmlsbD0iIzNiYTJjZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjQ2LjU4OTI5LDE4MC4xNzcyM2MwLDAgMy40NSwwLjkgNC4wNSwzLjc1YzAuNiwyLjg1IC0xLjgsOCAtMTEuMSw5LjhjLTEyLjEsMi41IC0xNy44NSwtNC43IC0xNC41LC0xMGMzLjM1LC01LjM1IDkuMSwtMC44IDEzLjMsLTEuMWMzLjYsLTAuMjUgNCwtMy40IDguMjUsLTIuNDV6IiBmaWxsPSIjYTdlMmZiIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjU1Ljc4OTI5LDE4MC43MjcyM2MtMi4zNSwxLjkgLTUuOTUsMS45NSAtNS45NSwxLjk1IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjU1LjEzOTI5LDE4Ni4zMjcyM2MtMy4xNSwwLjI1IC01LjEsLTAuNyAtNS4xLC0wLjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFiNTU2ZSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzguMTM5MjksMTgxLjMyNzIzYzEuMDUsMCAyLjE1LDAuMSAyLjIsMC40NWMwLjA1LDAuNyAtMC43LDIuMSAtMS41LDIuMTVjLTAuOSwwLjEgLTMsLTEuMTUgLTMsLTEuOTVjLTAuMDUsLTAuNiAxLjMsLTAuNjUgMi4zLC0wLjY1eiIgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxNS42MzkyOSwxODAuNTc3MjNjMCwwIDQuMywxLjQgNi4wNSwyLjk1IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjIxLjgzOTI5LDE4NS4yNzcyM2MtMi4xNSwwLjg1IC01Ljg1LDAuMyAtNS44NSwwLjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFiNTU2ZSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxnIGZpbGw9IiMxYjU1NmUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciI+PHBhdGggZD0iTTI0My44MzkyOSwxNzguMzI3MjNjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAgMC45LDAuNDUgMC45LDEiLz48L2c+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjMxLjMzOTI5LDE3OS43NzcyM2MwLDAuNTUgLTAuNCwxIC0wLjksMWMtMC41LDAgLTAuOSwtMC40NSAtMC45LC0xYzAsLTAuNTUgMC40LC0xIDAuOSwtMWMwLjUsMC4wNSAwLjksMC40NSAwLjksMSIvPjwvZz48L2c+PHBhdGggZD0iTTIxOC45ODM4MywyMDEuMDE2MTl2LTQyLjAzMjM1aDQyLjAzMjM1djQyLjAzMjM1eiIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yNDMuNDc1LDE3NS43NjI5NWMwLjE1LC0wLjEgMC40LC0wLjA1IDAuNDUsMC4xNWwxLjMsNS4zNWMwLDAgMy4yLDIuMzUgNC4xNSw0YzEuNiwyLjc1IDEuNjUsNSAxLjY1LDVjMCwwIDMuNTUsMS4wNSA0LjE1LDMuOWMwLjYsMi44NSAtMS42LDguMjUgLTExLDEwLjFjLTkuNCwxLjg1IC0xNi45NSwtMC43IC0yMC41LC02LjRjLTMuNTUsLTUuNyAyLjA1LC0xMi41IDEuNzUsLTEyLjFsLTEuMDUsLTguOTVjLTAuMDUsLTAuMiAwLjIsLTAuMzUgMC40LC0wLjI1bDYuMDUsMy45NWMwLDAgMi4yNSwtMC44NSA0LjYsLTAuOTVjMS40LC0wLjEgMi42LDAgMy43NSwwLjJ6IiBmaWxsPSIjM2JhMmNlIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yNTAuODc1LDE5MC40NjI5NWMwLDAgMy40NSwwLjkgNC4wNSwzLjc1YzAuNiwyLjg1IC0xLjgsOCAtMTEuMSw5LjhjLTEyLjEsMi41IC0xNy44NSwtNC43IC0xNC41LC0xMGMzLjM1LC01LjM1IDkuMSwtMC44IDEzLjMsLTEuMWMzLjYsLTAuMjUgNCwtMy40IDguMjUsLTIuNDV6IiBmaWxsPSIjYTdlMmZiIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjYwLjA3NSwxOTEuMDEyOTVjLTIuMzUsMS45IC01Ljk1LDEuOTUgLTUuOTUsMS45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI1OS40MjUsMTk2LjYxMjk1Yy0zLjE1LDAuMjUgLTUuMSwtMC43IC01LjEsLTAuNyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI0Mi40MjUsMTkxLjYxMjk1YzEuMDUsMCAyLjE1LDAuMSAyLjIsMC40NWMwLjA1LDAuNyAtMC43LDIuMSAtMS41LDIuMTVjLTAuOSwwLjEgLTMsLTEuMTUgLTMsLTEuOTVjLTAuMDUsLTAuNiAxLjMsLTAuNjUgMi4zLC0wLjY1eiIgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxOS45MjUsMTkwLjg2Mjk1YzAsMCA0LjMsMS40IDYuMDUsMi45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIyNi4xMjUsMTk1LjU2Mjk1Yy0yLjE1LDAuODUgLTUuODUsMC4zIC01Ljg1LDAuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjQ4LjEyNSwxODguNjEyOTVjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAgMC45LDAuNDUgMC45LDEiLz48L2c+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjM1LjYyNSwxOTAuMDYyOTVjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAuMDUgMC45LDAuNDUgMC45LDEiLz48L2c+PC9nPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjI0Ljk2MDcwOTI4NTcxNDMzOjIxLjAxNjE2NS0tPg==";
 
   const userAgent = navigator.userAgent;
+  let supportsTouches = true;
   if (
-    userAgent.includes("Safari") ||
-    userAgent.includes("iPhone") ||
-    userAgent.includes("iPod") ||
-    userAgent.includes("iPad")
+    userAgent.includes("Safari") &&
+    /^((?!chrome|android).)*safari/i.test(userAgent)
   ) {
-    //* <-- Its a problem with all IOS browsers from what I see.
-    hackyTouchFix = true;
-  }
-  if (
+    //* Its a problem with all safari browsers from what I see now which is odd since apple says its supported?
+    supportsTouches = false;
+  } else if (
     userAgent.includes("Windows") ||
     userAgent.includes("Mac OS") ||
-    userAgent.includes("Linux")
+    userAgent.includes("Linux") ||
+    userAgent.includes("CrOS")
   ) {
-    //* <-- Most chrome OS devices support touch events with up to 10 fingers.
+    //* <-- Most chrome OS devices support touch events with up to 10 fingers but include a check to make it better anyways.
     notMobile = true;
+    supportsTouches = navigator.maxTouchPoints > 0;
   }
 
   const maxTouchPoints = navigator.maxTouchPoints;
@@ -328,6 +325,8 @@
 
   const touchPointsArray = makeArrayOfTouches(); //* <-- Do this for devices that really can't support that many touches.
 
+  const alreadyTapped = {};
+
   class SensingPlus {
     getInfo() {
       return {
@@ -338,6 +337,21 @@
         id: "obviousalexsensing",
         name: "Sensing+",
         blocks: [
+          {
+            blockType: "label",
+            text: "Touch blocks are broken in Safari.",
+          },
+          {
+            blockType: "label",
+            text: "We will try to fix them soon.",
+          },
+          {
+            opcode: "supportsTouches",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Supports touches?",
+            blockIconURI: touchIco,
+            arguments: {},
+          },
           {
             opcode: "getMaxTouches",
             blockType: Scratch.BlockType.REPORTER,
@@ -563,6 +577,38 @@
           },
           "---",
           {
+            opcode: "getClipBoard",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Copied Contents",
+            blockIconURI: clipboardIco,
+            disableMonitor: true,
+          },
+          {
+            opcode: "setClipBoard",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Set clipboard to [TEXT]",
+            blockIconURI: clipboardIco,
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "",
+              },
+            },
+          },
+          "---",
+          {
+            opcode: "isPackaged",
+            blockIconURI: packagedIco,
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Is Packaged?",
+            disableMonitor: false,
+          },
+          "---",
+          {
+            blockType: "label",
+            text: "Speech recording is unreliable",
+          },
+          {
             opcode: "recording",
             blockType: Scratch.BlockType.COMMAND,
             text: "Turn speech recording [toggle]",
@@ -588,25 +634,21 @@
           },
           "---",
           {
-            opcode: "getClipBoard",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Copied Contents",
-            blockIconURI: clipboardIco,
-            disableMonitor: true,
+            blockType: "label",
+            text: "Needs a gyroscope or accelerometer",
           },
           {
-            opcode: "setClipBoard",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Set clipboard to [TEXT]",
-            blockIconURI: clipboardIco,
+            opcode: "hasDevice",
+            blockIconURI: deviceVelIco,
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Has a [device]?",
             arguments: {
-              TEXT: {
+              device: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "",
+                menu: "deviceMenu",
               },
             },
           },
-          "---",
           {
             opcode: "getDeviceSpeed",
             blockIconURI: deviceVelIco,
@@ -624,18 +666,15 @@
               },
             },
           },
-          {
-            opcode: "isPackaged",
-            blockIconURI: packagedIco,
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "Is Packaged?",
-            disableMonitor: false,
-          },
         ],
         menus: {
           fingerIDMenu: {
             acceptReporters: true,
             items: touchPointsArray,
+          },
+          deviceMenu: {
+            acceptReporters: true,
+            items: ["gyroscope", "accelerometer"],
           },
           coordmenu: {
             acceptReporters: true,
@@ -674,6 +713,65 @@
           },
         },
       };
+    }
+
+    _touchUtil = {
+      blankExpression: () => {},
+      isTouchingAnyFinger(util, success, fail) {
+        success = success || this.blankExpression;
+        if (success == null) {
+          success = this.blankExpression;
+        }
+        fail = fail || this.blankExpression;
+        if (fail == null) {
+          fail = this.blankExpression;
+        }
+
+        for (let index = 0; index < fingerPositions.length; index++) {
+          const fingerPos = fingerPositions[index];
+          if (fingerPos != null) {
+            const touching = util.target.isTouchingPoint(
+              fingerPos[0],
+              fingerPos[1]
+            );
+            if (touching) {
+              success(index);
+              return true;
+            }
+          }
+        }
+        fail(-1);
+        return false;
+      },
+
+      isTouchingSpecificFinger(id, util, success, fail) {
+        success = success || this.blankExpression;
+        if (success == null) {
+          success = this.blankExpression;
+        }
+        fail = fail || this.blankExpression;
+        if (fail == null) {
+          fail = this.blankExpression;
+        }
+
+        const fingerPos = fingerPositions[Scratch.Cast.toNumber(id) - 1];
+        if (fingerPos != null) {
+          const touching = util.target.isTouchingPoint(
+            fingerPos[0],
+            fingerPos[1]
+          );
+          if (touching) {
+            success(id);
+            return true;
+          }
+        }
+        fail(id);
+        return false;
+      },
+    };
+
+    supportsTouches() {
+      return supportsTouches;
     }
 
     getMaxTouches() {
@@ -752,6 +850,13 @@
       return recording;
     }
 
+    hasDevice({ device }) {
+      if (deviceStatus[device]) {
+        return deviceStatus[device];
+      }
+      return false;
+    }
+
     getDeviceSpeed({ type, axis }) {
       initializeSensors();
       if (type === "positional") {
@@ -777,7 +882,6 @@
 
     getClipBoard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        // @ts-expect-error - not typed yet
         return Scratch.canReadClipboard().then(allowed => {
           if (allowed) {
             return navigator.clipboard.readText();
@@ -827,7 +931,7 @@
               targetName: target.getName(),
               variableId: listId,
             };
-            if (listVar.type == "list"){
+            if (listVar.type == "list") {
               lists.push({
                 text: `${target.getName()}: ${listVar.name}`,
                 value: JSON.stringify(listData),
@@ -848,47 +952,19 @@
     }
 
     touchingFinger(args, util) {
-      for (let index = 0; index < fingerPositions.length; index++) {
-        const fingerPos = fingerPositions[index];
-        if (fingerPos != null) {
-          const touching = util.target.isTouchingPoint(
-            fingerPos[0],
-            fingerPos[1]
-          );
-          if (touching) {
-            return true;
-          }
-        }
-      }
-      return false;
+      return this._touchUtil.isTouchingAnyFinger(util);
     }
 
     touchingSpecificFinger({ ID }, util) {
-      const fingerPos = fingerPositions[ID];
-      if (fingerPos != null) {
-        const touching = util.target.isTouchingPoint(
-          fingerPos[0],
-          fingerPos[1]
-        );
-        return touching;
-      }
-      return false;
+      return this._touchUtil.isTouchingSpecificFinger(ID, util);
     }
 
     getTouchingFingerID(args, util) {
-      for (let index = 0; index < fingerPositions.length; index++) {
-        const fingerPos = fingerPositions[index];
-        if (fingerPos != null) {
-          const touching = util.target.isTouchingPoint(
-            fingerPos[0],
-            fingerPos[1]
-          );
-          if (touching) {
-            return index + 1;
-          }
-        }
-      }
-      return 0;
+      let TouchingFingerID = 0;
+      this._touchUtil.isTouchingAnyFinger(util, (FID) => {
+        TouchingFingerID = FID + 1;
+      });
+      return TouchingFingerID;
     }
 
     fingerPosition({ ID, PositionType }) {
@@ -934,7 +1010,6 @@
       if (casted === "INVALID") {
         return "";
       }
-      // @ts-expect-error - this will never be "ANY" due to false in toListIndex above
       return variable.value[casted - 1];
     }
 
