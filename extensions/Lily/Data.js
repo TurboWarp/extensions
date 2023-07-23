@@ -450,7 +450,6 @@
       list._monitorUpToDate = false;
     }
 
-    /* To do: simplify this, maybe */
     replaceAllOfItem(args, util) {
       const list = getVarObjectFromName(args.LIST, util, 'list');
       if (!list) return;
