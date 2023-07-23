@@ -54,7 +54,8 @@
             filter: [Scratch.TargetType.SPRITE],
             opcode: 'rotationStyle',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'rotation style'
+            text: 'rotation style',
+            disableMonitor: true
           },
           '---',
           {
