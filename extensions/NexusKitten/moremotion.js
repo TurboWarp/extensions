@@ -278,17 +278,15 @@
     }
 
     touchingxy(args, util) {
-      // I can tell this is not the most efficient way to do this. I still don't feel like fixing it.
-      // This method also doesn't account for rotation or non-square shapes. I'm not sure if there's a workaround for this.
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
-
-      const costumeIndex = util.target.getCostumeIndexByName(Scratch.Cast.toString(util.target.getCostumes()[util.target.currentCostume].name));
-      const costume = util.target.sprite.costumes[costumeIndex];
-      const width = Math.ceil(Scratch.Cast.toNumber(costume.size[0]));
-      const height = Math.ceil(Scratch.Cast.toNumber(costume.size[1]));
-
-      return x >= util.target.x - (width / 2) && util.target.x + (width / 2) >= x && y >= util.target.y - (height / 2) && util.target.y + (height / 2) >= y;
+      const drawable = Scratch.vm.renderer._allDrawables[util.target.drawableID];
+      if (!drawable) {
+        return false;
+      }
+      // Position should technically be a twgl vec3, but it doesn't actually need to be
+      drawable.updateCPURenderAttributes();
+      return drawable.isTouching([x, y]);
     }
 
     spritewh(args, util) {
