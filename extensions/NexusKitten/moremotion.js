@@ -14,6 +14,11 @@
         color2: '#3373cc',
         blocks: [
           {
+            filter: [Scratch.TargetType.STAGE],
+            blockType: Scratch.BlockType.LABEL,
+            text: 'Stage selected: no motion blocks'
+          },
+          {
             filter: [Scratch.TargetType.SPRITE],
             opcode: 'changexy',
             blockType: Scratch.BlockType.COMMAND,
