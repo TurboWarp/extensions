@@ -4833,10 +4833,11 @@ function WebAudioTinySynth(opt){
   JZZ.synth.Tiny.version = function() { return _version; };
 
 });
+(function(Scratch) {
+  'use strict';
 var port = null;
 JZZ.synth.Tiny.register('Web Audio');
 class JZ {
-  'use strict';
     getInfo() {
       
       return {
@@ -4996,3 +4997,5 @@ class JZ {
     }
   }
   Scratch.extensions.register(new JZ());
+
+})(Scratch);
