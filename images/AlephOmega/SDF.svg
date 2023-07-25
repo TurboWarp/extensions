@@ -1,29 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg viewBox="0 300 600 300" width="300px" height="600px" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
-  <rect x="-14.782" y="290.864" width="663.268" height="337.713" style="stroke: rgb(0, 0, 0);"/>
-  <g transform="matrix(1, 0, 0, 1, -17.44862, -12.967016)">
-    <text style="fill: none; fill-rule: evenodd; font-family: Arial, sans-serif; font-size: 113.6px; paint-order: stroke; stroke: rgb(34, 0, 0); stroke-dashoffset: 25px; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 1; stroke-width: 200px; white-space: pre;" x="45.466" y="550.565" bx:origin="0 0.000002">SDF</text>
-    <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 200px; stroke: rgb(34, 0, 0);" cx="375.402" cy="423.845" rx="77.342" ry="77.342"/>
-    <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 200px; stroke: rgb(34, 0, 0);" transform="matrix(0.993502, 0.113814, -0.113814, 0.993502, 244.970245, 379.789154)"/>
-  </g>
-  <g transform="matrix(1, 0, 0, 1, -17.116037, -12.117466)">
-    <text style="fill: none; fill-rule: evenodd; font-family: Arial, sans-serif; font-size: 113.6px; paint-order: stroke; stroke: rgb(58, 0, 0); stroke-dashoffset: 25px; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 1; stroke-width: 150px; white-space: pre;" x="45.466" y="550.565" bx:origin="0 0.000002">SDF</text>
-    <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 150px; stroke: rgb(58, 0, 0);" cx="375.402" cy="423.845" rx="77.342" ry="77.342"/>
-    <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 150px; stroke: rgb(58, 0, 0);" transform="matrix(0.993502, 0.113814, -0.113814, 0.993502, 244.970245, 379.789154)"/>
-  </g>
-  <g transform="matrix(1, 0, 0, 1, -12.335494, -12.143744)">
-    <text style="fill: none; fill-rule: evenodd; font-family: Arial, sans-serif; font-size: 113.6px; paint-order: stroke; stroke: rgb(80, 0, 0); stroke-dashoffset: 25px; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 1; stroke-width: 100px; white-space: pre;" x="45.466" y="550.565" bx:origin="0 0.000002">SDF</text>
-    <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 100px; stroke: rgb(80, 0, 0);" cx="375.402" cy="423.845" rx="77.342" ry="77.342"/>
-    <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 100px; stroke: rgb(80, 0, 0);" transform="matrix(0.993502, 0.113814, -0.113814, 0.993502, 244.970245, 379.789154)"/>
-  </g>
-  <g transform="matrix(1, 0, 0, 1, -12.157664, -10.131387)">
-    <text style="fill: none; fill-rule: evenodd; font-family: Arial, sans-serif; font-size: 113.6px; paint-order: stroke; stroke: rgb(140, 0, 0); stroke-dashoffset: 25px; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 1; stroke-width: 70px; white-space: pre;" x="45.466" y="550.565" bx:origin="0 0.000002">SDF</text>
-    <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke: rgb(140, 0, 0); stroke-width: 70px;" cx="375.402" cy="423.845" rx="77.342" ry="77.342"/>
-    <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke: rgb(140, 0, 0); stroke-width: 70px;" transform="matrix(0.993502, 0.113814, -0.113814, 0.993502, 244.970245, 379.789154)"/>
-  </g>
-  <g>
-    <text style="fill: rgb(0, 255, 21); fill-rule: evenodd; font-family: Arial, sans-serif; font-size: 113.6px; paint-order: stroke; stroke: rgb(255, 0, 0); stroke-dashoffset: 25px; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 1; stroke-width: 27px; white-space: pre;" x="34.158" y="540.817" bx:origin="0 0.000002">SDF</text>
-    <ellipse style="stroke: rgb(255, 0, 0); stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: rgb(34, 255, 0); stroke-width: 37px;" cx="364.094" cy="414.097" rx="77.342" ry="77.342"/>
-    <rect x="233.436" y="74.827" width="112.901" height="87.985" style="fill: rgb(0, 255, 13); stroke: rgb(255, 0, 0); stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; stroke-width: 33px;" transform="matrix(0.993502, 0.113814, -0.113814, 0.993502, 233.662399, 370.040924)"/>
-  </g>
+<!doctype html>
+<svg viewBox="9.603 92.915 663.268 337.713" width="663.268" height="337.713">
+  <rect x="9.603" y="92.915" width="663.268" height="337.713" style="stroke: rgb(0, 0, 0);"></rect>
+  <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 200px; stroke: rgb(34, 0, 0);" cx="382.338" cy="212.929" rx="77.342" ry="77.342"></ellipse>
+  <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 200px; stroke: rgb(34, 0, 0);" transform="matrix(0.9935020804405212, 0.11381399631500244, -0.11381399631500244, 0.9935020804405212, 251.90623474121097, 168.87315368652344)"></rect>
+  <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 150px; stroke: rgb(58, 0, 0);" cx="382.671" cy="213.779" rx="77.342" ry="77.342"></ellipse>
+  <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 150px; stroke: rgb(58, 0, 0);" transform="matrix(0.9935020804405212, 0.11381399631500244, -0.11381399631500244, 0.9935020804405212, 252.23924255371097, 169.72315979003906)"></rect>
+  <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 100px; stroke: rgb(80, 0, 0);" cx="387.452" cy="213.752" rx="77.342" ry="77.342"></ellipse>
+  <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke-width: 100px; stroke: rgb(80, 0, 0);" transform="matrix(0.9935020804405212, 0.11381399631500244, -0.11381399631500244, 0.9935020804405212, 257.0202331542969, 169.69615173339844)"></rect>
+  <ellipse style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke: rgb(140, 0, 0); stroke-width: 70px;" cx="387.629" cy="215.765" rx="77.342" ry="77.342"></ellipse>
+  <rect x="233.436" y="74.827" width="112.901" height="87.985" style="stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: none; stroke: rgb(140, 0, 0); stroke-width: 70px;" transform="matrix(0.9935020804405212, 0.11381399631500244, -0.11381399631500244, 0.9935020804405212, 257.1972351074219, 171.7091522216797)"></rect>
+  <ellipse style="stroke: rgb(255, 0, 0); stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; fill: rgb(34, 255, 0); stroke-width: 37px;" cx="388.479" cy="216.148" rx="77.342" ry="77.342"></ellipse>
+  <rect x="233.436" y="74.827" width="112.901" height="87.985" style="fill: rgb(0, 255, 13); stroke: rgb(255, 0, 0); stroke-linecap: round; stroke-linejoin: round; paint-order: stroke; stroke-width: 33px;" transform="matrix(0.9935020804405212, 0.11381399631500244, -0.11381399631500244, 0.9935020804405212, 258.0473937988281, 172.09193420410156)"></rect>
+  <path style="stroke: rgb(0, 0, 0); fill: rgb(115, 255, 0);" d="M 117.155 283.333 L 129.113 282.49 C 129.113 282.49 119.624 261.862 95.283 264.188 C 70.942 266.514 64.976 276.872 70.194 294.89 C 75.412 312.908 127.414 304.794 118.265 324.636 C 109.116 344.478 74.86 326.723 74.734 325.281 C 74.608 323.839 64.874 325.577 64.874 325.577 C 64.874 325.577 80.499 345.215 102.659 344.753 C 124.819 344.291 128.172 332.418 128.815 325.606 C 129.458 318.794 131.075 304.675 110.223 299.945 C 89.371 295.215 77.742 298.077 77.614 283.701 C 77.486 269.325 102.171 273.263 102.171 273.263 C 111.397 275.321 117.454 277.751 117.155 283.333 Z"></path>
+  <path style="stroke: rgb(0, 0, 0); fill: rgb(115, 255, 0);" d="M 142.857 265.797 L 143.558 344.172 L 181.489 344.395 C 181.489 344.395 211.858 340.814 209.751 304.859 C 207.644 268.904 194.599 267.003 177.208 265.696 C 159.817 264.389 143.728 266.351 142.857 265.797 Z"></path>
+  <path style="stroke: rgb(0, 0, 0); fill: rgb(115, 255, 0);" d="M 225.386 265.026 L 225.187 343.814 L 235.625 343.041 L 235.625 311.986 L 279.407 310.908 L 278.505 300.471 L 237.012 301.248 L 237.14 273.203 L 280.821 272.941 L 280.435 263.792 L 225.386 265.026 Z"></path>
 </svg>
