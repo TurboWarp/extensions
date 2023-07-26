@@ -236,7 +236,10 @@
       "newV3fromValue",
       Scratch.BlockType.REPORTER,
       ({ value }) => {
-        return JSON.stringify([value, value, value]);
+        if (typeof value == "number") {
+          return JSON.stringify([value, value, value]);
+        }
+        return JSON.stringify([0, 0, 0]);
       }
     )
     .addArgument("value", 0);
