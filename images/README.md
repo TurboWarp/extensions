@@ -243,3 +243,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Alestore/nfcwarp.svg
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636726352
+
+## veggiecan/LongmanDictionary.svg 
+- Created by [veggiecan](https://github.com/veggiecan0419) using the turbowarp costume editor
+- The ship is [this](https://www.ldoceonline.com/external/images/logo_home_smartphone.svg?version=1.2.61) logo from the [ldoceonline](https://www.ldoceonline.com/) website, just coloured black
