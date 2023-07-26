@@ -243,3 +243,8 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Alestore/nfcwarp.svg
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636726352
+
+## Veggiecan/browserfullscreen.svg
+ - Drawn by hand by Veggiecan0419
+ - Convererted to svg using [PicSvg](https://picsvg.com)
+ - Everything else done by Veggiecan0419 in the [Turbowarp costume editor](https://turbowarp.org/editor)
