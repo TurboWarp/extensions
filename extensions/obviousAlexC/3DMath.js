@@ -203,15 +203,6 @@
   const math_3d = new ExtensionBuilder("3D Math", "obviousAlexCMath3d");
   const d2r = 0.0174533;
 
-  const isJSON = () => {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  };
-
   math_3d.setMenuIcon(cubeICO);
 
   math_3d.setGlobalBlockIcon(blockICO);
