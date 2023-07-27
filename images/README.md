@@ -243,3 +243,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Alestore/nfcwarp.svg
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636726352
+
+## lolemo/scratchGPT
+ - Created by [@LOLEMO](https://github.com/LOLEMO/)
+ - Based on [CGP Grey's video](https://youtu.be/wvWpdrfoEv0)
