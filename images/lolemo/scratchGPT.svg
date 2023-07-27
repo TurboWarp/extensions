@@ -1,0 +1,38 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 601 301" width="601" height="301">
+	<title>costume1 (1)-svg</title>
+	<style>
+		tspan { white-space:pre } 
+		.s0 { fill: #2c4733 } 
+		.s1 { fill: #253c2b } 
+		.t2 { font-size: 40px;fill: #dbdbdb;font-family: "Sans  Serif" } 
+		.s3 { fill: #db8383;stroke: #000000;stroke-miterlimit:10;stroke-width: 8;stroke-dasharray: NaN } 
+		.s4 { fill: #dcdcdc;stroke: #000000;stroke-miterlimit:10;stroke-width: 8;stroke-dasharray: NaN } 
+		.s5 { fill: #7a99db;stroke: #000000;stroke-miterlimit:10;stroke-width: 8;stroke-dasharray: NaN } 
+	</style>
+	<g id="Layer">
+		<g id="Layer">
+			<path id="Layer" class="s0" d="m-21 359.3v-398.3h659v398.3z"/>
+			<path id="Layer" class="s1" d="m1.4 64v-59.2h244.4v59.2z"/>
+			<path id="Layer" class="s1" d="m126 144v-62.6h250.5v62.6z"/>
+			<path id="Layer" class="s1" d="m380.6 47v-49.7h170.8v49.7z"/>
+			<path id="Layer" class="s1" d="m451.3 178.3v-61.9h149.1v61.9z"/>
+			<path id="Layer" class="s1" d="m2.8 226v-55.2h167.4v55.2z"/>
+			<path id="Layer" class="s1" d="m269.6 214.4v-50.4h168.8v50.4z"/>
+			<path id="Layer" class="s1" d="m117.8 310.4v-62h198.8v62z"/>
+			<path id="Layer" class="s1" d="m413.2 290v-48.4h143.6v48.4z"/>
+			<text id="GPT" style="transform: matrix(3.33,0,0,3.33,61.158,192.142)" >
+				<tspan x="0" y="0" class="t2">GPT
+</tspan>
+			</text>
+			<path id="Layer" class="s3" d="m362.7 178.3c-12 0-21.7-10.6-21.7-23.8 0-13.1 9.7-23.7 21.7-23.7 12.1 0 21.8 10.6 21.8 23.7 0 13.2-9.7 23.8-21.8 23.8z"/>
+			<path id="Layer" class="s3" d="m440 131.5c-23.1 0-41.7-9.7-41.7-21.8 0-12 18.6-21.7 41.7-21.7 23.1 0 41.7 9.7 41.7 21.7 0 12.1-18.6 21.8-41.7 21.8z"/>
+			<path id="Layer" class="s4" d="m379.6 150.7h109.6v199.4h-109.6z"/>
+			<path id="Layer" class="s4" d="m354.7 181.1c0-17.1 0-41.7 0-52.8 0-10.8 14.8-25.9 27.4-25.9 19.4 0 77.3 0 109.6 0 13.4 0 22.4 9.9 22.4 22.9 0 20.1 0 47.8 0 57.8 0 7.4-7.2 16-18.4 16-33.2 0-101.4 0-120.6 0-9.9 0-20.4-7.6-20.4-18z"/>
+			<path id="Layer" class="s3" d="m514.9 174.5c-8.7 0-15.8-10.6-15.8-23.7 0-13.1 7.1-23.7 15.8-23.7 8.7 0 15.7 10.6 15.7 23.7 0 13.1-7 23.7-15.7 23.7z"/>
+			<g id="Layer">
+				<path id="Layer" class="s5" d="m396.6 160.5c-9.7 0-17.5-7.8-17.5-17.5 0-9.7 7.8-17.5 17.5-17.5 9.7 0 17.5 7.8 17.5 17.5 0 9.7-7.8 17.5-17.5 17.5z"/>
+				<path id="Layer" class="s5" d="m451.4 160.5c-9.7 0-17.5-7.8-17.5-17.5 0-9.7 7.8-17.5 17.5-17.5 9.7 0 17.5 7.8 17.5 17.5 0 9.7-7.8 17.5-17.5 17.5z"/>
+			</g>
+		</g>
+	</g>
+</svg>
