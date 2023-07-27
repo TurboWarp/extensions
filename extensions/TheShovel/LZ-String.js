@@ -197,7 +197,6 @@
         return LZString
     });
     /* eslint-enable */
-    
     class lzcompress {
         getInfo() {
             return {
@@ -254,7 +253,7 @@
                 return LZString.compressToUint8Array(args.TEXT);
             } else if (args.TYPE == 'UTF16') {
                 return LZString.compressToUTF16(args.TEXT);
-            } return ''
+            } return '';
         }
 
         decompress(args) {
@@ -268,7 +267,7 @@
                 return LZString.decompressFromUint8Array(args.TEXT);
             } else if (args.TYPE == 'UTF16') {
                 return LZString.decompressFromUTF16(args.TEXT);
-            } return ''
+            } return '';
         }
     }
     Scratch.extensions.register(new lzcompress());
