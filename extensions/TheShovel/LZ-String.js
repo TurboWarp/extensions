@@ -2,6 +2,7 @@
     'use strict';
 
     //Code from https://github.com/pieroxy/lz-string/
+    /* eslint-disable */
     var LZString = function() {
         var r = String.fromCharCode,
             o = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
@@ -195,6 +196,8 @@
     }) : "undefined" != typeof module && null != module ? module.exports = LZString : "undefined" != typeof angular && null != angular && angular.module("LZString", []).factory("LZString", function() {
         return LZString
     });
+    /* eslint-enable */
+    
     class lzcompress {
         getInfo() {
             return {
