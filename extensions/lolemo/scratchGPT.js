@@ -99,7 +99,7 @@
       const api_url = "https://free.churchless.tech/v1/chat/completions";
       const prompt = args.PROMPT;
     
-      return fetch(api_url, {
+      return Scratch.fetch(api_url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,29 +127,29 @@
 
     createChat(args) {
       const chatID = args.chatID;
-        if (!this.chatHistories.hasOwnProperty(chatID)) {
-          this.chatHistories[chatID] = [{ role: "system", content: "Your name is: " + chatID }];
-        }
+      if (!(chatID in this.chatHistories)) {
+        this.chatHistories[chatID] = [{ role: "system", content: "Your name is: " + chatID }];
+      }
     }
 
     informChat(args) {
       const inform = args.inform;
       const chatID = args.chatID;    
-      if (this.chatHistories.hasOwnProperty(chatID)) {
+      if (chatID in this.chatHistories) {
         this.chatHistories[chatID].push({ role: "system", content: inform });
       }
     }
 
     resetChat(args) {
       const chatID = args.chatID;
-      if (this.chatHistories.hasOwnProperty(chatID)) {
+      if (chatID in this.chatHistories) {
         this.chatHistories[chatID] = [{ role: "system", content: "Your name is: " + chatID }];
       }
     }
 
     removeChat(args) {
       const chatID = args.chatID;
-      if (this.chatHistories.hasOwnProperty(chatID)) {
+      if (chatID in this.chatHistories) {
         delete this.chatHistories[chatID];
       }
     }
@@ -158,13 +158,13 @@
       const api_url = "https://free.churchless.tech/v1/chat/completions";
       const prompt = args.PROMPT;
       const chatID = args.chatID;
-      if (!this.chatHistories.hasOwnProperty(chatID)) {
+      if (!(chatID in this.chatHistories)) {
           return "";
       }
       
       const chatHistory = this.chatHistories[chatID] || [];
       chatHistory.push({ role: "user", content: prompt });
-      return fetch(api_url, {
+      return Scratch.fetch(api_url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
