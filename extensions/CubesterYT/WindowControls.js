@@ -221,6 +221,11 @@
             text: "is window focused?"
           },
           {
+            opcode: "isFullscreen",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is window fullscreen?"
+          },
+          {
             opcode: "isTouchingEdge",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is window touching screen edge?"
@@ -354,16 +359,23 @@
     isFocused () {
       return (document.hasFocus());
     }
+    isFullscreen () {
+      return (document.fullscreenElement !== null);
+    }
     isTouchingEdge () {
       const edgeX = screen.width - window.outerWidth;
       const edgeY = screen.height - window.outerHeight;
       return (window.screenLeft <= 0 || window.screenTop <= 0 || window.screenLeft >= edgeX || window.screenTop >= edgeY);
     }
     enterFullscreen () {
-      document.documentElement.requestFullscreen();
+      if (document.fullscreenElement == null) {
+        document.documentElement.requestFullscreen();
+      }
     }
     exitFullscreen () {
-      document.exitFullscreen();
+      if (document.fullscreenElement !== null) {
+        document.exitFullscreen();
+      }
     }
     closeWindow () {
       window.close();
