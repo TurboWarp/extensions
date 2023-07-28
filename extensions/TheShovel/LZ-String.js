@@ -1,6 +1,5 @@
 (function(Scratch) {
     'use strict';
-    
     /* eslint-disable */
     //Code from https://github.com/pieroxy/lz-string/
     //MIT License
