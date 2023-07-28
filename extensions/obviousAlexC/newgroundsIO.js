@@ -9491,16 +9491,22 @@
           switch (scoreDataType) {
             case "name":
               resolve(scores[0].user.name);
+              break;
             case "id":
               resolve(scores[0].user.id);
+              break;
             case "supporter":
               resolve(scores[0].user.supporter);
+              break;
             case "icon":
               resolve(scores[0].user.icons.large);
+              break;
             case "rawScore":
               resolve(scores[0].value);
+              break;
             case "score":
               resolve(scores[0].formatted_value);
+              break;
             case "json":
               resolve(
                 JSON.stringify({
@@ -9512,6 +9518,7 @@
                   formattedScore: scores[0].formatted_value,
                 })
               );
+              break;
           }
         });
       });
