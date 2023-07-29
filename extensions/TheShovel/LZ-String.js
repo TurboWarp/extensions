@@ -1,28 +1,29 @@
 (function(Scratch) {
     'use strict';
+
     /* eslint-disable */
-    //Code from https://github.com/pieroxy/lz-string/
-    //MIT License
+    // Code from https://github.com/pieroxy/lz-string/
+    // MIT License
 
-    //Copyright (c) 2013 pieroxy
+    // Copyright (c) 2013 pieroxy
 
-    //Permission is hereby granted, free of charge, to any person obtaining a copy
-    //of this software and associated documentation files (the "Software"), to deal
-    //in the Software without restriction, including without limitation the rights
-    //to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    //copies of the Software, and to permit persons to whom the Software is
-    //furnished to do so, subject to the following conditions:
+    // Permission is hereby granted, free of charge, to any person obtaining a copy
+    // of this software and associated documentation files (the "Software"), to deal
+    // in the Software without restriction, including without limitation the rights
+    // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    // copies of the Software, and to permit persons to whom the Software is
+    // furnished to do so, subject to the following conditions:
 
-    //The above copyright notice and this permission notice shall be included in all
-    //copies or substantial portions of the Software.
+    // The above copyright notice and this permission notice shall be included in all
+    // copies or substantial portions of the Software.
 
-    //THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    //IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    //FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    //AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    //SOFTWARE.
+    // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    // SOFTWARE.
     var LZString = function() {
         var r = String.fromCharCode,
             o = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
@@ -217,6 +218,7 @@
         return LZString
     });
     /* eslint-enable */
+
     class lzcompress {
         getInfo() {
             return {
@@ -226,7 +228,7 @@
                 blocks: [{
                         opcode: 'compress',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Compress [TEXT] to [TYPE]',
+                        text: 'compress [TEXT] to [TYPE]',
                         arguments: {
                             TEXT: {
                                 type: Scratch.ArgumentType.STRING,
@@ -241,7 +243,7 @@
                     {
                         opcode: 'decompress',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Decompress [TEXT] from [TYPE]',
+                        text: 'decompress [TEXT] from [TYPE]',
                         arguments: {
                             TEXT: {
                                 type: Scratch.ArgumentType.STRING,
@@ -291,5 +293,4 @@
         }
     }
     Scratch.extensions.register(new lzcompress());
-    // @ts-ignore
 })(Scratch);
