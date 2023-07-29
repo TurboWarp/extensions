@@ -1,6 +1,6 @@
 /*!
  * Window Controls (V.1.0.0)
- * Made by CubesterYT and BlueDome
+ * Made by CubesterYT
  */
 
 (function (Scratch) {

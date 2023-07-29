@@ -63,6 +63,15 @@
 			* {
 				box-sizing: border-box;
 			}
+    		.heading-link {
+      			font-size: 13px;
+      			opacity: 0;
+      			transition: 0.25s;
+    		}
+    		h2:hover .heading-link,
+    		h3:hover .heading-link {
+      			opacity: 1;
+    		}
 		</style>
 	</head>
 	<body>
@@ -70,7 +79,7 @@
 			<span class="title">Window Controls extension documentation</title>
 		</div>
 		<div class="inbox">
-			<h2>About this extension</h2>
+			<h2 id="about">About this extension <span class="heading-link">(<a href="#about">link</a>)</span></h2>
 			<p>This extension provides a set of blocks that gives you greater control over the Program Window.</p>
 			<p><strong>Note: Most of these blocks only work in Electron, Pop Ups/Web Apps containing HTML packaged projects, and normal Web Apps.</strong></p>
 			<p><strong>Examples are the TurboWarp Desktop App, TurboWarp Web App, Pop Up/Web App windows that contain the HTML packaged project, and plain Electron.</strong></p>
@@ -79,15 +88,15 @@
 			<hr>
 
 			<h2>Blocks</h2>
-			<h3>Move Window Block</h3>
+			<h3 id="move_window">Move Window Block <span class="heading-link">(<a href="#move_window">link</a>)</span></h3>
 			<img src="images/WindowControls/move_window.png" width="198" height="57"/>
 			<p>Moves the Program Window to the defined "x" and "y" coordinate on the screen.</p>
 
 			<hr>
 
-			<h3>Move Window to Preset Block</h3>
+			<h3 id="move_window_preset">Move Window to Preset Block <span class="heading-link">(<a href="#move_window_preset">link</a>)</span></h3>
 			<p>Moves the Program Window to a preset.</p>
-			<p>The menu area has nine options, <strong>("center", "right", "left", "top", "bottom", "top right", "top left", "bottom right", "bottom left")</strong></p>
+			<p>The menu area has ten options, <strong>("center", "right", "left", "top", "bottom", "top right", "top left", "bottom right", "bottom left", "random position")</strong></p>
 			<h4>Center</h4>
 			<img src="images/WindowControls/move_window_center.png" width="189" height="57"/>
 			<p>When choosing "center", it will move the Program Window to the center of the screen.</p>
@@ -121,166 +130,196 @@
 
 			<hr>
 
-			<h3>Change "x" Block</h3>
+			<h3 id="change_x">Change "x" Block <span class="heading-link">(<a href="#change_x">link</a>)</span></h3>
 			<img src="images/WindowControls/change_x.png" width="156" height="57"/>
 			<p>Dynamically changes the "x" position of the Program Window on the screen.</p>
 
 			<hr>
 
-			<h3>Set "x" Block</h3>
+			<h3 id="set_x">Set "x" Block <span class="heading-link">(<a href="#set_x">link</a>)</span></h3>
 			<img src="images/WindowControls/set_x.png" width="136.5" height="57"/>
 			<p>Statically changes the "x" position of the Program Window on the screen.</p>
 
 			<hr>
 
-			<h3>Change "y" Block</h3>
+			<h3 id="change_y">Change "y" Block <span class="heading-link">(<a href="#change_y">link</a>)</span></h3>
 			<img src="images/WindowControls/change_y.png" width="156" height="57"/>
 			<p>Dynamically changes the "y" position of the Program Window on the screen.</p>
 
 			<hr>
 
-			<h3>Set "y" Block</h3>
+			<h3 id="set_y">Set "y" Block <span class="heading-link">(<a href="#set_y">link</a>)</span></h3>
 			<img src="images/WindowControls/set_y.png" width="136.5" height="57"/>
 			<p>Statically changes the "y" position of the Program Window on the screen.</p>
 
 			<hr>
 
-			<h3>Window "x" Reporter</h3>
+			<h3 id="window_x">Window "x" Reporter <span class="heading-link">(<a href="#window_x">link</a>)</span></h3>
 			<img src="images/WindowControls/window_x.png" width="67.5" height="45"/>
 			<p>This reporter returns the "x" position of the Program Window.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Window "y" Reporter</h3>
+			<h3 id="window_y">Window "y" Reporter <span class="heading-link">(<a href="#window_y">link</a>)</span></h3>
 			<img src="images/WindowControls/window_y.png" width="67.5" height="45"/>
 			<p>This reporter returns the "y" position of the Program Window.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Resize Window Block</h3>
+			<h3 id="resize_window">Resize Window Block <span class="heading-link">(<a href="#resize_window">link</a>)</span></h3>
 			<img src="images/WindowControls/resize.png" width="230.625" height="57"/>
 			<p>Resizes the Program Window to the defined "w" (width) and "h" (height) values.</p>
 
 			<hr>
 
-			<h3>Change Width Block</h3>
+			<h3 id="resize_window_preset">Resize Window Preset Block <span class="heading-link">(<a href="#resize_window_preset">link</a>)</span></h3>
+			<p>Resizes the Program Window to a preset.</p>
+			<p>The menu area has eight options, <strong>("360p", "480p", "720p", "1080p", "1440p", "2K", "4K", "8K")</strong></p>
+			<h4>360p</h4>
+			<img src="images/WindowControls/resize_360p.png" width="165" height="57"/>
+			<p>When choosing "360p", it will resize the Program Window to a resolution size of 360p.</p>
+			<h4>480p</h4>
+			<img src="images/WindowControls/resize_480p.png" width="165" height="57"/>
+			<p>When choosing "480p", it will resize the Program Window to a resolution size of 480p.</p>
+			<h4>720p</h4>
+			<img src="images/WindowControls/resize_720p.png" width="165" height="57"/>
+			<p>When choosing "720p", it will resize the Program Window to a resolution size of 720p.</p>
+			<h4>1080p</h4>
+			<img src="images/WindowControls/resize_1080p.png" width="171.75" height="57"/>
+			<p>When choosing "1080p", it will resize the Program Window to a resolution size of 1080p.</p>
+			<h4>1440p</h4>
+			<img src="images/WindowControls/resize_1440p.png" width="171.75" height="57"/>
+			<p>When choosing "1440p", it will resize the Program Window to a resolution size of 1440p.</p>
+			<h4>2K</h4>
+			<img src="images/WindowControls/resize_2K.png" width="153" height="57"/>
+			<p>When choosing "2K", it will resize the Program Window to a resolution size of 2K.</p>
+			<h4>4K</h4>
+			<img src="images/WindowControls/resize_4K.png" width="153" height="57"/>
+			<p>When choosing "4K", it will resize the Program Window to a resolution size of 4K.</p>
+			<h4>8K</h4>
+			<img src="images/WindowControls/resize_8K.png" width="153" height="57"/>
+			<p>When choosing "8K", it will resize the Program Window to a resolution size of 8K.</p>
+
+			<hr>
+
+			<h3 id="change_width">Change Width Block <span class="heading-link">(<a href="#change_width">link</a>)</span></h3>
 			<img src="images/WindowControls/change_w.png" width="178.125" height="57"/>
 			<p>Dynamically changes the width of the Program Window.</p>
 
 			<hr>
 
-			<h3>Set Width Block</h3>
+			<h3 id="set_width">Set Width Block <span class="heading-link">(<a href="#set_width">link</a>)</span></h3>
 			<img src="images/WindowControls/set_w.png" width="165.375" height="57"/>
 			<p>Statically changes the width of the Program Window.</p>
 
 			<hr>
 
-			<h3>Change Height Block</h3>
+			<h3 id="change_height">Change Height Block <span class="heading-link">(<a href="#change_height">link</a>)</span></h3>
 			<img src="images/WindowControls/change_h.png" width="182.625" height="57"/>
 			<p>Dynamically changes the height of the Program Window.</p>
 
 			<hr>
 
-			<h3>Set Height Block</h3>
+			<h3 id="set_height">Set Height Block <span class="heading-link">(<a href="#set_height">link</a>)</span></h3>
 			<img src="images/WindowControls/set_h.png" width="169.875" height="57"/>
 			<p>Statically changes the height of the Program Window.</p>
 
 			<hr>
 
-			<h3>Match Stage Size Block</h3>
+			<h3 id="match_stage">Match Stage Size Block <span class="heading-link">(<a href="#match_stage">link</a>)</span></h3>
 			<img src="images/WindowControls/match.png" width="102" height="57"/>
 			<p>Resizes the Program Window to match the aspect ratio of the stage. Works best when the stage is dynamically changed.</p>
 			<p><strong>Example: When using runtime options to change the stage size, using this block can help you adapt to the new stage size.</strong></p>
 
 			<hr>
 
-			<h3>Window Width Reporter</h3>
+			<h3 id="window_width">Window Width Reporter <span class="heading-link">(<a href="#window_width">link</a>)</span></h3>
 			<img src="images/WindowControls/window_width.png" width="89.25" height="45"/>
 			<p>This reporter returns the width of the Program Window.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Window Height Reporter</h3>
+			<h3 id="window_height">Window Height Reporter <span class="heading-link">(<a href="#window_height">link</a>)</span></h3>
 			<img src="images/WindowControls/window_height.png" width="94.125" height="45"/>
 			<p>This reporter returns the height of the Program Window.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Screen Width Reporter</h3>
+			<h3 id="screen_width">Screen Width Reporter <span class="heading-link">(<a href="#screen_width">link</a>)</span></h3>
 			<img src="images/WindowControls/screen_width.png" width="85.5" height="45"/>
 			<p>This reporter returns the width of the Screen.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Screen Height Reporter</h3>
+			<h3 id="screen_height">Screen Height Reporter <span class="heading-link">(<a href="#screen_height">link</a>)</span></h3>
 			<img src="images/WindowControls/screen_height.png" width="90" height="45"/>
 			<p>This reporter returns the height of the Screen.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Set Window Title Block</h3>
+			<h3 id="set_title">Set Window Title Block <span class="heading-link">(<a href="#set_title">link</a>)</span></h3>
 			<img src="images/WindowControls/set_title.png" width="194.25" height="57"/>
 			<p>Changes the title of the Program Window.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Window Title Reporter</h3>
+			<h3 id="window_title">Window Title Reporter <span class="heading-link">(<a href="#window_title">link</a>)</span></h3>
 			<img src="images/WindowControls/window_title.png" width="79.875" height="45"/>
 			<p>This reporter returns the title of the Program Window.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Is Window Focused Boolean</h3>
+			<h3 id="is_focused">Is Window Focused Boolean <span class="heading-link">(<a href="#is_focused">link</a>)</span></h3>
 			<img src="images/WindowControls/is_focused.png" width="134.25" height="45"/>
 			<p>This boolean returns true or false for whether or not the Program Window is in focus.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Is Window Fullscreen Boolean</h3>
+			<h3 id="is_fullscreen">Is Window Fullscreen Boolean <span class="heading-link">(<a href="#is_fullscreen">link</a>)</span></h3>
 			<img src="images/WindowControls/is_fullscreen.png" width="143.25" height="45"/>
 			<p>This boolean returns true or false for whether or not the Program Window is in fullscreen.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Is Window Touching Screen Edge Boolean</h3>
+			<h3 id="is_touching_edge">Is Window Touching Screen Edge Boolean <span class="heading-link">(<a href="#is_touching_edge">link</a>)</span></h3>
 			<img src="images/WindowControls/is_touching.png" width="206.625" height="45"/>
 			<p>This boolean returns true or false for whether or not the Program Window is touching the screen's edge.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Enter Fullscreen Block</h3>
+			<h3 id="enter_fullscreen">Enter Fullscreen Block <span class="heading-link">(<a href="#enter_fullscreen">link</a>)</span></h3>
 			<img src="images/WindowControls/enter_fullscreen.png" width="94.125" height="57"/>
 			<p>Makes the Program Window enter Fullscreen.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Exit Fullscreen Block</h3>
+			<h3 id="exit_fullscreen">Exit Fullscreen Block <span class="heading-link">(<a href="#exit_fullscreen">link</a>)</span></h3>
 			<img src="images/WindowControls/exit_fullscreen.png" width="85.5" height="57"/>
 			<p>Makes the Program Window exit Fullscreen.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h3>Close Window Block</h3>
+			<h3 id="close_window">Close Window Block <span class="heading-link">(<a href="#close_window">link</a>)</span></h3>
 			<img src="images/WindowControls/close_window.png" width="83.25" height="57"/>
 			<p>Closes the Program Window.</p>
 			<p><strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong></p>
 
 			<hr>
 
-			<h2>Credits</h2>
+			<h2 id="credits">Credits <span class="heading-link">(<a href="#credits">link</a>)</span></h2>
 			<p><strong>This extension is made in collaboration between <a href="https://scratch.mit.edu/users/CubesterYT/">CubesterYT</a> and <a href="https://github.com/BlueDome77/">BlueDome</a>.</strong></p>
 			<p>Extension Icon, Color scheme, majority of extension, and more made by CubesterYT.</p>
 			<p>Extension Thumbnail, Color scheme, and some base code, made by BlueDome.</p>
