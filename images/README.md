@@ -243,3 +243,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Alestore/nfcwarp.svg
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636726352
+
+## Lily/Data.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
+ - Background "blobs" by Scratch.
