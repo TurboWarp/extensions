@@ -222,7 +222,7 @@
     class lzcompress {
         getInfo() {
             return {
-                id: 'lzcompress',
+                id: 'shovellzcompress',
                 name: 'LZ Compress',
                 docsURI: 'https://pieroxy.net/blog/pages/lz-string/index.html',
                 blocks: [{
