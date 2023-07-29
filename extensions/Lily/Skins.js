@@ -176,14 +176,21 @@
     async registerCostumeSkin (args, util) {
       const skinName = args.NAME;
       const costumeIndex = util.target.getCostumeIndexByName(args.COSTUME);
-      const url = util.target.sprite.costumes[costumeIndex].asset.encodeDataURI();
+      const costume = util.target.sprite.costumes[costumeIndex];
+
+      const url = costume.asset.encodeDataURI();
+      const rotationCenterX = costume.rotationCenterX;
+      const rotationCenterY = costume.rotationCenterY;
+
+      let rotationCenter = [rotationCenterX, rotationCenterY];
+      if (!rotationCenterX || !rotationCenterY) rotationCenter = null; 
 
       let oldSkinId = null;
       if (createdSkins[skinName]) {
         oldSkinId = createdSkins[skinName];
       }
 
-      const skinId = await this._createURLSkin(url);
+      const skinId = await this._createURLSkin(url, rotationCenter);
       createdSkins[skinName] = skinId;
 
       if (oldSkinId) {
@@ -300,11 +307,12 @@
       return target;
     }
 
-    async _createURLSkin (URL) {
+    async _createURLSkin (URL, rotationCenter) {
       const imageData = await Scratch.fetch(URL);
       const contentType = imageData.headers.get("Content-Type");
+
       if (contentType === 'image/svg+xml') {
-        return renderer.createSVGSkin(await imageData.text());
+        return renderer.createSVGSkin(await imageData.text(), rotationCenter);
       } else if (contentType === 'image/png' || contentType === 'image/jpeg' || contentType === 'image/bmp') {
         // eslint-disable-next-line no-restricted-syntax
         const output = new Image();
