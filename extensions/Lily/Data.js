@@ -4,7 +4,7 @@
   /* -- SETUP -- */
   const vm = Scratch.vm;
   const runtime = Scratch.vm.runtime;
-  const ArgumentType = Scratch.ArgumentType;
+
   /* Credit to skyhigh173 for the idea of this */
   const label = (name, hidden) => ({
     blockType: Scratch.BlockType.LABEL,
