@@ -3,17 +3,10 @@
 
   /* -- SETUP -- */
   const vm = Scratch.vm;
-  const runtime = Scratch.vm.runtime;
-
-  /* Credit to skyhigh173 for the idea of this */
-  const label = (name, hidden) => ({
-    blockType: Scratch.BlockType.LABEL,
-    text: name,
-    hideFromPalette: hidden
-  });
+  const runtime = vm.runtime;
 
   const getVarObjectFromName = function (name, util, type) {
-    const stageTarget = Scratch.vm.runtime.getTargetForStage();
+    const stageTarget = runtime.getTargetForStage();
     const target = util.target;
     let listObject = Object.create(null);
 
@@ -36,7 +29,6 @@
     }
     return true;
   };
-
 
   class Data {
     getInfo() {
@@ -275,22 +267,19 @@
           '---',
 
           // These blocks only work with Temp Variables 2
-          // I'll add a check to show these if the extension
-          // is loaded. But not right now.
           /*{
             opcode: 'forEachListItem',
             blockType: Scratch.BlockType.LOOP,
-            text: 'for each item [VAR] in [LIST]',
-            extensions: ['colours_data_lists'],
+            text: 'for each item value [VAR] in [LIST]',
+            hideFromPalette: !runtime.extensionManager.isExtensionLoaded('lmsTempVars2'),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'thread variable'
               },
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           },
@@ -298,16 +287,15 @@
             opcode: 'forEachListItemNum',
             blockType: Scratch.BlockType.LOOP,
             text: 'for each item # [VAR] in [LIST]',
-            extensions: ['colours_data_lists'],
+            hideFromPalette: !runtime.extensionManager.isExtensionLoaded('lmsTempVars2'),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'thread variable'
               },
               LIST: {
-                type: Scratch.ArgumentType.VARIABLE,
-                variableType: 'list',
-                variable: 'my list'
+                type: Scratch.ArgumentType.STRING,
+                menu: 'lists'
               }
             }
           },*/
