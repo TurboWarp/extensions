@@ -183,7 +183,7 @@
       const rotationCenterY = costume.rotationCenterY;
 
       let rotationCenter = [rotationCenterX, rotationCenterY];
-      if (!rotationCenterX || !rotationCenterY) rotationCenter = null; 
+      if (!rotationCenterX || !rotationCenterY) rotationCenter = null;
 
       let oldSkinId = null;
       if (createdSkins[skinName]) {
