@@ -74,7 +74,7 @@
     runtime.startHats('lmsMoreEvents_always', {
       CONDITION: 'true'
     });
-    
+
     runtime.startHats('lmsMoreEvents_whileTurboMode', {
       STATE: (runtime.turboMode) ? 'enabled' : 'disabled'
     });
