@@ -48,7 +48,7 @@
             arguments: {
               PRESETS: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "PRESETS"
+                menu: "MOVE"
               }
             }
           },
@@ -121,6 +121,17 @@
               H: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "1000"
+              }
+            }
+          },
+          {
+            opcode: "resizeToPresets",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "resize window to [PRESETS]",
+            arguments: {
+              PRESETS: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "RESIZE"
               }
             }
           },
@@ -250,9 +261,13 @@
           }
         ],
         menus: {
-          PRESETS: {
+          MOVE: {
             acceptReporters: true,
             items: ["center", "right", "left", "top", "bottom", "top right", "top left", "bottom right", "bottom left", "random position"]
+          },
+          RESIZE: {
+            acceptReporters: true,
+            items: ["360p", "480p", "720p", "1080p", "1440p", "2K", "4K", "8K"]
           }
         }
       };
@@ -260,57 +275,72 @@
 
     moveTo (args) {
       window.moveTo(args.X, args.Y);
+      Scratch.vm.runtime.requestRedraw();
     }
     moveToPresets (args) {
       if (args.PRESETS == "center") {
         const left = ((screen.width - window.outerWidth) / 2);
         const top = ((screen.height - window.outerHeight) / 2);
         window.moveTo(left, top);
+        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "right") {
         const right = (screen.width - window.outerWidth);
         const top = ((screen.height - window.outerHeight) / 2);
         window.moveTo(right, top);
+        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "left") {
         const top = ((screen.height - window.outerHeight) / 2);
         window.moveTo(0, top);
+        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "top") {
         const left = ((screen.width - window.outerWidth) / 2);
         window.moveTo(left, 0);
+        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "bottom") {
         const left = ((screen.width - window.outerWidth) / 2);
         const bottom = (screen.height - window.outerHeight);
         window.moveTo(left, bottom);
+        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "top right") {
         const right = (screen.width - window.outerWidth);
         window.moveTo(right, 0);
+        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "top left") {
         window.moveTo(0, 0);
+        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "bottom right") {
         const right = (screen.width - window.outerWidth);
         const bottom = (screen.height - window.outerHeight);
         window.moveTo(right, bottom);
+        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "bottom left") {
         const bottom = (screen.height - window.outerHeight);
         window.moveTo(0, bottom);
+        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "random position") {
         const randomX = getRandomInt(0, screen.width);
         const randomY = getRandomInt(0, screen.height);
         window.moveTo(randomX, randomY);
+        Scratch.vm.runtime.requestRedraw();
       }
     }
     changeX (args) {
       moveBy(args.X, 0);
+      Scratch.vm.runtime.requestRedraw();
     }
     setX (args) {
       const currentY = window.screenY;
       window.moveTo(args.X, currentY);
+      Scratch.vm.runtime.requestRedraw();
     }
     changeY (args) {
       moveBy(0, args.Y);
+      Scratch.vm.runtime.requestRedraw();
     }
     setY (args) {
       const currentX = window.screenX;
       window.moveTo(currentX, args.Y);
+      Scratch.vm.runtime.requestRedraw();
     }
     windowX () {
       return (window.screenLeft);
@@ -320,23 +350,56 @@
     }
     resizeTo (args) {
       resizeTo(args.W, args.H);
+      Scratch.vm.runtime.requestRedraw();
+    }
+    resizeToPresets (args) {
+      if (args.PRESETS == "360p") {
+        resizeTo(480 + (window.outerWidth - window.innerWidth), 360 + (window.outerHeight - window.innerHeight));
+        Scratch.vm.runtime.requestRedraw();
+      } else if (args.PRESETS == "480p") {
+        resizeTo(640 + (window.outerWidth - window.innerWidth), 480 + (window.outerHeight - window.innerHeight));
+        Scratch.vm.runtime.requestRedraw();
+      } else if (args.PRESETS == "720p") {
+        resizeTo(1280 + (window.outerWidth - window.innerWidth), 780 + (window.outerHeight - window.innerHeight));
+        Scratch.vm.runtime.requestRedraw();
+      } else if (args.PRESETS == "1080p") {
+        resizeTo(1920 + (window.outerWidth - window.innerWidth), 1080 + (window.outerHeight - window.innerHeight));
+        Scratch.vm.runtime.requestRedraw();
+      } else if (args.PRESETS == "1440p") {
+        resizeTo(2560 + (window.outerWidth - window.innerWidth), 1440 + (window.outerHeight - window.innerHeight));
+        Scratch.vm.runtime.requestRedraw();
+      } else if (args.PRESETS == "2K") {
+        resizeTo(2048 + (window.outerWidth - window.innerWidth), 1080 + (window.outerHeight - window.innerHeight));
+        Scratch.vm.runtime.requestRedraw();
+      } else if (args.PRESETS == "4K") {
+        resizeTo(3840 + (window.outerWidth - window.innerWidth), 2160 + (window.outerHeight - window.innerHeight));
+        Scratch.vm.runtime.requestRedraw();
+      } else if (args.PRESETS == "8K") {
+        resizeTo(7680 + (window.outerWidth - window.innerWidth), 4320 + (window.outerHeight - window.innerHeight));
+        Scratch.vm.runtime.requestRedraw();
+      }
     }
     changeW (args) {
       resizeBy(args.W, 0);
+      Scratch.vm.runtime.requestRedraw();
     }
     setW (args) {
       const currentH = window.outerHeight;
       window.resizeTo(args.W, currentH);
+      Scratch.vm.runtime.requestRedraw();
     }
     changeH (args) {
       resizeBy(0, args.H);
+      Scratch.vm.runtime.requestRedraw();
     }
     setH (args) {
       const currentW = window.outerWidth;
       window.resizeTo(currentW, args.H);
+      Scratch.vm.runtime.requestRedraw();
     }
     matchStageSize () {
       resizeTo(Scratch.vm.runtime.stageWidth + (window.outerWidth - window.innerWidth), Scratch.vm.runtime.stageHeight + (window.outerHeight - window.innerHeight));
+      Scratch.vm.runtime.requestRedraw();
     }
     windowW () {
       return (window.outerWidth);
