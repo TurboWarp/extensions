@@ -11,36 +11,38 @@ Please pay special attention to:
  - A better development server: https://docs.turbowarp.org/development/extensions/better-development-server
  - Maintaining compatibility: https://docs.turbowarp.org/development/extensions/compatibility
 
-Pull requests that don't follow the guidelines outlined in these documents will take *much* longer to be reviewed and merged.
+Read this document **in full** too. Pull requests that don't follow the guidelines will take *much* longer to be reviewed.
 
 ## Acceptance criteria
 
-Unfortunately we have to limit the types of extensions we can accept. Strictly, nothing is banned, but the following are *highly* discouraged:
+Strictly, nothing is banned, but the following are *highly* discouraged:
 
  - Broad "Utilities" extensions (break them up into multiple extensions, see https://github.com/TurboWarp/extensions/issues/674)
- - Joke extensions (they aren't funny when they cause us to get bug reports)
  - Extensions that are very similar to existing ones (consider modifying the existing one instead)
  - Novelties or one-use personal extensions (load the extension as a local file instead)
+ - Joke extensions (they aren't funny when they cause us to get bug reports)
+
+Some extensions were added before these rules existed. That doesn't mean you will be exempted too.
 
 ## Important context
 
-Every extension that gets accepted is more code that we will be expected to maintain indefinitely, even if you disappear. Remember: broken extensions mean that real projects made by real people are now broken. If the renderer is rewritten one day, we will have to ensure that extensions like Clipping and blending, RGB channels, and Augmented Reality still work.
+Every merged extension is more code that we will be expected to maintain indefinitely, even if you disappear. Remember: broken extensions mean that real projects by real people break. If the renderer is rewritten one day, we will have to ensure that extensions like Clipping and blending, RGB channels, and Augmented Reality still work. That's not a small commitment.
 
-We're all volunteers who all have lives outside of Scratch extensions. Many have full time jobs or are full time students. We'll get to you as soon as we can, but please be patient.
+We're all volunteers who all have lives outside of Scratch extensions. Many have full time jobs or are full time students. We'll get to you as soon as we can, so please be patient.
 
 ## Writing extensions
 
-Extension source code goes in the `extensions` folder. For example, an extension placed at `extensions/hello-world.js` would be accessible at [http://localhost:8000/hello-world.js](http://localhost:8000/hello-world.js).
+Extension source code goes in the [`extensions`](extensions) folder. For example, an extension placed at `extensions/hello-world.js` would be accessible at [http://localhost:8000/hello-world.js](http://localhost:8000/hello-world.js) using our development server.
 
-New extensions should be added in a user folder. You can name your folder your GitHub username, your Scratch username, or anything else. If your username is `TestMuffin123`, you could use names like `TestMuffin123`, `TestMuffin` or `Muffin`. We're pretty lenient about this. Do note that this is just for organization -- other people are still allowed to edit your extension.
-
-Static resources go in the `website` folder. This is where some example assets used by extensions such as fetch are placed.
+New extensions should be added in a user folder. You can name your folder anything you want; common choices are your GitHub username or your Scratch username. If your username is `TestMuffin123`, `TestMuffin123`, `TestMuffin` and `Muffin` are all accepted -- we are very lenient about this. Do note that user folders are just for organization; other people are still allowed to edit your extension. Renaming your folder later isn't something we allow (rare exceptions, open an issue), so please get it right the first time.
 
 Extensions must be self-contained. All libraries and hardcoded resources should be embedded into the extension's JavaScript file. If you include minified code, please link where to find the unminified code and include a copy of the license.
 
-To add an extension to the website homepage, modify `website/index.ejs`. See the existing entries for a template to copy. Just place your extension wherever you want in the list; if we disagree then we will move it for you.
+Static resources go in the `website` folder. This is where some example assets used by extensions such as fetch are placed. This is also where documentation goes for now, though we are in the process of modernizing that.
 
-To add an image for your extension on the homepage, put a file in the `images` folder with the same name and directory structure (but a different file extension) as the extension's source code. For example, if your extension is located in `extensions/TestMuffin/fetch.js`, save the image as `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will detect the image automatically. Images will be displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you.
+To add an extension to the website homepage, modify [`website/index.ejs`](website/index.ejs). See the existing entries for a template to copy. Place your extension wherever you want in the list. We will move it for you if we disagree.
+
+New extensions do not need images, but they are highly encouraged. Save the image in the `images` folder with the same folder name and file name (but different file extension) as the extension's source code. For example, if your extension is located in `extensions/TestMuffin/fetch.js`, save the image as `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will detect it automatically. Images are displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you.
 
 ## Banned APIs
 
@@ -52,15 +54,9 @@ To add an image for your extension on the homepage, put a file in the `images` f
  - untrusted `<iframe>`
  - other arbitrary JS/CSS/HTML evaluation
 
-## Type checking
-
-If you use our development server, TypeScript aware editors such as Visual Studio Code will give you smart autocomplete suggestions for most Scratch and extension APIs based on [@turbowarp/types](https://github.com/TurboWarp/types) and [@turbowarp/types-tw](https://github.com/TurboWarp/types-tw). Note that these types are not perfect; some methods are missing or incorrect. Please report any issues you find.
-
-If you encounter a TypeScript error, as long as you understand the error, feel free to add `// @ts-ignore`, `// @ts-expect-error`, or just ignore the error entirely. We currently do not require extensions to pass type checking.
-
 ## License
 
-**We are not lawyers. This section should not be interpreted as legal advice.**
+**We are not lawyers. This is not legal advice.**
 
 The source code of the extension and any libraries it uses must be available under a permissive open source license that is compatible with the [GNU General Public License version 3](licenses/GPL-3.0.txt). This allows us to include it in TurboWarp Desktop and allows packaged projects to use your extension. If you're unsure, use our default: the [MIT License](licenses/MIT.txt). For this to be legally possible, either you must have written the entire extension yourself or have permission to use all of its components under a compatible open source license.
 
@@ -89,15 +85,19 @@ Update the copyright year and name appropriately. Pseudonyms are accepted. Add a
 
 Extension images in the [images](images) directory are instead licensed under the [GNU General Public version 3](licenses/GPL-3.0.txt).
 
-You **MUST** avoid using code or images under these licenses as they are not compatible with the GPLv3:
+## Banned licenses
+
+You **MUST** avoid using any code or images under these licenses as we believe they are incompatible with the GPLv3:
 
  - Creative Commons Attribution-ShareAlike licenses prior to version 4.0
-   - User-generated content on the Scratch website [uses version 2.0](https://scratch.mit.edu/terms_of_use) of this license.
-   - StackOverflow post contributed [before 2018-05-02 use older versions of this license](https://stackoverflow.com/help/licensing).
+   - This includes user-generated content on the Scratch website which [uses version 2.0](https://scratch.mit.edu/terms_of_use) of this license.
+   - This includes StackOverflow posts contributed before 2018-05-02 which [use several different versions](https://stackoverflow.com/help/licensing).
  - Creative Commons Attribution-NoDerivs and similar "no derivatives" licenses
  - Creative Commons Attribution-NonCommercial and similar "non commercial" licenses
  - This list is non-comprehensive
  - More information: https://www.gnu.org/licenses/license-list.en.html
+
+We take licenses very seriously. License violations are one of the few things that can force us to break project compatibility.
 
 ## Code style
 
@@ -105,9 +105,15 @@ Our preferred code style is:
 
  - Indent with 2 spaces
  - Use semicolons
- - We don't care which type of quotes you use, just pick one and be consistent
+ - Use whitespace liberally
+ - Comment liberally, but don't just re-explain what the code literally says (`var x = 3; // set x to 3` is a bad comment)
+ - Pick one type of quotes and be consistent (if unsure, we like single quotes)
 
-Don't worry too much about this -- if we disagree we will change it ourselves.
+## Type checking
+
+If you use our development server, TypeScript aware editors such as Visual Studio Code will give you smart autocomplete suggestions for most Scratch and extension APIs based on [@turbowarp/types](https://github.com/TurboWarp/types) and [@turbowarp/types-tw](https://github.com/TurboWarp/types-tw). Note that these types are not perfect; some methods are missing or incorrect. Please report any issues you find.
+
+If you encounter a TypeScript error, as long as you understand the error, feel free to add `// @ts-ignore`, `// @ts-expect-error`, or just ignore the error entirely. We currently do not require extensions to pass type checking.
 
 ## Linting
 
