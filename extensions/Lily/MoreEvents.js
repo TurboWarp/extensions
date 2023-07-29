@@ -78,7 +78,7 @@
     runtime.startHats('lmsMoreEvents_whileTurboMode', {
       STATE: (runtime.turboMode) ? 'enabled' : 'disabled'
     });
-  })
+  });
 
   var lastValues = {};
 
@@ -309,7 +309,7 @@
       if (!args.BROADCAST_OPTION) return;
       const broadcastVar = util.runtime.getTargetForStage().lookupBroadcastMsg(args.BROADCAST_OPTION);
       if (!broadcastVar) return;
-      if (args.TARGET = '_stage_') {
+      if (args.TARGET === '_stage_') {
         util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, runtime.getTargetForStage());
         return;
       }
