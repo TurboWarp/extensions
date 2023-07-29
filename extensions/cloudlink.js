@@ -153,6 +153,7 @@ class CloudLink {
 			"name": 'CloudLink',
 			"blockIconURI": this.cl_block,
 			"menuIconURI": this.cl_icon,
+			"docsURI": "https://hackmd.io/@MikeDEV/HJiNYwOfo",
 			"blocks": [
 				{
 					"opcode": 'returnGlobalData',
