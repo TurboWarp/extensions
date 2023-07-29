@@ -243,3 +243,8 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Alestore/nfcwarp.svg
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636726352
+
+## Lily/Skins.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
+ - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+ - Background "blobs" by Scratch.
