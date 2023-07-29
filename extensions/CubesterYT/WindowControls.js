@@ -267,7 +267,7 @@
           },
           RESIZE: {
             acceptReporters: true,
-            items: ["360p", "480p", "720p", "1080p", "1440p", "2K", "4K", "8K"]
+            items: ["480x360", "640x480", "1280x720", "1920x1080", "2560x1440", "2048x1080", "3840x2160", "7680x4320"]
           }
         }
       };
@@ -353,28 +353,28 @@
       Scratch.vm.runtime.requestRedraw();
     }
     resizeToPresets (args) {
-      if (args.PRESETS == "360p") {
+      if (args.PRESETS == "480x360") {
         resizeTo(480 + (window.outerWidth - window.innerWidth), 360 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
-      } else if (args.PRESETS == "480p") {
+      } else if (args.PRESETS == "640x480") {
         resizeTo(640 + (window.outerWidth - window.innerWidth), 480 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
-      } else if (args.PRESETS == "720p") {
-        resizeTo(1280 + (window.outerWidth - window.innerWidth), 780 + (window.outerHeight - window.innerHeight));
+      } else if (args.PRESETS == "1280x720") {
+        resizeTo(1280 + (window.outerWidth - window.innerWidth), 720 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
-      } else if (args.PRESETS == "1080p") {
+      } else if (args.PRESETS == "1920x1080") {
         resizeTo(1920 + (window.outerWidth - window.innerWidth), 1080 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
-      } else if (args.PRESETS == "1440p") {
+      } else if (args.PRESETS == "2560x1440") {
         resizeTo(2560 + (window.outerWidth - window.innerWidth), 1440 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
-      } else if (args.PRESETS == "2K") {
+      } else if (args.PRESETS == "2048x1080") {
         resizeTo(2048 + (window.outerWidth - window.innerWidth), 1080 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
-      } else if (args.PRESETS == "4K") {
+      } else if (args.PRESETS == "3840x2160") {
         resizeTo(3840 + (window.outerWidth - window.innerWidth), 2160 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
-      } else if (args.PRESETS == "8K") {
+      } else if (args.PRESETS == "7680x4320") {
         resizeTo(7680 + (window.outerWidth - window.innerWidth), 4320 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
       }
