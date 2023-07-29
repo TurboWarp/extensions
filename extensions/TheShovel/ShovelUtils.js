@@ -365,7 +365,8 @@
       //0znzw, since shovel did not add it yet.
       let sprites = new Object([]), target = "";
       for (target in vm.runtime.targets) {
-        sprites.push(vm.runtime.targets[target].sprite.name);
+        target = vm.runtime.targets[target];
+        if (target.isOriginal) sprites.push(target.sprite.name);
       }
       return JSON.stringify(sprites);
     }
