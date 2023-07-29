@@ -9,6 +9,16 @@
   var createdSkins = [];
 
   class Skins {
+    constructor() {
+      runtime.on('PROJECT_START', () => {
+        this._refreshTargets();
+      });
+
+      runtime.on('PROJECT_STOP_ALL', () => {
+        this._refreshTargets();
+      });
+    }
+
     getInfo() {
       return {
         id: 'lmsSkins',
