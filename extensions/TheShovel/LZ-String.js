@@ -281,17 +281,21 @@
 
         decompress(args) {
             args.TEXT = Scratch.Cast.toString(args.TEXT);
-            if (args.TYPE == 'Raw') {
-                return LZString.decompress(args.TEXT) || '';
-            } else if (args.TYPE == 'Base64') {
-                return LZString.decompressFromBase64(args.TEXT) || '';
-            } else if (args.TYPE == 'EncodedURIComponent') {
-                return LZString.decompressFromEncodedURIComponent(args.TEXT) || '';
-            } else if (args.TYPE == 'Uint8Array') {
-                return LZString.decompressFromUint8Array(args.TEXT) || '';
-            } else if (args.TYPE == 'UTF16') {
-                return LZString.decompressFromUTF16(args.TEXT) || '';
-            } return '';
+            try {
+                if (args.TYPE == 'Raw') {
+                    return LZString.decompress(args.TEXT) || '';
+                } else if (args.TYPE == 'Base64') {
+                    return LZString.decompressFromBase64(args.TEXT) || '';
+                } else if (args.TYPE == 'EncodedURIComponent') {
+                    return LZString.decompressFromEncodedURIComponent(args.TEXT) || '';
+                } else if (args.TYPE == 'Uint8Array') {
+                    return LZString.decompressFromUint8Array(args.TEXT) || '';
+                } else if (args.TYPE == 'UTF16') {
+                    return LZString.decompressFromUTF16(args.TEXT) || '';
+                } return '';
+            } catch {
+                return '';
+            }
         }
     }
     Scratch.extensions.register(new lzcompress());
