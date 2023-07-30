@@ -26,7 +26,7 @@ Some extensions were added before these rules existed. That doesn't mean you wil
 
 ## Important context
 
-Every merged extension is more code that we will be expected to maintain indefinitely, even if you disappear. Remember: broken extensions mean that real projects by real people break. If the renderer is rewritten one day, we will have to ensure that extensions like Clipping and blending, RGB channels, and Augmented Reality still work. That's not a small commitment.
+Every merged extension is more code that we will be expected to maintain indefinitely, even if you disappear. Remember: broken extensions mean that real projects by real people no longer work. If the renderer is rewritten one day, we will have to ensure that extensions like Clipping & Blending, RGB Channels, and Augmented Reality still work. That's not a small commitment.
 
 We're all volunteers who all have lives outside of Scratch extensions. Many have full time jobs or are full time students. We'll get to you as soon as we can, so please be patient.
 
@@ -34,15 +34,15 @@ We're all volunteers who all have lives outside of Scratch extensions. Many have
 
 Extension source code goes in the [`extensions`](extensions) folder. For example, an extension placed at `extensions/hello-world.js` would be accessible at [http://localhost:8000/hello-world.js](http://localhost:8000/hello-world.js) using our development server.
 
-New extensions should be added in a user folder. You can name your folder anything you want; common choices are your GitHub username or your Scratch username. If your username is `TestMuffin123`, `TestMuffin123`, `TestMuffin` and `Muffin` are all accepted -- we are very lenient about this. Do note that user folders are just for organization; other people are still allowed to edit your extension. Renaming your folder later isn't something we allow (rare exceptions, open an issue), so please get it right the first time.
+New extensions should be added in a user folder. You can name your folder anything you want; common choices are your GitHub username or your Scratch username. If your username is `TestMuffin123`, then `TestMuffin123`, `TestMuffin`, or even just `Muffin` would all be accepted -- we are very lenient about this. Do note that user folders are just for organization; other people are still allowed to edit your extension. Renaming your folder later is only allowed in very rare circumstances, so please get it right the first time.
 
-Extensions must be self-contained. All libraries and hardcoded resources should be embedded into the extension's JavaScript file. If you include minified code, please link where to find the unminified code and include a copy of the license.
+Extensions must be self-contained. All libraries and hardcoded resources should be embedded into the extension's JavaScript file. If you include minified code, please link where to find the unminified code and include a copy of the original license.
 
 Static resources go in the `website` folder. This is where some example assets used by extensions such as fetch are placed. This is also where documentation goes for now, though we are in the process of modernizing that.
 
 To add an extension to the website homepage, modify [`website/index.ejs`](website/index.ejs). See the existing entries for a template to copy. Place your extension wherever you want in the list. We will move it for you if we disagree.
 
-New extensions do not need images, but they are highly encouraged. Save the image in the `images` folder with the same folder name and file name (but different file extension) as the extension's source code. For example, if your extension is located in `extensions/TestMuffin/fetch.js`, save the image as `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will detect it automatically. Images are displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you.
+New extensions do not *need* images, but they are highly encouraged. Save the image in the `images` folder with the same folder name and file name (but different file extension) as the extension's source code. For example, if your extension is located in `extensions/TestMuffin/fetch.js`, save the image as `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will detect it automatically. Images are displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you.
 
 ## Banned APIs
 
@@ -50,15 +50,14 @@ New extensions do not need images, but they are highly encouraged. Save the imag
 
  - `eval()`
  - `new Function()`
- - untrusted `<script>`
- - untrusted `<iframe>`
+ - untrusted or remote `<script>` or `<iframe>`
  - other arbitrary JS/CSS/HTML evaluation
 
 ## License
 
 **We are not lawyers. This is not legal advice.**
 
-The source code of the extension and any libraries it uses must be available under a permissive open source license that is compatible with the [GNU General Public License version 3](licenses/GPL-3.0.txt). This allows us to include it in TurboWarp Desktop and allows packaged projects to use your extension. If you're unsure, use our default: the [MIT License](licenses/MIT.txt). For this to be legally possible, either you must have written the entire extension yourself or have permission to use all of its components under a compatible open source license.
+The source code of the extension and any libraries it uses must be available under a **permissive** open source license that is compatible with the [GNU General Public License version 3](licenses/GPL-3.0.txt). This allows us to include it in TurboWarp Desktop and allows the packager to include it in packaged projects. If you're unsure, use our default: the [MIT License](licenses/MIT.txt). For this to be legally possible, either you must have written the entire extension yourself or have permission to use all of its components under a compatible open source license.
 
 If you use the default MIT license as we recommend, you don't need to add a comment (you can if you want to, though). If you wish to use a different license, leave a comment at the top of the file. For example, if you prefer Apache 2.0, add a comment like the one below.
 
