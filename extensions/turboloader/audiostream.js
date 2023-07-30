@@ -368,7 +368,7 @@
       return sounds.length ? sounds : [{ text: 'empty', value: 'empty' }];
     }
 
-    getSprites(){
+    getSprites() {
       return Scratch.vm.runtime.targets
         .filter(s => s.isOriginal)
         .map(s => ({
@@ -379,7 +379,7 @@
 
     // the 'am' prefix is a remenant from the original (sandboxed) extension 'AudioManager' made by me some time back, that i based this enhanced version off.
 
-    getContext(id, opt){
+    getContext(id, opt) {
       // TODO: infinite recursion
       if (contextBindings[id] && id !== contextBindings[id]) {
         return this.getContext(contextBindings[id], opt);
@@ -391,7 +391,7 @@
       return this.newContext(id, opt);
     }
 
-    newContext(id, opt){
+    newContext(id, opt) {
       if (!opt) opt = {};
       let ctx = {
         id: id || contexList.length,
@@ -406,11 +406,11 @@
       ctx.source.preservesPitch = false;
       ctx.source.id = 'AudioStreamSource_' + id;
       document.body.appendChild(ctx.source);
-      if (!opt?.simple){
+      if (!opt?.simple) {
         ctx.audio = new AudioContext();
         ctx.track = ctx.audio.createMediaElementSource(ctx.source);
         ctx.effects.gain = ctx.audio.createGain();
-        ctx.effects.panner = new StereoPannerNode(ctx.audio,{pan: 0});
+        ctx.effects.panner = new StereoPannerNode(ctx.audio, {pan: 0});
         ['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'peaking', 'notch', 'allpass'].forEach(f => {
           let bf = ctx.audio.createBiquadFilter();
           bf.type = f;
@@ -425,19 +425,20 @@
       return ctx;
     }
 
-    am_usecontext({SPRITE},util){
+    am_usecontext({SPRITE},util) {
       contextBindings[util.target.id] = SPRITE;
     }
 
-    am_loadasset({SRC}, util){
+    am_loadasset({SRC}, util) {
       let ctx = (!util?.source?.id) ? this.getContext(util.target.id) : util;
-      if (assetSourceList[SRC]){
+      if (assetSourceList[SRC]) {
         ctx.source.src = assetSourceList[SRC];
         return;
       }
       let asset = Scratch.vm.assets.find(e => e.assetId === SRC);
-      if (!asset){
-        console.error('[AudioStream] Media error: ',asset);return;
+      if (!asset) {
+        console.error('[AudioStream] Media error: ',asset);
+        return;
       }
       let src = URL.createObjectURL(new Blob([asset.data], {type: asset.assetType.contentType}));
       ctx.source.src = src;
@@ -451,17 +452,17 @@
       }
     }
 
-    am_stopthis(args, util){
+    am_stopthis(args, util) {
       let ctx = this.getContext(util.target.id);
       ctx.source.currentTime = 9e20;
     }
 
-    am_stophim({SPRITE}){
+    am_stophim({SPRITE}) {
       let ctx = this.getContext(SPRITE);
       ctx.source.currentTime = 9e20;
     }
 
-    am_stop(){
+    am_stop() {
       contexList.forEach(ctx=>{
         ctx.source.currentTime = 9e20;
       });
@@ -478,19 +479,19 @@
       return new Promise(r => {
         ctx.source.currentTime = 0.001;
         ctx.source.play();
-        ctx.source.addEventListener('ended',r);
+        ctx.source.addEventListener('ended', r);
       });
     }
 
-    am_playnew({SRC}){
+    am_playnew({SRC}) {
       let id = btoa((Math.random() * 1e17).toString());
-      let ctx = this.newContext(id,{simple: true});
+      let ctx = this.newContext(id, {simple: true});
       this.am_loadasset({SRC: SRC},ctx);
       ctx.source.currentTime = 0;
       ctx.source.play();
-      ctx.source.addEventListener('ended',()=>{
+      ctx.source.addEventListener('ended', () => {
         ctx.source.remove();
-        contexList = contexList.filter(c=>c.id != id);
+        contexList = contexList.filter(c => c.id != id);
       });
     }
 
@@ -511,42 +512,42 @@
 
     am_setpitch({VAL}, util) {
       let ctx = this.getContext(util.target.id);
-      /*Calculate the pitch value to be closer to original Scratch*/
+      // Calculate the pitch value to be closer to original Scratch
       ctx.source.playbackRate = ctx.source.defaultPlaybackRate = VAL < 0 ? VAL < -659 ? 0.1 : Math.abs(VAL) / 700 : VAL > 700 ? 15 : VAL / 50 + 1;
     }
 
     am_setvolume({VAL}, util) {
       let ctx = this.getContext(util.target.id);
       ctx.volume = +VAL;
-      if (ctx.volume > 1){
+      if (ctx.volume > 1) {
         ctx.source.volume = 1;
-      } else if (ctx.volume < 0){
+      } else if (ctx.volume < 0) {
         ctx.source.volume = 0;
       } else {
         ctx.source.volume = ctx.volume;
       }
     }
 
-    am_getvolume(args, util){
+    am_getvolume(args, util) {
       let ctx = this.getContext(util.target.id);
       return ctx.volume;
     }
 
-    am_setstereo({VAL}, util){
+    am_setstereo({VAL}, util) {
       let ctx = this.getContext(util.target.id);
       ctx.effects.panner.pan.value = VAL;
     }
 
-    am_setppitch({VAL}, util){
+    am_setppitch({VAL}, util) {
       let ctx = this.getContext(util.target.id);
       ctx.source.preservesPitch = VAL;
     }
 
-    am_setfilter({FIL,FQ, Q}, util){
+    am_setfilter({FIL,FQ, Q}, util) {
       // did not work in the original version
     }
 
-    am_toglefilter({FIL, STATE}, util){
+    am_toglefilter({FIL, STATE}, util) {
       // did not work in the original version
     }
 
@@ -562,7 +563,7 @@
       // did not work in the original version
     }
 
-    am_analyserfft({VAL}, util){
+    am_analyserfft({VAL}, util) {
       let ctx = this.getContext(util.target.id);
       ctx.analyser.fftSize = VAL;
     }
