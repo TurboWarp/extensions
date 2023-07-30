@@ -224,7 +224,6 @@
             return {
                 id: 'shovellzcompress',
                 name: 'LZ Compress',
-                docsURI: 'https://pieroxy.net/blog/pages/lz-string/index.html',
                 blocks: [{
                         opcode: 'compress',
                         blockType: Scratch.BlockType.REPORTER,
