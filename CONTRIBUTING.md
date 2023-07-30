@@ -113,29 +113,31 @@ You **MUST** avoid using any code or images under these licenses as we believe t
 
 We take licenses very seriously. License violations are one of the few things that can force us to break project compatibility.
 
-## Code style
-
-Our preferred code style is:
-
- - Indent with 2 spaces
- - Use semicolons
- - Use whitespace liberally
- - Comment liberally, but don't just re-explain what the code literally says (`var x = 3; // set x to 3` is a bad comment)
- - Pick one type of quotes and be consistent (if unsure, we like single quotes)
-
 ## Type checking
 
 If you use our development server, TypeScript aware editors such as Visual Studio Code will give you smart autocomplete suggestions for most Scratch and extension APIs based on [@turbowarp/types](https://github.com/TurboWarp/types) and [@turbowarp/types-tw](https://github.com/TurboWarp/types-tw). Note that these types are not perfect; some methods are missing or incorrect. Please report any issues you find.
 
 If you encounter a TypeScript error, as long as you understand the error, feel free to add `// @ts-ignore`, `// @ts-expect-error`, or just ignore the error entirely. We currently do not require extensions to pass type checking.
 
-## Linting
+## Linting, validation, and formatting
 
-We use ESLint to automatically common problems in pull requests. To run our linting rules on your computer, run:
+All pull requests are automatically checked by a combination of custom validation scripts, [ESLint](https://eslint.org/), and [Prettier](https://prettier.io/). Don't worry about passing these checks on the first attempt -- most don't. That's why we have these checks.
+
+Our custom validation scripts do things like making sure you have the correct headers at the start of your extension and that the images are the right size. You can run them locally with:
+
+```bash
+npm run validate
+```
+
+ESLint detects common JavaScript errors such as referencing non-existant variables. You can run it locally with:
 
 ```bash
 npm run lint
 ```
+
+You are allowed to [disable ESLint warnings and errors](https://eslint.org/docs/latest/use/configure/rules#disabling-rules) as needed, but please only do so if actually required.
+
+When including third-party code, especially minified code, you may use `/* eslint-disable*/` and `/* eslint-enable */` markers to disable linting for that entire section.
 
 ESLint can automatically fix certain issues. You can run this with:
 
@@ -143,11 +145,14 @@ ESLint can automatically fix certain issues. You can run this with:
 npm run fix
 ```
 
-Our ESLint configuration separates between *warnings* and *errors*. They both cause big red error messages to appear on pull requests, but they are different:
+We use Prettier to ensure consistent code formatting. You can format your code automatically with:
 
- - Warnings are typically minor style issues. If you ignore these we will fix it ourselves. This usually takes 15 seconds to address.
- - Errors are actually problems. Please read and address all of them. Extensions with errors may take longer to review as your extension is unfinished.
+```bash
+npm run format
+```
 
-You are allowed to [disable warnings or errors](https://eslint.org/docs/latest/use/configure/rules#disabling-rules) as needed, but only if actually required.
+To just check formatting instead, use:
 
-When including third-party code, especially minified code, you may use `/* eslint-disable*/` and `/* eslint-enable */` markers to disable linting for that entire section.
+```bash
+npm run check-format
+```
