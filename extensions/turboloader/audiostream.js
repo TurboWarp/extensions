@@ -17,33 +17,33 @@
         blocks: [
           {
             opcode: 'am_loadasset',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'load sound from project [SRC]',
             arguments: {
               SRC: {
-                type: 'string',
+                type: Scratch.ArgumentType.STRING,
                 menu: 'audAssetList'
               }
             }
           },
           {
             opcode: 'am_playfromurl',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'load sound from URL/URI [URL]',
             arguments: {
               URL: {
-                type: 'string',
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: 'https://extensions.turbowarp.org/meow.mp3'
               }
             }
           },
           {
             opcode: 'am_playnew',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'start playing [SRC] in a new context',
             arguments: {
               SRC: {
-                type: 'string',
+                type: Scratch.ArgumentType.STRING,
                 menu: 'audAssetList'
               }
             }
@@ -51,205 +51,205 @@
           '---',
           {
             opcode: 'am_usecontext',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'use [SPRITE]\'s context in this sprite',
             arguments: {
-              SPRITE: {type: 'string',menu: 'spriteList'}
+              SPRITE: {type: Scratch.ArgumentType.STRING,menu: 'spriteList'}
             }
           },
           '---',
           {
             opcode: 'am_play',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'play',
             arguments: {}
           },
           {
             opcode: 'am_playandwait',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'play and wait till the end',
             arguments: {}
           },
           {
             opcode: 'am_resume',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'resume',
             arguments: {}
           },
           {
             opcode: 'am_pause',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'pause',
             arguments: {}
           },
           {
             opcode: 'am_stopthis',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'stop (this context)',
             arguments: {}
           },
           {
             opcode: 'am_stophim',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'stop sounds of [SPRITE]',
-            arguments: {SPRITE: {type: 'string', menu: 'spriteList'}}
+            arguments: {SPRITE: {type: Scratch.ArgumentType.STRING, menu: 'spriteList'}}
           },
           {
             opcode: 'am_stop',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'stop all sounds',
             arguments: {}
           },
           {
             opcode: 'am_hasStopped',
-            blockType: 'Boolean',
+            blockType: Scratch.BlockType.BOOLEAN,
             text: 'has stopped',
             arguments: {}
           },
           {
             opcode: 'am_isPaused',
-            blockType: 'Boolean',
+            blockType: Scratch.BlockType.BOOLEAN,
             text: 'is paused',
             arguments: {}
           },
           '---',
           {
             opcode: 'am_getanalyser',
-            blockType: 'reporter',
+            blockType: Scratch.BlockType.REPORTER,
             text: 'get all visualizer data (slow)',
             arguments: {}
           },
           {
             opcode: 'am_getanalyserindex',
-            blockType: 'reporter',
+            blockType: Scratch.BlockType.REPORTER,
             text: 'get visualizer data at [INDEX]',
             arguments: {
               INDEX: {
-                type: 'number'
+                type: Scratch.BlockType.BUTTON
               }
             }
           },
           {
             opcode: 'am_analyserfft',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'set visualizer read size to [VAL] (must be power of 2)',
             arguments: {
               VAL: {
-                'type': 'number',
-                'defaultValue': '256'
+                type: Scratch.BlockType.BUTTON,
+                defaultValue: '256'
               }
             }
           },
           '---',
           {
             opcode: 'am_setvolume',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'set volume to [VAL]',
             arguments: {
               VAL: {
-                type: 'number',
+                type: Scratch.BlockType.BUTTON,
                 defaultValue: '1.0'
               }
             }
           },
           {
             opcode: 'am_getvolume',
-            blockType: 'reporter',
+            blockType: Scratch.BlockType.REPORTER,
             text: 'volume',
             arguments: {}
           },
           '---',
           {
             opcode: 'am_skipToTime',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'skip to time [VAL]',
             arguments: {
               VAL: {
-                type: 'number',
+                type: Scratch.BlockType.BUTTON,
                 defaultValue: '0'
               }
             }
           },
           {
             opcode: 'am_songDuration',
-            blockType: 'reporter',
+            blockType: Scratch.BlockType.REPORTER,
             text: 'sound duration',
             arguments: {}
           },
           {
             opcode: 'am_songCurrent',
-            blockType: 'reporter',
+            blockType: Scratch.BlockType.REPORTER,
             text: 'current time',
             arguments: {}
           },
           '---',
           {
             opcode: 'am_setpitch',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'set speed/pitch to [VAL]',
             arguments: {
               VAL: {
-                type: 'number',
+                type: Scratch.BlockType.BUTTON,
                 defaultValue: '0'
               }
             }
           },
           {
             opcode: 'am_setppitch',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'preservesPitch [VAL]',
             arguments: {
               VAL: {
-                type: 'Boolean',
+                type: Scratch.BlockType.BOOLEAN,
                 defaultValue: 'false'
               }
             }
           },
           {
             opcode: 'am_setstereo',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: 'set pan to [VAL] (-1 to 1)',
             arguments: {
               VAL: {
-                type: 'number',
+                type: Scratch.BlockType.BUTTON,
                 defaultValue: '0'
               }
             }
           },
           {
             opcode: 'am_setfilter',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: '(broken) filter [FIL] set frequency [FQ] quality [Q]',
             hideFromPalette: true,
             arguments: {
               FIL: {
-                type: 'string',
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: 'lowpass',
                 menu: 'filtersmenu'
               },
               Q: {
-                type: 'number',
+                type: Scratch.BlockType.BUTTON,
                 defaultValue: '0'
               },
               FQ: {
-                type: 'number',
+                type: Scratch.BlockType.BUTTON,
                 defaultValue: '440'
               }
             }
           },
           {
             opcode: 'am_toglefilter',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: '(broken) filter [FIL] [STATE]',
             hideFromPalette: true,
             arguments: {
               FIL: {
-                type: 'string',
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: 'lowpass',
                 menu: 'filtersmenu'
               },
               STATE: {
-                type: 'string',
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: 'connect',
                 menu: 'connectOrDisconnect'
               }
@@ -257,39 +257,39 @@
           },
           {
             opcode: 'am_freset',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: '(broken) reset all filters',
             hideFromPalette: true,
             arguments: {}
           },
           {
             opcode: 'am_connect',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: '(broken) connect [STRING] to track [TRACK]',
             hideFromPalette: true,
             arguments: {
               STRING: {
-                type: 'string',
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: 'filter1'
               },
               TRACK: {
-                type: 'string',
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: 'track'
               }
             }
           },
           {
             opcode: 'am_disconnect',
-            blockType: 'command',
+            blockType: Scratch.BlockType.COMMAND,
             text: '(broken) disconnect [STRING] from track [TRACK]',
             hideFromPalette: true,
             arguments: {
               STRING: {
-                type: 'string',
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: 'filter1'
               },
               TRACK: {
-                type: 'string',
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: 'track'
               }
             }
