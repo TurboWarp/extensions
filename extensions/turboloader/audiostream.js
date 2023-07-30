@@ -1,3 +1,9 @@
+/*!
+  This extension is from Turboloader - https://greasyfork.org/en/scripts/437432-turboloader
+  It has been imported here with permission from the author for compatibility reasons only.
+  Any future development MUST happen in a new extension.
+*/
+
 (function (Scratch) {
   'use strict';
 
