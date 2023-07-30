@@ -444,9 +444,11 @@
       assetSourceList[SRC] = src;
     }
 
-    am_playfromurl({URL},util) {
+    async am_playfromurl({URL}, util) {
       let ctx = this.getContext(util.target.id);
-      ctx.source.src = URL;
+      if (await Scratch.canFetch(URL)) {
+        ctx.source.src = URL;
+      }
     }
 
     am_stopthis(args, util){
