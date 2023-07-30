@@ -280,15 +280,15 @@
 
         decompress(args) {
             if (args.TYPE == 'Raw') {
-                return LZString.decompress(args.TEXT);
+                return LZString.decompress(args.TEXT) || '';
             } else if (args.TYPE == 'Base64') {
-                return LZString.decompressFromBase64(args.TEXT);
+                return LZString.decompressFromBase64(args.TEXT) || '';
             } else if (args.TYPE == 'EncodedURIComponent') {
-                return LZString.decompressFromEncodedURIComponent(args.TEXT);
+                return LZString.decompressFromEncodedURIComponent(args.TEXT) || '';
             } else if (args.TYPE == 'Uint8Array') {
-                return LZString.decompressFromUint8Array(args.TEXT);
+                return LZString.decompressFromUint8Array(args.TEXT) || '';
             } else if (args.TYPE == 'UTF16') {
-                return LZString.decompressFromUTF16(args.TEXT);
+                return LZString.decompressFromUTF16(args.TEXT) || '';
             } return '';
         }
     }
