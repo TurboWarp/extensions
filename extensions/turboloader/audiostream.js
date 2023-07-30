@@ -7,10 +7,9 @@
 (function (Scratch) {
   'use strict';
 
-  // TODO: Object.create(null)
   let contexList = [];
-  let contextBindings = {};
-  let assetSourceList = {};
+  let contextBindings = Object.create(null);
+  let assetSourceList = Object.create(null);
 
   class AudioStream {
     getInfo() {
