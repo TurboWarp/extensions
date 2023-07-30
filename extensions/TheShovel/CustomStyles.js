@@ -656,6 +656,8 @@
                 }
             } else if (args.ITEM == 'border size') {
                 return borderSize;
+            } else if (args.ITEM == 'ask prompt button image') {
+                return askBoxButtonImage;
             }
             return '';
         }
