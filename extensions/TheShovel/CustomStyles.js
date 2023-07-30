@@ -40,7 +40,6 @@
     let askBoxButton;
     let askBoxInner;
     if (typeof scaffolding !== 'undefined') {
-        allowURL = true;
         monitorRoot = '.sc-monitor-root';
         monitorValue = '.sc-monitor-value';
         monitorListHeader = '.sc-monitor-list-label';
