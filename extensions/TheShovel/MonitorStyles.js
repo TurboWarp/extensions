@@ -20,11 +20,11 @@
     let allowScrolling = true;
     let borderSize = -1;
     let askBoxBGColor = '';
-    let askboxBGRoundness = '';
+    let askboxBGRoundness = -1;
     let askBoxButtonColor = '';
-    let askBoxButtonRoundness = '';
+    let askBoxButtonRoundness = -1;
     let askBoxInnerColor = '';
-    let askBoxInnerRoundness = '';
+    let askBoxInnerRoundness = -1;
     let askBoxIcon = '';
     let askBoxTextColor = '';
 
@@ -70,7 +70,7 @@
         monitorValueLarge = 'div[class^="monitor_large-value_"]';
         askBoxBG = 'div[class^="question_question-container_"]';
         askBoxButton = 'button[class^="question_question-submit-button_"]';
-        askBoxInner = 'input[class^="input_input-form_"]';
+        askBoxInner = '[class^="question_question-container_"] input[class^="input_input-form_"]';
         askBoxIcon = 'img[class^="question_question-submit-button-icon_"]';
     }
 
@@ -129,35 +129,34 @@
         if (listValueTextColor) {
             css += `${monitorRowValueOuter} { color: ${listValueTextColor}; }`;
         }
-        if (listValueBoxCornerRadius) {
+        if (listValueBoxCornerRadius >= 0) {
             css += `${monitorRowValueOuter} { border-radius: ${listValueBoxCornerRadius}px; }`;
         }
         if (!allowScrolling) {
             css += `${monitorRowsScroller} { overflow: hidden !important; }`;
         }
         if (askBoxBGColor) {
-            css += `${askBoxBG} { background: ${askBoxBGColor} !important; }`;
-            // Yeah
-            css += `${askBoxBG} { border: none !important; }`;
+            css += `${askBoxBG} { background: ${askBoxBGColor} !important; border: none !important; }`;
         }
-        if (askboxBGRoundness) {
+        if (askboxBGRoundness >= 0) {
             css += `${askBoxBG} { border-radius: ${askboxBGRoundness}px !important; }`;
         }
         if (askBoxButtonColor) {
-            css += `${askBoxButton} { background: ${askBoxButtonColor} ; }`;
+            css += `${askBoxButton} { background: ${askBoxButtonColor}; }`;
             // I can't keep the icon while changing the color when packaged, so let's keep it consinstent with the editor
             css += `${askBoxIcon} { visibility: hidden ; }`;
         }
-        if (askBoxButtonRoundness) {
+        if (askBoxButtonRoundness >= 0) {
             css += `${askBoxButton} { border-radius: ${askBoxButtonRoundness}px !important; }`;
         }
-        if (askBoxInner) {
+        if (askBoxInnerColor) {
             css += `${askBoxInner} { background: ${askBoxInnerColor} !important; }`;
-            // Yeah...
             css += `${askBoxInner} { border: none !important; }`;
+        }
+        if (askBoxTextColor) {
             css += `${askBoxInner} { color: ${askBoxTextColor} !important; }`;
         }
-        if (askBoxInnerRoundness) {
+        if (askBoxInnerRoundness >= 0) {
             css += `${askBoxInner} { border-radius: ${askBoxInnerRoundness}px !important; }`;
         }
 
@@ -576,11 +575,11 @@
             allowScrolling = true;
             borderSize = -1;
             askBoxBGColor = '';
-            askboxBGRoundness = '';
+            askboxBGRoundness = -1;
             askBoxButtonColor = '';
-            askBoxButtonRoundness = '';
+            askBoxButtonRoundness = -1;
             askBoxInnerColor = '';
-            askBoxInnerRoundness = '';
+            askBoxInnerRoundness = -1;
             askBoxIcon = '';
             askBoxTextColor = '';
             applyCSS();
