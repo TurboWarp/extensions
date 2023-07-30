@@ -1,6 +1,8 @@
 (function(Scratch) {
   'use strict';
 
+  /* globals JZZ */
+
   /*!
   This is https://github.com/jazz-soft/JZZ
 
