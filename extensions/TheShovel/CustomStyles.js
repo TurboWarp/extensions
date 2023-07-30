@@ -30,7 +30,6 @@
 
     // CSS selectors
     let monitorRoot;
-    let monitorRoot2;
     let monitorValue;
     let monitorListHeader;
     let monitorListFooter;
@@ -45,7 +44,6 @@
     if (typeof scaffolding !== 'undefined') {
         allowURL = true;
         monitorRoot = '.sc-monitor-root';
-        monitorRoot2 = '.sc-monitor-root[data-opcode^="data_"] .sc-monitor-value-color';
         monitorValue = '.sc-monitor-value';
         monitorListHeader = '.sc-monitor-list-label';
         monitorListFooter = '.sc-monitor-list-footer';
@@ -59,7 +57,6 @@
         askBoxInner = '.sc-question-input';
     } else {
         monitorRoot = 'div[class^="monitor_monitor-container_"]';
-        monitorRoot2 = 'div[class^="monitor_value_"][data-opcode^="data_"]';
         monitorValue = 'div[class^="monitor_value_"]';
         monitorListHeader = 'div[class^="monitor_list-header_"]';
         monitorListFooter = 'div[class^="monitor_list-footer_"]';
@@ -202,13 +199,6 @@
             setMonitorPosition(variable.id, x, y);
         }
     };
-
-    // Credit to LilyMakesThings
-    const label = (name, hidden) => ({
-        blockType: Scratch.BlockType.LABEL,
-        text: name,
-        hideFromPalette: hidden
-    });
 
     class MonitorStyles {
         getInfo() {
