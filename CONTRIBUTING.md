@@ -9,7 +9,6 @@ Please pay special attention to:
  - Unsandboxed extensions: https://docs.turbowarp.org/development/extensions/unsandboxed
  - Maintaining backward compatibility: https://docs.turbowarp.org/development/extensions/compatibility
  - A better development server: https://docs.turbowarp.org/development/extensions/better-development-server
- - Maintaining compatibility: https://docs.turbowarp.org/development/extensions/compatibility
 
 Read this document **in full** too. Pull requests that don't follow the guidelines will take *much* longer to be reviewed.
 
