@@ -1,9 +1,7 @@
 // Thanks LilyMakesThings for the awesome banner!
 (function(Scratch) {
     'use strict';
-    let allowURL = false;
-    // Misc
-    let color = '';
+
     // Styles
     let generalTextColor = '';
     let generalBorderColor = '';
@@ -200,6 +198,38 @@
         }
     };
 
+    const parseColor = (color, callback) => {
+        color = Scratch.Cast.toString(color);
+
+        // These might have some exponential backtracking/ReDoS, but that's not really a concern here.
+        // If a project wanted to get stuck in an infinite loop, there are so many other ways to do that.
+
+        // Simple color code or name
+        if (/^#?[a-z0-9]+$/.test(color)) {
+            callback(color);
+            return;
+        }
+
+        // Simple linear gradient
+        if (/^linear-gradient\(\d+deg,#?[a-z0-9]+,#?[a-z0-9]+\)$/.test(color)) {
+            callback(color);
+            return;
+        }
+
+        // URL
+        const match = color.match(/^url\((.+)\)$/);
+        if (match) {
+            const url = match[1];
+            return Scratch.canFetch(url).then(allowed => {
+                if (allowed) {
+                    callback(color);
+                }
+            });
+        }
+
+        console.error('Invalid color', color);
+    };
+
     class MonitorStyles {
         getInfo() {
             return {
@@ -274,7 +304,7 @@
                         blockIconURI: BorderIcon,
                         opcode: 'setbordersize',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'set border size to [SIZE]',
+                        text: 'set variable border size to [SIZE]',
                         arguments: {
                             SIZE: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -439,50 +469,37 @@
             };
         }
         changecss(args) {
-            //We check if there is a valid URL to ask for permission
-            if (args.COLOR.includes(":") || args.COLOR.includes(".")) {
-                if (!allowURL) {
-                    if (window.confirm("This project wants to fetch something with the Monitor Styles extension.\nDo you want to allow it?")) {
-                        allowURL = true;
-                        color = args.COLOR;
-                    } else {
-                        color = "";
-                    }
-                } else {
-                    color = args.COLOR;
+            return parseColor(args.COLOR, color => {
+                if (args.COLORABLE == 'general text') {
+                    generalTextColor = color;
+                } else if (args.COLORABLE == 'general background') {
+                    generalbackgroundColor = color;
+                } else if (args.COLORABLE == 'variable value box') {
+                    variableValueBoxColor = color;
+                } else if (args.COLORABLE == 'variable value text') {
+                    variableValueTextColor = color;
+                } else if (args.COLORABLE == 'list header') {
+                    listHeaderColor = color;
+                } else if (args.COLORABLE == 'list footer') {
+                    listFooterColor = color;
+                } else if (args.COLORABLE == 'list value box') {
+                    listValueBoxColor = color;
+                } else if (args.COLORABLE == 'list value text') {
+                    listValueTextColor = color;
+                } else if (args.COLORABLE == 'general border') {
+                    generalBorderColor = color;
+                } else if (args.COLORABLE == 'ask prompt background') {
+                    askBoxBGColor = color;
+                } else if (args.COLORABLE == 'ask prompt button') {
+                    askBoxButtonColor = color;
+                } else if (args.COLORABLE == 'ask prompt inner') {
+                    askBoxInnerColor = color;
+                } else if (args.COLORABLE == 'ask prompt text') {
+                    askBoxTextColor = color;
                 }
-            } else {
-                color = args.COLOR;
-            }
-            if (args.COLORABLE == 'general text') {
-                generalTextColor = color;
-            } else if (args.COLORABLE == 'general background') {
-                generalbackgroundColor = color;
-            } else if (args.COLORABLE == 'variable value box') {
-                variableValueBoxColor = color;
-            } else if (args.COLORABLE == 'variable value text') {
-                variableValueTextColor = color;
-            } else if (args.COLORABLE == 'list header') {
-                listHeaderColor = color;
-            } else if (args.COLORABLE == 'list footer') {
-                listFooterColor = color;
-            } else if (args.COLORABLE == 'list value box') {
-                listValueBoxColor = color;
-            } else if (args.COLORABLE == 'list value text') {
-                listValueTextColor = color;
-            } else if (args.COLORABLE == 'general border') {
-                generalBorderColor = color;
-            } else if (args.COLORABLE == 'ask prompt background') {
-                askBoxBGColor = color;
-            } else if (args.COLORABLE == 'ask prompt button') {
-                askBoxButtonColor = color;
-            } else if (args.COLORABLE == 'ask prompt inner') {
-                askBoxInnerColor = color;
-            } else if (args.COLORABLE == 'ask prompt text') {
-                askBoxTextColor = color;
-            }
 
-            applyCSS();
+                applyCSS();
+            });
         }
 
         gradientAngle(args) {
