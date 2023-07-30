@@ -25,6 +25,7 @@
     let askBoxInnerRoundness = -1;
     let askBoxIcon = '';
     let askBoxTextColor = '';
+    let askBoxButtonImage = '';
 
     // CSS selectors
     let monitorRoot;
@@ -136,9 +137,7 @@
             css += `${askBoxBG} { border-radius: ${askboxBGRoundness}px !important; }`;
         }
         if (askBoxButtonColor) {
-            css += `${askBoxButton} { background: ${askBoxButtonColor}; }`;
-            // I can't keep the icon while changing the color when packaged, so let's keep it consinstent with the editor
-            css += `${askBoxIcon} { visibility: hidden ; }`;
+            css += `${askBoxButton} { background-color: ${askBoxButtonColor}; }`;
         }
         if (askBoxButtonRoundness >= 0) {
             css += `${askBoxButton} { border-radius: ${askBoxButtonRoundness}px !important; }`;
@@ -152,6 +151,11 @@
         }
         if (askBoxInnerRoundness >= 0) {
             css += `${askBoxInner} { border-radius: ${askBoxInnerRoundness}px !important; }`;
+        }
+        if (askBoxButtonImage) {
+            css += `${askBoxButton} { background-image: ${askBoxButtonImage} !important; }`;
+            // I hate this
+            css += `${askBoxIcon} { visibility: hidden ; }`;
         }
 
         stylesheet.textContent = css;
@@ -285,6 +289,19 @@
                         opcode: 'transparentinput',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'transparent',
+                    },
+                    {
+                        blockIconURI: PictureIcon,
+                        disableMonitor: true,
+                        opcode: 'setAskURI',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'set ask prompt button image to [URL]',
+                        arguments: {
+                            URL: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'https://extensions.turbowarp.org/dango.png'
+                            }
+                        }
                     },
                     {
                         blockIconURI: PictureIcon,
@@ -452,6 +469,7 @@
                             'list value text color',
                             'ask prompt background color',
                             'ask prompt button color',
+                            'ask prompt button image',
                             'ask prompt inner color',
                             'ask prompt text color',
                             'general borders roundness',
@@ -640,6 +658,14 @@
                 return borderSize;
             }
             return '';
+        }
+
+        setAskURI(args) {
+            // Lazyness
+            return parseColor('url(' + args.URL + ')', color => {
+                askBoxButtonImage = color;
+                applyCSS();
+            });
         }
     }
 
