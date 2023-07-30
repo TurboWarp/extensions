@@ -353,7 +353,7 @@
     }
 
     deleteImage({ SPRITE, COSNAME }){
-      //0znzw, since shovel did not add it yet.
+      // 0znzw, since shovel did not add it yet.
       const target = vm.runtime.getSpriteTargetByName(SPRITE);
       if (!target) {
         return;
@@ -362,10 +362,9 @@
     }
 
     getAllSprites(){
-      //0znzw, since shovel did not add it yet.
-      let sprites = new Object([]), target = "";
-      for (target in vm.runtime.targets) {
-        target = vm.runtime.targets[target];
+      // 0znzw, since shovel did not add it yet.
+      let sprites = [];
+      for (const target of vm.runtime.targets) {
         if (target.isOriginal) sprites.push(target.sprite.name);
       }
       return JSON.stringify(sprites);
