@@ -214,7 +214,7 @@
         getInfo() {
             return {
                 id: 'shovelcss',
-                name: 'Monitor Styles',
+                name: 'Custom Styles',
                 menuIconURI: extensionIcon,
                 color1: '#0072d6',
                 color2: '#0072d6',
