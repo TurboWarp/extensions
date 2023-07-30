@@ -265,16 +265,17 @@
             };
         }
         compress(args) {
+            const text = Scratch.Cast.toString(args.TEXT);
             if (args.TYPE == 'Raw') {
-                return LZString.compress(args.TEXT);
+                return LZString.compress(text);
             } else if (args.TYPE == 'Base64') {
-                return LZString.compressToBase64(args.TEXT);
+                return LZString.compressToBase64(text);
             } else if (args.TYPE == 'EncodedURIComponent') {
-                return LZString.compressToEncodedURIComponent(args.TEXT);
+                return LZString.compressToEncodedURIComponent(text);
             } else if (args.TYPE == 'Uint8Array') {
-                return LZString.compressToUint8Array(args.TEXT);
+                return LZString.compressToUint8Array(text);
             } else if (args.TYPE == 'UTF16') {
-                return LZString.compressToUTF16(args.TEXT);
+                return LZString.compressToUTF16(text);
             } return '';
         }
 
