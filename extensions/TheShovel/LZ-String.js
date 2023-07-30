@@ -265,31 +265,38 @@
             };
         }
         compress(args) {
+            const text = Scratch.Cast.toString(args.TEXT);
             if (args.TYPE == 'Raw') {
-                return LZString.compress(args.TEXT);
+                return LZString.compress(text);
             } else if (args.TYPE == 'Base64') {
-                return LZString.compressToBase64(args.TEXT);
+                return LZString.compressToBase64(text);
             } else if (args.TYPE == 'EncodedURIComponent') {
-                return LZString.compressToEncodedURIComponent(args.TEXT);
+                return LZString.compressToEncodedURIComponent(text);
             } else if (args.TYPE == 'Uint8Array') {
-                return LZString.compressToUint8Array(args.TEXT);
+                return LZString.compressToUint8Array(text);
             } else if (args.TYPE == 'UTF16') {
-                return LZString.compressToUTF16(args.TEXT);
+                return LZString.compressToUTF16(text);
             } return '';
         }
 
         decompress(args) {
-            if (args.TYPE == 'Raw') {
-                return LZString.decompress(args.TEXT) || '';
-            } else if (args.TYPE == 'Base64') {
-                return LZString.decompressFromBase64(args.TEXT) || '';
-            } else if (args.TYPE == 'EncodedURIComponent') {
-                return LZString.decompressFromEncodedURIComponent(args.TEXT) || '';
-            } else if (args.TYPE == 'Uint8Array') {
-                return LZString.decompressFromUint8Array(args.TEXT) || '';
-            } else if (args.TYPE == 'UTF16') {
-                return LZString.decompressFromUTF16(args.TEXT) || '';
-            } return '';
+            try {
+                const text = Scratch.Cast.toString(args.TEXT);
+                if (args.TYPE == 'Raw') {
+                    return LZString.decompress(text) || '';
+                } else if (args.TYPE == 'Base64') {
+                    return LZString.decompressFromBase64(text) || '';
+                } else if (args.TYPE == 'EncodedURIComponent') {
+                    return LZString.decompressFromEncodedURIComponent(text) || '';
+                } else if (args.TYPE == 'Uint8Array') {
+                    return LZString.decompressFromUint8Array(text) || '';
+                } else if (args.TYPE == 'UTF16') {
+                    return LZString.decompressFromUTF16(text) || '';
+                }
+            } catch (e) {
+                console.error('decompress error', e);
+            }
+            return '';
         }
     }
     Scratch.extensions.register(new lzcompress());
