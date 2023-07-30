@@ -219,12 +219,12 @@
                 menuIconURI: extensionIcon,
                 color1: '#0072d6',
                 color2: '#0072d6',
-                blocks: [{
+                blocks: [
+                    {
                         func: 'help',
                         blockType: Scratch.BlockType.BUTTON,
                         text: 'How to use',
                     },
-                    label('Looks', false),
                     {
                         blockIconURI: ColorIcon,
                         opcode: 'changecss',
@@ -315,7 +315,7 @@
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Reset styles'
                     },
-                    label('Sensing', false),
+                    '---',
                     {
                         blockIconURI: miscIcon,
                         opcode: 'allowscrollrule',
@@ -340,7 +340,7 @@
                             }
                         }
                     },
-                    label('Motion', false),
+                    '---',
                     {
                         blockIconURI: miscIcon,
                         opcode: 'setvarpos',
@@ -405,7 +405,7 @@
                     BORDER_MENU: {
                         acceptReporters: true,
                         items: [
-                            'general borders ',
+                            'general borders',
                             'variable value box borders',
                             'list value box borders',
                             'ask prompt background',
@@ -507,7 +507,7 @@
 
         setborderradius(args) {
             const size = Scratch.Cast.toNumber(args.SIZE);
-            if (args.CORNER == 'general borders ') {
+            if (args.CORNER == 'general borders') {
                 generalBorderRadius = size;
             } else if (args.CORNER == 'variable value box borders') {
                 variableValueBoxCornerRadius = size;
