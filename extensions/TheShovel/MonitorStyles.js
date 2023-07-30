@@ -228,7 +228,7 @@
                         blockIconURI: ColorIcon,
                         opcode: 'changecss',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set color of [COLORABLE] to [COLOR]',
+                        text: 'set color of [COLORABLE] to [COLOR]',
                         arguments: {
                             COLORABLE: {
                                 type: Scratch.ArgumentType.STRING,
@@ -244,7 +244,7 @@
                         blockIconURI: GradientIcon,
                         opcode: 'gradientAngle',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Make a gradient with [COLOR1] and [COLOR2] at angle [ANGLE]',
+                        text: 'make a gradient with [COLOR1] and [COLOR2] at angle [ANGLE]',
                         arguments: {
                             COLOR1: {
                                 type: Scratch.ArgumentType.COLOR,
@@ -265,14 +265,14 @@
                         disableMonitor: true,
                         opcode: 'transparentinput',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Transparent',
+                        text: 'transparent',
                     },
                     {
                         blockIconURI: PictureIcon,
                         disableMonitor: true,
                         opcode: 'pictureinput',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Image [URL]',
+                        text: 'image [URL]',
                         arguments: {
                             URL: {
                                 type: Scratch.ArgumentType.STRING,
@@ -284,7 +284,7 @@
                         blockIconURI: BorderIcon,
                         opcode: 'setbordersize',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set border size to [SIZE]',
+                        text: 'set border size to [SIZE]',
                         arguments: {
                             SIZE: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -296,7 +296,7 @@
                         blockIconURI: BorderIcon,
                         opcode: 'setborderradius',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set roundness of [CORNER] to [SIZE]',
+                        text: 'set roundness of [CORNER] to [SIZE]',
                         arguments: {
                             SIZE: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -312,14 +312,14 @@
                         blockIconURI: ResetIcon,
                         opcode: 'clearCSS',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Reset styles'
+                        text: 'reset styles'
                     },
                     '---',
                     {
                         blockIconURI: miscIcon,
                         opcode: 'allowscrollrule',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set list scroll rule to [SCROLLRULE]',
+                        text: 'set list scroll rule to [SCROLLRULE]',
                         arguments: {
                             SCROLLRULE: {
                                 type: Scratch.ArgumentType.STRING,
@@ -331,7 +331,7 @@
                         blockIconURI: miscIcon,
                         opcode: 'getValue',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: '[ITEM]',
+                        text: 'get [ITEM]',
                         arguments: {
                             ITEM: {
                                 type: Scratch.ArgumentType.STRING,
@@ -344,7 +344,7 @@
                         blockIconURI: miscIcon,
                         opcode: 'setvarpos',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set position of variable with label [NAME] to x:[X] y:[Y]',
+                        text: 'set position of variable with label [NAME] to x: [X] y: [Y]',
                         arguments: {
                             X: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -364,7 +364,7 @@
                         blockIconURI: miscIcon,
                         opcode: 'setlistpos',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set position of list with label [NAME] to x:[X] y:[Y]',
+                        text: 'set position of list with label [NAME] to x: [X] y: [Y]',
                         arguments: {
                             X: {
                                 type: Scratch.ArgumentType.NUMBER,
