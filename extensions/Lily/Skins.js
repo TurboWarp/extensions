@@ -219,6 +219,7 @@
       }
 
       const skinId = await this._createURLSkin(url);
+      if (!skinId) return;
       createdSkins[skinName] = skinId;
 
       if (oldSkinId) {
@@ -318,9 +319,14 @@
     }
 
     async _createURLSkin (URL, rotationCenter) {
-      const imageData = await Scratch.fetch(URL);
-      const contentType = imageData.headers.get("Content-Type");
+      let imageData;
+      if (await Scratch.canFetch(URL)) {
+        imageData = await Scratch.fetch(URL);
+      } else {
+        return;
+      }
 
+      const contentType = imageData.headers.get("Content-Type");
       if (contentType === 'image/svg+xml') {
         return renderer.createSVGSkin(await imageData.text(), rotationCenter);
       } else if (contentType === 'image/png' || contentType === 'image/jpeg' || contentType === 'image/bmp') {
