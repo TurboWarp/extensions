@@ -422,7 +422,6 @@
 
     am_usecontext({SPRITE},util){
       contextBindings[util.target.id] = SPRITE;
-      console.log(contextBindings);
     }
 
     am_loadasset({SRC}, util){
@@ -433,12 +432,11 @@
       }
       let asset = Scratch.vm.assets.find(e => e.assetId === SRC);
       if (!asset){
-        console.log('[AudioStream] Media error: ',asset);return;
+        console.error('[AudioStream] Media error: ',asset);return;
       }
-      let src = URL.createObjectURL(new Blob([asset.data], {'type': asset.assetType.contentType}));
+      let src = URL.createObjectURL(new Blob([asset.data], {type: asset.assetType.contentType}));
       ctx.source.src = src;
       assetSourceList[SRC] = src;
-      console.log(assetSourceList);
     }
 
     am_playfromurl({URL},util) {
