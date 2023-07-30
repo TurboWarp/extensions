@@ -265,6 +265,7 @@
             };
         }
         compress(args) {
+            args.TEXT = Scratch.Cast.toString(args.TEXT);
             if (args.TYPE == 'Raw') {
                 return LZString.compress(args.TEXT);
             } else if (args.TYPE == 'Base64') {
@@ -279,6 +280,7 @@
         }
 
         decompress(args) {
+            args.TEXT = Scratch.Cast.toString(args.TEXT);
             if (args.TYPE == 'Raw') {
                 return LZString.decompress(args.TEXT) || '';
             } else if (args.TYPE == 'Base64') {
