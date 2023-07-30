@@ -123,6 +123,9 @@
               }
             }
           },
+
+          '---',
+
           {
             opcode: 'getCurrentSkin',
             blockType: Scratch.BlockType.REPORTER,
@@ -131,6 +134,21 @@
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'targetMenu'
+              }
+            }
+          },
+          {
+            opcode: 'getSkinAttribute',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[ATTRIBUTE] of skin [NAME]',
+            arguments: {
+              ATTRIBUTE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'skinAttributes'
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'my skin'
               }
             }
           },
@@ -155,18 +173,21 @@
           }
         ],
         menus: {
-          // Targets have acceptReporters: true
           targetMenu: {
             acceptReporters: true,
             items: '_getTargets'
+          },
+          skinAttributes: {
+            acceptReporters: false,
+            items: ['width', 'height']
           }
         }
       };
     }
 
-    async registerSVGSkin (args, util) {
-      const skinName = args.NAME;
-      const svgData = args.SVG;
+    async registerSVGSkin (args) {
+      const skinName = Cast.toString(args.NAME);
+      const svgData = Cast.toString(args.SVG);
 
       let oldSkinId = null;
       if (createdSkins[skinName]) {
@@ -184,7 +205,7 @@
     }
 
     async registerCostumeSkin (args, util) {
-      const skinName = args.NAME;
+      const skinName = Cast.toString(args.NAME);
       const costumeIndex = util.target.getCostumeIndexByName(args.COSTUME);
       const costume = util.target.sprite.costumes[costumeIndex];
 
@@ -209,9 +230,9 @@
       }
     }
 
-    async registerURLSkin (args, util) {
-      const skinName = args.NAME;
-      const url = args.URL;
+    async registerURLSkin (args) {
+      const skinName = Cast.toString(args.NAME);
+      const url = Cast.toString(args.URL);
 
       let oldSkinId = null;
       if (createdSkins[skinName]) {
@@ -228,16 +249,17 @@
       }
     }
 
-    getSkinLoaded (args, util) {
-      const skinName = args.NAME;
+    getSkinLoaded (args) {
+      const skinName = Cast.toString(args.NAME);
       return !!(createdSkins[skinName]);
     }
 
     setSkin (args, util) {
-      const skinName = args.NAME;
+      const skinName = Cast.toString(args.NAME);
       if (!createdSkins[skinName]) return;
 
-      let target = this._getTargetFromMenu(args.TARGET, util);
+      const targetName = Cast.toString(args.TARGET);
+      let target = this._getTargetFromMenu(targetName, util);
       const drawableID = target.drawableID;
 
       const skinId = createdSkins[skinName];
@@ -245,12 +267,14 @@
     }
 
     restoreSkin (args, util) {
-      let target = this._getTargetFromMenu(args.TARGET, util);
+      const targetName = Cast.toString(args.TARGET);
+      let target = this._getTargetFromMenu(targetName, util);
       target.updateAllDrawableProperties();
     }
 
     getCurrentSkin (args, util) {
-      let target = this._getTargetFromMenu(args.TARGET, util);
+      const targetName = Cast.toString(args.TARGET);
+      let target = this._getTargetFromMenu(targetName, util);
       const drawableID = target.drawableID;
 
       const skinId = renderer._allDrawables[drawableID].skin._id;
@@ -258,8 +282,26 @@
       return (skinName) ? skinName : '';
     }
 
-    deleteSkin (args, util) {
-      const skinName = args.NAME;
+    getSkinAttribute (args) {
+      const skins = renderer._allSkins;
+      const skinName = Cast.toString(args.NAME);
+
+      if (!createdSkins[skinName]) return 0;
+      const skinId = createdSkins[skinName];
+      if (!skins[skinId]) return 0;
+
+      const size = skins[skinId].size;
+      const attribute = Cast.toString(args.ATTRIBUTE).toLowerCase();
+
+      switch (attribute) {
+        case ('width'): return Math.ceil(size[0]);
+        case ('height'): return Math.ceil(size[1]);
+        default: return 0;
+      }
+    }
+
+    deleteSkin (args) {
+      const skinName = Cast.toString(args.NAME);
       if (!createdSkins[skinName]) return;
       const skinId = createdSkins[skinName];
 
@@ -268,14 +310,14 @@
       Reflect.deleteProperty(createdSkins, skinName);
     }
 
-    deleteAllSkins (args, util) {
+    deleteAllSkins () {
       this._refreshTargets();
       for (let i = 0; i < createdSkins.length; i++) renderer.destroySkin(createdSkins[i]);
       createdSkins = [];
     }
 
-    restoreTargets (args, util) {
-      const skinName = args.NAME;
+    restoreTargets (args) {
+      const skinName = Cast.toString(args.NAME);
       if (!createdSkins[skinName]) return;
       const skinId = createdSkins[skinName];
 
