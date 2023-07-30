@@ -72,7 +72,7 @@
               }
             }
           },
-          { // Current Query: Is this even necessary?
+          {
             opcode: 'getSkinLoaded',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'skin [NAME] is loaded?',
