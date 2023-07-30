@@ -219,7 +219,8 @@
           {
             opcode: 'am_setfilter',
             blockType: 'command',
-            text: 'filter [FIL] set frequency [FQ] quality [Q]',
+            text: '(broken) filter [FIL] set frequency [FQ] quality [Q]',
+            hideFromPalette: true,
             arguments: {
               FIL: {
                 type: 'string',
@@ -239,7 +240,8 @@
           {
             opcode: 'am_toglefilter',
             blockType: 'command',
-            text: 'filter [FIL] [STATE]',
+            text: '(broken) filter [FIL] [STATE]',
+            hideFromPalette: true,
             arguments: {
               FIL: {
                 type: 'string',
@@ -256,13 +258,15 @@
           {
             opcode: 'am_freset',
             blockType: 'command',
-            text: 'reset all filters',
+            text: '(broken) reset all filters',
+            hideFromPalette: true,
             arguments: {}
           },
           {
             opcode: 'am_connect',
             blockType: 'command',
-            text: 'connect [STRING] to track [TRACK]',
+            text: '(broken) connect [STRING] to track [TRACK]',
+            hideFromPalette: true,
             arguments: {
               STRING: {
                 type: 'string',
@@ -277,7 +281,8 @@
           {
             opcode: 'am_disconnect',
             blockType: 'command',
-            text: 'disconnect [STRING] from track [TRACK]',
+            text: '(broken) disconnect [STRING] from track [TRACK]',
+            hideFromPalette: true,
             arguments: {
               STRING: {
                 type: 'string',
@@ -533,118 +538,23 @@
     }
 
     am_setfilter({FIL,FQ, Q}, util){
-      let ctx = this.getContext(util.target.id);
-      if (FIL === 'lowpass') {
-        filter1.frequency.value = FQ;
-        filter1.Q.value = Q;
-      } else if (FIL === 'highpass') {
-        filter2.frequency.value = FQ;
-        filter2.Q.value = Q;
-      } else if (FIL === 'bandpass') {
-        filter3.frequency.value = FQ;
-        filter3.Q.value = Q;
-      } else if (FIL === 'lowshelf') {
-        filter4.frequency.value = FQ;
-        filter4.Q.value = Q;
-      } else if (FIL === 'highshelf') {
-        filter5.frequency.value = FQ;
-        filter5.Q.value = Q;
-      } else if (FIL === 'peaking') {
-        filter6.frequency.value = FQ;
-        filter6.Q.value = Q;
-      } else if (FIL === 'notch') {
-        filter7.frequency.value = FQ;
-        filter7.Q.value = Q;
-      } else if (FIL === 'allpass') {
-        filter8.frequency.value = FQ;
-        filter8.Q.value = Q;
-      }
+      // did not work in the original version
     }
 
     am_toglefilter({FIL, STATE}, util){
-      let ctx = this.getContext(util.target.id);
-      if (FIL === 'lowpass') {
-        if (STATE === 'connect') {
-          track.connect(filter1);
-        } else {
-          filter1.disconnect();
-        }
-      } else if (FIL === 'highpass') {
-        if (STATE === 'connect') {
-          track.connect(filter2);
-        } else {
-          filter2.disconnect();
-        }
-      } else if (FIL === 'bandpass') {
-        if (STATE === 'connect') {
-          track.connect(filter3);
-        } else {
-          filter3.disconnect();
-        }
-      } else if (FIL === 'lowshelf') {
-        if (STATE === 'connect') {
-          track.connect(filter4);
-        } else {
-          filter4.disconnect();
-        }
-      } else if (FIL === 'highshelf') {
-        if (STATE === 'connect') {
-          track.connect(filter5);
-        } else {
-          filter5.disconnect();
-        }
-      } else if (FIL === 'peaking') {
-        if (STATE === 'connect') {
-          track.connect(filter6);
-        } else {
-          filter6.disconnect();
-        }
-      } else if (FIL === 'notch') {
-        if (STATE === 'connect') {
-          track.connect(filter7);
-        } else {
-          filter7.disconnect();
-        }
-      } else if (FIL === 'allpass') {
-        if (STATE === 'connect') {
-          track.connect(filter8);
-        } else {
-          filter8.disconnect();
-        }
-      }
+      // did not work in the original version
     }
 
     am_freset({FQ}, util) {
-      let ctx = this.getContext(util.target.id);
-      filter1.frequency.value = FQ;
-      filter1.Q.value = 0;
-      filter2.frequency.value = FQ;
-      filter2.Q.value = 0;
-      filter3.frequency.value = FQ;
-      filter3.Q.value = 0;
-      filter4.frequency.value = FQ;
-      filter4.Q.value = 0;
-      filter5.frequency.value = FQ;
-      filter5.Q.value = 0;
-      filter6.frequency.value = FQ;
-      filter6.Q.value = 0;
-      filter7.frequency.value = FQ;
-      filter7.Q.value = 0;
-      filter8.frequency.value = FQ;
-      filter8.Q.value = 0;
+      // did not work in the original version
     }
 
     am_connect({STRING}, util) {
-      var utl2_theInstructions = 'return ' + STRING;
-      var F = new Function(utl2_theInstructions);
-      track.connect(F());
+      // did not work in the original version
     }
 
     am_disconnect({STRING}, util) {
-      let ctx = this.getContext(util.target.id);
-      var utl2_theInstructions = 'return ' + STRING;
-      var F = new Function(utl2_theInstructions);
-      F().disconnect;
+      // did not work in the original version
     }
 
     am_analyserfft({VAL}, util){
