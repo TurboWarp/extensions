@@ -226,8 +226,8 @@
       } else if (type === 'generated text') {
         type = 'assistant';
       }
-      if (type === 'user' || type === 'assistant') {
-        if (this.chatHistories.hasOwnProperty(chatID)) {
+      if (['user', 'assistant'].includes(type)) {
+        if (Object.prototype.hasOwnProperty.call(this.chatHistories, chatID)) {
           const chatHistory = this.chatHistories[chatID];
           for (let i = chatHistory.length - 1; i >= 0; i--) {
             if (chatHistory[i].role === type) {
