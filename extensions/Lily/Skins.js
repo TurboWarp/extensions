@@ -1,6 +1,14 @@
 (function (Scratch) {
   'use strict';
 
+  const requireNonPackagedRuntime = (blockName) => {
+    if (Scratch.vm.runtime.isPackaged) {
+      alert(`To use the Skins ${blockName} block, the creator of the packaged project must uncheck "Remove raw asset data after loading to save RAM" under advanced settings in the packager.`);
+      return false;
+    }
+    return true;
+  };
+
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const renderer = runtime.renderer;
@@ -205,6 +213,10 @@
     }
 
     async registerCostumeSkin (args, util) {
+      if (!requireNonPackagedRuntime('add costume skin')) {
+        return;
+      }
+
       const skinName = Cast.toString(args.NAME);
       const costumeIndex = util.target.getCostumeIndexByName(args.COSTUME);
       const costume = util.target.sprite.costumes[costumeIndex];
