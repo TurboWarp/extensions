@@ -227,10 +227,10 @@
         type = 'assistant';
       }
       if (['user', 'assistant'].includes(type)) {
-        if (Object.prototype.hasOwnProperty.call(this.chatHistories, chatID)) {
+        if (this.chatHistories[chatID] !== undefined) {
           const chatHistory = this.chatHistories[chatID];
           for (let i = chatHistory.length - 1; i >= 0; i--) {
-            if (chatHistory[i].role === type) {
+            if ('role' in chatHistory[i] && chatHistory[i].role === type) {
               return chatHistory[i].content;
             }
           }
