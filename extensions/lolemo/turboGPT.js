@@ -147,7 +147,7 @@
           {
             opcode: 'importAll',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Import all form [json] and [merge]',
+            text: 'Import all from [json] and [merge]',
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
