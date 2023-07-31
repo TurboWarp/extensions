@@ -246,3 +246,8 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## XeroName/Deltatime.svg
  - Created by [@XeroName](https://scratch.mit.edu/users/plant2014/) in https://github.com/TurboWarp/extensions/pull/622
+
+## veggiecan/LongmanDictionary.svg 
+- Created by [veggiecan](https://github.com/veggiecan0419)
+- The ship is based on [this](https://www.ldoceonline.com/external/images/logo_home_smartphone.svg?version=1.2.61) logo from the [ldoceonline](https://www.ldoceonline.com/) website
+
