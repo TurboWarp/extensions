@@ -827,16 +827,22 @@
       return JSON.stringify(NUM1.split(NUM2));
     }
     joinListBlock({LIST, JOINER}) {
-      if (!isValidList(LIST)) {return null;}
+      if (!isValidList(LIST)) {
+        return null;
+      }
       return JSON.parse(LIST).join(JOINER);
     }
     getItemListBlock({LIST, SPLICER}) {
-      if (!isValidList(LIST)) {return null;}
+      if (!isValidList(LIST)) {
+        return null;
+      }
       SPLICER -= 1;
       return JSON.parse(LIST).splice(SPLICER, 1)[0];
     }
     removeListBlock({LIST, REMOVE}) {
-      if (!isValidList(LIST)) {return null;}
+      if (!isValidList(LIST)) {
+        return null;
+      }
       const list = JSON.parse(LIST);
       if (typeof REMOVE === "number") {
         REMOVE -= 1;
@@ -846,12 +852,16 @@
       return JSON.stringify(list.filter((item) => item !== REMOVE));
     }
     indexOfListBlock({LIST, INPUT}) {
-      if (!isValidList(LIST)) {return null;}
+      if (!isValidList(LIST)) {
+        return null;
+      }
       const list = JSON.parse(LIST);
       return list.indexOf(INPUT) + 1;
     }
     addListBlock({LIST, ADD, INDEX}) {
-      if (!isValidList(LIST)) {return null;}
+      if (!isValidList(LIST)) {
+        return null;
+      }
       const list = JSON.parse(LIST);
       INDEX -= 1;
       list.splice(INDEX, 0, ADD);
@@ -911,7 +921,9 @@
       return INPUT;
     }
     listOrderBlock({INPUT, MENU}) {
-      if (!isValidList(INPUT)) {return null;}
+      if (!isValidList(INPUT)) {
+        return null;
+      }
       switch (MENU) {
       case 'ascending': return JSON.stringify(JSON.parse(INPUT).sort());
       case 'descending': return JSON.stringify(JSON.parse(INPUT).sort().reverse());
