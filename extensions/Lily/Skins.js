@@ -186,7 +186,7 @@
             items: '_getTargets'
           },
           skinAttributes: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: ['width', 'height']
           }
         }
