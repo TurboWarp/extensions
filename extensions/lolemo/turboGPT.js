@@ -241,7 +241,7 @@
 
     exportChat(args) {
       const chatID = args.chatID;
-      if (this.chatHistories.hasOwnProperty(chatID)) {
+      if (this.chatHistories[chatID] !== undefined) {
         const chatHistory = this.chatHistories[chatID];
         const json = JSON.stringify(chatHistory);
         return json;
@@ -328,12 +328,10 @@
 
     exportAll() {
       const allChats = {};
-      for (const chatID in this.chatHistories) {
-        if (this.chatHistories.hasOwnProperty(chatID)) {
-          allChats[chatID] = this.chatHistories[chatID];
-        }
+      const chatIDs = Object.keys(this.chatHistories);
+      for (const chatID of chatIDs) {
+        allChats[chatID] = this.chatHistories[chatID];
       }
-
       const json = JSON.stringify(allChats);
       return json;
     }
@@ -341,24 +339,20 @@
     importAll(args) {
       const json = args.json;
       const mergeOption = args.merge.toLowerCase();
-
       let importedChats;
-
       try {
         importedChats = JSON.parse(json);
       } catch (error) {
         console.error('Error parsing JSON:', error.message);
         return;
       }
-
       if (typeof importedChats === 'object' && importedChats !== null) {
         if (mergeOption === 'remove all and import') {
           this.chatHistories = importedChats;
         } else if (mergeOption === 'merge with existing chats') {
-          for (const chatID in importedChats) {
-            if (importedChats.hasOwnProperty(chatID)) {
-              this.chatHistories[chatID] = importedChats[chatID];
-            }
+          const importedChatIDs = Object.keys(importedChats);
+          for (const chatID of importedChatIDs) {
+            this.chatHistories[chatID] = importedChats[chatID];
           }
         } else {
           console.error('Invalid merge option. Expected "remove all and import" or "merge with existing chats".');
