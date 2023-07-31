@@ -2,7 +2,6 @@
     'use strict';
     if (!Scratch.extensions.unsandboxed) throw new Error('can not load out side unsandboxed mode');
 
-    const pathRegex = /[^.]+/g;
     const setType = (value, type) => {
         switch (type) {
         case 'string':
@@ -81,7 +80,7 @@
         }
     };
     const getPathArray = path => {
-        const names = path.match(pathRegex);
+        const names = path.split('.');
         for (let index = 0; index < names.length; index++) {
             let name = names[index];
             name = name.replaceAll(/(?<!\\)&dot/g, '.');
@@ -90,17 +89,15 @@
     };
     const getValueAtPath = (object, path) => {
         for (const name of path) {
-            object = object[name];
-            if (typeof object !== 'object') return;
+            object = object?.[name];
         }
-        return object;
+        return setType(object, 'string');
     };
     const setValueAtPath = (object, path, value) => {
-        for (const name of path) {
+        for (const name of path.slice(0, -1)) {
             object = object[name];
-            if (typeof object !== 'object') return;
         }
-        return object = value;
+        object[path.at(-1)] = value;
     };
 
     const {vm} = Scratch;
@@ -153,6 +150,10 @@
                     return this.options.headers['Content-Type'];
                 },
                 set mimeType(value) {
+                    if (this.options.headers['Content-Type'] === 'multipart/form-data' &&
+                        value !== 'multipart/form-data') {
+                        this.options.body = '';
+                    }
                     this.options.headers['Content-Type'] = value;
                 },
                 set method(val) {
@@ -173,6 +174,14 @@
                 },
                 set body(val) {
                     if (this.method === 'GET') return;
+                    if (val instanceof FormData && !(this.options.body instanceof FormData)) {
+                        this.options.body = val;
+                        this.options.headers['Content-Type'] = 'multipart/form-data';
+                    }
+                    if (!(val instanceof FormData) && this.options.body instanceof FormData) {
+                        this.options.body = '';
+                        this.options.headers['Content-Type'] = 'text/plain';
+                    }
                     this.options.body = val;
                 },
                 get body() {
@@ -349,11 +358,56 @@
                         blockType: BlockType.COMMAND,
                         arguments: {
                             text: {
-                                type: ArgumentType.STRING
+                                type: ArgumentType.STRING,
+                                default: 'Apple!'
                             }
                         },
                         text: 'set request body to [text]'
                     },
+                    '---',
+                    {
+                        opcode: 'setBodyToForm',
+                        blockType: BlockType.COMMAND,
+                        text: 'set request body to a form'
+                    },
+                    {
+                        opcode: 'getFormProperty',
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            name: {
+                                type: ArgumentType.STRING,
+                                defaultValue: 'name'
+                            }
+                        },
+                        text: 'get [name] in request form'
+                    },
+                    {
+                        opcode: 'setFormProperty',
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            name: {
+                                type: ArgumentType.STRING,
+                                defaultValue: 'name'
+                            },
+                            value: {
+                                type: ArgumentType.STRING,
+                                defaultValue: 'value'
+                            }
+                        },
+                        text: 'set [name] to [value] in request form'
+                    },
+                    {
+                        opcode: 'deleteFormProperty',
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            name: {
+                                type: ArgumentType.STRING,
+                                defaultValue: 'name'
+                            }
+                        },
+                        text: 'delete [name] from request form'
+                    },
+                    '---',
                     {
                         opcode: 'sendRequest',
                         blockType: BlockType.COMMAND,
@@ -587,6 +641,29 @@
             this.request.body = body;
         }
 
+        setBodyToForm() {
+            this.request.body = new FormData();
+        }
+
+        getFormProperty(args) {
+            if (!(this.request.options.body instanceof FormData)) return;
+            const name = Cast.toString(args.name);
+            return this.request.body.get(name);
+        }
+
+        setFormProperty(args) {
+            if (!(this.request.options.body instanceof FormData)) return;
+            const name = Cast.toString(args.name);
+            const value = Cast.toString(args.value);
+            this.request.body.set(name, value);
+        }
+
+        deleteFormProperty(args) {
+            if (!(this.request.options.body instanceof FormData)) return;
+            const name = Cast.toString(args.name);
+            this.request.body.delete(name);
+        }
+
         // eslint-disable-next-line require-await
         async sendRequest(args) {
             const url = Cast.toString(args.url);
@@ -624,16 +701,18 @@
 
         showExtra() {
             this.showingExtra = true;
+            // @ts-ignore
             vm.extensionManager.refreshBlocks();
         }
 
         hideExtra() {
             this.showingExtra = false;
+            // @ts-ignore
             vm.extensionManager.refreshBlocks();
         }
 
         setUnkownProperty(args) {
-            const name = Cast.toString(args.name);
+            const name = Cast.toString(args.path);
             const text = Cast.toString(args.value);
 
             const path = getPathArray(name);
@@ -642,7 +721,7 @@
         }
 
         setUnkownPropertyType(args) {
-            const name = Cast.toString(args.name);
+            const name = Cast.toString(args.path);
             const type = Cast.toString(args.type);
             const path = getPathArray(name);
 
@@ -652,14 +731,14 @@
         }
 
         getUnkownProperty(args) {
-            const name = Cast.toString(args.name);
+            const name = Cast.toString(args.path);
             const path = getPathArray(name);
 
             return getValueAtPath(this.request.options, path);
         }
 
         getUnkownPropertyType(args) {
-            const name = Cast.toString(args.name);
+            const name = Cast.toString(args.path);
             const path = getPathArray(name);
             const value = getValueAtPath(this.request.options, path);
 
@@ -668,5 +747,6 @@
     }
 
     const instance = new WebRequests();
+    // @ts-ignore
     Scratch.extensions.register(instance);
 })(Scratch);
