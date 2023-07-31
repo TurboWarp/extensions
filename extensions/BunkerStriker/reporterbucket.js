@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function isValidList(str) {
-  try {
-    const parsedList = JSON.parse(str);
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
 (function(Scratch) {
   'use strict';
-  const menuIconURI = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxNDYuNTg0NjQiIGhlaWdodD0iMTQ2LjU4NDY0IiB2aWV3Qm94PSIwLDAsMTQ2LjU4NDY0LDE0Ni41ODQ2NCI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE2NC44MDMzNCwtMTA0LjExNjM5KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsPSIjYWRkZDAwIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iI2FkZGQwMCIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iJnF1b3Q7TWljcm9zb2Z0IFlhSGVpJnF1b3Q7LCAmcXVvdDvlvq7ova/pm4Xpu5EmcXVvdDssIFNUWGloZWksICZxdW90O+WNjuaWh+e7hum7kSZxdW90OyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgZm9udC1zaXplPSI0MCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTkyLjQxOTgyLDI0Mi45OTQxKSByb3RhdGUoLTQ1KSBzY2FsZSgwLjkwODI3LDAuOTA4MjcpIiBmb250LXNpemU9IjQwIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjYWRkZDAwIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iI2FkZGQwMCIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iJnF1b3Q7TWljcm9zb2Z0IFlhSGVpJnF1b3Q7LCAmcXVvdDvlvq7ova/pm4Xpu5EmcXVvdDssIFNUWGloZWksICZxdW90O+WNjuaWh+e7hum7kSZxdW90OyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHRzcGFuIHg9IjAiIGR5PSIwIj7Cr1xfKOODhClfL8KvPC90c3Bhbj48L3RleHQ+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6NzUuMTk2NjYzMjI0OTAyNjE6NzUuODgzNjA4NjYwODQ5NDYtLT4='
+  const menuIconURI = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxNDYuNTg0NjQiIGhlaWdodD0iMTQ2LjU4NDY0IiB2aWV3Qm94PSIwLDAsMTQ2LjU4NDY0LDE0Ni41ODQ2NCI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE2NC44MDMzNCwtMTA0LjExNjM5KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsPSIjYWRkZDAwIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iI2FkZGQwMCIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iJnF1b3Q7TWljcm9zb2Z0IFlhSGVpJnF1b3Q7LCAmcXVvdDvlvq7ova/pm4Xpu5EmcXVvdDssIFNUWGloZWksICZxdW90O+WNjuaWh+e7hum7kSZxdW90OyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgZm9udC1zaXplPSI0MCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHRleHQgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTkyLjQxOTgyLDI0Mi45OTQxKSByb3RhdGUoLTQ1KSBzY2FsZSgwLjkwODI3LDAuOTA4MjcpIiBmb250LXNpemU9IjQwIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjYWRkZDAwIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iI2FkZGQwMCIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iJnF1b3Q7TWljcm9zb2Z0IFlhSGVpJnF1b3Q7LCAmcXVvdDvlvq7ova/pm4Xpu5EmcXVvdDssIFNUWGloZWksICZxdW90O+WNjuaWh+e7hum7kSZxdW90OyIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHRzcGFuIHg9IjAiIGR5PSIwIj7Cr1xfKOODhClfL8KvPC90c3Bhbj48L3RleHQ+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6NzUuMTk2NjYzMjI0OTAyNjE6NzUuODgzNjA4NjYwODQ5NDYtLT4=';
   const vm = Scratch.vm;
+  function isValidList(str) {
+    try {
+      const parsedList = JSON.parse(str);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
   class ReporterBucketExtension {
     getInfo() {
       return {
@@ -152,7 +152,7 @@ function isValidList(str) {
               },
               SEED4: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "misc extension"
+                defaultValue: "RBE extension"
               }
             }
           },
@@ -343,7 +343,7 @@ function isValidList(str) {
               },
               NUM3: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "misc extension"
+                defaultValue: "reporter bucket extension"
               }
             }
           },
@@ -499,7 +499,7 @@ function isValidList(str) {
             arguments: {
               ADD: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "misc"
+                defaultValue: "reporter bucket"
               },
               LIST: {
                 type: Scratch.ArgumentType.STRING,
@@ -673,11 +673,11 @@ function isValidList(str) {
       }
     }
     addStringBlock(args) {
-      let buffer = ""
+      let buffer = "";
       if (args.INDEX > args.OGSTRING.length) {
         args.OGSTRING += args.BUFFER.toString().repeat(args.INDEX - args.OGSTRING.length);
       } else if (args.INDEX < 0) {
-        buffer = args.BUFFER.toString().repeat(args.INDEX * -1)
+        buffer = args.BUFFER.toString().repeat(args.INDEX * -1);
         args.OGSTRING = buffer + args.OGSTRING;
         args.INDEX = 0;
       }
@@ -805,7 +805,7 @@ function isValidList(str) {
       return INPUT;
     }
     directionBlock({X, Y, X2, Y2}) {
-      return (((Math.atan2(X2-X, Y2-Y) * 180) / Math.PI) + 180) % 360 - 180;
+      return (((Math.atan2(X2 - X, Y2 - Y) * 180) / Math.PI) + 180) % 360 - 180;
     }
     waitBlock({INPUT, TIME }) {
       const wait = (args) => {
@@ -870,10 +870,10 @@ function isValidList(str) {
       return JSON.stringify(Object.values(args[0]));
     }
     distanceBlock({X,X2,Y,Y2}) {
-      return Math.sqrt(((X-X2) ** 2) + ((Y-Y2) ** 2))
+      return Math.sqrt(((X - X2) ** 2) + ((Y - Y2) ** 2));
     }
     matrixXYBlock({MATRIX,X,Y}) {
-      return MATRIX.charAt((X - 1) + ((Y - 1) * 5))
+      return MATRIX.charAt((X - 1) + ((Y - 1) * 5));
     }
     convertBlock({INPUT, MENU, DIRECTION}) {
       if (DIRECTION === "to") {
@@ -911,7 +911,7 @@ function isValidList(str) {
       return INPUT;
     }
     listOrderBlock({INPUT, MENU}) {
-      if (!isValidList(LIST)) {return null;}
+      if (!isValidList(INPUT)) {return null;}
       switch (MENU) {
       case 'ascending': return JSON.stringify(JSON.parse(INPUT).sort());
       case 'descending': return JSON.stringify(JSON.parse(INPUT).sort().reverse());
