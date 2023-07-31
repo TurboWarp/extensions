@@ -67,6 +67,55 @@
               }
             },
           },
+          '---',
+          {
+            opcode: 'lastGeneration',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Last [type] from [chatID]',
+            arguments: {
+              type: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'types',
+              },
+              chatID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Apple'
+              }
+            },
+          },
+          '---',
+          {
+            opcode: 'listChats',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Active chats',
+            disableMonitor: true,
+          },
+          {
+            opcode: 'exportChat',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Export chat history of [chatID] in json',
+            arguments: {
+              chatID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Apple'
+              }
+            },
+          },
+          {
+            opcode: 'importChat',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Import chat history from [json] to [chatID]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'json here'
+              },
+              chatID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Apple'
+              }
+            },
+          },
           {
             opcode: 'resetChat',
             blockType: Scratch.BlockType.COMMAND,
@@ -89,7 +138,38 @@
               }
             },
           },
+          {
+            opcode: 'exportAll',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Export all chats in json',
+            disableMonitor: true,
+          },
+          {
+            opcode: 'importAll',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Import all form [json] and [merge]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'json here'
+              },
+              merge: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'merge',
+              }
+            },
+          },
         ],
+        menus: {
+          types: {
+            acceptReporters: true,
+            items: ['prompt', 'generated text']
+          },
+          merge: {
+            acceptReporters: true,
+            items: ['merge with existing chats', 'remove all and import']
+          }
+        }
       };
     }
 
@@ -135,6 +215,63 @@
       const chatID = args.chatID;
       if (chatID in this.chatHistories) {
         this.chatHistories[chatID].push({ role: "system", content: inform });
+      }
+    }
+
+    lastGeneration(args) {
+      const chatID = args.chatID;
+      let type = args.type;
+      if (type === 'prompt') {
+        type = 'user';
+      } else if (type === 'generated text') {
+        type = 'assistant';
+      }
+      if (type === 'user' || type === 'assistant') {
+        if (this.chatHistories.hasOwnProperty(chatID)) {
+          const chatHistory = this.chatHistories[chatID];
+          for (let i = chatHistory.length - 1; i >= 0; i--) {
+            if (chatHistory[i].role === type) {
+              return chatHistory[i].content;
+            }
+          }
+        }
+      }
+      return '';
+    }
+
+    exportChat(args) {
+      const chatID = args.chatID;
+      if (this.chatHistories.hasOwnProperty(chatID)) {
+        const chatHistory = this.chatHistories[chatID];
+        const json = JSON.stringify(chatHistory);
+        return json;
+      } else {
+        return '';
+      }
+    }
+
+    listChats() {
+      const activeChats = Object.keys(this.chatHistories);
+      const json = JSON.stringify(activeChats);
+      return json;
+    }
+
+    importChat(args) {
+      const chatID = args.chatID;
+      const json = args.json;
+      let chatHistory;
+
+      try {
+        chatHistory = JSON.parse(json);
+      } catch (error) {
+        console.error('Error parsing JSON:', error.message);
+        return;
+      }
+
+      if (Array.isArray(chatHistory)) {
+        this.chatHistories[chatID] = chatHistory;
+      } else {
+        console.error('Invalid JSON format. Expected an array.');
       }
     }
 
@@ -187,6 +324,48 @@
         console.error("Error sending prompt to GPT", error.message);
         return "";
       });
+    }
+
+    exportAll() {
+      const allChats = {};
+      for (const chatID in this.chatHistories) {
+        if (this.chatHistories.hasOwnProperty(chatID)) {
+          allChats[chatID] = this.chatHistories[chatID];
+        }
+      }
+
+      const json = JSON.stringify(allChats);
+      return json;
+    }
+
+    importAll(args) {
+      const json = args.json;
+      const mergeOption = args.merge.toLowerCase();
+
+      let importedChats;
+
+      try {
+        importedChats = JSON.parse(json);
+      } catch (error) {
+        console.error('Error parsing JSON:', error.message);
+        return;
+      }
+
+      if (typeof importedChats === 'object' && importedChats !== null) {
+        if (mergeOption === 'remove all and import') {
+          this.chatHistories = importedChats;
+        } else if (mergeOption === 'merge with existing chats') {
+          for (const chatID in importedChats) {
+            if (importedChats.hasOwnProperty(chatID)) {
+              this.chatHistories[chatID] = importedChats[chatID];
+            }
+          }
+        } else {
+          console.error('Invalid merge option. Expected "remove all and import" or "merge with existing chats".');
+        }
+      } else {
+        console.error('Invalid JSON format. Expected an object.');
+      }
     }
 
   }
