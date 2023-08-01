@@ -686,6 +686,15 @@
                     this.request.events.activate('reqFail');
                 }
                 this.request.end = true;
+                if (res.headers.get('Content-Type') === 'multipart/form-data') {
+                    const form = await res.formData();
+                    const json = {};
+                    for (const [key, value] of form.entries()) {
+                        json[key] = value;
+                    }
+                    this.response.text = JSON.stringify(json);
+                    return;
+                }
                 const body = await res.text();
                 this.response.text = body;
             } catch (err) {
