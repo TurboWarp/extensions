@@ -130,7 +130,7 @@
             text: 'get visualizer data at [INDEX]',
             arguments: {
               INDEX: {
-                type: Scratch.BlockType.BUTTON
+                type: Scratch.ArgumentType.NUMBER
               }
             }
           },
@@ -140,7 +140,7 @@
             text: 'set visualizer read size to [VAL] (must be power of 2)',
             arguments: {
               VAL: {
-                type: Scratch.BlockType.BUTTON,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '256'
               }
             }
@@ -152,7 +152,7 @@
             text: 'set volume to [VAL]',
             arguments: {
               VAL: {
-                type: Scratch.BlockType.BUTTON,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '1.0'
               }
             }
@@ -170,7 +170,7 @@
             text: 'skip to time [VAL]',
             arguments: {
               VAL: {
-                type: Scratch.BlockType.BUTTON,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
             }
@@ -194,7 +194,7 @@
             text: 'set speed/pitch to [VAL]',
             arguments: {
               VAL: {
-                type: Scratch.BlockType.BUTTON,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
             }
@@ -205,7 +205,7 @@
             text: 'preservesPitch [VAL]',
             arguments: {
               VAL: {
-                type: Scratch.BlockType.BOOLEAN,
+                type: Scratch.ArgumentType.BOOLEAN,
                 defaultValue: 'false'
               }
             }
@@ -216,7 +216,7 @@
             text: 'set pan to [VAL] (-1 to 1)',
             arguments: {
               VAL: {
-                type: Scratch.BlockType.BUTTON,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               }
             }
@@ -233,11 +233,11 @@
                 menu: 'filtersmenu'
               },
               Q: {
-                type: Scratch.BlockType.BUTTON,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '0'
               },
               FQ: {
-                type: Scratch.BlockType.BUTTON,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: '440'
               }
             }
