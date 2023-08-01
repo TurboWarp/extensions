@@ -325,7 +325,7 @@
       }
     }
     changeX (args) {
-      moveBy(args.X, 0);
+      window.moveBy(args.X, 0);
       Scratch.vm.runtime.requestRedraw();
     }
     setX (args) {
@@ -334,7 +334,7 @@
       Scratch.vm.runtime.requestRedraw();
     }
     changeY (args) {
-      moveBy(0, args.Y);
+      window.moveBy(0, args.Y);
       Scratch.vm.runtime.requestRedraw();
     }
     setY (args) {
@@ -349,38 +349,38 @@
       return (window.screenTop);
     }
     resizeTo (args) {
-      resizeTo(args.W, args.H);
+      window.resizeTo(args.W, args.H);
       Scratch.vm.runtime.requestRedraw();
     }
     resizeToPresets (args) {
       if (args.PRESETS == "480x360") {
-        resizeTo(480 + (window.outerWidth - window.innerWidth), 360 + (window.outerHeight - window.innerHeight));
+        window.resizeTo(480 + (window.outerWidth - window.innerWidth), 360 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "640x480") {
-        resizeTo(640 + (window.outerWidth - window.innerWidth), 480 + (window.outerHeight - window.innerHeight));
+        window.resizeTo(640 + (window.outerWidth - window.innerWidth), 480 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "1280x720") {
-        resizeTo(1280 + (window.outerWidth - window.innerWidth), 720 + (window.outerHeight - window.innerHeight));
+        window.resizeTo(1280 + (window.outerWidth - window.innerWidth), 720 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "1920x1080") {
-        resizeTo(1920 + (window.outerWidth - window.innerWidth), 1080 + (window.outerHeight - window.innerHeight));
+        window.resizeTo(1920 + (window.outerWidth - window.innerWidth), 1080 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "2560x1440") {
-        resizeTo(2560 + (window.outerWidth - window.innerWidth), 1440 + (window.outerHeight - window.innerHeight));
+        window.resizeTo(2560 + (window.outerWidth - window.innerWidth), 1440 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "2048x1080") {
-        resizeTo(2048 + (window.outerWidth - window.innerWidth), 1080 + (window.outerHeight - window.innerHeight));
+        window.resizeTo(2048 + (window.outerWidth - window.innerWidth), 1080 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "3840x2160") {
-        resizeTo(3840 + (window.outerWidth - window.innerWidth), 2160 + (window.outerHeight - window.innerHeight));
+        window.resizeTo(3840 + (window.outerWidth - window.innerWidth), 2160 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "7680x4320") {
-        resizeTo(7680 + (window.outerWidth - window.innerWidth), 4320 + (window.outerHeight - window.innerHeight));
+        window.resizeTo(7680 + (window.outerWidth - window.innerWidth), 4320 + (window.outerHeight - window.innerHeight));
         Scratch.vm.runtime.requestRedraw();
       }
     }
     changeW (args) {
-      resizeBy(args.W, 0);
+      window.resizeBy(args.W, 0);
       Scratch.vm.runtime.requestRedraw();
     }
     setW (args) {
@@ -389,7 +389,7 @@
       Scratch.vm.runtime.requestRedraw();
     }
     changeH (args) {
-      resizeBy(0, args.H);
+      window.resizeBy(0, args.H);
       Scratch.vm.runtime.requestRedraw();
     }
     setH (args) {
@@ -398,7 +398,7 @@
       Scratch.vm.runtime.requestRedraw();
     }
     matchStageSize () {
-      resizeTo(Scratch.vm.runtime.stageWidth + (window.outerWidth - window.innerWidth), Scratch.vm.runtime.stageHeight + (window.outerHeight - window.innerHeight));
+      window.resizeTo(Scratch.vm.runtime.stageWidth + (window.outerWidth - window.innerWidth), Scratch.vm.runtime.stageHeight + (window.outerHeight - window.innerHeight));
       Scratch.vm.runtime.requestRedraw();
     }
     windowW () {
