@@ -1,6 +1,6 @@
 /*
 * This extension was made by SharkPool
-* Version 1.5 (More Fonts and Changes)
+* Version 1.6 (More Buttons)
 * Do NOT delete these comments
 */
 
@@ -32,19 +32,29 @@
     this.inputBackgroundColor = '#ffffff'; 
     this.inputOutlineColor = '#000000';
     this.textAlign = 'left';
-    this.fontFamily = 'Arial'; // Default font family (will add more fonts in a later update)
+    this.fontFamily = 'Arial';
     this.showCancelButton = true;
-    this.submitButtonText = 'OK';
+    this.showButton3 = true;
+    this.showButton4 = true;
+    this.submitButtonText = 'Submit';
     this.cancelButtonText = 'Cancel';
+    this.Button3Text = 'Okay';
+    this.Button4Text = 'No';
     this.submitButtonColor = '#0074D9'; 
     this.cancelButtonColor = '#d9534f';
-    this.textBoxBorderRadius = 5;
+    this.button3Color = '#0074D9';
+    this.button4Color = '#d9534f';
     this.cancelButtonBorderRadius = 5; 
     this.submitButtonBorderRadius = 5;
-    this.inputBoxRadius = 4;
-    this.isInputEnabled = true; 
+    this.button3BorderRadius = 5; 
+    this.button4BorderRadius = 5;
     this.submitButtonTextColor = '#ffffff'; 
     this.cancelButtonTextColor = '#ffffff';
+    this.button3TextColor = '#ffffff'; 
+    this.button4TextColor = '#ffffff';
+    this.textBoxBorderRadius = 5;
+    this.inputBoxRadius = 4;
+    this.isInputEnabled = true; 
     this.textBoxX = 0;
     this.textBoxY = 0;
     this.askBoxCount = 0;
@@ -107,24 +117,18 @@
           },
         },
         {
-          opcode: 'setSubmitButtonText',
+          opcode: 'setButtonText',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'set submit button text to [TEXT]',
+          text: 'set [BUTTON_MENU] text to [TEXT]',
           arguments: {
-            TEXT: {
+            BUTTON_MENU: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'OK',
+              menu: 'buttonMenu',
+              defaultValue: 'Button 1',
             },
-          },
-        },
-        {
-          opcode: 'setCancelButtonText',
-          blockType: Scratch.BlockType.COMMAND,
-          text: 'set cancel button text to [TEXT]',
-          arguments: {
             TEXT: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'Cancel',
+              defaultValue: 'Submit',
             },
           },
         },
@@ -135,7 +139,7 @@
         {
           opcode: 'setTextAlignment',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'set text alignment to [ALIGNMENT]',
+          text: 'set alignment to [ALIGNMENT]',
           blockIconURI: formatIcon,
           arguments: {
             ALIGNMENT: {
@@ -159,24 +163,16 @@
           },
         },
         {
-          opcode: 'setInputEnabled',
+          opcode: 'setEnable',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'set input box to [INPUT_ACTION]',
+          text: 'set [ENABLE_MENU] to be [ACTION]',
           blockIconURI: formatIcon,
           arguments: {
-            INPUT_ACTION: {
+            ENABLE_MENU: {
               type: Scratch.ArgumentType.STRING,
-              menu: 'inputActionMenu',
-              defaultValue: 'Enabled',
+              menu: 'enableMenu',
+              defaultValue: 'Input Box',
             },
-          },
-        },
-        {
-          opcode: 'setCancelButton',
-          blockType: Scratch.BlockType.COMMAND,
-          text: 'set cancel button to [ACTION]',
-          blockIconURI: formatIcon,
-          arguments: {
             ACTION: {
               type: Scratch.ArgumentType.STRING,
               menu: 'inputActionMenu',
@@ -301,8 +297,10 @@
         inputActionMenu: ['Enabled', 'Disabled'],
         enterEffectMenu: ['None', 'Fade in', 'Grow'],
         exitEffectMenu: ['None', 'Fade out', 'Shrink'],
-        elementMenu: ['Textbox', 'Input Box', 'Cancel Button', 'Submit Button'],
-        colorSettingsMenu: ['Question', 'Input Text', 'Textbox', 'Input Background', 'Input Outline', 'Submit Button', 'Cancel Button', 'Submit Button Text', 'Cancel Button Text'],
+        buttonMenu: ['Button 1','Button 2', 'Button 3', 'Button 4'],
+        enableMenu: ['Input Box','Button 2', 'Button 3', 'Button 4'],
+        elementMenu: ['Textbox', 'Input Box', 'Cancel Button', 'Submit Button', 'Button 3', 'Button 4'],
+        colorSettingsMenu: ['Question', 'Input Text', 'Textbox', 'Input Background', 'Input Outline', 'Submit Button', 'Cancel Button', 'Button 3', 'Button 4', 'Submit Button Text', 'Cancel Button Text', 'Button 3 Text', 'Button 4 Text'],
         },
       };
     }
@@ -333,11 +331,23 @@
       case 'Cancel Button':
         this.cancelButtonColor = colorValue;
         break;
+      case 'Button 3':
+        this.button3Color = colorValue;
+        break;
+      case 'Button 4':
+        this.button4Color = colorValue;
+        break;
       case 'Submit Button Text':
         this.submitButtonTextColor = colorValue;
         break;
       case 'Cancel Button Text':
         this.cancelButtonTextColor = colorValue;
+        break;
+      case 'Button 3 Text':
+        this.button3TextColor = colorValue;
+        break;
+      case 'Button 4 Text':
+        this.button4TextColor = colorValue;
         break;
     }
   }
@@ -359,6 +369,12 @@
         break;
       case "Submit Button":
         this.submitButtonBorderRadius = value;
+        break;
+      case "Button 3":
+        this.button3BorderRadius = value;
+        break;
+      case "Button 4":
+        this.button4BorderRadius = value;
         break;
       case "Input Box":
         this.inputBoxRadius = value;
@@ -423,20 +439,42 @@
     this.fontFamily = args.FONT;
   }
 
-  setCancelButton(args) {
-    this.showCancelButton = args.ACTION === 'Enabled';
+  setEnable(args) {
+    const enableMenu = args.ENABLE_MENU;
+    const action = args.ACTION;
+    switch (enableMenu) {
+      case 'Input Box':
+        this.isInputEnabled = action === 'Enabled';
+        break;
+      case 'Button 2':
+        this.showCancelButton = action === 'Enabled';
+        break;
+      case 'Button 3':
+        this.showButton3 = action === 'Enabled';
+        break;
+      case 'Button 4':
+        this.showButton4 = action === 'Enabled';
+        break;
+    }
   }
 
-  setSubmitButtonText(args) {
-    this.submitButtonText = args.TEXT;
-  }
-
-  setCancelButtonText(args) {
-    this.cancelButtonText = args.TEXT;
-  }
-  
-  setInputEnabled(args) {
-    this.isInputEnabled = args.INPUT_ACTION === 'Enabled';
+  setButtonText(args) {
+    const buttonMenu = args.BUTTON_MENU;
+    const text = args.TEXT;
+    switch (buttonMenu) {
+      case 'Button 1':
+        this.submitButtonText = text;
+        break;
+      case 'Button 2':
+        this.cancelButtonText = text;
+        break;
+      case 'Button 3':
+        this.Button3Text = text;
+        break;
+      case 'Button 4':
+        this.Button4Text = text;
+        break;
+    }
   }
   
   askAndWaitForInput(args) {
@@ -547,7 +585,7 @@
         const overlay = document.createElement('div');
         overlay.classList.add('ask-box');
         overlay.style.position = 'fixed';
-        overlay.style.left = `${43 + this.textBoxX}%`;
+        overlay.style.left = `${41 + this.textBoxX}%`;
         overlay.style.top = `${44 + this.textBoxY}%`;
         overlay.style.zIndex = "9999"; 
         overlay.style.backgroundColor = this.textBoxColor;
@@ -589,7 +627,11 @@
         submitButton.textContent = this.submitButtonText;
 
         submitButton.addEventListener('click', () => {
-          this.userInput = inputField.value;
+          if (this.isInputEnabled) {
+            this.userInput = inputField.value;
+          } else {
+            this.userInput = this.submitButtonText;
+          }
           this.isWaitingForInput = false;
           if (this.exitEffect) {
             this.applyExitEffect(overlay);
@@ -598,11 +640,11 @@
             resolve();
           }
           this.askBoxCount--;
-          resolve();
         });
 
         const cancelButton = document.createElement('button');
         cancelButton.style.marginTop = '10px';
+        cancelButton.style.marginRight = '5px';
         cancelButton.style.padding = '5px 10px';
         cancelButton.style.backgroundColor = this.cancelButtonColor;
         cancelButton.style.color = this.cancelButtonTextColor;
@@ -614,7 +656,7 @@
 
         cancelButton.addEventListener('click', () => {
           if (!this.isInputEnabled) {
-            this.userInput = 'cancelled';
+            this.userInput = this.cancelButtonText;
           }
           this.isWaitingForInput = false;
           if (this.exitEffect) {
@@ -624,7 +666,54 @@
             resolve();
           }
           this.askBoxCount--;
-          resolve();
+        });
+        
+        const Button3 = document.createElement('button');
+        Button3.style.marginTop = '10px';
+        Button3.style.marginRight = '5px';
+        Button3.style.padding = '5px 10px';
+        Button3.style.backgroundColor = this.button3Color;
+        Button3.style.color = this.button3TextColor;
+        Button3.style.border = 'none';
+        Button3.style.borderRadius = this.button3BorderRadius + 'px';
+        Button3.style.cursor = 'pointer';
+        Button3.textContent = this.Button3Text;
+        Button3.style.display = this.showButton3 ? 'inline-block' : 'none';
+
+        Button3.addEventListener('click', () => {
+          this.userInput = this.Button3Text;
+          this.isWaitingForInput = false;
+          if (this.exitEffect) {
+            this.applyExitEffect(overlay);
+          } else {
+            document.body.removeChild(overlay);
+            resolve();
+          }
+          this.askBoxCount--;
+        });
+        
+        const Button4 = document.createElement('button');
+        Button4.style.marginTop = '10px';
+        Button4.style.marginRight = '5px';
+        Button4.style.padding = '5px 10px';
+        Button4.style.backgroundColor = this.button4Color;
+        Button4.style.color = this.button4TextColor;
+        Button4.style.border = 'none';
+        Button4.style.borderRadius = this.button4BorderRadius + 'px';
+        Button4.style.cursor = 'pointer';
+        Button4.textContent = this.Button4Text;
+        Button4.style.display = this.showButton4 ? 'inline-block' : 'none';
+
+        Button4.addEventListener('click', () => {
+          this.userInput = this.Button4Text;
+          this.isWaitingForInput = false;
+          if (this.exitEffect) {
+            this.applyExitEffect(overlay);
+          } else {
+            document.body.removeChild(overlay);
+            resolve();
+          }
+          this.askBoxCount--;
         });
 
 
@@ -636,6 +725,8 @@
       
         overlay.appendChild(submitButton);
         overlay.appendChild(cancelButton);
+        overlay.appendChild(Button3);
+        overlay.appendChild(Button4);
 
         document.body.appendChild(overlay);
         inputField.focus();
