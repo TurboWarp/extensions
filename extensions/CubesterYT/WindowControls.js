@@ -32,11 +32,11 @@
             text: "move window to x: [X] y: [Y]",
             arguments: {
               X: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "0"
               },
               Y: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "0"
               }
             }
@@ -58,7 +58,7 @@
             text: "change window x by [X]",
             arguments: {
               X: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "50"
               }
             }
@@ -69,7 +69,7 @@
             text: "set window x to [X]",
             arguments: {
               X: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "100"
               }
             }
@@ -80,7 +80,7 @@
             text: "change window y by [Y]",
             arguments: {
               Y: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "50"
               }
             }
@@ -91,7 +91,7 @@
             text: "set window y to [Y]",
             arguments: {
               Y: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "100"
               }
             }
@@ -115,11 +115,11 @@
             text: "resize window to w: [W] h: [H]",
             arguments: {
               W: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "1000"
               },
               H: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "1000"
               }
             }
@@ -141,7 +141,7 @@
             text: "change window width by [W]",
             arguments: {
               W: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "50"
               }
             }
@@ -152,7 +152,7 @@
             text: "set window width to [W]",
             arguments: {
               W: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "1000"
               }
             }
@@ -163,7 +163,7 @@
             text: "change window height by [H]",
             arguments: {
               H: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "50"
               }
             }
@@ -174,7 +174,7 @@
             text: "set window height to [H]",
             arguments: {
               H: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "1000"
               }
             }
