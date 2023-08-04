@@ -1,6 +1,6 @@
 /*
 * This extension was made by SharkPool
-* Version 1.6 (More Buttons)
+* Version 1.7 (Emergency DOM fixes, Force Input Block, More Positioning, and Image setting)
 * Do NOT delete these comments
 */
 
@@ -58,7 +58,10 @@
     this.textBoxX = 0;
     this.textBoxY = 0;
     this.askBoxCount = 0;
-    this.maxBoxCount = 1; 
+    this.maxBoxCount = 1;
+    this.forceInput = 'Disabled';
+    this.overlayInput = null
+    this.overlayImage = null
   }
   
     getInfo() {
@@ -104,17 +107,6 @@
           opcode: "removeAskBoxes",
           blockType: Scratch.BlockType.COMMAND,
           text: "remove all ask boxes",
-        },
-        {
-          opcode: 'setFontSize',
-          blockType: Scratch.BlockType.COMMAND,
-          text: 'set font size to [SIZE]',
-          arguments: {
-            SIZE: {
-              type: Scratch.ArgumentType.NUMBER,
-              defaultValue: 14,
-            },
-          },
         },
         {
           opcode: 'setButtonText',
@@ -181,21 +173,20 @@
           },
         },
         {
-          opcode: "setBorderRadius",
+          opcode: 'setFontSize',
           blockType: Scratch.BlockType.COMMAND,
-          text: "set [ELEMENT] border radius to [VALUE]",
+          text: 'set font size to [SIZE]',
           blockIconURI: formatIcon,
           arguments: {
-            ELEMENT: {
-              type: Scratch.ArgumentType.STRING,
-              menu: "elementMenu",
-              defaultValue: "Textbox",
-            },
-            VALUE: {
+            SIZE: {
               type: Scratch.ArgumentType.NUMBER,
-              defaultValue: 5,
+              defaultValue: 14,
             },
           },
+        },
+        {
+        blockType: Scratch.BlockType.LABEL,
+        text: 'Positioning',
         },
         {
           opcode: "setPosition",
@@ -214,8 +205,36 @@
           },
         },
         {
+          opcode: "changePosition",
+          blockType: Scratch.BlockType.COMMAND,
+          text: "change textbox position by x: [X] y: [Y]",
+          blockIconURI: formatIcon,
+          arguments: {
+            X: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 0,
+            },
+            Y: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 0,
+            },
+          },
+        },
+        {
+          opcode: 'getXpos',
+          blockType: Scratch.BlockType.REPORTER,
+          blockIconURI: formatIcon,
+          text: 'x position',
+        },
+        {
+          opcode: 'getYpos',
+          blockType: Scratch.BlockType.REPORTER,
+          blockIconURI: formatIcon,
+          text: 'y position',
+        },
+        {
         blockType: Scratch.BlockType.LABEL,
-        text: 'Color Setting',
+        text: 'Visual Settings',
         },
         {
           opcode: 'setColorSettings',
@@ -231,6 +250,35 @@
             COLOR: {
               type: Scratch.ArgumentType.COLOR,
               defaultValue: '#000000',
+            },
+          },
+        },
+        {
+          opcode: "setBorderRadius",
+          blockType: Scratch.BlockType.COMMAND,
+          text: "set [ELEMENT] border radius to [VALUE]",
+          blockIconURI: colorIcon,
+          arguments: {
+            ELEMENT: {
+              type: Scratch.ArgumentType.STRING,
+              menu: "elementMenu",
+              defaultValue: "Textbox",
+            },
+            VALUE: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 5,
+            },
+          },
+        },
+        {
+          opcode: "setImage",
+          blockType: Scratch.BlockType.COMMAND,
+          text: "set background image to [IMAGE]",
+          blockIconURI: colorIcon,
+          arguments: {
+            IMAGE: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'input-url-or-uri-here',
             },
           },
         },
@@ -269,10 +317,21 @@
         text: 'Operations',
         },
         {
+          opcode: 'setSubmitEvent',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'set force input to [ENTER]',
+          arguments: {
+            ENTER: {
+              type: Scratch.ArgumentType.STRING,
+              menu: 'enterMenu',
+              defaultValue: 'Disabled',
+            },
+          },
+        },
+        {
           opcode: 'setMaxBoxCount',
           blockType: Scratch.BlockType.COMMAND,
           text: 'set max box count to: [MAX]',
-          blockIconURI: formatIcon,
           arguments: {
             MAX: {
               type: Scratch.ArgumentType.NUMBER,
@@ -294,13 +353,14 @@
       menus: {
         alignmentMenu: ['left', 'right', 'center'],
         fontMenu: ['Arial', 'Times New Roman', 'Comic Sans MS', 'Verdana', 'Courier New', 'Impact', 'Cursive', 'Lucida Console', 'Scratch','Arial Black', 'Calibri', 'Consolas', 'Handwriting', 'Marker','Curly', 'Pixel'],
+        enterMenu: ['Disabled', 'Enter Key', 'Shift + Enter key'],
         inputActionMenu: ['Enabled', 'Disabled'],
         enterEffectMenu: ['None', 'Fade in', 'Grow'],
         exitEffectMenu: ['None', 'Fade out', 'Shrink'],
         buttonMenu: ['Button 1','Button 2', 'Button 3', 'Button 4'],
         enableMenu: ['Input Box','Button 2', 'Button 3', 'Button 4'],
-        elementMenu: ['Textbox', 'Input Box', 'Cancel Button', 'Submit Button', 'Button 3', 'Button 4'],
-        colorSettingsMenu: ['Question', 'Input Text', 'Textbox', 'Input Background', 'Input Outline', 'Submit Button', 'Cancel Button', 'Button 3', 'Button 4', 'Submit Button Text', 'Cancel Button Text', 'Button 3 Text', 'Button 4 Text'],
+        elementMenu: ['Textbox', 'Input Box', 'Button 1', 'Button 2', 'Button 3', 'Button 4'],
+        colorSettingsMenu: ['Question', 'Input Text', 'Textbox', 'Input Background', 'Input Outline', 'Button 1', 'Button 2', 'Button 3', 'Button 4', 'Button 1 Text', 'Button 2 Text', 'Button 3 Text', 'Button 4 Text'],
         },
       };
     }
@@ -318,6 +378,7 @@
         break;
       case 'Textbox':
         this.textBoxColor = colorValue;
+        this.overlayImage = null;
         break;
       case 'Input Background':
         this.inputBackgroundColor = colorValue;
@@ -325,22 +386,26 @@
       case 'Input Outline':
         this.inputOutlineColor = colorValue;
         break;
-      case 'Submit Button':
+      case 'Button 1':
         this.submitButtonColor = colorValue;
+        this.Btn1Image = null;
         break;
-      case 'Cancel Button':
+      case 'Button 2':
         this.cancelButtonColor = colorValue;
+        this.Btn2Image = null;
         break;
       case 'Button 3':
         this.button3Color = colorValue;
+        this.Btn3Image = null;
         break;
       case 'Button 4':
         this.button4Color = colorValue;
+        this.Btn4Image = null;
         break;
-      case 'Submit Button Text':
+      case 'Button 1 Text':
         this.submitButtonTextColor = colorValue;
         break;
-      case 'Cancel Button Text':
+      case 'Button 2 Text':
         this.cancelButtonTextColor = colorValue;
         break;
       case 'Button 3 Text':
@@ -364,10 +429,10 @@
       case "Textbox":
         this.textBoxBorderRadius = value;
         break;
-      case "Cancel Button":
+      case "Button 1":
         this.cancelButtonBorderRadius = value;
         break;
-      case "Submit Button":
+      case "Button 2":
         this.submitButtonBorderRadius = value;
         break;
       case "Button 3":
@@ -421,6 +486,32 @@
   setPosition(args) {
     this.textBoxX = args.X;
     this.textBoxY = args.Y * -1;
+    
+        
+    const overlays = document.querySelectorAll(".ask-box");
+    overlays.forEach((overlay) => {
+      this.updateOverlayPosition(overlay);
+    });
+  }
+  
+  changePosition(args) {
+    this.textBoxX = this.textBoxX + args.X;
+    this.textBoxY = this.textBoxY + args.Y * -1;
+    
+    const overlays = document.querySelectorAll(".ask-box");
+    overlays.forEach((overlay) => {
+      this.updateOverlayPosition(overlay);
+    });
+  }
+  
+  updateOverlayPosition(overlay) {
+    if (this.textBoxX !== null && this.textBoxY !== null) {
+      overlay.style.left = `${41 + this.textBoxX}%`;
+      overlay.style.top = `${44 + this.textBoxY}%`;
+    } else {
+      overlay.style.left = "50%";
+      overlay.style.top = "50%";
+    }
   }
   
   setMaxBoxCount(args) {
@@ -595,6 +686,56 @@
         overlay.style.fontSize = this.fontSize;
         overlay.style.textAlign = this.textAlign;
         overlay.style.fontFamily = this.fontFamily;
+        
+        const overlayImageContainer = document.createElement('div');
+        overlayImageContainer.style.background = `url(${this.overlayImage})`;
+        overlayImageContainer.style.width = '100%';
+        overlayImageContainer.style.height = '100%';
+        overlayImageContainer.style.position = 'absolute';
+        overlayImageContainer.style.top = '0';
+        overlayImageContainer.style.left = '0';
+        overlayImageContainer.style.zIndex = '-1'; 
+        
+        if (this.forceInput !== 'Disabled') {
+          let overlayInput;
+        
+          if (this.forceInput === 'Enter Key') {
+            overlayInput = 'Enter';
+          } else {
+           overlayInput = 'ShiftEnter';
+          }
+        
+          const handleKeydown = (event) => {
+            if (
+              (overlayInput === 'Enter' && event.key === 'Enter') ||
+              (overlayInput === 'ShiftEnter' && event.shiftKey && event.key === 'Enter')
+           ) {
+             this.userInput = inputField.value;
+             this.isWaitingForInput = false;
+             if (this.exitEffect) {
+              this.applyExitEffect(overlay);
+             } else {
+               document.body.removeChild(overlay);
+
+             }
+             resolve();
+             this.askBoxCount--;
+          }
+         };
+
+         const observer = new MutationObserver((mutationsList) => {
+           for (const mutation of mutationsList) {
+             if (mutation.type === 'childList' && !document.contains(overlay)) {
+               document.removeEventListener('keydown', handleKeydown);
+               observer.disconnect();
+             }
+           }
+        });
+
+        observer.observe(document.body, { childList: true });
+
+        document.addEventListener('keydown', handleKeydown);
+        }  
 
         const questionText = document.createElement('div');
         questionText.classList.add('question');
@@ -637,8 +778,8 @@
             this.applyExitEffect(overlay);
           } else {
             document.body.removeChild(overlay);
-            resolve();
           }
+          resolve();
           this.askBoxCount--;
         });
 
@@ -663,8 +804,8 @@
             this.applyExitEffect(overlay);
           } else {
             document.body.removeChild(overlay);
-            resolve();
           }
+          resolve();
           this.askBoxCount--;
         });
         
@@ -687,8 +828,8 @@
             this.applyExitEffect(overlay);
           } else {
             document.body.removeChild(overlay);
-            resolve();
           }
+          resolve();
           this.askBoxCount--;
         });
         
@@ -711,11 +852,10 @@
             this.applyExitEffect(overlay);
           } else {
             document.body.removeChild(overlay);
-            resolve();
           }
+          resolve();
           this.askBoxCount--;
         });
-
 
         overlay.appendChild(questionText);
       
@@ -727,6 +867,7 @@
         overlay.appendChild(cancelButton);
         overlay.appendChild(Button3);
         overlay.appendChild(Button4);
+        overlay.appendChild(overlayImageContainer); 
 
         document.body.appendChild(overlay);
         inputField.focus();
@@ -740,8 +881,8 @@
       
         const resizeHandler = () => {
           if (this.textBoxX !== null && this.textBoxY !== null) {
-            overlay.style.left = `${50 + this.textBoxX}%`;
-            overlay.style.top = `${50 + this.textBoxY}%`;
+            overlay.style.left = `${41 + this.textBoxX}%`;
+            overlay.style.top = `${44 + this.textBoxY}%`;
           } else {
             overlay.style.left = "50%";
             overlay.style.top = "50%";
@@ -752,13 +893,22 @@
         document.addEventListener("webkitfullscreenchange", resizeHandler);
         document.addEventListener("mozfullscreenchange", resizeHandler);
         document.addEventListener("MSFullscreenChange", resizeHandler);
-
-        overlay.addEventListener("DOMNodeRemoved", () => {
-          document.removeEventListener("fullscreenchange", resizeHandler);
-          document.removeEventListener("webkitfullscreenchange", resizeHandler);
-          document.removeEventListener("mozfullscreenchange", resizeHandler);
-          document.removeEventListener("MSFullscreenChange", resizeHandler);
+        
+        const observer = new MutationObserver((mutationsList) => {
+          for (const mutation of mutationsList) {
+            if (mutation.type === "childList" && !document.contains(overlay)) {
+              document.removeEventListener("fullscreenchange", resizeHandler);
+              document.removeEventListener("webkitfullscreenchange", resizeHandler);
+              document.removeEventListener("mozfullscreenchange", resizeHandler);
+              document.removeEventListener("MSFullscreenChange", resizeHandler);
+              observer.disconnect();
+            }
+          }
         });
+        
+        observer.observe(document.body, { childList: true });
+        document.body.appendChild(overlay);
+        inputField.focus();
       });
     }
   }
@@ -773,6 +923,22 @@
   
   getMaxCount() {
     return this.maxBoxCount;
+  }
+  
+  getXpos() {
+    return this.textBoxX;
+  }
+  
+  getYpos() {
+    return this.textBoxY;
+  }
+  
+  setSubmitEvent(args) {
+      this.forceInput = args.ENTER;
+  }
+  
+  setImage(args) {
+    this.overlayImage = args.IMAGE;
   }
 }
 
