@@ -1,3 +1,6 @@
+(function(Scratch) {
+  'use strict';
+
 class Resolution {
     getInfo() {
       return {
@@ -28,3 +31,4 @@ class Resolution {
     }
   }
 Scratch.extensions.register(new Resolution());
+}(Scratch));
