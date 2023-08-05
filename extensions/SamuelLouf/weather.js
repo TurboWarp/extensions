@@ -70,8 +70,9 @@
 
 
   const letters_of = (text, from, to) => {
-    STRING = text.toString();
-    LETTER1 = Number(from) || 0;LETTER2 = Number(to) || 0;
+    var STRING = text.toString();
+    var LETTER1 = Number(from) || 0;
+    var LETTER2 = Number(to) || 0;
     return STRING.substring(LETTER1 - 1, LETTER2);
   }
 
