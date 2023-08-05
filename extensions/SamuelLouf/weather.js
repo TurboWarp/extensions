@@ -69,14 +69,14 @@
   }
 
 
-  const letters_of = (text, from, to) => {
+  function letters_of(text, from, to) {
     var STRING = text.toString();
     var LETTER1 = Number(from) || 0;
     var LETTER2 = Number(to) || 0;
     return STRING.substring(LETTER1 - 1, LETTER2);
   }
 
-  const itemOfFromString = (no, from, splitby) => {
+  function itemOfFromString(no, from, splitby){
     var input1 = (Number(no) - 1);
     var input2 = String(from);
     var input3 = splitby;
