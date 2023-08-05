@@ -68,6 +68,20 @@
     return fetched_json.current_weather;
   }
 
+
+  const letters_of = (text, from, to) => {
+    args.STRING = text.toString();
+    args.LETTER1 = Number(from) || 0;args.LETTER2 = Number(to) || 0;
+    return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);
+  }
+  
+  const itemOfFromString = (no, from, splitby) => {
+    var input1 = (Number(no) - 1);
+    var input2 = String(from);
+    var input3 = splitby;
+    return input2.split(input3)[input1] || '';
+  }
+
   class Weather {
     getInfo() {
       return {
@@ -327,8 +341,6 @@
           return current_weather.temperature;
         } else {
           var temperature = (current_weather.temperature * 9 / 5) + 32;
-          const letters_of = (text, from, to) => {args.STRING = text.toString();args.LETTER1 = Number(from) || 0;args.LETTER2 = Number(to) || 0;return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);}
-          const itemOfFromString = (no, from, splitby) => {var input1 = (Number(no) - 1);var input2 = String(from);var input3 = splitby;return input2.split(input3)[input1] || '';}
           return Number(String(itemOfFromString(1, temperature, '.')) + '.' + letters_of(itemOfFromString(2, temperature, '.'), 1, 2));
         }
       } else if (args.METEO == 'all (JSON)'){
@@ -338,8 +350,6 @@
           return current_weather.windspeed;
         } else {
           var wind_speed = current_weather.windspeed / 1.609;
-          const letters_of = (text, from, to) => {args.STRING = text.toString();args.LETTER1 = Number(from) || 0;args.LETTER2 = Number(to) || 0;return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);}
-          const itemOfFromString = (no, from, splitby) => {var input1 = (Number(no) - 1);var input2 = String(from);var input3 = splitby;return input2.split(input3)[input1] || '';}
           return Number(String(itemOfFromString(1, wind_speed, '.')) + '.' + letters_of(itemOfFromString(2, wind_speed, '.'), 1, 2));
         }
       } else {
@@ -377,7 +387,7 @@
     }
 
     async get_current_weather_in (args){
-      var geolocation_of_place = await Scratch.fetch('https://geocode.maps.co/search?q='+escape(args.place)).then(r => r.text()).catch(() => '');
+      var geolocation_of_place = await Scratch.fetch('https://geocode.maps.co/search?q=' + encodeURIComponent(args.place)).then(r => r.text()).catch(() => '');
       geolocation_of_place = JSON.parse(geolocation_of_place);
       var current_weather = await getCurrentWeather({latitude: Number(geolocation_of_place[0].lat), longitude: Number(geolocation_of_place[0].lon)});
 
@@ -386,8 +396,6 @@
           return current_weather.temperature;
         } else {
           var temperature = (current_weather.temperature * 9 / 5 ) + 32;
-          const letters_of = (text, from, to) => {args.STRING = text.toString();args.LETTER1 = Number(from) || 0;args.LETTER2 = Number(to) || 0;return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);}
-          const itemOfFromString = (no, from, splitby) => {var input1 = (Number(no) - 1);var input2 = String(from);var input3 = splitby;return input2.split(input3)[input1] || '';}
           return Number(String(itemOfFromString(1, temperature, '.')) + '.' + letters_of(itemOfFromString(2, temperature, '.'), 1, 2));
         }
       } else if (args.METEO == 'all (JSON)'){
@@ -397,8 +405,6 @@
           return current_weather.windspeed;
         } else {
           var wind_speed = current_weather.windspeed / 1.609;
-          const letters_of = (text, from, to) => {args.STRING = text.toString();args.LETTER1 = Number(from) || 0;args.LETTER2 = Number(to) || 0;return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);}
-          const itemOfFromString = (no, from, splitby) => {var input1 = (Number(no) - 1);var input2 = String(from);var input3 = splitby;return input2.split(input3)[input1] || '';}
           return Number(String(itemOfFromString(1, wind_speed, '.')) + '.' + letters_of(itemOfFromString(2, wind_speed, '.'), 1, 2));
         }
       } else {
@@ -418,8 +424,6 @@
           return current_weather.temperature;
         } else {
           var temperature = (current_weather.temperature * 9 / 5) + 32;
-          const letters_of = (text, from, to) => {args.STRING = text.toString();args.LETTER1 = Number(from) || 0;args.LETTER2 = Number(to) || 0;return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);}
-          const itemOfFromString = (no, from, splitby) => {var input1 = (Number(no) - 1);var input2 = String(from);var input3 = splitby;return input2.split(input3)[input1] || '';}
           return Number(String(itemOfFromString(1, temperature, '.')) + '.' + letters_of(itemOfFromString(2, temperature, '.'), 1, 2));
         }
       } else if (args.METEO == 'all (JSON)'){
@@ -429,8 +433,6 @@
           return current_weather.windspeed;
         } else {
           var wind_speed = current_weather.windspeed / 1.609;
-          const letters_of = (text, from, to) => {args.STRING = text.toString();args.LETTER1 = Number(from) || 0;args.LETTER2 = Number(to) || 0;return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);}
-          const itemOfFromString = (no, from, splitby) => {var input1 = (Number(no) - 1);var input2 = String(from);var input3 = splitby;return input2.split(input3)[input1] || '';}
           return Number(String(itemOfFromString(1, wind_speed, '.')) + '.' + letters_of(itemOfFromString(2, wind_speed, '.'), 1, 2));
         }
       } else {
@@ -451,7 +453,7 @@
           if (args.METEO.includes('(C)')){
             return Number(args.value) - 2.5 < Number(response) && Number(response) < Number(args.value) + 2.5;
           } else {
-            return Number(args.value) - 3.6 < Number(response) && Number(response) < Number(args.value)+3.6;
+            return Number(args.value) - 3.6 < Number(response) && Number(response) < Number(args.value) + 3.6;
           }
         } else if (args.METEO.includes('wind speed')){
           if (args.METEO.includes('(km/h)')){
