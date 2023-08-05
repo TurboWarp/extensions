@@ -70,11 +70,11 @@
 
 
   const letters_of = (text, from, to) => {
-    args.STRING = text.toString();
-    args.LETTER1 = Number(from) || 0;args.LETTER2 = Number(to) || 0;
-    return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);
+    STRING = text.toString();
+    LETTER1 = Number(from) || 0;LETTER2 = Number(to) || 0;
+    return STRING.substring(LETTER1 - 1, LETTER2);
   }
-  
+
   const itemOfFromString = (no, from, splitby) => {
     var input1 = (Number(no) - 1);
     var input2 = String(from);
