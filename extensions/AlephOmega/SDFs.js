@@ -399,7 +399,7 @@
           }
         ]
       };
-    }
+    }1
     vecSub(v1, v2) {
       return { x: v1.x - v2.x, y: v1.y - v2.y, z: v1.z - v2.z };
     }
@@ -448,15 +448,15 @@
     }
 
     Smoothint({A, B, K}) {
-      return A * (1 - Math.exp(-B/K));
+      return A * (1 - Math.exp(-B / K));
     }
 
     Smoothsub({A, B, K}) {
-      return A * Math.exp(-B/K);
+      return A * Math.exp(-B / K);
     }
 
     Smoothunion({A, B, K}) {
-      return A + B - (A * B)/(A + B) * (1 - Math.exp(-(A + B)/K));
+      return A + B - (A * B) / (A + B) * (1 - Math.exp(-(A + B) / K));
     }
 
     Scale({A, B}) {
@@ -477,14 +477,14 @@
     }
 
     round_subtract({A, B, K}) {
-      return this.round_intersect({"A": A,"B": 0 - B ,"K": K})
+      return this.round_intersect({"A": A,"B": 0 - B ,"K": K});
     }
 
       round_intersect({A, B, K}) {
       var ISX = min(A + K,0);
       var ISY = min(B + K,0);
       var outdist = Math.sqrt(ISX * ISX + ISY * ISY);
-      var intersect = max(A,b);
+      var intersect = max(A,B);
       var indist = min(intersect, -K);
       return indist + outdist;
     }
@@ -493,7 +493,7 @@
       var ISX = max(A - K,0);
       var ISY = max(B - K,0);
       var indist = 0 - Math.sqrt(ISX * ISX + ISY * ISY);
-      var union = min(A,b);
+      var union = min(A,B);
       var outdist = max(union, K);
       return indist + outdist;
     }
@@ -567,7 +567,7 @@
       var dy = P.y - A.y;
       var dz = P.z - A.z;
       var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-      return dist-R;
+      return dist - R;
     }
 
     Box({P, A, S}) {
@@ -583,7 +583,7 @@
       dy = max(dy,0);
       dz = max(dz,0);
       var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-      return dist+min(max(dx,max(dy,dz)),0);
+      return dist + min(max(dx,max(dy,dz)),0);
     }
 
     Box2({P, A, S, R}) {
@@ -595,11 +595,11 @@
       dx = Math.abs(dx) - S.x;
       dy = Math.abs(dy) - S.y;
       dz = Math.abs(dz) - S.z;
-      dx = max(dx,0)
-      dy = max(dy,0)
-      dz = max(dz,0)
+      dx = max(dx,0);
+      dy = max(dy,0);
+      dz = max(dz,0);
       var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-      return dist+min(max(dx,max(dy,dz)),0)-R
+      return dist + min(max(dx,max(dy,dz)),0)-R
     }
   }
 
