@@ -305,15 +305,15 @@
       } else if (args.OPERATORS == '≈'){
         if (args.METEO.includes('temperature')){
           if (args.METEO.includes('(C)')){
-            return Number(args.value)-2.5 < Number(response) && Number(response) < Number(args.value)+2.5;
+            return Number(args.value) - 2.5 < Number(response) && Number(response) < Number(args.value) + 2.5;
           } else {
-            return Number(args.value)-3.6 < Number(response) && Number(response) < Number(args.value)+3.6;
+            return Number(args.value) - 3.6 < Number(response) && Number(response) < Number(args.value) + 3.6;
           }
         } else if (args.METEO.includes('wind speed')){
           if (args.METEO.includes('(km/h)')){
-            return Number(args.value)-10 < Number(response) && Number(response) < Number(args.value)+10;
+            return Number(args.value) - 10 < Number(response) && Number(response) < Number(args.value) + 10;
           } else {
-            return Number(args.value)-6.2 < Number(response) && Number(response) < Number(args.value)+6.2;
+            return Number(args.value) - 6.2 < Number(response) && Number(response) < Number(args.value) + 6.2;
           }
         }
       }
@@ -326,7 +326,7 @@
         if (args.METEO.includes('(C)')){
           return current_weather.temperature;
         } else {
-          var temperature = (current_weather.temperature*9/5)+32;
+          var temperature = (current_weather.temperature * 9 / 5) + 32;
           const letters_of = (text, from, to) => {args.STRING = text.toString();args.LETTER1 = Number(from) || 0;args.LETTER2 = Number(to) || 0;return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);}
           const itemOfFromString = (no, from, splitby) => {var input1 = (Number(no) - 1);var input2 = String(from);var input3 = splitby;return input2.split(input3)[input1] || '';}
           return Number(String(itemOfFromString(1, temperature, '.')) + '.' + letters_of(itemOfFromString(2, temperature, '.'), 1, 2));
