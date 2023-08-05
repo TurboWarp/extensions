@@ -1,6 +1,6 @@
 /*
 * This extension was made by SharkPool
-* Version 1.7 (Emergency DOM fixes, Force Input Block, More Positioning, and Image setting)
+* Version 1.8 (Bug fixes and Dropdown-able Menus)
 * Do NOT delete these comments
 */
 
@@ -40,28 +40,33 @@
     this.cancelButtonText = 'Cancel';
     this.Button3Text = 'Okay';
     this.Button4Text = 'No';
+    this.DropdownText = 'Dropdown';
     this.submitButtonColor = '#0074D9'; 
     this.cancelButtonColor = '#d9534f';
     this.button3Color = '#0074D9';
     this.button4Color = '#d9534f';
+    this.optionbuttonColor = '#5f5f5f';
     this.cancelButtonBorderRadius = 5; 
     this.submitButtonBorderRadius = 5;
     this.button3BorderRadius = 5; 
     this.button4BorderRadius = 5;
+    this.optionbuttonBorderRadius = 5;
     this.submitButtonTextColor = '#ffffff'; 
     this.cancelButtonTextColor = '#ffffff';
     this.button3TextColor = '#ffffff'; 
     this.button4TextColor = '#ffffff';
+    this.optionbuttonTextColor = '#ffffff';
     this.textBoxBorderRadius = 5;
     this.inputBoxRadius = 4;
-    this.isInputEnabled = true; 
+    this.isInputEnabled = 'Enabled'; 
     this.textBoxX = 0;
     this.textBoxY = 0;
     this.askBoxCount = 0;
     this.maxBoxCount = 1;
     this.forceInput = 'Disabled';
-    this.overlayInput = null
-    this.overlayImage = null
+    this.overlayInput = null;
+    this.overlayImage = null;
+    this.optionList = 'Option 1,Option 2,Option 3';
   }
   
     getInfo() {
@@ -125,6 +130,17 @@
           },
         },
         {
+          opcode: 'setDropdown',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'set dropdown options to array: [DROPDOWN]',
+          arguments: {
+            DROPDOWN: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: 'option 1,option 2,option 3',
+            },
+          },
+        },
+        {
         blockType: Scratch.BlockType.LABEL,
         text: 'Formatting',
         },
@@ -155,6 +171,19 @@
           },
         },
         {
+          opcode: 'setInputType',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'set Input Box to be [ACTION]',
+          blockIconURI: formatIcon,
+          arguments: {
+            ACTION: {
+              type: Scratch.ArgumentType.STRING,
+              menu: 'inputActionMenu',
+              defaultValue: 'Enabled',
+            },
+          },
+        },
+        {
           opcode: 'setEnable',
           blockType: Scratch.BlockType.COMMAND,
           text: 'set [ENABLE_MENU] to be [ACTION]',
@@ -163,11 +192,11 @@
             ENABLE_MENU: {
               type: Scratch.ArgumentType.STRING,
               menu: 'enableMenu',
-              defaultValue: 'Input Box',
+              defaultValue: 'Button 2',
             },
             ACTION: {
               type: Scratch.ArgumentType.STRING,
-              menu: 'inputActionMenu',
+              menu: 'buttonActionMenu',
               defaultValue: 'Enabled',
             },
           },
@@ -354,13 +383,14 @@
         alignmentMenu: ['left', 'right', 'center'],
         fontMenu: ['Arial', 'Times New Roman', 'Comic Sans MS', 'Verdana', 'Courier New', 'Impact', 'Cursive', 'Lucida Console', 'Scratch','Arial Black', 'Calibri', 'Consolas', 'Handwriting', 'Marker','Curly', 'Pixel'],
         enterMenu: ['Disabled', 'Enter Key', 'Shift + Enter key'],
-        inputActionMenu: ['Enabled', 'Disabled'],
+        buttonActionMenu: ['Enabled', 'Disabled'],
+        inputActionMenu: ['Enabled', 'Disabled', 'Dropdown'],
         enterEffectMenu: ['None', 'Fade in', 'Grow'],
         exitEffectMenu: ['None', 'Fade out', 'Shrink'],
-        buttonMenu: ['Button 1','Button 2', 'Button 3', 'Button 4'],
-        enableMenu: ['Input Box','Button 2', 'Button 3', 'Button 4'],
-        elementMenu: ['Textbox', 'Input Box', 'Button 1', 'Button 2', 'Button 3', 'Button 4'],
-        colorSettingsMenu: ['Question', 'Input Text', 'Textbox', 'Input Background', 'Input Outline', 'Button 1', 'Button 2', 'Button 3', 'Button 4', 'Button 1 Text', 'Button 2 Text', 'Button 3 Text', 'Button 4 Text'],
+        buttonMenu: ['Button 1','Button 2', 'Button 3', 'Button 4', 'Dropdown'],
+        enableMenu: ['Button 2', 'Button 3', 'Button 4'],
+        elementMenu: ['Textbox', 'Input Box', 'Button 1', 'Button 2', 'Button 3', 'Button 4', 'Dropdown Buttons'],
+        colorSettingsMenu: ['Question', 'Input Text', 'Textbox', 'Input Background', 'Input Outline', 'Button 1', 'Button 2', 'Button 3', 'Button 4', 'Dropdown Buttons', 'Button 1 Text', 'Button 2 Text', 'Button 3 Text', 'Button 4 Text', 'Dropdown Text'],
         },
       };
     }
@@ -388,19 +418,18 @@
         break;
       case 'Button 1':
         this.submitButtonColor = colorValue;
-        this.Btn1Image = null;
         break;
       case 'Button 2':
         this.cancelButtonColor = colorValue;
-        this.Btn2Image = null;
         break;
       case 'Button 3':
         this.button3Color = colorValue;
-        this.Btn3Image = null;
         break;
       case 'Button 4':
         this.button4Color = colorValue;
-        this.Btn4Image = null;
+        break;
+      case 'Dropdown Buttons':
+        this.optionbuttonColor = colorValue;
         break;
       case 'Button 1 Text':
         this.submitButtonTextColor = colorValue;
@@ -413,6 +442,9 @@
         break;
       case 'Button 4 Text':
         this.button4TextColor = colorValue;
+        break;
+      case 'Dropdown Text':
+        this.optionButtonTextColor = colorValue;
         break;
     }
   }
@@ -443,6 +475,9 @@
         break;
       case "Input Box":
         this.inputBoxRadius = value;
+        break;
+      case "Dropdown Buttons":
+        this.optionbuttonBorderRadius = value;
         break;
     }
   }
@@ -534,9 +569,6 @@
     const enableMenu = args.ENABLE_MENU;
     const action = args.ACTION;
     switch (enableMenu) {
-      case 'Input Box':
-        this.isInputEnabled = action === 'Enabled';
-        break;
       case 'Button 2':
         this.showCancelButton = action === 'Enabled';
         break;
@@ -547,6 +579,10 @@
         this.showButton4 = action === 'Enabled';
         break;
     }
+  }
+  
+  setInputType(args) {
+   this.isInputEnabled = args.ACTION;
   }
 
   setButtonText(args) {
@@ -564,6 +600,9 @@
         break;
       case 'Button 4':
         this.Button4Text = text;
+        break;
+      case 'Dropdown':
+        this.DropdownText = text;
         break;
     }
   }
@@ -768,7 +807,7 @@
         submitButton.textContent = this.submitButtonText;
 
         submitButton.addEventListener('click', () => {
-          if (this.isInputEnabled) {
+          if (this.isInputEnabled !== 'Disabled') {
             this.userInput = inputField.value;
           } else {
             this.userInput = this.submitButtonText;
@@ -796,7 +835,7 @@
         cancelButton.style.display = this.showCancelButton ? 'inline-block' : 'none';
 
         cancelButton.addEventListener('click', () => {
-          if (!this.isInputEnabled) {
+          if (this.isInputEnabled === 'Disabled') {
             this.userInput = this.cancelButtonText;
           }
           this.isWaitingForInput = false;
@@ -822,7 +861,9 @@
         Button3.style.display = this.showButton3 ? 'inline-block' : 'none';
 
         Button3.addEventListener('click', () => {
-          this.userInput = this.Button3Text;
+          if (this.isInputEnabled === 'Disabled') {
+            this.userInput = this.Button3Text;
+          }
           this.isWaitingForInput = false;
           if (this.exitEffect) {
             this.applyExitEffect(overlay);
@@ -846,7 +887,9 @@
         Button4.style.display = this.showButton4 ? 'inline-block' : 'none';
 
         Button4.addEventListener('click', () => {
-          this.userInput = this.Button4Text;
+          if (this.isInputEnabled === 'Disabled') {
+            this.userInput = this.Button4Text;
+          }
           this.isWaitingForInput = false;
           if (this.exitEffect) {
             this.applyExitEffect(overlay);
@@ -856,11 +899,66 @@
           resolve();
           this.askBoxCount--;
         });
+        
+        const dropdown = document.createElement('div');
+        dropdown.className = 'dropdown';
+        
+        const dropdownButton = document.createElement('button');
+        dropdownButton.className = 'dropdown-button';
+        dropdownButton.textContent = this.DropdownText;
+        dropdownButton.style.padding = '5px 10px';
+        dropdownButton.style.backgroundColor = this.optionbuttonColor;
+        dropdownButton.style.color = this.optionButtonTextColor;
+        dropdownButton.style.border = 'none';
+        dropdownButton.style.borderRadius = this.optionbuttonBorderRadius + 'px';
+
+        const dropdownContent = document.createElement('div');
+        dropdownContent.className = 'dropdown-content';
+        
+        let isDropdownOpen = false;
+
+        const optionList = this.optionList;
+        const numOfOptions = optionList.split(',').length;
+        const options = this.optionList.split(',');
+        for (let i = 1; i <= numOfOptions; i++) {
+          const optionButton = document.createElement('button');
+          optionButton.style.marginRight = '5px';
+          optionButton.style.marginTop = '10px';
+          optionButton.style.padding = '5px 10px';
+          optionButton.style.backgroundColor = this.optionbuttonColor;
+          optionButton.style.color = this.optionButtonTextColor;
+          optionButton.style.border = 'none';
+          optionButton.style.borderRadius = this.optionbuttonBorderRadius + 'px';
+          optionButton.textContent = `${options[i - 1]}`;
+          optionButton.addEventListener('click', () => {
+            inputField.value = `${options[i - 1]}`;
+          });
+          dropdownContent.appendChild(optionButton);
+        }
+        
+        dropdownButton.addEventListener('mouseover', () => {
+          if (!isDropdownOpen) {
+            overlay.insertBefore(dropdownContent, submitButton);
+            isDropdownOpen = true;
+          }
+        });
+
+        overlay.addEventListener('mouseleave', () => {
+          if (isDropdownOpen) {
+            overlay.removeChild(dropdownContent);
+            isDropdownOpen = false;
+          }
+        });
 
         overlay.appendChild(questionText);
       
-        if (this.isInputEnabled) {
-        overlay.appendChild(inputField);
+        if (this.isInputEnabled !== 'Disabled') {
+          if (this.isInputEnabled === 'Enabled') {
+            overlay.appendChild(inputField);
+          } else {
+            dropdown.appendChild(dropdownButton);
+            overlay.appendChild(dropdown);
+          }
         }
       
         overlay.appendChild(submitButton);
@@ -934,7 +1032,11 @@
   }
   
   setSubmitEvent(args) {
-      this.forceInput = args.ENTER;
+    this.forceInput = args.ENTER;
+  }
+  
+  setDropdown(args) {
+    this.optionList = args.DROPDOWN
   }
   
   setImage(args) {
