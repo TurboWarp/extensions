@@ -338,25 +338,25 @@ class VectorExtension {
 
   Set(args) {
     if (!(this.isValidJSON(args.SET) && (args.OF == "X" || args.OF == "Y" || args.OF == "Z" ) && typeof(args.OF) == "number")) {
-      return "Make sure all inputs are valid"
+    return "Make sure all inputs are valid";
    }
    var {SET, OF, TO} = args
    OF = JSON.parse(OF);
    if (SET == "X") {
-     OF.X = TO 
+     OF.X = TO;
    }
    if (SET == "Y") {
-    OF.Y = TO 
+    OF.Y = TO;
   }
   if (SET == "Z") {
-    OF.Z = TO 
+    OF.Z = TO;
   }
    return JSON.stringify(OF);
   }
 
   Distance(args) {
     if (!(this.isValidJSON(args.V1) && this.isValidJSON(args.V2))) {
-      return "Make sure all inputs are valid"
+    return "Make sure all inputs are valid";
    }
     var { V1, V2 } = args;
       V1 = JSON.parse(V1);
@@ -372,7 +372,7 @@ class VectorExtension {
   Mat(args) {
     var {VEC, XV , YV , ZV} = args;
     if (!(this.isValidJSON(VEC) && this.isValidJSON(XV) && this.isValidJSON(YV) && this.isValidJSON(ZV))) {
-      return "Make sure all inputs are valid"
+    return "Make sure all inputs are valid";
    }
     var x = (VEC.x * XV.x) + (VEC.y * XV.y) + (VEC.y * XV.y);
     var y = (VEC.x * YV.x) + (VEC.y * YV.y) + (VEC.y * YV.y);
@@ -383,7 +383,7 @@ class VectorExtension {
   lerp(args) {
     var {V1, V2 , T} = args;
     if (!(this.isValidJSON(V1) && this.isValidJSON(V2) && typeof(t) == "number")) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     var scaled = V1;
    scaled.x *= T;
@@ -403,7 +403,7 @@ class VectorExtension {
   Setmag(args) {
     var {VEC, MAG} = args;
     if (!(this.isValidJSON(VEC) &&  typeof(MAG) == "number")) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     VEC = JSON.parse(VEC);
     var Mag = Math.sqrt(
@@ -418,10 +418,9 @@ class VectorExtension {
     return JSON.stringify(VEC);
   }
   Reflect(args) {
-    
     var {Vector, Normal} = args;
     if (!(this.isValidJSON(Vector) &&  this.isValidJSON(Normal))) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     Vector = JSON.parse(Vector);
     Normal = JSON.parse(Normal);
@@ -446,7 +445,7 @@ class VectorExtension {
   get(args) {
     var {VAL, VECTOR} = args;
     if (!this.isValidJSON(VECTOR)) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     VECTOR = JSON.parse(VECTOR);
     if (VAL == "X") {
@@ -462,7 +461,7 @@ class VectorExtension {
 
   ProjectionFrom(args) {
     if (!(this.isValidJSON(args.V1) && this.isValidJSON(args.V2))) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     var V1 = JSON.parse(args.V1);
     var V2 = JSON.parse(args.V2);
@@ -486,7 +485,7 @@ class VectorExtension {
   ProjectionOn(args) {
      var {V1,V2} = args;
      if (!(this.isValidJSON(V1) && this.isValidJSON(V2))) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
       V1 = JSON.parse(V1);
       V2 = JSON.parse(V2);
@@ -505,7 +504,7 @@ class VectorExtension {
   Angle(args) {
     var {V1, V2} = args;
     if (!(this.isValidJSON(V1) && this.isValidJSON(V2))) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     V1 = JSON.parse(V1);
     V2 = JSON.parse(V2);
@@ -547,7 +546,7 @@ class VectorExtension {
   Rotate(args) {
     const { Vector, VEC } = args;
     if (!(this.isValidJSON(Vector) && this.isValidJSON(VEC))) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     var vector = JSON.parse(VEC);
     var angle = JSON.parse(Vector);
@@ -569,7 +568,7 @@ class VectorExtension {
   getVector(args) {
     const { x, y, z } = args;
     if (!(typeof(x) == "number" && typeof(y) == "number" && typeof(z) == "number")) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     const vector = { x, y, z };
     return JSON.stringify(vector);
@@ -593,7 +592,7 @@ class VectorExtension {
   subtractVectors(args) {
     const { vector1, vector2 } = args;
     if (!(this.isValidJSON(vector1) && this.isValidJSON(vector2))) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     const vec1 = JSON.parse(vector1);
     const vec2 = JSON.parse(vector2);
@@ -608,7 +607,7 @@ class VectorExtension {
   calculateMagnitude(args) {
     const { vector } = args;
     if (!(this.isValidJSON(vector))) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     const vec = JSON.parse(vector);
     const magnitude = Math.sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
@@ -617,8 +616,8 @@ class VectorExtension {
 
   multiplyVector(args) {
     const { vector, scalar } = args;
-    if (!(this.isValidJSON(vector1) && typeof(scalar) == "number")) {
-      return "Make sure all inputs are valid"
+    if (!(this.isValidJSON(vector) && typeof(scalar) == "number")) {
+      return "Make sure all inputs are valid";
    }
     const vec = JSON.parse(vector);
     const result = {
@@ -632,7 +631,7 @@ class VectorExtension {
   dotProduct(args) {
     const { vector1, vector2 } = args;
     if (!(this.isValidJSON(vector1) && this.isValidJSON(vector2))) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     const vec1 = JSON.parse(vector1);
     const vec2 = JSON.parse(vector2);
@@ -644,7 +643,7 @@ class VectorExtension {
   crossProduct(args) {
     const { vector1, vector2 } = args;
     if (!(this.isValidJSON(vector1) && this.isValidJSON(vector2))) {
-      return "Make sure all inputs are valid"
+      return "Make sure all inputs are valid";
    }
     const vec1 = JSON.parse(vector1);
     const vec2 = JSON.parse(vector2);
