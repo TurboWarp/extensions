@@ -247,3 +247,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## veggiecan/LongmanDictionary.svg 
 - Created by [veggiecan](https://github.com/veggiecan0419)
 - The ship is based on [this](https://www.ldoceonline.com/external/images/logo_home_smartphone.svg?version=1.2.61) logo from the [ldoceonline](https://www.ldoceonline.com/) website
+
+## Lily/Video.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
