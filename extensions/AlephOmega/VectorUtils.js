@@ -276,7 +276,7 @@ class VectorExtension {
           arguments: {
             SET: {
               type: Scratch.ArgumentType.STRING,
-              menu : "VAL"
+              menu: "VAL"
             },
             OF: {
               type: Scratch.ArgumentType.STRING
@@ -292,7 +292,7 @@ class VectorExtension {
           text: "Absolute value of all axis in [V1]",
           arguments: {
             V1: {
-              type:Scratch.ArgumentType.STRING
+              type: Scratch.ArgumentType.STRING
             }
           }
         }
@@ -309,12 +309,12 @@ class VectorExtension {
   isValidJSON(jsonString) {
     try {
       const parsedJSON = JSON.parse(jsonString);
-      return typeof parsedJSON === 'object' && !Array.isArray(parsedJSON) && areAllValuesNumbers(parsedJSON);
+      return typeof parsedJSON === 'object' && !Array.isArray(parsedJSON) && this.areAllValuesNumbers(parsedJSON);
     } catch (error) {
       return false;
     }
   }
-  
+
    areAllValuesNumbers(obj) {
     const requiredKeys = ['x', 'y', 'z'];
     for (const key of requiredKeys) {
@@ -324,11 +324,10 @@ class VectorExtension {
     }
     return true;
   }
-  
 
   Abs(args) {
     if (!this.isValidJSON(args.V1)) {
-       return "Make sure all inputs are valid"
+       return "Make sure all inputs are valid";
     }
     var V1 = JSON.parse(args.V1);
     V1.X = Math.abs(V1.X);
