@@ -18,7 +18,7 @@
       const adjustSize = (width, height) => {
         this.video.style.width = `${(width / runtime.stageWidth) * 100}%`;
         this.video.style.height = `${(height / runtime.stageHeight) * 100}%`;
-      }
+      };
 
       runtime.on('STAGE_SIZE_CHANGED', () => adjustSize(runtime.stageWidth, runtime.stageHeight));
       adjustSize(runtime.stageWidth, runtime.stageHeight);
@@ -88,7 +88,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'video is [STATE]?',
             arguments: {
-              STATE: { 
+              STATE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'state'
               }
@@ -159,11 +159,11 @@
     }
 
     getState(args) {
-      switch(args.STATE) {
-        case('paused'): return this.video.paused;
-        case('playing'): return !this.video.paused;
-        case('visible'): return this.video.style.visibility === 'visible';
-        case('hidden'): return this.video.style.visibility === 'hidden';
+      switch (args.STATE) {
+        case ('paused'): return this.video.paused;
+        case ('playing'): return !this.video.paused;
+        case ('visible'): return this.video.style.visibility === 'visible';
+        case ('hidden'): return this.video.style.visibility === 'hidden';
       }
     }
 
@@ -191,17 +191,17 @@
       const option = Cast.toString(args.OPTION);
       const toggle = Cast.toString(args.TOGGLE);
 
-      switch(option) {
-        case('controls'): this.video.controls = !!(toggle == 'enabled');
-        case('loop'): this.video.loop = !!(toggle == 'enabled');
+      switch (option) {
+        case ('controls'): return this.video.controls = !!(toggle == 'enabled');
+        case ('loop'): return this.video.loop = !!(toggle == 'enabled');
       }
     }
 
     getOptionIsEnabled(args) {
       const option = Cast.toString(args.OPTION);
-      switch(option) {
-        case('controls'): return this.video.controls;
-        case('loop'): return this.video.loop;
+      switch (option) {
+        case ('controls'): return this.video.controls;
+        case ('loop'): return this.video.loop;
       }
     }
   }
