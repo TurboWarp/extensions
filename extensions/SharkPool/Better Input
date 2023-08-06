@@ -1,6 +1,7 @@
 /*
 * This extension was made by SharkPool
-* Version 1.8 (Bug fixes and Dropdown-able Menus)
+* Version 1.9 (Visual bug fixes and Remodeled Effects)
+* Next Update: Add Sliders and other Suggested Features
 * Do NOT delete these comments
 */
 
@@ -24,7 +25,7 @@
   class BetterInputSP {
   constructor() {
     this.isWaitingForInput = false;
-    this.userInput = null;
+    this.userInput = '';
     this.fontSize = '14px';
     this.questionColor = '#000000'; 
     this.inputColor = '#000000';
@@ -34,8 +35,8 @@
     this.textAlign = 'left';
     this.fontFamily = 'Arial';
     this.showCancelButton = true;
-    this.showButton3 = true;
-    this.showButton4 = true;
+    this.showButton3 = false;
+    this.showButton4 = false;
     this.submitButtonText = 'Submit';
     this.cancelButtonText = 'Cancel';
     this.Button3Text = 'Okay';
@@ -67,6 +68,9 @@
     this.overlayInput = null;
     this.overlayImage = null;
     this.optionList = 'Option 1,Option 2,Option 3';
+    this.splitKey = ',';
+    this.enterSpeed = '10';
+    this.exitSpeed = '10';
   }
   
     getInfo() {
@@ -132,11 +136,15 @@
         {
           opcode: 'setDropdown',
           blockType: Scratch.BlockType.COMMAND,
-          text: 'set dropdown options to array: [DROPDOWN]',
+          text: 'set dropdown options to list: [DROPDOWN] split by [SPLITTER]',
           arguments: {
             DROPDOWN: {
               type: Scratch.ArgumentType.STRING,
               defaultValue: 'option 1,option 2,option 3',
+            },
+            SPLITTER: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: ',',
             },
           },
         },
@@ -216,6 +224,22 @@
         {
         blockType: Scratch.BlockType.LABEL,
         text: 'Positioning',
+        },
+        {
+          opcode: "setPrePosition",
+          blockType: Scratch.BlockType.COMMAND,
+          text: "preset textbox position to x: [X] y: [Y]",
+          blockIconURI: formatIcon,
+          arguments: {
+            X: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 0,
+            },
+            Y: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 0,
+            },
+          },
         },
         {
           opcode: "setPosition",
@@ -329,6 +353,18 @@
           },
         },
         {
+          opcode: 'setEnterSpeed',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'set enter effect speed to [SPEED]',
+          blockIconURI: effectIcon,
+          arguments: {
+            SPEED: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: '10',
+            },
+          },
+        },
+        {
           opcode: 'setExitEffect',
           blockType: Scratch.BlockType.COMMAND,
           text: 'set exit effect to [EXIT_EFFECT]',
@@ -338,6 +374,18 @@
               type: Scratch.ArgumentType.STRING,
               menu: 'exitEffectMenu',
               defaultValue: 'None',
+            },
+          },
+        },
+        {
+          opcode: 'setExitSpeed',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'set exit effect speed to [SPEED]',
+          blockIconURI: effectIcon,
+          arguments: {
+            SPEED: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: '10',
             },
           },
         },
@@ -385,8 +433,8 @@
         enterMenu: ['Disabled', 'Enter Key', 'Shift + Enter key'],
         buttonActionMenu: ['Enabled', 'Disabled'],
         inputActionMenu: ['Enabled', 'Disabled', 'Dropdown'],
-        enterEffectMenu: ['None', 'Fade in', 'Grow'],
-        exitEffectMenu: ['None', 'Fade out', 'Shrink'],
+        enterEffectMenu: ['None', 'Fade in', 'Grow', 'Both'],
+        exitEffectMenu: ['None', 'Fade out', 'Shrink', 'Both'],
         buttonMenu: ['Button 1','Button 2', 'Button 3', 'Button 4', 'Dropdown'],
         enableMenu: ['Button 2', 'Button 3', 'Button 4'],
         elementMenu: ['Textbox', 'Input Box', 'Button 1', 'Button 2', 'Button 3', 'Button 4', 'Dropdown Buttons'],
@@ -444,7 +492,7 @@
         this.button4TextColor = colorValue;
         break;
       case 'Dropdown Text':
-        this.optionButtonTextColor = colorValue;
+        this.optionbuttonTextColor = colorValue;
         break;
     }
   }
@@ -494,6 +542,9 @@
       case 'Grow':
         this.enterEffect = 'growIn';
         break;
+      case 'Both':
+        this.enterEffect = 'Both';
+        break;
       default:
         this.enterEffect = null;
         break;
@@ -512,16 +563,23 @@
       case 'Shrink':
         this.exitEffect = 'shrinkOut';
         break;
+      case 'Both':
+        this.exitEffect = 'Both';
+        break;
       default:
         this.exitEffect = null;
         break;
     }
   }
-  
+ 
+  setPrePosition(args) {
+    this.textBoxX = args.X;
+    this.textBoxY = args.Y * -1;
+  }
+ 
   setPosition(args) {
     this.textBoxX = args.X;
     this.textBoxY = args.Y * -1;
-    
         
     const overlays = document.querySelectorAll(".ask-box");
     overlays.forEach((overlay) => {
@@ -628,36 +686,53 @@
       this.askBoxPromise = null;
     }
     this.askBoxCount = 0;
-    this.userInput = 'removed';
+    this.userInput = '';
   }
     
   applyEnterEffect(overlay) {
-    if (this.enterEffect === 'fadeIn') {
-      overlay.style.opacity = '0';
-      overlay.style.transform = 'scale(1)';
-
-      let currentOpacity = 0;
+    overlay.style.opacity = '1';
+    overlay.style.transform = 'scale(1)';
+    let currentOpacity = 0;
+    let currentScale = 0;
+    
+    if (this.enterEffect !== 'None') {
+      if (this.enterEffect === 'fadeIn' || this.enterEffect === 'Both') {
+        overlay.style.opacity = '0';
+      }
+      if (this.enterEffect === 'growIn' || this.enterEffect === 'Both') {
+        overlay.style.transform = 'scale(0)';
+        overlay.style.transition = 'opacity 0.3s';
+      }
+      
       const step = () => {
-        currentOpacity += 10;
-        overlay.style.opacity = `${currentOpacity}%`;
-        if (currentOpacity < 100) {
-          requestAnimationFrame(step);
+        if ((this.enterEffect === 'fadeIn' || this.enterEffect === 'Both') && currentOpacity < 100) {
+          currentOpacity += this.enterSpeed;
+          overlay.style.opacity = `${currentOpacity}%`;
+        }
+        
+        if ((this.enterEffect === 'growIn' || this.enterEffect === 'Both') && currentScale < 100) {
+          currentScale += this.enterSpeed;
+          overlay.style.transform = `scale(${currentScale / 100})`;
+        }
+        if (this.enterEffect === 'Both') {
+          if (currentOpacity < 100 || currentScale < 100) {
+            requestAnimationFrame(step);
+          }
+        } else if (this.enterEffect === 'growIn'){
+          if (currentScale < 100) {
+            requestAnimationFrame(step);
+          }
+        } else {
+          if (currentOpacity < 100) {
+            requestAnimationFrame(step);
+          }
         }
       };
-      requestAnimationFrame(step);
-    } else if (this.enterEffect === 'growIn') {
-      overlay.style.opacity = '1';
-      overlay.style.transform = 'scale(0)';
-      overlay.style.transition = 'opacity 0.3s';
-
-      let currentScale = 0;
-      const step = () => {
-        currentScale += 10;
-        overlay.style.transform = `scale(${currentScale / 100})`;
-        if (currentScale < 100) {
-          requestAnimationFrame(step);
-        }
-      };
+    
+      if (this.enterEffect === 'growIn' || this.enterEffect === 'Both') {
+        overlay.style.transition = 'opacity 0.3s';
+      }
+      
       requestAnimationFrame(step);
     } else {
       overlay.style.opacity = '1';
@@ -665,33 +740,34 @@
   }
 
   applyExitEffect(overlay) {
-    if (this.exitEffect === 'fadeOut') {
-      overlay.style.transition = 'opacity 0.5s';
+    let currentScale = 100;
+    let currentOpacity = 0;
+  
+    if (this.exitEffect !== 'None') {
+      if (this.exitEffect === 'fadeOut') {
+        overlay.style.transition = 'opacity 0.5s';
+      } else {
+        overlay.style.transition = 'transform 0.5s, opacity 0.5s';
+      }
 
-      let currentOpacity = 0;
       const step = () => {
-        currentOpacity -= 5;
-        overlay.style.opacity = `${currentOpacity}%`;
-        if (currentOpacity > -100) {
+        if ((this.exitEffect === 'fadeOut' || this.exitEffect === 'Both') && currentOpacity < 100) {
+          currentOpacity -= this.exitSpeed;
+          overlay.style.opacity = `${currentOpacity}%`;
+        }
+
+        if ((this.exitEffect === 'shrinkOut' || this.exitEffect === 'Both') && currentScale > 0) {
+          currentScale -= this.exitSpeed;
+          overlay.style.transform = `scale(${currentScale / 100})`;
+        }
+
+        if ((this.exitEffect === 'Both' && (currentOpacity > -200 || currentScale > -100)) || (this.exitEffect === 'shrinkOut' && currentScale > -100) || (this.exitEffect !== 'Both' && currentOpacity > -200)) {
           requestAnimationFrame(step);
         } else {
           document.body.removeChild(overlay);
         }
       };
-      requestAnimationFrame(step);
-    } else if (this.exitEffect === 'shrinkOut') {
-      overlay.style.transition = 'transform 0.3s, opacity 0.3s';
 
-      let currentScale = 100;
-      const step = () => {
-        currentScale -= 15;
-        overlay.style.transform = `scale(${currentScale / 100})`;
-        if (currentScale > -200) {
-          requestAnimationFrame(step);
-        } else {
-          document.body.removeChild(overlay);
-        }
-      };
       requestAnimationFrame(step);
     } else {
       document.body.removeChild(overlay);
@@ -837,7 +913,9 @@
         cancelButton.addEventListener('click', () => {
           if (this.isInputEnabled === 'Disabled') {
             this.userInput = this.cancelButtonText;
-          }
+          } else {
+			this.userInput = ''
+		  }
           this.isWaitingForInput = false;
           if (this.exitEffect) {
             this.applyExitEffect(overlay);
@@ -863,7 +941,9 @@
         Button3.addEventListener('click', () => {
           if (this.isInputEnabled === 'Disabled') {
             this.userInput = this.Button3Text;
-          }
+          } else {
+			this.userInput = ''
+		  }
           this.isWaitingForInput = false;
           if (this.exitEffect) {
             this.applyExitEffect(overlay);
@@ -889,7 +969,9 @@
         Button4.addEventListener('click', () => {
           if (this.isInputEnabled === 'Disabled') {
             this.userInput = this.Button4Text;
-          }
+          } else {
+		      	this.userInput = ''
+		      }
           this.isWaitingForInput = false;
           if (this.exitEffect) {
             this.applyExitEffect(overlay);
@@ -908,7 +990,7 @@
         dropdownButton.textContent = this.DropdownText;
         dropdownButton.style.padding = '5px 10px';
         dropdownButton.style.backgroundColor = this.optionbuttonColor;
-        dropdownButton.style.color = this.optionButtonTextColor;
+        dropdownButton.style.color = this.optionbuttonTextColor;
         dropdownButton.style.border = 'none';
         dropdownButton.style.borderRadius = this.optionbuttonBorderRadius + 'px';
 
@@ -918,20 +1000,29 @@
         let isDropdownOpen = false;
 
         const optionList = this.optionList;
-        const numOfOptions = optionList.split(',').length;
-        const options = this.optionList.split(',');
+        const numOfOptions = optionList.split(this.splitKey).length;
+        const options = this.optionList.split(this.splitKey);
         for (let i = 1; i <= numOfOptions; i++) {
-          const optionButton = document.createElement('button');
+		      const optionButton = document.createElement('button');
           optionButton.style.marginRight = '5px';
           optionButton.style.marginTop = '10px';
           optionButton.style.padding = '5px 10px';
           optionButton.style.backgroundColor = this.optionbuttonColor;
-          optionButton.style.color = this.optionButtonTextColor;
+          optionButton.style.color = this.optionbuttonTextColor;
           optionButton.style.border = 'none';
           optionButton.style.borderRadius = this.optionbuttonBorderRadius + 'px';
           optionButton.textContent = `${options[i - 1]}`;
+          optionButton.style.filter = 'brightness(1)';
+
           optionButton.addEventListener('click', () => {
             inputField.value = `${options[i - 1]}`;
+            
+            for (let j = 0; j < numOfOptions; j++) {
+              const otherButton = dropdownContent.children[j];
+              otherButton.style.filter = 'brightness(1)';
+            }
+
+            optionButton.style.filter = 'brightness(1.5)';
           });
           dropdownContent.appendChild(optionButton);
         }
@@ -1037,6 +1128,21 @@
   
   setDropdown(args) {
     this.optionList = args.DROPDOWN
+    this.splitKey = args.SPLITTER
+  }
+  
+  setEnterSpeed(args) {
+    this.enterSpeed = Math.abs(args.SPEED)
+    if (this.enterSpeed < 1) {
+      this.enterSpeed = 1
+    }
+  }
+  
+  setExitSpeed(args) {
+    this.exitSpeed = Math.abs(args.SPEED)
+    if (this.exitSpeed < 1) {
+      this.exitSpeed = 1
+    }
   }
   
   setImage(args) {
