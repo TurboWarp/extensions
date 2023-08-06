@@ -547,15 +547,15 @@
       P = JSON.parse(P);
       A = JSON.parse(A);
       B = JSON.parse(B);
-      var AP = vecSub(P, A);
-      var AB = vecSub(B, A);
+      var AP = this.vecSub(P, A);
+      var AB = this.vecSub(B, A);
       var t = Math.max(0, Math.min(1, dot(AP, AB) / dot(AB, AB)));
-      var closestPoint = vecAdd(A, vecMult(AB, t));
-      var distToClosest = vecDist(P, closestPoint);
+      var closestPoint = this.vecAdd(A, this.vecMult(AB, t));
+      var distToClosest = this.vecDist(P, closestPoint);
       if (t === 0 || t === 1) {
         return distToClosest - R;
       } else {
-        var distToAxis = vecDist(P, A) - R;
+        var distToAxis = this.vecDist(P, A) - R;
         return Math.sqrt(distToClosest * distToClosest + distToAxis * distToAxis);
       }
     }
