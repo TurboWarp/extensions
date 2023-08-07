@@ -1,10 +1,10 @@
 (function (Scratch) {
   'use strict';
 
-  class ForLoop {
+  class HackedBlocks {
     getInfo() {
       return {
-        id: 'lmsForLoop',
+        id: 'lmsHackedBlocks',
         name: 'Hacked Block Collection',
         blocks: [
           {
@@ -55,9 +55,9 @@
             xml: '<block type="control_clear_counter"/>'
           },
         ]
-      }
+      };
     }
   }
 
-  Scratch.extensions.register(new ForLoop());
+  Scratch.extensions.register(new HackedBlocks());
 })(Scratch);
