@@ -290,7 +290,8 @@
       if (!createdSkins[skinName]) return;
 
       const targetName = Cast.toString(args.TARGET);
-      let target = this._getTargetFromMenu(targetName, util);
+      const target = this._getTargetFromMenu(targetName, util);
+      if (!target) return;
       const drawableID = target.drawableID;
 
       const skinId = createdSkins[skinName];
@@ -299,13 +300,15 @@
 
     restoreSkin (args, util) {
       const targetName = Cast.toString(args.TARGET);
-      let target = this._getTargetFromMenu(targetName, util);
+      const target = this._getTargetFromMenu(targetName, util);
+      if (!target) return;
       target.updateAllDrawableProperties();
     }
 
     getCurrentSkin (args, util) {
       const targetName = Cast.toString(args.TARGET);
-      let target = this._getTargetFromMenu(targetName, util);
+      const target = this._getTargetFromMenu(targetName, util);
+      if (!target) return;
       const drawableID = target.drawableID;
 
       const skinId = renderer._allDrawables[drawableID].skin._id;
