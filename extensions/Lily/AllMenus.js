@@ -7,20 +7,21 @@
   Scratch.vm.addListener('BLOCKSINFO_UPDATE', refreshMenus);
 
   function refreshMenus() {
+    // @ts-expect-error - ScratchBlocks not typed yet
+    // eslint-disable-next-line no-undef
     if (!window.ScratchBlocks) return;
     Scratch.vm.removeListener('BLOCKSINFO_UPDATE', refreshMenus);
 
-    let menuBlocks = [];
     let allBlocks = Object.keys(ScratchBlocks.Blocks);
 
     allBlocks = allBlocks.filter(
-      item => item.includes('menu') && 
+      item => item.includes('menu') &&
       !blacklist.includes(item)
     );
 
-    allBlocks.forEach(item => menuBlocks.push(
-      '<block id="' + item + '" type="' + item + '"/>'
-    ));
+    const menuBlocks = allBlocks.map(
+      item => '<block id="' + item + '" type="' + item + '"/>'
+    );
 
     blockXML = menuBlocks.join('');
     Scratch.vm.runtime.extensionManager.refreshBlocks();
@@ -46,6 +47,8 @@
       };
     }
   }
+
   refreshMenus();
+
 Scratch.extensions.register(new AllMenus());
 })(Scratch);
