@@ -238,6 +238,7 @@
 
       const skinName = Cast.toString(args.NAME);
       const costumeIndex = util.target.getCostumeIndexByName(args.COSTUME);
+      if (costumeIndex === -1) return;
       const costume = util.target.sprite.costumes[costumeIndex];
 
       const url = costume.asset.encodeDataURI();
