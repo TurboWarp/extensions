@@ -9,6 +9,23 @@
     return true;
   };
 
+  /**
+   * @param {RenderWebGL.SVGSkin} svgSkin
+   * @returns {Promise<void>}
+   */
+  const svgSkinFinishedLoading = svgSkin => new Promise(resolve => {
+    if (svgSkin._svgImageLoaded) {
+      resolve();
+    } else {
+      svgSkin._svgImage.addEventListener('load', () => {
+        resolve();
+      });
+      svgSkin._svgImage.addEventListener('error', () => {
+        resolve();
+      });
+    }
+  });
+
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const renderer = runtime.renderer;
@@ -203,8 +220,10 @@
       }
 
       // This generally takes a few frames, so yield the block
-      const skinId = await renderer.createSVGSkin(svgData);
+      const skinId = renderer.createSVGSkin(svgData);
       createdSkins[skinName] = skinId;
+
+      await svgSkinFinishedLoading(renderer._allSkins[skinId]);
 
       if (oldSkinId) {
         this._refreshTargetsFromID(oldSkinId, false, skinId);
