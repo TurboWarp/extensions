@@ -7,8 +7,6 @@
   Scratch.vm.addListener('BLOCKSINFO_UPDATE', refreshMenus);
 
   function refreshMenus() {
-    // @ts-expect-error - ScratchBlocks not typed yet
-    // eslint-disable-next-line no-undef
     if (!window.ScratchBlocks) return;
     Scratch.vm.removeListener('BLOCKSINFO_UPDATE', refreshMenus);
 
