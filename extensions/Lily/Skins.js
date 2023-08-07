@@ -72,7 +72,7 @@
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: 'https://extensions.turbowarp.org/dango.png'
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -399,7 +399,6 @@
         {text: 'Stage', value: '_stage_'}
       ];
       const targets = Scratch.vm.runtime.targets;
-      const myself = Scratch.vm.runtime.getEditingTarget().getName();
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) {
