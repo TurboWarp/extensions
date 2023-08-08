@@ -1016,13 +1016,13 @@
 
     disableCompatibilityMode() {
       let popup = [
-        'Enabling this will allow the use of new fonts as well as new blocks.'
-        + '\n' +
-        'These blocks and features DO NOT WORK with the official Scratch Lab.'
-        + '\n' + '\n' +
-        'Do you wish to continue?'];
-      if (confirm(popup.join())) compatibilityMode = false;
-      Scratch.vm.extensionManager.refreshBlocks();
+        'This will enable new blocks and features that WILL NOT WORK in the offical Scratch Lab.',
+        'Do you wish to continue?'
+      ];
+      if (confirm(popup.join('\n\n'))) {
+        compatibilityMode = false;
+        Scratch.vm.extensionManager.refreshBlocks();
+      }
     }
 
     setAlignment (args, util) {
