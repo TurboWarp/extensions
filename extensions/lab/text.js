@@ -37,12 +37,12 @@
   const DEFAULT_ALIGN = ALIGN_CENTER;
   const DEFAULT_FONT_SIZE = 24;
 
-  const TYPE_DELAY = 1000 / 15;
+  const DEFAULT_TYPE_DELAY = 1000 / 15;
 
   const RAINBOW_TIME_PER = 1000;
-  const RAINBOW_DURATION = 2000;
+  const DEFAULT_RAINBOW_DURATION = 2000;
 
-  const ZOOM_DURATION = 500;
+  const DEFAULT_ZOOM_DURATION = 500;
 
   let globalFrameTime = 0;
 
@@ -158,17 +158,17 @@
 
       this.isTyping = false;
       this.typeAnimationInterval = null;
-      this.typeDelay = TYPE_DELAY;
+      this.typeDelay = DEFAULT_TYPE_DELAY;
 
       this.isRainbow = false;
       this.rainbowStartTime = 0;
       this.rainbowTimeout = null;
-      this.rainbowDuration = RAINBOW_DURATION;
+      this.rainbowDuration = DEFAULT_RAINBOW_DURATION;
 
       this.isZooming = false;
       this.zoomStartTime = 0;
       this.zoomTimeout = null;
-      this.zoomDuration = ZOOM_DURATION;
+      this.zoomDuration = DEFAULT_ZOOM_DURATION;
 
       /** @type {(() => void)|null} */
       this.resolveOngoingAnimation = null;
@@ -409,6 +409,10 @@
       });
     }
 
+    setTypeDelay(delay) {
+      this.typeDelay = delay;
+    }
+
     startRainbowAnimation () {
       return this._oneAnimationAtATime(resolve => {
         this.isRainbow = true;
@@ -422,6 +426,10 @@
       });
     }
 
+    setRainbowDuration(duration) {
+      this.rainbowDuration = duration;
+    }
+
     startZoomAnimation () {
       return this._oneAnimationAtATime(resolve => {
         this.isZooming = true;
@@ -433,6 +441,10 @@
           this._invalidateText();
         }, this.zoomDuration);
       });
+    }
+
+    setZoomDuration(duration) {
+      this.zoomDuration = duration;
     }
 
     cancelAnimation () {
@@ -1098,30 +1110,31 @@
 
     setAnimateDuration (args, util) {
       const state = this._getState(util.target);
-      const anim = args.ANIMATE;
-      if (anim === 'rainbow') {
-        state.skin.rainbowDuration = args.NUM * 1000;
-      } else if (anim === 'zoom') {
-        state.skin.zoomDuration = args.NUM * 1000;
+      const animation = args.ANIMATE;
+      const milliseconds = Scratch.Cast.toNumber(args.NUM) * 1000;
+      if (animation === 'rainbow') {
+        state.skin.setRainbowDuration(milliseconds);
+      } else if (animation === 'zoom') {
+        state.skin.setZoomDuration(milliseconds);
       }
     }
 
     resetAnimateDuration (args, util) {
       const state = this._getState(util.target);
-      const anim = args.ANIMATE;
-      if (anim === 'rainbow') {
-        state.skin.rainbowDuration = RAINBOW_DURATION;
-      } else if (anim === 'zoom') {
-        state.skin.zoomDuration = ZOOM_DURATION;
+      const animation = args.ANIMATE;
+      if (animation === 'rainbow') {
+        state.skin.setRainbowDuration(DEFAULT_RAINBOW_DURATION);
+      } else if (animation === 'zoom') {
+        state.skin.setZoomDuration(DEFAULT_ZOOM_DURATION);
       }
     }
 
     getAnimateDuration (args, util) {
       const state = this._getState(util.target);
-      const anim = args.ANIMATE;
-      if (anim === 'rainbow') {
+      const animation = args.ANIMATE;
+      if (animation === 'rainbow') {
         return state.skin.rainbowDuration / 1000;
-      } else if (anim === 'zoom') {
+      } else if (animation === 'zoom') {
         return state.skin.zoomDuration / 1000;
       } else {
         // should never happen
@@ -1131,12 +1144,12 @@
 
     setTypeDelay (args, util) {
       const state = this._getState(util.target);
-      state.skin.typeDelay = args.NUM * 1000;
+      state.skin.setTypeDelay(Scratch.Cast.toNumber(args.NUM) * 1000);
     }
 
     resetTypeDelay (args, util) {
       const state = this._getState(util.target);
-      state.skin.typeDelay = TYPE_DELAY;
+      state.skin.setTypeDelay(DEFAULT_TYPE_DELAY);
     }
 
     getTypeDelay (args, util) {
