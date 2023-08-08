@@ -542,6 +542,9 @@
           newSkin.setFontFamily(originalSkin.fontFamily);
           newSkin.setWidth(originalSkin.textWidth);
           newSkin.setText(originalSkin.text);
+          newSkin.setRainbowDuration(originalSkin.rainbowDuration);
+          newSkin.setZoomDuration(originalSkin.zoomDuration);
+          newSkin.setTypeDelay(originalSkin.typeDelay);
           if (renderer._allDrawables[this.drawableID].skin instanceof TextCostumeSkin) {
             renderer.updateDrawableSkinId(newClone.drawableID, newSkin.id);
           }
