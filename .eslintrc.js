@@ -11,6 +11,7 @@ module.exports = {
   },
   globals: {
     Scratch: 'readonly',
+    ScratchBlocks: 'readonly',
     ScratchExtensions: 'readonly',
     scaffolding: 'readonly'
   },
