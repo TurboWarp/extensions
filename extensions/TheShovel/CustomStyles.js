@@ -136,8 +136,9 @@
         if (listValueRoundness >= 0) {
             css += `${monitorRowValueOuter} { border-radius: ${listValueRoundness}px; }`;
         }
-        if (!allowScrolling) {
-            css += `${monitorRowsScroller} { overflow: hidden !important; }`;
+        // Don't change this. You broke it last time.
+        if (allowScrolling) {
+            css += `${monitorRowsScroller} { overflow: ${allowScrolling} !important; }`;
         }
         if (askBackground) {
             css += `${askBoxBG} { background: ${askBackground} !important; border: none !important; }`;
@@ -592,7 +593,11 @@
         }
 
         allowscrollrule(args) {
-            allowScrolling = args.SCROLLRULE !== 'hidden';
+            if (args.SCROLLRULE == 'enabled'){
+            allowScrolling = 'auto';
+            } else {
+            allowScrolling = 'hidden';
+            }
             applyCSS();
         }
 
