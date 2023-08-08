@@ -27,7 +27,7 @@
     let askInputBorderWidth = -1;
     let askBoxIcon = '';
     let askInputText = '';
-    let askBoxButtonImage = '';
+    let askButtonImage = '';
     let askInputBorder = '';
 
     // CSS selectors
@@ -167,8 +167,8 @@
         if (askInputBorderWidth >= 0) {
             css += `${askBoxInner} { border-width: ${askInputBorderWidth}px !important; }`;
         }
-        if (askBoxButtonImage) {
-            css += `${askBoxButton} { background-image: url("${encodeURI(askBoxButtonImage)}") !important; background-repeat: no-repeat; background-size: contain; }`;
+        if (askButtonImage) {
+            css += `${askBoxButton} { background-image: url("${encodeURI(askButtonImage)}") !important; background-repeat: no-repeat; background-size: contain; }`;
             css += `${askBoxIcon} { visibility: hidden; }`;
         }
         if (askInputBorder) {
@@ -378,7 +378,7 @@
                         blockIconURI: miscIcon,
                         opcode: 'allowscrollrule',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'set list scroll rule to [SCROLLRULE]',
+                        text: 'set list scrolling to [SCROLLRULE]',
                         arguments: {
                             SCROLLRULE: {
                                 type: Scratch.ArgumentType.STRING,
@@ -403,7 +403,7 @@
                         blockIconURI: miscIcon,
                         opcode: 'setvarpos',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'set position of variable with label [NAME] to x: [X] y: [Y]',
+                        text: 'set position of variable [NAME] to x: [X] y: [Y]',
                         arguments: {
                             X: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -423,7 +423,7 @@
                         blockIconURI: miscIcon,
                         opcode: 'setlistpos',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'set position of list with label [NAME] to x: [X] y: [Y]',
+                        text: 'set position of list [NAME] to x: [X] y: [Y]',
                         arguments: {
                             X: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -483,8 +483,8 @@
                     SCROLL_MENU: {
                         acceptReporters: true,
                         items: [
-                            'auto',
-                            'hidden'
+                            'enabled',
+                            'disabled'
                         ]
                     },
                     VALUEGET_LIST: {
@@ -653,7 +653,7 @@
             askInputBorderWidth = -1;
             askBoxIcon = '';
             askInputText = '';
-            askBoxButtonImage = '';
+            askButtonImage = '';
             askInputBorder = '';        
             applyCSS();
         }
@@ -706,12 +706,12 @@
             } else if (args.ITEM === 'ask prompt input roundness') {
                 return askInputRoundness;
             } else if (args.ITEM === 'ask prompt button image') {
-                // TODO
-            } else if (args.ITEM === 'list scroll rule') {
+                return askButtonImage;
+            } else if (args.ITEM === 'list scrolling') {
                 if (allowScrolling) {
-                    return 'auto';
+                    return 'enabled';
                 } else {
-                    return 'hidden';
+                    return 'disabled';
                 }
             }
             return '';
@@ -720,7 +720,7 @@
         setAskURI(args) {
             return Scratch.canFetch(args.URL).then(allowed => {
                 if (allowed) {
-                    askBoxButtonImage = args.URL;
+                    askButtonImage = args.URL;
                     applyCSS();
                 }
             });
