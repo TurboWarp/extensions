@@ -71,9 +71,7 @@
   ];
 
   vm.runtime.on('BEFORE_EXECUTE', () => {
-    runtime.startHats('lmsMoreEvents_always', {
-      CONDITION: 'true'
-    });
+    runtime.startHats('lmsMoreEvents_forever');
 
     runtime.startHats('lmsMoreEvents_whileTurboMode', {
       STATE: (runtime.turboMode) ? 'enabled' : 'disabled'
@@ -150,16 +148,10 @@
             }
           },
           {
-            opcode: 'always',
+            opcode: 'forever',
             blockType: Scratch.BlockType.HAT,
-            text: 'always return [CONDITION]',
-            isEdgeActivated: false,
-            arguments: {
-              CONDITION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'boolean'
-              }
-            }
+            text: 'forever',
+            isEdgeActivated: false
           },
 
           '---',
@@ -215,35 +207,6 @@
             opcode: 'broadcastAll',
             blockType: Scratch.BlockType.COMMAND,
             text: 'broadcast everything'
-          },
-
-          '---',
-
-          {
-            opcode: 'startHats',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'start hats [HAT]',
-            arguments: {
-              HAT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'event_whenflagclicked'
-              }
-            }
-          },
-          {
-            opcode: 'startHatsInTarget',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'start hats [HAT] in [TARGET]',
-            arguments: {
-              HAT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'event_whenflagclicked'
-              },
-              TARGET: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'targetMenu'
-              }
-            }
           }
         ],
         menus: {
@@ -272,14 +235,6 @@
           state: {
             acceptReporters: false,
             items: ['enabled', 'disabled']
-          },
-          runtimeOptions: {
-            acceptReporters: false,
-            items: ['framerate', 'stage size', 'interpolation']
-          },
-          startStop: {
-            acceptReporters: false,
-            items: ['started', 'stopped']
           }
         }
       };
@@ -321,15 +276,6 @@
 
     broadcastAll(args, util) {
       util.startHats('event_whenbroadcastreceived');
-    }
-
-    startHats(args, util) {
-      util.startHats(args.HAT);
-    }
-
-    startHatsInTarget(args, util) {
-      const target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
-      util.startHats(args.HAT, null, target);
     }
 
     _getTargets() {
