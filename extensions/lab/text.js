@@ -31,7 +31,7 @@
     'Pixel',
   ];
 
-  const COMPATIBLE_FONTS = [
+  const EXTRA_FONTS = [
     'Scratch',
     'Arial',
     'Arial Black',
@@ -844,7 +844,7 @@
           },
           font: {
             acceptReporters: false,
-            items: this._compatibleFonts()
+            items: 'getFonts'
           },
           align: {
             acceptReporters: false,
@@ -937,23 +937,23 @@
 
     _compatibleFonts() {
       if (compatibilityMode) {
-        return [
-          ...NATIVE_FONTS,
-          {
-            text: 'random font',
-            value: 'Random'
-          }
-        ];
+        return NATIVE_FONTS;
       } else {
         return [
           ...NATIVE_FONTS,
-          ...COMPATIBLE_FONTS,
-          {
-            text: 'random font',
-            value: 'Random'
-          }
+          ...EXTRA_FONTS
         ];
       }
+    }
+
+    getFonts () {
+      return [
+        ...this._compatibleFonts(),
+        {
+          text: 'random font',
+          value: 'Random'
+        }
+      ];
     }
 
     setText ({ TEXT }, util) {
