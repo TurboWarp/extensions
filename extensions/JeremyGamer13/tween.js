@@ -6,13 +6,13 @@
     const Cast = Scratch.Cast;
 
     /**
-     * @param {number} time 0-1
+     * @param {number} time should be 0-1
      * @param {number} a value at 0
      * @param {number} b value at 1
      * @returns {number}
      */
     const interpolate = (time, a, b) => {
-        time = Math.min(Math.max(time, 0), 1);
+        // don't restrict range of time as some easing functions are expected to go outside the range
         const multiplier = b - a;
         const result = (time * multiplier) + a;
         return result;
@@ -245,6 +245,8 @@
         bounce
     };
 
+    const now = () => Scratch.vm.runtime.currentMSecs;
+
     class Tween {
         getInfo() {
             return {
@@ -294,6 +296,45 @@
                                 defaultValue: 0
                             },
                             END: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 100
+                            },
+                            SEC: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                            MODE: {
+                                type: ArgumentType.STRING,
+                                menu: 'modes'
+                            },
+                            DIRECTION: {
+                                type: ArgumentType.STRING,
+                                menu: 'direction'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'tweenXY',
+                        text: 'tween from x: [X1] y: [Y1] to x: [X2] y: [Y2] over [SEC] seconds using [MODE] ease [DIRECTION]',
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            PROPERTY: {
+                                type: ArgumentType.STRING,
+                                menu: 'properties'
+                            },
+                            X1: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                            Y1: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                            X2: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 100
+                            },
+                            Y2: {
                                 type: ArgumentType.NUMBER,
                                 defaultValue: 100
                             },
@@ -406,67 +447,78 @@
             return interpolate(tweened, start, end);
         }
 
-        _tweenValue(args, util, callback) {
-            if (util.stackTimerNeedsInit()) {
+        _tweenValue(args, util, id, startProperty, endProperty, callback) {
+            // Only use args on first run, otherwise grab everything from stackframe.
+            // This matches the behavior of the vanilla glide blocks.
+            const state = util.stackFrame[id];
+
+            if (!state) {
+                // First run, need to start timer
+                util.yield();
+
                 const durationMS = Cast.toNumber(args.SEC) * 1000;
                 const easeMethod = Cast.toString(args.MODE);
                 const easeDirection = Cast.toString(args.DIRECTION);
-                const start = Cast.toNumber(args.START);
-                const end = Cast.toNumber(args.END);
+                const start = Cast.toNumber(args[startProperty]);
+                const end = Cast.toNumber(args[endProperty]);
 
-                util.stackFrame.durationMS = durationMS;
-                util.stackFrame.easeMethod = easeMethod;
-                util.stackFrame.easeDirection = easeDirection;
-                util.stackFrame.start = start;
-                util.stackFrame.end = end;
-
-                util.startStackTimer(durationMS);
-                util.yield();
-
-                callback(start);
-            } else if (util.stackTimerFinished()) {
-                callback(util.stackFrame.end);
-            } else {
-                util.yield();
-
-                // TODO: what's the ideal behavior for unknown? like we still should update the value to get to `end`
-                // eventually, right?
                 let easingFunction;
-                if (Object.prototype.hasOwnProperty.call(EasingMethods, util.stackFrame.easeMethod)) {
-                    easingFunction = EasingMethods[util.stackFrame.easeMethod];
+                if (Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) {
+                    easingFunction = EasingMethods[easeMethod];
                 } else {
+                    // TODO: does this make sense here?
                     easingFunction = EasingMethods.linear;
                 }
 
-                const timer = util.stackFrame.timer;
-                const progress = timer.timeElapsed() / util.stackFrame.durationMS;
-                const tweened = easingFunction(progress, util.stackFrame.easeDirection);
-                const value = interpolate(tweened, util.stackFrame.start, util.stackFrame.end);
-                callback(value);
+                util.stackFrame[id] = {
+                    startTimeMS: now(),
+                    durationMS,
+                    easingFunction,
+                    easeDirection,
+                    start,
+                    end
+                };
+
+                return start;
+            } else if ((now() - state.startTimeMS) >= state.durationMS) {
+                // Done
+                return util.stackFrame[id].end;
+            } else {
+                // Still running
+                util.yield();
+
+                const progress = (now() - state.startTimeMS) / state.durationMS;
+                const tweened = state.easingFunction(progress, state.easeDirection);
+                // TODO: round?
+                return interpolate(tweened, state.start, state.end);
             }
         }
 
         tweenVariable(args, util) {
-            this._tweenValue(args, util, value => {
-                const variable = util.target.lookupVariableById(args.VAR);
-                if (variable && variable.type === '') {
-                    variable.value = value;
-                }
-            });
+            const value = this._tweenValue(args, util, '', 'START', 'END');
+            const variable = util.target.lookupVariableById(args.VAR);
+            if (variable && variable.type === '') {
+                variable.value = value;
+            }
+        }
+
+        tweenXY(args, util) {
+            const x = this._tweenValue(args, util, 'x', 'X1', 'X2');
+            const y = this._tweenValue(args, util, 'y', 'Y1', 'Y2');
+            util.target.setXY(x, y);
         }
 
         tweenProperty(args, util) {
-            this._tweenValue(args, util, value => {
-                if (args.PROPERTY === 'x position') {
-                    util.target.setXY(value, util.target.y);
-                } else if (args.PROPERTY === 'y position') {
-                    util.target.setXY(util.target.x, value);
-                } else if (args.PROPERTY === 'direction') {
-                    util.target.setDirection(value);
-                } else if (args.PROPERTY === 'size') {
-                    util.target.setSize(value);
-                }
-            });
+            const value = this._tweenValue(args, util, '', 'START', 'END');
+            if (args.PROPERTY === 'x position') {
+                util.target.setXY(value, util.target.y);
+            } else if (args.PROPERTY === 'y position') {
+                util.target.setXY(util.target.x, value);
+            } else if (args.PROPERTY === 'direction') {
+                util.target.setDirection(value);
+            } else if (args.PROPERTY === 'size') {
+                util.target.setSize(value);
+            }
         }
     }
 
