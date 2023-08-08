@@ -11,7 +11,8 @@
      * @param {number} b value at 1
      * @returns {number}
      */
-    const interpolate = (time, a, b)=> {
+    const interpolate = (time, a, b) => {
+        time = Math.min(Math.max(time, 0), 1);
         const multiplier = b - a;
         const result = (time * multiplier) + a;
         return result;
@@ -276,7 +277,38 @@
                             AMOUNT: {
                                 type: ArgumentType.NUMBER,
                                 defaultValue: 50
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'tweenVariable',
+                        text: 'tween variable [VAR] from [START] to [END] over [SEC] seconds using [MODE] ease [DIRECTION]',
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            VAR: {
+                                type: ArgumentType.STRING,
+                                menu: 'vars'
                             },
+                            START: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                            END: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 100
+                            },
+                            SEC: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                            MODE: {
+                                type: ArgumentType.STRING,
+                                menu: 'modes'
+                            },
+                            DIRECTION: {
+                                type: ArgumentType.STRING,
+                                menu: 'direction'
+                            }
                         }
                     }
                 ],
@@ -292,28 +324,94 @@
                             "out",
                             "in out"
                         ]
+                    },
+                    vars: {
+                        items: 'getVariables'
                     }
                 }
             };
         }
 
+        getVariables() {
+            // @ts-expect-error - Blockly not typed yet
+            const variables = typeof Blockly === 'undefined' ? [] : Blockly.getMainWorkspace()
+                .getVariableMap()
+                .getVariablesOfType('')
+                .map(model => ({
+                    text: model.name,
+                    value: model.getId()
+                }));
+            if (variables.length > 0) {
+                return variables;
+            } else {
+                return [{ text: '', value: '' }];
+            }
+        }
+
         tweenValue(args) {
             const easeMethod = Cast.toString(args.MODE);
             const easeDirection = Cast.toString(args.DIRECTION);
-
             const start = Cast.toNumber(args.START);
             const end = Cast.toNumber(args.END);
+            const progress = Cast.toNumber(args.AMOUNT) / 100;
 
             if (!Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) {
                 // Unknown method
                 return start;
             }
-
-            const progress = Cast.toNumber(args.AMOUNT) / 100;
-
             const easingFunction = EasingMethods[easeMethod];
+
             const tweened = easingFunction(progress, easeDirection);
             return interpolate(tweened, start, end);
+        }
+
+        _tweenValue(args, util, callback) {
+            if (util.stackTimerNeedsInit()) {
+                const durationMS = Cast.toNumber(args.SEC) * 1000;
+                const easeMethod = Cast.toString(args.MODE);
+                const easeDirection = Cast.toString(args.DIRECTION);
+                const start = Cast.toNumber(args.START);
+                const end = Cast.toNumber(args.END);
+
+                util.stackFrame.durationMS = durationMS;
+                util.stackFrame.easeMethod = easeMethod;
+                util.stackFrame.easeDirection = easeDirection;
+                util.stackFrame.start = start;
+                util.stackFrame.end = end;
+
+                util.startStackTimer(durationMS);
+                util.yield();
+
+                callback(start);
+            } else if (util.stackTimerFinished()) {
+                callback(util.stackFrame.end);
+            } else {
+                util.yield();
+
+                // TODO: what's the ideal behavior for unknown? like we still should update the value to get to `end`
+                // eventually, right?
+                let easingFunction;
+                if (Object.prototype.hasOwnProperty.call(EasingMethods, util.stackFrame.easeMethod)) {
+                    easingFunction = EasingMethods[util.stackFrame.easeMethod];
+                } else {
+                    easingFunction = EasingMethods.linear;
+                }
+
+                const timer = util.stackFrame.timer;
+                const progress = timer.timeElapsed() / util.stackFrame.durationMS;
+                const tweened = easingFunction(progress, util.stackFrame.easeDirection);
+                const value = interpolate(tweened, util.stackFrame.start, util.stackFrame.end);
+                callback(value);
+            }
+        }
+
+        tweenVariable(args, util) {
+            this._tweenValue(args, util, value => {
+                const variable = util.target.lookupVariableById(args.VAR);
+                if (variable && variable.type === '') {
+                    variable.value = value;
+                }
+            });
         }
     }
 
