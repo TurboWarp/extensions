@@ -703,7 +703,8 @@
             opcode: 'getLines',
             blockType: Scratch.BlockType.REPORTER,
             text: '# of lines',
-            hideFromPalette: compatibilityMode
+            hideFromPalette: compatibilityMode,
+            disableMonitor: true
           },
           '---',
           {
@@ -805,7 +806,8 @@
             opcode: 'getTypeDelay',
             blockType: Scratch.BlockType.REPORTER,
             text: 'typing delay',
-            hideFromPalette: compatibilityMode
+            hideFromPalette: compatibilityMode,
+            disableMonitor: true
           },
           '---',
           {
@@ -818,7 +820,8 @@
             opcode: 'getDisplayedText',
             blockType: Scratch.BlockType.REPORTER,
             text: 'displayed text',
-            hideFromPalette: compatibilityMode
+            hideFromPalette: compatibilityMode,
+            disableMonitor: true
           },
           {
             opcode: 'getTextAttribute',
