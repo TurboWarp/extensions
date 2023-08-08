@@ -22,29 +22,13 @@
 
   let compatibilityMode = true;
 
-  const NATIVE_FONTS = [
+  const FONTS = [
     'Sans Serif',
     'Serif',
     'Handwriting',
     'Marker',
     'Curly',
     'Pixel',
-  ];
-
-  const EXTRA_FONTS = [
-    'Scratch',
-    'Arial',
-    'Arial Black',
-    'Helvetica Neue',
-    'Calibri',
-    'Garamond',
-    'Times New Roman',
-    'Courier New',
-    'Brush Script MT',
-    'Impact',
-    'Comic Sans MS',
-    'Consolas',
-    'Lucida Console'
   ];
 
   const DEFAULT_COLOR = '#575e75';
@@ -935,20 +919,9 @@
       target.setCostume(target.currentCostume);
     }
 
-    _compatibleFonts() {
-      if (compatibilityMode) {
-        return NATIVE_FONTS;
-      } else {
-        return [
-          ...NATIVE_FONTS,
-          ...EXTRA_FONTS
-        ];
-      }
-    }
-
     getFonts () {
       return [
-        ...this._compatibleFonts(),
+        ...FONTS,
         {
           text: 'random font',
           value: 'Random'
