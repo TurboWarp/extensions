@@ -651,7 +651,6 @@
             hideFromPalette: !compatibilityMode
           },
           {
-            opcode: 'labelNewBlocks',
             blockType: Scratch.BlockType.LABEL,
             text: 'Incompatible with Scratch Lab:',
             hideFromPalette: compatibilityMode
