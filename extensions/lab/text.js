@@ -695,7 +695,7 @@
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'TurboWarp is great!'
+                defaultValue: 'Hello!'
               }
             }
           },
@@ -1020,7 +1020,9 @@
       state.skin.setWidth(Scratch.Cast.toNumber(WIDTH));
     }
 
-    // TurboWarp blocks
+    /*
+     * Extra blocks, not compatible with Scratch:
+     */
 
     disableCompatibilityMode() {
       let popup = [
@@ -1029,19 +1031,18 @@
         'These blocks and features DO NOT WORK with the official Scratch Lab.'
         + '\n' + '\n' +
         'Do you wish to continue?'];
-      if (confirm (popup.join())) compatibilityMode = false;
+      if (confirm(popup.join())) compatibilityMode = false;
       Scratch.vm.extensionManager.refreshBlocks();
     }
 
     setAlignment (args, util) {
+      // see setWidth
       const state = this._getState(util.target);
-
       if (args.ALIGN === 'center') {
         state.skin.setAlign(ALIGN_CENTER);
       } else if (args.ALIGN === 'right') {
         state.skin.setAlign(ALIGN_RIGHT);
       } else {
-        // Scratch treats unknown values as left alignment.
         state.skin.setAlign(ALIGN_LEFT);
       }
     }
@@ -1129,8 +1130,6 @@
         state.skin.rainbowDuration = args.NUM * 1000;
       } else if (anim === 'zoom') {
         state.skin.zoomDuration = args.NUM * 1000;
-      } else {
-        //
       }
     }
 
@@ -1141,8 +1140,6 @@
         state.skin.rainbowDuration = RAINBOW_DURATION;
       } else if (anim === 'zoom') {
         state.skin.zoomDuration = ZOOM_DURATION;
-      } else {
-        //
       }
     }
 
@@ -1171,7 +1168,7 @@
 
     getTypeDelay (args, util) {
       const state = this._getState(util.target);
-      // Note for maintainers: Should we round this?
+      // TODO: Should we round this?
       return state.skin.typeDelay / 1000;
     }
 
@@ -1197,9 +1194,9 @@
         return state.skin.getWidth();
       } else if (attrib === 'alignment') {
         switch (state.skin.getAlign()) {
-          case (0): return 'left';
-          case (1): return 'right';
-          case (2): return 'center';
+          case ALIGN_LEFT: return 'left';
+          case ALIGN_RIGHT: return 'right';
+          case ALIGN_CENTER: return 'center';
         }
       } else {
         // should never happen
