@@ -1,7 +1,7 @@
 /*
 * This extension was made by SharkPool
-* Version 1.9 (Visual bug fixes and Remodeled Effects)
-* Next Update: Add Sliders and other Suggested Features
+* Version 2.0 (Sliders, Bug Fixes, Better Force Input, and more Fonts)
+* Next Update: None right now
 * Do NOT delete these comments
 */
 
@@ -69,8 +69,11 @@
     this.overlayImage = null;
     this.optionList = 'Option 1,Option 2,Option 3';
     this.splitKey = ',';
-    this.enterSpeed = '10';
-    this.exitSpeed = '10';
+    this.minSlider = '0';
+    this.maxSlider = '100';
+    this.defaultSlider = '50';
+    this.enterSpeed = 10;
+    this.exitSpeed = 10;
   }
   
     getInfo() {
@@ -145,6 +148,25 @@
             SPLITTER: {
               type: Scratch.ArgumentType.STRING,
               defaultValue: ',',
+            },
+          },
+        },
+        {
+          opcode: 'setSlider',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'set slider to min: [MIN] max: [MAX] default: [DEFAULT]',
+          arguments: {
+            MIN: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: '0',
+            },
+            MAX: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: '100',
+            },
+            DEFAULT: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: '50',
             },
           },
         },
@@ -429,17 +451,20 @@
       ],
       menus: {
         alignmentMenu: ['left', 'right', 'center'],
-        fontMenu: ['Arial', 'Times New Roman', 'Comic Sans MS', 'Verdana', 'Courier New', 'Impact', 'Cursive', 'Lucida Console', 'Scratch','Arial Black', 'Calibri', 'Consolas', 'Handwriting', 'Marker','Curly', 'Pixel'],
-        enterMenu: ['Disabled', 'Enter Key', 'Shift + Enter key'],
+        fontMenu: ['Arial', 'Times New Roman', 'Comic Sans MS', 'Verdana', 'Courier New', 'Impact', 'Cursive', 'Lucida Console', 'Scratch','Arial Black', 'Calibri', 'Consolas', 'Handwriting', 'Marker','Curly', 'Pixel', 'MS PGothic', 'Malgun Gothic', 'Microsoft YaHei'],
         buttonActionMenu: ['Enabled', 'Disabled'],
-        inputActionMenu: ['Enabled', 'Disabled', 'Dropdown'],
+        inputActionMenu: ['Enabled', 'Disabled', 'Dropdown', 'Slider'],
         enterEffectMenu: ['None', 'Fade in', 'Grow', 'Both'],
         exitEffectMenu: ['None', 'Fade out', 'Shrink', 'Both'],
         buttonMenu: ['Button 1','Button 2', 'Button 3', 'Button 4', 'Dropdown'],
         enableMenu: ['Button 2', 'Button 3', 'Button 4'],
         elementMenu: ['Textbox', 'Input Box', 'Button 1', 'Button 2', 'Button 3', 'Button 4', 'Dropdown Buttons'],
         colorSettingsMenu: ['Question', 'Input Text', 'Textbox', 'Input Background', 'Input Outline', 'Button 1', 'Button 2', 'Button 3', 'Button 4', 'Dropdown Buttons', 'Button 1 Text', 'Button 2 Text', 'Button 3 Text', 'Button 4 Text', 'Dropdown Text'],
-        },
+          enterMenu: {
+              acceptReporters: true,
+              items: ['Disabled', 'Enter Key', 'Shift + Enter Key'],
+          }
+        }
       };
     }
 
@@ -478,6 +503,9 @@
         break;
       case 'Dropdown Buttons':
         this.optionbuttonColor = colorValue;
+        break;
+      case 'Slider':
+        this.sliderColor = colorValue;
         break;
       case 'Button 1 Text':
         this.submitButtonTextColor = colorValue;
@@ -527,6 +555,9 @@
       case "Dropdown Buttons":
         this.optionbuttonBorderRadius = value;
         break;
+      case "Slider":
+        this.sliderBorderRadius = value;
+        break;
     }
   }
     
@@ -545,9 +576,6 @@
       case 'Both':
         this.enterEffect = 'Both';
         break;
-      default:
-        this.enterEffect = null;
-        break;
     }
   }
 
@@ -565,9 +593,6 @@
         break;
       case 'Both':
         this.exitEffect = 'Both';
-        break;
-      default:
-        this.exitEffect = null;
         break;
     }
   }
@@ -621,6 +646,12 @@
 
   setFontFamily(args) {
     this.fontFamily = args.FONT;
+  }
+  
+  setSlider(args) {
+    this.minSlider = args.MIN;
+    this.maxSlider = args.MAX;
+    this.defaultSlider = args.DEFAULT;
   }
 
   setEnable(args) {
@@ -692,6 +723,7 @@
   applyEnterEffect(overlay) {
     overlay.style.opacity = '1';
     overlay.style.transform = 'scale(1)';
+    
     let currentOpacity = 0;
     let currentScale = 0;
     
@@ -699,6 +731,7 @@
       if (this.enterEffect === 'fadeIn' || this.enterEffect === 'Both') {
         overlay.style.opacity = '0';
       }
+      
       if (this.enterEffect === 'growIn' || this.enterEffect === 'Both') {
         overlay.style.transform = 'scale(0)';
         overlay.style.transition = 'opacity 0.3s';
@@ -714,18 +747,11 @@
           currentScale += this.enterSpeed;
           overlay.style.transform = `scale(${currentScale / 100})`;
         }
-        if (this.enterEffect === 'Both') {
-          if (currentOpacity < 100 || currentScale < 100) {
-            requestAnimationFrame(step);
-          }
-        } else if (this.enterEffect === 'growIn'){
-          if (currentScale < 100) {
-            requestAnimationFrame(step);
-          }
-        } else {
-          if (currentOpacity < 100) {
-            requestAnimationFrame(step);
-          }
+        
+        if ((this.enterEffect === 'Both' && (currentOpacity < 100 || currentScale < 100)) ||
+        (this.enterEffect === 'growIn' && currentScale < 100) ||
+        (this.enterEffect !== 'Both' && currentOpacity < 100)) {
+          requestAnimationFrame(step);
         }
       };
     
@@ -816,14 +842,15 @@
         
           if (this.forceInput === 'Enter Key') {
             overlayInput = 'Enter';
+          } else if (this.forceInput === 'Shift + Enter Key') {
+            overlayInput = 'ShiftEnter';
           } else {
-           overlayInput = 'ShiftEnter';
+            overlayInput = this.forceInput;
           }
         
           const handleKeydown = (event) => {
             if (
-              (overlayInput === 'Enter' && event.key === 'Enter') ||
-              (overlayInput === 'ShiftEnter' && event.shiftKey && event.key === 'Enter')
+              (overlayInput === 'ShiftEnter' && event.shiftKey && event.key === 'Enter') || (event.key === overlayInput)
            ) {
              this.userInput = inputField.value;
              this.isWaitingForInput = false;
@@ -914,8 +941,8 @@
           if (this.isInputEnabled === 'Disabled') {
             this.userInput = this.cancelButtonText;
           } else {
-			this.userInput = ''
-		  }
+			      this.userInput = ''
+		        }
           this.isWaitingForInput = false;
           if (this.exitEffect) {
             this.applyExitEffect(overlay);
@@ -942,8 +969,8 @@
           if (this.isInputEnabled === 'Disabled') {
             this.userInput = this.Button3Text;
           } else {
-			this.userInput = ''
-		  }
+			      this.userInput = ''
+		      }
           this.isWaitingForInput = false;
           if (this.exitEffect) {
             this.applyExitEffect(overlay);
@@ -1003,7 +1030,7 @@
         const numOfOptions = optionList.split(this.splitKey).length;
         const options = this.optionList.split(this.splitKey);
         for (let i = 1; i <= numOfOptions; i++) {
-		      const optionButton = document.createElement('button');
+	      const optionButton = document.createElement('button');
           optionButton.style.marginRight = '5px';
           optionButton.style.marginTop = '10px';
           optionButton.style.padding = '5px 10px';
@@ -1041,22 +1068,49 @@
           }
         });
 
+        const sliderContainer = document.createElement('div');
+        sliderContainer.classList.add('slider-container');
+
+        const slider = document.createElement('input');
+        slider.type = 'range';
+        slider.min = this.minSlider;
+        slider.max = this.maxSlider;
+        slider.value = this.defaultSlider;
+        
+        sliderContainer.appendChild(slider);
+
+        const valueDisplay = document.createElement('span');
+        valueDisplay.classList.add('slider-value');
+        sliderContainer.appendChild(valueDisplay);
+        valueDisplay.style.color = this.questionColor;
+        valueDisplay.textContent = slider.value;
+
+        slider.addEventListener('input', () => {
+          valueDisplay.textContent = slider.value;
+          inputField.value = valueDisplay.textContent;
+        });
+
         overlay.appendChild(questionText);
-      
+
         if (this.isInputEnabled !== 'Disabled') {
           if (this.isInputEnabled === 'Enabled') {
             overlay.appendChild(inputField);
-          } else {
+          } else if (this.isInputEnabled === 'Dropdown'){
             dropdown.appendChild(dropdownButton);
             overlay.appendChild(dropdown);
+          } else {
+            overlay.appendChild(sliderContainer);
+            overlay.appendChild(valueDisplay);
+            overlay.appendChild(document.createElement('br'));
           }
         }
-      
+
         overlay.appendChild(submitButton);
         overlay.appendChild(cancelButton);
         overlay.appendChild(Button3);
         overlay.appendChild(Button4);
-        overlay.appendChild(overlayImageContainer); 
+        overlay.appendChild(overlayImageContainer);
+
 
         document.body.appendChild(overlay);
         inputField.focus();
