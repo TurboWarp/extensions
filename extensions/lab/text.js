@@ -3,9 +3,9 @@
 
   // This extension was created by making projects with https://lab.scratch.mit.edu/text/
   // To determine block and argument IDs, we extracted project.json and examined the result.
-  // To determine block behaviors we simply experiment with Scratch Labs and made sure our
+  // To determine block behaviors we simply experiment with Scratch Lab and made sure our
   // blocks do the same things.
-  // This extension's code is not based on the source code of Scratch Labs.
+  // This extension's code is not based on the source code of Scratch Lab's.
 
   // by @LilyMakesThings
   const blockIconURI = 'data:image/svg+xml;,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22284.242%22%20height%3D%22284.242%22%3E%3Cg%20fill-rule%3D%22evenodd%22%20stroke-miterlimit%3D%2210%22%20data-paper-data%3D%22%7B%26quot%3BisPaintingLayer%26quot%3B%3Atrue%7D%22%20style%3D%22mix-blend-mode%3Anormal%22%3E%3Cpath%20fill%3D%22none%22%20d%3D%22M188.894%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.48%209.888a1671.47%201671.47%200%200%200-4.174%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.83%20522.83%200%200%201-4.065-11.242%20408.343%20408.343%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.519-56.092%2062.329%20157.508H225.43l-9.636-26.111h-54.08l-9.636%2026.11h-43.432l62.768-157.507Z%22%2F%3E%3Cpath%20fill%3D%22%2396f%22%20stroke%3D%22%237240d6%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%2229%22%20d%3D%22M188.894%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.48%209.888a1671.47%201671.47%200%200%200-4.174%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.83%20522.83%200%200%201-4.065-11.242%20408.343%20408.343%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.519-56.092%2062.329%20157.508H225.43l-9.636-26.111h-54.08l-9.636%2026.11h-43.432l62.768-157.507Z%22%2F%3E%3Cpath%20fill%3D%22none%22%20d%3D%22M188.894%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.48%209.888a1671.47%201671.47%200%200%200-4.174%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.827%20522.827%200%200%201-4.065-11.242%20408.302%20408.302%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.519-56.092%2062.329%20157.508H225.43l-9.636-26.111h-54.08l-9.636%2026.11h-43.432l62.768-157.507Z%22%2F%3E%3Cpath%20fill%3D%22%23ffa24d%22%20stroke%3D%22%23fff%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%229%22%20d%3D%22M188.894%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.48%209.888a1671.47%201671.47%200%200%200-4.174%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.827%20522.827%200%200%201-4.065-11.242%20408.302%20408.302%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.519-56.092%2062.329%20157.508H225.43l-9.636-26.111h-54.08l-9.636%2026.11h-43.432l62.768-157.507Z%22%2F%3E%3Cpath%20fill%3D%22none%22%20d%3D%22M143.696%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.479%209.888a1671.47%201671.47%200%200%200-4.175%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.827%20522.827%200%200%201-4.065-11.242%20408.343%20408.343%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.519-56.092%2062.33%20157.508h-44.312l-9.637-26.111h-54.08l-9.636%2026.11H63.448l62.768-157.507Z%22%2F%3E%3Cpath%20fill%3D%22%2396f%22%20stroke%3D%22%237240d6%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%2229%22%20d%3D%22M143.696%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.479%209.888a1671.47%201671.47%200%200%200-4.175%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.827%20522.827%200%200%201-4.065-11.242%20408.343%20408.343%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.519-56.092%2062.33%20157.508h-44.312l-9.637-26.111h-54.08l-9.636%2026.11H63.448l62.768-157.507Z%22%2F%3E%3Cpath%20fill%3D%22none%22%20d%3D%22M143.696%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.479%209.888a1671.47%201671.47%200%200%200-4.175%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.827%20522.827%200%200%201-4.065-11.242%20408.343%20408.343%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.519-56.092%2062.33%20157.508h-44.312l-9.637-26.111h-54.08l-9.636%2026.11H63.448l62.768-157.507Z%22%2F%3E%3Cpath%20fill%3D%22%23ff774d%22%20stroke%3D%22%23fff%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%229%22%20d%3D%22M143.696%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.479%209.888a1671.47%201671.47%200%200%200-4.175%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.827%20522.827%200%200%201-4.065-11.242%20408.343%20408.343%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.519-56.092%2062.33%20157.508h-44.312l-9.637-26.111h-54.08l-9.636%2026.11H63.448l62.768-157.507Z%22%2F%3E%3Cpath%20fill%3D%22none%22%20d%3D%22M94.748%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.479%209.888-1.27%203.442-2.66%207.263-4.175%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.885%20522.885%200%200%201-4.065-11.242%20408.343%20408.343%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.52-56.092%2062.328%20157.508h-44.311l-9.637-26.111h-54.08l-9.635%2026.11H14.5L77.269%2063.368Z%22%2F%3E%3Cpath%20fill%3D%22%2396f%22%20stroke%3D%22%237240d6%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%2229%22%20d%3D%22M94.748%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.479%209.888-1.27%203.442-2.66%207.263-4.175%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.885%20522.885%200%200%201-4.065-11.242%20408.343%20408.343%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.52-56.092%2062.328%20157.508h-44.311l-9.637-26.111h-54.08l-9.635%2026.11H14.5L77.269%2063.368Z%22%2F%3E%3Cpath%20fill%3D%22none%22%20d%3D%22M94.748%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.479%209.888-1.27%203.442-2.66%207.263-4.175%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.885%20522.885%200%200%201-4.065-11.242%20408.302%20408.302%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.52-56.092%2062.328%20157.508h-44.311l-9.637-26.111h-54.08l-9.635%2026.11H14.5L77.269%2063.368Z%22%2F%3E%3Cpath%20fill%3D%22%23ff4c4c%22%20stroke%3D%22%23fff%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%229%22%20d%3D%22M94.748%20119.459c-.706%202.378-1.43%204.69-2.172%206.933-1.05%203.15-2.21%206.445-3.479%209.888-1.27%203.442-2.66%207.263-4.175%2011.462l-5.73%2015.528h30.833l-5.73-15.528a522.885%20522.885%200%200%201-4.065-11.242%20408.302%20408.302%200%200%201-3.37-10.108%20350.767%20350.767%200%200%201-2.112-6.933zm18.52-56.092%2062.328%20157.508h-44.311l-9.637-26.111h-54.08l-9.635%2026.11H14.5L77.269%2063.368Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E';
@@ -20,7 +20,9 @@
   const renderer = vm.renderer;
   const gl = renderer.gl;
 
-  const NATIVE_FONTS = [
+  let compatibilityMode = true;
+
+  const FONTS = [
     'Sans Serif',
     'Serif',
     'Handwriting',
@@ -35,12 +37,12 @@
   const DEFAULT_ALIGN = ALIGN_CENTER;
   const DEFAULT_FONT_SIZE = 24;
 
-  const TYPE_DELAY = 1000 / 15;
+  const DEFAULT_TYPE_DELAY = 1000 / 15;
 
   const RAINBOW_TIME_PER = 1000;
-  const RAINBOW_DURATION = 2000;
+  const DEFAULT_RAINBOW_DURATION = 2000;
 
-  const ZOOM_DURATION = 500;
+  const DEFAULT_ZOOM_DURATION = 500;
 
   let globalFrameTime = 0;
 
@@ -154,15 +156,19 @@
       this._renderTime = 0;
       this._reflowTime = 0;
 
+      this.isTyping = false;
       this.typeAnimationInterval = null;
+      this.typeDelay = DEFAULT_TYPE_DELAY;
 
       this.isRainbow = false;
       this.rainbowStartTime = 0;
       this.rainbowTimeout = null;
+      this.rainbowDuration = DEFAULT_RAINBOW_DURATION;
 
       this.isZooming = false;
       this.zoomStartTime = 0;
       this.zoomTimeout = null;
+      this.zoomDuration = DEFAULT_ZOOM_DURATION;
 
       /** @type {(() => void)|null} */
       this.resolveOngoingAnimation = null;
@@ -205,7 +211,7 @@
       if (this.isZooming) {
         // TODO: it looks like Scratch's animation always starts at least a little visible
         const time = globalFrameTime - this.zoomStartTime;
-        const progress = Math.max(0, Math.min(1, time / ZOOM_DURATION));
+        const progress = Math.max(0, Math.min(1, time / this.zoomDuration));
         this.calculatedFontSize *= progress;
       }
       this.lineHeight = this.baseFontSize * 8 / 7;
@@ -366,6 +372,10 @@
       return this.textWidth;
     }
 
+    getAlign () {
+      return this.align;
+    }
+
     _oneAnimationAtATime (newCallback) {
       this.cancelAnimation();
       return new Promise(resolve => {
@@ -379,6 +389,7 @@
 
     startTypeAnimation () {
       return this._oneAnimationAtATime(resolve => {
+        this.isTyping = true;
         const originalText = this.text;
         let i = 1;
         const update = () => {
@@ -391,10 +402,15 @@
           update();
           if (i >= originalText.length) {
             clearInterval(this.typeAnimationInterval);
+            this.isTyping = false;
             resolve();
           }
-        }, TYPE_DELAY);
+        }, this.typeDelay);
       });
+    }
+
+    setTypeDelay(delay) {
+      this.typeDelay = delay;
     }
 
     startRainbowAnimation () {
@@ -406,8 +422,12 @@
           this.isRainbow = false;
           resolve();
           this._invalidateTexture();
-        }, RAINBOW_DURATION);
+        }, this.rainbowDuration);
       });
+    }
+
+    setRainbowDuration(duration) {
+      this.rainbowDuration = duration;
     }
 
     startZoomAnimation () {
@@ -419,8 +439,12 @@
           this.isZooming = false;
           resolve();
           this._invalidateText();
-        }, ZOOM_DURATION);
+        }, this.zoomDuration);
       });
+    }
+
+    setZoomDuration(duration) {
+      this.zoomDuration = duration;
     }
 
     cancelAnimation () {
@@ -428,6 +452,7 @@
         this.resolveOngoingAnimation();
         this.resolveOngoingAnimation = null;
 
+        this.isTyping = false;
         clearInterval(this.typeAnimationInterval);
 
         this.isRainbow = false;
@@ -517,6 +542,9 @@
           newSkin.setFontFamily(originalSkin.fontFamily);
           newSkin.setWidth(originalSkin.textWidth);
           newSkin.setText(originalSkin.text);
+          newSkin.setRainbowDuration(originalSkin.rainbowDuration);
+          newSkin.setZoomDuration(originalSkin.zoomDuration);
+          newSkin.setTypeDelay(originalSkin.typeDelay);
           if (renderer._allDrawables[this.drawableID].skin instanceof TextCostumeSkin) {
             renderer.updateDrawableSkinId(newClone.drawableID, newSkin.id);
           }
@@ -536,6 +564,7 @@
       return {
         id: 'text',
         name: 'Animated Text',
+        color1: '#9966FF',
         blockIconURI: blockIconURI,
         blocks: [
           {
@@ -607,15 +636,190 @@
               }
             }
           },
+          '---',
+
+          /** 
+           * Contributors:
+           * - LilyMakesThings
+          */
+
           {
-            opcode: 'labelNewBlocks',
-            blockType: Scratch.BlockType.LABEL,
-            text: 'Incompatible with Scratch Lab:'
+            func: 'disableCompatibilityMode',
+            blockType: Scratch.BlockType.BUTTON,
+            text: 'Enable Non-Scratch Lab Features',
+            hideFromPalette: !compatibilityMode
           },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: 'Incompatible with Scratch Lab:',
+            hideFromPalette: compatibilityMode
+          },
+          {
+            opcode: 'setAlignment',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'align text to [ALIGN]',
+            hideFromPalette: compatibilityMode,
+            arguments: {
+              ALIGN: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'twAlign'
+              }
+            }
+          },
+          { // why is the other block called "setWidth" :(
+            opcode: 'setWidthValue',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set width to [WIDTH]',
+            hideFromPalette: compatibilityMode,
+            arguments: {
+              WIDTH: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 200
+              }
+            }
+          },
+          {
+            opcode: 'resetWidth',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'reset text width',
+            hideFromPalette: compatibilityMode
+          },
+          '---',
+          {
+            opcode: 'addLine',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'add line [TEXT]',
+            hideFromPalette: compatibilityMode,
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Hello!'
+              }
+            }
+          },
+          {
+            opcode: 'getLines',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '# of lines',
+            hideFromPalette: compatibilityMode,
+            disableMonitor: true
+          },
+          '---',
+          {
+            opcode: 'startAnimate',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'start [ANIMATE] animation',
+            hideFromPalette: compatibilityMode,
+            arguments: {
+              ANIMATE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'twAnimate',
+                defaultValue: 'rainbow'
+              }
+            }
+          },
+          {
+            opcode: 'animateUntilDone',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'animate [ANIMATE] until done',
+            hideFromPalette: compatibilityMode,
+            arguments: {
+              ANIMATE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'twAnimate',
+                defaultValue: 'rainbow'
+              }
+            }
+          },
+          {
+            opcode: 'isAnimating',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'is animating?',
+            hideFromPalette: compatibilityMode
+          },
+          '---',
+          {
+            opcode: 'setAnimateDuration',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set [ANIMATE] duration to [NUM] seconds',
+            hideFromPalette: compatibilityMode,
+            arguments: {
+              ANIMATE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'twAnimateDuration',
+                defaultValue: 'rainbow'
+              },
+              NUM: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 3
+              }
+            }
+          },
+          {
+            opcode: 'resetAnimateDuration',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'reset [ANIMATE] duration',
+            hideFromPalette: compatibilityMode,
+            arguments: {
+              ANIMATE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'twAnimateDuration',
+                defaultValue: 'rainbow'
+              }
+            }
+          },
+          {
+            opcode: 'getAnimateDuration',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[ANIMATE] duration',
+            hideFromPalette: compatibilityMode,
+            arguments: {
+              ANIMATE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'twAnimateDuration',
+                defaultValue: 'rainbow'
+              }
+            }
+          },
+          '---',
+          {
+            opcode: 'setTypeDelay',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set typing delay to [NUM] seconds',
+            hideFromPalette: compatibilityMode,
+            arguments: {
+              NUM: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0.1
+              }
+            }
+          },
+          {
+            opcode: 'resetTypeDelay',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'reset typing delay',
+            hideFromPalette: compatibilityMode
+          },
+          {
+            opcode: 'getTypeDelay',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'typing delay',
+            hideFromPalette: compatibilityMode,
+            disableMonitor: true
+          },
+          '---',
           {
             opcode: 'textActive',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is showing text?'
+            text: 'is showing text?',
+            hideFromPalette: compatibilityMode
+          },
+          {
+            opcode: 'getDisplayedText',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'displayed text',
+            hideFromPalette: compatibilityMode,
+            disableMonitor: true
           },
           {
             opcode: 'getTextAttribute',
@@ -627,7 +831,8 @@
                 menu: 'attribute'
               }
             },
-            disableMonitor: true
+            disableMonitor: true,
+            hideFromPalette: compatibilityMode
           }
         ],
         menus: {
@@ -638,13 +843,7 @@
           },
           font: {
             acceptReporters: false,
-            items: [
-              ...NATIVE_FONTS,
-              {
-                text: 'random font',
-                value: 'Random'
-              }
-            ]
+            items: 'getFonts'
           },
           align: {
             acceptReporters: false,
@@ -659,7 +858,25 @@
             items: [
               'font',
               'color',
-              'width'
+              'width',
+              'alignment'
+            ]
+          },
+          // TurboWarp menus (acceptReporters: true)
+          twAnimate: {
+            acceptReporters: true,
+            items: ['type', 'rainbow', 'zoom']
+          },
+          twAnimateDuration: {
+            acceptReporters: true,
+            items: ['rainbow', 'zoom']
+          },
+          twAlign: {
+            acceptReporters: true,
+            items: [
+              'left',
+              'center',
+              'right'
             ]
           }
         }
@@ -717,6 +934,16 @@
       target.setCostume(target.currentCostume);
     }
 
+    getFonts () {
+      return [
+        ...FONTS,
+        {
+          text: 'random font',
+          value: 'Random'
+        }
+      ];
+    }
+
     setText ({ TEXT }, util) {
       const state = this._getState(util.target);
       this._renderText(util.target, state);
@@ -756,7 +983,7 @@
       const state = this._getState(util.target);
       if (FONT === 'Random') {
         // Random font always switches to a new font, never the same one
-        const possibleFonts = NATIVE_FONTS.filter(i => i !== state.skin.fontFamily);
+        const possibleFonts = FONTS.filter(i => i !== state.skin.fontFamily);
         state.skin.setFontFamily(possibleFonts[Math.floor(Math.random() * possibleFonts.length)]);
       } else {
         state.skin.setFontFamily(Scratch.Cast.toString(FONT));
@@ -783,10 +1010,166 @@
       state.skin.setWidth(Scratch.Cast.toNumber(WIDTH));
     }
 
+    /*
+     * Extra blocks, not compatible with Scratch:
+     */
+
+    disableCompatibilityMode() {
+      let popup = [
+        'This will enable new blocks and features that WILL NOT WORK in the offical Scratch Lab.',
+        'Do you wish to continue?'
+      ];
+      if (confirm(popup.join('\n\n'))) {
+        compatibilityMode = false;
+        Scratch.vm.extensionManager.refreshBlocks();
+      }
+    }
+
+    setAlignment (args, util) {
+      // see setWidth
+      const state = this._getState(util.target);
+      if (args.ALIGN === 'center') {
+        state.skin.setAlign(ALIGN_CENTER);
+      } else if (args.ALIGN === 'right') {
+        state.skin.setAlign(ALIGN_RIGHT);
+      } else {
+        state.skin.setAlign(ALIGN_LEFT);
+      }
+    }
+
+    setWidthValue (args, util) {
+      const state = this._getState(util.target);
+      state.skin.setWidth(Scratch.Cast.toNumber(args.WIDTH));
+    }
+
+    resetWidth (args, util) {
+      const state = this._getState(util.target);
+      state.skin.setWidth(DEFAULT_WIDTH);
+    }
+
+    addLine (args, util) {
+      const state = this._getState(util.target);
+      this._renderText(util.target, state);
+
+      const originalText = state.skin.text;
+      const addingText = Scratch.Cast.toString(args.TEXT);
+      state.skin.setText(originalText ? `${originalText}\n${addingText}` : addingText);
+      util.runtime.requestRedraw();
+    }
+
+    getLines (args, util) {
+      const drawableID = util.target.drawableID;
+      const skin = renderer._allDrawables[drawableID].skin;
+      if (!(skin instanceof TextCostumeSkin)) return 0;
+
+      const state = this._getState(util.target);
+      const text = state.skin.text;
+      return text.split('\n').length;
+    }
+
+    startAnimate (args, util) {
+      const drawableID = util.target.drawableID;
+      const skin = renderer._allDrawables[drawableID].skin;
+      if (!(skin instanceof TextCostumeSkin)) return;
+
+      const state = this._getState(util.target);
+      state.skin.cancelAnimation();
+
+      // Don't return the promise
+      if (args.ANIMATE === 'type') {
+        state.skin.startTypeAnimation();
+      } else if (args.ANIMATE === 'rainbow') {
+        state.skin.startRainbowAnimation();
+      } else if (args.ANIMATE === 'zoom') {
+        state.skin.startZoomAnimation();
+      } else {
+        // Scratch does nothing here
+      }
+    }
+
+    animateUntilDone (args, util) {
+      const drawableID = util.target.drawableID;
+      const skin = renderer._allDrawables[drawableID].skin;
+      if (!(skin instanceof TextCostumeSkin)) return;
+
+      const state = this._getState(util.target);
+      state.skin.cancelAnimation();
+
+      if (args.ANIMATE === 'type') {
+        return state.skin.startTypeAnimation();
+      } else if (args.ANIMATE === 'rainbow') {
+        return state.skin.startRainbowAnimation();
+      } else if (args.ANIMATE === 'zoom') {
+        return state.skin.startZoomAnimation();
+      } else {
+        // Scratch does nothing here
+      }
+    }
+
+    isAnimating (args, util) {
+      const skin = this._getState(util.target).skin;
+      return (skin.isTyping || skin.isRainbow || skin.isZooming);
+    }
+
+    setAnimateDuration (args, util) {
+      const state = this._getState(util.target);
+      const animation = args.ANIMATE;
+      const milliseconds = Scratch.Cast.toNumber(args.NUM) * 1000;
+      if (animation === 'rainbow') {
+        state.skin.setRainbowDuration(milliseconds);
+      } else if (animation === 'zoom') {
+        state.skin.setZoomDuration(milliseconds);
+      }
+    }
+
+    resetAnimateDuration (args, util) {
+      const state = this._getState(util.target);
+      const animation = args.ANIMATE;
+      if (animation === 'rainbow') {
+        state.skin.setRainbowDuration(DEFAULT_RAINBOW_DURATION);
+      } else if (animation === 'zoom') {
+        state.skin.setZoomDuration(DEFAULT_ZOOM_DURATION);
+      }
+    }
+
+    getAnimateDuration (args, util) {
+      const state = this._getState(util.target);
+      const animation = args.ANIMATE;
+      if (animation === 'rainbow') {
+        return state.skin.rainbowDuration / 1000;
+      } else if (animation === 'zoom') {
+        return state.skin.zoomDuration / 1000;
+      } else {
+        // should never happen
+        return '';
+      }
+    }
+
+    setTypeDelay (args, util) {
+      const state = this._getState(util.target);
+      state.skin.setTypeDelay(Scratch.Cast.toNumber(args.NUM) * 1000);
+    }
+
+    resetTypeDelay (args, util) {
+      const state = this._getState(util.target);
+      state.skin.setTypeDelay(DEFAULT_TYPE_DELAY);
+    }
+
+    getTypeDelay (args, util) {
+      const state = this._getState(util.target);
+      // TODO: Should we round this?
+      return state.skin.typeDelay / 1000;
+    }
+
     textActive (args, util) {
       const drawableID = util.target.drawableID;
       const skin = renderer._allDrawables[drawableID].skin;
       return skin instanceof TextCostumeSkin;
+    }
+
+    getDisplayedText (args, util) {
+      const state = this._getState(util.target);
+      return state.skin.text;
     }
 
     getTextAttribute (args, util) {
@@ -798,6 +1181,12 @@
         return state.skin.getColor();
       } else if (attrib === 'width') {
         return state.skin.getWidth();
+      } else if (attrib === 'alignment') {
+        switch (state.skin.getAlign()) {
+          case ALIGN_LEFT: return 'left';
+          case ALIGN_RIGHT: return 'right';
+          case ALIGN_CENTER: return 'center';
+        }
       } else {
         // should never happen
         return '';
