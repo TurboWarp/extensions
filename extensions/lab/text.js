@@ -369,7 +369,7 @@
     }
 
     getWidth () {
-      return this._size[0];
+      return this.textWidth;
     }
 
     getAlign () {
