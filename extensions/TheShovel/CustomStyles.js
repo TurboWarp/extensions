@@ -654,7 +654,7 @@
             askBoxIcon = '';
             askInputText = '';
             askButtonImage = '';
-            askInputBorder = '';        
+            askInputBorder = '';
             applyCSS();
         }
 
