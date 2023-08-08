@@ -3,32 +3,32 @@
     'use strict';
 
     // Styles
-    let monitorTextColor = '';
-    let monitorBorderColor = '';
+    let monitorText = '';
+    let monitorBorder = '';
     let monitorBackgroundColor = '';
-    let variableValueBoxColor = '';
+    let variableValueBackground = '';
     let variableValueTextColor = '';
-    let listFooterColor = '';
-    let listHeaderColor = '';
-    let listValueTextColor = '';
-    let listValueBoxColor = '';
-    let variableValueBoxRoundness = -1;
-    let listValueBoxRoundness = -1;
-    let monitorRoundness = -1;
-    let monitorBorderSize = -1;
+    let listFooterBackground = '';
+    let listHeaderBackground = '';
+    let listValueText = '';
+    let listValueBackground = '';
+    let variableValueRoundness = -1;
+    let listValueRoundness = -1;
+    let monitorBackgroundRoundness = -1;
+    let monitorBackgroundBorderWidth = -1;
     let allowScrolling = true;
-    let askBoxBGColor = '';
-    let askboxBGRoundness = -1;
-    let askboxBGBorderSize = -1;
-    let askBoxButtonColor = '';
-    let askBoxButtonRoundness = -1;
-    let askBoxInnerColor = '';
-    let askBoxInnerRoundness = -1;
-    let askBoxInnerBorderSize = -1;
+    let askBackground = '';
+    let askBackgroundRoundness = -1;
+    let askBackgroundBorderWidth = -1;
+    let askButtonBackground = '';
+    let askButtonRoundness = -1;
+    let askInputBackground = '';
+    let askInputRoundness = -1;
+    let askInputBorderWidth = -1;
     let askBoxIcon = '';
-    let askBoxTextColor = '';
+    let askInputText = '';
     let askBoxButtonImage = '';
-    let askBoxBorderColor = '';
+    let askInputBorder = '';
 
     // CSS selectors
     let monitorRoot;
@@ -97,83 +97,82 @@
 
         // We assume all values are sanitized when they are set, so then we can just use them as-is here.
 
-        if (monitorTextColor) {
-            css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${monitorTextColor}; }`;
+        if (monitorText) {
+            css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${monitorText}; }`;
         }
         if (monitorBackgroundColor) {
             css += `${monitorRoot}, ${monitorRowsInner} { background: ${monitorBackgroundColor}; }`;
         }
-        if (monitorBorderColor) {
-            css += `${monitorRoot} { border-color: ${monitorBorderColor}; }`;
+        if (monitorBorder) {
+            css += `${monitorRoot} { border-color: ${monitorBorder}; }`;
         }
-        if (monitorRoundness >= 0) {
-            css += `${monitorRoot} { border-radius: ${monitorRoundness}px; }`;
+        if (monitorBackgroundRoundness >= 0) {
+            css += `${monitorRoot} { border-radius: ${monitorBackgroundRoundness}px; }`;
         }
-        if (monitorBorderSize >= 0) {
-            css += `${monitorRoot} { border-width: ${monitorBorderSize}px; }`;
+        if (monitorBackgroundBorderWidth >= 0) {
+            css += `${monitorRoot} { border-width: ${monitorBackgroundBorderWidth}px; }`;
         }
-        if (variableValueBoxColor) {
-            css += `${monitorValue}, ${monitorValueLarge} { background: ${variableValueBoxColor} !important; }`;
+        if (variableValueBackground) {
+            css += `${monitorValue}, ${monitorValueLarge} { background: ${variableValueBackground} !important; }`;
         }
         if (variableValueTextColor) {
             css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor}; }`;
         }
-        if (variableValueBoxRoundness >= 0) {
-            css += `${monitorValue} { border-radius: ${variableValueBoxRoundness}px; }`;
+        if (variableValueRoundness >= 0) {
+            css += `${monitorValue} { border-radius: ${variableValueRoundness}px; }`;
         }
-        if (listHeaderColor) {
-            css += `${monitorListHeader} { background: ${listHeaderColor}; }`;
+        if (listHeaderBackground) {
+            css += `${monitorListHeader} { background: ${listHeaderBackground}; }`;
         }
-        if (listFooterColor) {
-            css += `${monitorListFooter} { background: ${listHeaderColor}; }`;
+        if (listFooterBackground) {
+            css += `${monitorListFooter} { background: ${listHeaderBackground}; }`;
         }
-        if (listValueBoxColor) {
-            css += `${monitorRowValueOuter} { background: ${listValueBoxColor} !important; }`;
+        if (listValueBackground) {
+            css += `${monitorRowValueOuter} { background: ${listValueBackground} !important; }`;
         }
-        if (listValueTextColor) {
-            css += `${monitorRowValueOuter} { color: ${listValueTextColor}; }`;
+        if (listValueText) {
+            css += `${monitorRowValueOuter} { color: ${listValueText}; }`;
         }
-        if (listValueBoxRoundness >= 0) {
-            css += `${monitorRowValueOuter} { border-radius: ${listValueBoxRoundness}px; }`;
+        if (listValueRoundness >= 0) {
+            css += `${monitorRowValueOuter} { border-radius: ${listValueRoundness}px; }`;
         }
         if (!allowScrolling) {
             css += `${monitorRowsScroller} { overflow: hidden !important; }`;
         }
-        if (askBoxBGColor) {
-            css += `${askBoxBG} { background: ${askBoxBGColor} !important; border: none !important; }`;
+        if (askBackground) {
+            css += `${askBoxBG} { background: ${askBackground} !important; border: none !important; }`;
         }
-        if (askboxBGRoundness >= 0) {
-            css += `${askBoxBG} { border-radius: ${askboxBGRoundness}px !important; }`;
+        if (askBackgroundRoundness >= 0) {
+            css += `${askBoxBG} { border-radius: ${askBackgroundRoundness}px !important; }`;
         }
-        if (askboxBGBorderSize >= 0) {
-            css += `${askBoxBG} { border-width: ${askboxBGBorderSize}px !important; }`;
+        if (askBackgroundBorderWidth >= 0) {
+            css += `${askBoxBG} { border-width: ${askBackgroundBorderWidth}px !important; }`;
         }
-        if (askBoxButtonColor) {
-            css += `${askBoxButton} { background-color: ${askBoxButtonColor}; }`;
+        if (askButtonBackground) {
+            css += `${askBoxButton} { background-color: ${askButtonBackground}; }`;
         }
-        if (askBoxButtonRoundness >= 0) {
-            css += `${askBoxButton} { border-radius: ${askBoxButtonRoundness}px !important; }`;
+        if (askButtonRoundness >= 0) {
+            css += `${askBoxButton} { border-radius: ${askButtonRoundness}px !important; }`;
         }
-        if (askBoxInnerColor) {
-            css += `${askBoxInner} { background: ${askBoxInnerColor} !important; }`;
+        if (askInputBackground) {
+            css += `${askBoxInner} { background: ${askInputBackground} !important; }`;
             css += `${askBoxInner} { border: none !important; }`;
         }
-        if (askBoxTextColor) {
-            css += `${askBoxInner} { color: ${askBoxTextColor} !important; }`;
+        if (askInputText) {
+            css += `${askBoxInner} { color: ${askInputText} !important; }`;
         }
-        if (askBoxInnerRoundness >= 0) {
-            css += `${askBoxInner} { border-radius: ${askBoxInnerRoundness}px !important; }`;
+        if (askInputRoundness >= 0) {
+            css += `${askBoxInner} { border-radius: ${askInputRoundness}px !important; }`;
         }
-        if (askBoxInnerBorderSize >= 0) {
-            css += `${askBoxInner} { border-width: ${askBoxInnerBorderSize}px !important; }`;
+        if (askInputBorderWidth >= 0) {
+            css += `${askBoxInner} { border-width: ${askInputBorderWidth}px !important; }`;
         }
         if (askBoxButtonImage) {
-            css += `${askBoxButton} { background-image: ${askBoxButtonImage} !important; }`;
-            // I hate this
-            css += `${askBoxIcon} { visibility: hidden ; }`;
+            css += `${askBoxButton} { background-image: url(${encodeURI(askBoxButtonImage)}) !important; background-repeat: no-repeat; background-size: contain; }`;
+            css += `${askBoxIcon} { visibility: hidden; }`;
         }
-        if (askBoxBorderColor) {
-            css += `${askBoxBorderMain}, ${askBoxBorderOuter} { border-color: ${askBoxBorderColor} !important; }`;
+        if (askInputBorder) {
+            css += `${askBoxBorderMain}, ${askBoxBorderOuter} { border-color: ${askInputBorder} !important; }`;
             css += `${askBoxBorderOuter} { box-shadow: none !important; }`;
         }
 
@@ -346,7 +345,7 @@
                         arguments: {
                             BORDER: {
                                 type: Scratch.ArgumentType.STRING,
-                                menu: 'BORDER_SIZE_MENU'
+                                menu: 'BORDER_WIDTH_MENU'
                             },
                             SIZE: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -465,7 +464,7 @@
                             'ask prompt input border'
                         ]
                     },
-                    BORDER_SIZE_MENU: {
+                    BORDER_WIDTH_MENU: {
                         acceptReporters: true,
                         items: [
                             'monitor background',
@@ -494,29 +493,31 @@
                     VALUEGET_LIST: {
                         acceptReporters: true,
                         items: [
-                            'general text color',
-                            'general background color',
-                            'general border color',
-                            'variable value box color',
-                            'variable value text color',
-                            'list header color',
-                            'list footer color',
-                            'list value box color',
-                            'list value text color',
-                            'ask prompt background color',
-                            'ask prompt button color',
+                            'monitor text',
+                            'monitor background',
+                            'monitor border color',
+                            'variable value background',
+                            'variable value text',
+                            'list header background',
+                            'list footer background',
+                            'list value background',
+                            'list value text',
+                            'ask prompt background',
+                            'ask prompt button background',
+                            'ask prompt input background',
+                            'ask prompt input text',
+                            'ask prompt input border',
+                            'monitor background border width',
+                            'ask prompt background border width',
+                            'ask prompt input border width',
+                            'monitor background roundness',
+                            'variable value roundness',
+                            'list value roundness',
+                            'ask prompt background roundness',
+                            'ask prompt button roundness',
+                            'ask prompt input roundness',
                             'ask prompt button image',
-                            'ask prompt inner color',
-                            'ask prompt text color',
-                            'ask prompt border color',
-                            'general borders roundness',
-                            'variable value box borders roundness',
-                            'list value box borders roundness',
-                            'ask prompt background border roundness',
-                            'ask prompt button border roundness',
-                            'ask prompt inner border roundness',
-                            'list scroll rule',
-                            'border size'
+                            'list scroll rule'
                         ]
                     }
                 }
@@ -526,33 +527,33 @@
         changecss(args) {
             return parseColor(args.COLOR, color => {
                 if (args.COLORABLE === 'monitor text') {
-                    monitorTextColor = color;
+                    monitorText = color;
                 } else if (args.COLORABLE === 'monitor background') {
                     monitorBackgroundColor = color;
                 } else if (args.COLORABLE === 'monitor border') {
-                    monitorBorderColor = color;
+                    monitorBorder = color;
                 } else if (args.COLORABLE === 'variable value background') {
-                    variableValueBoxColor = color;
+                    variableValueBackground = color;
                 } else if (args.COLORABLE === 'variable value text') {
                     variableValueTextColor = color;
                 } else if (args.COLORABLE === 'list header background') {
-                    listHeaderColor = color;
+                    listHeaderBackground = color;
                 } else if (args.COLORABLE === 'list footer background') {
-                    listFooterColor = color;
+                    listFooterBackground = color;
                 } else if (args.COLORABLE === 'list value background') {
-                    listValueBoxColor = color;
+                    listValueBackground = color;
                 } else if (args.COLORABLE === 'list value text') {
-                    listValueTextColor = color;
+                    listValueText = color;
                 } else if (args.COLORABLE === 'ask prompt background') {
-                    askBoxBGColor = color;
+                    askBackground = color;
                 } else if (args.COLORABLE === 'ask prompt button background') {
-                    askBoxButtonColor = color;
+                    askButtonBackground = color;
                 } else if (args.COLORABLE === 'ask prompt input background') {
-                    askBoxInnerColor = color;
+                    askInputBackground = color;
                 } else if (args.COLORABLE === 'ask prompt input text') {
-                    askBoxTextColor = color;
+                    askInputText = color;
                 } else if (args.COLORABLE === 'ask prompt input border') {
-                    askBoxBorderColor = color;
+                    askInputBorder = color;
                 }
 
                 applyCSS();
@@ -566,11 +567,11 @@
         setbordersize(args) {
             const size = Scratch.Cast.toNumber(args.SIZE);
             if (args.BORDER === 'monitor background') {
-                monitorBorderSize = size;
+                monitorBackgroundBorderWidth = size;
             } else if (args.BORDER === 'ask prompt background') {
-                askboxBGBorderSize = size;
+                askBackgroundBorderWidth = size;
             } else if (args.BORDER === 'ask prompt input') {
-                askBoxInnerBorderSize = size;
+                askInputBorderWidth = size;
             }
             applyCSS();
         }
@@ -578,17 +579,17 @@
         setborderradius(args) {
             const size = Scratch.Cast.toNumber(args.SIZE);
             if (args.CORNER === 'monitor background') {
-                monitorRoundness = size;
+                monitorBackgroundRoundness = size;
             } else if (args.CORNER === 'variable value') {
-                variableValueBoxRoundness = size;
+                variableValueRoundness = size;
             } else if (args.CORNER === 'list value') {
-                listValueBoxRoundness = size;
+                listValueRoundness = size;
             } else if (args.CORNER === 'ask prompt background') {
-                askboxBGRoundness = size;
+                askBackgroundRoundness = size;
             } else if (args.CORNER === 'ask prompt button') {
-                askBoxButtonRoundness = size;
+                askButtonRoundness = size;
             } else if (args.CORNER === 'ask prompt input') {
-                askBoxInnerRoundness = size;
+                askInputRoundness = size;
             }
             applyCSS();
         }
@@ -631,95 +632,100 @@
         }
 
         clearCSS() {
-            monitorTextColor = '';
-            monitorBorderColor = '';
+            monitorText = '';
+            monitorBorder = '';
             monitorBackgroundColor = '';
-            variableValueBoxColor = '';
+            variableValueBackground = '';
             variableValueTextColor = '';
-            listFooterColor = '';
-            listHeaderColor = '';
-            listValueTextColor = '';
-            listValueBoxColor = '';
-            variableValueBoxRoundness = -1;
-            listValueBoxRoundness = -1;
-            monitorRoundness = -1;
-            monitorBorderSize = -1;
+            listFooterBackground = '';
+            listHeaderBackground = '';
+            listValueText = '';
+            listValueBackground = '';
+            variableValueRoundness = -1;
+            listValueRoundness = -1;
+            monitorBackgroundRoundness = -1;
+            monitorBackgroundBorderWidth = -1;
             allowScrolling = true;
-            askBoxBGColor = '';
-            askboxBGRoundness = -1;
-            askboxBGBorderSize = -1;
-            askBoxButtonColor = '';
-            askBoxButtonRoundness = -1;
-            askBoxInnerColor = '';
-            askBoxInnerRoundness = -1;
-            askBoxInnerBorderSize = -1;
+            askBackground = '';
+            askBackgroundRoundness = -1;
+            askBackgroundBorderWidth = -1;
+            askButtonBackground = '';
+            askButtonRoundness = -1;
+            askInputBackground = '';
+            askInputRoundness = -1;
+            askInputBorderWidth = -1;
             askBoxIcon = '';
-            askBoxTextColor = '';
+            askInputText = '';
             askBoxButtonImage = '';
-            askBoxBorderColor = '';        
+            askInputBorder = '';        
             applyCSS();
         }
 
         getValue(args) {
-            if (args.ITEM == 'general text color') {
-                return monitorTextColor;
-            } else if (args.ITEM == 'general background color') {
+            if (args.ITEM === 'monitor text') {
+                return monitorText;
+            } else if (args.ITEM === 'monitor background') {
                 return monitorBackgroundColor;
-            } else if (args.ITEM == 'variable value box color') {
-                return variableValueBoxColor;
-            } else if (args.ITEM == 'variable value text color') {
+            } else if (args.ITEM === 'monitor border color') {
+                return monitorBorder;
+            } else if (args.ITEM === 'variable value background') {
+                return variableValueBackground;
+            } else if (args.ITEM === 'variable value text') {
                 return variableValueTextColor;
-            } else if (args.ITEM == 'list header color') {
-                return listHeaderColor;
-            } else if (args.ITEM == 'list footer color') {
-                return listFooterColor;
-            } else if (args.ITEM == 'list value box color') {
-                return listValueBoxColor;
-            } else if (args.ITEM == 'list value text color') {
-                return listValueTextColor;
-            } else if (args.ITEM == 'general border color') {
-                return monitorBorderColor;
-            } else if (args.ITEM == 'ask prompt background color') {
-                return askBoxBGColor;
-            } else if (args.ITEM == 'ask prompt button color') {
-                return askBoxButtonColor;
-            } else if (args.ITEM == 'ask prompt inner color') {
-                return askBoxInnerColor;
-            } else if (args.ITEM == 'ask prompt text color') {
-                return askBoxTextColor;
-            } else if (args.ITEM == 'general borders roundness') {
-                return monitorRoundness;
-            } else if (args.ITEM == 'variable value box borders roundness') {
-                return variableValueBoxRoundness;
-            } else if (args.ITEM == 'list value box borders roundness') {
-                return listValueBoxRoundness;
-            } else if (args.ITEM == 'ask prompt background border roundness') {
-                return askboxBGRoundness;
-            } else if (args.ITEM == 'ask prompt button border roundness') {
-                return askBoxButtonRoundness;
-            } else if (args.ITEM == 'ask prompt inner border roundness') {
-                return askBoxInnerRoundness;
-            } else if (args.ITEM == 'list scroll rule') {
-                if (allowScrolling == true) {
+            } else if (args.ITEM === 'list header background') {
+                return listHeaderBackground;
+            } else if (args.ITEM === 'list footer background') {
+                return listFooterBackground;
+            } else if (args.ITEM === 'list value background') {
+                return listValueBackground;
+            } else if (args.ITEM === 'list value text') {
+                return listValueText;
+            } else if (args.ITEM === 'ask prompt background') {
+                return askBackground;
+            } else if (args.ITEM === 'ask prompt button background') {
+                return askButtonBackground;
+            } else if (args.ITEM === 'ask prompt input background') {
+                return askInputBackground;
+            } else if (args.ITEM === 'ask prompt input text') {
+                return askInputText;
+            } else if (args.ITEM === 'ask prompt input border') {
+                return askInputBorder;
+            } else if (args.ITEM === 'monitor background border width') {
+                return monitorBackgroundBorderWidth;
+            } else if (args.ITEM === 'ask prompt background border width') {
+                return askBackgroundBorderWidth;
+            } else if (args.ITEM === 'ask prompt input border width') {
+                return askInputBorderWidth;
+            } else if (args.ITEM === 'monitor background roundness') {
+                return monitorBackgroundRoundness;
+            } else if (args.ITEM === 'variable value roundness') {
+                return variableValueRoundness;
+            } else if (args.ITEM === 'list value roundness') {
+                return listValueRoundness;
+            } else if (args.ITEM === 'ask prompt background roundness') {
+                return askBackgroundRoundness;
+            } else if (args.ITEM === 'ask prompt button roundness') {
+                return askButtonRoundness;
+            } else if (args.ITEM === 'ask prompt input roundness') {
+                return askInputRoundness;
+            } else if (args.ITEM === 'ask prompt button image') {
+                // TODO
+            } else if (args.ITEM === 'list scroll rule') {
+                if (allowScrolling) {
                     return 'auto';
                 } else {
                     return 'hidden';
                 }
-            } else if (args.ITEM == 'border size') {
-                return monitorBorderSize;
-            } else if (args.ITEM == 'ask prompt button image') {
-                return askBoxButtonImage;
-            } else if (args.ITEM == 'ask prompt border color') {
-                return askBoxBorderColor;
             }
             return '';
         }
 
         setAskURI(args) {
-            // Lazyness
-            return parseColor('url(' + args.URL + ')', color => {
-                askBoxButtonImage = color;
-                applyCSS();
+            return Scratch.canFetch(args.URL).then(allowed => {
+                if (allowed) {
+                    askBoxButtonImage = args.URL;
+                    applyCSS();
+                }
             });
         }
     }
