@@ -10,6 +10,7 @@ module.exports = {
     ecmaVersion: 'latest'
   },
   globals: {
+    Blockly: 'readonly',
     Scratch: 'readonly',
     ScratchBlocks: 'readonly',
     ScratchExtensions: 'readonly',
