@@ -983,7 +983,7 @@
       const state = this._getState(util.target);
       if (FONT === 'Random') {
         // Random font always switches to a new font, never the same one
-        const possibleFonts = this._compatibleFonts().filter(i => i !== state.skin.fontFamily);
+        const possibleFonts = FONTS.filter(i => i !== state.skin.fontFamily);
         state.skin.setFontFamily(possibleFonts[Math.floor(Math.random() * possibleFonts.length)]);
       } else {
         state.skin.setFontFamily(Scratch.Cast.toString(FONT));
