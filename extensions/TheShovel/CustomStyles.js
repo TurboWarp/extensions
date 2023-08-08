@@ -16,7 +16,7 @@
     let listValueRoundness = -1;
     let monitorBackgroundRoundness = -1;
     let monitorBackgroundBorderWidth = -1;
-    let allowScrolling = true;
+    let allowScrolling = '';
     let askBackground = '';
     let askBackgroundRoundness = -1;
     let askBackgroundBorderWidth = -1;
@@ -136,7 +136,6 @@
         if (listValueRoundness >= 0) {
             css += `${monitorRowValueOuter} { border-radius: ${listValueRoundness}px; }`;
         }
-        // Don't change this. You broke it last time.
         if (allowScrolling) {
             css += `${monitorRowsScroller} { overflow: ${allowScrolling} !important; }`;
         }
@@ -593,10 +592,10 @@
         }
 
         allowscrollrule(args) {
-            if (args.SCROLLRULE == 'enabled'){
-            allowScrolling = 'auto';
+            if (args.SCROLLRULE === 'enabled'){
+                allowScrolling = 'auto';
             } else {
-            allowScrolling = 'hidden';
+                allowScrolling = 'hidden';
             }
             applyCSS();
         }
@@ -647,7 +646,7 @@
             listValueRoundness = -1;
             monitorBackgroundRoundness = -1;
             monitorBackgroundBorderWidth = -1;
-            allowScrolling = true;
+            allowScrolling = '';
             askBackground = '';
             askBackgroundRoundness = -1;
             askBackgroundBorderWidth = -1;
@@ -713,7 +712,7 @@
             } else if (args.ITEM === 'ask prompt button image') {
                 return askButtonImage;
             } else if (args.ITEM === 'list scrolling') {
-                if (allowScrolling == 'auto') {
+                if (allowScrolling === 'auto') {
                     return 'enabled';
                 } else {
                     return 'disabled';
