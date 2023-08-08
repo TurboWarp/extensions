@@ -310,6 +310,37 @@
                                 menu: 'direction'
                             }
                         }
+                    },
+                    {
+                        opcode: 'tweenProperty',
+                        text: 'tween [PROPERTY] from [START] to [END] over [SEC] seconds using [MODE] ease [DIRECTION]',
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            PROPERTY: {
+                                type: ArgumentType.STRING,
+                                menu: 'properties'
+                            },
+                            START: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                            END: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 100
+                            },
+                            SEC: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                            MODE: {
+                                type: ArgumentType.STRING,
+                                menu: 'modes'
+                            },
+                            DIRECTION: {
+                                type: ArgumentType.STRING,
+                                menu: 'direction'
+                            }
+                        }
                     }
                 ],
                 menus: {
@@ -326,7 +357,17 @@
                         ]
                     },
                     vars: {
+                        acceptReporters: false, // for Scratch parity
                         items: 'getVariables'
+                    },
+                    properties: {
+                        acceptReporters: true,
+                        items: [
+                            'x position',
+                            'y position',
+                            'direction',
+                            'size'
+                        ]
                     }
                 }
             };
@@ -410,6 +451,20 @@
                 const variable = util.target.lookupVariableById(args.VAR);
                 if (variable && variable.type === '') {
                     variable.value = value;
+                }
+            });
+        }
+
+        tweenProperty(args, util) {
+            this._tweenValue(args, util, value => {
+                if (args.PROPERTY === 'x position') {
+                    util.target.setXY(value, util.target.y);
+                } else if (args.PROPERTY === 'y position') {
+                    util.target.setXY(util.target.x, value);
+                } else if (args.PROPERTY === 'direction') {
+                    util.target.setDirection(value);
+                } else if (args.PROPERTY === 'size') {
+                    util.target.setSize(value);
                 }
             });
         }
