@@ -1058,14 +1058,12 @@
     }
 
     addLine (args, util) {
-      const drawableID = util.target.drawableID;
-      const skin = renderer._allDrawables[drawableID].skin;
-      if (!(skin instanceof TextCostumeSkin)) return;
-
       const state = this._getState(util.target);
+      this._renderText(util.target, state);
+
       const originalText = state.skin.text;
-      state.skin.setText(originalText + '\n' + Scratch.Cast.toString(args.TEXT));
-      // Scratch forces 1 frame delay by returning promise. I think that's silly.
+      const addingText = Scratch.Cast.toString(args.TEXT);
+      state.skin.setText(originalText ? `${originalText}\n${addingText}` : addingText);
       util.runtime.requestRedraw();
     }
 
