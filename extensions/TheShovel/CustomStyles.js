@@ -3,26 +3,28 @@
     'use strict';
 
     // Styles
-    let generalTextColor = '';
-    let generalBorderColor = '';
-    let generalbackgroundColor = '';
+    let monitorTextColor = '';
+    let monitorBorderColor = '';
+    let monitorBackgroundColor = '';
     let variableValueBoxColor = '';
     let variableValueTextColor = '';
     let listFooterColor = '';
     let listHeaderColor = '';
     let listValueTextColor = '';
     let listValueBoxColor = '';
-    let listValueBoxCornerRadius = -1;
-    let variableValueBoxCornerRadius = -1;
-    let generalBorderRadius = -1;
+    let variableValueBoxRoundness = -1;
+    let listValueBoxRoundness = -1;
+    let monitorRoundness = -1;
+    let monitorBorderSize = -1;
     let allowScrolling = true;
-    let borderSize = -1;
     let askBoxBGColor = '';
     let askboxBGRoundness = -1;
+    let askboxBGBorderSize = -1;
     let askBoxButtonColor = '';
     let askBoxButtonRoundness = -1;
     let askBoxInnerColor = '';
     let askBoxInnerRoundness = -1;
+    let askBoxInnerBorderSize = -1;
     let askBoxIcon = '';
     let askBoxTextColor = '';
     let askBoxButtonImage = '';
@@ -42,7 +44,7 @@
     let askBoxButton;
     let askBoxInner;
     let askBoxBorderMain;
-    let askBoxBorderOutter;
+    let askBoxBorderOuter;
     if (typeof scaffolding !== 'undefined') {
         monitorRoot = '.sc-monitor-root';
         monitorValue = '.sc-monitor-value';
@@ -57,7 +59,7 @@
         askBoxButton = '.sc-question-submit-button';
         askBoxInner = '.sc-question-input';
         askBoxBorderMain = '.sc-question-input:hover';
-        askBoxBorderOutter = '.sc-question-input:focus';
+        askBoxBorderOuter = '.sc-question-input:focus';
     } else {
         monitorRoot = 'div[class^="monitor_monitor-container_"]';
         monitorValue = 'div[class^="monitor_value_"]';
@@ -72,8 +74,8 @@
         askBoxButton = 'button[class^="question_question-submit-button_"]';
         askBoxInner = '[class^="question_question-container_"] input[class^="input_input-form_"]';
         askBoxIcon = 'img[class^="question_question-submit-button-icon_"]';
-        askBoxBorderMain = '[class^="question_question-input_"] input:focus, input:hover';
-        askBoxBorderOutter = '[class^="question_question-input_"] > input:focus';
+        askBoxBorderMain = '[class^="question_question-input_"] input:focus, [class^="question_question-input_"] input:hover';
+        askBoxBorderOuter = '[class^="question_question-input_"] > input:focus';
     }
 
     const ColorIcon = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMTYuNDE5NjQiIGhlaWdodD0iMTE4LjM0OTk0IiB2aWV3Qm94PSIwLDAsMTE2LjQxOTY0LDExOC4zNDk5NCI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOC45MjgwOSw3LjY1MTk0KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTMxLjc3NzE4LDEwLjU1MDMzYy0xMC4yOTkxNywxLjEwODUyIC0xNi4zNDU2NSw0LjY2NTg3IC0xOS4xNDcxOSw5LjE4MDU3Yy0xLjg5MjIsMy4yNDc5NyAtMi4zNDE1Niw3LjEzODcyIC0xLjIzOTUzLDEwLjczMjVsMC4wOTA3LDAuMzQyNjRsMjAuMjY1NzksLTIwLjI1NTcxek03OC4yODQ2OSwyMS43NTY0OGMtNy4zNDY0NywtNy4zNTY1NSAtMTQuNzczNTcsLTEzLjEwMDcgLTIwLjg5MDU5LC0xNi4yOTUyN2MtNC4zNDMzOSwtMi4yMzcyIC03LjcyOTQyLC0zLjEzNDA5IC05LjM5MjIsLTIuMTg2ODFsLTAuODI2MzYsMC44MjYzNmMtMS4yMjk0NSwyLjAxNTUgLTAuNTEzOTYsNi4zMDg0OSAxLjc5Mzc5LDExLjY2OTdjMy41NjMzNSw3LjczMjE5IDguNTIwMTUsMTQuNzQyMDggMTQuNjIyNCwyMC42Nzg5N2M2Ljk5Mzc3LDYuOTkzNzcgMTQuNTAxNDgsMTIuMjM0MDQgMjAuODkwNTksMTUuMTE2MmM0LjU0NDk0LDIuMDE1NSA4LjI3MzYsMi45MjI0NyAxMC40MzAxOCwyLjMzNzk3bDEuOTI0OCwtMS45MzQ4OGMwLjQ1MzQ4LC0xLjkyNDggLTAuNTAzODgsLTUuMTc5ODIgLTIuNTA5MjksLTkuMjAwNzNjLTMuMTEzOTQsLTYuMjU4MTEgLTguNzg3NTUsLTEzLjc2NTgyIC0xNi4wNDMzMywtMjEuMDExNTJ6TTYwLjI4NjMzLC0wLjE1MTk0YzYuNzExNTksMy40NTY1NyAxNC42OTI5NSw5LjY0NDE0IDIyLjQ4MjgzLDE3LjQzNDAyYzcuNzg5ODksNy43ODk4OSAxMy44NTY1MiwxNS44MjE2MyAxNy4yMjIzOSwyMi43MjQ2OWMzLjc3OTA1LDcuNTY4MTggNC4zODM3LDE0LjAyNzg0IDAuNjk1MzQsMTcuNzE2MTljLTAuNjA1OCwwLjU3NzQ5IC0xLjI5NTUyLDEuMDU5OTYgLTIuMDQ1NzIsMS40MzFsLTM5LjQyMzA2LDM5LjQwMjljLTIuMzY4MiwyLjM4ODM2IC0zLjM1NTgsMy4zOTYxMSAtNy40MzcxNyw0LjMxMzE1Yy0yLjAzMTMyLDAuNDQwMzcgLTQuMTE4NywwLjU2Mjc2IC02LjE4NzU3LDAuMzYyNzhjLTIuMTQxODMsLTAuMjA3OCAtNC4yNTIxNSwtMC42NjQzNyAtNi4yODgzNCwtMS4zNjA0NmMtOC4zOTQ1MywtMi44MjE2OSAtMTcuMTMxNjksLTguNzI3MDkgLTI0LjQwNzYyLC0xNS45ODI4NmMtNy4yNzU5MywtNy4yNTU3NyAtMTMuMzcyOCwtMTYuMDUzNDEgLTE2LjMyNTUsLTI0LjQ2ODFjLTAuNTUwNDYsLTEuNTI1NTIgLTAuOTc4NDMsLTMuMDkyNDggLTEuMjc5ODQsLTQuNjg2MDJjLTAuMjg2MDMsLTEuNDc3NzUgLTAuNDMxMTIsLTIuOTc5MyAtMC40MzMzNCwtNC40ODQ0N2MtMC4xMTgxNywtMi4zNTIzNCAwLjMwNTkyLC00LjcwMDM3IDEuMjM5NTMsLTYuODYyNzVjMC45Njc0LC0xLjg2MTczIDIuMjUzMiwtMy41Mzk3NiAzLjc5OTIxLC00Ljk1ODExbDAuMTYxMjQsLTAuMTcxMzJsNC43NDY0OSwtNC43MzY0MWMtMC40OTc0NywtMS4xMjYwMiAtMC45MDg0OCwtMi4yODgyOCAtMS4yMjk0NSwtMy40NzY3M2MtMS41NTYxLC01LjE5NTg5IC0wLjg1MzgyLC0xMC44MDY3NSAxLjkzNDg4LC0xNS40NTg4NGM0LjMwMzA4LC03LjAzNDA3IDEzLjk1NzMsLTEyLjI2NDI4IDMwLjY2NTczLC0xMi40MzU2bDQuMjAyMzEsLTQuMTkyMjNjMC40NDM2OCwtMC42MDgzMiAwLjk4MTExLC0xLjE0MjM1IDEuNTkyMjQsLTEuNTgyMTZjMC4xOTg1NywtMC4xODczMSAwLjQyNjcsLTAuMzQwNTMgMC42NzUxOSwtMC40NTM0OGMzLjczODc0LC0yLjI1NzM1IDkuMjcxMjcsLTEuMzYwNDYgMTUuNjQwMjMsMS45MjQ4ek04OS4wNDc0Myw1OS43Njg2OWMtMi40NjcyLC0wLjU1OTY2IC00Ljg2ODc0LC0xLjM3NzA3IC03LjE2NTA4LC0yLjQzODc1Yy03LjA1NDIzLC0zLjE4NDQ4IC0xNS4yMjcwNiwtOC44NzgyNSAtMjIuNzY1LC0xNi40MDYxMmMtNi42NjcyNywtNi41MDY3NiAtMTIuMDc4NTEsLTE0LjE4NjM2IC0xNS45NjI3MSwtMjIuNjU0MTVjLTEuMDk4MjYsLTIuNDc4NDUgLTEuOTA2NDYsLTUuMDc1NTEgLTIuNDA4NTIsLTcuNzM5NDlsLTI2LjQxODk4LDI2LjMwMjJjMTMuODgzNTcsMTUuMDM3NTkgNTUuMzcyMzcsMjAuMzU1OTQgNjguMjQxMywxNC44NDM1NmMxLjUyOTk3LC0wLjYyNjEyIDMuMjc5MTUsMC4wOTI3NiAzLjkyNjY5LDEuNjEzOGMwLjY0NzU0LDEuNTIxMDMgLTAuMDQ2NzEsMy4yODAxNCAtMS41NTg0OSwzLjk0ODk3Yy0xNS4zMjc4Myw2LjU2MDQzIC02Mi41NTg3NiwtMS41MjU3NiAtNzQuODY2MzQsLTE2LjA4MzA5bC0zLjY5ODQzLDMuNzM4NzRjLTEuMDE3OSwwLjkxNDA1IC0xLjg4MjE3LDEuOTg1ODcgLTIuNTU5NjgsMy4xNzQ0Yy0wLjUxNTM2LDEuMzI3MzcgLTAuNzM1NDUsMi43NTEwNSAtMC42NDQ5Niw0LjE3MjA3YzAuMDA3NywxLjExNjQyIDAuMTE5MDQsMi4yMjk3MiAwLjMzMjU2LDMuMzI1NTZjMC4yMzkxMywxLjI4MDIzIDAuNTc2MDMsMi41NDAyNCAxLjAwNzc0LDMuNzY4OTdjMi42MzAyMiw3LjQ4NzU2IDguMDYxOTcsMTUuMzg4MjkgMTQuODIzOTYsMjIuMDU5NThjNi43NjE5OSw2LjY3MTI5IDE0LjUyMTYzLDEyLjAyMjQyIDIxLjk3ODk2LDE0LjQ5MTRjMS41NjYyMSwwLjU0IDMuMTg5MjMsMC44OTg0MSA0LjgzNzE5LDEuMDY4MjF2MGMxLjQxNDg2LDAuMTM5NCAyLjg0Mjc3LDAuMDU3ODEgNC4yMzI1MywtMC4yNDE4NmMxLjcwOTMzLC0wLjI5ODk0IDMuMjQ4NTEsLTEuMjE3NDEgNC4zMjMyMywtMi41Nzk4M2MwLjA2MDQ2LC0wLjA3MDU0IDAuNjQ0OTYsLTAuNjQ0OTYgMC42MzQ4OCwtMC42NTUwNHoiIGZpbGw9IiMwMDAwMDAiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLW9wYWNpdHk9IjAuMTI5NDEiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIxNSIvPjxwYXRoIGQ9Ik0zLjI5NzAyLDQ5LjQyMTZjMi40NDg2OSwwLjQ4ODgxIDE0LjYwMzczLDI0LjI5Nzc5IDMxLjc5OSwyMS40MjkyM2MxNS42MzU4MywtMi42MDg0MSA5LjA4MDY3LDE0LjMzMjQ1IDQ4LjU0ODY1LC01LjUwNjgybC0yOC41MDkxNiwyOC40Nzg5M2MwLDAgLTAuNTc0NDIsMC41ODQ1IC0wLjYzNDg4LDAuNjU1MDRjLTEuMDc0NzIsMS4zNjI0MSAtMi42MTM5LDIuMjgwOSAtNC4zMjMyMywyLjU3OTgzYy0xLjM4OTc2LDAuMjk5NjYgLTIuODE3NjgsMC4zODEyNiAtNC4yMzI1MywwLjI0MTg2djBjLTEuNjQ3OTYsLTAuMTY5NzkgLTMuMjcwOTcsLTAuNTI4MjEgLTQuODM3MTksLTEuMDY4MjFjLTcuNDU3MzMsLTIuNDk5MjEgLTE1LjI4NzUyLC03Ljg2MDQzIC0yMS45NTg4LC0xNC40ODEzMmMtNi42NzEyOSwtNi42MjA4OSAtMTIuMTYzNSwtMTQuNTcyMDIgLTE0Ljc5MzcyLC0yMi4wNTk1OGMtMC40MzE3MiwtMS4yMjg3NCAtMC43Njg2MiwtMi40ODg3NSAtMS4wMDc3NCwtMy43Njg5N2MtMC4yMTM1MiwtMS4wOTU4NSAtMC4zMjQ4NiwtMi4yMDkxNCAtMC4zMzI1NiwtMy4zMjU1NmMtMC4wMzY5LC0xLjA2NTcxIDAuMDU3ODcsLTIuMTMxOSAwLjI4MjE2LC0zLjE3NDR6IiBmaWxsPSIjZjU0MjQyIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iTTMxLjc3NzE4LDEwLjU1MDMzYy0xMC4yOTkxNywxLjEwODUyIC0xNi4zNDU2NSw0LjY2NTg3IC0xOS4xNDcxOSw5LjE4MDU3Yy0xLjg5MjIsMy4yNDc5NyAtMi4zNDE1Niw3LjEzODcyIC0xLjIzOTUzLDEwLjczMjVsMC4wOTA3LDAuMzQyNjRsMjAuMjY1NzksLTIwLjI1NTcxek03OC4yODQ2OSwyMS43NTY0OGMtNy4zNDY0NywtNy4zNTY1NSAtMTQuNzczNTcsLTEzLjEwMDcgLTIwLjg5MDU5LC0xNi4yOTUyN2MtNC4zNDMzOSwtMi4yMzcyIC03LjcyOTQyLC0zLjEzNDA5IC05LjM5MjIsLTIuMTg2ODFsLTAuODI2MzYsMC44MjYzNmMtMS4yMjk0NSwyLjAxNTUgLTAuNTEzOTYsNi4zMDg0OSAxLjc5Mzc5LDExLjY2OTdjMy41NjMzNSw3LjczMjE5IDguNTIwMTUsMTQuNzQyMDggMTQuNjIyNCwyMC42Nzg5N2M2Ljk5Mzc3LDYuOTkzNzcgMTQuNTAxNDgsMTIuMjM0MDQgMjAuODkwNTksMTUuMTE2MmM0LjU0NDk0LDIuMDE1NSA4LjI3MzYsMi45MjI0NyAxMC40MzAxOCwyLjMzNzk3bDEuOTI0OCwtMS45MzQ4OGMwLjQ1MzQ4LC0xLjkyNDggLTAuNTAzODgsLTUuMTc5ODIgLTIuNTA5MjksLTkuMjAwNzNjLTMuMTEzOTQsLTYuMjU4MTEgLTguNzg3NTUsLTEzLjc2NTgyIC0xNi4wNDMzMywtMjEuMDExNTJ6TTYwLjI4NjMzLC0wLjE1MTk0YzYuNzExNTksMy40NTY1NyAxNC42OTI5NSw5LjY0NDE0IDIyLjQ4MjgzLDE3LjQzNDAyYzcuNzg5ODksNy43ODk4OSAxMy44NTY1MiwxNS44MjE2MyAxNy4yMjIzOSwyMi43MjQ2OWMzLjc3OTA1LDcuNTY4MTggNC4zODM3LDE0LjAyNzg0IDAuNjk1MzQsMTcuNzE2MTljLTAuNjA1OCwwLjU3NzQ5IC0xLjI5NTUyLDEuMDU5OTYgLTIuMDQ1NzIsMS40MzFsLTM5LjQyMzA2LDM5LjQwMjljLTIuMzY4MiwyLjM4ODM2IC0zLjM1NTgsMy4zOTYxMSAtNy40MzcxNyw0LjMxMzE1Yy0yLjAzMTMyLDAuNDQwMzcgLTQuMTE4NywwLjU2Mjc2IC02LjE4NzU3LDAuMzYyNzhjLTIuMTQxODMsLTAuMjA3OCAtNC4yNTIxNSwtMC42NjQzNyAtNi4yODgzNCwtMS4zNjA0NmMtOC4zOTQ1MywtMi44MjE2OSAtMTcuMTMxNjksLTguNzI3MDkgLTI0LjQwNzYyLC0xNS45ODI4NmMtNy4yNzU5MywtNy4yNTU3NyAtMTMuMzcyOCwtMTYuMDUzNDEgLTE2LjMyNTUsLTI0LjQ2ODFjLTAuNTUwNDYsLTEuNTI1NTIgLTAuOTc4NDMsLTMuMDkyNDggLTEuMjc5ODQsLTQuNjg2MDJjLTAuMjg2MDMsLTEuNDc3NzUgLTAuNDMxMTIsLTIuOTc5MyAtMC40MzMzNCwtNC40ODQ0N2MtMC4xMTgxNywtMi4zNTIzNCAwLjMwNTkyLC00LjcwMDM3IDEuMjM5NTMsLTYuODYyNzVjMC45Njc0LC0xLjg2MTczIDIuMjUzMiwtMy41Mzk3NiAzLjc5OTIxLC00Ljk1ODExbDAuMTYxMjQsLTAuMTcxMzJsNC43NDY0OSwtNC43MzY0MWMtMC40OTc0NywtMS4xMjYwMiAtMC45MDg0OCwtMi4yODgyOCAtMS4yMjk0NSwtMy40NzY3M2MtMS41NTYxLC01LjE5NTg5IC0wLjg1MzgyLC0xMC44MDY3NSAxLjkzNDg4LC0xNS40NTg4NGM0LjMwMzA4LC03LjAzNDA3IDEzLjk1NzMsLTEyLjI2NDI4IDMwLjY2NTczLC0xMi40MzU2bDQuMjAyMzEsLTQuMTkyMjNjMC40NDM2OCwtMC42MDgzMiAwLjk4MTExLC0xLjE0MjM1IDEuNTkyMjQsLTEuNTgyMTZjMC4xOTg1NywtMC4xODczMSAwLjQyNjcsLTAuMzQwNTMgMC42NzUxOSwtMC40NTM0OGMzLjczODc0LC0yLjI1NzM1IDkuMjcxMjcsLTEuMzYwNDYgMTUuNjQwMjMsMS45MjQ4ek04OS4wNDc0Myw1OS43Njg2OWMtMi40NjcyLC0wLjU1OTY2IC00Ljg2ODc0LC0xLjM3NzA3IC03LjE2NTA4LC0yLjQzODc1Yy03LjA1NDIzLC0zLjE4NDQ4IC0xNS4yMjcwNiwtOC44NzgyNSAtMjIuNzY1LC0xNi40MDYxMmMtNi42NjcyNywtNi41MDY3NiAtMTIuMDc4NTEsLTE0LjE4NjM2IC0xNS45NjI3MSwtMjIuNjU0MTVjLTEuMDk4MjYsLTIuNDc4NDUgLTEuOTA2NDYsLTUuMDc1NTEgLTIuNDA4NTIsLTcuNzM5NDlsLTI2LjQxODk4LDI2LjMwMjJjMTMuODgzNTcsMTUuMDM3NTkgNTUuMzcyMzcsMjAuMzU1OTQgNjguMjQxMywxNC44NDM1NmMxLjUyOTk3LC0wLjYyNjEyIDMuMjc5MTUsMC4wOTI3NiAzLjkyNjY5LDEuNjEzOGMwLjY0NzU0LDEuNTIxMDMgLTAuMDQ2NzEsMy4yODAxNCAtMS41NTg0OSwzLjk0ODk3Yy0xNS4zMjc4Myw2LjU2MDQzIC02Mi41NTg3NiwtMS41MjU3NiAtNzQuODY2MzQsLTE2LjA4MzA5bC0zLjY5ODQzLDMuNzM4NzRjLTEuMDE3OSwwLjkxNDA1IC0xLjg4MjE3LDEuOTg1ODcgLTIuNTU5NjgsMy4xNzQ0Yy0wLjUxNTM2LDEuMzI3MzcgLTAuNzM1NDUsMi43NTEwNSAtMC42NDQ5Niw0LjE3MjA3YzAuMDA3NywxLjExNjQyIDAuMTE5MDQsMi4yMjk3MiAwLjMzMjU2LDMuMzI1NTZjMC4yMzkxMywxLjI4MDIzIDAuNTc2MDMsMi41NDAyNCAxLjAwNzc0LDMuNzY4OTdjMi42MzAyMiw3LjQ4NzU2IDguMDYxOTcsMTUuMzg4MjkgMTQuODIzOTYsMjIuMDU5NThjNi43NjE5OSw2LjY3MTI5IDE0LjUyMTYzLDEyLjAyMjQyIDIxLjk3ODk2LDE0LjQ5MTRjMS41NjYyMSwwLjU0IDMuMTg5MjMsMC44OTg0MSA0LjgzNzE5LDEuMDY4MjF2MGMxLjQxNDg2LDAuMTM5NCAyLjg0Mjc3LDAuMDU3ODEgNC4yMzI1MywtMC4yNDE4NmMxLjcwOTMzLC0wLjI5ODk0IDMuMjQ4NTEsLTEuMjE3NDEgNC4zMjMyMywtMi41Nzk4M2MwLjA2MDQ2LC0wLjA3MDU0IDAuNjQ0OTYsLTAuNjQ0OTYgMC42MzQ4OCwtMC42NTUwNHoiIGZpbGw9IiMwMDAwMDAiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjEwIi8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6NTguOTI4MDk6NTcuNjUxOTM5OTk5OTk5OTk2LS0+';
@@ -95,20 +97,20 @@
 
         // We assume all values are sanitized when they are set, so then we can just use them as-is here.
 
-        if (generalTextColor) {
-            css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${generalTextColor}; }`;
+        if (monitorTextColor) {
+            css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${monitorTextColor}; }`;
         }
-        if (generalbackgroundColor) {
-            css += `${monitorRoot}, ${monitorRowsInner} { background: ${generalbackgroundColor}; }`;
+        if (monitorBackgroundColor) {
+            css += `${monitorRoot}, ${monitorRowsInner} { background: ${monitorBackgroundColor}; }`;
         }
-        if (generalBorderColor) {
-            css += `${monitorRoot} { border-color: ${generalBorderColor}; }`;
+        if (monitorBorderColor) {
+            css += `${monitorRoot} { border-color: ${monitorBorderColor}; }`;
         }
-        if (borderSize >= 0) {
-            css += `${monitorRoot} { border-width: ${borderSize}px; }`;
+        if (monitorRoundness >= 0) {
+            css += `${monitorRoot} { border-radius: ${monitorRoundness}px; }`;
         }
-        if (generalBorderRadius >= 0) {
-            css += `${monitorRoot} { border-radius: ${generalBorderRadius}px; }`;
+        if (monitorBorderSize >= 0) {
+            css += `${monitorRoot} { border-width: ${monitorBorderSize}px; }`;
         }
         if (variableValueBoxColor) {
             css += `${monitorValue}, ${monitorValueLarge} { background: ${variableValueBoxColor} !important; }`;
@@ -116,8 +118,8 @@
         if (variableValueTextColor) {
             css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor}; }`;
         }
-        if (variableValueBoxCornerRadius >= 0) {
-            css += `${monitorValue} { border-radius: ${variableValueBoxCornerRadius}px; }`;
+        if (variableValueBoxRoundness >= 0) {
+            css += `${monitorValue} { border-radius: ${variableValueBoxRoundness}px; }`;
         }
         if (listHeaderColor) {
             css += `${monitorListHeader} { background: ${listHeaderColor}; }`;
@@ -131,8 +133,8 @@
         if (listValueTextColor) {
             css += `${monitorRowValueOuter} { color: ${listValueTextColor}; }`;
         }
-        if (listValueBoxCornerRadius >= 0) {
-            css += `${monitorRowValueOuter} { border-radius: ${listValueBoxCornerRadius}px; }`;
+        if (listValueBoxRoundness >= 0) {
+            css += `${monitorRowValueOuter} { border-radius: ${listValueBoxRoundness}px; }`;
         }
         if (!allowScrolling) {
             css += `${monitorRowsScroller} { overflow: hidden !important; }`;
@@ -142,6 +144,9 @@
         }
         if (askboxBGRoundness >= 0) {
             css += `${askBoxBG} { border-radius: ${askboxBGRoundness}px !important; }`;
+        }
+        if (askboxBGBorderSize >= 0) {
+            css += `${askBoxBG} { border-width: ${askboxBGBorderSize}px !important; }`;
         }
         if (askBoxButtonColor) {
             css += `${askBoxButton} { background-color: ${askBoxButtonColor}; }`;
@@ -159,14 +164,17 @@
         if (askBoxInnerRoundness >= 0) {
             css += `${askBoxInner} { border-radius: ${askBoxInnerRoundness}px !important; }`;
         }
+        if (askBoxInnerBorderSize >= 0) {
+            css += `${askBoxInner} { border-width: ${askBoxInnerBorderSize}px !important; }`;
+        }
         if (askBoxButtonImage) {
             css += `${askBoxButton} { background-image: ${askBoxButtonImage} !important; }`;
             // I hate this
             css += `${askBoxIcon} { visibility: hidden ; }`;
         }
         if (askBoxBorderColor) {
-            css += `${askBoxBorderMain}, ${askBoxBorderOutter} { border-color: ${askBoxBorderColor} !important; }`;
-            css += `${askBoxBorderOutter} { box-shadow: none !important; }`;
+            css += `${askBoxBorderMain}, ${askBoxBorderOuter} { border-color: ${askBoxBorderColor} !important; }`;
+            css += `${askBoxBorderOuter} { box-shadow: none !important; }`;
         }
 
         stylesheet.textContent = css;
@@ -251,7 +259,8 @@
                 name: 'Custom Styles',
                 menuIconURI: extensionIcon,
                 color1: '#0072d6',
-                color2: '#0072d6',
+                color2: '#0064bc',
+                color3: '#01539b',
                 blocks: [
                     {
                         func: 'help',
@@ -262,7 +271,7 @@
                         blockIconURI: ColorIcon,
                         opcode: 'changecss',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'set color of [COLORABLE] to [COLOR]',
+                        text: 'set [COLORABLE] to [COLOR]',
                         arguments: {
                             COLORABLE: {
                                 type: Scratch.ArgumentType.STRING,
@@ -304,19 +313,6 @@
                     {
                         blockIconURI: PictureIcon,
                         disableMonitor: true,
-                        opcode: 'setAskURI',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'set ask prompt button image to [URL]',
-                        arguments: {
-                            URL: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'https://extensions.turbowarp.org/dango.png'
-                            }
-                        }
-                    },
-                    {
-                        blockIconURI: PictureIcon,
-                        disableMonitor: true,
                         opcode: 'pictureinput',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'image [URL]',
@@ -327,12 +323,31 @@
                             }
                         }
                     },
+                    '---',
+                    {
+                        blockIconURI: PictureIcon,
+                        disableMonitor: true,
+                        opcode: 'setAskURI',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'set ask prompt button image to [URL]',
+                        arguments: {
+                            URL: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'https://extensions.turbowarp.org/dango.png'
+                            }
+                        }
+                    },
+                    '---',
                     {
                         blockIconURI: BorderIcon,
                         opcode: 'setbordersize',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'set variable border size to [SIZE]',
+                        text: 'set border width of [BORDER] to [SIZE]',
                         arguments: {
+                            BORDER: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: 'BORDER_SIZE_MENU'
+                            },
                             SIZE: {
                                 type: Scratch.ArgumentType.NUMBER,
                                 defaultValue: '2'
@@ -351,10 +366,11 @@
                             },
                             CORNER: {
                                 type: Scratch.ArgumentType.STRING,
-                                menu: 'BORDER_MENU'
+                                menu: 'BORDER_ROUNDNESS_MENU'
                             }
                         }
                     },
+                    '---',
                     {
                         blockIconURI: ResetIcon,
                         opcode: 'clearCSS',
@@ -433,31 +449,39 @@
                     COLORABLE_MENU: {
                         acceptReporters: true,
                         items: [
-                            'general text',
-                            'general background',
-                            'general border',
-                            'variable value box',
+                            'monitor text',
+                            'monitor background',
+                            'monitor border',
+                            'variable value background',
                             'variable value text',
-                            'list header',
-                            'list footer',
-                            'list value box',
+                            'list header background',
+                            'list footer background',
+                            'list value background',
                             'list value text',
                             'ask prompt background',
-                            'ask prompt button',
-                            'ask prompt inner',
-                            'ask prompt text',
-                            'ask prompt border'
+                            'ask prompt button background',
+                            'ask prompt input background',
+                            'ask prompt input text',
+                            'ask prompt input border'
                         ]
                     },
-                    BORDER_MENU: {
+                    BORDER_SIZE_MENU: {
                         acceptReporters: true,
                         items: [
-                            'general borders',
-                            'variable value box borders',
-                            'list value box borders',
+                            'monitor background',
+                            'ask prompt background',
+                            'ask prompt input'
+                        ]
+                    },
+                    BORDER_ROUNDNESS_MENU: {
+                        acceptReporters: true,
+                        items: [
+                            'monitor background',
+                            'variable value',
+                            'list value',
                             'ask prompt background',
                             'ask prompt button',
-                            'ask prompt inner'
+                            'ask prompt input'
                         ]
                     },
                     SCROLL_MENU: {
@@ -498,35 +522,36 @@
                 }
             };
         }
+
         changecss(args) {
             return parseColor(args.COLOR, color => {
-                if (args.COLORABLE == 'general text') {
-                    generalTextColor = color;
-                } else if (args.COLORABLE == 'general background') {
-                    generalbackgroundColor = color;
-                } else if (args.COLORABLE == 'variable value box') {
+                if (args.COLORABLE === 'monitor text') {
+                    monitorTextColor = color;
+                } else if (args.COLORABLE === 'monitor background') {
+                    monitorBackgroundColor = color;
+                } else if (args.COLORABLE === 'monitor border') {
+                    monitorBorderColor = color;
+                } else if (args.COLORABLE === 'variable value background') {
                     variableValueBoxColor = color;
-                } else if (args.COLORABLE == 'variable value text') {
+                } else if (args.COLORABLE === 'variable value text') {
                     variableValueTextColor = color;
-                } else if (args.COLORABLE == 'list header') {
+                } else if (args.COLORABLE === 'list header background') {
                     listHeaderColor = color;
-                } else if (args.COLORABLE == 'list footer') {
+                } else if (args.COLORABLE === 'list footer background') {
                     listFooterColor = color;
-                } else if (args.COLORABLE == 'list value box') {
+                } else if (args.COLORABLE === 'list value background') {
                     listValueBoxColor = color;
-                } else if (args.COLORABLE == 'list value text') {
+                } else if (args.COLORABLE === 'list value text') {
                     listValueTextColor = color;
-                } else if (args.COLORABLE == 'general border') {
-                    generalBorderColor = color;
-                } else if (args.COLORABLE == 'ask prompt background') {
+                } else if (args.COLORABLE === 'ask prompt background') {
                     askBoxBGColor = color;
-                } else if (args.COLORABLE == 'ask prompt button') {
+                } else if (args.COLORABLE === 'ask prompt button background') {
                     askBoxButtonColor = color;
-                } else if (args.COLORABLE == 'ask prompt inner') {
+                } else if (args.COLORABLE === 'ask prompt input background') {
                     askBoxInnerColor = color;
-                } else if (args.COLORABLE == 'ask prompt text') {
+                } else if (args.COLORABLE === 'ask prompt input text') {
                     askBoxTextColor = color;
-                } else if (args.COLORABLE == 'ask prompt border') {
+                } else if (args.COLORABLE === 'ask prompt input border') {
                     askBoxBorderColor = color;
                 }
 
@@ -539,23 +564,30 @@
         }
 
         setbordersize(args) {
-            borderSize = Scratch.Cast.toNumber(args.SIZE);
+            const size = Scratch.Cast.toNumber(args.SIZE);
+            if (args.BORDER === 'monitor background') {
+                monitorBorderSize = size;
+            } else if (args.BORDER === 'ask prompt background') {
+                askboxBGBorderSize = size;
+            } else if (args.BORDER === 'ask prompt input') {
+                askBoxInnerBorderSize = size;
+            }
             applyCSS();
         }
 
         setborderradius(args) {
             const size = Scratch.Cast.toNumber(args.SIZE);
-            if (args.CORNER == 'general borders') {
-                generalBorderRadius = size;
-            } else if (args.CORNER == 'variable value box borders') {
-                variableValueBoxCornerRadius = size;
-            } else if (args.CORNER == 'list value box borders') {
-                listValueBoxCornerRadius = size;
-            } else if (args.CORNER == 'ask prompt background') {
+            if (args.CORNER === 'monitor background') {
+                monitorRoundness = size;
+            } else if (args.CORNER === 'variable value') {
+                variableValueBoxRoundness = size;
+            } else if (args.CORNER === 'list value') {
+                listValueBoxRoundness = size;
+            } else if (args.CORNER === 'ask prompt background') {
                 askboxBGRoundness = size;
-            } else if (args.CORNER == 'ask prompt button') {
+            } else if (args.CORNER === 'ask prompt button') {
                 askBoxButtonRoundness = size;
-            } else if (args.CORNER == 'ask prompt inner') {
+            } else if (args.CORNER === 'ask prompt input') {
                 askBoxInnerRoundness = size;
             }
             applyCSS();
@@ -599,38 +631,40 @@
         }
 
         clearCSS() {
-            generalTextColor = '';
-            generalBorderColor = '';
-            generalbackgroundColor = '';
+            monitorTextColor = '';
+            monitorBorderColor = '';
+            monitorBackgroundColor = '';
             variableValueBoxColor = '';
             variableValueTextColor = '';
             listFooterColor = '';
             listHeaderColor = '';
             listValueTextColor = '';
             listValueBoxColor = '';
-            listValueBoxCornerRadius = -1;
-            variableValueBoxCornerRadius = -1;
-            generalBorderRadius = -1;
+            variableValueBoxRoundness = -1;
+            listValueBoxRoundness = -1;
+            monitorRoundness = -1;
+            monitorBorderSize = -1;
             allowScrolling = true;
-            borderSize = -1;
             askBoxBGColor = '';
             askboxBGRoundness = -1;
+            askboxBGBorderSize = -1;
             askBoxButtonColor = '';
             askBoxButtonRoundness = -1;
             askBoxInnerColor = '';
             askBoxInnerRoundness = -1;
+            askBoxInnerBorderSize = -1;
             askBoxIcon = '';
             askBoxTextColor = '';
             askBoxButtonImage = '';
-            askBoxBorderColor = '';
+            askBoxBorderColor = '';        
             applyCSS();
         }
 
         getValue(args) {
             if (args.ITEM == 'general text color') {
-                return generalTextColor;
+                return monitorTextColor;
             } else if (args.ITEM == 'general background color') {
-                return generalbackgroundColor;
+                return monitorBackgroundColor;
             } else if (args.ITEM == 'variable value box color') {
                 return variableValueBoxColor;
             } else if (args.ITEM == 'variable value text color') {
@@ -644,7 +678,7 @@
             } else if (args.ITEM == 'list value text color') {
                 return listValueTextColor;
             } else if (args.ITEM == 'general border color') {
-                return generalBorderColor;
+                return monitorBorderColor;
             } else if (args.ITEM == 'ask prompt background color') {
                 return askBoxBGColor;
             } else if (args.ITEM == 'ask prompt button color') {
@@ -654,11 +688,11 @@
             } else if (args.ITEM == 'ask prompt text color') {
                 return askBoxTextColor;
             } else if (args.ITEM == 'general borders roundness') {
-                return generalBorderRadius;
+                return monitorRoundness;
             } else if (args.ITEM == 'variable value box borders roundness') {
-                return variableValueBoxCornerRadius;
+                return variableValueBoxRoundness;
             } else if (args.ITEM == 'list value box borders roundness') {
-                return listValueBoxCornerRadius;
+                return listValueBoxRoundness;
             } else if (args.ITEM == 'ask prompt background border roundness') {
                 return askboxBGRoundness;
             } else if (args.ITEM == 'ask prompt button border roundness') {
@@ -672,7 +706,7 @@
                     return 'hidden';
                 }
             } else if (args.ITEM == 'border size') {
-                return borderSize;
+                return monitorBorderSize;
             } else if (args.ITEM == 'ask prompt button image') {
                 return askBoxButtonImage;
             } else if (args.ITEM == 'ask prompt border color') {
