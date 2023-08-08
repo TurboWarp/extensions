@@ -713,7 +713,7 @@
             } else if (args.ITEM === 'ask prompt button image') {
                 return askButtonImage;
             } else if (args.ITEM === 'list scrolling') {
-                if (allowScrolling) {
+                if (allowScrolling == 'auto') {
                     return 'enabled';
                 } else {
                     return 'disabled';
