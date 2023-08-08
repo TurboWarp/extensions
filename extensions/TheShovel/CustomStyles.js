@@ -168,7 +168,7 @@
             css += `${askBoxInner} { border-width: ${askInputBorderWidth}px !important; }`;
         }
         if (askBoxButtonImage) {
-            css += `${askBoxButton} { background-image: url(${encodeURI(askBoxButtonImage)}) !important; background-repeat: no-repeat; background-size: contain; }`;
+            css += `${askBoxButton} { background-image: url("${encodeURI(askBoxButtonImage)}") !important; background-repeat: no-repeat; background-size: contain; }`;
             css += `${askBoxIcon} { visibility: hidden; }`;
         }
         if (askInputBorder) {
@@ -238,7 +238,9 @@
         }
 
         // URL
-        const match = color.match(/^url\((.+)\)$/);
+        // see list of non-escaped characters:
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI#description
+        const match = color.match(/^url\("([A-Za-z0-9\-_.!~*'();/?:@&=+$,#]+)"\)$/);
         if (match) {
             const url = match[1];
             return Scratch.canFetch(url).then(allowed => {
@@ -628,7 +630,7 @@
         }
 
         pictureinput(args) {
-            return 'url(' + args.URL + ')';
+            return `url("${encodeURI(args.URL)}")`;
         }
 
         clearCSS() {
