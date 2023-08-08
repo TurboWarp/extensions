@@ -264,11 +264,6 @@
                 color3: '#01539b',
                 blocks: [
                     {
-                        func: 'help',
-                        blockType: Scratch.BlockType.BUTTON,
-                        text: 'How to use',
-                    },
-                    {
                         blockIconURI: ColorIcon,
                         opcode: 'changecss',
                         blockType: Scratch.BlockType.COMMAND,
