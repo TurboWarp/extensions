@@ -79,7 +79,7 @@
       runtime.on('BEFORE_EXECUTE', () => {
         runtime.shouldExecuteStopClicked = false;
         runtime.startHats('lmsMoreEvents_forever');
-    
+
         runtime.startHats('lmsMoreEvents_whileTurboMode', {
           STATE: (runtime.turboMode) ? 'enabled' : 'disabled'
         });
@@ -323,7 +323,7 @@
       if (!broadcastVar) return;
 
       const spriteTarget = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
-      if(!spriteTarget) return;
+      if (!spriteTarget) return;
       const cloneTargets = spriteTarget.sprite.clones;
 
       if (args.TARGET === '_stage_') {
