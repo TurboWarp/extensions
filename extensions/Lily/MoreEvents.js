@@ -70,14 +70,6 @@
     { text: '9', value: '9' },
   ];
 
-  vm.runtime.on('BEFORE_EXECUTE', () => {
-    runtime.startHats('lmsMoreEvents_forever');
-
-    runtime.startHats('lmsMoreEvents_whileTurboMode', {
-      STATE: (runtime.turboMode) ? 'enabled' : 'disabled'
-    });
-  });
-
   var lastValues = {};
 
   class MoreEvents {
@@ -86,6 +78,11 @@
       runtime.shouldExecuteStopClicked = true;
       runtime.on('BEFORE_EXECUTE', () => {
         runtime.shouldExecuteStopClicked = false;
+        runtime.startHats('lmsMoreEvents_forever');
+    
+        runtime.startHats('lmsMoreEvents_whileTurboMode', {
+          STATE: (runtime.turboMode) ? 'enabled' : 'disabled'
+        });
       });
       runtime.on('PROJECT_STOP_ALL', () => {
         if (runtime.shouldExecuteStopClicked)
@@ -139,7 +136,7 @@
           {
             opcode: 'whenValueChanged',
             blockType: Scratch.BlockType.HAT,
-            text: 'when [INPUT] changed',
+            text: 'when [INPUT] is changed',
             isEdgeActivated: true,
             arguments: {
               INPUT: {
@@ -204,9 +201,43 @@
             }
           },
           {
-            opcode: 'broadcastAll',
+            opcode: 'broadcastData',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'broadcast everything'
+            text: 'broadcast [BROADCAST_OPTION] with data [DATA]',
+            arguments: {
+              BROADCAST_OPTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'broadcastMenu'
+              },
+              DATA: {
+                type: Scratch.ArgumentType.STRING
+              }
+            }
+          },
+          {
+            opcode: 'broadcastDataToTarget',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA]',
+            arguments: {
+              BROADCAST_OPTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'broadcastMenu'
+              },
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'targetMenu'
+              },
+              DATA: {
+                type: Scratch.ArgumentType.STRING
+              }
+            }
+          },
+          {
+            opcode: 'receivedData',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'received data',
+            disableMonitor: true,
+            allowDropAnywhere: true
           }
         ],
         menus: {
@@ -256,7 +287,7 @@
 
     whenKeyAction(args, util) {
       const key = Scratch.Cast.toString(args.KEY_OPTION).toLowerCase();
-      const pressed = util.ioQuery('keyboard', 'getKeyIsDown', [args.KEY_OPTION]);
+      const pressed = util.ioQuery('keyboard', 'getKeyIsDown', [key]);
       return (args.ACTION === 'released') ? !pressed : pressed;
     }
 
@@ -264,24 +295,60 @@
       if (!args.BROADCAST_OPTION) return;
       const broadcastVar = util.runtime.getTargetForStage().lookupBroadcastMsg(args.BROADCAST_OPTION);
       if (!broadcastVar) return;
+
       if (args.TARGET === '_stage_') {
         util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, runtime.getTargetForStage());
         return;
       }
+
       const spriteTarget = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
       const cloneTargets = spriteTarget.sprite.clones;
       cloneTargets.forEach(model => util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, model));
       util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, spriteTarget);
     }
 
-    broadcastAll(args, util) {
-      util.startHats('event_whenbroadcastreceived');
+    broadcastData(args, util) {
+      if (!args.BROADCAST_OPTION) return;
+      const broadcastVar = util.runtime.getTargetForStage().lookupBroadcastMsg(args.BROADCAST_OPTION);
+      if (!broadcastVar) return;
+
+      const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name});
+      console.log(threads);
+      threads.forEach(thread => thread['emitedData'] = args.DATA);
+    }
+
+    broadcastDataToTarget(args, util) {
+      if (!args.BROADCAST_OPTION) return;
+      const broadcastVar = util.runtime.getTargetForStage().lookupBroadcastMsg(args.BROADCAST_OPTION);
+      if (!broadcastVar) return;
+
+      const spriteTarget = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      if(!spriteTarget) return;
+      const cloneTargets = spriteTarget.sprite.clones;
+
+      if (args.TARGET === '_stage_') {
+        const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, runtime.getTargetForStage());
+        threads.forEach(thread => thread['emitedData'] = args.DATA);
+        return;
+      } else {
+        cloneTargets.forEach(model => {
+          const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, model);
+          threads.forEach(thread => thread['emitedData'] = args.DATA);
+        });
+      }
+
+      const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, spriteTarget);
+      threads.forEach(thread => thread['emitedData'] = args.DATA);
+    }
+
+    receivedData(args, util) {
+      const received = util.thread['emitedData'];
+      return (received) ? received : '';
     }
 
     _getTargets() {
       const spriteNames = [{text: 'Stage', value: '_stage_'}];
       const targets = Scratch.vm.runtime.targets;
-      const myself = Scratch.vm.runtime.getEditingTarget().getName();
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) {
