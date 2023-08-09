@@ -2,7 +2,7 @@
   'use strict';
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Wake Lock extension must run unsandboxed");
+    throw new Error('Wake Lock extension must run unsandboxed');
   }
 
   let wakeLock = null;
