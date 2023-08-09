@@ -59,7 +59,7 @@
       };
     }
     async setWakeLock(args) {
-      if (args.enabled === 'true') {
+      if (Scratch.Cast.toBoolean(args.enabled) === true) {
         if (!wakeLock) {
           try {
             wakeLock = await navigator.wakeLock.request('screen');
@@ -80,7 +80,6 @@
           console.log('Wake Lock already inactive.');
         }
       }
-
     }
     isLocked() {
       return !!wakeLock;

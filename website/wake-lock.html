@@ -72,23 +72,21 @@
     	<div class="inbox">
 			<p>The Wake Lock feature allows you to keep your computer's screen on while a project is running. This can be helpful when playing media or while a project is performing an important but time-consuming task.</p>
 
-			<h2>Activating Wake Lock</h2>
+			<h2>Activating and Releasing Wake Lock</h2>
 
 			<p>Run the "set wake lock to (on)" block to activate wake lock.</p>
 
 			<p>If you ever need to check that wake lock has properly been activated, use the "is wake lock active?" boolean reporter.</p>
 
-			<h2>Releasing Wake Lock</h2>
+			<p>To release wake lock, simply change "on" to "off".</p>
 
-			<p>Simply change "on" to "off".</p>
+			<p>You can also insert boolean reporters into the menu input.</p>
 
 			<p>Wake lock will also be released automatically when the user clicks the stop sign or green flag, to ensure it isn't accidentally left on forever.</p>
 
-			<h2>Other</h2>
+			<h2>Note</h2>
 
-            <p>The wake lock block takes a moment to finish running as it activates wake lock, so if you put it in a script with other blocks, it will yield briefly, so try keeping it separate from your other scripts. The boolean reporter, however, does not have a delay.</p>
-
-			<p>Advanced: You can also use boolean reporters to determine whether to activate or release wake lock. However, you have to change the boolean into a string for... reasons. You can do this with the <a href=https://extensions.turbowarp.org/Lily/Cast.js>Cast extension</a>.</p>
+      <p>The wake lock block takes a moment to finish running as it activates wake lock, so if you put it in a script with other blocks, it will yield briefly, so try keeping it separate from your other scripts. The boolean reporter, however, does not have a delay.</p>
 		</div>
 	</body>
 </html>
