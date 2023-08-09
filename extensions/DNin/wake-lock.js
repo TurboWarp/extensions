@@ -6,6 +6,7 @@
   }
 
   let wakeLock = null;
+  let working = false;
 
   class WakeLock {
     constructor(runtime, extensionId) {
@@ -13,10 +14,16 @@
       this.runtime.on('PROJECT_STOP_ALL', this.stopAll.bind(this));
     }
     stopAll() {
+      if (working) {
+        console.error('Already trying to activate/release Wake Lock.');
+        return;
+      }
       if (wakeLock) {
+        working = true;
         wakeLock.release().then(() => {
           console.log('Wake Lock released due to stop.');
           wakeLock = null;
+          working = false;
         });
       }
     }
@@ -59,22 +66,30 @@
       };
     }
     async setWakeLock(args) {
+      if (working) {
+        console.error('Already trying to activate/release Wake Lock.');
+        return;
+      }
       if (Scratch.Cast.toBoolean(args.enabled) === true) {
         if (!wakeLock) {
+          working = true;
           try {
             wakeLock = await navigator.wakeLock.request('screen');
             console.log('Wake Lock activated.');
           } catch (err) {
             console.error(err);
           }
+          working = false;
         } else {
           console.log('Wake Lock already active.');
         }
       } else {
         if (wakeLock) {
+          working = true;
           wakeLock.release().then(() => {
             console.log('Wake Lock released.');
             wakeLock = null;
+            working = false;
           });
         } else {
           console.log('Wake Lock already inactive.');
