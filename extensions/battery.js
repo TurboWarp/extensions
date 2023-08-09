@@ -81,25 +81,25 @@
           },
           {
             opcode: 'chargingChanged',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when charging changed',
             isEdgeActivated: false
           },
           {
             opcode: 'levelChanged',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when battery level changed',
             isEdgeActivated: false
           },
           {
             opcode: 'chargeTimeChanged',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when time until charged changed',
             isEdgeActivated: false
           },
           {
             opcode: 'dischargeTimeChanged',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when time until empty changed',
             isEdgeActivated: false
           },
