@@ -191,14 +191,14 @@
             text: 'broadcast [BROADCAST_OPTION] to [TARGET]',
             arguments: {
               BROADCAST_OPTION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'broadcastMenu'
+                type: Scratch.ArgumentType.STRING
               },
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'targetMenu'
               }
-            }
+            },
+            hideFromPalette: true
           },
           {
             opcode: 'broadcastData',
@@ -206,13 +206,13 @@
             text: 'broadcast [BROADCAST_OPTION] with data [DATA]',
             arguments: {
               BROADCAST_OPTION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'broadcastMenu'
+                type: Scratch.ArgumentType.STRING
               },
               DATA: {
                 type: Scratch.ArgumentType.STRING
               }
-            }
+            },
+            hideFromPalette: true
           },
           {
             opcode: 'broadcastDataToTarget',
@@ -220,8 +220,7 @@
             text: 'broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA]',
             arguments: {
               BROADCAST_OPTION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'broadcastMenu'
+                type: Scratch.ArgumentType.STRING
               },
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -230,7 +229,12 @@
               DATA: {
                 type: Scratch.ArgumentType.STRING
               }
-            }
+            },
+            hideFromPalette: true
+          },
+          { // Adding the broadcast argument to the blocks
+            blockType: Scratch.BlockType.XML,
+            xml: '<block type="lmsMoreEvents_broadcastToTarget"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value></block><block type="lmsMoreEvents_broadcastData"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block><block type="lmsMoreEvents_broadcastDataToTarget"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block>'
           },
           {
             opcode: 'receivedData',
@@ -245,10 +249,6 @@
           targetMenu: {
             acceptReporters: true,
             items: '_getTargets'
-          },
-          broadcastMenu: {
-            acceptReporters: true,
-            items: '_getBroadcastMsgs'
           },
           keyboardButtons: {
             acceptReporters: true,
@@ -292,56 +292,54 @@
     }
 
     broadcastToTarget(args, util) {
-      if (!args.BROADCAST_OPTION) return;
-      const broadcastVar = util.runtime.getTargetForStage().lookupBroadcastMsg(args.BROADCAST_OPTION);
-      if (!broadcastVar) return;
+      const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
+      if (!broadcast) return;
 
       if (args.TARGET === '_stage_') {
-        util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, runtime.getTargetForStage());
+        util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, runtime.getTargetForStage());
         return;
       }
 
       const spriteTarget = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
       const cloneTargets = spriteTarget.sprite.clones;
-      cloneTargets.forEach(model => util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, model));
-      util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, spriteTarget);
+      cloneTargets.forEach(model => util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, model));
+      util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, spriteTarget);
     }
 
     broadcastData(args, util) {
-      if (!args.BROADCAST_OPTION) return;
-      const broadcastVar = util.runtime.getTargetForStage().lookupBroadcastMsg(args.BROADCAST_OPTION);
-      if (!broadcastVar) return;
+      const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
+      if (!broadcast) return;
 
-      const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name});
-      threads.forEach(thread => thread['emitedData'] = args.DATA);
+      const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast});
+      console.log(threads);
+      threads.forEach(thread => thread.receivedData = args.DATA);
     }
 
     broadcastDataToTarget(args, util) {
-      if (!args.BROADCAST_OPTION) return;
-      const broadcastVar = util.runtime.getTargetForStage().lookupBroadcastMsg(args.BROADCAST_OPTION);
-      if (!broadcastVar) return;
+      const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
+      if (!broadcast) return;
 
       const spriteTarget = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
       if (!spriteTarget) return;
       const cloneTargets = spriteTarget.sprite.clones;
 
       if (args.TARGET === '_stage_') {
-        const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, runtime.getTargetForStage());
-        threads.forEach(thread => thread['emitedData'] = args.DATA);
+        const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, runtime.getTargetForStage());
+        threads.forEach(thread => thread.receivedData = args.DATA);
         return;
       } else {
         cloneTargets.forEach(model => {
-          const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, model);
-          threads.forEach(thread => thread['emitedData'] = args.DATA);
+          const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, model);
+          threads.forEach(thread => thread.receivedData = args.DATA);
         });
       }
 
-      const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name}, spriteTarget);
-      threads.forEach(thread => thread['emitedData'] = args.DATA);
+      const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, spriteTarget);
+      threads.forEach(thread => thread.receivedData = args.DATA);
     }
 
     receivedData(args, util) {
-      const received = util.thread['emitedData'];
+      const received = util.thread.receivedData;
       return (received) ? received : '';
     }
 
