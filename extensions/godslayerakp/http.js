@@ -710,13 +710,11 @@
 
         showExtra() {
             this.showingExtra = true;
-            // @ts-ignore
             vm.extensionManager.refreshBlocks();
         }
 
         hideExtra() {
             this.showingExtra = false;
-            // @ts-ignore
             vm.extensionManager.refreshBlocks();
         }
 
