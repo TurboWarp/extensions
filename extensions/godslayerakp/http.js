@@ -280,13 +280,13 @@
                     '---',
                     {
                         opcode: 'onResponse',
-                        blockType: BlockType.HAT,
+                        blockType: BlockType.EVENT,
                         isEdgeActivated: false,
                         text: 'when a site responds'
                     },
                     {
                         opcode: 'onFail',
-                        blockType: BlockType.HAT,
+                        blockType: BlockType.EVENT,
                         isEdgeActivated: false,
                         text: 'when a request fails'
                     },
@@ -537,18 +537,6 @@
                 object[entry[0]] = entry[1];
             }
             return JSON.stringify(object);
-        }
-
-        /* -------- EVENTS -------- */
-
-        onResponse() {
-            // filer olo
-            return false;
-        }
-
-        onFail() {
-            // filer olo
-            return false;
         }
 
         /* -------- CONTROL --------- */
