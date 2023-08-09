@@ -313,7 +313,6 @@
       if (!broadcastVar) return;
 
       const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcastVar.name});
-      console.log(threads);
       threads.forEach(thread => thread['emitedData'] = args.DATA);
     }
 
