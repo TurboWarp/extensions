@@ -13,7 +13,7 @@
       this.runtime.on('PROJECT_STOP_ALL', this.stopAll.bind(this));
     }
     stopAll() {
-      if (!!wakeLock) {
+      if (wakeLock) {
         wakeLock.release().then(() => {
           console.log('Wake Lock released due to stop.');
           wakeLock = null;
@@ -71,7 +71,7 @@
           console.log('Wake Lock already active.');
         }
       } else {
-        if (!!wakeLock) {
+        if (wakeLock) {
           wakeLock.release().then(() => {
             console.log('Wake Lock released.');
             wakeLock = null;
