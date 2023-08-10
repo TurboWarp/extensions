@@ -546,7 +546,9 @@
       return !isTrueInt(A) && !Number.isNaN(toNaNNumber(A));
     }
     resolve_math({A}) {
+      /* eslint-disable */
       return math.evaluate(A);
+      /* eslint-enable */
     }
   }
 
