@@ -19,6 +19,11 @@
       if (x ==  'i') return new ComplexNumber(0, 1);
       if (x == '-i') return new ComplexNumber(0,-1);
 
+      let tmp = Number(x);
+      if (!Number.isNaN(tmp)) return new ComplexNumber(tmp);
+      tmp = Number(x.slice(0,-1));
+      if (x.endsWith('i') && !Number.isNaN(tmp)) return new ComplexNumber(0,tmp);
+
       //// case 1:
       // match + or -            (0~1)
       // match numbers 0-9       (1~)
@@ -296,6 +301,10 @@
       if (this.r == 0 && this.i == 0) return this.ZERO;
       return this.div(new ComplexNumber(this.abs()));
     }
+
+    equal(that) {
+      return this.r == that.r && this.i == that.i;
+    }
   }
 
   ComplexNumber.prototype.toString = function() {
@@ -397,6 +406,21 @@
               B: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: '2+3i'
+              }
+            }
+          },
+          {
+            opcode: 'eq',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: '[A] = [B]',
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '1-i'
+              },
+              B: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '1-i'
               }
             }
           },
@@ -517,6 +541,12 @@
       return A.pow(B).toStr();
     }
 
+    eq(arg) {
+      const A = ComplexNumber.fromStr(Scratch.Cast.toString(arg.A));
+      const B = ComplexNumber.fromStr(Scratch.Cast.toString(arg.B));
+      return A.equal(B);
+    }
+
     unaryop(arg) {
       const m = arg.M;
       const A = ComplexNumber.fromStr(Scratch.Cast.toString(arg.A));
@@ -543,6 +573,7 @@
       const m = arg.M;
       const A = ComplexNumber.fromStr(Scratch.Cast.toString(arg.A));
 
+      // ['sin','cos','tan','arcsin','arccos','arctan','sinh','cosh','tanh','coth','sech','csch']
       switch (m) {
         case 'sin': return A.sin().toStr();
         case 'cos': return A.cos().toStr();
@@ -576,6 +607,29 @@
       return A.factorial().toStr();
     }
   }
+
+  // for tests, if u changed fromStr
+  let tests = () => {
+    let make = (str, r, i) => console.assert(ComplexNumber.fromStr(str).equal(new ComplexNumber(r,i)), str, ComplexNumber.fromStr(str));
+    make('0',0,0);
+    make('123',123,0);
+    make('-123',-123,0);
+    make('123.456',123.456,0);
+    make('-123.456',-123.456,0);
+    make('1.23e+45',1.23e+45,0);
+    
+    make('i',0,1);
+    make('-i',0,-1);
+    make('-2.3i',0,-2.3);
+    make('-2.34e-45i',0,-2.34e-45);
+
+    make('1-i',1,-1);
+    make('1+i',1,1);
+    make('1.23+4.56i',1.23,4.56);
+    make('-1.234-4.56e-2i',-1.234,-4.56e-2);
+    make('1.2e+4+2.3e+5i',1.2e+4,2.3e+5);
+  }
+  //tests();
 
   Scratch.extensions.register(new ComplexNumberExtension());
 })(Scratch);
