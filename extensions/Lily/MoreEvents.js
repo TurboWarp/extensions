@@ -191,7 +191,7 @@
             text: 'broadcast [BROADCAST_OPTION] to [TARGET]',
             arguments: {
               BROADCAST_OPTION: {
-                type: Scratch.ArgumentType.STRING
+                type: null,
               },
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -206,7 +206,7 @@
             text: 'broadcast [BROADCAST_OPTION] with data [DATA]',
             arguments: {
               BROADCAST_OPTION: {
-                type: Scratch.ArgumentType.STRING
+                type: null,
               },
               DATA: {
                 type: Scratch.ArgumentType.STRING
@@ -220,7 +220,7 @@
             text: 'broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA]',
             arguments: {
               BROADCAST_OPTION: {
-                type: Scratch.ArgumentType.STRING
+                type: null,
               },
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
