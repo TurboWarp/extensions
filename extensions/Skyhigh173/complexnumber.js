@@ -573,7 +573,6 @@
       const m = arg.M;
       const A = ComplexNumber.fromStr(Scratch.Cast.toString(arg.A));
 
-      // ['sin','cos','tan','arcsin','arccos','arctan','sinh','cosh','tanh','coth','sech','csch']
       switch (m) {
         case 'sin': return A.sin().toStr();
         case 'cos': return A.cos().toStr();
@@ -590,6 +589,7 @@
       }
       return ComplexNumber.NAN;
     }
+
 
     getpart(arg) {
       const m = arg.M;
@@ -617,7 +617,7 @@
     make('123.456',123.456,0);
     make('-123.456',-123.456,0);
     make('1.23e+45',1.23e+45,0);
-    
+
     make('i',0,1);
     make('-i',0,-1);
     make('-2.3i',0,-2.3);
@@ -628,7 +628,7 @@
     make('1.23+4.56i',1.23,4.56);
     make('-1.234-4.56e-2i',-1.234,-4.56e-2);
     make('1.2e+4+2.3e+5i',1.2e+4,2.3e+5);
-  }
+  };
   //tests();
 
   Scratch.extensions.register(new ComplexNumberExtension());
