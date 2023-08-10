@@ -124,7 +124,7 @@
           },
           {
             opcode: 'whenChanged',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when another window changes storage',
             isEdgeActivated: false
           }
