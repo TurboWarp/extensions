@@ -449,6 +449,17 @@
               }
             }
           },
+          {
+            opcode: 'factorial',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[A]!',
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '2+3i'
+              }
+            }
+          },
         ],
         menus: {
           unary: {
@@ -559,6 +570,11 @@
         case 'im': return A.i;
       }
       return ComplexNumber.NAN;
+    }
+
+    factorial(arg) {
+      const A = ComplexNumber.fromStr(Scratch.Cast.toString(arg.A));
+      return A.factorial().toStr();
     }
   }
 
