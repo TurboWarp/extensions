@@ -107,7 +107,7 @@
       if (i ==  1) return prefix + 'i';
       if (i == -1) return '-i';
 
-      return `${i > 0 ? prefix: ''}${i}i`;
+      return `${i > 0 ? prefix : ''}${i}i`;
     }
 
     toStr() {
@@ -185,7 +185,7 @@
 
     ln() {
       // 1/2*ln(ppow2)+ i*arg(z)
-      return new ComplexNumber(1/2 * Math.log(this.ppow2()), this.arg());
+      return new ComplexNumber(1 / 2 * Math.log(this.ppow2()), this.arg());
     }
 
     pow(that) {
@@ -204,7 +204,7 @@
     }
 
     cbrt() {
-      return this.pow(new ComplexNumber(1/3));
+      return this.pow(new ComplexNumber(1 / 3));
     }
 
     sinh() {
