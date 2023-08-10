@@ -543,7 +543,6 @@
       const m = arg.M;
       const A = ComplexNumber.fromStr(Scratch.Cast.toString(arg.A));
 
-      // ['sin','cos','tan','arcsin','arccos','arctan','sinh','cosh','tanh','coth','sech','csch']
       switch (m) {
         case 'sin': return A.sin().toStr();
         case 'cos': return A.cos().toStr();
