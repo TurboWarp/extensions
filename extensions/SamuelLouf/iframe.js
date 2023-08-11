@@ -68,7 +68,7 @@
   
   function set_css_filter_of(element_query, filter_name, value){
     var filters = get_css_filter_of(element_query);
-    document.querySelector(element_query).style.filter=document.querySelector(element_query).style.filter.replace(filter_name + '(' + filters[filter_name] + ')', filter_name + '(' + value + ')');
+    document.querySelector(element_query).style.filter = document.querySelector(element_query).style.filter.replace(filter_name + '(' + filters[filter_name] + ')', filter_name + '(' + value + ')');
   }
 
   function if_then_return_else_return(condition, then_return, else_return){
@@ -115,8 +115,8 @@
 
       this.iframe.classList.add('samuellouf');
       this.iframe.id = 'iFrame-extension';
-      this.iframe.style.filter='hue-rotate(0deg) grayscale(0%) brightness(100%) contrast(100%) opacity(100%) blur(0px) invert(0%) saturate(100%) sepia(0%)';
-      this.iframe.src='data:text/html;base64,PERPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4tVVMiPgo8aGVhZD48L2hlYWQ+Cjxib2R5PjxoMT5IZWxsbyE8L2gxPjxwPllvdSd2ZSBqdXN0IGNyZWF0ZWQgYW4gaWZyYW1lIGVsZW1lbnQuPGJyPlVzZSB0aGlzIHRvIGVtYmVkIHNpdGVzIHdpdGggVVJMcyBvciBIVE1MIHVzaW5nIERhdGEgVVJJcy48L3A+PC9ib2R5Pgo8L2h0bWw+';
+      this.iframe.style.filter = 'hue-rotate(0deg) grayscale(0%) brightness(100%) contrast(100%) opacity(100%) blur(0px) invert(0%) saturate(100%) sepia(0%)';
+      this.iframe.src = 'data:text/html;base64,PERPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4tVVMiPgo8aGVhZD48L2hlYWQ+Cjxib2R5PjxoMT5IZWxsbyE8L2gxPjxwPllvdSd2ZSBqdXN0IGNyZWF0ZWQgYW4gaWZyYW1lIGVsZW1lbnQuPGJyPlVzZSB0aGlzIHRvIGVtYmVkIHNpdGVzIHdpdGggVVJMcyBvciBIVE1MIHVzaW5nIERhdGEgVVJJcy48L3A+PC9ib2R5Pgo8L2h0bWw+';
 
       this.iframe.style.position = 'absolute';
       this.iframe.style.visibility = 'hidden';
@@ -125,7 +125,7 @@
 
       this.platform = get_platform();
       if (this.platform.support == 'Blob' || this.platform.support == 'single html' || this.platform.support == 'Zip' || this.platform.support == 'MacOS' || this.platform.support == 'Windows' || this.platform.support == 'Linux' ){
-        this.iframe.style.zIndex=500;
+        this.iframe.style.zIndex = 500;
       }
 
       this.iframe_pos = {
@@ -473,7 +473,7 @@
     // First you look at my blocks and now you're looking at the functions. That code is not your stuff. Get out.
 
     reinitiFrame() {
-      this.iframe.src='data:text/html;base64,PERPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4tVVMiPgo8aGVhZD48L2hlYWQ+Cjxib2R5PjxoMT5IZWxsbyE8L2gxPjxwPllvdSd2ZSBqdXN0IGNyZWF0ZWQgYW4gaWZyYW1lIGVsZW1lbnQuPGJyPlVzZSB0aGlzIHRvIGVtYmVkIHNpdGVzIHdpdGggVVJMcyBvciBIVE1MIHVzaW5nIERhdGEgVVJJcy48L3A+PC9ib2R5Pgo8L2h0bWw+';
+      this.iframe.src = 'data:text/html;base64,PERPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4tVVMiPgo8aGVhZD48L2hlYWQ+Cjxib2R5PjxoMT5IZWxsbyE8L2gxPjxwPllvdSd2ZSBqdXN0IGNyZWF0ZWQgYW4gaWZyYW1lIGVsZW1lbnQuPGJyPlVzZSB0aGlzIHRvIGVtYmVkIHNpdGVzIHdpdGggVVJMcyBvciBIVE1MIHVzaW5nIERhdGEgVVJJcy48L3A+PC9ib2R5Pgo8L2h0bWw+';
       this.hide_show_invertiFrameBorder({do: 'show'});
       this.cleariFrameEffects();
       this.setiFrameHeight({height: 100});
@@ -560,7 +560,7 @@
 
     // '---',
 
-    SetIFramePosition (x, y, width, height) {
+    SetIFramePosition (x = this.iframe_pos.x, y = this.iframe_pos.y, width = this.iframe.width, height = this.iframe.height) {
       const stage = {
           width: runtime.stageWidth,
           height: runtime.stageHeight
@@ -586,11 +586,11 @@
     }
 
     setiFrameWidth(args) {
-      this.iframe.style.width=Cast.toString(args.width + '%');
+      this.iframe.style.width = Cast.toString(args.width + '%');
     }
 
     changeiFrameWidth(args) {
-      this.iframe.style.width=Number(this.iframe.style.width.replace('%', '')) + args.width + '%';
+      this.iframe.style.width = Number(this.iframe.style.width.replace('%', '')) + args.width + '%';
     }
 
     getiFrameWidth() {
@@ -598,11 +598,11 @@
     }
 
     setiFrameHeight(args) {
-      this.iframe.style.height=Cast.toString(args.height + '%');
+      this.iframe.style.height = Cast.toString(args.height + '%');
     }
 
     changeiFrameHeight(args) {
-      this.iframe.style.height=Number(this.iframe.style.height.replace('%', '')) + args.height + '%';
+      this.iframe.style.height = Number(this.iframe.style.height.replace('%', '')) + args.height + '%';
     }
 
     getiFrameHeight() {
@@ -612,12 +612,12 @@
     // '---',
 
     setiFrameX(args) {
-      this.SetIFramePosition(args.x, this.iframe_pos.y, this.iframe.width, this.iframe.height);
+      this.SetIFramePosition(args.x);
       this.iframe_pos.x = args.x;
     }
 
     setiFrameY(args) {
-      this.SetIFramePosition(this.iframe_pos.x, args.y, this.iframe.width, this.iframe.height);
+      this.SetIFramePosition(y=args.y);
       this.iframe_pos.y = args.y;
     }
 
@@ -630,7 +630,7 @@
     }
 
     setiFrameXY(args) {
-      this.SetIFramePosition(args.x, args.y, this.iframe.width, this.iframe.height);
+      this.SetIFramePosition(args.x, args.y);
       this.iframe_pos.x = args.x;
       this.iframe_pos.y = args.y;
     }
@@ -651,7 +651,9 @@
       return this.iframe.style.rotate.replace('deg', '');
     }
 
-    reinitiFramePos() {}
+    reinitiFramePos() {
+      this.SetIFramePosition(0, 0);
+    }
 
     // '---',
 
@@ -690,7 +692,7 @@
     }
 
     cleariFrameEffects() {
-      this.iframe.style.filter='hue-rotate(0deg) grayscale(0%) brightness(100%) contrast(100%) opacity(100%) blur(0px) invert(0%) saturate(100%) sepia(0%)';
+      this.iframe.style.filter = 'hue-rotate(0deg) grayscale(0%) brightness(100%) contrast(100%) opacity(100%) blur(0px) invert(0%) saturate(100%) sepia(0%)';
     }
   }
   Scratch.extensions.register(new iFrame());
