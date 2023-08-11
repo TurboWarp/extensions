@@ -560,7 +560,7 @@
 
     // '---',
 
-    SetIFramePosition (x = this.iframe_pos.x, y = this.iframe_pos.y, width = this.iframe.width, height = this.iframe.height) {
+    SetIFramePosition (x, y, width, height) {
       const stage = {
           width: runtime.stageWidth,
           height: runtime.stageHeight
@@ -612,12 +612,12 @@
     // '---',
 
     setiFrameX(args) {
-      this.SetIFramePosition(args.x);
+      this.SetIFramePosition(args.x, this.iframe_pos.y, this.iframe.width, this.iframe.height);
       this.iframe_pos.x = args.x;
     }
 
     setiFrameY(args) {
-      this.SetIFramePosition(y=args.y);
+      this.SetIFramePosition(this.iframe_pos.x, args.y, this.iframe.width, this.iframe.height);
       this.iframe_pos.y = args.y;
     }
 
@@ -630,13 +630,13 @@
     }
 
     setiFrameXY(args) {
-      this.SetIFramePosition(args.x, args.y);
+      this.SetIFramePosition(args.x, args.y, this.iframe.width, this.iframe.height);
       this.iframe_pos.x = args.x;
       this.iframe_pos.y = args.y;
     }
 
     pointiFrameInDirection(args) {
-      this.iframe.style.rotate=Cast.toString((Number(args.deg) - 90) + 'deg');
+      this.iframe.style.rotate = Cast.toString((Number(args.deg) - 90) + 'deg');
     }
 
     getiFrameX() {
@@ -652,7 +652,7 @@
     }
 
     reinitiFramePos() {
-      this.SetIFramePosition(0, 0);
+      this.SetIFramePosition(0, 0, this.iframe.width, this.iframe.height)
     }
 
     // '---',
