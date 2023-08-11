@@ -659,7 +659,7 @@
       if (args.effect == 'opacity'){
         set_ghost_of('iframe#iFrame-extension.samuellouf', args.value + '%');
       } else {
-        set_css_filter_of('iframe#iFrame-extension.samuellouf', args.effect, (args.value * if_then_return_else_return(args.effect=='hue-rotate', 1.8, if_then_return_else_return(args.effect=='blur', 0.2, 1))) + if_then_return_else_return(args.effect=='hue-rotate', 'deg', if_then_return_else_return(args.effect=='blur', 'px', '%')));
+        set_css_filter_of('iframe#iFrame-extension.samuellouf', args.effect, (args.value * if_then_return_else_return(args.effect == 'hue-rotate', 1.8, if_then_return_else_return(args.effect == 'blur', 0.2, 1))) + if_then_return_else_return(args.effect == 'hue-rotate', 'deg', if_then_return_else_return(args.effect == 'blur', 'px', '%')));
       }
     }
 
@@ -670,7 +670,7 @@
       if (args.effect == 'opacity'){
         this.setEffectOniFrame({effect: 'opacity', value: Number(this.getEffectOniFrame({effect: 'opacity'}).replace('%', '')) + args.value});
       } else {
-        set_css_filter_of('iframe#iFrame-extension.samuellouf', args.effect, geoi_value+(args.value * if_then_return_else_return(args.effect=='hue-rotate', 1.8, if_then_return_else_return(args.effect=='blur', 0.2, 1))) + if_then_return_else_return(args.effect=='hue-rotate', 'deg', if_then_return_else_return(args.effect=='blur', 'px', '%')));
+        set_css_filter_of('iframe#iFrame-extension.samuellouf', args.effect, geoi_value+(args.value * if_then_return_else_return(args.effect == 'hue-rotate', 1.8, if_then_return_else_return(args.effect == 'blur', 0.2, 1))) + if_then_return_else_return(args.effect == 'hue-rotate', 'deg', if_then_return_else_return(args.effect == 'blur', 'px', '%')));
       }
     }
 
