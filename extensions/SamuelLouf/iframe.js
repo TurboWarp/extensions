@@ -43,18 +43,18 @@
         support: 'single html'
       };
     }
-  }
-  
+  };
+
   function get_css_filter_of(element_query){
     let element = document.querySelector(element_query);
-  
+
     const itemOfFromString = (no, from, splitby) => {
       return String(from).split(splitby)[(Number(no) - 1)] || '';
-    }
-  
+    };
+
     var data = {};
     var filters = ['blur', 'brightness', 'contrast', 'grayscale', 'hue-rotate', 'invert', 'opacity', 'saturate', 'sepia'];
-  
+
     for (var i in filters){
       if (element.style.filter.includes(filters[i])){
         data[filters[i]] = itemOfFromString(1, itemOfFromString(2, element.style.filter, filters[i] + '('), ')');
@@ -62,10 +62,10 @@
         data[filters[i]] = NaN;
       }
     }
-  
+
     return data;
   }
-  
+
   function set_css_filter_of(element_query, filter_name, value){
     var filters = get_css_filter_of(element_query);
     document.querySelector(element_query).style.filter = document.querySelector(element_query).style.filter.replace(filter_name + '(' + filters[filter_name] + ')', filter_name + '(' + value + ')');
@@ -92,7 +92,7 @@
   }
 
   function set_ghost_of(element_query, to_value) {
-    set_visibility_of(element_query, 100 - Number(String(to_value).replace('%', '')))
+    set_visibility_of(element_query, 100 - Number(String(to_value).replace('%', '')));
   }
 
   function get_ghost_of(element_query) {
@@ -101,11 +101,11 @@
 
   const deg_to_percent = (deg) => {
     return Number(String(deg).replace('deg', '')) / 1.8;
-  }
+  };
 
   const px_to_percent = (px) => {
     return Number(String(px).replace('px', '')) / 0.2;
-  }
+  };
 
   // Oh, you're looking into the source code of my extension !
 
@@ -131,13 +131,13 @@
       this.iframe_pos = {
         x: 0,
         y: 0
-      }
+      };
 
       const adjustSize = (width, height) => {
         this.iframe.style.width = `${(width / runtime.stageWidth) * 100}%`;
         this.iframe.style.height = `${(height / runtime.stageHeight) * 100}%`;
       };
-      
+
       runtime.on('STAGE_SIZE_CHANGED', () => adjustSize(runtime.stageWidth, runtime.stageHeight));
       adjustSize(runtime.stageWidth, runtime.stageHeight);
     }
@@ -147,7 +147,7 @@
         id: 'samuelloufiframe',
         color1: '#f36518',
         color2: '#e64d18',
-        name: 'iFrame', 
+        name: 'iFrame',
         blocks: [
           {
             opcode: 'wheniFrameLoads',
@@ -482,7 +482,7 @@
     }
 
     // '---',
-    
+
     setiFrameURL(args, util) {
       this.iframe.src = Cast.toString(args.URL);
       util.startHats('samuelloufiframe_wheniFrameLoadsSite');
@@ -582,7 +582,7 @@
       ypos = (((0 - ypos) / stage.height) * 100);
 
       // epic maths to place x and y at the center
-      this.iframe.style.transform = `translate(${xpos}%, ${ypos}%)`; 
+      this.iframe.style.transform = `translate(${xpos}%, ${ypos}%)`;
     }
 
     setiFrameWidth(args) {
@@ -652,7 +652,7 @@
     }
 
     reinitiFramePos() {
-      this.SetIFramePosition(0, 0, this.iframe.width, this.iframe.height)
+      this.SetIFramePosition(0, 0, this.iframe.width, this.iframe.height);
     }
 
     // '---',
