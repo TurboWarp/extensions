@@ -1,5 +1,5 @@
-// The extensions works on the TurboWarp Editor (off/on line)
-
+// What are you doing here?
+// Are you lost?
 
 (function(Scratch) {
   'use strict';
@@ -10,18 +10,6 @@
   const Cast = Scratch.Cast;
 
   const youtubeIcon = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxNjMuMjc5MjEiIGhlaWdodD0iMTE0LjMwMDc2IiB2aWV3Qm94PSIwLDAsMTYzLjI3OTIxLDExNC4zMDA3NiI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE1OC4zNjA0LC0xMjIuODQ5NjIpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48Zz48cGF0aCBkPSJNMzIxLjYzOTYsMTgwYzAsMCAwLDI2LjU3MjY0IC0zLjQxNDE3LDM5LjMwMTE4Yy0xLjg4MTM5LDcuMDI5NDkgLTcuNDA2MTEsMTIuNTUzNjUgLTE0LjQzNTYxLDE0LjQzNTA0Yy0xMi43Mjc5NiwzLjQxNDE2IC02My43OTAxMiwzLjQxNDE2IC02My43OTAxMiwzLjQxNDE2YzAsMCAtNTEuMDYxNDYsMCAtNjMuNzg5OTQsLTMuNDE0MTZjLTcuMDI5NDksLTEuODgxMzkgLTEyLjU1MzY5LC03LjQwNTU0IC0xNC40MzU0LC0xNC40MzUwNGMtMy40MTM5NywtMTIuNzI4NTMgLTMuNDEzOTcsLTM5LjMwMTE3IC0zLjQxMzk3LC0zOS4zMDExN2MwLDAgMCwtMjYuNTcyNTMgMy40MTM5NywtMzkuMzAwOTVjMS44ODE3MSwtNy4wMjk1NSA3LjQwNTkxLC0xMi41NTM3NSAxNC40MzU0LC0xNC40MzU0NmMxMi43Mjg0OCwtMy40MTM5NyA2My43ODk5NCwtMy40MTM5NyA2My43ODk5NCwtMy40MTM5N2MwLDAgNTEuMDYyMTYsMCA2My43OTAxMiwzLjQxMzk3YzcuMDI5NDksMS44ODE3MiAxMi41NTQyMiw3LjQwNTkxIDE0LjQzNTYxLDE0LjQzNTQ2YzMuNDAwNDUsMTIuNzI4NDIgMy40MTQxNywzOS4zMDA5NSAzLjQxNDE3LDM5LjMwMDk1eiIgZmlsbD0iI2ZmMDAwMCIvPjxwYXRoIGQ9Ik0yMjMuNjU2NDIsMTU1LjUxMjk1bDQyLjQxOTMsMjQuNDg5MzRsLTQyLjQxOTMsMjQuNDg4OTR6IiBmaWxsPSIjZmZmZmZmIi8+PC9nPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjgxLjYzOTYwMjUwMDAwMDA4OjU3LjE1MDM4LS0+';
-
-  const place_iframe = () => {
-    const vm = Scratch.vm;
-    const runtime = vm.runtime;
-    const canvas = vm.renderer.canvas;
-    var iframe = document.querySelector('iframe#iFrame-extension.samuellouf');
-    if (iframe.parentElement !== canvas.parentElement){
-      canvas.parentElement.prepend(iframe);
-    }
-  }
-
-  // const place_iframe_automatically = setInterval(() => place_iframe(), 100);
 
   const get_platform = () => {
     if (window.location.href.includes('https://turbowarp.org/')) {
@@ -42,7 +30,7 @@
     } else if (window.location.href.includes('/resources/app/index.html')) {
       return {
         type: 'packaged',
-        support: if_then_else_return(navigator.userAgent.includes('Linux'), 'Linux', 'Windows')
+        support: if_then_return_else_return(navigator.userAgent.includes('Linux'), 'Linux', 'Windows')
       };
     } else if (document.body.innerHTML.includes('<script src="script.js"></script>')) {
       return {
@@ -69,7 +57,7 @@
   
     for (var i in filters){
       if (element.style.filter.includes(filters[i])){
-        data[filters[i]] = itemOfFromString(1, itemOfFromString(2, element.style.filter, filters[i]+'('), ')');
+        data[filters[i]] = itemOfFromString(1, itemOfFromString(2, element.style.filter, filters[i] + '('), ')');
       } else {
         data[filters[i]] = NaN;
       }
@@ -80,7 +68,7 @@
   
   function set_css_filter_of(element_query, filter_name, value){
     var filters = get_css_filter_of(element_query);
-    document.querySelector(element_query).style.filter=document.querySelector(element_query).style.filter.replace(filter_name+'('+filters[filter_name]+')', filter_name+'('+value+')');
+    document.querySelector(element_query).style.filter=document.querySelector(element_query).style.filter.replace(filter_name + '(' + filters[filter_name] + ')', filter_name + '(' + value + ')');
   }
 
   function if_then_return_else_return(condition, then_return, else_return){
@@ -92,11 +80,11 @@
   }
 
   function percent_of(percent, of) {
-    return Number(of)*(Number(percent.replace('%', ''))/100);
+    return Number(of) * (Number(percent.replace('%', '')) / 100);
   }
 
   function set_visibility_of(element_query, to_value) {
-    set_css_filter_of(element_query, 'opacity', to_value+if_then_return_else_return(String(to_value).includes('%'), '', '%'));
+    set_css_filter_of(element_query, 'opacity', to_value + if_then_return_else_return(String(to_value).includes('%'), '', '%'));
   }
 
   function get_visibility_of(element_query) {
@@ -104,20 +92,22 @@
   }
 
   function set_ghost_of(element_query, to_value) {
-    set_visibility_of(element_query, 100-Number(String(to_value).replace('%', '')))
+    set_visibility_of(element_query, 100 - Number(String(to_value).replace('%', '')))
   }
 
   function get_ghost_of(element_query) {
-    return 100-Number(String(get_visibility_of(element_query)).replace('%', ''))+'%';
+    return 100 - Number(String(get_visibility_of(element_query)).replace('%', '')) + '%';
   }
 
   const deg_to_percent = (deg) => {
-    return Number(String(deg).replace('deg', ''))/1.8;
+    return Number(String(deg).replace('deg', '')) / 1.8;
   }
 
   const px_to_percent = (px) => {
-    return Number(String(px).replace('px', ''))/0.2;
+    return Number(String(px).replace('px', '')) / 0.2;
   }
+
+  // Oh, you're looking into the source code of my extension !
 
   class iFrame {
     constructor() {
@@ -157,7 +147,7 @@
         id: 'samuelloufiframe',
         color1: '#f36518',
         color2: '#e64d18',
-        name: 'iFrame',
+        name: 'iFrame', 
         blocks: [
           {
             opcode: 'wheniFrameLoads',
@@ -193,7 +183,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'current iframe URL'
           },
-          '---',
+          '---',// Why are you looking at my blocks?
           {
             opcode: 'wheniFrameLoadsYouTubeVideo',
             blockType: Scratch.BlockType.HAT,
@@ -247,7 +237,7 @@
               }
             }
           },
-          '---',
+          '---', // Why?
           {
             opcode: 'hide_show_invertiFrameBorder',
             blockType: Scratch.BlockType.COMMAND,
@@ -325,7 +315,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'iframe height (in %)'
           },
-          '---',
+          '---', // OK, I get it, you don't want to talk to me.
           {
             opcode: 'setiFrameX',
             blockType: Scratch.BlockType.COMMAND,
@@ -480,6 +470,8 @@
       };
     }
 
+    // First you look at my blocks and now you're looking at the functions. That code is not your stuff. Get out.
+
     reinitiFrame() {
       this.iframe.src='data:text/html;base64,PERPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4tVVMiPgo8aGVhZD48L2hlYWQ+Cjxib2R5PjxoMT5IZWxsbyE8L2gxPjxwPllvdSd2ZSBqdXN0IGNyZWF0ZWQgYW4gaWZyYW1lIGVsZW1lbnQuPGJyPlVzZSB0aGlzIHRvIGVtYmVkIHNpdGVzIHdpdGggVVJMcyBvciBIVE1MIHVzaW5nIERhdGEgVVJJcy48L3A+PC9ib2R5Pgo8L2h0bWw+';
       this.hide_show_invertiFrameBorder({do: 'show'});
@@ -591,20 +583,14 @@
 
       // epic maths to place x and y at the center
       this.iframe.style.transform = `translate(${xpos}%, ${ypos}%)`; 
-
-      // when switching between project page & editor, we need to place the iframe again since it gets lost
-      if (this.iframe.parentElement !== canvas.parentElement) {
-        /* todo: create layers so that iframe appears above 3d every time this is done */
-        canvas.parentElement.prepend(this.iframe);
-      }
     }
 
     setiFrameWidth(args) {
-      this.iframe.style.width=Cast.toString(args.width+'%');
+      this.iframe.style.width=Cast.toString(args.width + '%');
     }
 
     changeiFrameWidth(args) {
-      this.iframe.style.width=Number(this.iframe.style.width.replace('%', ''))+args.width+'%';
+      this.iframe.style.width=Number(this.iframe.style.width.replace('%', '')) + args.width + '%';
     }
 
     getiFrameWidth() {
@@ -612,11 +598,11 @@
     }
 
     setiFrameHeight(args) {
-      this.iframe.style.height=Cast.toString(args.height+'%');
+      this.iframe.style.height=Cast.toString(args.height + '%');
     }
 
     changeiFrameHeight(args) {
-      this.iframe.style.height=Number(this.iframe.style.height.replace('%', ''))+args.height+'%';
+      this.iframe.style.height=Number(this.iframe.style.height.replace('%', '')) + args.height + '%';
     }
 
     getiFrameHeight() {
@@ -636,11 +622,11 @@
     }
 
     changeiFrameX(args) {
-      this.setiFrameX({x: this.getiFrameX()+args.x});
+      this.setiFrameX({x: this.getiFrameX() + args.x});
     }
 
     changeiFrameY(args) {
-      this.setiFrameY({y: this.getiFrameY()+args.y});
+      this.setiFrameY({y: this.getiFrameY() + args.y});
     }
 
     setiFrameXY(args) {
@@ -671,9 +657,9 @@
 
     setEffectOniFrame(args){
       if (args.effect == 'opacity'){
-        set_ghost_of('iframe#iFrame-extension.samuellouf', args.value+'%');
+        set_ghost_of('iframe#iFrame-extension.samuellouf', args.value + '%');
       } else {
-        set_css_filter_of('iframe#iFrame-extension.samuellouf', args.effect, (args.value*if_then_return_else_return(args.effect=='hue-rotate', 1.8, if_then_return_else_return(args.effect=='blur', 0.2, 1)))+if_then_return_else_return(args.effect=='hue-rotate', 'deg', if_then_return_else_return(args.effect=='blur', 'px', '%')));
+        set_css_filter_of('iframe#iFrame-extension.samuellouf', args.effect, (args.value * if_then_return_else_return(args.effect=='hue-rotate', 1.8, if_then_return_else_return(args.effect=='blur', 0.2, 1))) + if_then_return_else_return(args.effect=='hue-rotate', 'deg', if_then_return_else_return(args.effect=='blur', 'px', '%')));
       }
     }
 
@@ -682,9 +668,9 @@
       var geoi_ext = if_then_return_else_return(geoi.includes('px'), 'px', if_then_return_else_return(geoi.includes('deg'), 'deg', '%'));
       var geoi_value = Number(geoi.replace(geoi_ext, ''));
       if (args.effect == 'opacity'){
-        this.setEffectOniFrame({effect: 'opacity', value: Number(this.getEffectOniFrame({effect: 'opacity'}).replace('%', ''))+args.value});
+        this.setEffectOniFrame({effect: 'opacity', value: Number(this.getEffectOniFrame({effect: 'opacity'}).replace('%', '')) + args.value});
       } else {
-        set_css_filter_of('iframe#iFrame-extension.samuellouf', args.effect, geoi_value+(args.value*if_then_return_else_return(args.effect=='hue-rotate', 1.8, if_then_return_else_return(args.effect=='blur', 0.2, 1)))+if_then_return_else_return(args.effect=='hue-rotate', 'deg', if_then_return_else_return(args.effect=='blur', 'px', '%')));
+        set_css_filter_of('iframe#iFrame-extension.samuellouf', args.effect, geoi_value+(args.value * if_then_return_else_return(args.effect=='hue-rotate', 1.8, if_then_return_else_return(args.effect=='blur', 0.2, 1))) + if_then_return_else_return(args.effect=='hue-rotate', 'deg', if_then_return_else_return(args.effect=='blur', 'px', '%')));
       }
     }
 
@@ -706,8 +692,7 @@
     cleariFrameEffects() {
       this.iframe.style.filter='hue-rotate(0deg) grayscale(0%) brightness(100%) contrast(100%) opacity(100%) blur(0px) invert(0%) saturate(100%) sepia(0%)';
     }
-
-    
   }
   Scratch.extensions.register(new iFrame());
 })(Scratch);
+// You didn't listen to me huh. You're so stubborn.
