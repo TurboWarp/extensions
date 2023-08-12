@@ -126,7 +126,7 @@
 
     toStr(useStr = false) {
 
-      if (useStr || CFG_OUT == 'string' || rd(this.i) == 0 && CFG_OUT != 'JSON') {
+      if (useStr || CFG_OUT == 'string' || (rd(this.i) == 0 && CFG_OUT != 'JSON')) {
         const r = rd(this.r);
         if (Number.isNaN(r) || Number.isNaN(this.i)) return 'NaN';
         if (rd(this.i) == 0) return `${r}`;
