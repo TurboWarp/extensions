@@ -1,6 +1,3 @@
-// What are you doing here?
-// Are you lost?
-
 (function(Scratch) {
   'use strict';
 
@@ -107,7 +104,7 @@
     return Number(String(px).replace('px', '')) / 0.2;
   };
 
-  // Oh, you're looking into the source code of my extension !
+  
 
   class iFrame {
     constructor() {
@@ -183,7 +180,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'current iframe URL'
           },
-          '---',// Why are you looking at my blocks?
+          '---',
           {
             opcode: 'wheniFrameLoadsYouTubeVideo',
             blockType: Scratch.BlockType.HAT,
@@ -237,7 +234,7 @@
               }
             }
           },
-          '---', // Why?
+          '---', 
           {
             opcode: 'hide_show_invertiFrameBorder',
             blockType: Scratch.BlockType.COMMAND,
@@ -315,7 +312,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: 'iframe height (in %)'
           },
-          '---', // OK, I get it, you don't want to talk to me.
+          '---', 
           {
             opcode: 'setiFrameX',
             blockType: Scratch.BlockType.COMMAND,
@@ -470,7 +467,6 @@
       };
     }
 
-    // First you look at my blocks and now you're looking at the functions. That code is not your stuff. Get out.
 
     reinitiFrame() {
       this.iframe.src = 'data:text/html;base64,PERPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4tVVMiPgo8aGVhZD48L2hlYWQ+Cjxib2R5PjxoMT5IZWxsbyE8L2gxPjxwPllvdSd2ZSBqdXN0IGNyZWF0ZWQgYW4gaWZyYW1lIGVsZW1lbnQuPGJyPlVzZSB0aGlzIHRvIGVtYmVkIHNpdGVzIHdpdGggVVJMcyBvciBIVE1MIHVzaW5nIERhdGEgVVJJcy48L3A+PC9ib2R5Pgo8L2h0bWw+';
@@ -697,4 +693,3 @@
   }
   Scratch.extensions.register(new iFrame());
 })(Scratch);
-// You didn't listen to me huh. You're so stubborn.
