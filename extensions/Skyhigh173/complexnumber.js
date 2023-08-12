@@ -3,7 +3,14 @@
 
   // round small values to 0 -- floating point error
   let CFG_TOPC = 14;
-  var rd = x => CFG_TOPC == -1 ? x : Math.round(x * 10 ** CFG_TOPC) / 10 ** CFG_TOPC;
+  let rd = x => CFG_TOPC == -1 || x > 1e200 ? x : Math.round(x * 10 ** CFG_TOPC) / 10 ** CFG_TOPC;
+
+  /* output mode
+  ** string - normal       - a+bi
+  ** raw string - raw str  - !a|b
+  ** JSON - json           - {}
+  */
+  let CFG_OUT = 'string';
 
   class ComplexNumber {
     constructor (r = 0, i = 0) {
@@ -16,6 +23,21 @@
     }
 
     static fromStr(x = '0') {
+      // raw string
+      if (x.charAt(0) == '!') {
+        const y = x.slice(1).split('|');
+        return new ComplexNumber(Number(y[0]),Number(y[1]));
+      }
+      // JSON
+      if (x.charAt(0) == '{') {
+        try {
+          const y = JSON.parse(x);
+          return new ComplexNumber(y.r, y.i);
+        } catch {
+          return ComplexNumber.NAN;
+        }
+      }
+
       if (x ==  'i') return new ComplexNumber(0, 1);
       if (x == '-i') return new ComplexNumber(0,-1);
 
@@ -63,19 +85,6 @@
 
     }
 
-    // use toStr instead
-    /*toCalcStr() {
-      // ** why not use '+':
-      // sometimes this.r or this.i is in sci notation
-      // things will go wrong because they contains 'e+'
-      return `${this.r}&${this.i}i`;
-    }
-
-    static fromCalcStr(x = '') {
-      const parts = x.slice(0,-1).split('&');
-      return new ComplexNumber(Number(parts[0]),Number(parts[1]));
-    }*/
-
     get ZERO() {
       return new ComplexNumber(0,0);
     }
@@ -115,13 +124,22 @@
       return `${i > 0 ? prefix : ''}${i}i`;
     }
 
-    toStr() {
-      const r = rd(this.r);
-      if (Number.isNaN(r) || Number.isNaN(this.i)) return 'NaN';
-      if (rd(this.i) == 0) return `${r}`;
-      if (r == 0) return this.formatImaginary();
+    toStr(useStr = false) {
 
-      return `${r}${this.formatImaginary('+')}`;
+      if (useStr || CFG_OUT == 'string' || rd(this.i) == 0 && CFG_OUT != 'JSON') {
+        const r = rd(this.r);
+        if (Number.isNaN(r) || Number.isNaN(this.i)) return 'NaN';
+        if (rd(this.i) == 0) return `${r}`;
+        if (r == 0) return this.formatImaginary();
+        return `${r}${this.formatImaginary('+')}`;
+
+      } else if (CFG_OUT == 'raw string') {
+        return `!${this.r}|${this.i}`;
+      } else if (CFG_OUT == 'JSON') {
+        return JSON.stringify({r: this.r, i: this.i});
+      } else {
+        console.warn(`invalid mode ${CFG_OUT}`);
+      }
     }
 
     ppow2() {
@@ -319,6 +337,35 @@
         color1: '#9999FF',
         blocks: [
           {
+            opcode: 'setout',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set output mode to [MODE]',
+            arguments: {
+              MODE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'string',
+                menu: 'out'
+              }
+            }
+          },
+          {
+            opcode: 'getout',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'output mode'
+          },
+          {
+            opcode: 'toStr',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'complex [T] to string',
+            arguments: {
+              T: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"r":0,"i":0}'
+              }
+            }
+          },
+          '---',
+          {
             opcode: 'from',
             blockType: Scratch.BlockType.REPORTER,
             text: '[R] + [I]i to complex',
@@ -497,10 +544,27 @@
           trig: {
             acceptReporters: true,
             items: ['sin','cos','tan','arcsin','arccos','arctan','sinh','cosh','tanh','coth','sech','csch']
+          },
+          out: {
+            items: ['string', 'raw string', 'JSON']
           }
         }
       };
     }
+
+    setout(arg) {
+      CFG_OUT = arg.MODE;
+    }
+
+    getout() {
+      return CFG_OUT;
+    }
+
+    toStr(arg) {
+      return ComplexNumber.fromStr(Scratch.Cast.toString(arg.T)).toStr(true);
+    }
+
+    /////////////////////////////////////////
 
     from(arg) {
       const R = Scratch.Cast.toNumber(arg.R);
