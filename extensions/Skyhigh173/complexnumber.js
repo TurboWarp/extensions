@@ -315,6 +315,16 @@
       return sqrt1.mul(T.div(this.E).mul(sqrt2).pow(T));
     }
 
+    conjg() {
+      // a-bi
+      return new ComplexNumber(this.r, -this.i);
+    }
+
+    iabs() {
+      // abs(a)+abs(b)i
+      return new ComplexNumber(Math.abs(this.r), Math.abs(this.i));
+    }
+
     sign() {
       if (this.r == 0 && this.i == 0) return this.ZERO;
       return this.div(new ComplexNumber(this.abs()));
@@ -535,7 +545,7 @@
         menus: {
           unary: {
             acceptReporters: true,
-            items: ['abs','arg','neg','inv','muli','sign','exp','ln','log10','log2','square','sqrt','cbrt']
+            items: ['abs','arg','neg','inv','muli','iabs','sign','exp','ln','log10','log2','square','sqrt','cbrt','conjg']
           },
           part: {
             acceptReporters: true,
@@ -621,6 +631,7 @@
         case 'neg':    return A.neg().toStr();
         case 'inv':    return A.inv().toStr();
         case 'muli':   return A.muli().toStr();
+        case 'iabs':   return A.iabs().toStr();
         case 'sign':   return A.sign().toStr();
         case 'exp':    return A.exp().toStr();
         case 'ln':     return A.ln().toStr();
@@ -629,6 +640,7 @@
         case 'square': return A.square().toStr();
         case 'sqrt':   return A.sqrt().toStr();
         case 'cbrt':   return A.cbrt().toStr();
+        case 'conjg':  return A.conjg().toStr();
       }
       return ComplexNumber.NAN;
     }
