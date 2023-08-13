@@ -10,6 +10,26 @@
       this.videos = [];
       this.targets = [];
 
+      runtime.on('PROJECT_RUN_STOP', () => {
+        for (const name of Object.keys(this.videos)) {
+          const video = this.videos[name];
+          video.pause();
+          video.currentTime = 0;
+        }
+
+        this.targets = [];
+      });
+
+      runtime.on('PROJECT_START', () => {
+        for (const name of Object.keys(this.videos)) {
+          const video = this.videos[name];
+          video.pause();
+          video.currentTime = 0;
+        }
+
+        this.targets = [];
+      });
+
       runtime.on('BEFORE_EXECUTE', () => {
         for (const name of Object.keys(this.videos)) {
           const video = this.videos[name];
@@ -20,7 +40,11 @@
           const target = this.targets[id].target;
           const drawableID = target.drawableID;
 
-          const skinId = runtime.renderer._allDrawables[drawableID].skin._id;
+          const drawable = runtime.renderer._allDrawables[drawableID];
+          // This was only a problem when targets weren't reset, I don't
+          // expect it to happen much now but just in case..
+          if (!drawable) return;
+          const skinId = drawable.skin._id;
           const video = this.videos[this.targets[id].videoName];
 
           vm.renderer.updateBitmapSkin(skinId, video, 1);
@@ -196,8 +220,8 @@
     }
 
     deleteVideoURL(args) {
-      const name = Cast.toString(args.NAME);
-      Reflect.deleteProperty(this.videos, name);
+      const videoName = Cast.toString(args.NAME);
+      Reflect.deleteProperty(this.videos, videoName);
 
       // To-do : reset the targets with the video
     }
@@ -238,10 +262,12 @@
 
     startVideo(args) {
       const videoName = Cast.toString(args.NAME);
+      const duration = Cast.toNumber(args.DURATION);
       const video = this.videos[videoName];
       if (!video) return;
 
       video.play();
+      video.currentTime = duration;
     }
 
     getCurrentTime(args) {
@@ -250,7 +276,6 @@
       if (!video) return 0;
 
       return video.currentTime;
-
     }
 
     pauseVideo(args) {
