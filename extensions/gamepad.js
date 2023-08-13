@@ -71,6 +71,14 @@
     return axisValue;
   };
 
+  const matchVendor = (id) => {
+    return id.match(/vendor:\s*(\w+)/i)[1];
+  };
+
+  const matchProduct = (id) => {
+    return id.match(/product:\s*(\w+)/i)[1];
+  };
+
   class GamepadExtension {
     getInfo() {
       return {
@@ -89,6 +97,26 @@
               }
             }
           },
+          {
+            opcode: 'gamepadDetail',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'get [d] of pad [i]',
+            arguments: {
+              d: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'id',
+                menu: 'detailMenu'
+              },
+              i: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '1',
+                menu: 'padMenu'
+              }
+            }
+          },
+
+          '---',
+
           {
             opcode: 'buttonDown',
             blockType: Scratch.BlockType.BOOLEAN,
@@ -272,6 +300,10 @@
               }
             ],
           },
+          detailMenu: {
+            acceptReporters: true,
+            items: ['id', 'vendor', 'product', 'mapping']
+          },
           buttonMenu: {
             acceptReporters: true,
             items: [
@@ -400,6 +432,18 @@
 
     gamepadConnected ({pad}) {
       return getGamepads(pad).length > 0;
+    }
+
+    gamepadDetail ({d, i}) {
+      for (const gamepad of getGamepads(i)) {
+        switch (d) {
+          case 'mapping': return gamepad.mapping;
+          case 'vendor': return matchVendor(gamepad.id);
+          case 'product': return matchProduct(gamepad.id);
+          case 'id': return gamepad.id;
+        }
+      }
+      return 'not connected';
     }
 
     buttonDown ({b, i}) {
