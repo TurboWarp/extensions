@@ -22,7 +22,7 @@
 
       runtime.on('PROJECT_START', () => {
         for (const name of Object.keys(this.videos)) {
-          const video = this.videos[name];
+          const video = this.videos[name].video;
           video.pause();
           video.currentTime = 0;
         }
@@ -32,8 +32,10 @@
 
       runtime.on('BEFORE_EXECUTE', () => {
         for (const name of Object.keys(this.videos)) {
-          const video = this.videos[name];
-          video.volume = runtime.audioEngine.inputNode.gain.value;
+          const video = this.videos[name].video;
+          const videoVolume = this.videos[name].volume;
+          const projectVolume = runtime.audioEngine.inputNode.gain.value;
+          video.volume = videoVolume * projectVolume;
         }
 
         for (const id of Object.keys(this.targets)) {
@@ -45,7 +47,7 @@
           // expect it to happen much now but just in case..
           if (!drawable) return;
           const skinId = drawable.skin._id;
-          const video = this.videos[this.targets[id].videoName];
+          const video = this.videos[this.targets[id].videoName].video;
 
           vm.renderer.updateBitmapSkin(skinId, video, 1);
         }
@@ -82,6 +84,11 @@
                 defaultValue: 'my video'
               }
             }
+          },
+          {
+            opcode: 'getLoadedVideos',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'loaded videos'
           },
           '---',
           {
@@ -154,7 +161,7 @@
           },
           '---',
           {
-            opcode: 'pauseVideo',
+            opcode: 'pause',
             blockType: Scratch.BlockType.COMMAND,
             text: 'pause video [NAME]',
             arguments: {
@@ -165,7 +172,7 @@
             }
           },
           {
-            opcode: 'resumeVideo',
+            opcode: 'resume',
             blockType: Scratch.BlockType.COMMAND,
             text: 'resume video [NAME]',
             arguments: {
@@ -189,6 +196,33 @@
                 menu: 'state'
               }
             }
+          },
+          '---',
+          {
+            opcode: 'setVolume',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set volume of video [NAME] to [VALUE]',
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'my video'
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100
+              }
+            }
+          },
+          {
+            opcode: 'getVolume',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'volume of video [NAME]',
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'my video'
+              }
+            }
           }
         ],
         menus: {
@@ -204,19 +238,25 @@
       };
     }
 
-    loadVideoURL(args) {
+    async loadVideoURL(args) {
       const videoName = Cast.toString(args.NAME);
       const url = Cast.toString(args.URL);
+      if (!await Scratch.canFetch(url)) return;
 
-      this.videos[videoName] = document.createElement('video');
-      this.videos[videoName].width = 480;
-      this.videos[videoName].height = 360;
-      this.videos[videoName].crossOrigin = 'anonymous';
+      this.videos[videoName] = {
+        video: document.createElement('video'),
+        volume: 1
+      }
+
+      const video = this.videos[videoName].video;
+      video.width = 480;
+      video.height = 360;
+      video.crossOrigin = 'anonymous';
 
       // To-do : Some urls can't be loaded by the renderer, how can we detect that?
 
-      this.videos[videoName].src = url;
-      this.videos[videoName].currentTime = 0;
+      video.src = url;
+      video.currentTime = 0;
     }
 
     deleteVideoURL(args) {
@@ -224,6 +264,10 @@
       Reflect.deleteProperty(this.videos, videoName);
 
       // To-do : reset the targets with the video
+    }
+
+    getLoadedVideos() {
+      return JSON.stringify(Object.keys(this.videos));
     }
 
     showVideo(args, util) {
@@ -263,10 +307,8 @@
     startVideo(args) {
       const videoName = Cast.toString(args.NAME);
       const duration = Cast.toNumber(args.DURATION);
-      const video = this.videos[videoName];
+      const video = this.videos[videoName].video;
       if (!video) return;
-
-      console.log(video);
 
       video.play();
       video.currentTime = duration;
@@ -274,23 +316,23 @@
 
     getCurrentTime(args) {
       const videoName = Cast.toString(args.NAME);
-      const video = this.videos[videoName];
+      const video = this.videos[videoName].video;
       if (!video) return 0;
 
       return video.currentTime;
     }
 
-    pauseVideo(args) {
+    pause(args) {
       const videoName = Cast.toString(args.NAME);
-      const video = this.videos[videoName];
+      const video = this.videos[videoName].video;
       if (!video) return;
 
       video.pause();
     }
 
-    resumeVideo(args) {
+    resume(args) {
       const videoName = Cast.toString(args.NAME);
-      const video = this.videos[videoName];
+      const video = this.videos[videoName].video;
       if (!video) return;
 
       video.play();
@@ -298,10 +340,27 @@
 
     getState(args) {
       const videoName = Cast.toString(args.NAME);
-      const video = this.videos[videoName];
+      const video = this.videos[videoName].video;
       if (!video) return (args.STATE == 'paused');
 
       return (args.STATE == 'playing') ? !video.paused : video.paused;
+    }
+
+    setVolume(args) {
+      const videoName = Cast.toString(args.NAME);
+      const value = Cast.toNumber(args.VALUE);
+      const videoObject = this.videos[videoName];
+      if (!videoObject) return;
+
+      videoObject.volume = value / 100;
+    }
+
+    getVolume(args) {
+      const videoName = Cast.toString(args.NAME);
+      const videoObject = this.videos[videoName];
+      if (!videoObject) return 0;
+
+      return videoObject.volume * 100;
     }
 
     _getTargetFromMenu (targetName, util) {
