@@ -10,7 +10,7 @@
       this.videos = [];
       this.targets = [];
 
-      runtime.on('PROJECT_RUN_STOP', () => {
+      runtime.on('PROJECT_STOP_ALL', () => {
         for (const name of Object.keys(this.videos)) {
           const video = this.videos[name];
           video.pause();
@@ -265,6 +265,8 @@
       const duration = Cast.toNumber(args.DURATION);
       const video = this.videos[videoName];
       if (!video) return;
+
+      console.log(video);
 
       video.play();
       video.currentTime = duration;
