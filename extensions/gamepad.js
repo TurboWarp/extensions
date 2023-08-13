@@ -71,10 +71,18 @@
     return axisValue;
   };
 
+  /**
+   * @param {Gamepad.id} id
+   * @returns {string}
+   */
   const matchVendor = (id) => {
     return id.match(/vendor:\s*(\w+)/i)[1];
   };
 
+  /**
+   * @param {Gamepad.id} id
+   * @returns {string}
+   */
   const matchProduct = (id) => {
     return id.match(/product:\s*(\w+)/i)[1];
   };
