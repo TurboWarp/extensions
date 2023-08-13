@@ -3,25 +3,26 @@
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
-  const canvas = vm.renderer.canvas;
+  const canvas = runtime.renderer.canvas;
   const Cast = Scratch.Cast;
 
   class Video {
     constructor() {
       this.video = document.createElement('video');
+      this.video.width = 480;
+      this.video.height = 360;
+      this.video.crossOrigin = 'anonymous';
 
-      this.video.style.position = 'absolute';
-      this.video.style.visibility = 'hidden';
-      this.video.style.transformOrigin = 'center center';
-      canvas.parentElement.prepend(this.video);
+      runtime.on('BEFORE_EXECUTE', () => {
+        /* Scratch Addons volume slider moment */
+        this.video.volume = runtime.audioEngine.inputNode.gain.value;
 
-      const adjustSize = (width, height) => {
-        this.video.style.width = `${(width / runtime.stageWidth) * 100}%`;
-        this.video.style.height = `${(height / runtime.stageHeight) * 100}%`;
-      };
-
-      runtime.on('STAGE_SIZE_CHANGED', () => adjustSize(runtime.stageWidth, runtime.stageHeight));
-      adjustSize(runtime.stageWidth, runtime.stageHeight);
+        const target = runtime.targets[0];
+        const drawableID = target.drawableID;
+        const skinId = runtime.renderer._allDrawables[drawableID].skin._id;
+  
+        vm.renderer.updateBitmapSkin(skinId, this.video, 2);
+      });
     }
     getInfo() {
       return {
@@ -74,16 +75,6 @@
             text: 'resume video'
           },
           {
-            opcode: 'showVideo',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'show video'
-          },
-          {
-            opcode: 'hideVideo',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'hide video'
-          },
-          {
             opcode: 'getState',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'video is [STATE]?',
@@ -96,30 +87,9 @@
           },
           '---',
           {
-            opcode: 'setOptionOnVideo',
+            opcode: 'testBlock',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set [OPTION] on video to [TOGGLE]',
-            arguments: {
-              OPTION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'options'
-              },
-              TOGGLE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'toggle'
-              }
-            }
-          },
-          {
-            opcode: 'getOptionIsEnabled',
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: '[OPTION] is enabled?',
-            arguments: {
-              OPTION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'options'
-              }
-            }
+            text: 'test'
           }
         ],
         menus: {
@@ -141,6 +111,7 @@
 
     setVideoURL(args) {
       this.video.src = Cast.toString(args.URL);
+      this.video.currentTime = 0;
     }
 
     getVideoURL() {
@@ -151,7 +122,6 @@
       const time = Cast.toNumber(args.DURATION);
       this.video.currentTime = time;
       this.video.play();
-      this.video.style.visibility = 'visible';
     }
 
     getCurrentTime() {
@@ -179,30 +149,15 @@
       return this.video.paused;
     }
 
-    showVideo() {
-      this.video.style.visibility = 'visible';
-    }
-
-    hideVideo() {
-      this.video.style.visibility = 'hidden';
-    }
-
-    setOptionOnVideo(args) {
-      const option = Cast.toString(args.OPTION);
-      const toggle = Cast.toString(args.TOGGLE);
-
-      switch (option) {
-        case ('controls'): return this.video.controls = !!(toggle == 'enabled');
-        case ('loop'): return this.video.loop = !!(toggle == 'enabled');
-      }
-    }
-
     getOptionIsEnabled(args) {
       const option = Cast.toString(args.OPTION);
       switch (option) {
         case ('controls'): return this.video.controls;
         case ('loop'): return this.video.loop;
       }
+    }
+
+    testBlock(args, util) {
     }
   }
   Scratch.extensions.register(new Video());
