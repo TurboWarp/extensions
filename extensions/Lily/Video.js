@@ -246,7 +246,7 @@
       this.videos[videoName] = {
         video: document.createElement('video'),
         volume: 1
-      }
+      };
 
       const video = this.videos[videoName].video;
       video.width = 480;
