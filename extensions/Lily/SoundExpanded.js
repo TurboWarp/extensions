@@ -146,6 +146,34 @@
                 menu: 'targets'
               }
             }
+          },
+          '---',
+          {
+            opcode: 'setProjectVolume',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set project volume to [VALUE]',
+            arguments: {
+              VALUE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100
+              }
+            }
+          },
+          {
+            opcode: 'changeProjectVolume',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'change project volume by [VALUE]',
+            arguments: {
+              VALUE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100
+              }
+            }
+          },
+          {
+            opcode: 'getProjectVolume',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'project volume'
           }
         ],
         menus: {
@@ -286,6 +314,24 @@
       const effects = target.soundEffects;
       if (!effects) return 0;
       return effects[args.EFFECT];
+    }
+
+    setProjectVolume(args) {
+      const value = Scratch.Cast.toNumber(args.VALUE);
+      const newVolume = Math.min(Math.max(value / 100, 0), 1);
+      runtime.audioEngine.inputNode.gain.value = newVolume;
+    }
+
+    changeProjectVolume(args) {
+      const value = Scratch.Cast.toNumber(args.VALUE) / 100;
+      const volume = runtime.audioEngine.inputNode.gain.value;
+      const newVolume = Math.min(Math.max(volume + value, 0), 1);
+      runtime.audioEngine.inputNode.gain.value = newVolume;
+    }
+
+    getProjectVolume() {
+      const volume = runtime.audioEngine.inputNode.gain.value;
+      return (Math.round(volume * 10000) / 100);
     }
 
     /* Utility Functions */
