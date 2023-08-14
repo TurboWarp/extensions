@@ -168,7 +168,7 @@
         menus: {
           attribute: {
             acceptReporters: false,
-            items: ['length', 'channels', 'sample rate']
+            items: ['length', 'channels', 'sample rate', 'dataURI']
           },
           effect: {
             acceptReporters: false,
@@ -271,7 +271,8 @@
       if (index < 0) return 0;
       const sprite = util.target.sprite;
 
-      const soundId = sprite.sounds[index].soundId;
+      const sound = sprite.sounds[index];
+      const soundId = sound.soundId;
       const soundPlayer = sprite.soundBank.soundPlayers[soundId];
       const soundBuffer = soundPlayer.buffer;
 
@@ -282,6 +283,8 @@
           return soundBuffer.numberOfChannels;
         case ('sample rate'):
           return soundBuffer.sampleRate;
+        case ('dataURI'):
+          return sound.asset.encodeDataURI();
       }
     }
 
