@@ -80,7 +80,7 @@
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: 'https://extensions.turbowarp.org/dango.mp4'
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
