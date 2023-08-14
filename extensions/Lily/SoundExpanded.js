@@ -23,6 +23,8 @@
       return {
         id: 'lmsSoundExpanded',
         color1: "#CF63CF",
+        color2: "#C94FC9",
+        color3: "#BD42BD",
         name: "Sound Expanded",
         blocks: [
           {
@@ -191,7 +193,7 @@
 
       if (!soundPlayer.isPlaying) {
         soundCategory._addWaitingSound(target.id, soundId);
-        sprite.soundBank.playSound(util.target, soundId);
+        sprite.soundBank.playSound(util.target, soundId);  
       }
 
       if (!soundPlayer.outputNode) return;
