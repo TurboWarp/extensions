@@ -269,7 +269,7 @@
         video: document.createElement('video'),
         volume: 1,
         skin: 0
-      }
+      };
 
       const videoObject = this.videos[videoName];
       const video = videoObject.video;
@@ -287,7 +287,7 @@
     deleteVideoURL(args) {
       const videoName = Cast.toString(args.NAME);
       if (!this.videos[videoName]) return;
-      
+
       for (const id of Object.keys(this.targets)) {
         if (this.targets[id].videoName === videoName) {
           this.targets[id].target.updateAllDrawableProperties();
@@ -354,11 +354,11 @@
       const skinId = videoObject.skin;
       const skin = vm.renderer._allSkins[skinId];
 
-      switch(args.ATTRIBUTE) {
-        case('current time'): return videoObject.video.currentTime;
-        case('duration'): return videoObject.video.duration;
-        case('width'): return skin._textureSize[0];
-        case('height'): return skin._textureSize[1];
+      switch (args.ATTRIBUTE) {
+        case ('current time'): return videoObject.video.currentTime;
+        case ('duration'): return videoObject.video.duration;
+        case ('width'): return skin._textureSize[0];
+        case ('height'): return skin._textureSize[1];
         default: return 0;
       }
     }
