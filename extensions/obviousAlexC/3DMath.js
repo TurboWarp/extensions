@@ -2,194 +2,7 @@
   "use strict";
 
   /* eslint-disable */
-  class ExtensionBuilder {
-    constructor(t, n, i, e) {
-      (this.internal = {}),
-        (this.internal.JSON = { blocks: [], menus: {} }),
-        (this.runtime = Scratch.vm.runtime),
-        (this.internal.defaultFunction = {
-          code() {
-            console.log("This block has no code");
-          },
-          arguments: {},
-        }),
-        (this.addDocs = (t) => {
-          this.internal.JSON.docsURI = t;
-        }),
-        (this.addBlock = (t, n, i, e, l, s) => {
-          (e = e || this.internal.defaultFunction.code),
-            (this[n] = e),
-            (s = s || {});
-          let o = s;
-          o.disableMonitor || (o.disableMonitor = !0),
-            (o.opcode = n),
-            (o.blockType = i),
-            (o.text = t),
-            (o.arguments =
-              l ||
-              JSON.parse(
-                JSON.stringify(this.internal.defaultFunction.arguments)
-              ));
-          let r = this.internal.JSON.blocks.length;
-          return (
-            this.internal.JSON.blocks.push(o),
-            (this.internal.JSON.blocks[r].addArgument = (t, i, e, l) => {
-              if (null == (e = e || null))
-                switch (typeof i) {
-                  case "string":
-                  default:
-                    e = Scratch.ArgumentType.STRING;
-                    break;
-                  case "boolean":
-                    e = Scratch.ArgumentType.BOOLEAN;
-                    break;
-                  case "number":
-                  case "bigint":
-                    e = Scratch.ArgumentType.NUMBER;
-                }
-              return (
-                null == i
-                  ? (this.internal.JSON.blocks[r].arguments[t] = { type: e })
-                  : (this.internal.JSON.blocks[r].arguments[t] = {
-                      type: e,
-                      defaultValue: i,
-                    }),
-                (l = l || null) &&
-                  ("string" == typeof l
-                    ? (this.internal.JSON.blocks[r].arguments[t].menu = l)
-                    : "function" == typeof l || "object" == typeof l
-                    ? (this.addMenu(n + "_" + t + "_Menu", l, !0),
-                      (this.internal.JSON.blocks[r].arguments[t].menu =
-                        n + "_" + t + "_Menu"))
-                    : console.error(
-                        "Menu '" + n + "_" + t + "_Menu'is not valid!"
-                      )),
-                this.internal.JSON.blocks[r]
-              );
-            }),
-            (this.internal.JSON.blocks[r].setIcon = (t) => (
-              (this.internal.JSON.blocks[r].blockIconURI = t),
-              this.internal.JSON.blocks[r]
-            )),
-            (this.internal.JSON.blocks[r].setFilter = (t) => (
-              (t = t || Scratch.TargetType.SPRITE),
-              (this.internal.JSON.blocks[r].filter = t),
-              this.internal.JSON.blocks[r]
-            )),
-            (this.internal.JSON.blocks[r].hideBlock = () => (
-              (this.internal.JSON.blocks[r].hideFromPalette = !0),
-              this.internal.JSON.blocks[r]
-            )),
-            (this.internal.JSON.blocks[r].stopMoniter = () => (
-              (this.internal.JSON.blocks[r].disableMonitor = !0),
-              this.internal.JSON.blocks[r]
-            )),
-            (this.internal.JSON.blocks[r].setEdgeActivation = (t) => (
-              (this.internal.JSON.blocks[r].isEdgeActivated = t),
-              this.internal.JSON.blocks[r]
-            )),
-            (this.internal.JSON.blocks[r].addImage = (t, n, i) => {
-              i = i || !1;
-              let e = {
-                type: Scratch.ArgumentType.IMAGE,
-                dataURI: n,
-                flipRTL: i,
-              };
-              return (
-                (this.internal.JSON.blocks[r].arguments[t] = e),
-                this.internal.JSON.blocks[r]
-              );
-            }),
-            this.internal.JSON.blocks[r]
-          );
-        }),
-        (this.addMenu = (t, n, i) => {
-          (i = i || !1),
-            "function" == typeof n
-              ? ((this[t + "Function"] = n),
-                (this.internal.JSON.menus[t] = { items: t + "Function" }))
-              : (this.internal.JSON.menus[t] = { items: n }),
-            (this.internal.JSON.menus[t].acceptReporters = i);
-        }),
-        (this.addButton = (t, n, i) => {
-          (n = n || this.internal.defaultFunction.code),
-            (i = i || "Button"),
-            (this["button_" + t] = n);
-          let e = {};
-          (e.func = "button_" + t),
-            (e.blockType = Scratch.BlockType.BUTTON),
-            (e.text = i);
-          let l = this.internal.JSON.blocks.length;
-          return (
-            (this.internal.JSON.blocks[l] = e), this.internal.JSON.blocks[l]
-          );
-        }),
-        (this.addDivider = () => {
-          this.internal.JSON.blocks.push("---");
-        }),
-        (this.addLabel = (t) => {
-          t = t || "N/A";
-          let n = { opcode: "__NOUSEOPCODE", blockType: "label", text: t };
-          this.internal.JSON.blocks.push(n);
-        }),
-        (this.__NOUSEOPCODE = () => {}),
-        (this.internal.createBase = () => {
-          if (
-            ((t = t || "Extension"),
-            (n = n || "extension"),
-            (this.internal.JSON.name = t),
-            (this.internal.JSON.id = n),
-            ((i = i || {}).blockColor = i.blockColor || null),
-            (i.inputColor = i.inputColor || null),
-            (i.outlineColor = i.outlineColor || null),
-            null != i.blockColor)
-          ) {
-            let l = i.blockColor;
-            l > 8947848
-              ? (this.internal.colors = [l, l - 197379, l - 394758])
-              : (this.internal.colors = [l, l + 197379, l + 394758]),
-              i.inputColor,
-              (this.internal.colors[1] = i.inputColor),
-              i.outlineColor,
-              (this.internal.colors[2] = i.outlineColor),
-              (this.internal.JSON.color1 = this.internal.colors[0]),
-              (this.internal.JSON.color2 = this.internal.colors[1]),
-              (this.internal.JSON.color3 = this.internal.colors[2]);
-          }
-          ((e = e || {}).blockIconUri = e.blockIconUri || null),
-            (e.menuIconUri = e.menuIconUri || e.blockIconUri || null),
-            (this.menuUri = e.menuIconUri),
-            (this.blockIco = e.blockIconUri),
-            (this.docsUri = null);
-        }),
-        this.internal.createBase(),
-        (this.setColors = (t, n, i) => {
-          (t = "string" == typeof t ? t : (t + 0).toString(16)),
-            (n = "string" == typeof n ? n : (n + 0).toString(16)),
-            (i = "string" == typeof i ? i : (i + 0).toString(16)),
-            (this.internal.colors = [0, 0, 0]),
-            (this.internal.colors[0] = t),
-            (this.internal.colors[1] = n),
-            (this.internal.colors[2] = i),
-            (this.internal.JSON.color1 = t),
-            (this.internal.JSON.color2 = n),
-            (this.internal.JSON.color3 = i);
-        }),
-        (this.setMenuIcon = (t) => {
-          this.internal.JSON.menuIconURI = t;
-        }),
-        (this.setGlobalBlockIcon = (t) => {
-          this.internal.JSON.blockIconURI = t;
-        }),
-        (this.runHat = (t) => {
-          this.runtime.startHats(this.internal.JSON.id + "_" + t);
-        }),
-        (this.getInfo = () => this.internal.JSON),
-        (this.register = () => {
-          Scratch.extensions.register(this);
-        });
-    }
-  }
+  class ExtensionBuilder{constructor(t,n,i,e){this.internal={},this.internal.JSON={blocks:[],menus:{}},this.runtime=Scratch.vm.runtime,this.internal.defaultFunction={code(){console.log("This block has no code")},arguments:{}},this.addDocs=t=>{this.internal.JSON.docsURI=t},this.addBlock=(t,n,i,e,l,s)=>{e=e||this.internal.defaultFunction.code,this[n]=e,s=s||{};let o=s;o.disableMonitor||(o.disableMonitor=!0),o.opcode=n,o.blockType=i,o.text=t,o.arguments=l||JSON.parse(JSON.stringify(this.internal.defaultFunction.arguments));let r=this.internal.JSON.blocks.length;return this.internal.JSON.blocks.push(o),this.internal.JSON.blocks[r].addArgument=(t,i,e,l)=>{if(null==(e=e||null))switch(typeof i){case"string":default:e=Scratch.ArgumentType.STRING;break;case"boolean":e=Scratch.ArgumentType.BOOLEAN;break;case"number":case"bigint":e=Scratch.ArgumentType.NUMBER}return null==i?this.internal.JSON.blocks[r].arguments[t]={type:e}:this.internal.JSON.blocks[r].arguments[t]={type:e,defaultValue:i},(l=l||null)&&("string"==typeof l?this.internal.JSON.blocks[r].arguments[t].menu=l:"function"==typeof l||"object"==typeof l?(this.addMenu(n+"_"+t+"_Menu",l,!0),this.internal.JSON.blocks[r].arguments[t].menu=n+"_"+t+"_Menu"):console.error("Menu '"+n+"_"+t+"_Menu'is not valid!")),this.internal.JSON.blocks[r]},this.internal.JSON.blocks[r].setIcon=t=>(this.internal.JSON.blocks[r].blockIconURI=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].setFilter=t=>(t=t||Scratch.TargetType.SPRITE,this.internal.JSON.blocks[r].filter=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].hideBlock=()=>(this.internal.JSON.blocks[r].hideFromPalette=!0,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].stopMoniter=()=>(this.internal.JSON.blocks[r].disableMonitor=!0,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].setEdgeActivation=t=>(this.internal.JSON.blocks[r].isEdgeActivated=t,this.internal.JSON.blocks[r]),this.internal.JSON.blocks[r].addImage=(t,n,i)=>{i=i||!1;let e={type:Scratch.ArgumentType.IMAGE,dataURI:n,flipRTL:i};return this.internal.JSON.blocks[r].arguments[t]=e,this.internal.JSON.blocks[r]},this.internal.JSON.blocks[r]},this.addMenu=(t,n,i)=>{i=i||!1,"function"==typeof n?(this[t+"Function"]=n,this.internal.JSON.menus[t]={items:t+"Function"}):this.internal.JSON.menus[t]={items:n},this.internal.JSON.menus[t].acceptReporters=i},this.addButton=(t,n,i)=>{n=n||this.internal.defaultFunction.code,i=i||"Button",this["button_"+t]=n;let e={};e.func="button_"+t,e.blockType=Scratch.BlockType.BUTTON,e.text=i;let l=this.internal.JSON.blocks.length;return this.internal.JSON.blocks[l]=e,this.internal.JSON.blocks[l]},this.addDivider=()=>{this.internal.JSON.blocks.push("---")},this.addLabel=t=>{t=t||"N/A";let n={opcode:"__NOUSEOPCODE",blockType:"label",text:t};this.internal.JSON.blocks.push(n)},this.__NOUSEOPCODE=()=>{},this.internal.createBase=()=>{if(t=t||"Extension",n=n||"extension",this.internal.JSON.name=t,this.internal.JSON.id=n,(i=i||{}).blockColor=i.blockColor||null,i.inputColor=i.inputColor||null,i.outlineColor=i.outlineColor||null,null!=i.blockColor){let l=i.blockColor;l>8947848?this.internal.colors=[l,l-197379,l-394758,]:this.internal.colors=[l,l+197379,l+394758,],i.inputColor,this.internal.colors[1]=i.inputColor,i.outlineColor,this.internal.colors[2]=i.outlineColor,this.internal.JSON.color1=this.internal.colors[0],this.internal.JSON.color2=this.internal.colors[1],this.internal.JSON.color3=this.internal.colors[2]}(e=e||{}).blockIconUri=e.blockIconUri||null,e.menuIconUri=e.menuIconUri||e.blockIconUri||null,this.menuUri=e.menuIconUri,this.blockIco=e.blockIconUri,this.docsUri=null},this.internal.createBase(),this.setColors=(t,n,i)=>{t="string"==typeof t?t:(t+0).toString(16),n="string"==typeof n?n:(n+0).toString(16),i="string"==typeof i?i:(i+0).toString(16),this.internal.colors=[0,0,0],this.internal.colors[0]=t,this.internal.colors[1]=n,this.internal.colors[2]=i,this.internal.JSON.color1=t,this.internal.JSON.color2=n,this.internal.JSON.color3=i},this.setMenuIcon=t=>{this.internal.JSON.menuIconURI=t},this.setGlobalBlockIcon=t=>{this.internal.JSON.blockIconURI=t},this.runHat=t=>{this.runtime.startHats(this.internal.JSON.id+"_"+t)},this.getInfo=()=>this.internal.JSON,this.register=()=>{Scratch.extensions.register(this)}}}
   /* eslint-enable */
 
   const cubeICO =
@@ -203,6 +16,11 @@
   const math_3d = new ExtensionBuilder("3D Math", "obviousAlexCMath3d");
   const d2r = 0.0174533;
 
+  const camera = {
+    position: [0, 0, 0],
+    rotation: [0, 0, 0],
+  };
+
   math_3d.setMenuIcon(cubeICO);
 
   math_3d.setGlobalBlockIcon(blockICO);
@@ -213,6 +31,11 @@
     { text: "x", value: "0" },
     { text: "y", value: "1" },
     { text: "z", value: "2" },
+  ]);
+
+  math_3d.addMenu("axisMenu2D", [
+    { text: "x", value: "0" },
+    { text: "y", value: "1" },
   ]);
 
   math_3d.addLabel("Vector 3");
@@ -260,60 +83,80 @@
   math_3d.addLabel("Equations");
 
   math_3d
-    .addBlock("[a] + [b]", "addV3", Scratch.BlockType.REPORTER, ({ a, b }) => {
-      a = JSON.parse(a);
-      b = JSON.parse(b);
-      return JSON.stringify([a[0] + b[0], a[1] + b[1], a[2] + b[2]]);
-    })
-    .addArgument("a", "[0,0,0]")
-    .addArgument("b", "[0,0,0]");
-
-  math_3d
-    .addBlock("[a] - [b]", "subV3", Scratch.BlockType.REPORTER, ({ a, b }) => {
-      a = JSON.parse(a);
-      b = JSON.parse(b);
-      return JSON.stringify([a[0] - b[0], a[1] - b[1], a[2] - b[2]]);
-    })
-    .addArgument("a", "[0,0,0]")
-    .addArgument("b", "[0,0,0]");
-
-  math_3d
-    .addBlock("[a] * [b]", "mulV3", Scratch.BlockType.REPORTER, ({ a, b }) => {
-      a = JSON.parse(a);
-      b = JSON.parse(b);
-      return JSON.stringify([a[0] * b[0], a[1] * b[1], a[2] * b[2]]);
-    })
-    .addArgument("a", "[0,0,0]")
-    .addArgument("b", "[0,0,0]");
-
-  math_3d
-    .addBlock("[a] / [b]", "divV3", Scratch.BlockType.REPORTER, ({ a, b }) => {
-      a = JSON.parse(a);
-      b = JSON.parse(b);
-      const c = [0, 0, 0];
-      c[0] = a[0] / b[0];
-      c[1] = a[1] / b[1];
-      c[2] = a[2] / b[2];
-      if (isNaN(c[0])) {
-        c[0] = 0;
+    .addBlock(
+      "V3: [a] + [b]",
+      "addV3",
+      Scratch.BlockType.REPORTER,
+      ({ a, b }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+        return JSON.stringify([a[0] + b[0], a[1] + b[1], a[2] + b[2]]);
       }
-
-      if (isNaN(c[1])) {
-        c[1] = 0;
-      }
-
-      if (isNaN(c[2])) {
-        c[2] = 0;
-      }
-
-      return JSON.stringify(c);
-    })
+    )
     .addArgument("a", "[0,0,0]")
     .addArgument("b", "[0,0,0]");
 
   math_3d
     .addBlock(
-      "dot product between [a] and [b]",
+      "V3: [a] - [b]",
+      "subV3",
+      Scratch.BlockType.REPORTER,
+      ({ a, b }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+        return JSON.stringify([a[0] - b[0], a[1] - b[1], a[2] - b[2]]);
+      }
+    )
+    .addArgument("a", "[0,0,0]")
+    .addArgument("b", "[0,0,0]");
+
+  math_3d
+    .addBlock(
+      "V3: [a] * [b]",
+      "mulV3",
+      Scratch.BlockType.REPORTER,
+      ({ a, b }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+        return JSON.stringify([a[0] * b[0], a[1] * b[1], a[2] * b[2]]);
+      }
+    )
+    .addArgument("a", "[0,0,0]")
+    .addArgument("b", "[0,0,0]");
+
+  math_3d
+    .addBlock(
+      "V3: [a] / [b]",
+      "divV3",
+      Scratch.BlockType.REPORTER,
+      ({ a, b }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+        const c = [0, 0, 0];
+        c[0] = a[0] / b[0];
+        c[1] = a[1] / b[1];
+        c[2] = a[2] / b[2];
+        if (isNaN(c[0])) {
+          c[0] = 0;
+        }
+
+        if (isNaN(c[1])) {
+          c[1] = 0;
+        }
+
+        if (isNaN(c[2])) {
+          c[2] = 0;
+        }
+
+        return JSON.stringify(c);
+      }
+    )
+    .addArgument("a", "[0,0,0]")
+    .addArgument("b", "[0,0,0]");
+
+  math_3d
+    .addBlock(
+      "V3: dot product between [a] and [b]",
       "dotProductOfV3",
       Scratch.BlockType.REPORTER,
       ({ a, b }) => {
@@ -327,7 +170,7 @@
 
   math_3d
     .addBlock(
-      "cross product between [a] and [b]",
+      "V3: cross product between [a] and [b]",
       "crossProductOfV3",
       Scratch.BlockType.REPORTER,
       ({ a, b }) => {
@@ -348,7 +191,7 @@
 
   math_3d
     .addBlock(
-      "magnitude of [a]",
+      "V3: magnitude of [a]",
       "magnitudeV3",
       Scratch.BlockType.REPORTER,
       ({ a }) => {
@@ -362,7 +205,7 @@
 
   math_3d
     .addBlock(
-      "distance between [a] and [b]",
+      "V3: distance between [a] and [b]",
       "distanceV3",
       Scratch.BlockType.REPORTER,
       ({ a, b }) => {
@@ -380,7 +223,7 @@
 
   math_3d
     .addBlock(
-      "rotate [a] around [b] by yaw:[yaw] pitch:[pitch], and roll:[roll]",
+      "V3: rotate [a] around [b] by yaw:[yaw] pitch:[pitch], and roll:[roll]",
       "rotateAroundPointV3",
       Scratch.BlockType.REPORTER,
       ({ a, b, yaw, pitch, roll }) => {
@@ -430,7 +273,7 @@
 
   math_3d
     .addBlock(
-      "rotate [a] around the center by yaw:[yaw] pitch:[pitch], and roll:[roll]",
+      "V3: rotate [a] around the center by yaw:[yaw] pitch:[pitch], and roll:[roll]",
       "rotateAroundCenterV3",
       Scratch.BlockType.REPORTER,
       ({ a, yaw, pitch, roll }) => {
@@ -468,12 +311,314 @@
     .addArgument("pitch", "0")
     .addArgument("roll", "0");
 
-  math_3d.addLabel("camera");
+  math_3d.addLabel("Vector 2");
 
-  const camera = {
-    position: [0, 0, 0],
-    rotation: [0, 0, 0],
-  };
+  math_3d
+    .addBlock(
+      "vector 2 x:[x] y:[y]",
+      "newV2",
+      Scratch.BlockType.REPORTER,
+      ({ x, y, z }) => {
+        return JSON.stringify([x, y, z]);
+      }
+    )
+    .addArgument("x", 0)
+    .addArgument("y", 0)
+    .addArgument("z", 0);
+
+  math_3d
+    .addBlock(
+      "vector 2 from [value]",
+      "newV2fromValue",
+      Scratch.BlockType.REPORTER,
+      ({ value }) => {
+        if (typeof value == "number") {
+          return JSON.stringify([value, value]);
+        }
+        return JSON.stringify([0, 0]);
+      }
+    )
+    .addArgument("value", 0);
+
+  math_3d
+    .addBlock(
+      "V2: get the [axis] axis of [vector]",
+      "getAxisOfV2",
+      Scratch.BlockType.REPORTER,
+      ({ axis, vector }) => {
+        axis = Scratch.Cast.toNumber(axis);
+        return JSON.parse(vector)[axis];
+      }
+    )
+    .addArgument("axis", null, null, "axisMenu2D")
+    .addArgument("vector", "[0,0]");
+
+  math_3d
+    .addBlock(
+      "get projected [a] to 2D from camera",
+      "project2DFromCam",
+      Scratch.BlockType.REPORTER,
+      ({ a }) => {
+        a = JSON.parse(a);
+
+        a[0] -= camera.position[0];
+        a[1] -= camera.position[1];
+        a[2] -= camera.position[2];
+
+        const sinAndCos = [
+          Math.sin(-camera.rotation[0] * d2r),
+          Math.cos(-camera.rotation[0] * d2r),
+          Math.sin(-camera.rotation[1] * d2r),
+          Math.cos(-camera.rotation[1] * d2r),
+          Math.sin(-camera.rotation[2] * d2r),
+          Math.cos(-camera.rotation[2] * d2r),
+        ];
+
+        let temp = a[0];
+
+        a[0] = a[2] * sinAndCos[0] + a[0] * sinAndCos[1];
+        a[2] = a[2] * sinAndCos[1] - temp * sinAndCos[0];
+
+        temp = a[1];
+
+        a[1] = a[2] * sinAndCos[2] + a[1] * sinAndCos[3];
+        a[2] = a[2] * sinAndCos[3] - temp * sinAndCos[2];
+
+        temp = a[0];
+
+        a[0] = a[1] * sinAndCos[4] + a[0] * sinAndCos[5];
+        a[1] = a[1] * sinAndCos[5] - temp * sinAndCos[4];
+
+        let project = fov / a[2];
+
+        return JSON.stringify([a[0] * project, a[1] * project]);
+      }
+    )
+    .addArgument("a", "[0,0,100]");
+
+  math_3d
+    .addBlock(
+      "get projected [a] to 2D from [b] yaw:[yaw] pitch:[pitch] roll:[roll]",
+      "project2DFromPos",
+      Scratch.BlockType.REPORTER,
+      ({ a, b, yaw, pitch, roll }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+
+        a[0] -= b[0];
+        a[1] -= b[1];
+        a[2] -= b[2];
+
+        const sinAndCos = [
+          Math.sin(-yaw * d2r),
+          Math.cos(-yaw * d2r),
+          Math.sin(-pitch * d2r),
+          Math.cos(-pitch * d2r),
+          Math.sin(-roll * d2r),
+          Math.cos(-roll * d2r),
+        ];
+
+        let temp = a[0];
+
+        a[0] = a[2] * sinAndCos[0] + a[0] * sinAndCos[1];
+        a[2] = a[2] * sinAndCos[1] - temp * sinAndCos[0];
+
+        temp = a[1];
+
+        a[1] = a[2] * sinAndCos[2] + a[1] * sinAndCos[3];
+        a[2] = a[2] * sinAndCos[3] - temp * sinAndCos[2];
+
+        temp = a[0];
+
+        a[0] = a[1] * sinAndCos[4] + a[0] * sinAndCos[5];
+        a[1] = a[1] * sinAndCos[5] - temp * sinAndCos[4];
+
+        let project = fov / a[2];
+
+        return JSON.stringify([a[0] * project, a[1] * project]);
+      }
+    )
+    .addArgument("a", "[0,0,100]")
+    .addArgument("b", "[0,0,0]")
+    .addArgument("yaw", "0")
+    .addArgument("pitch", "0")
+    .addArgument("roll", "0");
+
+  math_3d.addLabel("Equations");
+
+  math_3d
+    .addBlock(
+      "V2: [a] + [b]",
+      "addV2",
+      Scratch.BlockType.REPORTER,
+      ({ a, b }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+        return JSON.stringify([a[0] + b[0], a[1] + b[1]]);
+      }
+    )
+    .addArgument("a", "[0,0]")
+    .addArgument("b", "[0,0]");
+
+  math_3d
+    .addBlock(
+      "V2: [a] - [b]",
+      "subV2",
+      Scratch.BlockType.REPORTER,
+      ({ a, b }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+        return JSON.stringify([a[0] - b[0], a[1] - b[1], a[2] - b[2]]);
+      }
+    )
+    .addArgument("a", "[0,0]")
+    .addArgument("b", "[0,0]");
+
+  math_3d
+    .addBlock("[a] * [b]", "mulV2", Scratch.BlockType.REPORTER, ({ a, b }) => {
+      a = JSON.parse(a);
+      b = JSON.parse(b);
+      return JSON.stringify([a[0] * b[0], a[1] * b[1]]);
+    })
+    .addArgument("a", "[0,0]")
+    .addArgument("b", "[0,0]");
+
+  math_3d
+    .addBlock(
+      "V2: [a] / [b]",
+      "divV2",
+      Scratch.BlockType.REPORTER,
+      ({ a, b }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+        const c = [0, 0];
+        c[0] = a[0] / b[0];
+        c[1] = a[1] / b[1];
+        if (isNaN(c[0])) {
+          c[0] = 0;
+        }
+
+        if (isNaN(c[1])) {
+          c[1] = 0;
+        }
+
+        return JSON.stringify(c);
+      }
+    )
+    .addArgument("a", "[0,0]")
+    .addArgument("b", "[0,0]");
+
+  math_3d
+    .addBlock(
+      "V2: dot product between [a] and [b]",
+      "dotProductOfV3",
+      Scratch.BlockType.REPORTER,
+      ({ a, b }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+        return a[0] * b[0] + a[1] * b[1];
+      }
+    )
+    .addArgument("a", "[0,0]")
+    .addArgument("b", "[0,0]");
+
+  math_3d
+    .addBlock(
+      "V2: cross product between [a] and [b]",
+      "crossProductOfV2",
+      Scratch.BlockType.REPORTER,
+      ({ a, b }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+
+        const c = [0, 0];
+
+        c[0] = a[1] - b[1];
+        c[1] = b[0] - a[0];
+
+        return JSON.stringify(c);
+      }
+    )
+    .addArgument("a", "[0,0]")
+    .addArgument("b", "[0,0]");
+
+  math_3d
+    .addBlock(
+      "V2: magnitude of [a]",
+      "magnitudeV2",
+      Scratch.BlockType.REPORTER,
+      ({ a }) => {
+        a = JSON.parse(a);
+        return Math.sqrt(Math.pow(a[0], 2) + Math.pow(a[1], 2));
+      }
+    )
+    .addArgument("a", "[0,0]");
+
+  math_3d
+    .addBlock(
+      "V2: distance between [a] and [b]",
+      "distanceV2",
+      Scratch.BlockType.REPORTER,
+      ({ a, b }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+        return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
+      }
+    )
+    .addArgument("a", "[0,0]")
+    .addArgument("b", "[0,0]");
+
+  math_3d
+    .addBlock(
+      "V2: rotate [a] around [b] by [yaw] degrees",
+      "rotateAroundPointV2",
+      Scratch.BlockType.REPORTER,
+      ({ a, b, yaw }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+
+        a[0] -= b[0];
+        a[1] -= b[1];
+
+        const sinAndCos = [Math.sin(yaw * d2r), Math.cos(yaw * d2r)];
+
+        let temp = a[0];
+
+        a[0] = a[1] * sinAndCos[0] + a[0] * sinAndCos[1];
+        a[1] = a[1] * sinAndCos[1] - temp * sinAndCos[0];
+
+        a[0] += b[0];
+        a[1] += b[1];
+
+        return JSON.stringify(a);
+      }
+    )
+    .addArgument("a", "[0,0]")
+    .addArgument("b", "[0,0]")
+    .addArgument("yaw", "0");
+
+  math_3d
+    .addBlock(
+      "V2: rotate [a] around the center by [yaw] degrees",
+      "rotateAroundCenterV2",
+      Scratch.BlockType.REPORTER,
+      ({ a, yaw }) => {
+        a = JSON.parse(a);
+
+        const sinAndCos = [Math.sin(yaw * d2r), Math.cos(yaw * d2r)];
+
+        let temp = a[0];
+
+        a[0] = a[1] * sinAndCos[0] + a[0] * sinAndCos[1];
+        a[2] = a[1] * sinAndCos[1] - temp * sinAndCos[0];
+
+        return JSON.stringify(a);
+      }
+    )
+    .addArgument("a", "[0,0]")
+    .addArgument("yaw", "0");
+
+  math_3d.addLabel("camera");
 
   math_3d
     .addBlock(
