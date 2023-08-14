@@ -193,7 +193,7 @@
 
       if (!soundPlayer.isPlaying) {
         soundCategory._addWaitingSound(target.id, soundId);
-        sprite.soundBank.playSound(util.target, soundId);  
+        sprite.soundBank.playSound(util.target, soundId);
       }
 
       if (!soundPlayer.outputNode) return;
