@@ -12,9 +12,14 @@
 
       runtime.on('PROJECT_STOP_ALL', () => {
         for (const name of Object.keys(this.videos)) {
-          const video = this.videos[name];
+          const video = this.videos[name].video;
           video.pause();
           video.currentTime = 0;
+        }
+
+        for (const id of Object.keys(this.targets)) {
+          const target = this.targets[id].target;
+          target.updateAllDrawableProperties();
         }
 
         this.targets = [];
@@ -27,15 +32,26 @@
           video.currentTime = 0;
         }
 
+        for (const id of Object.keys(this.targets)) {
+          const target = this.targets[id].target;
+          target.updateAllDrawableProperties();
+        }
+
         this.targets = [];
       });
 
       runtime.on('BEFORE_EXECUTE', () => {
         for (const name of Object.keys(this.videos)) {
-          const video = this.videos[name].video;
-          const videoVolume = this.videos[name].volume;
+          const videoObject = this.videos[name];
+
+          const video = videoObject.video;
+          const videoVolume = videoObject.volume;
+          const skin = videoObject.skin;
+
           const projectVolume = runtime.audioEngine.inputNode.gain.value;
           video.volume = videoVolume * projectVolume;
+
+          vm.renderer.updateBitmapSkin(skin, video, 1);
         }
 
         for (const id of Object.keys(this.targets)) {
@@ -46,10 +62,8 @@
           // This was only a problem when targets weren't reset, I don't
           // expect it to happen much now but just in case..
           if (!drawable) return;
-          const skinId = drawable.skin._id;
-          const video = this.videos[this.targets[id].videoName].video;
-
-          vm.renderer.updateBitmapSkin(skinId, video, 1);
+          const skin = this.videos[this.targets[id].videoName].skin;
+          drawable.skin = vm.renderer._allSkins[skin];
         }
       });
     }
@@ -149,10 +163,14 @@
             }
           },
           {
-            opcode: 'getCurrentTime',
+            opcode: 'getAttribute',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'current time of video [NAME]',
+            text: '[ATTRIBUTE] of video [NAME]',
             arguments: {
+              ATTRIBUTE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'attribute'
+              },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'my video'
@@ -233,6 +251,10 @@
           state: {
             acceptReporters: true,
             items: ['playing', 'paused']
+          },
+          attribute: {
+            acceptReporters: false,
+            items: ['current time', 'duration', 'width', 'height']
           }
         }
       };
@@ -245,25 +267,36 @@
 
       this.videos[videoName] = {
         video: document.createElement('video'),
-        volume: 1
-      };
+        volume: 1,
+        skin: 0
+      }
 
-      const video = this.videos[videoName].video;
-      video.width = 480;
-      video.height = 360;
+      const videoObject = this.videos[videoName];
+      const video = videoObject.video;
+
+      video.width = 1;
+      video.height = 1;
       video.crossOrigin = 'anonymous';
-
-      // To-do : Some urls can't be loaded by the renderer, how can we detect that?
 
       video.src = url;
       video.currentTime = 0;
+
+      videoObject.skin = vm.renderer.createBitmapSkin(video);
     }
 
     deleteVideoURL(args) {
       const videoName = Cast.toString(args.NAME);
-      Reflect.deleteProperty(this.videos, videoName);
+      if (!this.videos[videoName]) return;
+      
+      for (const id of Object.keys(this.targets)) {
+        if (this.targets[id].videoName === videoName) {
+          this.targets[id].target.updateAllDrawableProperties();
+          Reflect.deleteProperty(this.targets, id);
+        }
+      }
 
-      // To-do : reset the targets with the video
+      this.videos[videoName].video.pause();
+      Reflect.deleteProperty(this.videos, videoName);
     }
 
     getLoadedVideos() {
@@ -274,7 +307,7 @@
       const targetName = Cast.toString(args.TARGET);
       const videoName = Cast.toString(args.NAME);
       const target = this._getTargetFromMenu(targetName, util);
-      if (!target) return;
+      if (!target || !this.videos[videoName]) return;
 
       const targetId = target.id;
       this.targets[targetId] = {
@@ -291,7 +324,6 @@
       const targetId = target.id;
       Reflect.deleteProperty(this.targets, targetId);
 
-      // Why does this not work, what
       target.updateAllDrawableProperties();
     }
 
@@ -307,43 +339,52 @@
     startVideo(args) {
       const videoName = Cast.toString(args.NAME);
       const duration = Cast.toNumber(args.DURATION);
-      const video = this.videos[videoName].video;
-      if (!video) return;
+      const videoObject = this.videos[videoName];
+      if (!videoObject) return;
 
-      video.play();
-      video.currentTime = duration;
+      videoObject.video.play();
+      videoObject.video.currentTime = duration;
     }
 
-    getCurrentTime(args) {
+    getAttribute(args) {
       const videoName = Cast.toString(args.NAME);
-      const video = this.videos[videoName].video;
-      if (!video) return 0;
+      const videoObject = this.videos[videoName];
+      if (!videoObject) return 0;
 
-      return video.currentTime;
+      const skinId = videoObject.skin;
+      const skin = vm.renderer._allSkins[skinId];
+
+      switch(args.ATTRIBUTE) {
+        case('current time'): return videoObject.video.currentTime;
+        case('duration'): return videoObject.video.duration;
+        case('width'): return skin._textureSize[0];
+        case('height'): return skin._textureSize[1];
+        default: return 0;
+      }
     }
 
     pause(args) {
       const videoName = Cast.toString(args.NAME);
-      const video = this.videos[videoName].video;
-      if (!video) return;
+      const videoObject = this.videos[videoName];
+      if (!videoObject) return;
 
-      video.pause();
+      videoObject.video.pause();
     }
 
     resume(args) {
       const videoName = Cast.toString(args.NAME);
-      const video = this.videos[videoName].video;
-      if (!video) return;
+      const videoObject = this.videos[videoName];
+      if (!videoObject) return;
 
-      video.play();
+      videoObject.video.play();
     }
 
     getState(args) {
       const videoName = Cast.toString(args.NAME);
-      const video = this.videos[videoName].video;
-      if (!video) return (args.STATE == 'paused');
+      const videoObject = this.videos[videoName];
+      if (!videoObject) return (args.STATE === 'paused');
 
-      return (args.STATE == 'playing') ? !video.paused : video.paused;
+      return (args.STATE == 'playing') ? !videoObject.video.paused : videoObject.video.paused;
     }
 
     setVolume(args) {
