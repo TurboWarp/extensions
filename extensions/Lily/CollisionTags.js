@@ -183,7 +183,7 @@
       }
       return spriteNames;
     }
-    
+
     _getTargetFromMenu (targetName, util) {
       let target = Scratch.vm.runtime.getSpriteTargetByName(targetName);
       if (targetName === '_myself_') target = util.target;
