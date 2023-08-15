@@ -474,26 +474,26 @@
 
     reorderCostume(args, util) {
       const target = util.target;
-      const index1 = Cast.toNumber(args.INDEX1);
-      const index2 = Cast.toNumber(args.INDEX2);
+      const index1 = Cast.toNumber(args.INDEX1) - 1;
+      const index2 = Cast.toNumber(args.INDEX2) - 1;
       const costumes = target.sprite.costumes;
 
-      if (!(0 < index1 < costumes.length + 1)) return;
-      if (!(0 < index2 < costumes.length + 1)) return;
+      if (!(0 <= index1 < costumes.length)) return;
+      if (!(0 <= index2 < costumes.length)) return;
 
-      target.reorderCostume(index1 - 1, index2 - 1);
+      target.reorderCostume(index1, index2);
     }
 
     reorderSound(args, util) {
       const target = util.target;
-      const index1 = Cast.toNumber(args.INDEX1);
-      const index2 = Cast.toNumber(args.INDEX2);
+      const index1 = Cast.toNumber(args.INDEX1) - 1;
+      const index2 = Cast.toNumber(args.INDEX2) - 1;
       const sounds = target.sprite.sounds;
 
-      if (!(0 < index1 < sounds.length + 1)) return;
-      if (!(0 < index2 < sounds.length + 1)) return;
+      if (!(0 <= index1 < sounds.length)) return;
+      if (!(0 <= index2 < sounds.length)) return;
 
-      target.reorderSound(index1 - 1, index2 - 1);
+      target.reorderSound(index1, index2);
     }
 
     getCostumeData(args, util) {
