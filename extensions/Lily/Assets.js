@@ -534,7 +534,7 @@
       const target = util.target;
       const index = Math.round(Cast.toNumber(args.INDEX - 1));
       const costumes = target.sprite.costumes;
-      if (!(0 < index < costumes.length)) return;
+      if (!(0 < index < costumes.length)) return '';
 
       return costumes[index].name;
     }
@@ -543,7 +543,7 @@
       const target = util.target;
       const index = Math.round(Cast.toNumber(args.INDEX - 1));
       const sounds = target.sprite.sounds;
-      if (!(0 < index < sounds.length)) return;
+      if (!(0 < index < sounds.length)) return '';
 
       return sounds[index].name;
     }
