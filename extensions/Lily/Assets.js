@@ -372,7 +372,7 @@
             resolve(vm.addSound({
               md5: asset.assetId + '.' + asset.dataFormat,
               asset: asset,
-              name: assetName;
+              name: assetName
             }, targetId));
           }).catch(resolve);
       });
