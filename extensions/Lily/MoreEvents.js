@@ -81,10 +81,7 @@
         runtime.startHats('lmsMoreEvents_forever');
         runtime.startHats('lmsMoreEvents_whileTrueFalse');
         runtime.startHats('lmsMoreEvents_whenValueChanged');
-
-        runtime.startHats('lmsMoreEvents_whileTurboMode', {
-          STATE: (runtime.turboMode) ? 'enabled' : 'disabled'
-        });
+        runtime.startHats('lmsMoreEvents_whileKeyPressed');
       });
       runtime.on('PROJECT_STOP_ALL', () => {
         if (runtime.shouldExecuteStopClicked)
@@ -191,14 +188,15 @@
             }
           },
           {
-            opcode: 'whileTurboMode',
+            opcode: 'whileKeyPressed',
             blockType: Scratch.BlockType.HAT,
-            text: 'while turbo mode is [STATE]',
+            text: 'while [KEY_OPTION] key pressed',
             isEdgeActivated: false,
             arguments: {
-              STATE: {
+              KEY_OPTION: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'state'
+                defaultValue: 'space',
+                menu: 'keyboardButtons'
               }
             }
           },
@@ -313,6 +311,11 @@
       const key = Scratch.Cast.toString(args.KEY_OPTION).toLowerCase();
       const pressed = util.ioQuery('keyboard', 'getKeyIsDown', [key]);
       return (args.ACTION === 'released') ? !pressed : pressed;
+    }
+
+    whileKeyPressed(args, util) {
+      const key = Scratch.Cast.toString(args.KEY_OPTION).toLowerCase();
+      return util.ioQuery('keyboard', 'getKeyIsDown', [key]);
     }
 
     broadcastToTarget(args, util) {
