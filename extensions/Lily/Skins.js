@@ -356,7 +356,7 @@
       if (!createdSkins[skinName]) return;
       const skinId = createdSkins[skinName];
 
-      this._refreshTargetsFromID(skinId, false);
+      this._refreshTargetsFromID(skinId, true);
     }
 
     // Utility Functions
