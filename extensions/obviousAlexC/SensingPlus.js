@@ -786,7 +786,6 @@
             text: "Recording?",
             blockIconURI: speechIco,
           },
-          
           {
             opcode: "hasDevice",
             blockIconURI: deviceVelIco,
