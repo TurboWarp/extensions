@@ -282,47 +282,38 @@
         const left = ((screen.width - window.outerWidth) / 2);
         const top = ((screen.height - window.outerHeight) / 2);
         window.moveTo(left, top);
-        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "right") {
         const right = (screen.width - window.outerWidth);
         const top = ((screen.height - window.outerHeight) / 2);
         window.moveTo(right, top);
-        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "left") {
         const top = ((screen.height - window.outerHeight) / 2);
         window.moveTo(0, top);
-        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "top") {
         const left = ((screen.width - window.outerWidth) / 2);
         window.moveTo(left, 0);
-        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "bottom") {
         const left = ((screen.width - window.outerWidth) / 2);
         const bottom = (screen.height - window.outerHeight);
         window.moveTo(left, bottom);
-        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "top right") {
         const right = (screen.width - window.outerWidth);
         window.moveTo(right, 0);
-        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "top left") {
         window.moveTo(0, 0);
-        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "bottom right") {
         const right = (screen.width - window.outerWidth);
         const bottom = (screen.height - window.outerHeight);
         window.moveTo(right, bottom);
-        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "bottom left") {
         const bottom = (screen.height - window.outerHeight);
         window.moveTo(0, bottom);
-        Scratch.vm.runtime.requestRedraw();
       } else if (args.PRESETS == "random position") {
         const randomX = getRandomInt(0, screen.width);
         const randomY = getRandomInt(0, screen.height);
         window.moveTo(randomX, randomY);
-        Scratch.vm.runtime.requestRedraw();
       }
+      Scratch.vm.runtime.requestRedraw();
     }
     changeX (args) {
       window.moveBy(args.X, 0);
