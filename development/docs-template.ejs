@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= headerText %> - TurboWarp Extension Documentation</title>
+    <style>
+      :root {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color-scheme: light dark;
+        font-size: 16px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color: #eee;
+          background: #111;
+        }
+      }
+
+      @media (prefers-color-scheme: dark) {
+        a {
+          color: #56b2ff;
+        }
+        a:visited {
+          color: #f192ff;
+        }
+        a:active {
+          color: red;
+        }
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        border-top: 4px solid #ff4c4c;
+      }
+
+      noscript {
+        font-weight: bold;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: auto;
+      }
+      hr {
+        border: none;
+        border-top: 1px solid #ccc;
+      }
+      @media (prefers-color-scheme: dark) {
+        hr {
+          border-color: #444;
+        }
+      }
+
+      code {
+        background-color: #eee;
+        border-radius: 4px;
+        padding: 0 2px;
+      }
+      pre {
+        background-color: #eee;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 4px;
+        overflow-x: auto;
+      }
+      @media (prefers-color-scheme: dark) {
+        code, pre {
+          background-color: #223;
+          border-color: #334;
+        }
+      }
+
+      .render-scratchblocks {
+        width: 100%;
+        overflow-x: auto;
+        white-space: pre;
+      }
+      .render-scratchblocks svg {
+        display: block;
+      }
+
+      footer {
+        margin: 16px 0;
+        font-size: small;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1><%- headerHTML %></h1>
+
+      <noscript><p>Enable JavaScript for blocks to render.</p></noscript>
+
+      <%- bodyHTML %>
+
+      <hr>
+
+      <footer>
+        <p>
+          This page is <a href="https://github.com/TurboWarp/extensions/tree/master/docs">open source</a>.
+          <% if (usesScratchBlocks) { %>
+            Blocks rendered with <a href="https://scratchblocks.github.io/">scratchblocks</a>.
+          <% } %>
+        </p>
+        <p>TurboWarp is not affiliated with Scratch, the Scratch Team, or the Scratch Foundation.</p>
+      </footer>
+    </div>
+
+    <script src="/docs-internal/scratchblocks.js"></script>
+    <script>
+      scratchblocks.renderMatching('.render-scratchblocks', {
+        style: 'scratch3'
+      });
+    </script>
+  </body>
+</html>
