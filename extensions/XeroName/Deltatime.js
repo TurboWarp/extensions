@@ -1,15 +1,3 @@
-// TurboWarp Extension : Deltatime by XeroName v3.2.3
-
-/*
-Referenced articles :
-- https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html
-- https://stackoverflow.com/questions/4787431/how-do-i-check-framerate-in-javascript
-- https://developer.mozilla.org/en-US/docs/Web/API/Performance/now
-
-Thanks to the "TheShovel", one of the TurboWarp Extension's developer named "ShovelUtils".
-I learned how to use "Runtime Steps" of Scratch VM through that code.
-*/
-
 (function (Scratch) {
   'use strict';
 
