@@ -107,7 +107,7 @@
         blocks: [
           {
             opcode: 'whenStopClicked',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when [STOP] clicked',
             isEdgeActivated: false,
             arguments: {
