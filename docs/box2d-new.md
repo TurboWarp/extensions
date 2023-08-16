@@ -7,7 +7,7 @@ This extension allows you to easily implement proper physics using a physics lib
 Adjust the physics of all sprites.
 
 ```scratch
-setup stage [boxed stage v]
+setup stage [boxed stage v] :: #0FBD8C
 ```
 Choose a type of containment to keep sprites within the stage.
 
@@ -18,14 +18,14 @@ Choose a type of containment to keep sprites within the stage.
 ---
 
 ```scratch
-set gravity to x: [0] y: [-10]
+set gravity to x: [0] y: [-10] :: #0FBD8C
 ```
 Change the direction and strength of gravity.
 
 ---
 
 ```scratch
-step simulation
+step simulation :: #0FBD8C
 ```
 
 Move forward in time by one step. Run this in a loop to keep the physics going.
@@ -35,7 +35,7 @@ Move forward in time by one step. Run this in a loop to keep the physics going.
 Manipulate individual sprites.
 
 ```scratch
-enable for [this costume v] mode [normal v]
+enable for [this costume v] mode [normal v] :: #0FBD8C
 ```
 
 Make physics apply to this sprite. It can also collide with other sprites that have physics enabled.
@@ -49,7 +49,7 @@ Precision mode will make the sprite work extra hard to make sure it doesn't over
 ---
 
 ```scratch
-go to x: [0] y: [0] [in world v]
+go to x: [0] y: [0] [in world v] :: #0FBD8C
 ```
 
 Make the sprite go to the specified location.
@@ -61,7 +61,7 @@ Make the sprite go to the specified location.
 ---
 
 ```scratch
-set velocity to sx: [0] sy: [0]
+set velocity to sx: [0] sy: [0] :: #0FBD8C
 ```
 
 Set the velocity (speed) of the sprite to the specified value.
@@ -71,7 +71,7 @@ You can get the velocity of the current sprite with the (x velocity) and (y velo
 ---
 
 ```scratch
-push with force [25] in direction [0]
+push with force [25] in direction [0] :: #0FBD8C
 ```
 
 Directly send the sprite flying in a certain direction, adding on to its current velocity.
@@ -79,7 +79,7 @@ Directly send the sprite flying in a certain direction, adding on to its current
 ---
 
 ```scratch
-set angular velocity to [30]
+set angular velocity to [30] :: #0FBD8C
 ```
 Set the angular velocity (rotational speed) of the sprite to the specified value.
 
@@ -88,14 +88,14 @@ You can get the angular velocity of the current sprite with the (angular velocit
 ---
 
 ```scratch
-spin with force [500]
+spin with force [500] :: #0FBD8C
 ```
 Directly send the sprite spinning, adding on to its current angular (rotational) velocity.
 
 ---
 
 ```scratch
-set fixed [fixed in place v]
+set fixed [fixed in place v] :: #0FBD8C
 ```
 Choose whether the sprite is fixed in place or can move around.
 
@@ -104,7 +104,7 @@ You can tell if the sprite is currently fixed in place with the (fixed?) reporte
 ---
 
 ```scratch
-set density [normal v]
+set density [normal v] :: #0FBD8C
 ```
 Set the sprite's density, which affects how heavy it is.
 
@@ -113,7 +113,7 @@ You can get the sprite's current density with the (density) reporter.
 ---
 
 ```scratch
-set friction [normal v]
+set friction [normal v] :: #0FBD8C
 ```
 Set the sprite's roughness. Smoother settings make the sprite slipperier.
 
@@ -122,7 +122,7 @@ You can get the sprite's current friction with the (friction) reporter.
 ---
 
 ```scratch
-set bounce [normal v]
+set bounce [normal v] :: #0FBD8C
 ```
 Set the sprite's bounciness.
 
@@ -131,7 +131,7 @@ You can get the sprite's current bounciness with the (bounce) reporter.
 ---
 
 ```scratch
-(touching [any v])
+(touching [any v] :: #0FBD8C)
 ```
 Returns what other sprites the sprite is touching. Also includes the edges of the stage.
 
@@ -142,7 +142,7 @@ If there are multiple sprites touching, it will return a comma-separated list of
 Move the camera around the world.
 
 ```scratch
-set scroll x: [0] y: [0]
+set scroll x: [0] y: [0] :: #0FBD8C
 ```
 
 Scroll to the desired location.
@@ -155,21 +155,21 @@ This will not affect the world boundaries set by the [setup stage] block.
 
 ```scratch
 when flag clicked
-setup stage [boxed stage v]
-set gravity to x: [0] y: [-10]
+setup stage [boxed stage v] :: #0FBD8C
+set gravity to x: [0] y: [-10] :: #0FBD8C
 create clone of (myself v)
 repeat [20]
-    step simulation
+    step simulation :: #0FBD8C
 end
 create clone of (myself v)
 forever
-    step simulation
+    step simulation :: #0FBD8C
 end
 
 when I start as a clone
 show
-enable for [this costume v] mode [normal v]
-go to x: [-150] y: [240] [in world v]
-set bounce [quite bouncy v]
-set angular velocity to [-4.1]
+enable for [this costume v] mode [normal v] :: #0FBD8C
+go to x: [-150] y: [240] [in world v] :: #0FBD8C
+set bounce [quite bouncy v] :: #0FBD8C
+set angular velocity to [-4.1] :: #0FBD8C
 ```

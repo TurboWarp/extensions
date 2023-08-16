@@ -9,7 +9,7 @@ The namespace is basically like the file you want to read and write to. Each pro
 You can set which namespace to use with this block:
 
 ```scratch
-set storage namespace ID to [project title]
+set storage namespace ID to [project title] :: #0FBD8C
 ```
 
 Some example namespaces:
@@ -28,25 +28,25 @@ You can store data in keys, which are kind of like names of variables in any Scr
 You can store data in storage keys with this block:
 
 ```scratch
-set key [score] to [1000]
+set key [score] to [1000] :: #0FBD8C
 ```
 
 And read it with:
 
 ```scratch
-(get key [score])
+(get key [score] :: #0FBD8C)
 ```
 
 If you want to delete a key and its value, use this block:
 
 ```scratch
-delete key [score]
+delete key [score] :: #0FBD8C
 ```
 
 Or wipe everything stored in the namespace:
 
 ```scratch
-delete all keys
+delete all keys :: #0FBD8C
 ```
 
 ## Loading data into memory
@@ -61,12 +61,12 @@ For example, in a game, you can speed up code that needs to know how many coins 
 
 ```scratch
 forever
-    if <(get key [coins]) > [99]> then // Don't do this
+    if <(get key [coins] :: #0FBD8C) > [99]> then // Don't do this
         broadcast (1-UP v)
     end
 end
 
-set [coins v] to (get key [coins]) // Do this instead
+set [coins v] to (get key [coins] :: #0FBD8C) // Do this instead
 forever
     if <(coins) > [99]> then
         broadcast (1-UP v)
@@ -99,7 +99,7 @@ The worst that could happen with this implementation is that "data A" might be o
 Sometimes you might want to respond to changes in local storage. There is a block to help with this:
 
 ```scratch
-when another window changes storage :: hat
+when another window changes storage :: hat #0FBD8C
 ```
 
 The code under this block will run whenever a different instance of the project writes to storage or if a different project that's using the same namespace writes to storage. This allows your project to properly respond to and handle these events as they happen.
