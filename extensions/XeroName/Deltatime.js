@@ -16,46 +16,23 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
   const icon = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDYwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjMwMCIgY3k9IjMwMCIgcj0iMzAwIiBmaWxsPSIjMjAyMDIwIi8+CjxwYXRoIGQ9Ik04Ny44NjggNTEyLjEzMkM2MC4wMTA0IDQ4NC4yNzQgMzcuOTEyNSA0NTEuMjAzIDIyLjgzNjEgNDE0LjgwNUM3Ljc1OTcyIDM3OC40MDcgLTMuNDQ0MTZlLTA2IDMzOS4zOTcgMCAzMDBDMy40NDQxNmUtMDYgMjYwLjYwMyA3Ljc1OTc0IDIyMS41OTMgMjIuODM2MiAxODUuMTk1QzM3LjkxMjYgMTQ4Ljc5NyA2MC4wMTA0IDExNS43MjYgODcuODY4IDg3Ljg2NzlDMTE1LjcyNiA2MC4wMTA0IDE0OC43OTcgMzcuOTEyNSAxODUuMTk1IDIyLjgzNjFDMjIxLjU5MyA3Ljc1OTcxIDI2MC42MDQgLTkuODYyNjZlLTA2IDMwMCAwQzMzOS4zOTcgOS44NjI2OGUtMDYgMzc4LjQwNyA3Ljc1OTc1IDQxNC44MDUgMjIuODM2MkM0NTEuMjAzIDM3LjkxMjYgNDg0LjI3NSA2MC4wMTA0IDUxMi4xMzIgODcuODY4TDMwMCAzMDBMODcuODY4IDUxMi4xMzJaIiBmaWxsPSIjMzAzMDMwIi8+CjxwYXRoIGQ9Ik0zMzAgNDM1TDIzMCAxODUiIHN0cm9rZT0iIzYxMjM2MSIgc3Ryb2tlLXdpZHRoPSIzMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxwYXRoIGQ9Ik0zMjAgMTg1SDQyME01MjAgMTg1SDQyME00MjAgMTg1VjQzNU0yOTkuNDUxIDQzMy42MjlMMjAwLjkyOCAxODcuMzIxQzIwMC41OTMgMTg2LjQ4MyAxOTkuNDA3IDE4Ni40ODMgMTk5LjA3MiAxODcuMzIxTDEwMC41NDkgNDMzLjYyOUMxMDAuMjg2IDQzNC4yODUgMTAwLjc3IDQzNSAxMDEuNDc3IDQzNUgyOTguNTIzQzI5OS4yMyA0MzUgMjk5LjcxNCA0MzQuMjg1IDI5OS40NTEgNDMzLjYyOVoiIHN0cm9rZT0iIzYwNjA2MCIgc3Ryb2tlLXdpZHRoPSIzMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxwYXRoIGQ9Ik0zMTAgNDE1TDIxMCAxNjUiIHN0cm9rZT0iI0ZGNUNGRiIgc3Ryb2tlLXdpZHRoPSIzMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxwYXRoIGQ9Ik0zMDAgMTY1SDQwME01MDAgMTY1SDQwME00MDAgMTY1VjQxNU0yNzkuNDUxIDQxMy42MjlMMTgwLjkyOCAxNjcuMzIxQzE4MC41OTMgMTY2LjQ4MyAxNzkuNDA3IDE2Ni40ODMgMTc5LjA3MiAxNjcuMzIxTDgwLjU0ODYgNDEzLjYyOUM4MC4yODU4IDQxNC4yODUgODAuNzY5NiA0MTUgODEuNDc3IDQxNUgyNzguNTIzQzI3OS4yMyA0MTUgMjc5LjcxNCA0MTQuMjg1IDI3OS40NTEgNDEzLjYyOVoiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMzIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K';
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('Deltatime by XeroName : This extension must run unsandboxed');
+    throw new Error('DeltaTime must be run unsandboxed');
   }
 
   const vm = Scratch.vm;
-  const cast = Scratch.Cast;
 
-  let maxFiltStren = Number.MAX_VALUE; // Max value of Filter Strength
-  let filtStren = 8; // Default value of Filter Strength = 8
-  let calcStandFPS = 30; // Standard value of Calculator
+  let deltaTime = 0;
+  let previousTime = 0;
 
-  let fT = 0, last = performance.now(), rawFPS, vmFPS, vmDt;
-  const oldStep = vm.runtime._step;
-
-  vm.runtime._step = function () {
+  vm.runtime.on('BEFORE_EXECUTE', () => {
     const now = performance.now();
-    let thisFT = now - last;
-    fT += (thisFT - fT) / filtStren;
-
-    rawFPS = 1000 / fT;
-
-    if (rawFPS < 0.5) {
-      vmFPS = rawFPS.toFixed(2);
-    } else {
-      vmFPS = Math.round(rawFPS);
-    }
-
-    if (vmFPS > 0) {
-      vmDt = 1 / vmFPS; // At normal situation
-    } else {
-      vmDt = 0; // Prevent situation of "DIV/0"
-    }
-    last = now;
-    oldStep.call(this);
-  };
+    deltaTime = previousTime === 0 ? 0 : (now - previousTime) / 1000;
+    previousTime = now;
+  });
 
   class Dt {
-
     getInfo() {
       return {
-
         id: 'dtbyxeroname',
         name: 'Deltatime',
         docsURI: 'https://extensions.turbowarp.org/XeroName/Deltatime.html',
@@ -63,104 +40,19 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
         color2: '#444444',
         color3: '#ffffff',
         menuIconURI: icon,
-
         blocks: [
           {
-            opcode: 'getDt_vm',
+            opcode: 'dt',
             blockType: Scratch.BlockType.REPORTER,
             text: 'ΔT'
-          },
-          {
-            opcode: 'getFPS_vm',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'FPS'
-          },
-          {
-            blockType: "label",
-            text: "Filtering"
-          },
-          {
-            opcode: 'setFilterStrength',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Set Filter Strength : [STRENGTH]',
-            arguments: {
-              STRENGTH: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '8'
-              }
-            }
-          },
-          {
-            opcode: 'getFilterStrength',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'Filter Strength'
-          },
-          {
-            blockType: "label",
-            text: "Calculating"
-          },
-          {
-            opcode: 'setCalculatorStandard',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Set Calculator Standard to [FPS] FPS',
-            arguments: {
-              FPS: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '60'
-              }
-            }
-          },
-          {
-            opcode: 'getCalculatorStandard',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'Standard FPS of Calculator',
-            disableMonitor: true
-          },
-          {
-            opcode: 'calcMultiplyValue',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'Value to Move [DISTANCE] with ΔT',
-            arguments: {
-              DISTANCE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '10'
-              }
-            }
           }
-        ],
+        ]
       };
     }
 
-    getDt_vm() {
-      return vmDt;
+    dt() {
+      return deltaTime;
     }
-    getFPS_vm() {
-      return vmFPS;
-    }
-    setCalculatorStandard({ FPS }) {
-      calcStandFPS = cast.toNumber(FPS);
-    }
-    getCalculatorStandard() {
-      return calcStandFPS;
-    }
-    calcMultiplyValue({ DISTANCE }) {
-      const moveDist = cast.toNumber(DISTANCE);
-      return moveDist * calcStandFPS;
-    }
-    getFilterStrength() {
-      return filtStren;
-    }
-    setFilterStrength({ STRENGTH }) {
-      const fStren = cast.toNumber(STRENGTH);
-      if (fStren <= 1) {
-        filtStren = 1;
-      } else if (fStren >= maxFiltStren) {
-        filtStren = maxFiltStren;
-      } else {
-        filtStren = fStren;
-      }
-    }
-
   }
 
   Scratch.extensions.register(new Dt());
