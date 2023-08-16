@@ -32,23 +32,11 @@
       body {
         margin: 0;
         padding: 0;
+        border-top: 4px solid #ff4c4c;
       }
 
       noscript {
         font-weight: bold;
-      }
-
-      header {
-        width: 100%;
-        background-color: #ff4c4c;
-        color: white;
-        text-align: center;
-        padding: 20px 0;
-        font-size: 24px;
-      }
-      h1 {
-        margin: 0;
-        padding: 0;
       }
 
       .container {
@@ -100,11 +88,9 @@
     </style>
   </head>
   <body>
-    <header>
-      <h1><%- headerHTML %></h1>
-    </header>
-
     <div class="container">
+      <h1><%- headerHTML %></h1>
+
       <noscript><p>Enable JavaScript for blocks to render.</p></noscript>
 
       <%- bodyHTML %>
@@ -124,9 +110,9 @@
 
     <script src="/docs-internal/scratchblocks.js"></script>
     <script>
-        scratchblocks.renderMatching('.render-scratchblocks', {
-          style: 'scratch3'
-        });
+      scratchblocks.renderMatching('.render-scratchblocks', {
+        style: 'scratch3'
+      });
     </script>
   </body>
 </html>
