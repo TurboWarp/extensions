@@ -589,7 +589,6 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "Get index [index] of [List]",
             blockIconURI: listIco,
-            hideFromPalette: true,
             arguments: {
               index: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -607,7 +606,6 @@
             text: "Length of [List]",
             blockIconURI: listIco,
             disableMonitor: true,
-            hideFromPalette: true,
             arguments: {
               List: {
                 type: Scratch.ArgumentType.STRING,
@@ -620,7 +618,6 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Does [List] contain [term]",
             blockIconURI: listIco,
-            hideFromPalette: true,
             arguments: {
               term: {
                 type: Scratch.ArgumentType.STRING,
@@ -637,7 +634,6 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "Item # of [term] in [List]",
             blockIconURI: listIco,
-            hideFromPalette: true,
             arguments: {
               term: {
                 type: Scratch.ArgumentType.STRING,
@@ -683,8 +679,8 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "# of clones of [Sprite]",
             blockIconURI: catIco,
-            hideFromPalette: true,
             disableMonitor: true,
+            hideFromPalette: true,
             arguments: {
               Sprite: {
                 type: Scratch.ArgumentType.STRING,
@@ -711,8 +707,8 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Hidden?",
             blockIconURI: effectIco,
-            hideFromPalette: true,
             filter: [Scratch.TargetType.SPRITE],
+            hideFromPalette: true,
           },
           {
             opcode: "getRotationStyle",
@@ -720,8 +716,8 @@
             text: "Rotation Style",
             blockIconURI: rotationIco,
             disableMonitor: true,
-            hideFromPalette: true,
             filter: [Scratch.TargetType.SPRITE],
+            hideFromPalette: true,
           },
           {
             opcode: "getSpriteLayer",
@@ -729,8 +725,8 @@
             text: "Sprite Layer",
             blockIconURI: layerIco,
             disableMonitor: true,
-            hideFromPalette: true,
             filter: [Scratch.TargetType.SPRITE],
+            hideFromPalette: true,
           },
           "---",
           {
@@ -763,11 +759,14 @@
             hideFromPalette: true,
           },
           {
+            blockType: "label",
+            text: "Works on google chrome",
+          },
+          {
             opcode: "recording",
             blockType: Scratch.BlockType.COMMAND,
             text: "Turn speech recording [toggle]",
             blockIconURI: speechIco,
-            hideFromPalette: true,
             arguments: {
               toggle: {
                 type: Scratch.ArgumentType.STRING,
@@ -780,15 +779,14 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "Recognized Words",
             blockIconURI: speechIco,
-            hideFromPalette: true,
           },
           {
             opcode: "isrecording",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Recording?",
             blockIconURI: speechIco,
-            hideFromPalette: true,
           },
+          
           {
             opcode: "hasDevice",
             blockIconURI: deviceVelIco,
