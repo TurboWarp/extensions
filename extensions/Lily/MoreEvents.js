@@ -79,6 +79,8 @@
       runtime.on('BEFORE_EXECUTE', () => {
         runtime.shouldExecuteStopClicked = false;
         runtime.startHats('lmsMoreEvents_forever');
+        runtime.startHats('lmsMoreEvents_whileTrueFalse');
+        runtime.startHats('lmsMoreEvents_whenValueChanged');
 
         runtime.startHats('lmsMoreEvents_whileTurboMode', {
           STATE: (runtime.turboMode) ? 'enabled' : 'disabled'
@@ -119,10 +121,34 @@
             }
           },
           {
+            opcode: 'forever',
+            blockType: Scratch.BlockType.EVENT,
+            text: 'forever',
+            isEdgeActivated: false
+          },
+
+          '---',
+
+          {
             opcode: 'whenTrueFalse',
             blockType: Scratch.BlockType.HAT,
-            text: 'when [CONDITION] is [STATE]',
+            text: 'when [CONDITION] becomes [STATE]',
             isEdgeActivated: true,
+            arguments: {
+              CONDITION: {
+                type: Scratch.ArgumentType.BOOLEAN
+              },
+              STATE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'boolean'
+              }
+            }
+          },
+          {
+            opcode: 'whileTrueFalse',
+            blockType: Scratch.BlockType.HAT,
+            text: 'while [CONDITION] is [STATE]',
+            isEdgeActivated: false,
             arguments: {
               CONDITION: {
                 type: Scratch.ArgumentType.BOOLEAN
@@ -137,18 +163,12 @@
             opcode: 'whenValueChanged',
             blockType: Scratch.BlockType.HAT,
             text: 'when [INPUT] is changed',
-            isEdgeActivated: true,
+            isEdgeActivated: false,
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING
               }
             }
-          },
-          {
-            opcode: 'forever',
-            blockType: Scratch.BlockType.HAT,
-            text: 'forever',
-            isEdgeActivated: false
           },
 
           '---',
@@ -272,6 +292,10 @@
     }
 
     whenTrueFalse(args) {
+      return (args.STATE === 'true') ? args.CONDITION : !args.CONDITION;
+    }
+
+    whileTrueFalse(args) {
       return (args.STATE === 'true') ? args.CONDITION : !args.CONDITION;
     }
 
