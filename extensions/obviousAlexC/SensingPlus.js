@@ -390,7 +390,7 @@
         color2: "#3ba2ce",
         color3: "#2e8eb8",
         id: "obviousalexsensing",
-        name: "ATOM",
+        name: "Sensing+",
         blocks: [
           {
             blockType: "label",
