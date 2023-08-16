@@ -23,7 +23,6 @@
       return {
         id: 'dtbyxeroname',
         name: 'Deltatime',
-        docsURI: 'https://extensions.turbowarp.org/XeroName/Deltatime.html',
         color1: '#333333',
         color2: '#444444',
         color3: '#ffffff',
