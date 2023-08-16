@@ -237,7 +237,7 @@ class Builder {
       build.files[`/${extensionId}.html`] = new DocsFile(path);
     }
 
-    const scratchblocksPath = pathUtil.join(__dirname, '..', 'node_modules', 'scratchblocks', 'build', 'scratchblocks.min.js');
+    const scratchblocksPath = pathUtil.join(__dirname, '../node_modules/@turbowarp/scratchblocks/build/scratchblocks.min.js');
     build.files['/docs-internal/scratchblocks.js'] = new DiskFile(scratchblocksPath);
 
     const extensionFiles = [];
