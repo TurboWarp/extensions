@@ -209,7 +209,7 @@
             text: 'broadcast [BROADCAST_OPTION] to [TARGET]',
             arguments: {
               BROADCAST_OPTION: {
-                type: null,
+                type: null
               },
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -218,13 +218,31 @@
             },
             hideFromPalette: true
           },
+          {
+            opcode: 'broadcastToTargetAndWait',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'broadcast [BROADCAST_OPTION] to [TARGET] and wait',
+            arguments: {
+              BROADCAST_OPTION: {
+                type: null
+              },
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'targetMenu'
+              }
+            },
+            hideFromPalette: true
+          },
+
+          '---',
+
           {
             opcode: 'broadcastData',
             blockType: Scratch.BlockType.COMMAND,
             text: 'broadcast [BROADCAST_OPTION] with data [DATA]',
             arguments: {
               BROADCAST_OPTION: {
-                type: null,
+                type: null
               },
               DATA: {
                 type: Scratch.ArgumentType.STRING
@@ -233,16 +251,12 @@
             hideFromPalette: true
           },
           {
-            opcode: 'broadcastDataToTarget',
+            opcode: 'broadcastDataAndWait',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA]',
+            text: 'broadcast [BROADCAST_OPTION] with data [DATA] and wait',
             arguments: {
               BROADCAST_OPTION: {
-                type: null,
-              },
-              TARGET: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'targetMenu'
+                type: null
               },
               DATA: {
                 type: Scratch.ArgumentType.STRING
@@ -250,9 +264,9 @@
             },
             hideFromPalette: true
           },
-          { // Adding the broadcast argument to the blocks
+          {
             blockType: Scratch.BlockType.XML,
-            xml: '<block type="lmsMoreEvents_broadcastToTarget"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value></block><block type="lmsMoreEvents_broadcastData"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block><block type="lmsMoreEvents_broadcastDataToTarget"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block>'
+            xml: '<block type="lmsMoreEvents_broadcastToTarget"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value></block><block type="lmsMoreEvents_broadcastToTargetAndWait"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value></block><sep gap="36"/><block type="lmsMoreEvents_broadcastData"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block><block type="lmsMoreEvents_broadcastDataAndWait"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block>'
           },
           {
             opcode: 'receivedData',
@@ -260,6 +274,51 @@
             text: 'received data',
             disableMonitor: true,
             allowDropAnywhere: true
+          },
+
+          '---',
+
+          {
+            opcode: 'broadcastDataToTarget',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA]',
+            func: 'broadcastToTarget',
+            arguments: {
+              BROADCAST_OPTION: {
+                type: null
+              },
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'targetMenu'
+              },
+              DATA: {
+                type: Scratch.ArgumentType.STRING
+              }
+            },
+            hideFromPalette: true
+          },
+          {
+            opcode: 'broadcastDataToTargetAndWait',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA] and wait',
+            func: 'broadcastToTargetAndWait',
+            arguments: {
+              BROADCAST_OPTION: {
+                type: null
+              },
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'targetMenu'
+              },
+              DATA: {
+                type: Scratch.ArgumentType.STRING
+              }
+            },
+            hideFromPalette: true
+          },
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: '<block type="lmsMoreEvents_broadcastDataToTarget"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block><block type="lmsMoreEvents_broadcastDataToTargetAndWait"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block>'
           }
         ],
         menus: {
@@ -284,6 +343,10 @@
           state: {
             acceptReporters: false,
             items: ['enabled', 'disabled']
+          },
+          broadcasts: {
+            acceptReporters: true,
+            items: '_getBroadcastMsgs'
           }
         }
       };
@@ -319,55 +382,134 @@
     }
 
     broadcastToTarget(args, util) {
-      const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
-      if (!broadcast) return;
+      const broadcastOption = Scratch.Cast.toString(args.BROADCAST_OPTION);
+      if (!broadcastOption) return;
 
-      if (args.TARGET === '_stage_') {
-        util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, runtime.getTargetForStage());
-        return;
+      const data = Scratch.Cast.toString(args.DATA);
+      console.log(data);
+
+      const cloneTargets = this._getTargetFromMenu(args.TARGET).sprite.clones;
+      let startedThreads = [];
+
+      for (const clone of cloneTargets) {
+        startedThreads = [
+          ...startedThreads,
+          ...util.startHats(
+            'event_whenbroadcastreceived', {
+              BROADCAST_OPTION: broadcastOption
+            },
+          clone
+        )];
+        if (data) {
+          startedThreads.forEach(thread => thread.receivedData = args.DATA);
+        }
+      }
+    }
+
+    broadcastToTargetAndWait(args, util) {
+      if (!util.stackFrame.broadcastVar) {
+        util.stackFrame.broadcastVar = Scratch.Cast.toString(args.BROADCAST_OPTION);
       }
 
-      const spriteTarget = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      const spriteTarget = this._getTargetFromMenu(args.TARGET);
+      if (!spriteTarget) return;
       const cloneTargets = spriteTarget.sprite.clones;
-      cloneTargets.forEach(model => util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, model));
-      util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, spriteTarget);
+
+      const data = Scratch.Cast.toString(args.DATA);
+
+      if (util.stackFrame.broadcastVar) {
+        const broadcastOption = util.stackFrame.broadcastVar;
+        if (!util.stackFrame.startedThreads) {
+          util.stackFrame.startedThreads = [];
+          for (const clone of cloneTargets) {
+            util.stackFrame.startedThreads = [
+              ...util.stackFrame.startedThreads,
+              ...util.startHats(
+                'event_whenbroadcastreceived', {
+                  BROADCAST_OPTION: broadcastOption
+                },
+              clone
+            )];
+            if (data) {
+              util.stackFrame.startedThreads.forEach(thread => thread.receivedData = args.DATA);
+            }
+          }
+          if (util.stackFrame.startedThreads.length === 0) {
+            return;
+          }
+        }
+
+        const waiting = util.stackFrame.startedThreads
+          .some(thread => runtime.threads.indexOf(thread) !== -1);
+        if (waiting) {
+          if (
+            util.stackFrame.startedThreads
+            .every(thread => runtime.isWaitingThread(thread))
+          ) {
+            util.yieldTick();
+          } else {
+            util.yield();
+          }
+        }
+      }
     }
 
     broadcastData(args, util) {
       const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
       if (!broadcast) return;
 
-      const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast});
-      console.log(threads);
-      threads.forEach(thread => thread.receivedData = args.DATA);
+      const data = Scratch.Cast.toString(args.DATA);
+
+      let threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast});
+      threads.forEach(thread => thread.receivedData = data);
     }
 
-    broadcastDataToTarget(args, util) {
-      const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
-      if (!broadcast) return;
+    broadcastDataAndWait(args, util) {
+      const data = Scratch.Cast.toString(args.DATA);
 
-      const spriteTarget = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
-      if (!spriteTarget) return;
-      const cloneTargets = spriteTarget.sprite.clones;
-
-      if (args.TARGET === '_stage_') {
-        const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, runtime.getTargetForStage());
-        threads.forEach(thread => thread.receivedData = args.DATA);
-        return;
-      } else {
-        cloneTargets.forEach(model => {
-          const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, model);
-          threads.forEach(thread => thread.receivedData = args.DATA);
-        });
+      if (!util.stackFrame.broadcastVar) {
+        util.stackFrame.broadcastVar = Scratch.Cast.toString(args.BROADCAST_OPTION);
       }
 
-      const threads = util.startHats('event_whenbroadcastreceived', {BROADCAST_OPTION: broadcast}, spriteTarget);
-      threads.forEach(thread => thread.receivedData = args.DATA);
+      if (util.stackFrame.broadcastVar) {
+        const broadcastOption = util.stackFrame.broadcastVar;
+        if (!util.stackFrame.startedThreads) {
+          util.stackFrame.startedThreads = util.startHats(
+            'event_whenbroadcastreceived', {
+              BROADCAST_OPTION: broadcastOption
+            },
+          );
+          if (util.stackFrame.startedThreads.length === 0) {
+            return;
+          } else {
+            util.stackFrame.startedThreads.forEach(thread => thread.receivedData = data);
+          }
+        }
+
+        const waiting = util.stackFrame.startedThreads
+          .some(thread => runtime.threads.indexOf(thread) !== -1);
+        if (waiting) {
+          if (
+            util.stackFrame.startedThreads
+            .every(thread => runtime.isWaitingThread(thread))
+          ) {
+            util.yieldTick();
+          } else {
+            util.yield();
+          }
+        }
+      }
     }
 
     receivedData(args, util) {
       const received = util.thread.receivedData;
       return (received) ? received : '';
+    }
+
+    _getTargetFromMenu (targetName) {
+      let target = Scratch.vm.runtime.getSpriteTargetByName(targetName);
+      if (targetName === '_stage_') target = runtime.getTargetForStage();
+      return target;
     }
 
     _getTargets() {
@@ -398,7 +540,7 @@
         .getVariablesOfType('broadcast_msg')
         .map(model => ({
           text: model.name,
-          value: model.getId()
+          value: model.name
         }));
       if (broadcasts.length > 0) {
         return broadcasts;
