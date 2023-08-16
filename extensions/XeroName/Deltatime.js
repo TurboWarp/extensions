@@ -45,6 +45,11 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
             opcode: 'dt',
             blockType: Scratch.BlockType.REPORTER,
             text: 'ΔT'
+          },
+          {
+            opcode: 'fps',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'fps'
           }
         ]
       };
@@ -52,6 +57,10 @@ I learned how to use "Runtime Steps" of Scratch VM through that code.
 
     dt() {
       return deltaTime;
+    }
+
+    fps() {
+      return +(1 / deltaTime).toFixed(2);
     }
   }
 
