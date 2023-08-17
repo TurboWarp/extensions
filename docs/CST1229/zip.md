@@ -14,7 +14,7 @@ Most blocks in this extension work with a path format:
  - A `/` at the end denotes a directory, like `folder/`
  - Multiple slashes in a row or trying to go above the root directory will result in an error (usually the block doing nothing or returning the empty value)
 
-## Archive management blocks (link) 
+## Archive management blocks
 
 Blocks for creating and saving the current archive. Only one archive can be open at a time. 
 

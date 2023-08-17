@@ -13,7 +13,7 @@
       @media (prefers-color-scheme: dark) {
         :root {
           color: #eee;
-          background: #111;
+          background: #131313;
         }
       }
 
@@ -32,7 +32,37 @@
       body {
         margin: 0;
         padding: 0;
-        border-top: 4px solid #ff4c4c;
+        line-height: 1.3;
+      }
+
+      nav {
+        background-color: #ff4c4c;
+        color: white;
+        font-weight: bold;
+        font-size: 1.1em;
+      }
+      nav > * {
+        display: flex;
+        align-items: center;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 0.5rem 0.25rem;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: inherit !important;
+      }
+      nav > *:hover {
+        text-decoration: underline;
+      }
+      nav img {
+        width: 2rem;
+        height: 2rem;
+        flex-shrink: 0;
+      }
+      @media (prefers-color-scheme: dark) {
+        nav {
+          background-color: #333;
+        }
       }
 
       noscript {
@@ -42,13 +72,21 @@
       .container {
         max-width: 600px;
         margin: auto;
+        padding: 0 0.25rem;
+      }
+      h1 {
+        font-size: 2.25rem;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        border-bottom: 1px solid #ccc;
       }
       hr {
         border: none;
         border-top: 1px solid #ccc;
+        margin: 1rem 0;
       }
       @media (prefers-color-scheme: dark) {
-        hr {
+        hr, h1, h2, h3, h4, h5, h6 {
           border-color: #444;
         }
       }
@@ -82,13 +120,20 @@
       }
 
       footer {
-        margin: 16px 0;
+        margin: 1rem 0;
         font-size: small;
       }
     </style>
   </head>
   <body>
-    <div class="container">
+    <nav role="navigation">
+      <a href="/">
+        <img src="/turbowarp.svg" alt="">
+        <span>TurboWarp Extension Gallery</span>
+      </a>
+    </nav>
+
+    <main class="container">
       <h1><%- headerHTML %></h1>
 
       <noscript><p>Enable JavaScript for blocks to render.</p></noscript>
@@ -106,13 +151,15 @@
         </p>
         <p>TurboWarp is not affiliated with Scratch, the Scratch Team, or the Scratch Foundation.</p>
       </footer>
-    </div>
+    </main>
 
-    <script src="/docs-internal/scratchblocks.js"></script>
-    <script>
-      scratchblocks.renderMatching('.render-scratchblocks', {
-        style: 'scratch3'
-      });
-    </script>
+    <% if (usesScratchBlocks) { %>
+      <script src="/docs-internal/scratchblocks.js"></script>
+      <script>
+        scratchblocks.renderMatching('.render-scratchblocks', {
+          style: 'scratch3'
+        });
+      </script>
+    <% } %>
   </body>
 </html>
