@@ -174,7 +174,10 @@
             isEdgeActivated: false,
             arguments: {
               INPUT: {
-                type: Scratch.ArgumentType.STRING
+                // Intentional:
+                // Encourages people to place a block
+                // (as opposed to typing a value)
+                type: null
               }
             }
           },
