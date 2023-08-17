@@ -200,4 +200,4 @@
     .addArgument("mode", null, null, "DocTypes");
 
   turboMD.register();
-})(window.Scratch);
+})(Scratch);
