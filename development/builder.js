@@ -145,14 +145,15 @@ IMAGE_FORMATS.set('.jpg', ImageFile);
 IMAGE_FORMATS.set('.svg', SVGFile);
 
 class DocsFile extends DiskFile {
-  constructor (path) {
+  constructor (path, extensionId) {
     super(path);
+    this.extensionId = extensionId;
     this.getDiskPath = null;
   }
 
   read () {
     const markdown = super.read().toString('utf-8');
-    return renderDocs(markdown);
+    return renderDocs(markdown, this.extensionId);
   }
 
   getType () {
@@ -234,10 +235,10 @@ class Builder {
         continue;
       }
       const extensionId = docsFilename.split('.')[0];
-      build.files[`/${extensionId}.html`] = new DocsFile(path);
+      build.files[`/${extensionId}.html`] = new DocsFile(path, extensionId);
     }
 
-    const scratchblocksPath = pathUtil.join(__dirname, '../node_modules/@turbowarp/scratchblocks/build/scratchblocks.min.js');
+    const scratchblocksPath = pathUtil.join(__dirname, '../node_modules/scratchblocks/build/scratchblocks.min.js');
     build.files['/docs-internal/scratchblocks.js'] = new DiskFile(scratchblocksPath);
 
     const extensionFiles = [];
