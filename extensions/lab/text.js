@@ -884,12 +884,14 @@
     }
 
     getFonts () {
+      const customFonts = Scratch.vm.runtime.fontManager ? Scratch.vm.runtime.fontManager.getFonts().map(i => ({
+        text: i.name,
+        value: i.family
+      })) : [];
+
       return [
         ...FONTS,
-        ...Scratch.vm.runtime.fontManager.getFonts().map(i => ({
-          text: i.name,
-          value: i.family
-        })),
+        ...customFonts,
         {
           text: 'random font',
           value: 'Random'
