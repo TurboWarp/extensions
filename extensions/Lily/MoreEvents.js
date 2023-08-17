@@ -462,7 +462,7 @@
             return;
           }
         }
-    
+
         const waiting = util.stackFrame.startedThreads
           .some(thread => runtime.threads.indexOf(thread) !== -1);
         if (waiting) {
@@ -509,7 +509,7 @@
             util.stackFrame.startedThreads.forEach(thread => thread.receivedData = data);
           }
         }
-    
+
         const waiting = util.stackFrame.startedThreads
           .some(thread => runtime.threads.indexOf(thread) !== -1);
         if (waiting) {
