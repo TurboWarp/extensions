@@ -22,14 +22,21 @@
   let port;
   class JZ {
     getInfo() {
+      const icon = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxODAuNjUzMDQiIGhlaWdodD0iMTgwLjY1MzAzIiB2aWV3Qm94PSIwLDAsMTgwLjY1MzA0LDE4MC42NTMwMyI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE0OS42NzM0OCwtODkuNjczNDkpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMTQ5LjY3MzQ4LDI1OS42NDYwM2MwLC0zNC4wNjUzMiAwLC0xMzkuMDQzMzkgMCwtMTU4LjUwNDAxYzAsLTYuMDY2MjcgNC44OTQ3MSwtMTEuNDY4NTMgMTAuNTAzNDksLTExLjQ2ODUzYzE4Ljg5MDIyLDAgMTI1LjMwOTM3LDAgMTU5LjU0MjI0LDBjNi42NzY1NywwIDEwLjYwNzMxLDUuMjE5NDcgMTAuNjA3MzEsMTEuMTIyNDVjMCwxOS4zMjIyNSAwLDEyNC4wMzE0NyAwLDE1Ny44MTE4NWMwLDYuNTEwMDcgLTMuOTMwMDQsMTEuNzE4NzMgLTEwLjYwNzMxLDExLjcxODczYy0zNC40MTI4MiwwIC0xNDEuNzk0NjIsMCAtMTYwLjIzNDQsMGMtNS4yNzY0MiwwIC05LjgxMTMzLC0zLjk2MDQ2IC05LjgxMTMzLC0xMC42ODA1eiIgZmlsbD0iI2ZmZDY3NiIvPjxwYXRoIGQ9Ik0xNTMsMjU2LjcxMjg0YzAsLTMyLjgxMDc3IDAsLTEzMy45MjI3NCAwLC0xNTIuNjY2NjdjMCwtNS44NDI4NiA0LjcxNDQ1LC0xMS4wNDYxNyAxMC4xMTY2NywtMTEuMDQ2MTdjMTguMTk0NTQsMCAxMjAuNjk0NTIsMCAxNTMuNjY2NjcsMGM2LjQzMDY5LDAgMTAuMjE2NjYsNS4wMjcyNSAxMC4yMTY2NiwxMC43MTI4NGMwLDE4LjYxMDY2IDAsMTE5LjQ2MzY3IDAsMTUyYzAsNi4yNzAzMSAtMy43ODUzLDExLjI4NzE2IC0xMC4yMTY2NiwxMS4yODcxNmMtMzMuMTQ1NDcsMCAtMTM2LjU3MjY1LDAgLTE1NC4zMzMzNCwwYy01LjA4MjExLDAgLTkuNDUsLTMuODE0NjEgLTkuNDUsLTEwLjI4NzE2eiIgZmlsbD0iIzAwMDAwMCIvPjxwYXRoIGQ9Ik0xNTcuMTE2NjcsMjU2LjU0NjE3YzAsLTI3LjQ3NzIxIDAsLTEzNi45MzQ5NCAwLC0xNTIuNWMwLC0zLjY0NjAxIDMuMjEwNzMsLTYuNTg3ODMgNS4zMzMzMywtNi41ODc4M2M1Ljg3OTUxLDAgMzIuMjQ4MjcsMCAzMi4yNDgyNywwYzAsMCAwLjAxNDI0LDg0LjQ2ODU2IDAuMDE2OTMsMTAwLjEzNDk5YzAuMDAwODQsNC45MTM4NCA0LjM2NjIyLDcuOTg3MjUgNi42MTA1Myw3Ljk5NjQzYzIuMzMwMTcsMC4wMDk1MiA3LjEyNDI2LDAuMDI5MTMgNy4xMjQyNiwwLjAyOTEzYzAsMCAwLDQ1LjIxNDk3IDAsNTIuNDI3M2MwLDEuODE3MDIgLTEuMzQ2NTIsNC43NDU1IC01LDQuNzQ1NWMtMTEuMzExMjgsMCAtMzYuMTUwMzEsMCAtNDEuNjY2NjYsMGMtMi4yMTYwMSwwIC00LjY2NjY2LC0yLjI2MDY1IC00LjY2NjY2LC02LjI0NTV6IiBmaWxsPSIjZmZkNjc2Ii8+PHBhdGggZD0iTTIxNC41MTQxMiwyNTguMDQ2MTdjMCwtNy42ODE1OCAwLC01Mi40MjczIDAsLTUyLjQyNzNjMCwwIDMuNjg2MTMsLTAuMDE3ODEgNS41ODM2NCwtMC4wMjY5OGMxLjk3Mjk5LC0wLjAwOTU0IDYuMDQxNCwtMy4wNTU1IDYuMDQ2NzQsLTYuNTAwMzhjMC4wMjExNywtMTMuNjUyMSAwLjE1NzU5LC0xMDEuNjMzMTggMC4xNTc1OSwtMTAxLjYzMzE4aDI2Ljc2MmMwLDAgMC4zNzQ0LDg4LjIyNjY3IDAuNDMxODgsMTAxLjc3MjAyYzAuMDE0MzQsMy4zNzg3NyAzLjYxNzY5LDYuMzQ4NzMgNS41NTU1OSw2LjM1NzU2YzIuMTQ4NTMsMC4wMDk3OSA2Ljc5NTg5LDAuMDMwOTYgNi43OTU4OSwwLjAzMDk2YzAsMCAwLDQ0LjU0NTIgMCw1Mi4zNjAyMWMwLDIuMjI1NjkgLTEuMzc3MjcsNC44MTI1OSAtNS4xMzQwNiw0LjgxMjU5Yy0xMS40MDMwNSwwIC0zNi4xMzM5MSwwIC00MS41OTY3MiwwYy0yLjE4NzM1LDAgLTQuNjAyNTUsLTIuNjE2NCAtNC42MDI1NSwtNC43NDU1eiIgZmlsbD0iI2ZmZDY3NiIvPjxwYXRoIGQ9Ik0yNzEuMjA3MzEsMjU4LjUwMjMzYzAsLTcuNzgzMTcgMCwtNTIuNTMxMzIgMCwtNTIuNTMxMzJjMCwwIDQuNjM0MzksLTAuMDE4OTUgNi45MzQ0NSwtMC4wMjgzNWMyLjI3NzQzLC0wLjAwOTMxIDYuODA1NzIsLTMuNjMxNDQgNi44MTMwNiwtOC4zODE1OWMwLjAyMzk2LC0xNS41MDI4NCAwLjE1MzI0LC0xMDAuMTAyNzMgMC4xNTMyNCwtMTAwLjEwMjczYzAsMCAyNC4xNDI5OCwwIDMwLjY3NTI4LDBjMy4wNjU5LDAgNi43NTczLDMuMjc1MTYgNi43NTczLDYuOTIxMTdjMCwxNS43NjU4MiAwLDEyNi44OTA5OSAwLDE1Mi4yNWMwLDMuMzA3OTMgLTMuMjU4ODksNi4xNjIxNyAtNi4wOTA2NCw2LjE2MjE3Yy02LjMyNzQsMCAtMzEuMTM5NTMsMCAtNDEuMDg1NjYsMGMtMi41Nzc4MSwwIC00LjE1NzA0LC0yLjA2NTMgLTQuMTU3MDQsLTQuMjg5MzR6IiBmaWxsPSIjZmZkNjc2Ii8+PHBhdGggZD0iTTE5OC45MjM4NiwxOTYuNDMxOThjMCwtMTIuMDQwOTkgMCwtOTguNTY1MzYgMCwtOTguNTY1MzZoMjIuODg4NTVjMCwwIDAsODguNjI0OTYgMCw5OS42MTE4NmMwLDIuMTc4MDkgLTEuODk5MzQsMy45MTQ4MyAtNC41Mjg2NSwzLjkxNDgzYy00Ljg0Mjc3LDAgLTEyLjE2MTg3LDAgLTE0LjY1MDk2LDBjLTEuNjE3MjEsMCAtMy43MDg5NCwtMi4yNTk4NiAtMy43MDg5NCwtNC45NjEzMnoiIGZpbGw9IiNhYzg5MzkiLz48cGF0aCBkPSJNMjU3LjcyOTgzLDE5NS44ODk5MWMwLC0xMi41MTgwOCAwLC05OC4wMjMyOSAwLC05OC4wMjMyOWgyMi44ODg1NWMwLDAgMCw4Ny41ODE1OSAwLDk4LjczOTI2YzAsMi4yNTc1MyAtMi4wNzEwMyw0Ljc4NzQzIC01LjEwMSw0Ljc4NzQzYy00LjU0MTA0LDAgLTEwLjkzODU1LDAgLTEzLjM2NDc4LDBjLTEuOTc5NjcsMCAtNC40MjI3OCwtMi41MzcyOCAtNC40MjI3OCwtNS41MDM0eiIgZmlsbD0iI2FjODkzOSIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjkwLjMyNjUxOTk5OTk5OTk5OjkwLjMyNjUxNDk5OTk5OTk3LS0+'
+var port = null;
       return {
+        menuIconURI: icon,
+        blockIconURI: icon,
+        color1: '#e8b62d',
+        color2: '#e8ac0f',
+        color3: '#b7870b',
+        name: 'Jazz Midi',
         id: 'ziqianjz',
-        name: 'Jazz MIDI',
         blocks: [
           {
             opcode: 'JZInit',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'initialize jazz MIDI',
+            text: 'Open Jazz MIDI Port',
           },
           {
             opcode: 'play',
@@ -77,72 +84,7 @@
         menus: {
           channel: {
             acceptReporters: true,
-            items: [
-              {
-              text: '1',
-              value: '0'
-            },
-            {
-              text: '2',
-              value: '1'
-            },
-            {
-              text: '3',
-              value: '2'
-            },
-            {
-              text: '4',
-              value: '3'
-            },
-            {
-              text: '5',
-              value: '4'
-            },
-            {
-              text: '6',
-              value: '5'
-            },
-            {
-              text: '7',
-              value: '6'
-            },
-            {
-              text: '8',
-              value: '7'
-            },
-            {
-              text: '9',
-              value: '8'
-            },
-            {
-              text: '10',
-              value: '9'
-            },
-            {
-              text: '11',
-              value: '10'
-            },
-            {
-              text: '12',
-              value: '11'
-            },
-            {
-              text: '13',
-              value: '12'
-            },
-            {
-              text: '14',
-              value: '13'
-            },
-            {
-              text: '15',
-              value: '14'
-            },
-            {
-              text: '16',
-              value: '15'
-            },
-          ]
+            items: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
           }
         }
       };
@@ -152,14 +94,14 @@
     }
     play(args) {
       try {
-        port.note(args.ch, args.note, args.vel, args.dur * 1000);
+        port.note(args.ch-1, args.note, args.vel, args.dur * 1000);
       } catch (msgerr) {
         console.warn(msgerr.message);
       }
     }
     instrument(args) {
       try {
-        port.program(args.ch,args.inst);
+        port.program(args.ch-1,args.inst);
       } catch (msgerr) {
         console.warn(msgerr.message);
       }
