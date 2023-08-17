@@ -18,7 +18,7 @@
 
   const math_3d = new ExtensionBuilder("3D Math", "obviousAlexCMath3d");
   const d2r = 0.0174533;
-  const sortedDists = []
+  const sortedDists = [];
 
   const camera = {
     position: [0, 0, 0],
@@ -50,7 +50,11 @@
       "newV3",
       Scratch.BlockType.REPORTER,
       ({ x, y, z }) => {
-        return JSON.stringify([Scratch.Cast.toNumber(x) || 0, Scratch.Cast.toNumber(y) || 0, Scratch.Cast.toNumber(z) || 0]);
+        return JSON.stringify([
+          Scratch.Cast.toNumber(x) || 0,
+          Scratch.Cast.toNumber(y) || 0,
+          Scratch.Cast.toNumber(z) || 0,
+        ]);
       }
     )
     .addArgument("x", 0)
@@ -223,7 +227,7 @@
       ({ a }) => {
         a = JSON.parse(a);
         if (a) {
-        return Math.sqrt(
+          return Math.sqrt(
             Math.pow(a[0], 2) + Math.pow(a[1], 2) + Math.pow(a[2], 2)
           );
         }
@@ -356,8 +360,11 @@
       "vector 2 x:[x] y:[y]",
       "newV2",
       Scratch.BlockType.REPORTER,
-      ({ x, y}) => {
-        return JSON.stringify([Scratch.Cast.toNumber(x) || 0, Scratch.Cast.toNumber(y) || 0]);
+      ({ x, y }) => {
+        return JSON.stringify([
+          Scratch.Cast.toNumber(x) || 0,
+          Scratch.Cast.toNumber(y) || 0,
+        ]);
       }
     )
     .addArgument("x", 0)
@@ -528,14 +535,19 @@
     .addArgument("b", "[0,0]");
 
   math_3d
-    .addBlock("V2: [a] * [b]", "mulV2", Scratch.BlockType.REPORTER, ({ a, b }) => {
-      a = JSON.parse(a);
-      b = JSON.parse(b);
-      if (a && b) {
-        return JSON.stringify([a[0] * b[0], a[1] * b[1]]);
+    .addBlock(
+      "V2: [a] * [b]",
+      "mulV2",
+      Scratch.BlockType.REPORTER,
+      ({ a, b }) => {
+        a = JSON.parse(a);
+        b = JSON.parse(b);
+        if (a && b) {
+          return JSON.stringify([a[0] * b[0], a[1] * b[1]]);
+        }
+        return "[0,0]";
       }
-      return "[0,0]";
-    })
+    )
     .addArgument("a", "[0,0]")
     .addArgument("b", "[0,0]");
 
@@ -679,7 +691,7 @@
       ({ a, yaw }) => {
         a = JSON.parse(a);
 
-        if (a && b) {
+        if (a) {
           const sinAndCos = [Math.sin(yaw * d2r), Math.cos(yaw * d2r)];
 
           let temp = a[0];
