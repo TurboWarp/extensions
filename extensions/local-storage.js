@@ -67,7 +67,7 @@
       return {
         id: 'localstorage',
         name: 'Local Storage',
-        docsURI: "https://extensions.turbowarp.org/local-storage.html",
+        docsURI: "https://extensions.turbowarp.org/local-storage",
         blocks: [
           {
             opcode: 'setProjectId',
