@@ -23,9 +23,10 @@ md.renderer.rules.fence = function (tokens, idx, options, env, self) {
 
 /**
  * @param {string} markdownSource Markdown code
+ * @param {string} slug Path slug like 'TestMuffin/fetch'
  * @returns {string} HTML source code
  */
-const renderDocs = (markdownSource) => {
+const renderDocs = (markdownSource, slug) => {
   const env = {};
   const tokens = md.parse(markdownSource, env);
 
@@ -50,6 +51,7 @@ const renderDocs = (markdownSource) => {
   const bodyHTML = md.renderer.render(tokens, md.options, env);
 
   return renderTemplate(path.join(__dirname, 'docs-template.ejs'), {
+    slug,
     headerHTML,
     headerText,
     bodyHTML,
