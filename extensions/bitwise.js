@@ -30,7 +30,7 @@
 
         color1: '#17cde6',
 
-        docsURI: "https://extensions.turbowarp.org/bitwise.html",
+        docsURI: "https://extensions.turbowarp.org/bitwise",
         menuIconURI: icon,
 
         blocks: [

@@ -9724,4 +9724,4 @@
   }, 1500);
 
   Scratch.extensions.register(new NewgroundsAPI());
-})(window.Scratch);
+})(Scratch);

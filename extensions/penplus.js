@@ -2656,4 +2656,4 @@ Other various small fixes
   }
 
   Scratch.extensions.register(new PenPlus());
-})(window.Scratch); // use window.Scratch so it doesn't throw error in plugin loaders
+})(Scratch);

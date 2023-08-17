@@ -297,4 +297,4 @@
   }
 
   Scratch.extensions.register(new RuntimeOptions());
-})(window.Scratch);
+})(Scratch);
