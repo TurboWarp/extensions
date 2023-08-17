@@ -71,19 +71,27 @@
   ];
 
   var lastValues = {};
+  var runTimer = 0;
 
   class MoreEvents {
     constructor() {
       // Stop Sign Clicked contributed by @CST1229
       runtime.shouldExecuteStopClicked = true;
       runtime.on('BEFORE_EXECUTE', () => {
+        runTimer++;
         runtime.shouldExecuteStopClicked = false;
+
         runtime.startHats('lmsMoreEvents_forever');
         runtime.startHats('lmsMoreEvents_whileTrueFalse');
         runtime.startHats('lmsMoreEvents_whenValueChanged');
+        runtime.startHats('lmsMoreEvents_everyDuration');
         runtime.startHats('lmsMoreEvents_whileKeyPressed');
       });
+      runtime.on('PROJECT_START', () => {
+        runTimer = 0;
+      });
       runtime.on('PROJECT_STOP_ALL', () => {
+        runTimer = 0;
         if (runtime.shouldExecuteStopClicked)
           queueMicrotask(() => runtime.startHats('lmsMoreEvents_whenStopClicked'));
       });
@@ -156,6 +164,9 @@
               }
             }
           },
+
+          '---',
+
           {
             opcode: 'whenValueChanged',
             blockType: Scratch.BlockType.HAT,
@@ -164,6 +175,18 @@
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING
+              }
+            }
+          },
+          {
+            opcode: 'everyDuration',
+            blockType: Scratch.BlockType.HAT,
+            text: 'every [DURATION] frames',
+            isEdgeActivated: false,
+            arguments: {
+              DURATION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 3
               }
             }
           },
@@ -343,10 +366,6 @@
           state: {
             acceptReporters: false,
             items: ['enabled', 'disabled']
-          },
-          broadcasts: {
-            acceptReporters: true,
-            items: '_getBroadcastMsgs'
           }
         }
       };
@@ -368,6 +387,11 @@
         return true;
       }
       return false;
+    }
+
+    everyDuration(args, util) {
+      const duration = Math.max(Math.round(Scratch.Cast.toNumber(args.DURATION)), 0);
+      return !!((runTimer % duration) === 0);
     }
 
     whenKeyAction(args, util) {
@@ -438,7 +462,7 @@
             return;
           }
         }
-
+    
         const waiting = util.stackFrame.startedThreads
           .some(thread => runtime.threads.indexOf(thread) !== -1);
         if (waiting) {
@@ -485,7 +509,7 @@
             util.stackFrame.startedThreads.forEach(thread => thread.receivedData = data);
           }
         }
-
+    
         const waiting = util.stackFrame.startedThreads
           .some(thread => runtime.threads.indexOf(thread) !== -1);
         if (waiting) {
@@ -529,23 +553,6 @@
         return spriteNames;
       } else {
         return [{text: "", value: 0}]; //this should never happen but it's a failsafe
-      }
-    }
-
-    _getBroadcastMsgs() {
-      // @ts-expect-error - Blockly not typed yet
-      // eslint-disable-next-line no-undef
-      const broadcasts = typeof Blockly === 'undefined' ? [] : Blockly.getMainWorkspace()
-        .getVariableMap()
-        .getVariablesOfType('broadcast_msg')
-        .map(model => ({
-          text: model.name,
-          value: model.name
-        }));
-      if (broadcasts.length > 0) {
-        return broadcasts;
-      } else {
-        return [{ text: "", value: 0 }];
       }
     }
   }
