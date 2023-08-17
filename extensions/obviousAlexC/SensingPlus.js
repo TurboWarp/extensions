@@ -1346,4 +1346,4 @@
     }
   }
   Scratch.extensions.register(new SensingPlus());
-})(window.Scratch);
+})(Scratch);
