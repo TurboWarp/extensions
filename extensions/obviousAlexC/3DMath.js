@@ -816,4 +816,4 @@
     .setVisible(false).setFilter();
 */
   math_3d.register();
-})(window.Scratch);
+})(Scratch);
