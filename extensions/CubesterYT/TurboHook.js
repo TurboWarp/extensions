@@ -21,7 +21,7 @@
         color2: "#2f39a1",
         color3: "#28318f",
         menuIconURI: icon,
-        docsURI: "https://extensions.turbowarp.org/CubesterYT/TurboHook.html",
+        docsURI: "https://extensions.turbowarp.org/CubesterYT/TurboHook",
 
         blocks: [
           {

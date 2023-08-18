@@ -47,8 +47,7 @@
       return {
         id: "cst1229zip",
         name: "Zip",
-        // docsURI: "http://localhost:8000/CST1229/zip.html",
-        docsURI: "https://extensions.turbowarp.org/CST1229/zip.html",
+        docsURI: "https://extensions.turbowarp.org/CST1229/zip",
 
         blockIconURI: extIcon,
 
