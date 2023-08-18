@@ -32,7 +32,7 @@
       return {
         id: 'wakeLock',
         name: 'Wake Lock',
-        docsURI: 'https://extensions.turbowarp.org/wake-lock.html',
+        docsURI: 'https://extensions.turbowarp.org/wake-lock',
         blocks: [
           {
             opcode: 'setWakeLock',
