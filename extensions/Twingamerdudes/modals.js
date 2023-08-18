@@ -7,8 +7,9 @@
 
   const vm = Scratch.vm;
   let modalInput = "";
+  let buttonPressed = "";
   let isModalOpen = false;
-  class RandomUtils {
+  class Modals {
     getInfo() {
       return {
         id: 'modals',
@@ -64,6 +65,11 @@
             }
           },
           {
+            opcode: 'closeModal',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'close modal'
+          },
+          {
             opcode: 'addTextToModal',
             blockType: Scratch.BlockType.COMMAND,
             text: 'add [TEXT] to the current modal',
@@ -72,6 +78,25 @@
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: 'Hello World!'
                 }
+            }
+          },
+          {
+            opcode: 'addModalButton',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'add button [NAME] with the background color of [SCOLOR] and the text color of [TCOLOR] to the current modal',
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'My Button'
+              },
+              SCOLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: '#808080'
+              },
+              TCOLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: '#ffffff'
+              }
             }
           },
           {
@@ -129,9 +154,30 @@
             blockType: Scratch.BlockType.HAT,
             text: 'when a modal is closed',
             isEdgeActivated: false
+          },
+          {
+            blockType: Scratch.BlockType.EVENT,
+            opcode: 'whenButtonPressed',
+            text: 'when [BUTTON] is clicked',
+            isEdgeActivated: false, // required boilerplate
+            arguments: {
+              BUTTON: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'My Button'
+              }
+            }
           }
         ]
       };
+    }
+
+    whenButtonPressed(args){
+      if(buttonPressed == args.BUTTON)
+      {
+        buttonPressed = "";
+        return true;
+      }
+      return false
     }
     addTextToModal(args){
       if (isModalOpen){
@@ -145,12 +191,49 @@
       }
     }
 
+    closeModal(args){
+      if (isModalOpen){
+        const modal = document.querySelector("dialog");
+        modal.close();
+        modal.remove();
+        isModalOpen = false;
+      }
+    }
+
     changeDefaultModalText(args){
       if (isModalOpen){
         const defaultModalText = args.TEXT;
         const modal = document.querySelector("dialog");
         const text = document.getElementById("modals_modalText");
         text.textContent = defaultModalText;
+      }
+    }
+
+    addModalButton(args, util){
+      if (isModalOpen){
+        //init stuff
+        const buttonName = args.NAME;
+        const modal = document.querySelector("dialog");
+        const button = document.createElement("button");
+
+        //CSS Hell
+        button.style.backgroundColor = args.SCOLOR;
+        button.style.color = args.TCOLOR;
+        button.style.border = "none";
+        button.style.padding = "5px";
+        button.style.fontSize = "1em";
+        button.style.cursor = "pointer";
+        button.style.outline = "none";
+        button.style.transformOrigin = "50% 50%";
+        button.style.zIndex = "0";
+        button.style.borderRadius = "5px";
+        button.innerHTML = buttonName;
+
+        button.addEventListener("click", function(){
+          buttonPressed = buttonName;
+          util.startHats('modals_whenButtonPressed');
+        });
+        modal.appendChild(button);
       }
     }
 
@@ -321,5 +404,5 @@
       }
   }
 }
-Scratch.extensions.register(new RandomUtils());
+Scratch.extensions.register(new Modals());
 })(Scratch);
