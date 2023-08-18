@@ -172,12 +172,11 @@
     }
 
     whenButtonPressed(args){
-      if(buttonPressed == args.BUTTON)
-      {
+      if (buttonPressed == args.BUTTON) {
         buttonPressed = "";
         return true;
       }
-      return false
+      return false;
     }
     addTextToModal(args){
       if (isModalOpen){
