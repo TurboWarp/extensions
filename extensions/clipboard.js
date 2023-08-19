@@ -46,13 +46,13 @@
         blocks: [
           {
             opcode: 'whenCopied',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when something is copied',
             isEdgeActivated: false
           },
           {
             opcode: 'whenPasted',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when something is pasted',
             isEdgeActivated: false
           },

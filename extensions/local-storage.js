@@ -67,7 +67,7 @@
       return {
         id: 'localstorage',
         name: 'Local Storage',
-        docsURI: "https://extensions.turbowarp.org/local-storage.html",
+        docsURI: "https://extensions.turbowarp.org/local-storage",
         blocks: [
           {
             opcode: 'setProjectId',
@@ -124,7 +124,7 @@
           },
           {
             opcode: 'whenChanged',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when another window changes storage',
             isEdgeActivated: false
           }

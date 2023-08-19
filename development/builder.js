@@ -2,6 +2,7 @@ const fs = require('fs');
 const pathUtil = require('path');
 const sizeOfImage = require('image-size');
 const renderTemplate = require('./render-template');
+const renderDocs = require('./render-docs');
 const compatibilityAliases = require('./compatibility-aliases');
 
 /**
@@ -143,6 +144,23 @@ IMAGE_FORMATS.set('.png', ImageFile);
 IMAGE_FORMATS.set('.jpg', ImageFile);
 IMAGE_FORMATS.set('.svg', SVGFile);
 
+class DocsFile extends DiskFile {
+  constructor (path, extensionId) {
+    super(path);
+    this.extensionId = extensionId;
+    this.getDiskPath = null;
+  }
+
+  read () {
+    const markdown = super.read().toString('utf-8');
+    return renderDocs(markdown, this.extensionId);
+  }
+
+  getType () {
+    return '.html';
+  }
+}
+
 class Build {
   constructor () {
     this.files = {};
@@ -192,6 +210,7 @@ class Builder {
     this.extensionsRoot = pathUtil.join(__dirname, '..', 'extensions');
     this.websiteRoot = pathUtil.join(__dirname, '..', 'website');
     this.imagesRoot = pathUtil.join(__dirname, '..', 'images');
+    this.docsRoot = pathUtil.join(__dirname, '..', 'docs');
   }
 
   build () {
@@ -210,6 +229,17 @@ class Builder {
       }
       build.files[`/images/${imageFilename}`] = new ImageFileClass(path);
     }
+
+    for (const [docsFilename, path] of readDirectory(this.docsRoot)) {
+      if (!docsFilename.endsWith('.md')) {
+        continue;
+      }
+      const extensionId = docsFilename.split('.')[0];
+      build.files[`/${extensionId}.html`] = new DocsFile(path, extensionId);
+    }
+
+    const scratchblocksPath = pathUtil.join(__dirname, '../node_modules/scratchblocks/build/scratchblocks.min.js');
+    build.files['/docs-internal/scratchblocks.js'] = new DiskFile(scratchblocksPath);
 
     const extensionFiles = [];
     for (const [extensionFilename, path] of readDirectory(this.extensionsRoot)) {
@@ -277,6 +307,7 @@ class Builder {
       `${this.extensionsRoot}/**/*`,
       `${this.imagesRoot}/**/*`,
       `${this.websiteRoot}/**/*`,
+      `${this.docsRoot}/**/*`,
     ], {
       ignoreInitial: true
     }).on('all', () => {

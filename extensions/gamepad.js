@@ -181,7 +181,7 @@
           /*
           {
             opcode: 'buttonPressedReleased',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'button [b] [pr] of pad [i]',
             arguments: {
               b: {
@@ -203,7 +203,7 @@
 
           {
             opcode: 'axisMoved',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'axis [b] of pad [i] moved',
             arguments: {
               b: {
