@@ -1,7 +1,7 @@
 /*
  * This extension was made by SharkPool
  * Version 2.1 (Fixes, Booleans, More Customization, Rotation, More Effects, and Performance Updates)
- * Next Update: Redo Effects Tab (again but cooler) & Image Setting Additions
+ * Next Update: Image Setting Additions
  * Do NOT delete these comments
  */
 
