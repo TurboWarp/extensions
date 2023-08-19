@@ -32,6 +32,7 @@ var port = null;
         color3: '#b7870b',
         name: 'Jazz Midi',
         id: 'ziqianjz',
+        docsURI: 'https://extensions.turbowarp.org/ziqian11/jazzmidi',
         blocks: [
           {
             opcode: 'JZInit',
