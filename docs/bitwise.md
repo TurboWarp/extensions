@@ -19,7 +19,7 @@ Returns true if the input is a binary number. Binary numbers can only contain 0s
 
 Converts the input from decimal to binary and returns the result.
 
-Note: All other blocks except for [is () binary?] and [() to number] will treat this result as a decimal number, so make sure to convert it back to decimal before you perform operations on it.
+Note: All other blocks except for `is () binary?` and `() to number` will treat this result as a decimal number, so make sure to convert it back to decimal before you perform operations on it.
 
 ---
 
@@ -34,7 +34,7 @@ Converts the input from binary to decimal and returns the result.
 ```scratch
 ([x] >> [y] :: #17cde6)
 ```
-Arithmatically shifts each bit of the binary representation of x to the right y times and returns the result.
+Arithmatically shifts each bit of the binary representation of _x_ to the right _y_ times and returns the result.
 
 Example: `32` → `100000` → `010000` → `16`
 
@@ -47,7 +47,7 @@ This is essentially the same thing as dividing by 2^*y* and rounding down to the
 ```scratch
 ([x] \<\< [y] :: #17cde6)
 ```
-Arithmatically shifts each bit of the binary representation of x to the left y times and returns the result.
+Arithmatically shifts each bit of the binary representation of _x_ to the left _y_ times and returns the result.
 
 Example: `32` → `0100000` → `1000000` → `64`
 
@@ -60,18 +60,27 @@ This is essentially the same thing as multiplying by 2^*y*.
 ```scratch
 ([x] >>> [y] :: #17cde6)
 ```
-Logically shifts each bit of the binary representation of x to the right y times and returns the result.
+Logically shifts each bit of the binary representation of _x_ to the right _y_ times and returns the result.
 
 This also moves the sign bit, so it can result in negative numbers becoming positive.
 
 ---
 
 ```scratch
-([x] ↺ [y] :: #17cde6)
+([x] ↻ [y] :: #17cde6)
 ```
-Shifts each bit of the binary representation of x to the right y times. Numbers shifted past one end will reappear on the other (circle around).
+Shifts each bit of the binary representation of _x_ to the right _y_ times. Numbers shifted past one end will reappear on the other (circle around).
 
 Example: `3` → `00000000000000000000000000000011` → `10000000000000000000000000000001` → `-2147483647`
+
+---
+
+```scratch
+([x] ↺ [y] :: #17cde6)
+```
+Shifts each bit of the binary representation of _x_ to the left _y_ times. Numbers shifted past one end will reappear on the other (circle around).
+
+Example: `-2147483647` → `10000000000000000000000000000001` → `00000000000000000000000000000011` → `3`
 
 ---
 
@@ -109,10 +118,27 @@ OR  7     OR  0111
 ---
 
 ```scratch
+([x] xor [y] :: #17cde6)
+```
+
+Logically XORs the binary representation of the inputs together and returns the result.
+
+Example:
+
+```
+    14        1110
+XOR 3     XOR 0011
+——————————————————
+    13        1101
+```
+
+---
+
+```scratch
 (not [x] :: #17cde6)
 ```
 
-Flips all bits of the binary representation of x and returns the result.
+Flips all bits of the binary representation of _x_ and returns the result.
 
 Example:
 
