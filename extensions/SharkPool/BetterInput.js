@@ -1,7 +1,7 @@
 /*
  * This extension was made by SharkPool
- * Version 2.0 (Sliders, Bug Fixes, Better Force Input, and more Fonts)
- * Next Update: None right now
+ * Version 2.1 (Fixes, Booleans, More Customization, Rotation, More Effects, and Performance Updates)
+ * Next Update: Image Setting Additions
  * Do NOT delete these comments
  */
 
@@ -30,6 +30,7 @@
   class BetterInputSP {
     constructor() {
       this.isWaitingForInput = false;
+      this.isDropdownOpen = false;
       this.userInput = "";
       this.fontSize = "14px";
       this.questionColor = "#000000";
@@ -42,6 +43,7 @@
       this.showCancelButton = true;
       this.showButton3 = false;
       this.showButton4 = false;
+      this.shadowEnabled = true;
       this.submitButtonText = "Submit";
       this.cancelButtonText = "Cancel";
       this.Button3Text = "Okay";
@@ -74,11 +76,25 @@
       this.overlayImage = null;
       this.optionList = "Option 1,Option 2,Option 3";
       this.splitKey = ",";
-      this.minSlider = "0";
-      this.maxSlider = "100";
-      this.defaultSlider = "50";
+      this.minSlider = 0;
+      this.maxSlider = 100;
+      this.defaultSlider = 50;
       this.enterSpeed = 10;
       this.exitSpeed = 10;
+      this.activeOverlays = [];
+      this.Blur = 0;
+      this.Brightness = 100;
+      this.Opacity = 100;
+      this.Invert = 0;
+      this.Saturation = 100;
+      this.Hue = 0;
+      this.Sepia = 0;
+      this.Contrast = 100;
+      this.Scale = 100;
+      this.SkewX = 0;
+      this.SkewY = 0;
+      this.Rotation = 90;
+      this.Timeout = 0;
     }
 
     getInfo() {
@@ -313,6 +329,36 @@
             text: "y position",
           },
           {
+            opcode: "setDirection",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set direction to [ROTATE]",
+            blockIconURI: formatIcon,
+            arguments: {
+              ROTATE: {
+                type: Scratch.ArgumentType.ANGLE,
+                defaultValue: 90,
+              },
+            },
+          },
+          {
+            opcode: "changeDirection",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "change direction by [ROTATE]",
+            blockIconURI: formatIcon,
+            arguments: {
+              ROTATE: {
+                type: Scratch.ArgumentType.ANGLE,
+                defaultValue: 15,
+              },
+            },
+          },
+          {
+            opcode: "reportDirection",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "direction",
+            blockIconURI: formatIcon,
+          },
+          {
             blockType: Scratch.BlockType.LABEL,
             text: "Visual Settings",
           },
@@ -367,58 +413,89 @@
             text: "Effects",
           },
           {
-            opcode: "setEnterEffect",
+            opcode: "resetEffect",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set enter effect to [ENTER_EFFECT]",
+            text: "reset effects",
+            blockIconURI: effectIcon,
+          },
+          {
+            opcode: "setEffect",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set effect [EFFECT] to [AMT]",
             blockIconURI: effectIcon,
             arguments: {
-              ENTER_EFFECT: {
+              EFFECT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "enterEffectMenu",
-                defaultValue: "None",
+                menu: "effectMenu",
+                defaultValue: "Blur",
+              },
+              AMT: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 5,
               },
             },
           },
           {
-            opcode: "setEnterSpeed",
+            opcode: "changeEffect",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set enter effect speed to [SPEED]",
+            text: "change effect [EFFECT] by [AMT]",
             blockIconURI: effectIcon,
             arguments: {
-              SPEED: {
+              EFFECT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "10",
+                menu: "effectMenu",
+                defaultValue: "Blur",
+              },
+              AMT: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 5,
               },
             },
           },
           {
-            opcode: "setExitEffect",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "set exit effect to [EXIT_EFFECT]",
+            opcode: "showEffect",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "effect [EFFECT]",
             blockIconURI: effectIcon,
             arguments: {
-              EXIT_EFFECT: {
+              EFFECT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "exitEffectMenu",
-                defaultValue: "None",
+                menu: "effectMenu",
+                defaultValue: "Blur",
               },
             },
           },
           {
-            opcode: "setExitSpeed",
+            opcode: "setTimeout",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set exit effect speed to [SPEED]",
+            text: "when submitted delete textbox after [TIME] secs",
             blockIconURI: effectIcon,
             arguments: {
-              SPEED: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "10",
+              TIME: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 5,
               },
             },
+          },
+          {
+            opcode: "reportTimeout",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "current textbox timeout",
+            blockIconURI: effectIcon,
           },
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Operations",
+          },
+          {
+            opcode: "isWaitingInput",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is wating for Input?",
+          },
+          {
+            opcode: "isDropdown",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is dropdown menu open?",
           },
           {
             opcode: "setSubmitEvent",
@@ -455,66 +532,86 @@
           },
         ],
         menus: {
-          alignmentMenu: ["left", "right", "center"],
-          fontMenu: [
-            "Arial",
-            "Times New Roman",
-            "Comic Sans MS",
-            "Verdana",
-            "Courier New",
-            "Impact",
-            "Cursive",
-            "Lucida Console",
-            "Scratch",
-            "Arial Black",
-            "Calibri",
-            "Consolas",
-            "Handwriting",
-            "Marker",
-            "Curly",
-            "Pixel",
-            "MS PGothic",
-            "Malgun Gothic",
-            "Microsoft YaHei",
-          ],
-          buttonActionMenu: ["Enabled", "Disabled"],
-          inputActionMenu: ["Enabled", "Disabled", "Dropdown", "Slider"],
-          enterEffectMenu: ["None", "Fade in", "Grow", "Both"],
-          exitEffectMenu: ["None", "Fade out", "Shrink", "Both"],
-          buttonMenu: [
-            "Button 1",
-            "Button 2",
-            "Button 3",
-            "Button 4",
-            "Dropdown",
-          ],
-          enableMenu: ["Button 2", "Button 3", "Button 4"],
-          elementMenu: [
-            "Textbox",
-            "Input Box",
-            "Button 1",
-            "Button 2",
-            "Button 3",
-            "Button 4",
-            "Dropdown Buttons",
-          ],
-          colorSettingsMenu: [
-            "Question",
-            "Input Text",
-            "Textbox",
-            "Input Background",
-            "Input Outline",
-            "Button 1",
-            "Button 2",
-            "Button 3",
-            "Button 4",
-            "Dropdown Buttons",
-            "Button 1 Text",
-            "Button 2 Text",
-            "Button 3 Text",
-            "Button 4 Text",
-            "Dropdown Text",
-          ],
+          alignmentMenu: {
+            acceptReporters: true,
+            items: ["left", "right", "center"],
+          },
+          fontMenu: {
+            acceptReporters: true,
+            items: [
+              "Sans Serif",
+              "Serif",
+              "Handwriting",
+              "Marker",
+              "Curly",
+              "Pixel",
+              "Scratch",
+            ],
+          },
+          buttonActionMenu: {
+            acceptReporters: true,
+            items: ["Enabled", "Disabled"],
+          },
+          inputActionMenu: {
+            acceptReporters: true,
+            items: ["Enabled", "Disabled", "Dropdown", "Multi-Select Dropdown", "Slider"],
+          },
+          effectMenu: {
+            acceptReporters: true,
+            items: [
+              "Blur",
+              "Brightness",
+              "Opacity",
+              "Invert",
+              "Saturation",
+              "Hue",
+              "Sepia",
+              "Contrast",
+              "Scale",
+              "SkewX",
+              "SkewY",
+            ],
+          },
+          buttonMenu: {
+            acceptReporters: true,
+            items: ["Button 1", "Button 2", "Button 3", "Button 4", "Dropdown"],
+          },
+          enableMenu: {
+            acceptReporters: true,
+            items: ["Button 2", "Button 3", "Button 4", "Textbox Shadow"],
+          },
+          elementMenu: {
+            acceptReporters: true,
+            items: [
+              "Textbox",
+              "Input Box",
+              "Button 1",
+              "Button 2",
+              "Button 3",
+              "Button 4",
+              "Dropdown Buttons",
+            ],
+          },
+          colorSettingsMenu: {
+            acceptReporters: true,
+            items: [
+              "Question",
+              "Input Text",
+              "Textbox",
+              "Input Background",
+              "Input Outline",
+              "Button 1",
+              "Button 2",
+              "Button 3",
+              "Button 4",
+              "Dropdown Buttons",
+              "Button 1 Text",
+              "Button 2 Text",
+              "Button 3 Text",
+              "Button 4 Text",
+              "Dropdown Text",
+            ],
+          },
           enterMenu: {
             acceptReporters: true,
             items: ["Disabled", "Enter Key", "Shift + Enter Key"],
@@ -523,6 +620,75 @@
       };
     }
 
+    isWaitingInput(args) {
+      return this.isWaitingForInput;
+    }
+    
+    isDropdown(args) {
+      return this.isDropdownOpen;
+    }
+    
+    showEffect(args) {
+      const effect = args.EFFECT;
+      return this[effect];
+    }
+    
+    setEffect(args) {
+      const effect = args.EFFECT;
+      this[effect] = args.AMT;
+      
+      this.activeOverlays.forEach((overlay) => {
+        this.updateEffect(overlay);
+      });
+    }
+    
+    changeEffect(args) {
+      const effect = args.EFFECT;
+      this[effect] = this[effect] + args.AMT;
+      
+      this.activeOverlays.forEach((overlay) => {
+        this.updateEffect(overlay);
+      });
+    }
+    
+    resetEffect(args) {
+      this.Blur = 0;
+      this.Brightness = 100;
+      this.Opacity = 100;
+      this.Invert = 0;
+      this.Saturation = 100;
+      this.Hue = 0;
+      this.Sepia = 0;
+      this.Contrast = 100;
+      this.Scale = 100;
+      this.SkewX = 0;
+      this.SkewY = 0;
+      
+      this.activeOverlays.forEach((overlay) => {
+        this.updateEffect(overlay);
+      });
+    }
+
+    updateEffect(overlay) {
+      const newOpacity =  this.Opacity / 100;
+      const newScale = this.Scale / 100;
+      overlay.style.filter = `
+        blur(${this.Blur}px)
+        brightness(${this.Brightness}%)
+        invert(${this.Invert}%)
+        saturate(${this.Saturation}%)
+        hue-rotate(${this.Hue}deg)
+        sepia(${this.Sepia}%)
+        contrast(${this.Contrast}%)
+      `;
+      overlay.style.opacity = newOpacity;
+      overlay.style.scale = newScale;
+      overlay.style.transform = `
+        SkewX(${this.SkewX}deg)
+        SkewY(${this.SkewY}deg)
+      `;
+    }
+    
     setColorSettings(args) {
       const colorType = args.COLOR_TYPE;
       const colorValue = args.COLOR;
@@ -616,68 +782,62 @@
       }
     }
 
-    setEnterEffect(args) {
-      const enterEffect = args.ENTER_EFFECT;
-      switch (enterEffect) {
-        case "None":
-          this.enterEffect = null;
-          break;
-        case "Fade in":
-          this.enterEffect = "fadeIn";
-          break;
-        case "Grow":
-          this.enterEffect = "growIn";
-          break;
-        case "Both":
-          this.enterEffect = "Both";
-          break;
-      }
-    }
+    setDirection(args) {
+      const ROTATE = args.ROTATE;
+      this.Rotation = Scratch.Cast.toNumber(ROTATE);
 
-    setExitEffect(args) {
-      const exitEffect = args.EXIT_EFFECT;
-      switch (exitEffect) {
-        case "None":
-          this.exitEffect = null;
-          break;
-        case "Fade out":
-          this.exitEffect = "fadeOut";
-          break;
-        case "Shrink":
-          this.exitEffect = "shrinkOut";
-          break;
-        case "Both":
-          this.exitEffect = "Both";
-          break;
-      }
+      this.activeOverlays.forEach((overlay) => {
+        this.updateOverlayPosition(overlay);
+      });
     }
+    
+    changeDirection(args) {
+      const ROTATE = args.ROTATE;
+      this.Rotation = this.Rotation + Scratch.Cast.toNumber(ROTATE);
 
+      this.activeOverlays.forEach((overlay) => {
+        this.updateOverlayPosition(overlay);
+      });
+    }
+    
+    reportDirection(args) {
+      return this.Rotation;
+    }
+    
     setPrePosition(args) {
-      this.textBoxX = args.X;
-      this.textBoxY = args.Y * -1;
+      this.textBoxX = Scratch.Cast.toNumber(args.X);
+      this.textBoxY = Scratch.Cast.toNumber(args.Y) * -1;
     }
 
     setPosition(args) {
-      this.textBoxX = args.X;
-      this.textBoxY = args.Y * -1;
+      this.textBoxX = Scratch.Cast.toNumber(args.X);
+      this.textBoxY = Scratch.Cast.toNumber(args.Y) * -1;
 
-      const overlays = document.querySelectorAll(".ask-box");
-      overlays.forEach((overlay) => {
+      this.activeOverlays.forEach((overlay) => {
         this.updateOverlayPosition(overlay);
       });
     }
 
     changePosition(args) {
-      this.textBoxX = this.textBoxX + args.X;
-      this.textBoxY = this.textBoxY + args.Y * -1;
+      this.textBoxX = this.textBoxX + Scratch.Cast.toNumber(args.X);
+      this.textBoxY = this.textBoxY + Scratch.Cast.toNumber(args.Y) * -1;
 
-      const overlays = document.querySelectorAll(".ask-box");
-      overlays.forEach((overlay) => {
+      this.activeOverlays.forEach((overlay) => {
         this.updateOverlayPosition(overlay);
       });
     }
 
     updateOverlayPosition(overlay) {
+      if (this.Rotation > 359) {
+        this.Rotation = 0;
+      } else if (this.Rotation < 1) {
+        this.Rotation = 360;
+      }
+      overlay.style.transform = `
+        SkewX(${this.SkewX}deg)
+        SkewY(${this.SkewY}deg)
+        rotate(${this.Rotation - 90}deg)
+      `;
       if (this.textBoxX !== null && this.textBoxY !== null) {
         overlay.style.left = `${41 + this.textBoxX}%`;
         overlay.style.top = `${44 + this.textBoxY}%`;
@@ -702,6 +862,15 @@
     setFontFamily(args) {
       this.fontFamily = args.FONT;
     }
+    
+    setTimeout(args) {
+      this.Timeout = args.TIME;
+      this.Condition = args.CONDITION;
+    }
+    
+    reportTimeout(args) {
+      return this.Timeout;
+    }
 
     setSlider(args) {
       this.minSlider = args.MIN;
@@ -721,6 +890,9 @@
           break;
         case "Button 4":
           this.showButton4 = action === "Enabled";
+          break;
+        case "Textbox Shadow":
+          this.shadowEnabled = action === "Enabled";
           break;
       }
     }
@@ -775,106 +947,6 @@
       this.userInput = "";
     }
 
-    applyEnterEffect(overlay) {
-      overlay.style.opacity = "1";
-      overlay.style.transform = "scale(1)";
-
-      let currentOpacity = 0;
-      let currentScale = 0;
-
-      if (this.enterEffect !== "None") {
-        if (this.enterEffect === "fadeIn" || this.enterEffect === "Both") {
-          overlay.style.opacity = "0";
-        }
-
-        if (this.enterEffect === "growIn" || this.enterEffect === "Both") {
-          overlay.style.transform = "scale(0)";
-          overlay.style.transition = "opacity 0.3s";
-        }
-
-        const step = () => {
-          if (
-            (this.enterEffect === "fadeIn" || this.enterEffect === "Both") &&
-            currentOpacity < 100
-          ) {
-            currentOpacity += this.enterSpeed;
-            overlay.style.opacity = `${currentOpacity}%`;
-          }
-
-          if (
-            (this.enterEffect === "growIn" || this.enterEffect === "Both") &&
-            currentScale < 100
-          ) {
-            currentScale += this.enterSpeed;
-            overlay.style.transform = `scale(${currentScale / 100})`;
-          }
-
-          if (
-            (this.enterEffect === "Both" &&
-              (currentOpacity < 100 || currentScale < 100)) ||
-            (this.enterEffect === "growIn" && currentScale < 100) ||
-            (this.enterEffect !== "Both" && currentOpacity < 100)
-          ) {
-            requestAnimationFrame(step);
-          }
-        };
-
-        if (this.enterEffect === "growIn" || this.enterEffect === "Both") {
-          overlay.style.transition = "opacity 0.3s";
-        }
-
-        requestAnimationFrame(step);
-      } else {
-        overlay.style.opacity = "1";
-      }
-    }
-
-    applyExitEffect(overlay) {
-      let currentScale = 100;
-      let currentOpacity = 0;
-
-      if (this.exitEffect !== "None") {
-        if (this.exitEffect === "fadeOut") {
-          overlay.style.transition = "opacity 0.5s";
-        } else {
-          overlay.style.transition = "transform 0.5s, opacity 0.5s";
-        }
-
-        const step = () => {
-          if (
-            (this.exitEffect === "fadeOut" || this.exitEffect === "Both") &&
-            currentOpacity < 100
-          ) {
-            currentOpacity -= this.exitSpeed;
-            overlay.style.opacity = `${currentOpacity}%`;
-          }
-
-          if (
-            (this.exitEffect === "shrinkOut" || this.exitEffect === "Both") &&
-            currentScale > 0
-          ) {
-            currentScale -= this.exitSpeed;
-            overlay.style.transform = `scale(${currentScale / 100})`;
-          }
-
-          if (
-            (this.exitEffect === "Both" &&
-              (currentOpacity > -200 || currentScale > -100)) ||
-            (this.exitEffect === "shrinkOut" && currentScale > -100) ||
-            (this.exitEffect !== "Both" && currentOpacity > -200)
-          ) {
-            requestAnimationFrame(step);
-          } else {
-            document.body.removeChild(overlay);
-          }
-        };
-
-        requestAnimationFrame(step);
-      } else {
-        document.body.removeChild(overlay);
-      }
-    }
-
     askAndWait(args) {
       if (this.askBoxCount < this.maxBoxCount) {
         const question = args.question;
@@ -890,21 +962,25 @@
         return new Promise((resolve) => {
           this.askBoxPromise.resolve = resolve;
           const overlay = document.createElement("div");
+          this.activeOverlays.push(overlay);
           overlay.classList.add("ask-box");
           overlay.style.position = "fixed";
           overlay.style.left = `${41 + this.textBoxX}%`;
           overlay.style.top = `${44 + this.textBoxY}%`;
           overlay.style.zIndex = "9999";
           overlay.style.backgroundColor = this.textBoxColor;
-          overlay.style.boxShadow = "0 0 5px rgba(0, 0, 0, 0.3)";
+          overlay.style.boxShadow = this.shadowEnabled ? "0 0 5px rgba(0, 0, 0, 0.3)" : "none";
           overlay.style.borderRadius = this.textBoxBorderRadius + "px";
           overlay.style.padding = "15px";
           overlay.style.fontSize = this.fontSize;
           overlay.style.textAlign = this.textAlign;
           overlay.style.fontFamily = this.fontFamily;
+          this.updateEffect(overlay);
 
           const overlayImageContainer = document.createElement("div");
-          overlayImageContainer.style.background = `url(${this.overlayImage})`;
+          overlayImageContainer.style.background = `url("${encodeURI(this.overlayImage)}")`;
+          
+          //maybe in a future update we can make these customizable too...
           overlayImageContainer.style.width = "100%";
           overlayImageContainer.style.height = "100%";
           overlayImageContainer.style.position = "absolute";
@@ -931,14 +1007,8 @@
                 event.key === overlayInput
               ) {
                 this.userInput = inputField.value;
-                this.isWaitingForInput = false;
-                if (this.exitEffect) {
-                  this.applyExitEffect(overlay);
-                } else {
-                  document.body.removeChild(overlay);
-                }
+                this.closeOverlay(overlay);
                 resolve();
-                this.askBoxCount--;
               }
             };
 
@@ -986,7 +1056,7 @@
           submitButton.style.color = this.submitButtonTextColor;
           submitButton.style.border = "none";
           submitButton.style.borderRadius =
-            this.submitButtonBorderRadius + "px";
+          this.submitButtonBorderRadius + "px";
           submitButton.style.cursor = "pointer";
           submitButton.textContent = this.submitButtonText;
 
@@ -996,14 +1066,8 @@
             } else {
               this.userInput = this.submitButtonText;
             }
-            this.isWaitingForInput = false;
-            if (this.exitEffect) {
-              this.applyExitEffect(overlay);
-            } else {
-              document.body.removeChild(overlay);
-            }
+            this.closeOverlay(overlay);
             resolve();
-            this.askBoxCount--;
           });
 
           const cancelButton = document.createElement("button");
@@ -1014,7 +1078,7 @@
           cancelButton.style.color = this.cancelButtonTextColor;
           cancelButton.style.border = "none";
           cancelButton.style.borderRadius =
-            this.cancelButtonBorderRadius + "px";
+          this.cancelButtonBorderRadius + "px";
           cancelButton.style.cursor = "pointer";
           cancelButton.textContent = this.cancelButtonText;
           cancelButton.style.display = this.showCancelButton
@@ -1027,14 +1091,8 @@
             } else {
               this.userInput = "";
             }
-            this.isWaitingForInput = false;
-            if (this.exitEffect) {
-              this.applyExitEffect(overlay);
-            } else {
-              document.body.removeChild(overlay);
-            }
+            this.closeOverlay(overlay);
             resolve();
-            this.askBoxCount--;
           });
 
           const Button3 = document.createElement("button");
@@ -1055,14 +1113,8 @@
             } else {
               this.userInput = "";
             }
-            this.isWaitingForInput = false;
-            if (this.exitEffect) {
-              this.applyExitEffect(overlay);
-            } else {
-              document.body.removeChild(overlay);
-            }
+            this.closeOverlay(overlay);
             resolve();
-            this.askBoxCount--;
           });
 
           const Button4 = document.createElement("button");
@@ -1083,14 +1135,8 @@
             } else {
               this.userInput = "";
             }
-            this.isWaitingForInput = false;
-            if (this.exitEffect) {
-              this.applyExitEffect(overlay);
-            } else {
-              document.body.removeChild(overlay);
-            }
+            this.closeOverlay(overlay);
             resolve();
-            this.askBoxCount--;
           });
 
           const dropdown = document.createElement("div");
@@ -1104,16 +1150,16 @@
           dropdownButton.style.color = this.optionbuttonTextColor;
           dropdownButton.style.border = "none";
           dropdownButton.style.borderRadius =
-            this.optionbuttonBorderRadius + "px";
+          this.optionbuttonBorderRadius + "px";
 
           const dropdownContent = document.createElement("div");
           dropdownContent.className = "dropdown-content";
-
-          let isDropdownOpen = false;
+          this.isDropdownOpen = false;
 
           const optionList = this.optionList;
           const numOfOptions = optionList.split(this.splitKey).length;
           const options = this.optionList.split(this.splitKey);
+          const listing = Math.floor((optionList.length/2) / numOfOptions) -1;
           for (let i = 1; i <= numOfOptions; i++) {
             const optionButton = document.createElement("button");
             optionButton.style.marginRight = "5px";
@@ -1123,34 +1169,54 @@
             optionButton.style.color = this.optionbuttonTextColor;
             optionButton.style.border = "none";
             optionButton.style.borderRadius =
-              this.optionbuttonBorderRadius + "px";
+            this.optionbuttonBorderRadius + "px";
             optionButton.textContent = `${options[i - 1]}`;
             optionButton.style.filter = "brightness(1)";
 
             optionButton.addEventListener("click", () => {
-              inputField.value = `${options[i - 1]}`;
-
-              for (let j = 0; j < numOfOptions; j++) {
-                const otherButton = dropdownContent.children[j];
-                otherButton.style.filter = "brightness(1)";
+              if (this.isInputEnabled === "Multi-Select Dropdown") {
+                const selectedOptions = inputField.value.split(this.splitKey);
+                const isSelected = selectedOptions.includes(options[i - 1]);
+                
+                if (isSelected) {
+                  inputField.value = selectedOptions.filter(option => option !== options[i - 1]).join(this.splitKey);
+                } else {
+                  inputField.value = [...selectedOptions, options[i - 1]].join(this.splitKey);
+                }
+                
+                const newSelectedOptions = inputField.value.split(this.splitKey);
+                
+                for (let j = 0; j < numOfOptions; j++) {
+                  const otherButton = dropdownContent.children[j];
+                  otherButton.style.filter = newSelectedOptions.includes(options[j]) ? "brightness(1.5)" : "brightness(1)";
+                }
+              } else {
+                inputField.value = `${options[i - 1]}`;
+                
+                for (let j = 0; j < numOfOptions; j++) {
+                  const otherButton = dropdownContent.children[j];
+                  otherButton.style.filter = otherButton === optionButton ? "brightness(1.5)" : "brightness(1)";
+                }
               }
-
-              optionButton.style.filter = "brightness(1.5)";
             });
             dropdownContent.appendChild(optionButton);
+            if (i % listing === 0 && i !== numOfOptions) {
+              const lineBreak = document.createElement("br");
+              dropdownContent.appendChild(lineBreak);
+            }
           }
 
           dropdownButton.addEventListener("mouseover", () => {
-            if (!isDropdownOpen) {
+            if (!this.isDropdownOpen) {
               overlay.insertBefore(dropdownContent, submitButton);
-              isDropdownOpen = true;
+              this.isDropdownOpen = true;
             }
           });
 
           overlay.addEventListener("mouseleave", () => {
-            if (isDropdownOpen) {
+            if (this.isDropdownOpen) {
               overlay.removeChild(dropdownContent);
-              isDropdownOpen = false;
+              this.isDropdownOpen = false;
             }
           });
 
@@ -1181,7 +1247,7 @@
           if (this.isInputEnabled !== "Disabled") {
             if (this.isInputEnabled === "Enabled") {
               overlay.appendChild(inputField);
-            } else if (this.isInputEnabled === "Dropdown") {
+            } else if (this.isInputEnabled === "Dropdown" || this.isInputEnabled === "Multi-Select Dropdown") {
               dropdown.appendChild(dropdownButton);
               overlay.appendChild(dropdown);
             } else {
@@ -1298,6 +1364,24 @@
 
     setImage(args) {
       this.overlayImage = args.IMAGE;
+    }
+    
+    removeOverlay(overlay) {
+      const index = this.activeOverlays.indexOf(overlay);
+      if (index !== -1) {
+        this.activeOverlays.splice(index, 1);
+      }
+      document.body.removeChild(overlay);
+    }
+    
+    closeOverlay(overlay) {
+      this.isWaitingForInput = false;
+      this.isDropdownOpen = false;
+      this.askBoxCount--;
+      const timeout = this.Timeout * 1000;
+      setTimeout(() => {
+        document.body.removeChild(overlay);
+      }, timeout);
     }
   }
 
