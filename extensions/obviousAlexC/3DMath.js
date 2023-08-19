@@ -84,7 +84,7 @@
         axis = Scratch.Cast.toNumber(axis);
         vector = JSON.parse(vector);
         if (vector) {
-          return JSON.parse(vector)[axis];
+          return vector[axis];
         }
         return 0;
       }
@@ -393,7 +393,7 @@
         axis = Scratch.Cast.toNumber(axis);
         vector = JSON.parse(vector);
         if (vector) {
-          return JSON.parse(vector)[axis];
+          return vector[axis];
         }
         return 0;
       }
