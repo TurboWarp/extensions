@@ -632,7 +632,7 @@
       const effect = args.EFFECT;
       return this[effect];
     }
-    
+
     setEffect(args) {
       const effect = args.EFFECT;
       this[effect] = args.AMT;
@@ -645,7 +645,7 @@
     changeEffect(args) {
       const effect = args.EFFECT;
       this[effect] = this[effect] + args.AMT;
-      
+
       this.activeOverlays.forEach((overlay) => {
         this.updateEffect(overlay);
       });
