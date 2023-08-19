@@ -623,7 +623,7 @@
     isWaitingInput(args) {
       return this.isWaitingForInput;
     }
-    
+
     isDropdown(args) {
       return this.isDropdownOpen;
     }
@@ -641,7 +641,7 @@
         this.updateEffect(overlay);
       });
     }
-    
+
     changeEffect(args) {
       const effect = args.EFFECT;
       this[effect] = this[effect] + args.AMT;
@@ -650,7 +650,7 @@
         this.updateEffect(overlay);
       });
     }
-    
+
     resetEffect(args) {
       this.Blur = 0;
       this.Brightness = 100;
@@ -663,7 +663,7 @@
       this.Scale = 100;
       this.SkewX = 0;
       this.SkewY = 0;
-      
+
       this.activeOverlays.forEach((overlay) => {
         this.updateEffect(overlay);
       });
@@ -688,7 +688,7 @@
         SkewY(${this.SkewY}deg)
       `;
     }
-    
+
     setColorSettings(args) {
       const colorType = args.COLOR_TYPE;
       const colorValue = args.COLOR;
@@ -790,7 +790,7 @@
         this.updateOverlayPosition(overlay);
       });
     }
-    
+
     changeDirection(args) {
       const ROTATE = args.ROTATE;
       this.Rotation = this.Rotation + Scratch.Cast.toNumber(ROTATE);
@@ -799,11 +799,11 @@
         this.updateOverlayPosition(overlay);
       });
     }
-    
+
     reportDirection(args) {
       return this.Rotation;
     }
-    
+
     setPrePosition(args) {
       this.textBoxX = Scratch.Cast.toNumber(args.X);
       this.textBoxY = Scratch.Cast.toNumber(args.Y) * -1;
@@ -862,12 +862,12 @@
     setFontFamily(args) {
       this.fontFamily = args.FONT;
     }
-    
+
     setTimeout(args) {
       this.Timeout = args.TIME;
       this.Condition = args.CONDITION;
     }
-    
+
     reportTimeout(args) {
       return this.Timeout;
     }
@@ -979,7 +979,7 @@
 
           const overlayImageContainer = document.createElement("div");
           overlayImageContainer.style.background = `url("${encodeURI(this.overlayImage)}")`;
-          
+
           //maybe in a future update we can make these customizable too...
           overlayImageContainer.style.width = "100%";
           overlayImageContainer.style.height = "100%";
@@ -1177,22 +1177,21 @@
               if (this.isInputEnabled === "Multi-Select Dropdown") {
                 const selectedOptions = inputField.value.split(this.splitKey);
                 const isSelected = selectedOptions.includes(options[i - 1]);
-                
+
                 if (isSelected) {
                   inputField.value = selectedOptions.filter(option => option !== options[i - 1]).join(this.splitKey);
                 } else {
                   inputField.value = [...selectedOptions, options[i - 1]].join(this.splitKey);
                 }
-                
+
                 const newSelectedOptions = inputField.value.split(this.splitKey);
-                
                 for (let j = 0; j < numOfOptions; j++) {
                   const otherButton = dropdownContent.children[j];
                   otherButton.style.filter = newSelectedOptions.includes(options[j]) ? "brightness(1.5)" : "brightness(1)";
                 }
               } else {
                 inputField.value = `${options[i - 1]}`;
-                
+
                 for (let j = 0; j < numOfOptions; j++) {
                   const otherButton = dropdownContent.children[j];
                   otherButton.style.filter = otherButton === optionButton ? "brightness(1.5)" : "brightness(1)";
@@ -1365,7 +1364,7 @@
     setImage(args) {
       this.overlayImage = args.IMAGE;
     }
-    
+
     removeOverlay(overlay) {
       const index = this.activeOverlays.indexOf(overlay);
       if (index !== -1) {
@@ -1373,7 +1372,7 @@
       }
       document.body.removeChild(overlay);
     }
-    
+
     closeOverlay(overlay) {
       this.isWaitingForInput = false;
       this.isDropdownOpen = false;
