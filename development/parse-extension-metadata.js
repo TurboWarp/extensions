@@ -75,8 +75,8 @@ const parseMetadata = (extensionCode) => {
       continue;
     }
 
-    const key = parts[0].toLowerCase();
-    const value = parts[1];
+    const key = parts[0].toLowerCase().trim();
+    const value = parts[1].trim();
 
     switch (key) {
       case 'name':
