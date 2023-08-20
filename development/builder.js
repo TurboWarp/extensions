@@ -193,7 +193,10 @@ class DocsFile extends BuildFile {
 }
 
 class Build {
-  constructor () {
+  constructor (mode) {
+    /** @type {Mode} */
+    this.mode = mode;
+
     this.files = {};
   }
 
@@ -213,6 +216,10 @@ class Build {
     }
 
     for (const [relativePath, file] of Object.entries(this.files)) {
+      if (this.mode === 'desktop' && relativePath.endsWith('.html')) {
+        continue;
+      }
+
       const directoryName = pathUtil.dirname(relativePath);
       fs.mkdirSync(pathUtil.join(root, directoryName), {
         recursive: true
@@ -255,7 +262,7 @@ class Builder {
   }
 
   build () {
-    const build = new Build();
+    const build = new Build(this.mode);
 
     /** @type {Record<string, ImageFile>} */
     const extensionImages = {};
