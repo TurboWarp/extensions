@@ -1,3 +1,7 @@
+// Name: Canvas Effects
+// Description: Apply visual effects to the entire stage.
+// By: TheShovel
+
 (function(Scratch) {
     'use strict';
     if (!Scratch.extensions.unsandboxed) {

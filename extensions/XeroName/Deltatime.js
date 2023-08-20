@@ -1,3 +1,7 @@
+// Name: Deltatime
+// Description: Precise delta timing blocks.
+// By: XeroName <https://scratch.mit.edu/users/plant2014/>
+
 (function (Scratch) {
   'use strict';
 

@@ -1,3 +1,6 @@
+// Name: Clipboard
+// Description: Read and write from the system clipboard.
+
 /*!
  * Copyright 2023 tomyo-code + AdamMady
  * 

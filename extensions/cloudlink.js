@@ -1,3 +1,7 @@
+// Name: Cloudlink
+// Description: Powerful WebSocket extension for Scratch 3.
+// By: MikeDEV
+
 // Copy of S4-0_nosuite.js as of 10/31/2022
 /* eslint-disable */
 
