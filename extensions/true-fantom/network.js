@@ -1,4 +1,5 @@
 // Name: Network
+// ID: truefantomnetwork
 // Description: Various blocks for interacting with the network.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
 

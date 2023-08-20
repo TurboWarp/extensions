@@ -1,4 +1,5 @@
 // Name: Clipping & Blending
+// ID: xeltallivclipblend
 // Description: Clipping outside of a specified rectangular area and additive color blending.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 

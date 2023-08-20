@@ -1,4 +1,5 @@
 // Name: Pen Plus
+// ID: betterpen
 // Description: Advanced rendering capabilities.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
 

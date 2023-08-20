@@ -1,4 +1,5 @@
 // Name: Custom Styles
+// ID: shovelcss
 // Description: Customize the appearance of variable monitors and prompts in your project.
 // By: TheShovel
 

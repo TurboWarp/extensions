@@ -1,4 +1,5 @@
 // Name: Cloudlink
+// ID: cloudlink
 // Description: Powerful WebSocket extension for Scratch 3.
 // By: MikeDEV
 

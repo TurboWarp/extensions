@@ -79,6 +79,9 @@ const parseMetadata = (extensionCode) => {
     const value = parts[1].trim();
 
     switch (key) {
+      case 'id':
+        metadata.id = value;
+        break;
       case 'name':
         metadata.name = value;
         break;

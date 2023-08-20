@@ -1,4 +1,5 @@
 // Name: Gamepad
+// ID: Gamepad
 // Description: Directly access gamepads instead of just mapping buttons to keys.
 
 // Some parts of this scripts are based on or designed to be compatible-ish with:

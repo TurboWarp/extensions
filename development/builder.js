@@ -78,6 +78,10 @@ class ExtensionFile extends BuildFile {
 
     const metadata = this.getMetadata();
 
+    if (!metadata.id) {
+      throw new Error('Missing // ID:');
+    }
+
     if (!metadata.name) {
       throw new Error('Missing // Name:');
     }

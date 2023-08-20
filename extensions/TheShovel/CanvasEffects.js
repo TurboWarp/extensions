@@ -1,4 +1,5 @@
 // Name: Canvas Effects
+// ID: theshovelcanvaseffects
 // Description: Apply visual effects to the entire stage.
 // By: TheShovel
 

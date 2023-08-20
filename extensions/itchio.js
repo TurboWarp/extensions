@@ -1,4 +1,5 @@
 // Name: itch.io
+// ID: itch
 // Description: Blocks that interact with the itch.io website. Unofficial.
 // By: softed
 

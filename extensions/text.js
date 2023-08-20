@@ -1,4 +1,5 @@
 // Name: Text
+// ID: strings
 // Description: Manipulate characters and text.
 // Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
 
