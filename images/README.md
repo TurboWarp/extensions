@@ -261,3 +261,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## NexusKitten/moremotion.svg;
  - Created by [Pizzalover4783](https://github.com/Pizzalover4783) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1672844690
+
+## Lily/AllMenus.svg
+ - Created by [YogaindoCR](https://github.com/YogaindoCR) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1681839774
