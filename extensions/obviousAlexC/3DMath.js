@@ -1,5 +1,4 @@
 (function (Scratch) {
-  "use strict";
   const vm = Scratch.vm;
 
   const spriteData = {};
@@ -871,7 +870,7 @@
     }
     spr3DsetPosition({ a }, util) {
       const target = util.target;
-      math_3d.checkFor3dPositionData(target.id);
+      extension.checkFor3dPositionData(target.id);
 
       a = JSON.parse(a);
       if (a) {
@@ -880,7 +879,7 @@
     }
     spr3DchangePosition({ a }, util) {
       const target = util.target;
-      math_3d.checkFor3dPositionData(target.id);
+      extension.checkFor3dPositionData(target.id);
 
       a = JSON.parse(a);
 
@@ -890,12 +889,12 @@
     }
     spr3DgetPosition(args, util) {
       const target = util.target;
-      math_3d.checkFor3dPositionData(target.id);
+      extension.checkFor3dPositionData(target.id);
       return JSON.stringify(spriteData[target.id]);
     }
     spr3D(args, util) {
       const target = util.target;
-      math_3d.checkFor3dPositionData(target.id);
+      extension.checkFor3dPositionData(target.id);
       const myData = JSON.parse(JSON.stringify(spriteData[target.id]));
 
       myData[0] -= camera.position[0];
