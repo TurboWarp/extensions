@@ -102,18 +102,53 @@ class ExtensionFile extends BuildFile {
   }
 }
 
-class HTMLFile extends BuildFile {
-  constructor (path, data) {
-    super(path);
-    this.data = data;
+class HomepageFile extends BuildFile {
+  constructor (extensionFiles, extensionImages, mode) {
+    super(pathUtil.join(__dirname, 'homepage-template.ejs'));
+
+    /** @type {Record<string, ExtensionFile>} */
+    this.extensionFiles = extensionFiles;
+
+    /** @type {Record<string, string>} */
+    this.extensionImages = extensionImages;
+
+    /** @type {Mode} */
+    this.mode = mode;
+
+    this.host = mode === 'development' ? 'http://localhost:8000/' : 'https://extensions.turbowarp.org/';
   }
 
   getType () {
     return '.html';
   }
 
+  getFullExtensionURL (extensionID) {
+    return `${this.host}${extensionID}.js`;
+  }
+
+  getRunExtensionURL (extensionID) {
+    return `https://turbowarp.org/editor?extension=${this.getFullExtensionURL(extensionID)}`;
+  }
+
   read () {
-    return renderTemplate(this.sourcePath, this.data);
+    const mostRecentExtensions = Object.entries(this.extensionFiles)
+      .sort((a, b) => b[1].getLastModified() - a[1].getLastModified())
+      .slice(0, 5)
+      .map((i) => i[0]);
+
+    const extensionMetadata = Object.fromEntries(featuredExtensionsIDs.map((id) => [
+      id,
+      this.extensionFiles[id].getMetadata()
+    ]));
+
+    return renderTemplate(this.sourcePath, {
+      mode: this.mode,
+      mostRecentExtensions,
+      extensionImages: this.extensionImages,
+      extensionMetadata,
+      getFullExtensionURL: this.getFullExtensionURL.bind(this),
+      getRunExtensionURL: this.getRunExtensionURL.bind(this)
+    });
   }
 }
 
@@ -245,20 +280,10 @@ class Builder {
       this.mode = mode;
     }
 
-    this.host = this.mode === 'development' ? 'http://localhost:8000/' : 'https://extensions.turbowarp.org/';
-
     this.extensionsRoot = pathUtil.join(__dirname, '../extensions');
     this.websiteRoot = pathUtil.join(__dirname, '../website');
     this.imagesRoot = pathUtil.join(__dirname, '../images');
     this.docsRoot = pathUtil.join(__dirname, '../docs');
-  }
-
-  getFullExtensionURL (extensionID) {
-    return `${this.host}${extensionID}.js`;
-  }
-
-  getRunExtensionURL (extensionID) {
-    return `https://turbowarp.org/editor?extension=${this.getFullExtensionURL(extensionID)}`;
   }
 
   build () {
@@ -274,7 +299,7 @@ class Builder {
       }
       const extensionId = filename.split('.')[0];
       if (extensionId !== 'unknown') {
-        extensionImages[extensionId] = filename;
+        extensionImages[extensionId] = `images/${filename}`;
       }
       build.files[`/images/${filename}`] = new ImageFileClass(absolutePath);
     }
@@ -307,35 +332,12 @@ class Builder {
       build.files[oldPath] = build.files[newPath];
     }
 
-    build.files['/sitemap.xml'] = new SitemapFile(build);
-
-    const mostRecentExtensions = Object.entries(extensionFiles)
-      .sort((a, b) => b[1].getLastModified() - a[1].getLastModified())
-      .slice(0, 5)
-      .map((i) => i[0]);
-
-    const extensionMetadata = Object.fromEntries(featuredExtensionsIDs.map((id) => [
-      id,
-      extensionFiles[id].getMetadata()
-    ]));
-
-    const ejsData = {
-      mode: this.mode,
-      mostRecentExtensions,
-      extensionImages,
-      extensionMetadata,
-      getFullExtensionURL: this.getFullExtensionURL.bind(this),
-      getRunExtensionURL: this.getRunExtensionURL.bind(this)
-    };
-
     for (const [filename, absolutePath] of recursiveReadDirectory(this.websiteRoot)) {
-      if (filename.endsWith('.ejs')) {
-        const realFilename = filename.replace('.ejs', '.html');
-        build.files[`/${realFilename}`] = new HTMLFile(absolutePath, ejsData);
-      } else {
-        build.files[`/${filename}`] = new BuildFile(absolutePath);
-      }
+      build.files[`/${filename}`] = new BuildFile(absolutePath);
     }
+
+    build.files['/index.html'] = new HomepageFile(extensionFiles, extensionImages, this.mode);
+    build.files['/sitemap.xml'] = new SitemapFile(build);
 
     return build;
   }
