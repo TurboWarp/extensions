@@ -20,19 +20,19 @@
                     {
                         opcode: 'Timestamp',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'The current timestamp',
+                        text: 'current timestamp',
                         arguments: {}
                     },
                     {
                         opcode: 'timezone',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'The current time zone',
+                        text: 'current time zone',
                         arguments: {}
                     },
                     {
                         opcode: 'Timedata',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Extract [Timedata] from [timestamp]',
+                        text: 'get [Timedata] from [timestamp]',
                         arguments: {
                             timestamp: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -48,7 +48,7 @@
                     {
                         opcode: 'TimestampToTime',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Converts [timestamp] to a datetime',
+                        text: 'convert [timestamp] to datetime',
                         arguments: {
                             timestamp: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -59,10 +59,10 @@
                     {
                         opcode: 'TimeToTimestamp',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Converts [time] to a timestamp',
+                        text: 'convert [time] to timestamp',
                         arguments: {
                             time: {
-                                type: Scratch.ArgumentType.NUMBER,
+                                type: Scratch.ArgumentType.STRING,
                                 defaultValue: '2006-04-16 06:59:40'
                             }
                         }
@@ -84,7 +84,7 @@
         }
         Timedata(args) {
             args.timestamp = args.timestamp ? args.timestamp : null;
-            let date1 = new Date(args.timestamp);
+            let date1 = new Date(Scratch.Cast.toNumber(args.timestamp));
             switch (args.Timedata) {
                 case 'year':
                     return date1.getFullYear();
