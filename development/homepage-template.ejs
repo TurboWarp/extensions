@@ -241,8 +241,8 @@
           <h2>Development Server Tools</h2>
           <p>
             Most recently modified extensions:
-            <% for (const extensionID of mostRecentExtensions) { %>
-              <a href="<%= getRunExtensionURL(extensionID) %>"><%= extensionID %>.js</a>
+            <% for (const extensionSlug of mostRecentExtensions) { %>
+              <a href="<%= getRunExtensionURL(extensionSlug) %>"><%= extensionSlug %>.js</a>
             <% } %>
           </p>
         </div>
@@ -297,15 +297,15 @@
           return result;
         };
         %>
-        <% for (const [extensionID, metadata] of Object.entries(extensionMetadata)) { %>
+        <% for (const [extensionSlug, metadata] of Object.entries(extensionMetadata)) { %>
           <div class="extension">
             <div class="extension-banner">
-              <% const image = extensionImages[extensionID] || 'images/unknown.svg'; %>
+              <% const image = extensionImages[extensionSlug] || 'images/unknown.svg'; %>
               <img loading="lazy" src="<%= image %>" class="extension-image">
 
               <div class="extension-buttons">
-                <button class="copy" data-copy="<%= getFullExtensionURL(extensionID) %>">Copy URL</button>
-                <a class="open" href="<%= getRunExtensionURL(extensionID) %>">Open Extension</a>
+                <button class="copy" data-copy="<%= getFullExtensionURL(extensionSlug) %>">Copy URL</button>
+                <a class="open" href="<%= getRunExtensionURL(extensionSlug) %>">Open Extension</a>
               </div>
             </div>
       
