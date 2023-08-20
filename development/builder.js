@@ -186,6 +186,13 @@ class JSONMetadataFile extends BuildFile {
       if (image) {
         extension.image = image;
       }
+      if (metadata.by.length) {
+        extension.by = metadata.by;
+      }
+      if (metadata.original.length) {
+        extension.original = metadata.original;
+      }
+
       extensions.push(extension);
     }
 
