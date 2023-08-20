@@ -1,7 +1,8 @@
-/*!
- * Window Controls (V.1.0.0)
- * Made by CubesterYT
- */
+// Name: Window Controls
+// Description: A set of blocks that gives you greater control over the Program Window.
+// By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
+
+// Version V.1.0.0
 
 (function (Scratch) {
   "use strict";
