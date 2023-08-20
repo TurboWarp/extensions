@@ -1,4 +1,5 @@
 // Name: Mouse Cursor
+// ID: MouseCursor
 // Description: Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.
 
 (function (Scratch) {

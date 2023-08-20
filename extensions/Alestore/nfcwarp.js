@@ -1,4 +1,5 @@
 // Name: NFCWarp
+// ID: alestorenfc
 // Description: Allows reading data from NFC (NDEF) devices. Only works in Chrome on Android.
 // By: Alestore Games <https://scratch.mit.edu/users/aleb2005/>
 

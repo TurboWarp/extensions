@@ -1,4 +1,5 @@
 // Name: Clipboard
+// ID: clipboard
 // Description: Read and write from the system clipboard.
 
 /*!

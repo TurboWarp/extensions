@@ -1,4 +1,5 @@
 // Name: RGB Channels
+// ID: lbdrawtest
 // Description: Only render or stamp certain RGB channels.
 
 (function(Scratch) {

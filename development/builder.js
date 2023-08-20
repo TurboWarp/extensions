@@ -5,7 +5,7 @@ const renderTemplate = require('./render-template');
 const renderDocs = require('./render-docs');
 const compatibilityAliases = require('./compatibility-aliases');
 const parseMetadata = require('./parse-extension-metadata');
-const featuredExtensionsIDs = require('../extensions/extensions.json');
+const featuredExtensionSlugs = require('../extensions/extensions.json');
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -78,6 +78,10 @@ class ExtensionFile extends BuildFile {
 
     const metadata = this.getMetadata();
 
+    if (!metadata.id) {
+      throw new Error('Missing // ID:');
+    }
+
     if (!metadata.name) {
       throw new Error('Missing // Name:');
     }
@@ -122,12 +126,12 @@ class HomepageFile extends BuildFile {
     return '.html';
   }
 
-  getFullExtensionURL (extensionID) {
-    return `${this.host}${extensionID}.js`;
+  getFullExtensionURL (extensionSlug) {
+    return `${this.host}${extensionSlug}.js`;
   }
 
-  getRunExtensionURL (extensionID) {
-    return `https://turbowarp.org/editor?extension=${this.getFullExtensionURL(extensionID)}`;
+  getRunExtensionURL (extensionSlug) {
+    return `https://turbowarp.org/editor?extension=${this.getFullExtensionURL(extensionSlug)}`;
   }
 
   read () {
@@ -136,7 +140,7 @@ class HomepageFile extends BuildFile {
       .slice(0, 5)
       .map((i) => i[0]);
 
-    const extensionMetadata = Object.fromEntries(featuredExtensionsIDs.map((id) => [
+    const extensionMetadata = Object.fromEntries(featuredExtensionSlugs.map((id) => [
       id,
       this.extensionFiles[id].getMetadata()
     ]));
@@ -169,13 +173,14 @@ class JSONMetadataFile extends BuildFile {
 
   read () {
     const extensions = [];
-    for (const extensionID of featuredExtensionsIDs) {
+    for (const extensionSlug of featuredExtensionSlugs) {
       const extension = {};
-      const file = this.extensionFiles[extensionID];
+      const file = this.extensionFiles[extensionSlug];
       const metadata = file.getMetadata();
-      const image = this.extensionImages[extensionID];
+      const image = this.extensionImages[extensionSlug];
 
-      extension.id = extensionID;
+      extension.slug = extensionSlug;
+      extension.id = metadata.id;
       extension.name = metadata.name;
       extension.description = metadata.description;
       if (image) {
@@ -251,14 +256,14 @@ IMAGE_FORMATS.set('.jpg', ImageFile);
 IMAGE_FORMATS.set('.svg', SVGFile);
 
 class DocsFile extends BuildFile {
-  constructor (absolutePath, extensionId) {
+  constructor (absolutePath, extensionSlug) {
     super(absolutePath);
-    this.extensionId = extensionId;
+    this.extensionSlug = extensionSlug;
   }
 
   read () {
     const markdown = super.read().toString('utf-8');
-    return renderDocs(markdown, this.extensionId);
+    return renderDocs(markdown, this.extensionSlug);
   }
 
   getType () {
@@ -336,9 +341,9 @@ class Builder {
       if (!ImageFileClass) {
         continue;
       }
-      const extensionId = filename.split('.')[0];
-      if (extensionId !== 'unknown') {
-        extensionImages[extensionId] = `images/${filename}`;
+      const extensionSlug = filename.split('.')[0];
+      if (extensionSlug !== 'unknown') {
+        extensionImages[extensionSlug] = `images/${filename}`;
       }
       build.files[`/images/${filename}`] = new ImageFileClass(absolutePath);
     }
@@ -347,8 +352,8 @@ class Builder {
       if (!filename.endsWith('.md')) {
         continue;
       }
-      const extensionId = filename.split('.')[0];
-      build.files[`/${extensionId}.html`] = new DocsFile(absolutePath, extensionId);
+      const extensionSlug = filename.split('.')[0];
+      build.files[`/${extensionSlug}.html`] = new DocsFile(absolutePath, extensionSlug);
     }
 
     const scratchblocksPath = pathUtil.join(__dirname, '../node_modules/scratchblocks/build/scratchblocks.min.js');
@@ -360,10 +365,10 @@ class Builder {
       if (!filename.endsWith('.js')) {
         continue;
       }
-      const extensionId = filename.split('.')[0];
-      const featured = featuredExtensionsIDs.includes(extensionId);
+      const extensionSlug = filename.split('.')[0];
+      const featured = featuredExtensionSlugs.includes(extensionSlug);
       const file = new ExtensionFile(absolutePath, featured);
-      extensionFiles[extensionId] = file;
+      extensionFiles[extensionSlug] = file;
       build.files[`/${filename}`] = file;
     }
 

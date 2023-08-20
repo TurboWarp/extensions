@@ -1,4 +1,5 @@
 // Name: More Timers
+// ID: lmsTimers
 // Description: Control several timers at once.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 

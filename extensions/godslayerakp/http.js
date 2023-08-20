@@ -1,4 +1,5 @@
 // Name: HTTP
+// ID: gsaHTTPRequests
 // Description: Comprehensive extension for interacting with external websites.
 // By: RedMan13 <https://scratch.mit.edu/users/RedMan13/>
 

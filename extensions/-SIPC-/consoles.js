@@ -1,4 +1,5 @@
 // Name: Consoles
+// ID: sipcconsole
 // Description: Blocks that interact the JavaScript console built in to your browser's developer tools.
 // By: -SIPC-
 

@@ -1,4 +1,5 @@
 // Name: Fetch
+// ID: fetch
 // Description: Make requests to the broader internet.
 
 (function(Scratch) {

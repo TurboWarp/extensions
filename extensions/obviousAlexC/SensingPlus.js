@@ -1,4 +1,5 @@
 // Name: Sensing Plus
+// ID: obviousalexsensing
 // Description: An extension to the sensing category.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
 

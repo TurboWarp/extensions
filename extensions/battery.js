@@ -1,4 +1,5 @@
 // Name: Battery
+// ID: battery
 // Description: Access information about the battery of phones or laptops. May not work on all devices and browsers.
 
 (function (Scratch) {
