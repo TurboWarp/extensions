@@ -1,3 +1,6 @@
+// Name: Mouse Cursor
+// Description: Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.
+
 (function (Scratch) {
   'use strict';
 

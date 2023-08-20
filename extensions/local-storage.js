@@ -1,3 +1,6 @@
+// Name: Local Storage
+// Description: Store data persistently. Like cookies, but better.
+
 (function (Scratch) {
   'use strict';
 

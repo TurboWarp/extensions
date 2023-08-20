@@ -1,3 +1,7 @@
+// Name: Sensing Plus
+// Description: An extension to the sensing category.
+// By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
+
 (function (Scratch) {
   "use strict";
 

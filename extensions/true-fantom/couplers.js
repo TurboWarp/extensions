@@ -1,3 +1,7 @@
+// Name: Couplers
+// Description: A few adapter blocks.
+// By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+
 (Scratch => {
   'use strict';
 

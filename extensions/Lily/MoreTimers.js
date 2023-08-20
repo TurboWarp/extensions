@@ -1,3 +1,7 @@
+// Name: More Timers
+// Description: Control several timers at once.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
   'use strict';
 

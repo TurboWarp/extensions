@@ -1,3 +1,7 @@
+// Name: More Motion
+// Description: More motion-related blocks.
+// By: NamelessCat <https://scratch.mit.edu/users/NamelessCat/>
+
 (function(Scratch) {
   'use strict';
 

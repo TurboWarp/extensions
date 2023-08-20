@@ -1,3 +1,6 @@
+// Name: Notifications
+// Description: Display notifications.
+
 (function(Scratch) {
   'use strict';
 

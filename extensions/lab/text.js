@@ -1,3 +1,6 @@
+// Name: Animated Text
+// Description: An easy way to display and animate text. Compatible with Scratch Lab's Animated Text experiment.
+
 (function(Scratch) {
   'use strict';
 

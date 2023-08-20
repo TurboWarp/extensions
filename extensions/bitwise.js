@@ -1,3 +1,7 @@
+// Name: Bitwise
+// Description: Blocks that operate on the binary representation of numbers in computers.
+// By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+
 (Scratch => {
   'use strict';
 
