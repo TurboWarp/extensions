@@ -187,7 +187,7 @@ class JSONMetadataFile extends BuildFile {
     const data = {
       extensions
     };
-    return JSON.stringify(data, null, 2);
+    return JSON.stringify(data);
   }
 }
 
