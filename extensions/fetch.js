@@ -1,3 +1,6 @@
+// Name: Fetch
+// Description: Make requests to the broader internet.
+
 (function(Scratch) {
   'use strict';
 

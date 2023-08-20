@@ -1,3 +1,7 @@
+// Name: Search Params
+// Description: Interact with URL search parameters: the part of the URL after a question mark.
+// By: ZXMushroom63
+
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) {

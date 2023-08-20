@@ -1,3 +1,7 @@
+// Name: Network
+// Description: Various blocks for interacting with the network.
+// By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+
 (Scratch => {
   'use strict';
 

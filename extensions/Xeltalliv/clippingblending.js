@@ -1,3 +1,7 @@
+// Name: Clipping & Blending
+// Description: Clipping outside of a specified rectangular area and additive color blending.
+// By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
+
 (function(Scratch) {
   'use strict';
 

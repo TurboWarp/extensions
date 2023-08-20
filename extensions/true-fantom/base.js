@@ -1,3 +1,7 @@
+// Name: Base
+// Description: Convert numbers between bases.
+// By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+
 (Scratch => {
   'use strict';
 

@@ -1,3 +1,7 @@
+// Name: Ping Cloud Data
+// Description: Determine whether a cloud variable server is probably up.
+// Original: TheShovel
+
 (function (Scratch) {
   "use strict";
 

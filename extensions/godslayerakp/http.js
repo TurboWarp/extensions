@@ -1,3 +1,7 @@
+// Name: HTTP
+// Description: Comprehensive extension for interacting with external websites.
+// By: RedMan13 <https://scratch.mit.edu/users/RedMan13/>
+
 (function(Scratch) {
     'use strict';
     if (!Scratch.extensions.unsandboxed) throw new Error('can not load out side unsandboxed mode');

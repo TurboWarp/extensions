@@ -1,4 +1,7 @@
-//Created by veggiecan0419
+// Name: Longman Dictionary
+// Description: Get the definitions of words from the Longman Dictionary in your projects.
+// By: veggiecan0419
+
 (function(Scratch) {
   'use strict';
 
