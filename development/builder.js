@@ -180,6 +180,7 @@ class JSONMetadataFile extends BuildFile {
       const image = this.extensionImages[extensionSlug];
 
       extension.slug = extensionSlug;
+      extension.id = metadata.id;
       extension.name = metadata.name;
       extension.description = metadata.description;
       if (image) {
