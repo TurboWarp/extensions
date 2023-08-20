@@ -45,12 +45,13 @@ The header comments look like this:
 
 ```js
 // Name: Example Extension
+// ID: extensionid
 // Description: Does a very cool thing. This must have punctuation at the end!
 // By: GarboMuffin <https://scratch.mit.edu/users/GarboMuffin/>
 // Original: TestMuffin
 ```
 
-Remember, this has to be the *very first* thing in the JS file. `Name` and `Description` are required. You can have zero or more `By` and `Original`. Put credit links in `<angled brackets>` if you have one. It must point to a Scratch user profile. The parser is pretty loose, but try not to deviate too far from this format.
+Remember, this has to be the *very first* thing in the JS file. `Name`, `Description`, and `ID` are required. Make sure that `ID` exactly matches what you return in `getInfo()`. You can have zero or more `By` and `Original`. Put credit links in `<angled brackets>` if you have one. It must point to a Scratch user profile. The parser is pretty loose, but try not to deviate too far from this format.
 
 New extensions do not *need* images, but they are highly encouraged. Save the image in the `images` folder with the same folder name and file name (but different file extension) as the extension's source code. For example, if your extension is located in `extensions/TestMuffin/fetch.js`, save the image as `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will detect it automatically. Images are displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you.
 
