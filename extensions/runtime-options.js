@@ -1,3 +1,6 @@
+// Name: Runtime Options
+// Description: Get and modify turbo mode, framerate, interpolation, clone limit, stage size, and more.
+
 (function (Scratch) {
   'use strict';
 
@@ -297,4 +300,4 @@
   }
 
   Scratch.extensions.register(new RuntimeOptions());
-})(window.Scratch);
+})(Scratch);

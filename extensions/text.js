@@ -1,6 +1,6 @@
-
-// Made by CST1229
-// Modified port of an extension from a mod I worked on.
+// Name: Text
+// Description: Manipulate characters and text.
+// Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
 
 (function(Scratch) {
   "use strict";

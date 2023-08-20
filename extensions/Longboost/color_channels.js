@@ -1,3 +1,6 @@
+// Name: RGB Channels
+// Description: Only render or stamp certain RGB channels.
+
 (function(Scratch) {
   'use strict';
   const renderer = Scratch.vm.renderer;

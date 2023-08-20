@@ -1,3 +1,6 @@
+// Name: Pointerlock
+// Description: Adds blocks for mouse locking. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the pointerlock experiment.
+
 (function(Scratch) {
   'use strict';
 

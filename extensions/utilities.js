@@ -1,3 +1,7 @@
+// Name: Utilities
+// Description: A bunch of interesting blocks.
+// Original: Sheep_maker <https://scratch.mit.edu/users/Sheep_maker/>
+
 /*!
  * This is based on:
  * https://github.com/SheepTester/sheeptester.github.io/blob/master/javascripts/utilities.js
