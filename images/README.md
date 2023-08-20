@@ -258,3 +258,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## TheShovel/LZ-String.svg
  - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1658130807
+
+## NexusKitten/moremotion.svg;
+ - Created by [Pizzalover4783](https://github.com/Pizzalover4783) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1672844690
