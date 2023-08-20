@@ -1,3 +1,7 @@
+// Name: Zip
+// Description: Create and edit .zip format files, including .sb3 files.
+// By: CST1229 <https://scratch.mit.edu/users/CST1229/>
+
 (function (Scratch) {
   "use strict";
 
@@ -47,8 +51,7 @@
       return {
         id: "cst1229zip",
         name: "Zip",
-        // docsURI: "http://localhost:8000/CST1229/zip.html",
-        docsURI: "https://extensions.turbowarp.org/CST1229/zip.html",
+        docsURI: "https://extensions.turbowarp.org/CST1229/zip",
 
         blockIconURI: extIcon,
 

@@ -1,3 +1,7 @@
+// Name: Graphics 2D
+// Description: Blocks to compute lengths, angles, and areas in two dimensions.
+// By: NOname-awa
+
 (function (Scratch) {
   'use strict';
   Scratch.translate.setup({

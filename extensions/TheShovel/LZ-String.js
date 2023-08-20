@@ -1,3 +1,6 @@
+// Name: LZ Compress
+// Description: Compress and decompress text using lz-string.
+
 (function(Scratch) {
     'use strict';
 

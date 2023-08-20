@@ -1,3 +1,6 @@
+// Name: Animated Text
+// Description: An easy way to display and animate text. Compatible with Scratch Lab's Animated Text experiment.
+
 (function(Scratch) {
   'use strict';
 
@@ -222,7 +225,7 @@
     }
 
     _getFontStyle () {
-      return `${this.calculatedFontSize}px "${this.fontFamily}", sans-serif`;
+      return `${this.calculatedFontSize}px ${this.fontFamily}, sans-serif`;
     }
 
     _reflowText () {
@@ -883,6 +886,22 @@
       };
     }
 
+    getFonts () {
+      const customFonts = Scratch.vm.runtime.fontManager ? Scratch.vm.runtime.fontManager.getFonts().map(i => ({
+        text: i.name,
+        value: i.family
+      })) : [];
+
+      return [
+        ...FONTS,
+        ...customFonts,
+        {
+          text: 'random font',
+          value: 'Random'
+        }
+      ];
+    }
+
     /**
      * @param {VM.Target} target
      * @returns {TextState}
@@ -932,16 +951,6 @@
     _hideText (target, state) {
       state.skin.cancelAnimation();
       target.setCostume(target.currentCostume);
-    }
-
-    getFonts () {
-      return [
-        ...FONTS,
-        {
-          text: 'random font',
-          value: 'Random'
-        }
-      ];
     }
 
     setText ({ TEXT }, util) {

@@ -1,3 +1,7 @@
+// Name: Dictionaries
+// Description: Use the power of dictionaries in your project.
+// By: Vercte <https://scratch.mit.edu/users/lolecksdeehaha/>
+
 (function(Scratch) {
   'use strict';
   let dictionaries = new Map();

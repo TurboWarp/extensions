@@ -1,3 +1,6 @@
+// Name: Sound
+// Description: Play sounds from URLs.
+
 (Scratch => {
   'use strict';
 

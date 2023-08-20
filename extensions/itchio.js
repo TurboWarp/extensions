@@ -1,3 +1,7 @@
+// Name: itch.io
+// Description: Blocks that interact with the itch.io website. Unofficial.
+// By: softed
+
 (Scratch => {
   'use strict';
 
