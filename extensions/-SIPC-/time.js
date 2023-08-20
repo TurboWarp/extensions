@@ -16,19 +16,19 @@
                     {
                         opcode: 'Timestamp',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Current timestamp',
+                        text: 'current timestamp',
                         arguments: {}
                     },
                     {
                         opcode: 'timezone',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Current time zone',
+                        text: 'current time zone',
                         arguments: {}
                     },
                     {
                         opcode: 'Timedata',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Get [Timedata] from [timestamp]',
+                        text: 'get [Timedata] from [timestamp]',
                         arguments: {
                             timestamp: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -44,7 +44,7 @@
                     {
                         opcode: 'TimestampToTime',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Convert [timestamp] to datetime',
+                        text: 'convert [timestamp] to datetime',
                         arguments: {
                             timestamp: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -55,7 +55,7 @@
                     {
                         opcode: 'TimeToTimestamp',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Convert [time] to timestamp',
+                        text: 'convert [time] to timestamp',
                         arguments: {
                             time: {
                                 type: Scratch.ArgumentType.STRING,
