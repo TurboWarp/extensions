@@ -182,6 +182,9 @@
         element = element[id - 1];
         if (element) {
           element.innerHTML = value;
+          if (!currentMarkDown.body) {
+            return "";
+          }
           return currentMarkDown.body.innerHTML || "";
         }
       }
