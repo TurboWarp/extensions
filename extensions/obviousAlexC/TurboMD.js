@@ -1,6 +1,7 @@
 (function (Scratch) {
   "use strict";
   const parser = new DOMParser();
+  let parseType = "text/html";
 
   const getParsedMD = (MD) => {
     if (parseType != "text/html") {
