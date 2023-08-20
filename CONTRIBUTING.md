@@ -39,7 +39,18 @@ Extensions must be self-contained. All libraries and hardcoded resources should 
 
 ## Website stuff
 
-To add an extension to the website homepage, modify [`website/index.ejs`](website/index.ejs). See the existing entries for a template to copy. Place your extension wherever you want in the list. We will move it for you if we disagree.
+To add an extension to the homepage, you need to add metadata comments at the very start of the extension's JavaScript, and add the extension's path (without .js) to `extensions/extensions.json`. The order of that list determines the order of the library. Don't worry about putting it in the right spot, we'll move it if we disagree.
+
+The header comments look like this:
+
+```js
+// Name: Example Extension
+// Description: Does a very cool thing. This must have punctuation at the end!
+// By: GarboMuffin <https://scratch.mit.edu/users/GarboMuffin/>
+// Original: TestMuffin
+```
+
+Remember, this has to be the *very first* thing in the JS file. `Name` and `Description` are required. You can have zero or more `By` and `Original`. Put credit links in `<angled brackets>` if you have one. It must point to a Scratch user profile. The parser is pretty loose, but try not to deviate too far from this format.
 
 New extensions do not *need* images, but they are highly encouraged. Save the image in the `images` folder with the same folder name and file name (but different file extension) as the extension's source code. For example, if your extension is located in `extensions/TestMuffin/fetch.js`, save the image as `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will detect it automatically. Images are displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you.
 
