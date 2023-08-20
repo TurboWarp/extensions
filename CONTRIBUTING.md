@@ -56,7 +56,7 @@ New extensions do not *need* images, but they are highly encouraged. Save the im
 
 Most extensions shouldn't need external documentation -- it should be obvious what to do just by looking at the blocks. That said, some do need more explanation. Documentation is written in markdown and placed in the `docs` folder with a similar layout to images. For example, documentation for `extensions/TestMuffin/fetch.js` would be saved as `docs/TestMuffin/fetch.md`. Our version of markdown is slightly extended to allow rendering [scratchblocks](https://scratchblocks.github.io/). Just look at the existing documentation for syntax examples. It's not a perfect experience: block colors have to be manually copied, and icons aren't supported, but it's better than what we had before. Once you put your markdown there, you can set a `docsURI` like `https://extensions.turbowarp.org/TestMuffin/fetch`.
 
-Static resources, such as example links, go in the `website` folder. This is where some example assets used by extensions such as fetch are placed.
+Static resources such as example resources used by extensions go in the `website` folder.
 
 ## Banned APIs
 
