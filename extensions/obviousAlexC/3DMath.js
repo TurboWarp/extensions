@@ -1,4 +1,5 @@
 (function (Scratch) {
+  "use strict";
   const vm = Scratch.vm;
 
   const spriteData = {};
