@@ -1,4 +1,5 @@
 // Name: Window Controls
+// ID: cubesterWindowControls
 // Description: A set of blocks that gives you greater control over the Program Window.
 // By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
 
