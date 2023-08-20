@@ -255,3 +255,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## XeroName/Deltatime.svg
  - Created by [@XeroName](https://scratch.mit.edu/users/plant2014/) in https://github.com/TurboWarp/extensions/pull/622
+
+## TheShovel/LZ-String.svg
+ - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1658130807
