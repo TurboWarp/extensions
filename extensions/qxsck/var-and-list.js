@@ -1,3 +1,7 @@
+// Name: Variable and list
+// Description: More blocks related to variables and lists.
+// By: qxsck
+
 (function(Scratch) {
   'use strict';
   Scratch.translate.setup({

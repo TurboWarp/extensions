@@ -1,3 +1,7 @@
+// Name: Augmented Reality
+// Description: Shows image from camera and performs motion tracking, allowing 3D projects to correctly overlay virtual objects on real world.
+// By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
+
 (function(Scratch) {
     "use strict";
 
@@ -484,7 +488,7 @@
                 color1: "#d10000",
                 color2: "#bd0000",
                 color3: "#af0100",
-                docsURI: "https://extensions.turbowarp.org/ar.html",
+                docsURI: "https://extensions.turbowarp.org/ar",
                 blocks: [
                     {
                         opcode: "enterAR",

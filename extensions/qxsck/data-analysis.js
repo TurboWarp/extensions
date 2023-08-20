@@ -1,3 +1,7 @@
+// Name: Data Analysis
+// Description: Blocks to compute means, medians, maximums, minimums, variances, and modes.
+// By: qxsck
+
 (function(Scratch) {
   'use strict';
   Scratch.translate.setup({
