@@ -1,3 +1,7 @@
+// Name: HTTP
+// Description: Comprehensive extension for interacting with external websites.
+// By: RedMan13 <https://scratch.mit.edu/users/RedMan13/>
+
 (function(Scratch) {
     'use strict';
     if (!Scratch.extensions.unsandboxed) throw new Error('can not load out side unsandboxed mode');
@@ -289,13 +293,13 @@
                     '---',
                     {
                         opcode: 'onResponse',
-                        blockType: BlockType.HAT,
+                        blockType: BlockType.EVENT,
                         isEdgeActivated: false,
                         text: 'when a site responds'
                     },
                     {
                         opcode: 'onFail',
-                        blockType: BlockType.HAT,
+                        blockType: BlockType.EVENT,
                         isEdgeActivated: false,
                         text: 'when a request fails'
                     },
@@ -593,18 +597,6 @@
             return JSON.stringify(object);
         }
 
-        /* -------- EVENTS -------- */
-
-        onResponse() {
-            // filer olo
-            return false;
-        }
-
-        onFail() {
-            // filer olo
-            return false;
-        }
-
         /* -------- CONTROL --------- */
 
         setMimeType(args) {
@@ -710,13 +702,11 @@
 
         showExtra() {
             this.showingExtra = true;
-            // @ts-ignore
             vm.extensionManager.refreshBlocks();
         }
 
         hideExtra() {
             this.showingExtra = false;
-            // @ts-ignore
             vm.extensionManager.refreshBlocks();
         }
 

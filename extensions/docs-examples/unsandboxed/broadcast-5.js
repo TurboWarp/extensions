@@ -22,7 +22,6 @@
             opcode: 'broadcast',
             blockType: Scratch.BlockType.REPORTER,
             text: 'broadcast [EVENT]',
-            disableMonitor: true,
             arguments: {
               EVENT: {
                 type: Scratch.ArgumentType.STRING,

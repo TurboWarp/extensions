@@ -1,3 +1,7 @@
+// Name: Tween
+// Description: Easing methods for smooth animations.
+// By: JeremyGamer13 <https://scratch.mit.edu/users/JeremyGamer13/>
+
 (function (Scratch) {
     'use strict';
 

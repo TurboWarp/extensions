@@ -1,3 +1,7 @@
+// Name: Newgrounds
+// Description: Blocks that allow games to interact with the Newgrounds API. Unofficial.
+// By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
+
 (function (Scratch) {
   "use strict";
 
@@ -9724,4 +9728,4 @@
   }, 1500);
 
   Scratch.extensions.register(new NewgroundsAPI());
-})(window.Scratch);
+})(Scratch);
