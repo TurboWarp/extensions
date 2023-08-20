@@ -152,6 +152,45 @@ class HomepageFile extends BuildFile {
   }
 }
 
+class JSONMetadataFile extends BuildFile {
+  constructor (extensionFiles, extensionImages) {
+    super(null);
+
+    /** @type {Record<string, ExtensionFile>} */
+    this.extensionFiles = extensionFiles;
+
+    /** @type {Record<string, string>} */
+    this.extensionImages = extensionImages;
+  }
+
+  getType () {
+    return '.json';
+  }
+
+  read () {
+    const extensions = [];
+    for (const extensionID of featuredExtensionsIDs) {
+      const extension = {};
+      const file = this.extensionFiles[extensionID];
+      const metadata = file.getMetadata();
+      const image = this.extensionImages[extensionID];
+
+      extension.id = extensionID;
+      extension.name = metadata.name;
+      extension.description = metadata.description;
+      if (image) {
+        extension.image = image;
+      }
+      extensions.push(extension);
+    }
+
+    const data = {
+      extensions
+    };
+    return JSON.stringify(data, null, 2);
+  }
+}
+
 class ImageFile extends BuildFile {
   validate () {
     const contents = this.read();
@@ -337,6 +376,7 @@ class Builder {
     }
 
     build.files['/index.html'] = new HomepageFile(extensionFiles, extensionImages, this.mode);
+    build.files['/generated-metadata/extensions-v0.json'] = new JSONMetadataFile(extensionFiles, extensionImages);
     build.files['/sitemap.xml'] = new SitemapFile(build);
 
     return build;
