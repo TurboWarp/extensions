@@ -1,6 +1,6 @@
 // Name: List Tools
 // ID: lmsData
-// Description: An assortment of new was to interact with lists.
+// Description: An assortment of new ways to interact with lists.
 
 // (It's getting harder and harder to think of original descriptions now)
 
