@@ -1,3 +1,8 @@
+// Name: Clones Plus
+// ID: lmsclonesplus
+// Description: Expansion of Scratch's clone features.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
   'use strict';
 

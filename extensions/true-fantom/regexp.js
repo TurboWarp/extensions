@@ -1,3 +1,8 @@
+// Name: RegExp
+// ID: truefantomregexp
+// Description: Full interface for working with Regular Expressions.
+// By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+
 (Scratch => {
   'use strict';
 

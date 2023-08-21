@@ -1,3 +1,8 @@
+// Name: Skins
+// ID: lmsSkins
+// Description: Have your sprites render as other images or costumes.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
   'use strict';
 
