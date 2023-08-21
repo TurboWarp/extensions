@@ -1,3 +1,7 @@
+// Name: Video
+// ID: lmsVideo
+// Description: Play videos from URLs.
+
 (function (Scratch) {
   'use strict';
 
