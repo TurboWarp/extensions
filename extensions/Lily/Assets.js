@@ -1,3 +1,7 @@
+// Name: Asset Manager
+// ID: lmsAssets
+// Description: Add, remove, and get data from sprites, costumes and sounds. 
+
 // TheShovel is so epic and cool and awesome
 
 (function (Scratch) {
