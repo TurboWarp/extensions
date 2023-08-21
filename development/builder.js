@@ -1,8 +1,8 @@
 const fs = require('fs');
 const pathUtil = require('path');
-const sizeOfImage = require('image-size');
-const renderTemplate = require('./render-template');
 const compatibilityAliases = require('./compatibility-aliases');
+const parseMetadata = require('./parse-extension-metadata');
+const featuredExtensionSlugs = require('../extensions/extensions.json');
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -14,7 +14,7 @@ const compatibilityAliases = require('./compatibility-aliases');
  * @returns {Array<[string, string]>} List of tuples [name, absolutePath].
  * The return result includes files in subdirectories, but not the subdirectories themselves.
  */
-const readDirectory = (directory) => {
+const recursiveReadDirectory = (directory) => {
   const result = [];
   for (const name of fs.readdirSync(directory)) {
     if (name.startsWith('.')) {
@@ -24,7 +24,7 @@ const readDirectory = (directory) => {
     const absolutePath = pathUtil.join(directory, name);
     const stat = fs.statSync(absolutePath);
     if (stat.isDirectory()) {
-      for (const [relativeToChildName, childAbsolutePath] of readDirectory(absolutePath)) {
+      for (const [relativeToChildName, childAbsolutePath] of recursiveReadDirectory(absolutePath)) {
         // This always needs to use / on all systems
         result.push([`${name}/${relativeToChildName}`, childAbsolutePath]);
       }
@@ -35,56 +35,176 @@ const readDirectory = (directory) => {
   return result;
 };
 
-class DiskFile {
-  constructor (path) {
-    this.path = path;
+class BuildFile {
+  constructor (source) {
+    this.sourcePath = source;
   }
 
-  getDiskPath () {
-    return this.path;
+  getType () {
+    return pathUtil.extname(this.sourcePath);
   }
 
   getLastModified () {
-    return fs.statSync(this.path).mtimeMs;
+    return fs.statSync(this.sourcePath).mtimeMs;
   }
 
   read () {
-    return fs.readFileSync(this.path);
+    return fs.readFileSync(this.sourcePath);
   }
 
   validate () {
-    // no-op
+    // no-op by default
   }
 }
 
-class ExtensionFile extends DiskFile {
-  constructor (relativePath, path) {
-    super(path);
-    this.relativePath = relativePath;
+class ExtensionFile extends BuildFile {
+  constructor (absolutePath, featured) {
+    super(absolutePath);
+    this.featured = featured;
   }
 
-  // TODO: we can add some code to eg. show a message when the extension was modified on disk?
+  getMetadata () {
+    const data = fs.readFileSync(this.sourcePath, 'utf-8');
+    return parseMetadata(data);
+  }
+
+  validate () {
+    if (!this.featured) {
+      return;
+    }
+
+    const metadata = this.getMetadata();
+
+    if (!metadata.id) {
+      throw new Error('Missing // ID:');
+    }
+
+    if (!metadata.name) {
+      throw new Error('Missing // Name:');
+    }
+
+    if (!metadata.description) {
+      throw new Error('Missing // Description:');
+    }
+
+    const PUNCTUATION = ['.', '!', '?'];
+    if (!PUNCTUATION.some((punctuation) => metadata.description.endsWith(punctuation))) {
+      throw new Error(`Description is missing punctuation: ${metadata.description}`);
+    }
+
+    for (const person of [...metadata.by, ...metadata.original]) {
+      if (!person.name) {
+        throw new Error('Person is missing name');
+      }
+      if (person.link && !person.link.startsWith('https://scratch.mit.edu/users/')) {
+        throw new Error(`Link for ${person.name} does not point to a Scratch user`);
+      }
+    }
+  }
 }
 
-class HTMLFile extends DiskFile {
-  constructor (path, data) {
-    super(path);
-    this.data = data;
-    // force development server to use read()
-    this.getDiskPath = null;
+class HomepageFile extends BuildFile {
+  constructor (extensionFiles, extensionImages, mode) {
+    super(pathUtil.join(__dirname, 'homepage-template.ejs'));
+
+    /** @type {Record<string, ExtensionFile>} */
+    this.extensionFiles = extensionFiles;
+
+    /** @type {Record<string, string>} */
+    this.extensionImages = extensionImages;
+
+    /** @type {Mode} */
+    this.mode = mode;
+
+    this.host = mode === 'development' ? 'http://localhost:8000/' : 'https://extensions.turbowarp.org/';
   }
 
   getType () {
     return '.html';
   }
 
+  getFullExtensionURL (extensionSlug) {
+    return `${this.host}${extensionSlug}.js`;
+  }
+
+  getRunExtensionURL (extensionSlug) {
+    return `https://turbowarp.org/editor?extension=${this.getFullExtensionURL(extensionSlug)}`;
+  }
+
   read () {
-    return renderTemplate(this.path, this.data);
+    const renderTemplate = require('./render-template');
+
+    const mostRecentExtensions = Object.entries(this.extensionFiles)
+      .sort((a, b) => b[1].getLastModified() - a[1].getLastModified())
+      .slice(0, 5)
+      .map((i) => i[0]);
+
+    const extensionMetadata = Object.fromEntries(featuredExtensionSlugs.map((id) => [
+      id,
+      this.extensionFiles[id].getMetadata()
+    ]));
+
+    return renderTemplate(this.sourcePath, {
+      mode: this.mode,
+      mostRecentExtensions,
+      extensionImages: this.extensionImages,
+      extensionMetadata,
+      getFullExtensionURL: this.getFullExtensionURL.bind(this),
+      getRunExtensionURL: this.getRunExtensionURL.bind(this)
+    });
   }
 }
 
-class ImageFile extends DiskFile {
+class JSONMetadataFile extends BuildFile {
+  constructor (extensionFiles, extensionImages) {
+    super(null);
+
+    /** @type {Record<string, ExtensionFile>} */
+    this.extensionFiles = extensionFiles;
+
+    /** @type {Record<string, string>} */
+    this.extensionImages = extensionImages;
+  }
+
+  getType () {
+    return '.json';
+  }
+
+  read () {
+    const extensions = [];
+    for (const extensionSlug of featuredExtensionSlugs) {
+      const extension = {};
+      const file = this.extensionFiles[extensionSlug];
+      const metadata = file.getMetadata();
+      const image = this.extensionImages[extensionSlug];
+
+      extension.slug = extensionSlug;
+      extension.id = metadata.id;
+      extension.name = metadata.name;
+      extension.description = metadata.description;
+      if (image) {
+        extension.image = image;
+      }
+      if (metadata.by.length) {
+        extension.by = metadata.by;
+      }
+      if (metadata.original.length) {
+        extension.original = metadata.original;
+      }
+
+      extensions.push(extension);
+    }
+
+    const data = {
+      extensions
+    };
+    return JSON.stringify(data);
+  }
+}
+
+class ImageFile extends BuildFile {
   validate () {
+    const sizeOfImage = require('image-size');
     const contents = this.read();
     const {width, height} = sizeOfImage(contents);
     const aspectRatio = width / height;
@@ -105,10 +225,9 @@ class SVGFile extends ImageFile {
   }
 }
 
-class SitemapFile extends DiskFile {
+class SitemapFile extends BuildFile {
   constructor (build) {
     super(null);
-    this.getDiskPath = null;
     this.build = build;
   }
 
@@ -142,6 +261,23 @@ const IMAGE_FORMATS = new Map();
 IMAGE_FORMATS.set('.png', ImageFile);
 IMAGE_FORMATS.set('.jpg', ImageFile);
 IMAGE_FORMATS.set('.svg', SVGFile);
+
+class DocsFile extends BuildFile {
+  constructor (absolutePath, extensionSlug) {
+    super(absolutePath);
+    this.extensionSlug = extensionSlug;
+  }
+
+  read () {
+    const renderDocs = require('./render-docs');
+    const markdown = super.read().toString('utf-8');
+    return renderDocs(markdown, this.extensionSlug);
+  }
+
+  getType () {
+    return '.html';
+  }
+}
 
 class Build {
   constructor () {
@@ -189,65 +325,67 @@ class Builder {
       this.mode = mode;
     }
 
-    this.extensionsRoot = pathUtil.join(__dirname, '..', 'extensions');
-    this.websiteRoot = pathUtil.join(__dirname, '..', 'website');
-    this.imagesRoot = pathUtil.join(__dirname, '..', 'images');
+    this.extensionsRoot = pathUtil.join(__dirname, '../extensions');
+    this.websiteRoot = pathUtil.join(__dirname, '../website');
+    this.imagesRoot = pathUtil.join(__dirname, '../images');
+    this.docsRoot = pathUtil.join(__dirname, '../docs');
   }
 
   build () {
-    const build = new Build();
+    const build = new Build(this.mode);
 
-    const images = {};
-    for (const [imageFilename, path] of readDirectory(this.imagesRoot)) {
-      const extension = pathUtil.extname(imageFilename);
+    /** @type {Record<string, ExtensionFile>} */
+    const extensionFiles = {};
+    for (const [filename, absolutePath] of recursiveReadDirectory(this.extensionsRoot)) {
+      if (!filename.endsWith('.js')) {
+        continue;
+      }
+      const extensionSlug = filename.split('.')[0];
+      const featured = featuredExtensionSlugs.includes(extensionSlug);
+      const file = new ExtensionFile(absolutePath, featured);
+      extensionFiles[extensionSlug] = file;
+      build.files[`/${filename}`] = file;
+    }
+
+    /** @type {Record<string, ImageFile>} */
+    const extensionImages = {};
+    for (const [filename, absolutePath] of recursiveReadDirectory(this.imagesRoot)) {
+      const extension = pathUtil.extname(filename);
       const ImageFileClass = IMAGE_FORMATS.get(extension);
       if (!ImageFileClass) {
         continue;
       }
-      const extensionId = imageFilename.split('.')[0];
-      if (extensionId !== 'unknown') {
-        images[extensionId] = imageFilename;
+      const extensionSlug = filename.split('.')[0];
+      if (extensionSlug !== 'unknown') {
+        extensionImages[extensionSlug] = `images/${filename}`;
       }
-      build.files[`/images/${imageFilename}`] = new ImageFileClass(path);
-    }
-
-    const extensionFiles = [];
-    for (const [extensionFilename, path] of readDirectory(this.extensionsRoot)) {
-      if (!extensionFilename.endsWith('.js')) {
-        continue;
-      }
-      const file = new ExtensionFile(extensionFilename, path);
-      extensionFiles.push(file);
-      build.files[`/${extensionFilename}`] = file;
-    }
-
-    for (const [oldPath, newPath] of Object.entries(compatibilityAliases)) {
-      build.files[oldPath] = build.files[newPath];
+      build.files[`/images/${filename}`] = new ImageFileClass(absolutePath);
     }
 
     if (this.mode !== 'desktop') {
+      for (const [filename, absolutePath] of recursiveReadDirectory(this.websiteRoot)) {
+        build.files[`/${filename}`] = new BuildFile(absolutePath);
+      }
+
+      for (const [filename, absolutePath] of recursiveReadDirectory(this.docsRoot)) {
+        if (!filename.endsWith('.md')) {
+          continue;
+        }
+        const extensionSlug = filename.split('.')[0];
+        build.files[`/${extensionSlug}.html`] = new DocsFile(absolutePath, extensionSlug);
+      }
+
+      const scratchblocksPath = pathUtil.join(__dirname, '../node_modules/scratchblocks/build/scratchblocks.min.js');
+      build.files['/docs-internal/scratchblocks.js'] = new BuildFile(scratchblocksPath);
+
+      build.files['/index.html'] = new HomepageFile(extensionFiles, extensionImages, this.mode);
       build.files['/sitemap.xml'] = new SitemapFile(build);
     }
 
-    const mostRecentExtensions = extensionFiles
-      .sort((a, b) => b.getLastModified() - a.getLastModified())
-      .slice(0, 5)
-      .map((file) => file.relativePath);
+    build.files['/generated-metadata/extensions-v0.json'] = new JSONMetadataFile(extensionFiles, extensionImages);
 
-    const ejsData = {
-      mode: this.mode,
-      host: this.mode === 'development' ? 'http://localhost:8000/' : 'https://extensions.turbowarp.org/',
-      mostRecentExtensions: mostRecentExtensions,
-      extensionImages: images
-    };
-
-    for (const [websiteFilename, path] of readDirectory(this.websiteRoot)) {
-      if (websiteFilename.endsWith('.ejs')) {
-        const realFilename = websiteFilename.replace('.ejs', '.html');
-        build.files[`/${realFilename}`] = new HTMLFile(path, ejsData);
-      } else {
-        build.files[`/${websiteFilename}`] = new DiskFile(path);
-      }
+    for (const [oldPath, newPath] of Object.entries(compatibilityAliases)) {
+      build.files[oldPath] = build.files[newPath];
     }
 
     return build;
@@ -262,10 +400,11 @@ class Builder {
       const time = Date.now() - start.getTime();
       console.log(`done in ${time}ms`);
       return build;
-    } catch (e) {
+    } catch (error) {
       console.log('error');
-      console.error(e);
+      console.error(error);
     }
+
     return null;
   }
 
@@ -277,6 +416,7 @@ class Builder {
       `${this.extensionsRoot}/**/*`,
       `${this.imagesRoot}/**/*`,
       `${this.websiteRoot}/**/*`,
+      `${this.docsRoot}/**/*`,
     ], {
       ignoreInitial: true
     }).on('all', () => {

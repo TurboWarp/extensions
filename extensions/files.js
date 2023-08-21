@@ -1,3 +1,7 @@
+// Name: Files
+// ID: files
+// Description: Read and download files.
+
 (function(Scratch) {
   'use strict';
 

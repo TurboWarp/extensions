@@ -1,3 +1,7 @@
+// Name: Local Storage
+// ID: localstorage
+// Description: Store data persistently. Like cookies, but better.
+
 (function (Scratch) {
   'use strict';
 
@@ -67,7 +71,7 @@
       return {
         id: 'localstorage',
         name: 'Local Storage',
-        docsURI: "https://extensions.turbowarp.org/local-storage.html",
+        docsURI: "https://extensions.turbowarp.org/local-storage",
         blocks: [
           {
             opcode: 'setProjectId',

@@ -1,3 +1,8 @@
+// Name: Math
+// ID: truefantommath
+// Description: A lot of operators blocks, from exponentiation to trigonometric functions.
+// By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+
 (Scratch => {
   'use strict';
 

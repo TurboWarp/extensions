@@ -1,3 +1,8 @@
+// Name: Bitwise
+// ID: Bitwise
+// Description: Blocks that operate on the binary representation of numbers in computers.
+// By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+
 (Scratch => {
   'use strict';
 
@@ -30,7 +35,7 @@
 
         color1: '#17cde6',
 
-        docsURI: "https://extensions.turbowarp.org/bitwise.html",
+        docsURI: "https://extensions.turbowarp.org/bitwise",
         menuIconURI: icon,
 
         blocks: [
