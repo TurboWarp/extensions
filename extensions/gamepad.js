@@ -1,3 +1,7 @@
+// Name: Gamepad
+// ID: Gamepad
+// Description: Directly access gamepads instead of just mapping buttons to keys.
+
 // Some parts of this scripts are based on or designed to be compatible-ish with:
 // https://arpruss.github.io/gamepad.js (MIT Licensed)
 
@@ -181,7 +185,7 @@
           /*
           {
             opcode: 'buttonPressedReleased',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'button [b] [pr] of pad [i]',
             arguments: {
               b: {
@@ -203,7 +207,7 @@
 
           {
             opcode: 'axisMoved',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'axis [b] of pad [i] moved',
             arguments: {
               b: {

@@ -1,3 +1,8 @@
+// Name: Camera Controls
+// ID: DTcameracontrols
+// Description: Move the visible part of the stage.
+// By: DT
+
 (Scratch => {
   'use strict';
 

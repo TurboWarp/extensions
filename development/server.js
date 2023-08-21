@@ -49,12 +49,8 @@ app.get('/*', (req, res, next) => {
     return next();
   }
 
-  if (fileInBuild.getDiskPath) {
-    res.sendFile(fileInBuild.getDiskPath());
-  } else {
-    res.contentType(fileInBuild.getType());
-    res.send(fileInBuild.read());
-  }
+  res.contentType(fileInBuild.getType());
+  res.send(fileInBuild.read());
 });
 
 app.use((req, res) => {

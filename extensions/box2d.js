@@ -1,3 +1,8 @@
+// Name: Box2D Physics
+// ID: griffpatch
+// Description: Two dimensional physics.
+// Original: griffpatch <https://scratch.mit.edu/users/griffpatch/>
+
 /*!
  * This is based on https://github.com/griffpatch/scratch-vm/tree/box2d/src/extensions/scratch3_griffpatch
  */
@@ -12354,7 +12359,7 @@
           default: "Physics",
           description: "Label for the Griffpatch extension category",
         }),
-        docsURI: "https://extensions.turbowarp.org/box2d.html",
+        docsURI: "https://extensions.turbowarp.org/box2d",
         menuIconURI: menuIconURI,
         blockIconURI: blockIconURI,
         blocks: [

@@ -1,3 +1,8 @@
+// Name: Cast
+// ID: lmsCast
+// Description: Convert values between types.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
   'use strict';
 

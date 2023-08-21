@@ -1,3 +1,8 @@
+// Name: rxFS
+// ID: 0832rxfs2
+// Description: Blocks for interacting with a virtual in-memory filesystem.
+// By: 0832
+
 /*!
  * Made by 0832
  * This file was originally under the rxLI Version 2.1 license:

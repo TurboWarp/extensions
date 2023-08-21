@@ -1,3 +1,8 @@
+// Name: Pen Plus
+// ID: betterpen
+// Description: Advanced rendering capabilities.
+// By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
+
 /* eslint-disable no-empty-pattern */
 /* eslint-disable no-prototype-builtins */
 /*
@@ -2656,4 +2661,4 @@ Other various small fixes
   }
 
   Scratch.extensions.register(new PenPlus());
-})(window.Scratch); // use window.Scratch so it doesn't throw error in plugin loaders
+})(Scratch);

@@ -1,3 +1,8 @@
+// Name: ShovelUtils
+// ID: ShovelUtils
+// Description: A bunch of miscellaneous blocks.
+// By: TheShovel
+
 (function (Scratch) {
   'use strict';
   if (!Scratch.extensions.unsandboxed) {
