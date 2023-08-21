@@ -1,3 +1,8 @@
+// Name: Zip
+// ID: cst1229zip
+// Description: Create and edit .zip format files, including .sb3 files.
+// By: CST1229 <https://scratch.mit.edu/users/CST1229/>
+
 (function (Scratch) {
   "use strict";
 
@@ -47,8 +52,7 @@
       return {
         id: "cst1229zip",
         name: "Zip",
-        // docsURI: "http://localhost:8000/CST1229/zip.html",
-        docsURI: "https://extensions.turbowarp.org/CST1229/zip.html",
+        docsURI: "https://extensions.turbowarp.org/CST1229/zip",
 
         blockIconURI: extIcon,
 
@@ -92,7 +96,7 @@
               },
               COMPRESSION: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 6,
+                defaultValue: "6",
                 menu: "compressionLevel",
               },
             },
@@ -326,16 +330,16 @@
           compressionLevel: {
             acceptReporters: true,
             items: [
-              { text: "no compression (fastest)", value: 0 },
-              { text: "1 (fast, large)", value: 1 },
-              { text: "2", value: 2 },
-              { text: "3", value: 3 },
-              { text: "4", value: 4 },
-              { text: "5", value: 5 },
-              { text: "6", value: 6 },
-              { text: "7", value: 7 },
-              { text: "8", value: 8 },
-              { text: "9 (slowest, smallest)", value: 9 },
+              { text: "no compression (fastest)", value: "0" },
+              { text: "1 (fast, large)", value: "1" },
+              { text: "2", value: "2" },
+              { text: "3", value: "3" },
+              { text: "4", value: "4" },
+              { text: "5", value: "5" },
+              { text: "6", value: "6" },
+              { text: "7", value: "7" },
+              { text: "8", value: "8" },
+              { text: "9 (slowest, smallest)", value: "9" },
             ],
           },
           fileMeta: {

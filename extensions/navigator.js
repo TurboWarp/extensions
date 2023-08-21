@@ -1,3 +1,7 @@
+// Name: Navigator
+// ID: navigatorinfo
+// Description: Details about the user's browser and operating system.
+
 (function(Scratch) {
   'use strict';
 

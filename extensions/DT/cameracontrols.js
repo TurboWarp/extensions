@@ -1,3 +1,8 @@
+// Name: Camera Controls
+// ID: DTcameracontrols
+// Description: Move the visible part of the stage.
+// By: DT
+
 (Scratch => {
   'use strict';
 
@@ -19,6 +24,7 @@
 
   vm.runtime.runtimeOptions.fencing = false;
   vm.renderer.offscreenTouching = true;
+  vm.setInterpolation(false);
 
   function updateCamera(x = cameraX, y = cameraY, scale = cameraZoom / 100, rot = -cameraDirection + 90) {
     rot = rot / 180 * Math.PI;
@@ -347,6 +353,7 @@
     setCol(args, util) {
       const rgb = Scratch.Cast.toRgbColorList(args.val);
       Scratch.vm.renderer.setBackgroundColor(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
+      cameraBG = args.val;
     }
     getCol() {
       return cameraBG;

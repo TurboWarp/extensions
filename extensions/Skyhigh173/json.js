@@ -1,3 +1,8 @@
+// Name: JSON
+// ID: skyhigh173JSON
+// Description: Handle JSON strings and arrays.
+// By: Skyhigh173
+
 (function(Scratch) {
   'use strict';
   /*

@@ -1,3 +1,7 @@
+// Name: Clipboard
+// ID: clipboard
+// Description: Read and write from the system clipboard.
+
 /*!
  * Copyright 2023 tomyo-code + AdamMady
  * 
@@ -46,13 +50,13 @@
         blocks: [
           {
             opcode: 'whenCopied',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when something is copied',
             isEdgeActivated: false
           },
           {
             opcode: 'whenPasted',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when something is pasted',
             isEdgeActivated: false
           },
