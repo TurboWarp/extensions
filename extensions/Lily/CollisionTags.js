@@ -6,6 +6,15 @@
   const Cast = Scratch.Cast;
 
   class CollisionTags {
+    constructor() {
+      vm.runtime.on('targetWasCreated', (target, original) => {
+        target._collisionTags = [];
+        if (!original) return;
+
+        if (!original._collisionTags) original._collisionTags = [];
+        target._collisionTags = original._collisionTags;
+      });
+    }
     getInfo() {
       return {
         id: 'lmsCollisions',
@@ -68,8 +77,12 @@
           {
             opcode: 'touchingTargetWithTag',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'touching [TARGET] with tag [TAG]?',
+            text: 'touching [TYPE] of [TARGET] with tag [TAG]?',
             arguments: {
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'types'
+              },
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
                 menu: 'targets'
@@ -82,8 +95,12 @@
           {
             opcode: 'touchingWithTag',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'touching any sprite with tag [TAG]?',
+            text: 'touching [TYPE] with tag [TAG]?',
             arguments: {
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'types'
+              },
               TAG: {
                 type: Scratch.ArgumentType.STRING
               }
@@ -91,6 +108,11 @@
           }
         ],
         menus: {
+          // Targets have acceptReporters: false
+          types: {
+            acceptReporters: false,
+            items: ['parent', 'clone', 'anything']
+          },
           // Targets have acceptReporters: true
           targets: {
             acceptReporters: true,
@@ -142,34 +164,36 @@
 
     touchingTargetWithTag(args, util) {
       const targetName = Cast.toString(args.TARGET);
+      const type = Cast.toString(args.TYPE);
       const tag = Cast.toString(args.TAG);
       const target = this._getTargetFromMenu(targetName, util);
       if (!target) return;
 
-      const drawableCandidates = target.sprite.clones
-        .filter(clone => {
-          return (clone._collisionTags && clone._collisionTags.includes(tag));
-        })
-        .map(clone => clone.drawableID);
+      let drawableCandidates;
+      if (type === 'parent') drawableCandidates = [target];
+      if (type === 'anything') drawableCandidates = target.sprite.clones.filter(target => target._collisionTags && target._collisionTags.includes(tag));
+      if (type === 'clone') drawableCandidates = target.sprite.clones.filter(target => target._collisionTags && target._collisionTags.includes(tag) && !target.isOriginal);
+      drawableCandidates = drawableCandidates.map(target => target.drawableID);
 
       return vm.renderer.isTouchingDrawables(util.target.drawableID, drawableCandidates);
     }
 
     touchingWithTag(args, util) {
+      const type = Cast.toString(args.TYPE);
       const tag = Cast.toString(args.TAG);
 
-      const drawableCandidates = runtime.targets
-        .filter(target => {
-          return (target._collisionTags && target._collisionTags.includes(tag));
-        })
-        .map(target => target.drawableID);
+      let drawableCandidates;
+      if (type === 'parent') drawableCandidates = runtime.targets.filter(target => target._collisionTags && target._collisionTags.includes(tag) && target.isOriginal);
+      if (type === 'anything') drawableCandidates = runtime.targets.filter(target => target._collisionTags && target._collisionTags.includes(tag));
+      if (type === 'clone') drawableCandidates = runtime.targets.filter(target => target._collisionTags && target._collisionTags.includes(tag) && !target.isOriginal);
+      drawableCandidates = drawableCandidates.map(target => target.drawableID);
 
       return vm.renderer.isTouchingDrawables(util.target.drawableID, drawableCandidates);
     }
 
     _getTargets() {
       const spriteNames = [
-        {text: 'myself', value: '_myself_'}
+        {text: 'myself', value: '_myself_'},
       ];
       const targets = Scratch.vm.runtime.targets;
       for (const target of targets) {
