@@ -1,3 +1,8 @@
+// Name: GameJolt
+// ID: GameJoltAPI
+// Description: Blocks that allow games to interact with the GameJolt API. Unofficial.
+// By: softed
+
 (Scratch => {
   'use strict';
 

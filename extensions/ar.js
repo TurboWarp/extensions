@@ -1,3 +1,8 @@
+// Name: Augmented Reality
+// ID: AR
+// Description: Shows image from camera and performs motion tracking, allowing 3D projects to correctly overlay virtual objects on real world.
+// By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
+
 (function(Scratch) {
     "use strict";
 

@@ -1,3 +1,7 @@
+// Name: LZ Compress
+// ID: shovellzcompress
+// Description: Compress and decompress text using lz-string.
+
 (function(Scratch) {
     'use strict';
 

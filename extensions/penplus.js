@@ -1,3 +1,8 @@
+// Name: Pen Plus
+// ID: betterpen
+// Description: Advanced rendering capabilities.
+// By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
+
 /* eslint-disable no-empty-pattern */
 /* eslint-disable no-prototype-builtins */
 /*
