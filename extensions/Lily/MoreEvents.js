@@ -1,3 +1,7 @@
+// Name: More Events
+// ID: lmsMoreEvents
+// Description: Start your scripts in new ways.
+
 (function (Scratch) {
   'use strict';
 
