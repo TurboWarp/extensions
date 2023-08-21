@@ -197,7 +197,7 @@
     confirmationBlock(args) {
       return confirm(args.STRING);
     }
-    
+
     // The following blocks were originally from Navigator, repurposed as suggested by GarboMuffin.
     getOS () {
       const userAgent = navigator.userAgent;
