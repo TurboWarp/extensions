@@ -175,10 +175,10 @@ This reporter returns the "y" position of the Program Window.
 <h3 id="resize_window">Resize Window Block <span class="heading-link">(<a href="#resize_window">#</a>)</span></h3>
 
 ```scratch
-resize window to w: (1000) h: (1000) :: #359ed4
+resize window to width: (1000) height: (1000) :: #359ed4
 ```
 
-Resizes the Program Window to the defined "w" (width) and "h" (height) values.
+Resizes the Program Window to the defined width and height values.
 
 <hr>
 
@@ -344,6 +344,18 @@ This reporter returns the height of the Program Window.
 
 <hr>
 
+<h3 id="is_touching_edge">Is Window Touching Screen Edge Boolean <span class="heading-link">(<a href="#is_touching_edge">#</a>)</span></h3>
+
+```scratch
+<is window touching screen edge? :: #359ed4>
+```
+
+This boolean returns true or false for whether or not the Program Window is touching the screen's edge.
+
+<strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong>
+
+<hr>
+
 <h3 id="screen_width">Screen Width Reporter <span class="heading-link">(<a href="#screen_width">#</a>)</span></h3>
 
 ```scratch
@@ -363,6 +375,18 @@ This reporter returns the width of the Screen.
 ```
 
 This reporter returns the height of the Screen.
+
+<strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong>
+
+<hr>
+
+<h3 id="is_focused">Is Window Focused Boolean <span class="heading-link">(<a href="#is_focused">#</a>)</span></h3>
+
+```scratch
+<is window focused? :: #359ed4>
+```
+
+This boolean returns true or false for whether or not the Program Window is in focus.
 
 <strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong>
 
@@ -392,42 +416,6 @@ This reporter returns the title of the Program Window.
 
 <hr>
 
-<h3 id="is_focused">Is Window Focused Boolean <span class="heading-link">(<a href="#is_focused">#</a>)</span></h3>
-
-```scratch
-<is window focused? :: #359ed4>
-```
-
-This boolean returns true or false for whether or not the Program Window is in focus.
-
-<strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong>
-
-<hr>
-
-<h3 id="is_fullscreen">Is Window Fullscreen Boolean <span class="heading-link">(<a href="#is_fullscreen">#</a>)</span></h3>
-
-```scratch
-<is window fullscreen? :: #359ed4>
-```
-
-This boolean returns true or false for whether or not the Program Window is in fullscreen.
-
-<strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong>
-
-<hr>
-
-<h3 id="is_touching_edge">Is Window Touching Screen Edge Boolean <span class="heading-link">(<a href="#is_touching_edge">#</a>)</span></h3>
-
-```scratch
-<is window touching screen edge? :: #359ed4>
-```
-
-This boolean returns true or false for whether or not the Program Window is touching the screen's edge.
-
-<strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong>
-
-<hr>
-
 <h3 id="enter_fullscreen">Enter Fullscreen Block <span class="heading-link">(<a href="#enter_fullscreen">#</a>)</span></h3>
 
 ```scratch
@@ -452,10 +440,22 @@ Makes the Program Window exit Fullscreen.
 
 <hr>
 
+<h3 id="is_fullscreen">Is Window Fullscreen Boolean <span class="heading-link">(<a href="#is_fullscreen">#</a>)</span></h3>
+
+```scratch
+<is window fullscreen? :: #359ed4>
+```
+
+This boolean returns true or false for whether or not the Program Window is in fullscreen.
+
+<strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong>
+
+<hr>
+
 <h3 id="close_window">Close Window Block <span class="heading-link">(<a href="#close_window">#</a>)</span></h3>
 
 ```scratch
-close window :: #359ed4
+close window :: cap :: #359ed4
 ```
 
 Closes the Program Window.

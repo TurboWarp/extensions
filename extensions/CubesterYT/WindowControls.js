@@ -114,7 +114,7 @@
           {
             opcode: "resizeTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "resize window to w: [W] h: [H]",
+            text: "resize window to width: [W] height: [H]",
             arguments: {
               W: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -196,6 +196,14 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "window height"
           },
+
+          "---",
+
+          {
+            opcode: "isTouchingEdge",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is window touching screen edge?"
+          },
           {
             opcode: "screenW",
             blockType: Scratch.BlockType.REPORTER,
@@ -205,6 +213,14 @@
             opcode: "screenH",
             blockType: Scratch.BlockType.REPORTER,
             text: "screen height"
+          },
+
+          "---",
+
+          {
+            opcode: "isFocused",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is window focused?"
           },
 
           "---",
@@ -229,24 +245,6 @@
           "---",
 
           {
-            opcode: "isFocused",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "is window focused?"
-          },
-          {
-            opcode: "isFullscreen",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "is window fullscreen?"
-          },
-          {
-            opcode: "isTouchingEdge",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "is window touching screen edge?"
-          },
-
-          "---",
-
-          {
             opcode: "enterFullscreen",
             blockType: Scratch.BlockType.COMMAND,
             text: "enter fullscreen"
@@ -257,8 +255,17 @@
             text: "exit fullscreen"
           },
           {
+            opcode: "isFullscreen",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is window fullscreen?"
+          },
+
+          "---",
+
+          {
             opcode: "closeWindow",
             blockType: Scratch.BlockType.COMMAND,
+            isTerminal: true,
             text: "close window"
           }
         ],
@@ -393,28 +400,25 @@
     windowH () {
       return (window.outerHeight);
     }
+    isTouchingEdge () {
+      const edgeX = screen.width - window.outerWidth;
+      const edgeY = screen.height - window.outerHeight;
+      return (window.screenLeft <= 0 || window.screenTop <= 0 || window.screenLeft >= edgeX || window.screenTop >= edgeY);
+    }
     screenW () {
       return (screen.width);
     }
     screenH () {
       return (screen.height);
     }
+    isFocused () {
+      return (document.hasFocus());
+    }
     changeTitleTo (args) {
       document.title = args.TITLE;
     }
     windowTitle () {
       return (document.title);
-    }
-    isFocused () {
-      return (document.hasFocus());
-    }
-    isFullscreen () {
-      return (document.fullscreenElement !== null);
-    }
-    isTouchingEdge () {
-      const edgeX = screen.width - window.outerWidth;
-      const edgeY = screen.height - window.outerHeight;
-      return (window.screenLeft <= 0 || window.screenTop <= 0 || window.screenLeft >= edgeX || window.screenTop >= edgeY);
     }
     enterFullscreen () {
       if (document.fullscreenElement == null) {
@@ -425,6 +429,9 @@
       if (document.fullscreenElement !== null) {
         document.exitFullscreen();
       }
+    }
+    isFullscreen () {
+      return (document.fullscreenElement !== null);
     }
     closeWindow () {
       window.close();
