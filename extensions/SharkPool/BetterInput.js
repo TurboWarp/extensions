@@ -624,7 +624,7 @@
     isWaitingInput(args) {
       return this.isWaitingForInput;
     }
-    
+
     isDropdown(args) {
       return this.isDropdownOpen;
     }
@@ -633,7 +633,7 @@
       const effect = args.EFFECT;
       return this[effect];
     }
-    
+
     setEffect(args) {
       const effect = args.EFFECT;
       this[effect] = args.AMT;
@@ -642,16 +642,16 @@
         this.updateOverlay(overlay);
       });
     }
-    
+
     changeEffect(args) {
       const effect = args.EFFECT;
       this[effect] = this[effect] + args.AMT;
-      
+
       this.activeOverlays.forEach((overlay) => {
         this.updateOverlay(overlay);
       });
     }
-    
+
     resetEffect(args) {
       this.Blur = 0;
       this.Brightness = 0;
@@ -664,7 +664,7 @@
       this.Scale = 100;
       this.SkewX = 0;
       this.SkewY = 0;
-      
+
       this.activeOverlays.forEach((overlay) => {
         this.updateOverlay(overlay);
       });
@@ -771,7 +771,7 @@
         this.updateOverlay(overlay);
       });
     }
-    
+
     changeDirection(args) {
       const ROTATE = args.ROTATE;
       this.Rotation = this.Rotation + Scratch.Cast.toNumber(ROTATE);
@@ -780,11 +780,11 @@
         this.updateOverlay(overlay);
       });
     }
-    
+
     reportDirection(args) {
       return this.Rotation;
     }
-    
+
     setPrePosition(args) {
       this.textBoxX = Scratch.Cast.toNumber(args.X);
       this.textBoxY = Scratch.Cast.toNumber(args.Y) * -1;
@@ -860,12 +860,12 @@
     setFontFamily(args) {
       this.fontFamily = args.FONT;
     }
-    
+
     setTimeout(args) {
       this.Timeout = args.TIME;
       this.Condition = args.CONDITION;
     }
-    
+
     reportTimeout(args) {
       return this.Timeout;
     }
@@ -1184,7 +1184,7 @@
               if (this.isInputEnabled === "Multi-Select Dropdown") {
                 const selectedOptions = inputField.value.split(this.splitKey);
                 const isSelected = selectedOptions.includes(options[i - 1]);
-                
+
                 if (isSelected) {
                   inputField.value = selectedOptions.filter(option => option !== options[i - 1]).join(this.splitKey);
                 } else {
@@ -1384,7 +1384,7 @@
       }
       document.body.removeChild(overlay);
     }
-    
+
     closeOverlay(overlay) {
       this.isWaitingForInput = false;
       this.isDropdownOpen = false;
