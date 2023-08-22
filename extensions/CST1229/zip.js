@@ -9,7 +9,8 @@
   // @ts-expect-error - not typed yet
   const JSZip = Scratch.vm.exports.JSZip;
 
-  const extIcon = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+PHJlY3Qgd2lkdGg9IjIzIiBoZWlnaHQ9IjIwIiB4PSI2IiB5PSIzIiByeD0iNCIgcnk9IjQiIHN0eWxlPSJmb250LXZhcmlhdGlvbi1zZXR0aW5nczpub3JtYWw7ZmlsbDojZDhkODZjO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTojN2Q3ZDIzO3N0cm9rZS13aWR0aDoyO3N0cm9rZS1saW5lY2FwOmJ1dHQ7c3Ryb2tlLWxpbmVqb2luOm1pdGVyO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lO3N0cm9rZS1kYXNob2Zmc2V0OjA7c3Ryb2tlLW9wYWNpdHk6MTtwYWludC1vcmRlcjpzdHJva2UgbWFya2VycyBmaWxsO3N0b3AtY29sb3I6IzAwMCIvPjxyZWN0IHdpZHRoPSIyOCIgaGVpZ2h0PSIyMCIgeD0iMSIgeT0iOCIgcng9IjQiIHJ5PSI0IiBzdHlsZT0iZm9udC12YXJpYXRpb24tc2V0dGluZ3M6bm9ybWFsO29wYWNpdHk6MTtmaWxsOiNkOGQ4NmM7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOiM3ZDdkMjM7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLWxpbmVjYXA6YnV0dDtzdHJva2UtbGluZWpvaW46bWl0ZXI7c3Ryb2tlLW1pdGVybGltaXQ6NDtzdHJva2UtZGFzaGFycmF5Om5vbmU7c3Ryb2tlLWRhc2hvZmZzZXQ6MDtzdHJva2Utb3BhY2l0eToxO3BhaW50LW9yZGVyOnN0cm9rZSBtYXJrZXJzIGZpbGw7c3RvcC1jb2xvcjojMDAwO3N0b3Atb3BhY2l0eToxIi8+PHBhdGggZmlsbD0iIzdkN2QyMyIgZD0iTTUgMTJWOGg0djRabTMgNHYtNGg0djRabS0zIDR2LTRoNHY0Wm0zIDR2LTRoNHY0em0tMyA0di00aDR2NFoiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTpub3JtYWwiLz48cGF0aCBmaWxsPSIjN2Q3ZDIzIiBzdHJva2U9IiM3ZDdkMjMiIHN0cm9rZS13aWR0aD0iLjEiIGQ9Ik0xMCA3VjVoMnYyem0xLTJWM2gydjJ6IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6bm9ybWFsIi8+PHRleHQgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeD0iMTQuNSIgeT0iMjQuOCIgc3R5bGU9ImZvbnQtd2VpZ2h0OjcwMDtmb250LXNpemU6MTkuNDMwNHB4O2ZvbnQtZmFtaWx5OkNvbnNvbGFzOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246JnF1b3Q7Q29uc29sYXMsIEJvbGQmcXVvdDs7Zm9udC12YXJpYXRpb24tc2V0dGluZ3M6bm9ybWFsO29wYWNpdHk6MTtmaWxsOiNmZmY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOiM3ZDdkMjM7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLWxpbmVjYXA6YnV0dDtzdHJva2UtbGluZWpvaW46bWl0ZXI7c3Ryb2tlLW1pdGVybGltaXQ6NDtzdHJva2UtZGFzaGFycmF5Om5vbmU7c3Ryb2tlLWRhc2hvZmZzZXQ6MDtzdHJva2Utb3BhY2l0eToxO3BhaW50LW9yZGVyOnN0cm9rZSBtYXJrZXJzIGZpbGw7c3RvcC1jb2xvcjojMDAwO3N0b3Atb3BhY2l0eToxIiB0cmFuc2Zvcm09InNjYWxlKDEuMDMzIC45NjgpIj48dHNwYW4geD0iMTQuNSIgeT0iMjQuOCIgc3R5bGU9InN0cm9rZS13aWR0aDoyIj5aPC90c3Bhbj48L3RleHQ+PC9zdmc+";
+  const extIcon =
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+PHJlY3Qgd2lkdGg9IjIzIiBoZWlnaHQ9IjIwIiB4PSI2IiB5PSIzIiByeD0iNCIgcnk9IjQiIHN0eWxlPSJmb250LXZhcmlhdGlvbi1zZXR0aW5nczpub3JtYWw7ZmlsbDojZDhkODZjO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTojN2Q3ZDIzO3N0cm9rZS13aWR0aDoyO3N0cm9rZS1saW5lY2FwOmJ1dHQ7c3Ryb2tlLWxpbmVqb2luOm1pdGVyO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLWRhc2hhcnJheTpub25lO3N0cm9rZS1kYXNob2Zmc2V0OjA7c3Ryb2tlLW9wYWNpdHk6MTtwYWludC1vcmRlcjpzdHJva2UgbWFya2VycyBmaWxsO3N0b3AtY29sb3I6IzAwMCIvPjxyZWN0IHdpZHRoPSIyOCIgaGVpZ2h0PSIyMCIgeD0iMSIgeT0iOCIgcng9IjQiIHJ5PSI0IiBzdHlsZT0iZm9udC12YXJpYXRpb24tc2V0dGluZ3M6bm9ybWFsO29wYWNpdHk6MTtmaWxsOiNkOGQ4NmM7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOiM3ZDdkMjM7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLWxpbmVjYXA6YnV0dDtzdHJva2UtbGluZWpvaW46bWl0ZXI7c3Ryb2tlLW1pdGVybGltaXQ6NDtzdHJva2UtZGFzaGFycmF5Om5vbmU7c3Ryb2tlLWRhc2hvZmZzZXQ6MDtzdHJva2Utb3BhY2l0eToxO3BhaW50LW9yZGVyOnN0cm9rZSBtYXJrZXJzIGZpbGw7c3RvcC1jb2xvcjojMDAwO3N0b3Atb3BhY2l0eToxIi8+PHBhdGggZmlsbD0iIzdkN2QyMyIgZD0iTTUgMTJWOGg0djRabTMgNHYtNGg0djRabS0zIDR2LTRoNHY0Wm0zIDR2LTRoNHY0em0tMyA0di00aDR2NFoiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTpub3JtYWwiLz48cGF0aCBmaWxsPSIjN2Q3ZDIzIiBzdHJva2U9IiM3ZDdkMjMiIHN0cm9rZS13aWR0aD0iLjEiIGQ9Ik0xMCA3VjVoMnYyem0xLTJWM2gydjJ6IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6bm9ybWFsIi8+PHRleHQgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeD0iMTQuNSIgeT0iMjQuOCIgc3R5bGU9ImZvbnQtd2VpZ2h0OjcwMDtmb250LXNpemU6MTkuNDMwNHB4O2ZvbnQtZmFtaWx5OkNvbnNvbGFzOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246JnF1b3Q7Q29uc29sYXMsIEJvbGQmcXVvdDs7Zm9udC12YXJpYXRpb24tc2V0dGluZ3M6bm9ybWFsO29wYWNpdHk6MTtmaWxsOiNmZmY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOiM3ZDdkMjM7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLWxpbmVjYXA6YnV0dDtzdHJva2UtbGluZWpvaW46bWl0ZXI7c3Ryb2tlLW1pdGVybGltaXQ6NDtzdHJva2UtZGFzaGFycmF5Om5vbmU7c3Ryb2tlLWRhc2hvZmZzZXQ6MDtzdHJva2Utb3BhY2l0eToxO3BhaW50LW9yZGVyOnN0cm9rZSBtYXJrZXJzIGZpbGw7c3RvcC1jb2xvcjojMDAwO3N0b3Atb3BhY2l0eToxIiB0cmFuc2Zvcm09InNjYWxlKDEuMDMzIC45NjgpIj48dHNwYW4geD0iMTQuNSIgeT0iMjQuOCIgc3R5bGU9InN0cm9rZS13aWR0aDoyIj5aPC90c3Bhbj48L3RleHQ+PC9zdmc+";
 
   class ZipExt {
     constructor() {
@@ -83,7 +84,6 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "archive is open?",
             arguments: {},
-
           },
 
           "---",
@@ -95,8 +95,8 @@
             arguments: {
               OBJECT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "folder/"
-              }
+                defaultValue: "folder/",
+              },
             },
           },
           {
@@ -152,12 +152,12 @@
             arguments: {
               FILE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "hello.txt"
+                defaultValue: "hello.txt",
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "text",
-                menu: "getFileType"
+                menu: "getFileType",
               },
             },
           },
@@ -172,15 +172,15 @@
               META: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "modified days since 2000",
-                menu: "setFileMeta"
+                menu: "setFileMeta",
               },
               FILE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "folder/dango.png"
+                defaultValue: "folder/dango.png",
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "0"
+                defaultValue: "0",
               },
             },
           },
@@ -192,11 +192,11 @@
               META: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "name",
-                menu: "fileMeta"
+                menu: "fileMeta",
               },
               FILE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "folder/dango.png"
+                defaultValue: "folder/dango.png",
               },
             },
           },
@@ -210,8 +210,8 @@
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "new folder"
-              }
+                defaultValue: "new folder",
+              },
             },
           },
           {
@@ -221,8 +221,8 @@
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "folder"
-              }
+                defaultValue: "folder",
+              },
             },
           },
           {
@@ -232,14 +232,14 @@
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "."
-              }
+                defaultValue: ".",
+              },
             },
           },
           {
             opcode: "currentDir",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current directory path"
+            text: "current directory path",
           },
 
           "---",
@@ -251,7 +251,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "any text"
+                defaultValue: "any text",
               },
             },
           },
@@ -264,7 +264,6 @@
 
           "---",
 
-
           {
             opcode: "normalizePath",
             blockType: Scratch.BlockType.REPORTER,
@@ -272,29 +271,33 @@
             arguments: {
               PATH: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "../folder3/"
+                defaultValue: "../folder3/",
               },
               ORIGIN: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/folder/folder2"
+                defaultValue: "/folder/folder2",
               },
             },
           },
         ],
         menus: {
-          fileType: { // used in the open zip block
+          fileType: {
+            // used in the open zip block
             acceptReporters: true,
             items: ["URL", "base64", "hex", "binary", "string"],
           },
-          zipFileType: { // used in the output zip block
+          zipFileType: {
+            // used in the output zip block
             acceptReporters: true,
             items: ["data: URL", "base64", "hex", "binary", "string"],
           },
-          getFileType: { // used in the get file block
+          getFileType: {
+            // used in the get file block
             acceptReporters: true,
             items: ["text", "data: URL", "base64", "hex", "binary"],
           },
-          writeFileType: { // used in the write file block
+          writeFileType: {
+            // used in the write file block
             acceptReporters: true,
             items: ["text", "URL", "base64", "hex", "binary"],
           },
@@ -334,7 +337,7 @@
               "comment",
             ],
           },
-        }
+        },
       };
     }
 
@@ -358,7 +361,7 @@
         if (part === "") {
           // First split of `/` is blank, so ignore in that case
           // Last split of a directory is also blank due to the /
-          if (+i !== 0 && +i !== (split.length - 1)) {
+          if (+i !== 0 && +i !== split.length - 1) {
             throw new Error("Cannot have empty directory names");
           }
           if (+i === 0) continue;
@@ -420,22 +423,28 @@
         switch (TYPE) {
           case "base64":
           case "data: URL":
-          case "URL": {
-            if (TYPE === "base64")
-              DATA = "data:application/zip;base64," + DATA;
-            const resp = await Scratch.fetch(DATA);
-            DATA = await resp.blob();
-          } break;
-          case "hex": {
-            if (!/^(?:[0-9A-F]{2})*$/i.test(DATA)) return;
-            const dataArr = this.splitIntoParts(DATA, 2);
-            DATA = Uint8Array.from(dataArr.map(o => parseInt(o, 16)));
-          } break;
-          case "binary": {
-            if (!/^(?:[01]{8})*$/i.test(DATA)) return;
-            const dataArr = this.splitIntoParts(DATA, 8);
-            DATA = Uint8Array.from(dataArr.map(o => parseInt(o, 2)));
-          } break;
+          case "URL":
+            {
+              if (TYPE === "base64")
+                DATA = "data:application/zip;base64," + DATA;
+              const resp = await Scratch.fetch(DATA);
+              DATA = await resp.blob();
+            }
+            break;
+          case "hex":
+            {
+              if (!/^(?:[0-9A-F]{2})*$/i.test(DATA)) return;
+              const dataArr = this.splitIntoParts(DATA, 2);
+              DATA = Uint8Array.from(dataArr.map((o) => parseInt(o, 16)));
+            }
+            break;
+          case "binary":
+            {
+              if (!/^(?:[01]{8})*$/i.test(DATA)) return;
+              const dataArr = this.splitIntoParts(DATA, 8);
+              DATA = Uint8Array.from(dataArr.map((o) => parseInt(o, 2)));
+            }
+            break;
         }
 
         this.zip = await JSZip.loadAsync(DATA, { createFolders: true });
@@ -451,20 +460,23 @@
         COMPRESSION = Math.max(Math.min(Math.round(COMPRESSION), 9), 0);
 
         const compType = COMPRESSION === 0 ? "STORE" : "DEFLATE";
-        const options = { compression: compType, compressionOptions: { level: COMPRESSION } };
+        const options = {
+          compression: compType,
+          compressionOptions: { level: COMPRESSION },
+        };
 
         switch (TYPE) {
           case "text":
           case "string":
             return await this.zip.generateAsync({
               type: "binarystring",
-              ...options
+              ...options,
             });
           case "base64":
           case "data: URL": {
             let data = await this.zip.generateAsync({
               type: "base64",
-              ...options
+              ...options,
             });
             if (TYPE === "data: URL")
               data = "data:application/zip;base64," + data;
@@ -473,21 +485,29 @@
           case "hex": {
             const data = await this.zip.generateAsync({
               type: "array",
-              ...options
+              ...options,
             });
-            return data.map(data => data.toString(16).padStart(2, "0")).join("");
+            return data
+              .map((data) => data.toString(16).padStart(2, "0"))
+              .join("");
           }
           case "binary": {
             const data = await this.zip.generateAsync({
               type: "array",
-              ...options
+              ...options,
             });
-            return data.map(data => data.toString(2).padStart(8, "0")).join("");
+            return data
+              .map((data) => data.toString(2).padStart(8, "0"))
+              .join("");
           }
-          default: return "";
+          default:
+            return "";
         }
       } catch (e) {
-        console.error(`Zip extension: Error creating zip with type ${TYPE} compression ${COMPRESSION}:`, e);
+        console.error(
+          `Zip extension: Error creating zip with type ${TYPE} compression ${COMPRESSION}:`,
+          e
+        );
       }
     }
     close() {
@@ -500,7 +520,9 @@
 
     exists({ OBJECT }) {
       try {
-        return !!this.getObj(this.normalize(this.zipPath, Scratch.Cast.toString(OBJECT)));
+        return !!this.getObj(
+          this.normalize(this.zipPath, Scratch.Cast.toString(OBJECT))
+        );
       } catch (e) {
         return false;
       }
@@ -528,16 +550,24 @@
           }
           case "hex": {
             const data = await obj.async("array");
-            return data.map(data => data.toString(16).padStart(2, "0")).join("");
+            return data
+              .map((data) => data.toString(16).padStart(2, "0"))
+              .join("");
           }
           case "binary": {
             const data = await obj.async("array");
-            return data.map(data => data.toString(2).padStart(8, "0")).join("");
+            return data
+              .map((data) => data.toString(2).padStart(8, "0"))
+              .join("");
           }
-          default: return "";
+          default:
+            return "";
         }
       } catch (e) {
-        console.error(`Zip extension: Error getting file ${FILE} with type ${TYPE}:`, e);
+        console.error(
+          `Zip extension: Error getting file ${FILE} with type ${TYPE}:`,
+          e
+        );
         return "";
       }
     }
@@ -563,7 +593,8 @@
             });
             break;
           case "base64":
-          case "data: URL": { // compatibility
+          case "data: URL": {
+            // compatibility
             if (TYPE === "data: URL")
               CONTENT = CONTENT.substring(CONTENT.indexOf(","));
             this.zip.file(path, CONTENT, {
@@ -572,33 +603,43 @@
             });
             break;
           }
-          case "URL": {
-            const resp = await Scratch.fetch(CONTENT);
-            this.zip.file(path, await resp.blob(), {
-              base64: true,
-              createFolders: true,
-            });
-          } break;
-          case "hex": {
-            if (!/^(?:[0-9A-F]{2})*$/i.test(CONTENT)) return "";
-            const dataArr = this.splitIntoParts(CONTENT, 2);
-            const data = Uint8Array.from(dataArr.map(o => parseInt(o, 16)));
-            this.zip.file(path, data, {
-              createFolders: true,
-            });
-          } break;
-          case "binary": {
-            if (!/^(?:[01]{8})*$/i.test(CONTENT)) return "";
-            const dataArr = this.splitIntoParts(CONTENT, 8);
-            const data = Uint8Array.from(dataArr.map(o => parseInt(o, 2)));
-            this.zip.file(path, data, {
-              createFolders: true,
-            });
-          } break;
-          default: return "";
+          case "URL":
+            {
+              const resp = await Scratch.fetch(CONTENT);
+              this.zip.file(path, await resp.blob(), {
+                base64: true,
+                createFolders: true,
+              });
+            }
+            break;
+          case "hex":
+            {
+              if (!/^(?:[0-9A-F]{2})*$/i.test(CONTENT)) return "";
+              const dataArr = this.splitIntoParts(CONTENT, 2);
+              const data = Uint8Array.from(dataArr.map((o) => parseInt(o, 16)));
+              this.zip.file(path, data, {
+                createFolders: true,
+              });
+            }
+            break;
+          case "binary":
+            {
+              if (!/^(?:[01]{8})*$/i.test(CONTENT)) return "";
+              const dataArr = this.splitIntoParts(CONTENT, 8);
+              const data = Uint8Array.from(dataArr.map((o) => parseInt(o, 2)));
+              this.zip.file(path, data, {
+                createFolders: true,
+              });
+            }
+            break;
+          default:
+            return "";
         }
       } catch (e) {
-        console.error(`Zip extension: Error writing to file ${FILE} type ${TYPE}:`, e);
+        console.error(
+          `Zip extension: Error writing to file ${FILE} type ${TYPE}:`,
+          e
+        );
       }
     }
     renameFile({ FROM, TO }) {
@@ -624,7 +665,10 @@
         let toPath = this.normalize(this.zipPath, TO);
         const replacedTo = TO.replaceAll(/\\/g, "/");
         const slashes = replacedTo.split("/").length - 1;
-        if (slashes <= +fromObj.dir && (slashes === 0 || replacedTo.endsWith("/"))) {
+        if (
+          slashes <= +fromObj.dir &&
+          (slashes === 0 || replacedTo.endsWith("/"))
+        ) {
           // this is a name-only change
           toPath = this.normalize(fromPath, "../" + replacedTo);
           if (fromObj.dir) {
@@ -650,7 +694,7 @@
         // Move current directory
         if (this.zipPath.substring(1).startsWith(fromPath)) {
           this.zipPath =
-            "/" + toPath + (this.zipPath.substring(1).substring(fromPath.length));
+            "/" + toPath + this.zipPath.substring(1).substring(fromPath.length);
         }
 
         for (const path in this.zip.files) {
@@ -672,9 +716,9 @@
         if (!this.getObj(path)) return;
         if (path === "/") return;
 
-        const shouldGoBack = this.getObj(path).dir && this.zipPath.startsWith(path);
+        const shouldGoBack =
+          this.getObj(path).dir && this.zipPath.startsWith(path);
         if (path.startsWith("/")) path = path.substring(1);
-
 
         this.zip.remove(path);
 
@@ -712,18 +756,23 @@
         const obj = this.getObj(normalized);
         if (!obj) return "";
         switch (META) {
-          case "modified days since 2000": {
-            const msPerDay = 24 * 60 * 60 * 1000;
-            const start = +(new Date(2000, 0, 1));
-            obj.date = new Date(start + (Scratch.Cast.toNumber(VALUE) * msPerDay));
-          } break;
+          case "modified days since 2000":
+            {
+              const msPerDay = 24 * 60 * 60 * 1000;
+              const start = +new Date(2000, 0, 1);
+              obj.date = new Date(
+                start + Scratch.Cast.toNumber(VALUE) * msPerDay
+              );
+            }
+            break;
           case "unix modified timestamp":
             obj.date = new Date(Scratch.Cast.toNumber(VALUE));
             break;
           case "comment":
             obj.comment = VALUE;
             break;
-          default: return;
+          default:
+            return;
         }
       } catch (e) {
         console.error(`Zip extension: Error getting ${META} of ${FILE}:`, e);
@@ -751,28 +800,29 @@
           case "folder": {
             /** @type {Array} */
             const splitPath = obj.name.split("/");
-            const folders = (splitPath.slice(
-              0, splitPath.length - 1 - +obj.dir
-            ).join("/"));
+            const folders = splitPath
+              .slice(0, splitPath.length - 1 - +obj.dir)
+              .join("/");
             return "/" + folders + (folders === "" ? "" : "/");
           }
           case "modification date":
             return obj.date.toLocaleString(navigator.language);
           case "long modification date":
-            return new Date().toLocaleString(
-              navigator.language,
-              { dateStyle: "full", timeStyle: "medium" }
-            );
+            return new Date().toLocaleString(navigator.language, {
+              dateStyle: "full",
+              timeStyle: "medium",
+            });
           case "modified days since 2000": {
             const msPerDay = 24 * 60 * 60 * 1000;
-            const start = +(new Date(2000, 0, 1));
+            const start = +new Date(2000, 0, 1);
             return (+obj.date - start) / msPerDay;
           }
           case "unix modified timestamp":
             return +obj.date;
           case "comment":
             return obj.comment || "";
-          default: return "";
+          default:
+            return "";
         }
       } catch (e) {
         console.error(`Zip extension: Error getting ${META} of ${FILE}:`, e);
@@ -816,15 +866,20 @@
         const dir = normalized.substring(1);
         const length = dir.length;
 
-        return JSON.stringify(Object.values(this.zip.files).filter((obj) => {
-          // Above the current directory
-          if (!obj.name.startsWith(dir)) return false;
-          // Below the current directory
-          if (obj.name.substring(length).split("/").length > (obj.dir + 1)) return false;
-          // Is the current directory
-          if (obj.name === dir) return false;
-          return true;
-        }).map(obj => obj.name.substring(length)));
+        return JSON.stringify(
+          Object.values(this.zip.files)
+            .filter((obj) => {
+              // Above the current directory
+              if (!obj.name.startsWith(dir)) return false;
+              // Below the current directory
+              if (obj.name.substring(length).split("/").length > obj.dir + 1)
+                return false;
+              // Is the current directory
+              if (obj.name === dir) return false;
+              return true;
+            })
+            .map((obj) => obj.name.substring(length))
+        );
       } catch (e) {
         console.error(`Zip extension: Could not get directory ${DIR}:`, e);
         return "";
