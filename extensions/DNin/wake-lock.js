@@ -9,28 +9,15 @@
     throw new Error('Wake Lock extension must run unsandboxed');
   }
 
+  /** @type {WakeLockSentinel} */
   let wakeLock = null;
-  let working = false;
+  let latestEnabled = false;
+  let promise = Promise.resolve();
 
   class WakeLock {
     constructor(runtime) {
       this.runtime = runtime;
       this.runtime.on('PROJECT_STOP_ALL', this.stopAll.bind(this));
-    }
-
-    stopAll() {
-      if (working) {
-        console.warn('Already trying to activate/release Wake Lock.');
-        return;
-      }
-      if (wakeLock) {
-        working = true;
-        wakeLock.release().then(() => {
-          console.log('Wake Lock released due to stop.');
-          wakeLock = null;
-          working = false;
-        });
-      }
     }
 
     getInfo() {
@@ -75,41 +62,49 @@
       };
     }
 
-    async setWakeLock(args) {
-      if (working) {
-        console.warn('Already trying to activate/release Wake Lock.');
-        return;
-      }
+    stopAll() {
+      this.setWakeLock({
+        enabled: false
+      });
+    }
 
+    setWakeLock(args) {
       if (!navigator.wakeLock) {
-        // Not supported.
+        // Not supported in this browser.
         return;
       }
 
-      if (Scratch.Cast.toBoolean(args.enabled)) {
-        if (!wakeLock) {
-          working = true;
-          try {
-            wakeLock = await navigator.wakeLock.request('screen');
-            console.log('Wake Lock activated.');
-          } catch (err) {
-            console.error(err);
-          }
-          working = false;
-        } else {
-          console.log('Wake Lock already active.');
-        }
-      } else {
-        if (wakeLock) {
-          working = true;
-          wakeLock.release().then(() => {
-            console.log('Wake Lock released.');
-            wakeLock = null;
-            working = false;
+      const previousEnabled = latestEnabled;
+      latestEnabled = Scratch.Cast.toBoolean(args.enabled);
+      if (latestEnabled && !previousEnabled) {
+        promise = promise
+          .then(() => navigator.wakeLock.request('screen'))
+          .then((sentinel) => {
+            wakeLock = sentinel;
+          })
+          .catch((error) => {
+            console.error(error);
+            // Allow to retry
+            latestEnabled = false;
           });
-        } else {
-          console.log('Wake Lock already inactive.');
-        }
+        return promise;
+      } else if (!latestEnabled && previousEnabled) {
+        promise = promise
+          .then(() => {
+            if (wakeLock) {
+              return wakeLock.release();
+            } else {
+              // Attempt to enable in the first place didn't work
+            }
+          })
+          .then(() => {
+            wakeLock = null;
+          })
+          .catch((error) => {
+            console.error(error);
+            wakeLock = null;
+          });
+        return promise;
       }
     }
 
