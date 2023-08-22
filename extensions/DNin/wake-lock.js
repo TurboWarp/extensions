@@ -1,3 +1,7 @@
+// Name: Wake Lock
+// Description: Prevent the computer from falling asleep.
+// By: D-ScratchNinja <https://scratch.mit.edu/users/D-ScratchNinja/>
+
 (function (Scratch) {
   'use strict';
 
