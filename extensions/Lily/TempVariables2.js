@@ -256,7 +256,7 @@
       if (util.stackFrame.index < Number(args.NUM)) {
         util.stackFrame.index++;
         vars[args.VAR] = util.stackFrame.index;
-        util.startBranch(1, true);
+        return true;
       }
     }
 
