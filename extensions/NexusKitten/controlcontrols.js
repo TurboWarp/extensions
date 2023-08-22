@@ -21,15 +21,15 @@
     pauseButton = undefined;
     stopButton = undefined;
 
-    const rightButtons = document.getElementsByClassName('button_outlined-button_1bS__ stage-header_stage-button_hkl9B');
+    const rightButtons = document.querySelectorAll('[class*="stage-header_stage-button_"]');
     fullScreen = rightButtons[rightButtons.length - 1];
     if (!fullScreen) {
-      fullScreen = document.getElementsByClassName('control-button fullscreen-button')[0] || document.getElementsByClassName('standalone-fullscreen-button')[0];
+      fullScreen = document.querySelector('.fullscreen-button') || document.querySelector('.standalone-fullscreen-button');
     }
 
-    greenFlag = document.getElementsByClassName('green-flag_green-flag_1kiAo')[0] || document.getElementsByClassName('control-button green-flag-button active')[0];
-    pauseButton = document.getElementsByClassName('pause-btn addons-display-none-pause')[0] || document.getElementsByClassName('control-button pause-button')[0];
-    stopButton = document.getElementsByClassName('stop-all_stop-all_1Y8P9')[0] || document.getElementsByClassName('control-button stop-all-button')[0];
+    greenFlag = document.querySelector('[class*="green-flag_green-flag_"]') || document.querySelector('.green-flag-button');
+    pauseButton = document.querySelector('.pause-btn') || document.querySelector('.pause-button');
+    stopButton = document.querySelector('[class*="stop-all_stop-all_"]') || document.querySelector('.stop-all-button');
   };
 
   class controlcontrols {
@@ -126,13 +126,13 @@
     optionShown(args) {
       getButtons();
       if (args.OPTION === "green flag" && greenFlag) {
-        return !(greenFlag.style.display === 'none');
+        return greenFlag.style.display !== 'none';
       } else if (args.OPTION === "pause" && pauseButton) {
-        return !(pauseButton.style.display === 'none');
+        return pauseButton.style.display !== 'none';
       } else if (args.OPTION === "stop" && stopButton) {
-        return !(stopButton.style.display === 'none');
+        return stopButton.style.display !== 'none';
       } else if (args.OPTION === "fullscreen" && fullScreen) {
-        return !(fullScreen.style.display === 'none');
+        return fullScreen.style.display !== 'none';
       }
       return false;
     }
