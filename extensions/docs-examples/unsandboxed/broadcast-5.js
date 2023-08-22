@@ -8,7 +8,7 @@
         blocks: [
           {
             opcode: 'whenReceived',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when I receive [EVENT_OPTION]',
             isEdgeActivated: false,
             arguments: {

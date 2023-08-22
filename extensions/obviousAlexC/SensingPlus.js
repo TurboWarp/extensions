@@ -35,7 +35,7 @@
       return;
     }
 
-    if (!await Scratch.canRecordAudio()) {
+    if (!(await Scratch.canRecordAudio())) {
       return;
     }
 
@@ -887,11 +887,11 @@
 
     getClipBoard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        return Scratch.canReadClipboard().then(allowed => {
+        return Scratch.canReadClipboard().then((allowed) => {
           if (allowed) {
             return navigator.clipboard.readText();
           }
-          return '';
+          return "";
         });
       }
       return "";

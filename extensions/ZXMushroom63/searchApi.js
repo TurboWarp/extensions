@@ -142,11 +142,17 @@
     }
 
     occurencesofsearchparam({ ID }) {
-      return new URLSearchParams(location.search).getAll(ID.toString()).length || 0;
+      return (
+        new URLSearchParams(location.search).getAll(ID.toString()).length || 0
+      );
     }
 
     indexedsearchparam({ ID, I }) {
-      return new URLSearchParams(location.search).getAll(ID.toString())[parseInt(I) - 1] || "";
+      return (
+        new URLSearchParams(location.search).getAll(ID.toString())[
+          parseInt(I) - 1
+        ] || ""
+      );
     }
 
     setsearchparam({ ID, VAL }) {
