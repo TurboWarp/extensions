@@ -101,7 +101,6 @@
 
           "---",
 
-          /* Add this when the compiler supports it
           {
             opcode: 'forEachThreadVariable',
             blockType: Scratch.BlockType.LOOP,
@@ -117,7 +116,6 @@
               }
             }
           },
-          */
           {
             opcode: "listThreadVariables",
             blockType: Scratch.BlockType.REPORTER,
