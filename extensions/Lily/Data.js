@@ -272,8 +272,7 @@
 
           '---',
 
-          // These blocks only work with Temp Variables 2
-          /*{
+          {
             opcode: 'forEachListItem',
             blockType: Scratch.BlockType.LOOP,
             text: 'for each item value [VAR] in [LIST]',
@@ -304,7 +303,7 @@
                 menu: 'lists'
               }
             }
-          },*/
+          },
 
           '---',
 
