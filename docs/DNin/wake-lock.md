@@ -15,7 +15,7 @@ To release wake lock, simply change "on" to "off".
 
 You can also insert boolean reporters into the menu input.
 
-Wake lock will also be released automatically when the user clicks the stop sign or green flag, to ensure it isn't accidentally left on forever.
+Wake lock will also be released automatically when the project stops or is restarted to ensure it isn't accidentally left on forever.
 
 ## Browser support
 
