@@ -52,7 +52,6 @@
         }
 
         loop({TIMES}, util) {
-            console.log(TIMES, util.stackFrame.loopCounter);
             const times = Math.round(Scratch.Cast.toNumber(TIMES));
             if (typeof util.stackFrame.loopCounter === "undefined") {
                 util.stackFrame.loopCounter = times;
