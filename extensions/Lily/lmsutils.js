@@ -1,3 +1,8 @@
+// Name: LMS Utilities
+// ID: lmsutilsblocks
+// Description: Relisted.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
   "use strict";
   const menuIconURI =
