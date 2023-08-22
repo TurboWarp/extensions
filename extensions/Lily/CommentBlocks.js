@@ -91,7 +91,7 @@
     }
 
     commentC (args, util) {
-      return false;
+      return true;
     }
 
     commentReporter (args) {
