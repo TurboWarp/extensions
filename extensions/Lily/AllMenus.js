@@ -1,3 +1,8 @@
+// Name: All Menus
+// ID: lmsAllMenus
+// Description: Special category with every menu from every Scratch category and extensions.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
   'use strict';
 

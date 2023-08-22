@@ -1,3 +1,8 @@
+// Name: Newgrounds
+// ID: NGIO
+// Description: Blocks that allow games to interact with the Newgrounds API. Unofficial.
+// By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
+
 (function (Scratch) {
   "use strict";
 

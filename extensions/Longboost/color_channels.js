@@ -1,3 +1,7 @@
+// Name: RGB Channels
+// ID: lbdrawtest
+// Description: Only render or stamp certain RGB channels.
+
 (function(Scratch) {
   'use strict';
   const renderer = Scratch.vm.renderer;

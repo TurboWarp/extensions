@@ -1,3 +1,7 @@
+// Name: Stretch
+// ID: stretch
+// Description: Stretch sprites horizontally or vertically.
+
 (function (Scratch) {
   'use strict';
 

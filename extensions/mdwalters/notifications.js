@@ -1,3 +1,7 @@
+// Name: Notifications
+// ID: mdwaltersnotifications
+// Description: Display notifications.
+
 (function(Scratch) {
   'use strict';
 

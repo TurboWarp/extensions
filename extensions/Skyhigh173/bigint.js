@@ -1,3 +1,8 @@
+// Name: BigInt
+// ID: skyhigh173BigInt
+// Description: Math blocks that work on infinitely large integers (no decimals).
+// By: Skyhigh173
+
 (function(Scratch){
   'use strict';
 

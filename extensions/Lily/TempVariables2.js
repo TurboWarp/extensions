@@ -1,3 +1,8 @@
+// Name: Temporary Variables
+// ID: lmsTempVars2
+// Description: Create disposable runtime or thread variables.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function(Scratch) {
   'use strict';
 

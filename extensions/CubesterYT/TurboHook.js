@@ -1,3 +1,8 @@
+// Name: TurboHook
+// ID: cubesterTurboHook
+// Description: Allows you to use webhooks.
+// By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
+
 (function (Scratch) {
   "use strict";
 
