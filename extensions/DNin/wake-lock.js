@@ -13,13 +13,14 @@
   let working = false;
 
   class WakeLock {
-    constructor(runtime, extensionId) {
+    constructor(runtime) {
       this.runtime = runtime;
       this.runtime.on('PROJECT_STOP_ALL', this.stopAll.bind(this));
     }
+
     stopAll() {
       if (working) {
-        console.error('Already trying to activate/release Wake Lock.');
+        console.warn('Already trying to activate/release Wake Lock.');
         return;
       }
       if (wakeLock) {
@@ -43,7 +44,11 @@
             blockType: Scratch.BlockType.COMMAND,
             text: 'turn wake lock [enabled]',
             arguments: {
-              enabled: { type: Scratch.ArgumentType.MENU, menu: 'state', defaultValue: 'true' }
+              enabled: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'state',
+                defaultValue: 'true'
+              }
             }
           },
           {
@@ -69,12 +74,14 @@
         }
       };
     }
+
     async setWakeLock(args) {
       if (working) {
-        console.error('Already trying to activate/release Wake Lock.');
+        console.warn('Already trying to activate/release Wake Lock.');
         return;
       }
-      if (Scratch.Cast.toBoolean(args.enabled) === true) {
+
+      if (Scratch.Cast.toBoolean(args.enabled)) {
         if (!wakeLock) {
           working = true;
           try {
@@ -100,9 +107,11 @@
         }
       }
     }
+
     isLocked() {
       return !!wakeLock;
     }
   }
+
   Scratch.extensions.register(new WakeLock(Scratch.vm.runtime));
 })(Scratch);
