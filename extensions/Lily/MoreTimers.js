@@ -1,5 +1,10 @@
+// Name: More Timers
+// ID: lmsTimers
+// Description: Control several timers at once.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   const vm = Scratch.vm;
 
@@ -17,190 +22,193 @@
    * @param {Timer} timer
    * @return {number}
    */
-  const timerValue = timer => {
-    return ((timer.paused ? 0 : (Date.now() - timer.startTime)) + timer.pauseTime) / 1000;
+  const timerValue = (timer) => {
+    return (
+      ((timer.paused ? 0 : Date.now() - timer.startTime) + timer.pauseTime) /
+      1000
+    );
   };
 
   class Timers {
     constructor() {
-      vm.runtime.on('PROJECT_START', () => {
+      vm.runtime.on("PROJECT_START", () => {
         timers = Object.create(null);
       });
     }
 
     getInfo() {
       return {
-        id: 'lmsTimers',
-        name: 'More Timers',
-        color1: '#5cb1d6',
-        color2: '#428faf',
-        color3: '#3281a3',
+        id: "lmsTimers",
+        name: "More Timers",
+        color1: "#5cb1d6",
+        color2: "#428faf",
+        color3: "#3281a3",
         blocks: [
           {
-            opcode: 'whenTimerOp',
+            opcode: "whenTimerOp",
             blockType: Scratch.BlockType.HAT,
-            extensions: ['colours_sensing'],
-            text: 'when timer [TIMER] [OP] [NUM]',
+            extensions: ["colours_sensing"],
+            text: "when timer [TIMER] [OP] [NUM]",
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'timer'
+                defaultValue: "timer",
               },
               OP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'operation'
+                menu: "operation",
               },
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '5'
-              }
-            }
+                defaultValue: "5",
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'startResetTimer',
+            opcode: "startResetTimer",
             blockType: Scratch.BlockType.COMMAND,
-            extensions: ['colours_sensing'],
-            text: 'start/reset timer [TIMER]',
+            extensions: ["colours_sensing"],
+            text: "start/reset timer [TIMER]",
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'timer'
-              }
-            }
+                defaultValue: "timer",
+              },
+            },
           },
           {
-            opcode: 'valueOfTimer',
+            opcode: "valueOfTimer",
             blockType: Scratch.BlockType.REPORTER,
-            extensions: ['colours_sensing'],
-            text: 'timer [TIMER]',
+            extensions: ["colours_sensing"],
+            text: "timer [TIMER]",
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'timer'
-              }
-            }
+                defaultValue: "timer",
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'pauseTimer',
+            opcode: "pauseTimer",
             blockType: Scratch.BlockType.COMMAND,
-            extensions: ['colours_sensing'],
-            text: 'pause timer [TIMER]',
+            extensions: ["colours_sensing"],
+            text: "pause timer [TIMER]",
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'timer'
-              }
-            }
+                defaultValue: "timer",
+              },
+            },
           },
           {
-            opcode: 'resumeTimer',
+            opcode: "resumeTimer",
             blockType: Scratch.BlockType.COMMAND,
-            extensions: ['colours_sensing'],
-            text: 'resume timer [TIMER]',
+            extensions: ["colours_sensing"],
+            text: "resume timer [TIMER]",
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'timer'
-              }
-            }
+                defaultValue: "timer",
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'setTimer',
+            opcode: "setTimer",
             blockType: Scratch.BlockType.COMMAND,
-            extensions: ['colours_sensing'],
-            text: 'set timer [TIMER] to [NUM]',
+            extensions: ["colours_sensing"],
+            text: "set timer [TIMER] to [NUM]",
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'timer'
+                defaultValue: "timer",
               },
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '10'
-              }
-            }
+                defaultValue: "10",
+              },
+            },
           },
           {
-            opcode: 'changeTimer',
+            opcode: "changeTimer",
             blockType: Scratch.BlockType.COMMAND,
-            extensions: ['colours_sensing'],
-            text: 'change timer [TIMER] by [NUM]',
+            extensions: ["colours_sensing"],
+            text: "change timer [TIMER] by [NUM]",
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'timer'
+                defaultValue: "timer",
               },
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '10'
-              }
-            }
+                defaultValue: "10",
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'removeTimer',
+            opcode: "removeTimer",
             blockType: Scratch.BlockType.COMMAND,
-            extensions: ['colours_sensing'],
-            text: 'remove timer [TIMER]',
+            extensions: ["colours_sensing"],
+            text: "remove timer [TIMER]",
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'timer'
+                defaultValue: "timer",
               },
-            }
+            },
           },
           {
-            opcode: 'removeTimers',
+            opcode: "removeTimers",
             blockType: Scratch.BlockType.COMMAND,
-            extensions: ['colours_sensing'],
-            text: 'remove all timers'
+            extensions: ["colours_sensing"],
+            text: "remove all timers",
           },
           {
-            opcode: 'timerExists',
+            opcode: "timerExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            extensions: ['colours_sensing'],
-            text: 'timer [TIMER] exists?',
+            extensions: ["colours_sensing"],
+            text: "timer [TIMER] exists?",
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'timer'
+                defaultValue: "timer",
               },
-            }
+            },
           },
           {
-            opcode: 'listExistingTimers',
+            opcode: "listExistingTimers",
             blockType: Scratch.BlockType.REPORTER,
-            extensions: ['colours_sensing'],
-            text: 'list existing timers',
-            disableMonitor: false
-          }
+            extensions: ["colours_sensing"],
+            text: "list existing timers",
+            disableMonitor: false,
+          },
         ],
         menus: {
           operation: {
             // false for Scratch parity
             acceptReporters: false,
-            items: ['>','<']
-          }
-        }
+            items: [">", "<"],
+          },
+        },
       };
     }
 
     whenTimerOp(args) {
       if (!timers[args.TIMER]) return false;
       const value = timerValue(timers[args.TIMER]);
-      if (args.OP === '>') return value > args.NUM;
-      if (args.OP === '<') return value < args.NUM;
+      if (args.OP === ">") return value > args.NUM;
+      if (args.OP === "<") return value < args.NUM;
       return false;
     }
 
@@ -208,7 +216,7 @@
       timers[args.TIMER] = {
         startTime: Date.now(),
         pauseTime: 0,
-        paused: false
+        paused: false,
       };
     }
 
@@ -228,7 +236,7 @@
     }
 
     valueOfTimer(args) {
-      if (!timers[args.TIMER]) return '';
+      if (!timers[args.TIMER]) return "";
       return timerValue(timers[args.TIMER]);
     }
 
@@ -236,7 +244,7 @@
       timers[args.TIMER] = {
         paused: false,
         startTime: Date.now(),
-        pauseTime: Scratch.Cast.toNumber(args.NUM) * 1000
+        pauseTime: Scratch.Cast.toNumber(args.NUM) * 1000,
       };
     }
 
@@ -258,7 +266,7 @@
     }
 
     listExistingTimers(args) {
-      return Object.keys(timers).join(',');
+      return Object.keys(timers).join(",");
     }
   }
 

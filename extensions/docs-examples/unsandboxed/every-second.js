@@ -10,13 +10,7 @@
             opcode: 'everySecond',
             blockType: Scratch.BlockType.HAT,
             text: 'every second',
-            isEdgeActivated: false,
-            arguments: {
-              EVENT_OPTION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'EVENT_FIELD'
-              }
-            }
+            isEdgeActivated: false
           }
         ]
       };
