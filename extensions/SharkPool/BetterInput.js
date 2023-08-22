@@ -852,13 +852,13 @@
       }
       return newColorType;
     }
-    
+
     setGradient(args) {
       this.findGradientType(args.COLOR_TYPE);
       const gradientColor = `linear-gradient(${args.DIR - 90}deg, ${args.COLOR2}, ${args.COLOR1})`;
       this[newColorType] = gradientColor;
     }
-    
+
     setCircleGradient(args) {
       this.findGradientType(args.COLOR_TYPE);
       const newX = args.X + 50;
@@ -1545,11 +1545,11 @@
         document.body.removeChild(overlay);
       }, timeout);
     }
-    
+
     setShadow(args) {
       const shadow = args.SHADOW;
-      
-      switch(shadow) {
+
+      switch (shadow) {
         case 'Scale':
           this.shadowS[2] = args.AMT;
           break;
