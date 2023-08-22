@@ -25,7 +25,7 @@
       return {
         id: 'dninwakelock',
         name: 'Wake Lock',
-        docsURI: 'https://extensions.turbowarp.org/wake-lock',
+        docsURI: 'https://extensions.turbowarp.org/DNin/wake-lock',
         blocks: [
           {
             opcode: 'setWakeLock',
