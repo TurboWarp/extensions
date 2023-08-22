@@ -1,7 +1,6 @@
 /*
  * This extension was made by SharkPool
- * Version 2.1.1 (Fixes, Booleans, More Customization, Rotation, More Effects, and Performance Updates)
- * Next Update: Image Setting Additions
+ * Version 2.2 (Visual Effects Expansion + Fixes)
  * Do NOT delete these comments
  */
 
@@ -26,6 +25,9 @@
 
   const effectIcon =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI1Ny40NDI0MSIgaGVpZ2h0PSI3MC40NSIgdmlld0JveD0iMCwwLDU3LjQ0MjQxLDcwLjQ1Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjEwLjI2NjQ1LC0xNDQuODU2NTUpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGw9IiNmZmZmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMTUuMjY2NDUsMTkzLjkwNDFjLTMuOTg4MTUsLTguMTE3MSAtMy45OTYxMSwtMTguMjQzMDUgMC4xNTIyMSwtMjYuNDExMDNjNC42ODc3OSwtOS41NzQzMSAxMi41NzY5MSwtMTMuODE3OTcgMTUuNzQ3NTYsLTE1LjE5Nzc1YzEuOTA1OCwtMC44ODUwOCAzLjkxMzg4LC0xLjU3NDk3IDYuMDc1MzcsLTIuMDgzMTNsMi4xMjA1OSwtMC40NTc2OGMxLjU1ODA1LC0wLjMxOTcgMy4xMDkyOCwwLjY0NjE0IDMuNDQ2OCwyLjE4NzQ1YzAuMzQwOTMsMS41NDQ2OCAtMC42NTExOCwzLjA2NTggLTIuMjE2MDUsMy40MDIzM2wtMi4wNjI2MywwLjQ0NDIyYy0xLjcxNDg4LDAuNDAzODQgLTMuMzU4MTYsMC45NjkyMSAtNC45NjA1MywxLjcxNjMxYy0yLjA4MzA4LDAuOTAxOSAtOC45NzMyOCw0LjM5MTczIC0xMi45NDg1MiwxMi41MTU2Yy0zLjAxNzIzLDUuOTMzMDUgLTMuOTE3MjksMTUuMzY2MDIgMC44MzE4NywyMy4xNDk5OGM0LjMwMjU0LDcuNDk3OTIgMTMuMTEyMTcsMTIuMDk0OTMgMjEuNDY4MzcsMTEuMzIwOTFjNy45MDI3NiwtMC41Njg3NCAxNS4xNTQzNCwtNS44Mjg3MiAxNy42OTc2OCwtMTIuNzk0OTJjMi41ODA4NCwtNi41NTIyNiAwLjg2NTk2LC0xMy4yNjk0MyAtMS45NjcxNywtMTcuMDUyMDRjLTMuNDEyNzEsLTQuNjYwOTYgLTcuNjYwNywtNi4wOTQ1OCAtOS4zMjc4NSwtNi40OTUwNWMtMC4yNDg4OCwtMC4wNzQwNCAtNi4wODU2LC0xLjgyNzM2IC0xMS4yNDA0NiwwLjc1MzgzYy0yLjIxOTQ1LDEuMDYzNDQgLTUuMDkwMDksMy40NTYxOCAtNi42Mjc2OCw3LjA1MDMzYy0xLjY2MDMzLDMuNzExOTQgLTEuMjMwNzYsOC40ODM5NSAxLjAxOTM4LDExLjY1NDA4YzIuMjYzNzgsMy4zOTg5NyA2LjUzMjIyLDUuMzIzOTIgMTAuMjA0MDQsNC42NzEwNWMzLjY1NDc3LC0wLjU3NTQ3IDYuMTI2NTEsLTMuMjk0NjQgNi43MTI5MSwtNS42ODQwMWMwLjY4ODY4LC0yLjU2NzczIC0wLjM2ODIsLTQuNzM4MzYgLTEuMTkzMjYsLTUuNTE5MTFjLTEuNDAxMjIsLTEuMzgzMTQgLTIuNjExNTIsLTEuNDA2NyAtMi42NjI2NiwtMS40MTAwN2MtMC41NzI3NiwtMC4wMTY4MyAtMC44NTU3MywwLjAyNjkyIC0xLjAyNjIsMC4wNTM4NGMtMC42NTQ1OSwwLjIzODk0IC0xLjU4MTkyLDAuNzYzOTMgLTEuODU0NjYsMS4zMTU4NGMtMC4wNDc3MywwLjA5MDg2IC0wLjE3MDQ3LDAuMzM5OSAwLjA2NDc4LDAuOTYyNDhjMC41NjI1MywxLjQ3NzM3IC0wLjE5Nzc0LDMuMTI5NzQgLTEuNjk0NDIsMy42ODUwMmMtMS40ODk4NiwwLjU1ODY0IC0zLjE2NzI0LC0wLjE5MTgyIC0zLjczMzE4LC0xLjY3MjU2Yy0wLjkzMDc0LC0yLjQ0OTk1IC0wLjQxNTkzLC00LjM2ODE4IDAuMTgwNjksLTUuNTQ2MDNjMS41NTgwNSwtMy4wNjU4IDUuMTc1MzIsLTQuMTc2MzUgNS41ODQ0MywtNC4yOTQxNGMwLjE4NzUxLC0wLjA1NzIxIDAuMzg1MjUsLTAuMDkwODYgMC41Nzk1OCwtMC4xMDc2OWMwLjM5ODg5LC0wLjA2MDU4IDEuMTAxMiwtMC4xNTQ4IDIuMDUyNCwtMC4xMTc3OWMyLjE3ODU0LDAuMDI2OTIgNC42NjA1MSwxLjE2NDQgNi41NjI5LDMuMDQ1NjFjMi4yNDY3MywyLjEyMDE1IDQuMDA1OTMsNi4zODA2MyAyLjc1ODEyLDExLjAxMTNjLTEuMjE3MTIsNC45NTcxIC01Ljg5NDY4LDkuMDU2MDYgLTExLjM1Mjk3LDkuOTE0MjFjLTUuODcwODIsMS4wNDY2MSAtMTIuNDgxNDUsLTEuODQ3NTYgLTE1Ljk3MjU3LC03LjA5NDA4Yy0zLjM2NDk4LC00LjcyODI2IC00LjAwOTM0LC0xMS42NDczNSAtMS41NDc4MiwtMTcuMTM2MTdjMi43MDAxNywtNi4zMjAwNiA3Ljg1ODQ0LC05LjE4MDU3IDkuMzcyMTcsLTkuOTA3NDhjNy4yNzg4NiwtMy42MzQ1NCAxNS4wNTg4OCwtMS4yMzUwNyAxNS4zODYxNywtMS4xMzQxMWMyLjA5MzMxLDAuNDk0NyA3LjkxMjk5LDIuNDQzMjIgMTIuNDM3MTMsOC42MjUyOWMzLjQ3NzQ5LDQuNjUwODYgNi4yOTY5OCwxMy4zMzY3MyAyLjcxMzgsMjIuNDI5ODFjLTMuMjcyOTMsOC45NjE4MyAtMTIuNTkwNTUsMTUuNzY5ODUgLTIyLjYzNzc2LDE2LjQ5MzM5Yy0wLjc4NzU1LDAuMDc0MDQgLTEuNTg1MzIsMC4xMTQ0MiAtMi4zNzk2OSwwLjExNDQyYy05Ljc1MDYsMCAtMTkuNjI3MzQsLTUuNjIwMDcgLTI0LjU4MTA2LC0xNC4yNDg3M2MwLDAgLTAuODIwNDksLTEuNDE4MzQgLTEuMTgxODEsLTIuMTUzNzN6IiBzdHJva2U9IiM2OTAwYjQiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNMjE2LjQ0ODI3LDE5Ni4wNTc4NGMtNS4xMzQ0MSwtOC40MjAwMSAtNS41NTM3NSwtMTkuNjU2NzkgLTEuMDI5NjEsLTI4LjU2NDc3YzQuNjg3NzksLTkuNTc0MzEgMTIuNTc2OTEsLTEzLjgxNzk3IDE1Ljc0NzU2LC0xNS4xOTc3NWMxLjkwNTgsLTAuODg1MDggMy45MTM4OCwtMS41NzQ5NyA2LjA3NTM3LC0yLjA4MzEzbDIuMTIwNTksLTAuNDU3NjhjMS41NTgwNSwtMC4zMTk3IDMuMTA5MjgsMC42NDYxNCAzLjQ0NjgsMi4xODc0NWMwLjM0MDkzLDEuNTQ0NjggLTAuNjUxMTgsMy4wNjU4IC0yLjIxNjA1LDMuNDAyMzNsLTIuMDYyNjMsMC40NDQyMmMtMS43MTQ4OCwwLjQwMzg0IC0zLjM1ODE2LDAuOTY5MjEgLTQuOTYwNTMsMS43MTYzMWMtMi4wODMwOCwwLjkwMTkgLTguOTczMjgsNC4zOTE3MyAtMTIuOTQ4NTIsMTIuNTE1NmMtMy4wMTcyMyw1LjkzMzA1IC0zLjkxNzI5LDE1LjM2NjAyIDAuODMxODcsMjMuMTQ5OThjNC4zMDI1NCw3LjQ5NzkyIDEzLjExMjE3LDEyLjA5NDkzIDIxLjQ2ODM3LDExLjMyMDkxYzcuOTAyNzYsLTAuNTY4NzQgMTUuMTU0MzQsLTUuODI4NzIgMTcuNjk3NjgsLTEyLjc5NDkyYzIuNTgwODQsLTYuNTUyMjYgMC44NjU5NiwtMTMuMjY5NDMgLTEuOTY3MTcsLTE3LjA1MjA0Yy0zLjQxMjcxLC00LjY2MDk2IC03LjY2MDcsLTYuMDk0NTggLTkuMzI3ODUsLTYuNDk1MDVjLTAuMjQ4ODgsLTAuMDc0MDQgLTYuMDg1NiwtMS44MjczNiAtMTEuMjQwNDYsMC43NTM4M2MtMi4yMTk0NSwxLjA2MzQ0IC01LjA5MDA5LDMuNDU2MTggLTYuNjI3NjgsNy4wNTAzM2MtMS42NjAzMywzLjcxMTk0IC0xLjIzMDc2LDguNDgzOTUgMS4wMTkzOCwxMS42NTQwOGMyLjI2Mzc4LDMuMzk4OTcgNi41MzIyMiw1LjMyMzkyIDEwLjIwNDA0LDQuNjcxMDVjMy42NTQ3NywtMC41NzU0NyA2LjEyNjUxLC0zLjI5NDY0IDYuNzEyOTEsLTUuNjg0MDFjMC42ODg2OCwtMi41Njc3MyAtMC4zNjgyLC00LjczODM2IC0xLjE5MzI2LC01LjUxOTExYy0xLjQwMTIyLC0xLjM4MzE0IC0yLjYxMTUyLC0xLjQwNjcgLTIuNjYyNjYsLTEuNDEwMDdjLTAuNTcyNzYsLTAuMDE2ODMgLTAuODU1NzMsMC4wMjY5MiAtMS4wMjYyLDAuMDUzODRjLTAuNjU0NTksMC4yMzg5NCAtMS41ODE5MiwwLjc2MzkzIC0xLjg1NDY2LDEuMzE1ODRjLTAuMDQ3NzMsMC4wOTA4NiAtMC4xNzA0NywwLjMzOTkgMC4wNjQ3OCwwLjk2MjQ4YzAuNTYyNTMsMS40NzczNyAtMC4xOTc3NCwzLjEyOTc0IC0xLjY5NDQyLDMuNjg1MDJjLTEuNDg5ODYsMC41NTg2NCAtMy4xNjcyNCwtMC4xOTE4MiAtMy43MzMxOCwtMS42NzI1NmMtMC45MzA3NCwtMi40NDk5NSAtMC40MTU5MywtNC4zNjgxOCAwLjE4MDY5LC01LjU0NjAzYzEuNTU4MDUsLTMuMDY1OCA1LjE3NTMyLC00LjE3NjM1IDUuNTg0NDMsLTQuMjk0MTRjMC4xODc1MSwtMC4wNTcyMSAwLjM4NTI1LC0wLjA5MDg2IDAuNTc5NTgsLTAuMTA3NjljMC4zOTg4OSwtMC4wNjA1OCAxLjEwMTIsLTAuMTU0OCAyLjA1MjQsLTAuMTE3NzljMi4xNzg1NCwwLjAyNjkyIDQuNjYwNTEsMS4xNjQ0IDYuNTYyOSwzLjA0NTYxYzIuMjQ2NzMsMi4xMjAxNSA0LjAwNTkzLDYuMzgwNjMgMi43NTgxMiwxMS4wMTEzYy0xLjIxNzEyLDQuOTU3MSAtNS44OTQ2OCw5LjA1NjA2IC0xMS4zNTI5Nyw5LjkxNDIxYy01Ljg3MDgyLDEuMDQ2NjEgLTEyLjQ4MTQ1LC0xLjg0NzU2IC0xNS45NzI1NywtNy4wOTQwOGMtMy4zNjQ5OCwtNC43MjgyNiAtNC4wMDkzNCwtMTEuNjQ3MzUgLTEuNTQ3ODIsLTE3LjEzNjE3YzIuNzAwMTcsLTYuMzIwMDYgNy44NTg0NCwtOS4xODA1NyA5LjM3MjE3LC05LjkwNzQ4YzcuMjc4ODYsLTMuNjM0NTQgMTUuMDU4ODgsLTEuMjM1MDcgMTUuMzg2MTcsLTEuMTM0MTFjMi4wOTMzMSwwLjQ5NDcgNy45MTI5OSwyLjQ0MzIyIDEyLjQzNzEzLDguNjI1MjljMy40Nzc0OSw0LjY1MDg2IDYuMjk2OTgsMTMuMzM2NzMgMi43MTM4LDIyLjQyOTgxYy0zLjI3MjkzLDguOTYxODMgLTEyLjU5MDU1LDE1Ljc2OTg1IC0yMi42Mzc3NiwxNi40OTMzOWMtMC43ODc1NSwwLjA3NDA0IC0xLjU4NTMyLDAuMTE0NDIgLTIuMzc5NjksMC4xMTQ0MmMtOS43NTA2LDAgLTE5LjYyNzM0LC01LjYyMDA3IC0yNC41ODEwNiwtMTQuMjQ4NzN6IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIvPjwvZz48L2c+PC9zdmc+";
+
+  let newColorType = '';
+  let overlayImageContainer = '';
 
   class BetterInputSP {
     constructor() {
@@ -95,7 +97,8 @@
       this.SkewY = 0;
       this.Rotation = 90;
       this.Timeout = 0;
-      this.imageSettings = ['100%', '100%'];
+      this.imgScale = 100;
+      this.shadowS = ['0','0','5','0.3'];
     }
 
     getInfo() {
@@ -381,6 +384,80 @@
             },
           },
           {
+            opcode: "setShadow",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set shadow [SHADOW] to [AMT]",
+            blockIconURI: colorIcon,
+            arguments: {
+              SHADOW: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "shadowStuff",
+                defaultValue: "Scale",
+              },
+              AMT: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "5",
+              },
+            },
+          },
+          {
+            opcode: "setGradient",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [COLOR_TYPE] color to gradient with colors [COLOR1] and [COLOR2] with direction [DIR]",
+            blockIconURI: colorIcon,
+            arguments: {
+              COLOR_TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "elementMenu",
+                defaultValue: "Textbox",
+              },
+              COLOR1: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#ffffff",
+              },
+              COLOR2: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#ff0000",
+              },
+              DIR: {
+                type: Scratch.ArgumentType.ANGLE,
+                defaultValue: 90,
+              },
+            },
+          },
+          {
+            opcode: "setCircleGradient",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [COLOR_TYPE] color to radial gradient with colors [COLOR1] and [COLOR2] with position x [X] y [Y]",
+            blockIconURI: colorIcon,
+            arguments: {
+              COLOR_TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "elementMenu",
+                defaultValue: "Textbox",
+              },
+              COLOR1: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#ffffff",
+              },
+              COLOR2: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#ff0000",
+              },
+              X: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              Y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+          },
+
+          '---',
+
+          {
             opcode: "setBorderRadius",
             blockType: Scratch.BlockType.COMMAND,
             text: "set [ELEMENT] border radius to [VALUE]",
@@ -397,6 +474,9 @@
               },
             },
           },
+
+          '---',
+
           {
             opcode: "setImage",
             blockType: Scratch.BlockType.COMMAND,
@@ -406,6 +486,18 @@
               IMAGE: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "input-url-or-uri-here",
+              },
+            },
+          },
+          {
+            opcode: "scaleImage",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "scale background image to [SCALE]%",
+            blockIconURI: colorIcon,
+            arguments: {
+              SCALE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100,
               },
             },
           },
@@ -573,6 +665,10 @@
               "SkewY",
             ],
           },
+          shadowStuff: {
+            acceptReporters: true,
+            items: ["Scale", "X", "Y", "Opacity"],
+          },
           buttonMenu: {
             acceptReporters: true,
             items: ["Button 1", "Button 2", "Button 3", "Button 4", "Dropdown"],
@@ -727,6 +823,51 @@
       }
     }
 
+    findGradientType(menu) {
+      const colorType = menu;
+
+      switch (colorType) {
+        case "Textbox":
+          newColorType = 'textBoxColor';
+          this.overlayImage = null;
+          break;
+        case "Input Box":
+          newColorType = 'inputBackgroundColor';
+          break;
+        case "Button 1":
+          newColorType = 'submitButtonColor';
+          break;
+        case "Button 2":
+          newColorType = 'cancelButtonColor';
+          break;
+        case "Button 3":
+          newColorType = 'button3Color';
+          break;
+        case "Button 4":
+          newColorType = 'button4Color';
+          break;
+        case "Dropdown Buttons":
+          newColorType = 'optionbuttonColor';
+          break;
+      }
+      return newColorType;
+    }
+    
+    setGradient(args) {
+      this.findGradientType(args.COLOR_TYPE);
+      const gradientColor = `linear-gradient(${args.DIR - 90}deg, ${args.COLOR2}, ${args.COLOR1})`;
+      this[newColorType] = gradientColor;
+    }
+    
+    setCircleGradient(args) {
+      this.findGradientType(args.COLOR_TYPE);
+      const newX = args.X + 50;
+      const newY = args.Y + 50;
+
+      const gradientColor = `radial-gradient(circle at ${newX}% ${newY}%, ${args.COLOR2}, ${args.COLOR1})`;
+      this[newColorType] = gradientColor;
+    }
+
     setBorderRadius(args) {
       const element = args.ELEMENT;
       let value = args.VALUE;
@@ -835,6 +976,9 @@
       `;
       overlay.style.opacity = newOpacity;
       overlay.style.scale = newScale;
+
+      overlayImageContainer.style.background = `url("${encodeURI(this.overlayImage)}")`;
+      overlayImageContainer.style.backgroundSize = this.imgScale + '%';
 
       if (this.textBoxX !== null && this.textBoxY !== null) {
         overlay.style.left = `${41 + this.textBoxX}%`;
@@ -966,17 +1110,17 @@
           overlay.style.left = `${41 + this.textBoxX}%`;
           overlay.style.top = `${44 + this.textBoxY}%`;
           overlay.style.zIndex = "9999";
-          overlay.style.backgroundColor = this.textBoxColor;
-          overlay.style.boxShadow = this.shadowEnabled ? "0 0 5px rgba(0, 0, 0, 0.3)" : "none";
+          overlay.style[this.textBoxColor.includes('gradient') ? 'backgroundImage' : 'backgroundColor'] = this.textBoxColor;
+          overlay.style.boxShadow = this.shadowEnabled ? `${this.shadowS[0]}px ${this.shadowS[1]}px ${this.shadowS[2]}px rgba(0, 0, 0, ${this.shadowS[3]})` : "none";
           overlay.style.borderRadius = this.textBoxBorderRadius + "px";
           overlay.style.padding = "15px";
           overlay.style.fontSize = this.fontSize;
           overlay.style.textAlign = this.textAlign;
           overlay.style.fontFamily = this.fontFamily;
 
-          const overlayImageContainer = document.createElement("div");
+          overlayImageContainer = document.createElement("div");
           overlayImageContainer.style.background = `url("${encodeURI(this.overlayImage)}")`;
-
+          overlayImageContainer.style.backgroundSize = this.imgScale + '%';
           overlayImageContainer.style.width = '100%';
           overlayImageContainer.style.height = '100%';
           overlayImageContainer.style.position = "absolute";
@@ -1028,7 +1172,6 @@
             });
 
             observer.observe(document.body, { childList: true });
-
             document.addEventListener("keydown", handleKeydown);
           }
 
@@ -1045,7 +1188,7 @@
           inputField.style.padding = "5px";
           inputField.style.fontSize = this.fontSize;
           inputField.style.color = this.inputColor;
-          inputField.style.backgroundColor = this.inputBackgroundColor;
+          inputField.style[this.inputBackgroundColor.includes('gradient') ? 'backgroundImage' : 'backgroundColor'] = this.inputBackgroundColor;
           inputField.style.border = `1px solid ${this.inputOutlineColor}`;
           inputField.style.borderRadius = this.inputBoxRadius + "px";
           inputField.style.margin = "0 auto";
@@ -1055,7 +1198,7 @@
           submitButton.style.marginTop = "10px";
           submitButton.style.marginRight = "5px";
           submitButton.style.padding = "5px 10px";
-          submitButton.style.backgroundColor = this.submitButtonColor;
+          submitButton.style[this.submitButtonColor.includes('gradient') ? 'backgroundImage' : 'backgroundColor'] = this.submitButtonColor;
           submitButton.style.color = this.submitButtonTextColor;
           submitButton.style.border = "none";
           submitButton.style.borderRadius =
@@ -1083,7 +1226,7 @@
           cancelButton.style.marginTop = "10px";
           cancelButton.style.marginRight = "5px";
           cancelButton.style.padding = "5px 10px";
-          cancelButton.style.backgroundColor = this.cancelButtonColor;
+          cancelButton.style[this.cancelButtonColor.includes('gradient') ? 'backgroundImage' : 'backgroundColor'] = this.cancelButtonColor;
           cancelButton.style.color = this.cancelButtonTextColor;
           cancelButton.style.border = "none";
           cancelButton.style.borderRadius =
@@ -1106,7 +1249,7 @@
           Button3.style.marginTop = "10px";
           Button3.style.marginRight = "5px";
           Button3.style.padding = "5px 10px";
-          Button3.style.backgroundColor = this.button3Color;
+          Button3.style[this.button3Color.includes('gradient') ? 'backgroundImage' : 'backgroundColor'] = this.button3Color;
           Button3.style.color = this.button3TextColor;
           Button3.style.border = "none";
           Button3.style.borderRadius = this.button3BorderRadius + "px";
@@ -1128,7 +1271,7 @@
           Button4.style.marginTop = "10px";
           Button4.style.marginRight = "5px";
           Button4.style.padding = "5px 10px";
-          Button4.style.backgroundColor = this.button4Color;
+          Button4.style[this.button4Color.includes('gradient') ? 'backgroundImage' : 'backgroundColor'] = this.button4Color;
           Button4.style.color = this.button4TextColor;
           Button4.style.border = "none";
           Button4.style.borderRadius = this.button4BorderRadius + "px";
@@ -1153,7 +1296,7 @@
           dropdownButton.className = "dropdown-button";
           dropdownButton.textContent = this.DropdownText;
           dropdownButton.style.padding = "5px 10px";
-          dropdownButton.style.backgroundColor = this.optionbuttonColor;
+          dropdownButton.style[this.optionbuttonColor.includes('gradient') ? 'backgroundImage' : 'backgroundColor'] = this.optionbuttonColor;
           dropdownButton.style.color = this.optionbuttonTextColor;
           dropdownButton.style.border = "none";
           dropdownButton.style.borderRadius =
@@ -1172,7 +1315,7 @@
             optionButton.style.marginRight = "5px";
             optionButton.style.marginTop = "10px";
             optionButton.style.padding = "5px 10px";
-            optionButton.style.backgroundColor = this.optionbuttonColor;
+            optionButton.style[this.optionbuttonColor.includes('gradient') ? 'backgroundImage' : 'backgroundColor'] = this.optionbuttonColor;
             optionButton.style.color = this.optionbuttonTextColor;
             optionButton.style.border = "none";
             optionButton.style.borderRadius =
@@ -1249,7 +1392,6 @@
           });
 
           overlay.appendChild(questionText);
-
           if (this.isInputEnabled !== "Disabled") {
             if (this.isInputEnabled === "Enabled") {
               overlay.appendChild(inputField);
@@ -1262,7 +1404,6 @@
               overlay.appendChild(document.createElement("br"));
             }
           }
-
           overlay.appendChild(submitButton);
           overlay.appendChild(cancelButton);
           overlay.appendChild(Button3);
@@ -1375,6 +1516,16 @@
 
     setImage(args) {
       this.overlayImage = args.IMAGE;
+      this.activeOverlays.forEach((overlay) => {
+        this.updateOverlay(overlay);
+      });
+    }
+
+    scaleImage(args) {
+      this.imgScale = args.SCALE;
+      this.activeOverlays.forEach((overlay) => {
+        this.updateOverlay(overlay);
+      });
     }
 
     removeOverlay(overlay) {
@@ -1393,6 +1544,25 @@
       setTimeout(() => {
         document.body.removeChild(overlay);
       }, timeout);
+    }
+    
+    setShadow(args) {
+      const shadow = args.SHADOW;
+      
+      switch(shadow) {
+        case 'Scale':
+          this.shadowS[2] = args.AMT;
+          break;
+        case 'X':
+          this.shadowS[0] = args.AMT;
+          break;
+        case 'Y':
+          this.shadowS[1] = args.AMT;
+          break;
+        case 'Opacity':
+          this.shadowS[3] = args.AMT;
+          break;
+      }
     }
   }
 
