@@ -104,5 +104,3 @@
   }
   Scratch.extensions.register(new CommentBlocks());
 })(Scratch);
-  Scratch.extensions.register(new CommentBlocks());
-})(Scratch);
