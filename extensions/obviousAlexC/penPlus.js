@@ -918,7 +918,7 @@
   };
 
   const textureFunctions = {
-    createBlankPenPlusTextureInfo: async function (
+    createBlankPenPlusTextureInfo: function (
       width,
       height,
       color,
