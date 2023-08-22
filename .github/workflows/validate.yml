@@ -4,7 +4,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -12,10 +12,39 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: '14.x'
+          cache: 'npm'
       - name: Install dependencies
         run: npm ci
       - name: Validate
         run: npm run validate
-      - name: Lint
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14.x'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Validate
         run: npm run lint
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14.x'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Validate
+        run: npm run check-format
