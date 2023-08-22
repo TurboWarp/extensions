@@ -4,10 +4,10 @@
 // By: NamelessCat <https://scratch.mit.edu/users/NexusKitten/>
 
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('Control Controls must run unsandboxed');
+    throw new Error("Control Controls must run unsandboxed");
   }
 
   var fullScreen;
@@ -21,118 +21,128 @@
     pauseButton = undefined;
     stopButton = undefined;
 
-    const rightButtons = document.querySelectorAll('[class*="stage-header_stage-button_"]');
+    const rightButtons = document.querySelectorAll(
+      '[class*="stage-header_stage-button_"]'
+    );
     fullScreen = rightButtons[rightButtons.length - 1];
     if (!fullScreen) {
-      fullScreen = document.querySelector('.fullscreen-button') || document.querySelector('.standalone-fullscreen-button');
+      fullScreen =
+        document.querySelector(".fullscreen-button") ||
+        document.querySelector(".standalone-fullscreen-button");
     }
 
-    greenFlag = document.querySelector('[class*="green-flag_green-flag_"]') || document.querySelector('.green-flag-button');
-    pauseButton = document.querySelector('.pause-btn') || document.querySelector('.pause-button');
-    stopButton = document.querySelector('[class*="stop-all_stop-all_"]') || document.querySelector('.stop-all-button');
+    greenFlag =
+      document.querySelector('[class*="green-flag_green-flag_"]') ||
+      document.querySelector(".green-flag-button");
+    pauseButton =
+      document.querySelector(".pause-btn") ||
+      document.querySelector(".pause-button");
+    stopButton =
+      document.querySelector('[class*="stop-all_stop-all_"]') ||
+      document.querySelector(".stop-all-button");
   };
 
   class controlcontrols {
     getInfo() {
       return {
-        id: 'nkcontrols',
-        name: 'Control Controls',
-        color1: '#ffab19',
-        color2: '#ec9c13',
-        color3: '#b87d17',
+        id: "nkcontrols",
+        name: "Control Controls",
+        color1: "#ffab19",
+        color2: "#ec9c13",
+        color3: "#b87d17",
         blocks: [
           {
-            opcode: 'showOption',
+            opcode: "showOption",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'show [OPTION]',
+            text: "show [OPTION]",
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'OPTION'
-              }
-            }
+                menu: "OPTION",
+              },
+            },
           },
           {
-            opcode: 'hideOption',
+            opcode: "hideOption",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'hide [OPTION]',
+            text: "hide [OPTION]",
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'OPTION'
-              }
-            }
+                menu: "OPTION",
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'optionShown',
+            opcode: "optionShown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[OPTION] shown?',
+            text: "[OPTION] shown?",
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'OPTION'
-              }
-            }
+                menu: "OPTION",
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'optionExists',
+            opcode: "optionExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[OPTION] exists?',
+            text: "[OPTION] exists?",
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'OPTION'
-              }
-            }
+                menu: "OPTION",
+              },
+            },
           },
         ],
         menus: {
           OPTION: {
             acceptReporters: true,
-            items: ['green flag', 'pause', 'stop', 'fullscreen']
-          }
-        }
+            items: ["green flag", "pause", "stop", "fullscreen"],
+          },
+        },
       };
     }
 
     showOption(args) {
       getButtons();
       if (args.OPTION === "green flag" && greenFlag) {
-        greenFlag.style.display = 'block';
+        greenFlag.style.display = "block";
       } else if (args.OPTION === "pause" && pauseButton) {
-        pauseButton.style.display = 'block';
+        pauseButton.style.display = "block";
       } else if (args.OPTION === "stop" && stopButton) {
-        stopButton.style.display = 'block';
+        stopButton.style.display = "block";
       } else if (args.OPTION === "fullscreen" && fullScreen) {
-        fullScreen.style.display = 'block';
+        fullScreen.style.display = "block";
       }
     }
 
     hideOption(args) {
       getButtons();
       if (args.OPTION === "green flag" && greenFlag) {
-        greenFlag.style.display = 'none';
+        greenFlag.style.display = "none";
       } else if (args.OPTION === "pause" && pauseButton) {
-        pauseButton.style.display = 'none';
+        pauseButton.style.display = "none";
       } else if (args.OPTION === "stop" && stopButton) {
-        stopButton.style.display = 'none';
+        stopButton.style.display = "none";
       } else if (args.OPTION === "fullscreen" && fullScreen) {
-        fullScreen.style.display = 'none';
+        fullScreen.style.display = "none";
       }
     }
 
     optionShown(args) {
       getButtons();
       if (args.OPTION === "green flag" && greenFlag) {
-        return greenFlag.style.display !== 'none';
+        return greenFlag.style.display !== "none";
       } else if (args.OPTION === "pause" && pauseButton) {
-        return pauseButton.style.display !== 'none';
+        return pauseButton.style.display !== "none";
       } else if (args.OPTION === "stop" && stopButton) {
-        return stopButton.style.display !== 'none';
+        return stopButton.style.display !== "none";
       } else if (args.OPTION === "fullscreen" && fullScreen) {
-        return fullScreen.style.display !== 'none';
+        return fullScreen.style.display !== "none";
       }
       return false;
     }
@@ -150,7 +160,6 @@
       }
       return false;
     }
-
   }
   Scratch.extensions.register(new controlcontrols());
 })(Scratch);
