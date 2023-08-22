@@ -91,7 +91,7 @@
     }
 
     commentC (args, util) {
-      util.startBranch(1, false);
+      return false;
     }
 
     commentReporter (args) {
