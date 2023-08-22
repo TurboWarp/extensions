@@ -434,7 +434,14 @@
       return (document.fullscreenElement !== null);
     }
     closeWindow () {
-      window.close();
+      const editorConfirmation = [
+        'Are you sure you want to close this window?',
+        '',
+        '(This message will not appear when the project is packaged)'
+      ].join('\n');
+      if (typeof ScratchBlocks === 'undefined' || confirm(editorConfirmation)) {
+        window.close();
+      }
     }
   }
   Scratch.extensions.register(new WindowControls());
