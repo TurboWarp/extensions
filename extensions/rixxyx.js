@@ -1,10 +1,15 @@
+// Name: RixxyX
+// ID: RixxyX
+// Description: Various utility blocks.
+// By: RixTheTyrunt <https://scratch.mit.edu/users/RixTheTyrunt/>
+
 /*!
  * Originally created by https://scratch.mit.edu/users/RixTheTyrunt/
  * This file is available under an informal "use with credit" license.
  */
 
-(function() {
-  'use strict';
+(function () {
+  "use strict";
 
   var count = 0;
   var isMeasure = false;
@@ -19,311 +24,312 @@
         name: "RixxyX",
         blocks: [
           {
-            opcode: 'notEquals',
+            opcode: "notEquals",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[TEXT_1] != [TEXT_2]',
+            text: "[TEXT_1] != [TEXT_2]",
             arguments: {
               TEXT_1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'RixxyX'
+                defaultValue: "RixxyX",
               },
               TEXT_2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'TyruntX'
-              }
-            }
+                defaultValue: "TyruntX",
+              },
+            },
           },
           {
-            opcode: 'color',
+            opcode: "color",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'color [COLOR] in hex',
+            text: "color [COLOR] in hex",
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
-                defaultValue: '#ff0000'
-              }
-            }
+                defaultValue: "#ff0000",
+              },
+            },
           },
           {
-            opcode: 'returnTrue',
+            opcode: "returnTrue",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'true',
-            arguments: {}
+            text: "true",
+            arguments: {},
           },
           {
-            opcode: 'returnFalse',
+            opcode: "returnFalse",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'false',
-            arguments: {}
+            text: "false",
+            arguments: {},
           },
           {
-            opcode: 'ifElseString',
+            opcode: "ifElseString",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'if [BOOL] then [TEXT_1] else [TEXT_2]',
+            text: "if [BOOL] then [TEXT_1] else [TEXT_2]",
             arguments: {
               BOOL: {
                 type: Scratch.ArgumentType.BOOLEAN,
-                defaultValue: ''
+                defaultValue: "",
               },
               TEXT_1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'RixxyX'
+                defaultValue: "RixxyX",
               },
               TEXT_2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'TyruntX'
-              }
-            }
+                defaultValue: "TyruntX",
+              },
+            },
           },
           {
-            opcode: 'ifString',
+            opcode: "ifString",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'if [BOOL] then [TEXT]',
+            text: "if [BOOL] then [TEXT]",
             arguments: {
               BOOL: {
                 type: Scratch.ArgumentType.BOOLEAN,
-                defaultValue: ''
+                defaultValue: "",
               },
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'RixxyX'
-              }
-            }
+                defaultValue: "RixxyX",
+              },
+            },
           },
           {
-            opcode: 'extractTextBetweenToCharacters',
+            opcode: "extractTextBetweenToCharacters",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'extract text [TEXT] between [NUM_1] to [NUM_2] characters',
+            text: "extract text [TEXT] between [NUM_1] to [NUM_2] characters",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'RixxyX is cool, right?'
+                defaultValue: "RixxyX is cool, right?",
               },
               NUM_1: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
+                defaultValue: 1,
               },
               NUM_2: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 6
-              }
-            }
+                defaultValue: 6,
+              },
+            },
           },
           {
-            opcode: 'returnString',
+            opcode: "returnString",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[TEXT] as text',
+            text: "[TEXT] as text",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'RixxyX is cool, right?'
-              }
-            }
+                defaultValue: "RixxyX is cool, right?",
+              },
+            },
           },
           {
-            opcode: 'isTheSameTypeAs',
+            opcode: "isTheSameTypeAs",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[TEXT_1] is the same type as [TEXT_2]?',
+            text: "[TEXT_1] is the same type as [TEXT_2]?",
             arguments: {
               TEXT_1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'RixxyX is cool, right?'
+                defaultValue: "RixxyX is cool, right?",
               },
               TEXT_2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'RixxyX is cool, right?'
-              }
-            }
+                defaultValue: "RixxyX is cool, right?",
+              },
+            },
           },
           {
-            opcode: 'reverseTxt',
+            opcode: "reverseTxt",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'reverse text [TEXT]',
+            text: "reverse text [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'XyxxiR'
-              }
-            }
+                defaultValue: "XyxxiR",
+              },
+            },
           },
           {
-            opcode: 'returnCount',
+            opcode: "returnCount",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'counter',
-            arguments: {}
+            text: "counter",
+            arguments: {},
           },
           {
-            opcode: 'incrementCountByNum',
+            opcode: "incrementCountByNum",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'increment counter by [NUM]',
+            text: "increment counter by [NUM]",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
-              }
-            }
+                defaultValue: 1,
+              },
+            },
           },
           {
-            opcode: 'decrementCountByNum',
+            opcode: "decrementCountByNum",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'decrement counter by [NUM]',
+            text: "decrement counter by [NUM]",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
-              }
-            }
+                defaultValue: 1,
+              },
+            },
           },
           {
-            opcode: 'setCount',
+            opcode: "setCount",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set counter to [NUM]',
+            text: "set counter to [NUM]",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
-              }
-            }
+                defaultValue: 0,
+              },
+            },
           },
           {
-            opcode: 'toUppercase',
+            opcode: "toUppercase",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[TEXT] to uppercase',
+            text: "[TEXT] to uppercase",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'rixxyx'
-              }
-            }
+                defaultValue: "rixxyx",
+              },
+            },
           },
           {
-            opcode: 'toLowercase',
+            opcode: "toLowercase",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[TEXT] to lowercase',
+            text: "[TEXT] to lowercase",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'RIXXYX'
-              }
-            }
+                defaultValue: "RIXXYX",
+              },
+            },
           },
           {
-            opcode: 'toCapitalize',
+            opcode: "toCapitalize",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'capitalize [TEXT]',
+            text: "capitalize [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'rixxyX is cool, right?'
-              }
-            }
+                defaultValue: "rixxyX is cool, right?",
+              },
+            },
           },
           {
-            opcode: 'isJsNan',
+            opcode: "isJsNan",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is JavaScript NaN [OBJ]',
+            text: "is JavaScript NaN [OBJ]",
             arguments: {
               OBJ: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: NaN
-              }
-            }
+                defaultValue: NaN,
+              },
+            },
           },
           {
-            opcode: 'returnNum',
+            opcode: "returnNum",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[NUM] as number',
+            text: "[NUM] as number",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
-              }
-            }
+                defaultValue: 1,
+              },
+            },
           },
           {
-            opcode: 'returnBool',
+            opcode: "returnBool",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[BOOL] as boolean',
+            text: "[BOOL] as boolean",
             arguments: {
               BOOL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'true'
-              }
-            }
+                defaultValue: "true",
+              },
+            },
           },
           {
-            opcode: 'binToTxt',
+            opcode: "binToTxt",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'binary [BIN] to text',
+            text: "binary [BIN] to text",
             arguments: {
               BIN: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '01010010 01101001 01111000 01111000 01111001 01011000'
-              }
-            }
+                defaultValue:
+                  "01010010 01101001 01111000 01111000 01111001 01011000",
+              },
+            },
           },
           {
-            opcode: 'txtToBin',
+            opcode: "txtToBin",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'text [TEXT] to binary',
+            text: "text [TEXT] to binary",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'RixxyX'
-              }
-            }
+                defaultValue: "RixxyX",
+              },
+            },
           },
           {
-            opcode: 'repeatTxtTimes',
+            opcode: "repeatTxtTimes",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'repeat text [TEXT] [NUM] times',
+            text: "repeat text [TEXT] [NUM] times",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'x'
+                defaultValue: "x",
               },
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 2
-              }
-            }
+                defaultValue: 2,
+              },
+            },
           },
           {
-            opcode: 'jsonParse',
+            opcode: "jsonParse",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'JSON.parse([TEXT])',
+            text: "JSON.parse([TEXT])",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '"RixxyX"'
-              }
-            }
+                defaultValue: '"RixxyX"',
+              },
+            },
           },
           {
-            opcode: 'returnENum',
+            opcode: "returnENum",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'e', // e
-            arguments: {}
+            text: "e", // e
+            arguments: {},
           },
           {
-            opcode: 'startTime',
+            opcode: "startTime",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'start measuring time',
-            arguments: {}
+            text: "start measuring time",
+            arguments: {},
           },
           {
-            opcode: 'endTime',
+            opcode: "endTime",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'end measuring time',
-            arguments: {}
+            text: "end measuring time",
+            arguments: {},
           },
           {
-            opcode: 'returnTime',
+            opcode: "returnTime",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'time',
-            arguments: {}
-          }
-        ]
+            text: "time",
+            arguments: {},
+          },
+        ],
       };
     }
     notEquals(args) {
@@ -363,7 +369,7 @@
       return args.TEXT.toString();
     }
     isTheSameTypeAs(args) {
-      return (typeof args.TEXT_1 == typeof args.TEXT_2);
+      return typeof args.TEXT_1 == typeof args.TEXT_2;
     }
     reverseTxt(args) {
       var emptyStr = "";
@@ -379,7 +385,10 @@
       return count;
     }
     incrementCountByNum(args) {
-      if ((count.toString().indexOf("-") == -1) || (args.NUM.toString().indexOf("-") == -1)) {
+      if (
+        count.toString().indexOf("-") == -1 ||
+        args.NUM.toString().indexOf("-") == -1
+      ) {
         count += Math.floor(args.NUM);
       } else {
         count = 0;
@@ -393,7 +402,10 @@
       }
     }
     setCount(args) {
-      if ((count.toString().indexOf("-") == -1) && (args.NUM.toString().indexOf("-") == -1)) {
+      if (
+        count.toString().indexOf("-") == -1 &&
+        args.NUM.toString().indexOf("-") == -1
+      ) {
         count = Math.floor(args.NUM);
       } else {
         count = 0;
@@ -422,11 +434,16 @@
     }
     binToTxt(args) {
       var binary = args.BIN.toString();
-      return binary.split(" ").map((x) => x = String.fromCharCode(parseInt(x, 2))).join("");
+      return binary
+        .split(" ")
+        .map((x) => (x = String.fromCharCode(parseInt(x, 2))))
+        .join("");
     }
     txtToBin(args) {
       var text = args.TEXT.toString();
-      return Array.from(text).map((each)=>each.charCodeAt(0).toString(2)).join(" ");
+      return Array.from(text)
+        .map((each) => each.charCodeAt(0).toString(2))
+        .join(" ");
     }
     repeatTxtTimes(args) {
       return Scratch.Cast.toString(args.TEXT).repeat(Math.floor(args.NUM));
@@ -434,7 +451,11 @@
     jsonParse(args) {
       try {
         const parsed = JSON.parse(args.TEXT);
-        if (typeof parsed === 'string' || typeof parsed === 'number' || typeof parsed === 'boolean') {
+        if (
+          typeof parsed === "string" ||
+          typeof parsed === "number" ||
+          typeof parsed === "boolean"
+        ) {
           return parsed;
         }
         return Scratch.Cast.toString(parsed);

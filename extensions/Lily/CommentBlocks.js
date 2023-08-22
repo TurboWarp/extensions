@@ -1,84 +1,89 @@
+// Name: Comment Blocks
+// ID: lmscomments
+// Description: Annotate your scripts.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   class CommentBlocks {
     getInfo() {
       return {
-        id: 'lmscomments',
-        name: 'Comment Blocks',
-        color1: '#e4db8c',
-        color2: '#c6be79',
-        color3: '#a8a167',
+        id: "lmscomments",
+        name: "Comment Blocks",
+        color1: "#e4db8c",
+        color2: "#c6be79",
+        color3: "#a8a167",
         blocks: [
           {
-            opcode: 'commentHat',
+            opcode: "commentHat",
             blockType: Scratch.BlockType.HAT,
-            text: '// [COMMENT]',
+            text: "// [COMMENT]",
             isEdgeActivated: false,
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'comment'
-              }
-            }
+                defaultValue: "comment",
+              },
+            },
           },
           {
-            opcode: 'commentCommand',
+            opcode: "commentCommand",
             blockType: Scratch.BlockType.COMMAND,
-            text: '// [COMMENT]',
+            text: "// [COMMENT]",
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'comment'
-              }
-            }
+                defaultValue: "comment",
+              },
+            },
           },
           {
-            opcode: 'commentReporter',
+            opcode: "commentReporter",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[INPUT] // [COMMENT]',
+            text: "[INPUT] // [COMMENT]",
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'comment'
+                defaultValue: "comment",
               },
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'commentBoolean',
+            opcode: "commentBoolean",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[INPUT] // [COMMENT]',
+            text: "[INPUT] // [COMMENT]",
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'comment'
+                defaultValue: "comment",
               },
               INPUT: {
-                type: Scratch.ArgumentType.BOOLEAN
-              }
-            }
-          }
-        ]
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+            },
+          },
+        ],
       };
     }
 
-    commentHat () {
+    commentHat() {
       // no-op
     }
 
-    commentCommand () {
+    commentCommand() {
       // no-op
     }
 
-    commentReporter (args) {
+    commentReporter(args) {
       return args.INPUT;
     }
 
-    commentBoolean (args) {
+    commentBoolean(args) {
       return args.INPUT || false;
     }
   }

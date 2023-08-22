@@ -1,9 +1,16 @@
+// Name: Skins
+// ID: lmsSkins
+// Description: Have your sprites render as other images or costumes.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   const requireNonPackagedRuntime = (blockName) => {
     if (Scratch.vm.runtime.isPackaged) {
-      alert(`To use the Skins ${blockName} block, the creator of the packaged project must uncheck "Remove raw asset data after loading to save RAM" under advanced settings in the packager.`);
+      alert(
+        `To use the Skins ${blockName} block, the creator of the packaged project must uncheck "Remove raw asset data after loading to save RAM" under advanced settings in the packager.`
+      );
       return false;
     }
     return true;
@@ -13,18 +20,19 @@
    * @param {RenderWebGL.SVGSkin} svgSkin
    * @returns {Promise<void>}
    */
-  const svgSkinFinishedLoading = svgSkin => new Promise(resolve => {
-    if (svgSkin._svgImageLoaded) {
-      resolve();
-    } else {
-      svgSkin._svgImage.addEventListener('load', () => {
+  const svgSkinFinishedLoading = (svgSkin) =>
+    new Promise((resolve) => {
+      if (svgSkin._svgImageLoaded) {
         resolve();
-      });
-      svgSkin._svgImage.addEventListener('error', () => {
-        resolve();
-      });
-    }
-  });
+      } else {
+        svgSkin._svgImage.addEventListener("load", () => {
+          resolve();
+        });
+        svgSkin._svgImage.addEventListener("error", () => {
+          resolve();
+        });
+      }
+    });
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -35,182 +43,185 @@
 
   class Skins {
     constructor() {
-      runtime.on('PROJECT_START', () => {
+      runtime.on("PROJECT_START", () => {
         this._refreshTargets();
       });
 
-      runtime.on('PROJECT_STOP_ALL', () => {
+      runtime.on("PROJECT_STOP_ALL", () => {
         this._refreshTargets();
       });
     }
 
     getInfo() {
       return {
-        id: 'lmsSkins',
-        name: 'Skins',
-        color1: '#6b56ff',
+        id: "lmsSkins",
+        name: "Skins",
+        color1: "#6b56ff",
+        color2: "#604de6",
+        color3: "#5645cc",
+        docsURI: "https://extensions.turbowarp.org/Lily/Skins",
         blocks: [
           {
-            opcode: 'registerSVGSkin',
+            opcode: "registerSVGSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'create SVG skin [SVG] as [NAME]',
+            text: "create SVG skin [SVG] as [NAME]",
             arguments: {
               SVG: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<svg />'
+                defaultValue: "<svg />",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my skin'
-              }
-            }
+                defaultValue: "my skin",
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'registerCostumeSkin',
+            opcode: "registerCostumeSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'load skin from [COSTUME] as [NAME]',
+            text: "load skin from [COSTUME] as [NAME]",
             arguments: {
               COSTUME: {
-                type: Scratch.ArgumentType.COSTUME
+                type: Scratch.ArgumentType.COSTUME,
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my skin'
-              }
-            }
+                defaultValue: "my skin",
+              },
+            },
           },
           {
-            opcode: 'registerURLSkin',
+            opcode: "registerURLSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'load skin from URL [URL] as [NAME]',
+            text: "load skin from URL [URL] as [NAME]",
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'https://extensions.turbowarp.org/dango.png'
+                defaultValue: "https://extensions.turbowarp.org/dango.png",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my skin'
-              }
-            }
+                defaultValue: "my skin",
+              },
+            },
           },
           {
-            opcode: 'getSkinLoaded',
+            opcode: "getSkinLoaded",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'skin [NAME] is loaded?',
+            text: "skin [NAME] is loaded?",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my skin'
-              }
-            }
+                defaultValue: "my skin",
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'setSkin',
+            opcode: "setSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set skin of [TARGET] to [NAME]',
+            text: "set skin of [TARGET] to [NAME]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'targetMenu'
+                menu: "targetMenu",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my skin'
-              }
-            }
+                defaultValue: "my skin",
+              },
+            },
           },
           {
-            opcode: 'restoreSkin',
+            opcode: "restoreSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'restore skin of [TARGET]',
+            text: "restore skin of [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'targetMenu'
-              }
-            }
+                menu: "targetMenu",
+              },
+            },
           },
           {
-            opcode: 'restoreTargets',
+            opcode: "restoreTargets",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'restore targets with skin [NAME]',
+            text: "restore targets with skin [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my skin'
-              }
-            }
+                defaultValue: "my skin",
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'getCurrentSkin',
+            opcode: "getCurrentSkin",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'current skin of [TARGET]',
+            text: "current skin of [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'targetMenu'
-              }
-            }
+                menu: "targetMenu",
+              },
+            },
           },
           {
-            opcode: 'getSkinAttribute',
+            opcode: "getSkinAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[ATTRIBUTE] of skin [NAME]',
+            text: "[ATTRIBUTE] of skin [NAME]",
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'skinAttributes'
+                menu: "skinAttributes",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my skin'
-              }
-            }
+                defaultValue: "my skin",
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'deleteSkin',
+            opcode: "deleteSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'delete skin [NAME]',
+            text: "delete skin [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my skin'
-              }
-            }
+                defaultValue: "my skin",
+              },
+            },
           },
           {
-            opcode: 'deleteAllSkins',
+            opcode: "deleteAllSkins",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'delete all skins'
-          }
+            text: "delete all skins",
+          },
         ],
         menus: {
           targetMenu: {
             acceptReporters: true,
-            items: '_getTargets'
+            items: "_getTargets",
           },
           skinAttributes: {
             acceptReporters: true,
-            items: ['width', 'height']
-          }
-        }
+            items: ["width", "height"],
+          },
+        },
       };
     }
 
-    async registerSVGSkin (args) {
+    async registerSVGSkin(args) {
       const skinName = Cast.toString(args.NAME);
       const svgData = Cast.toString(args.SVG);
 
@@ -231,8 +242,8 @@
       }
     }
 
-    async registerCostumeSkin (args, util) {
-      if (!requireNonPackagedRuntime('add costume skin')) {
+    async registerCostumeSkin(args, util) {
+      if (!requireNonPackagedRuntime("add costume skin")) {
         return;
       }
 
@@ -262,7 +273,7 @@
       }
     }
 
-    async registerURLSkin (args) {
+    async registerURLSkin(args) {
       const skinName = Cast.toString(args.NAME);
       const url = Cast.toString(args.URL);
 
@@ -281,12 +292,12 @@
       }
     }
 
-    getSkinLoaded (args) {
+    getSkinLoaded(args) {
       const skinName = Cast.toString(args.NAME);
-      return !!(createdSkins[skinName]);
+      return !!createdSkins[skinName];
     }
 
-    setSkin (args, util) {
+    setSkin(args, util) {
       const skinName = Cast.toString(args.NAME);
       if (!createdSkins[skinName]) return;
 
@@ -299,14 +310,14 @@
       renderer._allDrawables[drawableID].skin = renderer._allSkins[skinId];
     }
 
-    restoreSkin (args, util) {
+    restoreSkin(args, util) {
       const targetName = Cast.toString(args.TARGET);
       const target = this._getTargetFromMenu(targetName, util);
       if (!target) return;
       target.updateAllDrawableProperties();
     }
 
-    getCurrentSkin (args, util) {
+    getCurrentSkin(args, util) {
       const targetName = Cast.toString(args.TARGET);
       const target = this._getTargetFromMenu(targetName, util);
       if (!target) return;
@@ -314,10 +325,10 @@
 
       const skinId = renderer._allDrawables[drawableID].skin._id;
       const skinName = this._getSkinNameFromID(skinId);
-      return (skinName) ? skinName : '';
+      return skinName ? skinName : "";
     }
 
-    getSkinAttribute (args) {
+    getSkinAttribute(args) {
       const skins = renderer._allSkins;
       const skinName = Cast.toString(args.NAME);
 
@@ -329,13 +340,16 @@
       const attribute = Cast.toString(args.ATTRIBUTE).toLowerCase();
 
       switch (attribute) {
-        case ('width'): return Math.ceil(size[0]);
-        case ('height'): return Math.ceil(size[1]);
-        default: return 0;
+        case "width":
+          return Math.ceil(size[0]);
+        case "height":
+          return Math.ceil(size[1]);
+        default:
+          return 0;
       }
     }
 
-    deleteSkin (args) {
+    deleteSkin(args) {
       const skinName = Cast.toString(args.NAME);
       if (!createdSkins[skinName]) return;
       const skinId = createdSkins[skinName];
@@ -345,13 +359,14 @@
       Reflect.deleteProperty(createdSkins, skinName);
     }
 
-    deleteAllSkins () {
+    deleteAllSkins() {
       this._refreshTargets();
-      for (let i = 0; i < createdSkins.length; i++) renderer.destroySkin(createdSkins[i]);
+      for (let i = 0; i < createdSkins.length; i++)
+        renderer.destroySkin(createdSkins[i]);
       createdSkins = [];
     }
 
-    restoreTargets (args) {
+    restoreTargets(args) {
       const skinName = Cast.toString(args.NAME);
       if (!createdSkins[skinName]) return;
       const skinId = createdSkins[skinName];
@@ -361,7 +376,7 @@
 
     // Utility Functions
 
-    _refreshTargetsFromID (skinId, reset, newId) {
+    _refreshTargetsFromID(skinId, reset, newId) {
       const drawables = renderer._allDrawables;
       const skins = renderer._allSkins;
 
@@ -371,31 +386,32 @@
 
         if (targetSkin === skinId) {
           target.updateAllDrawableProperties();
-          if (!reset) drawables[drawableID].skin = (newId) ? skins[newId] : skins[skinId];
+          if (!reset)
+            drawables[drawableID].skin = newId ? skins[newId] : skins[skinId];
         }
       }
     }
 
-    _refreshTargets () {
+    _refreshTargets() {
       for (const target of runtime.targets) {
         target.updateAllDrawableProperties();
       }
     }
 
-    _getSkinNameFromID (skinId) {
+    _getSkinNameFromID(skinId) {
       for (const skinName in createdSkins) {
         if (createdSkins[skinName] === skinId) return skinName;
       }
     }
 
-    _getTargetFromMenu (targetName, util) {
+    _getTargetFromMenu(targetName, util) {
       let target = Scratch.vm.runtime.getSpriteTargetByName(targetName);
-      if (targetName === '_myself_') target = util.target;
-      if (targetName === '_stage_') target = runtime.getTargetForStage();
+      if (targetName === "_myself_") target = util.target;
+      if (targetName === "_stage_") target = runtime.getTargetForStage();
       return target;
     }
 
-    async _createURLSkin (URL, rotationCenter) {
+    async _createURLSkin(URL, rotationCenter) {
       let imageData;
       if (await Scratch.canFetch(URL)) {
         imageData = await Scratch.fetch(URL);
@@ -404,13 +420,17 @@
       }
 
       const contentType = imageData.headers.get("Content-Type");
-      if (contentType === 'image/svg+xml') {
+      if (contentType === "image/svg+xml") {
         return renderer.createSVGSkin(await imageData.text(), rotationCenter);
-      } else if (contentType === 'image/png' || contentType === 'image/jpeg' || contentType === 'image/bmp') {
+      } else if (
+        contentType === "image/png" ||
+        contentType === "image/jpeg" ||
+        contentType === "image/bmp"
+      ) {
         // eslint-disable-next-line no-restricted-syntax
         const output = new Image();
         output.src = URL;
-        output.crossOrigin = 'anonymous';
+        output.crossOrigin = "anonymous";
         await output.decode();
         return renderer.createBitmapSkin(output);
       }
@@ -418,8 +438,8 @@
 
     _getTargets() {
       const spriteNames = [
-        {text: 'myself', value: '_myself_'},
-        {text: 'Stage', value: '_stage_'}
+        { text: "myself", value: "_myself_" },
+        { text: "Stage", value: "_stage_" },
       ];
       const targets = Scratch.vm.runtime.targets;
       for (let index = 1; index < targets.length; index++) {
@@ -428,13 +448,12 @@
           const targetName = target.getName();
           spriteNames.push({
             text: targetName,
-            value: targetName
+            value: targetName,
           });
         }
       }
       return spriteNames;
     }
-
   }
   Scratch.extensions.register(new Skins());
 })(Scratch);
