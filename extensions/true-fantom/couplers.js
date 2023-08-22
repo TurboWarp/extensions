@@ -85,6 +85,53 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'false',
             hideFromPalette: true
+          },
+
+          '---',
+
+          {
+            opcode: 'color_block',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'color [COLOUR]',
+            arguments: {
+              COLOUR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: '#ff0000'
+              }
+            }
+          },
+          {
+            opcode: 'angle_block',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'angle [ANGLE]',
+            arguments: {
+              ANGLE: {
+                type: Scratch.ArgumentType.ANGLE,
+                defaultValue: '90'
+              }
+            }
+          },
+          {
+            opcode: 'matrix_block',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'matrix [MATRIX]',
+            arguments: {
+              MATRIX: {
+                type: Scratch.ArgumentType.MATRIX,
+                defaultValue: '0101001010000001000101110'
+              }
+            }
+          },
+          {
+            opcode: 'note_block',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'note [NOTE]',
+            arguments: {
+              NOTE: {
+                type: Scratch.ArgumentType.NOTE,
+                defaultValue: ''
+              }
+            }
           }
         ],
         menus: {
@@ -118,6 +165,18 @@
     }
     false_block() {
       return false;
+    }
+    color_block(args) {
+      return args.COLOUR;
+    }
+    angle_block(args) {
+      return args.ANGLE;
+    }
+    matrix_block(args) {
+      return args.MATRIX;
+    }
+    note_block(args) {
+      return args.NOTE;
     }
   }
 
