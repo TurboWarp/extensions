@@ -17,6 +17,10 @@ You can also insert boolean reporters into the menu input.
 
 Wake lock will also be released automatically when the user clicks the stop sign or green flag, to ensure it isn't accidentally left on forever.
 
+## Browser support
+
+Not all browsers support wake lock (notably, Firefox does not). In these browsers requesting wake lock will not do anything.
+
 ## Note
 
 The wake lock block takes a moment to finish running as it activates wake lock, so if you put it in a script with other blocks, it will yield briefly, so try keeping it separate from your other scripts. The `is wake lock active?` boolean reporter, however, does not have a delay.

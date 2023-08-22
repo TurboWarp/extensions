@@ -81,6 +81,11 @@
         return;
       }
 
+      if (!navigator.wakeLock) {
+        // Not supported.
+        return;
+      }
+
       if (Scratch.Cast.toBoolean(args.enabled)) {
         if (!wakeLock) {
           working = true;
