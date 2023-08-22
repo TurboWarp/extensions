@@ -1,5 +1,5 @@
-(function(Scratch) {
-  'use strict';
+(function (Scratch) {
+  "use strict";
 
   const parseEnglish = (text) => {
     const words = text.toLowerCase().match(/\b\w+\b/g);
@@ -11,14 +11,14 @@
   const parseChinese = (text) => {
     const words = text.match(/[^\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+/g);
     const uniques = Array.from(new Set(words));
-    uniques.sort(function(a, b) {
-      return a.localeCompare(b, 'zh-Hans-CN', {sensitivity: 'accent'});
+    uniques.sort(function (a, b) {
+      return a.localeCompare(b, "zh-Hans-CN", { sensitivity: "accent" });
     });
     return uniques;
   };
 
   const parse = (text, language) => {
-    if (language === 'zh') {
+    if (language === "zh") {
       return parseChinese(text);
     }
     return parseEnglish(text);
@@ -27,50 +27,50 @@
   class SortUniqueWords {
     getInfo() {
       return {
-        id: 'nonameawasortuniquewords',
-        name: 'Sort Unique Words',
-        color1: '#5a8b9e',
-        color2: '#427081',
-        color3: '#427081',
+        id: "nonameawasortuniquewords",
+        name: "Sort Unique Words",
+        color1: "#5a8b9e",
+        color2: "#427081",
+        color3: "#427081",
         blocks: [
           {
-            opcode: 'words',
+            opcode: "words",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: 'sort unique words in [text] as [language]',
+            text: "sort unique words in [text] as [language]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'movie dog restaurant book school'
+                defaultValue: "movie dog restaurant book school",
               },
               language: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'language'
-              }
-            }
-          }
+                menu: "language",
+              },
+            },
+          },
         ],
         menus: {
           language: {
             acceptReporters: true,
             items: [
               {
-                text: 'English (en)',
-                value: 'en'
+                text: "English (en)",
+                value: "en",
               },
               {
-                text: 'Chinese (zh)',
-                value: 'zh'
-              }
-            ]
-          }
-        }
+                text: "Chinese (zh)",
+                value: "zh",
+              },
+            ],
+          },
+        },
       };
     }
     words(args) {
       const text = Scratch.Cast.toString(args.text);
       const words = parse(text, args.language);
-      return words.join(' ');
+      return words.join(" ");
     }
   }
 
