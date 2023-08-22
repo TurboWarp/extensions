@@ -10,6 +10,9 @@
     throw new Error('More Motion must run unsandboxed');
   }
 
+  // @ts-expect-error - not typed yet
+  const Rectangle = Scratch.vm.renderer.exports.Rectangle;
+
   class nkmoremotion {
     getInfo() {
       return {
@@ -303,10 +306,6 @@
       const drawableBounds = drawable.getFastBounds();
       drawableBounds.snapToInt();
 
-      // This is bad, need to rewrite this when renderer exports Rectangle
-      const Rectangle = Object.getPrototypeOf(drawableBounds).constructor;
-
-      /** @type {RenderWebGL.Rectangle} */
       const containsBounds = new Rectangle();
       containsBounds.initFromBounds(left, right, bottom, top);
       containsBounds.snapToInt();
@@ -317,7 +316,6 @@
 
       drawable.updateCPURenderAttributes();
 
-      /** @type {RenderWebGL.Rectangle} */
       const intersectingBounds = Rectangle.intersect(drawableBounds, containsBounds);
       for (let x = intersectingBounds.left; x < intersectingBounds.right; x++) {
         for (let y = intersectingBounds.bottom; y < intersectingBounds.top; y++) {
