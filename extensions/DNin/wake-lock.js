@@ -1,4 +1,5 @@
 // Name: Wake Lock
+// ID: dninwakelock
 // Description: Prevent the computer from falling asleep.
 // By: D-ScratchNinja <https://scratch.mit.edu/users/D-ScratchNinja/>
 
@@ -22,7 +23,7 @@
 
     getInfo() {
       return {
-        id: 'wakeLock',
+        id: 'dninwakelock',
         name: 'Wake Lock',
         docsURI: 'https://extensions.turbowarp.org/wake-lock',
         blocks: [
