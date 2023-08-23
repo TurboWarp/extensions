@@ -1,6 +1,6 @@
 // Name: Window Controls
 // ID: cubesterWindowControls
-// Description: A set of blocks that gives you greater control over the Program Window.
+// Description: Move, resize, and rename the window, enter fullscreen, get screen size, and more.
 // By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
 
 // Version V.1.0.0
