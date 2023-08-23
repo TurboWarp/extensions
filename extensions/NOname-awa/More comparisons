@@ -1,0 +1,750 @@
+(function (Scratch) {
+    'use strict';
+    const Cast = Scratch.Cast;
+    const ArgumentType = Scratch.ArgumentType;
+    const BlockType = Scratch.BlockType;
+    Scratch.translate.setup({
+        "zh-cn": {
+            "EXTENSION_EXT_NAME": "更多比较",
+            "EXTENSION.BOOLEAN_TO_NUMBER": "转换 [BOOLEAN] 为二进制数字",
+            "EXTENSION.IS_TRUE": "[OPERAND] 为真？",
+            "EXTENSION.CHECK_TYPE": "[INPUT] 是 [MODE] ？",
+            "EXTENSION.TRUE": "真",
+            "EXTENSION.FALSE": "假",
+            "EXTENSION.RANDOM": "随机",
+            "EXTENSION.TYPE_NUMBER": "数字",
+            "EXTENSION.TYPE_POSITIVE_NUMBER": "正数",
+            "EXTENSION.TYPE_NEGATIVE_NUMBER": "负数",
+            "EXTENSION.TYPE_EVEN_NUMBER": "偶数",
+            "EXTENSION.TYPE_ODD_NUMBER": "奇数",
+            "EXTENSION.TYPE_INTEGER_NUMBER": "整数",
+            "EXTENSION.TYPE_DECIMAL_NUMBER": "小数",
+            "EXTENSION.TYPE_PRIME_NUMBER": "质数",
+            "EXTENSION.TYPE_COMPOSITE_NUMBER": "合数",
+            "EXTENSION.TYPE_TEXT": "文本",
+            "EXTENSION.TYPE_BOOLEAN": "布尔值",
+            "EXTENSION.NAND": "[OPERAND1] 与非 [OPERAND2]",
+            "EXTENSION.NOR": "[OPERAND1] 或非 [OPERAND2]",
+            "EXTENSION.XOR": "[OPERAND1] 异或 [OPERAND2]",
+            "EXTENSION.XNOR": "[OPERAND1] 同或 [OPERAND2]",
+        },
+        "zh-tw": {
+            "EXTENSION_EXT_NAME": "更多比較",
+            "EXTENSION.BOOLEAN_TO_NUMBER": "轉換 [BOOLEAN] 為二位制數字",
+            "EXTENSION.IS_TRUE": "[OPERAND] 為真？",
+            "EXTENSION.CHECK_TYPE": "[INPUT] 是 [MODE] ？",
+            "EXTENSION.TRUE": "真",
+            "EXTENSION.FALSE": "假",
+            "EXTENSION.RANDOM": "隨機",
+            "EXTENSION.TYPE_NUMBER": "數字",
+            "EXTENSION.TYPE_POSITIVE_NUMBER": "正數",
+            "EXTENSION.TYPE_NEGATIVE_NUMBER": "負數",
+            "EXTENSION.TYPE_EVEN_NUMBER": "偶數",
+            "EXTENSION.TYPE_ODD_NUMBER": "奇數",
+            "EXTENSION.TYPE_INTEGER_NUMBER": "整數",
+            "EXTENSION.TYPE_DECIMAL_NUMBER": "小數",
+            "EXTENSION.TYPE_PRIME_NUMBER": "質數",
+            "EXTENSION.TYPE_COMPOSITE_NUMBER": "合數",
+            "EXTENSION.TYPE_TEXT": "文字",
+            "EXTENSION.TYPE_BOOLEAN": "布林值",
+            "EXTENSION.NAND": "[OPERAND1] 與非 [OPERAND2]",
+            "EXTENSION.NOR": "[OPERAND1] 或非 [OPERAND2]",
+            "EXTENSION.XOR": "[OPERAND1] 異或 [OPERAND2]",
+            "EXTENSION.XNOR": "[OPERAND1] 同或 [OPERAND2]",
+        },
+        "ko": {
+            "EXTENSION_EXT_NAME": "더 많은 비교",
+            "EXTENSION.BOOLEAN_TO_NUMBER": "[BOOLEAN] 을/를 이진수수자로 전환",
+            "EXTENSION.IS_TRUE": "[OPERAND] 으로 정말로？",
+            "EXTENSION.CHECK_TYPE": "[INPUT]은(는) [MODE]인가요?",
+            "EXTENSION.TRUE": "진짜",
+            "EXTENSION.FALSE": "가짜",
+            "EXTENSION.RANDOM": "무작위",
+            "EXTENSION.TYPE_NUMBER": "숫자",
+            "EXTENSION.TYPE_POSITIVE_NUMBER": "양수",
+            "EXTENSION.TYPE_NEGATIVE_NUMBER": "음수",
+            "EXTENSION.TYPE_EVEN_NUMBER": "짝수",
+            "EXTENSION.TYPE_ODD_NUMBER": "홀수",
+            "EXTENSION.TYPE_INTEGER_NUMBER": "정수",
+            "EXTENSION.TYPE_DECIMAL_NUMBER": "소수(.)",
+            "EXTENSION.TYPE_PRIME_NUMBER": "소수(자신과 1로만 나누어 집니다)",
+            "EXTENSION.TYPE_COMPOSITE_NUMBER": "합성수",
+            "EXTENSION.TYPE_TEXT": "텍스트",
+            "EXTENSION.TYPE_BOOLEAN": "부울 값",
+            "EXTENSION.NAND": "[OPERAND1] NAND [OPERAND2]",
+            "EXTENSION.NOR": "[OPERAND1] NOR [OPERAND2]",
+            "EXTENSION.XOR": "[OPERAND1] XOR [OPERAND2]",
+            "EXTENSION.XNOR": "[OPERAND1] XNOR [OPERAND2]",
+        }
+    });
+    const formatMessage = Scratch.translate;
+
+    class Blocks {
+        getInfo() {
+            return {
+                color1: '#00a889',
+                color2: '#00977b',
+                color3: '#00866e',
+                id: 'EXTENSION',
+                name: formatMessage({
+                    id: 'EXTENSION_EXT_NAME',
+                    default: 'More comparisons'
+                }),
+                blocks: [
+                    {
+                        opcode: 'booleanMenu',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[BOOLEAN]',
+                        arguments: {
+                            BOOLEAN: {
+                                type: ArgumentType.STRING,
+                                menu: 'BOOLEAN_MENU'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'isTrue',
+                        blockType: BlockType.BOOLEAN,
+                        text: formatMessage({
+                            id: 'EXTENSION.IS_TRUE',
+                            default: '[OPERAND] is true?'
+                        }),
+                        arguments: {
+                            OPERAND: {
+                                type: ArgumentType.STRING,
+                                defaultValue: ''
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'checkType',
+                        blockType: BlockType.BOOLEAN,
+                        text: formatMessage({
+                            id: 'EXTENSION.CHECK_TYPE',
+                            default: '[INPUT] is [MODE] ?'
+                        }),
+                        arguments: {
+                            INPUT: {
+                                type: ArgumentType.STRING,
+                                defaultValue: ''
+                            },
+                            MODE: {
+                                type: ArgumentType.STRING,
+                                menu: 'CHECK_TYPE',
+                                defaultValue: 'number'
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'strictlyEqual',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] ≡ [OPERAND2]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.STRING,
+                                defaultValue: ''
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.STRING,
+                                defaultValue: '50'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'greaterOrEqual',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] ≥ [OPERAND2]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.STRING,
+                                defaultValue: ''
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.STRING,
+                                defaultValue: '50'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'lessOrEqual',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] ≤ [OPERAND2]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.STRING,
+                                defaultValue: ''
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.STRING,
+                                defaultValue: '50'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'unequal',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] ≠ [OPERAND2]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.STRING,
+                                defaultValue: ''
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.STRING,
+                                defaultValue: '50'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'strictlyUnequal',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] ≢ [OPERAND2]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.STRING,
+                                defaultValue: ''
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.STRING,
+                                defaultValue: '50'
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'equalNegative',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] =- [OPERAND2]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: ''
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: '50'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'equalPON',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] =± [OPERAND2]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: ''
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: '50'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'vertical',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] ⊥ [OPERAND2]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.ANGLE,
+                                defaultValue: '0'
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.ANGLE,
+                                defaultValue: '90'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'parallel',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] ∥ [OPERAND2]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.ANGLE,
+                                defaultValue: '0'
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.ANGLE,
+                                defaultValue: '180'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'approximatelyEqualNormal',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] ≈ [OPERAND2]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: '5.5'
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: '6'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'approximatelyEqual',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] ≈ [OPERAND2] ± [NUM]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: '5'
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: '6'
+                            },
+                            NUM: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: '1'
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'continuousCompare',
+                        blockType: BlockType.BOOLEAN,
+                        text: '[OPERAND1] [SYMBOL1] [OPERAND2] [SYMBOL2] [OPERAND3]',
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.STRING,
+                                defaultValue: ''
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.STRING,
+                                defaultValue: ''
+                            },
+                            OPERAND3: {
+                                type: ArgumentType.STRING,
+                                defaultValue: ''
+                            },
+                            SYMBOL1: {
+                                type: ArgumentType.STRING,
+                                menu: 'EQUAL_SYMBOL',
+                                defaultValue: 'lessOrEqual'
+                            },
+                            SYMBOL2: {
+                                type: ArgumentType.STRING,
+                                menu: 'EQUAL_SYMBOL',
+                                defaultValue: 'lessOrEqual'
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'nand',
+                        blockType: BlockType.BOOLEAN,
+                        text: formatMessage({
+                            id: 'EXTENSION.NAND',
+                            default: '[OPERAND1] nand [OPERAND2]'
+                        }),
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.BOOLEAN
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.BOOLEAN
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'nor',
+                        blockType: BlockType.BOOLEAN,
+                        text: formatMessage({
+                            id: 'EXTENSION.NOR',
+                            default: '[OPERAND1] nor [OPERAND2]'
+                        }),
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.BOOLEAN
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.BOOLEAN
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'xor',
+                        blockType: BlockType.BOOLEAN,
+                        text: formatMessage({
+                            id: 'EXTENSION.XOR',
+                            default: '[OPERAND1] xor [OPERAND2]'
+                        }),
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.BOOLEAN
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.BOOLEAN
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'xnor',
+                        blockType: BlockType.BOOLEAN,
+                        text: formatMessage({
+                            id: 'EXTENSION.XNOR',
+                            default: '[OPERAND1] xnor [OPERAND2]'
+                        }),
+                        arguments: {
+                            OPERAND1: {
+                                type: ArgumentType.BOOLEAN
+                            },
+                            OPERAND2: {
+                                type: ArgumentType.BOOLEAN
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'booleanToNumber',
+                        blockType: BlockType.REPORTER,
+                        text: formatMessage({
+                            id: 'EXTENSION.BOOLEAN_TO_NUMBER',
+                            default: 'converts [BOOLEAN] to binary num'
+                        }),
+                        arguments: {
+                            BOOLEAN: {
+                                type: ArgumentType.BOOLEAN,
+                                defaultValue: ''
+                            }
+                        }
+                    }
+                ],
+                menus: {
+                    BOOLEAN_MENU: {
+                        acceptReporters: false,
+                        items: [
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TRUE',
+                                    default: 'true'
+                                }),
+                                value: 'true'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.FALSE',
+                                    default: 'false'
+                                }),
+                                value: 'false'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.RANDOM',
+                                    default: 'random'
+                                }),
+                                value: 'random'
+                            }
+                        ]
+                    },
+                    EQUAL_SYMBOL: {
+                        acceptReporters: false,
+                        items: [
+                            {
+                                text: '=',
+                                value: 'equal'
+                            },
+                            {
+                                text: '≡',
+                                value: 'strictlyEqual'
+                            },
+                            {
+                                text: '>',
+                                value: 'greater'
+                            },
+                            {
+                                text: '<',
+                                value: 'less'
+                            },
+                            {
+                                text: '≥',
+                                value: 'greaterOrEqual'
+                            },
+                            {
+                                text: '≤',
+                                value: 'lessOrEqual'
+                            },
+                            {
+                                text: '≠',
+                                value: 'unequal'
+                            },
+                            {
+                                text: '≢',
+                                value: 'strictlyUnequal'
+                            },
+                            {
+                                text: '=-',
+                                value: 'equalNegative'
+                            },
+                            {
+                                text: '=±',
+                                value: 'EqualPON'
+                            },
+                            {
+                                text: '≈',
+                                value: 'approximatelyEqual'
+                            },
+                            {
+                                text: '⊥',
+                                value: 'vertical'
+                            },
+                            {
+                                text: '∥',
+                                value: 'parallel'
+                            }
+                        ]
+                    },
+                    LOGIC_GATE_SYMBOL: {
+                        acceptReporters: false,
+                        items: [
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.NAND',
+                                    default: 'nand'
+                                }),
+                                value: 'nand'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.NOR',
+                                    default: 'nor'
+                                }),
+                                value: 'nor'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.XOR',
+                                    default: 'xor'
+                                }),
+                                value: 'xor'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.XNOR',
+                                    default: 'xnor'
+                                }),
+                                value: 'xnor'
+                            }
+                        ]
+                    },
+                    CHECK_TYPE: {
+                        acceptReporters: false,
+                        items: [
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TYPE_NUMBER',
+                                    default: 'number'
+                                }),
+                                value: 'number'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TYPE_POSITIVE_NUMBER',
+                                    default: 'positive number'
+                                }),
+                                value: 'positiveNumber'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TYPE_NEGATIVE_NUMBER',
+                                    default: 'negative number'
+                                }),
+                                value: 'negativeNumber'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TYPE_EVEN_NUMBER',
+                                    default: 'even number'
+                                }),
+                                value: 'evenNumber'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TYPE_ODD_NUMBER',
+                                    default: 'odd number'
+                                }),
+                                value: 'oddNumber'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TYPE_INTEGER_NUMBER',
+                                    default: 'integer number'
+                                }),
+                                value: 'integerNumber'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TYPE_DECIMAL_NUMBER',
+                                    default: 'decimal number'
+                                }),
+                                value: 'decimalNumber'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TYPE_PRIME_NUMBER',
+                                    default: 'prime number'
+                                }),
+                                value: 'primeNumber'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TYPE_COMPOSITE_NUMBER',
+                                    default: 'composite number'
+                                }),
+                                value: 'compositeNumber'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TYPE_TEXT',
+                                    default: 'text'
+                                }),
+                                value: 'text'
+                            },
+                            {
+                                text: formatMessage({
+                                    id: 'EXTENSION.TYPE_BOOLEAN',
+                                    default: 'boolean'
+                                }),
+                                value: 'boolean'
+                            }
+                        ]
+                    }
+                }
+            };
+        }
+        booleanMenu({ BOOLEAN }) {
+            if (BOOLEAN === 'random') return Math.random() < 0.5 ? true : false
+            return BOOLEAN == 'true' ? true : false;
+        }
+        isTrue({ OPERAND }) {
+            return Cast.toBoolean(OPERAND);
+        }
+        checkType({ INPUT, MODE }) {
+            INPUT = String(INPUT);
+            const isNumRegex = /^-?\d+(\.\d+)?$/;
+            const isPrime = (number) => {
+                if (number <= 1) return false;
+                if (number <= 3) return true;
+                if (number % 2 === 0 || number % 3 === 0) return false;
+                let i = 5;
+                while (i * i <= number) {
+                    if (number % i === 0 || number % (i + 2) === 0) return false;
+                    i += 6;
+                }
+                return true;
+            }
+            const isComposite = (number) => {
+                if (number <= 1) return false;
+                for (let i = 2; i <= Math.sqrt(number); i++) {
+                    if (number % i === 0) return true;
+                }
+                return false;
+            }
+            switch (MODE) {
+                case 'number': return isNumRegex.test(INPUT);
+                case 'positiveNumber': return Cast.toNumber(INPUT) > 0 && isNumRegex.test(INPUT);
+                case 'negativeNumber': return Cast.toNumber(INPUT) < 0 && isNumRegex.test(INPUT);
+                case 'evenNumber': return Cast.toNumber(INPUT) % 2 === 0 && isNumRegex.test(INPUT);
+                case 'oddNumber': return Cast.toNumber(INPUT) % 2 !== 0 && isNumRegex.test(INPUT);
+                case 'integerNumber': return Cast.toNumber(INPUT) % 1 === 0 && isNumRegex.test(INPUT);
+                case 'decimalNumber': return Cast.toNumber(INPUT) % 1 !== 0 && isNumRegex.test(INPUT);
+                case 'primeNumber': return isPrime(Cast.toNumber(INPUT)) && isNumRegex.test(INPUT);
+                case 'compositeNumber': return isComposite(Cast.toNumber(INPUT)) && isNumRegex.test(INPUT);
+                case 'text': return !isNumRegex.test(INPUT) && INPUT.length >= 1;
+                case 'boolean': return INPUT === 'true' || INPUT === 'false';
+            }
+        }
+        _compare(arg1, arg2, symbol) {
+            if (symbol === 'equal') return Cast.compare(arg1, arg2) === 0;
+            if (symbol === 'strictlyEqual') return arg1 === arg2;
+            if (symbol === 'greater') return Cast.compare(arg1, arg2) > 0;
+            if (symbol === 'less') return Cast.compare(arg1, arg2) < 0;
+            if (symbol === 'greaterOrEqual') return Cast.compare(arg1, arg2) >= 0;
+            if (symbol === 'lessOrEqual') return Cast.compare(arg1, arg2) <= 0;
+            if (symbol === 'unequal') return Cast.compare(arg1, arg2) !== 0;
+            if (symbol === 'strictlyUnequal') return arg1 !== arg2;
+            if (symbol === 'equalNegative') return Cast.compare(arg1, -arg2) === 0;
+            if (symbol === 'EqualPON') return Cast.compare(arg1, -arg2) === 0 || Cast.compare(arg1, arg2) === 0;
+            if (symbol === 'approximatelyEqual') return Math.abs(arg1 - arg2) <= 0.5;
+            if (symbol === 'vertical') return ((arg1 - (arg2 - 90)) % 180) === 0;
+            if (symbol === 'parallel') return ((arg1 - arg2) % 180) === 0;
+            return false;
+        }
+        strictlyEqual({ OPERAND1, OPERAND2 }) {
+            return this._compare(OPERAND1, OPERAND2, 'strictlyEqual');
+        }
+        greaterOrEqual({ OPERAND1, OPERAND2 }) {
+            return this._compare(OPERAND1, OPERAND2, 'greaterOrEqual');
+        }
+        lessOrEqual({ OPERAND1, OPERAND2 }) {
+            return this._compare(OPERAND1, OPERAND2, 'lessOrEqual');
+        }
+        unequal({ OPERAND1, OPERAND2 }) {
+            return this._compare(OPERAND1, OPERAND2, 'unequal');
+        }
+        strictlyUnequal({ OPERAND1, OPERAND2 }) {
+            return this._compare(OPERAND1, OPERAND2, 'strictlyUnequal');
+        }
+        equalNegative({ OPERAND1, OPERAND2 }) {
+            return this._compare(OPERAND1, OPERAND2, 'equalNegative');
+        }
+        equalPON({ OPERAND1, OPERAND2 }) {
+            return this._compare(OPERAND1, OPERAND2, 'EqualPON');
+        }
+        vertical({ OPERAND1, OPERAND2 }) {
+            return this._compare(OPERAND1, OPERAND2, 'vertical');
+        }
+        parallel({ OPERAND1, OPERAND2 }) {
+            return this._compare(OPERAND1, OPERAND2, 'parallel');
+        }
+        approximatelyEqualNormal({ OPERAND1, OPERAND2 }) {
+            return this._compare(OPERAND1, OPERAND2, 'approximatelyEqual');
+        }
+        approximatelyEqual({ OPERAND1, OPERAND2, NUM }) {
+            OPERAND1 = Cast.toNumber(OPERAND1);
+            OPERAND2 = Cast.toNumber(OPERAND2);
+            NUM = Cast.toNumber(NUM);
+            return Math.abs(OPERAND1 - OPERAND2) <= NUM;
+        }
+        continuousCompare({ OPERAND1, OPERAND2, OPERAND3, SYMBOL1, SYMBOL2 }) {
+            const result1 = this._compare(OPERAND1, OPERAND2, SYMBOL1);
+            const result2 = this._compare(OPERAND2, OPERAND3, SYMBOL2);
+            return result1 && result2;
+        }
+        logicGateOperation(OPERAND1, OPERAND2, SYMBOL) {
+            OPERAND1 = Cast.toBoolean(OPERAND1);
+            OPERAND2 = Cast.toBoolean(OPERAND2);
+            if (SYMBOL === 'nand') return !(OPERAND1 && OPERAND2);
+            if (SYMBOL === 'nor') return !(OPERAND1 || OPERAND2);
+            if (SYMBOL === 'xor') return OPERAND1 !== OPERAND2;
+            if (SYMBOL === 'xnor') return OPERAND1 === OPERAND2;
+            return false;
+        }
+        nand({ OPERAND1, OPERAND2 }) {
+            return this.logicGateOperation(OPERAND1, OPERAND2, 'nand');
+        }
+        nor({ OPERAND1, OPERAND2 }) {
+            return this.logicGateOperation(OPERAND1, OPERAND2, 'nor');
+        }
+        xor({ OPERAND1, OPERAND2 }) {
+            return this.logicGateOperation(OPERAND1, OPERAND2, 'xor');
+        }
+        xnor({ OPERAND1, OPERAND2 }) {
+            return this.logicGateOperation(OPERAND1, OPERAND2, 'xnor');
+        }
+        booleanToNumber({ BOOLEAN }) {
+            BOOLEAN = Cast.toNumber(
+                Cast.toBoolean(BOOLEAN)
+            );
+            return BOOLEAN ? 1 : 0;
+        }
+    }
+    Scratch.extensions.register(new Blocks());
+})(Scratch);
