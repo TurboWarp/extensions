@@ -102,19 +102,19 @@
           "---",
 
           {
-            opcode: 'forEachThreadVariable',
+            opcode: "forEachThreadVariable",
             blockType: Scratch.BlockType.LOOP,
-            text: 'for each [VAR] in [NUM]',
+            text: "for each [VAR] in [NUM]",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'thread variable'
+                defaultValue: "thread variable",
               },
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '10'
-              }
-            }
+                defaultValue: "10",
+              },
+            },
           },
           {
             opcode: "listThreadVariables",
