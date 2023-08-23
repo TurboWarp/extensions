@@ -1,10 +1,9 @@
-/* Name: Time
-* ID: sipctime
-* Old Description: Blocks for interacting with unix timestamps and other date strings.
-* Updated Description: Blocks for Time, Date, and Time Zone calculations and interactions.
-* Main Extension By: -SIPC-
-* Calculation Blocks By: SharkPool
-*/
+// Name: Time
+// ID: sipctime
+// Old Description: Blocks for interacting with unix timestamps and other date strings.
+// Updated Description: Blocks for Time, Date, and Time Zone calculations and interactions.
+// Main Extension By: -SIPC-
+// Calculation Blocks By: SharkPool
 
 (function (Scratch) {
   "use strict";
