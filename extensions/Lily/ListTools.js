@@ -1,5 +1,5 @@
 // Name: List Tools
-// ID: lmsData
+// ID: lmsListTools
 // Description: An assortment of new ways to interact with lists.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 
@@ -26,7 +26,7 @@
   class Data {
     getInfo() {
       return {
-        id: "lmsData",
+        id: "lmsListTools",
         name: "List Tools",
         color1: "#ff661a",
         color2: "#f2590d",
