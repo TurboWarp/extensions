@@ -500,7 +500,9 @@
         case "_last_":
           return Scratch.Cast.toNumber(indexes[indexes.length - 1] + 1);
         case "_random_":
-          return Scratch.Cast.toNumber(indexes[Math.floor(Math.random() * indexes.length)] + 1);
+          return Scratch.Cast.toNumber(
+            indexes[Math.floor(Math.random() * indexes.length)] + 1
+          );
         default:
           return Scratch.Cast.toNumber(indexes[args.INDEX - 1] + 1);
       }
