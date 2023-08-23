@@ -264,3 +264,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Lily/AllMenus.svg
  - Created by [YogaindoCR](https://github.com/YogaindoCR) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1681839774
+
+## Lily/MoreEvents.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
+ - Background "blobs" by Scratch.
