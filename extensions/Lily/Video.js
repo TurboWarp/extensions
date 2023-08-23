@@ -1,6 +1,9 @@
 // Name: Video
 // ID: lmsVideo
 // Description: Play videos from URLs.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
+// Attribution is not required, but greatly appreciated.
 
 (function (Scratch) {
   "use strict";
