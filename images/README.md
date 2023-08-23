@@ -268,3 +268,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Lily/Data.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
  - Background "blobs" by Scratch.
+
+## Lily/MoreEvents.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
+ - Background "blobs" by Scratch.
