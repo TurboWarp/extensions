@@ -121,9 +121,9 @@
           "---",
 
           {
-            opcode: "getListSplit",
+            opcode: "getListJoin",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get list [LIST] split by [STRING]",
+            text: "get list [LIST] joined by [STRING]",
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -257,7 +257,7 @@
           {
             opcode: "joinLists",
             blockType: Scratch.BlockType.COMMAND,
-            text: "merge [LIST1] onto [LIST2]",
+            text: "concatenate [LIST1] onto [LIST2]",
             arguments: {
               LIST1: {
                 type: Scratch.ArgumentType.STRING,
@@ -474,7 +474,7 @@
       }
     }
 
-    getListSplit(args, util) {
+    getListJoin(args, util) {
       const list = getVarObjectFromName(args.LIST, util, "list");
       if (!list) return "";
       return list.value.join(args.STRING);
