@@ -3,7 +3,7 @@
 // Description: Play videos from URLs.
 
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -14,7 +14,7 @@
       this.videos = [];
       this.targets = [];
 
-      runtime.on('PROJECT_STOP_ALL', () => {
+      runtime.on("PROJECT_STOP_ALL", () => {
         for (const name of Object.keys(this.videos)) {
           const video = this.videos[name].video;
           video.pause();
@@ -29,7 +29,7 @@
         this.targets = [];
       });
 
-      runtime.on('PROJECT_START', () => {
+      runtime.on("PROJECT_START", () => {
         for (const name of Object.keys(this.videos)) {
           const video = this.videos[name].video;
           video.pause();
@@ -44,7 +44,7 @@
         this.targets = [];
       });
 
-      runtime.on('BEFORE_EXECUTE', () => {
+      runtime.on("BEFORE_EXECUTE", () => {
         for (const name of Object.keys(this.videos)) {
           const videoObject = this.videos[name];
 
@@ -73,206 +73,206 @@
     }
     getInfo() {
       return {
-        id: 'lmsVideo',
-        color1: '#557882',
-        name: 'Video',
+        id: "lmsVideo",
+        color1: "#557882",
+        name: "Video",
         blocks: [
           {
-            opcode: 'loadVideoURL',
+            opcode: "loadVideoURL",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'load video from URL [URL] as [NAME]',
+            text: "load video from URL [URL] as [NAME]",
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'https://extensions.turbowarp.org/dango.mp4'
+                defaultValue: "https://extensions.turbowarp.org/dango.mp4",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my video'
-              }
-            }
+                defaultValue: "my video",
+              },
+            },
           },
           {
-            opcode: 'deleteVideoURL',
+            opcode: "deleteVideoURL",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'delete video [NAME]',
+            text: "delete video [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my video'
-              }
-            }
+                defaultValue: "my video",
+              },
+            },
           },
           {
-            opcode: 'getLoadedVideos',
+            opcode: "getLoadedVideos",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'loaded videos'
+            text: "loaded videos",
           },
-          '---',
+          "---",
           {
-            opcode: 'showVideo',
+            opcode: "showVideo",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'show video [NAME] on [TARGET]',
+            text: "show video [NAME] on [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'targets'
+                menu: "targets",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my video'
+                defaultValue: "my video",
               },
-            }
+            },
           },
           {
-            opcode: 'stopShowingVideo',
+            opcode: "stopShowingVideo",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'stop showing video on [TARGET]',
+            text: "stop showing video on [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'targets'
+                menu: "targets",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my video'
+                defaultValue: "my video",
               },
-            }
+            },
           },
           {
-            opcode: 'getCurrentVideo',
+            opcode: "getCurrentVideo",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'current video on [TARGET]',
+            text: "current video on [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'targets'
-              }
-            }
+                menu: "targets",
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'startVideo',
+            opcode: "startVideo",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'start video [NAME] at [DURATION] seconds',
+            text: "start video [NAME] at [DURATION] seconds",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my video'
+                defaultValue: "my video",
               },
               DURATION: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
-              }
-            }
+                defaultValue: 0,
+              },
+            },
           },
           {
-            opcode: 'getAttribute',
+            opcode: "getAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[ATTRIBUTE] of video [NAME]',
+            text: "[ATTRIBUTE] of video [NAME]",
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'attribute'
+                menu: "attribute",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my video'
-              }
-            }
+                defaultValue: "my video",
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'pause',
+            opcode: "pause",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'pause video [NAME]',
+            text: "pause video [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my video'
-              }
-            }
+                defaultValue: "my video",
+              },
+            },
           },
           {
-            opcode: 'resume',
+            opcode: "resume",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'resume video [NAME]',
+            text: "resume video [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my video'
-              }
-            }
+                defaultValue: "my video",
+              },
+            },
           },
           {
-            opcode: 'getState',
+            opcode: "getState",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'video [NAME] is [STATE]?',
+            text: "video [NAME] is [STATE]?",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my video'
+                defaultValue: "my video",
               },
               STATE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'state'
-              }
-            }
+                menu: "state",
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'setVolume',
+            opcode: "setVolume",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set volume of video [NAME] to [VALUE]',
+            text: "set volume of video [NAME] to [VALUE]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my video'
+                defaultValue: "my video",
               },
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100
-              }
-            }
+                defaultValue: 100,
+              },
+            },
           },
           {
-            opcode: 'getVolume',
+            opcode: "getVolume",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'volume of video [NAME]',
+            text: "volume of video [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'my video'
-              }
-            }
-          }
+                defaultValue: "my video",
+              },
+            },
+          },
         ],
         menus: {
           targets: {
             acceptReporters: true,
-            items: '_getTargets'
+            items: "_getTargets",
           },
           state: {
             acceptReporters: true,
-            items: ['playing', 'paused']
+            items: ["playing", "paused"],
           },
           attribute: {
             acceptReporters: false,
-            items: ['current time', 'duration', 'width', 'height']
-          }
-        }
+            items: ["current time", "duration", "width", "height"],
+          },
+        },
       };
     }
 
     async loadVideoURL(args) {
       const videoName = Cast.toString(args.NAME);
       const url = Cast.toString(args.URL);
-      if (!await Scratch.canFetch(url)) return;
+      if (!(await Scratch.canFetch(url))) return;
 
       this.videos[videoName] = {
-        video: document.createElement('video'),
+        video: document.createElement("video"),
         volume: 1,
-        skin: 0
+        skin: 0,
       };
 
       const videoObject = this.videos[videoName];
@@ -280,7 +280,7 @@
 
       video.width = 1;
       video.height = 1;
-      video.crossOrigin = 'anonymous';
+      video.crossOrigin = "anonymous";
 
       video.src = url;
       video.currentTime = 0;
@@ -316,7 +316,7 @@
       const targetId = target.id;
       this.targets[targetId] = {
         target: target,
-        videoName: videoName
+        videoName: videoName,
       };
     }
 
@@ -337,7 +337,7 @@
       if (!target) return;
 
       const targetId = target.id;
-      return (this.targets[targetId]) ? this.targets[targetId].videoName : '';
+      return this.targets[targetId] ? this.targets[targetId].videoName : "";
     }
 
     startVideo(args) {
@@ -359,11 +359,16 @@
       const skin = vm.renderer._allSkins[skinId];
 
       switch (args.ATTRIBUTE) {
-        case ('current time'): return videoObject.video.currentTime;
-        case ('duration'): return videoObject.video.duration;
-        case ('width'): return skin._textureSize[0];
-        case ('height'): return skin._textureSize[1];
-        default: return 0;
+        case "current time":
+          return videoObject.video.currentTime;
+        case "duration":
+          return videoObject.video.duration;
+        case "width":
+          return skin._textureSize[0];
+        case "height":
+          return skin._textureSize[1];
+        default:
+          return 0;
       }
     }
 
@@ -386,9 +391,11 @@
     getState(args) {
       const videoName = Cast.toString(args.NAME);
       const videoObject = this.videos[videoName];
-      if (!videoObject) return (args.STATE === 'paused');
+      if (!videoObject) return args.STATE === "paused";
 
-      return (args.STATE == 'playing') ? !videoObject.video.paused : videoObject.video.paused;
+      return args.STATE == "playing"
+        ? !videoObject.video.paused
+        : videoObject.video.paused;
     }
 
     setVolume(args) {
@@ -408,32 +415,24 @@
       return videoObject.volume * 100;
     }
 
-    _getTargetFromMenu (targetName, util) {
+    _getTargetFromMenu(targetName, util) {
       let target = Scratch.vm.runtime.getSpriteTargetByName(targetName);
-      if (targetName === '_myself_') target = util.target;
-      if (targetName === '_stage_') target = runtime.getTargetForStage();
+      if (targetName === "_myself_") target = util.target;
+      if (targetName === "_stage_") target = runtime.getTargetForStage();
       return target;
     }
 
     _getTargets() {
-      const spriteNames = [
-        {text: 'myself', value: '_myself_'},
-        {text: 'Stage', value: '_stage_'}
+      let spriteNames = [
+        { text: "myself", value: "_myself_" },
+        { text: "Stage", value: "_stage_" },
       ];
-      const targets = Scratch.vm.runtime.targets;
-      for (let index = 1; index < targets.length; index++) {
-        const target = targets[index];
-        if (target.isOriginal) {
-          const targetName = target.getName();
-          spriteNames.push({
-            text: targetName,
-            value: targetName
-          });
-        }
-      }
+      const targets = Scratch.vm.runtime.targets
+        .filter((target) => target.isOriginal && !target.isStage)
+        .map((target) => target.getName());
+      spriteNames = spriteNames.concat(targets);
       return spriteNames;
     }
-
   }
   Scratch.extensions.register(new Video());
 })(Scratch);
