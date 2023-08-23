@@ -1,11 +1,11 @@
 // Name: Asset Manager
 // ID: lmsAssets
-// Description: Add, remove, and get data from sprites, costumes and sounds. 
+// Description: Add, remove, and get data from various types of assets.
 
 // TheShovel is so epic and cool and awesome
 
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -14,286 +14,287 @@
   class Assets {
     getInfo() {
       return {
-        id: 'lmsAssets',
-        color1: '#5779ca',
-        color2: '#4e6db6',
-        color3: '#4661a2',
-        name: 'Asset Manager',
+        id: "lmsAssets",
+        color1: "#5779ca",
+        color2: "#4e6db6",
+        color3: "#4661a2",
+        name: "Asset Manager",
         blocks: [
           {
-            opcode: 'addSprite',
+            opcode: "addSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'add sprite from URL [URL]',
+            text: "add sprite from URL [URL]",
             arguments: {
               URL: {
-                type: Scratch.ArgumentType.STRING
-              }
-            }
+                type: Scratch.ArgumentType.STRING,
+              },
+            },
           },
           {
-            opcode: 'addCostume',
+            opcode: "addCostume",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'add costume from URL [URL] named [NAME]',
+            text: "add costume from URL [URL] named [NAME]",
             arguments: {
               URL: {
-                type: Scratch.ArgumentType.STRING
+                type: Scratch.ArgumentType.STRING,
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'costume1'
-              }
-            }
+                defaultValue: "costume1",
+              },
+            },
           },
           {
-            opcode: 'addSound',
+            opcode: "addSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'add sound from URL [URL] named [NAME]',
+            text: "add sound from URL [URL] named [NAME]",
             arguments: {
               URL: {
-                type: Scratch.ArgumentType.STRING
+                type: Scratch.ArgumentType.STRING,
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'idk sound1?? like-'
-              }
-            }
+                defaultValue: "idk sound1?? like-",
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'renameSprite',
+            opcode: "renameSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'rename sprite [TARGET] to [NAME]',
+            text: "rename sprite [TARGET] to [NAME]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'targets'
+                menu: "targets",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Sprite1'
-              }
-            }
+                defaultValue: "Sprite1",
+              },
+            },
           },
           {
-            opcode: 'renameCostume',
+            opcode: "renameCostume",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'rename costume [COSTUME] to [NAME]',
+            text: "rename costume [COSTUME] to [NAME]",
             arguments: {
               COSTUME: {
-                type: Scratch.ArgumentType.COSTUME
+                type: Scratch.ArgumentType.COSTUME,
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'costume1'
-              }
-            }
+                defaultValue: "costume1",
+              },
+            },
           },
           {
-            opcode: 'renameSound',
+            opcode: "renameSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'rename sound [SOUND] to [NAME]',
+            text: "rename sound [SOUND] to [NAME]",
             arguments: {
               SOUND: {
-                type: Scratch.ArgumentType.SOUND
+                type: Scratch.ArgumentType.SOUND,
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'idk sound1?? like-'
-              }
-            }
+                defaultValue: "idk sound1?? like-",
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'deleteSprite',
+            opcode: "deleteSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'delete sprite [TARGET]',
+            text: "delete sprite [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'targets'
+                menu: "targets",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Sprite1'
-              }
-            }
+                defaultValue: "Sprite1",
+              },
+            },
           },
           {
-            opcode: 'deleteCostume',
+            opcode: "deleteCostume",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'delete costume [COSTUME]',
+            text: "delete costume [COSTUME]",
             arguments: {
               COSTUME: {
-                type: Scratch.ArgumentType.COSTUME
+                type: Scratch.ArgumentType.COSTUME,
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'costume1'
-              }
-            }
+                defaultValue: "costume1",
+              },
+            },
           },
           {
-            opcode: 'deleteSound',
+            opcode: "deleteSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'delete sound [SOUND]',
+            text: "delete sound [SOUND]",
             arguments: {
               SOUND: {
-                type: Scratch.ArgumentType.SOUND
+                type: Scratch.ArgumentType.SOUND,
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'idk sound1?? like-'
-              }
-            }
+                defaultValue: "idk sound1?? like-",
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'getAllSprites',
+            opcode: "getAllSprites",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'all sprites'
+            text: "all sprites",
           },
           {
-            opcode: 'getAllCostumes',
+            opcode: "getAllCostumes",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'all costumes'
+            text: "all costumes",
           },
           {
-            opcode: 'getAllSounds',
+            opcode: "getAllSounds",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'all sounds'
+            text: "all sounds",
           },
           {
-            opcode: 'getSpriteName',
+            opcode: "getSpriteName",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'sprite name'
+            text: "sprite name",
           },
-          '---',
+          "---",
           {
-            opcode: 'reorderCostume',
+            opcode: "reorderCostume",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'reorder costume # [INDEX1] to index [INDEX2]',
+            text: "reorder costume # [INDEX1] to index [INDEX2]",
             arguments: {
               INDEX1: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
+                defaultValue: 1,
               },
               INDEX2: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 2
-              }
-            }
+                defaultValue: 2,
+              },
+            },
           },
           {
-            opcode: 'reorderSound',
+            opcode: "reorderSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'reorder sound # [INDEX1] to index [INDEX2]',
+            text: "reorder sound # [INDEX1] to index [INDEX2]",
             arguments: {
               INDEX1: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
+                defaultValue: 1,
               },
               INDEX2: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 2
-              }
-            }
+                defaultValue: 2,
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'getSoundData',
+            opcode: "getSoundData",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[ATTRIBUTE] of [SOUND]',
+            text: "[ATTRIBUTE] of [SOUND]",
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'attribute'
+                menu: "attribute",
               },
               SOUND: {
-                type: Scratch.ArgumentType.SOUND
-              }
-            }
+                type: Scratch.ArgumentType.SOUND,
+              },
+            },
           },
           {
-            opcode: 'getCostumeData',
+            opcode: "getCostumeData",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[ATTRIBUTE] of [COSTUME]',
+            text: "[ATTRIBUTE] of [COSTUME]",
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'attribute'
+                menu: "attribute",
               },
               COSTUME: {
-                type: Scratch.ArgumentType.COSTUME
-              }
-            }
+                type: Scratch.ArgumentType.COSTUME,
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'getCostumeAtIndex',
+            opcode: "getCostumeAtIndex",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'name of costume # [INDEX]',
+            text: "name of costume # [INDEX]",
             arguments: {
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
-              }
-            }
+                defaultValue: 1,
+              },
+            },
           },
           {
-            opcode: 'getSoundAtIndex',
+            opcode: "getSoundAtIndex",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'name of sound # [INDEX]',
+            text: "name of sound # [INDEX]",
             arguments: {
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
-              }
-            }
+                defaultValue: 1,
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'openProject',
+            opcode: "openProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'open project from URL [URL]',
-            arguments: {
-              URL: {
-                type: Scratch.ArgumentType.STRING
-              }
-            }
-          },
-          {
-            opcode: 'getProjectJSON',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'project JSON'
-          },
-          '---',
-          {
-            opcode: 'loadExtension',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'load extension from URL [URL]',
+            text: "open project from URL [URL]",
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'https://extensions.turbowarp.org/Skyhigh173/json.js'
-              }
-            }
+              },
+            },
           },
           {
-            opcode: 'getLoadedExtensions',
+            opcode: "getProjectJSON",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'loaded extensions'
-          }
+            text: "project JSON",
+          },
+          "---",
+          {
+            opcode: "loadExtension",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "load extension from URL [URL]",
+            arguments: {
+              URL: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue:
+                  "https://extensions.turbowarp.org/Skyhigh173/json.js",
+              },
+            },
+          },
+          {
+            opcode: "getLoadedExtensions",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "loaded extensions",
+          },
         ],
         menus: {
           targets: {
             acceptReporters: true,
-            items: '_getTargets'
+            items: "_getTargets",
           },
           attribute: {
             acceptReporters: false,
-            items: ['index', 'dataURI', 'format', 'header', 'asset ID']
-          }
-        }
+            items: ["index", "dataURI", "format", "header", "asset ID"],
+          },
+        },
       };
     }
 
@@ -310,51 +311,59 @@
     addCostume(args, util) {
       const targetId = util.target.id;
       const assetName = Cast.toString(args.NAME);
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         Scratch.fetch(args.URL, {
-          method: 'GET'
-        }).then(x => x.blob().then(blob => {
-          if (!(
-              (this._typeIsBitmap(blob.type)) ||
-              (blob.type === 'image/svg+xml')
-            )) {
-            resolve();
-            throw new Error(`Invalid mime type: "${blob.type}"`);
-          }
-
-          const assetType = this._typeIsBitmap(blob.type) ?
-            runtime.storage.AssetType.ImageBitmap :
-            runtime.storage.AssetType.ImageVector;
-
-          const dataType = blob.type === 'image/svg+xml' ?
-            'svg' :
-            blob.type.split('/')[1];
-
-          blob.arrayBuffer()
-            .then(buffer => {
-              const data = dataType === 'image/svg+xml' ?
-                buffer :
-                new Uint8Array(buffer);
-              const asset = runtime.storage.createAsset(assetType, dataType, data, null, true);
-              const name = `${asset.assetId}.${asset.dataFormat}`;
-              const spriteJson = {
-                asset: asset,
-                md5ext: name,
-                name: assetName
-              };
-              const request = vm.addCostume(name, spriteJson, targetId);
-              if (request.then) {
-                request.then(resolve);
-              } else {
-                resolve();
-              }
-            })
-            .catch(err => {
-              console.error(`Failed to Load Costume: ${err}`);
-              console.warn(err);
+          method: "GET",
+        }).then((x) =>
+          x.blob().then((blob) => {
+            if (
+              !(this._typeIsBitmap(blob.type) || blob.type === "image/svg+xml")
+            ) {
               resolve();
-            });
-        }));
+              throw new Error(`Invalid mime type: "${blob.type}"`);
+            }
+
+            const assetType = this._typeIsBitmap(blob.type)
+              ? runtime.storage.AssetType.ImageBitmap
+              : runtime.storage.AssetType.ImageVector;
+
+            const dataType =
+              blob.type === "image/svg+xml" ? "svg" : blob.type.split("/")[1];
+
+            blob
+              .arrayBuffer()
+              .then((buffer) => {
+                const data =
+                  dataType === "image/svg+xml"
+                    ? buffer
+                    : new Uint8Array(buffer);
+                const asset = runtime.storage.createAsset(
+                  assetType,
+                  dataType,
+                  data,
+                  null,
+                  true
+                );
+                const name = `${asset.assetId}.${asset.dataFormat}`;
+                const spriteJson = {
+                  asset: asset,
+                  md5ext: name,
+                  name: assetName,
+                };
+                const request = vm.addCostume(name, spriteJson, targetId);
+                if (request.then) {
+                  request.then(resolve);
+                } else {
+                  resolve();
+                }
+              })
+              .catch((err) => {
+                console.error(`Failed to Load Costume: ${err}`);
+                console.warn(err);
+                resolve();
+              });
+          })
+        );
       });
     }
 
@@ -373,12 +382,18 @@
               new Uint8Array(arrayBuffer),
               true
             );
-            resolve(vm.addSound({
-              md5: asset.assetId + '.' + asset.dataFormat,
-              asset: asset,
-              name: assetName
-            }, targetId));
-          }).catch(resolve);
+            resolve(
+              vm.addSound(
+                {
+                  md5: asset.assetId + "." + asset.dataFormat,
+                  asset: asset,
+                  name: assetName,
+                },
+                targetId
+              )
+            );
+          })
+          .catch(resolve);
       });
     }
     // End of PenguinMod
@@ -473,7 +488,7 @@
     }
 
     getSpriteName(args, util) {
-      return util.target.sprite.name ?? '';
+      return util.target.sprite.name ?? "";
     }
 
     reorderCostume(args, util) {
@@ -505,15 +520,20 @@
       const attribute = Cast.toString(args.ATTRIBUTE);
       const costumeName = Cast.toString(args.COSTUME);
       const costumeIndex = target.getCostumeIndexByName(costumeName);
-      if (costumeIndex < 0) return '';
+      if (costumeIndex < 0) return "";
 
       const costume = target.sprite.costumes[costumeIndex];
       switch (attribute) {
-        case ('dataURI'): return costume.asset.encodeDataURI();
-        case ('index'): return costumeIndex + 1;
-        case ('format'): return costume.asset.assetType.runtimeFormat;
-        case ('header'): return costume.asset.assetType.contentType;
-        case ('asset ID'): return costume.asset.assetId;
+        case "dataURI":
+          return costume.asset.encodeDataURI();
+        case "index":
+          return costumeIndex + 1;
+        case "format":
+          return costume.asset.assetType.runtimeFormat;
+        case "header":
+          return costume.asset.assetType.contentType;
+        case "asset ID":
+          return costume.asset.assetId;
       }
     }
 
@@ -522,15 +542,20 @@
       const attribute = Cast.toString(args.ATTRIBUTE);
       const soundName = Cast.toString(args.SOUND);
       const soundIndex = this._getSoundIndexByName(soundName, util);
-      if (soundIndex < 0) return '';
+      if (soundIndex < 0) return "";
 
       const sound = target.sprite.sounds[soundIndex];
       switch (attribute) {
-        case ('dataURI'): return sound.asset.encodeDataURI();
-        case ('index'): return soundIndex + 1;
-        case ('format'): return sound.asset.assetType.runtimeFormat;
-        case ('header'): return sound.asset.assetType.contentType;
-        case ('asset ID'): return sound.asset.assetId;
+        case "dataURI":
+          return sound.asset.encodeDataURI();
+        case "index":
+          return soundIndex + 1;
+        case "format":
+          return sound.asset.assetType.runtimeFormat;
+        case "header":
+          return sound.asset.assetType.contentType;
+        case "asset ID":
+          return sound.asset.assetId;
       }
     }
 
@@ -538,7 +563,7 @@
       const target = util.target;
       const index = Math.round(Cast.toNumber(args.INDEX - 1));
       const costumes = target.sprite.costumes;
-      if (!(0 < index < costumes.length)) return '';
+      if (!(0 < index < costumes.length)) return "";
 
       return costumes[index].name;
     }
@@ -547,7 +572,7 @@
       const target = util.target;
       const index = Math.round(Cast.toNumber(args.INDEX - 1));
       const sounds = target.sprite.sounds;
-      if (!(0 < index < sounds.length)) return '';
+      if (!(0 < index < sounds.length)) return "";
 
       return sounds[index].name;
     }
@@ -555,8 +580,8 @@
     openProject(args) {
       const url = Cast.toString(args.URL);
       Scratch.fetch(url)
-        .then(r => r.arrayBuffer())
-        .then(buffer => vm.loadProject(buffer));
+        .then((r) => r.arrayBuffer())
+        .then((buffer) => vm.loadProject(buffer));
     }
 
     getProjectJSON() {
@@ -569,7 +594,9 @@
     }
 
     getLoadedExtensions(args) {
-      return JSON.stringify(Array.from(vm.extensionManager._loadedExtensions.keys()));
+      return JSON.stringify(
+        Array.from(vm.extensionManager._loadedExtensions.keys())
+      );
     }
 
     /* Utility Functions */
@@ -587,19 +614,19 @@
     // PenguinMod
     _typeIsBitmap(type) {
       return (
-        type === 'image/png' ||
-        type === 'image/bmp' ||
-        type === 'image/jpg' ||
-        type === 'image/jpeg' ||
-        type === 'image/jfif' ||
-        type === 'image/webp' ||
-        type === 'image/gif'
+        type === "image/png" ||
+        type === "image/bmp" ||
+        type === "image/jpg" ||
+        type === "image/jpeg" ||
+        type === "image/jfif" ||
+        type === "image/webp" ||
+        type === "image/gif"
       );
     }
 
-    _getTargetFromMenu (targetName, util) {
+    _getTargetFromMenu(targetName, util) {
       let target = Scratch.vm.runtime.getSpriteTargetByName(targetName);
-      if (targetName === '_myself_') target = util.target.sprite.clones[0];
+      if (targetName === "_myself_") target = util.target.sprite.clones[0];
       return target;
     }
 
@@ -614,17 +641,16 @@
           spriteNames.push({
             text: targetName,
             // We, rather unfortunately, have to rely on Target IDs. This is a terrible idea.
-            value: targetId
+            value: targetId,
           });
         }
       }
       if (spriteNames.length > 0) {
         return spriteNames;
       } else {
-        return [''];
+        return [""];
       }
     }
-
   }
   Scratch.extensions.register(new Assets());
 })(Scratch);
