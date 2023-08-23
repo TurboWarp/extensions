@@ -1,4 +1,4 @@
-// Name: Camera Controls
+// Name: Camera Controls (Very Buggy)
 // ID: DTcameracontrols
 // Description: Move the visible part of the stage.
 // By: DT
@@ -79,7 +79,7 @@
     getInfo() {
       return {
         id: "DTcameracontrols",
-        name: "Camera",
+        name: "Camera (Very Buggy)",
 
         color1: "#ff4da7",
         color2: "#de4391",
