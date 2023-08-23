@@ -527,13 +527,11 @@
     orderIs(args, util) {
       const list = getVarObjectFromName(args.LIST, util, "list");
       if (!list) return false;
-      const defaultList = cloneObj(list.value);
-      const orderedList = cloneObj(list.value).sort();
-      if (args.ORDER === "ascending") {
-        return arraysEqual(defaultList, orderedList);
-      }
-      if (args.ORDER === "descending") {
-        return arraysEqual(defaultList.reverse(), orderedList);
+
+      for (let i = 0; i < list.value.length - 1; i++) {
+        const compare = Scratch.Cast.compare(list.value[i + 1], list.value[i]);
+        if (compare < 0 && args.ORDER === "descending") return true;
+        if (compare > 0 && args.ORDER === "ascending") return true;
       }
       return false;
     }
@@ -550,9 +548,9 @@
           .map(({ value }) => value);
         list.value = randomised;
       } else if (args.ORDER === "ascending") {
-        list.value.sort();
+        list.value.sort(Scratch.Cast.compare);
       } else if (args.ORDER === "descending") {
-        list.value.sort().reverse();
+        list.value.sort(Scratch.Cast.compare).reverse();
       }
       list._monitorUpToDate = false;
     }
@@ -617,7 +615,14 @@
     setListArray(args, util) {
       const list = getVarObjectFromName(args.LIST, util, "list");
       if (!list) return;
-      const array = JSON.parse(args.ARRAY);
+
+      let array;
+      try {
+        array = JSON.parse(args.ARRAY);
+      } catch (error) {
+        return;
+      }
+
       if (!Array.isArray(array)) return;
       const newArray = array;
       list.value = newArray;
