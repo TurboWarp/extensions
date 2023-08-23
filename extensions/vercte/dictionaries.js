@@ -1,114 +1,125 @@
-(function(Scratch) {
-  'use strict';
+// Name: Dictionaries
+// ID: verctedictionaries
+// Description: Use the power of dictionaries in your project.
+// By: Vercte <https://scratch.mit.edu/users/lolecksdeehaha/>
+
+(function (Scratch) {
+  "use strict";
   let dictionaries = new Map();
   class DictionaryExtension {
     getInfo() {
       return {
-        id: 'verctedictionaries',
-        name: 'Dictionaries',
-        color1: '#008cff',
-        color2: '#0073d1',
-        color3: '#0066ba',
+        id: "verctedictionaries",
+        name: "Dictionaries",
+        color1: "#008cff",
+        color2: "#0073d1",
+        color3: "#0066ba",
         blocks: [
           {
-            opcode: 'dict_list',
+            opcode: "dict_list",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'list of dictionaries'
+            text: "list of dictionaries",
           },
           {
-            opcode: 'dict_stringify',
+            opcode: "dict_stringify",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'stringify dictionary [DICT] into JSON',
+            text: "stringify dictionary [DICT] into JSON",
             arguments: {
               DICT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'foo'
-              }
-            }
+                defaultValue: "foo",
+              },
+            },
           },
           {
-            opcode: 'dict_parse',
+            opcode: "dict_parse",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'parse JSON [OBJ] into dictionary [DICT]',
+            text: "parse JSON [OBJ] into dictionary [DICT]",
             arguments: {
-              OBJ: { type: Scratch.ArgumentType.STRING, defaultValue: '{"bar": "baz"}' },
-              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' }
-            }
+              OBJ: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"bar": "baz"}',
+              },
+              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'dict_get',
+            opcode: "dict_get",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'get key [KEY] from dictionary [DICT]',
+            text: "get key [KEY] from dictionary [DICT]",
             arguments: {
-              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'bar' },
-              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
-            }
+              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "bar" },
+              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
+            },
           },
           {
-            opcode: 'dict_property_defined',
+            opcode: "dict_property_defined",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'key [KEY] in dictionary [DICT] is defined?',
+            text: "key [KEY] in dictionary [DICT] is defined?",
             arguments: {
-              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'bar' },
-              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
-            }
+              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "bar" },
+              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
+            },
           },
           {
-            opcode: 'dict_property_null',
+            opcode: "dict_property_null",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'key [KEY] in dictionary [DICT] is null?',
+            text: "key [KEY] in dictionary [DICT] is null?",
             arguments: {
-              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'bar' },
-              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
-            }
+              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "bar" },
+              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'dict_set',
+            opcode: "dict_set",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set key [KEY] in dictionary [DICT] to [VAL]',
+            text: "set key [KEY] in dictionary [DICT] to [VAL]",
             arguments: {
-              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'bar' },
-              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
-              VAL: { type: Scratch.ArgumentType.STRING, defaultValue: 'baz' }
-            }
+              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "bar" },
+              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
+              VAL: { type: Scratch.ArgumentType.STRING, defaultValue: "baz" },
+            },
           },
           {
-            opcode: 'dict_change',
+            opcode: "dict_change",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'change key [KEY] in dictionary [DICT] by [BY]',
+            text: "change key [KEY] in dictionary [DICT] by [BY]",
             arguments: {
-              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'number' },
-              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
-              BY: { type: Scratch.ArgumentType.NUMBER, defaultValue: '1' }
-            }
+              KEY: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "number",
+              },
+              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
+              BY: { type: Scratch.ArgumentType.NUMBER, defaultValue: "1" },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'dict_delete',
+            opcode: "dict_delete",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'remove dictionary [DICT]',
+            text: "remove dictionary [DICT]",
             arguments: {
-              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
-            }
+              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
+            },
           },
           {
-            opcode: 'dict_delete_key',
+            opcode: "dict_delete_key",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'remove key [KEY] from dictionary [DICT]',
+            text: "remove key [KEY] from dictionary [DICT]",
             arguments: {
-              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'bar' },
-              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: 'foo' },
-            }
+              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "bar" },
+              DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
+            },
           },
-        ]
+        ],
       };
     }
 
@@ -117,7 +128,7 @@
     }
 
     dict_stringify({ DICT }) {
-      const mapToObj = m => {
+      const mapToObj = (m) => {
         return Array.from(m).reduce((obj, [key, value]) => {
           obj[key] = value;
           return obj;
@@ -132,7 +143,7 @@
       try {
         dict = JSON.parse(OBJ);
       } catch (e) {
-        dict = {"error": String(e)};
+        dict = { error: String(e) };
       }
       dictionaries.set(DICT, new Map(Object.entries(dict)));
     }
@@ -141,11 +152,15 @@
       if (!dictionaries.get(DICT)) return "null";
       let dict = dictionaries.get(DICT);
       let value = dict.get(KEY);
-      if (typeof value === 'number' || typeof value === 'string' || typeof value === 'boolean') {
+      if (
+        typeof value === "number" ||
+        typeof value === "string" ||
+        typeof value === "boolean"
+      ) {
         return value;
       }
       if (value === undefined) {
-        return 'undefined';
+        return "undefined";
       }
       return JSON.stringify(value);
     }
