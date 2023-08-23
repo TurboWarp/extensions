@@ -433,7 +433,6 @@
       const listPart1 = list.value.slice(0, num1);
       const listPart2 = list.value.slice(num2 + 1, listLength);
       list.value = listPart1.concat(listPart2);
-      list._monitorUpToDate = false;
     }
 
     deleteAllOfItem(args, util) {
@@ -443,7 +442,6 @@
         return model !== args.ITEM;
       });
       list.value = newList;
-      list._monitorUpToDate = false;
     }
 
     replaceAllOfItem(args, util) {
@@ -461,7 +459,6 @@
         }
       }
       list.value = newList;
-      list._monitorUpToDate = false;
     }
 
     repeatList(args, util) {
