@@ -533,10 +533,10 @@
 
       for (let i = 0; i < list.value.length - 1; i++) {
         const compare = Scratch.Cast.compare(list.value[i + 1], list.value[i]);
-        if (compare < 0 && args.ORDER === "descending") return true;
-        if (compare > 0 && args.ORDER === "ascending") return true;
+        if (compare > 0 && args.ORDER === "descending") return false;
+        if (compare < 0 && args.ORDER === "ascending") return false;
       }
-      return false;
+      return true;
     }
 
     orderList(args, util) {
