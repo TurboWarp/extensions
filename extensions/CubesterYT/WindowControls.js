@@ -118,11 +118,11 @@
             arguments: {
               W: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "1000"
+                defaultValue: "480"
               },
               H: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "1000"
+                defaultValue: "360"
               }
             }
           },
