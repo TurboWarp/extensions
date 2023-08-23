@@ -457,44 +457,22 @@
             }
           },
           '---',
-          //sorting blocked added by 0znzw.
           {
             opcode: 'ss_sort',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'sort numbers in array [list] with [method] sort and return in [order] order',
+            text: 'sort item in array [list] with [order] order',
             disableMonitor: true,
             arguments: {
-                method: {
-                    type: Scratch.ArgumentType.STRING,
-                    menu: 'ss_sort_methods'
-                },
                 list: {
                     type: Scratch.ArgumentType.STRING,
                     defaultValue: '[5.23, 214, 522, 61, 5.24, 62.2, 1, 51212, 0, 0]'
                 },
                 order: {
                     type: Scratch.ArgumentType.STRING,
-                    menu: 'ss_sort_order'
+                    menu: 'sort_order'
                 }
             }
           },
-          {
-            opcode: 'ss_sortA',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'sort words in array [list] alphabetically and return in [order] order',
-            disableMonitor: true,
-            arguments: {
-                list: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: '["d","b","c","y","a"]'
-                },
-                order: {
-                    type: Scratch.ArgumentType.STRING,
-                    menu: 'ss_sort_order'
-                }
-            }
-          },
-          //end ss
           '---',
           makeLabel('Lists'),
           {
@@ -540,12 +518,7 @@
             acceptReporters: true,
             items: ['=','≠']
           },
-          //menus used by ss
-          ss_sort_methods: {
-            items: ['quick','bubble','selection','insertion','merge','heap','counting','shell','bogo'],
-            acceptReporters: true
-          },
-          ss_sort_order: {
+          sort_order: {
             items: ['ascending','descending'],
             acceptReporters: true
           }
@@ -952,77 +925,30 @@
       return '';
     }
 
-    //simple sort | @0znzw
     ss_sort(args) {
-      var list;
-      try {
-      list = JSON.parse(args.list);
-      } catch {
-          return ' ';
-      }
-      /*eslint-disable*/
-      function bblSort(t){for(var e=0;e<t.length;e+=1)for(var r=0;r<t.length-e-1;r+=1)if(t[r]>t[r+1]){var n=t[r];t[r]=t[r+1],t[r+1]=n}return t};
-      function selectionSort(t){let e=t.length;for(let r=0;r<e;r++){let n=r;for(let o=r+1;o<e;o++)t[o]<t[n]&&(n=o);if(n!=r){let l=t[r];t[r]=t[n],t[n]=l}}return t};
-      function insertionSort(t){let e=t.length;for(let r=1;r<e;r++){let n=t[r],o=r-1;for(;o>-1&&n<t[o];)t[o+1]=t[o],o--;t[o+1]=n}return t}function merge(t,e){let r=[];for(;t.length&&e.length;)t[0]<e[0]?r.push(t.shift()):r.push(e.shift());return[...r,...t,...e]};
-      function mergeSort(t){let e=t.length/2;return t.length<2?t:merge(mergeSort(t.splice(0,e)),mergeSort(t))};
-      function heapSort(t){class e{constructor(){this.heap=[]}parentIndex(t){return Math.floor((t-1)/2)}leftChildIndex(t){return 2*t+1}rightChildIndex(t){return 2*t+2}swap(t,e){let r=this.heap[t];this.heap[t]=this.heap[e],this.heap[e]=r}insert(t){this.heap.push(t);for(var e=this.heap.length-1,r=this.parentIndex(e);this.heap[r]&&this.heap[r]<this.heap[e];)this.swap(r,e),e=this.parentIndex(e),r=this.parentIndex(e)}delete(){var t=this.heap.shift();this.heap.unshift(this.heap.pop());for(var e=0,r=this.leftChildIndex(e),n=this.rightChildIndex(e);this.heap[r]&&this.heap[r]>this.heap[e]||this.heap[n]>this.heap[e];){var o=r;this.heap[n]&&this.heap[n]>this.heap[o]&&(o=n),this.swap(o,e),e=o,r=this.leftChildIndex(o),n=this.rightChildIndex(o)}return t}}return function t(r){var n=[],o=new e;for(let l=0;l<r.length;l++)o.insert(r[l]);for(let f=0;f<r.length;f++)n.push(o.delete());return n}(t)};
-      function countingSort(t){return t.reduce((t,e)=>(t[e]=(t[e]||0)+1,t),[]).reduce((t,e,r)=>t.concat(Array(e).fill(r)),[])};
-      function radixSort(t){let e=(t,e)=>{let r=String(t),n=r[r.length-1-e];return void 0===n?0:n},r=t=>{let e="0";return t.forEach(t=>{let r=String(t);r.length>e.length&&(e=r)}),e.length};return(t=>{let n=r(t);for(let o=0;o<n;o++){let l=Array.from({length:10},()=>[]);for(let f=0;f<t.length;f++){let h=e(t[f],o);void 0!==h&&l[h].push(t[f])}t=l.flat()}return t})(t)};
-      function bingoSort(t,e){let r=t[0],n=t[0];for(let o=1;o<e;r=Math.min(r,t[o]),n=Math.max(n,t[o]),o++);let l=n,f=0;for(;r<n;){let h=f;for(let i=h;i<e;i++)t[i]==r?([t[i],t[f]]=[t[f],t[i]],f+=1):t[i]<n&&(n=t[i]);r=n,n=l}for(let u=0;u<t.length;u++);};
-      function shellSort(t){let e=t.length;for(let r=Math.floor(e/2);r>0;r=Math.floor(r/2))for(let n=r;n<e;n+=1){let o=t[n],l;for(l=n;l>=r&&t[l-r]>o;l-=r)t[l]=t[l-r];t[l]=o}return t};
-      function timSort(t,e){let r=32;function n(t){let e=0;for(;t>=r;)e|=1&t,t>>=1;return t+e}function o(t,e,r){for(let n=e+1;n<=r;n++){let o=t[n],l=n-1;for(;l>=e&&t[l]>o;)t[l+1]=t[l],l--;t[l+1]=o}}function l(t,e,r,n){let o=r-e+1,l=n-r,f=Array(o),h=Array(l);for(let i=0;i<o;i++)f[i]=t[e+i];for(let u=0;u<l;u++)h[u]=t[r+1+u];let s=0,_=0,$=e;for(;s<o&&_<l;)f[s]<=h[_]?(t[$]=f[s],s++):(t[$]=h[_],_++),$++;for(;s<o;)t[$]=f[s],$++,s++;for(;_<l;)t[$]=h[_],$++,_++}return function t(e,f){let h=n(r);for(let i=0;i<f;i+=h)o(e,i,Math.min(i+r-1,f-1));for(let u=h;u<f;u*=2)for(let s=0;s<f;s+=2*u){let _=s+u-1,$=Math.min(s+2*u-1,f-1);_<$&&l(e,s,_,$)}}(t,e)};
-      //@ts-expect-error
-      function combSort(t){function e(t){return(t=parseInt(10*t/13,10))<1?1:t}return function t(r){let n=r.length,o=n,l=!0;for(;1!=o||!0==l;){o=e(o),l=!1;for(let f=0;f<n-o;f++)if(r[f]>r[f+o]){let h=r[f];r[f]=r[f+o],r[f+o]=h,l=!0}}}(t)};
-      function pigeonholeSort(t,e){let r=t[0],n=t[0],o,l,f,h;for(let i=0;i<e;i++)t[i]>n&&(n=t[i]),t[i]<r&&(r=t[i]);o=n-r+1;let u=[];for(l=0;l<e;l++)u[l]=0;for(l=0;l<e;l++)u[t[l]-r]++;for(f=0,h=0;f<o;f++)for(;u[f]-- >0;)t[h++]=f+r};
-      function cycleSort(t,e){let r=0;for(let n=0;n<=e-2;n++){let o=t[n],l=n;for(let f=n+1;f<e;f++)t[f]<o&&l++;if(l!=n){for(;o==t[l];)l+=1;if(l!=n){let h=o;o=t[l],t[l]=h,r++}for(;l!=n;){l=n;for(let i=n+1;i<e;i++)t[i]<o&&(l+=1);for(;o==t[l];)l+=1;if(o!=t[l]){let u=o;o=t[l],t[l]=u,r++}}}}};
-      function bogoSort(t,e){function r(e,r){for(var n=1;n<t.length;n++)if(e[n]<e[n-1])return!1;return!0}function n(t,e,r){var n=t[e];t[e]=t[r],t[r]=n}function o(t,e){var r,o=e;for(r=0;r<e;r++)n(t,o-r-1,Math.floor(Math.random()*e));return t}return function t(e,n){for(;!r(e,n);)e=o(e,n);return e}(t,e)}
-      const quickSort=t=>{if(t.length<=1)return t;let r=t[0],u=[],e=[];for(let n=1;n<t.length;n++)t[n]<r?u.push(t[n]):e.push(t[n]);return[...quickSort(u),r,...quickSort(e)]};
-      /*eslint-enable*/
-      var handleCases = (function(){
-      switch (args.method) {
-          case 'quick':
-              return quickSort(list);
-          case 'bubble':
-              return bblSort(list);
-          case 'selection':
-              return selectionSort(list);
-          case 'insertion':
-              return insertionSort(list);
-          case 'merge':
-              return mergeSort(list);
-          case 'heap':
-              return heapSort(list).reverse();
-          case 'counting':
-              return countingSort(list);
-          //radix sort was skipped
-          //bucket sort was skipped
-          //bingo broke for some reason :(
-          case 'shell':
-              return shellSort(list);
-          case 'bogo'://in request from jeremygamer13
-              return bogoSort(list, list.length);
-          /*eslint-disable*/
-          //so confused but this line vvvvvv (the one below) threw an error???
-          //timSort exists just it has 1 to many args to provide :\
-          /*eslint-enable*/
-          //skip 3
-          default:
-              return ' ';
-      }
-      });
-      var handled = handleCases();
-      return JSON.stringify((args.order == 'descending' ? reverseList(handled) : handled));
-  }
-  ss_sortA(args) {
-      var list;
+      let list;
       try {
           list = JSON.parse(args.list);
       } catch {
           return ' ';
       }
-      const sorted = list.sort();
+  
+      /*eslint-disable*/
+      const quickSort=t=>{if(t.length<=1)return t;let r=t[0],u=[],e=[];for(let n=1;n<t.length;n++)t[n]<r?u.push(t[n]):e.push(t[n]);return[...quickSort(u),r,...quickSort(e)]};
+      /*eslint-enable*/
+
+      let listHasAlph = false;
+      for (let item in list) {
+        item = list[item];
+        if (isNaN(item)) {
+          listHasAlph = true;
+          break;
+        }
+      }
+
+      const sorted = (listHasAlph ? list.sort() : quickSort(list));
       return JSON.stringify((args.order == 'descending' ? reverseList(sorted) : sorted));
-  }
+    }
   }
   Scratch.extensions.register(new JSONS());
 })(Scratch);
