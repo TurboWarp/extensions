@@ -1,6 +1,7 @@
 // Name: List Tools
 // ID: lmsData
 // Description: An assortment of new ways to interact with lists.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 
 // (It's getting harder and harder to think of original descriptions now)
 
