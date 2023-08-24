@@ -107,6 +107,7 @@
       }
 
       .extension {
+        position: relative;
         border: 2px solid #ccc;
         border-radius: 8px;
         margin: 4px;
@@ -120,6 +121,9 @@
       }
       .extension h3 {
         font-size: 1.5em;
+      }
+      .extension > :last-child {
+        margin-bottom: 0;
       }
       .extension-banner {
         position: relative;
@@ -137,10 +141,13 @@
         top: 0;
         left: 0;
         display: flex;
+        flex-wrap: wrap;
         width: 100%;
         height: 100%;
         align-items: center;
+        align-content: center;
         justify-content: center;
+        gap: 0.5rem;
         opacity: 0;
         transition: opacity .15s;
         background: rgba(0, 0, 0, 0.5);
@@ -148,14 +155,12 @@
       }
       .extension:hover .extension-buttons, .extension:focus-within .extension-buttons {
         opacity: 1;
-      }
-      .extension:hover .extension-buttons {
         backdrop-filter: blur(0.6px);
       }
       .extension-buttons > * {
-        padding: 8px;
+        padding: 0.5rem;
         background-color: #4c97ff;
-        border-radius: 8px;
+        border-radius: 0.5rem;
         border: none;
         font: inherit;
         cursor: pointer;
@@ -175,15 +180,50 @@
       .extension-buttons *:disabled {
         opacity: 0.5;
       }
-      .extension-buttons .copy {
-        margin: 0 8px 0 0;
-      }
       .extension-buttons .open {
         background-color: #ff4c4c;
         color: white;
       }
+      .extension-buttons .docs {
+        background-color: #FFAB19;
+        color: white;
+      }
+      .extension-buttons .sample {
+        background-color: #40BF4A;
+        color: white;
+      }
       .extension-buttons :disabled {
         opacity: 0.5;
+      }
+
+      .sample-list {
+        display: none;
+        position: absolute;
+        left: 0.5rem;
+        right: 0.5rem;
+        width: calc(100% - 1rem);
+        margin-top: -1.5rem;
+        padding: 0.5rem;
+        box-sizing: border-box;
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, .3);
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .sample-list h3 {
+        font-size: 1rem;
+        margin: 0;
+      }
+      .extension:hover[data-samples-open="true"] .sample-list {
+        display: flex;
+      }
+      @media (prefers-color-scheme: dark) {
+        .sample-list {
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          background-color: #333;
+        }
       }
 
       footer {
@@ -230,6 +270,7 @@
       </div>
 
       <div class="infobox">
+        <div class="infobox-title">Some extensions may not work in TurboWarp Desktop.</div>
         For compatibility, security, and offline support, each <a href="https://desktop.turbowarp.org/">TurboWarp Desktop</a> update contains an offline copy of these extensions from its release date, so some extensions may be outdated or missing.
         Use the latest update for best results.
       </div>
@@ -241,8 +282,8 @@
           <h2>Development Server Tools</h2>
           <p>
             Most recently modified extensions:
-            <% for (const extensionID of mostRecentExtensions) { %>
-              <a href="<%= getRunExtensionURL(extensionID) %>"><%= extensionID %>.js</a>
+            <% for (const extensionSlug of mostRecentExtensions) { %>
+              <a href="<%= getRunExtensionURL(extensionSlug) %>"><%= extensionSlug %>.js</a>
             <% } %>
           </p>
         </div>
@@ -273,6 +314,11 @@
             e.target.focus();
           }
         }
+
+        if (e.target.className.includes('sample-list-button')) {
+          var extension = e.target.closest('.extension');
+          extension.dataset.samplesOpen = extension.dataset.samplesOpen !== 'true';
+        }
       });
     </script>
 
@@ -297,17 +343,36 @@
           return result;
         };
         %>
-        <% for (const [extensionID, metadata] of Object.entries(extensionMetadata)) { %>
+        <% for (const [extensionSlug, metadata] of Object.entries(extensionMetadata)) { %>
           <div class="extension">
             <div class="extension-banner">
-              <% const image = extensionImages[extensionID] || 'images/unknown.svg'; %>
+              <% const image = extensionImages[extensionSlug] || 'images/unknown.svg'; %>
               <img loading="lazy" src="<%= image %>" class="extension-image">
 
               <div class="extension-buttons">
-                <button class="copy" data-copy="<%= getFullExtensionURL(extensionID) %>">Copy URL</button>
-                <a class="open" href="<%= getRunExtensionURL(extensionID) %>">Open Extension</a>
+                <button class="copy" data-copy="<%= getFullExtensionURL(extensionSlug) %>">Copy URL</button>
+                <a class="open" href="<%= getRunExtensionURL(extensionSlug) %>">Open Extension</a>
+
+                <% if (metadata.hasDocumentation) { %>
+                  <a class="docs" href="<%= getDocumentationURL(extensionSlug) %>">Documentation</a>
+                <% } %>
+
+                <% if (metadata.samples.length === 1) { %>
+                  <a class="sample" href="<%= getRunSampleURL(metadata.samples[0]) %>">Sample Project</a>
+                <% } else if (metadata.samples.length > 1) { %>
+                  <button class="sample sample-list-button">Sample Projects</button>
+                <% } %>
               </div>
             </div>
+
+            <% if (metadata.samples.length > 1) { %>
+              <div class="sample-list">
+                <h3><%= metadata.name %> Sample Projects:</h3>
+                <% for (const sample of metadata.samples) { %>
+                  <a class="sample-list-item" href="<%= getRunSampleURL(sample)%>"><%= sample.getTitle() %></a>
+                <% } %>
+              </div>
+            <% } %>
       
             <h2><%= metadata.name %></h2>
             <p>

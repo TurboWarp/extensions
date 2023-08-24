@@ -29,6 +29,8 @@ Every merged extension is more code that we will be expected to maintain indefin
 
 We're all volunteers who all have lives outside of Scratch extensions. Many have full time jobs or are full time students. We'll get to you as soon as we can, so please be patient.
 
+Every extension is also covered under [our bug bounty](https://github.com/TurboWarp/extensions/security/policy), so mindlessly merging things will have a direct impact on my wallet.
+
 ## Writing extensions
 
 Extension source code goes in the [`extensions`](extensions) folder. For example, an extension placed at `extensions/hello-world.js` would be accessible at [http://localhost:8000/hello-world.js](http://localhost:8000/hello-world.js) using our development server.
@@ -45,12 +47,13 @@ The header comments look like this:
 
 ```js
 // Name: Example Extension
+// ID: extensionid
 // Description: Does a very cool thing. This must have punctuation at the end!
 // By: GarboMuffin <https://scratch.mit.edu/users/GarboMuffin/>
 // Original: TestMuffin
 ```
 
-Remember, this has to be the *very first* thing in the JS file. `Name` and `Description` are required. You can have zero or more `By` and `Original`. Put credit links in `<angled brackets>` if you have one. It must point to a Scratch user profile. The parser is pretty loose, but try not to deviate too far from this format.
+Remember, this has to be the *very first* thing in the JS file. `Name`, `Description`, and `ID` are required. Make sure that `ID` exactly matches what you return in `getInfo()`. You can have zero or more `By` and `Original`. Put credit links in `<angled brackets>` if you have one. It must point to a Scratch user profile. This metadata is parsed by a script to generate the website and extension library. It tries to be pretty loose, but don't deviate too far. You must use `//`, not `/* */`.
 
 New extensions do not *need* images, but they are highly encouraged. Save the image in the `images` folder with the same folder name and file name (but different file extension) as the extension's source code. For example, if your extension is located in `extensions/TestMuffin/fetch.js`, save the image as `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will detect it automatically. Images are displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you.
 
@@ -112,41 +115,40 @@ You **MUST** avoid using any code or images under these licenses as we believe t
 
 We take licenses very seriously. License violations are one of the few things that can force us to break project compatibility.
 
-## Code style
-
-Our preferred code style is:
-
- - Indent with 2 spaces
- - Use semicolons
- - Use whitespace liberally
- - Comment liberally, but don't just re-explain what the code literally says (`var x = 3; // set x to 3` is a bad comment)
- - Pick one type of quotes and be consistent (if unsure, we like single quotes)
-
 ## Type checking
 
 If you use our development server, TypeScript aware editors such as Visual Studio Code will give you smart autocomplete suggestions for most Scratch and extension APIs based on [@turbowarp/types](https://github.com/TurboWarp/types) and [@turbowarp/types-tw](https://github.com/TurboWarp/types-tw). Note that these types are not perfect; some methods are missing or incorrect. Please report any issues you find.
 
 If you encounter a TypeScript error, as long as you understand the error, feel free to add `// @ts-ignore`, `// @ts-expect-error`, or just ignore the error entirely. We currently do not require extensions to pass type checking.
 
-## Linting
+## Linting, validation, and formatting
 
-We use ESLint to automatically common problems in pull requests. To run our linting rules on your computer, run:
+All pull requests are automatically checked by a combination of custom validation scripts, [ESLint](https://eslint.org/), and [Prettier](https://prettier.io/). Don't worry about passing these checks on the first attempt -- most don't. That's why we have these checks.
+
+Our custom validation scripts do things like making sure you have the correct headers at the start of your extension and that the images are the right size. **Your extension must pass validation.** You can run them locally with:
+
+```bash
+npm run validate
+```
+
+ESLint detects common JavaScript errors such as referencing non-existant variables. **Your extension must pass linting.** You can run it locally with:
 
 ```bash
 npm run lint
 ```
 
-ESLint can automatically fix certain issues. You can run this with:
-
-```bash
-npm run fix
-```
-
-Our ESLint configuration separates between *warnings* and *errors*. They both cause big red error messages to appear on pull requests, but they are different:
-
- - Warnings are typically minor style issues. If you ignore these we will fix it ourselves. This usually takes 15 seconds to address.
- - Errors are actually problems. Please read and address all of them. Extensions with errors may take longer to review as your extension is unfinished.
-
-You are allowed to [disable warnings or errors](https://eslint.org/docs/latest/use/configure/rules#disabling-rules) as needed, but only if actually required.
+You are allowed to [disable ESLint warnings and errors](https://eslint.org/docs/latest/use/configure/rules#disabling-rules) as needed, but please only do so if actually required.
 
 When including third-party code, especially minified code, you may use `/* eslint-disable*/` and `/* eslint-enable */` markers to disable linting for that entire section.
+
+We use Prettier to ensure consistent code formatting. **Your extension does not need to pass format; we will fix it for you if linting and validation pass.** You can format your code automatically with:
+
+```bash
+npm run format
+```
+
+To just check formatting, use:
+
+```bash
+npm run check-format
+```

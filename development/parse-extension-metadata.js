@@ -1,12 +1,12 @@
 class Person {
-  constructor (name, link) {
+  constructor(name, link) {
     /** @type {string} */
     this.name = name;
     /** @type {string|null} */
     this.link = link;
   }
 
-  toHTML () {
+  toHTML() {
     // Don't need to bother escaping here. There's no vulnerability.
     if (this.link) {
       return `<a href="${this.link}">${this.name}</a>`;
@@ -16,10 +16,10 @@ class Person {
 }
 
 class Extension {
-  constructor () {
-    this.id = '';
-    this.name = '';
-    this.description = '';
+  constructor() {
+    this.id = "";
+    this.name = "";
+    this.description = "";
     /** @type {Person[]} */
     this.by = [];
     /** @type {Person[]} */
@@ -45,13 +45,13 @@ const splitFirst = (string, split) => {
  * @returns {Person}
  */
 const parsePerson = (person) => {
-  const parts = splitFirst(person, '<');
+  const parts = splitFirst(person, "<");
   if (parts.length === 1) {
     return new Person(person, null);
   }
 
   const name = parts[0].trim();
-  const link = parts[1].replace('>', '');
+  const link = parts[1].replace(">", "");
   return new Person(name, link);
 };
 
@@ -62,14 +62,14 @@ const parsePerson = (person) => {
 const parseMetadata = (extensionCode) => {
   const metadata = new Extension();
 
-  for (const line of extensionCode.split('\n')) {
-    if (!line.startsWith('//')) {
+  for (const line of extensionCode.split("\n")) {
+    if (!line.startsWith("//")) {
       // End of header.
       break;
     }
 
     const withoutComment = line.substring(2).trim();
-    const parts = splitFirst(withoutComment, ':');
+    const parts = splitFirst(withoutComment, ":");
     if (parts.length === 1) {
       // Invalid.
       continue;
@@ -79,16 +79,19 @@ const parseMetadata = (extensionCode) => {
     const value = parts[1].trim();
 
     switch (key) {
-      case 'name':
+      case "id":
+        metadata.id = value;
+        break;
+      case "name":
         metadata.name = value;
         break;
-      case 'description':
+      case "description":
         metadata.description = value;
         break;
-      case 'by':
+      case "by":
         metadata.by.push(parsePerson(value));
         break;
-      case 'original':
+      case "original":
         metadata.original.push(parsePerson(value));
         break;
       default:
