@@ -29,7 +29,7 @@
     }
 
     gettotpcode(args) {
-      return new jsOTP.totp(30,6).getOtp("JBSWY3DPEHPK3PXP").toString()
+      return new jsOTP.totp().getOtp("JBSWY3DPEHPK3PXP").toString()
     }
   }
 
