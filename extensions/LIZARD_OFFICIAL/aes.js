@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 (function(Scratch) {
   'use strict';
 
