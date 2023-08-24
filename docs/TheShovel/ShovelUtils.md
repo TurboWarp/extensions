@@ -22,13 +22,13 @@ Imports a sprite into the project using a DataURI or link. Be mindful of sprite 
 Import image from [https://extensions.turbowarp.org/dango.png] name [Dango]
 ```
 
-Imports a costume from a PNG, Bitmap, or JPEG. **Does not work with SVGS**.
+Imports a costume from a PNG, Bitmap, or JPEG. **Does not work with SVGS**. The costume imports into the current sprite/backdrop the user has selected.
 
 ```scratch
 Import sound from [https://extensions.turbowarp.org/meow.mp3] name [Meow]
 ```
 
-Imports a sound from any Scratch-compatible sound file.
+Imports a sound from any Scratch-compatible sound file. The sound imports into the current sprite/backdrop the user has selected.
 
 ```scratch
 Import project from [https://theshovel.github.io/Bullet-Hell/Bullet%20Hell]
@@ -50,13 +50,13 @@ Aside from importing assets, Shovel Utils provides multiple miscellaneous featur
 Set editing target to [Sprite1]
 ```
 
-Sets the selected sprite in the editor. You can also set your input to "Stage" to set the selected target to the backdrop. Evidently, does not work packaged.
+Sets the selected sprite in the editor. You can also set your input to "Stage" to set the selected target to the backdrop. This does work packaged, however will not have a visual effect.
 
 ```scratch
 (get all sprites ::)
 ```
 
-Gets the names of all the sprites (and the stage) as a JSON array. This can then be parsed using other blocks in the extension, or the JSON Extension.
+Gets the names of all the sprites (and the stage) as a JSON array. This can then be parsed using the JSON Extension.
 
 ```scratch
 Restart project
