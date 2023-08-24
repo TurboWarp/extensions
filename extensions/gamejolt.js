@@ -864,7 +864,14 @@
     function __CreateAjax(sUrl, sBodyData, pCallback) {
       if (typeof sBodyData !== "string") sBodyData = "";
 
-      if (window.XMLHttpRequest) {
+      Scratch.canFetch(sUrl).then((allowed) => {
+        if (!allowed) {
+          pCallback("TODO: Put a message here");
+          return;
+        }
+
+        // canFetch() checked above
+        // eslint-disable-next-line no-restricted-syntax
         var pRequest = new XMLHttpRequest();
 
         // bind callback function
@@ -884,10 +891,7 @@
           pRequest.open("GET", sUrl);
           pRequest.send();
         }
-      } else {
-        console.error(GJAPI.sLogName + " XMLHttpRequest not supported");
-        pCallback(GJAPI.err.get("noXml"));
-      }
+      });
     }
 
     GJAPI.BETTER_THAN = true;
