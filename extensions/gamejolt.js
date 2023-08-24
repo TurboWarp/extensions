@@ -6,7 +6,6 @@
 (Scratch => {
   'use strict';
 
-  /* eslint-disable */
   const md5 = (() => {
     /*!
      * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
