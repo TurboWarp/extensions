@@ -233,7 +233,7 @@
     GJAPI.err = {
       noLogin: "No user logged in.",
       login: "User already logged in.",
-      noXml: "XMLHttp request not supported.",
+      noFetch: "Fetch request not supported.",
 
       /**
        * @param {string} code
@@ -424,8 +424,8 @@
             GJAPI.iSessionHandle = window.setInterval(GJAPI.SessionPing, 30000);
             window.addEventListener("beforeunload", GJAPI.SessionClose, false);
           }
-        },
-        pCallback(pResponse)
+          pCallback(pResponse);
+        }
       );
     };
 
@@ -866,7 +866,7 @@
 
       Scratch.canFetch(sUrl).then((allowed) => {
         if (!allowed) {
-          pCallback("TODO: Put a message here");
+          pCallback(GJAPI.err.get("noFetch"));
           return;
         }
 
@@ -1218,7 +1218,7 @@
         return;
       }
       GJAPI.SendRequest(
-        "/trophies/?trophy_id=" + value,
+        "/trophies/?trophy_id=" + iValue,
         GJAPI.SEND_FOR_USER,
         pCallback
       );
