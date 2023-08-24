@@ -101,6 +101,7 @@
       for (var c = 0; c < a.length; c++) {
         a[c] = 0;
       }
+      // eslint-disable-next-line no-redeclare
       for (var c = 0; c < b.length * 8; c += 8) {
         a[c >> 5] |= (b.charCodeAt(c / 8) & 255) << c % 32;
       }
@@ -337,7 +338,7 @@
 
         switch (sFormat) {
           case "json":
-            pCallback(eval("(" + sResponse + ")").response);
+            pCallback(JSON.parse(sResponse).response);
             break;
 
           case "dump":
