@@ -51,7 +51,7 @@
 
     let transform = "";
     transform += `translate(${stageWidth / 2 - effectiveWidth / 2 + x}px,${
-      stageHeight / 2 - effectiveHeight / 2 + y
+      stageHeight / 2 - effectiveHeight / 2 - y
     }px)`;
     iframe.style.transform = transform;
   };
