@@ -2,7 +2,7 @@
 // ID: sipctime
 // Old Desc: Blocks for interacting with unix timestamps and other date strings.
 // Description: Blocks for Time, Date, and Time Zone calculations and interactions.
-// Main Extension By: -SIPC-
+// By: -SIPC-
 // Calculation Blocks By: SharkPool
 
 (function (Scratch) {
