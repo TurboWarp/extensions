@@ -39,6 +39,17 @@
             },
           },
           {
+            opcode: "commentC",
+            blockType: Scratch.BlockType.CONDITIONAL,
+            text: "// [COMMENT]",
+            arguments: {
+              COMMENT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "comment",
+              },
+            },
+          },
+          {
             opcode: "commentReporter",
             blockType: Scratch.BlockType.REPORTER,
             text: "[INPUT] // [COMMENT]",
@@ -77,6 +88,10 @@
 
     commentCommand() {
       // no-op
+    }
+
+    commentC(args, util) {
+      return true;
     }
 
     commentReporter(args) {
