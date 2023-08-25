@@ -1,8 +1,12 @@
-(function (Scratch) {
-  'use strict';
+// Name: Stretch
+// ID: stretch
+// Description: Stretch sprites horizontally or vertically.
 
-  const STRETCH_X = Symbol('stretch.x');
-  const STRETCH_Y = Symbol('stretch.y');
+(function (Scratch) {
+  "use strict";
+
+  const STRETCH_X = Symbol("stretch.x");
+  const STRETCH_Y = Symbol("stretch.y");
 
   const vm = Scratch.vm;
 
@@ -30,8 +34,10 @@
     };
   };
   vm.runtime.targets.forEach((target) => implementStretchForTarget(target));
-  vm.runtime.on('targetWasCreated', (target, originalTarget) => implementStretchForTarget(target, originalTarget));
-  vm.runtime.on('PROJECT_LOADED', () => {
+  vm.runtime.on("targetWasCreated", (target, originalTarget) =>
+    implementStretchForTarget(target, originalTarget)
+  );
+  vm.runtime.on("PROJECT_LOADED", () => {
     vm.runtime.targets.forEach((target) => implementStretchForTarget(target));
   });
 
@@ -45,16 +51,16 @@
   class Stretch {
     getInfo() {
       return {
-        id: 'stretch',
-        name: 'Stretch',
-        color1: '#4287f5',
-        color2: '#2b62ba',
-        color3: '#204785',
+        id: "stretch",
+        name: "Stretch",
+        color1: "#4287f5",
+        color2: "#2b62ba",
+        color3: "#204785",
         blocks: [
           {
-            opcode: 'setStretch',
+            opcode: "setStretch",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set stretch to x: [X] y: [Y]',
+            text: "set stretch to x: [X] y: [Y]",
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -68,83 +74,83 @@
             filter: [Scratch.TargetType.SPRITE],
           },
           {
-            opcode: 'changeStretch',
+            opcode: "changeStretch",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'change stretch by x: [DX] y: [DY]',
+            text: "change stretch by x: [DX] y: [DY]",
             arguments: {
               DX: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: 0,
               },
               DY: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
-              }
-            }
+                defaultValue: 0,
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'setStretchX',
+            opcode: "setStretchX",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set stretch x to [X]',
+            text: "set stretch x to [X]",
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 100,
-              }
+              },
             },
             filter: [Scratch.TargetType.SPRITE],
           },
           {
-            opcode: 'setStretchY',
+            opcode: "setStretchY",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set stretch y to [Y]',
+            text: "set stretch y to [Y]",
             arguments: {
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 100,
-              }
+              },
             },
             filter: [Scratch.TargetType.SPRITE],
           },
           {
-            opcode: 'changeStretchX',
+            opcode: "changeStretchX",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'change stretch x by [DX]',
+            text: "change stretch x by [DX]",
             arguments: {
               DX: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 10
-              }
-            }
+                defaultValue: 10,
+              },
+            },
           },
           {
-            opcode: 'changeStretchY',
+            opcode: "changeStretchY",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'change stretch y by [DY]',
+            text: "change stretch y by [DY]",
             arguments: {
               DY: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 10
-              }
-            }
+                defaultValue: 10,
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'getX',
+            opcode: "getX",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'x stretch',
+            text: "x stretch",
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
           },
           {
-            opcode: 'getY',
+            opcode: "getY",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'y stretch',
+            text: "y stretch",
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
           },

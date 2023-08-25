@@ -1,5 +1,9 @@
+// Name: Battery
+// ID: battery
+// Description: Access information about the battery of phones or laptops. May not work on all devices and browsers.
+
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   /** @type {Promise<BatteryManager>|null} */
   let getBatteryPromise = null;
@@ -18,34 +22,35 @@
       return callback(cachedBattery);
     }
     if (!getBatteryPromise) {
-      getBatteryPromise = navigator.getBattery()
-        .then(battery => {
+      getBatteryPromise = navigator
+        .getBattery()
+        .then((battery) => {
           getBatteryPromise = null;
           cachedBattery = battery;
 
-          cachedBattery.addEventListener('chargingchange', () => {
-            Scratch.vm.runtime.startHats('battery_chargingChanged');
+          cachedBattery.addEventListener("chargingchange", () => {
+            Scratch.vm.runtime.startHats("battery_chargingChanged");
           });
-          cachedBattery.addEventListener('levelchange', () => {
-            Scratch.vm.runtime.startHats('battery_levelChanged');
+          cachedBattery.addEventListener("levelchange", () => {
+            Scratch.vm.runtime.startHats("battery_levelChanged");
           });
-          cachedBattery.addEventListener('chargingtimechange', () => {
-            Scratch.vm.runtime.startHats('battery_chargeTimeChanged');
+          cachedBattery.addEventListener("chargingtimechange", () => {
+            Scratch.vm.runtime.startHats("battery_chargeTimeChanged");
           });
-          cachedBattery.addEventListener('dischargingtimechange', () => {
-            Scratch.vm.runtime.startHats('battery_dischargeTimeChanged');
+          cachedBattery.addEventListener("dischargingtimechange", () => {
+            Scratch.vm.runtime.startHats("battery_dischargeTimeChanged");
           });
 
           return cachedBattery;
         })
-        .catch(error => {
+        .catch((error) => {
           getBatteryPromise = null;
-          console.error('Could not get battery', error);
+          console.error("Could not get battery", error);
           batteryError = true;
           return null;
         });
     }
-    return getBatteryPromise.then(battery => {
+    return getBatteryPromise.then((battery) => {
       return callback(battery);
     });
   };
@@ -54,78 +59,78 @@
   withBattery(() => {});
 
   class BatteryExtension {
-    getInfo () {
+    getInfo() {
       return {
-        name: 'Battery',
-        id: 'battery',
+        name: "Battery",
+        id: "battery",
         blocks: [
           {
-            opcode: 'charging',
+            opcode: "charging",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'charging?'
+            text: "charging?",
           },
           {
-            opcode: 'level',
+            opcode: "level",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'battery level'
+            text: "battery level",
           },
           {
-            opcode: 'chargeTime',
+            opcode: "chargeTime",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'seconds until charged'
+            text: "seconds until charged",
           },
           {
-            opcode: 'dischargeTime',
+            opcode: "dischargeTime",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'seconds until empty'
+            text: "seconds until empty",
           },
           {
-            opcode: 'chargingChanged',
-            blockType: Scratch.BlockType.HAT,
-            text: 'when charging changed',
-            isEdgeActivated: false
+            opcode: "chargingChanged",
+            blockType: Scratch.BlockType.EVENT,
+            text: "when charging changed",
+            isEdgeActivated: false,
           },
           {
-            opcode: 'levelChanged',
-            blockType: Scratch.BlockType.HAT,
-            text: 'when battery level changed',
-            isEdgeActivated: false
+            opcode: "levelChanged",
+            blockType: Scratch.BlockType.EVENT,
+            text: "when battery level changed",
+            isEdgeActivated: false,
           },
           {
-            opcode: 'chargeTimeChanged',
-            blockType: Scratch.BlockType.HAT,
-            text: 'when time until charged changed',
-            isEdgeActivated: false
+            opcode: "chargeTimeChanged",
+            blockType: Scratch.BlockType.EVENT,
+            text: "when time until charged changed",
+            isEdgeActivated: false,
           },
           {
-            opcode: 'dischargeTimeChanged',
-            blockType: Scratch.BlockType.HAT,
-            text: 'when time until empty changed',
-            isEdgeActivated: false
+            opcode: "dischargeTimeChanged",
+            blockType: Scratch.BlockType.EVENT,
+            text: "when time until empty changed",
+            isEdgeActivated: false,
           },
-        ]
+        ],
       };
     }
-    charging () {
-      return withBattery(battery => {
+    charging() {
+      return withBattery((battery) => {
         if (!battery) return true;
         return battery.charging;
       });
     }
-    level () {
-      return withBattery(battery => {
+    level() {
+      return withBattery((battery) => {
         if (!battery) return 100;
         return battery.level * 100;
       });
     }
-    chargeTime () {
-      return withBattery(battery => {
+    chargeTime() {
+      return withBattery((battery) => {
         if (!battery) return 0;
         return battery.chargingTime;
       });
     }
-    dischargeTime () {
-      return withBattery(battery => {
+    dischargeTime() {
+      return withBattery((battery) => {
         if (!battery) return Infinity;
         return battery.dischargingTime;
       });

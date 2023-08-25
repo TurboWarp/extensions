@@ -1,6 +1,14 @@
+// Name: ShovelUtils
+// ID: ShovelUtils
+// Description: A bunch of miscellaneous blocks.
+// By: TheShovel
+
 (function (Scratch) {
-  'use strict';
-  console.log("ShovelUtils v1.3");
+  "use strict";
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error("ShovelUtils must be run unsandboxed");
+  }
+  console.log("ShovelUtils v1.4");
   const vm = Scratch.vm;
 
   // Based on from https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html
@@ -20,154 +28,176 @@
   class ShovelUtils {
     getInfo() {
       return {
-        id: 'ShovelUtils',
-        name: 'ShovelUtils',
-        color1: '#f54242',
-        color2: '#f54242',
-        color3: '#f54242',
+        id: "ShovelUtils",
+        name: "ShovelUtils",
+        color1: "#f54242",
+        color2: "#f54242",
+        color3: "#f54242",
+        docsURI: "https://extensions.turbowarp.org/TheShovel/ShovelUtils",
         blocks: [
           {
-            opcode: 'importImage',
+            opcode: "importImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Import image from [TEXT] name [NAME]',
+            text: "Import image from [TEXT] name [NAME]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'https://extensions.turbowarp.org/dango.png',
+                defaultValue: "https://extensions.turbowarp.org/dango.png",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Dango',
-              }
-            }
+                defaultValue: "Dango",
+              },
+            },
           },
           {
-            opcode: 'getlist',
+            opcode: "getlist",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Get list [TEXT]',
+            text: "Get list [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'MyList',
-              }
-            }
+                defaultValue: "MyList",
+              },
+            },
           },
           {
-            opcode: 'setlist',
+            opcode: "setlist",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set list [NAME] to [TEXT]',
+            text: "Set list [NAME] to [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '[1,2]',
+                defaultValue: "[1,2]",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'MyList',
-              }
-            }
+                defaultValue: "MyList",
+              },
+            },
           },
           {
-            opcode: 'importSprite',
+            opcode: "importSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Import sprite from [TEXT]',
+            text: "Import sprite from [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Link or data uri here',
-              }
-            }
+                defaultValue: "Link or data uri here",
+              },
+            },
           },
           {
-            opcode: 'importSound',
+            opcode: "importSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Import sound from [TEXT] name [NAME]',
+            text: "Import sound from [TEXT] name [NAME]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'https://extensions.turbowarp.org/meow.mp3',
+                defaultValue: "https://extensions.turbowarp.org/meow.mp3",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Meow',
-              }
-            }
+                defaultValue: "Meow",
+              },
+            },
           },
           {
-            opcode: 'importProject',
+            opcode: "importProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Import project from [TEXT]',
+            text: "Import project from [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'https://theshovel.github.io/Bullet-Hell/Bullet%20Hell',
-              }
-            }
+                defaultValue:
+                  "https://theshovel.github.io/Bullet-Hell/Bullet%20Hell",
+              },
+            },
           },
           {
-            opcode: 'loadExtension',
+            opcode: "loadExtension",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Load extension from [TEXT]',
+            text: "Load extension from [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'https://extensions.turbowarp.org/utilities.js',
-              }
-            }
+                defaultValue: "https://extensions.turbowarp.org/utilities.js",
+              },
+            },
           },
 
           {
-            opcode: 'restartProject',
+            opcode: "restartProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Restart project',
+            text: "Restart project",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '0',
-              }
-            }
+                defaultValue: "0",
+              },
+            },
           },
           {
-            opcode: 'deleteSprite',
+            opcode: "deleteSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Delete sprite [SPRITE]',
+            text: "Delete sprite [SPRITE]",
             arguments: {
               SPRITE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Sprite1',
-              }
-            }
+                defaultValue: "Sprite1",
+              },
+            },
           },
           {
-            opcode: 'setedtarget',
+            opcode: "deleteImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set editing target to [NAME]',
+            text: "Delete costume [COSNAME] in [SPRITE]",
+            arguments: {
+              COSNAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "costume1",
+              },
+              SPRITE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Sprite1",
+              },
+            },
+          },
+          {
+            opcode: "setedtarget",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Set editing target to [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Sprite1',
-              }
-            }
+                defaultValue: "Sprite1",
+              },
+            },
           },
 
           {
-            opcode: 'brightnessByColor',
+            opcode: "brightnessByColor",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Get brightness of [color]',
+            text: "Get brightness of [color]",
             arguments: {
               color: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '#ffffff',
-              }
-            }
+                defaultValue: "#ffffff",
+              },
+            },
           },
 
           {
-            opcode: 'getfps',
+            opcode: "getAllSprites",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Fps'
+            text: "get all sprites",
           },
-        ]
+          {
+            opcode: "getfps",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Fps",
+          },
+        ],
       };
     }
 
@@ -176,23 +206,23 @@
         .then((r) => r.arrayBuffer())
         .then((arrayBuffer) => {
           const storage = vm.runtime.storage;
-          vm.addCostume(NAME + '.PNG', {
-            name: NAME + '',
+          vm.addCostume(NAME + ".PNG", {
+            name: NAME + "",
             asset: new storage.Asset(
               storage.AssetType.ImageBitmap,
               null, // asset id, doesn't need to be set here because of `true` at the end will make Scratch generate it for you
               storage.DataFormat.PNG,
               new Uint8Array(arrayBuffer),
               true
-            )
+            ),
           });
         });
     }
 
     importSprite({ TEXT }) {
       Scratch.fetch(TEXT)
-        .then(r => r.arrayBuffer())
-        .then(buffer => vm.addSprite(buffer))
+        .then((r) => r.arrayBuffer())
+        .then((buffer) => vm.addSprite(buffer))
         .then(() => {
           console.log("Done");
         })
@@ -207,8 +237,12 @@
         return;
       }
       // @ts-expect-error
-      if (typeof ScratchBlocks !== 'undefined') {
-        if (!confirm(`Do you want to delete the sprite "${SPRITE}"? This cannot be undone.`)) {
+      if (typeof ScratchBlocks !== "undefined") {
+        if (
+          !confirm(
+            `Do you want to delete the sprite "${SPRITE}"? This cannot be undone.`
+          )
+        ) {
           return;
         }
       }
@@ -228,24 +262,28 @@
             true
           );
           vm.addSound({
-            md5: asset.assetId + '.' + asset.dataFormat,
+            md5: asset.assetId + "." + asset.dataFormat,
             asset: asset,
-            name: NAME + ''
+            name: NAME + "",
           });
         });
     }
 
     importProject({ TEXT }) {
       // @ts-ignore
-      if (typeof ScratchBlocks !== 'undefined') {
+      if (typeof ScratchBlocks !== "undefined") {
         // We are in the editor. Ask before loading a new project to avoid unrecoverable data loss.
-        if (!confirm(`Do you want to import a project from "${TEXT}"? Everything in the current project will be permanently deleted.`)) {
+        if (
+          !confirm(
+            `Do you want to import a project from "${TEXT}"? Everything in the current project will be permanently deleted.`
+          )
+        ) {
           return;
         }
       }
       Scratch.fetch(TEXT)
-        .then(r => r.arrayBuffer())
-        .then(buffer => vm.loadProject(buffer))
+        .then((r) => r.arrayBuffer())
+        .then((buffer) => vm.loadProject(buffer))
         .then(() => {
           console.log("Done");
           vm.greenFlag();
@@ -266,7 +304,9 @@
     }
 
     getlist({ TEXT }) {
-      const list = vm.runtime.getTargetForStage().lookupVariableByNameAndType(TEXT, 'list');
+      const list = vm.runtime
+        .getTargetForStage()
+        .lookupVariableByNameAndType(TEXT, "list");
       if (list) {
         return JSON.stringify(list.value);
       } else {
@@ -292,7 +332,9 @@
         }
       }
 
-      const list = vm.runtime.getTargetForStage().lookupVariableByNameAndType(NAME, 'list');
+      const list = vm.runtime
+        .getTargetForStage()
+        .lookupVariableByNameAndType(NAME, "list");
       if (!list) {
         return; // List was not found
       }
@@ -321,15 +363,32 @@
      */
     brightnessByColor({ color }) {
       // https://www.w3.org/TR/AERT/#color-contrast
-      const {r, g, b} = Scratch.Cast.toRgbColorObject(color);
-      return ((r * 299) + (g * 587) + (b * 114)) / 1000;
+      const { r, g, b } = Scratch.Cast.toRgbColorObject(color);
+      return (r * 299 + g * 587 + b * 114) / 1000;
     }
 
-    getfps(){
+    getfps() {
       return fps;
     }
-  }
 
+    deleteImage({ SPRITE, COSNAME }) {
+      // 0znzw, since shovel did not add it yet.
+      const target = vm.runtime.getSpriteTargetByName(SPRITE);
+      if (!target) {
+        return;
+      }
+      target.deleteCostume(target.getCostumeIndexByName(COSNAME));
+    }
+
+    getAllSprites() {
+      // 0znzw, since shovel did not add it yet.
+      let sprites = [];
+      for (const target of vm.runtime.targets) {
+        if (target.isOriginal) sprites.push(target.sprite.name);
+      }
+      return JSON.stringify(sprites);
+    }
+  }
   Scratch.extensions.register(new ShovelUtils());
-// @ts-ignore
+  // @ts-ignore
 })(Scratch);

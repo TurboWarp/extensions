@@ -1,8 +1,12 @@
+// Name: Mouse Cursor
+// ID: MouseCursor
+// Description: Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.
+
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('MouseCursor extension must be run unsandboxed');
+    throw new Error("MouseCursor extension must be run unsandboxed");
   }
 
   const lazilyCreatedCanvas = () => {
@@ -17,10 +21,10 @@
      */
     return (width, height) => {
       if (!canvas) {
-        canvas = document.createElement('canvas');
-        ctx = canvas.getContext('2d');
+        canvas = document.createElement("canvas");
+        ctx = canvas.getContext("2d");
         if (!ctx) {
-          throw new Error('Could not get 2d rendering context');
+          throw new Error("Could not get 2d rendering context");
         }
       }
       // Setting canvas size also clears it
@@ -53,7 +57,11 @@
     const colorData = silhouette._colorData;
     const width = silhouette._width;
     const height = silhouette._height;
-    const imageData = new ImageData(colorData, silhouette._width, silhouette._height);
+    const imageData = new ImageData(
+      colorData,
+      silhouette._width,
+      silhouette._height
+    );
     const [canvas, ctx] = getRawSkinCanvas(width, height);
     ctx.putImageData(imageData, 0, 0);
     return canvas.toDataURL();
@@ -91,19 +99,19 @@
     // that automatically.
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">`;
     svg += `<image href="${imageURI}" width="${width}" height="${height}" />`;
-    svg += '</svg>';
+    svg += "</svg>";
     // URI encoding usually results in smaller string than base 64 for the types of data we get here.
     const svgURI = `data:image/svg+xml;,${encodeURIComponent(svg)}`;
 
     return {
       uri: svgURI,
       width,
-      height
+      height,
     };
   };
 
   /** @type {string} */
-  let nativeCursor = 'default';
+  let nativeCursor = "default";
   /** @type {null|string} */
   let customCursorImageName = null;
 
@@ -118,8 +126,8 @@
 
   // scratch-gui will sometimes reset the cursor when resizing the window or going in/out of fullscreen
   new MutationObserver(updateCanvasCursor).observe(canvas, {
-    attributeFilter: ['style'],
-    attributes: true
+    attributeFilter: ["style"],
+    attributes: true,
   });
 
   /**
@@ -128,67 +136,91 @@
    * @returns {[number, number]}
    */
   const parseTuple = (string) => {
-    const [a, b] = ('' + string).split(/[ ,x]/);
-    return [
-      +a || 0,
-      +b || 0
-    ];
+    const [a, b] = ("" + string).split(/[ ,x]/);
+    return [+a || 0, +b || 0];
   };
 
   const cursors = [
-    'default', 'pointer', 'move', 'grab', 'grabbing', 'text',
-    'vertical-text', 'wait', 'progress', 'help', 'context-menu',
-    'zoom-in', 'zoom-out', 'crosshair', 'cell', 'not-allowed',
-    'copy', 'alias', 'no-drop', 'all-scroll', 'col-resize',
-    'row-resize', 'n-resize', 'e-resize', 's-resize', 'w-resize',
-    'ne-resize', 'nw-resize', 'se-resize', 'sw-resize',
-    'ew-resize', 'ns-resize', 'nesw-resize', 'nwse-resize'
+    "default",
+    "pointer",
+    "move",
+    "grab",
+    "grabbing",
+    "text",
+    "vertical-text",
+    "wait",
+    "progress",
+    "help",
+    "context-menu",
+    "zoom-in",
+    "zoom-out",
+    "crosshair",
+    "cell",
+    "not-allowed",
+    "copy",
+    "alias",
+    "no-drop",
+    "all-scroll",
+    "col-resize",
+    "row-resize",
+    "n-resize",
+    "e-resize",
+    "s-resize",
+    "w-resize",
+    "ne-resize",
+    "nw-resize",
+    "se-resize",
+    "sw-resize",
+    "ew-resize",
+    "ns-resize",
+    "nesw-resize",
+    "nwse-resize",
   ];
 
   class MouseCursor {
     getInfo() {
       return {
-        id: 'MouseCursor',
-        name: 'Mouse Cursor',
+        id: "MouseCursor",
+        name: "Mouse Cursor",
         blocks: [
           {
-            opcode: 'setCur',
+            opcode: "setCur",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set cursor to [cur]',
+            text: "set cursor to [cur]",
             arguments: {
               cur: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'pointer',
-                menu: 'cursors',
+                defaultValue: "pointer",
+                menu: "cursors",
               },
             },
           },
           {
-            opcode: 'setCursorImage',
+            opcode: "setCursorImage",
             blockType: Scratch.BlockType.COMMAND,
             text: "set cursor to current costume center: [position] max size: [size]",
             arguments: {
               position: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '0,0',
-                menu: 'imagePositions'
+                defaultValue: "0,0",
+                menu: "imagePositions",
               },
               size: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '32x32',
-                menu: 'imageSizes'
-              }
-            }
+                defaultValue: "32x32",
+                menu: "imageSizes",
+              },
+            },
           },
           {
-            opcode: 'hideCur',
+            opcode: "hideCur",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'hide cursor',
+            text: "hide cursor",
           },
           {
-            opcode: 'getCur',
+            opcode: "getCur",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'cursor',
+            text: "cursor",
           },
         ],
         menus: {
@@ -200,12 +232,12 @@
             acceptReporters: true,
             items: [
               // [x, y] where x is [0=left, 100=right] and y is [0=top, 100=bottom]
-              { text: 'top left', value: '0,0' },
-              { text: 'top right', value: '100,0' },
-              { text: 'bottom left', value: '0,100' },
-              { text: 'bottom right', value: '100,100' },
-              { text: 'center', value: '50,50' },
-            ]
+              { text: "top left", value: "0,0" },
+              { text: "top right", value: "100,0" },
+              { text: "bottom left", value: "0,100" },
+              { text: "bottom right", value: "100,100" },
+              { text: "center", value: "50,50" },
+            ],
           },
           imageSizes: {
             acceptReporters: true,
@@ -213,16 +245,16 @@
               // Some important numbers to keep in mind:
               // Browsers ignore cursor images >128 in any dimension (https://searchfox.org/mozilla-central/rev/43ee5e789b079e94837a21336e9ce2420658fd19/widget/gtk/nsWindow.cpp#3393-3402)
               // Browsers may refuse to display a cursor near window borders for images >32 in any dimension
-              { text: '4x4', value: '4x4' },
-              { text: '8x8', value: '8x4' },
-              { text: '12x12', value: '12x12' },
-              { text: '16x16', value: '16x16' },
-              { text: '32x32', value: '32x32' },
-              { text: '48x48 (unreliable)', value: '48x48' },
-              { text: '64x64 (unreliable)', value: '64x64' },
-              { text: '128x128 (unreliable)', value: '128x128' },
-            ]
-          }
+              { text: "4x4", value: "4x4" },
+              { text: "8x8", value: "8x4" },
+              { text: "12x12", value: "12x12" },
+              { text: "16x16", value: "16x16" },
+              { text: "32x32", value: "32x32" },
+              { text: "48x48 (unreliable)", value: "48x48" },
+              { text: "64x64 (unreliable)", value: "64x64" },
+              { text: "128x128 (unreliable)", value: "128x128" },
+            ],
+          },
         },
       };
     }
@@ -230,7 +262,7 @@
     setCur(args) {
       const newCursor = Scratch.Cast.toString(args.cur);
       // Prevent setting cursor to "url(...), default" from causing fetch.
-      if (cursors.includes(newCursor) || newCursor === 'none') {
+      if (cursors.includes(newCursor) || newCursor === "none") {
         nativeCursor = newCursor;
         customCursorImageName = null;
         currentCanvasCursor = newCursor;
@@ -239,9 +271,12 @@
     }
 
     setCursorImage(args, util) {
-      const [maxWidth, maxHeight] = parseTuple(args.size).map(i => Math.max(0, i));
+      const [maxWidth, maxHeight] = parseTuple(args.size).map((i) =>
+        Math.max(0, i)
+      );
 
-      const currentCostume = util.target.getCostumes()[util.target.currentCostume];
+      const currentCostume =
+        util.target.getCostumes()[util.target.currentCostume];
       const costumeName = currentCostume.name;
 
       let encodedCostume;
@@ -253,7 +288,9 @@
       }
 
       if (encodedCostume) {
-        const [percentX, percentY] = parseTuple(args.position).map(i => Math.max(0, Math.min(100, i)) / 100);
+        const [percentX, percentY] = parseTuple(args.position).map(
+          (i) => Math.max(0, Math.min(100, i)) / 100
+        );
         const x = percentX * encodedCostume.width;
         const y = percentY * encodedCostume.height;
 
@@ -270,7 +307,7 @@
 
     hideCur() {
       this.setCur({
-        cur: 'none'
+        cur: "none",
       });
     }
 

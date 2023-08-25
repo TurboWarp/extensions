@@ -1,7 +1,7 @@
-(function(Scratch) {
+(function (Scratch) {
   "use strict";
   class codegioExtension {
-    getInfo () {
+    getInfo() {
       return {
         id: "utilitiesCodegio",
         name: "Utilities",
@@ -11,7 +11,7 @@
           {
             opcode: "newline",
             blockType: Scratch.BlockType.REPORTER,
-            text: "New Line"
+            text: "New Line",
           },
 
           {
@@ -21,25 +21,25 @@
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ""
+                defaultValue: "",
               },
               two: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ""
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
 
           {
             opcode: "returntrue",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "true"
+            text: "true",
           },
 
           {
             opcode: "returnfalse",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "false"
+            text: "false",
           },
 
           {
@@ -49,13 +49,13 @@
             arguments: {
               one: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ""
+                defaultValue: "",
               },
               two: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: ""
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
 
           {
@@ -65,33 +65,33 @@
             arguments: {
               color: {
                 type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#96ccff"
-              }
-            }
+                defaultValue: "#96ccff",
+              },
+            },
           },
 
           {
             opcode: "monitor_width",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Screen | Width"
+            text: "Screen | Width",
           },
 
           {
             opcode: "monitor_height",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Screen | Height"
+            text: "Screen | Height",
           },
 
           {
             opcode: "window_width",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Window | Width"
+            text: "Window | Width",
           },
 
           {
             opcode: "window_height",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Window | Height"
+            text: "Window | Height",
           },
 
           {
@@ -101,9 +101,9 @@
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Alert..."
-              }
-            }
+                defaultValue: "Alert...",
+              },
+            },
           },
 
           {
@@ -113,9 +113,9 @@
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Confirm..."
-              }
-            }
+                defaultValue: "Confirm...",
+              },
+            },
           },
 
           {
@@ -125,13 +125,13 @@
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Enter Username:"
+                defaultValue: "Enter Username:",
               },
               two: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "griffpatch"
+                defaultValue: "griffpatch",
               },
-            }
+            },
           },
 
           {
@@ -141,9 +141,9 @@
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "https://turbowarp.org/"
-              }
-            }
+                defaultValue: "https://turbowarp.org/",
+              },
+            },
           },
 
           {
@@ -153,21 +153,21 @@
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "https://turbowarp.org/"
-              }
-            }
+                defaultValue: "https://turbowarp.org/",
+              },
+            },
           },
 
           {
             opcode: "get_current_url",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Current URL"
+            text: "Current URL",
           },
 
           {
             opcode: "get_current_url_hash",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Current URL hash (#)"
+            text: "Current URL hash (#)",
           },
 
           {
@@ -177,27 +177,27 @@
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ""
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
 
           {
             opcode: "get_clipboard",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Clipboard"
+            text: "Clipboard",
           },
 
           {
             opcode: "get_browser",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Browser"
+            text: "Browser",
           },
 
           {
             opcode: "get_os",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Operating System"
+            text: "Operating System",
           },
 
           {
@@ -212,7 +212,7 @@
               font: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Monospace",
-                menu: "consoleFonts"
+                menu: "consoleFonts",
               },
               size: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -222,25 +222,25 @@
                 type: Scratch.ArgumentType.COLOR,
                 defaultValue: "#000000",
               },
-            }
+            },
           },
 
           {
             opcode: "consoleClear",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Console | Clear"
+            text: "Console | Clear",
           },
         ],
         menus: {
           consoleFonts: {
             acceptReporters: true,
             items: [
-              {text: "Serif (default)", value: "serif"},
-              {text: "Monospace", value: "monospace"},
-              {text: "Sans-serif", value: "sans-serif"}
-            ]
-          }
-        }
+              { text: "Serif (default)", value: "serif" },
+              { text: "Monospace", value: "monospace" },
+              { text: "Sans-serif", value: "sans-serif" },
+            ],
+          },
+        },
       };
     }
 
@@ -257,7 +257,7 @@
     }
 
     strict_equality(args) {
-      return (args.one == args.two);
+      return args.one == args.two;
     }
 
     exponent(args) {
@@ -333,28 +333,28 @@
 
     get_clipboard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        return Scratch.canReadClipboard().then(allowed => {
+        return Scratch.canReadClipboard().then((allowed) => {
           if (allowed) {
             return navigator.clipboard.readText();
           }
-          return '';
+          return "";
         });
       }
-      return '';
+      return "";
     }
 
     get_browser() {
       let userAgent = navigator.userAgent;
 
-      if (userAgent.match(/chrome|chromium|crios/i)){
+      if (userAgent.match(/chrome|chromium|crios/i)) {
         return "Chrome";
-      } else if (userAgent.match(/firefox|fxios/i)){
+      } else if (userAgent.match(/firefox|fxios/i)) {
         return "Firefox";
-      } else if (userAgent.match(/safari/i)){
+      } else if (userAgent.match(/safari/i)) {
         return "Safari";
-      } else if (userAgent.match(/opr\//i)){
+      } else if (userAgent.match(/opr\//i)) {
         return "Opera";
-      } else if (userAgent.match(/edg/i)){
+      } else if (userAgent.match(/edg/i)) {
         return "Edge";
       } else {
         return "No browser detection";
@@ -366,7 +366,10 @@
     }
 
     consoleLog(args) {
-      console.log(`%c${args.input}`, `color:${args.color}; font-family:${args.font}; font-size: ${args.size}px;`);
+      console.log(
+        `%c${args.input}`,
+        `color:${args.color}; font-family:${args.font}; font-size: ${args.size}px;`
+      );
     }
 
     consoleClear() {
