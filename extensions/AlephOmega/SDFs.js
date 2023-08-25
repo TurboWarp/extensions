@@ -385,7 +385,7 @@
         ],
       };
     }
-    1;
+
     vecSub(v1, v2) {
       return { x: v1.x - v2.x, y: v1.y - v2.y, z: v1.z - v2.z };
     }
@@ -531,7 +531,7 @@
       B = JSON.parse(B);
       var AP = this.vecSub(P, A);
       var AB = this.vecSub(B, A);
-      var t = Math.max(0, Math.min(1, dot(AP, AB) / dot(AB, AB)));
+      var t = Math.max(0, Math.min(1, this.dot(AP, AB) / this.dot(AB, AB)));
       var closestPoint = this.vecAdd(A, this.vecMult(AB, t));
       var distToClosest = this.vecDist(P, closestPoint);
       if (t === 0 || t === 1) {
