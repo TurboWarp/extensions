@@ -461,13 +461,3 @@ close window :: cap :: #359ed4
 Closes the Program Window.
 
 <strong>This is supported outside of Electron, Pop Ups, and Web Apps.</strong>
-
-<hr>
-
-<h2 id="credits">Credits <span class="heading-link">(<a href="#credits">#</a>)</span></h2>
-
-<strong>This extension is made in collaboration between <a href="https://scratch.mit.edu/users/CubesterYT/">CubesterYT</a> and <a href="https://github.com/BlueDome77/">BlueDome</a>.</strong>
-
-Extension Icon, Color scheme, majority of extension, and more made by CubesterYT.
-
-Extension Thumbnail, Color scheme, and some base code, made by BlueDome.
