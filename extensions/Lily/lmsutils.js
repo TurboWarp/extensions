@@ -1,4 +1,4 @@
-// Name: LMS Utilities
+// Name: Lily's Toolbox (LMS Utilities)
 // ID: lmsutilsblocks
 // Description: Relisted.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
@@ -24,7 +24,7 @@
     getInfo() {
       return {
         id: "lmsutilsblocks",
-        name: "LMS Utilities",
+        name: "Lily\'s Toolbox",
         color1: "#3bb2ed",
         color2: "#37a1de",
         color3: "#3693d9",
