@@ -24,33 +24,37 @@
           {
             opcode: "getMemory",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'device memory in GB'
+            text: "device memory in GB",
           },
           {
-            opcode: 'getPreferredColorScheme',
+            opcode: "getPreferredColorScheme",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'user prefers [THEME] color scheme?',
+            text: "user prefers [THEME] color scheme?",
             arguments: {
-              THEME: { type: Scratch.ArgumentType.MENU, menu: 'THEME', defaultValue: 'dark' }
-            }
+              THEME: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "THEME",
+                defaultValue: "dark",
+              },
+            },
           },
           {
-            opcode: 'getPreferredReducedMotion',
+            opcode: "getPreferredReducedMotion",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'user prefers reduced motion?'
+            text: "user prefers reduced motion?",
           },
           {
-            opcode: 'getPreferredContrast',
+            opcode: "getPreferredContrast",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'user prefers more contrast?'
-          }
+            text: "user prefers more contrast?",
+          },
         ],
         menus: {
           THEME: {
             acceptReporters: true,
-            items: ['light', 'dark']
-          }
-        }
+            items: ["light", "dark"],
+          },
+        },
       };
     }
 
@@ -99,15 +103,18 @@
     }
 
     getPreferredColorScheme(args) {
-      return ((window.matchMedia('(prefers-color-scheme: dark)').matches) === (args.THEME === 'dark'));
+      return (
+        window.matchMedia("(prefers-color-scheme: dark)").matches ===
+        (args.THEME === "dark")
+      );
     }
 
     getPreferredReducedMotion() {
-      return (!!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      return !!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     }
 
     getPreferredContrast() {
-      return (!!window.matchMedia('(prefers-contrast: more)').matches);
+      return !!window.matchMedia("(prefers-contrast: more)").matches;
     }
   }
 
