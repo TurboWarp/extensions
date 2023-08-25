@@ -24,7 +24,7 @@
     getInfo() {
       return {
         id: "lmsutilsblocks",
-        name: "Lily\'s Toolbox",
+        name: "Lily's Toolbox",
         color1: "#3bb2ed",
         color2: "#37a1de",
         color3: "#3693d9",
