@@ -1,3 +1,8 @@
+// Name: 3D Math
+// ID: obviousAlexCMath3d
+// Description: Math for 3D projects.
+// By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
+
 (function (Scratch) {
   "use strict";
   const vm = Scratch.vm;
