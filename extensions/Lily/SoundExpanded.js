@@ -5,19 +5,6 @@
   const runtime = vm.runtime;
   const soundCategory = runtime.ext_scratch3_sound;
 
-  /**
-   * @param {VM.BlockUtility} util
-   * @param {unknown} targetName
-   */
-  const getSpriteTargetByName = (util, targetName) => {
-    const nameString = Scratch.Cast.toString(targetName);
-    const target = util.target;
-    if (target.getName() === nameString) {
-      return target;
-    }
-    return util.runtime.getSpriteTargetByName(nameString);
-  };
-
   class SoundExpanded {
     getInfo() {
       return {
