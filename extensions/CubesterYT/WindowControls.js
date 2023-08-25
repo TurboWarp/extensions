@@ -291,7 +291,7 @@
               "top left",
               "bottom right",
               "bottom left",
-              "random position"
+              "random position",
             ],
           },
           RESIZE: {
@@ -304,7 +304,7 @@
               "2560x1440",
               "2048x1080",
               "3840x2160",
-              "7680x4320"
+              "7680x4320",
             ],
           },
         },
