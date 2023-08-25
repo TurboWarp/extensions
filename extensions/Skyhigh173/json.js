@@ -460,7 +460,7 @@
           {
             opcode: 'ss_sort',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'sort item in array [list] with [order] order',
+            text: 'sort array [list] in [order] order',
             disableMonitor: true,
             arguments: {
                 list: {
@@ -473,7 +473,6 @@
                 }
             }
           },
-          '---',
           makeLabel('Lists'),
           {
             opcode: 'json_vm_getlist',
@@ -928,26 +927,14 @@
     ss_sort(args) {
       let list;
       try {
-          list = JSON.parse(args.list);
+        list = JSON.parse(args.list);
       } catch {
-          return ' ';
+        return '';
       }
-  
-      /*eslint-disable*/
-      const quickSort=t=>{if(t.length<=1)return t;let r=t[0],u=[],e=[];for(let n=1;n<t.length;n++)t[n]<r?u.push(t[n]):e.push(t[n]);return[...quickSort(u),r,...quickSort(e)]};
-      /*eslint-enable*/
-
-      let listHasAlph = false;
-      for (let item in list) {
-        item = list[item];
-        if (isNaN(item)) {
-          listHasAlph = true;
-          break;
-        }
+      if (!Array.isArray(list)) {
+        return '';
       }
-
-      const sorted = (listHasAlph ? list.sort() : quickSort(list));
-      return JSON.stringify((args.order == 'descending' ? reverseList(sorted) : sorted));
+      return JSON.stringify(list.sort(Scratch.Cast.compare));
     }
   }
   Scratch.extensions.register(new JSONS());
