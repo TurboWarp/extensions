@@ -93,7 +93,7 @@
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "https://example.com/",
+                defaultValue: "https://extensions.turbowarp.org/hello.html",
               },
             },
           },
