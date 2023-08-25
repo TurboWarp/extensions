@@ -1,4 +1,5 @@
 // Name: Iframe
+// ID: iframe
 // Description: Display webpages or HTML over the stage.
 
 (function (Scratch) {
