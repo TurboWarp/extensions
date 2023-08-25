@@ -19,14 +19,6 @@
     text: text,
   });
 
-  /* utils for ss */
-  function reverseList(arr) {
-    const copy = structuredClone(arr);
-    copy.reverse();
-    return copy;
-  }
-  /* end utils for ss */
-
   class JSONS {
     getInfo() {
       return {
@@ -462,24 +454,25 @@
               },
             },
           },
-          '---',
+          "---",
           {
-            opcode: 'ss_sort',
+            opcode: "json_array_sort",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'sort array [list] in [order] order',
+            text: "sort array [list] in [order] order",
             disableMonitor: true,
             arguments: {
-                list: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: '[5.23, 214, 522, 61, 5.24, 62.2, 1, 51212, 0, 0]'
-                },
-                order: {
-                    type: Scratch.ArgumentType.STRING,
-                    menu: 'sort_order'
-                }
-            }
+              list: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue:
+                  "[5.23, 214, 522, 61, 5.24, 62.2, 1, 51212, 0, 0]",
+              },
+              order: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "sort_order",
+              },
+            },
           },
-          makeLabel('Lists'),
+          makeLabel("Lists"),
           {
             opcode: "json_vm_getlist",
             blockType: Scratch.BlockType.REPORTER,
@@ -521,13 +514,13 @@
           },
           equal: {
             acceptReporters: true,
-            items: ['=','≠']
+            items: ["=", "≠"],
           },
           sort_order: {
-            items: ['ascending','descending'],
-            acceptReporters: true
-          }
-        }
+            items: ["ascending", "descending"],
+            acceptReporters: true,
+          },
+        },
       };
     }
 
@@ -957,17 +950,19 @@
       return "";
     }
 
-    ss_sort(args) {
+    json_array_sort(args) {
       let list;
       try {
         list = JSON.parse(args.list);
       } catch {
-        return '';
+        return "";
       }
       if (!Array.isArray(list)) {
-        return '';
+        return "";
       }
-      return JSON.stringify(list.sort(Scratch.Cast.compare));
+      list.sort(Scratch.Cast.compare);
+      if (args.order === "descending") list.reverse();
+      return JSON.stringify(list);
     }
   }
   Scratch.extensions.register(new JSONS());
