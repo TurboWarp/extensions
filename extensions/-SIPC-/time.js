@@ -34,7 +34,7 @@
           {
             opcode: "timezone",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current time zone offset",
+            text: "current time zone",
             arguments: {},
           },
           {
@@ -192,7 +192,7 @@
       return Date.now();
     }
     timezone() {
-      return new Date().getTimezoneOffset() / -60;
+      return "UTC+" + new Date().getTimezoneOffset() / -60;
     }
     Timedata(args) {
       args.timestamp = args.timestamp ? args.timestamp : null;
