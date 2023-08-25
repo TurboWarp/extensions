@@ -265,6 +265,13 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Lily/AllMenus.svg
  - Created by [YogaindoCR](https://github.com/YogaindoCR) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1681839774
 
+## Lily/MoreEvents.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
+ - Background "blobs" by Scratch.
+
+## DNin/wake-lock.svg
+ - Created by [NexusKitten](https://github.com/NexusKitten) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1690949400
+
 ## Lily/Assets.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
  - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
