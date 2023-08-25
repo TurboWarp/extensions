@@ -1,9 +1,9 @@
 // Name: Time
 // ID: sipctime
 // Old Desc: Blocks for interacting with unix timestamps and other date strings.
-// Description: Blocks for Time, Date, and Time Zone calculations and interactions.
+// Description: Blocks for times, dates, and time zones.
 // By: -SIPC-
-// Calculation Blocks By: SharkPool
+// By: SharkPool
 
 (function (Scratch) {
   "use strict";
@@ -26,19 +26,15 @@
         blockIconURI,
         blocks: [
           {
-            blockType: Scratch.BlockType.LABEL,
-            text: 'Time Conversions',
-          },
-          {
             opcode: "Timestamp",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current timestamp",
+            text: "current unix timestamp",
             arguments: {},
           },
           {
             opcode: "timezone",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current time zone",
+            text: "current time zone offset",
             arguments: {},
           },
           {
@@ -81,91 +77,91 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: 'Time Calculations',
+            text: "Time Calculations",
           },
           {
-            opcode: 'calculatetimedurationfromdate',
+            opcode: "calculatetimedurationfromdate",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'time duration from [DATE] to current date in [TIME_MENU]',
+            text: "time duration from [DATE] to current date in [TIME_MENU]",
             arguments: {
-                DATE: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: '2006-04-16'
-                },
-                TIME_MENU: {
-                    type: Scratch.ArgumentType.STRING,
-                    menu: 'Time',
-                    defaultValue: 'day'
-                },
-            }
+              DATE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "2006-04-16",
+              },
+              TIME_MENU: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "Time",
+                defaultValue: "day",
+              },
+            },
           },
           {
-            opcode: 'calculatetimedurationfromtime',
+            opcode: "calculatetimedurationfromtime",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'time duration from [START_HOUR]:[START_MINUTE] to current time in [TIME_MENU]',
+            text: "time duration from [START_HOUR]:[START_MINUTE] to current time in [TIME_MENU]",
             arguments: {
-                START_HOUR: {
-                    type: Scratch.ArgumentType.NUMBER,
-                    defaultValue: 0
-                },
-                START_MINUTE: {
-                    type: Scratch.ArgumentType.NUMBER,
-                    defaultValue: 0
-                },
-                TIME_MENU: {
-                    type: Scratch.ArgumentType.STRING,
-                    menu: 'Time',
-                    defaultValue: 'hour'
-                },
-            }
+              START_HOUR: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              START_MINUTE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              TIME_MENU: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "Time",
+                defaultValue: "hour",
+              },
+            },
           },
           {
-            opcode: 'calculatetimedifference',
+            opcode: "calculatetimedifference",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'difference between [START_TIME] and [END_TIME] in [TIME_MENU]',
+            text: "difference between [START_TIME] and [END_TIME] in [TIME_MENU]",
             arguments: {
-                START_TIME: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: '00:00'
-                },
-                END_TIME: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: '00:00'
-                },
-                TIME_MENU: {
-                    type: Scratch.ArgumentType.STRING,
-                    menu: 'Time',
-                    defaultValue: 'hour'
-                },
-            }
+              START_TIME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "00:00",
+              },
+              END_TIME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "00:00",
+              },
+              TIME_MENU: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "Time",
+                defaultValue: "hour",
+              },
+            },
           },
           {
-            opcode: 'converttotime',
+            opcode: "converttotime",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'convert [VALUE] to time (day:hour:minute)',
+            text: "convert [VALUE] to time (day:hour:minute)",
             arguments: {
-                VALUE: {
-                    type: Scratch.ArgumentType.NUMBER,
-                    defaultValue: 0
-                },
-            }
+              VALUE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
           },
           {
-            opcode: 'daysinmonth',
+            opcode: "daysinmonth",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'number of days in [MONTH] [YEAR]',
+            text: "number of days in [MONTH] [YEAR]",
             arguments: {
-                MONTH: {
-                    type: Scratch.ArgumentType.STRING,
-                    menu: 'Months',
-                    defaultValue: 'January'
-                },
-                YEAR: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: '2000'
-                },
-            }
-          }
+              MONTH: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "Months",
+                defaultValue: "January",
+              },
+              YEAR: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "2000",
+              },
+            },
+          },
         ],
         menus: {
           Time: {
@@ -175,19 +171,19 @@
           Months: {
             acceptReporters: true,
             items: [
-              'January',
-              'February',
-              'March',
-              'April',
-              'May',
-              'June',
-              'July',
-              'August',
-              'September',
-              'October',
-              'November',
-              'December'
-            ]
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December",
+            ],
           },
         },
       };
@@ -196,7 +192,7 @@
       return Date.now();
     }
     timezone() {
-      return "UTC+" + new Date().getTimezoneOffset() / -60;
+      return new Date().getTimezoneOffset() / -60;
     }
     Timedata(args) {
       args.timestamp = args.timestamp ? args.timestamp : null;
@@ -256,17 +252,17 @@
       const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
 
       switch (timeMenu) {
-        case 'year':
+        case "year":
           return Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 365));
-        case 'month':
+        case "month":
           return Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 30));
-        case 'day':
+        case "day":
           return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-        case 'hour':
+        case "hour":
           return Math.floor(timeDiff / (1000 * 60 * 60));
-        case 'minute':
+        case "minute":
           return Math.floor(timeDiff / (1000 * 60));
-        case 'second':
+        case "second":
           return Math.floor(timeDiff / 1000);
       }
     }
@@ -295,10 +291,10 @@
       const timeMenu = args.TIME_MENU;
       const startDate = new Date();
       const endDate = new Date();
-      const startHour = parseInt(startTime.split(':')[0]);
-      const startMinute = parseInt(startTime.split(':')[1]);
-      const endHour = parseInt(endTime.split(':')[0]);
-      const endMinute = parseInt(endTime.split(':')[1]);
+      const startHour = parseInt(startTime.split(":")[0]);
+      const startMinute = parseInt(startTime.split(":")[1]);
+      const endHour = parseInt(endTime.split(":")[0]);
+      const endMinute = parseInt(endTime.split(":")[1]);
       startDate.setHours(startHour, startMinute, 0, 0);
       endDate.setHours(endHour, endMinute, 0, 0);
       return this.calculateTimeDifference(startDate, endDate, timeMenu);
@@ -324,18 +320,18 @@
 
     _getMonthIndex(month) {
       const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
       ];
       return months.indexOf(month);
     }
