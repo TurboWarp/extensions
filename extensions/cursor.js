@@ -1,8 +1,12 @@
+// Name: Mouse Cursor
+// ID: MouseCursor
+// Description: Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.
+
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('MouseCursor extension must be run unsandboxed');
+    throw new Error("MouseCursor extension must be run unsandboxed");
   }
 
   const lazilyCreatedCanvas = () => {
@@ -17,10 +21,10 @@
      */
     return (width, height) => {
       if (!canvas) {
-        canvas = document.createElement('canvas');
-        ctx = canvas.getContext('2d');
+        canvas = document.createElement("canvas");
+        ctx = canvas.getContext("2d");
         if (!ctx) {
-          throw new Error('Could not get 2d rendering context');
+          throw new Error("Could not get 2d rendering context");
         }
       }
       // Setting canvas size also clears it
@@ -53,7 +57,11 @@
     const colorData = silhouette._colorData;
     const width = silhouette._width;
     const height = silhouette._height;
-    const imageData = new ImageData(colorData, silhouette._width, silhouette._height);
+    const imageData = new ImageData(
+      colorData,
+      silhouette._width,
+      silhouette._height
+    );
     const [canvas, ctx] = getRawSkinCanvas(width, height);
     ctx.putImageData(imageData, 0, 0);
     return canvas.toDataURL();
@@ -91,19 +99,19 @@
     // that automatically.
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">`;
     svg += `<image href="${imageURI}" width="${width}" height="${height}" />`;
-    svg += '</svg>';
+    svg += "</svg>";
     // URI encoding usually results in smaller string than base 64 for the types of data we get here.
     const svgURI = `data:image/svg+xml;,${encodeURIComponent(svg)}`;
 
     return {
       uri: svgURI,
       width,
-      height
+      height,
     };
   };
 
   /** @type {string} */
-  let nativeCursor = 'default';
+  let nativeCursor = "default";
   /** @type {null|string} */
   let customCursorImageName = null;
 
@@ -118,8 +126,8 @@
 
   // scratch-gui will sometimes reset the cursor when resizing the window or going in/out of fullscreen
   new MutationObserver(updateCanvasCursor).observe(canvas, {
-    attributeFilter: ['style'],
-    attributes: true
+    attributeFilter: ["style"],
+    attributes: true,
   });
 
   /**
@@ -128,134 +136,183 @@
    * @returns {[number, number]}
    */
   const parseTuple = (string) => {
-    const [a, b] = ('' + string).split(/[ ,x]/);
-    return [
-      +a || 0,
-      +b || 0
-    ];
+    const [a, b] = ("" + string).split(/[ ,x]/);
+    return [+a || 0, +b || 0];
   };
 
   const cursors = [
-    'default', 'pointer', 'move', 'grab', 'grabbing', 'text',
-    'vertical-text', 'wait', 'progress', 'help', 'context-menu',
-    'zoom-in', 'zoom-out', 'crosshair', 'cell', 'not-allowed',
-    'copy', 'alias', 'no-drop', 'all-scroll', 'col-resize',
-    'row-resize', 'n-resize', 'e-resize', 's-resize', 'w-resize',
-    'ne-resize', 'nw-resize', 'se-resize', 'sw-resize',
-    'ew-resize', 'ns-resize', 'nesw-resize', 'nwse-resize'
+    "default",
+    "pointer",
+    "move",
+    "grab",
+    "grabbing",
+    "text",
+    "vertical-text",
+    "wait",
+    "progress",
+    "help",
+    "context-menu",
+    "zoom-in",
+    "zoom-out",
+    "crosshair",
+    "cell",
+    "not-allowed",
+    "copy",
+    "alias",
+    "no-drop",
+    "all-scroll",
+    "col-resize",
+    "row-resize",
+    "n-resize",
+    "e-resize",
+    "s-resize",
+    "w-resize",
+    "ne-resize",
+    "nw-resize",
+    "se-resize",
+    "sw-resize",
+    "ew-resize",
+    "ns-resize",
+    "nesw-resize",
+    "nwse-resize",
   ];
 
-  let mouseDownInterval = {};
+  var scrollX = 0;
+  var scrollY = 0;
 
-  let scrollX = 0;
-  let scrollY = 0;
-  canvas.addEventListener('wheel', updateScrollValues);
-  function updateScrollValues(event) {
-    scrollX = event.deltaX;
-    scrollY = event.deltaY;
-    Scratch.vm.runtime.startHats('MouseCursor_whenMouseWheel', {direction: 'any'});
-    if (scrollY > 0) {
-      Scratch.vm.runtime.startHats('MouseCursor_whenMouseWheel', {direction: 'down'});
-    } else if (scrollY < 0) {
-      Scratch.vm.runtime.startHats('MouseCursor_whenMouseWheel', {direction: 'up'});
-    }
-  }
+  var scrollDistance = 0;
+  var scrollDistanceUp = 0;
+  var scrollDistanceDown = 0;
 
   class MouseCursor {
+    constructor() {
+      Scratch.vm.runtime.on("AFTER_EXECUTE", () => {
+        scrollY = 0;
+      });
+
+      canvas.addEventListener("wheel", updateScrollValues);
+      function updateScrollValues(event) {
+        scrollX = event.deltaX;
+        scrollY = event.deltaY;
+
+        Scratch.vm.runtime.startHats("MouseCursor_whenMouseWheel", {
+          DIRECTION: "any",
+        });
+        if (scrollY > 0) {
+          Scratch.vm.runtime.startHats("MouseCursor_whenMouseWheel", {
+            DIRECTION: "down",
+          });
+          scrollDistance--;
+          scrollDistanceDown--;
+        } else if (scrollY < 0) {
+          Scratch.vm.runtime.startHats("MouseCursor_whenMouseWheel", {
+            DIRECTION: "up",
+          });
+          scrollDistance++;
+          scrollDistanceUp++;
+        }
+      }
+    }
     getInfo() {
       return {
-        id: 'MouseCursor',
-        name: 'Mouse Cursor',
+        id: "MouseCursor",
+        name: "Mouse Cursor",
         blocks: [
           {
-            opcode: 'setCur',
+            opcode: "setCur",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set cursor to [cur]',
+            text: "set cursor to [cur]",
             arguments: {
               cur: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'pointer',
-                menu: 'cursors',
+                defaultValue: "pointer",
+                menu: "cursors",
               },
             },
           },
           {
-            opcode: 'setCursorImage',
+            opcode: "setCursorImage",
             blockType: Scratch.BlockType.COMMAND,
             text: "set cursor to current costume center: [position] max size: [size]",
             arguments: {
               position: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '0,0',
-                menu: 'imagePositions'
+                defaultValue: "0,0",
+                menu: "imagePositions",
               },
               size: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '32x32',
-                menu: 'imageSizes'
-              }
-            }
+                defaultValue: "32x32",
+                menu: "imageSizes",
+              },
+            },
           },
           {
-            opcode: 'hideCur',
+            opcode: "hideCur",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'hide cursor',
+            text: "hide cursor",
           },
           {
-            opcode: 'getCur',
+            opcode: "getCur",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'cursor',
+            text: "cursor",
           },
-          '---',
+          "---",
           {
-            opcode: 'whenMouseWheel',
-            blockType: Scratch.BlockType.HAT,
-            text: 'when mouse wheel scrolled [direction]',
+            opcode: "whenMouseWheel",
+            blockType: Scratch.BlockType.EVENT,
+            text: "when mouse scrolled [DIRECTION]",
             isEdgeActivated: false,
             arguments: {
-              direction: {
+              DIRECTION: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'wheelDirectionsHat'
-              }
-            }
-          },
-          {
-            opcode: 'mouseWheel',
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: 'mouse wheel scrolled [direction]?',
-            arguments: {
-              direction: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'wheelDirections'
-              }
-            }
-          },
-          {
-            opcode: 'mouseWheelDirection',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'mouse wheel scroll direction'
-          },
-          '---',
-          {
-            opcode: 'mouseButton',
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: '[button] mouse [action]?',
-            arguments: {
-              button: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'mouseButtons'
+                menu: "direction",
               },
-              action: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'mouseActions'
-              }
-            }
+            },
           },
           {
-            opcode: 'mouseClicked',
+            opcode: "getMouseScrolling",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'mouse clicked?'
-          }
+            text: "mouse scrolling [DIRECTION]?",
+            arguments: {
+              DIRECTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "direction",
+              },
+            },
+          },
+          {
+            opcode: "getMouseWheelDirection",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "mouse wheel direction",
+          },
+          "---",
+          {
+            opcode: "setMouseTravel",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set mouse [DIRECTION] distance to [VALUE]",
+            arguments: {
+              DIRECTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "distance",
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+          },
+          {
+            opcode: "mouseWheelTravel",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "mouse [DIRECTION] distance",
+            arguments: {
+              DIRECTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "direction",
+              },
+            },
+          },
         ],
         menus: {
           cursors: {
@@ -266,12 +323,12 @@
             acceptReporters: true,
             items: [
               // [x, y] where x is [0=left, 100=right] and y is [0=top, 100=bottom]
-              { text: 'top left', value: '0,0' },
-              { text: 'top right', value: '100,0' },
-              { text: 'bottom left', value: '0,100' },
-              { text: 'bottom right', value: '100,100' },
-              { text: 'center', value: '50,50' },
-            ]
+              { text: "top left", value: "0,0" },
+              { text: "top right", value: "100,0" },
+              { text: "bottom left", value: "0,100" },
+              { text: "bottom right", value: "100,100" },
+              { text: "center", value: "50,50" },
+            ],
           },
           imageSizes: {
             acceptReporters: true,
@@ -279,39 +336,23 @@
               // Some important numbers to keep in mind:
               // Browsers ignore cursor images >128 in any dimension (https://searchfox.org/mozilla-central/rev/43ee5e789b079e94837a21336e9ce2420658fd19/widget/gtk/nsWindow.cpp#3393-3402)
               // Browsers may refuse to display a cursor near window borders for images >32 in any dimension
-              { text: '4x4', value: '4x4' },
-              { text: '8x8', value: '8x4' },
-              { text: '12x12', value: '12x12' },
-              { text: '16x16', value: '16x16' },
-              { text: '32x32', value: '32x32' },
-              { text: '48x48 (unreliable)', value: '48x48' },
-              { text: '64x64 (unreliable)', value: '64x64' },
-              { text: '128x128 (unreliable)', value: '128x128' },
-            ]
+              { text: "4x4", value: "4x4" },
+              { text: "8x8", value: "8x4" },
+              { text: "12x12", value: "12x12" },
+              { text: "16x16", value: "16x16" },
+              { text: "32x32", value: "32x32" },
+              { text: "48x48 (unreliable)", value: "48x48" },
+              { text: "64x64 (unreliable)", value: "64x64" },
+              { text: "128x128 (unreliable)", value: "128x128" },
+            ],
           },
-          wheelDirections: {
-            acceptReporters: true,
-            items: ['up', 'down']
-          },
-          wheelDirectionsHat: {
-            // must be "acceptReporters: false" due to the nature of event-based hats
+          direction: {
             acceptReporters: false,
-            items: ['up', 'down', 'any']
+            items: ["up", "down", "any"],
           },
-          mouseButtons: {
-            acceptReporters: true,
-            items: [
-              // Some important numbers to keep in mind:
-              // Browsers ignore cursor images >128 in any dimension (https://searchfox.org/mozilla-central/rev/43ee5e789b079e94837a21336e9ce2420658fd19/widget/gtk/nsWindow.cpp#3393-3402)
-              // Browsers may refuse to display a cursor near window borders for images >32 in any dimension
-              { text: 'primary', value: '0' },
-              { text: 'middle', value: '1' },
-              { text: 'secondary', value: '2' }
-            ]
-          },
-          mouseActions: {
-            acceptReporters: true,
-            items: ['down', 'clicked']
+          distance: {
+            acceptReporters: false,
+            items: ["up", "down", "any"],
           },
         },
       };
@@ -320,7 +361,7 @@
     setCur(args) {
       const newCursor = Scratch.Cast.toString(args.cur);
       // Prevent setting cursor to "url(...), default" from causing fetch.
-      if (cursors.includes(newCursor) || newCursor === 'none') {
+      if (cursors.includes(newCursor) || newCursor === "none") {
         nativeCursor = newCursor;
         customCursorImageName = null;
         currentCanvasCursor = newCursor;
@@ -329,9 +370,12 @@
     }
 
     setCursorImage(args, util) {
-      const [maxWidth, maxHeight] = parseTuple(args.size).map(i => Math.max(0, i));
+      const [maxWidth, maxHeight] = parseTuple(args.size).map((i) =>
+        Math.max(0, i)
+      );
 
-      const currentCostume = util.target.getCostumes()[util.target.currentCostume];
+      const currentCostume =
+        util.target.getCostumes()[util.target.currentCostume];
       const costumeName = currentCostume.name;
 
       let encodedCostume;
@@ -343,7 +387,9 @@
       }
 
       if (encodedCostume) {
-        const [percentX, percentY] = parseTuple(args.position).map(i => Math.max(0, Math.min(100, i)) / 100);
+        const [percentX, percentY] = parseTuple(args.position).map(
+          (i) => Math.max(0, Math.min(100, i)) / 100
+        );
         const x = percentX * encodedCostume.width;
         const y = percentY * encodedCostume.height;
 
@@ -360,7 +406,7 @@
 
     hideCur() {
       this.setCur({
-        cur: 'none'
+        cur: "none",
       });
     }
 
@@ -371,67 +417,46 @@
       return nativeCursor;
     }
 
-    mouseWheel(args, util) {
-      // This is why I wanted to run it as an ioQuery.
-      // If the cursor was scrolled at any point before checking, then
-      // this will return true on the first frame every time.
-      // 
-      // There's no reason why I couldn't make this more resilient, I
-      // just don't know how.
-      const oldScrollY = scrollY;
-      scrollY = 0;
-      if (args.direction === 'up') return (oldScrollY < 0);
-      if (args.direction === 'down') return (oldScrollY > 0);
-      return false;
-    }
-
-    mouseWheelDirection() {
-      const oldScrollY = scrollY;
-      scrollY = 0;
-      return Scratch.Cast.toNumber(oldScrollY) / 100;
-    }
-
-    mouseButton(args, blockInfo) {
-      const button = Scratch.Cast.toNumber(args.button);
-      const blockId = blockInfo.thread.topBlock;
-      const mouseDown = Scratch.vm.runtime.ioDevices.mouse.getButtonIsDown(button);
-
-      if (!mouseDownInterval[blockId]) {
-        mouseDownInterval[blockId] = {
-          'any': 0, 0: 0, 1: 0, 2: 0
-        };
-      }
-      const mouseInterval = mouseDownInterval[blockId];
-
-      if (args.action === 'down') {
-        return mouseDown;
-      } else {
-        if (mouseDown) {
-          mouseInterval[button]++;
-        } else {
-          mouseInterval[button] = 0;
-        }
-        return mouseInterval[button] === 1;
+    getMouseScrolling(args) {
+      switch (args.DIRECTION) {
+        case "up":
+          return !!(scrollY < 0);
+        case "down":
+          return !!(scrollY > 0);
+        case "any":
+          return !!(scrollY != 0);
+        default:
+          return false;
       }
     }
 
-    mouseClicked(args, blockInfo) {
-      const blockId = blockInfo.thread.topBlock;
-      const mouseDown = Scratch.vm.runtime.ioDevices.mouse.getIsDown();
+    getMouseWheelDirection() {
+      return scrollY / 100;
+    }
 
-      if (!mouseDownInterval[blockId]) {
-        mouseDownInterval[blockId] = {
-          'any': 0, 0: 0, 1: 0, 2: 0
-        };
+    mouseWheelTravel(args) {
+      switch (args.DIRECTION) {
+        case "up":
+          return scrollDistanceUp;
+        case "down":
+          return scrollDistanceDown;
+        case "any":
+          return scrollDistance;
+        default:
+          return 0;
       }
+    }
 
-      const mouseInterval = mouseDownInterval[blockId];
-      if (mouseDown) {
-        mouseInterval['any']++;
-      } else {
-        mouseInterval['any'] = 0;
+    setMouseTravel(args) {
+      const value = Scratch.Cast.toNumber(args.VALUE);
+      switch (args.DIRECTION) {
+        case "up":
+          return (scrollDistanceUp = value);
+        case "down":
+          return (scrollDistanceDown = value);
+        default:
+          return (scrollDistance = value);
       }
-      return mouseInterval['any'] === 1;
     }
   }
 
