@@ -1,6 +1,6 @@
-// Name: Lily's Toolbox (LMS Utilities)
+// Name: Lily's Toolbox
 // ID: lmsutilsblocks
-// Description: Relisted.
+// Description: LMS Utilities but relisted.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 
 (function (Scratch) {
