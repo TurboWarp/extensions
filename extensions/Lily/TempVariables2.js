@@ -1,7 +1,12 @@
-(function(Scratch) {
-  'use strict';
+// Name: Temporary Variables
+// ID: lmsTempVars2
+// Description: Create disposable runtime or thread variables.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 
-  const menuIconURI = '';
+(function (Scratch) {
+  "use strict";
+
+  const menuIconURI = "";
 
   // Object.create(null) prevents "variable [toString]" from returning a function
   let runtimeVariables = Object.create(null);
@@ -10,7 +15,7 @@
   const label = (name, hidden) => ({
     blockType: Scratch.BlockType.LABEL,
     text: name,
-    hideFromPalette: hidden
+    hideFromPalette: hidden,
   });
 
   function resetRuntimeVariables() {
@@ -19,193 +24,190 @@
 
   class TempVars {
     constructor() {
-      Scratch.vm.runtime.on('PROJECT_START', () => {
+      Scratch.vm.runtime.on("PROJECT_START", () => {
         resetRuntimeVariables();
       });
 
-      Scratch.vm.runtime.on('PROJECT_STOP_ALL', () => {
+      Scratch.vm.runtime.on("PROJECT_STOP_ALL", () => {
         resetRuntimeVariables();
       });
     }
 
     getInfo() {
       return {
-        id: 'lmsTempVars2',
-        name: 'Temporary Variables',
-        color1: '#FF791A',
-        color2: '#E15D00',
+        id: "lmsTempVars2",
+        name: "Temporary Variables",
+        color1: "#FF791A",
+        color2: "#E15D00",
         menuIconURI: menuIconURI, // I intend on making one later
         blocks: [
-
-          label('Thread Variables', false),
+          label("Thread Variables", false),
 
           {
-            opcode: 'setThreadVariable',
+            opcode: "setThreadVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set thread var [VAR] to [STRING]',
+            text: "set thread var [VAR] to [STRING]",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'variable'
+                defaultValue: "variable",
               },
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '0'
-              }
+                defaultValue: "0",
+              },
             },
           },
           {
-            opcode: 'changeThreadVariable',
+            opcode: "changeThreadVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'change thread var [VAR] by [NUM]',
+            text: "change thread var [VAR] by [NUM]",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'variable'
+                defaultValue: "variable",
               },
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1'
-              }
+                defaultValue: "1",
+              },
             },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'getThreadVariable',
+            opcode: "getThreadVariable",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'thread var [VAR]',
+            text: "thread var [VAR]",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'variable'
-              }
-            }
+                defaultValue: "variable",
+              },
+            },
           },
           {
-            opcode: 'threadVariableExists',
+            opcode: "threadVariableExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'thread var [VAR] exists?',
+            text: "thread var [VAR] exists?",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'variable'
-              }
-            }
+                defaultValue: "variable",
+              },
+            },
           },
 
-          '---',
+          "---",
 
-          /* Add this when the compiler supports it
           {
-            opcode: 'forEachThreadVariable',
+            opcode: "forEachThreadVariable",
             blockType: Scratch.BlockType.LOOP,
-            text: 'for each [VAR] in [NUM]',
+            text: "for each [VAR] in [NUM]",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'thread variable'
+                defaultValue: "thread variable",
               },
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '10'
-              }
-            }
+                defaultValue: "10",
+              },
+            },
           },
-          */
           {
-            opcode: 'listThreadVariables',
+            opcode: "listThreadVariables",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'list active thread variables',
-            disableMonitor: true
+            text: "list active thread variables",
+            disableMonitor: true,
           },
 
-          '---',
+          "---",
 
-          label('Runtime Variables', false),
+          label("Runtime Variables", false),
 
           {
-            opcode: 'setRuntimeVariable',
+            opcode: "setRuntimeVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set runtime var [VAR] to [STRING]',
+            text: "set runtime var [VAR] to [STRING]",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'variable'
+                defaultValue: "variable",
               },
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '0'
-              }
-            }
+                defaultValue: "0",
+              },
+            },
           },
           {
-            opcode: 'changeRuntimeVariable',
+            opcode: "changeRuntimeVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'change runtime var [VAR] by [NUM]',
+            text: "change runtime var [VAR] by [NUM]",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'variable'
+                defaultValue: "variable",
               },
               NUM: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '1'
-              }
-            }
+                defaultValue: "1",
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'getRuntimeVariable',
+            opcode: "getRuntimeVariable",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'runtime var [VAR]',
+            text: "runtime var [VAR]",
             disableMonitor: true,
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'variable'
-              }
-            }
+                defaultValue: "variable",
+              },
+            },
           },
           {
-            opcode: 'runtimeVariableExists',
+            opcode: "runtimeVariableExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'runtime var [VAR] exists?',
+            text: "runtime var [VAR] exists?",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'variable'
-              }
-            }
+                defaultValue: "variable",
+              },
+            },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'deleteRuntimeVariable',
+            opcode: "deleteRuntimeVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'delete runtime var [VAR]',
+            text: "delete runtime var [VAR]",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'variable'
-              }
-            }
+                defaultValue: "variable",
+              },
+            },
           },
           {
-            opcode: 'deleteAllRuntimeVariables',
+            opcode: "deleteAllRuntimeVariables",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'delete all runtime variables',
+            text: "delete all runtime variables",
           },
           {
-            opcode: 'listRuntimeVariables',
+            opcode: "listRuntimeVariables",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'list active runtime variables'
-          }
-        ]
+            text: "list active runtime variables",
+          },
+        ],
       };
     }
 
@@ -227,34 +229,34 @@
       vars[args.VAR] = prev + next;
     }
 
-    getThreadVariable (args, util) {
+    getThreadVariable(args, util) {
       const thread = util.thread;
       if (!thread.variables) thread.variables = Object.create(null);
       const vars = thread.variables;
       const varValue = vars[args.VAR];
-      if (typeof varValue === 'undefined') return '';
+      if (typeof varValue === "undefined") return "";
       return varValue;
     }
 
-    threadVariableExists (args, util) {
+    threadVariableExists(args, util) {
       const thread = util.thread;
       if (!thread.variables) thread.variables = Object.create(null);
       const vars = thread.variables;
       const varValue = vars[args.VAR];
-      return !(typeof varValue === 'undefined');
+      return !(typeof varValue === "undefined");
     }
 
     forEachThreadVariable(args, util) {
       const thread = util.thread;
       if (!thread.variables) thread.variables = Object.create(null);
       const vars = thread.variables;
-      if (typeof util.stackFrame.index === 'undefined') {
+      if (typeof util.stackFrame.index === "undefined") {
         util.stackFrame.index = 0;
       }
       if (util.stackFrame.index < Number(args.NUM)) {
         util.stackFrame.index++;
         vars[args.VAR] = util.stackFrame.index;
-        util.startBranch(1, true);
+        return true;
       }
     }
 
@@ -262,39 +264,39 @@
       const thread = util.thread;
       if (!thread.variables) thread.variables = Object.create(null);
       const vars = thread.variables;
-      return Object.keys(vars).join(',');
+      return Object.keys(vars).join(",");
     }
 
     /* RUNTIME VARIABLES */
 
-    setRuntimeVariable (args) {
+    setRuntimeVariable(args) {
       runtimeVariables[args.VAR] = args.STRING;
     }
 
-    changeRuntimeVariable (args) {
+    changeRuntimeVariable(args) {
       const prev = Scratch.Cast.toNumber(runtimeVariables[args.VAR]);
       const next = Scratch.Cast.toNumber(args.NUM);
       runtimeVariables[args.VAR] = prev + next;
     }
 
-    getRuntimeVariable (args) {
-      if (!(args.VAR in runtimeVariables)) return '';
+    getRuntimeVariable(args) {
+      if (!(args.VAR in runtimeVariables)) return "";
       return runtimeVariables[args.VAR];
     }
 
-    runtimeVariableExists (args) {
-      return (args.VAR in runtimeVariables);
+    runtimeVariableExists(args) {
+      return args.VAR in runtimeVariables;
     }
 
-    listRuntimeVariables (args, util) {
-      return Object.keys(runtimeVariables).join(',');
+    listRuntimeVariables(args, util) {
+      return Object.keys(runtimeVariables).join(",");
     }
 
-    deleteRuntimeVariable (args) {
+    deleteRuntimeVariable(args) {
       Reflect.deleteProperty(runtimeVariables, args.VAR);
     }
 
-    deleteAllRuntimeVariables () {
+    deleteAllRuntimeVariables() {
       runtimeVariables = Object.create(null);
     }
   }

@@ -1,14 +1,19 @@
-(function(Scratch){
-  'use strict';
+// Name: BigInt
+// ID: skyhigh173BigInt
+// Description: Math blocks that work on infinitely large integers (no decimals).
+// By: Skyhigh173
+
+(function (Scratch) {
+  "use strict";
 
   /**
    * @param {unknown} x
    * @returns {bigint}
    */
-  const bi = x => {
-    if (typeof x === 'string') {
+  const bi = (x) => {
+    if (typeof x === "string") {
       // Try to parse things like '8n'
-      if (x.charAt(x.length - 1) === 'n') {
+      if (x.charAt(x.length - 1) === "n") {
         try {
           return BigInt(x.slice(0, -1));
         } catch (e) {
@@ -16,9 +21,10 @@
         }
       }
       // Must remove decimal using string operations. Math.trunc will convert to float
-      // which ruins the point of using bigints. 
-      const decimalIndex = x.indexOf('.');
-      const withoutDecimal = decimalIndex === -1 ? x : x.substring(0, decimalIndex);
+      // which ruins the point of using bigints.
+      const decimalIndex = x.indexOf(".");
+      const withoutDecimal =
+        decimalIndex === -1 ? x : x.substring(0, decimalIndex);
       try {
         return BigInt(withoutDecimal);
       } catch (e) {
@@ -35,335 +41,335 @@
   };
 
   const makeLabel = (text) => ({
-    blockType: 'label',
-    text: text
+    blockType: "label",
+    text: text,
   });
 
   class BigIntExtension {
     getInfo() {
       return {
-        id: 'skyhigh173BigInt',
-        name: 'BigInt',
-        color1: '#59C093',
+        id: "skyhigh173BigInt",
+        name: "BigInt",
+        color1: "#59C093",
         blocks: [
           {
-            opcode: 'from',
+            opcode: "from",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'To BigInt [text]',
+            text: "To BigInt [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'to',
+            opcode: "to",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'To Number [text]',
+            text: "To Number [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
-          makeLabel('Arithmetic'),
+          makeLabel("Arithmetic"),
           {
-            opcode: 'add',
+            opcode: "add",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] + [b]',
+            text: "[a] + [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'sub',
+            opcode: "sub",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] - [b]',
+            text: "[a] - [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'mul',
+            opcode: "mul",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] * [b]',
+            text: "[a] * [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'div',
+            opcode: "div",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] / [b]',
+            text: "[a] / [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'pow',
+            opcode: "pow",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] ** [b]',
+            text: "[a] ** [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'mod',
+            opcode: "mod",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] mod [b]',
+            text: "[a] mod [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'select',
+            opcode: "select",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] [sel] [b]',
+            text: "[a] [sel] [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               sel: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '+',
-                menu: 'op'
-              }
-            }
+                defaultValue: "+",
+                menu: "op",
+              },
+            },
           },
-          makeLabel('Logic'),
+          makeLabel("Logic"),
           {
-            opcode: 'lt',
+            opcode: "lt",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[a] < [b]',
+            text: "[a] < [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'le',
+            opcode: "le",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[a] ≤ [b]',
+            text: "[a] ≤ [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'eq',
+            opcode: "eq",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[a] = [b]',
+            text: "[a] = [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'neq',
+            opcode: "neq",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[a] ≠ [b]',
+            text: "[a] ≠ [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'ge',
+            opcode: "ge",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[a] ≥ [b]',
+            text: "[a] ≥ [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'gt',
+            opcode: "gt",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[a] > [b]',
+            text: "[a] > [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
-          makeLabel('Bitwise'),
+          makeLabel("Bitwise"),
           {
-            opcode: 'and',
+            opcode: "and",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] & [b]',
+            text: "[a] & [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'or',
+            opcode: "or",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] | [b]',
+            text: "[a] | [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'xor',
+            opcode: "xor",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] ^ [b]',
+            text: "[a] ^ [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'ls',
+            opcode: "ls",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] << [b]',
+            text: "[a] << [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'rs',
+            opcode: "rs",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[a] >> [b]',
+            text: "[a] >> [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
-              }
-            }
+                defaultValue: "",
+              },
+            },
           },
           {
-            opcode: 'not',
+            opcode: "not",
             blockType: Scratch.BlockType.REPORTER,
-            text: '~ [a]',
+            text: "~ [a]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ''
+                defaultValue: "",
               },
-            }
+            },
           },
         ],
         menus: {
           op: {
-            items: ['+', '-', '*', '/', '%', '^'],
-            acceptReporters: true
-          }
-        }
+            items: ["+", "-", "*", "/", "%", "^"],
+            acceptReporters: true,
+          },
+        },
       };
     }
     from({ text }) {
@@ -382,14 +388,14 @@
       return (bi(a) * bi(b)).toString();
     }
     div({ a, b }) {
-      if (Number(b) == 0) return 'NaN';
+      if (Number(b) == 0) return "NaN";
       return (bi(a) / bi(b)).toString();
     }
     pow({ a, b }) {
       return (bi(a) ** bi(b)).toString();
     }
     mod({ a, b }) {
-      if (Number(b) == 0) return 'NaN';
+      if (Number(b) == 0) return "NaN";
       return (bi(a) % bi(b)).toString();
     }
 
@@ -414,19 +420,25 @@
 
     select({ a, sel, b }) {
       switch (sel) {
-      case '+': return (bi(a) + bi(b)).toString();
-      case '-': return (bi(a) - bi(b)).toString();
-      case '*': return (bi(a) * bi(b)).toString();
-      case '/': {
-        if (Number(b) == 0) return 'NaN';
-        return (bi(a) / bi(b)).toString();
-      }
-      case '%': {
-        if (Number(b) == 0) return 'NaN';
-        return (bi(a) % bi(b)).toString();
-      }
-      case '^': case '**': return (bi(a) ** bi(b)).toString();
-      default: return '0';
+        case "+":
+          return (bi(a) + bi(b)).toString();
+        case "-":
+          return (bi(a) - bi(b)).toString();
+        case "*":
+          return (bi(a) * bi(b)).toString();
+        case "/": {
+          if (Number(b) == 0) return "NaN";
+          return (bi(a) / bi(b)).toString();
+        }
+        case "%": {
+          if (Number(b) == 0) return "NaN";
+          return (bi(a) % bi(b)).toString();
+        }
+        case "^":
+        case "**":
+          return (bi(a) ** bi(b)).toString();
+        default:
+          return "0";
       }
     }
 
