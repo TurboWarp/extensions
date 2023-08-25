@@ -1,6 +1,6 @@
 // Name: Lily's Toolbox
 // ID: lmsutilsblocks
-// Description: LMS Utilities but relisted.
+// Description: Previously called LMS Utilities.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 
 (function (Scratch) {
