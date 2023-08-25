@@ -7,13 +7,9 @@
 
   class CollisionTags {
     constructor() {
-      vm.runtime.on('targetWasCreated', (target, original) => {
+      for (const target of runtime.targets) {
         target._collisionTags = [];
-        if (!original) return;
-
-        if (!original._collisionTags) original._collisionTags = [];
-        target._collisionTags = original._collisionTags;
-      });
+      }
     }
     getInfo() {
       return {
