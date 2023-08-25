@@ -424,6 +424,7 @@
             GJAPI.iSessionHandle = window.setInterval(GJAPI.SessionPing, 30000);
             window.addEventListener("beforeunload", GJAPI.SessionClose, false);
           }
+          
           pCallback(pResponse);
         }
       );
