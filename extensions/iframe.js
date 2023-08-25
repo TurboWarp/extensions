@@ -37,8 +37,9 @@
   let y = 0;
   let width = -1; // negative means default
   let height = -1; // negative means default
+  let interactive = true;
 
-  const positionFrame = () => {
+  const updateFrameAttributes = () => {
     if (!iframe) {
       return;
     }
@@ -54,6 +55,8 @@
       stageHeight / 2 - effectiveHeight / 2 - y
     }px)`;
     iframe.style.transform = transform;
+
+    iframe.style.pointerEvents = interactive ? "" : "none";
   };
 
   const createFrame = (src) => {
@@ -73,7 +76,7 @@
     iframe.setAttribute("src", src);
     Scratch.vm.renderer.scaledOverlay.appendChild(iframe);
 
-    positionFrame();
+    updateFrameAttributes();
   };
 
   class IframeExtension {
@@ -124,7 +127,7 @@
           {
             opcode: "get",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get iframe [MENU]",
+            text: "iframe [MENU]",
             arguments: {
               MENU: {
                 type: Scratch.ArgumentType.STRING,
@@ -135,7 +138,7 @@
           {
             opcode: "setX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set x position to [X]",
+            text: "set iframe x position to [X]",
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -146,7 +149,7 @@
           {
             opcode: "setY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set y position to [Y]",
+            text: "set iframe y position to [Y]",
             arguments: {
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -157,7 +160,7 @@
           {
             opcode: "setWidth",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set width position to [WIDTH]",
+            text: "set iframe width to [WIDTH]",
             arguments: {
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -168,7 +171,7 @@
           {
             opcode: "setHeight",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set height position to [HEIGHT]",
+            text: "set iframe height to [HEIGHT]",
             arguments: {
               HEIGHT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -176,11 +179,34 @@
               },
             },
           },
+          {
+            opcode: "setInteractive",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set iframe interactive to [INTERACTIVE]",
+            arguments: {
+              INTERACTIVE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "interactiveMenu",
+              },
+            },
+          },
         ],
         menus: {
           getMenu: {
             acceptReporters: true,
-            items: ["url", "visible", "x", "y", "width", "height"],
+            items: [
+              "url",
+              "visible",
+              "x",
+              "y",
+              "width",
+              "height",
+              "interactive",
+            ],
+          },
+          interactiveMenu: {
+            acceptReporters: true,
+            items: ["true", "false"],
           },
         },
       };
@@ -237,6 +263,8 @@
         return width >= 0 ? width : Scratch.vm.runtime.stageWidth;
       } else if (MENU === "height") {
         return height >= 0 ? height : Scratch.vm.runtime.stageHeight;
+      } else if (MENU === "interactive") {
+        return interactive;
       } else {
         return "";
       }
@@ -244,22 +272,27 @@
 
     setX({ X }) {
       x = Scratch.Cast.toNumber(X);
-      positionFrame();
+      updateFrameAttributes();
     }
 
     setY({ Y }) {
       y = Scratch.Cast.toNumber(Y);
-      positionFrame();
+      updateFrameAttributes();
     }
 
     setWidth({ WIDTH }) {
       width = Scratch.Cast.toNumber(WIDTH);
-      positionFrame();
+      updateFrameAttributes();
     }
 
     setHeight({ HEIGHT }) {
       height = Scratch.Cast.toNumber(HEIGHT);
-      positionFrame();
+      updateFrameAttributes();
+    }
+
+    setInteractive({ INTERACTIVE }) {
+      interactive = Scratch.Cast.toBoolean(INTERACTIVE);
+      updateFrameAttributes();
     }
   }
 
