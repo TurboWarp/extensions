@@ -1,8 +1,18 @@
-(function(Scratch) {
-  'use strict';
+(function (Scratch) {
+  "use strict";
 
-  const encode = (str) => btoa(str).split('').map((i) => String.fromCharCode(i.charCodeAt(0) + 1)).join('');
-  const decode = (str) => atob(str.split('').map((i) => String.fromCharCode(i.charCodeAt(0) - 1)).join(''));
+  const encode = (str) =>
+    btoa(str)
+      .split("")
+      .map((i) => String.fromCharCode(i.charCodeAt(0) + 1))
+      .join("");
+  const decode = (str) =>
+    atob(
+      str
+        .split("")
+        .map((i) => String.fromCharCode(i.charCodeAt(0) - 1))
+        .join("")
+    );
 
   // A forewarning for the reader:
   // This list contains some very bad naughty words, so we've encoded it in a way that
@@ -214,44 +224,44 @@
     "e3iwdnV>",
     "e3m{[XG{dx>>",
     "e3m{[XG{d3W{",
-    "e3:x"
+    "e3:x",
   ].map(decode);
 
   // Put the longest words first so that if "test" and "tests" are in the word list in
   // that order, redacting "tests" will give "***" instead of "***s"
   NAUGHTY_WORDS.sort((a, b) => b.length - a.length);
 
-  const regex = new RegExp(NAUGHTY_WORDS.join('|'), 'gi');
+  const regex = new RegExp(NAUGHTY_WORDS.join("|"), "gi");
 
   class Profanity {
-    getInfo () {
+    getInfo() {
       return {
-        id: 'theshovelprofanity',
-        name: 'Bad Word Remover',
-        color1: '#cf6a3c',
-        color2: '#cf6a3c',
-        color3: '#cf6a3c',
+        id: "theshovelprofanity",
+        name: "Bad Word Remover",
+        color1: "#cf6a3c",
+        color2: "#cf6a3c",
+        color3: "#cf6a3c",
         blocks: [
           {
-            opcode: 'checkProfanity',
+            opcode: "checkProfanity",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'replace bad words in [TEXT] with [REPLACEMENT]',
+            text: "replace bad words in [TEXT] with [REPLACEMENT]",
             arguments: {
               REPLACEMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '***',
+                defaultValue: "***",
               },
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Hello!',
-              }
-            }
+                defaultValue: "Hello!",
+              },
+            },
           },
-        ]
+        ],
       };
     }
 
-    checkProfanity({TEXT, REPLACEMENT}) {
+    checkProfanity({ TEXT, REPLACEMENT }) {
       // Use a function as the second argument so that replacing with "$&" does not allow
       // bypass.
       return String(TEXT).replace(regex, () => REPLACEMENT);
