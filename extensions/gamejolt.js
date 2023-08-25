@@ -414,20 +414,16 @@
       }
 
       // send open-session request
-      GJAPI.SendRequest(
-        "/sessions/open/",
-        GJAPI.SEND_FOR_USER,
-        (pResponse) => {
-          // check for success
-          if (pResponse.success == "true") {
-            // add automatic session ping and close
-            GJAPI.iSessionHandle = window.setInterval(GJAPI.SessionPing, 30000);
-            window.addEventListener("beforeunload", GJAPI.SessionClose, false);
-          }
-          
-          pCallback(pResponse);
+      GJAPI.SendRequest("/sessions/open/", GJAPI.SEND_FOR_USER, (pResponse) => {
+        // check for success
+        if (pResponse.success == "true") {
+          // add automatic session ping and close
+          GJAPI.iSessionHandle = window.setInterval(GJAPI.SessionPing, 30000);
+          window.addEventListener("beforeunload", GJAPI.SessionClose, false);
         }
-      );
+
+        pCallback(pResponse);
+      });
     };
 
     /**
