@@ -1,11 +1,12 @@
 // Name: Newgrounds
+// ID: NGIO
 // Description: Blocks that allow games to interact with the Newgrounds API. Unofficial.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
 
 (function (Scratch) {
   "use strict";
 
-   /*!
+  /*!
     The following code is from NewgroundsIO-JS
     The original code is available at https://github.com/PsychoGoldfishNG/NewgroundsIO-JS
   
@@ -2670,48 +2671,48 @@
         let request = this._getRequest(component);
         let response = new NewgroundsIO.objects.Response();
 
-        Scratch.canFetch(this.GATEWAY_URI).then(allowed => {
-            if (!allowed) return callback(null);
-            // eslint-disable-next-line no-restricted-syntax
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-              if (xhr.readyState == 4) {
-                var o_return;
-                try {
-                  o_return = JSON.parse(xhr.responseText);
-                } catch (e) {
-                  o_return = { success: false, app_id: core.app_id };
-                  o_return.error = { message: String(e), code: 8002 };
-                }
-  
-                let response = core._populateResponse(o_return);
-  
-                core.dispatchEvent(
-                  new CustomEvent("serverResponse", { detail: response })
-                );
-  
-                if (callback) {
-                  if (thisArg) callback.call(thisArg, response);
-                  else callback(response);
-                }
+        Scratch.canFetch(this.GATEWAY_URI).then((allowed) => {
+          if (!allowed) return callback(null);
+          // eslint-disable-next-line no-restricted-syntax
+          var xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+              var o_return;
+              try {
+                o_return = JSON.parse(xhr.responseText);
+              } catch (e) {
+                o_return = { success: false, app_id: core.app_id };
+                o_return.error = { message: String(e), code: 8002 };
               }
-            };
-  
-            // jhax is a hack to get around JS frameworks that add a toJSON method to Array (wich breaks the native implementation).
-            var jhax =
-              typeof Array.prototype.toJSON != "undefined"
-                ? Array.prototype.toJSON
-                : null;
-            if (jhax) delete Array.prototype.toJSON;
-  
-            let formData = new FormData();
-            formData.append("request", JSON.stringify(request));
-            if (jhax) Array.prototype.toJSON = jhax;
-  
-            xhr.open("POST", this.GATEWAY_URI, true);
-  
-            xhr.send(formData);
-          });
+
+              let response = core._populateResponse(o_return);
+
+              core.dispatchEvent(
+                new CustomEvent("serverResponse", { detail: response })
+              );
+
+              if (callback) {
+                if (thisArg) callback.call(thisArg, response);
+                else callback(response);
+              }
+            }
+          };
+
+          // jhax is a hack to get around JS frameworks that add a toJSON method to Array (wich breaks the native implementation).
+          var jhax =
+            typeof Array.prototype.toJSON != "undefined"
+              ? Array.prototype.toJSON
+              : null;
+          if (jhax) delete Array.prototype.toJSON;
+
+          let formData = new FormData();
+          formData.append("request", JSON.stringify(request));
+          if (jhax) Array.prototype.toJSON = jhax;
+
+          xhr.open("POST", this.GATEWAY_URI, true);
+
+          xhr.send(formData);
+        });
       }
 
       /**
@@ -6028,19 +6029,19 @@
           return;
         }
 
-        Scratch.canFetch(this.url).then(allowed => {
-            if (!allowed) return callback(null);
-            // eslint-disable-next-line no-restricted-syntax
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-              if (xhr.readyState == 4) {
-                if (thisArg) callback.call(thisArg, xhr.responseText);
-                else callback(xhr.responseText);
-              }
-            };
-            xhr.open("GET", this.url, true);
-            xhr.send();
-          });
+        Scratch.canFetch(this.url).then((allowed) => {
+          if (!allowed) return callback(null);
+          // eslint-disable-next-line no-restricted-syntax
+          var xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+              if (thisArg) callback.call(thisArg, xhr.responseText);
+              else callback(xhr.responseText);
+            }
+          };
+          xhr.open("GET", this.url, true);
+          xhr.send();
+        });
       }
 
       /**
