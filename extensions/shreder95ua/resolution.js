@@ -17,12 +17,12 @@
         blocks: [
           {
             opcode: "getWidth",
-            text: "Get width",
+            text: "primary screen width",
             blockType: Scratch.BlockType.REPORTER,
           },
           {
             opcode: "getHeight",
-            text: "Get height",
+            text: "primary screen height",
             blockType: Scratch.BlockType.REPORTER,
           },
         ],
