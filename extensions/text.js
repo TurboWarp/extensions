@@ -1,8 +1,9 @@
+// Name: Text
+// ID: strings
+// Description: Manipulate characters and text.
+// Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
 
-// Made by CST1229
-// Modified port of an extension from a mod I worked on.
-
-(function(Scratch) {
+(function (Scratch) {
   "use strict";
 
   const CaseParam = {
@@ -10,41 +11,41 @@
     UPPERCASE: "uppercase",
     MIXEDCASE: "mixedcase",
     TITLECASE: "titlecase",
-    EXACTTITLECASE: "exacttitlecase"
+    EXACTTITLECASE: "exacttitlecase",
   };
 
   let splitCache;
   let matchCache;
 
   class StringsExt {
-    constructor () {}
+    constructor() {}
 
-    _initCaseMenu () {
+    _initCaseMenu() {
       return [
         {
           text: "lowercase",
-          value: CaseParam.LOWERCASE
+          value: CaseParam.LOWERCASE,
         },
         {
           text: "UPPERCASE",
-          value: CaseParam.UPPERCASE
+          value: CaseParam.UPPERCASE,
         },
         {
           text: "Title Case",
-          value: CaseParam.TITLECASE
+          value: CaseParam.TITLECASE,
         },
         {
           text: "Exactly Title Case",
-          value: CaseParam.EXACTTITLECASE
+          value: CaseParam.EXACTTITLECASE,
         },
         {
           text: "MiXeD CaSe",
-          value: CaseParam.MIXEDCASE
-        }
+          value: CaseParam.MIXEDCASE,
+        },
       ];
     }
 
-    getInfo () {
+    getInfo() {
       return {
         // id "text" could conflict with Scratch Lab's Animated Text
         // for mods which implement it or if it ever comes out
@@ -58,17 +59,17 @@
             arguments: {
               LETTER1: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 2
+                defaultValue: 2,
               },
               LETTER2: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 4
+                defaultValue: 4,
               },
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple"
-              }
-            }
+                defaultValue: "apple",
+              },
+            },
           },
           {
             opcode: "split",
@@ -77,17 +78,17 @@
             arguments: {
               ITEM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 3
+                defaultValue: 3,
               },
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple"
+                defaultValue: "apple",
               },
               SPLIT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "p"
-              }
-            }
+                defaultValue: "p",
+              },
+            },
           },
           {
             opcode: "count",
@@ -96,13 +97,13 @@
             arguments: {
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "p"
+                defaultValue: "p",
               },
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple"
-              }
-            }
+                defaultValue: "apple",
+              },
+            },
           },
           {
             opcode: "indexof",
@@ -111,13 +112,13 @@
             arguments: {
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "p"
+                defaultValue: "p",
               },
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple"
-              }
-            }
+                defaultValue: "apple",
+              },
+            },
           },
 
           "---",
@@ -129,17 +130,17 @@
             arguments: {
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "world"
+                defaultValue: "world",
               },
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello world!"
+                defaultValue: "Hello world!",
               },
               REPLACE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "fellow Scratchers"
-              }
-            }
+                defaultValue: "fellow Scratchers",
+              },
+            },
           },
           {
             opcode: "repeat",
@@ -148,13 +149,13 @@
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple "
+                defaultValue: "apple ",
               },
               REPEAT: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 3
-              }
-            }
+                defaultValue: 3,
+              },
+            },
           },
 
           "---",
@@ -166,9 +167,9 @@
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "A"
-              }
-            }
+                defaultValue: "A",
+              },
+            },
           },
           {
             opcode: "unicodefrom",
@@ -177,9 +178,9 @@
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 65
-              }
-            }
+                defaultValue: 65,
+              },
+            },
           },
 
           "---",
@@ -190,21 +191,21 @@
             arguments: {
               REGEX: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "."
+                defaultValue: ".",
               },
               FLAGS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "g"
+                defaultValue: "g",
               },
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello world!"
+                defaultValue: "Hello world!",
               },
               REPLACE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "$&$&"
-              }
-            }
+                defaultValue: "$&$&",
+              },
+            },
           },
           {
             opcode: "matchRegex",
@@ -213,21 +214,21 @@
             arguments: {
               ITEM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
+                defaultValue: 1,
               },
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello world!"
+                defaultValue: "Hello world!",
               },
               REGEX: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "(.) (.{2})"
+                defaultValue: "(.) (.{2})",
               },
               FLAGS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "g"
-              }
-            }
+                defaultValue: "g",
+              },
+            },
           },
           {
             opcode: "countRegex",
@@ -236,17 +237,17 @@
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello world!"
+                defaultValue: "Hello world!",
               },
               REGEX: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "[AEIOU]"
+                defaultValue: "[AEIOU]",
               },
               FLAGS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "i"
-              }
-            }
+                defaultValue: "i",
+              },
+            },
           },
           {
             opcode: "testRegex",
@@ -255,17 +256,17 @@
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello world!"
+                defaultValue: "Hello world!",
               },
               REGEX: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "hello"
+                defaultValue: "hello",
               },
               FLAGS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "i"
-              }
-            }
+                defaultValue: "i",
+              },
+            },
           },
 
           "---",
@@ -277,13 +278,13 @@
             arguments: {
               OPERAND1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "A"
+                defaultValue: "A",
               },
               OPERAND2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "a"
-              }
-            }
+                defaultValue: "a",
+              },
+            },
           },
 
           "---",
@@ -295,14 +296,14 @@
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple"
+                defaultValue: "apple",
               },
               TEXTCASE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "textCase",
-                defaultValue: CaseParam.LOWERCASE
-              }
-            }
+                defaultValue: CaseParam.LOWERCASE,
+              },
+            },
           },
           {
             opcode: "toCase",
@@ -311,22 +312,22 @@
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple"
+                defaultValue: "apple",
               },
               TEXTCASE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "textCase",
-                defaultValue: CaseParam.UPPERCASE
-              }
-            }
-          }
+                defaultValue: CaseParam.UPPERCASE,
+              },
+            },
+          },
         ],
         menus: {
           textCase: {
             acceptReporters: true,
-            items: this._initCaseMenu()
-          }
-        }
+            items: this._initCaseMenu(),
+          },
+        },
       };
     }
 
@@ -353,10 +354,7 @@
     }
 
     _caseInsensitiveRegex(str) {
-      return new RegExp(
-        str.replaceAll(/[^a-zA-Z0-9]/g, "\\$&"),
-        "gi"
-      );
+      return new RegExp(str.replaceAll(/[^a-zA-Z0-9]/g, "\\$&"), "gi");
     }
 
     split(args, util) {
@@ -365,17 +363,19 @@
       args.ITEM = Number(args.ITEM) || 0;
 
       // Cache the last split
-      if (!(
-        splitCache &&
-        splitCache.string === args.STRING &&
-        splitCache.split === args.SPLIT
-      )) {
+      if (
+        !(
+          splitCache &&
+          splitCache.string === args.STRING &&
+          splitCache.split === args.SPLIT
+        )
+      ) {
         const regex = this._caseInsensitiveRegex(args.SPLIT);
 
         splitCache = {
           string: args.STRING,
           split: args.SPLIT,
-          arr: args.STRING.split(regex)
+          arr: args.STRING.split(regex),
         };
       }
       return splitCache.arr[args.ITEM - 1] || "";
@@ -383,12 +383,15 @@
 
     count(args, util) {
       // Fill cache
-      this.split({
-        SPLIT: args.SUBSTRING,
-        STRING: args.STRING,
-        ITEM: 0
-      }, util);
-      return (splitCache.arr.length - 1) || 0;
+      this.split(
+        {
+          SPLIT: args.SUBSTRING,
+          STRING: args.STRING,
+          ITEM: 0,
+        },
+        util
+      );
+      return splitCache.arr.length - 1 || 0;
     }
 
     replace(args, util) {
@@ -447,20 +450,24 @@
         args.ITEM = Number(args.ITEM) || 0;
 
         // Cache the last matched string
-        if (!(
-          matchCache &&
-          matchCache.string === args.STRING &&
-          matchCache.regex === args.REGEX &&
-          matchCache.flags === args.FLAGS
-        )) {
-          const newFlags = args.FLAGS.includes("g") ? args.FLAGS : args.FLAGS + "g";
+        if (
+          !(
+            matchCache &&
+            matchCache.string === args.STRING &&
+            matchCache.regex === args.REGEX &&
+            matchCache.flags === args.FLAGS
+          )
+        ) {
+          const newFlags = args.FLAGS.includes("g")
+            ? args.FLAGS
+            : args.FLAGS + "g";
           const regex = new RegExp(args.REGEX, newFlags);
 
           matchCache = {
             string: args.STRING,
             regex: args.REGEX,
             flags: args.FLAGS,
-            arr: args.STRING.match(regex) || []
+            arr: args.STRING.match(regex) || [],
           };
         }
         return matchCache.arr[args.ITEM - 1] || "";
@@ -500,10 +507,9 @@
         case CaseParam.UPPERCASE:
           return string.toUpperCase() === string;
         case CaseParam.MIXEDCASE:
-          return (!(
-            string.toUpperCase() === string ||
-            string.toLowerCase() === string
-          ));
+          return !(
+            string.toUpperCase() === string || string.toLowerCase() === string
+          );
         case CaseParam.TITLECASE:
           return string.split(/\b/g).every((word) => {
             if (!word) return true;
@@ -513,10 +519,12 @@
         case CaseParam.EXACTTITLECASE:
           return string.split(/\b/g).every((word) => {
             if (!word) return true;
-            const titleCased = word[0].toUpperCase() + word.substring(1).toLowerCase();
+            const titleCased =
+              word[0].toUpperCase() + word.substring(1).toLowerCase();
             return word === titleCased;
           });
-        default: return false;
+        default:
+          return false;
       }
     }
 
@@ -529,22 +537,29 @@
         case CaseParam.UPPERCASE:
           return string.toUpperCase();
         case CaseParam.MIXEDCASE:
-          return Array.from(string).map(
-            (char, index) => index % 2 === 0 ?
-              char.toUpperCase() :
-              char.toLowerCase()
-          ).join("");
+          return Array.from(string)
+            .map((char, index) =>
+              index % 2 === 0 ? char.toUpperCase() : char.toLowerCase()
+            )
+            .join("");
         case CaseParam.TITLECASE:
-          return string.split(/\b/g).map((word) => {
-            if (!word) return '';
-            return word[0].toUpperCase() + word.substring(1);
-          }).join("");
+          return string
+            .split(/\b/g)
+            .map((word) => {
+              if (!word) return "";
+              return word[0].toUpperCase() + word.substring(1);
+            })
+            .join("");
         case CaseParam.EXACTTITLECASE:
-          return string.split(/\b/g).map((word) => {
-            if (!word) return '';
-            return word[0].toUpperCase() + word.substring(1).toLowerCase();
-          }).join("");
-        default: return string;
+          return string
+            .split(/\b/g)
+            .map((word) => {
+              if (!word) return "";
+              return word[0].toUpperCase() + word.substring(1).toLowerCase();
+            })
+            .join("");
+        default:
+          return string;
       }
     }
   }
