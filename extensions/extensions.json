@@ -43,6 +43,7 @@
   "true-fantom/regexp",
   "true-fantom/couplers",
   "Lily/AllMenus",
+  "Lily/HackedBlocks",
   "Lily/Cast",
   "-SIPC-/time",
   "-SIPC-/consoles",
