@@ -17,7 +17,7 @@
           {
             opcode: "gettotpcode",
             blockType: Scratch.BlockType.REPORTER,
-            text: "GET TOTP CODE [CODE]",
+            text: "Generate TOTP from [CODE]",
             arguments: {
               CODE: {
                 type: Scratch.ArgumentType.STRING,
