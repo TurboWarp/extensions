@@ -1,3 +1,9 @@
+// Name: AES encryption
+// ID: AES
+// Description: Easily encrypt and decrypt a message.
+// By: LIZARD_OFFICIAL <https://scratch.mit.edu/users/LIZARD_OFFICIAL/>
+// Original: LIZARD_OFFICIAL
+
 /* eslint-disable */
 
 (function(Scratch) {
