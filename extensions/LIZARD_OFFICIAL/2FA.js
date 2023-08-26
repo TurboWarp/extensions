@@ -1,3 +1,8 @@
+// Name: 2 Factor Authentication
+// ID: lizard2fa
+// Description: Get TOTP codes from secret keys provided to be used in a 2FA app.
+// By: LIZARD_OFFICIAL <https://scratch.mit.edu/users/LIZARD_OFFICIAL/>
+// Original: LIZARD_OFFICIAL
 
 (function (Scratch) {
   "use strict";
