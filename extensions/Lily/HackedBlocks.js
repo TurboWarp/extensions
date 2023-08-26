@@ -1,3 +1,8 @@
+// Name: Hacked Block Collection
+// ID: lmsHackedBlocks
+// Description: Various modified vanilla blocks.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
   'use strict';
 
