@@ -52,7 +52,7 @@
     }
 
     encrypt (args) {
-      return CryptoJS.AES.encrypt(args.TEXT,args.KEY).toString()
+      return CryptoJS.AES.encrypt(args.TEXT,args.KEY).toString();
     }
     decrypt (args) {
       return CryptoJS.AES.decrypt(args.TEXT,args.KEY).toString().match(/.{1,2}/g).map(function(v){
