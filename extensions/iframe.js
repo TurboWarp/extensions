@@ -241,7 +241,7 @@
           },
           resizeMenu: {
             acceptReporters: true,
-            items: ["scale", "increase viewport"],
+            items: ["scale", "viewport"],
           },
         },
       };
@@ -334,7 +334,7 @@
     }
 
     setResize({ RESIZE }) {
-      if (RESIZE === "scale" || RESIZE === "increase viewport") {
+      if (RESIZE === "scale" || RESIZE === "viewport") {
         resizeBehavior = RESIZE;
         if (overlay) {
           overlay.mode = getOverlayMode();
