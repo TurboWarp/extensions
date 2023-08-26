@@ -1,3 +1,8 @@
+// Name: Color Picker
+// ID: shovelColorPicker
+// Description: Access your system's color picker.
+// By: TheShovel
+
 (function(Scratch) {
     'use strict';
 
