@@ -18,7 +18,7 @@
   input.style.visibility = 'hidden';
   Scratch.renderer.addOverlay(input, 'scale');
 
-  input.addEventListener("change", () => {
+  input.addEventListener("input", () => {
     Scratch.vm.runtime.startHats('shovelColorPicker_whenChanged');
   });
 
