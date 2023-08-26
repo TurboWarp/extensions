@@ -7,6 +7,7 @@
 
   /** @type {HTMLIFrameElement|null} */
   let iframe = null;
+  let overlay = null;
 
   const featurePolicy = {
     accelerometer: "'none'",
@@ -59,30 +60,27 @@
       iframe.style.transform = `translate(${-effectiveWidth / 2 + x}px, ${
         -effectiveHeight / 2 - y
       }px)`;
+      iframe.style.top = '0';
+      iframe.style.left = '0';
     } else {
       // As the stage is resized in fullscreen mode, only % can be relied upon
       iframe.style.width = `${(effectiveWidth / stageWidth) * 100}%`;
       iframe.style.height = `${(effectiveHeight / stageHeight) * 100}%`;
 
-      iframe.style.position = "absolute";
+      iframe.style.transform = '';
       iframe.style.top = `${(0.5 - effectiveHeight / 2 / stageHeight) * 100}%`;
       iframe.style.left = `${(0.5 - effectiveWidth / 2 / stageWidth) * 100}%`;
     }
   };
 
-  const reappendFrame = () => {
-    Scratch.renderer.removeOverlay(iframe);
-    Scratch.renderer.addOverlay(
-      iframe,
-      resizeBehavior === "scale" ? "scale-centered" : "manual"
-    );
-  };
+  const getOverlayMode = () => resizeBehavior === "scale" ? "scale-centered" : "manual";
 
   const createFrame = (src) => {
     iframe = document.createElement("iframe");
     iframe.style.width = "100%";
     iframe.style.height = "100%";
     iframe.style.border = "none";
+    iframe.style.position = "absolute";
     iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
     iframe.setAttribute(
       "allow",
@@ -94,7 +92,7 @@
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("src", src);
 
-    reappendFrame();
+    overlay = Scratch.renderer.addOverlay(iframe, getOverlayMode());
     updateFrameAttributes();
   };
 
@@ -282,6 +280,7 @@
       if (iframe) {
         Scratch.renderer.removeOverlay(iframe);
         iframe = null;
+        overlay = null;
       }
     }
 
@@ -337,8 +336,9 @@
     setResize({ RESIZE }) {
       if (RESIZE === "scale" || RESIZE === "increase viewport") {
         resizeBehavior = RESIZE;
-        if (iframe) {
-          reappendFrame();
+        if (overlay) {
+          overlay.mode = getOverlayMode();
+          Scratch.renderer._updateOverlays();
           updateFrameAttributes();
         }
       }
