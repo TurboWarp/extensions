@@ -61,8 +61,27 @@
     vm.renderer.dirty = true;
   }
 
+  function updateCameraBG(color = cameraBG) {
+    const rgb = Scratch.Cast.toRgbColorList(color);
+    Scratch.vm.renderer.setBackgroundColor(
+      rgb[0] / 255,
+      rgb[1] / 255,
+      rgb[2] / 255
+    );
+  }
+
   // tell resize to update camera as well
   vm.runtime.on("STAGE_SIZE_CHANGED", (_) => updateCamera());
+
+  vm.runtime.on("PROJECT_LOADED", (_) => {
+    cameraX = 0;
+    cameraY = 0;
+    cameraZoom = 100;
+    cameraDirection = 90;
+    cameraBG = "#ffffff";
+    updateCamera();
+    updateCameraBG();
+  });
 
   function _translateX(x, fromTopLeft = false, multiplier = 1, doZoom = true) {
     const w = fromTopLeft ? (vm.runtime.stageWidth / 2) : 0;
@@ -483,13 +502,8 @@
       return cameraDirection;
     }
     setCol(args, util) {
-      const rgb = Scratch.Cast.toRgbColorList(args.val);
-      Scratch.vm.renderer.setBackgroundColor(
-        rgb[0] / 255,
-        rgb[1] / 255,
-        rgb[2] / 255
-      );
       cameraBG = args.val;
+      updateCameraBG();
     }
     getCol() {
       return cameraBG;
