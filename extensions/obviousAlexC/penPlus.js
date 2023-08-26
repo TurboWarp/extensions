@@ -959,7 +959,7 @@
   };
 
   const textureFunctions = {
-    createBlankPenPlusTextureInfo: async function (
+    createBlankPenPlusTextureInfo: function (
       width,
       height,
       color,
@@ -1004,7 +1004,7 @@
         height: height,
       };
     },
-    createPenPlusTextureInfo: async function (url, name, clamp) {
+    createPenPlusTextureInfo: function (url, name, clamp) {
       const texture = penPlusCostumeLibrary[name]
         ? penPlusCostumeLibrary[name].texture
         : gl.createTexture();
