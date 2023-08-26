@@ -1,14 +1,15 @@
-/**
- * Created By Da TripleBlock (TTT)
- * ♥ Please Dont Remove this Comment ♥
- */
+// Name: Color Tools
+// ID: colortoolsdatripleblockk
+// Description: 
+// By: Da TripleBlock
+
 (function (Scratch) {
     'use strict';
     class colorTools {
         getInfo() {
             return {
                 id: 'colortoolsdatripleblockk',
-                name: 'Colors Tool',
+                name: 'Color Tools',
                 blockIconURI: "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCwwLDQ4LDQ4Ij4KCiAgPGNpcmNsZSBjbGFzcz0iYmxlbmQiIGN4PSIyNCIgY3k9IjEyIiByPSIxMiIgZmlsbD0iI2ZmMDAwMCIgLz4KICA8Y2lyY2xlIGNsYXNzPSJibGVuZCIgY3g9IjM2IiBjeT0iMzYiIHI9IjEyIiBmaWxsPSIjMDBmZjAwIiAvPgogIDxjaXJjbGUgY2xhc3M9ImJsZW5kIiBjeD0iMTIiIGN5PSIzNiIgcj0iMTIiIGZpbGw9IiMwMDAwZmYiIC8+CiAgPHN0eWxlPgogICAgLmJsZW5kIHsgbWl4LWJsZW5kLW1vZGU6IHNjcmVlbjsgfQogIDwvc3R5bGU+Cjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjozMDAsMTUwLS0+",
                 color1: '#0080ff',
                 color2: '#0080ff',
