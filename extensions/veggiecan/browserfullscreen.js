@@ -10,7 +10,7 @@
 
   window.addEventListener("fullscreenchange", () => {
     Scratch.vm.runtime.startHats("fullscreen0419_whenfullscreen", {
-      ENABLED: document.fullscreenElement === null ? 'exited' : 'entered'
+      ENABLED: document.fullscreenElement === null ? "exited" : "entered",
     });
   });
 
@@ -50,7 +50,7 @@
             arguments: {
               ENABLED: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "whenfullscreenMenu"
+                menu: "whenfullscreenMenu",
               },
             },
           },
