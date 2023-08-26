@@ -232,6 +232,10 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## ZXMushroom63/searchApi.svg
  - Created by [@CST1229](https://github.com/CST1229) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1596158611
 
+## CubesterYT/WindowControls.svg
+ - Created by [@BlueDome77](https://github.com/BlueDome77) for the Window Controls extension Collaboration
+ - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
 ## Lily/LooksPlus.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
 
@@ -264,3 +268,10 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Lily/AllMenus.svg
  - Created by [YogaindoCR](https://github.com/YogaindoCR) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1681839774
+
+## Lily/MoreEvents.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
+ - Background "blobs" by Scratch.
+
+## DNin/wake-lock.svg
+ - Created by [NexusKitten](https://github.com/NexusKitten) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1690949400

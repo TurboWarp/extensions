@@ -33,6 +33,7 @@
         color1: "#f54242",
         color2: "#f54242",
         color3: "#f54242",
+        docsURI: "https://extensions.turbowarp.org/TheShovel/ShovelUtils",
         blocks: [
           {
             opcode: "importImage",

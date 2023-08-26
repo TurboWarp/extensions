@@ -26,7 +26,35 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "device memory in GB",
           },
+          {
+            opcode: "getPreferredColorScheme",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "user prefers [THEME] color scheme?",
+            arguments: {
+              THEME: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "THEME",
+                defaultValue: "dark",
+              },
+            },
+          },
+          {
+            opcode: "getPreferredReducedMotion",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "user prefers reduced motion?",
+          },
+          {
+            opcode: "getPreferredContrast",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "user prefers more contrast?",
+          },
         ],
+        menus: {
+          THEME: {
+            acceptReporters: true,
+            items: ["light", "dark"],
+          },
+        },
       };
     }
 
@@ -72,6 +100,21 @@
         // @ts-expect-error
         return navigator.deviceMemory;
       }
+    }
+
+    getPreferredColorScheme(args) {
+      return (
+        window.matchMedia("(prefers-color-scheme: dark)").matches ===
+        (args.THEME === "dark")
+      );
+    }
+
+    getPreferredReducedMotion() {
+      return !!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    }
+
+    getPreferredContrast() {
+      return !!window.matchMedia("(prefers-contrast: more)").matches;
     }
   }
 

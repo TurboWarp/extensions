@@ -30,8 +30,9 @@
     "scratchblocks": "^3.6.2"
   },
   "devDependencies": {
+    "adm-zip": "^0.5.10",
     "eslint": "^8.47.0",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.2"
   },
   "private": true
 }

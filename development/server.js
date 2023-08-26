@@ -47,7 +47,7 @@ app.get("/*", (req, res, next) => {
     return;
   }
 
-  const fileInBuild = mostRecentBuild.getFile(req.path);
+  const fileInBuild = mostRecentBuild.getFile(decodeURIComponent(req.path));
   if (!fileInBuild) {
     return next();
   }
