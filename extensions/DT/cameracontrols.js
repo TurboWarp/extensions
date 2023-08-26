@@ -27,7 +27,7 @@
 
   vm.runtime.runtimeOptions.fencing = false;
   vm.renderer.offscreenTouching = true;
-  vm.setInterpolation(false);
+  vm.setInterpolation(0);
 
   function updateCamera(
     x = cameraX,
@@ -36,10 +36,10 @@
     rot = -cameraDirection + 90
   ) {
     rot = (rot / 180) * Math.PI;
-    let s = Math.sin(rot) * scale;
-    let c = Math.cos(rot) * scale;
-    let w = vm.runtime.stageWidth / 2;
-    let h = vm.runtime.stageHeight / 2;
+    const s = Math.sin(rot) * scale;
+    const c = Math.cos(rot) * scale;
+    const w = vm.runtime.stageWidth / 2;
+    const h = vm.runtime.stageHeight / 2;
     vm.renderer._projection = [
       c / w,
       -s / h,
@@ -64,16 +64,110 @@
   // tell resize to update camera as well
   vm.runtime.on("STAGE_SIZE_CHANGED", (_) => updateCamera());
 
-  // fix mouse positions
-  let oldSX = vm.runtime.ioDevices.mouse.getScratchX;
-  let oldSY = vm.runtime.ioDevices.mouse.getScratchY;
+  function _translateX(x, fromTopLeft = false, multiplier = 1, doZoom = true) {
+    const w = fromTopLeft ? (vm.runtime.stageWidth / 2) : 0;
+    return ((x - w) / (doZoom ? (cameraZoom / 100) : 1)) + w;
+  }
+  
+  function _translateY(y, fromTopLeft = false, multiplier = 1, doZoom = true) {
+    const h = fromTopLeft ? (vm.runtime.stageHeight / 2) : 0;
+    return ((y - h) / (doZoom ? (cameraZoom / 100) : 1)) + h;
+  }
 
+  function translateX(
+      x, fromTopLeft = false, multiplier = 1, doZoom = true,
+      y = 0, yMult = multiplier
+  ) {
+    // rotation hell, not gonna bother with it for now
+    return _translateX(x, fromTopLeft, multiplier, doZoom) + cameraX * multiplier;
+    /*
+      if (cameraDirection % 360 === 0) {
+        return _translateX(x, fromTopLeft, multiplier, doZoom) + cameraX * multiplier;
+      } else {
+        const x1 = _translateX(x, fromTopLeft, multiplier, doZoom);
+        const y1 = _translateY(y, fromTopLeft, yMult, doZoom);
+        const dx = x1 - x;
+        const dy = y1 - y;
+        const rot = ((-cameraDirection + 90) / 180) * Math.PI;
+        const sin = Math.sin(rot);
+        const cos = Math.cos(rot);
+        return x1 + (dx * cos + dy * sin) + cameraX * multiplier;
+      }
+    */
+  }
+  function translateY(
+    y, fromTopLeft = false, multiplier = 1, doZoom = true,
+    x = 0, xMult = multiplier
+  ) {
+    return _translateY(y, fromTopLeft, multiplier, doZoom) + cameraY * multiplier;
+    /*
+      if (cameraDirection % 360 === 0) {
+        return _translateY(y, fromTopLeft, multiplier, doZoom) + cameraY * multiplier;
+      } else {
+        const x1 = _translateX(x, fromTopLeft, xMult, doZoom);
+        const y1 = _translateY(y, fromTopLeft, multiplier, doZoom);
+        const dx = x1 - x;
+        const dy = y1 - y;
+        const rot = ((-cameraDirection + 90) / 180) * Math.PI;
+        const sin = Math.sin(rot);
+        const cos = Math.cos(rot);
+        return y1 + (dx * sin + dy * cos) + cameraY * multiplier;
+      }
+    */
+  }
+
+  // fix mouse positions
+  const oldSX = vm.runtime.ioDevices.mouse.getScratchX;
+  const oldSY = vm.runtime.ioDevices.mouse.getScratchY;
   vm.runtime.ioDevices.mouse.getScratchX = function (...a) {
-    return ((oldSX.apply(this, a) + cameraX) / cameraZoom) * 100;
+    return translateX(oldSX.apply(this, a), false, 1, true, /*oldSY.apply(this, a), 1*/);
   };
   vm.runtime.ioDevices.mouse.getScratchY = function (...a) {
-    return ((oldSY.apply(this, a) + cameraY) / cameraZoom) * 100;
+    return translateY(oldSY.apply(this, a), false, 1, true, /*oldSX.apply(this, a), 1*/);
   };
+  const oldCX = vm.runtime.ioDevices.mouse.getClientX;
+  const oldCY = vm.runtime.ioDevices.mouse.getClientY;
+  vm.runtime.ioDevices.mouse.getClientX = function (...a) {
+    return translateX(oldCX.apply(this, a), true, 1, true, /*oldCY.apply(this, a), -1*/);
+  };
+  vm.runtime.ioDevices.mouse.getClientY = function (...a) {
+    return translateY(oldCY.apply(this, a), true, -1, true, /*oldCX.apply(this, a), 1*/);
+  };
+
+  const oldPick = vm.renderer.pick;
+  vm.renderer.pick = function (x, y) {
+    return oldPick.call(
+      this,
+      translateX(x, true, 1),
+      translateY(y, true, -1)
+    );
+  };
+
+  const oldExtract = vm.renderer.extractDrawableScreenSpace;
+  vm.renderer.extractDrawableScreenSpace = function (...args) {
+    const extracted = oldExtract.apply(this, args);
+    extracted.x = translateX(extracted.x, false, -1, false);
+    extracted.y = translateY(extracted.y, false, 1, false);
+    return extracted;
+  };
+
+  // @ts-expect-error
+  if (vm.runtime.ext_scratch3_looks) {
+    // @ts-expect-error
+    const oldPosBubble = vm.runtime.ext_scratch3_looks._positionBubble;
+    // @ts-expect-error
+    vm.runtime.ext_scratch3_looks._positionBubble = function(target) {
+      // it's harder to limit speech bubbles to the camera region...
+      // it's easier to just remove speech bubble bounds entirely
+      const oldGetNativeSize = this.runtime.renderer.getNativeSize;
+      this.runtime.renderer.getNativeSize = () => ([Infinity, Infinity]);
+      try {
+        return oldPosBubble.call(this, target);
+      } finally {
+        this.runtime.renderer.getNativeSize = oldGetNativeSize;
+      }
+    }
+  }
 
   class Camera {
     getInfo() {
@@ -240,6 +334,19 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "camera direction",
           },
+          /*
+          // debugging blocks
+          {
+            opcode: "getCX",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "client x",
+          },
+          {
+            opcode: "getCY",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "client y",
+          },
+          */
           "---",
           {
             opcode: "changeZoom",
@@ -294,8 +401,15 @@
       };
     }
 
+    getCX() {
+      return vm.runtime.ioDevices.mouse.getClientX();
+    }
+    getCY() {
+      return vm.runtime.ioDevices.mouse.getClientY();
+    }
+
     getSprites() {
-      let sprites = [];
+      const sprites = [];
       Scratch.vm.runtime.targets.forEach((e) => {
         if (e.isOriginal && !e.isStage) sprites.push(e.sprite.name);
       });
@@ -381,7 +495,7 @@
       return cameraBG;
     }
     moveSteps(args) {
-      let dir = ((-cameraDirection + 90) * Math.PI) / 180;
+      const dir = ((-cameraDirection + 90) * Math.PI) / 180;
       cameraX += args.val * Math.cos(dir);
       cameraY += args.val * Math.sin(dir);
       updateCamera();
@@ -400,8 +514,8 @@
       const target = Scratch.Cast.toString(args.sprite);
       const sprite = vm.runtime.getSpriteTargetByName(target);
       if (!sprite) return;
-      let targetX = sprite.x;
-      let targetY = sprite.y;
+      const targetX = sprite.x;
+      const targetY = sprite.y;
       const dx = targetX - cameraX;
       const dy = targetY - cameraY;
       cameraDirection = 90 - this.radToDeg(Math.atan2(dy, dx));
