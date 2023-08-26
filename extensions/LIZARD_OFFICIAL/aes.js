@@ -14,7 +14,7 @@
   class AESE {
     getInfo () {
       return {
-        id: 'AES',
+        id: 'LIZARD_OFFICIAL_AES',
         name: 'AES Encryption',
         blocks: [
           {
