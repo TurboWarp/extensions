@@ -94,7 +94,6 @@
     );
 
     gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
 
@@ -152,16 +151,15 @@
       updateCanvasSize();
     });
 
-    let lastURL = window.location.href;
-    let lastHQPen = renderer.useHighQualityRender;
-
     vm.runtime.on("BEFORE_EXECUTE", () => {
       if (
-        lastURL != window.location.href ||
-        lastHQPen != renderer.useHighQualityRender
+        (renderer.useHighQualityRender
+          ? [canvas.width, canvas.height]
+          : renderer._nativeSize) != nativeSize
       ) {
-        lastURL = window.location.href;
-        lastHQPen = renderer.useHighQualityRender;
+        nativeSize = renderer.useHighQualityRender
+          ? [canvas.width, canvas.height]
+          : renderer._nativeSize;
         updateCanvasSize();
       }
     });
@@ -223,116 +221,140 @@
     untextured: {
       Shaders: {
         vert: `
-                  attribute highp vec4 a_position;
-                  attribute highp vec4 a_color;
-                  varying vec4 v_color;
-  
-                  varying highp float v_depth;
-  
-                  void main()
-                  {
+                attribute highp vec4 a_position;
+                attribute highp vec4 a_color;
+                varying highp vec4 v_color;
+
+                varying highp float v_depth;
+                
+                void main()
+                {
                     v_color = a_color;
                     v_depth = a_position.z;
                     gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
-                  }
-              `,
+                }
+            `,
         frag: `
-                  varying highp vec4 v_color;
-  
-                  uniform mediump vec2 u_res;
-                  uniform sampler2D u_depthTexture;
-  
-                  varying highp float v_depth;
-  
-                  void main()
-                  {
-                    gl_FragColor = v_color;
-                    highp vec4 v_depthPart = texture2D(u_depthTexture,gl_FragCoord.xy/u_res);
-                    highp float v_depthcalc = (v_depthPart.r+v_depthPart.g+v_depthPart.b)/3.0;
-                    if (v_depthcalc < v_depth){
-                      gl_FragColor.a = 0.0;
-                    }
-                    gl_FragColor.rgb *= gl_FragColor.a;
+                varying highp vec4 v_color;
+
+                uniform mediump vec2 u_res;
+                uniform sampler2D u_depthTexture;
+
+                varying highp float v_depth;
+
+                void main()
+                {
+                  gl_FragColor = v_color;
+                  highp vec4 v_depthPart = texture2D(u_depthTexture,gl_FragCoord.xy/u_res);
+                  highp float v_depthcalc = v_depthPart.r + floor((v_depthPart.g + floor(v_depthPart.b * 100.0 )) * 100.0);
+
+                  highp float v_inDepth = v_depth;
+
+                  if (v_depth < 0.0 ) {
+                    v_inDepth = 0.0;
                   }
-              `,
+                  if (v_depth > 10000.0 ) {
+                    v_inDepth = 10000.0;
+                  }
+
+                  if (v_depthcalc <= v_inDepth){
+                    gl_FragColor.a = 0.0;
+                  }
+
+                  gl_FragColor.rgb *= gl_FragColor.a;
+                }
+            `,
       },
       ProgramInf: null,
     },
     textured: {
       Shaders: {
         vert: `
-                  attribute highp vec4 a_position;
-                  attribute highp vec4 a_color;
-                  attribute highp vec2 a_texCoord;
-                  
-                  varying highp vec4 v_color;
-                  varying highp vec2 v_texCoord;
-  
-                  varying highp float v_depth;
-                  
-                  void main()
-                  {
-                      v_color = a_color;
-                      v_texCoord = a_texCoord;
-                      v_depth = a_position.z * 3.0;
-                      gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
-                  }
-              `,
+                attribute highp vec4 a_position;
+                attribute highp vec4 a_color;
+                attribute highp vec2 a_texCoord;
+                
+                varying highp vec4 v_color;
+                varying highp vec2 v_texCoord;
+
+                varying highp float v_depth;
+                
+                void main()
+                {
+                    v_color = a_color;
+                    v_texCoord = a_texCoord;
+                    v_depth = a_position.z;
+                    gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
+                }
+            `,
         frag: `
-                  uniform sampler2D u_texture;
-  
-                  varying highp vec2 v_texCoord;
-                  varying highp vec4 v_color;
-  
-                  uniform mediump vec2 u_res;
-                  uniform sampler2D u_depthTexture;
-  
-                  varying highp float v_depth;
-                  
-                  void main()
-                  {
-                      gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
-                      highp vec4 v_depthPart = texture2D(u_depthTexture,gl_FragCoord.xy/u_res);
-                      highp float v_depthcalc = (v_depthPart.r+v_depthPart.g+v_depthPart.b);
-                      if (v_depthcalc < v_depth){
-                        gl_FragColor.a = 0.0;
-                      }
-                      gl_FragColor.rgb *= gl_FragColor.a;
-                      
-                  }
-              `,
+                uniform sampler2D u_texture;
+
+                varying highp vec2 v_texCoord;
+                varying highp vec4 v_color;
+
+                uniform mediump vec2 u_res;
+                uniform sampler2D u_depthTexture;
+
+                varying highp float v_depth;
+                
+                void main()
+                {
+                    gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
+                    highp vec4 v_depthPart = texture2D(u_depthTexture,gl_FragCoord.xy/u_res);
+                    highp float v_depthcalc = v_depthPart.r + floor((v_depthPart.g + floor(v_depthPart.b * 100.0 )) * 100.0);
+
+                    highp float v_inDepth = v_depth;
+
+                    if (v_depth < 0.0 ) {
+                      v_inDepth = 0.0;
+                    }
+                    if (v_depth > 10000.0 ) {
+                      v_inDepth = 10000.0;
+                    }
+
+                    if (v_depthcalc <= v_inDepth){
+                      gl_FragColor.a = 0.0;
+                    }
+
+                    gl_FragColor.rgb *= gl_FragColor.a;
+                    
+                }
+            `,
       },
       ProgramInf: null,
     },
     depth: {
       Shaders: {
         vert: `
-                  attribute highp vec4 a_position;
-                  
-                  varying highp float v_depth;
-                  
-                  void main()
-                  {
-                      v_depth = a_position.z*3.0;
-                      gl_Position = a_position * vec4(a_position.w,a_position.w,a_position.w,1);
-                  }
-              `,
+                attribute highp vec4 a_position;
+                
+                varying highp float v_depth;
+                
+                void main()
+                {
+                    v_depth = a_position.z;
+                    gl_Position = a_position * vec4(a_position.w,a_position.w,a_position.w * 0.0001,1);
+                }
+            `,
         frag: `
-                  varying highp float v_depth;
-                  
-                  void main()
-                  {
-                      gl_FragColor = vec4(v_depth,0,0,1);
-                      if (v_depth>1.0) {
-                        gl_FragColor.r = 1.0;
-                        gl_FragColor.g = v_depth-1.0;
-                        if (v_depth>2.0) {
-                          gl_FragColor.g = 1.0;
-                          gl_FragColor.b = v_depth-2.0;
-                        }
-                      }
-                  }
-              `,
+                varying highp float v_depth;
+                
+                void main()
+                {
+                    if (v_depth >= 10000.0) {
+                      gl_FragColor = vec4(1,1,1,1);
+                    }
+                    else {
+                      highp float d_100 = floor(v_depth / 100.0);
+                      gl_FragColor = vec4(
+                        mod(v_depth,1.0),
+                        mod( floor( v_depth - mod(v_depth,1.0) )/100.0,1.0),
+                        mod( floor( d_100 - mod(d_100,1.0) )/100.0,1.0),
+                        1);
+                    }
+                }
+            `,
       },
       ProgramInf: null,
     },
@@ -507,6 +529,8 @@
   //I plan to add more later
   const penPlusAdvancedSettings = {
     wValueUnderFlow: false,
+    useDepthBuffer: true,
+    _ClampZ: false,
     _maxDepth: 1000,
   };
 
@@ -608,7 +632,9 @@
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       //? Hacky fix but it works.
 
-      triFunctions.drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
+      if (penPlusAdvancedSettings.useDepthBuffer) {
+        triFunctions.drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
+      }
       gl.useProgram(penPlusShaders.pen.program);
     },
 
@@ -620,7 +646,7 @@
         vertexBufferData = new Float32Array([
           x1,
           -y1,
-          triAttribs[5],
+          penPlusAdvancedSettings.useDepthBuffer ? triAttribs[5] : 0,
           triAttribs[6],
           triAttribs[2],
           triAttribs[3],
@@ -631,7 +657,7 @@
 
           x2,
           -y2,
-          triAttribs[13],
+          penPlusAdvancedSettings.useDepthBuffer ? triAttribs[13] : 0,
           triAttribs[14],
           triAttribs[10],
           triAttribs[11],
@@ -642,7 +668,7 @@
 
           x3,
           -y3,
-          triAttribs[21],
+          penPlusAdvancedSettings.useDepthBuffer ? triAttribs[21] : 0,
           triAttribs[22],
           triAttribs[18],
           triAttribs[19],
@@ -655,7 +681,7 @@
         vertexBufferData = new Float32Array([
           x1,
           -y1,
-          1,
+          0,
           1,
           1,
           1,
@@ -666,7 +692,7 @@
 
           x2,
           -y2,
-          1,
+          0,
           1,
           1,
           1,
@@ -677,7 +703,7 @@
 
           x3,
           -y3,
-          1,
+          0,
           1,
           1,
           1,
@@ -728,8 +754,9 @@
       gl.uniform2fv(u_res_Location_text, nativeSize);
 
       gl.drawArrays(gl.TRIANGLES, 0, 3);
-      //? Hacky fix but it works.
-      triFunctions.drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
+      if (penPlusAdvancedSettings.useDepthBuffer) {
+        triFunctions.drawDepthTri(targetID, x1, y1, x2, y2, x3, y3);
+      }
       gl.useProgram(penPlusShaders.pen.program);
     },
 
@@ -833,11 +860,20 @@
         //Clamp to 0 so we can't go behind the stage.
         //Z
         case 5:
-          if (value < 0) {
-            valuetoSet = 0;
+          if (penPlusAdvancedSettings._ClampZ) {
+            if (value < 0) {
+              valuetoSet = 0;
+              break;
+            }
+            //convert to depth space for best accuracy
+            valuetoSet = Math.min(
+              (value * 10000) / penPlusAdvancedSettings._maxDepth,
+              10000
+            );
             break;
           }
-          valuetoSet = Math.min(value / penPlusAdvancedSettings._maxDepth, 1);
+          //convert to depth space for best accuracy
+          valuetoSet = (value * 10000) / penPlusAdvancedSettings._maxDepth;
           break;
 
         //Clamp to 1 so we don't accidentally clip.
@@ -918,7 +954,7 @@
   };
 
   const textureFunctions = {
-    createBlankPenPlusTextureInfo: function (
+    createBlankPenPlusTextureInfo: async function (
       width,
       height,
       color,
@@ -1687,6 +1723,8 @@
           advancedSettingsMenu: {
             items: [
               { text: "allow 'Corner Pinch < 1'", value: "wValueUnderFlow" },
+              { text: "toggle depth buffer", value: "useDepthBuffer" },
+              { text: "clamp depth value", value: "_ClampZ" },
             ],
             acceptReporters: true,
           },
@@ -2145,10 +2183,16 @@
       const attributeNum = Scratch.Cast.toNumber(target);
       if (attributeNum >= 7) {
         if (attributeNum == 11) {
-          squareAttributesOfAllSprites[curTarget.id][attributeNum] = Math.min(
-            Math.max(number / penPlusAdvancedSettings._maxDepth, 0),
-            1
-          );
+          if (penPlusAdvancedSettings._ClampZ) {
+            Math.min(
+              Math.max(number / penPlusAdvancedSettings._maxDepth, 0),
+              1
+            );
+            return;
+          }
+          valuetoSet = value / penPlusAdvancedSettings._maxDepth;
+          squareAttributesOfAllSprites[curTarget.id][attributeNum] =
+            number / penPlusAdvancedSettings._maxDepth;
           return;
         }
         squareAttributesOfAllSprites[curTarget.id][attributeNum] =
@@ -2629,23 +2673,26 @@
     runtime = Scratch.vm.runtime;
   }
 
-  if (!Scratch.vm.renderer._penSkinId) {
-    Scratch.vm.renderer.createPenSkin();
-  }
-  renderer.penClear(Scratch.vm.renderer._penSkinId);
-  Scratch.vm.renderer.penLine(
-    Scratch.vm.renderer._penSkinId,
-    {
-      color4f: [0, 0, 1, 1],
-      diameter: 1,
-    },
-    0,
-    0,
-    0,
-    0
-  );
+  //? A small hack to stop the renderer from immediatly dying. And to allow for immediate use
+  {
+    if (!Scratch.vm.renderer._penSkinId) {
+      window.vm.renderer.createPenSkin();
+    }
+    renderer.penClear(Scratch.vm.renderer._penSkinId);
+    Scratch.vm.renderer.penLine(
+      Scratch.vm.renderer._penSkinId,
+      {
+        color4f: [0, 0, 1, 1],
+        diameter: 1,
+      },
+      0,
+      0,
+      0,
+      0
+    );
 
-  penPlusShaders.pen.program = shaderManager._shaderCache.line[0].program;
+    penPlusShaders.pen.program = shaderManager._shaderCache.line[0].program;
+  }
 
   Scratch.extensions.register(new extension());
 })(Scratch);
