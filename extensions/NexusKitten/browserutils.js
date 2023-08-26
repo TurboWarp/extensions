@@ -78,10 +78,21 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'is tab active?',
           },
+          '---',
           {
             opcode: 'darkmode',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is dark mode?',
+            text: 'user prefers dark mode?',
+          },
+          {
+            opcode: "getPreferredReducedMotion",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "user prefers reduced motion?",
+          },
+          {
+            opcode: "getPreferredContrast",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "user prefers more contrast?",
           },
           '---',
           {
@@ -225,6 +236,14 @@
         // @ts-expect-error
         return navigator.deviceMemory;
       }
+    }
+
+    getPreferredReducedMotion() {
+      return !!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    }
+
+    getPreferredContrast() {
+      return !!window.matchMedia("(prefers-contrast: more)").matches;
     }
   }
   Scratch.extensions.register(new BrowserUtils());
