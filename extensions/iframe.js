@@ -39,25 +39,40 @@
   let width = -1; // negative means default
   let height = -1; // negative means default
   let interactive = true;
+  let resizeBehavior = 'increase viewport';
 
   const updateFrameAttributes = () => {
     if (!iframe) {
       return;
     }
 
+    iframe.style.pointerEvents = interactive ? "auto" : "none";
+
     const { stageWidth, stageHeight } = Scratch.vm.runtime;
     const effectiveWidth = width >= 0 ? width : stageWidth;
     const effectiveHeight = height >= 0 ? height : stageHeight;
-    iframe.style.width = `${effectiveWidth}px`;
-    iframe.style.height = `${effectiveHeight}px`;
 
-    let transform = "";
-    transform += `translate(${-effectiveWidth / 2 + x}px, ${
-      -effectiveHeight / 2 - y
-    }px)`;
-    iframe.style.transform = transform;
+    if (resizeBehavior === 'scale') {
+      iframe.style.width = `${effectiveWidth}px`;
+      iframe.style.height = `${effectiveHeight}px`;
 
-    iframe.style.pointerEvents = interactive ? "auto" : "none";
+      iframe.style.transform = `translate(${-effectiveWidth / 2 + x}px, ${
+        -effectiveHeight / 2 - y
+      }px)`;
+    } else {
+      // As the stage is resized in fullscreen mode, only % can be relied upon
+      iframe.style.width = `${effectiveWidth / stageWidth * 100}%`;
+      iframe.style.height = `${effectiveHeight / stageHeight * 100}%`;
+
+      iframe.style.position = 'absolute';
+      iframe.style.top = `${(0.5 - ((effectiveHeight / 2) / stageHeight)) * 100}%`;
+      iframe.style.left = `${(0.5 - ((effectiveWidth / 2) / stageWidth)) * 100}%`;
+    }
+  };
+
+  const reappendFrame = () => {
+    Scratch.renderer.removeOverlay(iframe);
+    Scratch.renderer.addOverlay(iframe, resizeBehavior === 'scale' ? 'scale-centered' : 'manual');
   };
 
   const createFrame = (src) => {
@@ -75,10 +90,12 @@
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("src", src);
-    Scratch.renderer.addOverlay(iframe, "scale-centered");
 
+    reappendFrame();
     updateFrameAttributes();
   };
+
+  Scratch.vm.on('STAGE_SIZE_CHANGED', updateFrameAttributes);
 
   class IframeExtension {
     getInfo() {
@@ -191,6 +208,17 @@
               },
             },
           },
+          {
+            opcode: 'setResize',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set iframe resize behavior to [RESIZE]',
+            arguments: {
+              RESIZE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'resizeMenu'
+              }
+            }
+          }
         ],
         menus: {
           getMenu: {
@@ -203,12 +231,17 @@
               "width",
               "height",
               "interactive",
+              "resize behavior"
             ],
           },
           interactiveMenu: {
             acceptReporters: true,
             items: ["true", "false"],
           },
+          resizeMenu: {
+            acceptReporters: true,
+            items: ["scale", "increase viewport"]
+          }
         },
       };
     }
@@ -266,6 +299,8 @@
         return height >= 0 ? height : Scratch.vm.runtime.stageHeight;
       } else if (MENU === "interactive") {
         return interactive;
+      } else if (MENU === 'resize behavior') {
+        return resizeBehavior;
       } else {
         return "";
       }
@@ -294,6 +329,16 @@
     setInteractive({ INTERACTIVE }) {
       interactive = Scratch.Cast.toBoolean(INTERACTIVE);
       updateFrameAttributes();
+    }
+
+    setResize({ RESIZE }) {
+      if (RESIZE === 'scale' || RESIZE === 'increase viewport') {
+        resizeBehavior = RESIZE;
+        if (iframe) {
+          reappendFrame();
+          updateFrameAttributes();
+        }
+      }
     }
   }
 
