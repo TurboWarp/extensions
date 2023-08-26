@@ -1,6 +1,6 @@
 // Name: Pen Plus
 // ID: penP
-// Description: Advanced rendering capabilities.
+// Description: Various Additions to the pen.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
 
 (function (Scratch) {
