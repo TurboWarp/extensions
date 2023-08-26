@@ -1,26 +1,31 @@
-(function(Scratch) {
-  'use strict';
+// Name: Screen Resolution
+// ID: shreder95resolution
+// Description: Get the resolution of the primary screen.
+// By: shreder95ua <https://scratch.mit.edu/users/shreder95ua/>
 
-class Resolution {
+(function (Scratch) {
+  "use strict";
+
+  class Resolution {
     getInfo() {
       return {
-        id: 'resolution',
-        name: 'Screen resolution',
-        color1: '#FFAB19',
-        color2: '#EC9C13',
-        color3: '#CF8B17',
+        id: "shreder95resolution",
+        name: "Screen resolution",
+        color1: "#FFAB19",
+        color2: "#EC9C13",
+        color3: "#CF8B17",
         blocks: [
           {
-            opcode: 'getWidth',
-            text: 'Get width',
-            blockType: Scratch.BlockType.REPORTER
+            opcode: "getWidth",
+            text: "Get width",
+            blockType: Scratch.BlockType.REPORTER,
           },
           {
-            opcode: 'getHeight',
-            text: 'Get height',
-            blockType: Scratch.BlockType.REPORTER
-          }
-        ]
+            opcode: "getHeight",
+            text: "Get height",
+            blockType: Scratch.BlockType.REPORTER,
+          },
+        ],
       };
     }
     getWidth() {
@@ -30,5 +35,5 @@ class Resolution {
       return window.screen.height;
     }
   }
-Scratch.extensions.register(new Resolution());
-}(Scratch));
+  Scratch.extensions.register(new Resolution());
+})(Scratch);
