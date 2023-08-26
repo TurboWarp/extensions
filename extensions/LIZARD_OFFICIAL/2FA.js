@@ -10,7 +10,7 @@
   class MFA {
     getInfo() {
       return {
-        id: "twofactorauth",
+        id: "lizard2fa",
         name: "2FA",
         blocks: [
           {
@@ -26,8 +26,7 @@
           },
         ],
       };
-    }
-
+    };
     gettotpcode(args) {
       return new jsOTP.totp().getOtp(args.CODE).toString()
     }
