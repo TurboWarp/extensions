@@ -521,7 +521,7 @@ class Builder {
 
       const scratchblocksPath = pathUtil.join(
         __dirname,
-        "../node_modules/scratchblocks/build/scratchblocks.min.js"
+        "../node_modules/@turbowarp/scratchblocks/build/scratchblocks.min.js"
       );
       build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
         scratchblocksPath
