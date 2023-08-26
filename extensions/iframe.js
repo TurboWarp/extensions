@@ -75,7 +75,7 @@
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("src", src);
-    Scratch.renderer.addOverlay(iframe, 'scale');
+    Scratch.renderer.addOverlay(iframe, "scale");
 
     updateFrameAttributes();
   };
