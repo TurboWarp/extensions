@@ -119,7 +119,7 @@ class ExtensionFile extends BuildFile {
 }
 
 class HomepageFile extends BuildFile {
-  constructor(extensionFiles, extensionImages, docs, samples, mode) {
+  constructor(extensionFiles, extensionImages, withDocs, samples, mode) {
     super(pathUtil.join(__dirname, "homepage-template.ejs"));
 
     /** @type {Record<string, ExtensionFile>} */
@@ -128,8 +128,8 @@ class HomepageFile extends BuildFile {
     /** @type {Record<string, string>} */
     this.extensionImages = extensionImages;
 
-    /** @type {Record<string, DocsFile>} */
-    this.docs = docs;
+    /** @type {Map<string, SampleFile[]>} */
+    this.withDocs = withDocs;
 
     /** @type {SampleFile[]} */
     this.samples = samples;
@@ -178,27 +178,13 @@ class HomepageFile extends BuildFile {
       .slice(0, 5)
       .map((i) => i[0]);
 
-    /** @type {Map<string, SampleFile[]>} */
-    const samplesBySlug = new Map();
-    for (const sample of this.samples) {
-      for (const url of sample.getExtensionURLs()) {
-        const slug = new URL(url).pathname.substring(1).replace(".js", "");
-
-        if (samplesBySlug.has(slug)) {
-          samplesBySlug.get(slug).push(sample);
-        } else {
-          samplesBySlug.set(slug, [sample]);
-        }
-      }
-    }
-
     const extensionMetadata = Object.fromEntries(
       featuredExtensionSlugs.map((slug) => [
         slug,
         {
           ...this.extensionFiles[slug].getMetadata(),
-          hasDocumentation: !!this.docs[slug],
-          samples: samplesBySlug.get(slug) || [],
+          hasDocumentation: this.withDocs.has(slug),
+          samples: this.samples.get(slug) || [],
         },
       ])
     );
@@ -217,7 +203,7 @@ class HomepageFile extends BuildFile {
 }
 
 class JSONMetadataFile extends BuildFile {
-  constructor(extensionFiles, extensionImages) {
+  constructor(extensionFiles, extensionImages, withDocs, samples) {
     super(null);
 
     /** @type {Record<string, ExtensionFile>} */
@@ -225,6 +211,12 @@ class JSONMetadataFile extends BuildFile {
 
     /** @type {Record<string, string>} */
     this.extensionImages = extensionImages;
+
+    /** @type {Set<string>} */
+    this.withDocs = withDocs;
+
+    /** @type {Map<string, SampleFile[]>} */
+    this.samples = samples;
   }
 
   getType() {
@@ -251,6 +243,13 @@ class JSONMetadataFile extends BuildFile {
       }
       if (metadata.original.length) {
         extension.original = metadata.original;
+      }
+      if (this.withDocs.has(extensionSlug)) {
+        extension.docs = true;
+      }
+      const samples = this.samples.get(extensionSlug);
+      if (samples) {
+        extension.samples = samples.map((i) => i.getTitle());
       }
 
       extensions.push(extension);
@@ -477,6 +476,30 @@ class Builder {
       build.files[`/images/${filename}`] = new ImageFileClass(absolutePath);
     }
 
+    /** @type {Set<string>} */
+    const extensionsWithDocs = new Set();
+
+    /** @type {Map<string, SampleFile[]>} */
+    const samples = new Map();
+    for (const [filename, absolutePath] of recursiveReadDirectory(
+      this.samplesRoot
+    )) {
+      if (!filename.endsWith(".sb3")) {
+        continue;
+      }
+
+      const file = new SampleFile(absolutePath);
+      for (const url of file.getExtensionURLs()) {
+        const slug = new URL(url).pathname.substring(1).replace(".js", "");
+        if (samples.has(slug)) {
+          samples.get(slug).push(file);
+        } else {
+          samples.set(slug, [file]);
+        }
+      }
+      build.files[`/samples/${filename}`] = file;
+    }
+
     if (this.mode !== "desktop") {
       for (const [filename, absolutePath] of recursiveReadDirectory(
         this.websiteRoot
@@ -484,8 +507,6 @@ class Builder {
         build.files[`/${filename}`] = new BuildFile(absolutePath);
       }
 
-      /** @type {Record<string, DocsFile>} */
-      const docs = {};
       for (const [filename, absolutePath] of recursiveReadDirectory(
         this.docsRoot
       )) {
@@ -494,26 +515,13 @@ class Builder {
         }
         const extensionSlug = filename.split(".")[0];
         const file = new DocsFile(absolutePath, extensionSlug);
-        docs[extensionSlug] = file;
+        extensionsWithDocs.add(extensionSlug);
         build.files[`/${extensionSlug}.html`] = file;
-      }
-
-      /** @type {SampleFile[]} */
-      const samples = [];
-      for (const [filename, absolutePath] of recursiveReadDirectory(
-        this.samplesRoot
-      )) {
-        if (!filename.endsWith(".sb3")) {
-          continue;
-        }
-        const file = new SampleFile(absolutePath);
-        build.files[`/samples/${filename}`] = file;
-        samples.push(file);
       }
 
       const scratchblocksPath = pathUtil.join(
         __dirname,
-        "../node_modules/scratchblocks/build/scratchblocks.min.js"
+        "../node_modules/@turbowarp/scratchblocks/build/scratchblocks.min.js"
       );
       build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
         scratchblocksPath
@@ -522,7 +530,7 @@ class Builder {
       build.files["/index.html"] = new HomepageFile(
         extensionFiles,
         extensionImages,
-        docs,
+        extensionsWithDocs,
         samples,
         this.mode
       );
@@ -530,7 +538,12 @@ class Builder {
     }
 
     build.files["/generated-metadata/extensions-v0.json"] =
-      new JSONMetadataFile(extensionFiles, extensionImages);
+      new JSONMetadataFile(
+        extensionFiles,
+        extensionImages,
+        extensionsWithDocs,
+        samples
+      );
 
     for (const [oldPath, newPath] of Object.entries(compatibilityAliases)) {
       build.files[oldPath] = build.files[newPath];
