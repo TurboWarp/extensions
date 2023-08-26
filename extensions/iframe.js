@@ -57,7 +57,7 @@
     }px)`;
     iframe.style.transform = transform;
 
-    iframe.style.pointerEvents = interactive ? "" : "none";
+    iframe.style.pointerEvents = interactive ? "auto" : "none";
   };
 
   const createFrame = (src) => {
@@ -75,7 +75,7 @@
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("src", src);
-    Scratch.vm.renderer.scaledOverlay.appendChild(iframe);
+    Scratch.renderer.addOverlay(iframe, 'scale');
 
     updateFrameAttributes();
   };
@@ -244,7 +244,7 @@
 
     close() {
       if (iframe) {
-        iframe.remove();
+        Scratch.renderer.removeOverlay(iframe);
         iframe = null;
       }
     }
