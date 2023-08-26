@@ -1327,12 +1327,12 @@
       if (args.DROPDOWN === "operating system") {
         if (user.includes("Mac OS")) return "macOS";
         if (user.includes("CrOS")) return "ChromeOS";
+        if (user.includes("Android")) return "Android";
         if (user.includes("Linux")) return "Linux";
         if (user.includes("Windows")) return "Windows";
         if (user.includes("iPad")) return "iOS";
         if (user.includes("iPod")) return "iOS";
         if (user.includes("iPhone")) return "iOS";
-        if (user.includes("Android")) return "Android";
         return "Other";
       }
       if (args.DROPDOWN === "browser") {
