@@ -13,7 +13,7 @@
   input.style.width = '1px';
   input.style.height = '1px';
   input.style.visibility = 'hidden';
-  Scratch.renderer.addOverlay(input, 'scale');
+  Scratch.renderer.addOverlay(input, 'scale-centered');
 
   input.addEventListener("input", () => {
     Scratch.vm.runtime.startHats('shovelColorPicker_whenChanged');
@@ -22,9 +22,7 @@
   let x = 0;
   let y = 0;
   const updatePosition = () => {
-    const centeredX = Scratch.vm.runtime.stageWidth / 2 + x;
-    const centeredY = Scratch.vm.runtime.stageHeight / 2 - y;
-    input.style.transform = `translate(${centeredX}px, ${centeredY}px)`;
+    input.style.transform = `translate(${x}px, ${-y}px)`;
   };
   updatePosition();
 
