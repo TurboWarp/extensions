@@ -1,14 +1,19 @@
+// Name: Box2D Physics
+// ID: griffpatch
+// Description: Two dimensional physics.
+// Original: griffpatch <https://scratch.mit.edu/users/griffpatch/>
+
 /*!
  * This is based on https://github.com/griffpatch/scratch-vm/tree/box2d/src/extensions/scratch3_griffpatch
  */
 
 /* eslint-disable */
 
-(function(Scratch) {
-  'use strict';
+(function (Scratch) {
+  "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('Box2D must be run unsandboxed');
+    throw new Error("Box2D must be run unsandboxed");
   }
 
   // First we need to load the Box2D physics library that this extension uses.
@@ -16,22 +21,22 @@
   // the source code below. Yes, this is really ugly.
 
   /*!
-    * Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
-    *
-    * This software is provided 'as-is', without any express or implied
-    * warranty.  In no event will the authors be held liable for any damages
-    * arising from the use of this software.
-    * Permission is granted to anyone to use this software for any purpose,
-    * including commercial applications, and to alter it and redistribute it
-    * freely, subject to the following restrictions:
-    * 1. The origin of this software must not be misrepresented; you must not
-    * claim that you wrote the original software. If you use this software
-    * in a product, an acknowledgment in the product documentation would be
-    * appreciated but is not required.
-    * 2. Altered source versions must be plainly marked as such, and must not be
-    * misrepresented as being the original software.
-    * 3. This notice may not be removed or altered from any source distribution.
-    */
+   * Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+   *
+   * This software is provided 'as-is', without any express or implied
+   * warranty.  In no event will the authors be held liable for any damages
+   * arising from the use of this software.
+   * Permission is granted to anyone to use this software for any purpose,
+   * including commercial applications, and to alter it and redistribute it
+   * freely, subject to the following restrictions:
+   * 1. The origin of this software must not be misrepresented; you must not
+   * claim that you wrote the original software. If you use this software
+   * in a product, an acknowledgment in the product documentation would be
+   * appreciated but is not required.
+   * 2. Altered source versions must be plainly marked as such, and must not be
+   * misrepresented as being the original software.
+   * 3. This notice may not be removed or altered from any source distribution.
+   */
 
   var Box2D = {};
   (function (a2j, undefined) {
@@ -78,7 +83,8 @@
   //package structure
   if (typeof Box2D === "undefined") Box2D = {};
   if (typeof Box2D.Collision === "undefined") Box2D.Collision = {};
-  if (typeof Box2D.Collision.Shapes === "undefined") Box2D.Collision.Shapes = {};
+  if (typeof Box2D.Collision.Shapes === "undefined")
+    Box2D.Collision.Shapes = {};
   if (typeof Box2D.Common === "undefined") Box2D.Common = {};
   if (typeof Box2D.Common.Math === "undefined") Box2D.Common.Math = {};
   if (typeof Box2D.Dynamics === "undefined") Box2D.Dynamics = {};
@@ -169,7 +175,8 @@
 
     function b2Manifold() {
       b2Manifold.b2Manifold.apply(this, arguments);
-      if (this.constructor === b2Manifold) this.b2Manifold.apply(this, arguments);
+      if (this.constructor === b2Manifold)
+        this.b2Manifold.apply(this, arguments);
     }
     Box2D.Collision.b2Manifold = b2Manifold;
 
@@ -515,13 +522,19 @@
     Box2D.Dynamics.Controllers.b2BuoyancyController = b2BuoyancyController;
 
     function b2ConstantAccelController() {
-      b2ConstantAccelController.b2ConstantAccelController.apply(this, arguments);
+      b2ConstantAccelController.b2ConstantAccelController.apply(
+        this,
+        arguments
+      );
     }
     Box2D.Dynamics.Controllers.b2ConstantAccelController =
       b2ConstantAccelController;
 
     function b2ConstantForceController() {
-      b2ConstantForceController.b2ConstantForceController.apply(this, arguments);
+      b2ConstantForceController.b2ConstantForceController.apply(
+        this,
+        arguments
+      );
     }
     Box2D.Dynamics.Controllers.b2ConstantForceController =
       b2ConstantForceController;
@@ -542,7 +555,10 @@
     Box2D.Dynamics.Controllers.b2GravityController = b2GravityController;
 
     function b2TensorDampingController() {
-      b2TensorDampingController.b2TensorDampingController.apply(this, arguments);
+      b2TensorDampingController.b2TensorDampingController.apply(
+        this,
+        arguments
+      );
     }
     Box2D.Dynamics.Controllers.b2TensorDampingController =
       b2TensorDampingController;
@@ -602,7 +618,8 @@
 
     function b2JointDef() {
       b2JointDef.b2JointDef.apply(this, arguments);
-      if (this.constructor === b2JointDef) this.b2JointDef.apply(this, arguments);
+      if (this.constructor === b2JointDef)
+        this.b2JointDef.apply(this, arguments);
     }
     Box2D.Dynamics.Joints.b2JointDef = b2JointDef;
 
@@ -957,7 +974,13 @@
       var separation = v2X * normal1WorldX + v2Y * normal1WorldY;
       return separation;
     };
-    b2Collision.FindMaxSeparation = function (edgeIndex, poly1, xf1, poly2, xf2) {
+    b2Collision.FindMaxSeparation = function (
+      edgeIndex,
+      poly1,
+      xf1,
+      poly2,
+      xf2
+    ) {
       var count1 = parseInt(poly1.m_vertexCount);
       var normals1 = poly1.m_normals;
       var tVec;
@@ -1003,7 +1026,8 @@
         return s;
       }
       while (true) {
-        if (increment == -1) edge = bestEdge - 1 >= 0 ? bestEdge - 1 : count1 - 1;
+        if (increment == -1)
+          edge = bestEdge - 1 >= 0 ? bestEdge - 1 : count1 - 1;
         else edge = bestEdge + 1 < count1 ? bestEdge + 1 : 0;
         s = b2Collision.EdgeSeparation(poly1, xf1, edge, poly2, xf2);
         if (s > bestSeparation) {
@@ -1049,16 +1073,20 @@
       tClip = c[0];
       tVec = vertices2[i1];
       tMat = xf2.R;
-      tClip.v.x = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      tClip.v.y = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      tClip.v.x =
+        xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+      tClip.v.y =
+        xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tClip.id.features.referenceEdge = edge1;
       tClip.id.features.incidentEdge = i1;
       tClip.id.features.incidentVertex = 0;
       tClip = c[1];
       tVec = vertices2[i2];
       tMat = xf2.R;
-      tClip.v.x = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      tClip.v.y = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      tClip.v.x =
+        xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+      tClip.v.y =
+        xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tClip.id.features.referenceEdge = edge1;
       tClip.id.features.incidentEdge = i2;
       tClip.id.features.incidentVertex = 1;
@@ -1156,13 +1184,17 @@
       var v11 = b2Collision.s_v11;
       var v12 = b2Collision.s_v12;
       v11.x =
-        xf1.position.x + (tMat.col1.x * local_v11.x + tMat.col2.x * local_v11.y);
+        xf1.position.x +
+        (tMat.col1.x * local_v11.x + tMat.col2.x * local_v11.y);
       v11.y =
-        xf1.position.y + (tMat.col1.y * local_v11.x + tMat.col2.y * local_v11.y);
+        xf1.position.y +
+        (tMat.col1.y * local_v11.x + tMat.col2.y * local_v11.y);
       v12.x =
-        xf1.position.x + (tMat.col1.x * local_v12.x + tMat.col2.x * local_v12.y);
+        xf1.position.x +
+        (tMat.col1.x * local_v12.x + tMat.col2.x * local_v12.y);
       v12.y =
-        xf1.position.y + (tMat.col1.y * local_v12.x + tMat.col2.y * local_v12.y);
+        xf1.position.y +
+        (tMat.col1.y * local_v12.x + tMat.col2.y * local_v12.y);
       var frontOffset = normal.x * v11.x + normal.y * v11.y;
       var sideOffset1 = -tangent.x * v11.x - tangent.y * v11.y + totalRadius;
       var sideOffset2 = tangent.x * v12.x + tangent.y * v12.y + totalRadius;
@@ -1203,7 +1235,13 @@
       }
       manifold.m_pointCount = pointCount;
     };
-    b2Collision.CollideCircles = function (manifold, circle1, xf1, circle2, xf2) {
+    b2Collision.CollideCircles = function (
+      manifold,
+      circle1,
+      xf1,
+      circle2,
+      xf2
+    ) {
       manifold.m_pointCount = 0;
       var tMat;
       var tVec;
@@ -1489,7 +1527,9 @@
       }
       b2Distance.b2_gjkMaxIters = b2Math.Max(b2Distance.b2_gjkMaxIters, iter);
       simplex.GetWitnessPoints(output.pointA, output.pointB);
-      output.distance = b2Math.SubtractVV(output.pointA, output.pointB).Length();
+      output.distance = b2Math
+        .SubtractVV(output.pointA, output.pointB)
+        .Length();
       output.iterations = iter;
       simplex.WriteCache(cache);
       if (input.useRadii) {
@@ -1748,17 +1788,21 @@
           var child2 = sibling.child2;
           var norm1 =
             Math.abs(
-              (child1.aabb.lowerBound.x + child1.aabb.upperBound.x) / 2 - center.x
+              (child1.aabb.lowerBound.x + child1.aabb.upperBound.x) / 2 -
+                center.x
             ) +
             Math.abs(
-              (child1.aabb.lowerBound.y + child1.aabb.upperBound.y) / 2 - center.y
+              (child1.aabb.lowerBound.y + child1.aabb.upperBound.y) / 2 -
+                center.y
             );
           var norm2 =
             Math.abs(
-              (child2.aabb.lowerBound.x + child2.aabb.upperBound.x) / 2 - center.x
+              (child2.aabb.lowerBound.x + child2.aabb.upperBound.x) / 2 -
+                center.x
             ) +
             Math.abs(
-              (child2.aabb.lowerBound.y + child2.aabb.upperBound.y) / 2 - center.y
+              (child2.aabb.lowerBound.y + child2.aabb.upperBound.y) / 2 -
+                center.y
             );
           if (norm1 < norm2) {
             sibling = child1;
@@ -2275,15 +2319,19 @@
           tVec = this.m_localPoint;
           tMat = transformB.R;
           pointBX =
-            transformB.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+            transformB.position.x +
+            (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
           pointBY =
-            transformB.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+            transformB.position.y +
+            (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           tVec = localPointA;
           tMat = transformA.R;
           pointAX =
-            transformA.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+            transformA.position.x +
+            (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
           pointAY =
-            transformA.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+            transformA.position.y +
+            (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           sgn = (pointAX - pointBX) * normalX + (pointAY - pointBY) * normalY;
           if (s < 0.0) {
             this.m_axis.NegativeSelf();
@@ -2302,15 +2350,19 @@
           tVec = this.m_localPoint;
           tMat = transformA.R;
           pointAX =
-            transformA.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+            transformA.position.x +
+            (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
           pointAY =
-            transformA.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+            transformA.position.y +
+            (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           tVec = localPointB;
           tMat = transformB.R;
           pointBX =
-            transformB.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+            transformB.position.x +
+            (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
           pointBY =
-            transformB.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+            transformB.position.y +
+            (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           sgn = (pointBX - pointAX) * normalX + (pointBY - pointAY) * normalY;
           if (s < 0.0) {
             this.m_axis.NegativeSelf();
@@ -2318,7 +2370,10 @@
         }
       }
     };
-    b2SeparationFunction.prototype.Evaluate = function (transformA, transformB) {
+    b2SeparationFunction.prototype.Evaluate = function (
+      transformA,
+      transformB
+    ) {
       var axisA;
       var axisB;
       var localPointA;
@@ -3133,7 +3188,8 @@
     };
     b2CircleShape.prototype.ComputeMass = function (massData, density) {
       if (density === undefined) density = 0;
-      massData.mass = density * b2Settings.b2_pi * this.m_radius * this.m_radius;
+      massData.mass =
+        density * b2Settings.b2_pi * this.m_radius * this.m_radius;
       massData.center.SetV(this.m_p);
       massData.I =
         massData.mass *
@@ -3395,7 +3451,10 @@
       this.m_nextEdge = null;
       this.m_v1 = v1;
       this.m_v2 = v2;
-      this.m_direction.Set(this.m_v2.x - this.m_v1.x, this.m_v2.y - this.m_v1.y);
+      this.m_direction.Set(
+        this.m_v2.x - this.m_v1.x,
+        this.m_v2.y - this.m_v1.y
+      );
       this.m_length = this.m_direction.Normalize();
       this.m_normal.Set(this.m_direction.y, -this.m_direction.x);
       this.m_coreV1.Set(
@@ -3413,13 +3472,23 @@
       this.m_cornerDir1 = this.m_normal;
       this.m_cornerDir2.Set(-this.m_normal.x, -this.m_normal.y);
     };
-    b2EdgeShape.prototype.SetPrevEdge = function (edge, core, cornerDir, convex) {
+    b2EdgeShape.prototype.SetPrevEdge = function (
+      edge,
+      core,
+      cornerDir,
+      convex
+    ) {
       this.m_prevEdge = edge;
       this.m_coreV1 = core;
       this.m_cornerDir1 = cornerDir;
       this.m_cornerConvex1 = convex;
     };
-    b2EdgeShape.prototype.SetNextEdge = function (edge, core, cornerDir, convex) {
+    b2EdgeShape.prototype.SetNextEdge = function (
+      edge,
+      core,
+      cornerDir,
+      convex
+    ) {
       this.m_nextEdge = edge;
       this.m_coreV2 = core;
       this.m_cornerDir2 = cornerDir;
@@ -3521,7 +3590,12 @@
       polygonShape.SetAsBox(hx, hy);
       return polygonShape;
     };
-    b2PolygonShape.prototype.SetAsOrientedBox = function (hx, hy, center, angle) {
+    b2PolygonShape.prototype.SetAsOrientedBox = function (
+      hx,
+      hy,
+      center,
+      angle
+    ) {
       if (hx === undefined) hx = 0;
       if (hy === undefined) hy = 0;
       if (center === undefined) center = null;
@@ -3646,8 +3720,10 @@
     b2PolygonShape.prototype.ComputeAABB = function (aabb, xf) {
       var tMat = xf.R;
       var tVec = this.m_vertices[0];
-      var lowerX = xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      var lowerY = xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      var lowerX =
+        xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+      var lowerY =
+        xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       var upperX = lowerX;
       var upperY = lowerY;
       for (var i = 1; i < this.m_vertexCount; ++i) {
@@ -3703,11 +3779,13 @@
         var ey2 = e2Y;
         var intx2 =
           k_inv3 *
-            (0.25 * (ex1 * ex1 + ex2 * ex1 + ex2 * ex2) + (px * ex1 + px * ex2)) +
+            (0.25 * (ex1 * ex1 + ex2 * ex1 + ex2 * ex2) +
+              (px * ex1 + px * ex2)) +
           0.5 * px * px;
         var inty2 =
           k_inv3 *
-            (0.25 * (ey1 * ey1 + ey2 * ey1 + ey2 * ey2) + (py * ey1 + py * ey2)) +
+            (0.25 * (ey1 * ey1 + ey2 * ey1 + ey2 * ey2) +
+              (py * ey1 + py * ey2)) +
           0.5 * py * py;
         I += D * (intx2 + inty2);
       }
@@ -3925,8 +4003,10 @@
           var centerX = 0.5 * (lowerX + upperX);
           var centerY = 0.5 * (lowerY + upperY);
           var tMat = obb.R;
-          obb.center.x = root.x + (tMat.col1.x * centerX + tMat.col2.x * centerY);
-          obb.center.y = root.y + (tMat.col1.y * centerX + tMat.col2.y * centerY);
+          obb.center.x =
+            root.x + (tMat.col1.x * centerX + tMat.col2.x * centerY);
+          obb.center.y =
+            root.y + (tMat.col1.y * centerX + tMat.col2.y * centerY);
           obb.extents.x = 0.5 * (upperX - lowerX);
           obb.extents.y = 0.5 * (upperY - lowerY);
         }
@@ -4404,8 +4484,14 @@
       return C;
     };
     b2Math.MulTMM = function (A, B) {
-      var c1 = new b2Vec2(b2Math.Dot(A.col1, B.col1), b2Math.Dot(A.col2, B.col1));
-      var c2 = new b2Vec2(b2Math.Dot(A.col1, B.col2), b2Math.Dot(A.col2, B.col2));
+      var c1 = new b2Vec2(
+        b2Math.Dot(A.col1, B.col1),
+        b2Math.Dot(A.col2, B.col1)
+      );
+      var c2 = new b2Vec2(
+        b2Math.Dot(A.col1, B.col2),
+        b2Math.Dot(A.col2, B.col2)
+      );
       var C = b2Mat22.FromVV(c1, c2);
       return C;
     };
@@ -4780,7 +4866,8 @@
       b2CircleContact = Box2D.Dynamics.Contacts.b2CircleContact,
       b2Contact = Box2D.Dynamics.Contacts.b2Contact,
       b2ContactConstraint = Box2D.Dynamics.Contacts.b2ContactConstraint,
-      b2ContactConstraintPoint = Box2D.Dynamics.Contacts.b2ContactConstraintPoint,
+      b2ContactConstraintPoint =
+        Box2D.Dynamics.Contacts.b2ContactConstraintPoint,
       b2ContactEdge = Box2D.Dynamics.Contacts.b2ContactEdge,
       b2ContactFactory = Box2D.Dynamics.Contacts.b2ContactFactory,
       b2ContactRegister = Box2D.Dynamics.Contacts.b2ContactRegister,
@@ -4791,7 +4878,8 @@
       b2PolyAndCircleContact = Box2D.Dynamics.Contacts.b2PolyAndCircleContact,
       b2PolyAndEdgeContact = Box2D.Dynamics.Contacts.b2PolyAndEdgeContact,
       b2PolygonContact = Box2D.Dynamics.Contacts.b2PolygonContact,
-      b2PositionSolverManifold = Box2D.Dynamics.Contacts.b2PositionSolverManifold,
+      b2PositionSolverManifold =
+        Box2D.Dynamics.Contacts.b2PositionSolverManifold,
       b2Controller = Box2D.Dynamics.Controllers.b2Controller,
       b2DistanceJoint = Box2D.Dynamics.Joints.b2DistanceJoint,
       b2DistanceJointDef = Box2D.Dynamics.Joints.b2DistanceJointDef,
@@ -4984,7 +5072,8 @@
       bd.angularDamping = this.m_angularDamping;
       bd.angularVelocity = this.m_angularVelocity;
       bd.fixedRotation =
-        (this.m_flags & b2Body.e_fixedRotationFlag) == b2Body.e_fixedRotationFlag;
+        (this.m_flags & b2Body.e_fixedRotationFlag) ==
+        b2Body.e_fixedRotationFlag;
       bd.bullet = (this.m_flags & b2Body.e_bulletFlag) == b2Body.e_bulletFlag;
       bd.awake = (this.m_flags & b2Body.e_awakeFlag) == b2Body.e_awakeFlag;
       bd.linearDamping = this.m_linearDamping;
@@ -5126,7 +5215,10 @@
         this.m_mass = 1.0;
       }
       this.m_invMass = 1.0 / this.m_mass;
-      if (massData.I > 0.0 && (this.m_flags & b2Body.e_fixedRotationFlag) == 0) {
+      if (
+        massData.I > 0.0 &&
+        (this.m_flags & b2Body.e_fixedRotationFlag) == 0
+      ) {
         this.m_I =
           massData.I -
           this.m_mass *
@@ -5313,7 +5405,8 @@
     };
     b2Body.prototype.IsFixedRotation = function () {
       return (
-        (this.m_flags & b2Body.e_fixedRotationFlag) == b2Body.e_fixedRotationFlag
+        (this.m_flags & b2Body.e_fixedRotationFlag) ==
+        b2Body.e_fixedRotationFlag
       );
     };
     b2Body.prototype.SetActive = function (flag) {
@@ -5347,7 +5440,9 @@
       return (this.m_flags & b2Body.e_activeFlag) == b2Body.e_activeFlag;
     };
     b2Body.prototype.IsSleepingAllowed = function () {
-      return (this.m_flags & b2Body.e_allowSleepFlag) == b2Body.e_allowSleepFlag;
+      return (
+        (this.m_flags & b2Body.e_allowSleepFlag) == b2Body.e_allowSleepFlag
+      );
     };
     b2Body.prototype.GetFixtureList = function () {
       return this.m_fixtureList;
@@ -5561,8 +5656,10 @@
       proxyUserDataA,
       proxyUserDataB
     ) {
-      var fixtureA = proxyUserDataA instanceof b2Fixture ? proxyUserDataA : null;
-      var fixtureB = proxyUserDataB instanceof b2Fixture ? proxyUserDataB : null;
+      var fixtureA =
+        proxyUserDataA instanceof b2Fixture ? proxyUserDataA : null;
+      var fixtureB =
+        proxyUserDataB instanceof b2Fixture ? proxyUserDataB : null;
       var bodyA = fixtureA.GetBody();
       var bodyB = fixtureB.GetBody();
       if (bodyA == bodyB) return;
@@ -5729,7 +5826,11 @@
       if (xformScale === undefined) xformScale = 0;
     };
     b2DebugDraw.prototype.GetXFormScale = function () {};
-    b2DebugDraw.prototype.DrawPolygon = function (vertices, vertexCount, color) {
+    b2DebugDraw.prototype.DrawPolygon = function (
+      vertices,
+      vertexCount,
+      color
+    ) {
       if (vertexCount === undefined) vertexCount = 0;
     };
     b2DebugDraw.prototype.DrawSolidPolygon = function (
@@ -5979,8 +6080,10 @@
       for (i = 0; i < this.m_bodyCount; ++i) {
         b = this.m_bodies[i];
         if (b.GetType() != b2Body.b2_dynamicBody) continue;
-        b.m_linearVelocity.x += step.dt * (gravity.x + b.m_invMass * b.m_force.x);
-        b.m_linearVelocity.y += step.dt * (gravity.y + b.m_invMass * b.m_force.y);
+        b.m_linearVelocity.x +=
+          step.dt * (gravity.x + b.m_invMass * b.m_force.x);
+        b.m_linearVelocity.y +=
+          step.dt * (gravity.y + b.m_invMass * b.m_force.y);
         b.m_angularVelocity += step.dt * b.m_invI * b.m_torque;
         b.m_linearVelocity.Multiply(
           b2Math.Clamp(1.0 - step.dt * b.m_linearDamping, 0.0, 1.0)
@@ -6063,7 +6166,8 @@
       if (allowSleep) {
         var minSleepTime = Number.MAX_VALUE;
         var linTolSqr =
-          b2Settings.b2_linearSleepTolerance * b2Settings.b2_linearSleepTolerance;
+          b2Settings.b2_linearSleepTolerance *
+          b2Settings.b2_linearSleepTolerance;
         var angTolSqr =
           b2Settings.b2_angularSleepTolerance *
           b2Settings.b2_angularSleepTolerance;
@@ -6145,7 +6249,8 @@
       }
       var k_toiBaumgarte = 0.75;
       for (i = 0; i < subStep.positionIterations; ++i) {
-        var contactsOkay = contactSolver.SolvePositionConstraints(k_toiBaumgarte);
+        var contactsOkay =
+          contactSolver.SolvePositionConstraints(k_toiBaumgarte);
         var jointsOkay = true;
         for (j = 0; j < this.m_jointCount; ++j) {
           var jointOkay = this.m_joints[j].SolvePositionConstraints(
@@ -6870,7 +6975,8 @@
             bA = fA.m_body;
             bB = fB.m_body;
             if (
-              (bA.GetType() != b2Body.b2_dynamicBody || bA.IsAwake() == false) &&
+              (bA.GetType() != b2Body.b2_dynamicBody ||
+                bA.IsAwake() == false) &&
               (bB.GetType() != b2Body.b2_dynamicBody || bB.IsAwake() == false)
             ) {
               continue;
@@ -7113,7 +7219,8 @@
       b2CircleContact = Box2D.Dynamics.Contacts.b2CircleContact,
       b2Contact = Box2D.Dynamics.Contacts.b2Contact,
       b2ContactConstraint = Box2D.Dynamics.Contacts.b2ContactConstraint,
-      b2ContactConstraintPoint = Box2D.Dynamics.Contacts.b2ContactConstraintPoint,
+      b2ContactConstraintPoint =
+        Box2D.Dynamics.Contacts.b2ContactConstraintPoint,
       b2ContactEdge = Box2D.Dynamics.Contacts.b2ContactEdge,
       b2ContactFactory = Box2D.Dynamics.Contacts.b2ContactFactory,
       b2ContactRegister = Box2D.Dynamics.Contacts.b2ContactRegister,
@@ -7124,7 +7231,8 @@
       b2PolyAndCircleContact = Box2D.Dynamics.Contacts.b2PolyAndCircleContact,
       b2PolyAndEdgeContact = Box2D.Dynamics.Contacts.b2PolyAndEdgeContact,
       b2PolygonContact = Box2D.Dynamics.Contacts.b2PolygonContact,
-      b2PositionSolverManifold = Box2D.Dynamics.Contacts.b2PositionSolverManifold,
+      b2PositionSolverManifold =
+        Box2D.Dynamics.Contacts.b2PositionSolverManifold,
       b2Body = Box2D.Dynamics.b2Body,
       b2BodyDef = Box2D.Dynamics.b2BodyDef,
       b2ContactFilter = Box2D.Dynamics.b2ContactFilter,
@@ -7237,7 +7345,8 @@
     };
     b2Contact.prototype.IsContinuous = function () {
       return (
-        (this.m_flags & b2Contact.e_continuousFlag) == b2Contact.e_continuousFlag
+        (this.m_flags & b2Contact.e_continuousFlag) ==
+        b2Contact.e_continuousFlag
       );
     };
     b2Contact.prototype.SetSensor = function (sensor) {
@@ -7258,7 +7367,9 @@
       }
     };
     b2Contact.prototype.IsEnabled = function () {
-      return (this.m_flags & b2Contact.e_enabledFlag) == b2Contact.e_enabledFlag;
+      return (
+        (this.m_flags & b2Contact.e_enabledFlag) == b2Contact.e_enabledFlag
+      );
     };
     b2Contact.prototype.GetNext = function () {
       return this.m_next;
@@ -7550,7 +7661,8 @@
       var tMat;
       this.m_constraintCount = contactCount;
       while (this.m_constraints.length < this.m_constraintCount) {
-        this.m_constraints[this.m_constraints.length] = new b2ContactConstraint();
+        this.m_constraints[this.m_constraints.length] =
+          new b2ContactConstraint();
       }
       for (i = 0; i < contactCount; ++i) {
         contact = contacts[i];
@@ -7629,7 +7741,8 @@
           var kEqualized =
             bodyA.m_mass * bodyA.m_invMass + bodyB.m_mass * bodyB.m_invMass;
           kEqualized +=
-            bodyA.m_mass * bodyA.m_invI * rnA + bodyB.m_mass * bodyB.m_invI * rnB;
+            bodyA.m_mass * bodyA.m_invI * rnA +
+            bodyB.m_mass * bodyB.m_invI * rnB;
           ccp.equalizedMass = 1.0 / kEqualized;
           var tangentX = normalY;
           var tangentY = -normalX;
@@ -7704,8 +7817,10 @@
             var ccp = c.points[j];
             ccp.normalImpulse *= step.dtRatio;
             ccp.tangentImpulse *= step.dtRatio;
-            var PX = ccp.normalImpulse * normalX + ccp.tangentImpulse * tangentX;
-            var PY = ccp.normalImpulse * normalY + ccp.tangentImpulse * tangentY;
+            var PX =
+              ccp.normalImpulse * normalX + ccp.tangentImpulse * tangentX;
+            var PY =
+              ccp.normalImpulse * normalY + ccp.tangentImpulse * tangentY;
             bodyA.m_angularVelocity -= invIA * (ccp.rA.x * PY - ccp.rA.y * PX);
             bodyA.m_linearVelocity.x -= invMassA * PX;
             bodyA.m_linearVelocity.y -= invMassA * PY;
@@ -7988,7 +8103,8 @@
           var rAY = point.y - bodyA.m_sweep.c.y;
           var rBX = point.x - bodyB.m_sweep.c.x;
           var rBY = point.y - bodyB.m_sweep.c.y;
-          minSeparation = minSeparation < separation ? minSeparation : separation;
+          minSeparation =
+            minSeparation < separation ? minSeparation : separation;
           var C = b2Math.Clamp(
             baumgarte * (separation + b2Settings.b2_linearSlop),
             -b2Settings.b2_maxLinearCorrection,
@@ -8051,7 +8167,8 @@
       xf2
     ) {};
     Box2D.inherit(b2NullContact, Box2D.Dynamics.Contacts.b2Contact);
-    b2NullContact.prototype.__super = Box2D.Dynamics.Contacts.b2Contact.prototype;
+    b2NullContact.prototype.__super =
+      Box2D.Dynamics.Contacts.b2Contact.prototype;
     b2NullContact.b2NullContact = function () {
       Box2D.Dynamics.Contacts.b2Contact.b2Contact.apply(this, arguments);
     };
@@ -8157,7 +8274,9 @@
     b2PositionSolverManifold.b2PositionSolverManifold = function () {};
     b2PositionSolverManifold.prototype.b2PositionSolverManifold = function () {
       this.m_normal = new b2Vec2();
-      this.m_separations = new Vector_a2j_Number(b2Settings.b2_maxManifoldPoints);
+      this.m_separations = new Vector_a2j_Number(
+        b2Settings.b2_maxManifoldPoints
+      );
       this.m_points = new Vector(b2Settings.b2_maxManifoldPoints);
       for (var i = 0; i < b2Settings.b2_maxManifoldPoints; i++) {
         this.m_points[i] = new b2Vec2();
@@ -8324,11 +8443,17 @@
       b2TensorDampingController =
         Box2D.Dynamics.Controllers.b2TensorDampingController;
 
-    Box2D.inherit(b2BuoyancyController, Box2D.Dynamics.Controllers.b2Controller);
+    Box2D.inherit(
+      b2BuoyancyController,
+      Box2D.Dynamics.Controllers.b2Controller
+    );
     b2BuoyancyController.prototype.__super =
       Box2D.Dynamics.Controllers.b2Controller.prototype;
     b2BuoyancyController.b2BuoyancyController = function () {
-      Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(this, arguments);
+      Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(
+        this,
+        arguments
+      );
       this.normal = new b2Vec2(0, -1);
       this.offset = 0;
       this.density = 0;
@@ -8418,7 +8543,10 @@
     b2ConstantAccelController.prototype.__super =
       Box2D.Dynamics.Controllers.b2Controller.prototype;
     b2ConstantAccelController.b2ConstantAccelController = function () {
-      Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(this, arguments);
+      Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(
+        this,
+        arguments
+      );
       this.A = new b2Vec2(0, 0);
     };
     b2ConstantAccelController.prototype.Step = function (step) {
@@ -8441,7 +8569,10 @@
     b2ConstantForceController.prototype.__super =
       Box2D.Dynamics.Controllers.b2Controller.prototype;
     b2ConstantForceController.b2ConstantForceController = function () {
-      Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(this, arguments);
+      Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(
+        this,
+        arguments
+      );
       this.F = new b2Vec2(0, 0);
     };
     b2ConstantForceController.prototype.Step = function (step) {
@@ -8501,7 +8632,10 @@
     b2GravityController.prototype.__super =
       Box2D.Dynamics.Controllers.b2Controller.prototype;
     b2GravityController.b2GravityController = function () {
-      Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(this, arguments);
+      Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(
+        this,
+        arguments
+      );
       this.G = 1;
       this.invSqr = true;
     };
@@ -8564,7 +8698,10 @@
     b2TensorDampingController.prototype.__super =
       Box2D.Dynamics.Controllers.b2Controller.prototype;
     b2TensorDampingController.b2TensorDampingController = function () {
-      Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(this, arguments);
+      Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(
+        this,
+        arguments
+      );
       this.T = new b2Mat22();
       this.maxTimestep = 0;
     };
@@ -9216,7 +9353,9 @@
         this.m_J.linearB.Set(-this.m_ratio * ugX, -this.m_ratio * ugY);
         this.m_J.angularB = -this.m_ratio * crug;
         K +=
-          this.m_ratio * this.m_ratio * (bB.m_invMass + bB.m_invI * crug * crug);
+          this.m_ratio *
+          this.m_ratio *
+          (bB.m_invMass + bB.m_invI * crug * crug);
       }
       this.m_mass = K > 0.0 ? 1.0 / K : 0.0;
       if (step.warmStarting) {
@@ -9282,7 +9421,8 @@
       return linearError < b2Settings.b2_linearSlop;
     };
     Box2D.inherit(b2GearJointDef, Box2D.Dynamics.Joints.b2JointDef);
-    b2GearJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
+    b2GearJointDef.prototype.__super =
+      Box2D.Dynamics.Joints.b2JointDef.prototype;
     b2GearJointDef.b2GearJointDef = function () {
       Box2D.Dynamics.Joints.b2JointDef.b2JointDef.apply(this, arguments);
     };
@@ -9375,7 +9515,9 @@
           break;
         case b2Joint.e_mouseJoint:
           {
-            joint = new b2MouseJoint(def instanceof b2MouseJointDef ? def : null);
+            joint = new b2MouseJoint(
+              def instanceof b2MouseJointDef ? def : null
+            );
           }
           break;
         case b2Joint.e_prismaticJoint:
@@ -9673,7 +9815,8 @@
         var i2 = this.m_invIB;
         this.m_K.col1.x =
           m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
-        this.m_K.col1.y = i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
+        this.m_K.col1.y =
+          i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
         this.m_K.col2.x = this.m_K.col1.y;
         this.m_K.col2.y =
           m1 + m2 + i1 * this.m_a1 * this.m_a1 + i2 * this.m_a2 * this.m_a2;
@@ -9916,7 +10059,8 @@
         i2 = this.m_invIB;
         this.m_K.col1.x =
           m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
-        this.m_K.col1.y = i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
+        this.m_K.col1.y =
+          i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
         this.m_K.col2.x = this.m_K.col1.y;
         this.m_K.col2.y =
           m1 + m2 + i1 * this.m_a1 * this.m_a1 + i2 * this.m_a2 * this.m_a2;
@@ -9957,7 +10101,8 @@
       );
     };
     Box2D.inherit(b2LineJointDef, Box2D.Dynamics.Joints.b2JointDef);
-    b2LineJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
+    b2LineJointDef.prototype.__super =
+      Box2D.Dynamics.Joints.b2JointDef.prototype;
     b2LineJointDef.b2LineJointDef = function () {
       Box2D.Dynamics.Joints.b2JointDef.b2JointDef.apply(this, arguments);
       this.localAnchorA = new b2Vec2();
@@ -10146,7 +10291,8 @@
       this.dampingRatio = 0.7;
     };
     Box2D.inherit(b2PrismaticJoint, Box2D.Dynamics.Joints.b2Joint);
-    b2PrismaticJoint.prototype.__super = Box2D.Dynamics.Joints.b2Joint.prototype;
+    b2PrismaticJoint.prototype.__super =
+      Box2D.Dynamics.Joints.b2Joint.prototype;
     b2PrismaticJoint.b2PrismaticJoint = function () {
       Box2D.Dynamics.Joints.b2Joint.b2Joint.apply(this, arguments);
       this.m_localAnchor1 = new b2Vec2();
@@ -10347,7 +10493,8 @@
         this.m_K.col1.x =
           m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
         this.m_K.col1.y = i1 * this.m_s1 + i2 * this.m_s2;
-        this.m_K.col1.z = i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
+        this.m_K.col1.z =
+          i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
         this.m_K.col2.x = this.m_K.col1.y;
         this.m_K.col2.y = i1 + i2;
         this.m_K.col2.z = i1 * this.m_a1 + i2 * this.m_a2;
@@ -10595,7 +10742,8 @@
         this.m_K.col1.x =
           m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
         this.m_K.col1.y = i1 * this.m_s1 + i2 * this.m_s2;
-        this.m_K.col1.z = i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
+        this.m_K.col1.z =
+          i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
         this.m_K.col2.x = this.m_K.col1.y;
         this.m_K.col2.y = i1 + i2;
         this.m_K.col2.z = i1 * this.m_a1 + i2 * this.m_a2;
@@ -11370,11 +11518,13 @@
         v1.x -= m1 * this.impulse3.x;
         v1.y -= m1 * this.impulse3.y;
         w1 -=
-          i1 * (r1X * this.impulse3.y - r1Y * this.impulse3.x + this.impulse3.z);
+          i1 *
+          (r1X * this.impulse3.y - r1Y * this.impulse3.x + this.impulse3.z);
         v2.x += m2 * this.impulse3.x;
         v2.y += m2 * this.impulse3.y;
         w2 +=
-          i2 * (r2X * this.impulse3.y - r2Y * this.impulse3.x + this.impulse3.z);
+          i2 *
+          (r2X * this.impulse3.y - r2Y * this.impulse3.x + this.impulse3.z);
       } else {
         tMat = bA.m_xf.R;
         r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
@@ -11729,7 +11879,8 @@
       );
     };
     Box2D.inherit(b2WeldJointDef, Box2D.Dynamics.Joints.b2JointDef);
-    b2WeldJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
+    b2WeldJointDef.prototype.__super =
+      Box2D.Dynamics.Joints.b2JointDef.prototype;
     b2WeldJointDef.b2WeldJointDef = function () {
       Box2D.Dynamics.Joints.b2JointDef.b2JointDef.apply(this, arguments);
       this.localAnchorA = new b2Vec2();
@@ -11844,7 +11995,11 @@
     b2DebugDraw.prototype.GetXFormScale = function () {
       return this.m_xformScale;
     };
-    b2DebugDraw.prototype.DrawPolygon = function (vertices, vertexCount, color) {
+    b2DebugDraw.prototype.DrawPolygon = function (
+      vertices,
+      vertexCount,
+      color
+    ) {
       if (!vertexCount) return;
       var s = this.m_ctx;
       var drawScale = this.m_drawScale;
@@ -12003,16 +12158,16 @@
 
   const prevPos = {};
   /**
-  * Active b2Body/s in the world.
-  * @type {Object.<string,*>}
-  */
+   * Active b2Body/s in the world.
+   * @type {Object.<string,*>}
+   */
   const bodies = {};
   // const joints = {};
   const pinned = {}; // Map of IDs to pinned joints
   /**
-  * The runtime instantiating this block package.
-  * @type {Array}
-  */
+   * The runtime instantiating this block package.
+   * @type {Array}
+   */
   const stageBodies = [];
 
   // const categorySeq = 1;
@@ -12208,12 +12363,12 @@
   };
 
   /**
-  * Set the X and Y coordinates (No Fencing)
-  * @param {!RenderedTarget} rt the renderedTarget.
-  * @param {!number} x New X coordinate, in Scratch coordinates.
-  * @param {!number} y New Y coordinate, in Scratch coordinates.
-  * @param {?boolean} force Force setting X/Y, in case of dragging
-  */
+   * Set the X and Y coordinates (No Fencing)
+   * @param {!RenderedTarget} rt the renderedTarget.
+   * @param {!number} x New X coordinate, in Scratch coordinates.
+   * @param {!number} y New Y coordinate, in Scratch coordinates.
+   * @param {?boolean} force Force setting X/Y, in case of dragging
+   */
   const _setXY = function (rt, x, y, force) {
     if (rt.isStage) return;
     if (rt.dragging && !force) return;
@@ -12291,8 +12446,10 @@
     }
   };
 
-  const blockIconURI = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmE9Imh0dHA6Ly9ucy5hZG9iZS5jb20vQWRvYmVTVkdWaWV3ZXJFeHRlbnNpb25zLzMuMC8iDQoJIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSItMy43IC0zLjcgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTMuNyAtMy43IDQwIDQwIg0KCSB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxkZWZzPg0KPC9kZWZzPg0KPHJlY3QgeD0iOC45IiB5PSIxLjUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxLjUiIHk9IjE2LjMiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxNi4zIiB5PSIxNi4zIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMxNjlGQjAiIHN0cm9rZS13aWR0aD0iMyIgd2lkdGg9IjE0LjgiIGhlaWdodD0iMTQuOCIvPg0KPC9zdmc+";
-  const menuIconURI = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmE9Imh0dHA6Ly9ucy5hZG9iZS5jb20vQWRvYmVTVkdWaWV3ZXJFeHRlbnNpb25zLzMuMC8iDQoJIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSItMy43IC0zLjcgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTMuNyAtMy43IDQwIDQwIg0KCSB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxkZWZzPg0KPC9kZWZzPg0KPHJlY3QgeD0iOC45IiB5PSIxLjUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxLjUiIHk9IjE2LjMiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxNi4zIiB5PSIxNi4zIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMxNjlGQjAiIHN0cm9rZS13aWR0aD0iMyIgd2lkdGg9IjE0LjgiIGhlaWdodD0iMTQuOCIvPg0KPC9zdmc+";
+  const blockIconURI =
+    "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmE9Imh0dHA6Ly9ucy5hZG9iZS5jb20vQWRvYmVTVkdWaWV3ZXJFeHRlbnNpb25zLzMuMC8iDQoJIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSItMy43IC0zLjcgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTMuNyAtMy43IDQwIDQwIg0KCSB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxkZWZzPg0KPC9kZWZzPg0KPHJlY3QgeD0iOC45IiB5PSIxLjUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxLjUiIHk9IjE2LjMiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxNi4zIiB5PSIxNi4zIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMxNjlGQjAiIHN0cm9rZS13aWR0aD0iMyIgd2lkdGg9IjE0LjgiIGhlaWdodD0iMTQuOCIvPg0KPC9zdmc+";
+  const menuIconURI =
+    "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmE9Imh0dHA6Ly9ucy5hZG9iZS5jb20vQWRvYmVTVkdWaWV3ZXJFeHRlbnNpb25zLzMuMC8iDQoJIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSItMy43IC0zLjcgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTMuNyAtMy43IDQwIDQwIg0KCSB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxkZWZzPg0KPC9kZWZzPg0KPHJlY3QgeD0iOC45IiB5PSIxLjUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxLjUiIHk9IjE2LjMiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxNi4zIiB5PSIxNi4zIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMxNjlGQjAiIHN0cm9rZS13aWR0aD0iMyIgd2lkdGg9IjE0LjgiIGhlaWdodD0iMTQuOCIvPg0KPC9zdmc+";
   const vm = Scratch.vm;
 
   class Scratch3Griffpatch {
@@ -12354,7 +12511,7 @@
           default: "Physics",
           description: "Label for the Griffpatch extension category",
         }),
-        docsURI: "https://extensions.turbowarp.org/box2d.html",
+        docsURI: "https://extensions.turbowarp.org/box2d",
         menuIconURI: menuIconURI,
         blockIconURI: blockIconURI,
         blocks: [
@@ -12609,7 +12766,7 @@
             filter: [Scratch.TargetType.SPRITE],
           },
 
-          '---',
+          "---",
 
           {
             opcode: "setAngVelocity",
@@ -12637,7 +12794,7 @@
             }),
             filter: [Scratch.TargetType.SPRITE],
           },
-            
+
           "---",
 
           {
@@ -12662,10 +12819,10 @@
             text: formatMessage({
               id: "griffpatch.getStatic",
               default: "fixed?",
-              description: "get whether this sprite is fixed"
+              description: "get whether this sprite is fixed",
             }),
             blockType: BlockType.BOOLEAN,
-            filter: [Scratch.TargetType.SPRITE]
+            filter: [Scratch.TargetType.SPRITE],
           },
 
           "---",
@@ -12676,7 +12833,7 @@
             text: formatMessage({
               id: "griffpatch.setDensity",
               default: "set density [density]",
-              description: "Set the density of the object"
+              description: "Set the density of the object",
             }),
             arguments: {
               density: {
@@ -12694,13 +12851,13 @@
             text: formatMessage({
               id: "griffpatch.setDensityValue",
               default: "set density to [density]",
-              description: "Set the density of the object"
+              description: "Set the density of the object",
             }),
             arguments: {
               density: {
                 type: ArgumentType.NUMBER,
-                defaultValue: 100
-              }
+                defaultValue: 100,
+              },
             },
             filter: [Scratch.TargetType.SPRITE],
           },
@@ -12816,7 +12973,8 @@
             blockType: BlockType.COMMAND,
             text: formatMessage({
               id: "griffpatch.setProperties",
-              default: "set density [density] roughness [friction] bounce [restitution]",
+              default:
+                "set density [density] roughness [friction] bounce [restitution]",
               description: "Set the density of the object",
             }),
             arguments: {
@@ -12938,7 +13096,7 @@
               description: "get the y scroll",
             }),
             blockType: BlockType.REPORTER,
-          }
+          },
         ],
 
         menus: {
@@ -13104,7 +13262,8 @@
         }
 
         const prev = prevPos[targetID];
-        const fixedRotation = target.rotationStyle !== ROTATION_STYLE_ALL_AROUND;
+        const fixedRotation =
+          target.rotationStyle !== ROTATION_STYLE_ALL_AROUND;
 
         if (prev && (prev.x !== target.x || prev.y !== target.y)) {
           const pos = new b2Vec2(
@@ -13350,7 +13509,7 @@
       body.GetFixtureList().SetDensity(Cast.toNumber(args.density) / 100.0);
       body.ResetMassData();
     }
-    
+
     getDensity(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
@@ -13385,7 +13544,9 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      body.GetFixtureList().SetRestitution(Cast.toNumber(args.restitution) / 100.0);
+      body
+        .GetFixtureList()
+        .SetRestitution(Cast.toNumber(args.restitution) / 100.0);
       body.ResetMassData();
     }
 
@@ -13406,7 +13567,9 @@
 
       body.GetFixtureList().SetDensity(Cast.toNumber(args.density) / 100.0);
       body.GetFixtureList().SetFriction(Cast.toNumber(args.friction) / 100.0);
-      body.GetFixtureList().SetRestitution(Cast.toNumber(args.restitution) / 100.0);
+      body
+        .GetFixtureList()
+        .SetRestitution(Cast.toNumber(args.restitution) / 100.0);
       body.ResetMassData();
     }
 
@@ -13695,7 +13858,11 @@
             position.x * zoom - _scroll.x,
             position.y * zoom - _scroll.y
           );
-          prevPos[targetID] = { x: target.x, y: target.y, dir: target.direction };
+          prevPos[targetID] = {
+            x: target.x,
+            y: target.y,
+            dir: target.direction,
+          };
         }
       }
     }
