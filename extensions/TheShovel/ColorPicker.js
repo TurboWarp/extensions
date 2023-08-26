@@ -9,14 +9,14 @@
   const input = document.createElement("input");
   input.type = "color";
   input.value = "#9966ff"; // default scratch-paint color
-  input.style.pointerEvents = 'none';
-  input.style.width = '1px';
-  input.style.height = '1px';
-  input.style.visibility = 'hidden';
-  Scratch.renderer.addOverlay(input, 'scale-centered');
+  input.style.pointerEvents = "none";
+  input.style.width = "1px";
+  input.style.height = "1px";
+  input.style.visibility = "hidden";
+  Scratch.renderer.addOverlay(input, "scale-centered");
 
   input.addEventListener("input", () => {
-    Scratch.vm.runtime.startHats('shovelColorPicker_whenChanged');
+    Scratch.vm.runtime.startHats("shovelColorPicker_whenChanged");
   });
 
   let x = 0;
@@ -92,8 +92,8 @@
             opcode: "whenChanged",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text: "when color changed"
-          }
+            text: "when color changed",
+          },
         ],
         menus: {
           RGBMenu: {
@@ -121,7 +121,7 @@
     }
 
     getColor(args) {
-      if (args.TYPE === "hex" ){
+      if (args.TYPE === "hex") {
         return input.value;
       } else if (args.TYPE == "red") {
         return Scratch.Cast.toRgbColorObject(input.value).r;
