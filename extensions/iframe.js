@@ -52,8 +52,8 @@
     iframe.style.height = `${effectiveHeight}px`;
 
     let transform = "";
-    transform += `translate(${stageWidth / 2 - effectiveWidth / 2 + x}px,${
-      stageHeight / 2 - effectiveHeight / 2 - y
+    transform += `translate(${-effectiveWidth / 2 + x}px, ${
+      -effectiveHeight / 2 - y
     }px)`;
     iframe.style.transform = transform;
 
@@ -75,7 +75,7 @@
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("src", src);
-    Scratch.renderer.addOverlay(iframe, "scale");
+    Scratch.renderer.addOverlay(iframe, "scale-centered");
 
     updateFrameAttributes();
   };
