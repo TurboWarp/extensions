@@ -110,7 +110,7 @@
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue:
-                  "https://theshovel.github.io/Bullet-Hell/Bullet%20Hell",
+                  "https://extensions.turbowarp.org/samples/Box2D.sb3",
               },
             },
           },
