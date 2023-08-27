@@ -1,6 +1,6 @@
-/*
+console.log("Hello, World!");/*
  * This extension was made by SharkPool
- * Version 2.2 (Visual Effects Expansion + Fixes)
+ * Version 2.2.1 (Bug Fixes and Mr. Muffin Man Fixes)
  * Do NOT delete these comments
  */
 
@@ -28,6 +28,16 @@
 
   let newColorType = '';
   let overlayImageContainer = '';
+
+  const fontMenu = [
+    "Scratch",
+    "Sans Serif",
+    "Serif",
+    "Handwriting",
+    "Marker",
+    "Curly",
+    "Pixel",
+  ];  
 
   class BetterInputSP {
     constructor() {
@@ -81,8 +91,6 @@
       this.minSlider = 0;
       this.maxSlider = 100;
       this.defaultSlider = 50;
-      this.enterSpeed = 10;
-      this.exitSpeed = 10;
       this.activeOverlays = [];
       this.Blur = 0;
       this.Brightness = 0;
@@ -631,15 +639,7 @@
           },
           fontMenu: {
             acceptReporters: true,
-            items: [
-              "Scratch",
-              "Sans Serif",
-              "Serif",
-              "Handwriting",
-              "Marker",
-              "Curly",
-              "Pixel"
-            ],
+            items: "allFonts",
           },
           buttonActionMenu: {
             acceptReporters: true,
@@ -715,6 +715,20 @@
           },
         },
       };
+    }
+
+    allFonts() {
+      const customFonts = Scratch.vm.runtime.fontManager
+        ? Scratch.vm.runtime.fontManager.getFonts().map((i) => ({
+            text: i.name,
+            value: i.family,
+          }))
+        : [];
+
+      return [
+        ...fontMenu,
+        ...customFonts,
+      ];
     }
 
     isWaitingInput(args) {
@@ -936,7 +950,7 @@
       this.textBoxY = Scratch.Cast.toNumber(args.Y) * -1;
 
       this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
+        this.updateOverlayPos(overlay);
       });
     }
 
@@ -945,17 +959,33 @@
       this.textBoxY = this.textBoxY + Scratch.Cast.toNumber(args.Y) * -1;
 
       this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
+        this.updateOverlayPos(overlay);
       });
     }
 
-    updateOverlay(overlay) {
+    updateOverlayPos(overlay) {
       if (this.Rotation > 359) {
         this.Rotation = 0;
       } else if (this.Rotation < 1) {
         this.Rotation = 360;
       }
 
+      overlay.style.transform = `
+        SkewX(${this.SkewX}deg)
+        SkewY(${this.SkewY}deg)
+        rotate(${this.Rotation - 90}deg)
+      `;
+
+      if (this.textBoxX !== null && this.textBoxY !== null) {
+        overlay.style.left = `${41 + this.textBoxX}%`;
+        overlay.style.top = `${44 + this.textBoxY}%`;
+      } else {
+        overlay.style.left = "50%";
+        overlay.style.top = "50%";
+      }
+    }
+
+    updateOverlay(overlay) {
       const newOpacity =  this.Opacity / 100;
       const newScale = this.Scale / 100;
       const newBrightness = this.Brightness + 100;
@@ -976,17 +1006,16 @@
       `;
       overlay.style.opacity = newOpacity;
       overlay.style.scale = newScale;
-
-      overlayImageContainer.style.background = `url("${encodeURI(this.overlayImage)}")`;
-      overlayImageContainer.style.backgroundSize = this.imgScale + '%';
-
-      if (this.textBoxX !== null && this.textBoxY !== null) {
-        overlay.style.left = `${41 + this.textBoxX}%`;
-        overlay.style.top = `${44 + this.textBoxY}%`;
-      } else {
-        overlay.style.left = "50%";
-        overlay.style.top = "50%";
-      }
+  
+      Scratch.canFetch(encodeURI(this.overlayImage))
+        .then(canFetch => {
+          if (canFetch) {
+            overlayImageContainer.style.background = `url(${encodeURI(this.overlayImage)})`;
+            overlayImageContainer.style.backgroundSize = this.imgScale + '%';
+          } else {
+            console.log("Cannot fetch content from the URL.");
+          }
+        });
     }
 
     setMaxBoxCount(args) {
@@ -1067,18 +1096,15 @@
 
     askAndWaitForInput(args) {
       if (this.askBoxCount < this.maxBoxCount) {
-        return new Promise((resolve) => {
-          this.askAndWait(args).then(() => {
-            resolve(this.getUserInput());
-          });
+        return this.askAndWait(args).then(() => {
+          return this.getUserInput();
         });
       }
     }
 
     removeAskBoxes() {
-      const askBoxes = document.querySelectorAll(".ask-box");
-      askBoxes.forEach((box) => {
-        box.parentNode.removeChild(box);
+      this.activeOverlays.forEach((overlay) => {
+        overlay.parentNode.removeChild(overlay);
       });
 
       if (this.askBoxPromise) {
@@ -1119,8 +1145,6 @@
           overlay.style.fontFamily = this.fontFamily;
 
           overlayImageContainer = document.createElement("div");
-          overlayImageContainer.style.background = `url("${encodeURI(this.overlayImage)}")`;
-          overlayImageContainer.style.backgroundSize = this.imgScale + '%';
           overlayImageContainer.style.width = '100%';
           overlayImageContainer.style.height = '100%';
           overlayImageContainer.style.position = "absolute";
@@ -1377,7 +1401,6 @@
           slider.min = this.minSlider;
           slider.max = this.maxSlider;
           slider.value = this.defaultSlider;
-
           sliderContainer.appendChild(slider);
 
           const valueDisplay = document.createElement("span");
@@ -1413,13 +1436,6 @@
           document.body.appendChild(overlay);
           inputField.focus();
 
-          if (this.enterEffect) {
-            this.applyEnterEffect(overlay);
-          } else {
-            overlay.style.opacity = "1";
-            overlay.style.transform = "scale(1)";
-          }
-
           const resizeHandler = () => {
             if (this.textBoxX !== null && this.textBoxY !== null) {
               overlay.style.left = `${41 + this.textBoxX}%`;
@@ -1437,7 +1453,6 @@
 
           this.activeOverlays.forEach((overlay) => {
             this.updateOverlay(overlay);
-            overlay.style.transform = `rotate(${this.Rotation - 90}deg)`;
           });
 
           const observer = new MutationObserver((mutationsList) => {
@@ -1498,20 +1513,6 @@
     setDropdown(args) {
       this.optionList = args.DROPDOWN;
       this.splitKey = args.SPLITTER;
-    }
-
-    setEnterSpeed(args) {
-      this.enterSpeed = Math.abs(args.SPEED);
-      if (this.enterSpeed < 1) {
-        this.enterSpeed = 1;
-      }
-    }
-
-    setExitSpeed(args) {
-      this.exitSpeed = Math.abs(args.SPEED);
-      if (this.exitSpeed < 1) {
-        this.exitSpeed = 1;
-      }
     }
 
     setImage(args) {
