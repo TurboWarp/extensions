@@ -27,7 +27,7 @@
 
   vm.runtime.runtimeOptions.fencing = false;
   vm.renderer.offscreenTouching = true;
-  vm.setInterpolation(0);
+  vm.setInterpolation(false);
 
   function updateCamera(
     x = cameraX,
