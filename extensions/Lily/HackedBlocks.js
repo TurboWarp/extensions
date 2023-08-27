@@ -2,7 +2,7 @@
 // ID: lmsHackedBlocks
 // Description: Various vanilla blocks not visible in the block palette.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// Contributors: pumpkinhasapatch
+// By: pumpkinhasapatch
 
 (function (Scratch) {
   "use strict";
@@ -12,7 +12,7 @@
       return {
         id: "lmsHackedBlocks",
         name: "Hidden Blocks",
-        docsURI: "https://en.scratch-wiki.info/wiki/Hidden_Blocks",
+        docsURI: "https://en.scratch-wiki.info/wiki/Hidden_Blocks#Events",
         blocks: [
           // Use the sensing_touchingobjectmenu instead of event_ to also list sprites, since the block supports it
           {
