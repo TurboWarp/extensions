@@ -58,7 +58,19 @@
           const projectVolume = runtime.audioEngine.inputNode.gain.value;
           video.volume = videoVolume * projectVolume;
 
-          if (!video.paused) {
+          const drawables = vm.renderer._allDrawables;
+          let targetsWithVideo = [];
+    
+          for (const target of runtime.targets) {
+            const drawableID = target.drawableID;
+            const targetSkin = drawables[drawableID].skin.id;
+    
+            if (targetSkin === skin.id) {
+              targetsWithVideo.push(target);
+            }
+          }
+
+          if (!video.paused || targetsWithVideo.length > 0) {
             vm.renderer.updateBitmapSkin(skin, video, 1);
           }
         }
