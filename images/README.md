@@ -278,3 +278,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## NexusKitten/controlcontrols.svg
  - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464
+
+## Lily/SoundExpanded.svg
+ - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464
