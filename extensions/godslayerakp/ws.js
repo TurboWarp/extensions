@@ -40,7 +40,7 @@
           "---",
           {
             opcode: "onError",
-            blockType: BlockType.HAT,
+            blockType: BlockType.EVENT,
             isEdgeActivated: false,
             text: "when connection errors",
           },
@@ -52,7 +52,7 @@
           "---",
           {
             opcode: "onOpen",
-            blockType: BlockType.HAT,
+            blockType: BlockType.EVENT,
             isEdgeActivated: false,
             text: "when connection connects",
           },
@@ -64,7 +64,7 @@
           "---",
           {
             opcode: "onMessage",
-            blockType: BlockType.HAT,
+            blockType: BlockType.EVENT,
             isEdgeActivated: false,
             text: "when message recieved",
           },
@@ -93,7 +93,7 @@
           "---",
           {
             opcode: "onClose",
-            blockType: BlockType.HAT,
+            blockType: BlockType.EVENT,
             isEdgeActivated: false,
             text: "when connection closes",
           },
