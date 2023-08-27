@@ -261,7 +261,7 @@
                     v_inDepth = 10000.0;
                   }
 
-                  if (v_depthcalc <= v_inDepth){
+                  if (v_depthcalc < v_inDepth){
                     gl_FragColor.a = 0.0;
                   }
 
@@ -317,7 +317,7 @@
                       v_inDepth = 10000.0;
                     }
 
-                    if (v_depthcalc <= v_inDepth){
+                    if (v_depthcalc < v_inDepth){
                       gl_FragColor.a = 0.0;
                     }
 
