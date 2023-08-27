@@ -1,8 +1,8 @@
-console.log("Hello, World!");/*
- * This extension was made by SharkPool
- * Version 2.2.1 (Bug Fixes and Mr. Muffin Man Fixes)
- * Do NOT delete these comments
- */
+/*
+* This extension was made by SharkPool
+* Version 2.2.1 (Bug Fixes and Mr. Muffin Man Fixes)
+* Do NOT delete these comments
+*/
 
 (function (Scratch) {
   "use strict";
