@@ -1,3 +1,8 @@
+// Name: Lily's Toolbox
+// ID: lmsutilsblocks
+// Description: Previously called LMS Utilities.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
   "use strict";
   const menuIconURI =
@@ -19,7 +24,7 @@
     getInfo() {
       return {
         id: "lmsutilsblocks",
-        name: "LMS Utilities",
+        name: "Lily's Toolbox",
         color1: "#3bb2ed",
         color2: "#37a1de",
         color3: "#3693d9",
@@ -1322,12 +1327,12 @@
       if (args.DROPDOWN === "operating system") {
         if (user.includes("Mac OS")) return "macOS";
         if (user.includes("CrOS")) return "ChromeOS";
+        if (user.includes("Android")) return "Android";
         if (user.includes("Linux")) return "Linux";
         if (user.includes("Windows")) return "Windows";
         if (user.includes("iPad")) return "iOS";
         if (user.includes("iPod")) return "iOS";
         if (user.includes("iPhone")) return "iOS";
-        if (user.includes("Android")) return "Android";
         return "Other";
       }
       if (args.DROPDOWN === "browser") {
