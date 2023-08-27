@@ -87,15 +87,15 @@
     const w = fromTopLeft ? (vm.runtime.stageWidth / 2) : 0;
     return ((x - w) / (doZoom ? (cameraZoom / 100) : 1)) + w;
   }
-  
+
   function _translateY(y, fromTopLeft = false, multiplier = 1, doZoom = true) {
     const h = fromTopLeft ? (vm.runtime.stageHeight / 2) : 0;
     return ((y - h) / (doZoom ? (cameraZoom / 100) : 1)) + h;
   }
 
   function translateX(
-      x, fromTopLeft = false, multiplier = 1, doZoom = true,
-      y = 0, yMult = multiplier
+    x, fromTopLeft = false, multiplier = 1, doZoom = true,
+    y = 0, yMult = multiplier
   ) {
     // rotation hell, not gonna bother with it for now
     return _translateX(x, fromTopLeft, multiplier, doZoom) + cameraX * multiplier;
@@ -175,7 +175,7 @@
     // @ts-expect-error
     const oldPosBubble = vm.runtime.ext_scratch3_looks._positionBubble;
     // @ts-expect-error
-    vm.runtime.ext_scratch3_looks._positionBubble = function(target) {
+    vm.runtime.ext_scratch3_looks._positionBubble = function (target) {
       // it's harder to limit speech bubbles to the camera region...
       // it's easier to just remove speech bubble bounds entirely
       const oldGetNativeSize = this.runtime.renderer.getNativeSize;
