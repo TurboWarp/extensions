@@ -8,6 +8,7 @@
   "cursor",
   "runtime-options",
   "fetch",
+  "NexusKitten/corsproxy",
   "text",
   "local-storage",
   "true-fantom/base",
