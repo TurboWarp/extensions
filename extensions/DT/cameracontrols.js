@@ -84,58 +84,66 @@
   });
 
   function _translateX(x, fromTopLeft = false, multiplier = 1, doZoom = true) {
-    const w = fromTopLeft ? (vm.runtime.stageWidth / 2) : 0;
-    return ((x - w) / (doZoom ? (cameraZoom / 100) : 1)) + w + cameraX * multiplier;
+    const w = fromTopLeft ? vm.runtime.stageWidth / 2 : 0;
+    return (x - w) / (doZoom ? cameraZoom / 100 : 1) + w + cameraX * multiplier;
   }
 
   function _translateY(y, fromTopLeft = false, multiplier = 1, doZoom = true) {
-    const h = fromTopLeft ? (vm.runtime.stageHeight / 2) : 0;
-    return ((y - h) / (doZoom ? (cameraZoom / 100) : 1)) + h + cameraY * multiplier;
+    const h = fromTopLeft ? vm.runtime.stageHeight / 2 : 0;
+    return (y - h) / (doZoom ? cameraZoom / 100 : 1) + h + cameraY * multiplier;
   }
 
   function rotate(cx, cy, x, y, radians) {
     const cos = Math.cos(radians),
       sin = Math.sin(radians),
-      nx = (cos * (x - cx)) + (sin * (y - cy)) + cx,
-      ny = (cos * (y - cy)) - (sin * (x - cx)) + cy;
+      nx = cos * (x - cx) + sin * (y - cy) + cx,
+      ny = cos * (y - cy) - sin * (x - cx) + cy;
     return [nx, ny];
   }
 
   // rotation hell
   function translateX(
-    x, fromTopLeft = false, xMult = 1, doZoom = true,
-    y = 0, yMult = xMult
+    x,
+    fromTopLeft = false,
+    xMult = 1,
+    doZoom = true,
+    y = 0,
+    yMult = xMult
   ) {
     if ((cameraDirection - 90) % 360 === 0 || !doZoom) {
       return _translateX(x, fromTopLeft, xMult, doZoom);
     } else {
-      const w = fromTopLeft ? (vm.runtime.stageWidth / 2) : 0;
-      const h = fromTopLeft ? (vm.runtime.stageHeight / 2) : 0;
+      const w = fromTopLeft ? vm.runtime.stageWidth / 2 : 0;
+      const h = fromTopLeft ? vm.runtime.stageHeight / 2 : 0;
       const rotated = rotate(
         cameraX + w,
         cameraY + h,
         _translateX(x, fromTopLeft, xMult, doZoom),
         _translateY(y, fromTopLeft, yMult, doZoom),
-        (-cameraDirection + 90) / 180 * Math.PI
+        ((-cameraDirection + 90) / 180) * Math.PI
       );
       return rotated[0];
     }
   }
   function translateY(
-    y, fromTopLeft = false, yMult = 1, doZoom = true,
-    x = 0, xMult = yMult
+    y,
+    fromTopLeft = false,
+    yMult = 1,
+    doZoom = true,
+    x = 0,
+    xMult = yMult
   ) {
     if ((cameraDirection - 90) % 360 === 0 || !doZoom) {
       return _translateY(y, fromTopLeft, yMult, doZoom);
     } else {
-      const w = fromTopLeft ? (vm.runtime.stageWidth / 2) : 0;
-      const h = fromTopLeft ? (vm.runtime.stageHeight / 2) : 0;
+      const w = fromTopLeft ? vm.runtime.stageWidth / 2 : 0;
+      const h = fromTopLeft ? vm.runtime.stageHeight / 2 : 0;
       const rotated = rotate(
         cameraX + w,
         cameraY + h,
         _translateX(x, fromTopLeft, xMult, doZoom),
         _translateY(y, fromTopLeft, yMult, doZoom),
-        (-cameraDirection + 90) / 180 * Math.PI
+        ((-cameraDirection + 90) / 180) * Math.PI
       );
       return rotated[1];
     }
@@ -145,18 +153,46 @@
   const oldSX = vm.runtime.ioDevices.mouse.getScratchX;
   const oldSY = vm.runtime.ioDevices.mouse.getScratchY;
   vm.runtime.ioDevices.mouse.getScratchX = function (...a) {
-    return translateX(oldSX.apply(this, a), false, 1, true, oldSY.apply(this, a), 1);
+    return translateX(
+      oldSX.apply(this, a),
+      false,
+      1,
+      true,
+      oldSY.apply(this, a),
+      1
+    );
   };
   vm.runtime.ioDevices.mouse.getScratchY = function (...a) {
-    return translateY(oldSY.apply(this, a), false, 1, true, oldSX.apply(this, a), 1);
+    return translateY(
+      oldSY.apply(this, a),
+      false,
+      1,
+      true,
+      oldSX.apply(this, a),
+      1
+    );
   };
   const oldCX = vm.runtime.ioDevices.mouse.getClientX;
   const oldCY = vm.runtime.ioDevices.mouse.getClientY;
   vm.runtime.ioDevices.mouse.getClientX = function (...a) {
-    return translateX(oldCX.apply(this, a), true, 1, true, oldCY.apply(this, a), -1);
+    return translateX(
+      oldCX.apply(this, a),
+      true,
+      1,
+      true,
+      oldCY.apply(this, a),
+      -1
+    );
   };
   vm.runtime.ioDevices.mouse.getClientY = function (...a) {
-    return translateY(oldCY.apply(this, a), true, -1, true, oldCX.apply(this, a), 1);
+    return translateY(
+      oldCY.apply(this, a),
+      true,
+      -1,
+      true,
+      oldCX.apply(this, a),
+      1
+    );
   };
 
   const oldPick = vm.renderer.pick;
@@ -185,13 +221,13 @@
       // it's harder to limit speech bubbles to the camera region...
       // it's easier to just remove speech bubble bounds entirely
       const oldGetNativeSize = this.runtime.renderer.getNativeSize;
-      this.runtime.renderer.getNativeSize = () => ([Infinity, Infinity]);
+      this.runtime.renderer.getNativeSize = () => [Infinity, Infinity];
       try {
         return oldPosBubble.call(this, target);
       } finally {
         this.runtime.renderer.getNativeSize = oldGetNativeSize;
       }
-    }
+    };
   }
 
   class Camera {
