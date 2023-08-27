@@ -1,6 +1,6 @@
 // Name: Hidden Block Collection
 // ID: lmsHackedBlocks
-// Description: Various vanilla blocks not normally visible in the block palette.
+// Description: Various vanilla blocks not visible in the block palette.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // Contributors: pumpkinhasapatch
 
@@ -44,16 +44,13 @@
           },
           "---",
           {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Hidden Inputs",
+            blockType: Scratch.BlockType.XML,
+            xml: '<block type="operator_round"><value name="NUM"><shadow type="note"><field name="NOTE">60</field></shadow></value></block>',
           },
+          "---",
           {
             blockType: Scratch.BlockType.XML,
             xml: '<block type="operator_join"><value name="STRING1"><shadow type="colour_picker"/></value><value name="STRING2"><shadow type="text"><field name="TEXT"></field></shadow></value></block>',
-          },
-          {
-            blockType: Scratch.BlockType.XML,
-            xml: '<block type="operator_round"><value name="NUM"><shadow type="note"><field name="NOTE">60</field></shadow></value></block>',
           },
           // Matrix input from the micro:bit extension
           // Returns a 5x5 binary grid of pixels depending on what was drawn. White pixels are 1 and green pixels are 0.
