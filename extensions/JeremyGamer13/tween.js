@@ -407,10 +407,11 @@
     }
 
     getVariables() {
-      // @ts-expect-error - Blockly not typed yet
       const variables =
+        // @ts-expect-error
         typeof Blockly === "undefined"
           ? []
+          // @ts-expect-error
           : Blockly.getMainWorkspace()
               .getVariableMap()
               .getVariablesOfType("")
