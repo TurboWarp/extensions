@@ -60,11 +60,11 @@
 
           const drawables = vm.renderer._allDrawables;
           let targetsWithVideo = [];
-    
+
           for (const target of runtime.targets) {
             const drawableID = target.drawableID;
             const targetSkin = drawables[drawableID].skin.id;
-    
+
             if (targetSkin === skin.id) {
               targetsWithVideo.push(target);
             }
