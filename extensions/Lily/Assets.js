@@ -590,9 +590,9 @@
       return Scratch.vm.toJSON();
     }
 
-    loadExtension(args) {
+    async loadExtension(args) {
       const url = Cast.toString(args.URL);
-      vm.extensionManager.loadExtensionURL(url);
+      await vm.extensionManager.loadExtensionURL(url);
     }
 
     getLoadedExtensions(args) {
