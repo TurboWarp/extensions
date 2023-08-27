@@ -58,7 +58,9 @@
           const projectVolume = runtime.audioEngine.inputNode.gain.value;
           video.volume = videoVolume * projectVolume;
 
-          vm.renderer.updateBitmapSkin(skin, video, 1);
+          if (!video.paused) {
+            vm.renderer.updateBitmapSkin(skin, video, 1);
+          }
         }
 
         for (const id of Object.keys(this.targets)) {
