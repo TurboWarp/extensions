@@ -68,7 +68,7 @@
           const drawable = runtime.renderer._allDrawables[drawableID];
           // This was only a problem when targets weren't reset, I don't
           // expect it to happen much now but just in case..
-          if (!drawable) return;
+          if (!drawable) continue;
           const skin = this.videos[this.targets[id].videoName].skin;
           drawable.skin = vm.renderer._allSkins[skin];
         }
