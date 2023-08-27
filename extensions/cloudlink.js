@@ -12,7 +12,9 @@
 
   // Get the server URL list
   try {
-    Scratch.fetch("https://raw.githubusercontent.com/MikeDev101/cloudlink/master/serverlist.json")
+    Scratch.fetch(
+      "https://raw.githubusercontent.com/MikeDev101/cloudlink/master/serverlist.json"
+    )
       .then((response) => {
         return response.text();
       })
@@ -324,8 +326,7 @@
             arguments: {
               url: {
                 type: "string",
-                defaultValue:
-                  "https://extensions.turbowarp.org/hello.txt",
+                defaultValue: "https://extensions.turbowarp.org/hello.txt",
               },
             },
           },
@@ -341,8 +342,7 @@
               },
               url: {
                 type: "string",
-                defaultValue:
-                  "https://extensions.turbowarp.org/hello.txt",
+                defaultValue: "https://extensions.turbowarp.org/hello.txt",
               },
               data: {
                 type: "string",
