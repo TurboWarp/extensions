@@ -176,6 +176,7 @@
           isOpen: false,
           isClosed: false,
           isErrored: false,
+          isMessage: false,
           set gottenMessage(bool) {
             this.isMessage = bool;
           },
