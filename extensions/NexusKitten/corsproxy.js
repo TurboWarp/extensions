@@ -1,3 +1,8 @@
+// Name: CORS Proxy
+// ID: nkcorsproxy
+// Description: Simple blocks for avoiding CORS errors.
+// By: NamelessCat <https://scratch.mit.edu/users/NexusKitten/>
+
 (function(Scratch) {
   'use strict';
 
@@ -16,7 +21,7 @@
       return {
         id: 'nkcorsproxy',
         name: 'CORS Proxy',
-        docsURI: "https://extensions.turbowarp.org/NexusKitten/corsproxy.html",
+        docsURI: "https://extensions.turbowarp.org/CubesterYT/corsproxy",
         color1: '#376661',
         color2: '#3b6766',
         blocks: [
