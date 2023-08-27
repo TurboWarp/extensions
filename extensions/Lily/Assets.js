@@ -535,7 +535,7 @@
         case "asset ID":
           return costume.asset.assetId;
         default:
-          return '';
+          return "";
       }
     }
 
