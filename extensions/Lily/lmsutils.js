@@ -1307,7 +1307,10 @@
     }
 
     isUserMobile(args, util) {
-      return navigator.userAgent.includes("Mobile") || navigator.userAgent.includes('Android');
+      return (
+        navigator.userAgent.includes("Mobile") ||
+        navigator.userAgent.includes("Android")
+      );
     }
 
     screenReporter(args) {
