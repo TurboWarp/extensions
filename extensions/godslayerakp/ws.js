@@ -4,13 +4,15 @@
 
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed)
-    throw "can not load out side unsandboxed mode";
+
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error("can not load outside unsandboxed mode");
+  }
 
   /* ------- BLOCKS -------- */
   const { BlockType, Cast, ArgumentType } = Scratch;
 
-  class WebRequests {
+  class WebSocketExtension {
     /**
      * no need to install runtime as it comes with Scratch var
      */
@@ -276,8 +278,5 @@
     }
   }
 
-  const instance = new WebRequests();
-  // @ts-ignore
-  Scratch.extensions.register(instance);
-  // @ts-ignore
+  Scratch.extensions.register(new WebSocketExtension());
 })(Scratch);
