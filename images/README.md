@@ -119,7 +119,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Based on https://github.com/ScratchCE/scratch-gui/blob/develop/src/lib/libraries/extensions/strings/strings.png by [@JoshsAccount](https://scratch.mit.edu/users/JoshsAccount/) under [The GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html).
 
 ## Lily/lmsutils.svg
- - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545.
+ - Created by [@HamsterCreativity](https://scratch.mit.edu/users/HamsterCreativity/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464.
 
 ## 0832/rxFS2.svg
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1604175329.
@@ -232,6 +232,10 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## ZXMushroom63/searchApi.svg
  - Created by [@CST1229](https://github.com/CST1229) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1596158611
 
+## CubesterYT/WindowControls.svg
+ - Created by [@BlueDome77](https://github.com/BlueDome77) for the Window Controls extension Collaboration
+ - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
 ## Lily/LooksPlus.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
 
@@ -257,3 +261,28 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@ClaytonTDM](https://github.com/ClaytonTDM)
  - Upload icon based on https://icons8.com/icon/367/upload
  - Background based on https://app.haikei.app/
+
+## XeroName/Deltatime.svg
+ - Created by [@XeroName](https://scratch.mit.edu/users/plant2014/) in https://github.com/TurboWarp/extensions/pull/622
+
+## TheShovel/LZ-String.svg
+ - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1658130807
+
+## NexusKitten/moremotion.svg;
+ - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1646987348
+
+## Lily/AllMenus.svg
+ - Created by [YogaindoCR](https://github.com/YogaindoCR) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1681839774
+
+## Lily/MoreEvents.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
+ - Background "blobs" by Scratch.
+
+## DNin/wake-lock.svg
+ - Created by [NexusKitten](https://github.com/NexusKitten) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1690949400
+
+## NexusKitten/controlcontrols.svg
+ - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464
+
+## Lily/SoundExpanded.svg
+ - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464

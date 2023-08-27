@@ -1,8 +1,12 @@
+// Name: Gamepad
+// ID: Gamepad
+// Description: Directly access gamepads instead of just mapping buttons to keys.
+
 // Some parts of this scripts are based on or designed to be compatible-ish with:
 // https://arpruss.github.io/gamepad.js (MIT Licensed)
 
-(function(Scratch) {
-  'use strict';
+(function (Scratch) {
+  "use strict";
 
   const AXIS_DEADZONE = 0.1;
   const BUTTON_DEADZONE = 0.05;
@@ -12,8 +16,8 @@
    * @returns {Gamepad[]}
    */
   const getGamepads = (index) => {
-    if (index === 'any') {
-      return navigator.getGamepads().filter(i => i);
+    if (index === "any") {
+      return navigator.getGamepads().filter((i) => i);
     }
     const gamepad = navigator.getGamepads()[index - 1];
     if (gamepad) {
@@ -28,8 +32,8 @@
    * @returns {boolean} false if button does not exist
    */
   const isButtonPressed = (gamepad, buttonIndex) => {
-    if (buttonIndex === 'any') {
-      return gamepad.buttons.some(i => i.pressed);
+    if (buttonIndex === "any") {
+      return gamepad.buttons.some((i) => i.pressed);
     }
     const button = gamepad.buttons[buttonIndex - 1];
     if (!button) {
@@ -62,7 +66,7 @@
    */
   const getAxisValue = (gamepad, axisIndex) => {
     const axisValue = gamepad.axes[axisIndex - 1];
-    if (typeof axisValue !== 'number') {
+    if (typeof axisValue !== "number") {
       return 0;
     }
     if (Math.abs(axisValue) < AXIS_DEADZONE) {
@@ -74,114 +78,114 @@
   class GamepadExtension {
     getInfo() {
       return {
-        id: 'Gamepad',
-        name: 'Gamepad',
+        id: "Gamepad",
+        name: "Gamepad",
         blocks: [
           {
-            opcode: 'gamepadConnected',
+            opcode: "gamepadConnected",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is gamepad [pad] connected?',
+            text: "is gamepad [pad] connected?",
             arguments: {
               pad: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'padMenu'
-              }
-            }
+                defaultValue: "1",
+                menu: "padMenu",
+              },
+            },
           },
           {
-            opcode: 'buttonDown',
+            opcode: "buttonDown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'button [b] on pad [i] pressed?',
+            text: "button [b] on pad [i] pressed?",
             arguments: {
               b: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'buttonMenu'
+                defaultValue: "1",
+                menu: "buttonMenu",
               },
               i: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'padMenu'
-              }
-            }
+                defaultValue: "1",
+                menu: "padMenu",
+              },
+            },
           },
           {
-            opcode: 'buttonValue',
+            opcode: "buttonValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'value of button [b] on pad [i]',
+            text: "value of button [b] on pad [i]",
             arguments: {
               b: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'buttonMenu'
+                defaultValue: "1",
+                menu: "buttonMenu",
               },
               i: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'padMenu'
-              }
-            }
+                defaultValue: "1",
+                menu: "padMenu",
+              },
+            },
           },
           {
-            opcode: 'axisValue',
+            opcode: "axisValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'value of axis [b] on pad [i]',
+            text: "value of axis [b] on pad [i]",
             arguments: {
               b: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'axisMenu'
+                defaultValue: "1",
+                menu: "axisMenu",
               },
               i: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'padMenu'
+                defaultValue: "1",
+                menu: "padMenu",
               },
             },
           },
 
-          '---',
+          "---",
 
           {
-            opcode: 'axisDirection',
+            opcode: "axisDirection",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'direction of axes [axis] on pad [pad]',
+            text: "direction of axes [axis] on pad [pad]",
             arguments: {
               axis: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'axesGroupMenu'
+                defaultValue: "1",
+                menu: "axesGroupMenu",
               },
               pad: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'padMenu'
-              }
-            }
+                defaultValue: "1",
+                menu: "padMenu",
+              },
+            },
           },
           {
-            opcode: 'axisMagnitude',
+            opcode: "axisMagnitude",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'magnitude of axes [axis] on pad [pad]',
+            text: "magnitude of axes [axis] on pad [pad]",
             arguments: {
               axis: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'axesGroupMenu'
+                defaultValue: "1",
+                menu: "axesGroupMenu",
               },
               pad: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'padMenu'
-              }
-            }
+                defaultValue: "1",
+                menu: "padMenu",
+              },
+            },
           },
 
           /*
           {
             opcode: 'buttonPressedReleased',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'button [b] [pr] of pad [i]',
             arguments: {
               b: {
@@ -203,7 +207,7 @@
 
           {
             opcode: 'axisMoved',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'axis [b] of pad [i] moved',
             arguments: {
               b: {
@@ -219,29 +223,29 @@
           },
           */
 
-          '---',
+          "---",
 
           {
-            opcode: 'rumble',
+            opcode: "rumble",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'rumble strong [s] and weak [w] for [t] sec. on pad [i]',
+            text: "rumble strong [s] and weak [w] for [t] sec. on pad [i]",
             arguments: {
               s: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '0.25'
+                defaultValue: "0.25",
               },
               w: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '0.5'
+                defaultValue: "0.5",
               },
               t: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '0.25'
+                defaultValue: "0.25",
               },
               i: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-                menu: 'padMenu'
+                defaultValue: "1",
+                menu: "padMenu",
               },
             },
           },
@@ -251,25 +255,25 @@
             acceptReporters: true,
             items: [
               {
-                text: 'any',
-                value: 'any'
+                text: "any",
+                value: "any",
               },
               {
-                text: '1',
-                value: '1'
+                text: "1",
+                value: "1",
               },
               {
-                text: '2',
-                value: '2'
+                text: "2",
+                value: "2",
               },
               {
-                text: '3',
-                value: '3'
+                text: "3",
+                value: "3",
               },
               {
-                text: '4',
-                value: '4'
-              }
+                text: "4",
+                value: "4",
+              },
             ],
           },
           buttonMenu: {
@@ -277,110 +281,110 @@
             items: [
               // Based on an Xbox controller
               {
-                text: 'any',
-                value: 'any'
+                text: "any",
+                value: "any",
               },
               {
-                text: 'A (1)',
-                value: '1'
+                text: "A (1)",
+                value: "1",
               },
               {
-                text: 'B (2)',
-                value: '2'
+                text: "B (2)",
+                value: "2",
               },
               {
-                text: 'X (3)',
-                value: '3'
+                text: "X (3)",
+                value: "3",
               },
               {
-                text: 'Y (4)',
-                value: '4'
+                text: "Y (4)",
+                value: "4",
               },
               {
-                text: 'Left bumper (5)',
-                value: '5'
+                text: "Left bumper (5)",
+                value: "5",
               },
               {
-                text: 'Right bumper (6)',
-                value: '6'
+                text: "Right bumper (6)",
+                value: "6",
               },
               {
-                text: 'Left trigger (7)',
-                value: '7'
+                text: "Left trigger (7)",
+                value: "7",
               },
               {
-                text: 'Right trigger (8)',
-                value: '8'
+                text: "Right trigger (8)",
+                value: "8",
               },
               {
-                text: 'Select/View (9)',
-                value: '9'
+                text: "Select/View (9)",
+                value: "9",
               },
               {
-                text: 'Start/Menu (10)',
-                value: '10'
+                text: "Start/Menu (10)",
+                value: "10",
               },
               {
-                text: 'Left stick (11)',
-                value: '11'
+                text: "Left stick (11)",
+                value: "11",
               },
               {
-                text: 'Right stick (12)',
-                value: '12'
+                text: "Right stick (12)",
+                value: "12",
               },
               {
-                text: 'D-pad up (13)',
-                value: '13'
+                text: "D-pad up (13)",
+                value: "13",
               },
               {
-                text: 'D-pad down (14)',
-                value: '14'
+                text: "D-pad down (14)",
+                value: "14",
               },
               {
-                text: 'D-pad left (15)',
-                value: '15'
+                text: "D-pad left (15)",
+                value: "15",
               },
               {
-                text: 'D-pad right (16)',
-                value: '16'
+                text: "D-pad right (16)",
+                value: "16",
               },
-            ]
+            ],
           },
           axisMenu: {
             acceptReporters: true,
             items: [
               // Based on an Xbox controller
               {
-                text: 'Left stick horizontal (1)',
-                value: '1'
+                text: "Left stick horizontal (1)",
+                value: "1",
               },
               {
-                text: 'Left stick vertical (2)',
-                value: '2'
+                text: "Left stick vertical (2)",
+                value: "2",
               },
               {
-                text: 'Right stick horizontal (3)',
-                value: '3'
+                text: "Right stick horizontal (3)",
+                value: "3",
               },
               {
-                text: 'Right stick vertical (4)',
-                value: '4'
-              }
-            ]
+                text: "Right stick vertical (4)",
+                value: "4",
+              },
+            ],
           },
           axesGroupMenu: {
             acceptReporters: true,
             items: [
               // Based on an Xbox controller
               {
-                text: 'Left stick (1 & 2)',
-                value: '1'
+                text: "Left stick (1 & 2)",
+                value: "1",
               },
               {
-                text: 'Right stick (3 & 4)',
-                value: '3'
-              }
-            ]
+                text: "Right stick (3 & 4)",
+                value: "3",
+              },
+            ],
           },
           /*
           pressReleaseMenu: [
@@ -394,15 +398,15 @@
             }
           ],
           */
-        }
+        },
       };
     }
 
-    gamepadConnected ({pad}) {
+    gamepadConnected({ pad }) {
       return getGamepads(pad).length > 0;
     }
 
-    buttonDown ({b, i}) {
+    buttonDown({ b, i }) {
       for (const gamepad of getGamepads(i)) {
         if (isButtonPressed(gamepad, b)) {
           return true;
@@ -411,7 +415,7 @@
       return false;
     }
 
-    buttonValue ({b, i}) {
+    buttonValue({ b, i }) {
       let greatestButton = 0;
       for (const gamepad of getGamepads(i)) {
         const value = getButtonValue(gamepad, b);
@@ -422,7 +426,7 @@
       return greatestButton;
     }
 
-    axisValue ({b, i}) {
+    axisValue({ b, i }) {
       let greatestAxis = 0;
       for (const gamepad of getGamepads(i)) {
         const axis = getAxisValue(gamepad, b);
@@ -433,7 +437,7 @@
       return greatestAxis;
     }
 
-    axisDirection ({axis, pad}) {
+    axisDirection({ axis, pad }) {
       let greatestMagnitude = 0;
       let direction = 90;
       for (const gamepad of getGamepads(pad)) {
@@ -442,7 +446,8 @@
         const magnitude = Math.sqrt(horizontalAxis ** 2 + verticalAxis ** 2);
         if (magnitude > greatestMagnitude) {
           greatestMagnitude = magnitude;
-          direction = Math.atan2(verticalAxis, horizontalAxis) * 180 / Math.PI + 90;
+          direction =
+            (Math.atan2(verticalAxis, horizontalAxis) * 180) / Math.PI + 90;
           if (direction < 0) {
             direction += 360;
           }
@@ -451,7 +456,7 @@
       return direction;
     }
 
-    axisMagnitude ({axis, pad}) {
+    axisMagnitude({ axis, pad }) {
       let greatestMagnitude = 0;
       for (const gamepad of getGamepads(pad)) {
         const horizontalAxis = getAxisValue(gamepad, axis);
@@ -464,17 +469,17 @@
       return greatestMagnitude;
     }
 
-    rumble ({s, w, t, i}) {
+    rumble({ s, w, t, i }) {
       const gamepads = getGamepads(i);
       for (const gamepad of gamepads) {
         // @ts-ignore
         if (gamepad.vibrationActuator) {
           // @ts-ignore
-          gamepad.vibrationActuator.playEffect('dual-rumble', {
+          gamepad.vibrationActuator.playEffect("dual-rumble", {
             startDelay: 0,
             duration: t * 1000,
             weakMagnitude: w,
-            strongMagnitude: s
+            strongMagnitude: s,
           });
         }
       }
