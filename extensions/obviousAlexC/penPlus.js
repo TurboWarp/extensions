@@ -2,7 +2,6 @@
 // ID: penP
 // Description: Various Additions to the pen.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
-
 (function (Scratch) {
   "use strict";
 
@@ -959,7 +958,7 @@
   };
 
   const textureFunctions = {
-    createBlankPenPlusTextureInfo: function (
+    createBlankPenPlusTextureInfo: async function (
       width,
       height,
       color,
@@ -1004,7 +1003,7 @@
         height: height,
       };
     },
-    createPenPlusTextureInfo: function (url, name, clamp) {
+    createPenPlusTextureInfo: async function (url, name, clamp) {
       const texture = penPlusCostumeLibrary[name]
         ? penPlusCostumeLibrary[name].texture
         : gl.createTexture();
@@ -2185,6 +2184,8 @@
         squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
+      let valuetoSet = 0;
+
       const attributeNum = Scratch.Cast.toNumber(target);
       if (attributeNum >= 7) {
         if (attributeNum == 11) {
@@ -2195,7 +2196,7 @@
             );
             return;
           }
-          valuetoSet = value / penPlusAdvancedSettings._maxDepth;
+          valuetoSet = number / penPlusAdvancedSettings._maxDepth;
           squareAttributesOfAllSprites[curTarget.id][attributeNum] =
             number / penPlusAdvancedSettings._maxDepth;
           return;
