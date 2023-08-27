@@ -119,7 +119,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Based on https://github.com/ScratchCE/scratch-gui/blob/develop/src/lib/libraries/extensions/strings/strings.png by [@JoshsAccount](https://scratch.mit.edu/users/JoshsAccount/) under [The GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html).
 
 ## Lily/lmsutils.svg
- - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545.
+ - Created by [@HamsterCreativity](https://scratch.mit.edu/users/HamsterCreativity/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464.
 
 ## 0832/rxFS2.svg
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1604175329.
