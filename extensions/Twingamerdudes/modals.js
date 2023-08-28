@@ -1,3 +1,7 @@
+// Name: Modals
+// ID: modals
+// Description: Adds support for HTML modals.
+// By: Twingamerdudes <https://scratch.mit.edu/users/twingamerdudesreal/>
 (function(Scratch) {
   'use strict';
 
