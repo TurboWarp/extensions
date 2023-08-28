@@ -23,6 +23,20 @@
   const AS_DATA_URL = "url";
 
   /**
+   * @param {HTMLInputElement} input
+   * @returns {boolean}
+   */
+  const isCancelEventSupported = (input) => {
+    if ('oncancel' in input) {
+      // Chrome 113+, Safari 16.4+
+      return true;
+    }
+    // Firefox is weird. cancel is supported since Firefox 91, but oncancel doesn't exist.
+    // Firefox 91 is from August 2021. That's old enough to not care about previous versions.
+    return navigator.userAgent.includes('Firefox');
+  };
+
+  /**
    * @param {string} accept See MODE_ constants above
    * @param {string} as See AS_ constants above
    * @returns {Promise<string>} format given by as parameter
@@ -153,6 +167,12 @@
       const formattedAccept = accept || "any";
       subtitle.textContent = `Accepted formats: ${formattedAccept}`;
       modal.appendChild(subtitle);
+
+      // To avoid the script getting stalled forever, if cancel isn't supported, we'll just forcibly
+      // show our modal.
+      if (openFileSelectorMode === MODE_ONLY_SELECTOR && !isCancelEventSupported(input)) {
+        openFileSelectorMode = MODE_IMMEDIATELY_SHOW_SELECTOR;
+      }
 
       if (openFileSelectorMode !== MODE_ONLY_SELECTOR) {
         const overlay = Scratch.vm.renderer.addOverlay(outer, 'scale');
