@@ -5,6 +5,9 @@
 // Original: -happen3-
 
 (function (ext) {
+
+    'use strict'; 
+    
     ext.squareRoot = function (num) {
         return Math.sqrt(num);
     };
