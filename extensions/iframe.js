@@ -35,6 +35,16 @@
     "interest-cohort": "'none'",
   };
 
+  const SANDBOX = [
+    "allow-same-origin",
+    "allow-scripts",
+    "allow-forms",
+    "allow-modals",
+    "allow-popups",
+
+    // The big one we don't want to include is allow-top-navigation
+  ];
+
   let x = 0;
   let y = 0;
   let width = -1; // negative means default
@@ -82,7 +92,7 @@
     iframe.style.height = "100%";
     iframe.style.border = "none";
     iframe.style.position = "absolute";
-    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
+    iframe.setAttribute("sandbox", SANDBOX.join(" "));
     iframe.setAttribute(
       "allow",
       Object.entries(featurePolicy)
