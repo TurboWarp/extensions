@@ -1,7 +1,8 @@
 // Name: Additional Roots
-// ID: stretch
+// ID: additionalroots
 // Description: A bunch of new additional roots for your pleasure.
 // By: -happen3-
+// Original: -happen3-
 
 (function (ext) {
     ext.squareRoot = function (num) {
