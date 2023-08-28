@@ -15,7 +15,7 @@
 
   const BitmapSkin = runtime.renderer.exports.BitmapSkin;
   class VideoSkin extends BitmapSkin {
-    constructor (id, renderer, videoName, videoSrc) {
+    constructor(id, renderer, videoName, videoSrc) {
       super(id, renderer);
 
       /** @type {string} */
@@ -24,12 +24,21 @@
       /** @type {string} */
       this.videoSrc = videoSrc;
 
-      this.videoElement = document.createElement('video');
+      this.videoError = false;
+
+      this.videoElement = document.createElement("video");
       // Need to set non-zero dimensions, otherwise scratch-render thinks this is an empty image
       this.videoElement.width = 1;
       this.videoElement.height = 1;
       this.videoElement.crossOrigin = "anonymous";
-      this.videoElement.onloadeddata = () => this.markVideoDirty();
+      this.videoElement.onloadeddata = () => {
+        // First frame loaded
+        this.markVideoDirty();
+      };
+      this.videoElement.onerror = () => {
+        this.videoError = true;
+        this.markVideoDirty();
+      };
       this.videoElement.src = videoSrc;
       this.videoElement.currentTime = 0;
 
@@ -38,26 +47,48 @@
       this.reuploadVideo();
     }
 
-    reuploadVideo () {
-      console.log('reupload');
+    reuploadVideo() {
       this.videoDirty = false;
-      this.setBitmap(this.videoElement);
+      if (this.videoError) {
+        // Draw an image that looks similar to Scratch's normal costume loading errors
+        const canvas = document.createElement("canvas");
+        canvas.width = this.videoElement.videoWidth || 128;
+        canvas.height = this.videoElement.videoHeight || 128;
+        const ctx = canvas.getContext("2d");
+
+        if (ctx) {
+          ctx.fillStyle = "#cccccc";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          const fontSize = Math.min(canvas.width, canvas.height);
+          ctx.fillStyle = "#000000";
+          ctx.font = `${fontSize}px serif`;
+          ctx.textBaseline = "middle";
+          ctx.textAlign = "center";
+          ctx.fillText("?", canvas.width / 2, canvas.height / 2);
+        } else {
+          // guess we can't draw the error then
+        }
+
+        this.setBitmap(canvas);
+      } else {
+        this.setBitmap(this.videoElement);
+      }
     }
 
-    markVideoDirty () {
-      console.log('dirty');
+    markVideoDirty() {
       this.videoDirty = true;
       this.emitWasAltered();
     }
 
-    getTexture (scale) {
+    getTexture(scale) {
       if (this.videoDirty) {
         this.reuploadVideo();
       }
       return super.getTexture(scale);
     }
 
-    dispose () {
+    dispose() {
       super.dispose();
       this.videoElement.pause();
     }
@@ -243,7 +274,7 @@
                 defaultValue: 100,
               },
             },
-          }
+          },
         ],
         menus: {
           targets: {
@@ -262,8 +293,8 @@
       };
     }
 
-    resetEverything () {
-      for (const {videoElement} of Object.values(this.videos)) {
+    resetEverything() {
+      for (const { videoElement } of Object.values(this.videos)) {
         videoElement.pause();
         videoElement.currentTime = 0;
       }
@@ -335,7 +366,7 @@
 
       const drawable = renderer._allDrawables[target.drawableID];
       const skin = drawable && drawable.skin;
-      return skin instanceof VideoSkin ? skin.videoName : '';
+      return skin instanceof VideoSkin ? skin.videoName : "";
     }
 
     startVideo(args) {
