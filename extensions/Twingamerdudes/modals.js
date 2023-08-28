@@ -2,188 +2,189 @@
 // ID: modals
 // Description: Adds support for HTML modals.
 // By: Twingamerdudes <https://scratch.mit.edu/users/twingamerdudesreal/>
-(function(Scratch) {
-  'use strict';
+(function (Scratch) {
+  "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('Modals must run unsandboxed');
+    throw new Error("Modals must run unsandboxed");
   }
 
   const vm = Scratch.vm;
-  let modalInput = "";
+  let modalInput = ""; // By: Twingamerdudes <https://scratch.mit.edu/users/twingamerdudesreal/>
+  // Original: YourMom
   let buttonPressed = "";
   let isModalOpen = false;
   class Modals {
     getInfo() {
       return {
-        id: 'modals',
-        name: 'Modals',
-        color1: '#a01c1c',
-        color2: '#861515',
-        color3: '#6d1212',
+        id: "modals",
+        name: "Modals",
+        color1: "#a01c1c",
+        color2: "#861515",
+        color3: "#6d1212",
         blocks: [
           {
-            opcode: 'showModal',
+            opcode: "showModal",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'show modal [TEXT] with the background [COLOR] and text color [TCOLOR]',
+            text: "show modal [TEXT] with the background [COLOR] and text color [TCOLOR]",
             arguments: {
-                TEXT: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: 'Hello World!'
-                },
-                COLOR: {
-                    type: Scratch.ArgumentType.COLOR,
-                    defaultValue: '#696969'
-                },
-                TCOLOR: {
-                    type: Scratch.ArgumentType.COLOR,
-                    defaultValue: '#ffffff'
-                }
-            }
-          },
-          {
-            opcode: 'showModalWithInput',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'show input modal [TEXT] with the background [COLOR] secondary color [SCOLOR], text color [TCOLOR], and placeholder [PLACEHOLDER]',
-            arguments: {
-                TEXT: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: 'Hello World!'
-                },
-                COLOR: {
-                    type: Scratch.ArgumentType.COLOR,
-                    defaultValue: '#696969'
-                },
-                TCOLOR: {
-                    type: Scratch.ArgumentType.COLOR,
-                    defaultValue: '#ffffff'
-                },
-                SCOLOR: {
-                    type: Scratch.ArgumentType.COLOR,
-                    defaultValue: '#808080'
-                },
-                PLACEHOLDER: {
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: 'Your text.'
-                }
-            }
-          },
-          {
-            opcode: 'closeModal',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'close modal'
-          },
-          {
-            opcode: 'addTextToModal',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'add [TEXT] to the current modal',
-            arguments: {
-                TEXT: {
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: 'Hello World!'
-                }
-            }
-          },
-          {
-            opcode: 'addModalButton',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'add button [NAME] with the background color of [SCOLOR] and the text color of [TCOLOR] to the current modal',
-            arguments: {
-              NAME: {
+              TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'My Button'
+                defaultValue: "Hello World!",
               },
-              SCOLOR: {
+              COLOR: {
                 type: Scratch.ArgumentType.COLOR,
-                defaultValue: '#808080'
+                defaultValue: "#696969",
               },
               TCOLOR: {
                 type: Scratch.ArgumentType.COLOR,
-                defaultValue: '#ffffff'
-              }
-            }
+                defaultValue: "#ffffff",
+              },
+            },
           },
           {
-            opcode: 'changeDefaultModalText',
+            opcode: "showModalWithInput",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'change default modal text to [TEXT]',
+            text: "show input modal [TEXT] with the background [COLOR] secondary color [SCOLOR], text color [TCOLOR], and placeholder [PLACEHOLDER]",
             arguments: {
-                TEXT: {
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: 'Hello World!'
-                }
-            }
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello World!",
+              },
+              COLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#696969",
+              },
+              TCOLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#ffffff",
+              },
+              SCOLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#808080",
+              },
+              PLACEHOLDER: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Your text.",
+              },
+            },
           },
           {
-            opcode: 'changeDefaultModalColor',
+            opcode: "closeModal",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'change modal background color to [COLOR]',
+            text: "close modal",
+          },
+          {
+            opcode: "addTextToModal",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "add [TEXT] to the current modal",
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello World!",
+              },
+            },
+          },
+          {
+            opcode: "addModalButton",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "add button [NAME] with the background color of [SCOLOR] and the text color of [TCOLOR] to the current modal",
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "My Button",
+              },
+              SCOLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#808080",
+              },
+              TCOLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#ffffff",
+              },
+            },
+          },
+          {
+            opcode: "changeDefaultModalText",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "change default modal text to [TEXT]",
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello World!",
+              },
+            },
+          },
+          {
+            opcode: "changeDefaultModalColor",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "change modal background color to [COLOR]",
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
-                defaultValue: '#696969'
-              }
-            }
+                defaultValue: "#696969",
+              },
+            },
           },
           {
-            opcode: 'changeDefaultModalTextColor',
+            opcode: "changeDefaultModalTextColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'change modal text color to [COLOR]',
+            text: "change modal text color to [COLOR]",
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
-                defaultValue: '#ffffff'
-              }
-            }
+                defaultValue: "#ffffff",
+              },
+            },
           },
           {
-            opcode: 'inputModalValue',
+            opcode: "inputModalValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'input modal value',
-            disableMonitor: true
+            text: "input modal value",
+            disableMonitor: true,
           },
           {
-            opcode: 'IsModalOpen',
+            opcode: "IsModalOpen",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is modal open?',
+            text: "is modal open?",
           },
           {
-            opcode: 'modalOpen',
+            opcode: "modalOpen",
             blockType: Scratch.BlockType.HAT,
-            text: 'when a modal is opened',
-            isEdgeActivated: false
+            text: "when a modal is opened",
+            isEdgeActivated: false,
           },
           {
-            opcode: 'modalClose',
+            opcode: "modalClose",
             blockType: Scratch.BlockType.HAT,
-            text: 'when a modal is closed',
-            isEdgeActivated: false
+            text: "when a modal is closed",
+            isEdgeActivated: false,
           },
           {
             blockType: Scratch.BlockType.EVENT,
-            opcode: 'whenButtonPressed',
-            text: 'when [BUTTON] is clicked',
+            opcode: "whenButtonPressed",
+            text: "when [BUTTON] is clicked",
             isEdgeActivated: false, // required boilerplate
             arguments: {
               BUTTON: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'My Button'
-              }
-            }
-          }
-        ]
+                defaultValue: "My Button",
+              },
+            },
+          },
+        ],
       };
     }
 
-    whenButtonPressed(args){
+    whenButtonPressed(args) {
       if (buttonPressed == args.BUTTON) {
         buttonPressed = "";
         return true;
       }
       return false;
     }
-    addTextToModal(args){
-      if (isModalOpen){
+    addTextToModal(args) {
+      if (isModalOpen) {
         const text = args.TEXT;
         //select the first <dialog> element
         const modal = document.querySelector("dialog");
@@ -194,8 +195,8 @@
       }
     }
 
-    closeModal(args){
-      if (isModalOpen){
+    closeModal(args) {
+      if (isModalOpen) {
         const modal = document.querySelector("dialog");
         modal.close();
         modal.remove();
@@ -203,8 +204,8 @@
       }
     }
 
-    changeDefaultModalText(args){
-      if (isModalOpen){
+    changeDefaultModalText(args) {
+      if (isModalOpen) {
         const defaultModalText = args.TEXT;
         const modal = document.querySelector("dialog");
         const text = document.getElementById("modals_modalText");
@@ -212,8 +213,8 @@
       }
     }
 
-    addModalButton(args, util){
-      if (isModalOpen){
+    addModalButton(args, util) {
+      if (isModalOpen) {
         //init stuff
         const buttonName = args.NAME;
         const modal = document.querySelector("dialog");
@@ -232,40 +233,40 @@
         button.style.borderRadius = "5px";
         button.innerHTML = buttonName;
 
-        button.addEventListener("click", function(){
+        button.addEventListener("click", function () {
           buttonPressed = buttonName;
-          util.startHats('modals_whenButtonPressed');
+          util.startHats("modals_whenButtonPressed");
         });
         modal.appendChild(button);
       }
     }
 
-    changeDefaultModalColor(args){
-      if (isModalOpen){
+    changeDefaultModalColor(args) {
+      if (isModalOpen) {
         const defaultModalColor = args.COLOR;
         const modal = document.querySelector("dialog");
         modal.style.backgroundColor = defaultModalColor;
       }
     }
 
-    changeDefaultModalTextColor(args){
-      if (isModalOpen){
+    changeDefaultModalTextColor(args) {
+      if (isModalOpen) {
         const defaultModalTextColor = args.COLOR;
         const modal = document.querySelector("dialog");
         modal.style.color = defaultModalTextColor;
       }
     }
 
-    IsModalOpen(){
-        return isModalOpen;
+    IsModalOpen() {
+      return isModalOpen;
     }
 
-    inputModalValue(){
-        return modalInput;
+    inputModalValue() {
+      return modalInput;
     }
-    showModal(args, util){
+    showModal(args, util) {
       //Create Modal
-      if (!isModalOpen){
+      if (!isModalOpen) {
         var modal = document.createElement("dialog");
         var text = document.createElement("p");
         text.id = "modals_modalText";
@@ -275,11 +276,11 @@
         //Create Close Button
         var close = document.createElement("button");
         close.innerHTML = "X";
-        close.addEventListener("click", function(){
-            util.startHats('modals_modalClose');
-            isModalOpen = false;
-            modal.close();
-            modal.remove();
+        close.addEventListener("click", function () {
+          util.startHats("modals_modalClose");
+          isModalOpen = false;
+          modal.close();
+          modal.remove();
         });
         //CSS Hell
         close.style.position = "absolute";
@@ -303,12 +304,12 @@
         modal.appendChild(close);
         modal.showModal();
         isModalOpen = true;
-        util.startHats('modals_modalOpen');
+        util.startHats("modals_modalOpen");
       }
     }
 
-    showModalWithInput(args, util){
-      if (!isModalOpen){
+    showModalWithInput(args, util) {
+      if (!isModalOpen) {
         //Create Modal
         var modal = document.createElement("dialog");
         var text = document.createElement("p");
@@ -337,7 +338,10 @@
         input.style.color = args.TCOLOR;
 
         //WHY DO I HAVE TO DO THIS!?!?!?!?!?!?
-        var pcss = "#modals_modalInput::placeholder { color: " + args.TCOLOR + "; opacity: 0.5; }";
+        var pcss =
+          "#modals_modalInput::placeholder { color: " +
+          args.TCOLOR +
+          "; opacity: 0.5; }";
         var styleElement = document.createElement("style");
         styleElement.appendChild(document.createTextNode(pcss));
         document.head.appendChild(styleElement);
@@ -345,11 +349,11 @@
         //Create Close Button
         var close = document.createElement("button");
         close.innerHTML = "X";
-        close.addEventListener("click", function(){
-            util.startHats('modals_modalClose');
-            isModalOpen = false;
-            modal.close();
-            modal.remove();
+        close.addEventListener("click", function () {
+          util.startHats("modals_modalClose");
+          isModalOpen = false;
+          modal.close();
+          modal.remove();
         });
 
         //More CSS Hell
@@ -369,8 +373,8 @@
         //Create Submit Button
         var submit = document.createElement("button");
         submit.innerHTML = "Submit";
-        submit.addEventListener("click", function(){
-          util.startHats('modals_modalClose');
+        submit.addEventListener("click", function () {
+          util.startHats("modals_modalClose");
           const input = document.getElementById("modals_modalInput");
           isModalOpen = false;
           // @ts-ignore
@@ -403,9 +407,9 @@
         modal.appendChild(submit);
         isModalOpen = true;
         modal.showModal();
-        util.startHats('modals_modalOpen');
+        util.startHats("modals_modalOpen");
       }
+    }
   }
-}
-Scratch.extensions.register(new Modals());
+  Scratch.extensions.register(new Modals());
 })(Scratch);
