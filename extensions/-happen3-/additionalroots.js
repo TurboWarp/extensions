@@ -5,13 +5,10 @@
 // Original: -happen3-
 
 (function (Scratch) {
+    'use strict';
 
     function AdditionalRoots(runtime) {
-
-        'use strict';
-
         this.runtime = runtime;
-
     }
 
     AdditionalRoots.prototype.getInfo = function () {
@@ -26,9 +23,9 @@
                     arguments: {
                         num: {
                             type: Scratch.ArgumentType.NUMBER,
-                            defaultValue: 9
-                        }
-                    }
+                            defaultValue: 9,
+                        },
+                    },
                 },
                 {
                     opcode: 'cubeRoot',
@@ -37,9 +34,9 @@
                     arguments: {
                         num: {
                             type: Scratch.ArgumentType.NUMBER,
-                            defaultValue: 8
-                        }
-                    }
+                            defaultValue: 8,
+                        },
+                    },
                 },
                 {
                     opcode: 'fourthRoot',
@@ -48,9 +45,9 @@
                     arguments: {
                         num: {
                             type: Scratch.ArgumentType.NUMBER,
-                            defaultValue: 16
-                        }
-                    }
+                            defaultValue: 16,
+                        },
+                    },
                 },
                 {
                     opcode: 'fifthRoot',
@@ -59,9 +56,9 @@
                     arguments: {
                         num: {
                             type: Scratch.ArgumentType.NUMBER,
-                            defaultValue: 32
-                        }
-                    }
+                            defaultValue: 32,
+                        },
+                    },
                 },
                 {
                     opcode: 'nthRoot',
@@ -70,17 +67,17 @@
                     arguments: {
                         n: {
                             type: Scratch.ArgumentType.NUMBER,
-                            defaultValue: 4
+                            defaultValue: 4,
                         },
                         nth: {
                             type: Scratch.ArgumentType.NUMBER,
-                            defaultValue: 2
-                        }
-                    }
-                }
+                            defaultValue: 2,
+                        },
+                    },
+                },
             ],
             menus: {},
-            displayName: 'Additional Roots!'
+            displayName: 'Additional Roots!',
         };
     };
 
