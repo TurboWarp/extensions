@@ -33,9 +33,9 @@
       // so we have to show our own UI anyways. We may as well use this to implement some nice features
       // that native file pickers don't have:
       //  - Easy drag+drop
-      //  - Reliable cancel button (input cancel event is still basically nonexistent)
+      //  - Reliable cancel button (input cancel event is still not perfect)
       //    This is important so we can make this just a reporter instead of a command+hat block.
-      //    Without an interface, the script would be stalled if the prompt was just cancelled.
+      //    Without an interface, the script would be stalled if the prompt was cancelled.
 
       /** @param {string} text */
       const callback = (text) => {
@@ -356,6 +356,10 @@
                 text: "open selector immediately",
                 value: MODE_IMMEDIATELY_SHOW_SELECTOR,
               },
+              {
+                text: "only show selector",
+                value: MODE_ONLY_SELECTOR
+              }
             ],
           },
         },
