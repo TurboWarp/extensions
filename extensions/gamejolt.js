@@ -1407,6 +1407,7 @@
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Session?",
+            disableMonitor: true,
           },
           {
             blockType: Scratch.BlockType.LABEL,

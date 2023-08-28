@@ -103,11 +103,13 @@
             opcode: "trueBlock",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "true",
+            disableMonitor: true,
           },
           {
             opcode: "falseBlock",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "false",
+            disableMonitor: true,
           },
           {
             opcode: "exponent",

@@ -9238,6 +9238,7 @@
             opcode: "loggedIn",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Logged In?",
+            disableMonitor: true,
           },
           {
             opcode: "version",
