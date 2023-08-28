@@ -1,3 +1,7 @@
+// Name: Additional Roots
+// ID: stretch
+// Description: A bunch of new additional roots for your pleasure.
+
 (function (ext) {
     ext.squareRoot = function (num) {
         return Math.sqrt(num);
