@@ -12823,6 +12823,7 @@
             }),
             blockType: BlockType.BOOLEAN,
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
 
           "---",

@@ -390,6 +390,7 @@
             blockIconURI: touchIco,
             filter: [Scratch.TargetType.SPRITE],
             arguments: {},
+            disableMonitor: true,
           },
           {
             opcode: "touchingSpecificFinger",
@@ -563,6 +564,7 @@
             text: "Hidden?",
             blockIconURI: effectIco,
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
           {
             opcode: "getRotationStyle",
@@ -606,7 +608,6 @@
             blockIconURI: packagedIco,
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Is Packaged?",
-            disableMonitor: false,
           },
           "---",
           {

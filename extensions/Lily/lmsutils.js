@@ -141,12 +141,14 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is clone?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
           {
             opcode: "spriteClicked",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "sprite clicked?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
 
           "---",

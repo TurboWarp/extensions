@@ -24,12 +24,14 @@
             opcode: "true",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "true",
+            disableMonitor: true,
           },
           {
             opcode: "false",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "false",
             hideFromPalette: true,
+            disableMonitor: true,
           },
           {
             opcode: "enabledCheck",
