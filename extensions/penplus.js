@@ -26,49 +26,6 @@ Other various small fixes
 (function (Scratch) {
   "use strict";
 
-  // This is for compatibility with plugin loaders that don't implement window.Scratch.
-  // This is a one-time exception. Similar code like this WILL NOT be accepted in new extensions without
-  // significant justification.
-  if (!Scratch) {
-    Scratch = {
-      // @ts-expect-error
-      BlockType: {
-        COMMAND: "command",
-        REPORTER: "reporter",
-        BOOLEAN: "Boolean",
-        HAT: "hat",
-      },
-      // @ts-expect-error
-      ArgumentType: {
-        STRING: "string",
-        NUMBER: "number",
-        COLOR: "color",
-        ANGLE: "angle",
-        BOOLEAN: "Boolean",
-        MATRIX: "matrix",
-        NOTE: "note",
-      },
-      // @ts-expect-error
-      vm: window.vm,
-      extensions: {
-        unsandboxed: true,
-        register: (object) => {
-          // @ts-expect-error
-          const serviceName =
-            vm.extensionManager._registerInternalExtension(object);
-          // @ts-expect-error
-          vm.extensionManager._loadedExtensions.set(
-            object.getInfo().id,
-            serviceName
-          );
-        },
-      },
-    };
-    if (!Scratch.vm) {
-      throw new Error("The VM does not exist");
-    }
-  }
-
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("Pen+ must be run unsandboxed");
   }
