@@ -27,13 +27,13 @@
    * @returns {boolean}
    */
   const isCancelEventSupported = (input) => {
-    if ('oncancel' in input) {
+    if ("oncancel" in input) {
       // Chrome 113+, Safari 16.4+
       return true;
     }
     // Firefox is weird. cancel is supported since Firefox 91, but oncancel doesn't exist.
     // Firefox 91 is from August 2021. That's old enough to not care about previous versions.
-    return navigator.userAgent.includes('Firefox');
+    return navigator.userAgent.includes("Firefox");
   };
 
   /**
@@ -98,9 +98,9 @@
       const DROPPING_BORDER_COLOR = "#03a9fc";
 
       const outer = document.createElement("div");
-      outer.style.pointerEvents = 'auto';
-      outer.style.width = '100%';
-      outer.style.height = '100%';
+      outer.style.pointerEvents = "auto";
+      outer.style.width = "100%";
+      outer.style.height = "100%";
       outer.style.display = "flex";
       outer.style.alignItems = "center";
       outer.style.justifyContent = "center";
@@ -170,13 +170,16 @@
 
       // To avoid the script getting stalled forever, if cancel isn't supported, we'll just forcibly
       // show our modal.
-      if (openFileSelectorMode === MODE_ONLY_SELECTOR && !isCancelEventSupported(input)) {
+      if (
+        openFileSelectorMode === MODE_ONLY_SELECTOR &&
+        !isCancelEventSupported(input)
+      ) {
         openFileSelectorMode = MODE_IMMEDIATELY_SHOW_SELECTOR;
       }
 
       if (openFileSelectorMode !== MODE_ONLY_SELECTOR) {
-        const overlay = Scratch.vm.renderer.addOverlay(outer, 'scale');
-        overlay.container.style.zIndex = '100';
+        const overlay = Scratch.vm.renderer.addOverlay(outer, "scale");
+        overlay.container.style.zIndex = "100";
       }
 
       if (
@@ -378,8 +381,8 @@
               },
               {
                 text: "only show selector",
-                value: MODE_ONLY_SELECTOR
-              }
+                value: MODE_ONLY_SELECTOR,
+              },
             ],
           },
         },
