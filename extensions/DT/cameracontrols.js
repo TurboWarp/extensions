@@ -395,6 +395,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "camera direction",
           },
+          /*
           // debugging blocks
           {
             opcode: "getCX",
@@ -406,6 +407,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "client y",
           },
+          */
           "---",
           {
             opcode: "changeZoom",
