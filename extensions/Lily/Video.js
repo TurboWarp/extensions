@@ -10,84 +10,76 @@
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
+  const renderer = vm.renderer;
   const Cast = Scratch.Cast;
+
+  const BitmapSkin = runtime.renderer.exports.BitmapSkin;
+  class VideoSkin extends BitmapSkin {
+    constructor (id, renderer, videoName, videoSrc) {
+      super(id, renderer);
+
+      /** @type {string} */
+      this.videoName = videoName;
+
+      /** @type {string} */
+      this.videoSrc = videoSrc;
+
+      this.videoElement = document.createElement('video');
+      // Need to set non-zero dimensions, otherwise scratch-render thinks this is an empty image
+      this.videoElement.width = 1;
+      this.videoElement.height = 1;
+      this.videoElement.crossOrigin = "anonymous";
+      this.videoElement.onloadeddata = () => this.markVideoDirty();
+      this.videoElement.src = videoSrc;
+      this.videoElement.currentTime = 0;
+
+      this.videoDirty = true;
+
+      this.reuploadVideo();
+    }
+
+    reuploadVideo () {
+      console.log('reupload');
+      this.videoDirty = false;
+      this.setBitmap(this.videoElement);
+    }
+
+    markVideoDirty () {
+      console.log('dirty');
+      this.videoDirty = true;
+      this.emitWasAltered();
+    }
+
+    getTexture (scale) {
+      if (this.videoDirty) {
+        this.reuploadVideo();
+      }
+      return super.getTexture(scale);
+    }
+
+    dispose () {
+      super.dispose();
+      this.videoElement.pause();
+    }
+  }
 
   class Video {
     constructor() {
-      this.videos = [];
-      this.targets = [];
+      /** @type {Record<string, VideoSkin>} */
+      this.videos = Object.create(null);
 
-      runtime.on("PROJECT_STOP_ALL", () => {
-        for (const name of Object.keys(this.videos)) {
-          const video = this.videos[name].video;
-          video.pause();
-          video.currentTime = 0;
-        }
-
-        for (const id of Object.keys(this.targets)) {
-          const target = this.targets[id].target;
-          target.updateAllDrawableProperties();
-        }
-
-        this.targets = [];
-      });
-
-      runtime.on("PROJECT_START", () => {
-        for (const name of Object.keys(this.videos)) {
-          const video = this.videos[name].video;
-          video.pause();
-          video.currentTime = 0;
-        }
-
-        for (const id of Object.keys(this.targets)) {
-          const target = this.targets[id].target;
-          target.updateAllDrawableProperties();
-        }
-
-        this.targets = [];
-      });
+      runtime.on("PROJECT_STOP_ALL", () => this.resetEverything());
+      runtime.on("PROJECT_START", () => this.resetEverything());
 
       runtime.on("BEFORE_EXECUTE", () => {
-        for (const name of Object.keys(this.videos)) {
-          const videoObject = this.videos[name];
-
-          const video = videoObject.video;
-          const videoVolume = videoObject.volume;
-          const skin = videoObject.skin;
-
-          const projectVolume = runtime.audioEngine.inputNode.gain.value;
-          video.volume = videoVolume * projectVolume;
-
-          const drawables = vm.renderer._allDrawables;
-          let targetsWithVideo = [];
-
-          for (const target of runtime.targets) {
-            const drawableID = target.drawableID;
-            const targetSkin = drawables[drawableID].skin.id;
-
-            if (targetSkin === skin.id) {
-              targetsWithVideo.push(target);
-            }
+        for (const skin of renderer._allSkins) {
+          if (skin instanceof VideoSkin && !skin.videoElement.paused) {
+            skin.markVideoDirty();
           }
-
-          if (!video.paused || targetsWithVideo.length > 0) {
-            vm.renderer.updateBitmapSkin(skin, video, 1);
-          }
-        }
-
-        for (const id of Object.keys(this.targets)) {
-          const target = this.targets[id].target;
-          const drawableID = target.drawableID;
-
-          const drawable = runtime.renderer._allDrawables[drawableID];
-          // This was only a problem when targets weren't reset, I don't
-          // expect it to happen much now but just in case..
-          if (!drawable) continue;
-          const skin = this.videos[this.targets[id].videoName].skin;
-          drawable.skin = vm.renderer._allSkins[skin];
         }
       });
     }
+
     getInfo() {
       return {
         id: "lmsVideo",
@@ -251,18 +243,7 @@
                 defaultValue: 100,
               },
             },
-          },
-          {
-            opcode: "getVolume",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "volume of video [NAME]",
-            arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "my video",
-              },
-            },
-          },
+          }
         ],
         menus: {
           targets: {
@@ -275,48 +256,53 @@
           },
           attribute: {
             acceptReporters: false,
-            items: ["current time", "duration", "width", "height"],
+            items: ["current time", "duration", "volume", "width", "height"],
           },
         },
       };
     }
 
+    resetEverything () {
+      for (const {videoElement} of Object.values(this.videos)) {
+        videoElement.pause();
+        videoElement.currentTime = 0;
+      }
+
+      for (const target of runtime.targets) {
+        const drawable = renderer._allDrawables[target.drawableID];
+        if (drawable instanceof VideoSkin) {
+          target.setCostume(target.currentCostume);
+        }
+      }
+    }
+
     async loadVideoURL(args) {
+      // Always delete the old video with the same name, if it exists.
+      this.deleteVideoURL(args);
+
       const videoName = Cast.toString(args.NAME);
       const url = Cast.toString(args.URL);
       if (!(await Scratch.canFetch(url))) return;
 
-      this.videos[videoName] = {
-        video: document.createElement("video"),
-        volume: 1,
-        skin: 0,
-      };
-
-      const videoObject = this.videos[videoName];
-      const video = videoObject.video;
-
-      video.width = 1;
-      video.height = 1;
-      video.crossOrigin = "anonymous";
-
-      video.src = url;
-      video.currentTime = 0;
-
-      videoObject.skin = vm.renderer.createBitmapSkin(video);
+      const skinId = renderer._nextSkinId++;
+      const skin = new VideoSkin(skinId, renderer, videoName, url);
+      renderer._allSkins[skinId] = skin;
+      this.videos[videoName] = skin;
     }
 
     deleteVideoURL(args) {
       const videoName = Cast.toString(args.NAME);
-      if (!this.videos[videoName]) return;
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
 
-      for (const id of Object.keys(this.targets)) {
-        if (this.targets[id].videoName === videoName) {
-          this.targets[id].target.updateAllDrawableProperties();
-          Reflect.deleteProperty(this.targets, id);
+      for (const target of runtime.targets) {
+        const drawable = renderer._allDrawables[target.drawableID];
+        if (drawable && drawable.skin === videoSkin) {
+          target.setCostume(target.currentCostume);
         }
       }
 
-      this.videos[videoName].video.pause();
+      renderer.destroySkin(videoSkin.id);
       Reflect.deleteProperty(this.videos, videoName);
     }
 
@@ -328,13 +314,10 @@
       const targetName = Cast.toString(args.TARGET);
       const videoName = Cast.toString(args.NAME);
       const target = this._getTargetFromMenu(targetName, util);
-      if (!target || !this.videos[videoName]) return;
+      const videoSkin = this.videos[videoName];
+      if (!target || !videoSkin) return;
 
-      const targetId = target.id;
-      this.targets[targetId] = {
-        target: target,
-        videoName: videoName,
-      };
+      vm.renderer.updateDrawableSkinId(target.drawableID, videoSkin._id);
     }
 
     stopShowingVideo(args, util) {
@@ -342,10 +325,7 @@
       const target = this._getTargetFromMenu(targetName, util);
       if (!target) return;
 
-      const targetId = target.id;
-      Reflect.deleteProperty(this.targets, targetId);
-
-      target.updateAllDrawableProperties();
+      target.setCostume(target.currentCostume);
     }
 
     getCurrentVideo(args, util) {
@@ -353,37 +333,38 @@
       const target = this._getTargetFromMenu(targetName, util);
       if (!target) return;
 
-      const targetId = target.id;
-      return this.targets[targetId] ? this.targets[targetId].videoName : "";
+      const drawable = renderer._allDrawables[target.drawableID];
+      const skin = drawable && drawable.skin;
+      return skin instanceof VideoSkin ? skin.videoName : '';
     }
 
     startVideo(args) {
       const videoName = Cast.toString(args.NAME);
       const duration = Cast.toNumber(args.DURATION);
-      const videoObject = this.videos[videoName];
-      if (!videoObject) return;
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
 
-      videoObject.video.play();
-      videoObject.video.currentTime = duration;
+      videoSkin.videoElement.play();
+      videoSkin.videoElement.currentTime = duration;
+      videoSkin.markVideoDirty();
     }
 
     getAttribute(args) {
       const videoName = Cast.toString(args.NAME);
-      const videoObject = this.videos[videoName];
-      if (!videoObject) return 0;
-
-      const skinId = videoObject.skin;
-      const skin = vm.renderer._allSkins[skinId];
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return 0;
 
       switch (args.ATTRIBUTE) {
         case "current time":
-          return videoObject.video.currentTime;
+          return videoSkin.videoElement.currentTime;
         case "duration":
-          return videoObject.video.duration;
+          return videoSkin.videoElement.duration;
+        case "volume":
+          return videoSkin.videoElement.volume * 100;
         case "width":
-          return skin._textureSize[0];
+          return videoSkin._textureSize[0];
         case "height":
-          return skin._textureSize[1];
+          return videoSkin._textureSize[1];
         default:
           return 0;
       }
@@ -391,52 +372,46 @@
 
     pause(args) {
       const videoName = Cast.toString(args.NAME);
-      const videoObject = this.videos[videoName];
-      if (!videoObject) return;
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
 
-      videoObject.video.pause();
+      videoSkin.videoElement.pause();
+      videoSkin.markVideoDirty();
     }
 
     resume(args) {
       const videoName = Cast.toString(args.NAME);
-      const videoObject = this.videos[videoName];
-      if (!videoObject) return;
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
 
-      videoObject.video.play();
+      videoSkin.videoElement.play();
+      videoSkin.markVideoDirty();
     }
 
     getState(args) {
       const videoName = Cast.toString(args.NAME);
-      const videoObject = this.videos[videoName];
-      if (!videoObject) return args.STATE === "paused";
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return args.STATE === "paused";
 
       return args.STATE == "playing"
-        ? !videoObject.video.paused
-        : videoObject.video.paused;
+        ? !videoSkin.videoElement.paused
+        : videoSkin.videoElement.paused;
     }
 
     setVolume(args) {
       const videoName = Cast.toString(args.NAME);
       const value = Cast.toNumber(args.VALUE);
-      const videoObject = this.videos[videoName];
-      if (!videoObject) return;
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
 
-      videoObject.volume = value / 100;
+      videoSkin.videoElement.volume = value / 100;
     }
 
-    getVolume(args) {
-      const videoName = Cast.toString(args.NAME);
-      const videoObject = this.videos[videoName];
-      if (!videoObject) return 0;
-
-      return videoObject.volume * 100;
-    }
-
+    /** @returns {VM.Target|undefined} */
     _getTargetFromMenu(targetName, util) {
-      let target = Scratch.vm.runtime.getSpriteTargetByName(targetName);
-      if (targetName === "_myself_") target = util.target;
-      if (targetName === "_stage_") target = runtime.getTargetForStage();
-      return target;
+      if (targetName === "_myself_") return util.target;
+      if (targetName === "_stage_") return runtime.getTargetForStage();
+      return Scratch.vm.runtime.getSpriteTargetByName(targetName);
     }
 
     _getTargets() {
@@ -451,5 +426,6 @@
       return spriteNames;
     }
   }
+
   Scratch.extensions.register(new Video());
 })(Scratch);
