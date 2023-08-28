@@ -4,43 +4,105 @@
 // By: -happen3-
 // Original: -happen3-
 
-(function(ext) {
+class AdditionalRoots {
+  constructor(runtime) {
+    this.runtime = runtime;
+  }
 
-    'use strict';
-
-    ext.squareRoot = function(num) {
-        return Math.sqrt(num);
+  getInfo() {
+    return {
+      id: 'additionalroots',
+      name: 'Additional Roots!',
+      blocks: [
+        {
+          opcode: 'squareRoot',
+          blockType: Scratch.BlockType.REPORTER,
+          text: 'square root of [num]',
+          arguments: {
+            num: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 9,
+            },
+          },
+        },
+        {
+          opcode: 'cubeRoot',
+          blockType: Scratch.BlockType.REPORTER,
+          text: 'cube root of [num]',
+          arguments: {
+            num: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 8,
+            },
+          },
+        },
+        {
+          opcode: 'fourthRoot',
+          blockType: Scratch.BlockType.REPORTER,
+          text: 'fourth root of [num]',
+          arguments: {
+            num: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 16,
+            },
+          },
+        },
+        {
+          opcode: 'fifthRoot',
+          blockType: Scratch.BlockType.REPORTER,
+          text: 'fifth root of [num]',
+          arguments: {
+            num: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 32,
+            },
+          },
+        },
+        {
+          opcode: 'nthRoot',
+          blockType: Scratch.BlockType.REPORTER,
+          text: '[n] to the power of 1/[nth]',
+          arguments: {
+            n: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 4,
+            },
+            nth: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 2,
+            },
+          },
+        },
+      ],
+      menus: {},
+      displayName: 'Additional Roots!',
     };
+  }
 
-    ext.cubeRoot = function(num) {
-        return Math.cbrt(num);
-    };
+  squareRoot({ num }) {
+    return Math.sqrt(num);
+  }
 
-    ext.fourthRoot = function(num) {
-        return Math.pow(num, 1 / 4);
-    };
+  cubeRoot({ num }) {
+    return Math.cbrt(num);
+  }
 
-    ext.fifthRoot = function(num) {
-        return Math.pow(num, 1 / 5);
-    };
+  fourthRoot({ num }) {
+    return Math.pow(num, 1 / 4);
+  }
 
-    ext.nthRoot = function(n, nth) {
-        return Math.pow(n, 1 / nth);
-    };
+  fifthRoot({ num }) {
+    return Math.pow(num, 1 / 5);
+  }
 
-    // Extension data
-    var descriptor = {
-        blocks: [
-            ['r', 'square root of %n', 'squareRoot', 9],
-            ['r', 'cube root of %n', 'cubeRoot', 8],
-            ['r', 'fourth root of %n', 'fourthRoot', 16],
-            ['r', 'fifth root of %n', 'fifthRoot', 32],
-            ['r', '%n to the power of 1/%n', 'nthRoot', 4, 2],
-        ],
-        menus: {},
-        displayName: 'Additional Roots!',
-    };
+  nthRoot({ n, nth }) {
+    return Math.pow(n, 1 / nth);
+  }
+}
 
-    // Register the extension
-    ScratchExtensions.register('additionalRoots', descriptor, ext);
-})(this);
+(function() {
+  const extensionInstance = new AdditionalRoots(window.vm.extensionManager.runtime);
+  const serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance);
+  window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
+})();
+
