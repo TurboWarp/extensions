@@ -313,6 +313,15 @@
 
       const videoName = Cast.toString(args.NAME);
       const url = Cast.toString(args.URL);
+
+      if (url.startsWith('https://www.youtube.com/') || url.startsWith('https://youtube.com/')) {
+        alert([
+          'The video extension does not support YouTube links.',
+          'You can use the Iframe extension instead.'
+        ].join('\n\n'));
+        return;
+      }
+
       if (!(await Scratch.canFetch(url))) return;
 
       const skinId = renderer._nextSkinId++;
