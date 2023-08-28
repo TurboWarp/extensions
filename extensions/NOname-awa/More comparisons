@@ -85,7 +85,7 @@
                 color1: '#00a889',
                 color2: '#00977b',
                 color3: '#00866e',
-                id: 'moreComparisons',
+                id: 'NOnameMoreComparisons',
                 name: formatMessage({
                     id: 'EXTENSION_EXT_NAME',
                     default: 'More comparisons'
@@ -659,6 +659,7 @@
                 case 'compositeNumber': return isComposite(Cast.toNumber(INPUT)) && isNumRegex.test(INPUT);
                 case 'text': return !isNumRegex.test(INPUT) && INPUT.length >= 1;
                 case 'boolean': return INPUT === 'true' || INPUT === 'false';
+                default: return false;
             }
         }
         _compare(arg1, arg2, symbol) {
