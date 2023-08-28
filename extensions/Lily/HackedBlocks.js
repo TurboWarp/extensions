@@ -52,8 +52,8 @@
             blockType: Scratch.BlockType.XML,
             xml: '<block type="operator_join"><value name="STRING1"><shadow type="colour_picker"/></value><value name="STRING2"><shadow type="text"><field name="TEXT"></field></shadow></value></block>',
           },
-          // Matrix input from the micro:bit extension
-          // Returns a 5x5 binary grid of pixels depending on what was drawn. White pixels are 1 and green pixels are 0.
+          // Dot matrix input from the micro:bit extension
+          // Returns a 5x5 binary grid of pixels depending on what was drawn. White pixels are 1 and green pixels are 0
           {
             blockType: Scratch.BlockType.XML,
             xml: '<block type="operator_join"><value name="STRING1"><shadow type="matrix"><field name="MATRIX">1111110101001000010001110</field></shadow></value><value name="STRING2"><shadow type="text"><field name="TEXT"></field></shadow></value></block>',
