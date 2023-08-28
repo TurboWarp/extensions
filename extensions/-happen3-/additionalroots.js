@@ -4,7 +4,9 @@
 // By: -happen3-
 // Original: -happen3-
 
-class AdditionalRoots {
+'use strict';
+
+(function (Scratch) {class AdditionalRoots {
   constructor(runtime) {
     this.runtime = runtime;
   }
@@ -105,4 +107,5 @@ class AdditionalRoots {
   const serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance);
   window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
 })();
+})(Scratch);
 
