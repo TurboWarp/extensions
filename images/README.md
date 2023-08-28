@@ -284,3 +284,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Lily/SoundExpanded.svg
  - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464
+
+## iframe.svg
+ - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694716263
