@@ -4,9 +4,10 @@
 // By: -happen3-
 // Original: -happen3-
 
-'use strict';
-
 (function (Scratch) {class AdditionalRoots {
+
+  'use strict';
+  
   constructor(runtime) {
     this.runtime = runtime;
   }
