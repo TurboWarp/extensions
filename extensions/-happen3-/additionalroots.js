@@ -4,6 +4,8 @@
 // By: -happen3-
 // Original: -happen3-
 
+// I wonder if this will ever pass the check?
+
 (function (Scratch) {
     'use strict';
 
