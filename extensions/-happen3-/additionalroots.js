@@ -1,34 +1,34 @@
 // Name: Additional Roots
 // ID: additionalroots
-// Description: A bunch of new additional roots for your pleasure.
+// Description: A collection of new additional roots for your enjoyment.
 // By: -happen3-
 // Original: -happen3-
 
-(function (ext) {
+(function(ext) {
 
-    'use strict'; 
-    
-    ext.squareRoot = function (num) {
+    'use strict';
+
+    ext.squareRoot = function(num) {
         return Math.sqrt(num);
     };
 
-    ext.cubeRoot = function (num) {
+    ext.cubeRoot = function(num) {
         return Math.cbrt(num);
     };
 
-    ext.fourthRoot = function (num) {
+    ext.fourthRoot = function(num) {
         return Math.pow(num, 1 / 4);
     };
 
-    ext.fifthRoot = function (num) {
+    ext.fifthRoot = function(num) {
         return Math.pow(num, 1 / 5);
     };
 
-    ext.nthRoot = function (n, nth) {
+    ext.nthRoot = function(n, nth) {
         return Math.pow(n, 1 / nth);
     };
 
-    // extension data
+    // Extension data
     var descriptor = {
         blocks: [
             ['r', 'square root of %n', 'squareRoot', 9],
@@ -41,6 +41,6 @@
         displayName: 'Additional Roots!',
     };
 
-    // register the extension
+    // Register the extension
     ScratchExtensions.register('additionalRoots', descriptor, ext);
-})({});
+})(this);
