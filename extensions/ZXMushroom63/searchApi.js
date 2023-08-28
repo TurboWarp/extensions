@@ -1,12 +1,13 @@
+// Name: Search Params
+// ID: zxmushroom63searchparams
+// Description: Interact with URL search parameters: the part of the URL after a question mark.
+// By: ZXMushroom63
+
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("SearchParams must be run unsandboxed.");
   }
-
-  // Disable in desktop app editor for security reasons.
-  // @ts-ignore
-  const disabled = typeof TWD !== 'undefined';
 
   class SearchApi {
     getInfo() {
@@ -17,11 +18,6 @@
         color2: "#9c9c9c",
         color3: "#646464",
         blocks: [
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: 'Disabled in desktop editor for security',
-            hideFromPalette: !disabled
-          },
           {
             opcode: "searchparam",
             blockType: Scratch.BlockType.REPORTER,
@@ -142,56 +138,53 @@
     }
 
     searchparam({ ID }) {
-      if (disabled) return "";
       return new URLSearchParams(location.search).get(ID.toString()) || "";
     }
 
     occurencesofsearchparam({ ID }) {
-      if (disabled) return 0;
-      return new URLSearchParams(location.search).getAll(ID.toString()).length || 0;
+      return (
+        new URLSearchParams(location.search).getAll(ID.toString()).length || 0
+      );
     }
 
     indexedsearchparam({ ID, I }) {
-      if (disabled) return "";
-      return new URLSearchParams(location.search).getAll(ID.toString())[parseInt(I) - 1] || "";
+      return (
+        new URLSearchParams(location.search).getAll(ID.toString())[
+          parseInt(I) - 1
+        ] || ""
+      );
     }
 
     setsearchparam({ ID, VAL }) {
-      if (disabled) return;
       var s = new URLSearchParams(location.search);
       s.set(ID.toString(), VAL.toString());
       history.replaceState("", "", "?" + s.toString());
     }
 
     searchparamslength() {
-      if (disabled) return 0;
       var s = new URLSearchParams(location.search);
       // @ts-ignore
       return typeof s.size !== "object" ? s.size : 0;
     }
 
     deletesearchparam({ ID }) {
-      if (disabled) return;
       var s = new URLSearchParams(location.search);
       s.delete(ID.toString());
       history.replaceState("", "", "?" + s.toString());
     }
 
     appendsearchparam({ ID, VAL }) {
-      if (disabled) return;
       var s = new URLSearchParams(location.search);
       s.append(ID.toString(), VAL.toString());
       history.replaceState("", "", "?" + s.toString());
     }
 
     hassearchparam({ ID }) {
-      if (disabled) return false;
       var s = new URLSearchParams(location.search);
       return s.has(ID.toString()) || false;
     }
 
     searchparamatindex({ PARAM, I }) {
-      if (disabled) return "";
       var index = parseInt(I) - 1 || 0;
       index = Math.max(0, index);
       var s = new URLSearchParams(location.search);
