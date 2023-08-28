@@ -40,7 +40,7 @@
       /** @param {string} text */
       const callback = (text) => {
         _resolve(text);
-        outer.remove();
+        Scratch.vm.renderer.removeOverlay(outer);
         document.body.removeEventListener("keydown", handleKeyDown);
       };
 
@@ -84,17 +84,13 @@
       const DROPPING_BORDER_COLOR = "#03a9fc";
 
       const outer = document.createElement("div");
-      outer.className = "extension-content";
-      outer.style.position = "fixed";
-      outer.style.top = "0";
-      outer.style.left = "0";
-      outer.style.width = "100%";
-      outer.style.height = "100%";
+      outer.style.pointerEvents = 'auto';
+      outer.style.width = '100%';
+      outer.style.height = '100%';
       outer.style.display = "flex";
       outer.style.alignItems = "center";
       outer.style.justifyContent = "center";
       outer.style.background = "rgba(0, 0, 0, 0.5)";
-      outer.style.zIndex = "20000";
       outer.style.color = "black";
       outer.style.colorScheme = "light";
       outer.addEventListener("dragover", (e) => {
@@ -158,7 +154,10 @@
       subtitle.textContent = `Accepted formats: ${formattedAccept}`;
       modal.appendChild(subtitle);
 
-      document.body.appendChild(outer);
+      if (openFileSelectorMode !== MODE_ONLY_SELECTOR) {
+        const overlay = Scratch.vm.renderer.addOverlay(outer, 'scale');
+        overlay.container.style.zIndex = '100';
+      }
 
       if (
         openFileSelectorMode === MODE_IMMEDIATELY_SHOW_SELECTOR ||
@@ -172,7 +171,6 @@
         input.addEventListener("cancel", () => {
           callback("");
         });
-        outer.remove();
       }
     });
 
