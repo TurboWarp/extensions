@@ -500,13 +500,13 @@ class Builder {
       build.files[`/samples/${filename}`] = file;
     }
 
-    if (this.mode !== "desktop") {
-      for (const [filename, absolutePath] of recursiveReadDirectory(
-        this.websiteRoot
-      )) {
-        build.files[`/${filename}`] = new BuildFile(absolutePath);
-      }
+    for (const [filename, absolutePath] of recursiveReadDirectory(
+      this.websiteRoot
+    )) {
+      build.files[`/${filename}`] = new BuildFile(absolutePath);
+    }
 
+    if (this.mode !== "desktop") {
       for (const [filename, absolutePath] of recursiveReadDirectory(
         this.docsRoot
       )) {
