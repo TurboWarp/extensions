@@ -55,7 +55,7 @@
       const callback = (text) => {
         _resolve(text);
         Scratch.vm.renderer.removeOverlay(outer);
-        Scratch.vm.runtime.off('PROJECT_STOP_ALL', handleProjectStopped);
+        Scratch.vm.runtime.off("PROJECT_STOP_ALL", handleProjectStopped);
         document.body.removeEventListener("keydown", handleKeyDown);
       };
 
@@ -96,9 +96,9 @@
       });
 
       const handleProjectStopped = () => {
-        callback('');
+        callback("");
       };
-      Scratch.vm.runtime.on('PROJECT_STOP_ALL', handleProjectStopped);
+      Scratch.vm.runtime.on("PROJECT_STOP_ALL", handleProjectStopped);
 
       const INITIAL_BORDER_COLOR = "#888";
       const DROPPING_BORDER_COLOR = "#03a9fc";
