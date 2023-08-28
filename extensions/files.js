@@ -380,7 +380,8 @@
                 value: MODE_IMMEDIATELY_SHOW_SELECTOR,
               },
               {
-                text: "only show selector",
+                // Will not work if the browser doesn't think we are responding to a click event.
+                text: "only show selector (unreliable)",
                 value: MODE_ONLY_SELECTOR,
               },
             ],
