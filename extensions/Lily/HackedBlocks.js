@@ -1,6 +1,6 @@
 // Name: Hidden Block Collection
 // ID: lmsHackedBlocks
-// Description: Various "hacked" vanilla blocks not visible in the main block palette.
+// Description: Various "hacked blocks" that work in Scratch but are not visible in the palette.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // By: pumpkinhasapatch
 
