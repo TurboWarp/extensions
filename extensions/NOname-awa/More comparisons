@@ -85,7 +85,7 @@
                 color1: '#00a889',
                 color2: '#00977b',
                 color3: '#00866e',
-                id: 'EXTENSION',
+                id: 'moreComparisons',
                 name: formatMessage({
                     id: 'EXTENSION_EXT_NAME',
                     default: 'More comparisons'
