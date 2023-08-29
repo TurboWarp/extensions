@@ -326,6 +326,53 @@
           },
           "---",
           {
+            opcode: "clamp_block",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "clamp [A] between [B] and [C]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "\n",
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              C: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+            },
+          },
+          {
+            opcode: "scale_block",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "map [A] from range [m1] - [M1] to range [m2] - [M2]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "\n",
+              },
+              m1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              M1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+              m2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              M2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "1",
+              },
+            },
+          },
+          "---",
+          {
             opcode: "trunc2_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "trunc of [A] with [B] digits after dot",
@@ -495,6 +542,17 @@
     }
     exactly_cont_block({ A, B }) {
       return cast.toString(A).includes(cast.toString(B));
+    }
+    clamp_block({ A, B, C }) {
+      return Math.min(Math.max(A, B), C);
+    }
+    scale_block({ A, m1, M1, m2, M2 }) {
+      return (
+        ((cast.toNumber(A) - cast.toNumber(m1)) *
+          (cast.toNumber(M2) - cast.toNumber(m2))) /
+          (cast.toNumber(M1) - cast.toNumber(m1)) +
+        cast.toNumber(m2)
+      );
     }
     trunc2_block({ A, B }) {
       let n = Math.floor(cast.toNumber(B));
