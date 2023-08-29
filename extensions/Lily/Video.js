@@ -301,7 +301,7 @@
 
       for (const target of runtime.targets) {
         const drawable = renderer._allDrawables[target.drawableID];
-        if (drawable instanceof VideoSkin) {
+        if (drawable.skin instanceof VideoSkin) {
           target.setCostume(target.currentCostume);
         }
       }
