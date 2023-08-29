@@ -81,6 +81,13 @@
       this.emitWasAltered();
     }
 
+    get size () {
+      if (this.videoDirty) {
+        this.reuploadVideo();
+      }
+      return super.size;
+    }
+
     getTexture(scale) {
       if (this.videoDirty) {
         this.reuploadVideo();
@@ -407,9 +414,9 @@
         case "volume":
           return videoSkin.videoElement.volume * 100;
         case "width":
-          return videoSkin._textureSize[0];
+          return videoSkin.size[0];
         case "height":
-          return videoSkin._textureSize[1];
+          return videoSkin.size[1];
         default:
           return 0;
       }
