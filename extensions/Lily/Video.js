@@ -132,11 +132,11 @@
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Only direct downloads will work"
+            text: "Only direct downloads will work",
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Use Iframe extension for YouTube"
+            text: "Use Iframe extension for YouTube",
           },
           {
             opcode: "loadVideoURL",
@@ -337,7 +337,8 @@
 
       if (
         url.startsWith("https://www.youtube.com/") ||
-        url.startsWith("https://youtube.com/")
+        url.startsWith("https://youtube.com/") ||
+        url.startsWith("https://youtu.be/")
       ) {
         alert(
           [
