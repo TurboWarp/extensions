@@ -87,7 +87,7 @@
       this.emitWasAltered();
     }
 
-    get size () {
+    get size() {
       if (this.videoDirty) {
         this.reuploadVideo();
       }
