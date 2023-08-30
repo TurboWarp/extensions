@@ -544,7 +544,7 @@
       return cast.toString(A).includes(cast.toString(B));
     }
     clamp_block({ A, B, C }) {
-      return Math.min(Math.max(A, B), C);
+      return B < C ? Math.min(Math.max(A, B), C) : Math.min(Math.max(A, C), B);
     }
     scale_block({ A, m1, M1, m2, M2 }) {
       return (
