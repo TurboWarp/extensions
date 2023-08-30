@@ -163,7 +163,7 @@
           {
             opcode: "unicodeof",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Unicode of [STRING]",
+            text: "unicode of [STRING]",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -174,7 +174,7 @@
           {
             opcode: "unicodefrom",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Unicode [NUM] as letter",
+            text: "unicode [NUM] as letter",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
