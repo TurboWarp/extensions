@@ -84,7 +84,7 @@
           },
           {
             opcode: "setCloneLimit",
-            text: "set clone limit [limit]",
+            text: "set clone limit to [limit]",
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               limit: {
