@@ -125,7 +125,7 @@
           {
             opcode: "isLocked",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is pointer locked?",
+            text: "pointer locked?",
           },
         ],
         menus: {
