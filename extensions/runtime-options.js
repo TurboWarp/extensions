@@ -28,7 +28,7 @@
         blocks: [
           {
             opcode: "getEnabled",
-            text: "is [thing] enabled?",
+            text: "[thing] enabled?",
             blockType: Scratch.BlockType.BOOLEAN,
             arguments: {
               thing: {
