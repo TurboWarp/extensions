@@ -239,7 +239,7 @@
           {
             opcode: "json_array_set",
             blockType: Scratch.BlockType.REPORTER,
-            text: "replace item [pos] of [json] to [item]",
+            text: "replace item [pos] of [json] with [item]",
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
