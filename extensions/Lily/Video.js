@@ -26,6 +26,10 @@
 
       this.videoError = false;
 
+      this.readyPromise = new Promise((resolve) => {
+        this.readyCallback = resolve;
+      });
+
       this.videoElement = document.createElement("video");
       // Need to set non-zero dimensions, otherwise scratch-render thinks this is an empty image
       this.videoElement.width = 1;
@@ -33,10 +37,12 @@
       this.videoElement.crossOrigin = "anonymous";
       this.videoElement.onloadeddata = () => {
         // First frame loaded
+        this.readyCallback();
         this.markVideoDirty();
       };
       this.videoElement.onerror = () => {
         this.videoError = true;
+        this.readyCallback();
         this.markVideoDirty();
       };
       this.videoElement.src = videoSrc;
@@ -340,6 +346,8 @@
       const skin = new VideoSkin(skinId, renderer, videoName, url);
       renderer._allSkins[skinId] = skin;
       this.videos[videoName] = skin;
+
+      return skin.readyPromise;
     }
 
     deleteVideoURL(args) {
