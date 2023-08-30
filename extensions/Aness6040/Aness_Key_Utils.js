@@ -5,7 +5,7 @@
 // Credit to Aness6040 <https://scratch.mit.edu/users/AnessScratched/>
 // Creator's Github: https://github.com/Aness6040
 
-class KeyUtils {
+class AnessKeyUtils {
   constructor(runtime) {
     this.runtime = runtime;
     this.isPressed = false;
@@ -191,4 +191,4 @@ class KeyUtils {
   }
 }
 
-Scratch.extensions.register(new KeyUtils());
+Scratch.extensions.register(new AnessKeyUtils());
