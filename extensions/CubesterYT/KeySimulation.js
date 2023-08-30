@@ -67,7 +67,7 @@
           },
           {
             opcode: "holdMouse",
-            text: "hold mouse at x: [X] y: [Y] for [SECONDS] seconds",
+            text: "click and hold mouse at x: [X] y: [Y] for [SECONDS] seconds",
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               X: {
