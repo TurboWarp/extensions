@@ -60,7 +60,7 @@
 
           {
             opcode: "getFramerate",
-            text: "get framerate limit",
+            text: "framerate limit",
             blockType: Scratch.BlockType.REPORTER,
           },
           {
@@ -79,7 +79,7 @@
 
           {
             opcode: "getCloneLimit",
-            text: "get clone limit",
+            text: "clone limit",
             blockType: Scratch.BlockType.REPORTER,
           },
           {
@@ -99,7 +99,7 @@
 
           {
             opcode: "getDimension",
-            text: "get stage [dimension]",
+            text: "stage [dimension]",
             blockType: Scratch.BlockType.REPORTER,
             arguments: {
               dimension: {
