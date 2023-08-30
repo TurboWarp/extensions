@@ -287,3 +287,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## iframe.svg
  - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694716263
+
+## Lily/Video.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
