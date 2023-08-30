@@ -131,6 +131,14 @@
         name: "Video",
         blocks: [
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Only direct downloads will work"
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Use Iframe extension for YouTube"
+          },
+          {
             opcode: "loadVideoURL",
             blockType: Scratch.BlockType.COMMAND,
             text: "load video from URL [URL] as [NAME]",
