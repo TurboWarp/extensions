@@ -3,6 +3,7 @@
 // Description: Adds detections to the Minecraft game for example if the player is a premium account or get the icon of a Minecraft server in URI etc...
 // By: Aness6040 <https://scratch.mit.edu/users/AnessScratched/>
 // Creator's Github: https://github.com/Aness6040
+(function (Scratch) { 
 class MinecraftUtils {
     getInfo() {
       return {
@@ -250,3 +251,4 @@ class MinecraftUtils {
   
   
   Scratch.extensions.register(new MinecraftUtils());
+})(Scratch);
