@@ -30,7 +30,7 @@ Presses and holds the selected key for the defined amount of seconds.
 click (left v) mouse button at x: (0) y: (0) :: #BF0000
 ```
 
-Clicks at the designated location. Location is based off Scratch X/Y System.
+Clicks the selected button at the designated location. Location is based off Scratch X/Y System.
 
 ---
 
@@ -40,4 +40,4 @@ Clicks at the designated location. Location is based off Scratch X/Y System.
 click and hold (left v) mouse button at x: (0) y: (0) for (5) seconds :: #BF0000
 ```
 
-Clicks and Holds at the designated location for the defined amount of seconds.
+Clicks and Holds the selected button at the designated location for the defined amount of seconds.
