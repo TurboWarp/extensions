@@ -115,11 +115,11 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
           },
@@ -130,11 +130,11 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
           },
@@ -145,7 +145,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
           },
@@ -157,7 +157,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -172,7 +172,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -187,7 +187,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -202,7 +202,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -217,7 +217,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -232,7 +232,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -247,7 +247,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
@@ -332,7 +332,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -351,7 +351,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               m1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -379,7 +379,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -394,7 +394,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
           },
@@ -406,11 +406,11 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
           },
@@ -422,7 +422,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -454,7 +454,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
           },
@@ -466,7 +466,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
           },
@@ -477,7 +477,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
           },
@@ -488,7 +488,7 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
           },
@@ -544,7 +544,15 @@
       return cast.toString(A).includes(cast.toString(B));
     }
     clamp_block({ A, B, C }) {
-      return B < C ? Math.min(Math.max(A, B), C) : Math.min(Math.max(A, C), B);
+      return B < C
+        ? Math.min(
+            Math.max(cast.toNumber(A), cast.toNumber(B)),
+            cast.toNumber(C)
+          )
+        : Math.min(
+            Math.max(cast.toNumber(A), cast.toNumber(C)),
+            cast.toNumber(B)
+          );
     }
     scale_block({ A, m1, M1, m2, M2 }) {
       return (
