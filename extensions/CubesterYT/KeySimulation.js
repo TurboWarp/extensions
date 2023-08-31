@@ -52,9 +52,13 @@
           },
           {
             opcode: "clickMouse",
-            text: "click mouse at x: [X] y: [Y]",
+            text: "click [BUTTON] mouse button at x: [X] y: [Y]",
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
+              BUTTON: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "BUTTONS",
+              },
               X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 0,
@@ -67,9 +71,13 @@
           },
           {
             opcode: "holdMouse",
-            text: "click and hold mouse at x: [X] y: [Y] for [SECONDS] seconds",
+            text: "click and hold [BUTTON] mouse button at x: [X] y: [Y] for [SECONDS] seconds",
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
+              BUTTON: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "BUTTONS",
+              },
               X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 0,
@@ -168,6 +176,10 @@
               "@",
               '"',
             ],
+          },
+          BUTTONS: {
+            acceptReporters: true,
+            items: ["left", "middle", "right"],
           },
         },
       };

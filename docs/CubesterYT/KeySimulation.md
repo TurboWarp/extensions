@@ -27,17 +27,17 @@ Presses and holds the selected key for the defined amount of seconds.
 <h3 id="click_mouse">Click Mouse Block <span class="heading-link">(<a href="#click_mouse">#</a>)</span></h3>
 
 ```scratch
-click mouse at x: (0) y: (0) :: #BF0000
+click (left v) mouse button at x: (0) y: (0) :: #BF0000
 ```
 
 Clicks at the designated location. Location is based off Scratch X/Y System.
 
 ---
 
-<h3 id="hold_mouse">Hold Mouse Block <span class="heading-link">(<a href="#hold_mouse">#</a>)</span></h3>
+<h3 id="hold_mouse">Click and Hold Mouse Block <span class="heading-link">(<a href="#hold_mouse">#</a>)</span></h3>
 
 ```scratch
-click and hold mouse at x: (0) y: (0) for (5) seconds :: #BF0000
+click and hold (left v) mouse button at x: (0) y: (0) for (5) seconds :: #BF0000
 ```
 
 Clicks and Holds at the designated location for the defined amount of seconds.
