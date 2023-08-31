@@ -4,6 +4,9 @@
 // By: Aness6040 <https://scratch.mit.edu/users/AnessScratched/>
 // Creator's Github: https://github.com/Aness6040
 (function (Scratch) { 
+    'use strict';
+    const vm = Scratch.vm;
+    
 class MinecraftUtils {
     getInfo() {
       return {
