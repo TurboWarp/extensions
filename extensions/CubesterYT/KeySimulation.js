@@ -233,8 +233,8 @@
             acceptReporters: true,
             items: [
               { text: "left", value: "0" },
-              { text: "middle", value: "2" },
-              { text: "right", value: "1" },
+              { text: "middle", value: "1" },
+              { text: "right", value: "2" },
             ],
           },
         },
