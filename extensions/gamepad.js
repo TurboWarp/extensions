@@ -84,7 +84,7 @@
           {
             opcode: "gamepadConnected",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is gamepad [pad] connected?",
+            text: "gamepad [pad] connected?",
             arguments: {
               pad: {
                 type: Scratch.ArgumentType.NUMBER,
