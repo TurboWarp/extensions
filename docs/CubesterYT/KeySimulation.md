@@ -10,14 +10,14 @@ This extension allows you to simulate Key Presses and Mouse Clicks on the Projec
 press key (space v) :: #BF0000
 ```
 
-Presses the selected key, press time is relative to an average key press.
+Presses the selected key, press time is 1/10 of a second.
 
 ---
 
 <h3 id="hold_key">Hold Key Block <span class="heading-link">(<a href="#hold_key">#</a>)</span></h3>
 
 ```scratch
-press key (space v) for (5) seconds :: #BF0000
+hold key (space v) for (5) seconds :: #BF0000
 ```
 
 Presses and holds the selected key for the defined amount of seconds.
@@ -30,7 +30,7 @@ Presses and holds the selected key for the defined amount of seconds.
 click (left v) mouse button at x: (0) y: (0) :: #BF0000
 ```
 
-Clicks the selected button at the designated location. Location is based off Scratch X/Y System.
+Clicks the selected button at the designated location. Click time is 1/10 of a second. Location is based off the Scratch X/Y System.
 
 ---
 
