@@ -1,3 +1,7 @@
+// Name: Turbo XML
+// ID: obviousAlexCTurbowarpMarkdown
+// Description: A XML, HTML, and SVG parser for turbowarp!
+// By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
 (function (Scratch) {
   "use strict";
   const parser = new DOMParser();
@@ -159,7 +163,8 @@
             acceptReporters: false,
           },
         },
-        name: "Turbo Markdown",
+        name: "Turbo XML",
+        //For people who where already using the extension!
         id: "obviousAlexCTurbowarpMarkdown",
         menuIconURI:
           "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI2Ni4yMTI2MSIgaGVpZ2h0PSI2Ni4yMTI2MSIgdmlld0JveD0iMCwwLDY2LjIxMjYxLDY2LjIxMjYxIj4NCiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjA2Ljg5MzY5LC0xNDYuODkzNjkpIj4NCiAgICAgICAgPGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPg0KICAgICAgICAgICAgPHBhdGggZD0iTTIwNi44OTM3LDE4MGMwLC0xOC4yODQxMSAxNC44MjIyLC0zMy4xMDYzIDMzLjEwNjMsLTMzLjEwNjNjMTguMjg0MTEsMCAzMy4xMDYzMSwxNC44MjIyIDMzLjEwNjMxLDMzLjEwNjNjMCwxOC4yODQxMSAtMTQuODIyMiwzMy4xMDYzIC0zMy4xMDYzMSwzMy4xMDYzYy0xOC4yODQxMSwwIC0zMy4xMDYzLC0xNC44MjIyIC0zMy4xMDYzLC0zMy4xMDYzeiIgZmlsbD0iIzU5YmM3NyIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJidXR0IiAvPg0KICAgICAgICAgICAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+DQogICAgICAgICAgICAgICAgPHBhdGggZD0iTTIyMS45ODUzMSwxNTcuODEyMzdoMjguMjQ0NjUiIC8+DQogICAgICAgICAgICAgICAgPHBhdGggZD0iTTIzNi4xMDc2NCwxOTEuNjEyNDl2LTMzLjEyMzI4IiAvPg0KICAgICAgICAgICAgPC9nPg0KICAgICAgICAgICAgPHBhdGggZD0iTTI0Mi40NDUyMiwxOTcuODIyNTVsNC4zNjUwOCw0LjM2NTA5di0zMS4zMjU4OWg2LjgzOTMxdjMxLjMyNTg5bDQuMzY1MDgsLTQuMzY1MDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI3IiBzdHJva2UtbGluZWNhcD0icm91bmQiIC8+DQogICAgICAgIDwvZz4NCiAgICA8L2c+DQo8L3N2Zz4NCjwhLS1yb3RhdGlvbkNlbnRlcjozMy4xMDYzMDQ5OTk5OTk5OTozMy4xMDYzMDQ5OTk5OTk5OS0tPg==",
