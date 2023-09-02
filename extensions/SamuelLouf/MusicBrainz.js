@@ -85,8 +85,22 @@
               }
             }
           },
+          {
+            opcode: 'search_artist_life',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[life] of artist [name]',
+            arguments: {
+              life: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'search_artist_start',
+              },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'The Living Tombstone',
+              }
+            }
+          },
           '---'
-          //Missing: begin-area,life-span
         ],
         menus: {
           // Menus
@@ -101,7 +115,11 @@
           search_artist_alias_area: {
             acceptReporters: true,
             items: ['alias','area']
-          }
+          },
+          search_artist_start: {
+            acceptReporters: true,
+            items: ['start','end']
+          },
         }
       };
     }
@@ -114,7 +132,7 @@
       if (args.artist == 'tags'){
         return json_array_filter('name', JSON.stringify(fetched_json.artists[0].tags));
       } else if (args.artist == 'country'){
-        return countryCode(fetched_json.artists[0][args.artist]);
+        return getCountryName(fetched_json.artists[0][args.artist]);
       } else {
         return fetched_json.artists[0][args.artist];
       }
@@ -127,6 +145,19 @@
         return fetched_json.artists[0].aliases[0][args.alias];
       } else if (args.alias_area == 'area'){
         return fetched_json.artists[0].area[args.alias];
+      }
+    }
+
+    async search_artist_life(args) {
+      var fetched_json = JSON.parse(await search('artist', args.name, 'json'));
+      if (args.life == 'start'){
+        return fetched_json.artists[0]['life-span'].begin.replaceAll('-', '/');
+      } else {
+        if (fetched_json.artists[0]['life-span'].ended == null){
+          return 'This artist is still producing songs';
+        } else {
+          return fetched_json.artists[0]['life-span'].ended.replaceAll('-', '/');
+        }
       }
     }
   }
