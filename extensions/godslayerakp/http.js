@@ -432,6 +432,17 @@
             },
             text: "encode URI component [urii]",
           },
+          {
+            opcode: "decodeURIcomp",
+            blockType: BlockType.REPORTER,
+            arguments: {
+              urii: {
+                type: ArgumentType.STRING,
+                defaultValue: "Hello%2C%20World!",
+              },
+            },
+            text: "decode URI component [urii]",
+          },
           "---",
           {
             opcode: "sendRequest",
@@ -666,6 +677,10 @@
 
     encodeURIcomp(args) {
       return encodeURIComponent(args.urii);
+    }
+
+    decodeURIcomp(args) {
+      return decodeURIComponent(args.urii);
     }
 
     // eslint-disable-next-line require-await
