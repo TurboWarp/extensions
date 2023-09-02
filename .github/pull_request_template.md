@@ -1,4 +1,4 @@
-<!-- Before submitting your extensions, please *fully* read our contributing guidelines and our custom extension tutorial. Trust me, it is worthwhile and contains important information such as licensing.
+<!-- Before submitting your extensions, please *fully* read our contributing guidelines and our custom extension tutorial. Trust me, it is worthwhile and contains important information such as acceptance criteria and licensing.
 
 Pull requests that don't follow the guidelines will take *much* longer to be reviewed.
 
@@ -15,6 +15,6 @@ Resolves #
 
 
 ### Tests
-<!-- Don't forget to fully test your extension, too! Again, change [ ] to [x] to check off the box. -->
+<!-- Don't forget to fully test your changes, too! Again, change [ ] to [x] to check off the box. -->
 
 - [ ] I have tested my changes in their current state
