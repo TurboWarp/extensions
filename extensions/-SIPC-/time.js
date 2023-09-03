@@ -1,9 +1,10 @@
 // Name: Time
 // ID: sipctime
-// Old Desc: Blocks for interacting with unix timestamps and other date strings.
 // Description: Blocks for times, dates, and time zones.
 // By: -SIPC-
-// By: SharkPool
+
+// Old Desc: Blocks for interacting with unix timestamps and other date strings.
+// Calculation Blocks By: SharkPool
 
 (function (Scratch) {
   "use strict";
