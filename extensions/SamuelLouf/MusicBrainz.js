@@ -40,6 +40,13 @@
     }
   }
 
+  function blocksLabel(text){
+    return {
+      blockType: Scratch.BlockType.LABEL,
+      text: text
+    }
+  }
+
   class MusicBrainz {
     getInfo() {
       return {
@@ -100,7 +107,22 @@
               }
             }
           },
-          '---'
+          '---',
+          {
+            opcode: 'search_instrument',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[instrument] of instrument [name]',
+            arguments: {
+              instrument: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'search_instrument',
+              },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Piano',
+              }
+            }
+          }
         ],
         menus: {
           // Menus
@@ -120,11 +142,17 @@
             acceptReporters: true,
             items: ['start','end']
           },
+          search_instrument: {
+            acceptReporters: true,
+            items: ['id','type','type id','score','name','tags']
+          }
         }
       };
     }
 
     // Functions
+
+    // Search Artist
 
     async search_artist(args) {
       var fetched_json = JSON.parse(await search('artist', args.name, 'json'));
@@ -158,6 +186,18 @@
         } else {
           return fetched_json.artists[0]['life-span'].ended.replaceAll('-', '/');
         }
+      }
+    }
+
+    // Search Instrument
+    
+    async search_instrument(args) {
+      var fetched_json = JSON.parse(await search('instrument', args.name, 'json'));
+      args.instrument = args.instrument.replace(' ', '-');
+      if (args.instrument == 'tags'){
+        return json_array_filter('name', JSON.stringify(fetched_json.instruments[0].tags));
+      } else {
+        return fetched_json.instruments[0][args.instrument];
       }
     }
   }
