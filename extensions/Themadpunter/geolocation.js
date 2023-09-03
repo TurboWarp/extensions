@@ -1,3 +1,8 @@
+// Name: Geolocation
+// ID: geolocation
+// Description: Get your precise location based on GPS or IP.
+// By: The_Mad_Punter
+
 class GeolocationExtension {
   constructor(runtime) {
     this.runtime = runtime;
