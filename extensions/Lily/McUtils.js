@@ -105,7 +105,8 @@
     }
 
     placeOrder(args, util) {
-      if (args.INPUT.includes("ice cream")) {
+      const text = Scratch.Cast.toString(args.INPUT);
+      if (text.includes("ice cream")) {
         return false;
       } else {
         return args.INPUT;
