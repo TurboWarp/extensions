@@ -35,7 +35,7 @@
       return;
     }
 
-    if (!await Scratch.canRecordAudio()) {
+    if (!(await Scratch.canRecordAudio())) {
       return;
     }
 
@@ -128,58 +128,6 @@
       console.warn("gyro API is not supported in this browser");
     }
   };
-
-  if (!Scratch) {
-    Scratch = {
-      TargetType: {
-        SPRITE: "sprite",
-        STAGE: "stage",
-      },
-      BlockType: {
-        COMMAND: "command",
-        REPORTER: "reporter",
-        BOOLEAN: "Boolean",
-        HAT: "hat",
-      },
-      ArgumentType: {
-        STRING: "string",
-        NUMBER: "number",
-        COLOR: "color",
-        ANGLE: "angle",
-        BOOLEAN: "Boolean",
-        MATRIX: "matrix",
-        NOTE: "note",
-      },
-      Cast: {
-        toNumber: (input) => {
-          return Number(input);
-        },
-
-        toString: (input) => {
-          return String(input);
-        },
-
-        toBoolean: (input) => {
-          return Boolean(input);
-        },
-      },
-      vm: window.vm,
-      extensions: {
-        unsandboxed: true,
-        register: (object) => {
-          const serviceName =
-            vm.extensionManager._registerInternalExtension(object);
-          vm.extensionManager._loadedExtensions.set(
-            object.getInfo().id,
-            serviceName
-          );
-        },
-      },
-    };
-    if (!Scratch.vm) {
-      throw new Error("The VM does not exist");
-    }
-  }
 
   const isPackaged = Scratch.vm.runtime.isPackaged;
 
@@ -390,6 +338,7 @@
             blockIconURI: touchIco,
             filter: [Scratch.TargetType.SPRITE],
             arguments: {},
+            disableMonitor: true,
           },
           {
             opcode: "touchingSpecificFinger",
@@ -563,6 +512,7 @@
             text: "Hidden?",
             blockIconURI: effectIco,
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
           {
             opcode: "getRotationStyle",
@@ -606,7 +556,6 @@
             blockIconURI: packagedIco,
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Is Packaged?",
-            disableMonitor: false,
           },
           "---",
           {
@@ -887,11 +836,11 @@
 
     getClipBoard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        return Scratch.canReadClipboard().then(allowed => {
+        return Scratch.canReadClipboard().then((allowed) => {
           if (allowed) {
             return navigator.clipboard.readText();
           }
-          return '';
+          return "";
         });
       }
       return "";

@@ -4,10 +4,10 @@
 // By: D-ScratchNinja <https://scratch.mit.edu/users/D-ScratchNinja/>
 
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('Wake Lock extension must run unsandboxed');
+    throw new Error("Wake Lock extension must run unsandboxed");
   }
 
   /** @type {WakeLockSentinel} */
@@ -18,54 +18,54 @@
   class WakeLock {
     constructor(runtime) {
       this.runtime = runtime;
-      this.runtime.on('PROJECT_STOP_ALL', this.stopAll.bind(this));
+      this.runtime.on("PROJECT_STOP_ALL", this.stopAll.bind(this));
     }
 
     getInfo() {
       return {
-        id: 'dninwakelock',
-        name: 'Wake Lock',
-        docsURI: 'https://extensions.turbowarp.org/wake-lock',
+        id: "dninwakelock",
+        name: "Wake Lock",
+        docsURI: "https://extensions.turbowarp.org/DNin/wake-lock",
         blocks: [
           {
-            opcode: 'setWakeLock',
+            opcode: "setWakeLock",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'turn wake lock [enabled]',
+            text: "turn wake lock [enabled]",
             arguments: {
               enabled: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'state',
-                defaultValue: 'true'
-              }
-            }
+                menu: "state",
+                defaultValue: "true",
+              },
+            },
           },
           {
-            opcode: 'isLocked',
+            opcode: "isLocked",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is wake lock active?'
-          }
+            text: "is wake lock active?",
+          },
         ],
         menus: {
           state: {
             acceptReporters: true,
             items: [
               {
-                text: 'on',
-                value: 'true'
+                text: "on",
+                value: "true",
               },
               {
-                text: 'off',
-                value: 'false'
-              }
-            ]
-          }
-        }
+                text: "off",
+                value: "false",
+              },
+            ],
+          },
+        },
       };
     }
 
     stopAll() {
       this.setWakeLock({
-        enabled: false
+        enabled: false,
       });
     }
 
@@ -79,7 +79,7 @@
       latestEnabled = Scratch.Cast.toBoolean(args.enabled);
       if (latestEnabled && !previousEnabled) {
         promise = promise
-          .then(() => navigator.wakeLock.request('screen'))
+          .then(() => navigator.wakeLock.request("screen"))
           .then((sentinel) => {
             wakeLock = sentinel;
           })
