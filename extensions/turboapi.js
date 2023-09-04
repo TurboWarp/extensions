@@ -4,6 +4,8 @@
 // By: Tek <https://github.com/Tekinical/>
 
 (function (Scratch) {
+  "use strict";
+  
   let APIResponse = null;
   let JsonThing = null;
   
