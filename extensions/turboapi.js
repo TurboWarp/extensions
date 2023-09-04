@@ -24,11 +24,11 @@
         color1: "#FF4C4C",
         blocks: [
           {
-            opcode: "sendResponse",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "GET Request from [endpoint]",
+            opcode: "getRequest",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "GET Request to [web]",
             arguments: {
-              endpoint: {
+              web: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Website Endpoint",
               },
@@ -49,24 +49,18 @@
               },
             },
           },
-          {
-            opcode: "responseAPI",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "API Response",
-            blockIconURI: Rep,
-          },
         ],
       };
     }
 
-    sendResponse(args) {
-      APIResponse = Scratch.fetch(args.endpoint)
+    getRequest(args) {
+      return Scratch.fetch(args.web)
         .then((r) => r.text())
         .catch(() => "");
     }
 
     sendPost(args) {
-      APIResponse = Scratch.fetch(args.endpoint, {
+      Scratch.fetch(args.endpoint, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -76,10 +70,6 @@
       })
         .then((r) => r.text())
         .catch(() => "");
-    }
-
-    responseAPI() {
-      return APIResponse;
     }
   }
 
