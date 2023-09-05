@@ -125,6 +125,37 @@
                 defaultValue: 'Piano',
               }
             }
+          },
+          '---',
+          {
+            opcode: 'search_recording',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[recording] of recording [name]',
+            arguments: {
+              recording: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'search_recording',
+              },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Five Nights at Freddy\'s',
+              }
+            }
+          },
+          {
+            opcode: 'search_recording_credit',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[recording_credit] of recording [name]\'s creators',
+            arguments: {
+              recording_credit: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'search_recording_credit',
+              },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Five Nights at Freddy\'s',
+              }
+            }
           }
         ],
         menus: {
@@ -148,6 +179,14 @@
           search_instrument: {
             acceptReporters: true,
             items: ['id','type','type id','score','name','tags']
+          },
+          search_recording: {
+            acceptReporters: true,
+            items: ['id','length (ms)','length (s)','score','title']
+          },
+          search_recording_credit: {
+            acceptReporters: true,
+            items: ['id(s)','name(s)','sort name(s)','alias(es)']
           }
         }
       };
@@ -201,6 +240,36 @@
         return json_array_filter('name', JSON.stringify(fetched_json.instruments[0].tags));
       } else {
         return fetched_json.instruments[0][args.instrument];
+      }
+    }
+
+    // Search Recording
+    
+    async search_recording(args) {
+      var fetched_json = JSON.parse(await search('recording', args.name, 'json'));
+      if (args.recording.includes('length')){
+        if (args.recording.includes('(ms)')){
+          return fetched_json.recordings[0].length;
+        } else {
+          return (fetched_json.recordings[0].length / 1000);
+        }
+      } else {
+        return fetched_json.recordings[0][args.recording];
+      }
+    }
+    
+    async search_recording_credit(args) {
+      args.recording_credit = args.recording_credit.replace('(s)', '').replace('(es)', '');
+      var fetched_json = JSON.parse(await search('recording', args.name, 'json'));
+      var credits = fetched_json.recordings[0]['artist-credit'];
+      if (args.recording_credit == 'name'){
+        return json_array_filter(args.recording_credit, JSON.stringify(credits));
+      } else if (args.recording_credit == 'alias') {
+        
+      } else {
+        args.recording_credit = args.recording_credit.replace(' ', '-');
+        var artist = JSON.parse(json_array_filter('artist', JSON.stringify(credits)));
+        return json_array_filter(args.recording_credit, JSON.stringify(artist));
       }
     }
   }
