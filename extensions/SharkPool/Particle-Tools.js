@@ -1,5 +1,5 @@
 // Name: Particle Tools
-// ID: SPParticleTools
+// ID: ParticleToolsSP
 // Description: Tools for making particle engines easier.
 // By: SharkPool <https://github.com/SharkPool-SP>
 
