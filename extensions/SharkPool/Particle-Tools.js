@@ -5,7 +5,7 @@
 
 // Version V.1.1.0
 
-(function(Scratch) {
+(function (Scratch) {
   'use strict';
 
   if (!Scratch.extensions.unsandboxed) {
