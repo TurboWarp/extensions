@@ -25,6 +25,7 @@
       return {
         id: 'ParticleToolsSP',
         name: 'Particle Tools',
+        docsURI: 'https://extensions.turbowarp.org/SharkPool/Particle-Tools',
         color1: '#0090ff',
         menuIconURI,
         blocks: [
