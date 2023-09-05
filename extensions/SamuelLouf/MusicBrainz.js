@@ -49,6 +49,14 @@
     }
   }
 
+  const if_then_return_else_return = (condition, then_return, else_return) => {
+    if (condition){
+      return then_return;
+    } else {
+      return else_return;
+    }
+  }
+
   class MusicBrainz {
     getInfo() {
       return {
@@ -156,6 +164,37 @@
                 defaultValue: 'Five Nights at Freddy\'s',
               }
             }
+          },
+          '---',
+          {
+            opcode: 'search_event',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[event] of event [name]',
+            arguments: {
+              event: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'search_event',
+              },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Paris Jazz Festival',
+              }
+            }
+          },
+          {
+            opcode: 'search_event_life_span',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'life span [start_end] of event [name]',
+            arguments: {
+              start_end: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'start_end',
+              },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Paris Jazz Festival',
+              }
+            }
           }
         ],
         menus: {
@@ -187,6 +226,14 @@
           search_recording_credit: {
             acceptReporters: true,
             items: ['id(s)','name(s)','sort name(s)']
+          },
+          search_event: {
+            acceptReporters: true,
+            items: ['id','name','score','type']
+          },
+          start_end: {
+            acceptReporters: true,
+            items: ['start','end']
           }
         }
       };
@@ -269,6 +316,19 @@
         var artist = JSON.parse(json_array_filter('artist', JSON.stringify(credits)));
         return json_array_filter(args.recording_credit, JSON.stringify(artist));
       }
+    }
+
+    // Search Event
+
+    async search_event(args) {
+      var fetched_json = JSON.parse(await search('event', args.name, 'json'));
+      return fetched_json.events[0][args.event];
+    }
+
+    async search_event_life_span(args) {
+      var fetched_json = JSON.parse(await search('event', args.name, 'json'));
+      var life_span = fetched_json.events[0]['life-span'];
+      return if_then_return_else_return(args.start_end == 'start', if_then_return_else_return(life_span.begin.includes('-'), life_span.begin.replaceAll('-', '/'), life_span.begin), if_then_return_else_return(life_span.end.includes('-'), life_span.end.replaceAll('-', '/'), life_span.end));
     }
   }
   Scratch.extensions.register(new MusicBrainz());
