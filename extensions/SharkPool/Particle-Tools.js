@@ -289,15 +289,15 @@
       }
     }
 
-    reportCnt {
+    reportCnt() {
       return this.IDcount;
     }
 
-    currentGrav {
+    currentGrav() {
       return this.Gravity;
     }
 
-    deleteID {
+    deleteID() {
       this.IDs = {};
       this.IDcount = 0;
     }
