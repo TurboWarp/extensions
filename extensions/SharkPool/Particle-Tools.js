@@ -139,7 +139,7 @@
             arguments: {
               GRAVITY: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '9.8',
+                defaultValue: 9.8,
               },
             },
           },
