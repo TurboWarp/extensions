@@ -3,7 +3,7 @@
 // Description: Tools for making particle engines easier.
 // By: SharkPool <https://github.com/SharkPool-SP>
 
-// Version V.1.0.0
+// Version V.1.1.0
 
 (function(Scratch) {
   'use strict';
@@ -199,36 +199,38 @@
 
     genID(args) {
       this.IDcount++;
-      this.IDs[this.IDcount] = 'ID = ' + this.IDcount + '| x velocity = ' + args.VELX + '| y velocity = ' + args.VELY;
+      this.IDs[this.IDcount] = {
+        ID: this.IDcount.toString(),
+        "X Velocity": args.VELX.toString(),
+        "Y Velocity": args.VELY.toString(),
+      };
     }
 
     replaceID(args) {
       if (this.IDs[args.ID] === undefined) {
         this.IDcount++;
       }
-      this.IDs[args.ID] = 'ID = ' + args.ID + ' | x velocity = ' + args.VELX + ' | y velocity = ' + args.VELY;
+      this.IDs[args.ID] = {
+        ID: args.ID.toString(),
+        "X Velocity": args.VELX.toString(),
+        "Y Velocity": args.VELY.toString(),
+      };
     }
 
     reportID(args) {
-      const ID = args.NAME
+      const ID = args.NAME;
+
       if (this.IDs[ID] === undefined) {
         return 'ID doesnt exist!';
       }
 
       const Value = this.IDs[ID];
-
       if (args.REPORT === 'all') {
-        return this.IDs[ID];
+        return JSON.stringify(Value);
       } else if (args.REPORT === 'x velocity') {
-        const startIndex = Value.indexOf('x velocity = ');
-        const endIndex = Value.indexOf('| y');
-        const extractedValue = Value.substring(startIndex + 13, endIndex);
-        return extractedValue;
-      } else {   
-        const startIndex = Value.indexOf('y velocity = ');
-        const endIndex = Value.length;
-        const extractedValue = Value.substring(startIndex + 13, endIndex);
-        return extractedValue;
+        return Value['X Velocity'];
+      } else {
+        return Value['Y Velocity'];
       }
     }
 
@@ -237,47 +239,39 @@
 
       if (this.IDs[ID] !== undefined) {
         const Value = this.IDs[ID];
-        const xVelocityStartIndex = Value.indexOf('x velocity = ') + 'x velocity = '.length;
-        const yVelocityStartIndex = Value.indexOf('y velocity = ') + 'y velocity = '.length;
-        const xVelocityEndIndex = Value.indexOf('| y velocity');
-        const yVelocityEndIndex = Value.length;
-
-        const extractedXValue = parseFloat(Value.substring(xVelocityStartIndex, xVelocityEndIndex));
-        const extractedYValue = parseFloat(Value.substring(yVelocityStartIndex, yVelocityEndIndex));
-        const newXVelocity = extractedXValue - this.Gravity;
-        const newYVelocity = extractedYValue - this.Gravity;
+        const currentXVelocity = parseFloat(Value['X Velocity']);
+        const currentYVelocity = parseFloat(Value['Y Velocity']);
+        const newXVelocity = currentXVelocity - this.Gravity;
+        const newYVelocity = currentYVelocity - this.Gravity;
 
         if (args.REPORT === 'all') {
-          this.IDs[ID] = 'ID = ' + ID + ' | x velocity = ' + newXVelocity + ' | y velocity = ' + newYVelocity;
+          Value['X Velocity'] = newXVelocity.toString();
+          Value['Y Velocity'] = newYVelocity.toString();
         } else if (args.REPORT === 'x velocity') {
-          this.IDs[ID] = 'ID = ' + ID + ' | x velocity = ' + newXVelocity + ' | y velocity = ' + extractedYValue;
+          Value['X Velocity'] = newXVelocity.toString();
         } else {
-          this.IDs[ID] = 'ID = ' + ID + ' | x velocity = ' + extractedXValue + ' | y velocity = ' + newYVelocity;
+          Value['Y Velocity'] = newYVelocity.toString();
         }
       }
     }
 
     updateCustomGravity(args) {
       const ID = args.ID;
-  
+
       if (this.IDs[ID] !== undefined) {
         const Value = this.IDs[ID];
-        const xVelocityStartIndex = Value.indexOf('x velocity = ') + 'x velocity = '.length;
-        const yVelocityStartIndex = Value.indexOf('y velocity = ') + 'y velocity = '.length;
-        const xVelocityEndIndex = Value.indexOf('| y velocity');
-        const yVelocityEndIndex = Value.length;
-
-        const extractedXValue = parseFloat(Value.substring(xVelocityStartIndex, xVelocityEndIndex));
-        const extractedYValue = parseFloat(Value.substring(yVelocityStartIndex, yVelocityEndIndex));
-        const newXVelocity = extractedXValue - args.INPUT;
-        const newYVelocity = extractedYValue - args.INPUT;
+        const currentXVelocity = parseFloat(Value['X Velocity']);
+        const currentYVelocity = parseFloat(Value['Y Velocity']);
+        const newXVelocity = currentXVelocity - args.INPUT;
+        const newYVelocity = currentYVelocity - args.INPUT;
 
         if (args.REPORT === 'all') {
-          this.IDs[ID] = 'ID = ' + ID + ' | x velocity = ' + newXVelocity + ' | y velocity = ' + newYVelocity;
+          Value['X Velocity'] = newXVelocity.toString();
+          Value['Y Velocity'] = newYVelocity.toString();
         } else if (args.REPORT === 'x velocity') {
-          this.IDs[ID] = 'ID = ' + ID + ' | x velocity = ' + newXVelocity + ' | y velocity = ' + extractedYValue;
+          Value['X Velocity'] = newXVelocity.toString();
         } else {
-          this.IDs[ID] = 'ID = ' + ID + ' | x velocity = ' + extractedXValue + ' | y velocity = ' + newYVelocity;
+          Value['Y Velocity'] = newYVelocity.toString();
         }
       }
     }
