@@ -186,7 +186,7 @@
           },
           search_recording_credit: {
             acceptReporters: true,
-            items: ['id(s)','name(s)','sort name(s)','alias(es)']
+            items: ['id(s)','name(s)','sort name(s)']
           }
         }
       };
@@ -264,8 +264,6 @@
       var credits = fetched_json.recordings[0]['artist-credit'];
       if (args.recording_credit == 'name'){
         return json_array_filter(args.recording_credit, JSON.stringify(credits));
-      } else if (args.recording_credit == 'alias') {
-        
       } else {
         args.recording_credit = args.recording_credit.replace(' ', '-');
         var artist = JSON.parse(json_array_filter('artist', JSON.stringify(credits)));
