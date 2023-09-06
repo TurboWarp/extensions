@@ -33,7 +33,7 @@
     x = cameraX,
     y = cameraY,
     scale = cameraZoom / 100,
-    rot = -cameraDirection + 90,
+    rot = -cameraDirection + 90
   ) {
     rot = (rot / 180) * Math.PI;
     const s = Math.sin(rot) * scale;
@@ -66,7 +66,7 @@
     Scratch.vm.renderer.setBackgroundColor(
       rgb[0] / 255,
       rgb[1] / 255,
-      rgb[2] / 255,
+      rgb[2] / 255
     );
   }
 
@@ -108,7 +108,7 @@
     xMult = 1,
     doZoom = true,
     y = 0,
-    yMult = xMult,
+    yMult = xMult
   ) {
     if ((cameraDirection - 90) % 360 === 0 || !doZoom) {
       return _translateX(x, fromTopLeft, xMult, doZoom);
@@ -120,7 +120,7 @@
         cameraY + h,
         _translateX(x, fromTopLeft, xMult, doZoom),
         _translateY(y, fromTopLeft, yMult, doZoom),
-        ((-cameraDirection + 90) / 180) * Math.PI,
+        ((-cameraDirection + 90) / 180) * Math.PI
       );
       return rotated[0];
     }
@@ -131,7 +131,7 @@
     yMult = 1,
     doZoom = true,
     x = 0,
-    xMult = yMult,
+    xMult = yMult
   ) {
     if ((cameraDirection - 90) % 360 === 0 || !doZoom) {
       return _translateY(y, fromTopLeft, yMult, doZoom);
@@ -143,7 +143,7 @@
         cameraY + h,
         _translateX(x, fromTopLeft, xMult, doZoom),
         _translateY(y, fromTopLeft, yMult, doZoom),
-        ((-cameraDirection + 90) / 180) * Math.PI,
+        ((-cameraDirection + 90) / 180) * Math.PI
       );
       return rotated[1];
     }
@@ -159,7 +159,7 @@
       1,
       true,
       oldSY.apply(this, a),
-      1,
+      1
     );
   };
   vm.runtime.ioDevices.mouse.getScratchY = function (...a) {
@@ -169,7 +169,7 @@
       1,
       true,
       oldSX.apply(this, a),
-      1,
+      1
     );
   };
   const oldCX = vm.runtime.ioDevices.mouse.getClientX;
@@ -181,7 +181,7 @@
       1,
       true,
       oldCY.apply(this, a),
-      -1,
+      -1
     );
   };
   vm.runtime.ioDevices.mouse.getClientY = function (...a) {
@@ -191,7 +191,7 @@
       -1,
       true,
       oldCX.apply(this, a),
-      1,
+      1
     );
   };
 
@@ -200,7 +200,7 @@
     return oldPick.call(
       this,
       translateX(x, true, 1, true, y, -1),
-      translateY(y, true, -1, true, x, 1),
+      translateY(y, true, -1, true, x, 1)
     );
   };
 
