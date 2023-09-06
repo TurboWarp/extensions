@@ -17,7 +17,7 @@
   }
 
   const hasOwn = (obj, property) =>
-    Object.prototype.hasOwnProperty.call(obj, property);
+    obj.hasOwnProperty.call(property);
 
   function json_array_filter( key, json ) {
     try {
