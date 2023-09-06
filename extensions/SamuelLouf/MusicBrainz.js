@@ -17,7 +17,7 @@
   }
 
   const hasOwn = (obj, property) =>
-    obj.hasOwnProperty.call(property);
+    obj.hasOwnProperty(property);
 
   function json_array_filter( key, json ) {
     try {
