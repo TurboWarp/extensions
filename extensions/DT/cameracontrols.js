@@ -410,6 +410,29 @@
           */
           "---",
           {
+            opcode: "blocktx",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "fix x [x]",
+            arguments: {
+              x: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100,
+              },
+            },
+          },
+          {
+            opcode: "blockty",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "fix y [y]",
+            arguments: {
+              y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100,
+              },
+            },
+          },
+          "---",
+          {
             opcode: "changeZoom",
             blockType: Scratch.BlockType.COMMAND,
             text: "change camera zoom by [val]",
@@ -542,6 +565,12 @@
     }
     getDirection() {
       return cameraDirection;
+    }
+    blocktx(args){
+      return _translateX(args.x);
+    }
+    blockty(args){
+      return _translateY(args.y);
     }
     setCol(args, util) {
       cameraBG = args.val;
