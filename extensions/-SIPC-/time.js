@@ -280,17 +280,17 @@
 
       switch (timeMenu) {
         case "year":
-          return Math.round(timeDifference / 946080000000);
+          return Math.round(timeDiff / 946080000000);
         case "month":
-          return Math.round(timeDifference / 2592000000);
+          return Math.round(timeDiff / 2592000000);
         case "day":
-          return Math.round(timeDifference / 86400000);
+          return Math.round(timeDiff / 86400000);
         case "hour":
-          return Math.round(timeDifference / 3600000);
+          return Math.round(timeDiff / 3600000);
         case "minute":
-          return Math.round(timeDifference / 60000);
+          return Math.round(timeDiff / 60000);
         case "second":
-          return Math.round(timeDifference / 1000);
+          return Math.round(timeDiff / 1000);
         default:
           return "Invalid Menu Input";
       }
