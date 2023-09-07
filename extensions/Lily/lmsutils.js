@@ -141,12 +141,14 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is clone?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
           {
             opcode: "spriteClicked",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "sprite clicked?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
 
           "---",
@@ -1307,7 +1309,10 @@
     }
 
     isUserMobile(args, util) {
-      return navigator.userAgent.includes("Mobile");
+      return (
+        navigator.userAgent.includes("Mobile") ||
+        navigator.userAgent.includes("Android")
+      );
     }
 
     screenReporter(args) {

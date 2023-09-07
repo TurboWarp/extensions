@@ -28,7 +28,7 @@
         blocks: [
           {
             opcode: "getEnabled",
-            text: "is [thing] enabled?",
+            text: "[thing] enabled?",
             blockType: Scratch.BlockType.BOOLEAN,
             arguments: {
               thing: {
@@ -60,7 +60,7 @@
 
           {
             opcode: "getFramerate",
-            text: "get framerate limit",
+            text: "framerate limit",
             blockType: Scratch.BlockType.REPORTER,
           },
           {
@@ -79,12 +79,12 @@
 
           {
             opcode: "getCloneLimit",
-            text: "get clone limit",
+            text: "clone limit",
             blockType: Scratch.BlockType.REPORTER,
           },
           {
             opcode: "setCloneLimit",
-            text: "set clone limit [limit]",
+            text: "set clone limit to [limit]",
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               limit: {
@@ -99,7 +99,7 @@
 
           {
             opcode: "getDimension",
-            text: "get stage [dimension]",
+            text: "stage [dimension]",
             blockType: Scratch.BlockType.REPORTER,
             arguments: {
               dimension: {

@@ -109,6 +109,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "touching main sprite?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
 
           "---",
@@ -316,6 +317,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is clone?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
 
           "---",

@@ -13,12 +13,15 @@
   let namespace = "";
   const getFullStorageKey = () => `${PREFIX}${namespace}`;
 
+  let lastNamespaceWarning = 0;
+
   const validNamespace = () => {
     const valid = !!namespace;
-    if (!valid) {
+    if (!valid && Date.now() - lastNamespaceWarning > 3000) {
       alert(
         'Local Storage extension: project must run the "set storage namespace ID" block before it can use other blocks'
       );
+      lastNamespaceWarning = Date.now();
     }
     return valid;
   };

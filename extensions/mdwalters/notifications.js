@@ -54,6 +54,7 @@
             opcode: "hasPermission",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "has notification permission",
+            disableMonitor: true,
           },
           {
             opcode: "showNotification",

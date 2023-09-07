@@ -78,12 +78,14 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "true",
             hideFromPalette: true,
+            disableMonitor: true,
           },
           {
             opcode: "false_block",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "false",
             hideFromPalette: true,
+            disableMonitor: true,
           },
 
           "---",

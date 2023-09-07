@@ -30,7 +30,7 @@
           {
             opcode: "json_is_valid",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is JSON [json] valid",
+            text: "is JSON [json] valid?",
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -41,7 +41,7 @@
           {
             opcode: "json_is",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [json] [types]",
+            text: "is [json] [types]?",
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -58,7 +58,7 @@
           {
             opcode: "json_get_all",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get all [Stype] of [json]",
+            text: "all [Stype] of [json]",
             arguments: {
               Stype: {
                 type: Scratch.ArgumentType.STRING,
@@ -148,7 +148,7 @@
           {
             opcode: "json_get",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get [item] in [json]",
+            text: "value of [item] in [json]",
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -163,7 +163,7 @@
           {
             opcode: "json_set",
             blockType: Scratch.BlockType.REPORTER,
-            text: "set [item] to [value] in [json]",
+            text: "set [item] in [json] to [value]",
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -239,7 +239,7 @@
           {
             opcode: "json_array_set",
             blockType: Scratch.BlockType.REPORTER,
-            text: "replace item [pos] of [json] to [item]",
+            text: "replace item [pos] of [json] with [item]",
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -336,7 +336,7 @@
           {
             opcode: "json_array_fromto",
             blockType: Scratch.BlockType.REPORTER,
-            text: "array [json] from item [item] to [item2]",
+            text: "items [item] to [item2] of array [json]",
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -396,7 +396,7 @@
           {
             opcode: "json_array_filter",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get all value with key [key] in array [json]",
+            text: "get all values with key [key] in array [json]",
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -487,7 +487,7 @@
           {
             opcode: "json_vm_setlist",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set list [list] to content [json]",
+            text: "set list [list] to [json]",
             arguments: {
               list: {
                 type: Scratch.ArgumentType.STRING,

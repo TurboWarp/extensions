@@ -370,6 +370,7 @@
             text: "is additive blending on?",
             filter: [Scratch.TargetType.SPRITE],
             hideFromPalette: true,
+            disableMonitor: true,
           },
         ],
         menus: {
