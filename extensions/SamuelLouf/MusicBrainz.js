@@ -16,12 +16,15 @@
     return await Scratch.fetch(`https://musicbrainz.org/ws/2/${type}/?query=${query}&fmt=${format}&limit=${limit}`).then((r) => r.text()).catch(() => '');
   }
 
+  const hasOwn = (obj, property) =>
+    Object.prototype.hasOwnProperty.call(obj, property);
+
   function json_array_filter( key, json ) {
     try {
       json = JSON.parse(json);
       return JSON.stringify(
         json.map((x) => {
-          if (x.hasOwnProperty(key)) {
+          if (hasOwn(x, key)) {
             return x[key];
           }
           return null;
