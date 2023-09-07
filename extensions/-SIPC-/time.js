@@ -159,6 +159,36 @@
               },
             },
           },
+
+          '---',
+
+          {
+            opcode: "countdownReport",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "countdown to [TIME] in [MENU]",
+            arguments: {
+              TIME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '2007-03-14 09:34:00',
+              },
+              MENU: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "Time",
+                defaultValue: "hour",
+              },
+            },
+          },
+          {
+            opcode: "countdownBoolean",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "countdown to [TIME] reached?",
+            arguments: {
+              TIME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '2007-03-14 09:34:00',
+              },
+            },
+          },
         ],
         menus: {
           Time: {
@@ -250,17 +280,17 @@
 
       switch (timeMenu) {
         case "year":
-          return Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 365));
+          return Math.round(timeDifference / 946080000000);
         case "month":
-          return Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 30));
+          return Math.round(timeDifference / 2592000000);
         case "day":
-          return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+          return Math.round(timeDifference / 86400000);
         case "hour":
-          return Math.floor(timeDiff / (1000 * 60 * 60));
+          return Math.round(timeDifference / 3600000);
         case "minute":
-          return Math.floor(timeDiff / (1000 * 60));
+          return Math.round(timeDifference / 60000);
         case "second":
-          return Math.floor(timeDiff / 1000);
+          return Math.round(timeDifference / 1000);
         default:
           return "Invalid Menu Input";
       }
@@ -356,6 +386,55 @@
         "December",
       ];
       return months.indexOf(month);
+    }
+
+    countdownReport(args) {
+      const timeMenu = args.MENU;
+      const endDate = Date.now();
+
+      const dateTimeParts = args.TIME.split(/[- :]/);
+      const year = parseInt(dateTimeParts[0]);
+      const month = parseInt(dateTimeParts[1]) - 1;
+      const day = parseInt(dateTimeParts[2]);
+      const hour = parseInt(dateTimeParts[3]);
+      const minute = parseInt(dateTimeParts[4]);
+      const second = parseInt(dateTimeParts[5]);
+
+      const startDate = new Date(year, month, day, hour, minute, second).getTime();
+      const timeDifference = startDate - endDate;
+      
+      switch (timeMenu) {
+        case "year":
+          return Math.round(timeDifference / 946080000000);
+        case "month":
+          return Math.round(timeDifference / 2592000000);
+        case "day":
+          return Math.round(timeDifference / 86400000);
+        case "hour":
+          return Math.round(timeDifference / 3600000);
+        case "minute":
+          return Math.round(timeDifference / 60000);
+        case "second":
+          return Math.round(timeDifference / 1000);
+        default:
+          return "Invalid Menu Input";
+      }
+    }
+
+    countdownBoolean(args) {
+      const endDate = Date.now();
+
+      const dateTimeParts = args.TIME.split(/[- :]/);
+      const year = parseInt(dateTimeParts[0]);
+      const month = parseInt(dateTimeParts[1]) - 1;
+      const day = parseInt(dateTimeParts[2]);
+      const hour = parseInt(dateTimeParts[3]);
+      const minute = parseInt(dateTimeParts[4]);
+      const second = parseInt(dateTimeParts[5]);
+
+      const startDate = new Date(year, month, day, hour, minute, second).getTime();
+      const timeDifference = startDate - endDate;
+      return (timeDifference <= 0);
     }
   }
   Scratch.extensions.register(new Time());
