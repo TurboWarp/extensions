@@ -1,15 +1,15 @@
 // Name: Gamepad
 // ID: Gamepad
 // Description: Directly access gamepads instead of just mapping buttons to keys.
-
+// Edited by Martinelplayz
 // Some parts of this scripts are based on or designed to be compatible-ish with:
 // https://arpruss.github.io/gamepad.js (MIT Licensed)
 
 (function (Scratch) {
   "use strict";
 
-  const AXIS_DEADZONE = 0.1;
-  const BUTTON_DEADZONE = 0.05;
+  var AXIS_DEADZONE = 0.1;
+  var BUTTON_DEADZONE = 0.05;
 
   /**
    * @param {number|'any'} index 1-indexed index
@@ -75,6 +75,22 @@
     return axisValue;
   };
 
+  /**
+   * @param {Gamepad.id} id
+   * @returns {string}
+   */
+  const matchVendor = (id) => {
+    return id.match(/vendor:\s*(\w+)/i)[1];
+  };
+
+  /**
+   * @param {Gamepad.id} id
+   * @returns {string}
+   */
+  const matchProduct = (id) => {
+    return id.match(/product:\s*(\w+)/i)[1];
+  };
+
   class GamepadExtension {
     getInfo() {
       return {
@@ -93,6 +109,26 @@
               },
             },
           },
+          {
+            opcode: 'gamepadDetail',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'get [d] of pad [i]',
+            arguments: {
+              d: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'id',
+                menu: 'detailMenu'
+              },
+              i: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '1',
+                menu: 'padMenu'
+              }
+            }
+          },
+
+          '---',
+
           {
             opcode: "buttonDown",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -249,6 +285,42 @@
               },
             },
           },
+
+          "---",
+
+	{
+          opcode: "deadzone",
+          blockType: Scratch.BlockType.COMMAND,
+          text: "set axis deadzone to [i]",
+          arguments: {
+            i: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: "0.1",
+            },
+          },
+        },
+
+	{
+          opcode: "deadzoneButton",
+          blockType: Scratch.BlockType.COMMAND,
+          text: "set button deadzone to [i]",
+          arguments: {
+            i: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: "0.05",
+            },
+          },
+        },
+	{
+            opcode: "getdeadzone",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get axis deadzone", 
+          },
+        {
+            opcode: "getdeadzoneButton",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get button deadzone",
+          },
         ],
         menus: {
           padMenu: {
@@ -275,6 +347,10 @@
                 value: "4",
               },
             ],
+          },
+          detailMenu: {
+            acceptReporters: true,
+            items: ['id', 'vendor', 'product', 'mapping']
           },
           buttonMenu: {
             acceptReporters: true,
@@ -406,6 +482,18 @@
       return getGamepads(pad).length > 0;
     }
 
+    gamepadDetail ({d, i}) {
+      for (const gamepad of getGamepads(i)) {
+        switch (d) {
+          case 'mapping': return gamepad.mapping;
+          case 'vendor': return matchVendor(gamepad.id);
+          case 'product': return matchProduct(gamepad.id);
+          case 'id': return gamepad.id;
+        }
+      }
+      return 'not connected';
+    }
+      
     buttonDown({ b, i }) {
       for (const gamepad of getGamepads(i)) {
         if (isButtonPressed(gamepad, b)) {
@@ -483,6 +571,22 @@
           });
         }
       }
+    } 
+
+    deadzone({ i }) {
+      AXIS_DEADZONE = i;
+    }
+
+    deadzoneButton({ i }) {
+      BUTTON_DEADZONE = i;
+    }
+
+    getdeadzone({ i }) {
+      return AXIS_DEADZONE;
+    }
+
+    getdeadzoneButton({ i }) {
+      return BUTTON_DEADZONE;
     }
   }
 
