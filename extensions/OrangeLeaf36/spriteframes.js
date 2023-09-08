@@ -43,7 +43,7 @@
   }
 
   function getIDs() {
-    vm.runtime.targets.map(sprite => {
+    Scratch.vm.runtime.targets.map(sprite => {
       return sprite.id;
     })
   }
@@ -65,13 +65,13 @@
   }
 
   function getSizeByTargetId(targetId) {
-    const currentCostumeId = vm.runtime.targets.find(target => target.id === targetId).currentCostume;
-    const size = vm.runtime.targets.find(
+    const currentCostumeId = Scratch.vm.runtime.targets.find(target => target.id === targetId).currentCostume;
+    const size = Scratch.vm.runtime.targets.find(
       target => target.id === targetId
     ).sprite.costumes[currentCostumeId].size.map(
-      num => num * vm.runtime.targets.find(
+      num => num * Scratch.vm.runtime.targets.find(
         target => target.id === targetId
-      ).size / (vm.runtime.targets.find(
+      ).size / (Scratch.vm.runtime.targets.find(
         target => target.id === targetId
       ).sprite.costumes[currentCostumeId].dataFormat != "svg" ? 200 : 100)
     );
@@ -108,7 +108,7 @@
 }
 
   function checkIfValidID(target) {
-    const allIDs = Object.values(vm.runtime.targets).map(target => target.id);
+    const allIDs = Object.values(Scratch.vm.runtime.targets).map(target => target.id);
   }
 
   class guiPositioning {
@@ -364,13 +364,13 @@
           {
             blockType: Scratch.BlockType.LABEL,
             text: "For use with Camera Controls:",
-            hideFromPalette: !vm.extensionManager._loadedExtensions.has("DTcameracontrols")
+            hideFromPalette: !Scratch.vm.extensionManager._loadedExtensions.has("DTcameracontrols")
           },
           {
             opcode: "setZoom",
             blockType: Scratch.BlockType.COMMAND,
             text: "set zoom [zoom]",
-            hideFromPalette: !vm.extensionManager._loadedExtensions.has("DTcameracontrols"),
+            hideFromPalette: !Scratch.vm.extensionManager._loadedExtensions.has("DTcameracontrols"),
             arguments: {
               zoom: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -382,7 +382,7 @@
             opcode: "adjustNumByZoom",
             blockType: Scratch.BlockType.REPORTER,
             text: "[adjust] number [number] to zoom",
-            hideFromPalette: !vm.extensionManager._loadedExtensions.has("DTcameracontrols"),
+            hideFromPalette: !Scratch.vm.extensionManager._loadedExtensions.has("DTcameracontrols"),
             arguments: {
               number: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -460,9 +460,9 @@
 
     getViewportPercentage(args, util) {
       if (args.resolution === "width") {
-        return Scratch.vm.runtime.stageWidth * (args.percentage / 100);
+        return Scratch.Scratch.vm.runtime.stageWidth * (args.percentage / 100);
       } else if (args.resolution === "height") {
-        return Scratch.vm.runtime.stageHeight * (args.percentage / 100);
+        return Scratch.Scratch.vm.runtime.stageHeight * (args.percentage / 100);
       }
       return 0;
     }
@@ -470,7 +470,7 @@
     //Sprite
     bindSpiteToFrame(args, util) {
       console.log(util.target);
-      console.log(vm.runtime.targets)
+      console.log(Scratch.vm.runtime.targets)
       // check if in frame
       let foundInFrame = null;
       foundInFrame = findInFrame(util.target.id);
@@ -722,7 +722,7 @@
 
   function waitForConditionAndExecute(callback) {
     const interval = setInterval(() => {
-      if (vm.extensionManager._loadedExtensions.has("DTcameracontrols")) {
+      if (Scratch.vm.extensionManager._loadedExtensions.has("DTcameracontrols")) {
         clearInterval(interval);
         callback();
       }
@@ -730,6 +730,6 @@
   }
 
   waitForConditionAndExecute(() => {
-    Scratch.vm.extensionManager.refreshBlocks();
+    Scratch.Scratch.vm.extensionManager.refreshBlocks();
   });
 })(Scratch);
