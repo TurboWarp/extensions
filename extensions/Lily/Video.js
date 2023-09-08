@@ -132,7 +132,7 @@
         blocks: [
           {
             blockType: Scratch.BlockType.XML,
-            xml: "<sep gap='6'/><label text='Only direct downloads will work, use'/><sep gap='-12'/><label text='the Iframe extension for YouTube.'/><sep gap='24'/>"
+            xml: "<sep gap='6'/><label text='Only direct downloads will work, use'/><sep gap='-12'/><label text='the Iframe extension for YouTube.'/><sep gap='24'/>",
           },
           {
             opcode: "loadVideoURL",
