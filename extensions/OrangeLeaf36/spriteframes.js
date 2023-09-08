@@ -2,24 +2,24 @@
 // ID: leaf36devgui
 // Description: Position sprites in an interface-like manner.
 // By: OrangeLeaf36
-(function(Scratch) {
+(function (Scratch) {
   "use strict";
 
   let zoom = 1;
   let frames = {
-    "frame1": {
-      "x": 0,
-      "y": 0,
-      "width": 100,
-      "height": 100,
-      "layout": {
-        "spriteOrder": [],
-        "spriteMargin": 0,
-        "axis": "horizontal", // vertical/horizontal
-        "alignX": "left",
-        "alignY": "bottom",
-      }
-    }
+    frame1: {
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      layout: {
+        spriteOrder: [],
+        spriteMargin: 0,
+        axis: "horizontal", // vertical/horizontal
+        alignX: "left",
+        alignY: "bottom",
+      },
+    },
   };
 
   if (!Scratch.extensions.unsandboxed) {
@@ -28,31 +28,31 @@
 
   function setFrame(name, x, y, width, height) {
     frames[name] = {
-      "x": 0,
-      "y": 0,
-      "width": 100,
-      "height": 100,
-      "layout": {
-        "spriteOrder": [],
-        "spriteMargin": 0,
-        "axis": "horizontal", // vertical/horizontal
-        "alignX": "left",
-        "alignY": "bottom",
-      }
-    }
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      layout: {
+        spriteOrder: [],
+        spriteMargin: 0,
+        axis: "horizontal", // vertical/horizontal
+        alignX: "left",
+        alignY: "bottom",
+      },
+    };
   }
 
   function getIDs() {
-    Scratch.vm.runtime.targets.map(sprite => {
+    Scratch.vm.runtime.targets.map((sprite) => {
       return sprite.id;
-    })
+    });
   }
 
   function findInFrame(searchString) {
     let foundInFrame = null;
 
     for (let frameName in frames) {
-      if (frames.hasOwnProperty(frameName)) {
+      if (Object.prototype.hasOwnProperty.call(frames, frameName)) {
         const spriteOrder = frames[frameName].layout.spriteOrder;
         if (spriteOrder.includes(searchString)) {
           foundInFrame = frameName;
@@ -61,32 +61,45 @@
       }
     }
 
-    return foundInFrame
+    return foundInFrame;
   }
 
   function getSizeByTargetId(targetId) {
-    const currentCostumeId = Scratch.vm.runtime.targets.find(target => target.id === targetId).currentCostume;
-    const size = Scratch.vm.runtime.targets.find(
-      target => target.id === targetId
-    ).sprite.costumes[currentCostumeId].size.map(
-      num => num * Scratch.vm.runtime.targets.find(
-        target => target.id === targetId
-      ).size / (Scratch.vm.runtime.targets.find(
-        target => target.id === targetId
-      ).sprite.costumes[currentCostumeId].dataFormat != "svg" ? 200 : 100)
-    );
+    const currentCostumeId = Scratch.vm.runtime.targets.find(
+      (target) => target.id === targetId
+    ).currentCostume;
+    const size = Scratch.vm.runtime.targets
+      .find((target) => target.id === targetId)
+      .sprite.costumes[currentCostumeId].size.map(
+        (num) =>
+          (num *
+            Scratch.vm.runtime.targets.find((target) => target.id === targetId)
+              .size) /
+          (Scratch.vm.runtime.targets.find((target) => target.id === targetId)
+            .sprite.costumes[currentCostumeId].dataFormat != "svg"
+            ? 200
+            : 100)
+      );
     return size;
   }
 
   function totalOfFrameSprite(frame) {
-    if (frames.hasOwnProperty(frame)) {
-      let total = [0,0];
-      let inc = [0,0];
+    if (Object.prototype.hasOwnProperty.call(frames, frame)) {
+      let total = [0, 0];
+      let inc = [0, 0];
       for (let targetId of frames[frame].layout.spriteOrder) {
         inc = getSizeByTargetId(targetId);
         total = total.map((value, index) => value + inc[index]);
-        if (targetId != frames[frame].layout.spriteOrder[frames[frame].layout.spriteOrder.length-1]) {
-          inc = [frames[frame].layout.spriteMargin,frames[frame].layout.spriteMargin];
+        if (
+          targetId !=
+          frames[frame].layout.spriteOrder[
+            frames[frame].layout.spriteOrder.length - 1
+          ]
+        ) {
+          inc = [
+            frames[frame].layout.spriteMargin,
+            frames[frame].layout.spriteMargin,
+          ];
           total = total.map((value, index) => value + inc[index]);
         }
       }
@@ -98,17 +111,19 @@
     const currentIndex = arr.indexOf(stringToMove);
 
     if (currentIndex === -1) {
-        return arr; // String not found in array
+      return arr; // String not found in array
     }
 
     arr.splice(currentIndex, 1); // Remove the string from its current index
     arr.splice(targetIndex, 0, stringToMove); // Insert the string at the target index
 
     return arr;
-}
+  }
 
   function checkIfValidID(target) {
-    const allIDs = Object.values(Scratch.vm.runtime.targets).map(target => target.id);
+    const allIDs = Object.values(Scratch.vm.runtime.targets).map(
+      (target) => target.id
+    );
   }
 
   class guiPositioning {
@@ -120,21 +135,22 @@
         color3: "#5f388a",
         name: "Sprite Frames",
         // docsURI: "https://orangeleaf36.is-a.dev/docs/gui-positioning/",
-        blocks: [{
+        blocks: [
+          {
             opcode: "getViewportPercentage",
             text: "[percentage]% of stage's [resolution]",
             blockType: Scratch.BlockType.REPORTER,
             arguments: {
               percentage: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "25"
+                defaultValue: "25",
               },
               resolution: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "RES_MENU",
-                defaultValue: "width"
-              }
-            }
+                defaultValue: "width",
+              },
+            },
           },
           "---",
           {
@@ -146,8 +162,8 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAMES_NOSTAGE",
                 defaultValue: "frame1",
-              }
-            }
+              },
+            },
           },
           {
             opcode: "unbindSprite",
@@ -158,14 +174,14 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAMES_NOSTAGE",
                 defaultValue: "frame1",
-              }
-            }
+              },
+            },
           },
           {
             opcode: "getElemNum",
             text: "element number in binded frame",
             blockType: Scratch.BlockType.REPORTER,
-            disableMonitor: true
+            disableMonitor: true,
           },
           {
             opcode: "setElemNumber",
@@ -174,9 +190,9 @@
             arguments: {
               elemNum: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              }
-            }
+                defaultValue: "0",
+              },
+            },
           },
           {
             opcode: "positionSpriteOnFrame",
@@ -185,13 +201,13 @@
             arguments: {
               x: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
+                defaultValue: "0",
               },
               y: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              }
-            }
+                defaultValue: "0",
+              },
+            },
           },
 
           "---",
@@ -199,7 +215,7 @@
             opcode: "listFrames",
             text: "frames",
             blockType: Scratch.BlockType.REPORTER,
-            disableMonitor: true
+            disableMonitor: true,
           },
           {
             opcode: "keysOfFrame",
@@ -209,9 +225,9 @@
               frame: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAMES_NOSTAGE",
-                defaultValue: "frame1"
-              }
-            }
+                defaultValue: "frame1",
+              },
+            },
           },
           {
             opcode: "keyOfFrame",
@@ -221,14 +237,14 @@
               key: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAME_PROPERTIES",
-                defaultValue: "x"
+                defaultValue: "x",
               },
               frame: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAMES_NOSTAGE",
-                defaultValue: "frame1"
-              }
-            }
+                defaultValue: "frame1",
+              },
+            },
           },
           "---",
           {
@@ -238,9 +254,9 @@
             arguments: {
               frame: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "frame1"
-              }
-            }
+                defaultValue: "frame1",
+              },
+            },
           },
           {
             opcode: "deleteFrame",
@@ -250,9 +266,9 @@
               frame: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAMES_NOSTAGE",
-                defaultValue: "frame1"
-              }
-            }
+                defaultValue: "frame1",
+              },
+            },
           },
           {
             opcode: "setPosFrame",
@@ -262,17 +278,17 @@
               frame: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAMES_NOSTAGE",
-                defaultValue: "frame1"
+                defaultValue: "frame1",
               },
               x: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
+                defaultValue: "0",
               },
               y: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0"
-              }
-            }
+                defaultValue: "0",
+              },
+            },
           },
           {
             opcode: "setSizeFrame",
@@ -282,17 +298,17 @@
               frame: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAMES_NOSTAGE",
-                defaultValue: "frame1"
+                defaultValue: "frame1",
               },
               width: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "100"
+                defaultValue: "100",
               },
               height: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "100"
-              }
-            }
+                defaultValue: "100",
+              },
+            },
           },
           {
             opcode: "setAlignXFrame",
@@ -302,14 +318,14 @@
               frame: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAMES_NOSTAGE",
-                defaultValue: "frame1"
+                defaultValue: "frame1",
               },
               align: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "left",
-                menu: "ALIGN_X"
-              }
-            }
+                menu: "ALIGN_X",
+              },
+            },
           },
           {
             opcode: "setAlignYFrame",
@@ -319,14 +335,14 @@
               frame: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAMES_NOSTAGE",
-                defaultValue: "frame1"
+                defaultValue: "frame1",
               },
               align: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "bottom",
-                menu: "ALIGN_Y"
-              }
-            }
+                menu: "ALIGN_Y",
+              },
+            },
           },
           {
             opcode: "setAxisFrame",
@@ -336,14 +352,14 @@
               frame: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAMES_NOSTAGE",
-                defaultValue: "frame1"
+                defaultValue: "frame1",
               },
               axis: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "horizontal",
-                menu: "AXIS"
-              }
-            }
+                menu: "AXIS",
+              },
+            },
           },
           {
             opcode: "setSpriteMarginFrame",
@@ -353,63 +369,70 @@
               frame: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "FRAMES_NOSTAGE",
-                defaultValue: "frame1"
+                defaultValue: "frame1",
               },
               margin: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "0",
-              }
-            }
+              },
+            },
           },
           {
             blockType: Scratch.BlockType.LABEL,
             text: "For use with Camera Controls:",
-            hideFromPalette: !Scratch.vm.extensionManager._loadedExtensions.has("DTcameracontrols")
+            hideFromPalette:
+              !Scratch.vm.extensionManager._loadedExtensions.has(
+                "DTcameracontrols"
+              ),
           },
           {
             opcode: "setZoom",
             blockType: Scratch.BlockType.COMMAND,
             text: "set zoom [zoom]",
-            hideFromPalette: !Scratch.vm.extensionManager._loadedExtensions.has("DTcameracontrols"),
+            hideFromPalette:
+              !Scratch.vm.extensionManager._loadedExtensions.has(
+                "DTcameracontrols"
+              ),
             arguments: {
               zoom: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "100"
-              }
-            }
+                defaultValue: "100",
+              },
+            },
           },
           {
             opcode: "adjustNumByZoom",
             blockType: Scratch.BlockType.REPORTER,
             text: "[adjust] number [number] to zoom",
-            hideFromPalette: !Scratch.vm.extensionManager._loadedExtensions.has("DTcameracontrols"),
+            hideFromPalette:
+              !Scratch.vm.extensionManager._loadedExtensions.has(
+                "DTcameracontrols"
+              ),
             arguments: {
               number: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "50"
+                defaultValue: "50",
               },
               adjust: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "ADJ_ZOOM",
-                defaultValue: "fit"
-              }
-            }
+                defaultValue: "fit",
+              },
+            },
           },
         ],
         menus: {
           RES_MENU: {
             acceptReporters: true,
-            items: [
-              "width", "height"
-            ]
+            items: ["width", "height"],
           },
           FRAMES: {
             acceptReporters: true,
-            items: "_getFramesAndStage" //This basically makes it run a function every time
+            items: "_getFramesAndStage", //This basically makes it run a function every time
           },
           FRAMES_NOSTAGE: {
             acceptReporters: true,
-            items: "_getFrames" //This basically makes it run a function every time
+            items: "_getFrames", //This basically makes it run a function every time
           },
           FRAME_PROPERTIES: {
             acceptReporters: false,
@@ -421,40 +444,26 @@
               "axis",
               "alignX",
               "alignY",
-              "margin"
-            ]
+              "margin",
+            ],
           },
           ADJ_ZOOM: {
             acceptReporters: false,
-            items: [
-              "fit",
-              "decrease"
-            ]
+            items: ["fit", "decrease"],
           },
           ALIGN_X: {
             acceptReporters: false,
-            items: [
-              "left",
-              "right",
-              "center"
-            ]
+            items: ["left", "right", "center"],
           },
           ALIGN_Y: {
             acceptReporters: false,
-            items: [
-              "bottom",
-              "top",
-              "center"
-            ]
+            items: ["bottom", "top", "center"],
           },
           AXIS: {
             acceptReporters: false,
-            items: [
-              "horizontal",
-              "vertical"
-            ]
-          }
-        }
+            items: ["horizontal", "vertical"],
+          },
+        },
       };
     }
 
@@ -470,13 +479,15 @@
     //Sprite
     bindSpiteToFrame(args, util) {
       console.log(util.target);
-      console.log(Scratch.vm.runtime.targets)
+      console.log(Scratch.vm.runtime.targets);
       // check if in frame
       let foundInFrame = null;
       foundInFrame = findInFrame(util.target.id);
       // remove if in frame
       if (foundInFrame) {
-        frames[foundInFrame].layout.spriteOrder = frames[foundInFrame].layout.spriteOrder.filter(item => item !== util.target.id);
+        frames[foundInFrame].layout.spriteOrder = frames[
+          foundInFrame
+        ].layout.spriteOrder.filter((item) => item !== util.target.id);
       }
       frames[args.frame].layout.spriteOrder.push(util.target.id);
     }
@@ -486,7 +497,9 @@
       foundInFrame = findInFrame(util.target.id);
       // remove if in frame
       if (foundInFrame) {
-        frames[foundInFrame].layout.spriteOrder = frames[foundInFrame].layout.spriteOrder.filter(item => item !== util.target.id);
+        frames[foundInFrame].layout.spriteOrder = frames[
+          foundInFrame
+        ].layout.spriteOrder.filter((item) => item !== util.target.id);
       }
     }
 
@@ -495,7 +508,11 @@
       foundInFrame = findInFrame(util.target.id);
       //check if spriteID is in frame
       if (foundInFrame) {
-        moveStringToIndex(frames[foundInFrame].layout.spriteOrder, util.target.id, args.elemNum);
+        moveStringToIndex(
+          frames[foundInFrame].layout.spriteOrder,
+          util.target.id,
+          args.elemNum
+        );
       }
     }
 
@@ -507,7 +524,7 @@
         //if spriteID is in frame, get index of spriteid in frame
         return frames[foundInFrame].layout.spriteOrder.indexOf(util.target.id);
       } else {
-        return -1
+        return -1;
       }
     }
 
@@ -520,82 +537,110 @@
       const frameY = frame.y;
       const frameWidth = frame.width;
       const frameHeight = frame.height;
-      const frameCenterOffset = totalOfFrameSprite(foundInFrame).map(element => element / 2);
-      let costumeSize = util.target.sprite.costumes[util.target.currentCostume].size.map(element => element * util.target.size / 100);
-      costumeSize = costumeSize.map(element => element / (util.target.sprite.costumes[util.target.currentCostume].dataFormat != "svg" ? 2 : 1));
+      const frameCenterOffset = totalOfFrameSprite(foundInFrame).map(
+        (element) => element / 2
+      );
+      let costumeSize = util.target.sprite.costumes[
+        util.target.currentCostume
+      ].size.map((element) => (element * util.target.size) / 100);
+      costumeSize = costumeSize.map(
+        (element) =>
+          element /
+          (util.target.sprite.costumes[util.target.currentCostume].dataFormat !=
+          "svg"
+            ? 2
+            : 1)
+      );
       let newX = 0;
       let newY = 0;
       if (frames[foundInFrame].layout.axis == "horizontal") {
         // Main Event /metaphor
-        switch(frames[foundInFrame].layout.alignX) {
-            case "left":
-              newX = frameX + (costumeSize[0]/2);
-              break;
-            case "right":
-              newX = frameX + (costumeSize[0]/2) + (((frameWidth - frameCenterOffset[0]) * 2)-frameWidth);
-              break;
-            case "center":
-              newX = frameX + (costumeSize[0]/2) + ((((frameWidth - frameCenterOffset[0]) * 2)-frameWidth)/2);
-              break;
-        }
-        // Align on the funny Y
-        switch(frames[foundInFrame].layout.alignY) {
-          case "bottom":
-            newY = frameY + (costumeSize[1]/2);
+        switch (frames[foundInFrame].layout.alignX) {
+          case "left":
+            newX = frameX + costumeSize[0] / 2;
             break;
-          case "top":
-            newY = frameY - (costumeSize[1]/2) + frameHeight;
+          case "right":
+            newX =
+              frameX +
+              costumeSize[0] / 2 +
+              ((frameWidth - frameCenterOffset[0]) * 2 - frameWidth);
             break;
           case "center":
-            newY = frameY + (frameHeight/2);
+            newX =
+              frameX +
+              costumeSize[0] / 2 +
+              ((frameWidth - frameCenterOffset[0]) * 2 - frameWidth) / 2;
+            break;
+        }
+        // Align on the funny Y
+        switch (frames[foundInFrame].layout.alignY) {
+          case "bottom":
+            newY = frameY + costumeSize[1] / 2;
+            break;
+          case "top":
+            newY = frameY - costumeSize[1] / 2 + frameHeight;
+            break;
+          case "center":
+            newY = frameY + frameHeight / 2;
             break;
         }
       } else if (frames[foundInFrame].layout.axis == "vertical") {
         // Align on the boring X
-        switch(frames[foundInFrame].layout.alignX) {
+        switch (frames[foundInFrame].layout.alignX) {
           case "left":
-            newX = frameX + (costumeSize[0]/2);
+            newX = frameX + costumeSize[0] / 2;
             break;
           case "right":
-            newX = frameX - (costumeSize[0]/2) + frameWidth;
+            newX = frameX - costumeSize[0] / 2 + frameWidth;
             break;
           case "center":
-            newX = frameX + (frameWidth/2);
+            newX = frameX + frameWidth / 2;
             break;
         }
         // Main Event /metaphor
-        switch(frames[foundInFrame].layout.alignY) {
+        switch (frames[foundInFrame].layout.alignY) {
           case "bottom":
-            newY = frameY + (costumeSize[1]/2);
+            newY = frameY + costumeSize[1] / 2;
             break;
           case "top":
-            newY = frameY + (costumeSize[1]/2) + (((frameHeight - frameCenterOffset[1]) * 2)-frameHeight);
+            newY =
+              frameY +
+              costumeSize[1] / 2 +
+              ((frameHeight - frameCenterOffset[1]) * 2 - frameHeight);
             break;
           case "center":
-            newY = frameY + (costumeSize[1]/2) + ((((frameHeight - frameCenterOffset[1]) * 2)-frameHeight)/2);
+            newY =
+              frameY +
+              costumeSize[1] / 2 +
+              ((frameHeight - frameCenterOffset[1]) * 2 - frameHeight) / 2;
             break;
         }
       }
 
-      if (foundInFrame) { // foundInFrame
+      if (foundInFrame) {
+        // foundInFrame
         //if spriteID is in frame, get index of spriteid in frame
         const endNum = frames[foundInFrame].layout.spriteOrder.length;
         //loop i from 0 to current spriteID index
         const start = 0;
         const step = 1;
-        const end = endNum - 1
+        const end = endNum - 1;
         for (let i = start; i !== end; i += step) {
-            if (i < frames[foundInFrame].layout.spriteOrder.indexOf(util.target.id)) {
-              if (frames[foundInFrame].layout.axis == "horizontal") {
-                newX += getSizeByTargetId(
+          if (
+            i < frames[foundInFrame].layout.spriteOrder.indexOf(util.target.id)
+          ) {
+            if (frames[foundInFrame].layout.axis == "horizontal") {
+              newX +=
+                getSizeByTargetId(
                   frames[foundInFrame].layout.spriteOrder[i]
                 )[0] + frames[foundInFrame].layout.spriteMargin;
-              } else if (frames[foundInFrame].layout.axis == "vertical") {
-                newY += getSizeByTargetId(
+            } else if (frames[foundInFrame].layout.axis == "vertical") {
+              newY +=
+                getSizeByTargetId(
                   frames[foundInFrame].layout.spriteOrder[i]
                 )[1] + frames[foundInFrame].layout.spriteMargin;
-              }
             }
+          }
         }
         util.target.setXY(newX, newY);
         //// get width&height of spriteID index i
@@ -609,7 +654,7 @@
     }
 
     deleteFrame(args, util) {
-      delete(frames[args.frame]);
+      delete frames[args.frame];
     }
 
     listFrames(args, util) {
@@ -625,7 +670,9 @@
         return JSON.stringify(frames[args.frame].layout);
       } else if (args.key == "margin") {
         return frames[args.frame].layout.spriteMargin;
-      } else if (["axis", "spriteOrder", "alignX", "alignY"].includes(args.key)) {
+      } else if (
+        ["axis", "spriteOrder", "alignX", "alignY"].includes(args.key)
+      ) {
         return frames[args.frame].layout[args.key];
       } else {
         return frames[args.frame][args.key];
@@ -639,7 +686,7 @@
         frame.y = args.y;
       } else {
         console.error("Frame doesn't exist!");
-        return 0
+        return 0;
       }
     }
 
@@ -650,7 +697,7 @@
         frame.height = args.height;
       } else {
         console.error("Frame doesn't exist!");
-        return 0
+        return 0;
       }
     }
 
@@ -660,7 +707,7 @@
         frame.layout.alignX = args.align;
       } else {
         console.error("Frame doesn't exist!");
-        return 0
+        return 0;
       }
     }
 
@@ -670,7 +717,7 @@
         frame.layout.alignY = args.align;
       } else {
         console.error("Frame doesn't exist!");
-        return 0
+        return 0;
       }
     }
 
@@ -680,7 +727,7 @@
         frame.layout.spriteMargin = args.margin;
       } else {
         console.error("Frame doesn't exist!");
-        return 0
+        return 0;
       }
     }
 
@@ -690,15 +737,17 @@
         frame.layout.axis = args.axis;
       } else {
         console.error("Frame doesn't exist!");
-        return 0
+        return 0;
       }
     }
 
-    _getFramesAndStage() { // The menu function
+    _getFramesAndStage() {
+      // The menu function
       return ["stage", ...Object.keys(frames)];
     }
 
-    _getFrames() { // The menu function
+    _getFrames() {
+      // The menu function
       return Object.keys(frames);
     }
 
@@ -708,7 +757,7 @@
     }
 
     adjustNumByZoom(args, util) {
-      console.log(util.size)
+      console.log(util.size);
       if (args.adjust == "decrease") {
         return args.number * zoom;
       } else if (args.adjust == "fit") {
@@ -722,7 +771,9 @@
 
   function waitForConditionAndExecute(callback) {
     const interval = setInterval(() => {
-      if (Scratch.vm.extensionManager._loadedExtensions.has("DTcameracontrols")) {
+      if (
+        Scratch.vm.extensionManager._loadedExtensions.has("DTcameracontrols")
+      ) {
         clearInterval(interval);
         callback();
       }
