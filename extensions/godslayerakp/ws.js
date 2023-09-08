@@ -9,18 +9,20 @@
     throw new Error("can not load outside unsandboxed mode");
   }
   // copied from https://stackoverflow.com/a/30407959
-  const blobToDataURL = blob => 
+  const blobToDataURL = (blob) =>
     new Promise((resolve, reject) => {
       var a = new FileReader();
-      a.onload = function(e) {resolve(e.target.result);}
-      a.onerror = reject
+      a.onload = function (e) {
+        resolve(e.target.result);
+      };
+      a.onerror = reject;
       a.readAsDataURL(blob);
-    })
+    });
 
   /* ------- BLOCKS -------- */
   const { BlockType, Cast, ArgumentType } = Scratch;
   const vm = Scratch.vm;
-  const runtime = vm.runtime
+  const runtime = vm.runtime;
 
   class WebSocketExtension {
     /**
@@ -90,9 +92,9 @@
             arguments: {
               INDEX: {
                 type: ArgumentType.NUMBER,
-                defaultValue: '1'
-              }
-            }
+                defaultValue: "1",
+              },
+            },
           },
           {
             opcode: "deleteCache",
@@ -104,7 +106,7 @@
             blockType: BlockType.COMMAND,
             text: "clear all data from cache",
           },
-          '---',
+          "---",
           {
             opcode: "onMessage",
             blockType: BlockType.EVENT,
@@ -191,7 +193,7 @@
     newInstance(args, utils) {
       // dont you dare remove this
       // eslint-disable-next-line no-async-promise-executor
-      return new Promise(async resolve => {
+      return new Promise(async (resolve) => {
         let resolved = false;
         let url = Cast.toString(args.URL);
         if (!/^(ws|wss):/is.test(url)) {
@@ -236,9 +238,9 @@
             state: "opening",
             websocket,
             messageThreads: [],
-            messageCache: []
+            messageCache: [],
           };
-          websocket.binaryType = "blob"
+          websocket.binaryType = "blob";
           websocket.onopen = (e) => {
             instance.state = "opened";
             instance.isOpen = true;
@@ -262,17 +264,18 @@
             if (!resolved) resolve();
           };
           websocket.onmessage = async (e) => {
-            let data = e.data
+            let data = e.data;
             // convert binnary data to a data uri
-            if (typeof data !== 'string') {
-              data = await blobToDataURL(data)
+            if (typeof data !== "string") {
+              data = await blobToDataURL(data);
             }
-            const stillWaiting = instance.messageThreads
-              .every(thread => runtime.isActiveThread(thread))
+            const stillWaiting = instance.messageThreads.every((thread) =>
+              runtime.isActiveThread(thread)
+            );
             // if we are still waiting on the message hats then push the message to cache
             if (stillWaiting && instance.messageThreads.length) {
-              instance.messageCache.push(data)
-              return
+              instance.messageCache.push(data);
+              return;
             }
             if (instance.messageCache.length > 0) {
               // cache must be handled by the user as we dont know how the user wants to handle the cache
@@ -280,7 +283,11 @@
             } else {
               instance.data = data;
               instance.gottenMessage = true;
-              const threads = runtime.startHats("gsaWebsocket_onMessage", null, target);
+              const threads = runtime.startHats(
+                "gsaWebsocket_onMessage",
+                null,
+                target
+              );
               instance.messageThreads = threads;
             }
           };
@@ -288,32 +295,32 @@
         } catch (err) {
           console.warn("couldnt create websocket instance because", err);
         }
-      })
+      });
     }
     cacheLength(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "0";
-      return instance.messageCache.length
+      return instance.messageCache.length;
     }
     readCache(args, utils) {
-      const idx = Cast.toNumber(args.INDEX)
+      const idx = Cast.toNumber(args.INDEX);
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
-      const data = instance.messageCache[idx - 1]
-      if (typeof data === 'undefined') return ""
-      return data
+      const data = instance.messageCache[idx - 1];
+      if (typeof data === "undefined") return "";
+      return data;
     }
     deleteCache(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
-      const data = instance.messageCache.pop()
-      instance.data = data
-      instance.gottenMessage = true
+      const data = instance.messageCache.pop();
+      instance.data = data;
+      instance.gottenMessage = true;
     }
     clearCache(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
-      instance.messageCache = []
+      instance.messageCache = [];
     }
     isConnected(_, utils) {
       const instance = this.instances[utils.target.id];
@@ -323,8 +330,8 @@
     messageReceived(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
-      const ret = instance.gottenMessage
-      instance.gottenMessage = false
+      const ret = instance.gottenMessage;
+      instance.gottenMessage = false;
       return ret;
     }
     messageData(_, utils) {
