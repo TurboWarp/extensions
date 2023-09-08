@@ -9,11 +9,13 @@
     throw new Error("can not load outside unsandboxed mode");
   }
   // copied from https://stackoverflow.com/a/30407959
-  function blobToDataURL(blob, callback) {
-    var a = new FileReader();
-    a.onload = function(e) {callback(e.target.result);}
-    a.readAsDataURL(blob);
-  }
+  const blobToDataURL = blob => 
+    new Promise((resolve, reject) => {
+      var a = new FileReader();
+      a.onload = function(e) {resolve(e.target.result);}
+      a.onerror = reject
+      a.readAsDataURL(blob);
+    })
 
   /* ------- BLOCKS -------- */
   const { BlockType, Cast, ArgumentType } = Scratch;
@@ -257,23 +259,23 @@
             runtime.startHats("gsaWebsocket_onError", null, target);
             if (!resolved) resolve();
           };
-          websocket.onmessage = (e) => {
+          websocket.onmessage = async (e) => {
+            let data = e.data
+            // convert binnary data to a data uri
+            if (typeof data !== 'string') {
+              data = await blobToDataURL(data)
+            }
             const stillWaiting = instance.messageThreads
               .every(thread => runtime.isActiveThread(thread))
             // if we are still waiting on the message hats then push the message to cache
-            if (stillWaiting) {
-              instance.messageCache.push(e.data)
+            if (stillWaiting && instance.messageThreads.length) {
+              instance.messageCache.push(data)
               return
             }
             if (instance.messageCache.length > 0) {
               // cache must be handled by the user as we dont know how the user wants to handle the cache
               runtime.startHats("gsaWebsocket_handleCache", null, target);
             } else {
-              let data = e.data
-              // convert binnary data to a data uri
-              if (typeof data !== 'string') {
-                data = blobToDataURL(data)
-              }
               instance.data = data;
               instance.gottenMessage = true;
               const threads = runtime.startHats("gsaWebsocket_onMessage", null, target);
