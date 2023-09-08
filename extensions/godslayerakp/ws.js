@@ -8,6 +8,12 @@
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("can not load outside unsandboxed mode");
   }
+  // copied from https://stackoverflow.com/a/30407959
+  function blobToDataURL(blob, callback) {
+    var a = new FileReader();
+    a.onload = function(e) {callback(e.target.result);}
+    a.readAsDataURL(blob);
+  }
 
   /* ------- BLOCKS -------- */
   const { BlockType, Cast, ArgumentType } = Scratch;
@@ -228,6 +234,7 @@
             messageThreads: [],
             messageCache: []
           };
+          websocket.binaryType = "blob"
           websocket.onopen = (e) => {
             instance.state = "opened";
             instance.isOpen = true;
@@ -262,7 +269,12 @@
               // cache must be handled by the user as we dont know how the user wants to handle the cache
               runtime.startHats("gsaWebsocket_handleCache", null, target);
             } else {
-              instance.data = e.data;
+              let data = e.data
+              // convert binnary data to a data uri
+              if (typeof data !== 'string') {
+                data = blobToDataURL(data)
+              }
+              instance.data = data;
               instance.gottenMessage = true;
               const threads = runtime.startHats("gsaWebsocket_onMessage", null, target);
               instance.messageThreads = threads;
