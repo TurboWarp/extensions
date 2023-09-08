@@ -189,6 +189,8 @@
       };
     }
     newInstance(args, utils) {
+      // dont you dare remove this
+      // eslint-disable-next-line no-async-promise-executor
       return new Promise(async resolve => {
         let resolved = false;
         let url = Cast.toString(args.URL);
