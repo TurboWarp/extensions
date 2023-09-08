@@ -45,7 +45,7 @@
             arguments: {
               URL: {
                 type: ArgumentType.STRING,
-                defaultValue: "wss://example.com",
+                defaultValue: "wss://echoserver.redman13.repl.co",
               },
             },
             text: "connect to [URL]",
