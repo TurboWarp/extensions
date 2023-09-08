@@ -10,8 +10,8 @@
     "frame1": {
       "x": 0,
       "y": 0,
-      "width": 240,
-      "height": 180,
+      "width": 100,
+      "height": 100,
       "layout": {
         "spriteOrder": [],
         "spriteMargin": 0,
@@ -30,8 +30,8 @@
     frames[name] = {
       "x": 0,
       "y": 0,
-      "width": 240,
-      "height": 180,
+      "width": 100,
+      "height": 100,
       "layout": {
         "spriteOrder": [],
         "spriteMargin": 0,
@@ -286,11 +286,11 @@
               },
               width: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "240"
+                defaultValue: "100"
               },
               height: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "180"
+                defaultValue: "100"
               }
             }
           },
