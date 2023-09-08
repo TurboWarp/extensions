@@ -1,4 +1,5 @@
 // Name: WebSocket
+// ID: gsaWebsocket
 // Description: an extension for connecting to websocket servers like discord and cloudlink.
 // By: RedMan13 <https://scratch.mit.edu/users/RedMan13/>
 
