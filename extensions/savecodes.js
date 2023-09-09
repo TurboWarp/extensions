@@ -1,7 +1,7 @@
 // Name: SaveCodes
 // ID: TeksSaveCodes
 // Description: Save codes easily using this!
-// By: Tek <https://github.com/Tekinical/>
+// By: Tek <https://scratch.mit.edu/users/ggez-io/>
 
 // ty skyhigh173 for fixing dropdown
 
