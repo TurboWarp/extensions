@@ -1,7 +1,7 @@
 // Name: TurboAPI
 // ID: TeksTurboAPI
 // Description: GET and POST requests in Scratch!
-// By: Tek <https://github.com/Tekinical/>
+// By: Tek <https://scratch.mit.edu/users/ggez-io/>
 
 (function (Scratch) {
   "use strict";
