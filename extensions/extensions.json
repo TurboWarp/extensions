@@ -10,6 +10,7 @@
   "fetch",
   "text",
   "local-storage",
+  "savecodes",
   "true-fantom/base",
   "bitwise",
   "Skyhigh173/bigint",
