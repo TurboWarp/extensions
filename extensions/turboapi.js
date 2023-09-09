@@ -1,5 +1,5 @@
 // Name: TurboAPI
-// ID: TurboAPI
+// ID: TeksTurboAPI
 // Description: GET and POST requests in Scratch!
 // By: Tek <https://github.com/Tekinical/>
 
@@ -19,7 +19,7 @@
     getInfo() {
       return {
         id: "TeksTurboAPI",
-        name: "TeksTurboAPI",
+        name: "TurboAPI",
         menuIconURI: Main,
         color1: "#FF4C4C",
         blocks: [
