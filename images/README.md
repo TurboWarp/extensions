@@ -40,7 +40,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Green flag icon is from the Scratch Foundation.
 
 ## frames.svg
- - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/1024.
+ - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/1025.
 
 ## clouddata-ping.svg
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1586210422
