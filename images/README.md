@@ -39,6 +39,9 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/498.
  - Green flag icon is from the Scratch Foundation.
 
+## frames.svg
+ - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/1024.
+
 ## clouddata-ping.svg
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1586210422
  - Based on work by [@David-Orangemoon](https://scratch.mit.edu/users/pinksheep2917/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1367719189
