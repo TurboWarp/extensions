@@ -1,7 +1,7 @@
 // Name: Scope Variables
 // ID: scopeVar
 // Description: Manage your data inside your stack (or substack).
-// By: SimonShiki <https://github.com/SimonShiki/>
+// By: SimonShiki <https://scratch.mit.edu/users/SinanGentoo/>
 // Original: Skyhigh173
 
 (function (Scratch) {
@@ -127,21 +127,22 @@
       util.startBranch(1, false);
     }
 
-    create(args, util) {
-      const varName = Cast.toString(args.var);
+    create (args, util) {
+      const varName = Cast.toString(args.VAR);
+      const stackFrames = util.thread.stackFrames;
       const outerStackFrame = stackFrames[stackFrames.length - 2];
       const vars = this._initScope(outerStackFrame);
-      vars[varName] = Cast.toString(args.value);
+      vars[varName] = Cast.toString(args.VALUE);
     }
 
     set(args, util) {
-      const varName = Cast.toString(args.var);
+      const varName = Cast.toString(args.VAR);
       const vars = this._getVarObjByName(varName, util.thread);
-      vars[varName] = Cast.toString(args.value);
+      vars[varName] = Cast.toString(args.VALUE);
     }
 
     get(args, util) {
-      const varName = Cast.toString(args.var);
+      const varName = Cast.toString(args.VAR);
       const vars = this._getVarObjByName(varName, util.thread);
       return vars[varName] ?? "";
     }
