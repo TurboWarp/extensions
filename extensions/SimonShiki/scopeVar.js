@@ -127,7 +127,7 @@
       util.startBranch(1, false);
     }
 
-    create (args, util) {
+    create(args, util) {
       const varName = Cast.toString(args.VAR);
       const stackFrames = util.thread.stackFrames;
       const outerStackFrame = stackFrames[stackFrames.length - 2];
