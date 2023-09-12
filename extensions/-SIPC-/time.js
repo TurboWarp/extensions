@@ -430,12 +430,6 @@
         default:
           return "Invalid Menu Input";
       }
-
-      if (isNaN(date.getTime())) {
-        return "Invalid Time Input";
-      } else {
-        return date;
-      }
     }
 
     daysinmonth(args) {
