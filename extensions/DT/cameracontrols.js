@@ -412,7 +412,7 @@
           {
             opcode: "blocktx",
             blockType: Scratch.BlockType.REPORTER,
-            text: "fix x [x]",
+            text: "stage to world x: [x]",
             arguments: {
               x: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -423,7 +423,7 @@
           {
             opcode: "blockty",
             blockType: Scratch.BlockType.REPORTER,
-            text: "fix y [y]",
+            text: "stage to world y: [y]",
             arguments: {
               y: {
                 type: Scratch.ArgumentType.NUMBER,
