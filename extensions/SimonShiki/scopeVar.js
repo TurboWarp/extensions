@@ -16,8 +16,9 @@
   class ScopeVar {
     getInfo() {
       return {
-        id: "scopeVar",
+        id: "shikiScopeVar",
         name: "Scope Variables",
+        docsURI: "https://extensions.turbowarp.org/SimonShiki/scopeVar",
         collaborator: "Skyhigh173, SimonShiki",
         description: "Manage your data inside.",
         color1: "#9999FF",
