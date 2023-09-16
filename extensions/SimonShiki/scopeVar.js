@@ -61,6 +61,21 @@
             },
           },
           {
+            opcode: "change",
+            blockType: BlockType.COMMAND,
+            text: "change scoped [VAR] by [INCREMENT]",
+            arguments: {
+              VAR: {
+                type: ArgumentType.STRING,
+                defaultValue: "variable",
+              },
+              INCREMENT: {
+                type: ArgumentType.NUMBER,
+                defaultValue: "1",
+              },
+            },
+          },
+          {
             opcode: "get",
             blockType: BlockType.REPORTER,
             text: "get scoped [VAR]",
@@ -140,6 +155,14 @@
       const varName = Cast.toString(args.VAR);
       const vars = this._getVarObjByName(varName, util.thread);
       vars[varName] = Cast.toString(args.VALUE);
+    }
+
+    change(args, util) {
+      const varName = Cast.toString(args.VAR);
+      const vars = this._getVarObjByName(varName, util.thread);
+      const castedValue = Cast.toNumber(vars[varName]);
+      const dValue = Cast.toNumber(args.INCREMENT);
+      vars[varName] = castedValue + dValue;
     }
 
     get(args, util) {
