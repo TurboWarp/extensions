@@ -152,6 +152,26 @@
               },
             },
           },
+          {
+            opcode: "evaluateTime",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[MATH] [START_TIME] and [END_TIME]",
+            arguments: {
+              START_TIME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "1970-01-01 00:00:00",
+              },
+              END_TIME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "2016-07-21 15:03:00",
+              },
+              MATH: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "MathType",
+                defaultValue: "add",
+              },
+            },
+          },
 
           '---',
 
@@ -233,6 +253,10 @@
           Time: {
             acceptReporters: true,
             items: ["year", "month", "day", "hour", "minute", "second"],
+          },
+          MathType: {
+            acceptReporters: true,
+            items: ["add", "subtract"],
           },
           Months: {
             acceptReporters: true,
@@ -482,6 +506,27 @@
       const startDate = new Date(dateString);
       const timeDifference = startDate - endDate;
       return (timeDifference <= 0);
+    }
+
+    evaluateTime(args) {
+      const startTimeString = args.START_TIME ? args.START_TIME : null;
+      const endTimeString = args.END_TIME ? args.END_TIME : null;
+      const startDate = new Date(startTimeString);
+      const endDate = new Date(endTimeString);
+
+      if (isNaN(startDate) || isNaN(endDate)) {
+        return "Invalid Time Input";
+      }
+
+      let timeDifference = "";
+      if (args.MATH === "add") {
+        timeDifference = startDate.getTime() + endDate.getTime();
+      } else {
+        timeDifference = startDate.getTime() - endDate.getTime();
+      }
+      timeDifference = new Date(timeDifference);
+      timeDifference = `${timeDifference.getFullYear()}-${(timeDifference.getMonth() + 1).toString().padStart(2, '0')}-${timeDifference.getDate().toString().padStart(2, '0')} ${timeDifference.getHours().toString().padStart(2, '0')}:${timeDifference.getMinutes().toString().padStart(2, '0')}:${timeDifference.getSeconds().toString().padStart(2, '0')}`;
+      return timeDifference;
     }
   }
   Scratch.extensions.register(new Time());
