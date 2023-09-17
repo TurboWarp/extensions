@@ -39,6 +39,7 @@
   "ar",
   "encoding",
   "Lily/SoundExpanded",
+  "SamuelLouf/AudioRecording",
   "Lily/TempVariables2",
   "Lily/MoreTimers",
   "clouddata-ping",
