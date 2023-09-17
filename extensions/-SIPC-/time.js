@@ -551,9 +551,16 @@
       } else {
         timeDifference = startDate.getTime() - endDate.getTime();
       }
-      timeDifference = new Date(timeDifference);
-      timeDifference = `${timeDifference.getFullYear()}-${(timeDifference.getMonth() + 1).toString().padStart(2, "0")}-${timeDifference.getDate().toString().padStart(2, "0")} ${timeDifference.getHours().toString().padStart(2, "0")}:${timeDifference.getMinutes().toString().padStart(2, "0")}:${timeDifference.getSeconds().toString().padStart(2, "0")}`;
-      return timeDifference;
+      const resultDate = new Date(timeDifference);
+      const year = resultDate.getFullYear();
+      const month = String(resultDate.getMonth() + 1).padStart(2, '0');
+      const day = String(resultDate.getDate()).padStart(2, '0');
+      const hours = String(resultDate.getHours()).padStart(2, '0');
+      const minutes = String(resultDate.getMinutes()).padStart(2, '0');
+      const seconds = String(resultDate.getSeconds()).padStart(2, '0');
+
+      const formattedResult = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      return formattedResult;
     }
   }
   Scratch.extensions.register(new Time());
