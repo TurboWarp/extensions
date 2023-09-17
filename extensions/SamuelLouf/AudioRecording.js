@@ -219,12 +219,6 @@
   }
 
   class AudioRecording {
-    constructor(renderer) {
-      this.audioElement = document.createElement("audio");
-      this.audioElement.classList.add("samuelloufaudiorecording");
-      this.audioElement.src = "";
-    }
-
     getInfo() {
       return {
         id: 'samuelloufaudiorecording',
@@ -266,11 +260,6 @@
                 defaultValue: 'Recording'
               }
             }
-          },
-          {
-            opcode: 'recording_length',
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: 'recording\'s length'
           }
         ],
         menus: {
@@ -334,15 +323,6 @@
     import_recording (args) {
       var recording = getLastestRecording();
       this.importSound({TEXT: recording, NAME: args.name});
-    }
-
-    recording_length () {
-      if (getLastestRecording() != undefined){
-        this.audioElement.src = getLastestRecording();
-        return this.audioElement.duration;
-      } else {
-        return 'no last recording';
-      }
     }
   }
   Scratch.extensions.register(new AudioRecording());
