@@ -8,6 +8,7 @@
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
+  const renderer = vm.renderer;
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Audio Recording must run unsandboxed');
@@ -218,6 +219,12 @@
   }
 
   class AudioRecording {
+    constructor(renderer) {
+      this.audioElement = document.createElement("audio");
+      this.audioElement.classList.add("samuelloufaudiorecording");
+      this.audioElement.src = "";
+    }
+
     getInfo() {
       return {
         id: 'samuelloufaudiorecording',
@@ -322,6 +329,15 @@
     import_recording (args) {
       var recording = getLastestRecording();
       this.importSound({TEXT: recording, NAME: args.name});
+    }
+
+    recording_length () {
+      if (getLastestRecording() != undefined){
+        this.audioElement.src = getLastestRecording();
+        return this.audioElement.duration;
+      } else {
+        return 'no last recording';
+      }
     }
   }
   Scratch.extensions.register(new AudioRecording());
