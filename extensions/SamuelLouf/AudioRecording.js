@@ -140,11 +140,6 @@
   function startAudioRecording() {
       //start recording using the audio recording API
       audioRecorder.start()
-          .then(() => { //on success
-  
-              //store the recording start time to display the elapsed time according to it
-              audioRecordStartTime = new Date();
-          })
           .catch(error => { //on error
               //No Browser Support Error
               if (error.message.includes("mediaDevices API or getUserMedia method is not supported in this browser.")) {
@@ -155,7 +150,7 @@
               switch (error.name) {
                   default:
                       console.log("An error occured with the error name " + error.name);
-              };
+              }
           });
   }
   /** Stop the currently started audio recording */
@@ -187,7 +182,7 @@
     localStorage.setItem('audioBlobsNames', JSON.stringify(audioBlobsNames));
   }
   
-  async function stopAudioRecording(nameas = null) {
+  function stopAudioRecording(nameas = null) {
   
       audioRecorder.stop()
           .then(audioAsblob => {
@@ -199,7 +194,7 @@
               switch (error.name) {
                   default:
                       console.log("An error occured with the error name " + error.name);
-              };
+              }
           });
   }
   
