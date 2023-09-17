@@ -266,6 +266,11 @@
                 defaultValue: 'Recording'
               }
             }
+          },
+          {
+            opcode: 'recording_length',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'recording\'s length'
           }
         ],
         menus: {
