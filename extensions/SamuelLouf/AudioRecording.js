@@ -52,6 +52,11 @@
         menuIconURI: icon,
         blocks: [
           // Blocks
+          {
+            opcode: 'can_record_sound',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'can record sound?'
+          }
         ],
         menus: {
           // Menus
@@ -60,6 +65,10 @@
     }
 
     // Functions
+    can_record_sound() {
+      return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    }
+    
   }
   Scratch.extensions.register(new AudioRecording());
 })(Scratch);
