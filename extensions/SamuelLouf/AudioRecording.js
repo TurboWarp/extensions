@@ -207,6 +207,16 @@
     audioRecorder.cancel();
   }
 
+  function getLastestRecording() {
+    var audioBlobs = JSON.parse(localStorage.getItem('audioBlobs'));
+    return audioBlobs[(audioBlobs.length - 1)];
+  }
+
+  function getRecordingByNumber(number) {
+    var audioBlobs = JSON.parse(localStorage.getItem('audioBlobs'));
+    return audioBlobs[(number - 1)];
+  }
+
   class AudioRecording {
     getInfo() {
       return {
@@ -238,6 +248,17 @@
             opcode: 'is_recording',
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'is recording?'
+          },
+          {
+            opcode: 'import_recording',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'import recording as [name]',
+            arguments: {
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Recording'
+              }
+            }
           }
         ],
         menus: {
@@ -276,6 +297,31 @@
 
     is_recording () {
       return isrecording;
+    }
+
+    importSound({ TEXT, NAME }) {
+      Scratch.fetch(TEXT)
+        .then((r) => r.arrayBuffer())
+        .then((arrayBuffer) => {
+          const storage = vm.runtime.storage;
+          const asset = new storage.Asset(
+            storage.AssetType.Sound,
+            null,
+            storage.DataFormat.MP3,
+            new Uint8Array(arrayBuffer),
+            true
+          );
+          vm.addSound({
+            md5: asset.assetId + "." + asset.dataFormat,
+            asset: asset,
+            name: NAME + "",
+          });
+        });
+    }
+
+    import_recording (args) {
+      var recording = getLastestRecording();
+      this.importSound({TEXT: recording, NAME: args.name});
     }
   }
   Scratch.extensions.register(new AudioRecording());
