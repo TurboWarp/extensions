@@ -260,6 +260,11 @@
                 defaultValue: 'Recording'
               }
             }
+          },
+          {
+            opcode: 'recording_base',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'recording base64'
           }
         ],
         menus: {
@@ -323,6 +328,14 @@
     import_recording (args) {
       var recording = getLastestRecording();
       this.importSound({TEXT: recording, NAME: args.name});
+    }
+
+    recording_base () {
+      if (localStorage.getItem('audioBlobs') == '[]'){
+        return "There are no recordings";
+      } else {
+        return getLastestRecording();
+      }
     }
   }
   Scratch.extensions.register(new AudioRecording());
