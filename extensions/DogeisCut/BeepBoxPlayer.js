@@ -21734,7 +21734,7 @@
   let synths = [];
   var synth = new beepbox.Synth(url);
   synths.push(synth);
-  synth.volume = 1.5;
+  synth.volume = 1;
 
   var targetSynth = 0;
 
@@ -22060,7 +22060,7 @@
         case "channels":
           return synth.song.channels.length;
         case "volume":
-          return (synth.volume / 1.5) * 100;
+          return (synth.volume / 1) * 100;
         case "title":
           return synth.song.title;
       }
@@ -22125,7 +22125,7 @@
     setSongVolume(args) {
       synth.volume = Math.max(
         Math.min(
-          ((args.VOLUME * 1.5) / 100) *
+          ((args.VOLUME * 1) / 100) *
             Scratch.vm.runtime.audioEngine.inputNode.gain.value,
           200
         ),
@@ -22135,7 +22135,7 @@
     changeSongVolume(args) {
       synth.volume += Math.max(
         Math.min(
-          ((args.VOLUME * 1.5) / 100) *
+          ((args.VOLUME * 1) / 100) *
             Scratch.vm.runtime.audioEngine.inputNode.gain.value,
           200
         ),
@@ -22189,7 +22189,7 @@
       synths = [];
       synth = new beepbox.Synth(url);
       synths.push(synth);
-      synth.volume = 1.5;
+      synth.volume = 1;
     }
   }
 
