@@ -22060,7 +22060,7 @@
         case "channels":
           return synth.song.channels.length;
         case "volume":
-          return (synth.volume / 2) * 100;
+          return (synth.volume / 1.5) * 100;
         case "title":
           return synth.song.title;
       }
