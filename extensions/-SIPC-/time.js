@@ -159,11 +159,11 @@
             arguments: {
               START_TIME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "1970-01-01 00:00:00",
+                defaultValue: "2023-10-10 00:00:00",
               },
               END_TIME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "2016-07-21 15:03:00",
+                defaultValue: "1970-01-01 00:10:00",
               },
               MATH: {
                 type: Scratch.ArgumentType.STRING,
@@ -178,11 +178,16 @@
           {
             opcode: "converttotime",
             blockType: Scratch.BlockType.REPORTER,
-            text: "convert [VALUE] to time (hour:minute:second)",
+            text: "convert [VALUE] seconds to [ROUND] time",
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 0,
+              },
+              ROUND: {
+                type: Scratch.ArgumentType.NUMBER,
+                menu: "Round",
+                defaultValue: "exact",
               },
             },
           },
@@ -257,6 +262,10 @@
           MathType: {
             acceptReporters: true,
             items: ["add", "subtract"],
+          },
+          Round: {
+            acceptReporters: true,
+            items: ["rounded", "exact"],
           },
           Months: {
             acceptReporters: true,
@@ -445,7 +454,7 @@
 
     converttotime(args) {
       const timestamp = args.VALUE ? args.VALUE : 0;
-      const seconds = timestamp % 60;
+      const seconds = args.ROUND === "rounded" ? Math.round(timestamp % 60) : timestamp % 60;
       const minutes = Math.round((timestamp / 60) % 60);
       const hours = Math.round((timestamp / 3600) % 24);
 
@@ -551,11 +560,12 @@
       }
       const resultDate = new Date(timeDifference);
       const year = resultDate.getFullYear();
-      const month = String(resultDate.getMonth() + 1).padStart(2, '0');
-      const day = String(resultDate.getDate()).padStart(2, '0');
-      const hours = String(resultDate.getHours()).padStart(2, '0');
-      const minutes = String(resultDate.getMinutes()).padStart(2, '0');
-      const seconds = String(resultDate.getSeconds()).padStart(2, '0');
+      const month = String(resultDate.getMonth() + 1).padStart(2, "0");
+      const day = String(resultDate.getDate()).padStart(2, "0");
+      const changer = args.MATH === "add" ? 8 : -8;
+      const hours = String(resultDate.getHours() - changer).padStart(2, "0");
+      const minutes = String(resultDate.getMinutes()).padStart(2, "0");
+      const seconds = String(resultDate.getSeconds()).padStart(2, "0");
 
       const formattedResult = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       return formattedResult;
