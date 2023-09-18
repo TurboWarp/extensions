@@ -563,7 +563,7 @@
       const month = String(resultDate.getMonth() + 1).padStart(2, "0");
       const day = String(resultDate.getDate()).padStart(2, "0");
       const changer = args.MATH === "add" ? 8 : -8;
-      const hours = String(resultDate.getHours() - changer).padStart(2, "0");
+      const hours = String(resultDate.getHours()).padStart(2, "0");
       const minutes = String(resultDate.getMinutes()).padStart(2, "0");
       const seconds = String(resultDate.getSeconds()).padStart(2, "0");
 
