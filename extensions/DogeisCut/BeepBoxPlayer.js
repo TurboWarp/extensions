@@ -22126,23 +22126,11 @@
     }
 
     setSongVolume(args) {
-      synth.volume = Math.max(
-        Math.min(
-          ((args.VOLUME * 1) / 100), 
-          200
-        ),
-        0
-      );
+      synth.volume = Math.max(Math.min((args.VOLUME * 1) / 100, 200), 0);
     }
     changeSongVolume(args) {
       synth.volume += args.VOLUME;
-      synth.volume = Math.max(
-        Math.min(
-          ((synth.volume * 1) / 100),
-          200
-        ),
-        0
-      );
+      synth.volume = Math.max(Math.min((synth.volume * 1) / 100, 200), 0);
     }
 
     disableLooping(args) {
