@@ -13,6 +13,7 @@
   //So, i have to copy and paste the entire beepbox player code in here, as adding in scripts is not advised, it is... not pretty.
   //Also, the source code uses `new Function()` but it doesnt take user input. I cannot remove this as beepbox it uses it to not have to branch on the number of voices. the fm code does the same
   /* eslint-disable*/
+  // prettier-ignore
   var beepbox = (function (e) {
     "use strict";
     /*!
@@ -21725,12 +21726,15 @@
   //the above minified code is a compiled version of https://github.com/DogeisCut/ultraabox-for-turbowarp/blob/main/synth/synth.ts
   //which is based on https://github.com/ultraabox/ultrabox_typescript/blob/main/synth/synth.ts
   /* eslint-enable*/
+  //todo: actually minify the above code (its all thanks to prettier for ruining it.)
 
   console.log(beepbox);
 
-  var url =
+  const defaultSong = 
     "5sbk4l00e0ftaa7g0fj7i0r1w1100f0000d1110c0000h0000v2200o3320b4z8Ql6hkpUsiczhkp5hDxN8Od5hAl6u74z8Ql6hkpUsp24ZFzzQ1E39kxIceEtoV8s66138l1S0L1u2139l1H39McyaeOgKA0TxAU213jj0NM4x8i0o0c86ywz7keUtVxQk1E3hi6OEcB8Atl0q0Qmm6eCexg6wd50oczkhO8VcsEeAc26gG3E1q2U406hG3i6jw94ksf8i5Uo0dZY26kHHzxp2gAgM0o4d516ej7uegceGwd0q84czm6yj8Xa0Q1EIIctcvq0Q1EE3ihE8W1OgV8s46Icxk7o24110w0OdgqMOk392OEWhS1ANQQ4toUctBpzRxx1M0WNSk1I3ANMEXwS3I79xSzJ7q6QtEXgw0";
 
+  var url = defaultSong;
+    
   let synths = [];
   var synth = new beepbox.Synth(url);
   synths.push(synth);
@@ -21824,8 +21828,7 @@
             arguments: {
               SONG: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue:
-                  "5sbk4l00e0ftaa7g0fj7i0r1w1100f0000d1110c0000h0000v2200o3320b4z8Ql6hkpUsiczhkp5hDxN8Od5hAl6u74z8Ql6hkpUsp24ZFzzQ1E39kxIceEtoV8s66138l1S0L1u2139l1H39McyaeOgKA0TxAU213jj0NM4x8i0o0c86ywz7keUtVxQk1E3hi6OEcB8Atl0q0Qmm6eCexg6wd50oczkhO8VcsEeAc26gG3E1q2U406hG3i6jw94ksf8i5Uo0dZY26kHHzxp2gAgM0o4d516ej7uegceGwd0q84czm6yj8Xa0Q1EIIctcvq0Q1EE3ihE8W1OgV8s46Icxk7o24110w0OdgqMOk392OEWhS1ANQQ4toUctBpzRxx1M0WNSk1I3ANMEXwS3I79xSzJ7q6QtEXgw0",
+                defaultValue: defaultSong
               },
             },
           },
@@ -22081,8 +22084,6 @@
     }
 
     setSong(args) {
-      //let song = Scratch.Cast.toString(args.SONG).replace(/\\/g, '/').replace(/https:\/\/|jummbus\.bitbucket\.io|www\.beepbox\.co|ultraabox\.github\.io|\/#/g, '').replace(/[^A-Za-z0-9_]/g, '') //better safe than sorry
-      //let song = Scratch.Cast.toString(args.SONG).replace(/.*?#/, "").replace(/[^A-Za-z0-9_\-()%!<>~"'.*]/g, ""); //if your song uses emojis, i dont care
       let song = Scratch.Cast.toString(args.SONG);
       song = isValidJSON(song) ? song : song.replace(/.*?#/, "");
       console.log("Loaded BeepBox Song: " + song);
@@ -22120,23 +22121,24 @@
     }
     restartSong() {
       synth.snapToStart();
+      synth.activateAudio();
+      synth.play();
     }
 
     setSongVolume(args) {
       synth.volume = Math.max(
         Math.min(
-          ((args.VOLUME * 1) / 100) *
-            Scratch.vm.runtime.audioEngine.inputNode.gain.value,
+          ((args.VOLUME * 1) / 100), 
           200
         ),
         0
       );
     }
     changeSongVolume(args) {
-      synth.volume += Math.max(
+      synth.volume += args.VOLUME;
+      synth.volume = Math.max(
         Math.min(
-          ((args.VOLUME * 1) / 100) *
-            Scratch.vm.runtime.audioEngine.inputNode.gain.value,
+          ((synth.volume * 1) / 100),
           200
         ),
         0
