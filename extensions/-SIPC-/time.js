@@ -454,8 +454,8 @@
 
     converttotime(args) {
       const timestamp = args.VALUE ? args.VALUE : 0;
-      const seconds = args.ROUND === "rounded" ? 
-        Math.round(timestamp % 60) : timestamp % 60;
+      const seconds =
+        args.ROUND === "rounded" ? Math.round(timestamp % 60) : timestamp % 60;
       const minutes = Math.round((timestamp / 60) % 60);
       const hours = Math.round((timestamp / 3600) % 24);
 
