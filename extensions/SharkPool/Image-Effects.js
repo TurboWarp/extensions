@@ -3,7 +3,7 @@
 // Description: Apply a variety of new effects to the data URI of Images or Costumes.
 // By: SharkPool <https://github.com/SharkPool-SP>
 
-// Version V.1.3.0
+// Version V.1.4.0
 
 (function (Scratch) {
   "use strict";
@@ -15,12 +15,20 @@
   const menuIconURI =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMzUuNzMwNjQiIGhlaWdodD0iMTM1LjczMDY0IiB2aWV3Qm94PSIwLDAsMTM1LjczMDY0LDEzNS43MzA2NCI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE3Mi4xMzQ2OCwtMTEyLjEzNDY4KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsPSIjOTk2NmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMTc1Ljg4NDY4LDE4MGMwLC0zNS40MDk5MSAyOC43MDU0MSwtNjQuMTE1MzIgNjQuMTE1MzIsLTY0LjExNTMyYzM1LjQwOTkxLDAgNjQuMTE1MzIsMjguNzA1NDEgNjQuMTE1MzIsNjQuMTE1MzJjMCwzNS40MDk5MSAtMjguNzA1NDEsNjQuMTE1MzIgLTY0LjExNTMyLDY0LjExNTMyYy0zNS40MDk5MSwwIC02NC4xMTUzMiwtMjguNzA1NDEgLTY0LjExNTMyLC02NC4xMTUzMnoiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBzdHJva2U9IiM3NzRkY2IiIHN0cm9rZS13aWR0aD0iNy41Ii8+PHBhdGggZD0iTTI0MC40NDQ3MSwxNzMuMjY3NjJjNC4wOTQ5MiwtMS42NzM4NiA5LjMwMjQ5LC0xLjE5MDEgMTIuMTM5MDIsLTUuMDU1MzljMi45NDAxOSwtNC4wMDY1NSAzLjgyMTg1LC0xMi4zNTQ5MyA0LjQ0ODA0LC0xNy4yNTg2MWMwLjYxMDA3LC00Ljc3NzQ5IDEuNzYyMTIsLTQuNjEwOTMgMi42MzYyMywwLjI0MTA0YzAuOTI1MDIsNS4xMzQ1MyAyLjAzNDk4LDEzLjY3Njk1IDQuNjU0MTcsMTcuMjQ2MDhjMi45OTI4OSw0LjA3ODM3IDguOTIyODMsMy44NDQ2MiAxMy4zMDU3Miw1LjUyMjUyYzMuMDc3MjksMS4xNzgwNyAyLjgwMzA3LDEuODUyNzYgLTAuNTU3NTMsMi41NjMxOGMtNC4zMTUyNSwwLjkxMjIyIC05LjkwMjk2LDEuNjU3MSAtMTIuOTE1ODksNS43NjI3N2MtMy4xNzkwMyw0LjMzMjAyIC00LjI2MTk4LDE0LjY4OTEyIC01LjAwNjEyLDIwLjg0MjU5Yy0wLjUxMDM2LDQuMjIwMjYgLTEuOTQ5MjEsMi40MjI2MiAtMi4yMTYzMiwwLjI3NjAxYy0wLjc3MDA3LC02LjE4ODY3IC0xLjk2NjQ1LC0xNi44MzA3NiAtNS41MjIxNiwtMjEuNjc2MDdjLTIuNTE2NjgsLTMuNDI5NDQgLTYuNjk2MjksLTQuMDQ3ODUgLTEwLjExNzcyLC01LjAwMDM5Yy00LjYxNjIsLTEuMjg1MTggLTUuMTMyNDYsLTEuNzEyMTUgLTAuODQ3NDUsLTMuNDYzNzJ6IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjE1Ii8+PHBhdGggZD0iTTI1Mi41ODM3MywxNjguMjEyMjNjMi45NDAxOSwtNC4wMDY1NSAyLjgyMTg1LC0xMi4zNTQ5MiAzLjQ0ODA0LC0xNy4yNTg2YzAuNjEwMDcsLTQuNzc3NDkgMy44NzMyMywtNC42MTA5MyA0Ljc0NzM0LDAuMjQxMDRjMC45MjUwMiw1LjEzNDUzIDAuOTIzODcsMTMuNjc2OTUgMy41NDMwNiwxNy4yNDYwOGMyLjk5Mjg5LDQuMDc4MzcgOC4zNjcyNywyLjczMzUxIDEyLjc1MDE2LDQuNDExNGMzLjA3NzI5LDEuMTc4MDcgMy4zNTg2MywzLjg1Mjc2IC0wLjAwMTk3LDQuNTYzMThjLTQuMzE1MjUsMC45MTIyMiAtOS45MDI5NiwwLjc2ODIxIC0xMi45MTU4OSw0Ljg3Mzg4Yy0zLjE3OTAzLDQuMzMyMDIgLTMuNDg0MiwxNC45MTEzNCAtNC4yMjgzMywyMS4wNjQ4MWMtMC41MTAzNiw0LjIyMDI2IC0zLjcyNjk5LDIuMjAwNCAtMy45OTQxLDAuMDUzNzljLTAuNzcwMDcsLTYuMTg4NjcgLTAuOTY2NDUsLTE2LjgzMDc2IC00LjUyMjE2LC0yMS42NzYwN2MtMi41MTY2OCwtMy40Mjk0NCAtNy40NzQwNywtMy4zODExOCAtMTAuODk1NSwtNC4zMzM3MmMtNC42MTYyLC0xLjI4NTE4IC00LjM1NDY4LC0zLjI2NzcxIC0wLjA2OTY3LC01LjAxOTI4YzAsMCA5LjMwMjQ5LC0wLjMwMTIzIDEyLjEzOTAyLC00LjE2NjUxeiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTIxNC4xNjUzMSwxNTIuMzM0NzJjMS40OTI4MiwtMS42NDY2OSAxLjk0MDQ3LC01LjA3Nzg3IDIuMjU4NCwtNy4wOTMyOGMwLjMwOTc1LC0xLjk2MzU1IDAuODk0NjcsLTEuODk1MDkgMS4zMzg0OSwwLjA5OTA2YzAuNDY5NjYsMi4xMTAyOSAxLjAzMzIyLDUuNjIxMjMgMi4zNjMwNiw3LjA4ODE0YzEuNTE5NTgsMS42NzYyMSA0LjUzMDM3LDEuNTgwMTMgNi43NTU3LDIuMjY5NzVjMS41NjI0MywwLjQ4NDE4IDEuNDIzMiwwLjc2MTQ4IC0wLjI4MzA3LDEuMDUzNDZjLTIuMTkwOTgsMC4zNzQ5MiAtNS4wMjgwMSwwLjY4MTA3IC02LjU1Nzc2LDIuMzY4NWMtMS42MTQwOCwxLjc4MDQ2IC0yLjE2MzkzLDYuMDM3MjIgLTIuNTQxNzUsOC41NjYyOWMtMC4yNTkxMiwxLjczNDUyIC0wLjk4OTY3LDAuOTk1NyAtMS4xMjUyOSwwLjExMzQ0Yy0wLjM5MDk5LC0yLjU0MzU0IC0wLjk5ODQyLC02LjkxNzQ0IC0yLjgwMzc2LC04LjkwODg2Yy0xLjI3Nzc5LC0xLjQwOTUgLTMuMzk5OSwtMS42NjM2NyAtNS4xMzcwNiwtMi4wNTUxNmMtMi4zNDM3NywtMC41MjgyMSAtMi42MDU5LC0wLjcwMzcgLTAuNDMwMjcsLTEuNDIzNTljMCwwIDQuNzIzMTMsLTAuNDg5MTIgNi4xNjMzMSwtMi4wNzc3NXoiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNMjE0LjE2NTMxLDE1Mi4zMzQ3MmMxLjQ5MjgyLC0xLjY0NjY5IDEuMjczODEsLTQuOTY2NzYgMS41OTE3NCwtNi45ODIxN2MwLjMwOTc1LC0xLjk2MzU1IDIuMTE2ODksLTIuMDA2MiAyLjU2MDcsLTAuMDEyMDVjMC40Njk2NiwyLjExMDI5IDAuNDc3NjcsNS42MjEyMyAxLjgwNzUxLDcuMDg4MTRjMS41MTk1OCwxLjY3NjIxIDQuMzA4MTUsMC42MzU2OCA2LjUzMzQ4LDEuMzI1M2MxLjU2MjQzLDAuNDg0MTggMS42NDU0MiwyLjI2MTQ4IC0wLjA2MDg1LDIuNTUzNDZjLTIuMTkwOTgsMC4zNzQ5MiAtNS4wMjgwMSwwLjEyNTUyIC02LjU1Nzc2LDEuODEyOTVjLTEuNjE0MDgsMS43ODA0NiAtMS4xNjM5Myw2LjAzNzIyIC0xLjU0MTc1LDguNTY2MjljLTAuMjU5MTIsMS43MzQ1MiAtMi43Njc0NSwwLjk5NTcgLTIuOTAzMDcsMC4xMTM0NGMtMC4zOTA5OSwtMi41NDM1NCAtMC4yMjA2NCwtNi45MTc0NCAtMi4wMjU5OCwtOC45MDg4NmMtMS4yNzc3OSwtMS40MDk1IC00LjI4ODc5LC0wLjk5NyAtNi4wMjU5NSwtMS4zODg0OWMtMi4wMDQ1OCwtMC40NTE3NyAtMS4yNjQyMSwtMi4yMDEwOCAtMC4wMDA1MiwtMi42OTgwOWMwLjIxMzgyLC0wLjA4NDA5IDUuMTgyMjgsMC4xMTg3MSA2LjYyMjQ2LC0xLjQ2OTkyeiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTIyMC44NTY0LDIwNC44MDk1MWMxLjU2MTg4LC0xLjk1NjIgMi4wMzAyNSwtNi4wMzIyOSAyLjM2Mjg5LC04LjQyNjUyYzAuMzI0MDgsLTIuMzMyNjIgMC45MzYwNiwtMi4yNTEyOSAxLjQwMDQxLDAuMTE3NjhjMC40OTEzOSwyLjUwNjkzIDEuMDgxMDIsNi42Nzc3OSAyLjQ3MjM5LDguNDIwNDFjMS41ODk4OSwxLjk5MTI2IDQuNzM5OTgsMS44NzcxNCA3LjA2ODI1LDIuNjk2MzdjMS42MzQ3MiwwLjU3NTIgMS40ODkwNSwwLjkwNDYxIC0wLjI5NjE3LDEuMjUxNDdjLTIuMjkyMzUsMC40NDUzOCAtNS4yNjA2NCwwLjgwOTA4IC02Ljg2MTE2LDIuODEzNjhjLTEuNjg4NzUsMi4xMTUxMSAtMi4yNjQwNSw3LjE3MTk4IC0yLjY1OTM1LDEwLjE3NjQxYy0wLjI3MTExLDIuMDYwNTQgLTEuMDM1NDUsMS4xODI4NSAtMS4xNzczNSwwLjEzNDc2Yy0wLjQwOTA4LC0zLjAyMTYyIC0xLjA0NDYxLC04LjIxNzY0IC0yLjkzMzQ4LC0xMC41ODMzNmMtMS4zMzY5MSwtMS42NzQ0MiAtMy41NTcxOSwtMS45NzYzNyAtNS4zNzQ3MSwtMi40NDE0NWMtMi40NTIyLC0wLjYyNzQ5IC0yLjcyNjQ2LC0wLjgzNTk1IC0wLjQ1MDE5LC0xLjY5MTE2YzAsMCA0Ljk0MTY1LC0wLjU4MTA3IDYuNDQ4NDYsLTIuNDY4M3oiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNMjIwLjg1NjQsMjA0LjgwOTUxYzEuNTYxODgsLTEuOTU2MiAxLjM2MzU4LC02LjAzMjI5IDEuNjk2MjIsLTguNDI2NTJjMC4zMjQwOCwtMi4zMzI2MiAyLjM4MDUsLTIuMjUxMjkgMi44NDQ4NiwwLjExNzY4YzAuNDkxMzksMi41MDY5MyAwLjMwMzI0LDYuNjc3NzkgMS42OTQ2LDguNDIwNDFjMS41ODk4OSwxLjk5MTI2IDQuMjk1NTMsMC45NDY1OCA2LjYyMzgxLDEuNzY1ODJjMS42MzQ3MiwwLjU3NTIgMS45MzM0OSwyLjM5MDcyIDAuMTQ4MjgsMi43Mzc1OGMtMi4yOTIzNSwwLjQ0NTM4IC01LjI2MDY0LDAuMjUzNTIgLTYuODYxMTYsMi4yNTgxM2MtMS42ODg3NSwyLjExNTExIC0xLjQ4NjI3LDcuMTcxOTggLTEuODgxNTYsMTAuMTc2NDFjLTAuMjcxMTEsMi4wNjA1NCAtMi41OTEwMSwxLjE4Mjg1IC0yLjczMjksMC4xMzQ3NmMtMC40MDkwOCwtMy4wMjE2MiAtMC4yNjY4MywtOC4yMTc2NCAtMi4xNTU3LC0xMC41ODMzNmMtMS4zMzY5MSwtMS42NzQ0MiAtNC4wMDE2NCwtMS41MzE5MyAtNS44MTkxNiwtMS45OTcwMWMtMi40NTIyLC0wLjYyNzQ5IC0yLjI4MjAxLC0xLjgzNTk1IC0wLjAwNTc0LC0yLjY5MTE2YzAsMCA0Ljk0MTY0LC0wLjAyNTUyIDYuNDQ4NDUsLTEuOTEyNzV6IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjAiLz48L2c+PC9nPjwvc3ZnPg==";
 
+  function hexToRgb(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return [r, g, b];
+  }
+
   class imgEffectsSP {
     constructor() {
       this.cutoutX = 0;
       this.cutoutY = 0;
       this.scale = 100;
       this.cutoutDirection = 90;
+      this.softness = 10;
     }
 
     getInfo() {
@@ -54,25 +62,65 @@
           {
             opcode: "applyHueEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: "apply hue R [R] G [G] B [B] to URI [SVG]",
+            text: "apply hue [COLOR] to URI [SVG]",
             arguments: {
               SVG: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "data:,",
               },
-              R: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 255,
-              },
-              G: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              B: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+              COLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#FF0000",
               },
             },
+          },
+
+          "---",
+
+          {
+            opcode: "deleteColor",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "remove color [COLOR] from [DATA_URI]",
+            arguments: {
+              COLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#FF0000",
+              },
+              DATA_URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "data:,",
+              }
+            }
+          },
+          {
+            opcode: "replaceColor",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "replace color [COLOR] with [REPLACE_COLOR] from [DATA_URI]",
+            arguments: {
+              COLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#FF0000",
+              },
+              REPLACE_COLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#00ff22",
+              },
+              DATA_URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "data:,",
+              }
+            }
+          },
+          {
+            opcode: "setSoftness",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set softness of color detection to [AMT]%",
+            arguments: {
+              AMT: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10,
+              },
+            }
           },
 
           "---",
@@ -225,7 +273,7 @@
           {
             opcode: "applyEdgeOutlineEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: "add outline to URI [SVG] with thickness [THICKNESS] and r [R] g [G] b [B] a [A]",
+            text: "add outline to URI [SVG] with thickness [THICKNESS] and color [COLOR] opacity [A]%",
             arguments: {
               SVG: {
                 type: Scratch.ArgumentType.STRING,
@@ -235,21 +283,13 @@
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 1,
               },
-              R: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 255,
-              },
-              G: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              B: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+              COLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#FF0000",
               },
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 255,
+                defaultValue: 100,
               },
             },
           },
@@ -519,9 +559,10 @@
     applyHueEffect(args) {
       return new Promise((resolve) => {
         const svgDataUri = args.SVG;
-        const r = args.R;
-        const g = args.G;
-        const b = args.B;
+        const color = hexToRgb(args.COLOR);
+        const r = color[0];
+        const g = color[1];
+        const b = color[2];
 
         const img = new Image();
         img.onload = async () => {
@@ -1201,10 +1242,11 @@
       return new Promise((resolve) => {
         const svgDataUri = args.SVG;
         const thickness = Math.ceil(Scratch.Cast.toNumber(args.THICKNESS) / 4);
-        const r = args.R;
-        const g = args.G;
-        const b = args.B;
-        const a = args.A;
+        const color = hexToRgb(args.COLOR);
+        const r = color[0];
+        const g = color[1];
+        const b = color[2];
+        const a = Math.min(Math.max(args.A, 0), 100) * 2.55;
 
         const img = new Image();
         img.onload = async () => {
@@ -1699,6 +1741,94 @@
         SVG = `data:image/svg+xml;base64,${btoa(SVG)}`;
       }
       return SVG;
+    }
+
+    deleteColor(args) {
+      const hexColorToBeRemoved = args.COLOR;
+      const colorToBeRemoved = hexToRgb(hexColorToBeRemoved);
+      const dataURI = args.DATA_URI;
+      const canvasElement = document.createElement("canvas");
+      const context = canvasElement.getContext("2d");
+      const imageElement = new Image();
+      const softness = this.softness;
+
+      return new Promise(resolve => {
+        imageElement.onload = () => {
+          canvasElement.width = imageElement.width;
+          canvasElement.height = imageElement.height;
+          context.drawImage(imageElement, 0, 0);
+          const imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
+          const data = imageData.data;
+
+          for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            if (
+              r >= colorToBeRemoved[0] - softness &&
+              r <= colorToBeRemoved[0] + softness &&
+              g >= colorToBeRemoved[1] - softness &&
+              g <= colorToBeRemoved[1] + softness &&
+              b >= colorToBeRemoved[2] - softness &&
+              b <= colorToBeRemoved[2] + softness
+            ) {
+              data[i + 3] = 0;
+            }
+          }
+          context.putImageData(imageData, 0, 0);
+          const newDataURI = canvasElement.toDataURL("image/png");
+          resolve(newDataURI);
+        };
+        imageElement.src = dataURI;
+      });
+    }
+
+    replaceColor(args) {
+      const hexColorToBeRemoved = args.COLOR;
+      const ColorReplaced = args.REPLACE_COLOR;
+      const colorToBeRemoved = hexToRgb(hexColorToBeRemoved);
+      const colorToBeReplaced = hexToRgb(ColorReplaced);
+      const dataURI = args.DATA_URI;
+      const canvasElement = document.createElement("canvas");
+      const context = canvasElement.getContext("2d");
+      const imageElement = new Image();
+      const softness = this.softness;
+
+      return new Promise(resolve => {
+        imageElement.onload = () => {
+          canvasElement.width = imageElement.width;
+          canvasElement.height = imageElement.height;
+          context.drawImage(imageElement, 0, 0);
+          const imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
+          const data = imageData.data;
+
+          for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            if (
+              r >= colorToBeRemoved[0] - softness &&
+              r <= colorToBeRemoved[0] + softness &&
+              g >= colorToBeRemoved[1] - softness &&
+              g <= colorToBeRemoved[1] + softness &&
+              b >= colorToBeRemoved[2] - softness &&
+              b <= colorToBeRemoved[2] + softness
+            ) {
+              data[i] = colorToBeReplaced[0];
+              data[i + 1] = colorToBeReplaced[1];
+              data[i + 2] = colorToBeReplaced[2];
+            }
+          }
+          context.putImageData(imageData, 0, 0);
+          const newDataURI = canvasElement.toDataURL("image/png");
+          resolve(newDataURI);
+        };
+        imageElement.src = dataURI;
+      });
+    }
+
+    setSoftness(args) {
+      this.softness = Scratch.Cast.toNumber(args.AMT);
     }
   }
 
