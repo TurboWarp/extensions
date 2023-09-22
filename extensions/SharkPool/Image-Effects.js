@@ -89,8 +89,8 @@
               DATA_URI: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "data:,",
-              }
-            }
+              },
+            },
           },
           {
             opcode: "replaceColor",
@@ -108,8 +108,8 @@
               DATA_URI: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "data:,",
-              }
-            }
+              },
+            },
           },
           {
             opcode: "setSoftness",
@@ -120,7 +120,7 @@
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 10,
               },
-            }
+            },
           },
 
           "---",
@@ -565,7 +565,7 @@
         const b = color[2];
 
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
@@ -573,7 +573,7 @@
           ctx.drawImage(img, 0, 0);
 
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          await this.applyHue(imageData, r, g, b);
+          this.applyHue(imageData, r, g, b);
           ctx.putImageData(imageData, 0, 0);
 
           const modifiedDataUrl = canvas.toDataURL();
@@ -598,7 +598,7 @@
         const percentage = args.PERCENTAGE !== "" ? args.PERCENTAGE : 100;
 
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
@@ -924,7 +924,7 @@
         const strength = args.STRENGTH !== "" ? args.STRENGTH / 100 : 0;
 
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
@@ -981,7 +981,7 @@
         const frequencyY = args.FREQY !== "" ? args.FREQY / 100 : 0;
 
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
@@ -1087,7 +1087,7 @@
         const width = args.WIDTH !== "" ? args.WIDTH / 50 : 0;
 
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
@@ -1202,7 +1202,7 @@
         const removeUnder = args.REMOVE;
 
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
@@ -1249,7 +1249,7 @@
         const a = Math.min(Math.max(args.A, 0), 100) * 2.55;
 
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
@@ -1473,7 +1473,7 @@
         const direction = args.DIRECT;
 
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width + Math.abs(percentage) * 5;
           canvas.height = img.height + Math.abs(percentage) * 5;
@@ -1752,12 +1752,17 @@
       const imageElement = new Image();
       const softness = this.softness;
 
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         imageElement.onload = () => {
           canvasElement.width = imageElement.width;
           canvasElement.height = imageElement.height;
           context.drawImage(imageElement, 0, 0);
-          const imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
+          const imageData = context.getImageData(
+            0,
+            0,
+            canvasElement.width,
+            canvasElement.height
+          );
           const data = imageData.data;
 
           for (let i = 0; i < data.length; i += 4) {
@@ -1794,12 +1799,17 @@
       const imageElement = new Image();
       const softness = this.softness;
 
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         imageElement.onload = () => {
           canvasElement.width = imageElement.width;
           canvasElement.height = imageElement.height;
           context.drawImage(imageElement, 0, 0);
-          const imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
+          const imageData = context.getImageData(
+            0,
+            0,
+            canvasElement.width,
+            canvasElement.height
+          );
           const data = imageData.data;
 
           for (let i = 0; i < data.length; i += 4) {
