@@ -23,11 +23,11 @@
     fps = times.length;
   };
 
-  class ShovelUtils {
+  class TrowelUtils {
     getInfo() {
       return {
-        id: "TrowelUtils",
-        name: "ShovelUtils",
+        id: "ShovelUtils",
+        name: "TrowelUtils",
         color1: "#f54242",
         color2: "#f54242",
         color3: "#f54242",
@@ -387,6 +387,6 @@
       return JSON.stringify(sprites);
     }
   }
-  Scratch.extensions.register(new ShovelUtils());
+  Scratch.extensions.register(new TrowelUtils());
   // @ts-ignore
 })(Scratch);
