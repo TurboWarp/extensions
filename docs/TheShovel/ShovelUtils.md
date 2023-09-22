@@ -1,12 +1,12 @@
-# TrowelUtils
+# ShovelUtils
 
-Trowel Utils is an extension focused mostly on injecting and modifying sprites and assets inside the project, as well as several other functions. (previously called ShovelUtils)
+Shovel Utils is an extension focused mostly on injecting and modifying sprites and assets inside the project, as well as several other functions.
 
 **Disclaimer: Modifying and importing assets can be dangerous, and has the potential to corrupt your project. Be careful!**
 
 ## Importing Assets
 
-Trowel Utils offers an easy way to import several types of assets, including sprites, costumes, sounds, extensions, and even full projects.
+Shovel Utils offers an easy way to import several types of assets, including sprites, costumes, sounds, extensions, and even full projects.
 
 ---
 
@@ -44,7 +44,7 @@ Imports any extension from a link. Extensions from the [Extension Gallery](https
 
 ## Other Ways to Modify The Project
 
-Aside from importing assets, Trowel Utils provides multiple miscellaneous features to modify and straight up delete parts of your projects.
+Aside from importing assets, Shovel Utils provides multiple miscellaneous features to modify and straight up delete parts of your projects.
 
 ```scratch
 Set editing target to [Sprite1]
@@ -78,13 +78,13 @@ Deletes a the specified sprite. If the user has the "Sprite Deletion Confirmatio
 
 ## Miscellaneous Features
 
-Aside from project modification, there's several utility blocks present in Trowel Utils.
+Aside from project modification, there's several utility blocks present in Shovel Utils.
 
 ```scratch
 (fps::)
 ```
 
-Get the accurate FPS, or frames per second, of the current project. This is *not* the same as the "framerate limit" block from Runtime Options, as the block in Trowel Utils accounts for lag.
+Get the accurate FPS, or frames per second, of the current project. This is *not* the same as the "framerate limit" block from Runtime Options, as the block in Shovel Utils accounts for lag.
 
 ```scratch
 (Get list [MyList])

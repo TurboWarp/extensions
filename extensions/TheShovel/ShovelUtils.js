@@ -1,4 +1,4 @@
-// Name: TrowelUtils
+// Name: ShovelUtils
 // ID: ShovelUtils
 // Description: A bunch of miscellaneous blocks. Previously called ShovelUtils.
 
@@ -23,11 +23,11 @@
     fps = times.length;
   };
 
-  class TrowelUtils {
+  class ShovelUtils {
     getInfo() {
       return {
         id: "ShovelUtils",
-        name: "TrowelUtils",
+        name: "ShovelUtils",
         color1: "#f54242",
         color2: "#f54242",
         color3: "#f54242",
@@ -387,6 +387,6 @@
       return JSON.stringify(sprites);
     }
   }
-  Scratch.extensions.register(new TrowelUtils());
+  Scratch.extensions.register(new ShovelUtils());
   // @ts-ignore
 })(Scratch);
