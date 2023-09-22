@@ -3,10 +3,6 @@
 // Description: Helpful utilities for any fast food employee.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 
-/*!
- * Credit to NexusKitten (NamelessCat) for the idea
- */
-
 (function (Scratch) {
   "use strict";
 

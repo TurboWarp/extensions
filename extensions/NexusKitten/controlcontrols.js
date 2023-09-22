@@ -1,7 +1,6 @@
 // Name: Control Controls
 // ID: nkcontrols
 // Description: Show and hide the project's controls.
-// By: NamelessCat <https://scratch.mit.edu/users/NexusKitten/>
 
 (function (Scratch) {
   "use strict";

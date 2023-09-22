@@ -1,7 +1,6 @@
 // Name: S-Grab
 // ID: nexuskittensgrab
 // Description: Get information about Scratch projects and Scratch users.
-// By: NamelessCat <https://scratch.mit.edu/users/NamelessCat/>
 
 (function (Scratch) {
   "use strict";

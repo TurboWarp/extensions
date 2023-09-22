@@ -142,11 +142,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## TheShovel/CanvasEffects.svg
  - Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1526886264.
 
-## cs2627883/numericalencoding.svg
- - Created by [@NexusKitten](https://scratch.mit.edu/users/namelesscat/).
- - Silkscreen font used under [Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
- - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-
 ## NOname-awa/graphics2d.svg
  - Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1550426448.
 
@@ -272,9 +267,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Lily/MoreEvents.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
  - Background "blobs" by Scratch.
-
-## DNin/wake-lock.svg
- - Created by [NexusKitten](https://github.com/NexusKitten) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1690949400
 
 ## veggiecan/browserfullscreen.png
  - Created by Veggiecan0419

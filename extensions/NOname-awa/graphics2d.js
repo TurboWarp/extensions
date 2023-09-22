@@ -298,8 +298,6 @@
       );
     }
     ray_direction(args) {
-      // Added by NexusKitten
-      // 由 NexusKitten 添加
       const dx =
         Scratch.Cast.toNumber(args.x2) - Scratch.Cast.toNumber(args.x1);
       const dy =
