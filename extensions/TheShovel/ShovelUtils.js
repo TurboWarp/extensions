@@ -1,14 +1,12 @@
-// Name: ShovelUtils
+// Name: TrowelUtils
 // ID: ShovelUtils
-// Description: A bunch of miscellaneous blocks.
-// By: TheShovel
+// Description: A bunch of miscellaneous blocks. Previously called ShovelUtils.
 
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("ShovelUtils must be run unsandboxed");
+    throw new Error("Must be run unsandboxed");
   }
-  console.log("ShovelUtils v1.4");
   const vm = Scratch.vm;
 
   // Based on from https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html
@@ -28,7 +26,7 @@
   class ShovelUtils {
     getInfo() {
       return {
-        id: "ShovelUtils",
+        id: "TrowelUtils",
         name: "ShovelUtils",
         color1: "#f54242",
         color2: "#f54242",
