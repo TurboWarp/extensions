@@ -480,8 +480,8 @@
       const index2 = Cast.toNumber(args.INDEX2) - 1;
       const costumes = target.sprite.costumes;
 
-      if (!(0 <= index1 < costumes.length)) return;
-      if (!(0 <= index2 < costumes.length)) return;
+      if (index1 < 0 || index1 >= costumes.length) return;
+      if (index2 < 0 || index2 >= costumes.length) return;
 
       target.reorderCostume(index1, index2);
     }
@@ -492,8 +492,8 @@
       const index2 = Cast.toNumber(args.INDEX2) - 1;
       const sounds = target.sprite.sounds;
 
-      if (!(0 <= index1 < sounds.length)) return;
-      if (!(0 <= index2 < sounds.length)) return;
+      if (index1 < 0 || index1 >= sounds.length) return;
+      if (index2 < 0 || index2 >= sounds.length) return;
 
       target.reorderSound(index1, index2);
     }
@@ -550,7 +550,7 @@
       const target = util.target;
       const index = Math.round(Cast.toNumber(args.INDEX - 1));
       const costumes = target.sprite.costumes;
-      if (!(0 < index < costumes.length)) return "";
+      if (index < 0 || index >= costumes.length) return "";
 
       return costumes[index].name;
     }
@@ -559,7 +559,7 @@
       const target = util.target;
       const index = Math.round(Cast.toNumber(args.INDEX - 1));
       const sounds = target.sprite.sounds;
-      if (!(0 < index < sounds.length)) return "";
+      if (index < 0 || index >= sounds.length) return "";
 
       return sounds[index].name;
     }
