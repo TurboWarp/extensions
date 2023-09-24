@@ -54,7 +54,7 @@
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "idk sound1?? like-",
+                defaultValue: "sound1",
               },
             },
           },
@@ -98,7 +98,7 @@
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "idk sound1?? like-",
+                defaultValue: "sound1",
               },
             },
           },
@@ -142,7 +142,7 @@
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "idk sound1?? like-",
+                defaultValue: "sound1",
               },
             },
           },
@@ -175,11 +175,11 @@
             arguments: {
               INDEX1: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
+                defaultValue: "1",
               },
               INDEX2: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 2,
+                defaultValue: "2",
               },
             },
           },
@@ -190,11 +190,11 @@
             arguments: {
               INDEX1: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
+                defaultValue: "1",
               },
               INDEX2: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 2,
+                defaultValue: "2",
               },
             },
           },
@@ -235,7 +235,7 @@
             arguments: {
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
+                defaultValue: "1",
               },
             },
           },
@@ -246,7 +246,7 @@
             arguments: {
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
+                defaultValue: "1",
               },
             },
           },
