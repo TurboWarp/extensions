@@ -303,70 +303,50 @@
       const response = await Scratch.fetch(url);
       const json = await response.arrayBuffer();
       try {
-      await vm.addSprite(json);
+        await vm.addSprite(json);
       } catch (e) {
         console.error(e);
       }
     }
 
     // Thank you PenguinMod for providing this code.
-    addCostume(args, util) {
+    async addCostume(args, util) {
       const targetId = util.target.id;
       const assetName = Cast.toString(args.NAME);
-      return new Promise((resolve) => {
-        Scratch.fetch(args.URL, {
-          method: "GET",
-        }).then((x) =>
-          x.blob().then((blob) => {
-            if (
-              !(this._typeIsBitmap(blob.type) || blob.type === "image/svg+xml")
-            ) {
-              resolve();
-              throw new Error(`Invalid mime type: "${blob.type}"`);
-            }
 
-            const assetType = this._typeIsBitmap(blob.type)
-              ? runtime.storage.AssetType.ImageBitmap
-              : runtime.storage.AssetType.ImageVector;
+      const res = await Scratch.fetch(args.URL);
+      const blob = await res.blob();
 
-            const dataType =
-              blob.type === "image/svg+xml" ? "svg" : blob.type.split("/")[1];
+      if (!(this._typeIsBitmap(blob.type) || blob.type === "image/svg+xml")) {
+        console.error(`Invalid MIME type: ${blob.type}`);
+        return;
+      }
 
-            blob
-              .arrayBuffer()
-              .then((buffer) => {
-                const data =
-                  dataType === "image/svg+xml"
-                    ? buffer
-                    : new Uint8Array(buffer);
-                const asset = runtime.storage.createAsset(
-                  assetType,
-                  dataType,
-                  data,
-                  null,
-                  true
-                );
-                const name = `${asset.assetId}.${asset.dataFormat}`;
-                const spriteJson = {
-                  asset: asset,
-                  md5ext: name,
-                  name: assetName,
-                };
-                const request = vm.addCostume(name, spriteJson, targetId);
-                if (request.then) {
-                  request.then(resolve);
-                } else {
-                  resolve();
-                }
-              })
-              .catch((err) => {
-                console.error(`Failed to Load Costume: ${err}`);
-                console.warn(err);
-                resolve();
-              });
-          })
-        );
+      const assetType = this._typeIsBitmap(blob.type)
+        ? runtime.storage.AssetType.ImageBitmap
+        : runtime.storage.AssetType.ImageVector;
+      const dataType = blob.type === "image/svg+xml" ? "svg" : blob.type.split("/")[1];
+
+      const arrayBuffer = await new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result);
+        fr.onerror = () => reject(new Error(`Failed to read as array buffer: ${fr.error}`));
+        fr.readAsArrayBuffer(blob);
       });
+
+      const asset = runtime.storage.createAsset(
+        assetType,
+        dataType,
+        new Uint8Array(arrayBuffer),
+        null,
+        true
+      );
+      const name = `${asset.assetId}.${asset.dataFormat}`;
+      await vm.addCostume(name, {
+        asset,
+        md5ext: name,
+        name: assetName,
+      }, targetId);
     }
 
     addSound(args, util) {
