@@ -541,6 +541,8 @@
           return sound.asset.assetType.contentType;
         case "asset ID":
           return sound.asset.assetId;
+        default:
+          return "";
       }
     }
 
