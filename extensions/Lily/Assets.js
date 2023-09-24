@@ -399,8 +399,7 @@
     // End of PenguinMod
 
     renameSprite(args, util) {
-      let target = runtime.getTargetById(args.TARGET);
-      if (!target) target = this._getTargetFromMenu(args.TARGET, util);
+      const target = this._getTargetFromMenu(args.TARGET, util);
       if (!target || target.isStage) return;
 
       const name = Cast.toString(args.NAME);
@@ -428,8 +427,7 @@
     }
 
     deleteSprite(args, util) {
-      let target = runtime.getTargetById(args.TARGET);
-      if (!target) target = runtime.getSpriteTargetByName(args.TARGET);
+      const target = this._getTargetFromMenu(args.TARGET);
       if (!target || target.isStage) return;
 
       Scratch.vm.deleteSprite(target.id);
@@ -634,17 +632,17 @@
 
     _getTargets() {
       const spriteNames = [];
+      if (Scratch.vm.editingTarget && !Scratch.vm.editingTarget.isStage) {
+        spriteNames.push({
+          text: 'myself',
+          value: '_myself_'
+        });
+      }
       const targets = Scratch.vm.runtime.targets;
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) {
-          const targetName = target.getName();
-          const targetId = target.id;
-          spriteNames.push({
-            text: targetName,
-            // We, rather unfortunately, have to rely on Target IDs. This is a terrible idea.
-            value: targetId,
-          });
+          spriteNames.push(target.getName());
         }
       }
       if (spriteNames.length > 0) {
