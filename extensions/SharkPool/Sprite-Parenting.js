@@ -258,6 +258,7 @@
 
     updateMaster() {
       for (const linkName in this.linkMasters) {
+        // eslint-disable-next-line no-undef
         if (this.linkMasters.hasOwnProperty(linkName)) {
           const linkMasterList = this.linkMasters[linkName];
           for (let i = 0; i < linkMasterList.length; i++) {
