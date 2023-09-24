@@ -300,8 +300,10 @@
 
     async addSprite(args, util) {
       const url = Cast.toString(args.URL);
+
       const response = await Scratch.fetch(url);
       const json = await response.arrayBuffer();
+
       try {
         await vm.addSprite(json);
       } catch (e) {
@@ -321,7 +323,6 @@
         console.error(`Invalid MIME type: ${blob.type}`);
         return;
       }
-
       const assetType = this._typeIsBitmap(blob.type)
         ? runtime.storage.AssetType.ImageBitmap
         : runtime.storage.AssetType.ImageVector;
@@ -341,12 +342,17 @@
         null,
         true
       );
-      const name = `${asset.assetId}.${asset.dataFormat}`;
-      await vm.addCostume(name, {
-        asset,
-        md5ext: name,
-        name: assetName,
-      }, targetId);
+      const md5ext = `${asset.assetId}.${asset.dataFormat}`;
+
+      try {
+        await vm.addCostume(md5ext, {
+          asset,
+          md5ext,
+          name: assetName,
+        }, targetId);
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     async addSound(args, util) {
