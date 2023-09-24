@@ -349,34 +349,31 @@
       }, targetId);
     }
 
-    addSound(args, util) {
+    async addSound(args, util) {
       const targetId = util.target.id;
       const assetName = Cast.toString(args.NAME);
-      return new Promise((resolve) => {
-        Scratch.fetch(args.URL)
-          .then((r) => r.arrayBuffer())
-          .then((arrayBuffer) => {
-            const storage = runtime.storage;
-            const asset = new storage.Asset(
-              storage.AssetType.Sound,
-              null,
-              storage.DataFormat.MP3,
-              new Uint8Array(arrayBuffer),
-              true
-            );
-            resolve(
-              vm.addSound(
-                {
-                  md5: asset.assetId + "." + asset.dataFormat,
-                  asset: asset,
-                  name: assetName,
-                },
-                targetId
-              )
-            );
-          })
-          .catch(resolve);
-      });
+
+      const res = await Scratch.fetch(args.URL)
+      const buffer = await res.arrayBuffer();
+
+      const storage = runtime.storage;
+      const asset = storage.createAsset(
+        storage.AssetType.Sound,
+        storage.DataFormat.MP3,
+        new Uint8Array(buffer),
+        null,
+        true
+      );
+
+      try {
+        await vm.addSound({
+          asset,
+          md5: asset.assetId + "." + asset.dataFormat,
+          name: assetName,
+        }, targetId);
+      } catch (e) {
+        console.error(e);
+      }
     }
     // End of PenguinMod
 
