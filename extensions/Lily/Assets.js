@@ -300,11 +300,13 @@
 
     async addSprite(args, util) {
       const url = Cast.toString(args.URL);
-      if (!(await Scratch.canFetch(url))) return;
-
       const response = await Scratch.fetch(url);
       const json = await response.arrayBuffer();
+      try {
       await vm.addSprite(json);
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     // Thank you PenguinMod for providing this code.
