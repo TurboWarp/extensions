@@ -30,7 +30,7 @@
     "G#",
     "A",
     "A#",
-    "B"
+    "B",
   ];
 
   class SPsoundWaves {
@@ -64,21 +64,21 @@
               WAVE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "WAVES",
-                defaultValue: "sine"
+                defaultValue: "sine",
               },
               NOTE: {
                 type: Scratch.ArgumentType.NOTE,
-                defaultValue: 60
+                defaultValue: 60,
               },
               DURATION: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0.5
+                defaultValue: 0.5,
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
-              }
-            }
+                defaultValue: 1,
+              },
+            },
           },
           {
             opcode: "playNoteContinuously",
@@ -88,17 +88,17 @@
               WAVE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "WAVES",
-                defaultValue: "sine"
+                defaultValue: "sine",
               },
               NOTE: {
                 type: Scratch.ArgumentType.NOTE,
-                defaultValue: 60
+                defaultValue: 60,
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
-              }
-            }
+                defaultValue: 1,
+              },
+            },
           },
           {
             opcode: "stopID",
@@ -107,14 +107,14 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
-              }
-            }
+                defaultValue: 1,
+              },
+            },
           },
           {
             opcode: "stopNote",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop all notes"
+            text: "stop all notes",
           },
 
           "---",
@@ -126,13 +126,13 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
+                defaultValue: 1,
               },
               VOLUME: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100
-              }
-            }
+                defaultValue: 100,
+              },
+            },
           },
           {
             opcode: "getVol",
@@ -141,9 +141,9 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
-              }
-            }
+                defaultValue: 1,
+              },
+            },
           },
           {
             opcode: "setAllVolume",
@@ -152,9 +152,9 @@
             arguments: {
               VOLUME: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100
-              }
-            }
+                defaultValue: 100,
+              },
+            },
           },
 
           "---",
@@ -166,9 +166,9 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
-              }
-            }
+                defaultValue: 1,
+              },
+            },
           },
 
           "---",
@@ -176,18 +176,18 @@
           {
             opcode: "convertPressedKeyToNote",
             blockType: Scratch.BlockType.REPORTER,
-            text: "pressed key to note"
+            text: "pressed key to note",
           },
           {
             opcode: "getKeyPressedDuration",
             blockType: Scratch.BlockType.REPORTER,
-            text: "pressed key duration"
-          }
+            text: "pressed key duration",
+          },
         ],
         menus: {
           WAVES: ["triangle", "sine", "square", "sawtooth"],
-          NOTES: this.getNotesMenu()
-        }
+          NOTES: this.getNotesMenu(),
+        },
       };
     }
 
@@ -381,7 +381,7 @@
         8: 74,
         9: 76,
         0: this.currentNote,
-        O: this.currentNote
+        O: this.currentNote,
       };
       const note = keysToNotes[key.toUpperCase()] || 0;
       this.currentNote = note;
