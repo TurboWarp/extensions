@@ -326,12 +326,14 @@
       const assetType = this._typeIsBitmap(blob.type)
         ? runtime.storage.AssetType.ImageBitmap
         : runtime.storage.AssetType.ImageVector;
-      const dataType = blob.type === "image/svg+xml" ? "svg" : blob.type.split("/")[1];
+      const dataType =
+        blob.type === "image/svg+xml" ? "svg" : blob.type.split("/")[1];
 
       const arrayBuffer = await new Promise((resolve, reject) => {
         const fr = new FileReader();
         fr.onload = () => resolve(fr.result);
-        fr.onerror = () => reject(new Error(`Failed to read as array buffer: ${fr.error}`));
+        fr.onerror = () =>
+          reject(new Error(`Failed to read as array buffer: ${fr.error}`));
         fr.readAsArrayBuffer(blob);
       });
 
@@ -345,11 +347,15 @@
       const md5ext = `${asset.assetId}.${asset.dataFormat}`;
 
       try {
-        await vm.addCostume(md5ext, {
-          asset,
+        await vm.addCostume(
           md5ext,
-          name: assetName,
-        }, targetId);
+          {
+            asset,
+            md5ext,
+            name: assetName,
+          },
+          targetId
+        );
       } catch (e) {
         console.error(e);
       }
@@ -359,7 +365,7 @@
       const targetId = util.target.id;
       const assetName = Cast.toString(args.NAME);
 
-      const res = await Scratch.fetch(args.URL)
+      const res = await Scratch.fetch(args.URL);
       const buffer = await res.arrayBuffer();
 
       const storage = runtime.storage;
@@ -372,11 +378,14 @@
       );
 
       try {
-        await vm.addSound({
-          asset,
-          md5: asset.assetId + "." + asset.dataFormat,
-          name: assetName,
-        }, targetId);
+        await vm.addSound(
+          {
+            asset,
+            md5: asset.assetId + "." + asset.dataFormat,
+            name: assetName,
+          },
+          targetId
+        );
       } catch (e) {
         console.error(e);
       }
@@ -621,8 +630,8 @@
       const spriteNames = [];
       if (Scratch.vm.editingTarget && !Scratch.vm.editingTarget.isStage) {
         spriteNames.push({
-          text: 'myself',
-          value: '_myself_'
+          text: "myself",
+          value: "_myself_",
         });
       }
       const targets = Scratch.vm.runtime.targets;
