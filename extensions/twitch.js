@@ -1,5 +1,5 @@
 // Name: Twitch
-// ID: boptwitch
+// ID: twitch
 // Description: Blocks that allow you to stream easier on TurboWarp.
 // By: BOP <https://scratch.mit.edu/users/CEFSharp/>
 
@@ -14,7 +14,7 @@
   class Twitch {
     getInfo() {
       return {
-        id: "boptwitch",
+        id: "twitch",
         name: "Twitch",
         color1: "#772CE8",
         menuIconURI: "https://tekinical.github.io/twitchURI.png",
