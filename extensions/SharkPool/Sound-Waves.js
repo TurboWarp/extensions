@@ -222,13 +222,13 @@
     }
 
     playNote({ WAVE, NOTE, DURATION, ID }) {
-      const realNote = this.convertScratchNoteToRealNote(NOTE);
+      const realNote = this.convertScratchNoteToRealNote(Math.round(NOTE));
       const frequency = this.noteToFrequency(realNote);
       this.playSound(frequency, DURATION, WAVE, ID);
     }
 
     playNoteContinuously({ WAVE, NOTE, ID }) {
-      const realNote = this.convertScratchNoteToRealNote(NOTE);
+      const realNote = this.convertScratchNoteToRealNote(Math.round(NOTE));
       const frequency = this.noteToFrequency(realNote);
       this.playingNote = true;
       this.noteStopTime = Infinity;
