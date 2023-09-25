@@ -37,7 +37,7 @@
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Linking"
+            text: "Linking",
           },
           {
             opcode: "makeLink",
@@ -46,9 +46,9 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1"
-              }
-            }
+                defaultValue: "Link 1",
+              },
+            },
           },
           {
             opcode: "deleteLink",
@@ -57,14 +57,14 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1"
-              }
-            }
+                defaultValue: "Link 1",
+              },
+            },
           },
           {
             opcode: "deleteAll",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete all sprite families"
+            text: "delete all sprite families",
           },
 
           "---",
@@ -76,13 +76,13 @@
             arguments: {
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1"
+                defaultValue: "Link 1",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "TARGETS"
-              }
-            }
+                menu: "TARGETS",
+              },
+            },
           },
           {
             opcode: "removeSprite",
@@ -91,13 +91,13 @@
             arguments: {
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1"
+                defaultValue: "Link 1",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "TARGETS"
-              }
-            }
+                menu: "TARGETS",
+              },
+            },
           },
 
           "---",
@@ -109,9 +109,9 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1"
-              }
-            }
+                defaultValue: "Link 1",
+              },
+            },
           },
           {
             opcode: "contentsLink",
@@ -120,13 +120,13 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1"
-              }
-            }
+                defaultValue: "Link 1",
+              },
+            },
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Parent Sprites"
+            text: "Parent Sprites",
           },
           {
             opcode: "linkMaster",
@@ -135,13 +135,13 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "TARGETS"
+                menu: "TARGETS",
               },
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1"
-              }
-            }
+                defaultValue: "Link 1",
+              },
+            },
           },
           {
             opcode: "whoMaster",
@@ -150,13 +150,13 @@
             arguments: {
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1"
-              }
-            }
+                defaultValue: "Link 1",
+              },
+            },
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Parent Functions"
+            text: "Parent Functions",
           },
           {
             opcode: "updateLink",
@@ -165,14 +165,14 @@
             arguments: {
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1"
+                defaultValue: "Link 1",
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "CONTROLTYPE",
-                defaultValue: "everything"
-              }
-            }
+                defaultValue: "everything",
+              },
+            },
           },
           {
             opcode: "updateAll",
@@ -182,9 +182,9 @@
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "CONTROLTYPE",
-                defaultValue: "everything"
-              }
-            }
+                defaultValue: "everything",
+              },
+            },
           },
 
           "---",
@@ -196,20 +196,20 @@
             arguments: {
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1"
-              }
-            }
+                defaultValue: "Link 1",
+              },
+            },
           },
           {
             opcode: "refreshAll",
             blockType: Scratch.BlockType.COMMAND,
-            text: "refresh all sprite families"
-          }
+            text: "refresh all sprite families",
+          },
         ],
         menus: {
           TARGETS: {
             acceptReporters: true,
-            items: "_getTargets"
+            items: "_getTargets",
           },
           CONTROLTYPE: {
             acceptReporters: true,
@@ -219,10 +219,10 @@
               "direction",
               "size",
               "effects",
-              "visibility"
-            ]
-          }
-        }
+              "visibility",
+            ],
+          },
+        },
       };
     }
 
@@ -234,7 +234,7 @@
         this.linkMasters[linkName] = [];
       }
       const existingMasterIndex = this.linkMasters[linkName].findIndex(
-        (item) => item.link === linkName
+        (item) => item.link === linkName,
       );
 
       if (existingMasterIndex !== -1) {
@@ -246,7 +246,7 @@
           direction: target.direction,
           size: target.size,
           show: target.visible,
-          effects: target.effects
+          effects: target.effects,
         };
       } else {
         this.linkMasters[linkName].push({
@@ -257,14 +257,15 @@
           direction: target.direction,
           size: target.size,
           show: target.visible,
-          effects: target.effects
+          effects: target.effects,
         });
       }
     }
 
     updateMaster() {
       for (const linkName in this.linkMasters) {
-        if (this.linkMasters.hasOwnProperty(linkName)) { // eslint-disable-line no-prototype-builtins
+        if (this.linkMasters.hasOwnProperty(linkName)) {
+          // eslint-disable-line no-prototype-builtins
           const linkMasterList = this.linkMasters[linkName];
           for (let i = 0; i < linkMasterList.length; i++) {
             const linkMasterItem = linkMasterList[i];
@@ -324,7 +325,7 @@
       const link = this.links[args.LINK];
       if (link) {
         const targetIndex = link.indexOf(
-          runtime.getSpriteTargetByName(args.NAME)
+          runtime.getSpriteTargetByName(args.NAME),
         );
         if (targetIndex !== -1) {
           link.splice(targetIndex, 1);
@@ -360,11 +361,11 @@
               const MasterList = this.linkMasters[LINK];
               const getMasterPos = [
                 MasterList.map((target) => target.Px),
-                MasterList.map((target) => target.Py)
+                MasterList.map((target) => target.Py),
               ];
               this.ogPositions[spriteNames[i]] = [
                 target.x - getMasterPos[0],
-                target.y - getMasterPos[1]
+                target.y - getMasterPos[1],
               ];
             }
             const ogPos = this.ogPositions[spriteNames[i]];
@@ -409,7 +410,7 @@
             if (target) {
               if (TYPE === "everything" || TYPE === "direction") {
                 target.setDirection(
-                  MasterList.map((target) => target.direction)
+                  MasterList.map((target) => target.direction),
                 );
               }
               if (TYPE === "everything" || TYPE === "size") {
@@ -431,10 +432,10 @@
               }
               if (TYPE === "everything" || TYPE === "x and y") {
                 const xChange = Scratch.Cast.toNumber(
-                  MasterList.map((target) => target.Px)
+                  MasterList.map((target) => target.Px),
                 );
                 const yChange = Scratch.Cast.toNumber(
-                  MasterList.map((target) => target.Py)
+                  MasterList.map((target) => target.Py),
                 );
                 if (!this.ogPositions[spriteNames[i]]) {
                   this.ogPositions[spriteNames[i]] = [target.x, target.y];
@@ -449,6 +450,7 @@
       }
     }
 
+    //Thank you LilyMakesThings for this bit of gold :3
     _getTargets() {
       const spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
@@ -458,7 +460,7 @@
           const targetName = target.getName();
           spriteNames.push({
             text: targetName,
-            value: targetName
+            value: targetName,
           });
         }
       }
