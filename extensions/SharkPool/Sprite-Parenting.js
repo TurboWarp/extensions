@@ -318,7 +318,9 @@
         this.links[args.LINK] = [];
       }
       const link = this.links[args.LINK];
-      const target = runtime.getSpriteTargetByName(Scratch.Cast.toString(args.NAME));
+      const target = runtime.getSpriteTargetByName(
+        Scratch.Cast.toString(args.NAME),
+      );
       if (target && link.indexOf(target) === -1) {
         link.push(target);
       }
@@ -328,7 +330,7 @@
       const link = this.links[args.LINK];
       if (link) {
         const targetIndex = link.indexOf(
-          runtime.getSpriteTargetByName(Scratch.Cast.toString(args.NAME))
+          runtime.getSpriteTargetByName(Scratch.Cast.toString(args.NAME)),
         );
         if (targetIndex !== -1) {
           link.splice(targetIndex, 1);
