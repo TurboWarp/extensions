@@ -22,9 +22,9 @@
 
   class SPspriteParent {
     constructor() {
-      this.links = {};
-      this.linkMasters = {};
-      this.ogPositions = {};
+      this.links = Object.create(null);
+      this.linkMasters = Object.create(null);
+      this.ogPositions = Object.create(null);
     }
 
     getInfo() {
@@ -227,9 +227,13 @@
     }
 
     linkMaster(args) {
-      const linkName = args.LINK;
-      const spriteName = args.NAME;
+      const linkName = Scratch.Cast.toString(args.LINK);
+      const spriteName = Scratch.Cast.toString(args.NAME);
       const target = runtime.getSpriteTargetByName(args.NAME);
+      if (!target) {
+        console.error("No Sprite Found!");
+        return;
+      }
       if (!this.linkMasters[linkName]) {
         this.linkMasters[linkName] = [];
       }
@@ -264,8 +268,7 @@
 
     updateMaster() {
       for (const linkName in this.linkMasters) {
-        if (this.linkMasters.hasOwnProperty(linkName)) {
-          // eslint-disable-line no-prototype-builtins
+        if (linkName in this.linkMasters) {
           const linkMasterList = this.linkMasters[linkName];
           for (let i = 0; i < linkMasterList.length; i++) {
             const linkMasterItem = linkMasterList[i];
@@ -305,9 +308,9 @@
     }
 
     deleteAll(args) {
-      this.links = {};
-      this.linkMasters = {};
-      this.ogPositions = {};
+      this.links = Object.create(null);
+      this.linkMasters = Object.create(null);
+      this.ogPositions = Object.create(null);
     }
 
     addSprite(args) {
@@ -315,7 +318,7 @@
         this.links[args.LINK] = [];
       }
       const link = this.links[args.LINK];
-      const target = runtime.getSpriteTargetByName(args.NAME);
+      const target = runtime.getSpriteTargetByName(Scratch.Cast.toString(args.NAME));
       if (target && link.indexOf(target) === -1) {
         link.push(target);
       }
@@ -325,7 +328,7 @@
       const link = this.links[args.LINK];
       if (link) {
         const targetIndex = link.indexOf(
-          runtime.getSpriteTargetByName(args.NAME),
+          runtime.getSpriteTargetByName(Scratch.Cast.toString(args.NAME))
         );
         if (targetIndex !== -1) {
           link.splice(targetIndex, 1);
@@ -457,11 +460,7 @@
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) {
-          const targetName = target.getName();
-          spriteNames.push({
-            text: targetName,
-            value: targetName,
-          });
+          spriteNames.push(target.getName());
         }
       }
       if (spriteNames.length > 0) {
