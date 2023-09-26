@@ -25,38 +25,37 @@
   const POSITIONS = ["static", "relative", "fixed", "absolute", "sticky"];
 
   const CreateTextElement = (args) => {
-    console.log(args);
     text = document.createElement("p");
-    text.style.font = args.font;
-    text.innerText = args.text;
+    text.style.font = Scratch.Cast.toString(args.font);
+    text.innerText = Scratch.Cast.toString(args.text);
     text.width = "20%";
     text.height = "10%";
     text.style.border = "none";
     text.style.position = "absolute";
     text.style.bottom = 0;
-    if (args.bold) {
+    if (Scratch.Cast.toBoolean(args.bold)) {
       text.style.fontWeight = "bold";
     }
-    if (args.italic) {
+    if (Scratch.Cast.toBoolean(args.italic)) {
       text.style.fontStyle = "italic";
     }
-    text.style.fontSize = args.size + "px";
-    text.style.fontFamily = args.font;
+    text.style.fontSize = Scratch.Cast.toString(args.size) + "px";
+    text.style.fontFamily = Scratch.Cast.toString(args.font);
   };
 
   const CreateImageElement = (args) => {
     image = document.createElement("img");
-    image.style.width = args.width + "px";
-    image.style.height = args.height + "px";
-    image.style.position = args.position;
-    if (args.bottom) {
+    image.style.width = Scratch.Cast.toString(args.width) + "px";
+    image.style.height = Scratch.Cast.toString(args.height) + "px";
+    image.style.position = Scratch.Cast.toString(args.position);
+    if (Scratch.Cast.toBoolean(args.bottom)) {
       image.style.bottom = 0;
     } else {
-      if (args.top) {
+      if (Scratch.Cast.toBoolean(args.top)) {
         image.style.top = 0;
       }
     }
-    image.setAttribute("src", args.image);
+    image.setAttribute("src", Scratch.Cast.toString(args.image));
   };
 
   class Twitch {
@@ -203,11 +202,11 @@
         ],
         menus: {
           font: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: "getFonts",
           },
           position: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: "getPositions",
           },
         },
@@ -226,22 +225,18 @@
           "&prevent_clipping=" +
           Scratch.Cast.toString(args.prevent);
         chat = document.createElement("iframe");
-        chat.style.width = args.width;
-        chat.style.height = args.height;
+        chat.style.width = Scratch.Cast.toString(args.width);
+        chat.style.height = Scratch.Cast.toString(args.height);
         chat.style.border = "none";
-        chat.style.position = args.position;
+        chat.style.position = Scratch.Cast.toString(args.position);
         chat.setAttribute("allowtransparency", "true");
         chat.setAttribute("src", Link);
         Scratch.renderer.addOverlay(chat, "manual");
-      } else {
-        alert("Use close chat to close the chat.");
       }
     }
 
     closechat() {
-      if (chat == null) {
-        alert("Chat hasn't been created yet!");
-      } else {
+      if (chat != null) {
         Scratch.renderer.removeOverlay(chat);
         chat = null;
       }
@@ -270,18 +265,14 @@
     }
 
     closetext() {
-      if (text == null) {
-        alert("No text element was found!");
-      } else {
+      if (text != null) {
         Scratch.renderer.removeOverlay(text);
         text = null;
       }
     }
 
     closeimage() {
-      if (image == null) {
-        alert("No image element was found!");
-      } else {
+      if (image != null) {
         Scratch.renderer.removeOverlay(image);
         image = null;
       }
@@ -295,7 +286,7 @@
       return false;
     }
 
-    // credits to lily: (animated text)
+    // https://extensions.turbowarp.org/lab/text.js (thx garbo <3)
 
     getFonts() {
       const customFonts = Scratch.vm.runtime.fontManager
@@ -305,14 +296,7 @@
           }))
         : [];
 
-      return [
-        ...FONTS,
-        ...customFonts,
-        {
-          text: "random font",
-          value: "Random",
-        },
-      ];
+      return [...FONTS, ...customFonts];
     }
 
     getPositions() {
