@@ -255,12 +255,7 @@
       for (let index = 0; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) {
-          const targetName = target.getName();
-          const targetId = target.id;
-          spriteNames.push({
-            text: targetName,
-            value: targetId,
-          });
+          spriteNames.push(target.getName());
         }
       }
       if (spriteNames.length > 0) {
