@@ -345,10 +345,7 @@
     contentsLink(args) {
       const link = this.links[args.NAME];
       if (link) {
-        let contentsArray =
-          '["' + link.map((target) => target.sprite.name) + '"]';
-        contentsArray = contentsArray.replaceAll(",", '", "');
-        return [contentsArray];
+        return JSON.stringify(link.map((target) => target.sprite.name));
       }
       return "This Family Doesnt Exist";
     }
@@ -407,6 +404,9 @@
         let spriteNames = this.links[link];
         spriteNames = spriteNames.map((target) => target.sprite.name);
         let MasterList = this.linkMasters[link];
+        if (!MasterList) {
+          throw new Error('No parent was assigned to this family');
+        }
         MasterList = MasterList.map((target) => target.name);
         if (MasterList) {
           for (let i = 0; i < spriteNames.length; i++) {
@@ -427,13 +427,9 @@
               }
               if (TYPE === "everything" || TYPE === "effects") {
                 let value = MasterList.map((target) => target.effects)[0];
-                target.setEffect("color", value.color);
-                target.setEffect("fisheye", value.fisheye);
-                target.setEffect("whirl", value.whirl);
-                target.setEffect("pixelate", value.pixelate);
-                target.setEffect("mosaic", value.mosaic);
-                target.setEffect("brightness", value.brightness);
-                target.setEffect("ghost", value.ghost);
+                for (const effect in value) {
+                  target.setEffect(effect, value[effect]);
+                }
               }
               if (TYPE === "everything" || TYPE === "x and y") {
                 const xChange = Scratch.Cast.toNumber(
