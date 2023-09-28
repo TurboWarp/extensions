@@ -213,7 +213,12 @@
 
     async saveRecording(args) {
       if (this.recording) {
-        const target = args.SPRITE;
+        let target = args.SPRITE;
+        if (target === "Stage") {
+          target = Scratch.vm.runtime.targets[0].id
+        } else {
+          target = this.findID(target);
+        }
         Scratch.fetch(await this.convertBlobToBase64(this.recording, "mp3"))
           .then((r) => r.arrayBuffer())
           .then((arrayBuffer) => {
@@ -262,6 +267,22 @@
         return spriteNames;
       } else {
         return [""];
+      }
+    }
+
+    findID(sprite) {
+      const targets = Scratch.vm.runtime.targets;
+      if (targets.length > 0) {
+        for (let index = 1; index < targets.length; index++) {
+          const target = targets[index];
+          if (target.isOriginal) {
+            if (target.getName() === sprite) {
+              return target.id;
+            }
+          }
+        }
+      } else {
+        return "";
       }
     }
 
