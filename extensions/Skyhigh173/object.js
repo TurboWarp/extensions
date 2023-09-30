@@ -6,6 +6,10 @@
   // when saved to project, it will be converted to JSON string
   // we modify toString() to use it as string
   class ObjMap extends Map {
+    static reviver(key, value) {
+      if (value instanceof Array || value instanceof Object) return new ObjMap(Object.entries(value));
+      return value;
+    }
     toString() {
       return JSON.stringify(this.toJSON());
     }
@@ -15,7 +19,7 @@
     static toMap(value) {
       if (value instanceof ObjMap) return value;
       try {
-        return new ObjMap(Object.entries(JSON.parse(value)));
+        return JSON.parse(value, ObjMap.reviver);
       } catch {
         return new ObjMap();
       }
@@ -30,6 +34,7 @@
       }
     }
   }
+  window.ObjMap = ObjMap;
 
   const exampleJSON = {
     empty: '{}',
@@ -293,6 +298,8 @@
       return JSON.stringify([...ObjMap.toMap(args.obj).entries()]);
     }
   }
+
+
 
   Scratch.extensions.register(new ObjectExtension());
 })(Scratch);
