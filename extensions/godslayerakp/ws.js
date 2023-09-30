@@ -203,11 +203,9 @@
           if (/^(?!(ws|http)s?:\/\/).*$/is.test(url)) {
             url = `wss://${url}`;
           } else if (/^(http|https):/is.test(url)) {
-            url = url.split(":")
-            url[0] = url.startsWith("https")
-              ? "wss"
-              : "ws"
-            url = url.join(":")
+            url = url.split(":");
+            url[0] = url.startsWith("https") ? "wss" : "ws";
+            url = url.join(":");
           } else {
             // we couldnt fix the url...
             resolve();
