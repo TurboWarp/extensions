@@ -34,7 +34,6 @@
       }
     }
   }
-  window.ObjMap = ObjMap;
 
   const exampleJSON = {
     empty: '{}',
@@ -298,8 +297,6 @@
       return JSON.stringify([...ObjMap.toMap(args.obj).entries()]);
     }
   }
-
-
 
   Scratch.extensions.register(new ObjectExtension());
 })(Scratch);
