@@ -67,6 +67,10 @@
         color3: "#FA5C5C",
         blocks: [
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Window"
+          },
+          {
             opcode: "openItchWindow",
             blockType: Scratch.BlockType.COMMAND,
             text: "Open [prefix] itch.io [page] window with [width]width and [height]height",
@@ -89,7 +93,10 @@
               },
             },
           },
-          "---",
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Data"
+          },
           {
             opcode: "getGameData",
             blockType: Scratch.BlockType.COMMAND,
@@ -151,7 +158,10 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Game data?",
           },
-          "---",
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Rewards"
+          },
           {
             opcode: "returnGameRewards",
             blockType: Scratch.BlockType.REPORTER,
@@ -178,7 +188,10 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Rewards?",
           },
-          "---",
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Sub products"
+          },
           {
             opcode: "returnGameSubProducts",
             blockType: Scratch.BlockType.REPORTER,
@@ -205,7 +218,10 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Sub products?"
           },
-          "---",
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Sale"
+          },
           {
             opcode: "returnGameSale",
             blockType: Scratch.BlockType.REPORTER,
@@ -297,7 +313,7 @@
       return JSON.stringify(data);
     }
     returnGameData(game) {
-      return data[game.data] || err(); // k you win
+      return data[game.data] || err();
     }
     gameBool() {
       return data.id ? true : false;
