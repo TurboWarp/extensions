@@ -296,8 +296,8 @@
     returnGameDataJson() {
       return JSON.stringify(data);
     }
-    returnGameData({ data }) {
-      return data[this.data] || err();
+    returnGameData(game) {
+      return data[game.data] || err(); // k you win
     }
     gameBool() {
       return data.id ? true : false;
