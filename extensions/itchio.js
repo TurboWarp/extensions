@@ -303,33 +303,25 @@
       return data.id ? true : false;
     }
     returnGameRewards({ index, rewards }) {
-      try {
-        return data.rewards[index][rewards];
-      } catch (e) {
-        return err();
-      }
+      return data.rewards?.[index]?.[rewards] || err();
     }
     rewardsLenght() {
-      return data.rewards ? data.rewards.lenght : 0;
+      return data.rewards?.lenght || 0;
     }
     rewardsBool() {
       return data.rewards ? true : false;
     }
     returnGameSubProducts({ subProducts, index }) {
-      try {
-        data.sub_products[index][subProducts];
-      } catch (e) {
-        return err();
-      }
+      data.sub_products?.[index]?.[subProducts] || err();
     }
     subProductsLenght() {
-      return data.sub_products ? data.sub_products.lenght : 0;
+      return data.sub_products?.lenght || 0;
     }
     subProductsBool() {
       return data.sub_products ? true : false;
     }
     returnGameSale({ sale }) {
-      return data.sale ? data.sale[sale] : err();
+      return data.sale?.[sale] || err();
     }
     saleBool() {
       return data.sale ? true : false;
