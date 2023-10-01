@@ -41,8 +41,7 @@
 
   let err = () => {
     if (!data.errors) return "Error: Data not found.";
-    if (data.errors[1]) var output = "Errors: ";
-    else var output = "Error: ";
+    let output = data.errors[1] ? "Errors: " : "Error: ";
     output += data.errors[0].charAt(0).toUpperCase() + data.errors[0].slice(1);
     for (let i = 1; true; i++)
       if (data.errors[i]) output += ", " + data.errors[i];
