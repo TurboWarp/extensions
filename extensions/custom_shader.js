@@ -441,10 +441,10 @@
         renderer.shader_frag = frag;
         renderer.shader_vert = vert;
     });
-    renderer.setUniforms=(function(drawableID,uniform){
-        const drawable=this._allDrawables[drawableID];
-        if(!drawable) return;
-        drawable._uniforms=Object.assign(drawable._uniforms,uniform)
+    renderer.setUniforms = (function(drawableID,uniform){
+        const drawable = this._allDrawables[drawableID];
+        if (!drawable) return;
+        drawable._uniforms = Object.assign(drawable._uniforms,uniform);
     });
     renderer.reloadCode();
     renderer._shaderManager.reloadShader = (function() {
@@ -490,7 +490,7 @@
         const vsFullText = definesText + renderer.shader_vert;
         const fsFullText = definesText + renderer.shader_frag;
 
-        if(!twgl.createProgramInfo(this._gl, [vsFullText, fsFullText])){
+        if (!twgl.createProgramInfo(this._gl, [vsFullText, fsFullText])){
             renderer.fragUniformCode = "";
             renderer.vertUniformCode = "";
             renderer.shader_frag_addCode = "";
@@ -629,18 +629,18 @@
             renderer.vertUniformCode = code;
         }
         opcodeuniform({name,type,value}, {target}) {
-            var uniform={}
+            var uniform = {};
             switch (type) {
                 case 'string':
-                    uniform[name]=cast.toString(value);
+                    uniform[name] = cast.toString(value);
                     renderer.setUniforms(target.drawableID,uniform);
                     break;
                 case 'boolean':
-                    uniform[name]=cast.toBoolean(value);
+                    uniform[name] = cast.toBoolean(value);
                     renderer.setUniforms(target.drawableID,uniform);
                     break;
                 case 'number':
-                    uniform[name]=cast.toNumber(value);
+                    uniform[name] = cast.toNumber(value);
                     renderer.setUniforms(target.drawableID,uniform);
                     break;
             }
@@ -664,24 +664,3 @@
     Scratch.extensions.register(new customshader());
 })(Scratch);
 
-/*
-				   _ooOoo_
-                  o8888888o
-                  88" . "88
-                  (| -_- |)
-                  O\  =  /O
-               ____/`---'\____
-             .'  \\|     |//  `.
-            /  \\|||  :  |||//  \
-           |  _|||||-卍- |||||-  \
-           |   | \\\  -  /// |   |
-           | \_|  ''\---/''  |   |
-           \  .-\__  `-`  ___/-. /
-         ___`. .'  /--.--\  `. . ____ 
-      ."" '<  `.___\_<|>_/___.'  >'"".\ 
-     | | :  `- \`.;`\ _ /`;.`/ - ` : | \
-     \  \ `-.   \_ __\ /__ _/   .-` /  /
-======`-.____`-.___\_____/___.-`____.-'======
-                   `=---='					 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-*/
