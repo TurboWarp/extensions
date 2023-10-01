@@ -178,9 +178,9 @@
             },
           },
           {
-            opcode: "rewardsLenght",
+            opcode: "rewardsLenght", // uh oh
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return rewards list lenght",
+            text: "Return rewards list length",
           },
           {
             opcode: "rewardsBool",
@@ -210,7 +210,7 @@
           {
             opcode: "subProductsLenght",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return sub products list lenght"
+            text: "Return sub products list length"
           },
           {
             opcode: "subProductsBool",
@@ -321,7 +321,7 @@
       return data.rewards?.[index]?.[rewards] || err();
     }
     rewardsLenght() {
-      return data.rewards?.lenght || 0;
+      return data.rewards?.length || 0;
     }
     rewardsBool() {
       return data.rewards ? true : false;
@@ -330,7 +330,7 @@
       data.sub_products?.[index]?.[subProducts] || err();
     }
     subProductsLenght() {
-      return data.sub_products?.lenght || 0;
+      return data.sub_products?.length || 0;
     }
     subProductsBool() {
       return data.sub_products ? true : false;
