@@ -8,7 +8,6 @@
     const gl = renderer._gl;
     const cast = Scratch.Cast;
     const twgl = renderer.exports.twgl;
-    var uniform = {};
     class SM {}
     SM.EFFECT_INFO = {
         /** Color effect */
