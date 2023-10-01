@@ -296,7 +296,7 @@
     getGameData({ user, game, secret }) {
       return new Promise((resolve) => {
         getGameData(user, game, secret, (response) => {
-          data = response;
+          data = response || {};
           resolve();
         });
       });
@@ -304,7 +304,7 @@
     getGameDataJson({ user, game, secret }) {
       return new Promise((resolve) => {
         getGameData(user, game, secret, (response) => {
-          data = response;
+          data = response || {};
           resolve(JSON.stringify(response));
         });
       });
