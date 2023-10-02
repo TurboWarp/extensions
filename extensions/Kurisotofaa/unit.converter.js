@@ -3,6 +3,8 @@
 // Description: Convert values between different units of measurement.
 // By: Kurisotofaa <https://scratch.mit.edu/users/kurisotofa/>
 
+// Version V.1.0.0
+
 (function (Scratch) {
   "use strict";
 
