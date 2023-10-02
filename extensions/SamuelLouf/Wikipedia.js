@@ -235,7 +235,6 @@
         .then((data) => {
           const pageId = Object.keys(data.query.pages)[0];
           let extract = data.query.pages[pageId].extract;
-          console.log(extract);
           extract = extract.replace(/\s{2,}/g, ' ');
           return extract.split('.').slice(0, 2).join('.') + '.';
         })
