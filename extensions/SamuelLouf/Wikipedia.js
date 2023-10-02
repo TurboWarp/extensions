@@ -192,7 +192,7 @@
     }
 
     wikipediafirstparagraph(args) {
-      return fetch(`https://${this.wikipediaLanguages}.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(args.NAME)}&explaintext=1&exsectionformat=plain&format=json&origin=*`)
+      return Scratch.fetch(`https://${this.wikipediaLanguages}.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(args.NAME)}&explaintext=1&exsectionformat=plain&format=json&origin=*`)
         .then((response) => {
           if (response.ok == true) {
             return response.json();
@@ -224,7 +224,7 @@
     }
 
     wikipediashortphrase(args) {
-      return fetch(`https://${this.wikipediaLanguages}.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(args.NAME)}&explaintext=1&exsectionformat=plain&format=json&origin=*`)
+      return Scratch.fetch(`https://${this.wikipediaLanguages}.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(args.NAME)}&explaintext=1&exsectionformat=plain&format=json&origin=*`)
         .then((response) => {
           if (response.ok == true) {
             return response.json();
@@ -253,7 +253,7 @@
     }
 
     wikipediapageexists(args) {
-      return fetch(`https://${this.wikipediaLanguages}.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(args.NAME)}&explaintext=1&exsectionformat=plain&format=json&origin=*`)
+      return Scratch.fetch(`https://${this.wikipediaLanguages}.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(args.NAME)}&explaintext=1&exsectionformat=plain&format=json&origin=*`)
         .then((response) => {
           if (response.ok == true) {
             return response.json();
