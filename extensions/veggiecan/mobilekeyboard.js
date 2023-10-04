@@ -239,7 +239,6 @@
           //TODO:See if there is a way to sense if the keyboard is closed while the textbox is still in focus (could happen)
           self.keyboardOpen = false;
           input.style.display = "none";
-          input.removeEventListener("keydown", keydownListener);
           if (self.waitCallback) {
             self.waitCallback();
             self.waitCallback = null;
