@@ -178,7 +178,7 @@
             },
           },
           {
-            opcode: "rewardsLenght", // uh oh
+            opcode: "rewardsLenght", // oof
             blockType: Scratch.BlockType.REPORTER,
             text: "Return rewards list length",
           },
@@ -208,7 +208,7 @@
             }
           },
           {
-            opcode: "subProductsLenght",
+            opcode: "subProductsLength",
             blockType: Scratch.BlockType.REPORTER,
             text: "Return sub products list length"
           },
@@ -329,7 +329,7 @@
     returnGameSubProducts({ subProducts, index }) {
       data.sub_products?.[index]?.[subProducts] || err();
     }
-    subProductsLenght() {
+    subProductsLength() {
       return data.sub_products?.length || 0;
     }
     subProductsBool() {
