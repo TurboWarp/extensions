@@ -134,7 +134,7 @@ The type can be one of the following:
  - **hex**: A sequence of hexadecimal bytes (like `101A1B1C`), without a separator.
  - **binary**: A sequence of binary bytes (like `000000010010101001101011`), without a separator.
 
-## File Info Blocks
+## File info blocks
 
 Blocks for getting and setting additional information on a file.
 
@@ -197,7 +197,7 @@ Returns a list of files in a directory, as JSON (which you can parse with the JS
 ---
 
 ```scratch
-current directory path :: #a49a3a
+(current directory path :: #a49a3a)
 ```
 Returns the absolute path to the current directory. 
 
@@ -215,7 +215,7 @@ Sets the archive's comment to some text. Just like file comments, this is saved 
 ---
 
 ```scratch
-archive comment :: #a49a3a
+(archive comment :: #a49a3a)
 ```
 Returns the archive's comment. 
 
