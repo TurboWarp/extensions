@@ -12,12 +12,17 @@ const Icon='data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi
       'qxsckdataanalysis.median': '[NUMBERS] 的中位数',
       'qxsckdataanalysis.mode': '[NUMBERS] 的众数',
       'qxsckdataanalysis.variance': '[NUMBERS] 的方差',
+      'qxsckdataanalysis.countNumebrs':'[NUMBERS] 每个数字出现的 [TYPE]',
       'qxsckdataanalysis.averageInList': '列表 [NUMBERS] 里所有数据的平均数',
       'qxsckdataanalysis.maximumInList': '列表 [NUMBERS] 里所有数据的最大数',
       'qxsckdataanalysis.minimumInList': '列表 [NUMBERS] 里所有数据的最小数',
       'qxsckdataanalysis.medianInList': '列表 [NUMBERS] 里所有数据的中位数',
       'qxsckdataanalysis.modeInList': '列表 [NUMBERS] 里所有数据的众数',
       'qxsckdataanalysis.varianceInList': '列表 [NUMBERS] 里所有数据的方差',
+      'qxsckdataanalysis.countNumebrsInList':'列表 [NUMBERS] 每个数字出现的 [TYPE]',
+
+      'qxsckdataanalysis.value.count': '次数',
+      'qxsckdataanalysis.value.fre': '频率',
     },
     en: {
       'qxsckdataanalysis.name': 'data analysis',
@@ -27,12 +32,17 @@ const Icon='data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi
       'qxsckdataanalysis.median': 'minimum of [NUMBERS]',
       'qxsckdataanalysis.mode': 'mode of [NUMBERS]',
       'qxsckdataanalysis.variance': 'variance of [NUMBERS]',
+      'qxsckdataanalysis.countNumebrs':'the [TYPE] that each numbers in [NUMBER]',
       'qxsckdataanalysis.averageInList': 'average of list [NUMBERS]',
       'qxsckdataanalysis.maximumInList': 'maximum of list [NUMBERS]',
       'qxsckdataanalysis.minimumInList': 'minimum of list [NUMBERS]',
       'qxsckdataanalysis.medianInList': 'median of list [NUMBERS]',
       'qxsckdataanalysis.modeInList': 'mode of list [NUMBERS]',
       'qxsckdataanalysis.varianceInList': 'variance of list [NUMBERS]',
+      'qxsckdataanalysis.countNumebrsInlist':'the [TYPE] that each numbers in list [NUMBER]',
+
+      'qxsckdataanalysis.value.count': 'count',
+      'qxsckdataanalysis.value.fre': 'frequency',
     }
   });
 
@@ -113,6 +123,22 @@ const Icon='data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi
             }
           },
           {
+            opcode: 'countNumebrs',
+            blockType: 'reporter',
+            text: Scratch.translate({ id: 'qxsckdataanalysis.countNumebrs', default: 'the [TYPE] that each numbers in [NUMBER]' }),
+            arguments: {
+              NUMBERS: {
+                type: 'string',
+                defaultValue: '1 2 3 4 5'
+              },
+              TYPE: {
+                type: 'string',
+                menu: 'countNumebrsList'
+              },
+            }
+          },
+
+          {
             opcode: 'averageInList',
             blockType: 'reporter',
             text: Scratch.translate({ id: 'qxsckdataanalysis.averageInList', default: 'average of list [NUMBERS]' }),
@@ -184,11 +210,37 @@ const Icon='data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi
             },
             disableMonitor: true,
           },
+          {
+            opcode: 'countNumebrsInList',
+            blockType: 'reporter',
+            text: Scratch.translate({ id: 'qxsckdataanalysis.countNumebrsInList', default: 'the [TYPE] that each numbers in list [NUMBER]' }),
+            arguments: {
+              NUMBERS: {
+                type: 'string',
+                menu: 'listMenu'
+              },
+              TYPE: {
+                type: 'string',
+                menu: 'countNumebrsList'
+              },
+            },
+            disableMonitor: true,
+          },
         ],
         menus: {
           listMenu: {
               items: 'findAllList'
           },
+          countNumebrsList:[
+            {
+              text:Scratch.translate({ id: 'qxsckdataanalysis.value.count', default: 'count' }),
+              value:'count',
+            },
+            {
+              text:Scratch.translate({ id: 'qxsckdataanalysis.value.fre', default: 'frequency' }),
+              value:'fre',
+            }
+          ],
         }
       };
     }
@@ -259,6 +311,33 @@ const Icon='data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi
       const sum = squaredDifferences.reduce((a, b) => a + b, 0);
       return sum / numbers.length;
     }
+    countNumebrs(args){
+      var type_=String(args.TYPE);
+      const numbers = String(args.NUMBERS).split(' ').map(Number);
+      const counts = new Map();
+      for (const number of numbers) {
+        let count = counts.get(number) || 0;
+        count++;
+        counts.set(number, count);
+      }
+      var result=new Object;
+      if(type_==='count'){
+        for (const [key, value] of counts) {
+          var key1=String(key),value1=String(value);
+          result[key1]=value1;
+        }
+        return JSON.stringify(result);
+      }else if(type_==='fre'){
+        var length=numbers.length;
+        for (const [key, value] of counts) {
+          var key1=String(key);
+          result[key1]=String(Math.round((value/length)*100)/100);
+        }
+        return JSON.stringify(result);
+      }
+      return 0;
+    }
+
     averageInList(args, util) {
       if(args.NUMBERS!='empty'){
         const list = util.target.lookupVariableByNameAndType(String(args.NUMBERS), 'list');
@@ -331,6 +410,33 @@ const Icon='data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi
         return sum2 / nums.length;
       }
       else return -1;
+    }
+    countNumebrsInList(args){
+      var type_=String(args.TYPE);
+      const list = util.target.lookupVariableByNameAndType(String(args.NUMBERS), 'list');
+      const numbers = list.value;
+      const counts = new Map();
+      for (const number of numbers) {
+        let count = counts.get(number) || 0;
+        count++;
+        counts.set(number, count);
+      }
+      var result=new Object;
+      if(type_==='count'){
+        for (const [key, value] of counts) {
+          var key1=String(key),value1=String(value);
+          result[key1]=value1;
+        }
+        return JSON.stringify(result);
+      }else if(type_==='fre'){
+        var length=numbers.length;
+        for (const [key, value] of counts) {
+          var key1=String(key);
+          result[key1]=String(Math.round((value/length)*100)/100);
+        }
+        return JSON.stringify(result);
+      }
+      return 0;
     }
   }
 
