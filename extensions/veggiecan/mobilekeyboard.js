@@ -1,6 +1,6 @@
 // Name: Mobile keyboard
 // ID: mobilekeyboard0419
-// Description: Show the keyboard on mobile devices and get the users input without showing any sort of input modal.
+// Description: Show the keyboard on mobile devices and get the users input without showing any input modal.
 // By: veggiecan0419
 (function (Scratch) {
   "use strict";
@@ -205,6 +205,7 @@
       self.typedText = self.deafultvalue;
       this.keyboardOpen = true;
       input.addEventListener("blur", function () {
+          //TODO: See if there is a way to sense if the keyboard is closed while the textbox is still in focus (could happen)
           self.keyboardOpen = false;
           input.style.display = "none";
           input.removeEventListener("keydown", keydownListener);
@@ -235,6 +236,7 @@
       self.typedText = self.deafultvalue;
       this.keyboardOpen = true;
       input.addEventListener("blur", function () {
+          //TODO:See if there is a way to sense if the keyboard is closed while the textbox is still in focus (could happen)
           self.keyboardOpen = false;
           input.style.display = "none";
           input.removeEventListener("keydown", keydownListener);
