@@ -120,8 +120,7 @@
           {
             opcode: "setSelectedText",
             blockType: Scratch.BlockType.COMMAND,
-            text:
-              "select text starting at position in text [START] ending at position [END]",
+            text: "select text starting at position in text [START] ending at position [END]",
             arguments: {
               START: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -205,14 +204,14 @@
       self.typedText = self.deafultvalue;
       this.keyboardOpen = true;
       input.addEventListener("blur", function () {
-          //TODO: See if there is a way to sense if the keyboard is closed while the textbox is still in focus (could happen)
-          self.keyboardOpen = false;
-          input.style.display = "none";
-          input.removeEventListener("keydown", keydownListener);
-          if (self.waitCallback) {
-            self.waitCallback();
-            self.waitCallback = null;
-          }
+        //TODO: See if there is a way to sense if the keyboard is closed while the textbox is still in focus (could happen)
+        self.keyboardOpen = false;
+        input.style.display = "none";
+        input.removeEventListener("keydown", keydownListener);
+        if (self.waitCallback) {
+          self.waitCallback();
+          self.waitCallback = null;
+        }
       });
       this.inputElement = input;
     }
@@ -236,13 +235,13 @@
       self.typedText = self.deafultvalue;
       this.keyboardOpen = true;
       input.addEventListener("blur", function () {
-          //TODO:See if there is a way to sense if the keyboard is closed while the textbox is still in focus (could happen)
-          self.keyboardOpen = false;
-          input.style.display = "none";
-          if (self.waitCallback) {
-            self.waitCallback();
-            self.waitCallback = null;
-          }
+        //TODO:See if there is a way to sense if the keyboard is closed while the textbox is still in focus (could happen)
+        self.keyboardOpen = false;
+        input.style.display = "none";
+        if (self.waitCallback) {
+          self.waitCallback();
+          self.waitCallback = null;
+        }
       });
       this.inputElement = input;
     }
