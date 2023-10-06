@@ -411,7 +411,7 @@ const Icon='data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi
       }
       else return -1;
     }
-    countNumebrsInList(args){
+    countNumebrsInList(args,util){
       var type_=String(args.TYPE);
       const list = util.target.lookupVariableByNameAndType(String(args.NUMBERS), 'list');
       const numbers = list.value;
