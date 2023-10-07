@@ -3,6 +3,8 @@
 // Description: Simple extension for encoding text in HTML escape codes.
 // By: ClaytonTDM
 (function (Scratch) {
+  "use strict";
+
   class HtmlEncode {
     getInfo() {
       return {
@@ -26,7 +28,7 @@
 
     htmlEncode({ text }) {
       return text.replace(
-        /[\u00A0-\u9999<>\&]/g,
+        /[\u00A0-\u9999<>]/g,
         (i) => "&#" + i.charCodeAt(0) + ";",
       );
     }
