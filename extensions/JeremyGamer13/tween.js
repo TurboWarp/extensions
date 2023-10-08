@@ -447,7 +447,6 @@
         if (Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) {
           easingFunction = EasingMethods[easeMethod];
         } else {
-          // TODO: does this make sense here?
           easingFunction = EasingMethods.linear;
         }
 
@@ -470,7 +469,6 @@
 
         const progress = (now() - state.startTimeMS) / state.durationMS;
         const tweened = state.easingFunction(progress, state.easeDirection);
-        // TODO: round?
         return interpolate(tweened, state.start, state.end);
       }
     }
