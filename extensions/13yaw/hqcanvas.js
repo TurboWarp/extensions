@@ -1,15 +1,15 @@
 // Name: HQCanvas
 // ID: 13hqcanvas
-// Description: Useful HTML5 Canvas2d API Interface for Scratch
+// Description: Useful HTML5 Canvas2d API Interface for Scratch.
 // By: 13yaw
 
 (function (Scratch) {
-    /*
-     * HQCanvas by 13yaw (QQ 2334660277)
-     * Useful HTML5 Canvas2d API Interface for Scratch
-     *
-     * License: MIT
-     */
+  /*
+   * HQCanvas by 13yaw (QQ 2334660277)
+   * Useful HTML5 Canvas2d API Interface for Scratch
+   *
+   * License: MIT
+   */
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
