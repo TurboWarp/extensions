@@ -285,18 +285,14 @@
           },
           {
             opcode: "tweenVariable",
-            text: "tween variable [VAR] from [START] to [END] over [SEC] seconds using [MODE] ease [DIRECTION]",
+            text: "tween variable [VAR] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]",
             blockType: BlockType.COMMAND,
             arguments: {
               VAR: {
                 type: ArgumentType.STRING,
                 menu: "vars",
               },
-              START: {
-                type: ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              END: {
+              VALUE: {
                 type: ArgumentType.NUMBER,
                 defaultValue: 100,
               },
@@ -316,26 +312,18 @@
           },
           {
             opcode: "tweenXY",
-            text: "tween from x: [X1] y: [Y1] to x: [X2] y: [Y2] over [SEC] seconds using [MODE] ease [DIRECTION]",
+            text: "tween to x: [X] y: [Y] over [SEC] seconds using [MODE] ease [DIRECTION]",
             blockType: BlockType.COMMAND,
             arguments: {
               PROPERTY: {
                 type: ArgumentType.STRING,
                 menu: "properties",
               },
-              X1: {
-                type: ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              Y1: {
-                type: ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              X2: {
+              X: {
                 type: ArgumentType.NUMBER,
                 defaultValue: 100,
               },
-              Y2: {
+              Y: {
                 type: ArgumentType.NUMBER,
                 defaultValue: 100,
               },
@@ -355,18 +343,14 @@
           },
           {
             opcode: "tweenProperty",
-            text: "tween [PROPERTY] from [START] to [END] over [SEC] seconds using [MODE] ease [DIRECTION]",
+            text: "tween [PROPERTY] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]",
             blockType: BlockType.COMMAND,
             arguments: {
               PROPERTY: {
                 type: ArgumentType.STRING,
                 menu: "properties",
               },
-              START: {
-                type: ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              END: {
+              VALUE: {
                 type: ArgumentType.NUMBER,
                 defaultValue: 100,
               },
@@ -443,9 +427,10 @@
       return interpolate(tweened, start, end);
     }
 
-    _tweenValue(args, util, id, startProperty, endProperty, callback) {
-      // Only use args on first run, otherwise grab everything from stackframe.
-      // This matches the behavior of the vanilla glide blocks.
+    _tweenValue(args, util, id, valueArgName, currentValue) {
+      // Only use args on first run. For later executions grab everything from stackframe.
+      // This ensures that if the arguments change, the tweening won't change. This matches
+      // the vanilla Scratch glide blocks.
       const state = util.stackFrame[id];
 
       if (!state) {
@@ -455,8 +440,8 @@
         const durationMS = Cast.toNumber(args.SEC) * 1000;
         const easeMethod = Cast.toString(args.MODE);
         const easeDirection = Cast.toString(args.DIRECTION);
-        const start = Cast.toNumber(args[startProperty]);
-        const end = Cast.toNumber(args[endProperty]);
+        const start = currentValue;
+        const end = Cast.toNumber(args[valueArgName]);
 
         let easingFunction;
         if (Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) {
@@ -491,21 +476,33 @@
     }
 
     tweenVariable(args, util) {
-      const value = this._tweenValue(args, util, "", "START", "END");
       const variable = util.target.lookupVariableById(args.VAR);
+      const value = this._tweenValue(args, util, "", "VALUE", variable.value);
       if (variable && variable.type === "") {
         variable.value = value;
       }
     }
 
     tweenXY(args, util) {
-      const x = this._tweenValue(args, util, "x", "X1", "X2");
-      const y = this._tweenValue(args, util, "y", "Y1", "Y2");
+      const x = this._tweenValue(args, util, "x", "X", util.target.x);
+      const y = this._tweenValue(args, util, "y", "Y", util.target.y);
       util.target.setXY(x, y);
     }
 
     tweenProperty(args, util) {
-      const value = this._tweenValue(args, util, "", "START", "END");
+      let currentValue = 0;
+      if (args.PROPERTY === "x position") {
+        currentValue = util.target.x;
+      } else if (args.PROPERTY === "y position") {
+        currentValue = util.target.y;
+      } else if (args.PROPERTY === "direction") {
+        currentValue = util.target.direction;
+      } else if (args.PROPERTY === "size") {
+        currentValue = util.target.size;
+      }
+
+      const value = this._tweenValue(args, util, "", "VALUE", currentValue);
+
       if (args.PROPERTY === "x position") {
         util.target.setXY(value, util.target.y);
       } else if (args.PROPERTY === "y position") {
