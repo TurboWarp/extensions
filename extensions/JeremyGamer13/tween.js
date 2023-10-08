@@ -208,7 +208,7 @@
   const bounce = (x, dir) => {
     switch (dir) {
       case "in": {
-        return 1 - this.bounce(1 - x, "out");
+        return 1 - bounce(1 - x, "out");
       }
       case "out": {
         const n1 = 7.5625;
@@ -225,8 +225,8 @@
       }
       case "in out": {
         return x < 0.5
-          ? (1 - this.bounce(1 - 2 * x, "out")) / 2
-          : (1 + this.bounce(2 * x - 1, "out")) / 2;
+          ? (1 - bounce(1 - 2 * x, "out")) / 2
+          : (1 + bounce(2 * x - 1, "out")) / 2;
       }
       default:
         return 0;
