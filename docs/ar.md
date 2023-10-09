@@ -54,7 +54,7 @@ Tells if AR is supported on this device.
 ```
 Tells if AR engine knows what the current camera position and orientation is.
 
-After entering AR mode, is is not immediately availible as the map of the environment needs to be built first. After enough information about environment has been gathered and processed, it becomes availible. It can temporarily become unavailible due to lack of detailed features in the view of camera that are used for motion tracking, fast motion causing camera image to become too blurry or camera getting covered.
+After entering AR mode, is is not immediately available as the map of the environment needs to be built first. After enough information about environment has been gathered and processed, it becomes available. It can temporarily become unavailable due to lack of detailed features in the view of camera that are used for motion tracking, fast motion causing camera image to become too blurry or camera getting covered.
 
 ---
 
@@ -63,7 +63,7 @@ After entering AR mode, is is not immediately availible as the map of the enviro
 ```
 Tells if AR engine knows where the point of ray intersection is.
 
-Can become unavailible for the same reasons as [is [pose] availible?]
+Can become unavailable for the same reasons as [is [pose] available?]
 
 ---
 
