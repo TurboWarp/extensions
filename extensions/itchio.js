@@ -67,7 +67,7 @@
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Window"
+            text: "Window",
           },
           {
             opcode: "openItchWindow",
@@ -94,7 +94,7 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Data"
+            text: "Data",
           },
           {
             opcode: "getGameData",
@@ -159,7 +159,7 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Rewards"
+            text: "Rewards",
           },
           {
             opcode: "returnGameRewards",
@@ -178,7 +178,7 @@
             },
           },
           {
-            opcode: "rewardsLenght", // oof
+            opcode: "rewardsLenght", // fixing this typo would break projects
             blockType: Scratch.BlockType.REPORTER,
             text: "Return rewards list length",
           },
@@ -189,7 +189,7 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Sub products"
+            text: "Sub products",
           },
           {
             opcode: "returnGameSubProducts",
@@ -199,27 +199,27 @@
               subProducts: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "subProductsMenu",
-                defaultValue: "id"
+                defaultValue: "id",
               },
               index: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
-              }
-            }
+                defaultValue: 0,
+              },
+            },
           },
           {
             opcode: "subProductsLength",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return sub products list length"
+            text: "Return sub products list length",
           },
           {
             opcode: "subProductsBool",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Sub products?"
+            text: "Sub products?",
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Sale"
+            text: "Sale",
           },
           {
             opcode: "returnGameSale",
@@ -264,7 +264,7 @@
               { text: "id", value: "id" },
               { text: "name", value: "name" },
               { text: "price", value: "price" },
-            ]
+            ],
           },
           saleMenu: {
             items: [
