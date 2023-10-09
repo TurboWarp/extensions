@@ -7,7 +7,7 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Effects extension must be run unsandboxed");
+    throw new Error("Clipping & Blending extension must be run unsandboxed");
   }
 
   // Simplified remake of an icon by True-Fantom
