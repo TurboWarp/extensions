@@ -35,7 +35,7 @@
   let xrCombinedMatrix;
   let xrHitTestSource;
   let hitPosition;
-  let hitPositionAvailible;
+  let hitPositionAvailible = false;
   let oldWidth = 0;
   let oldHeight = 0;
   let xrNeedsResize = false;
