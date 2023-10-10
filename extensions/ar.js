@@ -35,11 +35,11 @@
   let xrCombinedMatrix;
   let xrHitTestSource;
   let hitPosition;
-  let hitPositionAvailible;
+  let hitPositionAvailable = false;
   let oldWidth = 0;
   let oldHeight = 0;
   let xrNeedsResize = false;
-  let poseAvailible = false;
+  let poseAvailable = false;
   let enterARDone = [];
 
   let stageWrapper;
@@ -87,8 +87,8 @@
     xrViewSpace = null;
     xrHitTestSource = null;
     hitPosition = null;
-    hitPositionAvailible = false;
-    poseAvailible = false;
+    hitPositionAvailable = false;
+    poseAvailable = false;
 
     session.updateRenderState({
       baseLayer: new XRWebGLLayer(session, gl, {
@@ -266,11 +266,11 @@
           borderThing["transform"] = ""; // Removes translateX
         }
       }
-      poseAvailible = false;
+      poseAvailable = false;
       if (xrRefSpace) {
         const pose = frame.getViewerPose(xrRefSpace);
         if (pose) {
-          poseAvailible = true;
+          poseAvailable = true;
           xrProjectionMatrix = pose.views[0].projectionMatrix;
           xrTransform = pose.views[0].transform;
           const inverseTransformMatrix = xrTransform.inverse.matrix;
@@ -326,11 +326,11 @@
           ];
         }
       }
-      hitPositionAvailible = false;
+      hitPositionAvailable = false;
       if (xrHitTestSource) {
         const hitTestResults = frame.getHitTestResults(xrHitTestSource);
         if (hitTestResults.length > 0) {
-          hitPositionAvailible = true;
+          hitPositionAvailable = true;
           hitPosition =
             hitTestResults[0].getPose(xrRefSpace).transform.position;
         }
@@ -542,9 +542,9 @@
             arguments: {},
           },
           {
-            opcode: "isFeatureAvailible",
+            opcode: "isFeatureAvailible", // unfixable typo
             blockType: BlockType.BOOLEAN,
-            text: "is [FEATURE] availible?",
+            text: "is [FEATURE] available?",
             arguments: {
               FEATURE: {
                 type: ArgumentType.STRING,
@@ -731,7 +731,7 @@
         if (arFail !== "shown") {
           // AR is used on mobile, where accessing browser console to see what's wrong can be an issue
           alert(
-            "Project attempted to start AR even though it's not avalible. The reason: " +
+            "AR is not available because: " +
               arFail +
               ". This message will only be shown once."
           );
@@ -822,9 +822,9 @@
         case "ar":
           return !arFail;
         case "pose":
-          return poseAvailible;
+          return poseAvailable;
         case "hit position":
-          return hitPositionAvailible;
+          return hitPositionAvailable;
         default:
           return false;
       }
