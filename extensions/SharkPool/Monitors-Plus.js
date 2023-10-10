@@ -441,6 +441,7 @@
         ["id", variableId],
         ["visible", false]
       ]));
+
       setTimeout(() => {
         runtime.requestUpdateMonitor(new Map([
           ["id", variableId],
@@ -475,21 +476,26 @@
       }
       let newHTML;
       let typeElement;
+      let isHex;
       let variableName = nameID;
+      let toggleButtonClickFunction;
+
+      const hexColorRegex = /^#([0-9A-F]{3}){1,2}$/i;
       const Vvalue = util.target.lookupOrCreateVariable(nameID, variableName).value;
+      const isChecked = Vvalue === "true" || Vvalue === 1 ? true : false;
       variableName = name.replace(/[<>]/g, "");
       this.removeAllMonitorsUpdateListeners();
 
       switch (type) {
         case "large readout":
           this.resetFormat(variableId);
-          var state = vm.runtime.getMonitorState().get(variableId);
+          var LState = vm.runtime.getMonitorState().get(variableId);
           state = state.set("mode", "large");
           vm.runtime.requestUpdateMonitor(state);
           break;
         case "slider":
           this.resetFormat(variableId);
-          var state = vm.runtime.getMonitorState().get(variableId);
+          var SState = vm.runtime.getMonitorState().get(variableId);
           state = state.set("mode", "slider");
           vm.runtime.requestUpdateMonitor(state);
           break;
@@ -523,7 +529,6 @@
           });
           break;
         case "checkbox":
-          const isChecked = Vvalue === "true" ? true : false;
           this.setValue(nameID, isChecked, util);
           newHTML = `
             <div class="monitor_default-monitor_2vCcZ">
@@ -550,8 +555,6 @@
           });
           break;
         case "color":
-          let isHex = "";
-          const hexColorRegex = /^#([0-9A-F]{3}){1,2}$/i;
           if (hexColorRegex.test(Vvalue)) {
             isHex = Vvalue;
           } else {
@@ -594,7 +597,7 @@
 
           variableMonitor.innerHTML = newHTML;
           typeElement = document.querySelector(`[id="button_${variableId}"]`);
-          const toggleButtonClickFunction = () => this.toggleButtonClick(variableId);
+          toggleButtonClickFunction = () => this.toggleButtonClick(variableId);
           typeElement.onclick = toggleButtonClickFunction;
           typeElement.addEventListener("click", toggleButtonClickFunction);
           break;
@@ -617,18 +620,15 @@
             if (event.target && event.target.id === `file_${variableId}`) {
               const file = event.target.files[0];
               if (file) {
-                function getBase64(file) {
-                  const reader = new FileReader();
-                  reader.readAsDataURL(file);
-                  reader.onload = function () {
-                    const variable = util.target.lookupOrCreateVariable(nameID, variableName);
-                    variable.value = reader.result;
-                  };
-                  reader.onerror = function (error) {
-                    console.log('Error: ', error);
-                  };
-                }
-                getBase64(file);
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function () {
+                  const variable = util.target.lookupOrCreateVariable(nameID, variableName);
+                  variable.value = reader.result;
+                };
+                reader.onerror = function (error) {
+                  console.log("Error: ", error);
+                };
               }
             }
           });
