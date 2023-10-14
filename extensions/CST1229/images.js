@@ -19,6 +19,10 @@
 
       this.createdImages = new Set();
       this.validImages = new Set();
+
+      Scratch.vm.runtime.on("PROJECT_LOADED", () => {
+        this.deleteAllImages();
+      });
     }
 
     getInfo() {
