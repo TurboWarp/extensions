@@ -230,6 +230,10 @@
     constructor() {
       this.clearAll();
       this.showingExtra = false;
+
+      Scratch.vm.runtime.on('PROJECT_LOADED', () => {
+        this.clearAll();
+      });
     }
     getInfo() {
       return {
