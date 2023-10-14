@@ -33,6 +33,9 @@
         return value;
       }
     }
+    static fromArray(arr) {
+      return new ObjMap(Object.entries(arr));
+    }
   }
 
   const exampleJSON = {
@@ -226,10 +229,70 @@
               }
             }
           },
-        ]
+          '---',
+          {
+            opcode: 'listAsObject',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'list [list] as object',
+            arguments: {
+              list: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'list'
+              }
+            }
+          },
+          {
+            opcode: 'setListAsObject',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'set list [list] to object [obj]',
+            arguments: {
+              list: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'list'
+              },
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.array
+              }
+            }
+          },
+        ],
+        menus: {
+          list: {
+            acceptReporters: true,
+            items: 'getLists'
+          }
+        }
       };
     }
 
+    getLists () {
+      const globalLists = Object.values(Scratch.vm.runtime.getTargetForStage().variables).filter(x => x.type == 'list');
+      const localLists = Object.values(Scratch.vm.editingTarget.variables).filter(x => x.type == 'list');
+      const uniqueLists = [...new Set([...globalLists, ...localLists])];
+      if (uniqueLists.length === 0) {
+        return [
+          {
+            text: 'select a list',
+            value: 'select a list'
+          }
+        ];
+      }
+      return uniqueLists.map(i => ({
+        text: i.name,
+        value: i.id
+      }));
+    }
+
+    getScratchLists(util) {
+      const globalLists = Object.values(Scratch.vm.runtime.getTargetForStage().variables).filter(x => x.type == 'list');
+      const localLists = Object.values(util.target.variables).filter(x => x.type == 'list');
+      const uniqueLists = [...new Set([...globalLists, ...localLists])];
+      return uniqueLists.map(i => ({
+        text: i.name,
+        value: i.id
+      }));
+    }
 
     newObject() {
       return new ObjMap();
@@ -243,15 +306,12 @@
       return ObjMap.toMap(args.obj);
     }
 
+    _toArray(obj) {
+      return Array.from(obj.values());
+    }
+
     toArray(args) {
-      const obj = ObjMap.toMap(args.obj);
-      let i = 0, arr = [];
-      while (true) {
-        if (!obj.has(String(i))) break;
-        arr.push(obj.get(String(i)));
-        i++;
-      }
-      return JSON.stringify(arr);
+      return JSON.stringify(this._toArray(ObjMap.toMap(args.obj)));
     }
 
     set(args) {
@@ -295,6 +355,40 @@
 
     entries(args) {
       return JSON.stringify([...ObjMap.toMap(args.obj).entries()]);
+    }
+
+    listAsObject({ list }, util) {
+      try {
+        let listVariable = util.target.lookupVariableById(list);
+        if (listVariable == undefined) {
+          listVariable = this.getListsID(util).find(x => x.text === list).value;
+          listVariable = util.target.lookupVariableById(listVariable);
+        }
+
+        if (listVariable && listVariable.type === 'list') {
+          return ObjMap.fromArray(listVariable.value);
+        }
+      } catch (e) {
+        // ignore
+      }
+      return '';
+    }
+
+    setListAsObject({ list, obj }, util) {
+      try {
+        let listVariable = util.target.lookupVariableById(list);
+
+        if (listVariable == undefined) {
+          listVariable = this.getListsID(util).find(x => x.text === list).value;
+          listVariable = util.target.lookupVariableById(listVariable);
+        }
+
+        if (listVariable && listVariable.type === 'list') {
+          listVariable.value = this._toArray(ObjMap.toMap(obj));
+        }
+      } catch (e) {
+        // ignore
+      }
     }
   }
 
