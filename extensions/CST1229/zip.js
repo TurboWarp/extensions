@@ -18,6 +18,10 @@
       // jszip has its own "go to directory" system, but it sucks
       // implement our own instead
       this.zipPath = null;
+
+      Scratch.vm.runtime.on("PROJECT_LOADED", () => {
+        this.close();
+      });
     }
 
     getInfo() {
