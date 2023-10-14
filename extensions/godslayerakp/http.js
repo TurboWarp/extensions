@@ -211,8 +211,8 @@
 
       return defaultRequest;
     }
-    static get defualtResponse() {
-      const defualtResponse = {
+    static get defaultResponse() {
+      const defaultResponse = {
         text: "",
         status: "",
         statusText: "",
@@ -221,7 +221,7 @@
         url: "",
       };
 
-      return defualtResponse;
+      return defaultResponse;
     }
 
     /**
@@ -548,7 +548,7 @@
 
     clearAll() {
       this.request = WebRequests.defaultRequest;
-      this.response = WebRequests.defualtResponse;
+      this.response = WebRequests.defaultResponse;
     }
 
     /* ------- DATA READING -------- */
