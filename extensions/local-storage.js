@@ -82,6 +82,10 @@
     }
   });
 
+  Scratch.vm.runtime.on('PROJECT_LOADED', () => {
+    namespace = '';
+  });
+
   class LocalStorage {
     getInfo() {
       return {
