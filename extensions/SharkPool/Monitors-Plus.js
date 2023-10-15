@@ -485,17 +485,17 @@
       const isChecked = Vvalue === "true" || Vvalue === 1 ? true : false;
       variableName = name.replace(/[<>]/g, "");
       this.removeAllMonitorsUpdateListeners();
+      if (type === "large readout" || type === "slider" || type === "normal readout") {
+        this.resetFormat(variableId);
+        var state = vm.runtime.getMonitorState().get(variableId);
+      }
 
       switch (type) {
         case "large readout":
-          this.resetFormat(variableId);
-          var LState = vm.runtime.getMonitorState().get(variableId);
           state = state.set("mode", "large");
           vm.runtime.requestUpdateMonitor(state);
           break;
         case "slider":
-          this.resetFormat(variableId);
-          var SState = vm.runtime.getMonitorState().get(variableId);
           state = state.set("mode", "slider");
           vm.runtime.requestUpdateMonitor(state);
           break;
@@ -672,8 +672,6 @@
           });
           break;
         default: // Handle unknown monitor (default monitor)
-          this.resetFormat(variableId);
-          var state = vm.runtime.getMonitorState().get(variableId);
           state = state.set("mode", "default");
           vm.runtime.requestUpdateMonitor(state);
           break;
@@ -824,6 +822,7 @@
       let styleAttribute = variableMonitor.getAttribute("style");
       const transformRegex = /transform:([^;]+);/;
       const transformMatch = styleAttribute.match(transformRegex);
+
       if (transformMatch) {
         const existingTransform = transformMatch[1];
         const updatedTransform = existingTransform.replace(/translate\([^)]+\)/, `translate(${x}px, ${y}px)`);
@@ -863,6 +862,7 @@
           let y = parseInt(match[2]);
           x = x - canvas[0] + 5 + (sizeOffset.width / 2);
           y = canvas[1] - y - 6 - (sizeOffset.height / 2);
+
           this.varEffect(args.VARIABLE, "scale", scaleSet, util);
           if (args.POSITION === "x") {
             return (x * 0.275) * 5.01 + 1; //variable width is dynamic so x position is hard to calculate exactly
