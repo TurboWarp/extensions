@@ -682,7 +682,7 @@
           target.setCostume(target.currentCostume + 1);
         } else if (requestedCostume === "previous costume") {
           target.setCostume(target.currentCostume - 1);
-        } else if (!(isNaN(requestedCostume) || Cast.isWhiteSpace(requestedCostume))) {
+        } else if (!(isNaN(requestedCostume) || Scratch.Cast.isWhiteSpace(requestedCostume))) {
           target.setCostume(optZeroIndex ? Number(requestedCostume) : Number(requestedCostume) - 1);
         }
       }
