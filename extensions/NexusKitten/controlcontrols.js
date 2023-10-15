@@ -43,6 +43,16 @@
   };
 
   class controlcontrols {
+    constructor () {
+      Scratch.vm.runtime.on('PROJECT_LOADED', () => {
+        getButtons();
+        for (const button of [fullScreen, greenFlag, pauseButton, stopButton]) {
+          if (button) {
+            button.style.display = "block";
+          }
+        }
+      });
+    }
     getInfo() {
       return {
         id: "nkcontrols",
