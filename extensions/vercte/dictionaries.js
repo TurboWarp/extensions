@@ -6,6 +6,11 @@
 (function (Scratch) {
   "use strict";
   let dictionaries = new Map();
+
+  Scratch.vm.runtime.on('PROJECT_LOADED', () => {
+    dictionaries.clear();
+  });
+
   class DictionaryExtension {
     getInfo() {
       return {
