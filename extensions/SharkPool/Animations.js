@@ -3,7 +3,7 @@
 // Description: Play Animations for your Sprites
 // By: SharkPool <https://github.com/SharkPool-SP>
 
-// Version V.1.0.0
+// Version V.1.1.0
 
 (function (Scratch) {
   "use strict";
@@ -308,6 +308,18 @@
             },
           },
           {
+            opcode: "currentFrame",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "current frame of animation [NAME]",
+            blockIconURI: playIconURI,
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "animation 1",
+              },
+            },
+          },
+          {
             blockType: Scratch.BlockType.LABEL,
             text: "Keyframes",
           },
@@ -430,6 +442,7 @@
           fps: 10,
           frames: [],
           playing: false,
+          currentFrame: 0,
         }
       });
     }
@@ -550,6 +563,15 @@
       }
     }
 
+    currentFrame(args) {
+      const animation = allAnimations.find((animation) => animation[args.NAME]);
+      if (animation) {
+        return animation[args.NAME].currentFrame;
+      } else {
+        return "Animation Doesnt Exist!";
+      }
+    }
+
     frameNames(args) {
       const animation = allAnimations.find((animation) => animation[args.NAME]);
       if (animation) {
@@ -586,10 +608,12 @@
           myAnimation.playing = true;
           const target = myAnimation.target;
           let frameIndex = args.TYPE.includes("reverse") ? myAnimation.frames.length - 1 : 0;
+          myAnimation.currentFrame = frameIndex;
           const numFrames = myAnimation.frames.length;
 
           const playNextFrame = () => {
             if (myAnimation.playing === true) {
+              myAnimation.currentFrame = frameIndex;
               if (Object.keys(myAnimation.frames[frameIndex]).some(key => key.includes("spKF4!"))) {
                 if (Object.keys(myAnimation.frames[frameIndex]).some(key => key.includes("PZ"))) {
                   const keys = Object.keys(myAnimation.frames[frameIndex]);
