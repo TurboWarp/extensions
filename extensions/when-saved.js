@@ -22,7 +22,7 @@
       const checkThreadStatus = () => {
         if (
           performance.now() - startTime > MAX_BEFORE_SAVE_MS ||
-          threads.every((thread) => !vm.runtime.threads.includes(thread))
+          threads.every((thread) => !vm.runtime.isActiveThread(thread))
         ) {
           vm.runtime.off("AFTER_EXECUTE", checkThreadStatus);
           resolve();
