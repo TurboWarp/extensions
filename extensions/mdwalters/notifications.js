@@ -40,8 +40,8 @@
   };
 
   class Notifications {
-    constructor () {
-      Scratch.vm.runtime.on('RUNTIME_DISPOSED', () => {
+    constructor() {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
         this._closeNotification();
       });
     }

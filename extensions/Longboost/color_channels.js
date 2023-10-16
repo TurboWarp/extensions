@@ -8,8 +8,8 @@
   const gl = renderer._gl;
   let channel_array = [true, true, true, true];
   class LBdrawtest {
-    constructor () {
-      Scratch.vm.runtime.on('RUNTIME_DISPOSED', () => {
+    constructor() {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
         this.clearEffects();
       });
     }

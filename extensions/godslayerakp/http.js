@@ -231,7 +231,7 @@
       this.clearAll();
       this.showingExtra = false;
 
-      Scratch.vm.runtime.on('RUNTIME_DISPOSED', () => {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
         this.clearAll();
       });
     }

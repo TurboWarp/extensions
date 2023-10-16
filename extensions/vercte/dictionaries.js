@@ -7,7 +7,7 @@
   "use strict";
   let dictionaries = new Map();
 
-  Scratch.vm.runtime.on('RUNTIME_DISPOSED', () => {
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
     dictionaries.clear();
   });
 

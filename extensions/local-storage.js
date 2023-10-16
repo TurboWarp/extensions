@@ -82,8 +82,8 @@
     }
   });
 
-  Scratch.vm.runtime.on('RUNTIME_DISPOSED', () => {
-    namespace = '';
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    namespace = "";
   });
 
   class LocalStorage {
