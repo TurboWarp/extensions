@@ -10,7 +10,7 @@
   const MAX_BEFORE_SAVE_MS = 3000;
 
   const beforeSave = () =>
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
       const threads = vm.runtime.startHats("whensaved_beforeSave");
 
       if (threads.length === 0) {
@@ -66,9 +66,9 @@
     };
 
     const streamWrapper = {
-      on: (...args) => whenStreamReady("on", args),
-      pause: (...args) => whenStreamReady("pause", args),
-      resume: (...args) => whenStreamReady("resume", args),
+      on: (...args) => void whenStreamReady("on", args),
+      pause: (...args) => void whenStreamReady("pause", args),
+      resume: (...args) => void whenStreamReady("resume", args),
       accumulate: (...args) => whenStreamReady("accumulate", args),
     };
 
