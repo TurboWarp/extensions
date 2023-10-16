@@ -60,6 +60,28 @@
   let invert = 0;
   let resizeMode = "default";
 
+  const resetStyles = () => {
+    borderRadius = 0;
+    rotation = 0;
+    offsetY = 0;
+    offsetX = 0;
+    skewY = 0;
+    skewX = 0;
+    scale = 100;
+    transparency = 0;
+    sepia = 0;
+    blur = 0;
+    contrast = 100;
+    saturation = 100;
+    color = 0;
+    brightness = 100;
+    invert = 0;
+    resizeMode = "default";
+    updateStyle();
+  };
+
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", resetStyles);
+
   class CanvasEffects {
     getInfo() {
       return {
@@ -245,23 +267,7 @@
       updateStyle();
     }
     cleareffects() {
-      borderRadius = 0;
-      rotation = 0;
-      offsetY = 0;
-      offsetX = 0;
-      skewY = 0;
-      skewX = 0;
-      scale = 100;
-      transparency = 0;
-      sepia = 0;
-      blur = 0;
-      contrast = 100;
-      saturation = 100;
-      color = 0;
-      brightness = 100;
-      invert = 0;
-      resizeMode = "default";
-      updateStyle();
+      resetStyles();
     }
     setrendermode({ EFFECT }) {
       resizeMode = EFFECT;

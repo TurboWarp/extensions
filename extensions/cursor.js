@@ -178,6 +178,13 @@
   ];
 
   class MouseCursor {
+    constructor() {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this.setCur({
+          cur: "default",
+        });
+      });
+    }
     getInfo() {
       return {
         id: "MouseCursor",
