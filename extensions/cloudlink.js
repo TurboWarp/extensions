@@ -1783,33 +1783,35 @@
     // Reporter - Returns a RESTful GET promise.
     // url - String
     fetchURL(args) {
-      return fetch(args.url, {method: "GET"})
-      .then(response => response.text())
-      .catch(error => {
-        console.warn(`[CloudLink] Fetch error: ${error}`);
-      });
+      return Scratch.fetch(args.url, {method: "GET"})
+        .then(response => response.text())
+        .catch(error => {
+          console.warn(`[CloudLink] Fetch error: ${error}`);
+        });
     }
 
     // Reporter - Returns a RESTful request promise.
     // url - String, method - String, data - String, headers - String
     requestURL(args) {
       if (args.method == "GET" || args.method == "HEAD") {
-        return fetch(args.url, {
+        return Scratch.fetch(args.url, {
           method: args.method,
           headers: JSON.parse(args.headers)
-        }).then(response => response.text())
-        .catch(error => {
-          console.warn(`[CloudLink] Request error: ${error}`);
-        });
+        })
+          .then(response => response.text())
+          .catch(error => {
+            console.warn(`[CloudLink] Request error: ${error}`);
+          });
       } else {
-        return fetch(args.url, {
+        return Scratch.fetch(args.url, {
           method: args.method,
           headers: JSON.parse(args.headers),
           body: JSON.parse(args.data)
-        }).then(response => response.text())
-        .catch(error => {
-          console.warn(`[CloudLink] Request error: ${error}`);
-        });
+        })
+          .then(response => response.text())
+          .catch(error => {
+            console.warn(`[CloudLink] Request error: ${error}`);
+          });
       }
     }
     
