@@ -19,7 +19,7 @@
       // implement our own instead
       this.zipPath = null;
 
-      Scratch.vm.runtime.on("PROJECT_LOADED", () => {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
         this.close();
       });
     }

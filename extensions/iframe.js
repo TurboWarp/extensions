@@ -117,7 +117,7 @@
 
   Scratch.vm.on("STAGE_SIZE_CHANGED", updateFrameAttributes);
 
-  Scratch.vm.runtime.on("PROJECT_LOADED", closeFrame);
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", closeFrame);
 
   class IframeExtension {
     getInfo() {

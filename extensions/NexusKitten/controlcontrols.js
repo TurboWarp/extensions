@@ -44,7 +44,7 @@
 
   class controlcontrols {
     constructor () {
-      Scratch.vm.runtime.on('PROJECT_LOADED', () => {
+      Scratch.vm.runtime.on('RUNTIME_DISPOSED', () => {
         getButtons();
         for (const button of [fullScreen, greenFlag, pauseButton, stopButton]) {
           if (button) {

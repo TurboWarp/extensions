@@ -41,7 +41,7 @@
 
   class Notifications {
     constructor () {
-      Scratch.vm.runtime.on('PROJECT_LOADED', () => {
+      Scratch.vm.runtime.on('RUNTIME_DISPOSED', () => {
         this._closeNotification();
       });
     }

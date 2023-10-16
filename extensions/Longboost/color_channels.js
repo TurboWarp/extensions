@@ -9,7 +9,7 @@
   let channel_array = [true, true, true, true];
   class LBdrawtest {
     constructor () {
-      Scratch.vm.runtime.on('PROJECT_LOADED', () => {
+      Scratch.vm.runtime.on('RUNTIME_DISPOSED', () => {
         this.clearEffects();
       });
     }

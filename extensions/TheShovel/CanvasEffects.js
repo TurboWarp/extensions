@@ -80,7 +80,7 @@
     updateStyle();
   };
 
-  Scratch.vm.runtime.on("PROJECT_LOADED", resetStyles);
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", resetStyles);
 
   class CanvasEffects {
     getInfo() {

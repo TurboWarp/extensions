@@ -302,7 +302,7 @@
     console.error("Invalid color", color);
   };
 
-  Scratch.vm.runtime.on("PROJECT_LOADED", resetStyles);
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", resetStyles);
 
   class MonitorStyles {
     getInfo() {
