@@ -105,7 +105,11 @@
     });
 
   const afterSave = () => {
-    vm.runtime.startHats("lmsMoreEvents_afterSave");
+    // Wait until the next frame actually starts so that the actual file
+    // saving routine has a chance to finish before we starting running blocks.
+    vm.runtime.once('BEFORE_EXECUTE', () => {
+      vm.runtime.startHats("lmsMoreEvents_afterSave");
+    });
   };
 
   const originalSaveProjectSb3 = vm.saveProjectSb3;
