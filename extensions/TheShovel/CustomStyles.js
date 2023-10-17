@@ -197,6 +197,37 @@
     stylesheet.textContent = css;
   };
 
+  const resetStyles = () => {
+    monitorText = "";
+    monitorBorder = "";
+    monitorBackgroundColor = "";
+    variableValueBackground = "";
+    variableValueTextColor = "";
+    listFooterBackground = "";
+    listHeaderBackground = "";
+    listValueText = "";
+    listValueBackground = "";
+    variableValueRoundness = -1;
+    listValueRoundness = -1;
+    monitorBackgroundRoundness = -1;
+    monitorBackgroundBorderWidth = -1;
+    allowScrolling = "";
+    askBackground = "";
+    askBackgroundRoundness = -1;
+    askBackgroundBorderWidth = -1;
+    askButtonBackground = "";
+    askButtonRoundness = -1;
+    askInputBackground = "";
+    askInputRoundness = -1;
+    askInputBorderWidth = -1;
+    askBoxIcon = "";
+    askInputText = "";
+    askButtonImage = "";
+    askInputBorder = "";
+
+    applyCSS();
+  };
+
   const getMonitorRoot = (id) => {
     const allMonitors = document.querySelectorAll(monitorRoot);
     for (const monitor of allMonitors) {
@@ -270,6 +301,8 @@
 
     console.error("Invalid color", color);
   };
+
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", resetStyles);
 
   class MonitorStyles {
     getInfo() {
@@ -658,33 +691,7 @@
     }
 
     clearCSS() {
-      monitorText = "";
-      monitorBorder = "";
-      monitorBackgroundColor = "";
-      variableValueBackground = "";
-      variableValueTextColor = "";
-      listFooterBackground = "";
-      listHeaderBackground = "";
-      listValueText = "";
-      listValueBackground = "";
-      variableValueRoundness = -1;
-      listValueRoundness = -1;
-      monitorBackgroundRoundness = -1;
-      monitorBackgroundBorderWidth = -1;
-      allowScrolling = "";
-      askBackground = "";
-      askBackgroundRoundness = -1;
-      askBackgroundBorderWidth = -1;
-      askButtonBackground = "";
-      askButtonRoundness = -1;
-      askInputBackground = "";
-      askInputRoundness = -1;
-      askInputBorderWidth = -1;
-      askBoxIcon = "";
-      askInputText = "";
-      askButtonImage = "";
-      askInputBorder = "";
-      applyCSS();
+      resetStyles();
     }
 
     getValue(args) {

@@ -211,8 +211,8 @@
 
       return defaultRequest;
     }
-    static get defualtResponse() {
-      const defualtResponse = {
+    static get defaultResponse() {
+      const defaultResponse = {
         text: "",
         status: "",
         statusText: "",
@@ -221,7 +221,7 @@
         url: "",
       };
 
-      return defualtResponse;
+      return defaultResponse;
     }
 
     /**
@@ -230,6 +230,10 @@
     constructor() {
       this.clearAll();
       this.showingExtra = false;
+
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this.clearAll();
+      });
     }
     getInfo() {
       return {
@@ -548,7 +552,7 @@
 
     clearAll() {
       this.request = WebRequests.defaultRequest;
-      this.response = WebRequests.defualtResponse;
+      this.response = WebRequests.defaultResponse;
     }
 
     /* ------- DATA READING -------- */
