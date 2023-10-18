@@ -8,7 +8,7 @@
 (function (Scratch) {
 
   /*
-  CloudLink Extension for TurboWarp v0.1.0.
+  CloudLink Extension for TurboWarp v0.1.1.
 
   This extension should be fully compatible with projects developed using
   extensions S4.1, S4.0, and B3.0.
@@ -74,8 +74,8 @@
   */
   const version = {
     editorType: "TurboWarp",
-    versionNumber: 0,
-    versionString: "0.1.0",
+    versionNumber: 1,
+    versionString: "0.1.1",
   };
 
   // Store extension state
@@ -474,13 +474,6 @@
         clVars.gmsg.hasNew = true;
         clVars.gmsg.queue.push(packet);
         clVars.gmsg.eventHatTick = true;
-
-        // Fire event hats
-        runtime.startHats('cloudlink_onNewPacket', {
-          TYPE: 'Global data',
-          VAR: packet.name
-        });
-
         break;
 
       case "pmsg":
@@ -488,13 +481,6 @@
         clVars.pmsg.hasNew = true;
         clVars.pmsg.queue.push(packet);
         clVars.pmsg.eventHatTick = true;
-
-        // Fire event hats
-        runtime.startHats('cloudlink_onNewPacket', {
-          TYPE: 'Private data',
-          VAR: packet.name
-        });
-
         break;
 
       case "gvar":
@@ -505,17 +491,6 @@
         };
         clVars.gvar.queue.push(packet);
         clVars.gvar.eventHatTick = true;
-
-        // Fire event hats
-        runtime.startHats('cloudlink_onNewVar', {
-          TYPE: 'Global variables',
-          VAR: packet.name
-        });
-        runtime.startHats('cloudlink_onNewPacket', {
-          TYPE: 'Global variables',
-          VAR: packet.name
-        });
-
         break;
 
       case "pvar":
@@ -526,19 +501,6 @@
         };
         clVars.pvar.queue.push(packet);
         clVars.pvar.eventHatTick = true;
-
-        /*
-        // Fire event hats
-        runtime.startHats('cloudlink_onNewVar', {
-          TYPE: 'Private variables',
-          VAR: packet.name
-        });
-        */
-        runtime.startHats('cloudlink_onNewPacket', {
-          TYPE: 'Private variables',
-          VAR: packet.name
-        });
-
         break;
 
       case "direct":
@@ -564,13 +526,6 @@
         clVars.direct.hasNew = true;
         clVars.direct.queue.push(packet);
         clVars.direct.eventHatTick = true;
-
-        // Fire event hats
-        runtime.startHats('cloudlink_onNewPacket', {
-          TYPE: 'Direct data',
-          VAR: packet.name
-        });
-
         break;
 
       case "client_obj":
@@ -656,13 +611,6 @@
         clVars.statuscode.hasNew = true;
         clVars.statuscode.queue.push(packet);
         clVars.statuscode.eventHatTick = true;
-
-        // Fire event hats
-        runtime.startHats('cloudlink_onNewPacket', {
-          TYPE: 'Status code',
-          VAR: packet.name
-        });
-
         break;
 
       case "ulist":
@@ -1129,7 +1077,6 @@
             blockType: Scratch.BlockType.EVENT,
             text: "When connected",
             isEdgeActivated: false, // Gets called by runtime.startHats
-            shouldRestartExistingThreads: true,
           },
 
           {
@@ -1137,7 +1084,6 @@
             blockType: Scratch.BlockType.EVENT,
             text: "When disconnected",
             isEdgeActivated: false, // Gets called by runtime.startHats
-            shouldRestartExistingThreads: true,
           },
 
           "---",
@@ -1146,8 +1092,7 @@
             opcode: "onListener",
             blockType: Scratch.BlockType.HAT,
             text: "When I receive new message with listener [ID]",
-            isEdgeActivated: true, // Set to false when runtime.startHats is fixed
-            shouldRestartExistingThreads: true,
+            isEdgeActivated: true,
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -1160,8 +1105,7 @@
             opcode: "onNewPacket",
             blockType: Scratch.BlockType.HAT,
             text: "When I receive new [TYPE] message",
-            isEdgeActivated: true, // Set to false when runtime.startHats is fixed
-            shouldRestartExistingThreads: false,
+            isEdgeActivated: true,
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1175,8 +1119,7 @@
             opcode: "onNewVar",
             blockType: Scratch.BlockType.HAT,
             text: "When I receive new [TYPE] data for [VAR]",
-            isEdgeActivated: true, // Set to false when runtime.startHats is fixed
-            shouldRestartExistingThreads: true,
+            isEdgeActivated: true,
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1815,7 +1758,7 @@
       }
     }
     
-    // Event - Currently a temporary fix until startHats is fixed.
+    // Event
     // ID - String (listener)
     onListener(args) {
       // Must be connected
@@ -1833,7 +1776,7 @@
       return false;
     }
 
-    // Event - Currently a temporary fix until startHats is fixed.
+    // Event
     // TYPE - String (menu almostallmenu)
     onNewPacket(args) {
       // Must be connected
@@ -1887,7 +1830,7 @@
       return false;
     }
 
-    // Event - Currently a temporary fix until startHats is fixed.
+    // Event
     // TYPE - String (varmenu), VAR - String (variable name)
     onNewVar(args) {
       // Must be connected
@@ -2318,7 +2261,7 @@
         return;
       };
 
-      return sendMessage({ cmd: args.CMD, val: args.DATA, ID: args.ID });
+      return sendMessage({ cmd: args.CMD, val: args.DATA, id: args.ID });
     }
 
     // Command - Resets the "returnIsNewData" boolean state.
