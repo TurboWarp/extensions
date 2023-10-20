@@ -16,13 +16,15 @@
     toJSON() {
       return Object.fromEntries(this);
     }
-    static toMap(value) {
+    static fromAny(value) {
       if (value instanceof ObjMap) return value;
       try {
-        return JSON.parse(value, ObjMap.reviver);
+        const map = JSON.parse(value, ObjMap.reviver);
+        if (map instanceof ObjMap) return map;
       } catch {
-        return new ObjMap();
+        // ignore
       }
+      return ObjMap.emptyMap;
     }
     static toMapOrString(value) {
       if (value instanceof ObjMap) return value;
@@ -36,13 +38,17 @@
     static fromArray(arr) {
       return new ObjMap(Object.entries(arr));
     }
+    static get emptyMap() {
+      return new ObjMap();
+    }
   }
 
   const exampleJSON = {
     empty: '{}',
     keyValue: '{"key":"value"}',
     keyValue2: '{"key2":"value2"}',
-    array: '{"0":0,"1":1,"2":2}'
+    double: '{"apple":"banana","one":"two"}',
+    array: '{"0":"a","1":"b","2":"c"}'
   };
 
   class ObjectExtension {
@@ -183,6 +189,56 @@
               }
             }
           },
+          {
+            opcode: 'itemFromTo',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'key index [a] to [b] in [obj]',
+            arguments: {
+              a: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              b: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 2
+              },
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.array
+              }
+            }
+          },
+          '---',
+          {
+            opcode: 'indexOf',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'index of [key] in [obj]',
+            arguments: {
+              key: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'one'
+              },
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.double
+              }
+            }
+          },
+          {
+            opcode: 'getWhole',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'get whole object from [key] in [obj]',
+            arguments: {
+              key: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'one'
+              },
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.double
+              }
+            }
+          },
           '---',
           {
             opcode: 'keys',
@@ -299,11 +355,11 @@
     }
 
     toJSON(args) {
-      return JSON.stringify(ObjMap.toMap(args.obj));
+      return JSON.stringify(ObjMap.fromAny(args.obj));
     }
 
     toMap(args) {
-      return ObjMap.toMap(args.obj);
+      return ObjMap.fromAny(args.obj);
     }
 
     _toArray(obj) {
@@ -311,34 +367,34 @@
     }
 
     toArray(args) {
-      return JSON.stringify(this._toArray(ObjMap.toMap(args.obj)));
+      return JSON.stringify(this._toArray(ObjMap.fromAny(args.obj)));
     }
 
     set(args) {
       let value = ObjMap.toMapOrString(args.value);
-      return ObjMap.toMap(args.obj).set(Scratch.Cast.toString(args.key), value);
+      return ObjMap.fromAny(args.obj).set(Scratch.Cast.toString(args.key), value);
     }
 
     get(args) {
-      return ObjMap.toMap(args.obj).get(Scratch.Cast.toString(args.key)) ?? '';
+      return ObjMap.fromAny(args.obj).get(Scratch.Cast.toString(args.key)) ?? '';
     }
 
     delete(args) {
-      let obj = ObjMap.toMap(args.obj);
+      let obj = ObjMap.fromAny(args.obj);
       obj.delete(args.key);
       return obj;
     }
 
     length(args) {
-      return ObjMap.toMap(args.obj).size;
+      return ObjMap.fromAny(args.obj).size;
     }
 
     has(args) {
-      return ObjMap.toMap(args.obj).has(args.key);
+      return ObjMap.fromAny(args.obj).has(args.key);
     }
 
     merge(args) {
-      return new ObjMap([...ObjMap.toMap(args.obj1), ...ObjMap.toMap(args.obj2)]);
+      return new ObjMap([...ObjMap.fromAny(args.obj1), ...ObjMap.fromAny(args.obj2)]);
     }
 
     isObject(args) {
@@ -346,17 +402,20 @@
     }
 
     keys(args) {
-      return JSON.stringify([...ObjMap.toMap(args.obj).keys()]);
+      return ObjMap.fromArray([...ObjMap.fromAny(args.obj).keys()]);
     }
 
     values(args) {
-      return JSON.stringify([...ObjMap.toMap(args.obj).values()]);
+      return  ObjMap.fromArray([...ObjMap.fromAny(args.obj).values()]);
     }
 
     entries(args) {
-      return JSON.stringify([...ObjMap.toMap(args.obj).entries()]);
+      // currently O(n) time
+      const obj = ObjMap.fromAny(args.obj);
+      return new ObjMap(Object.entries([...obj.entries()].map(x => ObjMap.emptyMap.set(x[0],x[1]))));
     }
 
+    // from json extension
     listAsObject({ list }, util) {
       try {
         let listVariable = util.target.lookupVariableById(list);
@@ -384,11 +443,28 @@
         }
 
         if (listVariable && listVariable.type === 'list') {
-          listVariable.value = this._toArray(ObjMap.toMap(obj));
+          listVariable.value = this._toArray(ObjMap.fromAny(obj));
         }
       } catch (e) {
         // ignore
       }
+    }
+
+    itemFromTo(args) {
+      const obj = ObjMap.fromAny(args.obj);
+      args.b++; // inclusive slice
+      return new ObjMap([...obj.entries()].slice(args.a < 0 ? args.a + obj.size() : args.a, args.b <= 0 ? args.b + obj.size : args.b));
+    }
+
+    indexOf(args) {
+      return [...ObjMap.fromAny(args.obj).keys()].indexOf(Scratch.Cast.toString(args.key));
+    }
+
+    getWhole(args) {
+      const key = Scratch.Cast.toString(args.key);
+      const obj = ObjMap.fromAny(args.obj);
+      if (!obj.has(key)) return ObjMap.emptyMap;
+      return new ObjMap().set(key, obj.get(key));
     }
   }
 
