@@ -3,7 +3,7 @@
 // Description: Play Animations for your Sprites
 // By: SharkPool <https://github.com/SharkPool-SP>
 
-// Version V.1.1.0
+// Version V.1.2.0
 
 (function (Scratch) {
   "use strict";
@@ -84,6 +84,18 @@
               NAME: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "animation 1",
+              },
+            },
+          },
+          {
+            opcode: "allAnimationsX",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "all [TYPE] animations",
+            arguments: {
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "pullTypes",
+                defaultValue: "existing",
               },
             },
           },
@@ -430,6 +442,13 @@
               "looped reversed"
             ],
           },
+          pullTypes: {
+            acceptReporters: true,
+            items: [
+              "existing",
+              "playing"
+            ],
+          },
         }
       };
     }
@@ -484,7 +503,6 @@
     }
 
     addAllFrames(args, util) {
-      const maxCos = util.target.sprite.costumes_.length;
       args.COS1 = args.COS1 < 1 ? 1 : Math.round(args.COS1) - 1;
       args.COS2 = args.COS2 < 1 ? 1 : args.COS2 > util.target.sprite.costumes_.length ? util.target.sprite.costumes_.length : Math.round(args.COS2);
       let animation = allAnimations.find((animation) => animation[args.NAME]);
@@ -504,7 +522,6 @@
     }
 
     removeAllFrames(args, util) {
-      const maxCos = util.target.sprite.costumes_.length;
       args.COS1 = args.COS1 < 1 ? 1 : Math.round(args.COS1) - 1;
       args.COS2 = args.COS2 < 1 ? 1 : args.COS2 > util.target.sprite.costumes_.length ? util.target.sprite.costumes_.length : Math.round(args.COS2);
       let animation = allAnimations.find((animation) => animation[args.NAME]);
@@ -591,6 +608,15 @@
       }
     }
 
+    allAnimationsX(args) {
+      if (args.TYPE === "playing") {
+       const playingAnimations = allAnimations.filter(animationObj => animationObj[Object.keys(animationObj)[0]].playing === true);
+        return JSON.stringify(playingAnimations.map(animationObj => Object.keys(animationObj)[0]));
+      } else {
+        return JSON.stringify(allAnimations.map(animationObj => Object.keys(animationObj)[0]));
+      }
+    }
+
     setFPS(args) {
       const animation = allAnimations.find((animation) => animation[args.NAME]);
       if (animation) {
@@ -610,6 +636,9 @@
           let frameIndex = args.TYPE.includes("reverse") ? myAnimation.frames.length - 1 : 0;
           myAnimation.currentFrame = frameIndex;
           const numFrames = myAnimation.frames.length;
+          if (numFrames === 0) {
+            return;
+          }
 
           const playNextFrame = () => {
             if (myAnimation.playing === true) {
@@ -690,7 +719,7 @@
       if (animation) {
         return animation[args.NAME].playing;
       } else {
-        return "Animation Doesnt Exist!";
+        return false;
       }
     }
 
