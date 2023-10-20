@@ -412,31 +412,33 @@ const Icon='data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi
       else return -1;
     }
     countNumebrsInList(args,util){
-      var type_=String(args.TYPE);
-      const list = util.target.lookupVariableByNameAndType(String(args.NUMBERS), 'list');
-      const numbers = list.value;
-      const counts = new Map();
-      for (const number of numbers) {
-        let count = counts.get(number) || 0;
-        count++;
-        counts.set(number, count);
-      }
-      var result=new Object;
-      if(type_==='count'){
-        for (const [key, value] of counts) {
-          var key1=String(key),value1=String(value);
-          result[key1]=value1;
+      if(args.NUMBERS!='empty'){
+        var type_=String(args.TYPE);
+        const list = util.target.lookupVariableByNameAndType(String(args.NUMBERS), 'list');
+        const numbers = list.value;
+        const counts = new Map();
+        for (const number of numbers) {
+          let count = counts.get(number) || 0;
+          count++;
+          counts.set(number, count);
         }
-        return JSON.stringify(result);
-      }else if(type_==='fre'){
-        var length=numbers.length;
-        for (const [key, value] of counts) {
-          var key1=String(key);
-          result[key1]=String(Math.round((value/length)*100)/100);
+        var result=new Object;
+        if(type_==='count'){
+          for (const [key, value] of counts) {
+            var key1=String(key),value1=String(value);
+            result[key1]=value1;
+          }
+          return JSON.stringify(result);
+        }else if(type_==='fre'){
+          var length=numbers.length;
+          for (const [key, value] of counts) {
+            var key1=String(key);
+            result[key1]=String(Math.round((value/length)*100)/100);
+          }
+          return JSON.stringify(result);
         }
-        return JSON.stringify(result);
       }
-      return 0;
+      return -1;
     }
   }
 
