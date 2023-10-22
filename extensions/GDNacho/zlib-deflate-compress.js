@@ -88,7 +88,7 @@
             }
 
             if (args.OPTION === 'compress') {
-                return compress(args.STRING);;
+                return compress(args.STRING);
             }else if (args.OPTION === 'decompress'){
                 return decompress(args.STRING);
             }
