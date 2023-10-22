@@ -290,3 +290,8 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Lily/Video.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
+
+## GDNacho/zlib-deflate-compress.svg
+ - Created by [GDNacho](https://github.com/gdnacho)
+ - "zlib" logo from https://www.zlib.net.
+ - zlib logo vector by TilmannR.
