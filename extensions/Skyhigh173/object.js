@@ -1,47 +1,73 @@
+// Name: Object
+// ID: skyhigh173object
+// Description: Treat JSON strings as objects, to boost the performance.
+// By: Skyhigh173
+
 (function (Scratch) {
   'use strict';
+  // ! to editor:
+  // ! pay attention to comments which contains '!' at the beginning.
+  // ! they are important.
 
-  // JSON can't be displayed properly
-  // but Map can!
-  // when saved to project, it will be converted to JSON string
-  // we modify toString() to use it as string
-  class ObjMap extends Map {
-    static reviver(key, value) {
-      if (value instanceof Array || value instanceof Object) return new ObjMap(Object.entries(value));
+  // ! custom functions
+  Map._e = {
+    get empty() {
+      return new Map();
+    },
+
+    // reviver for JSON.parse
+    reviver(_, value) {
+      if (value instanceof Array || value instanceof Object) return new Map(Object.entries(value));
       return value;
-    }
-    toString() {
-      return JSON.stringify(this.toJSON());
-    }
-    toJSON() {
-      return Object.fromEntries(this);
-    }
-    static fromAny(value) {
-      if (value instanceof ObjMap) return value;
+    },
+
+    // replacer for JSON.stringify
+    replacer(_, value) {
+      if (value instanceof Map) return Object.fromEntries(value);
+      return value;
+    },
+
+    // ! use when you need to modify contents of the map
+    deepCopy(value) {
+      if (value instanceof Map) return structuredClone(value);
+      return Map._e.parse(value);
+    },
+
+    // ! use when you only needs to read the contents of the map
+    shallowCopy(value) {
+      return Map._e.parse(value);
+    },
+
+    // (shallow) parse value
+    parse(value) {
+      if (value instanceof Map) return value;
       try {
-        const map = JSON.parse(value, ObjMap.reviver);
-        if (map instanceof ObjMap) return map;
+        const result = JSON.parse(value, Map._e.reviver);
+        if (result instanceof Map) return result; // make sure they are not Numbers
       } catch {
         // ignore
       }
-      return ObjMap.emptyMap;
-    }
-    static toMapOrString(value) {
-      if (value instanceof ObjMap) return value;
-      if (value instanceof Boolean || value instanceof Number) return value;
+      return Map._e.empty;
+    },
+
+    // used in 'set' related functions
+    fromMapOrString(value) {
+      if (value instanceof Map) return structuredClone(value);
       try {
-        return new ObjMap(Object.entries(JSON.parse(value)));
+        return new Map(Object.entries(JSON.parse(value)));
       } catch {
         return value;
       }
+    },
+
+    // Array to Map
+    fromArray(arr) {
+      return new Map(Object.entries(arr));
     }
-    static fromArray(arr) {
-      return new ObjMap(Object.entries(arr));
-    }
-    static get emptyMap() {
-      return new ObjMap();
-    }
-  }
+  };
+
+  Map.prototype.toString = function() { return JSON.stringify(Object.fromEntries(this), Map._e.replacer); };
+
 
   const exampleJSON = {
     empty: '{}',
@@ -147,7 +173,6 @@
               }
             }
           },
-          '---',
           {
             opcode: 'length',
             blockType: Scratch.BlockType.REPORTER,
@@ -174,10 +199,11 @@
               }
             }
           },
+          '---',
           {
             opcode: 'merge',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'merge [obj1] [obj2]',
+            text: 'merge [obj1] with [obj2]',
             arguments: {
               obj1: {
                 type: Scratch.ArgumentType.STRING,
@@ -190,9 +216,9 @@
             }
           },
           {
-            opcode: 'itemFromTo',
+            opcode: 'slice',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'key index [a] to [b] in [obj]',
+            text: 'slice from [a] to [b] in [obj]',
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -212,7 +238,7 @@
           {
             opcode: 'indexOf',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'index of [key] in [obj]',
+            text: 'index of key [key] in [obj]',
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -227,7 +253,7 @@
           {
             opcode: 'getWhole',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'get whole object from [key] in [obj]',
+            text: 'get whole from key [key] in [obj]',
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -350,71 +376,6 @@
       }));
     }
 
-    newObject() {
-      return new ObjMap();
-    }
-
-    toJSON(args) {
-      return JSON.stringify(ObjMap.fromAny(args.obj));
-    }
-
-    toMap(args) {
-      return ObjMap.fromAny(args.obj);
-    }
-
-    _toArray(obj) {
-      return Array.from(obj.values());
-    }
-
-    toArray(args) {
-      return JSON.stringify(this._toArray(ObjMap.fromAny(args.obj)));
-    }
-
-    set(args) {
-      let value = ObjMap.toMapOrString(args.value);
-      return ObjMap.fromAny(args.obj).set(Scratch.Cast.toString(args.key), value);
-    }
-
-    get(args) {
-      return ObjMap.fromAny(args.obj).get(Scratch.Cast.toString(args.key)) ?? '';
-    }
-
-    delete(args) {
-      let obj = ObjMap.fromAny(args.obj);
-      obj.delete(args.key);
-      return obj;
-    }
-
-    length(args) {
-      return ObjMap.fromAny(args.obj).size;
-    }
-
-    has(args) {
-      return ObjMap.fromAny(args.obj).has(args.key);
-    }
-
-    merge(args) {
-      return new ObjMap([...ObjMap.fromAny(args.obj1), ...ObjMap.fromAny(args.obj2)]);
-    }
-
-    isObject(args) {
-      return args.obj instanceof ObjMap;
-    }
-
-    keys(args) {
-      return ObjMap.fromArray([...ObjMap.fromAny(args.obj).keys()]);
-    }
-
-    values(args) {
-      return  ObjMap.fromArray([...ObjMap.fromAny(args.obj).values()]);
-    }
-
-    entries(args) {
-      // currently O(n) time
-      const obj = ObjMap.fromAny(args.obj);
-      return new ObjMap(Object.entries([...obj.entries()].map(x => ObjMap.emptyMap.set(x[0],x[1]))));
-    }
-
     // from json extension
     listAsObject({ list }, util) {
       try {
@@ -425,7 +386,7 @@
         }
 
         if (listVariable && listVariable.type === 'list') {
-          return ObjMap.fromArray(listVariable.value);
+          return Map._e.fromArray(listVariable.value);
         }
       } catch (e) {
         // ignore
@@ -443,28 +404,92 @@
         }
 
         if (listVariable && listVariable.type === 'list') {
-          listVariable.value = this._toArray(ObjMap.fromAny(obj));
+          listVariable.value = this._toArray(Map._e.deepCopy(obj));
         }
       } catch (e) {
         // ignore
       }
     }
 
-    itemFromTo(args) {
-      const obj = ObjMap.fromAny(args.obj);
-      args.b++; // inclusive slice
-      return new ObjMap([...obj.entries()].slice(args.a < 0 ? args.a + obj.size() : args.a, args.b <= 0 ? args.b + obj.size : args.b));
+    newObject() {
+      return Map._e.empty;
+    }
+
+    toJSON(args) {
+      return Map._e.shallowCopy(args.obj).toString();
+    }
+
+    toMap(args) {
+      return Map._e.shallowCopy(args.obj);
+    }
+
+    _toArray(obj) {
+      return Array.from(obj.values());
+    }
+
+    toArray(args) {
+      return JSON.stringify(this._toArray(Map._e.shallowCopy(args.obj)));
+    }
+
+    set(args) {
+      let value = Map._e.fromMapOrString(args.value);
+      return Map._e.deepCopy(args.obj).set(Scratch.Cast.toString(args.key), value);
+    }
+
+    get(args) {
+      return Map._e.shallowCopy(args.obj).get(Scratch.Cast.toString(args.key)) ?? '';
+    }
+
+    delete(args) {
+      let obj = Map._e.deepCopy(args.obj);
+      obj.delete(args.key);
+      return obj;
+    }
+
+    length(args) {
+      return Map._e.shallowCopy(args.obj).size;
+    }
+
+    has(args) {
+      return Map._e.shallowCopy(args.obj).has(args.key);
+    }
+
+    merge(args) {
+      return new Map([...Map._e.shallowCopy(args.obj1), ...Map._e.shallowCopy(args.obj2)]);
+    }
+
+    isObject(args) {
+      return args.obj instanceof Map;
+    }
+
+    keys(args) {
+      return Map._e.fromArray([...Map._e.shallowCopy(args.obj).keys()]);
+    }
+
+    values(args) {
+      return  Map._e.fromArray([...Map._e.shallowCopy(args.obj).values()]);
+    }
+
+    entries(args) {
+      const obj = Map._e.shallowCopy(args.obj);
+      // convert entries to map
+      return Map._e.fromArray(Array.from(obj.entries()).map(x => Map._e.fromArray(x)));
+    }
+
+    slice(args) {
+      const obj = Map._e.deepCopy(args.obj);
+      return new Map([...obj.entries()].slice(args.a, args.b));
     }
 
     indexOf(args) {
-      return [...ObjMap.fromAny(args.obj).keys()].indexOf(Scratch.Cast.toString(args.key));
+      return [...Map._e.shallowCopy(args.obj).keys()].indexOf(Scratch.Cast.toString(args.key));
     }
 
     getWhole(args) {
       const key = Scratch.Cast.toString(args.key);
-      const obj = ObjMap.fromAny(args.obj);
-      if (!obj.has(key)) return ObjMap.emptyMap;
-      return new ObjMap().set(key, obj.get(key));
+      const obj = Map._e.shallowCopy(args.obj);
+      if (!obj.has(key)) return Map._e.empty;
+      return new Map([[key, obj.get(key)]]);
     }
   }
 
