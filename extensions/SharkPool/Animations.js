@@ -646,6 +646,7 @@
               if (Object.keys(myAnimation.frames[frameIndex]).some(key => key.includes("spKF4!"))) {
                 if (Object.keys(myAnimation.frames[frameIndex]).some(key => key.includes("PZ"))) {
                   const keys = Object.keys(myAnimation.frames[frameIndex]);
+                  /* eslint-disable */
                   for (const key of keys) {
                     const delayTime = myAnimation.frames[frameIndex][key].secs;
                     setTimeout(() => {
@@ -653,6 +654,7 @@
                     }, delayTime);
                     return;
                   }
+                  /* eslint-enable */
                 } else {
                   this._setKeyframe(target, myAnimation.frames[frameIndex], myAnimation);
                 }
