@@ -130,13 +130,13 @@
             arguments: {
               LINE: {
                 type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 1,
-                },
-                STRING: {
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: "Hello, world!\nGoodbye, world!",
-                },
+                defaultValue: 1,
               },
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello, world!\nGoodbye, world!",
+              },
+            },
           },
           {
             opcode: "get_lines",
@@ -144,22 +144,22 @@
             text: "get lines [FROM] to [TO] from [STRING]",
             arguments: {
               FROM: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 1,
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
               },
               TO: {
-                  type: Scratch.ArgumentType.NUMBER,
-                  defaultValue: 3,
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 3,
               },
               STRING: {
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: "Hello, world!\nHey!\nHi!\nI'm excluded!",
-                },
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello, world!\nHey!\nHi!\nI'm excluded!",
               },
+            },
           },
 
           "---",
-          
+
           {
             opcode: "replace",
             blockType: Scratch.BlockType.REPORTER,
@@ -221,7 +221,7 @@
           },
 
           "---",
-          
+
           {
             opcode: "replaceRegex",
             blockType: Scratch.BlockType.REPORTER,
@@ -472,7 +472,13 @@
       const maxLines = Math.floor(args.TO);
       const text = args.STRING;
       const lines = text.split("\n");
-      if (minLines < 1 || minLines > lines.length || maxLines < 1 || maxLines > lines.length || minLines > maxLines) {
+      if (
+        minLines < 1 ||
+        minLines > lines.length ||
+        maxLines < 1 ||
+        maxLines > lines.length ||
+        minLines > maxLines
+      ) {
         return "";
       }
       return lines.slice(minLines - 1, maxLines).join("\n");
