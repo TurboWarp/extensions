@@ -3024,7 +3024,8 @@
       return new Promise((resolve) =>
         GameJolt.SendBatchRequest(
           data.batchRequests
-          .map((I) => `
+          .map(
+            (I) => `
               /${I.namespace.split("/").map((i) => encodeURIComponent(i)).join("/")}/
               ?game_id=${GameJolt.iGameID}
               &${new URLSearchParams(I.parameters).toString()}
