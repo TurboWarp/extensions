@@ -1288,12 +1288,9 @@
       }
       let sFinalURL = GJAPI.sAPI + "/batch?game_id=" + GJAPI.iGameID;
       for (let i = 0; i < sRequests.length; i++) {
-        sRequests[i] +=
-          (sRequests[i].indexOf("/?") === -1 ? "?" : "&") +
-          "game_id=" + 
-          GJAPI.iGameID;
         sFinalURL += "&requests[]=" +
-          encodeURIComponent(sRequests[i] +
+          encodeURIComponent(
+            encodeURI(sRequests[i]) +
             "&signature=" +
             md5(sRequests[i] + GJAPI.sGameKey)
           );
@@ -2134,15 +2131,15 @@
             opcode: "batchAdd",
             blockIconURI: icons.batch,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Add [field] request with [params] to batch",
+            text: "Add [namespace] request with [parameters] to batch",
             arguments: {
-              field: {
+              namespace: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "data-store/set"
               },
-              params: {
+              parameters: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key=key&data=data",
+                defaultValue: '{"key":"key","data":"data"}',
               },
             },
           },
@@ -2395,7 +2392,8 @@
           token,
           (pResponse) => {
             if (pResponse.success != trueStr)
-              err.last = pResponse.message;
+              [err.user, err.last] =
+                [pResponse.message, pResponse.message];
             resolve();
           }
         )
@@ -2410,7 +2408,8 @@
         GameJolt.UserLoginAuto(
           (pResponse) => {
             if (pResponse.success != trueStr)
-              err.last = pResponse.message;
+            [err.user, err.last] =
+              [pResponse.message, pResponse.message];
             resolve();
           }
         )
@@ -2424,7 +2423,8 @@
         GameJolt.UserLogout(
           (pResponse) => {
             if (pResponse.success != trueStr)
-              err.last = pResponse.message;
+            [err.user, err.last] =
+              [pResponse.message, pResponse.message];
             resolve();
           }
         )
@@ -3000,9 +3000,19 @@
     timeReturnJson() {
       return JSON.stringify(data.time) || err.get("time") || "{}";
     }
-    batchAdd({ field, params }) {
+    batchAdd({ namespace, parameters }) {
       if (!data.batchRequests) data.batchRequests = [];
-      data.batchRequests.push(`/${field}/?${params}`);
+      try {
+        data.batchRequests.push({
+          namespace: namespace,
+          parameters: JSON.parse(parameters),
+        });
+      } catch (err) {
+        data.batchRequests.push({
+          namespace: namespace,
+          parameters: {},
+        });
+      }
     }
     batchClear() {
       data.batchRequests = undefined;
@@ -3013,7 +3023,13 @@
     batchCall({ parameter }) {
       return new Promise((resolve) =>
         GameJolt.SendBatchRequest(
-          data.batchRequests,
+          data.batchRequests
+          .map((I) => `
+              /${I.namespace.split("/").map((i) => encodeURIComponent(i)).join("/")}/
+              ?game_id=${GameJolt.iGameID}
+              &${new URLSearchParams(I.parameters).toString()}
+            `
+          ),
           parameter,
           (pResponse) => {
             if (pResponse.success != trueStr) {
