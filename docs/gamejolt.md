@@ -145,7 +145,6 @@ Returns fetched user's friend ID at passed index.
 (Fetched user's friend IDs in JSON :: #2F7F6F)
 ```
 Returns fetched user's friend IDs in JSON.
-
 ### Trophy Blocks
 ---
 Achieve, remove and fetch trophies.
@@ -192,7 +191,6 @@ Returns fetched trophy data at passed index by passed key.
 (Fetched trophies in JSON :: #2F7F6F)
 ```
 Returns fetched trophy data in JSON
-
 ### Score Blocks
 ---
 ```scratch
@@ -277,7 +275,6 @@ Returns fetched table data at passed index by passed key.
 (Fetched tables in JSON :: #2F7F6F)
 ```
 Returns fetched tables in JSON.
-
 ### Data Storage Blocks
 ---
 Operate on Game Jolt's cloud variables.
@@ -328,10 +325,10 @@ Fetch [global v] keys matching with [*] :: #2F7F6F
 ```
 Fetches global/user keys matching with passed pattern.
 - Examples:
-  - A pattern of `*` matches all keys.
-  - A pattern of `key*` matches all keys with `key` at the start.
-  - A pattern of `*key` matches all keys with `key` at the end.
-  - A pattern of `*key*` matches all keys containing `key`.
+    - A pattern of `*` matches all keys.
+    - A pattern of `key*` matches all keys with `key` at the start.
+    - A pattern of `*key` matches all keys with `key` at the end.
+    - A pattern of `*key*` matches all keys containing `key`.
 
 User option requires to be logged in.
 
@@ -346,7 +343,6 @@ Returns fetched key at passed index.
 (Fetched keys in JSON :: #2F7F6F)
 ```
 Returns fetched keys in JSON.
-
 ### Time Blocks
 ---
 Track server's time.
@@ -367,6 +363,47 @@ Returns fetched server's time data by passed key.
 (Fetched server's time in JSON :: #2F7F6F)
 ```
 Returns fetched server's time data in JSON.
+### Batch Blocks
+---
+Fetch more data per request.
+
+```scratch
+Add [data-store/set] request with [{"key":"key", "data":"data"}] parameters :: #2F7F6F
+```
+Adds passed arguments to the batch.
+- The batch is an array of sub requests consisting of the namespace and the parameters object.
+
+---
+```scratch
+Clear batch :: #2F7F6F
+```
+Clears the batch of all sub requests.
+
+---
+```scratch
+(Batch in JSON :: #2F7F6F)
+```
+Returns the batch in JSON.
+
+---
+```scratch
+Fetch batch [sequentially v] :: #2F7F6F
+```
+Fetches the batch.
+- After the fetch the batch is not cleared.
+
+You can call the batch request in different ways:
+- Sequentially - all sub requests are processed in sequence.
+- Sequentially, break on error - all sub requests are processed in sequence, if an error in one of them occurs, the whole request will fail.
+- In parallel - all sub requests are processed in parallel, this is the fastest way but the results may vary depending on which request finished first.
+
+User based sub requests require to be logged in.
+
+---
+```scratch
+(Fetched batch data in JSON :: #2F7F6F)
+```
+Returns fetched batch data in JSON.
 
 ### Debug Blocks
 ---
@@ -389,6 +426,85 @@ Checks to see if debug mode is on.
 (Last API error :: #2F7F6F)
 ```
 Returns the last API error.
-- Doesn't return errors based on invalid input.
+
+### Handling Common Errors
+---
+Handling commonly encountered errors.
+
+```scratch
+// Error: The game ID you passed in does not point to a valid game.
+```
+This error occurs when the game ID you set is invalid.
+#### Handling
+This error can be avoided by using this block:
+```scratch
+Set game ID to [0] and private key to [private key] :: #2F7F6F
+```
+- Make sure the value matches your game's ID.
 
 ---
+```scratch
+// Error: The signature you entered for the request is invalid.
+```
+This error occurs when the private key you set is invalid.
+#### Handling
+This error can be avoided by using this block:
+```scratch
+Set game ID to [0] and private key to [private key] :: #2F7F6F
+```
+- Make sure the value matches your game's private key.
+
+---
+```scratch
+// Error: No user logged in.
+```
+This error occurs when no user is logged in.
+- The most common cause is that the extension failed to recognize the user.
+#### Handling
+This error can be avoided with a manual login option.
+```scratch
+when flag clicked
+if <not<Autologin available? :: #2F7F6F>> then
+ask [login or continue as guest?] and wait
+if <(answer) = [login]> then
+ask [enter your username] and wait
+set [username v] to (answer)
+ask [enter your private game token] and wait
+set [private game token v] to (answer)
+Login with (username :: variables) and (private game token) :: #2F7F6F 
+end
+end
+```
+
+---
+```scratch
+// Error: No such user with the credentials passed in could be found.
+```
+This error occurs when manual login failed to recognize the user credentials you passed in.
+- It can also occur with autologin when no user is recognized by the extension.
+#### Handling
+This error can be avoided by modifying the previous example to try again after a failed login attempt.
+```scratch
+when flag clicked
+if <not<Autologin available? :: #2F7F6F>> then
+ask [login or continue as guest?] and wait
+if <(answer) = [login]> then
+repeat until <Logged in? :: #2F7F6F>
+ask [enter your username] and wait
+set [username v] to (answer)
+ask [enter your private game token] and wait
+set [private game token v] to (answer)
+Login with (username :: variables) and (private game token) :: #2F7F6F 
+end
+end
+end
+```
+
+---
+```scratch
+// Error: Data not found.
+// Error: Data at such index not found.
+```
+These errors occur when you are trying to access non-existent data.
+- Make sure you have previously fetched the data you are trying to access.
+- Make sure you have the right index as indexing starts at 0 instead of 1.
