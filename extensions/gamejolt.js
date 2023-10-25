@@ -1658,7 +1658,14 @@
             opcode: "trophyFetchAll",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch all trophies",
+            text: "Fetch [trophyFetchGroup] trophies",
+            arguments: {
+              trophyFetchGroup: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "trophyFetchGroup",
+                defaultValue: "0",
+              },
+            },
           },
           {
             opcode: "trophyReturn",
@@ -2305,6 +2312,13 @@
               { text: "user", value: "true" },
             ],
           },
+          trophyFetchGroup: {
+            items: [
+              { text: "all", value: "0" },
+              { text: "all achieved", value: "1" },
+              { text: "all unachieved", value: "-1" },
+            ],
+          },
           indexOrID: {
             items: [
               { text: "index", value: "true" },
@@ -2568,9 +2582,10 @@
       }
       return data.trophies[trophyDataType] || err.get("noData");
     }
-    trophyFetchAll() {
+    trophyFetchAll({ trophyFetchGroup }) {
       return new Promise((resolve) =>
         GameJolt.TrophyFetch(
+          Number(trophyFetchGroup),
           (pResponse) => {
             if (pResponse != trueStr) {
               [err.trophies, err.last] =
