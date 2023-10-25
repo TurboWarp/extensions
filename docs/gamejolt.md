@@ -174,9 +174,12 @@ Requires to be logged in.
 
 ---
 ```scratch
-Fetch all trophies :: #2F7F6F
+Fetch [all v] trophies :: #2F7F6F
 ```
-Fetches all of the game's trophies.
+Fetches game trophies:
+- All - fetches all trophies.
+- All achieved - fetches all achieved trophies.
+- All unachieved - fetches all unachieved trophies.
 
 Requires to be logged in.
 
