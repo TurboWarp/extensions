@@ -371,7 +371,7 @@ Returns fetched server's time data in JSON.
 Fetch more data per request.
 
 ```scratch
-Add [data-store/set] request with [{"key":"key", "data":"data"}] parameters :: #2F7F6F
+Add [data-store/set] request with [{"key":"key", "data":"data"}] to batch :: #2F7F6F
 ```
 Adds passed arguments to the batch.
 - The batch is an array of sub requests consisting of the namespace and the parameters object.
