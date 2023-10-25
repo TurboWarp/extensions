@@ -3018,18 +3018,16 @@
       data.batchRequests = undefined;
     }
     batchJson() {
-      return JSON.stringify(data.batchRequests) || err.get("batch") || "{}";
+      return JSON.stringify(data.batchRequests) || err.get("noData") || "{}";
     }
     batchCall({ parameter }) {
       return new Promise((resolve) =>
         GameJolt.SendBatchRequest(
           data.batchRequests
           .map(
-            (I) => `
-              /${I.namespace.split("/").map((i) => encodeURIComponent(i)).join("/")}/
-              ?game_id=${GameJolt.iGameID}
-              &${new URLSearchParams(I.parameters).toString()}
-            `
+            (I) => `/${I.namespace.split("/").map((i) => encodeURIComponent(i)).join("/")}/` +
+                   `?game_id=${GameJolt.iGameID}` +
+                   `&${new URLSearchParams(I.parameters).toString()}`
           ),
           parameter,
           (pResponse) => {
