@@ -2587,7 +2587,7 @@
         GameJolt.TrophyFetch(
           Number(trophyFetchGroup),
           (pResponse) => {
-            if (pResponse != trueStr) {
+            if (pResponse.success != trueStr) {
               [err.trophies, err.last] =
                 [pResponse.message, pResponse.message];
               data.trophies = undefined;
@@ -2606,7 +2606,7 @@
         GameJolt.TrophyFetchSingle(
           ID,
           (pResponse) => {
-            if (pResponse != trueStr) {
+            if (pResponse.success != trueStr) {
               [err.trophies, err.last] =
                 [pResponse.message, pResponse.message];
               data.trophies = undefined;
