@@ -355,7 +355,7 @@
             break;
 
           default:
-            pCallback(sResponse);
+            if (typeof pCallback == "function") pCallback(sResponse);
         }
       });
     };
@@ -424,7 +424,7 @@
           window.addEventListener("beforeunload", GJAPI.SessionClose, false);
         }
 
-        pCallback(pResponse);
+        if (typeof pCallback == "function") pCallback(pResponse);
       });
     };
 
@@ -2613,7 +2613,7 @@
               resolve();
               return;
             }
-            data.trophies = pResponse.trophies[0];
+            data.trophies = pResponse.trophies;
             err.trophies = undefined;
             resolve();
           }
@@ -2626,7 +2626,7 @@
       return data.trophies[Math.floor(index)][trophyDataType] || err.get("noData");
     }
     trophyReturnJson() {
-      return JSON.stringify(data.trohies) || err.get("trophies") || "{}";
+      return JSON.stringify(data.trophies) || err.get("trophies") || "{}";
     }
     scoreAdd({ ID, value, text, extraData }) {
       return new Promise((resolve) =>
