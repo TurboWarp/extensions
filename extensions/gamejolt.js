@@ -2139,7 +2139,7 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Batch Blocks (For Developers)",
+            text: "Batch Blocks",
           },
           {
             opcode: "batchAdd",
