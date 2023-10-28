@@ -1,3 +1,8 @@
+// Name: Run Javascript
+// ID: js
+// Description: Run JavaScript code with this simple extension. This extension is great for API's where it needs to be dynamic but is hard to do with available tools.
+// By: bazztube <https://scratch.mit.edu/users/bazztube/>
+
 (function (Scratch) {
   "use strict";
 
