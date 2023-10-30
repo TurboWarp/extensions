@@ -279,11 +279,11 @@
     }
 
     isLessOrEqual({ A, B }) {
-      return A <= B;
+      return Scratch.Cast.compare(A, B) <= 0;
     }
 
     isMoreOrEqual({ A, B }) {
-      return A >= B;
+      return Scratch.Cast.compare(A, B) >= 0;
     }
 
     trueBlock() {
@@ -295,6 +295,8 @@
     }
 
     exponent({ A, B }) {
+      A = Scratch.Cast.toNumber(A);
+      B = Scratch.Cast.toNumber(B);
       return Math.pow(A, B);
     }
 
