@@ -1341,6 +1341,7 @@
         return "Other";
       }
       if (args.DROPDOWN === "browser") {
+        if (user.includes("Edg")) return "Edge";
         if (user.includes("Chrome")) return "Chrome";
         if (user.includes("MSIE")) return "Internet Explorer";
         if (user.includes("Firefox")) return "Firefox";
