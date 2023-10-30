@@ -74,7 +74,7 @@
                 ((t =
                   "undefined" != typeof globalThis
                     ? globalThis
-                    : t || self).pako = {}),
+                    : t || self).pako = {})
               );
         })(this, function (t) {
           "use strict";
@@ -523,7 +523,7 @@
                 e[a] = t;
               }
               return e;
-            })(),
+            })()
           );
           var M = (t, e, a, s) => {
               const n = H,
@@ -633,7 +633,7 @@
                 0 !== a &&
                   (t.output.set(
                     e.pending_buf.subarray(e.pending_out, e.pending_out + a),
-                    t.next_out,
+                    t.next_out
                   ),
                   (t.next_out += a),
                   (e.pending_out += a),
@@ -647,7 +647,7 @@
                 t,
                 t.block_start >= 0 ? t.block_start : -1,
                 t.strstart - t.block_start,
-                e,
+                e
               ),
                 (t.block_start = t.strstart),
                 kt(t.strm);
@@ -796,7 +796,7 @@
                     (s > a && (s = a),
                     t.strm.output.set(
                       t.window.subarray(t.block_start, t.block_start + s),
-                      t.strm.next_out,
+                      t.strm.next_out
                     ),
                     (t.strm.next_out += s),
                     (t.strm.avail_out -= s),
@@ -817,9 +817,9 @@
                       t.window.set(
                         t.strm.input.subarray(
                           t.strm.next_in - t.w_size,
-                          t.strm.next_in,
+                          t.strm.next_in
                         ),
-                        0,
+                        0
                       ),
                       (t.strstart = t.w_size),
                       (t.insert = t.strstart))
@@ -827,16 +827,16 @@
                         ((t.strstart -= t.w_size),
                         t.window.set(
                           t.window.subarray(t.w_size, t.w_size + t.strstart),
-                          0,
+                          0
                         ),
                         t.matches < 2 && t.matches++,
                         t.insert > t.strstart && (t.insert = t.strstart)),
                       t.window.set(
                         t.strm.input.subarray(
                           t.strm.next_in - _,
-                          t.strm.next_in,
+                          t.strm.next_in
                         ),
-                        t.strstart,
+                        t.strstart
                       ),
                       (t.strstart += _),
                       (t.insert +=
@@ -857,7 +857,7 @@
                       (t.strstart -= t.w_size),
                       t.window.set(
                         t.window.subarray(t.w_size, t.w_size + t.strstart),
-                        0,
+                        0
                       ),
                       t.matches < 2 && t.matches++,
                       (n += t.w_size),
@@ -918,7 +918,7 @@
                         (t.ins_h = zt(
                           t,
                           t.ins_h,
-                          t.window[t.strstart + 3 - 1],
+                          t.window[t.strstart + 3 - 1]
                         )),
                         (a = t.prev[t.strstart & t.w_mask] = t.head[t.ins_h]),
                         (t.head[t.ins_h] = t.strstart);
@@ -975,7 +975,7 @@
                     (s = X(
                       t,
                       t.strstart - 1 - t.prev_match,
-                      t.prev_length - 3,
+                      t.prev_length - 3
                     )),
                     (t.lookahead -= t.prev_length - 1),
                     (t.prev_length -= 2);
@@ -1256,7 +1256,7 @@
                       (a.gzhead.hcrc ? 2 : 0) +
                       (a.gzhead.extra ? 4 : 0) +
                       (a.gzhead.name ? 8 : 0) +
-                      (a.gzhead.comment ? 16 : 0),
+                      (a.gzhead.comment ? 16 : 0)
                   ),
                     At(a, 255 & a.gzhead.time),
                     At(a, (a.gzhead.time >> 8) & 255),
@@ -1268,7 +1268,7 @@
                         ? 2
                         : a.strategy >= _t || a.level < 2
                         ? 4
-                        : 0,
+                        : 0
                     ),
                     At(a, 255 & a.gzhead.os),
                     a.gzhead.extra &&
@@ -1287,7 +1287,7 @@
                   At(a, 0),
                   At(
                     a,
-                    9 === a.level ? 2 : a.strategy >= _t || a.level < 2 ? 4 : 0,
+                    9 === a.level ? 2 : a.strategy >= _t || a.level < 2 ? 4 : 0
                   ),
                   At(a, 3),
                   (a.status = gt),
@@ -1304,7 +1304,7 @@
                     if (
                       (a.pending_buf.set(
                         a.gzhead.extra.subarray(a.gzindex, a.gzindex + n),
-                        a.pending,
+                        a.pending
                       ),
                       (a.pending = a.pending_buf_size),
                       a.gzhead.hcrc &&
@@ -1320,7 +1320,7 @@
                   let n = new Uint8Array(a.gzhead.extra);
                   a.pending_buf.set(
                     n.subarray(a.gzindex, a.gzindex + s),
-                    a.pending,
+                    a.pending
                   ),
                     (a.pending += s),
                     a.gzhead.hcrc &&
@@ -1343,7 +1343,7 @@
                             t.adler,
                             a.pending_buf,
                             a.pending - s,
-                            s,
+                            s
                           )),
                         kt(t),
                         0 !== a.pending)
@@ -1377,7 +1377,7 @@
                             t.adler,
                             a.pending_buf,
                             a.pending - s,
-                            s,
+                            s
                           )),
                         kt(t),
                         0 !== a.pending)
@@ -1721,7 +1721,7 @@
                 memLevel: 8,
                 strategy: ae,
               },
-              t || {},
+              t || {}
             );
             let e = this.options;
             e.raw && e.windowBits > 0
@@ -1742,7 +1742,7 @@
               e.method,
               e.windowBits,
               e.memLevel,
-              e.strategy,
+              e.strategy
             );
             if (a !== $t) throw new Error(P[a]);
             if (
@@ -1857,7 +1857,7 @@
         const compressedBytes = pako.deflate(inputBytes);
         /* eslint-enable */
         const compressedString = btoa(
-          String.fromCharCode.apply(null, compressedBytes),
+          String.fromCharCode.apply(null, compressedBytes)
         );
 
         return compressedString;
@@ -1875,7 +1875,7 @@
                 ((e =
                   "undefined" != typeof globalThis
                     ? globalThis
-                    : e || self).pako = {}),
+                    : e || self).pako = {})
               );
         })(this, function (e) {
           "use strict";
@@ -1903,7 +1903,7 @@
                 t[i] = e;
               }
               return t;
-            })(),
+            })()
           );
           var n = (e, t, n, a) => {
             const r = i,
@@ -2870,7 +2870,7 @@
                         a.distcode,
                         0,
                         a.work,
-                        ee,
+                        ee
                       )),
                       (a.distbits = ee.bits),
                       Q)
@@ -3257,7 +3257,7 @@
                 if (t < 65534 && e.subarray && q)
                   return String.fromCharCode.apply(
                     null,
-                    e.length === t ? e : e.subarray(0, t),
+                    e.length === t ? e : e.subarray(0, t)
                   );
                 let i = "";
                 for (let n = 0; n < t; n++) i += String.fromCharCode(e[n]);
@@ -3321,7 +3321,7 @@
           function he(e) {
             this.options = X(
               { chunkSize: 65536, windowBits: 15, to: "" },
-              e || {},
+              e || {}
             );
             const t = this.options;
             t.raw &&
@@ -3419,7 +3419,7 @@
                   this.onData(
                     i.output.length === i.next_out
                       ? i.output
-                      : i.output.subarray(0, i.next_out),
+                      : i.output.subarray(0, i.next_out)
                   );
               if (r !== oe || 0 !== s) {
                 if (r === se)
@@ -3474,13 +3474,13 @@
         const compressedBytes = new Uint8Array(
           atob(compressedString)
             .split("")
-            .map((char) => char.charCodeAt(0)),
+            .map((char) => char.charCodeAt(0))
         );
         /* eslint-disable */
         const decompressedBytes = pako.inflate(compressedBytes);
         /* eslint-enable */
         const decompressedString = new TextDecoder("utf-8").decode(
-          decompressedBytes,
+          decompressedBytes
         );
 
         return decompressedString;
