@@ -317,9 +317,9 @@
       MIN = Scratch.Cast.toNumber(MIN);
       MAX = Scratch.Cast.toNumber(MAX);
       if (MIN > MAX) {
-        return Scratch.Cast.toNumber(Math.min(Math.max(INPUT, MAX), MIN));
+        return Math.min(Math.max(INPUT, MAX), MIN);
       } else {
-        return Scratch.Cast.toNumber(Math.min(Math.max(INPUT, MIN), MAX));
+        return Math.min(Math.max(INPUT, MIN), MAX);
       }
     }
 
