@@ -279,11 +279,11 @@
     }
 
     isLessOrEqual({ A, B }) {
-      return A <= B;
+      return Scratch.Cast.compare(A, B) <= 0;
     }
 
     isMoreOrEqual({ A, B }) {
-      return A >= B;
+      return Scratch.Cast.compare(A, B) >= 0;
     }
 
     trueBlock() {
@@ -295,6 +295,8 @@
     }
 
     exponent({ A, B }) {
+      A = Scratch.Cast.toNumber(A);
+      B = Scratch.Cast.toNumber(B);
       return Math.pow(A, B);
     }
 
@@ -311,10 +313,13 @@
     }
 
     clamp({ INPUT, MIN, MAX }) {
+      INPUT = Scratch.Cast.toNumber(INPUT);
+      MIN = Scratch.Cast.toNumber(MIN);
+      MAX = Scratch.Cast.toNumber(MAX);
       if (MIN > MAX) {
-        return Scratch.Cast.toNumber(Math.min(Math.max(INPUT, MAX), MIN));
+        return Math.min(Math.max(INPUT, MAX), MIN);
       } else {
-        return Scratch.Cast.toNumber(Math.min(Math.max(INPUT, MIN), MAX));
+        return Math.min(Math.max(INPUT, MIN), MAX);
       }
     }
 
