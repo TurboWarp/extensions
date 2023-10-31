@@ -292,4 +292,4 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
 
 ## Den4ik-12/WheelScroll.svg
- - Created by [@Den4ik-12](https://github.com/DDen4ik-12) in https://github.com/TurboWarp/extensions/pull/
+ - Created by [@Den4ik-12](https://github.com/DDen4ik-12)
