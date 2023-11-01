@@ -10,12 +10,14 @@
     throw new Error("can not load outside unsandboxed mode");
   }
 
-  const blobToDataURL = (blob) => new Promise((resolve, reject) => {
-    const fr = new FileReader();
-    fr.onload = () => resolve(fr.result);
-    fr.onerror = () => reject(new Error(`Failed to read as data URL: ${fr.error}`));
-    fr.readAsDataURL(blob);
-  });
+  const blobToDataURL = (blob) =>
+    new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = () =>
+        reject(new Error(`Failed to read as data URL: ${fr.error}`));
+      fr.readAsDataURL(blob);
+    });
 
   /* ------- BLOCKS -------- */
   const { BlockType, Cast, ArgumentType } = Scratch;
@@ -42,7 +44,7 @@
    * @param {unknown} exitCode
    * @return {number} a valid code that won't throw an error in WebSocket#close()
    */
-  const toCloseCode = exitCode => {
+  const toCloseCode = (exitCode) => {
     const casted = Cast.toNumber(exitCode);
     // Only valid values are 1000 or the range 3000-4999
     if (casted === 1000 || (casted >= 3000 && casted <= 4999)) {
@@ -55,7 +57,7 @@
    * @param {unknown} reason
    * @returns {string} a valid reason that won't throw an error in WebSocket#close()
    */
-  const toCloseReason = reason => {
+  const toCloseReason = (reason) => {
     const casted = Cast.toString(reason);
 
     // Reason can't be longer than 123 UTF-8 bytes
@@ -76,7 +78,7 @@
       }
     }
 
-    return '';
+    return "";
   };
 
   class WebSocketExtension {
@@ -87,7 +89,7 @@
       /** @type {Record<string, WebSocketInfo>} */
       this.instances = {};
 
-      runtime.on('targetWasRemoved', (target) => {
+      runtime.on("targetWasRemoved", (target) => {
         const instance = this.instances[target.id];
         if (instance) {
           instance.manuallyClosed = true;
@@ -265,129 +267,147 @@
         connectThreads: [],
         messageThreads: [],
         messageQueue: [],
-        sendOnceConnected: []
+        sendOnceConnected: [],
       };
       this.instances[util.target.id] = instance;
 
-      return Scratch.canFetch(url).then((allowed) => new Promise((resolve) => {
-        if (!allowed || instance.instanceReplaced || instance.manuallyClosed) {
-          resolve();
-          return;
-        }
+      return Scratch.canFetch(url)
+        .then(
+          (allowed) =>
+            new Promise((resolve) => {
+              if (
+                !allowed ||
+                instance.instanceReplaced ||
+                instance.manuallyClosed
+              ) {
+                resolve();
+                return;
+              }
 
-        // canFetch() checked above
-        // eslint-disable-next-line no-restricted-syntax
-        const websocket = new WebSocket(url);
-        instance.websocket = websocket;
+              // canFetch() checked above
+              // eslint-disable-next-line no-restricted-syntax
+              const websocket = new WebSocket(url);
+              instance.websocket = websocket;
 
-        const beforeExecute = () => {
-          if (instance.messageThreadsRunning) {
-            const stillRunning = instance.messageThreads.some(i => runtime.isActiveThread(i));
-            if (!stillRunning) {
-              const isQueueEmpty = instance.messageQueue.length === 0;
-              if (isQueueEmpty) {
-                instance.messageThreadsRunning = false;
-                instance.messageThreads = [];
-              } else {
-                instance.data = instance.messageQueue.shift();
-                instance.messageThreads = runtime.startHats(
-                  "gsaWebsocket_onMessage",
+              const beforeExecute = () => {
+                if (instance.messageThreadsRunning) {
+                  const stillRunning = instance.messageThreads.some((i) =>
+                    runtime.isActiveThread(i)
+                  );
+                  if (!stillRunning) {
+                    const isQueueEmpty = instance.messageQueue.length === 0;
+                    if (isQueueEmpty) {
+                      instance.messageThreadsRunning = false;
+                      instance.messageThreads = [];
+                    } else {
+                      instance.data = instance.messageQueue.shift();
+                      instance.messageThreads = runtime.startHats(
+                        "gsaWebsocket_onMessage",
+                        null,
+                        target
+                      );
+                    }
+                  }
+                }
+              };
+
+              const onStopAll = () => {
+                instance.instanceReplaced = true;
+                instance.manuallyClosed = true;
+                instance.websocket.close();
+              };
+
+              vm.runtime.on("BEFORE_EXECUTE", beforeExecute);
+              vm.runtime.on("PROJECT_STOP_ALL", onStopAll);
+
+              const cleanup = () => {
+                vm.runtime.off("BEFORE_EXECUTE", beforeExecute);
+                vm.runtime.off("PROJECT_STOP_ALL", onStopAll);
+
+                for (const thread of instance.connectThreads) {
+                  thread.status = 4; // STATUS_DONE
+                }
+
+                if (!instance.instanceReplaced) {
+                  delete this.instances[target.id];
+                }
+
+                resolve();
+              };
+
+              websocket.onopen = (e) => {
+                if (instance.instanceReplaced || instance.manuallyClosed) {
+                  cleanup();
+                  websocket.close();
+                  return;
+                }
+
+                for (const item of instance.sendOnceConnected) {
+                  websocket.send(item);
+                }
+                instance.sendOnceConnected.length = 0;
+
+                instance.connectThreads = runtime.startHats(
+                  "gsaWebsocket_onOpen",
                   null,
                   target
                 );
-              }
-            }
-          }
-        };
+                resolve();
+              };
 
-        const onStopAll = () => {
-          instance.instanceReplaced = true;
-          instance.manuallyClosed = true;
-          instance.websocket.close();
-        };
+              websocket.onclose = (e) => {
+                if (instance.instanceReplaced) return;
+                instance.closeMessage = e.reason || "";
+                instance.closeCode = e.code;
+                runtime.startHats("gsaWebsocket_onClose", null, target);
+                cleanup();
+              };
 
-        vm.runtime.on('BEFORE_EXECUTE', beforeExecute);
-        vm.runtime.on('PROJECT_STOP_ALL', onStopAll);
+              websocket.onerror = (e) => {
+                if (instance.instanceReplaced) return;
+                console.error("websocket error", e);
+                instance.errored = true;
+                runtime.startHats("gsaWebsocket_onError", null, target);
+                cleanup();
+              };
 
-        const cleanup = () => {
-          vm.runtime.off('BEFORE_EXECUTE', beforeExecute);
-          vm.runtime.off('PROJECT_STOP_ALL', onStopAll);
+              websocket.onmessage = async (e) => {
+                if (instance.instanceReplaced || instance.manuallyClosed)
+                  return;
 
-          for (const thread of instance.connectThreads) {
-            thread.status = 4; // STATUS_DONE
-          }
+                let data = e.data;
 
-          if (!instance.instanceReplaced) {
-            delete this.instances[target.id];
-          }
+                // Convert binary messages to a data: uri
+                // TODO: doing this right now might break order?
+                if (data instanceof Blob) {
+                  data = await blobToDataURL(data);
+                }
 
-          resolve();
-        };
-
-        websocket.onopen = (e) => {
-          if (instance.instanceReplaced || instance.manuallyClosed) {
-            cleanup();
-            websocket.close();
-            return;
-          }
-
-          for (const item of instance.sendOnceConnected) {
-            websocket.send(item);
-          }
-          instance.sendOnceConnected.length = 0;
-
-          instance.connectThreads = runtime.startHats("gsaWebsocket_onOpen", null, target);
-          resolve();
-        };
-
-        websocket.onclose = (e) => {
-          if (instance.instanceReplaced) return;
-          instance.closeMessage = e.reason || "";
-          instance.closeCode = e.code;
-          runtime.startHats("gsaWebsocket_onClose", null, target);
-          cleanup();
-        };
-
-        websocket.onerror = (e) => {
-          if (instance.instanceReplaced) return;
-          console.error('websocket error', e);
-          instance.errored = true;
-          runtime.startHats("gsaWebsocket_onError", null, target);
-          cleanup();
-        };
-
-        websocket.onmessage = async (e) => {
-          if (instance.instanceReplaced || instance.manuallyClosed) return;
-
-          let data = e.data;
-
-          // Convert binary messages to a data: uri
-          // TODO: doing this right now might break order?
-          if (data instanceof Blob) {
-            data = await blobToDataURL(data);
-          }
-
-          if (instance.messageThreadsRunning) {
-            instance.messageQueue.push(data);
-          } else {
-            instance.data = data;
-            instance.messageThreads = runtime.startHats(
-              "gsaWebsocket_onMessage",
-              null,
-              target
-            );
-            instance.messageThreadsRunning = true;
-          }
-        };
-      })).catch((error) => {
-        console.error('could not open websocket connection', error);
-      });
+                if (instance.messageThreadsRunning) {
+                  instance.messageQueue.push(data);
+                } else {
+                  instance.data = data;
+                  instance.messageThreads = runtime.startHats(
+                    "gsaWebsocket_onMessage",
+                    null,
+                    target
+                  );
+                  instance.messageThreadsRunning = true;
+                }
+              };
+            })
+        )
+        .catch((error) => {
+          console.error("could not open websocket connection", error);
+        });
     }
 
     isConnected(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return false;
-      return !!instance.websocket && instance.websocket.readyState === WebSocket.OPEN;
+      return (
+        !!instance.websocket && instance.websocket.readyState === WebSocket.OPEN
+      );
     }
 
     messageData(_, utils) {
@@ -399,7 +419,10 @@
     isClosed(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return false;
-      return !!instance.websocket && instance.websocket.readyState === WebSocket.CLOSED;
+      return (
+        !!instance.websocket &&
+        instance.websocket.readyState === WebSocket.CLOSED
+      );
     }
 
     closeCode(_, utils) {
@@ -425,7 +448,10 @@
       const instance = this.instances[utils.target.id];
       if (!instance) return;
 
-      if (!instance.websocket || instance.websocket.readyState === WebSocket.CONNECTING) {
+      if (
+        !instance.websocket ||
+        instance.websocket.readyState === WebSocket.CONNECTING
+      ) {
         // Trying to send now will throw an error. Send it once we get connected.
         instance.sendOnceConnected.push(PAYLOAD);
       } else {
@@ -457,7 +483,10 @@
       if (!instance) return;
       instance.manuallyClosed = true;
       if (instance.websocket) {
-        instance.websocket.close(toCloseCode(args.CODE), toCloseReason(args.REASON));
+        instance.websocket.close(
+          toCloseCode(args.CODE),
+          toCloseReason(args.REASON)
+        );
       }
     }
   }
