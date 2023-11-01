@@ -192,7 +192,6 @@
       // dont you dare remove this
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve) => {
-        let resolved = false;
         let url = Cast.toString(args.URL);
         if (!/^(ws|wss):/is.test(url)) {
           // url doesnt start with a valid connection type
@@ -237,12 +236,11 @@
             messageThreads: [],
             messageQueue: [],
           };
-          websocket.binaryType = "blob";
           websocket.onopen = (e) => {
             instance.state = "opened";
             instance.isOpen = true;
             runtime.startHats("gsaWebsocket_onOpen", null, target);
-            if (!resolved) resolve();
+            resolve();
           };
           websocket.onclose = (e) => {
             instance.state = "closed";
@@ -251,19 +249,19 @@
             instance.closeMessage = e.reason || "";
             instance.closeCode = Cast.toString(e.code) || "";
             runtime.startHats("gsaWebsocket_onClose", null, target);
-            if (!resolved) resolve();
+            resolve();
           };
           websocket.onerror = (e) => {
             instance.state = "errored";
             instance.isErrored = true;
             instance.isOpen = false;
             runtime.startHats("gsaWebsocket_onError", null, target);
-            if (!resolved) resolve();
+            resolve();
           };
           websocket.onmessage = async (e) => {
             let data = e.data;
-            // convert binnary data to a data uri
-            if (typeof data !== "string") {
+            // convert binary data to a data: uri
+            if (data instanceof Blob) {
               data = await blobToDataURL(data);
             }
             const stillWaiting = instance.messageThreads.every((thread) =>
