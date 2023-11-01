@@ -73,20 +73,20 @@
           },
           "---",
           {
-            opcode: "handleCache",
+            opcode: "handleQueue",
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
-            text: "when cache is flushed",
+            text: "when queue is flushed",
           },
           {
-            opcode: "cacheLength",
+            opcode: "queueLength",
             blockType: BlockType.REPORTER,
-            text: "length of the cache",
+            text: "length of the queue",
           },
           {
-            opcode: "readCache",
+            opcode: "readQueue",
             blockType: BlockType.REPORTER,
-            text: "cache item [INDEX]",
+            text: "queue item [INDEX]",
             arguments: {
               INDEX: {
                 type: ArgumentType.NUMBER,
@@ -95,14 +95,14 @@
             },
           },
           {
-            opcode: "deleteCache",
+            opcode: "deleteQueue",
             blockType: BlockType.COMMAND,
-            text: "pop cache item to data",
+            text: "pop queue item to data",
           },
           {
-            opcode: "clearCache",
+            opcode: "clearQueue",
             blockType: BlockType.COMMAND,
-            text: "clear all data from cache",
+            text: "clear all data from queue",
           },
           "---",
           {
@@ -235,7 +235,7 @@
             state: "opening",
             websocket,
             messageThreads: [],
-            messageCache: [],
+            messageQueue: [],
           };
           websocket.binaryType = "blob";
           websocket.onopen = (e) => {
@@ -269,14 +269,14 @@
             const stillWaiting = instance.messageThreads.every((thread) =>
               runtime.isActiveThread(thread)
             );
-            // if we are still waiting on the message hats then push the message to cache
+            // if we are still waiting on the message hats then push the message to queue
             if (stillWaiting && instance.messageThreads.length) {
-              instance.messageCache.push(data);
+              instance.messageQueue.push(data);
               return;
             }
-            if (instance.messageCache.length > 0) {
-              // cache must be handled by the user as we dont know how the user wants to handle the cache
-              runtime.startHats("gsaWebsocket_handleCache", null, target);
+            if (instance.messageQueue.length > 0) {
+              // queue must be handled by the user as we dont know how the user wants to handle the queue
+              runtime.startHats("gsaWebsocket_handleQueue", null, target);
             } else {
               instance.data = data;
               instance.gottenMessage = true;
@@ -294,30 +294,30 @@
         }
       });
     }
-    cacheLength(_, utils) {
+    queueLength(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "0";
-      return instance.messageCache.length;
+      return instance.messageQueue.length;
     }
-    readCache(args, utils) {
+    readQueue(args, utils) {
       const idx = Cast.toNumber(args.INDEX);
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
-      const data = instance.messageCache[idx - 1];
+      const data = instance.messageQueue[idx - 1];
       if (typeof data === "undefined") return "";
       return data;
     }
-    deleteCache(_, utils) {
+    deleteQueue(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
-      const data = instance.messageCache.pop();
+      const data = instance.messageQueue.pop();
       instance.data = data;
       instance.gottenMessage = true;
     }
-    clearCache(_, utils) {
+    clearQueue(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
-      instance.messageCache = [];
+      instance.messageQueue = [];
     }
     isConnected(_, utils) {
       const instance = this.instances[utils.target.id];
