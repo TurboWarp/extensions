@@ -264,11 +264,10 @@
             if (data instanceof Blob) {
               data = await blobToDataURL(data);
             }
-            const stillWaiting = instance.messageThreads.every((thread) =>
+            // if we are still waiting on the message hats then push the message to queue instead
+            if (instance.messageThreads.some((thread) =>
               runtime.isActiveThread(thread)
-            );
-            // if we are still waiting on the message hats then push the message to queue
-            if (stillWaiting && instance.messageThreads.length) {
+            )) {
               instance.messageQueue.push(data);
               return;
             }
