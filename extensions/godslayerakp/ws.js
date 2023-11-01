@@ -32,6 +32,7 @@
    * @property {string} data
    * @property {string[]} messageQueue
    * @property {WebSocket|null} websocket
+   * @property {VM.Thread[]} connectThreads
    * @property {boolean} messageThreadsRunning
    * @property {VM.Thread[]} messageThreads
    * @property {object[]} sendOnceConnected
@@ -117,22 +118,11 @@
           },
           "---",
           {
-            opcode: "onError",
-            blockType: BlockType.EVENT,
-            isEdgeActivated: false,
-            text: "when connection errors",
-          },
-          {
-            opcode: "hasErrored",
-            blockType: BlockType.BOOLEAN,
-            text: "has connection errored?",
-          },
-          "---",
-          {
             opcode: "onOpen",
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
-            text: "when connection connects",
+            shouldRestartExistingThreads: true,
+            text: "when connected",
           },
           {
             opcode: "isConnected",
@@ -144,6 +134,7 @@
             opcode: "onMessage",
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
+            shouldRestartExistingThreads: true,
             text: "when message received",
           },
           {
@@ -165,9 +156,23 @@
           },
           "---",
           {
+            opcode: "onError",
+            blockType: BlockType.EVENT,
+            isEdgeActivated: false,
+            shouldRestartExistingThreads: true,
+            text: "when connection errors",
+          },
+          {
+            opcode: "hasErrored",
+            blockType: BlockType.BOOLEAN,
+            text: "has connection errored?",
+          },
+          "---",
+          {
             opcode: "onClose",
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
+            shouldRestartExistingThreads: true,
             text: "when connection closes",
           },
           {
@@ -257,6 +262,7 @@
         data: "",
         websocket: null,
         messageThreadsRunning: false,
+        connectThreads: [],
         messageThreads: [],
         messageQueue: [],
         sendOnceConnected: []
@@ -306,9 +312,15 @@
         const cleanup = () => {
           vm.runtime.off('BEFORE_EXECUTE', beforeExecute);
           vm.runtime.off('PROJECT_STOP_ALL', onStopAll);
+
+          for (const thread of instance.connectThreads) {
+            thread.status = 4; // STATUS_DONE
+          }
+
           if (!instance.instanceReplaced) {
             delete this.instances[target.id];
           }
+
           resolve();
         };
 
@@ -324,7 +336,7 @@
           }
           instance.sendOnceConnected.length = 0;
 
-          runtime.startHats("gsaWebsocket_onOpen", null, target);
+          instance.connectThreads = runtime.startHats("gsaWebsocket_onOpen", null, target);
           resolve();
         };
 
