@@ -180,7 +180,7 @@
           {
             opcode: "closeWithoutReason",
             blockType: BlockType.COMMAND,
-            text: "close connection without reason",
+            text: "close connection",
           },
           {
             opcode: "closeWithCode",
@@ -203,7 +203,7 @@
               },
               REASON: {
                 type: ArgumentType.STRING,
-                defaultValue: "connection fulfilled",
+                defaultValue: "fulfilled",
               },
             },
             text: "close connection with reason [REASON] and code [CODE]",
@@ -397,18 +397,17 @@
     }
 
     closeWithCode(args, utils) {
-      const CODE = toCloseCode(args.CODE);
       const instance = this.instances[utils.target.id];
       if (!instance) return;
+      const CODE = toCloseCode(args.CODE);
       instance.websocket.close(CODE);
     }
 
     closeWithReason(args, utils) {
+      const instance = this.instances[utils.target.id];
+      if (!instance) return;
       const CODE = toCloseCode(args.CODE);
       const REASON = toCloseReason(args.REASON);
-
-      const instance = this.instances[utils.target.id];
-      if (!instance) return "";
       instance.websocket.close(CODE, REASON);
     }
   }
