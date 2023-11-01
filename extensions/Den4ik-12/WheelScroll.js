@@ -8,7 +8,7 @@
 
   // Error, if sandboxed
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('\nWhell Scroll:\nExtension "Whell Scroll" must run unsandboxed!\n');
+    throw new Error('\nWheel Scroll:\nExtension "Wheel Scroll" must run unsandboxed!\n');
   }
 
   // Icons
