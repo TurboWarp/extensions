@@ -8,9 +8,7 @@
 
   // Error, if sandboxed
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error(
-      '\nWhell Scroll:\nExtension "Whell Scroll" must run unsandboxed!\n',
-    );
+    throw new Error('\nWhell Scroll:\nExtension "Whell Scroll" must run unsandboxed!\n');
   }
 
   // Icons
@@ -96,7 +94,7 @@
         id: "Den4ik12WheelScroll",
         name: Scratch.translate({
           id: "extName",
-          default: "Whell Scroll",
+          default: "Wheel Scroll",
         }),
         color1: "#E74C3C",
         color2: "#CB4335",
@@ -108,7 +106,7 @@
             opcode: "whenScrollDir",
             text: Scratch.translate({
               id: "whenScrollDir",
-              default: "when mouse whell scrolls [SCROLL_TYPE]",
+              default: "when mouse wheel scrolls [SCROLL_TYPE]",
             }),
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
