@@ -3,7 +3,7 @@
 // Description: Play Animations for your Sprites
 // By: SharkPool <https://github.com/SharkPool-SP>
 
-// Version V.1.2.0
+// Version V.1.3.0
 
 (function (Scratch) {
   "use strict";
@@ -416,6 +416,38 @@
             },
           },
           {
+            opcode: "addStretch",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "add keyframe stretch to animation [NAME] with ID [ID] starting at width [x] height [y] and ending at width [x2] height [y2]",
+            blockIconURI: keyIconURI,
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "animation 1",
+              },
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "key1",
+              },
+              x: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100,
+              },
+              y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100,
+              },
+              x2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 200,
+              },
+              y2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 50,
+              },
+            },
+          },
+          {
             opcode: "deleteKeyframe",
             blockType: Scratch.BlockType.COMMAND,
             text: "remove keyframe with ID [ID] from animation [NAME]",
@@ -646,7 +678,6 @@
               if (Object.keys(myAnimation.frames[frameIndex]).some(key => key.includes("spKF4!"))) {
                 if (Object.keys(myAnimation.frames[frameIndex]).some(key => key.includes("PZ"))) {
                   const keys = Object.keys(myAnimation.frames[frameIndex]);
-                  /* eslint-disable */
                   for (const key of keys) {
                     const delayTime = myAnimation.frames[frameIndex][key].secs;
                     setTimeout(() => {
@@ -654,7 +685,6 @@
                     }, delayTime);
                     return;
                   }
-                  /* eslint-enable */
                 } else {
                   this._setKeyframe(target, myAnimation.frames[frameIndex], myAnimation);
                 }
@@ -763,6 +793,25 @@
       }
     }
 
+    addStretch(args, util) {
+      let animation = allAnimations.find((animation) => animation[args.NAME]);
+      if (!animation) {
+        this.createAnimation(args, util);
+        animation = allAnimations.find((animation) => animation[args.NAME]);
+      }
+      if (animation) {
+        const keyframe = {
+          [`spKF4!WH${args.ID}`]: {
+            x1: args.x,
+            y1: args.y,
+            x2: args.x2,
+            y2: args.y2,
+          }
+        };
+        animation[args.NAME].frames.push(keyframe);
+      }
+    }
+
     addDirection(args, util) {
       let animation = allAnimations.find((animation) => animation[args.NAME]);
       if (!animation) {
@@ -833,6 +882,28 @@
           const newX = startX + deltaX * progress;
           const newY = startY + deltaY * progress;
           target.setXY(newX, newY);
+          if (progress < 1) {
+            requestAnimationFrame(animateXY);
+          }
+        };
+        requestAnimationFrame(animateXY);
+      } else if (JSON.stringify(keyframe).includes("WH")) {
+        console.log(target);
+        const startX = key.x1;
+        const startY = key.y1;
+        const deltaX = key.x2 - key.x1;
+        const deltaY = key.y2 - key.y1;
+        const animateXY = (timestamp) => {
+          if (!startTime) {
+            startTime = timestamp;
+          }
+          const elapsedTime = timestamp - startTime;
+          const progress = Math.min(elapsedTime / animationDuration, 1);
+          const newX = startX + deltaX * progress;
+          const newY = startY + deltaY * progress;
+          target.stretch["0"] = newX;
+          target.stretch["1"] = newY;
+          target.setDirection(target.direction);
           if (progress < 1) {
             requestAnimationFrame(animateXY);
           }
