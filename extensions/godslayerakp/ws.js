@@ -188,114 +188,124 @@
         ],
       };
     }
-    newInstance(args, utils) {
-      // dont you dare remove this
-      // eslint-disable-next-line no-async-promise-executor
-      return new Promise(async (resolve) => {
-        let url = Cast.toString(args.URL);
-        if (!/^(ws|wss):/is.test(url)) {
-          // url doesnt start with a valid connection type
-          // so we jsut assume its formated without it
-          if (/^(?!(ws|http)s?:\/\/).*$/is.test(url)) {
-            url = `wss://${url}`;
-          } else if (/^(http|https):/is.test(url)) {
-            const urlParts = url.split(":");
-            urlParts[0] = url.toLowerCase().startsWith("https") ? "wss" : "ws";
-            url = urlParts.join(":");
-          } else {
-            // we couldnt fix the url...
-            resolve();
+    newInstance(args, util) {
+      const target = util.target;
+
+      let url = Cast.toString(args.URL);
+      if (!/^(ws|wss):/is.test(url)) {
+        // url doesnt start with a valid connection type
+        // so we jsut assume its formated without it
+        if (/^(?!(ws|http)s?:\/\/).*$/is.test(url)) {
+          url = `wss://${url}`;
+        } else if (/^(http|https):/is.test(url)) {
+          const urlParts = url.split(":");
+          urlParts[0] = url.toLowerCase().startsWith("https") ? "wss" : "ws";
+          url = urlParts.join(":");
+        } else {
+          // we couldnt fix the url...
+          return;
+        }
+      }
+
+      return Scratch.canFetch(url).then((allowed) => new Promise((resolve) => {
+        if (!allowed) {
+          resolve();
+          return;
+        }
+
+        // canFetch() checked above
+        // eslint-disable-next-line no-restricted-syntax
+        const websocket = new WebSocket(url);
+
+        const instance = {
+          closeMessage: "",
+          closeCode: "",
+          data: "",
+          isOpen: false,
+          isClosed: false,
+          isErrored: false,
+          isMessage: false,
+          set gottenMessage(bool) {
+            this.isMessage = bool;
+          },
+          get gottenMessage() {
+            const oldState = this.isMessage;
+            this.isMessage = false;
+            return oldState;
+          },
+          state: "opening",
+          websocket,
+          messageThreads: [],
+          messageQueue: [],
+        };
+
+        websocket.onopen = (e) => {
+          instance.state = "opened";
+          instance.isOpen = true;
+          runtime.startHats("gsaWebsocket_onOpen", null, target);
+          resolve();
+        };
+
+        websocket.onclose = (e) => {
+          instance.state = "closed";
+          instance.isClosed = true;
+          instance.isOpen = false;
+          instance.closeMessage = e.reason || "";
+          instance.closeCode = Cast.toString(e.code) || "";
+          runtime.startHats("gsaWebsocket_onClose", null, target);
+          resolve();
+        };
+
+        websocket.onerror = (e) => {
+          instance.state = "errored";
+          instance.isErrored = true;
+          instance.isOpen = false;
+          runtime.startHats("gsaWebsocket_onError", null, target);
+          resolve();
+        };
+
+        websocket.onmessage = async (e) => {
+          let data = e.data;
+
+          // convert binary data to a data: uri
+          if (data instanceof Blob) {
+            data = await blobToDataURL(data);
+          }
+
+          // if we are still waiting on the message hats then push the message to queue instead
+          if (instance.messageThreads.some((thread) =>
+            runtime.isActiveThread(thread)
+          )) {
+            instance.messageQueue.push(data);
             return;
           }
-        }
-        if (!(await Scratch.canFetch(url))) return;
 
-        try {
-          const target = utils.target;
-          // canFetch() checked above
-          // eslint-disable-next-line no-restricted-syntax
-          const websocket = new WebSocket(url);
-          const instance = {
-            closeMessage: "",
-            closeCode: "",
-            data: "",
-            isOpen: false,
-            isClosed: false,
-            isErrored: false,
-            isMessage: false,
-            set gottenMessage(bool) {
-              this.isMessage = bool;
-            },
-            get gottenMessage() {
-              const oldState = this.isMessage;
-              this.isMessage = false;
-              return oldState;
-            },
-            state: "opening",
-            websocket,
-            messageThreads: [],
-            messageQueue: [],
-          };
-          websocket.onopen = (e) => {
-            instance.state = "opened";
-            instance.isOpen = true;
-            runtime.startHats("gsaWebsocket_onOpen", null, target);
-            resolve();
-          };
-          websocket.onclose = (e) => {
-            instance.state = "closed";
-            instance.isClosed = true;
-            instance.isOpen = false;
-            instance.closeMessage = e.reason || "";
-            instance.closeCode = Cast.toString(e.code) || "";
-            runtime.startHats("gsaWebsocket_onClose", null, target);
-            resolve();
-          };
-          websocket.onerror = (e) => {
-            instance.state = "errored";
-            instance.isErrored = true;
-            instance.isOpen = false;
-            runtime.startHats("gsaWebsocket_onError", null, target);
-            resolve();
-          };
-          websocket.onmessage = async (e) => {
-            let data = e.data;
-            // convert binary data to a data: uri
-            if (data instanceof Blob) {
-              data = await blobToDataURL(data);
-            }
-            // if we are still waiting on the message hats then push the message to queue instead
-            if (instance.messageThreads.some((thread) =>
-              runtime.isActiveThread(thread)
-            )) {
-              instance.messageQueue.push(data);
-              return;
-            }
-            if (instance.messageQueue.length > 0) {
-              // queue must be handled by the user as we dont know how the user wants to handle the queue
-              runtime.startHats("gsaWebsocket_handleQueue", null, target);
-            } else {
-              instance.data = data;
-              instance.gottenMessage = true;
-              const threads = runtime.startHats(
-                "gsaWebsocket_onMessage",
-                null,
-                target
-              );
-              instance.messageThreads = threads;
-            }
-          };
-          this.instances[utils.target.id] = instance;
-        } catch (err) {
-          console.warn("couldnt create websocket instance because", err);
-        }
+          if (instance.messageQueue.length > 0) {
+            // queue must be handled by the user as we dont know how the user wants to handle the queue
+            runtime.startHats("gsaWebsocket_handleQueue", null, target);
+          } else {
+            instance.data = data;
+            instance.gottenMessage = true;
+            instance.messageThreads = runtime.startHats(
+              "gsaWebsocket_onMessage",
+              null,
+              target
+            );
+          }
+        };
+
+        this.instances[target.id] = instance;
+      })).catch((error) => {
+        console.error('could not open websocket connection', error);
       });
     }
+
     queueLength(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "0";
       return instance.messageQueue.length;
     }
+
     readQueue(args, utils) {
       const idx = Cast.toNumber(args.INDEX);
       const instance = this.instances[utils.target.id];
@@ -304,6 +314,7 @@
       if (typeof data === "undefined") return "";
       return data;
     }
+
     deleteQueue(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
@@ -311,16 +322,19 @@
       instance.data = data;
       instance.gottenMessage = true;
     }
+
     clearQueue(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
       instance.messageQueue = [];
     }
+
     isConnected(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
       return instance.isOpen;
     }
+
     messageReceived(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
@@ -328,45 +342,52 @@
       instance.gottenMessage = false;
       return ret;
     }
+
     messageData(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
       return instance.data;
     }
+
     isClosed(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
       return instance.isClosed;
     }
+
     closeCode(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
       return instance.closeCode;
     }
+
     closeMessage(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
       return instance.closeMessage;
     }
+
     hasErrored(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
       return instance.isErrored;
     }
+
     sendMessage(args, utils) {
       const PAYLOAD = Cast.toString(args.PAYLOAD);
-
       const instance = this.instances[utils.target.id];
       // if the instance isnt ready it will throw an error if we try to send to it
       // same if its closed
       if (!instance || !instance.isOpen || instance.isClosed) return "";
       instance.websocket.send(PAYLOAD);
     }
+
     closeWithoutReason(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
       instance.websocket.close();
     }
+
     closeWithCode(args, utils) {
       const CODE = Cast.toString(args.CODE);
 
@@ -374,6 +395,7 @@
       if (!instance) return "";
       instance.websocket.close(CODE);
     }
+
     closeWithReason(args, utils) {
       const CODE = Cast.toString(args.CODE);
       const REASON = Cast.toString(args.REASON);
