@@ -147,11 +147,6 @@
             text: "when message received",
           },
           {
-            opcode: "messageReceived",
-            blockType: BlockType.BOOLEAN,
-            text: "received message?",
-          },
-          {
             opcode: "messageData",
             blockType: BlockType.REPORTER,
             text: "received message data",
@@ -381,12 +376,6 @@
       const instance = this.instances[utils.target.id];
       if (!instance) return false;
       return !!instance.websocket && instance.websocket.readyState === WebSocket.OPEN;
-    }
-
-    messageReceived(_, utils) {
-      const instance = this.instances[utils.target.id];
-      if (!instance) return false;
-      return "TODO";
     }
 
     messageData(_, utils) {
