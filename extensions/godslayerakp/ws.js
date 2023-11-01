@@ -22,11 +22,65 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
 
+  /**
+   * @typedef WebSocketInfo
+   * @property {boolean} errored
+   * @property {string} closeMessage
+   * @property {number} closeCode
+   * @property {string} data
+   * @property {string[]} messageQueue
+   * @property {WebSocket} websocket
+   * @property {boolean} messageThreadsRunning
+   * @property {VM.Thread[]} messageThreads
+   */
+
+  /**
+   * @param {unknown} exitCode
+   * @return {number} a valid code that won't throw an error in WebSocket#close()
+   */
+  const toCloseCode = exitCode => {
+    const casted = Cast.toNumber(exitCode);
+    // Only valid values are 1000 or the range 3000-4999
+    if (casted === 1000 || (casted >= 3000 && casted <= 4999)) {
+      return casted;
+    }
+    return 1000;
+  };
+
+  /**
+   * @param {unknown} reason
+   * @returns {string} a valid reason that won't throw an error in WebSocket#close()
+   */
+  const toCloseReason = reason => {
+    const casted = Cast.toString(reason);
+
+    // Reason can't be longer than 123 UTF-8 bytes
+    // We can't just truncate by reason.length as that would not work for eg. emoji
+    const encoder = new TextEncoder();
+    let encoded = encoder.encode(casted);
+    encoded = encoded.slice(0, 123);
+
+    // Now we have another problem: If the 123 byte cut-off produced invalid UTF-8, we
+    // need to keep cutting off bytes until it's valid.
+    const decoder = new TextDecoder();
+    while (encoded.byteLength > 0) {
+      try {
+        const decoded = decoder.decode(encoded);
+        return decoded;
+      } catch (e) {
+        encoded = encoded.slice(0, encoded.byteLength - 1);
+      }
+    }
+
+    return '';
+  };
+
   class WebSocketExtension {
     /**
      * no need to install runtime as it comes with Scratch var
      */
     constructor() {
+      /** @type {Record<string, WebSocketInfo>} */
       this.instances = {};
     }
     getInfo() {
@@ -69,58 +123,26 @@
           {
             opcode: "isConnected",
             blockType: BlockType.BOOLEAN,
-            text: "is connection connected?",
-          },
-          "---",
-          {
-            opcode: "handleQueue",
-            blockType: BlockType.EVENT,
-            isEdgeActivated: false,
-            text: "when queue is flushed",
-          },
-          {
-            opcode: "queueLength",
-            blockType: BlockType.REPORTER,
-            text: "length of the queue",
-          },
-          {
-            opcode: "readQueue",
-            blockType: BlockType.REPORTER,
-            text: "queue item [INDEX]",
-            arguments: {
-              INDEX: {
-                type: ArgumentType.NUMBER,
-                defaultValue: "1",
-              },
-            },
-          },
-          {
-            opcode: "deleteQueue",
-            blockType: BlockType.COMMAND,
-            text: "pop queue item to data",
-          },
-          {
-            opcode: "clearQueue",
-            blockType: BlockType.COMMAND,
-            text: "clear all data from queue",
+            text: "is connected?",
           },
           "---",
           {
             opcode: "onMessage",
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
-            text: "when message recieved",
+            text: "when message received",
           },
           {
             opcode: "messageReceived",
             blockType: BlockType.BOOLEAN,
-            text: "recieved message?",
+            text: "received message?",
           },
           {
             opcode: "messageData",
             blockType: BlockType.REPORTER,
-            text: "recieved message data",
+            text: "received message data",
           },
+          "---",
           {
             opcode: "sendMessage",
             blockType: BlockType.COMMAND,
@@ -188,6 +210,7 @@
         ],
       };
     }
+
     newInstance(args, util) {
       const target = util.target;
 
@@ -213,84 +236,88 @@
           return;
         }
 
+        // TODO: close pre-existing instance
+
         // canFetch() checked above
         // eslint-disable-next-line no-restricted-syntax
         const websocket = new WebSocket(url);
 
+        /** @type {WebSocketInfo} */
         const instance = {
+          errored: false,
           closeMessage: "",
-          closeCode: "",
+          closeCode: 0,
           data: "",
-          isOpen: false,
-          isClosed: false,
-          isErrored: false,
-          isMessage: false,
-          set gottenMessage(bool) {
-            this.isMessage = bool;
-          },
-          get gottenMessage() {
-            const oldState = this.isMessage;
-            this.isMessage = false;
-            return oldState;
-          },
-          state: "opening",
           websocket,
+          messageThreadsRunning: false,
           messageThreads: [],
           messageQueue: [],
         };
 
+        const beforeExecute = () => {
+          if (instance.messageThreadsRunning) {
+            const stillRunning = instance.messageThreads.some(i => runtime.isActiveThread(i));
+            if (!stillRunning) {
+              const isQueueEmpty = instance.messageQueue.length === 0;
+              if (isQueueEmpty) {
+                instance.messageThreadsRunning = false;
+                instance.messageThreads = [];
+              } else {
+                instance.data = instance.messageQueue.shift();
+                instance.messageThreads = runtime.startHats(
+                  "gsaWebsocket_onMessage",
+                  null,
+                  target
+                );
+              }
+            }
+          }
+        };
+        vm.runtime.on('BEFORE_EXECUTE', beforeExecute);
+
+        const cleanup = () => {
+          vm.runtime.off('BEFORE_EXECUTE', beforeExecute);
+          resolve();
+        };
+
         websocket.onopen = (e) => {
-          instance.state = "opened";
-          instance.isOpen = true;
           runtime.startHats("gsaWebsocket_onOpen", null, target);
           resolve();
         };
 
         websocket.onclose = (e) => {
-          instance.state = "closed";
-          instance.isClosed = true;
-          instance.isOpen = false;
           instance.closeMessage = e.reason || "";
-          instance.closeCode = Cast.toString(e.code) || "";
+          instance.closeCode = e.code;
           runtime.startHats("gsaWebsocket_onClose", null, target);
-          resolve();
+          cleanup();
         };
 
         websocket.onerror = (e) => {
-          instance.state = "errored";
-          instance.isErrored = true;
-          instance.isOpen = false;
+          console.error('websocket error', e);
+          instance.errored = true;
           runtime.startHats("gsaWebsocket_onError", null, target);
-          resolve();
+          cleanup();
         };
 
         websocket.onmessage = async (e) => {
           let data = e.data;
 
-          // convert binary data to a data: uri
+          // Convert binary messages to a data: uri
+          // TODO: doing this right now might break order?
           if (data instanceof Blob) {
             data = await blobToDataURL(data);
           }
 
-          // if we are still waiting on the message hats then push the message to queue instead
-          if (instance.messageThreads.some((thread) =>
-            runtime.isActiveThread(thread)
-          )) {
+          if (instance.messageThreadsRunning) {
             instance.messageQueue.push(data);
-            return;
-          }
-
-          if (instance.messageQueue.length > 0) {
-            // queue must be handled by the user as we dont know how the user wants to handle the queue
-            runtime.startHats("gsaWebsocket_handleQueue", null, target);
           } else {
             instance.data = data;
-            instance.gottenMessage = true;
             instance.messageThreads = runtime.startHats(
               "gsaWebsocket_onMessage",
               null,
               target
             );
+            instance.messageThreadsRunning = true;
           }
         };
 
@@ -300,47 +327,16 @@
       });
     }
 
-    queueLength(_, utils) {
-      const instance = this.instances[utils.target.id];
-      if (!instance) return "0";
-      return instance.messageQueue.length;
-    }
-
-    readQueue(args, utils) {
-      const idx = Cast.toNumber(args.INDEX);
-      const instance = this.instances[utils.target.id];
-      if (!instance) return "";
-      const data = instance.messageQueue[idx - 1];
-      if (typeof data === "undefined") return "";
-      return data;
-    }
-
-    deleteQueue(_, utils) {
-      const instance = this.instances[utils.target.id];
-      if (!instance) return "";
-      const data = instance.messageQueue.pop();
-      instance.data = data;
-      instance.gottenMessage = true;
-    }
-
-    clearQueue(_, utils) {
-      const instance = this.instances[utils.target.id];
-      if (!instance) return "";
-      instance.messageQueue = [];
-    }
-
     isConnected(_, utils) {
       const instance = this.instances[utils.target.id];
-      if (!instance) return "";
-      return instance.isOpen;
+      if (!instance) return false;
+      return instance.websocket.readyState === WebSocket.OPEN;
     }
 
     messageReceived(_, utils) {
       const instance = this.instances[utils.target.id];
-      if (!instance) return "";
-      const ret = instance.gottenMessage;
-      instance.gottenMessage = false;
-      return ret;
+      if (!instance) return false;
+      return "TODO";
     }
 
     messageData(_, utils) {
@@ -352,12 +348,12 @@
     isClosed(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
-      return instance.isClosed;
+      return instance.websocket.readyState === WebSocket.CLOSED;
     }
 
     closeCode(_, utils) {
       const instance = this.instances[utils.target.id];
-      if (!instance) return "";
+      if (!instance) return 0;
       return instance.closeCode;
     }
 
@@ -369,36 +365,38 @@
 
     hasErrored(_, utils) {
       const instance = this.instances[utils.target.id];
-      if (!instance) return "";
-      return instance.isErrored;
+      if (!instance) return false;
+      return instance.errored;
     }
 
     sendMessage(args, utils) {
       const PAYLOAD = Cast.toString(args.PAYLOAD);
       const instance = this.instances[utils.target.id];
-      // if the instance isnt ready it will throw an error if we try to send to it
-      // same if its closed
-      if (!instance || !instance.isOpen || instance.isClosed) return "";
-      instance.websocket.send(PAYLOAD);
+
+      if (instance.websocket.readyState === WebSocket.CONNECTING) {
+        // TODO: queue data to send when we connect
+      } else {
+        // CLOSING and CLOSED states won't throw an error, just silently ignore
+        instance.websocket.send(PAYLOAD);
+      }
     }
 
     closeWithoutReason(_, utils) {
       const instance = this.instances[utils.target.id];
-      if (!instance) return "";
+      if (!instance) return;
       instance.websocket.close();
     }
 
     closeWithCode(args, utils) {
-      const CODE = Cast.toString(args.CODE);
-
+      const CODE = toCloseCode(args.CODE);
       const instance = this.instances[utils.target.id];
-      if (!instance) return "";
+      if (!instance) return;
       instance.websocket.close(CODE);
     }
 
     closeWithReason(args, utils) {
-      const CODE = Cast.toString(args.CODE);
-      const REASON = Cast.toString(args.REASON);
+      const CODE = toCloseCode(args.CODE);
+      const REASON = toCloseReason(args.REASON);
 
       const instance = this.instances[utils.target.id];
       if (!instance) return "";
