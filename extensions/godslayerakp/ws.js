@@ -24,12 +24,14 @@
 
   /**
    * @typedef WebSocketInfo
+   * @property {boolean} instanceReplaced
+   * @property {boolean} manuallyClosed
    * @property {boolean} errored
    * @property {string} closeMessage
    * @property {number} closeCode
    * @property {string} data
    * @property {string[]} messageQueue
-   * @property {WebSocket} websocket
+   * @property {WebSocket|null} websocket
    * @property {boolean} messageThreadsRunning
    * @property {VM.Thread[]} messageThreads
    * @property {object[]} sendOnceConnected
@@ -83,6 +85,17 @@
     constructor() {
       /** @type {Record<string, WebSocketInfo>} */
       this.instances = {};
+
+      runtime.on('targetWasRemoved', (target) => {
+        const instance = this.instances[target.id];
+        if (instance) {
+          instance.manuallyClosed = true;
+          if (instance.websocket) {
+            instance.websocket.close();
+          }
+          delete this.instances[target.id];
+        }
+      });
     }
     getInfo() {
       return {
@@ -218,7 +231,7 @@
       let url = Cast.toString(args.URL);
       if (!/^(ws|wss):/is.test(url)) {
         // url doesnt start with a valid connection type
-        // so we jsut assume its formated without it
+        // so we just assume its formated without it
         if (/^(?!(ws|http)s?:\/\/).*$/is.test(url)) {
           url = `wss://${url}`;
         } else if (/^(http|https):/is.test(url)) {
@@ -231,30 +244,40 @@
         }
       }
 
+      const oldInstance = this.instances[util.target.id];
+      if (oldInstance) {
+        oldInstance.instanceReplaced = true;
+        if (oldInstance.websocket) {
+          oldInstance.websocket.close();
+        }
+      }
+
+      /** @type {WebSocketInfo} */
+      const instance = {
+        instanceReplaced: false,
+        manuallyClosed: false,
+        errored: false,
+        closeMessage: "",
+        closeCode: 0,
+        data: "",
+        websocket: null,
+        messageThreadsRunning: false,
+        messageThreads: [],
+        messageQueue: [],
+        sendOnceConnected: []
+      };
+      this.instances[util.target.id] = instance;
+
       return Scratch.canFetch(url).then((allowed) => new Promise((resolve) => {
-        if (!allowed) {
+        if (!allowed || instance.instanceReplaced || instance.manuallyClosed) {
           resolve();
           return;
         }
 
-        // TODO: close pre-existing instance
-
         // canFetch() checked above
         // eslint-disable-next-line no-restricted-syntax
         const websocket = new WebSocket(url);
-
-        /** @type {WebSocketInfo} */
-        const instance = {
-          errored: false,
-          closeMessage: "",
-          closeCode: 0,
-          data: "",
-          websocket,
-          messageThreadsRunning: false,
-          messageThreads: [],
-          messageQueue: [],
-          sendOnceConnected: []
-        };
+        instance.websocket = websocket;
 
         const beforeExecute = () => {
           if (instance.messageThreadsRunning) {
@@ -275,14 +298,32 @@
             }
           }
         };
+
+        const onStopAll = () => {
+          instance.instanceReplaced = true;
+          instance.manuallyClosed = true;
+          instance.websocket.close();
+        };
+
         vm.runtime.on('BEFORE_EXECUTE', beforeExecute);
+        vm.runtime.on('PROJECT_STOP_ALL', onStopAll);
 
         const cleanup = () => {
           vm.runtime.off('BEFORE_EXECUTE', beforeExecute);
+          vm.runtime.off('PROJECT_STOP_ALL', onStopAll);
+          if (!instance.instanceReplaced) {
+            delete this.instances[target.id];
+          }
           resolve();
         };
 
         websocket.onopen = (e) => {
+          if (instance.instanceReplaced || instance.manuallyClosed) {
+            cleanup();
+            websocket.close();
+            return;
+          }
+
           for (const item of instance.sendOnceConnected) {
             websocket.send(item);
           }
@@ -293,6 +334,7 @@
         };
 
         websocket.onclose = (e) => {
+          if (instance.instanceReplaced) return;
           instance.closeMessage = e.reason || "";
           instance.closeCode = e.code;
           runtime.startHats("gsaWebsocket_onClose", null, target);
@@ -300,6 +342,7 @@
         };
 
         websocket.onerror = (e) => {
+          if (instance.instanceReplaced) return;
           console.error('websocket error', e);
           instance.errored = true;
           runtime.startHats("gsaWebsocket_onError", null, target);
@@ -307,6 +350,8 @@
         };
 
         websocket.onmessage = async (e) => {
+          if (instance.instanceReplaced || instance.manuallyClosed) return;
+
           let data = e.data;
 
           // Convert binary messages to a data: uri
@@ -327,8 +372,6 @@
             instance.messageThreadsRunning = true;
           }
         };
-
-        this.instances[target.id] = instance;
       })).catch((error) => {
         console.error('could not open websocket connection', error);
       });
@@ -337,7 +380,7 @@
     isConnected(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return false;
-      return instance.websocket.readyState === WebSocket.OPEN;
+      return !!instance.websocket && instance.websocket.readyState === WebSocket.OPEN;
     }
 
     messageReceived(_, utils) {
@@ -354,8 +397,8 @@
 
     isClosed(_, utils) {
       const instance = this.instances[utils.target.id];
-      if (!instance) return "";
-      return instance.websocket.readyState === WebSocket.CLOSED;
+      if (!instance) return false;
+      return !!instance.websocket && instance.websocket.readyState === WebSocket.CLOSED;
     }
 
     closeCode(_, utils) {
@@ -381,7 +424,7 @@
       const instance = this.instances[utils.target.id];
       if (!instance) return;
 
-      if (instance.websocket.readyState === WebSocket.CONNECTING) {
+      if (!instance.websocket || instance.websocket.readyState === WebSocket.CONNECTING) {
         // Trying to send now will throw an error. Send it once we get connected.
         instance.sendOnceConnected.push(PAYLOAD);
       } else {
@@ -393,22 +436,28 @@
     closeWithoutReason(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return;
-      instance.websocket.close();
+      instance.manuallyClosed = true;
+      if (instance.websocket) {
+        instance.websocket.close();
+      }
     }
 
     closeWithCode(args, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return;
-      const CODE = toCloseCode(args.CODE);
-      instance.websocket.close(CODE);
+      instance.manuallyClosed = true;
+      if (instance.websocket) {
+        instance.websocket.close(toCloseCode(args.CODE));
+      }
     }
 
     closeWithReason(args, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return;
-      const CODE = toCloseCode(args.CODE);
-      const REASON = toCloseReason(args.REASON);
-      instance.websocket.close(CODE, REASON);
+      instance.manuallyClosed = true;
+      if (instance.websocket) {
+        instance.websocket.close(toCloseCode(args.CODE), toCloseReason(args.REASON));
+      }
     }
   }
 
