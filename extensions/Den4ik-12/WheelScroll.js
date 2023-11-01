@@ -65,7 +65,7 @@
         SCROLL_TYPE: 'l'
       })
     }
-  };
+  }
 
 // Translate
   Scratch.translate.setup({
@@ -82,7 +82,7 @@
       menuSCROLL_TYPEvalueAX: 'вдоль оси x',
       menuSCROLL_TYPEvalueAY: 'вдоль оси y',
       menuSCROLL_TYPEvalueAZ: 'вдоль оси z',
-    },
+    }
   });
 
 // Extension
@@ -114,7 +114,7 @@
             text: Scratch.translate({id: 'whenScroll', default: 'when mouse wheel scrolls'}),
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false
-          },
+          }
         ],
         menus: {
           SCROLL_TYPE: [
