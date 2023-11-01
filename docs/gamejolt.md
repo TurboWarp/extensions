@@ -1,8 +1,6 @@
 # Game Jolt API
----
 This extension allows you to easily implement the Game Jolt API using a public domain library.
 ## Blocks
----
 Blocks that the extension uses to send requests to the Game Jolt API.
 
 ```scratch
@@ -10,7 +8,6 @@ Blocks that the extension uses to send requests to the Game Jolt API.
 ```
 Checks to see if the URL is the Game Jolt website.
 ### Session Blocks
----
 Operating on the game's session.
 
 ```scratch
@@ -52,7 +49,6 @@ Sets the session status to active/idle.
 Checks to see if there is an open session for the user.
 - Can be used to see if a particular user account is active in the game.
 ### User Blocks
----
 Login, logout and fetch users.
 
 ```scratch
@@ -146,7 +142,6 @@ Returns fetched user's friend ID at passed index.
 ```
 Returns fetched user's friend IDs in JSON.
 ### Trophy Blocks
----
 Achieve, remove and fetch trophies.
 
 ```scratch
@@ -195,7 +190,6 @@ Returns fetched trophy data at passed index by passed key.
 ```
 Returns fetched trophy data in JSON
 ### Score Blocks
----
 ```scratch
 Add score (1) in table of ID (0) with text [1 point] and comment [optional] :: #2F7F6F
 ```
@@ -279,7 +273,6 @@ Returns fetched table data at passed index by passed key.
 ```
 Returns fetched tables in JSON.
 ### Data Storage Blocks
----
 Operate on Game Jolt's cloud variables.
 
 ```scratch
@@ -347,7 +340,6 @@ Returns fetched key at passed index.
 ```
 Returns fetched keys in JSON.
 ### Time Blocks
----
 Track server's time.
 
 ```scratch
@@ -367,7 +359,6 @@ Returns fetched server's time data by passed key.
 ```
 Returns fetched server's time data in JSON.
 ### Batch Blocks
----
 Fetch more data per request.
 
 ```scratch
@@ -409,7 +400,6 @@ User based sub requests require to be logged in.
 Returns fetched batch data in JSON.
 
 ### Debug Blocks
----
 Blocks used for debugging.
 
 ```scratch
@@ -431,7 +421,6 @@ Checks to see if debug mode is on.
 Returns the last API error.
 
 ### Handling Common Errors
----
 Handling commonly encountered errors.
 
 ```scratch
