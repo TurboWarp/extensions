@@ -329,10 +329,6 @@
                   thread.status = 4; // STATUS_DONE
                 }
 
-                if (!instance.instanceReplaced) {
-                  delete this.instances[target.id];
-                }
-
                 resolve();
               };
 
