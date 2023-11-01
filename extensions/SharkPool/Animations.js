@@ -3,7 +3,7 @@
 // Description: Play Animations for your Sprites
 // By: SharkPool <https://github.com/SharkPool-SP>
 
-// Version V.1.3.0
+// Version V.1.2.0
 
 (function (Scratch) {
   "use strict";
@@ -678,6 +678,7 @@
               if (Object.keys(myAnimation.frames[frameIndex]).some(key => key.includes("spKF4!"))) {
                 if (Object.keys(myAnimation.frames[frameIndex]).some(key => key.includes("PZ"))) {
                   const keys = Object.keys(myAnimation.frames[frameIndex]);
+                  /* eslint-disable */
                   for (const key of keys) {
                     const delayTime = myAnimation.frames[frameIndex][key].secs;
                     setTimeout(() => {
@@ -685,6 +686,7 @@
                     }, delayTime);
                     return;
                   }
+                  /* eslint-enable */
                 } else {
                   this._setKeyframe(target, myAnimation.frames[frameIndex], myAnimation);
                 }
