@@ -200,9 +200,9 @@
           if (/^(?!(ws|http)s?:\/\/).*$/is.test(url)) {
             url = `wss://${url}`;
           } else if (/^(http|https):/is.test(url)) {
-            url = url.split(":");
-            url[0] = url.startsWith("https") ? "wss" : "ws";
-            url = url.join(":");
+            const urlParts = url.split(":");
+            urlParts[0] = url.toLowerCase().startsWith("https") ? "wss" : "ws";
+            url = urlParts.join(":");
           } else {
             // we couldnt fix the url...
             resolve();
@@ -213,6 +213,7 @@
 
         try {
           const target = utils.target;
+          // canFetch() checked above
           // eslint-disable-next-line no-restricted-syntax
           const websocket = new WebSocket(url);
           const instance = {
