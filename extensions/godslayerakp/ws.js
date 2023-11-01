@@ -9,16 +9,13 @@
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("can not load outside unsandboxed mode");
   }
-  // copied from https://stackoverflow.com/a/30407959
-  const blobToDataURL = (blob) =>
-    new Promise((resolve, reject) => {
-      var a = new FileReader();
-      a.onload = function (e) {
-        resolve(e.target.result);
-      };
-      a.onerror = reject;
-      a.readAsDataURL(blob);
-    });
+
+  const blobToDataURL = (blob) => new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(fr.result);
+    fr.onerror = () => reject(new Error(`Failed to read as data URL: ${fr.error}`));
+    fr.readAsDataURL(blob);
+  });
 
   /* ------- BLOCKS -------- */
   const { BlockType, Cast, ArgumentType } = Scratch;
