@@ -1,4 +1,4 @@
-﻿// Name: Wheel Scroll
+// Name: Wheel Scroll
 // ID: Den4ik12WheelScroll
 // Description: Blocks for detecting mouse wheel scrolling.
 // By: Den4ik-12 <https://scratch.mit.edu/users/Den4ik-12/>
@@ -18,49 +18,49 @@
 // Scroll Events
   document.querySelector("body").onwheel = scroll;
 
-  function scroll(event) {
+  function scroll(e) {
     Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScroll');
-    if (event.deltaZ != 0) {
+    if (e.deltaZ != 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'az'
       });
     }
-    if (event.deltaY != 0) {
+    if (e.deltaY != 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'ay'
       });
     }
-    if (event.deltaX != 0) {
+    if (e.deltaX != 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'ax'
       });
     }
-    if (event.deltaZ > 0) {
+    if (e.deltaZ > 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'i'
       });
     }
-    if (event.deltaZ < 0) {
+    if (e.deltaZ < 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'o'
       });
     }
-    if (event.deltaY > 0) {
+    if (e.deltaY > 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'd'
       });
     }
-    if (event.deltaY < 0) {
+    if (e.deltaY < 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'u'
       });
     }
-    if (event.deltaX > 0) {
+    if (e.deltaX > 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'r'
       });
     }
-    if (event.deltaX < 0) {
+    if (e.deltaX < 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'l'
       });
