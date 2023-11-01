@@ -23,47 +23,47 @@
     if (e.deltaZ != 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'az'
-      });
+      })
     }
     if (e.deltaY != 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'ay'
-      });
+      })
     }
     if (e.deltaX != 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'ax'
-      });
+      })
     }
     if (e.deltaZ > 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'i'
-      });
+      })
     }
     if (e.deltaZ < 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'o'
-      });
+      })
     }
     if (e.deltaY > 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'd'
-      });
+      })
     }
     if (e.deltaY < 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'u'
-      });
+      })
     }
     if (e.deltaX > 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'r'
-      });
+      })
     }
     if (e.deltaX < 0) {
       Scratch.vm.runtime.startHats('Den4ik12WheelScroll_whenScrollDir', {
         SCROLL_TYPE: 'l'
-      });
+      })
     }
   };
 
