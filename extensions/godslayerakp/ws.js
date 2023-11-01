@@ -32,6 +32,7 @@
    * @property {WebSocket} websocket
    * @property {boolean} messageThreadsRunning
    * @property {VM.Thread[]} messageThreads
+   * @property {object[]} sendOnceConnected
    */
 
   /**
@@ -252,6 +253,7 @@
           messageThreadsRunning: false,
           messageThreads: [],
           messageQueue: [],
+          sendOnceConnected: []
         };
 
         const beforeExecute = () => {
@@ -281,6 +283,11 @@
         };
 
         websocket.onopen = (e) => {
+          for (const item of instance.sendOnceConnected) {
+            websocket.send(item);
+          }
+          instance.sendOnceConnected.length = 0;
+
           runtime.startHats("gsaWebsocket_onOpen", null, target);
           resolve();
         };
@@ -372,9 +379,11 @@
     sendMessage(args, utils) {
       const PAYLOAD = Cast.toString(args.PAYLOAD);
       const instance = this.instances[utils.target.id];
+      if (!instance) return;
 
       if (instance.websocket.readyState === WebSocket.CONNECTING) {
-        // TODO: queue data to send when we connect
+        // Trying to send now will throw an error. Send it once we get connected.
+        instance.sendOnceConnected.push(PAYLOAD);
       } else {
         // CLOSING and CLOSED states won't throw an error, just silently ignore
         instance.websocket.send(PAYLOAD);
