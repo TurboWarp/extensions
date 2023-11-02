@@ -420,6 +420,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "add keyframe stretch to animation [NAME] with ID [ID] starting at width [x] height [y] and ending at width [x2] height [y2]",
             blockIconURI: keyIconURI,
+            hideFromPalette: true,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
