@@ -1,4 +1,4 @@
-// Name: Monitors Plus
+// Name: Variables Expanded
 // ID: DICandSPmonitorsPlus
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
@@ -9,7 +9,7 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Monitors Plus must run unsandboxed!");
+    throw new Error("Variables Expanded must run unsandboxed!");
   }
 
   const vm = Scratch.vm;
@@ -56,7 +56,7 @@
     getInfo() {
       return {
         id: "DICandSPmonitorsPlus",
-        name: "Monitors+",
+        name: "Variables Expanded",
         color1: "#FF8C1A",
         color2: "#e67e17",
         color3: "#cc7015",
@@ -413,7 +413,7 @@
     }
 
     alertWarning() {
-      let popup = `WARNING: Monitors+ can easily Crash the Editor (only the Editor). To avoid these crashes:
+      let popup = `WARNING: Variables Expanded can easily Crash the Editor (only the Editor). To avoid these crashes:
       - DO NOT Double/Fast Click visible Monitors
       - DO NOT Right Click and Select visible Monitors popups`;
       alert(popup);
