@@ -63,6 +63,24 @@
     // Array to Map
     fromArray(arr) {
       return new Map(Object.entries(arr));
+    },
+
+    // to array
+    toArray(obj) {
+      return [...Map._e.shallowCopy(obj).values()];
+    },
+
+    // to indexed obj
+    toIndexed(obj) {
+      return Map._e.fromArray(Map._e.toArray(obj));
+    },
+
+    // do things as Array
+    asArray(obj, func, inplaceReturn = false) {
+      let tmp = [...Map._e.deepCopy(obj).values()];
+      const res = func(tmp);
+      if (inplaceReturn) tmp = res;
+      return Map._e.fromArray(tmp);
     }
   };
 
@@ -76,6 +94,11 @@
     double: '{"apple":"banana","one":"two"}',
     array: '{"0":"a","1":"b","2":"c"}'
   };
+
+  const label = (text) => ({
+    blockType: 'label',
+    text: text
+  });
 
   class ObjectExtension {
     getInfo() {
@@ -113,14 +136,18 @@
             }
           },
           {
-            opcode: 'toArray',
+            opcode: 'keyval',
             blockType: Scratch.BlockType.REPORTER,
-            text: '[obj] to Array',
+            text: '{[key]: [val]}',
             arguments: {
-              obj: {
+              key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.array
-              }
+                defaultValue: 'key'
+              },
+              val: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'value'
+              },
             }
           },
           '---',
@@ -174,17 +201,6 @@
             }
           },
           {
-            opcode: 'length',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'length of [obj]',
-            arguments: {
-              obj: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.empty
-              }
-            }
-          },
-          {
             opcode: 'has',
             blockType: Scratch.BlockType.BOOLEAN,
             text: '[obj] has [key]?',
@@ -196,6 +212,17 @@
               key: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'key'
+              }
+            }
+          },
+          {
+            opcode: 'length',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'size of [obj]',
+            arguments: {
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.empty
               }
             }
           },
@@ -212,25 +239,6 @@
               obj2: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: exampleJSON.keyValue2
-              }
-            }
-          },
-          {
-            opcode: 'slice',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'slice from [a] to [b] in [obj]',
-            arguments: {
-              a: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
-              },
-              b: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 2
-              },
-              obj: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.array
               }
             }
           },
@@ -308,6 +316,137 @@
               obj: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: ' '
+              }
+            }
+          },
+          label('Indexed Object'),
+          {
+            opcode: 'toIndexed',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[obj] to indexed object',
+            arguments: {
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.keyValue
+              }
+            }
+          },
+          {
+            opcode: 'toArray',
+            blockType: Scratch.BlockType.REPORTER,
+            text: '[obj] to Array',
+            arguments: {
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.array
+              }
+            }
+          },
+          '---',
+          {
+            opcode: 'item',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'item [idx] of [obj]',
+            arguments: {
+              idx: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: -1
+              },
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.array
+              }
+            }
+          },
+          {
+            opcode: 'push',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'push value [value] to [obj]',
+            arguments: {
+              value: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'd'
+              },
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.array
+              }
+            }
+          },
+          '---',
+          {
+            opcode: 'slice',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'slice [obj] with [a] [b]',
+            arguments: {
+              a: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              b: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 2
+              },
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.array
+              }
+            }
+          },
+          {
+            opcode: 'splice1',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'splice [obj] with [a]',
+            arguments: {
+              a: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.array
+              }
+            }
+          },
+          {
+            opcode: 'splice2',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'splice [obj] with [a] [b]',
+            arguments: {
+              a: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              b: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0
+              },
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.array
+              }
+            }
+          },
+          {
+            opcode: 'splice3',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'splice [obj] with [a] [b] [i]',
+            arguments: {
+              a: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              },
+              b: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0
+              },
+              i: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'z'
+              },
+              obj: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: exampleJSON.array
               }
             }
           },
@@ -423,6 +562,10 @@
       return Map._e.shallowCopy(args.obj);
     }
 
+    keyval(args) {
+      return new Map().set(Scratch.Cast.toString(args.key), Map._e.fromMapOrString(args.val));
+    }
+
     _toArray(obj) {
       return Array.from(obj.values());
     }
@@ -432,7 +575,7 @@
     }
 
     set(args) {
-      let value = Map._e.fromMapOrString(args.value);
+      const value = Map._e.fromMapOrString(args.value);
       return Map._e.deepCopy(args.obj).set(Scratch.Cast.toString(args.key), value);
     }
 
@@ -442,7 +585,7 @@
 
     delete(args) {
       let obj = Map._e.deepCopy(args.obj);
-      obj.delete(args.key);
+      obj.delete(Scratch.Cast.toString(args.key));
       return obj;
     }
 
@@ -476,11 +619,6 @@
       return Map._e.fromArray(Array.from(obj.entries()).map(x => Map._e.fromArray(x)));
     }
 
-    slice(args) {
-      const obj = Map._e.deepCopy(args.obj);
-      return new Map([...obj.entries()].slice(args.a, args.b));
-    }
-
     indexOf(args) {
       return [...Map._e.shallowCopy(args.obj).keys()].indexOf(Scratch.Cast.toString(args.key));
     }
@@ -490,6 +628,37 @@
       const obj = Map._e.shallowCopy(args.obj);
       if (!obj.has(key)) return Map._e.empty;
       return new Map([[key, obj.get(key)]]);
+    }
+
+    toIndexed(args) {
+      return Map._e.toIndexed(args.obj);
+    }
+
+    push(args) {
+      const value = Map._e.fromMapOrString(args.value);
+      return Map._e.asArray(args.obj, x => x.push(value));
+    }
+
+    slice(args) {
+      const obj = Map._e.deepCopy(args.obj);
+      return new Map([...obj.entries()].slice(args.a, args.b));
+    }
+
+    splice1(args) {
+      return Map._e.asArray(args.obj, x => x.splice(args.a));
+    }
+
+    splice2(args) {
+      return Map._e.asArray(args.obj, x => x.splice(args.a, args.b));
+    }
+
+    splice3(args) {
+      const value = Map._e.fromMapOrString(args.i);
+      return Map._e.asArray(args.obj, x => x.splice(args.a, args.b, value));
+    }
+
+    item(args) {
+      return Map._e.toArray(args.obj).at(args.idx);
     }
   }
 
