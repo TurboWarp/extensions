@@ -774,7 +774,7 @@
     isShowing(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
       const info = runtime.getMonitorState().get(variableId);
-      return !!info ? (info.get("visible") !== undefined && info.get("visible") !== false) : false;
+      return info ? (info.get("visible") !== undefined && info.get("visible") !== false) : false;
     }
 
     setPosition(args, util) {
