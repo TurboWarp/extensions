@@ -1259,7 +1259,7 @@
             disableMonitor: true,
             opcode: "getStampAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get pen square's [target]",
+            text: "get pen square's [target]",
             arguments: {
               target: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1447,7 +1447,7 @@
             disableMonitor: true,
             opcode: "RGB2HEX",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Red [R] Green [G] Blue [B]",
+            text: "red [R] green [G] blue [B]",
             arguments: {
               R: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               G: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1458,7 +1458,7 @@
             disableMonitor: true,
             opcode: "HSV2RGB",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Hue [H] Saturation [S] Value [V]",
+            text: "hue [H] saturation [S] value [V]",
             arguments: {
               H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
