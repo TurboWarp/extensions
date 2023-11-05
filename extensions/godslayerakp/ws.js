@@ -131,6 +131,7 @@
             opcode: "isConnected",
             blockType: BlockType.BOOLEAN,
             text: "is connected?",
+            disableMonitor: true,
           },
           "---",
           {
@@ -144,6 +145,7 @@
             opcode: "messageData",
             blockType: BlockType.REPORTER,
             text: "received message data",
+            disableMonitor: true,
           },
           "---",
           {
@@ -169,6 +171,7 @@
             opcode: "hasErrored",
             blockType: BlockType.BOOLEAN,
             text: "has connection errored?",
+            disableMonitor: true,
           },
           "---",
           {
@@ -182,16 +185,19 @@
             opcode: "isClosed",
             blockType: BlockType.BOOLEAN,
             text: "is connection closed?",
+            disableMonitor: true,
           },
           {
             opcode: "closeCode",
             blockType: BlockType.REPORTER,
             text: "closing code",
+            disableMonitor: true,
           },
           {
             opcode: "closeMessage",
             blockType: BlockType.REPORTER,
             text: "closing message",
+            disableMonitor: true,
           },
           {
             opcode: "closeWithoutReason",
