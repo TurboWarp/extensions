@@ -353,12 +353,14 @@
               };
 
               websocket.onclose = (e) => {
-                instance.closeMessage = e.reason || "";
-                instance.closeCode = e.code;
-                cleanup();
+                if (!instance.errored) {
+                  instance.closeMessage = e.reason || "";
+                  instance.closeCode = e.code;
+                  cleanup();
 
-                if (!instance.destroyed) {
-                  runtime.startHats("gsaWebsocket_onClose", null, target);
+                  if (!instance.destroyed) {
+                    runtime.startHats("gsaWebsocket_onClose", null, target);
+                  }
                 }
               };
 
@@ -421,10 +423,7 @@
     isClosed(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return false;
-      return (
-        !!instance.websocket &&
-        instance.websocket.readyState === WebSocket.CLOSED
-      );
+      return instance.closeCode !== 0;
     }
 
     closeCode(_, utils) {

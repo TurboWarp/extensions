@@ -125,3 +125,5 @@ when connection errors :: hat #307eff
 Sometimes things don't go so well. Maybe your internet connection died, the server is down, or you typed in the wrong URL. There's a lot of things that can go wrong. These let you try to handle that.
 
 Unfortunately we can't give much insight as to what caused the errors. Your browser tells us very little, but even if it did give us more information, it probably wouldn't be very helpful.
+
+A connection can either close or error; it won't do both.
