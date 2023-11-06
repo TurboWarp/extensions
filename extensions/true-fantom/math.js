@@ -544,15 +544,13 @@
       return cast.toString(A).includes(cast.toString(B));
     }
     clamp_block({ A, B, C }) {
-      return B < C
-        ? Math.min(
-            Math.max(cast.toNumber(A), cast.toNumber(B)),
-            cast.toNumber(C)
-          )
-        : Math.min(
-            Math.max(cast.toNumber(A), cast.toNumber(C)),
-            cast.toNumber(B)
-          );
+      if (cast.compare(A, B) < 0) {
+        return B;
+      } else if (cast.compare(A, C) > 0) {
+        return C;
+      } else {
+        return A;
+      }
     }
     scale_block({ A, m1, M1, m2, M2 }) {
       return (
