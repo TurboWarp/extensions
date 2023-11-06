@@ -280,7 +280,11 @@
         .then(
           (allowed) =>
             new Promise((resolve) => {
-              if (!allowed || instance.destroyed) {
+              if (!allowed) {
+                throw new Error('Not allowed');
+              }
+
+              if (instance.destroyed) {
                 resolve();
                 return;
               }
@@ -403,6 +407,11 @@
         )
         .catch((error) => {
           console.error("could not open websocket connection", error);
+
+          instance.errored = true;
+          if (!instance.destroyed) {
+            runtime.startHats("gsaWebsocket_onError", null, target);
+          }
         });
     }
 
