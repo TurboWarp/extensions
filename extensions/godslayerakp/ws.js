@@ -325,7 +325,6 @@
               vm.runtime.on("PROJECT_STOP_ALL", onStopAll);
 
               const cleanup = () => {
-                console.log('Cleanup');
                 vm.runtime.off("BEFORE_EXECUTE", beforeExecute);
                 vm.runtime.off("PROJECT_STOP_ALL", onStopAll);
 
