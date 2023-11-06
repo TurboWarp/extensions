@@ -3,3 +3,7 @@ node_modules
 
 # Final built website
 build
+
+# Various operating system caches
+thumbs.db
+.DS_Store
