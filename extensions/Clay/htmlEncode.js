@@ -1,6 +1,6 @@
 // Name: HTML Encode
 // ID: clayhtmlencode
-// Description: Simple extension for encoding text in HTML escape codes.
+// Description: Escape untrusted text to safely include in HTML.
 // By: ClaytonTDM
 
 (function (Scratch) {

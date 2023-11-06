@@ -17,6 +17,7 @@
   "sound",
   "Lily/Video",
   "iframe",
+  "Clay/htmlEncode",
   "Xeltalliv/clippingblending",
   "clipboard",
   "penplus",
