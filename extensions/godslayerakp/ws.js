@@ -26,8 +26,7 @@
 
   /**
    * @typedef WebSocketInfo
-   * @property {boolean} instanceReplaced
-   * @property {boolean} manuallyClosed
+   * @property {boolean} destroyed
    * @property {boolean} errored
    * @property {string} closeMessage
    * @property {number} closeCode
@@ -92,7 +91,7 @@
       runtime.on("targetWasRemoved", (target) => {
         const instance = this.instances[target.id];
         if (instance) {
-          instance.manuallyClosed = true;
+          instance.destroyed = true;
           if (instance.websocket) {
             instance.websocket.close();
           }
@@ -255,7 +254,7 @@
 
       const oldInstance = this.instances[util.target.id];
       if (oldInstance) {
-        oldInstance.instanceReplaced = true;
+        oldInstance.destroyed = true;
         if (oldInstance.websocket) {
           oldInstance.websocket.close();
         }
@@ -263,8 +262,7 @@
 
       /** @type {WebSocketInfo} */
       const instance = {
-        instanceReplaced: false,
-        manuallyClosed: false,
+        destroyed: false,
         errored: false,
         closeMessage: "",
         closeCode: 0,
@@ -282,11 +280,7 @@
         .then(
           (allowed) =>
             new Promise((resolve) => {
-              if (
-                !allowed ||
-                instance.instanceReplaced ||
-                instance.manuallyClosed
-              ) {
+              if (!allowed || instance.destroyed) {
                 resolve();
                 return;
               }
@@ -319,15 +313,15 @@
               };
 
               const onStopAll = () => {
-                instance.instanceReplaced = true;
-                instance.manuallyClosed = true;
-                instance.websocket.close();
+                instance.destroyed = true;
+                websocket.close();
               };
 
               vm.runtime.on("BEFORE_EXECUTE", beforeExecute);
               vm.runtime.on("PROJECT_STOP_ALL", onStopAll);
 
               const cleanup = () => {
+                console.log('Cleanup');
                 vm.runtime.off("BEFORE_EXECUTE", beforeExecute);
                 vm.runtime.off("PROJECT_STOP_ALL", onStopAll);
 
@@ -339,7 +333,7 @@
               };
 
               websocket.onopen = (e) => {
-                if (instance.instanceReplaced || instance.manuallyClosed) {
+                if (instance.destroyed) {
                   cleanup();
                   websocket.close();
                   return;
@@ -359,24 +353,29 @@
               };
 
               websocket.onclose = (e) => {
-                if (instance.instanceReplaced) return;
                 instance.closeMessage = e.reason || "";
                 instance.closeCode = e.code;
-                runtime.startHats("gsaWebsocket_onClose", null, target);
                 cleanup();
+
+                if (!instance.destroyed) {
+                  runtime.startHats("gsaWebsocket_onClose", null, target);
+                }
               };
 
               websocket.onerror = (e) => {
-                if (instance.instanceReplaced) return;
                 console.error("websocket error", e);
                 instance.errored = true;
-                runtime.startHats("gsaWebsocket_onError", null, target);
                 cleanup();
+
+                if (!instance.destroyed) {
+                  runtime.startHats("gsaWebsocket_onError", null, target);
+                }
               };
 
               websocket.onmessage = async (e) => {
-                if (instance.instanceReplaced || instance.manuallyClosed)
+                if (instance.destroyed) {
                   return;
+                }
 
                 let data = e.data;
 
@@ -466,7 +465,7 @@
     closeWithoutReason(_, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return;
-      instance.manuallyClosed = true;
+      instance.destroyed = true;
       if (instance.websocket) {
         instance.websocket.close();
       }
@@ -475,7 +474,7 @@
     closeWithCode(args, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return;
-      instance.manuallyClosed = true;
+      instance.destroyed = true;
       if (instance.websocket) {
         instance.websocket.close(toCloseCode(args.CODE));
       }
@@ -484,7 +483,7 @@
     closeWithReason(args, utils) {
       const instance = this.instances[utils.target.id];
       if (!instance) return;
-      instance.manuallyClosed = true;
+      instance.destroyed = true;
       if (instance.websocket) {
         instance.websocket.close(
           toCloseCode(args.CODE),
