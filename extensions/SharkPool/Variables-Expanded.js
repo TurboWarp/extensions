@@ -3,7 +3,7 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.1
+// Version 1.2
 
 (function (Scratch) {
   "use strict";
@@ -52,7 +52,6 @@
       this.buttonName = "";
       this.monitorsUpdateListeners = [];
     }
-
     getInfo() {
       return {
         id: "DICandSPmonitorsPlus",
@@ -63,9 +62,15 @@
         menuIconURI,
         blocks: [
           {
-            func: "alertWarning",
-            blockType: Scratch.BlockType.BUTTON,
-            text: "Crash Warning",
+            opcode: "exists",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "does [VARIABLE] exist?",
+            arguments: {
+              VARIABLE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my variable",
+              },
+            },
           },
           {
             opcode: "isShowing",
@@ -78,6 +83,7 @@
               },
             },
           },
+          "---",
           {
             opcode: "setColor",
             blockType: Scratch.BlockType.COMMAND,
@@ -86,6 +92,21 @@
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
                 defaultValue: "#ff0000",
+              },
+              VARIABLE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "variableMenu",
+              },
+            },
+          },
+          {
+            opcode: "setString",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [VARIABLE] to [STRING]",
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 0
               },
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
@@ -384,7 +405,7 @@
             items: ["x", "y"],
           },
           EFFECTS: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: [
               "blur",
               "saturation",
@@ -412,13 +433,6 @@
       return uniqueVars.map((i) => (Scratch.Cast.toString(i.name)));
     }
 
-    alertWarning() {
-      let popup = `WARNING: Variables Expanded can easily Crash the Editor (only the Editor). To avoid these crashes:
-      - DO NOT Double/Fast Click visible Monitors
-      - DO NOT Right Click and Select visible Monitors popups`;
-      alert(popup);
-    }
-
     getFonts() {
       const customFonts = Scratch.vm.runtime.fontManager ? Scratch.vm.runtime.fontManager.getFonts().map((i) => ({text: i.name, value: i.family})) : [];
       return [
@@ -434,9 +448,7 @@
       let varFind = "";
       for (const name of Object.getOwnPropertyNames(sprite.target.variables)) {
         varFind = sprite.target.variables[name].name;
-        if (varFind === variable) {
-          return sprite.target.variables[name].id;
-        }
+        if (varFind === variable) return sprite.target.variables[name].id;
       }
       const ID = runtime.getTargetForStage().lookupVariableByNameAndType(variable, "");
       if (!ID) return "";
@@ -449,7 +461,6 @@
         ["id", variableId],
         ["visible", false]
       ]));
-
       setTimeout(() => {
         runtime.requestUpdateMonitor(new Map([
           ["id", variableId],
@@ -458,42 +469,60 @@
       }, 25);
     }
 
-    setVariableToType(args, util) {
-      this.setMonitor(args.VARIABLE, util, args.VARIABLE, args.TYPE);
-    }
+    async setVariableToType(args, util) { await this.setMonitor(args.VARIABLE, util, args.VARIABLE, args.TYPE) }
 
-    setDisplay(args, util) {
+    async setDisplay(args, util) {
       const safeName = xmlEscape(args.NAME);
       const type = this.getMonitor(args.VARIABLE, util);
       let variableId = this.findVariable(args.VARIABLE, util);
       if (type === "normal readout" || type === "slider" || type === "large readout") {
-        const variableMonitorLabel = document.querySelector(`[data-id="${variableId}"][class*="monitor_"] .monitor_label_ci1ok`);
-        if (variableMonitorLabel) {
-          variableMonitorLabel.textContent = args.NAME;
-        }
+        const variableMonitorLabel = document.querySelector(`[data-id="${variableId}"][class*="monitor_"] [class^="monitor_label"]`);
+        if (variableMonitorLabel) variableMonitorLabel.textContent = args.NAME;
       } else {
-        this.setMonitor(args.VARIABLE, util, args.NAME, type);
+        await this.setMonitor(args.VARIABLE, util, args.NAME, type);
       }
     }
 
-    setMonitor(nameID, util, name, type) {
+    async setMonitor(nameID, util, name, type) {
       let variableId = this.findVariable(nameID, util);
+      if (type.includes("readout") || type === "slider") {
+        if (!(this.getMonitor(nameID, util).includes("readout") || this.getMonitor(nameID, util) === "slider")) {
+          this.resetFormat(variableId);
+        }
+      }
+      if (!type.includes("readout") && type !== "slider") {
+        var state2 = vm.runtime.getMonitorState().get(variableId);
+        vm.runtime.requestUpdateMonitor(state2.set("mode", "default"));
+        let i;
+        await new Promise(resolve => { const wait = () => {
+          if (i) resolve();
+          else {
+            i = runtime.getMonitorState().get(variableId).get("visible");
+            setTimeout(wait, 5);
+          }};
+          wait();
+        });
+      }
+
       const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
       if (!variableMonitor) return;
-      let newHTML;
       let typeElement;
       let isHex;
-      let variableName = nameID
+      let variableName = nameID;
       let toggleButtonClickFunction;
+      let container;
 
       const hexColorRegex = /^#([0-9A-F]{3}){1,2}$/i;
       const Vvalue = util.target.lookupOrCreateVariable(nameID, variableName).value;
       const isChecked = Vvalue === "true" || Vvalue === 1 ? true : false;
       variableName = name.replace(/[<>]/g, "");
       this.removeAllMonitorsUpdateListeners();
-      if (type === "large readout" || type === "slider" || type === "normal readout") {
-        this.resetFormat(variableId);
+      if (type.includes("readout") || type === "slider") {
         var state = vm.runtime.getMonitorState().get(variableId);
+        vm.runtime.requestUpdateMonitor(state.set("mode", "large"));
+      } else {
+        const oldMonitor = variableMonitor.querySelector(`[class^="monitor_default-monitor"]:not(.monitor_default-monitor_SPnew1)`);
+        oldMonitor.style.display = "none";
       }
 
       switch (type) {
@@ -507,53 +536,61 @@
           break;
         case "text":
           this.setValue(nameID, "", util);
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <div class="monitor_label_ci1ok">${variableName}</div>
-              </div>
-              <div class="monitor_row_2y_kM">
-                <input type="text" id="text_${variableId}" class="monitor_slider_1CHwk no-drag" value="...">
-              </div>
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <div class="monitor_label_ci1ok">${variableName}</div>
+            </div>
+            <div class="monitor_row_2y_kM">
+              <input type="text" id="text_${variableId}" class="monitor_slider_1CHwk no-drag" value="...">
             </div>`;
-
-          variableMonitor.innerHTML = newHTML;
+          variableMonitor.appendChild(container);
           this.setValue(nameID, "...", util);
-          typeElement = document.querySelector(`[id="text_${variableId}"]`)
+          typeElement = container.querySelector(`[id="text_${variableId}"]`);
           typeElement = removeAllEventListeners(typeElement);
+
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
             typeElement.value = variable.value;
           });
           typeElement.addEventListener("change", function (event) {
             if (event.target && event.target.id.startsWith(`text_${variableId}`)) {
-              const variable = util.target.lookupOrCreateVariable(
-              nameID, nameID);
+              const variable = util.target.lookupOrCreateVariable(nameID, nameID);
               variable.value = typeElement.value;
             }
           });
           break;
         case "checkbox":
           this.setValue(nameID, isChecked, util);
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <input type="checkbox" id="checkbox_${variableId}" class="monitor_slider_1CHwk no-drag" ${isChecked ? "checked" : ""}>
-                <div class="monitor_label_ci1ok">${"test"/*variableName*/}</div>
-              </div>
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <input type="checkbox" id="checkbox_${variableId}" class="monitor_slider_1CHwk no-drag" ${isChecked ? "checked" : ""}>
+              <div class="monitor_label_ci1ok">${variableName}</div>
             </div>`;
-
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="checkbox_${variableId}"]`)
+          variableMonitor.appendChild(container);
+          typeElement = container.querySelector(`[id="checkbox_${variableId}"`);
           typeElement = removeAllEventListeners(typeElement);
+
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
             typeElement.checked = variable.value === "false" ? 0 : variable.value;
           });
           typeElement.addEventListener("change", function (event) {
             if (event.target && event.target.id.startsWith(`checkbox_${variableId}`)) {
-              const variable = util.target.lookupOrCreateVariable(
-              nameID, nameID);
+              const variable = util.target.lookupOrCreateVariable(nameID, nameID);
               variable.value = typeElement.checked;
             }
           });
@@ -565,19 +602,25 @@
             isHex = "#ff0000";
           }
           this.setValue(nameID, isHex, util);
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <div class="monitor_label_ci1ok">${variableName}</div>
-              </div>
-              <div class="monitor_row_2y_kM">
-                <input type="color" id="color_${variableId}" class="monitor_slider_1CHwk no-drag" value="${isHex}">
-              </div>
-            </div>`;
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
 
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="color_${variableId}"]`);
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <div class="monitor_label_ci1ok">${variableName}</div>
+            </div>
+            <div class="monitor_row_2y_kM">
+              <input type="color" id="color_${variableId}" class="monitor_slider_1CHwk no-drag" value="${isHex}">
+            </div>`;
+          variableMonitor.appendChild(container);
+          typeElement = container.querySelector(`[id="color_${variableId}"`);
           typeElement = removeAllEventListeners(typeElement);
+
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
             typeElement.value = variable.value;
@@ -590,32 +633,41 @@
           });
           break;
         case "button":
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <input type="button" id="button_${variableId}" value="${variableName}" class="monitor_slider_1CHwk no-drag monitor-button">
-              </div>
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <input type="button" id="button_${variableId}" value="${variableName}" class="monitor_slider_1CHwk no-drag monitor-button">
             </div>`;
-
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="button_${variableId}"]`);
+          variableMonitor.appendChild(container);
+          typeElement = container.querySelector(`[id="button_${variableId}"]`);
           toggleButtonClickFunction = () => this.toggleButtonClick(variableId);
           typeElement.onclick = toggleButtonClickFunction;
           typeElement.addEventListener("click", toggleButtonClickFunction);
           break;
         case "file":
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <div class="monitor_label_ci1ok">${variableName}</div>
-              </div>
-              <div class="monitor_row_2y_kM">
-                <input type="file" id="file_${variableId}" class="monitor_slider_1CHwk no-drag" value="0">
-              </div>
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <div class="monitor_label_ci1ok">${variableName}</div>
+            </div>
+            <div class="monitor_row_2y_kM">
+              <input type="file" id="file_${variableId}" class="monitor_slider_1CHwk no-drag" value="0">
             </div>`;
+          variableMonitor.appendChild(container);
 
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="file_${variableId}"]`)
+          typeElement = container.querySelector(`[id="file_${variableId}"]`);
           typeElement = removeAllEventListeners(typeElement);
           typeElement.addEventListener("change", function (event) {
             if (event.target && event.target.id === `file_${variableId}`) {
@@ -635,42 +687,51 @@
           });
           break;
         case "image":
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <div class="monitor_label_ci1ok">${variableName}</div>
-              </div>
-              <div class="monitor_row_2y_kM">
-                 <img src="${Vvalue}" id="image_${variableId}" class="monitor_slider_1CHwk no-drag">
-              </div>
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <div class="monitor_label_ci1ok">${variableName}</div>
+            </div>
+            <div class "monitor_row_2y_kM">
+              <img src="${Vvalue}" id="image_${variableId}" class="monitor_slider_1CHwk no-drag">
             </div>`;
-
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="image_${variableId}"]`);
+          variableMonitor.appendChild(container);
+          typeElement = container.querySelector(`[id="image_${variableId}"]`);
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
             typeElement.src = variable.value;
           });
           break;
         case "audio":
-          newHTML = `
-            <div class="monitor_default-monitor_2vCcZ">
-              <div class="monitor_row_2y_kM">
-                <div class="monitor_label_ci1ok">${variableName}</div>
-              </div>
-              <div class="monitor_row_2y_kM">
-                <audio id="audio_${variableId}" class="monitor_audio" src="${Vvalue}" controls></audio>
-              </div>
+          if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
+            container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
+          } else {
+            container = document.createElement("div");
+            container.className = "monitor_default-monitor_SPnew1";
+            container.setAttribute("style", "padding: 5px 5px 5px 5px");
+          }
+          container.innerHTML = `
+            <div class="monitor_row_2y_kM">
+              <div class="monitor_label_ci1ok">${variableName}</div>
+            </div>
+            <div class="monitor_row_2y_kM">
+              <audio id="audio_${variableId}" class="monitor_audio" src="${Vvalue}" controls></audio>
             </div>`;
+          variableMonitor.appendChild(container);
 
-          variableMonitor.innerHTML = newHTML;
-          typeElement = document.querySelector(`[id="audio_${variableId}"]`);
+          typeElement = container.querySelector(`[id="audio_${variableId}"]`);
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
             typeElement.src = variable.value;
           });
           break;
-        default: // Handle unknown monitor (default monitor)
+        default: // Handle unknown monitor or default monitor
           state = state.set("mode", "default");
           vm.runtime.requestUpdateMonitor(state);
           break;
@@ -731,7 +792,9 @@
 
     setSliderMinMaxOfVaribleTo(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      this.resetFormat(variableId);
+      if (!(this.getMonitor(args.VARIABLE, util).includes("readout") || this.getMonitor(args.VARIABLE, util) === "slider")) {
+        this.resetFormat(variableId);
+      }
       var state = vm.runtime.getMonitorState().get(variableId);
       if (!state) return "";
       state = state.set("mode", "slider");
@@ -747,16 +810,11 @@
       const variableId = this.findVariable(args.VARIABLE, util);
       const info = vm.runtime.getMonitorState().get(variableId);
       if (info === undefined) return "";
-      if (args.MINMAX === "min") {
-        return info.get("sliderMin");
-      } else {
-        return info.get("sliderMax");
-      }
+      return info.get(args.MINMAX === "min" ? "sliderMin" : "sliderMax");
     }
 
-    setColor(args, util) {
-      this.setValue(args.VARIABLE, args.COLOR, util);
-    }
+    setColor(args, util) { this.setValue(args.VARIABLE, args.COLOR, util) }
+    setString(args, util) { this.setValue(args.VARIABLE, args.STRING, util) }
 
     setValue(variableN, value, util) {
       const variableName = variableN; 
@@ -776,6 +834,10 @@
       const info = runtime.getMonitorState().get(variableId);
       return info ? (info.get("visible") !== undefined && info.get("visible") !== false) : false;
     }
+    exists(args, util) {
+      const variableId = this.findVariable(args.VARIABLE, util);
+      return Scratch.Cast.toBoolean(variableId);
+    }
 
     setPosition(args, util) {
       const canvas = [Scratch.vm.runtime.stageWidth / 2, Scratch.vm.runtime.stageHeight / 2];
@@ -784,7 +846,6 @@
       if (!variableMonitor) return;
       let x = Scratch.Cast.toNumber(args.X) + canvas[0] - (variableMonitor.offsetWidth / 2);
       let y = (Scratch.Cast.toNumber(args.Y) - canvas[1] + (variableMonitor.offsetHeight / 2)) * -1;
-
       x = x - parseInt(variableMonitor.style.left);
       y = y - parseInt(variableMonitor.style.top);
 
@@ -830,15 +891,13 @@
       variableMonitor.style.transform = translation;
     }
 
-    setEffect(args, util) {
-      this.varEffect(args.VARIABLE, args.EFFECT, args.AMOUNT, util);
-    }
+    setEffect(args, util) { this.varEffect(args.VARIABLE, args.EFFECT, args.AMOUNT, util) }
 
     varEffect(VARIABLE, EFFECT, AMOUNT, util) {
       const variableId = this.findVariable(VARIABLE, util);
       const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
       if (!variableMonitor) return;
-      let currentTransform = variableMonitor.style.transform || "";
+      let currentTransform = variableMonitor.style.transform;
       let currentFilterEffect = variableMonitor.style.filter || "";
       let setEffect = EFFECT;
       let amountIn = AMOUNT;
@@ -876,7 +935,7 @@
       const variableId = this.findVariable(args.VARIABLE, util);
       const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
       if (!variableMonitor) return "";
-      const currentTransform = variableMonitor.style.transform || "";
+      const currentTransform = variableMonitor.style.transform;
       const currentFilterEffect = variableMonitor.style.filter || "";
       const setEffect = {
         saturation: "saturate",
@@ -888,7 +947,6 @@
         "skew x": "skewX",
         "skew y": "skewY",
       }[args.EFFECT] || args.EFFECT;
-
       const defaultV = {
         saturation: 100,
         hue: 0,
@@ -945,15 +1003,12 @@
 
     deleteVariable(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      if (variableId) {
-        Blockly.getMainWorkspace().deleteVariableById(variableId);
-      }
+      if (variableId) Blockly.getMainWorkspace().deleteVariableById(variableId);
     }
 
     generateId() {
       const chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/", "|", ",", ".", "{", "}", "[", "]", "(", ")", "+", "-", "!", "?", "`"];
       const array = Array.from(Array(20).keys());
-
       const normalArray = array.map(() => {
         return chars[Math.round(Math.random() * (chars.length - 1))]
       })
