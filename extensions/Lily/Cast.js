@@ -43,11 +43,31 @@
               },
             },
           },
+          {
+            opcode: "isType",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "[INPUT] is [TYPE]?",
+            disableMonitor: true,
+            arguments: {
+              INPUT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "apple",
+              },
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "typeObject",
+              },
+            },
+          }
         ],
         menus: {
           type: {
             acceptReporters: true,
             items: ["number", "string", "boolean", "default"],
+          },
+          typeObject: {
+            acceptReporters: true,
+            items: ["number", "string", "boolean", "object"],
           },
         },
       };
@@ -55,7 +75,7 @@
 
     toType(args) {
       const input = args.INPUT;
-      switch (args.TYPE) {
+      switch (Cast.toString(args.TYPE)) {
         case "number":
           return Cast.toNumber(input);
         case "string":
@@ -68,17 +88,11 @@
     }
 
     typeOf(args) {
-      const input = args.INPUT;
-      switch (typeof input) {
-        case "number":
-          return "number";
-        case "string":
-          return "string";
-        case "boolean":
-          return "boolean";
-        default:
-          return "";
-      }
+      return typeof args.INPUT;
+    }
+
+    isType(args) {
+      return Cast.toString(args.TYPE) === typeof args.INPUT;
     }
   }
 
