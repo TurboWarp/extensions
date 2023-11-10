@@ -3,7 +3,7 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.2
+// Version 1.2.1
 
 (function (Scratch) {
   "use strict";
@@ -61,6 +61,11 @@
         color3: "#cc7015",
         menuIconURI,
         blocks: [
+          {
+            func: "notify",
+            blockType: Scratch.BlockType.BUTTON,
+            text: "Editor Debugging",
+          },
           {
             opcode: "exists",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -425,6 +430,13 @@
       }
     }
 
+    notify() {
+      alert(
+        "Upon Double-Clicking New Monitors, it will open up the Debug Menu" +
+        "\n\nThis feature is only accessible within the Editor and can be reset by using the set monitor block"
+      );
+    }
+
     getVariables() {
       const globalVars = Object.values(vm.runtime.getTargetForStage().variables).filter((x) => x.type == "");
       const localVars = Object.values(vm.editingTarget.variables).filter((x) => x.type == "");
@@ -455,8 +467,7 @@
       return ID.id;
     }
 
-    resetFormat(variableId) { 
-      //reset to avoid Site Crashing
+    resetFormat(variableId) {
       runtime.requestUpdateMonitor(new Map([
         ["id", variableId],
         ["visible", false]
@@ -535,7 +546,6 @@
           vm.runtime.requestUpdateMonitor(state);
           break;
         case "text":
-          this.setValue(nameID, "", util);
           if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"`)) {
             container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"`);
           } else {
@@ -551,7 +561,6 @@
               <input type="text" id="text_${variableId}" class="monitor_slider_1CHwk no-drag" value="...">
             </div>`;
           variableMonitor.appendChild(container);
-          this.setValue(nameID, "...", util);
           typeElement = container.querySelector(`[id="text_${variableId}"]`);
           typeElement = removeAllEventListeners(typeElement);
 
@@ -567,7 +576,6 @@
           });
           break;
         case "checkbox":
-          this.setValue(nameID, isChecked, util);
           if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
             container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
           } else {
@@ -601,7 +609,6 @@
           } else {
             isHex = "#ff0000";
           }
-          this.setValue(nameID, isHex, util);
           if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
             container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
           } else {
@@ -994,16 +1001,18 @@
 
     makeVariable(args, util) {
       if (args.TYPE === "for this sprite only") {
-        //creating this kind of variable doesnt show until you switch back from editing a sprite to another for some reason...
-        return util.target.createVariable(this.generateId(), args.VARIABLE, "");
+        return util.target.lookupOrCreateVariable(this.generateId(), args.VARIABLE, "");
       } else {
-        Blockly.getMainWorkspace().createVariable(args.VARIABLE);
+        return runtime.createNewGlobalVariable(args.VARIABLE, "");
       }
     }
 
     deleteVariable(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      if (variableId) Blockly.getMainWorkspace().deleteVariableById(variableId);
+      if (variableId) {
+        runtime.getTargetForStage().deleteVariable(variableId)
+        util.target.deleteVariable(variableId);
+      }
     }
 
     generateId() {
