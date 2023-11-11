@@ -3,7 +3,7 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.2.1
+// Version 1.2.2
 
 (function (Scratch) {
   "use strict";
@@ -487,7 +487,7 @@
       const type = this.getMonitor(args.VARIABLE, util);
       let variableId = this.findVariable(args.VARIABLE, util);
       if (type === "normal readout" || type === "slider" || type === "large readout") {
-        const variableMonitorLabel = document.querySelector(`[data-id="${variableId}"][class*="monitor_"] [class^="monitor_label"]`);
+        const variableMonitorLabel = document.querySelector(`[data-id="${variableId}"][class*="monitor"] [class^="monitor_label"]`);
         if (variableMonitorLabel) variableMonitorLabel.textContent = args.NAME;
       } else {
         await this.setMonitor(args.VARIABLE, util, args.NAME, type);
@@ -515,7 +515,7 @@
         });
       }
 
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
       if (!variableMonitor) return;
       let typeElement;
       let isHex;
@@ -532,7 +532,8 @@
         var state = vm.runtime.getMonitorState().get(variableId);
         vm.runtime.requestUpdateMonitor(state.set("mode", "large"));
       } else {
-        const oldMonitor = variableMonitor.querySelector(`[class^="monitor_default-monitor"]:not(.monitor_default-monitor_SPnew1)`);
+        let oldMonitor = variableMonitor.querySelector(`[class^="monitor_default-monitor"]:not(.monitor_default-monitor_SPnew1)`);
+        if (!oldMonitor) oldMonitor = variableMonitor.querySelector(`[class^="sc-monitor-inner"] [class^="sc-monitor-row"]`);
         oldMonitor.style.display = "none";
       }
 
@@ -783,7 +784,7 @@
 
     getMonitor(variable, util) {
       const variableId = this.findVariable(variable, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
       if (!variableMonitor) return "normal readout";
       if (variableMonitor.querySelector("input[type=\"range\"]")) return "slider";
       if (variableMonitor.querySelector("input[type=\"text\"]")) return "text";
@@ -793,7 +794,7 @@
       if (variableMonitor.querySelector("input[type=\"file\"]")) return "file";
       if (variableMonitor.querySelector("img")) return "image";
       if (variableMonitor.querySelector("audio")) return "audio";
-      if (variableMonitor.querySelector(".monitor_large-value_P-rAm")) return "large readout";
+      if (variableMonitor.querySelector(`[class^="monitor_large-value_"]`)) return "large readout";
       return "normal readout";
     }
 
@@ -849,7 +850,7 @@
     setPosition(args, util) {
       const canvas = [Scratch.vm.runtime.stageWidth / 2, Scratch.vm.runtime.stageHeight / 2];
       const variableId = this.findVariable(args.VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
       if (!variableMonitor) return;
       let x = Scratch.Cast.toNumber(args.X) + canvas[0] - (variableMonitor.offsetWidth / 2);
       let y = (Scratch.Cast.toNumber(args.Y) - canvas[1] + (variableMonitor.offsetHeight / 2)) * -1;
@@ -871,7 +872,7 @@
     currentPos(args, util) {
       const canvas = [Scratch.vm.runtime.stageWidth / 2, Scratch.vm.runtime.stageHeight / 2];
       const variableId = this.findVariable(args.VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
       if (!variableMonitor) return "";
 
       const styleAttribute = variableMonitor.getAttribute("style");
@@ -889,11 +890,11 @@
     }
 
     resetEffects(variableId, currentTransform) {
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
       if (!variableMonitor) return;
       const translationRegex = /translate\(([^,]+),\s*([^)]+)\)/;
       const matches = currentTransform.match(translationRegex);
-      const translation = matches ? `translate(${matches[1]}, ${matches[2]})` : '';
+      const translation = matches ? `translate(${matches[1]}, ${matches[2]})` : "";
       variableMonitor.style.filter = "";
       variableMonitor.style.transform = translation;
     }
@@ -902,7 +903,7 @@
 
     varEffect(VARIABLE, EFFECT, AMOUNT, util) {
       const variableId = this.findVariable(VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
       if (!variableMonitor) return;
       let currentTransform = variableMonitor.style.transform;
       let currentFilterEffect = variableMonitor.style.filter || "";
@@ -940,7 +941,7 @@
 
     currentEffect(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
       if (!variableMonitor) return "";
       const currentTransform = variableMonitor.style.transform;
       const currentFilterEffect = variableMonitor.style.filter || "";
@@ -986,7 +987,7 @@
 
     resetEffect(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
       if (!variableMonitor) return;
       let currentTransform = variableMonitor.style.transform || "";
       this.resetEffects(variableId, currentTransform);
@@ -994,7 +995,7 @@
 
     setFont(args, util) {
       const variableId = this.findVariable(args.VARIABLE, util);
-      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor_"]`);
+      const variableMonitor = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
       if (!variableMonitor) return;
       variableMonitor.style.fontFamily = args.FONT;
     }
