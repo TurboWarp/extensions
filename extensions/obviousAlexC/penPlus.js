@@ -410,7 +410,7 @@
     penPlusShaders.textured.ProgramInf.program,
     "u_texture"
   );
-  
+
   //?Depth
   const u_depthTexture_Location_draw = gl.getUniformLocation(
     penPlusShaders.draw.ProgramInf.program,
@@ -482,7 +482,7 @@
       lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
       gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-      
+
       gl.clear(gl.COLOR_BUFFER_BIT);
       //? get triangle attributes for current sprite.
       const triAttribs = triangleAttributesOfAllSprites[targetID];
@@ -585,7 +585,7 @@
       lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
       gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-      
+
       gl.clear(gl.COLOR_BUFFER_BIT);
       //? get triangle attributes for current sprite.
       const triAttribs = triangleAttributesOfAllSprites[targetID];
@@ -752,13 +752,13 @@
         f32_6,
         f32_4
       );
-      
+
       gl.useProgram(penPlusShaders.draw.ProgramInf.program);
-      
+
       gl.uniform1i(u_depthTexture_Location_draw, 1);
 
       gl.drawArrays(gl.TRIANGLES, 0, 3);
-    
+
       vertexBufferData = new Float32Array([
         -1,
         -1,
@@ -2299,7 +2299,7 @@
       }
       let value =
         triangleAttributesOfAllSprites[targetId][
-          trianglePointStart + attribute
+        trianglePointStart + attribute
         ];
 
       if ((attribute >= 2 && attribute <= 4) || attribute == 7) {
