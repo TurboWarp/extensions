@@ -287,10 +287,6 @@
 
           '---',
 
-
-
-          '---',
-
           {
             opcode: "getStructType",
             blockType: 'reporter',
