@@ -159,12 +159,10 @@
     });
 
     vm.runtime.on("BEFORE_EXECUTE", () => {
-      let calcSize = (renderer.useHighQualityRender
+      let calcSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
-        : renderer._nativeSize);
-      if (
-        (calcSize[0] != nativeSize[0]) || (calcSize[1] != nativeSize[1])
-      ) {
+        : renderer._nativeSize;
+      if (calcSize[0] != nativeSize[0] || calcSize[1] != nativeSize[1]) {
         nativeSize = renderer.useHighQualityRender
           ? [canvas.width, canvas.height]
           : renderer._nativeSize;
@@ -710,26 +708,11 @@
     //? but I have previaled!
     drawOnScreen: () => {
       vertexBufferData = new Float32Array([
-        -1,
-        -1,
-        0,
-        1,
-        0,
-        1,
+        -1, -1, 0, 1, 0, 1,
 
-        1,
-        -1,
-        0,
-        1,
-        1,
-        1,
+        1, -1, 0, 1, 1, 1,
 
-        1,
-        1,
-        0,
-        1,
-        1,
-        0,
+        1, 1, 0, 1, 1, 0,
       ]);
 
       //? Bind Positional Data
@@ -760,26 +743,11 @@
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 
       vertexBufferData = new Float32Array([
-        -1,
-        -1,
-        0,
-        1,
-        0,
-        1,
+        -1, -1, 0, 1, 0, 1,
 
-        -1,
-        1,
-        0,
-        1,
-        0,
-        0,
+        -1, 1, 0, 1, 0, 0,
 
-        1,
-        1,
-        0,
-        1,
-        1,
-        0,
+        1, 1, 0, 1, 1, 0,
       ]);
 
       gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
@@ -829,11 +797,11 @@
               break;
             }
             //convert to depth space for best accuracy
-            valuetoSet = (value);
+            valuetoSet = value;
             break;
           }
           //convert to depth space for best accuracy
-          valuetoSet = (value);
+          valuetoSet = value;
           break;
 
         //Clamp to 1 so we don't accidentally clip.
@@ -2299,7 +2267,7 @@
       }
       let value =
         triangleAttributesOfAllSprites[targetId][
-        trianglePointStart + attribute
+          trianglePointStart + attribute
         ];
 
       if ((attribute >= 2 && attribute <= 4) || attribute == 7) {
