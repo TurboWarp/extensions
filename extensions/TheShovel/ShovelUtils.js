@@ -212,7 +212,7 @@
       const storage = vm.runtime.storage;
       function get_url_extension(uri) {
           var len = uri.split('/');
-          return(len[len.length-1].split('.')[1].split(/[#\?]/gi)[0]);
+          return(len[len.length-1].split('.')[1].split(/[#?]/gi)[0]);
       }
       let dataType = '', dataFormat = '';
       if (url.startsWith('data:image/')) {
@@ -258,6 +258,7 @@
             });
           });
       return 1; // ignore the below, its only here for reference
+      /* eslint-disable no-unreachable */
       Scratch.fetch(TEXT)
         .then((r) => r.arrayBuffer())
         .then((arrayBuffer) => {
@@ -273,6 +274,7 @@
             ),
           });
         });
+        /* eslint-enable no-unreachable */
     }
 
     importSprite({ TEXT }) {
