@@ -204,65 +204,77 @@
     importImage({ TEXT, NAME }) {
       //Updated to support SVG. (0znzw)
       //Some notes: it returns a "error code" for debugging.
-      /* -2: Invalid format from URL
-         -1: Invalid format in dataURL
-          1: Ran succesfully
+      /*  -2: Invalid format from URL
+          -1: Invalid format in dataURL
+          1: Ran successfully
       */
-      let url = Scratch.Cast.toString(TEXT), costume_name = Scratch.Cast.toString(NAME);
+      let url = Scratch.Cast.toString(TEXT),
+        costume_name = Scratch.Cast.toString(NAME);
       const storage = vm.runtime.storage;
       function get_url_extension(uri) {
-          var len = uri.split('/');
-          return(len[len.length-1].split('.')[1].split(/[#?]/gi)[0]);
+        var len = uri.split("/");
+        return len[len.length - 1].split(".")[1].split(/[#?]/gi)[0];
       }
-      let dataType = '', dataFormat = '';
-      if (url.startsWith('data:image/')) {
-          url = url.replace('data:image/', '');
-          if (url.startsWith('svg')) dataType = 'svg', dataFormat = storage.DataFormat.SVG;
-          if (url.startsWith('png')) dataType = 'png', dataFormat = storage.DataFormat.PNG;
-          if (url.startsWith('jpg')) dataType = 'jpg', dataFormat = storage.DataFormat.JPG;
-          if (url.startsWith('jpeg')) dataType = 'jpg', dataFormat = storage.DataFormat.JPG;
-          if (dataType == '') return -1;
-          url = `data:image/${url}`;
+      let dataType = "",
+        dataFormat = "";
+      if (url.startsWith("data:image/")) {
+        url = url.replace("data:image/", "");
+        if (url.startsWith("svg"))
+          (dataType = "svg"), (dataFormat = storage.DataFormat.SVG);
+        if (url.startsWith("png"))
+          (dataType = "png"), (dataFormat = storage.DataFormat.PNG);
+        if (url.startsWith("jpg"))
+          (dataType = "jpg"), (dataFormat = storage.DataFormat.JPG);
+        if (url.startsWith("jpeg"))
+          (dataType = "jpg"), (dataFormat = storage.DataFormat.JPG);
+        if (dataType == "") return -1;
+        url = `data:image/${url}`;
       } else {
-          dataType = get_url_extension(url);
-          dataType = dataType.toLowerCase();
-          switch(dataType) {
-              case 'svg':
-                  dataFormat = storage.DataFormat.SVG;
-                  break;
-              case 'png':
-                  dataFormat = storage.DataFormat.PNG;
-                  break;
-              default:
-                  // *cough* to many jpg formats
-                  if ([
-                    'jpg', 'jpeg', 'jfif' /* etc, etc.. */
-                  ].includes(dataType)) {
-                    dataFormat = storage.DataFormat.JPG;
-                    break;
-                  }
-                  return -2;
-          }
+        dataType = get_url_extension(url);
+        dataType = dataType.toLowerCase();
+        switch (dataType) {
+          case "svg":
+            dataFormat = storage.DataFormat.SVG;
+            break;
+          case "png":
+            dataFormat = storage.DataFormat.PNG;
+            break;
+          default:
+            // *cough* to many jpg formats
+            if (["jpg", "jpeg", "jfif" /* etc, etc.. */].includes(dataType)) {
+              dataFormat = storage.DataFormat.JPG;
+              break;
+            }
+            return -2;
+        }
       }
       dataType = dataType.toLowerCase();
       Scratch.fetch(url)
-          .then((r) => r.arrayBuffer())
-          .then((arrayBuffer) => {
-            const storage = vm.runtime.storage;
-            vm.addCostume(costume_name + `.${dataType.toUpperCase()}`, {
-              name: costume_name + '',
-              asset: new storage.Asset(
-                (dataType == 'svg' ? storage.AssetType.ImageVector : storage.AssetType.ImageBitmap),
-                null, dataFormat, new Uint8Array(arrayBuffer), true
-              ),
-            });
+        .then((r) => r.arrayBuffer())
+        .then((arrayBuffer) => {
+          const storage = vm.runtime.storage;
+          //  @ts-expect-error
+          vm.addCostume(costume_name + `.${dataType.toUpperCase()}`, {
+            name: costume_name + "",
+            asset: new storage.Asset(
+              dataType == "svg"
+                ? storage.AssetType.ImageVector
+                : storage.AssetType.ImageBitmap,
+              null,
+              // @ts-expect-error YES IT IS SHUT TS lol
+              dataFormat,
+              new Uint8Array(arrayBuffer),
+              true
+            ),
           });
+        });
       return 1; // ignore the below, its only here for reference
       /* eslint-disable no-unreachable */
       Scratch.fetch(TEXT)
         .then((r) => r.arrayBuffer())
         .then((arrayBuffer) => {
           const storage = vm.runtime.storage;
+          // @ts-expect-error
           vm.addCostume(NAME + ".PNG", {
             name: NAME + "",
             asset: new storage.Asset(
@@ -274,7 +286,7 @@
             ),
           });
         });
-        /* eslint-enable no-unreachable */
+      /* eslint-enable no-unreachable */
     }
 
     importSprite({ TEXT }) {
@@ -319,6 +331,7 @@
             new Uint8Array(arrayBuffer),
             true
           );
+          // @ts-expect-error
           vm.addSound({
             md5: asset.assetId + "." + asset.dataFormat,
             asset: asset,
