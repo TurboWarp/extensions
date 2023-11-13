@@ -3,7 +3,7 @@
 // Description: Play Animations for your Sprites
 // By: SharkPool <https://github.com/SharkPool-SP>
 
-// Version V.1.2.0
+// Version V.1.4.0
 
 (function (Scratch) {
   "use strict";
@@ -203,9 +203,7 @@
               },
             },
           },
-
           "---",
-
           {
             opcode: "numFrames",
             blockType: Scratch.BlockType.REPORTER,
@@ -281,6 +279,23 @@
             },
           },
           {
+            opcode: "playBackWait",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "play animation [NAME] [TYPE] until done",
+            blockIconURI: playIconURI,
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "animation 1",
+              },
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "playBack",
+                defaultValue: "normally",
+              },
+            },
+          },
+          {
             opcode: "stopAnimation",
             blockType: Scratch.BlockType.COMMAND,
             text: "stop animation [NAME]",
@@ -292,9 +307,7 @@
               },
             },
           },
-
           "---",
-
           {
             opcode: "currentFPS",
             blockType: Scratch.BlockType.REPORTER,
@@ -420,7 +433,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "add keyframe stretch to animation [NAME] with ID [ID] starting at width [x] height [y] and ending at width [x2] height [y2]",
             blockIconURI: keyIconURI,
-            hideFromPalette: true,
+            hideFromPalette: !Scratch.extensions.isPenguinMod,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -448,6 +461,7 @@
               },
             },
           },
+          "---",
           {
             opcode: "deleteKeyframe",
             blockType: Scratch.BlockType.COMMAND,
@@ -468,19 +482,11 @@
         menus: {
           playBack: {
             acceptReporters: false,
-            items: [
-              "normally",
-              "in reverse",
-              "looped normally",
-              "looped reversed"
-            ],
+            items: ["normally", "in reverse", "looped normally", "looped reversed"],
           },
           pullTypes: {
             acceptReporters: true,
-            items: [
-              "existing",
-              "playing"
-            ],
+            items: ["existing", "playing"],
           },
         }
       };
@@ -502,9 +508,7 @@
     removeAnimation(args) {
       this.stopPlayingAnimation(args.NAME);
       const indexToRemove = allAnimations.findIndex((animation) => Object.keys(animation)[0] === args.NAME);
-      if (indexToRemove !== -1) {
-        allAnimations.splice(indexToRemove, 1);
-      }
+      if (indexToRemove !== -1) { allAnimations.splice(indexToRemove, 1) }
     }
 
     removeAll() {
@@ -517,7 +521,7 @@
 
     isExists(args) {
       const animation = allAnimations.find((animation) => animation[args.NAME]);
-      return Boolean(animation);
+      return Scratch.Cast.toBoolean(animation);
     }
 
     addFrame(args, util) {
@@ -530,9 +534,7 @@
         console.error(`This Animation belongs to and can only be ran in "${animation[args.NAME].target.sprite.name}"`);
         return;
       }
-      if (animation) {
-        animation[args.NAME].frames.push(args.COSTUME);
-      }
+      if (animation) { animation[args.NAME].frames.push(args.COSTUME) }
     }
 
     addAllFrames(args, util) {
@@ -590,9 +592,7 @@
       if (animation) {
         const SECS = Math.abs(args.SECOND) * 1000;
         animation[args.NAME].frames.push({
-          [`spKF4!PZ${args.ID}`]: {
-            secs: SECS,
-          }
+          [`spKF4!PZ${args.ID}`]: { secs: SECS }
         });
       }
     }
@@ -657,6 +657,16 @@
       }
     }
 
+    playBackWait(args) {
+      this.playBack(args);
+      return new Promise((resolve, reject) => {
+        const animationPlay = () => {
+          this.isPlaying(args) ? setTimeout(animationPlay, 100) : resolve();
+        };
+        setTimeout(animationPlay, 100);
+      });
+    }
+
     playBack(args) {
       const animation = allAnimations.find((animation) => animation[args.NAME]);
       if (animation) {
@@ -669,9 +679,7 @@
           let frameIndex = args.TYPE.includes("reverse") ? myAnimation.frames.length - 1 : 0;
           myAnimation.currentFrame = frameIndex;
           const numFrames = myAnimation.frames.length;
-          if (numFrames === 0) {
-            return;
-          }
+          if (numFrames === 0) return;
 
           const playNextFrame = () => {
             if (myAnimation.playing === true) {
@@ -682,9 +690,7 @@
                   /* eslint-disable */
                   for (const key of keys) {
                     const delayTime = myAnimation.frames[frameIndex][key].secs;
-                    setTimeout(() => {
-                      handleNextFrame();
-                    }, delayTime);
+                    setTimeout(() => { handleNextFrame() }, delayTime);
                     return;
                   }
                   /* eslint-enable */
@@ -729,15 +735,11 @@
       }
     }
 
-    stopAnimation(args) {
-      this.stopPlayingAnimation(args.NAME);
-    }
+    stopAnimation(args) { this.stopPlayingAnimation(args.NAME) }
 
     stopPlayingAnimation(name) {
       const animation = allAnimations.find((animation) => animation[name]);
-      if (animation) {
-        animation[name].playing = false;
-      }
+      if (animation) animation[name].playing = false;
     }
 
     currentFPS(args) {
@@ -877,29 +879,22 @@
         const deltaX = key.x2 - key.x1;
         const deltaY = key.y2 - key.y1;
         const animateXY = (timestamp) => {
-          if (!startTime) {
-            startTime = timestamp;
-          }
+          if (!startTime) startTime = timestamp;
           const elapsedTime = timestamp - startTime;
           const progress = Math.min(elapsedTime / animationDuration, 1);
           const newX = startX + deltaX * progress;
           const newY = startY + deltaY * progress;
           target.setXY(newX, newY);
-          if (progress < 1) {
-            requestAnimationFrame(animateXY);
-          }
+          if (progress < 1) requestAnimationFrame(animateXY);
         };
         requestAnimationFrame(animateXY);
       } else if (JSON.stringify(keyframe).includes("WH")) {
-        console.log(target);
         const startX = key.x1;
         const startY = key.y1;
         const deltaX = key.x2 - key.x1;
         const deltaY = key.y2 - key.y1;
         const animateXY = (timestamp) => {
-          if (!startTime) {
-            startTime = timestamp;
-          }
+          if (!startTime) startTime = timestamp;
           const elapsedTime = timestamp - startTime;
           const progress = Math.min(elapsedTime / animationDuration, 1);
           const newX = startX + deltaX * progress;
@@ -907,41 +902,31 @@
           target.stretch["0"] = newX;
           target.stretch["1"] = newY;
           target.setDirection(target.direction);
-          if (progress < 1) {
-            requestAnimationFrame(animateXY);
-          }
+          if (progress < 1) requestAnimationFrame(animateXY);
         };
         requestAnimationFrame(animateXY);
       } else if (JSON.stringify(keyframe).includes("DIR")) {
         const startDir = key.dir1;
         const deltaDir = key.dir2 - key.dir1;
         const animateDirection = (timestamp) => {
-          if (!startTime) {
-            startTime = timestamp;
-          }
+          if (!startTime) startTime = timestamp;
           const elapsedTime = timestamp - startTime;
           const progress = Math.min(elapsedTime / animationDuration, 1);
           const newDirection = startDir + deltaDir * progress;
           target.setDirection(newDirection);
-          if (progress < 1) {
-            requestAnimationFrame(animateDirection);
-          }
+          if (progress < 1) requestAnimationFrame(animateDirection);
         };
         requestAnimationFrame(animateDirection);
       } else if (JSON.stringify(keyframe).includes("SZ")) {
         const startSize = key.size1;
         const deltaSize = key.size2 - key.size1;
         const animateSize = (timestamp) => {
-          if (!startTime) {
-            startTime = timestamp;
-          }
+          if (!startTime) startTime = timestamp;
           const elapsedTime = timestamp - startTime;
           const progress = Math.min(elapsedTime / animationDuration, 1);
           const newSize = startSize + deltaSize * progress;
           target.setSize(newSize);
-          if (progress < 1) {
-            requestAnimationFrame(animateSize);
-          }
+          if (progress < 1) requestAnimationFrame(animateSize);
         };
         requestAnimationFrame(animateSize);
       }
