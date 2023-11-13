@@ -38,7 +38,7 @@
           {
             opcode: "importImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Import image from [TEXT] name [NAME]",
+            text: "import image from [TEXT] name [NAME]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -53,7 +53,7 @@
           {
             opcode: "getlist",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get list [TEXT]",
+            text: "get list [TEXT] as array",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -64,7 +64,7 @@
           {
             opcode: "setlist",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set list [NAME] to [TEXT]",
+            text: "set list [NAME] to [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -79,7 +79,7 @@
           {
             opcode: "importSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Import sprite from [TEXT]",
+            text: "import sprite from [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -90,7 +90,7 @@
           {
             opcode: "importSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Import sound from [TEXT] name [NAME]",
+            text: "import sound from [TEXT] name [NAME]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -105,7 +105,7 @@
           {
             opcode: "importProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Import project from [TEXT]",
+            text: "import project from [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -117,7 +117,7 @@
           {
             opcode: "loadExtension",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Load extension from [TEXT]",
+            text: "load extension from [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -129,7 +129,7 @@
           {
             opcode: "restartProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Restart project",
+            text: "restart project",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -140,7 +140,7 @@
           {
             opcode: "deleteSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Delete sprite [SPRITE]",
+            text: "delete sprite [SPRITE]",
             arguments: {
               SPRITE: {
                 type: Scratch.ArgumentType.STRING,
@@ -151,7 +151,7 @@
           {
             opcode: "deleteImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Delete costume [COSNAME] in [SPRITE]",
+            text: "delete costume [COSNAME] in [SPRITE]",
             arguments: {
               COSNAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -166,7 +166,7 @@
           {
             opcode: "setedtarget",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set editing target to [NAME]",
+            text: "set editing target to [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -178,7 +178,7 @@
           {
             opcode: "brightnessByColor",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get brightness of [color]",
+            text: "brightness of [color]",
             arguments: {
               color: {
                 type: Scratch.ArgumentType.STRING,
@@ -190,12 +190,12 @@
           {
             opcode: "getAllSprites",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get all sprites",
+            text: "all sprites",
           },
           {
             opcode: "getfps",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fps",
+            text: "fps",
           },
         ],
       };

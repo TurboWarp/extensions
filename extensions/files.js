@@ -23,6 +23,20 @@
   const AS_DATA_URL = "url";
 
   /**
+   * @param {HTMLInputElement} input
+   * @returns {boolean}
+   */
+  const isCancelEventSupported = (input) => {
+    if ("oncancel" in input) {
+      // Chrome 113+, Safari 16.4+
+      return true;
+    }
+    // Firefox is weird. cancel is supported since Firefox 91, but oncancel doesn't exist.
+    // Firefox 91 is from August 2021. That's old enough to not care about previous versions.
+    return navigator.userAgent.includes("Firefox");
+  };
+
+  /**
    * @param {string} accept See MODE_ constants above
    * @param {string} as See AS_ constants above
    * @returns {Promise<string>} format given by as parameter
@@ -33,14 +47,15 @@
       // so we have to show our own UI anyways. We may as well use this to implement some nice features
       // that native file pickers don't have:
       //  - Easy drag+drop
-      //  - Reliable cancel button (input cancel event is still basically nonexistent)
+      //  - Reliable cancel button (input cancel event is still not perfect)
       //    This is important so we can make this just a reporter instead of a command+hat block.
-      //    Without an interface, the script would be stalled if the prompt was just cancelled.
+      //    Without an interface, the script would be stalled if the prompt was cancelled.
 
       /** @param {string} text */
       const callback = (text) => {
         _resolve(text);
-        outer.remove();
+        Scratch.vm.renderer.removeOverlay(outer);
+        Scratch.vm.runtime.off("PROJECT_STOP_ALL", handleProjectStopped);
         document.body.removeEventListener("keydown", handleKeyDown);
       };
 
@@ -80,21 +95,22 @@
         capture: true,
       });
 
+      const handleProjectStopped = () => {
+        callback("");
+      };
+      Scratch.vm.runtime.on("PROJECT_STOP_ALL", handleProjectStopped);
+
       const INITIAL_BORDER_COLOR = "#888";
       const DROPPING_BORDER_COLOR = "#03a9fc";
 
       const outer = document.createElement("div");
-      outer.className = "extension-content";
-      outer.style.position = "fixed";
-      outer.style.top = "0";
-      outer.style.left = "0";
+      outer.style.pointerEvents = "auto";
       outer.style.width = "100%";
       outer.style.height = "100%";
       outer.style.display = "flex";
       outer.style.alignItems = "center";
       outer.style.justifyContent = "center";
       outer.style.background = "rgba(0, 0, 0, 0.5)";
-      outer.style.zIndex = "20000";
       outer.style.color = "black";
       outer.style.colorScheme = "light";
       outer.addEventListener("dragover", (e) => {
@@ -158,7 +174,19 @@
       subtitle.textContent = `Accepted formats: ${formattedAccept}`;
       modal.appendChild(subtitle);
 
-      document.body.appendChild(outer);
+      // To avoid the script getting stalled forever, if cancel isn't supported, we'll just forcibly
+      // show our modal.
+      if (
+        openFileSelectorMode === MODE_ONLY_SELECTOR &&
+        !isCancelEventSupported(input)
+      ) {
+        openFileSelectorMode = MODE_IMMEDIATELY_SHOW_SELECTOR;
+      }
+
+      if (openFileSelectorMode !== MODE_ONLY_SELECTOR) {
+        const overlay = Scratch.vm.renderer.addOverlay(outer, "scale");
+        overlay.container.style.zIndex = "100";
+      }
 
       if (
         openFileSelectorMode === MODE_IMMEDIATELY_SHOW_SELECTOR ||
@@ -172,7 +200,6 @@
         input.addEventListener("cancel", () => {
           callback("");
         });
-        outer.remove();
       }
     });
 
@@ -357,6 +384,11 @@
               {
                 text: "open selector immediately",
                 value: MODE_IMMEDIATELY_SHOW_SELECTOR,
+              },
+              {
+                // Will not work if the browser doesn't think we are responding to a click event.
+                text: "only show selector (unreliable)",
+                value: MODE_ONLY_SELECTOR,
               },
             ],
           },

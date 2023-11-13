@@ -12522,7 +12522,7 @@
             blockType: BlockType.COMMAND,
             text: formatMessage({
               id: "griffpatch.setStage",
-              default: "setup stage [stageType]",
+              default: "set stage boundaries to [stageType]",
               description: "Set the stage type",
             }),
             arguments: {
@@ -12802,7 +12802,7 @@
             blockType: BlockType.COMMAND,
             text: formatMessage({
               id: "griffpatch.setStatic",
-              default: "set fixed [static]",
+              default: "set fixed to [static]",
               description: "Sets whether this block is static or dynamic",
             }),
             arguments: {
@@ -12823,6 +12823,7 @@
             }),
             blockType: BlockType.BOOLEAN,
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
 
           "---",
@@ -12832,7 +12833,7 @@
             blockType: BlockType.COMMAND,
             text: formatMessage({
               id: "griffpatch.setDensity",
-              default: "set density [density]",
+              default: "set density to [density]",
               description: "Set the density of the object",
             }),
             arguments: {
@@ -12879,7 +12880,7 @@
             blockType: BlockType.COMMAND,
             text: formatMessage({
               id: "griffpatch.setFriction",
-              default: "set friction [friction]",
+              default: "set friction to [friction]",
               description: "Set the friction of the object",
             }),
             arguments: {
@@ -12926,7 +12927,7 @@
             blockType: BlockType.COMMAND,
             text: formatMessage({
               id: "griffpatch.setRestitution",
-              default: "set bounce [restitution]",
+              default: "set bounce to [restitution]",
               description: "Set the bounce of the object",
             }),
             arguments: {
@@ -13023,7 +13024,7 @@
             opcode: "getTouching",
             text: formatMessage({
               id: "griffpatch.getTouching",
-              default: "touching [where]",
+              default: "list sprites touching [where]",
               description: "get the name of any sprites we are touching",
             }),
             blockType: BlockType.REPORTER,
@@ -13046,7 +13047,7 @@
             blockType: BlockType.COMMAND,
             text: formatMessage({
               id: "griffpatch.setScroll",
-              default: "set scroll x: [ox] y: [oy]",
+              default: "set scroll to x: [ox] y: [oy]",
               description: "Sets whether this block is static or dynamic",
             }),
             arguments: {

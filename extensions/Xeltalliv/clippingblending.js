@@ -1,13 +1,13 @@
 // Name: Clipping & Blending
 // ID: xeltallivclipblend
-// Description: Clipping outside of a specified rectangular area and additive color blending.
+// Description: Clipping outside of a specified rectangular area and different color blending modes.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 
 (function (Scratch) {
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Effects extension must be run unsandboxed");
+    throw new Error("Clipping & Blending extension must be run unsandboxed");
   }
 
   // Simplified remake of an icon by True-Fantom
@@ -370,6 +370,7 @@
             text: "is additive blending on?",
             filter: [Scratch.TargetType.SPRITE],
             hideFromPalette: true,
+            disableMonitor: true,
           },
         ],
         menus: {

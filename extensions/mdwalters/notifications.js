@@ -40,6 +40,11 @@
   };
 
   class Notifications {
+    constructor() {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this._closeNotification();
+      });
+    }
     getInfo() {
       return {
         id: "mdwaltersnotifications",
@@ -54,6 +59,7 @@
             opcode: "hasPermission",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "has notification permission",
+            disableMonitor: true,
           },
           {
             opcode: "showNotification",
@@ -117,6 +123,7 @@
     async _closeNotification() {
       if (notification) {
         notification.close();
+        notification = null;
       }
 
       const registration = await getServiceWorkerRegistration();

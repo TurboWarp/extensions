@@ -775,6 +775,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is animating?",
             hideFromPalette: compatibilityMode,
+            disableMonitor: true,
           },
           "---",
           {
@@ -852,6 +853,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is showing text?",
             hideFromPalette: compatibilityMode,
+            disableMonitor: true,
           },
           {
             opcode: "getDisplayedText",

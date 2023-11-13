@@ -35,6 +35,16 @@
     "interest-cohort": "'none'",
   };
 
+  const SANDBOX = [
+    "allow-same-origin",
+    "allow-scripts",
+    "allow-forms",
+    "allow-modals",
+    "allow-popups",
+
+    // The big one we don't want to include is allow-top-navigation
+  ];
+
   let x = 0;
   let y = 0;
   let width = -1; // negative means default
@@ -82,7 +92,7 @@
     iframe.style.height = "100%";
     iframe.style.border = "none";
     iframe.style.position = "absolute";
-    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
+    iframe.setAttribute("sandbox", SANDBOX.join(" "));
     iframe.setAttribute(
       "allow",
       Object.entries(featurePolicy)
@@ -97,7 +107,17 @@
     updateFrameAttributes();
   };
 
+  const closeFrame = () => {
+    if (iframe) {
+      Scratch.renderer.removeOverlay(iframe);
+      iframe = null;
+      overlay = null;
+    }
+  };
+
   Scratch.vm.on("STAGE_SIZE_CHANGED", updateFrameAttributes);
+
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", closeFrame);
 
   class IframeExtension {
     getInfo() {
@@ -249,14 +269,14 @@
     }
 
     async display({ URL }) {
-      this.close();
+      closeFrame();
       if (await Scratch.canEmbed(URL)) {
         createFrame(Scratch.Cast.toString(URL));
       }
     }
 
     async displayHTML({ HTML }) {
-      this.close();
+      closeFrame();
       const url = `data:text/html;,${encodeURIComponent(
         Scratch.Cast.toString(HTML)
       )}`;
@@ -278,11 +298,7 @@
     }
 
     close() {
-      if (iframe) {
-        Scratch.renderer.removeOverlay(iframe);
-        iframe = null;
-        overlay = null;
-      }
+      closeFrame();
     }
 
     get({ MENU }) {
