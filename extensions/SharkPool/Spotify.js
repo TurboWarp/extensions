@@ -295,8 +295,8 @@
     }
 
     async playSongURL(args) {
-      const audio = new Audio();
       /* eslint-disable */
+      const audio = new Audio();
       audio.src = await this.getSongURL(args);
       /* eslint-enable */
       audio.play();
