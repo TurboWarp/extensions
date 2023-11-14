@@ -296,7 +296,9 @@
 
     async playSongURL(args) {
       const audio = new Audio();
+      // eslint-disable
       audio.src = await this.getSongURL(args);
+      // eslint-enable
       audio.play();
       audioInstances.push(audio);
     }
@@ -358,7 +360,6 @@
       } catch (error) {
         return `Error: ${error}`;
       }
-      return "";
     }
 
     async getArtistAtt(args) {
@@ -402,7 +403,6 @@
       } catch (error) {
         return `Error: ${error}`;
       }
-      return "";
     }
 
     async getPlaylistAtt(args) {
@@ -459,7 +459,6 @@
       } catch (error) {
         return `Error: ${error}`;
       }
-      return "";
     }
   }
 
