@@ -1,6 +1,6 @@
-// Name: Pen Plus
+// Name: Pen Plus V5 (Old)
 // ID: betterpen
-// Description: Advanced rendering capabilities.
+// Description: Replaced by Pen Plus V6.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
 
 /* eslint-disable no-empty-pattern */
@@ -2422,7 +2422,7 @@ Other various small fixes
     getInfo() {
       return {
         id: "betterpen",
-        name: "Pen+",
+        name: "Pen+ V5",
         color1: "#0e9a6b",
         color2: "#0b7f58",
         color3: "#096647",
