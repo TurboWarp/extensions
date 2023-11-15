@@ -5,26 +5,6 @@
 
 (function (Scratch) {
   "use strict";
-  Scratch.translate.setup({
-    zh: {
-      name: "变量与列表",
-      getVar: "[VAR] 的值",
-      seriVarsToJson: "将以 [START] 为开头的所有变量转换为json",
-      setVar: "将变量 [VAR] 的值设置为 [VALUE]",
-      getList: "列表 [LIST] 的值",
-      getValueOfList: "列表 [LIST] 的第 [INDEX] 项",
-      seriListsToJson: "将以 [START] 为开头的所有列表转换为json",
-      clearList: "清空列表 [LIST]",
-      deleteOfList: "删除列表 [LIST] 的第 [INDEX] 项",
-      addValueInList: "在列表 [LIST] 末尾添加 [VALUE]",
-      replaceOfList: "替换列表 [LIST] 的第 [INDEX] 项为 [VALUE]",
-      getIndexOfList: "列表 [LIST] 中第一个 [VALUE] 的位置",
-      getIndexesOfList: "列表 [LIST] 中 [VALUE] 的位置",
-      length: "列表 [LIST] 的长度",
-      listContains: "列表 [LIST] 包括 [VALUE] 吗？",
-      copyList: "将列表 [LIST1] 复制到列表 [LIST2]",
-    },
-  });
   class VarAndList {
     getInfo() {
       return {
@@ -316,6 +296,12 @@
       );
       if (variable) {
         variable.value = args.VALUE;
+        if (variable.isCloud) {
+          util.runtime.ioDevices.cloud.requestUpdateVariable(
+            variable.name,
+            variable.value
+          );
+        }
       }
     }
     getList(args, util) {

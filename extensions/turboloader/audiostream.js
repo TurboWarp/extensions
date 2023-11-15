@@ -540,8 +540,8 @@
             ? 0.1
             : Math.abs(VAL) / 700
           : VAL > 700
-          ? 15
-          : VAL / 50 + 1;
+            ? 15
+            : VAL / 50 + 1;
     }
 
     am_setvolume({ VAL }, util) {
