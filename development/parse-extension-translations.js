@@ -47,7 +47,11 @@ const parseTranslations = (js) => {
   if (!metadata.name) {
     throw new Error(`Extension needs a // Name: to generate translations`);
   }
-  const defaultDescription = `Part of the '${metadata.name}' extension.`;
+
+  let defaultDescription = `Part of the '${metadata.name}' extension.`;
+  if (metadata.context) {
+    defaultDescription += ` ${metadata.context}`;
+  }
 
   const ast = espree.parse(js, {
     ecmaVersion: 2022

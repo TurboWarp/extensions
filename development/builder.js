@@ -163,14 +163,21 @@ class ExtensionFile extends BuildFile {
     const metadata = this.getMetadata();
     const slug = this.slug;
 
+    const getMetadataDescription = (part) => {
+      let result = `${part} of the '${metadata.name}' extension in the extension gallery.`;
+      if (metadata.context) {
+        result += ` ${metadata.context}`;
+      }
+      return result;
+    };
     const metadataStrings = {
       [`${slug}@name`]: {
         string: metadata.name,
-        developer_comment: `Name of the '${metadata.name}' extension in the extension gallery.`
+        developer_comment: getMetadataDescription('Name')
       },
       [`${slug}@description`]: {
         string: metadata.description,
-        developer_comment: `Description of the '${metadata.name}' extension in the extension gallery.`
+        developer_comment: getMetadataDescription('Description')
       }
     };
 
@@ -515,7 +522,7 @@ class Build {
 
     const groups = this.generateL10N();
     for (const [name, strings] of Object.entries(groups)) {
-      const filename = pathUtil.join(root, `${name}.json`);
+      const filename = pathUtil.join(root, `exported-${name}.json`);
       fs.writeFileSync(filename, JSON.stringify(strings, null, 2));
     }
   }
