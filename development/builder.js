@@ -60,6 +60,68 @@ const mkdirp = (directory) => {
   }
 };
 
+/**
+ * @param {Record<string, Record<string, string>>} allTranslations
+ * @param {string} idPrefix
+ * @returns {Record<string, Record<string, string>>|null}
+ */
+const filterTranslations = (allTranslations, idPrefix) => {
+  let translationsEmpty = true;
+  const filteredTranslations = {};
+
+  for (const [locale, strings] of Object.entries(allTranslations)) {
+    let localeEmpty = true;
+    const filteredStrings = {};
+
+    for (const [id, string] of Object.entries(strings)) {
+      if (id.startsWith(idPrefix)) {
+        filteredStrings[id.substring(idPrefix.length)] = string;
+        localeEmpty = false;
+      }
+    }
+
+    if (!localeEmpty) {
+      filteredTranslations[locale] = filteredStrings;
+      translationsEmpty = false;
+    }
+  }
+
+  return translationsEmpty ? null : filteredTranslations;
+};
+
+/**
+ * @param {string} oldCode
+ * @param {string} insertCode
+ */
+const insertAfterCommentsBeforeCode = (oldCode, insertCode) => {
+  let index = 0;
+  while (true) {
+    if (oldCode.substring(index, index + 2) === '//') { // Line comment
+      const end = oldCode.indexOf('\n', index);
+      if (end === -1) {
+        // This file is only line comments
+        index = oldCode.length;
+        break;
+      }
+      index = end;
+    } else if (oldCode.substring(index, index + 2) === '/*') { // Block comment
+      const end = oldCode.indexOf('*/', index);
+      if (end === -1) {
+        throw new Error('Block comment never ends');
+      }
+      index = end + 2;
+    } else if (/\s/.test(oldCode.charAt(index))) { // Whitespace
+      index++;
+    } else {
+      break;
+    }
+  }
+
+  const before = oldCode.substring(0, index);
+  const after = oldCode.substring(index);
+  return before + insertCode + after;
+};
+
 class BuildFile {
   constructor(source) {
     this.sourcePath = source;
@@ -95,13 +157,35 @@ class ExtensionFile extends BuildFile {
    * @param {string} absolutePath Full path to the .js file, eg. /home/.../extensions/fetch.js
    * @param {string} slug Just the extension ID from the path, eg. fetch
    * @param {boolean} featured true if the extension is the homepage
+   * @param {Record<string, Record<string, string>>} allTranslations All extension runtime translations
+   * @param {Mode} mode
    */
-  constructor(absolutePath, slug, featured) {
+  constructor(absolutePath, slug, featured, allTranslations, mode) {
     super(absolutePath);
     /** @type {string} */
     this.slug = slug;
     /** @type {boolean} */
     this.featured = featured;
+    /** @type {Record<string, Record<string, string>>} */
+    this.allTranslations = allTranslations;
+    /** @type {Mode} */
+    this.mode = mode;
+  }
+
+  read() {
+    const data = fs.readFileSync(this.sourcePath, "utf-8");
+
+    if (this.mode !== 'development') {
+      const translations = filterTranslations(this.allTranslations, `${this.slug}@`);
+      if (translations !== null) {
+        return insertAfterCommentsBeforeCode(
+          data,
+          `Scratch.translate.setup(${JSON.stringify(translations)});`
+        );
+      }
+    }
+
+    return data;
   }
 
   getMetadata() {
@@ -554,6 +638,7 @@ class Builder {
     this.imagesRoot = pathUtil.join(__dirname, "../images");
     this.docsRoot = pathUtil.join(__dirname, "../docs");
     this.samplesRoot = pathUtil.join(__dirname, "../samples");
+    this.translationsRoot = pathUtil.join(__dirname, "../translations");
   }
 
   build() {
@@ -563,6 +648,22 @@ class Builder {
       pathUtil.join(this.extensionsRoot, "extensions.json"),
       "utf-8"
     ));
+
+    /**
+     * Look up by [group][locale][id]
+     * @type {Record<string, Record<string, Record<string, string>>>}
+     */
+    const translations = {};
+    for (const [filename, absolutePath] of recursiveReadDirectory(
+      this.translationsRoot
+    )) {
+      if (!filename.endsWith('.json')) {
+        continue;
+      }
+      const group = filename.split('.')[0];
+      const data = JSON.parse(fs.readFileSync(absolutePath, 'utf-8'));
+      translations[group] = data;
+    }
 
     /** @type {Record<string, ExtensionFile>} */
     const extensionFiles = {};
@@ -574,7 +675,13 @@ class Builder {
       }
       const extensionSlug = filename.split(".")[0];
       const featured = featuredExtensionSlugs.includes(extensionSlug);
-      const file = new ExtensionFile(absolutePath, extensionSlug, featured);
+      const file = new ExtensionFile(
+        absolutePath,
+        extensionSlug,
+        featured,
+        translations['extension-runtime'],
+        this.mode
+      );
       extensionFiles[extensionSlug] = file;
       build.files[`/${filename}`] = file;
     }
@@ -703,6 +810,7 @@ class Builder {
           `${this.websiteRoot}/**/*`,
           `${this.docsRoot}/**/*`,
           `${this.samplesRoot}/**/*`,
+          `${this.translationsRoot}/**/*`
         ],
         {
           ignoreInitial: true,
