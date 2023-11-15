@@ -15,13 +15,17 @@ const evaluateAST = (node) => {
   if (node.type === "ObjectExpression") {
     const object = {};
     for (const { key, value } of node.properties) {
-      object[evaluateAST(key)] = evaluateAST(value);
+      // Normally Identifier refers to a variable, but inside of key we treat it as a string.
+      let evaluatedKey;
+      if (key.type === "Identifier") {
+        evaluatedKey = key.name;
+      } else {
+        evaluatedKey = evaluateAST(key);
+      }
+
+      object[evaluatedKey] = evaluateAST(value);
     }
     return object;
-  }
-
-  if (node.type === "Identifier") {
-    return node.name;
   }
 
   console.error(`Can't evaluate node:`, node);
