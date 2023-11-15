@@ -65,7 +65,7 @@ const mkdirp = (directory) => {
  * @param {string} idPrefix
  * @returns {Record<string, Record<string, string>>|null}
  */
-const filterTranslations = (allTranslations, idPrefix) => {
+const filterTranslationsByPrefix = (allTranslations, idPrefix) => {
   let translationsEmpty = true;
   const filteredTranslations = {};
 
@@ -87,6 +87,26 @@ const filterTranslations = (allTranslations, idPrefix) => {
   }
 
   return translationsEmpty ? null : filteredTranslations;
+};
+
+/**
+ * @param {Record<string, Record<string, string>>} allTranslations
+ * @param {string} idFilter
+ * @returns {Record<string, string>}
+ */
+const filterTranslationsByID = (allTranslations, idFilter) => {
+  let stringsEmpty = true;
+  const result = {};
+
+  for (const [locale, strings] of Object.entries(allTranslations)) {
+    const translated = strings[idFilter];
+    if (translated) {
+      result[locale] = translated;
+      stringsEmpty = false;
+    }
+  }
+
+  return stringsEmpty ? null : result;
 };
 
 /**
@@ -176,7 +196,7 @@ class ExtensionFile extends BuildFile {
     const data = fs.readFileSync(this.sourcePath, "utf-8");
 
     if (this.mode !== 'development') {
-      const translations = filterTranslations(this.allTranslations, `${this.slug}@`);
+      const translations = filterTranslationsByPrefix(this.allTranslations, `${this.slug}@`);
       if (translations !== null) {
         return insertAfterCommentsBeforeCode(
           data,
@@ -364,7 +384,7 @@ class HomepageFile extends BuildFile {
 }
 
 class JSONMetadataFile extends BuildFile {
-  constructor(extensionFiles, extensionImages, featuredSlugs, withDocs, samples) {
+  constructor(extensionFiles, extensionImages, featuredSlugs, withDocs, samples, allTranslations) {
     super(null);
 
     /** @type {Record<string, ExtensionFile>} */
@@ -381,6 +401,9 @@ class JSONMetadataFile extends BuildFile {
 
     /** @type {Map<string, SampleFile[]>} */
     this.samples = samples;
+
+    /** @type {Record<string, Record<string, string>>} */
+    this.allTranslations = allTranslations;
   }
 
   getType() {
@@ -397,8 +420,21 @@ class JSONMetadataFile extends BuildFile {
 
       extension.slug = extensionSlug;
       extension.id = metadata.id;
+
+      // Compatibility fields
       extension.name = metadata.name;
       extension.description = metadata.description;
+
+      // New fields with translations
+      const nameTranslations = filterTranslationsByID(this.allTranslations, `${extensionSlug}@name`);
+      if (nameTranslations) {
+        extension.nameTranslations = nameTranslations;
+      }
+      const descriptionTranslations = filterTranslationsByID(this.allTranslations, `${extensionSlug}@description`);
+      if (descriptionTranslations) {
+        extension.descriptionTranslations = descriptionTranslations;
+      }
+
       if (image) {
         extension.image = image;
       }
@@ -422,7 +458,7 @@ class JSONMetadataFile extends BuildFile {
     const data = {
       extensions,
     };
-    return JSON.stringify(data);
+    return JSON.stringify(data, null, 2);
   }
 }
 
@@ -771,7 +807,8 @@ class Builder {
         extensionImages,
         featuredExtensionSlugs,
         extensionsWithDocs,
-        samples
+        samples,
+        translations['extension-metadata']
       );
 
     for (const [oldPath, newPath] of Object.entries(compatibilityAliases)) {
