@@ -15,8 +15,8 @@
     typeof webkitSpeechRecognition !== "undefined"
       ? window.webkitSpeechRecognition
       : typeof window.SpeechRecognition !== "undefined"
-      ? window.SpeechRecognition
-      : null;
+        ? window.SpeechRecognition
+        : null;
 
   let recognizedSpeech = "";
   let recording = false;

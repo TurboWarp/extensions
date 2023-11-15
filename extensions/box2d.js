@@ -2124,13 +2124,13 @@
         dX > 0
           ? (aabb.upperBound.x - this.p1.x) / dX
           : dX < 0
-          ? (aabb.lowerBound.x - this.p1.x) / dX
-          : Number.POSITIVE_INFINITY,
+            ? (aabb.lowerBound.x - this.p1.x) / dX
+            : Number.POSITIVE_INFINITY,
         dY > 0
           ? (aabb.upperBound.y - this.p1.y) / dY
           : dY < 0
-          ? (aabb.lowerBound.y - this.p1.y) / dY
-          : Number.POSITIVE_INFINITY
+            ? (aabb.lowerBound.y - this.p1.y) / dY
+            : Number.POSITIVE_INFINITY
       );
       this.p2.x = this.p1.x + dX * lambda;
       this.p2.y = this.p1.y + dY * lambda;
@@ -2142,13 +2142,13 @@
         dX > 0
           ? (aabb.upperBound.x - this.p2.x) / dX
           : dX < 0
-          ? (aabb.lowerBound.x - this.p2.x) / dX
-          : Number.POSITIVE_INFINITY,
+            ? (aabb.lowerBound.x - this.p2.x) / dX
+            : Number.POSITIVE_INFINITY,
         dY > 0
           ? (aabb.upperBound.y - this.p2.y) / dY
           : dY < 0
-          ? (aabb.lowerBound.y - this.p2.y) / dY
-          : Number.POSITIVE_INFINITY
+            ? (aabb.lowerBound.y - this.p2.y) / dY
+            : Number.POSITIVE_INFINITY
       );
       this.p1.x = this.p2.x + dX * lambda;
       this.p1.y = this.p2.y + dY * lambda;
