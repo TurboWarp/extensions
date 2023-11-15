@@ -446,11 +446,12 @@ class JSONMetadataFile extends BuildFile {
       extension.slug = extensionSlug;
       extension.id = metadata.id;
 
-      // Compatibility fields
+      // English fields
       extension.name = metadata.name;
       extension.description = metadata.description;
 
-      // New fields with translations
+      // For other languages, translations go here.
+      // This system is a bit silly to avoid backwards-incompatible JSON changes.
       const nameTranslations = filterTranslationsByID(
         this.allTranslations,
         `${extensionSlug}@name`
@@ -489,7 +490,7 @@ class JSONMetadataFile extends BuildFile {
     const data = {
       extensions,
     };
-    return JSON.stringify(data, null, 2);
+    return JSON.stringify(data);
   }
 }
 
