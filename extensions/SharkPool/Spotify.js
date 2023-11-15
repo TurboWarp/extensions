@@ -3,7 +3,7 @@
 // Description: Fetch Statistics and Information and Play Songs from Spotify
 // By: SharkPool
 
-// Version 1.0.0
+// Version 1.0.1
 
 (function (Scratch) {
   "use strict";
@@ -353,8 +353,7 @@
           default:
             regex = /<meta property="og:title" content="([^"]+)"\/>/;
             match = response.match(regex);
-            match = match.map(match => match.replace(/&quot;/g, "\""));
-            match = match.map(match => match.replace(/&#x27;/g, "'"));
+            match = this.replaceSpecial(match);
             return match && match[1] ? match[1] : "";
         }
       } catch (error) {
