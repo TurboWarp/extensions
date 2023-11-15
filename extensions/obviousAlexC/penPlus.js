@@ -479,10 +479,12 @@
 
   //?Link some stuff to the draw region
   //?Might be a better way but I've tried many different things and they didn't work.
+  let drawnFirst = false;
   renderer.oldEnterDrawRegion = renderer.enterDrawRegion;
   renderer.enterDrawRegion = (region) => {
     triFunctions.drawOnScreen();
     renderer.oldEnterDrawRegion(region);
+    drawnFirst = false;
   };
 
   //?Override pen Clear with pen+
@@ -615,6 +617,7 @@
       gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
 
       gl.useProgram(penPlusShaders.pen.program);
+      if (!drawnFirst) triFunctions.drawOnScreen();
     },
 
     drawTextTri: (curProgram, x1, y1, x2, y2, x3, y3, targetID, texture) => {
@@ -736,12 +739,14 @@
       gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
 
       gl.useProgram(penPlusShaders.pen.program);
+      if (!drawnFirst) triFunctions.drawOnScreen();
     },
 
     //? this is so I don't have to go through the hassle of replacing default scratch shaders
     //? many of curse words where exchanged between me and a pillow while writing this extension
     //? but I have previaled!
     drawOnScreen: () => {
+      drawnFirst = true;
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
       vertexBufferData = new Float32Array([
         -1, -1, 0, 1, 0, 1,
