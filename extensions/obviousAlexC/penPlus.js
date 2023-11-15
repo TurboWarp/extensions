@@ -182,27 +182,6 @@
       }
     });
 
-    //Penguinmod
-    vm.runtime.on("RUNTIME_STEP_START", () => {
-      let calcSize = renderer.useHighQualityRender
-        ? [canvas.width, canvas.height]
-        : renderer._nativeSize;
-      if (calcSize[0] != nativeSize[0] || calcSize[1] != nativeSize[1]) {
-        nativeSize = renderer.useHighQualityRender
-          ? [canvas.width, canvas.height]
-          : renderer._nativeSize;
-        updateCanvasSize();
-      }
-
-      if (resizeCall) {
-        nativeSize = renderer.useHighQualityRender
-          ? [canvas.width, canvas.height]
-          : renderer._nativeSize;
-        updateCanvasSize();
-        resizeCall = false;
-      }
-    });
-
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
 
