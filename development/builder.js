@@ -51,7 +51,7 @@ const recursiveReadDirectory = (directory) => {
 const mkdirp = (directory) => {
   try {
     fs.mkdirSync(directory, {
-      recursive: true
+      recursive: true,
     });
   } catch (e) {
     if (e.code !== "ENOENT") {
@@ -116,21 +116,24 @@ const filterTranslationsByID = (allTranslations, idFilter) => {
 const insertAfterCommentsBeforeCode = (oldCode, insertCode) => {
   let index = 0;
   while (true) {
-    if (oldCode.substring(index, index + 2) === '//') { // Line comment
-      const end = oldCode.indexOf('\n', index);
+    if (oldCode.substring(index, index + 2) === "//") {
+      // Line comment
+      const end = oldCode.indexOf("\n", index);
       if (end === -1) {
         // This file is only line comments
         index = oldCode.length;
         break;
       }
       index = end;
-    } else if (oldCode.substring(index, index + 2) === '/*') { // Block comment
-      const end = oldCode.indexOf('*/', index);
+    } else if (oldCode.substring(index, index + 2) === "/*") {
+      // Block comment
+      const end = oldCode.indexOf("*/", index);
       if (end === -1) {
-        throw new Error('Block comment never ends');
+        throw new Error("Block comment never ends");
       }
       index = end + 2;
-    } else if (/\s/.test(oldCode.charAt(index))) { // Whitespace
+    } else if (/\s/.test(oldCode.charAt(index))) {
+      // Whitespace
       index++;
     } else {
       break;
@@ -195,8 +198,11 @@ class ExtensionFile extends BuildFile {
   read() {
     const data = fs.readFileSync(this.sourcePath, "utf-8");
 
-    if (this.mode !== 'development') {
-      const translations = filterTranslationsByPrefix(this.allTranslations, `${this.slug}@`);
+    if (this.mode !== "development") {
+      const translations = filterTranslationsByPrefix(
+        this.allTranslations,
+        `${this.slug}@`
+      );
       if (translations !== null) {
         return insertAfterCommentsBeforeCode(
           data,
@@ -276,28 +282,40 @@ class ExtensionFile extends BuildFile {
     const metadataStrings = {
       [`${slug}@name`]: {
         string: metadata.name,
-        developer_comment: getMetadataDescription('Name')
+        developer_comment: getMetadataDescription("Name"),
       },
       [`${slug}@description`]: {
         string: metadata.description,
-        developer_comment: getMetadataDescription('Description')
-      }
+        developer_comment: getMetadataDescription("Description"),
+      },
     };
 
-    const parseTranslations = require('./parse-extension-translations');
+    const parseTranslations = require("./parse-extension-translations");
     const jsCode = fs.readFileSync(this.sourcePath, "utf-8");
     const unprefixedRuntimeStrings = parseTranslations(jsCode);
-    const runtimeStrings = Object.fromEntries(Object.entries(unprefixedRuntimeStrings).map(([key, value]) => [`${slug}@${key}`, value]));
+    const runtimeStrings = Object.fromEntries(
+      Object.entries(unprefixedRuntimeStrings).map(([key, value]) => [
+        `${slug}@${key}`,
+        value,
+      ])
+    );
 
     return {
-      'extension-metadata': metadataStrings,
-      'extension-runtime': runtimeStrings
+      "extension-metadata": metadataStrings,
+      "extension-runtime": runtimeStrings,
     };
   }
 }
 
 class HomepageFile extends BuildFile {
-  constructor(extensionFiles, extensionImages, featuredSlugs, withDocs, samples, mode) {
+  constructor(
+    extensionFiles,
+    extensionImages,
+    featuredSlugs,
+    withDocs,
+    samples,
+    mode
+  ) {
     super(pathUtil.join(__dirname, "homepage-template.ejs"));
 
     /** @type {Record<string, ExtensionFile>} */
@@ -384,7 +402,14 @@ class HomepageFile extends BuildFile {
 }
 
 class JSONMetadataFile extends BuildFile {
-  constructor(extensionFiles, extensionImages, featuredSlugs, withDocs, samples, allTranslations) {
+  constructor(
+    extensionFiles,
+    extensionImages,
+    featuredSlugs,
+    withDocs,
+    samples,
+    allTranslations
+  ) {
     super(null);
 
     /** @type {Record<string, ExtensionFile>} */
@@ -426,11 +451,17 @@ class JSONMetadataFile extends BuildFile {
       extension.description = metadata.description;
 
       // New fields with translations
-      const nameTranslations = filterTranslationsByID(this.allTranslations, `${extensionSlug}@name`);
+      const nameTranslations = filterTranslationsByID(
+        this.allTranslations,
+        `${extensionSlug}@name`
+      );
       if (nameTranslations) {
         extension.nameTranslations = nameTranslations;
       }
-      const descriptionTranslations = filterTranslationsByID(this.allTranslations, `${extensionSlug}@description`);
+      const descriptionTranslations = filterTranslationsByID(
+        this.allTranslations,
+        `${extensionSlug}@description`
+      );
       if (descriptionTranslations) {
         extension.descriptionTranslations = descriptionTranslations;
       }
@@ -629,7 +660,9 @@ class Build {
 
         for (const [key, value] of Object.entries(strings)) {
           if (allStrings[key]) {
-            throw new Error(`L10N collision: multiple instances of ${key} in group ${group}`);
+            throw new Error(
+              `L10N collision: multiple instances of ${key} in group ${group}`
+            );
           }
           allStrings[group][key] = value;
         }
@@ -680,10 +713,12 @@ class Builder {
   build() {
     const build = new Build(this.mode);
 
-    const featuredExtensionSlugs = JSON.parse(fs.readFileSync(
-      pathUtil.join(this.extensionsRoot, "extensions.json"),
-      "utf-8"
-    ));
+    const featuredExtensionSlugs = JSON.parse(
+      fs.readFileSync(
+        pathUtil.join(this.extensionsRoot, "extensions.json"),
+        "utf-8"
+      )
+    );
 
     /**
      * Look up by [group][locale][id]
@@ -693,11 +728,11 @@ class Builder {
     for (const [filename, absolutePath] of recursiveReadDirectory(
       this.translationsRoot
     )) {
-      if (!filename.endsWith('.json')) {
+      if (!filename.endsWith(".json")) {
         continue;
       }
-      const group = filename.split('.')[0];
-      const data = JSON.parse(fs.readFileSync(absolutePath, 'utf-8'));
+      const group = filename.split(".")[0];
+      const data = JSON.parse(fs.readFileSync(absolutePath, "utf-8"));
       translations[group] = data;
     }
 
@@ -715,7 +750,7 @@ class Builder {
         absolutePath,
         extensionSlug,
         featured,
-        translations['extension-runtime'],
+        translations["extension-runtime"],
         this.mode
       );
       extensionFiles[extensionSlug] = file;
@@ -808,7 +843,7 @@ class Builder {
         featuredExtensionSlugs,
         extensionsWithDocs,
         samples,
-        translations['extension-metadata']
+        translations["extension-metadata"]
       );
 
     for (const [oldPath, newPath] of Object.entries(compatibilityAliases)) {
@@ -847,7 +882,7 @@ class Builder {
           `${this.websiteRoot}/**/*`,
           `${this.docsRoot}/**/*`,
           `${this.samplesRoot}/**/*`,
-          `${this.translationsRoot}/**/*`
+          `${this.translationsRoot}/**/*`,
         ],
         {
           ignoreInitial: true,

@@ -1,6 +1,6 @@
-const espree = require('espree');
-const esquery = require('esquery');
-const parseMetadata = require('./parse-extension-metadata');
+const espree = require("espree");
+const esquery = require("esquery");
+const parseMetadata = require("./parse-extension-metadata");
 
 /**
  * @fileoverview Parses extension code to find calls to Scratch.translate() and statically
@@ -8,19 +8,19 @@ const parseMetadata = require('./parse-extension-metadata');
  */
 
 const evaluateAST = (node) => {
-  if (node.type == 'Literal') {
+  if (node.type == "Literal") {
     return node.value;
   }
 
-  if (node.type === 'ObjectExpression') {
+  if (node.type === "ObjectExpression") {
     const object = {};
-    for (const {key, value} of node.properties) {
+    for (const { key, value } of node.properties) {
       object[evaluateAST(key)] = evaluateAST(value);
     }
     return object;
   }
 
-  if (node.type === 'Identifier') {
+  if (node.type === "Identifier") {
     return node.name;
   }
 
@@ -54,9 +54,11 @@ const parseTranslations = (js) => {
   }
 
   const ast = espree.parse(js, {
-    ecmaVersion: 2022
+    ecmaVersion: 2022,
   });
-  const selector = esquery.parse('CallExpression[callee.object.name="Scratch"][callee.property.name="translate"]');
+  const selector = esquery.parse(
+    'CallExpression[callee.object.name="Scratch"][callee.property.name="translate"]'
+  );
   const matches = esquery.match(ast, selector);
 
   const result = {};
@@ -72,35 +74,42 @@ const parseTranslations = (js) => {
     let english;
     let description;
 
-    if (typeof evaluated === 'string') {
+    if (typeof evaluated === "string") {
       id = defaultIdForString(evaluated);
       english = evaluated;
       description = defaultDescription;
-    } else if (typeof evaluated === 'object' && evaluated !== null) {
+    } else if (typeof evaluated === "object" && evaluated !== null) {
       english = evaluated.default;
       id = evaluated.id || defaultIdForString(english);
 
-      description = [
-        defaultDescription,
-        evaluated.description
-      ].filter(i => i).join(' ');
+      description = [defaultDescription, evaluated.description]
+        .filter((i) => i)
+        .join(" ");
     } else {
-      throw new Error(`Not a valid argument for Scratch.translate(): ${evaluated}`);
+      throw new Error(
+        `Not a valid argument for Scratch.translate(): ${evaluated}`
+      );
     }
 
-    if (typeof id !== 'string') {
-      throw new Error(`Scratch.translate() passed a value for id that is not a string: ${id}`);
+    if (typeof id !== "string") {
+      throw new Error(
+        `Scratch.translate() passed a value for id that is not a string: ${id}`
+      );
     }
-    if (typeof english !== 'string') {
-      throw new Error(`Scratch.translate() passed a value for default that is not a string: ${english}`);
+    if (typeof english !== "string") {
+      throw new Error(
+        `Scratch.translate() passed a value for default that is not a string: ${english}`
+      );
     }
-    if (typeof description !== 'string') {
-      throw new Error(`Scratch.translate() passed a value for description that is not a string: ${description}`);
+    if (typeof description !== "string") {
+      throw new Error(
+        `Scratch.translate() passed a value for description that is not a string: ${description}`
+      );
     }
 
     result[id] = {
       string: english,
-      developer_comment: description
+      developer_comment: description,
     };
   }
 
