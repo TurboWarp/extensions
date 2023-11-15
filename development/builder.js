@@ -83,7 +83,7 @@ class BuildFile {
   }
 
   /**
-   * @returns {{group: string; strings: Record<string, TranslatableString>}|null}
+   * @returns {Record<string, Record<string, TranslatableString>>|null}
    */
   getStrings() {
     // no-op by default, to be overridden
@@ -163,18 +163,25 @@ class ExtensionFile extends BuildFile {
     const metadata = this.getMetadata();
     const slug = this.slug;
 
-    return {
-      group: 'extension-metadata',
-      strings: {
-        [`${slug}@name`]: {
-          string: metadata.name,
-          developer_comment: `Name of the '${metadata.name}' extension in the extension gallery.`
-        },
-        [`${slug}@description`]: {
-          string: metadata.description,
-          developer_comment: `Description of the '${metadata.name}' extension in the extension gallery.`
-        }
+    const metadataStrings = {
+      [`${slug}@name`]: {
+        string: metadata.name,
+        developer_comment: `Name of the '${metadata.name}' extension in the extension gallery.`
+      },
+      [`${slug}@description`]: {
+        string: metadata.description,
+        developer_comment: `Description of the '${metadata.name}' extension in the extension gallery.`
       }
+    };
+
+    const parseTranslations = require('./parse-extension-translations');
+    const jsCode = fs.readFileSync(this.sourcePath, "utf-8");
+    const unprefixedRuntimeStrings = parseTranslations(jsCode);
+    const runtimeStrings = Object.fromEntries(Object.entries(unprefixedRuntimeStrings).map(([key, value]) => [`${slug}@${key}`, value]));
+
+    return {
+      'extension-metadata': metadataStrings,
+      'extension-runtime': runtimeStrings
     };
   }
 }
@@ -483,10 +490,18 @@ class Build {
         continue;
       }
 
-      allStrings[fileStrings.group] = Object.assign(
-        allStrings[fileStrings.group] || {},
-        fileStrings.strings
-      );
+      for (const [group, strings] of Object.entries(fileStrings)) {
+        if (!allStrings[group]) {
+          allStrings[group] = {};
+        }
+
+        for (const [key, value] of Object.entries(strings)) {
+          if (allStrings[key]) {
+            throw new Error(`L10N collision: multiple instances of ${key} in group ${group}`);
+          }
+          allStrings[group][key] = value;
+        }
+      }
     }
 
     return allStrings;
