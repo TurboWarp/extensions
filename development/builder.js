@@ -3,7 +3,6 @@ const AdmZip = require("adm-zip");
 const pathUtil = require("path");
 const compatibilityAliases = require("./compatibility-aliases");
 const parseMetadata = require("./parse-extension-metadata");
-const featuredExtensionSlugs = require("../extensions/extensions.json");
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -194,7 +193,7 @@ class ExtensionFile extends BuildFile {
 }
 
 class HomepageFile extends BuildFile {
-  constructor(extensionFiles, extensionImages, withDocs, samples, mode) {
+  constructor(extensionFiles, extensionImages, featuredSlugs, withDocs, samples, mode) {
     super(pathUtil.join(__dirname, "homepage-template.ejs"));
 
     /** @type {Record<string, ExtensionFile>} */
@@ -202,6 +201,9 @@ class HomepageFile extends BuildFile {
 
     /** @type {Record<string, string>} */
     this.extensionImages = extensionImages;
+
+    /** @type {string[]} */
+    this.featuredSlugs = featuredSlugs;
 
     /** @type {Map<string, SampleFile[]>} */
     this.withDocs = withDocs;
@@ -254,7 +256,7 @@ class HomepageFile extends BuildFile {
       .map((i) => i[0]);
 
     const extensionMetadata = Object.fromEntries(
-      featuredExtensionSlugs.map((slug) => [
+      this.featuredSlugs.map((slug) => [
         slug,
         {
           ...this.extensionFiles[slug].getMetadata(),
@@ -278,7 +280,7 @@ class HomepageFile extends BuildFile {
 }
 
 class JSONMetadataFile extends BuildFile {
-  constructor(extensionFiles, extensionImages, withDocs, samples) {
+  constructor(extensionFiles, extensionImages, featuredSlugs, withDocs, samples) {
     super(null);
 
     /** @type {Record<string, ExtensionFile>} */
@@ -286,6 +288,9 @@ class JSONMetadataFile extends BuildFile {
 
     /** @type {Record<string, string>} */
     this.extensionImages = extensionImages;
+
+    /** @type {string[]} */
+    this.featuredSlugs = featuredSlugs;
 
     /** @type {Set<string>} */
     this.withDocs = withDocs;
@@ -300,7 +305,7 @@ class JSONMetadataFile extends BuildFile {
 
   read() {
     const extensions = [];
-    for (const extensionSlug of featuredExtensionSlugs) {
+    for (const extensionSlug of this.featuredSlugs) {
       const extension = {};
       const file = this.extensionFiles[extensionSlug];
       const metadata = file.getMetadata();
@@ -554,6 +559,11 @@ class Builder {
   build() {
     const build = new Build(this.mode);
 
+    const featuredExtensionSlugs = JSON.parse(fs.readFileSync(
+      pathUtil.join(this.extensionsRoot, "extensions.json"),
+      "utf-8"
+    ));
+
     /** @type {Record<string, ExtensionFile>} */
     const extensionFiles = {};
     for (const [filename, absolutePath] of recursiveReadDirectory(
@@ -640,6 +650,7 @@ class Builder {
       build.files["/index.html"] = new HomepageFile(
         extensionFiles,
         extensionImages,
+        featuredExtensionSlugs,
         extensionsWithDocs,
         samples,
         this.mode
@@ -651,6 +662,7 @@ class Builder {
       new JSONMetadataFile(
         extensionFiles,
         extensionImages,
+        featuredExtensionSlugs,
         extensionsWithDocs,
         samples
       );
