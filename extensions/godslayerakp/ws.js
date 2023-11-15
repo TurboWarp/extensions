@@ -281,7 +281,7 @@
           (allowed) =>
             new Promise((resolve) => {
               if (!allowed) {
-                throw new Error('Not allowed');
+                throw new Error("Not allowed");
               }
 
               if (instance.destroyed) {
