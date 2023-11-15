@@ -10,6 +10,12 @@ const featuredExtensionSlugs = require("../extensions/extensions.json");
  */
 
 /**
+ * @typedef TranslatableString
+ * @property {string} string The English version of the string
+ * @property {string} developer_comment Helper text to help translators
+ */
+
+/**
  * Recursively read a directory.
  * @param {string} directory
  * @returns {Array<[string, string]>} List of tuples [name, absolutePath].
@@ -39,6 +45,22 @@ const recursiveReadDirectory = (directory) => {
   return result;
 };
 
+/**
+ * Synchronous create a directory and any parents. Does nothing if the folder already exists.
+ * @param {string} directory
+ */
+const mkdirp = (directory) => {
+  try {
+    fs.mkdirSync(directory, {
+      recursive: true
+    });
+  } catch (e) {
+    if (e.code !== "ENOENT") {
+      throw e;
+    }
+  }
+};
+
 class BuildFile {
   constructor(source) {
     this.sourcePath = source;
@@ -59,11 +81,27 @@ class BuildFile {
   validate() {
     // no-op by default
   }
+
+  /**
+   * @returns {{group: string; strings: Record<string, TranslatableString>}|null}
+   */
+  getStrings() {
+    // no-op by default, to be overridden
+    return null;
+  }
 }
 
 class ExtensionFile extends BuildFile {
-  constructor(absolutePath, featured) {
+  /**
+   * @param {string} absolutePath Full path to the .js file, eg. /home/.../extensions/fetch.js
+   * @param {string} slug Just the extension ID from the path, eg. fetch
+   * @param {boolean} featured true if the extension is the homepage
+   */
+  constructor(absolutePath, slug, featured) {
     super(absolutePath);
+    /** @type {string} */
+    this.slug = slug;
+    /** @type {boolean} */
     this.featured = featured;
   }
 
@@ -115,6 +153,29 @@ class ExtensionFile extends BuildFile {
         );
       }
     }
+  }
+
+  getStrings() {
+    if (!this.featured) {
+      return null;
+    }
+
+    const metadata = this.getMetadata();
+    const slug = this.slug;
+
+    return {
+      group: 'extension-metadata',
+      strings: {
+        [`${slug}@name`]: {
+          string: metadata.name,
+          developer_comment: `Name of the '${metadata.name}' extension in the extension gallery.`
+        },
+        [`${slug}@description`]: {
+          string: metadata.description,
+          developer_comment: `Description of the '${metadata.name}' extension in the extension gallery.`
+        }
+      }
+    };
   }
 }
 
@@ -385,6 +446,7 @@ class SampleFile extends BuildFile {
 
 class Build {
   constructor() {
+    /** @type {Record<string, BuildFile>} */
     this.files = {};
   }
 
@@ -398,15 +460,7 @@ class Build {
   }
 
   export(root) {
-    try {
-      fs.rmSync(root, {
-        recursive: true,
-      });
-    } catch (e) {
-      if (e.code !== "ENOENT") {
-        throw e;
-      }
-    }
+    mkdirp(root);
 
     for (const [relativePath, file] of Object.entries(this.files)) {
       const directoryName = pathUtil.dirname(relativePath);
@@ -414,6 +468,40 @@ class Build {
         recursive: true,
       });
       fs.writeFileSync(pathUtil.join(root, relativePath), file.read());
+    }
+  }
+
+  /**
+   * @returns {Record<string, Record<string, TranslatableString>>}
+   */
+  generateL10N() {
+    const allStrings = {};
+
+    for (const file of Object.values(this.files)) {
+      const fileStrings = file.getStrings();
+      if (!fileStrings) {
+        continue;
+      }
+
+      allStrings[fileStrings.group] = Object.assign(
+        allStrings[fileStrings.group] || {},
+        fileStrings.strings
+      );
+    }
+
+    return allStrings;
+  }
+
+  /**
+   * @param {string} root
+   */
+  exportL10N(root) {
+    mkdirp(root);
+
+    const groups = this.generateL10N();
+    for (const [name, strings] of Object.entries(groups)) {
+      const filename = pathUtil.join(root, `${name}.json`);
+      fs.writeFileSync(filename, JSON.stringify(strings, null, 2));
     }
   }
 }
@@ -454,7 +542,7 @@ class Builder {
       }
       const extensionSlug = filename.split(".")[0];
       const featured = featuredExtensionSlugs.includes(extensionSlug);
-      const file = new ExtensionFile(absolutePath, featured);
+      const file = new ExtensionFile(absolutePath, extensionSlug, featured);
       extensionFiles[extensionSlug] = file;
       build.files[`/${filename}`] = file;
     }
