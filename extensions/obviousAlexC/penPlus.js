@@ -98,12 +98,14 @@
       depthBufferTexture,
       0
     );
-
     gl.enable(gl.DEPTH_TEST);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
 
+    let resizeCall = false;
+
     const updateCanvasSize = () => {
+      console.log("cS changed");
       nativeSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
@@ -156,8 +158,10 @@
     window.addEventListener("resize", updateCanvasSize);
     vm.runtime.on("STAGE_SIZE_CHANGED", () => {
       updateCanvasSize();
+      resizeCall = true;
     });
 
+    //Turbowarp
     vm.runtime.on("BEFORE_EXECUTE", () => {
       let calcSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
@@ -167,6 +171,35 @@
           ? [canvas.width, canvas.height]
           : renderer._nativeSize;
         updateCanvasSize();
+      }
+
+      if (resizeCall) {
+        nativeSize = renderer.useHighQualityRender
+          ? [canvas.width, canvas.height]
+          : renderer._nativeSize;
+        updateCanvasSize();
+        resizeCall = false;
+      }
+    });
+
+    //Penguinmod
+    vm.runtime.on("RUNTIME_STEP_START", () => {
+      let calcSize = renderer.useHighQualityRender
+        ? [canvas.width, canvas.height]
+        : renderer._nativeSize;
+      if (calcSize[0] != nativeSize[0] || calcSize[1] != nativeSize[1]) {
+        nativeSize = renderer.useHighQualityRender
+          ? [canvas.width, canvas.height]
+          : renderer._nativeSize;
+        updateCanvasSize();
+      }
+
+      if (resizeCall) {
+        nativeSize = renderer.useHighQualityRender
+          ? [canvas.width, canvas.height]
+          : renderer._nativeSize;
+        updateCanvasSize();
+        resizeCall = false;
       }
     });
 
@@ -300,7 +333,7 @@
                 
                 void main()
                 {
-                  gl_FragColor = texture2D(u_drawTex, v_texCoord);
+                  gl_FragColor = vec4(v_texCoord,1,1) * texture2D(u_drawTex, v_texCoord);
                   gl_FragColor.rgb *= gl_FragColor.a;
                 }
             `,
@@ -444,6 +477,14 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
   }
 
+  //?Link some stuff to the draw region
+  //?Might be a better way but I've tried many different things and they didn't work.
+  renderer.oldEnterDrawRegion = renderer.enterDrawRegion;
+  renderer.enterDrawRegion = (region) => {
+    triFunctions.drawOnScreen();
+    renderer.oldEnterDrawRegion(region);
+  };
+
   //?Override pen Clear with pen+
   renderer.penClear = (penSkinID) => {
     const lastCC = gl.getParameter(gl.COLOR_CLEAR_VALUE);
@@ -480,8 +521,6 @@
       lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
       gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-
-      gl.clear(gl.COLOR_BUFFER_BIT);
       //? get triangle attributes for current sprite.
       const triAttribs = triangleAttributesOfAllSprites[targetID];
 
@@ -574,7 +613,6 @@
       //? Hacky fix but it works.
 
       gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
-      triFunctions.drawOnScreen();
 
       gl.useProgram(penPlusShaders.pen.program);
     },
@@ -583,8 +621,6 @@
       lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
       gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-
-      gl.clear(gl.COLOR_BUFFER_BIT);
       //? get triangle attributes for current sprite.
       const triAttribs = triangleAttributesOfAllSprites[targetID];
 
@@ -698,7 +734,6 @@
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 
       gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
-      triFunctions.drawOnScreen();
 
       gl.useProgram(penPlusShaders.pen.program);
     },
@@ -707,6 +742,7 @@
     //? many of curse words where exchanged between me and a pillow while writing this extension
     //? but I have previaled!
     drawOnScreen: () => {
+      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
       vertexBufferData = new Float32Array([
         -1, -1, 0, 1, 0, 1,
 
@@ -753,6 +789,12 @@
       gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
 
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+      lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
+      gl.useProgram(penPlusShaders.pen.program);
     },
 
     setValueAccordingToCaseTriangle: (
