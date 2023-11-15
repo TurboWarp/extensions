@@ -333,7 +333,7 @@
                 
                 void main()
                 {
-                  gl_FragColor = vec4(v_texCoord,1,1) * texture2D(u_drawTex, v_texCoord);
+                  gl_FragColor = texture2D(u_drawTex, v_texCoord);
                   gl_FragColor.rgb *= gl_FragColor.a;
                 }
             `,
