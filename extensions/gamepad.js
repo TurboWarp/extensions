@@ -79,12 +79,12 @@
     getInfo() {
       return {
         id: "Gamepad",
-        name: "Gamepad",
+        name: Scratch.translate("Gamepad"),
         blocks: [
           {
             opcode: "gamepadConnected",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "gamepad [pad] connected?",
+            text: Scratch.translate("gamepad [pad] connected?"),
             arguments: {
               pad: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -96,7 +96,7 @@
           {
             opcode: "buttonDown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "button [b] on pad [i] pressed?",
+            text: Scratch.translate("button [b] on pad [i] pressed?"),
             arguments: {
               b: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -113,7 +113,7 @@
           {
             opcode: "buttonValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: "value of button [b] on pad [i]",
+            text: Scratch.translate("value of button [b] on pad [i]"),
             arguments: {
               b: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -130,7 +130,7 @@
           {
             opcode: "axisValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: "value of axis [b] on pad [i]",
+            text: Scratch.translate("value of axis [b] on pad [i]"),
             arguments: {
               b: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -150,7 +150,7 @@
           {
             opcode: "axisDirection",
             blockType: Scratch.BlockType.REPORTER,
-            text: "direction of axes [axis] on pad [pad]",
+            text: Scratch.translate("direction of axes [axis] on pad [pad]"),
             arguments: {
               axis: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -167,7 +167,7 @@
           {
             opcode: "axisMagnitude",
             blockType: Scratch.BlockType.REPORTER,
-            text: "magnitude of axes [axis] on pad [pad]",
+            text: Scratch.translate("magnitude of axes [axis] on pad [pad]"),
             arguments: {
               axis: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -186,7 +186,7 @@
           {
             opcode: 'buttonPressedReleased',
             blockType: Scratch.BlockType.EVENT,
-            text: 'button [b] [pr] of pad [i]',
+            text: Scratch.translate('button [b] [pr] of pad [i]'),
             arguments: {
               b: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -208,7 +208,7 @@
           {
             opcode: 'axisMoved',
             blockType: Scratch.BlockType.EVENT,
-            text: 'axis [b] of pad [i] moved',
+            text: Scratch.translate('axis [b] of pad [i] moved'),
             arguments: {
               b: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -228,7 +228,9 @@
           {
             opcode: "rumble",
             blockType: Scratch.BlockType.COMMAND,
-            text: "rumble strong [s] and weak [w] for [t] sec. on pad [i]",
+            text: Scratch.translate(
+              "rumble strong [s] and weak [w] for [t] sec. on pad [i]"
+            ),
             arguments: {
               s: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -255,7 +257,7 @@
             acceptReporters: true,
             items: [
               {
-                text: "any",
+                text: Scratch.translate("any"),
                 value: "any",
               },
               {
@@ -281,7 +283,7 @@
             items: [
               // Based on an Xbox controller
               {
-                text: "any",
+                text: Scratch.translate("any"),
                 value: "any",
               },
               {
@@ -301,51 +303,51 @@
                 value: "4",
               },
               {
-                text: "Left bumper (5)",
+                text: Scratch.translate("Left bumper (5)"),
                 value: "5",
               },
               {
-                text: "Right bumper (6)",
+                text: Scratch.translate("Right bumper (6)"),
                 value: "6",
               },
               {
-                text: "Left trigger (7)",
+                text: Scratch.translate("Left trigger (7)"),
                 value: "7",
               },
               {
-                text: "Right trigger (8)",
+                text: Scratch.translate("Right trigger (8)"),
                 value: "8",
               },
               {
-                text: "Select/View (9)",
+                text: Scratch.translate("Select/View (9)"),
                 value: "9",
               },
               {
-                text: "Start/Menu (10)",
+                text: Scratch.translate("Start/Menu (10)"),
                 value: "10",
               },
               {
-                text: "Left stick (11)",
+                text: Scratch.translate("Left stick (11)"),
                 value: "11",
               },
               {
-                text: "Right stick (12)",
+                text: Scratch.translate("Right stick (12)"),
                 value: "12",
               },
               {
-                text: "D-pad up (13)",
+                text: Scratch.translate("D-pad up (13)"),
                 value: "13",
               },
               {
-                text: "D-pad down (14)",
+                text: Scratch.translate("D-pad down (14)"),
                 value: "14",
               },
               {
-                text: "D-pad left (15)",
+                text: Scratch.translate("D-pad left (15)"),
                 value: "15",
               },
               {
-                text: "D-pad right (16)",
+                text: Scratch.translate("D-pad right (16)"),
                 value: "16",
               },
             ],
@@ -355,19 +357,19 @@
             items: [
               // Based on an Xbox controller
               {
-                text: "Left stick horizontal (1)",
+                text: Scratch.translate("Left stick horizontal (1)"),
                 value: "1",
               },
               {
-                text: "Left stick vertical (2)",
+                text: Scratch.translate("Left stick vertical (2)"),
                 value: "2",
               },
               {
-                text: "Right stick horizontal (3)",
+                text: Scratch.translate("Right stick horizontal (3)"),
                 value: "3",
               },
               {
-                text: "Right stick vertical (4)",
+                text: Scratch.translate("Right stick vertical (4)"),
                 value: "4",
               },
             ],
@@ -377,11 +379,11 @@
             items: [
               // Based on an Xbox controller
               {
-                text: "Left stick (1 & 2)",
+                text: Scratch.translate("Left stick (1 & 2)"),
                 value: "1",
               },
               {
-                text: "Right stick (3 & 4)",
+                text: Scratch.translate("Right stick (3 & 4)"),
                 value: "3",
               },
             ],
@@ -389,11 +391,11 @@
           /*
           pressReleaseMenu: [
             {
-              text: 'press',
+              text: Scratch.translate('press'),
               value: 1
             },
             {
-              text: 'release',
+              text: Scratch.translate('release'),
               value: 0
             }
           ],

@@ -68,8 +68,8 @@ const parseTranslations = (js) => {
   const result = {};
   for (const match of matches) {
     const args = match.arguments;
-    if (args.length !== 1) {
-      throw new Error(`Scratch.translate() must have exactly 1 argument`);
+    if (args.length === 0) {
+      throw new Error(`Scratch.translate() needs at least 1 argument`);
     }
 
     const evaluated = evaluateAST(args[0]);
