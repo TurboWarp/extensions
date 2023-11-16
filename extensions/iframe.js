@@ -263,7 +263,7 @@
               // The getter blocks will return English regardless of translating these
               "true",
               "false",
-            ]
+            ],
           },
           resizeMenu: {
             acceptReporters: true,
@@ -274,9 +274,9 @@
               },
               {
                 text: Scratch.translate("viewport"),
-                value: "viewport"
-              }
-            ]
+                value: "viewport",
+              },
+            ],
           },
         },
       };

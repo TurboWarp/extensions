@@ -654,7 +654,9 @@ class Build {
         fileStrings = file.getStrings();
       } catch (error) {
         console.error(error);
-        throw new Error(`Error getting translations from ${filePath}: ${error}, see above`);
+        throw new Error(
+          `Error getting translations from ${filePath}: ${error}, see above`
+        );
       }
       if (!fileStrings) {
         continue;

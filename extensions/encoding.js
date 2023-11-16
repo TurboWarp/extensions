@@ -475,7 +475,9 @@
           {
             opcode: "Conversioncodes",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Convert the character [string] to [CodeList]"),
+            text: Scratch.translate(
+              "Convert the character [string] to [CodeList]"
+            ),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -491,7 +493,9 @@
           {
             opcode: "Restorecode",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[string] corresponding to the [CodeList] character"),
+            text: Scratch.translate(
+              "[string] corresponding to the [CodeList] character"
+            ),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -510,7 +514,9 @@
           {
             opcode: "Randomstrings",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Randomly generated [position] character string"),
+            text: Scratch.translate(
+              "Randomly generated [position] character string"
+            ),
             arguments: {
               position: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -521,7 +527,9 @@
           {
             opcode: "Fontgenerationstring",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Use [wordbank] to generate a random [position] character string"),
+            text: Scratch.translate(
+              "Use [wordbank] to generate a random [position] character string"
+            ),
             arguments: {
               wordbank: {
                 type: Scratch.ArgumentType.STRING,

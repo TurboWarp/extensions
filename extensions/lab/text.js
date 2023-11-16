@@ -883,17 +883,17 @@
             items: [
               {
                 text: Scratch.translate("type"),
-                value: "type"
+                value: "type",
               },
               {
                 text: Scratch.translate("rainbow"),
-                value: "rainbow"
+                value: "rainbow",
               },
               {
                 text: Scratch.translate("zoom"),
-                value: "zoom"
-              }
-            ]
+                value: "zoom",
+              },
+            ],
           },
           font: {
             acceptReporters: false,
@@ -908,13 +908,13 @@
               },
               {
                 text: Scratch.translate("center"),
-                value: "center"
+                value: "center",
               },
               {
                 text: Scratch.translate("right"),
-                value: "right"
-              }
-            ]
+                value: "right",
+              },
+            ],
           },
           attribute: {
             acceptReporters: false,
@@ -926,16 +926,16 @@
             items: [
               {
                 text: Scratch.translate("type"),
-                value: "type"
+                value: "type",
               },
               {
                 text: Scratch.translate("rainbow"),
-                value: "rainbow"
+                value: "rainbow",
               },
               {
                 text: Scratch.translate("zoom"),
-                value: "zoom"
-              }
+                value: "zoom",
+              },
             ],
           },
           twAnimateDuration: {
@@ -943,12 +943,12 @@
             items: [
               {
                 text: Scratch.translate("rainbow"),
-                value: "rainbow"
+                value: "rainbow",
               },
               {
                 text: Scratch.translate("zoom"),
-                value: "zoom"
-              }
+                value: "zoom",
+              },
             ],
           },
           twAlign: {
@@ -960,13 +960,13 @@
               },
               {
                 text: Scratch.translate("center"),
-                value: "center"
+                value: "center",
               },
               {
                 text: Scratch.translate("right"),
-                value: "right"
-              }
-            ]
+                value: "right",
+              },
+            ],
           },
         },
       };
@@ -1115,8 +1115,9 @@
 
     disableCompatibilityMode() {
       const popup = Scratch.translate({
-        id: 'disableCompatibilityMode',
-        default: "This will enable new blocks and features that WILL NOT WORK in the offical Scratch Lab.\n\nDo you wish to continue?"
+        id: "disableCompatibilityMode",
+        default:
+          "This will enable new blocks and features that WILL NOT WORK in the offical Scratch Lab.\n\nDo you wish to continue?",
       });
       if (confirm(popup)) {
         compatibilityMode = false;

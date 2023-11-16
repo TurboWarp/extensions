@@ -144,14 +144,14 @@
    * @param {string} size eg. "48x84"
    * @returns {string}
    */
-  const formatUnreliableSize = (size) => Scratch.translate(
-    {
-      default: "{size} (unreliable)",
-      description:
-        "[size] is replaced with a size in pixels such as '48x48'",
-    },
-    { size }
-  );
+  const formatUnreliableSize = (size) =>
+    Scratch.translate(
+      {
+        default: "{size} (unreliable)",
+        description: "[size] is replaced with a size in pixels such as '48x48'",
+      },
+      { size }
+    );
 
   const cursors = [
     "default",
@@ -272,7 +272,7 @@
               { text: "12x12", value: "12x12" },
               { text: "16x16", value: "16x16" },
               { text: "32x32", value: "32x32" },
-              { text: formatUnreliableSize("48x48"), value: "48x48", },
+              { text: formatUnreliableSize("48x48"), value: "48x48" },
               { text: formatUnreliableSize("64x64"), value: "64x64" },
               { text: formatUnreliableSize("128x128"), value: "128x128" },
             ],

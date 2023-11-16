@@ -60,9 +60,9 @@
               },
               {
                 text: Scratch.translate("dark"),
-                value: "dark"
-              }
-            ]
+                value: "dark",
+              },
+            ],
           },
         },
       };

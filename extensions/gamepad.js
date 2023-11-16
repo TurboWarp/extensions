@@ -228,7 +228,9 @@
           {
             opcode: "rumble",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("rumble strong [s] and weak [w] for [t] sec. on pad [i]"),
+            text: Scratch.translate(
+              "rumble strong [s] and weak [w] for [t] sec. on pad [i]"
+            ),
             arguments: {
               s: {
                 type: Scratch.ArgumentType.NUMBER,

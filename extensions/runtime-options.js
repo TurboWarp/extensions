@@ -101,7 +101,7 @@
             opcode: "getDimension",
             text: Scratch.translate({
               default: "stage [dimension]",
-              description: "[dimension] is a dropdown of width and height"
+              description: "[dimension] is a dropdown of width and height",
             }),
             blockType: Scratch.BlockType.REPORTER,
             arguments: {
@@ -114,7 +114,9 @@
           },
           {
             opcode: "setDimensions",
-            text: Scratch.translate("set stage size width: [width] height: [height]"),
+            text: Scratch.translate(
+              "set stage size width: [width] height: [height]"
+            ),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               width: {
@@ -199,7 +201,7 @@
             items: [
               {
                 text: Scratch.translate("default ({n})", {
-                  n: '300'
+                  n: "300",
                 }),
                 value: "300",
               },

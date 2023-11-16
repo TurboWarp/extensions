@@ -171,12 +171,16 @@
 
       const subtitle = document.createElement("div");
       const formattedAccept = accept || Scratch.translate("any");
-      subtitle.textContent = Scratch.translate({
-        default: 'Accepted formats: {formats}',
-        description: '[formats] is replaced with a comma-separated list of file types eg: .txt, .mp3, .png or the word any'
-      }, {
-        formats: formattedAccept
-      });
+      subtitle.textContent = Scratch.translate(
+        {
+          default: "Accepted formats: {formats}",
+          description:
+            "[formats] is replaced with a comma-separated list of file types eg: .txt, .mp3, .png or the word any",
+        },
+        {
+          formats: formattedAccept,
+        }
+      );
       modal.appendChild(subtitle);
 
       // To avoid the script getting stalled forever, if cancel isn't supported, we'll just forcibly
