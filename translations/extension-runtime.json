@@ -1,4 +1,21 @@
 {
+    "ca": {
+        "files@_Select or drop file": "Selecciona o deixa anar el fitxer",
+        "runtime-options@_Runtime Options": "Opcions d'execució"
+    },
+    "cs": {
+        "files@_Select or drop file": "Vyberte nebo přetáhněte soubor",
+        "runtime-options@_Runtime Options": "Nastavení běhu"
+    },
+    "de": {
+        "battery@_Battery": "Batterie",
+        "clipboard@_Clipboard": "Zwischenablage",
+        "files@_Files": "Dateien",
+        "files@_Select or drop file": "Datei auswählen oder ziehen",
+        "lab/text@_Animated Text": "Animierter Text",
+        "runtime-options@_Runtime Options": "Laufzeit-Optionen",
+        "sound@_Sound": "Klänge"
+    },
     "es": {
         "0832/rxFS2@del": "Eliminar [STR]",
         "0832/rxFS2@folder": "Fijar [STR] a [STR2]",
@@ -10,7 +27,17 @@
         "NOname-awa/graphics2d@area": "área",
         "NOname-awa/graphics2d@diameter": "diámetro",
         "NOname-awa/graphics2d@name": "Gráficos 2D",
-        "NOname-awa/graphics2d@radius": "radio"
+        "NOname-awa/graphics2d@radius": "radio",
+        "files@_Select or drop file": "Selecciona o suelta aquí un archivo",
+        "runtime-options@_Runtime Options": "Opciones de Runtime"
+    },
+    "fr": {
+        "files@_Select or drop file": "Sélectionne ou dépose un fichier",
+        "runtime-options@_Runtime Options": "Options d'exécution"
+    },
+    "hu": {
+        "files@_Select or drop file": "Válasszon ki, vagy húzzon ide egy fájlt",
+        "runtime-options@_Runtime Options": "Lefutási Opciók"
     },
     "it": {
         "0832/rxFS2@clean": "Svuota il file system",
@@ -37,6 +64,16 @@
         "NOname-awa/graphics2d@round": "[CS] del cerchio [rd][a]",
         "NOname-awa/graphics2d@triangle": "[CS] del triangolo ([x1],[y1]) ([x2],[y2]) ([x3],[y3])",
         "NOname-awa/graphics2d@triangle_s": "area del triangolo [s1] [s2] [s3]",
+        "battery@_Battery": "Batteria",
+        "clipboard@_Clipboard": "Appunti",
+        "clouddata-ping@_Ping Cloud Data": "Ping Dati Cloud",
+        "cursor@_Mouse Cursor": "Puntatore Mouse",
+        "encoding@_Encoding": "Codifica",
+        "files@_Files": "File",
+        "files@_Select or drop file": "Seleziona o trascina qui un file",
+        "lab/text@_Animated Text": "Testo Animato",
+        "local-storage@_Local Storage": "Memoria Locale",
+        "pointerlock@_Pointerlock": "Blocco Puntatore",
         "qxsck/data-analysis@average": "media di [NUMBERS]",
         "qxsck/data-analysis@maximum": "massimo di [NUMBERS]",
         "qxsck/data-analysis@median": "mediana di [NUMBERS]",
@@ -59,7 +96,61 @@
         "qxsck/var-and-list@replaceOfList": "sostituisci elemento [INDEX] di [LIST] con [VALUE]",
         "qxsck/var-and-list@seriListsToJson": "converti in json tutte le liste che iniziano con [START] ",
         "qxsck/var-and-list@seriVarsToJson": "converti in json tutte le variabili che iniziano con [START]",
-        "qxsck/var-and-list@setVar": "porta il valore di [VAR] a [VALUE]"
+        "qxsck/var-and-list@setVar": "porta il valore di [VAR] a [VALUE]",
+        "runtime-options@_Runtime Options": "Opzioni Esecuzione",
+        "sound@_Sound": "Suoni",
+        "stretch@_Stretch": "Stira"
+    },
+    "ja": {
+        "files@_Select or drop file": "選ぶかファイルをドロップする",
+        "runtime-options@_Runtime Options": "ランタイムのオプション"
+    },
+    "ja-hira": {
+        "runtime-options@_Runtime Options": "ランタイムのオプション"
+    },
+    "ko": {
+        "files@_Select or drop file": "선택하거나 끌어다 놓기",
+        "runtime-options@_Runtime Options": "실행 설정"
+    },
+    "lt": {
+        "files@_Select or drop file": "Pasirinkite arba numeskite failą",
+        "runtime-options@_Runtime Options": "Paleidimo laiko parinktys"
+    },
+    "nl": {
+        "files@_Select or drop file": "Bestand selecteren of neerzetten",
+        "runtime-options@_Runtime Options": "Looptijdopties"
+    },
+    "pl": {
+        "files@_Select or drop file": "Wybierz lub upuść plik",
+        "runtime-options@_Runtime Options": "Opcje Uruchamiania"
+    },
+    "pt": {
+        "files@_Select or drop file": "Selecione ou arraste um arquivo",
+        "runtime-options@_Runtime Options": "Opções de Execução"
+    },
+    "pt-br": {
+        "files@_Select or drop file": "Selecione ou arraste um arquivo",
+        "runtime-options@_Runtime Options": "Opções de Execução"
+    },
+    "ru": {
+        "files@_Select or drop file": "Выберите или \"закиньте\" файл",
+        "runtime-options@_Runtime Options": "Опции Выполнения"
+    },
+    "sl": {
+        "files@_Select or drop file": "Izberite ali povlecite datoteko",
+        "runtime-options@_Runtime Options": "Možnosti izvajanja"
+    },
+    "sv": {
+        "files@_Select or drop file": "Välj eller släpp fil",
+        "runtime-options@_Runtime Options": "Körtidsalternativ"
+    },
+    "tr": {
+        "files@_Select or drop file": "Dosyayı şeçin yada buraya bırakın",
+        "runtime-options@_Runtime Options": "Çalışma Zamanı Seçenekleri"
+    },
+    "uk": {
+        "files@_Select or drop file": "Виберіть або \"закиньте\" файл",
+        "runtime-options@_Runtime Options": "Параметри виконання"
     },
     "zh-cn": {
         "0832/rxFS2@clean": "清空文件系统",
@@ -83,8 +174,20 @@
         "NOname-awa/graphics2d@round": "[rd] 为 [a] 的圆的 [CS]",
         "NOname-awa/graphics2d@triangle": "三角形（[x1],[y1]）（[x2],[y2]）（[x3],[y3]）的 [CS]",
         "NOname-awa/graphics2d@triangle_s": "三角形 [s1] [s2] [s3] 的面积",
+        "clipboard@_Clipboard": "剪切板",
+        "encoding@_Encoding": "编码",
+        "files@_Files": "文件",
+        "files@_Select or drop file": "选择或拖入文件",
+        "lab/text@_Animated Text": "动画文字",
         "qxsck/data-analysis@name": "数据分析",
         "qxsck/var-and-list@copyList": "复制 [LIST1] 到 [LIST2]",
-        "qxsck/var-and-list@name": "变量与列表"
+        "qxsck/var-and-list@name": "变量与列表",
+        "runtime-options@_Runtime Options": "运行选项",
+        "sound@_Sound": "声音",
+        "stretch@_Stretch": "伸缩"
+    },
+    "zh-tw": {
+        "files@_Select or drop file": "選擇或放入檔案",
+        "runtime-options@_Runtime Options": "運行選項"
     }
 }
