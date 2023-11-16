@@ -198,7 +198,7 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("default ([n])", {
+                text: Scratch.translate("default ({n})", {
                   n: '300'
                 }),
                 value: "300",

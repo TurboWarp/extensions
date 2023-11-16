@@ -146,7 +146,7 @@
    */
   const formatUnreliableSize = (size) => Scratch.translate(
     {
-      default: "[size] (unreliable)",
+      default: "{size} (unreliable)",
       description:
         "[size] is replaced with a size in pixels such as '48x48'",
     },
