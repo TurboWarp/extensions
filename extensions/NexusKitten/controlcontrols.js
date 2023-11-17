@@ -56,7 +56,7 @@
     getInfo() {
       return {
         id: "nkcontrols",
-        name: "Control Controls",
+        name: Scratch.translate("Control Controls"),
         color1: "#ffab19",
         color2: "#ec9c13",
         color3: "#b87d17",
@@ -64,7 +64,7 @@
           {
             opcode: "showOption",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show [OPTION]",
+            text: Scratch.translate("show [OPTION]"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
@@ -75,7 +75,7 @@
           {
             opcode: "hideOption",
             blockType: Scratch.BlockType.COMMAND,
-            text: "hide [OPTION]",
+            text: Scratch.translate("hide [OPTION]"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
@@ -87,7 +87,7 @@
           {
             opcode: "optionShown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[OPTION] shown?",
+            text: Scratch.translate("[OPTION] shown?"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
@@ -99,7 +99,7 @@
           {
             opcode: "optionExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[OPTION] exists?",
+            text: Scratch.translate("[OPTION] exists?"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
@@ -111,7 +111,24 @@
         menus: {
           OPTION: {
             acceptReporters: true,
-            items: ["green flag", "pause", "stop", "fullscreen"],
+            items: [
+              {
+                text: Scratch.translate("green flag"),
+                value: "green flag",
+              },
+              {
+                text: Scratch.translate("pause"),
+                value: "pause",
+              },
+              {
+                text: Scratch.translate("stop"),
+                value: "stop",
+              },
+              {
+                text: Scratch.translate("fullscreen"),
+                value: "fullscreen",
+              },
+            ],
           },
         },
       };
