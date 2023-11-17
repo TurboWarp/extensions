@@ -1391,7 +1391,7 @@
     getInfo() {
       return {
         id: "GameJoltAPI",
-        name: Scratch.translate("Game Jolt API"),
+        name: "Game Jolt API",
         color1: "#2F7F6F",
         color2: "#2A2731",
         color3: "#CCFF00",
@@ -1402,7 +1402,11 @@
             opcode: "gamejoltBool",
             blockIconURI: icons.GameJolt,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("On Game Jolt?"),
+            text: Scratch.translate({
+              id: "GameJoltAPI_gamejoltBool",
+              default: "On Game Jolt?",
+              description: "Keep \"Game Jolt\" as is.",
+            }),
           },
           {
             blockType: Scratch.BlockType.LABEL,
