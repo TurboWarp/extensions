@@ -17,7 +17,7 @@
     getInfo() {
       return {
         id: "nexuskittensgrab",
-        name: "S-Grab",
+        name: Scratch.translate("S-Grab"),
         menuIconURI: icon,
         color1: "#ECA90B",
         color2: "#EBAF00",
@@ -25,7 +25,7 @@
           {
             opcode: "usergrab",
             blockType: Scratch.BlockType.REPORTER,
-            text: "grab [WHAT] count of user [WHO]",
+            text: Scratch.translate("grab [WHAT] count of user [WHO]"),
             arguments: {
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
@@ -40,7 +40,7 @@
           {
             opcode: "rankusergrab",
             blockType: Scratch.BlockType.REPORTER,
-            text: "global [WHAT] ranking for [WHO]",
+            text: Scratch.translate("global [WHAT] ranking for [WHO]"),
             arguments: {
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
@@ -55,7 +55,7 @@
           {
             opcode: "usergrab2",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[WHAT] of user [WHO]",
+            text: Scratch.translate("[WHAT] of user [WHO]"),
             arguments: {
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
@@ -71,7 +71,7 @@
           {
             opcode: "projectgrab",
             blockType: Scratch.BlockType.REPORTER,
-            text: "grab [WHAT] count of project id [WHO]",
+            text: Scratch.translate("grab [WHAT] count of project id [WHO]"),
             arguments: {
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
@@ -86,7 +86,9 @@
           {
             opcode: "rankprojectgrab",
             blockType: Scratch.BlockType.REPORTER,
-            text: "global [WHAT] ranking for project id [WHO]",
+            text: Scratch.translate(
+              "global [WHAT] ranking for project id [WHO]"
+            ),
             arguments: {
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
@@ -101,7 +103,7 @@
           {
             opcode: "idtoname",
             blockType: Scratch.BlockType.REPORTER,
-            text: "name of project id [WHO]",
+            text: Scratch.translate("name of project id [WHO]"),
             arguments: {
               WHO: {
                 type: Scratch.ArgumentType.STRING,
@@ -112,7 +114,7 @@
           {
             opcode: "idtoowner",
             blockType: Scratch.BlockType.REPORTER,
-            text: "creator of project id [WHO]",
+            text: Scratch.translate("creator of project id [WHO]"),
             arguments: {
               WHO: {
                 type: Scratch.ArgumentType.STRING,
@@ -124,23 +126,96 @@
         menus: {
           WHAT: {
             acceptReporters: true,
-            items: ["follower", "following"],
+            items: [
+              {
+                text: Scratch.translate("follower"),
+                value: "follower",
+              },
+              {
+                text: Scratch.translate("following"),
+                value: "following",
+              },
+            ],
           },
           WHAT2: {
             acceptReporters: true,
-            items: ["follower", "love", "favorite", "view"],
+            items: [
+              {
+                text: Scratch.translate("follower"),
+                value: "follower",
+              },
+              {
+                text: Scratch.translate("love"),
+                value: "love",
+              },
+              {
+                text: Scratch.translate("favorite"),
+                value: "favorite",
+              },
+              {
+                text: Scratch.translate("view"),
+                value: "view",
+              },
+            ],
           },
           WHAT3: {
             acceptReporters: true,
-            items: ["love", "favorite", "view"],
+            items: [
+              {
+                text: Scratch.translate("love"),
+                value: "love",
+              },
+              {
+                text: Scratch.translate("favorite"),
+                value: "favorite",
+              },
+              {
+                text: Scratch.translate("view"),
+                value: "view",
+              },
+            ],
           },
           WHAT4: {
             acceptReporters: true,
-            items: ["love", "favorite", "view"],
+            items: [
+              {
+                text: Scratch.translate("love"),
+                value: "love",
+              },
+              {
+                text: Scratch.translate("favorite"),
+                value: "favorite",
+              },
+              {
+                text: Scratch.translate("view"),
+                value: "view",
+              },
+            ],
           },
           WHAT5: {
             acceptReporters: true,
-            items: ["about me", "wiwo", "location", "status"],
+            items: [
+              {
+                text: Scratch.translate("about me"),
+                value: "about me",
+              },
+              {
+                text: Scratch.translate({
+                  default: "wiwo",
+                  description:
+                    "WIWO stands for 'What I'm Working On', part of the Scratch profile page.",
+                }),
+                value: "wiwo",
+              },
+              {
+                text: Scratch.translate("location"),
+                value: "location",
+              },
+              {
+                text: Scratch.translate("status"),
+                value: "status",
+              },
+            ],
           },
         },
       };

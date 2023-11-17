@@ -24,13 +24,16 @@
     getInfo() {
       return {
         id: "dninwakelock",
-        name: "Wake Lock",
+        name: Scratch.translate("Wake Lock"),
         docsURI: "https://extensions.turbowarp.org/DNin/wake-lock",
         blocks: [
           {
             opcode: "setWakeLock",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn wake lock [enabled]",
+            text: Scratch.translate({
+              default: "turn wake lock [enabled]",
+              description: "[enabled] is a drop down with items 'on' and 'off'",
+            }),
             arguments: {
               enabled: {
                 type: Scratch.ArgumentType.STRING,
@@ -42,7 +45,7 @@
           {
             opcode: "isLocked",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is wake lock active?",
+            text: Scratch.translate("is wake lock active?"),
           },
         ],
         menus: {
@@ -50,11 +53,11 @@
             acceptReporters: true,
             items: [
               {
-                text: "on",
+                text: Scratch.translate("on"),
                 value: "true",
               },
               {
-                text: "off",
+                text: Scratch.translate("off"),
                 value: "false",
               },
             ],

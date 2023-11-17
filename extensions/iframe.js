@@ -1,6 +1,7 @@
 // Name: Iframe
 // ID: iframe
 // Description: Display webpages or HTML over the stage.
+// Context: "iframe" is an HTML element that lets websites embed other websites.
 
 (function (Scratch) {
   "use strict";
@@ -122,13 +123,13 @@
   class IframeExtension {
     getInfo() {
       return {
-        name: "Iframe",
+        name: Scratch.translate("Iframe"),
         id: "iframe",
         blocks: [
           {
             opcode: "display",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show website [URL]",
+            text: Scratch.translate("show website [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -139,11 +140,11 @@
           {
             opcode: "displayHTML",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show HTML [HTML]",
+            text: Scratch.translate("show HTML [HTML]"),
             arguments: {
               HTML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "<h1>It works!</h1>",
+                defaultValue: `<h1>${Scratch.translate("It works!")}</h1>`,
               },
             },
           },
@@ -151,23 +152,23 @@
           {
             opcode: "show",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show iframe",
+            text: Scratch.translate("show iframe"),
           },
           {
             opcode: "hide",
             blockType: Scratch.BlockType.COMMAND,
-            text: "hide iframe",
+            text: Scratch.translate("hide iframe"),
           },
           {
             opcode: "close",
             blockType: Scratch.BlockType.COMMAND,
-            text: "close iframe",
+            text: Scratch.translate("close iframe"),
           },
           "---",
           {
             opcode: "get",
             blockType: Scratch.BlockType.REPORTER,
-            text: "iframe [MENU]",
+            text: Scratch.translate("iframe [MENU]"),
             arguments: {
               MENU: {
                 type: Scratch.ArgumentType.STRING,
@@ -178,7 +179,7 @@
           {
             opcode: "setX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe x position to [X]",
+            text: Scratch.translate("set iframe x position to [X]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -189,7 +190,7 @@
           {
             opcode: "setY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe y position to [Y]",
+            text: Scratch.translate("set iframe y position to [Y]"),
             arguments: {
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -200,7 +201,7 @@
           {
             opcode: "setWidth",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe width to [WIDTH]",
+            text: Scratch.translate("set iframe width to [WIDTH]"),
             arguments: {
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -211,7 +212,7 @@
           {
             opcode: "setHeight",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe height to [HEIGHT]",
+            text: Scratch.translate("set iframe height to [HEIGHT]"),
             arguments: {
               HEIGHT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -222,7 +223,7 @@
           {
             opcode: "setInteractive",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe interactive to [INTERACTIVE]",
+            text: Scratch.translate("set iframe interactive to [INTERACTIVE]"),
             arguments: {
               INTERACTIVE: {
                 type: Scratch.ArgumentType.STRING,
@@ -233,7 +234,7 @@
           {
             opcode: "setResize",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe resize behavior to [RESIZE]",
+            text: Scratch.translate("set iframe resize behavior to [RESIZE]"),
             arguments: {
               RESIZE: {
                 type: Scratch.ArgumentType.STRING,
@@ -246,23 +247,36 @@
           getMenu: {
             acceptReporters: true,
             items: [
-              "url",
-              "visible",
+              Scratch.translate("url"),
+              Scratch.translate("visible"),
               "x",
               "y",
-              "width",
-              "height",
-              "interactive",
-              "resize behavior",
+              Scratch.translate("width"),
+              Scratch.translate("height"),
+              Scratch.translate("interactive"),
+              Scratch.translate("resize behavior"),
             ],
           },
           interactiveMenu: {
             acceptReporters: true,
-            items: ["true", "false"],
+            items: [
+              // The getter blocks will return English regardless of translating these
+              "true",
+              "false",
+            ],
           },
           resizeMenu: {
             acceptReporters: true,
-            items: ["scale", "viewport"],
+            items: [
+              {
+                text: Scratch.translate("scale"),
+                value: "scale",
+              },
+              {
+                text: Scratch.translate("viewport"),
+                value: "viewport",
+              },
+            ],
           },
         },
       };

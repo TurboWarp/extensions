@@ -206,7 +206,9 @@ class ExtensionFile extends BuildFile {
       if (translations !== null) {
         return insertAfterCommentsBeforeCode(
           data,
-          `Scratch.translate.setup(${JSON.stringify(translations)});`
+          `/* generated l10n code */Scratch.translate.setup(${JSON.stringify(
+            translations
+          )});/* end generated l10n code */`
         );
       }
     }
@@ -648,8 +650,16 @@ class Build {
   generateL10N() {
     const allStrings = {};
 
-    for (const file of Object.values(this.files)) {
-      const fileStrings = file.getStrings();
+    for (const [filePath, file] of Object.entries(this.files)) {
+      let fileStrings;
+      try {
+        fileStrings = file.getStrings();
+      } catch (error) {
+        console.error(error);
+        throw new Error(
+          `Error getting translations from ${filePath}: ${error}, see above`
+        );
+      }
       if (!fileStrings) {
         continue;
       }
