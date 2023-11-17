@@ -1405,7 +1405,7 @@
             text: Scratch.translate({
               id: "GameJoltAPI_gamejoltBool",
               default: "On Game Jolt?",
-              description: "Keep \"Game Jolt\" as is.",
+              description: 'Keep "Game Jolt" as is.',
             }),
           },
           {
