@@ -206,7 +206,9 @@ class ExtensionFile extends BuildFile {
       if (translations !== null) {
         return insertAfterCommentsBeforeCode(
           data,
-          `/* generated l10n code */Scratch.translate.setup(${JSON.stringify(translations)});/* end generated l10n code */`
+          `/* generated l10n code */Scratch.translate.setup(${JSON.stringify(
+            translations
+          )});/* end generated l10n code */`
         );
       }
     }
