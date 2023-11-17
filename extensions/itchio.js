@@ -67,39 +67,41 @@
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Window",
+            text: Scratch.translate("Window"),
           },
           {
             opcode: "openItchWindow",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Open [prefix] itch.io [page] window with [width]width and [height]height",
+            text: Scratch.translate(
+              "Open [prefix] itch.io [page] window with [width]width and [height]height"
+            ),
             arguments: {
               prefix: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "user",
+                defaultValue: Scratch.translate("user"),
               },
               page: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "game",
+                defaultValue: Scratch.translate("game"),
               },
               width: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "680",
+                defaultValue: 680,
               },
               height: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "400",
+                defaultValue: 400,
               },
             },
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Data",
+            text: Scratch.translate("Data"),
           },
           {
             opcode: "getGameData",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch game data [user][game][secret]",
+            text: Scratch.translate("Fetch game data [user][game][secret]"),
             arguments: {
               user: {
                 type: Scratch.ArgumentType.STRING,
@@ -118,7 +120,9 @@
           {
             opcode: "getGameDataJson",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return game data [user][game][secret] in .json",
+            text: Scratch.translate(
+              "Return game data [user][game][secret] in .json"
+            ),
             arguments: {
               user: {
                 type: Scratch.ArgumentType.STRING,
@@ -137,13 +141,13 @@
           {
             opcode: "returnGameDataJson",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return game data in .json",
+            text: Scratch.translate("Return game data in .json"),
           },
           "---",
           {
             opcode: "returnGameData",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return game [data]",
+            text: Scratch.translate("Return game [data]"),
             arguments: {
               data: {
                 type: Scratch.ArgumentType.STRING,
@@ -155,16 +159,18 @@
           {
             opcode: "gameBool",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Game data?",
+            text: Scratch.translate("Game data?"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Rewards",
+            text: Scratch.translate("Rewards"),
           },
           {
             opcode: "returnGameRewards",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return game rewards [rewards] by index:[index]",
+            text: Scratch.translate(
+              "Return game rewards [rewards] by index:[index]"
+            ),
             arguments: {
               rewards: {
                 type: Scratch.ArgumentType.STRING,
@@ -180,21 +186,23 @@
           {
             opcode: "rewardsLenght", // fixing this typo would break projects
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return rewards list length",
+            text: Scratch.translate("Return rewards list length"),
           },
           {
             opcode: "rewardsBool",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Rewards?",
+            text: Scratch.translate("Rewards?"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Sub products",
+            text: Scratch.translate("Sub products"),
           },
           {
             opcode: "returnGameSubProducts",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return game sub products [subProducts] by index:[index]",
+            text: Scratch.translate(
+              "Return game sub products [subProducts] by index:[index]"
+            ),
             arguments: {
               subProducts: {
                 type: Scratch.ArgumentType.STRING,
@@ -210,21 +218,21 @@
           {
             opcode: "subProductsLength",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return sub products list length",
+            text: Scratch.translate("Return sub products list length"),
           },
           {
             opcode: "subProductsBool",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Sub products?",
+            text: Scratch.translate("Sub products?"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Sale",
+            text: Scratch.translate("Sale"),
           },
           {
             opcode: "returnGameSale",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return game sale [sale]",
+            text: Scratch.translate("Return game sale [sale]"),
             arguments: {
               sale: {
                 type: Scratch.ArgumentType.STRING,
@@ -236,42 +244,51 @@
           {
             opcode: "saleBool",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Sale?",
+            text: Scratch.translate("Sale?"),
           },
         ],
         menus: {
           menu: {
             items: [
-              { text: "id", value: "id" },
-              { text: "title", value: "title" },
-              { text: "cover image URL", value: "cover_image" },
-              { text: "price", value: "price" },
-              { text: "original price", value: "original_price" },
+              { text: Scratch.translate("id"), value: "id" },
+              { text: Scratch.translate("title"), value: "title" },
+              {
+                text: Scratch.translate("cover image URL"),
+                value: "cover_image",
+              },
+              { text: Scratch.translate("price"), value: "price" },
+              {
+                text: Scratch.translate("original price"),
+                value: "original_price",
+              },
             ],
           },
           rewardsMenu: {
             items: [
-              { text: "id", value: "id" },
-              { text: "title", value: "title" },
-              { text: "price", value: "price" },
-              { text: "amount", value: "amount" },
-              { text: "amount remaining", value: "amount_remaining" },
-              { text: "available", value: "available" },
+              { text: Scratch.translate("id"), value: "id" },
+              { text: Scratch.translate("title"), value: "title" },
+              { text: Scratch.translate("price"), value: "price" },
+              { text: Scratch.translate("amount"), value: "amount" },
+              {
+                text: Scratch.translate("amount remaining"),
+                value: "amount_remaining",
+              },
+              { text: Scratch.translate("available"), value: "available" },
             ],
           },
           subProductsMenu: {
             items: [
-              { text: "id", value: "id" },
-              { text: "name", value: "name" },
-              { text: "price", value: "price" },
+              { text: Scratch.translate("id"), value: "id" },
+              { text: Scratch.translate("name"), value: "name" },
+              { text: Scratch.translate("price"), value: "price" },
             ],
           },
           saleMenu: {
             items: [
-              { text: "id", value: "id" },
-              { text: "title", value: "title" },
-              { text: "end date", value: "end_date" },
-              { text: "rate", value: "rate" },
+              { text: Scratch.translate("id"), value: "id" },
+              { text: Scratch.translate("title"), value: "title" },
+              { text: Scratch.translate("end date"), value: "end_date" },
+              { text: Scratch.translate("rate"), value: "rate" },
             ],
           },
         },
