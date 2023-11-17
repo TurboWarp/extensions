@@ -14,8 +14,10 @@
   const getGameData = (user, game, secret, onComplete) => {
     if (!user || !game) {
       let callback = { errors: [] };
-      if (!user) callback.errors.push("user argument not found");
-      if (!game) callback.errors.push("game argument not found");
+      if (!user)
+        callback.errors.push(Scratch.translate("user argument not found"));
+      if (!game)
+        callback.errors.push(Scratch.translate("game argument not found"));
       return onComplete(callback);
     }
     const url =
@@ -40,8 +42,18 @@
   let data = {};
 
   let err = () => {
-    if (!data.errors) return "Error: Data not found.";
-    let output = data.errors[1] ? "Errors: " : "Error: ";
+    if (!data.errors) return Scratch.translate("Error: Data not found.");
+    let output = data.errors[1]
+      ? Scratch.translate({
+          id: "itchio_errors",
+          default: "Errors: ",
+          description: "Don't forget the space at the end.",
+        })
+      : Scratch.translate({
+          id: "itchio_error",
+          default: "Error: ",
+          description: "Don't forget the space at the end.",
+        });
     output += data.errors[0].charAt(0).toUpperCase() + data.errors[0].slice(1);
     for (let i = 1; true; i++)
       if (data.errors[i]) output += ", " + data.errors[i];
@@ -86,11 +98,11 @@
               },
               width: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 680,
+                defaultValue: "680",
               },
               height: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 400,
+                defaultValue: "400",
               },
             },
           },
