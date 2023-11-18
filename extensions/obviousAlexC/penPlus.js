@@ -1815,18 +1815,15 @@
 
       //correction for HQ pen
       const typSize = renderer._nativeSize;
-      const mul = renderer.useHighQualityRender
-        ? (canvas.width + canvas.height) / (typSize[0] + typSize[1])
-        : 1;
 
       //Predifine stuff so there aren't as many calculations
-      const wMulX = mul * myAttributes[0];
-      const wMulY = mul * myAttributes[1];
+      const wMulX = myAttributes[0];
+      const wMulY = myAttributes[1];
 
       const offDiam = 0.5 * diam;
 
-      const sprXoff = spritex * mul;
-      const sprYoff = spritey * mul;
+      const sprXoff = spritex;
+      const sprYoff = spritey;
       //Paratheses because I know some obscure browser will screw this up.
       let x1 = Scratch.Cast.toNumber(-offDiam) * wMulX;
       let x2 = Scratch.Cast.toNumber(offDiam) * wMulX;
@@ -1948,18 +1945,15 @@
 
       //correction for HQ pen
       const typSize = renderer._nativeSize;
-      const mul = renderer.useHighQualityRender
-        ? (canvas.width + canvas.height) / (typSize[0] + typSize[1])
-        : 1;
 
       //Predifine stuff so there aren't as many calculations
-      const wMulX = mul * myAttributes[0];
-      const wMulY = mul * myAttributes[1];
+      const wMulX = myAttributes[0];
+      const wMulY = myAttributes[1];
 
       const offDiam = 0.5 * diam;
 
-      const sprXoff = spritex * mul;
-      const sprYoff = spritey * mul;
+      const sprXoff = spritex;
+      const sprYoff = spritey;
       //Paratheses because I know some obscure browser will screw this up.
       let x1 = Scratch.Cast.toNumber(-offDiam) * wMulX;
       let x2 = Scratch.Cast.toNumber(offDiam) * wMulX;
