@@ -3,7 +3,7 @@
 // Description: Fetch Statistics and Information and Play Songs from Spotify
 // By: SharkPool
 
-// Version 1.0.1
+// Version 1.0.2
 
 (function (Scratch) {
   "use strict";
@@ -280,7 +280,8 @@
         if (lastFetchedSong[0] === args.URL) {
           response = lastFetchedSong[1];
         } else {
-          response = await Scratch.fetch(`${proxy}https://open.spotify.com/track/${args.URL}`);
+          if (!await Scratch.canFetch(`${proxy}https://open.spotify.com/track/${args.URL}`)) return "";
+          response = await fetch(`${proxy}https://open.spotify.com/track/${args.URL}`);
           if (!response.ok) return "Error: 404";
           response = await response.text();
           lastFetchedSong = [args.URL, response];
@@ -317,7 +318,8 @@
         if (lastFetchedSong[0] === args.URL) {
           response = lastFetchedSong[1];
         } else {
-          response = await Scratch.fetch(`${proxy}https://open.spotify.com/track/${args.URL}`);
+          if (!await Scratch.canFetch(`${proxy}https://open.spotify.com/track/${args.URL}`)) return "";
+          response = await fetch(`${proxy}https://open.spotify.com/track/${args.URL}`);
           if (!response.ok) return "Error: 404";
           response = await response.text();
           lastFetchedSong = [args.URL, response];
@@ -367,7 +369,8 @@
         if (lastFetchedArtist[0] === args.URL) {
           response = lastFetchedArtist[1];
         } else {
-          response = await Scratch.fetch(`${proxy}https://open.spotify.com/artist/${args.URL}`);
+          if (!await Scratch.canFetch(`${proxy}https://open.spotify.com/artist/${args.URL}`)) return "";
+          response = await fetch(`${proxy}https://open.spotify.com/artist/${args.URL}`);
           if (!response.ok) return "Error: 404";
           response = await response.text();
           lastFetchedArtist = [args.URL, response];
@@ -410,7 +413,8 @@
         if (lastFetchedPlaylist[0] === args.URL) {
           response = lastFetchedPlaylist[1];
         } else {
-          response = await Scratch.fetch(`${proxy}https://open.spotify.com/playlist/${args.URL}`);
+          if (!await Scratch.canFetch(`${proxy}https://open.spotify.com/playlist/${args.URL}`)) return "";
+          response = await fetch(`${proxy}https://open.spotify.com/playlist/${args.URL}`);
           if (!response.ok) return "Error: 404";
           response = await response.text();
           lastFetchedPlaylist = [args.URL, response];
