@@ -19,6 +19,16 @@
     constructor(runtime) {
       this.runtime = runtime;
       this.runtime.on("PROJECT_STOP_ALL", this.stopAll.bind(this));
+
+      document.addEventListener("visibilitychange", () => {
+        // If enabled, reacquire wake lock when document becomes visible again
+        if (wakeLock !== null && document.visibilityState === "visible") {
+          latestEnabled = false;
+          this.setWakeLock({
+            enabled: true,
+          });
+        }
+      });
     }
 
     getInfo() {
@@ -77,9 +87,14 @@
         // Not supported in this browser.
         return;
       }
+      const enable = Scratch.Cast.toBoolean(args.enabled);
+      if (enable && document.visibilityState === "hidden") {
+        // Can't request wake lock while document is hidden.
+        return;
+      }
 
       const previousEnabled = latestEnabled;
-      latestEnabled = Scratch.Cast.toBoolean(args.enabled);
+      latestEnabled = enable;
       if (latestEnabled && !previousEnabled) {
         promise = promise
           .then(() => navigator.wakeLock.request("screen"))
