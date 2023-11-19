@@ -7,7 +7,9 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('\nWhell Scroll:\nExtension "Whell Scroll" must run unsandboxed!\n');
+    throw new Error(
+      '\nWhell Scroll:\nExtension "Whell Scroll" must run unsandboxed!\n'
+    );
   }
 
   const ExtIcon =
