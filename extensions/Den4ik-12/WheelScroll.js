@@ -3,22 +3,6 @@
 // Description: Blocks for detecting mouse wheel scrolling.
 // By: Den4ik-12 <https://scratch.mit.edu/users/Den4ik-12/>
 
-Scratch.translate.setup({
-  ru: {
-    extName: "Прокрутка колеса",
-    whenScrollDir: "когда колесо мыши прокручивается [SCROLL_TYPE]",
-    whenScroll: "когда колесо мыши прокручивается",
-    menuSCROLL_TYPEvalueU: "вверх",
-    menuSCROLL_TYPEvalueD: "вниз",
-    menuSCROLL_TYPEvalueL: "влево",
-    menuSCROLL_TYPEvalueR: "вправо",
-    menuSCROLL_TYPEvalueO: "out",
-    menuSCROLL_TYPEvalueI: "in",
-    menuSCROLL_TYPEvalueAX: "вдоль оси x",
-    menuSCROLL_TYPEvalueAY: "вдоль оси y",
-    menuSCROLL_TYPEvalueAZ: "вдоль оси z",
-  },
-});
 (function (Scratch) {
   "use strict";
 
