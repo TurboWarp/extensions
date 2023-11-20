@@ -1,4 +1,4 @@
-// Name:Advanced Numerical Encoding
+// Name: Advanced Numerical Encoding
 // ID: advancedNumericalEncoding
 // Description: Encode strings to numbers with advanced blocks.
 // By: Stiwen02 <https://scratch.mit.edu/users/Stiwen02/>
