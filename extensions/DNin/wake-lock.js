@@ -100,6 +100,13 @@
           .then(() => navigator.wakeLock.request("screen"))
           .then((sentinel) => {
             wakeLock = sentinel;
+            wakeLock.addEventListener("release", () => {
+              if (document.visibilityState === "visible") {
+                // If the document is hidden, wake lock should be reacquired when it's visible again.
+                wakeLock = null;
+                latestEnabled = false;
+              }
+            });
           })
           .catch((error) => {
             console.error(error);
