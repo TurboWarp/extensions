@@ -18,12 +18,16 @@
       // jszip has its own "go to directory" system, but it sucks
       // implement our own instead
       this.zipPath = null;
+
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this.close();
+      });
     }
 
     getInfo() {
       return {
         id: "cst1229zip",
-        name: "Zip",
+        name: Scratch.translate("Zip"),
         docsURI: "https://extensions.turbowarp.org/CST1229/zip",
 
         blockIconURI: extIcon,
@@ -36,13 +40,13 @@
           {
             opcode: "createEmpty",
             blockType: Scratch.BlockType.COMMAND,
-            text: "create empty archive",
+            text: Scratch.translate("create empty archive"),
             arguments: {},
           },
           {
             opcode: "open",
             blockType: Scratch.BlockType.COMMAND,
-            text: "open zip from [TYPE] [DATA]",
+            text: Scratch.translate("open zip from [TYPE] [DATA]"),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -59,7 +63,9 @@
           {
             opcode: "getZip",
             blockType: Scratch.BlockType.REPORTER,
-            text: "output zip type [TYPE] compression level [COMPRESSION]",
+            text: Scratch.translate(
+              "output zip type [TYPE] compression level [COMPRESSION]"
+            ),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -76,13 +82,13 @@
           {
             opcode: "close",
             blockType: Scratch.BlockType.COMMAND,
-            text: "close archive",
+            text: Scratch.translate("close archive"),
             arguments: {},
           },
           {
             opcode: "isOpen",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "archive is open?",
+            text: Scratch.translate("archive is open?"),
             arguments: {},
           },
 
@@ -91,10 +97,11 @@
           {
             opcode: "exists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[OBJECT] exists?",
+            text: Scratch.translate("[OBJECT] exists?"),
             arguments: {
               OBJECT: {
                 type: Scratch.ArgumentType.STRING,
+                // Don't translate so this matches the default zip
                 defaultValue: "folder/",
               },
             },
@@ -102,11 +109,16 @@
           {
             opcode: "writeFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "write file [FILE] content [CONTENT] type [TYPE]",
+            text: Scratch.translate(
+              "write file [FILE] content [CONTENT] type [TYPE]"
+            ),
             arguments: {
               FILE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "new file.txt",
+                defaultValue: `${Scratch.translate({
+                  default: "new file",
+                  description: "Default file name",
+                })}.txt`,
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -115,7 +127,7 @@
               },
               CONTENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, world?",
+                defaultValue: Scratch.translate("Hello, world?"),
               },
             },
           },
@@ -126,10 +138,12 @@
             arguments: {
               FROM: {
                 type: Scratch.ArgumentType.STRING,
+                // Don't translate so matches default zip
                 defaultValue: "hello.txt",
               },
               TO: {
                 type: Scratch.ArgumentType.STRING,
+                // Don't translate so matches default zip
                 defaultValue: "hello renamed.txt",
               },
             },
@@ -137,10 +151,11 @@
           {
             opcode: "deleteFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete [FILE]",
+            text: Scratch.translate("delete [FILE]"),
             arguments: {
               FILE: {
                 type: Scratch.ArgumentType.STRING,
+                // Don't translate so matches default zip
                 defaultValue: "hello.txt",
               },
             },
@@ -148,10 +163,11 @@
           {
             opcode: "getFile",
             blockType: Scratch.BlockType.REPORTER,
-            text: "file [FILE] as [TYPE]",
+            text: Scratch.translate("file [FILE] as [TYPE]"),
             arguments: {
               FILE: {
                 type: Scratch.ArgumentType.STRING,
+                // Don't translate so matches default zip
                 defaultValue: "hello.txt",
               },
               TYPE: {
@@ -167,7 +183,7 @@
           {
             opcode: "setFileMeta",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [META] of [FILE] to [VALUE]",
+            text: Scratch.translate("set [META] of [FILE] to [VALUE]"),
             arguments: {
               META: {
                 type: Scratch.ArgumentType.STRING,
@@ -176,6 +192,7 @@
               },
               FILE: {
                 type: Scratch.ArgumentType.STRING,
+                // Don't translate so matches default zip
                 defaultValue: "folder/dango.png",
               },
               VALUE: {
@@ -187,7 +204,7 @@
           {
             opcode: "getFileMeta",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[META] of [FILE]",
+            text: Scratch.translate("[META] of [FILE]"),
             arguments: {
               META: {
                 type: Scratch.ArgumentType.STRING,
@@ -196,6 +213,7 @@
               },
               FILE: {
                 type: Scratch.ArgumentType.STRING,
+                // Don't translate so matches default zip
                 defaultValue: "folder/dango.png",
               },
             },
@@ -206,18 +224,18 @@
           {
             opcode: "createDir",
             blockType: Scratch.BlockType.COMMAND,
-            text: "create directory [DIR]",
+            text: Scratch.translate("create directory [DIR]"),
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "new folder",
+                defaultValue: Scratch.translate("new folder"),
               },
             },
           },
           {
             opcode: "goToDir",
             blockType: Scratch.BlockType.COMMAND,
-            text: "go to directory [DIR]",
+            text: Scratch.translate("go to directory [DIR]"),
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
@@ -228,7 +246,7 @@
           {
             opcode: "getDir",
             blockType: Scratch.BlockType.REPORTER,
-            text: "contents of directory [DIR]",
+            text: Scratch.translate("contents of directory [DIR]"),
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
@@ -239,7 +257,7 @@
           {
             opcode: "currentDir",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current directory path",
+            text: Scratch.translate("current directory path"),
           },
 
           "---",
@@ -247,18 +265,18 @@
           {
             opcode: "setComment",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set archive comment to [COMMENT]",
+            text: Scratch.translate("set archive comment to [COMMENT]"),
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "any text",
+                defaultValue: Scratch.translate("any text"),
               },
             },
           },
           {
             opcode: "getComment",
             blockType: Scratch.BlockType.REPORTER,
-            text: "archive comment",
+            text: Scratch.translate("archive comment"),
             arguments: {},
           },
 
@@ -267,7 +285,7 @@
           {
             opcode: "normalizePath",
             blockType: Scratch.BlockType.REPORTER,
-            text: "path [PATH] from [ORIGIN]",
+            text: Scratch.translate("path [PATH] from [ORIGIN]"),
             arguments: {
               PATH: {
                 type: Scratch.ArgumentType.STRING,
@@ -284,28 +302,115 @@
           fileType: {
             // used in the open zip block
             acceptReporters: true,
-            items: ["URL", "base64", "hex", "binary", "string"],
+            items: [
+              {
+                text: Scratch.translate("URL"),
+                value: "URL",
+              },
+              {
+                text: Scratch.translate("base64"),
+                value: "base64",
+              },
+              {
+                text: Scratch.translate("hex"),
+                value: "hex",
+              },
+              {
+                text: Scratch.translate("binary"),
+                value: "binary",
+              },
+              {
+                text: Scratch.translate("string"),
+                value: "string",
+              },
+            ],
           },
           zipFileType: {
             // used in the output zip block
             acceptReporters: true,
-            items: ["data: URL", "base64", "hex", "binary", "string"],
+            items: [
+              {
+                text: Scratch.translate("data: URL"),
+                value: "data: URL",
+              },
+              {
+                text: Scratch.translate("base64"),
+                value: "base64",
+              },
+              {
+                text: Scratch.translate("hex"),
+                value: "hex",
+              },
+              {
+                text: Scratch.translate("binary"),
+                value: "binary",
+              },
+              {
+                text: Scratch.translate("string"),
+                value: "string",
+              },
+            ],
           },
           getFileType: {
             // used in the get file block
             acceptReporters: true,
-            items: ["text", "data: URL", "base64", "hex", "binary"],
+            items: [
+              {
+                text: Scratch.translate("text"),
+                value: "text",
+              },
+              {
+                text: Scratch.translate("data: URL"),
+                value: "data: URL",
+              },
+              {
+                text: Scratch.translate("base64"),
+                value: "base64",
+              },
+              {
+                text: Scratch.translate("hex"),
+                value: "hex",
+              },
+              {
+                text: Scratch.translate("binary"),
+                value: "binary",
+              },
+            ],
           },
           writeFileType: {
             // used in the write file block
             acceptReporters: true,
-            items: ["text", "URL", "base64", "hex", "binary"],
+            items: [
+              {
+                text: Scratch.translate("text"),
+                value: "text",
+              },
+              {
+                text: Scratch.translate("URL"),
+                value: "URL",
+              },
+              {
+                text: Scratch.translate("base64"),
+                value: "base64",
+              },
+              {
+                text: Scratch.translate("hex"),
+                value: "hex",
+              },
+              {
+                text: Scratch.translate("binary"),
+                value: "binary",
+              },
+            ],
           },
           compressionLevel: {
             acceptReporters: true,
             items: [
-              { text: "no compression (fastest)", value: "0" },
-              { text: "1 (fast, large)", value: "1" },
+              {
+                text: Scratch.translate("no compression (fastest)"),
+                value: "0",
+              },
+              { text: Scratch.translate("1 (fast, large)"), value: "1" },
               { text: "2", value: "2" },
               { text: "3", value: "3" },
               { text: "4", value: "4" },
@@ -313,28 +418,61 @@
               { text: "6", value: "6" },
               { text: "7", value: "7" },
               { text: "8", value: "8" },
-              { text: "9 (slowest, smallest)", value: "9" },
+              { text: Scratch.translate("9 (slowest, smallest)"), value: "9" },
             ],
           },
           fileMeta: {
             acceptReporters: true,
             items: [
-              "name",
-              "path",
-              "folder",
-              "modification date",
-              "long modification date",
-              "modified days since 2000",
-              "unix modified timestamp",
-              "comment",
+              {
+                text: Scratch.translate("name"),
+                value: "name",
+              },
+              {
+                text: Scratch.translate("path"),
+                value: "path",
+              },
+              {
+                text: Scratch.translate("folder"),
+                value: "folder",
+              },
+              {
+                text: Scratch.translate("modification date"),
+                value: "modification date",
+              },
+              {
+                text: Scratch.translate("long modification date"),
+                value: "long modification date",
+              },
+              {
+                text: Scratch.translate("modified days since 2000"),
+                value: "modified days since 2000",
+              },
+              {
+                text: Scratch.translate("unix modified timestamp"),
+                value: "unix modified timestamp",
+              },
+              {
+                text: Scratch.translate("comment"),
+                value: "comment",
+              },
             ],
           },
           setFileMeta: {
             acceptReporters: true,
             items: [
-              "modified days since 2000",
-              "unix modified timestamp",
-              "comment",
+              {
+                text: Scratch.translate("modified days since 2000"),
+                value: "modified days since 2000",
+              },
+              {
+                text: Scratch.translate("unix modified timestamp"),
+                value: "unix modified timestamp",
+              },
+              {
+                text: Scratch.translate("comment"),
+                value: "comment",
+              },
             ],
           },
         },

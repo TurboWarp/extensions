@@ -1,3 +1,8 @@
+// Name: Lily's Toolbox
+// ID: lmsutilsblocks
+// Description: Previously called LMS Utilities.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+
 (function (Scratch) {
   "use strict";
   const menuIconURI =
@@ -19,7 +24,7 @@
     getInfo() {
       return {
         id: "lmsutilsblocks",
-        name: "LMS Utilities",
+        name: "Lily's Toolbox",
         color1: "#3bb2ed",
         color2: "#37a1de",
         color3: "#3693d9",
@@ -136,12 +141,14 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is clone?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
           {
             opcode: "spriteClicked",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "sprite clicked?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
 
           "---",
@@ -1302,7 +1309,10 @@
     }
 
     isUserMobile(args, util) {
-      return navigator.userAgent.includes("Mobile");
+      return (
+        navigator.userAgent.includes("Mobile") ||
+        navigator.userAgent.includes("Android")
+      );
     }
 
     screenReporter(args) {
@@ -1322,15 +1332,16 @@
       if (args.DROPDOWN === "operating system") {
         if (user.includes("Mac OS")) return "macOS";
         if (user.includes("CrOS")) return "ChromeOS";
+        if (user.includes("Android")) return "Android";
         if (user.includes("Linux")) return "Linux";
         if (user.includes("Windows")) return "Windows";
         if (user.includes("iPad")) return "iOS";
         if (user.includes("iPod")) return "iOS";
         if (user.includes("iPhone")) return "iOS";
-        if (user.includes("Android")) return "Android";
         return "Other";
       }
       if (args.DROPDOWN === "browser") {
+        if (user.includes("Edg")) return "Edge";
         if (user.includes("Chrome")) return "Chrome";
         if (user.includes("MSIE")) return "Internet Explorer";
         if (user.includes("Firefox")) return "Firefox";

@@ -8,6 +8,11 @@
   const gl = renderer._gl;
   let channel_array = [true, true, true, true];
   class LBdrawtest {
+    constructor() {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this.clearEffects();
+      });
+    }
     getInfo() {
       return {
         id: "lbdrawtest",
@@ -24,12 +29,14 @@
             opcode: "true",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "true",
+            disableMonitor: true,
           },
           {
             opcode: "false",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "false",
             hideFromPalette: true,
+            disableMonitor: true,
           },
           {
             opcode: "enabledCheck",
