@@ -843,8 +843,8 @@
           typeof options["social"] === "undefined"
             ? false
             : options["social"]
-            ? true
-            : false,
+              ? true
+              : false,
         skip: typeof options["skip"] !== "number" ? 0 : options["skip"],
         limit: typeof options["limit"] !== "number" ? 10 : options["limit"],
       };

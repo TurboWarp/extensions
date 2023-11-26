@@ -22,7 +22,7 @@
     getInfo() {
       return {
         id: "cubesterTurboHook",
-        name: "TurboHook",
+        name: Scratch.translate("TurboHook"),
         color1: "#3c48c2",
         color2: "#2f39a1",
         color3: "#28318f",
@@ -32,7 +32,9 @@
         blocks: [
           {
             opcode: "webhook",
-            text: "webhook data: [hookDATA] webhook url: [hookURL]",
+            text: Scratch.translate(
+              "webhook data: [hookDATA] webhook url: [hookURL]"
+            ),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               hookURL: {
@@ -63,7 +65,20 @@
         menus: {
           PARAMS: {
             acceptReporters: true,
-            items: ["content", "name", "icon"],
+            items: [
+              {
+                text: Scratch.translate("content"),
+                value: "content",
+              },
+              {
+                text: Scratch.translate("name"),
+                value: "name",
+              },
+              {
+                text: Scratch.translate("icon"),
+                value: "icon",
+              },
+            ],
           },
         },
       };

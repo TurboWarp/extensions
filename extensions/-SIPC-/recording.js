@@ -12,39 +12,45 @@
     getInfo() {
       return {
         id: "sipcrecording",
-        name: "Recording",
+        name: Scratch.translate("Recording"),
         color1: "#696969",
         blocks: [
           {
             opcode: "startRecording",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Start recording",
+            text: Scratch.translate("Start recording"),
             blockIconURI: icon,
             arguments: {},
           },
           {
             opcode: "stopRecording",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Stop recording",
+            text: Scratch.translate("Stop recording"),
             blockIconURI: icon,
             arguments: {},
           },
           {
             opcode: "stopRecordingAndDownload",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Stop recording and download with [name] as filename",
+            text: Scratch.translate(
+              "Stop recording and download with [name] as filename"
+            ),
             blockIconURI: icon,
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "recording.wav",
+                defaultValue:
+                  Scratch.translate({
+                    default: "recording",
+                    description: "Default file name",
+                  }) + ".wav",
               },
             },
           },
           {
             opcode: "isRecording",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Recording?",
+            text: Scratch.translate("Recording?"),
             blockIconURI: icon,
             arguments: {},
           },

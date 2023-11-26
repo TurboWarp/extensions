@@ -49,14 +49,14 @@
     return isObject(val)
       ? val
       : isArray(val)
-      ? val.reduce(
-          (array, currentValue, currentIndex) => ({
-            ...array,
-            [currentIndex + 1]: currentValue,
-          }),
-          {}
-        )
-      : { 1: val };
+        ? val.reduce(
+            (array, currentValue, currentIndex) => ({
+              ...array,
+              [currentIndex + 1]: currentValue,
+            }),
+            {}
+          )
+        : { 1: val };
   };
 
   const dataValues = (val) => {
@@ -551,8 +551,8 @@
                 redat.global
                   ? data
                   : Object.keys(data)[0]
-                  ? { [Object.keys(data)[0]]: Object.values(data)[0] }
-                  : {}
+                    ? { [Object.keys(data)[0]]: Object.values(data)[0] }
+                    : {}
               );
             case "map":
               data = Array.from(str.matchAll(gredat)).map((val) => [
