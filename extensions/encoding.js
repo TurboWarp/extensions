@@ -444,7 +444,7 @@
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: btoa(Scratch.translate("apple")),
+                defaultValue: btoa("apple"), // don't translate because btoa() will error in Chinese ...
               },
               code: {
                 type: Scratch.ArgumentType.STRING,
@@ -460,7 +460,7 @@
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("apple"),
+                defaultValue: "apple",
               },
               hash: {
                 type: Scratch.ArgumentType.STRING,
