@@ -32,41 +32,39 @@ For more information, please refer to <https://unlicense.org>
 */
 
 (function(Scratch) {
-  'use strict';
+    'use strict';
 
-class ipaddresses {
-  getInfo() {
-    return {
-      id: 'ipaddresses',
-      name: 'IP Addresses',
-      color1: '#2237f2',
-      color2: '#1c30e5',
-      color3: '#1627bd',
-      blocks: [
-        {
-          opcode: 'get_ip',
-          text: 'get public ip address',
-          blockType: Scratch.BlockType.REPORTER,
-	  disableMonitor: true
+    class ipaddresses {
+        getInfo() {
+            return {
+                id: 'ipaddresses',
+                name: 'IP Addresses',
+                color1: '#2237f2',
+                color2: '#1c30e5',
+                color3: '#1627bd',
+                blocks: [{
+                    opcode: 'get_ip',
+                    text: 'get public ip address',
+                    blockType: Scratch.BlockType.REPORTER,
+                    disableMonitor: true
+                }]
+            };
         }
-      ]
-    };
-  }
 
-  get_ip() {
-    	return Scratch.fetch("https://api.ipify.org/")
-     	 .then((response) => {
-     	   return response.text();
-   	   })
-   	   .catch((error) => {
-     	   console.error(error);
-    	    return 'IP address could not be identified.';
-   	   });
- 	 }
-	}
+        get_ip() {
+            return Scratch.fetch("https://api.ipify.org/")
+                .then((response) => {
+                    return response.text();
+                })
+                .catch((error) => {
+                    console.error(error);
+                    return 'IP address could not be identified.';
+                });
+        }
+    }
 
 
-  Scratch.extensions.register(new ipaddresses());
+    Scratch.extensions.register(new ipaddresses());
 })(Scratch);
 /*
 
