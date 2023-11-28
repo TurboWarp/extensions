@@ -34,6 +34,10 @@ For more information, please refer to <https://unlicense.org>
 (function(Scratch) {
     'use strict';
 
+    if (!Scratch.extensions.unsandboxed) {
+        throw new Error('Error! IP Addresses must run unsandboxed!');
+    }
+
     class ipaddresses {
         getInfo() {
             return {
