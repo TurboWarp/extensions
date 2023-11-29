@@ -2571,8 +2571,8 @@
               : err.last.includes("There is no item with the key passed in:")
               ? err.translated[
                   err.known.indexOf("There is no item with the key passed in:")
-                ] + text.split(":").slice(1).join(":")
-              : text)
+                ] + err.last.split(":").slice(1).join(":")
+              : err.last)
         : "";
     }
     debugErrProjectsLanguage() {
