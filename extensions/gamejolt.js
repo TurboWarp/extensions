@@ -1323,11 +1323,116 @@
    * Used for storing API error messages
    */
   let err = {
+    // Backwards compatibility
     debug: true,
+    projectsLanguage: false,
 
     noLogin: "No user logged in.",
     noData: "Data not found.",
     noIndex: "Data at such index not found.",
+
+    known: [
+      "No user logged in.",
+      "Data not found.",
+      "Data at such index not found.",
+      "Unknown fatal error occured.",
+      "You must enter a signature with your request.",
+      "The signature you entered for the request is invalid.",
+      "The game ID you passed in does not point to a valid game.",
+      "No such user with the credentials passed in could be found.",
+      "This key has restrictions placed on it. Please pass in a restriction user with valid permissions.",
+      "You must enter in a user ID or username.",
+      "No such user could be found.",
+      "Could not find an open session. You must open a new one.",
+      "The high score table ID you passed in does not belong to this game or has been deleted.",
+      "'username' and 'guest' are mutually exclusive",
+      "'better-than' and 'worse-than' are mutually exclusive",
+      "Guests are not allowed to enter scores for this game.",
+      "You must pass in a user/guest for this score.",
+      "You must enter a score.",
+      "You must enter a sort value for this score, and it must be numeric.",
+      "Unknown error has occured",
+      "Could not get a rank for the parameters you entered.",
+      "The trophy returned does not belong to this game.",
+      "Incorrect trophy ID.",
+      "The user already has this trophy.",
+      "The user does not have this trophy.",
+      "You must enter the key for the item you would like to retrieve data for.",
+      "You must enter data with the request.",
+      "There is no item with the key passed in:",
+      "You must enter an operation with the request.",
+      "Operation must be add, subtract, multiply, divide, append or prepend.",
+      "You must enter an value with the request.",
+      "Mathematical operations require the pre-existing data stored to also be numeric.",
+      "Value must be numeric if operation is mathematical.",
+      "GAME JOLT STOP: 0x00000019 (0x00000000, 0xC00E0FF0, 0xFFFFEFD4, 0xC0000000) UNIVERSAL_COLLAPSE",
+    ],
+
+    translated: [
+      Scratch.translate("No user logged in."),
+      Scratch.translate("Data not found."),
+      Scratch.translate("Data at such index not found."),
+      Scratch.translate("Unknown fatal error occured."),
+      Scratch.translate("You must enter a signature with your request."),
+      Scratch.translate(
+        "The signature you entered for the request is invalid."
+      ),
+      Scratch.translate(
+        "The game ID you passed in does not point to a valid game."
+      ),
+      Scratch.translate(
+        "No such user with the credentials passed in could be found."
+      ),
+      Scratch.translate(
+        "This key has restrictions placed on it. Please pass in a restriction user with valid permissions."
+      ),
+      Scratch.translate("You must enter in a user ID or username."),
+      Scratch.translate("No such user could be found."),
+      Scratch.translate(
+        "Could not find an open session. You must open a new one."
+      ),
+      Scratch.translate(
+        "The high score table ID you passed in does not belong to this game or has been deleted."
+      ),
+      Scratch.translate("'username' and 'guest' are mutually exclusive"),
+      Scratch.translate(
+        "'better-than' and 'worse-than' are mutually exclusive"
+      ),
+      Scratch.translate(
+        "Guests are not allowed to enter scores for this game."
+      ),
+      Scratch.translate("You must pass in a user/guest for this score."),
+      Scratch.translate("You must enter a score."),
+      Scratch.translate(
+        "You must enter a sort value for this score, and it must be numeric."
+      ),
+      Scratch.translate("Unknown error has occured"),
+      Scratch.translate("Could not get a rank for the parameters you entered."),
+      Scratch.translate("The trophy returned does not belong to this game."),
+      Scratch.translate("Incorrect trophy ID."),
+      Scratch.translate("The user already has this trophy."),
+      Scratch.translate("The user does not have this trophy."),
+      Scratch.translate(
+        "You must enter the key for the item you would like to retrieve data for."
+      ),
+      Scratch.translate("You must enter data with the request."),
+      Scratch.translate("There is no item with the key passed in:"),
+      Scratch.translate("You must enter an operation with the request."),
+      Scratch.translate(
+        "Operation must be add, subtract, multiply, divide, append or prepend."
+      ),
+      Scratch.translate("You must enter an value with the request."),
+      Scratch.translate(
+        "Mathematical operations require the pre-existing data stored to also be numeric."
+      ),
+      Scratch.translate("Value must be numeric if operation is mathematical."),
+      Scratch.translate({
+        id: "err.divisionByZero",
+        default:
+          "GAME JOLT STOP: 0x00000019 (0x00000000, 0xC00E0FF0, 0xFFFFEFD4, 0xC0000000) UNIVERSAL_COLLAPSE",
+        description: "Try to keep it as cool.",
+      }),
+    ],
 
     /**
      * Used for returning a standartized error message
@@ -1336,15 +1441,32 @@
     get: (code) =>
       err.debug
         ? err[code]
-          ? "Error: " + err[code]
-          : "Error: Data not found."
+          ? Scratch.translate("Error: ") +
+            (err.projectsLanguage && err.known.includes(err[code])
+              ? err.translated[err.known.indexOf(err[code])]
+              : err[code].includes("There is no item with the key passed in:")
+              ? err.translated[
+                  err.known.indexOf("There is no item with the key passed in:")
+                ] + err[code].split(":").slice(1).join(":")
+              : err[code])
+          : Scratch.translate("Error: Data not found.")
         : "",
 
     /**
      * Used for returning a standartized error message
      * @param {string} text
      */
-    show: (text) => (err.debug ? "Error: " + text : ""),
+    show: (text) =>
+      err.debug
+        ? Scratch.translate("Error: ") +
+          (err.projectsLanguage && err.known.includes(text)
+            ? err.translated[err.known.indexOf(text)]
+            : text.includes("There is no item with the key passed in:")
+            ? err.translated[
+                err.known.indexOf("There is no item with the key passed in:")
+              ] + text.split(":").slice(1).join(":")
+            : text)
+        : "",
   };
 
   /**
@@ -1923,9 +2045,7 @@
             opcode: "scoreGetTables",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "Fetched table [tableDataType] at index[index] (Deprecated)"
-            ),
+            text: "Fetched table [tableDataType] at index[index] (Deprecated)",
             arguments: {
               tableDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -2175,7 +2295,7 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Batch Blocks",
+            text: Scratch.translate("Batch Blocks"),
           },
           {
             opcode: "batchAdd",
@@ -2191,7 +2311,11 @@
               },
               parameters: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"key":"key","data":"data"}',
+                defaultValue: Scratch.translate({
+                  id: "GameJoltAPI_batchAddParameters",
+                  default: '{"key":"key","data":"data"}',
+                  description: "Translate only the values.",
+                }),
               },
             },
           },
@@ -2254,6 +2378,29 @@
             blockIconURI: icons.debug,
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("Last API error"),
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Debug Options (Editor Only)"),
+          },
+          {
+            func: "debugErrProjectsLanguage",
+            blockType: Scratch.BlockType.BUTTON,
+            text: Scratch.translate({
+              id: "GameJoltAPI_debugErrProjectsLanguage",
+              default: "Return known errors in english",
+              description: "Change english to the translated language.",
+            }),
+          },
+          {
+            hideFromPalette: Scratch.Language == "en", // Doesn't work
+            func: "debugErrEnglish",
+            blockType: Scratch.BlockType.BUTTON,
+            text: Scratch.translate({
+              id: "GameJoltAPI_debugErrEnglish",
+              default: "Return known errors in english",
+              description: 'Keep it "english".',
+            }),
           },
         ],
         menus: {
@@ -2417,7 +2564,22 @@
       return err.debug;
     }
     debugLastErr() {
-      return err.last ? "Error: " + err.last : "";
+      return err.last
+        ? Scratch.translate("Error: ") +
+            (err.projectsLanguage && err.known.includes(err.last)
+              ? err.translated[err.known.indexOf(err.last)]
+              : err.last.includes("There is no item with the key passed in:")
+              ? err.translated[
+                  err.known.indexOf("There is no item with the key passed in:")
+                ] + text.split(":").slice(1).join(":")
+              : text)
+        : "";
+    }
+    debugErrProjectsLanguage() {
+      err.projectsLanguage = true;
+    }
+    debugErrEnglish() {
+      err.projectsLanguage = false;
     }
     gamejoltBool() {
       return GameJolt.bOnGJ;
