@@ -11,6 +11,7 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
 
+  const hasOwn = (prop, object) => Object.hasOwn(object, prop);
   const Cast = Scratch.Cast;
   let Utilities = {
     cloneBlock(id, target) {
@@ -24,18 +25,18 @@
         return [];
       }
       Object.values(block.inputs).forEach((key) => {
-        if (key.hasOwn("shadow") && key.block === key.shadow) {
+        if (hasOwn("shadow", key) && key.block === key.shadow) {
           needed = [...needed, ...cloneBlock(key.block, target)];
           return;
         } else {
-          if (key.hasOwn("shadow"))
+          if (hasOwn("shadow", key))
             needed = [...needed, ...cloneBlock(key.shadow, target)];
-          if (key.hasOwn("block"))
+          if (hasOwn("shadow", block))
             needed = [...needed, ...cloneBlock(key.block, target)];
         }
       });
       Object.values(block.fields).forEach((key) => {
-        if (key.hasOwn("id"))
+        if (hasOwn("id", key))
           needed = [...needed, ...cloneBlock(key.id, target)];
       });
       needed.push(block);
@@ -285,7 +286,6 @@
 
     default(args, util) {
       if (this.isInPalette(util.thread)) return;
-      const block = util.thread.peekStack();
       let outerBlock = this.getOuterCtillOpcode(
         util.target,
         util.thread.peekStack(),
@@ -524,11 +524,11 @@
       let block = this.getBlockByID(target, startId);
       if (!block || typeof block !== "object") return null;
       let isC = false;
-      while (!isC && block.hasOwn("parent") && block.parent !== null) {
+      while (!isC && hasOwn("parent", block) && block.parent !== null) {
         block = this.getBlockByID(target, block.parent);
         isC =
-          block.hasOwn("inputs") &&
-          block.inputs.hasOwn("SUBSTACK");
+        hasOwn("inputs", block) &&
+        hasOwn("SUBSTACK", block.inputs);
       }
       return isC ? block : null;
     }
@@ -549,6 +549,15 @@
       return !Object.keys(thread.target.blocks._blocks).includes(
         thread.peekStack()
       );
+    }
+
+    CommitFunne(thread) {
+      const call = "You have commited a funne act.\nDont do it again.";
+      if (this.isInPalette(thread)) {
+        Scratch.vm.runtime.visualReport(thread.peekStack(), call);
+        return call;
+      }
+      return false;
     }
 
     _getTargetFromMenu(targetName, util) {
