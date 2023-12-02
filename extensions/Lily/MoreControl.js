@@ -59,7 +59,7 @@
             blockType: Scratch.BlockType.CONDITIONAL,
             arguments: {
               SWITCH: {
-                type: Scratch.ArgumentType.STRING,
+                type: null,
               },
             },
           },
@@ -89,6 +89,11 @@
               },
             },
             isTerminal: true,
+          },
+          {
+            opcode: "switchValue",
+            text: "switch value",
+            blockType: Scratch.BlockType.REPORTER,
           },
           "---",
           {
@@ -310,6 +315,17 @@
       this.setBlockByID(util.target, outerBlock.id, outerBlock);
     }
 
+    switchValue(args, util) {
+      if (this.isInPalette(util.thread)) return;
+      const outerBlock = this.getOuterCtillOpcode(
+        util.target,
+        util.thread.peekStack(),
+        "lmsSpAsMoreControl_switch"
+      );
+      if (outerBlock == null) return "";
+      return outerBlock.switchValue;
+    }
+
     elseIf(args, util) {
       const condition1 = Scratch.Cast.toBoolean(args.CONDITION1);
       const condition2 = Scratch.Cast.toBoolean(args.CONDITION2);
@@ -526,9 +542,7 @@
       let isC = false;
       while (!isC && hasOwn("parent", block) && block.parent !== null) {
         block = this.getBlockByID(target, block.parent);
-        isC =
-        hasOwn("inputs", block) &&
-        hasOwn("SUBSTACK", block.inputs);
+        isC = hasOwn("inputs", block) && hasOwn("SUBSTACK", block.inputs);
       }
       return isC ? block : null;
     }
@@ -549,15 +563,6 @@
       return !Object.keys(thread.target.blocks._blocks).includes(
         thread.peekStack()
       );
-    }
-
-    CommitFunne(thread) {
-      const call = "You have commited a funne act.\nDont do it again.";
-      if (this.isInPalette(thread)) {
-        Scratch.vm.runtime.visualReport(thread.peekStack(), call);
-        return call;
-      }
-      return false;
     }
 
     _getTargetFromMenu(targetName, util) {
