@@ -24,18 +24,18 @@
         return [];
       }
       Object.values(block.inputs).forEach((key) => {
-        if (key.hasOwnProperty("shadow") && key.block === key.shadow) {
+        if (key.hasOwn("shadow") && key.block === key.shadow) {
           needed = [...needed, ...cloneBlock(key.block, target)];
           return;
         } else {
-          if (key.hasOwnProperty("shadow"))
+          if (key.hasOwn("shadow"))
             needed = [...needed, ...cloneBlock(key.shadow, target)];
-          if (key.hasOwnProperty("block"))
+          if (key.hasOwn("block"))
             needed = [...needed, ...cloneBlock(key.block, target)];
         }
       });
       Object.values(block.fields).forEach((key) => {
-        if (key.hasOwnProperty("id"))
+        if (key.hasOwn("id"))
           needed = [...needed, ...cloneBlock(key.id, target)];
       });
       needed.push(block);
@@ -524,11 +524,11 @@
       let block = this.getBlockByID(target, startId);
       if (!block || typeof block !== "object") return null;
       let isC = false;
-      while (!isC && block.hasOwnProperty("parent") && block.parent !== null) {
+      while (!isC && block.hasOwn("parent") && block.parent !== null) {
         block = this.getBlockByID(target, block.parent);
         isC =
-          block.hasOwnProperty("inputs") &&
-          block.inputs.hasOwnProperty("SUBSTACK");
+          block.hasOwn("inputs") &&
+          block.inputs.hasOwn("SUBSTACK");
       }
       return isC ? block : null;
     }
