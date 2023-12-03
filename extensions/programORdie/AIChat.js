@@ -41,12 +41,12 @@ class AskAI {
     return r;
   }
 
-  ask({PROMPT}) {
+  ask({ PROMPT }) {
     let url = 'https://programordie-1-b6431438.deta.app/aichat/chat?prompt=';
     return Scratch.fetch(url+PROMPT)
     .then((r) => r.text())
     .then(r => this.normalText(r))
-    .catch((err) => "Error! Please contact programORdie if this keeps happening."+err);
+    .catch((err) => "Error! Please contact programORdie if this keeps happening.");
   }
 }
 
