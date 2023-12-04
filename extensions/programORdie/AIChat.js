@@ -1,5 +1,5 @@
 // Name: AI  Chat
-// ID: aichat
+// ID: aichat_programordie
 // Description: Use an AI Chatbot in your projects, inspired chatGPT!
 // By: programORdie <https://scratch.mit.edu/users/programORdie/>
 
@@ -12,7 +12,7 @@ const menuIcon = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5v
 class AskAI {
   getInfo() {
     return {
-      id: 'aichat',
+      id: 'aichat_programordie',
       name: 'AI Chat',
       menuIconURI: menuIcon,
       blockIconURI: blockIcon,
@@ -35,15 +35,15 @@ class AskAI {
   }
 
   normalText(r) {
-    r = r.replace('\"', "");
     r = r.replace('\\', "");
     r = r.replace('\\', "");
     return r;
   }
 
   ask({ PROMPT }) {
+    //MY API//
     let url = 'https://programordie-1-b6431438.deta.app/aichat/chat?prompt=';
-    return Scratch.fetch(url+PROMPT)
+    return Scratch.fetch(url+Scratch.Cast.toString(PROMPT))
     .then((r) => r.text())
     .then(r => this.normalText(r))
     .catch((err) => "Error! Please contact programORdie if this keeps happening.");
