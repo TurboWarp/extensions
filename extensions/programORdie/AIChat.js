@@ -1,6 +1,6 @@
 // Name: AI  Chat
 // ID: aichat_programordie
-// Description: Use an AI Chatbot in your projects, inspired chatGPT!
+// Description: Use an AI Chatbot in your projects that can answer questions, follow your instructions, generate stories and much more!
 // By: programORdie <https://scratch.mit.edu/users/programORdie/>
 
 (function (Scratch) {
