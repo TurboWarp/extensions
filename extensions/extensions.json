@@ -1,5 +1,4 @@
 [
-  "programORdie/AIChat",
   "lab/text",
   "stretch",
   "gamepad",
@@ -84,5 +83,6 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
-  "Lily/McUtils"
+  "Lily/McUtils",
+  "programORdie/AIChat"
 ]
