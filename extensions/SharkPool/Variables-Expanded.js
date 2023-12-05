@@ -3,14 +3,12 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.2.2
+// Version 1.2.3
 
 (function (Scratch) {
   "use strict";
 
-  if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Variables Expanded must run unsandboxed!");
-  }
+  if (!Scratch.extensions.unsandboxed) throw new Error("Variables Expanded must run unsandboxed!");
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -389,10 +387,7 @@
               "audio"
             ],
           },
-          sliderMaxMinMenu: {
-            acceptReporters: false,
-            items: ["min", "max"],
-          },
+          sliderMaxMinMenu: ["min", "max"],
           variableMenu: {
             acceptReporters: true,
             items: "getVariables",
@@ -401,14 +396,8 @@
             acceptReporters: true,
             items: "getFonts",
           },
-          variableTypeCreate: {
-            acceptReporters: false,
-            items: ["globally", "for this sprite only"],
-          },
-          POSITIONS: {
-            acceptReporters: false,
-            items: ["x", "y"],
-          },
+          variableTypeCreate: ["globally", "for this sprite only"],
+          POSITIONS: ["x", "y"],
           EFFECTS: {
             acceptReporters: true,
             items: [
@@ -477,7 +466,7 @@
           ["id", variableId],
           ["visible", true]
         ]));
-      }, 25);
+      }, 30);
     }
 
     async setVariableToType(args, util) { await this.setMonitor(args.VARIABLE, util, args.VARIABLE, args.TYPE) }
@@ -486,7 +475,7 @@
       const safeName = xmlEscape(args.NAME);
       const type = this.getMonitor(args.VARIABLE, util);
       let variableId = this.findVariable(args.VARIABLE, util);
-      if (type === "normal readout" || type === "slider" || type === "large readout") {
+      if (type.includes("readout") || type === "slider") {
         const variableMonitorLabel = document.querySelector(`[data-id="${variableId}"][class*="monitor"] [class^="monitor_label"]`);
         if (variableMonitorLabel) variableMonitorLabel.textContent = args.NAME;
       } else {
@@ -496,6 +485,7 @@
 
     async setMonitor(nameID, util, name, type) {
       let variableId = this.findVariable(nameID, util);
+      const oldStyle = document.querySelector(`[data-id="${variableId}"][class*="monitor"]`);
       if (type.includes("readout") || type === "slider") {
         if (!(this.getMonitor(nameID, util).includes("readout") || this.getMonitor(nameID, util) === "slider")) {
           this.resetFormat(variableId);
@@ -559,7 +549,7 @@
               <div class="monitor_label_ci1ok">${variableName}</div>
             </div>
             <div class="monitor_row_2y_kM">
-              <input type="text" id="text_${variableId}" class="monitor_slider_1CHwk no-drag" value="...">
+              <input type="text" id="text_${variableId}" class="monitor_slider_1CHwk no-drag" value="${Vvalue}">
             </div>`;
           variableMonitor.appendChild(container);
           typeElement = container.querySelector(`[id="text_${variableId}"]`);
@@ -744,6 +734,7 @@
           vm.runtime.requestUpdateMonitor(state);
           break;
       }
+      this.reAddDeleted(oldStyle, variableId, nameID, util);
     }
 
     addMonitorsUpdateListener(listener) {
@@ -778,9 +769,7 @@
       return variableId === this.buttonName ? !!this.buttonClick : false;
     }
 
-    getVariableType(args, util) {
-      return this.getMonitor(args.VARIABLE, util);
-    }
+    getVariableType(args, util) { return this.getMonitor(args.VARIABLE, util) }
 
     getMonitor(variable, util) {
       const variableId = this.findVariable(variable, util);
@@ -1023,6 +1012,21 @@
         return chars[Math.round(Math.random() * (chars.length - 1))]
       })
       return normalArray.join("");
+    }
+
+    reAddDeleted(variable, id, name, util) {
+      const waitAndExecute = () => {
+        if (!this.isShowing({VARIABLE : name}, util)) {
+          setTimeout(waitAndExecute, 5);
+          return;
+        }
+        setTimeout(() => {
+          const variableMonitor = document.querySelector(`[data-id="${id}"][class*="monitor"]`);
+          const inlineStyles = variable.getAttribute("style");
+          if (variableMonitor.style) variableMonitor.style = inlineStyles;
+        }, 10);
+      };
+      waitAndExecute();
     }
   }
 
