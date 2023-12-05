@@ -1,0 +1,32 @@
+class DateTimeExtension {
+  getInfo() {
+    return {
+      id: 'datetimeexample',
+      name: 'Date and Time',
+      blocks: [
+        {
+          opcode: 'getCurrentDateTime',
+          blockType: Scratch.BlockType.REPORTER,
+          text: 'current date and time'
+        }
+      ]
+    };
+  }
+
+  getCurrentDateTime() {
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    const now = new Date();
+    const dayOfWeek = daysOfWeek[now.getDay()];
+    const month = monthsOfYear[now.getMonth()];
+    const dayOfMonth = now.getDate();
+    const year = now.getFullYear();
+
+    const formattedDateTime = `${dayOfWeek}, ${month} ${dayOfMonth}, ${year}`;
+    
+    return formattedDateTime;
+  }
+}
+
+Scratch.extensions.register(new DateTimeExtension());
