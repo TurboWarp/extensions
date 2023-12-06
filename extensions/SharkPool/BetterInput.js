@@ -1,16 +1,14 @@
 // Name: Better Input
 // ID: BetterInputSP
 // Description: Expansion of the "ask and wait" Blocks
-// By: SharkPool <https://github.com/SharkPool-SP>
+// By: SharkPool
 
-// Version V.3.0.1 (Formatting Changes and Code Simplifications)
+// Version V.3.0.2 (Bug Fixes and New Blocks)
 
 (function (Scratch) {
   "use strict";
 
-  if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Better Input must run unsandboxed");
-  }
+  if (!Scratch.extensions.unsandboxed) throw new Error("Better Input must run unsandboxed");
 
   const menuIconURI =
 "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMzQuMTc2MjgiIGhlaWdodD0iMTM0LjE3NjI4IiB2aWV3Qm94PSIwLDAsMTM0LjE3NjI4LDEzNC4xNzYyOCI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE3Mi45MTE4NiwtMTEyLjkxMTg2KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMTcyLjkxMTg2LDE4MGMwLC0zNy4wNTE3NiAzMC4wMzYzOCwtNjcuMDg4MTQgNjcuMDg4MTQsLTY3LjA4ODE0YzM3LjA1MTc2LDAgNjcuMDg4MTQsMzAuMDM2MzggNjcuMDg4MTQsNjcuMDg4MTRjMCwzNy4wNTE3NiAtMzAuMDM2MzgsNjcuMDg4MTQgLTY3LjA4ODE0LDY3LjA4ODE0Yy0zNy4wNTE3NiwwIC02Ny4wODgxNCwtMzAuMDM2MzggLTY3LjA4ODE0LC02Ny4wODgxNHoiIGZpbGw9IiM5NDAwZmYiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTI0OS42Nzg4MiwxNDEuMDQ1NzZsMTAuODMzOSwwLjAzOTgzYzEwLjUxNTI2LDAuMDc5NjYgMTAuODMzOSwwLjExOTQ5IDExLjUxMTAyLDAuNTk3NDVjMi40Mjk2NiwxLjg3MjA0IDIuMzg5ODMsNC45Mzg5OSAtMC4xNTkzMyw2LjY1MTY5Yy0wLjc1Njc4LDAuNTE3OCAtMS4xMTUyNSwwLjU1NzYzIC00LjM0MTUyLDAuNTU3NjNoLTMuNTA1MDl2MzEuMTA3NjN2MzEuMDY3NzloMy40NjUyNmMzLjk0MzIyLDAgNC44OTkxNiwwLjMxODY1IDUuODE1MjYsMS45NTE3YzEuMDM1NiwxLjgzMjIgMC41MTc4LDMuOTQzMjMgLTEuMjc0NTgsNS4yNTc2M2MtMC42NzcxMiwwLjUxNzggLTAuOTk1NzYsMC41MTc4IC0xMS41MTEwMiwwLjU5NzQ1bC0xMC44MzM5LDAuMDc5NjZsLTEuMTE1MjUsLTAuNTU3NjNjLTEuMTU1MDksLTAuNjM3MjkgLTIuMTkwNjgsLTIuMTUwODUgLTIuMTkwNjgsLTMuMzg1NmMwLC0wLjg3NjI3IDAuOTk1NzcsLTIuNjY4NjQgMS43OTIzNywtMy4yNjYxYzAuNTk3NDYsLTAuNDc3OTcgMS4xMTUyNSwtMC41MTc4IDQuMzQxNTIsLTAuNTk3NDVsMy42NjQ0LC0wLjA3OTY3di0zMS4wNjc3OXYtMzEuMDY3NzlsLTMuNjY0NCwtMC4wNzk2N2MtMy4yMjYyNywtMC4wNzk2NiAtMy43NDQwNiwtMC4xMTk0OSAtNC4zNDE1MiwtMC41OTc0NWMtMC43OTY2MSwtMC41NTc2MyAtMS43OTIzNywtMi4zNSAtMS43OTIzNywtMy4yNjYxYzAsLTEuMjM0NzUgMC45OTU3NiwtMi43ODgxNCAyLjE5MDY4LC0zLjM4NTZ6IiBmaWxsPSJub25lIiBzdHJva2U9IiM2OTAwYjQiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNMjI0LjY2NTI2LDE1OC40NTE3aDI4LjA0MDY3djIxLjU0ODMxdjIxLjUwODQ4bC0yOC40Mzg5OCwtMC4wMzk4M2MtMjguMiwtMC4wNzk2NiAtMjguNDM4OTksLTAuMDc5NjcgLTI5LjMxNTI2LC0wLjU5NzQ2Yy0wLjQ3Nzk3LC0wLjI3ODgyIC0xLjExNTI1LC0wLjkxNjEgLTEuMzk0MDcsLTEuNDczNzNsLTAuNTU3NjMsLTAuOTU1OTN2LTE4LjQ0MTUzYzAsLTE3LjcyNDU4IDAuMDM5ODMsLTE4LjQ0MTUzIDAuNDc3OTcsLTE5LjM1NzYzYzAuNTk3NDYsLTEuMDc1NDIgMC45NTU5MywtMS40MzM5IDIuMTUwODUsLTEuODcyMDNjMC43NTY3OCwtMC4yMzg5OSA2LjE3MzczLC0wLjMxODY1IDI5LjAzNjQ0LC0wLjMxODY1ek0yMTQuNjI3OTcsMTY4LjQ0OTE2Yy0wLjYzNzI5LDAuMzk4MyAtMS4zMTQ0MSwxLjc5MjM3IC01LjAxODY0LDkuOTk3NDZjLTQuNjIwMzQsMTAuMjM2NDQgLTQuODU5MzIsMTAuOTEzNTYgLTMuODIzNzIsMTIuMDI4ODJjMS4xNTUwOSwxLjIzNDc1IDIuOTQ3NDUsMS4yNzQ1NyAzLjk4MzA1LDAuMDM5ODNjMC4zMTg2NSwtMC4zOTgzIDAuNzk2NiwtMS4yNzQ1NyAxLjAzNTU5LC0xLjk1MTdsMC40MzgxNCwtMS4yMzQ3NWg0Ljc3OTY2aDQuNzc5NjZsMC41NTc2MywxLjQzMzljMC43MTY5NSwxLjk1MTcgMS40NzM3MywyLjYyODgyIDIuOTA3NjMsMi42Mjg4MmMwLjkxNjEsMCAxLjE5NDkxLC0wLjExOTQ5IDEuNzkyMzcsLTAuNzk2NjFjMC41MTc4LC0wLjU1NzYzIDAuNzE2OTUsLTEuMDM1NTkgMC43MTY5NSwtMS42NzI4OGMwLC0wLjYzNzI5IC0xLjE1NTA4LC0zLjU4NDc0IC0zLjc4MzksLTkuNDM5ODNjLTQuOTc4ODEsLTExLjE5MjM3IC00LjczOTg0LC0xMC43MTQ0MSAtNS41MzY0NSwtMTEuMTEyNzFjLTAuOTE2MSwtMC41MTc4IC0xLjkxMTg3LC0wLjQ3Nzk2IC0yLjgyNzk3LDAuMDc5NjZ6IiBmaWxsPSJub25lIiBzdHJva2U9IiM2OTAwYjQiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNMjE2LjEwMTcsMTc2LjA5NjYxYzAuMTU5MzIsMC4xNTkzMiAyLjU4ODk4LDYuMTMzOSAyLjU4ODk4LDYuMzMzMDVjMCwwLjE1OTMyIC0xLjE5NDkxLDAuMjM4OTggLTIuNzA4NDcsMC4yMzg5OGMtMi4wNzExOCwwIC0yLjY2ODY0LC0wLjA3OTY2IC0yLjU4ODk4LC0wLjMxODY1YzAuMDc5NjYsLTAuMTU5MzIgMC42NzcxMiwtMS42MzMwNSAxLjM5NDA3LC0zLjMwNTkzYzAuNzE2OTUsLTEuNjMzMDUgMS4zMTQ0LC0yLjk4NzI5IDEuMzE0NCwtMi45NDc0NnoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY5MDBiNCIgc3Ryb2tlLXdpZHRoPSIxMCIvPjxwYXRoIGQ9Ik0yNjcuNjQyMzgsMTgwdi0yMS41ODgxM2w4LjI4NDc0LDAuMDc5NjZjNy44MDY3OCwwLjA3OTY2IDguMzI0NTgsMC4xMTk1IDkuMTIxMTksMC41OTc0NmMwLjQ3Nzk2LDAuMjc4ODIgMS4xMTUyNSwwLjkxNjEgMS4zOTQwNywxLjQ3MzczbDAuNTU3NjIsMC45NTU5M3YxOC40ODEzNnYxOC40NDE1M2wtMC41NTc2MiwwLjk1NTkzYy0wLjI3ODgyLDAuNTU3NjMgLTAuOTE2MTEsMS4xOTQ5MSAtMS4zOTQwNywxLjQ3MzczYy0wLjgzNjQ0LDAuNTE3OCAtMS4zMTQ0MSwwLjUxNzggLTkuMTIxMTksMC41OTc0NmwtOC4yODQ3NCwwLjA3OTY2di0yMS41NDgzeiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNjkwMGI0IiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTI0OS42Nzg4MiwxNDEuMDQ1NzZsMTAuODMzOSwwLjAzOTgzYzEwLjUxNTI2LDAuMDc5NjYgMTAuODMzOSwwLjExOTQ5IDExLjUxMTAyLDAuNTk3NDVjMi40Mjk2NiwxLjg3MjA0IDIuMzg5ODMsNC45Mzg5OSAtMC4xNTkzMyw2LjY1MTY5Yy0wLjc1Njc4LDAuNTE3OCAtMS4xMTUyNSwwLjU1NzYzIC00LjM0MTUyLDAuNTU3NjNoLTMuNTA1MDl2MzEuMTA3NjN2MzEuMDY3NzloMy40NjUyNmMzLjk0MzIyLDAgNC44OTkxNiwwLjMxODY1IDUuODE1MjYsMS45NTE3YzEuMDM1NiwxLjgzMjIgMC41MTc4LDMuOTQzMjMgLTEuMjc0NTgsNS4yNTc2M2MtMC42NzcxMiwwLjUxNzggLTAuOTk1NzYsMC41MTc4IC0xMS41MTEwMiwwLjU5NzQ1bC0xMC44MzM5LDAuMDc5NjZsLTEuMTE1MjUsLTAuNTU3NjNjLTEuMTU1MDksLTAuNjM3MjkgLTIuMTkwNjgsLTIuMTUwODUgLTIuMTkwNjgsLTMuMzg1NmMwLC0wLjg3NjI3IDAuOTk1NzcsLTIuNjY4NjQgMS43OTIzNywtMy4yNjYxYzAuNTk3NDYsLTAuNDc3OTcgMS4xMTUyNSwtMC41MTc4IDQuMzQxNTIsLTAuNTk3NDVsMy42NjQ0LC0wLjA3OTY3di0zMS4wNjc3OXYtMzEuMDY3NzlsLTMuNjY0NCwtMC4wNzk2N2MtMy4yMjYyNywtMC4wNzk2NiAtMy43NDQwNiwtMC4xMTk0OSAtNC4zNDE1MiwtMC41OTc0NWMtMC43OTY2MSwtMC41NTc2MyAtMS43OTIzNywtMi4zNSAtMS43OTIzNywtMy4yNjYxYzAsLTEuMjM0NzUgMC45OTU3NiwtMi43ODgxNCAyLjE5MDY4LC0zLjM4NTZ6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIvPjxwYXRoIGQ9Ik0yNTEuMzcyNiwxNTguNDUxN3Y0My4wNTY3OGMwLDAgLTU1LjU0NDYzLC0wLjExOTUgLTU2LjQyMDksLTAuNjM3MjljLTAuNDc3OTcsLTAuMjc4ODIgLTEuMTE1MjUsLTAuOTE2MSAtMS4zOTQwNywtMS40NzM3M2wtMC41NTc2MywtMC45NTU5M3YtMTguNDQxNTNjMCwtMTcuNzI0NTggMC4wMzk4MywtMTguNDQxNTMgMC40Nzc5NywtMTkuMzU3NjNjMC41OTc0NiwtMS4wNzU0MiAwLjk1NTkzLC0xLjQzMzkgMi4xNTA4NSwtMS44NzIwM2MwLjc1Njc4LC0wLjIzODk5IDU1Ljc0Mzc4LC0wLjMxODY1IDU1Ljc0Mzc4LC0wLjMxODY1ek0yMTQuNjI3OTcsMTY4LjQ0OTE2Yy0wLjYzNzI5LDAuMzk4MyAtMS4zMTQ0MSwxLjc5MjM3IC01LjAxODY0LDkuOTk3NDZjLTQuNjIwMzQsMTAuMjM2NDQgLTQuODU5MzIsMTAuOTEzNTYgLTMuODIzNzIsMTIuMDI4ODJjMS4xNTUwOSwxLjIzNDc1IDIuOTQ3NDUsMS4yNzQ1NyAzLjk4MzA1LDAuMDM5ODNjMC4zMTg2NSwtMC4zOTgzIDAuNzk2NiwtMS4yNzQ1NyAxLjAzNTU5LC0xLjk1MTdsMC40MzgxNCwtMS4yMzQ3NWg0Ljc3OTY2aDQuNzc5NjZsMC41NTc2MywxLjQzMzljMC43MTY5NSwxLjk1MTcgMS40NzM3MywyLjYyODgyIDIuOTA3NjMsMi42Mjg4MmMwLjkxNjEsMCAxLjE5NDkxLC0wLjExOTQ5IDEuNzkyMzcsLTAuNzk2NjFjMC41MTc4LC0wLjU1NzYzIDAuNzE2OTUsLTEuMDM1NTkgMC43MTY5NSwtMS42NzI4OGMwLC0wLjYzNzI5IC0xLjE1NTA4LC0zLjU4NDc0IC0zLjc4MzksLTkuNDM5ODNjLTQuOTc4ODEsLTExLjE5MjM3IC00LjczOTg0LC0xMC43MTQ0MSAtNS41MzY0NSwtMTEuMTEyNzFjLTAuOTE2MSwtMC41MTc4IC0xLjkxMTg3LC0wLjQ3Nzk2IC0yLjgyNzk3LDAuMDc5NjZ6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIvPjxwYXRoIGQ9Ik0yMTYuMTAxNywxNzYuMDk2NjFjMC4xNTkzMiwwLjE1OTMyIDIuNTg4OTgsNi4xMzM5IDIuNTg4OTgsNi4zMzMwNWMwLDAuMTU5MzIgLTEuMTk0OTEsMC4yMzg5OCAtMi43MDg0NywwLjIzODk4Yy0yLjA3MTE4LDAgLTIuNjY4NjQsLTAuMDc5NjYgLTIuNTg4OTgsLTAuMzE4NjVjMC4wNzk2NiwtMC4xNTkzMiAwLjY3NzEyLC0xLjYzMzA1IDEuMzk0MDcsLTMuMzA1OTNjMC43MTY5NSwtMS42MzMwNSAxLjMxNDQsLTIuOTg3MjkgMS4zMTQ0LC0yLjk0NzQ2eiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjY4Ljk3NTcxLDE1OC40MTE4N2MwLDAgMTUuMjc1OTksMC4xOTkxNSAxNi4wNzI2LDAuNjc3MTJjMC40Nzc5NiwwLjI3ODgyIDEuMTE1MjUsMC45MTYxIDEuMzk0MDcsMS40NzM3M2wwLjU1NzYyLDAuOTU1OTN2MTguNDgxMzZ2MTguNDQxNTNsLTAuNTU3NjIsMC45NTU5M2MtMC4yNzg4MiwwLjU1NzYzIC0wLjkxNjExLDEuMTk0OTEgLTEuMzk0MDcsMS40NzM3M2MtMC44MzY0NCwwLjUxNzggLTE2LjA3MjYsMC42NzcxMiAtMTYuMDcyNiwwLjY3NzEyeiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiLz48L2c+PC9nPjwvc3ZnPg==";
@@ -116,10 +114,7 @@
         menuIconURI,
         blockIconURI,
         blocks: [
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Text Blocks",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Text Blocks" },
           {
             opcode: "askAndWait",
             blockType: Scratch.BlockType.COMMAND,
@@ -152,10 +147,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "remove all ask boxes",
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Formatting",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Formatting" },
           {
             opcode: "setFontSize",
             blockType: Scratch.BlockType.COMMAND,
@@ -239,9 +231,7 @@
               },
             },
           },
-
           "---",
-
           {
             opcode: "setButton",
             blockType: Scratch.BlockType.COMMAND,
@@ -260,6 +250,12 @@
             },
           },
           {
+            opcode: "deleteAllButtons",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "remove all buttons",
+            blockIconURI: formatIcon
+          },
+          {
             opcode: "setButtonText",
             blockType: Scratch.BlockType.COMMAND,
             text: "set [BUTTON_MENU] button name to [TEXT]",
@@ -276,10 +272,7 @@
               },
             },
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Positioning",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Positioning" },
           {
             opcode: "setPrePosition",
             blockType: Scratch.BlockType.COMMAND,
@@ -370,10 +363,7 @@
             text: "direction",
             blockIconURI: formatIcon,
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Visual Settings",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Visual Settings" },
           {
             opcode: "setColorSettings",
             blockType: Scratch.BlockType.COMMAND,
@@ -445,9 +435,7 @@
               },
             },
           },
-
           "---",
-
           {
             opcode: "enableShadow",
             blockType: Scratch.BlockType.COMMAND,
@@ -478,9 +466,7 @@
               },
             },
           },
-
           "---",
-
           {
             opcode: "setBorderRadius",
             blockType: Scratch.BlockType.COMMAND,
@@ -498,9 +484,7 @@
               },
             },
           },
-
           "---",
-
           {
             opcode: "setImage",
             blockType: Scratch.BlockType.COMMAND,
@@ -535,10 +519,7 @@
               },
             },
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Effects",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Effects" },
           {
             opcode: "resetEffect",
             blockType: Scratch.BlockType.COMMAND,
@@ -592,9 +573,7 @@
               },
             },
           },
-
           "---",
-
           {
             opcode: "setTimeout",
             blockType: Scratch.BlockType.COMMAND,
@@ -613,10 +592,7 @@
             text: "current textbox timeout",
             blockIconURI: effectIcon,
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Operations",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Operations" },
           {
             opcode: "isWaitingInput",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -653,7 +629,7 @@
           {
             opcode: "getBoxInfo",
             blockType: Scratch.BlockType.REPORTER,
-            text: "box [INFO]",
+            text: "textbox [INFO]",
             arguments: {
               INFO: {
                 type: Scratch.ArgumentType.STRING,
@@ -670,7 +646,7 @@
           },
           boxInfo: {
             acceptReporters: true,
-            items: ["count", "limit"],
+            items: ["count", "limit", "button count", "button names"],
           },
           buttonType: {
             acceptReporters: true,
@@ -756,23 +732,15 @@
             value: i.family,
           }))
         : [];
-      return [
-        ...fontMenu,
-        ...customFonts,
-      ];
+      return [ ...fontMenu, ...customFonts ];
     }
 
     allButtons(array, enableText) {
       const customButtons = Object.keys(this.buttonJSON);
       if (enableText) {
-        customButtons.forEach((button) => {
-          customButtons.push(button + " Text");
-        });
+        customButtons.forEach((button) => { customButtons.push(button + " Text") });
       }
-      return [
-        ...array,
-        ...customButtons,
-      ];
+      return [ ...array, ...customButtons ];
     }
 
     updateOverlayPos(overlay) {
@@ -884,25 +852,17 @@
       }
     }
 
-    showEffect(args) {
-      const effect = args.EFFECT;
-      return this[effect];
-    }
+    showEffect(args) { return this[args.EFFECT] }
 
     setEffect(args) {
-      const effect = args.EFFECT;
-      this[effect] = args.AMT;
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this[args.EFFECT] = args.AMT;
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     changeEffect(args) {
       const effect = args.EFFECT;
       this[effect] = this[effect] + args.AMT;
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     resetEffect() {
@@ -917,10 +877,7 @@
       this.Scale = 100;
       this.SkewX = 0;
       this.SkewY = 0;
-
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     setColorSettings(args) {
@@ -965,9 +922,7 @@
           }
           break;
       }
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     findGradientType(menu) {
@@ -1002,9 +957,7 @@
         const buttonInfo = this.buttonJSON[newColorType[1]];
         buttonInfo.color = gradientColor;
       }
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     setCircleGradient(args) {
@@ -1017,9 +970,7 @@
         const buttonInfo = this.buttonJSON[newColorType[1]];
         buttonInfo.color = gradientColor;
       }
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     setBorderRadius(args) {
@@ -1043,9 +994,7 @@
           }
           break;
       }
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     setShadow(args) {
@@ -1064,9 +1013,7 @@
           this.shadowS[3] = args.AMT / 100;
           break;
       }
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     setImage(args) {
@@ -1080,9 +1027,7 @@
         const buttonInfo = this.buttonJSON[args.ELEMENT];
         buttonInfo.image = args.IMAGE;
       }
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     scaleImage(args) {
@@ -1096,25 +1041,19 @@
         const buttonInfo = this.buttonJSON[args.ELEMENT];
         buttonInfo.imgScale = args.SCALE;
       }
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     setDirection(args) {
       const ROTATE = args.ROTATE;
       this.Rotation = Scratch.Cast.toNumber(ROTATE);
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     changeDirection(args) {
       const ROTATE = args.ROTATE;
       this.Rotation = this.Rotation + Scratch.Cast.toNumber(ROTATE);
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     reportDirection() { return this.Rotation }
@@ -1127,17 +1066,13 @@
     setPosition(args) {
       this.textBoxX = Scratch.Cast.toNumber(args.X) / (screen.width / 400);
       this.textBoxY = Scratch.Cast.toNumber(args.Y) / (screen.height / -300);
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlayPos(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlayPos(overlay) });
     }
 
     changePosition(args) {
       this.textBoxX = this.textBoxX + Scratch.Cast.toNumber(args.X) / (screen.width / 400);
       this.textBoxY = this.textBoxY + Scratch.Cast.toNumber(args.Y) / (screen.height / -300);
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlayPos(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlayPos(overlay) });
     }
 
     getXpos() { return this.textBoxX * (screen.width / 400) }
@@ -1148,16 +1083,12 @@
 
     setTextAlignment(args) {
       this.textAlign = args.ALIGNMENT;
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     setFontFamily(args) {
       this.fontFamily = args.FONT;
-      this.activeOverlays.forEach((overlay) => {
-        this.updateOverlay(overlay);
-      });
+      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     setSlider(args) { this.sliderInfo = [args.MIN, args.MAX, args.DEFAULT] }
@@ -1215,9 +1146,7 @@
 
     askAndWaitForInput(args) {
       if (this.askBoxInfo[0] < this.askBoxInfo[1] ) {
-        return this.askAndWait(args).then(() => {
-          return this.getUserInput();
-        });
+        return this.askAndWait(args).then(() => { return this.getUserInput() });
       }
     }
 
@@ -1375,11 +1304,8 @@
 
           const sliderContainer = document.createElement("div");
           sliderContainer.classList.add("slider-container");
-
           const slider = document.createElement("input");
-          if (this.isInputEnabled.includes("Vertical")) {
-            slider.style.transform = "rotate(270deg)";
-          }
+          if (this.isInputEnabled.includes("Vertical")) slider.style.transform = "rotate(270deg)";
           slider.type = "range";
           slider.min = this.sliderInfo[0];
           slider.max = this.sliderInfo[1];
@@ -1402,7 +1328,7 @@
           valueDisplay.textContent = slider.value;
           slider.addEventListener("input", () => {
             valueDisplay.textContent = slider.value;
-            inputField.value = valueDisplay.textContent;
+            this.userInput = valueDisplay.textContent;
           });
 
           overlay.appendChild(questionText);
@@ -1498,6 +1424,11 @@
       Scratch.vm.extensionManager.refreshBlocks()
     }
 
+    deleteAllButtons() {
+      this.buttonJSON = {};
+      Scratch.vm.extensionManager.refreshBlocks()
+    }
+
     isWaitingInput() { return this.isWaitingForInput }
 
     isDropdown() { return this.isDropdownOpen }
@@ -1513,7 +1444,14 @@
 
     getUserInput() { return this.userInput === null ? "" : this.userInput }
 
-    getBoxInfo(args) { return this.askBoxInfo[args.INFO === "count" ? 0 : 1] }
+    getBoxInfo(args) {
+      if (args.INFO.includes("button")) {
+        const buttons = Object.keys(this.buttonJSON);
+        return args.INFO.includes("names") ? JSON.stringify(buttons) : buttons.length;
+      } else {
+        return this.askBoxInfo[args.INFO === "count" ? 0 : 1]
+      }
+    }
 
     setSubmitEvent(args) { this.forceInput = args.ENTER }
   }
