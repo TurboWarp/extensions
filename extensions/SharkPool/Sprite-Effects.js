@@ -1146,6 +1146,7 @@
     async getImage(image) {
       if (image.startsWith("data:image/")) {
         return new Promise((resolve, reject) => {
+          // eslint-disable-next-line
           const img = new Image();
           img.onload = () => {
             const width = img.width;
@@ -1181,6 +1182,7 @@
 
     async svgToBitmap(svg, width, height) {
       return new Promise((resolve) => {
+        // eslint-disable-next-line
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement("canvas");
@@ -1250,7 +1252,7 @@
       if (svgTag !== -1) {
         let url = `filter="url(#${name})"`;
         if (svg.includes("filter=\"url(")) {
-          const regex = /filter="url\(\#[^"]+\)"/g;
+          const regex = /filter="url\([^"]+\)"/g;
           const existingFilters = svg.match(regex);
           if (existingFilters) {
             const filterString = existingFilters.join(" ").slice(0, -1);
@@ -1270,6 +1272,7 @@
       // we shouldnt ask for permission since its for a trusted, static function
       // I could hardcode this in, but Id rather not have it take up file space :/
       const link = "https://raw.githubusercontent.com/SharkPool-SP/SharkPools-Extensions/main/extension-sourceFeed/";
+      /* eslint-disable */
       try {
         displacementSrCs = [
           await (await fetch(link + "SE-bulge.txt")).text(),
@@ -1277,6 +1280,7 @@
           await (await fetch(link + "SE-ripple.txt")).text(),
         ];
       } catch (error) { console.error("Error fetching resources: ", error) }
+      /* eslint-enable */
     }
   }
 
