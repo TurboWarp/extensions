@@ -943,7 +943,7 @@
           (Scratch.Cast.toNumber(args.Y) * -1) + Scratch.Cast.toNumber(heightMatch ? parseFloat(heightMatch[1]) / 2 : parseFloat(Scratch.renderer.canvas.style.height) / 2)
         ];
         const filterElement = `<filter id="lighting"><feSpecularLighting result="specOut" specularExponent="20" lighting-color="${args.COLOR}"><fePointLight x="${pos[0]}" y="${pos[1]}" z="${Scratch.Cast.toNumber(args.NUM)}" /></feSpecularLighting><feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" /></filter>`;
-	      return this.filterApplier(svg, filterElement, "lighting");
+        return this.filterApplier(svg, filterElement, "lighting");
       }
       return svg;
     }
@@ -995,7 +995,7 @@
             width="${axis === 1 || axis === 3 ? `${mul[0]}%` : mul[1] + "%"}" height="${axis > 1 ? `${mul[0]}%` : mul[1] + "%"}" result="merge2">
             <feMergeNode in="SourceGraphic" /><feMergeNode in="off2b" /></feMerge><feColorMatrix in="merge2" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 ${Math.random() * 0.5 + 0.5} 0" result="tinted2"/>
           <feMerge><feMergeNode in="SourceGraphic" /><feMergeNode in="tinted1" /><feMergeNode in="tinted2" /></feMerge></filter>`;
-	      return this.filterApplier(svg, filterElement, "glitch");
+        return this.filterApplier(svg, filterElement, "glitch");
       }
       return svg;
     }
@@ -1020,7 +1020,7 @@
         const filterElement = `<filter id="${name}">
         	<feImage xlink:href="${`data:image/svg+xml;base64,${btoa(svg2)}`}" x="${maskOptions[0]}" y="${maskOptions[1]}" width="${maskOptions[2]}%" height="${maskOptions[2]}%" preserveAspectRatio="xMidYMid meet" crossOrigin="anonymous" result="image1"/>
         	<feComposite in="${args.TYPE !== " " ? "SourceGraphic" : "image1"}" in2="${args.TYPE !== " " ? "image1" : "SourceGraphic"}" operator="${args.TYPE}" x="0%" y="0%" width="${multiply[0]}%" height="${multiply[1]}%" result="composite1"/></filter>`;
-	      return this.filterApplier(svg, filterElement, name);
+        return this.filterApplier(svg, filterElement, name);
       }
       return svg;
     }
@@ -1048,7 +1048,7 @@
         const y = Scratch.Cast.toNumber(args.y ? args.y : 0) / 100;
         if (type === 0) {
           const newPos = [currentX + (x * 100), currentY + (y * -100)];
-          return svg.replace(/translate\([^\)]*\)/, `translate(${newPos[0]},${newPos[1]})`);
+          return svg.replace(/translate\([^)]*\)/, `translate(${newPos[0]},${newPos[1]})`);
         } else if (type === 1) {
           if (svg.includes("style=\"transform-origin: center; transform:")) {
             svg = svg.replace(/(style="[^"]*transform:[^"]*)/, `$1 rotate(${Scratch.Cast.toNumber(args.DIR) - 90}deg)`);
