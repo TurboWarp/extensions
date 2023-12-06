@@ -1145,7 +1145,7 @@
 
     async getImage(image) {
       if (image.startsWith("data:image/")) {
-        return new Promise((resolve, reject) => {
+        return await new Promise((resolve, reject) => {
           // eslint-disable-next-line
           const img = new Image();
           img.onload = () => {
@@ -1181,7 +1181,7 @@
     }
 
     async svgToBitmap(svg, width, height) {
-      return new Promise((resolve) => {
+      return await new Promise((resolve) => {
         // eslint-disable-next-line
         const img = new Image();
         img.onload = () => {
@@ -1285,4 +1285,4 @@
   }
 
   Scratch.extensions.register(new SPspriteEffects());
-})(Scratch);
+})(Scratch);    
