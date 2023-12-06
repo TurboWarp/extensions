@@ -227,7 +227,7 @@
           "---",
           {
             opcode: "warp",
-            blockType: Scratch.BlockType.CONDITIONAL
+            blockType: Scratch.BlockType.CONDITIONAL,
           },
           {
             opcode: "runInSprite",
@@ -458,7 +458,10 @@
     warp(args, util) {
       if (runtime.compilerOptions.enabled) {
         //I'd really like for this not to be the case, but I don't think that's going to happen.
-        vm.runtime.emitCompileError(util.target, "The Warp block only works when the compiler is disabled.");
+        vm.runtime.emitCompileError(
+          util.target,
+          "The Warp block only works when the compiler is disabled."
+        );
         return 1;
       }
       util.thread.peekStackFrame().warpMode = false;
