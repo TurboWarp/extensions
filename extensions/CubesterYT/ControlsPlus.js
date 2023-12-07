@@ -225,21 +225,6 @@
           "---",
 
           {
-            opcode: "forEachItem",
-            text: "for each [VARIABLE] in [LIST]",
-            blockType: Scratch.BlockType.LOOP,
-            arguments: {
-              VARIABLE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "VARIABLES",
-              },
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "LISTS",
-              },
-            },
-          },
-          {
             opcode: "forEachFrom",
             text: "for each [VARIABLE] in [TIMES] from [VALUE]",
             blockType: Scratch.BlockType.LOOP,
@@ -255,6 +240,21 @@
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 5,
+              },
+            },
+          },
+          {
+            opcode: "forEachItem",
+            text: "for each [VARIABLE] in [LIST]",
+            blockType: Scratch.BlockType.LOOP,
+            arguments: {
+              VARIABLE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "VARIABLES",
+              },
+              LIST: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "LISTS",
               },
             },
           },
@@ -344,6 +344,7 @@
             opcode: "runGreenFlag",
             text: "run [FLAG]",
             blockType: Scratch.BlockType.COMMAND,
+            isTerminal: true,
             arguments: {
               FLAG: {
                 type: Scratch.ArgumentType.IMAGE,
@@ -553,6 +554,20 @@
       }
       util.startBranch(1, false);
     }
+    forEachFrom(args, util) {
+      args.VARIABLE = util.target.lookupOrCreateVariable(
+        args.VARIABLE,
+        args.VARIABLE
+      );
+      if (typeof util.stackFrame.index === "undefined") {
+        util.stackFrame.index = args.VALUE;
+      }
+      if (util.stackFrame.index < args.TIMES + args.VALUE) {
+        util.stackFrame.index++;
+        args.VARIABLE.value = util.stackFrame.index;
+        util.startBranch(1, true);
+      }
+    }
     forEachItem(args, util) {
       args.VARIABLE = util.target.lookupOrCreateVariable(
         args.VARIABLE,
@@ -565,20 +580,6 @@
       if (util.stackFrame.index < Number(args.LIST.value.length)) {
         args.VARIABLE.value = args.LIST.value[util.stackFrame.index];
         util.stackFrame.index++;
-        util.startBranch(1, true);
-      }
-    }
-    forEachFrom(args, util) {
-      args.VARIABLE = util.target.lookupOrCreateVariable(
-        args.VARIABLE,
-        args.VARIABLE
-      );
-      if (typeof util.stackFrame.index === "undefined") {
-        util.stackFrame.index = args.VALUE;
-      }
-      if (util.stackFrame.index < args.TIMES + args.VALUE) {
-        util.stackFrame.index++;
-        args.VARIABLE.value = util.stackFrame.index;
         util.startBranch(1, true);
       }
     }
