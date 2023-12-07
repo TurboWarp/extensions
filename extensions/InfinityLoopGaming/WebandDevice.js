@@ -129,6 +129,23 @@
             text: "screen height",
             blockType: Scratch.BlockType.REPORTER,
           },
+          "---",
+          {
+            opcode: "set_clipboard",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Set clipboard to [text]",
+            arguments: {
+              text: {
+                type: Scratch.ArgumentType.STRING,
+              },
+            },
+          },
+
+          {
+            opcode: "get_clipboard",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get clipboard",
+          },
         ],
       };
     }
@@ -269,6 +286,23 @@
       return Scratch.fetch(args.URL)
         .then((r) => r.text())
         .catch(() => "");
+    }
+    set_clipboard(args) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(args.text);
+      }
+    }
+
+    get_clipboard() {
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        return Scratch.canReadClipboard().then((allowed) => {
+          if (allowed) {
+            return navigator.clipboard.readText();
+          }
+          return "";
+        });
+      }
+      return "";
     }
   }
   Scratch.extensions.register(new WebAndDevice());
