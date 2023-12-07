@@ -53,23 +53,10 @@
           {
             opcode: "waitSecondsOrUntil",
             text: "wait [SECONDS] seconds or until [CONDITIONAL]",
-            blockType: Scratch.BlockType.COMMAND,
+            blockType: Scratch.BlockType.LOOP,
+            branchCount: -1,
             arguments: {
               SECONDS: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
-              },
-              CONDITIONAL: {
-                type: Scratch.ArgumentType.BOOLEAN,
-              },
-            },
-          },
-          {
-            opcode: "waitFramesOrUntil",
-            text: "wait [FRAMES] frames or until [CONDITIONAL]",
-            blockType: Scratch.BlockType.COMMAND,
-            arguments: {
-              FRAMES: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 1,
               },
@@ -93,7 +80,7 @@
             },
           },
           {
-            opcode: "repeatOrUntilTrue",
+            opcode: "repeatOrUntil",
             text: "repeat [TIMES] or until [CONDITIONAL]",
             blockType: Scratch.BlockType.LOOP,
             arguments: {
@@ -238,8 +225,23 @@
           "---",
 
           {
+            opcode: "forEachItem",
+            text: "for each [VARIABLE] in [LIST]",
+            blockType: Scratch.BlockType.LOOP,
+            arguments: {
+              VARIABLE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "VARIABLES",
+              },
+              LIST: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "LISTS",
+              },
+            },
+          },
+          {
             opcode: "forEachFrom",
-            text: "for each [VARIABLE] in [TIMES] starting from [VALUE]",
+            text: "for each [VARIABLE] in [TIMES] from [VALUE]",
             blockType: Scratch.BlockType.LOOP,
             arguments: {
               VARIABLE: {
@@ -249,6 +251,25 @@
               TIMES: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 10,
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 5,
+              },
+            },
+          },
+          {
+            opcode: "forEachItemFrom",
+            text: "for each [VARIABLE] in [LIST] from [VALUE]",
+            blockType: Scratch.BlockType.LOOP,
+            arguments: {
+              VARIABLE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "VARIABLES",
+              },
+              LIST: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "LISTS",
               },
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -363,6 +384,10 @@
             acceptReporters: false,
             items: "getVariables",
           },
+          LISTS: {
+            acceptReporters: false,
+            items: "getLists",
+          },
         },
       };
     }
@@ -384,22 +409,9 @@
           args.SECONDS = Math.max(0, 1000 * args.SECONDS);
           util.startStackTimer(args.SECONDS);
           Scratch.vm.runtime.requestRedraw();
-          util.yield();
+          util.startBranch(1, true);
         } else if (!util.stackTimerFinished()) {
-          util.yield();
-        }
-      }
-    }
-    waitFramesOrUntil(args, util) {
-      args.CONDITIONAL = Scratch.Cast.toBoolean(args.CONDITIONAL);
-      if (!args.CONDITIONAL) {
-        args.FRAMES = Math.round(args.FRAMES);
-        if (typeof util.stackFrame.loopCounter === "undefined") {
-          util.stackFrame.loopCounter = args.FRAMES;
-        }
-        util.stackFrame.loopCounter--;
-        if (util.stackFrame.loopCounter >= 0) {
-          util.yieldTick();
+          util.startBranch(1, true);
         }
       }
     }
@@ -413,7 +425,7 @@
         util.startBranch(1, true);
       }
     }
-    repeatOrUntilTrue(args, util) {
+    repeatOrUntil(args, util) {
       args.CONDITIONAL = Scratch.Cast.toBoolean(args.CONDITIONAL);
       if (!args.CONDITIONAL) {
         if (typeof util.stackFrame.loopCounter === "undefined") {
@@ -541,6 +553,21 @@
       }
       util.startBranch(1, false);
     }
+    forEachItem(args, util) {
+      args.VARIABLE = util.target.lookupOrCreateVariable(
+        args.VARIABLE,
+        args.VARIABLE
+      );
+      args.LIST = util.target.lookupOrCreateList(args.LIST, args.LIST);
+      if (typeof util.stackFrame.index === "undefined") {
+        util.stackFrame.index = 0;
+      }
+      if (util.stackFrame.index < Number(args.LIST.value.length)) {
+        args.VARIABLE.value = args.LIST.value[util.stackFrame.index];
+        util.stackFrame.index++;
+        util.startBranch(1, true);
+      }
+    }
     forEachFrom(args, util) {
       args.VARIABLE = util.target.lookupOrCreateVariable(
         args.VARIABLE,
@@ -552,6 +579,21 @@
       if (util.stackFrame.index < args.TIMES + args.VALUE) {
         util.stackFrame.index++;
         args.VARIABLE.value = util.stackFrame.index;
+        util.startBranch(1, true);
+      }
+    }
+    forEachItemFrom(args, util) {
+      args.VARIABLE = util.target.lookupOrCreateVariable(
+        args.VARIABLE,
+        args.VARIABLE
+      );
+      args.LIST = util.target.lookupOrCreateList(args.LIST, args.LIST);
+      if (typeof util.stackFrame.index === "undefined") {
+        util.stackFrame.index = args.VALUE;
+      }
+      if (util.stackFrame.index < Number(args.LIST.value.length)) {
+        args.VARIABLE.value = args.LIST.value[util.stackFrame.index];
+        util.stackFrame.index++;
         util.startBranch(1, true);
       }
     }
@@ -650,6 +692,22 @@
       } else {
         return [""];
       }
+    }
+    getLists() {
+      const globalLists = Object.values(
+        Scratch.vm.runtime.getTargetForStage().variables
+      ).filter((x) => x.type == "list");
+      const localLists = Object.values(
+        Scratch.vm.editingTarget.variables
+      ).filter((x) => x.type == "list");
+      const uniqueLists = [...new Set([...globalLists, ...localLists])];
+      if (uniqueLists.length === 0) {
+        return [""];
+      }
+      return uniqueLists.map((i) => ({
+        text: i.name,
+        value: i.id,
+      }));
     }
   }
 
