@@ -677,7 +677,7 @@
         return [""];
       }
     }
-    getVariables() {
+    getVariables() { // From the Tween Extension
       const variables =
         typeof Blockly === "undefined"
           ? []
@@ -694,7 +694,7 @@
         return [""];
       }
     }
-    getLists() {
+    getLists() { // From the JSON Extension
       const globalLists = Object.values(
         Scratch.vm.runtime.getTargetForStage().variables
       ).filter((x) => x.type == "list");
