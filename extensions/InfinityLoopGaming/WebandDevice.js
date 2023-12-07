@@ -1,4 +1,7 @@
-//Created by InfinityLoop (InfinityLoopGaming on Scratch)
+// Name: Web & Device
+// ID: webanddevice_InfinityLoopGaming
+// Description: Interacts and gets data from websites, your device, and your network.
+// By: InfinityLoopGaming <https://scratch.mit.edu/users/InfinityLoopGaming/>
 (function(Scratch) {
   'use strict';
   if (!Scratch.extensions.unsandboxed) {
