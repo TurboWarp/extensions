@@ -15,51 +15,6 @@
 (function (Scratch) {
   "use strict";
 
-  Scratch.translate.setup({
-    zh: {
-      start: "新建 [STR] ",
-      folder: "设置 [STR] 为 [STR2] ",
-      folder_default: "大主教大祭司主宰世界!",
-      sync: "将 [STR] 的位置更改为 [STR2] ",
-      del: "删除 [STR] ",
-      webin: "从网络加载 [STR]",
-      open: "打开 [STR]",
-      clean: "清空文件系统",
-      in: "从 [STR] 导入文件系统",
-      out: "导出文件系统",
-      list: "列出 [STR] 下的所有文件",
-      search: "搜索 [STR]",
-    },
-    ru: {
-      start: "Создать [STR]",
-      folder: "Установить [STR] в [STR2]",
-      folder_default: "Архиепископ Верховный жрец Правитель мира!",
-      sync: "Изменить расположение [STR] на [STR2]",
-      del: "Удалить [STR]",
-      webin: "Загрузить [STR] из Интернета",
-      open: "Открыть [STR]",
-      clean: "Очистить файловую систему",
-      in: "Импортировать файловую систему из [STR]",
-      out: "Экспортировать файловую систему",
-      list: "Список всех файлов в [STR]",
-      search: "Поиск [STR]",
-    },
-    jp: {
-      start: "新規作成 [STR]",
-      folder: "[STR] を [STR2] に設定する",
-      folder_default: "大主教大祭司世界の支配者！",
-      sync: "[STR] の位置を [STR2] に変更する",
-      del: "[STR] を削除する",
-      webin: "[STR] をウェブから読み込む",
-      open: "[STR] を開く",
-      clean: "ファイルシステムをクリアする",
-      in: "[STR] からファイルシステムをインポートする",
-      out: "ファイルシステムをエクスポートする",
-      list: "[STR] にあるすべてのファイルをリストする",
-      search: "[STR] を検索する",
-    },
-  });
-
   var rxFSfi = new Array();
   var rxFSsy = new Array();
   var Search, i, str, str2;

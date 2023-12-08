@@ -10,19 +10,19 @@
     getInfo() {
       return {
         id: "claytonhtmlencode",
-        name: "HTML Encode",
+        name: Scratch.translate("HTML Encode"),
         blocks: [
           {
             opcode: "encode",
             blockType: Scratch.BlockType.REPORTER,
-            text: "encode [text] as HTML-safe",
+            text: Scratch.translate("encode [text] as HTML-safe"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
                 // don't use a script tag as the example here as the closing script
                 // tag might break things when this extension gets inlined in packed
                 // projects
-                defaultValue: "<h1>Hello!</h1>",
+                defaultValue: `<h1>${Scratch.translate("Hello!")}</h1>`,
               },
             },
           },

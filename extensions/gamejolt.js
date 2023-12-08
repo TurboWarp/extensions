@@ -1402,17 +1402,23 @@
             opcode: "gamejoltBool",
             blockIconURI: icons.GameJolt,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "On Game Jolt?",
+            text: Scratch.translate({
+              id: "GameJoltAPI_gamejoltBool",
+              default: "On Game Jolt?",
+              description: 'Keep "Game Jolt" as is.',
+            }),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Session Blocks",
+            text: Scratch.translate("Session Blocks"),
           },
           {
             opcode: "setGame",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set game ID to [ID] and private key to [key]",
+            text: Scratch.translate(
+              "Set game ID to [ID] and private key to [key]"
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1420,7 +1426,7 @@
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "private key",
+                defaultValue: Scratch.translate("private key"),
               },
             },
           },
@@ -1428,7 +1434,7 @@
             opcode: "session",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.COMMAND,
-            text: "[openOrClose] session",
+            text: Scratch.translate("[openOrClose] session"),
             arguments: {
               openOrClose: {
                 type: Scratch.ArgumentType.STRING,
@@ -1447,13 +1453,13 @@
             opcode: "sessionPing",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Ping session",
+            text: Scratch.translate("Ping session"),
           },
           {
             opcode: "sessionSetStatus",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set session status to [status]",
+            text: Scratch.translate("Set session status to [status]"),
             arguments: {
               status: {
                 type: Scratch.ArgumentType.STRING,
@@ -1466,26 +1472,26 @@
             opcode: "sessionBool",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Session open?",
+            text: Scratch.translate("Session open?"),
             disableMonitor: true,
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "User Blocks",
+            text: Scratch.translate("User Blocks"),
           },
           {
             opcode: "loginManual",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Login with [username] and [token]",
+            text: Scratch.translate("Login with [username] and [token]"),
             arguments: {
               username: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "username",
+                defaultValue: Scratch.translate("username"),
               },
               token: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "private token",
+                defaultValue: Scratch.translate("private token"),
               },
             },
           },
@@ -1493,41 +1499,43 @@
             opcode: "loginAuto",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Login automatically",
+            text: Scratch.translate("Login automatically"),
           },
           {
             opcode: "loginAutoBool",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Autologin available?",
+            text: Scratch.translate("Autologin available?"),
           },
           {
             opcode: "logout",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Logout",
+            text: Scratch.translate("Logout"),
           },
           {
             opcode: "loginBool",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Logged in?",
+            text: Scratch.translate("Logged in?"),
           },
           {
             opcode: "loginUser",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Logged in user's username",
+            text: Scratch.translate("Logged in user's username"),
           },
           {
             opcode: "userFetch",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch user's [usernameOrID] by [fetchType]",
+            text: Scratch.translate(
+              "Fetch user's [usernameOrID] by [fetchType]"
+            ),
             arguments: {
               usernameOrID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "username",
+                defaultValue: Scratch.translate("username"),
               },
               fetchType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1540,13 +1548,13 @@
             opcode: "userFetchCurrent",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch logged in user",
+            text: Scratch.translate("Fetch logged in user"),
           },
           {
             opcode: "returnUserData",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched user's [userDataType]",
+            text: Scratch.translate("Fetched user's [userDataType]"),
             arguments: {
               userDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1559,7 +1567,7 @@
             opcode: "returnUserDataJson",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched user's data in JSON",
+            text: Scratch.translate("Fetched user's data in JSON"),
           },
           {
             hideFromPalette: true,
@@ -1578,13 +1586,13 @@
             opcode: "friendsFetchNew",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch user's friend IDs",
+            text: Scratch.translate("Fetch user's friend IDs"),
           },
           {
             opcode: "friendsReturn",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched user's friend ID at index[index]",
+            text: Scratch.translate("Fetched user's friend ID at index[index]"),
             arguments: {
               index: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1596,17 +1604,17 @@
             opcode: "friendsReturnJson",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched user's friend IDs in JSON",
+            text: Scratch.translate("Fetched user's friend IDs in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Trophy Blocks",
+            text: Scratch.translate("Trophy Blocks"),
           },
           {
             opcode: "trophyAchieve",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Achieve trophy of ID [ID]",
+            text: Scratch.translate("Achieve trophy of ID [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1618,7 +1626,7 @@
             opcode: "trophyRemove",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Remove trophy of ID [ID]",
+            text: Scratch.translate("Remove trophy of ID [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1653,7 +1661,7 @@
             opcode: "trophyFetchId",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch trophy of ID[ID]",
+            text: Scratch.translate("Fetch trophy of ID[ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1665,7 +1673,7 @@
             opcode: "trophyFetchAll",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch [trophyFetchGroup] trophies",
+            text: Scratch.translate("Fetch [trophyFetchGroup] trophies"),
             arguments: {
               trophyFetchGroup: {
                 type: Scratch.ArgumentType.STRING,
@@ -1678,7 +1686,9 @@
             opcode: "trophyReturn",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched trophy [trophyDataType] at index [index]",
+            text: Scratch.translate(
+              "Fetched trophy [trophyDataType] at index [index]"
+            ),
             arguments: {
               trophyDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1695,17 +1705,19 @@
             opcode: "trophyReturnJson",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched trophies in JSON",
+            text: Scratch.translate("Fetched trophies in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Score Blocks",
+            text: Scratch.translate("Score Blocks"),
           },
           {
             opcode: "scoreAdd",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Add score [value] in table of ID [ID] with text [text] and comment [extraData]",
+            text: Scratch.translate(
+              "Add score [value] in table of ID [ID] with text [text] and comment [extraData]"
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1717,11 +1729,11 @@
               },
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "1 point",
+                defaultValue: Scratch.translate("1 point"),
               },
               extraData: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "optional",
+                defaultValue: Scratch.translate("optional"),
               },
             },
           },
@@ -1729,7 +1741,9 @@
             opcode: "scoreAddGuest",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Add [username] score [value] in table of ID [ID] with text [text] and comment [extraData]",
+            text: Scratch.translate(
+              "Add [username] score [value] in table of ID [ID] with text [text] and comment [extraData]"
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1741,15 +1755,15 @@
               },
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "1 point",
+                defaultValue: Scratch.translate("1 point"),
               },
               extraData: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "optional",
+                defaultValue: Scratch.translate("optional"),
               },
               username: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "guest",
+                defaultValue: Scratch.translate("guest"),
               },
             },
           },
@@ -1757,7 +1771,9 @@
             opcode: "scoreFetchSimple",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch [amount] [globalOrPerUser] score/s in table of ID [ID]",
+            text: Scratch.translate(
+              "Fetch [amount] [globalOrPerUser] score/s in table of ID [ID]"
+            ),
             arguments: {
               amount: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1778,7 +1794,9 @@
             opcode: "scoreFetch",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch [amount] [globalOrPerUser] score/s [betterOrWorse] than [value] in table of ID [ID]",
+            text: Scratch.translate(
+              "Fetch [amount] [globalOrPerUser] score/s [betterOrWorse] than [value] in table of ID [ID]"
+            ),
             arguments: {
               amount: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1808,7 +1826,9 @@
             opcode: "scoreFetchGuestSimple",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch [amount] [username] score/s in table of ID [ID]",
+            text: Scratch.translate(
+              "Fetch [amount] [username] score/s in table of ID [ID]"
+            ),
             arguments: {
               amount: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1816,7 +1836,7 @@
               },
               username: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "guest",
+                defaultValue: Scratch.translate("guest"),
               },
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1828,7 +1848,9 @@
             opcode: "scoreFetchGuest",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch [amount] [username] score/s [betterOrWorse] than [value] in table of ID [ID]",
+            text: Scratch.translate(
+              "Fetch [amount] [username] score/s [betterOrWorse] than [value] in table of ID [ID]"
+            ),
             arguments: {
               amount: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1836,7 +1858,7 @@
               },
               username: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "guest",
+                defaultValue: Scratch.translate("guest"),
               },
               betterOrWorse: {
                 type: Scratch.ArgumentType.STRING,
@@ -1857,7 +1879,9 @@
             opcode: "returnScoreData",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched score [scoreDataType] at index [index]",
+            text: Scratch.translate(
+              "Fetched score [scoreDataType] at index [index]"
+            ),
             arguments: {
               scoreDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1874,13 +1898,15 @@
             opcode: "returnScoreDataJson",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched score data in JSON",
+            text: Scratch.translate("Fetched score data in JSON"),
           },
           {
             opcode: "scoreGetRank",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched rank of [value] in table of ID [ID]",
+            text: Scratch.translate(
+              "Fetched rank of [value] in table of ID [ID]"
+            ),
             arguments: {
               value: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1897,7 +1923,9 @@
             opcode: "scoreGetTables",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched table [tableDataType] at index[index] (Deprecated)",
+            text: Scratch.translate(
+              "Fetched table [tableDataType] at index[index] (Deprecated)"
+            ),
             arguments: {
               tableDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1914,13 +1942,15 @@
             opcode: "scoreFetchTables",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch score tables",
+            text: Scratch.translate("Fetch score tables"),
           },
           {
             opcode: "scoreReturnTables",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched table [tableDataType] at index [index]",
+            text: Scratch.translate(
+              "Fetched table [tableDataType] at index [index]"
+            ),
             arguments: {
               tableDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1937,17 +1967,19 @@
             opcode: "scoreReturnTablesJson",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched tables in JSON",
+            text: Scratch.translate("Fetched tables in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Data Storage Blocks",
+            text: Scratch.translate("Data Storage Blocks"),
           },
           {
             opcode: "dataStoreSet",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set [globalOrPerUser] data at [key] to [data]",
+            text: Scratch.translate(
+              "Set [globalOrPerUser] data at [key] to [data]"
+            ),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -1956,11 +1988,11 @@
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key",
+                defaultValue: Scratch.translate("key"),
               },
               data: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "data",
+                defaultValue: Scratch.translate("data"),
               },
             },
           },
@@ -1968,7 +2000,7 @@
             opcode: "dataStoreFetch",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched [globalOrPerUser] data at [key]",
+            text: Scratch.translate("Fetched [globalOrPerUser] data at [key]"),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -1977,7 +2009,7 @@
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key",
+                defaultValue: Scratch.translate("key"),
               },
             },
           },
@@ -1985,7 +2017,9 @@
             opcode: "dataStoreUpdate",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Update [globalOrPerUser] data at [key] by [operationType] [value]",
+            text: Scratch.translate(
+              "Update [globalOrPerUser] data at [key] by [operationType] [value]"
+            ),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -1994,7 +2028,7 @@
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key",
+                defaultValue: Scratch.translate("key"),
               },
               operationType: {
                 type: Scratch.ArgumentType.STRING,
@@ -2011,7 +2045,7 @@
             opcode: "dataStoreRemove",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Remove [globalOrPerUser] data at [key]",
+            text: Scratch.translate("Remove [globalOrPerUser] data at [key]"),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -2020,7 +2054,7 @@
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key",
+                defaultValue: Scratch.translate("key"),
               },
             },
           },
@@ -2050,7 +2084,7 @@
             opcode: "dataStoreFetchKeys",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch all [globalOrPerUser] keys",
+            text: Scratch.translate("Fetch all [globalOrPerUser] keys"),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -2063,7 +2097,9 @@
             opcode: "dataStoreFetchPatternKeys",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch [globalOrPerUser] keys matching with [pattern]",
+            text: Scratch.translate(
+              "Fetch [globalOrPerUser] keys matching with [pattern]"
+            ),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -2080,7 +2116,7 @@
             opcode: "dataStoreReturnKeys",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched key at index [index]",
+            text: Scratch.translate("Fetched key at index [index]"),
             arguments: {
               index: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -2092,11 +2128,11 @@
             opcode: "dataStoreReturnKeysJson",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched keys in JSON",
+            text: Scratch.translate("Fetched keys in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Time Blocks",
+            text: Scratch.translate("Time Blocks"),
           },
           {
             hideFromPalette: true,
@@ -2116,13 +2152,13 @@
             opcode: "timeFetchNew",
             blockIconURI: icons.time,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch server's time",
+            text: Scratch.translate("Fetch server's time"),
           },
           {
             opcode: "timeReturn",
             blockIconURI: icons.time,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched server's [timeType]",
+            text: Scratch.translate("Fetched server's [timeType]"),
             arguments: {
               timeType: {
                 type: Scratch.ArgumentType.STRING,
@@ -2135,7 +2171,7 @@
             opcode: "timeReturnJson",
             blockIconURI: icons.time,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched server's time in JSON",
+            text: Scratch.translate("Fetched server's time in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -2145,7 +2181,9 @@
             opcode: "batchAdd",
             blockIconURI: icons.batch,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Add [namespace] request with [parameters] to batch",
+            text: Scratch.translate(
+              "Add [namespace] request with [parameters] to batch"
+            ),
             arguments: {
               namespace: {
                 type: Scratch.ArgumentType.STRING,
@@ -2161,19 +2199,19 @@
             opcode: "batchClear",
             blockIconURI: icons.batch,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Clear batch",
+            text: Scratch.translate("Clear batch"),
           },
           {
             opcode: "batchJson",
             blockIconURI: icons.batch,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Batch in JSON",
+            text: Scratch.translate("Batch in JSON"),
           },
           {
             opcode: "batchCall",
             blockIconURI: icons.batch,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch batch [parameter]",
+            text: Scratch.translate("Fetch batch [parameter]"),
             arguments: {
               parameter: {
                 type: Scratch.ArgumentType.STRING,
@@ -2186,17 +2224,17 @@
             opcode: "batchReturnJson",
             blockIconURI: icons.batch,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched batch data in JSON",
+            text: Scratch.translate("Fetched batch data in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Debug Blocks",
+            text: Scratch.translate("Debug Blocks"),
           },
           {
             opcode: "debug",
             blockIconURI: icons.debug,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Turn debug mode [toggle]",
+            text: Scratch.translate("Turn debug mode [toggle]"),
             arguments: {
               toggle: {
                 type: Scratch.ArgumentType.STRING,
@@ -2209,137 +2247,164 @@
             opcode: "debugBool",
             blockIconURI: icons.debug,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "In debug mode?",
+            text: Scratch.translate("In debug mode?"),
           },
           {
             opcode: "debugLastErr",
             blockIconURI: icons.debug,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Last API error",
+            text: Scratch.translate("Last API error"),
           },
         ],
         menus: {
           debug: {
             items: [
-              { text: "on", value: "true" },
-              { text: "off", value: "" },
+              { text: Scratch.translate("on"), value: "true" },
+              { text: Scratch.translate("off"), value: "" },
             ],
           },
           status: {
-            items: ["active", "idle"],
+            items: [
+              { text: Scratch.translate("active"), value: "active" },
+              { text: Scratch.translate("idle"), value: "idle" },
+            ],
           },
           fetchTypes: {
             items: [
-              { text: "username", value: "true" },
-              { text: "ID", value: "" },
+              { text: Scratch.translate("username"), value: "true" },
+              { text: Scratch.translate("ID"), value: "" },
             ],
           },
           userDataTypes: {
             items: [
-              { text: "ID", value: "id" },
-              { text: "username", value: "username" },
-              { text: "developer username", value: "developer_name" },
-              { text: "description", value: "developer_description" },
-              { text: "status", value: "status" },
-              { text: "type", value: "type" },
-              { text: "avatar URL", value: "avatar_url" },
-              { text: "website", value: "website" },
-              { text: "sign up date", value: "signed_up" },
-              { text: "sign up timestamp", value: "signed_up_timestamp" },
-              { text: "last login", value: "last_logged_in" },
+              { text: Scratch.translate("ID"), value: "id" },
+              { text: Scratch.translate("username"), value: "username" },
               {
-                text: "last login timestamp",
+                text: Scratch.translate("developer username"),
+                value: "developer_name",
+              },
+              {
+                text: Scratch.translate("description"),
+                value: "developer_description",
+              },
+              { text: Scratch.translate("status"), value: "status" },
+              { text: Scratch.translate("type"), value: "type" },
+              { text: Scratch.translate("avatar URL"), value: "avatar_url" },
+              { text: Scratch.translate("website"), value: "website" },
+              { text: Scratch.translate("sign up date"), value: "signed_up" },
+              {
+                text: Scratch.translate("sign up timestamp"),
+                value: "signed_up_timestamp",
+              },
+              {
+                text: Scratch.translate("last login"),
+                value: "last_logged_in",
+              },
+              {
+                text: Scratch.translate("last login timestamp"),
                 value: "last_logged_in_timestamp",
               },
             ],
           },
           operationTypes: {
             items: [
-              { text: "adding", value: "add" },
-              { text: "subtracting", value: "subtract" },
-              { text: "multiplying by", value: "multiply" },
-              { text: "dividing by", value: "divide" },
-              { text: "appending", value: "append" },
-              { text: "prepending", value: "prepend" },
+              { text: Scratch.translate("adding"), value: "add" },
+              { text: Scratch.translate("subtracting"), value: "subtract" },
+              { text: Scratch.translate("multiplying by"), value: "multiply" },
+              { text: Scratch.translate("dividing by"), value: "divide" },
+              { text: Scratch.translate("appending"), value: "append" },
+              { text: Scratch.translate("prepending"), value: "prepend" },
             ],
           },
           scoreDataTypes: {
             items: [
-              { text: "value", value: "sort" },
-              { text: "text", value: "score" },
-              { text: "comment", value: "extra_data" },
-              { text: "username", value: "user" },
-              { text: "user ID", value: "user_id" },
-              { text: "score date", value: "stored" },
-              { text: "score timestamp", value: "stored_timestamp" },
+              { text: Scratch.translate("value"), value: "sort" },
+              { text: Scratch.translate("text"), value: "score" },
+              { text: Scratch.translate("comment"), value: "extra_data" },
+              { text: Scratch.translate("username"), value: "user" },
+              { text: Scratch.translate("user ID"), value: "user_id" },
+              { text: Scratch.translate("score date"), value: "stored" },
+              {
+                text: Scratch.translate("score timestamp"),
+                value: "stored_timestamp",
+              },
             ],
           },
           trophyDataTypes: {
             items: [
-              { text: "ID", value: "id" },
-              { text: "title", value: "title" },
-              { text: "description", value: "description" },
-              { text: "difficulty", value: "difficulty" },
-              { text: "image URL", value: "image_url" },
-              { text: "achievement date", value: "achieved" },
+              { text: Scratch.translate("ID"), value: "id" },
+              { text: Scratch.translate("title"), value: "title" },
+              { text: Scratch.translate("description"), value: "description" },
+              { text: Scratch.translate("difficulty"), value: "difficulty" },
+              { text: Scratch.translate("image URL"), value: "image_url" },
+              {
+                text: Scratch.translate("achievement date"),
+                value: "achieved",
+              },
             ],
           },
           timeTypes: {
             items: [
-              "timestamp",
-              "timezone",
-              "year",
-              "month",
-              "day",
-              "hour",
-              "minute",
-              "second",
+              { text: Scratch.translate("timestamp"), value: "timestamp" },
+              { text: Scratch.translate("timezone"), value: "timezone" },
+              { text: Scratch.translate("year"), value: "year" },
+              { text: Scratch.translate("month"), value: "month" },
+              { text: Scratch.translate("day"), value: "day" },
+              { text: Scratch.translate("hour"), value: "hour" },
+              { text: Scratch.translate("minute"), value: "minute" },
+              { text: Scratch.translate("second"), value: "second" },
             ],
           },
           tableDataTypes: {
             items: [
-              { text: "ID", value: "id" },
-              { text: "name", value: "name" },
-              { text: "description", value: "description" },
-              { text: "primary", value: "primary" },
+              { text: Scratch.translate("ID"), value: "id" },
+              { text: Scratch.translate("name"), value: "name" },
+              { text: Scratch.translate("description"), value: "description" },
+              { text: Scratch.translate("primary"), value: "primary" },
             ],
           },
           openOrClose: {
             items: [
-              { text: "Open", value: "true" },
-              { text: "Close", value: "" },
+              { text: Scratch.translate("Open"), value: "true" },
+              { text: Scratch.translate("Close"), value: "" },
             ],
           },
           globalOrPerUser: {
             items: [
-              { text: "global", value: "false" },
-              { text: "user", value: "true" },
+              { text: Scratch.translate("global"), value: "false" },
+              { text: Scratch.translate("user"), value: "true" },
             ],
           },
           trophyFetchGroup: {
             items: [
-              { text: "all", value: "0" },
-              { text: "all achieved", value: "1" },
-              { text: "all unachieved", value: "-1" },
+              { text: Scratch.translate("all"), value: "0" },
+              { text: Scratch.translate("all achieved"), value: "1" },
+              { text: Scratch.translate("all unachieved"), value: "-1" },
             ],
           },
           indexOrID: {
             items: [
-              { text: "index", value: "true" },
-              { text: "ID", value: "" },
+              { text: Scratch.translate("index"), value: "true" },
+              { text: Scratch.translate("ID"), value: "" },
             ],
           },
           betterOrWorse: {
             items: [
-              { text: "better", value: "true" },
-              { text: "worse", value: "" },
+              { text: Scratch.translate("better"), value: "true" },
+              { text: Scratch.translate("worse"), value: "" },
             ],
           },
           batchParameters: {
             items: [
-              { text: "sequentially", value: "sequentially" },
-              { text: "sequentially, break on error", value: "break_on_error" },
-              { text: "in parallel", value: "parallel" },
+              {
+                text: Scratch.translate("sequentially"),
+                value: "sequentially",
+              },
+              {
+                text: Scratch.translate("sequentially, break on error"),
+                value: "break_on_error",
+              },
+              { text: Scratch.translate("in parallel"), value: "parallel" },
             ],
           },
         },

@@ -9,7 +9,7 @@
     getInfo() {
       return {
         id: "fetch",
-        name: "Fetch",
+        name: Scratch.translate("Fetch"),
         blocks: [
           {
             opcode: "get",
