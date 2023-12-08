@@ -8,7 +8,7 @@
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
-      '\nWhell Scroll:\nExtension "Whell Scroll" must run unsandboxed!\n'
+      '\nWheel Scroll:\nExtension "Wheel Scroll" must run unsandboxed!\n'
     );
   }
 
@@ -71,10 +71,7 @@
     getInfo() {
       return {
         id: "Den4ik12WheelScroll",
-        name: Scratch.translate({
-          id: "extName",
-          default: "Wheel Scroll",
-        }),
+        name: "Wheel Scroll",
         color1: "#E74C3C",
         color2: "#CB4335",
         color3: "#B03A2E",
@@ -83,10 +80,7 @@
         blocks: [
           {
             opcode: "whenScrollDir",
-            text: Scratch.translate({
-              id: "whenScrollDir",
-              default: "when mouse wheel scrolls [SCROLL_TYPE]",
-            }),
+            text: "when mouse wheel scrolls [SCROLL_TYPE]",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
             arguments: {
@@ -98,10 +92,7 @@
           },
           {
             opcode: "whenScroll",
-            text: Scratch.translate({
-              id: "whenScroll",
-              default: "when mouse wheel scrolls",
-            }),
+            text: "when mouse wheel scrolls",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
           },
@@ -109,66 +100,39 @@
         menus: {
           SCROLL_TYPE: [
             {
-              text: Scratch.translate({
-                id: "menuSCROLL_TYPEvalueU",
-                default: "up",
-              }),
+              text: "up",
               value: "u",
             },
             {
-              text: Scratch.translate({
-                id: "menuSCROLL_TYPEvalueD",
-                default: "down",
-              }),
+              text: "down",
               value: "d",
             },
             {
-              text: Scratch.translate({
-                id: "menuSCROLL_TYPEvalueL",
-                default: "to the left",
-              }),
+              text: "to the left",
               value: "l",
             },
             {
-              text: Scratch.translate({
-                id: "menuSCROLL_TYPEvalueR",
-                default: "to the right",
-              }),
+              text: "to the right",
               value: "r",
             },
             {
-              text: Scratch.translate({
-                id: "menuSCROLL_TYPEvalueO",
-                default: "out",
-              }),
+              text: "out",
               value: "o",
             },
             {
-              text: Scratch.translate({
-                id: "menuSCROLL_TYPEvalueI",
-                default: "in",
-              }),
+              text: "in",
               value: "i",
             },
             {
-              text: Scratch.translate({
-                id: "menuSCROLL_TYPEvalueAX",
-                default: "along the x-axis",
-              }),
+              text: "along the x-axis",
               value: "ax",
             },
             {
-              text: Scratch.translate({
-                id: "menuSCROLL_TYPEvalueAY",
-                default: "along the y-axis",
-              }),
+              text: "along the y-axis",
               value: "ay",
             },
             {
-              text: Scratch.translate({
-                id: "menuSCROLL_TYPEvalueAZ",
-                default: "along the z-axis",
-              }),
+              text: "along the z-axis",
               value: "az",
             },
           ],
