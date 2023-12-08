@@ -441,7 +441,7 @@
           {
             opcode: "unClipSPR",
             blockType: Scratch.BlockType.REPORTER,
-            text: "update viewbox of [SPRITE] by [NUM]%",
+            text: "resize viewbox of [SPRITE] by [NUM]%",
             hideFromPalette: !sprite,
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
@@ -451,7 +451,7 @@
           {
             opcode: "unClipIMG",
             blockType: Scratch.BlockType.REPORTER,
-            text: "update viewbox of [SPRITE] by [NUM]%",
+            text: "resize viewbox of [SPRITE] by [NUM]%",
             hideFromPalette: sprite,
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
