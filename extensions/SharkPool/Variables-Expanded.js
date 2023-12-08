@@ -843,8 +843,8 @@
       if (!variableMonitor) return;
       let x = Scratch.Cast.toNumber(args.X) + canvas[0] - (variableMonitor.offsetWidth / 2);
       let y = (Scratch.Cast.toNumber(args.Y) - canvas[1] + (variableMonitor.offsetHeight / 2)) * -1;
-      x = x - parseInt(variableMonitor.style.left);
-      y = y - parseInt(variableMonitor.style.top);
+      x = x - (parseInt(variableMonitor.style.left) || 5);
+      y = y - (parseInt(variableMonitor.style.top) || 5);
 
       let styleAttribute = variableMonitor.getAttribute("style");
       const transformRegex = /transform:([^;]+);/;
