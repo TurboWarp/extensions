@@ -287,6 +287,7 @@
           response = lastFetchedSong[1];
         } else {
           if (!await Scratch.canFetch(`${proxy}https://open.spotify.com/track/${args.URL}`)) return "";
+          // eslint-disable-next-line
           response = await fetch(`${proxy}https://open.spotify.com/track/${args.URL}`);
           if (!response.ok) return "Error: 404";
           response = await response.text();
@@ -303,6 +304,7 @@
 
     getUrlAudioBuffer(url) {
       return new Promise((resolve, reject) => {
+        // eslint-disable-next-line
         fetch(url)
           .then(response => {
             response.arrayBuffer()
@@ -351,6 +353,7 @@
           response = lastFetchedSong[1];
         } else {
           if (!await Scratch.canFetch(`${proxy}https://open.spotify.com/track/${args.URL}`)) return "";
+          // eslint-disable-next-line
           response = await fetch(`${proxy}https://open.spotify.com/track/${args.URL}`);
           if (!response.ok) return "Error: 404";
           response = await response.text();
@@ -402,6 +405,7 @@
           response = lastFetchedArtist[1];
         } else {
           if (!await Scratch.canFetch(`${proxy}https://open.spotify.com/artist/${args.URL}`)) return "";
+          // eslint-disable-next-line
           response = await fetch(`${proxy}https://open.spotify.com/artist/${args.URL}`);
           if (!response.ok) return "Error: 404";
           response = await response.text();
@@ -446,6 +450,7 @@
           response = lastFetchedPlaylist[1];
         } else {
           if (!await Scratch.canFetch(`${proxy}https://open.spotify.com/playlist/${args.URL}`)) return "";
+          // eslint-disable-next-line
           response = await fetch(`${proxy}https://open.spotify.com/playlist/${args.URL}`);
           if (!response.ok) return "Error: 404";
           response = await response.text();
