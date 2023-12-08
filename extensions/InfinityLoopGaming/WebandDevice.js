@@ -93,9 +93,9 @@
             text: Scratch.translate("current link"),
           },
           {
-            opcode: "getdatafromurl",
+            opcode: "fetchdatafromurl",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get data from url [url]",
+            text: "fetch data from url [url]",
             arguments: {
               url: {
                 type: Scratch.ArgumentType.STRING,
@@ -282,7 +282,7 @@
     screenHeight() {
       return window.screen.height;
     }
-    getdatafromurl(args) {
+    fetchdatafromurl(args) {
       return Scratch.fetch(args.URL)
         .then((r) => r.text())
         .catch(() => "");
