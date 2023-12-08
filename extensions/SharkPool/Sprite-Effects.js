@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.1.0
+// Version V.1.1.1
 
 (function (Scratch) {
   "use strict";
@@ -439,6 +439,27 @@
           },
           "---",
           {
+            opcode: "unClipSPR",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "update viewbox of [SPRITE] by [NUM]%",
+            hideFromPalette: !sprite,
+            arguments: {
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+            },
+          },
+          {
+            opcode: "unClipIMG",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "update viewbox of [SPRITE] by [NUM]%",
+            hideFromPalette: sprite,
+            arguments: {
+              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+            },
+          },
+          "---",
+          {
             opcode: "setXY",
             blockType: Scratch.BlockType.REPORTER,
             text: "set [SPRITE] x [x] y [y]",
@@ -668,6 +689,9 @@
 
     maskSprite(args, util) { return this.mask(args, false, util) }
     async maskImage(args) { return await this.mask(args, true) }
+
+    unClipSPR(args, util) { return this.updateView(args, false, util) }
+    async unClipIMG(args) { return await this.updateView(args, true) }
 
     setXY(args, util) { return this.setATT(args, false, 0, util) }
     async setXY2(args) { return await this.setATT(args, true, 0) }
@@ -1076,6 +1100,36 @@
       return svg;
     }
 
+    async updateView(args, isImage, util) {
+      let svg;
+      if (args.SPRITE === "_myself_") {
+        svg = await this.findAsset(util);
+      } else {
+        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
+      }
+      if (svg) {
+        let values;
+        const viewBoxMatch = svg.match(/viewBox="([^"]+)"/);
+        let viewBoxValues = -1;
+        if (viewBoxMatch) viewBoxValues = viewBoxMatch[1].split(/\s*,\s*/).map(parseFloat);
+
+        const translateMatch = svg.match(/<g transform="translate\((-?[\d.]+),(-?[\d.]+)\)/);
+        let translateValues = -1;
+        if (translateMatch) translateValues = [parseFloat(translateMatch[1]), parseFloat(translateMatch[2])];
+        values = `${viewBoxValues},${translateValues}`;
+        values = values.split(",");
+        values = values.map(item => Scratch.Cast.toNumber(item));
+        args.NUM = Scratch.Cast.toNumber(args.NUM);
+        if (values.length > 3) {
+          svg = svg.replace(/viewBox="([^"]+)"/, `viewBox="${values[0]},${values[1]},${values[2] + (args.NUM * 2)},${values[3] + (args.NUM * 2)}"`);
+          svg = svg.replace(/width="([^"]+)"/, `width="${values[2] + (args.NUM * 2)}"`);
+          svg = svg.replace(/height="([^"]+)"/, `height="${values[3] + (args.NUM * 2)}"`);
+          svg = svg.replace(/<g transform="([^"]+)"/, `<g transform="translate(${values[4] + args.NUM},${values[5] + args.NUM})"`);
+        }
+      }
+      return svg;
+    }
+
     addCanvasFilter(args) {
       args.NAME = Scratch.Cast.toString(args.NAME).replaceAll(" ", "_");
       const filter = args.FILTER;
@@ -1261,7 +1315,7 @@
           }
         }
         svgTag = svg.indexOf(">");
-        const appliedSVG = `${svg.substring(0, svgTag)} ${url}>${filter.slice(0, -1)}${svg.slice(svgTag)}`;
+        let appliedSVG = `${svg.substring(0, svgTag)} ${url}>${filter.slice(0, -1)}${svg.slice(svgTag)}`;
         // replace needs to be repeated twice to avoid the new name being used in other namespaces
         return appliedSVG.replace(`#${name})`, `#${name}${nameOffset})`).replace(`"${name}"`, `"${name}${nameOffset}"`);
       }
@@ -1285,4 +1339,4 @@
   }
 
   Scratch.extensions.register(new SPspriteEffects());
-})(Scratch);    
+})(Scratch);
