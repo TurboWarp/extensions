@@ -3,13 +3,11 @@
 // Description: Fetch Statistics and Information and Play Songs from Spotify
 // By: SharkPool
 
-// Version 1.0.2
+// Version 1.1.0
 
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Spotify API must run unsandboxed");
-  }
+  if (!Scratch.extensions.unsandboxed) throw new Error("Spotify API must run unsandboxed");
 
   const menuIconURI = "https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg";
   const blockIconURI = "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/spotify-white-icon.svg";
@@ -22,6 +20,14 @@
 
   class SPspotify {
     constructor() {
+      this.audioContext = new AudioContext();
+      this.gainNode = this.audioContext.createGain();
+      this.gainNode.gain.value = 1;
+      this.gainNode.connect(this.audioContext.destination);
+      // PenguinMod thing
+      if (Scratch.extensions.isPenguinMod) {
+        Scratch.vm.runtime.registerExtensionAudioContext("SPspotify", this.audioContext, this.gainNode);
+      }
       Scratch.vm.runtime.on("PROJECT_STOP_ALL", () => {
         this.stopAll();
       });
@@ -295,19 +301,45 @@
       return "";
     }
 
+    getUrlAudioBuffer(url) {
+      return new Promise((resolve, reject) => {
+        fetch(url)
+          .then(response => {
+            response.arrayBuffer()
+              .then(arrayBuffer => {
+                this.audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
+                  resolve(audioBuffer);
+                }, reject).catch(reject);
+              })
+              .catch(reject);
+          })
+          .catch(reject);
+      });
+    }
+
     async playSongURL(args) {
+      const url = await this.getSongURL(args);
+      if (!(await Scratch.canFetch(url))) return;
+      let buffer = null;
+      try {
+        buffer = await this.getUrlAudioBuffer(url);
+      } catch (err) {
+        return console.warn('Couldn\'t decode AudioBuffer', err);
+      }
       /* eslint-disable */
-      const audio = new Audio();
-      audio.src = await this.getSongURL(args);
+      const node = this.audioContext.createBufferSource();
+      node.buffer = buffer;
+      node.connect(this.gainNode);
+      node.start(0);
       /* eslint-enable */
-      audio.play();
-      audioInstances.push(audio);
+      audioInstances.push(node);
     }
 
     stopAll() {
-      audioInstances.forEach(audio => {
-        audio.pause();
-        audio.currentTime = 0;
+      audioInstances.forEach(node => {
+        try {
+          node.stop();
+        } catch {}
       });
       audioInstances = [];
     }
