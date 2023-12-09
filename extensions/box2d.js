@@ -12246,11 +12246,11 @@
 
   const _removeBody = function (id) {
     if (!bodies[id]) return;
-    
+
     world.DestroyBody(bodies[id]);
     delete bodies[id];
     delete prevPos[id];
-  }
+  };
 
   const _applyForce = function (id, ftype, x, y, dir, pow) {
     const body = bodies[id];
@@ -12658,7 +12658,8 @@
             text: Scratch.translate({
               id: "griffpatch.setTickRate",
               default: "set simulation rate to [rate]/s",
-              description: "Set the number of physics simulation steps to run per second",
+              description:
+                "Set the number of physics simulation steps to run per second",
             }),
             arguments: {
               rate: {
@@ -12673,7 +12674,8 @@
             text: Scratch.translate({
               id: "griffpatch.getTickRate",
               default: "simulation rate",
-              description: "Get the number of physics simulation steps to run per second",
+              description:
+                "Get the number of physics simulation steps to run per second",
             }),
           },
 
