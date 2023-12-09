@@ -32,28 +32,35 @@
     getInfo() {
       return {
         id: "mbwxml",
-        name: "XML",
+        name: Scratch.translate("XML"),
         color1: "#6c2b5f",
         blocks: [
           {
             opcode: "isValid",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [MAYBE_XML] valid XML?",
+            text: Scratch.translate("is [MAYBE_XML] valid XML?"),
             arguments: {
               MAYBE_XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />',
+                defaultValue: Scratch.translate({
+                  default: '<hello apple="banana" />',
+                  description: "This should be valid XML",
+                }),
               },
             },
           },
           {
             opcode: "errorMessage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "error message of [MAYBE_XML]",
+            text: Scratch.translate("error message of [MAYBE_XML]"),
             arguments: {
               MAYBE_XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana">',
+                defaultValue: Scratch.translate({
+                  default: '<hello apple="banana">',
+                  description:
+                    "This should be valid XML, *except* for the missing closing tag.",
+                }),
               },
             },
           },
@@ -61,22 +68,28 @@
           {
             opcode: "tagName",
             blockType: Scratch.BlockType.REPORTER,
-            text: "tag name of [XML]",
+            text: Scratch.translate("tag name of [XML]"),
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />',
+                defaultValue: Scratch.translate({
+                  default: '<hello apple="banana" />',
+                  description: "This should be valid XML",
+                }),
               },
             },
           },
           {
             opcode: "textContent",
             blockType: Scratch.BlockType.REPORTER,
-            text: "text of [XML]",
+            text: Scratch.translate("text of [XML]"),
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "<hello>world</hello>",
+                defaultValue: Scratch.translate({
+                  default: "<hello>world</hello>",
+                  description: "This should be valid XML",
+                }),
               },
             },
           },
@@ -84,75 +97,108 @@
           {
             opcode: "attributes",
             blockType: Scratch.BlockType.REPORTER,
-            text: "attributes of [XML]",
+            text: Scratch.translate("attributes of [XML]"),
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />',
+                defaultValue: Scratch.translate({
+                  default: '<hello apple="banana" />',
+                  description: "This should be valid XML",
+                }),
               },
             },
           },
           {
             opcode: "hasAttribute",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "does [XML] have attribute [ATTR]?",
+            text: Scratch.translate("does [XML] have attribute [ATTR]?"),
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />',
+                defaultValue: Scratch.translate({
+                  default: '<hello apple="banana" />',
+                  description: "This should be valid XML",
+                }),
               },
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "foo",
+                defaultValue: Scratch.translate({
+                  default: "foo",
+                  description: "This should be a valid XML attribute",
+                }),
               },
             },
           },
           {
             opcode: "setAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: "set attribute [ATTR] of [XML] to [VALUE]",
+            text: Scratch.translate("set attribute [ATTR] of [XML] to [VALUE]"),
             arguments: {
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple",
+                defaultValue: Scratch.translate({
+                  default: "apple",
+                  description:
+                    'This should use the same attribute name as in `<hello apple="banana" />',
+                }),
               },
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />',
+                defaultValue: Scratch.translate({
+                  default: '<hello apple="banana" />',
+                  description: "This should be valid XML",
+                }),
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "foo",
+                defaultValue: Scratch.translate({
+                  default: "foo",
+                  description: "This should be a valid XML attribute",
+                }),
               },
             },
           },
           {
             opcode: "getAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: "attribute [ATTR] of [XML]",
+            text: Scratch.translate("attribute [ATTR] of [XML]"),
             arguments: {
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple",
+                defaultValue: Scratch.translate({
+                  default: "apple",
+                  description:
+                    'This should use the same attribute name as in `<hello apple="banana" />',
+                }),
               },
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />',
+                defaultValue: Scratch.translate({
+                  default: '<hello apple="banana" />',
+                  description: "This should be valid XML",
+                }),
               },
             },
           },
           {
             opcode: "removeAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: "remove attribute [ATTR] of [XML]",
+            text: Scratch.translate("remove attribute [ATTR] of [XML]"),
             arguments: {
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple",
+                defaultValue: Scratch.translate({
+                  default: "apple",
+                  description:
+                    'This should use the same attribute name as in `<hello apple="banana" />',
+                }),
               },
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />',
+                defaultValue: Scratch.translate({
+                  default: '<hello apple="banana" />',
+                  description: "This should be valid XML",
+                }),
               },
             },
           },
@@ -160,7 +206,7 @@
           {
             opcode: "hasChildren",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "does [XML] have children?",
+            text: Scratch.translate("does [XML] have children?"),
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
@@ -171,7 +217,7 @@
           {
             opcode: "childrenAmount",
             blockType: Scratch.BlockType.REPORTER,
-            text: "children amount of [XML]",
+            text: Scratch.translate("children amount of [XML]"),
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
@@ -182,7 +228,7 @@
           {
             opcode: "addChild",
             blockType: Scratch.BlockType.REPORTER,
-            text: "add child [CHILD] to [XML]",
+            text: Scratch.translate("add child [CHILD] to [XML]"),
             arguments: {
               CHILD: {
                 type: Scratch.ArgumentType.STRING,
@@ -197,7 +243,9 @@
           {
             opcode: "replaceChild",
             blockType: Scratch.BlockType.REPORTER,
-            text: "replace child #[NO] of [XML] with [CHILD]",
+            text: Scratch.translate(
+              "replace child #[NO] of [XML] with [CHILD]"
+            ),
             arguments: {
               NO: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -216,7 +264,7 @@
           {
             opcode: "getChild",
             blockType: Scratch.BlockType.REPORTER,
-            text: "child #[NO] of [XML]",
+            text: Scratch.translate("child #[NO] of [XML]"),
             arguments: {
               NO: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -231,7 +279,7 @@
           {
             opcode: "removeChild",
             blockType: Scratch.BlockType.REPORTER,
-            text: "remove child #[NO] of [XML]",
+            text: Scratch.translate("remove child #[NO] of [XML]"),
             arguments: {
               NO: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -247,7 +295,7 @@
           {
             opcode: "querySuccessful",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "query [QUERY] on [XML] successful?",
+            text: Scratch.translate("query [QUERY] on [XML] successful?"),
             arguments: {
               QUERY: {
                 type: Scratch.ArgumentType.STRING,
@@ -262,7 +310,7 @@
           {
             opcode: "querySelector",
             blockType: Scratch.BlockType.REPORTER,
-            text: "query [QUERY] on [XML]",
+            text: Scratch.translate("query [QUERY] on [XML]"),
             arguments: {
               QUERY: {
                 type: Scratch.ArgumentType.STRING,
@@ -277,7 +325,7 @@
           {
             opcode: "querySelectorAll",
             blockType: Scratch.BlockType.REPORTER,
-            text: "query all [QUERY] on [XML]",
+            text: Scratch.translate("query all [QUERY] on [XML]"),
             arguments: {
               QUERY: {
                 type: Scratch.ArgumentType.STRING,
