@@ -295,28 +295,28 @@
 
     /**
      * @param {object} args
-     * @param {string} args.MAYBE_XML
+     * @param {unknown} args.MAYBE_XML
      */
     isValid({ MAYBE_XML }) {
-      const { xml } = this.stringToXml(MAYBE_XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(MAYBE_XML));
       return xml !== null;
     }
 
     /**
      * @param {object} args
-     * @param {string} args.MAYBE_XML
+     * @param {unknown} args.MAYBE_XML
      */
     errorMessage({ MAYBE_XML }) {
-      const { xml, error } = this.stringToXml(MAYBE_XML);
+      const { xml, error } = this.stringToXml(Scratch.Cast.toString(MAYBE_XML));
       return xml === null ? error : "";
     }
 
     /**
      * @param {object} args
-     * @param {string} args.XML
+     * @param {unknown} args.XML
      */
     tagName({ XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
@@ -325,10 +325,10 @@
 
     /**
      * @param {object} args
-     * @param {string} args.XML
+     * @param {unknown} args.XML
      */
     textContent({ XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
@@ -337,10 +337,10 @@
 
     /**
      * @param {object} args
-     * @param {string} args.XML
+     * @param {unknown} args.XML
      */
     attributes({ XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
@@ -349,8 +349,8 @@
 
     /**
      * @param {object} args
-     * @param {string} args.XML
-     * @param {string} args.ATTR
+     * @param {unknown} args.XML
+     * @param {unknown} args.ATTR
      */
     hasAttribute({ XML, ATTR }) {
       return this.getAttribute({ XML, ATTR }) === "";
@@ -358,49 +358,52 @@
 
     /**
      * @param {object} args
-     * @param {string} args.ATTR
-     * @param {string} args.XML
-     * @param {string} args.VALUE
+     * @param {unknown} args.ATTR
+     * @param {unknown} args.XML
+     * @param {unknown} args.VALUE
      */
     setAttribute({ ATTR, XML, VALUE }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
-      xml.setAttribute(ATTR, VALUE);
+      xml.setAttribute(
+        Scratch.Cast.toString(ATTR),
+        Scratch.Cast.toString(VALUE)
+      );
       return this.xmlToString(xml);
     }
 
     /**
      * @param {object} args
-     * @param {string} args.ATTR
-     * @param {string} args.XML
+     * @param {unknown} args.ATTR
+     * @param {unknown} args.XML
      */
     getAttribute({ ATTR, XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
-      return xml.getAttribute(ATTR) ?? "";
+      return xml.getAttribute(Scratch.Cast.toString(ATTR)) ?? "";
     }
 
     /**
      * @param {object} args
-     * @param {string} args.ATTR
-     * @param {string} args.XML
+     * @param {unknown} args.ATTR
+     * @param {unknown} args.XML
      */
     removeAttribute({ ATTR, XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
-      xml.removeAttribute(ATTR);
+      xml.removeAttribute(Scratch.Cast.toString(ATTR));
       return this.xmlToString(xml);
     }
 
     /**
      * @param {object} args
-     * @param {string} args.XML
+     * @param {unknown} args.XML
      */
     hasChildren({ XML }) {
       return this.childrenAmount({ XML }) !== 0;
@@ -408,10 +411,10 @@
 
     /**
      * @param {object} args
-     * @param {string} args.XML
+     * @param {unknown} args.XML
      */
     childrenAmount({ XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return 0;
       }
@@ -420,15 +423,15 @@
 
     /**
      * @param {object} args
-     * @param {string} args.CHILD
-     * @param {string} args.XML
+     * @param {unknown} args.CHILD
+     * @param {unknown} args.XML
      */
     addChild({ CHILD, XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
-      const { xml: childXML } = this.stringToXml(CHILD);
+      const { xml: childXML } = this.stringToXml(Scratch.Cast.toString(CHILD));
       if (childXML === null) {
         return this.xmlToString(xml);
       }
@@ -438,21 +441,22 @@
 
     /**
      * @param {object} args
-     * @param {string} args.NO
-     * @param {string} args.XML
-     * @param {string} args.CHILD
+     * @param {unknown} args.NO
+     * @param {unknown} args.XML
+     * @param {unknown} args.CHILD
      */
     replaceChild({ NO, XML, CHILD }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
-      const { xml: childXML } = this.stringToXml(CHILD);
+      const { xml: childXML } = this.stringToXml(Scratch.Cast.toString(CHILD));
       if (childXML === null) {
         return this.xmlToString(xml);
       }
-      const originalChild = xml.children[parseInt(NO) - 1];
-      if (originalChild === null) {
+      const originalChild =
+        xml.children[Math.floor(Scratch.Cast.toNumber(NO)) - 1];
+      if (originalChild === undefined) {
         return this.xmlToString(xml);
       }
       xml.replaceChild(childXML, originalChild);
@@ -461,16 +465,16 @@
 
     /**
      * @param {object} args
-     * @param {string} args.NO
-     * @param {string} args.XML
+     * @param {unknown} args.NO
+     * @param {unknown} args.XML
      */
     getChild({ NO, XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
-      const child = xml.children[parseInt(NO) - 1];
-      if (child === null) {
+      const child = xml.children[Math.floor(Scratch.Cast.toNumber(NO)) - 1];
+      if (child === undefined) {
         return "";
       }
       return this.xmlToString(child);
@@ -478,16 +482,16 @@
 
     /**
      * @param {object} args
-     * @param {string} args.NO
-     * @param {string} args.XML
+     * @param {unknown} args.NO
+     * @param {unknown} args.XML
      */
     removeChild({ NO, XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
-      const child = xml.children[parseInt(NO) - 1];
-      if (child === null) {
+      const child = xml.children[Math.floor(Scratch.Cast.toNumber(NO)) - 1];
+      if (child === undefined) {
         return this.xmlToString(xml);
       }
       xml.removeChild(child);
@@ -496,29 +500,29 @@
 
     /**
      * @param {object} args
-     * @param {string} args.QUERY
-     * @param {string} args.XML
+     * @param {unknown} args.QUERY
+     * @param {unknown} args.XML
      */
     querySuccessful({ QUERY, XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
-      const child = xml.querySelector(QUERY);
+      const child = xml.querySelector(Scratch.Cast.toString(QUERY));
       return child !== null;
     }
 
     /**
      * @param {object} args
-     * @param {string} args.QUERY
-     * @param {string} args.XML
+     * @param {unknown} args.QUERY
+     * @param {unknown} args.XML
      */
     querySelector({ QUERY, XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
-      const child = xml.querySelector(QUERY);
+      const child = xml.querySelector(Scratch.Cast.toString(QUERY));
       if (child === null) {
         return "";
       }
@@ -526,15 +530,15 @@
     }
     /**
      * @param {object} args
-     * @param {string} args.QUERY
-     * @param {string} args.XML
+     * @param {unknown} args.QUERY
+     * @param {unknown} args.XML
      */
     querySelectorAll({ QUERY, XML }) {
-      const { xml } = this.stringToXml(XML);
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
       if (xml === null) {
         return "";
       }
-      const child = xml.querySelectorAll(QUERY);
+      const child = xml.querySelectorAll(Scratch.Cast.toString(QUERY));
       if (child.length === 0) {
         return "";
       }
