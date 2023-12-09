@@ -12675,12 +12675,6 @@
               default: "simulation rate",
               description: "Get the number of physics simulation steps to run per second",
             }),
-            arguments: {
-              rate: {
-                type: ArgumentType.NUMBER,
-                defaultValue: 30,
-              },
-            },
           },
 
           "---",
