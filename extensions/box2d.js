@@ -12221,7 +12221,7 @@
       }
       prev = b2Vec;
     }
-  
+
     fixDef.shape.SetAsArray(vertices);
   };
 
