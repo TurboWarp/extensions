@@ -33,6 +33,7 @@
       return {
         id: "mbwxml",
         name: "XML",
+        color1: "#6c2b5f",
         blocks: [
           {
             opcode: "isValid",
