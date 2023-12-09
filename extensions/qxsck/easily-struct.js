@@ -9,76 +9,82 @@
 
   Scratch.translate.setup({
     'en':{
-      'qxsckeasilystruct_struct_name':'Easily struct',
+      //qxsckeasilystruct
+      'qxsckeasilystruct.name':'Easily struct',
 
-      'qxsckeasilystruct_clearAllStructTypes':'clear all struct types',
-      'qxsckeasilystruct_clearAllStructs':'clear all structs',
-      'qxsckeasilystruct_clearAllStructLists':'clear all struct lists',
+      'qxsckeasilystruct.type':"type",
+      'qxsckeasilystruct.length':"length",
+      'qxsckeasilystruct.memberLength':"number of members",
+      'qxsckeasilystruct.members':"members",
 
-      'qxsckeasilystruct_setStructType':'set struct type,name = [NAME] , members = [MEMBERS]',
-      'qxsckeasilystruct_setStruct':'set struct,name = [NAME] , type = [TYPE]',
-      'qxsckeasilystruct_setStructList':'set struct list,name = [NAME] , type = [TYPE]',
-      'qxsckeasilystruct_getLengthofStructType':'length of members in struct type [NAME]',
-      'qxsckeasilystruct_deleteStructType':'delete struct type [NAME]',
-      'qxsckeasilystruct_deleteStruct':'delete struct [NAME]',
-      'qxsckeasilystruct_deleteStructList':'delete struct list [NAME]',
+      'qxsckeasilystruct.structTypes':"struct types",
+      'qxsckeasilystruct.structs':"structs",
+      'qxsckeasilystruct.structLists':"struct lists",
 
-      'qxsckeasilystruct_checkHaveStructType':'have struct type [NAME] ?',
-      'qxsckeasilystruct_checkHaveStruct':'have struct [NAME] ?',
-      'qxsckeasilystruct_checkHaveStructList':'have struct list [NAME] ?',
-      'qxsckeasilystruct_checkHaveStructTypeMember':'struct type [NAME] have member [MEMBER] ?',
-      'qxsckeasilystruct_checkHaveStructMember':'struct [NAME] have member [MEMBER] ?',
-      'qxsckeasilystruct_checkHaveStructListMember':'struct list [NAME] have member [MEMBER] ?',
+      'qxsckeasilystruct.clearAll':"clear all",
+      'qxsckeasilystruct.clearData':'clear all [TYPE]',
 
-      'qxsckeasilystruct_getStructType':'type in struct [NAME]',
-      'qxsckeasilystruct_setStructMemberData':'set member [MEMBER] in struct [NAME] to [DATA]',
-      'qxsckeasilystruct_getStructMember':'member [MEMBER] in struct [NAME]',
-      'qxsckeasilystruct_getStructMemberIndex':'item [INDEX] of members in struct [NAME]',
+      'qxsckeasilystruct.setStructType':'set struct type,name = [NAME] , members = [MEMBERS]',
+      'qxsckeasilystruct.setStruct':'set struct,name = [NAME] , type = [TYPE]',
+      'qxsckeasilystruct.setStructList':'set struct list,name = [NAME] , type = [TYPE]',
+      'qxsckeasilystruct.getStructTypeData':'[TYPE] in struct type [NAME]',
+      'qxsckeasilystruct.deleteData':'delete [TYPE] [NAME]',
 
-      'qxsckeasilystruct_getStructListType':'type in struct list [NAME]',
-      'qxsckeasilystruct_getStructListLength':'length of struct list [NAME]',
-      'qxsckeasilystruct_getStructListPushData':'push [NUM] none datas to struct list [NAME]',
+      'qxsckeasilystruct.checkData':'have [TYPE] [NAME] ?',
+      'qxsckeasilystruct.checkDataMember':'[TYPE] [NAME] have member [MEMBER] ?',
 
-      'qxsckeasilystruct_setStructListMemberData':'set item [INDEX] of member [MEMBER] in struct list [NAME] to [DATA]',
-      'qxsckeasilystruct_getStructListMember':'item [INDEX] of member [MEMBER] in struct list [NAME]',
-      'qxsckeasilystruct_getStructListMemberIndex':'item [INDEX2] of the [INDEX] member in the struct list [NAME]',
-      'qxsckeasilystruct_deleteStructListMember':'delete item [INDEX] in struct list [NAME]',
+      'qxsckeasilystruct.getStructType':'type in struct [NAME]',
+      'qxsckeasilystruct.setStructMemberData':'set member [MEMBER] in struct [NAME] to [DATA]',
+      'qxsckeasilystruct.getStructMember':'member [MEMBER] in struct [NAME]',
+      'qxsckeasilystruct.getStructMemberIndex':'item [INDEX] of members in struct [NAME]',
+
+      'qxsckeasilystruct.getStructListData':'[TYPE] in struct list [NAME]',
+      'qxsckeasilystruct.structListPushData':'push [NUM] none datas to struct list [NAME]',
+
+      'qxsckeasilystruct.setStructListMemberData':'set item [INDEX] of member [MEMBER] in struct list [NAME] to [DATA]',
+      'qxsckeasilystruct.getStructListMember':'item [INDEX] of member [MEMBER] in struct list [NAME]',
+      'qxsckeasilystruct.getStructListMemberIndex':'item [INDEX2] of the [INDEX] member in the struct list [NAME]',
+      'qxsckeasilystruct.deleteStructListMember':'delete item [INDEX] in struct list [NAME]',
+      'qxsckeasilystruct.structListSort':'sort struct list [NAME] with rule [RULE]',
     },
     'zh': {
-      'qxsckeasilystruct_struct_name':'简易结构体',
+      //qxsckeasilystruct
+      'qxsckeasilystruct.name':'简易结构体',
 
-      'qxsckeasilystruct_clearAllStructTypes':'清空所有结构体类型',
-      'qxsckeasilystruct_clearAllStructs':'清空所有结构体',
-      'qxsckeasilystruct_clearAllStructLists':'清空所有结构体列表',
+      'qxsckeasilystruct.type':"类型",
+      'qxsckeasilystruct.length':"长度",
+      'qxsckeasilystruct.memberLength':"成员数量",
+      'qxsckeasilystruct.members':"成员",
 
-      'qxsckeasilystruct_setStructType':'设置结构体类型，类型名称 = [NAME] ，成员 = [MEMBERS]',
-      'qxsckeasilystruct_setStruct':'设置结构体，结构体名称 = [NAME] ，结构体类型名称 = [TYPE]',
-      'qxsckeasilystruct_setStructList':'设置结构体列表，结构体列表名称 = [NAME] ，结构体类型名称 = [TYPE]',
-      'qxsckeasilystruct_getLengthofStructType':'结构体类型 [NAME] 的成员数量',
-      'qxsckeasilystruct_deleteStructType':'删除结构体类型 [NAME]',
-      'qxsckeasilystruct_deleteStruct':'删除结构体 [NAME]',
-      'qxsckeasilystruct_deleteStructList':'设删除结构体列表 [NAME]',
+      'qxsckeasilystruct.structTypes':"结构体定义",
+      'qxsckeasilystruct.structs':"结构体",
+      'qxsckeasilystruct.structLists':"结构体列表",
 
-      'qxsckeasilystruct_checkHaveStructType':'存在结构体类型 [NAME] ？',
-      'qxsckeasilystruct_checkHaveStruct':'存在结构体 [NAME] ？',
-      'qxsckeasilystruct_checkHaveStructList':'存在结构体列表 [NAME] ？',
-      'qxsckeasilystruct_checkHaveStructTypeMember':'结构体类型 [NAME] 存在成员 [MEMBER] ？',
-      'qxsckeasilystruct_checkHaveStructMember':'结构体 [NAME] 存在成员 [MEMBER] ？',
-      'qxsckeasilystruct_checkHaveStructListMember':'结构体列表 [NAME] 存在成员 [MEMBER] ？',
+      'qxsckeasilystruct.clearAll':"清空所有数据",
+      'qxsckeasilystruct.clearData':'清空所有 [TYPE]',
 
-      'qxsckeasilystruct_getStructType':'结构体 [NAME] 的类型',
-      'qxsckeasilystruct_setStructMemberData':'设置结构体 [NAME] 的成员 [MEMBER] 的数据为 [DATA]',
-      'qxsckeasilystruct_getStructMember':'结构体 [NAME] 的成员 [MEMBER]',
-      'qxsckeasilystruct_getStructMemberIndex':'结构体 [NAME] 的第 [INDEX] 个成员',
+      'qxsckeasilystruct.setStructType':'设置结构体类型，类型名称 = [NAME] ，成员 = [MEMBERS]',
+      'qxsckeasilystruct.setStruct':'设置结构体，结构体名称 = [NAME] ，结构体类型名称 = [TYPE]',
+      'qxsckeasilystruct.setStructList':'设置结构体列表，结构体列表名称 = [NAME] ，结构体类型名称 = [TYPE]',
+      'qxsckeasilystruct.getStructTypeData':'结构体类型 [NAME] 的 [TYPE]',
+      'qxsckeasilystruct.deleteData':'删除 [TYPE] [NAME]',
 
-      'qxsckeasilystruct_getStructListType':'结构体列表 [NAME] 的类型',
-      'qxsckeasilystruct_getStructListLength':'结构体列表 [NAME] 的长度',
-      'qxsckeasilystruct_getStructListPushData':'结构体列表 [NAME] 增加 [NUM] 项空白项',
+      'qxsckeasilystruct.checkData':'存在 [TYPE] [NAME] ？',
+      'qxsckeasilystruct.checkDataMember':'[TYPE] [NAME] 存在成员 [MEMBER] ？',
 
-      'qxsckeasilystruct_setStructListMemberData':'设置结构体列表 [NAME] 的第 [INDEX] 项的成员 [MEMBER] 的数据为 [DATA]',
-      'qxsckeasilystruct_getStructListMember':'结构体列表 [NAME] 的第 [INDEX] 项的成员 [MEMBER]',
-      'qxsckeasilystruct_getStructListMemberIndex':'结构体列表 [NAME] 的第 [INDEX] 项的第 [INDEX2] 个成员',
-      'qxsckeasilystruct_deleteStructListMember':'删除结构体列表 [NAME] 的第 [INDEX] 项',
+      'qxsckeasilystruct.getStructType':'结构体 [NAME] 的类型',
+      'qxsckeasilystruct.setStructMemberData':'设置结构体 [NAME] 的成员 [MEMBER] 的数据为 [DATA]',
+      'qxsckeasilystruct.getStructMember':'结构体 [NAME] 的成员 [MEMBER]',
+      'qxsckeasilystruct.getStructMemberIndex':'结构体 [NAME] 的第 [INDEX] 个成员',
+
+      'qxsckeasilystruct.getStructListData':'结构体列表 [NAME] 的 [TYPE]',
+      'qxsckeasilystruct.structListPushData':'结构体列表 [NAME] 增加 [NUM] 项空白项',
+
+      'qxsckeasilystruct.setStructListMemberData':'设置结构体列表 [NAME] 的第 [INDEX] 项的成员 [MEMBER] 的数据为 [DATA]',
+      'qxsckeasilystruct.getStructListMember':'结构体列表 [NAME] 的第 [INDEX] 项的成员 [MEMBER]',
+      'qxsckeasilystruct.getStructListMemberIndex':'结构体列表 [NAME] 的第 [INDEX] 项的第 [INDEX2] 个成员',
+      'qxsckeasilystruct.deleteStructListMember':'删除结构体列表 [NAME] 的第 [INDEX] 项',
+      'qxsckeasilystruct.structListSort':'使用规则 [RULE] 排序结构体列表 [NAME]',
     },
   });
 
@@ -86,30 +92,31 @@
     getInfo() {
       return {
       id: "qxsckeasilystruct",
-      name: Scratch.translate({id: "qxsckeasilystruct_struct_name",default: "Easily struct"}),
+      name: Scratch.translate({id: "qxsckeasilystruct.name",default: "Easily struct"}),
       color1: '#0e7bed',
       color2: '#0e7bed',
+      color3: '#0e7bed',
       blockIconURI: Icon,
       menuIconURI: Icon,
         blocks: [
           //command,reporter,Boolean,hat
           {
-            opcode: "clearAllStructTypes",
+            opcode: "clearAll",
             blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_clearAllStructTypes",default: "clear all struct types"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.clearAll",default: "clear all"}),
             arguments: {},
           },
           {
-            opcode: "clearAllStructs",
+            opcode: "clearData",
             blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_clearAllStructs",default: "clear all structs"}),
-            arguments: {},
-          },
-          {
-            opcode: "clearAllStructLists",
-            blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_clearAllStructLists",default: "clear all struct lists"}),
-            arguments: {},
+            text: Scratch.translate({id: "qxsckeasilystruct.clearData",default: "clear all [TYPE]"}),
+            arguments: {
+              TYPE:{
+                type: 'string',
+                defaultValue: Scratch.translate({id: "qxsckeasilystruct.structTypes",default: "struct types"}),
+                menu: 'structData.List',
+              },
+            },
           },
 
           '---',
@@ -117,7 +124,7 @@
           {
             opcode: "setStructType",
             blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_setStructType",default: "set struct type,name = [NAME],members = [MEMBERS]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.setStructType",default: "set struct type,name = [NAME],members = [MEMBERS]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -132,7 +139,7 @@
           {
             opcode: "setStruct",
             blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_setStruct",default: "set struct,name = [NAME],type = [TYPE]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.setStruct",default: "set struct,name = [NAME],type = [TYPE]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -147,7 +154,7 @@
           {
             opcode: "setStructList",
             blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_setStructList",default: "set struct list,name = [NAME],type = [TYPE]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.setStructList",default: "set struct list,name = [NAME],type = [TYPE]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -160,46 +167,34 @@
             },
           },
           {
-            opcode: "getLengthofStructType",
+            opcode: "getStructTypeData",
             blockType: 'reporter',
-            text: Scratch.translate({id: "qxsckeasilystruct_getLengthofStructType",default: "length of members in struct type [NAME]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.getStructTypeData",default: "[TYPE] in struct type [NAME]"}),
             arguments: {
               NAME: {
                 type: 'string',
                 defaultValue: 'struct_'
               },
+              TYPE:{
+                type: 'string',
+                defaultValue: Scratch.translate({id: "qxsckeasilystruct.memberLength",default: "number of members"}),
+                menu: 'getStructTypeData.List',
+              },
             },
           },
           {
-            opcode: "deleteStructType",
+            opcode: "deleteData",
             blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_deleteStructType",default: "delete struct type [NAME]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.deleteData",default: "delete [TYPE] [NAME]"}),
             arguments: {
               NAME: {
                 type: 'string',
                 defaultValue: 'struct_'
               },
-            },
-          },
-          {
-            opcode: "deleteStruct",
-            blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_deleteStruct",default: "delete struct [NAME]"}),
-            arguments: {
-              NAME: {
+              TYPE:{
                 type: 'string',
-                defaultValue: 'struct'
-              },
-            },
-          },
-          {
-            opcode: "deleteStructList",
-            blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_deleteStructList",default: "delete struct list [NAME]"}),
-            arguments: {
-              NAME: {
-                type: 'string',
-                defaultValue: 'structList'
+                defaultValue: Scratch.translate({id: "qxsckeasilystruct.structTypes",default: "struct types"}),
+                menu: 'structData.List',
               },
             },
           },
@@ -207,42 +202,25 @@
           '---',
 
           {
-            opcode: "checkHaveStructType",
+            opcode: "checkData",
             blockType: 'Boolean',
-            text: Scratch.translate({id: "qxsckeasilystruct_checkHaveStructType",default: "have struct type [NAME] ?"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.checkData",default: "have [TYPE] [NAME] ?"}),
             arguments: {
               NAME: {
                 type: 'string',
                 defaultValue: 'struct_'
               },
-            },
-          },
-          {
-            opcode: "checkHaveStruct",
-            blockType: 'Boolean',
-            text: Scratch.translate({id: "qxsckeasilystruct_checkHaveStruct",default: "have struct [NAME] ?"}),
-            arguments: {
-              NAME: {
+              TYPE:{
                 type: 'string',
-                defaultValue: 'struct'
+                defaultValue: Scratch.translate({id: "qxsckeasilystruct.structTypes",default: "struct types"}),
+                menu: 'structData.List',
               },
             },
           },
           {
-            opcode: "checkHaveStructList",
+            opcode: "checkDataMember",
             blockType: 'Boolean',
-            text: Scratch.translate({id: "qxsckeasilystruct_checkHaveStructList",default: "have struct list [NAME] ?"}),
-            arguments: {
-              NAME: {
-                type: 'string',
-                defaultValue: 'structList'
-              },
-            },
-          },
-          {
-            opcode: "checkHaveStructTypeMember",
-            blockType: 'Boolean',
-            text: Scratch.translate({id: "qxsckeasilystruct_checkHaveStructTypeMember",default: "struct type [NAME] have member [MEMBER] ?"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.checkDataMember",default: "[TYPE] [NAME] have member [MEMBER] ?"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -252,35 +230,10 @@
                 type: 'string',
                 defaultValue: 'mem1'
               },
-            },
-          },
-          {
-            opcode: "checkHaveStructMember",
-            blockType: 'Boolean',
-            text: Scratch.translate({id: "qxsckeasilystruct_checkHaveStructMember",default: "struct [NAME] have member [MEMBER] ?"}),
-            arguments: {
-              NAME: {
+              TYPE:{
                 type: 'string',
-                defaultValue: 'struct'
-              },
-              MEMBER: {
-                type: 'string',
-                defaultValue: 'mem1'
-              },
-            },
-          },
-          {
-            opcode: "checkHaveStructListMember",
-            blockType: 'Boolean',
-            text: Scratch.translate({id: "qxsckeasilystruct_checkHaveStructListMember",default: "struct list [NAME] have member [MEMBER] ?"}),
-            arguments: {
-              NAME: {
-                type: 'string',
-                defaultValue: 'structList'
-              },
-              MEMBER: {
-                type: 'string',
-                defaultValue: 'mem1'
+                defaultValue: Scratch.translate({id: "qxsckeasilystruct.structTypes",default: "struct types"}),
+                menu: 'structData.List',
               },
             },
           },
@@ -290,7 +243,7 @@
           {
             opcode: "getStructType",
             blockType: 'reporter',
-            text: Scratch.translate({id: "qxsckeasilystruct_getStructType",default: "type in struct [NAME]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.getStructType",default: "type in struct [NAME]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -301,7 +254,7 @@
           {
             opcode: "setStructMemberData",
             blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_setStructMemberData",default: "set member [MEMBER] in struct [NAME] to [DATA]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.setStructMemberData",default: "set member [MEMBER] in struct [NAME] to [DATA]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -320,7 +273,7 @@
           {
             opcode: "getStructMember",
             blockType: 'reporter',
-            text: Scratch.translate({id: "qxsckeasilystruct_getStructMember",default: "member [MEMBER] in struct [NAME]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.getStructMember",default: "member [MEMBER] in struct [NAME]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -335,7 +288,7 @@
           {
             opcode: "getStructMemberIndex",
             blockType: 'reporter',
-            text: Scratch.translate({id: "qxsckeasilystruct_getStructMemberIndex",default: "item [INDEX] of members in struct [NAME]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.getStructMemberIndex",default: "item [INDEX] of members in struct [NAME]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -351,31 +304,25 @@
           '---',
 
           {
-            opcode: "getStructListType",
+            opcode: "getStructListData",
             blockType: 'reporter',
-            text: Scratch.translate({id: "qxsckeasilystruct_getStructListType",default: "type in struct list [NAME]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.getStructListData",default: "[TYPE] in struct list [NAME]"}),
             arguments: {
               NAME: {
                 type: 'string',
                 defaultValue: 'structList'
               },
-            },
-          },
-          {
-            opcode: "getStructListLength",
-            blockType: 'reporter',
-            text: Scratch.translate({id: "qxsckeasilystruct_getStructListLength",default: "length of struct list [NAME]"}),
-            arguments: {
-              NAME: {
+              TYPE:{
                 type: 'string',
-                defaultValue: 'structList'
-              },
+                defaultValue: Scratch.translate({id: "qxsckeasilystruct.type",default: "type"}),
+                menu: 'getStructListData.List',
+              }
             },
           },
           {
-            opcode: "getStructListPushData",
+            opcode: "structListPushData",
             blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_getStructListPushData",default: "push [NUM] datas to struct list [NAME]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.structListPushData",default: "push [NUM] datas to struct list [NAME]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -390,7 +337,7 @@
           {
             opcode: "setStructListMemberData",
             blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_setStructListMemberData",default: "set item [INDEX] of member [MEMBER] in struct list [NAME] to [DATA]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.setStructListMemberData",default: "set item [INDEX] of member [MEMBER] in struct list [NAME] to [DATA]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -413,7 +360,7 @@
           {
             opcode: "getStructListMember",
             blockType: 'reporter',
-            text: Scratch.translate({id: "qxsckeasilystruct_getStructListMember",default: "item [INDEX] of member [MEMBER] in struct list [NAME]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.getStructListMember",default: "item [INDEX] of member [MEMBER] in struct list [NAME]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -432,7 +379,7 @@
           {
             opcode: "getStructListMemberIndex",
             blockType: 'reporter',
-            text: Scratch.translate({id: "qxsckeasilystruct_getStructListMemberIndex",default: "item [INDEX2] of the [INDEX] member in the struct list [NAME]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.getStructListMemberIndex",default: "item [INDEX2] of the [INDEX] member in the struct list [NAME]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -451,7 +398,7 @@
           {
             opcode: "deleteStructListMember",
             blockType: 'command',
-            text: Scratch.translate({id: "qxsckeasilystruct_deleteStructListMember",default: "delete item [INDEX] in struct list [NAME]"}),
+            text: Scratch.translate({id: "qxsckeasilystruct.deleteStructListMember",default: "delete item [INDEX] in struct list [NAME]"}),
             arguments: {
               NAME: {
                 type: 'string',
@@ -463,26 +410,76 @@
               },
             },
           },
+          {
+            opcode: "structListSort",
+            blockType: 'command',
+            text: Scratch.translate({id: "qxsckeasilystruct.structListSort",default: "sort struct list [NAME] with rule [RULE]"}),
+            arguments: {
+              NAME: {
+                type: 'string',
+                defaultValue: 'structList'
+              },
+              RULE: {
+                type: 'string',
+                defaultValue: 'mem1 num asc mem2 str none'
+              },
+            },
+          },
         ],
+        menus: {
+          'getStructListData.List':[
+            {
+              text: Scratch.translate({id: "qxsckeasilystruct.type",default: "type"}),
+              value: 'type'
+            },
+            {
+              text: Scratch.translate({id: "qxsckeasilystruct.length",default: "length"}),
+              value: 'length'
+            },
+          ],
+          'structData.List':[
+            {
+              text: Scratch.translate({id: "qxsckeasilystruct.structTypes",default: "struct types"}),
+              value: 'structTypes'
+            },
+            {
+              text: Scratch.translate({id: "qxsckeasilystruct.structs",default: "structs"}),
+              value: 'structs'
+            },
+            {
+              text: Scratch.translate({id: "qxsckeasilystruct.structLists",default: "structLists"}),
+              value: 'structLists'
+            },
+          ],
+          'getStructTypeData.List':[
+            {
+              text: Scratch.translate({id: "qxsckeasilystruct.memberLength",default: "number of members"}),
+              value: 'length'
+            },
+            {
+              text: Scratch.translate({id: "qxsckeasilystruct.members",default: "members"}),
+              value: 'members'
+            },
+          ],
+        }
       };
     }
 
-    clearAllStructTypes(){
-      structs=Object.create(null);
+    clearAll(){
+      structs=Object.create(null),useStructs=Object.create(null),useStructLists=Object.create(null);
     }
-    clearAllStructs(){
-      useStructs=Object.create(null);
-    }
-    clearAllStructs(){
-      useStructLists=Object.create(null);
+    clearData(args){
+      let type_=String(args.TYPE);
+      if(type_=='structTypes') structs=Object.create(null);
+      else if(type_=='structs') useStructs=Object.create(null);
+      else if(type_=='structLists') useStructLists=Object.create(null);
     }
 
     setStructType(args){
-      var name=String(args.NAME),members=String(args.MEMBERS).split(' ');
-      if(name in structs){
-      }else{
-        var flag=0,v={};
-        for(var i in members){
+      let name=String(args.NAME),members=String(args.MEMBERS).split(' ');
+      if(!(name in structs)){
+        let flag=0,v={};
+        for(let i in members){
           if(v[members[i]]) flag=1;
           v[members[i]] = true;
         }
@@ -492,137 +489,169 @@
       }
     }
     setStruct(args){
-      var name=String(args.NAME),type=String(args.TYPE);
-      if(name in useStructs){
-      }else{
+      let name=String(args.NAME),type=String(args.TYPE);
+      if(!(name in useStructs)){
         if(type in structs){
-          var members=structs[type];
-          var json={"type":type,"data":{}};
-          for(var i in members) json['data'][members[i]]="";
+          let members=structs[type];
+          let json={"type":type,"data":{}};
+          for(let i in members) json['data'][members[i]]="";
           useStructs[name]=json;
         }
       }
     }
     setStructList(args){
-      var name=String(args.NAME),type=String(args.TYPE);
-      if(name in useStructLists){
-      }else{
+      let name=String(args.NAME),type=String(args.TYPE);
+      if(!(name in useStructLists)){
         if(type in structs){
-          var members=structs[type];
-          var json={"type":type,"members":members,"data":[]};
+          let members=structs[type];
+          let json={"type":type,"members":members,"data":[]};
           useStructLists[name]=json;
         }
       }
     }
-    getLengthofStructType(args){
-      var name=String(args.NAME);
-      if(name in structs) return structs[name].length;
+    getStructTypeData(args){
+      let name=String(args.NAME),type_=String(args.TYPE);
+      if(name in structs){
+        if(type_=='length') return structs[name].length;
+        else if(type_=='members'){
+          let members=structs[name];
+          return '['+members.map(value=>'"'+String(value)+'"').join(',')+']';
+        }
+      }
     }
-    deleteStructType(args){
-      var name=String(args.NAME);
-      if((name in structs)) delete structs[name];
-    }
-    deleteStruct(args){
-      var name=String(args.NAME);
-      if((name in useStructs)) delete useStructs[name];
-    }
-    deleteStructList(args){
-      var name=String(args.NAME);
-      if((name in useStructLists)) delete useStructLists[name];
+    deleteData(args){
+      let type_=String(args.TYPE),name=String(args.NAME);
+      if(type_=='structTypes') if((name in structs)) delete structs[name];
+      else if(type_=='structs') if((name in useStructs)) delete useStructs[name];
+      else if(type_=='structLists') if((name in useStructLists)) delete useStructLists[name];
     }
 
-    checkHaveStructType(args){
-      var name=String(args.NAME);
-      return (name in structs);
+    checkData(args){
+      let type_=String(args.TYPE),name=String(args.NAME);
+      if(type_=='structTypes') return (name in structs);
+      else if(type_=='structs') return (name in useStructs);
+      else if(type_=='structLists') return (name in useStructLists);
     }
-    checkHaveStruct(args){
-      var name=String(args.NAME);
-      return (name in useStructs);
-    }
-    checkHaveStructList(args){
-      var name=String(args.NAME);
-      return (name in useStructLists);
-    }
-    checkHaveStructTypeMember(args){
-      var name=String(args.NAME),member=String(args.MEMBER);
-      if(name in structs) return (structs[name].indexOf(member)>-1);
-      else return false;
-    }
-    checkHaveStructMember(args){
-      var name=String(args.NAME),member=String(args.MEMBER);
-      if(name in useStructs) return (member in useStructs[name]['data']);
-      else return false;
-    }
-    checkHaveStructListMember(args){
-      var name=String(args.NAME),member=String(args.MEMBER);
-      if(name in useStructLists) return (useStructLists[name]['members'].indexOf(member)>-1);
-      else return false;
+    checkDataMember(args){
+      let type_=String(args.TYPE),name=String(args.NAME),member=String(args.MEMBER);
+      if(type_=='structTypes'){
+        if(name in structs) return (structs[name].indexOf(member)>-1);
+        else return false;
+      }
+      else if(type_=='structs'){
+        if(name in useStructs) return (member in useStructs[name]['data']);
+        else return false;
+      }
+      else if(type_=='structLists'){
+        if(name in useStructLists) return (useStructLists[name]['members'].indexOf(member)>-1);
+        else return false;
+      }
     }
 
     getStructType(args){
-      var name=String(args.NAME);
+      let name=String(args.NAME);
       if(name in useStructs) return useStructs[name]['type'];
       else return '';
     }
     setStructMemberData(args){
-      var name=String(args.NAME),member=String(args.MEMBER),data=String(args.DATA);
+      let name=String(args.NAME),member=String(args.MEMBER),data=String(args.DATA);
       if(name in useStructs) if(member in useStructs[name]['data']) useStructs[name]['data'][member]=data;
     }
     getStructMember(args){
-      var name=String(args.NAME),member=String(args.MEMBER);
+      let name=String(args.NAME),member=String(args.MEMBER);
       if(name in useStructs) if(member in useStructs[name]['data']) return useStructs[name]['data'][member];
       else return '';
     }
     getStructMemberIndex(args){
-      var name=String(args.NAME),index=Number(args.INDEX);
+      let name=String(args.NAME),index=Number(args.INDEX);
       if(name in useStructs){
-        var members=Object.keys(useStructs[name]['data']);
+        let members=Object.keys(useStructs[name]['data']);
         if(index<=members.length) return useStructs[name]['data'][members[index-1]];
         else return '';
       }
       else return '';
     }
 
-    getStructListType(args){
-      var name=String(args.NAME);
-      if(name in useStructLists) return useStructLists[name]['type'];
-      return '';
+    getStructListData(args){
+      let type_=String(args.TYPE),name=String(args.NAME);
+      if(type_=="type"){
+        if(name in useStructLists) return useStructLists[name]['type'];
+        return '';
+      }else if(type_=='length'){
+        if(name in useStructLists) return useStructLists[name]['data'].length;
+        else return -1;
+      }
     }
-    getStructListLength(args){
-      var name=String(args.NAME);
-      if(name in useStructLists) return useStructLists[name]['data'].length;
-      else return -1;
-    }
-    getStructListPushData(args){
-      var name=String(args.NAME),num=Number(args.NUM);
+    structListPushData(args){
+      let name=String(args.NAME),num=Number(args.NUM);
       if(name in useStructLists){
-        var type=useStructLists[name]['type'],members=structs[type],json={};
-        for(var i in members) json[members[i]]="";
-        for(var i=0;i<num;i++) useStructLists[name]['data'].push(json);
+        let type=useStructLists[name]['type'],members=structs[type],json={};
+        for(let i in members) json[members[i]]="";
+        for(let i=0;i<num;i++) useStructLists[name]['data'].push(json);
       }
     }
     setStructListMemberData(args){
-      var name=String(args.NAME),member=String(args.MEMBER),data=String(args.DATA),index=Number(args.INDEX);
+      let name=String(args.NAME),member=String(args.MEMBER),data=String(args.DATA),index=Number(args.INDEX);
       if(name in useStructLists) if(index<=useStructLists[name]['data'].length) if(member in useStructLists[name]['data'][index-1]) useStructLists[name]['data'][index-1][member]=data;
     }
     getStructListMember(args){
-      var name=String(args.NAME),member=String(args.MEMBER),index=Number(args.INDEX);
+      let name=String(args.NAME),member=String(args.MEMBER),index=Number(args.INDEX);
       if(name in useStructLists) if(index<=useStructLists[name]['data'].length) if(member in useStructLists[name]['data'][index-1]) return useStructLists[name]['data'][index-1][member];
       else return '';
     }
     getStructListMemberIndex(args){
-      var name=String(args.NAME),index=Number(args.INDEX),index2=Number(args.INDEX2);
+      let name=String(args.NAME),index=Number(args.INDEX),index2=Number(args.INDEX2);
       if(name in useStructLists) if(index<=useStructLists[name]['data'].length){
-        var members=Object.keys(useStructLists[name]['data'][index-1]);
+        let members=Object.keys(useStructLists[name]['data'][index-1]);
         if(index2<=members.length) return useStructLists[name]['data'][index-1][members[index2-1]];
         else return '';
       }
       else return '';
     }
     deleteStructListMember(args){
-      var name=String(args.NAME),index=Number(args.INDEX);
+      let name=String(args.NAME),index=Number(args.INDEX);
       if(name in useStructLists) if(index<=useStructLists[name]['data'].length) delete useStructLists[name]['data'][index-1];
-      else return '';
+    }
+    structListSort(args){
+      let name=String(args.NAME),rule_arr=String(args.RULE).split(" ");
+      if(name in useStructLists){
+        let type=useStructLists[name]['type'],members=structs[type];
+        if(members.length==rule_arr.length/3 && rule_arr.length%3==0){
+          let rule_member=[],rule_type=[],rule_order=[];
+          for(let i=0;i<rule_arr.length/3;i++){
+            if(rule_arr[i*3+2]!='asc' && rule_arr[i*3+2]!='desc' && rule_arr[i*3+2]!='none' && rule_arr[i*3+1]!='num' && rule_arr[i*3+1]!='str') return ;
+            else rule_member.push(rule_arr[i*3]),rule_type.push(rule_arr[i*3+1]),rule_order.push(rule_arr[i*3+2]);
+          }
+          let arr=useStructLists[name]['data'];
+          function structListsort(rule_member,rule_type,rule_order){
+            return(a,b)=>{
+              for(let i=0;i<rule_member.length;i++){
+                let key=rule_member[i],value=rule_order[i],type_=rule_type[i];
+                console.log(key,value,type_,i);
+                if(value=='none') continue;
+                let cmp_;
+                if(type_=='str'){
+                  let aval=a[key],bval=b[key];
+                  cmp_=(value=='asc' ?
+                    aval<bval?-1 : aval>bval?1:0
+                    : aval>bval?-1 : aval<bval?1:0
+                  );
+                }else{
+                  let aval=isNaN(Number(a[key]))?0:Number(a[key]),
+                      bval=isNaN(Number(b[key]))?0:Number(b[key]);
+                  cmp_=(value=='asc' ? aval-bval : bval-aval);
+                }
+                if(cmp_!=0) return cmp_;
+              }
+              return 0;
+            };
+          };
+          console.log(rule_member,rule_type,rule_order);
+          let result=arr.sort(structListsort(rule_member,rule_type,rule_order));
+          console.log(result);
+          useStructLists[name]['data']=result;
+        }
+      }
     }
   }
 
