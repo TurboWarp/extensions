@@ -1,5 +1,5 @@
 // Name: XML
-// ID: xml
+// ID: mbwxml
 // Description: Create and extract values from XML.
 // By: mybearworld <https://scratch.mit.edu/users/mybearworld/>
 
@@ -31,7 +31,7 @@
     /** @returns {Scratch.Info} */
     getInfo() {
       return {
-        id: "xml",
+        id: "mbwxml",
         name: "XML",
         blocks: [
           {
