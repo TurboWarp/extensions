@@ -1070,7 +1070,7 @@
         const svgDataUri = args.SVG;
         const percentage = args.PERCENTAGE;
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width + Math.abs(percentage) * 5;
           canvas.height = img.height + Math.abs(percentage) * 5;
