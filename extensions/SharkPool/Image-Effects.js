@@ -443,7 +443,7 @@
     applyEffect(args) {
       return new Promise((resolve) => {
         const svgDataUri = args.SVG;
-        const percentage = args.PERCENTAGE !== "" ? args.PERCENTAGE : 100;
+        const percentage = Scratch.Cast.toNumber(args.PERCENTAGE) || 100;
         const img = new Image();
         img.onload = async () => {
           const canvas = document.createElement("canvas");
@@ -455,7 +455,7 @@
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const effectFunction = this[`apply${Scratch.Cast.toString(args.EFFECT).replaceAll(" ", "")}`];
           if (effectFunction && typeof effectFunction === "function") {
-            effectFunction(imageData, percentage);
+            await effectFunction(imageData, percentage);
           } else {
             this.applySaturation(imageData, percentage);
           }
@@ -637,11 +637,11 @@
     applyBulgeEffect(args) {
       return new Promise((resolve) => {
         const svgDataUri = args.SVG;
-        let centerX = args.CENTER_X !== "" ? args.CENTER_X / 100 : 0;
-        let centerY = args.CENTER_Y !== "" ? args.CENTER_Y / -100 : 0;
-        const strength = args.STRENGTH !== "" ? args.STRENGTH / 100 : 0;
+        let centerX = Scratch.Cast.toNumber(args.CENTER_X) / 100 || 0;
+        let centerY = Scratch.Cast.toNumber(args.CENTER_Y) / -100 || 0;
+        const strength = Scratch.Cast.toNumber(args.STRENGTH) / 100 || 0;
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
@@ -688,12 +688,12 @@
     applyWaveEffect(args) {
       return new Promise((resolve) => {
         const svgDataUri = args.SVG;
-        const amplitudeX = args.AMPX !== "" ? args.AMPX / 10 : 0;
-        const amplitudeY = args.AMPY !== "" ? args.AMPY / 10 : 0;
-        const frequencyX = args.FREQX !== "" ? args.FREQX / 100 : 0;
-        const frequencyY = args.FREQY !== "" ? args.FREQY / 100 : 0;
+        const amplitudeX = Scratch.Cast.toNumber(args.AMPX) / 10 || 0;
+        const amplitudeY = Scratch.Cast.toNumber(args.AMPY) / 10 || 0;
+        const frequencyX = Scratch.Cast.toNumber(args.FREQX) / 100 || 0;
+        const frequencyY = Scratch.Cast.toNumber(args.FREQY) / 100 || 0;
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
@@ -776,11 +776,11 @@
     applyLineGlitchEffect(args) {
       return new Promise((resolve) => {
         const svgDataUri = args.SVG;
-        const percentage = args.PERCENTAGE !== "" ? args.PERCENTAGE / 100 : 0;
+        const percentage = Scratch.Cast.toNumber(args.PERCENTAGE) / 100 || 0;
         const direction = args.DIRECT;
-        const width = args.WIDTH !== "" ? args.WIDTH / 50 : 0;
+        const width = Scratch.Cast.toNumber(args.WIDTH) / 50 || 0;
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
@@ -875,10 +875,10 @@
     removeTransparencyEffect(args) {
       return new Promise((resolve) => {
         const svgDataUri = args.SVG;
-        const threshold = args.THRESHOLD !== "" ? args.THRESHOLD / 100 : 0;
+        const threshold = Scratch.Cast.toNumber(args.THRESHOLD) / 100 || 0;
         const removeUnder = args.REMOVE;
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
@@ -918,7 +918,7 @@
         const color = hexToRgb(args.COLOR);
         const a = Math.min(Math.max(args.A, 0), 100) * 2.55;
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
