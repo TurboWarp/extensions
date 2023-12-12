@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.1.1
+// Version V.1.1.2
 
 (function (Scratch) {
   "use strict";
@@ -966,7 +966,8 @@
           Scratch.Cast.toNumber(args.X) + Scratch.Cast.toNumber(widthMatch ? parseFloat(widthMatch[1]) / 2 : parseFloat(Scratch.renderer.canvas.style.width) / 2),
           (Scratch.Cast.toNumber(args.Y) * -1) + Scratch.Cast.toNumber(heightMatch ? parseFloat(heightMatch[1]) / 2 : parseFloat(Scratch.renderer.canvas.style.height) / 2)
         ];
-        const filterElement = `<filter id="lighting"><feSpecularLighting result="specOut" specularExponent="20" lighting-color="${args.COLOR}"><fePointLight x="${pos[0]}" y="${pos[1]}" z="${Scratch.Cast.toNumber(args.NUM)}" /></feSpecularLighting><feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" /></filter>`;
+        const off = args.SPRITE === "_canvas_" ? vm.renderer.canvas.width / vm.runtime.stageWidth : 1;
+        const filterElement = `<filter id="lighting"><feSpecularLighting result="specOut" specularExponent="20" lighting-color="${args.COLOR}"><fePointLight x="${pos[0] * 1}" y="${pos[1] * 1}" z="${Scratch.Cast.toNumber(args.NUM) * off}" /></feSpecularLighting><feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" /></filter>`;
         return this.filterApplier(svg, filterElement, "lighting");
       }
       return svg;
@@ -986,7 +987,7 @@
         } else {
           source = args.EFFECT === "bulge" ? 0 : args.EFFECT === "whirl" ? 1 : 2;
         }
-        const mul = args.SPRITE === "_canvas_" ? 2 : 1;
+        const mul = args.SPRITE === "_canvas_" ? vm.renderer.canvas.width / vm.runtime.stageWidth * 2 : 1;
         const amts = [Scratch.Cast.toNumber(args.NUM), Scratch.Cast.toNumber(args.X), Scratch.Cast.toNumber(args.Y)];
         if (!displacementSrCs[2] && !override) await this.getSources();
         const scaleFactor = (amts[0] * 1.5).toFixed(2);
@@ -1009,7 +1010,8 @@
         svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       }
       if (svg) {
-        const mul = args.SPRITE === "_canvas_" ? [1000, args.NUM * 10] : [200, args.NUM];
+        const off = (vm.renderer.canvas.width / vm.runtime.stageWidth) * (vm.renderer.canvas.width / vm.runtime.stageWidth);
+        const mul = args.SPRITE === "_canvas_" ? [off * 1000, args.NUM * (off * 10)] : [200, args.NUM];
         const axis = args.axis === "x axis" ? 1 : args.axis === "y axis" ? 2 : 3;
         const filterElement = `<filter id="glitch"><feOffset in="SourceGraphic" dx="${args.X}" dy="${args.Y}" result="off1b"/><feOffset in="SourceGraphic" dx="-${args.X}" dy="${args.Y}" result="off2b"/>
           <feMerge ${axis === 1 ? `x="-50%" y="${Math.random() * 100}%"` : axis === 2 ? `x="${Math.random() * 100}%" y="-50%"` : `x="${Math.random() * 100}%" y="${Math.random() * 100}%"`}
@@ -1038,11 +1040,12 @@
       } else {
         svg2 = isImage ? await this.getImage(args.SPRITE2) : await this.getSVG(args.SPRITE2);
       }
-      const multiply = args.SPRITE === "_canvas_" ? [parseFloat(Scratch.renderer.canvas.style.width), parseFloat(Scratch.renderer.canvas.style.height)] : [100, 100];
+      const multiply = args.SPRITE === "_canvas_" ? [Scratch.renderer.canvas.width * 2, Scratch.renderer.canvas.height * 2,
+        vm.renderer.canvas.width / vm.runtime.stageWidth] : [100, 100, 1];
       if (svg && svg2) {
         const name = args.TYPE === " " ? "maskOver" : "maskRemove";
         const filterElement = `<filter id="${name}">
-        	<feImage xlink:href="${`data:image/svg+xml;base64,${btoa(svg2)}`}" x="${maskOptions[0]}" y="${maskOptions[1]}" width="${maskOptions[2]}%" height="${maskOptions[2]}%" preserveAspectRatio="xMidYMid meet" crossOrigin="anonymous" result="image1"/>
+        	<feImage xlink:href="${`data:image/svg+xml;base64,${btoa(svg2)}`}" x="${maskOptions[0] * multiply[2]}" y="${maskOptions[1] * multiply[2]}" width="${maskOptions[2] * multiply[2]}%" height="${maskOptions[2] * multiply[2]}%" preserveAspectRatio="xMidYMid meet" crossOrigin="anonymous" result="image1"/>
         	<feComposite in="${args.TYPE !== " " ? "SourceGraphic" : "image1"}" in2="${args.TYPE !== " " ? "image1" : "SourceGraphic"}" operator="${args.TYPE}" x="0%" y="0%" width="${multiply[0]}%" height="${multiply[1]}%" result="composite1"/></filter>`;
         return this.filterApplier(svg, filterElement, name);
       }
