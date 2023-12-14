@@ -3,11 +3,10 @@
 // Description: Expansion of the "ask and wait" Blocks
 // By: SharkPool
 
-// Version V.3.0.2 (Bug Fixes and New Blocks)
+// Version V.3.1.0 (New Blocks and Input Types + Minor Changes)
 
 (function (Scratch) {
   "use strict";
-
   if (!Scratch.extensions.unsandboxed) throw new Error("Better Input must run unsandboxed");
 
   const menuIconURI =
@@ -28,13 +27,8 @@
   let newColorType = "";
   let overlayImageContainer = "";
   const fontMenu = [
-    "Scratch",
-    "Sans Serif",
-    "Serif",
-    "Handwriting",
-    "Marker",
-    "Curly",
-    "Pixel"
+    "Scratch", "Sans Serif", "Serif",
+    "Handwriting", "Marker", "Curly", "Pixel"
   ];  
 
   class BetterInputSP {
@@ -45,6 +39,7 @@
       this.isWaitingForInput = false;
       this.isDropdownOpen = false;
       this.userInput = " ";
+      this.defaultValue = "";
       this.textBoxX = 0;
       this.textBoxY = 0;
       this.askBoxInfo = [0, 1];
@@ -65,19 +60,15 @@
       this.buttonJSON = {
         "Submit": {
           borderRadius: 5,
-          color: "#0074D9",
-          textColor: "#ffffff",
+          color: "#0074D9", textColor: "#ffffff",
           name: "Submit",
-          image: "",
-          imgScale: 100,
+          image: "", imgScale: 100
         },
         "Cancel": {
           borderRadius: 5,
-          color: "#d9534f",
-          textColor: "#ffffff",
+          color: "#d9534f", textColor: "#ffffff",
           name: "Cancel",
-          image: "",
-          imgScale: 100,
+          image: "", imgScale: 100
         },
       };
 
@@ -143,6 +134,17 @@
             text: "user input",
           },
           {
+            opcode: "setDefaultV",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set default value to [defaultV]",
+            arguments: {
+              defaultV: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "My Name Is...",
+              },
+            },
+          },
+          {
             opcode: "removeAskBoxes",
             blockType: Scratch.BlockType.COMMAND,
             text: "remove all ask boxes",
@@ -169,7 +171,6 @@
               ALIGNMENT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "alignmentMenu",
-                defaultValue: "left",
               },
             },
           },
@@ -182,7 +183,6 @@
               FONT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "fontMenu",
-                defaultValue: "Sans Serif",
               },
             },
           },
@@ -195,7 +195,6 @@
               ACTION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "inputActionMenu",
-                defaultValue: "Text",
               },
             },
           },
@@ -241,7 +240,6 @@
               BUTTON: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "buttonType",
-                defaultValue: "add",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -264,7 +262,6 @@
               BUTTON_MENU: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "buttonMenu",
-                defaultValue: "Dropdown",
               },
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -373,7 +370,6 @@
               COLOR_TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "colorSettingsMenu",
-                defaultValue: "Textbox",
               },
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -390,7 +386,6 @@
               COLOR_TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "elementMenu",
-                defaultValue: "Textbox",
               },
               COLOR1: {
                 type: Scratch.ArgumentType.COLOR,
@@ -415,7 +410,6 @@
               COLOR_TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "elementMenu",
-                defaultValue: "Textbox",
               },
               COLOR1: {
                 type: Scratch.ArgumentType.COLOR,
@@ -445,7 +439,6 @@
               ACTION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "buttonActionMenu",
-                defaultValue: "Enabled",
               },
             },
           },
@@ -458,7 +451,6 @@
               SHADOW: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "shadowStuff",
-                defaultValue: "Size",
               },
               AMT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -476,7 +468,6 @@
               ELEMENT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "elementMenu",
-                defaultValue: "Textbox",
               },
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -494,7 +485,6 @@
               ELEMENT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "elementMenu",
-                defaultValue: "Textbox",
               },
               IMAGE: {
                 type: Scratch.ArgumentType.STRING,
@@ -511,7 +501,6 @@
               ELEMENT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "elementMenu",
-                defaultValue: "Textbox",
               },
               SCALE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -535,7 +524,6 @@
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "effectMenu",
-                defaultValue: "Blur",
               },
               AMT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -552,7 +540,6 @@
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "effectMenu",
-                defaultValue: "Blur",
               },
               AMT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -569,7 +556,6 @@
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "effectMenu",
-                defaultValue: "Blur",
               },
             },
           },
@@ -611,7 +597,6 @@
               ENTER: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "enterMenu",
-                defaultValue: "Disabled",
               },
             },
           },
@@ -634,12 +619,15 @@
               INFO: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "boxInfo",
-                defaultValue: "count",
               },
             },
           },
         ],
         menus: {
+          enableMenu: {
+            acceptReporters: true,
+            items: ["Button 2", "Button 3", "Button 4", "Textbox Shadow"],
+          },
           alignmentMenu: {
             acceptReporters: true,
             items: ["left", "right", "center"],
@@ -663,28 +651,19 @@
           inputActionMenu: {
             acceptReporters: true,
             items: [
-              "Text",
-              "None",
-              "Dropdown",
-              "Multi-Select Dropdown",
-              "Horizontal Slider",
-              "Vertical Slider"
+              "Text", "Number",
+              "None", "Color",
+              "Dropdown", "Multi-Select Dropdown",
+              "Horizontal Slider", "Vertical Slider"
             ],
           },
           effectMenu: {
             acceptReporters: true,
             items: [
-              "Blur",
-              "Brightness",
-              "Opacity",
-              "Invert",
-              "Saturation",
-              "Hue",
-              "Sepia",
-              "Contrast",
-              "Scale",
-              "SkewX",
-              "SkewY",
+              "Blur", "Brightness",
+              "Opacity", "Invert", "Saturation",
+              "Hue", "Sepia", "Contrast",
+              "Scale", "SkewX", "SkewY",
             ],
           },
           shadowStuff: {
@@ -708,13 +687,9 @@
           colorSettingsMenu: {
             acceptReporters: true,
             items: this.allButtons([
-              "Textbox",
-              "Question Text",
-              "Input Text",
-              "Input Box",
-              "Input Outline",
-              "Dropdown Button",
-              "Dropdown Text",
+              "Textbox", "Question Text",
+              "Input Text", "Input Box", "Input Outline",
+              "Dropdown Button", "Dropdown Text",
             ], true),
           },
           enterMenu: {
@@ -1136,12 +1111,9 @@
         }
       });
       this.askBoxPromises = [];
-      this.activeOverlays = this.activeOverlays.filter(
-        (overlay) => !overlaysToRemove.includes(overlay)
-      );
+      this.activeOverlays = this.activeOverlays.filter((overlay) => !overlaysToRemove.includes(overlay));
       this.activeUI = [];
       this.askBoxInfo[0] = 0;
-      this.userInput = "";
     }
 
     askAndWaitForInput(args) {
@@ -1154,7 +1126,6 @@
       if (this.askBoxInfo[0] < this.askBoxInfo[1]) {
         const question = args.question;
         this.isWaitingForInput = true;
-        this.userInput = null;
         this.askBoxInfo[0]++;
         let selectedOptions = [];
 
@@ -1179,20 +1150,11 @@
           overlayImageContainer.style.zIndex = "-1";
 
           if (this.forceInput !== "Disabled") {
-            let overlayInput;
-            if (this.forceInput === "Enter Key") {
-              overlayInput = "Enter";
-            } else if (this.forceInput === "Shift + Enter Key") {
-              overlayInput = "ShiftEnter";
-            } else {
-              overlayInput = this.forceInput;
-            }
+            let overlayInput = this.forceInput === "Enter Key" ? "Enter" : this.forceInput === "Shift + Enter Key" ? "ShiftEnter" : this.forceInput;
             const handleKeydown = (event) => {
               if (
-                (overlayInput === "ShiftEnter" &&
-                  event.shiftKey &&
-                  event.key === "Enter") ||
-                event.key === overlayInput
+                (overlayInput === "ShiftEnter" && event.shiftKey &&
+                  event.key === "Enter") || event.key === overlayInput
               ) {
                 this.userInput = inputField.value;
                 this.closeOverlay(overlay);
@@ -1201,10 +1163,7 @@
             };
             const observer = new MutationObserver((mutationsList) => {
               for (const mutation of mutationsList) {
-                if (
-                  mutation.type === "childList" &&
-                  !document.contains(overlay)
-                ) {
+                if (mutation.type === "childList" && !document.contains(overlay)) {
                   document.removeEventListener("keydown", handleKeydown);
                   observer.disconnect();
                 }
@@ -1226,7 +1185,8 @@
           inputField.style.padding = "5px";
           inputField.style.fontSize = this.fontSize;
           inputField.style.margin = "0 auto";
-
+          inputField.type = this.isInputEnabled === "Color" ? "color" : this.isInputEnabled === "Number" ? "number" : "text";
+          inputField.addEventListener("input", () => { this.userInput = inputField.value });
           const buttonContainer = document.createElement("div");
           buttonContainer.classList.add("button-container");
           for (const buttonName in this.buttonJSON) {
@@ -1244,11 +1204,7 @@
               button.textContent = buttonInfo.name;
               button.style.display = "inline-block";
               button.addEventListener("click", () => {
-                if (this.isInputEnabled === "Disabled") {
-                  this.userInput = buttonInfo.name;
-                } else {
-                  this.userInput = inputField.value;
-                }
+                this.userInput = this.isInputEnabled === "Disabled" ? buttonInfo.name : inputField.value;
                 this.closeOverlay(overlay);
                 resolve();
               });
@@ -1258,7 +1214,6 @@
 
           const dropdown = document.createElement("div");
           dropdown.className = "dropdown";
-
           const dropdownButton = document.createElement("button");
           dropdownButton.className = "dropbtn";
           dropdownButton.textContent = this.DropdownText;
@@ -1290,6 +1245,7 @@
               } else {
                 inputField.value = label;
               }
+              this.userInput = inputField.value;
             });
             optionLabel.appendChild(optionRadio);
             optionLabel.appendChild(document.createTextNode(" " + label));
@@ -1333,7 +1289,7 @@
 
           overlay.appendChild(questionText);
           if (this.isInputEnabled !== "Disabled") {
-            if (this.isInputEnabled === "Enabled") {
+            if (this.isInputEnabled === "Enabled" || this.isInputEnabled === "Color" || this.isInputEnabled === "Number") {
               overlay.appendChild(inputField);
             } else if (this.isInputEnabled.includes("Dropdown")) {
               overlay.appendChild(dropdownButton);
@@ -1349,7 +1305,7 @@
           overlay.appendChild(overlayImageContainer);
           document.body.appendChild(overlay);
           inputField.focus();
-
+          inputField.value = this.defaultValue;
           const resizeHandler = () => {
             if (this.textBoxX !== null && this.textBoxY !== null) {
               overlay.style.left = `${50 + this.textBoxX}%`;
@@ -1359,14 +1315,9 @@
               overlay.style.top = "50%";
             }
           };
-
           this.activeOverlays.push(overlay);
           this.activeUI.push({
-            overlay: {
-              button: buttonContainer,
-              dropdown: dropdownButton,
-              input: inputField,
-            },
+            overlay: { button: buttonContainer, dropdown: dropdownButton, input: inputField },
           });
           document.addEventListener("fullscreenchange", resizeHandler);
           document.addEventListener("webkitfullscreenchange", resizeHandler);
@@ -1416,17 +1367,17 @@
           textColor: "#ffffff",
           name: args.NAME,
           image: "",
-          imgScale: 100,
+          imgScale: 100
         };
       } else {
         delete this.buttonJSON[args.NAME];
       }
-      Scratch.vm.extensionManager.refreshBlocks()
+      Scratch.vm.extensionManager.refreshBlocks();
     }
 
     deleteAllButtons() {
       this.buttonJSON = {};
-      Scratch.vm.extensionManager.refreshBlocks()
+      Scratch.vm.extensionManager.refreshBlocks();
     }
 
     isWaitingInput() { return this.isWaitingForInput }
@@ -1454,6 +1405,8 @@
     }
 
     setSubmitEvent(args) { this.forceInput = args.ENTER }
+
+    setDefaultV(args) { this.defaultValue = args.defaultV }
   }
 
   Scratch.extensions.register(new BetterInputSP());
