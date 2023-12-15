@@ -2259,7 +2259,7 @@
           1, 1, 1,
         ];
       }
-      drawSolidTri({ x1, y1, x2, y2, x3, y3 }, util, squareTex) {
+      drawSolidTri({ x1, y1, x2, y2, x3, y3 }, util) {
         const curTarget = util.target;
         checkForPen(util);
         const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
@@ -2307,7 +2307,7 @@
           curTarget.id
         );
       }
-      drawTexTri({ x1, y1, x2, y2, x3, y3, tex }, util, squareTex) {
+      drawTexTri({ x1, y1, x2, y2, x3, y3, tex }, util) {
         const curTarget = util.target;
         let currentTexture = null;
         if (penPlusCostumeLibrary[tex]) {
