@@ -1,10 +1,9 @@
-/* eslint-disable require-await */ 
 // ID: ShowierData9978-TurbowarpHTML 
 // Name: HTML
 // ID: ShowierData9978-TurbowarpHTML
 // Description: Allows for building HTML within scratch.
 // By: ShowierData9978 <github.com/showierdata9978>
-
+/* eslint-disable require-await */ 
 /// <reference types="@turbowarp/types" />
 
 /**
