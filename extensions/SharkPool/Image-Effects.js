@@ -1201,7 +1201,7 @@
     }
 
     skewSVG(args) {
-      svg = this.updateView(args.SVG, Math.abs(args.X) + Math.abs(args.Y));
+      let svg = this.updateView(args.SVG, Math.abs(args.X) + Math.abs(args.Y));
       const widthMatch = /width="([^"]*)"/.exec(svg);
       const heightMatch = /height="([^"]*)"/.exec(svg);
       if (widthMatch && heightMatch) {
@@ -1295,7 +1295,7 @@
     }
 
     confirmAsset(input, type) {
-      if (!input || !input.startsWith("data:image/") && !input.startsWith("<svg")) return menuIconURI;
+      if (!input || (!input.startsWith("data:image/") && !input.startsWith("<svg"))) return menuIconURI;
       if (type === "png") {
         return input.startsWith("data:image/") ? input : `data:image/svg+xml;base64,${btoa(input)}`;
       } else {
