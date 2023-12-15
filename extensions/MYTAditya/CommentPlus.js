@@ -360,19 +360,19 @@
     }
     
     commentReporterP6(args) {
-      return args.INPUT;
+      return args.COLOR;
     }
 
     commentBooleanP6(args) {
-      return args.INPUT || false;
+      return args.COLOR || false;
     }
     
     commentReporterP7(args) {
-      return args.INPUT;
+      return args.COLOR;
     }
 
     commentBooleanP7(args) {
-      return args.INPUT || false;
+      return args.COLOR || false;
     }
     
     commentCPlus(args, util) {
