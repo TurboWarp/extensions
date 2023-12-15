@@ -678,7 +678,6 @@
       }
     }
     getVariables() {
-      // From the Tween Extension
       const variables =
         typeof Blockly === "undefined"
           ? []
@@ -696,21 +695,21 @@
       }
     }
     getLists() {
-      // From the JSON Extension
-      const globalLists = Object.values(
-        Scratch.vm.runtime.getTargetForStage().variables
-      ).filter((x) => x.type == "list");
-      const localLists = Object.values(
-        Scratch.vm.editingTarget.variables
-      ).filter((x) => x.type == "list");
-      const uniqueLists = [...new Set([...globalLists, ...localLists])];
-      if (uniqueLists.length === 0) {
+      const lists =
+        typeof Blockly === "undefined"
+          ? []
+          : Blockly.getMainWorkspace()
+              .getVariableMap()
+              .getVariablesOfType("list")
+              .map((model) => ({
+                text: model.name,
+                value: model.getId(),
+              }));
+      if (lists.length > 0) {
+        return lists;
+      } else {
         return [""];
       }
-      return uniqueLists.map((i) => ({
-        text: i.name,
-        value: i.id,
-      }));
     }
   }
 
