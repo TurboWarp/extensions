@@ -1,5 +1,10 @@
-/* eslint-disable require-await */
-// BrowserJs
+/* eslint-disable require-await */ 
+// ID: ShowierData9978-TurbowarpHTML 
+// Name: HTML
+// ID: ShowierData9978-TurbowarpHTML
+// Description: Allows for building HTML within scratch.
+// By: ShowierData9978 <github.com/showierdata9978>
+
 /// <reference types="@turbowarp/types" />
 
 /**
@@ -11,7 +16,7 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("HTML must run unsandboxed");
+    throw new Error("HTML Extension must be run unsandboxed");
   }
 
   /**
@@ -31,11 +36,10 @@
      */
     getInfo() {
       return {
-        id: "TurbowarpHTML",
+        id: "ShowierData9978-TurbowarpHTML",
         name: "HTML",
         color1: "#FF0000",
         blocks: [
-          "---",
           {
             opcode: "htmlWrap",
             blockType: Scratch.BlockType.CONDITIONAL,
