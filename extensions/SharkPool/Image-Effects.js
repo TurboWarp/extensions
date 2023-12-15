@@ -3,7 +3,7 @@
 // Description: Apply a variety of new effects to the data URI of Images or Costumes.
 // By: SharkPool
 
-// Version V.1.5.0
+// Version V.2.0.0
 
 (function (Scratch) {
   "use strict";
@@ -24,8 +24,7 @@
 
   class imgEffectsSP {
     constructor() {
-      this.cutoutX = 0;
-      this.cutoutY = 0;
+      this.cutPos = [0, 0];
       this.scale = [100, 100];
       this.cutoutDirection = 90;
       this.softness = 10;
@@ -54,7 +53,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "apply hue [COLOR] to URI [SVG]",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
             }
           },
@@ -65,7 +64,7 @@
             text: "remove color [COLOR] from [DATA_URI]",
             arguments: {
               COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
-              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," }
+              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" }
             }
           },
           {
@@ -75,7 +74,7 @@
             arguments: {
               COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
               REPLACE: { type: Scratch.ArgumentType.COLOR, defaultValue: "#00ff00" },
-              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," }
+              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" }
             }
           },
           {
@@ -93,7 +92,7 @@
             text: "set [EFFECT] effect of URI [SVG] to [PERCENTAGE]%",
             arguments: {
               EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECTS" },
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               PERCENTAGE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 }
             }
           },
@@ -102,7 +101,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "set bulge effect of URI [SVG] to [STRENGTH]% at x [CENTER_X] y [CENTER_Y]",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               STRENGTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               CENTER_X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               CENTER_Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
@@ -113,7 +112,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "set wave effect of URI [SVG] to amplitude x [AMPX] y [AMPY] and frequency x [FREQX] y [FREQY]",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               AMPX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               AMPY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               FREQX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
@@ -125,7 +124,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "set line glitch of URI [SVG] to [PERCENTAGE]% on [DIRECT] axis and line width [WIDTH]",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               PERCENTAGE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               DIRECT: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" },
               WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
@@ -136,7 +135,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "set abberation of URI [SVG] to colors [COLOR1] and [COLOR2] at [PERCENTAGE]% on [DIRECT] axis",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               PERCENTAGE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
               COLOR1: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
               COLOR2: { type: Scratch.ArgumentType.COLOR, defaultValue: "#00f7ff" },
@@ -149,7 +148,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "remove pixels from URI [SVG] [REMOVE] [THRESHOLD]% transparency",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               THRESHOLD: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               REMOVE: { type: Scratch.ArgumentType.STRING, menu: "REMOVAL" }
             }
@@ -159,7 +158,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "add outline to URI [SVG] with thickness [THICKNESS] and color [COLOR] opacity [A]%",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               THICKNESS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
               A: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
@@ -171,8 +170,8 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "clip [CUTOUT] from [MAIN]",
             arguments: {
-              MAIN: { type: Scratch.ArgumentType.STRING, defaultValue: "source-uri-here" },
-              CUTOUT: { type: Scratch.ArgumentType.STRING, defaultValue: "cutout-uri-here" }
+              MAIN: { type: Scratch.ArgumentType.STRING, defaultValue: "source-here" },
+              CUTOUT: { type: Scratch.ArgumentType.STRING, defaultValue: "cutout-here" }
             }
           },
           {
@@ -250,6 +249,37 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "clipping direction"
           },
+          { blockType: Scratch.BlockType.LABEL, text: "Pixels" },
+          {
+            opcode: "numPixels",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "number of pixels [TYPE] in [URI]",
+            arguments: {
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "PIXELTYPE" }
+            }
+          },
+          {
+            opcode: "setPixel",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "set color of pixel #[NUM] to [COLOR] in [URI]",
+            arguments: {
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
+            }
+          },
+          {
+            opcode: "setPixels",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "set color of pixels from #[NUM] to [NUM2] to [COLOR] in [URI]",
+            arguments: {
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              NUM2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
+            }
+          },
           { blockType: Scratch.BlockType.LABEL, text: "Image Conversions" },
           {
             opcode: "svgToBitmap",
@@ -266,7 +296,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "convert bitmap URI [URI] to svg [TYPE]",
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "fileType" }
             }
           },
@@ -275,39 +305,65 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "make new svg with image URI [URI] to svg [TYPE]",
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "data:," },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "fileType" }
             }
           },
           {
+            opcode: "upscaleImage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "upscale image URI [URI] by [NUM] %",
+            arguments: {
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+            }
+          },
+          "---",
+          {
+            opcode: "stretchImg",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "stretch URI [URI] to width [W] height [H]",
+            arguments: {
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 200 },
+              H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
+            }
+          },
+          "---",
+          {
             opcode: "audioToImage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "convert audio URI [AUDIO_URI] to PNG with width [W] and height [H]",
+            text: "convert audio URI [AUDIO_URI] to PNG with width [W] height [H]",
             arguments: {
               AUDIO_URI: { type: Scratch.ArgumentType.STRING, defaultValue: "audio_uri_here" },
               W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
               H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
             }
           },
-          "---",
           {
             opcode: "skewSVG",
             blockType: Scratch.BlockType.REPORTER,
             text: "skew SVG content [SVG] at x [Y] y [X] as [TYPE]",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "<svg/>" },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "<svg>" },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "fileType" }
             }
           },
+          {
+            opcode: "removeThorns",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "remove vector thorns from [SVG]",
+            arguments: {
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "<svg>" }
+            }
+          }
         ],
         menus: {
-          CHANNELS: {
-            acceptReporters: true,
-            items: ["R", "G", "B"]
-          },
+          CHANNELS: { acceptReporters: true, items: ["R", "G", "B"] },
           POSITIONS: ["X", "Y"],
+          PIXELTYPE: ["total", "per line", "per row"],
           REMOVAL: ["under", "over", "equal to"],
           fileType: ["content", "dataURI"],
           EFFECTS: {
@@ -322,23 +378,17 @@
       };
     }
 
-    setCutout(args) {
-      this.cutoutX = Scratch.Cast.toNumber(args.X);
-      this.cutoutY = Scratch.Cast.toNumber(args.Y);
-    }
+    setCutout(args) { this.cutPos = [Scratch.Cast.toNumber(args.X), Scratch.Cast.toNumber(args.Y)] }
     changeCutout(args) {
-      this.cutoutX = this.cutoutX + Scratch.Cast.toNumber(args.X);
-      this.cutoutY = this.cutoutY + Scratch.Cast.toNumber(args.Y);
+      this.cutPos = [this.cutPos[0] + Scratch.Cast.toNumber(args.X),
+      this.cutPos[1] + Scratch.Cast.toNumber(args.Y)];
     }
-    currentCut(args) { return args.POS === "X" ? this.cutoutX : this.cutoutY }
+    currentCut(args) { return this.cutPos[args.POS === "X" ? 0 : 1] }
 
-    setScale(args) {
-      this.scale[0] = Scratch.Cast.toNumber(args.SIZE);
-      this.scale[1] = Scratch.Cast.toNumber(args.Y);
-    }
+    setScale(args) { this.scale = [Scratch.Cast.toNumber(args.SIZE), Scratch.Cast.toNumber(args.Y)] }
     changeScale(args) {
-      this.scale[0] = this.scale[0] + Scratch.Cast.toNumber(args.SIZE);
-      this.scale[1] = this.scale[1] + Scratch.Cast.toNumber(args.Y);
+      this.scale = [this.scale[0] + Scratch.Cast.toNumber(args.SIZE),
+      this.scale[1] + Scratch.Cast.toNumber(args.Y)];
     }
     currentScale(args) { return this.scale[args.POS === "X" ? 0 : 1] }
 
@@ -350,135 +400,6 @@
       this.cutoutDirection = direction;
     }
     currentDir() { return this.cutoutDirection }
-
-    setSoftness(args) { this.softness = Scratch.Cast.toNumber(args.AMT) }
-
-    convertHexToRGB(args) {
-      const hexColor = args.HEX;
-      if (args.CHANNEL === "R") {
-        return parseInt(hexColor.substring(1, 3), 16);
-      } else if (args.CHANNEL === "G") {
-        return parseInt(hexColor.substring(3, 5), 16);
-      } else {
-        return parseInt(hexColor.substring(5, 7), 16);
-      }
-    }
-
-    applyHueEffect(args) {
-      return new Promise((resolve) => {
-        const svgDataUri = args.SVG;
-        const color = hexToRgb(args.COLOR);
-        const img = new Image();
-        img.onload = async () => {
-          const canvas = document.createElement("canvas");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0);
-
-          let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          await this.applyHue(imageData, color[0], color[1], color[2]);
-          ctx.putImageData(imageData, 0, 0);
-          const modifiedDataUrl = canvas.toDataURL();
-          resolve(modifiedDataUrl);
-        };
-        img.src = svgDataUri;
-      });
-    }
-    applyHue(imageData, r, g, b) {
-      const data = imageData.data;
-      for (let i = 0; i < data.length; i += 4) {
-        data[i] = Math.min(255, (data[i] * r) / 255);
-        data[i + 1] = Math.min(255, (data[i + 1] * g) / 255);
-        data[i + 2] = Math.min(255, (data[i + 2] * b) / 255);
-      }
-    }
-
-    deleteColor(args) {
-      return this.replaceColor({
-        COLOR : args.COLOR,
-        REPLACE : "#00000000",
-        DATA_URI : args.DATA_URI
-      });
-    }
-
-    replaceColor(args) {
-      const colRem = hexToRgb(args.COLOR);
-      const colRep = hexToRgb(args.REPLACE);
-      const dataURI = args.DATA_URI;
-      const canvasElement = document.createElement("canvas");
-      const context = canvasElement.getContext("2d");
-      const imageElement = new Image();
-      const softness = this.softness;
-      return new Promise(resolve => {
-        imageElement.onload = () => {
-          canvasElement.width = imageElement.width;
-          canvasElement.height = imageElement.height;
-          context.drawImage(imageElement, 0, 0);
-          const imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
-          const data = imageData.data;
-          for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            if (
-              r >= colRem[0] - softness && r <= colRem[0] + softness &&
-              g >= colRem[1] - softness && g <= colRem[1] + softness &&
-              b >= colRem[2] - softness && b <= colRem[2] + softness
-            ) {
-              data[i] = colRep[0];
-              data[i + 1] = colRep[1];
-              data[i + 2] = colRep[2];
-              data[i + 3] = colRep[3];
-            }
-          }
-          context.putImageData(imageData, 0, 0);
-          const newDataURI = canvasElement.toDataURL("image/png");
-          resolve(newDataURI);
-        };
-        imageElement.src = dataURI;
-      });
-    }
-
-    applyEffect(args) {
-      return new Promise((resolve) => {
-        const svgDataUri = args.SVG;
-        const percentage = Scratch.Cast.toNumber(args.PERCENTAGE) || 100;
-        const img = new Image();
-        img.onload = async () => {
-          const canvas = document.createElement("canvas");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0);
-
-          let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const effectFunction = this[`apply${Scratch.Cast.toString(args.EFFECT).replaceAll(" ", "")}`];
-          if (effectFunction && typeof effectFunction === "function") {
-            await effectFunction(imageData, percentage);
-          } else {
-            this.applySaturation(imageData, percentage);
-          }
-          ctx.putImageData(imageData, 0, 0);
-          const modifiedDataUrl = canvas.toDataURL();
-          resolve(modifiedDataUrl);
-        };
-        img.src = svgDataUri;
-      });
-    }
-
-    applySaturation(imageData, percentage) {
-      const data = imageData.data;
-      for (let i = 0; i < data.length; i += 4) {
-        const r = data[i];
-        const g = data[i + 1];
-        const b = data[i + 2];
-        const avg = (r + g + b) / 3;
-        data[i] = avg + (r - avg) * (percentage / 100);
-        data[i + 1] = avg + (g - avg) * (percentage / 100);
-        data[i + 2] = avg + (b - avg) * (percentage / 100);
-      }
-    }
 
     clipImage(args) {
       return new Promise((resolve, reject) => {
@@ -492,45 +413,123 @@
             const context = canvas.getContext("2d");
             const scaledWidth = cutoutImage.width + this.scale[0];
             const scaledHeight = cutoutImage.height + this.scale[1];
-            const cutX = this.cutoutX + mainImage.width / 2 - scaledWidth / 2;
-            const cutY = this.cutoutY - mainImage.height / 2 + scaledHeight / 2;
+            const cutX = this.cutPos[0] + mainImage.width / 2 - scaledWidth / 2;
+            const cutY = this.cutPos[1] - mainImage.height / 2 + scaledHeight / 2;
 
             context.drawImage(mainImage, 0, 0);
             context.globalCompositeOperation = "destination-in";
             const rotationAngle = ((this.cutoutDirection + 270) * Math.PI) / 180;
             context.translate(cutX + scaledWidth / 2, cutY * -1 + scaledHeight / 2);
             context.rotate(rotationAngle);
-            context.drawImage(
-              cutoutImage,
-              -scaledWidth / 2,
-              -scaledHeight / 2,
-              scaledWidth,
-              scaledHeight
+            context.drawImage(cutoutImage, -scaledWidth / 2,
+              -scaledHeight / 2, scaledWidth, scaledHeight
             );
             context.setTransform(1, 0, 0, 1, 0, 0);
             context.globalCompositeOperation = "source-over";
-            const clippedDataURI = canvas.toDataURL("image/png");
-            resolve(clippedDataURI);
+            resolve(canvas.toDataURL("image/png"));
           };
-          cutoutImage.src = args.CUTOUT;
+          cutoutImage.src = this.confirmAsset(args.CUTOUT, "png");
         };
-        mainImage.src = args.MAIN;
+        mainImage.src = this.confirmAsset(args.MAIN, "png");
       });
+    }
+
+    setSoftness(args) { this.softness = Scratch.Cast.toNumber(args.AMT) }
+
+    convertHexToRGB(args) {
+      const hexColor = args.HEX;
+      const channelOffset = { R: 1, G: 3, B: 5 }[args.CHANNEL];
+      return parseInt(hexColor.substring(channelOffset, channelOffset + 2), 16);
+    }
+
+    applyHueEffect(args) {
+      return new Promise((resolve) => {
+        const color = hexToRgb(args.COLOR);
+        const img = new Image();
+        img.onload = async () => {
+          const pixelData = this.printImg(img);
+          await this.applyHue(pixelData, color[0], color[1], color[2]);
+          resolve(this.exportImg(img, pixelData));
+        };
+        img.src = this.confirmAsset(args.SVG, "png");
+      });
+    }
+    applyHue(pixelData, r, g, b) {
+      const data = pixelData;
+      for (let i = 0; i < data.length; i += 4) {
+        data[i] = Math.min(255, (data[i] * r) / 255);
+        data[i + 1] = Math.min(255, (data[i + 1] * g) / 255);
+        data[i + 2] = Math.min(255, (data[i + 2] * b) / 255);
+      }
+    }
+
+    deleteColor(args) {
+      return this.replaceColor({
+        COLOR : args.COLOR, REPLACE : "#00000000", DATA_URI : args.DATA_URI
+      });
+    }
+
+    replaceColor(args) {
+      const colRem = hexToRgb(args.COLOR);
+      const colRep = hexToRgb(args.REPLACE);
+      return new Promise(resolve => {
+        const imageElement = new Image();
+        imageElement.onload = () => {
+          const pixelData = this.printImg(imageElement);
+          for (let i = 0; i < pixelData.length; i += 4) {
+            const [r, g, b] = pixelData.slice(i, i + 3);
+            const inRange = (val, target) => val >= target - this.softness && val <= target + this.softness;
+            if (inRange(r, colRem[0]) && inRange(g, colRem[1]) && inRange(b, colRem[2])) {
+              pixelData.set(colRep, i);
+            }
+          }
+          resolve(this.exportImg(imageElement, pixelData));
+        };
+        imageElement.src = this.confirmAsset(args.DATA_URI, "png");
+      });
+    }
+
+    applyEffect(args) {
+      return new Promise((resolve) => {
+        const percentage = Scratch.Cast.toNumber(args.PERCENTAGE) + 1 || 101; // let 0 pass
+        const img = new Image();
+        img.onload = async () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+
+          let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const effectFunction = this[`apply${Scratch.Cast.toString(args.EFFECT).replaceAll(" ", "")}`];
+          if (effectFunction && typeof effectFunction === "function") {
+            await effectFunction(imageData, percentage - 1);
+          } else {
+            this.applySaturation(imageData, percentage - 1);
+          }
+          ctx.putImageData(imageData, 0, 0);
+          resolve(canvas.toDataURL());
+        };
+        img.src = this.confirmAsset(args.SVG, "png");
+      });
+    }
+
+    applySaturation(imageData, percentage) {
+      const data = imageData.data;
+      const percent = Scratch.Cast.toNumber(percentage) / 100;
+      for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        for (let j = 0; j < 3; j++) { data[i + j] = avg + (data[i + j] - avg) * percent }
+      }
     }
 
     applyGlitch(imageData, percentage) {
       const data = imageData.data;
       const percent = Scratch.Cast.toNumber(percentage);
       for (let i = 0; i < data.length; i += 4) {
-        const randomChance = Math.random() * 100;
-        if (randomChance <= percentage) {
-          const negative = Math.random() < 0.5 ? -1 : 1;
-          const rndR = Math.random() * (percentage * 1.5 * negative);
-          const rndG = Math.random() * (percentage * 1.5 * negative);
-          const rndB = Math.random() * (percentage * 1.5 * negative);
-          data[i] = (data[i] + rndR) % 256;
-          data[i + 1] = (data[i + 1] + rndG) % 256;
-          data[i + 2] = (data[i + 2] + rndB) % 256;
+        if (Math.random() * 100 <= percentage) {
+          const rnd = () => (Math.random() - 0.5) * percent * 3;
+          for (let j = 0; j < 3; j++) { data[i + j] = (data[i + j] + rnd()) % 256 }
         }
       }
     }
@@ -539,25 +538,19 @@
       const data = imageData.data;
       const width = imageData.width;
       const height = imageData.height;
-      const centerX = width / 2;
-      const centerY = height / 2;
-      const maxDistance = Math.sqrt(centerX * centerX + centerY * centerY);
+      let center = [width / 2, height / 2];
+      const maxDistance = Math.sqrt(center[0] * center[0] + center[1] * center[1]);
       const percent = Scratch.Cast.toNumber(percentage);
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           const index = (y * width + x) * 4;
-          const distanceX = Math.abs(x - centerX);
-          const distanceY = Math.abs(y - centerY);
-          const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-          let vigAMT = "";
-          if (percent < 0) {
-            vigAMT = 1 - (distance / maxDistance) * (percent / 100);
-          } else {
-            vigAMT = ((maxDistance - distance) / maxDistance) * (percent / 100);
+          center = [Math.abs(x - center[0]), Math.abs(y - center[1])];
+          const distance = Math.sqrt(center[0] * center[0] + center[1] * center[1]);
+          let vigAMT = (percent < 0) ? 1 - (distance / maxDistance) * (percent / 100) : ((maxDistance - distance) / maxDistance) * (percent / 100);
+          vigAMT = Math.max(0, Math.min(1, vigAMT));
+          for (let i = 0; i < 3; i++) {
+            data[index + i] = Math.round(data[index + i] * vigAMT);
           }
-          data[index] = Math.max(0, Math.min(255, data[index] * vigAMT));
-          data[index + 1] = Math.max(0, Math.min(255, data[index + 1] * vigAMT));
-          data[index + 2] = Math.max(0, Math.min(255, data[index + 2] * vigAMT));
         }
       }
     }
@@ -577,16 +570,10 @@
           const offset = Math.sin(distance * (percentage / 100)) * (percentage / 100);
           const sourceX = Math.floor(x + offset);
           const sourceY = Math.floor(y);
-          if (
-            sourceX >= 0 && sourceX < width &&
-            sourceY >= 0 && sourceY < height
-          ) {
+          if (sourceX >= 0 && sourceX < width && sourceY >= 0 && sourceY < height) {
             const sourceIndex = (sourceY * width + sourceX) * 4;
             if (data[sourceIndex + 3] > 0) {
-              data[index] = data[sourceIndex];
-              data[index + 1] = data[sourceIndex + 1];
-              data[index + 2] = data[sourceIndex + 2];
-              data[index + 3] = data[sourceIndex + 3];
+              data.copyWithin(index, sourceIndex, sourceIndex + 4);
             } else {
               data[index + 3] = 0;
             }
@@ -604,17 +591,12 @@
       const newData = new Uint8ClampedArray(data.length);
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-          const srcX = x +
-            Math.floor(Math.random() * dispAmt * 2 - dispAmt);
-          const srcY = y +
-            Math.floor(Math.random() * dispAmt * 2 - dispAmt);
+          const srcX = x + Math.floor(Math.random() * dispAmt * 2 - dispAmt);
+          const srcY = y + Math.floor(Math.random() * dispAmt * 2 - dispAmt);
           if (srcX >= 0 && srcX < width && srcY >= 0 && srcY < height) {
             const srcIndex = (srcY * width + srcX) * 4;
             const dstIndex = (y * width + x) * 4;
-            newData[dstIndex] = data[srcIndex];
-            newData[dstIndex + 1] = data[srcIndex + 1];
-            newData[dstIndex + 2] = data[srcIndex + 2];
-            newData[dstIndex + 3] = data[srcIndex + 3];
+            newData.set(data.subarray(srcIndex, srcIndex + 4), dstIndex);
           }
         }
       }
@@ -625,18 +607,14 @@
       const data = imageData.data;
       const numLevels = Math.max(percentage / 10, 1);
       for (let i = 0; i < data.length; i += 4) {
-        data[i] =
-          Math.round((data[i] * (numLevels - 1)) / 255) * (255 / (numLevels - 1));
-        data[i + 1] =
-          Math.round((data[i + 1] * (numLevels - 1)) / 255) * (255 / (numLevels - 1));
-        data[i + 2] =
-          Math.round((data[i + 2] * (numLevels - 1)) / 255) * (255 / (numLevels - 1));
+        for (let j = 0; j < 3; j++) {
+          data[i + j] = Math.round((data[i + j] * (numLevels - 1)) / 255) * (255 / (numLevels - 1));
+        }
       }
     }
 
     applyBulgeEffect(args) {
       return new Promise((resolve) => {
-        const svgDataUri = args.SVG;
         let centerX = Scratch.Cast.toNumber(args.CENTER_X) / 100 || 0;
         let centerY = Scratch.Cast.toNumber(args.CENTER_Y) / -100 || 0;
         const strength = Scratch.Cast.toNumber(args.STRENGTH) / 100 || 0;
@@ -652,13 +630,11 @@
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           this.applyBulge(imageData, centerX, centerY, strength);
           ctx.putImageData(imageData, 0, 0);
-          const modifiedDataUrl = canvas.toDataURL();
-          resolve(modifiedDataUrl);
+          resolve(canvas.toDataURL());
         };
-        img.src = svgDataUri;
+        img.src = this.confirmAsset(args.SVG, "png");
       });
     }
-
     applyBulge(imageData, centerX, centerY, strength) {
       const data = imageData.data;
       const width = imageData.width;
@@ -675,10 +651,7 @@
           if (srcX >= 0 && srcX < width && srcY >= 0 && srcY < height) {
             const srcIndex = (srcY * width + srcX) * 4;
             const dstIndex = (y * width + x) * 4;
-            newData[dstIndex] = data[srcIndex];
-            newData[dstIndex + 1] = data[srcIndex + 1];
-            newData[dstIndex + 2] = data[srcIndex + 2];
-            newData[dstIndex + 3] = data[srcIndex + 3];
+            newData.set(data.subarray(srcIndex, srcIndex + 4), dstIndex);
           }
         }
       }
@@ -687,7 +660,6 @@
 
     applyWaveEffect(args) {
       return new Promise((resolve) => {
-        const svgDataUri = args.SVG;
         const amplitudeX = Scratch.Cast.toNumber(args.AMPX) / 10 || 0;
         const amplitudeY = Scratch.Cast.toNumber(args.AMPY) / 10 || 0;
         const frequencyX = Scratch.Cast.toNumber(args.FREQX) / 100 || 0;
@@ -702,13 +674,11 @@
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           this.applyWave(imageData, amplitudeX, amplitudeY, frequencyX, frequencyY);
           ctx.putImageData(imageData, 0, 0);
-          const modifiedDataUrl = canvas.toDataURL();
-          resolve(modifiedDataUrl);
+          resolve(canvas.toDataURL());
         };
-        img.src = svgDataUri;
+        img.src = this.confirmAsset(args.SVG, "png");
       });
     }
-
     applyWave(imageData, amplitudeX, amplitudeY, frequencyX, frequencyY) {
       const data = imageData.data;
       const width = imageData.width;
@@ -721,10 +691,7 @@
           if (srcX >= 0 && srcX < width && srcY >= 0 && srcY < height) {
             const srcIndex = (srcY * width + srcX) * 4;
             const dstIndex = (y * width + x) * 4;
-            newData[dstIndex] = data[srcIndex];
-            newData[dstIndex + 1] = data[srcIndex + 1];
-            newData[dstIndex + 2] = data[srcIndex + 2];
-            newData[dstIndex + 3] = data[srcIndex + 3];
+            newData.set(data.subarray(srcIndex, srcIndex + 4), dstIndex);
           }
         }
       }
@@ -735,47 +702,85 @@
       const data = imageData.data;
       const width = imageData.width;
       const height = imageData.height;
-      const radius = percentage > 1 ? Math.floor((percentage / 100) * 10) : 0;
+      const radius = Math.floor((percentage / 100) * 10);
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-          let r = 0,
-            g = 0,
-            b = 0,
-            a = 0,
-            count = 0;
+          let sum = [0, 0, 0, 0];
+          let count = 0;
           for (let ky = -radius; ky <= radius; ky++) {
             for (let kx = -radius; kx <= radius; kx++) {
               const offsetX = x + kx;
               const offsetY = y + ky;
-              if (
-                offsetX >= 0 && offsetX < width &&
-                offsetY >= 0 && offsetY < height
-              ) {
+              if (offsetX >= 0 && offsetX < width && offsetY >= 0 && offsetY < height) {
                 const pixelIndex = (offsetY * width + offsetX) * 4;
-                r += data[pixelIndex];
-                g += data[pixelIndex + 1];
-                b += data[pixelIndex + 2];
-                a += data[pixelIndex + 3];
+                for (let i = 0; i < 4; i++) { sum[i] += data[pixelIndex + i] }
                 count++;
               }
             }
           }
           const pixelIndex = (y * width + x) * 4;
-          if (a === 0) {
-            data[pixelIndex + 3] = a / count;
-          } else {
-            data[pixelIndex] = r / count;
-            data[pixelIndex + 1] = g / count;
-            data[pixelIndex + 2] = b / count;
-            data[pixelIndex + 3] = a / count;
+          if (count > 0) for (let i = 0; i < 4; i++) { data[pixelIndex + i] = sum[i] / count }
+        }
+      }
+    }
+
+    applyChunkGlitch(imageData, percentage) {
+      const newWidth = percentage / 10;
+      const data = imageData.data;
+      const imgWidth = imageData.width;
+      const imgHeight = imageData.height;
+      const numLines = Math.floor(imgWidth * 1);
+      for (let lineIndex = 0; lineIndex < numLines; lineIndex++) {
+        const linePos = Math.floor(Math.random() * imgHeight);
+        const lineStart = linePos - Math.floor(newWidth / 2);
+        const lineEnd = lineStart + newWidth;
+        for (let y = 0; y < imgHeight; y++) {
+          const srcIndex = (y * imgWidth + linePos) * 4;
+          if (linePos >= 0 && linePos < imgWidth) {
+            for (let x = lineStart; x < lineEnd; x++) {
+              const dstIndex = (y * imgWidth + x) * 4;
+              data.copyWithin(dstIndex, srcIndex, srcIndex + 4);
+            }
           }
+        }
+      }
+    }
+
+    removeTransparencyEffect(args) {
+      return new Promise((resolve) => {
+        const threshold = Scratch.Cast.toNumber(args.THRESHOLD) / 100 || 0;
+        const removeUnder = args.REMOVE;
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          this.applyTransparencyRemoval(imageData, threshold, removeUnder);
+          ctx.putImageData(imageData, 0, 0);
+          resolve(canvas.toDataURL());
+        };
+        img.src = this.confirmAsset(args.SVG, "png");
+      });
+    }
+    applyTransparencyRemoval(imageData, threshold, removeUnder) {
+      const data = imageData.data;
+      const pixelCount = data.length / 4;
+      for (let i = 0; i < pixelCount; i++) {
+        const alpha = data[i * 4 + 3] / 255;
+        if ((removeUnder === "under" && alpha < threshold) ||
+          (removeUnder === "over" && alpha > threshold) ||
+          (removeUnder === "equal to" && alpha > threshold - 0.01 &&
+          alpha < threshold + 0.01)) {
+          data[i * 4 + 3] = 0;
         }
       }
     }
 
     applyLineGlitchEffect(args) {
       return new Promise((resolve) => {
-        const svgDataUri = args.SVG;
         const percentage = Scratch.Cast.toNumber(args.PERCENTAGE) / 100 || 0;
         const direction = args.DIRECT;
         const width = Scratch.Cast.toNumber(args.WIDTH) / 50 || 0;
@@ -789,13 +794,11 @@
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           this.applyLineGlitch(imageData, percentage, direction, width);
           ctx.putImageData(imageData, 0, 0);
-          const modifiedDataUrl = canvas.toDataURL();
-          resolve(modifiedDataUrl);
+          resolve(canvas.toDataURL());
         };
-        img.src = svgDataUri;
+        img.src = this.confirmAsset(args.SVG, "png");
       });
     }
-
     applyLineGlitch(imageData, percentage, direction, width) {
       const data = imageData.data;
       const imgWidth = imageData.width;
@@ -805,115 +808,22 @@
         const linePosition = Math.floor(Math.random() * imgHeight);
         const lineStart = linePosition - Math.floor(width / 2);
         const lineEnd = lineStart + width;
-        if (direction === "Y") {
-          for (let y = 0; y < imgHeight; y++) {
-            for (let x = lineStart; x < lineEnd; x++) {
-              const srcX = x;
-              const srcY = linePosition;
-              if (
-                srcX >= 0 && srcX < imgWidth &&
-                srcY >= 0 && srcY < imgHeight
-              ) {
-                const srcIndex = (srcY * imgWidth + srcX) * 4;
-                const dstIndex = (y * imgWidth + x) * 4;
-                data[dstIndex] = data[srcIndex];
-                data[dstIndex + 1] = data[srcIndex + 1];
-                data[dstIndex + 2] = data[srcIndex + 2];
-                data[dstIndex + 3] = data[srcIndex + 3];
-              }
-            }
-          }
-        } else {
-          for (let y = lineStart; y < lineEnd; y++) {
-            for (let x = 0; x < imgWidth; x++) {
-              const srcX = linePosition;
-              const srcY = y;
-              if (
-                srcX >= 0 && srcX < imgWidth &&
-                srcY >= 0 && srcY < imgHeight
-              ) {
-                const srcIndex = (srcY * imgWidth + srcX) * 4;
-                const dstIndex = (y * imgWidth + x) * 4;
-                data[dstIndex] = data[srcIndex];
-                data[dstIndex + 1] = data[srcIndex + 1];
-                data[dstIndex + 2] = data[srcIndex + 2];
-                data[dstIndex + 3] = data[srcIndex + 3];
-              }
-            }
-          }
-        }
-      }
-    }
-
-    applyChunkGlitch(imageData, percentage) {
-      const newWidth = percentage / 10;
-      const data = imageData.data;
-      const imgWidth = imageData.width;
-      const imgHeight = imageData.height;
-      const numLines = Math.floor(imgWidth * 1);
-      for (let lineIndex = 0; lineIndex < numLines; lineIndex++) {
-        const linePosition = Math.floor(Math.random() * imgHeight);
-        const lineStart = linePosition - Math.floor(newWidth / 2);
-        const lineEnd = lineStart + newWidth;
-        for (let y = 0; y < imgHeight; y++) {
-          for (let x = lineStart; x < lineEnd; x++) {
-            const srcX = linePosition;
-            const srcY = y;
+        for (let y = (direction === "Y" ? 0 : lineStart); y < (direction === "Y" ? imgHeight : lineEnd); y++) {
+          for (let x = (direction === "Y" ? lineStart : 0); x < (direction === "Y" ? lineEnd : imgWidth); x++) {
+            const srcX = (direction === "Y" ? x : linePosition);
+            const srcY = (direction === "Y" ? linePosition : y);
             if (srcX >= 0 && srcX < imgWidth && srcY >= 0 && srcY < imgHeight) {
               const srcIndex = (srcY * imgWidth + srcX) * 4;
               const dstIndex = (y * imgWidth + x) * 4;
-              data[dstIndex] = data[srcIndex];
-              data[dstIndex + 1] = data[srcIndex + 1];
-              data[dstIndex + 2] = data[srcIndex + 2];
-              data[dstIndex + 3] = data[srcIndex + 3];
+              data.copyWithin(dstIndex, srcIndex, srcIndex + 4);
             }
           }
-        }
-      }
-    }
-
-    removeTransparencyEffect(args) {
-      return new Promise((resolve) => {
-        const svgDataUri = args.SVG;
-        const threshold = Scratch.Cast.toNumber(args.THRESHOLD) / 100 || 0;
-        const removeUnder = args.REMOVE;
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0);
-          let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          this.applyTransparencyRemoval(imageData, threshold, removeUnder);
-          ctx.putImageData(imageData, 0, 0);
-          const modifiedDataUrl = canvas.toDataURL();
-          resolve(modifiedDataUrl);
-        };
-        img.src = svgDataUri;
-      });
-    }
-
-    applyTransparencyRemoval(imageData, threshold, removeUnder) {
-      const data = imageData.data;
-      const pixelCount = data.length / 4;
-      for (let i = 0; i < pixelCount; i++) {
-        const alpha = data[i * 4 + 3] / 255;
-        if (
-          (removeUnder === "under" && alpha < threshold) ||
-          (removeUnder === "over" && alpha > threshold) ||
-          (removeUnder === "equal to" &&
-            alpha > threshold - 0.01 &&
-            alpha < threshold + 0.01)
-        ) {
-          data[i * 4 + 3] = 0;
         }
       }
     }
 
     applyEdgeOutlineEffect(args) {
       return new Promise((resolve) => {
-        const svgDataUri = args.SVG;
         const thickness = Math.ceil(Scratch.Cast.toNumber(args.THICKNESS) / 4);
         const color = hexToRgb(args.COLOR);
         const a = Math.min(Math.max(args.A, 0), 100) * 2.55;
@@ -927,13 +837,11 @@
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           this.applyOutline(imageData, thickness, color[0], color[1], color[2], a);
           ctx.putImageData(imageData, 0, 0);
-          const modifiedDataUrl = canvas.toDataURL();
-          resolve(modifiedDataUrl);
+          resolve(canvas.toDataURL());
         };
-        img.src = svgDataUri;
+        img.src = this.confirmAsset(args.SVG, "png");
       });
     }
-
     applyOutline(imageData, thickness, r, g, b, a) {
       const data = imageData.data;
       const width = imageData.width;
@@ -942,8 +850,7 @@
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           const index = (y * width + x) * 4;
-          const alpha = data[index + 3];
-          if (alpha < 255) {
+          if (data[index + 3] < 255) {
             for (let dy = -thickness; dy <= thickness; dy++) {
               for (let dx = -thickness; dx <= thickness; dx++) {
                 const nx = x + dx;
@@ -952,10 +859,7 @@
                   const neighborIndex = (ny * width + nx) * 4;
                   const neighborAlpha = copyData[neighborIndex + 3];
                   if (neighborAlpha === 255) {
-                    data[index] = r;
-                    data[index + 1] = g;
-                    data[index + 2] = b;
-                    data[index + 3] = a;
+                    data.set([r, g, b, a], index);
                     break;
                   }
                 }
@@ -972,24 +876,18 @@
       const height = imageData.height;
       const percent = percentage / 100;
       const numPixelsToEnlarge = Math.floor((percent / 100) * (width * height));
-      const maxEnlargeFactor = 1.5 + percent / 200;
       for (let i = 0; i < numPixelsToEnlarge; i++) {
         const x = Math.floor(Math.random() * width);
         const y = Math.floor(Math.random() * height);
         const index = (y * width + x) * 4;
-        const enlargeFactor = 1 + Math.random() * maxEnlargeFactor;
+        const enlargeFactor = 1 + Math.random() * (1.5 + percent / 200);
         const blurRadius = Math.floor(enlargeFactor * 4);
         for (let offsetY = -blurRadius; offsetY <= blurRadius; offsetY++) {
           for (let offsetX = -blurRadius; offsetX <= blurRadius; offsetX++) {
             const newX = x + offsetX;
             const newY = y + offsetY;
-            if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
-              const newIndex = (newY * width + newX) * 4;
-              data[newIndex] = data[index];
-              data[newIndex + 1] = data[index + 1];
-              data[newIndex + 2] = data[index + 2];
-              data[newIndex + 3] = data[index + 3];
-            }
+            const bound = newX >= 0 && newX < width && newY >= 0 && newY < height;
+            if (bound) data.copyWithin((newY * width + newX) * 4, index, index + 4);
           }
         }
       }
@@ -1036,25 +934,23 @@
       const percent = percentage === 0 || percentage === "" ? 1 : Math.abs(Scratch.Cast.toNumber(percentage));
       for (let y = 0; y < height; y += percent) {
         for (let x = 0; x < width; x += percent) {
-          const startX = x;
           const endX = Math.min(x + percent, width);
-          const startY = y;
           const endY = Math.min(y + percent, height);
           const avgColor = [0, 0, 0];
-          for (let j = startY; j < endY; j++) {
-            for (let i = startX; i < endX; i++) {
+          for (let j = y; j < endY; j++) {
+            for (let i = x; i < endX; i++) {
               const index = (j * width + i) * 4;
               avgColor[0] += data[index];
               avgColor[1] += data[index + 1];
               avgColor[2] += data[index + 2];
             }
           }
-          const totalPixels = (endX - startX) * (endY - startY);
+          const totalPixels = (endX - x) * (endY - y);
           avgColor[0] /= totalPixels;
           avgColor[1] /= totalPixels;
           avgColor[2] /= totalPixels;
-          for (let j = startY; j < endY; j++) {
-            for (let i = startX; i < endX; i++) {
+          for (let j = y; j < endY; j++) {
+            for (let i = x; i < endX; i++) {
               const index = (j * width + i) * 4;
               data[index] = avgColor[0];
               data[index + 1] = avgColor[1];
@@ -1067,7 +963,6 @@
 
     applyAbberationEffect(args) {
       return new Promise((resolve) => {
-        const svgDataUri = args.SVG;
         const percentage = args.PERCENTAGE;
         const img = new Image();
         img.onload = () => {
@@ -1075,41 +970,31 @@
           canvas.width = img.width + Math.abs(percentage) * 5;
           canvas.height = img.height + Math.abs(percentage) * 5;
           const ctx = canvas.getContext("2d");
-          ctx.drawImage(
-            img, Math.abs(percentage) * 2.5, Math.abs(percentage) * 2.5
-          );
+          ctx.drawImage(img, Math.abs(percentage) * 2.5, Math.abs(percentage) * 2.5);
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          this.applyChromaticAberration(
-            imageData, args.COLOR1, args.COLOR2,
+          this.applyChromAb(imageData, args.COLOR1, args.COLOR2,
             percentage, args.DIRECT);
           ctx.putImageData(imageData, 0, 0);
-          const modifiedDataUrl = canvas.toDataURL();
-          resolve(modifiedDataUrl);
+          resolve(canvas.toDataURL());
         };
-        img.src = svgDataUri;
+        img.src = this.confirmAsset(args.SVG, "png");
       });
     }
-
-    applyChromaticAberration(imageData, color1, color2, percentage, direction) {
+    applyChromAb(imageData, color1, color2, percentage, direction) {
       const data = imageData.data;
       let width = imageData.width;
       let height = imageData.height;
       const copy1 = new Uint8ClampedArray(data.length);
       const copy2 = new Uint8ClampedArray(data.length);
-      const hexToRGB = (hex) => [
-        parseInt(hex.slice(1, 3), 16),
-        parseInt(hex.slice(3, 5), 16),
-        parseInt(hex.slice(5, 7), 16),
-      ];
-      const rgb1 = hexToRGB(color1);
-      const rgb2 = hexToRGB(color2);
+      const rgb1 = hexToRgb(color1);
+      const rgb2 = hexToRgb(color2);
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           const srcIndex = (y * width + x) * 4;
           const r = data[srcIndex];
           const g = data[srcIndex + 1];
           const b = data[srcIndex + 2];
-          const a = data[srcIndex + 3] / 1;
+          const a = data[srcIndex + 3];
           let newX1, newY1, newX2, newY2;
           if (direction === "X") {
             newX1 = x + Math.floor((width / 2) * (percentage / 100));
@@ -1133,28 +1018,15 @@
           const newR2 = data[(newY2 * width + newX2) * 4];
           const newG2 = data[(newY2 * width + newX2) * 4 + 1];
           const newB2 = data[(newY2 * width + newX2) * 4 + 2];
-          const leftColor = [
-            (rgb1[0] * r) / 255,
-            (rgb1[1] * g) / 255,
-            (rgb1[2] * b) / 255,
-          ];
-          const rightColor = [
-            (rgb2[0] * r) / 255,
-            (rgb2[1] * g) / 255,
-            (rgb2[2] * b) / 255,
-          ];
+          const leftColor = [(rgb1[0] * r) / 255, (rgb1[1] * g) / 255, (rgb1[2] * b) / 255];
+          const rightColor = [(rgb2[0] * r) / 255, (rgb2[1] * g) / 255, (rgb2[2] * b) / 255];
           const leftIndex = (newY1 * width + newX1) * 4;
           const rightIndex = (newY2 * width + newX2) * 4;
-
-          copy1[leftIndex] = leftColor[0];
-          copy1[leftIndex + 1] = leftColor[1];
-          copy1[leftIndex + 2] = leftColor[2];
-          copy1[leftIndex + 3] = a;
-
-          copy2[rightIndex] = rightColor[0];
-          copy2[rightIndex + 1] = rightColor[1];
-          copy2[rightIndex + 2] = rightColor[2];
-          copy2[rightIndex + 3] = a;
+          for (let i = 0; i < 4; i++) {
+            copy1[leftIndex + i] = leftColor[i];
+            copy2[rightIndex + i] = rightColor[i];
+          }
+          copy1[leftIndex + 3] = copy2[rightIndex + 3] = a;
         }
       }
       for (let i = 0; i < data.length; i++) {
@@ -1162,62 +1034,43 @@
       }
     }
 
-    svgToBitmap(args) {
-      const svgContent = args.SVG;
-      const width = Math.abs(Scratch.Cast.toNumber(args.WIDTH));
-      const height = Math.abs(Scratch.Cast.toNumber(args.HEIGHT));
+    stretch(src, w, h) {
       return new Promise((resolve) => {
         const img = new Image();
         img.onload = () => {
-          const canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
-          if (args.WIDTH < 0) {
-            ctx.translate(width, 0);
-            ctx.scale(-1, 1);
-          }
-          if (args.HEIGHT < 0) {
-            ctx.translate(0, height);
-            ctx.scale(1, -1);
-          }
-          ctx.drawImage(img, 0, 0, width, height);
-          const imageData = ctx.getImageData(0, 0, width, height);
-          const newCanvas = document.createElement("canvas");
-          newCanvas.width = width;
-          newCanvas.height = height;
-          const newCtx = newCanvas.getContext("2d");
-          newCtx.putImageData(imageData, 0, 0);
-          const dataUri = newCanvas.toDataURL();
-          resolve(dataUri);
+          resolve(this.exportImg(img, this.printImg(img, w, h), w, h));
         };
-        img.src = `data:image/svg+xml;base64,${btoa(svgContent)}`;
+        img.src = src;
       });
+    }
+    svgToBitmap(args) {
+      return this.stretch(this.confirmAsset(args.URI, "svg"),
+        Math.abs(Scratch.Cast.toNumber(args.WIDTH)), Math.abs(Scratch.Cast.toNumber(args.HEIGHT))
+      );
+    }
+    stretchImg(args) {
+      return this.stretch(this.confirmAsset(args.URI, "png"),
+        Math.abs(Scratch.Cast.toNumber(args.W)), Math.abs(Scratch.Cast.toNumber(args.H))
+      );
     }
 
     convertImageToSVG(args) {
       return new Promise((resolve) => {
         const img = new Image();
-        img.src = args.URI;
+        img.src = this.confirmAsset(args.URI, "png");
         img.onload = () => {
           const canvas = document.createElement("canvas");
           canvas.width = img.width;
           canvas.height = img.height;
           const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, img.width, img.height);
-          const svg = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "svg"
-          );
+          const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
           svg.setAttribute("version", "1.1");
           svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
           svg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
           svg.setAttribute("width", img.width.toFixed(5));
           svg.setAttribute("height", img.height.toFixed(5));
-          svg.setAttribute(
-            "viewBox",
-            `0,0,${img.width.toFixed(5)},${img.height.toFixed(5)}`
-          );
+          svg.setAttribute("viewBox", `0,0,${img.width.toFixed(5)},${img.height.toFixed(5)}`);
           const mergedColors = new Map();
           for (let y = 0; y < img.height; y++) {
             for (let x = 0; x < img.width; x++) {
@@ -1228,30 +1081,16 @@
               const rightColorData = ctx.getImageData(x + 1, y, 1, 1).data;
               const rightColor = `rgb(${rightColorData[0]}, ${rightColorData[1]}, ${rightColorData[2]})`;
               if (color === rightColor) {
-                const mergedPixel = mergedColors.get(color) || {
-                  x1: x,
-                  y1: y,
-                  x2: x + 1,
-                  y2: y,
-                };
+                const mergedPixel = mergedColors.get(color) || {x1: x, y1: y, x2: x + 1, y2: y};
                 mergedPixel.x2++;
                 mergedColors.set(color, mergedPixel);
               } else {
                 mergedColors.forEach((mergedPixel, colorKey) => {
-                  const rect = document.createElementNS(
-                    "http://www.w3.org/2000/svg",
-                    "rect"
-                  );
+                  const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                   rect.setAttribute("x", mergedPixel.x1.toFixed(5));
                   rect.setAttribute("y", mergedPixel.y1.toFixed(5));
-                  rect.setAttribute(
-                    "width",
-                    (mergedPixel.x2 - mergedPixel.x1 + 1).toFixed(5)
-                  );
-                  rect.setAttribute(
-                    "height",
-                    (mergedPixel.y2 - mergedPixel.y1 + 1).toFixed(5)
-                  );
+                  rect.setAttribute("width", (mergedPixel.x2 - mergedPixel.x1 + 1).toFixed(5));
+                  rect.setAttribute("height", (mergedPixel.y2 - mergedPixel.y1 + 1).toFixed(5));
                   rect.setAttribute("fill", colorKey);
                   svg.appendChild(rect);
                 });
@@ -1284,35 +1123,85 @@
             resolve(args.TYPE === "dataURI" ? `data:image/svg+xml;base64,${btoa(svg)}` : svg);
           };
           img.onerror = reject;
-          img.src = args.URI;
+          img.src = this.confirmAsset(args.URI, "png");
         });
       } else {
         return args.URI;
       }
     }
 
+    upscaleImage(args) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const pixelData = this.printImg(img);
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.putImageData(new ImageData(new Uint8ClampedArray(pixelData), img.width, img.height), 0, 0);
+          const percentage = args.NUM * 10 || 0;
+          const factor = percentage / 100;
+          const weights = [0, -factor, 0, -factor, 1 + 4 * factor, -factor, 0, -factor, 0];
+          this.sharpen(ctx, img.width, img.height, weights, 25);
+          resolve(this.exportImg(img, ctx.getImageData(0, 0, img.width, img.height).data));
+        };
+        img.src = this.confirmAsset(args.URI, "png");
+      });
+    }
+    sharpen(ctx, width, height, weights, alphaThreshold) {
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const data = imageData.data;
+      const side = Math.round(Math.sqrt(weights.length));
+      const halfSide = Math.floor(side / 2);
+      const output = ctx.createImageData(width, height);
+      const outputData = output.data;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const pixelIndex = (y * width + x) * 4;
+          let r = 0, g = 0, b = 0;
+          for (let ky = 0; ky < side; ky++) {
+            for (let kx = 0; kx < side; kx++) {
+              const weight = weights[ky * side + kx];
+              const neighborY = Math.min(height - 1, Math.max(0, y + ky - halfSide));
+              const neighborX = Math.min(width - 1, Math.max(0, x + kx - halfSide));
+              const neighborPixelIndex = (neighborY * width + neighborX) * 4;
+              r += data[neighborPixelIndex] * weight;
+              g += data[neighborPixelIndex + 1] * weight;
+              b += data[neighborPixelIndex + 2] * weight;
+            }
+          }
+          if (data[pixelIndex + 3] / 255 > alphaThreshold / 50) {
+            outputData[pixelIndex] = this.clamp(r, 0, 255);
+            outputData[pixelIndex + 1] = this.clamp(g, 0, 255);
+            outputData[pixelIndex + 2] = this.clamp(b, 0, 255);
+            outputData[pixelIndex + 3] = 255;
+          } else {
+            outputData[pixelIndex + 3] = 0;
+          }
+        }
+      }
+      ctx.putImageData(output, 0, 0);
+    }
+    clamp(value, min, max) { return Math.min(max, Math.max(min, value)) }
+
     audioToImage(args) {
       const audioURI = args.AUDIO_URI;
       const imageWidth = Math.abs(Scratch.Cast.toString(args.W));
-      const imageHeight = Math.abs(Scratch.Cast.toString(args.H));
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
       canvas.width = imageWidth;
-      canvas.height = imageHeight;
+      canvas.height = Math.abs(Scratch.Cast.toString(args.H));
       for (let i = 0; i < audioURI.length; i++) {
         const charCode = audioURI.charCodeAt(i);
-        const red = (charCode * 2) % 256;
-        const green = (charCode * 3) % 256;
-        const blue = (charCode * 4) % 256;
-        ctx.fillStyle = `rgb(${red},${green},${blue})`;
+        ctx.fillStyle = `rgb(${(charCode * 2) % 256},${(charCode * 3) % 256},${(charCode * 4) % 256})`;
         ctx.fillRect(i % imageWidth, Math.floor(i / imageWidth), 1, 1);
       }
-      const dataURI = canvas.toDataURL("image/png");
-      return dataURI;
+      return canvas.toDataURL("image/png");
     }
 
     skewSVG(args) {
-      let svg = this.updateView(args.SVG, Math.abs(args.X) + Math.abs(args.Y));
+      svg = this.updateView(args.SVG, Math.abs(args.X) + Math.abs(args.Y));
       const widthMatch = /width="([^"]*)"/.exec(svg);
       const heightMatch = /height="([^"]*)"/.exec(svg);
       if (widthMatch && heightMatch) {
@@ -1323,8 +1212,7 @@
           svg = svg.replace(/(style="[^"]*transform:[^"]*)/, `$1 skew(${args.Y}deg, ${args.X}deg)`);
         } else {
           svg = svg.replace(
-            `width="${width}" height="${height}"`,
-            `width="${width}" height="${height}" style="transform-origin: center; transform: skew(${args.Y}deg, ${args.X}deg)"`
+            `width="${width}" height="${height}"`, `width="${width}" height="${height}" style="transform-origin: center; transform: skew(${args.Y}deg, ${args.X}deg)"`
           );
         }
         const currentTransform = /transform="([^"]*)"/.exec(svg);
@@ -1355,6 +1243,64 @@
         svg = svg.replace(/<g transform="([^"]+)"/, `<g transform="translate(${values[4] + amt},${values[5] + amt})"`);
       }
       return svg;
+    }
+
+    removeThorns(args) { return args.SVG.replaceAll("linejoin=\"miter\"", "linejoin=\"round\"") }
+
+    numPixels(args) {
+      const img = new Image();
+      img.src = this.confirmAsset(args.URI, "png");
+      return new Promise((resolve) => {
+        img.onload = () => {
+          const pixelData = this.printImg(img);
+          resolve(args.TYPE === "total" ? pixelData.length / 4 : args.TYPE === "per line" ? img.width : img.height);
+        };
+      });
+    }
+
+    setPixel(args) { return this.setPixels(args) }
+    setPixels(args) {
+      const img = new Image();
+      img.src = this.confirmAsset(args.URI, "png");
+      return new Promise((resolve) => {
+        img.onload = () => {
+          const startNum = Scratch.Cast.toNumber(args.NUM);
+          const endNum = Scratch.Cast.toNumber(args.NUM2) || startNum;
+          const pixelData = this.printImg(img);
+          for (let num = startNum; num <= endNum && num <= pixelData.length / 4; num++) {
+            const rgb = hexToRgb(args.COLOR);
+            for (let i = 0; i < 4; i++) { pixelData[((num - 1) * 4) + i] = rgb[i] }
+          }
+          resolve(this.exportImg(img, pixelData));
+        };
+      });
+    }
+
+    printImg(img, forceWid, forceHei) {
+      const canvas = document.createElement("canvas");
+      canvas.width = forceWid || img.width;
+      canvas.height = forceHei || img.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      return ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    }
+
+    exportImg(img, pixelData, forceWid, forceHei) {
+      const canvas = document.createElement("canvas");
+      canvas.width = forceWid || img.width;
+      canvas.height = forceHei || img.height;
+      const ctx = canvas.getContext("2d");
+      ctx.putImageData(new ImageData(new Uint8ClampedArray(pixelData), canvas.width, canvas.height), 0, 0);
+      return canvas.toDataURL();
+    }
+
+    confirmAsset(input, type) {
+      if (!input || !input.startsWith("data:image/") && !input.startsWith("<svg")) return menuIconURI;
+      if (type === "png") {
+        return input.startsWith("data:image/") ? input : `data:image/svg+xml;base64,${btoa(input)}`;
+      } else {
+        return input.startsWith("data:image/") ? this.makeSVGimage({ URI : input, TYPE : "content" }) : input;
+      }
     }
   }
 
