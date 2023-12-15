@@ -3,7 +3,7 @@
 // Description: Display Text in Your Projects!
 // By: SharkPool
 
-// Version V.1.0.0
+// Version V.1.0.1
 
 (function (Scratch) {
   "use strict";
@@ -141,6 +141,15 @@
               ATT: { type: Scratch.ArgumentType.STRING, menu: "TEXT_ATT" }
             },
           },
+          {
+            opcode: "setOverflow",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set text overflow of ID [ID] to [TYPE]",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "OVERFLOW" }
+            },
+          },
           "---",
           {
             opcode: "attOfText",
@@ -192,7 +201,7 @@
               COLOR1: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
               COLOR2: { type: Scratch.ArgumentType.COLOR, defaultValue: "#00ff00" },
               ANGLE: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 },
-              TYPE: { type: Scratch.ArgumentType.NUMBER, menu: "GRADIENTS" }
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "GRADIENTS" }
             },
           },
           "---",
@@ -215,6 +224,16 @@
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Positioning" },
+          {
+            opcode: "presetTextPosition",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "preset position of ID [ID] to x: [X] y: [Y]",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" },
+              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+            },
+          },
           {
             opcode: "setTextPosition",
             blockType: Scratch.BlockType.COMMAND,
@@ -240,7 +259,7 @@
             text: "[ATT] of ID [ID]",
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" },
-              ATT: { type: Scratch.ArgumentType.NUMBER, menu: "POS" }
+              ATT: { type: Scratch.ArgumentType.STRING, menu: "POS" }
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Effects" },
@@ -287,6 +306,7 @@
             items: ["linear", "radial"]
           },
           POS: ["x position", "y position", "z layer"],
+          OVERFLOW: ["visible", "hidden"],
           ARCS: ["circle", "hill", "dip", "wave"],
           FORMATS: {
             acceptReporters: true,
@@ -297,7 +317,8 @@
               { text: "margin width", value: "width" },
               { text: "margin height", value: "height" },
               { text: "letter spacing", value: "letterSpacing" },
-              { text: "text spacing", value: "lineHeight" }
+              { text: "text spacing", value: "lineHeight" },
+              { text: "overflow type", value: "overflow" }
             ]
           },
           EFFECTS: {
@@ -344,6 +365,8 @@
       if (lastRecdVals["txtALI"]) this.setTextAlignment(lastRecdVals["txtALI"].inputs);
       if (lastRecdVals["lineDIS"]) this.setTextSpacing(lastRecdVals["lineDIS"].inputs);
       if (lastRecdVals["letDIS"]) this.setTextSpacing(lastRecdVals["letDIS"].inputs);
+      if (lastRecdVals["textOVR"]) this.setOverflow(lastRecdVals["textOVR"].inputs);
+      if (lastRecdVals["preTxt1"]) this.presetTextPosition(lastRecdVals["preTxt1"].inputs,);
 
       const box = newTextElement.getBoundingClientRect();
       this.setMargins({ ID : args.ID, WIDTH : box.width / 2, HEIGHT : box.height });
@@ -351,7 +374,11 @@
 
     replaceTxt(args) {
       const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
-      elements.forEach((element) => { element.textContent = args.TXT });
+      if (elements.length > 0) {
+        elements.forEach((element) => { element.textContent = args.TXT });
+      } else {
+        this.printTxt(args);
+      }
     }
 
     removeTxt(args) {
@@ -417,6 +444,12 @@
       lastRecdVals["textSHA"] = {inputs: args};
     }
 
+    setOverflow(args) {
+      const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
+      elements.forEach((element) => { element.style.overflow = args.TYPE });
+      lastRecdVals["textOVR"] = {inputs: args};
+    }
+
     setTextOutline(args) {
       const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
       elements.forEach((element) => {
@@ -466,6 +499,19 @@
       lastRecdVals["lineDIS"] = {inputs: {ID : args.ID, SPACING : args.SPACING, ATT : "line"}};
     }
 
+    presetTextPosition(args) {
+      if (args.isPrint === undefined) {
+        lastRecdVals["preTxt1"] = {inputs: {...args, isPrint: true}};
+      } else {
+        const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
+        const element = elements[elements.length - 1];
+        const box = element.getBoundingClientRect();
+        element.style.position = "absolute";
+        element.style.left = `${(args.X - (box.width / 2)) + (parseFloat(Scratch.vm.renderer.canvas.style.width) / 2)}px`;
+        element.style.top = `${(args.Y * -1) - (box.height / 2)}px`;
+      }
+    }
+
     setTextPosition(args) {
       const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
       elements.forEach((element) => {
@@ -495,7 +541,7 @@
       const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
       let value;
       elements.forEach((element) => { value = element.style[args.ATT] });
-      value = args.ATT === "fontFamily" || args.ATT === "textAlign" ? value : parseFloat(value);
+      value = args.ATT === "fontFamily" || args.ATT === "textAlign" || args.ATT === "overflow" ? value : parseFloat(value);
       return value || "";
     }
 
