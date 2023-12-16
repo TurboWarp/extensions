@@ -29,17 +29,6 @@
             },
           },
           {
-            opcode: "commentCap",
-            blockType: Scratch.BlockType.CAP,
-            text: "// [COMMENT]",
-            arguments: {
-              COMMENT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "comment"
-              },
-            },
-          },
-          {
             opcode: "commentCommand",
             blockType: Scratch.BlockType.COMMAND,
             text: "// [COMMENT]",
