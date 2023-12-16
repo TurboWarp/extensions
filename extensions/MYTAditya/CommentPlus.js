@@ -321,7 +321,7 @@
     }
 
     commentReporterPPPP(args) {
-      return args.INPUT;
+      return args.INPUT || false;
     }
 
     commentBooleanPPPP(args) {
@@ -345,7 +345,7 @@
     }
     
     commentReporterPlusPlus(args) {
-      return args.INPUT;
+      return args.INPUT || false;
     }
 
     commentBooleanPlusPlus(args) {
