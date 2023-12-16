@@ -273,7 +273,7 @@
             },
           },
           {
-            opcode: "commentCPlus",
+            opcode: "commentCPlusPlus",
             blockType: Scratch.BlockType.CONDITIONAL,
             branchCount: 2,
             text: "// [COMMENT]",
@@ -339,6 +339,10 @@
     commentCap() {
       // no-op
     }
+
+    commentCPlus() {
+      // no-op
+    }
     
     commentReporterPlusPlus(args) {
       return args.INPUT;
@@ -364,7 +368,7 @@
       return args.COLOR || false;
     }
     
-    commentCPlus(args, util) {
+    commentCPlusPlus(args, util) {
       return true;
     }
   }
