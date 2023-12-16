@@ -138,7 +138,7 @@
             },
           },
           {
-            opcode: "commentBoolenPlus",
+            opcode: "commentBooleanPlus",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "// [COMMENT]",
             arguments: {
