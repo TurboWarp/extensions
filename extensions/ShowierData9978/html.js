@@ -1,9 +1,8 @@
-// ID: ShowierData9978-TurbowarpHTML 
 // Name: HTML
-// ID: ShowierData9978-TurbowarpHTML
+// ID: ShowierTWHtml
 // Description: Allows for building HTML within scratch.
 // By: ShowierData9978 <github.com/showierdata9978>
-/* eslint-disable require-await */ 
+/* eslint-disable require-await */
 /// <reference types="@turbowarp/types" />
 
 /**
@@ -35,7 +34,7 @@
      */
     getInfo() {
       return {
-        id: "ShowierData9978-TurbowarpHTML",
+        id: "ShowierTWHtml",
         name: "HTML",
         color1: "#FF0000",
         blocks: [
