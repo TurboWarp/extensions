@@ -160,7 +160,7 @@
             },
           },
           {
-            opcode: "commentCapPlus",
+            opcode: "commentCap",
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
             text: "// [COMMENT]",
@@ -329,14 +329,14 @@
     }
 
     commentBooleanPlus(args) {
-      return args.INPUT;
+      // no-op
     }
 
     commentReporterPlus(args) {
-      return args.INPUT;
+      // no-op
     }
 
-    commentCapPlus() {
+    commentCap() {
       // no-op
     }
     
