@@ -19,6 +19,7 @@ Strictly, nothing is banned, but the following are *highly* discouraged:
  - Broad "Utilities" extensions (break them up into multiple extensions, see https://github.com/TurboWarp/extensions/issues/674)
  - Extensions that are very similar to existing ones (consider modifying the existing one instead)
  - One-use personal extensions (load the extension as a local file instead)
+ - Extensions whose primary purpose is monetization (not in the spirit of an open source project)
  - Joke extensions (they aren't funny when they cause us to get bug reports)
 
 Some extensions were added before these rules existed. That doesn't mean you will be exempted too.
