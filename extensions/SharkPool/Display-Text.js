@@ -23,6 +23,19 @@
     "Marker", "Curly", "Pixel"
   ];
 
+  const xmlEscape = function (unsafe) {
+    unsafe = String(unsafe);
+    return unsafe.replace(/[<>&'"]/g, c => {
+      switch (c) {
+        case "<": return "&lt;";
+        case ">": return "&gt;";
+        case "&": return "&amp;";
+        case "'": return "&apos;";
+        case "\"": return "&quot;";
+      }
+    });
+  };
+
   class SPdisText {
     getInfo() {
       return {
@@ -359,7 +372,7 @@
     printTxt(args) {
       args.ID = args.ID.replaceAll(" ", "_");
       const newTextElement = document.createElement("div");
-      newTextElement.innerHTML = args.TXT.replace(/\n/g, "<br>");
+      newTextElement.innerHTML = xmlEscape(args.TXT).replace(/\n/g, "<br>");
       newTextElement.id = `SP_Text-Ext-${args.ID}`;
       newTextElement.classList.add(args.ID);
       render.addOverlay(newTextElement, "scale-centered");
@@ -384,7 +397,7 @@
     replaceTxt(args) {
       const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
       if (elements.length > 0) {
-        elements.forEach((element) => { element.innerHTML = args.TXT.replace(/\n/g, "<br>"); });
+        elements.forEach((element) => { element.innerHTML = xmlEscape(args.TXT).replace(/\n/g, "<br>") });
       } else {
         this.printTxt(args);
       }
