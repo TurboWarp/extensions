@@ -560,7 +560,6 @@
       elements.forEach((element) => {
         value.push(element.querySelectorAll("br").length + 1 || 1); 
       });
-      console.log(value);
       value = value.length > 1 ? JSON.stringify(value) : (value[0] || 0);
       return value;
     }
