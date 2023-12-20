@@ -292,10 +292,6 @@
       // no-op
     }
 
-    commentCap(args) {
-      // no-op
-    }
-
     commentCommand() {
       // no-op
     }
@@ -325,11 +321,11 @@
     }
 
     commentBooleanPPPP(args) {
-      return args.INPUT || false;
+      return args.INPUT
     }
 
     commentBooleanPlus(args) {
-      // no-op
+      return args.INPUT
     }
 
     commentReporterPlus(args) {
