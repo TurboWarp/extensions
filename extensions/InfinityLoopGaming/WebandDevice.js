@@ -12,7 +12,7 @@
   class WebAndDevice {
     getInfo() {
       return {
-        id: "webanddevice_InfinityLoopGaming",
+        id: "webanddeviceInfinityLoopGaming",
         name: "Web & Device",
         color1: "#348ceb",
         color2: "#5b95d4",
@@ -142,9 +142,9 @@
           },
 
           {
-            opcode: "get_clipboard",
+            opcode: "clipboard",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get clipboard",
+            text: "clipboard",
           },
         ],
       };
@@ -293,7 +293,7 @@
       }
     }
 
-    get_clipboard() {
+    clipboard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
         return Scratch.canReadClipboard().then((allowed) => {
           if (allowed) {
@@ -305,6 +305,8 @@
       return "";
     }
   }
+
+  
   Scratch.extensions.register(new WebAndDevice());
 })(Scratch);
 
