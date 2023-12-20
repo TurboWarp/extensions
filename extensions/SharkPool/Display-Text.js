@@ -3,7 +3,7 @@
 // Description: Display Text in Your Projects!
 // By: SharkPool
 
-// Version V.1.1.0
+// Version V.1.1.1
 
 (function (Scratch) {
   "use strict";
@@ -37,6 +37,10 @@
   };
 
   class SPdisText {
+    constructor() {
+      Scratch.vm.runtime.on("PROJECT_START", () => { this.removeAllTxt() });
+      Scratch.vm.runtime.on("PROJECT_STOP_ALL", () => { this.removeAllTxt() });
+    }
     getInfo() {
       return {
         id: "SPdisText",
