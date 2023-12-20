@@ -383,7 +383,7 @@
             const height = parseInt(subTexture.getAttribute('height'));
             const frameX = parseInt(subTexture.getAttribute('frameX'));
             const frameY = parseInt(subTexture.getAttribute('frameY'));
-            // eslint-disable-next-line no-restricted-syntax before this line.
+            // eslint-disable-next-line no-restricted-syntax
             const frameWidth = parseInt(subTexture.getAttribute('frameWidth'));
             const frameHeight = parseInt(subTexture.getAttribute('frameHeight'));
 
@@ -690,7 +690,7 @@
     
       return scratchSize;
     }
-    // eslint-disable-next-line no-restricted-syntax before this line.
+    // eslint-disable-next-line no-restricted-syntax
     getFlippedImageURI(args) {
       const image = new Image();
       image.src = args.uri;
