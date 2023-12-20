@@ -336,8 +336,8 @@
       // no-op
     }
 
-    commentCPlus() {
-      // no-op
+    commentCPlus(args, util) {
+      return true;
     }
     
     commentReporterPlusPlus(args) {
@@ -353,7 +353,7 @@
     }
 
     commentBooleanP6(args) {
-      return args.COLOR || false;
+      return args.COLOR;
     }
     
     commentReporterP7(args) {
@@ -361,7 +361,7 @@
     }
 
     commentBooleanP7(args) {
-      return args.COLOR || false;
+      return args.COLOR;
     }
     
     commentCPlusPlus(args, util) {
