@@ -23,14 +23,13 @@
         blockIconURI: FNFSpriteIcon,
         blocks: [
           {
-            opcode: 'xmlspritesheetlabel',
             blockType: Scratch.BlockType.LABEL,
             text: 'XML Spritesheets Utilities',
           },
           {
             opcode: 'importSpriteFile',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Import sprite file [fileType]',
+            text: 'import sprite file [fileType]',
             arguments: {
               fileType: {
                 type: Scratch.ArgumentType.STRING,
@@ -107,7 +106,7 @@
             opcode: 'ifAnimationExists',
             blockType: Scratch.BlockType.BOOLEAN,
 
-            text: 'If [animation] of [xmlText] exists',
+            text: 'if [animation] of [xmlText] exists',
             arguments: {
               animation: {
                 type: Scratch.ArgumentType.STRING,
@@ -122,7 +121,7 @@
           {
             opcode: 'subTextureExists',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'If [animation] [number] of [xmlText] exists',
+            text: 'if [animation] [number] of [xmlText] exists',
 
             arguments: {
               animation: {
@@ -152,7 +151,6 @@
             },
           },      
           {
-            opcode: 'xmlspritesheetdataextractor',
             blockType: Scratch.BlockType.LABEL,
             text: 'XML Spritesheet JSON Data Extractor',
           }, 
@@ -217,16 +215,20 @@
             },
           },
           {
-            opcode: 'haxeflixelextras',
             blockType: Scratch.BlockType.LABEL,
             text: 'Haxeflixel Extras',
           },
           {
             opcode: 'convertSize',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'convert haxeflixel size [size] to scratch size',
+            text: 'convert haxeflixel [sizetype] [size] to scratch size',
             blockIconURI: FlixelIcon,
             arguments: {
+              sizetype: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'sizeTypeMenu',
+                defaultValue: 'real size',
+              },
               size: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 1,
@@ -254,29 +256,19 @@
             },
           },
           {
-            opcode: 'booleanMenu',
+            opcode: 'checked',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[boolean]',
+            text: 'checked',
             blockIconURI: FlixelIcon,
-            arguments: {
-              boolean: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'boolean', // Options du menu
-                defaultValue: 'true', // Valeur par défaut
-              },
-            },
           },
         ],
         menus: {
           fileType: ['png', 'xml'],
-          boolean: ['true', 'false'],
+          sizeTypeMenu: ['real size', 'fnf resized size'],
         }
       };
     }
   
-    hello() {
-      return 'World!';
-    }
     importSpriteFile(args) {
       const fileType = args.fileType;
     
@@ -391,6 +383,7 @@
             const height = parseInt(subTexture.getAttribute('height'));
             const frameX = parseInt(subTexture.getAttribute('frameX'));
             const frameY = parseInt(subTexture.getAttribute('frameY'));
+            // eslint-disable-next-line no-restricted-syntax before this line.
             const frameWidth = parseInt(subTexture.getAttribute('frameWidth'));
             const frameHeight = parseInt(subTexture.getAttribute('frameHeight'));
 
@@ -670,7 +663,7 @@
         const subTexture = subTextures[i];
         const name = subTexture.getAttribute('name');
   
-        if (name) {
+        if (name) {GETFLICONSE
           subtextureArray.push(name);
         }
       }
@@ -680,12 +673,24 @@
     }
 
     convertSize(args) {
+      const sizetype = args.sizetype;
       const size = args.size;
-      // Ajoutez ici la logique de conversion de HaxeFlixel à Scratch
-      const scratchSize = size * 100; // Exemple de conversion, adaptez selon vos besoins
+    
+      let scratchSize;
+    
+      // Logique de conversion en fonction du sizetype
+      if (sizetype === 'real size') {
+        scratchSize = size * 100;
+      } else if (sizetype === 'fnf resized size') {
+        scratchSize = size * 100 / 2;
+      } else {
+        // Gestion d'une valeur inattendue pour sizetype (peut être ajusté selon les besoins)
+        throw new Error('Invalid sizetype');
+      }
+    
       return scratchSize;
     }
-
+    // eslint-disable-next-line no-restricted-syntax before this line.
     getFlippedImageURI(args) {
       const image = new Image();
       image.src = args.uri;
@@ -722,9 +727,8 @@
         };
       });
     }
-    booleanMenu(args) {
-      // Récupérer la valeur booléenne en fonction du nom choisi dans le menu
-      return args.boolean === 'true';
+    checked() {
+      return true;
     }
   }
   
