@@ -1,5 +1,5 @@
 // Name: Web & Device
-// ID: webanddevice_InfinityLoopGaming
+// ID: webanddeviceInfinityLoopGaming
 // Description: Interacts and gets data from websites, your device, and your network.
 // By: InfinityLoopGaming <https://scratch.mit.edu/users/InfinityLoopGaming/>
 (function (Scratch) {
@@ -306,7 +306,6 @@
     }
   }
 
-  
   Scratch.extensions.register(new WebAndDevice());
 })(Scratch);
 
