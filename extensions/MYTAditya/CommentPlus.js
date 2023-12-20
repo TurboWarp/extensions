@@ -325,7 +325,7 @@
     }
 
     commentBooleanPlus(args) {
-      return args.INPUT
+      // no-op
     }
 
     commentReporterPlus(args) {
