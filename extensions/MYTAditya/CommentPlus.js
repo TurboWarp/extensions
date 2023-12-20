@@ -321,7 +321,7 @@
     }
 
     commentBooleanPPPP(args) {
-      return args.INPUT
+      return args.INPUT;
     }
 
     commentBooleanPlus(args) {
@@ -345,7 +345,7 @@
     }
 
     commentBooleanPlusPlus(args) {
-      return args.INPUT || false;
+      return args.INPUT;
     }
     
     commentReporterP6(args) {
