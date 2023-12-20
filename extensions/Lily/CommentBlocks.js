@@ -53,6 +53,7 @@
             opcode: "commentReporter",
             blockType: Scratch.BlockType.REPORTER,
             text: "[INPUT] // [COMMENT]",
+            allowDropAnywhere: true,
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
