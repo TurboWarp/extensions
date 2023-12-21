@@ -24,8 +24,15 @@
 
   class Html {
     constructor() {
-      this.stack = [];
-      this.html = "";
+      /**
+       * @typedef {Object.<string, Array.<string>>} stack
+       * @typedef {Object.<string, string>} html
+       */
+
+      /** @type {stack} */
+      this.stack = {};
+      /** @type {html} */
+      this.html = {};
     }
 
     /**
@@ -119,66 +126,132 @@
       };
     }
 
+    sanitise(text) {
+      return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    /**
+     * @param {import("scratch-vm").BlockUtility} util
+     *
+     */
+    pushStack(element, util) {
+      if (!this.stack[util.target.id]) this.stack[util.target.id] = [];
+
+      this.stack[util.target.id].push(element);
+    }
+
+    /**
+     * @param {import("scratch-vm").BlockUtility} util
+     * @returns {string}
+     */
+
+    popStack(util) {
+      if (!this.stack[util.target.id]) {
+        this.stack[util.target.id] = [];
+        return;
+      }
+
+      return this.stack[util.target.id].pop();
+    }
+
+    /**
+     * @param {import("scratch-vm").BlockUtility} util
+     */
+    getStack(util) {
+      if (!this.stack[util.target.id]) {
+        this.stack[util.target.id] = [];
+      }
+
+      return this.stack[util.target.id];
+    }
+
     /**
      * @typedef arg_wrap
      *  @prop {string} element
      *  @prop {string} attributes
      * @param {arg_wrap} args
+     * @param {import("scratch-vm").BlockUtility} util
      */
-    async htmlWrap({ element, attributes }) {
-      this._appendHtml(`<${element} ${attributes}>`);
-      this.stack.push(element);
+    async htmlWrap({ element, attributes }, util) {
+      this._appendHtml(
+        `<${this.sanitise(element)} ${this.sanitise(attributes)}>`,
+        util
+      );
+      this.pushStack(element, util);
       return true;
     }
 
     /**
      * @param {arg_wrap} args
+     * @param {import("scratch-vm").BlockUtility} util
      */
-    async noInner({ element, attributes }) {
-      this._appendHtml(`<${element} ${attributes} />`);
+    async noInner({ element, attributes }, util) {
+      this._appendHtml(
+        `<${this.sanitise(element)} ${this.sanitise(attributes)} />`,
+        util
+      );
       return true;
     }
+
     /**
      * @typedef arg_command
      *  @prop {string} element
      *  @prop {string} attributes
      *  @prop {string} text
      * @param {arg_command} args
+     * @param {import("scratch-vm").BlockUtility} util
      */
-    async htmlCommand({ element, attributes, text }) {
-      this._appendHtml(`<${element} ${attributes}>${text}</${element}>`);
+    async htmlCommand({ element, attributes, text }, util) {
+      element = this.sanitise(element);
+      attributes = this.sanitise(attributes);
+
+      this._appendHtml(`<${element} ${attributes}>${text}</${element}>`, util);
       return true;
     }
 
     /**
      * @param {string} text
+     * @param {import("scratch-vm").BlockUtility} util
      */
-    _appendHtml(text) {
+    _appendHtml(text, util) {
       let whitespace = " ".repeat(
-        this.stack.length ? this.stack.length - 1 : 0
+        this.stack.length ? this.getStack(util).length - 1 : 0
       );
-      this.html += whitespace + text + "\n";
+      if (this.html[util.target.id] === undefined) {
+        this.html[util.target.id] = "";
+      }
+      this.html[util.target.id] += whitespace + text + "\n";
     }
 
-    exit() {
+    /**
+     * @param {import("scratch-vm").BlockUtility} util
+     */
+    exit(args, util) {
       /* @type {string} */
-      const element = this.stack.pop();
+      const element = this.popStack(util);
       if (!element) {
         throw "Error: No element to close";
       }
-      this._appendHtml(`</${element}>`);
+      this._appendHtml(`</${this.sanitise(element)}>`, util);
     }
 
-    rawInsert({ html }) {
-      this._appendHtml(html);
+    rawInsert({ html }, util) {
+      this._appendHtml(html, util);
     }
 
-    html_ret() {
-      return this.html;
+    /**
+     * @param {import("scratch-vm").BlockUtility} util
+     * @returns {string}
+     */
+    html_ret(args, util) {
+      return this.html[util.target.id];
     }
 
-    clear() {
-      this.html = "";
+    /**
+     * @param {import("scratch-vm").BlockUtility} util
+     */
+    clear(args, util) {
+      this.html[util.target.id] = "";
     }
   }
 
