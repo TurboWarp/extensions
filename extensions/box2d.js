@@ -12609,7 +12609,7 @@
             blockType: BlockType.COMMAND,
             text: Scratch.translate({
               id: "griffpatch.disablePhysics",
-              default: "disable physics",
+              default: "disable physics for this sprite",
               description: "Disable Physics for this Sprite",
             }),
             arguments: {},
