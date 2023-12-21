@@ -268,25 +268,7 @@
             ),
           });
         });
-      return 1; // ignore the below, its only here for reference
-      /* eslint-disable no-unreachable */
-      Scratch.fetch(TEXT)
-        .then((r) => r.arrayBuffer())
-        .then((arrayBuffer) => {
-          const storage = vm.runtime.storage;
-          // @ts-expect-error
-          vm.addCostume(NAME + ".PNG", {
-            name: NAME + "",
-            asset: new storage.Asset(
-              storage.AssetType.ImageBitmap,
-              null, // asset id, doesn't need to be set here because of `true` at the end will make Scratch generate it for you
-              storage.DataFormat.PNG,
-              new Uint8Array(arrayBuffer),
-              true
-            ),
-          });
-        });
-      /* eslint-enable no-unreachable */
+      return 1;
     }
 
     importSprite({ TEXT }) {
