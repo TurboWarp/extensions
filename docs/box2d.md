@@ -57,7 +57,7 @@ Precision mode will make the sprite work extra hard to make sure it doesn't over
 
 
 ```scratch
-disable physics :: #0FBD8C
+disable physics for this sprite :: #0FBD8C
 ```
 
 Makes physics no longer apply to this sprite.
