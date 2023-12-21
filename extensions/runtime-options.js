@@ -403,8 +403,9 @@
     }
 
     setUsername({ username }) {
-      Scratch.vm.runtime.ioDevices.userData._username =
-        Scratch.Cast.toString(username);
+      Scratch.vm.postIOData("userData", {
+        username: Scratch.Cast.toString(username),
+      });
     }
 
     greenFlag() {
