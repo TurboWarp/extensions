@@ -55,6 +55,7 @@ Make physics apply to this sprite. It can also collide with other sprites that h
 
 Precision mode will make the sprite work extra hard to make sure it doesn't overlap with anything. Note that this can decrease performance and even cause the project to get stuck, so use with care.
 
+---
 
 ```scratch
 disable physics for this sprite :: #0FBD8C
