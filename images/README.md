@@ -285,6 +285,10 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Lily/SoundExpanded.svg
  - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464
 
+## Lily/Assets.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
+ - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
 ## iframe.svg
  - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694716263
 
