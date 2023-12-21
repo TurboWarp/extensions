@@ -18,6 +18,23 @@
   const HIGH_QUALITY_PEN = "high quality pen";
 
   class RuntimeOptions {
+    constructor() {
+      Scratch.vm.runtime.on("STAGE_SIZE_CHANGED", () => {
+        Scratch.vm.runtime.startHats("runtimeoptions_onRunT", { MENU : "stage size" })
+      });
+      Scratch.vm.runtime.on("FRAMERATE_CHANGED", () => {
+        Scratch.vm.runtime.startHats("runtimeoptions_onRunT", { MENU : "framerate" })
+      });
+      Scratch.vm.runtime.on("INTERPOLATION_CHANGED", () => {
+        Scratch.vm.runtime.startHats("runtimeoptions_onRunT", { MENU : "interpolation" })
+      });
+      Scratch.vm.on("TURBO_MODE_ON", () => {
+        Scratch.vm.runtime.startHats("runtimeoptions_onTurbomode", { OPT : "on" })
+      });
+      Scratch.vm.on("TURBO_MODE_OFF", () => {
+        Scratch.vm.runtime.startHats("runtimeoptions_onTurbomode", { OPT : "off" })
+      });
+    }
     getInfo() {
       return {
         id: "runtimeoptions",
@@ -129,6 +146,24 @@
               },
             },
           },
+          {
+            opcode: "onTurbomode",
+            blockType: Scratch.BlockType.EVENT,
+            text: "when turbomode turns [OPT]",
+            isEdgeActivated: false,
+            arguments: {
+              OPT: { type: Scratch.ArgumentType.STRING, menu: "ON_OFF" }
+            }
+          },
+          {
+            opcode: "onRunT",
+            blockType: Scratch.BlockType.EVENT,
+            text: "when [MENU] is set",
+            isEdgeActivated: false,
+            arguments: {
+              MENU: { type: Scratch.ArgumentType.STRING, menu: "RUNTIME_OPT" }
+            }
+          },
 
           "---",
 
@@ -156,6 +191,8 @@
           },
         ],
         menus: {
+          RUNTIME_OPT: ["stage size", "framerate", "interpolation"],
+          ON_OFF: ["on", "off"],
           thing: {
             acceptReporters: true,
             items: [
