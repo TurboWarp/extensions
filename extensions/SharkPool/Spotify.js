@@ -197,13 +197,18 @@
     }
 
     disclaimer() {
+      const overlay = document.createElement("div");
+      overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9998;";
       const disclaimerContainer = document.createElement("div");
       disclaimerContainer.id = "disclaimer-container";
 
       const closeButton = document.createElement("button");
       closeButton.textContent = "Close";
       closeButton.style.cssText = "font-weight: bold; display: block; margin: auto; border: 3px solid #106e31; border-radius: 15px; padding: 10px; width: 100px; background-color: #1db954; color: white;";
-      closeButton.addEventListener("click", () => { disclaimerContainer.style.display = "none"; });
+      closeButton.addEventListener("click", () => { 
+        disclaimerContainer.remove();
+        overlay.remove();
+      });
       const image = document.createElement("img");
       image.src = menuIconURI;
       image.alt = "Disclaimer Image";
@@ -225,6 +230,7 @@
       disclaimerContainer.appendChild(closeButton);
 
       disclaimerContainer.style.cssText = "position: fixed; width: 250px; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; border: 5px outset #1db954; border-radius: 15px; padding: 10px; background-color: #18191A; color: white; font-family: arial;";
+      document.body.appendChild(overlay);
       document.body.appendChild(disclaimerContainer);
     }
 
