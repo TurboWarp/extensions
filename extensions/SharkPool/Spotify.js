@@ -3,14 +3,17 @@
 // Description: Fetch Statistics and Information and Play Songs from Spotify
 // By: SharkPool
 
-// Version 1.1.0
+// Version 1.1.1
 
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) throw new Error("Spotify API must run unsandboxed");
 
-  const menuIconURI = "https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg";
-  const blockIconURI = "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/spotify-white-icon.svg";
+  const menuIconURI =
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OTYgNTEyIj4KICA8cGF0aCBkPSJNMjQ4IDhDMTExLjEgOCAwIDExOS4xIDAgMjU2czExMS4xIDI0OCAyNDggMjQ4IDI0OC0xMTEuMSAyNDgtMjQ4UzM4NC45IDggMjQ4IDhaIiBmaWxsPSIjMWVkNzYwIi8+CiAgPHBhdGggZD0iTTQwNi42IDIzMS4xYy01LjIgMC04LjQtMS4zLTEyLjktMy45LTcxLjItNDIuNS0xOTguNS01Mi43LTI4MC45LTI5LjctMy42IDEtOC4xIDIuNi0xMi45IDIuNi0xMy4yIDAtMjMuMy0xMC4zLTIzLjMtMjMuNiAwLTEzLjYgOC40LTIxLjMgMTcuNC0yMy45IDM1LjItMTAuMyA3NC42LTE1LjIgMTE3LjUtMTUuMiA3MyAwIDE0OS41IDE1LjIgMjA1LjQgNDcuOCA3LjggNC41IDEyLjkgMTAuNyAxMi45IDIyLjYgMCAxMy42LTExIDIzLjMtMjMuMiAyMy4zem0tMzEgNzYuMmMtNS4yIDAtOC43LTIuMy0xMi4zLTQuMi02Mi41LTM3LTE1NS43LTUxLjktMjM4LjYtMjkuNC00LjggMS4zLTcuNCAyLjYtMTEuOSAyLjYtMTAuNyAwLTE5LjQtOC43LTE5LjQtMTkuNHM1LjItMTcuOCAxNS41LTIwLjdjMjcuOC03LjggNTYuMi0xMy42IDk3LjgtMTMuNiA2NC45IDAgMTI3LjYgMTYuMSAxNzcgNDUuNSA4LjEgNC44IDExLjMgMTEgMTEuMyAxOS43LS4xIDEwLjgtOC41IDE5LjUtMTkuNCAxOS41em0tMjYuOSA2NS42Yy00LjIgMC02LjgtMS4zLTEwLjctMy42LTYyLjQtMzcuNi0xMzUtMzkuMi0yMDYuNy0yNC41LTMuOSAxLTkgMi42LTExLjkgMi42LTkuNyAwLTE1LjgtNy43LTE1LjgtMTUuOCAwLTEwLjMgNi4xLTE1LjIgMTMuNi0xNi44IDgxLjktMTguMSAxNjUuNi0xNi41IDIzNyAyNi4yIDYuMSAzLjkgOS43IDcuNCA5LjcgMTYuNXMtNy4xIDE1LjQtMTUuMiAxNS40eiIvPgo8L3N2Zz4=";
+
+  const blockIconURI =
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTExLjk5MSIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGltYWdlLXJlbmRlcmluZz0ib3B0aW1pemVRdWFsaXR5IiB0ZXh0LXJlbmRlcmluZz0iZ2VvbWV0cmljUHJlY2lzaW9uIiBzaGFwZS1yZW5kZXJpbmc9Imdlb21ldHJpY1ByZWNpc2lvbiI+PHBhdGggZD0iTTI1NS45OTguMDAzQzExNC42MTYuMDAzIDAgMTE0LjYxNiAwIDI1NS45OTdjMCAxNDEuMzg1IDExNC42MTYgMjU1Ljk5NCAyNTUuOTk4IDI1NS45OTRDMzk3LjM5NSA1MTEuOTkxIDUxMiAzOTcuMzg2IDUxMiAyNTUuOTk3IDUxMiAxMTQuNjI0IDM5Ny4zOTUuMDE1IDI1NS45OTQuMDE1bC4wMDQtLjAxNXYuMDAzem0xMTcuNCAzNjkuMjJjLTQuNTg1IDcuNTE5LTE0LjQyNyA5LjkwOC0yMS45NDkgNS4yODgtNjAuMTA0LTM2LjcxNC0xMzUuNzcxLTQ1LjAyNy0yMjQuODgyLTI0LjY2OC04LjU4NyAxLjk1NC0xNy4xNDYtMy40MjUtMTkuMTA0LTEyLjAxNS0xLjk2Ny04LjU5MSAzLjM5NC0xNy4xNSAxMi4wMDMtMTkuMTA0IDk3LjUxOC0yMi4yOCAxODEuMTY0LTEyLjY4OCAyNDguNjQ1IDI4LjU1IDcuNTIyIDQuNjE2IDkuOTA3IDE0LjQyNyA1LjI4OCAyMS45NWwtLjAwMS0uMDAxem0zMS4zMzUtNjkuNzAzYy01Ljc3OSA5LjM4OS0xOC4wNjcgMTIuMzUzLTI3LjQ1MiA2LjU3OC02OC44MTMtNDIuMjk4LTE3My43MDMtNTQuNTQ4LTI1NS4wOTYtMjkuODM3LTEwLjU1NiAzLjE4Ny0yMS43MDQtMi43NjEtMjQuOTA2LTEzLjI5OC0zLjE4LTEwLjU1NiAyLjc3Mi0yMS42OCAxMy4zMDktMjQuODkxIDkyLjk3MS0yOC4yMDggMjA4LjU1MS0xNC41NDYgMjg3LjU3NCAzNC4wMTUgOS4zODUgNS43NzkgMTIuMzUgMTguMDY3IDYuNTc1IDI3LjQ0MXYtLjAwNGwtLjAwNC0uMDA0em0yLjY5Mi03Mi41ODRjLTgyLjUxMS00OS4wMDYtMjE4LjYzNS01My41MS0yOTcuNDA5LTI5LjYwMy0xMi42NDkgMy44MzctMjYuMDI3LTMuMzAyLTI5Ljg2LTE1Ljk1NS0zLjgzMi0xMi42NTYgMy4zMDMtMjYuMDIzIDE1Ljk2LTI5Ljg2NyA5MC40MjgtMjcuNDUyIDI0MC43NTMtMjIuMTQ5IDMzNS43NDcgMzQuMjQ1IDExLjQwMSA2Ljc1NCAxNS4xMzMgMjEuNDQ2IDguMzc1IDMyLjgwOS02LjcyOCAxMS4zNzgtMjEuNDYyIDE1LjEzLTMyLjgwMiA4LjM3MWgtLjAxMXoiIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==";
 
   const proxy = "https://api.codetabs.com/v1/proxy?quest=";
   let audioInstances = [];
@@ -20,17 +23,11 @@
 
   class SPspotify {
     constructor() {
-      this.audioContext = new AudioContext();
-      this.gainNode = this.audioContext.createGain();
+      this.audioNode = Scratch.vm.runtime.audioEngine.inputNode;
+      this.gainNode = this.audioNode.context.createGain();
       this.gainNode.gain.value = 1;
-      this.gainNode.connect(this.audioContext.destination);
-      // PenguinMod thing
-      if (Scratch.extensions.isPenguinMod) {
-        Scratch.vm.runtime.registerExtensionAudioContext("SPspotify", this.audioContext, this.gainNode);
-      }
-      Scratch.vm.runtime.on("PROJECT_STOP_ALL", () => {
-        this.stopAll();
-      });
+      this.gainNode.connect(this.audioNode);
+      Scratch.vm.runtime.on("PROJECT_STOP_ALL", () => { this.stopAll() });
     }
     getInfo() {
       return {
@@ -111,7 +108,6 @@
               THING: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "SONG_ATTS",
-                defaultValue: "name"
               },
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -128,7 +124,6 @@
               THING: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "ARTIST_ATTS",
-                defaultValue: "artist"
               },
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -145,7 +140,6 @@
               THING: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "PLAYLIST_ATTS",
-                defaultValue: "name"
               },
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -304,12 +298,11 @@
 
     getUrlAudioBuffer(url) {
       return new Promise((resolve, reject) => {
-        // eslint-disable-next-line
         fetch(url)
           .then(response => {
             response.arrayBuffer()
               .then(arrayBuffer => {
-                this.audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
+                Scratch.vm.runtime.audioEngine.inputNode.context.decodeAudioData(arrayBuffer, (audioBuffer) => {
                   resolve(audioBuffer);
                 }, reject).catch(reject);
               })
@@ -326,21 +319,19 @@
       try {
         buffer = await this.getUrlAudioBuffer(url);
       } catch (err) {
-        return console.warn('Couldn\'t decode AudioBuffer', err);
+        return console.warn("Couldn't decode AudioBuffer", err);
       }
-      /* eslint-disable */
-      const node = this.audioContext.createBufferSource();
+      const node = this.audioNode.context.createBufferSource();
       node.buffer = buffer;
       node.connect(this.gainNode);
       node.start(0);
-      /* eslint-enable */
       audioInstances.push(node);
     }
 
     stopAll() {
       audioInstances.forEach(node => {
         try {
-          node.stop();
+          node.disconnect(this.gainNode);
         } catch {}
       });
       audioInstances = [];
@@ -415,6 +406,7 @@
         let match;
         switch (args.THING) {
           case "description":
+            // has to be very case-specific since Spotify names their classes very similarly
             regex = /<span[^>]*class="Type__TypeElement-sc-goli3j-0 gLgnHU G_f5DJd2sgHWeto5cwbi"[^>]*data-encore-id="type">([\s\S]*?)<\/span><\/div><\/div><\/div><\/div>/g;
             match = [...response.matchAll(regex)].map(match => match[1].trim());
             // Formatting
