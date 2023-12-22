@@ -298,6 +298,7 @@
 
     getUrlAudioBuffer(url) {
       return new Promise((resolve, reject) => {
+        // eslint-disable-next-line
         fetch(url)
           .then(response => {
             response.arrayBuffer()
