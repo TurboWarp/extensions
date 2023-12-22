@@ -12244,6 +12244,14 @@
     return body;
   };
 
+  const _removeBody = function (id) {
+    if (!bodies[id]) return;
+
+    world.DestroyBody(bodies[id]);
+    delete bodies[id];
+    delete prevPos[id];
+  };
+
   const _applyForce = function (id, ftype, x, y, dir, pow) {
     const body = bodies[id];
     if (!body) {
@@ -12444,6 +12452,8 @@
     }
   };
 
+  let tickRate = 30;
+
   const blockIconURI =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmE9Imh0dHA6Ly9ucy5hZG9iZS5jb20vQWRvYmVTVkdWaWV3ZXJFeHRlbnNpb25zLzMuMC8iDQoJIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSItMy43IC0zLjcgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTMuNyAtMy43IDQwIDQwIg0KCSB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxkZWZzPg0KPC9kZWZzPg0KPHJlY3QgeD0iOC45IiB5PSIxLjUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxLjUiIHk9IjE2LjMiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxNi4zIiB5PSIxNi4zIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMxNjlGQjAiIHN0cm9rZS13aWR0aD0iMyIgd2lkdGg9IjE0LjgiIGhlaWdodD0iMTQuOCIvPg0KPC9zdmc+";
   const menuIconURI =
@@ -12487,6 +12497,7 @@
         delete bodies[body];
         delete prevPos[body];
       }
+      tickRate = 30;
       // todo: delete joins?
     }
 
@@ -12593,6 +12604,17 @@
             },
             filter: [Scratch.TargetType.SPRITE],
           },
+          {
+            opcode: "disablePhysics",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate({
+              id: "griffpatch.disablePhysics",
+              default: "disable physics for this sprite",
+              description: "Disable Physics for this Sprite",
+            }),
+            arguments: {},
+            filter: [Scratch.TargetType.SPRITE],
+          },
           // {
           //     opcode: 'setPhysics',
           //     blockType: BlockType.COMMAND,
@@ -12628,6 +12650,32 @@
               id: "griffpatch.doTick",
               default: "step simulation",
               description: "Run a single tick of the physics simulation",
+            }),
+          },
+          {
+            opcode: "setTickRate",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate({
+              id: "griffpatch.setTickRate",
+              default: "set simulation rate to [rate]/s",
+              description:
+                "Set the number of physics simulation steps to run per second",
+            }),
+            arguments: {
+              rate: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 30,
+              },
+            },
+          },
+          {
+            opcode: "getTickRate",
+            blockType: BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "griffpatch.getTickRate",
+              default: "simulation rate",
+              description:
+                "Get the number of physics simulation steps to run per second",
             }),
           },
 
@@ -13219,7 +13267,7 @@
       this._checkMoved();
 
       // world.Step(1 / 30, 10, 10);
-      world.Step(1 / 30, 10, 10);
+      world.Step(1 / tickRate, 10, 10);
       world.ClearForces();
 
       for (const targetID in bodies) {
@@ -13246,6 +13294,18 @@
 
         prevPos[targetID] = { x: target.x, y: target.y, dir: target.direction };
       }
+    }
+
+    setTickRate(args) {
+      let rate = Scratch.Cast.toNumber(args.rate);
+      if (Number.isNaN(rate) || rate === Infinity) rate = 30;
+      rate = Math.max(rate, 0.01);
+
+      tickRate = rate;
+    }
+
+    getTickRate() {
+      return tickRate;
     }
 
     _checkMoved() {
@@ -13406,6 +13466,10 @@
       }
 
       return body;
+    }
+
+    disablePhysics(args, util) {
+      _removeBody(util.target.id);
     }
 
     /**

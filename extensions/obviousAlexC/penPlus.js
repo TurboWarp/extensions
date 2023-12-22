@@ -235,86 +235,86 @@
     untextured: {
       Shaders: {
         vert: `
-                attribute highp vec4 a_position;
-                attribute highp vec4 a_color;
-                varying highp vec4 v_color;
-                
-                void main()
-                {
-                    v_color = a_color;
-                    gl_Position = a_position * vec4(a_position.w,a_position.w,-1.0/a_position.w,1);
-                }
-            `,
+                  attribute highp vec4 a_position;
+                  attribute highp vec4 a_color;
+                  varying highp vec4 v_color;
+                  
+                  void main()
+                  {
+                      v_color = a_color;
+                      gl_Position = a_position * vec4(a_position.w,a_position.w,-1.0/a_position.w,1);
+                  }
+              `,
         frag: `
-                varying highp vec4 v_color;
-
-                void main()
-                {
-                  gl_FragColor = v_color;
-                  gl_FragColor.rgb *= gl_FragColor.a;
-                }
-            `,
+                  varying highp vec4 v_color;
+  
+                  void main()
+                  {
+                    gl_FragColor = v_color;
+                    gl_FragColor.rgb *= gl_FragColor.a;
+                  }
+              `,
       },
       ProgramInf: null,
     },
     textured: {
       Shaders: {
         vert: `
-                attribute highp vec4 a_position;
-                attribute highp vec4 a_color;
-                attribute highp vec2 a_texCoord;
-                
-                varying highp vec4 v_color;
-                varying highp vec2 v_texCoord;
-                
-                void main()
-                {
-                    v_color = a_color;
-                    v_texCoord = a_texCoord;
-                    gl_Position = a_position * vec4(a_position.w,a_position.w,-1.0/a_position.w,1);
-                }
-            `,
+                  attribute highp vec4 a_position;
+                  attribute highp vec4 a_color;
+                  attribute highp vec2 a_texCoord;
+                  
+                  varying highp vec4 v_color;
+                  varying highp vec2 v_texCoord;
+                  
+                  void main()
+                  {
+                      v_color = a_color;
+                      v_texCoord = a_texCoord;
+                      gl_Position = a_position * vec4(a_position.w,a_position.w,-1.0/a_position.w,1);
+                  }
+              `,
         frag: `
-                uniform sampler2D u_texture;
-
-                varying highp vec2 v_texCoord;
-                varying highp vec4 v_color;
-                
-                void main()
-                {
-                    gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
-                    gl_FragColor.rgb *= gl_FragColor.a;
-                    
-                }
-            `,
+                  uniform sampler2D u_texture;
+  
+                  varying highp vec2 v_texCoord;
+                  varying highp vec4 v_color;
+                  
+                  void main()
+                  {
+                      gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
+                      gl_FragColor.rgb *= gl_FragColor.a;
+                      
+                  }
+              `,
       },
       ProgramInf: null,
     },
     draw: {
       Shaders: {
         vert: `
-                attribute highp vec4 a_position;
-
-                varying highp vec2 v_texCoord;
-                attribute highp vec2 a_texCoord;
-                
-                void main()
-                {
-                    gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
-                    v_texCoord = (a_position.xy / 2.0) + vec2(0.5,0.5);
-                }
-            `,
+                  attribute highp vec4 a_position;
+  
+                  varying highp vec2 v_texCoord;
+                  attribute highp vec2 a_texCoord;
+                  
+                  void main()
+                  {
+                      gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
+                      v_texCoord = (a_position.xy / 2.0) + vec2(0.5,0.5);
+                  }
+              `,
         frag: `
-                varying highp vec2 v_texCoord;
-
-                uniform sampler2D u_drawTex;
-                
-                void main()
-                {
-                  gl_FragColor = texture2D(u_drawTex, v_texCoord);
-                  gl_FragColor.rgb *= gl_FragColor.a;
-                }
-            `,
+                  varying highp vec2 v_texCoord;
+  
+                  uniform sampler2D u_drawTex;
+                  
+                  void main()
+                  {
+                    gl_FragColor = texture2D(u_drawTex, v_texCoord);
+                    gl_FragColor.rgb *= gl_FragColor.a;
+                  }
+              `,
       },
       ProgramInf: null,
     },
@@ -2259,7 +2259,7 @@
         1, 1, 1,
       ];
     }
-    drawSolidTri({ x1, y1, x2, y2, x3, y3 }, util, squareTex) {
+    drawSolidTri({ x1, y1, x2, y2, x3, y3 }, util) {
       const curTarget = util.target;
       checkForPen(util);
       const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
@@ -2304,10 +2304,10 @@
         x3,
         y3,
         attrib.color4f,
-        squareTex ? "squareStamp_" + curTarget.id : curTarget.id
+        curTarget.id
       );
     }
-    drawTexTri({ x1, y1, x2, y2, x3, y3, tex }, util, squareTex) {
+    drawTexTri({ x1, y1, x2, y2, x3, y3, tex }, util) {
       const curTarget = util.target;
       let currentTexture = null;
       if (penPlusCostumeLibrary[tex]) {
@@ -2360,7 +2360,7 @@
           y2,
           x3,
           y3,
-          squareTex ? "squareStamp_" + curTarget.id : curTarget.id,
+          curTarget.id,
           currentTexture
         );
       }
