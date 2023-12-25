@@ -144,6 +144,17 @@
               },
             },
           },
+          {
+            opcode: 'json_flip',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'flip key-value pair in JSON [json]',
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"key":"value","key2":"value2"}',
+              }
+            },
+          },
           makeLabel('JSON Strings'),
           {
             opcode: 'json_jlength',
@@ -434,6 +445,31 @@
               },
             },
           },
+          {
+            // requested by sharkpool, I will improve it when theres lambda function
+            opcode: 'json_array_textfilter',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'filter array [list] if text [options] [text] and return [type]',
+            arguments: {
+              list: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue:
+                  '["abc","bac","cab"]',
+              },
+              options: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'filter_options',
+              },
+              text: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'a',
+              },
+              type: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'types',
+              }
+            },
+          },
           '---',
           {
             opcode: 'json_array_create',
@@ -549,6 +585,9 @@
             items: ['ascending', 'descending'],
             acceptReporters: true,
           },
+          filter_options: {
+            items: ['includes', 'starts with', 'ends with']
+          }
         },
       };
     }
@@ -676,6 +715,16 @@
         return json.includes(value);
       } catch {
         return false;
+      }
+    }
+
+    json_flip({ json }) {
+      try {
+        json = Object.entries(JSON.parse(json));
+        json = json.map(x => [x[1], x[0]]);
+        return JSON.stringify(Object.fromEntries(json));
+      } catch {
+        return '';
       }
     }
 
@@ -970,6 +1019,35 @@
           }
         }
       } catch (e) {
+        // ignore
+      }
+      return '';
+    }
+
+    json_array_textfilter(args) {
+      try {
+        const option = args.options;
+        let list = JSON.parse(args.list);
+        // check type
+        const isArray = Array.isArray(list);
+        // [[0, a], [1, b], [2, c]]
+        list = Object.entries(list);
+        const text = Scratch.Cast.toString(args.text);
+        const out = args.type;
+
+        switch (option) {
+          case 'includes': list = list.filter(x => typeof x[1] === 'string' && x[1].includes(text)); break;
+          case 'starts with': list = list.filter(x => typeof x[1] === 'string' && x[1].startsWith(text)); break;
+          case 'ends with': list = list.filter(x => typeof x[1] === 'string' && x[1].endsWith(text)); break;
+          default: return ''; // shouldn't happen
+        }
+        if (out === 'Object') {
+          // if array, convert to scratch index
+          if (isArray) list = list.map(x => [Number(x[0]) + 1, x[1]]);
+          return JSON.stringify(Object.fromEntries(list));
+        }
+        if (out === 'Array') return JSON.stringify(list.map(x => x[1]));
+      } catch {
         // ignore
       }
       return '';
