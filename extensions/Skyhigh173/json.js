@@ -18,6 +18,15 @@
     text: text,
   });
 
+  const sampleJSON = {
+    keyval: '{"key":"value"}',
+    mulkeyval: '{"key":"value","key2":"value2"}',
+    list: '["scratch","TurboWarp"]',
+    longList: '["apple","banana","orange"]',
+    intList: '[1,2,3,4]',
+    floatList: '[5.23, 214, 522, 61, 5.24, 62.2, 1, 51212, 0, 0]'
+  };
+
   class JSONS {
     getInfo() {
       return {
@@ -33,7 +42,7 @@
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"key":"value"}',
+                defaultValue: sampleJSON.keyval,
               },
             },
           },
@@ -44,7 +53,7 @@
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"key":"value"}',
+                defaultValue: sampleJSON.keyval,
               },
               types: {
                 type: Scratch.ArgumentType.STRING,
@@ -65,7 +74,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"key":"value","key2":"value2"}',
+                defaultValue: sampleJSON.mulkeyval,
               },
             },
           },
@@ -93,7 +102,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"key":"value"}',
+                defaultValue: sampleJSON.keyval,
               },
             },
           },
@@ -239,7 +248,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["scratch","TurboWarp"]',
+                defaultValue: sampleJSON.list,
               },
             },
           },
@@ -273,7 +282,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["love","heart","follow"]',
+                defaultValue: sampleJSON.longList,
               },
             },
           },
@@ -284,7 +293,7 @@
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'fav',
+                defaultValue: 'pear',
               },
               pos: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -292,7 +301,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["love","follow"]',
+                defaultValue: sampleJSON.longList,
               },
             },
           },
@@ -308,7 +317,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["scratch","a","TurboWarp"]',
+                defaultValue: sampleJSON.longList,
               },
             },
           },
@@ -339,7 +348,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["scratch","TurboWarp"]',
+                defaultValue: sampleJSON.list,
               },
             },
           },
@@ -362,7 +371,7 @@
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '[1,2,3,4]',
+                defaultValue: sampleJSON.intList,
               },
               item: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -381,7 +390,7 @@
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["a","b","c","d","e","f"]',
+                defaultValue: sampleJSON.intList,
               },
             },
           },
@@ -407,11 +416,11 @@
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["a","b"]',
+                defaultValue: sampleJSON.list,
               },
               json2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["c","d"]',
+                defaultValue: sampleJSON.longList,
               },
             },
           },
@@ -437,11 +446,11 @@
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["a","b","c"]',
+                defaultValue: sampleJSON.list,
               },
               len: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 2,
+                defaultValue: 1,
               },
             },
           },
@@ -453,8 +462,7 @@
             arguments: {
               list: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue:
-                  '["abc","bac","cab"]',
+                defaultValue: sampleJSON.longList,
               },
               options: {
                 type: Scratch.ArgumentType.STRING,
@@ -462,7 +470,7 @@
               },
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'a',
+                defaultValue: 'e',
               },
               type: {
                 type: Scratch.ArgumentType.STRING,
@@ -510,8 +518,7 @@
             arguments: {
               list: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue:
-                  '[5.23, 214, 522, 61, 5.24, 62.2, 1, 51212, 0, 0]',
+                defaultValue: sampleJSON.floatList,
               },
               order: {
                 type: Scratch.ArgumentType.STRING,
@@ -560,7 +567,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["apple","banana"]',
+                defaultValue: sampleJSON.longList,
               },
             },
           },
@@ -582,8 +589,8 @@
             items: ['=', '≠'],
           },
           sort_order: {
-            items: ['ascending', 'descending'],
             acceptReporters: true,
+            items: ['ascending', 'descending'],
           },
           filter_options: {
             items: ['includes', 'starts with', 'ends with']
@@ -661,12 +668,11 @@
             return !Array.isArray(json);
           case 'Array':
             return Array.isArray(json);
-          default:
-            return false;
         }
       } catch {
-        return false;
+        // ignore
       }
+      return false;
     }
 
     json_minify({ json }) {
@@ -721,7 +727,7 @@
     json_flip({ json }) {
       try {
         json = Object.entries(JSON.parse(json));
-        json = json.map(x => [x[1], x[0]]);
+        json = json.map(([k, v]) => [v, k]);
         return JSON.stringify(Object.fromEntries(json));
       } catch {
         return '';
@@ -1036,14 +1042,21 @@
         const out = args.type;
 
         switch (option) {
-          case 'includes': list = list.filter(x => typeof x[1] === 'string' && x[1].includes(text)); break;
-          case 'starts with': list = list.filter(x => typeof x[1] === 'string' && x[1].startsWith(text)); break;
-          case 'ends with': list = list.filter(x => typeof x[1] === 'string' && x[1].endsWith(text)); break;
-          default: return ''; // shouldn't happen
+          case 'includes':
+            list = list.filter(x => typeof x[1] === 'string' && x[1].includes(text));
+            break;
+          case 'starts with':
+            list = list.filter(x => typeof x[1] === 'string' && x[1].startsWith(text));
+            break;
+          case 'ends with':
+            list = list.filter(x => typeof x[1] === 'string' && x[1].endsWith(text));
+            break;
+          default:
+            return ''; // shouldn't happen
         }
         if (out === 'Object') {
           // if array, convert to scratch index
-          if (isArray) list = list.map(x => [Number(x[0]) + 1, x[1]]);
+          if (isArray) list = list.map(([k, v]) => [Number(k) + 1, v]);
           return JSON.stringify(Object.fromEntries(list));
         }
         if (out === 'Array') return JSON.stringify(list.map(x => x[1]));
@@ -1060,17 +1073,18 @@
       } catch {
         return '';
       }
-      if (!Array.isArray(list)) {
-        return '';
-      }
+      if (!Array.isArray(list)) return '';
+
       list.sort(Scratch.Cast.compare);
       if (args.order === 'descending') list.reverse();
       return JSON.stringify(list);
     }
 
     json_vm_export_var(_, util) {
-      const global = Object.fromEntries(Object.values(vm.runtime.getTargetForStage().variables).filter(x => x.type === '').map(x => [x.name, x.value]));
-      const local = Object.fromEntries(Object.values(util.target.variables).filter(x => x.type === '').map(x => [x.name, x.value]));
+      const getVariables = x => Object.fromEntries(Object.values(x.variables).filter(x => x.type === '').map(x => [x.name, x.value]));
+
+      const global = getVariables(vm.runtime.getTargetForStage());
+      const local = getVariables(util.target);
       return JSON.stringify({...global, ...local});
     }
 
