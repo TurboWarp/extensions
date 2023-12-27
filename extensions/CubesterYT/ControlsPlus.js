@@ -517,6 +517,13 @@
     }
     switch(args, util) {
       args.CASE = Scratch.Cast.toString(args.CASE);
+      if (
+        !Object.keys(util.target.blocks._blocks).includes(
+          util.thread.peekStack()
+        )
+      ) {
+        return;
+      }
       let getSwitch = util.target.blocks._blocks[util.thread.peekStack()];
       getSwitch.caseData = args.CASE;
       getSwitch.runCase = false;
@@ -530,6 +537,13 @@
     }
     case(args, util) {
       args.CASE = Scratch.Cast.toString(args.CASE);
+      if (
+        !Object.keys(util.target.blocks._blocks).includes(
+          util.thread.peekStack()
+        )
+      ) {
+        return;
+      }
       let outside = outsideID(util.target, util.thread.peekStack());
       if (outside.opcode != "cubesterControlsPlus_switch") {
         return;
@@ -555,6 +569,13 @@
       return;
     }
     nextCase(args, util) {
+      if (
+        !Object.keys(util.target.blocks._blocks).includes(
+          util.thread.peekStack()
+        )
+      ) {
+        return;
+      }
       let outside = outsideID(util.target, util.thread.peekStack());
       if (outside.opcode != "cubesterControlsPlus_switch") {
         return;
@@ -565,6 +586,13 @@
     }
     executeCase(args, util) {
       args.CASE = Scratch.Cast.toString(args.CASE);
+      if (
+        !Object.keys(util.target.blocks._blocks).includes(
+          util.thread.peekStack()
+        )
+      ) {
+        return;
+      }
       let outside = outsideID(util.target, util.thread.peekStack());
       if (outside.opcode != "cubesterControlsPlus_switch") {
         return;
@@ -576,6 +604,13 @@
     }
     nextCaseWhen(args, util) {
       args.CASE = Scratch.Cast.toString(args.CASE);
+      if (
+        !Object.keys(util.target.blocks._blocks).includes(
+          util.thread.peekStack()
+        )
+      ) {
+        return;
+      }
       let outside = outsideID(util.target, util.thread.peekStack());
       if (outside.opcode != "cubesterControlsPlus_switch") {
         return;
@@ -587,6 +622,13 @@
       return;
     }
     default(args, util) {
+      if (
+        !Object.keys(util.target.blocks._blocks).includes(
+          util.thread.peekStack()
+        )
+      ) {
+        return;
+      }
       let getDefault = util.target.blocks._blocks[util.thread.peekStack()];
       let outside = outsideID(util.target, util.thread.peekStack());
       if (
