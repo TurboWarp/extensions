@@ -243,6 +243,19 @@
           "---",
 
           {
+            opcode: "doWhile",
+            text: ["do", "while [CONDITIONAL]"],
+            blockType: Scratch.BlockType.LOOP,
+            arguments: {
+              CONDITIONAL: {
+                type: Scratch.BlockType.BOOLEAN,
+              },
+            },
+          },
+
+          "---",
+
+          {
             opcode: "forEachFrom",
             text: "for each [VARIABLE] in [TIMES] from [VALUE]",
             blockType: Scratch.BlockType.LOOP,
@@ -584,6 +597,19 @@
         return;
       }
       util.startBranch(1, false);
+    }
+    doWhile(args, util) {
+      args.CONDITIONAL = Scratch.Cast.toBoolean(args.CONDITIONAL);
+      if (
+        !(typeof util.stackFrame.index === "undefined")
+          ? !util.stackFrame.index
+          : util.stackFrame.index ?? !args.CONDITIONAL
+      ) {
+        util.startBranch(1, false);
+      } else if (args.CONDITIONAL) {
+        util.stackFrame.index = true;
+        util.startBranch(1, true);
+      }
     }
     forEachFrom(args, util) {
       args.VARIABLE = util.target.lookupOrCreateVariable(
