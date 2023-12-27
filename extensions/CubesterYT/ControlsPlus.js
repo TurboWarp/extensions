@@ -248,7 +248,7 @@
             blockType: Scratch.BlockType.LOOP,
             arguments: {
               CONDITIONAL: {
-                type: Scratch.BlockType.BOOLEAN,
+                type: Scratch.ArgumentType.BOOLEAN,
               },
             },
           },
