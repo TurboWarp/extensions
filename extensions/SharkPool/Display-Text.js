@@ -3,7 +3,7 @@
 // Description: Display Text in Your Projects!
 // By: SharkPool
 
-// Version V.1.1.1
+// Version V.1.1.2
 
 (function (Scratch) {
   "use strict";
@@ -373,6 +373,11 @@
       return [...fontMenu, ...customFonts];
     }
 
+    isScreen() {
+      const values = [parseFloat(Scratch.vm.renderer.canvas.style.width), Scratch.vm.runtime.stageWidth];
+      return values[0] > values[1] ? [3.78, 7] : [2, 2];
+    }
+
     printTxt(args) {
       args.ID = args.ID.replaceAll(" ", "_");
       const newTextElement = document.createElement("div");
@@ -543,8 +548,8 @@
       elements.forEach((element) => {
         const box = element.getBoundingClientRect();
         element.style.position = "absolute";
-        element.style.left = `${args.X - (box.width / 2)}px`;
-        element.style.top = `${(args.Y * -1) - (box.height / 2)}px`;
+        element.style.left = `${args.X - (box.width / this.isScreen()[0])}px`;
+        element.style.top = `${(args.Y * -1) - (box.height / this.isScreen()[1])}px`;
       });
     }
 
