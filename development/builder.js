@@ -3,7 +3,7 @@ const AdmZip = require("adm-zip");
 const pathUtil = require("path");
 const compatibilityAliases = require("./compatibility-aliases");
 const parseMetadata = require("./parse-extension-metadata");
-const {mkdirp, recursiveReadDirectory} = require("./fs-utils");
+const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
