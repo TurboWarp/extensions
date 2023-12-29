@@ -269,7 +269,7 @@
       const values = [parseFloat(Scratch.vm.renderer.canvas.style.width), Scratch.vm.runtime.stageWidth];
       if (values[0] > values[1]) {
         return (Scratch.vm.renderer.canvas.width / Scratch.vm.runtime.stageWidth) * 1.5;
-      } else { return 2 };
+      } else { return 2 }
     }
 
     allFonts() {
