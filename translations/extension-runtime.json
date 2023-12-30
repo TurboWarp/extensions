@@ -2127,7 +2127,7 @@
         "lab/text@_set [ANIMATE] duration to [NUM] seconds": "设置动画样式[ANIMATE]的完成时间是[NUM]秒",
         "lab/text@_set font to [FONT]": "设置文本的字体为[FONT]",
         "lab/text@_set text color to [COLOR]": "设置文本的颜色为[COLOR]",
-        "lab/text@_set typing delay to [NUM] seconds": "设置柱子显示速度为[NUM]秒/字",
+        "lab/text@_set typing delay to [NUM] seconds": "设置逐字显示速度为[NUM]秒/字",
         "lab/text@_set width to [WIDTH]": "设置文本的宽度为[WIDTH]",
         "lab/text@_set width to [WIDTH] aligned [ALIGN]": "设置[ALIGN]样式的宽度为[WIDTH]",
         "lab/text@_show sprite": "显示角色",
