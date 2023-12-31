@@ -218,6 +218,7 @@
             opcode: "whenStopClicked",
             blockType: Scratch.BlockType.EVENT,
             text: "when [STOP] clicked",
+            extensions: ['colours_event'],
             isEdgeActivated: false,
             arguments: {
               STOP: {
@@ -230,6 +231,7 @@
             opcode: "forever",
             blockType: Scratch.BlockType.EVENT,
             text: "forever",
+            extensions: ['colours_event'],
             isEdgeActivated: false,
           },
 
@@ -239,6 +241,7 @@
             opcode: "whenTrueFalse",
             blockType: Scratch.BlockType.HAT,
             text: "when [CONDITION] becomes [STATE]",
+            extensions: ['colours_event'],
             isEdgeActivated: true,
             arguments: {
               CONDITION: {
@@ -254,6 +257,7 @@
             opcode: "whileTrueFalse",
             blockType: Scratch.BlockType.HAT,
             text: "while [CONDITION] is [STATE]",
+            extensions: ['colours_event'],
             isEdgeActivated: false,
             arguments: {
               CONDITION: {
@@ -272,6 +276,7 @@
             opcode: "whenValueChanged",
             blockType: Scratch.BlockType.HAT,
             text: "when [INPUT] is changed",
+            extensions: ['colours_event'],
             isEdgeActivated: false,
             arguments: {
               INPUT: {
@@ -286,6 +291,7 @@
             opcode: "everyDuration",
             blockType: Scratch.BlockType.HAT,
             text: "every [DURATION] frames",
+            extensions: ['colours_event'],
             isEdgeActivated: false,
             arguments: {
               DURATION: {
@@ -301,6 +307,7 @@
             opcode: "whenKeyAction",
             blockType: Scratch.BlockType.HAT,
             text: "when [KEY_OPTION] key [ACTION]",
+            extensions: ['colours_event'],
             isEdgeActivated: true,
             arguments: {
               KEY_OPTION: {
@@ -318,6 +325,7 @@
             opcode: "whileKeyPressed",
             blockType: Scratch.BlockType.HAT,
             text: "while [KEY_OPTION] key pressed",
+            extensions: ['colours_event'],
             isEdgeActivated: false,
             arguments: {
               KEY_OPTION: {
@@ -334,9 +342,10 @@
             opcode: "broadcastToTarget",
             blockType: Scratch.BlockType.COMMAND,
             text: "broadcast [BROADCAST_OPTION] to [TARGET]",
+            extensions: ['colours_event'],
             arguments: {
               BROADCAST_OPTION: {
-                type: null,
+                type: Scratch.ArgumentType.BROADCAST,
               },
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -349,9 +358,10 @@
             opcode: "broadcastToTargetAndWait",
             blockType: Scratch.BlockType.COMMAND,
             text: "broadcast [BROADCAST_OPTION] to [TARGET] and wait",
+            extensions: ['colours_event'],
             arguments: {
               BROADCAST_OPTION: {
-                type: null,
+                type: Scratch.ArgumentType.BROADCAST,
               },
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -367,9 +377,10 @@
             opcode: "broadcastData",
             blockType: Scratch.BlockType.COMMAND,
             text: "broadcast [BROADCAST_OPTION] with data [DATA]",
+            extensions: ['colours_event'],
             arguments: {
               BROADCAST_OPTION: {
-                type: null,
+                type: Scratch.ArgumentType.BROADCAST,
               },
               DATA: {
                 type: Scratch.ArgumentType.STRING,
@@ -381,9 +392,10 @@
             opcode: "broadcastDataAndWait",
             blockType: Scratch.BlockType.COMMAND,
             text: "broadcast [BROADCAST_OPTION] with data [DATA] and wait",
+            extensions: ['colours_event'],
             arguments: {
               BROADCAST_OPTION: {
-                type: null,
+                type: Scratch.ArgumentType.BROADCAST,
               },
               DATA: {
                 type: Scratch.ArgumentType.STRING,
@@ -392,13 +404,10 @@
             hideFromPalette: true,
           },
           {
-            blockType: Scratch.BlockType.XML,
-            xml: '<block type="lmsMoreEvents_broadcastToTarget"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value></block><block type="lmsMoreEvents_broadcastToTargetAndWait"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value></block><sep gap="36"/><block type="lmsMoreEvents_broadcastData"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block><block type="lmsMoreEvents_broadcastDataAndWait"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block>',
-          },
-          {
             opcode: "receivedData",
             blockType: Scratch.BlockType.REPORTER,
             text: "received data",
+            extensions: ['colours_event'],
             disableMonitor: true,
             allowDropAnywhere: true,
           },
@@ -409,10 +418,11 @@
             opcode: "broadcastDataToTarget",
             blockType: Scratch.BlockType.COMMAND,
             text: "broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA]",
+            extensions: ['colours_event'],
             func: "broadcastToTarget",
             arguments: {
               BROADCAST_OPTION: {
-                type: null,
+                type: Scratch.ArgumentType.BROADCAST,
               },
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -428,10 +438,11 @@
             opcode: "broadcastDataToTargetAndWait",
             blockType: Scratch.BlockType.COMMAND,
             text: "broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA] and wait",
+            extensions: ['colours_event'],
             func: "broadcastToTargetAndWait",
             arguments: {
               BROADCAST_OPTION: {
-                type: null,
+                type: Scratch.ArgumentType.BROADCAST,
               },
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -443,15 +454,12 @@
             },
             hideFromPalette: true,
           },
-          {
-            blockType: Scratch.BlockType.XML,
-            xml: '<block type="lmsMoreEvents_broadcastDataToTarget"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block><block type="lmsMoreEvents_broadcastDataToTargetAndWait"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block>',
-          },
           "---",
           {
             blockType: Scratch.BlockType.EVENT,
             opcode: "beforeSave",
             text: "before project saves",
+            extensions: ['colours_event'],
             shouldRestartExistingThreads: true,
             isEdgeActivated: false,
           },
@@ -459,6 +467,7 @@
             blockType: Scratch.BlockType.EVENT,
             opcode: "afterSave",
             text: "after project saves",
+            extensions: ['colours_event'],
             shouldRestartExistingThreads: true,
             isEdgeActivated: false,
           },
