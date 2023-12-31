@@ -58,6 +58,7 @@
             blockType: Scratch.BlockType.HAT,
             text: "when I start as a clone with [INPUTA] set to [INPUTB]",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -74,6 +75,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "create clone with [INPUTA] set to [INPUTB]",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -93,6 +95,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "touching clone with [INPUTA] set to [INPUTB]?",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -109,6 +112,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "touching main sprite?",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             disableMonitor: true,
           },
 
@@ -119,6 +123,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set variable [INPUTA] to [INPUTB] for clones with [INPUTC] set to [INPUTD]",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -143,6 +148,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "variable [INPUTA] of clone with [INPUTB] set to [INPUTC]",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             disableMonitor: true,
             arguments: {
               INPUTA: {
@@ -164,6 +170,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set variable [INPUTA] to [INPUTB] for main sprite",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -180,6 +187,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "variable [INPUT] of main sprite",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             disableMonitor: true,
             arguments: {
               INPUT: {
@@ -196,6 +204,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "clone with [INPUTA] set to [INPUTB] exists?",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -212,6 +221,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "[INPUTA] of clone with [INPUTB] set to [INPUTC]",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             disableMonitor: true,
             arguments: {
               INPUTA: {
@@ -234,6 +244,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "[INPUT] of main sprite",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             disableMonitor: true,
             arguments: {
               INPUT: {
@@ -250,6 +261,7 @@
             opcode: "stopScriptsInSprite",
             blockType: Scratch.BlockType.COMMAND,
             text: "stop scripts in [INPUT]",
+            extensions: ['colours_control'],
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -262,6 +274,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "stop scripts in clones with [INPUTA] set to [INPUTB]",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -278,6 +291,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "stop scripts in main sprite",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
           },
 
           "---",
@@ -286,6 +300,7 @@
             opcode: "deleteClonesInSprite",
             blockType: Scratch.BlockType.COMMAND,
             text: "delete clones in [INPUT]",
+            extensions: ['colours_control'],
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -298,6 +313,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "delete clones with [INPUTA] set to [INPUTB]",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -317,6 +333,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is clone?",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ['colours_control'],
             disableMonitor: true,
           },
 
@@ -331,6 +348,7 @@
             opcode: "spriteCloneCount",
             blockType: Scratch.BlockType.REPORTER,
             text: "clone count of [INPUT]",
+            extensions: ['colours_control'],
             disableMonitor: true,
             arguments: {
               INPUT: {
