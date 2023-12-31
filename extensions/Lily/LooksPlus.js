@@ -46,6 +46,7 @@
             opcode: "showSprite",
             blockType: Scratch.BlockType.COMMAND,
             text: "show [TARGET]",
+            extensions: ['colours_looks'],
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -57,6 +58,7 @@
             opcode: "hideSprite",
             blockType: Scratch.BlockType.COMMAND,
             text: "hide [TARGET]",
+            extensions: ['colours_looks'],
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -68,6 +70,7 @@
             opcode: "spriteVisible",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "[TARGET] visible?",
+            extensions: ['colours_looks'],
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -82,6 +85,7 @@
             opcode: "setLayerTo",
             blockType: Scratch.BlockType.COMMAND,
             text: "set layer # of [TARGET] to [LAYER]",
+            extensions: ['colours_looks'],
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -97,6 +101,7 @@
             opcode: "spriteLayerNumber",
             blockType: Scratch.BlockType.REPORTER,
             text: "layer # of [TARGET]",
+            extensions: ['colours_looks'],
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -108,6 +113,7 @@
             opcode: "effectValue",
             blockType: Scratch.BlockType.REPORTER,
             text: "[EFFECT] effect of [TARGET]",
+            extensions: ['colours_looks'],
             arguments: {
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -127,6 +133,7 @@
             opcode: "targetCostumeNumber",
             blockType: Scratch.BlockType.REPORTER,
             text: "# of costumes in [TARGET]",
+            extensions: ['colours_looks'],
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -138,6 +145,7 @@
             opcode: "costumeAttribute",
             blockType: Scratch.BlockType.REPORTER,
             text: "[ATTRIBUTE] of [COSTUME]",
+            extensions: ['colours_looks'],
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -155,6 +163,7 @@
             opcode: "snapshotStage",
             blockType: Scratch.BlockType.REPORTER,
             text: "snapshot stage",
+            extensions: ['colours_looks'],
             disableMonitor: true,
           },
 
@@ -164,6 +173,7 @@
             opcode: "replaceCostumeContent",
             blockType: Scratch.BlockType.COMMAND,
             text: "set [TYPE] for [COSTUME] to [CONTENT]",
+            extensions: ['colours_looks'],
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -183,6 +193,7 @@
             opcode: "restoreCostumeContent",
             blockType: Scratch.BlockType.COMMAND,
             text: "restore content for [COSTUME]",
+            extensions: ['colours_looks'],
             arguments: {
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
@@ -193,6 +204,7 @@
             opcode: "costumeContent",
             blockType: Scratch.BlockType.REPORTER,
             text: "[CONTENT] of costume # [COSTUME] of [TARGET]",
+            extensions: ['colours_looks'],
             arguments: {
               CONTENT: {
                 type: Scratch.ArgumentType.STRING,
@@ -216,6 +228,7 @@
             opcode: "replaceColors",
             blockType: Scratch.BlockType.REPORTER,
             text: "replace [COLOR1] with [COLOR2] in [SVG]",
+            extensions: ['colours_looks'],
             arguments: {
               COLOR1: {
                 type: Scratch.ArgumentType.COLOR,
@@ -235,6 +248,7 @@
             opcode: "colorHex",
             blockType: Scratch.BlockType.REPORTER,
             text: "hex of [COLOR]",
+            extensions: ['colours_looks'],
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
