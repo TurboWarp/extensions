@@ -23,6 +23,7 @@
             opcode: "startLooping",
             blockType: Scratch.BlockType.COMMAND,
             text: "start looping [SOUND]",
+            extensions: ['colours_sound'],
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -37,6 +38,7 @@
             opcode: "stopLooping",
             blockType: Scratch.BlockType.COMMAND,
             text: "end looping [SOUND]",
+            extensions: ['colours_sound'],
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -47,6 +49,7 @@
             opcode: "isLooping",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "[SOUND] is looping?",
+            extensions: ['colours_sound'],
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -60,6 +63,7 @@
             opcode: "stopSound",
             blockType: Scratch.BlockType.COMMAND,
             text: "stop sound [SOUND]",
+            extensions: ['colours_sound'],
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -70,6 +74,7 @@
             opcode: "pauseSounds",
             blockType: Scratch.BlockType.COMMAND,
             text: "pause all sounds",
+            extensions: ['colours_sound'],
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -80,6 +85,7 @@
             opcode: "resumeSounds",
             blockType: Scratch.BlockType.COMMAND,
             text: "resume all sounds",
+            extensions: ['colours_sound'],
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -93,6 +99,7 @@
             opcode: "isSoundPlaying",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "sound [SOUND] is playing?",
+            extensions: ['colours_sound'],
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -103,6 +110,7 @@
             opcode: "attributeOfSound",
             blockType: Scratch.BlockType.REPORTER,
             text: "[ATTRIBUTE] of [SOUND]",
+            extensions: ['colours_sound'],
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -117,6 +125,7 @@
             opcode: "getSoundEffect",
             blockType: Scratch.BlockType.REPORTER,
             text: "[EFFECT] of [TARGET]",
+            extensions: ['colours_sound'],
             arguments: {
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -133,6 +142,7 @@
             opcode: "setProjectVolume",
             blockType: Scratch.BlockType.COMMAND,
             text: "set project volume to [VALUE]%",
+            extensions: ['colours_sound'],
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -144,6 +154,7 @@
             opcode: "changeProjectVolume",
             blockType: Scratch.BlockType.COMMAND,
             text: "change project volume by [VALUE]",
+            extensions: ['colours_sound'],
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -155,6 +166,7 @@
             opcode: "getProjectVolume",
             blockType: Scratch.BlockType.REPORTER,
             text: "project volume",
+            extensions: ['colours_sound'],
           },
         ],
         menus: {
