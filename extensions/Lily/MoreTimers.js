@@ -270,18 +270,5 @@
     }
   }
 
-  // "Extension" option reimplementation by Xeltalliv
-  // https://github.com/Xeltalliv/extensions/blob/examples/examples/extension-colors.js
-
-  // const cbfsb = Scratch.vm.runtime._convertBlockForScratchBlocks.bind(Scratch.vm.runtime);
-  // Scratch.vm.runtime._convertBlockForScratchBlocks = function(blockInfo, categoryInfo) {
-  //   const res = cbfsb(blockInfo, categoryInfo);
-  //   if (blockInfo.extensions) {
-  //     if (!res.json.extensions) res.json.extensions = [];
-  //     res.json.extensions.push(...blockInfo.extensions);
-  //   }
-  //   return res;
-  // };
-
   Scratch.extensions.register(new Timers());
 })(Scratch);
