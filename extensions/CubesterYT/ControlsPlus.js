@@ -23,20 +23,30 @@
   const asyncIcon =
     "data:image/svg+xml;base64,CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjI0cHgiIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KPGRlZnM+CjxnIGlkPSJMYXllcjFfMF9GSUxMIj4KPHBhdGggZmlsbD0iI0NGOEIxNyIgZmlsbC1vcGFjaXR5PSIxIiBzdHJva2U9Im5vbmUiIGQ9IgpNIDEyLjEgMS41NQpRIDExLjUxNTQyOTY4NzUgMS40OTk2MDkzNzUgMTAuOTUgMi4xNQpMIDcuMyA2LjEKUSA2LjY4NzEwOTM3NSA2LjU2MjUgNi43IDcuMiA2LjcyNSA4Ljc3NTE5NTMxMjUgOC4zIDguNzUKTCA5LjI1IDguNzUKUSA5LjYxMDU0Njg3NSAxMi4yNTYwNTQ2ODc1IDkuMjUgMTUuMwpMIDguMSAxNS4yNQpRIDcuMTUzOTA2MjUgMTUuMjcxNjc5Njg3NSA2LjggMTYgNi42NzYzNjcxODc1IDE2LjI2Njc5Njg3NSA2LjY1IDE2LjY1IDYuNjEyNjk1MzEyNSAxNy4xNjcxODc1IDcuMiAxNy44NQpMIDEwLjk1IDIxLjkKUSAxMS40NDEyMTA5Mzc1IDIyLjY1MTk1MzEyNSAxMi4xIDIyLjU1IDEyLjYwOTE3OTY4NzUgMjIuNjQ0NzI2NTYyNSAxMy4yIDIyLjA1CkwgMTMuMiAyMi4wNSAxNy4wNSAxNy45ClEgMTcuNTU4Nzg5MDYyNSAxNy40Njg5NDUzMTI1IDE3LjUgMTYuOSAxNy41MjUgMTUuMzI0ODA0Njg3NSAxNS45NSAxNS4zCkwgMTQuOCAxNS4zClEgMTQuNTI4MzIwMzEyNSAxMi4xMjE2Nzk2ODc1IDE0Ljg1IDguOApMIDE2LjE1IDguOApRIDE3LjE5ODQzNzUgOC44Mjg3MTA5Mzc1IDE3LjQ1IDcuOSAxNy41MjM2MzI4MTI1IDcuNzUxMTcxODc1IDE3LjUgNy42IDE3LjUyNSA3LjU1IDE3LjUgNy40NSAxNy41NDc0NjA5Mzc1IDYuODQ0NTMxMjUgMTcuMDUgNi4yNQpMIDEzLjIgMi4yClEgMTIuNzU1MDc4MTI1IDEuNDk4MjQyMTg3NSAxMi4xIDEuNTUgWiIvPgo8L2c+Cgo8ZyBpZD0iTGF5ZXIwXzBfRklMTCI+CjxwYXRoIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0ibm9uZSIgZD0iCk0gMTYuMzUgNi44NQpMIDEyLjQ1IDIuNzUKUSAxMi4zIDIuNSAxMi4xIDIuNSAxMS45IDIuNSAxMS43IDIuNzUKTCA3Ljg1IDYuODUKUSA3LjY1IDcgNy42NSA3LjIgNy42NSA3Ljg1IDguMyA3Ljg1CkwgMTAuMSA3Ljg1ClEgMTAuNjUgMTIuNCAxMC4xIDE2LjI1CkwgOC4xIDE2LjIKUSA3Ljc1IDE2LjIgNy42NSAxNi41IDcuNiAxNi41NSA3LjYgMTYuNjUgNy42IDE2LjkgNy45IDE3LjI1CkwgMTEuNzUgMjEuNApRIDExLjkgMjEuNjUgMTIuMSAyMS42NSAxMi4zIDIxLjY1IDEyLjU1IDIxLjQKTCAxNi40IDE3LjI1ClEgMTYuNiAxNy4xIDE2LjYgMTYuOSAxNi42IDE2LjI1IDE1Ljk1IDE2LjI1CkwgMTQgMTYuMjUKUSAxMy41IDEyLjE1IDE0IDcuOQpMIDE2LjE1IDcuOQpRIDE2LjUgNy45IDE2LjYgNy42IDE2LjYgNy41NSAxNi42IDcuNDUgMTYuNiA3LjE1IDE2LjM1IDYuODUgWiIvPgo8L2c+CjwvZGVmcz4KCjxnIGlkPSJMYXllcl8zIj4KPGcgdHJhbnNmb3JtPSJtYXRyaXgoIDEsIDAsIDAsIDEsIDAsMCkgIj4KPHVzZSB4bGluazpocmVmPSIjTGF5ZXIxXzBfRklMTCIvPgo8L2c+CjwvZz4KCjxnIGlkPSJhc3luY19zdmciPgo8ZyB0cmFuc2Zvcm09Im1hdHJpeCggMSwgMCwgMCwgMSwgMCwwKSAiPgo8dXNlIHhsaW5rOmhyZWY9IiNMYXllcjBfMF9GSUxMIi8+CjwvZz4KPC9nPgo8L3N2Zz4K";
 
-  const empty = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
-
-  function outsideID(target, start) {
+  function outerCBlock(target, start, opcode) {
+    let Cblock = false;
     let outsideTarget = target.blocks._blocks[start];
+    if (typeof outsideTarget !== "object" || !outsideTarget) {
+      return null;
+    }
     while (
-      outsideTarget.parent != null &&
-      target.blocks._blocks[outsideTarget.parent].next
+      !Cblock &&
+      outsideTarget.parent !== null &&
+      Object.hasOwn(outsideTarget, "parent")
     ) {
+      Cblock =
+        Object.hasOwn(outsideTarget, "inputs") &&
+        Object.hasOwn(outsideTarget.inputs, "SUBSTACK");
       outsideTarget = target.blocks._blocks[outsideTarget.parent];
     }
-    if (outsideTarget.parent) {
-      outsideTarget = target.blocks._blocks[outsideTarget.parent];
+    let block = Cblock ? outsideTarget : null;
+    if (!(opcode == null)) {
+      while (block != null && block.opcode !== opcode) {
+        block = outerCBlock(target, block.id, null);
+      }
+      return block;
     }
-    return outsideTarget;
+    return block;
   }
 
   class ControlsPlus {
@@ -45,7 +55,8 @@
         id: "cubesterControlsPlus",
         name: "Controls+",
         color1: "#FFAB19",
-        color2: "#CF8B17",
+        color2: "#EC9C13",
+        color3: "#CF8B17",
         menuIconURI: icon,
         docsURI: "https://extensions.turbowarp.org/CubesterYT/ControlsPlus",
 
@@ -54,6 +65,7 @@
             opcode: "waitFrames",
             text: "wait [FRAMES] frames",
             blockType: Scratch.BlockType.COMMAND,
+            extensions: ["colours_control"],
             arguments: {
               FRAMES: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -66,7 +78,8 @@
             text: "wait [SECONDS] seconds or until [CONDITIONAL]",
             blockType: Scratch.BlockType.LOOP,
             branchCount: -1,
-            branchIconURI: empty,
+            branchIconURI: "",
+            extensions: ["colours_control"],
             arguments: {
               SECONDS: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -84,6 +97,7 @@
             opcode: "repeatSeconds",
             text: "repeat for [SECONDS] seconds",
             blockType: Scratch.BlockType.LOOP,
+            extensions: ["colours_control"],
             arguments: {
               SECONDS: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -95,34 +109,12 @@
             opcode: "repeatOrUntil",
             text: "repeat [TIMES] or until [CONDITIONAL]",
             blockType: Scratch.BlockType.LOOP,
+            extensions: ["colours_control"],
             arguments: {
               TIMES: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 10,
               },
-              CONDITIONAL: {
-                type: Scratch.ArgumentType.BOOLEAN,
-              },
-            },
-          },
-          {
-            opcode: "foreverIf",
-            text: "forever if [CONDITIONAL]",
-            blockType: Scratch.BlockType.LOOP,
-            isTerminal: true,
-            arguments: {
-              CONDITIONAL: {
-                type: Scratch.ArgumentType.BOOLEAN,
-              },
-            },
-          },
-          {
-            opcode: "foreverIfElse",
-            text: ["forever if [CONDITIONAL]", "else"],
-            blockType: Scratch.BlockType.LOOP,
-            branchCount: 2,
-            isTerminal: true,
-            arguments: {
               CONDITIONAL: {
                 type: Scratch.ArgumentType.BOOLEAN,
               },
@@ -136,6 +128,7 @@
             text: ["if [CONDITION1] then", "else if [CONDITION2] then"],
             blockType: Scratch.BlockType.CONDITIONAL,
             branchCount: 2,
+            extensions: ["colours_control"],
             arguments: {
               CONDITION1: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -150,6 +143,7 @@
             text: ["if [CONDITION1] then", "else if [CONDITION2] then", "else"],
             blockType: Scratch.BlockType.CONDITIONAL,
             branchCount: 3,
+            extensions: ["colours_control"],
             arguments: {
               CONDITION1: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -163,6 +157,7 @@
             opcode: "ifElseReporter",
             text: "if [CONDITIONAL] then [VALUE1] else [VALUE2]",
             blockType: Scratch.BlockType.REPORTER,
+            extensions: ["colours_control"],
             arguments: {
               CONDITIONAL: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -184,6 +179,7 @@
             opcode: "switch",
             text: "switch [CASE]",
             blockType: Scratch.BlockType.CONDITIONAL,
+            extensions: ["colours_control"],
             arguments: {
               CASE: {
                 type: Scratch.ArgumentType.STRING,
@@ -194,6 +190,7 @@
             opcode: "case",
             text: "case [CASE]",
             blockType: Scratch.BlockType.CONDITIONAL,
+            extensions: ["colours_control"],
             arguments: {
               CASE: {
                 type: Scratch.ArgumentType.STRING,
@@ -205,6 +202,7 @@
             text: "run next case [ICON]",
             isTerminal: true,
             blockType: Scratch.BlockType.COMMAND,
+            extensions: ["colours_control"],
             arguments: {
               ICON: {
                 type: Scratch.ArgumentType.IMAGE,
@@ -217,6 +215,7 @@
             text: "execute case [CASE]",
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
+            extensions: ["colours_control"],
             arguments: {
               CASE: {
                 type: Scratch.ArgumentType.STRING,
@@ -227,6 +226,7 @@
             opcode: "nextCaseWhen",
             text: "run next case when [CASE]",
             blockType: Scratch.BlockType.COMMAND,
+            extensions: ["colours_control"],
             arguments: {
               CASE: {
                 type: Scratch.ArgumentType.STRING,
@@ -238,14 +238,36 @@
             text: "default",
             blockType: Scratch.BlockType.CONDITIONAL,
             isTerminal: true,
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "switchValue",
+            text: "switch value",
+            blockType: Scratch.BlockType.REPORTER,
+            extensions: ["colours_control"],
           },
 
           "---",
 
           {
+            opcode: "startStop",
+            text: ["if [CONDITION1] then", "stop if [CONDITION2]"],
+            blockType: Scratch.BlockType.LOOP,
+            extensions: ["colours_control"],
+            arguments: {
+              CONDITION1: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+              CONDITION2: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+            },
+          },
+          {
             opcode: "doWhile",
             text: ["do", "while [CONDITIONAL]"],
             blockType: Scratch.BlockType.LOOP,
+            extensions: ["colours_control"],
             arguments: {
               CONDITIONAL: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -259,6 +281,7 @@
             opcode: "forEachFrom",
             text: "for each [VARIABLE] in [TIMES] from [VALUE]",
             blockType: Scratch.BlockType.LOOP,
+            extensions: ["colours_control"],
             arguments: {
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
@@ -278,6 +301,7 @@
             opcode: "forEachItem",
             text: "for each [VARIABLE] in [LIST]",
             blockType: Scratch.BlockType.LOOP,
+            extensions: ["colours_control"],
             arguments: {
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
@@ -293,6 +317,7 @@
             opcode: "forEachItemFrom",
             text: "for each [VARIABLE] in [LIST] from [VALUE]",
             blockType: Scratch.BlockType.LOOP,
+            extensions: ["colours_control"],
             arguments: {
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
@@ -316,12 +341,14 @@
             text: "start in new thread",
             blockType: Scratch.BlockType.CONDITIONAL,
             branchIconURI: asyncIcon,
+            extensions: ["colours_control"],
           },
           {
             opcode: "restartScript",
             text: "restart script [ICON]",
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
+            extensions: ["colours_control"],
             arguments: {
               ICON: {
                 type: Scratch.ArgumentType.IMAGE,
@@ -333,32 +360,18 @@
           "---",
 
           {
-            opcode: "startStop",
-            text: ["if [CONDITION1] then", "stop if [CONDITION2]"],
-            blockType: Scratch.BlockType.LOOP,
-            arguments: {
-              CONDITION1: {
-                type: Scratch.ArgumentType.BOOLEAN,
-              },
-              CONDITION2: {
-                type: Scratch.ArgumentType.BOOLEAN,
-              },
-            },
-          },
-
-          "---",
-
-          {
             opcode: "randomBranch",
             text: ["choose random between this", "or this"],
             blockType: Scratch.BlockType.CONDITIONAL,
             branchCount: 2,
+            extensions: ["colours_control"],
           },
           {
             opcode: "chanceBranch",
             text: ["try a [CHANCE]% chance to run this", "else"],
             blockType: Scratch.BlockType.CONDITIONAL,
             branchCount: 2,
+            extensions: ["colours_control"],
             arguments: {
               CHANCE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -389,6 +402,7 @@
             text: "run [FLAG]",
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
+            extensions: ["colours_control"],
             arguments: {
               FLAG: {
                 type: Scratch.ArgumentType.IMAGE,
@@ -400,6 +414,7 @@
             opcode: "stopTarget",
             text: "stop [TARGET]",
             blockType: Scratch.BlockType.COMMAND,
+            extensions: ["colours_control"],
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -412,6 +427,7 @@
             text: "stop all targets except [TARGET]",
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
+            extensions: ["colours_control"],
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -482,20 +498,6 @@
         }
       }
     }
-    foreverIf(args, util) {
-      args.CONDITIONAL = Scratch.Cast.toBoolean(args.CONDITIONAL);
-      if (args.CONDITIONAL) {
-        util.startBranch(1, true);
-      }
-    }
-    foreverIfElse(args, util) {
-      args.CONDITIONAL = Scratch.Cast.toBoolean(args.CONDITIONAL);
-      if (args.CONDITIONAL) {
-        util.startBranch(1, true);
-      } else {
-        util.startBranch(2, true);
-      }
-    }
     ifElseIf(args, util) {
       if (args.CONDITION1) {
         util.startBranch(1, false);
@@ -544,8 +546,12 @@
       ) {
         return;
       }
-      let outside = outsideID(util.target, util.thread.peekStack());
-      if (outside.opcode != "cubesterControlsPlus_switch") {
+      let outside = outerCBlock(
+        util.target,
+        util.thread.peekStack(),
+        "cubesterControlsPlus_switch"
+      );
+      if (outside == null) {
         return;
       }
       if (
@@ -576,8 +582,12 @@
       ) {
         return;
       }
-      let outside = outsideID(util.target, util.thread.peekStack());
-      if (outside.opcode != "cubesterControlsPlus_switch") {
+      let outside = outerCBlock(
+        util.target,
+        util.thread.peekStack(),
+        "cubesterControlsPlus_switch"
+      );
+      if (outside == null) {
         return;
       }
       outside.nextCase = true;
@@ -593,8 +603,12 @@
       ) {
         return;
       }
-      let outside = outsideID(util.target, util.thread.peekStack());
-      if (outside.opcode != "cubesterControlsPlus_switch") {
+      let outside = outerCBlock(
+        util.target,
+        util.thread.peekStack(),
+        "cubesterControlsPlus_switch"
+      );
+      if (outside == null) {
         return;
       }
       outside.execute.requested = true;
@@ -611,8 +625,12 @@
       ) {
         return;
       }
-      let outside = outsideID(util.target, util.thread.peekStack());
-      if (outside.opcode != "cubesterControlsPlus_switch") {
+      let outside = outerCBlock(
+        util.target,
+        util.thread.peekStack(),
+        "cubesterControlsPlus_switch"
+      );
+      if (outside == null) {
         return;
       }
       if (outside.caseData == args.CASE) {
@@ -630,15 +648,50 @@
         return;
       }
       let getDefault = util.target.blocks._blocks[util.thread.peekStack()];
-      let outside = outsideID(util.target, util.thread.peekStack());
-      if (
-        outside.opcode != "cubesterControlsPlus_switch" ||
-        outside.runCase ||
-        getDefault.next
-      ) {
+      let outside = outerCBlock(
+        util.target,
+        util.thread.peekStack(),
+        "cubesterControlsPlus_switch"
+      );
+      if (outside == null || outside.runCase || getDefault.next != null) {
         return;
       }
       util.startBranch(1, false);
+    }
+    switchValue(args, util) {
+      if (
+        !Object.keys(util.target.blocks._blocks).includes(
+          util.thread.peekStack()
+        )
+      ) {
+        return;
+      }
+      let outside = outerCBlock(
+        util.target,
+        util.thread.peekStack(),
+        "cubesterControlsPlus_switch"
+      );
+      if (outside == null) {
+        return;
+      }
+      return outside.caseData ?? "";
+    }
+    startStop(args, util) {
+      args.CONDITION1 = Scratch.Cast.toBoolean(args.CONDITION1);
+      args.CONDITION2 = Scratch.Cast.toBoolean(args.CONDITION2);
+      if (typeof util.stackFrame.index === "undefined")
+        util.stackFrame.index = 0;
+      if (!args.CONDITION1 && util.stackFrame.index === 0) {
+        return;
+      } else {
+        if (!args.CONDITION2) {
+          util.stackFrame.index = 1;
+          util.startBranch(1, true);
+        } else {
+          util.stackFrame.index = 0;
+          return;
+        }
+      }
     }
     doWhile(args, util) {
       args.CONDITIONAL = Scratch.Cast.toBoolean(args.CONDITIONAL);
@@ -708,23 +761,6 @@
     }
     restartScript(args, util) {
       util.sequencer.runtime._restartThread(util.thread);
-    }
-    startStop(args, util) {
-      args.CONDITION1 = Scratch.Cast.toBoolean(args.CONDITION1);
-      args.CONDITION2 = Scratch.Cast.toBoolean(args.CONDITION2);
-      if (typeof util.stackFrame.index === "undefined")
-        util.stackFrame.index = 0;
-      if (!args.CONDITION1 && util.stackFrame.index === 0) {
-        return;
-      } else {
-        if (!args.CONDITION2) {
-          util.stackFrame.index = 1;
-          util.startBranch(1, true);
-        } else {
-          util.stackFrame.index = 0;
-          return;
-        }
-      }
     }
     randomBranch(args, util) {
       util.startBranch(Math.random() < 0.5 ? 1 : 2, false);
