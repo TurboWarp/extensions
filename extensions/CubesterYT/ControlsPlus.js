@@ -680,15 +680,15 @@
       args.CONDITION1 = Scratch.Cast.toBoolean(args.CONDITION1);
       args.CONDITION2 = Scratch.Cast.toBoolean(args.CONDITION2);
       if (typeof util.stackFrame.index === "undefined")
-        util.stackFrame.index = 0;
-      if (!args.CONDITION1 && util.stackFrame.index === 0) {
+        util.stackFrame.index = true;
+      if (!args.CONDITION1 && util.stackFrame.index) {
         return;
       } else {
         if (!args.CONDITION2) {
-          util.stackFrame.index = 1;
+          util.stackFrame.index = false;
           util.startBranch(1, true);
         } else {
-          util.stackFrame.index = 0;
+          util.stackFrame.index = true;
           return;
         }
       }
