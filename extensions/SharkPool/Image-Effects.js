@@ -3,7 +3,7 @@
 // Description: Apply a variety of new effects to the data URI of Images or Costumes.
 // By: SharkPool
 
-// Version V.2.0.0
+// Version V.2.0.1
 
 (function (Scratch) {
   "use strict";
@@ -1044,7 +1044,7 @@
       });
     }
     svgToBitmap(args) {
-      return this.stretch(this.confirmAsset(args.URI, "svg"),
+      return this.stretch(this.confirmAsset(args.SVG, "png"),
         Math.abs(Scratch.Cast.toNumber(args.WIDTH)), Math.abs(Scratch.Cast.toNumber(args.HEIGHT))
       );
     }
