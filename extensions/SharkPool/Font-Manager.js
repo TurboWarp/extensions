@@ -37,15 +37,6 @@
     }
   }
 
-  function findDiff(allFonts) {
-    let newArray = [];
-    for (let i = 0; i < allFonts.length; i++) { newArray[i] = allFonts[i].family }
-    let addedFonts = newArray.filter(font => !oldFontList.includes(font));
-    let removedFonts = oldFontList.filter(font => !newArray.includes(font));
-    oldFontList = newArray;
-    return { ADDED : addedFonts, REMOVED : removedFonts };
-  }
-
   class SPASfontManager {
     constructor() {
       this.difference = { cleared: true };
