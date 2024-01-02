@@ -67,11 +67,11 @@
   }
 
   vm.runtime.extensionStorage = {}; // Temporary while we don't have access to it yet
-  vm.runtime.extensionStorage['lmsDiscord'] = {};
-  vm.runtime.extensionStorage['lmsDiscord'].webhooks = Object.create(null);
-  vm.runtime.extensionStorage['lmsDiscord'].embeds = Object.create(null);
-  const webhooks = vm.runtime.extensionStorage['lmsDiscord'].webhooks;
-  const embeds = vm.runtime.extensionStorage['lmsDiscord'].embeds;
+  vm.runtime.extensionStorage['lmsDiscordAPI'] = {};
+  vm.runtime.extensionStorage['lmsDiscordAPI'].webhooks = Object.create(null);
+  vm.runtime.extensionStorage['lmsDiscordAPI'].embeds = Object.create(null);
+  const webhooks = vm.runtime.extensionStorage['lmsDiscordAPI'].webhooks;
+  const embeds = vm.runtime.extensionStorage['lmsDiscordAPI'].embeds;
 
   class DiscordAPI {
     getInfo() {
