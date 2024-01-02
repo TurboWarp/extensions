@@ -21,7 +21,7 @@
     hideFromPalette: hidden
   });
 
-  async function getWebhookName() {
+  function getWebhookName() {
     ScratchBlocks.prompt('Enter webhook name', '', (text) => {
       if (!text) return;
       if (!!webhooks[text]) return alert('A webhook named "'+text+'"already exists.');
