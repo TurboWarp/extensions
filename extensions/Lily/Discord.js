@@ -93,7 +93,7 @@
 
   function renameWebhook(uid) {
     const name = webhooks[uid].name;
-    ScratchBlocks.prompt(`Rename all "${name}" webhooks to:`, '', (text) => {
+    ScratchBlocks.prompt(`Rename all "${name}" webhooks to:`, name, (text) => {
       if (!text) return;
       if (!checkValid(webhooks, text)) return alert('A webhook named "'+name+'" already exists.');
       webhooks[uid].name = text;
@@ -104,7 +104,7 @@
   function renameEmbed(uid) {
     if (uid === 'no embed') return;
     const name = embeds[uid].name;
-    ScratchBlocks.prompt(`Rename all "${name}" embeds to:`, '', (text) => {
+    ScratchBlocks.prompt(`Rename all "${name}" embeds to:`, name, (text) => {
       if (!text) return;
       if (!checkValid(embeds, text)) return alert('An embed named "'+name+'" already exists.');
       embeds[uid].name = text;
