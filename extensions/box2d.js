@@ -12435,12 +12435,12 @@
       // create one such box at the bottom of the stage, accounting for thickness...
       bodyDef.position.Set(0, (stageBounds.bottom - 10) / zoom);
       createStageBody();
-      // and one 640 units above the top of the stage.
-      bodyDef.position.Set(0, (stageBounds.top + 640) / zoom);
+      // and one 820 units above the top of the stage.
+      bodyDef.position.Set(0, (stageBounds.top + 820) / zoom);
       createStageBody();
       // For the left & right wall boxes...
-      // use a height equivalent to the stage height + 640, with a thickness of 10
-      fixDef.shape.SetAsBox(10 / zoom, (stageHeight + 640) / zoom);
+      // use a height equivalent to the stage height + 820, with a thickness of 10
+      fixDef.shape.SetAsBox(10 / zoom, (stageHeight + 820) / zoom);
       // create a box at the left of the stage...
       bodyDef.position.Set((stageBounds.left - 10) / zoom, 0);
       createStageBody();
