@@ -274,6 +274,13 @@
               },
             },
           },
+          {
+            opcode: "whileScript",
+            text: ["while", "run"],
+            blockType: Scratch.BlockType.LOOP,
+            branchCount: 2,
+            extensions: ["colours_control"],
+          },
 
           "---",
 
@@ -704,6 +711,25 @@
       } else if (args.CONDITIONAL) {
         util.stackFrame.index = true;
         util.startBranch(1, true);
+      }
+    }
+    whileScript(args, util) {
+      if (
+        util.thread.target.blocks.getBranch(util.thread.peekStack(), 0) &&
+        typeof util.stackFrame.index === "undefined"
+      ) {
+        util.stackFrame.index = util.sequencer.runtime._pushThread(
+          util.thread.target.blocks.getBranch(util.thread.peekStack(), 0),
+          util.target,
+          {}
+        );
+      }
+      if (
+        typeof util.stackFrame.index === "undefined"
+          ? false
+          : Scratch.vm.runtime.isActiveThread(util.stackFrame.index)
+      ) {
+        util.startBranch(2, true);
       }
     }
     forEachFrom(args, util) {
