@@ -20,6 +20,7 @@
 
   const manage = runtime.fontManager;
   let oldFonts = [];
+  const hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
 
   /**
    * Construct an Asset.
@@ -48,15 +49,6 @@
     });
   }
   waitForAssets();
-
-  function findDiff(allFonts) {
-    let newArray = [];
-    for (let i = 0; i < allFonts.length; i++) { newArray[i] = allFonts[i].family }
-    let addedFonts = newArray.filter(font => !oldFontList.includes(font));
-    let removedFonts = oldFontList.filter(font => !newArray.includes(font));
-    oldFontList = newArray;
-    return { ADDED : addedFonts, REMOVED : removedFonts };
-  }
 
   class SPASfontManager {
     constructor() {
@@ -169,7 +161,7 @@
     fontsMenu() { return [".ttf", ".otf", ".woff", ".woff2"] }
 
     async dataUrlToArrBuff(dataURL) {
-      const data = await fetch(dataURL);
+      const data = await Scratch.fetch(dataURL);
       return (await data.arrayBuffer());
     }
 
@@ -199,7 +191,7 @@
     cast(args, func) {
       let obj = args;
       for (let key in obj) {
-        if (obj.hasOwnProperty(key)) obj[key] = Scratch.Cast[`to${(func ?? "String")}`](obj[key]);
+        if (hasOwn(obj, key)) obj[key] = Scratch.Cast[`to${(func ?? "String")}`](obj[key]);
       }
       return obj;
     }
@@ -247,7 +239,7 @@
     fontsChanged(args, util) {
       args = this.cast(args);
       const difference = util.thread.fontDifference;
-      if (!!!difference) return "[]";
+      if (!difference) return "[]";
       if (args.ATT == "clear") return JSON.stringify(difference.oldFontNames);
       if (difference.added && args.ATT.toLowerCase() === "removed") return;
       return JSON.stringify(difference.dif);
@@ -260,7 +252,7 @@
         oldFonts: oldFontNames, added
       };
       if (added) difference.dif = fontNames.filter(fontName => !oldFontNames.includes(fontName));
-      	else difference.dif = oldFontNames.filter(fontName => !fontNames.includes(fontName));
+        else difference.dif = oldFontNames.filter(fontName => !fontNames.includes(fontName));
       const threads = runtime.startHats(`${extensionId}_whenFont`, {
         ATT: (added ? "added" : "removed")
       });
