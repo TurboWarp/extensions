@@ -14,12 +14,6 @@
 
   /* Utility Functions */
 
-  const label = (name, hidden) => ({
-    blockType: Scratch.BlockType.LABEL,
-    text: name,
-    hideFromPalette: hidden
-  });
-
   const soup_ = '!#%()*+,-./:;=?@[]^_`{|}~' +
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -149,8 +143,6 @@
         color3: '#3747bd',
         menuIconURI: discordIcon,
         blocks: [
-          label('Webhooks'),
-
           {
             blockType: Scratch.BlockType.BUTTON,
             text: 'Add Webhook',
@@ -228,11 +220,7 @@
             },
             hideFromPalette: webhookHidden
           },
-
           '---',
-
-          label('Embeds'),
-
           {
             blockType: Scratch.BlockType.BUTTON,
             text: 'Create Embed',
@@ -263,9 +251,7 @@
             },
             hideFromPalette: embedHidden
           },
-
           '---',
-
           {
             opcode: 'setEmbedAttribute',
             blockType: Scratch.BlockType.COMMAND,
