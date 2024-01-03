@@ -89,10 +89,31 @@
     Scratch.vm.extensionManager.refreshBlocks();
   }
 
+  /* Webhook/embed renaming */
+
+  function renameWebhook(uid) {
+    const name = webhooks[uid].name;
+    ScratchBlocks.prompt(`Rename all "${name}" webhooks to:`, '', (text) => {
+      if (!text) return;
+      if (!checkValid(webhooks, text)) return alert('A webhook named "'+name+'" already exists.');
+      webhooks[uid].name = text;
+      Scratch.vm.emitWorkspaceUpdate();
+    }, 'Rename Webhook', 'broadcast_msg');
+  }
+
+  function renameEmbed(uid) {
+    if (uid === 'no embed') return;
+    const name = embeds[uid].name;
+    ScratchBlocks.prompt(`Rename all "${name}" embeds to:`, '', (text) => {
+      if (!text) return;
+      if (!checkValid(embeds, text)) return alert('An embed named "'+name+'" already exists.');
+      embeds[uid].name = text;
+      Scratch.vm.emitWorkspaceUpdate();
+    }, 'Rename Embed', 'broadcast_msg');
+  }
+
   /* Webhook/embed deletion */
 
-  // TODO: Check if any blocks use the webhooks/
-  // embeds before allowng deletion.
   function removeWebhook(name) {
     const uids = Object.keys(webhooks);
     for (const uid of uids) {
@@ -556,8 +577,10 @@
           value: uid
         });
       }
-      const newWebhook = {text: 'New webhook', value: () => getWebhookName()};
+      const nameWebhook = {text: 'Rename webhook', value: () => renameWebhook(ScratchBlocks.DropDownDiv.owner_.value_)};
+      const newWebhook = {text: 'New webhook', value: () => getWebhookName('New Webhook', getWebhookURL)};
       if (webhookMenu.length > 0) {
+        webhookMenu.push(nameWebhook);
         webhookMenu.push(newWebhook);
         return webhookMenu;
       } else {
@@ -575,10 +598,12 @@
           value: uid
         });
       }
-      const newEmbed = {text: 'New embed', value: () => getEmbedName()};
       const noEmbed = {text: 'no embed', value: 'no embed'};
+      const nameEmbed = {text: 'Rename embed', value: () => renameEmbed(ScratchBlocks.DropDownDiv.owner_.value_)};
+      const newEmbed = {text: 'New embed', value: () => getEmbedName()};
       if (embedMenu.length > 0) {
         embedMenu.push(noEmbed);
+        embedMenu.push(nameEmbed);
         embedMenu.push(newEmbed);
         return embedMenu;
       } else {
