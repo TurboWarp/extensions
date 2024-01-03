@@ -600,8 +600,8 @@
       }
       const noEmbed = {text: 'no embed', value: 'no embed'};
       const nameEmbed = {text: 'Rename embed', value: () => renameEmbed(ScratchBlocks.DropDownDiv.owner_.value_)};
-      const newEmbed = {text: 'New embed', value: () => getEmbedName()};
-      if (embedMenu.length > 0) {
+      const newEmbed = {text: 'New embed', value: () => getEmbedName('New Embed', createNewEmbed)};
+      if (embedMenu.length > 0) {'
         embedMenu.push(noEmbed);
         embedMenu.push(nameEmbed);
         embedMenu.push(newEmbed);
