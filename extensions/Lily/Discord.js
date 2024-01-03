@@ -91,6 +91,8 @@
 
   /* Webhook/embed deletion */
 
+  // TODO: Check if any blocks use the webhooks/
+  // embeds before allowng deletion.
   function removeWebhook(name) {
     const uids = Object.keys(webhooks);
     for (const uid of uids) {
