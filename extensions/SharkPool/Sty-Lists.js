@@ -3,7 +3,7 @@
 // Description: Customize and Organize Lists Monitors.
 // By: SharkPool
 
-// Version 1.1.0
+// Version 1.1.1
 
 (function (Scratch) {
   "use strict";
@@ -474,8 +474,8 @@
       let listWidth = parseFloat(parentList.style.width) || parentList.getBoundingClientRect().width / 2;
       listWidth = listWidth / args.NUM;
       list = document.querySelector(`[data-id=${list}] ${listDocs.contain}`);
-      if (list === null) return;
       const itemsHTML = this.getListArray(args.LIST, util);
+      if (itemsHTML[1] === 0 || list === null) return;
       const newContainer = document.createElement("div");
       newContainer.className = listDocs.contain;
 
@@ -485,7 +485,7 @@
         `${((itemsHTML[1] * 24) / args.NUM) + 24}px`;
       newContainer.style.maxWidth = parentList.style.width;
       newContainer.style.maxHeight = list.style.maxHeight;
-      newContainer.style.overflow = "scroll"; // always use scroll
+      newContainer.style.overflow = "scroll";
       newContainer.style.position = "relative";
 
       newContainer.innerHTML = itemsHTML[0];
@@ -525,16 +525,19 @@
 
     getListArray(list, util) {
       const items = util.target.lookupVariableById(list).value;
+      if (items.length === 0) return ["", 0];
       let allItems = document.querySelectorAll(`[data-id="${list}"]`);
       allItems = allItems[allItems.length - 1];
       allItems = allItems.querySelectorAll(`[class^="${listDocs.ind}"`);
       let html = "";
-      const elementClasses = {
-        row : allItems[0].parentNode.className,
-        index : allItems[0].className,
-        outerV : allItems[0].nextElementSibling.className,
-        innerV : allItems[0].nextElementSibling.children[0].className
-      };
+      try {
+        const elementClasses = {
+          row : allItems[0].parentNode.className,
+          index : allItems[0].className,
+          outerV : allItems[0].nextElementSibling.className,
+          innerV : allItems[0].nextElementSibling.children[0].className
+        };
+      } catch { return ["", 0] }
       for (let i = 0; i < items.length; i++) {
         const value = allItems[i] ? allItems[i].textContent : i + 1;
         html += `
@@ -704,7 +707,7 @@
         this.changeMonitorVisibility(list, false);
         setTimeout(() => {
           this.changeMonitorVisibility(list, true);
-          resolve();
+          setTimeout(() => { resolve() }, 0);
         }, 25);
       });
     }
@@ -825,12 +828,8 @@
         } else if (setEffect === "scale") {
           const arr = valueWithUnits.split(", ");
           return arr[args.EFFECT.includes("x") ? 0 : 1] * 100;
-        } else {
-          return numericValue;
-        }
-      } else {
-        return defaultV;
-      }
+        } else { return numericValue }
+      } else { return defaultV }
     }
 
     resetEffect(args, util) {
