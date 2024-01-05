@@ -154,6 +154,24 @@
             },
           },
           {
+            opcode:'addListToList',
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate({
+              id:'addListToList',
+              default:'add list [LIST2] to [LIST]'
+            }),
+            arguments: {
+              LIST: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue:'list'
+              },
+              LIST2: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue:'["a","a"]'
+              },
+            }
+          },
+          {
             opcode: "replaceOfList",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
@@ -260,6 +278,20 @@
                 defaultValue: "list2",
               },
             },
+          },
+          {
+            opcode:'reverseList',
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate({
+              id:'reverseList',
+              default:'reverse [LIST]'
+            }),
+            arguments: {
+              LIST: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue:'list'
+              },
+            }
           },
         ],
       };
@@ -383,6 +415,26 @@
         variable._monitorUpToDate = false;
       }
     }
+    addListToList(args, util) {
+      /** @type {VM.ListVariable} */
+      const variable = util.target.lookupVariableByNameAndType(
+        Scratch.Cast.toString(args.LIST),
+        'list'
+      ),
+      list2=Scratch.Cast.toString(args.LIST2);
+      if (variable) {
+        try {
+          var arr = JSON.parse(list2);
+          for (var i = 0; i < arr.length; i++) {
+            variable.value.push(arr[i]);
+          }
+
+          variable._monitorUpToDate = false;
+        } catch (error) {
+          console.log('error:', error);
+        }
+      }
+    }
     replaceOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
@@ -470,6 +522,19 @@
       );
       if (list1 && list2) {
         list2.value = list1.value.slice();
+      }
+    }
+    reverseList(args, util) {
+      /** @type {VM.ListVariable} */
+      const variable = util.target.lookupVariableByNameAndType(
+        Scratch.Cast.toString(args.LIST),
+        'list'
+      );
+      if (variable) {
+        var list=variable.value.slice();
+        list.reverse();
+        variable.value=list;
+        variable._monitorUpToDate = false;
       }
     }
   }
