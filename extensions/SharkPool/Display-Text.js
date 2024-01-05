@@ -353,6 +353,7 @@
             items: [
               { text: "font", value: "fontFamily" },
               { text: "font size", value: "fontSize" },
+              { text: "boldness", value: "fontWeight" },
               { text: "alignment", value: "textAlign" },
               { text: "margin width", value: "width" },
               { text: "margin height", value: "height" },
@@ -612,6 +613,7 @@
       let value;
       elements.forEach((element) => { value = element.style[args.ATT] });
       value = args.ATT === "fontFamily" || args.ATT === "textAlign" || args.ATT === "overflow" ? value : parseFloat(value);
+      value = args.ATT === "fontWeight" ? value / 9 : value
       return value || "";
     }
   
