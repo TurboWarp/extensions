@@ -71,7 +71,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "🎂",
             extensions: ['colours_looks'],
-            hideFromPalette: new Date().getMonth() !== 5
+            hideFromPalette: new Date().getMonth() !== 5,
           },
         ],
         menus: {
