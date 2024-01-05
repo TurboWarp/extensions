@@ -3,7 +3,7 @@
 // Description: Display Text in Your Projects!
 // By: SharkPool
 
-// Version V.1.1.2
+// Version V.1.2.0
 
 (function (Scratch) {
   "use strict";
@@ -14,6 +14,7 @@
 
   const blockIconURI =
 "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI0OS42MjQ0MSIgaGVpZ2h0PSI0OS42MjQ0MSIgdmlld0JveD0iMCwwLDQ5LjYyNDQxLDQ5LjYyNDQxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjE1LjE4NzgsLTE1NS4xODc4KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjE1LjE4NzgsMjA0LjgxMjJ2LTQ5LjYyNDQxaDQ5LjYyNDQxdjQ5LjYyNDQxeiIgZmlsbD0iIzc3ODg5OSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjI2LjQ1ODg1LDE5Ni44NjIzNmMtMS44MzQyNSwwIC0zLjMyMTIxLC0xLjQ4Njk2IC0zLjMyMTIxLC0zLjMyMTIydi00Ljk0ODIyaDIuNjA3NTR2Mi44NTQyNmMwLDEuNTUwNjEgMS4yNTcwMiwyLjgwNzY0IDIuODA3NjMsMi44MDc2NGgyLjg1NDI2djIuNjA3NTR6TTI1MS40NDcxOSwxOTQuMjU0ODJjMS41NTA2MSwwIDIuODA3NjMsLTEuMjU3MDIgMi44MDc2MywtMi44MDc2NHYtMi44NTQyNmgyLjYwNzU0djQuOTQ4MjJjMCwxLjgzNDI2IC0xLjQ4Njk2LDMuMzIxMjIgLTMuMzIxMjIsMy4zMjEyMmgtNC45NDgyMnYtMi42MDc1NHpNMjIzLjEzNzY0LDE2Ni40NTg4NWMwLC0xLjgzNDI2IDEuNDg2OTUsLTMuMzIxMjEgMy4zMjEyMSwtMy4zMjEyMWg0Ljk0ODIydjIuNjA3NTRoLTIuODU0MjZjLTEuNTUwNjEsMCAtMi44MDc2MywxLjI1NzAyIC0yLjgwNzYzLDIuODA3NjN2Mi44NTQyNmgtMi42MDc1NHpNMjUzLjU0MTE1LDE2My4xMzc2NGMxLjgzNDI2LDAgMy4zMjEyMiwxLjQ4Njk1IDMuMzIxMjIsMy4zMjEyMXY0Ljk0ODIyaC0yLjYwNzU0di0yLjg1NDI2YzAsLTEuNTUwNjEgLTEuMjU3MDIsLTIuODA3NjMgLTIuODA3NjMsLTIuODA3NjNoLTIuODU0MjZ2LTIuNjA3NTR6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMi41Ii8+PHBhdGggZD0iTTIzMy4xOTQsMTc0LjkwMzUyYy0wLjUxMjcyLDAgLTAuOTI4MzYsLTAuNDE1NjQgLTAuOTI4MzYsLTAuOTI4MzZ2LTEuNjI2M2MwLC0wLjUxMjcyIDAuNDE1NjQsLTAuOTI4MzYgMC45MjgzNiwtMC45MjgzNmgxMy42MTE5OWMwLjUxMjcyLDAgMC45MjgzNiwwLjQxNTY0IDAuOTI4MzYsMC45MjgzNnYxLjYyNjNjMCwwLjUxMjcyIC0wLjQxNTY0LDAuOTI4MzYgLTAuOTI4MzYsMC45MjgzNnoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz48cGF0aCBkPSJNMjM4LjI1ODQ5LDE3NC4wMzkxNWMwLC0wLjUxMjcyIDAuNDE1NjQsLTAuOTI4MzYgMC45MjgzNiwtMC45MjgzNmgxLjYyNjMxYzAuNTEyNzIsMCAwLjkyODM2LDAuNDE1NjQgMC45MjgzNiwwLjkyODM2djEzLjYxMTk5YzAsMC41MTI3MiAtMC40MTU2NCwwLjkyODM2IC0wLjkyODM2LDAuOTI4MzZoLTEuNjI2MzFjLTAuNTEyNzIsMCAtMC45MjgzNiwtMC40MTU2NCAtMC45MjgzNiwtMC45MjgzNnoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz48L2c+PC9nPjwvc3ZnPg==";
+
   const render = Scratch.vm.renderer;
   let allText = [];
   let lastRecdVals = {};
@@ -128,6 +129,15 @@
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" },
               SIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 30 }
             },
+          },
+          {
+            opcode: "setThick",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set boldness of ID [ID] to [NUM]",
+            arguments: {
+              NUM : { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" }
+            }
           },
           {
             opcode: "setTextAlignment",
@@ -333,6 +343,11 @@
           POS: ["x position", "y position", "z layer"],
           OVERFLOW: ["visible", "hidden"],
           ARCS: ["circle", "hill", "dip", "wave"],
+          THICK: [
+            { text : "thick", value : "900" },
+            { text : "medium", value : "600" },
+            { text : "none", value : "1" },
+          ],
           FORMATS: {
             acceptReporters: true,
             items: [
@@ -375,7 +390,7 @@
 
     isScreen() {
       const values = [parseFloat(Scratch.vm.renderer.canvas.style.width), Scratch.vm.runtime.stageWidth];
-      return values[0] > values[1] ? [3.78, 7] : [2, 2];
+      return values[0] > values[1] || Scratch.vm.runtime.isPackaged;
     }
 
     printTxt(args) {
@@ -397,8 +412,9 @@
       if (lastRecdVals["lineDIS"]) this.setTextSpacing(lastRecdVals["lineDIS"].inputs);
       if (lastRecdVals["letDIS"]) this.setTextSpacing(lastRecdVals["letDIS"].inputs);
       if (lastRecdVals["textOVR"]) this.setOverflow(lastRecdVals["textOVR"].inputs);
-      if (lastRecdVals["preTxt1"]) this.presetTextPosition(lastRecdVals["preTxt1"].inputs,);
+      if (lastRecdVals["txtFontTK"]) this.setThick(lastRecdVals["txtFontTK"].inputs);
 
+      if (lastRecdVals["preTxt1"]) this.presetTextPosition(lastRecdVals["preTxt1"].inputs);
       const box = newTextElement.getBoundingClientRect();
       this.setMargins({ ID : args.ID, WIDTH : box.width / 2, HEIGHT : box.height });
     }
@@ -521,6 +537,12 @@
       lastRecdVals["txtFontSZ"] = {inputs: args};
     }
 
+    setThick(args) {
+      const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
+      elements.forEach((element) => { element.style.fontWeight = args.NUM * 9 });
+      lastRecdVals["txtFontTK"] = {inputs: args};
+    }
+
     setTextSpacing(args) {
       const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
       elements.forEach((element) => {
@@ -534,12 +556,19 @@
       if (args.isPrint === undefined) {
         lastRecdVals["preTxt1"] = {inputs: {...args, isPrint: true}};
       } else {
-        const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
-        const element = elements[elements.length - 1];
-        const box = element.getBoundingClientRect();
-        element.style.position = "absolute";
-        element.style.left = `${(args.X - (box.width / 2)) + (parseFloat(Scratch.vm.renderer.canvas.style.width) / 2)}px`;
-        element.style.top = `${(args.Y * -1) - (box.height / 2)}px`;
+        setTimeout(function() {
+          const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
+          const element = elements[elements.length - 1];
+          const box = element.getBoundingClientRect();
+          const transformValue = element.parentNode.style.transform;
+          const match = transformValue.match(/scale\(([^,]+),\s*([^)]+)\)/);
+          const scales = [parseFloat(match[1]), parseFloat(match[2])];
+          const centerW = this.isScreen() ? box.width / 2 / scales[0] : box.width / 2;
+          const centerH = this.isScreen() ? box.height / 2 / (scales[1] * scales[1]): box.height / 2;
+          element.style.position = "absolute";
+          element.style.left = `${args.X - centerW}px`;
+          element.style.top = `${(args.Y * -1) - centerH}px`;
+        }.bind(this), 0);
       }
     }
 
@@ -547,9 +576,14 @@
       const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
       elements.forEach((element) => {
         const box = element.getBoundingClientRect();
+        const transformValue = element.parentNode.style.transform;
+        const match = transformValue.match(/scale\(([^,]+),\s*([^)]+)\)/);
+        const scales = [parseFloat(match[1]), parseFloat(match[2])];
+        const centerW = this.isScreen() ? box.width / 2 / scales[0] : box.width / 2;
+        const centerH = this.isScreen() ? box.height / 2 / (scales[1] * scales[1]): box.height / 2;
         element.style.position = "absolute";
-        element.style.left = `${args.X - (box.width / this.isScreen()[0])}px`;
-        element.style.top = `${(args.Y * -1) - (box.height / this.isScreen()[1])}px`;
+        element.style.left = `${args.X - centerW}px`;
+        element.style.top = `${(args.Y * -1) - centerH}px`;
       });
     }
 
@@ -558,14 +592,19 @@
       let value;
       elements.forEach((element) => {
         const box = element.getBoundingClientRect();
+        const transformValue = element.parentNode.style.transform;
+        const match = transformValue.match(/scale\(([^,]+),\s*([^)]+)\)/);
+        const scales = [parseFloat(match[1]), parseFloat(match[2])];
+        const centerW = this.isScreen() ? box.width / 2 / scales[0] : box.width / 2;
+        const centerH = this.isScreen() ? box.height / 2 / (scales[1] * scales[1]): box.height / 2;
         if (args.ATT === "z layer") {
           value = element.parentNode.style.zIndex;
         } else {
           value = parseFloat(element.style[args.ATT.includes("x") ? "left" : "top"]);
-          value = ((box[args.ATT.includes("x") ? "width" : "height"] / 2) + value) * (args.ATT.includes("x") ? 1 : -1);
+          value = ((args.ATT.includes("x") ? centerW : centerH) + value) * (args.ATT.includes("x") ? 1 : -1);
         }
       });
-      return value || 0;
+      return Math.round(value * 100) / 100 || 0;
     }
 
     attOfText(args) {
