@@ -3,7 +3,7 @@
 // Description: Customize and Organize Lists Monitors.
 // By: SharkPool
 
-// Version 1.1.2
+// Version 1.1.3
 
 (function (Scratch) {
   "use strict";
@@ -574,7 +574,7 @@
       ]));
       list = document.querySelectorAll(`[data-id=${list}]`);
       list = list[list.length - 1];
-      if (list.classList.contains("blocklyDraggable")) return;
+      if (!list || (list && list.classList.contains("blocklyDraggable"))) return;
       if (!runtime.isPackaged) {
         list = list.querySelector(`[class^="${listDocs.body}"]`);
         list.style.cssText = `width: ${args.WIDTH}px; height: ${args.HEIGHT}px;`;
@@ -591,7 +591,7 @@
       if (!list) return "";
       list = document.querySelectorAll(`[data-id=${list}]`);
       list = list[list.length - 1];
-      if (list.classList.contains("blocklyDraggable")) return "";
+      if (!list || (list && list.classList.contains("blocklyDraggable"))) return "";
       list = runtime.isPackaged ? list : list.querySelector(`[class^="${listDocs.body}"]`);
       return parseFloat(list.style[args.THING]);
     }
@@ -649,7 +649,7 @@
       if (!list) return;
       list = document.querySelectorAll(`[data-id=${list}]`);
       list = list[list.length - 1];
-      if (list.classList.contains("blocklyDraggable")) return;
+      if (!list || (list && list.classList.contains("blocklyDraggable"))) return;
 
       const box = runtime.isPackaged ? list : list.querySelector(`[class^="${listDocs.body}"]`);
       const sizeOffset = [parseFloat(box.style.width), parseFloat(box.style.height)];
@@ -672,7 +672,7 @@
       if (!list) return "";
       list = document.querySelectorAll(`[data-id=${list}]`);
       list = list[list.length - 1];
-      if (list.classList.contains("blocklyDraggable")) return "";
+      if (!list || (list && list.classList.contains("blocklyDraggable"))) return "";
 
       const box = runtime.isPackaged ? list : list.querySelector(`[class^="${listDocs.body}"]`);
       const sizeOffset = [parseFloat(box.style.width), parseFloat(box.style.height)];
@@ -781,7 +781,7 @@
       if (!list) return;
       list = document.querySelectorAll(`[data-id=${list}]`);
       list = list[list.length - 1];
-      if (list.classList.contains("blocklyDraggable")) return;
+      if (!list || (list && list.classList.contains("blocklyDraggable"))) return;
       let existingTransform = list.style.transform || "";
       existingTransform = existingTransform.replace(/scale\([^)]*\)/g, "");
       list.style.transform = `${existingTransform} scale(${args.x / 100}, ${args.y / 100})`;
