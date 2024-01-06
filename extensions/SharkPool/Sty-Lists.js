@@ -3,7 +3,7 @@
 // Description: Customize and Organize Lists Monitors.
 // By: SharkPool
 
-// Version 1.1.1
+// Version 1.1.2
 
 (function (Scratch) {
   "use strict";
@@ -467,7 +467,7 @@
     renderList(args, util) {
       let list = this.lookForList(args.LIST, util);
       if (!list) return;
-      const footer = runtime.isPackaged ? document.querySelector(`[data-id=${list}] [class^="${listDocs.foot}"]`).getBoundingClientRect() : "";
+      let footer = runtime.isPackaged ? document.querySelector(`[data-id=${list}] ${listDocs.grid}`) : "";
       args.NUM = args.NUM > 0 ? Math.round(args.NUM) : 1;
       const parentList = document.querySelector(`[data-id=${list}] ${listDocs.grid}`);
       if (parentList === null) return;
@@ -481,7 +481,7 @@
 
       newContainer.setAttribute("role", "rowgroup");
       newContainer.style.width = "auto";
-      newContainer.style.height = runtime.isPackaged ? `${(footer.top - (footer.height * 2)) / 2}px` :
+      newContainer.style.height = runtime.isPackaged && footer ? window.getComputedStyle(footer).height :
         `${((itemsHTML[1] * 24) / args.NUM) + 24}px`;
       newContainer.style.maxWidth = parentList.style.width;
       newContainer.style.maxHeight = list.style.maxHeight;
@@ -525,11 +525,11 @@
 
     getListArray(list, util) {
       const items = util.target.lookupVariableById(list).value;
-      if (items.length === 0) return ["", 0];
       let allItems = document.querySelectorAll(`[data-id="${list}"]`);
       allItems = allItems[allItems.length - 1];
       allItems = allItems.querySelectorAll(`[class^="${listDocs.ind}"`);
       let html = "";
+      if (items.length === 0) return ["", 0];
       try {
         const elementClasses = {
           row : allItems[0].parentNode.className,
@@ -537,17 +537,17 @@
           outerV : allItems[0].nextElementSibling.className,
           innerV : allItems[0].nextElementSibling.children[0].className
         };
+        for (let i = 0; i < items.length; i++) {
+          const value = allItems[i] ? allItems[i].textContent : i + 1;
+          html += `
+            <div class="${elementClasses.row}" style="height: 24px; left: 0px; position: absolute; top: ${i * 24}px; width: 100%;">
+              <div class="${elementClasses.index}">${value}</div>
+              <div class="${elementClasses.outerV}" dataindex="${i}" style="background: rgb(252, 102, 44);">
+                <div class="${elementClasses.innerV}">${items[i]}</div>
+              </div>
+            </div>`;
+        }
       } catch { return ["", 0] }
-      for (let i = 0; i < items.length; i++) {
-        const value = allItems[i] ? allItems[i].textContent : i + 1;
-        html += `
-          <div class="${elementClasses.row}" style="height: 24px; left: 0px; position: absolute; top: ${i * 24}px; width: 100%;">
-            <div class="${elementClasses.index}">${value}</div>
-            <div class="${elementClasses.outerV}" dataindex="${i}" style="background: rgb(252, 102, 44);">
-              <div class="${elementClasses.innerV}">${items[i]}</div>
-            </div>
-          </div>`;
-      }
       return [html, items.length];
     }
 
@@ -707,7 +707,7 @@
         this.changeMonitorVisibility(list, false);
         setTimeout(() => {
           this.changeMonitorVisibility(list, true);
-          setTimeout(() => { resolve() }, 0);
+          setTimeout(() => { resolve() }, 1);
         }, 25);
       });
     }
