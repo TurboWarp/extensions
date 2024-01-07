@@ -298,6 +298,40 @@
 
     Reflect.deleteProperty(storage, uid);
 
+    for (const t of runtime.targets) {
+      const blocks = t.blocks._blocks;
+
+      for (let block in blocks) {
+        block = blocks[block];
+        console.log(block);
+
+        if (block.opcode.includes("lmsDictionaries")) {
+          const uidCheck = block.fields.DICTIONARY.value;
+
+          if (uidCheck === uid) {
+            const next = block.next ?? null;
+
+            // If the block is in between 2 blocks, move those 2 blocks together
+            if (block.parent && next) {
+              blocks[block.parent].next = next;
+            }
+
+            // If the block is currently the top block, replace the script id with that block
+            if (!block.parent && next) {
+              t.blocks._addScript(next);
+            }
+            t.blocks._deleteScript(block.id);
+
+            // Delete the block itself
+            delete blocks[block.id];
+
+            t.blocks.resetCache();
+            runtime.emitProjectChanged();
+          }
+        }
+      }
+    }
+
     Scratch.vm.extensionManager.refreshBlocks();
     Scratch.vm.emitWorkspaceUpdate();
   }
