@@ -230,7 +230,7 @@
     }
   }
 
-  // Get a dictionary by checking for its ID in every target
+  // Get a dictionary's target by checking for its ID in every target
   function getTargetFromDictionary(uid) {
     const targets = runtime.targets;
     for (const target of targets) {
@@ -274,7 +274,7 @@
   function renameDictionary(name, uid) {
     ScratchBlocks.prompt(
       `Rename all "${name}" dictionaries to:`,
-      "",
+      name,
       (text) => {
         if (!text) return;
         const target = getTargetFromDictionary(uid);
@@ -619,7 +619,7 @@
     }
 
     // sorted w/ love lmao -Ashime
-    getDictionaries(a) {
+    getDictionaries() {
       const stage = runtime.getTargetForStage();
       const editingTarget = runtime.getEditingTarget();
       if (!stage || !editingTarget) return [""];
