@@ -323,6 +323,7 @@
             text: "created with love by Lily",
             isDynamic: true,
             hideFromPalette: true,
+            disableMonitor: true, // Monitors just cannot work yet
             arguments: {
               DICTIONARY: {
                 type: Scratch.ArgumentType.STRING,
