@@ -3,7 +3,7 @@
 // Description: Display Text in Your Projects!
 // By: SharkPool
 
-// Version V.1.2.0
+// Version V.1.2.1
 
 (function (Scratch) {
   "use strict";
@@ -389,11 +389,6 @@
       return [...fontMenu, ...customFonts];
     }
 
-    isScreen() {
-      const values = [parseFloat(Scratch.vm.renderer.canvas.style.width), Scratch.vm.runtime.stageWidth];
-      return values[0] > values[1] || Scratch.vm.runtime.isPackaged;
-    }
-
     printTxt(args) {
       args.ID = args.ID.replaceAll(" ", "_");
       const newTextElement = document.createElement("div");
@@ -560,12 +555,11 @@
         setTimeout(function() {
           const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
           const element = elements[elements.length - 1];
-          const box = element.getBoundingClientRect();
-          const transformValue = element.parentNode.style.transform;
-          const match = transformValue.match(/scale\(([^,]+),\s*([^)]+)\)/);
-          const scales = [parseFloat(match[1]), parseFloat(match[2])];
-          const centerW = this.isScreen() ? box.width / 2 / scales[0] : box.width / 2;
-          const centerH = this.isScreen() ? box.height / 2 / (scales[1] * scales[1]): box.height / 2;
+          const centerW = parseFloat(element.style.width) / 2;
+          const computedStyle = window.getComputedStyle(element);
+          const lineHeight = computedStyle.getPropertyValue("line-height");
+          const fontSize = computedStyle.getPropertyValue("font-size");
+          const centerH = (lineHeight === "normal" ? parseFloat(fontSize) * 1.2 : parseFloat(lineHeight)) / 2;
           element.style.position = "absolute";
           element.style.left = `${args.X - centerW}px`;
           element.style.top = `${(args.Y * -1) - centerH}px`;
@@ -576,12 +570,11 @@
     setTextPosition(args) {
       const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
       elements.forEach((element) => {
-        const box = element.getBoundingClientRect();
-        const transformValue = element.parentNode.style.transform;
-        const match = transformValue.match(/scale\(([^,]+),\s*([^)]+)\)/);
-        const scales = [parseFloat(match[1]), parseFloat(match[2])];
-        const centerW = this.isScreen() ? box.width / 2 / scales[0] : box.width / 2;
-        const centerH = this.isScreen() ? box.height / 2 / (scales[1] * scales[1]): box.height / 2;
+        const centerW = parseFloat(element.style.width) / 2;
+        const computedStyle = window.getComputedStyle(element);
+        const lineHeight = computedStyle.getPropertyValue("line-height");
+        const fontSize = computedStyle.getPropertyValue("font-size");
+        const centerH = (lineHeight === "normal" ? parseFloat(fontSize) * 1.2 : parseFloat(lineHeight)) / 2;
         element.style.position = "absolute";
         element.style.left = `${args.X - centerW}px`;
         element.style.top = `${(args.Y * -1) - centerH}px`;
@@ -592,12 +585,11 @@
       const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
       let value;
       elements.forEach((element) => {
-        const box = element.getBoundingClientRect();
-        const transformValue = element.parentNode.style.transform;
-        const match = transformValue.match(/scale\(([^,]+),\s*([^)]+)\)/);
-        const scales = [parseFloat(match[1]), parseFloat(match[2])];
-        const centerW = this.isScreen() ? box.width / 2 / scales[0] : box.width / 2;
-        const centerH = this.isScreen() ? box.height / 2 / (scales[1] * scales[1]): box.height / 2;
+        const centerW = parseFloat(element.style.width) / 2;
+        const computedStyle = window.getComputedStyle(element);
+        const lineHeight = computedStyle.getPropertyValue("line-height");
+        const fontSize = computedStyle.getPropertyValue("font-size");
+        const centerH = (lineHeight === "normal" ? parseFloat(fontSize) * 1.2 : parseFloat(lineHeight)) / 2;
         if (args.ATT === "z layer") {
           value = element.parentNode.style.zIndex;
         } else {
