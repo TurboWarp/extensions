@@ -196,7 +196,7 @@
       if (safeName.length < 1)
         safeName += jsonEscape("/!\\ Invalid name, please check the console.");
       const mutation = mutationXML(
-        `{"blockType":"reporter","terminal":false,"disableMonitor":true,"blockAllThreads":false,"arguments":{"DICTIONARY":{"type":"string","defaultValue":"${uid}"}},"opcode":"getDictionary","text":"${safeName}","isDynamic":true,"hideFromPalette":false}`
+        `{"blockType":"reporter","terminal":false,"blockAllThreads":false,"arguments":{"DICTIONARY":{"type":"string","defaultValue":"${uid}"}},"opcode":"getDictionary","text":"${safeName}","isDynamic":true,"hideFromPalette":false}`
       );
       const reporter = `<block type="lmsDictionaries_getDictionary">${mutation}</block>`;
       xml[name] = reporter;
@@ -323,7 +323,6 @@
             text: "created with love by Lily",
             isDynamic: true,
             hideFromPalette: true,
-            disableMonitor: true, // Monitors just cannot work yet
             arguments: {
               DICTIONARY: {
                 type: Scratch.ArgumentType.STRING,
