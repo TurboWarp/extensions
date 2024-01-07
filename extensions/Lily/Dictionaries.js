@@ -299,6 +299,7 @@
 
     Reflect.deleteProperty(storage, uid);
 
+    // TODO there has got to be a better way of handling this
     for (const target of runtime.targets) {
       const blocks = target.blocks._blocks;
 
