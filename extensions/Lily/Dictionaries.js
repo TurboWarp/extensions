@@ -336,7 +336,7 @@
         block.inputs[input].shadow !== null &&
         block.inputs[input].shadow !== block.inputs[input].block
       ) {
-        deleteSingleBlock(block.inputs[input].shadow);
+        deleteSingleBlock(block.inputs[input].shadow, target);
       }
     }
 
