@@ -520,7 +520,7 @@
     getDictionary(args, util) {
       // ASHIME IS GREAT
       const blkId = util.thread.peekStack(),
-        blocks = !!util.target.blocks.getBlock(blkId)
+        blocks = util.target.blocks.getBlock(blkId)
           ? util.target.blocks
           : vm.runtime.flyoutBlocks;
       const blockInfo = JSON.parse(
