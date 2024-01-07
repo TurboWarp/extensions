@@ -293,13 +293,14 @@
   }
 
   function deleteDictionary(uid) {
-    const target = getTargetFromDictionary(uid);
-    const storage = target.extensionStorage["lmsDictionaries"].dictionaries;
+    const dictionaryTarget = getTargetFromDictionary(uid);
+    const storage =
+      dictionaryTarget.extensionStorage["lmsDictionaries"].dictionaries;
 
     Reflect.deleteProperty(storage, uid);
 
-    for (const t of runtime.targets) {
-      const blocks = t.blocks._blocks;
+    for (const target of runtime.targets) {
+      const blocks = target.blocks._blocks;
 
       for (let block in blocks) {
         block = blocks[block];
@@ -309,24 +310,7 @@
           const uidCheck = block.fields.DICTIONARY.value;
 
           if (uidCheck === uid) {
-            const next = block.next ?? null;
-
-            // If the block is in between 2 blocks, move those 2 blocks together
-            if (block.parent && next) {
-              blocks[block.parent].next = next;
-            }
-
-            // If the block is currently the top block, replace the script id with that block
-            if (!block.parent && next) {
-              t.blocks._addScript(next);
-            }
-            t.blocks._deleteScript(block.id);
-
-            // Delete the block itself
-            delete blocks[block.id];
-
-            t.blocks.resetCache();
-            runtime.emitProjectChanged();
+            deleteSingleBlock(block.id, target);
           }
         }
       }
@@ -334,6 +318,39 @@
 
     Scratch.vm.extensionManager.refreshBlocks();
     Scratch.vm.emitWorkspaceUpdate();
+  }
+
+  function deleteSingleBlock(blockId, target) {
+    const blocks = target.blocks._blocks;
+    const block = blocks[blockId];
+    const next = block.next ?? null;
+
+    // If the block is in between 2 blocks, move those 2 blocks together
+    if (block.parent && next) {
+      blocks[block.parent].next = next;
+    }
+
+    // Delete inputs (not including branches)
+    for (const input in block.inputs) {
+      if (
+        block.inputs[input].shadow !== null &&
+        block.inputs[input].shadow !== block.inputs[input].block
+      ) {
+        deleteSingleBlock(block.inputs[input].shadow);
+      }
+    }
+
+    // If the block is currently the top block, replace the script id with that block
+    if (!block.parent && next) {
+      target.blocks._addScript(next);
+    }
+    target.blocks._deleteScript(blockId);
+
+    // Delete the block itself
+    delete blocks[blockId];
+
+    target.blocks.resetCache();
+    runtime.emitProjectChanged();
   }
 
   class Dictionaries {
