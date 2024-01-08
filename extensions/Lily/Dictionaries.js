@@ -194,19 +194,25 @@
     if (!checkValid(name, target))
       return alert('A dictionary named "' + name + '" already exists.');
 
-    if (!target.extensionStorage["lmsDictionaries"]) {
-      target.extensionStorage["lmsDictionaries"] = Object.create(null);
-      target.extensionStorage["lmsDictionaries"].dictionaries =
-        Object.create(null);
-    }
-    const dictionaries =
-      target.extensionStorage["lmsDictionaries"].dictionaries;
+    const newUid = uid();
+    const clones = target.sprite.clones;
 
-    dictionaries[uid()] = {
-      name,
-      value: Object.create(null),
-      scope,
-    };
+    for (const clone of clones) {
+      if (!clone.extensionStorage["lmsDictionaries"]) {
+        clone.extensionStorage["lmsDictionaries"] = Object.create(null);
+        clone.extensionStorage["lmsDictionaries"].dictionaries =
+          Object.create(null);
+      }
+      const dictionaries =
+        clone.extensionStorage["lmsDictionaries"].dictionaries;
+
+      dictionaries[newUid] = {
+        name,
+        value: Object.create(null),
+        scope,
+      };
+    }
+
     Scratch.vm.extensionManager.refreshBlocks();
     Scratch.vm.emitWorkspaceUpdate();
   }
@@ -304,13 +310,24 @@
   }
 
   // Get a dictionary by checking for its ID in every target
-  function getDictionaryByID(uid) {
-    const targets = runtime.targets;
-    for (const target of targets) {
-      const storage = target.extensionStorage["lmsDictionaries"];
+  // OR from the specified target
+  function getDictionaryByID(uid, t) {
+    console.log(t);
+    if (t) {
+      const storage = t.extensionStorage["lmsDictionaries"];
       if (storage) {
         const dictionaries = storage.dictionaries;
         if (dictionaries[uid]) return dictionaries[uid];
+      }
+      return;
+    } else {
+      const targets = runtime.targets.filter((target) => target.isOriginal);
+      for (const target of targets) {
+        const storage = target.extensionStorage["lmsDictionaries"];
+        if (storage) {
+          const dictionaries = storage.dictionaries;
+          if (dictionaries[uid]) return dictionaries[uid];
+        }
       }
     }
   }
@@ -357,7 +374,10 @@
     return dictionaries;
   }
 
-  // Throw a prompt and rename the dictionary to the result
+  // Throw a prompt and rename the dictionary to the result.
+  // TO DO: In the future it might be wise to rename
+  // dictonaries within other clones, but it's not
+  // necessary right now.
   function renameDictionary(name, uid) {
     ScratchBlocks.prompt(
       `Rename all "${name}" dictionaries to:`,
@@ -386,11 +406,12 @@
   // one is detected in a block, we have to delete every instance
   // in every target as opposed to just the editing target.
   function deleteDictionary(uid) {
-    const dictionaryTarget = getTargetFromDictionary(uid);
-    const storage =
-      dictionaryTarget.extensionStorage["lmsDictionaries"].dictionaries;
+    const clones = getTargetFromDictionary(uid).sprite.clones;
 
-    Reflect.deleteProperty(storage, uid);
+    for (const clone of clones) {
+      const storage = clone.extensionStorage["lmsDictionaries"].dictionaries;
+      Reflect.deleteProperty(storage, uid);
+    }
 
     // TODO there has got to be a better way of handling this
     for (const target of runtime.targets) {
@@ -456,6 +477,20 @@
     target.blocks.resetCache();
     runtime.emitProjectChanged();
   }
+
+  // copy the extisting dictionaries onto clones
+  vm.runtime.on("targetWasCreated", (newTarget, original) => {
+    if (!original) return;
+
+    const storage = original.extensionStorage["lmsDictionaries"];
+    console.log(storage);
+    if (!storage) return;
+
+    newTarget.extensionStorage["lmsDictionaries"] = Object.create(null);
+    newTarget.extensionStorage["lmsDictionaries"].dictionaries = JSON.parse(
+      JSON.stringify(storage.dictionaries)
+    );
+  });
 
   class Dictionaries {
     getInfo() {
@@ -685,51 +720,66 @@
           .getAttribute("blockInfo")
       );
       const uid = blockInfo.arguments.DICTIONARY.defaultValue;
-      const dictionary = getDictionaryByID(uid);
+
+      // Get the dictionary from the target the block is in.
+      // failing that it's probably from a different sprite
+      // or the stage.
+      // We have to check the target first because of clones.
+      let dictionary = getDictionaryByID(uid, util.target);
+      if (!dictionary) dictionary = getDictionaryByID(uid);
       if (!dictionary) return;
 
       return dictionary ? JSON.stringify(dictionary.value) : "{}";
     }
 
-    setDictionary(args) {
+    setDictionary(args, util) {
       const key = Scratch.Cast.toString(args.KEY);
       const value = args.VALUE;
       const uid = Scratch.Cast.toString(args.DICTIONARY);
-      const dictionary = getDictionaryByID(uid);
+
+      console.log(util.target);
+      let dictionary = getDictionaryByID(uid, util.target);
+      if (!dictionary) dictionary = getDictionaryByID(uid);
       if (!dictionary) return;
 
       dictionary.value[key] = value;
     }
 
-    changeDictionary(args) {
+    changeDictionary(args, util) {
       const key = Scratch.Cast.toString(args.KEY);
       const value = Scratch.Cast.toNumber(args.VALUE);
       const uid = Scratch.Cast.toString(args.DICTIONARY);
-      const dictionary = getDictionaryByID(uid);
+
+      let dictionary = getDictionaryByID(uid, util.target);
+      if (!dictionary) dictionary = getDictionaryByID(uid);
       if (!dictionary) return;
 
       const ogValue = Scratch.Cast.toNumber(dictionary.value[key]);
       dictionary.value[key] = ogValue + value;
     }
 
-    deleteKey(args) {
+    deleteKey(args, util) {
       const key = Scratch.Cast.toString(args.KEY);
       const uid = Scratch.Cast.toString(args.DICTIONARY);
-      const dictionary = getDictionaryByID(uid);
+
+      let dictionary = getDictionaryByID(uid, util.target);
+      if (!dictionary) dictionary = getDictionaryByID(uid);
       if (!dictionary) return;
 
       Reflect.deleteProperty(dictionary.value, key);
     }
 
-    deleteAll(args) {
+    deleteAll(args, util) {
       const uid = Scratch.Cast.toString(args.DICTIONARY);
-      const dictionary = getDictionaryByID(uid);
+
+      let dictionary = getDictionaryByID(uid, util.target);
+      if (!dictionary) dictionary = getDictionaryByID(uid);
       if (!dictionary) return;
 
       dictionary.value = Object.create(null);
     }
 
-    getKey(args) {
+    getKey(args, util) {
       const key = Scratch.Cast.toString(args.KEY);
       const uid = Scratch.Cast.toString(args.DICTIONARY);
       const dictionary = getDictionaryByID(uid);
@@ -738,10 +788,12 @@
       return dictionary.value[key] ?? "";
     }
 
-    allProperty(args) {
+    allProperty(args, util) {
       const property = Scratch.Cast.toString(args.PROPERTY);
       const uid = Scratch.Cast.toString(args.DICTIONARY);
-      const dictionary = getDictionaryByID(uid);
+
+      let dictionary = getDictionaryByID(uid, util.target);
+      if (!dictionary) dictionary = getDictionaryByID(uid);
       if (!dictionary) return;
 
       const currentDictionaries = dictionary.value;
@@ -752,21 +804,25 @@
       return JSON.stringify(res);
     }
 
-    lengthOf(args) {
+    lengthOf(args, util) {
       const uid = Scratch.Cast.toString(args.DICTIONARY);
-      const dictionary = getDictionaryByID(uid);
+
+      let dictionary = getDictionaryByID(uid, util.target);
+      if (!dictionary) dictionary = getDictionaryByID(uid);
       if (!dictionary) return;
 
       return Object.keys(dictionary.value).length;
     }
 
-    containsProperty(args) {
+    containsProperty(args, util) {
       const value = args.VALUE;
       const uid = Scratch.Cast.toString(args.DICTIONARY);
-      const dictionary = getDictionaryByID(uid);
-      const property = Scratch.Cast.toString(args.PROPERTY);
+
+      let dictionary = getDictionaryByID(uid, util.target);
+      if (!dictionary) dictionary = getDictionaryByID(uid);
       if (!dictionary) return;
 
+      const property = Scratch.Cast.toString(args.PROPERTY);
       if (property === "key") {
         return !!Object.keys(dictionary.value).includes(value);
       } else return !!Object.values(dictionary.value).includes(value);
