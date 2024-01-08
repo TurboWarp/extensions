@@ -312,7 +312,6 @@
   // Get a dictionary by checking for its ID in every target
   // OR from the specified target
   function getDictionaryByID(uid, t) {
-    console.log(t);
     if (t) {
       const storage = t.extensionStorage["lmsDictionaries"];
       if (storage) {
@@ -483,7 +482,6 @@
     if (!original) return;
 
     const storage = original.extensionStorage["lmsDictionaries"];
-    console.log(storage);
     if (!storage) return;
 
     newTarget.extensionStorage["lmsDictionaries"] = Object.create(null);
@@ -737,7 +735,6 @@
       const value = args.VALUE;
       const uid = Scratch.Cast.toString(args.DICTIONARY);
 
-      console.log(util.target);
       let dictionary = getDictionaryByID(uid, util.target);
       if (!dictionary) dictionary = getDictionaryByID(uid);
       if (!dictionary) return;
