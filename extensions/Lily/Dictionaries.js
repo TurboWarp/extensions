@@ -11,6 +11,30 @@
     alert("The VM is outdated!");
   }
 
+  // This patch gives us the blockId in menu functions.
+  // It's required in order to get the currently selected menu.
+  // Right now it's only used in order to get the name of the selected
+  // dictionary for the "Delete the X dictionary" function within the
+  // dictionary menu.
+  const extensionManager = Scratch.vm.runtime.extensionManager;
+  const gemi = extensionManager._getExtensionMenuItems.bind(extensionManager);
+  extensionManager._getExtensionMenuItems = function (
+    extensionObject,
+    menuItemFunctionName,
+    block
+  ) {
+    const menuFunc = extensionObject[menuItemFunctionName];
+    const menuFunc2 = function (...args) {
+      return menuFunc(...args, block);
+    };
+    return gemi(
+      {
+        fn: menuFunc2,
+      },
+      "fn"
+    );
+  };
+
   vm.on("EXTENSION_ADDED", tryUseScratchBlocks);
   vm.on("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
   tryUseScratchBlocks();
@@ -20,6 +44,65 @@
     vm.removeListener("EXTENSION_ADDED", tryUseScratchBlocks);
     vm.removeListener("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
 
+    // This is the second part of the previously mentioned patch
+    ScratchBlocks.defineBlocksWithJsonArray = function (jsonArray) {
+      for (var i = 0; i < jsonArray.length; i++) {
+        let jsonDef = jsonArray[i];
+        if (!jsonDef) {
+          console.warn(
+            "Block definition #" +
+              i +
+              " in JSON array is " +
+              jsonDef +
+              ". " +
+              "Skipping."
+          );
+        } else {
+          var typename = jsonDef.type;
+          if (typename == null || typename === "") {
+            console.warn(
+              "Block definition #" +
+                i +
+                " in JSON array is missing a type attribute. Skipping."
+            );
+          } else {
+            if (ScratchBlocks.Blocks[typename]) {
+              console.warn(
+                "Block definition #" +
+                  i +
+                  " in JSON array" +
+                  ' overwrites prior definition of "' +
+                  typename +
+                  '".'
+              );
+            }
+            ScratchBlocks.Blocks[typename] = {
+              init: function () {
+                let block = this;
+                let row = 0;
+                while (jsonDef["args" + row]) {
+                  let blockArgs = jsonDef["args" + row];
+                  for (let arg of blockArgs) {
+                    if (typeof arg.options === "function") {
+                      const menuGen = arg.options;
+                      arg.options = function (...args) {
+                        return menuGen(...args, block.id);
+                      };
+                    }
+                  }
+                  row++;
+                }
+                this.jsonInit(jsonDef);
+              },
+            };
+          }
+        }
+      }
+    };
+
+    // This patch is to append the context menu data for the reporters
+    // We can't use mixins because they don't work on dynamic blocks
+    // (this also allows us to discriminate in flyout)
     // https://github.com/Xeltalliv/extensions/blob/0a90e48aeed737530fc2f1dcc9dd5fa714a00bf3/examples/dynamic-blocks.js#L45C11-L45C11
     ScratchBlocks.BlockSvg.prototype.showContextMenu_ = function (a) {
       if (!this.workspace.options.readOnly && this.contextMenu) {
@@ -190,6 +273,7 @@
     let xml = {},
       names = [];
 
+    // Create a mutation of getDictionary for each dictionary in the target
     for (const uid of uids) {
       let name = dictionaries[uid].name,
         safeName = jsonEscape(name);
@@ -203,6 +287,7 @@
       names.push(name);
     }
 
+    // Alphabetise the reporters with the same rules as variables
     names.sort(compareStrings);
     for (const name of names) {
       reporters.push(xml[name]);
@@ -252,6 +337,7 @@
     return stageDictionaries.concat(targetDictionaries).length === 0;
   }
 
+  // Get all dictionaries within a target
   function _getDictionariesForTarget(target) {
     if (!target) return [];
     const storage = target.extensionStorage["lmsDictionaries"];
@@ -271,6 +357,7 @@
     return dictionaries;
   }
 
+  // Throw a prompt and rename the dictionary to the result
   function renameDictionary(name, uid) {
     ScratchBlocks.prompt(
       `Rename all "${name}" dictionaries to:`,
@@ -292,6 +379,12 @@
     );
   }
 
+  // Delete a dictionary based on its UID.
+  // In parity with other Data categories, we delete the blocks
+  // that were using the dictionary.
+  // Because we can't automatically create dictionaries when
+  // one is detected in a block, we have to delete every instance
+  // in every target as opposed to just the editing target.
   function deleteDictionary(uid) {
     const dictionaryTarget = getTargetFromDictionary(uid);
     const storage =
@@ -321,6 +414,8 @@
     Scratch.vm.emitWorkspaceUpdate();
   }
 
+  // custom function to remove a single block from
+  // any target.
   function deleteSingleBlock(blockId, target) {
     const blocks = target.blocks._blocks;
     const block = blocks[blockId];
@@ -670,7 +765,7 @@
     }
 
     // sorted w/ love lmao -Ashime
-    getDictionaries() {
+    getDictionaries(_, blockId) {
       const stage = runtime.getTargetForStage();
       const editingTarget = runtime.getEditingTarget();
       if (!stage || !editingTarget) return [""];
@@ -693,6 +788,7 @@
         return ScratchBlocks.DropDownDiv.owner_.value_;
       };
 
+      // Alphabetise the dictionary names
       const names = dictionaries.map((dict) => dict.text).sort(compareStrings);
       for (let i = 0; i < names.length; i++) {
         const dict = dictionaries[i];
@@ -700,13 +796,25 @@
       }
       dictionaries = names;
 
-      // TO DO: Display name of dictionary to delete (need block ID)
+      // if the block isn't in the target it's probably in the toolbox (flyout)
+      let block = editingTarget.blocks.getBlock(blockId);
+      if (!block) block = vm.runtime.flyoutBlocks.getBlock(blockId);
+
+      // Get the name of the currently selected dictionary
+      // (this is where the first patch comes into play)
+      let name = "undefined";
+      if (block) {
+        const currentUid = block.fields.DICTIONARY.value;
+        const dictionary = getDictionaryByID(currentUid);
+        if (dictionary) name = dictionary.name;
+      }
+
       dictionaries.push({
         text: "Rename dictionary",
         value: () => renameDictionary(text(), value()),
       });
       dictionaries.push({
-        text: `Delete dictionary`,
+        text: `Delete the "${name}" dictionary`,
         value: () => deleteDictionary(value()),
       });
       return dictionaries;
