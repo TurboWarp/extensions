@@ -398,10 +398,16 @@
 
       for (let block in blocks) {
         block = blocks[block];
-        console.log(block);
 
+        // Blocks within the extension
         if (block.opcode.includes("lmsDictionaries")) {
-          const uidCheck = block.fields.DICTIONARY.value;
+          let uidCheck;
+
+          // Reporters are accessed slightly differently
+          if (block.opcode === "lmsDictionaries_getDictionary") {
+            uidCheck =
+              block.mutation.blockInfo.arguments.DICTIONARY.defaultValue;
+          } else uidCheck = block.fields.DICTIONARY.value;
 
           if (uidCheck === uid) {
             deleteSingleBlock(block.id, target);
@@ -419,12 +425,7 @@
   function deleteSingleBlock(blockId, target) {
     const blocks = target.blocks._blocks;
     const block = blocks[blockId];
-    const next = block.next ?? null;
-
-    // If the block is in between 2 blocks, move those 2 blocks together
-    if (block.parent && next) {
-      blocks[block.parent].next = next;
-    }
+    const next = block.next ?? undefined;
 
     // Delete inputs (not including branches)
     for (const input in block.inputs) {
@@ -436,9 +437,16 @@
       }
     }
 
-    // If the block is currently the top block, replace the script id with that block
+    // If the block is in between 2 blocks, move those 2 blocks together
+    if (block.parent && next) {
+      blocks[block.parent].next = next;
+    }
+
+    // If the block is currently the top block, replace the script id
+    // with that block and remove the parent of the block underneath
     if (!block.parent && next) {
       target.blocks._addScript(next);
+      blocks[next].parent = null;
     }
     target.blocks._deleteScript(blockId);
 
@@ -802,21 +810,31 @@
 
       // Get the name of the currently selected dictionary
       // (this is where the first patch comes into play)
-      let name = "undefined";
+      let name;
       if (block) {
-        const currentUid = block.fields.DICTIONARY.value;
-        const dictionary = getDictionaryByID(currentUid);
-        if (dictionary) name = dictionary.name;
+        const field = block.fields.DICTIONARY;
+
+        // in any other case, it's probably the standalone
+        // menu block, or a broken block
+        if (field) {
+          const currentUid = field.value;
+          const dictionary = getDictionaryByID(currentUid);
+          if (dictionary) name = dictionary.name;
+        }
       }
 
-      dictionaries.push({
-        text: "Rename dictionary",
-        value: () => renameDictionary(text(), value()),
-      });
-      dictionaries.push({
-        text: `Delete the "${name}" dictionary`,
-        value: () => deleteDictionary(value()),
-      });
+      // any block within the extension itself
+      // (not the standalone menu block, ie All Menus)
+      if (name) {
+        dictionaries.push({
+          text: "Rename dictionary",
+          value: () => renameDictionary(text(), value()),
+        });
+        dictionaries.push({
+          text: `Delete the "${name}" dictionary`,
+          value: () => deleteDictionary(value()),
+        });
+      }
       return dictionaries;
     }
   }
