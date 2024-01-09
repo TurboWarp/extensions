@@ -615,6 +615,7 @@
                 defaultValue: Scratch.translate("Welcome to my project!"),
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "animateText",
@@ -631,11 +632,13 @@
                 defaultValue: Scratch.translate("Here we go!"),
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "clearText",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("show sprite"),
+            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -648,6 +651,7 @@
                 menu: "font",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "setColor",
@@ -658,6 +662,7 @@
                 type: Scratch.ArgumentType.COLOR,
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "setWidth",
@@ -673,6 +678,7 @@
                 menu: "align",
               },
             },
+            extensions: ["colours_looks"],
           },
           "---",
 
@@ -686,11 +692,13 @@
             blockType: Scratch.BlockType.BUTTON,
             text: Scratch.translate("Enable Non-Scratch Lab Features"),
             hideFromPalette: !compatibilityMode,
+            extensions: ["colours_looks"],
           },
           {
             blockType: Scratch.BlockType.LABEL,
             text: Scratch.translate("Incompatible with Scratch Lab:"),
             hideFromPalette: compatibilityMode,
+            extensions: ["colours_looks"],
           },
           {
             opcode: "setAlignment",
@@ -703,6 +711,7 @@
                 menu: "twAlign",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             // why is the other block called "setWidth" :(
@@ -716,12 +725,14 @@
                 defaultValue: 200,
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "resetWidth",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("reset text width"),
             hideFromPalette: compatibilityMode,
+            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -735,6 +746,7 @@
                 defaultValue: Scratch.translate("Hello!"),
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getLines",
@@ -742,6 +754,7 @@
             text: Scratch.translate("# of lines"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -756,6 +769,7 @@
                 defaultValue: "rainbow",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "animateUntilDone",
@@ -769,6 +783,7 @@
                 defaultValue: "rainbow",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "isAnimating",
@@ -776,6 +791,7 @@
             text: Scratch.translate("is animating?"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -794,6 +810,7 @@
                 defaultValue: 3,
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "resetAnimateDuration",
@@ -807,6 +824,7 @@
                 defaultValue: "rainbow",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getAnimateDuration",
@@ -820,6 +838,7 @@
                 defaultValue: "rainbow",
               },
             },
+            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -833,12 +852,14 @@
                 defaultValue: 0.1,
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "resetTypeDelay",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("reset typing delay"),
             hideFromPalette: compatibilityMode,
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getTypeDelay",
@@ -846,6 +867,7 @@
             text: Scratch.translate("typing delay"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -854,6 +876,7 @@
             text: Scratch.translate("is showing text?"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getDisplayedText",
@@ -861,6 +884,7 @@
             text: Scratch.translate("displayed text"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getTextAttribute",
@@ -874,6 +898,7 @@
             },
             disableMonitor: true,
             hideFromPalette: compatibilityMode,
+            extensions: ["colours_looks"],
           },
         ],
         menus: {
