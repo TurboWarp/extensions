@@ -160,11 +160,19 @@
             dictionaries = stageDictionaries;
           } else dictionaries = { ...targetDictionaries, ...stageDictionaries };
 
+          // alphabetise the dictionaries
+          let sorted = Object.entries(dictionaries);
+          sorted = sorted
+            .sort((f, e) => compareStrings(f[1].name, e[1].name))
+            .filter((dict) => dict[0] !== uid);
+
+          // push them onto the context menu
+          // addons will push them after this, so we don't need to worry about them
           let i = 0;
-          for (const dictionary in dictionaries) {
+          for (const dictionary of sorted) {
             i++;
-            b.splice(4, 0, {
-              text: dictionaries[dictionary].name,
+            b.push({
+              text: dictionary[1].name,
               enabled: true,
               separator: i === 1,
               callback: () => {
@@ -172,8 +180,8 @@
                 const block = editingTarget.blocks.getBlock(currentBlock);
 
                 block.mutation.blockInfo.arguments.DICTIONARY.defaultValue =
-                  dictionary;
-                block.mutation.blockInfo.text = dictionaries[dictionary].name;
+                  dictionary[0];
+                block.mutation.blockInfo.text = dictionary[1].name;
 
                 vm.emitWorkspaceUpdate();
               },
