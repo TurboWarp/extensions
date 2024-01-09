@@ -32,6 +32,7 @@
                 defaultValue: 0,
               },
             },
+            extensions: ["colours_sound"],
           },
           {
             opcode: "stopLooping",
@@ -42,6 +43,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sound"],
           },
           {
             opcode: "isLooping",
@@ -52,6 +54,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sound"],
           },
 
           "---",
@@ -65,6 +68,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sound"],
           },
           {
             opcode: "pauseSounds",
@@ -75,6 +79,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sound"],
           },
           {
             opcode: "resumeSounds",
@@ -85,6 +90,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sound"],
           },
 
           "---",
@@ -98,6 +104,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sound"],
           },
           {
             opcode: "attributeOfSound",
@@ -112,6 +119,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sound"],
           },
           {
             opcode: "getSoundEffect",
@@ -127,6 +135,7 @@
                 menu: "targets",
               },
             },
+            extensions: ["colours_sound"],
           },
           "---",
           {
@@ -139,6 +148,7 @@
                 defaultValue: 100,
               },
             },
+            extensions: ["colours_sound"],
           },
           {
             opcode: "changeProjectVolume",
@@ -150,11 +160,13 @@
                 defaultValue: -10,
               },
             },
+            extensions: ["colours_sound"],
           },
           {
             opcode: "getProjectVolume",
             blockType: Scratch.BlockType.REPORTER,
             text: "project volume",
+            extensions: ["colours_sound"],
           },
         ],
         menus: {
