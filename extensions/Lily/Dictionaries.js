@@ -16,7 +16,7 @@
   // Right now it's only used in order to get the name of the selected
   // dictionary for the "Delete the X dictionary" function within the
   // dictionary menu.
-  const extensionManager = Scratch.vm.runtime.extensionManager;
+  const extensionManager = runtime.extensionManager;
   const gemi = extensionManager._getExtensionMenuItems.bind(extensionManager);
   extensionManager._getExtensionMenuItems = function (
     extensionObject,
@@ -107,9 +107,19 @@
     ScratchBlocks.BlockSvg.prototype.showContextMenu_ = function (a) {
       if (!this.workspace.options.readOnly && this.contextMenu) {
         var b = [];
+        if (this.isDeletable() && this.isMovable() && !this.isInFlyout)
+          b.push(ScratchBlocks.ContextMenu.blockDuplicateOption(this, a)),
+            this.isEditable() &&
+              this.workspace.options.comments &&
+              b.push(ScratchBlocks.ContextMenu.blockCommentOption(this)),
+            b.push(ScratchBlocks.ContextMenu.blockDeleteOption(this));
+        else if (this.parentBlock_ && this.isShadow_) {
+          this.parentBlock_.showContextMenu_(a);
+          return;
+        }
         // START OF NEW
+        const name = JSON.parse(this.blockInfoText).text;
         if (this.type == "lmsDictionaries_getDictionary" && this.isInFlyout) {
-          const name = JSON.parse(this.blockInfoText).text;
           const uid = JSON.parse(this.blockInfoText).arguments.DICTIONARY
             .defaultValue;
           b.push({
@@ -126,18 +136,52 @@
               deleteDictionary(uid);
             },
           });
+        } else if (this.type == "lmsDictionaries_getDictionary") {
+          // The current dictionary in the reporter
+          const uid = JSON.parse(this.blockInfoText).arguments.DICTIONARY
+            .defaultValue;
+
+          const stage = runtime.getTargetForStage();
+          const editingTarget = runtime.getEditingTarget();
+
+          // getting stage dictionaries
+          let stageDictionaries;
+          const stageStorage = stage.extensionStorage["lmsDictionaries"];
+          if (stageStorage) stageDictionaries = stageStorage.dictionaries;
+
+          // getting editing target dictonaries
+          let targetDictionaries;
+          const targetStorage = stage.extensionStorage["lmsDictionaries"];
+          if (targetStorage) targetDictionaries = targetStorage.dictionaries;
+
+          // if the stage is the editing target then just output the stage dictionaries
+          let dictionaries = [];
+          if (editingTarget.isStage) {
+            dictionaries = stageDictionaries;
+          } else dictionaries = { ...targetDictionaries, ...stageDictionaries };
+
+          let i = 0;
+          for (const dictionary in dictionaries) {
+            i++;
+            b.splice(4, 0, {
+              text: dictionaries[dictionary].name,
+              enabled: true,
+              separator: i === 1,
+              callback: () => {
+                const currentBlock = ScratchBlocks.ContextMenu.currentBlock.id;
+                const block = editingTarget.blocks.getBlock(currentBlock);
+
+                console.log("YOOYOOOYOYOYOY   " + dictionary);
+                block.mutation.blockInfo.arguments.DICTIONARY.defaultValue =
+                  dictionary;
+                block.mutation.blockInfo.text = dictionaries[dictionary].name;
+
+                vm.emitWorkspaceUpdate();
+              },
+            });
+          }
         }
         // END OF NEW
-        if (this.isDeletable() && this.isMovable() && !this.isInFlyout)
-          b.push(ScratchBlocks.ContextMenu.blockDuplicateOption(this, a)),
-            this.isEditable() &&
-              this.workspace.options.comments &&
-              b.push(ScratchBlocks.ContextMenu.blockCommentOption(this)),
-            b.push(ScratchBlocks.ContextMenu.blockDeleteOption(this));
-        else if (this.parentBlock_ && this.isShadow_) {
-          this.parentBlock_.showContextMenu_(a);
-          return;
-        }
         this.customContextMenu && this.customContextMenu(b);
         ScratchBlocks.ContextMenu.show(a, b, this.RTL);
         ScratchBlocks.ContextMenu.currentBlock = this;
@@ -213,8 +257,8 @@
       };
     }
 
-    Scratch.vm.extensionManager.refreshBlocks();
-    Scratch.vm.emitWorkspaceUpdate();
+    vm.extensionManager.refreshBlocks();
+    vm.emitWorkspaceUpdate();
   }
 
   // Check if the name is used by the global target (stage) or itself
@@ -312,6 +356,7 @@
   // Get a dictionary by checking for its ID in every target
   // OR from the specified target
   function getDictionaryByID(uid, t) {
+    console.log(t);
     if (t) {
       const storage = t.extensionStorage["lmsDictionaries"];
       if (storage) {
@@ -390,8 +435,8 @@
           return alert('A dictionary named "' + text + '" already exists.');
         dictionary.name = text;
 
-        Scratch.vm.extensionManager.refreshBlocks();
-        Scratch.vm.emitWorkspaceUpdate();
+        vm.extensionManager.refreshBlocks();
+        vm.emitWorkspaceUpdate();
       },
       "Rename Dictionary",
       "broadcast_msg"
@@ -436,8 +481,8 @@
       }
     }
 
-    Scratch.vm.extensionManager.refreshBlocks();
-    Scratch.vm.emitWorkspaceUpdate();
+    vm.extensionManager.refreshBlocks();
+    vm.emitWorkspaceUpdate();
   }
 
   // custom function to remove a single block from
@@ -478,10 +523,11 @@
   }
 
   // copy the extisting dictionaries onto clones
-  vm.runtime.on("targetWasCreated", (newTarget, original) => {
+  runtime.on("targetWasCreated", (newTarget, original) => {
     if (!original) return;
 
     const storage = original.extensionStorage["lmsDictionaries"];
+    console.log(storage);
     if (!storage) return;
 
     newTarget.extensionStorage["lmsDictionaries"] = Object.create(null);
@@ -710,7 +756,7 @@
       const blkId = util.thread.peekStack(),
         blocks = util.target.blocks.getBlock(blkId)
           ? util.target.blocks
-          : vm.runtime.flyoutBlocks;
+          : runtime.flyoutBlocks;
       const blockInfo = JSON.parse(
         new DOMParser()
           .parseFromString(blocks.blockToXML(blkId), "application/xml")
@@ -735,6 +781,7 @@
       const value = args.VALUE;
       const uid = Scratch.Cast.toString(args.DICTIONARY);
 
+      console.log(util.target);
       let dictionary = getDictionaryByID(uid, util.target);
       if (!dictionary) dictionary = getDictionaryByID(uid);
       if (!dictionary) return;
@@ -842,13 +889,6 @@
 
       if (dictionaries.length === 0) return [""];
 
-      const text = () => {
-        return ScratchBlocks.DropDownDiv.owner_.text_;
-      };
-      const value = () => {
-        return ScratchBlocks.DropDownDiv.owner_.value_;
-      };
-
       // Alphabetise the dictionary names
       const names = dictionaries.map((dict) => dict.text).sort(compareStrings);
       for (let i = 0; i < names.length; i++) {
@@ -857,9 +897,16 @@
       }
       dictionaries = names;
 
+      const text = () => {
+        return ScratchBlocks.DropDownDiv.owner_.text_;
+      };
+      const value = () => {
+        return ScratchBlocks.DropDownDiv.owner_.value_;
+      };
+
       // if the block isn't in the target it's probably in the toolbox (flyout)
       let block = editingTarget.blocks.getBlock(blockId);
-      if (!block) block = vm.runtime.flyoutBlocks.getBlock(blockId);
+      if (!block) block = runtime.flyoutBlocks.getBlock(blockId);
 
       // Get the name of the currently selected dictionary
       // (this is where the first patch comes into play)
