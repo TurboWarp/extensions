@@ -906,6 +906,8 @@
       }
       dictionaries = names;
 
+      // Functions to get the currently selected values within the dropdown.
+      // These will only work when the dropdown is already open.
       const text = () => {
         return ScratchBlocks.DropDownDiv.owner_.text_;
       };
@@ -916,6 +918,9 @@
       // if the block isn't in the target it's probably in the toolbox (flyout)
       let block = editingTarget.blocks.getBlock(blockId);
       if (!block) block = runtime.flyoutBlocks.getBlock(blockId);
+
+      // In the unlikely event that this does happen, we should probably account for it.
+      if (!block) return ['Oops! Something went wrong.'];
 
       // Get the name of the currently selected dictionary
       // (this is where the first patch comes into play)
