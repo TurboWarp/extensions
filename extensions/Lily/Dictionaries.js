@@ -312,19 +312,24 @@
     // Targets haven't been loaded yet
     if (!stage || !editingTarget) return;
 
-    // Getting dictionaries from the stage
+    // getting stage dictionaries
+    let stageDictionaries;
     const stageStorage = stage.extensionStorage["lmsDictionaries"];
-    const stageDictionaries = !stageStorage ? {} : stageStorage.dictionaries;
+    if (stageStorage) stageDictionaries = stageStorage.dictionaries;
 
-    // Getting dictionaries from the editing target
-    // Also checking if the editing target is the stage, which'd make this redundant
-    const targetStorage = editingTarget.extensionStorage["lmsDictionaries"];
-    const targetDictionaries =
-      !targetStorage || editingTarget.isStage ? {} : targetStorage.dictionaries;
+    // getting editing target dictonaries
+    let targetDictionaries;
+    const targetStorage = stage.extensionStorage["lmsDictionaries"];
+    if (targetStorage) targetDictionaries = targetStorage.dictionaries;
 
-    // Concatenate and sort alphabetically
+    // if the stage is the editing target then just output the stage dictionaries
+    let dictionaries = [];
+    if (editingTarget.isStage) {
+    dictionaries = stageDictionaries;
+    } else dictionaries = { ...targetDictionaries, ...stageDictionaries };
+
+    // sort alphabetically
     // (Thank you Ashime for helping me with the sorting)
-    const dictionaries = { ...stageDictionaries, ...targetDictionaries };
     let reporters = [],
       uids = Object.keys(dictionaries);
     let xml = {},
@@ -634,7 +639,7 @@
           {
             opcode: "deleteAll",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete all of [DICTIONARY]",
+            text: "delete all keys in [DICTIONARY]",
             hideFromPalette: dictionaryHidden(),
             arguments: {
               DICTIONARY: {
