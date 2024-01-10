@@ -3,7 +3,7 @@
 // Description: Record your voice while you run your projects!
 // By: SharkPool
 
-// Version 1.1.0
+// Version 1.1.1
 
 (function (Scratch) {
   "use strict";
@@ -202,15 +202,15 @@
           warningSent = true;
         }
       } else { this.startRecording() }
-      setTimeout(() => {
         return new Promise((resolve, reject) => {
-          const time = Math.abs(args.TIME * 1000);
           setTimeout(() => {
-            this.stopRecording();
-            resolve();
-          }, time);
+            const time = Math.abs(args.TIME * 1000);
+            setTimeout(() => {
+              this.stopRecording();
+              resolve();
+            }, time);
+          }, 100); // Short time to set up mic
         });
-      }, 100); // Short time to set up mic
     }
 
     recordedAudio(args) {
