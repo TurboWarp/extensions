@@ -3,7 +3,7 @@
 // Description: Customizable Speech Bubbles
 // By: SharkPool
 
-// Version V.1.0.0
+// Version V.1.0.1
 
 (function (Scratch) {
   "use strict";
@@ -409,8 +409,10 @@
     updateElement(key, object) {
       const elements = document.querySelectorAll(key);
       elements.forEach((element) => {
+        let translate = element.style.transform.match(/translate\(([^,]+),([^)]+)\)/);
+        translate = translate ? `translate(${translate[1]},${translate[2]})` : "";
         Object.assign(element.style, object.styles);
-        element.style.transform = object.styles.transform;
+        element.style.transform = `${translate} ${object.styles.transform}`;
         element.style.filter = object.styles.filter;
         const arrowElement = element.querySelector(`[id="arrow-ID"]`);
         Object.assign(arrowElement.style, object.arrowStyles);
