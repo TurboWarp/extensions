@@ -81,6 +81,7 @@
         color3: "#84a3c4",
         menuIconURI: paletteIcon,
         blocks: [
+          "Web",
           {
             opcode: "setTitle",
             blockType: Scratch.BlockType.COMMAND,
@@ -97,44 +98,6 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("page title"),
             blockIconURI: webBlockIcon,
-          },
-          "---",
-          {
-            opcode: "enterFullscreen",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("enter fullscreen"),
-            blockIconURI: fullscreenBlockIcon,
-          },
-          {
-            opcode: "exitFullscreen",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("exit fullscreen"),
-            blockIconURI: fullscreenBlockIcon,
-          },
-          {
-            opcode: "isFullscreen",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is page fullscreen?"),
-            blockIconURI: fullscreenBlockIcon,
-          },
-          "---",
-          {
-            opcode: "connected_to_internet",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "connected to internet?",
-            blockIconURI: networkBlockIcon,
-          },
-          {
-            opcode: "networktype",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("network type"),
-            blockIconURI: networkBlockIcon,
-          },
-          {
-            opcode: "networkgeneration",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("network generation"),
-            blockIconURI: networkBlockIcon,
           },
           "---",
           {
@@ -177,6 +140,47 @@
             },
           },
           "---",
+          "Fullscreen",
+          {
+            opcode: "enterFullscreen",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("enter fullscreen"),
+            blockIconURI: fullscreenBlockIcon,
+          },
+          {
+            opcode: "exitFullscreen",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("exit fullscreen"),
+            blockIconURI: fullscreenBlockIcon,
+          },
+          {
+            opcode: "isFullscreen",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("is page fullscreen?"),
+            blockIconURI: fullscreenBlockIcon,
+          },
+          "---",
+          "Network",
+          {
+            opcode: "connected_to_internet",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "connected to internet?",
+            blockIconURI: networkBlockIcon,
+          },
+          {
+            opcode: "networktype",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("network type"),
+            blockIconURI: networkBlockIcon,
+          },
+          {
+            opcode: "networkgeneration",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("network generation"),
+            blockIconURI: networkBlockIcon,
+          },
+          "---",
+          "Device",
           {
             opcode: "browser",
             blockType: Scratch.BlockType.REPORTER,
@@ -195,7 +199,6 @@
             text: Scratch.translate("device memory"),
             blockIconURI: deviceBlockIcon,
           },
-          "---",
           {
             opcode: "screenWidth",
             text: "screen width",
@@ -209,11 +212,12 @@
             blockIconURI: deviceBlockIcon,
           },
           "---",
+          "Clipboard",
           {
             opcode: "set_clipboard",
             blockType: Scratch.BlockType.COMMAND,
             text: "Set clipboard to [text]",
-            blockIconURI: deviceBlockIcon,
+            blockIconURI: clipboardBlockIcon,
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -228,6 +232,7 @@
             blockIconURI: clipboardBlockIcon,
           },
           "---",
+          "Battery",
           {
             opcode: "batteryCharging",
             blockType: Scratch.BlockType.BOOLEAN,
