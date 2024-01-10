@@ -71,6 +71,7 @@
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "hideOption",
@@ -82,6 +83,7 @@
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
           "---",
           {
@@ -94,6 +96,7 @@
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
           "---",
           {
@@ -106,6 +109,7 @@
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
         ],
         menus: {
