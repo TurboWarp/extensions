@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.1.2
+// Version V.1.2.0
 
 (function (Scratch) {
   "use strict";
@@ -388,6 +388,28 @@
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
           },
+          {
+            opcode: "advSpriteLight",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "apply light to [SPRITE] using map [MAP] with mode [BLEND]",
+            hideFromPalette: !sprite,
+            arguments: {
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS2" },
+              BLEND: { type: Scratch.ArgumentType.STRING, menu: "BLENDING2" },
+              MAP: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" }
+            },
+          },
+          {
+            opcode: "advImageLight",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "apply light to [SPRITE] using map [MAP] with mode [BLEND]",
+            hideFromPalette: sprite,
+            arguments: {
+              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
+              BLEND: { type: Scratch.ArgumentType.STRING, menu: "BLENDING2" },
+              MAP: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" }
+            },
+          },
           "---",
           {
             opcode: "maskSprite",
@@ -589,24 +611,10 @@
           EFFECTS: {
             acceptReporters: true,
             items: [
-              "blur",
-              "saturation",
-              "contrast",
-              "sepia",
-              "bloom",
-              "amplify",
-              "discrete",
-              "thermal",
-              "posterize",
-              "inflate",
-              "bevel",
-              "liquify",
-              "ripple",
-              "erode",
-              "torn",
-              "disolve",
-              "displacement",
-              "grain"
+              "blur", "saturation", "contrast", "sepia", "bloom",
+              "amplify", "discrete", "thermal", "posterize",
+              "inflate", "bevel", "liquify", "ripple", "erode",
+              "torn", "disolve", "displacement", "grain"
             ],
           },
           DISTORTION: {
@@ -631,9 +639,17 @@
           BLENDING: {
             acceptReporters: true,
             items: [
-              "normal", "multiply", "screen",
-              "overlay", "exclusion",
-              "color-dodge", "color-burn"
+              "normal", "multiply", "screen", "overlay", "exclusion",
+              "color-dodge", "color-burn", "hard-light", "soft-light",
+              "difference", "luminosity"
+            ]
+          },
+          BLENDING2: {
+            acceptReporters: true,
+            items: [
+              "multiply", "screen", "darken", "lighten",
+              "overlay", "hard-light", "soft-light", "difference",
+              "exclusion", "hue", "saturation", "color", "luminosity"
             ]
           }
         },
@@ -686,6 +702,8 @@
 
     applySpriteLight(args, util) { return this.lighting(args, false, util) }
     async applyImageLight(args) { return await this.lighting(args, true) }
+    advSpriteLight(args, util) { return this.advLighting(args, false, util) }
+    async advImageLight(args) { return await this.advLighting(args, true) }
 
     maskSprite(args, util) { return this.mask(args, false, util) }
     async maskImage(args) { return await this.mask(args, true) }
@@ -708,11 +726,8 @@
 
     async setMainEffect(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         let filterElement;
         let amtIn = args.NUM;
@@ -790,11 +805,8 @@
 
     async motionBlur(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         const filterElement = `<filter id="motionBlur"><feGaussianBlur stdDeviation="${Math.abs(args.X)}, ${Math.abs(args.Y)}" in="SourceGraphic" result="BLUR"></feGaussianBlur></filter>`;
         return this.filterApplier(svg, filterElement, "motionBlur");
@@ -804,11 +816,8 @@
 
     async blendType(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         const filterElement = `<filter id="blend-${args.BLEND}"><feBlend in="SourceGraphic" in2="SourceGraphic" mode="${args.BLEND}" /></filter>`;
         return this.filterApplier(svg, filterElement, `blend-${args.BLEND}`);
@@ -818,11 +827,8 @@
 
     async customFilter(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) return this.filterApplier(svg, args.EFFECT, args.ID);
       return svg;
     }
@@ -830,11 +836,8 @@
     async setHue(args, isImage, util) {
       let targetColorHex = args.COLOR;
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         targetColorHex = targetColorHex.replace(/^#/, "");
         const r = parseInt(targetColorHex.slice(0, 2), 16);
@@ -854,11 +857,8 @@
 
     async addShadow(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         const rgbColor = this.hexToRgb(args.COLOR);
         const filterElement = `<filter id="shadow"><feDropShadow dx="${args.X}" dy="${args.Y * -1}" stdDeviation="${args.NUM / 2}" flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})"/></filter>`;
@@ -869,11 +869,8 @@
 
     async addOutline(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         let filterElement;
         const rgbColor = this.hexToRgb(args.COLOR);
@@ -892,11 +889,8 @@
 
     async colorSplit(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         let filterElement;
         let effect;
@@ -918,11 +912,8 @@
 
     async waveEffect(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         const ChannelSelector = [args.axis === "x axis" ? "A" : "R", args.axis === "y axis" ? "A" : "G"];
         const filterElement = `<filter id="wave"><feTurbulence type="fractalNoise" baseFrequency="${args.Y / 100}, ${args.NUM / 100}" numOctaves="2" seed="${args.SEED}" result="turbulence" /><feDisplacementMap in="SourceGraphic" in2="turbulence" scale="25" xChannelSelector="${ChannelSelector[0]}" yChannelSelector="${ChannelSelector[1]}" /></filter>`;
@@ -933,11 +924,8 @@
 
     async addTile(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         let atts = [/width="([^"]*)"/.exec(svg), /height="([^"]*)"/.exec(svg)];
         atts = [
@@ -954,11 +942,8 @@
 
     async lighting(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         const widthMatch = /width="([^"]*)"/.exec(svg);
         const heightMatch = /height="([^"]*)"/.exec(svg);
@@ -973,20 +958,33 @@
       return svg;
     }
 
+    async advLighting(args, isImage, util) {
+      let svg;
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
+      const source = args.MAP.startsWith("data:image/") || args.MAP.startsWith("http") ? args.MAP : `data:image/svg+xml;base64,${btoa(args.MAP)}`;
+      if (svg) {
+        const widthMatch = /width="([^"]*)"/.exec(svg);
+        const heightMatch = /height="([^"]*)"/.exec(svg);
+        const size = [
+          Scratch.Cast.toNumber(widthMatch ? parseFloat(widthMatch[1]) : parseFloat(Scratch.renderer.canvas.style.width)),
+          Scratch.Cast.toNumber(heightMatch ? parseFloat(heightMatch[1]) : parseFloat(Scratch.renderer.canvas.style.height))
+        ];
+        const filterElement = `<filter id="advLight"><feImage xlink:href="${source}" result="normalMap" width="${size[0]}" height="${size[1]}" x="1" y="1" /><feComponentTransfer in="normalMap"><feFuncR type="discrete" tableValues="0" /><feFuncG type="discrete" tableValues="0" /><feFuncB type="table" tableValues="0 1" /></feComponentTransfer><feBlend in="SourceGraphic" in2="normalMap" mode="${args.BLEND}" /><feComposite in2="SourceAlpha" operator="in" /></filter>`;
+        return this.filterApplier(svg, filterElement, "advLight");
+      }
+      return svg;
+    }
+
     async setDistort(args, isImage, override, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         let source;
         if (override) {
-          source = args.EFFECT.includes("data:image/") ? args.EFFECT : `data:image/svg+xml;base64,${btoa(args.EFFECT)}`;
-        } else {
-          source = args.EFFECT === "bulge" ? 0 : args.EFFECT === "whirl" ? 1 : 2;
-        }
+          source = args.EFFECT.startsWith("data:image/") ? args.EFFECT : `data:image/svg+xml;base64,${btoa(args.EFFECT)}`;
+        } else { source = args.EFFECT === "bulge" ? 0 : args.EFFECT === "whirl" ? 1 : 2 }
         const mul = args.SPRITE === "_canvas_" ? vm.renderer.canvas.width / vm.runtime.stageWidth * 2 : 1;
         const amts = [Scratch.Cast.toNumber(args.NUM), Scratch.Cast.toNumber(args.X), Scratch.Cast.toNumber(args.Y)];
         if (!displacementSrCs[2] && !override) await this.getSources();
@@ -1004,11 +1002,8 @@
 
     async setGlitch(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         const off = (vm.renderer.canvas.width / vm.runtime.stageWidth) * (vm.renderer.canvas.width / vm.runtime.stageWidth);
         const mul = args.SPRITE === "_canvas_" ? [off * 1000, args.NUM * (off * 10)] : [200, args.NUM];
@@ -1028,18 +1023,12 @@
 
     async mask(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (args.SPRITE === args.SPRITE2) return svg; // do nothing if youre masking yourself
       let svg2;
-      if (args.SPRITE2 === "_myself_") {
-        svg2 = await this.findAsset(util);
-      } else {
-        svg2 = isImage ? await this.getImage(args.SPRITE2) : await this.getSVG(args.SPRITE2);
-      }
+      if (args.SPRITE === "_myself_") svg2 = await this.findAsset(util);
+      else svg2 = isImage ? await this.getImage(args.SPRITE2) : await this.getSVG(args.SPRITE2);
       const multiply = args.SPRITE === "_canvas_" ? [Scratch.renderer.canvas.width * 2, Scratch.renderer.canvas.height * 2,
         vm.renderer.canvas.width / vm.runtime.stageWidth] : [100, 100, 1];
       if (svg && svg2) {
@@ -1054,11 +1043,8 @@
 
     async setATT(args, isImage, type, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         // Note: We Do Not Check if Translate Exists Since We Override it
         let transform = "";
@@ -1105,11 +1091,8 @@
 
     async updateView(args, isImage, util) {
       let svg;
-      if (args.SPRITE === "_myself_") {
-        svg = await this.findAsset(util);
-      } else {
-        svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      }
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         let values;
         const viewBoxMatch = svg.match(/viewBox="([^"]+)"/);
@@ -1156,9 +1139,7 @@
         const existingFilter = Scratch.renderer.canvas.parentNode.parentNode.parentNode.style.filter;
         const filterString = existingFilter ? `${existingFilter} url(#${filterID})` : `url(#${filterID})`;
         Scratch.renderer.canvas.parentNode.parentNode.parentNode.style.filter = filterString;
-      } else {
-        console.error("Invalid Filter, Cancelled Application");
-      }
+      } else { console.error("Invalid Filter, Cancelled Application") }
     }
 
     removeCanvasFilter(args) {
@@ -1173,9 +1154,7 @@
           document.body.removeChild(filterSel);
           allFilters.splice(allFilters.indexOf(args.NAME), 1);
         }
-      } else {
-        console.error("Filter not found, Cancelled Deletion");
-      }
+      } else { console.error("Filter not found, Cancelled Deletion") }
     }
 
     removeAllFilters(args) {
@@ -1195,9 +1174,7 @@
       //if bitmap, convert to svg
       if (costume.dataFormat === "png") {
         return await this.getImage(costume.asset.encodeDataURI());
-      } else {
-        return costume.asset.decodeText();
-      }
+      } else { return costume.asset.decodeText() }
     }
 
     async getImage(image) {
@@ -1230,11 +1207,8 @@
       let myAsset = util.target.sprite.costumes;
       myAsset = myAsset[currentCostume];
       //if bitmap, convert to svg
-      if (myAsset.dataFormat === "png") {
-        return await this.getImage(myAsset.asset.encodeDataURI());
-      } else {
-        return myAsset.asset.decodeText();
-      }
+      if (myAsset.dataFormat === "png") return await this.getImage(myAsset.asset.encodeDataURI());
+      else return myAsset.asset.decodeText();
     }
 
     async svgToBitmap(svg, width, height) {
