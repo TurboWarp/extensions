@@ -140,7 +140,6 @@
             },
           },
           "---",
-          "Fullscreen",
           {
             opcode: "enterFullscreen",
             blockType: Scratch.BlockType.COMMAND,
@@ -160,7 +159,6 @@
             blockIconURI: fullscreenBlockIcon,
           },
           "---",
-          "Network",
           {
             opcode: "connected_to_internet",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -180,7 +178,6 @@
             blockIconURI: networkBlockIcon,
           },
           "---",
-          "Device",
           {
             opcode: "browser",
             blockType: Scratch.BlockType.REPORTER,
@@ -212,7 +209,6 @@
             blockIconURI: deviceBlockIcon,
           },
           "---",
-          "Clipboard",
           {
             opcode: "set_clipboard",
             blockType: Scratch.BlockType.COMMAND,
@@ -232,7 +228,6 @@
             blockIconURI: clipboardBlockIcon,
           },
           "---",
-          "Battery",
           {
             opcode: "batteryCharging",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -257,6 +252,7 @@
             text: Scratch.translate("seconds until empty"),
             blockIconURI: batteryBlockIcon,
           },
+          "---",
           {
             opcode: "batteryChargingChanged",
             blockType: Scratch.BlockType.EVENT,
