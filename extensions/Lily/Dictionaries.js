@@ -920,9 +920,6 @@
       let block = editingTarget.blocks.getBlock(blockId);
       if (!block) block = runtime.flyoutBlocks.getBlock(blockId);
 
-      // In the unlikely event that this does happen, we should probably account for it.
-      if (!block) return ['Oops! Something went wrong.'];
-
       // Get the name of the currently selected dictionary
       // (this is where the first patch comes into play)
       let name;
