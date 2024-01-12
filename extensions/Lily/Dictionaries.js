@@ -102,7 +102,7 @@
 
     // This patch is to append the context menu data for the reporters
     // We can't use mixins because they don't work on dynamic blocks
-    // (this also allows us to discriminate in flyout)
+    // (this also allows us to discriminate isInFlyout)
     // https://github.com/Xeltalliv/extensions/blob/0a90e48aeed737530fc2f1dcc9dd5fa714a00bf3/examples/dynamic-blocks.js#L45C11-L45C11
     ScratchBlocks.BlockSvg.prototype.showContextMenu_ = function (a) {
       if (!this.workspace.options.readOnly && this.contextMenu) {
@@ -282,18 +282,17 @@
         // For Scratch parity, names are checked case-sensitively
         if (dictionaries[uid].name === name) return false;
       }
-      return true;
-    }
-
-    const targets = runtime.targets;
-    for (const target of targets) {
-      const storage = target.extensionStorage["lmsDictionaries"];
-      if (storage) {
-        const dictionaries = storage.dictionaries;
-        const uids = Object.keys(dictionaries);
-        for (const uid of uids) {
-          // For Scratch parity, names are checked case-sensitively
-          if (dictionaries[uid].name === name) return false;
+    } else {
+      const targets = runtime.targets;
+      for (const target of targets) {
+        const storage = target.extensionStorage["lmsDictionaries"];
+        if (storage) {
+          const dictionaries = storage.dictionaries;
+          const uids = Object.keys(dictionaries);
+          for (const uid of uids) {
+            // For Scratch parity, names are checked case-sensitively
+            if (dictionaries[uid].name === name) return false;
+          }
         }
       }
     }
@@ -328,8 +327,6 @@
     dictionaries = stageDictionaries;
     } else dictionaries = { ...targetDictionaries, ...stageDictionaries };
 
-    // sort alphabetically
-    // (Thank you Ashime for helping me with the sorting)
     let reporters = [],
       uids = Object.keys(dictionaries);
     let xml = {},
@@ -350,6 +347,7 @@
     }
 
     // Alphabetise the reporters with the same rules as variables
+    // (Thank you Ashime for helping me with the sorting)
     names.sort(compareStrings);
     for (const name of names) {
       reporters.push(xml[name]);
@@ -358,6 +356,7 @@
     return reporters.join();
   }
 
+  // an abridged version of Scratch's native comparison script
   function compareStrings(str1, str2) {
     return str1.localeCompare(str2, [], {
       sensitivity: "base",
@@ -400,17 +399,17 @@
   }
 
   function dictionaryHidden() {
-    const stageDictionaries = _getDictionariesForTarget(
+    const stageDictionaries = getDictionaryMenuForTarget(
       runtime.getTargetForStage()
     );
-    const targetDictionaries = _getDictionariesForTarget(
+    const targetDictionaries = getDictionaryMenuForTarget(
       runtime.getEditingTarget()
     );
     return stageDictionaries.concat(targetDictionaries).length === 0;
   }
 
-  // Get all dictionaries within a target
-  function _getDictionariesForTarget(target) {
+  // Get all dictionaries within a target (mapped to menu syntax)
+  function getDictionaryMenuForTarget(target) {
     if (!target) return [];
     const storage = target.extensionStorage["lmsDictionaries"];
     if (!storage) return [];
@@ -611,7 +610,7 @@
               },
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+                defaultValue: 1,
               },
               DICTIONARY: {
                 type: Scratch.ArgumentType.STRING,
@@ -887,8 +886,8 @@
       const editingTarget = runtime.getEditingTarget();
       if (!stage || !editingTarget) return [""];
 
-      const stageDictionaries = _getDictionariesForTarget(stage);
-      const targetDictionaries = _getDictionariesForTarget(editingTarget);
+      const stageDictionaries = getDictionaryMenuForTarget(stage);
+      const targetDictionaries = getDictionaryMenuForTarget(editingTarget);
 
       let dictionaries = [];
       if (editingTarget.isStage) {
