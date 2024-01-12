@@ -653,6 +653,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "key [KEY] in [DICTIONARY]",
             disableMonitor: true,
+            allowDropAnywhere: true,
             hideFromPalette: dictionaryHidden(),
             arguments: {
               KEY: {
@@ -687,6 +688,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "length of [DICTIONARY]",
             disableMonitor: true,
+            allowDropAnywhere: true,
             hideFromPalette: dictionaryHidden(),
             arguments: {
               DICTIONARY: {
