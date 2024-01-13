@@ -164,6 +164,24 @@
           },
           "---",
           {
+            opcode: "for",
+            blockType: Scratch.BlockType.LOOP,
+            text: "for [I] in [NUMBER]",
+            hideFromPalette: true,
+            extensions: ['colours_control'],
+            arguments: {
+              I: {},
+              NUMBER: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10
+              }
+            }
+          },
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: `<block type="lmsForBlock_for"><value name="I"><shadow type="argument_reporter_string_number"><field name="VALUE">i</field></shadow></value><value name="NUMBER"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>`
+          },
+          {
             opcode: "repeatDuration",
             blockType: Scratch.BlockType.LOOP,
             text: "repeat for [DURATION] seconds",
@@ -398,6 +416,20 @@
         } else if (!util.stackTimerFinished() && !args.CONDITION) {
           return true;
         }
+      }
+    }
+
+    for(args, util) {
+      const times = Cast.toNumber(args.NUMBER);
+      if (typeof util.stackFrame.loopCounter === 'undefined') {
+        util.stackFrame.loopCounter = 0;
+        util.thread.stackFrames[0].params = {};
+      }
+
+      util.stackFrame.loopCounter++;
+      if (util.stackFrame.loopCounter <= times) {
+        util.thread.stackFrames[0].params["i"] = util.stackFrame.loopCounter;
+        util.startBranch(1, true);
       }
     }
 
