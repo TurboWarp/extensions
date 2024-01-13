@@ -193,7 +193,7 @@
             opcode: "for",
             blockType: Scratch.BlockType.LOOP,
             text: "for [I] = [A] to [B]",
-            hideFromPalette: true,
+            hideFromPalette: false,
             arguments: {
               I: {},
               A: {
@@ -209,7 +209,7 @@
           {
             opcode: "forArg",
             blockType: Scratch.BlockType.REPORTER,
-            hideFromPalette: true,
+            hideFromPalette: false,
             text: "i",
           },
           {
@@ -274,10 +274,6 @@
             },
           },
           "---",
-          {
-            opcode: "warp",
-            blockType: Scratch.BlockType.CONDITIONAL,
-          },
           {
             opcode: "runInSprite",
             blockType: Scratch.BlockType.CONDITIONAL,
@@ -451,22 +447,32 @@
     }
 
     forArg(args, util) {
-      return util.thread.getParam("i") ?? 0;
+      const param = 'test';
+      const params = util.thread.moreControlParams;
+      if (typeof params === "undefined") return 0;
+
+      return params[param] ?? 0;
     }
 
     for(args, util) {
+      const param = 'test';
+      const params = util.thread.moreControlParams;
+
       const a = Cast.toNumber(args.A);
       const b = Cast.toNumber(args.B);
 
       if (typeof util.stackFrame.loopCounter === "undefined") {
         util.stackFrame.loopCounter = a;
-        util.thread.stackFrames[0].params = {};
+
+        if (typeof params === "undefined") {
+          util.thread.moreControlParams = {};
+        } 
       }
 
       util.stackFrame.loopCounter++;
 
       if (util.stackFrame.loopCounter <= b) {
-        util.thread.stackFrames[0].params["i"] = util.stackFrame.loopCounter;
+        util.thread.moreControlParams[param] = util.stackFrame.loopCounter;
         util.startBranch(1, true);
       }
     }
@@ -525,20 +531,6 @@
       }
     }
 
-    warp(args, util) {
-      if (runtime.compilerOptions.enabled) {
-        //I'd really like for this not to be the case, but I don't think that's going to happen.
-        vm.runtime.emitCompileError(
-          util.target,
-          "The Warp block only works when the compiler is disabled."
-        );
-        return 1;
-      }
-      util.thread.peekStackFrame().warpMode = false;
-      util.startBranch(1, false);
-      util.thread.peekStackFrame().warpMode = true;
-    }
-
     async runInSprite(args, util) {
       const cloneBlock = Utilities.cloneBlock;
       let SPRITE = Cast.toString(args.SPRITE);
@@ -569,12 +561,17 @@
       }
       endTarget.blocks._addScript(startBlock);
       runtime.requestBlocksUpdate();
-      vm.refreshWorkspace();
+      vm.refreshWorkspace();      
       var newThread = runtime._pushThread(startBlock, endTarget, {
         stackClick: true,
-      });
+      }), threadDied = false;
+      setTimeout(async () => {
+        await this.until((_) => !runtime.isActiveThread(newThread) == true);
+        threadDied = true;
+        endTarget.blocks._deleteScript(newThread.topBlock);
+      }, 0);
       if (DONT_WAIT) return 0;
-      await this.until((_) => !runtime.isActiveThread(newThread) == true);
+      await this.until((_) => threadDied);
       return 0;
     }
 
