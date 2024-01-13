@@ -187,17 +187,20 @@
           "---",
           {
             blockType: Scratch.BlockType.XML,
-            xml: `<block type="lmsSpAsMoreControl_for"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="NUMBER"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>`,
+            xml: `<block type="lmsSpAsMoreControl_for"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>`,
           },
           {
             opcode: "for",
             blockType: Scratch.BlockType.LOOP,
-            text: "for [I] in [NUMBER]",
-            extensions: ["colours_control"],
+            text: "for [I] = [A] to [B]",
             hideFromPalette: true,
             arguments: {
               I: {},
-              NUMBER: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              B: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 10,
               },
@@ -206,7 +209,6 @@
           {
             opcode: "forArg",
             blockType: Scratch.BlockType.REPORTER,
-            extensions: ["colours_control"],
             hideFromPalette: true,
             text: "i",
           },
@@ -453,13 +455,17 @@
     }
 
     for(args, util) {
-      const times = Cast.toNumber(args.NUMBER);
+      const a = Cast.toNumber(args.A);
+      const b = Cast.toNumber(args.B);
+
       if (typeof util.stackFrame.loopCounter === "undefined") {
-        util.stackFrame.loopCounter = 0;
+        util.stackFrame.loopCounter = a;
         util.thread.stackFrames[0].params = {};
       }
+
       util.stackFrame.loopCounter++;
-      if (util.stackFrame.loopCounter <= times) {
+
+      if (util.stackFrame.loopCounter <= b) {
         util.thread.stackFrames[0].params["i"] = util.stackFrame.loopCounter;
         util.startBranch(1, true);
       }
