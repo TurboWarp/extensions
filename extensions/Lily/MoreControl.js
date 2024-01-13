@@ -451,7 +451,7 @@
     }
 
     forArg(args, util) {
-      return util.thread.getParam("i");
+      return util.thread.getParam("i") ?? 0;
     }
 
     for(args, util) {
