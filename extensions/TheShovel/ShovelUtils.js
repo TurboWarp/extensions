@@ -164,6 +164,21 @@
             },
           },
           {
+            opcode: "deleteSound",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "delete sound [SNDNAME] in [SPRITE]",
+            arguments: {
+              SNDNAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Meow",
+              },
+              SPRITE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Sprite1",
+              },
+            },
+          },
+          {
             opcode: "setedtarget",
             blockType: Scratch.BlockType.COMMAND,
             text: "set editing target to [NAME]",
@@ -202,20 +217,38 @@
     }
 
     importImage({ TEXT, NAME }) {
+	  // Modified by Procybit for svg compatibility.
       Scratch.fetch(TEXT)
-        .then((r) => r.arrayBuffer())
-        .then((arrayBuffer) => {
+        .then((r) => r.blob())
+        .then(async (blob) => {
+		  const arrayBuffer = await blob.arrayBuffer()
+		  console.log(arrayBuffer)
           const storage = vm.runtime.storage;
-          vm.addCostume(NAME + ".PNG", {
-            name: NAME + "",
-            asset: new storage.Asset(
-              storage.AssetType.ImageBitmap,
-              null, // asset id, doesn't need to be set here because of `true` at the end will make Scratch generate it for you
-              storage.DataFormat.PNG,
-              new Uint8Array(arrayBuffer),
-              true
-            ),
-          });
+		  if (['image/png', 'image/jpeg'].includes(blob.type)) {
+			console.log('png!');
+            vm.addCostume(NAME + ".PNG", {
+              name: NAME + "",
+              asset: new storage.Asset(
+                storage.AssetType.ImageBitmap,
+                null, // asset id, doesn't need to be set here because of `true` at the end will make Scratch generate it for you
+                storage.DataFormat.PNG,
+                new Uint8Array(arrayBuffer),
+                true
+              ),
+			})
+          } else {
+			console.log('svg!');
+            vm.addCostume(NAME + ".SVG", {
+              name: NAME + "",
+              asset: new storage.Asset(
+                storage.AssetType.ImageVector,
+                null,
+                storage.DataFormat.SVG,
+                new Uint8Array(arrayBuffer),
+                true
+              ),
+			})
+		  };
         });
     }
 
@@ -378,6 +411,20 @@
         return;
       }
       target.deleteCostume(target.getCostumeIndexByName(COSNAME));
+    }
+
+    deleteSound({ SPRITE, SNDNAME }) {
+      // 0znzw & Procybit, since shovel did not add it yet.
+      const target = vm.runtime.getSpriteTargetByName(SPRITE);
+      if (!target) {
+        return;
+      }
+	  const sounds = target.getSounds(); // based on vm.runtime.getSpriteTargetByName()
+        for (let i = 0; i < sounds.length; i++) {
+            if (sounds[i].name === SNDNAME) {
+                target.deleteSound(i);
+            }
+        }
     }
 
     getAllSprites() {
