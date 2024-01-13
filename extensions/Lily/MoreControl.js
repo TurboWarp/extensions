@@ -61,7 +61,7 @@
         (block.type == "argument_reporter_boolean" ||
           block.type == "argument_reporter_boolean" ||
           block.type == "argument_reporter_string_number" ||
-          block.type == "lmsForBlock_forArg")
+          block.type == "lmsSpAsMoreControl_forArg")
       );
     };
   }
