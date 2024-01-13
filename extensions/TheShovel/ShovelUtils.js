@@ -217,41 +217,42 @@
     }
 
     importImage({ TEXT, NAME }) {
-	  // Modified by Procybit for svg compatibility.
+      // Modified by Procybit for svg compatibility.
       Scratch.fetch(TEXT)
         .then((r) => r.blob())
         .then(async (blob) => {
-		  const arrayBuffer = await blob.arrayBuffer();
+          const arrayBuffer = await blob.arrayBuffer();
           const storage = vm.runtime.storage;
-		  let ext = "", format = "";
-		  switch (blob.type) {
-			case "image/png":
-			  ext = ".PNG";
-			  format = storage.DataFormat.PNG;
-			  break;
-			case "image/jpeg":
-			  ext = ".JPG";
-			  format = storage.DataFormat.JPG;
-			  break;
-			case "image/svg+xml":
-			  ext = ".SVG";
-			  format = storage.DataFormat.SVG;
-			  break;
-			default:
-		      return 0;
-		  };
+          let ext = "",
+            format = "";
+          switch (blob.type) {
+            case "image/png":
+              ext = ".PNG";
+              format = storage.DataFormat.PNG;
+              break;
+            case "image/jpeg":
+              ext = ".JPG";
+              format = storage.DataFormat.JPG;
+              break;
+            case "image/svg+xml":
+              ext = ".SVG";
+              format = storage.DataFormat.SVG;
+              break;
+            default:
+              return 0;
+          }
           vm.addCostume(NAME + ext, {
             name: NAME + "",
             asset: new storage.Asset(
               ext == ".SVG"
-			    ? storage.AssetType.ImageVector
-				: storage.AssetType.ImageBitmap,
+                ? storage.AssetType.ImageVector
+                : storage.AssetType.ImageBitmap,
               null, // asset id, doesn't need to be set here because of `true` at the end will make Scratch generate it for you
               format,
               new Uint8Array(arrayBuffer),
               true
             ),
-		  });
+          });
         });
     }
 
@@ -422,12 +423,12 @@
       if (!target) {
         return;
       }
-	  const sounds = target.getSounds(); // based on vm.runtime.getSpriteTargetByName()
-        for (let i = 0; i < sounds.length; i++) {
-            if (sounds[i].name === SNDNAME) {
-                target.deleteSound(i);
-            }
+      const sounds = target.getSounds(); // based on vm.runtime.getSpriteTargetByName()
+      for (let i = 0; i < sounds.length; i++) {
+        if (sounds[i].name === SNDNAME) {
+          target.deleteSound(i);
         }
+      }
     }
 
     getAllSprites() {
