@@ -44,6 +44,28 @@
     },
   };
 
+  vm.on("EXTENSION_ADDED", tryUseScratchBlocks);
+  vm.on("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
+  tryUseScratchBlocks();
+
+  function tryUseScratchBlocks() {
+    if (!window.ScratchBlocks) return;
+    vm.removeListener("EXTENSION_ADDED", tryUseScratchBlocks);
+    vm.removeListener("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
+
+    ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter = function (
+      block
+    ) {
+      return (
+        block.isShadow() &&
+        (block.type == "argument_reporter_boolean" ||
+          block.type == "argument_reporter_boolean" ||
+          block.type == "argument_reporter_string_number" ||
+          block.type == "lmsForBlock_forArg")
+      );
+    };
+  }
+
   class MoreControl {
     getInfo() {
       return {
@@ -164,22 +186,29 @@
           },
           "---",
           {
+            blockType: Scratch.BlockType.XML,
+            xml: `<block type="lmsSpAsMoreControl_for"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="NUMBER"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>`,
+          },
+          {
             opcode: "for",
             blockType: Scratch.BlockType.LOOP,
             text: "for [I] in [NUMBER]",
+            extensions: ["colours_control"],
             hideFromPalette: true,
-            extensions: ['colours_control'],
             arguments: {
               I: {},
               NUMBER: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 10
-              }
-            }
+                defaultValue: 10,
+              },
+            },
           },
           {
-            blockType: Scratch.BlockType.XML,
-            xml: `<block type="lmsForBlock_for"><value name="I"><shadow type="argument_reporter_string_number"><field name="VALUE">i</field></shadow></value><value name="NUMBER"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>`
+            opcode: "forArg",
+            blockType: Scratch.BlockType.REPORTER,
+            extensions: ["colours_control"],
+            hideFromPalette: true,
+            text: "i",
           },
           {
             opcode: "repeatDuration",
@@ -419,13 +448,16 @@
       }
     }
 
+    forArg(args, util) {
+      return util.thread.getParam("i");
+    }
+
     for(args, util) {
       const times = Cast.toNumber(args.NUMBER);
-      if (typeof util.stackFrame.loopCounter === 'undefined') {
+      if (typeof util.stackFrame.loopCounter === "undefined") {
         util.stackFrame.loopCounter = 0;
         util.thread.stackFrames[0].params = {};
       }
-
       util.stackFrame.loopCounter++;
       if (util.stackFrame.loopCounter <= times) {
         util.thread.stackFrames[0].params["i"] = util.stackFrame.loopCounter;
