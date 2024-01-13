@@ -221,34 +221,37 @@
       Scratch.fetch(TEXT)
         .then((r) => r.blob())
         .then(async (blob) => {
-		  const arrayBuffer = await blob.arrayBuffer()
-		  console.log(arrayBuffer)
+		  const arrayBuffer = await blob.arrayBuffer();
           const storage = vm.runtime.storage;
-		  if (['image/png', 'image/jpeg'].includes(blob.type)) {
-			console.log('png!');
-            vm.addCostume(NAME + ".PNG", {
-              name: NAME + "",
-              asset: new storage.Asset(
-                storage.AssetType.ImageBitmap,
-                null, // asset id, doesn't need to be set here because of `true` at the end will make Scratch generate it for you
-                storage.DataFormat.PNG,
-                new Uint8Array(arrayBuffer),
-                true
-              ),
-			})
-          } else {
-			console.log('svg!');
-            vm.addCostume(NAME + ".SVG", {
-              name: NAME + "",
-              asset: new storage.Asset(
-                storage.AssetType.ImageVector,
-                null,
-                storage.DataFormat.SVG,
-                new Uint8Array(arrayBuffer),
-                true
-              ),
-			})
+		  let ext = "", format = "";
+		  switch (blob.type) {
+			case "image/png":
+			  ext = ".PNG";
+			  format = storage.DataFormat.PNG;
+			  break;
+			case "image/jpeg":
+			  ext = ".JPG";
+			  format = storage.DataFormat.JPG;
+			  break;
+			case "image/svg+xml":
+			  ext = ".SVG";
+			  format = storage.DataFormat.SVG;
+			  break;
+			default:
+		      return 0;
 		  };
+          vm.addCostume(NAME + ext, {
+            name: NAME + "",
+            asset: new storage.Asset(
+              ext == ".SVG"
+			    ? storage.AssetType.ImageVector
+				: storage.AssetType.ImageBitmap,
+              null, // asset id, doesn't need to be set here because of `true` at the end will make Scratch generate it for you
+              format,
+              new Uint8Array(arrayBuffer),
+              true
+            ),
+		  });
         });
     }
 
