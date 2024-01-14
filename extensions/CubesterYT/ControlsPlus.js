@@ -157,6 +157,7 @@
             opcode: "ifElseReporter",
             text: "if [CONDITIONAL] then [VALUE1] else [VALUE2]",
             blockType: Scratch.BlockType.REPORTER,
+            allowDropAnywhere: true,
             extensions: ["colours_control"],
             arguments: {
               CONDITIONAL: {
