@@ -10,6 +10,7 @@
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
+  const Cast = Scratch.Cast;
 
   const junction =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOS44MzUxOSIgaGVpZ2h0PSIxNy45OTM0OSIgdmlld0JveD0iMCwwLDE5LjgzNTE5LDE3Ljk5MzQ5Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjEyLjc0ODAyLC0xNzEuODc3OTEpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIyNS44MzMyMSwxODMuOTc3OTFjLTAuNiwtMC4zIC0xLC0wLjkgLTEsLTEuNXYtMS42Yy0xLjMsLTAuMSAtMi41LC0wLjUgLTMuNiwtMS4xYy0xLjcsLTAuOSAtMy4yLC0yLjMgLTQuMSwtNC4xYy0wLjksLTEuNyAzLjk1ODI3LC0zLjYyNzk3IDMuOTU4MjcsLTMuNjI3OTdjMCwwIC0wLjA5NTI5LDAuOTYxMDIgMC44OTUxNCwxLjg0ODk1YzEuMjU3ODYsMS4xMjc3IDIuMjc3NTgsMS4xNzkwMiAyLjg0NjYsMS4xNzkwMnYtMS41YzAsLTAuOSAwLjcsLTEuNyAxLjcsLTEuN2MwLjQsMCAwLjksMC4yIDEuMiwwLjVsNC40LDQuNGMwLjYsMC43IDAuNiwxLjcgMCwyLjRsLTQuNSw0LjVjLTAuNSwwLjUgLTEuMiwwLjYgLTEuOCwwLjN6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjE1LjQ5ODU3LDE4My45MDI3OGwxLC0xMS44OTU1Nmg0LjY1MDAxbDEuMTE3NjUsMTEuODk1NTZ6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjEyLjkxNjc3LDE4My4xMjE0YzAuMywtMC42IDAuOSwtMSAxLjUsLTFoMS42aDUuOGgxLjVjMC45LDAgMS43LDAuNyAxLjcsMS43YzAsMC40IC0wLjIsMC45IC0wLjUsMS4ybC00LjQsNC40Yy0wLjcsMC42IC0xLjcsMC42IC0yLjQsMGwtNC41LC00LjVjLTAuNSwtMC41IC0wLjYsLTEuMiAtMC4zLC0xLjh6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjE2LjUwNDU3LDE4NC4zMjk1N2wwLjgyMzUzLC0xMS40NjIzNGgyLjgxNDQ3bDEuMTE3NjUsMTEuNDYyMzR6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjE0LjQ3Nzc0LDE4My4xMjE0bDksMC4xYzAuNCwwIDAuNywwLjMgMC43LDAuN2MwLDAuMiAtMC4xLDAuMyAtMC4yLDAuNGwtNC40LDQuNGMtMC4zLDAuMyAtMC43LDAuMyAtMC45LDBsLTQuNCwtNC40Yy0wLjMsLTAuMyAtMC40LC0wLjYgLTAuMywtMC45YzAuMSwtMC4zIDAuMywtMC4zIDAuNSwtMC4zeiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iTTIyNS43NzIyNCwxODIuNjYwODJ2LTIuNmMtMS41LDAgLTIuOSwtMC4zIC00LjIsLTFjLTEuNiwtMC44IC0yLjgsLTIuMSAtMy42LC0zLjdjLTAuMjE3NjYsLTAuNDA4MTEgLTAuMzk4MywtMC44Mzg0MiAtMC41Mzk5MiwtMS4yODA4OGMtMC4zNzg5LC0xLjE4Mzc4IDIuNjYwNSwtMS4xNDg2NyAyLjY2MDUsLTEuMTQ4NjdjMCwwIDAuMjM2NTcsMC43MjU0NyAwLjM3OTQyLDAuOTI5NTRjMC42LDAuOSAxLjUsMS42IDIuNiwyYzAuOSwwLjMgMS44LDAuNCAyLjgsMC4ydi0yLjRjMCwtMC40IDAuMywtMC43IDAuNywtMC43YzAuMiwwIDAuMywwLjEgMC40LDAuMmw0LjQsNC40YzAuMywwLjMgMC4zLDAuNyAwLDAuOWwtNC40LDQuNGMtMC4zLDAuMyAtMC42LDAuNCAtMC45LDAuM2MtMC4zLC0wLjEgLTAuMywtMC4zIC0wLjMsLTAuNXoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMSIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjI3LjI1MTk4MDAwMDAwMDAwMzo4LjEyMjA4OTk5OTk5OTk4Ni0tPg==";
@@ -17,7 +18,7 @@
     "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgaGVpZ2h0PSIyNCIKICAgd2lkdGg9IjI0IgogICB4bWw6c3BhY2U9InByZXNlcnZlIgogICBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAyNCAyNDsiCiAgIHZpZXdCb3g9IjAgMCAyNCAyNCIKICAgeT0iMHB4IgogICB4PSIwcHgiCiAgIGlkPSJyZXBlYXQiCiAgIHZlcnNpb249IjEuMSIKICAgc29kaXBvZGk6ZG9jbmFtZT0icmVwZWF0ICgyKS5zdmciCiAgIHhtbG5zOmlua3NjYXBlPSJodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy9uYW1lc3BhY2VzL2lua3NjYXBlIgogICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnMKICAgaWQ9ImRlZnMxMyIgLz48c29kaXBvZGk6bmFtZWR2aWV3CiAgIGlkPSJuYW1lZHZpZXcxMSIKICAgcGFnZWNvbG9yPSIjZmZmZmZmIgogICBib3JkZXJjb2xvcj0iIzAwMDAwMCIKICAgYm9yZGVyb3BhY2l0eT0iMC4yNSIKICAgaW5rc2NhcGU6c2hvd3BhZ2VzaGFkb3c9IjIiCiAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwLjAiCiAgIGlua3NjYXBlOnBhZ2VjaGVja2VyYm9hcmQ9IjAiCiAgIGlua3NjYXBlOmRlc2tjb2xvcj0iI2QxZDFkMSIgLz4KPHN0eWxlCiAgIHR5cGU9InRleHQvY3NzIgogICBpZD0ic3R5bGUyIj4KCS5zdDB7ZmlsbDojQ0Y4QjE3O30KCS5zdDF7ZmlsbDojRkZGRkZGO30KPC9zdHlsZT4KPHRpdGxlCiAgIGlkPSJ0aXRsZTQiPnJlcGVhdDwvdGl0bGU+CjxwYXRoCiAgIGQ9Ik0yMy4zLDExYy0wLjMsMC42LTAuOSwxLTEuNSwxaC0xLjZjLTAuMSwxLjMtMC41LDIuNS0xLjEsMy42Yy0wLjksMS43LTIuMywzLjItNC4xLDQuMSAgYy0xLjcsMC45LTMuNiwxLjItNS41LDAuOWMtMS44LTAuMy0zLjUtMS4xLTQuOS0yLjNjLTAuNy0wLjctMC43LTEuOSwwLTIuNmMwLjYtMC42LDEuNi0wLjcsMi4zLTAuMkg3YzAuOSwwLjYsMS45LDAuOSwyLjksMC45ICBzMS45LTAuMywyLjctMC45YzEuMS0wLjgsMS44LTIuMSwxLjgtMy41aC0xLjVjLTAuOSwwLTEuNy0wLjctMS43LTEuN2MwLTAuNCwwLjItMC45LDAuNS0xLjJsNC40LTQuNGMwLjctMC42LDEuNy0wLjYsMi40LDBMMjMsOS4yICBDMjMuNSw5LjcsMjMuNiwxMC40LDIzLjMsMTF6IgogICBjbGFzcz0ic3QwIgogICBpZD0icGF0aDYiIC8+CjxwYXRoCiAgIGQ9Ik0yMS44LDExaC0yLjZjMCwxLjUtMC4zLDIuOS0xLDQuMmMtMC44LDEuNi0yLjEsMi44LTMuNywzLjZjLTEuNSwwLjgtMy4zLDEuMS00LjksMC44Yy0xLjYtMC4yLTMuMi0xLTQuNC0yLjEgIGMtMC40LTAuMy0wLjQtMC45LTAuMS0xLjJjMC4zLTAuNCwwLjktMC40LDEuMi0wLjFsMCwwYzEsMC43LDIuMiwxLjEsMy40LDEuMXMyLjMtMC4zLDMuMy0xYzAuOS0wLjYsMS42LTEuNSwyLTIuNiAgYzAuMy0wLjksMC40LTEuOCwwLjItMi44aC0yLjRjLTAuNCwwLTAuNy0wLjMtMC43LTAuN2MwLTAuMiwwLjEtMC4zLDAuMi0wLjRsNC40LTQuNGMwLjMtMC4zLDAuNy0wLjMsMC45LDBMMjIsOS44ICBjMC4zLDAuMywwLjQsMC42LDAuMywwLjlTMjIsMTEsMjEuOCwxMXoiCiAgIGNsYXNzPSJzdDEiCiAgIGlkPSJwYXRoOCIgLz4KPC9zdmc+CjwhLS1yb3RhdGlvbkNlbnRlcjoxMjoxMi0tPgoK";
 
   const hasOwn = (prop, object) => Object.hasOwn(object, prop);
-  const Cast = Scratch.Cast;
+
   let Utilities = {
     cloneBlock(id, target) {
       const cloneBlock = Utilities.cloneBlock;
@@ -66,7 +67,8 @@
         (block.type == "argument_reporter_boolean" ||
           block.type == "argument_reporter_boolean" ||
           block.type == "argument_reporter_string_number" ||
-          block.type == "lmsSpAsMoreControl_forArg")
+          block.type == "lmsSpAsMoreControl_forArg" ||
+          block.type == "lmsSpAsMoreControl_forArg2")
       );
     };
   }
@@ -93,8 +95,8 @@
         blocks: [
           {
             opcode: "switch",
-            text: "switch [SWITCH]",
             blockType: Scratch.BlockType.CONDITIONAL,
+            text: "switch [SWITCH]",
             arguments: {
               SWITCH: {
                 type: null,
@@ -103,8 +105,8 @@
           },
           {
             opcode: "case",
-            text: "case [CASE]",
             blockType: Scratch.BlockType.CONDITIONAL,
+            text: "case [CASE]",
             arguments: {
               CASE: {
                 type: Scratch.ArgumentType.STRING,
@@ -113,26 +115,42 @@
           },
           {
             opcode: "default",
-            text: "default",
             blockType: Scratch.BlockType.CONDITIONAL,
+            text: "default",
             isTerminal: true,
           },
           {
-            opcode: "runCase",
-            text: "run case [CASE]",
+            opcode: "runNextCaseWhen",
             blockType: Scratch.BlockType.COMMAND,
+            text: "run next case when [CASE]",
             arguments: {
               CASE: {
                 type: Scratch.ArgumentType.STRING,
+                defaultValue: "apple",
               },
             },
+          },
+          {
+            opcode: "runNextCase",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "run next case",
+          },
+          {
+            opcode: "breakSwitch",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "break switch",
+            isTerminal: true,
+          },
+          {
+            opcode: "continueSwitch",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "continue switch",
             isTerminal: true,
           },
           {
             opcode: "switchValue",
-            text: "switch value",
             blockType: Scratch.BlockType.REPORTER,
-            disableMonitor: true,
+            text: "switch value",
           },
           "---",
           {
@@ -373,73 +391,123 @@
     }
 
     switch(args, util) {
-      if (this.isInPalette(util.thread)) return;
-      const switchValue = Cast.toString(args.SWITCH);
-      const block = util.thread.peekStack();
-      const self = this.getBlockByID(util.target, block);
-      self.switchValue = switchValue;
-      self.runCase = false;
-      self.ifCase = null;
-      this.setBlockByID(util.target, block, self);
-      return 1;
+      const blockId = util.thread.peekStack();
+      const blocks = util.thread.blockContainer;
+      const block = blocks.getBlock(blockId);
+
+      block.switchValue = args.SWITCH;
+      block.switchFalling = false;
+      block.switchResponse = false;
+      block.switchBroken = false;
+      block.runNextCase = false;
+
+      util.startBranch(1, false);
     }
 
     case(args, util) {
-      if (this.isInPalette(util.thread)) return;
-      const caseValue = Cast.toString(args.CASE);
-      const outerBlock = this.getOuterCtillOpcode(
+      const blockId = util.thread.peekStack();
+      const outerC = this.getOuterCFromOpcode(
         util.target,
-        util.thread.peekStack(),
-        "lmsSpAsMoreControl_switch"
+        blockId,
+        "lmsSwitchCase_switch"
       );
-      if (outerBlock == null) return;
+      if (!outerC) return;
+
       if (
-        outerBlock.switchValue == caseValue ||
-        outerBlock.ifCase == caseValue
+        outerC.switchValue === args.CASE ||
+        outerC.switchFalling ||
+        outerC.runNextCase
       ) {
-        outerBlock.runCase = true;
-        outerBlock.ifCase = null;
-        this.setBlockByID(util.target, outerBlock.id, outerBlock);
-        return 1;
+        if (outerC.switchBroken) return;
+        outerC.runNextCase = false;
+        outerC.switchFalling = true;
+        outerC.switchResponse = true;
+        util.startBranch(1, false);
       }
-      return;
     }
 
     default(args, util) {
-      if (this.isInPalette(util.thread)) return;
-      let outerBlock = this.getOuterCtillOpcode(
+      const blockId = util.thread.peekStack();
+      const outerC = this.getOuterCFromOpcode(
         util.target,
-        util.thread.peekStack(),
-        "lmsSpAsMoreControl_switch"
+        blockId,
+        "lmsSwitchCase_switch"
       );
-      if (outerBlock == null || outerBlock.runCase || outerBlock.next != null)
-        return 0;
-      return 1;
+      if (!outerC) return;
+
+      if (
+        !outerC.switchResponse ||
+        outerC.switchFalling ||
+        outerC.runNextCase
+      ) {
+        if (outerC.switchBroken) return;
+        outerC.runNextCase = false;
+        outerC.switchFalling = true;
+        util.startBranch(1, false);
+      }
     }
 
-    runCase(args, util) {
-      if (this.isInPalette(util.thread)) return;
-      const block = util.thread.peekStack();
-      const caseValue = Cast.toString(args.CASE);
-      let outerBlock = this.getOuterCtillOpcode(
+    runNextCaseWhen(args, util) {
+      const blockId = util.thread.peekStack();
+      const outerC = this.getOuterCFromOpcode(
         util.target,
-        block,
-        "lmsSpAsMoreControl_switch"
+        blockId,
+        "lmsSwitchCase_switch"
       );
-      if (outerBlock == null) return 0;
-      outerBlock.ifCase = caseValue;
-      this.setBlockByID(util.target, outerBlock.id, outerBlock);
+      if (!outerC) return;
+
+      if (args.CASE === outerC.switchValue) {
+        outerC.runNextCase = true;
+      }
+    }
+
+    runNextCase(args, util) {
+      const blockId = util.thread.peekStack();
+      const outerC = this.getOuterCFromOpcode(
+        util.target,
+        blockId,
+        "lmsSwitchCase_switch"
+      );
+      if (!outerC) return;
+
+      outerC.runNextCase = true;
+    }
+
+    breakSwitch(args, util) {
+      const blockId = util.thread.peekStack();
+      const outerC = this.getOuterCFromOpcode(
+        util.target,
+        blockId,
+        "lmsSwitchCase_switch"
+      );
+      if (!outerC) return;
+
+      outerC.switchBroken = true;
+    }
+
+    continueSwitch(args, util) {
+      const blockId = util.thread.peekStack();
+      const outerC = this.getOuterCFromOpcode(
+        util.target,
+        blockId,
+        "lmsSwitchCase_switch"
+      );
+      if (!outerC) return;
+
+      outerC.runNextCase = false;
+      outerC.switchFalling = false;
     }
 
     switchValue(args, util) {
-      if (this.isInPalette(util.thread)) return "";
-      const outerBlock = this.getOuterCtillOpcode(
+      const blockId = util.thread.peekStack();
+      const outerC = this.getOuterCFromOpcode(
         util.target,
-        util.thread.peekStack(),
-        "lmsSpAsMoreControl_switch"
+        blockId,
+        "lmsSwitchCase_switch"
       );
-      if (outerBlock == null) return "";
-      return outerBlock.switchValue ?? "";
+      if (!outerC) return "";
+
+      return outerC.switchValue ?? "";
     }
 
     elseIf(args, util) {
@@ -709,6 +777,47 @@
     }
 
     /* Utility Functions */
+
+    getBlockByID(target, id) {
+      return target.blocks._blocks[id];
+    }
+
+    getOuterBlockID(target, startBlockID) {
+      let block = this.getBlockByID(target, startBlockID);
+
+      while (
+        block.parent != null &&
+        this.getBlockByID(target, block.parent).next
+      ) {
+        block = this.getBlockByID(target, block.parent);
+      }
+
+      if (block.parent) block = this.getBlockByID(target, block.parent);
+      return block;
+    }
+
+    getOuterCBlock(target, startId) {
+      let block = this.getBlockByID(target, startId);
+      if (!block || typeof block !== "object") return null;
+
+      let isC = false;
+
+      while (!isC && hasOwn("parent", block) && block.parent !== null) {
+        block = this.getBlockByID(target, block.parent);
+        isC = hasOwn("inputs", block) && hasOwn("SUBSTACK", block.inputs);
+      }
+
+      return isC ? block : null;
+    }
+
+    getOuterCFromOpcode(target, startId, opcode) {
+      let currentC = this.getOuterCBlock(target, startId);
+      while (currentC != null && currentC.opcode !== opcode) {
+        currentC = this.getOuterCBlock(target, currentC.id);
+      }
+      return currentC;
+    }
+
     _getTargets(stage, myself) {
       const spriteNames = [];
       if (stage) spriteNames.push({ text: "Stage", value: "_stage_" });
@@ -735,47 +844,6 @@
         else runtime.once("AFTER_EXECUTE", (_) => poll(resolve));
       };
       return new Promise(poll);
-    }
-
-    getBlockByID(target, id) {
-      return target.blocks._blocks[id];
-    }
-
-    getOuterBlockID(target, startBlockID) {
-      let block = this.getBlockByID(target, startBlockID);
-
-      while (
-        block.parent != null &&
-        this.getBlockByID(target, block.parent).next
-      ) {
-        block = this.getBlockByID(target, block.parent);
-      }
-
-      if (block.parent) block = this.getBlockByID(target, block.parent);
-      return block;
-    }
-
-    getOuterCblock(target, startId) {
-      let block = this.getBlockByID(target, startId);
-      if (!block || typeof block !== "object") return null;
-      let isC = false;
-      while (!isC && hasOwn("parent", block) && block.parent !== null) {
-        block = this.getBlockByID(target, block.parent);
-        isC = hasOwn("inputs", block) && hasOwn("SUBSTACK", block.inputs);
-      }
-      return isC ? block : null;
-    }
-
-    setBlockByID(target, id, JSON) {
-      target.blocks._blocks[id] = JSON;
-    }
-
-    getOuterCtillOpcode(target, startId, opcode) {
-      let currentC = this.getOuterCblock(target, startId);
-      while (currentC != null && currentC.opcode !== opcode) {
-        currentC = this.getOuterCblock(target, currentC.id);
-      }
-      return currentC;
     }
 
     isInPalette(thread) {
