@@ -153,6 +153,7 @@
             blockType: Scratch.BlockType.LOOP,
             text: "wait [DURATION] [TYPE]",
             branchCount: -1,
+            branchIconURI: null,
             arguments: {
               DURATION: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -170,6 +171,7 @@
             blockType: Scratch.BlockType.LOOP,
             text: "wait [DURATION] [TYPE] or until [CONDITION]",
             branchCount: -1,
+            branchIconURI: null,
             arguments: {
               DURATION: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -193,7 +195,7 @@
             opcode: "for",
             blockType: Scratch.BlockType.LOOP,
             text: "for [I] = [A] to [B]",
-            hideFromPalette: false,
+            hideFromPalette: true,
             arguments: {
               I: {},
               A: {
@@ -209,7 +211,7 @@
           {
             opcode: "forArg",
             blockType: Scratch.BlockType.REPORTER,
-            hideFromPalette: false,
+            hideFromPalette: true,
             text: "i",
           },
           {
@@ -447,15 +449,18 @@
     }
 
     forArg(args, util) {
-      const param = 'test';
-      const params = util.thread.moreControlParams;
+      const param = "i";
+      const stackFrames = util.thread.stackFrames;
+      if (typeof stackFrames === "undefined") return 0;
+      
+      const params = stackFrames[0].moreControlParams;
       if (typeof params === "undefined") return 0;
 
       return params[param] ?? 0;
     }
 
     for(args, util) {
-      const param = 'test';
+      const param = "i";
       const params = util.thread.moreControlParams;
 
       const a = Cast.toNumber(args.A);
@@ -465,14 +470,14 @@
         util.stackFrame.loopCounter = a;
 
         if (typeof params === "undefined") {
-          util.thread.moreControlParams = {};
+          util.thread.stackFrames[0].moreControlParams = {};
         } 
       }
 
       util.stackFrame.loopCounter++;
 
       if (util.stackFrame.loopCounter <= b) {
-        util.thread.moreControlParams[param] = util.stackFrame.loopCounter;
+        util.thread.stackFrames[0].moreControlParams[param] = util.stackFrame.loopCounter;
         util.startBranch(1, true);
       }
     }
