@@ -349,6 +349,10 @@
             acceptReporters: true,
             items: "_getLists",
           },
+          targetsMyself: {
+            acceptReporters: true,
+            items: this._getTargets("stage", "myself"),
+          },
           targets: {
             acceptReporters: true,
             items: this._getTargets("stage"),
