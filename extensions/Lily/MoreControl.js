@@ -12,43 +12,16 @@
   const runtime = vm.runtime;
   const Cast = Scratch.Cast;
 
-  const junction =
+  const junctionIcon =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOS44MzUxOSIgaGVpZ2h0PSIxNy45OTM0OSIgdmlld0JveD0iMCwwLDE5LjgzNTE5LDE3Ljk5MzQ5Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjEyLjc0ODAyLC0xNzEuODc3OTEpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIyNS44MzMyMSwxODMuOTc3OTFjLTAuNiwtMC4zIC0xLC0wLjkgLTEsLTEuNXYtMS42Yy0xLjMsLTAuMSAtMi41LC0wLjUgLTMuNiwtMS4xYy0xLjcsLTAuOSAtMy4yLC0yLjMgLTQuMSwtNC4xYy0wLjksLTEuNyAzLjk1ODI3LC0zLjYyNzk3IDMuOTU4MjcsLTMuNjI3OTdjMCwwIC0wLjA5NTI5LDAuOTYxMDIgMC44OTUxNCwxLjg0ODk1YzEuMjU3ODYsMS4xMjc3IDIuMjc3NTgsMS4xNzkwMiAyLjg0NjYsMS4xNzkwMnYtMS41YzAsLTAuOSAwLjcsLTEuNyAxLjcsLTEuN2MwLjQsMCAwLjksMC4yIDEuMiwwLjVsNC40LDQuNGMwLjYsMC43IDAuNiwxLjcgMCwyLjRsLTQuNSw0LjVjLTAuNSwwLjUgLTEuMiwwLjYgLTEuOCwwLjN6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjE1LjQ5ODU3LDE4My45MDI3OGwxLC0xMS44OTU1Nmg0LjY1MDAxbDEuMTE3NjUsMTEuODk1NTZ6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjEyLjkxNjc3LDE4My4xMjE0YzAuMywtMC42IDAuOSwtMSAxLjUsLTFoMS42aDUuOGgxLjVjMC45LDAgMS43LDAuNyAxLjcsMS43YzAsMC40IC0wLjIsMC45IC0wLjUsMS4ybC00LjQsNC40Yy0wLjcsMC42IC0xLjcsMC42IC0yLjQsMGwtNC41LC00LjVjLTAuNSwtMC41IC0wLjYsLTEuMiAtMC4zLC0xLjh6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjE2LjUwNDU3LDE4NC4zMjk1N2wwLjgyMzUzLC0xMS40NjIzNGgyLjgxNDQ3bDEuMTE3NjUsMTEuNDYyMzR6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjE0LjQ3Nzc0LDE4My4xMjE0bDksMC4xYzAuNCwwIDAuNywwLjMgMC43LDAuN2MwLDAuMiAtMC4xLDAuMyAtMC4yLDAuNGwtNC40LDQuNGMtMC4zLDAuMyAtMC43LDAuMyAtMC45LDBsLTQuNCwtNC40Yy0wLjMsLTAuMyAtMC40LC0wLjYgLTAuMywtMC45YzAuMSwtMC4zIDAuMywtMC4zIDAuNSwtMC4zeiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iTTIyNS43NzIyNCwxODIuNjYwODJ2LTIuNmMtMS41LDAgLTIuOSwtMC4zIC00LjIsLTFjLTEuNiwtMC44IC0yLjgsLTIuMSAtMy42LC0zLjdjLTAuMjE3NjYsLTAuNDA4MTEgLTAuMzk4MywtMC44Mzg0MiAtMC41Mzk5MiwtMS4yODA4OGMtMC4zNzg5LC0xLjE4Mzc4IDIuNjYwNSwtMS4xNDg2NyAyLjY2MDUsLTEuMTQ4NjdjMCwwIDAuMjM2NTcsMC43MjU0NyAwLjM3OTQyLDAuOTI5NTRjMC42LDAuOSAxLjUsMS42IDIuNiwyYzAuOSwwLjMgMS44LDAuNCAyLjgsMC4ydi0yLjRjMCwtMC40IDAuMywtMC43IDAuNywtMC43YzAuMiwwIDAuMywwLjEgMC40LDAuMmw0LjQsNC40YzAuMywwLjMgMC4zLDAuNyAwLDAuOWwtNC40LDQuNGMtMC4zLDAuMyAtMC42LDAuNCAtMC45LDAuM2MtMC4zLC0wLjEgLTAuMywtMC4zIC0wLjMsLTAuNXoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMSIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjI3LjI1MTk4MDAwMDAwMDAwMzo4LjEyMjA4OTk5OTk5OTk4Ni0tPg==";
-  const repeat =
+  const repeatIcon =
     "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgaGVpZ2h0PSIyNCIKICAgd2lkdGg9IjI0IgogICB4bWw6c3BhY2U9InByZXNlcnZlIgogICBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAyNCAyNDsiCiAgIHZpZXdCb3g9IjAgMCAyNCAyNCIKICAgeT0iMHB4IgogICB4PSIwcHgiCiAgIGlkPSJyZXBlYXQiCiAgIHZlcnNpb249IjEuMSIKICAgc29kaXBvZGk6ZG9jbmFtZT0icmVwZWF0ICgyKS5zdmciCiAgIHhtbG5zOmlua3NjYXBlPSJodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy9uYW1lc3BhY2VzL2lua3NjYXBlIgogICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnMKICAgaWQ9ImRlZnMxMyIgLz48c29kaXBvZGk6bmFtZWR2aWV3CiAgIGlkPSJuYW1lZHZpZXcxMSIKICAgcGFnZWNvbG9yPSIjZmZmZmZmIgogICBib3JkZXJjb2xvcj0iIzAwMDAwMCIKICAgYm9yZGVyb3BhY2l0eT0iMC4yNSIKICAgaW5rc2NhcGU6c2hvd3BhZ2VzaGFkb3c9IjIiCiAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwLjAiCiAgIGlua3NjYXBlOnBhZ2VjaGVja2VyYm9hcmQ9IjAiCiAgIGlua3NjYXBlOmRlc2tjb2xvcj0iI2QxZDFkMSIgLz4KPHN0eWxlCiAgIHR5cGU9InRleHQvY3NzIgogICBpZD0ic3R5bGUyIj4KCS5zdDB7ZmlsbDojQ0Y4QjE3O30KCS5zdDF7ZmlsbDojRkZGRkZGO30KPC9zdHlsZT4KPHRpdGxlCiAgIGlkPSJ0aXRsZTQiPnJlcGVhdDwvdGl0bGU+CjxwYXRoCiAgIGQ9Ik0yMy4zLDExYy0wLjMsMC42LTAuOSwxLTEuNSwxaC0xLjZjLTAuMSwxLjMtMC41LDIuNS0xLjEsMy42Yy0wLjksMS43LTIuMywzLjItNC4xLDQuMSAgYy0xLjcsMC45LTMuNiwxLjItNS41LDAuOWMtMS44LTAuMy0zLjUtMS4xLTQuOS0yLjNjLTAuNy0wLjctMC43LTEuOSwwLTIuNmMwLjYtMC42LDEuNi0wLjcsMi4zLTAuMkg3YzAuOSwwLjYsMS45LDAuOSwyLjksMC45ICBzMS45LTAuMywyLjctMC45YzEuMS0wLjgsMS44LTIuMSwxLjgtMy41aC0xLjVjLTAuOSwwLTEuNy0wLjctMS43LTEuN2MwLTAuNCwwLjItMC45LDAuNS0xLjJsNC40LTQuNGMwLjctMC42LDEuNy0wLjYsMi40LDBMMjMsOS4yICBDMjMuNSw5LjcsMjMuNiwxMC40LDIzLjMsMTF6IgogICBjbGFzcz0ic3QwIgogICBpZD0icGF0aDYiIC8+CjxwYXRoCiAgIGQ9Ik0yMS44LDExaC0yLjZjMCwxLjUtMC4zLDIuOS0xLDQuMmMtMC44LDEuNi0yLjEsMi44LTMuNywzLjZjLTEuNSwwLjgtMy4zLDEuMS00LjksMC44Yy0xLjYtMC4yLTMuMi0xLTQuNC0yLjEgIGMtMC40LTAuMy0wLjQtMC45LTAuMS0xLjJjMC4zLTAuNCwwLjktMC40LDEuMi0wLjFsMCwwYzEsMC43LDIuMiwxLjEsMy40LDEuMXMyLjMtMC4zLDMuMy0xYzAuOS0wLjYsMS42LTEuNSwyLTIuNiAgYzAuMy0wLjksMC40LTEuOCwwLjItMi44aC0yLjRjLTAuNCwwLTAuNy0wLjMtMC43LTAuN2MwLTAuMiwwLjEtMC4zLDAuMi0wLjRsNC40LTQuNGMwLjMtMC4zLDAuNy0wLjMsMC45LDBMMjIsOS44ICBjMC4zLDAuMywwLjQsMC42LDAuMywwLjlTMjIsMTEsMjEuOCwxMXoiCiAgIGNsYXNzPSJzdDEiCiAgIGlkPSJwYXRoOCIgLz4KPC9zdmc+CjwhLS1yb3RhdGlvbkNlbnRlcjoxMjoxMi0tPgoK";
+  const continueIcon =
+    "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxNi40NjI1IiBoZWlnaHQ9IjE5LjM5Mzc1IiB2aWV3Qm94PSIwLDAsMTYuNDYyNSwxOS4zOTM3NSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIzMy41NDA2MiwtMTcwLjc4NDM3KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIzOC40OTA2MywxODkuNzA5MzdsLTQuNSwtNC41Yy0wLjYsLTAuNyAtMC42LC0xLjcgMCwtMi40bDQuNCwtNC40YzAuMywtMC4zIDAuOCwtMC41IDEuMiwtMC41YzEsMCAxLjcsMC44IDEuNywxLjdsMCwxLjVjMS40LDAgMi43LC0wLjcgMy41LC0xLjhjMC42LC0wLjggMC45LC0xLjcgMC45LC0yLjdjMCwtMSAtMC4zLC0yIC0wLjksLTIuOWwwLC0wLjFjLTAuNSwtMC43IC0wLjQsLTEuNyAwLjIsLTIuM2MwLjcsLTAuNyAxLjksLTAuNyAyLjYsMGMxLjIsMS40IDIsMy4xIDIuMyw0LjljMC4zLDEuOSAwLDMuOCAtMC45LDUuNWMtMC45LDEuOCAtMi40LDMuMiAtNC4xLDQuMWMtMS4xLDAuNiAtMi4zLDEgLTMuNiwxLjFsMCwxLjZjMCwwLjYgLTAuNCwxLjIgLTEsMS41Yy0wLjYsMC4zIC0xLjMsMC4yIC0xLjgsLTAuM3oiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBmaWxsPSIjY2Y4YjE3Ii8+PHBhdGggZD0iTTIzOS45OTA2MiwxODkuMDA5MzhjLTAuMywwLjEgLTAuNiwwIC0wLjksLTAuM2wtNC40LC00LjRjLTAuMywtMC4yIC0wLjMsLTAuNiAwLC0wLjlsNC40LC00LjRjMC4xLC0wLjEgMC4yLC0wLjIgMC40LC0wLjJjMC40LDAgMC43LDAuMyAwLjcsMC43djIuNGMxLDAuMiAxLjksMC4xIDIuOCwtMC4yYzEuMSwtMC40IDIsLTEuMSAyLjYsLTJjMC43LC0xIDEsLTIuMSAxLC0zLjNjMCwtMS4yIC0wLjQsLTIuNCAtMS4xLC0zLjR2MGMtMC4zLC0wLjMgLTAuMywtMC45IDAuMSwtMS4yYzAuMywtMC4zIDAuOSwtMC4zIDEuMiwwLjFjMS4xLDEuMiAxLjksMi44IDIuMSw0LjRjMC4zLDEuNiAwLDMuNCAtMC44LDQuOWMtMC44LDEuNiAtMiwyLjkgLTMuNiwzLjdjLTEuMywwLjcgLTIuNywxIC00LjIsMWwwLDIuNmMwLDAuMiAwLDAuNCAtMC4zLDAuNXoiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBmaWxsPSIjZmZmZmZmIi8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6Ni40NTkzNzUwMDAwMDAwMjM6OS4yMTU2MjUwMDAwMDAwMTctLT4=";
+  const breakIcon =
+    "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOS4zOTM3NSIgaGVpZ2h0PSIxNi40NjI1IiB2aWV3Qm94PSIwLDAsMTkuMzkzNzUsMTYuNDYyNSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIzMi4wNzUwMSwtMTcyLjI1KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTI1MS4wMDAwMSwxODMuNzYyNWwtNC41LDQuNWMtMC43LDAuNiAtMS43LDAuNiAtMi40LDBsLTQuNCwtNC40Yy0wLjMsLTAuMyAtMC41LC0wLjggLTAuNSwtMS4yYzAsLTEgMC44LC0xLjcgMS43LC0xLjdoMS41YzAsLTEuNCAtMC43LC0yLjcgLTEuOCwtMy41Yy0wLjgsLTAuNiAtMS43LC0wLjkgLTIuNywtMC45Yy0xLDAgLTIsMC4zIC0yLjksMC45bC0wLjEsMGMtMC43LDAuNSAtMS43LDAuNCAtMi4zLC0wLjJjLTAuNywtMC43IC0wLjcsLTEuOSAwLC0yLjZjMS40LC0xLjIgMy4xLC0yIDQuOSwtMi4zYzEuOSwtMC4zIDMuOCwwIDUuNSwwLjljMS44LDAuOSAzLjIsMi40IDQuMSw0LjFjMC42LDEuMSAxLDIuMyAxLjEsMy42aDEuNmMwLjYsMCAxLjIsMC40IDEuNSwxYzAuMywwLjYgMC4yLDEuMyAtMC4zLDEuOHoiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBmaWxsPSIjY2Y4YjE3Ii8+PHBhdGggZD0iTTI1MC4zMDAwMiwxODIuMjYyNTFjMC4xLDAuMyAwLDAuNiAtMC4zLDAuOWwtNC40LDQuNGMtMC4yLDAuMyAtMC42LDAuMyAtMC45LDBsLTQuNCwtNC40Yy0wLjEsLTAuMSAtMC4yLC0wLjIgLTAuMiwtMC40YzAsLTAuNCAwLjMsLTAuNyAwLjcsLTAuN2wyLjQsMGMwLjIsLTEgMC4xLC0xLjkgLTAuMiwtMi44Yy0wLjQsLTEuMSAtMS4xLC0yIC0yLC0yLjZjLTEsLTAuNyAtMi4xLC0xIC0zLjMsLTFjLTEuMiwwIC0yLjQsMC40IC0zLjQsMS4xdjBjLTAuMywwLjMgLTAuOSwwLjMgLTEuMiwtMC4xYy0wLjMsLTAuMyAtMC4zLC0wLjkgMC4xLC0xLjJjMS4yLC0xLjEgMi44LC0xLjkgNC40LC0yLjFjMS42LC0wLjMgMy40LDAgNC45LDAuOGMxLjYsMC44IDIuOSwyIDMuNywzLjZjMC43LDEuMyAxLDIuNyAxLDQuMmwyLjYsMGMwLjIsMCAwLjQsMCAwLjUsMC4zeiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIGZpbGw9IiNmZmZmZmYiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjo3LjkyNDk5MDAwMDAwMDA5MzU6Ny43NTAwMDAwMDAwMDAwMjgtLT4=";
 
   const hasOwn = (prop, object) => Object.hasOwn(object, prop);
-
-  let Utilities = {
-    cloneBlock(id, target) {
-      const cloneBlock = Utilities.cloneBlock;
-      function isInvalid(data) {
-        return data == null || data == undefined;
-      }
-      let needed = [];
-      let block = target.blocks.getBlock(id);
-      if (isInvalid(block)) {
-        return [];
-      }
-      Object.values(block.inputs).forEach((key) => {
-        if (hasOwn("shadow", key) && key.block === key.shadow) {
-          needed = [...needed, ...cloneBlock(key.block, target)];
-          return;
-        } else {
-          if (hasOwn("shadow", key))
-            needed = [...needed, ...cloneBlock(key.shadow, target)];
-          if (hasOwn("shadow", block))
-            needed = [...needed, ...cloneBlock(key.block, target)];
-        }
-      });
-      Object.values(block.fields).forEach((key) => {
-        if (hasOwn("id", key))
-          needed = [...needed, ...cloneBlock(key.id, target)];
-      });
-      needed.push(block);
-      return needed;
-    },
-  };
 
   vm.on("EXTENSION_ADDED", tryUseScratchBlocks);
   vm.on("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
@@ -138,14 +111,26 @@
           {
             opcode: "breakSwitch",
             blockType: Scratch.BlockType.COMMAND,
-            text: "break switch",
+            text: "break switch [IMAGE]",
             isTerminal: true,
+            arguments: {
+              IMAGE: {
+                type: Scratch.ArgumentType.IMAGE,
+                dataURI: breakIcon,
+              },
+            },
           },
           {
             opcode: "continueSwitch",
             blockType: Scratch.BlockType.COMMAND,
-            text: "continue switch",
+            text: "continue switch [IMAGE]",
             isTerminal: true,
+            arguments: {
+              IMAGE: {
+                type: Scratch.ArgumentType.IMAGE,
+                dataURI: continueIcon,
+              },
+            },
           },
           {
             opcode: "switchValue",
@@ -228,7 +213,7 @@
             arguments: {
               IMAGE: {
                 type: Scratch.ArgumentType.IMAGE,
-                dataURI: repeat,
+                dataURI: repeatIcon,
               },
             },
           },
@@ -350,23 +335,10 @@
           },
           "---",
           {
-            // created by Ashime
-            opcode: "runInSprite",
-            blockType: Scratch.BlockType.CONDITIONAL,
-            text: "run in [SPRITE]",
-            branchIconURI: junction,
-            arguments: {
-              SPRITE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "targets",
-              },
-            },
-          },
-          {
             opcode: "launch",
             blockType: Scratch.BlockType.CONDITIONAL,
             text: "launch",
-            branchIconURI: junction,
+            branchIconURI: junctionIcon,
           },
         ],
         menus: {
@@ -377,10 +349,6 @@
           lists: {
             acceptReporters: true,
             items: "_getLists",
-          },
-          targets: {
-            acceptReporters: true,
-            items: this._getTargets("stage"),
           },
           targetsMyself: {
             acceptReporters: true,
@@ -724,49 +692,6 @@
       }
     }
 
-    async runInSprite(args, util) {
-      const cloneBlock = Utilities.cloneBlock;
-      let SPRITE = Cast.toString(args.SPRITE);
-      let endTarget = undefined;
-      if (SPRITE.toLowerCase() === "_stage_") endTarget = runtime._stageTarget;
-      //if (SPRITE.toLowerCase() === '_myself_') endTarget = util.target;
-      if (!endTarget) endTarget = runtime.getSpriteTargetByName(SPRITE);
-      if (!endTarget) return 0;
-      const thread = util.thread;
-      const target = util.target;
-      const blocks = target.blocks;
-      const startBlock = blocks.getBranch(thread.peekStack(), 1);
-      let cloneOver = [];
-      let block = blocks.getBlock(startBlock);
-      cloneOver.push(cloneBlock(block.id, target));
-      while (block.next) {
-        if (block.next) block = blocks.getBlock(block.next);
-        cloneOver.push(cloneBlock(block.id, target));
-      }
-      cloneOver[0].parent = null;
-      for (let i = 0; i < cloneOver.length; i++) {
-        const blocks2 = cloneOver[i];
-        for (let j = 0; j < blocks2.length; j++) {
-          block = blocks2[j];
-          endTarget.blocks._blocks[block.id] = block;
-        }
-      }
-      endTarget.blocks._addScript(startBlock);
-      runtime.requestBlocksUpdate();
-      vm.refreshWorkspace();
-      var newThread = runtime._pushThread(startBlock, endTarget, {
-          stackClick: true,
-        }),
-        threadDied = false;
-      setTimeout(async () => {
-        await this.until((_) => !runtime.isActiveThread(newThread) == true);
-        threadDied = true;
-        endTarget.blocks._deleteScript(newThread.topBlock);
-      }, 0);
-      await this.until((_) => threadDied);
-      return 0;
-    }
-
     launch(args, util) {
       const target = util.target;
       const blockId = util.thread.peekStack();
@@ -818,26 +743,6 @@
       return currentC;
     }
 
-    _getTargets(stage, myself) {
-      const spriteNames = [];
-      if (stage) spriteNames.push({ text: "Stage", value: "_stage_" });
-      if (myself) spriteNames.push({ text: "myself", value: "_myself_" });
-
-      const targets = runtime.targets;
-      for (let index = 1; index < targets.length; index++) {
-        const targetName = targets[index].getName();
-        spriteNames.push({
-          text: targetName,
-          value: targetName,
-        });
-      }
-      if (spriteNames.length > 0) {
-        return spriteNames;
-      } else {
-        return [{ text: "", value: 0 }]; //this should never happen but it's a failsafe
-      }
-    }
-
     until(conditionFunction) {
       const poll = (resolve) => {
         if (conditionFunction()) resolve();
@@ -850,13 +755,6 @@
       return !Object.keys(thread.target.blocks._blocks).includes(
         thread.peekStack()
       );
-    }
-
-    _getTargetFromMenu(targetName, util) {
-      let target = runtime.getSpriteTargetByName(targetName);
-      if (targetName === "_myself_") target = util.target;
-      if (targetName === "_stage_") target = runtime.getTargetForStage();
-      return target;
     }
 
     _getLists() {
