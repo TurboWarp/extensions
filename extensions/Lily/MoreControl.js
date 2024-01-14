@@ -61,10 +61,22 @@
         (block.type == "argument_reporter_boolean" ||
           block.type == "argument_reporter_boolean" ||
           block.type == "argument_reporter_string_number" ||
-          block.type == "lmsSpAsMoreControl_forArg")
+          block.type == "lmsSpAsMoreControl_forArg" ||
+          block.type == "lmsSpAsMoreControl_forArg2")
       );
     };
   }
+
+  const getVarObjectFromName = function (name, util, type) {
+    const stageTarget = runtime.getTargetForStage();
+    const target = util.target;
+    let listObject = Object.create(null);
+
+    listObject = stageTarget.lookupVariableByNameAndType(name, type);
+    if (listObject) return listObject;
+    listObject = target.lookupVariableByNameAndType(name, type);
+    if (listObject) return listObject;
+  };
 
   class MoreControl {
     getInfo() {
@@ -188,33 +200,6 @@
           },
           "---",
           {
-            blockType: Scratch.BlockType.XML,
-            xml: `<block type="lmsSpAsMoreControl_for"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>`,
-          },
-          {
-            opcode: "for",
-            blockType: Scratch.BlockType.LOOP,
-            text: "for [I] = [A] to [B]",
-            hideFromPalette: true,
-            arguments: {
-              I: {},
-              A: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              B: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 10,
-              },
-            },
-          },
-          {
-            opcode: "forArg",
-            blockType: Scratch.BlockType.REPORTER,
-            hideFromPalette: true,
-            text: "i",
-          },
-          {
             opcode: "repeatDuration",
             blockType: Scratch.BlockType.LOOP,
             text: "repeat for [DURATION] seconds",
@@ -243,6 +228,59 @@
               },
             },
           },
+          "---",
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: '<block type="lmsSpAsMoreControl_for"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="lmsSpAsMoreControl_forEachItemNum"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpAsMoreControl_menu_lists"><field name="lists"></field></shadow></value></block><block type="lmsSpAsMoreControl_forEachItem"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpAsMoreControl_menu_lists"><field name="lists"></field></shadow></value></block>',
+          },
+          {
+            opcode: "for",
+            blockType: Scratch.BlockType.LOOP,
+            text: "for [I] = [A] to [B]",
+            hideFromPalette: true,
+            arguments: {
+              I: {},
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10,
+              },
+            },
+          },
+          {
+            opcode: "forEachItemNum",
+            blockType: Scratch.BlockType.LOOP,
+            text: "for each item # [I] in [LIST]",
+            hideFromPalette: true,
+            arguments: {
+              I: {},
+              LIST: {
+                menu: "lists",
+              },
+            },
+          },
+          {
+            opcode: "forEachItem",
+            blockType: Scratch.BlockType.LOOP,
+            text: "for each item [I] in [LIST]",
+            hideFromPalette: true,
+            arguments: {
+              I: {},
+              LIST: {
+                menu: "lists",
+              },
+            },
+          },
+          {
+            opcode: "forArg",
+            blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true,
+            text: "i",
+          },
+          "---",
           {
             opcode: "spayedCondition",
             blockType: Scratch.BlockType.LOOP,
@@ -295,6 +333,10 @@
           types: {
             acceptReporters: true,
             items: ["frames", "seconds"],
+          },
+          lists: {
+            acceptReporters: true,
+            items: "_getLists",
           },
           targets: {
             acceptReporters: true,
@@ -452,7 +494,7 @@
       const param = "i";
       const stackFrames = util.thread.stackFrames;
       if (typeof stackFrames === "undefined") return 0;
-      
+
       const params = stackFrames[0].moreControlParams;
       if (typeof params === "undefined") return 0;
 
@@ -471,14 +513,66 @@
 
         if (typeof params === "undefined") {
           util.thread.stackFrames[0].moreControlParams = {};
-        } 
+        }
       }
 
       util.stackFrame.loopCounter++;
 
       if (util.stackFrame.loopCounter <= b) {
-        util.thread.stackFrames[0].moreControlParams[param] = util.stackFrame.loopCounter;
+        util.thread.stackFrames[0].moreControlParams[param] =
+          util.stackFrame.loopCounter;
         util.startBranch(1, true);
+      }
+    }
+
+    forEachItem(args, util) {
+      const listName = Cast.toString(args.LIST);
+      const list = getVarObjectFromName(listName, util, "list");
+      if (!list) return;
+
+      const param = "i";
+      const params = util.thread.moreControlParams;
+
+      if (typeof util.stackFrame.loopCounter === "undefined") {
+        util.stackFrame.loopCounter = 0;
+
+        if (typeof params === "undefined") {
+          util.thread.stackFrames[0].moreControlParams = {};
+        }
+      }
+
+      util.stackFrame.loopCounter++;
+
+      if (util.stackFrame.loopCounter <= list.value.length) {
+        const loopCounter = util.stackFrame.loopCounter;
+        util.thread.stackFrames[0].moreControlParams[param] =
+          list.value[loopCounter - 1];
+        return true;
+      }
+    }
+
+    forEachItemNum(args, util) {
+      const listName = Cast.toString(args.LIST);
+      const list = getVarObjectFromName(listName, util, "list");
+      if (!list) return;
+
+      const param = "i";
+      const params = util.thread.moreControlParams;
+
+      if (typeof util.stackFrame.loopCounter === "undefined") {
+        util.stackFrame.loopCounter = 0;
+
+        if (typeof params === "undefined") {
+          util.thread.stackFrames[0].moreControlParams = {};
+        }
+      }
+
+      util.stackFrame.loopCounter++;
+
+      if (util.stackFrame.loopCounter <= list.value.length) {
+        const loopCounter = util.stackFrame.loopCounter;
+        util.thread.stackFrames[0].moreControlParams[param] = loopCounter;
+        return true;
       }
     }
 
@@ -489,7 +583,7 @@
         util.startStackTimer(duration);
         runtime.requestRedraw();
         return true;
-      } else if (!util.stackTimerFinished() && !args.CONDITION) {
+      } else if (!util.stackTimerFinished()) {
         return true;
       }
     }
@@ -500,7 +594,7 @@
         util.stackFrame.loopCounter = duration;
       }
       util.stackFrame.loopCounter--;
-      if (util.stackFrame.loopCounter >= 0 && !args.CONDITION) {
+      if (util.stackFrame.loopCounter >= 0) {
         return true;
       }
     }
@@ -566,10 +660,11 @@
       }
       endTarget.blocks._addScript(startBlock);
       runtime.requestBlocksUpdate();
-      vm.refreshWorkspace();      
+      vm.refreshWorkspace();
       var newThread = runtime._pushThread(startBlock, endTarget, {
-        stackClick: true,
-      }), threadDied = false;
+          stackClick: true,
+        }),
+        threadDied = false;
       setTimeout(async () => {
         await this.until((_) => !runtime.isActiveThread(newThread) == true);
         threadDied = true;
@@ -661,6 +756,23 @@
       if (targetName === "_myself_") target = util.target;
       if (targetName === "_stage_") target = runtime.getTargetForStage();
       return target;
+    }
+
+    _getLists() {
+      // @ts-expect-error - ScratchBlocks not typed yet
+      // eslint-disable-next-line no-undef
+      const lists =
+        typeof ScratchBlocks === "undefined"
+          ? []
+          : ScratchBlocks.getMainWorkspace()
+              .getVariableMap()
+              .getVariablesOfType("list")
+              .map((model) => model.name);
+      if (lists.length > 0) {
+        return lists;
+      } else {
+        return [""];
+      }
     }
   }
 
