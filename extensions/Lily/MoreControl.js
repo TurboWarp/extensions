@@ -377,7 +377,7 @@
       const outerC = this.getOuterCFromOpcode(
         util.target,
         blockId,
-        "lmsSwitchCase_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -399,7 +399,7 @@
       const outerC = this.getOuterCFromOpcode(
         util.target,
         blockId,
-        "lmsSwitchCase_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -420,7 +420,7 @@
       const outerC = this.getOuterCFromOpcode(
         util.target,
         blockId,
-        "lmsSwitchCase_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -434,7 +434,7 @@
       const outerC = this.getOuterCFromOpcode(
         util.target,
         blockId,
-        "lmsSwitchCase_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -446,7 +446,7 @@
       const outerC = this.getOuterCFromOpcode(
         util.target,
         blockId,
-        "lmsSwitchCase_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -458,7 +458,7 @@
       const outerC = this.getOuterCFromOpcode(
         util.target,
         blockId,
-        "lmsSwitchCase_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -471,7 +471,7 @@
       const outerC = this.getOuterCFromOpcode(
         util.target,
         blockId,
-        "lmsSwitchCase_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return "";
 
