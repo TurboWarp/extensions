@@ -16,6 +16,7 @@
 "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI1MC44OTkzOSIgaGVpZ2h0PSI1MC44OTkzOSIgdmlld0JveD0iMCwwLDUwLjg5OTM5LDUwLjg5OTM5Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjE0LjU1MDMxLC0xNTQuNTYzNzYpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIxNC41NTAzMSwyMDUuNDYzMTV2LTUwLjg5OTM5aDUwLjg5OTM5djUwLjg5OTM5eiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIi8+PHBhdGggZD0iTTIyNC4wMDAwMSwxOTguNzU1MTNjMCwtOC45MjY4NiAwLC0zMy4zNzYzOSAwLC0zNy4zMzMzM2MwLC0xLjc2MTczIDIuMTg0OTMsLTMuNDA4MzQgMy45NjY2NywtMy40MDgzNGMzLjY3OTgsMCAxNi45MTk0NSwwIDE2LjkxOTQ1LDBsMTEuMTEzODgsMTEuMDQ5NjZjMCwwIDAsMjQuMjg2ODMgMCwyOS4zNTg2OGMwLDEuNzczOTcgLTEuNjI5NiwzLjU5MTY2IC00LjExNjY3LDMuNTkxNjZjLTYuODQxMTcsMCAtMjAuMTcwMjEsMCAtMjMuOTE2NjcsMGMtMS45MjE2MSwwIC0zLjk2NjY3LC0xLjIyNzQ3IC0zLjk2NjY3LC0zLjI1ODMzeiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSIjMDAwMDAwIi8+PHBhdGggZD0iTTI0NC45NDY2NywxNjguOTg0MnYtMTAuOTk3NjRsMTAuOTk3NjQsMTAuOTk3NjR6IiBmaWxsPSIjYzBjMGMwIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNMjI5Ljk1ODMzLDE4OS45MjE3OXYtMTQuODMzMzRoMjB2MTQuODMzMzR6IiBmaWxsPSIjYzBjMGMwIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNMjMyLjA1LDE4MS4wODg0M3YtNGg2LjgzMzMzdjR6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNMjQxLjA1LDE4MS4wODg0M3YtNGg2LjgzMzMzdjR6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNMjMyLjA1LDE4Ny4xNzE3OXYtNGg2LjgzMzMzdjR6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNMjQxLjA1LDE4Ny4xNzE3OXYtNGg2LjgzMzMzdjR6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9Im5vbmUiLz48L2c+PC9nPjwvc3ZnPg==";
 
   const defaultID = "1fDpOhPA2xNvar_K9mtl2h1XV5AdZnlkOZzmJnZNjHDg";
+  const vm = Scratch.vm;
 
   class SPspreads {
     getInfo() {
@@ -73,7 +74,7 @@
     setup() {
       const confirm = window.confirm(`To Write Rows and Columns in Spreadsheets, You Must install this Spreads Extension. Do you want to open the link?\n
       "workspace.google.com/marketplace/webhooks_for_sheets" \n\nFollow the Setup Steps in the "Extensions/Addons" Tab in Your Spread.`);
-      if (confirm) window.open("https://workspace.google.com/u/0/marketplace/app/webhooks_for_sheets/860288437469", "_blank");
+      if (confirm) Scratch.openWindow("https://workspace.google.com/u/0/marketplace/app/webhooks_for_sheets/860288437469", "_blank");
     }
     setup2() {
       alert(`To interact with Your Spread in this Project, import the extensions "Couplers" and "TurboHook" or "HTTP"`);
@@ -84,7 +85,7 @@
       const confirm3 = window.confirm(`Import "HTTP" by "godslayerakp"?`);
       if (confirm3) this.importExt("https://extensions.turbowarp.org/godslayerakp/http.js");
     }
-    async importExt(NAME) { vm.extensionManager.loadExtensionURL(NAME) }
+    importExt(NAME) { vm.extensionManager.loadExtensionURL(NAME) }
 
     getID(args) {
       const url = Scratch.Cast.toString(args.URL);
