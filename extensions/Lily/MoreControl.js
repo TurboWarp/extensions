@@ -350,9 +350,9 @@
             acceptReporters: true,
             items: "_getLists",
           },
-          targetsMyself: {
+          targets: {
             acceptReporters: true,
-            items: this._getTargets("stage", "myself"),
+            items: this._getTargets("stage"),
           },
         },
       };
@@ -755,6 +755,33 @@
       return !Object.keys(thread.target.blocks._blocks).includes(
         thread.peekStack()
       );
+    }
+
+    _getTargetFromMenu(targetName, util) {
+      let target = runtime.getSpriteTargetByName(targetName);
+      if (targetName === "_myself_") target = util.target;
+      if (targetName === "_stage_") target = runtime.getTargetForStage();
+      return target;
+    }
+
+    _getTargets(stage, myself) {
+      const spriteNames = [];
+      if (stage) spriteNames.push({ text: "Stage", value: "_stage_" });
+      if (myself) spriteNames.push({ text: "myself", value: "_myself_" });
+
+      const targets = runtime.targets;
+      for (let index = 1; index < targets.length; index++) {
+        const targetName = targets[index].getName();
+        spriteNames.push({
+          text: targetName,
+          value: targetName,
+        });
+      }
+      if (spriteNames.length > 0) {
+        return spriteNames;
+      } else {
+        return [{ text: "", value: 0 }]; //this should never happen but it's a failsafe
+      }
     }
 
     _getLists() {
