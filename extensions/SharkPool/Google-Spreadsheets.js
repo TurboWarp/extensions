@@ -29,7 +29,7 @@
         color2: "#188038",
         color3: "#115c28",
         blocks: [
-          { blockType: Scratch.BlockType.LABEL, text: "Spread Reading" },
+          { blockType: Scratch.BlockType.LABEL, text: "Sheet Reading" },
           {
             func: "disclaimer",
             blockType: Scratch.BlockType.BUTTON,
@@ -38,7 +38,7 @@
           {
             opcode: "getID",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get ID from spread [URL]",
+            text: "get ID from sheet [URL]",
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -49,12 +49,12 @@
           {
             opcode: "getContent",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get data from spread with ID [ID]",
+            text: "get data from sheet with ID [ID]",
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "/d/..." }
             }
           },
-          { blockType: Scratch.BlockType.LABEL, text: "Spread Writing" },
+          { blockType: Scratch.BlockType.LABEL, text: "Sheet Writing" },
           {
             func: "setup",
             blockType: Scratch.BlockType.BUTTON,
