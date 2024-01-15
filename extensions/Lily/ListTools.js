@@ -26,7 +26,7 @@
   class Data {
     getInfo() {
       return {
-        id: "lmsListTools",
+        id: "lmsData",
         name: "List Tools",
         color1: "#ff661a",
         color2: "#f2590d",
