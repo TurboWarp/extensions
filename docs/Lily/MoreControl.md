@@ -165,14 +165,6 @@ case [3] {
 }  :: control 
 ```
 
-## Switch value
-
-The **switch value** block is rather simple: it reports the value of the nearest switch. It's for quality of life more than anything, if you don't want to save the switch to a variable before running it.
-
-```scratch
-switch value :: control reporter
-```
-
 # Conditionals
 
 There are 2 extra **if** blocks within this extension.
