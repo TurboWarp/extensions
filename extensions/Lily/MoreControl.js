@@ -131,11 +131,6 @@
               },
             },
           },
-          {
-            opcode: "switchValue",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "switch value",
-          },
           "---",
           {
             opcode: "elseIf",
@@ -455,18 +450,6 @@
 
       outerC.runNextCase = false;
       outerC.switchFalling = false;
-    }
-
-    switchValue(args, util) {
-      const blockId = util.thread.peekStack();
-      const outerC = this._getOuterCFromOpcode(
-        util.thread,
-        blockId,
-        "lmsSpAsMoreControl_switch"
-      );
-      if (!outerC) return "";
-
-      return outerC.switchValue ?? "";
     }
 
     elseIf(args, util) {
