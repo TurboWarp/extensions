@@ -3,7 +3,7 @@
 // Description: Pause the Project and certain Scripts
 // By: SharkPool
 
-// Version V.1.6.0
+// Version V.1.6.0 (TW Version)
 
 (function (Scratch) {
   "use strict";
@@ -26,11 +26,10 @@
     let isChecking = false;
     const check = () => {
       if (isChecking) return;
-      const isPM = Scratch.extensions.isPenguinMod;
       isChecking = true;
       try {
         projectPaused = runtime.ioDevices.clock._paused;
-        if (!projectPaused && !isPM) return;
+        if (!projectPaused) return;
         const allUtils = vm.runtime.targets;
         for (let i = 0; i < allUtils.length; i++) {
           const util = allUtils[i];
@@ -44,12 +43,11 @@
                 if (projectPaused) {
                   vm.runtime.toggleScript(object[keyV].id, util);
                   checkReset(object[keyV].id);
-                } else if (isPM) { checkReset(object[keyV].id) }
+                }
               } else { checkReset(object[keyV].id) }
             }
           }
         }
-        if (isPM) vm.runtime._step();
       } catch {} finally {
         isChecking = false;
         setTimeout(check, 10);
