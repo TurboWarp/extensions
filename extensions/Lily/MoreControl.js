@@ -249,7 +249,7 @@
           "---",
           {
             blockType: Scratch.BlockType.XML,
-            xml: '<block type="lmsSpAsMoreControl_for"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="lmsSpAsMoreControl_forEachItemNum"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpAsMoreControl_menu_lists"><field name="lists"></field></shadow></value></block><block type="lmsSpAsMoreControl_forEachItem"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpAsMoreControl_menu_lists"><field name="lists"></field></shadow></value></block>',
+            xml: '<block type="lmsSpAsMoreControl_for"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="lmsSpAsMoreControl_forEachItem"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpAsMoreControl_menu_lists"><field name="lists"></field></shadow></value></block>',
           },
           {
             opcode: "for",
@@ -265,18 +265,6 @@
               B: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 10,
-              },
-            },
-          },
-          {
-            opcode: "forEachItemNum",
-            blockType: Scratch.BlockType.LOOP,
-            text: "for each item # [I] in [LIST]",
-            hideFromPalette: true,
-            arguments: {
-              I: {},
-              LIST: {
-                menu: "lists",
               },
             },
           },
@@ -581,9 +569,8 @@
         }
       }
 
-      util.stackFrame.loopCounter++;
-
       if (util.stackFrame.loopCounter <= b) {
+        util.stackFrame.loopCounter++;
         util.thread.stackFrames[0].moreControlParams[param] =
           util.stackFrame.loopCounter;
         util.startBranch(1, true);
@@ -612,31 +599,6 @@
         const loopCounter = util.stackFrame.loopCounter;
         util.thread.stackFrames[0].moreControlParams[param] =
           list.value[loopCounter - 1];
-        return true;
-      }
-    }
-
-    forEachItemNum(args, util) {
-      const listName = Cast.toString(args.LIST);
-      const list = getVarObjectFromName(listName, util, "list");
-      if (!list) return;
-
-      const param = "i";
-      const params = util.thread.moreControlParams;
-
-      if (typeof util.stackFrame.loopCounter === "undefined") {
-        util.stackFrame.loopCounter = 0;
-
-        if (typeof params === "undefined") {
-          util.thread.stackFrames[0].moreControlParams = {};
-        }
-      }
-
-      util.stackFrame.loopCounter++;
-
-      if (util.stackFrame.loopCounter <= list.value.length) {
-        const loopCounter = util.stackFrame.loopCounter;
-        util.thread.stackFrames[0].moreControlParams[param] = loopCounter;
         return true;
       }
     }
