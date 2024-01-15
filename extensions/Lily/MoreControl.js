@@ -365,8 +365,8 @@
 
     case(args, util) {
       const blockId = util.thread.peekStack();
-      const outerC = this.getOuterCFromOpcode(
-        util.target,
+      const outerC = this._getOuterCFromOpcode(
+        util.thread,
         blockId,
         "lmsSpAsMoreControl_switch"
       );
@@ -387,8 +387,8 @@
 
     default(args, util) {
       const blockId = util.thread.peekStack();
-      const outerC = this.getOuterCFromOpcode(
-        util.target,
+      const outerC = this._getOuterCFromOpcode(
+        util.thread,
         blockId,
         "lmsSpAsMoreControl_switch"
       );
@@ -408,8 +408,8 @@
 
     runNextCaseWhen(args, util) {
       const blockId = util.thread.peekStack();
-      const outerC = this.getOuterCFromOpcode(
-        util.target,
+      const outerC = this._getOuterCFromOpcode(
+        util.thread,
         blockId,
         "lmsSpAsMoreControl_switch"
       );
@@ -422,8 +422,8 @@
 
     runNextCase(args, util) {
       const blockId = util.thread.peekStack();
-      const outerC = this.getOuterCFromOpcode(
-        util.target,
+      const outerC = this._getOuterCFromOpcode(
+        util.thread,
         blockId,
         "lmsSpAsMoreControl_switch"
       );
@@ -434,8 +434,8 @@
 
     breakSwitch(args, util) {
       const blockId = util.thread.peekStack();
-      const outerC = this.getOuterCFromOpcode(
-        util.target,
+      const outerC = this._getOuterCFromOpcode(
+        util.thread,
         blockId,
         "lmsSpAsMoreControl_switch"
       );
@@ -446,8 +446,8 @@
 
     continueSwitch(args, util) {
       const blockId = util.thread.peekStack();
-      const outerC = this.getOuterCFromOpcode(
-        util.target,
+      const outerC = this._getOuterCFromOpcode(
+        util.thread,
         blockId,
         "lmsSpAsMoreControl_switch"
       );
@@ -459,8 +459,8 @@
 
     switchValue(args, util) {
       const blockId = util.thread.peekStack();
-      const outerC = this.getOuterCFromOpcode(
-        util.target,
+      const outerC = this._getOuterCFromOpcode(
+        util.thread,
         blockId,
         "lmsSpAsMoreControl_switch"
       );
@@ -668,42 +668,46 @@
 
     /* Utility Functions */
 
-    getBlockByID(target, id) {
-      return target.blocks._blocks[id];
+    _getBlockByID(thread, id) {
+      return thread.blockContainer.getBlock(id);
     }
 
-    getOuterBlockID(target, startBlockID) {
-      let block = this.getBlockByID(target, startBlockID);
+    _isInSubstack(thread, startId, checkId) {
+      let currentBlock = this._getBlockByID(thread, startId);
+      if (!currentBlock || !checkId) return false;
+      if (currentBlock.id === checkId) return true;
 
-      while (
-        block.parent != null &&
-        this.getBlockByID(target, block.parent).next
-      ) {
-        block = this.getBlockByID(target, block.parent);
+      while (currentBlock.next !== null) {
+        const next = currentBlock.next;
+        if (next === checkId) {
+          return true;
+        }
+        currentBlock = this._getBlockByID(thread, currentBlock.next);
       }
 
-      if (block.parent) block = this.getBlockByID(target, block.parent);
-      return block;
+      return false;
     }
 
-    getOuterCBlock(target, startId) {
-      let block = this.getBlockByID(target, startId);
-      if (!block || typeof block !== "object") return null;
+    _getOuterCBlock(thread, startId) {
+      let block = this._getBlockByID(thread, startId);
+      if (!block.parent) return;
 
-      let isC = false;
+      while (block.parent) {
+        block = this._getBlockByID(thread, block.parent);
+        if (!block) return;
+        if (!block.inputs.SUBSTACK) continue;
 
-      while (!isC && hasOwn("parent", block) && block.parent !== null) {
-        block = this.getBlockByID(target, block.parent);
-        isC = hasOwn("inputs", block) && hasOwn("SUBSTACK", block.inputs);
+        const substackBlock = block.inputs.SUBSTACK.block;
+        if (this._isInSubstack(thread, substackBlock, startId)) {
+          return block;
+        }
       }
-
-      return isC ? block : null;
     }
 
-    getOuterCFromOpcode(target, startId, opcode) {
-      let currentC = this.getOuterCBlock(target, startId);
-      while (currentC != null && currentC.opcode !== opcode) {
-        currentC = this.getOuterCBlock(target, currentC.id);
+    _getOuterCFromOpcode(thread, startId, opcode) {
+      let currentC = this._getOuterCBlock(thread, startId);
+      while (currentC !== null && currentC.opcode !== opcode) {
+        currentC = this._getOuterCBlock(thread, currentC.id);
       }
       return currentC;
     }
