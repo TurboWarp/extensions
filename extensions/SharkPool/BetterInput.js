@@ -3,7 +3,7 @@
 // Description: Expansion of the "ask and wait" Blocks
 // By: SharkPool
 
-// Version V.3.1.0 (New Blocks and Input Types + Minor Changes)
+// Version V.3.1.1 (Bug Fixes + Code Optimization)
 
 (function (Scratch) {
   "use strict";
@@ -150,6 +150,34 @@
             text: "remove all ask boxes",
           },
           { blockType: Scratch.BlockType.LABEL, text: "Formatting" },
+          {
+            opcode: "setEnable",
+            blockType: Scratch.BlockType.COMMAND,
+            hideFromPalette: true,
+            text: "set [ENABLE_MENU] to be [ACTION]",
+            arguments: {
+              ENABLE_MENU: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "enableMenu",
+              },
+              ACTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "inputActionMenu",
+              }
+            },
+          },
+          {
+            opcode: "getBoxCount",
+            blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true,
+            text: "box count",
+          },
+          {
+            opcode: "getMaxCount",
+            blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true,
+            text: "box limit",
+          },
           {
             opcode: "setFontSize",
             blockType: Scratch.BlockType.COMMAND,
@@ -703,28 +731,22 @@
     allFonts() {
       const customFonts = Scratch.vm.runtime.fontManager
         ? Scratch.vm.runtime.fontManager.getFonts().map((i) => ({
-            text: i.name,
-            value: i.family,
+            text: i.name, value: i.family
           }))
         : [];
       return [ ...fontMenu, ...customFonts ];
     }
 
-    allButtons(array, enableText) {
-      const customButtons = Object.keys(this.buttonJSON);
-      if (enableText) {
-        customButtons.forEach((button) => { customButtons.push(button + " Text") });
-      }
-      return [ ...array, ...customButtons ];
+    allButtons(array, enableTxt) {
+      const customBtn = Object.keys(this.buttonJSON);
+      if (enableTxt) customBtn.forEach((btn) => { customBtn.push(btn + " Text") });
+      return [ ...array, ...customBtn ];
     }
 
     updateOverlayPos(overlay) {
       if (this.Rotation > 359) {
         this.Rotation = 0;
-      } else if (this.Rotation < 1) {
-        this.Rotation = 360;
-      }
-
+      } else if (this.Rotation < 1) { this.Rotation = 360 }
       if (this.textBoxX !== null && this.textBoxY !== null) {
         overlay.style.left = `${50 + this.textBoxX}%`;
         overlay.style.top = `${50 + this.textBoxY}%`;
@@ -777,7 +799,6 @@
     updateButtonImages(overlay) {
       let text = overlay.querySelector(".question");
       if (text) text.style.color = this.questionColor;
-
       const inputField = overlay.querySelector("input");
       if (inputField) {
         inputField.style.background = "";
@@ -820,9 +841,7 @@
           if (canFetch) {
             element.style.background = `url(${encodeURI(url)})`;
             element.style.backgroundSize = scale + "%";
-          } else {
-            console.log("Cannot fetch content from the URL");
-          }
+          } else { console.log("Cannot fetch content from the URL") }
         });
       }
     }
@@ -858,69 +877,41 @@
     setColorSettings(args) {
       const colorType = args.COLOR_TYPE;
       const colorValue = args.COLOR;
-      switch (colorType) {
-        case "Question Text":
-          this.questionColor = colorValue;
-          break;
-        case "Input Text":
-          this.inputColor = colorValue;
-          break;
-        case "Textbox":
-          this.textBoxColor[0] = colorValue;
-          this.overlayImage[0] = " ";
-          break;
-        case "Input Box":
-          this.inputFieldColor[0] = colorValue;
-          this.overlayImage[1] = " ";
-          break;
-        case "Input Outline":
-          this.inputFieldColor[1] = colorValue;
-          break;
-        case "Dropdown Button":
-          this.dropdownButtonColor[0] = colorValue;
-          this.overlayImage[2] = " ";
-          break;
-        case "Dropdown Text":
-          this.dropdownButtonColor[1] = colorValue;
-          break;
-        default:
-          if (this.buttonJSON[colorType] || this.buttonJSON[colorType.replace(" Text", "")]) {
-            let buttonInfo;
-            if (colorType.includes(" Text")) {
-              buttonInfo = this.buttonJSON[colorType.replace(" Text", "")];
-              buttonInfo.textColor = colorValue;
-            } else {
-              buttonInfo = this.buttonJSON[colorType];
-              buttonInfo.color = colorValue;
-              buttonInfo.image = " ";
-            }
-          }
-          break;
+      const colorTypeMap = {
+        "Question Text": () => this.questionColor = colorValue,
+        "Input Text": () => this.inputColor = colorValue,
+        "Textbox": () => { this.textBoxColor[0] = colorValue; this.overlayImage[0] = " "; },
+        "Input Box": () => { this.inputFieldColor[0] = colorValue; this.overlayImage[1] = " "; },
+        "Input Outline": () => this.inputFieldColor[1] = colorValue,
+        "Dropdown Button": () => { this.dropdownButtonColor[0] = colorValue; this.overlayImage[2] = " "; },
+        "Dropdown Text": () => this.dropdownButtonColor[1] = colorValue,
+      };
+      const buttonInfo = this.buttonJSON[colorType] || this.buttonJSON[colorType.replace(" Text", "")];
+      if (buttonInfo) {
+        if (colorType.includes(" Text")) {
+          buttonInfo.textColor = colorValue;
+        } else {
+          buttonInfo.color = colorValue;
+          buttonInfo.image = " ";
+        }
       }
-      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
+      const applyColor = colorTypeMap[colorType];
+      if (applyColor) applyColor();
+      this.activeOverlays.forEach(overlay => this.updateOverlay(overlay));
     }
 
     findGradientType(menu) {
-      const colorType = menu;
-      switch (colorType) {
-        case "Textbox":
-          newColorType = "textBoxColor";
-          this.overlayImage[0] = " ";
-          return newColorType;
-        case "Input Box":
-          newColorType = "inputFieldColor";
-          this.overlayImage[1] = " ";
-          return newColorType;
-        case "Dropdown Button":
-          newColorType = "dropdownButtonColor";
-          this.overlayImage[2] = " ";
-          return newColorType;
-        default:
-          if (this.buttonJSON[colorType]) {
-            newColorType = ["button", colorType];
-          }
-          return newColorType;
-      }
+      const colorTypeMap = {
+        Textbox: { newColorType: "textBoxColor", ind: 0 },
+        "Input Box": { newColorType: "inputFieldColor", ind: 1 },
+        "Dropdown Button": { newColorType: "dropdownButtonColor", ind: 2 }
+      };
+      if (colorTypeMap[menu]) {
+        const { newColorType, ind } = colorTypeMap[menu];
+        this.overlayImage[ind] = " ";
+        return newColorType;
+      } else if (this.buttonJSON[menu]) { return ["button", menu] }
+      return menu;
     }
 
     setGradient(args) {
@@ -950,84 +941,56 @@
 
     setBorderRadius(args) {
       const element = args.ELEMENT;
-      let value = args.VALUE;
-      if (value < 0)  value = 0;
-      switch (element) {
-        case "Textbox":
-          this.overlayBorderRadius[0] = value;
-          break;
-        case "Input Box":
-          this.overlayBorderRadius[1] = value;
-          break;
-        case "Dropdown Button":
-          this.overlayBorderRadius[2] = value;
-          break;
-        default:
-          if (this.buttonJSON[element]) {
-            const buttonInfo = this.buttonJSON[element];
-            buttonInfo.borderRadius = value;
-          }
-          break;
+      let value = Math.max(args.VALUE, 0);
+      const elementMap = { Textbox: 0, "Input Box": 1, "Dropdown Button": 2 };
+      const elementIndex = elementMap[element];
+      if (elementIndex !== undefined) {
+        this.overlayBorderRadius[elementIndex] = value;
+      } else if (this.buttonJSON[element]) {
+        this.buttonJSON[element].borderRadius = value;
       }
-      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
+      this.activeOverlays.forEach(overlay => this.updateOverlay(overlay));
     }
 
     setShadow(args) {
-      const shadow = args.SHADOW;
-      switch (shadow) {
-        case "Size":
-          this.shadowS[2] = args.AMT;
-          break;
-        case "X":
-          this.shadowS[0] = args.AMT;
-          break;
-        case "Y":
-          this.shadowS[1] = args.AMT;
-          break;
-        case "Opacity":
-          this.shadowS[3] = args.AMT / 100;
-          break;
+      const shadowMap = { Size: 2, X: 0, Y: 1, Opacity: 3 };
+      const propertyIndex = shadowMap[args.SHADOW];
+      if (propertyIndex !== undefined) {
+        this.shadowS[propertyIndex] = args.AMT;
+        if (args.SHADOW === "Opacity") this.shadowS[propertyIndex] /= 100;
       }
-      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
+      this.activeOverlays.forEach(overlay => this.updateOverlay(overlay));
     }
 
     setImage(args) {
-      if (args.ELEMENT === "Textbox") {
-        this.overlayImage[0] = args.IMAGE;
-      } else if (args.ELEMENT === "Input Box") {
-        this.overlayImage[1] = args.IMAGE;
-      } else if (args.ELEMENT === "Dropdown Button") {
-        this.overlayImage[2] = args.IMAGE;
+      const elementMap = { Textbox: 0, "Input Box": 1, "Dropdown Button": 2 };
+      const elementIndex = elementMap[args.ELEMENT];
+      if (elementIndex !== undefined) {
+        this.overlayImage[elementIndex] = args.IMAGE;
       } else if (this.buttonJSON[args.ELEMENT]) {
-        const buttonInfo = this.buttonJSON[args.ELEMENT];
-        buttonInfo.image = args.IMAGE;
+        this.buttonJSON[args.ELEMENT].image = args.IMAGE;
       }
-      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
+      this.activeOverlays.forEach(overlay => this.updateOverlay(overlay));
     }
 
     scaleImage(args) {
-      if (args.ELEMENT === "Textbox") {
-        this.imgScale[0] = args.SCALE;
-      } else if (args.ELEMENT === "Input Box") {
-        this.imgScale[1] = args.SCALE;
-      } else if (args.ELEMENT === "Dropdown Button") {
-        this.imgScale[2] = args.SCALE;
+      const elementMap = { Textbox: 0, "Input Box": 1, "Dropdown Button": 2 };
+      const elementIndex = elementMap[args.ELEMENT];
+      if (elementIndex !== undefined) {
+        this.imgScale[elementIndex] = args.SCALE;
       } else if (this.buttonJSON[args.ELEMENT]) {
-        const buttonInfo = this.buttonJSON[args.ELEMENT];
-        buttonInfo.imgScale = args.SCALE;
+        this.buttonJSON[args.ELEMENT].imgScale = args.SCALE;
       }
-      this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
+      this.activeOverlays.forEach(overlay => this.updateOverlay(overlay));
     }
 
     setDirection(args) {
-      const ROTATE = args.ROTATE;
-      this.Rotation = Scratch.Cast.toNumber(ROTATE);
+      this.Rotation = Scratch.Cast.toNumber(args.ROTATE);
       this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
     changeDirection(args) {
-      const ROTATE = args.ROTATE;
-      this.Rotation = this.Rotation + Scratch.Cast.toNumber(ROTATE);
+      this.Rotation = this.Rotation + Scratch.Cast.toNumber(args.ROTATE);
       this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
@@ -1071,9 +1034,7 @@
     setInputType(args) {
       if (args.ACTION === "Text" || args.ACTION ===  "None") {
         this.isInputEnabled = args.ACTION === "Text" ? "Enabled" : "Disabled";
-      } else {
-        this.isInputEnabled = args.ACTION;
-      }
+      } else { this.isInputEnabled = args.ACTION }
     }
 
     enableShadow(args) { this.shadowEnabled = args.ACTION === "Enabled" }
@@ -1093,9 +1054,7 @@
     setDropdown(args) {
       try {
         this.optionList = JSON.parse(args.DROPDOWN);
-      } catch (error) {
-        this.optionList = ["Undefined Array Error"];
-      }
+      } catch { this.optionList = ["Undefined Array Error"] }
     }
 
     removeAskBoxes() {
@@ -1128,7 +1087,6 @@
         this.isWaitingForInput = true;
         this.askBoxInfo[0]++;
         let selectedOptions = [];
-
         return new Promise((resolve) => {
           const askBoxPromise = { resolve };
           this.askBoxPromises.push(askBoxPromise);
@@ -1148,14 +1106,10 @@
           overlayImageContainer.style.top = 0;
           overlayImageContainer.style.left = 0;
           overlayImageContainer.style.zIndex = "-1";
-
           if (this.forceInput !== "Disabled") {
-            let overlayInput = this.forceInput === "Enter Key" ? "Enter" : this.forceInput === "Shift + Enter Key" ? "ShiftEnter" : this.forceInput;
+            const overlayInput = this.forceInput === "Enter Key" ? "Enter" : this.forceInput === "Shift + Enter Key" ? "ShiftEnter" : this.forceInput;
             const handleKeydown = (event) => {
-              if (
-                (overlayInput === "ShiftEnter" && event.shiftKey &&
-                  event.key === "Enter") || event.key === overlayInput
-              ) {
+              if ((overlayInput === "ShiftEnter" && event.shiftKey && event.key === "Enter") || event.key === overlayInput) {
                 this.userInput = inputField.value;
                 this.closeOverlay(overlay);
                 resolve();
@@ -1238,13 +1192,9 @@
               if (this.isInputEnabled === "Multi-Select Dropdown") {
                 if (selectedOptions.includes(label)) {
                   selectedOptions = selectedOptions.filter(item => item !== label);
-                } else {
-                  selectedOptions.push(label);
-                }
+                } else { selectedOptions.push(label) }
                 inputField.value = selectedOptions.length > 0 ? JSON.stringify(selectedOptions) : "";
-              } else {
-                inputField.value = label;
-              }
+              } else { inputField.value = label }
               this.userInput = inputField.value;
             });
             optionLabel.appendChild(optionRadio);
@@ -1274,9 +1224,7 @@
             for (let i = 0; i < 4; i++) {
               sliderContainer.appendChild(document.createElement("br"));
             }
-          } else {
-            sliderContainer.appendChild(slider);
-          }
+          } else { sliderContainer.appendChild(slider) }
           const valueDisplay = document.createElement("span");
           valueDisplay.classList.add("slider-value");
           sliderContainer.appendChild(valueDisplay);
@@ -1307,24 +1255,15 @@
           inputField.focus();
           inputField.value = this.defaultValue;
           const resizeHandler = () => {
-            if (this.textBoxX !== null && this.textBoxY !== null) {
-              overlay.style.left = `${50 + this.textBoxX}%`;
-              overlay.style.top = `${50 + this.textBoxY}%`;
-            } else {
-              overlay.style.left = "50%";
-              overlay.style.top = "50%";
-            }
+            overlay.style.left = `${this.textBoxX !== null ? 50 + this.textBoxX : 50}%`;
+            overlay.style.top = `${this.textBoxY !== null ? 50 + this.textBoxY : 50}%`;
           };
           this.activeOverlays.push(overlay);
-          this.activeUI.push({
-            overlay: { button: buttonContainer, dropdown: dropdownButton, input: inputField },
-          });
+          this.activeUI.push({ overlay: { button: buttonContainer, dropdown: dropdownButton, input: inputField } });
           document.addEventListener("fullscreenchange", resizeHandler);
           document.addEventListener("webkitfullscreenchange", resizeHandler);
           document.addEventListener("mozfullscreenchange", resizeHandler);
           document.addEventListener("MSFullscreenChange", resizeHandler);
-
-          const overlayParent = overlay.parentNode;
           const observer = new MutationObserver((mutationsList) => {
             for (const mutation of mutationsList) {
               if (mutation.type === "childList" && mutation.removedNodes.contains(overlay)) {
@@ -1336,7 +1275,7 @@
               }
             }
           });
-          observer.observe(overlayParent, { childList: true });
+          observer.observe(overlay.parentNode, { childList: true });
           document.body.appendChild(overlay);
           inputField.focus();
           this.updateOverlay(overlay);
@@ -1349,12 +1288,12 @@
       this.isDropdownOpen = false;
       this.askBoxInfo[0]--;
       const index = this.activeOverlays.indexOf(overlay);
-      if (index !== -1) {
-        this.activeOverlays.splice(index, 1);
-        this.askBoxPromises.splice(index, 1);
-      }
-      delete this.activeUI[overlay];
       setTimeout(() => {
+        if (index !== -1) {
+          this.activeOverlays.splice(index, 1);
+          this.askBoxPromises.splice(index, 1);
+        }
+        delete this.activeUI[overlay];
         document.body.removeChild(overlay);
       }, this.Timeout * 1000);
     }
@@ -1363,15 +1302,11 @@
       if (args.BUTTON === "add") {
         this.buttonJSON[args.NAME] = {
           borderRadius: 5,
-          color: "#0074D9",
-          textColor: "#ffffff",
+          color: "#0074D9", textColor: "#ffffff",
           name: args.NAME,
-          image: "",
-          imgScale: 100
+          image: "", imgScale: 100
         };
-      } else {
-        delete this.buttonJSON[args.NAME];
-      }
+      } else { delete this.buttonJSON[args.NAME] }
       Scratch.vm.extensionManager.refreshBlocks();
     }
 
@@ -1399,14 +1334,16 @@
       if (args.INFO.includes("button")) {
         const buttons = Object.keys(this.buttonJSON);
         return args.INFO.includes("names") ? JSON.stringify(buttons) : buttons.length;
-      } else {
-        return this.askBoxInfo[args.INFO === "count" ? 0 : 1]
-      }
+      } else { return this.askBoxInfo[args.INFO === "count" ? 0 : 1] }
     }
 
     setSubmitEvent(args) { this.forceInput = args.ENTER }
 
     setDefaultV(args) { this.defaultValue = args.defaultV }
+
+    setEnable() { throw new Error("This block is removed in Better Input V3. Please use the more powerful and better blocks") }
+    getBoxCount() { throw new Error("This block is removed in Better Input V3. Please use the more powerful and better blocks") }
+    getMaxCount() { throw new Error("This block is removed in Better Input V3. Please use the more powerful and better blocks") }
   }
 
   Scratch.extensions.register(new BetterInputSP());
