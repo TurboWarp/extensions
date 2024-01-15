@@ -45,6 +45,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -61,6 +62,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -68,6 +70,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("rotation style"),
             disableMonitor: true,
+            extensions: ["colours_motion"],
           },
           "---",
           {
@@ -79,6 +82,7 @@
               description:
                 "This blocks forces the sprite to be onscreen if it moved offscreen.",
             }),
+            extensions: ["colours_motion"],
           },
           "---",
           {
@@ -100,6 +104,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -122,6 +127,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           "---",
           {
@@ -139,6 +145,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -155,6 +162,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -185,6 +193,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -211,6 +220,7 @@
                 defaultValue: "100",
               },
             },
+            extensions: ["colours_motion"],
           },
         ],
         menus: {

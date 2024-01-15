@@ -6,8 +6,6 @@
 (function (Scratch) {
   "use strict";
 
-  /* globals XRWebGLLayer, XRRigidTransform, XRWebGLLayer */
-
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("AR extension must be run unsandboxed");
   }

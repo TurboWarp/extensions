@@ -3,6 +3,7 @@ const AdmZip = require("adm-zip");
 const pathUtil = require("path");
 const compatibilityAliases = require("./compatibility-aliases");
 const parseMetadata = require("./parse-extension-metadata");
+const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -13,52 +14,6 @@ const parseMetadata = require("./parse-extension-metadata");
  * @property {string} string The English version of the string
  * @property {string} developer_comment Helper text to help translators
  */
-
-/**
- * Recursively read a directory.
- * @param {string} directory
- * @returns {Array<[string, string]>} List of tuples [name, absolutePath].
- * The return result includes files in subdirectories, but not the subdirectories themselves.
- */
-const recursiveReadDirectory = (directory) => {
-  const result = [];
-  for (const name of fs.readdirSync(directory)) {
-    if (name.startsWith(".")) {
-      // Ignore .eslintrc.js, .DS_Store, etc.
-      continue;
-    }
-    const absolutePath = pathUtil.join(directory, name);
-    const stat = fs.statSync(absolutePath);
-    if (stat.isDirectory()) {
-      for (const [
-        relativeToChildName,
-        childAbsolutePath,
-      ] of recursiveReadDirectory(absolutePath)) {
-        // This always needs to use / on all systems
-        result.push([`${name}/${relativeToChildName}`, childAbsolutePath]);
-      }
-    } else {
-      result.push([name, absolutePath]);
-    }
-  }
-  return result;
-};
-
-/**
- * Synchronous create a directory and any parents. Does nothing if the folder already exists.
- * @param {string} directory
- */
-const mkdirp = (directory) => {
-  try {
-    fs.mkdirSync(directory, {
-      recursive: true,
-    });
-  } catch (e) {
-    if (e.code !== "ENOENT") {
-      throw e;
-    }
-  }
-};
 
 /**
  * @param {Record<string, Record<string, string>>} allTranslations
