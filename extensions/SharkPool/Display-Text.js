@@ -3,7 +3,7 @@
 // Description: Display Text in Your Projects!
 // By: SharkPool
 
-// Version V.1.2.1
+// Version V.1.3.0
 
 (function (Scratch) {
   "use strict";
@@ -110,6 +110,15 @@
             opcode: "allIDs",
             blockType: Scratch.BlockType.REPORTER,
             text: "all text IDs"
+          },
+          "---",
+          {
+            opcode: "debug",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "toggle debug mode [TOGGLE]",
+            arguments: {
+              TOGGLE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" }
+            },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Formatting" },
           {
@@ -227,6 +236,18 @@
               THICKNESS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 3 }
             },
           },
+          {
+            opcode: "setLine",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set text line of ID [ID] to [TYPE1] [TYPE2] colored [COLOR] thickness [THICK]",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" },
+              TYPE1: { type: Scratch.ArgumentType.STRING, menu: "STYLE" },
+              TYPE2: { type: Scratch.ArgumentType.STRING, menu: "LINE_TYPE" },
+              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
+              THICK: { type: Scratch.ArgumentType.NUMBER, defaultValue: 2 }
+            },
+          },
           "---",
           {
             opcode: "makeGradient",
@@ -327,9 +348,18 @@
           },
         ],
         menus: {
+          TOGGLE: ["on", "off"],
           FONTS: {
             acceptReporters: true,
             items: "allFonts"
+          },
+          STYLE: {
+            acceptReporters: true,
+            items: ["solid", "wavy", "dashed", "double"]
+          },
+          LINE_TYPE: {
+            acceptReporters: true,
+            items: ["underline", "strikethrough"]
           },
           ALIGNMENTS: {
             acceptReporters: true,
@@ -389,6 +419,17 @@
       return [...fontMenu, ...customFonts];
     }
 
+    debug(args) {
+      const toggle = args.TOGGLE === "on" ? "solid" : "none";
+      const elements = document.querySelectorAll(`[id^="SP_Text-Ext-"]`);
+      elements.forEach((element) => {
+        element.style.border = toggle;
+        element.style.borderWidth = "1px";
+        const color = element.style.textAlign === "center" ? "#00ff00" : element.style.textAlign === "right" ? "#0000ff" : "#ff0000";
+        element.style.borderColor = color;
+      });
+    }
+
     printTxt(args) {
       args.ID = args.ID.replaceAll(" ", "_");
       const newTextElement = document.createElement("div");
@@ -409,6 +450,7 @@
       if (lastRecdVals["letDIS"]) this.setTextSpacing(lastRecdVals["letDIS"].inputs);
       if (lastRecdVals["textOVR"]) this.setOverflow(lastRecdVals["textOVR"].inputs);
       if (lastRecdVals["txtFontTK"]) this.setThick(lastRecdVals["txtFontTK"].inputs);
+      if (lastRecdVals["textLIN"]) this.setLine(lastRecdVals["textLIN"].inputs);
 
       if (lastRecdVals["preTxt1"]) this.presetTextPosition(lastRecdVals["preTxt1"].inputs);
       const box = newTextElement.getBoundingClientRect();
@@ -427,7 +469,7 @@
     removeTxt(args) {
       const elementsToRemove = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
       elementsToRemove.forEach((element) => {
-        render.removeOverlay(element)
+        render.removeOverlay(element);
         const index = allText.indexOf(`#SP_Text-Ext-${args.ID}`);
         if (index !== -1) allText.splice(index, 1);
       });
@@ -505,6 +547,18 @@
         element.style.mozTextStrokeWidth = `${args.THICKNESS}px`;
       });
       lastRecdVals["textOUT"] = {inputs: args};
+    }
+
+    setLine(args) {
+      const lineType = args.TYPE2.replace("strike", "line-");
+      const elements = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
+      elements.forEach((element) => {
+        element.style.textDecorationLine = lineType;
+        element.style.textDecorationStyle = args.TYPE1;
+        element.style.textDecorationThickness = `${args.THICK}px`;
+        element.style.textDecorationColor = args.COLOR;
+      });
+      lastRecdVals["textLIN"] = {inputs: args};
     }
 
     setMargins(args) {
