@@ -133,6 +133,27 @@
           },
           "---",
           {
+            opcode: "inline",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "inline",
+            outputShape: 3,
+            output: "Boolean",
+            branchCount: 1,
+            disableMonitor: true,
+          },
+          {
+            opcode: "inlineReturn",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "return [VALUE]",
+            isTerminal: true,
+            arguments: {
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+              },
+            },
+          },
+          "---",
+          {
             opcode: "elseIf",
             text: ["if [CONDITION1] then", "else if [CONDITION2] then"],
             blockType: Scratch.BlockType.CONDITIONAL,
@@ -342,6 +363,34 @@
           },
         },
       };
+    }
+
+    inline(args, util) {
+      const target = util.target;
+      const blockId = util.thread.peekStack();
+      const blocks = target.blocks;
+      if (!blocks.getBranch(blockId, 0)) return "";
+
+      if (!util.thread.newThread) {
+        util.thread.newThread = runtime._pushThread(
+          blocks.getBranch(blockId, 0),
+          target
+        );
+      }
+
+      const thread = util.thread.newThread;
+
+      if (thread.returnValue || thread.status === 4) {
+        return thread.returnValue ?? "";
+      } else {
+        util.thread.peekStackFrame().waitingReporter = true;
+        util.yield();
+      }
+    }
+
+    inlineReturn(args, util) {
+      util.thread.returnValue = args.VALUE;
+      util.thread.status === 4;
     }
 
     switch(args, util) {
@@ -753,6 +802,18 @@
       }
     }
   }
+
+  const cbfsb = runtime._convertBlockForScratchBlocks.bind(runtime);
+  runtime._convertBlockForScratchBlocks = function (blockInfo, categoryInfo) {
+    const res = cbfsb(blockInfo, categoryInfo);
+    if (blockInfo.outputShape) {
+      res.json.outputShape = blockInfo.outputShape;
+    }
+    if (blockInfo.output) {
+      res.json.output = blockInfo.output;
+    }
+    return res;
+  };
 
   Scratch.extensions.register(new MoreControl());
 })(Scratch);
