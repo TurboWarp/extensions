@@ -1,8 +1,7 @@
 // Name: More Control
-// ID: lmsSpAsMoreControl
+// ID: lmsSpMoreControl
 // Description: More conditional and loop statements.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// By: Ashime <https://scratch.mit.edu/users/0znzw/>
 // By: SharkPool <https://scratch.mit.edu/users/DemonX5/>
 
 (function (Scratch) {
@@ -21,8 +20,6 @@
   const breakIcon =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOS4zOTM3NSIgaGVpZ2h0PSIxNi40NjI1IiB2aWV3Qm94PSIwLDAsMTkuMzkzNzUsMTYuNDYyNSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIzMi4wNzUwMSwtMTcyLjI1KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTI1MS4wMDAwMSwxODMuNzYyNWwtNC41LDQuNWMtMC43LDAuNiAtMS43LDAuNiAtMi40LDBsLTQuNCwtNC40Yy0wLjMsLTAuMyAtMC41LC0wLjggLTAuNSwtMS4yYzAsLTEgMC44LC0xLjcgMS43LC0xLjdoMS41YzAsLTEuNCAtMC43LC0yLjcgLTEuOCwtMy41Yy0wLjgsLTAuNiAtMS43LC0wLjkgLTIuNywtMC45Yy0xLDAgLTIsMC4zIC0yLjksMC45bC0wLjEsMGMtMC43LDAuNSAtMS43LDAuNCAtMi4zLC0wLjJjLTAuNywtMC43IC0wLjcsLTEuOSAwLC0yLjZjMS40LC0xLjIgMy4xLC0yIDQuOSwtMi4zYzEuOSwtMC4zIDMuOCwwIDUuNSwwLjljMS44LDAuOSAzLjIsMi40IDQuMSw0LjFjMC42LDEuMSAxLDIuMyAxLjEsMy42aDEuNmMwLjYsMCAxLjIsMC40IDEuNSwxYzAuMywwLjYgMC4yLDEuMyAtMC4zLDEuOHoiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBmaWxsPSIjY2Y4YjE3Ii8+PHBhdGggZD0iTTI1MC4zMDAwMiwxODIuMjYyNTFjMC4xLDAuMyAwLDAuNiAtMC4zLDAuOWwtNC40LDQuNGMtMC4yLDAuMyAtMC42LDAuMyAtMC45LDBsLTQuNCwtNC40Yy0wLjEsLTAuMSAtMC4yLC0wLjIgLTAuMiwtMC40YzAsLTAuNCAwLjMsLTAuNyAwLjcsLTAuN2wyLjQsMGMwLjIsLTEgMC4xLC0xLjkgLTAuMiwtMi44Yy0wLjQsLTEuMSAtMS4xLC0yIC0yLC0yLjZjLTEsLTAuNyAtMi4xLC0xIC0zLjMsLTFjLTEuMiwwIC0yLjQsMC40IC0zLjQsMS4xdjBjLTAuMywwLjMgLTAuOSwwLjMgLTEuMiwtMC4xYy0wLjMsLTAuMyAtMC4zLC0wLjkgMC4xLC0xLjJjMS4yLC0xLjEgMi44LC0xLjkgNC40LC0yLjFjMS42LC0wLjMgMy40LDAgNC45LDAuOGMxLjYsMC44IDIuOSwyIDMuNywzLjZjMC43LDEuMyAxLDIuNyAxLDQuMmwyLjYsMGMwLjIsMCAwLjQsMCAwLjUsMC4zeiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIGZpbGw9IiNmZmZmZmYiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjo3LjkyNDk5MDAwMDAwMDA5MzU6Ny43NTAwMDAwMDAwMDAwMjgtLT4=";
 
-  const hasOwn = (prop, object) => Object.hasOwn(object, prop);
-
   vm.on("EXTENSION_ADDED", tryUseScratchBlocks);
   vm.on("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
   tryUseScratchBlocks();
@@ -40,7 +37,7 @@
         (block.type == "argument_reporter_boolean" ||
           block.type == "argument_reporter_boolean" ||
           block.type == "argument_reporter_string_number" ||
-          block.type == "lmsSpAsMoreControl_forArg")
+          block.type == "lmsSpMoreControl_forArg")
       );
     };
   }
@@ -59,7 +56,7 @@
   class MoreControl {
     getInfo() {
       return {
-        id: "lmsSpAsMoreControl",
+        id: "lmsSpMoreControl",
         name: "More Control",
         color1: "#FFAB19",
         color2: "#EC9C13",
@@ -133,6 +130,10 @@
           },
           "---",
           {
+            blockType: Scratch.BlockType.XML,
+            xml: `<block type="lmsSpMoreControl_inline"><statement name="SUBSTACK"><block type="procedures_return"><value name="VALUE"><shadow type="text"><field name="TEXT"></field></shadow></value></block></statement></block>`,
+          },
+          {
             opcode: "inline",
             blockType: Scratch.BlockType.REPORTER,
             text: "inline",
@@ -140,17 +141,7 @@
             output: "Boolean",
             branchCount: 1,
             disableMonitor: true,
-          },
-          {
-            opcode: "inlineReturn",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "return [VALUE]",
-            isTerminal: true,
-            arguments: {
-              VALUE: {
-                type: Scratch.ArgumentType.STRING,
-              },
-            },
+            hideFromPalette: true,
           },
           "---",
           {
@@ -265,7 +256,7 @@
           "---",
           {
             blockType: Scratch.BlockType.XML,
-            xml: '<block type="lmsSpAsMoreControl_for"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="lmsSpAsMoreControl_forEachItem"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpAsMoreControl_menu_lists"><field name="lists"></field></shadow></value></block>',
+            xml: '<block type="lmsSpMoreControl_for"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="lmsSpMoreControl_forEachItem"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpMoreControl_menu_lists"><field name="lists"></field></shadow></value></block>',
           },
           {
             opcode: "for",
@@ -366,37 +357,23 @@
     }
 
     inline(args, util) {
-      const target = util.target;
-      const blockId = util.thread.peekStack();
-      const blocks = target.blocks;
-      if (!blocks.getBranch(blockId, 0)) return "";
+      const thread = util.thread;
+      const stackFrame = util.stackFrame;
 
-      if (!util.thread.newThread) {
-        util.thread.newThread = runtime._pushThread(
-          blocks.getBranch(blockId, 0),
-          target
-        );
+      if (stackFrame.executed) {
+        const returnValue = stackFrame.returnValue;
+        delete stackFrame.returnValue;
+        delete stackFrame.executed;
+        return returnValue;
       }
 
-      const thread = util.thread.newThread;
+      stackFrame.executed = true;
 
-      runtime.on("RUNTIME_STOPPED", () => {
-        delete util.thread.newThread;
-      })
+      thread.peekStackFrame().waitingReporter = true;
+      stackFrame.returnValue = "";
 
-      if (typeof thread.returnValue !== "undefined") {
-        let returnValue = thread.returnValue;
-        delete util.thread.newThread;
-        return returnValue ?? "";
-      } else {
-        util.thread.peekStackFrame().waitingReporter = true;
-        util.yield();
-      }
-    }
-
-    inlineReturn(args, util) {
-      util.thread.returnValue = args.VALUE;
-      util.stopThisScript();
+      // TO DO: make this work compiled.. somehow
+      util.startBranch(1, false);
     }
 
     switch(args, util) {
@@ -418,7 +395,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpAsMoreControl_switch"
+        "lmsSpMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -440,7 +417,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpAsMoreControl_switch"
+        "lmsSpMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -461,7 +438,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpAsMoreControl_switch"
+        "lmsSpMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -475,7 +452,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpAsMoreControl_switch"
+        "lmsSpMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -487,7 +464,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpAsMoreControl_switch"
+        "lmsSpMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -499,7 +476,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpAsMoreControl_switch"
+        "lmsSpMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -735,8 +712,7 @@
         if (!block) return;
         if (!block.inputs.SUBSTACK) continue;
 
-        const substackBlock = block.inputs.SUBSTACK.block;
-        if (this._isInSubstack(thread, substackBlock, startId)) {
+        if (this._isInSubstack(thread, block.id, startId)) {
           return block;
         }
       }
@@ -745,8 +721,6 @@
     _getOuterCFromOpcode(thread, startId, opcode) {
       let currentC = this._getOuterCBlock(thread, startId);
       if (!currentC) return;
-
-      console.log(currentC.opcode, opcode);
 
       while (currentC) {
         if (currentC.opcode === opcode) {
