@@ -380,7 +380,11 @@
 
       const thread = util.thread.newThread;
 
-      if (thread.returnValue) {
+      runtime.on("RUNTIME_STOPPED", () => {
+        delete util.thread.newThread;
+      })
+
+      if (typeof thread.returnValue !== "undefined") {
         let returnValue = thread.returnValue;
         delete util.thread.newThread;
         return returnValue ?? "";
