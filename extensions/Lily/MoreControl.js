@@ -380,8 +380,10 @@
 
       const thread = util.thread.newThread;
 
-      if (thread.returnValue || thread.status === 4) {
-        return thread.returnValue ?? "";
+      if (thread.returnValue) {
+        let returnValue = thread.returnValue;
+        delete util.thread.newThread;
+        return returnValue ?? "";
       } else {
         util.thread.peekStackFrame().waitingReporter = true;
         util.yield();
@@ -390,7 +392,7 @@
 
     inlineReturn(args, util) {
       util.thread.returnValue = args.VALUE;
-      util.thread.status === 4;
+      util.stopThisScript();
     }
 
     switch(args, util) {
@@ -738,7 +740,14 @@
 
     _getOuterCFromOpcode(thread, startId, opcode) {
       let currentC = this._getOuterCBlock(thread, startId);
-      while (currentC !== null && currentC.opcode !== opcode) {
+      if (!currentC) return;
+
+      console.log(currentC.opcode, opcode);
+
+      while (currentC) {
+        if (currentC.opcode === opcode) {
+          return currentC;
+        }
         currentC = this._getOuterCBlock(thread, currentC.id);
       }
       return currentC;
