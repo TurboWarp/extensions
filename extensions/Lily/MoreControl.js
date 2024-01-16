@@ -22,6 +22,7 @@
 
   vm.on("EXTENSION_ADDED", tryUseScratchBlocks);
   vm.on("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
+
   tryUseScratchBlocks();
 
   function tryUseScratchBlocks() {
@@ -130,10 +131,6 @@
           },
           "---",
           {
-            blockType: Scratch.BlockType.XML,
-            xml: `<block type="lmsSpMoreControl_inline"><statement name="SUBSTACK"><block type="procedures_return"><value name="VALUE"><shadow type="text"><field name="TEXT"></field></shadow></value></block></statement></block>`,
-          },
-          {
             opcode: "inline",
             blockType: Scratch.BlockType.REPORTER,
             text: "inline",
@@ -142,6 +139,17 @@
             branchCount: 1,
             disableMonitor: true,
             hideFromPalette: true,
+          },
+          {
+            opcode: "inlineReturn",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "return [VALUE]",
+            arguments: {
+              VALUE: {
+                type: Scratch.ArgumentType.STRING
+              }
+            },
+            isTerminal: true,
           },
           "---",
           {
@@ -357,23 +365,37 @@
     }
 
     inline(args, util) {
-      const thread = util.thread;
-      const stackFrame = util.stackFrame;
+      const target = util.target;
+      const blockId = util.thread.peekStack();
+      const blocks = target.blocks;
+      if (!blocks.getBranch(blockId, 0)) return "";
 
-      if (stackFrame.executed) {
-        const returnValue = stackFrame.returnValue;
-        delete stackFrame.returnValue;
-        delete stackFrame.executed;
-        return returnValue;
+      if (!util.thread.newThread) {
+        util.thread.newThread = runtime._pushThread(
+          blocks.getBranch(blockId, 0),
+          target
+        );
       }
 
-      stackFrame.executed = true;
+      const thread = util.thread.newThread;
 
-      thread.peekStackFrame().waitingReporter = true;
-      stackFrame.returnValue = "";
+      runtime.on("RUNTIME_STOPPED", () => {
+        delete util.thread.newThread;
+      })
 
-      // TO DO: make this work compiled.. somehow
-      util.startBranch(1, false);
+      if (typeof thread.returnValue !== "undefined") {
+        let returnValue = thread.returnValue;
+        delete util.thread.newThread;
+        return returnValue ?? "";
+      } else {
+        util.thread.peekStackFrame().waitingReporter = true;
+        util.yield();
+      }
+    }
+
+    inlineReturn(args, util) {
+      util.thread.returnValue = args.VALUE;
+      util.stopThisScript();
     }
 
     switch(args, util) {
