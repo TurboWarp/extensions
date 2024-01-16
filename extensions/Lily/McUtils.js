@@ -70,7 +70,7 @@
             opcode: "grimaceBlock",
             blockType: Scratch.BlockType.REPORTER,
             text: "🎂",
-            extensions: ['colours_looks'],
+            extensions: ["colours_looks"],
             hideFromPalette: new Date().getMonth() !== 5,
           },
         ],
