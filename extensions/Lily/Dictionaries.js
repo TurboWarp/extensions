@@ -324,7 +324,7 @@
     // if the stage is the editing target then just output the stage dictionaries
     let dictionaries = [];
     if (editingTarget.isStage) {
-    dictionaries = stageDictionaries;
+      dictionaries = stageDictionaries;
     } else dictionaries = { ...targetDictionaries, ...stageDictionaries };
 
     let reporters = [],
