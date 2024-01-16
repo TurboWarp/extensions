@@ -115,13 +115,14 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "root_block",
@@ -130,13 +131,14 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "negative_block",
@@ -145,9 +147,10 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -157,13 +160,14 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "less_or_equal_block",
@@ -172,13 +176,14 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "not_equal_block",
@@ -187,13 +192,14 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "exactly_equal_block",
@@ -202,13 +208,14 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "not_exactly_equal_block",
@@ -217,13 +224,14 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "almost_equal_block",
@@ -232,13 +240,14 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "not_almost_equal_block",
@@ -247,13 +256,14 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -268,6 +278,7 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "nor_block",
@@ -281,6 +292,7 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "xor_block",
@@ -294,6 +306,7 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "xnor_block",
@@ -307,6 +320,7 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -323,6 +337,56 @@
                 defaultValue: "a",
               },
             },
+            extensions: ["colours_operators"],
+          },
+          "---",
+          {
+            opcode: "clamp_block",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "clamp [A] between [B] and [C]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "",
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              C: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+            },
+            extensions: ["colours_operators"],
+          },
+          {
+            opcode: "scale_block",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "map [A] from range [m1] - [M1] to range [m2] - [M2]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "",
+              },
+              m1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              M1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+              m2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              M2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "1",
+              },
+            },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -332,13 +396,14 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "trunc_block",
@@ -347,9 +412,10 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -359,13 +425,14 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -375,29 +442,33 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               B: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 10,
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
             opcode: "pi_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "𝜋",
+            extensions: ["colours_operators"],
           },
           {
             opcode: "e_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "𝘦",
+            extensions: ["colours_operators"],
           },
           {
             opcode: "infinity_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "∞",
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -407,9 +478,10 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -419,9 +491,10 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "is_int_block",
@@ -430,9 +503,10 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "is_float_block",
@@ -441,9 +515,10 @@
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
         ],
       };
@@ -495,6 +570,23 @@
     }
     exactly_cont_block({ A, B }) {
       return cast.toString(A).includes(cast.toString(B));
+    }
+    clamp_block({ A, B, C }) {
+      if (cast.compare(A, B) < 0) {
+        return B;
+      } else if (cast.compare(A, C) > 0) {
+        return C;
+      } else {
+        return A;
+      }
+    }
+    scale_block({ A, m1, M1, m2, M2 }) {
+      return (
+        ((cast.toNumber(A) - cast.toNumber(m1)) *
+          (cast.toNumber(M2) - cast.toNumber(m2))) /
+          (cast.toNumber(M1) - cast.toNumber(m1)) +
+        cast.toNumber(m2)
+      );
     }
     trunc2_block({ A, B }) {
       let n = Math.floor(cast.toNumber(B));

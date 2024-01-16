@@ -54,12 +54,14 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "true",
             arguments: {},
+            disableMonitor: true,
           },
           {
             opcode: "returnFalse",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "false",
             arguments: {},
+            disableMonitor: true,
           },
           {
             opcode: "ifElseString",

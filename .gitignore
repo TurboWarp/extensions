@@ -1,5 +1,10 @@
 # npm
 node_modules
 
-# Final built website
+# Final built website and localizations
 build
+build-l10n
+
+# Various operating system caches
+thumbs.db
+.DS_Store

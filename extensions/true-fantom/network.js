@@ -552,8 +552,8 @@
             Number(WIDTH) < 100
               ? 100
               : Number(WIDTH) > window.screen.width
-              ? window.screen.width
-              : Number(WIDTH)
+                ? window.screen.width
+                : Number(WIDTH)
           }`;
       params += isNaN(HEIGHT)
         ? ""
@@ -561,8 +561,8 @@
             Number(HEIGHT) < 100
               ? 100
               : Number(HEIGHT) > window.screen.height
-              ? window.screen.height
-              : Number(HEIGHT)
+                ? window.screen.height
+                : Number(HEIGHT)
           }`;
       params += isNaN(LEFT)
         ? ""
@@ -570,8 +570,8 @@
             Number(LEFT) < 0
               ? 0
               : Number(LEFT) > window.screen.width
-              ? window.screen.width
-              : Number(LEFT)
+                ? window.screen.width
+                : Number(LEFT)
           }`;
       params += isNaN(TOP)
         ? ""
@@ -579,8 +579,8 @@
             Number(TOP) < 0
               ? 0
               : Number(TOP) > window.screen.height
-              ? window.screen.height
-              : Number(TOP)
+                ? window.screen.height
+                : Number(TOP)
           }`;
       Scratch.openWindow(String(USER_URL), params);
     }

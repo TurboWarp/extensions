@@ -1,6 +1,7 @@
 // Name: Navigator
 // ID: navigatorinfo
 // Description: Details about the user's browser and operating system.
+// Context: "Navigator" refers to someone's browser
 
 (function (Scratch) {
   "use strict";
@@ -9,24 +10,61 @@
     getInfo() {
       return {
         id: "navigatorinfo",
-        name: "Navigator Info",
+        name: Scratch.translate("Navigator Info"),
         blocks: [
           {
             opcode: "getOS",
             blockType: Scratch.BlockType.REPORTER,
-            text: "operating system",
+            text: Scratch.translate("operating system"),
           },
           {
             opcode: "getBrowser",
             blockType: Scratch.BlockType.REPORTER,
-            text: "browser",
+            text: Scratch.translate("browser"),
           },
           {
             opcode: "getMemory",
             blockType: Scratch.BlockType.REPORTER,
-            text: "device memory in GB",
+            text: Scratch.translate("device memory in GB"),
+          },
+          {
+            opcode: "getPreferredColorScheme",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("user prefers [THEME] color scheme?"),
+            arguments: {
+              THEME: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "THEME",
+                defaultValue: "dark",
+              },
+            },
+          },
+          {
+            opcode: "getPreferredReducedMotion",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("user prefers reduced motion?"),
+          },
+          {
+            opcode: "getPreferredContrast",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("user prefers more contrast?"),
           },
         ],
+        menus: {
+          THEME: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("light"),
+                value: "light",
+              },
+              {
+                text: Scratch.translate("dark"),
+                value: "dark",
+              },
+            ],
+          },
+        },
       };
     }
 
@@ -72,6 +110,21 @@
         // @ts-expect-error
         return navigator.deviceMemory;
       }
+    }
+
+    getPreferredColorScheme(args) {
+      return (
+        window.matchMedia("(prefers-color-scheme: dark)").matches ===
+        (args.THEME === "dark")
+      );
+    }
+
+    getPreferredReducedMotion() {
+      return !!window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    }
+
+    getPreferredContrast() {
+      return !!window.matchMedia("(prefers-contrast: more)").matches;
     }
   }
 
