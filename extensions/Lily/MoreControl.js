@@ -138,7 +138,6 @@
             output: "Boolean",
             branchCount: 1,
             disableMonitor: true,
-            hideFromPalette: true,
           },
           {
             opcode: "inlineReturn",
@@ -146,8 +145,8 @@
             text: "return [VALUE]",
             arguments: {
               VALUE: {
-                type: Scratch.ArgumentType.STRING
-              }
+                type: Scratch.ArgumentType.STRING,
+              },
             },
             isTerminal: true,
           },
@@ -373,7 +372,7 @@
       if (!util.thread.newThread) {
         util.thread.newThread = runtime._pushThread(
           blocks.getBranch(blockId, 0),
-          target
+          target,
         );
       }
 
