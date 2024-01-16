@@ -363,44 +363,11 @@
       };
     }
 
-    inline(args, util) {
-      const target = util.target;
-      const blockId = util.thread.peekStack();
-      const blocks = target.blocks;
-      if (!blocks.getBranch(blockId, 0)) return "";
-
-      if (!util.thread.newThread) {
-        util.thread.newThread = runtime._pushThread(
-          blocks.getBranch(blockId, 0),
-          target,
-        );
-      }
-
-      const thread = util.thread.newThread;
-
-      runtime.on("RUNTIME_STOPPED", () => {
-        delete util.thread.newThread;
-      })
-
-      if (typeof thread.returnValue !== "undefined") {
-        let returnValue = thread.returnValue;
-        delete util.thread.newThread;
-        return returnValue ?? "";
-      } else {
-        util.thread.peekStackFrame().waitingReporter = true;
-        util.yield();
-      }
-    }
-
-    inlineReturn(args, util) {
-      util.thread.returnValue = args.VALUE;
-      util.stopThisScript();
-    }
-
     switch(args, util) {
       const blockId = util.thread.peekStack();
       const blocks = util.thread.blockContainer;
       const block = blocks.getBlock(blockId);
+      if (!block) return;
 
       block.switchValue = args.SWITCH;
       block.switchFalling = false;
@@ -503,6 +470,40 @@
 
       outerC.runNextCase = false;
       outerC.switchFalling = false;
+    }
+
+    inline(args, util) {
+      const target = util.target;
+      const blockId = util.thread.peekStack();
+      const blocks = target.blocks;
+      if (!blocks.getBranch(blockId, 0)) return "";
+
+      if (!util.thread.newThread) {
+        util.thread.newThread = runtime._pushThread(
+          blocks.getBranch(blockId, 0),
+          target
+        );
+
+        runtime.on("RUNTIME_STOPPED", () => {
+          delete util.thread.newThread;
+        });
+      }
+
+      const thread = util.thread.newThread;
+
+      if (typeof thread.returnValue !== "undefined" || thread.status === 4) {
+        let returnValue = thread.returnValue;
+        delete util.thread.newThread;
+        return returnValue ?? "";
+      } else {
+        util.thread.peekStackFrame().waitingReporter = true;
+        util.yield();
+      }
+    }
+
+    inlineReturn(args, util) {
+      util.thread.returnValue = args.VALUE;
+      util.stopThisScript();
     }
 
     elseIf(args, util) {
