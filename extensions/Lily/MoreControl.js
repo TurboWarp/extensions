@@ -705,6 +705,7 @@
 
     _getOuterCBlock(thread, startId) {
       let block = this._getBlockByID(thread, startId);
+      if (!block) return;
       if (!block.parent) return;
 
       while (block.parent) {
