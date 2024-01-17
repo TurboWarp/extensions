@@ -264,7 +264,7 @@
           "---",
           {
             blockType: Scratch.BlockType.XML,
-            xml: '<block type="lmsSpMoreControl_for"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="lmsSpMoreControl_forEachItem"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpMoreControl_menu_lists"><field name="lists"></field></shadow></value></block>',
+            xml: '<block type="lmsSpMoreControl_for"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="lmsSpMoreControl_forEachList"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpMoreControl_menu_lists"><field name="lists"></field></shadow></value></block><block type="lmsSpMoreControl_forEachArray"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="ARRAY"><shadow type="text"><field name="TEXT">[]</field></shadow></value></block>',
           },
           {
             opcode: "for",
@@ -284,7 +284,7 @@
             },
           },
           {
-            opcode: "forEachItem",
+            opcode: "forEachList",
             blockType: Scratch.BlockType.LOOP,
             text: "for each item [I] in [LIST]",
             hideFromPalette: true,
@@ -295,6 +295,20 @@
               },
             },
           },
+          {
+            opcode: "forEachArray",
+            blockType: Scratch.BlockType.LOOP,
+            text: "for each item [I] in array [ARRAY]",
+            hideFromPalette: true,
+            arguments: {
+              I: {},
+              ARRAY: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "[]",
+              },
+            },
+          },
+          //TO DO: Make this dynamic and let people change the name
           {
             opcode: "forArg",
             blockType: Scratch.BlockType.REPORTER,
@@ -612,7 +626,7 @@
       }
     }
 
-    forEachItem(args, util) {
+    forEachList(args, util) {
       const listName = Cast.toString(args.LIST);
       const list = getVarObjectFromName(listName, util, "list");
       if (!list) return;
@@ -634,6 +648,36 @@
         const loopCounter = util.stackFrame.loopCounter;
         util.thread.stackFrames[0].moreControlParams[param] =
           list.value[loopCounter - 1];
+        return true;
+      }
+    }
+
+    forEachArray(args, util) {
+      let array;
+
+      try {
+        array = JSON.parse(args.ARRAY);
+      } catch (e) {
+        return;
+      }
+
+      const param = "i";
+      const params = util.thread.moreControlParams;
+
+      if (typeof util.stackFrame.loopCounter === "undefined") {
+        util.stackFrame.loopCounter = 0;
+
+        if (typeof params === "undefined") {
+          util.thread.stackFrames[0].moreControlParams = {};
+        }
+      }
+
+      util.stackFrame.loopCounter++;
+
+      if (util.stackFrame.loopCounter <= array.length) {
+        const loopCounter = util.stackFrame.loopCounter;
+        util.thread.stackFrames[0].moreControlParams[param] =
+          array[loopCounter - 1];
         return true;
       }
     }
