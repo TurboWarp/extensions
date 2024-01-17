@@ -310,6 +310,7 @@
               CON1: { type: Scratch.ArgumentType.BOOLEAN },
               CON2: { type: Scratch.ArgumentType.BOOLEAN },
             },
+            branchIconURI: null,
           },
           "---",
           {
