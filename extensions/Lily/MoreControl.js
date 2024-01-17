@@ -10,6 +10,7 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const Cast = Scratch.Cast;
+  const regeneratedReporters = ["lmsSpMoreControl_forArg"];
 
   const junctionIcon =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOS44MzUxOSIgaGVpZ2h0PSIxNy45OTM0OSIgdmlld0JveD0iMCwwLDE5LjgzNTE5LDE3Ljk5MzQ5Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjEyLjc0ODAyLC0xNzEuODc3OTEpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIyNS44MzMyMSwxODMuOTc3OTFjLTAuNiwtMC4zIC0xLC0wLjkgLTEsLTEuNXYtMS42Yy0xLjMsLTAuMSAtMi41LC0wLjUgLTMuNiwtMS4xYy0xLjcsLTAuOSAtMy4yLC0yLjMgLTQuMSwtNC4xYy0wLjksLTEuNyAzLjk1ODI3LC0zLjYyNzk3IDMuOTU4MjcsLTMuNjI3OTdjMCwwIC0wLjA5NTI5LDAuOTYxMDIgMC44OTUxNCwxLjg0ODk1YzEuMjU3ODYsMS4xMjc3IDIuMjc3NTgsMS4xNzkwMiAyLjg0NjYsMS4xNzkwMnYtMS41YzAsLTAuOSAwLjcsLTEuNyAxLjcsLTEuN2MwLjQsMCAwLjksMC4yIDEuMiwwLjVsNC40LDQuNGMwLjYsMC43IDAuNiwxLjcgMCwyLjRsLTQuNSw0LjVjLTAuNSwwLjUgLTEuMiwwLjYgLTEuOCwwLjN6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjE1LjQ5ODU3LDE4My45MDI3OGwxLC0xMS44OTU1Nmg0LjY1MDAxbDEuMTE3NjUsMTEuODk1NTZ6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjEyLjkxNjc3LDE4My4xMjE0YzAuMywtMC42IDAuOSwtMSAxLjUsLTFoMS42aDUuOGgxLjVjMC45LDAgMS43LDAuNyAxLjcsMS43YzAsMC40IC0wLjIsMC45IC0wLjUsMS4ybC00LjQsNC40Yy0wLjcsMC42IC0xLjcsMC42IC0yLjQsMGwtNC41LC00LjVjLTAuNSwtMC41IC0wLjYsLTEuMiAtMC4zLC0xLjh6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjE2LjUwNDU3LDE4NC4zMjk1N2wwLjgyMzUzLC0xMS40NjIzNGgyLjgxNDQ3bDEuMTE3NjUsMTEuNDYyMzR6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjE0LjQ3Nzc0LDE4My4xMjE0bDksMC4xYzAuNCwwIDAuNywwLjMgMC43LDAuN2MwLDAuMiAtMC4xLDAuMyAtMC4yLDAuNGwtNC40LDQuNGMtMC4zLDAuMyAtMC43LDAuMyAtMC45LDBsLTQuNCwtNC40Yy0wLjMsLTAuMyAtMC40LC0wLjYgLTAuMywtMC45YzAuMSwtMC4zIDAuMywtMC4zIDAuNSwtMC4zeiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iTTIyNS43NzIyNCwxODIuNjYwODJ2LTIuNmMtMS41LDAgLTIuOSwtMC4zIC00LjIsLTFjLTEuNiwtMC44IC0yLjgsLTIuMSAtMy42LC0zLjdjLTAuMjE3NjYsLTAuNDA4MTEgLTAuMzk4MywtMC44Mzg0MiAtMC41Mzk5MiwtMS4yODA4OGMtMC4zNzg5LC0xLjE4Mzc4IDIuNjYwNSwtMS4xNDg2NyAyLjY2MDUsLTEuMTQ4NjdjMCwwIDAuMjM2NTcsMC43MjU0NyAwLjM3OTQyLDAuOTI5NTRjMC42LDAuOSAxLjUsMS42IDIuNiwyYzAuOSwwLjMgMS44LDAuNCAyLjgsMC4ydi0yLjRjMCwtMC40IDAuMywtMC43IDAuNywtMC43YzAuMiwwIDAuMywwLjEgMC40LDAuMmw0LjQsNC40YzAuMywwLjMgMC4zLDAuNyAwLDAuOWwtNC40LDQuNGMtMC4zLDAuMyAtMC42LDAuNCAtMC45LDAuM2MtMC4zLC0wLjEgLTAuMywtMC4zIC0wLjMsLTAuNXoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMSIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjI3LjI1MTk4MDAwMDAwMDAwMzo4LjEyMjA4OTk5OTk5OTk4Ni0tPg==";
@@ -30,16 +31,14 @@
     vm.removeListener("EXTENSION_ADDED", tryUseScratchBlocks);
     vm.removeListener("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
 
+    const originalCheck =
+      ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter;
     ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter = function (
       block
     ) {
-      return (
-        block.isShadow() &&
-        (block.type == "argument_reporter_boolean" ||
-          block.type == "argument_reporter_boolean" ||
-          block.type == "argument_reporter_string_number" ||
-          block.type == "lmsSpMoreControl_forArg")
-      );
+      const result = originalCheck(block);
+      if (result) return;
+      return block.isShadow() && regeneratedReporters.includes(block.type);
     };
   }
 
@@ -264,7 +263,7 @@
           "---",
           {
             blockType: Scratch.BlockType.XML,
-            xml: '<block type="lmsSpMoreControl_for"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="lmsSpMoreControl_forEachList"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpMoreControl_menu_lists"><field name="lists"></field></shadow></value></block><block type="lmsSpMoreControl_forEachArray"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="ARRAY"><shadow type="text"><field name="TEXT">[]</field></shadow></value></block>',
+            xml: '<block type="lmsSpMoreControl_for"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="lmsSpMoreControl_forUntil"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block><block type="lmsSpMoreControl_forEachList"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpMoreControl_menu_lists"><field name="lists"></field></shadow></value></block><block type="lmsSpMoreControl_forEachArray"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="ARRAY"><shadow type="text"><field name="TEXT">[]</field></shadow></value></block>',
           },
           {
             opcode: "for",
@@ -284,10 +283,25 @@
             },
           },
           {
+            opcode: "forUntil",
+            blockType: Scratch.BlockType.LOOP,
+            text: "for [I] = [A] until [CONDITION]",
+            arguments: {
+              I: {},
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              CONDITION: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+            },
+          },
+          {
             opcode: "forEachList",
             blockType: Scratch.BlockType.LOOP,
             text: "for each item [I] in [LIST]",
-            hideFromPalette: true,
+            hideFromPalette: false,
             arguments: {
               I: {},
               LIST: {
@@ -318,12 +332,16 @@
           "---",
           {
             // created by sharkpool
-            opcode: "spayedCondition",
+            opcode: "loopedCondition",
             blockType: Scratch.BlockType.LOOP,
-            text: ["if [CON1] start loop", "repeat until [CON2]" + " "],
+            text: ["if [CONDITION1] start loop", "repeat until [CONDITION2]"],
             arguments: {
-              CON1: { type: Scratch.ArgumentType.BOOLEAN },
-              CON2: { type: Scratch.ArgumentType.BOOLEAN },
+              CONDITION1: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+              CONDITION2: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
             },
             branchIconURI: null,
           },
@@ -604,6 +622,20 @@
     }
 
     for(args, util) {
+      const blockId = util.thread.peekStack();
+      const block = util.target.blocks.getBlock(blockId);
+      if (!block?.inputs?.I?.block) return;
+
+      const reporter = util.target.blocks.getBlock(block.inputs.I.block);
+      if (!reporter) return;
+
+      const isVariable = reporter.opcode === "data_variable";
+      let variable;
+      if (isVariable) {
+        const variableId = reporter.fields.VARIABLE.id;
+        variable = util.target.lookupVariableById(variableId);
+      }
+
       const param = "i";
       const params = util.thread.moreControlParams;
 
@@ -619,20 +651,73 @@
       }
 
       if (util.stackFrame.loopCounter <= b) {
-        util.stackFrame.loopCounter++;
         util.thread.stackFrames[0].moreControlParams[param] =
           util.stackFrame.loopCounter;
+        if (isVariable) variable.setValue = util.stackFrame.loopCounter;
+        util.stackFrame.loopCounter++;
+        util.startBranch(1, true);
+      }
+    }
+
+    forUntil(args, util) {
+      const blockId = util.thread.peekStack();
+      const block = util.target.blocks.getBlock(blockId);
+      if (!block?.inputs?.I?.block) return;
+
+      const reporter = util.target.blocks.getBlock(block.inputs.I.block);
+      if (!reporter) return;
+
+      const isVariable = reporter.opcode === "data_variable";
+      let variable;
+      if (isVariable) {
+        const variableId = reporter.fields.VARIABLE.id;
+        variable = util.target.lookupVariableById(variableId);
+      }
+
+      const param = "i";
+      const params = util.thread.moreControlParams;
+
+      const a = Cast.toNumber(args.A);
+      const condition = Cast.toBoolean(args.CONDITION);
+
+      if (typeof util.stackFrame.loopCounter === "undefined") {
+        util.stackFrame.loopCounter = a;
+
+        if (typeof params === "undefined") {
+          util.thread.stackFrames[0].moreControlParams = {};
+        }
+      }
+
+      if (!condition) {
+        util.thread.stackFrames[0].moreControlParams[param] =
+          util.stackFrame.loopCounter;
+        if (isVariable) variable.value = util.stackFrame.loopCounter;
+        util.stackFrame.loopCounter++;
         util.startBranch(1, true);
       }
     }
 
     forEachList(args, util) {
-      const listName = Cast.toString(args.LIST);
-      const list = getVarObjectFromName(listName, util, "list");
-      if (!list) return;
+      const blockId = util.thread.peekStack();
+      const block = util.target.blocks.getBlock(blockId);
+      if (!block?.inputs?.I?.block) return;
+
+      const reporter = util.target.blocks.getBlock(block.inputs.I.block);
+      if (!reporter) return;
+
+      const isVariable = reporter.opcode === "data_variable";
+      let variable;
+      if (isVariable) {
+        const variableId = reporter.fields.VARIABLE.id;
+        variable = util.target.lookupVariableById(variableId);
+      }
 
       const param = "i";
       const params = util.thread.moreControlParams;
+
+      const listName = Cast.toString(args.LIST);
+      const list = getVarObjectFromName(listName, util, "list");
+      if (!list) return;
 
       if (typeof util.stackFrame.loopCounter === "undefined") {
         util.stackFrame.loopCounter = 0;
@@ -648,11 +733,29 @@
         const loopCounter = util.stackFrame.loopCounter;
         util.thread.stackFrames[0].moreControlParams[param] =
           list.value[loopCounter - 1];
+        if (isVariable) variable.value = list.value[loopCounter - 1];
         return true;
       }
     }
 
     forEachArray(args, util) {
+      const blockId = util.thread.peekStack();
+      const block = util.target.blocks.getBlock(blockId);
+      if (!block?.inputs?.I?.block) return;
+
+      const reporter = util.target.blocks.getBlock(block.inputs.I.block);
+      if (!reporter) return;
+
+      const isVariable = reporter.opcode === "data_variable";
+      let variable;
+      if (isVariable) {
+        const variableId = reporter.fields.VARIABLE.id;
+        variable = util.target.lookupVariableById(variableId);
+      }
+
+      const param = "i";
+      const params = util.thread.moreControlParams;
+
       let array;
 
       try {
@@ -660,9 +763,6 @@
       } catch (e) {
         return;
       }
-
-      const param = "i";
-      const params = util.thread.moreControlParams;
 
       if (typeof util.stackFrame.loopCounter === "undefined") {
         util.stackFrame.loopCounter = 0;
@@ -678,6 +778,7 @@
         const loopCounter = util.stackFrame.loopCounter;
         util.thread.stackFrames[0].moreControlParams[param] =
           array[loopCounter - 1];
+        if (isVariable) variable.value = array[loopCounter - 1];
         return true;
       }
     }
@@ -705,18 +806,15 @@
       }
     }
 
-    spayedCondition(args, util) {
-      if (typeof util.stackFrame.index === "undefined")
-        util.stackFrame.index = 0;
-      if (!Cast.toBoolean(args.CON1) && util.stackFrame.index === 0) {
-        return false;
-      } else {
-        if (!Cast.toBoolean(args.CON2)) {
-          util.stackFrame.index = 1;
-          return true;
+    loopedCondition(args, util) {
+      if (args.CONDITION1) {
+        util.stackFrame.loopStart = true;
+      }
+      if (util.stackFrame.loopStart) {
+        if (args.CONDITION2) {
+          util.stackFrame.loopStart = false;
         } else {
-          util.stackFrame.index = 0;
-          return false;
+          util.startBranch(1, true);
         }
       }
     }
