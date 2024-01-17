@@ -62,6 +62,7 @@
         color1: "#FFAB19",
         color2: "#EC9C13",
         color3: "#CF8B17",
+        docsURI: "https://extensions.turbowarp.org/Lily/MoreControl/",
         blocks: [
           {
             opcode: "switch",
@@ -410,9 +411,7 @@
       );
       if (!outerC) return;
 
-      if (
-        !outerC.switchResponse
-      ) {
+      if (!outerC.switchResponse) {
         if (outerC.switchBroken) return;
         outerC.runNextCase = false;
         outerC.switchFalling = true;
