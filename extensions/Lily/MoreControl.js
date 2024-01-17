@@ -769,6 +769,7 @@
 
     _getOuterCBlock(thread, startId) {
       let block = this._getBlockByID(thread, startId);
+      if (!block) return;
       if (!block.parent) return;
 
       while (block.parent) {
@@ -785,6 +786,8 @@
 
     _getOuterCFromOpcode(thread, startId, opcode) {
       let currentC = this._getOuterCBlock(thread, startId);
+      if (!currentC) return;
+
       while (currentC !== null && currentC.opcode !== opcode) {
         currentC = this._getOuterCBlock(thread, currentC.id);
       }
