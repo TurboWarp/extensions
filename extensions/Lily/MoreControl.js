@@ -286,6 +286,7 @@
             opcode: "forUntil",
             blockType: Scratch.BlockType.LOOP,
             text: "for [I] = [A] until [CONDITION]",
+            hideFromPalette: true,
             arguments: {
               I: {},
               A: {
@@ -301,7 +302,7 @@
             opcode: "forEachList",
             blockType: Scratch.BlockType.LOOP,
             text: "for each item [I] in [LIST]",
-            hideFromPalette: false,
+            hideFromPalette: true,
             arguments: {
               I: {},
               LIST: {
