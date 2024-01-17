@@ -55,6 +55,7 @@
   "-SIPC-/time",
   "-SIPC-/consoles",
   "ZXMushroom63/searchApi",
+  "ZXMushroom63/webLLM",
   "TheShovel/ShovelUtils",
   "Lily/Assets",
   "DNin/wake-lock",

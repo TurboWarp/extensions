@@ -1,7 +1,7 @@
 // Name: Search Params
 // ID: zxmushroom63searchparams
 // Description: Interact with URL search parameters: the part of the URL after a question mark.
-// By: ZXMushroom63
+// By: ZXMushroom63 <https://scratch.mit.edu/users/ZXMushroom63/>
 
 (function (Scratch) {
   "use strict";
