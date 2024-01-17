@@ -411,9 +411,7 @@
       if (!outerC) return;
 
       if (
-        !outerC.switchResponse ||
-        outerC.switchFalling ||
-        outerC.runNextCase
+        !outerC.switchResponse
       ) {
         if (outerC.switchBroken) return;
         outerC.runNextCase = false;
@@ -728,7 +726,6 @@
 
     _getOuterCBlock(thread, startId) {
       let block = this._getBlockByID(thread, startId);
-      if (!block) return;
       if (!block.parent) return;
 
       while (block.parent) {
@@ -736,7 +733,8 @@
         if (!block) return;
         if (!block.inputs.SUBSTACK) continue;
 
-        if (this._isInSubstack(thread, block.id, startId)) {
+        const substackBlock = block.inputs.SUBSTACK.block;
+        if (this._isInSubstack(thread, substackBlock, startId)) {
           return block;
         }
       }
@@ -744,12 +742,7 @@
 
     _getOuterCFromOpcode(thread, startId, opcode) {
       let currentC = this._getOuterCBlock(thread, startId);
-      if (!currentC) return;
-
-      while (currentC) {
-        if (currentC.opcode === opcode) {
-          return currentC;
-        }
+      while (currentC !== null && currentC.opcode !== opcode) {
         currentC = this._getOuterCBlock(thread, currentC.id);
       }
       return currentC;
