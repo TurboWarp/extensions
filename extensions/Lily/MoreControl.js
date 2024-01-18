@@ -376,6 +376,11 @@
             text: "launch",
             branchIconURI: junctionIcon,
           },
+          {
+            opcode: "withoutScreenRefresh",
+            blockType: Scratch.BlockType.CONDITIONAL,
+            text: "without screen refresh",
+          },
         ],
         menus: {
           types: {
@@ -839,9 +844,31 @@
       const target = util.target;
       const blockId = util.thread.peekStack();
       const blocks = target.blocks;
-      if (!blocks.getBranch(blockId, 0)) return;
+      const branch = blocks.getBranch(blockId, 0);
+      if (!branch) return;
 
-      runtime._pushThread(blocks.getBranch(blockId, 0), target);
+      runtime._pushThread(branch, target);
+    }
+
+    withoutScreenRefresh(args, util) {
+      const thread = util.thread;
+      if (thread.warpState === 2) {
+        thread.peekStackFrame().warpMode = false;
+        thread.isCompiled = false;
+        thread.warpState = 3;
+        return;
+      }
+      if (thread.warpState === 1) {
+        util.startBranch(1, true);
+        thread.warpState = 2;
+        return;
+      }
+      if (!thread.warpState) {
+        thread.peekStackFrame().warpMode = true;
+        thread.isCompiled = false;
+        thread.warpState = 1;
+        util.yield();
+      }
     }
 
     /* Utility Functions */
