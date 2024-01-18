@@ -659,7 +659,7 @@
       if (util.stackFrame.loopCounter <= b) {
         util.thread.stackFrames[0].moreControlParams[param] =
           util.stackFrame.loopCounter;
-        if (isVariable) variable.setValue = util.stackFrame.loopCounter;
+        if (isVariable) variable.value = util.stackFrame.loopCounter;
         util.stackFrame.loopCounter++;
         util.startBranch(1, true);
       }
