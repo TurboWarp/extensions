@@ -371,9 +371,9 @@
           },
           "---",
           {
-            opcode: "launch",
+            opcode: "startBlocks",
             blockType: Scratch.BlockType.CONDITIONAL,
-            text: "launch",
+            text: "start blocks",
             branchIconURI: junctionIcon,
           },
           {
@@ -840,7 +840,7 @@
       }
     }
 
-    launch(args, util) {
+    startBlocks(args, util) {
       const target = util.target;
       const blockId = util.thread.peekStack();
       const blocks = target.blocks;
@@ -850,11 +850,12 @@
       runtime._pushThread(branch, target);
     }
 
+    // todo: fix delay, run with compiler?
     withoutScreenRefresh(args, util) {
       const thread = util.thread;
       if (thread.warpState === 2) {
         thread.peekStackFrame().warpMode = false;
-        thread.isCompiled = false;
+        thread.isCompiled = true;
         thread.warpState = 3;
         return;
       }
