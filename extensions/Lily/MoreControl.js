@@ -854,8 +854,8 @@
       const thread = util.thread;
       if (thread.warpState === 2) {
         thread.peekStackFrame().warpMode = false;
-        thread.isCompiled = false;
-        thread.warpState = 3;
+        thread.isCompiled = true;
+        delete thread.warpState;
         return;
       }
       if (thread.warpState === 1) {
