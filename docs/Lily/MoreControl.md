@@ -258,15 +258,28 @@ if <key (space v) pressed?> start loop {
 
 # Everything Else
 
-The **launch** block will run the code inside it in a brand new thread, separately from the original script. It will not wait for the code to finish, instead just running the scripts below it immediately.
+The **start blocks** block will run the code inside it in a brand new thread, separately from the original script. It will not wait for the code to finish, instead just running the scripts below it immediately. Because it's acting like a separate script (or more appropriately, "thread"), thread-specific things will not be copied over, such as custom block parameters and thread variables if you're using the "Temporary Variables" extension.
 
 ```scratch
-launch {
+start blocks {
   forever {
     move [10] steps
   } :: control cap
 } :: control
 say [Hello!]
+```
+
+**Without screen refresh** will run the script inside of it without screen refresh, or in "warp mode", just like a custom block with the setting of the same name will try to run the definition instantaneously. As this is being written, the block does this by circumventing TurboWarp's compiler; therefore the script inside of it will not be compiled.
+
+```scratch
+without screen refresh {
+  repeat [10] {
+    turn @turnLeft [15] degrees
+  } :: control
+} :: control
+repeat [10] {
+  turn @turnLeft [15] degrees
+} :: control
 ```
 
 In this example, the **say [Hello!]** block will still run. This can be useful if you want to run 2 sets of code simultaneously within the same script.
