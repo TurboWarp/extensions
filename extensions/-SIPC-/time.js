@@ -77,7 +77,7 @@
           {
             opcode: "calculatetimedurationfromdate",
             blockType: Scratch.BlockType.REPORTER,
-            text: "difference between [DATE] to current datetime in [TIME_MENU]",
+            text: Scratch.translate("difference between [DATE] to current datetime in [TIME_MENU]"),
             arguments: {
               DATE: {
                 type: Scratch.ArgumentType.STRING,
@@ -92,7 +92,7 @@
           {
             opcode: "calculatetimedurationfromtime",
             blockType: Scratch.BlockType.REPORTER,
-            text: "difference between [START_TIME] to current time in [TIME_MENU]",
+            text: Scratch.translate("difference between [START_TIME] to current time in [TIME_MENU]"),
             arguments: {
               START_TIME: {
                 type: Scratch.ArgumentType.STRING,
@@ -107,7 +107,7 @@
           {
             opcode: "calculatetimedurationfromstamp",
             blockType: Scratch.BlockType.REPORTER,
-            text: "difference between [START_TIME] and [END_TIME] in [TIME_MENU]",
+            text: Scratch.translate("difference between [START_TIME] and [END_TIME] in [TIME_MENU]"),
             arguments: {
               START_TIME: {
                 type: Scratch.ArgumentType.STRING,
@@ -126,7 +126,7 @@
           {
             opcode: "calculatetimedifference",
             blockType: Scratch.BlockType.REPORTER,
-            text: "difference between [START_TIME] and [END_TIME] in [TIME_MENU]",
+            text: Scratch.translate("difference between [START_TIME] and [END_TIME] in [TIME_MENU]"),
             arguments: {
               START_TIME: {
                 type: Scratch.ArgumentType.STRING,
@@ -145,7 +145,7 @@
           {
             opcode: "evaluateTime",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[MATH] [START_TIME] and [END_TIME]",
+            text: Scratch.translate("[MATH] [START_TIME] and [END_TIME]"),
             arguments: {
               START_TIME: {
                 type: Scratch.ArgumentType.STRING,
@@ -165,7 +165,7 @@
           {
             opcode: "converttotime",
             blockType: Scratch.BlockType.REPORTER,
-            text: "convert [VALUE] seconds to [ROUND] time",
+            text: Scratch.translate("convert [VALUE] seconds to [ROUND] time"),
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -180,7 +180,7 @@
           {
             opcode: "convertToValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: "convert [VALUE] to [TIME]",
+            text: Scratch.translate("convert [VALUE] to [TIME]"),
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
@@ -195,7 +195,7 @@
           {
             opcode: "daysinmonth",
             blockType: Scratch.BlockType.REPORTER,
-            text: "number of days in [MONTH] [YEAR]",
+            text: Scratch.translate("number of days in [MONTH] [YEAR]"),
             arguments: {
               MONTH: {
                 type: Scratch.ArgumentType.STRING,
@@ -211,7 +211,7 @@
           {
             opcode: "countdownReport",
             blockType: Scratch.BlockType.REPORTER,
-            text: "countdown to [TIME] in [MENU]",
+            text: Scratch.translate("countdown to [TIME] in [MENU]"),
             arguments: {
               TIME: {
                 type: Scratch.ArgumentType.STRING,
@@ -226,7 +226,7 @@
           {
             opcode: "countdownBoolean",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "countdown to [TIME] reached?",
+            text: Scratch.translate("countdown to [TIME] reached?"),
             arguments: {
               TIME: {
                 type: Scratch.ArgumentType.STRING,
