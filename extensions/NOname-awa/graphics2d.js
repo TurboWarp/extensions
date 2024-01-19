@@ -5,23 +5,6 @@
 
 (function (Scratch) {
   "use strict";
-  Scratch.translate.setup({
-    zh: {
-      name: "图形 2D",
-      line_section: "线段（[x1],[y1]）到（[x2],[y2]）",
-      triangle: "三角形（[x1],[y1]）（[x2],[y2]）（[x3],[y3]）的 [CS]",
-      triangle_s: "三角形 [s1] [s2] [s3] 的面积",
-      quadrilateral:
-        "四边形（[x1],[y1]）（[x2],[y2]）（[x3],[y3]）（[x4],[y4]）的 [CS]",
-      graph: "图形 [graph] 的 [CS]",
-      round: "[rd] 为 [a] 的圆的 [CS]",
-      pi: "派",
-      radius: "半径",
-      diameter: "直径",
-      area: "面积",
-      circumference: "周长",
-    },
-  });
   class graph {
     getInfo() {
       return {
@@ -50,6 +33,32 @@
               x2: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "0",
+              },
+              y2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+            },
+          },
+          {
+            opcode: "ray_direction",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "ray_direction",
+              default: "direction of ([x1],[y1]) to ([x2],[y2])",
+            }),
+            arguments: {
+              x1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              y1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              x2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
               },
               y2: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -269,6 +278,21 @@
       return Math.sqrt(
         Math.pow(args.x1 - args.x2, 2) + Math.pow(args.y1 - args.y2, 2)
       );
+    }
+    ray_direction(args) {
+      // Added by NexusKitten
+      // 由 NexusKitten 添加
+      const dx =
+        Scratch.Cast.toNumber(args.x2) - Scratch.Cast.toNumber(args.x1);
+      const dy =
+        Scratch.Cast.toNumber(args.y2) - Scratch.Cast.toNumber(args.y1);
+      if (dx === 0 && dy === 0) {
+        return 0;
+      } else if (dy < 0) {
+        return (180 / Math.PI) * Math.atan(dx / dy) + 180;
+      } else {
+        return (180 / Math.PI) * Math.atan(dx / dy);
+      }
     }
     vertical(args) {
       if (isNaN(args.a) || isNaN(args.b)) {

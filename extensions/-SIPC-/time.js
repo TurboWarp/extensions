@@ -19,7 +19,7 @@
     getInfo() {
       return {
         id: "sipctime",
-        name: "Time",
+        name: Scratch.translate("Time"),
         color1: "#ff8000",
         color2: "#804000",
         color3: "#804000",
@@ -29,17 +29,17 @@
           {
             opcode: "Timestamp",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current unix timestamp"
+            text: Scratch.translate("current timestamp"),
           },
           {
             opcode: "timezone",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current time zone offset"
+            text: Scratch.translate("current time zone"),
           },
           {
             opcode: "Timedata",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get [Timedata] from [timestamp]",
+            text: Scratch.translate("get [Timedata] from [timestamp]"),
             arguments: {
               timestamp: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -54,7 +54,7 @@
           {
             opcode: "TimestampToTime",
             blockType: Scratch.BlockType.REPORTER,
-            text: "convert [timestamp] to datetime",
+            text: Scratch.translate("convert [timestamp] to datetime"),
             arguments: {
               timestamp: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -65,7 +65,7 @@
           {
             opcode: "TimeToTimestamp",
             blockType: Scratch.BlockType.REPORTER,
-            text: "convert [time] to timestamp",
+            text: Scratch.translate("convert [time] to timestamp"),
             arguments: {
               time: {
                 type: Scratch.ArgumentType.STRING,
@@ -238,7 +238,32 @@
         menus: {
           Time: {
             acceptReporters: true,
-            items: ["year", "month", "day", "hour", "minute", "second"],
+            items: [
+              {
+                text: Scratch.translate("year"),
+                value: "year",
+              },
+              {
+                text: Scratch.translate("month"),
+                value: "month",
+              },
+              {
+                text: Scratch.translate("day"),
+                value: "day",
+              },
+              {
+                text: Scratch.translate("hour"),
+                value: "hour",
+              },
+              {
+                text: Scratch.translate("minute"),
+                value: "minute",
+              },
+              {
+                text: Scratch.translate("second"),
+                value: "second",
+              },
+            ],
           },
           MathType: {
             acceptReporters: true,

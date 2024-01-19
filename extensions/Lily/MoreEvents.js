@@ -79,6 +79,99 @@
   var lastValues = {};
   var runTimer = 0;
 
+  const MAX_BEFORE_SAVE_MS = 3000;
+
+  const beforeSave = () =>
+    new Promise((resolve) => {
+      const threads = vm.runtime.startHats("lmsMoreEvents_beforeSave");
+
+      if (threads.length === 0) {
+        resolve();
+        return;
+      }
+
+      const startTime = performance.now();
+      const checkThreadStatus = () => {
+        if (
+          performance.now() - startTime > MAX_BEFORE_SAVE_MS ||
+          threads.every((thread) => !vm.runtime.isActiveThread(thread))
+        ) {
+          vm.runtime.off("AFTER_EXECUTE", checkThreadStatus);
+          resolve();
+        }
+      };
+
+      vm.runtime.on("AFTER_EXECUTE", checkThreadStatus);
+    });
+
+  const afterSave = () => {
+    // Wait until the next frame actually starts so that the actual file
+    // saving routine has a chance to finish before we starting running blocks.
+    vm.runtime.once("BEFORE_EXECUTE", () => {
+      vm.runtime.startHats("lmsMoreEvents_afterSave");
+    });
+  };
+
+  const originalSaveProjectSb3 = vm.saveProjectSb3;
+  vm.saveProjectSb3 = async function (...args) {
+    await beforeSave();
+    const result = await originalSaveProjectSb3.apply(this, args);
+    afterSave();
+    return result;
+  };
+
+  const originalSaveProjectSb3Stream = vm.saveProjectSb3Stream;
+  vm.saveProjectSb3Stream = function (...args) {
+    // This is complicated because we need to return a stream object syncronously...
+
+    let realStream = null;
+    const queuedCalls = [];
+
+    const whenStreamReady = (methodName, args) => {
+      if (realStream) {
+        return realStream[methodName].apply(realStream, args);
+      } else {
+        return new Promise((resolve) => {
+          queuedCalls.push({
+            resolve,
+            methodName,
+            args,
+          });
+        });
+      }
+    };
+
+    const streamWrapper = {
+      on: (...args) => void whenStreamReady("on", args),
+      pause: (...args) => void whenStreamReady("pause", args),
+      resume: (...args) => void whenStreamReady("resume", args),
+      accumulate: (...args) => whenStreamReady("accumulate", args),
+    };
+
+    beforeSave().then(() => {
+      realStream = originalSaveProjectSb3Stream.apply(this, args);
+
+      realStream.on("end", () => {
+        // Not sure how JSZip handles errors here, so we'll make sure not to break anything if
+        // afterSave somehow throws
+        try {
+          afterSave();
+        } catch (e) {
+          console.error(e);
+        }
+      });
+
+      for (const queued of queuedCalls) {
+        queued.resolve(
+          realStream[queued.methodName].apply(realStream, queued.args)
+        );
+      }
+      queuedCalls.length = 0;
+    });
+
+    return streamWrapper;
+  };
+
   class MoreEvents {
     constructor() {
       // Stop Sign Clicked contributed by @CST1229
@@ -132,12 +225,14 @@
                 dataURI: stopIcon,
               },
             },
+            extensions: ["colours_event"],
           },
           {
             opcode: "forever",
             blockType: Scratch.BlockType.EVENT,
             text: "forever",
             isEdgeActivated: false,
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -156,6 +251,7 @@
                 menu: "boolean",
               },
             },
+            extensions: ["colours_event"],
           },
           {
             opcode: "whileTrueFalse",
@@ -171,6 +267,7 @@
                 menu: "boolean",
               },
             },
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -188,6 +285,7 @@
                 type: null,
               },
             },
+            extensions: ["colours_event"],
           },
           {
             opcode: "everyDuration",
@@ -200,6 +298,7 @@
                 defaultValue: 3,
               },
             },
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -220,6 +319,7 @@
                 menu: "action",
               },
             },
+            extensions: ["colours_event"],
           },
           {
             opcode: "whileKeyPressed",
@@ -233,6 +333,7 @@
                 menu: "keyboardButtons",
               },
             },
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -251,6 +352,7 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
           {
             opcode: "broadcastToTargetAndWait",
@@ -266,6 +368,7 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -283,6 +386,7 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
           {
             opcode: "broadcastDataAndWait",
@@ -297,6 +401,7 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
           {
             blockType: Scratch.BlockType.XML,
@@ -308,6 +413,7 @@
             text: "received data",
             disableMonitor: true,
             allowDropAnywhere: true,
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -330,6 +436,7 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
           {
             opcode: "broadcastDataToTargetAndWait",
@@ -349,10 +456,28 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
           {
             blockType: Scratch.BlockType.XML,
             xml: '<block type="lmsMoreEvents_broadcastDataToTarget"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block><block type="lmsMoreEvents_broadcastDataToTargetAndWait"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TARGET"><shadow type="lmsMoreEvents_menu_targetMenu"></shadow></value><value name="DATA"><shadow type="text"></shadow></value></block>',
+          },
+          "---",
+          {
+            blockType: Scratch.BlockType.EVENT,
+            opcode: "beforeSave",
+            text: "before project saves",
+            shouldRestartExistingThreads: true,
+            isEdgeActivated: false,
+            extensions: ["colours_event"],
+          },
+          {
+            blockType: Scratch.BlockType.EVENT,
+            opcode: "afterSave",
+            text: "after project saves",
+            shouldRestartExistingThreads: true,
+            isEdgeActivated: false,
+            extensions: ["colours_event"],
           },
         ],
         menus: {

@@ -19,6 +19,7 @@ Strictly, nothing is banned, but the following are *highly* discouraged:
  - Broad "Utilities" extensions (break them up into multiple extensions, see https://github.com/TurboWarp/extensions/issues/674)
  - Extensions that are very similar to existing ones (consider modifying the existing one instead)
  - One-use personal extensions (load the extension as a local file instead)
+ - Extensions whose primary purpose is monetization (not in the spirit of an open source project)
  - Joke extensions (they aren't funny when they cause us to get bug reports)
 
 Some extensions were added before these rules existed. That doesn't mean you will be exempted too.
@@ -28,6 +29,12 @@ Some extensions were added before these rules existed. That doesn't mean you wil
 Every merged extension is more code that we will be expected to maintain indefinitely, even if you disappear. Remember: broken extensions mean that real projects by real people no longer work. If the renderer is rewritten one day, we will have to ensure that extensions like Clipping & Blending, RGB Channels, and Augmented Reality still work. That's not a small commitment.
 
 We're all volunteers who all have lives outside of Scratch extensions. Many have full time jobs or are full time students. We'll get to you as soon as we can, so please be patient.
+
+Every extension is also covered under [our bug bounty](https://github.com/TurboWarp/extensions/security/policy), so mindlessly merging things will have a direct impact on my wallet.
+
+## On AI language models
+
+**Generative AI language models like ChatGPT, Bing Chat, and Bard DO NOT know how to write proper extensions for TurboWarp.** Remember that the ChatGPT knowledge cutoff is in 2021 while our extension system did not exist until late 2022, thus it *literally can't know*. Pull requests submitting extensions that are made by AI (it's really obvious) will be closed as invalid.
 
 ## Writing extensions
 
@@ -51,7 +58,7 @@ The header comments look like this:
 // Original: TestMuffin
 ```
 
-Remember, this has to be the *very first* thing in the JS file. `Name`, `Description`, and `ID` are required. Make sure that `ID` exactly matches what you return in `getInfo()`. You can have zero or more `By` and `Original`. Put credit links in `<angled brackets>` if you have one. It must point to a Scratch user profile. The parser is pretty loose, but try not to deviate too far from this format.
+Remember, this has to be the *very first* thing in the JS file. `Name`, `Description`, and `ID` are required. Make sure that `ID` exactly matches what you return in `getInfo()`. You can have zero or more `By` and `Original`. Put credit links in `<angled brackets>` if you have one. It must point to a Scratch user profile. This metadata is parsed by a script to generate the website and extension library. It tries to be pretty loose, but don't deviate too far. You must use `//`, not `/* */`.
 
 New extensions do not *need* images, but they are highly encouraged. Save the image in the `images` folder with the same folder name and file name (but different file extension) as the extension's source code. For example, if your extension is located in `extensions/TestMuffin/fetch.js`, save the image as `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will detect it automatically. Images are displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you.
 
@@ -123,13 +130,13 @@ If you encounter a TypeScript error, as long as you understand the error, feel f
 
 All pull requests are automatically checked by a combination of custom validation scripts, [ESLint](https://eslint.org/), and [Prettier](https://prettier.io/). Don't worry about passing these checks on the first attempt -- most don't. That's why we have these checks.
 
-Our custom validation scripts do things like making sure you have the correct headers at the start of your extension and that the images are the right size. You can run them locally with:
+Our custom validation scripts do things like making sure you have the correct headers at the start of your extension and that the images are the right size. **Your extension must pass validation.** You can run them locally with:
 
 ```bash
 npm run validate
 ```
 
-ESLint detects common JavaScript errors such as referencing non-existant variables. You can run it locally with:
+ESLint detects common JavaScript errors such as referencing non-existant variables. **Your extension must pass linting.** You can run it locally with:
 
 ```bash
 npm run lint
@@ -139,19 +146,13 @@ You are allowed to [disable ESLint warnings and errors](https://eslint.org/docs/
 
 When including third-party code, especially minified code, you may use `/* eslint-disable*/` and `/* eslint-enable */` markers to disable linting for that entire section.
 
-ESLint can automatically fix certain issues. You can run this with:
-
-```bash
-npm run fix
-```
-
-We use Prettier to ensure consistent code formatting. You can format your code automatically with:
+We use Prettier to ensure consistent code formatting. **Your extension does not need to pass format; we will fix it for you if linting and validation pass.** You can format your code automatically with:
 
 ```bash
 npm run format
 ```
 
-To just check formatting instead, use:
+To just check formatting, use:
 
 ```bash
 npm run check-format

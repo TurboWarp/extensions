@@ -713,11 +713,13 @@
             opcode: "true",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "true",
+            disableMonitor: true,
           },
           {
             opcode: "false",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "false",
+            disableMonitor: true,
           },
           {
             opcode: "new_line",

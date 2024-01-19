@@ -21,12 +21,14 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "true",
             arguments: {},
+            disableMonitor: true,
           },
           {
             opcode: "false",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "false",
             arguments: {},
+            disableMonitor: true,
           },
           {
             opcode: "boolean",

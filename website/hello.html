@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>It works!</title>
+    <style>
+      body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      h1 {
+        animation-name: rainbow;
+        animation-duration: 5s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+      h1, p {
+        margin: 0.8rem 0;
+      }
+      @keyframes rainbow {
+        0% { color: #ff0000; }
+        17% { color: #ffff00; }
+        33% { color: #00ff00; }
+        50% { color: #00ffff; }
+        67% { color: #0000ff; }
+        83% { color: #ff00ff; }
+        100% { color: #ff0000; }
+      }
+    </style>
+  </head>
+  <head>
+    <main>
+      <h1>It works!</h1>
+      <p>Transparency is supported, so you can display the project behind the frame as long as the page doesn't explicitly set a background color.</p>
+      <p>You can also use JavaScript and most other Web APIs, like this:</p>
+      <p><button class="clickme">Click me!</button></p>
+      <p>Due to browser security measures, blocks like "mouse x" and "mouse down?" will not work while the cursor is over the frame unless you use the disable interactivity block.</p>
+      <p>Many websites also block other sites from embedding them for security reasons.</p>
+    </main>
+    <script>
+      let clicks = 0;
+      document.querySelector('.clickme').addEventListener('click', (e) => {
+        clicks++;
+        e.target.textContent = `Clicks: ${clicks}`;
+      });
+    </script>
+  </head>
+</html>

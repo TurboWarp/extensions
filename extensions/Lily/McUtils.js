@@ -2,6 +2,7 @@
 // ID: lmsmcutils
 // Description: Helpful utilities for any fast food employee.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// Context: Joke extension based on McDonalds, a fast food chain.
 
 /*!
  * Credit to NexusKitten (NamelessCat) for the idea
@@ -105,7 +106,8 @@
     }
 
     placeOrder(args, util) {
-      if (args.INPUT.includes("ice cream")) {
+      const text = Scratch.Cast.toString(args.INPUT);
+      if (text.includes("ice cream")) {
         return false;
       } else {
         return args.INPUT;

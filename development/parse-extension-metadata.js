@@ -24,6 +24,7 @@ class Extension {
     this.by = [];
     /** @type {Person[]} */
     this.original = [];
+    this.context = "";
   }
 }
 
@@ -93,6 +94,9 @@ const parseMetadata = (extensionCode) => {
         break;
       case "original":
         metadata.original.push(parsePerson(value));
+        break;
+      case "context":
+        metadata.context = value;
         break;
       default:
         // TODO
