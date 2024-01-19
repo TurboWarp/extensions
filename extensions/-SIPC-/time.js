@@ -29,14 +29,12 @@
           {
             opcode: "Timestamp",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current unix timestamp",
-            arguments: {},
+            text: "current unix timestamp"
           },
           {
             opcode: "timezone",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current time zone offset",
-            arguments: {},
+            text: "current time zone offset"
           },
           {
             opcode: "Timedata",
@@ -45,13 +43,12 @@
             arguments: {
               timestamp: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "1145141980000",
+                defaultValue: "1145141980000"
               },
               Timedata: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "Time",
-                defaultValue: "year",
-              },
+                menu: "Time"
+              }
             },
           },
           {
@@ -61,7 +58,7 @@
             arguments: {
               timestamp: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "1145141980000",
+                defaultValue: "1145141980000"
               },
             },
           },
@@ -76,10 +73,7 @@
               },
             },
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Time Calculations",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Time Calculations" },
           {
             opcode: "calculatetimedurationfromdate",
             blockType: Scratch.BlockType.REPORTER,
@@ -87,13 +81,12 @@
             arguments: {
               DATE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "2007-03-14 09:34:00",
+                defaultValue: "2007-03-14 09:34:00"
               },
               TIME_MENU: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "Time",
-                defaultValue: "hour",
-              },
+                menu: "Time"
+              }
             },
           },
           {
@@ -103,13 +96,12 @@
             arguments: {
               START_TIME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "00:00:00",
+                defaultValue: "00:00:00"
               },
               TIME_MENU: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "Time",
-                defaultValue: "hour",
-              },
+                menu: "Time"
+              }
             },
           },
           {
@@ -119,17 +111,16 @@
             arguments: {
               START_TIME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "2007-03-14 09:34:00",
+                defaultValue: "2007-03-14 09:34:00"
               },
               END_TIME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "2016-07-21 15:03:00",
+                defaultValue: "2016-07-21 15:03:00"
               },
               TIME_MENU: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "Time",
-                defaultValue: "hour",
-              },
+                menu: "Time"
+              }
             },
           },
           {
@@ -139,17 +130,16 @@
             arguments: {
               START_TIME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "00:00",
+                defaultValue: "00:00"
               },
               END_TIME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "00:00",
+                defaultValue: "00:00"
               },
               TIME_MENU: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "Time",
-                defaultValue: "hour",
-              },
+                menu: "Time"
+              }
             },
           },
           {
@@ -159,22 +149,19 @@
             arguments: {
               START_TIME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "2023-10-10 00:00:00",
+                defaultValue: "2023-10-10 00:00:00"
               },
               END_TIME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "1970-01-01 00:10:00",
+                defaultValue: "1970-01-01 00:10:00"
               },
               MATH: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "MathType",
-                defaultValue: "add",
-              },
+                menu: "MathType"
+              }
             },
           },
-
           "---",
-
           {
             opcode: "converttotime",
             blockType: Scratch.BlockType.REPORTER,
@@ -182,13 +169,12 @@
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+                defaultValue: 0
               },
               ROUND: {
                 type: Scratch.ArgumentType.NUMBER,
-                menu: "Round",
-                defaultValue: "exact",
-              },
+                menu: "Round"
+              }
             },
           },
           {
@@ -198,13 +184,12 @@
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "1970-01-01 00:00:00",
+                defaultValue: "1970-01-01 00:00:00"
               },
               TIME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "Time",
-                defaultValue: "hour",
-              },
+                menu: "Time"
+              }
             },
           },
           {
@@ -214,18 +199,15 @@
             arguments: {
               MONTH: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "Months",
-                defaultValue: "January",
+                menu: "Months"
               },
               YEAR: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "2000",
-              },
+                defaultValue: "2000"
+              }
             },
           },
-
           "---",
-
           {
             opcode: "countdownReport",
             blockType: Scratch.BlockType.REPORTER,
@@ -237,9 +219,8 @@
               },
               MENU: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "Time",
-                defaultValue: "hour",
-              },
+                menu: "Time"
+              }
             },
           },
           {
@@ -249,8 +230,8 @@
             arguments: {
               TIME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "2007-03-14 09:34:00",
-              },
+                defaultValue: "2007-03-14 09:34:00"
+              }
             },
           },
         ],
@@ -270,18 +251,9 @@
           Months: {
             acceptReporters: true,
             items: [
-              "January",
-              "February",
-              "March",
-              "April",
-              "May",
-              "June",
-              "July",
-              "August",
-              "September",
-              "October",
-              "November",
-              "December",
+              "January", "February", "March", "April",
+              "May", "June", "July", "August",
+              "September", "October", "November", "December",
             ],
           },
         },
@@ -297,49 +269,25 @@
       args.timestamp = args.timestamp ? args.timestamp : null;
       let date1 = new Date(Scratch.Cast.toNumber(args.timestamp));
       switch (args.Timedata) {
-        case "year":
-          return date1.getFullYear();
-        case "month":
-          return date1.getMonth() + 1 < 10
-            ? "0" + (date1.getMonth() + 1)
-            : date1.getMonth() + 1;
-        case "day":
-          return date1.getDate() < 10 ? "0" + date1.getDate() : date1.getDate();
-        case "hour":
-          return date1.getHours() < 10
-            ? "0" + date1.getHours()
-            : date1.getHours();
-        case "minute":
-          return date1.getMinutes() < 10
-            ? "0" + date1.getMinutes()
-            : date1.getMinutes();
-        case "second":
-          return date1.getSeconds() < 10
-            ? "0" + date1.getSeconds()
-            : date1.getSeconds();
+        case "year": return date1.getFullYear();
+        case "month": return date1.getMonth() + 1 < 10 ? "0" + (date1.getMonth() + 1) : date1.getMonth() + 1;
+        case "day": return date1.getDate() < 10 ? "0" + date1.getDate() : date1.getDate();
+        case "hour": return date1.getHours() < 10 ? "0" + date1.getHours() : date1.getHours();
+        case "minute": return date1.getMinutes() < 10 ? "0" + date1.getMinutes() : date1.getMinutes();
+        case "second": return date1.getSeconds() < 10 ? "0" + date1.getSeconds() : date1.getSeconds();
       }
       return 0;
     }
     TimestampToTime({ timestamp }) {
       timestamp = timestamp ? timestamp : null;
       let date2 = new Date(timestamp);
-      let Y = date2.getFullYear() + "-";
-      let M =
-        (date2.getMonth() + 1 < 10
-          ? "0" + (date2.getMonth() + 1)
-          : date2.getMonth() + 1) + "-";
-      let D =
-        (date2.getDate() < 10 ? "0" + date2.getDate() : date2.getDate()) + " ";
-      let h =
-        (date2.getHours() < 10 ? "0" + date2.getHours() : date2.getHours()) +
-        ":";
-      let m =
-        (date2.getMinutes() < 10
-          ? "0" + date2.getMinutes()
-          : date2.getMinutes()) + ":";
-      let s =
-        date2.getSeconds() < 10 ? "0" + date2.getSeconds() : date2.getSeconds();
-      return Y + M + D + h + m + s;
+      let Y = date2.getFullYear();
+      let M = (date2.getMonth() + 1 < 10 ? "0" + (date2.getMonth() + 1) : date2.getMonth() + 1);
+      let D = (date2.getDate() < 10 ? "0" + date2.getDate() : date2.getDate());
+      let h = (date2.getHours() < 10 ? "0" + date2.getHours() : date2.getHours());
+      let m = (date2.getMinutes() < 10 ? "0" + date2.getMinutes() : date2.getMinutes());
+      let s = date2.getSeconds() < 10 ? "0" + date2.getSeconds() : date2.getSeconds();
+      return `${Y}-${M}-${D} ${h}:${m}:${s}`;
     }
     TimeToTimestamp({ time }) {
       let data3 = time;
@@ -347,24 +295,18 @@
       return timestamp;
     }
 
+    //SharkPools Section
     calculateTimeDifference(startDate, endDate, timeMenu, abs) {
       let timeDiff = endDate.getTime() - startDate.getTime();
       timeDiff = abs ? Math.abs(timeDiff) : timeDiff * -1;
       switch (timeMenu) {
-        case "year":
-          return timeDiff / 946080000000;
-        case "month":
-          return timeDiff / 2592000000;
-        case "day":
-          return timeDiff / 86400000;
-        case "hour":
-          return timeDiff / 3600000;
-        case "minute":
-          return timeDiff / 60000;
-        case "second":
-          return timeDiff / 1000;
-        default:
-          return "Invalid Menu Input";
+        case "year": return timeDiff / 946080000000;
+        case "month": return timeDiff / 2592000000;
+        case "day": return timeDiff / 86400000;
+        case "hour": return timeDiff / 3600000;
+        case "minute": return timeDiff / 60000;
+        case "second": return timeDiff / 1000;
+        default: return "Invalid Menu Input";
       }
     }
 
@@ -374,16 +316,10 @@
       const startDate = new Date(dateString);
       const endDate = new Date();
       const difference = this.calculateTimeDifference(
-        startDate,
-        endDate,
-        timeMenu,
-        true
+        startDate, endDate, timeMenu, true
       );
-      if (isNaN(difference)) {
-        return "Invalid Time Input";
-      } else {
-        return difference;
-      }
+      if (isNaN(difference)) return "Invalid Time Input";
+      else return difference;
     }
 
     calculatetimedurationfromstamp(args) {
@@ -393,16 +329,10 @@
       const startDate = new Date(dateString);
       const endDate = new Date(endDateString);
       const difference = this.calculateTimeDifference(
-        startDate,
-        endDate,
-        timeMenu,
-        true
+        startDate, endDate, timeMenu, true
       );
-      if (isNaN(difference)) {
-        return "Invalid Time Input";
-      } else {
-        return difference;
-      }
+      if (isNaN(difference)) return "Invalid Time Input";
+      else return difference;
     }
 
     calculatetimedurationfromtime(args) {
@@ -413,23 +343,15 @@
       startDate.setHours(parseInt(startHour), parseInt(startMinute), 0, 0);
       const endDate = new Date();
       const difference = this.calculateTimeDifference(
-        startDate,
-        endDate,
-        timeMenu,
-        true
+        startDate, endDate, timeMenu, true
       );
-
-      if (isNaN(difference)) {
-        return "Invalid Time Input";
-      } else {
-        return difference;
-      }
+      if (isNaN(difference)) return "Invalid Time Input";
+      else return difference;
     }
 
     calculatetimedifference(args) {
       const startTime = args.START_TIME ? args.START_TIME : null;
       const endTime = args.END_TIME ? args.END_TIME : null;
-      const timeMenu = args.TIME_MENU;
       const startDate = new Date();
       const endDate = new Date();
       const startHour = parseInt(startTime.split(":")[0]);
@@ -438,81 +360,49 @@
       const endMinute = parseInt(endTime.split(":")[1]);
       startDate.setHours(startHour, startMinute, 0, 0);
       endDate.setHours(endHour, endMinute, 0, 0);
-
       const difference = this.calculateTimeDifference(
-        startDate,
-        endDate,
-        timeMenu,
-        true
+        startDate, endDate, args.TIME_MENU, true
       );
-      if (isNaN(difference)) {
-        return "Invalid Time Input";
-      } else {
-        return difference;
-      }
+      if (isNaN(difference)) return "Invalid Time Input";
+      else return difference;
     }
 
     converttotime(args) {
-      const timestamp = args.VALUE ? args.VALUE : 0;
-      const seconds =
-        args.ROUND === "rounded" ? Math.round(timestamp % 60) : timestamp % 60;
-      const minutes = Math.round((timestamp / 60) % 60);
-      const hours = Math.round((timestamp / 3600) % 24);
-
-      const timeString = `${hours}:${minutes}:${seconds}`;
-      return timeString;
+      const tStamp = args.VALUE ? args.VALUE : 0;
+      const seconds = args.ROUND === "rounded" ? Math.round(tStamp % 60) : tStamp % 60;
+      const minutes = Math.round((tStamp / 60) % 60);
+      const hours = Math.round((tStamp / 3600) % 24);
+      return `${hours}:${minutes}:${seconds}`;
     }
 
     convertToValue(args) {
-      const dateString = args.VALUE ? args.VALUE : null;
-      let date = new Date(dateString);
+      let date = new Date(args.VALUE ? args.VALUE : null);
       date = Math.round(date.getTime() / 1000) - 28800;
-
       switch (args.TIME) {
-        case "year":
-          return date / 31536000;
-        case "month":
-          return date / 2592000;
-        case "day":
-          return date / 86400;
-        case "hour":
-          return date / 3600;
-        case "minute":
-          return date / 60;
-        case "second":
-          return date;
-        default:
-          return "Invalid Menu Input";
+        case "year": return date / 31536000;
+        case "month": return date / 2592000;
+        case "day": return date / 86400;
+        case "hour": return date / 3600;
+        case "minute": return date / 60;
+        case "second": return date;
+        default: return "Invalid Menu Input";
       }
     }
 
     daysinmonth(args) {
-      const month = args.MONTH;
       const year = args.YEAR ? args.YEAR : null;
-      const monthIndex = this._getMonthIndex(month);
-
-      if (monthIndex === -1) {
-        return "Invalid month";
-      }
-
+      const monthIndex = this._getMonthIndex(Scratch.Cast.toString(args.MONTH));
+      if (monthIndex === -1) return "Invalid month";
       const date = new Date(year, monthIndex + 1, 0);
       return date.getDate();
     }
 
     _getMonthIndex(month) {
       const months = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
+        "January", "February", "March",
+        "April", "May", "June",
+        "July", "August", "September",
+        "October", "November", "December",
       ];
       return months.indexOf(month);
     }
@@ -523,42 +413,25 @@
       const dateString = args.TIME ? args.TIME : null;
       const startDate = new Date(dateString);
       const difference = this.calculateTimeDifference(
-        startDate,
-        endDate,
-        timeMenu,
-        false
+        startDate, endDate, timeMenu, false
       );
-      if (isNaN(difference)) {
-        return "Invalid Time Input";
-      } else {
-        return difference;
-      }
+      if (isNaN(difference)) return "Invalid Time Input";
+      else return difference;
     }
 
     countdownBoolean(args) {
       const endDate = Date.now();
-      const dateString = args.TIME ? args.TIME : null;
-      const startDate = new Date(dateString);
-      const timeDifference = startDate - endDate;
-      return timeDifference <= 0;
+      const startDate = new Date(args.TIME ? args.TIME : null);
+      return startDate - endDate <= 0;
     }
 
     evaluateTime(args) {
-      const startTimeString = args.START_TIME ? args.START_TIME : null;
-      const endTimeString = args.END_TIME ? args.END_TIME : null;
-      const startDate = new Date(startTimeString);
-      const endDate = new Date(endTimeString);
-
-      if (isNaN(startDate) || isNaN(endDate)) {
-        return "Invalid Time Input";
-      }
-
+      const startDate = new Date(args.START_TIME ? args.START_TIME : null);
+      const endDate = new Date(args.END_TIME ? args.END_TIME : null);
+      if (isNaN(startDate) || isNaN(endDate)) return "Invalid Time Input";
       let timeDifference = "";
-      if (args.MATH === "add") {
-        timeDifference = startDate.getTime() + endDate.getTime();
-      } else {
-        timeDifference = startDate.getTime() - endDate.getTime();
-      }
+      if (args.MATH === "add") timeDifference = startDate.getTime() + endDate.getTime();
+      else timeDifference = startDate.getTime() - endDate.getTime();
       const resultDate = new Date(timeDifference);
       const year = resultDate.getFullYear();
       const month = String(resultDate.getMonth() + 1).padStart(2, "0");
@@ -567,9 +440,7 @@
       const hours = String(resultDate.getHours() - changer).padStart(2, "0");
       const minutes = String(resultDate.getMinutes()).padStart(2, "0");
       const seconds = String(resultDate.getSeconds()).padStart(2, "0");
-
-      const formattedResult = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-      return formattedResult;
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
   }
   Scratch.extensions.register(new Time());
