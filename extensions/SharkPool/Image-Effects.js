@@ -3,7 +3,7 @@
 // Description: Apply a variety of new effects to the data URI of Images or Costumes.
 // By: SharkPool
 
-// Version V.2.0.1
+// Version V.2.1.0
 
 (function (Scratch) {
   "use strict";
@@ -20,6 +20,10 @@
     const b = parseInt(hex.slice(5, 7), 16);
     const a = hex.length === 9 ? parseInt(hex.slice(7, 9), 16) / 255 : 255;
     return [r, g, b, a];
+  }
+  function rgbaToHex(r, g, b, a) {
+    const alpha = a !== undefined ? Math.round(a).toString(16).padStart(2, "0") : "";
+    return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}${alpha}`;
   }
 
   class imgEffectsSP {
@@ -257,6 +261,15 @@
             arguments: {
               URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "PIXELTYPE" }
+            }
+          },
+          {
+            opcode: "getPixel",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get hex of pixel #[NUM] in [URI]",
+            arguments: {
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
             }
           },
           {
@@ -504,9 +517,7 @@
           const effectFunction = this[`apply${Scratch.Cast.toString(args.EFFECT).replaceAll(" ", "")}`];
           if (effectFunction && typeof effectFunction === "function") {
             await effectFunction(imageData, percentage - 1);
-          } else {
-            this.applySaturation(imageData, percentage - 1);
-          }
+          } else { this.applySaturation(imageData, percentage - 1) }
           ctx.putImageData(imageData, 0, 0);
           resolve(canvas.toDataURL());
         };
@@ -572,14 +583,9 @@
           const sourceY = Math.floor(y);
           if (sourceX >= 0 && sourceX < width && sourceY >= 0 && sourceY < height) {
             const sourceIndex = (sourceY * width + sourceX) * 4;
-            if (data[sourceIndex + 3] > 0) {
-              data.copyWithin(index, sourceIndex, sourceIndex + 4);
-            } else {
-              data[index + 3] = 0;
-            }
-          } else {
-            data[index + 3] = 0;
-          }
+            if (data[sourceIndex + 3] > 0) data.copyWithin(index, sourceIndex, sourceIndex + 4);
+            else data[index + 3] = 0;
+          } else { data[index + 3] = 0 }
         }
       }
     }
@@ -1125,9 +1131,7 @@
           img.onerror = reject;
           img.src = this.confirmAsset(args.URI, "png");
         });
-      } else {
-        return args.URI;
-      }
+      } else { return args.URI }
     }
 
     upscaleImage(args) {
@@ -1176,9 +1180,7 @@
             outputData[pixelIndex + 1] = this.clamp(g, 0, 255);
             outputData[pixelIndex + 2] = this.clamp(b, 0, 255);
             outputData[pixelIndex + 3] = 255;
-          } else {
-            outputData[pixelIndex + 3] = 0;
-          }
+          } else { outputData[pixelIndex + 3] = 0 }
         }
       }
       ctx.putImageData(output, 0, 0);
@@ -1275,6 +1277,21 @@
         };
       });
     }
+    getPixel(args) {
+      const img = new Image();
+      img.src = this.confirmAsset(args.URI, "png");
+      return new Promise((resolve) => {
+        img.onload = () => {
+          const targetPixel = Scratch.Cast.toNumber(args.NUM);
+          const pixelData = this.printImg(img);
+          if (targetPixel >= 1 && targetPixel <= pixelData.length / 4) {
+            const pixelIndex = (targetPixel - 1) * 4;
+            const rgba = pixelData.slice(pixelIndex, pixelIndex + 4);
+            resolve(rgbaToHex(rgba[0], rgba[1], rgba[2], rgba[3]));
+          } else { resolve("#00000000") }
+        };
+      });
+    }
 
     printImg(img, forceWid, forceHei) {
       const canvas = document.createElement("canvas");
@@ -1295,7 +1312,7 @@
     }
 
     confirmAsset(input, type) {
-      if (!input || (!input.startsWith("data:image/") && !input.startsWith("<svg"))) return menuIconURI;
+      if (!input || !(input.startsWith("data:image/") || input.startsWith("<svg"))) return menuIconURI;
       if (type === "png") {
         return input.startsWith("data:image/") ? input : `data:image/svg+xml;base64,${btoa(input)}`;
       } else {
