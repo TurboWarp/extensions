@@ -3,7 +3,7 @@
 // Description: Display Text in Your Projects!
 // By: SharkPool
 
-// Version V.1.3.1
+// Version V.1.3.2
 
 (function (Scratch) {
   "use strict";
@@ -387,6 +387,8 @@
               { text: "alignment", value: "textAlign" },
               { text: "margin width", value: "width" },
               { text: "margin height", value: "height" },
+              { text: "display width", value: "box2w" },
+              { text: "display height", value: "box2h" },
               { text: "letter spacing", value: "letterSpacing" },
               { text: "line spacing", value: "lineHeight" },
               { text: "overflow type", value: "overflow" }
@@ -682,10 +684,25 @@
     attOfText(args) {
       const elements = document.querySelectorAll(`#SP_Text-Ext-${this.fixID(args.ID)}`);
       let value;
-      elements.forEach((element) => { value = element.style[args.ATT] });
-      value = args.ATT === "fontFamily" || args.ATT === "textAlign" || args.ATT === "overflow" ? value : parseFloat(value);
-      value = args.ATT === "fontWeight" ? value / 9 : value
-      return value || "";
+      if (args.ATT.includes("box2")) {
+        const calcs = [];
+        elements.forEach((element) => {
+          const tempSpan = document.createElement("span");
+          tempSpan.innerHTML = element.textContent;
+          tempSpan.style.fontSize = element.style.fontSize;
+          tempSpan.style.fontFamily = getComputedStyle(element).fontFamily;
+          tempSpan.style.display = "inline";
+          document.body.appendChild(tempSpan);
+          calcs.push(tempSpan[`offset${args.ATT.includes("w") ? "Width" : "Height"}`]);
+          document.body.removeChild(tempSpan);
+        });
+        return JSON.stringify(calcs);
+      } else {
+        elements.forEach((element) => { value = element.style[args.ATT] });
+        value = args.ATT === "fontFamily" || args.ATT === "textAlign" || args.ATT === "overflow" ? value : parseFloat(value);
+        value = args.ATT === "fontWeight" ? value / 9 : value;
+        return value || "";
+      }
     }
   
     lineCnt(args) {
