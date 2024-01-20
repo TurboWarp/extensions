@@ -401,7 +401,7 @@
      * @param {unknown} args.ATTR
      */
     hasAttribute({ XML, ATTR }) {
-      return this.getAttribute({ XML, ATTR }) === "";
+      return this.getAttribute({ XML, ATTR }) !== "";
     }
 
     /**
