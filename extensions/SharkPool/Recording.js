@@ -3,7 +3,7 @@
 // Description: Record your voice while you run your projects!
 // By: SharkPool
 
-// Version 1.1.1
+// Version 1.1.2
 
 (function (Scratch) {
   "use strict";
@@ -13,6 +13,7 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   let warningSent = false;
+  let audioChunks = [];
 
   //this script was ripped from the Files Extension. Thanks GarboMuffin :D
   const downloadURL = (url, file) => {
@@ -33,7 +34,7 @@
   class SPrecording {
     constructor() {
       this.isRecording = false;
-      this.recording = null;
+      this.recording = "";
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       this.mediaStream = null;
       this.audioRecorder = null;
@@ -74,6 +75,11 @@
           },
           {
             opcode: "clearRecording",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "clear and stop recording"
+          },
+          {
+            opcode: "clearRecording2",
             blockType: Scratch.BlockType.COMMAND,
             text: "clear recording"
           },
@@ -164,13 +170,11 @@
     recordingSet(args) {
       if (args.MODE === "enabled") {
         if (!warningSent) {
-          const confirmed = window.confirm(
-            "Allow access to record Microphone Audio? Be aware of privacy concerns if you Accept.",
-          );
+          const confirmed = window.confirm("Allow access to record Microphone Audio? Be aware of privacy concerns if you Accept.");
           if (confirmed) {
             this.startRecording();
             warningSent = true;
-          }
+          } else { return }
         } else { this.startRecording() }
       } else { this.stopRecording() }
     }
@@ -189,18 +193,17 @@
 
     clearRecording() {
       this.stopRecording();
-      setTimeout(() => { this.recording = null }, 10);
+      setTimeout(() => { this.recording = "", audioChunks = [] }, 10);
     }
+    clearRecording2() { this.recording = "", audioChunks = [] }
 
     recordForX(args) {
       if (!warningSent) {
-        const confirmed = window.confirm(
-          "Allow access to record Microphone Audio? Be aware of privacy concerns if you Accept.",
-        );
+        const confirmed = window.confirm("Allow access to record Microphone Audio? Be aware of privacy concerns if you Accept.");
         if (confirmed) {
           this.startRecording();
           warningSent = true;
-        }
+        } else { return }
       } else { this.startRecording() }
         return new Promise((resolve, reject) => {
           setTimeout(() => {
@@ -209,13 +212,12 @@
               this.stopRecording();
               resolve();
             }, time);
-          }, 100); // Short time to set up mic
+          }, 150); // Short time to set up mic
         });
     }
 
     recordedAudio(args) {
-      return this.recording ? this.convertBlobToBase64(this.recording, args.TYPE) :
-        "Nothing has been Recorded!";
+      return this.recording ? this.convertBlobToBase64(this.recording, args.TYPE) : "Nothing has been Recorded!";
     }
     convertBlobToBase64(blob, TYPE) {
       return new Promise((resolve, reject) => {
@@ -233,12 +235,9 @@
     async saveRecording(args) {
       if (this.recording) {
         let target = args.SPRITE;
-        if (target === "Stage") {
-          target = vm.runtime.getTargetForStage().id;
-        } else {
-          target = runtime.getSpriteTargetByName(target).id;
-          if (!target) return;
-        }
+        if (target === "Stage") target = vm.runtime.getTargetForStage().id;
+        else target = runtime.getSpriteTargetByName(target).id;
+        if (!target) return;
         Scratch.fetch(await this.convertBlobToBase64(this.recording, "mp3"))
           .then((r) => r.arrayBuffer())
           .then((arrayBuffer) => {
@@ -250,9 +249,8 @@
             );
             vm.addSound(
               {
-                md5: asset.assetId + "." + asset.dataFormat,
-                asset: asset,
-                name: args.NAME + "",
+                md5: `${asset.assetId}.${asset.dataFormat}`,
+                asset: asset, name: Scratch.Cast.toString(args.NAME),
               },
               target,
             );
@@ -280,7 +278,6 @@
             .then((stream) => {
               this.mediaStream = stream;
               this.audioRecorder = new MediaRecorder(stream);
-              const audioChunks = [];
               this.audioRecorder.ondataavailable = (e) => {
                 if (e.data.size > 0) audioChunks.push(e.data);
               };
@@ -305,9 +302,7 @@
         const sum = Items.reduce((acc, val) => acc + val, 0);
         const averageLoudness = sum / Items.length;
         return Math.round(averageLoudness / 7) + 1;
-      } else {
-        return 0;
-      }
+      } else { return 0 }
     }
 
     stopRecording() {
