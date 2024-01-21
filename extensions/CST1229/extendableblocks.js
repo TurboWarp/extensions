@@ -269,14 +269,41 @@
 			return number;
 		}
 		
+		// The compiler does some weird stuff with arguments
+		fixCompilerArgs(args, util, prefix = "") {
+			// Copy the object just in case
+			args = Object.assign({}, args);
+
+			const blocks = util.target.blocks;
+			const block = blocks.getBlock(util.thread.peekStack());
+			if (!block) return args;
+			for (const key in args) {
+				if (key.toString().startsWith(prefix)) {
+					const input = block.inputs[key];
+					if (!input) continue;
+					const inputBlock = blocks.getBlock(input.block);
+					const shadowBlock = blocks.getBlock(input.shadow);
+					if (shadowBlock?.opcode === "text" && (!inputBlock || inputBlock?.opcode === "text")) {
+						args[key] = args[key].toString();
+					}
+				}
+			}
+			return args;
+		}
 		
-		extendArray(args) {
+		extendArray(args, util) {
 			let i = 0;
 			const prefix = "ARG";
 			const array = [];
+
+			if (util.thread.isCompiled) {
+				args = this.fixCompilerArgs(args, util, prefix);
+			}
+
 			for (let i = 0; (prefix + i) in args; i++) {
 				array.push(args[prefix + i]);
 			}
+
 			try {
 				return JSON.stringify(array);
 			} catch(e) {
