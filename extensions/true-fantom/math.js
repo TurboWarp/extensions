@@ -122,6 +122,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "root_block",
@@ -137,6 +138,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "negative_block",
@@ -148,6 +150,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -164,6 +167,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "less_or_equal_block",
@@ -179,6 +183,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "not_equal_block",
@@ -194,6 +199,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "exactly_equal_block",
@@ -209,6 +215,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "not_exactly_equal_block",
@@ -224,6 +231,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "almost_equal_block",
@@ -239,6 +247,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "not_almost_equal_block",
@@ -254,6 +263,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -268,6 +278,7 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "nor_block",
@@ -281,6 +292,7 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "xor_block",
@@ -294,6 +306,7 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "xnor_block",
@@ -307,6 +320,7 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -323,6 +337,7 @@
                 defaultValue: "a",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -343,6 +358,7 @@
                 defaultValue: "100",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "scale_block",
@@ -370,6 +386,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -386,6 +403,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "trunc_block",
@@ -397,6 +415,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -413,6 +432,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -429,22 +449,26 @@
                 defaultValue: 10,
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
             opcode: "pi_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "𝜋",
+            extensions: ["colours_operators"],
           },
           {
             opcode: "e_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "𝘦",
+            extensions: ["colours_operators"],
           },
           {
             opcode: "infinity_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "∞",
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -457,6 +481,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -469,6 +494,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "is_int_block",
@@ -480,6 +506,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "is_float_block",
@@ -491,6 +518,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
         ],
       };
