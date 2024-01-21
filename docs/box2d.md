@@ -30,6 +30,15 @@ step simulation :: #0FBD8C
 
 Move forward in time by one step. Run this in a loop to keep the physics going.
 
+
+```scratch
+set simulation rate to (30)/s :: #0FBD8C
+```
+
+Set how much simulation steps is considered one second. Usually this should be project's framerate, but can also be used to slow down or speed up time.
+
+You can get the current simulation rate with the (simulation rate) reporter.
+
 ## Sprites
 
 Manipulate individual sprites.
@@ -45,6 +54,14 @@ Make physics apply to this sprite. It can also collide with other sprites that h
  - Enable for all sprites: Enable physics for all sprites.
 
 Precision mode will make the sprite work extra hard to make sure it doesn't overlap with anything. Note that this can decrease performance and even cause the project to get stuck, so use with care.
+
+---
+
+```scratch
+disable physics for this sprite :: #0FBD8C
+```
+
+Makes physics no longer apply to this sprite.
 
 ---
 
