@@ -53,6 +53,10 @@
     if (listObject) return listObject;
   };
 
+  function showFunnyBlock() {
+    return runtime.ioDevices.userData._username !== "funny is allowed :)";
+  }
+
   class MoreControl {
     getInfo() {
       return {
@@ -179,6 +183,48 @@
               },
             },
           },
+          {
+            opcode: "funnyBlock",
+            blockType: Scratch.BlockType.CONDITIONAL,
+            text: [
+              "if [1] then",
+              "else if [2] then",
+              "else if [3] then",
+              "else if [4] then",
+              "else if [5] then",
+              "else if [6] then",
+              "else if [7] then",
+              "else if [8] then",
+            ],
+            hideFromPalette: showFunnyBlock(),
+            branchCount: 8,
+            arguments: {
+              1: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+              2: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+              3: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+              4: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+              5: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+              6: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+              7: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+              8: {
+                type: Scratch.ArgumentType.BOOLEAN,
+              },
+            },
+          },
           "---",
           {
             opcode: "waitDuration",
@@ -227,6 +273,18 @@
               IMAGE: {
                 type: Scratch.ArgumentType.IMAGE,
                 dataURI: repeatIcon,
+              },
+            },
+          },
+          {
+            opcode: "break",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "break loop [IMAGE]",
+            isTerminal: true,
+            arguments: {
+              IMAGE: {
+                type: Scratch.ArgumentType.IMAGE,
+                dataURI: breakIcon,
               },
             },
           },
@@ -535,14 +593,11 @@
       if (!blocks.getBranch(blockId, 0)) return "";
 
       if (!util.thread.newThread) {
+        // to do: use pushStack?
         util.thread.newThread = runtime._pushThread(
           blocks.getBranch(blockId, 0),
           target
         );
-
-        runtime.on("RUNTIME_STOPPED", () => {
-          delete util.thread.newThread;
-        });
       }
 
       const thread = util.thread.newThread;
@@ -562,7 +617,7 @@
       util.stopThisScript();
     }
 
-    elseIf(args, util) {
+    elseIf(args) {
       const condition1 = Cast.toBoolean(args.CONDITION1);
       const condition2 = Cast.toBoolean(args.CONDITION2);
       if (condition1) {
@@ -572,7 +627,7 @@
       }
     }
 
-    elseIfElse(args, util) {
+    elseIfElse(args) {
       const condition1 = Cast.toBoolean(args.CONDITION1);
       const condition2 = Cast.toBoolean(args.CONDITION2);
       if (condition1) {
@@ -581,6 +636,14 @@
         return 2;
       } else {
         return 3;
+      }
+    }
+
+    funnyBlock(args) {
+      for (const arg in args) {
+        if (args[arg]) {
+          return arg;
+        }
       }
     }
 
@@ -634,6 +697,22 @@
 
     restart(args, util) {
       runtime._restartThread(util.thread);
+    }
+
+    break(args, util) {
+      const thread = util.thread;
+      const blockId = this._getPeekStack(thread);
+
+      // find a way to identify loops from conditionals
+      const outerC = this._getOuterCBlock(thread, blockId, true);
+      if (!outerC) return;
+
+      const next = outerC.next;
+      if (outerC.next) {
+        runtime._pushThread(next, util.target);
+      }
+
+      util.stopThisScript();
     }
 
     forArg(args, util) {
@@ -877,10 +956,11 @@
       const branch = blocks.getBranch(blockId, 0);
       if (!branch) return;
 
+      // todo: use pushStack?
       runtime._pushThread(branch, target);
     }
 
-    // todo: fix delay, run with compiler?
+    // todo: fix delay / run with compiler?
     withoutScreenRefresh(args, util) {
       const thread = util.thread;
       if (thread.warpState === 2) {
@@ -930,7 +1010,7 @@
       return false;
     }
 
-    _getOuterCBlock(thread, startId) {
+    _getOuterCBlock(thread, startId, loop) {
       let block = this._getBlockByID(thread, startId);
       if (!block) return;
       if (!block.parent) return;
