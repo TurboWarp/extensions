@@ -709,7 +709,9 @@
 
       const next = outerC.next;
       if (outerC.next) {
+        util.stopThisScript();
         runtime._pushThread(next, util.target);
+      } else {
         util.stopThisScript();
       }
     }
