@@ -710,9 +710,8 @@
       const next = outerC.next;
       if (outerC.next) {
         runtime._pushThread(next, util.target);
+        util.stopThisScript();
       }
-
-      util.stopThisScript();
     }
 
     forArg(args, util) {
