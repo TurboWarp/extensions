@@ -13,7 +13,7 @@
   const regeneratedReporters = ["lmsSpMoreControl_forArg"];
 
   const junctionIcon =
-    "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOS44MzUxOSIgaGVpZ2h0PSIxNy45OTM0OSIgdmlld0JveD0iMCwwLDE5LjgzNTE5LDE3Ljk5MzQ5Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjEyLjc0ODAyLC0xNzEuODc3OTEpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIyNS44MzMyMSwxODMuOTc3OTFjLTAuNiwtMC4zIC0xLC0wLjkgLTEsLTEuNXYtMS42Yy0xLjMsLTAuMSAtMi41LC0wLjUgLTMuNiwtMS4xYy0xLjcsLTAuOSAtMy4yLC0yLjMgLTQuMSwtNC4xYy0wLjksLTEuNyAzLjk1ODI3LC0zLjYyNzk3IDMuOTU4MjcsLTMuNjI3OTdjMCwwIC0wLjA5NTI5LDAuOTYxMDIgMC44OTUxNCwxLjg0ODk1YzEuMjU3ODYsMS4xMjc3IDIuMjc3NTgsMS4xNzkwMiAyLjg0NjYsMS4xNzkwMnYtMS41YzAsLTAuOSAwLjcsLTEuNyAxLjcsLTEuN2MwLjQsMCAwLjksMC4yIDEuMiwwLjVsNC40LDQuNGMwLjYsMC43IDAuNiwxLjcgMCwyLjRsLTQuNSw0LjVjLTAuNSwwLjUgLTEuMiwwLjYgLTEuOCwwLjN6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjE1LjQ5ODU3LDE4My45MDI3OGwxLC0xMS44OTU1Nmg0LjY1MDAxbDEuMTE3NjUsMTEuODk1NTZ6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjEyLjkxNjc3LDE4My4xMjE0YzAuMywtMC42IDAuOSwtMSAxLjUsLTFoMS42aDUuOGgxLjVjMC45LDAgMS43LDAuNyAxLjcsMS43YzAsMC40IC0wLjIsMC45IC0wLjUsMS4ybC00LjQsNC40Yy0wLjcsMC42IC0xLjcsMC42IC0yLjQsMGwtNC41LC00LjVjLTAuNSwtMC41IC0wLjYsLTEuMiAtMC4zLC0xLjh6IiBmaWxsPSIjY2Y4YjE3IiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjE2LjUwNDU3LDE4NC4zMjk1N2wwLjgyMzUzLC0xMS40NjIzNGgyLjgxNDQ3bDEuMTE3NjUsMTEuNDYyMzR6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjE0LjQ3Nzc0LDE4My4xMjE0bDksMC4xYzAuNCwwIDAuNywwLjMgMC43LDAuN2MwLDAuMiAtMC4xLDAuMyAtMC4yLDAuNGwtNC40LDQuNGMtMC4zLDAuMyAtMC43LDAuMyAtMC45LDBsLTQuNCwtNC40Yy0wLjMsLTAuMyAtMC40LC0wLjYgLTAuMywtMC45YzAuMSwtMC4zIDAuMywtMC4zIDAuNSwtMC4zeiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iTTIyNS43NzIyNCwxODIuNjYwODJ2LTIuNmMtMS41LDAgLTIuOSwtMC4zIC00LjIsLTFjLTEuNiwtMC44IC0yLjgsLTIuMSAtMy42LC0zLjdjLTAuMjE3NjYsLTAuNDA4MTEgLTAuMzk4MywtMC44Mzg0MiAtMC41Mzk5MiwtMS4yODA4OGMtMC4zNzg5LC0xLjE4Mzc4IDIuNjYwNSwtMS4xNDg2NyAyLjY2MDUsLTEuMTQ4NjdjMCwwIDAuMjM2NTcsMC43MjU0NyAwLjM3OTQyLDAuOTI5NTRjMC42LDAuOSAxLjUsMS42IDIuNiwyYzAuOSwwLjMgMS44LDAuNCAyLjgsMC4ydi0yLjRjMCwtMC40IDAuMywtMC43IDAuNywtMC43YzAuMiwwIDAuMywwLjEgMC40LDAuMmw0LjQsNC40YzAuMywwLjMgMC4zLDAuNyAwLDAuOWwtNC40LDQuNGMtMC4zLDAuMyAtMC42LDAuNCAtMC45LDAuM2MtMC4zLC0wLjEgLTAuMywtMC4zIC0wLjMsLTAuNXoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMSIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjI3LjI1MTk4MDAwMDAwMDAwMzo4LjEyMjA4OTk5OTk5OTk4Ni0tPg==";
+    "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyMC4zOTkwNiIgaGVpZ2h0PSIyMS40MjE1MiIgdmlld0JveD0iMCwwLDIwLjM5OTA2LDIxLjQyMTUyIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjMxLjI4NTQsLTE2Ny4zMjgwOCkiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMzUuMjc2NDUsMTY5LjIxNzE1Yy0wLjEyNTQsLTAuODc2ODkgMC42Mzc4LC0xLjg3NzU0IDEuNjk1NCwtMS44NzU3NWMwLjg4ODYsLTAuMTIzNzUgMS45MDI2LDAuNjI5NDEgMS45MDA3OSwxLjY3MzA4YzAuMDE3MjYsMC4xNzU0NSAwLjA3NTc4LDIuOTEyOCAtMC4yNzA0MywzLjAxMzRjLTEuMDEzNjcsMC4yOTQ1NiAtMy4zNDIwNSwtMi4zNDQ0MiAtMy4zMjU3NSwtMi44MTA3MnoiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBmaWxsPSIjY2Y4YjE3Ii8+PHBhdGggZD0iTTI0NC45MzQ0NywxODQuMDczOTRjLTAuNiwtMC4zIC0xLC0wLjkgLTEsLTEuNXYtMS42Yy0xLjMsLTAuMSAtMi41LC0wLjUgLTMuNiwtMS4xYy0xLjcsLTAuOSAtMy4yOTEyOSwtMi4zIC00LjE5MTI5LC00LjFjLTAuOSwtMS43IC0xLjEyMTcsLTMuNiAtMC44MjE3LC01LjVjMC4zLC0xLjggMy42NzgyNiwtMC42IDMuNjc4MjYsMC40YzAsMSAwLjc0MzQ1LDEuOSAxLjM0MzQ1LDIuN2MwLjgsMS4xIDIuMTkxMjgsMS44IDMuNTkxMjgsMS44di0xLjVjMCwtMC45IDAuNywtMS43IDEuNywtMS43YzAuNCwwIDAuOSwwLjIgMS4yLDAuNWw0LjQsNC40YzAuNiwwLjcgMC42LDEuNyAwLDIuNGwtNC41LDQuNWMtMC41LDAuNSAtMS4yLDAuNiAtMS44LDAuM3oiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBmaWxsPSIjY2Y4YjE3Ii8+PHBhdGggZD0iTTI0My4wODU0MSwxODMuNzk5NjFsLTQuNSw0LjVjLTAuNywwLjYgLTEuNywwLjYgLTIuNCwwbC00LjQsLTQuNGMtMC4zLC0wLjMgLTAuNSwtMC44IC0wLjUsLTEuMmMwLC0xIDAuOCwtMS43IDEuNywtMS43aDEuNWMwLC0wLjE4Mjc5IDAuMjU3NjMsLTMuOTgyNTkgMC40NzkyNywtNy40MTYwNGMwLjEyMzE0LC0xLjkwNzYzIDAuMjM1MTcsLTMuNzAyMTcgMC4yODU3NCwtNC43MDA0NGMwLjA4NjgyLC0wLjQ0NDkyIDAuMzEzMzgsLTAuODQ1NzggMS43Njc2MSwtMC43MTI1M2MxLjUxOTU5LDAuMTM5MjQgMS44NDE3MSwwLjc0OTIxIDEuODgxODksMC44NzUxNGMwLjc4NjI4LDQuMDc3MjYgMS4zNDExNSwxMS4zNzc1IDEuMzg1NDksMTEuOTUzODhoMS42YzAuNiwwIDEuMiwwLjQgMS41LDFjMC4zLDAuNiAwLjIsMS4zIC0wLjMsMS44eiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIGZpbGw9IiNjZjhiMTciLz48cGF0aCBkPSJNMjQyLjQ3NjcsMTgyLjI5OTYyYzAuMSwwLjMgMCwwLjYgLTAuMywwLjlsLTQuNCw0LjRjLTAuMiwwLjMgLTAuNiwwLjMgLTAuOSwwbC00LjQsLTQuNGMtMC4xLC0wLjEgLTAuMiwtMC4yIC0wLjIsLTAuNGMwLC0wLjQgMC4zLC0wLjcgMC43LC0wLjdoMi40YzAuMDMyNjIsLTAuMTYzMSAwLjE1NjI2LC00LjQ2MDA3IDAuMjk5NjIsLTguNDQwMjJjMC4wNzM3LC0yLjA0NjIgMy4wMDY3OSwtMS43Nzg5NiAzLjE2MzE4LDAuMjY1NDJjMC4yOTA5MiwzLjgwMzAxIDAuNTM3MTksNy42NjI2MyAwLjUzNzE5LDguMDc0OGgyLjZjMC4yLDAgMC40LDAgMC41LDAuM3oiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBmaWxsPSIjZmZmZmZmIi8+PHBhdGggZD0iTTIzNS45MDMyNywxNjkuNDU5MzRjLTAuMDg0MTIsLTAuNTk2MDggMC40Mjc4NSwtMS4yNzYzIDEuMTM3MywtMS4yNzUwOGMwLjU5NjA4LC0wLjA4NDEyIDEuMjc2MywwLjQyNzg1IDEuMjc1MDgsMS4xMzczMWMwLjAwNDMsMC4wNDQyNSAxLjI0NzgxLDExLjYzOTUyIDAuODgxNjQsMTMuMzkyNzJjLTAuNjIwNzksMi45NzIzMSAtMy44NzI1NywwLjg5MzggLTMuODcyNTcsMC44OTM4YzAsMCAwLjE4ODQ1LC01Ljc1Mzk1IDAuMzU5MDMsLTkuOTI0MzVjMC4wOTQxMiwtMi4zMDEwMSAwLjIxNTkyLC00LjExOTk1IDAuMjE5NTIsLTQuMjI0Mzh6IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgZmlsbD0iI2ZmZmZmZiIvPjxwYXRoIGQ9Ik0yNDQuODkyNzMsMTgyLjQ3NjIydi0yLjZjLTEuNSwwIC0yLjksLTAuMyAtNC4yLC0xYy0xLjYsLTAuOCAtMi44OTEyOCwtMi4xIC0zLjY5MTI4LC0zLjdjLTAuOCwtMS41IC0xLjI4MjU3LC0zLjMgLTAuOTgyNTcsLTQuOWMwLjIsLTEuNiAyLjMsLTEuMSAyLjMsMC4xYzAsMS4yIDAuNDgyNTcsMi4zIDEuMTgyNTcsMy4zYzAuNiwwLjkgMS41OTEyOCwxLjYgMi42OTEyOCwyYzAuOSwwLjMgMS44LDAuNCAyLjgsMC4ydi0yLjRjMCwtMC40IDAuMywtMC43IDAuNywtMC43YzAuMiwwIDAuMywwLjEgMC40LDAuMmw0LjQsNC40YzAuMywwLjMgMC4zLDAuNyAwLDAuOWwtNC40LDQuNGMtMC4zLDAuMyAtMC42LDAuNCAtMC45LDAuM2MtMC4zLC0wLjEgLTAuMywtMC4zIC0wLjMsLTAuNXoiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBmaWxsPSIjZmZmZmZmIi8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6OC43MTQ1OTUwMDAwMDAwMDM6MTIuNjcxOTE2NDA2NTA3MzkzLS0+";
   const repeatIcon =
     "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgaGVpZ2h0PSIyNCIKICAgd2lkdGg9IjI0IgogICB4bWw6c3BhY2U9InByZXNlcnZlIgogICBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAyNCAyNDsiCiAgIHZpZXdCb3g9IjAgMCAyNCAyNCIKICAgeT0iMHB4IgogICB4PSIwcHgiCiAgIGlkPSJyZXBlYXQiCiAgIHZlcnNpb249IjEuMSIKICAgc29kaXBvZGk6ZG9jbmFtZT0icmVwZWF0ICgyKS5zdmciCiAgIHhtbG5zOmlua3NjYXBlPSJodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy9uYW1lc3BhY2VzL2lua3NjYXBlIgogICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnMKICAgaWQ9ImRlZnMxMyIgLz48c29kaXBvZGk6bmFtZWR2aWV3CiAgIGlkPSJuYW1lZHZpZXcxMSIKICAgcGFnZWNvbG9yPSIjZmZmZmZmIgogICBib3JkZXJjb2xvcj0iIzAwMDAwMCIKICAgYm9yZGVyb3BhY2l0eT0iMC4yNSIKICAgaW5rc2NhcGU6c2hvd3BhZ2VzaGFkb3c9IjIiCiAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwLjAiCiAgIGlua3NjYXBlOnBhZ2VjaGVja2VyYm9hcmQ9IjAiCiAgIGlua3NjYXBlOmRlc2tjb2xvcj0iI2QxZDFkMSIgLz4KPHN0eWxlCiAgIHR5cGU9InRleHQvY3NzIgogICBpZD0ic3R5bGUyIj4KCS5zdDB7ZmlsbDojQ0Y4QjE3O30KCS5zdDF7ZmlsbDojRkZGRkZGO30KPC9zdHlsZT4KPHRpdGxlCiAgIGlkPSJ0aXRsZTQiPnJlcGVhdDwvdGl0bGU+CjxwYXRoCiAgIGQ9Ik0yMy4zLDExYy0wLjMsMC42LTAuOSwxLTEuNSwxaC0xLjZjLTAuMSwxLjMtMC41LDIuNS0xLjEsMy42Yy0wLjksMS43LTIuMywzLjItNC4xLDQuMSAgYy0xLjcsMC45LTMuNiwxLjItNS41LDAuOWMtMS44LTAuMy0zLjUtMS4xLTQuOS0yLjNjLTAuNy0wLjctMC43LTEuOSwwLTIuNmMwLjYtMC42LDEuNi0wLjcsMi4zLTAuMkg3YzAuOSwwLjYsMS45LDAuOSwyLjksMC45ICBzMS45LTAuMywyLjctMC45YzEuMS0wLjgsMS44LTIuMSwxLjgtMy41aC0xLjVjLTAuOSwwLTEuNy0wLjctMS43LTEuN2MwLTAuNCwwLjItMC45LDAuNS0xLjJsNC40LTQuNGMwLjctMC42LDEuNy0wLjYsMi40LDBMMjMsOS4yICBDMjMuNSw5LjcsMjMuNiwxMC40LDIzLjMsMTF6IgogICBjbGFzcz0ic3QwIgogICBpZD0icGF0aDYiIC8+CjxwYXRoCiAgIGQ9Ik0yMS44LDExaC0yLjZjMCwxLjUtMC4zLDIuOS0xLDQuMmMtMC44LDEuNi0yLjEsMi44LTMuNywzLjZjLTEuNSwwLjgtMy4zLDEuMS00LjksMC44Yy0xLjYtMC4yLTMuMi0xLTQuNC0yLjEgIGMtMC40LTAuMy0wLjQtMC45LTAuMS0xLjJjMC4zLTAuNCwwLjktMC40LDEuMi0wLjFsMCwwYzEsMC43LDIuMiwxLjEsMy40LDEuMXMyLjMtMC4zLDMuMy0xYzAuOS0wLjYsMS42LTEuNSwyLTIuNiAgYzAuMy0wLjksMC40LTEuOCwwLjItMi44aC0yLjRjLTAuNCwwLTAuNy0wLjMtMC43LTAuN2MwLTAuMiwwLjEtMC4zLDAuMi0wLjRsNC40LTQuNGMwLjMtMC4zLDAuNy0wLjMsMC45LDBMMjIsOS44ICBjMC4zLDAuMywwLjQsMC42LDAuMywwLjlTMjIsMTEsMjEuOCwxMXoiCiAgIGNsYXNzPSJzdDEiCiAgIGlkPSJwYXRoOCIgLz4KPC9zdmc+CjwhLS1yb3RhdGlvbkNlbnRlcjoxMjoxMi0tPgoK";
   const continueIcon =
@@ -263,12 +263,13 @@
           "---",
           {
             blockType: Scratch.BlockType.XML,
-            xml: '<block type="lmsSpMoreControl_for"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block><block type="lmsSpMoreControl_forUntil"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block><block type="lmsSpMoreControl_forEachList"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpMoreControl_menu_lists"><field name="lists"></field></shadow></value></block><block type="lmsSpMoreControl_forEachArray"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="ARRAY"><shadow type="text"><field name="TEXT">[]</field></shadow></value></block>',
+            xml: `<block type="lmsSpMoreControl_for"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="lmsSpMoreControl_forUntil"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="lmsSpMoreControl_forEachList"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpMoreControl_menu_lists"><field name="lists"></field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="lmsSpMoreControl_forEachArray"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="ARRAY"><shadow type="text"><field name="TEXT">[]</field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block>`,
           },
           {
             opcode: "for",
             blockType: Scratch.BlockType.LOOP,
-            text: "for [I] = [A] to [B]",
+            text: ["for [I] = [A] to [B]", "step by [STEP]"],
+            branchIconURI: null,
             hideFromPalette: true,
             arguments: {
               I: {},
@@ -280,12 +281,17 @@
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 10,
               },
+              STEP: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
             },
           },
           {
             opcode: "forUntil",
             blockType: Scratch.BlockType.LOOP,
-            text: "for [I] = [A] until [CONDITION]",
+            text: ["for [I] = [A] until [CONDITION]", "step by [STEP]"],
+            branchIconURI: null,
             hideFromPalette: true,
             arguments: {
               I: {},
@@ -296,30 +302,44 @@
               CONDITION: {
                 type: Scratch.ArgumentType.BOOLEAN,
               },
+              STEP: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
             },
           },
           {
             opcode: "forEachList",
             blockType: Scratch.BlockType.LOOP,
-            text: "for each item [I] in [LIST]",
+            text: ["for each item [I] in [LIST]", "step by [STEP]"],
+            branchIconURI: null,
             hideFromPalette: true,
             arguments: {
               I: {},
               LIST: {
                 menu: "lists",
               },
+              STEP: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
             },
           },
           {
             opcode: "forEachArray",
             blockType: Scratch.BlockType.LOOP,
-            text: "for each item [I] in array [ARRAY]",
+            text: ["for each item [I] in array [ARRAY]", "step by [STEP]"],
+            branchIconURI: null,
             hideFromPalette: true,
             arguments: {
               I: {},
               ARRAY: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "[]",
+              },
+              STEP: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
               },
             },
           },
@@ -404,7 +424,7 @@
     }
 
     switch(args, util) {
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const blocks = util.thread.blockContainer;
       const block = blocks.getBlock(blockId);
       if (!block) return;
@@ -419,7 +439,7 @@
     }
 
     case(args, util) {
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
@@ -441,7 +461,7 @@
     }
 
     default(args, util) {
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
@@ -458,7 +478,7 @@
     }
 
     runNextCaseWhen(args, util) {
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
@@ -472,7 +492,7 @@
     }
 
     runNextCase(args, util) {
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
@@ -484,7 +504,7 @@
     }
 
     breakSwitch(args, util) {
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
@@ -496,7 +516,7 @@
     }
 
     continueSwitch(args, util) {
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
@@ -510,7 +530,7 @@
 
     inline(args, util) {
       const target = util.target;
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const blocks = target.blocks;
       if (!blocks.getBranch(blockId, 0)) return "";
 
@@ -628,7 +648,7 @@
     }
 
     for(args, util) {
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const block = util.target.blocks.getBlock(blockId);
       if (!block?.inputs?.I?.block) return;
 
@@ -647,6 +667,8 @@
 
       const a = Cast.toNumber(args.A);
       const b = Cast.toNumber(args.B);
+      let step = Cast.toNumber(args.STEP);
+      if (step < 1) step = 1;
 
       if (typeof util.stackFrame.loopCounter === "undefined") {
         util.stackFrame.loopCounter = a;
@@ -660,13 +682,13 @@
         util.thread.stackFrames[0].moreControlParams[param] =
           util.stackFrame.loopCounter;
         if (isVariable) variable.value = util.stackFrame.loopCounter;
-        util.stackFrame.loopCounter++;
+        util.stackFrame.loopCounter += step;
         util.startBranch(1, true);
       }
     }
 
     forUntil(args, util) {
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const block = util.target.blocks.getBlock(blockId);
       if (!block?.inputs?.I?.block) return;
 
@@ -685,6 +707,8 @@
 
       const a = Cast.toNumber(args.A);
       const condition = Cast.toBoolean(args.CONDITION);
+      let step = Cast.toNumber(args.STEP);
+      if (step < 1) step = 1;
 
       if (typeof util.stackFrame.loopCounter === "undefined") {
         util.stackFrame.loopCounter = a;
@@ -698,13 +722,13 @@
         util.thread.stackFrames[0].moreControlParams[param] =
           util.stackFrame.loopCounter;
         if (isVariable) variable.value = util.stackFrame.loopCounter;
-        util.stackFrame.loopCounter++;
+        util.stackFrame.loopCounter += step;
         util.startBranch(1, true);
       }
     }
 
     forEachList(args, util) {
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const block = util.target.blocks.getBlock(blockId);
       if (!block?.inputs?.I?.block) return;
 
@@ -725,6 +749,9 @@
       const list = getVarObjectFromName(listName, util, "list");
       if (!list) return;
 
+      let step = Cast.toNumber(args.STEP);
+      if (step < 1) step = 1;
+
       if (typeof util.stackFrame.loopCounter === "undefined") {
         util.stackFrame.loopCounter = 0;
 
@@ -733,7 +760,7 @@
         }
       }
 
-      util.stackFrame.loopCounter++;
+      util.stackFrame.loopCounter += step;
 
       if (util.stackFrame.loopCounter <= list.value.length) {
         const loopCounter = util.stackFrame.loopCounter;
@@ -745,7 +772,7 @@
     }
 
     forEachArray(args, util) {
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const block = util.target.blocks.getBlock(blockId);
       if (!block?.inputs?.I?.block) return;
 
@@ -770,6 +797,9 @@
         return;
       }
 
+      let step = Cast.toNumber(args.STEP);
+      if (step < 1) step = 1;
+
       if (typeof util.stackFrame.loopCounter === "undefined") {
         util.stackFrame.loopCounter = 0;
 
@@ -778,7 +808,7 @@
         }
       }
 
-      util.stackFrame.loopCounter++;
+      util.stackFrame.loopCounter += step;
 
       if (util.stackFrame.loopCounter <= array.length) {
         const loopCounter = util.stackFrame.loopCounter;
@@ -842,7 +872,7 @@
 
     startBlocks(args, util) {
       const target = util.target;
-      const blockId = util.thread.peekStack();
+      const blockId = this._getPeekStack(util.thread);
       const blocks = target.blocks;
       const branch = blocks.getBranch(blockId, 0);
       if (!branch) return;
@@ -873,6 +903,12 @@
     }
 
     /* Utility Functions */
+
+    _getPeekStack(thread) {
+      return thread.isCompiled
+        ? thread.peekStack()
+        : thread.peekStackFrame().op.id;
+    }
 
     _getBlockByID(thread, id) {
       return thread.blockContainer.getBlock(id);
