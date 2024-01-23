@@ -33,28 +33,14 @@
 
     const originalCheck =
       ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter;
+
     ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter = function (
       block
     ) {
       const result = originalCheck(block);
-      if (result) return;
+      if (result) return result;
       return block.isShadow() && regeneratedReporters.includes(block.type);
     };
-  }
-
-  const getVarObjectFromName = function (name, util, type) {
-    const stageTarget = runtime.getTargetForStage();
-    const target = util.target;
-    let listObject = Object.create(null);
-
-    listObject = stageTarget.lookupVariableByNameAndType(name, type);
-    if (listObject) return listObject;
-    listObject = target.lookupVariableByNameAndType(name, type);
-    if (listObject) return listObject;
-  };
-
-  function showFunnyBlock() {
-    return runtime.ioDevices.userData._username !== "funny is allowed :)";
   }
 
   class MoreControl {
@@ -196,7 +182,7 @@
               "else if [7] then",
               "else if [8] then",
             ],
-            hideFromPalette: showFunnyBlock(),
+            hideFromPalette: this._showFunnyBlock(),
             branchCount: 8,
             arguments: {
               1: {
@@ -471,11 +457,11 @@
           },
           targetsMyself: {
             acceptReporters: true,
-            items: this._getTargets("stage", "myself"),
+            items: this._getTargets(true, true),
           },
           targets: {
             acceptReporters: true,
-            items: this._getTargets("stage"),
+            items: this._getTargets(true, false),
           },
         },
       };
@@ -700,20 +686,37 @@
     }
 
     break(args, util) {
+      // to do: get this to work natively in the compiler
+      // extensions are unfortunately very limited when
+      // they can't access the compiler :(
       const thread = util.thread;
-      const blockId = this._getPeekStack(thread);
+      thread.isCompiled = false;
 
-      // find a way to identify loops from conditionals
-      const outerC = this._getOuterCBlock(thread, blockId, true);
+      let blockId = thread.peekStack();
+      const outerC = this._getOuterCBlock(thread, blockId);
       if (!outerC) return;
-
       const next = outerC.next;
-      if (outerC.next) {
-        util.stopThisScript();
-        runtime._pushThread(next, util.target);
-      } else {
-        util.stopThisScript();
+
+      while (blockId !== outerC.id) {
+        const block = util.target.blocks.getBlock(blockId);
+        if (
+          (typeof block !== "undefined" &&
+            block.opcode === "procedures_call") ||
+          thread.peekStackFrame().isWaitingReporter
+        ) {
+          break;
+        }
+        thread.popStack();
+        blockId = thread.peekStack();
+        if (!blockId) break;
       }
+      thread.popStack();
+
+      if (next) {
+        thread.pushStack(next);
+      }
+
+      thread.isCompiled = true;
     }
 
     forArg(args, util) {
@@ -826,7 +829,7 @@
       const params = util.thread.moreControlParams;
 
       const listName = Cast.toString(args.LIST);
-      const list = getVarObjectFromName(listName, util, "list");
+      const list = this._getVarObjectFromMenu(listName, util, "list");
       if (!list) return;
 
       let step = Cast.toNumber(args.STEP);
@@ -985,16 +988,35 @@
 
     /* Utility Functions */
 
+    /**
+     * Get top stack item.
+     * @param {Object} thread
+     * @returns {string} Block ID on top of stack.
+     */
     _getPeekStack(thread) {
       return thread.isCompiled
         ? thread.peekStack()
         : thread.peekStackFrame().op.id;
     }
 
+    /**
+     *
+     * @param {Object} thread
+     * @param {string} id
+     * @returns {Object} Block object
+     */
     _getBlockByID(thread, id) {
       return thread.blockContainer.getBlock(id);
     }
 
+    /**
+     * Attempt to determine with a block is contained
+     * within a substack by descending down the substack.
+     * @param {Object} thread Thread object.
+     * @param {string} startId Block ID of the top of the substack.
+     * @param {string} checkId Block ID we're checking is inside the substack.
+     * @returns {boolean} True if checkId is inside the substack.
+     */
     _isInSubstack(thread, startId, checkId) {
       let currentBlock = this._getBlockByID(thread, startId);
       if (!currentBlock || !checkId) return false;
@@ -1011,7 +1033,14 @@
       return false;
     }
 
-    _getOuterCBlock(thread, startId, loop) {
+    /**
+     * Get the C-Block that a block is contained in
+     * by ascending the current thread.
+     * @param {Object} thread Thread object.
+     * @param {string} startId The Block ID we're ascending from.
+     * @returns {Object} The Block Object of the outermost C-Block.
+     */
+    _getOuterCBlock(thread, startId) {
       let block = this._getBlockByID(thread, startId);
       if (!block) return;
       if (!block.parent) return;
@@ -1028,6 +1057,14 @@
       }
     }
 
+    /**
+     * Continue getting the outermost C-Block until
+     * we find one with a specific opcode.
+     * @param {Object} thread Thread object.
+     * @param {string} startId The Block ID we're ascending from.
+     * @param {string} opcode The opcode we're checking for.
+     * @returns The Block Object of the outermost C-Block with that opcode.
+     */
     _getOuterCFromOpcode(thread, startId, opcode) {
       let currentC = this._getOuterCBlock(thread, startId);
       if (!currentC) return;
@@ -1038,20 +1075,23 @@
       return currentC;
     }
 
-    until(conditionFunction) {
-      const poll = (resolve) => {
-        if (conditionFunction()) resolve();
-        else runtime.once("AFTER_EXECUTE", (_) => poll(resolve));
-      };
-      return new Promise(poll);
-    }
-
+    /**
+     * Determine if a block is contained within its own target.
+     * @param {Object} thread Thread object.
+     * @returns {boolean} True if block is within the palette.
+     */
     isInPalette(thread) {
       return !Object.keys(thread.target.blocks._blocks).includes(
         thread.peekStack()
       );
     }
 
+    /**
+     * Convert a target menu value into a rendered target object.
+     * @param {string} targetName The name of the target.
+     * @param {Object} util BlockUtility object.
+     * @returns {Object} The rendered target.
+     */
     _getTargetFromMenu(targetName, util) {
       let target = runtime.getSpriteTargetByName(targetName);
       if (targetName === "_myself_") target = util.target;
@@ -1059,6 +1099,12 @@
       return target;
     }
 
+    /**
+     * Generate a menu for all sprite targets.
+     * @param {boolean} stage True if we want to include the Stage.
+     * @param {boolean} myself True if we want to include the executed target.
+     * @returns {Array} The menu array containing names of targets.
+     */
     _getTargets(stage, myself) {
       const spriteNames = [];
       if (stage) spriteNames.push({ text: "Stage", value: "_stage_" });
@@ -1079,9 +1125,29 @@
       }
     }
 
+    /**
+     * Convert a variable menu value into a variable object.
+     * @param {string} name The name of the variable.
+     * @param {Object} util BlockUtility object.
+     * @param {string} type The type of variable we're looking for.
+     * @returns {Object} The variable object.
+     */
+    _getVarObjectFromMenu = function (name, util, type) {
+      const stageTarget = runtime.getTargetForStage();
+      const target = util.target;
+      let listObject = Object.create(null);
+
+      listObject = stageTarget.lookupVariableByNameAndType(name, type);
+      if (listObject) return listObject;
+      listObject = target.lookupVariableByNameAndType(name, type);
+      if (listObject) return listObject;
+    };
+
+    /**
+     * Generate a menu for all accessible lists.
+     * @returns {Array} The menu array containing names of lists.
+     */
     _getLists() {
-      // @ts-expect-error - ScratchBlocks not typed yet
-      // eslint-disable-next-line no-undef
       const lists =
         typeof ScratchBlocks === "undefined"
           ? []
@@ -1094,6 +1160,14 @@
       } else {
         return [""];
       }
+    }
+
+    /**
+     * Misleaing name. Determine whether to hide the comedically large if/else block.
+     * @returns {boolean} False if username is "funny is allowed :)".
+     */
+    _showFunnyBlock() {
+      return runtime.ioDevices.userData._username !== "funny is allowed :)";
     }
   }
 
