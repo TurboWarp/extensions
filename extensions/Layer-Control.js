@@ -1,6 +1,6 @@
 // Name: Layer Control
 // ID: SPlayering
-// Description: ...
+// Description: Relayer Pen, Video Camera, Backdrops, Sprites and More
 // By: SharkPool
 
 // Version V.1.0.0
