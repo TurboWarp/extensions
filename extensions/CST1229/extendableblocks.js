@@ -270,11 +270,14 @@
 		}
 		
 		// The compiler does some weird stuff with arguments
+		// (this is not the case in the interpreter, so
+		// this *is* a parity issue)
 		fixCompilerArgs(args, util, prefix = "") {
 			// Copy the object just in case
 			args = Object.assign({}, args);
 
 			const blocks = util.target.blocks;
+			// In the compiler, thread.peekStack works for reporter blocks
 			const block = blocks.getBlock(util.thread.peekStack());
 			if (!block) return args;
 			for (const key in args) {
@@ -284,7 +287,7 @@
 					const inputBlock = blocks.getBlock(input.block);
 					const shadowBlock = blocks.getBlock(input.shadow);
 					if (shadowBlock?.opcode === "text" && (!inputBlock || inputBlock?.opcode === "text")) {
-						args[key] = args[key].toString();
+						args[key] = Scratch.Cast.toString(args[key]);
 					}
 				}
 			}
@@ -498,11 +501,11 @@
 			// Disconnects all blocks in extendable inputs, and returns them.
 			disconnectOldBlocks_() {
 				// Remove old stuff
-				var connectionMap = {};
-				for (var i = 0, input; input = this.inputList[i]; i++) {
+				const connectionMap = {};
+				for (const input of this.inputList) {
 					if (input.connection && this.isExtendableInput(input)) {
-						var target = input.connection.targetBlock();
-						var saveInfo = {
+						const target = input.connection.targetBlock();
+						const saveInfo = {
 							shadow: input.connection.getShadowDom(),
 							block: target
 						};
@@ -557,7 +560,7 @@
 			buildShadowDom_(def) {
 				const shadowDom = document.createElement("shadow");
 				shadowDom.setAttribute("type", def.shadowType);
-				const fieldDom = document.createElement("field", null, def.shadowDefault);
+				const fieldDom = document.createElement("field", null);
 				fieldDom.setAttribute("name", def.shadowField);
 				shadowDom.appendChild(fieldDom);
 				return shadowDom;
@@ -606,7 +609,9 @@
 				for (const name of Object.keys(inputs)) {
 					const input = inputs[name];
 					if (!usedInputs.has(name)) {
+						// @ts-ignore
 						blocks.deleteBlock(input.block);
+						// @ts-ignore
 						blocks.deleteBlock(input.shadow);
 						delete inputs[name];
 					}
