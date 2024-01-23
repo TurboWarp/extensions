@@ -7,8 +7,7 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    alert("Extendable Blocks must be run unsandboxed");
-    return;
+    throw new Error("Extendable Blocks must be run unsandboxed");
   }
 
   const exId = "cst1229extendable";
