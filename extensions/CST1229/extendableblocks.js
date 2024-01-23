@@ -907,12 +907,12 @@
     );
 
     const createInput = (
-      type,
-      id,
-      check = null,
-      shadowType = undefined,
-      shadowField = undefined,
-      shadowDefault = undefined
+      type, // ScratchBlocks.INPUT_VALUE, NEXT_STATEMENT or DUMMY_INPUT
+      id, // The argument ID (a number will be appended to this)
+      check = null, // null or "Boolean" (or the label text for DUMMY_INPUTs)
+      shadowType = undefined, // The type of shadow block (or falsy for none)
+      shadowField = undefined, // The field to use in the shadow block
+      shadowDefault = undefined // The default shadow block value
     ) => ({ type, id, check, shadowType, shadowField, shadowDefault });
 
     // Configuration extensions
