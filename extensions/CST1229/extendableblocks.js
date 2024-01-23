@@ -13,33 +13,6 @@
 
   const exId = "cst1229extendable";
 
-  const PATCHES_ID = "__patches_" + exId;
-  const patch = (obj, functions) => {
-    if (obj[PATCHES_ID]) return;
-    obj[PATCHES_ID] = {};
-    for (const name in functions) {
-      const original = obj[name];
-      obj[PATCHES_ID][name] = obj[name];
-      if (original) {
-        obj[name] = function (...args) {
-          const callOriginal = (...args) => original.call(this, ...args);
-          return functions[name].call(this, callOriginal, ...args);
-        };
-      } else {
-        obj[name] = function (...args) {
-          return functions[name].call(this, () => {}, ...args);
-        };
-      }
-    }
-  };
-  const unpatch = (obj) => {
-    if (!obj[PATCHES_ID]) return;
-    for (const name in obj[PATCHES_ID]) {
-      obj[name] = obj[PATCHES_ID][name];
-    }
-    obj[PATCHES_ID] = null;
-  };
-
   // A high branchCount for old compiler versions
   const MAX_EXTENDABLE_BRANCHES = 75;
 
@@ -1100,14 +1073,13 @@
     });
 
     // HACK: fixes the flyout, also with dynamic enable/disable addons
-    patch(ScratchBlocks.BlockSvg.prototype, {
-      initSvg(og) {
+	const ogInitSvg = ScratchBlocks.BlockSvg.prototype.initSvg;
+	ScratchBlocks.BlockSvg.prototype.initSvg = function() {
         if (this.getExtendableInput && !this.extendableUpdatedDisplay) {
           this.updateDisplay_();
         }
-        return og();
-      },
-    });
+		return ogInitSvg.call(this);
+	}
   }
 
   // https://github.com/LilyMakesThings/extensions/blob/5b9ce572683e403933cab3b23c4a9bbb2a08ecf9/extensions/Lily/Dictionaries.js#L37C1-L45
