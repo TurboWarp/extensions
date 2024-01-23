@@ -1073,13 +1073,13 @@
     });
 
     // HACK: fixes the flyout, also with dynamic enable/disable addons
-	const ogInitSvg = ScratchBlocks.BlockSvg.prototype.initSvg;
-	ScratchBlocks.BlockSvg.prototype.initSvg = function() {
-        if (this.getExtendableInput && !this.extendableUpdatedDisplay) {
-          this.updateDisplay_();
-        }
-		return ogInitSvg.call(this);
-	}
+    const ogInitSvg = ScratchBlocks.BlockSvg.prototype.initSvg;
+    ScratchBlocks.BlockSvg.prototype.initSvg = function () {
+      if (this.getExtendableInput && !this.extendableUpdatedDisplay) {
+        this.updateDisplay_();
+      }
+      return ogInitSvg.call(this);
+    };
   }
 
   // https://github.com/LilyMakesThings/extensions/blob/5b9ce572683e403933cab3b23c4a9bbb2a08ecf9/extensions/Lily/Dictionaries.js#L37C1-L45
