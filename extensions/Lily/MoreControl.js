@@ -743,6 +743,7 @@
 
       const params = stackFrames[0].moreControlParams;
       if (typeof params === "undefined") return 0;
+      if (typeof params[param] === "object") return JSON.stringify(params[param]);
 
       return params[param] ?? 0;
     }
