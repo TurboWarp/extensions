@@ -7,21 +7,23 @@
   class InlineFunctions {
     constructor() {
       /**
-       * Override to add in the "output" and "outputShape"
-       * extension block parameters. Used to create the inline
-       * block shape.
+       * Override to implement a BlockType.INLINE.
+       * !! Remove once scratch-vm/pull/187 is merged. !!
        */
+      Scratch.BlockType.INLINE = "inline";
       const cbfsb = runtime._convertBlockForScratchBlocks.bind(runtime);
       runtime._convertBlockForScratchBlocks = function (
         blockInfo,
         categoryInfo
       ) {
-        const res = cbfsb(blockInfo, categoryInfo);
-        if (blockInfo.outputShape) {
-          res.json.outputShape = blockInfo.outputShape;
+        if (blockInfo.blockType === Scratch.BlockType.INLINE) {
+          blockInfo.branchCount = blockInfo.branchCount || 1;
         }
-        if (blockInfo.output) {
-          res.json.output = blockInfo.output;
+        const res = cbfsb(blockInfo, categoryInfo);
+        if (blockInfo.blockType === Scratch.BlockType.INLINE) {
+          blockInfo.blockType = Scratch.BlockType.REPORTER;
+          res.json.outputShape = 3;
+          res.json.output = blockInfo.allowDropAnywhere ? null : "String";
         }
         return res;
       };
@@ -35,10 +37,9 @@
         blocks: [
           {
             opcode: "function",
-            blockType: Scratch.BlockType.REPORTER,
-            outputShape: 3,
-            output: "Boolean",
-            branchCount: 1,
+            blockType: Scratch.BlockType.INLINE,
+            text: "function",
+            allowDropAnywhere: true,
             disableMonitor: true,
           },
           "---",
@@ -83,11 +84,15 @@
       };
     }
 
+    /**
+     * Block Functions
+     */
+
     function(args, util) {
       const target = util.target;
       const blockId = this._getPeekStack(util.thread);
       const blocks = target.blocks;
-      if (!blocks.getBlock(blockId).parent) return "";
+      if (!blocks.getBlock(blockId)?.parent) return "";
 
       const branch = blocks.getBranch(blockId, 0);
       if (!branch) return "";
@@ -99,7 +104,7 @@
       const blockId = Scratch.Cast.toString(args.SCRIPT);
       if (!blockId) return;
 
-      const target = this._getTargetForBlock(blockId)
+      const target = this._getTargetForBlock(blockId);
       if (!target) return;
 
       runtime._pushThread(blockId, target);
@@ -111,7 +116,7 @@
 
       const stackFrame = util.stackFrame;
       if (!stackFrame.newThread) {
-        const target = this._getTargetForBlock(blockId)
+        const target = this._getTargetForBlock(blockId);
         if (!target) return;
 
         stackFrame.newThread = runtime._pushThread(blockId, target);
@@ -134,13 +139,13 @@
 
     executeReporter(args, util) {
       const blockId = Scratch.Cast.toString(args.SCRIPT);
-      if (!blockId) return;
+      if (!blockId) return "";
 
       const stackFrame = util.stackFrame;
       if (!stackFrame.newThread) {
-        const target = this._getTargetForBlock(blockId)
-        if (!target) return;
-  
+        const target = this._getTargetForBlock(blockId);
+        if (!target) return "";
+
         stackFrame.newThread = runtime._pushThread(blockId, target);
       }
 
@@ -155,9 +160,13 @@
     }
 
     /**
+     * Utility Functions
+     */
+
+    /**
      * Get the target that a block is contained in based
      * on its ID.
-     * @param {string} blockId The block ID to check. 
+     * @param {string} blockId The block ID to check.
      * @returns {Object} The target the block is from.
      */
     _getTargetForBlock(blockId) {
