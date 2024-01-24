@@ -63,7 +63,6 @@
           "---",
           {
             opcode: "executeReporter",
-            func: "executeAndWait",
             blockType: Scratch.BlockType.REPORTER,
             text: "execute [SCRIPT] and wait",
             allowDropAnywhere: true,
@@ -122,11 +121,11 @@
 
       const newThread = stackFrame.newThread;
 
-      if (!newThread.returnValue && newThread.status !== 4) {
+      if (newThread.status !== 4) {
         util.thread.peekStackFrame().waitingReporter = true;
         util.yield();
       } else {
-        return newThread.returnValue ?? "";
+        return;
       }
     }
 
@@ -135,11 +134,25 @@
       util.stopThisScript();
     }
 
-    imBored(args, util) {
-      if (args.CONDITION) {
-        return 1;
+    executeReporter(args, util) {
+      const blockId = Scratch.Cast.toString(args.SCRIPT);
+      if (!blockId) return;
+
+      const stackFrame = util.stackFrame;
+      if (!stackFrame.newThread) {
+        const target = this._getTargetForBlock(blockId)
+        if (!target) return;
+  
+        stackFrame.newThread = runtime._pushThread(blockId, target);
+      }
+
+      const newThread = stackFrame.newThread;
+
+      if (!newThread.returnValue && newThread.status !== 4) {
+        util.thread.peekStackFrame().waitingReporter = true;
+        util.yield();
       } else {
-        return 2;
+        return newThread.returnValue ?? "";
       }
     }
 
