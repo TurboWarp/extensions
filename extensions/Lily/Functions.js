@@ -47,9 +47,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "execute [SCRIPT]",
             arguments: {
-              SCRIPT: {
-                type: Scratch.ArgumentType.STRING,
-              },
+              SCRIPT: {},
             },
           },
           {
@@ -115,7 +113,7 @@
       if (!stackFrame.newThread) {
         const target = this._getTargetForBlock(blockId)
         if (!target) return;
-  
+
         stackFrame.newThread = runtime._pushThread(blockId, target);
       }
 
