@@ -1105,7 +1105,14 @@
           },
           attribute: {
             acceptReporters: false,
-            items: ["font", "color", "width", "outline color", "outline width", "alignment"],
+            items: [
+              "font",
+              "color",
+              "width",
+              "outline color",
+              "outline width",
+              "alignment",
+            ],
           },
           // TurboWarp menus (acceptReporters: true)
           twAnimate: {
