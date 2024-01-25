@@ -36,12 +36,11 @@
           const object = util.blocks._blocks;
           const keysV = getKeysByValue(object, "opcode", "SPPause_whenProjectPaused");
           for (const keyV of keysV) {
-            if (projectPaused) vm.setEditingTarget(util.id);
             if (runtime.threads) {
               let threadExists = runtime.threads.some(thread => thread.topBlock === object[keyV].id);
               if (!threadExists) {
                 if (projectPaused) {
-                  vm.runtime.toggleScript(object[keyV].id, util);
+                  vm.runtime._pushThread(object[keyV].id, util);
                   checkReset(object[keyV].id);
                 }
               } else { checkReset(object[keyV].id) }
