@@ -232,7 +232,7 @@
   const downloadBlob = (blob, file) => {
     const url = URL.createObjectURL(blob);
     downloadURL(url, file);
-    URL.revokeObjectURL(url);
+    (requestIdleCallback ?? setTimeout)(() => URL.revokeObjectURL(url)); // Some old browsers process Blob URLs asynchronously
   };
 
   /**
