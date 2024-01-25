@@ -1157,6 +1157,10 @@
               },
             ],
           },
+          twFont: {
+            acceptReporters: false,
+            items: "getFonts",
+          },
         },
       };
     }
