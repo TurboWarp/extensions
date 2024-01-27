@@ -8,6 +8,12 @@
 (function (Scratch) {
   "use strict";
 
+  // For older versions of TurboWarp.
+  // https://experiments.turbowarp.org/
+  if (typeof Scratch.translate === "undefined") {
+    Scratch.translate = (text) => { return text };
+  }
+
   const AXIS_DEADZONE = 0.1;
   const BUTTON_DEADZONE = 0.05;
 
