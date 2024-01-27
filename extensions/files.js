@@ -234,7 +234,7 @@
     downloadURL(url, file);
     // Some old browsers process Blob URLs asynchronously
     setTimeout(() => {
-      URL.revokeObjectURL(url)
+      URL.revokeObjectURL(url);
     }, 1000);
   };
 
