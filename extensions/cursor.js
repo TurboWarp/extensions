@@ -5,6 +5,12 @@
 (function (Scratch) {
   "use strict";
 
+  // For older versions of TurboWarp.
+  // https://experiments.turbowarp.org/
+  if (typeof Scratch.translate === "undefined") {
+    Scratch.translate = (text) => { return text };
+  }
+
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("MouseCursor extension must be run unsandboxed");
   }
