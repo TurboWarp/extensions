@@ -5,6 +5,12 @@
 (function (Scratch) {
   "use strict";
 
+  // For older versions of TurboWarp.
+  // https://experiments.turbowarp.org/
+  if (typeof Scratch.translate === "undefined") {
+    Scratch.translate = (text) => { return text };
+  }
+
   const STRETCH_X = Symbol("stretch.x");
   const STRETCH_Y = Symbol("stretch.y");
 
