@@ -10,7 +10,7 @@
   let overlay = {};
 
   let elements_coordinates = {};
-  
+
   let interactive = true;
   let resizeBehavior = "scale";
 
@@ -20,49 +20,80 @@
     }
 
     const { stageWidth, stageHeight } = Scratch.vm.runtime;
-    const effectiveWidth = elements_coordinates[name].width >= 0 ? elements_coordinates[name].width : stageWidth;
-    const effectiveHeight = elements_coordinates[name].height >= 0 ? elements_coordinates[name].height : stageHeight;
+    const effectiveWidth =
+      elements_coordinates[name].width >= 0
+        ? elements_coordinates[name].width
+        : stageWidth;
+    const effectiveHeight =
+      elements_coordinates[name].height >= 0
+        ? elements_coordinates[name].height
+        : stageHeight;
 
     html_elements[name].style.pointerEvents = interactive ? "auto" : "none";
 
-    if (elements_coordinates[name].width == -1){
-      html_elements[name].style.width = '';
+    if (elements_coordinates[name].width == -1) {
+      html_elements[name].style.width = "";
       html_elements[name].style.left = "0";
     } else {
-      html_elements[name].style.width = (effectiveWidth / stageWidth * 100) + '%';
-      html_elements[name].style.left = `${-(stageWidth - elements_coordinates[name].width) + ((stageWidth - elements_coordinates[name].width) / 2)}px`;
+      html_elements[name].style.width =
+        (effectiveWidth / stageWidth) * 100 + "%";
+      html_elements[name].style.left = `${
+        -(stageWidth - elements_coordinates[name].width) +
+        (stageWidth - elements_coordinates[name].width) / 2
+      }px`;
     }
 
-    if (elements_coordinates[name].height == -1){
-      html_elements[name].style.height = '';
+    if (elements_coordinates[name].height == -1) {
+      html_elements[name].style.height = "";
       html_elements[name].style.top = "0";
     } else {
-      html_elements[name].style.height = (effectiveHeight / stageHeight * 100) + '%';
-      html_elements[name].style.top = `${-(stageHeight - elements_coordinates[name].height) + ((stageHeight - elements_coordinates[name].height) / 2)}px`;
+      html_elements[name].style.height =
+        (effectiveHeight / stageHeight) * 100 + "%";
+      html_elements[name].style.top = `${
+        -(stageHeight - elements_coordinates[name].height) +
+        (stageHeight - elements_coordinates[name].height) / 2
+      }px`;
     }
 
-    html_elements[name].style.transform = `translate(${(-effectiveWidth / 2 + elements_coordinates[name].x) + (stageWidth / 2) - (html_elements[name].clientWidth / 2)}px, ${
-      (-effectiveHeight / 2 - elements_coordinates[name].y) + (stageHeight / 2) - (html_elements[name].clientHeight / 2)
+    html_elements[name].style.transform = `translate(${
+      -effectiveWidth / 2 +
+      elements_coordinates[name].x +
+      stageWidth / 2 -
+      html_elements[name].clientWidth / 2
+    }px, ${
+      -effectiveHeight / 2 -
+      elements_coordinates[name].y +
+      stageHeight / 2 -
+      html_elements[name].clientHeight / 2
     }px)`;
   };
 
   const getOverlayMode = () =>
     resizeBehavior === "scale" ? "scale-centered" : "manual";
 
-  const createElement = (element, name, attributes = [], id = '', class_names = '') => {
+  const createElement = (
+    element,
+    name,
+    attributes = [],
+    id = "",
+    class_names = ""
+  ) => {
     html_elements[name] = document.createElement(element);
-    
+
     html_elements[name].style.position = "absolute";
 
-    elements_coordinates[name] = {x: 0, y: 0, width: -1, height: -1};
-    
-    for (var i in attributes){
+    elements_coordinates[name] = { x: 0, y: 0, width: -1, height: -1 };
+
+    for (var i in attributes) {
       html_elements[name].setAttribute(attributes[i].name, attributes[i].value);
     }
 
-    overlay[name] = Scratch.renderer.addOverlay(html_elements[name], getOverlayMode());
+    overlay[name] = Scratch.renderer.addOverlay(
+      html_elements[name],
+      getOverlayMode()
+    );
     updateElementAttributes(name);
-  }
+  };
 
   const closeElement = (name) => {
     if (html_elements[name]) {
@@ -73,34 +104,34 @@
 
   const updateElementsAttributes = () => {
     var elements = Object.keys(html_elements).map((key) => key);
-    for (var i in elements){
+    for (var i in elements) {
       updateElementAttributes(elements[i]);
     }
-  }
+  };
 
   const closeElements = () => {
     var elements = Object.keys(html_elements).map((key) => key);
-    for (var i in elements){
+    for (var i in elements) {
       closeElement(elements[i]);
     }
-  }
+  };
 
   const label = (text) => {
     return {
       blockType: "label",
       text: text,
-    }
-  }
+    };
+  };
 
   const getPromiseFromEvent = (item, event) => {
     return new Promise((resolve) => {
       const listener = (e) => {
         item.removeEventListener(event, listener);
         resolve(e);
-      }
+      };
       item.addEventListener(event, listener);
-    })
-  }
+    });
+  };
 
   Scratch.vm.on("STAGE_SIZE_CHANGED", updateElementsAttributes);
 
@@ -112,7 +143,7 @@
         name: "insertHTML",
         id: "samuelloufinserthtml",
         blocks: [
-          label('Create'),
+          label("Create"),
           {
             opcode: "createInput",
             blockType: Scratch.BlockType.COMMAND,
@@ -120,7 +151,7 @@
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'input_types',
+                menu: "input_types",
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -139,7 +170,7 @@
               },
             },
           },
-          label('Set'),
+          label("Set"),
           {
             opcode: "setSelectOptionsToList",
             blockType: Scratch.BlockType.COMMAND,
@@ -151,7 +182,7 @@
               },
               LIST: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'get_list',
+                menu: "get_list",
               },
             },
           },
@@ -185,7 +216,7 @@
               },
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'element_attributes',
+                menu: "element_attributes",
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
@@ -193,7 +224,7 @@
               },
             },
           },
-          label('Get'),
+          label("Get"),
           {
             opcode: "getElement",
             blockType: Scratch.BlockType.REPORTER,
@@ -205,7 +236,7 @@
               },
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'element_attributes_coordinates',
+                menu: "element_attributes_coordinates",
               },
             },
           },
@@ -216,15 +247,15 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'name'
+                defaultValue: "name",
               },
               EVENT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'element_event',
+                menu: "element_event",
               },
             },
           },
-          label('Delete'),
+          label("Delete"),
           {
             opcode: "deleteElement",
             blockType: Scratch.BlockType.COMMAND,
@@ -253,7 +284,7 @@
             },
           },
           "---",
-          label('Visibility'),
+          label("Visibility"),
           {
             opcode: "hide",
             blockType: Scratch.BlockType.COMMAND,
@@ -288,7 +319,7 @@
             },
           },
           "---",
-          label('Position'),
+          label("Position"),
           {
             opcode: "setElementX",
             blockType: Scratch.BlockType.COMMAND,
@@ -320,7 +351,7 @@
             },
           },
           "---",
-          label('Dimensions'),
+          label("Dimensions"),
           {
             opcode: "setElementWidth",
             blockType: Scratch.BlockType.COMMAND,
@@ -352,7 +383,7 @@
             },
           },
           "---",
-          label('Refresh'),
+          label("Refresh"),
           {
             opcode: "refreshElement",
             blockType: Scratch.BlockType.COMMAND,
@@ -376,23 +407,23 @@
             items: [
               "click",
               "change",
-              {text:"double click",value:"dblclick"},
+              { text: "double click", value: "dblclick" },
               "focus",
-              {text:"mouse down",value:"mousedown"},
-              {text:"mouse up",value:"mouseup"},
-              {text:"mouse enter",value:"mouseenter"},
-              {text:"mouse leave",value:"mouseleave"},
-              {text:"mouse move",value:"mousemove"},
-              {text:"mouse out",value:"mouseout"},
-              {text:"mouse wheel",value:"mousewheel"},
-              {text:"pointer down",value:"pointerdown"},
-              {text:"pointer up",value:"pointerup"},
-              {text:"pointer enter",value:"pointerenter"},
-              {text:"pointer leave",value:"pointerleave"},
-              {text:"pointer out",value:"pointerout"},
+              { text: "mouse down", value: "mousedown" },
+              { text: "mouse up", value: "mouseup" },
+              { text: "mouse enter", value: "mouseenter" },
+              { text: "mouse leave", value: "mouseleave" },
+              { text: "mouse move", value: "mousemove" },
+              { text: "mouse out", value: "mouseout" },
+              { text: "mouse wheel", value: "mousewheel" },
+              { text: "pointer down", value: "pointerdown" },
+              { text: "pointer up", value: "pointerup" },
+              { text: "pointer enter", value: "pointerenter" },
+              { text: "pointer leave", value: "pointerleave" },
+              { text: "pointer out", value: "pointerout" },
               "select",
-              {text:"selection change",value:"selectionchange"},
-              {text:"select start",value:"selectstart"}
+              { text: "selection change", value: "selectionchange" },
+              { text: "select start", value: "selectstart" },
             ],
           },
           input_types: {
@@ -420,9 +451,9 @@
               "value",
               "placeholder",
               "max",
-              {text: 'max length', value: 'maxlength'},
+              { text: "max length", value: "maxlength" },
               "min",
-              {text: 'min length', value: 'minlength'},
+              { text: "min length", value: "minlength" },
             ],
           },
           element_attributes_coordinates: {
@@ -432,9 +463,9 @@
               "value",
               "placeholder",
               "max",
-              {text: 'max length', value: 'maxlength'},
+              { text: "max length", value: "maxlength" },
               "min",
-              {text: 'min length', value: 'minlength'},
+              { text: "min length", value: "minlength" },
               "x",
               "y",
               "width",
@@ -444,17 +475,17 @@
           get_list: {
             acceptReporters: true,
             items: "getLists",
-          }
+          },
         },
       };
     }
 
-    createInput({ TYPE, NAME }){
-      createElement('input', NAME, [{name: 'type', value: TYPE}]);
+    createInput({ TYPE, NAME }) {
+      createElement("input", NAME, [{ name: "type", value: TYPE }]);
     }
 
-    createSelect({ NAME }){
-      createElement('select', NAME);
+    createSelect({ NAME }) {
+      createElement("select", NAME);
     }
 
     lookupList(list, util) {
@@ -469,24 +500,25 @@
       return null;
     }
 
-    _option(value, text){
-      var option = document.createElement('option');
+    _option(value, text) {
+      var option = document.createElement("option");
       option.value = value;
       option.text = text;
       return option;
     }
 
-    emptySelectMenu({NAME}){
-      try{
-        html_elements[NAME].innerText = ''
+    emptySelectMenu({ NAME }) {
+      try {
+        html_elements[NAME].innerText = "";
       } catch {
-        try{
-          var i, L = html_elements[NAME].options.length - 1;
-          for(i = L; i >= 0; i--) {
+        try {
+          var i,
+            L = html_elements[NAME].options.length - 1;
+          for (i = L; i >= 0; i--) {
             html_elements[NAME].remove(i);
           }
         } catch {
-          while (html_elements[NAME].options.length > 0) {                
+          while (html_elements[NAME].options.length > 0) {
             html_elements[NAME].remove(0);
           }
         }
@@ -494,47 +526,51 @@
       updateElementAttributes(NAME);
     }
 
-    setSelectOptionsToList({NAME,LIST}, util){
+    setSelectOptionsToList({ NAME, LIST }, util) {
       let listVariable = this.lookupList(LIST, util).value;
       this.emptySelectMenu({ NAME });
-      for (var i in listVariable){
-        html_elements[NAME].appendChild(this._option(listVariable[i], listVariable[i]));
+      for (var i in listVariable) {
+        html_elements[NAME].appendChild(
+          this._option(listVariable[i], listVariable[i])
+        );
       }
       updateElementAttributes(NAME);
     }
 
-    setSelectOptionsToText({NAME,LIST,SPLITBY}){
+    setSelectOptionsToText({ NAME, LIST, SPLITBY }) {
       let listVariable = LIST.split(SPLITBY);
       this.emptySelectMenu({ NAME });
-      for (var i in listVariable){
-        html_elements[NAME].appendChild(this._option(listVariable[i], listVariable[i]));
+      for (var i in listVariable) {
+        html_elements[NAME].appendChild(
+          this._option(listVariable[i], listVariable[i])
+        );
       }
       updateElementAttributes(NAME);
     }
 
-    setElement({NAME,ATTRIBUTE,VALUE}){
-      switch (ATTRIBUTE){
-        case 'text':
+    setElement({ NAME, ATTRIBUTE, VALUE }) {
+      switch (ATTRIBUTE) {
+        case "text":
           html_elements[NAME].innerText = VALUE;
           break;
-        case 'value':
+        case "value":
           html_elements[NAME].value = VALUE;
           break;
-        case 'placeholder':
+        case "placeholder":
           html_elements[NAME].placeholder = VALUE;
           break;
-        case 'disabled':
-          html_elements[NAME].disabled = (VALUE == 'true');
+        case "disabled":
+          html_elements[NAME].disabled = VALUE == "true";
       }
     }
 
-    getLists(){
+    getLists() {
       const globalLists = Object.values(
         Scratch.vm.runtime.getTargetForStage().variables
       ).filter((x) => x.type == "list");
-      const localLists = Object.values(Scratch.vm.editingTarget.variables).filter(
-        (x) => x.type == "list"
-      );
+      const localLists = Object.values(
+        Scratch.vm.editingTarget.variables
+      ).filter((x) => x.type == "list");
       const uniqueLists = [...new Set([...globalLists, ...localLists])];
       if (uniqueLists.length === 0) {
         return [
@@ -550,88 +586,88 @@
       }));
     }
 
-    elementExists({NAME}){
+    elementExists({ NAME }) {
       return html_elements[NAME] != undefined;
     }
 
-    setElementX({NAME,X}){
+    setElementX({ NAME, X }) {
       elements_coordinates[NAME].x = Scratch.Cast.toNumber(X);
       updateElementAttributes(NAME);
     }
 
-    setElementY({NAME,Y}){
+    setElementY({ NAME, Y }) {
       elements_coordinates[NAME].y = Scratch.Cast.toNumber(Y);
       updateElementAttributes(NAME);
     }
 
-    getElement({NAME,ATTRIBUTE}){
-      switch (ATTRIBUTE){
-        case 'text':
+    getElement({ NAME, ATTRIBUTE }) {
+      switch (ATTRIBUTE) {
+        case "text":
           return html_elements[NAME].innerText;
-        case 'value':
+        case "value":
           return html_elements[NAME].value;
-        case 'placeholder':
+        case "placeholder":
           return html_elements[NAME].placeholder;
-        case 'disabled':
+        case "disabled":
           return html_elements[NAME].disabled;
-        case 'x':
+        case "x":
           return elements_coordinates[NAME].x;
-        case 'y':
+        case "y":
           return elements_coordinates[NAME].y;
-        case 'height':
+        case "height":
           return elements_coordinates[NAME].height;
-        case 'width':
+        case "width":
           return elements_coordinates[NAME].width;
       }
     }
 
-    async waitUntilElementEvent({NAME,EVENT}){
-      if (html_elements[NAME]){
+    async waitUntilElementEvent({ NAME, EVENT }) {
+      if (html_elements[NAME]) {
         await getPromiseFromEvent(html_elements[NAME], EVENT);
       }
     }
 
-    show({NAME}){
-      if (html_elements[NAME]){
-        html_elements[NAME].style.display = '';
+    show({ NAME }) {
+      if (html_elements[NAME]) {
+        html_elements[NAME].style.display = "";
       }
     }
 
-    hide({NAME}){
-      if (html_elements[NAME]){
-        html_elements[NAME].style.display = 'none';
+    hide({ NAME }) {
+      if (html_elements[NAME]) {
+        html_elements[NAME].style.display = "none";
       }
     }
 
-    elementVisibility({NAME}){
-      if (html_elements[NAME]){
-        return html_elements[NAME].style.display == '';
+    elementVisibility({ NAME }) {
+      if (html_elements[NAME]) {
+        return html_elements[NAME].style.display == "";
       }
     }
 
-    deleteElement({NAME}){
+    deleteElement({ NAME }) {
       closeElement(NAME);
     }
 
-    deleteEveryElement(){
+    deleteEveryElement() {
       closeElements();
     }
 
-    setElementWidth({NAME,WIDTH}){
+    setElementWidth({ NAME, WIDTH }) {
       elements_coordinates[NAME].width = Scratch.Cast.toNumber(WIDTH);
       updateElementAttributes(NAME);
     }
 
-    setElementHeight({NAME,HEIGHT}){
+    setElementHeight({ NAME, HEIGHT }) {
       elements_coordinates[NAME].height = Scratch.Cast.toNumber(HEIGHT);
       updateElementAttributes(NAME);
     }
 
-    refreshElement({NAME}){
+    refreshElement({ NAME }) {
       updateElementAttributes(NAME);
     }
 
-    refreshAll(){
+    refreshAll() {
       updateElementsAttributes();
     }
   }
