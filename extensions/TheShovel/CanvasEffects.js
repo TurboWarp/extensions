@@ -327,43 +327,12 @@
       updateStyle();
     }
     changeEffect(args) {
-      const EFFECT = args.EFFECT;
-      const currentEffect = Scratch.Cast.toString(this.geteffect(args));
-      const NUMBER = Scratch.Cast.toNumber(args.NUMBER) + currentEffect;
-      if (EFFECT === "blur") {
-        blur = NUMBER;
-      } else if (EFFECT === "contrast") {
-        contrast = NUMBER;
-      } else if (EFFECT === "saturation") {
-        saturation = NUMBER;
-      } else if (EFFECT === "color shift") {
-        color = NUMBER;
-      } else if (EFFECT === "brightness") {
-        brightness = NUMBER;
-      } else if (EFFECT === "invert") {
-        invert = NUMBER;
-      } else if (EFFECT === "sepia") {
-        sepia = NUMBER;
-      } else if (EFFECT === "transparency") {
-        transparency = NUMBER;
-      } else if (EFFECT === "scale X") {
-        scaleX = NUMBER;
-      } else if (EFFECT === "scale Y") {
-        scaleY = NUMBER;
-      } else if (EFFECT === "skew X") {
-        skewX = NUMBER;
-      } else if (EFFECT === "skew Y") {
-        skewY = NUMBER;
-      } else if (EFFECT === "offset X") {
-        offsetX = NUMBER;
-      } else if (EFFECT === "offset Y") {
-        offsetY = NUMBER;
-      } else if (EFFECT === "rotation") {
-        rotation = NUMBER;
-      } else if (EFFECT === "border radius") {
-        borderRadius = NUMBER;
-      }
-      updateStyle();
+      const currentEffect = Scratch.Cast.toNumber(this.geteffect(args));
+      const newValue = Scratch.Cast.toNumber(args.NUMBER) + currentEffect;
+      this.seteffect({
+        EFFECT: args.EFFECT,
+        NUMBER: newValue
+      });
     }
     cleareffects() {
       resetStyles();
