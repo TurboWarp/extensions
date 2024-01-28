@@ -39,12 +39,16 @@
       canvas.style.imageRendering = imageRendering;
     }
 
-    const curBor = canvas.style.border.split(" ");
-    if (parseInt(curBor[0]) !== borderC[0] || curBor[1] !== borderC[1] || curBor[2] !== borderC[2]) {
-      canvas.style.border = Scratch.Cast.toString(`${borderC[0]}px ${borderC[1]} ${borderC[2]}`);
+    const border = `${borderWidth}px ${borderStyle} ${borderColor}`;
+    if (canvas.style.border !== border) {
+      canvas.style.border = border;
     }
-    canvas.style.backgroundColor = Scratch.Cast.toString(borderC[3]);
+
+    if (canvas.style.backgroundColor !== backgroundColor) {
+      canvas.style.backgroundColor = backgroundColor;
+    }
   };
+
   // scratch-gui may reset canvas styles when resizing the window or going in/out of fullscreen
   new MutationObserver(updateStyle).observe(canvas, {
     attributeFilter: ["style"],
@@ -69,7 +73,10 @@
   let brightness = 100;
   let invert = 0;
   let resizeMode = "default";
-  let borderC = [0, "none", "#ff0000", "#ff0000"];
+  let borderStyle = "solid";
+  let borderWidth = 0;
+  let borderColor = '#000000';
+  let backgroundColor = 'transparent';
 
   const resetStyles = () => {
     borderRadius = 0;
@@ -89,7 +96,10 @@
     brightness = 100;
     invert = 0;
     resizeMode = "default";
-    borderC = [0, "none", "#ff0000", "#ff0000"];
+    borderStyle = "solid";
+    borderWidth = 0;
+    borderColor = '#000000';
+    backgroundColor = 'transparent';
     updateStyle();
   };
 
@@ -150,13 +160,13 @@
           {
             opcode: "setBorder",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add [BORDER] border to canvas with color [COLOR1] and backup [COLOR2] and thickness [THICK]",
+            text: "set canvas border to [WIDTH] pixels [STYLE] with color [COLOR1] and background [COLOR2]",
             arguments: {
-              BORDER: {
+              STYLE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "borderTypes"
               },
-              THICK: {
+              WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 5
               },
@@ -173,7 +183,7 @@
           {
             opcode: "renderscale",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set canvas render size to width:[X] height:[Y]",
+            text: "set canvas render size to width: [X] height: [Y]",
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -344,9 +354,11 @@
     renderscale({ X, Y }) {
       Scratch.vm.renderer.resize(X, Y);
     }
-
     setBorder(args) {
-      borderC = [args.THICK, args.BORDER, args.COLOR1, args.COLOR2];
+      borderWidth = Scratch.Cast.toNumber(args.WIDTH);
+      borderStyle = Scratch.Cast.toString(args.STYLE).replace(/[^a-z]/ig, '');
+      borderColor = Scratch.Cast.toString(args.COLOR1).replace(/[^#0-9a-z]/ig, '');
+      backgroundColor = Scratch.Cast.toString(args.COLOR2).replace(/[^#0-9a-z]/ig, '');
       updateStyle();
     }
   }
