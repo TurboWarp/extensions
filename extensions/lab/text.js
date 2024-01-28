@@ -1166,7 +1166,7 @@
             ],
           },
           twFont: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: "getFonts",
           },
         },
