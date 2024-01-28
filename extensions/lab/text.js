@@ -355,7 +355,7 @@
           this.ctx.strokeText(text, xOffset, yOffset);
         }
 
-        // TODO: something here is wrong
+        // TODO: we're still a few pixels off of Scratch Lab
         this.ctx.fillText(text, xOffset, yOffset);
       }
 
