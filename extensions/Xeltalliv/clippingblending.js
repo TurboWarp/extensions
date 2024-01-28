@@ -308,12 +308,14 @@
               },
             },
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ["colours_looks"],
           },
           {
             opcode: "clearClipbox",
             blockType: Scratch.BlockType.COMMAND,
             text: "clear clipping box",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getClipbox",
@@ -327,6 +329,7 @@
               },
             },
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -341,6 +344,7 @@
               },
             },
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getBlend",
@@ -348,6 +352,7 @@
             text: "blending",
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -363,6 +368,7 @@
             },
             filter: [Scratch.TargetType.SPRITE],
             hideFromPalette: true,
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getAdditiveBlend",
@@ -371,6 +377,7 @@
             filter: [Scratch.TargetType.SPRITE],
             hideFromPalette: true,
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
         ],
         menus: {
