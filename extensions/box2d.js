@@ -12420,7 +12420,7 @@
     fixDef.shape = new b2PolygonShape();
     bodyDef.angle = 0;
 
-    const [stageWidth, stageHeight] = Scratch.renderer.getNativeSize();
+    const {stageWidth, stageHeight} = Scratch.vm.runtime;
     const stageBounds = {
       left: -stageWidth / 2,
       right: stageWidth / 2,
