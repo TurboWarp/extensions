@@ -285,6 +285,9 @@
         return sepia;
       } else if (EFFECT === "transparency") {
         return transparency;
+      } else if (EFFECT === "scale") {
+        // old extension compatibility
+        return scaleX;
       } else if (EFFECT === "scale X") {
         return scaleX;
       } else if (EFFECT === "scale Y") {
@@ -330,6 +333,10 @@
         sepia = NUMBER;
       } else if (EFFECT === "transparency") {
         transparency = NUMBER;
+      } else if (EFFECT === "scale") {
+        // old extension compatibility
+        scaleX = NUMBER;
+        scaleY = NUMBER;
       } else if (EFFECT === "scale X") {
         scaleX = NUMBER;
       } else if (EFFECT === "scale Y") {
