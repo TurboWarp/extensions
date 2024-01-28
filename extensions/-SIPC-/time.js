@@ -193,7 +193,7 @@
             },
           },
           {
-            opcode: "daysinmonth",
+            opcode: "daysInMonth",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("number of days in [MONTH] [YEAR]"),
             arguments: {
@@ -249,9 +249,54 @@
           Months: {
             acceptReporters: true,
             items: [
-              "January", "February", "March", "April",
-              "May", "June", "July", "August",
-              "September", "October", "November", "December",
+              {
+                text: Scratch.translate("January"),
+                value: "1",
+              },
+              {
+                text: Scratch.translate("February"),
+                value: "2"
+              },
+              {
+                text: Scratch.translate("March"),
+                value: "3",
+              },
+              {
+                text: Scratch.translate("April"),
+                value: "4",
+              },
+              {
+                text: Scratch.translate("May"),
+                value: "5",
+              },
+              {
+                text: Scratch.translate("June"),
+                value: "6"
+              },
+              {
+                text: Scratch.translate("July"),
+                value: "7"
+              },
+              {
+                text: Scratch.translate("August"),
+                value: "8"
+              },
+              {
+                text: Scratch.translate("September"),
+                value: "9"
+              },
+              {
+                text: Scratch.translate("October"),
+                value: "10"
+              },
+              {
+                text: Scratch.translate("November"),
+                value: "11"
+              },
+              {
+                text: Scratch.translate("December"),
+                value: '12'
+              }
             ],
           },
         },
@@ -387,22 +432,17 @@
       }
     }
 
-    daysinmonth(args) {
-      const year = args.YEAR ? args.YEAR : null;
-      const monthIndex = this._getMonthIndex(Scratch.Cast.toString(args.MONTH));
-      if (monthIndex === -1) return "Invalid month";
-      const date = new Date(year, monthIndex + 1, 0);
+    daysInMonth(args) {
+      const year = Math.round(Scratch.Cast.toNumber(args.YEAR));
+      if (year <= 0) {
+        return 0;
+      }
+      const monthIndex = Math.round(Scratch.Cast.toNumber(args.MONTH));
+      if (monthIndex < 0 || monthIndex >= 12) {
+        return 0;
+      }
+      const date = new Date(year, monthIndex, 0);
       return date.getDate();
-    }
-
-    _getMonthIndex(month) {
-      const months = [
-        "January", "February", "March",
-        "April", "May", "June",
-        "July", "August", "September",
-        "October", "November", "December",
-      ];
-      return months.indexOf(month);
     }
 
     evaluateTime(args) {
