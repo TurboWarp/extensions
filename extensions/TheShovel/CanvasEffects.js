@@ -357,6 +357,15 @@
       updateStyle();
     }
     changeEffect(args) {
+      // Scale needs some special treatment to change x & y separately
+      if (args.EFFECT === "scale") {
+        scaleX = scaleX + Scratch.Cast.toNumber(args.NUMBER);
+        scaleY = scaleY + Scratch.Cast.toNumber(args.NUMBER);
+        updateStyle();
+        return;
+      }
+
+      // Everything else is really generic
       const currentEffect = Scratch.Cast.toNumber(this.geteffect(args));
       const newValue = Scratch.Cast.toNumber(args.NUMBER) + currentEffect;
       this.seteffect({
