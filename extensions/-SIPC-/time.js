@@ -394,9 +394,9 @@
 
     converttotime(args) {
       const tStamp = args.VALUE ? args.VALUE : 0;
-      const seconds = args.ROUND === "rounded" ? Math.round(tStamp % 60) : tStamp % 60;
-      const minutes = Math.round((tStamp / 60) % 60);
-      const hours = Math.round((tStamp / 3600) % 24);
+      const seconds = (args.ROUND === "rounded" ? Math.round(tStamp % 60) : tStamp % 60).toString().padStart(2, '0');
+      const minutes = Math.round((tStamp / 60) % 60).toString().padStart(2, '0');
+      const hours = Math.round((tStamp / 3600) % 24).toString().padStart(2, '0');
       return `${hours}:${minutes}:${seconds}`;
     }
 
