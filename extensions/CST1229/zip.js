@@ -38,12 +38,48 @@
 
         blocks: [
           {
+            opcode: "createEmptyAs",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("create empty archive named [NAME]"),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("archive"),
+              },
+            },
+          },
+          {
+            opcode: "openAs",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("open archive from zip [TYPE] [DATA] named [NAME]"),
+            arguments: {
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "URL",
+                menu: "fileType",
+              },
+              DATA: {
+                type: Scratch.ArgumentType.STRING,
+                // defaultValue: "http:/localhost:8000/hello.zip",
+                defaultValue: "https://extensions.turbowarp.org/hello.zip",
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("archive"),
+              },
+            },
+          },
+
+          // legacy blocks
+          {
+            hideFromPalette: true,
             opcode: "createEmpty",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("create empty archive"),
             arguments: {},
           },
           {
+            hideFromPalette: true,
             opcode: "open",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("open zip from [TYPE] [DATA]"),
@@ -82,13 +118,45 @@
           {
             opcode: "close",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("close archive"),
+            text: Scratch.translate("close current archive"),
             arguments: {},
           },
           {
             opcode: "isOpen",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("archive is open?"),
+            arguments: {},
+          },
+          {
+            opcode: "isError",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("error opening archive?"),
+            arguments: {},
+          },
+
+          "---",
+
+          {
+            opcode: "currentArchive",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("current archive name"),
+            arguments: {},
+          },
+          {
+            opcode: "goToArchive",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set current archive to [NAME]"),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("other archive"),
+              },
+            },
+          },
+          {
+            opcode: "listArchives",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("currently open archives"),
             arguments: {},
           },
 
@@ -145,6 +213,48 @@
                 type: Scratch.ArgumentType.STRING,
                 // Don't translate so matches default zip
                 defaultValue: "hello renamed.txt",
+              },
+            },
+          },
+          {
+            opcode: "copyFile",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "copy [FROM] to [TO]",
+            arguments: {
+              FROM: {
+                type: Scratch.ArgumentType.STRING,
+                // Don't translate so matches default zip
+                defaultValue: "hello.txt",
+              },
+              TO: {
+                type: Scratch.ArgumentType.STRING,
+                // Don't translate so matches default zip
+                defaultValue: "Copy of hello.txt",
+              },
+            },
+          },
+          {
+            opcode: "copyFileTo",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "copy [FROM] in [FROMARCHIVE] to [TO] in [TOARCHIVE]",
+            arguments: {
+              FROM: {
+                type: Scratch.ArgumentType.STRING,
+                // Don't translate so matches default zip
+                defaultValue: "hello.txt",
+              },
+              TO: {
+                type: Scratch.ArgumentType.STRING,
+                // Don't translate so matches default zip
+                defaultValue: "Copy of hello.txt",
+              },
+              FROMARCHIVE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("other archive"),
+              },
+              TOARCHIVE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("archive"),
               },
             },
           },
