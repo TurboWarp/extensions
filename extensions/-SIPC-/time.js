@@ -321,8 +321,7 @@
     }
 
     TimestampToTime({ timestamp }) {
-      timestamp = timestamp ? timestamp : null;
-      const date = new Date(timestamp);
+      const date = parseDate(timestamp);
       const Y = date.getFullYear();
       const M =
         date.getMonth() + 1 < 10
@@ -338,8 +337,7 @@
     }
 
     TimeToTimestamp({ time }) {
-      const date = new Date(time);
-      return date.getTime();
+      return parseDate(time).getTime();
     }
 
     /**
