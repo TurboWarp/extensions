@@ -37,6 +37,9 @@
       this.gainNodes = new Map();
       this.playingStatus = new Map();
       this.registerKeyEvents();
+      Scratch.vm.runtime.on("PROJECT_STOP_ALL", () => {
+        this.stopNote();
+      });
     }
     getInfo() {
       return {
