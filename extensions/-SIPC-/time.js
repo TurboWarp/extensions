@@ -207,33 +207,6 @@
               }
             },
           },
-          "---",
-          {
-            opcode: "countdownReport",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("countdown to [TIME] in [MENU]"),
-            arguments: {
-              TIME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "2007-03-14 09:34:00",
-              },
-              MENU: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "Time"
-              }
-            },
-          },
-          {
-            opcode: "countdownBoolean",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("countdown to [TIME] reached?"),
-            arguments: {
-              TIME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "2007-03-14 09:34:00"
-              }
-            },
-          },
         ],
         menus: {
           Time: {
@@ -430,24 +403,6 @@
         "October", "November", "December",
       ];
       return months.indexOf(month);
-    }
-
-    countdownReport(args) {
-      const timeMenu = args.MENU;
-      const endDate = new Date();
-      const dateString = args.TIME ? args.TIME : null;
-      const startDate = new Date(dateString);
-      const difference = this.calculateTimeDifference(
-        startDate, endDate, timeMenu, false
-      );
-      if (isNaN(difference)) return "Invalid Time Input";
-      else return difference;
-    }
-
-    countdownBoolean(args) {
-      const endDate = Date.now();
-      const startDate = new Date(args.TIME ? args.TIME : null);
-      return startDate - endDate <= 0;
     }
 
     evaluateTime(args) {
