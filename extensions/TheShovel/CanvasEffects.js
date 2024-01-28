@@ -2,7 +2,7 @@
 // ID: theshovelcanvaseffects
 // Description: Apply visual effects to the entire stage.
 // By: TheShovel
-// By: SharkPool
+// By: SharkPool <https://scratch.mit.edu/users/DemonX5/>
 
 (function (Scratch) {
   "use strict";
