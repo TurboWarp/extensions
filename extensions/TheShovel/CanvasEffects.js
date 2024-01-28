@@ -249,6 +249,7 @@
         ...(isGetter ? ["resize rendering mode"] : []),
         "sepia",
         "transparency",
+        ...(isGetter ? [] : ["scale"]),
         "scale X",
         "scale Y",
         "skew X",
@@ -334,7 +335,6 @@
       } else if (EFFECT === "transparency") {
         transparency = NUMBER;
       } else if (EFFECT === "scale") {
-        // old extension compatibility
         scaleX = NUMBER;
         scaleY = NUMBER;
       } else if (EFFECT === "scale X") {
