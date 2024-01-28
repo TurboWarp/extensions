@@ -210,7 +210,7 @@
         menus: {
           EFFECTMENU: {
             acceptReporters: true,
-            items: this.mainEffects(false),
+            items: this._getMenuItems(false),
           },
           RENDERMODE: {
             acceptReporters: true,
@@ -218,8 +218,7 @@
           },
           EFFECTGETMENU: {
             acceptReporters: true,
-            // this contains 'resize rendering mode', EFFECTMENU does not
-            items: this.mainEffects(true),
+            items: this._getMenuItems(true),
           },
           borderTypes: {
             acceptReporters: true,
@@ -239,7 +238,7 @@
       };
     }
 
-    mainEffects(addRender) {
+    _getMenuItems(isGetter) {
       return [
         "blur",
         "contrast",
@@ -247,7 +246,7 @@
         "color shift",
         "brightness",
         "invert",
-        ...(addRender ? ["resize rendering mode"] : []),
+        ...(isGetter ? ["resize rendering mode"] : []),
         "sepia",
         "transparency",
         "scale X",
@@ -258,6 +257,12 @@
         "offset Y",
         "rotation",
         "border radius",
+        ...(isGetter ? [
+          "border width",
+          "border style",
+          "border color",
+          "background"
+        ] : [])
       ];
     }
 
@@ -296,6 +301,14 @@
         return rotation;
       } else if (EFFECT === "border radius") {
         return borderRadius;
+      } else if (EFFECT === "border width") {
+        return borderWidth;
+      } else if (EFFECT === "border style") {
+        return borderStyle;
+      } else if (EFFECT === "border color") {
+        return borderColor;
+      } else if (EFFECT === "background") {
+        return backgroundColor;
       }
       return "";
     }
