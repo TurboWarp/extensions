@@ -290,7 +290,7 @@
     }
 
     timezone() {
-      return new Date().getTimezoneOffset() / -60;
+      return "UTC+" + new Date().getTimezoneOffset() / -60;
     }
 
     Timedata(args) {
