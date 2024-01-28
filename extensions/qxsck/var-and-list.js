@@ -1,58 +1,58 @@
-const qxsckvarandlistIcon="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI3OS45ODQzOSIgaGVpZ2h0PSI3OS45ODQzOSIgdmlld0JveD0iMCwwLDc5Ljk4NDM5LDc5Ljk4NDM5Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjA5LjU2NDk1LC0xNDcuOTY0OTUpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PGc+PHBhdGggZD0iTTIzNy40NDIwNywxOTkuMzk1NTdjMCwtMTMuMDA4MTMgMTAuNTQ1MTEsLTIzLjU1Mzc3IDIzLjU1MzUsLTIzLjU1Mzc3YzEzLjAwODEzLDAgMjMuNTUzNzcsMTAuNTQ1NjQgMjMuNTUzNzcsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjQsMjMuNTUzNzcgLTIzLjU1Mzc3LDIzLjU1Mzc3Yy0xMy4wMDg0MSwwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9Im5vbmUiIHN0cm9rZS1vcGFjaXR5PSIwLjE1IiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIzNy42NDIwNywxOTkuNTk1NTdjMCwtMTMuMDA4MTMgMTAuNTQ1MTEsLTIzLjU1Mzc3IDIzLjU1MzUsLTIzLjU1Mzc3YzEzLjAwODEzLDAgMjMuNTUzNzcsMTAuNTQ1NjQgMjMuNTUzNzcsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjQsMjMuNTUzNzcgLTIzLjU1Mzc3LDIzLjU1Mzc3Yy0xMy4wMDg0MSwwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9IiNmZjhjMTkiIHN0cm9rZT0iI2RiNmUwMCIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiPjxwYXRoIGQ9Ik0yNjQuMzU1NDMsMjA1LjY0MDgzbC02LjcyNTM5LC0xMS4zOTQ3OCIvPjxwYXRoIGQ9Ik0yNTUuMjY0MjUsMjA1LjA0OTE4bDExLjY1MzksLTEwLjgwMzEzIiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIvPjwvZz48cGF0aCBkPSJNMjcyLjAwNzE5LDE4Ni41NjAwNWMwLDAgNC42NzA1LDUuNDc1NTIgNC42MDIwMSwxMy4xMTQ2OGMtMC4wODIxOCw5LjE2Mjk0IC01LjM3OTkzLDEzLjMyMzk1IC01LjM3OTkzLDEzLjMyMzk1IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTAuODg2NjcsMjEyLjU3OTJjMCwwIC01LjI1MDU2LC00LjYxMTE2IC00Ljc3NTM2LC0xNC4xMzY3OWMwLjM5NjI0LC03Ljk0MTU0IDUuNTg0OTMsLTEzLjM3Nzk1IDUuNTg0OTMsLTEzLjM3Nzk1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9nPjxnPjxwYXRoIGQ9Ik0yMTQuNTY1MjMsMTc2LjUxODcyYzAsLTEzLjAwODEzIDEwLjU0NTEsLTIzLjU1Mzc3IDIzLjU1Mzc3LC0yMy41NTM3N2MxMy4wMDgxMywwIDIzLjU1MzUsMTAuNTQ1NjUgMjMuNTUzNSwyMy41NTM3N2MwLDEzLjAwODEzIC0xMC41NDU2NSwyMy41NTM3OCAtMjMuNTUzNzcsMjMuNTUzNzhjLTEzLjAwODEzLDAgLTIzLjU1Mzc3LC0xMC41NDU2NSAtMjMuNTUzNzcsLTIzLjU1Mzc3eiIgZmlsbD0ibm9uZSIgc3Ryb2tlLW9wYWNpdHk9IjAuMTUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjE0LjU2NTIzLDE3Ni41MTg3MmMwLC0xMy4wMDgxMyAxMC41NDUxLC0yMy41NTM3NyAyMy41NTM3NywtMjMuNTUzNzdjMTMuMDA4MTMsMCAyMy41NTM1LDEwLjU0NTY1IDIzLjU1MzUsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjUsMjMuNTUzNzggLTIzLjU1Mzc3LDIzLjU1Mzc4Yy0xMy4wMDgxMywwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9IiNmZjY2MWEiIHN0cm9rZT0iI2U2NGQwMCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0yNTEuMDA0NDEsMTc2LjMxMzE4aC0xNS4wNzQ2NE0yNTEuMDA0NDEsMTY1LjkxNjk3aC0xNS4wNzQ2NE0yMjUuNzA2ODgsMTY2LjA5MDI5aDAuNjkzMjZNMjI2LjQwMDE1LDE3Ni40ODY1aC0wLjY5MzI2TTIzNS45Mjk3NywxODYuNzA5MzhoMTUuMDc0NjRNMjI2LjQwMDE1LDE4Ni44ODI3aC0wLjY5MzI2IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9nPjxnIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PHBhdGggZD0iTTI1OC4zNTU2NCwxNjkuMzY5MzNoMjQuMjAyMzlNMjcwLjQ1Njg0LDE1Ny4yNjg3djI0LjIwMTg0IiBzdHJva2Utb3BhY2l0eT0iMC4xNSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTI1OC4zNTU2NCwxNjkuMzY5MzNoMjQuMjAyMzlNMjcwLjQ1Njg0LDE1Ny4yNjg3djI0LjIwMTg0IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIvPjwvZz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjozMC40MzUwNTAwMDAwMDAxMDM6MzIuMDM1MDUwMDAwMDAwMDEtLT4=";
-
-let i10ndefaultValue={
-  'qxsckvarandlist.name': 'variable and list',
-
-  'qxsckvarandlist.open': 'open',
-  'qxsckvarandlist.close': 'close',
-
-  'qxsckvarandlist.asc': 'ascending',
-  'qxsckvarandlist.desc': 'descending',
-  'qxsckvarandlist.dictOrder': 'dictionary order',
-
-  'qxsckvarandlist.haveVar': 'have variable [VAR] ?',
-  'qxsckvarandlist.getVar': 'value of variable [VAR]',
-  'qxsckvarandlist.setVar': 'set variable [VAR] to [VALUE]',
-  'qxsckvarandlist.seriVarsToJson': 'convert all variables starting with [START] to json',
-
-  'qxsckvarandlist.openCaseSensitive': '[CASE] case sensitive',
-  'qxsckvarandlist.haveList': 'have list [LIST] ?',
-  'qxsckvarandlist.length': 'length of list [LIST]',
-  'qxsckvarandlist.getList': 'value of list [LIST]',
-  'qxsckvarandlist.newGetList': 'values of list [LIST]',
-  'qxsckvarandlist.getListRange': 'values of from [LEFT] to [RIGHT] in list [LIST]',
-  'qxsckvarandlist.getValueOfList': 'item # [INDEX] of list [LIST]',
-  'qxsckvarandlist.seriListsToJson': 'convert all lists starting with [START] to json',
-  'qxsckvarandlist.clearList': 'delete all of list [LIST]',
-  'qxsckvarandlist.setList': 'set list [LIST] to list [LIST2]',
-  'qxsckvarandlist.setListValue': 'set list [LIST] to [VALUE] [NUM] times',
-  'qxsckvarandlist.deleteOfList': 'delete # [INDEX] of list [LIST]',
-  'qxsckvarandlist.addValueInList': 'add [VALUE] to list [LIST]',
-  'qxsckvarandlist.addListToList': 'add list [LIST2] to list [LIST]',
-  'qxsckvarandlist.insertOfList': 'insert [VALUE] before item # [INDEX] in the list [LIST]',
-  'qxsckvarandlist.insertListToList': 'insert list [LIST2] before item # [INDEX] in list [LIST]',
-  'qxsckvarandlist.replaceOfList': 'replace item [INDEX] of list [LIST] to [VALUE]',
-  'qxsckvarandlist.replaceRangeOfList': 'replace items [LEFT] to [RIGHT] in list [LIST] with [VALUE]',
-  'qxsckvarandlist.getIndexOfList': 'first index of [VALUE] in list [LIST]',
-  'qxsckvarandlist.getIndexesOfList': 'indexes of [VALUE] in list [LIST]',
-  'qxsckvarandlist.newGetIndexesOfList': 'indexes of  [VALUE] in list [LIST]',
-  'qxsckvarandlist.getCountsOfList': 'number of [VALUE] in list [LIST]',
-  'qxsckvarandlist.listContains': 'list [LIST] have [VALUE] ?',
-  'qxsckvarandlist.copyList': 'copy list [LIST1] to list [LIST2]',
-  'qxsckvarandlist.reverseList': 'reverse list [LIST]',
-  'qxsckvarandlist.sortList': 'sort list [LIST] with [CASE]',
-  'qxsckvarandlist.sortListRange': 'sort item [LEFT] to [RIGHT] in list [LIST] with [CASE]',
-  'qxsckvarandlist.mapObject': 'map object [OBJ] to list [LIST], and key to list [LIST2]',
-
-  'qxsckvarandlist.unSupportCompile': '⚠️Compilation not supported',
-
-  'qxsckvarandlist.forEach': '⚠️for each variable [VAR] from [LEFT] to [RIGHT]',
-  'qxsckvarandlist.forEachList': '⚠️for each variable [VAR] in value of from [LEFT] to [RIGHT] in list [LIST]',
-};
-let openCaseSensitive=false;
-
 (function(Scratch) {
   'use strict';
+  const qxsckvarandlistIcon="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI3OS45ODQzOSIgaGVpZ2h0PSI3OS45ODQzOSIgdmlld0JveD0iMCwwLDc5Ljk4NDM5LDc5Ljk4NDM5Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjA5LjU2NDk1LC0xNDcuOTY0OTUpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PGc+PHBhdGggZD0iTTIzNy40NDIwNywxOTkuMzk1NTdjMCwtMTMuMDA4MTMgMTAuNTQ1MTEsLTIzLjU1Mzc3IDIzLjU1MzUsLTIzLjU1Mzc3YzEzLjAwODEzLDAgMjMuNTUzNzcsMTAuNTQ1NjQgMjMuNTUzNzcsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjQsMjMuNTUzNzcgLTIzLjU1Mzc3LDIzLjU1Mzc3Yy0xMy4wMDg0MSwwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9Im5vbmUiIHN0cm9rZS1vcGFjaXR5PSIwLjE1IiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIzNy42NDIwNywxOTkuNTk1NTdjMCwtMTMuMDA4MTMgMTAuNTQ1MTEsLTIzLjU1Mzc3IDIzLjU1MzUsLTIzLjU1Mzc3YzEzLjAwODEzLDAgMjMuNTUzNzcsMTAuNTQ1NjQgMjMuNTUzNzcsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjQsMjMuNTUzNzcgLTIzLjU1Mzc3LDIzLjU1Mzc3Yy0xMy4wMDg0MSwwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9IiNmZjhjMTkiIHN0cm9rZT0iI2RiNmUwMCIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiPjxwYXRoIGQ9Ik0yNjQuMzU1NDMsMjA1LjY0MDgzbC02LjcyNTM5LC0xMS4zOTQ3OCIvPjxwYXRoIGQ9Ik0yNTUuMjY0MjUsMjA1LjA0OTE4bDExLjY1MzksLTEwLjgwMzEzIiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIvPjwvZz48cGF0aCBkPSJNMjcyLjAwNzE5LDE4Ni41NjAwNWMwLDAgNC42NzA1LDUuNDc1NTIgNC42MDIwMSwxMy4xMTQ2OGMtMC4wODIxOCw5LjE2Mjk0IC01LjM3OTkzLDEzLjMyMzk1IC01LjM3OTkzLDEzLjMyMzk1IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTAuODg2NjcsMjEyLjU3OTJjMCwwIC01LjI1MDU2LC00LjYxMTE2IC00Ljc3NTM2LC0xNC4xMzY3OWMwLjM5NjI0LC03Ljk0MTU0IDUuNTg0OTMsLTEzLjM3Nzk1IDUuNTg0OTMsLTEzLjM3Nzk1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9nPjxnPjxwYXRoIGQ9Ik0yMTQuNTY1MjMsMTc2LjUxODcyYzAsLTEzLjAwODEzIDEwLjU0NTEsLTIzLjU1Mzc3IDIzLjU1Mzc3LC0yMy41NTM3N2MxMy4wMDgxMywwIDIzLjU1MzUsMTAuNTQ1NjUgMjMuNTUzNSwyMy41NTM3N2MwLDEzLjAwODEzIC0xMC41NDU2NSwyMy41NTM3OCAtMjMuNTUzNzcsMjMuNTUzNzhjLTEzLjAwODEzLDAgLTIzLjU1Mzc3LC0xMC41NDU2NSAtMjMuNTUzNzcsLTIzLjU1Mzc3eiIgZmlsbD0ibm9uZSIgc3Ryb2tlLW9wYWNpdHk9IjAuMTUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjE0LjU2NTIzLDE3Ni41MTg3MmMwLC0xMy4wMDgxMyAxMC41NDUxLC0yMy41NTM3NyAyMy41NTM3NywtMjMuNTUzNzdjMTMuMDA4MTMsMCAyMy41NTM1LDEwLjU0NTY1IDIzLjU1MzUsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjUsMjMuNTUzNzggLTIzLjU1Mzc3LDIzLjU1Mzc4Yy0xMy4wMDgxMywwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9IiNmZjY2MWEiIHN0cm9rZT0iI2U2NGQwMCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0yNTEuMDA0NDEsMTc2LjMxMzE4aC0xNS4wNzQ2NE0yNTEuMDA0NDEsMTY1LjkxNjk3aC0xNS4wNzQ2NE0yMjUuNzA2ODgsMTY2LjA5MDI5aDAuNjkzMjZNMjI2LjQwMDE1LDE3Ni40ODY1aC0wLjY5MzI2TTIzNS45Mjk3NywxODYuNzA5MzhoMTUuMDc0NjRNMjI2LjQwMDE1LDE4Ni44ODI3aC0wLjY5MzI2IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9nPjxnIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PHBhdGggZD0iTTI1OC4zNTU2NCwxNjkuMzY5MzNoMjQuMjAyMzlNMjcwLjQ1Njg0LDE1Ny4yNjg3djI0LjIwMTg0IiBzdHJva2Utb3BhY2l0eT0iMC4xNSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTI1OC4zNTU2NCwxNjkuMzY5MzNoMjQuMjAyMzlNMjcwLjQ1Njg0LDE1Ny4yNjg3djI0LjIwMTg0IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIvPjwvZz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjozMC40MzUwNTAwMDAwMDAxMDM6MzIuMDM1MDUwMDAwMDAwMDEtLT4=";
+
+  let i10ndefaultValue={
+    'qxsckvarandlist.name': 'variable and list',
+
+    'qxsckvarandlist.open': 'open',
+    'qxsckvarandlist.close': 'close',
+
+    'qxsckvarandlist.asc': 'ascending',
+    'qxsckvarandlist.desc': 'descending',
+    'qxsckvarandlist.dictOrder': 'dictionary order',
+
+    'qxsckvarandlist.haveVar': 'have variable [VAR] ?',
+    'qxsckvarandlist.getVar': 'value of variable [VAR]',
+    'qxsckvarandlist.setVar': 'set variable [VAR] to [VALUE]',
+    'qxsckvarandlist.seriVarsToJson': 'convert all variables starting with [START] to json',
+
+    'qxsckvarandlist.openCaseSensitive': '[CASE] case sensitive',
+    'qxsckvarandlist.haveList': 'have list [LIST] ?',
+    'qxsckvarandlist.length': 'length of list [LIST]',
+    'qxsckvarandlist.getList': 'value of list [LIST]',
+    'qxsckvarandlist.newGetList': 'values of list [LIST]',
+    'qxsckvarandlist.getListRange': 'values of from [LEFT] to [RIGHT] in list [LIST]',
+    'qxsckvarandlist.getValueOfList': 'item # [INDEX] of list [LIST]',
+    'qxsckvarandlist.seriListsToJson': 'convert all lists starting with [START] to json',
+    'qxsckvarandlist.clearList': 'delete all of list [LIST]',
+    'qxsckvarandlist.setList': 'set list [LIST] to list [LIST2]',
+    'qxsckvarandlist.setListValue': 'set list [LIST] to [VALUE] [NUM] times',
+    'qxsckvarandlist.deleteOfList': 'delete # [INDEX] of list [LIST]',
+    'qxsckvarandlist.addValueInList': 'add [VALUE] to list [LIST]',
+    'qxsckvarandlist.addListToList': 'add list [LIST2] to list [LIST]',
+    'qxsckvarandlist.insertOfList': 'insert [VALUE] before item # [INDEX] in the list [LIST]',
+    'qxsckvarandlist.insertListToList': 'insert list [LIST2] before item # [INDEX] in list [LIST]',
+    'qxsckvarandlist.replaceOfList': 'replace item [INDEX] of list [LIST] to [VALUE]',
+    'qxsckvarandlist.replaceRangeOfList': 'replace items [LEFT] to [RIGHT] in list [LIST] with [VALUE]',
+    'qxsckvarandlist.getIndexOfList': 'first index of [VALUE] in list [LIST]',
+    'qxsckvarandlist.getIndexesOfList': 'indexes of [VALUE] in list [LIST]',
+    'qxsckvarandlist.newGetIndexesOfList': 'indexes of  [VALUE] in list [LIST]',
+    'qxsckvarandlist.getCountsOfList': 'number of [VALUE] in list [LIST]',
+    'qxsckvarandlist.listContains': 'list [LIST] have [VALUE] ?',
+    'qxsckvarandlist.copyList': 'copy list [LIST1] to list [LIST2]',
+    'qxsckvarandlist.reverseList': 'reverse list [LIST]',
+    'qxsckvarandlist.sortList': 'sort list [LIST] with [CASE]',
+    'qxsckvarandlist.sortListRange': 'sort item [LEFT] to [RIGHT] in list [LIST] with [CASE]',
+    'qxsckvarandlist.mapObject': 'map object [OBJ] to list [LIST], and key to list [LIST2]',
+
+    'qxsckvarandlist.unSupportCompile': '⚠️Compilation not supported',
+
+    'qxsckvarandlist.forEach': '⚠️for each variable [VAR] from [LEFT] to [RIGHT]',
+    'qxsckvarandlist.forEachList': '⚠️for each variable [VAR] in value of from [LEFT] to [RIGHT] in list [LIST]',
+  };
+  let openCaseSensitive=false;
+
   Scratch.translate.setup({
     en: {
       'qxsckvarandlist.name': 'variable and list',
