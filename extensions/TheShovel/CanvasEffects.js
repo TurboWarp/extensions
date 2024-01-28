@@ -2,6 +2,7 @@
 // ID: theshovelcanvaseffects
 // Description: Apply visual effects to the entire stage.
 // By: TheShovel
+// By: SharkPool
 
 (function (Scratch) {
   "use strict";
@@ -38,7 +39,6 @@
       canvas.style.imageRendering = imageRendering;
     }
 
-    // Made by SharkPool
     const curBor = canvas.style.border.split(" ");
     if (parseInt(curBor[0]) !== borderC[0] || curBor[1] !== borderC[1] || curBor[2] !== borderC[2]) {
       canvas.style.border = Scratch.Cast.toString(`${borderC[0]}px ${borderC[1]} ${borderC[2]}`);
@@ -68,7 +68,6 @@
   let brightness = 100;
   let invert = 0;
   let resizeMode = "default";
-  // Made by SharkPool (Also made Scale XY)
   let borderC = [0, "none", "#ff0000", "#ff0000"];
 
   const resetStyles = () => {
