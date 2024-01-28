@@ -58,7 +58,7 @@
                 menu: "typeObject",
               },
             },
-          }
+          },
         ],
         menus: {
           type: {
