@@ -14,7 +14,7 @@
 
   const updateStyle = () => {
     // Gotta keep the translation to % because of the stage size, window size and so on
-    const transform = `rotate(${rotation}deg) scale(${scale[0]}%, ${scale[1]}%) skew(${skewX}deg, ${skewY}deg) translate(${offsetX}%, ${
+    const transform = `rotate(${rotation}deg) scale(${scaleX}%, ${scaleY}%) skew(${skewX}deg, ${skewY}deg) translate(${offsetX}%, ${
       0 - offsetY
     }%)`;
     if (canvas.style.transform !== transform) {
@@ -57,7 +57,8 @@
   let offsetX = 0;
   let skewY = 0;
   let skewX = 0;
-  let scale = [100, 100];
+  let scaleX = 100;
+  let scaleY = 100;
   // Thanks SharkPool for telling me about these
   let transparency = 0;
   let sepia = 0;
@@ -77,7 +78,8 @@
     offsetX = 0;
     skewY = 0;
     skewX = 0;
-    scale = [100, 100];
+    scaleX = 100;
+    scaleY = 100;
     transparency = 0;
     sepia = 0;
     blur = 0;
@@ -269,9 +271,9 @@
       } else if (EFFECT === "transparency") {
         return transparency;
       } else if (EFFECT === "scale X") {
-        return scale[0];
+        return scaleX;
       } else if (EFFECT === "scale Y") {
-        return scale[1];
+        return scaleY;
       } else if (EFFECT === "skew X") {
         return skewX;
       } else if (EFFECT === "skew Y") {
@@ -306,9 +308,9 @@
       } else if (EFFECT === "transparency") {
         transparency = NUMBER;
       } else if (EFFECT === "scale X") {
-        scale[0] = NUMBER;
+        scaleX = NUMBER;
       } else if (EFFECT === "scale Y") {
-        scale[1] = NUMBER;
+        scaleY = NUMBER;
       } else if (EFFECT === "skew X") {
         skewX = NUMBER;
       } else if (EFFECT === "skew Y") {
@@ -326,7 +328,7 @@
     }
     changeEffect(args) {
       const EFFECT = args.EFFECT;
-      const currentEffect = this.geteffect(args);
+      const currentEffect = Scratch.Cast.toString(this.geteffect(args));
       const NUMBER = Scratch.Cast.toNumber(args.NUMBER) + currentEffect;
       if (EFFECT === "blur") {
         blur = NUMBER;
@@ -345,9 +347,9 @@
       } else if (EFFECT === "transparency") {
         transparency = NUMBER;
       } else if (EFFECT === "scale X") {
-        scale[0] = NUMBER;
+        scaleX = NUMBER;
       } else if (EFFECT === "scale Y") {
-        scale[1] = NUMBER;
+        scaleY = NUMBER;
       } else if (EFFECT === "skew X") {
         skewX = NUMBER;
       } else if (EFFECT === "skew Y") {
