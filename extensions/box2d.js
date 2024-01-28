@@ -12420,28 +12420,51 @@
     fixDef.shape = new b2PolygonShape();
     bodyDef.angle = 0;
 
+    const { stageWidth, stageHeight } = Scratch.vm.runtime;
+    const stageBounds = {
+      left: -stageWidth / 2,
+      right: stageWidth / 2,
+      top: stageHeight / 2,
+      bottom: -stageHeight / 2,
+    };
+
     if (type === STAGE_TYPE_OPTIONS.BOXED) {
-      fixDef.shape.SetAsBox(250 / zoom, 10 / zoom);
-      bodyDef.position.Set(0, -190 / zoom);
+      // For the ceiling boxes...
+      // use a width equivalent to the stage width + 10, with a thickness of 10
+      fixDef.shape.SetAsBox((stageWidth + 10) / zoom, 10 / zoom);
+      // create one such box at the bottom of the stage, accounting for thickness...
+      bodyDef.position.Set(0, (stageBounds.bottom - 10) / zoom);
       createStageBody();
-      bodyDef.position.Set(0, 1000 / zoom);
+      // and one 820 units above the top of the stage.
+      bodyDef.position.Set(0, (stageBounds.top + 820) / zoom);
       createStageBody();
-      fixDef.shape.SetAsBox(10 / zoom, 800 / zoom);
-      bodyDef.position.Set(-250 / zoom, 540 / zoom);
+      // For the left & right wall boxes...
+      // use a height equivalent to the stage height + 820, with a thickness of 10
+      fixDef.shape.SetAsBox(10 / zoom, (stageHeight + 820) / zoom);
+      // create a box at the left of the stage...
+      bodyDef.position.Set((stageBounds.left - 10) / zoom, 0);
       createStageBody();
-      bodyDef.position.Set(250 / zoom, 540 / zoom);
+      // and one at the right of the stage.
+      bodyDef.position.Set((stageBounds.right + 10) / zoom, 0);
       createStageBody();
     } else if (type === STAGE_TYPE_OPTIONS.FLOOR) {
-      fixDef.shape.SetAsBox(5000 / zoom, 100 / zoom);
-      bodyDef.position.Set(0, -280 / zoom);
+      // All floor boxes are positioned at the bottom of the stage, accounting for
+      // the thickness of 100.
+      const floorY = (stageBounds.bottom - 100) / zoom;
+
+      // The floor boxes have a width of the stage width + 4520 units, and a
+      // thickness of 100 units.
+      fixDef.shape.SetAsBox((stageWidth + 4520) / zoom, 100 / zoom);
+      // Floor boxes are created at different intervals throughout the bottom of the stage.
+      bodyDef.position.Set(0, floorY);
       createStageBody();
-      bodyDef.position.Set(-10000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.left - 5000, floorY);
       createStageBody();
-      bodyDef.position.Set(10000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.right + 5000, floorY);
       createStageBody();
-      bodyDef.position.Set(-20000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.left - 15000, floorY);
       createStageBody();
-      bodyDef.position.Set(20000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.right + 15000, floorY);
       createStageBody();
     }
 
