@@ -24,15 +24,21 @@
     }) saturate(${saturation}%) hue-rotate(${color}deg) brightness(${brightness}%) invert(${invert}%) sepia(${sepia}%) opacity(${
       100 - transparency
     }%)`;
-    if (canvas.style.filter !== filter) canvas.style.filter = filter;
+    if (canvas.style.filter !== filter) {
+      canvas.style.filter = filter;
+    }
 
     const cssBorderRadius = borderRadius === 0 ? "" : `${borderRadius}%`;
-    if (canvas.style.borderRadius !== cssBorderRadius) canvas.style.borderRadius = cssBorderRadius;
+    if (canvas.style.borderRadius !== cssBorderRadius) {
+      canvas.style.borderRadius = cssBorderRadius;
+    }
 
     const imageRendering = resizeMode === "pixelated" ? "pixelated" : "";
-    if (canvas.style.imageRendering !== imageRendering) canvas.style.imageRendering = imageRendering;
-    // Made by SharkPool
+    if (canvas.style.imageRendering !== imageRendering) {
+      canvas.style.imageRendering = imageRendering;
+    }
 
+    // Made by SharkPool
     const curBor = canvas.style.border.split(" ");
     if (parseInt(curBor[0]) !== borderC[0] || curBor[1] !== borderC[1] || curBor[2] !== borderC[2]) {
       canvas.style.border = Scratch.Cast.toString(`${borderC[0]}px ${borderC[1]} ${borderC[2]}`);
