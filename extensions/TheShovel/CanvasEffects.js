@@ -75,8 +75,8 @@
   let resizeMode = "default";
   let borderStyle = "solid";
   let borderWidth = 0;
-  let borderColor = '#000000';
-  let backgroundColor = 'transparent';
+  let borderColor = "#000000";
+  let backgroundColor = "transparent";
 
   const resetStyles = () => {
     borderRadius = 0;
@@ -98,8 +98,8 @@
     resizeMode = "default";
     borderStyle = "solid";
     borderWidth = 0;
-    borderColor = '#000000';
-    backgroundColor = 'transparent';
+    borderColor = "#000000";
+    backgroundColor = "transparent";
     updateStyle();
   };
 
@@ -164,19 +164,19 @@
             arguments: {
               STYLE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "borderTypes"
+                menu: "borderTypes",
               },
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 5
+                defaultValue: 5,
               },
               COLOR1: {
                 type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#ff0000"
+                defaultValue: "#ff0000",
               },
               COLOR2: {
                 type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#0000ff"
+                defaultValue: "#0000ff",
               },
             },
           },
@@ -231,7 +231,7 @@
               "ridge",
               "inset",
               "outset",
-              "none"
+              "none",
             ],
           },
         },
@@ -258,12 +258,9 @@
         "offset Y",
         "rotation",
         "border radius",
-        ...(isGetter ? [
-          "border width",
-          "border style",
-          "border color",
-          "background"
-        ] : [])
+        ...(isGetter
+          ? ["border width", "border style", "border color", "background"]
+          : []),
       ];
     }
 
@@ -370,7 +367,7 @@
       const newValue = Scratch.Cast.toNumber(args.NUMBER) + currentEffect;
       this.seteffect({
         EFFECT: args.EFFECT,
-        NUMBER: newValue
+        NUMBER: newValue,
       });
     }
     cleareffects() {
@@ -385,9 +382,15 @@
     }
     setBorder(args) {
       borderWidth = Scratch.Cast.toNumber(args.WIDTH);
-      borderStyle = Scratch.Cast.toString(args.STYLE).replace(/[^a-z]/ig, '');
-      borderColor = Scratch.Cast.toString(args.COLOR1).replace(/[^#0-9a-z]/ig, '');
-      backgroundColor = Scratch.Cast.toString(args.COLOR2).replace(/[^#0-9a-z]/ig, '');
+      borderStyle = Scratch.Cast.toString(args.STYLE).replace(/[^a-z]/gi, "");
+      borderColor = Scratch.Cast.toString(args.COLOR1).replace(
+        /[^#0-9a-z]/gi,
+        ""
+      );
+      backgroundColor = Scratch.Cast.toString(args.COLOR2).replace(
+        /[^#0-9a-z]/gi,
+        ""
+      );
       updateStyle();
     }
   }
