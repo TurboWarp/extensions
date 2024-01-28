@@ -88,7 +88,7 @@
     }
 
     typeOf(args) {
-      return typeof args.INPUT || '';
+      return typeof args.INPUT || "";
     }
 
     isType(args) {
