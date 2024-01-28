@@ -1001,6 +1001,7 @@
                 defaultValue: 100,
               },
             },
+            extensions: ["colours_looks"],
           },
           "---",
           {
