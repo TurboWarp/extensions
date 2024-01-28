@@ -291,7 +291,7 @@
     }
 
     // General gradient pattern
-    if (/^[a-z]+-gradient\([a-z0-9,#%. ]+\)$/i.test(color)) {
+    if (/^[a-z-]+-gradient\([a-z0-9,#%. ]+\)$/i.test(color)) {
       callback(color);
       return;
     }
