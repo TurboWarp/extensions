@@ -26,6 +26,7 @@
 
   let newColorType = "";
   let overlayImageContainer = "";
+  const vm = Scratch.vm;
   const fontMenu = [
     "Scratch", "Sans Serif", "Serif",
     "Handwriting", "Marker", "Curly", "Pixel"
