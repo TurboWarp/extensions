@@ -4,13 +4,15 @@ This extension allows you to automatically save plain text in storage. Forget sa
 
 ## Namespaces
 
-The namespace is basically like the file you want to read and write to. Each project should set this to something unique, such as developer/project title so each project gets its own storage space. If two different projects use the same namespace, they will overwrite eachother's data and cause very bad things!
+The namespace is basically like the file you want to read and write to. When the extension loads, the project is given a random, unique ID which it will save as.
 
-You can set which namespace to use with this block:
+If you'd like to use a custom namespace, you can change it with this block:
 
 ```scratch
 set storage namespace ID to [project title] :: #0FBD8C
 ```
+
+Each project should set this to something unique, such as developer/project title so each project gets its own storage space. If two different projects use the same namespace, they will overwrite eachother's data and cause very bad things!
 
 Some example namespaces:
 
@@ -18,6 +20,12 @@ Some example namespaces:
  - `Untitled-37 by TestMuffin`
 
 The format isn't important -- it just needs to be unique. Don't include a version number like "v1.4" in the namespace unless you want to discard data from old versions of your project.
+
+You can get the current namespace ID by using this block:
+
+```scratch
+get storage namespace ID :: reporter #0FBD8C
+```
 
 ## Reading and writing
 
