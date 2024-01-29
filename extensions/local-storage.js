@@ -120,7 +120,7 @@
           {
             opcode: "getProjectId",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get storage ID", // used "get" to be consistent with "get key"
+            text: "get storage namespace ID", // used "get" to be consistent with "get key"
           },
           "---",
           {
