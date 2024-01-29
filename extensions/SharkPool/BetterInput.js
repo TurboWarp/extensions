@@ -3,7 +3,7 @@
 // Description: Expansion of the "ask and wait" Blocks
 // By: SharkPool
 
-// Version V.3.1.1 (Bug Fixes + Code Optimization)
+// Version V.4.0.0
 
 (function (Scratch) {
   "use strict";
@@ -33,18 +33,14 @@
 
   class BetterInputSP {
     constructor() {
-      this.activeOverlays = [];
-      this.activeUI = [];
-      this.askBoxPromises = [];
-      this.isWaitingForInput = false;
-      this.isDropdownOpen = false;
-      this.userInput = " ";
-      this.defaultValue = "";
-      this.textBoxX = 0;
-      this.textBoxY = 0;
-      this.askBoxInfo = [0, 1];
+      this.activeOverlays = []; this.activeUI = []; this.askBoxPromises = [];
+      this.isWaitingForInput = false; this.isDropdownOpen = false;
+      this.userInput = " "; this.defaultValue = "";
+      this.textBoxX = 0; this.textBoxY = 0;
+      this.askBoxInfo = [0, 1]; this.appendTarget = ["window", false];
       this.forceInput = "Disabled";
       this.overlayInput = null;
+      this.uiOrder = ["question", "input", "buttons"];
 
       this.optionList = ["Option 1", "Option 2", "Option 3"];
       this.sliderInfo = [0, 100, 50];
@@ -56,43 +52,42 @@
       this.fontSize = "14px";
       this.textAlign = "left";
       this.fontFamily = "Sans Serif";
-      this.overlayBorderRadius = [5, 4, 5];
+       // overlay + Image, input, dropdown button 
+      this.mainUIinfo = [
+        5, 4, 5,
+        "1px none #000000", "1px solid #000000", "1px none #000000",
+        "15px", "5px", "5px 10px",
+        "none", "none", "none", ["", 0], ["", 0], ["", 0]
+      ];
+      this.lastPressBtn = "";
       this.buttonJSON = {
         "Submit": {
-          borderRadius: 5,
           color: "#0074D9", textColor: "#ffffff",
-          name: "Submit",
-          image: "", imgScale: 100
+          name: "Submit", image: "", imgScale: 100,
+          borderRadius: 5, border: "1px none #000000",
+          padding: "5px 10px", dropShadow: "none", outline: ["", 0]
         },
         "Cancel": {
-          borderRadius: 5,
           color: "#d9534f", textColor: "#ffffff",
-          name: "Cancel",
-          image: "", imgScale: 100
+          name: "Cancel", image: "", imgScale: 100,
+          borderRadius: 5, border: "1px none #000000",
+          padding: "5px 10px", dropShadow: "none", outline: ["", 0]
         },
       };
 
       this.questionColor = "#000000";
       this.inputColor = "#000000";
       this.textBoxColor = ["#ffffff"];
-      this.inputFieldColor = ["#ffffff", "#000000"];
+      this.inputFieldColor = "#ffffff";
       this.dropdownButtonColor = ["#5f5f5f", "#ffffff"];
       this.overlayImage = [" ", " ", " "];
 
-      this.Blur = 0;
-      this.Brightness = 0;
-      this.Opacity = 100;
-      this.Invert = 0;
-      this.Saturation = 100;
-      this.Hue = 0;
-      this.Sepia = 0;
-      this.Contrast = 100;
-      this.Scale = 100;
-      this.SkewX = 0;
-      this.SkewY = 0;
-      this.Rotation = 90;
+      this.Blur = 0; this.Brightness = 0; this.Opacity = 100;
+      this.Invert = 0; this.Saturation = 100; this.Hue = 0;
+      this.Sepia = 0; this.Contrast = 100; this.Scale = 100; 
+      this.SkewX = 0; this.SkewY = 0; this.Rotation = 90;
       this.imgScale = [100, 100, 100];
-      this.shadowS = [0, 0, 5, 0.3];
+      this.shadowS = [0, 0, 5, "#000000"];
     }
 
     getInfo() {
@@ -100,21 +95,17 @@
         id: "BetterInputSP",
         name: "Better Input",
         color1: "#9400ff",
-        color2: "#7600cc",
-        color3: "#8500e6",
+        color2: "#7800cd",
+        color3: "#6900b3",
         menuIconURI,
         blockIconURI,
         blocks: [
-          { blockType: Scratch.BlockType.LABEL, text: "Text Blocks" },
           {
             opcode: "askAndWait",
             blockType: Scratch.BlockType.COMMAND,
             text: "ask [question] and wait",
             arguments: {
-              question: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "What is your name?",
-              },
+              question: { type: Scratch.ArgumentType.STRING, defaultValue: "What is your name?" }
             },
           },
           {
@@ -122,61 +113,41 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "ask [question] and wait",
             arguments: {
-              question: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "What is your name?",
-              },
+              question: { type: Scratch.ArgumentType.STRING, defaultValue: "What is your name?" }
             },
           },
           {
-            opcode: "getUserInput",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "user input",
+            opcode: "getUserInput", blockType: Scratch.BlockType.REPORTER,
+            text: "user input"
           },
           {
             opcode: "setDefaultV",
             blockType: Scratch.BlockType.COMMAND,
             text: "set default value to [defaultV]",
             arguments: {
-              defaultV: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "My Name Is...",
-              },
+              defaultV: { type: Scratch.ArgumentType.STRING, defaultValue: "My Name Is..." }
             },
           },
           {
-            opcode: "removeAskBoxes",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "remove all ask boxes",
+            opcode: "removeAskBoxes", blockType: Scratch.BlockType.COMMAND,
+            text: "remove all ask boxes"
           },
           { blockType: Scratch.BlockType.LABEL, text: "Formatting" },
           {
-            opcode: "setEnable",
-            blockType: Scratch.BlockType.COMMAND,
-            hideFromPalette: true,
-            text: "set [ENABLE_MENU] to be [ACTION]",
+            opcode: "setEnable", blockType: Scratch.BlockType.COMMAND,
+            hideFromPalette: true, text: "set [ENABLE_MENU] to be [ACTION]",
             arguments: {
-              ENABLE_MENU: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "enableMenu",
-              },
-              ACTION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "inputActionMenu",
-              }
+              ENABLE_MENU: { type: Scratch.ArgumentType.STRING, menu: "enableMenu" },
+              ACTION: { type: Scratch.ArgumentType.STRING, menu: "inputActionMenu" }
             },
           },
           {
-            opcode: "getBoxCount",
-            blockType: Scratch.BlockType.REPORTER,
-            hideFromPalette: true,
-            text: "box count",
+            opcode: "getBoxCount", blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true, text: "box count"
           },
           {
-            opcode: "getMaxCount",
-            blockType: Scratch.BlockType.REPORTER,
-            hideFromPalette: true,
-            text: "box limit",
+            opcode: "getMaxCount", blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true, text: "box limit"
           },
           {
             opcode: "setFontSize",
@@ -184,10 +155,7 @@
             text: "set font size to [SIZE]",
             blockIconURI: formatIcon,
             arguments: {
-              SIZE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 14,
-              },
+              SIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 14 }
             },
           },
           {
@@ -196,10 +164,7 @@
             text: "set alignment to [ALIGNMENT]",
             blockIconURI: formatIcon,
             arguments: {
-              ALIGNMENT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "alignmentMenu",
-              },
+              ALIGNMENT: { type: Scratch.ArgumentType.STRING, menu: "alignmentMenu" }
             },
           },
           {
@@ -208,22 +173,39 @@
             text: "set font to [FONT]",
             blockIconURI: formatIcon,
             arguments: {
-              FONT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "fontMenu",
-              },
+              FONT: { type: Scratch.ArgumentType.STRING, menu: "fontMenu" }
             },
           },
+          {
+            opcode: "setDropShadow",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [ELEMENT] shadow to x [x] y [y] z [z] color [COLOR]",
+            arguments: {
+              ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "textsMenu" },
+              x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              z: { type: Scratch.ArgumentType.NUMBER, defaultValue: 2 },
+              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
+            },
+          },
+          {
+            opcode: "setOutline",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [ELEMENT] outline to [COLOR] thickness [THICK]",
+            arguments: {
+              ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "textsMenu" },
+              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
+              THICK: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+            },
+          },
+          "---",
           {
             opcode: "setInputType",
             blockType: Scratch.BlockType.COMMAND,
             text: "set Input Box to be [ACTION]",
             blockIconURI: formatIcon,
             arguments: {
-              ACTION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "inputActionMenu",
-              },
+              ACTION: { type: Scratch.ArgumentType.STRING, menu: "inputActionMenu" }
             },
           },
           {
@@ -232,10 +214,7 @@
             text: "set dropdown options to array: [DROPDOWN]",
             blockIconURI: formatIcon,
             arguments: {
-              DROPDOWN: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "[\"Option 1\", \"Option 2\", \"Option 3\"]",
-              },
+              DROPDOWN: { type: Scratch.ArgumentType.STRING, defaultValue: "[\"Option 1\", \"Option 2\", \"Option 3\"]" }
             },
           },
           {
@@ -244,42 +223,25 @@
             text: "set slider to min: [MIN] max: [MAX] default: [DEFAULT]",
             blockIconURI: formatIcon,
             arguments: {
-              MIN: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              MAX: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100,
-              },
-              DEFAULT: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 50,
-              },
+              MIN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              MAX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
+              DEFAULT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 }
             },
           },
-          "---",
+          { blockType: Scratch.BlockType.LABEL, text: "Buttons" },
           {
             opcode: "setButton",
             blockType: Scratch.BlockType.COMMAND,
             text: "[BUTTON] button named [NAME]",
             blockIconURI: formatIcon,
             arguments: {
-              BUTTON: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "buttonType",
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Submit",
-              },
+              BUTTON: { type: Scratch.ArgumentType.STRING, menu: "buttonType" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "Submit" }
             },
           },
           {
-            opcode: "deleteAllButtons",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "remove all buttons",
-            blockIconURI: formatIcon
+            opcode: "deleteAllButtons", blockType: Scratch.BlockType.COMMAND,
+            text: "remove all buttons", blockIconURI: formatIcon
           },
           {
             opcode: "setButtonText",
@@ -287,15 +249,13 @@
             text: "set [BUTTON_MENU] button name to [TEXT]",
             blockIconURI: formatIcon,
             arguments: {
-              BUTTON_MENU: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "buttonMenu",
-              },
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "my dropdown",
-              },
+              BUTTON_MENU: { type: Scratch.ArgumentType.STRING, menu: "buttonMenu" },
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "my dropdown" }
             },
+          },
+          {
+            opcode: "lastButton", blockType: Scratch.BlockType.REPORTER,
+            text: "last pressed button", blockIconURI: formatIcon
           },
           { blockType: Scratch.BlockType.LABEL, text: "Positioning" },
           {
@@ -304,14 +264,8 @@
             text: "preset textbox position to x: [X] y: [Y]",
             blockIconURI: formatIcon,
             arguments: {
-              X: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              Y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
+              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
           },
           {
@@ -320,14 +274,8 @@
             text: "set textbox position to x: [X] y: [Y]",
             blockIconURI: formatIcon,
             arguments: {
-              X: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              Y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
+              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
           },
           {
@@ -336,27 +284,17 @@
             text: "change textbox position by x: [X] y: [Y]",
             blockIconURI: formatIcon,
             arguments: {
-              X: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              Y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
+              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
           },
           {
-            opcode: "getXpos",
-            blockType: Scratch.BlockType.REPORTER,
-            blockIconURI: formatIcon,
-            text: "x position",
+            opcode: "getXpos", blockType: Scratch.BlockType.REPORTER,
+            blockIconURI: formatIcon, text: "x position"
           },
           {
-            opcode: "getYpos",
-            blockType: Scratch.BlockType.REPORTER,
-            blockIconURI: formatIcon,
-            text: "y position",
+            opcode: "getYpos", blockType: Scratch.BlockType.REPORTER,
+            blockIconURI: formatIcon, text: "y position"
           },
           {
             opcode: "setDirection",
@@ -364,10 +302,7 @@
             text: "set direction to [ROTATE]",
             blockIconURI: formatIcon,
             arguments: {
-              ROTATE: {
-                type: Scratch.ArgumentType.ANGLE,
-                defaultValue: 90,
-              },
+              ROTATE: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 }
             },
           },
           {
@@ -376,17 +311,12 @@
             text: "change direction by [ROTATE]",
             blockIconURI: formatIcon,
             arguments: {
-              ROTATE: {
-                type: Scratch.ArgumentType.ANGLE,
-                defaultValue: 15,
-              },
+              ROTATE: { type: Scratch.ArgumentType.ANGLE, defaultValue: 15 }
             },
           },
           {
-            opcode: "reportDirection",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "direction",
-            blockIconURI: formatIcon,
+            opcode: "reportDirection", blockType: Scratch.BlockType.REPORTER,
+            text: "direction", blockIconURI: formatIcon
           },
           { blockType: Scratch.BlockType.LABEL, text: "Visual Settings" },
           {
@@ -395,112 +325,28 @@
             text: "set [COLOR_TYPE] color to [COLOR]",
             blockIconURI: colorIcon,
             arguments: {
-              COLOR_TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "colorSettingsMenu",
-              },
-              COLOR: {
-                type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#000000",
-              },
+              COLOR_TYPE: { type: Scratch.ArgumentType.STRING, menu: "colorSettingsMenu" },
+              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#000000" }
             },
           },
           {
-            opcode: "setGradient",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "set [COLOR_TYPE] color to gradient with colors [COLOR1] and [COLOR2] with direction [DIR]",
-            blockIconURI: colorIcon,
+            opcode: "setGradient", blockType: Scratch.BlockType.COMMAND,
+            text: "set [COLOR_TYPE] color to gradient with [COLOR1] and [COLOR2] with direction [DIR]",
+            hideFromPalette: true, //deprecated but needed for support
             arguments: {
-              COLOR_TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "elementMenu",
-              },
-              COLOR1: {
-                type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#ffffff",
-              },
-              COLOR2: {
-                type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#ff0000",
-              },
-              DIR: {
-                type: Scratch.ArgumentType.ANGLE,
-                defaultValue: 90,
-              },
+              COLOR_TYPE: { type: Scratch.ArgumentType.STRING, menu: "elementMenu" },
+              COLOR1: { type: Scratch.ArgumentType.COLOR }, COLOR2: { type: Scratch.ArgumentType.COLOR },
+              DIR: { type: Scratch.ArgumentType.ANGLE }
             },
           },
           {
-            opcode: "setCircleGradient",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "set [COLOR_TYPE] color to radial gradient with colors [COLOR1] and [COLOR2] with position x [X] y [Y]",
-            blockIconURI: colorIcon,
+            opcode: "setCircleGradient", blockType: Scratch.BlockType.COMMAND,
+            text: "set [COLOR_TYPE] color to radial gradient with [COLOR1] and [COLOR2] at x [X] y [Y]",
+            hideFromPalette: true, //deprecated but needed for support
             arguments: {
-              COLOR_TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "elementMenu",
-              },
-              COLOR1: {
-                type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#ffffff",
-              },
-              COLOR2: {
-                type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#ff0000",
-              },
-              X: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              Y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-            },
-          },
-          "---",
-          {
-            opcode: "enableShadow",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "set box shadow to be [ACTION]",
-            blockIconURI: colorIcon,
-            arguments: {
-              ACTION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "buttonActionMenu",
-              },
-            },
-          },
-          {
-            opcode: "setShadow",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "set box shadow [SHADOW] to [AMT]",
-            blockIconURI: colorIcon,
-            arguments: {
-              SHADOW: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "shadowStuff",
-              },
-              AMT: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 5,
-              },
-            },
-          },
-          "---",
-          {
-            opcode: "setBorderRadius",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "set [ELEMENT] border radius to [VALUE]",
-            blockIconURI: colorIcon,
-            arguments: {
-              ELEMENT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "elementMenu",
-              },
-              VALUE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 5,
-              },
+              COLOR_TYPE: { type: Scratch.ArgumentType.STRING, menu: "elementMenu" },
+              COLOR1: { type: Scratch.ArgumentType.COLOR }, COLOR2: { type: Scratch.ArgumentType.COLOR },
+              X: { type: Scratch.ArgumentType.NUMBER }, Y: { type: Scratch.ArgumentType.NUMBER }
             },
           },
           "---",
@@ -510,14 +356,8 @@
             text: "set [ELEMENT] image to [IMAGE]",
             blockIconURI: colorIcon,
             arguments: {
-              ELEMENT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "elementMenu",
-              },
-              IMAGE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "input-url-or-uri-here",
-              },
+              ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "elementMenu" },
+              IMAGE: { type: Scratch.ArgumentType.STRING, defaultValue: "input-url-here" }
             },
           },
           {
@@ -526,14 +366,64 @@
             text: "scale [ELEMENT] image to [SCALE]%",
             blockIconURI: colorIcon,
             arguments: {
-              ELEMENT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "elementMenu",
-              },
-              SCALE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100,
-              },
+              ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "elementMenu" },
+              SCALE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
+            },
+          },
+          "---",
+          {
+            opcode: "enableShadow",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set box shadow to be [ACTION]",
+            blockIconURI: colorIcon,
+            arguments: {
+              ACTION: { type: Scratch.ArgumentType.STRING, menu: "buttonActionMenu" }
+            },
+          },
+          {
+            opcode: "setShadow",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set box shadow [SHADOW] to [AMT]",
+            blockIconURI: colorIcon,
+            arguments: {
+              SHADOW: { type: Scratch.ArgumentType.STRING, menu: "shadowStuff" },
+              AMT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+            },
+          },
+          "---",
+          {
+            opcode: "setBorder",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [ELEMENT] border to [TYPE] color [COLOR] width [WIDTH]",
+            blockIconURI: colorIcon,
+            arguments: {
+              ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "elementMenu" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "borderTypes" },
+              COLOR: { type: Scratch.ArgumentType.COLOR },
+              WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+            },
+          },
+          {
+            opcode: "setBorderRadius",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [ELEMENT] border radius to [VALUE]",
+            blockIconURI: colorIcon,
+            arguments: {
+              ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "elementMenu" },
+              VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+            },
+          },
+          {
+            opcode: "setPadding",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [ELEMENT] padding to T: [N1] B: [N3] L: [N4] R: [N2]",
+            blockIconURI: colorIcon,
+            arguments: {
+              ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "elementMenu" },
+              N1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              N2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              N3: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              N4: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Effects" },
@@ -541,7 +431,7 @@
             opcode: "resetEffect",
             blockType: Scratch.BlockType.COMMAND,
             text: "reset effects",
-            blockIconURI: effectIcon,
+            blockIconURI: effectIcon
           },
           {
             opcode: "setEffect",
@@ -549,14 +439,8 @@
             text: "set effect [EFFECT] to [AMT]",
             blockIconURI: effectIcon,
             arguments: {
-              EFFECT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "effectMenu",
-              },
-              AMT: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 5,
-              },
+              EFFECT: { type: Scratch.ArgumentType.STRING, menu: "effectMenu" },
+              AMT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
             },
           },
           {
@@ -565,14 +449,8 @@
             text: "change effect [EFFECT] by [AMT]",
             blockIconURI: effectIcon,
             arguments: {
-              EFFECT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "effectMenu",
-              },
-              AMT: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 5,
-              },
+              EFFECT: { type: Scratch.ArgumentType.STRING, menu: "effectMenu" },
+              AMT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
             },
           },
           {
@@ -581,10 +459,7 @@
             text: "effect [EFFECT]",
             blockIconURI: effectIcon,
             arguments: {
-              EFFECT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "effectMenu",
-              },
+              EFFECT: { type: Scratch.ArgumentType.STRING, menu: "effectMenu" }
             },
           },
           "---",
@@ -594,38 +469,63 @@
             text: "when submitted delete textbox after [TIME] secs",
             blockIconURI: effectIcon,
             arguments: {
-              TIME: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 5,
-              },
+              TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
             },
           },
           {
             opcode: "reportTimeout",
             blockType: Scratch.BlockType.REPORTER,
             text: "current textbox timeout",
-            blockIconURI: effectIcon,
+            blockIconURI: effectIcon
           },
           { blockType: Scratch.BlockType.LABEL, text: "Operations" },
           {
+            opcode: "setUI",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set UI order to [ARRAY]",
+            arguments: {
+              ARRAY: { type: Scratch.ArgumentType.STRING, defaultValue: "[\"question\", \"input\", \"buttons\"]" }
+            },
+          },
+          {
+            opcode: "getUIOrder",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "UI order"
+          },
+          "---",
+          {
+            opcode: "setAppend",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "append next textbox to [TARGET]",
+            arguments: {
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "appendMenu" }
+            },
+          },
+          {
+            opcode: "setFocus",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "toggle focus mode to [TYPE]",
+            arguments: {
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "buttonActionMenu" }
+            },
+          },
+          "---",
+          {
             opcode: "isWaitingInput",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is waiting?",
+            text: "is waiting?"
           },
           {
             opcode: "isDropdown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is dropdown open?",
+            text: "is dropdown open?"
           },
           {
             opcode: "setSubmitEvent",
             blockType: Scratch.BlockType.COMMAND,
             text: "set force input to [ENTER]",
             arguments: {
-              ENTER: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "enterMenu",
-              },
+              ENTER: { type: Scratch.ArgumentType.STRING, menu: "enterMenu" }
             },
           },
           {
@@ -633,10 +533,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set max box count to: [MAX]",
             arguments: {
-              MAX: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
-              },
+              MAX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
             },
           },
           {
@@ -644,43 +541,47 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "textbox [INFO]",
             arguments: {
-              INFO: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "boxInfo",
-              },
+              INFO: { type: Scratch.ArgumentType.STRING, menu: "boxInfo" }
             },
           },
         ],
         menus: {
-          enableMenu: {
+          enableMenu: { acceptReporters: true, items: ["Button 2", "Button 3", "Button 4", "Textbox Shadow"] },
+          // ^ Old Menu ^ (Needed for V2 Support)
+          fontMenu: { acceptReporters: true, items: "allFonts" },
+          buttonMenu: {
             acceptReporters: true,
-            items: ["Button 2", "Button 3", "Button 4", "Textbox Shadow"],
+            items: this.allButtons(["Dropdown"], false),
           },
-          alignmentMenu: {
+          elementMenu: {
             acceptReporters: true,
-            items: ["left", "right", "center"],
+            items: this.allButtons(["Textbox", "Input Box", "Dropdown Button"], false),
           },
+          colorSettingsMenu: {
+            acceptReporters: true,
+            items: this.allButtons([
+              "Textbox", "Question Text", "Textbox Shadow",
+              "Input Text", "Input Box",
+              "Dropdown Button", "Dropdown Text"
+            ], true),
+          },
+          textsMenu: {
+            acceptReporters: true,
+            items: this.allButtons(["Question Text", "Input Text", "Dropdown Text"], true, true),
+          },
+          appendMenu: ["window", "canvas"],
+          buttonType: { acceptReporters: true, items: ["add", "remove"] },
+          buttonActionMenu: { acceptReporters: true, items: ["Enabled", "Disabled"] },
+          alignmentMenu: { acceptReporters: true, items: ["left", "right", "center"] },
+          shadowStuff: { acceptReporters: true, items: ["Size", "X", "Y"] },
           boxInfo: {
             acceptReporters: true,
             items: ["count", "limit", "button count", "button names"],
           },
-          buttonType: {
-            acceptReporters: true,
-            items: ["add", "remove"],
-          },
-          fontMenu: {
-            acceptReporters: true,
-            items: "allFonts",
-          },
-          buttonActionMenu: {
-            acceptReporters: true,
-            items: ["Enabled", "Disabled"],
-          },
           inputActionMenu: {
             acceptReporters: true,
             items: [
-              "Text", "Number",
-              "None", "Color",
+              "None", "Text", "Password", "Number", "Color",
               "Dropdown", "Multi-Select Dropdown",
               "Horizontal Slider", "Vertical Slider"
             ],
@@ -688,42 +589,23 @@
           effectMenu: {
             acceptReporters: true,
             items: [
-              "Blur", "Brightness",
-              "Opacity", "Invert", "Saturation",
-              "Hue", "Sepia", "Contrast",
+              "Blur", "Brightness", "Opacity",
+              "Invert", "Saturation", "Hue",
+              "Sepia", "Contrast",
               "Scale", "SkewX", "SkewY",
             ],
-          },
-          shadowStuff: {
-            acceptReporters: true,
-            items: ["Size", "X", "Y", "Opacity"],
-          },
-          buttonMenu: {
-            acceptReporters: true,
-            items: this.allButtons([
-              "Dropdown"
-            ], false),
-          },
-          elementMenu: {
-            acceptReporters: true,
-            items: this.allButtons([
-              "Textbox",
-              "Input Box",
-              "Dropdown Button",
-            ], false),
-          },
-          colorSettingsMenu: {
-            acceptReporters: true,
-            items: this.allButtons([
-              "Textbox", "Question Text",
-              "Input Text", "Input Box", "Input Outline",
-              "Dropdown Button", "Dropdown Text",
-            ], true),
           },
           enterMenu: {
             acceptReporters: true,
             items: ["Disabled", "Enter Key", "Shift + Enter Key"],
           },
+          borderTypes: {
+            acceptReporters: true,
+            items: [
+              "none", "solid", "dotted", "dashed",
+              "double", "groove", "ridge", "inset", "outset"
+            ],
+          }
         },
       };
     }
@@ -737,87 +619,94 @@
       return [ ...fontMenu, ...customFonts ];
     }
 
-    allButtons(array, enableTxt) {
-      const customBtn = Object.keys(this.buttonJSON);
-      if (enableTxt) customBtn.forEach((btn) => { customBtn.push(btn + " Text") });
+    allButtons(array, enableTxt, justTxt) {
+      let customBtn = Object.keys(this.buttonJSON);
+      if (justTxt) customBtn = customBtn.map(btn => btn + " Text");
+      else if (enableTxt) customBtn.forEach((btn) => { customBtn.push(btn + " Text") });
       return [ ...array, ...customBtn ];
     }
 
     updateOverlayPos(overlay) {
-      if (this.Rotation > 359) {
-        this.Rotation = 0;
-      } else if (this.Rotation < 1) { this.Rotation = 360 }
+      if (this.Rotation > 359) this.Rotation = 0;
+      else if (this.Rotation < 1) this.Rotation = 360;
       if (this.textBoxX !== null && this.textBoxY !== null) {
-        overlay.style.left = `${50 + this.textBoxX}%`;
-        overlay.style.top = `${50 + this.textBoxY}%`;
+        if (this.appendTarget[0] === "window") {
+          overlay.style.left = `${50 + this.textBoxX}%`;
+          overlay.style.top = `${50 + this.textBoxY}%`;
+        }
         overlay.style.transform = `
-          translate(-50%, -50%)
-          SkewX(${this.SkewX}deg)
-          SkewY(${this.SkewY}deg)
-          rotate(${this.Rotation - 90}deg)
-          scale(${this.Scale / 100})
+          translate${this.appendTarget[0] === "window" ? "(-50%, -50%)" : `(${-50 + this.textBoxX}%, ${-50 + this.textBoxY}%)` }
+          SkewX(${this.SkewX}deg) SkewY(${this.SkewY}deg)
+          rotate(${this.Rotation - 90}deg) scale(${this.Scale / 100})
         `;
       } else {
         overlay.style.left = "50%";
         overlay.style.top = "50%";
       }
     }
-
     updateOverlay(overlay) {
       const newOpacity =  this.Opacity / 100;
       const newBrightness = this.Brightness + 100;
       overlay.style.backgroundImage = "";
       overlay.style[this.textBoxColor[0].includes("gradient") ? "backgroundImage" : "backgroundColor"] = this.textBoxColor[0];
-      overlay.style.boxShadow = this.shadowEnabled ? `${this.shadowS[0]}px ${this.shadowS[1]}px ${this.shadowS[2]}px rgba(0, 0, 0, ${this.shadowS[3]})` : "none";
-
+      overlay.style.boxShadow = this.shadowEnabled ? `${this.shadowS[0]}px ${this.shadowS[1]}px ${this.shadowS[2]}px ${this.shadowS[3]}` : "none";
       overlay.style.transform = `
-        translate(-50%, -50%)
-        SkewX(${this.SkewX}deg)
-        SkewY(${this.SkewY}deg)
-        rotate(${this.Rotation - 90}deg)
-        scale(${this.Scale / 100})
+        translate${this.appendTarget[0] === "window" ? "(-50%, -50%)" : `(${-50 + this.textBoxX}%, ${-50 + this.textBoxY}%)` }
+        SkewX(${this.SkewX}deg) SkewY(${this.SkewY}deg)
+        rotate(${this.Rotation - 90}deg) scale(${this.Scale / 100})
       `;
       overlay.style.filter = `
-        blur(${this.Blur}px)
-        brightness(${newBrightness}%)
-        invert(${this.Invert}%)
-        saturate(${this.Saturation}%)
-        hue-rotate(${this.Hue}deg)
-        sepia(${this.Sepia}%)
+        blur(${this.Blur}px) brightness(${newBrightness}%)
+        invert(${this.Invert}%) saturate(${this.Saturation}%)
+        hue-rotate(${this.Hue}deg) sepia(${this.Sepia}%)
         contrast(${this.Contrast}%)
       `;
       overlay.style.opacity = newOpacity;
+      overlay.style.border = this.mainUIinfo[3];
+      overlay.style.padding = this.mainUIinfo[6];
       overlay.style.fontFamily = this.fontFamily;
       overlay.style.textAlign = this.textAlign;
-      overlay.style.borderRadius = this.overlayBorderRadius[0] + "px";
-      overlayImageContainer.style.borderRadius = this.overlayBorderRadius[0] + "px";
+      overlay.style.borderRadius = `${this.mainUIinfo[0]}px`;
+      overlayImageContainer.style.borderRadius = `${this.mainUIinfo[0]}px`;
       overlayImageContainer.style.background = "";
       this.setImageStyles(overlayImageContainer, this.overlayImage[0], this.imgScale[0]);
       this.updateButtonImages(overlay);
     }
-
     updateButtonImages(overlay) {
       let text = overlay.querySelector(".question");
-      if (text) text.style.color = this.questionColor;
+      if (text) {
+        text.style.color = this.questionColor;
+        text.style.textShadow = this.mainUIinfo[9];
+        this.tryOutline(text, this.mainUIinfo[12][0], this.mainUIinfo[12][1]);
+      }
       const inputField = overlay.querySelector("input");
       if (inputField) {
+        inputField.style.width = this.isInputEnabled === "Color" ? "100%" : "auto";
         inputField.style.background = "";
-        inputField.style[this.inputFieldColor[0].includes("gradient") ? "backgroundImage" : "backgroundColor"] = this.inputFieldColor[0];
+        inputField.style.fontFamily = this.fontFamily;
+        inputField.style[this.inputFieldColor.includes("gradient") ? "backgroundImage" : "backgroundColor"] = this.inputFieldColor;
         inputField.style.color = this.inputColor;
-        inputField.style.border = `1px solid ${this.inputFieldColor[1]}`;
-        inputField.style.borderRadius = this.overlayBorderRadius[1] + "px";
+        inputField.style.textShadow = this.mainUIinfo[10];
+        this.tryOutline(inputField, this.mainUIinfo[13][0], this.mainUIinfo[13][1]);
+        inputField.style.border = this.mainUIinfo[4];
+        inputField.style.borderRadius = `${this.mainUIinfo[1]}px`;
+        inputField.style.padding = this.mainUIinfo[7];
         this.setImageStyles(inputField, this.overlayImage[1], this.imgScale[1]);
       }
 
-      const dropdownButton = overlay.querySelector("button.dropbtn");
-      if (dropdownButton) {
-        dropdownButton.style.backgroundImage = "";
-        dropdownButton.style.color = this.dropdownButtonColor[1];
-        dropdownButton.style.borderRadius = this.overlayBorderRadius[2] + "px";
-        dropdownButton.style[this.dropdownButtonColor[0].includes("gradient") ? "backgroundImage" : "backgroundColor"] = this.dropdownButtonColor[0];
-        this.setImageStyles(dropdownButton, this.overlayImage[2], this.imgScale[2]);
+      const dropBtn = overlay.querySelector("button.dropbtn");
+      if (dropBtn) {
+        dropBtn.style.backgroundImage = "";
+        dropBtn.style.fontFamily = this.fontFamily;
+        dropBtn.style.color = this.dropdownButtonColor[1];
+        dropBtn.style.borderRadius = `${this.mainUIinfo[2]}px`;
+        dropBtn.style.border = this.mainUIinfo[5];
+        dropBtn.style.padding = this.mainUIinfo[8];
+        dropBtn.style.textShadow = this.mainUIinfo[11];
+        this.tryOutline(dropBtn, this.mainUIinfo[14][0], this.mainUIinfo[14][1]);
+        dropBtn.style[this.dropdownButtonColor[0].includes("gradient") ? "backgroundImage" : "backgroundColor"] = this.dropdownButtonColor[0];
+        this.setImageStyles(dropBtn, this.overlayImage[2], this.imgScale[2]);
       }
-
       const buttonContainer = overlay.querySelector(".button-container");
       if (buttonContainer) {
         const buttons = buttonContainer.querySelectorAll("button");
@@ -826,7 +715,12 @@
           const buttonInfo = this.buttonJSON[buttonName];
           if (buttonInfo) {
             button.style.color = buttonInfo.textColor;
-            button.style.borderRadius = buttonInfo.borderRadius + "px";
+            button.style.fontFamily = this.fontFamily;
+            button.style.borderRadius = `${buttonInfo.borderRadius}px`;
+            button.style.border = buttonInfo.border;
+            button.style.padding = buttonInfo.padding;
+            button.style.textShadow = buttonInfo.dropShadow;
+            this.tryOutline(button, buttonInfo.outline[0], buttonInfo.outline[1]);
             button.style.background = "";
             button.style[buttonInfo.color.includes("gradient") ? "backgroundImage" : "background"] = buttonInfo.color;
             this.setImageStyles(button, buttonInfo.image, buttonInfo.imgScale);
@@ -834,13 +728,22 @@
         });
       }
     }
+    tryOutline(element, color, thick) {
+      element.style.webkitTextStrokeColor = color;
+      element.style.webkitTextStrokeWidth = `${thick}px`;
+      //multi-platform support cuz we cant have nice things
+      element.style.textStrokeColor = color;
+      element.style.textStrokeWidth = `${thick}px`;
+      element.style.mozTextStrokeColor = color;
+      element.style.mozTextStrokeWidth = `${thick}px`;
+    }
 
     setImageStyles(element, url, scale) {
       if (Scratch.Cast.toString(url).length > 5) {
         Scratch.canFetch(encodeURI(url)).then((canFetch) => {
           if (canFetch) {
             element.style.background = `url(${encodeURI(url)})`;
-            element.style.backgroundSize = scale + "%";
+            element.style.backgroundSize = `${scale}%`;
           } else { console.log("Cannot fetch content from the URL") }
         });
       }
@@ -860,17 +763,9 @@
     }
 
     resetEffect() {
-      this.Blur = 0;
-      this.Brightness = 0;
-      this.Opacity = 100;
-      this.Invert = 0;
-      this.Saturation = 100;
-      this.Hue = 0;
-      this.Sepia = 0;
-      this.Contrast = 100;
-      this.Scale = 100;
-      this.SkewX = 0;
-      this.SkewY = 0;
+      this.Blur = 0; this.Brightness = 0; this.Opacity = 100; this.Invert = 0;
+      this.Saturation = 100; this.Hue = 0; this.Sepia = 0; this.Contrast = 100;
+      this.Scale = 100; this.SkewX = 0; this.SkewY = 0;
       this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
@@ -881,8 +776,8 @@
         "Question Text": () => this.questionColor = colorValue,
         "Input Text": () => this.inputColor = colorValue,
         "Textbox": () => { this.textBoxColor[0] = colorValue; this.overlayImage[0] = " "; },
-        "Input Box": () => { this.inputFieldColor[0] = colorValue; this.overlayImage[1] = " "; },
-        "Input Outline": () => this.inputFieldColor[1] = colorValue,
+        "Textbox Shadow": () => { this.shadowS[3] = colorValue },
+        "Input Box": () => { this.inputFieldColor = colorValue; this.overlayImage[1] = " "; },
         "Dropdown Button": () => { this.dropdownButtonColor[0] = colorValue; this.overlayImage[2] = " "; },
         "Dropdown Text": () => this.dropdownButtonColor[1] = colorValue,
       };
@@ -903,7 +798,6 @@
     findGradientType(menu) {
       const colorTypeMap = {
         Textbox: { newColorType: "textBoxColor", ind: 0 },
-        "Input Box": { newColorType: "inputFieldColor", ind: 1 },
         "Dropdown Button": { newColorType: "dropdownButtonColor", ind: 2 }
       };
       if (colorTypeMap[menu]) {
@@ -915,72 +809,97 @@
     }
 
     setGradient(args) {
+      if (args.COLOR_TYPE === "Input Box") throw new Error ("As of Better Input V4, this Option no Longer Works");
       const newColorType = this.findGradientType(args.COLOR_TYPE);
       const gradientColor = `linear-gradient(${args.DIR - 90}deg, ${args.COLOR2}, ${args.COLOR1})`;
-      if (newColorType[0] !== "button") {
-        this[newColorType][0] = gradientColor;
-      } else {
-        const buttonInfo = this.buttonJSON[newColorType[1]];
-        buttonInfo.color = gradientColor;
-      }
+      if (newColorType[0] !== "button") this[newColorType][0] = gradientColor;
+      else this.buttonJSON[newColorType[1]].color = gradientColor;
       this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
-
     setCircleGradient(args) {
       const newColorType = this.findGradientType(args.COLOR_TYPE);
       const newPos = [args.X + 50, args.Y + 50];
       const gradientColor = `radial-gradient(circle at ${newPos[0]}% ${newPos[1]}%, ${args.COLOR2}, ${args.COLOR1})`;
-      if (newColorType[0] !== "button") {
-        this[newColorType][0] = gradientColor;
-      } else {
-        const buttonInfo = this.buttonJSON[newColorType[1]];
-        buttonInfo.color = gradientColor;
-      }
+      if (newColorType[0] !== "button") this[newColorType][0] = gradientColor;
+      else this.buttonJSON[newColorType[1]].color = gradientColor;
       this.activeOverlays.forEach((overlay) => { this.updateOverlay(overlay) });
     }
 
-    setBorderRadius(args) {
-      const element = args.ELEMENT;
-      let value = Math.max(args.VALUE, 0);
-      const elementMap = { Textbox: 0, "Input Box": 1, "Dropdown Button": 2 };
-      const elementIndex = elementMap[element];
-      if (elementIndex !== undefined) {
-        this.overlayBorderRadius[elementIndex] = value;
-      } else if (this.buttonJSON[element]) {
-        this.buttonJSON[element].borderRadius = value;
-      }
+    callStyling(element, value, type, elements) {
+      const elementIndex = elements[element];
+      if (elementIndex !== undefined) this.mainUIinfo[elementIndex] = value;
+      else if (this.buttonJSON[element]) this.buttonJSON[element][type] = value;
       this.activeOverlays.forEach(overlay => this.updateOverlay(overlay));
     }
 
+    setBorder(args) {
+      const width = Scratch.Cast.toNumber(args.WIDTH);
+      const string = `${width}px ${args.TYPE} ${args.COLOR}`;
+      this.callStyling(
+        args.ELEMENT, string, "border",
+        { Textbox: 3, "Input Box": 4, "Dropdown Button": 5 }
+      );
+    }
+
+    setBorderRadius(args) {
+      this.callStyling(
+        args.ELEMENT, Math.max(args.VALUE, 0), "borderRadius",
+        { Textbox: 0, "Input Box": 1, "Dropdown Button": 2 }
+      );
+    }
+
+    setPadding(args) {
+      const casted = [
+        Scratch.Cast.toNumber(args.N1), Scratch.Cast.toNumber(args.N2),
+        Scratch.Cast.toNumber(args.N3), Scratch.Cast.toNumber(args.N4)
+      ];
+      let pad = `${casted[0]}px ${casted[1]}px ${casted[2]}px ${casted[3]}px`;
+      this.callStyling(
+        args.ELEMENT, pad, "padding",
+        { Textbox: 6, "Input Box": 7, "Dropdown Button": 8 }
+      );
+    }
+
+    setDropShadow(args) {
+      const casted = [
+        Scratch.Cast.toNumber(args.x), Scratch.Cast.toNumber(args.y),
+        Scratch.Cast.toNumber(args.z),
+      ];
+      let shadow = args.z === 0 ? "none" : `${casted[0]}px ${casted[1] * -1}px ${casted[2]}px ${args.COLOR}`;
+      this.callStyling(
+        args.ELEMENT.slice(0, -5), shadow, "dropShadow",
+        { "Question": 9, "Input": 10, "Dropdown": 11 }
+      );
+    }
+
+    setOutline(args) {
+      const thick = Scratch.Cast.toNumber(args.THICK);
+      this.callStyling(
+        args.ELEMENT.slice(0, -5), [args.COLOR, thick], "outline",
+        { "Question": 12, "Input": 13, "Dropdown": 14 }
+      );
+    }
+
     setShadow(args) {
-      const shadowMap = { Size: 2, X: 0, Y: 1, Opacity: 3 };
+      const shadowMap = { Size: 2, X: 0, Y: 1 };
       const propertyIndex = shadowMap[args.SHADOW];
-      if (propertyIndex !== undefined) {
-        this.shadowS[propertyIndex] = args.AMT;
-        if (args.SHADOW === "Opacity") this.shadowS[propertyIndex] /= 100;
-      }
+      if (propertyIndex !== undefined) this.shadowS[propertyIndex] = args.AMT;
       this.activeOverlays.forEach(overlay => this.updateOverlay(overlay));
     }
 
     setImage(args) {
       const elementMap = { Textbox: 0, "Input Box": 1, "Dropdown Button": 2 };
       const elementIndex = elementMap[args.ELEMENT];
-      if (elementIndex !== undefined) {
-        this.overlayImage[elementIndex] = args.IMAGE;
-      } else if (this.buttonJSON[args.ELEMENT]) {
-        this.buttonJSON[args.ELEMENT].image = args.IMAGE;
-      }
+      if (elementIndex !== undefined) this.overlayImage[elementIndex] = args.IMAGE;
+      else if (this.buttonJSON[args.ELEMENT]) this.buttonJSON[args.ELEMENT].image = args.IMAGE;
       this.activeOverlays.forEach(overlay => this.updateOverlay(overlay));
     }
 
     scaleImage(args) {
       const elementMap = { Textbox: 0, "Input Box": 1, "Dropdown Button": 2 };
       const elementIndex = elementMap[args.ELEMENT];
-      if (elementIndex !== undefined) {
-        this.imgScale[elementIndex] = args.SCALE;
-      } else if (this.buttonJSON[args.ELEMENT]) {
-        this.buttonJSON[args.ELEMENT].imgScale = args.SCALE;
-      }
+      if (elementIndex !== undefined) this.imgScale[elementIndex] = args.SCALE;
+      else if (this.buttonJSON[args.ELEMENT]) this.buttonJSON[args.ELEMENT].imgScale = args.SCALE;
       this.activeOverlays.forEach(overlay => this.updateOverlay(overlay));
     }
 
@@ -1014,7 +933,6 @@
     }
 
     getXpos() { return this.textBoxX * (screen.width / 400) }
-
     getYpos() { return this.textBoxY * (screen.height / -300) }
 
     setFontSize(args) { this.fontSize = args.SIZE + "px" }
@@ -1045,8 +963,7 @@
       if (buttonMenu === "Dropdown") {
         this.DropdownText = text;
       } else if (this.buttonJSON[buttonMenu]) {
-        const buttonInfo = this.buttonJSON[buttonMenu];
-        buttonInfo.name = text;
+        this.buttonJSON[buttonMenu].name = text;
         Scratch.vm.extensionManager.refreshBlocks();
       }
     }
@@ -1060,8 +977,12 @@
     removeAskBoxes() {
       const overlaysToRemove = [];
       this.activeOverlays.forEach((overlay) => {
-        if (overlay && overlay.parentNode) {
-          overlay.parentNode.removeChild(overlay);
+        if (overlay) {
+          if (this.appendTarget[0] === "window" && overlay.parentNode) {
+            overlay.parentNode.removeChild(overlay);
+          } else if (overlay.parentNode.parentNode !== document.documentElement) {
+            overlay.parentNode.parentNode.removeChild(overlay.parentNode);
+          }
           overlaysToRemove.push(overlay);
         }
         if (this.askBoxPromises) {
@@ -1073,6 +994,9 @@
       this.activeOverlays = this.activeOverlays.filter((overlay) => !overlaysToRemove.includes(overlay));
       this.activeUI = [];
       this.askBoxInfo[0] = 0;
+      // Remove "Bugged" Boxes, bugged boxes is a intentional feature, ask for more info
+      const bugged = document.querySelectorAll(`[class^="SP-ask-box"]`);
+      bugged.forEach((box) => { box.parentNode.removeChild(box) });
     }
 
     askAndWaitForInput(args) {
@@ -1085,23 +1009,31 @@
       if (this.askBoxInfo[0] < this.askBoxInfo[1]) {
         const question = args.question;
         this.isWaitingForInput = true;
+        this.lastPressBtn = "";
         this.askBoxInfo[0]++;
         let selectedOptions = [];
         return new Promise((resolve) => {
           const askBoxPromise = { resolve };
           this.askBoxPromises.push(askBoxPromise);
           const overlay = document.createElement("div");
-          overlay.classList.add("ask-box");
+          overlay.classList.add("SP-ask-box");
+          overlay.style.pointerEvents = "auto";
           overlay.style.position = "fixed";
           overlay.style.zIndex = "9999";
-          overlay.style.padding = "15px";
           overlay.style.fontSize = this.fontSize;
-          overlay.style.left = `${50 + this.textBoxX}%`;
-          overlay.style.top = `${50 + this.textBoxY}%`;
+          overlay.style.left = this.appendTarget[0] === "window" ? `${50 + this.textBoxX}%` : "0%";
+          overlay.style.top = this.appendTarget[0] === "window" ? `${50 + this.textBoxY}%` : "0%";
+
+          const focusBG = document.createElement("div");
+          focusBG.style.cssText = "pointer-events: auto; position: fixed; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9998;";
+          focusBG.className = "SP-ask-boxBG";
+          focusBG.id = this.appendTarget[0];
+          focusBG.style.left = this.appendTarget[0] === "window" ? "0%" : "-50%";
+          focusBG.style.top = this.appendTarget[0] === "window" ? "0%" : "-50%";
 
           overlayImageContainer = document.createElement("div");
-          overlayImageContainer.style.width = '100%';
-          overlayImageContainer.style.height = '100%';
+          overlayImageContainer.style.width = "100%";
+          overlayImageContainer.style.height = "100%";
           overlayImageContainer.style.position = "absolute";
           overlayImageContainer.style.top = 0;
           overlayImageContainer.style.left = 0;
@@ -1130,16 +1062,15 @@
           const questionText = document.createElement("div");
           questionText.classList.add("question");
           questionText.style.fontSize = this.fontSize;
-          questionText.style.marginBottom = "10px";
+          if (this.uiOrder[0] !== "question") questionText.style.marginTop = "10px";
+          if (this.uiOrder[0] === "question") questionText.style.marginBottom = "10px";
           questionText.textContent = question;
 
           const inputField = document.createElement("input");
           inputField.style.display = this.isInputEnabled ? "block" : "none";
-          inputField.style.width = "94%";
-          inputField.style.padding = "5px";
           inputField.style.fontSize = this.fontSize;
           inputField.style.margin = "0 auto";
-          inputField.type = this.isInputEnabled === "Color" ? "color" : this.isInputEnabled === "Number" ? "number" : "text";
+          inputField.type = this.isInputEnabled.toLowerCase();
           inputField.addEventListener("input", () => { this.userInput = inputField.value });
           const buttonContainer = document.createElement("div");
           buttonContainer.classList.add("button-container");
@@ -1150,14 +1081,14 @@
               buttonContainer.appendChild(lineBreak);
             } else {
               const button = document.createElement("button");
-              button.style.marginTop = "10px";
+              if (this.uiOrder[0] !== "buttons") button.style.marginTop = "10px";
+              if (this.uiOrder[2] !== "buttons") button.style.marginBottom = "10px";
               button.style.marginRight = "5px";
-              button.style.padding = "5px 10px";
-              button.style.border = "none";
               button.style.cursor = "pointer";
               button.textContent = buttonInfo.name;
               button.style.display = "inline-block";
               button.addEventListener("click", () => {
+                this.lastPressBtn = buttonInfo.name;
                 this.userInput = this.isInputEnabled === "Disabled" ? buttonInfo.name : inputField.value;
                 this.closeOverlay(overlay);
                 resolve();
@@ -1171,8 +1102,6 @@
           const dropdownButton = document.createElement("button");
           dropdownButton.className = "dropbtn";
           dropdownButton.textContent = this.DropdownText;
-          dropdownButton.style.padding = "5px 10px";
-          dropdownButton.style.border = "none";
           const dropdownContent = document.createElement("div");
           dropdownContent.id = "myDropdown";
           dropdownContent.className = "dropdown-content";
@@ -1204,6 +1133,7 @@
           });
           document.body.appendChild(dropdown);
           dropdownButton.addEventListener("click", () => {
+            this.lastPressBtn = this.DropdownText;
             dropdownContent.style.display = this.isDropdownOpen ? "none" : "block";
             this.isDropdownOpen = !this.isDropdownOpen;
           });
@@ -1217,13 +1147,9 @@
           slider.max = this.sliderInfo[1];
           slider.value = this.sliderInfo[2];
           if (this.isInputEnabled.includes("Vertical")) {
-            for (let i = 0; i < 3; i++) {
-              sliderContainer.appendChild(document.createElement("br"));
-            }
+            for (let i = 0; i < 3; i++) { sliderContainer.appendChild(document.createElement("br")) }
             sliderContainer.appendChild(slider);
-            for (let i = 0; i < 4; i++) {
-              sliderContainer.appendChild(document.createElement("br"));
-            }
+            for (let i = 0; i < 4; i++) { sliderContainer.appendChild(document.createElement("br")) }
           } else { sliderContainer.appendChild(slider) }
           const valueDisplay = document.createElement("span");
           valueDisplay.classList.add("slider-value");
@@ -1234,59 +1160,76 @@
             valueDisplay.textContent = slider.value;
             this.userInput = valueDisplay.textContent;
           });
-
-          overlay.appendChild(questionText);
-          if (this.isInputEnabled !== "Disabled") {
-            if (this.isInputEnabled === "Enabled" || this.isInputEnabled === "Color" || this.isInputEnabled === "Number") {
-              overlay.appendChild(inputField);
-            } else if (this.isInputEnabled.includes("Dropdown")) {
-              overlay.appendChild(dropdownButton);
-              overlay.appendChild(dropdownContent);
-              overlay.appendChild(document.createElement("br"));
-            } else {
-              overlay.appendChild(sliderContainer);
-              overlay.appendChild(valueDisplay);
-              overlay.appendChild(document.createElement("br"));
+          for (const item of this.uiOrder) {
+            switch (item) {
+              case "question": { overlay.appendChild(questionText); break }
+              case "input":
+                if (this.isInputEnabled !== "Disabled") {
+                  if (this.isInputEnabled === "Enabled" || this.isInputEnabled === "Color" ||
+                    this.isInputEnabled === "Number" || this.isInputEnabled === "Password"
+                  ) {
+                    overlay.appendChild(inputField);
+                  } else if (this.isInputEnabled.includes("Dropdown")) {
+                    overlay.appendChild(dropdownButton);
+                    overlay.appendChild(dropdownContent);
+                    overlay.appendChild(document.createElement("br"));
+                  } else {
+                    overlay.appendChild(sliderContainer);
+                    overlay.appendChild(valueDisplay);
+                    overlay.appendChild(document.createElement("br"));
+                  }
+                }
+                break;
+              case "buttons": { overlay.appendChild(buttonContainer); break }
             }
           }
-          overlay.appendChild(buttonContainer);
           overlay.appendChild(overlayImageContainer);
-          document.body.appendChild(overlay);
+          if (this.appendTarget[0] === "window") {
+            document.body.appendChild(overlay);
+            if (this.appendTarget[1]) document.body.appendChild(focusBG);
+          }
           inputField.focus();
           inputField.value = this.defaultValue;
-          const resizeHandler = () => {
-            overlay.style.left = `${this.textBoxX !== null ? 50 + this.textBoxX : 50}%`;
-            overlay.style.top = `${this.textBoxY !== null ? 50 + this.textBoxY : 50}%`;
-          };
           this.activeOverlays.push(overlay);
           this.activeUI.push({ overlay: { button: buttonContainer, dropdown: dropdownButton, input: inputField } });
-          document.addEventListener("fullscreenchange", resizeHandler);
-          document.addEventListener("webkitfullscreenchange", resizeHandler);
-          document.addEventListener("mozfullscreenchange", resizeHandler);
-          document.addEventListener("MSFullscreenChange", resizeHandler);
-          const observer = new MutationObserver((mutationsList) => {
-            for (const mutation of mutationsList) {
-              if (mutation.type === "childList" && mutation.removedNodes.contains(overlay)) {
-                document.removeEventListener("fullscreenchange", resizeHandler);
-                document.removeEventListener("webkitfullscreenchange", resizeHandler);
-                document.removeEventListener("mozfullscreenchange", resizeHandler);
-                document.removeEventListener("MSFullscreenChange", resizeHandler);
-                observer.disconnect();
+          if (this.appendTarget[0] === "window") {
+            const resizeHandler = () => {
+              overlay.style.left = `${this.textBoxX !== null ? 50 + this.textBoxX : 50}%`;
+              overlay.style.top = `${this.textBoxY !== null ? 50 + this.textBoxY : 50}%`;
+            };
+            document.addEventListener("fullscreenchange", resizeHandler);
+            document.addEventListener("webkitfullscreenchange", resizeHandler);
+            document.addEventListener("mozfullscreenchange", resizeHandler);
+            document.addEventListener("MSFullscreenChange", resizeHandler);
+            const observer = new MutationObserver((mutationsList) => {
+              for (const mutation of mutationsList) {
+                if (mutation.type === "childList" && Array.from(mutation.removedNodes).includes(overlay)) {
+                  document.removeEventListener("fullscreenchange", resizeHandler);
+                  document.removeEventListener("webkitfullscreenchange", resizeHandler);
+                  document.removeEventListener("mozfullscreenchange", resizeHandler);
+                  document.removeEventListener("MSFullscreenChange", resizeHandler);
+                  observer.disconnect();
+                }
               }
-            }
-          });
-          observer.observe(overlay.parentNode, { childList: true });
-          document.body.appendChild(overlay);
+            });
+            observer.observe(overlay.parentNode, { childList: true });
+            document.body.appendChild(overlay);
+          } else {
+            if (this.appendTarget[1]) vm.renderer.addOverlay(focusBG, "scale-centered");
+            vm.renderer.addOverlay(overlay, "scale-centered");
+          }
           inputField.focus();
           this.updateOverlay(overlay);
         });
       }
     }
-
     closeOverlay(overlay) {
       if (this.askBoxInfo[0] < 2) this.isWaitingForInput = false;
       this.isDropdownOpen = false;
       this.askBoxInfo[0]--;
+      let usedBG = document.querySelectorAll(".SP-ask-boxBG");
+      usedBG = usedBG[usedBG.length - 1];
+      // ^ Prioritizes Textboxes on Window
       const index = this.activeOverlays.indexOf(overlay);
       setTimeout(() => {
         if (index !== -1) {
@@ -1294,17 +1237,23 @@
           this.askBoxPromises.splice(index, 1);
         }
         delete this.activeUI[overlay];
-        document.body.removeChild(overlay);
+        if (this.appendTarget[0] === "window") document.body.removeChild(overlay);
+        else vm.renderer.removeOverlay(overlay);
+        if (usedBG) {
+          if (usedBG.id === "window") document.body.removeChild(usedBG);
+          else vm.renderer.removeOverlay(usedBG);
+        }
       }, this.Timeout * 1000);
     }
 
     setButton(args) {
       if (args.BUTTON === "add") {
         this.buttonJSON[args.NAME] = {
-          borderRadius: 5,
+          borderRadius: 5, border: "1px none #000000",
           color: "#0074D9", textColor: "#ffffff",
-          name: args.NAME,
-          image: "", imgScale: 100
+          name: args.NAME, padding: "5px 10px",
+          image: "", imgScale: 100,
+          dropShadow: "none", outline: ["", 0]
         };
       } else { delete this.buttonJSON[args.NAME] }
       Scratch.vm.extensionManager.refreshBlocks();
@@ -1314,6 +1263,8 @@
       this.buttonJSON = {};
       Scratch.vm.extensionManager.refreshBlocks();
     }
+
+    lastButton() { return this.lastPressBtn }
 
     isWaitingInput() { return this.isWaitingForInput }
 
@@ -1341,9 +1292,26 @@
 
     setDefaultV(args) { this.defaultValue = args.defaultV }
 
-    setEnable() { throw new Error("This block is removed in Better Input V3. Please use the more powerful and better blocks") }
-    getBoxCount() { throw new Error("This block is removed in Better Input V3. Please use the more powerful and better blocks") }
-    getMaxCount() { throw new Error("This block is removed in Better Input V3. Please use the more powerful and better blocks") }
+    setAppend(args) { this.appendTarget[0] = args.TARGET }
+    setFocus(args) { this.appendTarget[1] = args.TYPE === "Enabled" }
+
+    setUI(args) {
+      let array;
+      try { array = JSON.parse(args.ARRAY.toLowerCase()) } catch { return }
+      if (!Array.isArray(array)) return;
+      const allowedUI = ["question", "input", "buttons"];
+      let filteredArray = [...new Set(array.filter(element => allowedUI.includes(element)))];
+      allowedUI.forEach(element => {
+        if (!filteredArray.includes(element)) filteredArray.push(element);
+      });
+      this.uiOrder = filteredArray;
+    }
+
+    getUIOrder() { return JSON.stringify(this.uiOrder) }
+
+    setEnable() { throw new Error("This Block has been removed since Better Input V3. Please use the New Powerful Blocks") }
+    getBoxCount() { return this.askBoxInfo[0] } //Legacy
+    getMaxCount() { return this.askBoxInfo[1] } //Legacy
   }
 
   Scratch.extensions.register(new BetterInputSP());
