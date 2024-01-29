@@ -4,7 +4,7 @@ This extension allows you to automatically save plain text in storage. Forget sa
 
 ## Namespaces
 
-The namespace is basically like the file you want to read and write to. When the extension loads, the project is given a random, unique ID which it will save as.
+The namespace is basically like the file you want to read and write to. When the extension loads, the project is given a random, unique ID which it will save to by default. Setting it yourself is no longer a required, but highly recommended for your convenience.
 
 If you'd like to use a custom namespace, you can change it with this block:
 
