@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "eslint": "^8.56.0",
-    "espree": "^9.6.1",
+    "espree": "^10.0.0",
     "esquery": "^1.5.0",
     "prettier": "^3.2.4"
   },
