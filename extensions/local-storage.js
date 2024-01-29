@@ -5,28 +5,37 @@
 (function (Scratch) {
   "use strict";
 
+  const vm = Scratch.vm;
+  const runtime = vm.runtime;
+
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("Local Storage must be run unsandboxed");
   }
 
   const PREFIX = "extensions.turbowarp.org/local-storage:";
-  let namespace = "";
-  const getFullStorageKey = () => `${PREFIX}${namespace}`;
 
-  let lastNamespaceWarning = 0;
+  const soup_ =
+    "!#%()*+,-./:;=?@[]^_`{|}~" +
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  const validNamespace = () => {
-    const valid = !!namespace;
-    if (!valid && Date.now() - lastNamespaceWarning > 3000) {
-      alert(
-        Scratch.translate(
-          'Local Storage extension: project must run the "set storage namespace ID" block before it can use other blocks'
-        )
-      );
-      lastNamespaceWarning = Date.now();
+  const uid = function () {
+    const length = 10;
+    const soupLength = soup_.length;
+    const id = [];
+    for (let i = 0; i < length; i++) {
+      id[i] = soup_.charAt(Math.random() * soupLength);
     }
-    return valid;
+    return id.join("");
   };
+
+  if (!runtime.extensionStorage["localstorage"]) {
+    runtime.extensionStorage["localstorage"] = Object.create(null);
+    runtime.extensionStorage["localstorage"].namespace = uid();
+  }
+  const extStorage = runtime.extensionStorage["localstorage"];
+  const namespace = extStorage.namespace;
+
+  const getFullStorageKey = () => `${PREFIX}${namespace}`;
 
   const readFromStorage = () => {
     try {
@@ -85,7 +94,9 @@
   });
 
   Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
-    namespace = "";
+    // reset to another randomly generated id when
+    // runtime is cleared
+    extStorage.namespace = uid();
   });
 
   class LocalStorage {
@@ -106,6 +117,12 @@
               },
             },
           },
+          {
+            opcode: "getProjectId",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get storage ID", // used "get" to be consistent with "get key"
+          },
+          "---",
           {
             opcode: "get",
             blockType: Scratch.BlockType.REPORTER,
@@ -158,12 +175,12 @@
       };
     }
     setProjectId({ ID }) {
-      namespace = Scratch.Cast.toString(ID);
+      extStorage.namespace = Scratch.Cast.toString(ID);
+    }
+    getProjectId() {
+      return Scratch.Cast.toString(extStorage.namespace);
     }
     get({ KEY }) {
-      if (!validNamespace()) {
-        return "";
-      }
       const storage = readFromStorage();
       KEY = Scratch.Cast.toString(KEY);
       if (!Object.prototype.hasOwnProperty.call(storage, KEY)) {
@@ -172,25 +189,16 @@
       return storage[KEY];
     }
     set({ KEY, VALUE }) {
-      if (!validNamespace()) {
-        return "";
-      }
       const storage = readFromStorage();
       storage[Scratch.Cast.toString(KEY)] = VALUE;
       saveToLocalStorage(storage);
     }
     remove({ KEY }) {
-      if (!validNamespace()) {
-        return "";
-      }
       const storage = readFromStorage();
       delete storage[Scratch.Cast.toString(KEY)];
       saveToLocalStorage(storage);
     }
     removeAll() {
-      if (!validNamespace()) {
-        return "";
-      }
       saveToLocalStorage({});
     }
   }
