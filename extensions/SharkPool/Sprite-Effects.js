@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.2.0
+// Version V.1.3.0
 
 (function (Scratch) {
   "use strict";
@@ -259,6 +259,7 @@
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
           },
+          "---",
           {
             opcode: "distortSprite",
             blockType: Scratch.BlockType.REPORTER,
@@ -309,6 +310,14 @@
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+            },
+          },
+          {
+            opcode: "distortPreset",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "distortion [TYPE] preset",
+            arguments: {
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "DISTORTION" }
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Formatting" },
@@ -619,7 +628,7 @@
           },
           DISTORTION: {
             acceptReporters: true,
-            items: ["bulge", "whirl", "ripple"]
+            items: ["bulge", "whirl", "ripple", "shockwave"]
           },
           maskATTs: {
             acceptReporters: false,
@@ -934,7 +943,7 @@
         ];
         const amts = [Math.abs(100 - Scratch.Cast.toNumber(args.NUM)), Scratch.Cast.toNumber(args.x), Scratch.Cast.toNumber(args.y)];
          const filterElement =
-         `<filter id="tile"><feImage x="${amts[1]}" y="${amts[2]}" width="${amts[0]}%" height="${amts[0]}%" xlink:href="${await this.svgToBitmap(svg, atts[0], atts[1])}"/><feTile /></filter>`;
+         `<filter id="tile"><feImage x="${amts[1]}" y="${amts[2]}" width="${amts[0] / atts[0] * 100}%" height="${amts[0] / atts[1] * 100}%" xlink:href="${await this.svgToBitmap(svg, atts[0], atts[1])}"/><feTile /></filter>`;
         return this.filterApplier(svg, filterElement, "tile");
       }
       return svg;
@@ -984,7 +993,7 @@
         let source;
         if (override) {
           source = args.EFFECT.startsWith("data:image/") ? args.EFFECT : `data:image/svg+xml;base64,${btoa(args.EFFECT)}`;
-        } else { source = args.EFFECT === "bulge" ? 0 : args.EFFECT === "whirl" ? 1 : 2 }
+        } else { source = args.EFFECT === "bulge" ? 0 : args.EFFECT === "whirl" ? 1 : args.EFFECT === "ripple" ? 2 : 3 }
         const mul = args.SPRITE === "_canvas_" ? vm.renderer.canvas.width / vm.runtime.stageWidth * 2 : 1;
         const amts = [Scratch.Cast.toNumber(args.NUM), Scratch.Cast.toNumber(args.X), Scratch.Cast.toNumber(args.Y)];
         if (!displacementSrCs[2] && !override) await this.getSources();
@@ -998,6 +1007,14 @@
         return this.filterApplier(svg, filterElement, override ? "customDistort" : args.EFFECT);
       }
       return svg;
+    }
+
+    async distortPreset(args) {
+      const source = {
+        bulge : 0, whirl : 1, ripple : 2, shockwave : 3
+      };
+      if (!displacementSrCs[2]) await this.getSources();
+      return displacementSrCs[source[args.TYPE]] || "";
     }
 
     async setGlitch(args, isImage, util) {
@@ -1261,15 +1278,9 @@
       let h = 0;
       if (delta !== 0) {
         switch (max) {
-          case r:
-            h = ((g - b) / delta + (g < b ? 6 : 0)) / 6;
-            break;
-          case g:
-            h = ((b - r) / delta + 2) / 6;
-            break;
-          case b:
-            h = ((r - g) / delta + 4) / 6;
-            break;
+          case r: { h = ((g - b) / delta + (g < b ? 6 : 0)) / 6; break }
+          case g: { h = ((b - r) / delta + 2) / 6; break }
+          case b: { h = ((r - g) / delta + 4) / 6; break }
         }
       }
       const s = max === 0 ? 0 : delta / max;
@@ -1309,6 +1320,7 @@
           await (await fetch(link + "SE-bulge.txt")).text(),
           await (await fetch(link + "SE-whirl.txt")).text(),
           await (await fetch(link + "SE-ripple.txt")).text(),
+          await (await fetch(link + "SE-shock.txt")).text()
         ];
       } catch (error) { console.error("Error fetching resources: ", error) }
       /* eslint-enable */
