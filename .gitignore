@@ -3,3 +3,6 @@ node_modules
 
 # Final built website
 build
+
+# vscode sorry
+.vscode
