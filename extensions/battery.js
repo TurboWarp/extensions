@@ -61,51 +61,51 @@
   class BatteryExtension {
     getInfo() {
       return {
-        name: "Battery",
+        name: Scratch.translate("Battery"),
         id: "battery",
         blocks: [
           {
             opcode: "charging",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "charging?",
+            text: Scratch.translate("charging?"),
           },
           {
             opcode: "level",
             blockType: Scratch.BlockType.REPORTER,
-            text: "battery level",
+            text: Scratch.translate("battery level"),
           },
           {
             opcode: "chargeTime",
             blockType: Scratch.BlockType.REPORTER,
-            text: "seconds until charged",
+            text: Scratch.translate("seconds until charged"),
           },
           {
             opcode: "dischargeTime",
             blockType: Scratch.BlockType.REPORTER,
-            text: "seconds until empty",
+            text: Scratch.translate("seconds until empty"),
           },
           {
             opcode: "chargingChanged",
             blockType: Scratch.BlockType.EVENT,
-            text: "when charging changed",
+            text: Scratch.translate("when charging changed"),
             isEdgeActivated: false,
           },
           {
             opcode: "levelChanged",
             blockType: Scratch.BlockType.EVENT,
-            text: "when battery level changed",
+            text: Scratch.translate("when battery level changed"),
             isEdgeActivated: false,
           },
           {
             opcode: "chargeTimeChanged",
             blockType: Scratch.BlockType.EVENT,
-            text: "when time until charged changed",
+            text: Scratch.translate("when time until charged changed"),
             isEdgeActivated: false,
           },
           {
             opcode: "dischargeTimeChanged",
             blockType: Scratch.BlockType.EVENT,
-            text: "when time until empty changed",
+            text: Scratch.translate("when time until empty changed"),
             isEdgeActivated: false,
           },
         ],

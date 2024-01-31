@@ -19,6 +19,7 @@ Strictly, nothing is banned, but the following are *highly* discouraged:
  - Broad "Utilities" extensions (break them up into multiple extensions, see https://github.com/TurboWarp/extensions/issues/674)
  - Extensions that are very similar to existing ones (consider modifying the existing one instead)
  - One-use personal extensions (load the extension as a local file instead)
+ - Extensions whose primary purpose is monetization (not in the spirit of an open source project)
  - Joke extensions (they aren't funny when they cause us to get bug reports)
 
 Some extensions were added before these rules existed. That doesn't mean you will be exempted too.
@@ -30,6 +31,10 @@ Every merged extension is more code that we will be expected to maintain indefin
 We're all volunteers who all have lives outside of Scratch extensions. Many have full time jobs or are full time students. We'll get to you as soon as we can, so please be patient.
 
 Every extension is also covered under [our bug bounty](https://github.com/TurboWarp/extensions/security/policy), so mindlessly merging things will have a direct impact on my wallet.
+
+## On AI language models
+
+**Generative AI language models like ChatGPT, Bing Chat, and Bard DO NOT know how to write proper extensions for TurboWarp.** Remember that the ChatGPT knowledge cutoff is in 2021 while our extension system did not exist until late 2022, thus it *literally can't know*. Pull requests submitting extensions that are made by AI (it's really obvious) will be closed as invalid.
 
 ## Writing extensions
 

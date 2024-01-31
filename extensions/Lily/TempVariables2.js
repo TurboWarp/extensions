@@ -39,7 +39,6 @@
         name: "Temporary Variables",
         color1: "#FF791A",
         color2: "#E15D00",
-        menuIconURI: menuIconURI, // I intend on making one later
         blocks: [
           label("Thread Variables", false),
 
@@ -80,6 +79,8 @@
             opcode: "getThreadVariable",
             blockType: Scratch.BlockType.REPORTER,
             text: "thread var [VAR]",
+            disableMonitor: true,
+            allowDropAnywhere: true,
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -101,27 +102,25 @@
 
           "---",
 
-          /* Add this when the compiler supports it
           {
-            opcode: 'forEachThreadVariable',
+            opcode: "forEachThreadVariable",
             blockType: Scratch.BlockType.LOOP,
-            text: 'for each [VAR] in [NUM]',
+            text: "for [VAR] in [NUM]",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'thread variable'
+                defaultValue: "thread variable",
               },
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '10'
-              }
-            }
+                defaultValue: "10",
+              },
+            },
           },
-          */
           {
             opcode: "listThreadVariables",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list active thread variables",
+            text: "active thread variables",
             disableMonitor: true,
           },
 
@@ -167,6 +166,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "runtime var [VAR]",
             disableMonitor: true,
+            allowDropAnywhere: true,
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -207,7 +207,7 @@
           {
             opcode: "listRuntimeVariables",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list active runtime variables",
+            text: "active runtime variables",
           },
         ],
       };
@@ -258,7 +258,7 @@
       if (util.stackFrame.index < Number(args.NUM)) {
         util.stackFrame.index++;
         vars[args.VAR] = util.stackFrame.index;
-        util.startBranch(1, true);
+        return true;
       }
     }
 
