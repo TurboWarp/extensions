@@ -1,6 +1,6 @@
 // Name: Variables Extended
 // ID: 0znzwVarsExtended
-// Description: Better variable control
+// Description: Better variable control.
 // By: 0znzw <https://scratch.mit.edu/users/0znzw/>
 
 // *************
