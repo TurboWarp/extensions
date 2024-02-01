@@ -6,13 +6,10 @@
 // *************
 // Additional meta
 // License: MIT
-// Version: 1.0
+// Version: 1.1
 // *************
 (function(Scratch) {
     'use strict';
-    if (!Scratch.extensions.unsandboxed) {
-      throw new Error(`"Variables Extended" extension must be ran unsandboxed.`);
-    }
     const vm = Scratch.vm, runtime = vm.runtime;
     const hasOwn = function (object, key) {
         return Object.prototype.hasOwnProperty.call(object, key);
@@ -29,7 +26,8 @@
         // @ts-expect-error
         return (getVariable(target, name) ?? getVariable(runtime._stageTarget, name));
     }
-    // i assume you will probally want this removed :(
+
+    // I assume you dont want this?
     /* eslint-disable */
     vm.on('EXTENSION_ADDED', tryUseScratchBlocks);
     vm.on('BLOCKSINFO_UPDATE', tryUseScratchBlocks);
@@ -93,7 +91,7 @@
     class VP {
         getInfo() {
             const info = {
-                id: '0znzwVarsExtended',
+                id: '0znzwVarsPlus',
                 name: 'Variables Extended',
                 blocks: [
                     {
@@ -328,7 +326,9 @@
             NAME = Scratch.Cast.toString(NAME);
             const sprite = this._getTargetFromMenu(Scratch.Cast.toString(SPRITE_NAME), util);
             if (!sprite) return;
-            const VALUE = (Scratch.Cast.toNumber(getVariable(sprite, NAME).value) + Scratch.Cast.toNumber(AMOUNT));
+            const variable = getVariable(sprite, NAME);
+            if (!variable) return;
+            const VALUE = (Scratch.Cast.toNumber(variable.value) + Scratch.Cast.toNumber(AMOUNT));
             this.setVar({ SPRITE_NAME, NAME, VALUE }, util);
         }
         varIsVisible({ NAME }, util) {
