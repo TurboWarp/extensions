@@ -39,6 +39,7 @@
                 defaultValue: "banana",
               },
             },
+            allowDropAnywhere: true,
           },
           {
             opcode: "boolean_block",
