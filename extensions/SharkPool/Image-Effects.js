@@ -3,7 +3,7 @@
 // Description: Apply a variety of new effects to the data URI of Images or Costumes.
 // By: SharkPool
 
-// Version V.2.1.0
+// Version V.2.2.0
 
 (function (Scratch) {
   "use strict";
@@ -32,6 +32,7 @@
       this.scale = [100, 100];
       this.cutoutDirection = 90;
       this.softness = 10;
+      this.allShards = [];
     }
     getInfo() {
       return {
@@ -178,6 +179,7 @@
               CUTOUT: { type: Scratch.ArgumentType.STRING, defaultValue: "cutout-here" }
             }
           },
+          "---",
           {
             opcode: "setCutout",
             blockType: Scratch.BlockType.COMMAND,
@@ -205,6 +207,7 @@
               POS: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" }
             }
           },
+          "---",
           {
             opcode: "setScale",
             blockType: Scratch.BlockType.COMMAND,
@@ -232,6 +235,7 @@
               POS: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" }
             }
           },
+          "---",
           {
             opcode: "setDirection",
             blockType: Scratch.BlockType.COMMAND,
@@ -252,6 +256,24 @@
             opcode: "currentDir",
             blockType: Scratch.BlockType.REPORTER,
             text: "clipping direction"
+          },
+          "---",
+          {
+            opcode: "crackImage",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "crack [URI] into [SHARDS] shards",
+            arguments: {
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              SHARDS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+            }
+          },
+          {
+            opcode: "getShard",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get shard #[SHARD]",
+            arguments: {
+              SHARD: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
+            }
           },
           { blockType: Scratch.BlockType.LABEL, text: "Pixels" },
           {
@@ -1293,6 +1315,47 @@
       });
     }
 
+    crackImage(args) {
+      const cracks = Math.max(2, args.SHARDS);
+      const img = new Image();
+      img.src = this.confirmAsset(args.URI, "png");
+      const newWidth = img.width * 4;
+      const newHeight = img.height * 4;
+      this.allShards = [];
+      return new Promise((resolve) => {
+        img.onload = () => {
+          for (let i = 0; i < cracks; i++) {
+            if (this.allShards.length >= args.SHARDS) break;
+            for (let j = 0; j < cracks; j++) {
+              if (this.allShards.length >= args.SHARDS) break;
+              const shardCanvas = document.createElement("canvas");
+              const shardWidth = newWidth / cracks;
+              const shardHeight = newHeight / cracks;
+              shardCanvas.width = shardWidth;
+              shardCanvas.height = shardHeight;
+              const ctx = shardCanvas.getContext("2d");
+              ctx.clearRect(0, 0, shardWidth, shardHeight);
+              ctx.beginPath();
+              ctx.moveTo(Math.random() * shardWidth, Math.random() * shardHeight);
+              for (let k = 0; k < Math.random() * 10 + 3; k++) {
+                ctx.lineTo(Math.random() * shardWidth, Math.random() * shardHeight);
+              }
+              ctx.closePath();
+              ctx.clip();
+              const offsetX = Math.random() * (newWidth - shardWidth);
+              const offsetY = Math.random() * (newHeight - shardHeight);
+              ctx.drawImage(img, -offsetX, -offsetY, newWidth, newHeight);
+              const pixelData = this.printImg(shardCanvas);
+              this.allShards.push(this.exportImg(shardCanvas, pixelData));
+            }
+          }
+          resolve();
+        };
+      });
+    }
+
+    getShard(args) { return this.allShards[args.SHARD - 1] || "" }
+
     printImg(img, forceWid, forceHei) {
       const canvas = document.createElement("canvas");
       canvas.width = forceWid || img.width;
@@ -1313,11 +1376,8 @@
 
     confirmAsset(input, type) {
       if (!input || !(input.startsWith("data:image/") || input.startsWith("<svg"))) return menuIconURI;
-      if (type === "png") {
-        return input.startsWith("data:image/") ? input : `data:image/svg+xml;base64,${btoa(input)}`;
-      } else {
-        return input.startsWith("data:image/") ? this.makeSVGimage({ URI : input, TYPE : "content" }) : input;
-      }
+      if (type === "png") return input.startsWith("data:image/") ? input : `data:image/svg+xml;base64,${btoa(input)}`;
+      else return input.startsWith("data:image/") ? this.makeSVGimage({ URI : input, TYPE : "content" }) : input;
     }
   }
 
