@@ -7,9 +7,7 @@
     'qxsckmatrix.name': 'Matrix',
 
     'qxsckmatrix.isAMatrix': '[ARR] is matrix?',
-    'qxsckmatrix.matrixAdd': 'matrix [ARR] + matrix [ARR2]',
-    'qxsckmatrix.matrixSub': 'matrix [ARR] -  matrix [ARR2]',
-    'qxsckmatrix.matrixMul': 'matrix [ARR] * matrix [ARR2]',
+    'qxsckmatrix.matrixOper': 'matrix [ARR] [OPER] matrix [ARR2]',
     'qxsckmatrix.matrixScalar': 'matrix [ARR] * [NUM]',
     'qxsckmatrix.matrixTranspose': 'transpose matrix [ARR]',
     'qxsckmatrix.matrixTrace': 'trace of matrix [ARR]',
@@ -20,9 +18,7 @@
       'qxsckmatrix.name': 'Matrix',
 
       'qxsckmatrix.isAMatrix': '[ARR] is matrix?',
-      'qxsckmatrix.matrixAdd': 'matrix [ARR] + matrix [ARR2]',
-      'qxsckmatrix.matrixSub': 'matrix [ARR] -  matrix [ARR2]',
-      'qxsckmatrix.matrixMul': 'matrix [ARR] * matrix [ARR2]',
+      'qxsckmatrix.matrixOper': 'matrix [ARR] [OPER] matrix [ARR2]',
       'qxsckmatrix.matrixScalar': 'matrix [ARR] * [NUM]',
       'qxsckmatrix.matrixTranspose': 'transpose matrix [ARR]',
       'qxsckmatrix.matrixTrace': 'trace of matrix [ARR]',
@@ -30,9 +26,7 @@
     zh: {
       'qxsckmatrix.name': '矩阵',
       'qxsckmatrix.isAMatrix': '[ARR] 是矩阵吗？',
-      'qxsckmatrix.matrixAdd': '矩阵 [ARR] + 矩阵 [ARR2]',
-      'qxsckmatrix.matrixSub': '矩阵 [ARR] -  矩阵 [ARR2]',
-      'qxsckmatrix.matrixMul': '矩阵 [ARR] * 矩阵 [ARR2]',
+      'qxsckmatrix.matrixOper': '矩阵 [ARR] [OPER] 矩阵 [ARR2]',
       'qxsckmatrix.matrixScalar': '矩阵 [ARR] * [NUM]',
       'qxsckmatrix.matrixTranspose': '转置矩阵 [ARR]',
       'qxsckmatrix.matrixTrace': '矩阵 [ARR] 的迹',
@@ -154,9 +148,9 @@
             },
           },
           {
-            opcode:'matrixAdd',
+            opcode:'matrixOper',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckmatrix.matrixAdd'),
+            text: this.formatMessage('qxsckmatrix.matrixOper'),
             arguments: {
               ARR: {
                 type: 'string',
@@ -166,35 +160,9 @@
                 type: 'string',
                 defaultValue:'[[1,2],[3,4]]'
               },
-            },
-          },
-          {
-            opcode:'matrixSub',
-            blockType: 'reporter',
-            text: this.formatMessage('qxsckmatrix.matrixSub'),
-            arguments: {
-              ARR: {
+              OPER: {
                 type: 'string',
-                defaultValue:'[[1,2],[3,4]]'
-              },
-              ARR2: {
-                type: 'string',
-                defaultValue:'[[2,3],[4,5]]'
-              },
-            },
-          },
-          {
-            opcode:'matrixMul',
-            blockType: 'reporter',
-            text: this.formatMessage('qxsckmatrix.matrixMul'),
-            arguments: {
-              ARR: {
-                type: 'string',
-                defaultValue:'[[1,0,2],[-1,3,1]]'
-              },
-              ARR2: {
-                type: 'string',
-                defaultValue:'[[3,1],[2,1],[1,0]]'
+                menu: 'matrixOper.List',
               },
             },
           },
@@ -235,7 +203,23 @@
               },
             },
           },
-        ]
+        ],
+        menus: {
+          'matrixOper.List':[
+            {
+              text: '+',
+              value: '+'
+            },
+            {
+              text: '-',
+              value: '-'
+            },
+            {
+              text: '*',
+              value: '*'
+            },
+          ],
+        }
       };
     }
     isAMatrix(args){
@@ -246,26 +230,13 @@
         return false;
       }
     }
-    matrixAdd(args){
+    matrixOper(args){
+      let oper=args.OPER;
       try{
         let arr=JSON.parse(args.ARR),arr2=JSON.parse(args.ARR2);
-        return JSON.stringify(this.addMatrix(arr,arr2));
-      }catch(error){
-        return '[]';
-      }
-    }
-    matrixSub(args){
-      try{
-        let arr=JSON.parse(args.ARR),arr2=JSON.parse(args.ARR2);
-        return JSON.stringify(this.subMatrix(arr,arr2));
-      }catch(error){
-        return '[]';
-      }
-    }
-    matrixMul(args){
-      try{
-        let arr=JSON.parse(args.ARR),arr2=JSON.parse(args.ARR2);
-        return JSON.stringify(this.mulMatrix(arr,arr2));
+        if(oper==='+') return JSON.stringify(this.addMatrix(arr,arr2));
+        else if(oper==='-') return JSON.stringify(this.subMatrix(arr,arr2));
+        else if(oper==='*') return JSON.stringify(this.mulMatrix(arr,arr2));
       }catch(error){
         return '[]';
       }
