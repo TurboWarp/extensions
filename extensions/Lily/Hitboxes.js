@@ -71,6 +71,10 @@
 
       const skinId = target.getCostumes()[costume].skinId;
       target.hitboxSkin = renderer._allSkins[skinId];
+
+      const drawableID = target.drawableID;
+      const drawable = renderer._allDrawables[drawableID];
+      drawable.skin = target.originalSkin;
     }
 
     removeHitbox(args, util) {
