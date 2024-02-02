@@ -103,7 +103,7 @@
 
     setFreq(args) { noiseInfo = [noiseInfo[0], Scratch.Cast.toNumber(args.x), Scratch.Cast.toNumber(args.y)] }
 
-    async returnNoise(args) {
+    returnNoise(args) {
       if (args.TYPE === "encoded svg") return `data:image/svg+xml;base64,${btoa(curNoise)}`;
       if (args.TYPE === "png" && curNoise) {
         // eslint-disable-next-line
