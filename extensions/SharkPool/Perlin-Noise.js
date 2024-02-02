@@ -106,6 +106,7 @@
     async returnNoise(args) {
       if (args.TYPE === "encoded svg") return `data:image/svg+xml;base64,${btoa(curNoise)}`;
       if (args.TYPE === "png" && curNoise) {
+        // eslint-disable-next-line
         const img = new Image();
         img.src = `data:image/svg+xml;base64,${btoa(curNoise)}`;
         return new Promise((resolve) => {
@@ -121,12 +122,13 @@
       }
       if (args.TYPE === "pixel array") {
         if (!curNoise) return "[]";
-        return await this.analyze(`data:image/svg+xml;base64,${btoa(curNoise)}`);
+        return this.analyze(`data:image/svg+xml;base64,${btoa(curNoise)}`);
       }
       return curNoise.trim();
     }
 
-    async analyze(noise) {
+    analyze(noise) {
+      // eslint-disable-next-line
       const image = new Image();
       image.src = noise;
       const canvas = document.createElement("canvas");
@@ -152,6 +154,7 @@
     returnVal(args) {
       if (!curNoise) return "";
       return new Promise((resolve, reject) => {
+        // eslint-disable-next-line
         const image = new Image();
         image.src = `data:image/svg+xml;base64,${btoa(curNoise)}`;
         image.onload = () => {
