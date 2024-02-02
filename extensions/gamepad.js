@@ -62,7 +62,7 @@
       for (let i = 0; i < gamepad.axes.length; i += 2) {
         const x = gamepad.axes[i];
         const y = i + 1 >= gamepad.axes.length ? 0 : gamepad.axes[i + 1];
-        const magnitude = Math.abs(x ** 2 + y ** 2);
+        const magnitude = Math.sqrt(x ** 2 + y ** 2);
 
         if (magnitude > axisDeadzone) {
           let direction = (Math.atan2(y, x) * 180) / Math.PI + 90;
