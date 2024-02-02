@@ -8,8 +8,8 @@
 (function (Scratch) {
   "use strict";
 
-  const AXIS_DEADZONE = 0.1;
-  const BUTTON_DEADZONE = 0.05;
+  var AXIS_DEADZONE = 0.1;
+  var BUTTON_DEADZONE = 0.05;
 
   /**
    * @param {number|'any'} index 1-indexed index
@@ -251,6 +251,42 @@
               },
             },
           },
+
+          "---",
+
+	{
+          opcode: "deadzone",
+          blockType: Scratch.BlockType.COMMAND,
+          text: "set axis deadzone to [i]",
+          arguments: {
+            i: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: "0.1",
+            },
+          },
+        },
+
+	{
+          opcode: "deadzoneButton",
+          blockType: Scratch.BlockType.COMMAND,
+          text: "set button deadzone to [i]",
+          arguments: {
+            i: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: "0.05",
+            },
+          },
+        },
+	{
+            opcode: "getdeadzone",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get axis deadzone", 
+          },
+        {
+            opcode: "getdeadzoneButton",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get button deadzone",
+          },
         ],
         menus: {
           padMenu: {
@@ -485,6 +521,22 @@
           });
         }
       }
+    } 
+
+    deadzone({ i }) {
+      AXIS_DEADZONE = i;
+    }
+
+    deadzoneButton({ i }) {
+      BUTTON_DEADZONE = i;
+    }
+
+    getdeadzone({ i }) {
+      return AXIS_DEADZONE;
+    }
+
+    getdeadzoneButton({ i }) {
+      return BUTTON_DEADZONE;
     }
   }
 
