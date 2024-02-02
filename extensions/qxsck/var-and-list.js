@@ -10,6 +10,8 @@
       return {
         id: "qxsckvarandlist",
         name: Scratch.translate({ id: "name", default: "Variable and list" }),
+        color1: '#FF661A',
+        color2: '#EE6521',
         blocks: [
           {
             opcode: "getVar",
