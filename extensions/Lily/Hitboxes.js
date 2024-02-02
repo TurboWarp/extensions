@@ -5,7 +5,7 @@
   const runtime = vm.runtime;
   const renderer = vm.renderer;
 
-  class TurboCanvas {
+  class Hitboxes {
     constructor() {
       runtime.on("BEFORE_EXECUTE", () => {
         runtime.targets.forEach((target) => {
@@ -89,5 +89,5 @@
     }
   }
 
-  Scratch.extensions.register(new TurboCanvas());
+  Scratch.extensions.register(new Hitboxes());
 })(Scratch);
