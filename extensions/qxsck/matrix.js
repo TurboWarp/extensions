@@ -25,6 +25,7 @@
     },
     zh: {
       'qxsckmatrix.name': '矩阵',
+
       'qxsckmatrix.isAMatrix': '[ARR] 是矩阵吗？',
       'qxsckmatrix.matrixOper': '矩阵 [ARR] [OPER] 矩阵 [ARR2]',
       'qxsckmatrix.matrixScalar': '矩阵 [ARR] * [NUM]',
