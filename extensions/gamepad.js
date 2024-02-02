@@ -153,7 +153,8 @@
    * @param {unknown} startIndex
    */
   const getAxisPairMagnitude = (gamepad, startIndex) => {
-    const magnitude = gamepad.axisMagnitudes[Scratch.Cast.toNumber(startIndex) - 1];
+    const magnitude =
+      gamepad.axisMagnitudes[Scratch.Cast.toNumber(startIndex) - 1];
     return magnitude || 0;
   };
 
@@ -162,7 +163,8 @@
    * @param {unknown} startIndex
    */
   const getAxisPairDirection = (gamepad, startIndex) => {
-    const direction = gamepad.axisDirections[Scratch.Cast.toNumber(startIndex) - 1];
+    const direction =
+      gamepad.axisDirections[Scratch.Cast.toNumber(startIndex) - 1];
     return direction || 0;
   };
 
@@ -352,9 +354,9 @@
             arguments: {
               DEADZONE: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: DEFAULT_AXIS_DEADZONE.toString()
-              }
-            }
+                defaultValue: DEFAULT_AXIS_DEADZONE.toString(),
+              },
+            },
           },
         ],
         menus: {
