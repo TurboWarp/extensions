@@ -3,7 +3,7 @@
 // Description: Relayer Pen, Video Camera, Backdrops, Sprites and More
 // By: SharkPool
 
-// Version V.1.0.1
+// Version V.1.0.2
 
 (function (Scratch) {
   "use strict";
@@ -199,10 +199,9 @@
 
     moveID(args) {
       const allLay = vm.renderer._drawList;
-      const layer1 = Math.max(0, Math.min(allLay.length - 1, Math.round(args.TARGET)));
+      const index = allLay.indexOf(args.ID);
       const targetL = Math.max(0, Math.min(allLay.length - 1, Math.round(args.ORDER)));
-      if (allLay.includes(layer1)) {
-        const index = allLay.indexOf(layer1);
+      if (index !== -1) {
         const removedLayer = allLay.splice(index, 1)[0];
         vm.renderer._drawList.splice(targetL, 0, removedLayer);
         vm.runtime.targets[0].updateAllDrawableProperties();
