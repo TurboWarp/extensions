@@ -1,6 +1,6 @@
 (function (Scratch) {
   "use strict";
-  
+
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const renderer = vm.renderer;
@@ -37,7 +37,7 @@
             text: "set hitbox to [COSTUME]",
             arguments: {
               COSTUME: {
-                type: Scratch.ArgumentType.COSTUME
+                type: Scratch.ArgumentType.COSTUME,
               },
             },
           },
