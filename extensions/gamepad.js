@@ -559,9 +559,9 @@
         }
       }
 
+      // if no sticks are far enough out, instead we'll return the last direction
+      // of the most recently modified gamepad
       if (greatestMagnitude === 0 && gamepads.length > 0) {
-        // if no sticks are moved all the way out, instead we'll return the last direction
-        // of the most recently modified gamepad
         gamepads.sort((a, b) => b.timestamp - a.timestamp);
         direction = getAxisPairDirection(gamepads[0], axis);
       }
