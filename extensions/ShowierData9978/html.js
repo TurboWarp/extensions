@@ -1,4 +1,4 @@
-// Name: HTML
+// Name: HTWL
 // ID: ShowierTWHtml
 // Description: Allows for building HTML within scratch.
 // By: ShowierData9978 <github.com/showierdata9978>
@@ -41,7 +41,7 @@
      */
     getInfo() {
       return {
-        id: "ShowierTWHtml",
+        id: "HTWL",
         name: "HTML",
         color1: "#FF0000",
         blocks: [
