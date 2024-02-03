@@ -1,16 +1,13 @@
 // Name: Animations
 // ID: SPanimations
 // Description: Play Animations for your Sprites
-// By: SharkPool <https://github.com/SharkPool-SP>
+// By: SharkPool
 
-// Version V.1.4.0
+// Version V.1.5.0
 
 (function (Scratch) {
   "use strict";
-
-  if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Animations must run unsandboxed");
-  }
+  if (!Scratch.extensions.unsandboxed) throw new Error("Animations must run unsandboxed");
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -38,7 +35,6 @@
         });
       });
     }
-
     getInfo() {
       return {
         id: "SPanimations",
@@ -56,7 +52,7 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
             },
           },
@@ -67,14 +63,14 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
             },
           },
           {
             opcode: "removeAll",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete all animations",
+            text: "delete all animations"
           },
           {
             opcode: "isExists",
@@ -83,7 +79,7 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
             },
           },
@@ -94,112 +90,93 @@
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "pullTypes",
-                defaultValue: "existing",
+                menu: "pullTypes"
               },
             },
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Frames",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Frames" },
           {
             opcode: "addFrame",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add [COSTUME] to animation [NAME]",
+            text: "add [COSTUME] to [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
-              COSTUME: {
-                type: Scratch.ArgumentType.COSTUME,
-              },
+              COSTUME: { type: Scratch.ArgumentType.COSTUME },
             },
           },
           {
             opcode: "removeFrame",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove [COSTUME] from animation [NAME]",
+            text: "remove [COSTUME] from [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
-              COSTUME: {
-                type: Scratch.ArgumentType.COSTUME,
-              },
+              COSTUME: { type: Scratch.ArgumentType.COSTUME },
             },
           },
           {
             opcode: "addAllFrames",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add costumes from [COS1] to [COS2] to animation [NAME]",
+            text: "add costumes from [COS1] to [COS2] to [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
-              COS1: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
-              },
-              COS2: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 5,
-              },
+              COS1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              COS2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
             },
           },
           {
             opcode: "removeAllFrames",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove frames [COS1] to [COS2] from animation [NAME]",
+            text: "remove frames [COS1] to [COS2] from [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
-              COS1: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
-              },
-              COS2: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 5,
-              },
+              COS1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              COS2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
             },
           },
+          "---",
           {
             opcode: "addPause",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add a [SECOND] second pause to animation [NAME] with ID [ID]",
+            text: "add a [SECOND] second pause to [NAME] with ID [ID]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
               SECOND: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 3,
+                defaultValue: 3
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "pause1",
+                defaultValue: "pause1"
               },
             },
           },
           {
             opcode: "removePause",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove pause frame from animation [NAME] with ID [ID]",
+            text: "remove pause frame from [NAME] with ID [ID]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "pause1",
+                defaultValue: "pause1"
               },
             },
           },
@@ -207,57 +184,54 @@
           {
             opcode: "numFrames",
             blockType: Scratch.BlockType.REPORTER,
-            text: "number of frames in animation [NAME]",
+            text: "number of frames in [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
             },
           },
           {
             opcode: "frameNames",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all frames in animation [NAME]",
+            text: "all frames in [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "animation 1",
-              },
+              }
             },
           },
           {
             opcode: "frameName",
             blockType: Scratch.BlockType.REPORTER,
-            text: "frame [FRAME] in animation [NAME]",
+            text: "frame # [FRAME] in [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
               FRAME: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
+                defaultValue: 1
               },
             },
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Playback",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Playback" },
           {
             opcode: "setFPS",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set FPS of animation [NAME] to [FPS]",
+            text: "set FPS of [NAME] to [FPS]",
             blockIconURI: playIconURI,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
               FPS: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 30,
+                defaultValue: 30
               },
             },
           },
@@ -269,12 +243,11 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "playBack",
-                defaultValue: "normally",
+                menu: "playBack"
               },
             },
           },
@@ -286,12 +259,11 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "playBack",
-                defaultValue: "normally",
+                menu: "playBack"
               },
             },
           },
@@ -303,7 +275,7 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
             },
           },
@@ -311,179 +283,136 @@
           {
             opcode: "currentFPS",
             blockType: Scratch.BlockType.REPORTER,
-            text: "FPS of animation [NAME]",
+            text: "FPS of [NAME]",
             blockIconURI: playIconURI,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
             },
           },
           {
             opcode: "isPlaying",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is animation [NAME] playing?",
+            text: "is [NAME] playing?",
             blockIconURI: playIconURI,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
             },
           },
           {
             opcode: "currentFrame",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current frame of animation [NAME]",
+            text: "current frame of [NAME]",
             blockIconURI: playIconURI,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
             },
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Keyframes",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Keyframes" },
           {
             opcode: "addPosition",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add keyframe position to animation [NAME] with ID [ID] starting at x [x] y [y] and ending at x [x2] y [y2]",
+            text: "add keyframe position to [NAME] with ID [ID] start x [x] y [y] end x [x2] y [y2]",
             blockIconURI: keyIconURI,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key1",
+                defaultValue: "key1"
               },
-              x: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              x2: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100,
-              },
-              y2: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
+              x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              x2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
+              y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
           },
           {
             opcode: "addDirection",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add keyframe direction to animation [NAME] with ID [ID] starting at [DIR1] and ending at [DIR2]",
+            text: "add keyframe direction to [NAME] with ID [ID] start [DIR1] end [DIR2]",
             blockIconURI: keyIconURI,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key1",
+                defaultValue: "key1"
               },
-              DIR1: {
-                type: Scratch.ArgumentType.ANGLE,
-                defaultValue: 90,
-              },
-              DIR2: {
-                type: Scratch.ArgumentType.ANGLE,
-                defaultValue: 0,
-              },
+              DIR1: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 },
+              DIR2: { type: Scratch.ArgumentType.ANGLE, defaultValue: 0 },
             },
           },
           {
             opcode: "addScale",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add keyframe scale to animation [NAME] with ID [ID] starting at [scale]% and ending [scale2]%",
+            text: "add keyframe scale to [NAME] with ID [ID] start [scale]% end [scale2]%",
             blockIconURI: keyIconURI,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key1",
+                defaultValue: "key1"
               },
-              scale: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100,
-              },
-              scale2: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 150,
-              },
+              scale: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
+              scale2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 150 },
             },
           },
           {
             opcode: "addStretch",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add keyframe stretch to animation [NAME] with ID [ID] starting at width [x] height [y] and ending at width [x2] height [y2]",
+            text: "add keyframe stretch to [NAME] with ID [ID] start width [x] height [y] end width [x2] height [y2]",
             blockIconURI: keyIconURI,
-            hideFromPalette: !Scratch.extensions.isPenguinMod,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key1",
+                defaultValue: "key1"
               },
-              x: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100,
-              },
-              y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100,
-              },
-              x2: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 200,
-              },
-              y2: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 50,
-              },
+              x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
+              y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
+              x2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 200 },
+              y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
             },
           },
           "---",
           {
             opcode: "deleteKeyframe",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove keyframe with ID [ID] from animation [NAME]",
+            text: "remove keyframe with ID [ID] from [NAME]",
             blockIconURI: keyIconURI,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
+                defaultValue: "animation 1"
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key1",
+                defaultValue: "key1"
               },
             },
           },
         ],
         menus: {
-          playBack: {
-            acceptReporters: false,
-            items: ["normally", "in reverse", "looped normally", "looped reversed"],
-          },
+          playBack: ["normally", "in reverse", "looped normally", "looped reversed"],
           pullTypes: {
             acceptReporters: true,
             items: ["existing", "playing"],
@@ -495,12 +424,9 @@
     createAnimation(args, util) {
       allAnimations.push({
         [args.NAME]: {
-          name: args.NAME,
-          target: util.target,
-          fps: 10,
-          frames: [],
-          playing: false,
-          currentFrame: 0,
+          name: args.NAME, target: util.target,
+          fps: 10, frames: [],
+          playing: false, currentFrame: 0
         }
       });
     }
@@ -531,7 +457,7 @@
         animation = allAnimations.find((animation) => animation[args.NAME]);
       }
       if (util.target !== animation[args.NAME].target) {
-        console.error(`This Animation belongs to and can only be ran in "${animation[args.NAME].target.sprite.name}"`);
+        console.error(`This Animation can only be ran in "${animation[args.NAME].target.sprite.name}"`);
         return;
       }
       if (animation) { animation[args.NAME].frames.push(args.COSTUME) }
@@ -546,7 +472,7 @@
         animation = allAnimations.find((animation) => animation[args.NAME]);
       }
       if (util.target !== animation[args.NAME].target) {
-        console.error(`This Animation belongs to and can only be ran in "${animation[args.NAME].target.sprite.name}"`);
+        console.error(`This Animation can only be ran in "${animation[args.NAME].target.sprite.name}"`);
         return;
       }
       if (animation) {
@@ -576,7 +502,7 @@
       const animation = allAnimations.find((animation) => animation[args.NAME]);
       if (animation) {
         if (util.target !== animation[args.NAME].target) {
-          console.error(`This Animation belongs to and can only be ran in "${animation[args.NAME].target.sprite.name}"`);
+          console.error(`This Animation can only be ran in "${animation[args.NAME].target.sprite.name}"`);
           return;
         }
         animation[args.NAME].frames = animation[args.NAME].frames.filter(frame => frame !== args.COSTUME);
@@ -606,29 +532,20 @@
 
     numFrames(args) {
       const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        return animation[args.NAME].frames.length;
-      } else {
-        return "Animation Doesnt Exist!";
-      }
+      if (animation) return animation[args.NAME].frames.length;
+      else  return "Animation Doesnt Exist!";
     }
 
     currentFrame(args) {
       const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        return animation[args.NAME].currentFrame;
-      } else {
-        return "Animation Doesnt Exist!";
-      }
+      if (animation) return animation[args.NAME].currentFrame;
+      else return "Animation Doesnt Exist!";
     }
 
     frameNames(args) {
       const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        return JSON.stringify(animation[args.NAME].frames);
-      } else {
-        return "Animation Doesnt Exist!";
-      }
+      if (animation) return JSON.stringify(animation[args.NAME].frames);
+      else return "Animation Doesnt Exist!";
     }
 
     frameName(args) {
@@ -636,9 +553,7 @@
       if (animation) {
         const newFrame = Math.abs(Math.round(args.FRAME)) - 1;
         return (animation[args.NAME].frames[newFrame]) ? JSON.stringify(animation[args.NAME].frames[newFrame]) : "";
-      } else {
-        return "Animation Doesnt Exist!";
-      }
+      } else { return "Animation Doesnt Exist!" }
     }
 
     allAnimationsX(args) {
@@ -680,7 +595,6 @@
           myAnimation.currentFrame = frameIndex;
           const numFrames = myAnimation.frames.length;
           if (numFrames === 0) return;
-
           const playNextFrame = () => {
             if (myAnimation.playing === true) {
               myAnimation.currentFrame = frameIndex;
@@ -694,25 +608,17 @@
                     return;
                   }
                   /* eslint-enable */
-                } else {
-                  this._setKeyframe(target, myAnimation.frames[frameIndex], myAnimation);
-                }
-              } else {
-                this._setCostume(target, myAnimation.frames[frameIndex]);
-              }
+                } else { this._setKeyframe(target, myAnimation.frames[frameIndex], myAnimation) }
+              } else { this._setCostume(target, myAnimation.frames[frameIndex]) }
               handleNextFrame();
-            } else {
-              myAnimation.playing = false;
-            }
+            } else { myAnimation.playing = false }
           };
-
           const handleNextFrame = () => {
             if (args.TYPE.includes("reverse")) {
               frameIndex--;
               if (frameIndex < 0) {
-                if (args.TYPE.includes("looped")) {
-                  frameIndex = numFrames - 1;
-                } else {
+                if (args.TYPE.includes("looped")) frameIndex = numFrames - 1;
+                else {
                   myAnimation.playing = false;
                   return;
                 }
@@ -720,9 +626,8 @@
             } else {
               frameIndex++;
               if (frameIndex >= numFrames) {
-                if (args.TYPE.includes("looped")) {
-                  frameIndex = 0;
-                } else {
+                if (args.TYPE.includes("looped")) frameIndex = 0;
+                else {
                   myAnimation.playing = false;
                   return;
                 }
@@ -744,35 +649,25 @@
 
     currentFPS(args) {
       const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        return animation[args.NAME].fps;
-      } else {
-        return "Animation Doesnt Exist!";
-      }
+      if (animation) return animation[args.NAME].fps;
+      else return "Animation Doesnt Exist!";
     }
 
     isPlaying(args) {
       const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        return animation[args.NAME].playing;
-      } else {
-        return false;
-      }
+      if (animation) return animation[args.NAME].playing;
+      else return false;
     }
 
     _setCostume(target, requestedCostume, optZeroIndex) {
-      // ripped from vm
       if (typeof requestedCostume === "number") {
         target.setCostume(optZeroIndex ? requestedCostume : requestedCostume - 1);
       } else {
         const costumeIndex = target.getCostumeIndexByName(requestedCostume.toString());
-        if (costumeIndex !== -1) {
-          target.setCostume(costumeIndex);
-        } else if (requestedCostume === "next costume") {
-          target.setCostume(target.currentCostume + 1);
-        } else if (requestedCostume === "previous costume") {
-          target.setCostume(target.currentCostume - 1);
-        } else if (!(isNaN(requestedCostume) || Scratch.Cast.isWhiteSpace(requestedCostume))) {
+        if (costumeIndex !== -1) target.setCostume(costumeIndex);
+        else if (requestedCostume === "next costume") target.setCostume(target.currentCostume + 1);
+        else if (requestedCostume === "previous costume") target.setCostume(target.currentCostume - 1);
+        else if (!(isNaN(requestedCostume) || Scratch.Cast.isWhiteSpace(requestedCostume))) {
           target.setCostume(optZeroIndex ? Number(requestedCostume) : Number(requestedCostume) - 1);
         }
       }
@@ -788,10 +683,8 @@
       if (animation) {
         const keyframe = {
           [`spKF4!XY${args.ID}`]: {
-            x1: args.x,
-            y1: args.y,
-            x2: args.x2,
-            y2: args.y2,
+            x1: args.x, y1: args.y,
+            x2: args.x2, y2: args.y2,
           }
         };
         animation[args.NAME].frames.push(keyframe);
@@ -807,10 +700,8 @@
       if (animation) {
         const keyframe = {
           [`spKF4!WH${args.ID}`]: {
-            x1: args.x,
-            y1: args.y,
-            x2: args.x2,
-            y2: args.y2,
+            x1: args.x, y1: args.y,
+            x2: args.x2, y2: args.y2,
           }
         };
         animation[args.NAME].frames.push(keyframe);
@@ -826,8 +717,7 @@
       if (animation) {
         const keyframe = {
           [`spKF4!DIR${args.ID}`]: {
-            dir1: args.DIR1,
-            dir2: args.DIR2,
+            dir1: args.DIR1, dir2: args.DIR2,
           }
         };
         animation[args.NAME].frames.push(keyframe);
@@ -843,8 +733,7 @@
       if (animation) {
         const keyframe = {
           [`spKF4!SZ${args.ID}`]: {
-            size1: args.scale,
-            size2: args.scale2,
+            size1: args.scale, size2: args.scale2,
           }
         };
         animation[args.NAME].frames.push(keyframe);
@@ -856,9 +745,7 @@
       if (animation) {
         animation[args.NAME].frames = animation[args.NAME].frames.filter(frame => {
           for (const key in frame) {
-            if (key.startsWith("spKF4!") && key.endsWith(args.ID)) {
-              return false;
-            }
+            if (key.startsWith("spKF4!") && key.endsWith(args.ID)) return false;
           }
           return true;
         });
@@ -866,66 +753,60 @@
     }
 
     _setKeyframe(target, keyframe, data) {
+      let startTime, startX, startY, deltaX, deltaY, startSize, deltaSize, startDir, deltaDir;
       if (!keyFramesPlaying.some(item => JSON.stringify(item) === JSON.stringify([data, keyframe]))) {
         keyFramesPlaying.push([data, keyframe]);
       }
       keyFramesPlaying.push([data, keyframe]);
       const key = keyframe[Object.keys(keyframe)[0]];
       const animationDuration = data.fps * 20;
-      let startTime;
+      if (JSON.stringify(keyframe).includes("DIR")) {
+        startDir = key.dir1;
+        deltaDir = key.dir2 - key.dir1;
+      } else if (JSON.stringify(keyframe).includes("SZ")) {
+        startSize = key.size1;
+        deltaSize = key.size2 - key.size1;
+      } else {
+        startX = key.x1;
+        startY = key.y1;
+        deltaX = key.x2 - key.x1;
+        deltaY = key.y2 - key.y1;
+      }
       if (JSON.stringify(keyframe).includes("XY")) {
-        const startX = key.x1;
-        const startY = key.y1;
-        const deltaX = key.x2 - key.x1;
-        const deltaY = key.y2 - key.y1;
         const animateXY = (timestamp) => {
           if (!startTime) startTime = timestamp;
           const elapsedTime = timestamp - startTime;
           const progress = Math.min(elapsedTime / animationDuration, 1);
-          const newX = startX + deltaX * progress;
-          const newY = startY + deltaY * progress;
-          target.setXY(newX, newY);
+          target.setXY(startX + deltaX * progress, startY + deltaY * progress);
           if (progress < 1) requestAnimationFrame(animateXY);
         };
         requestAnimationFrame(animateXY);
       } else if (JSON.stringify(keyframe).includes("WH")) {
-        const startX = key.x1;
-        const startY = key.y1;
-        const deltaX = key.x2 - key.x1;
-        const deltaY = key.y2 - key.y1;
         const animateXY = (timestamp) => {
           if (!startTime) startTime = timestamp;
           const elapsedTime = timestamp - startTime;
           const progress = Math.min(elapsedTime / animationDuration, 1);
-          const newX = startX + deltaX * progress;
-          const newY = startY + deltaY * progress;
-          target.stretch["0"] = newX;
-          target.stretch["1"] = newY;
-          target.setDirection(target.direction);
+          vm.renderer._allDrawables[target.drawableID].updateScale([
+            startX + deltaX * progress, startY + deltaY * progress
+          ]);
           if (progress < 1) requestAnimationFrame(animateXY);
         };
         requestAnimationFrame(animateXY);
       } else if (JSON.stringify(keyframe).includes("DIR")) {
-        const startDir = key.dir1;
-        const deltaDir = key.dir2 - key.dir1;
         const animateDirection = (timestamp) => {
           if (!startTime) startTime = timestamp;
           const elapsedTime = timestamp - startTime;
           const progress = Math.min(elapsedTime / animationDuration, 1);
-          const newDirection = startDir + deltaDir * progress;
-          target.setDirection(newDirection);
+          target.setDirection(startDir + deltaDir * progress);
           if (progress < 1) requestAnimationFrame(animateDirection);
         };
         requestAnimationFrame(animateDirection);
       } else if (JSON.stringify(keyframe).includes("SZ")) {
-        const startSize = key.size1;
-        const deltaSize = key.size2 - key.size1;
         const animateSize = (timestamp) => {
           if (!startTime) startTime = timestamp;
           const elapsedTime = timestamp - startTime;
           const progress = Math.min(elapsedTime / animationDuration, 1);
-          const newSize = startSize + deltaSize * progress;
-          target.setSize(newSize);
+          target.setSize(startSize + deltaSize * progress);
           if (progress < 1) requestAnimationFrame(animateSize);
         };
         requestAnimationFrame(animateSize);
