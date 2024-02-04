@@ -150,6 +150,7 @@
                 defaultValue: "apple",
               },
             },
+            allowDropAnywhere: true,
           },
           {
             opcode: "letters",
