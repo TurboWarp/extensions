@@ -3,7 +3,7 @@
 // Description: Customize and Organize Lists Monitors.
 // By: SharkPool
 
-// Version 1.1.3
+// Version 1.1.4
 
 (function (Scratch) {
   "use strict";
@@ -18,6 +18,18 @@
     "Scratch", "Sans Serif", "Serif",
     "Handwriting", "Marker", "Curly", "Pixel"
   ];
+
+  const xmlEscape = function (unsafe) {
+    return unsafe.replace(/[<>&'"]/g, c => {
+      switch (c) {
+        case "<": return "&lt;";
+        case ">": return "&gt;";
+        case "&": return "&amp;";
+        case "'": return "&apos;";
+        case "\"": return "&quot;";
+      }
+    });
+  };
 
   let listDocs;
   if (runtime.isPackaged) {
@@ -538,12 +550,12 @@
           innerV : allItems[0].nextElementSibling.children[0].className
         };
         for (let i = 0; i < items.length; i++) {
-          const value = allItems[i] ? allItems[i].textContent : i + 1;
+          const value = allItems[i] ? xmlEscape(allItems[i].textContent) : i + 1;
           html += `
             <div class="${elementClasses.row}" style="height: 24px; left: 0px; position: absolute; top: ${i * 24}px; width: 100%;">
               <div class="${elementClasses.index}">${value}</div>
               <div class="${elementClasses.outerV}" dataindex="${i}" style="background: rgb(252, 102, 44);">
-                <div class="${elementClasses.innerV}">${items[i]}</div>
+                <div class="${elementClasses.innerV}">${xmlEscape(items[i])}</div>
               </div>
             </div>`;
         }
@@ -680,11 +692,8 @@
       if (styleAttribute) {
         const match = styleAttribute.match(/transform\s*:\s*translate\((-?\d+(?:\.\d+)?px),\s*(-?\d+(?:\.\d+)?px)\)/);
         if (match) {
-          if (args.POSITION === "x") {
-            return parseInt(match[1]) - canvas[0] + (sizeOffset[0] / 2);
-          } else {
-            return ((parseInt(match[2]) * -1) + canvas[1]) - (sizeOffset[1] / 2);
-          }
+          if (args.POSITION === "x") return parseInt(match[1]) - canvas[0] + (sizeOffset[0] / 2);
+          else return ((parseInt(match[2]) * -1) + canvas[1]) - (sizeOffset[1] / 2);
         }
       }
       return "";
@@ -727,7 +736,7 @@
       } else {
         label = document.querySelector(`[data-id=${list}] ${listDocs.pkg1}[class^="${listDocs.foot}"] ${listDocs.span}`);
       }
-      if (label) label.textContent = args.NAME;
+      if (label) label.textContent = xmlEscape(args.NAME);
     }
 
     resetEffects(list, currentTransform) {
@@ -750,20 +759,15 @@
       let currentFilterEffect = list.style.filter || "";
       let setEffect = EFFECT;
       let amountIn = AMOUNT;
-      if (setEffect === "saturation") {
-        setEffect = "saturate";
-      } else if (setEffect === "hue") {
-        setEffect = "hue-rotate";
-      } else if (setEffect === "direction") {
+      if (setEffect === "saturation") setEffect = "saturate";
+      else if (setEffect === "hue") setEffect = "hue-rotate";
+      else if (setEffect === "direction") {
         setEffect = "rotate";
         amountIn = AMOUNT - 90;
-      } else if (setEffect === "brightness") {
-        amountIn = AMOUNT + 100;
-      } else if (setEffect === "skew x") {
-        setEffect = "skewX";
-      } else if (setEffect === "skew y") {
-        setEffect = "skewY";
       }
+      else if (setEffect === "brightness") amountIn = AMOUNT + 100;
+      else if (setEffect === "skew x") setEffect = "skewX";
+      else if (setEffect === "skew y") setEffect = "skewY";
       const regex = new RegExp(`${setEffect}\\([^)]+\\)`, "g");
       currentTransform = currentTransform.replace(regex, "").trim();
       currentFilterEffect = currentFilterEffect.replace(regex, "").trim();
@@ -796,23 +800,16 @@
       const currentFilterEffect = list.style.filter || "";
       const setEffect = {
         saturation: "saturate",
-        hue: "hue-rotate",
-        direction: "rotate",
-        "scale x": "scale",
-        "scale y": "scale",
+        hue: "hue-rotate", direction: "rotate",
+        "scale x": "scale", "scale y": "scale",
         brightness: "brightness",
         opacity: "opacity",
-        "skew x": "skewX",
-        "skew y": "skewY",
+        "skew x": "skewX", "skew y": "skewY",
       }[args.EFFECT] || args.EFFECT;
       const defaultV = {
-        saturation: 100,
-        hue: 0,
-        direction: 90,
-        "scale x": 100,
-        "scale y": 100,
-        brightness: 0,
-        opacity: 100,
+        saturation: 100, hue: 0, direction: 90,
+        "scale x": 100, "scale y": 100,
+        brightness: 0, opacity: 100,
       }[args.EFFECT] || 0;
 
       const regex = new RegExp(`${setEffect}\\(([^)]+)\\)`);
@@ -821,11 +818,9 @@
       if (filterMatch || transformMatch) {
         const valueWithUnits = (filterMatch || transformMatch)[1];
         const numericValue = parseFloat(valueWithUnits.replace(/[^0-9.-]/g, ""));
-        if (setEffect === "brightness") {
-          return numericValue - 100;
-        } else if (setEffect === "rotate") {
-          return numericValue + 90;
-        } else if (setEffect === "scale") {
+        if (setEffect === "brightness") return numericValue - 100;
+        else if (setEffect === "rotate") return numericValue + 90;
+        else if (setEffect === "scale") {
           const arr = valueWithUnits.split(", ");
           return arr[args.EFFECT.includes("x") ? 0 : 1] * 100;
         } else { return numericValue }
@@ -861,7 +856,7 @@
       list = document.querySelectorAll(`[data-id=${list}]`);
       list = list[list.length - 1];
       const targetElement = list.querySelectorAll(`[class^="${listDocs.body}"] [class^="${listDocs.value}"]`)[args.NUM - 1];
-      if (targetElement) targetElement.style.background = args.COLOR;
+      if (targetElement) targetElement.style.background = xmlEscape(args.COLOR);
     }
 
     setLabel(args, util) {
@@ -871,27 +866,37 @@
       list = document.querySelectorAll(`[data-id=${list}]`);
       list = list[list.length - 1];
       const targetElement = list.querySelectorAll(`[class^="${listDocs.ind}"`)[args.NUM - 1];
-      if (targetElement) targetElement.textContent = args.VALUE;
+      if (targetElement) targetElement.textContent = xmlEscape(args.VALUE);
     }
 
     makeList(args, util) {
       let list = this.lookForList(args.LIST, util);
       if (list) return;
       if (args.TYPE === "for this sprite only") {
-        //creating this kind of list doesnt show until you switch back from editing a sprite to another for some reason...
-        return util.target.createVariable(this.generateId(), args.LIST, "list");
+        util.target.createVariable(this.generateId(), args.LIST, "list");
       } else {
         runtime.getTargetForStage().createVariable(this.generateId(), args.LIST, "list");
+      }
+      return this.refresh();
+    }
+
+    refresh() {
+      if (!runtime.isPackaged) {
+        Scratch.vm.emitWorkspaceUpdate();
+        window.ScratchBlocks.getMainWorkspace().toolboxRefreshEnabled_ = true;
+        window.ScratchBlocks.getMainWorkspace().refreshToolboxSelection_();
+        window.ScratchBlocks.getMainWorkspace().toolboxRefreshEnabled_ = false;
+        setTimeout(function() { vm.runtime.requestBlocksUpdate() }, 10);
       }
     }
 
     generateId() {
-      const chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/", "|", ",", ".", "{", "}", "[", "]", "(", ")", "+", "-", "!", "?", "`"];
-      const array = Array.from(Array(20).keys());
-      const normalArray = array.map(() => {
-        return chars[Math.round(Math.random() * (chars.length - 1))]
-      })
-      return normalArray.join("");
+      const soup = "!#%()*+,-./:;=?@[]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const id = [];
+      for (let i = 0; i < 20; i++) {
+        id[i] = soup.charAt(Math.random() * soup.length);
+      }
+      return id.join("");
     }
   }
 
