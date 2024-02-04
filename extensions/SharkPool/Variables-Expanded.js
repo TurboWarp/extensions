@@ -3,7 +3,7 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.2.3
+// Version 1.2.4
 
 (function (Scratch) {
   "use strict";
@@ -35,13 +35,8 @@
   }
 
   const builtInFonts = [
-    "Scratch",
-    "Sans Serif",
-    "Serif",
-    "Handwriting",
-    "Marker",
-    "Curly",
-    "Pixel"
+    "Scratch", "Sans Serif", "Serif",
+    "Handwriting", "Marker", "Curly", "Pixel"
   ];
 
   class MonitorsPlus {
@@ -167,8 +162,7 @@
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "variableTypeCreate",
-                defaultValue: "globally",
+                menu: "variableTypeCreate"
               }
             },
           },
@@ -255,8 +249,7 @@
               },
               POSITION: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "POSITIONS",
-                defaultValue: "x",
+                menu: "POSITIONS"
               },
             },
           },
@@ -313,8 +306,7 @@
             arguments: {
               FONT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "allFonts",
-                defaultValue: "Scratch",
+                menu: "allFonts"
               },
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
@@ -345,8 +337,7 @@
               },
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "EFFECTS",
-                defaultValue: "blur",
+                menu: "EFFECTS"
               },
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
@@ -365,8 +356,7 @@
               },
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "EFFECTS",
-                defaultValue: "blur",
+                menu: "EFFECTS"
               },
             },
           },
@@ -375,16 +365,10 @@
           variablesTypeMenu: {
             acceptReporters: true,
             items: [
-              "normal readout",
-              "large readout",
-              "slider",
-              "text",
-              "checkbox",
-              "color",
-              "button",
-              "file",
-              "image",
-              "audio"
+              "normal readout", "large readout",
+              "slider", "text", "checkbox",
+              "color", "button", "file",
+              "image", "audio"
             ],
           },
           sliderMaxMinMenu: ["min", "max"],
@@ -401,18 +385,10 @@
           EFFECTS: {
             acceptReporters: true,
             items: [
-              "blur",
-              "saturation",
-              "contrast",
-              "brightness",
-              "hue",
-              "opacity",
-              "sepia",
-              "invert",
-              "direction",
-              "scale",
-              "skew x",
-              "skew y"
+              "blur", "saturation", "contrast",
+              "brightness", "hue", "opacity",
+              "sepia", "invert", "direction",
+              "scale", "skew x", "skew y"
             ],
           },
         }
@@ -436,10 +412,7 @@
 
     getFonts() {
       const customFonts = Scratch.vm.runtime.fontManager ? Scratch.vm.runtime.fontManager.getFonts().map((i) => ({text: i.name, value: i.family})) : [];
-      return [
-        ...builtInFonts,
-        ...customFonts,
-      ];
+      return [ ...builtInFonts, ...customFonts ];
     }
 
     findVariable(variable, sprite) {
@@ -549,7 +522,7 @@
               <div class="monitor_label_ci1ok">${variableName}</div>
             </div>
             <div class="monitor_row_2y_kM">
-              <input type="text" id="text_${variableId}" class="monitor_slider_1CHwk no-drag" value="${Vvalue}">
+              <input type="text" id="text_${variableId}" class="monitor_slider_1CHwk no-drag" value="${xmlEscape(Vvalue)}">
             </div>`;
           variableMonitor.appendChild(container);
           typeElement = container.querySelector(`[id="text_${variableId}"]`);
@@ -595,11 +568,8 @@
           });
           break;
         case "color":
-          if (hexColorRegex.test(Vvalue)) {
-            isHex = Vvalue;
-          } else {
-            isHex = "#ff0000";
-          }
+          if (hexColorRegex.test(Vvalue)) isHex = xmlEscape(Vvalue);
+          else isHex = "#ff0000";
           if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
             container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
           } else {
@@ -677,9 +647,7 @@
                   const variable = util.target.lookupOrCreateVariable(nameID, variableName);
                   variable.value = reader.result;
                 };
-                reader.onerror = function (error) {
-                  console.log("Error: ", error);
-                };
+                reader.onerror = function (error) { console.log("Error: ", error) };
               }
             }
           });
@@ -899,22 +867,16 @@
       let setEffect = EFFECT;
       let amountIn = AMOUNT;
 
-      if (setEffect === "saturation") {
-        setEffect = "saturate";
-      } else if (setEffect === "hue") {
-        setEffect = "hue-rotate";
-      } else if (setEffect === "direction") {
+      if (setEffect === "saturation") setEffect = "saturate";
+      else if (setEffect === "hue") setEffect = "hue-rotate";
+      else if (setEffect === "direction") {
         setEffect = "rotate";
         amountIn = AMOUNT - 90;
-      } else if (setEffect === "scale") {
-        amountIn = AMOUNT / 100;
-      } else if (setEffect === "brightness") {
-        amountIn = AMOUNT + 100;
-      } else if (setEffect === "skew x") {
-        setEffect = "skewX";
-      } else if (setEffect === "skew y") {
-        setEffect = "skewY";
       }
+      else if (setEffect === "scale") amountIn = AMOUNT / 100;
+      else if (setEffect === "brightness") amountIn = AMOUNT + 100;
+      else if (setEffect === "skew x") setEffect = "skewX";
+      else if (setEffect === "skew y") setEffect = "skewY";
       const regex = new RegExp(`${setEffect}\\([^)]+\\)`, "g");
       currentTransform = currentTransform.replace(regex, "").trim();
       currentFilterEffect = currentFilterEffect.replace(regex, "").trim();
@@ -935,22 +897,15 @@
       const currentTransform = variableMonitor.style.transform;
       const currentFilterEffect = variableMonitor.style.filter || "";
       const setEffect = {
-        saturation: "saturate",
-        hue: "hue-rotate",
-        direction: "rotate",
-        scale: "scale",
-        brightness: "brightness",
-        opacity: "opacity",
-        "skew x": "skewX",
-        "skew y": "skewY",
+        saturation: "saturate", hue: "hue-rotate",
+        direction: "rotate", scale: "scale",
+        brightness: "brightness", opacity: "opacity",
+        "skew x": "skewX", "skew y": "skewY",
       }[args.EFFECT] || args.EFFECT;
       const defaultV = {
-        saturation: 100,
-        hue: 0,
-        direction: 90,
-        scale: 100,
-        brightness: 0,
-        opacity: 100,
+        saturation: 100, hue: 0,
+        direction: 90, scale: 100,
+        brightness: 0, opacity: 100,
       }[args.EFFECT] || 0;
 
       const regex = new RegExp(`${setEffect}\\(([^)]+)\\)`);
@@ -960,18 +915,11 @@
       if (filterMatch || transformMatch) {
         const valueWithUnits = (filterMatch || transformMatch)[1];
         const numericValue = parseFloat(valueWithUnits.replace(/[^0-9.-]/g, ""));
-        if (setEffect === "brightness") {
-          return numericValue - 100;
-        } else if (setEffect === "rotate") {
-          return numericValue + 90;
-        } else if (setEffect === "scale") {
-          return numericValue * 100;
-        } else {
-          return numericValue;
-        }
-      } else {
-        return defaultV;
-      }
+        if (setEffect === "brightness") return numericValue - 100;
+        else if (setEffect === "rotate") return numericValue + 90;
+        else if (setEffect === "scale") return numericValue * 100;
+        else return numericValue;
+      } else { return defaultV }
     }
 
     resetEffect(args, util) {
@@ -991,9 +939,20 @@
 
     makeVariable(args, util) {
       if (args.TYPE === "for this sprite only") {
-        return util.target.lookupOrCreateVariable(this.generateId(), args.VARIABLE, "");
+        util.target.lookupOrCreateVariable(this.generateId(), args.VARIABLE, "");
       } else {
-        return runtime.createNewGlobalVariable(args.VARIABLE, "");
+        runtime.createNewGlobalVariable(args.VARIABLE, "");
+      }
+      return this.refresh();
+    }
+
+    refresh() {
+      if (!runtime.isPackaged) {
+        Scratch.vm.emitWorkspaceUpdate();
+        window.ScratchBlocks.getMainWorkspace().toolboxRefreshEnabled_ = true;
+        window.ScratchBlocks.getMainWorkspace().refreshToolboxSelection_();
+        window.ScratchBlocks.getMainWorkspace().toolboxRefreshEnabled_ = false;
+        setTimeout(function() { vm.runtime.requestBlocksUpdate() }, 10);
       }
     }
 
@@ -1002,16 +961,17 @@
       if (variableId) {
         runtime.getTargetForStage().deleteVariable(variableId)
         util.target.deleteVariable(variableId);
+        return this.refresh();
       }
     }
 
     generateId() {
-      const chars = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/", "|", ",", ".", "{", "}", "[", "]", "(", ")", "+", "-", "!", "?", "`"];
-      const array = Array.from(Array(20).keys());
-      const normalArray = array.map(() => {
-        return chars[Math.round(Math.random() * (chars.length - 1))]
-      })
-      return normalArray.join("");
+      const soup = "!#%()*+,-./:;=?@[]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const id = [];
+      for (let i = 0; i < 20; i++) {
+        id[i] = soup.charAt(Math.random() * soup.length);
+      }
+      return id.join("");
     }
 
     reAddDeleted(variable, id, name, util) {
