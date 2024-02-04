@@ -20,7 +20,7 @@
   ];
 
   const xmlEscape = function (unsafe) {
-    return unsafe.replace(/[<>&'"]/g, c => {
+    return Scratch.Cast.toString(unsafe).replace(/[<>&'"]/g, c => {
       switch (c) {
         case "<": return "&lt;";
         case ">": return "&gt;";
