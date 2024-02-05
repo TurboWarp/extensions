@@ -44,6 +44,20 @@ This Block deletes the inputted ID and its values.
 ---
 
 ```scratch
+when particle ID is [added v] :: #0090ff :: hat
+```
+This Block runs when a ID is deleted/added.
+
+---
+
+```scratch
+particle ID [2] [exists v] ? :: #0090ff :: boolean
+```
+This Block checks if an ID exists or if its being used.
+
+---
+
+```scratch
 (particle ID: [5] (all v):: #0090ff)
 ```
 This Block reports the specified values of the inputted ID.
