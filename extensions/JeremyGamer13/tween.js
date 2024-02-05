@@ -9,6 +9,26 @@
   const BlockType = Scratch.BlockType;
   const ArgumentType = Scratch.ArgumentType;
   const Cast = Scratch.Cast;
+  const vm = Scratch.vm;
+  const runtime = vm.runtime;
+  const regeneratedReporters = ["jeremygamerTweening_changeV"];
+
+  vm.on("EXTENSION_ADDED", tryUseScratchBlocks);
+  vm.on("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
+  vm.runtime.on("BEFORE_EXECUTE", () => { vm.runtime.startHats("SharkPoolSharktilities_whenChanged") });
+
+  tryUseScratchBlocks();
+  function tryUseScratchBlocks() {
+    if (!window.ScratchBlocks) return;
+    vm.removeListener("EXTENSION_ADDED", tryUseScratchBlocks);
+    vm.removeListener("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
+    const originalCheck = ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter;
+    ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
+      const result = originalCheck(block);
+      if (result) return true;
+      return block.isShadow() && regeneratedReporters.includes(block.type);
+    };
+  }
 
   /**
    * @param {number} time should be 0-1
@@ -370,6 +390,49 @@
               },
             },
           },
+          "---",
+          { blockType: Scratch.BlockType.XML, xml: `
+            <block type="jeremygamerTweening_tweenC">
+              <value name="CHANGE"><shadow type="jeremygamerTweening_changeV"></shadow></value>
+              <value name="SEC"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+              <value name="START"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+              <value name="END"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
+              <value name="MODE"><shadow type="jeremygamerTweening_menu_modes"><field name="modes">linear</field></shadow></value>
+              <value name="DIRECTION"><shadow type="jeremygamerTweening_menu_direction"><field name="direction">in</field></shadow></value>
+            </block>`
+          },
+          {
+            opcode: "tweenC", blockType: Scratch.BlockType.LOOP,
+            text: "[MODE] ease [DIRECTION] [CHANGE] [START] to [END] in [SEC] secs",
+            hideFromPalette: true,
+            arguments: {
+              MODE: {
+                type: ArgumentType.STRING,
+                menu: "modes",
+              },
+              DIRECTION: {
+                type: ArgumentType.STRING,
+                menu: "direction",
+              },
+              CHANGE: { type: null },
+              START: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              END: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 100,
+              },
+              SEC: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 1,
+              }, 
+            }
+          },
+          {
+            opcode: "changeV", blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true, text: "tween value"
+          },
         ],
         menus: {
           modes: {
@@ -512,6 +575,58 @@
       } else if (args.PROPERTY === "size") {
         util.target.setSize(value);
       }
+    }
+
+    tweenC(args, util) {
+      const id = "loopedVal";
+      const state = util.stackFrame[id];
+      if (!state) {
+        const params = util.thread.TweenPars;
+        if (typeof params === "undefined") util.thread.stackFrames[0].TweenPars = {};
+        const blockId = util.thread.peekStack();
+
+        const durationMS = Cast.toNumber(args.SEC) * 1000;
+        const easeMethod = Cast.toString(args.MODE);
+        const easeDirection = Cast.toString(args.DIRECTION);
+        const start = Cast.toNumber(args.START);
+        const end = Cast.toNumber(args.END);
+        util.thread.stackFrames[0].TweenPars.val = start;
+        let easingFunction;
+        if (Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) {
+          easingFunction = EasingMethods[easeMethod];
+        } else {
+          easingFunction = EasingMethods.linear;
+        }
+
+        util.stackFrame[id] = {
+          startTimeMS: now(),
+          durationMS,
+          easingFunction,
+          easeDirection,
+          start,
+          end,
+        };
+        util.startBranch(1, true);
+      } else if (now() - state.startTimeMS >= state.durationMS) {
+        util.thread.stackFrames[0].TweenPars.val = util.stackFrame[id].end;
+        if (util.stackFrame[id].durationMS !== "stop") {
+          util.stackFrame[id].durationMS = "stop";
+          util.startBranch(1, true);
+        }
+      } else {
+        const progress = (now() - state.startTimeMS) / state.durationMS;
+        const tweened = state.easingFunction(progress, state.easeDirection);
+        util.thread.stackFrames[0].TweenPars.val =  interpolate(tweened, state.start, state.end);
+        if (util.stackFrame[id].durationMS !== "stop") util.startBranch(1, true);
+      }
+    }
+
+    changeV(args, util) {
+      const stack = util.thread.stackFrames;
+      if (typeof stack === "undefined") return "";
+      const params = stack[0].TweenPars;
+      if (typeof params === "undefined") return "";
+      return params.val || "";
     }
   }
 
