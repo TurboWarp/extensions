@@ -332,7 +332,7 @@
 
     existID(args) {
       if (args.TYPE === "exists") return Scratch.Cast.toBoolean(this.IDs[args.NAME]);
-      else return this.IDs[args.NAME] && this.IDs[args.NAME].active || false;
+      else return (this.IDs[args.NAME] && this.IDs[args.NAME].active) || false;
     }
 
     setGravity(args) { this.Gravity = args.GRAVITY }
