@@ -309,28 +309,29 @@
     }
   }
 
+
+  function addLinearGradientToBody() {
+    var grad1 = document.createElement("div");
+    grad1.innerHTML = `<svg><defs>
+      <linearGradient x1="200" y1="0" x2="240" y2="100" gradientUnits="userSpaceOnUse" id="SPscripts-GRAD1">
+      <stop offset="0" stop-color="#1e8370"/><stop offset="0.5" stop-color="#3a6062"/></linearGradient>
+      </defs></svg>`;
+    document.body.append(grad1);
+  }
+  if (!Scratch.vm.runtime.isPackaged) addLinearGradientToBody();
+
+  function documentChangedCallback(mutationsList, observer) {
+    var elements = document.querySelectorAll("g[data-category=\"Script Control\"] path");
+    var pathElements = document.querySelectorAll("g[data-category=\"Script Control\"] path");
+    pathElements.forEach(function(pathElement) {
+      var currentFill = pathElement.getAttribute("fill");
+      pathElement.setAttribute("fill", currentFill.replace(/#3a6062/g, "url(#SPscripts-GRAD1)"));
+    });
+  }
+  if (!Scratch.vm.runtime.isPackaged) {
+    var observer = new MutationObserver(documentChangedCallback);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+  }
+
   Scratch.extensions.register(new SPscripts());
 })(Scratch);
-
-function addLinearGradientToBody() {
-  var grad1 = document.createElement("div");
-  grad1.innerHTML = `<svg><defs>
-    <linearGradient x1="200" y1="0" x2="240" y2="100" gradientUnits="userSpaceOnUse" id="SPscripts-GRAD1">
-    <stop offset="0" stop-color="#1e8370"/><stop offset="0.5" stop-color="#3a6062"/></linearGradient>
-    </defs></svg>`;
-  document.body.append(grad1);
-}
-if (!Scratch.vm.runtime.isPackaged) addLinearGradientToBody();
-
-function documentChangedCallback(mutationsList, observer) {
-  var elements = document.querySelectorAll("g[data-category=\"Script Control\"] path");
-  var pathElements = document.querySelectorAll("g[data-category=\"Script Control\"] path");
-  pathElements.forEach(function(pathElement) {
-    var currentFill = pathElement.getAttribute("fill");
-    pathElement.setAttribute("fill", currentFill.replace(/#3a6062/g, "url(#SPscripts-GRAD1)"));
-  });
-}
-if (!Scratch.vm.runtime.isPackaged) {
-  var observer = new MutationObserver(documentChangedCallback);
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-}
