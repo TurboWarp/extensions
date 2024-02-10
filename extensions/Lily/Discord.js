@@ -376,11 +376,11 @@
     }
 
     createEmbed() {
-      getEmbedName("New Embed", this._createNewEmbed);
+      this.getEmbedName("New Embed", this._createNewEmbed);
     }
 
     deleteEmbed() {
-      getEmbedName("Remove Embed", this._removeEmbed);
+      this.getEmbedName("Remove Embed", this._removeEmbed);
     }
 
     setEmbedAttribute(args) {
@@ -474,6 +474,7 @@
     }
 
     async _getWebhookURL(name) {
+      const webhooks = this.webhooks;
       if (!this.checkValid(webhooks, name))
         return alert('A webhook named "' + name + '" already exists.');
       // fake promise so it doesn't close immediately
@@ -608,7 +609,7 @@
         id[i] = soup_.charAt(Math.random() * soupLength);
       }
       return id.join("");
-    };
+    }
 
     _createWebhookMenu() {
       const webhooks = this.webhooks;
