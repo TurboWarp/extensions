@@ -18,190 +18,14 @@
   let embedIcon =
     "data:image/png;base64,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";
 
-  /* Utility Functions */
-
-  const soup_ =
-    "!#%()*+,-./:;=?@[]^_`{|}~" +
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-  const uid = function () {
-    const length = 20;
-    const soupLength = soup_.length;
-    const id = [];
-    for (let i = 0; i < length; i++) {
-      id[i] = soup_.charAt(Math.random() * soupLength);
-    }
-    return id.join("");
-  };
-
-  function checkValid(object, name) {
-    const uids = Object.keys(object);
-    for (const uid of uids) {
-      if (object[uid].name == name) return false;
-    }
-    return true;
-  }
-
   /* Webhook/embed creation */
 
-  function getWebhookName(modalTitle, callback) {
-    ScratchBlocks.prompt(
-      "Enter webhook name",
-      "",
-      (text) => {
-        if (!text) return;
-        callback(text);
-      },
-      modalTitle,
-      "broadcast_msg"
-    );
-  }
-
-  function getEmbedName(modalTitle, callback) {
-    ScratchBlocks.prompt(
-      "Enter embed name",
-      "",
-      (text) => {
-        if (!text) return;
-        callback(text);
-      },
-      modalTitle,
-      "broadcast_msg"
-    );
-  }
-
-  async function getWebhookURL(name) {
-    // fake promise so it doesn't close immediately
-    if (!checkValid(webhooks, name))
-      return alert('A webhook named "' + name + '" already exists.');
-    await new Promise((resolveInner) => {
-      setTimeout(resolveInner, -1);
-    });
-    ScratchBlocks.prompt(
-      "Enter webhook URL",
-      "",
-      (text) => {
-        if (!text) return;
-        createNewWebhook(name, text);
-      },
-      "New Webhook",
-      "broadcast_msg"
-    );
-  }
-
-  async function createNewWebhook(name, url) {
-    const webhookData = await Scratch.fetch(url);
-    const jsonData = await webhookData.json();
-    const webhookName = jsonData["name"];
-    webhooks[uid()] = {
-      name: name,
-      URL: url,
-      USERNAME: webhookName,
-      AVATAR: "",
-    };
-    webhookHidden = false;
-    Scratch.vm.extensionManager.refreshBlocks();
-  }
-
-  function createNewEmbed(name) {
-    if (!checkValid(embeds, name))
-      return alert('An embed named "' + name + '" already exists.');
-    embeds[uid()] = {
-      name: name,
-      title: "Title",
-      description: "Description",
-      url: null,
-      color: null,
-      author: null,
-      image: { url: null },
-      thumbnail: { url: null },
-    };
-    embedHidden = false;
-    Scratch.vm.extensionManager.refreshBlocks();
-  }
-
-  /* Webhook/embed renaming */
-
-  function renameWebhook(uid) {
-    const name = webhooks[uid].name;
-    ScratchBlocks.prompt(
-      `Rename all "${name}" webhooks to:`,
-      name,
-      (text) => {
-        if (!text) return;
-        if (!checkValid(webhooks, text))
-          return alert('A webhook named "' + name + '" already exists.');
-        webhooks[uid].name = text;
-        Scratch.vm.emitWorkspaceUpdate();
-      },
-      "Rename Webhook",
-      "broadcast_msg"
-    );
-  }
-
-  function renameEmbed(uid) {
-    if (uid === "no embed") return;
-    const name = embeds[uid].name;
-    ScratchBlocks.prompt(
-      `Rename all "${name}" embeds to:`,
-      name,
-      (text) => {
-        if (!text) return;
-        if (!checkValid(embeds, text))
-          return alert('An embed named "' + name + '" already exists.');
-        embeds[uid].name = text;
-        Scratch.vm.emitWorkspaceUpdate();
-      },
-      "Rename Embed",
-      "broadcast_msg"
-    );
-  }
-
-  /* Webhook/embed deletion */
-
-  function removeWebhook(name) {
-    const uids = Object.keys(webhooks);
-    for (const uid of uids) {
-      if (webhooks[uid].name == name) {
-        Reflect.deleteProperty(webhooks, uid);
-        if (Object.keys(webhooks).length == 0) webhookHidden = true;
-        Scratch.vm.extensionManager.refreshBlocks();
-        return;
-      }
-    }
-    return alert("That webhook doesn't exist.");
-  }
-
-  function removeEmbed(name) {
-    const uids = Object.keys(embeds);
-    for (const uid of uids) {
-      if (embeds[uid].name == name) {
-        Reflect.deleteProperty(embeds, uid);
-        if (Object.keys(embeds).length == 0) embedHidden = true;
-        Scratch.vm.extensionManager.refreshBlocks();
-        return;
-      }
-    }
-    return alert("That embed doesn't exist.");
-  }
-
-  /* Extension Storage */
-
-  if (!runtime.extensionStorage["lmsDiscordAPI"]) {
-    runtime.extensionStorage["lmsDiscordAPI"] = Object.create(null);
-    runtime.extensionStorage["lmsDiscordAPI"].webhooks = Object.create(null);
-    runtime.extensionStorage["lmsDiscordAPI"].embeds = Object.create(null);
-  }
-
-  const webhooks = runtime.extensionStorage["lmsDiscordAPI"].webhooks;
-  const embeds = runtime.extensionStorage["lmsDiscordAPI"].embeds;
-
-  let webhookHidden = Object.keys(webhooks).length === 0;
-  let embedHidden = Object.keys(embeds).length === 0;
-
-  /* Extension class */
-
   class DiscordAPI {
+    constructor () {
+      vm.runtime.on("PROJECT_LOADED", this._setupExtensionStorage);
+      this._setupExtensionStorage();
+    }
+
     getInfo() {
       return {
         id: "lmsDiscordAPI",
@@ -214,15 +38,15 @@
           {
             blockType: Scratch.BlockType.BUTTON,
             text: "Add Webhook",
-            func: "addWebhook",
+            func: "_addWebhook",
             disableMonitor: true,
           },
           {
             blockType: Scratch.BlockType.BUTTON,
             text: "Remove Webhook",
-            func: "deleteWebhook",
+            func: "_deleteWebhook",
             disableMonitor: true,
-            hideFromPalette: webhookHidden,
+            hideFromPalette: this.webhookHidden,
           },
           {
             opcode: "setWebhookAttribute",
@@ -243,7 +67,7 @@
                 defaultValue: "GarboMuffin",
               },
             },
-            hideFromPalette: webhookHidden,
+            hideFromPalette: this.webhookHidden,
           },
           {
             opcode: "sendMessage",
@@ -269,7 +93,7 @@
                 menu: "embedMenu",
               },
             },
-            hideFromPalette: webhookHidden,
+            hideFromPalette: this.webhookHidden,
           },
           {
             opcode: "getWebhookAttribute",
@@ -286,21 +110,21 @@
                 menu: "webhookMenu",
               },
             },
-            hideFromPalette: webhookHidden,
+            hideFromPalette: this.webhookHidden,
           },
           "---",
           {
             blockType: Scratch.BlockType.BUTTON,
             text: "Create Embed",
-            func: "createEmbed",
+            func: "_createEmbed",
             disableMonitor: true,
           },
           {
             blockType: Scratch.BlockType.BUTTON,
             text: "Remove Embed",
-            func: "deleteEmbed",
+            func: "_deleteEmbed",
             disableMonitor: true,
-            hideFromPalette: embedHidden,
+            hideFromPalette: this.embedHidden,
           },
           {
             opcode: "getEmbedAttribute",
@@ -317,7 +141,7 @@
                 menu: "embedMenu",
               },
             },
-            hideFromPalette: embedHidden,
+            hideFromPalette: this.embedHidden,
           },
           "---",
           {
@@ -339,7 +163,7 @@
                 defaultValue: "Announcement",
               },
             },
-            hideFromPalette: embedHidden,
+            hideFromPalette: this.embedHidden,
           },
           {
             opcode: "setEmbedColor",
@@ -356,7 +180,7 @@
                 defaultValue: "#5ee59d",
               },
             },
-            hideFromPalette: embedHidden,
+            hideFromPalette: this.embedHidden,
           },
           {
             opcode: "setEmbedAuthor",
@@ -376,17 +200,17 @@
                 type: Scratch.ArgumentType.STRING,
               },
             },
-            hideFromPalette: embedHidden,
+            hideFromPalette: this.embedHidden,
           },
         ],
         menus: {
           webhookMenu: {
             acceptReporters: true,
-            items: "createWebhookMenu",
+            items: "_createWebhookMenu",
           },
           embedMenu: {
             acceptReporters: true,
-            items: "createEmbedMenu",
+            items: "_createEmbedMenu",
           },
           sendTypeMenu: {
             acceptReporters: false,
@@ -478,14 +302,15 @@
     }
 
     addWebhook() {
-      getWebhookName("New Webhook", getWebhookURL);
+      this._getWebhookName("New Webhook", this._getWebhookURL);
     }
 
     deleteWebhook() {
-      getWebhookName("Remove Webhook", removeWebhook);
+      this._getWebhookName("Remove Webhook", this._removeWebhook);
     }
 
     setWebhookAttribute(args) {
+      const webhooks = this.webhooks;
       if (!webhooks[args.WEBHOOK]) {
         return;
       }
@@ -499,6 +324,8 @@
     }
 
     sendMessage(args) {
+      const webhooks = this.webhooks;
+      const embeds = this.embeds;
       if (!webhooks[args.WEBHOOK]) {
         return;
       }
@@ -535,6 +362,7 @@
     }
 
     getWebhookAttribute(args) {
+      const webhooks = this.webhooks;
       if (!webhooks[args.WEBHOOK]) {
         return "";
       }
@@ -548,14 +376,15 @@
     }
 
     createEmbed() {
-      getEmbedName("New Embed", createNewEmbed);
+      getEmbedName("New Embed", this._createNewEmbed);
     }
 
     deleteEmbed() {
-      getEmbedName("Remove Embed", removeEmbed);
+      getEmbedName("Remove Embed", this._removeEmbed);
     }
 
     setEmbedAttribute(args) {
+      const embeds = this.embeds;
       if (!embeds[args.EMBED]) {
         return;
       }
@@ -574,6 +403,7 @@
     }
 
     setEmbedColor(args) {
+      const embeds = this.embeds;
       if (!embeds[args.EMBED]) {
         return "";
       }
@@ -584,6 +414,7 @@
     }
 
     setEmbedAuthor(args) {
+      const embeds = this.embeds;
       if (!embeds[args.EMBED]) {
         return "";
       }
@@ -601,6 +432,7 @@
     }
 
     getEmbedAttribute(args) {
+      const embeds = this.embeds;
       if (!embeds[args.EMBED]) {
         return "";
       }
@@ -613,7 +445,173 @@
       }
     }
 
-    createWebhookMenu() {
+    async _createNewWebhook(name, url) {
+      const webhooks = this.webhooks;
+      const webhookData = await Scratch.fetch(url);
+      const jsonData = await webhookData.json();
+      const webhookName = jsonData["name"];
+      webhooks[this._uid()] = {
+        name: name,
+        URL: url,
+        USERNAME: webhookName,
+        AVATAR: "",
+      };
+      this.webhookHidden = false;
+      Scratch.vm.extensionManager.refreshBlocks();
+    }
+
+    _getWebhookName(modalTitle, callback) {
+      ScratchBlocks.prompt(
+        "Enter webhook name",
+        "",
+        (text) => {
+          if (!text) return;
+          callback(text);
+        },
+        modalTitle,
+        "broadcast_msg"
+      );
+    }
+
+    async _getWebhookURL(name) {
+      if (!this.checkValid(webhooks, name))
+        return alert('A webhook named "' + name + '" already exists.');
+      // fake promise so it doesn't close immediately
+      await new Promise((resolveInner) => {
+        setTimeout(resolveInner, -1);
+      });
+      ScratchBlocks.prompt(
+        "Enter webhook URL",
+        "",
+        (text) => {
+          if (!text) return;
+          this._createNewWebhook(name, text);
+        },
+        "New Webhook",
+        "broadcast_msg"
+      );
+    }
+
+    _renameWebhook(uid) {
+      const webhooks = this.webhooks;
+      const name = webhooks[uid].name;
+      ScratchBlocks.prompt(
+        `Rename all "${name}" webhooks to:`,
+        name,
+        (text) => {
+          if (!text) return;
+          if (!this.checkValid(webhooks, text))
+            return alert('A webhook named "' + name + '" already exists.');
+          webhooks[uid].name = text;
+          Scratch.vm.emitWorkspaceUpdate();
+        },
+        "Rename Webhook",
+        "broadcast_msg"
+      );
+    }
+
+    _removeWebhook(name) {
+      const webhooks = this.webhooks;
+      const uids = Object.keys(webhooks);
+      for (const uid of uids) {
+        if (webhooks[uid].name == name) {
+          Reflect.deleteProperty(webhooks, uid);
+          if (Object.keys(webhooks).length == 0) this.webhookHidden = true;
+          Scratch.vm.extensionManager.refreshBlocks();
+          return;
+        }
+      }
+      return alert("That webhook doesn't exist.");
+    }
+
+    _createNewEmbed(name) {
+      const embeds = this.embeds;
+      if (!this.checkValid(embeds, name))
+        return alert('An embed named "' + name + '" already exists.');
+      embeds[this._uid()] = {
+        name: name,
+        title: "Title",
+        description: "Description",
+        url: null,
+        color: null,
+        author: null,
+        image: { url: null },
+        thumbnail: { url: null },
+      };
+      this.embedHidden = false;
+      Scratch.vm.extensionManager.refreshBlocks();
+    }
+
+    _getEmbedName(modalTitle, callback) {
+      ScratchBlocks.prompt(
+        "Enter embed name",
+        "",
+        (text) => {
+          if (!text) return;
+          callback(text);
+        },
+        modalTitle,
+        "broadcast_msg"
+      );
+    }
+
+    _renameEmbed(uid) {
+      const embeds = this.embeds;
+      if (uid === "no embed") return;
+      const name = embeds[uid].name;
+      ScratchBlocks.prompt(
+        `Rename all "${name}" embeds to:`,
+        name,
+        (text) => {
+          if (!text) return;
+          if (!this._checkValid(embeds, text))
+            return alert('An embed named "' + name + '" already exists.');
+          embeds[uid].name = text;
+          Scratch.vm.emitWorkspaceUpdate();
+        },
+        "Rename Embed",
+        "broadcast_msg"
+      );
+    }
+  
+    _removeEmbed(name) {
+      const embeds = this.embeds;
+      const uids = Object.keys(embeds);
+      for (const uid of uids) {
+        if (embeds[uid].name == name) {
+          Reflect.deleteProperty(embeds, uid);
+          if (Object.keys(embeds).length == 0) this.embedHidden = true;
+          Scratch.vm.extensionManager.refreshBlocks();
+          return;
+        }
+      }
+      return alert("That embed doesn't exist.");
+    }
+
+    _checkValid(object, name) {
+      const uids = Object.keys(object);
+      for (const uid of uids) {
+        if (object[uid].name == name) return false;
+      }
+      return true;
+    }
+
+    _uid() {
+      const soup_ =
+        "!#%()*+,-./:;=?@[]^_`{|}~" +
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+      const length = 20;
+      const soupLength = soup_.length;
+      const id = [];
+      for (let i = 0; i < length; i++) {
+        id[i] = soup_.charAt(Math.random() * soupLength);
+      }
+      return id.join("");
+    };
+
+    _createWebhookMenu() {
+      const webhooks = this.webhooks;
       const webhookMenu = [];
       const length = Object.keys(webhooks).length;
       for (let index = 0; index < length; index++) {
@@ -625,11 +623,11 @@
       }
       const nameWebhook = {
         text: "Rename webhook",
-        value: () => renameWebhook(ScratchBlocks.DropDownDiv.owner_.value_),
+        value: () => this._renameWebhook(ScratchBlocks.DropDownDiv.owner_.value_),
       };
       const newWebhook = {
         text: "New webhook",
-        value: () => getWebhookName("New Webhook", getWebhookURL),
+        value: () => this._getWebhookName("New Webhook", this._getWebhookURL),
       };
       if (webhookMenu.length > 0) {
         webhookMenu.push(nameWebhook);
@@ -640,7 +638,8 @@
       }
     }
 
-    createEmbedMenu() {
+    _createEmbedMenu() {
+      const embeds = this.embeds;
       const embedMenu = [];
       const length = Object.keys(embeds).length;
       for (let index = 0; index < length; index++) {
@@ -653,11 +652,11 @@
       const noEmbed = { text: "no embed", value: "no embed" };
       const nameEmbed = {
         text: "Rename embed",
-        value: () => renameEmbed(ScratchBlocks.DropDownDiv.owner_.value_),
+        value: () => this._renameEmbed(ScratchBlocks.DropDownDiv.owner_.value_),
       };
       const newEmbed = {
         text: "New embed",
-        value: () => getEmbedName("New Embed", createNewEmbed),
+        value: () => this._getEmbedName("New Embed", this._createNewEmbed),
       };
       if (embedMenu.length > 0) {
         embedMenu.push(noEmbed);
@@ -667,6 +666,20 @@
       } else {
         return [noEmbed, newEmbed];
       }
+    }
+
+    _setupExtensionStorage() {
+      if (!runtime.extensionStorage["lmsDiscordAPI"]) {
+        runtime.extensionStorage["lmsDiscordAPI"] = Object.create(null);
+        runtime.extensionStorage["lmsDiscordAPI"].webhooks = Object.create(null);
+        runtime.extensionStorage["lmsDiscordAPI"].embeds = Object.create(null);
+      }
+
+      this.webhooks = runtime.extensionStorage["lmsDiscordAPI"].webhooks;
+      this.embeds = runtime.extensionStorage["lmsDiscordAPI"].embeds;
+  
+      this.webhookHidden = Object.keys(this.webhooks).length === 0;
+      this.embedHidden = Object.keys(this.embeds).length === 0;
     }
   }
 
