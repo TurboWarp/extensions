@@ -28,7 +28,8 @@
     setupExtensionStorage() {
       if (!runtime.extensionStorage["lmsDiscordAPI"]) {
         runtime.extensionStorage["lmsDiscordAPI"] = Object.create(null);
-        runtime.extensionStorage["lmsDiscordAPI"].webhooks = Object.create(null);
+        runtime.extensionStorage["lmsDiscordAPI"].webhooks =
+          Object.create(null);
         runtime.extensionStorage["lmsDiscordAPI"].embeds = Object.create(null);
       }
 
