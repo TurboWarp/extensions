@@ -18,12 +18,25 @@
   let embedIcon =
     "data:image/png;base64,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";
 
-  /* Webhook/embed creation */
-
   class DiscordAPI {
-    constructor () {
-      vm.runtime.on("PROJECT_LOADED", this._setupExtensionStorage);
-      this._setupExtensionStorage();
+    constructor() {
+      vm.runtime.on("PROJECT_LOADED", this.setupExtensionStorage);
+      this.setupExtensionStorage();
+    }
+
+    // Note to GarboMuffin: would be very cool if this was called automatically by the extensionManager...
+    setupExtensionStorage() {
+      if (!runtime.extensionStorage["lmsDiscordAPI"]) {
+        runtime.extensionStorage["lmsDiscordAPI"] = Object.create(null);
+        runtime.extensionStorage["lmsDiscordAPI"].webhooks = Object.create(null);
+        runtime.extensionStorage["lmsDiscordAPI"].embeds = Object.create(null);
+      }
+
+      this.webhooks = runtime.extensionStorage["lmsDiscordAPI"].webhooks;
+      this.embeds = runtime.extensionStorage["lmsDiscordAPI"].embeds;
+
+      this.webhookHidden = Object.keys(this.webhooks).length === 0;
+      this.embedHidden = Object.keys(this.embeds).length === 0;
     }
 
     getInfo() {
@@ -574,7 +587,7 @@
         "broadcast_msg"
       );
     }
-  
+
     _removeEmbed(name) {
       const embeds = this.embeds;
       const uids = Object.keys(embeds);
@@ -624,7 +637,8 @@
       }
       const nameWebhook = {
         text: "Rename webhook",
-        value: () => this._renameWebhook(ScratchBlocks.DropDownDiv.owner_.value_),
+        value: () =>
+          this._renameWebhook(ScratchBlocks.DropDownDiv.owner_.value_),
       };
       const newWebhook = {
         text: "New webhook",
@@ -667,20 +681,6 @@
       } else {
         return [noEmbed, newEmbed];
       }
-    }
-
-    _setupExtensionStorage() {
-      if (!runtime.extensionStorage["lmsDiscordAPI"]) {
-        runtime.extensionStorage["lmsDiscordAPI"] = Object.create(null);
-        runtime.extensionStorage["lmsDiscordAPI"].webhooks = Object.create(null);
-        runtime.extensionStorage["lmsDiscordAPI"].embeds = Object.create(null);
-      }
-
-      this.webhooks = runtime.extensionStorage["lmsDiscordAPI"].webhooks;
-      this.embeds = runtime.extensionStorage["lmsDiscordAPI"].embeds;
-  
-      this.webhookHidden = Object.keys(this.webhooks).length === 0;
-      this.embedHidden = Object.keys(this.embeds).length === 0;
     }
   }
 
