@@ -37,7 +37,7 @@
     }
     extStorage = runtime.extensionStorage["localstorage"];
     namespace = extStorage.namespace;
-  }
+  };
 
   const getFullStorageKey = () => `${PREFIX}${namespace}`;
 
