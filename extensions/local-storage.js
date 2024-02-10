@@ -28,12 +28,16 @@
     return id.join("");
   };
 
-  if (!runtime.extensionStorage["localstorage"]) {
-    runtime.extensionStorage["localstorage"] = Object.create(null);
-    runtime.extensionStorage["localstorage"].namespace = uid();
+  let extStorage;
+  let namespace;
+  const setupExtensionStorage = () => {
+    if (!runtime.extensionStorage["localstorage"]) {
+      runtime.extensionStorage["localstorage"] = Object.create(null);
+      runtime.extensionStorage["localstorage"].namespace = uid();
+    }
+    extStorage = runtime.extensionStorage["localstorage"];
+    namespace = extStorage.namespace;
   }
-  const extStorage = runtime.extensionStorage["localstorage"];
-  const namespace = extStorage.namespace;
 
   const getFullStorageKey = () => `${PREFIX}${namespace}`;
 
@@ -100,6 +104,11 @@
   });
 
   class LocalStorage {
+    constructor() {
+      vm.runtime.on("PROJECT_LOADED", setupExtensionStorage);
+      setupExtensionStorage();
+    }
+
     getInfo() {
       return {
         id: "localstorage",
