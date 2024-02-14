@@ -3,7 +3,7 @@
 // Description: Make sounds with oscillators!
 // By: SharkPool
 
-// Version V.2.1.0
+// Version V.2.1.1
 
 (function (Scratch) {
   "use strict";
@@ -50,7 +50,7 @@
         blockIconURI,
         blocks: [
           {
-            opcode: "playNote",
+            opcode: "playNoteV2",
             blockType: Scratch.BlockType.COMMAND,
             text: "play [WAVE] note [NOTE] for [DURATION] seconds with ID [ID]",
             arguments: {
@@ -73,7 +73,7 @@
             },
           },
           {
-            opcode: "playNoteContinuously",
+            opcode: "playNoteContinuouslyV2",
             blockType: Scratch.BlockType.COMMAND,
             text: "play [WAVE] note [NOTE] continuously with ID [ID]",
             arguments: {
@@ -89,6 +89,30 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 1
               },
+            },
+          },
+          // These 2 are Legacy Blocks for Support
+          {
+            opcode: "playNote",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "play [WAVE] note [NOTE] for [DURATION] seconds with ID [ID]",
+            hideFromPalette: true,
+            arguments: {
+              WAVE: { type: Scratch.ArgumentType.STRING, menu: "WAVES2" },
+              NOTE: { type: Scratch.ArgumentType.NOTE, defaultValue: 60 },
+              DURATION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0.5 },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: 1 }
+            },
+          },
+          {
+            opcode: "playNoteContinuously",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "play [WAVE] note [NOTE] continuously with ID [ID]",
+            hideFromPalette: true,
+            arguments: {
+              WAVE: { type: Scratch.ArgumentType.STRING, menu: "WAVES2" },
+              NOTE: { type: Scratch.ArgumentType.NOTE, defaultValue: 60 },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: 1 }
             },
           },
           {
@@ -207,6 +231,7 @@
           }
         ],
         menus: {
+          WAVES2: ["triangle", "sine", "square", "sawtooth"],
           WAVES: {
             acceptReporters: true,
             items: ["triangle", "sine", "square", "sawtooth"]
@@ -229,6 +254,7 @@
       return `${noteName}${octave}`;
     }
 
+    playNoteV2(args) { this.playNote(args) }
     playNote({ WAVE, NOTE, DURATION, ID }) {
       this.stopID({ ID });
       const realNote = this.convertScratchNoteToRealNote(Math.round(NOTE));
@@ -236,6 +262,7 @@
       this.playSound(frequency, DURATION, WAVE, ID);
     }
 
+    playNoteContinuouslyV2(args) { this.playNoteContinuously(args) }
     playNoteContinuously({ WAVE, NOTE, ID }) {
       this.stopID({ ID });
       const realNote = this.convertScratchNoteToRealNote(Math.round(NOTE));
