@@ -40,6 +40,7 @@
   "XeroName/Deltatime",
   "ar",
   "encoding",
+  "SJ/BinaryConverter",
   "Lily/SoundExpanded",
   "Lily/TempVariables2",
   "Lily/MoreTimers",
