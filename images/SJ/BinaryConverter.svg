@@ -35,71 +35,8 @@
       font-size="40"
       text-anchor="start"
     >
-      <text
-        transform="translate(195.70157,118.44378) scale(0.9117,0.9117)"
-        font-size="40"
-        xml:space="preserve"
-        fill="#f2f2f2"
-        fill-rule="nonzero"
-        stroke="none"
-        stroke-width="1"
-        stroke-linecap="butt"
-        stroke-linejoin="miter"
-        stroke-miterlimit="10"
-        stroke-dasharray=""
-        stroke-dashoffset="0"
-        font-family="Sans Serif"
-        font-weight="normal"
-        text-anchor="start"
-        style="mix-blend-mode: normal"
-      >
-        <tspan
-          xmlns="http://www.w3.org/2000/svg"
-          x="0"
-          dy="0"
-          style="font-family: Comic Sans MS;"
-        >
-          Hello World
-        </tspan>
-        <tspan x="0" dy="46.15px">
-          {" "}
-        </tspan>
-        <tspan
-          xmlns="http://www.w3.org/2000/svg"
-          x="0"
-          dy="46.15px"
-          style="font-family: Comic Sans MS;"
-        >
-          1001011010
-        </tspan>
-      </text>
-      <text
-        transform="translate(289.57016,160.51874) scale(0.9117,0.9117)"
-        font-size="40"
-        xml:space="preserve"
-        fill="#f2f2f2"
-        fill-rule="nonzero"
-        stroke="none"
-        stroke-width="1"
-        stroke-linecap="butt"
-        stroke-linejoin="miter"
-        stroke-miterlimit="10"
-        stroke-dasharray=""
-        stroke-dashoffset="0"
-        font-family="Sans Serif"
-        font-weight="normal"
-        text-anchor="start"
-        style="mix-blend-mode: normal"
-      >
-        <tspan
-          xmlns="http://www.w3.org/2000/svg"
-          x="0"
-          dy="0"
-          style="font-family: Comic Sans MS;"
-        >
-          =
-        </tspan>
-      </text>
+      <path d="M 195.70157 118.44378 h 228.22959 q 0 0 -29.79059 46.15 h 259.47595 q 0 0 -29.79059 -46.15 z" fill="#f2f2f2"/>
+      <path d="M 289.57016 160.51874 h 0 q 0 0 -29.79059 46.15 h 0 q 0 0 -29.79059 -46.15 z" fill="#f2f2f2"/>
     </g>
   </g>
-</svg>;
+</svg>
