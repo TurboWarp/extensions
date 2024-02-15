@@ -1,5 +1,5 @@
 // Name: Arrays
-// ID: arrays
+// ID: spyroArrays
 // Description: Category that can create 2D and 3D arrays and access them
 // By: SpyroStudios <https://scratch.mit.edu/users/SpyroStudios/>
 
@@ -15,7 +15,7 @@
   class ArraysExtension {
     getInfo() {
       return {
-        id: "arrays",
+        id: "spyroArrays",
         name: "Arrays",
         color1: "#900C3F",
         color2: "#800b38",
