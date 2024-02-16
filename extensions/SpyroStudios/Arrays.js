@@ -367,14 +367,14 @@
 
     delete2DArray(args, util) {
       const name = `${args.NAME}_2D`;
-      if (util.target.variables.hasOwnProperty(name)) {
+      if (util.target.variables[name]) {
         delete util.target.variables[name];
       }
     }
 
     delete3DArray(args, util) {
       const name = `${args.NAME}_3D`;
-      if (util.target.variables.hasOwnProperty(name)) {
+      if (util.target.variables[name]) {
         delete util.target.variables[name];
       }
     }
