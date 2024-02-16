@@ -1,6 +1,6 @@
 // Name: Arrays
 // ID: spyroArrays
-// Description: Category that can create 2D and 3D arrays and access them
+// Description: Category that can create 2D and 3D arrays and access them.
 // By: SpyroStudios <https://scratch.mit.edu/users/SpyroStudios/>
 
 (function (Scratch) {
@@ -25,7 +25,6 @@
           {
             blockType: Scratch.BlockType.LABEL,
             text: "2D Arrays",
-            hideFromPalette: false
           },
           {
             opcode: "create2DArray",
@@ -132,13 +131,13 @@
               },
               NEWNAME: {
                 type: ArgumentType.STRING,
-                defaultValue: "new_array"
+                defaultValue: "newArray"
               }
             }
           },
           {
             opcode: "countOccurrencesOfItem2D",
-            text: "count occurrences of item [ITEM] in 2D array [NAME]",
+            text: "count # of item [ITEM] in 2D array [NAME]",
             blockType: BlockType.REPORTER,
             arguments: {
               ITEM: {
@@ -155,7 +154,6 @@
           {
             blockType: Scratch.BlockType.LABEL,
             text: "3D Arrays",
-            hideFromPalette: false
           },
           {
             opcode: "create3DArray",
@@ -285,13 +283,13 @@
               },
               NEWNAME: {
                 type: ArgumentType.STRING,
-                defaultValue: "new_array"
+                defaultValue: "newArray"
               }
             }
           },
           {
             opcode: "countOccurrencesOfItem3D",
-            text: "in 3D array [NAME] count occurrences of item [ITEM]",
+            text: "count # of item [ITEM] in 3D array [NAME]",
             blockType: BlockType.REPORTER,
             arguments: {
               ITEM: {
@@ -347,12 +345,12 @@
 
     arrayExists2D(args, util) {
       const name = `${args.NAME}_2D`;
-      return util.target.variables.hasOwnProperty(name);
+      return !!util.target.variables[name];
     }
 
     arrayRowCount2D(args, util) {
       const name = `${args.NAME}_2D`;
-      if (util.target.variables.hasOwnProperty(name)) {
+      if (!!util.target.variables[name]) {
         return util.target.variables[name].length;
       }
       return 0;
@@ -360,7 +358,7 @@
 
     arrayColumnCount2D(args, util) {
       const name = `${args.NAME}_2D`;
-      if (util.target.variables.hasOwnProperty(name)) {
+      if (!!util.target.variables[name]) {
         if (util.target.variables[name].length > 0) {
           return util.target.variables[name][0].length;
         }
@@ -371,7 +369,7 @@
     duplicateArray2D(args, util) {
       const name = `${args.NAME}_2D`;
       const newName = `${args.NEWNAME}_2D`;
-      if (util.target.variables.hasOwnProperty(name)) {
+      if (!!util.target.variables[name]) {
         util.target.variables[newName] = util.target.variables[name].map(row => [...row]);
       }
     }
@@ -380,7 +378,7 @@
       const item = args.ITEM;
       const name = `${args.NAME}_2D`;
       let count = 0;
-      if (util.target.variables.hasOwnProperty(name)) {
+      if (!!util.target.variables[name]) {
         const array = util.target.variables[name];
         for (const row of array) {
           for (const value of row) {
@@ -436,12 +434,12 @@
 
     arrayExists3D(args, util) {
       const name = `${args.NAME}_3D`;
-      return util.target.variables.hasOwnProperty(name);
+      return !!util.target.variables[name];
     }
 
     arrayRowCount3D(args, util) {
       const name = `${args.NAME}_3D`;
-      if (util.target.variables.hasOwnProperty(name)) {
+      if (!!util.target.variables[name]) {
         return util.target.variables[name].length;
       }
       return 0;
@@ -449,7 +447,7 @@
 
     arrayColumnCount3D(args, util) {
       const name = `${args.NAME}_3D`;
-      if (util.target.variables.hasOwnProperty(name)) {
+      if (!!util.target.variables[name]) {
         if (util.target.variables[name].length > 0) {
           return util.target.variables[name][0].length;
         }
@@ -459,7 +457,7 @@
 
     arrayDepthCount(args, util) {
       const name = `${args.NAME}_3D`;
-      if (util.target.variables.hasOwnProperty(name)) {
+      if (!!util.target.variables[name]) {
         if (util.target.variables[name].length > 0 && util.target.variables[name][0].length > 0) {
           return util.target.variables[name][0][0].length;
         }
@@ -470,7 +468,7 @@
     duplicateArray3D(args, util) {
       const name = `${args.NAME}_3D`;
       const newName = `${args.NEWNAME}_3D`;
-      if (util.target.variables.hasOwnProperty(name)) {
+      if (!!util.target.variables[name]) {
         util.target.variables[newName] = util.target.variables[name].map(row => row.map(col => [...col]));
       }
     }
@@ -479,7 +477,7 @@
       const item = args.ITEM;
       const name = `${args.NAME}_3D`;
       let count = 0;
-      if (util.target.variables.hasOwnProperty(name)) {
+      if (!!util.target.variables[name]) {
         const array = util.target.variables[name];
         for (const row of array) {
           for (const col of row) {
