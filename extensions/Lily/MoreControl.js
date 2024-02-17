@@ -175,12 +175,8 @@
           "---",
           {
             opcode: "inline",
-            blockType: Scratch.BlockType.REPORTER,
+            blockType: Scratch.BlockType.INLINE,
             text: "inline",
-            outputShape: 3,
-            output: "Boolean",
-            branchCount: 1,
-            disableMonitor: true,
           },
           {
             opcode: "inlineReturn",
@@ -480,11 +476,6 @@
             blockType: Scratch.BlockType.CONDITIONAL,
             text: "start blocks",
             branchIconURI: this.junctionIcon,
-          },
-          {
-            opcode: "withoutScreenRefresh",
-            blockType: Scratch.BlockType.CONDITIONAL,
-            text: "without screen refresh",
           },
         ],
         menus: {
@@ -984,28 +975,6 @@
 
       // todo: use pushStack?
       runtime._pushThread(branch, target);
-    }
-
-    // todo: fix delay / run with compiler?
-    withoutScreenRefresh(args, util) {
-      const thread = util.thread;
-      if (thread.warpState === 2) {
-        thread.peekStackFrame().warpMode = false;
-        thread.isCompiled = true;
-        thread.warpState = 3;
-        return;
-      }
-      if (thread.warpState === 1) {
-        util.startBranch(1, true);
-        thread.warpState = 2;
-        return;
-      }
-      if (!thread.warpState) {
-        thread.peekStackFrame().warpMode = true;
-        thread.isCompiled = false;
-        thread.warpState = 1;
-        util.yield();
-      }
     }
 
     /**
