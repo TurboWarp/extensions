@@ -17,6 +17,7 @@
       return {
         id: "sjBinaryConverter",
         name: "Binary Converter",
+        color1: "#343434",
         blocks: [
           {
             opcode: "textToBinary",
