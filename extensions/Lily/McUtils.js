@@ -66,6 +66,13 @@
               },
             },
           },
+          {
+            opcode: "grimaceBlock",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "🎂",
+            extensions: ["colours_looks"],
+            hideFromPalette: new Date().getMonth() !== 5,
+          },
         ],
         menus: {
           iceCreamMenu: {
@@ -112,6 +119,10 @@
       } else {
         return args.INPUT;
       }
+    }
+
+    grimaceBlock(args, util) {
+      return "All good things are purple, including Scratch <3";
     }
   }
   Scratch.extensions.register(new lmsmcutils());

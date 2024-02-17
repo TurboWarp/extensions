@@ -63,6 +63,7 @@
       return {
         name: Scratch.translate("Battery"),
         id: "battery",
+        color1: "#cf8436",
         blocks: [
           {
             opcode: "charging",

@@ -38,6 +38,30 @@
 
   let lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
+  //?Link some stuff to the draw region
+  //?And some fun statistics
+  let trianglesDrawn = 0;
+  let inDrawRegion = false;
+  let currentDrawShader = undefined;
+  let penPlusDrawRegion = {
+    enter: () => {
+      trianglesDrawn = 0;
+      inDrawRegion = true;
+      //lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
+      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
+    },
+    exit: () => {
+      inDrawRegion = false;
+      gl.bindFramebuffer(
+        gl.FRAMEBUFFER,
+        renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
+      );
+      triFunctions.drawOnScreen();
+      gl.useProgram(penPlusShaders.pen.program);
+    },
+  };
+
   //?Buffer handling and pen loading
   {
     gl.bindTexture(gl.TEXTURE_2D, depthBufferTexture);
@@ -152,7 +176,7 @@
     //?Call it to have it consistant
     updateCanvasSize();
 
-    //?Call every frame because I don't know of a way to detect when the stage is resized
+    //?Call every frame because I don't know of a way to detect when the stage is resized through window resizing (2/7/24) thought I should clarify
 
     window.addEventListener("resize", updateCanvasSize);
     vm.runtime.on("STAGE_SIZE_CHANGED", () => {
@@ -235,86 +259,86 @@
     untextured: {
       Shaders: {
         vert: `
-                  attribute highp vec4 a_position;
-                  attribute highp vec4 a_color;
-                  varying highp vec4 v_color;
-                  
-                  void main()
-                  {
-                      v_color = a_color;
-                      gl_Position = a_position * vec4(a_position.w,a_position.w,-1.0/a_position.w,1);
-                  }
-              `,
+                    attribute highp vec4 a_position;
+                    attribute highp vec4 a_color;
+                    varying highp vec4 v_color;
+                    
+                    void main()
+                    {
+                        v_color = a_color;
+                        gl_Position = a_position * vec4(a_position.w,a_position.w,-1.0/a_position.w,1);
+                    }
+                `,
         frag: `
-                  varying highp vec4 v_color;
-  
-                  void main()
-                  {
-                    gl_FragColor = v_color;
-                    gl_FragColor.rgb *= gl_FragColor.a;
-                  }
-              `,
+                    varying highp vec4 v_color;
+    
+                    void main()
+                    {
+                      gl_FragColor = v_color;
+                      gl_FragColor.rgb *= gl_FragColor.a;
+                    }
+                `,
       },
       ProgramInf: null,
     },
     textured: {
       Shaders: {
         vert: `
-                  attribute highp vec4 a_position;
-                  attribute highp vec4 a_color;
-                  attribute highp vec2 a_texCoord;
-                  
-                  varying highp vec4 v_color;
-                  varying highp vec2 v_texCoord;
-                  
-                  void main()
-                  {
-                      v_color = a_color;
-                      v_texCoord = a_texCoord;
-                      gl_Position = a_position * vec4(a_position.w,a_position.w,-1.0/a_position.w,1);
-                  }
-              `,
+                    attribute highp vec4 a_position;
+                    attribute highp vec4 a_color;
+                    attribute highp vec2 a_texCoord;
+                    
+                    varying highp vec4 v_color;
+                    varying highp vec2 v_texCoord;
+                    
+                    void main()
+                    {
+                        v_color = a_color;
+                        v_texCoord = a_texCoord;
+                        gl_Position = a_position * vec4(a_position.w,a_position.w,-1.0/a_position.w,1);
+                    }
+                `,
         frag: `
-                  uniform sampler2D u_texture;
-  
-                  varying highp vec2 v_texCoord;
-                  varying highp vec4 v_color;
-                  
-                  void main()
-                  {
-                      gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
-                      gl_FragColor.rgb *= gl_FragColor.a;
-                      
-                  }
-              `,
+                    uniform sampler2D u_texture;
+    
+                    varying highp vec2 v_texCoord;
+                    varying highp vec4 v_color;
+                    
+                    void main()
+                    {
+                        gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
+                        gl_FragColor.rgb *= gl_FragColor.a;
+                        
+                    }
+                `,
       },
       ProgramInf: null,
     },
     draw: {
       Shaders: {
         vert: `
-                  attribute highp vec4 a_position;
-  
-                  varying highp vec2 v_texCoord;
-                  attribute highp vec2 a_texCoord;
-                  
-                  void main()
-                  {
-                      gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
-                      v_texCoord = (a_position.xy / 2.0) + vec2(0.5,0.5);
-                  }
-              `,
+                    attribute highp vec4 a_position;
+    
+                    varying highp vec2 v_texCoord;
+                    attribute highp vec2 a_texCoord;
+                    
+                    void main()
+                    {
+                        gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
+                        v_texCoord = (a_position.xy / 2.0) + vec2(0.5,0.5);
+                    }
+                `,
         frag: `
-                  varying highp vec2 v_texCoord;
-  
-                  uniform sampler2D u_drawTex;
-                  
-                  void main()
-                  {
-                    gl_FragColor = texture2D(u_drawTex, v_texCoord);
-                    gl_FragColor.rgb *= gl_FragColor.a;
-                  }
-              `,
+                    varying highp vec2 v_texCoord;
+    
+                    uniform sampler2D u_drawTex;
+                    
+                    void main()
+                    {
+                      gl_FragColor = texture2D(u_drawTex, v_texCoord);
+                      gl_FragColor.rgb *= gl_FragColor.a;
+                    }
+                `,
       },
       ProgramInf: null,
     },
@@ -454,16 +478,12 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
   }
-
-  //?Link some stuff to the draw region
-  //?Might be a better way but I've tried many different things and they didn't work.
-  let drawnFirst = false;
-  renderer.oldEnterDrawRegion = renderer.enterDrawRegion;
-  renderer.enterDrawRegion = (region) => {
-    triFunctions.drawOnScreen();
-    renderer.oldEnterDrawRegion(region);
-    drawnFirst = false;
-  };
+  //renderer.oldEnterDrawRegion = renderer.enterDrawRegion;
+  //renderer.enterDrawRegion = (region) => {
+  //  console.log(region)
+  //  renderer.oldEnterDrawRegion(region);
+  //  drawnFirst = false;
+  //};
 
   //?Override pen Clear with pen+
   renderer.penClear = (penSkinID) => {
@@ -471,7 +491,7 @@
     lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
     //Pen+ Overrides default pen Clearing
     gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
-    gl.clearColor(1, 1, 1, 1);
+    gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.DEPTH_BUFFER_BIT);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
@@ -498,9 +518,8 @@
   //?Have this here for ez pz tri drawing on the canvas
   const triFunctions = {
     drawTri: (x1, y1, x2, y2, x3, y3, penColor, targetID) => {
-      lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-      gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
-      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
+      if (!inDrawRegion) renderer.enterDrawRegion(penPlusDrawRegion);
+      trianglesDrawn += 1;
       //? get triangle attributes for current sprite.
       const triAttribs = triangleAttributesOfAllSprites[targetID];
 
@@ -590,18 +609,11 @@
       gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
 
       gl.drawArrays(gl.TRIANGLES, 0, 3);
-      //? Hacky fix but it works.
-
-      gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
-
-      gl.useProgram(penPlusShaders.pen.program);
-      if (!drawnFirst) triFunctions.drawOnScreen();
     },
 
     drawTextTri: (x1, y1, x2, y2, x3, y3, targetID, texture) => {
-      lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-      gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
-      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
+      if (!inDrawRegion) renderer.enterDrawRegion(penPlusDrawRegion);
+      trianglesDrawn += 1;
       //? get triangle attributes for current sprite.
       const triAttribs = triangleAttributesOfAllSprites[targetID];
       if (triAttribs) {
@@ -712,23 +724,23 @@
       gl.uniform1i(u_texture_Location_text, 0);
 
       gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-      gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
-
-      gl.useProgram(penPlusShaders.pen.program);
-      if (!drawnFirst) triFunctions.drawOnScreen();
     },
 
     //? this is so I don't have to go through the hassle of replacing default scratch shaders
     //? many of curse words where exchanged between me and a pillow while writing this extension
     //? but I have previaled!
     drawOnScreen: () => {
-      drawnFirst = true;
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
       vertexBufferData = new Float32Array([
         -1, -1, 0, 1, 0, 1,
 
         1, -1, 0, 1, 1, 1,
+
+        1, 1, 0, 1, 1, 0,
+
+        -1, -1, 0, 1, 0, 1,
+
+        -1, 1, 0, 1, 0, 0,
 
         1, 1, 0, 1, 1, 0,
       ]);
@@ -758,28 +770,8 @@
 
       gl.uniform1i(u_depthTexture_Location_draw, 1);
 
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-      vertexBufferData = new Float32Array([
-        -1, -1, 0, 1, 0, 1,
-
-        -1, 1, 0, 1, 0, 0,
-
-        1, 1, 0, 1, 1, 0,
-      ]);
-
-      gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
-
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-      lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-      gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
-      let occ = gl.getParameter(gl.COLOR_CLEAR_VALUE);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.clearColor(occ[0], occ[1], occ[2], occ[3]);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
       gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
-      gl.useProgram(penPlusShaders.pen.program);
     },
 
     setValueAccordingToCaseTriangle: (
@@ -1117,7 +1109,6 @@
       return {
         blocks: [
           {
-            opcode: "__NOUSEOPCODE",
             blockType: Scratch.BlockType.LABEL,
             text: "Pen Properties",
           },
@@ -1168,7 +1159,6 @@
             filter: "sprite",
           },
           {
-            opcode: "__NOUSEOPCODE",
             blockType: Scratch.BlockType.LABEL,
             text: "Square Pen Blocks",
           },
@@ -1241,7 +1231,6 @@
             filter: "sprite",
           },
           {
-            opcode: "__NOUSEOPCODE",
             blockType: Scratch.BlockType.LABEL,
             text: "Triangle Blocks",
           },
@@ -1389,7 +1378,6 @@
             filter: "sprite",
           },
           {
-            opcode: "__NOUSEOPCODE",
             blockType: Scratch.BlockType.LABEL,
             text: "Color",
           },
@@ -1416,7 +1404,6 @@
             },
           },
           {
-            opcode: "__NOUSEOPCODE",
             blockType: Scratch.BlockType.LABEL,
             text: "Images",
           },
@@ -1568,9 +1555,13 @@
             },
           },
           {
-            opcode: "__NOUSEOPCODE",
             blockType: Scratch.BlockType.LABEL,
-            text: "Advanced options",
+            text: "Advanced Blocks",
+          },
+          {
+            opcode: "getTrianglesDrawn",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Triangles Drawn",
           },
           {
             disableMonitor: true,
@@ -2547,6 +2538,9 @@
         }
         return "";
       }
+    }
+    getTrianglesDrawn() {
+      return trianglesDrawn;
     }
     turnAdvancedSettingOff({ Setting, onOrOff }) {
       if (onOrOff == "on") {
