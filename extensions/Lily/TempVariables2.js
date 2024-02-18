@@ -6,8 +6,6 @@
 (function (Scratch) {
   "use strict";
 
-  const menuIconURI = "";
-
   // Object.create(null) prevents "variable [toString]" from returning a function
   let runtimeVariables = Object.create(null);
 
