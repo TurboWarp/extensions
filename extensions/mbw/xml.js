@@ -35,6 +35,10 @@
         name: 'XML',
         color1: "#6c2b5f",
         blocks: [
+          // For translations:
+          //  - Block text should be translated
+          //  - Default XML and attributes should NOT be translated because we can't expect translators
+          //    to know how to write valid XML in their language.
           {
             opcode: "isValid",
             blockType: Scratch.BlockType.BOOLEAN,
