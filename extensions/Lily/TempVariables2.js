@@ -6,8 +6,6 @@
 (function (Scratch) {
   "use strict";
 
-  const menuIconURI = "";
-
   // Object.create(null) prevents "variable [toString]" from returning a function
   let runtimeVariables = Object.create(null);
 
@@ -39,7 +37,6 @@
         name: "Temporary Variables",
         color1: "#FF791A",
         color2: "#E15D00",
-        menuIconURI: menuIconURI, // I intend on making one later
         blocks: [
           label("Thread Variables", false),
 
@@ -80,6 +77,8 @@
             opcode: "getThreadVariable",
             blockType: Scratch.BlockType.REPORTER,
             text: "thread var [VAR]",
+            disableMonitor: true,
+            allowDropAnywhere: true,
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -104,7 +103,7 @@
           {
             opcode: "forEachThreadVariable",
             blockType: Scratch.BlockType.LOOP,
-            text: "for each [VAR] in [NUM]",
+            text: "for [VAR] in [NUM]",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -119,7 +118,7 @@
           {
             opcode: "listThreadVariables",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list active thread variables",
+            text: "active thread variables",
             disableMonitor: true,
           },
 
@@ -165,6 +164,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "runtime var [VAR]",
             disableMonitor: true,
+            allowDropAnywhere: true,
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -205,7 +205,7 @@
           {
             opcode: "listRuntimeVariables",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list active runtime variables",
+            text: "active runtime variables",
           },
         ],
       };

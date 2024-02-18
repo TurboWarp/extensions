@@ -27,7 +27,6 @@
   let xrSession = null;
   let xrState = false;
   let xrRefSpace;
-  let xrViewSpace;
   let xrProjectionMatrix;
   let xrTransform;
   let xrCombinedMatrix;
@@ -82,7 +81,6 @@
   const onSuccess = function (session) {
     xrSession = session;
     xrRefSpace = null;
-    xrViewSpace = null;
     xrHitTestSource = null;
     hitPosition = null;
     hitPositionAvailable = false;
@@ -103,7 +101,6 @@
     session
       .requestReferenceSpace("viewer")
       .then((viewSpace) => {
-        xrViewSpace = viewSpace;
         return session.requestHitTestSource({ space: viewSpace });
       })
       .then((hts) => {
@@ -500,7 +497,6 @@
       }
       stageWrapperParent = stageWrapper.parentElement;
 
-      const noop = () => {};
       navigator.xr
         .requestSession("immersive-ar", {
           requiredFeatures: ["hit-test", "dom-overlay"],

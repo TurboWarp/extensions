@@ -1,6 +1,7 @@
 const fs = require("fs");
 const AdmZip = require("adm-zip");
 const pathUtil = require("path");
+const ExtendedJSON = require("@turbowarp/json");
 const compatibilityAliases = require("./compatibility-aliases");
 const parseMetadata = require("./parse-extension-metadata");
 const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
@@ -679,7 +680,7 @@ class Builder {
   build() {
     const build = new Build(this.mode);
 
-    const featuredExtensionSlugs = JSON.parse(
+    const featuredExtensionSlugs = ExtendedJSON.parse(
       fs.readFileSync(
         pathUtil.join(this.extensionsRoot, "extensions.json"),
         "utf-8"
