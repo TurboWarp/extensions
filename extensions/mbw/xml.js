@@ -32,7 +32,7 @@
     getInfo() {
       return {
         id: "mbwxml",
-        name: 'XML',
+        name: "XML",
         color1: "#6c2b5f",
         blocks: [
           // For translations:
@@ -46,7 +46,7 @@
             arguments: {
               MAYBE_XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />'
+                defaultValue: '<hello apple="banana" />',
               },
             },
           },
@@ -57,7 +57,7 @@
             arguments: {
               MAYBE_XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana">'
+                defaultValue: '<hello apple="banana">',
               },
             },
           },
@@ -69,7 +69,7 @@
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />'
+                defaultValue: '<hello apple="banana" />',
               },
             },
           },
@@ -80,7 +80,7 @@
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello>world</hello>'
+                defaultValue: "<hello>world</hello>",
               },
             },
           },
@@ -92,7 +92,7 @@
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />'
+                defaultValue: '<hello apple="banana" />',
               },
             },
           },
@@ -103,11 +103,11 @@
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />'
+                defaultValue: '<hello apple="banana" />',
               },
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'foo'
+                defaultValue: "foo",
               },
             },
           },
@@ -118,15 +118,15 @@
             arguments: {
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'apple'
+                defaultValue: "apple",
               },
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />'
+                defaultValue: '<hello apple="banana" />',
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'foo'
+                defaultValue: "foo",
               },
             },
           },
@@ -137,11 +137,11 @@
             arguments: {
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'apple'
+                defaultValue: "apple",
               },
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />'
+                defaultValue: '<hello apple="banana" />',
               },
             },
           },
@@ -152,11 +152,11 @@
             arguments: {
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'apple'
+                defaultValue: "apple",
               },
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '<hello apple="banana" />'
+                defaultValue: '<hello apple="banana" />',
               },
             },
           },
