@@ -58,6 +58,7 @@
   "TheShovel/ShovelUtils",
   "DNin/wake-lock",
   "Skyhigh173/json",
+  "mbw/xml",
   "cs2627883/numericalencoding",
   "DT/cameracontrols",
   "TheShovel/CanvasEffects",
@@ -83,6 +84,5 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
-  "Lily/McUtils",
-  "mbw/xml"
+  "Lily/McUtils"
 ]
