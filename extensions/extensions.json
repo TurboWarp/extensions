@@ -85,5 +85,5 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
-  "Lily/McUtils"
+  "Lily/McUtils" // McUtils should always be the last item.
 ]
