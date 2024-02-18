@@ -209,7 +209,7 @@
           {
             opcode: "whenChange",
             blockType: Scratch.BlockType.EVENT,
-            text: "when [WHAT] changed",
+            text: Scratch.translate("when [WHAT] changed"),
             isEdgeActivated: false,
             arguments: {
               WHAT: { type: Scratch.ArgumentType.STRING, menu: "changeable" },
@@ -379,7 +379,6 @@
     getCloneLimit() {
       return Scratch.vm.runtime.runtimeOptions.maxClones;
     }
-
     setCloneLimit({ limit }) {
       limit = Scratch.Cast.toNumber(limit);
       Scratch.vm.setRuntimeOptions({
