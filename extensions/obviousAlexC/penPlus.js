@@ -42,7 +42,6 @@
   //?And some fun statistics
   let trianglesDrawn = 0;
   let inDrawRegion = false;
-  let currentDrawShader = undefined;
   let penPlusDrawRegion = {
     enter: () => {
       trianglesDrawn = 0;
@@ -857,8 +856,6 @@
 
   const lilPenDabble = (InativeSize, curTarget, util) => {
     checkForPen(util);
-
-    const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
 
     Scratch.vm.renderer.penLine(
       Scratch.vm.renderer._penSkinId,
@@ -1804,9 +1801,6 @@
       const spritex = curTarget.x;
       const spritey = curTarget.y;
 
-      //correction for HQ pen
-      const typSize = renderer._nativeSize;
-
       //Predifine stuff so there aren't as many calculations
       const wMulX = myAttributes[0];
       const wMulY = myAttributes[1];
@@ -1933,9 +1927,6 @@
 
       const spritex = curTarget.x;
       const spritey = curTarget.y;
-
-      //correction for HQ pen
-      const typSize = renderer._nativeSize;
 
       //Predifine stuff so there aren't as many calculations
       const wMulX = myAttributes[0];
@@ -2066,8 +2057,6 @@
         squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
-      let valuetoSet = 0;
-
       const attributeNum = Scratch.Cast.toNumber(target);
       if (attributeNum >= 7) {
         if (attributeNum == 11) {
@@ -2078,7 +2067,6 @@
             );
             return;
           }
-          valuetoSet = number / penPlusAdvancedSettings._maxDepth;
           squareAttributesOfAllSprites[curTarget.id][attributeNum] =
             number / penPlusAdvancedSettings._maxDepth;
           return;
@@ -2152,8 +2140,6 @@
       );
     }
     tintTriPoint({ point, color }, util) {
-      const curTarget = util.target;
-
       const trianglePointStart = (point - 1) * 8;
 
       const targetId = util.target.id;
@@ -2189,8 +2175,6 @@
       );
     }
     tintTri({ point, color }, util) {
-      const curTarget = util.target;
-
       const trianglePointStart = (point - 1) * 8;
 
       const targetId = util.target.id;
