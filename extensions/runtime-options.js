@@ -143,17 +143,6 @@
               },
             },
           },
-          {
-            opcode: "setCloneLimitValue",
-            text: Scratch.translate("set clone limit to [limit]"),
-            blockType: Scratch.BlockType.COMMAND,
-            arguments: {
-              limit: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "500",
-              },
-            },
-          },
 
           "---",
 
@@ -391,12 +380,6 @@
       return Scratch.vm.runtime.runtimeOptions.maxClones;
     }
     setCloneLimit({ limit }) {
-      limit = Scratch.Cast.toNumber(limit);
-      Scratch.vm.setRuntimeOptions({
-        maxClones: limit,
-      });
-    }
-    setCloneLimitValue({ limit }) {
       limit = Scratch.Cast.toNumber(limit);
       Scratch.vm.setRuntimeOptions({
         maxClones: limit,
