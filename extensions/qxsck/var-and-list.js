@@ -19,44 +19,44 @@
         }
         return result;
       };
-      this.sortFunc=function(data){
-        let arr=data.arr,order=data.order,length=data.arr.length;
-        let left=data.range?data.range[0]:1,right=data.range?data.range[1]:length;
-        if(left<1) left=1;
-        if(right>length) right=length;
-        left-=1,right-=1;
-        let list=arr.slice(left,right+1);
-        switch(order){
+      this.sortFunc = function (data) {
+        let arr = data.arr, order = data.order, length = data.arr.length;
+        let left = data.range ? data.range[0] : 1, right = data.range ? data.range[1] : length;
+        if (left < 1) left = 1;
+        if (right > length) right = length;
+        left -= 1, right -= 1;
+        let list = arr.slice(left, right + 1);
+        switch (order) {
           case 'asc':
-            list=list.map(val=>isNaN(Number(val))?0:Number(val));
-            list.sort((a,b)=>a-b);
+            list = list.map(val => isNaN(Number(val)) ? 0 : Number(val));
+            list.sort((a, b) => a - b);
             break;
           case 'desc':
-            list=list.map(val=>isNaN(Number(val))?0:Number(val));
-            list.sort((a,b)=>b-a);
+            list = list.map(val => isNaN(Number(val)) ? 0 : Number(val));
+            list.sort((a, b) => b - a);
             break;
           case 'dictOrder':
-            list=list.map(val=>String(val));
+            list = list.map(val => String(val));
             list.sort();
             break;
           case 'random':
-            list.sort(function(){
-              return (0.5-Math.random());
+            list.sort(function () {
+              return (0.5 - Math.random());
             });
             break;
         }
-        let list2=arr.slice();
-        return [...list2.slice(0,left),...list,...list2.slice(right+1,length)];
+        let list2 = arr.slice();
+        return [...list2.slice(0, left), ...list, ...list2.slice(right + 1, length)];
       };
-      this.isOrderFunc=function(arr,order){
-        if(order==='asc'){
-          for(let i=0;i<arr.length-1;i++){
-            if (arr[i]>arr[i+1]) return false;
+      this.isOrderFunc = function (arr, order) {
+        if (order === 'asc') {
+          for (let i = 0; i < arr.length - 1; i++) {
+            if (arr[i] > arr[i + 1]) return false;
           }
           return true;
-        }else{
-          for(let i=0;i<arr.length-1;i++){
-            if (arr[i]<arr[i+1]) return false;
+        } else {
+          for (let i = 0; i < arr.length - 1; i++) {
+            if (arr[i] < arr[i + 1]) return false;
           }
           return true;
         }
@@ -577,15 +577,15 @@
             }
           },
           {
-            opcode:'isOrder',
+            opcode: 'isOrder',
             blockType: 'Boolean',
             text: Scratch.translate('list [LIST] is [CASE] ?'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
-              CASE:{
+              CASE: {
                 type: 'string',
                 menu: 'isOrder.List',
               },
@@ -709,7 +709,7 @@
               value: 'random'
             },
           ],
-          'isOrder.List':[
+          'isOrder.List': [
             {
               text: Scratch.translate("ascending"),
               value: 'asc'
@@ -740,7 +740,7 @@
     }
     getVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.VAR), '');
-      return variable ? variable.value :'';
+      return variable ? variable.value : '';
     }
     setVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.VAR), '');
@@ -763,18 +763,18 @@
       }
       return JSON.stringify(serialized);
     }
-    swapVar(args,util){
+    swapVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.VAR), '');
       const variable2 = util.target.lookupVariableByNameAndType(String(args.VAR2), '');
       if (variable && variable2) {
-        let value=variable.value;
-        variable.value=variable2.value;
-        variable2.value=value;
+        let value = variable.value;
+        variable.value = variable2.value;
+        variable2.value = value;
       }
     }
 
-    openCaseSensitive(args){
-      openCaseSensitive=(args.CASE==='open'?true:false);
+    openCaseSensitive(args) {
+      openCaseSensitive = (args.CASE === 'open' ? true : false);
     }
     haveList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
@@ -782,7 +782,7 @@
     }
     emptyList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      return variable ? (variable.value.length?false:true) : true;
+      return variable ? (variable.value.length ? false : true) : true;
     }
     length(args, util) {
       /** @type {VM.ListVariable} */
@@ -798,16 +798,16 @@
     }
     newGetList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      return variable ? '['+variable.value.map(value=>'"'+String(value)+'"').join(',')+']' : '[]';
+      return variable ? '[' + variable.value.map(value => '"' + String(value) + '"').join(',') + ']' : '[]';
     }
     getListRange(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        let length=variable.value.length,left=Number(args.LEFT),right=Number(args.RIGHT);
-        if(left<1) left=1;
-        if(right>length) right=length;
-        left-=1,right-=1;
-        return '['+variable.value.slice(left,right+1).map(value=>'"'+String(value)+'"').join(',')+']';
+        let length = variable.value.length, left = Number(args.LEFT), right = Number(args.RIGHT);
+        if (left < 1) left = 1;
+        if (right > length) right = length;
+        left -= 1, right -= 1;
+        return '[' + variable.value.slice(left, right + 1).map(value => '"' + String(value) + '"').join(',') + ']';
       }
       return '';
     }
@@ -815,7 +815,7 @@
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (!variable) return '';
       const index = String(args.INDEX);
-      if(Number(index)<=variable.value.length && Number(index)>=1){
+      if (Number(index) <= variable.value.length && Number(index) >= 1) {
         return variable.value[index - 1];
       }
       return '';
@@ -835,13 +835,13 @@
       }
       return JSON.stringify(serialized);
     }
-    swapList(args,util){
+    swapList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       const variable2 = util.target.lookupVariableByNameAndType(String(args.LIST2), 'list');
       if (variable && variable2) {
-        let value=variable.value;
-        variable.value=variable2.value;
-        variable2.value=value;
+        let value = variable.value;
+        variable.value = variable2.value;
+        variable2.value = value;
         variable._monitorUpToDate = false;
         variable2._monitorUpToDate = false;
       }
@@ -858,11 +858,11 @@
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        try{
-          let arr=JSON.parse(args.LIST2);
-          variable.value=arr;
+        try {
+          let arr = JSON.parse(args.LIST2);
+          variable.value = arr;
           variable._monitorUpToDate = false;
-        }catch(error){
+        } catch (error) {
           console.log('error:', error);
         }
       }
@@ -871,9 +871,9 @@
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        let val=String(args.VALUE),num=Number(args.NUM);
-        variable.value=[];
-        for(let i=1;i<=num;i++) variable.value.push(val);
+        let val = String(args.VALUE), num = Number(args.NUM);
+        variable.value = [];
+        for (let i = 1; i <= num; i++) variable.value.push(val);
         variable._monitorUpToDate = false;
       }
     }
@@ -884,7 +884,7 @@
         const index = String(args.INDEX);
         if (index === 'ALL') {
           variable.value = [];
-        } else if(Number(index)<=variable.value.length && Number(index)>=1){
+        } else if (Number(index) <= variable.value.length && Number(index) >= 1) {
           variable.value.splice(Number(index) - 1, 1);
           variable._monitorUpToDate = false;
         }
@@ -902,30 +902,30 @@
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        try{
-          let arr=JSON.parse(args.LIST2);
-          for(let i=0;i<arr.length;i++) variable.value.push(String(arr[i]));
+        try {
+          let arr = JSON.parse(args.LIST2);
+          for (let i = 0; i < arr.length; i++) variable.value.push(String(arr[i]));
           variable._monitorUpToDate = false;
-        }catch(error){
+        } catch (error) {
           console.log('error:', error);
         }
       }
     }
-    insertOfList(args,util){
+    insertOfList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      const index=Number(args.INDEX)>variable.value.length?variable.value.length+1:Number(args.INDEX);
-      variable.value.splice(index-1,0,value);
+      const value = String(args.VALUE);
+      const index = Number(args.INDEX) > variable.value.length ? variable.value.length + 1 : Number(args.INDEX);
+      variable.value.splice(index - 1, 0, value);
       variable._monitorUpToDate = false;
     }
-    insertListToList(args,util){
+    insertListToList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const index=Number(args.INDEX)>variable.value.length?variable.value.length+1:Number(args.INDEX);
-      try{
-        let arr=JSON.parse(args.LIST2).map(String);
-        variable.value.splice(index-1,0,...arr);
+      const index = Number(args.INDEX) > variable.value.length ? variable.value.length + 1 : Number(args.INDEX);
+      try {
+        let arr = JSON.parse(args.LIST2).map(String);
+        variable.value.splice(index - 1, 0, ...arr);
         variable._monitorUpToDate = false;
-      }catch(error){
+      } catch (error) {
         console.log('error:', error);
       }
     }
@@ -934,8 +934,8 @@
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
         const index = String(args.INDEX);
-        if(Number(index)<=variable.value.length && Number(index)>=1){
-          variable.value[index-1]=String(args.VALUE);
+        if (Number(index) <= variable.value.length && Number(index) >= 1) {
+          variable.value[index - 1] = String(args.VALUE);
           variable._monitorUpToDate = false;
         }
       }
@@ -944,25 +944,25 @@
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        let length=variable.value.length,left=Number(args.LEFT),right=Number(args.RIGHT);
-        if(left<1) left=1;
-        if(right>length) right=length;
-        left-=1,right-=1;
-        for(let i=left;i<=right;i++) variable.value[i]=String(args.VALUE);
+        let length = variable.value.length, left = Number(args.LEFT), right = Number(args.RIGHT);
+        if (left < 1) left = 1;
+        if (right > length) right = length;
+        left -= 1, right -= 1;
+        for (let i = left; i <= right; i++) variable.value[i] = String(args.VALUE);
         variable._monitorUpToDate = false;
       }
     }
     getIndexOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      let flag=openCaseSensitive;
+      const value = String(args.VALUE);
+      let flag = openCaseSensitive;
       if (variable) {
-        for(let i=0;i<variable.value.length;i++){
-          if(!flag){
-            if(Scratch.Cast.compare(variable.value[i],value)===0) return i + 1;
-          }else{
-            if(String(variable.value[i]) ==String(value)) return i + 1;
+        for (let i = 0; i < variable.value.length; i++) {
+          if (!flag) {
+            if (Scratch.Cast.compare(variable.value[i], value) === 0) return i + 1;
+          } else {
+            if (String(variable.value[i]) == String(value)) return i + 1;
           }
         }
       }
@@ -971,51 +971,51 @@
     getIndexesOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      let flag=openCaseSensitive;
-      if(variable){
-        let indexes=[];
-        for(let i=0;i<variable.value.length;i++){
-          if(!flag){
-            if(Scratch.Cast.compare(variable.value[i],value)===0) indexes.push(i + 1);
-          }else{
-            if(String(variable.value[i])===String(value)) indexes.push(i + 1);
+      const value = String(args.VALUE);
+      let flag = openCaseSensitive;
+      if (variable) {
+        let indexes = [];
+        for (let i = 0; i < variable.value.length; i++) {
+          if (!flag) {
+            if (Scratch.Cast.compare(variable.value[i], value) === 0) indexes.push(i + 1);
+          } else {
+            if (String(variable.value[i]) === String(value)) indexes.push(i + 1);
           }
         }
-        if(indexes.length>0) return indexes.toString();
+        if (indexes.length > 0) return indexes.toString();
       }
       return '';
     }
     newGetIndexesOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      let flag=openCaseSensitive;
-      if(variable){
-        let indexes=[];
-        for(let i=0;i<variable.value.length;i++){
-          if(!flag){
-            if(Scratch.Cast.compare(variable.value[i],value)===0) indexes.push(i + 1);
-          }else{
-            if(String(variable.value[i])===String(value)) indexes.push(i + 1);
+      const value = String(args.VALUE);
+      let flag = openCaseSensitive;
+      if (variable) {
+        let indexes = [];
+        for (let i = 0; i < variable.value.length; i++) {
+          if (!flag) {
+            if (Scratch.Cast.compare(variable.value[i], value) === 0) indexes.push(i + 1);
+          } else {
+            if (String(variable.value[i]) === String(value)) indexes.push(i + 1);
           }
         }
-        if(indexes.length>0) return '['+indexes.map(value=>'"'+String(value)+'"').join(',')+']';
+        if (indexes.length > 0) return '[' + indexes.map(value => '"' + String(value) + '"').join(',') + ']';
       }
       return '[]';
     }
     getCountsOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      let flag=openCaseSensitive;
-      if(variable){
-        let indexes=[];
-        for(let i=0;i<variable.value.length;i++){
-          if(!flag){
-            if(Scratch.Cast.compare(variable.value[i],value)===0) indexes.push(i + 1);
-          }else{
-            if(String(variable.value[i])===String(value)) indexes.push(i + 1);
+      const value = String(args.VALUE);
+      let flag = openCaseSensitive;
+      if (variable) {
+        let indexes = [];
+        for (let i = 0; i < variable.value.length; i++) {
+          if (!flag) {
+            if (Scratch.Cast.compare(variable.value[i], value) === 0) indexes.push(i + 1);
+          } else {
+            if (String(variable.value[i]) === String(value)) indexes.push(i + 1);
           }
         }
         return indexes.length;
@@ -1025,14 +1025,14 @@
     listContains(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      let flag=openCaseSensitive;
+      const value = String(args.VALUE);
+      let flag = openCaseSensitive;
       if (variable) {
-        for(let i=0;i<variable.value.length;i++){
-          if(!flag){
-            if(Scratch.Cast.compare(variable.value[i],value)===0) return true;
-          }else{
-            if(String(variable.value[i])===String(value)) return false;
+        for (let i = 0; i < variable.value.length; i++) {
+          if (!flag) {
+            if (Scratch.Cast.compare(variable.value[i], value) === 0) return true;
+          } else {
+            if (String(variable.value[i]) === String(value)) return false;
           }
         }
         return false;
@@ -1052,101 +1052,101 @@
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        let list=variable.value.slice();
+        let list = variable.value.slice();
         list.reverse();
-        variable.value=list;
+        variable.value = list;
         variable._monitorUpToDate = false;
       }
     }
-    sortList(args,util){
+    sortList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        let order=args.CASE;
-        variable.value=this.sortFunc({arr:variable.value,order:order});
+        let order = args.CASE;
+        variable.value = this.sortFunc({ arr: variable.value, order: order });
         variable._monitorUpToDate = false;
       }
     }
-    sortListRange(args,util){
+    sortListRange(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        let order=args.CASE,left=Number(args.LEFT),right=Number(args.RIGHT);
-        variable.value=this.sortFunc({arr:variable.value,order:order,range:[left,right]});
+        let order = args.CASE, left = Number(args.LEFT), right = Number(args.RIGHT);
+        variable.value = this.sortFunc({ arr: variable.value, order: order, range: [left, right] });
         variable._monitorUpToDate = false;
       }
     }
-    isOrder(args,util){
+    isOrder(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      if(variable){
-        let order=args.CASE;
-        return this.isOrderFunc(variable.value,order);
+      if (variable) {
+        let order = args.CASE;
+        return this.isOrderFunc(variable.value, order);
       }
       return false;
     }
-    mapObject(args,util){
+    mapObject(args, util) {
       const list = util.target.lookupVariableByNameAndType(String(args.LIST), 'list'),
-            list2 = util.target.lookupVariableByNameAndType(String(args.LIST2), 'list');
+        list2 = util.target.lookupVariableByNameAndType(String(args.LIST2), 'list');
       if (list && list2) {
-        try{
-          let object=JSON.parse(args.OBJ);
-          list.value=Object.keys(object);
-          list2.value=Object.values(object);
+        try {
+          let object = JSON.parse(args.OBJ);
+          list.value = Object.keys(object);
+          list2.value = Object.values(object);
           list._monitorUpToDate = false;
           list2._monitorUpToDate = false;
-        }catch(error){
+        } catch (error) {
           console.log('error:', error);
         }
       }
     }
-    associateList(args,util){
+    associateList(args, util) {
       const list = util.target.lookupVariableByNameAndType(String(args.LIST), 'list'),
-            list2 = util.target.lookupVariableByNameAndType(String(args.LIST2), 'list');
+        list2 = util.target.lookupVariableByNameAndType(String(args.LIST2), 'list');
       if (list && list2) {
-        let object={};
-        let length=(
-          args.DO==='d'?
-            Math.min(list.value.length,list2.value.length) :
-            Math.max(list.value.length,list2.value.length)
+        let object = {};
+        let length = (
+          args.DO === 'd' ?
+            Math.min(list.value.length, list2.value.length) :
+            Math.max(list.value.length, list2.value.length)
         );
-        for(let i=0;i<length;i++){
-          let key=list.value.length<=i?'key'+this.randomString(10):list.value[i];
-          let val=list2.value.length<=i?'':list2.value[i];
-          object[key]=val;
+        for (let i = 0; i < length; i++) {
+          let key = list.value.length <= i ? 'key' + this.randomString(10) : list.value[i];
+          let val = list2.value.length <= i ? '' : list2.value[i];
+          object[key] = val;
         }
         return JSON.stringify(object);
-      }else return '{}';
+      } else return '{}';
     }
 
-    forEach(args,util){
+    forEach(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.VAR), '');
       if (variable) {
-        let left=Number(args.LEFT),right=Number(args.RIGHT);
-        let range=right-left+1;
-        if(typeof util.stackFrame.index==='undefined'){
+        let left = Number(args.LEFT), right = Number(args.RIGHT);
+        let range = right - left + 1;
+        if (typeof util.stackFrame.index === 'undefined') {
           util.stackFrame.index = 0;
         }
 
-        if(util.stackFrame.index<range){
+        if (util.stackFrame.index < range) {
           util.stackFrame.index++;
-          variable.value=util.stackFrame.index+left-1;
-          util.startBranch(1,true);
+          variable.value = util.stackFrame.index + left - 1;
+          util.startBranch(1, true);
         }
       }
     }
-    forEachList(args,util){
+    forEachList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.VAR), '');
       const list = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable && list) {
-        let left=Number(args.LEFT)>0?Number(args.LEFT):1,
-            right=Number(args.RIGHT)<=list.value.length?Number(args.RIGHT):list.value.length;
-        let range=right-left+1;
-        if(typeof util.stackFrame.index==='undefined'){
+        let left = Number(args.LEFT) > 0 ? Number(args.LEFT) : 1,
+          right = Number(args.RIGHT) <= list.value.length ? Number(args.RIGHT) : list.value.length;
+        let range = right - left + 1;
+        if (typeof util.stackFrame.index === 'undefined') {
           util.stackFrame.index = 0;
         }
 
-        if(util.stackFrame.index<range){
+        if (util.stackFrame.index < range) {
           util.stackFrame.index++;
-          variable.value=list.value[util.stackFrame.index+left-2];
-          util.startBranch(1,true);
+          variable.value = list.value[util.stackFrame.index + left - 2];
+          util.startBranch(1, true);
         }
       }
     }
