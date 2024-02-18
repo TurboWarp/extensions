@@ -32,7 +32,7 @@
     getInfo() {
       return {
         id: "mbwxml",
-        name: Scratch.translate("XML"),
+        name: 'XML',
         color1: "#6c2b5f",
         blocks: [
           {
