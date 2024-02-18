@@ -50,7 +50,6 @@
   let askBoxButton;
   let askBoxInner;
   let askBoxText;
-  let askBoxQuestionText;
   let askBoxBorderMain;
   let askBoxBorderOuter;
   if (typeof scaffolding !== "undefined") {
