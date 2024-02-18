@@ -18,8 +18,8 @@
       const doc = this.domParser.parseFromString(string, "application/xml");
       const error = doc.querySelector("parsererror");
       if (error) {
-        console.error(error);
-        return { xml: null, error: error.querySelector("div").textContent };
+        console.error(error.textContent);
+        return { xml: null, error: error.textContent };
       }
       return { xml: doc.documentElement, error: null };
     }
