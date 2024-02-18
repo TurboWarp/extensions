@@ -1,8 +1,13 @@
+// Name: Git Penguin
+// ID: GitPenguin
+// Description: Manage and get files from your GitHub repository.
+// By: GarboMuffin <https://scratch.mit.edu/users/justablock/>
+// Original: justablock
 class GitPenguin {
     getInfo() {
         return {
             "id": "gitpenguin",
-            "name": "GitHub File Extension",
+            "name": "Git Penguin",
             "color1": "#303030",
             "color2": "#212121",
             "color3": "#212121",
