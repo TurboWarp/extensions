@@ -253,7 +253,7 @@
           {
             opcode: "querySuccessful",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("query [QUERY] on [XML] successful?"),
+            text: Scratch.translate("query [QUERY] on [XML] matches?"),
             arguments: {
               QUERY: {
                 type: Scratch.ArgumentType.STRING,
