@@ -65,8 +65,7 @@
     askBoxBG = ".sc-question-inner";
     askBoxButton = ".sc-question-submit-button";
     askBoxInner = ".sc-question-input";
-    askBoxText =
-      '[class^="question_question-container_"] input[class^="question_question-label_"]';
+    askBoxText = ".sc-question-text";
     askBoxBorderMain = ".sc-question-input:hover";
     askBoxBorderOuter = ".sc-question-input:focus";
   } else {
