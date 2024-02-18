@@ -12,6 +12,72 @@
   const Cast = Scratch.Cast;
   const regeneratedReporters = ["lmsSpMoreControl_forArg"];
 
+  class Frame {
+    constructor(isLoop) {
+      this.isLoop = isLoop;
+      this.isLastBlock = false;
+    }
+  }
+
+  // Patch code given to me by Ashime, made by CST. Adapted by me.
+  const JSG = vm.exports.i_will_not_ask_for_help_when_these_break().JSGenerator;
+  const STG =
+    vm.exports.i_will_not_ask_for_help_when_these_break().ScriptTreeGenerator;
+  const JSGP = JSG.prototype;
+  const STGP = STG.prototype;
+
+  const PATCHES_ID = "moreControl";
+  const cst_patch = (obj, functions) => {
+    if (obj[PATCHES_ID]) return;
+    obj[PATCHES_ID] = {};
+    for (const name in functions) {
+      const original = obj[name];
+      obj[PATCHES_ID][name] = obj[name];
+      if (original) {
+        obj[name] = function (...args) {
+          const callOriginal = (...args) => original.call(this, ...args);
+          return functions[name].call(this, callOriginal, ...args);
+        };
+      } else {
+        obj[name] = function (...args) {
+          return functions[name].call(this, () => {}, ...args);
+        };
+      }
+    }
+  };
+
+  cst_patch(JSGP, {
+    descendStackedBlock(originalFn, node) {
+      if (node.kind === "lmsSpMoreControl.withoutScreenRefresh") {
+        const previousWarp = this.isWarp;
+        this.isWarp = true;
+        this.descendStack(
+          node.code,
+          new Frame(false, "lmsSpMoreControl.withoutScreenRefresh")
+        );
+        this.isWarp = previousWarp;
+        return;
+      }
+      return originalFn(node);
+    },
+  });
+
+  cst_patch(STGP, {
+    descendStackedBlock(originalFn, block) {
+      if (block.opcode === "lmsSpMoreControl_withoutScreenRefresh") {
+        return {
+          kind: "lmsSpMoreControl.withoutScreenRefresh",
+          condition: {
+            kind: "constant",
+            value: true,
+          },
+          code: this.descendSubstack(block, "SUBSTACK"),
+        };
+      }
+      return originalFn(block);
+    },
+  });
+
   class MoreControl {
     constructor() {
       /**
@@ -476,6 +542,11 @@
             blockType: Scratch.BlockType.CONDITIONAL,
             text: "start blocks",
             branchIconURI: this.junctionIcon,
+          },
+          {
+            opcode: "withoutScreenRefresh",
+            blockType: Scratch.BlockType.CONDITIONAL,
+            text: "without screen refresh",
           },
         ],
         menus: {
@@ -975,6 +1046,12 @@
 
       // todo: use pushStack?
       runtime._pushThread(branch, target);
+    }
+
+    withoutScreenRefresh(arg, util) {
+      util.thread.peekStackFrame().warpMode = false;
+      util.startBranch(1, false);
+      util.thread.peekStackFrame().warpMode = true;
     }
 
     /**
