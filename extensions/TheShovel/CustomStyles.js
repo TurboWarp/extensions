@@ -50,6 +50,7 @@
   let askBoxButton;
   let askBoxInner;
   let askBoxText;
+  let askBoxQuestionText;
   let askBoxBorderMain;
   let askBoxBorderOuter;
   if (typeof scaffolding !== "undefined") {
@@ -65,7 +66,7 @@
     askBoxBG = ".sc-question-inner";
     askBoxButton = ".sc-question-submit-button";
     askBoxInner = ".sc-question-input";
-    askBoxText =
+    askBoxText = ".sc-question-text";
       '[class^="question_question-container_"] input[class^="question_question-label_"]';
     askBoxBorderMain = ".sc-question-input:hover";
     askBoxBorderOuter = ".sc-question-input:focus";
