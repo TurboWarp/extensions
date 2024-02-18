@@ -17,8 +17,8 @@
     stringToXml(string) {
       const doc = this.domParser.parseFromString(string, "application/xml");
       const error = doc.querySelector("parsererror");
-      console.log(error);
       if (error) {
+        console.error(error);
         return { xml: null, error: error.querySelector("div").textContent };
       }
       return { xml: doc.documentElement, error: null };
