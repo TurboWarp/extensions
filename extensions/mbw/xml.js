@@ -42,10 +42,7 @@
             arguments: {
               MAYBE_XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: '<hello apple="banana" />',
-                  description: "This should be valid XML",
-                }),
+                defaultValue: '<hello apple="banana" />'
               },
             },
           },
@@ -56,11 +53,7 @@
             arguments: {
               MAYBE_XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: '<hello apple="banana">',
-                  description:
-                    "This should be valid XML, *except* for the missing closing tag.",
-                }),
+                defaultValue: '<hello apple="banana">'
               },
             },
           },
@@ -72,10 +65,7 @@
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: '<hello apple="banana" />',
-                  description: "This should be valid XML",
-                }),
+                defaultValue: '<hello apple="banana" />'
               },
             },
           },
@@ -86,10 +76,7 @@
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: "<hello>world</hello>",
-                  description: "This should be valid XML",
-                }),
+                defaultValue: '<hello>world</hello>'
               },
             },
           },
@@ -101,10 +88,7 @@
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: '<hello apple="banana" />',
-                  description: "This should be valid XML",
-                }),
+                defaultValue: '<hello apple="banana" />'
               },
             },
           },
@@ -115,17 +99,11 @@
             arguments: {
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: '<hello apple="banana" />',
-                  description: "This should be valid XML",
-                }),
+                defaultValue: '<hello apple="banana" />'
               },
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: "foo",
-                  description: "This should be a valid XML attribute",
-                }),
+                defaultValue: 'foo'
               },
             },
           },
@@ -136,25 +114,15 @@
             arguments: {
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: "apple",
-                  description:
-                    'This should use the same attribute name as in `<hello apple="banana" />',
-                }),
+                defaultValue: 'apple'
               },
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: '<hello apple="banana" />',
-                  description: "This should be valid XML",
-                }),
+                defaultValue: '<hello apple="banana" />'
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: "foo",
-                  description: "This should be a valid XML attribute",
-                }),
+                defaultValue: 'foo'
               },
             },
           },
@@ -165,18 +133,11 @@
             arguments: {
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: "apple",
-                  description:
-                    'This should use the same attribute name as in `<hello apple="banana" />',
-                }),
+                defaultValue: 'apple'
               },
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: '<hello apple="banana" />',
-                  description: "This should be valid XML",
-                }),
+                defaultValue: '<hello apple="banana" />'
               },
             },
           },
@@ -187,18 +148,11 @@
             arguments: {
               ATTR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: "apple",
-                  description:
-                    'This should use the same attribute name as in `<hello apple="banana" />',
-                }),
+                defaultValue: 'apple'
               },
               XML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: '<hello apple="banana" />',
-                  description: "This should be valid XML",
-                }),
+                defaultValue: '<hello apple="banana" />'
               },
             },
           },
