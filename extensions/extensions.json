@@ -2,6 +2,7 @@
   // This file supports comments
   "lab/text",
   "stretch",
+  "justablock/gitpenguin",
   "gamepad",
   "box2d",
   "files",
