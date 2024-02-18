@@ -2,174 +2,28 @@
 // ID: qxsckvarandlist
 // Description: More blocks related to variables and lists.
 // By: qxsck
-(function(Scratch) {
+(function (Scratch) {
   'use strict';
-  const qxsckvarandlistIcon="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI3OS45ODQzOSIgaGVpZ2h0PSI3OS45ODQzOSIgdmlld0JveD0iMCwwLDc5Ljk4NDM5LDc5Ljk4NDM5Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjA5LjU2NDk1LC0xNDcuOTY0OTUpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PGc+PHBhdGggZD0iTTIzNy40NDIwNywxOTkuMzk1NTdjMCwtMTMuMDA4MTMgMTAuNTQ1MTEsLTIzLjU1Mzc3IDIzLjU1MzUsLTIzLjU1Mzc3YzEzLjAwODEzLDAgMjMuNTUzNzcsMTAuNTQ1NjQgMjMuNTUzNzcsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjQsMjMuNTUzNzcgLTIzLjU1Mzc3LDIzLjU1Mzc3Yy0xMy4wMDg0MSwwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9Im5vbmUiIHN0cm9rZS1vcGFjaXR5PSIwLjE1IiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIzNy42NDIwNywxOTkuNTk1NTdjMCwtMTMuMDA4MTMgMTAuNTQ1MTEsLTIzLjU1Mzc3IDIzLjU1MzUsLTIzLjU1Mzc3YzEzLjAwODEzLDAgMjMuNTUzNzcsMTAuNTQ1NjQgMjMuNTUzNzcsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjQsMjMuNTUzNzcgLTIzLjU1Mzc3LDIzLjU1Mzc3Yy0xMy4wMDg0MSwwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9IiNmZjhjMTkiIHN0cm9rZT0iI2RiNmUwMCIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiPjxwYXRoIGQ9Ik0yNjQuMzU1NDMsMjA1LjY0MDgzbC02LjcyNTM5LC0xMS4zOTQ3OCIvPjxwYXRoIGQ9Ik0yNTUuMjY0MjUsMjA1LjA0OTE4bDExLjY1MzksLTEwLjgwMzEzIiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIvPjwvZz48cGF0aCBkPSJNMjcyLjAwNzE5LDE4Ni41NjAwNWMwLDAgNC42NzA1LDUuNDc1NTIgNC42MDIwMSwxMy4xMTQ2OGMtMC4wODIxOCw5LjE2Mjk0IC01LjM3OTkzLDEzLjMyMzk1IC01LjM3OTkzLDEzLjMyMzk1IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTAuODg2NjcsMjEyLjU3OTJjMCwwIC01LjI1MDU2LC00LjYxMTE2IC00Ljc3NTM2LC0xNC4xMzY3OWMwLjM5NjI0LC03Ljk0MTU0IDUuNTg0OTMsLTEzLjM3Nzk1IDUuNTg0OTMsLTEzLjM3Nzk1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9nPjxnPjxwYXRoIGQ9Ik0yMTQuNTY1MjMsMTc2LjUxODcyYzAsLTEzLjAwODEzIDEwLjU0NTEsLTIzLjU1Mzc3IDIzLjU1Mzc3LC0yMy41NTM3N2MxMy4wMDgxMywwIDIzLjU1MzUsMTAuNTQ1NjUgMjMuNTUzNSwyMy41NTM3N2MwLDEzLjAwODEzIC0xMC41NDU2NSwyMy41NTM3OCAtMjMuNTUzNzcsMjMuNTUzNzhjLTEzLjAwODEzLDAgLTIzLjU1Mzc3LC0xMC41NDU2NSAtMjMuNTUzNzcsLTIzLjU1Mzc3eiIgZmlsbD0ibm9uZSIgc3Ryb2tlLW9wYWNpdHk9IjAuMTUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjE0LjU2NTIzLDE3Ni41MTg3MmMwLC0xMy4wMDgxMyAxMC41NDUxLC0yMy41NTM3NyAyMy41NTM3NywtMjMuNTUzNzdjMTMuMDA4MTMsMCAyMy41NTM1LDEwLjU0NTY1IDIzLjU1MzUsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjUsMjMuNTUzNzggLTIzLjU1Mzc3LDIzLjU1Mzc4Yy0xMy4wMDgxMywwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9IiNmZjY2MWEiIHN0cm9rZT0iI2U2NGQwMCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0yNTEuMDA0NDEsMTc2LjMxMzE4aC0xNS4wNzQ2NE0yNTEuMDA0NDEsMTY1LjkxNjk3aC0xNS4wNzQ2NE0yMjUuNzA2ODgsMTY2LjA5MDI5aDAuNjkzMjZNMjI2LjQwMDE1LDE3Ni40ODY1aC0wLjY5MzI2TTIzNS45Mjk3NywxODYuNzA5MzhoMTUuMDc0NjRNMjI2LjQwMDE1LDE4Ni44ODI3aC0wLjY5MzI2IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9nPjxnIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PHBhdGggZD0iTTI1OC4zNTU2NCwxNjkuMzY5MzNoMjQuMjAyMzlNMjcwLjQ1Njg0LDE1Ny4yNjg3djI0LjIwMTg0IiBzdHJva2Utb3BhY2l0eT0iMC4xNSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTI1OC4zNTU2NCwxNjkuMzY5MzNoMjQuMjAyMzlNMjcwLjQ1Njg0LDE1Ny4yNjg3djI0LjIwMTg0IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIvPjwvZz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjozMC40MzUwNTAwMDAwMDAxMDM6MzIuMDM1MDUwMDAwMDAwMDEtLT4=";
-
-  let i10ndefaultValue={
-    'qxsckvarandlist.name': 'variable and list',
-
-    'qxsckvarandlist.open': 'open',
-    'qxsckvarandlist.close': 'close',
-
-    'qxsckvarandlist.asc': 'ascending',
-    'qxsckvarandlist.desc': 'descending',
-    'qxsckvarandlist.dictOrder': 'dictionary order',
-
-    'qxsckvarandlist.haveVar': 'have variable [VAR] ?',
-    'qxsckvarandlist.getVar': 'value of variable [VAR]',
-    'qxsckvarandlist.setVar': 'set variable [VAR] to [VALUE]',
-    'qxsckvarandlist.seriVarsToJson': 'convert all variables starting with [START] to json',
-
-    'qxsckvarandlist.openCaseSensitive': '[CASE] case sensitive',
-    'qxsckvarandlist.haveList': 'have list [LIST] ?',
-    'qxsckvarandlist.length': 'length of list [LIST]',
-    'qxsckvarandlist.getList': 'value of list [LIST]',
-    'qxsckvarandlist.newGetList': 'values of list [LIST]',
-    'qxsckvarandlist.getListRange': 'values of from [LEFT] to [RIGHT] in list [LIST]',
-    'qxsckvarandlist.getValueOfList': 'item # [INDEX] of list [LIST]',
-    'qxsckvarandlist.seriListsToJson': 'convert all lists starting with [START] to json',
-    'qxsckvarandlist.clearList': 'delete all of list [LIST]',
-    'qxsckvarandlist.setList': 'set list [LIST] to list [LIST2]',
-    'qxsckvarandlist.setListValue': 'set list [LIST] to [VALUE] [NUM] times',
-    'qxsckvarandlist.deleteOfList': 'delete # [INDEX] of list [LIST]',
-    'qxsckvarandlist.addValueInList': 'add [VALUE] to list [LIST]',
-    'qxsckvarandlist.addListToList': 'add list [LIST2] to list [LIST]',
-    'qxsckvarandlist.insertOfList': 'insert [VALUE] before item # [INDEX] in the list [LIST]',
-    'qxsckvarandlist.insertListToList': 'insert list [LIST2] before item # [INDEX] in list [LIST]',
-    'qxsckvarandlist.replaceOfList': 'replace item [INDEX] of list [LIST] to [VALUE]',
-    'qxsckvarandlist.replaceRangeOfList': 'replace items [LEFT] to [RIGHT] in list [LIST] with [VALUE]',
-    'qxsckvarandlist.getIndexOfList': 'first index of [VALUE] in list [LIST]',
-    'qxsckvarandlist.getIndexesOfList': 'indexes of [VALUE] in list [LIST]',
-    'qxsckvarandlist.newGetIndexesOfList': 'indexes of  [VALUE] in list [LIST]',
-    'qxsckvarandlist.getCountsOfList': 'number of [VALUE] in list [LIST]',
-    'qxsckvarandlist.listContains': 'list [LIST] have [VALUE] ?',
-    'qxsckvarandlist.copyList': 'copy list [LIST1] to list [LIST2]',
-    'qxsckvarandlist.reverseList': 'reverse list [LIST]',
-    'qxsckvarandlist.sortList': 'sort list [LIST] with [CASE]',
-    'qxsckvarandlist.sortListRange': 'sort item [LEFT] to [RIGHT] in list [LIST] with [CASE]',
-    'qxsckvarandlist.mapObject': 'map object [OBJ] to list [LIST], and key to list [LIST2]',
-
-    'qxsckvarandlist.unSupportCompile': '⚠️Compilation not supported',
-
-    'qxsckvarandlist.forEach': '⚠️for each variable [VAR] from [LEFT] to [RIGHT]',
-    'qxsckvarandlist.forEachList': '⚠️for each variable [VAR] in value of from [LEFT] to [RIGHT] in list [LIST]',
-  };
-  let openCaseSensitive=false;
-
-  Scratch.translate.setup({
-    en: {
-      'qxsckvarandlist.name': 'variable and list',
-
-      'qxsckvarandlist.open': 'open',
-      'qxsckvarandlist.close': 'close',
-
-      'qxsckvarandlist.asc': 'ascending',
-      'qxsckvarandlist.desc': 'descending',
-      'qxsckvarandlist.dictOrder': 'dictionary order',
-
-      'qxsckvarandlist.haveVar': 'have variable [VAR] ?',
-      'qxsckvarandlist.getVar': 'value of variable [VAR]',
-      'qxsckvarandlist.setVar': 'set variable [VAR] to [VALUE]',
-      'qxsckvarandlist.seriVarsToJson': 'convert all variables starting with [START] to json',
-
-      'qxsckvarandlist.openCaseSensitive': '[CASE] case sensitive',
-      'qxsckvarandlist.haveList': 'have list [LIST] ?',
-      'qxsckvarandlist.length': 'length of list [LIST]',
-      'qxsckvarandlist.getList': 'value of list [LIST]',
-      'qxsckvarandlist.newGetList': 'values of list [LIST]',
-      'qxsckvarandlist.getListRange': 'values of from [LEFT] to [RIGHT] in list [LIST]',
-      'qxsckvarandlist.getValueOfList': 'item # [INDEX] of list [LIST]',
-      'qxsckvarandlist.seriListsToJson': 'convert all lists starting with [START] to json',
-      'qxsckvarandlist.clearList': 'delete all of list [LIST]',
-      'qxsckvarandlist.setList': 'set list [LIST] to list [LIST2]',
-      'qxsckvarandlist.setListValue': 'set list [LIST] to [VALUE] [NUM] times',
-      'qxsckvarandlist.deleteOfList': 'delete # [INDEX] of list [LIST]',
-      'qxsckvarandlist.addValueInList': 'add [VALUE] to list [LIST]',
-      'qxsckvarandlist.addListToList': 'add list [LIST2] to list [LIST]',
-      'qxsckvarandlist.insertOfList': 'insert [VALUE] before item # [INDEX] in the list [LIST]',
-      'qxsckvarandlist.insertListToList': 'insert list [LIST2] before item # [INDEX] in list [LIST]',
-      'qxsckvarandlist.replaceOfList': 'replace item [INDEX] of list [LIST] to [VALUE]',
-      'qxsckvarandlist.replaceRangeOfList': 'replace items [LEFT] to [RIGHT] in list [LIST] with [VALUE]',
-      'qxsckvarandlist.getIndexOfList': 'first index of [VALUE] in list [LIST]',
-      'qxsckvarandlist.getIndexesOfList': 'indexes of [VALUE] in list [LIST]',
-      'qxsckvarandlist.newGetIndexesOfList': 'indexes of  [VALUE] in list [LIST]',
-      'qxsckvarandlist.getCountsOfList': 'number of [VALUE] in list [LIST]',
-      'qxsckvarandlist.listContains': 'list [LIST] have [VALUE] ?',
-      'qxsckvarandlist.copyList': 'copy list [LIST1] to list [LIST2]',
-      'qxsckvarandlist.reverseList': 'reverse list [LIST]',
-      'qxsckvarandlist.sortList': 'sort list [LIST] with [CASE]',
-      'qxsckvarandlist.sortListRange': 'sort item [LEFT] to [RIGHT] in list [LIST] with [CASE]',
-      'qxsckvarandlist.mapObject': 'map object [OBJ] to list [LIST], and key to list [LIST2]',
-
-      'qxsckvarandlist.unSupportCompile': '⚠️Compilation not supported',
-
-      'qxsckvarandlist.forEach': '⚠️for each variable [VAR] from [LEFT] to [RIGHT]',
-      'qxsckvarandlist.forEachList': '⚠️for each variable [VAR] in value of from [LEFT] to [RIGHT] in list [LIST]',
-    },
-    zh: {
-      'qxsckvarandlist.name': '变量与列表',
-
-      'qxsckvarandlist.open': '打开',
-      'qxsckvarandlist.close': '关闭',
-
-      'qxsckvarandlist.asc': '升序',
-      'qxsckvarandlist.desc': '降序',
-      'qxsckvarandlist.dictOrder': '字典序',
-
-      'qxsckvarandlist.haveVar': '有变量 [VAR] 吗？',
-      'qxsckvarandlist.getVar': '变量 [VAR] 的值',
-      'qxsckvarandlist.setVar': '设置变量 [VAR] 的值为 [VALUE]',
-      'qxsckvarandlist.seriVarsToJson': '将以 [START] 为开头的所有变量转换为json',
-
-      'qxsckvarandlist.openCaseSensitive': '[CASE] 大小写敏感',
-      'qxsckvarandlist.haveList': '有列表 [LIST] 吗？',
-      'qxsckvarandlist.emptyList': '列表 [LIST] 是空的吗？',
-      'qxsckvarandlist.length': '列表 [LIST] 的长度',
-      'qxsckvarandlist.getList': '列表 [LIST] 的值',
-      'qxsckvarandlist.newGetList': '列表 [LIST] 的值',
-      'qxsckvarandlist.getListRange': '列表 [LIST] 中第 [LEFT] 到 [RIGHT] 项的值',
-      'qxsckvarandlist.getValueOfList': '列表 [LIST] 的第 [INDEX] 项',
-      'qxsckvarandlist.seriListsToJson': '将以 [START] 为开头的所有列表转换为json',
-      'qxsckvarandlist.clearList': '清空列表 [LIST]',
-      'qxsckvarandlist.setList': '设置列表 [LIST] 的内容为列表 [LIST2]',
-      'qxsckvarandlist.setListValue': '设置列表 [LIST] 为 [NUM] 个 [VALUE]',
-      'qxsckvarandlist.deleteOfList': '删除列表 [LIST] 的第 [INDEX] 项',
-      'qxsckvarandlist.addValueInList': '在列表 [LIST] 末尾添加 [VALUE]',
-      'qxsckvarandlist.addListToList': '在列表 [LIST] 末尾添加列表 [LIST2]',
-      'qxsckvarandlist.insertOfList': '在列表 [LIST] 的第 [INDEX] 项前插入 [VALUE]',
-      'qxsckvarandlist.insertListToList': '在列表 [LIST] 的第 [INDEX] 项前插入列表 [LIST2]',
-      'qxsckvarandlist.replaceOfList': '替换列表 [LIST] 的第 [INDEX] 项为 [VALUE]',
-      'qxsckvarandlist.replaceRangeOfList': '把列表 [LIST] 的第 [LEFT] 到 [RIGHT] 项都替换为 [VALUE]',
-      'qxsckvarandlist.getIndexOfList': '列表 [LIST] 中第一个 [VALUE] 的位置',
-      'qxsckvarandlist.getIndexesOfList': '列表 [LIST] 中所有 [VALUE] 的位置',
-      'qxsckvarandlist.newGetIndexesOfList': '列表 [LIST] 中所有 [VALUE] 的位置',
-      'qxsckvarandlist.getCountsOfList': '列表 [LIST] 中 [VALUE] 的数量',
-      'qxsckvarandlist.listContains': '列表 [LIST] 包括 [VALUE] 吗？',
-      'qxsckvarandlist.copyList': '将列表 [LIST1] 复制到列表 [LIST2]',
-      'qxsckvarandlist.reverseList': '反转列表 [LIST]',
-      'qxsckvarandlist.sortList': '以 [CASE] 排序列表 [LIST]',
-      'qxsckvarandlist.sortListRange': '以 [CASE] 排序列表 [LIST] 的第 [LEFT] 到 [RIGHT] 项',
-      'qxsckvarandlist.mapObject': '映射对象 [OBJ] 的值到列表 [LIST] ，键到列表 [LIST2]',
-
-      'qxsckvarandlist.unSupportCompile': '⚠️不支持编译',
-
-      'qxsckvarandlist.forEach': '⚠️对于从 [LEFT] 到 [RIGHT] 中的每个变量 [VAR]',
-      'qxsckvarandlist.forEachList': '⚠️对于列表 [LIST] 中从第 [LEFT] 到第 [RIGHT] 项的每个变量 [VAR]',
-    }
-  });
+  const qxsckvarandlistIcon = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI3OS45ODQzOSIgaGVpZ2h0PSI3OS45ODQzOSIgdmlld0JveD0iMCwwLDc5Ljk4NDM5LDc5Ljk4NDM5Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjA5LjU2NDk1LC0xNDcuOTY0OTUpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PGc+PHBhdGggZD0iTTIzNy40NDIwNywxOTkuMzk1NTdjMCwtMTMuMDA4MTMgMTAuNTQ1MTEsLTIzLjU1Mzc3IDIzLjU1MzUsLTIzLjU1Mzc3YzEzLjAwODEzLDAgMjMuNTUzNzcsMTAuNTQ1NjQgMjMuNTUzNzcsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjQsMjMuNTUzNzcgLTIzLjU1Mzc3LDIzLjU1Mzc3Yy0xMy4wMDg0MSwwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9Im5vbmUiIHN0cm9rZS1vcGFjaXR5PSIwLjE1IiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTIzNy42NDIwNywxOTkuNTk1NTdjMCwtMTMuMDA4MTMgMTAuNTQ1MTEsLTIzLjU1Mzc3IDIzLjU1MzUsLTIzLjU1Mzc3YzEzLjAwODEzLDAgMjMuNTUzNzcsMTAuNTQ1NjQgMjMuNTUzNzcsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjQsMjMuNTUzNzcgLTIzLjU1Mzc3LDIzLjU1Mzc3Yy0xMy4wMDg0MSwwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9IiNmZjhjMTkiIHN0cm9rZT0iI2RiNmUwMCIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiPjxwYXRoIGQ9Ik0yNjQuMzU1NDMsMjA1LjY0MDgzbC02LjcyNTM5LC0xMS4zOTQ3OCIvPjxwYXRoIGQ9Ik0yNTUuMjY0MjUsMjA1LjA0OTE4bDExLjY1MzksLTEwLjgwMzEzIiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIvPjwvZz48cGF0aCBkPSJNMjcyLjAwNzE5LDE4Ni41NjAwNWMwLDAgNC42NzA1LDUuNDc1NTIgNC42MDIwMSwxMy4xMTQ2OGMtMC4wODIxOCw5LjE2Mjk0IC01LjM3OTkzLDEzLjMyMzk1IC01LjM3OTkzLDEzLjMyMzk1IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTAuODg2NjcsMjEyLjU3OTJjMCwwIC01LjI1MDU2LC00LjYxMTE2IC00Ljc3NTM2LC0xNC4xMzY3OWMwLjM5NjI0LC03Ljk0MTU0IDUuNTg0OTMsLTEzLjM3Nzk1IDUuNTg0OTMsLTEzLjM3Nzk1IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9nPjxnPjxwYXRoIGQ9Ik0yMTQuNTY1MjMsMTc2LjUxODcyYzAsLTEzLjAwODEzIDEwLjU0NTEsLTIzLjU1Mzc3IDIzLjU1Mzc3LC0yMy41NTM3N2MxMy4wMDgxMywwIDIzLjU1MzUsMTAuNTQ1NjUgMjMuNTUzNSwyMy41NTM3N2MwLDEzLjAwODEzIC0xMC41NDU2NSwyMy41NTM3OCAtMjMuNTUzNzcsMjMuNTUzNzhjLTEzLjAwODEzLDAgLTIzLjU1Mzc3LC0xMC41NDU2NSAtMjMuNTUzNzcsLTIzLjU1Mzc3eiIgZmlsbD0ibm9uZSIgc3Ryb2tlLW9wYWNpdHk9IjAuMTUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjE0LjU2NTIzLDE3Ni41MTg3MmMwLC0xMy4wMDgxMyAxMC41NDUxLC0yMy41NTM3NyAyMy41NTM3NywtMjMuNTUzNzdjMTMuMDA4MTMsMCAyMy41NTM1LDEwLjU0NTY1IDIzLjU1MzUsMjMuNTUzNzdjMCwxMy4wMDgxMyAtMTAuNTQ1NjUsMjMuNTUzNzggLTIzLjU1Mzc3LDIzLjU1Mzc4Yy0xMy4wMDgxMywwIC0yMy41NTM3NywtMTAuNTQ1NjUgLTIzLjU1Mzc3LC0yMy41NTM3N3oiIGZpbGw9IiNmZjY2MWEiIHN0cm9rZT0iI2U2NGQwMCIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0yNTEuMDA0NDEsMTc2LjMxMzE4aC0xNS4wNzQ2NE0yNTEuMDA0NDEsMTY1LjkxNjk3aC0xNS4wNzQ2NE0yMjUuNzA2ODgsMTY2LjA5MDI5aDAuNjkzMjZNMjI2LjQwMDE1LDE3Ni40ODY1aC0wLjY5MzI2TTIzNS45Mjk3NywxODYuNzA5MzhoMTUuMDc0NjRNMjI2LjQwMDE1LDE4Ni44ODI3aC0wLjY5MzI2IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9nPjxnIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PHBhdGggZD0iTTI1OC4zNTU2NCwxNjkuMzY5MzNoMjQuMjAyMzlNMjcwLjQ1Njg0LDE1Ny4yNjg3djI0LjIwMTg0IiBzdHJva2Utb3BhY2l0eT0iMC4xNSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTI1OC4zNTU2NCwxNjkuMzY5MzNoMjQuMjAyMzlNMjcwLjQ1Njg0LDE1Ny4yNjg3djI0LjIwMTg0IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iNSIvPjwvZz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjozMC40MzUwNTAwMDAwMDAxMDM6MzIuMDM1MDUwMDAwMDAwMDEtLT4=";
 
   class VarAndList {
-    constructor(){
-      this.formatMessage=function(id){
-        return Scratch.translate({id: id,default: i10ndefaultValue[id]});
+    constructor() {
+      this.randomString = function (length) {
+        let stringDict =
+          'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~`!@#$%^&*()_-+={[}}|:;<,>.?/';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+          let idx = Math.floor(Math.random() * stringDict.length);
+          result += stringDict[idx];
+        }
+        return result;
       }
     }
 
     getInfo() {
       return {
-        id:'qxsckvarandlist',
-        name: this.formatMessage('qxsckvarandlist.name'),
+        id: 'qxsckvarandlist',
+        name: Scratch.translate('Variable and list'),
         color1: '#ed6b00',
         color2: '#ed6b00',
         blockIconURI: qxsckvarandlistIcon,
@@ -177,50 +31,65 @@
         blocks: [
           //command,reporter,Boolean,hat,conditional,loop
           {
-            opcode:'haveVar',
+            opcode: 'haveVar',
             blockType: 'Boolean',
-            text: this.formatMessage('qxsckvarandlist.haveVar'),
+            text: Scratch.translate('have variable [VAR] ?'),
             arguments: {
               VAR: {
                 type: 'string',
-                defaultValue:'variable'
+                defaultValue: 'variable'
               },
             }
           },
           {
-            opcode:'getVar',
+            opcode: 'getVar',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.getVar'),
+            text: Scratch.translate('value of variable [VAR]'),
             arguments: {
               VAR: {
                 type: 'string',
-                defaultValue:'variable'
+                defaultValue: 'variable'
               },
             }
           },
           {
-            opcode:'setVar',
+            opcode: 'setVar',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.setVar'),
+            text: Scratch.translate('set variable [VAR] to [VALUE]'),
             arguments: {
               VAR: {
                 type: 'string',
-                defaultValue:'variable'
+                defaultValue: 'variable'
               },
               VALUE: {
                 type: 'string',
-                defaultValue:'value'
+                defaultValue: 'value'
               },
             }
           },
           {
-            opcode:'seriVarsToJson',
+            opcode: 'seriVarsToJson',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.seriVarsToJson'),
+            text: Scratch.translate('convert all variables starting with [START] to json'),
             arguments: {
               START: {
                 type: 'string',
-                defaultValue:'variable'
+                defaultValue: 'variable'
+              },
+            }
+          },
+          {
+            opcode: 'swapVar',
+            blockType: 'command',
+            text: Scratch.translate('swap variable [VAR] and [VAR2]'),
+            arguments: {
+              VAR: {
+                type: 'string',
+                defaultValue: 'variable1'
+              },
+              VAR2: {
+                type: 'string',
+                defaultValue: 'variable2'
               },
             }
           },
@@ -228,9 +97,9 @@
           '---',
 
           {
-            opcode:'openCaseSensitive',
+            opcode: 'openCaseSensitive',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.openCaseSensitive'),
+            text: Scratch.translate('[CASE] case sensitive'),
             arguments: {
               CASE: {
                 type: 'string',
@@ -239,511 +108,553 @@
             }
           },
           {
-            opcode:'haveList',
+            opcode: 'haveList',
             blockType: 'Boolean',
-            text: this.formatMessage('qxsckvarandlist.haveList'),
+            text: Scratch.translate('have list [LIST] ?'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
             }
           },
           {
-            opcode:'emptyList',
+            opcode: 'emptyList',
             blockType: 'Boolean',
-            text: this.formatMessage('qxsckvarandlist.emptyList'),
+            text: Scratch.translate('list [LIST] is empty?'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
             }
           },
           {
-            opcode:'length',
+            opcode: 'length',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.length'),
+            text: Scratch.translate('length of list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               }
             }
           },
           {
-            opcode:'getList',
+            opcode: 'getList',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.getList'),
+            text: Scratch.translate('value of list [LIST]'),
             hideFromPalette: true,
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
             }
           },
           {
-            opcode:'newGetList',
+            opcode: 'newGetList',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.newGetList'),
+            text: Scratch.translate('values of list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
             }
           },
           {
-            opcode:'getListRange',
+            opcode: 'getListRange',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.getListRange'),
+            text: Scratch.translate('values of from [LEFT] to [RIGHT] in list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               LEFT: {
                 type: 'string',
-                defaultValue:'1'
+                defaultValue: '1'
               },
               RIGHT: {
                 type: 'string',
-                defaultValue:'2'
+                defaultValue: '2'
               },
             }
           },
           {
-            opcode:'getValueOfList',
+            opcode: 'getValueOfList',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.getValueOfList'),
+            text: Scratch.translate('item # [INDEX] of list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               INDEX: {
                 type: 'string',
-                defaultValue:'1'
+                defaultValue: '1'
               }
             }
           },
           {
-            opcode:'seriListsToJson',
+            opcode: 'seriListsToJson',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.seriListsToJson'),
+            text: Scratch.translate('convert all lists starting with [START] to json'),
             arguments: {
               START: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
             }
           },
           {
-            opcode:'clearList',
+            opcode: 'swapList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.clearList'),
+            text: Scratch.translate('swap list [LIST] and [LIST2]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
-              },
-            }
-          },
-          {
-            opcode:'setList',
-            blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.setList'),
-            arguments: {
-              LIST: {
-                type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list1'
               },
               LIST2: {
                 type: 'string',
-                defaultValue:'["a","b"]'
+                defaultValue: 'list2'
               },
             }
           },
           {
-            opcode:'setListValue',
+            opcode: 'clearList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.setListValue'),
+            text: Scratch.translate('delete all of list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
+              },
+            }
+          },
+          {
+            opcode: 'setList',
+            blockType: 'command',
+            text: Scratch.translate('set list [LIST] to list [LIST2]'),
+            arguments: {
+              LIST: {
+                type: 'string',
+                defaultValue: 'list'
+              },
+              LIST2: {
+                type: 'string',
+                defaultValue: '["a","b"]'
+              },
+            }
+          },
+          {
+            opcode: 'setListValue',
+            blockType: 'command',
+            text: Scratch.translate('set list [LIST] to [VALUE] [NUM] times'),
+            arguments: {
+              LIST: {
+                type: 'string',
+                defaultValue: 'list'
               },
               NUM: {
                 type: 'string',
-                defaultValue:'5'
+                defaultValue: '5'
               },
               VALUE: {
                 type: 'string',
-                defaultValue:'thing'
+                defaultValue: 'thing'
               },
             }
           },
           {
-            opcode:'deleteOfList',
+            opcode: 'deleteOfList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.deleteOfList'),
+            text: Scratch.translate('delete # [INDEX] of list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               INDEX: {
                 type: 'string',
-                defaultValue:'1'
+                defaultValue: '1'
               }
             }
           },
           {
-            opcode:'addValueInList',
+            opcode: 'addValueInList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.addValueInList'),
+            text: Scratch.translate('add [VALUE] to list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               VALUE: {
                 type: 'string',
-                defaultValue:'value'
+                defaultValue: 'value'
               },
             }
           },
           {
-            opcode:'addListToList',
+            opcode: 'addListToList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.addListToList'),
+            text: Scratch.translate('add list [LIST2] to list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               LIST2: {
                 type: 'string',
-                defaultValue:'["a","b"]'
+                defaultValue: '["a","b"]'
               },
             }
           },
           {
-            opcode:'insertOfList',
+            opcode: 'insertOfList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.insertOfList'),
+            text: Scratch.translate('insert [VALUE] before item # [INDEX] in the list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               INDEX: {
                 type: 'string',
-                defaultValue:'1'
+                defaultValue: '1'
               },
               VALUE: {
                 type: 'string',
-                defaultValue:'thing'
+                defaultValue: 'thing'
               }
             }
           },
           {
-            opcode:'insertListToList',
+            opcode: 'insertListToList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.insertListToList'),
+            text: Scratch.translate('insert list [LIST2] before item # [INDEX] in list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               INDEX: {
                 type: 'string',
-                defaultValue:'1'
+                defaultValue: '1'
               },
               LIST2: {
                 type: 'string',
-                defaultValue:'["ark","os"]'
+                defaultValue: '["ark","os"]'
               }
             }
           },
           {
-            opcode:'replaceOfList',
+            opcode: 'replaceOfList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.replaceOfList'),
+            text: Scratch.translate('replace item [INDEX] of list [LIST] to [VALUE]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               INDEX: {
                 type: 'string',
-                defaultValue:'1'
+                defaultValue: '1'
               },
               VALUE: {
                 type: 'string',
-                defaultValue:'thing'
+                defaultValue: 'thing'
               }
             }
           },
           {
-            opcode:'replaceRangeOfList',
+            opcode: 'replaceRangeOfList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.replaceRangeOfList'),
+            text: Scratch.translate('replace items [LEFT] to [RIGHT] in list [LIST] with [VALUE]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               LEFT: {
                 type: 'string',
-                defaultValue:'1'
+                defaultValue: '1'
               },
               RIGHT: {
                 type: 'string',
-                defaultValue:'2'
+                defaultValue: '2'
               },
               VALUE: {
                 type: 'string',
-                defaultValue:'thing'
+                defaultValue: 'thing'
               }
             }
           },
           {
-            opcode:'getIndexOfList',
+            opcode: 'getIndexOfList',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.getIndexOfList'),
+            text: Scratch.translate('first index of [VALUE] in list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               VALUE: {
                 type: 'string',
-                defaultValue:'thing'
+                defaultValue: 'thing'
               }
             }
           },
           {
-            opcode:'getIndexesOfList',
+            opcode: 'getIndexesOfList',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.getIndexesOfList'),
+            text: Scratch.translate('indexes of [VALUE] in list [LIST]'),
             hideFromPalette: true,
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               VALUE: {
                 type: 'string',
-                defaultValue:'thing'
+                defaultValue: 'thing'
               }
             }
           },
           {
-            opcode:'newGetIndexesOfList',
+            opcode: 'newGetIndexesOfList',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.newGetIndexesOfList'),
+            text: Scratch.translate('indexes of [VALUE] in list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               VALUE: {
                 type: 'string',
-                defaultValue:'thing'
+                defaultValue: 'thing'
               }
             }
           },
           {
-            opcode:'getCountsOfList',
+            opcode: 'getCountsOfList',
             blockType: 'reporter',
-            text: this.formatMessage('qxsckvarandlist.getCountsOfList'),
+            text: Scratch.translate('number of [VALUE] in list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               VALUE: {
                 type: 'string',
-                defaultValue:'thing'
+                defaultValue: 'thing'
               }
             }
           },
           {
-            opcode:'listContains',
+            opcode: 'listContains',
             blockType: 'Boolean',
-            text: this.formatMessage('qxsckvarandlist.listContains'),
+            text: Scratch.translate('list [LIST] have [VALUE] ?'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               VALUE: {
                 type: 'string',
-                defaultValue:'thing'
+                defaultValue: 'thing'
               }
             }
           },
           {
-            opcode:'copyList',
+            opcode: 'copyList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.copyList'),
+            text: Scratch.translate('copy list [LIST1] to list [LIST2]'),
             arguments: {
               LIST1: {
                 type: 'string',
-                defaultValue:'list1'
+                defaultValue: 'list1'
               },
               LIST2: {
                 type: 'string',
-                defaultValue:'list2'
+                defaultValue: 'list2'
               }
             }
           },
           {
-            opcode:'reverseList',
+            opcode: 'reverseList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.reverseList'),
+            text: Scratch.translate('reverse list [LIST]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
             },
           },
           {
-            opcode:'sortList',
+            opcode: 'sortList',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.sortList'),
+            text: Scratch.translate('sort list [LIST] with [CASE]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
-              CASE:{
+              CASE: {
                 type: 'string',
                 menu: 'sortList.List',
               }
             }
           },
           {
-            opcode:'sortListRange',
+            opcode: 'sortListRange',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.sortListRange'),
+            text: Scratch.translate('sort item [LEFT] to [RIGHT] in list [LIST] with [CASE]'),
             arguments: {
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
-              CASE:{
+              CASE: {
                 type: 'string',
                 menu: 'sortList.List',
               },
               LEFT: {
                 type: 'string',
-                defaultValue:'1'
+                defaultValue: '1'
               },
               RIGHT: {
                 type: 'string',
-                defaultValue:'2'
+                defaultValue: '2'
               },
             }
           },
           {
-            opcode:'mapObject',
+            opcode: 'mapObject',
             blockType: 'command',
-            text: this.formatMessage('qxsckvarandlist.mapObject'),
+            text: Scratch.translate('map object [OBJ] , keys to list [LIST], and values to list [LIST2]'),
             arguments: {
               OBJ: {
                 type: 'string',
-                defaultValue:'{"name":"Gandi"}'
+                defaultValue: '{"name":"TruboWarp"}'
               },
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list1'
               },
               LIST2: {
                 type: 'string',
-                defaultValue:'list2'
+                defaultValue: 'list2'
+              },
+            }
+          },
+          {
+            opcode: 'associateList',
+            blockType: 'reporter',
+            text: Scratch.translate('associate list [LIST] to keys, and [LIST2] to values, if length is different, then [DO]'),
+            arguments: {
+              LIST: {
+                type: 'string',
+                defaultValue: 'list1'
+              },
+              LIST2: {
+                type: 'string',
+                defaultValue: 'list2'
+              },
+              DO: {
+                type: 'string',
+                menu: 'associateList.List'
               },
             }
           },
 
-          '---',
-
           {
-            opcode:'unSupportCompile',
+            opcode: 'unSupportCompile',
             blockType: 'label',
-            text: this.formatMessage('qxsckvarandlist.unSupportCompile'),
+            text: Scratch.translate('⚠️Compilation not supported'),
             arguments: {}
           },
 
           {
-            opcode:'forEach',
+            opcode: 'forEach',
             blockType: 'conditional',
-            text: this.formatMessage('qxsckvarandlist.forEach'),
+            text: Scratch.translate('⚠️for each variable [VAR] from [LEFT] to [RIGHT]'),
             arguments: {
               VAR: {
                 type: 'string',
-                defaultValue:'variable'
+                defaultValue: 'variable'
               },
               LEFT: {
                 type: 'string',
-                defaultValue:'1'
+                defaultValue: '1'
               },
               RIGHT: {
                 type: 'string',
-                defaultValue:'5'
+                defaultValue: '5'
               },
             }
           },
           {
-            opcode:'forEachList',
+            opcode: 'forEachList',
             blockType: 'conditional',
-            text: this.formatMessage('qxsckvarandlist.forEachList'),
+            text: Scratch.translate('⚠️for each variable [VAR] in value of from [LEFT] to [RIGHT] in list [LIST]'),
             arguments: {
               VAR: {
                 type: 'string',
-                defaultValue:'variable'
+                defaultValue: 'variable'
               },
               LIST: {
                 type: 'string',
-                defaultValue:'list'
+                defaultValue: 'list'
               },
               LEFT: {
                 type: 'string',
-                defaultValue:'1'
+                defaultValue: '1'
               },
               RIGHT: {
                 type: 'string',
-                defaultValue:'5'
+                defaultValue: '5'
               },
             }
           },
         ],
         menus: {
-          'openCaseSensitive.List':[
+          'openCaseSensitive.List': [
             {
-              text: this.formatMessage("qxsckvarandlist.open"),
+              text: Scratch.translate("open"),
               value: 'open'
             },
             {
-              text: this.formatMessage("qxsckvarandlist.close"),
+              text: Scratch.translate("close"),
               value: 'close'
             },
           ],
-          'sortList.List':[
+          'sortList.List': [
             {
-              text: this.formatMessage("qxsckvarandlist.asc"),
+              text: Scratch.translate("ascending"),
               value: 'asc'
             },
             {
-              text: this.formatMessage("qxsckvarandlist.desc"),
+              text: Scratch.translate("descending"),
               value: 'desc'
             },
             {
-              text: this.formatMessage("qxsckvarandlist.dictOrder"),
+              text: Scratch.translate("dictionary order"),
               value: 'dictOrder'
+            },
+          ],
+          'associateList.List': [
+            {
+              text: Scratch.translate("complete the missing parts"),
+              value: 'c'
+            },
+            {
+              text: Scratch.translate("delete the excess parts"),
+              value: 'd'
             },
           ],
         }
@@ -756,18 +667,12 @@
     }
     getVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.VAR), '');
-      return variable ? variable.value :'';
+      return variable ? variable.value : '';
     }
     setVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.VAR), '');
       if (variable) {
         variable.value = args.VALUE;
-        if (variable.isCloud) {
-          util.runtime.ioDevices.cloud.requestUpdateVariable(
-            variable.name,
-            variable.value
-          );
-        }
       }
     }
     seriVarsToJson(args, util) {
@@ -785,9 +690,18 @@
       }
       return JSON.stringify(serialized);
     }
+    swapVar(args, util) {
+      const variable = util.target.lookupVariableByNameAndType(String(args.VAR), '');
+      const variable2 = util.target.lookupVariableByNameAndType(String(args.VAR2), '');
+      if (variable && variable2) {
+        let value = variable.value;
+        variable.value = variable2.value;
+        variable2.value = value;
+      }
+    }
 
-    openCaseSensitive(args){
-      openCaseSensitive=(String(args.CASE)==='open'?true:false);
+    openCaseSensitive(args) {
+      openCaseSensitive = (String(args.CASE) === 'open' ? true : false);
     }
     haveList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
@@ -795,7 +709,7 @@
     }
     emptyList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      return variable ? (variable.value.length?false:true) : true;
+      return variable ? (variable.value.length ? false : true) : true;
     }
     length(args, util) {
       /** @type {VM.ListVariable} */
@@ -811,16 +725,16 @@
     }
     newGetList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      return variable ? '['+variable.value.map(value=>'"'+String(value)+'"').join(',')+']' : '[]';
+      return variable ? '[' + variable.value.map(value => '"' + String(value) + '"').join(',') + ']' : '[]';
     }
     getListRange(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        let length=variable.value.length,left=Number(args.LEFT),right=Number(args.RIGHT);
-        if(left<1) left=1;
-        if(right>length) right=length;
-        left-=1,right-=1;
-        return '['+variable.value.slice(left,right+1).map(value=>'"'+String(value)+'"').join(',')+']';
+        let length = variable.value.length, left = Number(args.LEFT), right = Number(args.RIGHT);
+        if (left < 1) left = 1;
+        if (right > length) right = length;
+        left -= 1, right -= 1;
+        return '[' + variable.value.slice(left, right + 1).map(value => '"' + String(value) + '"').join(',') + ']';
       }
       return '';
     }
@@ -828,7 +742,7 @@
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (!variable) return '';
       const index = String(args.INDEX);
-      if(Number(index)<=variable.value.length && Number(index)>=1){
+      if (Number(index) <= variable.value.length && Number(index) >= 1) {
         return variable.value[index - 1];
       }
       return '';
@@ -848,6 +762,17 @@
       }
       return JSON.stringify(serialized);
     }
+    swapList(args, util) {
+      const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
+      const variable2 = util.target.lookupVariableByNameAndType(String(args.LIST2), 'list');
+      if (variable && variable2) {
+        let value = variable.value;
+        variable.value = variable2.value;
+        variable2.value = value;
+        variable._monitorUpToDate = false;
+        variable2._monitorUpToDate = false;
+      }
+    }
     clearList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
@@ -860,11 +785,11 @@
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        try{
-          let arr=JSON.parse(args.LIST2);
-          variable.value=arr;
+        try {
+          let arr = JSON.parse(args.LIST2);
+          variable.value = arr;
           variable._monitorUpToDate = false;
-        }catch(error){
+        } catch (error) {
           console.log('error:', error);
         }
       }
@@ -873,9 +798,9 @@
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        let val=String(args.VALUE),num=Number(args.NUM);
-        variable.value=[];
-        for(let i=1;i<=num;i++) variable.value.push(val);
+        let val = String(args.VALUE), num = Number(args.NUM);
+        variable.value = [];
+        for (let i = 1; i <= num; i++) variable.value.push(val);
         variable._monitorUpToDate = false;
       }
     }
@@ -886,7 +811,7 @@
         const index = String(args.INDEX);
         if (index === 'ALL') {
           variable.value = [];
-        } else if(Number(index)<=variable.value.length && Number(index)>=1){
+        } else if (Number(index) <= variable.value.length && Number(index) >= 1) {
           variable.value.splice(Number(index) - 1, 1);
           variable._monitorUpToDate = false;
         }
@@ -904,30 +829,30 @@
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        try{
-          let arr=JSON.parse(args.LIST2);
-          for(let i=0;i<arr.length;i++) variable.value.push(String(arr[i]));
+        try {
+          let arr = JSON.parse(args.LIST2);
+          for (let i = 0; i < arr.length; i++) variable.value.push(String(arr[i]));
           variable._monitorUpToDate = false;
-        }catch(error){
+        } catch (error) {
           console.log('error:', error);
         }
       }
     }
-    insertOfList(args,util){
+    insertOfList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      const index=Number(args.INDEX)>variable.value.length?variable.value.length+1:Number(args.INDEX);
-      variable.value.splice(index-1,0,value);
+      const value = String(args.VALUE);
+      const index = Number(args.INDEX) > variable.value.length ? variable.value.length + 1 : Number(args.INDEX);
+      variable.value.splice(index - 1, 0, value);
       variable._monitorUpToDate = false;
     }
-    insertListToList(args,util){
+    insertListToList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const index=Number(args.INDEX)>variable.value.length?variable.value.length+1:Number(args.INDEX);
-      try{
-        let arr=JSON.parse(args.LIST2).map(String);
-        variable.value.splice(index-1,0,...arr);
+      const index = Number(args.INDEX) > variable.value.length ? variable.value.length + 1 : Number(args.INDEX);
+      try {
+        let arr = JSON.parse(args.LIST2).map(String);
+        variable.value.splice(index - 1, 0, ...arr);
         variable._monitorUpToDate = false;
-      }catch(error){
+      } catch (error) {
         console.log('error:', error);
       }
     }
@@ -936,8 +861,8 @@
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
         const index = String(args.INDEX);
-        if(Number(index)<=variable.value.length && Number(index)>=1){
-          variable.value[index-1]=String(args.VALUE);
+        if (Number(index) <= variable.value.length && Number(index) >= 1) {
+          variable.value[index - 1] = String(args.VALUE);
           variable._monitorUpToDate = false;
         }
       }
@@ -946,25 +871,25 @@
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        let length=variable.value.length,left=Number(args.LEFT),right=Number(args.RIGHT);
-        if(left<1) left=1;
-        if(right>length) right=length;
-        left-=1,right-=1;
-        for(let i=left;i<=right;i++) variable.value[i]=String(args.VALUE);
+        let length = variable.value.length, left = Number(args.LEFT), right = Number(args.RIGHT);
+        if (left < 1) left = 1;
+        if (right > length) right = length;
+        left -= 1, right -= 1;
+        for (let i = left; i <= right; i++) variable.value[i] = String(args.VALUE);
         variable._monitorUpToDate = false;
       }
     }
     getIndexOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      let flag=openCaseSensitive;
+      const value = String(args.VALUE);
+      let flag = openCaseSensitive;
       if (variable) {
-        for(let i=0;i<variable.value.length;i++){
-          if(!flag){
-            if(Scratch.Cast.compare(variable.value[i],value)===0) return i + 1;
-          }else{
-            if(String(variable.value[i]) ==String(value)) return i + 1;
+        for (let i = 0; i < variable.value.length; i++) {
+          if (!flag) {
+            if (Scratch.Cast.compare(variable.value[i], value) === 0) return i + 1;
+          } else {
+            if (String(variable.value[i]) == String(value)) return i + 1;
           }
         }
       }
@@ -973,51 +898,51 @@
     getIndexesOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      let flag=openCaseSensitive;
-      if(variable){
-        let indexes=[];
-        for(let i=0;i<variable.value.length;i++){
-          if(!flag){
-            if(Scratch.Cast.compare(variable.value[i],value)===0) indexes.push(i + 1);
-          }else{
-            if(String(variable.value[i])===String(value)) indexes.push(i + 1);
+      const value = String(args.VALUE);
+      let flag = openCaseSensitive;
+      if (variable) {
+        let indexes = [];
+        for (let i = 0; i < variable.value.length; i++) {
+          if (!flag) {
+            if (Scratch.Cast.compare(variable.value[i], value) === 0) indexes.push(i + 1);
+          } else {
+            if (String(variable.value[i]) === String(value)) indexes.push(i + 1);
           }
         }
-        if(indexes.length>0) return indexes.toString();
+        if (indexes.length > 0) return indexes.toString();
       }
       return '';
     }
     newGetIndexesOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      let flag=openCaseSensitive;
-      if(variable){
-        let indexes=[];
-        for(let i=0;i<variable.value.length;i++){
-          if(!flag){
-            if(Scratch.Cast.compare(variable.value[i],value)===0) indexes.push(i + 1);
-          }else{
-            if(String(variable.value[i])===String(value)) indexes.push(i + 1);
+      const value = String(args.VALUE);
+      let flag = openCaseSensitive;
+      if (variable) {
+        let indexes = [];
+        for (let i = 0; i < variable.value.length; i++) {
+          if (!flag) {
+            if (Scratch.Cast.compare(variable.value[i], value) === 0) indexes.push(i + 1);
+          } else {
+            if (String(variable.value[i]) === String(value)) indexes.push(i + 1);
           }
         }
-        if(indexes.length>0) return '['+indexes.map(value=>'"'+String(value)+'"').join(',')+']';
+        if (indexes.length > 0) return '[' + indexes.map(value => '"' + String(value) + '"').join(',') + ']';
       }
       return '[]';
     }
     getCountsOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      let flag=openCaseSensitive;
-      if(variable){
-        let indexes=[];
-        for(let i=0;i<variable.value.length;i++){
-          if(!flag){
-            if(Scratch.Cast.compare(variable.value[i],value)===0) indexes.push(i + 1);
-          }else{
-            if(String(variable.value[i])===String(value)) indexes.push(i + 1);
+      const value = String(args.VALUE);
+      let flag = openCaseSensitive;
+      if (variable) {
+        let indexes = [];
+        for (let i = 0; i < variable.value.length; i++) {
+          if (!flag) {
+            if (Scratch.Cast.compare(variable.value[i], value) === 0) indexes.push(i + 1);
+          } else {
+            if (String(variable.value[i]) === String(value)) indexes.push(i + 1);
           }
         }
         return indexes.length;
@@ -1027,14 +952,14 @@
     listContains(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      const value=String(args.VALUE);
-      let flag=openCaseSensitive;
+      const value = String(args.VALUE);
+      let flag = openCaseSensitive;
       if (variable) {
-        for(let i=0;i<variable.value.length;i++){
-          if(!flag){
-            if(Scratch.Cast.compare(variable.value[i],value)===0) return true;
-          }else{
-            if(String(variable.value[i])===String(value)) return false;
+        for (let i = 0; i < variable.value.length; i++) {
+          if (!flag) {
+            if (Scratch.Cast.compare(variable.value[i], value) === 0) return true;
+          } else {
+            if (String(variable.value[i]) === String(value)) return false;
           }
         }
         return false;
@@ -1054,108 +979,127 @@
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable) {
-        let list=variable.value.slice();
+        let list = variable.value.slice();
         list.reverse();
-        variable.value=list;
+        variable.value = list;
         variable._monitorUpToDate = false;
       }
     }
-    sortList(args,util){
+    sortList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      let order=String(args.CASE);
+      let order = String(args.CASE);
       if (variable) {
-        let list=variable.value.slice();
-        if(order==='asc'){
-          list=list.map(val=>isNaN(Number(val))?0:Number(val));
-          variable.value=list.sort((a,b)=>a-b);
+        let list = variable.value.slice();
+        if (order === 'asc') {
+          list = list.map(val => isNaN(Number(val)) ? 0 : Number(val));
+          variable.value = list.sort((a, b) => a - b);
         }
-        else if(order==='desc'){
-          list=list.map(val=>isNaN(Number(val))?0:Number(val));
-          variable.value=list.sort((a,b)=>b-a);
+        else if (order === 'desc') {
+          list = list.map(val => isNaN(Number(val)) ? 0 : Number(val));
+          variable.value = list.sort((a, b) => b - a);
         }
-        else if(order==='dictOrder'){
-          list=list.map(val=>String(val));
-          variable.value=list.sort();
+        else if (order === 'dictOrder') {
+          list = list.map(val => String(val));
+          variable.value = list.sort();
         }
         variable._monitorUpToDate = false;
       }
     }
-    sortListRange(args,util){
+    sortListRange(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
-      let order=String(args.CASE);
+      let order = String(args.CASE);
       if (variable) {
-        let length=variable.value.length,left=Number(args.LEFT),right=Number(args.RIGHT);
-        if(left<1) left=1;
-        if(right>length) right=length;
-        left-=1,right-=1;
-        let list=variable.value.slice(left,right+1);
-        if(order==='asc'){
-          list=list.map(val=>isNaN(Number(val))?0:Number(val));
-          list=list.sort((a,b)=>a-b);
+        let length = variable.value.length, left = Number(args.LEFT), right = Number(args.RIGHT);
+        if (left < 1) left = 1;
+        if (right > length) right = length;
+        left -= 1, right -= 1;
+        let list = variable.value.slice(left, right + 1);
+        if (order === 'asc') {
+          list = list.map(val => isNaN(Number(val)) ? 0 : Number(val));
+          list = list.sort((a, b) => a - b);
         }
-        else if(order==='desc'){
-          list=list.map(val=>isNaN(Number(val))?0:Number(val));
-          list=list.sort((a,b)=>b-a);
+        else if (order === 'desc') {
+          list = list.map(val => isNaN(Number(val)) ? 0 : Number(val));
+          list = list.sort((a, b) => b - a);
         }
-        else if(order==='dictOrder'){
-          list=list.map(val=>String(val));
-          list=list.sort();
+        else if (order === 'dictOrder') {
+          list = list.map(val => String(val));
+          list = list.sort();
         }
-        let list2=variable.value.slice();
-        variable.value=[...list2.slice(0,left),...list,...list2.slice(right+1,length)];
+        let list2 = variable.value.slice();
+        variable.value = [...list2.slice(0, left), ...list, ...list2.slice(right + 1, length)];
         variable._monitorUpToDate = false;
       }
     }
-    mapObject(args,util){
+    mapObject(args, util) {
       const list = util.target.lookupVariableByNameAndType(String(args.LIST), 'list'),
-            list2 = util.target.lookupVariableByNameAndType(String(args.LIST2), 'list');
+        list2 = util.target.lookupVariableByNameAndType(String(args.LIST2), 'list');
       if (list && list2) {
-        try{
-          let object=JSON.parse(args.OBJ);
-          list.value=Object.keys(object);
-          list2.value=Object.values(object);
+        try {
+          let object = JSON.parse(args.OBJ);
+          list.value = Object.keys(object);
+          list2.value = Object.values(object);
           list._monitorUpToDate = false;
           list2._monitorUpToDate = false;
-        }catch(error){
+        } catch (error) {
           console.log('error:', error);
         }
       }
     }
+    associateList(args, util) {
+      const list = util.target.lookupVariableByNameAndType(String(args.LIST), 'list'),
+        list2 = util.target.lookupVariableByNameAndType(String(args.LIST2), 'list');
+      if (list && list2) {
+        let object = {};
+        let length = (
+          args.DO === 'd' ?
+            Math.min(list.value.length, list2.value.length) :
+            Math.max(list.value.length, list2.value.length)
+        );
+        for (let i = 0; i < length; i++) {
+          let key = list.value.length <= i ? 'key' + this.randomString(10) : list.value[i];
+          let val = list2.value.length <= i ? '' : list2.value[i];
+          object[key] = val;
+        }
+        return JSON.stringify(object);
+      } else return '{}';
+    }
 
-    forEach(args,util){
+    forEach(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.VAR), '');
       if (variable) {
-        let left=Number(args.LEFT),right=Number(args.RIGHT);
-        let range=right-left+1;
-        if(typeof util.stackFrame.index==='undefined'){
+        let left = Number(args.LEFT), right = Number(args.RIGHT);
+        let range = right - left + 1;
+        if (typeof util.stackFrame.index === 'undefined') {
           util.stackFrame.index = 0;
         }
 
-        if(util.stackFrame.index<range){
-            util.stackFrame.index++;
-            variable.value=util.stackFrame.index+left-1;
-            util.startBranch(1,true);
+        if (util.stackFrame.index < range) {
+          util.stackFrame.index++;
+          variable.value = util.stackFrame.index + left - 1;
+          util.startBranch(1, true);
         }
       }
     }
-    forEachList(args,util){
+    forEachList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(String(args.VAR), '');
       const list = util.target.lookupVariableByNameAndType(String(args.LIST), 'list');
       if (variable && list) {
-        let left=Number(args.LEFT)>0?Number(args.LEFT):1,
-            right=Number(args.RIGHT)<=list.value.length?Number(args.RIGHT):list.value.length;
-        let range=right-left+1;
-        if(typeof util.stackFrame.index==='undefined'){
+        let left = Number(args.LEFT) > 0 ? Number(args.LEFT) : 1,
+          right = Number(args.RIGHT) <= list.value.length ? Number(args.RIGHT) : list.value.length;
+        let range = right - left + 1;
+        if (typeof util.stackFrame.index === 'undefined') {
           util.stackFrame.index = 0;
         }
 
-        if(util.stackFrame.index<range){
-            util.stackFrame.index++;
-            variable.value=list.value[util.stackFrame.index+left-2];
-            util.startBranch(1,true);
+        if (util.stackFrame.index < range) {
+          util.stackFrame.index++;
+          variable.value = list.value[util.stackFrame.index + left - 2];
+          util.startBranch(1, true);
         }
       }
     }
   }
   Scratch.extensions.register(new VarAndList());
 }(Scratch));
+
