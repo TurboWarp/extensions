@@ -1000,7 +1000,6 @@
         const mul = args.SPRITE === "_canvas_" ? vm.renderer.canvas.width / vm.runtime.stageWidth * 2 : 1;
         const amts = [Scratch.Cast.toNumber(args.NUM), Scratch.Cast.toNumber(args.X), Scratch.Cast.toNumber(args.Y)];
         if (!displacementSrCs[2] && !override) await this.getSources();
-        const scaleFactor = (amts[0] * 1.5).toFixed(2);
         let tableValue = [100 + 2 * (100 - amts[0]) / 2];
         tableValue[1] = (100 - tableValue[0]) / 2;
         const filterElement =`<filter id="${override ? "customDistort" : args.EFFECT}" xmlns:xlink="http://www.w3.org/1999/xlink">
