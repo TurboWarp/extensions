@@ -3,7 +3,7 @@
 // Description: Control Visuals of Sprites, Backdrops, Pen, Video, and More!
 // By: SharkPool
 
-// Version V.1.0.0
+// Version V.1.1.0
 
 (function (Scratch) {
   "use strict";
@@ -39,6 +39,15 @@
             text: "get ID of [TARGET]",
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            }
+          },
+          "---",
+          {
+            opcode: "exportID",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "export ID [ID] as data.uri",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
             }
           },
           "---",
@@ -177,6 +186,16 @@
       if (args.TARGET === "_video_") return videoL !== -1 ? videoL : "";
       const target = runtime.getSpriteTargetByName(args.TARGET);
       return target ? target.drawableID : "";
+    }
+
+    exportID(args) {
+      if (vm.renderer._drawList.indexOf(args.ID) === -1) return "";
+      const imageData = vm.runtime.renderer.extractDrawableScreenSpace(args.ID).imageData;
+      var canvas = document.createElement("canvas");
+      canvas.width = imageData.width;
+      canvas.height = imageData.height;
+      canvas.getContext("2d").putImageData(imageData, 0, 0);
+      return canvas.toDataURL("image/png");
     }
 
     effectID(args) {
