@@ -278,8 +278,6 @@
 
   const touchPointsArray = makeArrayOfTouches(); //* <-- Do this for devices that really can't support that many touches.
 
-  const alreadyTapped = {};
-
   class SensingPlus {
     getInfo() {
       return {
