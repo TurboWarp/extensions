@@ -3,7 +3,7 @@
   "stretch",
   "gamepad",
   "box2d",
-  "SpyroStudios/Arrays",
+  "SpyroStudios/spyroArrays",
   "files",
   "pointerlock",
   "cursor",
