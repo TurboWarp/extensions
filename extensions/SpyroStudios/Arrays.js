@@ -405,7 +405,7 @@
 
     arrayExists2D(args, util) {
       const name = `${args.NAME}_2D`;
-      return util.target.variables[name];
+      return !!util.target.variables[name];
     }
 
     arrayRowCount2D(args, util) {
@@ -494,7 +494,7 @@
 
     arrayExists3D(args, util) {
       const name = `${args.NAME}_3D`;
-      return util.target.variables[name];
+      return !!util.target.variables[name];
     }
 
     arrayRowCount3D(args, util) {
