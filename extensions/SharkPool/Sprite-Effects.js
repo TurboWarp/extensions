@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.3.1
+// Version V.1.3.2
 
 (function (Scratch) {
   "use strict";
@@ -805,12 +805,12 @@
             filterElement = `<filter id="bloom"><feGaussianBlur in="SourceGraphic" stdDeviation="5" /><feComposite in2="SourceGraphic" operator="arithmetic" k2="${amtIn / 100}" k3="1" /></filter>`;
             break;
           case "bloom v2":
-            filterElement = `<filter id="bloom"><feGaussianBlur in="SourceGraphic" stdDeviation="5" /><feComposite in2="SourceGraphic" operator="arithmetic" k2="${amtIn / 100}" k3="1" color-interpolation-filters="sRGB" /></filter>`;
+            filterElement = `<filter id="bloom-v2"><feGaussianBlur in="SourceGraphic" stdDeviation="5" /><feComposite in2="SourceGraphic" operator="arithmetic" k2="${amtIn / 100}" k3="1" color-interpolation-filters="sRGB" /></filter>`;
             break;
           default:
             filterElement = `<filter id="blur"><feGaussianBlur stdDeviation="${Math.abs(amtIn)}" in="SourceGraphic" result="BLUR"></feGaussianBlur></filter>`;
         }
-        return this.filterApplier(svg, filterElement, args.EFFECT);
+        return this.filterApplier(svg, filterElement, args.EFFECT.replaceAll(" ", "-"));
       }
       return svg;
     }
