@@ -58,6 +58,16 @@
         this.isWarp = previousWarp;
         return;
       }
+      if (node.kind === "lmsSpMoreControl.withScreenRefresh") {
+        const previousWarp = this.isWarp;
+        this.isWarp = false;
+        this.descendStack(
+          node.code,
+          new Frame(false, "lmsSpMoreControl.withScreenRefresh")
+        );
+        this.isWarp = previousWarp;
+        return;
+      }
       return originalFn(node);
     },
   });
@@ -67,6 +77,16 @@
       if (block.opcode === "lmsSpMoreControl_withoutScreenRefresh") {
         return {
           kind: "lmsSpMoreControl.withoutScreenRefresh",
+          condition: {
+            kind: "constant",
+            value: true,
+          },
+          code: this.descendSubstack(block, "SUBSTACK"),
+        };
+      }
+      if (block.opcode === "lmsSpMoreControl_withScreenRefresh") {
+        return {
+          kind: "lmsSpMoreControl.withScreenRefresh",
           condition: {
             kind: "constant",
             value: true,
@@ -547,6 +567,11 @@
             opcode: "withoutScreenRefresh",
             blockType: Scratch.BlockType.CONDITIONAL,
             text: "without screen refresh",
+          },
+          {
+            opcode: "withScreenRefresh",
+            blockType: Scratch.BlockType.CONDITIONAL,
+            text: "with screen refresh",
           },
         ],
         menus: {
@@ -1049,9 +1074,19 @@
     }
 
     withoutScreenRefresh(arg, util) {
+      const stackFrame = util.thread.peekStackFrame();
+      const previousWarp = stackFrame.warpMode;
       util.thread.peekStackFrame().warpMode = false;
       util.startBranch(1, false);
+      util.thread.peekStackFrame().warpMode = previousWarp;
+    }
+
+    withScreenRefresh(arg, util) {
+      const stackFrame = util.thread.peekStackFrame();
+      const previousWarp = stackFrame.warpMode;
       util.thread.peekStackFrame().warpMode = true;
+      util.startBranch(1, false);
+      util.thread.peekStackFrame().warpMode = previousWarp;
     }
 
     /**
