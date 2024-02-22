@@ -230,7 +230,9 @@
           {
             opcode: "regexp_replace_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("replace matches of [A] with [IMAGE] [B] to [C]"),
+            text: Scratch.translate(
+              "replace matches of [A] with [IMAGE] [B] to [C]"
+            ),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -253,7 +255,9 @@
           {
             opcode: "regexp_split_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[IMAGE2] [A] split by matches with [IMAGE1] [B]"),
+            text: Scratch.translate(
+              "[IMAGE2] [A] split by matches with [IMAGE1] [B]"
+            ),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -276,7 +280,9 @@
           {
             opcode: "regexp_match_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[IMAGE2] match [C] of [A] with [IMAGE1] [B]"),
+            text: Scratch.translate(
+              "[IMAGE2] match [C] of [A] with [IMAGE1] [B]"
+            ),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
