@@ -574,7 +574,7 @@
       if (args.NUMBERS != 'empty') {
         return this.medianFunc(util.target.lookupVariableById(args.NUMBERS), 2);
       }
-      return 'NaN';;
+      return 'NaN';
     }
     modeInList(args, util) {
       if (args.NUMBERS != 'empty') {
