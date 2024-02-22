@@ -957,7 +957,8 @@
       if (variable) {
         try {
           let arr = JSON.parse(args.LIST2);
-          variable.value = arr;
+          if (Array.isArray(arr))
+            variable.value = arr.map((val) => String(val));
           variable._monitorUpToDate = false;
         } catch (error) {
           console.log("error:", error);
