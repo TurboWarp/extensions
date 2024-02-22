@@ -2,6 +2,7 @@
 // ID: qxsckdataanalysis
 // Description: Blocks to compute means, medians, maximums, minimums, variances, and modes.
 // By: qxsck
+
 (function (Scratch) {
   "use strict";
   const vm = Scratch.vm;
@@ -110,7 +111,7 @@
           numbers2 = this.getData(numbers2_, type).map(Number);
         (numbers = this.unique(numbers)), (numbers2 = this.unique(numbers2));
         const intersection = numbers.filter((value) =>
-          numbers2.includes(value),
+          numbers2.includes(value)
         );
         return JSON.stringify(intersection);
       };
@@ -402,7 +403,7 @@
             opcode: "binaryOperList",
             blockType: "reporter",
             text: Scratch.translate(
-              "[OPER] of list [NUMBERS] and list [NUMBERS2]",
+              "[OPER] of list [NUMBERS] and list [NUMBERS2]"
             ),
             arguments: {
               NUMBERS: {
@@ -574,7 +575,7 @@
       if (args.NUMBERS != "empty") {
         return this.averageFunc(
           util.target.lookupVariableById(args.NUMBERS),
-          2,
+          2
         );
       }
       return "NaN";
@@ -583,7 +584,7 @@
       if (args.NUMBERS != "empty") {
         return this.maximumFunc(
           util.target.lookupVariableById(args.NUMBERS),
-          2,
+          2
         );
       }
       return "NaN";
@@ -592,7 +593,7 @@
       if (args.NUMBERS != "empty") {
         return this.minimumFunc(
           util.target.lookupVariableById(args.NUMBERS),
-          2,
+          2
         );
       }
       return "NaN";
@@ -613,7 +614,7 @@
       if (args.NUMBERS != "empty") {
         return this.varianceFunc(
           util.target.lookupVariableById(args.NUMBERS),
-          2,
+          2
         );
       }
       return "NaN";
@@ -622,7 +623,7 @@
       if (args.NUMBERS != "empty") {
         return this.standardDeviationFunc(
           util.target.lookupVariableById(args.NUMBERS),
-          2,
+          2
         );
       }
       return "NaN";
@@ -633,7 +634,7 @@
         return this.countNumebrsFunc(
           util.target.lookupVariableById(args.NUMBERS),
           2,
-          type_,
+          type_
         );
       }
       return "{}";
