@@ -787,6 +787,12 @@
       );
       if (variable) {
         variable.value = args.VALUE;
+        if (variable.isCloud) {
+          util.runtime.ioDevices.cloud.requestUpdateVariable(
+            variable.name,
+            variable.value
+          );
+        }
       }
     }
     seriVarsToJson(args, util) {
