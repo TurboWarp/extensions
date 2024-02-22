@@ -112,7 +112,7 @@
       this.complementFunc = function (numbers_, numbers2_, type) {
         let numbers = this.getData(numbers_, type).map(Number), numbers2 = this.getData(numbers2_, type).map(Number);
         numbers = this.unique(numbers), numbers2 = this.unique(numbers2);
-        const complement = numbers2.filter(value => !numbers.includes(value));;
+        const complement = numbers2.filter(value => !numbers.includes(value));
         return JSON.stringify(complement);
       }
       this.symmetricDifferenceFunc = function (numbers_, numbers2_, type) {
