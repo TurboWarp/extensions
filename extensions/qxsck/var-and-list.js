@@ -146,6 +146,32 @@
               },
             },
           },
+          {
+            opcode: "changeMonitorVar",
+            blockType: "command",
+            text: Scratch.translate("[CASE] variable [VAR]"),
+            arguments: {
+              CASE: {
+                type: "string",
+                menu: "changeMonitor.List",
+              },
+              VAR: {
+                type: "string",
+                defaultValue: "variable",
+              },
+            },
+          },
+          {
+            opcode: "isShowVar",
+            blockType: "Boolean",
+            text: Scratch.translate("variable [VAR] is showing?"),
+            arguments: {
+              VAR: {
+                type: "string",
+                defaultValue: "variable",
+              },
+            },
+          },
 
           "---",
 
@@ -277,6 +303,32 @@
               LIST2: {
                 type: "string",
                 defaultValue: "list2",
+              },
+            },
+          },
+          {
+            opcode: "changeMonitorList",
+            blockType: "command",
+            text: Scratch.translate("[CASE] list [LIST]"),
+            arguments: {
+              CASE: {
+                type: "string",
+                menu: "changeMonitor.List",
+              },
+              LIST: {
+                type: "string",
+                defaultValue: "list",
+              },
+            },
+          },
+          {
+            opcode: "isShowList",
+            blockType: "Boolean",
+            text: Scratch.translate("list [LIST] is showing?"),
+            arguments: {
+              LIST: {
+                type: "string",
+                defaultValue: "list",
               },
             },
           },
@@ -766,6 +818,28 @@
       };
     }
 
+    //from turbowarp-vm
+    changeMonitorVisibility(id, visible) {
+      // Send the monitor blocks an event like the flyout checkbox event.
+      // This both updates the monitor state and changes the isMonitored block flag.
+      this.runtime.monitorBlocks.changeBlock(
+        {
+          id: id, // Monitor blocks for variables are the variable ID.
+          element: "checkbox", // Mimic checkbox event from flyout.
+          value: visible,
+        },
+        this.runtime
+      );
+    }
+
+    isShow(args) {
+      let list = args.list;
+      if (!list) return false;
+      list = this.runtime.getMonitorState().get(list.id);
+      if (!list) return false;
+      return list.visible;
+    }
+
     haveVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
         String(args.VAR),
@@ -826,6 +900,22 @@
         variable.value = variable2.value;
         variable2.value = value;
       }
+    }
+    changeMonitorVar(args, util) {
+      const variable = util.target.lookupVariableByNameAndType(
+        String(args.VAR),
+        ""
+      );
+      if (variable) {
+        this.changeMonitorVisibility(variable.id, args.CASE === "show");
+      }
+    }
+    isShowVar(args, util) {
+      const variable = util.target.lookupVariableByNameAndType(
+        String(args.VAR),
+        ""
+      );
+      return this.isShow({ list: variable });
     }
 
     openCaseSensitive(args) {
@@ -942,6 +1032,22 @@
         variable._monitorUpToDate = false;
         variable2._monitorUpToDate = false;
       }
+    }
+    changeMonitorList(args, util) {
+      const variable = util.target.lookupVariableByNameAndType(
+        String(args.LIST),
+        "list"
+      );
+      if (variable) {
+        this.changeMonitorVisibility(variable.id, args.CASE === "show");
+      }
+    }
+    isShowList(args, util) {
+      const variable = util.target.lookupVariableByNameAndType(
+        String(args.LIST),
+        "list"
+      );
+      return this.isShow({ list: variable });
     }
     clearList(args, util) {
       /** @type {VM.ListVariable} */
