@@ -323,7 +323,7 @@
           {
             opcode: "isFingerDown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Is Finger [ID] down?"),
+            text: Scratch.translate("is Finger [ID] down?"),
             blockIconURI: touchIco,
             arguments: {
               ID: {
@@ -336,7 +336,7 @@
           {
             opcode: "touchingFinger",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Touching a finger?"),
+            text: Scratch.translate("touching a finger?"),
             blockIconURI: touchIco,
             filter: [Scratch.TargetType.SPRITE],
             arguments: {},
@@ -346,7 +346,7 @@
           {
             opcode: "touchingSpecificFinger",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Touching finger [ID]?"),
+            text: Scratch.translate("touching finger [ID]?"),
             blockIconURI: touchIco,
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
@@ -361,7 +361,7 @@
             opcode: "getTouchingFingerID",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: Scratch.translate("Current finger touching"),
+            text: Scratch.translate("current finger touching"),
             filter: [Scratch.TargetType.SPRITE],
             blockIconURI: touchIco,
             arguments: {},
@@ -370,7 +370,7 @@
           {
             opcode: "fingerPosition",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Finger [ID] [PositionType]"),
+            text: Scratch.translate("finger [ID] [PositionType]"),
             blockIconURI: touchIco,
             arguments: {
               ID: {
@@ -387,7 +387,7 @@
           {
             opcode: "getFingerSpeed",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Finger [ID] speed"),
+            text: Scratch.translate("finger [ID] speed"),
             blockIconURI: touchIco,
             arguments: {
               ID: {
@@ -401,7 +401,7 @@
           {
             opcode: "listInSprite",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Get index [index] of [List]"),
+            text: Scratch.translate("get index [index] of [List]"),
             blockIconURI: listIco,
             arguments: {
               index: {
@@ -418,7 +418,7 @@
           {
             opcode: "lengthOfListInSprite",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Length of [List]"),
+            text: Scratch.translate("length of [List]"),
             blockIconURI: listIco,
             disableMonitor: true,
             arguments: {
@@ -432,7 +432,7 @@
           {
             opcode: "listContains",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Does [List] contain [term]"),
+            text: Scratch.translate("does [List] contain [term]"),
             blockIconURI: listIco,
             arguments: {
               term: {
@@ -449,7 +449,7 @@
           {
             opcode: "itemNumberInList",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Item # of [term] in [List]"),
+            text: Scratch.translate("item # of [term] in [List]"),
             blockIconURI: listIco,
             arguments: {
               term: {
@@ -467,7 +467,7 @@
           {
             opcode: "touchingOriginal",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Touching the original [Sprite]?"),
+            text: Scratch.translate("touching the original [Sprite]?"),
             blockIconURI: catIco,
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
@@ -481,7 +481,7 @@
           {
             opcode: "touchingClone",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Touching a clone of [Sprite]?"),
+            text: Scratch.translate("touching a clone of [Sprite]?"),
             blockIconURI: catIco,
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
@@ -510,7 +510,7 @@
           {
             opcode: "getEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Get this sprite's [effect] effect"),
+            text: Scratch.translate("get this sprite's [effect] effect"),
             blockIconURI: effectIco,
             disableMonitor: true,
             arguments: {
@@ -524,7 +524,7 @@
           {
             opcode: "isHidden",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Hidden?"),
+            text: Scratch.translate("hidden?"),
             blockIconURI: effectIco,
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
@@ -533,7 +533,7 @@
           {
             opcode: "getRotationStyle",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Rotation Style"),
+            text: Scratch.translate("rotation style"),
             blockIconURI: rotationIco,
             disableMonitor: true,
             filter: [Scratch.TargetType.SPRITE],
@@ -542,7 +542,7 @@
           {
             opcode: "getSpriteLayer",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Sprite Layer"),
+            text: Scratch.translate("sprite layer"),
             blockIconURI: layerIco,
             disableMonitor: true,
             filter: [Scratch.TargetType.SPRITE],
@@ -552,7 +552,7 @@
           {
             opcode: "getClipBoard",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Copied Contents"),
+            text: Scratch.translate("copied contents"),
             blockIconURI: clipboardIco,
             disableMonitor: true,
             extensions: ["colours_sensing"],
@@ -560,7 +560,7 @@
           {
             opcode: "setClipBoard",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Set clipboard to [TEXT]"),
+            text: Scratch.translate("set clipboard to [TEXT]"),
             blockIconURI: clipboardIco,
             arguments: {
               TEXT: {
@@ -575,7 +575,7 @@
             opcode: "isPackaged",
             blockIconURI: packagedIco,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Is Packaged?"),
+            text: Scratch.translate("is packaged?"),
             extensions: ["colours_sensing"],
           },
           "---",
@@ -586,7 +586,7 @@
           {
             opcode: "recording",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Turn speech recording [toggle]"),
+            text: Scratch.translate("turn speech recording [toggle]"),
             blockIconURI: speechIco,
             arguments: {
               toggle: {
@@ -599,14 +599,14 @@
           {
             opcode: "returnWords",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Recognized Words"),
+            text: Scratch.translate("recognized Words"),
             blockIconURI: speechIco,
             extensions: ["colours_sensing"],
           },
           {
             opcode: "isrecording",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Recording?"),
+            text: Scratch.translate("recording?"),
             blockIconURI: speechIco,
             extensions: ["colours_sensing"],
           },
@@ -619,7 +619,7 @@
             opcode: "hasDevice",
             blockIconURI: deviceVelIco,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Has a [device]?"),
+            text: Scratch.translate("has a [device]?"),
             arguments: {
               device: {
                 type: Scratch.ArgumentType.STRING,
@@ -632,7 +632,7 @@
             opcode: "getDeviceSpeed",
             blockIconURI: deviceVelIco,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Get the [type] speed on the [axis] axis"),
+            text: Scratch.translate("get the [type] speed on the [axis] axis"),
             disableMonitor: true,
             arguments: {
               type: {
@@ -654,7 +654,16 @@
           },
           deviceMenu: {
             acceptReporters: true,
-            items: ["gyroscope", "accelerometer"],
+            items: [
+              {
+                text: Scratch.translate("gyroscope"),
+                value: "gyroscope"
+              },
+              {
+                text: Scratch.translate("accelerometer"),
+                value: "accelerometer"
+              },
+            ]
           },
           coordmenu: {
             acceptReporters: true,
@@ -666,7 +675,16 @@
           },
           velocitymenu: {
             acceptReporters: true,
-            items: ["positional", "rotational"],
+            items: [
+              {
+                text: Scratch.translate("positional"),
+                value: "positional"
+              },
+              {
+                text: Scratch.translate("rotational"),
+                value: "rotational"
+              },
+            ],
           },
           spriteMenu: {
             acceptReporters: true,
@@ -677,18 +695,48 @@
           },
           toggleMenu: {
             acceptReporters: true,
-            items: ["on", "off"],
+            items: [
+              {
+                text: Scratch.translate("on"),
+                value: "on"
+              },
+              {
+                text: Scratch.translate("off"),
+                value: "off"
+              },
+            ]
           },
           effectMenu: {
             acceptReporters: true,
             items: [
-              "color",
-              "fisheye",
-              "whirl",
-              "pixelate",
-              "mosaic",
-              "brightness",
-              "ghost",
+              {
+                text: Scratch.translate("color"),
+                value: "color",
+              },
+              {
+                text: Scratch.translate("fisheye"),
+                value: "fisheye",
+              },
+              {
+                text: Scratch.translate("whirl"),
+                value: "whirl",
+              },
+              {
+                text: Scratch.translate("pixelate"),
+                value: "pixelate",
+              },
+              {
+                text: Scratch.translate("mosaic"),
+                value: "mosaic",
+              },
+              {
+                text: Scratch.translate("brightness"),
+                value: "brightness",
+              },
+              {
+                text: Scratch.translate("ghost"),
+                value: "ghost",
+              },
             ],
           },
         },
@@ -892,7 +940,7 @@
       if (sprites.length === 0) {
         return [
           {
-            text: "No sprites exist",
+            text: Scratch.translate("No sprites exist"),
             value: " ",
           },
         ];
@@ -923,7 +971,7 @@
       if (lists.length === 0) {
         return [
           {
-            text: "No local lists in other sprites",
+            text: Scratch.translate("No local lists in other sprites"),
             value: "null",
           },
         ];
