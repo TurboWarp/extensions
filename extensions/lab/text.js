@@ -285,15 +285,22 @@
         };
       });
 
-      const effectiveShakePadding = this.isShaking ? this.getShakePadding() : 0;
-      this._size[0] = this.wrapWidth + 2 * effectiveShakePadding;
-      this._size[1] = this.lines.length * this.lineHeight + 2 * this.verticalPadding + 2 * effectiveShakePadding;
+      this._size[0] = this.wrapWidth;
+      this._size[1] =
+        this.lines.length * this.lineHeight + 2 * this.verticalPadding;
 
       // Centered horizontally
       this._rotationCenter[0] = this._size[0] / 2;
       // Vertical center is roughly below the first line of text
       this._rotationCenter[1] =
-        this.calculatedFontSize * 0.9 + this.verticalPadding + effectiveShakePadding;
+        this.calculatedFontSize * 0.9 + this.verticalPadding;
+
+      if (this.isShaking) {
+        const padding = Math.max(0, this.shakeIntensity / 20);
+        // offsets should be in range [-padding, +padding]
+        this._rotationCenter[0] += 2 * Math.random() * padding - padding;
+        this._rotationCenter[1] += 2 * Math.random() * padding - padding;
+      }
     }
 
     _renderAtScale(requestedScale) {
@@ -309,10 +316,6 @@
       this.canvas.width = Math.ceil(scratchWidth * requestedScale);
       this.canvas.height = Math.ceil(scratchHeight * requestedScale);
       this.ctx.scale(requestedScale, requestedScale);
-
-      if (this.isShaking) {
-        this.ctx.translate(this.getShakePadding(), this.getShakePadding());
-      }
 
       const rainbowOffset = this.isRainbow
         ? (globalFrameTime - this.rainbowStartTime) / RAINBOW_TIME_PER
@@ -334,13 +337,6 @@
           xOffset = (this.wrapWidth - lineWidth) / 2;
         } else {
           xOffset = this.wrapWidth - lineWidth;
-        }
-
-        if (this.isShaking) {
-          // offsets should be in range [-padding, +padding]
-          const padding = this.getShakePadding();
-          xOffset += (2 * Math.random() * padding) - padding;
-          yOffset += (2 * Math.random() * padding) - padding;
         }
 
         if (this.isRainbow) {
@@ -534,6 +530,8 @@
       return this._oneAnimationAtATime((resolve) => {
         this.isShaking = true;
         this.shakeStartTime = Date.now();
+        // TODO: _invalidateText() is not smart enough to realize that we don't need to actually
+        // do a full reflow, just update rotation center...
         this._invalidateText();
         this.shakeTimeout = setTimeout(() => {
           this.isShaking = false;
@@ -551,14 +549,6 @@
       this.shakeIntensity = intensity;
     }
 
-    /**
-     * Returns # of Scratch pixels of padding in each direction.
-     * Does care about whether shake is actually enabled or not.
-     */
-    getShakePadding() {
-      return Math.max(0, this.shakeIntensity / 20);
-    }
-
     cancelAnimation() {
       if (this.resolveOngoingAnimation) {
         this.resolveOngoingAnimation();
@@ -573,7 +563,7 @@
         this.isZooming = false;
         clearTimeout(this.zoomTimeout);
 
-        this.isWiggling = false;
+        this.isShaking = false;
         clearTimeout(this.shakeTimeout);
 
         // TODO: sometimes we only need to invalidate the texture at this point
