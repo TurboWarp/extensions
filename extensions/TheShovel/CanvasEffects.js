@@ -3,6 +3,7 @@
 // Description: Apply visual effects to the entire stage.
 // By: TheShovel
 // By: SharkPool <https://scratch.mit.edu/users/DemonX5/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";

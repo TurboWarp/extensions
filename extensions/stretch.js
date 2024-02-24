@@ -1,6 +1,7 @@
 // Name: Stretch
 // ID: stretch
 // Description: Stretch sprites horizontally or vertically.
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";

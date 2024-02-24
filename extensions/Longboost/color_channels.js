@@ -1,6 +1,7 @@
 // Name: RGB Channels
 // ID: lbdrawtest
 // Description: Only render or stamp certain RGB channels.
+// License: MIT
 
 (function (Scratch) {
   "use strict";

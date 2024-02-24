@@ -2,6 +2,7 @@
 // ID: nkmoremotion
 // Description: More motion-related blocks.
 // By: NamelessCat <https://scratch.mit.edu/users/NamelessCat/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
