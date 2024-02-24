@@ -2,21 +2,10 @@
 // ID: qxsckdataanalysis
 // Description: Blocks to compute means, medians, maximums, minimums, variances, and modes.
 // By: qxsck
+// License: MIT
 
 (function (Scratch) {
   "use strict";
-  Scratch.translate.setup({
-    zh: {
-      name: "数据分析",
-      average: "[NUMBERS] 的平均数",
-      maximum: "[NUMBERS] 的最大数",
-      minimum: "[NUMBERS] 的最小数",
-      median: "[NUMBERS] 的中位数",
-      mode: "[NUMBERS] 的众数",
-      variance: "[NUMBERS] 的方差",
-    },
-  });
-
   class dataAnalysis {
     getInfo() {
       return {

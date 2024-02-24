@@ -17,7 +17,19 @@ module.exports = {
     scaffolding: 'readonly'
   },
   rules: {
-    'no-unused-vars': 'off',
+    // Unused variables commonly indicate logic errors
+    'no-unused-vars': [
+      'error',
+      {
+        // Unused arguments are useful, eg. it can be nice for blocks to accept `args` even if they don't use it
+        args: 'none',
+        // Allow silently eating try { } catch { }
+        caughtErrors: 'none',
+        // Variables starting with _ are intentionally unused
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      }
+    ],
     // Allow while (true) { }
     'no-constant-condition': [
       'error',

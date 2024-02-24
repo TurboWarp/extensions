@@ -1,21 +1,7 @@
 (function (Scratch) {
   "use strict";
 
-  let Number2,
-    null2,
-    units,
-    Number_in,
-    uppercase,
-    i,
-    N_Z,
-    o,
-    j,
-    After_decimal_point,
-    unit,
-    k,
-    C_Number,
-    m,
-    n;
+  let i, N_Z, o, j, After_decimal_point, unit, k, C_Number, m, n;
 
   class CNNUMBER {
     getInfo() {
@@ -90,15 +76,15 @@
             String(Number2).slice(-j).charAt(0) == "2" && j >= 3
               ? "两"
               : k == "0"
-              ? j == 1
-                ? ""
-                : i.slice(-1) == "零"
-                ? ""
-                : String(Number2).slice(-1) == "0" &&
-                  (j != 3 || String(Number2).charAt(2) == "0")
-                ? " "
-                : "零"
-              : C_Number[k - 1]
+                ? j == 1
+                  ? ""
+                  : i.slice(-1) == "零"
+                    ? ""
+                    : String(Number2).slice(-1) == "0" &&
+                        (j != 3 || String(Number2).charAt(2) == "0")
+                      ? " "
+                      : "零"
+                : C_Number[k - 1]
           );
         i =
           String(i) +
@@ -106,8 +92,8 @@
             i.slice(-1) == "零" || i.slice(-1) == " "
               ? ""
               : unit[j - 1] == "个"
-              ? ""
-              : unit[j - 1]
+                ? ""
+                : unit[j - 1]
           );
       } else {
         if (j != 1) {

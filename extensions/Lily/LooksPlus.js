@@ -2,6 +2,7 @@
 // ID: lmsLooksPlus
 // Description: Expands upon the looks category, allowing you to show/hide, get costume data and edit SVG skins on sprites.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -52,6 +53,7 @@
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "hideSprite",
@@ -63,6 +65,7 @@
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "spriteVisible",
@@ -74,6 +77,7 @@
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_looks"],
           },
 
           "---",
@@ -92,6 +96,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "spriteLayerNumber",
@@ -103,6 +108,7 @@
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "effectValue",
@@ -119,6 +125,7 @@
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_looks"],
           },
 
           "---",
@@ -133,6 +140,7 @@
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "costumeAttribute",
@@ -147,6 +155,7 @@
                 type: Scratch.ArgumentType.COSTUME,
               },
             },
+            extensions: ["colours_looks"],
           },
 
           "---",
@@ -156,6 +165,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "snapshot stage",
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
 
           "---",
@@ -178,6 +188,7 @@
                 defaultValue: "<svg />",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "restoreCostumeContent",
@@ -188,6 +199,7 @@
                 type: Scratch.ArgumentType.COSTUME,
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "costumeContent",
@@ -208,6 +220,7 @@
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_looks"],
           },
 
           "---",
@@ -230,6 +243,7 @@
                 defaultValue: "<svg />",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "colorHex",
@@ -241,6 +255,7 @@
                 defaultValue: "#FFD983",
               },
             },
+            extensions: ["colours_looks"],
           },
         ],
         menus: {

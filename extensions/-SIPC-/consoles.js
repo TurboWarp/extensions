@@ -1,7 +1,8 @@
 // Name: Consoles
 // ID: sipcconsole
-// Description: Blocks that interact the JavaScript console built in to your browser's developer tools.
+// Description: Blocks that interact with the JavaScript console built in to your browser's developer tools.
 // By: -SIPC-
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -14,7 +15,7 @@
     getInfo() {
       return {
         id: "sipcconsole",
-        name: "Consoles",
+        name: Scratch.translate("Consoles"),
         color1: "#808080",
         color2: "#8c8c8c",
         color3: "#999999",
@@ -24,61 +25,61 @@
           {
             opcode: "Emptying",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Clear Console",
+            text: Scratch.translate("Clear Console"),
             arguments: {},
           },
           {
             opcode: "Information",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Information [string]",
+            text: Scratch.translate("Information [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Information",
+                defaultValue: Scratch.translate("Information"),
               },
             },
           },
           {
             opcode: "Journal",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Journal [string]",
+            text: Scratch.translate("Journal [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Journal",
+                defaultValue: Scratch.translate("Journal"),
               },
             },
           },
           {
             opcode: "Warning",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Warning [string]",
+            text: Scratch.translate("Warning [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Warning",
+                defaultValue: Scratch.translate("Warning"),
               },
             },
           },
           {
             opcode: "Error",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Error [string]",
+            text: Scratch.translate("Error [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Error",
+                defaultValue: Scratch.translate("Error"),
               },
             },
           },
           {
             opcode: "debug",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Debug [string]",
+            text: Scratch.translate("Debug [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Debug",
+                defaultValue: Scratch.translate("Debug"),
               },
             },
           },
@@ -87,62 +88,66 @@
           {
             opcode: "group",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Create a group named [string]",
+            text: Scratch.translate("Create a group named [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "group",
+                defaultValue: Scratch.translate("group"),
               },
             },
           },
           {
             opcode: "groupCollapsed",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Create a collapsed group named [string]",
+            text: Scratch.translate("Create a collapsed group named [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "group",
+                defaultValue: Scratch.translate("group"),
               },
             },
           },
           {
             opcode: "groupEnd",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Exit the current group",
+            text: Scratch.translate("Exit the current group"),
             arguments: {},
           },
           "---",
           {
             opcode: "Timeron",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Start a timer named [string]",
+            text: Scratch.translate("Start a timer named [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Time",
+                defaultValue: Scratch.translate("Time"),
               },
             },
           },
           {
             opcode: "Timerlog",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Print the time run by the timer named [string]",
+            text: Scratch.translate(
+              "Print the time run by the timer named [string]"
+            ),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Time",
+                defaultValue: Scratch.translate("Time"),
               },
             },
           },
           {
             opcode: "Timeroff",
             blockType: Scratch.BlockType.COMMAND,
-            text: "End the timer named [string] and print the time elapsed from start to end",
+            text: Scratch.translate(
+              "End the timer named [string] and print the time elapsed from start to end"
+            ),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Time",
+                defaultValue: Scratch.translate("Time"),
               },
             },
           },

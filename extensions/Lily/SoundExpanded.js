@@ -2,6 +2,7 @@
 // Description: Adds more sound-related blocks.
 // ID: lmsSoundExpanded
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -32,6 +33,7 @@
                 defaultValue: 0,
               },
             },
+            extensions: ["colours_sounds"],
           },
           {
             opcode: "stopLooping",
@@ -42,6 +44,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sounds"],
           },
           {
             opcode: "isLooping",
@@ -52,6 +55,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sounds"],
           },
 
           "---",
@@ -65,6 +69,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sounds"],
           },
           {
             opcode: "pauseSounds",
@@ -75,6 +80,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sounds"],
           },
           {
             opcode: "resumeSounds",
@@ -85,6 +91,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sounds"],
           },
 
           "---",
@@ -98,6 +105,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sounds"],
           },
           {
             opcode: "attributeOfSound",
@@ -112,6 +120,7 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
+            extensions: ["colours_sounds"],
           },
           {
             opcode: "getSoundEffect",
@@ -127,6 +136,7 @@
                 menu: "targets",
               },
             },
+            extensions: ["colours_sounds"],
           },
           "---",
           {
@@ -139,6 +149,7 @@
                 defaultValue: 100,
               },
             },
+            extensions: ["colours_sounds"],
           },
           {
             opcode: "changeProjectVolume",
@@ -150,11 +161,13 @@
                 defaultValue: -10,
               },
             },
+            extensions: ["colours_sounds"],
           },
           {
             opcode: "getProjectVolume",
             blockType: Scratch.BlockType.REPORTER,
             text: "project volume",
+            extensions: ["colours_sounds"],
           },
         ],
         menus: {

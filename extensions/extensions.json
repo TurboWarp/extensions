@@ -1,4 +1,5 @@
 [
+  // This file supports comments
   "lab/text",
   "stretch",
   "gamepad",
@@ -17,14 +18,17 @@
   "sound",
   "Lily/Video",
   "iframe",
+  "Clay/htmlEncode",
   "Xeltalliv/clippingblending",
   "clipboard",
+  "obviousAlexC/penPlus",
   "penplus",
   "Lily/Skins",
   "obviousAlexC/SensingPlus",
   "Lily/ClonesPlus",
   "Lily/LooksPlus",
   "Lily/MoreEvents",
+  "Lily/ListTools",
   "NexusKitten/moremotion",
   "CubesterYT/WindowControls",
   "veggiecan/browserfullscreen",
@@ -54,8 +58,10 @@
   "-SIPC-/consoles",
   "ZXMushroom63/searchApi",
   "TheShovel/ShovelUtils",
+  "Lily/Assets",
   "DNin/wake-lock",
   "Skyhigh173/json",
+  "mbw/xml",
   "cs2627883/numericalencoding",
   "DT/cameracontrols",
   "TheShovel/CanvasEffects",
@@ -73,6 +79,7 @@
   "qxsck/var-and-list",
   "vercte/dictionaries",
   "godslayerakp/http",
+  "godslayerakp/ws",
   "Lily/CommentBlocks",
   "veggiecan/LongmanDictionary",
   "CubesterYT/TurboHook",
@@ -80,5 +87,5 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
-  "Lily/McUtils"
+  "Lily/McUtils" // McUtils should always be the last item.
 ]

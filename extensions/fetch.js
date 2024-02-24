@@ -1,6 +1,7 @@
 // Name: Fetch
 // ID: fetch
 // Description: Make requests to the broader internet.
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -9,7 +10,7 @@
     getInfo() {
       return {
         id: "fetch",
-        name: "Fetch",
+        name: Scratch.translate("Fetch"),
         blocks: [
           {
             opcode: "get",

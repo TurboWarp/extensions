@@ -1,6 +1,7 @@
 // Name: RGB Channels
 // ID: lbdrawtest
 // Description: Only render or stamp certain RGB channels.
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -8,6 +9,11 @@
   const gl = renderer._gl;
   let channel_array = [true, true, true, true];
   class LBdrawtest {
+    constructor() {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this.clearEffects();
+      });
+    }
     getInfo() {
       return {
         id: "lbdrawtest",

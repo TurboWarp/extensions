@@ -2,6 +2,7 @@
 // ID: lmsVideo
 // Description: Play videos from URLs.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 // Attribution is not required, but greatly appreciated.
 
@@ -131,12 +132,8 @@
         name: "Video",
         blocks: [
           {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Only direct downloads will work",
-          },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Use Iframe extension for YouTube",
+            blockType: Scratch.BlockType.XML,
+            xml: "<sep gap='6'/><label text='Only direct downloads will work, use'/><sep gap='-12'/><label text='the Iframe extension for YouTube.'/><sep gap='24'/>",
           },
           {
             opcode: "loadVideoURL",
