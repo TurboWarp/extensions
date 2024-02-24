@@ -1,6 +1,7 @@
 // Name: Asset Manager
 // ID: lmsAssets
 // Description: Add, remove, and get data from various types of assets.
+// License: MIT AND LGPL-3.0
 
 // TheShovel is so epic and cool and awesome
 
@@ -10,6 +11,16 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const Cast = Scratch.Cast;
+
+  const requireNonPackagedRuntime = (blockName) => {
+    if (vm.runtime.isPackaged) {
+      alert(
+        `To use the Asset Manager ${blockName} block, the creator of the packaged project must uncheck "Remove raw asset data after loading to save RAM" under advanced settings in the packager.`
+      );
+      return false;
+    }
+    return true;
+  };
 
   class Assets {
     getInfo() {
@@ -517,14 +528,18 @@
       const costume = target.sprite.costumes[costumeIndex];
       switch (attribute) {
         case "dataURI":
+          if (!requireNonPackagedRuntime("dataURI of costume")) return "";
           return costume.asset.encodeDataURI();
         case "index":
           return costumeIndex + 1;
         case "format":
+          if (!requireNonPackagedRuntime("format of costume")) return "";
           return costume.asset.assetType.runtimeFormat;
         case "header":
+          if (!requireNonPackagedRuntime("header of costume")) return "";
           return costume.asset.assetType.contentType;
         case "asset ID":
+          if (!requireNonPackagedRuntime("asset ID of costume")) return "";
           return costume.asset.assetId;
         default:
           return "";
@@ -541,14 +556,18 @@
       const sound = target.sprite.sounds[soundIndex];
       switch (attribute) {
         case "dataURI":
+          if (!requireNonPackagedRuntime("dataURI of sound")) return "";
           return sound.asset.encodeDataURI();
         case "index":
           return soundIndex + 1;
         case "format":
+          if (!requireNonPackagedRuntime("format of sound")) return "";
           return sound.asset.assetType.runtimeFormat;
         case "header":
+          if (!requireNonPackagedRuntime("header of sound")) return "";
           return sound.asset.assetType.contentType;
         case "asset ID":
+          if (!requireNonPackagedRuntime("asset ID of sound")) return "";
           return sound.asset.assetId;
         default:
           return "";

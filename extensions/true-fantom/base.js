@@ -2,6 +2,7 @@
 // ID: truefantombase
 // Description: Convert numbers between bases.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+// License: MIT
 
 ((Scratch) => {
   "use strict";

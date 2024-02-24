@@ -1,8 +1,10 @@
 const fs = require("fs");
 const AdmZip = require("adm-zip");
 const pathUtil = require("path");
+const ExtendedJSON = require("@turbowarp/json");
 const compatibilityAliases = require("./compatibility-aliases");
 const parseMetadata = require("./parse-extension-metadata");
+const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -13,52 +15,6 @@ const parseMetadata = require("./parse-extension-metadata");
  * @property {string} string The English version of the string
  * @property {string} developer_comment Helper text to help translators
  */
-
-/**
- * Recursively read a directory.
- * @param {string} directory
- * @returns {Array<[string, string]>} List of tuples [name, absolutePath].
- * The return result includes files in subdirectories, but not the subdirectories themselves.
- */
-const recursiveReadDirectory = (directory) => {
-  const result = [];
-  for (const name of fs.readdirSync(directory)) {
-    if (name.startsWith(".")) {
-      // Ignore .eslintrc.js, .DS_Store, etc.
-      continue;
-    }
-    const absolutePath = pathUtil.join(directory, name);
-    const stat = fs.statSync(absolutePath);
-    if (stat.isDirectory()) {
-      for (const [
-        relativeToChildName,
-        childAbsolutePath,
-      ] of recursiveReadDirectory(absolutePath)) {
-        // This always needs to use / on all systems
-        result.push([`${name}/${relativeToChildName}`, childAbsolutePath]);
-      }
-    } else {
-      result.push([name, absolutePath]);
-    }
-  }
-  return result;
-};
-
-/**
- * Synchronous create a directory and any parents. Does nothing if the folder already exists.
- * @param {string} directory
- */
-const mkdirp = (directory) => {
-  try {
-    fs.mkdirSync(directory, {
-      recursive: true,
-    });
-  } catch (e) {
-    if (e.code !== "ENOENT") {
-      throw e;
-    }
-  }
-};
 
 /**
  * @param {Record<string, Record<string, string>>} allTranslations
@@ -248,6 +204,22 @@ class ExtensionFile extends BuildFile {
     ) {
       throw new Error(
         `Description is missing punctuation: ${metadata.description}`
+      );
+    }
+
+    if (!metadata.license) {
+      throw new Error(
+        "Missing // License: -- We recommend using // License: LGPL-3.0"
+      );
+    }
+
+    const spdxParser = require("spdx-expression-parse");
+    try {
+      // Don't care about the result -- just see if it parses.
+      spdxParser(metadata.license);
+    } catch (e) {
+      throw new Error(
+        `${metadata.license} is not a valid SPDX license. Did you typo it? It is case sensitive. We recommend using // License: LGPL-3.0`
       );
     }
 
@@ -724,7 +696,7 @@ class Builder {
   build() {
     const build = new Build(this.mode);
 
-    const featuredExtensionSlugs = JSON.parse(
+    const featuredExtensionSlugs = ExtendedJSON.parse(
       fs.readFileSync(
         pathUtil.join(this.extensionsRoot, "extensions.json"),
         "utf-8"

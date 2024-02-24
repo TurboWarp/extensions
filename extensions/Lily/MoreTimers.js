@@ -2,6 +2,7 @@
 // ID: lmsTimers
 // Description: Control several timers at once.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";

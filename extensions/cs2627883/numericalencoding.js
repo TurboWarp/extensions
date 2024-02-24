@@ -2,6 +2,7 @@
 // ID: cs2627883NumericalEncoding
 // Description: Encode strings as numbers for cloud variables.
 // By: cs2627883 <https://scratch.mit.edu/users/cs2627883/>
+// License: MIT
 
 // https://github.com/CS2627883/Turbowarp-Encoding-Extension/blob/main/Encoding.js
 
