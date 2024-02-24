@@ -2,6 +2,7 @@
 // ID: cloudlink
 // Description: A powerful WebSocket extension for Scratch.
 // By: MikeDEV
+// License: MIT
 
 /* eslint-disable */
 // prettier-ignore

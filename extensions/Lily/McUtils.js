@@ -3,6 +3,7 @@
 // Description: Helpful utilities for any fast food employee.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // Context: Joke extension based on McDonalds, a fast food chain.
+// License: MIT
 
 /*!
  * Credit to NexusKitten (NamelessCat) for the idea

@@ -2,6 +2,7 @@
 // ID: lmsclonesplus
 // Description: Expansion of Scratch's clone features.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";

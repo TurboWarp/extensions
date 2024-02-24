@@ -2,6 +2,7 @@
 // ID: cst1229zip
 // Description: Create and edit .zip format files, including .sb3 files.
 // By: CST1229 <https://scratch.mit.edu/users/CST1229/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";

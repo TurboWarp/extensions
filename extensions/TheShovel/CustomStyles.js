@@ -2,6 +2,7 @@
 // ID: shovelcss
 // Description: Customize the appearance of variable monitors and prompts in your project.
 // By: TheShovel
+// License: MIT
 
 // Thanks LilyMakesThings for the awesome banner!
 (function (Scratch) {

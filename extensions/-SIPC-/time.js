@@ -3,6 +3,7 @@
 // Description: Blocks for times, dates, and time zones.
 // By: -SIPC-
 // By: SharkPool <https://scratch.mit.edu/users/DemonX5/>
+// License: MIT
 
 // If you're curious, the default dates are from the first commits of forkphorus & TurboWarp:
 // https://github.com/forkphorus/forkphorus/commit/632d3432a8a98abd627b1309f6c85f47dcc6d428

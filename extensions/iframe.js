@@ -2,6 +2,7 @@
 // ID: iframe
 // Description: Display webpages or HTML over the stage.
 // Context: "iframe" is an HTML element that lets websites embed other websites.
+// License: MIT
 
 (function (Scratch) {
   "use strict";

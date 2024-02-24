@@ -2,6 +2,7 @@
 // Description: Adds more sound-related blocks.
 // ID: lmsSoundExpanded
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";

@@ -2,6 +2,7 @@
 // ID: penP
 // Description: Advanced rendering capabilities.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";

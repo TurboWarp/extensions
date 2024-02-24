@@ -2,6 +2,7 @@
 // ID: truefantomregexp
 // Description: Full interface for working with Regular Expressions.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+// License: MIT
 
 ((Scratch) => {
   "use strict";

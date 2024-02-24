@@ -1,6 +1,7 @@
 // Name: Pointerlock
 // ID: pointerlock
 // Description: Adds blocks for mouse locking. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the pointerlock experiment.
+// License: MIT
 
 (function (Scratch) {
   "use strict";

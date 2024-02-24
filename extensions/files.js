@@ -1,6 +1,7 @@
 // Name: Files
 // ID: files
 // Description: Read and download files.
+// License: MIT
 
 (function (Scratch) {
   "use strict";

@@ -2,6 +2,7 @@
 // ID: qxsckvarandlist
 // Description: More blocks related to variables and lists.
 // By: qxsck
+// License: MIT
 
 (function (Scratch) {
   "use strict";

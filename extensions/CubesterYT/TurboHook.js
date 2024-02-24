@@ -2,6 +2,7 @@
 // ID: cubesterTurboHook
 // Description: Allows you to use webhooks.
 // By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";

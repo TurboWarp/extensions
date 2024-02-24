@@ -1,6 +1,7 @@
 // Name: Fetch
 // ID: fetch
 // Description: Make requests to the broader internet.
+// License: MIT
 
 (function (Scratch) {
   "use strict";

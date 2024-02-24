@@ -2,6 +2,7 @@
 // ID: lmsutilsblocks
 // Description: Previously called LMS Utilities.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
