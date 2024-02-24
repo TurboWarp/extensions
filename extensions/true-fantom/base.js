@@ -66,7 +66,7 @@
             opcode: "is_base_block",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate({
-              default: "is base [B] [A] ?",
+              default: "is base [B] [A]?",
               description: "[B] will be the base like 'base 10', [A] is the text we want to check if it is in that base"
             }),
             arguments: {
