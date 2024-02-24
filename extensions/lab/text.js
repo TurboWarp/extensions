@@ -285,15 +285,15 @@
         };
       });
 
-      this._size[0] = this.wrapWidth;
+      this._size[0] = this.wrapWidth + 2 * this.outlineWidth;
       this._size[1] =
-        this.lines.length * this.lineHeight + 2 * this.verticalPadding;
+        this.lines.length * this.lineHeight + 2 * this.verticalPadding + 2 * this.outlineWidth;
 
       // Centered horizontally
       this._rotationCenter[0] = this._size[0] / 2;
       // Vertical center is roughly below the first line of text
       this._rotationCenter[1] =
-        this.calculatedFontSize * 0.9 + this.verticalPadding;
+        this.calculatedFontSize * 0.9 + this.verticalPadding + this.outlineWidth;
 
       if (this.isShaking) {
         const padding = Math.max(0, this.shakeIntensity / 20);
@@ -317,6 +317,8 @@
       this.canvas.height = Math.ceil(scratchHeight * requestedScale);
       this.ctx.scale(requestedScale, requestedScale);
 
+      this.ctx.translate(this.outlineWidth, this.outlineWidth);
+
       const rainbowOffset = this.isRainbow
         ? (globalFrameTime - this.rainbowStartTime) / RAINBOW_TIME_PER
         : 0;
@@ -327,12 +329,10 @@
         const text = line.text;
         const lineWidth = line.width;
 
-        let xOffset = 0;
-        let yOffset =
-          this.verticalPadding + i * this.lineHeight + this.baseFontSize;
-
+        let xOffset;
+        const yOffset = this.verticalPadding + i * this.lineHeight + this.baseFontSize;
         if (this.align === ALIGN_LEFT) {
-          // already correct
+          xOffset = 0;
         } else if (this.align === ALIGN_CENTER) {
           xOffset = (this.wrapWidth - lineWidth) / 2;
         } else {
@@ -350,10 +350,11 @@
           this.ctx.fillStyle = gradient;
         }
 
-        this.ctx.strokeStyle = this.outlineColor;
-        this.ctx.lineWidth = Math.ceil(this.outlineWidth);
-
         if (this.outlineWidth > 0) {
+          this.ctx.lineWidth = this.outlineWidth;
+          this.ctx.strokeStyle = this.outlineColor;
+          this.ctx.lineCap = 'round';
+          this.ctx.lineJoin = 'round';
           this.ctx.strokeText(text, xOffset, yOffset);
         }
 
@@ -407,7 +408,7 @@
 
     setOutlineWidth(width) {
       this.outlineWidth = width;
-      this._invalidateTexture();
+      this._invalidateText();
     }
 
     setAlign(align) {
@@ -835,7 +836,7 @@
             arguments: {
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+                defaultValue: "3",
               },
             },
             extensions: ["colours_looks"],
@@ -1289,7 +1290,7 @@
     setFont({ FONT }, util) {
       const font = Scratch.Cast.toString(FONT);
       const state = this._getState(util.target);
-      const customFonts = this._getFontsMap();
+      const customFonts = this._getFontsMap().map(i => i.value);
       const possibleFonts = [...FONTS, ...customFonts].filter(
         (i) => i !== state.skin.fontFamily
       );
