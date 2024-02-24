@@ -287,13 +287,17 @@
 
       this._size[0] = this.wrapWidth + 2 * this.outlineWidth;
       this._size[1] =
-        this.lines.length * this.lineHeight + 2 * this.verticalPadding + 2 * this.outlineWidth;
+        this.lines.length * this.lineHeight +
+        2 * this.verticalPadding +
+        2 * this.outlineWidth;
 
       // Centered horizontally
       this._rotationCenter[0] = this._size[0] / 2;
       // Vertical center is roughly below the first line of text
       this._rotationCenter[1] =
-        this.calculatedFontSize * 0.9 + this.verticalPadding + this.outlineWidth;
+        this.calculatedFontSize * 0.9 +
+        this.verticalPadding +
+        this.outlineWidth;
 
       if (this.isShaking) {
         const padding = Math.max(0, this.shakeIntensity / 20);
@@ -330,7 +334,8 @@
         const lineWidth = line.width;
 
         let xOffset;
-        const yOffset = this.verticalPadding + i * this.lineHeight + this.baseFontSize;
+        const yOffset =
+          this.verticalPadding + i * this.lineHeight + this.baseFontSize;
         if (this.align === ALIGN_LEFT) {
           xOffset = 0;
         } else if (this.align === ALIGN_CENTER) {
@@ -353,8 +358,8 @@
         if (this.outlineWidth > 0) {
           this.ctx.lineWidth = this.outlineWidth;
           this.ctx.strokeStyle = this.outlineColor;
-          this.ctx.lineCap = 'round';
-          this.ctx.lineJoin = 'round';
+          this.ctx.lineCap = "round";
+          this.ctx.lineJoin = "round";
           this.ctx.strokeText(text, xOffset, yOffset);
         }
 
@@ -1295,8 +1300,8 @@
         // Random font always switches to a new font, never the same one
         const possibleFonts = [
           ...FONTS,
-          ...this._getFontsMap().map(i => i.value)
-        ].filter(i => i !== state.skin.fontFamily);
+          ...this._getFontsMap().map((i) => i.value),
+        ].filter((i) => i !== state.skin.fontFamily);
         state.skin.setFontFamily(
           possibleFonts[Math.floor(Math.random() * possibleFonts.length)]
         );
