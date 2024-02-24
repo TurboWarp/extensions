@@ -249,16 +249,16 @@
     }
 
     pressKey(args) {
-      const pressKey = new KeyboardEvent("keydown", {
-        key: args.KEY,
+      Scratch.vm.postIOData("keyboard", {
+        key: Scratch.Cast.toString(args.KEY),
+        isDown: true
       });
-      document.dispatchEvent(pressKey);
 
       return doLater(args.SECONDS, args.AND_WAIT, () => {
-        const releaseKey = new KeyboardEvent("keyup", {
-          key: args.KEY,
+        Scratch.vm.postIOData("keyboard", {
+          key: Scratch.Cast.toString(args.KEY),
+          isDown: false
         });
-        document.dispatchEvent(releaseKey);
       });
     }
 
