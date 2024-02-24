@@ -2,7 +2,7 @@
 // ID: lmsListTools
 // Description: An assortment of new ways to interact with lists.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// License: MIT
+// License: MIT AND LGPL-3.0
 
 // (It's getting harder and harder to think of original descriptions now)
 

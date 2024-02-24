@@ -1,7 +1,7 @@
 // Name: Asset Manager
 // ID: lmsAssets
 // Description: Add, remove, and get data from various types of assets.
-// License: MIT
+// License: MIT AND LGPL-3.0
 
 // TheShovel is so epic and cool and awesome
 

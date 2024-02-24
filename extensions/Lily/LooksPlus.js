@@ -2,7 +2,7 @@
 // ID: lmsLooksPlus
 // Description: Expands upon the looks category, allowing you to show/hide, get costume data and edit SVG skins on sprites.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// License: MIT
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";

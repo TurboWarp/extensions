@@ -2,7 +2,7 @@
 // ID: clouddataping
 // Description: Determine whether a cloud variable server is probably up.
 // Original: TheShovel
-// License: MIT
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";

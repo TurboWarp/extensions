@@ -2,7 +2,7 @@
 // ID: lmsSkins
 // Description: Have your sprites render as other images or costumes.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// License: MIT
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";

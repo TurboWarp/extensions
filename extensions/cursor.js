@@ -1,7 +1,7 @@
 // Name: Mouse Cursor
 // ID: MouseCursor
 // Description: Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.
-// License: MIT
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";

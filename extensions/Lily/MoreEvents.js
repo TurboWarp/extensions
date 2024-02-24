@@ -2,7 +2,7 @@
 // ID: lmsMoreEvents
 // Description: Start your scripts in new ways.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// License: MIT
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
