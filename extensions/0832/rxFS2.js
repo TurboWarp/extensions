@@ -2,6 +2,7 @@
 // ID: 0832rxfs2
 // Description: Blocks for interacting with a virtual in-memory filesystem.
 // By: 0832
+// License: MIT
 
 /*!
  * Made by 0832

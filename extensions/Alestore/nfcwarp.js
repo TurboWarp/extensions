@@ -3,6 +3,7 @@
 // Description: Allows reading data from NFC (NDEF) devices. Only works in Chrome on Android.
 // By: Alestore Games <https://scratch.mit.edu/users/aleb2005/>
 // Context: NFC stands for "Near-field communication". Ideally check a real phone in your language to see how they translated it.
+// License: MIT
 
 (function (Scratch) {
   "use strict";
