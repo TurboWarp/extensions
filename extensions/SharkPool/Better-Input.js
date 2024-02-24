@@ -28,7 +28,6 @@
   let overlayImageContainer = "";
   const vm = Scratch.vm;
   const fontMenu = [
-    "Scratch",
     "Sans Serif",
     "Serif",
     "Handwriting",
