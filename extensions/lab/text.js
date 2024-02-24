@@ -2,6 +2,7 @@
 // ID: text
 // Description: An easy way to display and animate text. Compatible with Scratch Lab's Animated Text experiment.
 // By: LilyMakesThings
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";

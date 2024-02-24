@@ -2,6 +2,7 @@
 // ID: obviousalexsensing
 // Description: An extension to the sensing category.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -277,8 +278,6 @@
   }
 
   const touchPointsArray = makeArrayOfTouches(); //* <-- Do this for devices that really can't support that many touches.
-
-  const alreadyTapped = {};
 
   class SensingPlus {
     getInfo() {

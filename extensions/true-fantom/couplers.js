@@ -2,6 +2,7 @@
 // ID: truefantomcouplers
 // Description: A few adapter blocks.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+// License: MIT
 
 ((Scratch) => {
   "use strict";
@@ -39,6 +40,7 @@
                 defaultValue: "banana",
               },
             },
+            allowDropAnywhere: true,
           },
           {
             opcode: "boolean_block",

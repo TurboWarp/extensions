@@ -2,6 +2,7 @@
 // ID: nexuskittensgrab
 // Description: Get information about Scratch projects and Scratch users.
 // By: NamelessCat <https://scratch.mit.edu/users/NamelessCat/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -22,6 +23,10 @@
         color1: "#ECA90B",
         color2: "#EBAF00",
         blocks: [
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: "<sep gap='6'/><label text='S-Grab relies on a third-party API that'/><sep gap='-12'/><label text='is very unreliable. Use this with caution.'/><sep gap='24'/>",
+          },
           {
             opcode: "usergrab",
             blockType: Scratch.BlockType.REPORTER,
@@ -227,9 +232,9 @@
         );
         const jsonData = await response.json();
         if (args.WHAT === "follower") {
-          return jsonData.statistics.followers;
+          return jsonData.statistics.followers ?? "";
         } else if (args.WHAT === "following") {
-          return jsonData.statistics.following;
+          return jsonData.statistics.following ?? "";
         } else {
           return "";
         }
@@ -244,13 +249,13 @@
         );
         const jsonData = await response.json();
         if (args.WHAT === "follower") {
-          return jsonData.statistics.ranks.followers;
+          return jsonData.statistics.ranks.followers ?? "";
         } else if (args.WHAT === "love") {
-          return jsonData.statistics.ranks.loves;
+          return jsonData.statistics.ranks.loves ?? "";
         } else if (args.WHAT === "favorite") {
-          return jsonData.statistics.ranks.favorites;
+          return jsonData.statistics.ranks.favorites ?? "";
         } else if (args.WHAT === "view") {
-          return jsonData.statistics.ranks.views;
+          return jsonData.statistics.ranks.views ?? "";
         } else {
           return "";
         }
@@ -265,13 +270,13 @@
         );
         const jsonData = await response.json();
         if (args.WHAT === "about me") {
-          return jsonData.bio;
+          return jsonData.bio ?? "";
         } else if (args.WHAT === "wiwo") {
-          return jsonData.work;
+          return jsonData.work ?? "";
         } else if (args.WHAT === "location") {
-          return jsonData.country;
+          return jsonData.country ?? "";
         } else if (args.WHAT === "status") {
-          return jsonData.status;
+          return jsonData.status ?? "";
         } else {
           return "";
         }
@@ -286,11 +291,11 @@
         );
         const jsonData = await response.json();
         if (args.WHAT === "love") {
-          return jsonData.statistics.loves;
+          return jsonData.statistics.loves ?? "";
         } else if (args.WHAT === "favorite") {
-          return jsonData.statistics.favorites;
+          return jsonData.statistics.favorites ?? "";
         } else if (args.WHAT === "view") {
-          return jsonData.statistics.views;
+          return jsonData.statistics.views ?? "";
         } else {
           return "";
         }
@@ -305,11 +310,11 @@
         );
         const jsonData = await response.json();
         if (args.WHAT === "love") {
-          return jsonData.statistics.ranks.loves;
+          return jsonData.statistics.ranks.loves ?? "";
         } else if (args.WHAT === "favorite") {
-          return jsonData.statistics.ranks.favorites;
+          return jsonData.statistics.ranks.favorites ?? "";
         } else if (args.WHAT === "view") {
-          return jsonData.statistics.ranks.views;
+          return jsonData.statistics.ranks.views ?? "";
         } else {
           return "";
         }
@@ -323,7 +328,7 @@
           "https://scratchdb.lefty.one/v3/project/info/" + args.WHO
         );
         const jsonData = await response.json();
-        return jsonData.title;
+        return jsonData.title ?? "";
       } catch (error) {
         return "";
       }
@@ -334,7 +339,7 @@
           "https://scratchdb.lefty.one/v3/project/info/" + args.WHO
         );
         const jsonData = await response.json();
-        return jsonData.username;
+        return jsonData.username ?? "";
       } catch (error) {
         return "";
       }

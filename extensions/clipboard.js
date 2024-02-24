@@ -1,6 +1,7 @@
 // Name: Clipboard
 // ID: clipboard
 // Description: Read and write from the system clipboard.
+// License: MIT
 
 /*!
  * Copyright 2023 tomyo-code + AdamMady

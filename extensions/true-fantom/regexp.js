@@ -2,6 +2,7 @@
 // ID: truefantomregexp
 // Description: Full interface for working with Regular Expressions.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+// License: MIT
 
 ((Scratch) => {
   "use strict";
@@ -15,13 +16,6 @@
 
   const cast = Scratch.Cast;
 
-  const toScratchData = (val) => {
-    return val === undefined || typeof val === "object" ? "" : val;
-  };
-
-  const toJsonData = (val) => {
-    return JSON.parse(val);
-  };
   const toJsonString = (val) => {
     return JSON.stringify(
       val,
@@ -30,46 +24,6 @@
       },
       0
     );
-  };
-
-  const isNotPrimitiveData = (val) => {
-    return val instanceof Object;
-  };
-  const isArray = (val) => {
-    return val instanceof Array;
-  };
-  const isObject = (val) => {
-    return val instanceof Object && !(val instanceof Array);
-  };
-
-  const toArray = (val) => {
-    return isArray(val) ? val : isObject(val) ? Object.values(val) : [val];
-  };
-  const toObject = (val) => {
-    return isObject(val)
-      ? val
-      : isArray(val)
-        ? val.reduce(
-            (array, currentValue, currentIndex) => ({
-              ...array,
-              [currentIndex + 1]: currentValue,
-            }),
-            {}
-          )
-        : { 1: val };
-  };
-
-  const dataValues = (val) => {
-    return Object.values(toObject(val));
-  };
-  const dataKeys = (val) => {
-    return Object.keys(toObject(val));
-  };
-  const dataPairs = (val) => {
-    return toObject(val);
-  };
-  const dataMap = (val) => {
-    return Object.entries(toObject(val));
   };
 
   const toRegExpData = (val) => {
@@ -453,7 +407,7 @@
         let restr = cast.toString(A);
         let redat = toRegExpData(restr);
         if (RegExpCompare(redat, restr)) {
-          let flagtest = new RegExp("test", cast.toString(B));
+          let _flagtest = new RegExp("test", cast.toString(B));
           let flags = Array.from(redat.flags);
           Array.from(cast.toString(B)).forEach((flag) =>
             flags.includes(flag) ? void 0 : flags.push(flag)
@@ -470,7 +424,7 @@
         let restr = cast.toString(A);
         let redat = toRegExpData(restr);
         if (RegExpCompare(redat, restr)) {
-          let flagtest = new RegExp("test", cast.toString(B));
+          let _flagtest = new RegExp("test", cast.toString(B));
           let flags = Array.from(redat.flags);
           Array.from(cast.toString(B)).forEach((flag) =>
             flags.includes(flag) ? flags.splice(flags.indexOf(flag), 1) : void 0
