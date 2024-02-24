@@ -1290,18 +1290,17 @@
     setFont({ FONT }, util) {
       const font = Scratch.Cast.toString(FONT);
       const state = this._getState(util.target);
-      const customFonts = this._getFontsMap().map(i => i.value);
-      const possibleFonts = [...FONTS, ...customFonts].filter(
-        (i) => i !== state.skin.fontFamily
-      );
 
       if (font === "Random") {
         // Random font always switches to a new font, never the same one
+        const possibleFonts = [
+          ...FONTS,
+          ...this._getFontsMap().map(i => i.value)
+        ].filter(i => i !== state.skin.fontFamily);
         state.skin.setFontFamily(
           possibleFonts[Math.floor(Math.random() * possibleFonts.length)]
         );
       } else {
-        if (!possibleFonts.includes(font)) return;
         state.skin.setFontFamily(font);
       }
     }
