@@ -1,6 +1,6 @@
 // Name: Key Simulation
 // ID: cubesterKeySimulation
-// Description: Simulate Key Presses and Mouse Clicks.
+// Description: Simulate key presses and mouse clicks.
 // By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
 // License: MIT AND LGPL-3.0
 
