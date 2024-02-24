@@ -10,7 +10,7 @@
   let openCaseSensitive = false;
   class VarAndList {
     constructor() {
-      this.randomString = function (length) {
+      this.randomScratch.Cast.toString = function (length) {
         let stringDict =
           "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~`!@#$%^&*()_-+={[}}|:;<,>.?/";
         let result = "";
@@ -32,15 +32,19 @@
         let list = arr.slice(left, right + 1);
         switch (order) {
           case "asc":
-            list = list.map((val) => (isNaN(Number(val)) ? 0 : Number(val)));
+            list = list.map((val) =>
+              isNaN(Scratch.Cast.toNumber(val)) ? 0 : Scratch.Cast.toNumber(val)
+            );
             list.sort((a, b) => a - b);
             break;
           case "desc":
-            list = list.map((val) => (isNaN(Number(val)) ? 0 : Number(val)));
+            list = list.map((val) =>
+              isNaN(Scratch.Cast.toNumber(val)) ? 0 : Scratch.Cast.toNumber(val)
+            );
             list.sort((a, b) => b - a);
             break;
           case "dictOrder":
-            list = list.map((val) => String(val));
+            list = list.map((val) => Scratch.Cast.toString(val));
             list.sort();
             break;
           case "random":
@@ -83,91 +87,91 @@
           //command,reporter,Boolean,hat,conditional,loop
           {
             opcode: "haveVar",
-            blockType: "Boolean",
+            blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("have variable [VAR] ?"),
             arguments: {
               VAR: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "variable",
               },
             },
           },
           {
             opcode: "getVar",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("value of variable [VAR]"),
             arguments: {
               VAR: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "variable",
               },
             },
           },
           {
             opcode: "setVar",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set variable [VAR] to [VALUE]"),
             arguments: {
               VAR: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "variable",
               },
               VALUE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "value",
               },
             },
           },
           {
             opcode: "seriVarsToJson",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
               "convert all variables starting with [START] to json"
             ),
             arguments: {
               START: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "variable",
               },
             },
           },
           {
             opcode: "swapVar",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("swap variable [VAR] and [VAR2]"),
             arguments: {
               VAR: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "variable1",
               },
               VAR2: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "variable2",
               },
             },
           },
           {
             opcode: "changeMonitorVar",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("[CASE] variable [VAR]"),
             arguments: {
               CASE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 menu: "changeMonitor.List",
               },
               VAR: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "variable",
               },
             },
           },
           {
             opcode: "isShowVar",
-            blockType: "Boolean",
+            blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("variable [VAR] is showing?"),
             arguments: {
               VAR: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "variable",
               },
             },
@@ -177,588 +181,581 @@
 
           {
             opcode: "openCaseSensitive",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("[CASE] case sensitive"),
             arguments: {
               CASE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 menu: "openCaseSensitive.List",
               },
             },
           },
           {
             opcode: "haveList",
-            blockType: "Boolean",
+            blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("have list [LIST] ?"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
             },
           },
           {
             opcode: "emptyList",
-            blockType: "Boolean",
+            blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("list [LIST] is empty?"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
             },
           },
           {
             opcode: "length",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("length of list [LIST]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
             },
           },
           {
             opcode: "getList",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("value of list [LIST]"),
             hideFromPalette: true,
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
             },
           },
           {
             opcode: "newGetList",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("values of list [LIST]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
             },
           },
           {
             opcode: "getListRange",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
               "values of from [LEFT] to [RIGHT] in list [LIST]"
             ),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               LEFT: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
               },
               RIGHT: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "2",
               },
             },
           },
           {
             opcode: "getValueOfList",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("item # [INDEX] of list [LIST]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               INDEX: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
               },
             },
           },
           {
             opcode: "seriListsToJson",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
               "convert all lists starting with [START] to json"
             ),
             arguments: {
               START: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
             },
           },
           {
             opcode: "swapList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("swap list [LIST] and [LIST2]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list1",
               },
               LIST2: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list2",
               },
             },
           },
           {
             opcode: "changeMonitorList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("[CASE] list [LIST]"),
             arguments: {
               CASE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 menu: "changeMonitor.List",
               },
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
             },
           },
           {
             opcode: "isShowList",
-            blockType: "Boolean",
+            blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("list [LIST] is showing?"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
             },
           },
           {
             opcode: "clearList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("delete all of list [LIST]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
             },
           },
           {
             opcode: "setList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set list [LIST] to list [LIST2]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               LIST2: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: '["a","b"]',
               },
             },
           },
           {
             opcode: "setListValue",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set list [LIST] to [VALUE] [NUM] times"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               NUM: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "5",
               },
               VALUE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "thing",
               },
             },
           },
           {
             opcode: "deleteOfList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("delete # [INDEX] of list [LIST]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               INDEX: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
               },
             },
           },
           {
             opcode: "addValueInList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("add [VALUE] to list [LIST]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               VALUE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "value",
               },
             },
           },
           {
             opcode: "addListToList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("add list [LIST2] to list [LIST]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               LIST2: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: '["a","b"]',
               },
             },
           },
           {
             opcode: "insertOfList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
               "insert [VALUE] before item # [INDEX] in the list [LIST]"
             ),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               INDEX: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
               },
               VALUE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "thing",
               },
             },
           },
           {
             opcode: "insertListToList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
               "insert list [LIST2] before item # [INDEX] in list [LIST]"
             ),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               INDEX: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
               },
               LIST2: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: '["ark","os"]',
               },
             },
           },
           {
             opcode: "replaceOfList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
               "replace item [INDEX] of list [LIST] to [VALUE]"
             ),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               INDEX: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
               },
               VALUE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "thing",
               },
             },
           },
           {
             opcode: "replaceRangeOfList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
               "replace items [LEFT] to [RIGHT] in list [LIST] with [VALUE]"
             ),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               LEFT: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
               },
               RIGHT: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "2",
               },
               VALUE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "thing",
               },
             },
           },
           {
             opcode: "getIndexOfList",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("first index of [VALUE] in list [LIST]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               VALUE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "thing",
               },
             },
           },
           {
             opcode: "getIndexesOfList",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("indexes of [VALUE] in list [LIST]"),
             hideFromPalette: true,
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               VALUE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "thing",
               },
             },
           },
           {
             opcode: "newGetIndexesOfList",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("indexes of [VALUE] in list [LIST]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               VALUE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "thing",
               },
             },
           },
           {
             opcode: "getCountsOfList",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("number of [VALUE] in list [LIST]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               VALUE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "thing",
               },
             },
           },
           {
             opcode: "listContains",
-            blockType: "Boolean",
+            blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("list [LIST] have [VALUE] ?"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               VALUE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "thing",
               },
             },
           },
           {
             opcode: "copyList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("copy list [LIST1] to list [LIST2]"),
             arguments: {
               LIST1: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list1",
               },
               LIST2: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list2",
               },
             },
           },
           {
             opcode: "reverseList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("reverse list [LIST]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
             },
           },
           {
             opcode: "sortList",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("sort list [LIST] with [CASE]"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               CASE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 menu: "sortList.List",
               },
             },
           },
           {
             opcode: "sortListRange",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
               "sort item [LEFT] to [RIGHT] in list [LIST] with [CASE]"
             ),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               CASE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 menu: "sortList.List",
               },
               LEFT: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
               },
               RIGHT: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "2",
               },
             },
           },
           {
             opcode: "isOrder",
-            blockType: "Boolean",
+            blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("list [LIST] is [CASE] ?"),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               CASE: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 menu: "isOrder.List",
               },
             },
           },
           {
             opcode: "mapObject",
-            blockType: "command",
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
               "map object [OBJ] , keys to list [LIST], and values to list [LIST2]"
             ),
             arguments: {
               OBJ: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: '{"name":"TruboWarp"}',
               },
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list1",
               },
               LIST2: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list2",
               },
             },
           },
           {
             opcode: "associateList",
-            blockType: "reporter",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
               "associate list [LIST] to keys, and [LIST2] to values, if length is different, then [DO]"
             ),
             arguments: {
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list1",
               },
               LIST2: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list2",
               },
               DO: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 menu: "associateList.List",
               },
             },
           },
 
           {
-            opcode: "unSupportCompile",
-            blockType: "label",
-            text: Scratch.translate("⚠️Compilation not supported"),
-            arguments: {},
-          },
-
-          {
             opcode: "forEach",
-            blockType: "conditional",
+            blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate(
               "⚠️for each variable [VAR] from [LEFT] to [RIGHT]"
             ),
             arguments: {
               VAR: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "variable",
               },
               LEFT: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
               },
               RIGHT: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "5",
               },
             },
           },
           {
             opcode: "forEachList",
-            blockType: "conditional",
+            blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate(
               "⚠️for each variable [VAR] in value of from [LEFT] to [RIGHT] in list [LIST]"
             ),
             arguments: {
               VAR: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "variable",
               },
               LIST: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "list",
               },
               LEFT: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
               },
               RIGHT: {
-                type: "string",
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "5",
               },
             },
@@ -818,7 +815,6 @@
       };
     }
 
-    //from turbowarp-vm
     changeMonitorVisibility(id, visible) {
       // Send the monitor blocks an event like the flyout checkbox event.
       // This both updates the monitor state and changes the isMonitored block flag.
@@ -842,21 +838,21 @@
 
     haveVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.VAR),
+        Scratch.Cast.toString(args.VAR),
         ""
       );
       return variable ? true : false;
     }
     getVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.VAR),
+        Scratch.Cast.toString(args.VAR),
         ""
       );
       return variable ? variable.value : "";
     }
     setVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.VAR),
+        Scratch.Cast.toString(args.VAR),
         ""
       );
       if (variable) {
@@ -870,7 +866,7 @@
       }
     }
     seriVarsToJson(args, util) {
-      const start = String(args.START);
+      const start = Scratch.Cast.toString(args.START);
       const serialized = {};
       for (const variable of Object.values(
         util.runtime.getTargetForStage().variables
@@ -888,11 +884,11 @@
     }
     swapVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.VAR),
+        Scratch.Cast.toString(args.VAR),
         ""
       );
       const variable2 = util.target.lookupVariableByNameAndType(
-        String(args.VAR2),
+        Scratch.Cast.toString(args.VAR2),
         ""
       );
       if (variable && variable2) {
@@ -903,7 +899,7 @@
     }
     changeMonitorVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.VAR),
+        Scratch.Cast.toString(args.VAR),
         ""
       );
       if (variable) {
@@ -912,7 +908,7 @@
     }
     isShowVar(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.VAR),
+        Scratch.Cast.toString(args.VAR),
         ""
       );
       return this.isShow({ list: variable });
@@ -923,14 +919,14 @@
     }
     haveList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       return variable ? true : false;
     }
     emptyList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       return variable ? (variable.value.length ? false : true) : true;
@@ -938,7 +934,7 @@
     length(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
@@ -948,31 +944,33 @@
     }
     getList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
-      return variable ? variable.value.toString() : "";
+      return variable ? variable.value.toScratch.Cast.toString() : "";
     }
     newGetList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       return variable
         ? "[" +
-            variable.value.map((value) => '"' + String(value) + '"').join(",") +
+            variable.value
+              .map((value) => '"' + Scratch.Cast.toString(value) + '"')
+              .join(",") +
             "]"
         : "[]";
     }
     getListRange(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
         let length = variable.value.length,
-          left = Number(args.LEFT),
-          right = Number(args.RIGHT);
+          left = Scratch.Cast.toNumber(args.LEFT),
+          right = Scratch.Cast.toNumber(args.RIGHT);
         if (left < 1) left = 1;
         if (right > length) right = length;
         (left -= 1), (right -= 1);
@@ -980,7 +978,7 @@
           "[" +
           variable.value
             .slice(left, right + 1)
-            .map((value) => '"' + String(value) + '"')
+            .map((value) => '"' + Scratch.Cast.toString(value) + '"')
             .join(",") +
           "]"
         );
@@ -989,18 +987,21 @@
     }
     getValueOfList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (!variable) return "";
-      const index = String(args.INDEX);
-      if (Number(index) <= variable.value.length && Number(index) >= 1) {
+      const index = Scratch.Cast.toString(args.INDEX);
+      if (
+        Scratch.Cast.toNumber(index) <= variable.value.length &&
+        Scratch.Cast.toNumber(index) >= 1
+      ) {
         return variable.value[index - 1];
       }
       return "";
     }
     seriListsToJson(args, util) {
-      const start = String(args.START);
+      const start = Scratch.Cast.toString(args.START);
       const serialized = {};
       for (const variable of Object.values(
         util.runtime.getTargetForStage().variables
@@ -1018,11 +1019,11 @@
     }
     swapList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       const variable2 = util.target.lookupVariableByNameAndType(
-        String(args.LIST2),
+        Scratch.Cast.toString(args.LIST2),
         "list"
       );
       if (variable && variable2) {
@@ -1035,7 +1036,7 @@
     }
     changeMonitorList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
@@ -1044,7 +1045,7 @@
     }
     isShowList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       return this.isShow({ list: variable });
@@ -1052,7 +1053,7 @@
     clearList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
@@ -1063,14 +1064,14 @@
     setList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
         try {
           let arr = JSON.parse(args.LIST2);
           if (Array.isArray(arr))
-            variable.value = arr.map((val) => String(val));
+            variable.value = arr.map((val) => Scratch.Cast.toString(val));
           variable._monitorUpToDate = false;
         } catch (error) {
           console.log("error:", error);
@@ -1080,12 +1081,12 @@
     setListValue(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
-        let val = String(args.VALUE),
-          num = Number(args.NUM);
+        let val = Scratch.Cast.toString(args.VALUE),
+          num = Scratch.Cast.toNumber(args.NUM);
         variable.value = [];
         for (let i = 1; i <= num; i++) variable.value.push(val);
         variable._monitorUpToDate = false;
@@ -1094,18 +1095,18 @@
     deleteOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
-        const index = String(args.INDEX);
+        const index = Scratch.Cast.toString(args.INDEX);
         if (index === "ALL") {
           variable.value = [];
         } else if (
-          Number(index) <= variable.value.length &&
-          Number(index) >= 1
+          Scratch.Cast.toNumber(index) <= variable.value.length &&
+          Scratch.Cast.toNumber(index) >= 1
         ) {
-          variable.value.splice(Number(index) - 1, 1);
+          variable.value.splice(Scratch.Cast.toNumber(index) - 1, 1);
           variable._monitorUpToDate = false;
         }
       }
@@ -1113,7 +1114,7 @@
     addValueInList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
@@ -1124,14 +1125,14 @@
     addListToList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
         try {
           let arr = JSON.parse(args.LIST2);
           for (let i = 0; i < arr.length; i++)
-            variable.value.push(String(arr[i]));
+            variable.value.push(Scratch.Cast.toString(arr[i]));
           variable._monitorUpToDate = false;
         } catch (error) {
           console.log("error:", error);
@@ -1140,28 +1141,28 @@
     }
     insertOfList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
-      const value = String(args.VALUE);
+      const value = Scratch.Cast.toString(args.VALUE);
       const index =
-        Number(args.INDEX) > variable.value.length
+        Scratch.Cast.toNumber(args.INDEX) > variable.value.length
           ? variable.value.length + 1
-          : Number(args.INDEX);
+          : Scratch.Cast.toNumber(args.INDEX);
       variable.value.splice(index - 1, 0, value);
       variable._monitorUpToDate = false;
     }
     insertListToList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       const index =
-        Number(args.INDEX) > variable.value.length
+        Scratch.Cast.toNumber(args.INDEX) > variable.value.length
           ? variable.value.length + 1
-          : Number(args.INDEX);
+          : Scratch.Cast.toNumber(args.INDEX);
       try {
-        let arr = JSON.parse(args.LIST2).map(String);
+        let arr = JSON.parse(args.LIST2).map(Scratch.Cast.toString);
         variable.value.splice(index - 1, 0, ...arr);
         variable._monitorUpToDate = false;
       } catch (error) {
@@ -1171,13 +1172,16 @@
     replaceOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
-        const index = String(args.INDEX);
-        if (Number(index) <= variable.value.length && Number(index) >= 1) {
-          variable.value[index - 1] = String(args.VALUE);
+        const index = Scratch.Cast.toString(args.INDEX);
+        if (
+          Scratch.Cast.toNumber(index) <= variable.value.length &&
+          Scratch.Cast.toNumber(index) >= 1
+        ) {
+          variable.value[index - 1] = Scratch.Cast.toString(args.VALUE);
           variable._monitorUpToDate = false;
         }
       }
@@ -1185,28 +1189,28 @@
     replaceRangeOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
         let length = variable.value.length,
-          left = Number(args.LEFT),
-          right = Number(args.RIGHT);
+          left = Scratch.Cast.toNumber(args.LEFT),
+          right = Scratch.Cast.toNumber(args.RIGHT);
         if (left < 1) left = 1;
         if (right > length) right = length;
         (left -= 1), (right -= 1);
         for (let i = left; i <= right; i++)
-          variable.value[i] = String(args.VALUE);
+          variable.value[i] = Scratch.Cast.toString(args.VALUE);
         variable._monitorUpToDate = false;
       }
     }
     getIndexOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
-      const value = String(args.VALUE);
+      const value = Scratch.Cast.toString(args.VALUE);
       let flag = openCaseSensitive;
       if (variable) {
         for (let i = 0; i < variable.value.length; i++) {
@@ -1214,7 +1218,11 @@
             if (Scratch.Cast.compare(variable.value[i], value) === 0)
               return i + 1;
           } else {
-            if (String(variable.value[i]) == String(value)) return i + 1;
+            if (
+              Scratch.Cast.toString(variable.value[i]) ==
+              Scratch.Cast.toString(value)
+            )
+              return i + 1;
           }
         }
       }
@@ -1223,10 +1231,10 @@
     getIndexesOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
-      const value = String(args.VALUE);
+      const value = Scratch.Cast.toString(args.VALUE);
       let flag = openCaseSensitive;
       if (variable) {
         let indexes = [];
@@ -1235,21 +1243,24 @@
             if (Scratch.Cast.compare(variable.value[i], value) === 0)
               indexes.push(i + 1);
           } else {
-            if (String(variable.value[i]) === String(value))
+            if (
+              Scratch.Cast.toString(variable.value[i]) ===
+              Scratch.Cast.toString(value)
+            )
               indexes.push(i + 1);
           }
         }
-        if (indexes.length > 0) return indexes.toString();
+        if (indexes.length > 0) return indexes.toScratch.Cast.toString();
       }
       return "";
     }
     newGetIndexesOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
-      const value = String(args.VALUE);
+      const value = Scratch.Cast.toString(args.VALUE);
       let flag = openCaseSensitive;
       if (variable) {
         let indexes = [];
@@ -1258,14 +1269,19 @@
             if (Scratch.Cast.compare(variable.value[i], value) === 0)
               indexes.push(i + 1);
           } else {
-            if (String(variable.value[i]) === String(value))
+            if (
+              Scratch.Cast.toString(variable.value[i]) ===
+              Scratch.Cast.toString(value)
+            )
               indexes.push(i + 1);
           }
         }
         if (indexes.length > 0)
           return (
             "[" +
-            indexes.map((value) => '"' + String(value) + '"').join(",") +
+            indexes
+              .map((value) => '"' + Scratch.Cast.toString(value) + '"')
+              .join(",") +
             "]"
           );
       }
@@ -1274,10 +1290,10 @@
     getCountsOfList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
-      const value = String(args.VALUE);
+      const value = Scratch.Cast.toString(args.VALUE);
       let flag = openCaseSensitive;
       if (variable) {
         let indexes = [];
@@ -1286,7 +1302,10 @@
             if (Scratch.Cast.compare(variable.value[i], value) === 0)
               indexes.push(i + 1);
           } else {
-            if (String(variable.value[i]) === String(value))
+            if (
+              Scratch.Cast.toString(variable.value[i]) ===
+              Scratch.Cast.toString(value)
+            )
               indexes.push(i + 1);
           }
         }
@@ -1297,10 +1316,10 @@
     listContains(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
-      const value = String(args.VALUE);
+      const value = Scratch.Cast.toString(args.VALUE);
       let flag = openCaseSensitive;
       if (variable) {
         for (let i = 0; i < variable.value.length; i++) {
@@ -1308,7 +1327,11 @@
             if (Scratch.Cast.compare(variable.value[i], value) === 0)
               return true;
           } else {
-            if (String(variable.value[i]) === String(value)) return false;
+            if (
+              Scratch.Cast.toString(variable.value[i]) ===
+              Scratch.Cast.toString(value)
+            )
+              return false;
           }
         }
         return false;
@@ -1318,11 +1341,11 @@
     copyList(args, util) {
       /** @type {VM.ListVariable} */
       const list1 = util.target.lookupVariableByNameAndType(
-        String(args.LIST1),
+        Scratch.Cast.toString(args.LIST1),
         "list"
       );
       const list2 = util.target.lookupVariableByNameAndType(
-        String(args.LIST2),
+        Scratch.Cast.toString(args.LIST2),
         "list"
       );
       if (list1 && list2) {
@@ -1333,7 +1356,7 @@
     reverseList(args, util) {
       /** @type {VM.ListVariable} */
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
@@ -1345,7 +1368,7 @@
     }
     sortList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
@@ -1356,13 +1379,13 @@
     }
     sortListRange(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
         let order = args.CASE,
-          left = Number(args.LEFT),
-          right = Number(args.RIGHT);
+          left = Scratch.Cast.toNumber(args.LEFT),
+          right = Scratch.Cast.toNumber(args.RIGHT);
         variable.value = this.sortFunc({
           arr: variable.value,
           order: order,
@@ -1373,7 +1396,7 @@
     }
     isOrder(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable) {
@@ -1384,11 +1407,11 @@
     }
     mapObject(args, util) {
       const list = util.target.lookupVariableByNameAndType(
-          String(args.LIST),
+          Scratch.Cast.toString(args.LIST),
           "list"
         ),
         list2 = util.target.lookupVariableByNameAndType(
-          String(args.LIST2),
+          Scratch.Cast.toString(args.LIST2),
           "list"
         );
       if (list && list2) {
@@ -1405,11 +1428,11 @@
     }
     associateList(args, util) {
       const list = util.target.lookupVariableByNameAndType(
-          String(args.LIST),
+          Scratch.Cast.toString(args.LIST),
           "list"
         ),
         list2 = util.target.lookupVariableByNameAndType(
-          String(args.LIST2),
+          Scratch.Cast.toString(args.LIST2),
           "list"
         );
       if (list && list2) {
@@ -1421,7 +1444,7 @@
         for (let i = 0; i < length; i++) {
           let key =
             list.value.length <= i
-              ? "key" + this.randomString(10)
+              ? "key" + this.randomScratch.Cast.toString(10)
               : list.value[i];
           let val = list2.value.length <= i ? "" : list2.value[i];
           object[key] = val;
@@ -1432,12 +1455,12 @@
 
     forEach(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.VAR),
+        Scratch.Cast.toString(args.VAR),
         ""
       );
       if (variable) {
-        let left = Number(args.LEFT),
-          right = Number(args.RIGHT);
+        let left = Scratch.Cast.toNumber(args.LEFT),
+          right = Scratch.Cast.toNumber(args.RIGHT);
         let range = right - left + 1;
         if (typeof util.stackFrame.index === "undefined") {
           util.stackFrame.index = 0;
@@ -1452,18 +1475,21 @@
     }
     forEachList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
-        String(args.VAR),
+        Scratch.Cast.toString(args.VAR),
         ""
       );
       const list = util.target.lookupVariableByNameAndType(
-        String(args.LIST),
+        Scratch.Cast.toString(args.LIST),
         "list"
       );
       if (variable && list) {
-        let left = Number(args.LEFT) > 0 ? Number(args.LEFT) : 1,
+        let left =
+            Scratch.Cast.toNumber(args.LEFT) > 0
+              ? Scratch.Cast.toNumber(args.LEFT)
+              : 1,
           right =
-            Number(args.RIGHT) <= list.value.length
-              ? Number(args.RIGHT)
+            Scratch.Cast.toNumber(args.RIGHT) <= list.value.length
+              ? Scratch.Cast.toNumber(args.RIGHT)
               : list.value.length;
         let range = right - left + 1;
         if (typeof util.stackFrame.index === "undefined") {
