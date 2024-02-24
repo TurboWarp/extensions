@@ -8,7 +8,7 @@
         blocks: [
           {
             opcode: 'whenReceived',
-            blockType: Scratch.BlockType.HAT,
+            blockType: Scratch.BlockType.EVENT,
             text: 'when I receive [EVENT_OPTION]',
             isEdgeActivated: false,
             arguments: {
@@ -22,7 +22,6 @@
             opcode: 'broadcast',
             blockType: Scratch.BlockType.REPORTER,
             text: 'broadcast [EVENT]',
-            disableMonitor: true,
             arguments: {
               EVENT: {
                 type: Scratch.ArgumentType.STRING,

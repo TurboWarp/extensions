@@ -10,13 +10,7 @@
             opcode: 'everySecond',
             blockType: Scratch.BlockType.HAT,
             text: 'every second',
-            isEdgeActivated: false,
-            arguments: {
-              EVENT_OPTION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'EVENT_FIELD'
-              }
-            }
+            isEdgeActivated: false
           }
         ]
       };
@@ -24,6 +18,7 @@
   }
   // highlight-start
   setInterval(() => {
+    // eslint-disable-next-line no-unused-vars
     const startedThreads = Scratch.vm.runtime.startHats('everysecondexample_everySecond');
   }, 1000);
   // highlight-end

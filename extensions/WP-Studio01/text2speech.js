@@ -1,35 +1,35 @@
-(function(Scratch) {
-  'use strict';
+(function (Scratch) {
+  "use strict";
 
   class Tools {
-    getInfo () {
+    getInfo() {
       return {
-        id: 'wpstudio01tts',
-        name: 'System Text To Speech',
+        id: "wpstudio01tts",
+        name: "System Text To Speech",
         blocks: [
           {
-            opcode: 'speak',
+            opcode: "speak",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'speak [TEXT]',
+            text: "speak [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Hello'
-              }
-            }
-          }
-        ]
+                defaultValue: "Hello",
+              },
+            },
+          },
+        ],
       };
     }
 
-    speak (args) {
+    speak(args) {
       return new Promise((resolve, reject) => {
         const utterance = new SpeechSynthesisUtterance(args.TEXT);
         utterance.onend = () => {
           resolve();
         };
         utterance.onerror = () => {
-          reject(new Error('Utterance error'));
+          reject(new Error("Utterance error"));
         };
         speechSynthesis.speak(utterance);
       });
