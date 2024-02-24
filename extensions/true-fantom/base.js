@@ -2,6 +2,7 @@
 // ID: truefantombase
 // Description: Convert numbers between bases.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+// License: MIT
 // Context: "Base" refers to the mathematical definition eg. base 2 is binary, base 10 is decimal, base 16 is hex.
 
 ((Scratch) => {

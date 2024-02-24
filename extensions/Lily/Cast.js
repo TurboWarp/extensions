@@ -2,6 +2,7 @@
 // ID: lmsCast
 // Description: Convert values between types.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";

@@ -2,6 +2,7 @@
 // ID: truefantomregexp
 // Description: Full interface for working with Regular Expressions.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+// License: MIT
 // Context: RegExp is short for "Regular Expression", a sort of programming language. This extension uses [IMAGE] to indicate that the following input should contain a regular expression.
 
 ((Scratch) => {

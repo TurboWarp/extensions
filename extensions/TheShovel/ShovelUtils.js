@@ -2,6 +2,7 @@
 // ID: ShovelUtils
 // Description: A bunch of miscellaneous blocks.
 // By: TheShovel
+// License: MIT
 
 (function (Scratch) {
   "use strict";

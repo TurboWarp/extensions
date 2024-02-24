@@ -2,6 +2,7 @@
 // ID: GameJoltAPI
 // Description: Blocks that allow games to interact with the GameJolt API. Unofficial.
 // By: softed <https://scratch.mit.edu/users/softed/>
+// License: MIT
 
 ((Scratch) => {
   "use strict";
