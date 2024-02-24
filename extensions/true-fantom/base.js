@@ -65,7 +65,10 @@
           {
             opcode: "is_base_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is base [B] [A] ?"),
+            text: Scratch.translate({
+              default: "is base [B] [A] ?",
+              description: "[B] will be the base like 'base 10', [A] is the text we want to check if it is in that base"
+            }),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -81,7 +84,10 @@
           {
             opcode: "base_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[A] from base [B] to base [C]"),
+            text: Scratch.translate({
+              default: "[A] from base [B] to base [C]",
+              description: '[A] is the original number, [B] is the base it is currently in, [C] is the base it will be converted to.'
+            }),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,

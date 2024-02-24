@@ -2,6 +2,7 @@
 // ID: truefantomregexp
 // Description: Full interface for working with Regular Expressions.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+// Context: RegExp is short for "Regular Expression", a sort of programming language. This extension uses [IMAGE] to indicate that the following input should contain a regular expression.
 
 ((Scratch) => {
   "use strict";
@@ -310,11 +311,40 @@
         menus: {
           components_menu: {
             acceptReporters: false,
-            items: ["pattern", "flags"],
+            items: [
+              {
+                text: Scratch.translate("pattern"),
+                value: "pattern"
+              },
+              {
+                text: Scratch.translate("flags"),
+                value: "flags"
+              },
+            ]
           },
           match_menu: {
             acceptReporters: false,
-            items: ["values", "keys", "pairs", "map"],
+            items: [
+              {
+                text: Scratch.translate("values"),
+                value: "values"
+              },
+              {
+                text: Scratch.translate("keys"),
+                value: "keys"
+              },
+              {
+                text: Scratch.translate("pairs"),
+                value: "pairs"
+              },
+              {
+                text: Scratch.translate({
+                  default: "map",
+                  description: "This is the computer science kind of map."
+                }),
+                value: "map"
+              },
+            ]
           },
         },
       };
