@@ -1,8 +1,3 @@
-// Name: Download from URL
-// ID: downloadfromurl
-// Description: Simple Download files form URL
-// v1.0.0
-
 class DownloadFromURL {
   getInfo() {
     return {
@@ -45,7 +40,7 @@ class DownloadFromURL {
               defaultValue: 'https://example.com/'
             }
           }
-        }
+        },
       ]
     };
   }
@@ -80,12 +75,6 @@ class DownloadFromURL {
       const isSafe = await this.isSafeURL({ url });
       if (!isSafe) {
         console.error('Unsafe URL! Download aborted.');
-        return;
-      }
-
-      const isViewable = await this.isBrowserViewableURL({ url });
-      if (!isViewable) {
-        console.error('URL is not viewable in browser! Download aborted.');
         return;
       }
 
