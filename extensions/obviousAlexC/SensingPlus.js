@@ -658,13 +658,13 @@
             items: [
               {
                 text: Scratch.translate("gyroscope"),
-                value: "gyroscope"
+                value: "gyroscope",
               },
               {
                 text: Scratch.translate("accelerometer"),
-                value: "accelerometer"
+                value: "accelerometer",
               },
-            ]
+            ],
           },
           coordmenu: {
             acceptReporters: true,
@@ -679,11 +679,11 @@
             items: [
               {
                 text: Scratch.translate("positional"),
-                value: "positional"
+                value: "positional",
               },
               {
                 text: Scratch.translate("rotational"),
-                value: "rotational"
+                value: "rotational",
               },
             ],
           },
@@ -699,13 +699,13 @@
             items: [
               {
                 text: Scratch.translate("on"),
-                value: "on"
+                value: "on",
               },
               {
                 text: Scratch.translate("off"),
-                value: "off"
+                value: "off",
               },
-            ]
+            ],
           },
           effectMenu: {
             acceptReporters: true,

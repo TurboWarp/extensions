@@ -315,37 +315,37 @@
             items: [
               {
                 text: Scratch.translate("pattern"),
-                value: "pattern"
+                value: "pattern",
               },
               {
                 text: Scratch.translate("flags"),
-                value: "flags"
+                value: "flags",
               },
-            ]
+            ],
           },
           match_menu: {
             acceptReporters: false,
             items: [
               {
                 text: Scratch.translate("values"),
-                value: "values"
+                value: "values",
               },
               {
                 text: Scratch.translate("keys"),
-                value: "keys"
+                value: "keys",
               },
               {
                 text: Scratch.translate("pairs"),
-                value: "pairs"
+                value: "pairs",
               },
               {
                 text: Scratch.translate({
                   default: "map",
-                  description: "This is the computer science kind of map."
+                  description: "This is the computer science kind of map.",
                 }),
-                value: "map"
+                value: "map",
               },
-            ]
+            ],
           },
         },
       };
