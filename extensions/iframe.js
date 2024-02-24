@@ -352,7 +352,7 @@
       }
     }
 
-    async displayHTML({ HTML }) {
+    displayHTML({ HTML }) {
       closeFrame();
       const url = `about:blank`; /* data:text/html;,${encodeURIComponent(
         Scratch.Cast.toString(HTML)
