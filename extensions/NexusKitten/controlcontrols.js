@@ -2,6 +2,7 @@
 // ID: nkcontrols
 // Description: Show and hide the project's controls.
 // By: NamelessCat <https://scratch.mit.edu/users/NexusKitten/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -43,10 +44,20 @@
   };
 
   class controlcontrols {
+    constructor() {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        getButtons();
+        for (const button of [fullScreen, greenFlag, pauseButton, stopButton]) {
+          if (button) {
+            button.style.display = "block";
+          }
+        }
+      });
+    }
     getInfo() {
       return {
         id: "nkcontrols",
-        name: "Control Controls",
+        name: Scratch.translate("Control Controls"),
         color1: "#ffab19",
         color2: "#ec9c13",
         color3: "#b87d17",
@@ -54,54 +65,75 @@
           {
             opcode: "showOption",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show [OPTION]",
+            text: Scratch.translate("show [OPTION]"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "hideOption",
             blockType: Scratch.BlockType.COMMAND,
-            text: "hide [OPTION]",
+            text: Scratch.translate("hide [OPTION]"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
           "---",
           {
             opcode: "optionShown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[OPTION] shown?",
+            text: Scratch.translate("[OPTION] shown?"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
           "---",
           {
             opcode: "optionExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[OPTION] exists?",
+            text: Scratch.translate("[OPTION] exists?"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
         ],
         menus: {
           OPTION: {
             acceptReporters: true,
-            items: ["green flag", "pause", "stop", "fullscreen"],
+            items: [
+              {
+                text: Scratch.translate("green flag"),
+                value: "green flag",
+              },
+              {
+                text: Scratch.translate("pause"),
+                value: "pause",
+              },
+              {
+                text: Scratch.translate("stop"),
+                value: "stop",
+              },
+              {
+                text: Scratch.translate("fullscreen"),
+                value: "fullscreen",
+              },
+            ],
           },
         },
       };

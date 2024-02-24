@@ -1,6 +1,7 @@
 // Name: Animated Text
 // ID: text
 // Description: An easy way to display and animate text. Compatible with Scratch Lab's Animated Text experiment.
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -601,25 +602,26 @@
     getInfo() {
       return {
         id: "text",
-        name: "Animated Text",
+        name: Scratch.translate("Animated Text"),
         color1: "#9966FF",
         blockIconURI: blockIconURI,
         blocks: [
           {
             opcode: "setText",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show text [TEXT]",
+            text: Scratch.translate("show text [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Welcome to my project!",
+                defaultValue: Scratch.translate("Welcome to my project!"),
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "animateText",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[ANIMATE] text [TEXT]",
+            text: Scratch.translate("[ANIMATE] text [TEXT]"),
             arguments: {
               ANIMATE: {
                 type: Scratch.ArgumentType.STRING,
@@ -628,41 +630,45 @@
               },
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Here we go!",
+                defaultValue: Scratch.translate("Here we go!"),
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "clearText",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show sprite",
+            text: Scratch.translate("show sprite"),
+            extensions: ["colours_looks"],
           },
           "---",
           {
             opcode: "setFont",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set font to [FONT]",
+            text: Scratch.translate("set font to [FONT]"),
             arguments: {
               FONT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "font",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "setColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set text color to [COLOR]",
+            text: Scratch.translate("set text color to [COLOR]"),
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "setWidth",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set width to [WIDTH] aligned [ALIGN]",
+            text: Scratch.translate("set width to [WIDTH] aligned [ALIGN]"),
             arguments: {
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -673,6 +679,7 @@
                 menu: "align",
               },
             },
+            extensions: ["colours_looks"],
           },
           "---",
 
@@ -684,18 +691,20 @@
           {
             func: "disableCompatibilityMode",
             blockType: Scratch.BlockType.BUTTON,
-            text: "Enable Non-Scratch Lab Features",
+            text: Scratch.translate("Enable Non-Scratch Lab Features"),
             hideFromPalette: !compatibilityMode,
+            extensions: ["colours_looks"],
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Incompatible with Scratch Lab:",
+            text: Scratch.translate("Incompatible with Scratch Lab:"),
             hideFromPalette: compatibilityMode,
+            extensions: ["colours_looks"],
           },
           {
             opcode: "setAlignment",
             blockType: Scratch.BlockType.COMMAND,
-            text: "align text to [ALIGN]",
+            text: Scratch.translate("align text to [ALIGN]"),
             hideFromPalette: compatibilityMode,
             arguments: {
               ALIGN: {
@@ -703,12 +712,13 @@
                 menu: "twAlign",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             // why is the other block called "setWidth" :(
             opcode: "setWidthValue",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set width to [WIDTH]",
+            text: Scratch.translate("set width to [WIDTH]"),
             hideFromPalette: compatibilityMode,
             arguments: {
               WIDTH: {
@@ -716,38 +726,42 @@
                 defaultValue: 200,
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "resetWidth",
             blockType: Scratch.BlockType.COMMAND,
-            text: "reset text width",
+            text: Scratch.translate("reset text width"),
             hideFromPalette: compatibilityMode,
+            extensions: ["colours_looks"],
           },
           "---",
           {
             opcode: "addLine",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add line [TEXT]",
+            text: Scratch.translate("add line [TEXT]"),
             hideFromPalette: compatibilityMode,
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello!",
+                defaultValue: Scratch.translate("Hello!"),
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getLines",
             blockType: Scratch.BlockType.REPORTER,
-            text: "# of lines",
+            text: Scratch.translate("# of lines"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
           "---",
           {
             opcode: "startAnimate",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start [ANIMATE] animation",
+            text: Scratch.translate("start [ANIMATE] animation"),
             hideFromPalette: compatibilityMode,
             arguments: {
               ANIMATE: {
@@ -756,11 +770,12 @@
                 defaultValue: "rainbow",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "animateUntilDone",
             blockType: Scratch.BlockType.COMMAND,
-            text: "animate [ANIMATE] until done",
+            text: Scratch.translate("animate [ANIMATE] until done"),
             hideFromPalette: compatibilityMode,
             arguments: {
               ANIMATE: {
@@ -769,19 +784,21 @@
                 defaultValue: "rainbow",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "isAnimating",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is animating?",
+            text: Scratch.translate("is animating?"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
           "---",
           {
             opcode: "setAnimateDuration",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [ANIMATE] duration to [NUM] seconds",
+            text: Scratch.translate("set [ANIMATE] duration to [NUM] seconds"),
             hideFromPalette: compatibilityMode,
             arguments: {
               ANIMATE: {
@@ -794,11 +811,12 @@
                 defaultValue: 3,
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "resetAnimateDuration",
             blockType: Scratch.BlockType.COMMAND,
-            text: "reset [ANIMATE] duration",
+            text: Scratch.translate("reset [ANIMATE] duration"),
             hideFromPalette: compatibilityMode,
             arguments: {
               ANIMATE: {
@@ -807,11 +825,12 @@
                 defaultValue: "rainbow",
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getAnimateDuration",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[ANIMATE] duration",
+            text: Scratch.translate("[ANIMATE] duration"),
             hideFromPalette: compatibilityMode,
             arguments: {
               ANIMATE: {
@@ -820,12 +839,13 @@
                 defaultValue: "rainbow",
               },
             },
+            extensions: ["colours_looks"],
           },
           "---",
           {
             opcode: "setTypeDelay",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set typing delay to [NUM] seconds",
+            text: Scratch.translate("set typing delay to [NUM] seconds"),
             hideFromPalette: compatibilityMode,
             arguments: {
               NUM: {
@@ -833,39 +853,44 @@
                 defaultValue: 0.1,
               },
             },
+            extensions: ["colours_looks"],
           },
           {
             opcode: "resetTypeDelay",
             blockType: Scratch.BlockType.COMMAND,
-            text: "reset typing delay",
+            text: Scratch.translate("reset typing delay"),
             hideFromPalette: compatibilityMode,
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getTypeDelay",
             blockType: Scratch.BlockType.REPORTER,
-            text: "typing delay",
+            text: Scratch.translate("typing delay"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
           "---",
           {
             opcode: "textActive",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is showing text?",
+            text: Scratch.translate("is showing text?"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getDisplayedText",
             blockType: Scratch.BlockType.REPORTER,
-            text: "displayed text",
+            text: Scratch.translate("displayed text"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
+            extensions: ["colours_looks"],
           },
           {
             opcode: "getTextAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: "text [ATTRIBUTE]",
+            text: Scratch.translate("text [ATTRIBUTE]"),
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -874,13 +899,27 @@
             },
             disableMonitor: true,
             hideFromPalette: compatibilityMode,
+            extensions: ["colours_looks"],
           },
         ],
         menus: {
           // These all need acceptReporters: false for parity with the Scratch Labs version.
           animate: {
             acceptReporters: false,
-            items: ["type", "rainbow", "zoom"],
+            items: [
+              {
+                text: Scratch.translate("type"),
+                value: "type",
+              },
+              {
+                text: Scratch.translate("rainbow"),
+                value: "rainbow",
+              },
+              {
+                text: Scratch.translate("zoom"),
+                value: "zoom",
+              },
+            ],
           },
           font: {
             acceptReporters: false,
@@ -888,7 +927,20 @@
           },
           align: {
             acceptReporters: false,
-            items: ["left", "center", "right"],
+            items: [
+              {
+                text: Scratch.translate("left"),
+                value: "left",
+              },
+              {
+                text: Scratch.translate("center"),
+                value: "center",
+              },
+              {
+                text: Scratch.translate("right"),
+                value: "right",
+              },
+            ],
           },
           attribute: {
             acceptReporters: false,
@@ -897,15 +949,50 @@
           // TurboWarp menus (acceptReporters: true)
           twAnimate: {
             acceptReporters: true,
-            items: ["type", "rainbow", "zoom"],
+            items: [
+              {
+                text: Scratch.translate("type"),
+                value: "type",
+              },
+              {
+                text: Scratch.translate("rainbow"),
+                value: "rainbow",
+              },
+              {
+                text: Scratch.translate("zoom"),
+                value: "zoom",
+              },
+            ],
           },
           twAnimateDuration: {
             acceptReporters: true,
-            items: ["rainbow", "zoom"],
+            items: [
+              {
+                text: Scratch.translate("rainbow"),
+                value: "rainbow",
+              },
+              {
+                text: Scratch.translate("zoom"),
+                value: "zoom",
+              },
+            ],
           },
           twAlign: {
             acceptReporters: true,
-            items: ["left", "center", "right"],
+            items: [
+              {
+                text: Scratch.translate("left"),
+                value: "left",
+              },
+              {
+                text: Scratch.translate("center"),
+                value: "center",
+              },
+              {
+                text: Scratch.translate("right"),
+                value: "right",
+              },
+            ],
           },
         },
       };
@@ -923,7 +1010,7 @@
         ...FONTS,
         ...customFonts,
         {
-          text: "random font",
+          text: Scratch.translate("random font"),
           value: "Random",
         },
       ];
@@ -1053,11 +1140,12 @@
      */
 
     disableCompatibilityMode() {
-      let popup = [
-        "This will enable new blocks and features that WILL NOT WORK in the offical Scratch Lab.",
-        "Do you wish to continue?",
-      ];
-      if (confirm(popup.join("\n\n"))) {
+      const popup = Scratch.translate({
+        id: "disableCompatibilityMode",
+        default:
+          "This will enable new blocks and features that WILL NOT WORK in the offical Scratch Lab.\n\nDo you wish to continue?",
+      });
+      if (confirm(popup)) {
         compatibilityMode = false;
         Scratch.vm.extensionManager.refreshBlocks();
       }

@@ -2,6 +2,7 @@
 // ID: longvegdictionary
 // Description: Get the definitions of words from the Longman Dictionary in your projects.
 // By: veggiecan0419
+// License: MIT
 
 (function (Scratch) {
   "use strict";

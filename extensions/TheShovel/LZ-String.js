@@ -1,6 +1,7 @@
 // Name: LZ Compress
 // ID: shovellzcompress
 // Description: Compress and decompress text using lz-string.
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -63,10 +64,10 @@
         return null == r
           ? ""
           : "" == r
-          ? null
-          : i._decompress(r.length, 32, function (n) {
-              return t(o, r.charAt(n));
-            });
+            ? null
+            : i._decompress(r.length, 32, function (n) {
+                return t(o, r.charAt(n));
+              });
       },
       compressToUTF16: function (o) {
         return null == o
@@ -79,10 +80,10 @@
         return null == r
           ? ""
           : "" == r
-          ? null
-          : i._decompress(r.length, 16384, function (o) {
-              return r.charCodeAt(o) - 32;
-            });
+            ? null
+            : i._decompress(r.length, 16384, function (o) {
+                return r.charCodeAt(o) - 32;
+              });
       },
       compressToUint8Array: function (r) {
         for (
@@ -121,11 +122,11 @@
         return null == r
           ? ""
           : "" == r
-          ? null
-          : ((r = r.replace(/ /g, "+")),
-            i._decompress(r.length, 32, function (o) {
-              return t(n, r.charAt(o));
-            }));
+            ? null
+            : ((r = r.replace(/ /g, "+")),
+              i._decompress(r.length, 32, function (o) {
+                return t(n, r.charAt(o));
+              }));
       },
       compress: function (o) {
         return i._compress(o, 16, function (o) {
@@ -231,10 +232,10 @@
         return null == r
           ? ""
           : "" == r
-          ? null
-          : i._decompress(r.length, 32768, function (o) {
-              return r.charCodeAt(o);
-            });
+            ? null
+            : i._decompress(r.length, 32768, function (o) {
+                return r.charCodeAt(o);
+              });
       },
       _decompress: function (o, n, e) {
         var t,
@@ -336,12 +337,12 @@
         // @ts-ignore
       })
     : "undefined" != typeof module && null != module
-    ? (module.exports = LZString)
-    : "undefined" != typeof angular &&
-      null != angular &&
-      angular.module("LZString", []).factory("LZString", function () {
-        return LZString;
-      });
+      ? (module.exports = LZString)
+      : "undefined" != typeof angular &&
+        null != angular &&
+        angular.module("LZString", []).factory("LZString", function () {
+          return LZString;
+        });
   /* eslint-enable */
 
   class lzcompress {

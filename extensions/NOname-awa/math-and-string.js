@@ -1156,22 +1156,6 @@
     return text.replace(new RegExp(oldStr, "g"), newStr);
   };
 
-  const sortAndUniqueWords_en = (text) => {
-    let words = text.toLowerCase().match(/\b\w+\b/g);
-    words = Array.from(new Set(words));
-    words.sort();
-    return words.join(" ");
-  };
-
-  const sortAndUniqueWords_cn = (text) => {
-    let words = text.match(/[^\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+/g);
-    words = Array.from(new Set(words));
-    words.sort(function (a, b) {
-      return a.localeCompare(b, "zh-Hans-CN", { sensitivity: "accent" });
-    });
-    return words.join(" ");
-  };
-
   const countKeyword = (sentence, keyword) => {
     const count = (sentence.match(new RegExp(keyword, "gi")) || []).length;
     return count;
