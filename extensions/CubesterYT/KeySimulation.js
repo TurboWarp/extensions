@@ -251,13 +251,13 @@
     pressKey(args) {
       Scratch.vm.postIOData("keyboard", {
         key: Scratch.Cast.toString(args.KEY),
-        isDown: true
+        isDown: true,
       });
 
       return doLater(args.SECONDS, args.AND_WAIT, () => {
         Scratch.vm.postIOData("keyboard", {
           key: Scratch.Cast.toString(args.KEY),
-          isDown: false
+          isDown: false,
         });
       });
     }
