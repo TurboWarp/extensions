@@ -3,6 +3,7 @@
 // Description: More conditional and loop statements.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // By: SharkPool <https://scratch.mit.edu/users/DemonX5/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
