@@ -208,15 +208,19 @@ class ExtensionFile extends BuildFile {
     }
 
     if (!metadata.license) {
-      throw new Error("Missing // License: -- We recommend using // License: LGPL-3.0");
+      throw new Error(
+        "Missing // License: -- We recommend using // License: LGPL-3.0"
+      );
     }
 
-    const spdxParser = require('spdx-expression-parse');
+    const spdxParser = require("spdx-expression-parse");
     try {
       // Don't care about the result -- just see if it parses.
       spdxParser(metadata.license);
     } catch (e) {
-      throw new Error(`${metadata.license} is not a valid SPDX license. Did you typo it? It is case sensitive. We recommend using // License: LGPL-3.0`);
+      throw new Error(
+        `${metadata.license} is not a valid SPDX license. Did you typo it? It is case sensitive. We recommend using // License: LGPL-3.0`
+      );
     }
 
     for (const person of [...metadata.by, ...metadata.original]) {
