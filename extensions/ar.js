@@ -2,11 +2,10 @@
 // ID: AR
 // Description: Shows image from camera and performs motion tracking, allowing 3D projects to correctly overlay virtual objects on real world.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
-
-  /* globals XRWebGLLayer, XRRigidTransform, XRWebGLLayer */
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("AR extension must be run unsandboxed");
@@ -29,7 +28,6 @@
   let xrSession = null;
   let xrState = false;
   let xrRefSpace;
-  let xrViewSpace;
   let xrProjectionMatrix;
   let xrTransform;
   let xrCombinedMatrix;
@@ -84,7 +82,6 @@
   const onSuccess = function (session) {
     xrSession = session;
     xrRefSpace = null;
-    xrViewSpace = null;
     xrHitTestSource = null;
     hitPosition = null;
     hitPositionAvailable = false;
@@ -105,7 +102,6 @@
     session
       .requestReferenceSpace("viewer")
       .then((viewSpace) => {
-        xrViewSpace = viewSpace;
         return session.requestHitTestSource({ space: viewSpace });
       })
       .then((hts) => {
@@ -502,7 +498,6 @@
       }
       stageWrapperParent = stageWrapper.parentElement;
 
-      const noop = () => {};
       navigator.xr
         .requestSession("immersive-ar", {
           requiredFeatures: ["hit-test", "dom-overlay"],

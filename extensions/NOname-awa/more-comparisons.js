@@ -2,6 +2,7 @@
 // ID: nonameawacomparisons
 // Description: More comparison blocks.
 // By: NOname-awa
+// License: MIT
 
 (function (Scratch) {
   "use strict";

@@ -2,6 +2,7 @@
 // ID: lmscomments
 // Description: Annotate your scripts.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -53,6 +54,7 @@
             opcode: "commentReporter",
             blockType: Scratch.BlockType.REPORTER,
             text: "[INPUT] // [COMMENT]",
+            allowDropAnywhere: true,
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,

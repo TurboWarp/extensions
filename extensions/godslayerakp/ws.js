@@ -2,6 +2,7 @@
 // ID: gsaWebsocket
 // Description: Manually connect to WebSocket servers.
 // By: RedMan13 <https://scratch.mit.edu/users/RedMan13/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
