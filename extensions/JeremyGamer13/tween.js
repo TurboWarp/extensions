@@ -9,8 +9,6 @@
   const BlockType = Scratch.BlockType;
   const ArgumentType = Scratch.ArgumentType;
   const Cast = Scratch.Cast;
-  const vm = Scratch.vm;
-  const runtime = vm.runtime;
   const regeneratedReporters = ["jeremygamerTweening_changeV"];
 
   vm.on("EXTENSION_ADDED", tryUseScratchBlocks);
@@ -582,8 +580,6 @@
       if (!state) {
         const params = util.thread.TweenPars;
         if (typeof params === "undefined") util.thread.stackFrames[0].TweenPars = {};
-        const blockId = util.thread.peekStack();
-
         const durationMS = Cast.toNumber(args.SEC) * 1000;
         const easeMethod = Cast.toString(args.MODE);
         const easeDirection = Cast.toString(args.DIRECTION);
