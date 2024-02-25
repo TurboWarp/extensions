@@ -15,7 +15,7 @@ When `0` is used as a duration, the key will be pressed for exactly one frame.
 ## Click mouse
 
 ```scratch
-click (left v) mouse button at x: (0) y: (0) seconds (without waiting v) :: #BF0000
+click (left v) mouse button at x: (0) y: (0) for (0.1) seconds (without waiting v) :: #BF0000
 ```
 
 This will trigger "mouse down?" and "when this sprite clicked" blocks as well as update the "mouse x" and "mouse y" blocks. It can't be used to click on buttons in the editor, for example.
