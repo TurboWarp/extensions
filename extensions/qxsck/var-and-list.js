@@ -84,7 +84,6 @@
         blockIconURI: qxsckvarandlistIcon,
         menuIconURI: qxsckvarandlistIcon,
         blocks: [
-          //command,reporter,Boolean,hat,conditional,loop
           {
             opcode: "haveVar",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -156,7 +155,6 @@
             text: Scratch.translate("[CASE] variable [VAR]"),
             arguments: {
               CASE: {
-                type: Scratch.ArgumentType.STRING,
                 menu: "changeMonitor.List",
               },
               VAR: {
@@ -185,7 +183,6 @@
             text: Scratch.translate("[CASE] case sensitive"),
             arguments: {
               CASE: {
-                type: Scratch.ArgumentType.STRING,
                 menu: "openCaseSensitive.List",
               },
             },
@@ -316,7 +313,6 @@
             text: Scratch.translate("[CASE] list [LIST]"),
             arguments: {
               CASE: {
-                type: Scratch.ArgumentType.STRING,
                 menu: "changeMonitor.List",
               },
               LIST: {
@@ -464,7 +460,7 @@
               },
               LIST2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["ark","os"]',
+                defaultValue: '["a","b"]',
               },
             },
           },
@@ -626,7 +622,6 @@
                 defaultValue: "list",
               },
               CASE: {
-                type: Scratch.ArgumentType.STRING,
                 menu: "sortList.List",
               },
             },
@@ -643,7 +638,6 @@
                 defaultValue: "list",
               },
               CASE: {
-                type: Scratch.ArgumentType.STRING,
                 menu: "sortList.List",
               },
               LEFT: {
@@ -666,7 +660,6 @@
                 defaultValue: "list",
               },
               CASE: {
-                type: Scratch.ArgumentType.STRING,
                 menu: "isOrder.List",
               },
             },
@@ -708,7 +701,6 @@
                 defaultValue: "list2",
               },
               DO: {
-                type: Scratch.ArgumentType.STRING,
                 menu: "associateList.List",
               },
             },
@@ -718,7 +710,7 @@
             opcode: "forEach",
             blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate(
-              "⚠️for each variable [VAR] from [LEFT] to [RIGHT]"
+              "for each variable [VAR] from [LEFT] to [RIGHT]"
             ),
             arguments: {
               VAR: {
@@ -739,7 +731,7 @@
             opcode: "forEachList",
             blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate(
-              "⚠️for each variable [VAR] in value of from [LEFT] to [RIGHT] in list [LIST]"
+              "for each variable [VAR] in value of from [LEFT] to [RIGHT] in list [LIST]"
             ),
             arguments: {
               VAR: {
