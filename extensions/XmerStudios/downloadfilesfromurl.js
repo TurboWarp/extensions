@@ -1,3 +1,7 @@
+// ID: downloadfromurl
+// Owner: XmerStudios
+// Description: Download files from URL
+
 class DownloadFromURL {
   getInfo() {
     return {
