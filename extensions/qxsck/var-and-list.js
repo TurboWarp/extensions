@@ -10,7 +10,7 @@
   let openCaseSensitive = false;
   class VarAndList {
     constructor() {
-      this.runtime = vm.runtime;
+      this.runtime = Scratch.vm.runtime;
       this.randomString = function (length) {
         let stringDict =
           "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~`!@#$%^&*()_-+={[}}|:;<,>.?/";
