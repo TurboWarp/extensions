@@ -189,6 +189,7 @@
         let proxyUse = proxy;
         while (!success && proxyUse) {
           try {
+            // eslint-disable-next-line
             response = await fetch(`${proxyUse}${args.URL}`);
             if (!response.ok) {
               if (proxyUse === proxy) proxyUse = proxy2;
