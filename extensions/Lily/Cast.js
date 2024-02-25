@@ -64,7 +64,7 @@
               {
                 text: Scratch.translate("default"),
                 value: "default",
-              }
+              },
             ],
           },
         },
