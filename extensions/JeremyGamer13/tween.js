@@ -9,6 +9,7 @@
   const BlockType = Scratch.BlockType;
   const ArgumentType = Scratch.ArgumentType;
   const Cast = Scratch.Cast;
+  const vm = Scratch.vm;
   const regeneratedReporters = ["jeremygamerTweening_changeV"];
 
   vm.on("EXTENSION_ADDED", tryUseScratchBlocks);
