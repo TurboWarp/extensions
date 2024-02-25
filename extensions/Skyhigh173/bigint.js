@@ -13,18 +13,18 @@
    */
 
   const bi = (x) => {
+    let str, idx, flag;
     switch (typeof x) {
       case "bigint":
         return x;
       case "string":
-        let str;
         // try to parse things like '8n'
-        str = x[v.length - 1] === "n" ? x.slice(0, -1) : x;
+        str = x[x.length - 1] === "n" ? x.slice(0, -1) : x;
         // remove decimals
-        let idx = str.indexOf(".");
+        idx = str.indexOf(".");
         str = idx === -1 ? str : str.substring(0, idx);
         //determine if only numbers are included
-        let flag = /^\d+$/.test(str);
+        flag = /^\d+$/.test(str);
         if (flag) {
           try {
             return BigInt(str);
