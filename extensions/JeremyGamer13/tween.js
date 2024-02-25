@@ -15,7 +15,6 @@
 
   vm.on("EXTENSION_ADDED", tryUseScratchBlocks);
   vm.on("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
-  vm.runtime.on("BEFORE_EXECUTE", () => { vm.runtime.startHats("SharkPoolSharktilities_whenChanged") });
 
   tryUseScratchBlocks();
   function tryUseScratchBlocks() {
