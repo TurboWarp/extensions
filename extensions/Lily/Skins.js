@@ -223,7 +223,7 @@
     }
 
     async registerSVGSkin(args) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       const svgData = Cast.toString(args.SVG);
 
       let oldSkinId = null;
@@ -248,7 +248,7 @@
         return;
       }
 
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       const costumeIndex = util.target.getCostumeIndexByName(args.COSTUME);
       if (costumeIndex === -1) return;
       const costume = util.target.sprite.costumes[costumeIndex];
@@ -275,7 +275,7 @@
     }
 
     async registerURLSkin(args) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       const url = Cast.toString(args.URL);
 
       let oldSkinId = null;
@@ -294,12 +294,12 @@
     }
 
     getSkinLoaded(args) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       return !!createdSkins[skinName];
     }
 
     setSkin(args, util) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       if (!createdSkins[skinName]) return;
 
       const targetName = Cast.toString(args.TARGET);
@@ -331,7 +331,7 @@
 
     getSkinAttribute(args) {
       const skins = renderer._allSkins;
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
 
       if (!createdSkins[skinName]) return 0;
       const skinId = createdSkins[skinName];
@@ -351,7 +351,7 @@
     }
 
     deleteSkin(args) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       if (!createdSkins[skinName]) return;
       const skinId = createdSkins[skinName];
 
@@ -368,7 +368,7 @@
     }
 
     restoreTargets(args) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       if (!createdSkins[skinName]) return;
       const skinId = createdSkins[skinName];
 
