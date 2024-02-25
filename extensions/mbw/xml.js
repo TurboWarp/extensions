@@ -2,6 +2,7 @@
 // ID: mbwxml
 // Description: Create and extract values from XML.
 // By: mybearworld <https://scratch.mit.edu/users/mybearworld/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
