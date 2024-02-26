@@ -43,15 +43,16 @@
   //?And some fun statistics
   let trianglesDrawn = 0;
   let inDrawRegion = false;
+  let currentDrawShader = undefined;
   let penPlusDrawRegion = {
     enter: () => {
       trianglesDrawn = 0;
       inDrawRegion = true;
-      //lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
       gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
     },
     exit: () => {
+      gl.clear(gl.DEPTH_BUFFER_BIT);
       inDrawRegion = false;
       gl.bindFramebuffer(
         gl.FRAMEBUFFER,
@@ -853,22 +854,6 @@
         }
       }
     },
-  };
-
-  const lilPenDabble = (InativeSize, curTarget, util) => {
-    checkForPen(util);
-
-    Scratch.vm.renderer.penLine(
-      Scratch.vm.renderer._penSkinId,
-      {
-        color4f: [1, 1, 1, 0.011],
-        diameter: 1,
-      },
-      InativeSize[0] / 2,
-      InativeSize[1] / 2,
-      InativeSize[0] / 2,
-      InativeSize[1] / 2
-    );
   };
 
   //?Color Library
@@ -1780,7 +1765,7 @@
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
 
-      lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
+      
 
       if (
         typeof triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
@@ -1801,6 +1786,9 @@
 
       const spritex = curTarget.x;
       const spritey = curTarget.y;
+
+      //correction for HQ pen
+      const typSize = renderer._nativeSize;
 
       //Predifine stuff so there aren't as many calculations
       const wMulX = myAttributes[0];
@@ -1907,7 +1895,7 @@
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
 
-      lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
+      
 
       if (
         typeof triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
@@ -1928,6 +1916,9 @@
 
       const spritex = curTarget.x;
       const spritey = curTarget.y;
+
+      //correction for HQ pen
+      const typSize = renderer._nativeSize;
 
       //Predifine stuff so there aren't as many calculations
       const wMulX = myAttributes[0];
@@ -2058,6 +2049,8 @@
         squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
+      let valuetoSet = 0;
+
       const attributeNum = Scratch.Cast.toNumber(target);
       if (attributeNum >= 7) {
         if (attributeNum == 11) {
@@ -2068,6 +2061,7 @@
             );
             return;
           }
+          valuetoSet = number / penPlusAdvancedSettings._maxDepth;
           squareAttributesOfAllSprites[curTarget.id][attributeNum] =
             number / penPlusAdvancedSettings._maxDepth;
           return;
@@ -2141,6 +2135,8 @@
       );
     }
     tintTriPoint({ point, color }, util) {
+      const curTarget = util.target;
+
       const trianglePointStart = (point - 1) * 8;
 
       const targetId = util.target.id;
@@ -2176,6 +2172,8 @@
       );
     }
     tintTri({ point, color }, util) {
+      const curTarget = util.target;
+
       const trianglePointStart = (point - 1) * 8;
 
       const targetId = util.target.id;
@@ -2251,7 +2249,7 @@
       //}
 
       //?Renderer Freaks out if we don't do this so do it.
-      lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
+      
 
       //trying my best to reduce memory usage
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
@@ -2307,7 +2305,7 @@
         : renderer._nativeSize;
 
       //?Renderer Freaks out if we don't do this so do it.
-      lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
+      
 
       //trying my best to reduce memory usage
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
