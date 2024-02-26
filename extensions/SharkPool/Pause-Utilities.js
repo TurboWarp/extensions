@@ -3,7 +3,7 @@
 // Description: Pause the Project and certain Scripts
 // By: SharkPool
 
-// Version V.1.6.0 (TW Version)
+// Version V.1.6.4 (TW Version)
 
 (function (Scratch) {
   "use strict";
@@ -253,7 +253,7 @@
         runtime.pause();
       } else {
         const pauseButton = document.querySelector(
-          runtime.isPackaged ? `[class*="pause-button"]` :
+          typeof scaffolding !== "undefined" ? `[class*="pause-button"]` :
           "img.pause-btn.addons-display-none-pause"
         );
         if (pauseButton) pauseButton.click();
