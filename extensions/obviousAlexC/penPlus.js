@@ -43,7 +43,6 @@
   //?And some fun statistics
   let trianglesDrawn = 0;
   let inDrawRegion = false;
-  let currentDrawShader = undefined;
   let penPlusDrawRegion = {
     enter: () => {
       trianglesDrawn = 0;
@@ -1765,7 +1764,7 @@
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
 
-      
+
 
       if (
         typeof triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
@@ -1786,9 +1785,6 @@
 
       const spritex = curTarget.x;
       const spritey = curTarget.y;
-
-      //correction for HQ pen
-      const typSize = renderer._nativeSize;
 
       //Predifine stuff so there aren't as many calculations
       const wMulX = myAttributes[0];
@@ -1895,7 +1891,7 @@
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
 
-      
+
 
       if (
         typeof triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
@@ -1916,9 +1912,6 @@
 
       const spritex = curTarget.x;
       const spritey = curTarget.y;
-
-      //correction for HQ pen
-      const typSize = renderer._nativeSize;
 
       //Predifine stuff so there aren't as many calculations
       const wMulX = myAttributes[0];
@@ -2049,8 +2042,6 @@
         squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
-      let valuetoSet = 0;
-
       const attributeNum = Scratch.Cast.toNumber(target);
       if (attributeNum >= 7) {
         if (attributeNum == 11) {
@@ -2135,8 +2126,6 @@
       );
     }
     tintTriPoint({ point, color }, util) {
-      const curTarget = util.target;
-
       const trianglePointStart = (point - 1) * 8;
 
       const targetId = util.target.id;
@@ -2172,7 +2161,6 @@
       );
     }
     tintTri({ point, color }, util) {
-      const curTarget = util.target;
 
       const trianglePointStart = (point - 1) * 8;
 
@@ -2218,7 +2206,7 @@
       }
       let value =
         triangleAttributesOfAllSprites[targetId][
-          trianglePointStart + attribute
+        trianglePointStart + attribute
         ];
 
       if ((attribute >= 2 && attribute <= 4) || attribute == 7) {
@@ -2249,7 +2237,7 @@
       //}
 
       //?Renderer Freaks out if we don't do this so do it.
-      
+
 
       //trying my best to reduce memory usage
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
@@ -2305,7 +2293,7 @@
         : renderer._nativeSize;
 
       //?Renderer Freaks out if we don't do this so do it.
-      
+
 
       //trying my best to reduce memory usage
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
