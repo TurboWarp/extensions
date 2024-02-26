@@ -51,7 +51,7 @@
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
     },
     exit: () => {
-      gl.clear(gl.DEPTH_BUFFER_BIT);
+      gl.clear(gl.COLOR_BUFFER_BIT);
       inDrawRegion = false;
       gl.bindFramebuffer(
         gl.FRAMEBUFFER,
