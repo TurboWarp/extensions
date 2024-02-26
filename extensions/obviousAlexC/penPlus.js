@@ -2042,26 +2042,28 @@
         squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
+      let valuetoSet = 0;
+
       const attributeNum = Scratch.Cast.toNumber(target);
       if (attributeNum >= 7) {
         if (attributeNum == 11) {
           if (penPlusAdvancedSettings._ClampZ) {
             Math.min(
-              Math.max(number / penPlusAdvancedSettings._maxDepth, 0),
+              Math.max(valuetoSet / penPlusAdvancedSettings._maxDepth, 0),
               1
             );
             return;
           }
-          valuetoSet = number / penPlusAdvancedSettings._maxDepth;
+          valuetoSet = valuetoSet / penPlusAdvancedSettings._maxDepth;
           squareAttributesOfAllSprites[curTarget.id][attributeNum] =
-            number / penPlusAdvancedSettings._maxDepth;
+            valuetoSet / penPlusAdvancedSettings._maxDepth;
           return;
         }
         squareAttributesOfAllSprites[curTarget.id][attributeNum] =
-          Math.min(Math.max(number, 0), 100) * 0.01;
+          Math.min(Math.max(valuetoSet, 0), 100) * 0.01;
         return;
       }
-      squareAttributesOfAllSprites[curTarget.id][attributeNum] = number;
+      squareAttributesOfAllSprites[curTarget.id][attributeNum] = valuetoSet;
     }
     getStampAttribute({ target }, util) {
       const curTarget = util.target;
