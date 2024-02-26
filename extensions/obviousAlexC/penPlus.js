@@ -47,11 +47,11 @@
     enter: () => {
       trianglesDrawn = 0;
       inDrawRegion = true;
-      //lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
       gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
     },
     exit: () => {
+      gl.clear(gl.DEPTH_BUFFER_BIT);
       inDrawRegion = false;
       gl.bindFramebuffer(
         gl.FRAMEBUFFER,
@@ -853,22 +853,6 @@
         }
       }
     },
-  };
-
-  const lilPenDabble = (InativeSize, curTarget, util) => {
-    checkForPen(util);
-
-    Scratch.vm.renderer.penLine(
-      Scratch.vm.renderer._penSkinId,
-      {
-        color4f: [1, 1, 1, 0.011],
-        diameter: 1,
-      },
-      InativeSize[0] / 2,
-      InativeSize[1] / 2,
-      InativeSize[0] / 2,
-      InativeSize[1] / 2
-    );
   };
 
   //?Color Library
@@ -1780,8 +1764,6 @@
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
 
-      lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
-
       if (
         typeof triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
         "undefined"
@@ -1877,8 +1859,7 @@
           x3: x3,
           y3: y3,
         },
-        util,
-        true
+        util
       );
 
       this.drawSolidTri(
@@ -1890,8 +1871,7 @@
           x3: x4,
           y3: y4,
         },
-        util,
-        true
+        util
       );
     }
     squareTexDown({ tex }, util) {
@@ -1906,8 +1886,6 @@
       nativeSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
-
-      lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
 
       if (
         typeof triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
@@ -2020,8 +1998,7 @@
           y3: y3,
           tex: tex,
         },
-        util,
-        true
+        util
       );
 
       triangleAttributesOfAllSprites[Attribute_ID][0] =
@@ -2048,8 +2025,7 @@
           y3: y4,
           tex: tex,
         },
-        util,
-        true
+        util
       );
     }
     setStampAttribute({ target, number }, util) {
@@ -2058,25 +2034,28 @@
         squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
+      let valuetoSet = 0;
+
       const attributeNum = Scratch.Cast.toNumber(target);
       if (attributeNum >= 7) {
         if (attributeNum == 11) {
           if (penPlusAdvancedSettings._ClampZ) {
             Math.min(
-              Math.max(number / penPlusAdvancedSettings._maxDepth, 0),
+              Math.max(valuetoSet / penPlusAdvancedSettings._maxDepth, 0),
               1
             );
             return;
           }
+          valuetoSet = valuetoSet / penPlusAdvancedSettings._maxDepth;
           squareAttributesOfAllSprites[curTarget.id][attributeNum] =
-            number / penPlusAdvancedSettings._maxDepth;
+            valuetoSet / penPlusAdvancedSettings._maxDepth;
           return;
         }
         squareAttributesOfAllSprites[curTarget.id][attributeNum] =
-          Math.min(Math.max(number, 0), 100) * 0.01;
+          Math.min(Math.max(valuetoSet, 0), 100) * 0.01;
         return;
       }
-      squareAttributesOfAllSprites[curTarget.id][attributeNum] = number;
+      squareAttributesOfAllSprites[curTarget.id][attributeNum] = valuetoSet;
     }
     getStampAttribute({ target }, util) {
       const curTarget = util.target;
@@ -2251,7 +2230,6 @@
       //}
 
       //?Renderer Freaks out if we don't do this so do it.
-      lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
 
       //trying my best to reduce memory usage
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
@@ -2307,7 +2285,6 @@
         : renderer._nativeSize;
 
       //?Renderer Freaks out if we don't do this so do it.
-      lilPenDabble(nativeSize, curTarget, util); // Do this so the renderer doesn't scream at us
 
       //trying my best to reduce memory usage
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
@@ -2550,7 +2527,7 @@
   //? A small hack to stop the renderer from immediatly dying. And to allow for immediate use
   {
     if (!Scratch.vm.renderer._penSkinId) {
-      window.vm.renderer.createPenSkin();
+      Scratch.vm.renderer.createPenSkin();
     }
     renderer.penClear(Scratch.vm.renderer._penSkinId);
     Scratch.vm.renderer.penLine(
