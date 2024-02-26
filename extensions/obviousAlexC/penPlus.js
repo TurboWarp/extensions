@@ -51,13 +51,22 @@
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
     },
     exit: () => {
-      gl.clear(gl.COLOR_BUFFER_BIT);
       inDrawRegion = false;
       gl.bindFramebuffer(
         gl.FRAMEBUFFER,
         renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
       );
       triFunctions.drawOnScreen();
+
+      //Quick clear the pen+ frame buffer
+      gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      gl.bindFramebuffer(
+        gl.FRAMEBUFFER,
+        renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
+      );
+      
       gl.useProgram(penPlusShaders.pen.program);
     },
   };
