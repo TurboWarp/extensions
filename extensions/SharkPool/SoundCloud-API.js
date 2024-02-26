@@ -3,7 +3,7 @@
 // Description: Fetch Songs and Statistics from Soundcloud (Unofficial)
 // By: SharkPool
 
-// Version V.1.0.0
+// Version V.1.0.1
 
 /* !IMPORTANT!
   In this Extension, I use regulare fetch()
@@ -363,7 +363,7 @@
       </defs></svg>`;
     document.body.appendChild(grad1);
   }
-  if (!Scratch.vm.runtime.isPackaged) addLinearGradientToBody();
+  if (typeof scaffolding === "undefined") addLinearGradientToBody();
 
   function documentChangedCallback(mutationsList, observer) {
     var pathElements = document.querySelectorAll("g[data-category=\"SoundCloud API\"] path");
@@ -372,7 +372,7 @@
       pathElement.setAttribute("fill", currentFill.replace(/#ff2200/g, "url(#SPsoundCloud-GRAD1)"));
     });
   }
-  if (!Scratch.vm.runtime.isPackaged) {
+  if (typeof scaffolding === "undefined") {
     var observer = new MutationObserver(documentChangedCallback);
     observer.observe(document.documentElement, { childList: true, subtree: true });
   }
