@@ -66,7 +66,7 @@
         gl.FRAMEBUFFER,
         renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
       );
-      
+
       gl.useProgram(penPlusShaders.pen.program);
     },
   };
