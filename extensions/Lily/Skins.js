@@ -326,7 +326,7 @@
 
       const skinId = renderer._allDrawables[drawableID].skin._id;
       const skinName = this._getSkinNameFromID(skinId);
-      return skinName ? skinName : "";
+      return skinName ? skinName.replace("lms-", "") : "";
     }
 
     getSkinAttribute(args) {
