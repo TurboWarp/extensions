@@ -3,7 +3,7 @@
 // Description: Fetch Spreadsheet Data
 // By: SharkPool
 
-// Version 1.0.0
+// Version 1.1.0
 
 (function (Scratch) {
   "use strict";
@@ -17,6 +17,7 @@
 
   const defaultID = "1fDpOhPA2xNvar_K9mtl2h1XV5AdZnlkOZzmJnZNjHDg";
   const vm = Scratch.vm;
+  let sheetName = "";
 
   class SPspreads {
     getInfo() {
@@ -46,12 +47,23 @@
               }
             }
           },
+          "---",
           {
             opcode: "getContent",
             blockType: Scratch.BlockType.REPORTER,
             text: "get data from sheet with ID [ID]",
+            hideFromPalette: true,
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "/d/..." }
+            }
+          },
+          {
+            opcode: "getContentNew",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "data from sheet named [NAME] with ID [ID]",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "/d/..." },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "Sheet1" }
             }
           },
           { blockType: Scratch.BlockType.LABEL, text: "Sheet Writing" },
@@ -96,13 +108,14 @@
       } else { return "" }
     }
 
+    async getContentNew(args) { return await this.getContent(args) }
+
     async getContent(args) {
       try {
         const cacheKiller = Math.random();
         const ID = args.ID === "/d/..." ? defaultID : Scratch.Cast.toString(args.ID);
         const name = encodeURIComponent(Scratch.Cast.toString(args.NAME));
         const url = `https://docs.google.com/spreadsheets/d/${ID}/gviz/tq?tqx=out:csv&sheet=${name}&cache=${cacheKiller}`;
-
         const response = await Scratch.fetch(`https://corsproxy.io?${url}`);
         if (!response.ok) return "[]";
         const csvContent = await response.text();
