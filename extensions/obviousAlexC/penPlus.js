@@ -49,24 +49,16 @@
       inDrawRegion = true;
       gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
+      renderer.dirty = true;
     },
     exit: () => {
+      gl.clear(gl.DEPTH_BUFFER_BIT);
       inDrawRegion = false;
       gl.bindFramebuffer(
         gl.FRAMEBUFFER,
-        renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
+        renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer,
       );
       triFunctions.drawOnScreen();
-
-      //Quick clear the pen+ frame buffer
-      gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-
-      gl.bindFramebuffer(
-        gl.FRAMEBUFFER,
-        renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
-      );
-
       gl.useProgram(penPlusShaders.pen.program);
     },
   };
@@ -87,7 +79,7 @@
       0,
       gl.RGBA,
       gl.UNSIGNED_BYTE,
-      null
+      null,
     );
 
     gl.activeTexture(gl.TEXTURE1);
@@ -101,13 +93,13 @@
       gl.RENDERBUFFER,
       gl.RGBA8 || gl.RGBA4,
       nativeSize[0],
-      nativeSize[1]
+      nativeSize[1],
     );
     gl.framebufferRenderbuffer(
       gl.FRAMEBUFFER,
       gl.COLOR_ATTACHMENT0,
       gl.RENDERBUFFER,
-      depthColorBuffer
+      depthColorBuffer,
     );
 
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthDepthBuffer);
@@ -115,13 +107,13 @@
       gl.RENDERBUFFER,
       gl.DEPTH_COMPONENT16,
       nativeSize[0],
-      nativeSize[1]
+      nativeSize[1],
     );
     gl.framebufferRenderbuffer(
       gl.FRAMEBUFFER,
       gl.DEPTH_ATTACHMENT,
       gl.RENDERBUFFER,
-      depthDepthBuffer
+      depthDepthBuffer,
     );
 
     gl.framebufferTexture2D(
@@ -129,7 +121,7 @@
       gl.COLOR_ATTACHMENT0,
       gl.TEXTURE_2D,
       depthBufferTexture,
-      0
+      0,
     );
     gl.enable(gl.DEPTH_TEST);
 
@@ -152,7 +144,7 @@
         gl.RENDERBUFFER,
         gl.RGBA8 || gl.RGBA4,
         nativeSize[0],
-        nativeSize[1]
+        nativeSize[1],
       );
 
       gl.bindRenderbuffer(gl.RENDERBUFFER, depthDepthBuffer);
@@ -160,7 +152,7 @@
         gl.RENDERBUFFER,
         gl.DEPTH_COMPONENT16,
         nativeSize[0],
-        nativeSize[1]
+        nativeSize[1],
       );
 
       gl.activeTexture(gl.TEXTURE1);
@@ -174,7 +166,7 @@
         0,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        null
+        null,
       );
 
       gl.activeTexture(gl.TEXTURE0);
@@ -410,63 +402,63 @@
     penPlusShaders.untextured.ProgramInf =
       penPlusShaders.createAndCompileShaders(
         penPlusShaders.untextured.Shaders.vert,
-        penPlusShaders.untextured.Shaders.frag
+        penPlusShaders.untextured.Shaders.frag,
       );
     penPlusShaders.textured.ProgramInf = penPlusShaders.createAndCompileShaders(
       penPlusShaders.textured.Shaders.vert,
-      penPlusShaders.textured.Shaders.frag
+      penPlusShaders.textured.Shaders.frag,
     );
 
     penPlusShaders.draw.ProgramInf = penPlusShaders.createAndCompileShaders(
       penPlusShaders.draw.Shaders.vert,
-      penPlusShaders.draw.Shaders.frag
+      penPlusShaders.draw.Shaders.frag,
     );
   }
 
   //?Untextured
   const a_position_Location_untext = gl.getAttribLocation(
     penPlusShaders.untextured.ProgramInf.program,
-    "a_position"
+    "a_position",
   );
   const a_color_Location_untext = gl.getAttribLocation(
     penPlusShaders.untextured.ProgramInf.program,
-    "a_color"
+    "a_color",
   );
 
   //?Textured
   const a_position_Location_text = gl.getAttribLocation(
     penPlusShaders.textured.ProgramInf.program,
-    "a_position"
+    "a_position",
   );
   const a_color_Location_text = gl.getAttribLocation(
     penPlusShaders.textured.ProgramInf.program,
-    "a_color"
+    "a_color",
   );
   const a_textCoord_Location_text = gl.getAttribLocation(
     penPlusShaders.textured.ProgramInf.program,
-    "a_texCoord"
+    "a_texCoord",
   );
 
   //?Uniforms
   const u_texture_Location_text = gl.getUniformLocation(
     penPlusShaders.textured.ProgramInf.program,
-    "u_texture"
+    "u_texture",
   );
 
   //?Depth
   const u_depthTexture_Location_draw = gl.getUniformLocation(
     penPlusShaders.draw.ProgramInf.program,
-    "u_drawTex"
+    "u_drawTex",
   );
 
   const a_position_Location_draw = gl.getAttribLocation(
     penPlusShaders.draw.ProgramInf.program,
-    "a_position"
+    "a_position",
   );
 
   const a_textCoord_Location_draw = gl.getAttribLocation(
     penPlusShaders.textured.ProgramInf.program,
-    "a_texCoord"
+    "a_texCoord",
   );
 
   //?Enables Attributes
@@ -604,7 +596,7 @@
         gl.FLOAT,
         false,
         f32_8,
-        0
+        0,
       );
       gl.vertexAttribPointer(
         a_color_Location_untext,
@@ -612,7 +604,7 @@
         gl.FLOAT,
         false,
         f32_8,
-        f32_4
+        f32_4,
       );
 
       gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
@@ -706,7 +698,7 @@
         gl.FLOAT,
         false,
         f32_10,
-        0
+        0,
       );
       gl.vertexAttribPointer(
         a_color_Location_text,
@@ -714,7 +706,7 @@
         gl.FLOAT,
         false,
         f32_10,
-        f32_4
+        f32_4,
       );
       gl.vertexAttribPointer(
         a_textCoord_Location_text,
@@ -722,7 +714,7 @@
         gl.FLOAT,
         false,
         f32_10,
-        f32_8
+        f32_8,
       );
 
       gl.useProgram(penPlusShaders.textured.ProgramInf.program);
@@ -764,7 +756,7 @@
         gl.FLOAT,
         false,
         f32_6,
-        0
+        0,
       );
       gl.vertexAttribPointer(
         a_textCoord_Location_draw,
@@ -772,7 +764,7 @@
         gl.FLOAT,
         false,
         f32_6,
-        f32_4
+        f32_4,
       );
 
       gl.useProgram(penPlusShaders.draw.ProgramInf.program);
@@ -788,7 +780,7 @@
       attribute,
       value,
       wholeTri,
-      offset
+      offset,
     ) => {
       offset = offset + attribute || attribute;
       let valuetoSet = 0;
@@ -897,7 +889,7 @@
       height,
       color,
       name,
-      clamp
+      clamp,
     ) {
       const texture = penPlusCostumeLibrary[name]
         ? penPlusCostumeLibrary[name].texture
@@ -928,7 +920,7 @@
         0,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        pixelData
+        pixelData,
       );
 
       penPlusCostumeLibrary[name] = {
@@ -952,7 +944,7 @@
         0,
         gl.RGBA,
         gl.UNSIGNED_BYTE,
-        new Uint8Array([0, 0, 255, 255])
+        new Uint8Array([0, 0, 255, 255]),
       );
 
       // Let's assume all images are not a power of 2
@@ -974,7 +966,7 @@
               gl.RGBA,
               gl.RGBA,
               gl.UNSIGNED_BYTE,
-              image
+              image,
             );
             penPlusCostumeLibrary[name] = {
               texture: texture,
@@ -1002,7 +994,7 @@
         gl.COLOR_ATTACHMENT0,
         gl.TEXTURE_2D,
         texture,
-        0
+        0,
       );
 
       //?make sure to unbind the framebuffer and delete it!
@@ -1023,7 +1015,7 @@
           height,
           gl.RGBA,
           gl.UNSIGNED_BYTE,
-          dataArray
+          dataArray,
         );
 
         //?Remove Buffer data and return data
@@ -1049,7 +1041,7 @@
         gl.COLOR_ATTACHMENT0,
         gl.TEXTURE_2D,
         texture,
-        0
+        0,
       );
 
       //?make sure to unbind the framebuffer and delete it!
@@ -1070,7 +1062,7 @@
           height,
           gl.RGBA,
           gl.UNSIGNED_BYTE,
-          dataArray
+          dataArray,
         );
 
         //Make an invisible canvas
@@ -1743,7 +1735,7 @@
         Scratch.vm.renderer._penSkinId,
         attrib,
         x,
-        y
+        y,
       );
     }
     drawLine({ x1, y1, x2, y2 }, util) {
@@ -1757,7 +1749,7 @@
         x1,
         y1,
         x2,
-        y2
+        y2,
       );
     }
     squareDown(arg, util) {
@@ -1868,7 +1860,8 @@
           x3: x3,
           y3: y3,
         },
-        util
+        util,
+        true,
       );
 
       this.drawSolidTri(
@@ -1880,7 +1873,8 @@
           x3: x4,
           y3: y4,
         },
-        util
+        util,
+        true,
       );
     }
     squareTexDown({ tex }, util) {
@@ -2007,7 +2001,8 @@
           y3: y3,
           tex: tex,
         },
-        util
+        util,
+        true,
       );
 
       triangleAttributesOfAllSprites[Attribute_ID][0] =
@@ -2034,7 +2029,8 @@
           y3: y4,
           tex: tex,
         },
-        util
+        util,
+        true,
       );
     }
     setStampAttribute({ target, number }, util) {
@@ -2051,7 +2047,7 @@
           if (penPlusAdvancedSettings._ClampZ) {
             Math.min(
               Math.max(valuetoSet / penPlusAdvancedSettings._maxDepth, 0),
-              1
+              1,
             );
             return;
           }
@@ -2111,7 +2107,7 @@
         Scratch.Cast.toNumber(attribute),
         value,
         false,
-        trianglePointStart
+        trianglePointStart,
       );
     }
     setWholeTrianglePointAttribute({ wholeAttribute, value }, util) {
@@ -2125,7 +2121,7 @@
         Scratch.Cast.toNumber(wholeAttribute),
         value,
         true,
-        0
+        0,
       );
     }
     tintTriPoint({ point, color }, util) {
@@ -2144,7 +2140,7 @@
         2,
         calcColor.r / 2.55,
         false,
-        trianglePointStart
+        trianglePointStart,
       );
 
       triFunctions.setValueAccordingToCaseTriangle(
@@ -2152,7 +2148,7 @@
         3,
         calcColor.g / 2.55,
         false,
-        trianglePointStart
+        trianglePointStart,
       );
 
       triFunctions.setValueAccordingToCaseTriangle(
@@ -2160,7 +2156,7 @@
         4,
         calcColor.b / 2.55,
         false,
-        trianglePointStart
+        trianglePointStart,
       );
     }
     tintTri({ point, color }, util) {
@@ -2179,7 +2175,7 @@
         2,
         calcColor.r / 2.55,
         true,
-        trianglePointStart
+        trianglePointStart,
       );
 
       triFunctions.setValueAccordingToCaseTriangle(
@@ -2187,7 +2183,7 @@
         3,
         calcColor.g / 2.55,
         true,
-        trianglePointStart
+        trianglePointStart,
       );
 
       triFunctions.setValueAccordingToCaseTriangle(
@@ -2195,7 +2191,7 @@
         4,
         calcColor.b / 2.55,
         true,
-        trianglePointStart
+        trianglePointStart,
       );
     }
     getTrianglePointAttribute({ point, attribute }, util) {
@@ -2267,7 +2263,7 @@
         x3,
         y3,
         attrib.color4f,
-        curTarget.id
+        curTarget.id,
       );
     }
     drawTexTri({ x1, y1, x2, y2, x3, y3, tex }, util) {
@@ -2277,7 +2273,7 @@
         currentTexture = penPlusCostumeLibrary[tex].texture;
       } else {
         const costIndex = curTarget.getCostumeIndexByName(
-          Scratch.Cast.toString(tex)
+          Scratch.Cast.toString(tex),
         );
         if (costIndex >= 0) {
           const curCostume = curTarget.sprite.costumes_[costIndex];
@@ -2323,7 +2319,7 @@
           x3,
           y3,
           curTarget.id,
-          currentTexture
+          currentTexture,
         );
       }
     }
@@ -2379,7 +2375,7 @@
         height,
         color,
         "!" + name,
-        penPlusImportWrapMode
+        penPlusImportWrapMode,
       );
     }
     addIMGfromDURI({ dataURI, name }) {
@@ -2387,7 +2383,7 @@
       textureFunctions.createPenPlusTextureInfo(
         dataURI,
         "!" + name,
-        penPlusImportWrapMode
+        penPlusImportWrapMode,
       );
     }
     removeIMGfromDURI({ name }, util) {
@@ -2404,7 +2400,7 @@
       //Just a simple thing to allow for pen drawing
       const curTarget = util.target;
       const costIndex = curTarget.getCostumeIndexByName(
-        Scratch.Cast.toString(costume)
+        Scratch.Cast.toString(costume),
       );
       if (costIndex >= 0) {
         const curCostume =
@@ -2440,7 +2436,7 @@
         const textureData = textureFunctions.getTextureData(
           curCostume.texture,
           curCostume.width,
-          curCostume.height
+          curCostume.height,
         );
         if (textureData) {
           x = Math.floor(x - 1);
@@ -2467,7 +2463,7 @@
               0,
               gl.RGBA,
               gl.UNSIGNED_BYTE,
-              textureData
+              textureData,
             );
           }
         }
@@ -2479,7 +2475,7 @@
         const textureData = textureFunctions.getTextureData(
           curCostume.texture,
           curCostume.width,
-          curCostume.height
+          curCostume.height,
         );
         if (textureData) {
           x = Math.floor(x - 1);
@@ -2502,7 +2498,7 @@
         const textureData = textureFunctions.getTextureAsURI(
           curCostume.texture,
           curCostume.width,
-          curCostume.height
+          curCostume.height,
         );
         if (textureData) {
           return textureData;
@@ -2536,7 +2532,7 @@
   //? A small hack to stop the renderer from immediatly dying. And to allow for immediate use
   {
     if (!Scratch.vm.renderer._penSkinId) {
-      Scratch.vm.renderer.createPenSkin();
+      window.vm.renderer.createPenSkin();
     }
     renderer.penClear(Scratch.vm.renderer._penSkinId);
     Scratch.vm.renderer.penLine(
@@ -2548,7 +2544,7 @@
       0,
       0,
       0,
-      0
+      0,
     );
 
     penPlusShaders.pen.program = shaderManager._shaderCache.line[0].program;
