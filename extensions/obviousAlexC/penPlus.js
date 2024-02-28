@@ -2532,7 +2532,7 @@
   //? A small hack to stop the renderer from immediatly dying. And to allow for immediate use
   {
     if (!Scratch.vm.renderer._penSkinId) {
-      window.vm.renderer.createPenSkin();
+      Scratch.vm.renderer.createPenSkin();
     }
     renderer.penClear(Scratch.vm.renderer._penSkinId);
     Scratch.vm.renderer.penLine(
