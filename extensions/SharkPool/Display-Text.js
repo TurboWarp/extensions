@@ -3,7 +3,7 @@
 // Description: Display Text in Your Projects!
 // By: SharkPool
 
-// Version V.1.3.2
+// Version V.1.3.3
 
 (function (Scratch) {
   "use strict";
@@ -19,8 +19,7 @@
   let allText = [];
   let lastRecdVals = {};
   const fontMenu = [
-    "Scratch", "Sans Serif",
-    "Serif", "Handwriting",
+    "Sans Serif", "Serif", "Handwriting",
     "Marker", "Curly", "Pixel"
   ];
 
@@ -423,7 +422,7 @@
 
     fixID(ID) {
       return xmlEscape(Scratch.Cast.toString(ID).replaceAll(" ", "_")
-        .replaceAll(/[#%(),.{}[\]$@^*&'";:]/g, "-"));
+        .replaceAll(/[#%(),.{}[\/\]$@^*&'";:]/g, "-"));
     }
 
     debug(args) {
@@ -463,7 +462,7 @@
       render.addOverlay(newTextElement, "scale-centered");
       allText.push(`#SP_Text-Ext-${args.ID}`);
       const box = newTextElement.getBoundingClientRect();
-      if (!lastRecdVals.textMAR) this.setMargins({ ID : args.ID, WIDTH : box.width / 2, HEIGHT : box.height });
+      if (lastRecdVals.textMAR === undefined) this.setMargins({ ID : args.ID, WIDTH : box.width / 2, HEIGHT : box.height });
 
       // add formatting (if any)
       const propertiesAndMethods = [
@@ -518,6 +517,8 @@
 
     allIDs() {
       const cleanedIDs = allText.map((item) => item.replace(/^#SP_Text-Ext-/, ""));
+      let index = cleanedIDs.indexOf("#SP_Text-Debug-Cross");
+      if (index !== -1) cleanedIDs.splice(index, 1);
       return JSON.stringify(cleanedIDs);
     }
 
