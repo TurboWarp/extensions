@@ -17,7 +17,6 @@
 
   const defaultID = "1fDpOhPA2xNvar_K9mtl2h1XV5AdZnlkOZzmJnZNjHDg";
   const vm = Scratch.vm;
-  let sheetName = "";
 
   class SPspreads {
     getInfo() {
