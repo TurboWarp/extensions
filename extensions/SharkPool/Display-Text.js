@@ -422,7 +422,7 @@
 
     fixID(ID) {
       return xmlEscape(Scratch.Cast.toString(ID).replaceAll(" ", "_")
-        .replaceAll(/[#%(),.{}[\/\]$@^*&'";:]/g, "-"));
+        .replaceAll(/[#%(),.{}[/\]$@^*&'";:]/g, "-"));
     }
 
     debug(args) {
