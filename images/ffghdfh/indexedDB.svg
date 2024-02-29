@@ -26,7 +26,7 @@
          offset="0"
          id="stop4" />
       <stop
-         style="stop-color:#fd7f54;stop-opacity:0.80810809;"
+         style="stop-color:#fd7f54;stop-opacity:1;"
          offset="1"
          id="stop5" />
     </linearGradient>
