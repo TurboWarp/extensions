@@ -1,5 +1,5 @@
 // Name: Indexed Database
-// ID: ffghdfh-IndexedDB
+// ID: ffghdfhIndexedDB
 // Description: Lets you use an IndexedDB database, allowing for you to store more than 5MB of data locally.
 // License: LGPL-3.0
 (function(Scratch) {
@@ -113,8 +113,11 @@ class IndexedDBExtension {
     // Scratch blocks implementation
     getInfo() {
       return {
-        id: 'IndexedDB',
+        id: 'ffghdfhIndexedDB',
         name: 'IndexedDB',
+        color1: '#fd7f54', // Main block color
+        color2: '#c26140',
+        color3: '#b35b3d', // Slightly darker outline color
         blocks: [
           {
             opcode: 'setDBName',
@@ -126,8 +129,6 @@ class IndexedDBExtension {
                 defaultValue: 'MyScratchDB',
               },
             },
-            color1: '#fd7f54', // Main block color
-            color3: '#cc6e45', // Slightly darker outline color
           },
           {
             opcode: 'setValue',
@@ -143,8 +144,6 @@ class IndexedDBExtension {
                 defaultValue: 'myValue',
               },
             },
-            color1: '#fd7f54', // Main block color
-            color3: '#cc6e45', // Slightly darker outline color
           },
           {
             opcode: 'getValue',
@@ -156,15 +155,11 @@ class IndexedDBExtension {
                 defaultValue: 'myKey',
               },
             },
-            color1: '#fd7f54', // Main block color
-            color3: '#cc6e45', // Slightly darker outline color
           },
           {
             opcode: 'deleteAllKeys',
             blockType: Scratch.BlockType.COMMAND,
             text: 'delete all keys',
-            color1: '#fd7f54', // Main block color
-            color3: '#cc6e45', // Slightly darker outline color
           },
           {
             opcode: 'deleteKey',
@@ -176,8 +171,6 @@ class IndexedDBExtension {
                 defaultValue: 'myKey',
               },
             },
-            color1: '#fd7f54', // Main block color
-            color3: '#cc6e45', // Slightly darker outline color
           },
           {
             opcode: 'keyExists',
@@ -189,10 +182,7 @@ class IndexedDBExtension {
                 defaultValue: 'myKey',
               },
             },
-            color1: '#fd7f54', // Main block color
-            color3: '#cc6e45', // Slightly darker outline color
           },
-          // Add other blocks as needed...
         ],
       };
     }
