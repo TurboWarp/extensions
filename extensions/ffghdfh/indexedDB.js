@@ -26,7 +26,7 @@ class IndexedDBExtension {
   
         request.onerror = (event) => {
           console.error('Database error:', event.target.error);
-          reject(event.target.error);
+          resolve();
         };
   
         request.onsuccess = (event) => {
@@ -50,7 +50,7 @@ class IndexedDBExtension {
   
         return new Promise((resolve, reject) => {
           request.onsuccess = () => resolve();
-          request.onerror = () => reject(request.error);
+          request.onerror = () => resolve();
         });
       });
     }
@@ -64,7 +64,7 @@ class IndexedDBExtension {
   
         return new Promise((resolve, reject) => {
           request.onsuccess = () => resolve(request.result ? request.result.value : null);
-          request.onerror = () => reject(request.error);
+          request.onerror = () => resolve('undefined');
         });
       });
     }
@@ -78,7 +78,7 @@ class IndexedDBExtension {
   
         return new Promise((resolve, reject) => {
           request.onsuccess = () => resolve();
-          request.onerror = () => reject(request.error);
+          request.onerror = () => resolve();
         });
       });
     }
@@ -92,7 +92,7 @@ class IndexedDBExtension {
   
         return new Promise((resolve, reject) => {
           request.onsuccess = () => resolve();
-          request.onerror = () => reject(request.error);
+          request.onerror = () => resolve();
         });
       });
     }
