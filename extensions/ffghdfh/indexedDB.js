@@ -1,7 +1,7 @@
 // Name: Indexed Database
 // ID: ffghdfh-IndexedDB
 // Description: Lets you use an IndexedDB database, allowing for you to store more than 5MB of data locally.
-// License: MIT AND LGPL-3.0
+// License: LGPL-3.0
 (function(Scratch) {
     "use strict";
   if (!Scratch.extensions.unsandboxed) {
