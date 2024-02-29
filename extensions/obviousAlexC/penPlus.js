@@ -52,13 +52,22 @@
       renderer.dirty = true;
     },
     exit: () => {
-      gl.clear(gl.DEPTH_BUFFER_BIT);
       inDrawRegion = false;
       gl.bindFramebuffer(
         gl.FRAMEBUFFER,
         renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
       );
+
       triFunctions.drawOnScreen();
+
+      //Quick clear the pen+ frame buffer
+      gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      gl.bindFramebuffer(
+        gl.FRAMEBUFFER,
+        renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
+      );
       gl.useProgram(penPlusShaders.pen.program);
     },
   };
@@ -1860,8 +1869,7 @@
           x3: x3,
           y3: y3,
         },
-        util,
-        true
+        util
       );
 
       this.drawSolidTri(
@@ -1873,8 +1881,7 @@
           x3: x4,
           y3: y4,
         },
-        util,
-        true
+        util
       );
     }
     squareTexDown({ tex }, util) {
@@ -2001,8 +2008,7 @@
           y3: y3,
           tex: tex,
         },
-        util,
-        true
+        util
       );
 
       triangleAttributesOfAllSprites[Attribute_ID][0] =
@@ -2029,8 +2035,7 @@
           y3: y4,
           tex: tex,
         },
-        util,
-        true
+        util
       );
     }
     setStampAttribute({ target, number }, util) {
