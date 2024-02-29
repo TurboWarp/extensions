@@ -165,6 +165,21 @@
             },
           },
           {
+            opcode: "deleteSound",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "delete sound [SNDNAME] in [SPRITE]",
+            arguments: {
+              SNDNAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Meow",
+              },
+              SPRITE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Sprite1",
+              },
+            },
+          },
+          {
             opcode: "setedtarget",
             blockType: Scratch.BlockType.COMMAND,
             text: "set editing target to [NAME]",
@@ -203,16 +218,38 @@
     }
 
     importImage({ TEXT, NAME }) {
+      // Modified by Procybit for svg compatibility.
       Scratch.fetch(TEXT)
-        .then((r) => r.arrayBuffer())
-        .then((arrayBuffer) => {
+        .then((r) => r.blob())
+        .then(async (blob) => {
+          const arrayBuffer = await blob.arrayBuffer();
           const storage = vm.runtime.storage;
-          vm.addCostume(NAME + ".PNG", {
+          let ext = "",
+            format = "";
+          switch (blob.type) {
+            case "image/png":
+              ext = ".PNG";
+              format = storage.DataFormat.PNG;
+              break;
+            case "image/jpeg":
+              ext = ".JPG";
+              format = storage.DataFormat.JPG;
+              break;
+            case "image/svg+xml":
+              ext = ".SVG";
+              format = storage.DataFormat.SVG;
+              break;
+            default:
+              return 0;
+          }
+          vm.addCostume(NAME + ext, {
             name: NAME + "",
             asset: new storage.Asset(
-              storage.AssetType.ImageBitmap,
+              ext == ".SVG"
+                ? storage.AssetType.ImageVector
+                : storage.AssetType.ImageBitmap,
               null, // asset id, doesn't need to be set here because of `true` at the end will make Scratch generate it for you
-              storage.DataFormat.PNG,
+              format,
               new Uint8Array(arrayBuffer),
               true
             ),
@@ -379,6 +416,20 @@
         return;
       }
       target.deleteCostume(target.getCostumeIndexByName(COSNAME));
+    }
+
+    deleteSound({ SPRITE, SNDNAME }) {
+      // 0znzw & Procybit, since shovel did not add it yet.
+      const target = vm.runtime.getSpriteTargetByName(SPRITE);
+      if (!target) {
+        return;
+      }
+      const sounds = target.getSounds(); // based on vm.runtime.getSpriteTargetByName()
+      for (let i = 0; i < sounds.length; i++) {
+        if (sounds[i].name === SNDNAME) {
+          target.deleteSound(i);
+        }
+      }
     }
 
     getAllSprites() {
