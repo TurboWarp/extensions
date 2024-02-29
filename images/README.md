@@ -192,7 +192,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - File icons based on https://icon-icons.com/icon/file-pdf/153412 under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
  - Background based on https://bgjar.com/contour-line under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-## indexedDB.svg
+## ffghdfh/indexedDB.svg
  - Created by [ffghdfh](https://github.com/ffghdfh)
  - Database icon by [@fontawesome](https://fontawesome.com), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons
 
