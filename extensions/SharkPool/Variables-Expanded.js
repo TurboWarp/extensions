@@ -3,10 +3,11 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.2.5
+// Version 1.2.4
 
 (function (Scratch) {
   "use strict";
+
   if (!Scratch.extensions.unsandboxed) throw new Error("Variables Expanded must run unsandboxed!");
 
   const vm = Scratch.vm;
@@ -458,7 +459,6 @@
     async setVariableToType(args, util) { await this.setMonitor(args.VARIABLE, util, args.VARIABLE, args.TYPE) }
 
     async setDisplay(args, util) {
-      const safeName = xmlEscape(args.NAME);
       const type = this.getMonitor(args.VARIABLE, util);
       let variableId = this.findVariable(args.VARIABLE, util);
       if (type.includes("readout") || type === "slider") {
