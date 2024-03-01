@@ -259,7 +259,6 @@
       for (const link in this.links) {
         const newLink = this.links[link];
         if (newLink.SPlinkMaster !== undefined) {
-          const oldValues = { ...newLink.SPlinkMaster };
           const target = runtime.getTargetById(newLink.SPlinkMaster.id);
           newLink.SPlinkMaster = {
             sprite: target.getName(),
