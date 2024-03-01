@@ -3,11 +3,10 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.2.4
+// Version 1.2.5
 
 (function (Scratch) {
   "use strict";
-
   if (!Scratch.extensions.unsandboxed) throw new Error("Variables Expanded must run unsandboxed!");
 
   const vm = Scratch.vm;
@@ -34,10 +33,8 @@
     return clonedElement;
   }
 
-  const builtInFonts = [
-    "Scratch", "Sans Serif", "Serif",
-    "Handwriting", "Marker", "Curly", "Pixel"
-  ];
+  const builtInFonts =
+    ["Sans Serif", "Serif", "Handwriting", "Marker", "Curly", "Pixel"];
 
   class MonitorsPlus {
     constructor() {
@@ -78,6 +75,21 @@
               VARIABLE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "variableMenu",
+              },
+            },
+          },
+          {
+            opcode: "setVis",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "[VIS] variable [VAR]",
+            arguments: {
+              VAR: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "variableMenu",
+              },
+              VIS: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "VISIBLE",
               },
             },
           },
@@ -382,6 +394,7 @@
           },
           variableTypeCreate: ["globally", "for this sprite only"],
           POSITIONS: ["x", "y"],
+          VISIBLE: { acceptReporters: true, items: ["show", "hide"] },
           EFFECTS: {
             acceptReporters: true,
             items: [
@@ -530,7 +543,7 @@
 
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
-            typeElement.value = variable.value;
+            typeElement.value = xmlEscape(variable.value);
           });
           typeElement.addEventListener("change", function (event) {
             if (event.target && event.target.id.startsWith(`text_${variableId}`)) {
@@ -591,7 +604,7 @@
 
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
-            typeElement.value = variable.value;
+            typeElement.value = xmlEscape(variable.value);
           });
           typeElement.addEventListener("change", function (event) {
             if (event.target && event.target.id.startsWith(`color_${variableId}`)) {
@@ -671,7 +684,7 @@
           typeElement = container.querySelector(`[id="image_${variableId}"]`);
           this.addMonitorsUpdateListener(() => {
             const variable = util.target.lookupOrCreateVariable(nameID, nameID);
-            typeElement.src = variable.value;
+            typeElement.src = xmlEscape(variable.value);
           });
           break;
         case "audio":
@@ -792,6 +805,14 @@
       if (!variableId) return 0;
       const variable = util.target.lookupVariableById(variableId);
       return variable.value;
+    }
+
+    setVis(args, util) {
+      const variable = util.target.lookupVariableByNameAndType(args.VAR, "");
+      if (!variable) return;
+      runtime.monitorBlocks.changeBlock({
+        id: variable.id, element: "checkbox", value: args.VIS === "show"
+      }, runtime);
     }
 
     isShowing(args, util) {
