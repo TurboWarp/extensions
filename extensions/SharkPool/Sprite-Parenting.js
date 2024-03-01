@@ -3,7 +3,7 @@
 // Description: Link sprites together and make them follow the parent.
 // By: SharkPool
 
-// Version 1.1.0
+// Version 2.0.0
 
 (function (Scratch) {
   "use strict";
@@ -22,8 +22,6 @@
   class SPspriteParent {
     constructor() {
       this.links = Object.create(null);
-      this.linkMasters = Object.create(null);
-      this.ogPositions = Object.create(null);
     }
 
     getInfo() {
@@ -42,7 +40,7 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1",
+                defaultValue: "Link 1"
               },
             },
           },
@@ -53,7 +51,7 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1",
+                defaultValue: "Link 1"
               },
             },
           },
@@ -70,12 +68,12 @@
             arguments: {
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1",
+                defaultValue: "Link 1"
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "TARGETS",
-              },
+                menu: "TARGETS"
+              }
             },
           },
           {
@@ -85,12 +83,12 @@
             arguments: {
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1",
+                defaultValue: "Link 1"
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "TARGETS",
-              },
+                menu: "TARGETS"
+              }
             },
           },
           "---",
@@ -101,8 +99,8 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1",
-              },
+                defaultValue: "Link 1"
+              }
             },
           },
           {
@@ -112,8 +110,8 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1",
-              },
+                defaultValue: "Link 1"
+              }
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Parent Sprites" },
@@ -124,12 +122,12 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "TARGETS",
+                menu: "TARGETS"
               },
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1",
-              },
+                defaultValue: "Link 1"
+              }
             },
           },
           {
@@ -139,8 +137,8 @@
             arguments: {
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1",
-              },
+                defaultValue: "Link 1"
+              }
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Parent Functions" },
@@ -151,13 +149,12 @@
             arguments: {
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1",
+                defaultValue: "Link 1"
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "CONTROLTYPE",
-                defaultValue: "everything",
-              },
+                menu: "CONTROLTYPE"
+              }
             },
           },
           {
@@ -167,9 +164,8 @@
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "CONTROLTYPE",
-                defaultValue: "everything",
-              },
+                menu: "CONTROLTYPE"
+              }
             },
           },
           "---",
@@ -180,15 +176,15 @@
             arguments: {
               LINK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link 1",
-              },
+                defaultValue: "Link 1"
+              }
             },
           },
           {
             opcode: "refreshAll",
             blockType: Scratch.BlockType.COMMAND,
-            text: "refresh all sprite families",
-          },
+            text: "refresh all sprite families"
+          }
         ],
         menus: {
           TARGETS: {
@@ -198,134 +194,103 @@
           CONTROLTYPE: {
             acceptReporters: true,
             items: [
-              "everything", "x and y",
-              "direction", "size",
-              "effects", "visibility"
+              "everything", "x and y", "direction",
+              "size", "effects", "visibility"
             ],
           },
         },
       };
     }
 
-    linkMaster(args) {
-      const linkName = Scratch.Cast.toString(args.LINK);
-      const spriteName = Scratch.Cast.toString(args.NAME);
-      const target = runtime.getSpriteTargetByName(args.NAME);
-      if (!target) return;
-      if (!this.linkMasters[linkName]) this.linkMasters[linkName] = [];
-      const existingMasterIndex = this.linkMasters[linkName].findIndex((item) => item.link === linkName);
-      if (existingMasterIndex !== -1) {
-        this.linkMasters[linkName][existingMasterIndex] = {
-          link: linkName,
-          sprite: spriteName,
-          Px: target.x, Py: target.y,
-          direction: target.direction,
-          size: target.size,
-          show: target.visible,
-          effects: target.effects,
-        };
-      } else {
-        this.linkMasters[linkName].push({
-          link: linkName,
-          sprite: spriteName,
-          Px: target.x, Py: target.y,
-          direction: target.direction,
-          size: target.size,
-          show: target.visible,
-          effects: target.effects,
+    makeLink(args) { this.links[args.NAME] = {} }
+
+    deleteLink(args) { delete this.links[args.NAME] }
+
+    deleteAll(args) { this.links = Object.create(null) }
+
+    addSprite(args, util) {
+      const link = this.links[args.LINK];
+      if (!link) this.links[args.LINK] = {};
+      const target = args.NAME === "_myself_" ? util.target : runtime.getSpriteTargetByName(args.NAME);
+      if (target) this.links[args.LINK][target.id] = [target, target.x, target.y];
+    }
+
+    removeSprite(args, util) {
+      const link = this.links[args.LINK];
+      if (link) {
+        const target = args.NAME === "_myself_" ? util.target : runtime.getSpriteTargetByName(args.NAME);
+        if (target) delete this.links[args.LINK][target.id];
+      }
+    }
+
+    linkExists(args) { return Scratch.Cast.toBoolean(this.links[args.NAME]) }
+
+    contentsLink(args) {
+      const link = this.links[args.NAME];
+      if (link !== undefined) {
+        const spriteNames = Object.keys(link).filter(key => key !== "SPlinkMaster")
+          .map(key => {
+            const sprite = link[key][0];
+            const name = sprite.getName();
+            if (!sprite.isOriginal) return name + " (Clone)";
+            else return name;
         });
+        return JSON.stringify(spriteNames);
+      } else { return "This Family Doesn't Exist" }
+    }
+
+    linkMaster(args, util) {
+      const link = this.links[args.LINK];
+      if (!link) this.links[args.LINK] = {};
+      const target = args.NAME === "_myself_" ? util.target : runtime.getSpriteTargetByName(args.NAME);
+      if (target) {
+        this.links[args.LINK].SPlinkMaster = {
+          sprite: target.getName(),
+          id: target.id,
+          direction: target.direction,
+          size: target.size,
+          show: target.visible,
+          effects: target.effects
+        };
       }
     }
 
     updateMaster() {
-      for (const linkName in this.linkMasters) {
-        if (linkName in this.linkMasters) {
-          const linkMasterList = this.linkMasters[linkName];
-          for (let i = 0; i < linkMasterList.length; i++) {
-            const linkMasterItem = linkMasterList[i];
-            const target = runtime.getSpriteTargetByName(linkMasterItem.sprite);
-            if (target) {
-              linkMasterItem.Px = target.x;
-              linkMasterItem.Py = target.y;
-              linkMasterItem.direction = target.direction;
-              linkMasterItem.size = target.size;
-              linkMasterItem.show = target.visible;
-              linkMasterItem.effects = target.effects;
-            }
-          }
+      for (const link in this.links) {
+        const newLink = this.links[link];
+        if (newLink.SPlinkMaster !== undefined) {
+          const oldValues = { ...newLink.SPlinkMaster };
+          const target = runtime.getTargetById(newLink.SPlinkMaster.id);
+          newLink.SPlinkMaster = {
+            sprite: target.getName(),
+            id: target.id,
+            direction: target.direction,
+            size: target.size,
+            show: target.visible,
+            effects: target.effects
+          };
         }
       }
     }
 
     whoMaster(args) {
-      const linkName = args.LINK;
-      if (this.linkMasters[linkName]) {
-        const master = this.linkMasters[linkName][0];
-        if (master) return master.sprite;
+      if (this.links[args.LINK] !== undefined) {
+        const master = this.links[args.LINK].SPlinkMaster;
+        if (master !== undefined) return master.sprite;
       }
       return "This Family doesnt have a Parent";
-    }
-
-    makeLink(args) { this.links[args.NAME] = [] }
-
-    deleteLink(args) {
-      delete this.links[args.NAME];
-      delete this.linkMasters[args.NAME];
-      delete this.ogPositions[args.NAME];
-    }
-
-    deleteAll(args) {
-      this.links = Object.create(null);
-      this.linkMasters = Object.create(null);
-      this.ogPositions = Object.create(null);
-    }
-
-    addSprite(args) {
-      if (!this.links[args.LINK]) this.links[args.LINK] = [];
-      const link = this.links[args.LINK];
-      const target = runtime.getSpriteTargetByName(Scratch.Cast.toString(args.NAME));
-      if (target && link.indexOf(target) === -1) link.push(target);
-    }
-
-    removeSprite(args) {
-      const link = this.links[args.LINK];
-      if (link) {
-        const targetIndex = link.indexOf(runtime.getSpriteTargetByName(Scratch.Cast.toString(args.NAME)));
-        if (targetIndex !== -1) link.splice(targetIndex, 1);
-      }
-    }
-
-    linkExists(args) { return !!this.links[args.NAME] }
-
-    contentsLink(args) {
-      const link = this.links[args.NAME];
-      if (link) return JSON.stringify(link.map((target) => target.sprite.name));
-      return "This Family Doesnt Exist";
     }
 
     refresh(LINK) {
       this.updateMaster();
       if (this.links[LINK]) {
-        let spriteNames = this.links[LINK];
-        spriteNames = spriteNames.map((target) => target.sprite.name);
-        for (let i = 0; i < spriteNames.length; i++) {
-          const target = runtime.getSpriteTargetByName(spriteNames[i]);
-          if (target) {
-            delete this.ogPositions[spriteNames[i]];
-            if (!this.ogPositions[spriteNames[i]]) {
-              const MasterList = this.linkMasters[LINK];
-              const getMasterPos = [
-                MasterList.map((target) => target.Px),
-                MasterList.map((target) => target.Py),
-              ];
-              this.ogPositions[spriteNames[i]] = [
-                target.x - getMasterPos[0],
-                target.y - getMasterPos[1],
-              ];
-            }
-            const ogPos = this.ogPositions[spriteNames[i]];
-          }
-        }
+        let link = this.links[LINK];
+        Object.keys(link).filter(key => key !== "SPlinkMaster")
+          .map(key => {
+            // get new values for target
+            const target = runtime.getTargetById(key);
+            if (target) link[key] = [target, target.x, target.y];
+        });
       }
     }
 
@@ -349,51 +314,32 @@
 
     update(link, TYPE) {
       this.updateMaster();
-      if (this.links[link]) {
-        const linkNames = this.links[link].map((target) => target.sprite.name);
-        const allTargets = Scratch.vm.runtime.targets;
-        let spriteNames = [];
-        for (let i = 0; i < linkNames.length; i++) {
-          for (let j = 0; j < allTargets.length; j++) {
-            if (allTargets[j].sprite && allTargets[j].sprite.name === linkNames[i]) {
-              spriteNames.push(allTargets[j].id);
+      link = this.links[link];
+      if (link) {
+        const master = link.SPlinkMaster;
+        const sprites = Object.keys(link).filter(key => key !== "SPlinkMaster");
+        if (!master) throw new Error("No parent was assigned to this family");
+        const masTarget = runtime.getTargetById(master.id);
+        for (let i = 0; i < sprites.length; i++) {
+          const target = link[sprites[i]][0];
+          if (target) {
+            if (TYPE === "everything" || TYPE === "direction") {
+              target.setDirection(master.direction);
             }
-          }
-        }
-        let MasterList = this.linkMasters[link];
-        if (!MasterList) throw new Error("No parent was assigned to this family");
-        MasterList = MasterList.map((target) => target.name);
-        if (MasterList) {
-          for (let i = 0; i < spriteNames.length; i++) {
-            const target = runtime.getTargetById(spriteNames[i]);
-            MasterList = this.linkMasters[link];
-            if (target) {
-              if (TYPE === "everything" || TYPE === "direction") {
-                target.setDirection(MasterList.map((target) => target.direction));
+            if (TYPE === "everything" || TYPE === "size") {
+              target.setSize(master.size);
+            }
+            if (TYPE === "everything" || TYPE === "visibility") {
+              target.setVisible(master.show);
+            }
+            if (TYPE === "everything" || TYPE === "effects") {
+              let value = master.effects;
+              for (const effect in value) {
+                target.setEffect(effect, value[effect]);
               }
-              if (TYPE === "everything" || TYPE === "size") {
-                target.setSize(MasterList.map((target) => target.size));
-              }
-              if (TYPE === "everything" || TYPE === "visibility") {
-                const visibility = MasterList.map((target) => target.show);
-                target.setVisible(visibility[0]);
-              }
-              if (TYPE === "everything" || TYPE === "effects") {
-                let value = MasterList.map((target) => target.effects)[0];
-                for (const effect in value) {
-                  target.setEffect(effect, value[effect]);
-                }
-              }
-              if (TYPE === "everything" || TYPE === "x and y") {
-                const xChange = Scratch.Cast.toNumber(MasterList.map((target) => target.Px));
-                const yChange = Scratch.Cast.toNumber(MasterList.map((target) => target.Py));
-                if (!this.ogPositions[spriteNames[i]]) {
-                  this.ogPositions[spriteNames[i]] = [target.x, target.y];
-                }
-                const ogPos = this.ogPositions[spriteNames[i]];
-                target.setXY(xChange, yChange);
-                target.setXY(target.x + ogPos[0], target.y + ogPos[1]);
-              }
+            }
+            if (TYPE === "everything" || TYPE === "x and y") {
+              target.setXY(link[sprites[i]][1] + masTarget.x, link[sprites[i]][2] + masTarget.y);
             }
           }
         }
@@ -403,10 +349,11 @@
     //Thank you LilyMakesThings for this bit of gold :3
     _getTargets() {
       const spriteNames = [];
+      spriteNames.push({ text : "myself", value: "_myself_" });
       const targets = Scratch.vm.runtime.targets;
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
-        if (target.isOriginal) spriteNames.push(target.getName());
+        if (target.isOriginal) spriteNames.push({ text : target.getName(), value : target.getName() });
       }
       return spriteNames.length > 0 ? spriteNames : [""];
     }
