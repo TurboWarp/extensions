@@ -1,6 +1,6 @@
 // Name: Better Input
 // ID: BetterInputSP
-// Description: Expansion of the "ask and wait" Blocks
+// Description: Expansion of the "ask and wait" Blocks.
 // By: SharkPool
 
 // Version V.4.0.1
