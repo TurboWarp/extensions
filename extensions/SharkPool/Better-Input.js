@@ -3,7 +3,7 @@
 // Description: Expansion of the "ask and wait" Blocks
 // By: SharkPool
 
-// Version V.4.0.0
+// Version V.4.0.1
 
 (function (Scratch) {
   "use strict";
@@ -1522,6 +1522,7 @@
           valueDisplay.textContent = slider.value;
           slider.addEventListener("input", () => {
             valueDisplay.textContent = slider.value;
+            inputField.value = slider.value;
             this.userInput = valueDisplay.textContent;
           });
           for (const item of this.uiOrder) {
