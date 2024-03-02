@@ -1,6 +1,6 @@
 // Name: Indexed Database
 // ID: ffghdfhIndexedDB
-// Description: Lets you use an IndexedDB database, allowing for you to store more than 5MB of data locally. Made by chair_senpai :)
+// Description: Lets you use an IndexedDB database, allowing for you to store more than 5MB of data locally. Made by chair_senpai :).
 // License: LGPL-3.0
 (function (Scratch) {
   "use strict";
