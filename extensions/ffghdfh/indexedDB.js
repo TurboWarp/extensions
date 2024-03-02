@@ -1,6 +1,6 @@
 // Name: Indexed Database
 // ID: ffghdfhIndexedDB
-// Description: Lets you use an IndexedDB database, allowing for you to store more than 5MB of data locally. Made by chair_senpai :).
+// Description: Lets you use an IndexedDB database, allowing for you to store more than 5MB of data locally. By chair_senpai.
 // License: LGPL-3.0
 (function (Scratch) {
   "use strict";
@@ -48,7 +48,7 @@
         const store = transaction.objectStore("data");
         const request = store.put({ key, value });
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           request.onsuccess = () => resolve();
           request.onerror = () => resolve();
         });
@@ -62,9 +62,12 @@
         const store = transaction.objectStore("data");
         const request = store.get(key);
 
-        return new Promise((resolve, reject) => {
-          request.onsuccess = () =>
-            resolve(request.result ? request.result.value : null);
+        return new Promise((resolve) => {
+          request.onsuccess = () => {
+            const value = request.result ? request.result.value : undefined;
+            resolve(value !== undefined ? value : "undefined");
+          };
+
           request.onerror = () => resolve("undefined");
         });
       });
@@ -77,7 +80,7 @@
         const store = transaction.objectStore("data");
         const request = store.clear();
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           request.onsuccess = () => resolve();
           request.onerror = () => resolve();
         });
@@ -91,7 +94,7 @@
         const store = transaction.objectStore("data");
         const request = store.delete(key);
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           request.onsuccess = () => resolve();
           request.onerror = () => resolve();
         });
