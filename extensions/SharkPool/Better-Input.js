@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: LGPL-3.0
 
-// Version V.4.0.1
+// Version V.4.0.2
 
 (function (Scratch) {
   "use strict";
@@ -64,24 +64,28 @@
       this.fontSize = "14px";
       this.textAlign = "left";
       this.fontFamily = "Sans Serif";
-      // overlay + Image, input, dropdown button
-      this.mainUIinfo = [
-        5,
-        4,
-        5,
-        "1px none #000000",
-        "1px solid #000000",
-        "1px none #000000",
-        "15px",
-        "5px",
-        "5px 10px",
-        "none",
-        "none",
-        "none",
-        ["", 0],
-        ["", 0],
-        ["", 0],
-      ];
+      this.mainUIinfo = {
+        // Border Radius
+        overlayRad: 5, 
+        inputRad: 4,
+        dropBtnRad: 5,
+        // Border Information
+        overlayBord: "1px none #000000",
+        inputBord: "1px solid #000000",
+        dropBtnBord: "1px none #000000",
+        // Text Padding
+        overlayPad: "15px",
+        inputPad: "5px",
+        dropBtnPad: "5px 10px",
+        // Text Shadow
+        overlayTxtShad: "none",
+        inputTxtShad: "none",
+        dropBtnTxtShad: "none",
+        // Outline: Color + Thickness
+        overlayOutline: ["", 0],
+        inputOutline: ["", 0],
+        dropBtnOutline: ["", 0]
+      };
       this.lastPressBtn = "";
       this.buttonJSON = {
         Submit: {
@@ -862,12 +866,12 @@
         contrast(${this.Contrast}%)
       `;
       overlay.style.opacity = newOpacity;
-      overlay.style.border = this.mainUIinfo[3];
-      overlay.style.padding = this.mainUIinfo[6];
+      overlay.style.border = this.mainUIinfo.overlayBord;
+      overlay.style.padding = this.mainUIinfo.overlayPad;
       overlay.style.fontFamily = this.fontFamily;
       overlay.style.textAlign = this.textAlign;
-      overlay.style.borderRadius = `${this.mainUIinfo[0]}px`;
-      overlayImageContainer.style.borderRadius = `${this.mainUIinfo[0]}px`;
+      overlay.style.borderRadius = `${this.mainUIinfo.overlayRad}px`;
+      overlayImageContainer.style.borderRadius = `${this.mainUIinfo.overlayRad}px`;
       overlayImageContainer.style.background = "";
       this.setImageStyles(
         overlayImageContainer,
@@ -880,8 +884,8 @@
       let text = overlay.querySelector(".question");
       if (text) {
         text.style.color = this.questionColor;
-        text.style.textShadow = this.mainUIinfo[9];
-        this.tryOutline(text, this.mainUIinfo[12][0], this.mainUIinfo[12][1]);
+        text.style.textShadow = this.mainUIinfo.overlayTxtShad;
+        this.tryOutline(text, this.mainUIinfo.overlayOutline[0], this.mainUIinfo.overlayOutline[1]);
       }
       const inputField = overlay.querySelector("input");
       if (inputField) {
@@ -895,15 +899,15 @@
             : "backgroundColor"
         ] = this.inputFieldColor;
         inputField.style.color = this.inputColor;
-        inputField.style.textShadow = this.mainUIinfo[10];
+        inputField.style.textShadow = this.mainUIinfo.inputTxtShad;
         this.tryOutline(
           inputField,
-          this.mainUIinfo[13][0],
-          this.mainUIinfo[13][1]
+          this.mainUIinfo.inputOutline[0],
+          this.mainUIinfo.inputOutline[1]
         );
-        inputField.style.border = this.mainUIinfo[4];
-        inputField.style.borderRadius = `${this.mainUIinfo[1]}px`;
-        inputField.style.padding = this.mainUIinfo[7];
+        inputField.style.border = this.mainUIinfo.inputBord;
+        inputField.style.borderRadius = `${this.mainUIinfo.inputRad}px`;
+        inputField.style.padding = this.mainUIinfo.inputPad;
         this.setImageStyles(inputField, this.overlayImage[1], this.imgScale[1]);
       }
 
@@ -912,14 +916,14 @@
         dropBtn.style.backgroundImage = "";
         dropBtn.style.fontFamily = this.fontFamily;
         dropBtn.style.color = this.dropdownButtonColor[1];
-        dropBtn.style.borderRadius = `${this.mainUIinfo[2]}px`;
-        dropBtn.style.border = this.mainUIinfo[5];
-        dropBtn.style.padding = this.mainUIinfo[8];
-        dropBtn.style.textShadow = this.mainUIinfo[11];
+        dropBtn.style.borderRadius = `${this.mainUIinfo.dropBtnRad}px`;
+        dropBtn.style.border = this.mainUIinfo.dropBtnBord;
+        dropBtn.style.padding = this.mainUIinfo.dropBtnPad;
+        dropBtn.style.textShadow = this.mainUIinfo.dropBtnTxtShad;
         this.tryOutline(
           dropBtn,
-          this.mainUIinfo[14][0],
-          this.mainUIinfo[14][1]
+          this.mainUIinfo.dropBtnOutline[0],
+          this.mainUIinfo.dropBtnOutline[1]
         );
         dropBtn.style[
           this.dropdownButtonColor[0].includes("gradient")
@@ -1093,27 +1097,27 @@
     }
 
     callStyling(element, value, type, elements) {
-      const elementIndex = elements[element];
-      if (elementIndex !== undefined) this.mainUIinfo[elementIndex] = value;
+      const elementID = elements[element];
+      if (elementID !== undefined) this.mainUIinfo[elementID] = value;
       else if (this.buttonJSON[element]) this.buttonJSON[element][type] = value;
-      this.activeOverlays.forEach((overlay) => this.updateOverlay(overlay));
+      this.activeOverlays.forEach(overlay => this.updateOverlay(overlay));
     }
 
     setBorder(args) {
       const width = Scratch.Cast.toNumber(args.WIDTH);
       const string = `${width}px ${args.TYPE} ${args.COLOR}`;
       this.callStyling(args.ELEMENT, string, "border", {
-        Textbox: 3,
-        "Input Box": 4,
-        "Dropdown Button": 5,
+        Textbox: "overlayBord",
+        "Input Box": "inputBord",
+        "Dropdown Button": "dropBtnBord"
       });
     }
 
     setBorderRadius(args) {
       this.callStyling(args.ELEMENT, Math.max(args.VALUE, 0), "borderRadius", {
-        Textbox: 0,
-        "Input Box": 1,
-        "Dropdown Button": 2,
+        Textbox: "overlayRad",
+        "Input Box": "inputRad",
+        "Dropdown Button": "dropBtnRad"
       });
     }
 
@@ -1126,9 +1130,9 @@
       ];
       let pad = `${casted[0]}px ${casted[1]}px ${casted[2]}px ${casted[3]}px`;
       this.callStyling(args.ELEMENT, pad, "padding", {
-        Textbox: 6,
-        "Input Box": 7,
-        "Dropdown Button": 8,
+        Textbox: "overlayPad",
+        "Input Box": "inputPad",
+        "Dropdown Button": "dropBtnPad"
       });
     }
 
@@ -1143,9 +1147,9 @@
           ? "none"
           : `${casted[0]}px ${casted[1] * -1}px ${casted[2]}px ${args.COLOR}`;
       this.callStyling(args.ELEMENT.slice(0, -5), shadow, "dropShadow", {
-        Question: 9,
-        Input: 10,
-        Dropdown: 11,
+        "Question": "overlayTxtShad",
+        "Input": "inputTxtShad",
+        "Dropdown": "dropBtnTxtShad"
       });
     }
 
@@ -1155,7 +1159,11 @@
         args.ELEMENT.slice(0, -5),
         [args.COLOR, thick],
         "outline",
-        { Question: 12, Input: 13, Dropdown: 14 }
+        {
+          "Question": "overlayOutline",
+          "Input": "inputOutline",
+          "Dropdown": "dropBtnOutline"
+        }
       );
     }
 
