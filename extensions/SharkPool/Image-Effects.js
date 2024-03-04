@@ -1076,13 +1076,6 @@
           newY1 = Math.max(0, Math.min(height - 1, newY1));
           newX2 = Math.max(0, Math.min(width - 1, newX2));
           newY2 = Math.max(0, Math.min(height - 1, newY2));
-          const newR1 = data[(newY1 * width + newX1) * 4];
-          const newG1 = data[(newY1 * width + newX1) * 4 + 1];
-          const newB1 = data[(newY1 * width + newX1) * 4 + 2];
-
-          const newR2 = data[(newY2 * width + newX2) * 4];
-          const newG2 = data[(newY2 * width + newX2) * 4 + 1];
-          const newB2 = data[(newY2 * width + newX2) * 4 + 2];
           const leftColor = [(rgb1[0] * r) / 255, (rgb1[1] * g) / 255, (rgb1[2] * b) / 255];
           const rightColor = [(rgb2[0] * r) / 255, (rgb2[1] * g) / 255, (rgb2[2] * b) / 255];
           const leftIndex = (newY1 * width + newX1) * 4;
