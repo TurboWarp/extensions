@@ -3,7 +3,7 @@
 // Description: Control Scripts
 // By: SharkPool
 
-// Version V.1.3.1
+// Version V.1.4.0
 
 (function (Scratch) {
   "use strict";
@@ -84,6 +84,27 @@
           },
           "---",
           {
+            opcode: "doScriptTarget",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "start script with custom ID [ID] in [TARGET]",
+            arguments: {
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "script-1" }
+            }
+          },
+          {
+            opcode: "doScriptClone",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "start script with custom ID [ID] in clones of [TARGET] with [VAR] set to [VAL]",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "script-1" },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS2" },
+              VAR: { type: Scratch.ArgumentType.STRING, defaultValue: "my variable" },
+              VAL: { type: Scratch.ArgumentType.STRING, defaultValue: "0" }
+            }
+          },
+          "---",
+          {
             opcode: "whileScript",
             blockType: Scratch.BlockType.LOOP,
             text: "while script with custom ID [ID] runs",
@@ -117,12 +138,26 @@
           },
         ],
         menus: {
+          TARGETS: { acceptReporters: true, items: this.getTargets(false) },
+          TARGETS2: { acceptReporters: true, items: this.getTargets(true) },
           CONTROL: {
             acceptReporters: true,
             items: ["start", "stop", "restart"]
           }
         },
       };
+    }
+
+    getTargets(spritesOnly) {
+      const spriteNames = [];
+      if (spritesOnly) spriteNames.push({ text : "myself", value: "_myself_" });
+      else spriteNames.push({ text : "Stage", value: "_stage_" });
+      const targets = Scratch.vm.runtime.targets;
+      for (let index = 1; index < targets.length; index++) {
+        const target = targets[index];
+        if (target.isOriginal) spriteNames.push({ text : target.getName(), value : target.getName() });
+      }
+      return spriteNames.length > 0 ? spriteNames : [""];
     }
 
     getIndexByVal(array, name, value) {
@@ -168,6 +203,8 @@
       const blockID = util.thread.isCompiled ? util.thread.peekStack() : util.thread.peekStackFrame().op.id;
       const topBlock = util.thread.topBlock;
       const index = this.getIndexByVal(runtime.threads, "topBlock", topBlock);
+      // prevent compiler errors when using block: "start script in [sprite]"
+      if (storedScripts[`SP-${ID}+${topBlock}`] !== undefined && storedScripts[`SP-${ID}+${topBlock}`].target !== util.target) return;
       storedScripts[`SP-${ID}+${topBlock}`] = {
         id : topBlock, ind : runtime.threads[index], target : util.target, indexBlock : this.getIndex(util.thread, blockID)
       };
@@ -192,7 +229,7 @@
       return ind;
     }
 
-    doScripts(args) {
+    runScript(args, overrideTarget) {
       // Needs to be a Promise, Stopped then Started Threads get Confused
       return new Promise((resolve, reject) => {
         const ID = Scratch.Cast.toString(args.ID).replaceAll(" ", "-");
@@ -207,7 +244,12 @@
                 if (args.TYPE === "start") {
                   promises.push(
                     new Promise((resolveThread, rejectThread) => {
-                      vm.runtime._pushThread(index.topBlock, storedScripts[key].target, { stackClick: true });
+                      const thread = vm.runtime._pushThread(index.topBlock, storedScripts[key].target, { stackClick: true });
+                      if (overrideTarget !== undefined) {
+                        thread.target = overrideTarget;
+                        thread.overriden = storedScripts[key].target; // custom key usable for other blocks
+                        if (runtime.compilerOptions.enabled) thread.tryCompile();
+                      }
                       resolveThread();
                     })
                   );
@@ -227,6 +269,29 @@
         });
         Promise.all(promises).then(() => resolve()).catch(error => reject(error));
       });
+    }
+
+    doScripts(args) { this.runScript(args) }
+
+    doScriptTarget(args) {
+      const target = args.TARGET === "_stage_" ? runtime.getTargetForStage() : runtime.getSpriteTargetByName(args.TARGET);
+      if (!target) return;
+      this.runScript({ ...args, TYPE : "start" }, target);
+    }
+
+    doScriptClone(args, util) {
+      const target = args.TARGET === "_myself_" ? util.target : runtime.getSpriteTargetByName(args.TARGET);
+      if (!target) return;
+      const clones = target.sprite.clones;
+      for (var i = 1; i < clones.length; i++) {
+        if (clones[i]) {
+          const variable = clones[i].lookupVariableByNameAndType(args.VAR, "", clones[i]);
+          const value = Scratch.Cast.toString(args.VAL);
+          if (variable && Scratch.Cast.toString(variable.value) === value) {
+            this.runScript({ ...args, TYPE : "start" }, clones[i]);
+          }
+        }
+      }
     }
 
     skipBlocks(args) {
@@ -266,7 +331,14 @@
           newID = thread.blockContainer.getNextBlock(newID);
         }
         if (num >= 0) util.stopThisScript();
-        if (newID && newID !== myID) vm.runtime._pushThread(newID, util.target);
+        if (newID && newID !== myID) {
+          if (thread.overriden === undefined) vm.runtime._pushThread(newID, util.target);
+          else {
+            const newThread = vm.runtime._pushThread(newID, thread.overriden);
+            thread.target = util.target;
+            if (runtime.compilerOptions.enabled) thread.tryCompile();
+          }
+        }
         resolve();
       });
     }
@@ -330,6 +402,5 @@
     var observer = new MutationObserver(documentChangedCallback);
     observer.observe(document.documentElement, { childList: true, subtree: true });
   }
-
   Scratch.extensions.register(new SPscripts());
 })(Scratch);
