@@ -335,8 +335,8 @@
           if (thread.overriden === undefined) vm.runtime._pushThread(newID, util.target);
           else {
             const newThread = vm.runtime._pushThread(newID, thread.overriden);
-            thread.target = util.target;
-            if (runtime.compilerOptions.enabled) thread.tryCompile();
+            newThread.target = util.target;
+            if (runtime.compilerOptions.enabled) newThread.tryCompile();
           }
         }
         resolve();
