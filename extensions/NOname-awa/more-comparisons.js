@@ -474,10 +474,16 @@
       return Math.abs(args.a - args.b) <= args.c;
     }
     between(args) {
-      return Scratch.Cast.compare(args.a, args.b) < 0 && Scratch.Cast.compare(args.b, args.c) < 0;
+      return (
+        Scratch.Cast.compare(args.a, args.b) < 0 &&
+        Scratch.Cast.compare(args.b, args.c) < 0
+      );
     }
     betweenEqual(args) {
-      return Scratch.Cast.compare(args.a, args.b) <= 0 && Scratch.Cast.compare(args.b, args.c) <= 0;
+      return (
+        Scratch.Cast.compare(args.a, args.b) <= 0 &&
+        Scratch.Cast.compare(args.b, args.c) <= 0
+      );
     }
     notEqual(args) {
       return args.a != args.b;
