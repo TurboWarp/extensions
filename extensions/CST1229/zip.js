@@ -132,12 +132,6 @@
             arguments: {},
           },
           {
-            opcode: "closeAll",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("remove all archives"),
-            arguments: {},
-          },
-          {
             opcode: "isOpen",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("archive is open?"),
@@ -159,6 +153,12 @@
             arguments: {},
           },
           {
+            opcode: "listArchives",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("currently open archives"),
+            arguments: {},
+          },
+          {
             opcode: "goToArchive",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("switch to archive named [NAME]"),
@@ -170,9 +170,9 @@
             },
           },
           {
-            opcode: "listArchives",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("currently open archives"),
+            opcode: "closeAll",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("remove all archives"),
             arguments: {},
           },
 
@@ -244,8 +244,10 @@
               },
               TO: {
                 type: Scratch.ArgumentType.STRING,
-                // Don't translate so matches default zip
-                defaultValue: "Copy of hello.txt",
+                text: Scratch.translate({
+                  default: 'Copy of hello.txt',
+                  description: 'Windows reference. The "hello.txt" filename isn\'t translated, so don\'t translate it here'
+                }),
               },
             },
           },
@@ -261,8 +263,10 @@
               },
               TO: {
                 type: Scratch.ArgumentType.STRING,
-                // Don't translate so matches default zip
-                defaultValue: "Copy of hello.txt",
+                text: Scratch.translate({
+                  default: 'Copy of hello.txt',
+                  description: 'Windows reference. The "hello.txt" filename isn\'t translated, so don\'t translate it here'
+                }),
               },
               FROMARCHIVE: {
                 type: Scratch.ArgumentType.STRING,
@@ -839,9 +843,11 @@
       return this.zip;
     }
     goToArchive({NAME}) {
-      this.zip = null;
       NAME = Scratch.Cast.toString(NAME);
-      if (!NAME) return;
+      if (!NAME) {
+        this.zip = null;
+        return;
+      }
       if (!this.zips[NAME]) return;
 
       this.zip = NAME;
