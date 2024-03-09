@@ -2044,7 +2044,7 @@
         squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
-      let valuetoSet = 0;
+      let valuetoSet = number;
 
       const attributeNum = Scratch.Cast.toNumber(target);
       if (attributeNum >= 7) {
