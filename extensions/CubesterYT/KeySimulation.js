@@ -145,8 +145,8 @@
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "0",
               },
-            }
-          }
+            },
+          },
         ],
         menus: {
           KEYS: {
