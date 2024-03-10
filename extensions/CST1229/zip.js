@@ -55,7 +55,9 @@
           {
             opcode: "openAs",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("open archive from zip [TYPE] [DATA] named [NAME]"),
+            text: Scratch.translate(
+              "open archive from zip [TYPE] [DATA] named [NAME]"
+            ),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -81,7 +83,8 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               default: 'create empty archive named "archive"',
-              description: 'Legacy block, not important to be translated. If you do, do not translate the name "archive"'
+              description:
+                'Legacy block, not important to be translated. If you do, do not translate the name "archive"',
             }),
             arguments: {},
           },
@@ -91,7 +94,8 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               default: 'open zip from [TYPE] [DATA] named "archive"',
-              description: 'Legacy block, not important to be translated. If you do, do not translate the name "archive"'
+              description:
+                'Legacy block, not important to be translated. If you do, do not translate the name "archive"',
             }),
             arguments: {
               TYPE: {
@@ -245,8 +249,9 @@
               TO: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
-                  default: 'Copy of hello.txt',
-                  description: 'Windows reference. The "hello.txt" filename isn\'t translated, so don\'t translate it here'
+                  default: "Copy of hello.txt",
+                  description:
+                    "Windows reference. The \"hello.txt\" filename isn't translated, so don't translate it here",
                 }),
               },
             },
@@ -264,8 +269,9 @@
               TO: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
-                  default: 'Copy of hello.txt',
-                  description: 'Windows reference. The "hello.txt" filename isn\'t translated, so don\'t translate it here'
+                  default: "Copy of hello.txt",
+                  description:
+                    "Windows reference. The \"hello.txt\" filename isn't translated, so don't translate it here",
                 }),
               },
               FROMARCHIVE: {
@@ -656,7 +662,9 @@
     getObj(path, zip = this.zip) {
       // JSZip.prototype.files seems to be a null-prototype object
       // it should be safe doing this
-      return this.zips[zip].files[path.substring(1)] || this.zips[zip].files[path];
+      return (
+        this.zips[zip].files[path.substring(1)] || this.zips[zip].files[path]
+      );
     }
     // create folders up to a certain path
     createFolders(path, zip) {
@@ -709,7 +717,7 @@
       this.zipPaths[this.zip] = "/";
     }
     createEmpty() {
-      this.createEmptyAs({ NAME: "archive" })
+      this.createEmptyAs({ NAME: "archive" });
     }
 
     async openAs({ TYPE, DATA, NAME }) {
@@ -753,7 +761,9 @@
 
         this.zip = NAME;
 
-        this.zips[this.zip] = await JSZip.loadAsync(DATA, { createFolders: true });
+        this.zips[this.zip] = await JSZip.loadAsync(DATA, {
+          createFolders: true,
+        });
         this.zipPaths[this.zip] = "/";
       } catch (e) {
         this.zipError = true;
@@ -842,7 +852,7 @@
       if (!this.zip) return "";
       return this.zip;
     }
-    goToArchive({NAME}) {
+    goToArchive({ NAME }) {
       NAME = Scratch.Cast.toString(NAME);
       if (!NAME) {
         this.zip = null;
@@ -1046,10 +1056,17 @@
         if (!toPath.endsWith("/")) toPath += "/";
 
         // Move current directory
-        if (!isCopy && this.zipPaths[fromZipName].substring(1).startsWith(fromPath)) {
+        if (
+          !isCopy &&
+          this.zipPaths[fromZipName].substring(1).startsWith(fromPath)
+        ) {
           if (fromZip === toZip) {
             this.zipPaths[fromZipName] =
-              "/" + toPath + this.zipPaths[fromZipName].substring(1).substring(fromPath.length);
+              "/" +
+              toPath +
+              this.zipPaths[fromZipName]
+                .substring(1)
+                .substring(fromPath.length);
           } else {
             this.goBackFolders(fromZip);
           }
@@ -1062,7 +1079,10 @@
         }
         this.createFolders(toPath, toZip);
       } catch (e) {
-        console.error(`Zip extension: Error ${isCopy ? "copying" : "renaming"} ${from} to ${to}:`, e);
+        console.error(
+          `Zip extension: Error ${isCopy ? "copying" : "renaming"} ${from} to ${to}:`,
+          e
+        );
       }
     }
 
