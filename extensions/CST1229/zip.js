@@ -682,7 +682,7 @@
         console.error(`Zip extension: Error creating folders for ${path}:`, e);
       }
     }
-    // ho back until we are in a directory that exists
+    // Go back until we are in a directory that exists
     goBackFolders(zip) {
       const split = this.zipPaths[zip].split("/");
       this.zipPaths[zip] = "";
