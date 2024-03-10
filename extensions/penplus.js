@@ -2,6 +2,7 @@
 // ID: betterpen
 // Description: Replaced by Pen Plus V6.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
+// License: MIT
 
 /* eslint-disable no-empty-pattern */
 /* eslint-disable no-prototype-builtins */

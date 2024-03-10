@@ -2,6 +2,7 @@
 // ID: GameJoltAPI
 // Description: Blocks that allow games to interact with the GameJolt API. Unofficial.
 // By: softed <https://scratch.mit.edu/users/softed/>
+// License: MIT
 
 ((Scratch) => {
   "use strict";
@@ -20,9 +21,11 @@
     function hex_md5(a) {
       return rstr2hex(rstr_md5(str2rstr_utf8(a)));
     }
+    // eslint-disable-next-line no-unused-vars
     function hex_hmac_md5(a, b) {
       return rstr2hex(rstr_hmac_md5(str2rstr_utf8(a), str2rstr_utf8(b)));
     }
+    // eslint-disable-next-line no-unused-vars
     function md5_vm_test() {
       return hex_md5("abc").toLowerCase() == "900150983cd24fb0d6963f7d28e17f72";
     }
