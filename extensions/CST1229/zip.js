@@ -244,7 +244,7 @@
               },
               TO: {
                 type: Scratch.ArgumentType.STRING,
-                text: Scratch.translate({
+                defaultValue: Scratch.translate({
                   default: 'Copy of hello.txt',
                   description: 'Windows reference. The "hello.txt" filename isn\'t translated, so don\'t translate it here'
                 }),
@@ -263,7 +263,7 @@
               },
               TO: {
                 type: Scratch.ArgumentType.STRING,
-                text: Scratch.translate({
+                defaultValue: Scratch.translate({
                   default: 'Copy of hello.txt',
                   description: 'Windows reference. The "hello.txt" filename isn\'t translated, so don\'t translate it here'
                 }),
