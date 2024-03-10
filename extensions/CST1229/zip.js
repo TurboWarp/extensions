@@ -1278,6 +1278,5 @@
   }
 
   // @ts-ignore
-  window.zipExt = new ZipExt();
-  Scratch.extensions.register(window.zipExt);
+  Scratch.extensions.register(new ZipExt());
 })(globalThis.Scratch);
