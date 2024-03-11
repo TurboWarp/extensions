@@ -311,7 +311,6 @@
     }
 
     extendArray(args, util) {
-      let i = 0;
       const prefix = "ARG";
       const array = [];
 
