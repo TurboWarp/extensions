@@ -100,6 +100,10 @@ module.exports = {
       {
         selector: 'MethodDefinition[key.name=getInfo] Property[key.name=opcode][value.callee.property.name=translate]',
         message: 'Do not translate block opcode'
+      },
+      {
+        selector: 'MemberExpression[object.name=window][property.name=vm]',
+        message: 'Use Scratch.vm instead of window.vm'
       }
     ]
   }

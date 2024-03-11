@@ -2,6 +2,7 @@
 // ID: xeltallivclipblend
 // Description: Clipping outside of a specified rectangular area and different color blending modes.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";

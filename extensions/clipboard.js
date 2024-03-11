@@ -1,6 +1,7 @@
 // Name: Clipboard
 // ID: clipboard
 // Description: Read and write from the system clipboard.
+// License: Apache-2.0
 
 /*!
  * Copyright 2023 tomyo-code + AdamMady
@@ -104,12 +105,16 @@
 
     clipboard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        return Scratch.canReadClipboard().then((allowed) => {
-          if (allowed) {
-            return navigator.clipboard.readText();
-          }
-          return "";
-        });
+        return Scratch.canReadClipboard()
+          .then((allowed) => {
+            if (allowed) {
+              return navigator.clipboard.readText() ?? "";
+            }
+            return "";
+          })
+          .catch(() => {
+            return "";
+          });
       }
       return "";
     }

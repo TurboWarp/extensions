@@ -1,6 +1,7 @@
 const fs = require("fs");
 const AdmZip = require("adm-zip");
 const pathUtil = require("path");
+const ExtendedJSON = require("@turbowarp/json");
 const compatibilityAliases = require("./compatibility-aliases");
 const parseMetadata = require("./parse-extension-metadata");
 const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
@@ -203,6 +204,22 @@ class ExtensionFile extends BuildFile {
     ) {
       throw new Error(
         `Description is missing punctuation: ${metadata.description}`
+      );
+    }
+
+    if (!metadata.license) {
+      throw new Error(
+        "Missing // License: -- We recommend using // License: LGPL-3.0"
+      );
+    }
+
+    const spdxParser = require("spdx-expression-parse");
+    try {
+      // Don't care about the result -- just see if it parses.
+      spdxParser(metadata.license);
+    } catch (e) {
+      throw new Error(
+        `${metadata.license} is not a valid SPDX license. Did you typo it? It is case sensitive. We recommend using // License: LGPL-3.0`
       );
     }
 
@@ -679,7 +696,7 @@ class Builder {
   build() {
     const build = new Build(this.mode);
 
-    const featuredExtensionSlugs = JSON.parse(
+    const featuredExtensionSlugs = ExtendedJSON.parse(
       fs.readFileSync(
         pathUtil.join(this.extensionsRoot, "extensions.json"),
         "utf-8"

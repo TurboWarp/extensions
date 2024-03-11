@@ -2,6 +2,7 @@
 // ID: shovelcss
 // Description: Customize the appearance of variable monitors and prompts in your project.
 // By: TheShovel
+// License: MIT
 
 // Thanks LilyMakesThings for the awesome banner!
 (function (Scratch) {
@@ -32,6 +33,7 @@
   let askInputBorderWidth = -1;
   let askBoxIcon = "";
   let askInputText = "";
+  let askQuestionText = "";
   let askButtonImage = "";
   let askInputBorder = "";
 
@@ -48,6 +50,7 @@
   let askBoxBG;
   let askBoxButton;
   let askBoxInner;
+  let askBoxText;
   let askBoxBorderMain;
   let askBoxBorderOuter;
   if (typeof scaffolding !== "undefined") {
@@ -63,6 +66,7 @@
     askBoxBG = ".sc-question-inner";
     askBoxButton = ".sc-question-submit-button";
     askBoxInner = ".sc-question-input";
+    askBoxText = ".sc-question-text";
     askBoxBorderMain = ".sc-question-input:hover";
     askBoxBorderOuter = ".sc-question-input:focus";
   } else {
@@ -80,6 +84,8 @@
     askBoxButton = 'button[class^="question_question-submit-button_"]';
     askBoxInner =
       '[class^="question_question-container_"] input[class^="input_input-form_"]';
+    askBoxText =
+      '[class^="question_question-container_"] div[class^="question_question-label_"]';
     askBoxIcon = 'img[class^="question_question-submit-button-icon_"]';
     askBoxBorderMain =
       '[class^="question_question-input_"] input:focus, [class^="question_question-input_"] input:hover';
@@ -177,6 +183,9 @@
     if (askInputText) {
       css += `${askBoxInner} { color: ${askInputText} !important; }`;
     }
+    if (askQuestionText) {
+      css += `${askBoxText} { color: ${askQuestionText} !important; }`;
+    }
     if (askInputRoundness >= 0) {
       css += `${askBoxInner} { border-radius: ${askInputRoundness}px !important; }`;
     }
@@ -222,6 +231,7 @@
     askInputBorderWidth = -1;
     askBoxIcon = "";
     askInputText = "";
+    askQuestionText = "";
     askButtonImage = "";
     askInputBorder = "";
 
@@ -280,8 +290,8 @@
       return;
     }
 
-    // Simple linear gradient
-    if (/^linear-gradient\(\d+deg,#?[a-z0-9]+,#?[a-z0-9]+\)$/.test(color)) {
+    // General gradient pattern
+    if (/^[a-z-]+-gradient\([a-z0-9,#%. ]+\)$/i.test(color)) {
       callback(color);
       return;
     }
@@ -508,6 +518,7 @@
               "ask prompt background",
               "ask prompt button background",
               "ask prompt input background",
+              "ask prompt question text",
               "ask prompt input text",
               "ask prompt input border",
             ],
@@ -550,6 +561,7 @@
               "ask prompt background",
               "ask prompt button background",
               "ask prompt input background",
+              "ask prompt question text",
               "ask prompt input text",
               "ask prompt input border",
               "monitor background border width",
@@ -595,6 +607,8 @@
           askButtonBackground = color;
         } else if (args.COLORABLE === "ask prompt input background") {
           askInputBackground = color;
+        } else if (args.COLORABLE === "ask prompt question text") {
+          askQuestionText = color;
         } else if (args.COLORABLE === "ask prompt input text") {
           askInputText = color;
         } else if (args.COLORABLE === "ask prompt input border") {
@@ -719,6 +733,8 @@
         return askButtonBackground;
       } else if (args.ITEM === "ask prompt input background") {
         return askInputBackground;
+      } else if (args.ITEM === "ask prompt question text") {
+        return askQuestionText;
       } else if (args.ITEM === "ask prompt input text") {
         return askInputText;
       } else if (args.ITEM === "ask prompt input border") {
