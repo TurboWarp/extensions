@@ -33,7 +33,7 @@
             text: Scratch.translate({
               default: "join",
               description:
-                "Beginning of the extendable join block. Text inputs follow after this",
+                "Beginning of the extendable join block. Text inputs follow after this. Ideally should match vanilla Scratch's strings",
             }),
             arguments: {},
             mutator: "cst_extendable",
@@ -198,7 +198,7 @@
             blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate({
               default: "if",
-              description: "Beginning of the extendable if blocks",
+              description: "Beginning of the extendable if blocks. Ideally should match vanilla Scratch's strings",
             }),
             branchCount: MAX_EXTENDABLE_BRANCHES,
             mutator: "cst_extendable",
@@ -209,7 +209,7 @@
             blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate({
               default: "if",
-              description: "Beginning of the extendable if blocks",
+              description: "Beginning of the extendable if blocks. Ideally should match vanilla Scratch's strings",
             }),
             branchCount: MAX_EXTENDABLE_BRANCHES,
             mutator: "cst_extendable",
