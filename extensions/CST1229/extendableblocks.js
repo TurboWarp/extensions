@@ -23,6 +23,7 @@
     getInfo() {
       return {
         id: exId,
+        text: Scratch.translate("Extendable Blocks"),
         name: "Extendable Blocks",
         menuIconURI: menuIconURI,
         blocks: [
@@ -30,10 +31,9 @@
             opcode: "extendJoin",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
-              id: "cst1229extendable.join",
               default: "join",
               description:
-                "Part of the extendable join block. Text inputs follow after this",
+                "Beginning of the extendable join block. Text inputs follow after this",
             }),
             arguments: {},
             mutator: "cst_extendable",
@@ -165,10 +165,9 @@
             opcode: "extendArray",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
-              id: "cst1229extendable.createjsonarray",
               default: "create json array",
               description:
-                "Part of the create JSON array block. Text inputs follow after this",
+                "Beginning of the create JSON array block. Text inputs follow after this",
             }),
             arguments: {},
             mutator: "cst_extendable",
@@ -180,10 +179,9 @@
             opcode: "runBranch",
             blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate({
-              id: "cst1229extendable.runbranch",
               default: "run branch [BRANCH] of",
               description:
-                "Part of the run branch of block. C block inputs follow after this",
+                "Beginning of the run branch of block. C block inputs follow after this",
             }),
             arguments: {
               BRANCH: {
@@ -199,9 +197,8 @@
             opcode: "extendIf",
             blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate({
-              id: "cst1229extendable.if",
               default: "if",
-              description: "Part of the extendable if block",
+              description: "Beginning of the extendable if blocks",
             }),
             branchCount: MAX_EXTENDABLE_BRANCHES,
             mutator: "cst_extendable",
@@ -211,9 +208,8 @@
             opcode: "extendIfElse",
             blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate({
-              id: "cst1229extendable.ifelseif",
               default: "if",
-              description: "Part of the extendable if-else block",
+              description: "Beginning of the extendable if blocks",
             }),
             branchCount: MAX_EXTENDABLE_BRANCHES,
             mutator: "cst_extendable",
@@ -223,9 +219,8 @@
             opcode: "extendSwitch",
             blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate({
-              id: "cst1229extendable.switch",
               default: "switch [VALUE]",
-              description: "Part of the extendable switch block",
+              description: "Beginning of the extendable switch block",
             }),
             arguments: {
               VALUE: {
@@ -817,7 +812,11 @@
               function () {
                 this.sourceBlock_.deleteInput();
               },
-              "Remove input",
+              Scratch.translate({
+                default: "Remove input",
+                description:
+                  "Alt text for the button that removes an input on blocks",
+              }),
               true,
               this.inputCount < this.maxInputs
             );
@@ -832,7 +831,11 @@
               function () {
                 this.sourceBlock_.insertInput();
               },
-              "Add input",
+              Scratch.translate({
+                default: "Add input",
+                description:
+                  "Alt text for the button that adds an input on blocks",
+              }),
               true,
               false
             );
@@ -1003,7 +1006,15 @@
           createInput(
             ScratchBlocks.DUMMY_INPUT,
             "WORD",
-            this.type === exId + "_extendAnd" ? "and" : "or"
+            this.type === exId + "_extendAnd" ? Scratch.translate({
+              default: "and",
+              description:
+                'Text inserted between inputs on the extendable "and" block. Ideally you should match vanilla Scratch\'s strings',
+            }) : Scratch.translate({
+              default: "or",
+              description:
+                'Text inserted between inputs on the extendable "or" block. Ideally you should match vanilla Scratch\'s strings',
+            })
           )
         );
         this.inputCount = 1;
@@ -1022,9 +1033,17 @@
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
       ];
       this.extendableDefs = [
-        createInput(ScratchBlocks.DUMMY_INPUT, "ELSE_WORD", "else if"),
+        createInput(ScratchBlocks.DUMMY_INPUT, "ELSE_WORD", Scratch.translate({
+          default: "else if",
+          description:
+            'Text inserted after a C input and before a boolean input on the extendable if blocks.',
+        })),
         createInput(ScratchBlocks.INPUT_VALUE, "CONDITION", "Boolean"),
-        createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", "then"),
+        createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", Scratch.translate({
+          default: "then",
+          description:
+            'Text inserted before a C input on the extendable if blocks. Ideally you should match vanilla Scratch\'s strings',
+        })),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
       ];
       this.inputCount = 0;
@@ -1033,16 +1052,32 @@
     ScratchBlocks.Extensions.register("cst_extendable_if_else", function () {
       this.extendableDefsStart = [
         createInput(ScratchBlocks.INPUT_VALUE, "CONDITION", "Boolean"),
-        createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", "then"),
+        createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", Scratch.translate({
+          default: "then",
+          description:
+            'Text inserted before a C input on the extendable if blocks. Ideally you should match vanilla Scratch\'s strings',
+        })),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
-        createInput(ScratchBlocks.DUMMY_INPUT, "ELSE_WORD", "else"),
+        createInput(ScratchBlocks.DUMMY_INPUT, "ELSE_WORD", Scratch.translate({
+          default: "else",
+          description:
+            'Text inserted before the last C input on the extendable if-else block. Ideally you should match vanilla Scratch\'s strings',
+        })),
       ];
       this.extendableDefs = [
         createInput(ScratchBlocks.DUMMY_INPUT, "IF_WORD", "if"),
         createInput(ScratchBlocks.INPUT_VALUE, "CONDITION", "Boolean"),
-        createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", "then"),
+        createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", Scratch.translate({
+          default: "then",
+          description:
+            'Text inserted before a C input on the extendable if blocks. Ideally you should match vanilla Scratch\'s strings',
+        })),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
-        createInput(ScratchBlocks.DUMMY_INPUT, "ELSE_WORD", "else"),
+        createInput(ScratchBlocks.DUMMY_INPUT, "ELSE_WORD", Scratch.translate({
+          default: "else",
+          description:
+            'Text inserted before the last C input on the extendable if-else block. Ideally you should match vanilla Scratch\'s strings',
+        })),
       ];
       this.extendableDefsEnd = [
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
@@ -1052,7 +1087,11 @@
     });
     ScratchBlocks.Extensions.register("cst_extendable_switch", function () {
       this.extendableDefs = [
-        createInput(ScratchBlocks.DUMMY_INPUT, "CASE_WORD", "case"),
+        createInput(ScratchBlocks.DUMMY_INPUT, "CASE_WORD", Scratch.translate({
+          default: "case",
+          description:
+            'Text inserted between C and text inputs on the extendable switch block',
+        })),
         createInput(
           ScratchBlocks.INPUT_VALUE,
           "CASE_VALUE",
@@ -1064,7 +1103,11 @@
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
       ];
       this.extendableDefsEnd = [
-        createInput(ScratchBlocks.DUMMY_INPUT, "DEFAULT_WORD", "default"),
+        createInput(ScratchBlocks.DUMMY_INPUT, "DEFAULT_WORD", Scratch.translate({
+          default: "default",
+          description:
+            'Text inserted before the last C input on the extendable switch block',
+        })),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
       ];
       this.inputCount = 1;
