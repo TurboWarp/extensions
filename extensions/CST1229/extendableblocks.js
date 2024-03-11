@@ -1009,11 +1009,11 @@
             this.type === exId + "_extendAnd" ? Scratch.translate({
               default: "and",
               description:
-                'Text inserted between inputs on the extendable "and" block. Ideally you should match vanilla Scratch\'s strings',
+                'Text inserted between inputs on the extendable "and" block. Ideally should match vanilla Scratch\'s strings',
             }) : Scratch.translate({
               default: "or",
               description:
-                'Text inserted between inputs on the extendable "or" block. Ideally you should match vanilla Scratch\'s strings',
+                'Text inserted between inputs on the extendable "or" block. Ideally should match vanilla Scratch\'s strings',
             })
           )
         );
@@ -1042,7 +1042,7 @@
         createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", Scratch.translate({
           default: "then",
           description:
-            'Text inserted before a C input on the extendable if blocks. Ideally you should match vanilla Scratch\'s strings',
+            'Text inserted before a C input on the extendable if blocks. Ideally should match vanilla Scratch\'s strings',
         })),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
       ];
@@ -1055,13 +1055,13 @@
         createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", Scratch.translate({
           default: "then",
           description:
-            'Text inserted before a C input on the extendable if blocks. Ideally you should match vanilla Scratch\'s strings',
+            'Text inserted before a C input on the extendable if blocks. Ideally should match vanilla Scratch\'s strings',
         })),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
         createInput(ScratchBlocks.DUMMY_INPUT, "ELSE_WORD", Scratch.translate({
           default: "else",
           description:
-            'Text inserted before the last C input on the extendable if-else block. Ideally you should match vanilla Scratch\'s strings',
+            'Text inserted before the last C input on the extendable if-else block. Ideally should match vanilla Scratch\'s strings',
         })),
       ];
       this.extendableDefs = [
@@ -1070,13 +1070,13 @@
         createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", Scratch.translate({
           default: "then",
           description:
-            'Text inserted before a C input on the extendable if blocks. Ideally you should match vanilla Scratch\'s strings',
+            'Text inserted before a C input on the extendable if blocks. Ideally should match vanilla Scratch\'s strings',
         })),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
         createInput(ScratchBlocks.DUMMY_INPUT, "ELSE_WORD", Scratch.translate({
           default: "else",
           description:
-            'Text inserted before the last C input on the extendable if-else block. Ideally you should match vanilla Scratch\'s strings',
+            'Text inserted before the last C input on the extendable if-else block. Ideally should match vanilla Scratch\'s strings',
         })),
       ];
       this.extendableDefsEnd = [
