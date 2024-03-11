@@ -2,6 +2,7 @@
 // ID: cst1229extendable
 // Description: Blocks with a variable number of inputs.
 // By: CST1229 <https://scratch.mit.edu/users/CST1229/>
+// License: LGPL-3.0
 
 (function (Scratch) {
   "use strict";
