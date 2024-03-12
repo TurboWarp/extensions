@@ -8,9 +8,10 @@
   "use strict";
 
   const Cast = Scratch.Cast;
-  const extensionId = 'arkosmoredatatypes';
+  const extensionId = "arkosmoredatatypes";
 
-  const icon = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzAwMjc3NjYzMDI2IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjkwOTkiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwYXRoIGQ9Ik00MzYgMTI3LjVIMTY4YTQwIDQwIDAgMCAwLTQwIDQwdjEyOGE0MCA0MCAwIDAgMCA0MCA0MGgyNjhhNDAgNDAgMCAwIDAgNDAtNDB2LTEyOGE0MCA0MCAwIDAgMC00MC00MHogbTQyMCAwSDU4OGE0MCA0MCAwIDAgMC00MCA0MHYxMjhhNDAgNDAgMCAwIDAgNDAgNDBoMjY4YTQwIDQwIDAgMCAwIDQwLTQwdi0xMjhhNDAgNDAgMCAwIDAtNDAtNDB6IG0tNDIwIDI4MEgxNjhhNDAgNDAgMCAwIDAtNDAgNDB2MTI4YTQwIDQwIDAgMCAwIDQwIDQwaDI2OGE0MCA0MCAwIDAgMCA0MC00MHYtMTI4YTQwIDQwIDAgMCAwLTQwLTQweiBtNDIwIDAuNUg1ODhhNDAgNDAgMCAwIDAtNDAgNDB2MTI4YTQwIDQwIDAgMCAwIDQwIDQwaDI2OGE0MCA0MCAwIDAgMCA0MC00MFY0NDhhNDAgNDAgMCAwIDAtNDAtNDB6TTQzNiA2ODguNUgxNjhhNDAgNDAgMCAwIDAtNDAgNDB2MTI4YTQwIDQwIDAgMCAwIDQwIDQwaDI2OGE0MCA0MCAwIDAgMCA0MC00MHYtMTI4YTQwIDQwIDAgMCAwLTQwLTQweiBtNDIwIDBINTg4YTQwIDQwIDAgMCAwLTQwIDQwdjEyOGE0MCA0MCAwIDAgMCA0MCA0MGgyNjhhNDAgNDAgMCAwIDAgNDAtNDB2LTEyOGE0MCA0MCAwIDAgMC00MC00MHoiIHAtaWQ9IjkxMDAiIGZpbGw9IiM1MTUxNTEiPjwvcGF0aD48L3N2Zz4=';
+  const icon =
+    "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzAwMjc3NjYzMDI2IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjkwOTkiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwYXRoIGQ9Ik00MzYgMTI3LjVIMTY4YTQwIDQwIDAgMCAwLTQwIDQwdjEyOGE0MCA0MCAwIDAgMCA0MCA0MGgyNjhhNDAgNDAgMCAwIDAgNDAtNDB2LTEyOGE0MCA0MCAwIDAgMC00MC00MHogbTQyMCAwSDU4OGE0MCA0MCAwIDAgMC00MCA0MHYxMjhhNDAgNDAgMCAwIDAgNDAgNDBoMjY4YTQwIDQwIDAgMCAwIDQwLTQwdi0xMjhhNDAgNDAgMCAwIDAtNDAtNDB6IG0tNDIwIDI4MEgxNjhhNDAgNDAgMCAwIDAtNDAgNDB2MTI4YTQwIDQwIDAgMCAwIDQwIDQwaDI2OGE0MCA0MCAwIDAgMCA0MC00MHYtMTI4YTQwIDQwIDAgMCAwLTQwLTQweiBtNDIwIDAuNUg1ODhhNDAgNDAgMCAwIDAtNDAgNDB2MTI4YTQwIDQwIDAgMCAwIDQwIDQwaDI2OGE0MCA0MCAwIDAgMCA0MC00MFY0NDhhNDAgNDAgMCAwIDAtNDAtNDB6TTQzNiA2ODguNUgxNjhhNDAgNDAgMCAwIDAtNDAgNDB2MTI4YTQwIDQwIDAgMCAwIDQwIDQwaDI2OGE0MCA0MCAwIDAgMCA0MC00MHYtMTI4YTQwIDQwIDAgMCAwLTQwLTQweiBtNDIwIDBINTg4YTQwIDQwIDAgMCAwLTQwIDQwdjEyOGE0MCA0MCAwIDAgMCA0MCA0MGgyNjhhNDAgNDAgMCAwIDAgNDAtNDB2LTEyOGE0MCA0MCAwIDAgMC00MC00MHoiIHAtaWQ9IjkxMDAiIGZpbGw9IiM1MTUxNTEiPjwvcGF0aD48L3N2Zz4=";
   // const cover = 'https://m.ccw.site/user_projects_assets/40d3aa39d5101bd5df854cf3a079fa4a.png';
 
   /**
@@ -23,17 +24,17 @@
      * @param {object} obj object or array
      */
     constructor(obj = {}) {
-      super('<SafeObject>');
-      this.assign(typeof obj !== 'object' ? {} : obj);
+      super("<SafeObject>");
+      this.assign(typeof obj !== "object" ? {} : obj);
     }
 
     /**
      * assign an object or array to SafeObject
-     * @param {any} value 
+     * @param {any} value
      */
     assign(value) {
-      if (typeof value !== 'object') {
-        throw new Error('Invalid object to assign for SafeObject');
+      if (typeof value !== "object") {
+        throw new Error("Invalid object to assign for SafeObject");
       }
       this.value = SafeObject.getActualObject(value);
       if (!Array.isArray(this.value)) {
@@ -62,10 +63,10 @@
       const seen = [];
       const res = JSON.stringify(obj, (key, value) => {
         const actualObj = SafeObject.getActualObject(value);
-        if (typeof actualObj === 'object' && actualObj !== null) {
+        if (typeof actualObj === "object" && actualObj !== null) {
           // 检测到循环引用，替换为提示字符串
           if (seen.includes(actualObj)) {
-            return '<Circular Reference>';
+            return "<Circular Reference>";
           }
           seen.push(actualObj);
         }
@@ -93,9 +94,9 @@
      */
     static toSafeObject(value) {
       if (
-        typeof value === 'object'
-        && value !== null
-        && !(value instanceof SafeObject)
+        typeof value === "object" &&
+        value !== null &&
+        !(value instanceof SafeObject)
       ) {
         return new SafeObject(value);
       }
@@ -115,7 +116,7 @@
       }
       const obj = SafeObject.getActualObject(OBJ);
       // 处理基本数据类型
-      if (obj === null || typeof obj !== 'object') {
+      if (obj === null || typeof obj !== "object") {
         return obj;
       }
       const safeObj = new SafeObject();
@@ -170,7 +171,7 @@
     static tryParseSafeObjectString(string) {
       // 使用正则表达式匹配 <SafeObject> {...}
       let match = string.match(/<SafeObject>\s*(.+)$/);
-      if (!match) match = string.match(/<SafeObject\s+(.*?)>$/);// 匹配 <SafeObject {...}>
+      if (!match) match = string.match(/<SafeObject\s+(.*?)>$/); // 匹配 <SafeObject {...}>
 
       if (match) {
         // 提取匹配到的 JSON 字符串
@@ -179,10 +180,10 @@
         try {
           // 尝试解析 JSON 字符串为对象
           const obj = SafeObject.parse(jsonString);
-          if (typeof obj !== 'object' || obj === null) return string;
+          if (typeof obj !== "object" || obj === null) return string;
           return obj;
         } catch (error) {
-          console.error('Error parsing SafeObject:', error);
+          console.error("Error parsing SafeObject:", error);
           return string;
         }
       } else {
@@ -197,18 +198,18 @@
     static parseAllVarInProject(runtime) {
       runtime.targets.forEach(({ variables }) => {
         Object.values(variables).forEach((variable) => {
-          if (variable.type === '') {
+          if (variable.type === "") {
             // 变量
-            if (typeof variable.value === 'string') {
+            if (typeof variable.value === "string") {
               variable.value = SafeObject.tryParseSafeObjectString(
-                variable.value,
+                variable.value
               );
             }
-          } else if (variable.type === 'list') {
+          } else if (variable.type === "list") {
             // 列表
             const list = variable.value;
             for (let i = 0; i < list.length; i += 1) {
-              if (typeof list[i] === 'string') {
+              if (typeof list[i] === "string") {
                 list[i] = SafeObject.tryParseSafeObjectString(list[i]);
               }
             }
@@ -233,205 +234,115 @@
       /** 是否启用嵌套功能 */
       this.enableNesting = true;
 
-      this.runtime.on('PROJECT_LOADED', () => {
+      this.runtime.on("PROJECT_LOADED", () => {
         // SafeObject will be converted to string (like '<SafeObject> {...}') when saved in the project
         // So when the project was loaded，code below will convert all string like '<SafeObject> {...}' back to SafeObjects.
         SafeObject.parseAllVarInProject(this.runtime);
       });
 
-      this.initFormatMessage({
-        extensionName: ['高级数据结构', 'Advanced Data Structure'],
-        // 'docsURI': [
-        //   'https://extensions.turbowarp.org/moreDataTypes',
-        //   'https://extensions.turbowarp.org/moreDataTypes',
-        // ],
-        'name.list': ['（列表）', '(list) '],
-        'name.object': ['（对象）', '(object) '],
-        'tag.tempData': ['数据', 'Data'],
-        'tag.tools': ['常用工具', 'Common Tools'],
-        'tag.tempVar': ['临时数据', 'Temporary Data'],
-        'tag.complexData': [' 复杂数据类型', 'Complex Data'],
-        'tag.list': ['列表操作', 'List Operation'],
-        'tag.object': ['对象操作', 'Object Operation'],
-        'tag.ScratchList': ['🐱原版列表', '🐱Scratch List'],
-        'block.getScratchList': ['🗄️原版列表[NAME]', '🗄️Scratch list[NAME]'],
-        'block.setScratchList': ['将原版列表[NAME]指向🗄️列表[OBJ]', 'set Scratch list[NAME]to🗄️[OBJ]'],
-        'block.deleteAllTempData': ['清空所有数据', 'delete all data'],
-        'block.listAllData': ['查看所有数据名称', 'names of exsiting data'],
-        'block.delTempData': [
-          '删除名为[NAME]的数据',
-          'delete data with name[NAME]',
-        ],
-        'block.ifTempDataExist': [
-          '存在名为[NAME]的数据？',
-          'data with name[NAME]exists?',
-        ],
-        'defaultValue.dataName': ['数据', 'data'],
-        'defaultValue.listName': ['我的列表', 'my list'],
-        'defaultValue.objName': ['我的对象', 'my object'],
-        'defaultValue.JSON': [
-          '"姓名":"小明","年龄":12,"朋友":["埃米","泰拉"]',
+      const l10n = {
+        extensionName: "Advanced Data Structure",
+        "name.list": "(list) ",
+        "name.object": "(object) ",
+        "tag.tempData": "Data",
+        "tag.tools": "Common Tools",
+        "tag.tempVar": "Temporary Data",
+        "tag.complexData": "Complex Data",
+        "tag.list": "List Operation",
+        "tag.object": "Object Operation",
+        "tag.ScratchList": "🐱Scratch List",
+        "block.getScratchList": "🗄️Scratch list[NAME]",
+        "block.setScratchList": "set Scratch list[NAME]to🗄️[OBJ]",
+        "block.deleteAllTempData": "delete all data",
+        "block.listAllData": "names of exsiting data",
+        "block.delTempData": "delete data with name[NAME]",
+        "block.ifTempDataExist": "data with name[NAME]exists?",
+        "defaultValue.dataName": "data",
+        "defaultValue.listName": "my list",
+        "defaultValue.objName": "my object",
+        "defaultValue.JSON":
           '"name":"Tera","age":12,"friends":["Amy","XiaoMing"]',
-        ],
-        'defaultValue.dataNameOrObj': [
-          '名称(或传入对象)',
-          'name (or input object)',
-        ],
+        "defaultValue.dataNameOrObj": "name (or input object)",
+        "block.setTempData": "data[NAME][OP][VALUE]",
+        "menu.op.set": "set to",
+        "menu.op.add": "change by",
+        "menu.op.insert": "insert before",
+        "menu.op.parse": "parse from JSON",
+        "menu.op.parse_warning": "parse from JSON",
+        "menu.op.shallowCopy": "shallow copy from",
+        "menu.op.deepCopy": "deep copy from",
+        "block.copyFrom": "🗄️[OP]object[OBJ]",
+        "menu.shallow": "shallow copy",
+        "menu.deep": "deep copy",
+        "block.getTempData": "data[NAME]",
+        "menu.getOption.objectAllowed": "value",
+        "menu.getOption.json": "JSON",
+        "block.getObjFromJson": "🗄️parse string [VALUE] to object",
+        "block.newEmptyObjOrArray": "🗄️create an [OPTION]",
+        "menu.emptyList": "empty list",
+        "menu.emptyObj": "empty object",
+        "block.getNewList": "🗄️ empty list",
+        "block.getNewObject": "🗄️ empty object",
+        "block.typeOf": "type of [VALUE]",
+        "block.JSONOf": "convert object[VALUE] to string",
+        "block.createOrClearList": "set data [NAME]to an empty list",
+        "block.addItemToList": "add [VALUE] to list [NAME_OR_OBJ]",
+        "block.mergeList": "🗄️[OP][LIST1][LIST2]",
+        "menu.merge": "merge lists",
+        "menu.union": "merge lists and remove duplicates",
+        "menu.intersection": "common elements between lists",
+        "menu.difference": "elements in list1 but not in list2",
+        "block.mergeObject":
+          "copy 🗄️object[OBJ] properties to object[NAME_OR_OBJ] (overwrite existing properties)",
+        "block.opList": "[OP]list[NAME_OR_OBJ]",
+        "menu.shuffle": "shuffle",
+        "menu.reverse": "reverse",
+        "menu.ascSort": "sort (ascending)",
+        "menu.descSort": "sort (descending)",
+        "menu.removeDuplicates": "remove duplicates from",
+        "block.sortListByProp":
+          "[OP]list[NAME_OR_OBJ]containing objects by property[PROP]",
+        "block.addItemToList2": "[VALUE][OP]list[NAME_OR_OBJ]",
+        "menu.addTo": "add to",
+        "menu.removeFrom": "remove from",
+        "menu.ifNotExistsaddTo": "(if not exists) add to",
+        "block.addItemToListAndReturn": "🗄️[VALUE][OP]list[OBJ]",
+        "block.createListWithLength": "🗄️create a list with [N]x[VALUE]",
+        "defaultValue.thing": "thing",
+        "block.setItemOfList": "item [IDX] of list [NAME_OR_OBJ][OP][VALUE]",
+        "menu.value": "value",
+        "block.delItemOfList": "delete item [IDX] of list [NAME_OR_OBJ]",
+        "block.getItemOfList": "item [IDX] of list [NAME_OR_OBJ]",
+        "block.lengthOfList": "length of list [NAME_OR_OBJ]",
+        "block.ifListItemExist": "list [NAME_OR_OBJ] contains [VALUE]?",
+        "block.getListItemIdxByItem": "item # of [VALUE] in list [NAME_OR_OBJ]",
+        "block.createOrClearObject": "set data [NAME]to an empty object",
+        "block.setPropOfObject": "[PROP] of object [NAME_OR_OBJ][OP][VALUE]",
+        "block.setPropOfObjectAndReturn": "🗄️[PROP] of object [OBJ][OP][VALUE]",
+        "defaultValue.prop": "property",
+        "block.delPropOfObject": "delete [PROP] of object [NAME_OR_OBJ]",
+        "block.getPropOfObject": "[PROP] of object [NAME_OR_OBJ]",
+        "block.getPropOfObjectByIdx":
+          "[OPTION] of item [IDX] of object [NAME_OR_OBJ]",
+        "menu.conInfo.name": "name",
+        "menu.conInfo.value": "content",
+        "menu.conInfo.objValue": "content",
+        "menu.conInfo.json": "JSON",
+        "block.getAllProperties": "get all[OPTION] of object [NAME_OR_OBJ]",
+        "menu.keys": "keys",
+        "menu.values": "values",
+        "menu.entries": "entries",
+        "block.sizeOfObject": "size of object [NAME_OR_OBJ]",
+        "block.ifObjectPropExist": "object [NAME_OR_OBJ] has [PROP]?",
+      };
 
-        'block.setTempData': ['将数据[NAME][OP][VALUE]', 'data[NAME][OP][VALUE]'],
-        'menu.op.set': ['设为', 'set to'],
-        'menu.op.add': ['增加', 'change by'],
-        'menu.op.insert': ['前插入', 'insert before'],
-        'menu.op.parse': ['从JSON解析', 'parse from JSON'],
-        'menu.op.parse_warning': ['从JSON解析', 'parse from JSON'],
-        'menu.op.shallowCopy': ['单层拷贝对象', 'shallow copy from'],
-        'menu.op.deepCopy': ['深度拷贝对象', 'deep copy from'],
-
-        'block.copyFrom': ['🗄️[OP]复制对象[OBJ]', '🗄️[OP]object[OBJ]'],
-        'menu.shallow': ['单层', 'shallow copy'],
-        'menu.deep': ['完全', 'deep copy'],
-
-        'block.getTempData': ['数据[NAME]', 'data[NAME]'],
-        'menu.getOption.objectAllowed': ['值', 'value'],
-        'menu.getOption.json': ['JSON', 'JSON'],
-        'block.getObjFromJson': [
-          '🗄️字符串[VALUE]解析为对象',
-          '🗄️parse string [VALUE] to object',
-        ],
-        'block.newEmptyObjOrArray': ['🗄️返回一个[OPTION]', '🗄️create an [OPTION]'],
-        'menu.emptyList': ['空列表', 'empty list'],
-        'menu.emptyObj': ['空对象', 'empty object'],
-        'block.getNewList': ['🗄️空列表', '🗄️ empty list'],
-        'block.getNewObject': ['🗄️空对象', '🗄️ empty object'],
-        'block.typeOf': ['[VALUE]的类型', 'type of [VALUE]'],
-        'block.JSONOf': ['[VALUE]转换为字符串', 'convert object[VALUE] to string'],
-        'block.createOrClearList': [
-          '将数据(填名称)[NAME]设为空列表',
-          'set data [NAME]to an empty list',
-        ],
-        'block.addItemToList': [
-          '向列表[NAME_OR_OBJ]加入[VALUE]',
-          'add [VALUE] to list [NAME_OR_OBJ]',
-        ],
-
-        'block.mergeList': [
-          '🗄️[OP][LIST1][LIST2]',
-          '🗄️[OP][LIST1][LIST2]',
-        ],
-        'menu.merge': ['合并列表', 'merge lists'],
-        'menu.union': ['合并列表并去重', 'merge lists and remove duplicates'],
-        'menu.intersection': ['列表交集', 'common elements between lists'],
-        'menu.difference': ['列表1有而列表2没有', 'elements in list1 but not in list2'],
-
-        'block.mergeObject': [
-          '给对象[NAME_OR_OBJ]追加🗄️对象[OBJ]里的属性(已有属性则覆盖)',
-          'copy 🗄️object[OBJ] properties to object[NAME_OR_OBJ] (overwrite existing properties)',
-        ],
-        'block.opList': [
-          '将列表[NAME_OR_OBJ][OP]',
-          '[OP]list[NAME_OR_OBJ]',
-        ],
-        'menu.shuffle': ['打乱', 'shuffle'],
-        'menu.reverse': ['反转', 'reverse'],
-        'menu.ascSort': ['升序排序', 'sort (ascending)'],
-        'menu.descSort': ['降序排序', 'sort (descending)'],
-        'menu.removeDuplicates': ['去重', 'remove duplicates from'],
-        'block.sortListByProp': [
-          '将列表[NAME_OR_OBJ]里的每个对象以属性[PROP][OP]',
-          '[OP]list[NAME_OR_OBJ]containing objects by property[PROP]',
-        ],
-
-        'block.addItemToList2': [
-          '向列表[NAME_OR_OBJ][OP][VALUE]',
-          '[VALUE][OP]list[NAME_OR_OBJ]',
-        ],
-        'menu.addTo': ['加入', 'add to'],
-        'menu.removeFrom': ['移除', 'remove from'],
-        'menu.ifNotExistsaddTo': ['(如果不存在)加入', '(if not exists) add to'],
-
-        'block.addItemToListAndReturn': [
-          '🗄️向列表[OBJ][OP][VALUE]',
-          '🗄️[VALUE][OP]list[OBJ]',
-        ],
-        'block.createListWithLength': [
-          '🗄️创建包含[N]个[VALUE]的列表',
-          '🗄️create a list with [N]x[VALUE]',
-        ],
-        'defaultValue.thing': ['东西', 'thing'],
-        'block.setItemOfList': [
-          '列表[NAME_OR_OBJ]第[IDX]项[OP][VALUE]',
-          'item [IDX] of list [NAME_OR_OBJ][OP][VALUE]',
-        ],
-        // 'block.insertItemIntoList': [
-        //   '在列表[NAME_OR_OBJ]第[IDX]项前插入[VALUE]',
-        //   'insert [VALUE] at [IDX] of list [NAME_OR_OBJ]',
-        // ],
-        'menu.value': ['值', 'value'],
-        'block.delItemOfList': [
-          '删除列表[NAME_OR_OBJ]第[IDX]项',
-          'delete item [IDX] of list [NAME_OR_OBJ]',
-        ],
-        'block.getItemOfList': [
-          '列表[NAME_OR_OBJ]第[IDX]项',
-          'item [IDX] of list [NAME_OR_OBJ]',
-        ],
-        'block.lengthOfList': [
-          '列表[NAME_OR_OBJ]长度',
-          'length of list [NAME_OR_OBJ]',
-        ],
-        'block.ifListItemExist': [
-          '列表[NAME_OR_OBJ]包含[VALUE]？',
-          'list [NAME_OR_OBJ] contains [VALUE]?',
-        ],
-        'block.getListItemIdxByItem': [
-          '列表[NAME_OR_OBJ]中第一个[VALUE]的编号',
-          'item # of [VALUE] in list [NAME_OR_OBJ]',
-        ],
-        'block.createOrClearObject': [
-          '将数据(填名称)[NAME]设为空对象',
-          'set data [NAME]to an empty object',
-        ],
-        'block.setPropOfObject': [
-          '对象[NAME_OR_OBJ]的[PROP][OP][VALUE]',
-          '[PROP] of object [NAME_OR_OBJ][OP][VALUE]',
-        ],
-        'block.setPropOfObjectAndReturn': [
-          '🗄️对象[OBJ]的[PROP][OP][VALUE]',
-          '🗄️[PROP] of object [OBJ][OP][VALUE]',
-        ],
-        'defaultValue.prop': ['属性', 'property'],
-        'block.delPropOfObject': [
-          '删除对象[NAME_OR_OBJ]中名为[PROP]的内容',
-          'delete [PROP] of object [NAME_OR_OBJ]',
-        ],
-        'block.getPropOfObject': [
-          '对象[NAME_OR_OBJ]的[PROP]',
-          '[PROP] of object [NAME_OR_OBJ]',
-        ],
-        'block.getPropOfObjectByIdx': [
-          '对象[NAME_OR_OBJ]第[IDX]项的[OPTION]',
-          '[OPTION] of item [IDX] of object [NAME_OR_OBJ]',
-        ],
-        'menu.conInfo.name': ['名称', 'name'],
-        'menu.conInfo.value': ['内容', 'content'],
-        'menu.conInfo.objValue': ['内容', 'content'],
-        'menu.conInfo.json': ['JSON', 'JSON'],
-        'block.getAllProperties': [
-          '对象[NAME_OR_OBJ]的所有[OPTION]',
-          'get all[OPTION] of object [NAME_OR_OBJ]',
-        ],
-        'menu.keys': ['属性名', 'keys'],
-        'menu.values': ['属性值', 'values'],
-        'menu.entries': [' [键, 值] 对', 'entries'],
-        'block.sizeOfObject': [
-          '对象[NAME_OR_OBJ]中内容数',
-          'size of object [NAME_OR_OBJ]',
-        ],
-        'block.ifObjectPropExist': [
-          '对象[NAME_OR_OBJ]包含[PROP]？',
-          'object [NAME_OR_OBJ] has [PROP]?',
-        ],
-      });
+      this.formatMessage = (id) => {
+        return Scratch.translate({
+          id,
+          default: l10n[id],
+          description: id,
+        });
+      };
     }
 
     /**
@@ -440,50 +351,25 @@
      * @returns
      */
     __dataNameOrObjMsg(type) {
-      return this.formatMessage(
-        'defaultValue.dataName',
-      );
-    }
-
-    /**
-     * 读取中英文l10n信息，并给每个信息id前加上扩展id
-     * @param {{[id:string]:[string, string]}} l10n 中英文l10n信息
-     */
-    initFormatMessage(l10n) {
-      const res = { 'zh-cn': {}, en: {} };
-
-      Object.entries(l10n).forEach(([id, msgs]) => {
-        // const ID = `${extensionId}.${id}`;
-        [res['zh-cn'][id], res.en[id]] = msgs;
-      });
-      // not sure if this is OK to init l10n here?
-      Scratch.translate.setup(res);
-      this.formatMessage = (id) => {
-        // const ID = `${extensionId}.${id}`;
-        return Scratch.translate({
-          id,
-          default: id,
-          description: id,
-        });
-      };
+      return this.formatMessage("defaultValue.dataName");
     }
 
     getInfo() {
       return {
         id: extensionId, // 拓展id
-        name: this.formatMessage('extensionName'),
+        name: this.formatMessage("extensionName"),
         // docsURI: this.formatMessage('docsURI'),
-        color1: '#DA4D16',
+        color1: "#DA4D16",
         menuIconURI: icon,
         // blockIconURI: icon,
         blocks: [
           // "---" + this.formatMessage("tag.tempData"), // 数据
-          '---',
+          "---",
           // 获取某内容类型
           {
-            opcode: 'typeOf',
+            opcode: "typeOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: this.formatMessage('block.typeOf'),
+            text: this.formatMessage("block.typeOf"),
             // hideFromPalette: !this.enableNesting,
             arguments: {
               VALUE: {
@@ -494,9 +380,9 @@
           },
           // 获取某内容JSON
           {
-            opcode: 'JSONOf',
+            opcode: "JSONOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: this.formatMessage('block.JSONOf'),
+            text: this.formatMessage("block.JSONOf"),
             hideFromPalette: !this.enableNesting,
             arguments: {
               VALUE: {
@@ -507,28 +393,27 @@
           },
           // 由JSON返回对象
           {
-            opcode: 'getObjFromJson',
+            opcode: "getObjFromJson",
             blockType: Scratch.BlockType.REPORTER,
-            text: this.formatMessage('block.getObjFromJson'),
+            text: this.formatMessage("block.getObjFromJson"),
             // hideFromPalette: !this.enableNesting,
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue:
-                  `{${this.formatMessage('defaultValue.JSON')}}`,
+                defaultValue: `{${this.formatMessage("defaultValue.JSON")}}`,
               },
             },
           },
           // 复制对象
           {
-            opcode: 'copyFrom',
+            opcode: "copyFrom",
             blockType: Scratch.BlockType.REPORTER,
-            text: this.formatMessage('block.copyFrom'),
+            text: this.formatMessage("block.copyFrom"),
             hideFromPalette: !this.enableNesting,
             arguments: {
               OP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'COPY_MENU',
+                menu: "COPY_MENU",
               },
               OBJ: {
                 type: null,
@@ -537,91 +422,91 @@
           },
           // 返回一个空数组/对象
           {
-            opcode: 'newEmptyObjOrArray',
+            opcode: "newEmptyObjOrArray",
             blockType: Scratch.BlockType.REPORTER,
-            text: this.formatMessage('block.newEmptyObjOrArray'),
+            text: this.formatMessage("block.newEmptyObjOrArray"),
             disableMonitor: true,
             hideFromPalette: true, // !this.enableNesting,
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
                 // defaultValue: this.formatMessage("defaultValue.JSON"),
-                menu: 'EMPTY_LIST_OR_OBJ',
+                menu: "EMPTY_LIST_OR_OBJ",
               },
             },
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: this.formatMessage('tag.tempVar'),
+            text: this.formatMessage("tag.tempVar"),
           },
           // 清空所有数据
           {
-            opcode: 'deleteAllTempData',
+            opcode: "deleteAllTempData",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.deleteAllTempData'),
+            text: this.formatMessage("block.deleteAllTempData"),
           },
           // 数据量
           {
-            opcode: 'listAllData',
+            opcode: "listAllData",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.listAllData'),
+            text: this.formatMessage("block.listAllData"),
           },
           // 删除数据
           {
-            opcode: 'delTempData',
+            opcode: "delTempData",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.delTempData'),
+            text: this.formatMessage("block.delTempData"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.dataName'),
+                defaultValue: this.formatMessage("defaultValue.dataName"),
               },
             },
           },
           // 判断数据存在
           {
-            opcode: 'ifTempDataExist',
+            opcode: "ifTempDataExist",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: this.formatMessage('block.ifTempDataExist'),
+            text: this.formatMessage("block.ifTempDataExist"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.dataName'),
+                defaultValue: this.formatMessage("defaultValue.dataName"),
               },
             },
           },
-          '---',
+          "---",
           // 设置数据
           {
-            opcode: 'setTempData',
+            opcode: "setTempData",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.setTempData'),
+            text: this.formatMessage("block.setTempData"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.dataName'),
+                defaultValue: this.formatMessage("defaultValue.dataName"),
               },
               OP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'DATA_SET_OPTION',
+                menu: "DATA_SET_OPTION",
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '100',
+                defaultValue: "100",
               },
             },
           },
           // 获取数据
           {
-            opcode: 'getTempData',
+            opcode: "getTempData",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.getTempData'),
+            text: this.formatMessage("block.getTempData"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.dataName'),
+                defaultValue: this.formatMessage("defaultValue.dataName"),
               },
               // OPTION: {
               //   type: Scratch.ArgumentType.STRING,
@@ -632,21 +517,21 @@
           // "---" + this.formatMessage("tag.complexData"),
           {
             blockType: Scratch.BlockType.LABEL,
-            text: this.formatMessage('tag.list'),
+            text: this.formatMessage("tag.list"),
           },
           // 返回一个空列表
           {
-            opcode: 'getNewList',
+            opcode: "getNewList",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.getNewList'),
+            text: this.formatMessage("block.getNewList"),
           },
           // 返回一个N个NUM的列表
           {
-            opcode: 'createListWithLength',
+            opcode: "createListWithLength",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.createListWithLength'),
+            text: this.formatMessage("block.createListWithLength"),
             arguments: {
               N: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -654,90 +539,90 @@
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '0',
+                defaultValue: "0",
               },
             },
           },
           // 向列表加入(返回值版)
           {
-            opcode: 'addItemToListAndReturn',
+            opcode: "addItemToListAndReturn",
             blockType: Scratch.BlockType.REPORTER,
-            text: this.formatMessage('block.addItemToListAndReturn'),
+            text: this.formatMessage("block.addItemToListAndReturn"),
             arguments: {
               OBJ: {
                 type: null,
               },
               OP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'LIST_ADD_OR_REMOVE',
+                menu: "LIST_ADD_OR_REMOVE",
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.thing'),
+                defaultValue: this.formatMessage("defaultValue.thing"),
               },
             },
           },
-          '---',
+          "---",
           // 创建空列表
           {
-            opcode: 'createOrClearList',
+            opcode: "createOrClearList",
             blockType: Scratch.BlockType.COMMAND,
             // hideFromPalette: true, // 积木隐藏（这个积木的用法容易让人误会）
-            text: this.formatMessage('block.createOrClearList'),
+            text: this.formatMessage("block.createOrClearList"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('list'),
+                defaultValue: this.__dataNameOrObjMsg("list"),
               },
             },
           },
           // 向列表加入(旧版，隐藏)
           {
-            opcode: 'addItemToList',
+            opcode: "addItemToList",
             blockType: Scratch.BlockType.COMMAND,
             hideFromPalette: true,
-            text: this.formatMessage('block.addItemToList'),
+            text: this.formatMessage("block.addItemToList"),
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('list'),
+                defaultValue: this.__dataNameOrObjMsg("list"),
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.thing'),
+                defaultValue: this.formatMessage("defaultValue.thing"),
               },
             },
           },
           // 向列表加入
           {
-            opcode: 'addItemToList2',
+            opcode: "addItemToList2",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.addItemToList2'),
+            text: this.formatMessage("block.addItemToList2"),
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('list'),
+                defaultValue: this.__dataNameOrObjMsg("list"),
               },
               OP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'LIST_ADD_OR_REMOVE',
+                menu: "LIST_ADD_OR_REMOVE",
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.thing'),
+                defaultValue: this.formatMessage("defaultValue.thing"),
               },
             },
           },
           // 设置列表
           {
-            opcode: 'setItemOfList',
+            opcode: "setItemOfList",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.setItemOfList'),
+            text: this.formatMessage("block.setItemOfList"),
             // isDynamic: true,
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('list'),
+                defaultValue: this.__dataNameOrObjMsg("list"),
               },
               IDX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -745,24 +630,24 @@
               },
               OP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'LIST_SET_OPTION',
+                menu: "LIST_SET_OPTION",
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.thing'),
+                defaultValue: this.formatMessage("defaultValue.thing"),
               },
             },
           },
           // 删除列表XX项
           {
-            opcode: 'delItemOfList',
+            opcode: "delItemOfList",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.delItemOfList'),
+            text: this.formatMessage("block.delItemOfList"),
             // isDynamic: true,
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('list'),
+                defaultValue: this.__dataNameOrObjMsg("list"),
               },
               IDX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -770,18 +655,18 @@
               },
             },
           },
-          '---',
+          "---",
           // 获取列表XX项
           {
-            opcode: 'getItemOfList',
+            opcode: "getItemOfList",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.getItemOfList'),
+            text: this.formatMessage("block.getItemOfList"),
             // isDynamic: true,
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('list'),
+                defaultValue: this.__dataNameOrObjMsg("list"),
               },
               IDX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -795,63 +680,63 @@
           },
           // 列表长度
           {
-            opcode: 'lengthOfList',
+            opcode: "lengthOfList",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.lengthOfList'),
+            text: this.formatMessage("block.lengthOfList"),
             // isDynamic: true,
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('list'),
+                defaultValue: this.__dataNameOrObjMsg("list"),
               },
             },
           },
           // 列表包含xx?
           {
-            opcode: 'ifListItemExist',
+            opcode: "ifListItemExist",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: this.formatMessage('block.ifListItemExist'),
+            text: this.formatMessage("block.ifListItemExist"),
             // isDynamic: true,
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('list'),
+                defaultValue: this.__dataNameOrObjMsg("list"),
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.thing'),
+                defaultValue: this.formatMessage("defaultValue.thing"),
               },
             },
           },
           // 获取列表第一个xx的索引
           {
-            opcode: 'getListItemIdxByItem',
+            opcode: "getListItemIdxByItem",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.getListItemIdxByItem'),
+            text: this.formatMessage("block.getListItemIdxByItem"),
             // isDynamic: true,
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('list'),
+                defaultValue: this.__dataNameOrObjMsg("list"),
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.thing'),
+                defaultValue: this.formatMessage("defaultValue.thing"),
               },
             },
           },
-          '---',
+          "---",
           // 合并列表
           {
-            opcode: 'mergeList',
+            opcode: "mergeList",
             blockType: Scratch.BlockType.REPORTER,
-            text: this.formatMessage('block.mergeList'),
+            text: this.formatMessage("block.mergeList"),
             arguments: {
               OP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'OP_LISTS',
+                menu: "OP_LISTS",
               },
               LIST1: {
                 type: null,
@@ -863,145 +748,145 @@
           },
           // 列表反转、排序等操作
           {
-            opcode: 'opList',
+            opcode: "opList",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.opList'),
+            text: this.formatMessage("block.opList"),
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('list'),
+                defaultValue: this.__dataNameOrObjMsg("list"),
               },
               OP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'LIST_OP',
+                menu: "LIST_OP",
               },
             },
           },
           // 含对象的列表排序
           {
-            opcode: 'sortListByProp',
+            opcode: "sortListByProp",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.sortListByProp'),
+            text: this.formatMessage("block.sortListByProp"),
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('list'),
+                defaultValue: this.__dataNameOrObjMsg("list"),
               },
               PROP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.prop'),
+                defaultValue: this.formatMessage("defaultValue.prop"),
               },
               OP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'SORT_ORDER',
+                menu: "SORT_ORDER",
               },
             },
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: this.formatMessage('tag.object'),
+            text: this.formatMessage("tag.object"),
           },
           // 返回一个空对象
           {
-            opcode: 'getNewObject',
+            opcode: "getNewObject",
             disableMonitor: true,
             blockType: Scratch.BlockType.REPORTER,
-            text: this.formatMessage('block.getNewObject'),
+            text: this.formatMessage("block.getNewObject"),
           },
           // 设置对象(并返回)
           {
-            opcode: 'setPropOfObjectAndReturn',
+            opcode: "setPropOfObjectAndReturn",
             blockType: Scratch.BlockType.REPORTER,
-            text: this.formatMessage('block.setPropOfObjectAndReturn'),
+            text: this.formatMessage("block.setPropOfObjectAndReturn"),
             arguments: {
               OBJ: {
                 type: null,
               },
               PROP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.prop'),
+                defaultValue: this.formatMessage("defaultValue.prop"),
               },
               OP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'ITEM_SET_OPTION',
+                menu: "ITEM_SET_OPTION",
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.thing'),
+                defaultValue: this.formatMessage("defaultValue.thing"),
               },
             },
           },
-          '---',
+          "---",
           // 创建空对象
           {
-            opcode: 'createOrClearObject',
+            opcode: "createOrClearObject",
             blockType: Scratch.BlockType.COMMAND,
             // hideFromPalette: true, // 积木隐藏（这个积木的用法容易让人误会）
-            text: this.formatMessage('block.createOrClearObject'),
+            text: this.formatMessage("block.createOrClearObject"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('obj'),
+                defaultValue: this.__dataNameOrObjMsg("obj"),
               },
             },
           },
           // 设置对象
           {
-            opcode: 'setPropOfObject',
+            opcode: "setPropOfObject",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.setPropOfObject'),
+            text: this.formatMessage("block.setPropOfObject"),
             // isDynamic: true,
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('obj'),
+                defaultValue: this.__dataNameOrObjMsg("obj"),
               },
               PROP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.prop'),
+                defaultValue: this.formatMessage("defaultValue.prop"),
               },
               OP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'ITEM_SET_OPTION',
+                menu: "ITEM_SET_OPTION",
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.thing'),
+                defaultValue: this.formatMessage("defaultValue.thing"),
               },
             },
           },
           // 删除对象名为xx的内容
           {
-            opcode: 'delPropOfObject',
+            opcode: "delPropOfObject",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.delPropOfObject'),
+            text: this.formatMessage("block.delPropOfObject"),
             // isDynamic: true,
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('obj'),
+                defaultValue: this.__dataNameOrObjMsg("obj"),
               },
               PROP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.prop'),
+                defaultValue: this.formatMessage("defaultValue.prop"),
               },
             },
           },
-          '---',
+          "---",
           // 获取对象名为XX的内容
           {
-            opcode: 'getPropOfObject',
+            opcode: "getPropOfObject",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.getPropOfObject'),
+            text: this.formatMessage("block.getPropOfObject"),
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('obj'),
+                defaultValue: this.__dataNameOrObjMsg("obj"),
               },
               PROP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.prop'),
+                defaultValue: this.formatMessage("defaultValue.prop"),
               },
               // OPTION: {
               //   type: Scratch.ArgumentType.STRING,
@@ -1011,46 +896,46 @@
           },
           // 对象长度
           {
-            opcode: 'sizeOfObject',
+            opcode: "sizeOfObject",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.sizeOfObject'),
+            text: this.formatMessage("block.sizeOfObject"),
             // isDynamic: true,
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('obj'),
+                defaultValue: this.__dataNameOrObjMsg("obj"),
               },
             },
           },
           // 对象属性是否存在
           {
-            opcode: 'ifObjectPropExist',
+            opcode: "ifObjectPropExist",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: this.formatMessage('block.ifObjectPropExist'),
+            text: this.formatMessage("block.ifObjectPropExist"),
             // isDynamic: true,
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('obj'),
+                defaultValue: this.__dataNameOrObjMsg("obj"),
               },
               PROP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.formatMessage('defaultValue.prop'),
+                defaultValue: this.formatMessage("defaultValue.prop"),
               },
             },
           },
           // 获取对象第n项的xx
           {
-            opcode: 'getPropOfObjectByIdx',
+            opcode: "getPropOfObjectByIdx",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.getPropOfObjectByIdx'),
+            text: this.formatMessage("block.getPropOfObjectByIdx"),
             // isDynamic: true,
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('obj'),
+                defaultValue: this.__dataNameOrObjMsg("obj"),
               },
               IDX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1058,37 +943,37 @@
               },
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'OBJECT_GET_OPTION',
+                menu: "OBJECT_GET_OPTION",
               },
             },
           },
           // 获取对象所有键
           {
-            opcode: 'getAllProperties',
+            opcode: "getAllProperties",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.getAllProperties'),
+            text: this.formatMessage("block.getAllProperties"),
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('obj'),
+                defaultValue: this.__dataNameOrObjMsg("obj"),
               },
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'KEYS_OR_VALUES_OR_ENTRIES',
+                menu: "KEYS_OR_VALUES_OR_ENTRIES",
               },
             },
           },
-          '---',
+          "---",
           // 合并对象
           {
-            opcode: 'mergeObject',
+            opcode: "mergeObject",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.mergeObject'),
+            text: this.formatMessage("block.mergeObject"),
             arguments: {
               NAME_OR_OBJ: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this.__dataNameOrObjMsg('obj'),
+                defaultValue: this.__dataNameOrObjMsg("obj"),
               },
               OBJ: {
                 type: null,
@@ -1097,30 +982,30 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: this.formatMessage('tag.ScratchList'),
+            text: this.formatMessage("tag.ScratchList"),
           },
           // 获取原版列表
           {
-            opcode: 'getScratchList',
+            opcode: "getScratchList",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: this.formatMessage('block.getScratchList'),
+            text: this.formatMessage("block.getScratchList"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'LIST_MENU',
+                menu: "LIST_MENU",
               },
             },
           },
           // 设置原版列表
           {
-            opcode: 'setScratchList',
+            opcode: "setScratchList",
             blockType: Scratch.BlockType.COMMAND,
-            text: this.formatMessage('block.setScratchList'),
+            text: this.formatMessage("block.setScratchList"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'LIST_MENU',
+                menu: "LIST_MENU",
               },
               OBJ: {
                 type: null,
@@ -1131,125 +1016,125 @@
         menus: {
           LIST_ADD_OR_REMOVE: [
             {
-              text: this.formatMessage('menu.addTo'),
-              value: 'add',
+              text: this.formatMessage("menu.addTo"),
+              value: "add",
             },
             {
-              text: this.formatMessage('menu.removeFrom'),
-              value: 'remove',
+              text: this.formatMessage("menu.removeFrom"),
+              value: "remove",
             },
             {
-              text: this.formatMessage('menu.ifNotExistsaddTo'),
-              value: 'addIfNotExists',
+              text: this.formatMessage("menu.ifNotExistsaddTo"),
+              value: "addIfNotExists",
             },
           ],
           LIST_MENU: {
             acceptReporters: true,
-            items: 'listMenu',
+            items: "listMenu",
           },
           DATA_SET_OPTION: {
-            items: '__dataSetOptionMenu',
+            items: "__dataSetOptionMenu",
           },
           ITEM_SET_OPTION: {
-            items: '__itemSetOptionMenu',
+            items: "__itemSetOptionMenu",
           },
           LIST_SET_OPTION: {
-            items: '__listSetOptionMenu',
+            items: "__listSetOptionMenu",
           },
           INSERT_OPTION: {
-            items: '__insertOptionMenu',
+            items: "__insertOptionMenu",
           },
           DATA_GET_OPTION: {
-            items: '__dataGetOptionMenu',
+            items: "__dataGetOptionMenu",
           },
           GET_OPTION: {
-            items: '__getOptionMenu',
+            items: "__getOptionMenu",
           },
           OBJECT_GET_OPTION: {
-            items: '__objectGetOptionMenu',
+            items: "__objectGetOptionMenu",
           },
           LIST_OP: [
             {
-              text: this.formatMessage('menu.shuffle'),
-              value: 'shuf',
+              text: this.formatMessage("menu.shuffle"),
+              value: "shuf",
             },
             {
-              text: this.formatMessage('menu.reverse'),
-              value: 'rev',
+              text: this.formatMessage("menu.reverse"),
+              value: "rev",
             },
             {
-              text: this.formatMessage('menu.ascSort'),
-              value: 'asc',
+              text: this.formatMessage("menu.ascSort"),
+              value: "asc",
             },
             {
-              text: this.formatMessage('menu.descSort'),
-              value: 'desc',
+              text: this.formatMessage("menu.descSort"),
+              value: "desc",
             },
             {
-              text: this.formatMessage('menu.removeDuplicates'),
-              value: 'dedup',
+              text: this.formatMessage("menu.removeDuplicates"),
+              value: "dedup",
             },
           ],
           OP_LISTS: [
             {
-              text: this.formatMessage('menu.merge'),
-              value: 'merge',
+              text: this.formatMessage("menu.merge"),
+              value: "merge",
             },
             {
-              text: this.formatMessage('menu.union'),
-              value: 'union',
+              text: this.formatMessage("menu.union"),
+              value: "union",
             },
             {
-              text: this.formatMessage('menu.intersection'),
-              value: 'intersec',
+              text: this.formatMessage("menu.intersection"),
+              value: "intersec",
             },
             {
-              text: this.formatMessage('menu.difference'),
-              value: 'diff',
+              text: this.formatMessage("menu.difference"),
+              value: "diff",
             },
           ],
           SORT_ORDER: [
             {
-              text: this.formatMessage('menu.ascSort'),
-              value: 'asc',
+              text: this.formatMessage("menu.ascSort"),
+              value: "asc",
             },
             {
-              text: this.formatMessage('menu.descSort'),
-              value: 'desc',
+              text: this.formatMessage("menu.descSort"),
+              value: "desc",
             },
           ],
           KEYS_OR_VALUES_OR_ENTRIES: [
             {
-              text: this.formatMessage('menu.keys'),
-              value: 'keys',
+              text: this.formatMessage("menu.keys"),
+              value: "keys",
             },
             {
-              text: this.formatMessage('menu.values'),
-              value: 'values',
+              text: this.formatMessage("menu.values"),
+              value: "values",
             },
             {
-              text: this.formatMessage('menu.entries'),
-              value: 'entries',
+              text: this.formatMessage("menu.entries"),
+              value: "entries",
             },
           ],
           COPY_MENU: [
             {
-              text: this.formatMessage('menu.shallow'), // 空列表
-              value: 'shallow',
+              text: this.formatMessage("menu.shallow"), // 空列表
+              value: "shallow",
             },
             {
-              text: this.formatMessage('menu.deep'), // 空对象
-              value: 'deep',
+              text: this.formatMessage("menu.deep"), // 空对象
+              value: "deep",
             },
           ],
           EMPTY_LIST_OR_OBJ: [
             {
-              text: this.formatMessage('menu.emptyList'), // 空列表
-              value: '[]',
+              text: this.formatMessage("menu.emptyList"), // 空列表
+              value: "[]",
             },
             {
-              text: this.formatMessage('menu.emptyObj'), // 空对象
-              value: '{}',
+              text: this.formatMessage("menu.emptyObj"), // 空对象
+              value: "{}",
             },
           ],
         },
@@ -1258,14 +1143,14 @@
     // ******************** ↓动态菜单 ********************
 
     /**
-       * Scratch列表的菜单
-       * @returns 
-       */
+     * Scratch列表的菜单
+     * @returns
+     */
     listMenu() {
       const menus = [];
       let { variables } = this.runtime._stageTarget;
       Object.keys(variables).forEach((variable) => {
-        if (variables[variable].type === 'list') {
+        if (variables[variable].type === "list") {
           menus.push({
             text: variables[variable].name,
             value: variables[variable].id,
@@ -1275,11 +1160,11 @@
       try {
         variables = this.runtime._editingTarget.variables;
       } catch (e) {
-        variables = 'error';
+        variables = "error";
       }
       if (
-        variables !== 'error'
-        && this.runtime._editingTarget !== this.runtime._stageTarget
+        variables !== "error" &&
+        this.runtime._editingTarget !== this.runtime._stageTarget
       ) {
         Object.keys(variables).forEach((variable) => {
           if (variables[variable].type) {
@@ -1292,8 +1177,8 @@
       }
       if (menus.length === 0) {
         menus.push({
-          text: '-',
-          value: 'empty',
+          text: "-",
+          value: "empty",
         });
       }
       return menus;
@@ -1306,12 +1191,12 @@
     __dataSetOptionMenu() {
       const menu = [
         {
-          text: this.formatMessage('menu.op.set'), // 设为
-          value: 'set',
+          text: this.formatMessage("menu.op.set"), // 设为
+          value: "set",
         },
         {
-          text: this.formatMessage('menu.op.add'), // 增加
-          value: 'add',
+          text: this.formatMessage("menu.op.add"), // 增加
+          value: "add",
         },
         // {
         //   text: this.formatMessage('menu.op.parse'), // 解析JSON
@@ -1340,16 +1225,16 @@
     __listSetOptionMenu() {
       const menu = [
         {
-          text: this.formatMessage('menu.op.set'), // 设为
-          value: 'set',
+          text: this.formatMessage("menu.op.set"), // 设为
+          value: "set",
         },
         {
-          text: this.formatMessage('menu.op.add'), // 增加
-          value: 'add',
+          text: this.formatMessage("menu.op.add"), // 增加
+          value: "add",
         },
         {
-          text: this.formatMessage('menu.op.insert'), // 增加
-          value: 'insert',
+          text: this.formatMessage("menu.op.insert"), // 增加
+          value: "insert",
         },
       ];
       return menu;
@@ -1362,12 +1247,12 @@
     __itemSetOptionMenu() {
       const menu = [
         {
-          text: this.formatMessage('menu.op.set'), // 设为
-          value: 'set',
+          text: this.formatMessage("menu.op.set"), // 设为
+          value: "set",
         },
         {
-          text: this.formatMessage('menu.op.add'), // 增加
-          value: 'add',
+          text: this.formatMessage("menu.op.add"), // 增加
+          value: "add",
         },
       ];
       // if (this.enableNesting) {
@@ -1396,24 +1281,24 @@
     __insertOptionMenu() {
       const menu = [
         {
-          text: this.formatMessage('menu.value'), // 设为
-          value: 'set',
+          text: this.formatMessage("menu.value"), // 设为
+          value: "set",
         },
       ];
       if (this.enableNesting) {
         menu.push(
           {
-            text: this.formatMessage('menu.op.parse_warning'), // 解析JSON
-            value: 'parse',
+            text: this.formatMessage("menu.op.parse_warning"), // 解析JSON
+            value: "parse",
           },
           {
-            text: this.formatMessage('menu.op.shallowCopy'), // 浅拷贝
-            value: 'shallowCopy',
+            text: this.formatMessage("menu.op.shallowCopy"), // 浅拷贝
+            value: "shallowCopy",
           },
           {
-            text: this.formatMessage('menu.op.deepCopy'), // 深拷贝
-            value: 'deepCopy',
-          },
+            text: this.formatMessage("menu.op.deepCopy"), // 深拷贝
+            value: "deepCopy",
+          }
         );
       }
       return menu;
@@ -1427,15 +1312,15 @@
       const menu = [
         {
           text: this.enableNesting
-            ? this.formatMessage('menu.getOption.objectAllowed') // 允许返回对象
-            : this.formatMessage('menu.value'), // 值
-          value: 'value',
+            ? this.formatMessage("menu.getOption.objectAllowed") // 允许返回对象
+            : this.formatMessage("menu.value"), // 值
+          value: "value",
         },
       ];
       if (this.enableNesting) {
         menu.push({
-          text: this.formatMessage('menu.getOption.json'), // 返回JSON
-          value: 'json',
+          text: this.formatMessage("menu.getOption.json"), // 返回JSON
+          value: "json",
         });
       }
       return menu;
@@ -1449,15 +1334,15 @@
       const menu = [
         {
           text: this.enableNesting
-            ? this.formatMessage('menu.getOption.objectAllowed') // 允许返回对象
-            : this.formatMessage('menu.value'), // 值
-          value: 'value',
+            ? this.formatMessage("menu.getOption.objectAllowed") // 允许返回对象
+            : this.formatMessage("menu.value"), // 值
+          value: "value",
         },
       ];
       if (this.enableNesting) {
         menu.push({
-          text: this.formatMessage('menu.getOption.json'), // 返回JSON
-          value: 'json',
+          text: this.formatMessage("menu.getOption.json"), // 返回JSON
+          value: "json",
         });
       }
       return menu;
@@ -1470,20 +1355,20 @@
     __objectGetOptionMenu() {
       const menu = [
         {
-          text: this.formatMessage('menu.conInfo.name'), // 名称
-          value: 'name',
+          text: this.formatMessage("menu.conInfo.name"), // 名称
+          value: "name",
         },
         {
           text: this.enableNesting
-            ? this.formatMessage('menu.conInfo.objValue') // 内容，允许返回对象
-            : this.formatMessage('menu.conInfo.value'), // 内容值
-          value: 'value',
+            ? this.formatMessage("menu.conInfo.objValue") // 内容，允许返回对象
+            : this.formatMessage("menu.conInfo.value"), // 内容值
+          value: "value",
         },
       ];
       if (this.enableNesting) {
         menu.push({
-          text: this.formatMessage('menu.conInfo.json'), // 返回JSON
-          value: 'json',
+          text: this.formatMessage("menu.conInfo.json"), // 返回JSON
+          value: "json",
         });
       }
       return menu;
@@ -1497,7 +1382,7 @@
      * @returns {string|number|object}
      */
     anythingToSCArg(value) {
-      return SafeObject.toSafeObject(value) ?? '';
+      return SafeObject.toSafeObject(value) ?? "";
       // // SC里这两个值返回空内容
       // if (value === null || value === undefined) return '';
       // // 开启嵌套时直接返回
@@ -1523,7 +1408,7 @@
      * @returns {string}
      */
     listAllData() {
-      return Object.keys(this.tempData.value).join(',');
+      return Object.keys(this.tempData.value).join(",");
     }
 
     /**
@@ -1542,7 +1427,7 @@
     ifTempDataExist({ NAME }) {
       return Object.prototype.hasOwnProperty.call(
         this.tempData.value,
-        Cast.toString(NAME),
+        Cast.toString(NAME)
       );
     }
 
@@ -1557,32 +1442,32 @@
     __setDataByOption(data, prop, OP, VALUE) {
       data = SafeObject.getActualObject(data);
       switch (OP) {
-        case 'set':
+        case "set":
           data[prop] = VALUE;
           return true;
-        case 'add':
+        case "add":
           data[prop] = Cast.toNumber(data[prop]) + Cast.toNumber(VALUE);
           return true;
-        case 'insert': {
+        case "insert": {
           const list = data;
           const idx = prop;
           list.splice(idx, 0, VALUE);
           return true;
         }
-        case 'parse': {
+        case "parse": {
           try {
-            if (typeof VALUE !== 'string') return false;
+            if (typeof VALUE !== "string") return false;
             const obj = SafeObject.parse(VALUE);
-            if (typeof obj !== 'object' || obj === null) return false;
+            if (typeof obj !== "object" || obj === null) return false;
             data[prop] = obj;
           } catch (e) {
             return false;
           }
           return true;
         }
-        case 'shallowCopy': {
+        case "shallowCopy": {
           const value = SafeObject.getActualObject(VALUE);
-          if (typeof value !== 'object' || value === null) return false;
+          if (typeof value !== "object" || value === null) return false;
           if (Array.isArray(value)) {
             data[prop] = new SafeObject([...value]);
             return true;
@@ -1590,8 +1475,8 @@
           data[prop] = new SafeObject({ ...value });
           return true;
         }
-        case 'deepCopy':
-          if (typeof VALUE !== 'object' || VALUE === null) return false;
+        case "deepCopy":
+          if (typeof VALUE !== "object" || VALUE === null) return false;
           try {
             data[prop] = SafeObject.deepCopy(VALUE);
           } catch (e) {
@@ -1622,12 +1507,12 @@
      */
     getObjFromJson({ VALUE }) {
       try {
-        if (typeof VALUE !== 'string') return '';
+        if (typeof VALUE !== "string") return "";
         const obj = SafeObject.parse(VALUE);
         // if (typeof obj !== "object" || obj === null) return '';
         return SafeObject.toSafeObject(obj);
       } catch (e) {
-        return '';
+        return "";
       }
     }
 
@@ -1638,7 +1523,7 @@
      * @return {SafeObject}
      */
     newEmptyObjOrArray({ OPTION }) {
-      return OPTION === '[]' ? new SafeObject([]) : new SafeObject();
+      return OPTION === "[]" ? new SafeObject([]) : new SafeObject();
     }
 
     /**
@@ -1668,10 +1553,10 @@
       const n = Cast.toNumber(N);
       let res;
       // 对于复杂类型，深拷贝复制
-      if (typeof VALUE === 'object' && VALUE !== null) {
+      if (typeof VALUE === "object" && VALUE !== null) {
         res = Array.from({ length: n }, () => SafeObject.deepCopy(VALUE));
       } else {
-      // 普通类型
+        // 普通类型
         res = Array.from({ length: n }, () => VALUE);
       }
       return new SafeObject(res);
@@ -1684,7 +1569,7 @@
      */
     typeOf({ VALUE }) {
       const value = SafeObject.getActualObject(VALUE);
-      if (Array.isArray(value)) return 'list';
+      if (Array.isArray(value)) return "list";
       return typeof value;
     }
 
@@ -1694,7 +1579,7 @@
      * @return {string} JSON
      */
     JSONOf({ VALUE }) {
-      if (VALUE === null || VALUE === undefined) return '';
+      if (VALUE === null || VALUE === undefined) return "";
       return SafeObject.stringify(VALUE);
     }
 
@@ -1706,11 +1591,11 @@
      * @return {*} 拷贝结果
      */
     copyFrom({ OP, OBJ }) {
-      if (OBJ === null || OBJ === undefined) return '';
+      if (OBJ === null || OBJ === undefined) return "";
       // 不是对象，直接返回结果
-      if (typeof OBJ !== 'object') return OBJ;
+      if (typeof OBJ !== "object") return OBJ;
       // 深拷贝
-      if (OP === 'deep') {
+      if (OP === "deep") {
         try {
           return SafeObject.deepCopy(OBJ);
         } catch (e) {
@@ -1732,8 +1617,8 @@
      * @param {string} OPTION value/ json
      */
     __getDataByOption(data, OPTION) {
-      if (OPTION === 'json') {
-        if (typeof data === 'object') data = SafeObject.stringify(data);
+      if (OPTION === "json") {
+        if (typeof data === "object") data = SafeObject.stringify(data);
         return this.anythingToSCArg(data);
       }
       return this.anythingToSCArg(data);
@@ -1766,7 +1651,7 @@
      * @param {*} args.NAME 数据名
      */
     createOrClearList({ NAME }) {
-      if (typeof NAME === 'object') {
+      if (typeof NAME === "object") {
         const value = SafeObject.getActualObject(NAME);
         if (Array.isArray(value)) {
           // 清空传入的列表
@@ -1782,7 +1667,7 @@
      * @param {*} NAME 数据名
      */
     createOrClearObject({ NAME }) {
-      if (typeof NAME === 'object') {
+      if (typeof NAME === "object") {
         const value = SafeObject.getActualObject(NAME);
         if (value !== null && !Array.isArray(value)) {
           // 清空传入的对象
@@ -1802,7 +1687,7 @@
      */
     __getListByNameOrObj(NAME_OR_OBJ) {
       let list;
-      if (typeof NAME_OR_OBJ === 'object') {
+      if (typeof NAME_OR_OBJ === "object") {
         list = NAME_OR_OBJ;
       } else {
         list = this.tempData.value[Cast.toString(NAME_OR_OBJ)];
@@ -1821,7 +1706,7 @@
     addItemToList({ NAME_OR_OBJ, VALUE }) {
       const list = this.__getListByNameOrObj(NAME_OR_OBJ);
       if (!list) return;
-      this.__setDataByOption(list, list.length, 'set', VALUE);
+      this.__setDataByOption(list, list.length, "set", VALUE);
     }
 
     /**
@@ -1859,17 +1744,17 @@
      */
     __addOrRemoveFromList(list, OP, VALUE) {
       switch (OP) {
-        case 'add':
+        case "add":
           list.push(VALUE);
           break;
-        case 'remove': {
+        case "remove": {
           const index = this.getListItemIdxByItem({ NAME_OR_OBJ: list, VALUE });
           if (index > 0) {
             list.splice(index - 1, 1);
           }
           break;
         }
-        case 'addIfNotExists':
+        case "addIfNotExists":
           if (!this.ifListItemExist({ NAME_OR_OBJ: list, VALUE })) {
             list.push(VALUE);
           }
@@ -1887,9 +1772,7 @@
      * @param {string} args.OP 操作：set/ add/ parse/ shallowCopy/ deepCopy
      * @param {*} args.VALUE
      */
-    setItemOfList({
-      NAME_OR_OBJ, IDX, OP, VALUE,
-    }) {
+    setItemOfList({ NAME_OR_OBJ, IDX, OP, VALUE }) {
       const list = this.__getListByNameOrObj(NAME_OR_OBJ);
       if (!list) return;
       const idx = Cast.toNumber(IDX) - 1;
@@ -1923,10 +1806,10 @@
      */
     getItemOfList({ NAME_OR_OBJ, IDX, OPTION }) {
       const list = this.__getListByNameOrObj(NAME_OR_OBJ);
-      if (!list) return '';
+      if (!list) return "";
 
       const idx = Cast.toNumber(IDX) - 1;
-      if (idx < 0 || idx > list.length - 1) return '';
+      if (idx < 0 || idx > list.length - 1) return "";
 
       return this.__getDataByOption(list[idx], OPTION);
     }
@@ -1957,11 +1840,11 @@
       if (list.indexOf(VALUE) >= 0) {
         return true;
       }
-      if (typeof VALUE === 'object') return false;
+      if (typeof VALUE === "object") return false;
       // Try using Scratch comparison operator on each item.
       // (Scratch considers the string '123' equal to the number 123).
       for (let i = 0; i < list.length; i += 1) {
-        if (typeof list[i] !== 'object' && Cast.compare(list[i], VALUE) === 0) {
+        if (typeof list[i] !== "object" && Cast.compare(list[i], VALUE) === 0) {
           return true;
         }
       }
@@ -1983,10 +1866,10 @@
       if (idx >= 0) {
         return idx + 1;
       }
-      if (typeof VALUE === 'object') return 0;
+      if (typeof VALUE === "object") return 0;
 
       for (let i = 0; i < list.length; i += 1) {
-        if (typeof list[i] !== 'object' && Cast.compare(list[i], VALUE) === 0) {
+        if (typeof list[i] !== "object" && Cast.compare(list[i], VALUE) === 0) {
           return i + 1;
         }
       }
@@ -2006,19 +1889,19 @@
       let res = [];
       if (list1 && list2) {
         switch (OP) {
-          case 'merge':
+          case "merge":
             res = list1.concat(list2);
             break;
-            // 并集
-          case 'union':
+          // 并集
+          case "union":
             res = [...new Set(list1.concat(list2))];
             break;
           // 交集
-          case 'intersec':
+          case "intersec":
             res = list1.filter((element) => list2.includes(element));
             break;
           // 差集(list1有list2没有)
-          case 'diff':
+          case "diff":
             res = list1.filter((element) => !list2.includes(element));
             break;
           default:
@@ -2052,19 +1935,19 @@
       const list = this.__getListByNameOrObj(NAME_OR_OBJ);
       if (!list) return;
       switch (OP) {
-        case 'shuf':
+        case "shuf":
           list.sort(() => Math.random() - 0.5);
           break;
-        case 'rev':
+        case "rev":
           list.reverse();
           break;
-        case 'asc':
+        case "asc":
           list.sort((a, b) => Cast.compare(a, b));
           break;
-        case 'desc':
+        case "desc":
           list.sort((a, b) => Cast.compare(b, a));
           break;
-        case 'dedup': {
+        case "dedup": {
           // 去重列表（在原列表上操作）
           const origList = [...list];
           list.length = 0;
@@ -2089,7 +1972,7 @@
       const list = this.__getListByNameOrObj(NAME_OR_OBJ);
       if (!list) return;
       const prop = Cast.toString(PROP);
-      const asc = (OP === 'asc' ? 1 : -1);
+      const asc = OP === "asc" ? 1 : -1;
       try {
         list.sort((a, b) => {
           const a1 = SafeObject.getActualObject(a);
@@ -2108,9 +1991,9 @@
     logError(...args) {
       if (this.runtime.logSystem) {
         // error的红字看不清，还是使用warn
-        this.runtime.logSystem.warn(`[${this.formatMessage('name')}]`, ...args);
+        this.runtime.logSystem.warn(`[${this.formatMessage("name")}]`, ...args);
         if (!this.runtime.isPlayerOnly) this.runtime.logSystem.show();
-      } else console.error(`${this.formatMessage('extensionName')}: `, ...args);
+      } else console.error(`${this.formatMessage("extensionName")}: `, ...args);
     }
 
     /**
@@ -2120,13 +2003,13 @@
      */
     __getObjByNameOrObj(NAME_OR_OBJ) {
       let obj;
-      if (typeof NAME_OR_OBJ === 'object') {
+      if (typeof NAME_OR_OBJ === "object") {
         obj = NAME_OR_OBJ;
       } else {
         obj = this.tempData.value[Cast.toString(NAME_OR_OBJ)];
       }
       obj = SafeObject.getActualObject(obj);
-      if (typeof obj === 'object' && obj !== null && !Array.isArray(obj)) {
+      if (typeof obj === "object" && obj !== null && !Array.isArray(obj)) {
         return obj;
       }
       return false;
@@ -2140,9 +2023,7 @@
      * @param {string} args.OP 操作：set/ add
      * @param {*} args.VALUE
      */
-    setPropOfObject({
-      NAME_OR_OBJ, PROP, OP, VALUE,
-    }) {
+    setPropOfObject({ NAME_OR_OBJ, PROP, OP, VALUE }) {
       const obj = this.__getObjByNameOrObj(NAME_OR_OBJ);
       if (!obj) return;
 
@@ -2155,7 +2036,7 @@
      * @returns {object | null} 对象
      */
     __getObj(OBJ) {
-      if (OBJ === null || typeof OBJ !== 'object') return null;
+      if (OBJ === null || typeof OBJ !== "object") return null;
       const obj = SafeObject.getActualObject(OBJ);
       if (Array.isArray(obj)) return null;
       return obj;
@@ -2167,7 +2048,7 @@
      * @returns {Array | null} 列表
      */
     __getArray(OBJ) {
-      if (OBJ === null || typeof OBJ !== 'object') return null;
+      if (OBJ === null || typeof OBJ !== "object") return null;
       const obj = SafeObject.getActualObject(OBJ);
       if (!Array.isArray(obj)) return null;
       return obj;
@@ -2181,9 +2062,7 @@
      * @param {string} args.OP 操作：set/ add
      * @param {*} args.VALUE
      */
-    setPropOfObjectAndReturn({
-      OBJ, PROP, OP, VALUE,
-    }) {
+    setPropOfObjectAndReturn({ OBJ, PROP, OP, VALUE }) {
       const obj = this.__getObj(OBJ);
       if (!obj) return OBJ;
       this.__setDataByOption(obj, Cast.toString(PROP), OP, VALUE);
@@ -2213,7 +2092,7 @@
      */
     getPropOfObject({ NAME_OR_OBJ, PROP, OPTION }) {
       const obj = this.__getObjByNameOrObj(NAME_OR_OBJ);
-      if (!obj) return '';
+      if (!obj) return "";
 
       return this.__getDataByOption(obj[Cast.toString(PROP)], OPTION);
     }
@@ -2228,11 +2107,11 @@
      */
     getPropOfObjectByIdx({ NAME_OR_OBJ, IDX, OPTION }) {
       const obj = this.__getObjByNameOrObj(NAME_OR_OBJ);
-      if (!obj) return '';
+      if (!obj) return "";
 
       const key = Object.keys(obj)[Cast.toNumber(IDX) - 1];
-      if (key === undefined) return '';
-      if (OPTION === 'name') return key;
+      if (key === undefined) return "";
+      if (OPTION === "name") return key;
 
       return this.__getDataByOption(obj[key], OPTION);
     }
@@ -2250,14 +2129,16 @@
 
       let res;
       switch (Cast.toString(OPTION)) {
-        case 'keys':
+        case "keys":
           res = Object.keys(obj);
           break;
-        case 'values':
+        case "values":
           res = Object.values(obj);
           break;
-        case 'entries':
-          res = Object.entries(obj).map((item) => SafeObject.toSafeObject(item));
+        case "entries":
+          res = Object.entries(obj).map((item) =>
+            SafeObject.toSafeObject(item)
+          );
           break;
         default:
           res = [];
@@ -2295,11 +2176,11 @@
      * @returns {SafeObject | ''}
      */
     getScratchList({ NAME }, util) {
-      if (NAME === 'empty') return '';
+      if (NAME === "empty") return "";
       let list = util.target.lookupVariableById(NAME);
       if (!list) {
-        list = util.target.lookupVariableByNameAndType(NAME, 'list');
-        if (!list) return '';
+        list = util.target.lookupVariableByNameAndType(NAME, "list");
+        if (!list) return "";
       }
       return SafeObject.toSafeObject(list.value);
     }
@@ -2315,10 +2196,10 @@
       if (!Array.isArray(obj)) {
         return;
       }
-      if (NAME === 'empty') return;
+      if (NAME === "empty") return;
       let list = util.target.lookupVariableById(NAME);
       if (!list) {
-        list = util.target.lookupVariableByNameAndType(NAME, 'list');
+        list = util.target.lookupVariableByNameAndType(NAME, "list");
         if (!list) return;
       }
       list.value = obj;
