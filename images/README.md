@@ -300,5 +300,5 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
 
 ## Arkos/moreDataTypes.svg
- - Created by [@Arkos](https://github.com/arkos123/) in https://github.com/TurboWarp/extensions/pull/1352.
+ - Created by [@Arkos](https://github.com/arkos123/) in https://github.com/TurboWarp/extensions/pull/1354.
  - Background based on https://app.haikei.app/.
