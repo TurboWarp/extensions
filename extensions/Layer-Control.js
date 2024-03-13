@@ -3,7 +3,7 @@
 // Description: Relayer Pen, Video Camera, Backdrops, Sprites and More
 // By: SharkPool
 
-// Version V.1.0.3
+// Version V.1.0.4
 
 (function (Scratch) {
   "use strict";
@@ -158,11 +158,18 @@
     getID(args, util) {
       if (args.TARGET === "_myself_") return util.target.drawableID;
       if (args.TARGET === "_stage_") return runtime.getTargetForStage().drawableID;
-      if (args.TARGET === "_pen_") return vm.renderer._penSkinId || "";
+      if (args.TARGET === "_pen_") return this.findSpecial(vm.renderer._allDrawables, "a_lineColorIndex");
       const videoL = runtime.ioDevices.video._drawable;
       if (args.TARGET === "_video_") return videoL !== -1 ? videoL : "";
       const target = runtime.getSpriteTargetByName(args.TARGET);
       return target ? target.drawableID : "";
+    }
+    // renderer._penSkinID doesnt work, we need to use this:
+    findSpecial(array, key) {
+      for (let i = 0; i < array.length; i++) {
+        if (array[i] && array[i].skin[key] !== undefined) return i;
+      }
+      return "";
     }
 
     getOwner(args, util) {
