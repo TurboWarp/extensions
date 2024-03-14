@@ -3,7 +3,7 @@
 // Description: Display Text in Your Projects!
 // By: SharkPool
 
-// Version V.1.3.3
+// Version V.1.3.4
 
 (function (Scratch) {
   "use strict";
@@ -517,8 +517,9 @@
 
     allIDs() {
       const cleanedIDs = allText.map((item) => item.replace(/^#SP_Text-Ext-/, ""));
-      let index = cleanedIDs.indexOf("#SP_Text-Debug-Cross");
-      if (index !== -1) cleanedIDs.splice(index, 1);
+      for (let i = cleanedIDs.length - 1; i >= 0; i--) {
+        if (cleanedIDs[i] === "#SP_Text-Debug-Cross") cleanedIDs.splice(i, 1);
+      }
       return JSON.stringify(cleanedIDs);
     }
 
@@ -652,7 +653,8 @@
     setTextPosition(args) {
       const elements = document.querySelectorAll(`#SP_Text-Ext-${this.fixID(args.ID)}`);
       elements.forEach((element) => {
-        const centerW = parseFloat(element.style.width) / 2;
+        let centerW = parseFloat(element.style.width) / 2;
+        if (isNaN(centerW)) centerW = (element.getBoundingClientRect().width ?? 0 ) / 2;
         const computedStyle = window.getComputedStyle(element);
         const lineHeight = computedStyle.getPropertyValue("line-height");
         const fontSize = computedStyle.getPropertyValue("font-size");
