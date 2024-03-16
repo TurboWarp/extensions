@@ -1187,6 +1187,7 @@
           {
             opcode: "setMinUnshadedTarget",
             blockType: Scratch.BlockType.COMMAND,
+            hideFromPalette: !this.quakeExtensionDetected,
 
             text: Scratch.translate({
               id: `${extensionId}.setMinUnshadedTarget`,
