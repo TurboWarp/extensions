@@ -1,7 +1,7 @@
 // Name: Gamepad
 // ID: Gamepad
 // Description: Directly access gamepads instead of just mapping buttons to keys.
-// License: MIT AND LGPL-3.0
+// License: MIT AND MPL-2.0
 
 // Some parts of this scripts are based on or designed to be compatible-ish with:
 // https://arpruss.github.io/gamepad.js (MIT Licensed)
