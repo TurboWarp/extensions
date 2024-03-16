@@ -362,14 +362,10 @@
         "veggiecan/browserfullscreen@description": "フルスクリーンモードを有効化したり、無効化したりする",
         "veggiecan/browserfullscreen@name": "ブラウザフルスクリーン",
         "vercte/dictionaries@description": "辞書をプロジェクトで使う",
-        "vercte/dictionaries@name": "辞書",
-        "Gandi/LayerManager@name": "レイヤー管理",
-        "Gandi/LayerManager@description": "Gandi IDEから、素早くスプライトレイヤーを管理するブロック。"
+        "vercte/dictionaries@name": "辞書"
     },
     "ja-hira": {
-        "runtime-options@name": "ランタイムのオプション",
-        "Gandi/LayerManager@name": "レイヤーかんり",
-        "Gandi/LayerManager@description": "Gandi IDEから、すばやくスプライトレイヤーをかんりするブロック。"
+        "runtime-options@name": "ランタイムのオプション"
     },
     "ko": {
         "runtime-options@name": "실행 설정",
@@ -887,13 +883,9 @@
         "veggiecan/browserfullscreen@description": "进入和退出全屏模式。",
         "veggiecan/browserfullscreen@name": "全屏模式",
         "vercte/dictionaries@description": "在你的作品使用字典。",
-        "vercte/dictionaries@name": "字典",
-        "Gandi/LayerManager@name": "图层管理",
-        "Gandi/LayerManager@description": "图层排序不再是难题。"
+        "vercte/dictionaries@name": "字典"
     },
     "zh-tw": {
-        "runtime-options@name": "運行選項",
-        "Gandi/LayerManager@name": "圖層管理",
-        "Gandi/LayerManager@description": "圖層排序不再是難題。"
+        "runtime-options@name": "運行選項"
     }
 }
