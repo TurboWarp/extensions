@@ -806,12 +806,12 @@
     for (const target of vm.runtime.targets) {
       if (typeof target.drawableID === "number") {
         const drawable = vm.renderer._allDrawables[target.drawableID];
-        // gandi: use for layer management
+        // // gandi: use for layer management
         drawable._layerIndex = 0;
-        /**
-         * 所属图层文件夹
-         * @type {LayerFolder}
-         */
+        // /**
+        //  * 所属图层文件夹
+        //  * @type {LayerFolder}
+        //  */
         drawable._layerFolder = null;
         vm.renderer.layerManager.defaultFolderDrawableAddTo.add(
           target.drawableID
@@ -842,18 +842,21 @@
      * @param {string} group Layer group to add the drawable to
      * @returns {int} The ID of the new Drawable.
      */
-    vm.renderer._createDrawable = function (group) {
+    vm.renderer.createDrawable = function (group) {
       const res = _createDrawable.call(this, group);
       if (typeof res === "number") {
         const drawable = this._allDrawables[res];
         // gandi: use for layer management
-        drawable._layerIndex = 0;
+        if (typeof drawable._layerIndex === "undefined")
+          drawable._layerIndex = 0;
         /**
          * 所属图层文件夹
          * @type {LayerFolder}
          */
-        drawable._layerFolder = null;
+        if (typeof drawable._layerFolder === "undefined")
+          drawable._layerFolder = null;
       }
+      return res;
     };
   }
   class LayerManagerExtension {
