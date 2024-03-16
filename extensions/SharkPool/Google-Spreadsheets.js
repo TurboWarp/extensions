@@ -3,7 +3,7 @@
 // Description: Fetch Spreadsheet Data
 // By: SharkPool
 
-// Version 1.1.0
+// Version 1.1.1
 
 (function (Scratch) {
   "use strict";
@@ -111,15 +111,13 @@
 
     async getContent(args) {
       try {
-        const cacheKiller = Math.random();
         const ID = args.ID === "/d/..." ? defaultID : Scratch.Cast.toString(args.ID);
         const name = encodeURIComponent(Scratch.Cast.toString(args.NAME));
-        const url = `https://docs.google.com/spreadsheets/d/${ID}/gviz/tq?tqx=out:csv&sheet=${name}&cache=${cacheKiller}`;
+        const url = `https://docs.google.com/spreadsheets/d/${ID}/gviz/tq?tqx=out:csv&sheet=${name}&cache=${Math.random()}`;
         const response = await Scratch.fetch(`https://corsproxy.io?${url}`);
         if (!response.ok) return "[]";
         const csvContent = await response.text();
-        const rows = csvContent.split("\n").map(row => row.split(","));
-        return JSON.stringify(rows.map(row => row.map(field => field.replace(/^"(.*)"$/, "$1"))));
+        return JSON.stringify(csvContent.split("\n").map(item => item.split(`","`).map(field => field.replace(/^"|"$/g, ""))));
       } catch { return "[]" }
     }
   }
