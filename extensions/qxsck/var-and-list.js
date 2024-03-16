@@ -951,7 +951,7 @@
         Scratch.Cast.toString(args.LIST),
         "list"
       );
-      return variable ? variable.value.toScratch.Cast.toString() : "";
+      return variable ? variable.value.toString() : "";
     }
     newGetList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
@@ -1254,7 +1254,7 @@
               indexes.push(i + 1);
           }
         }
-        if (indexes.length > 0) return indexes.toScratch.Cast.toString();
+        if (indexes.length > 0) return JSON.stringify(indexes);
       }
       return "";
     }
