@@ -4,7 +4,7 @@
 // By: Arkos
 // By: FurryR <https://scratch.mit.edu/users/FurryR/>
 // Original: Gandi IDE
-// License: LGPL-3.0
+// License: MPL-2.0
 
 (function (Scratch) {
   "use strict";
