@@ -1,7 +1,7 @@
 // Name: Layer Management
 // ID: layerManager
 // Description: Allows you to manage sprite layers.
-// By: Arkos
+// By: Arkos <https://scratch.mit.edu/users/lanluzhifeng/>
 // By: FurryR <https://scratch.mit.edu/users/FurryR/>
 // Original: Gandi IDE
 // License: MPL-2.0
@@ -19,6 +19,8 @@
   const menuIconURI =
     "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzA1NDg1NTYzNjQ1IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjI0MzgiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNDgiIGhlaWdodD0iNDgiPjxwYXRoIGQ9Ik0xMTAuOTMzMzMzIDM1MmwzODQgMTkyYzQuMjY2NjY3IDIuMTMzMzMzIDEwLjY2NjY2NyA0LjI2NjY2NyAxNy4wNjY2NjcgNC4yNjY2NjdzMTAuNjY2NjY3LTIuMTMzMzMzIDE3LjA2NjY2Ny00LjI2NjY2N2wzODQtMTkyYzEyLjgtNi40IDE5LjItMTkuMiAxOS4yLTMycy04LjUzMzMzMy0yNS42LTE5LjItMzJsLTM4NC0xOTJjLTEwLjY2NjY2Ny00LjI2NjY2Ny0yMS4zMzMzMzMtNC4yNjY2NjctMzIgMGwtMzg0IDE5MmMtMTIuOCA2LjQtMTkuMiAxOS4yLTE5LjIgMzJzNi40IDI1LjYgMTcuMDY2NjY2IDMyek01MTIgMTY4LjUzMzMzM0w4MTQuOTMzMzMzIDMyMCA1MTIgNDcxLjQ2NjY2NyAyMDkuMDY2NjY3IDMyMCA1MTIgMTY4LjUzMzMzM3pNODc4LjkzMzMzMyA2NzJMNTEyIDg1NS40NjY2NjcgMTQ1LjA2NjY2NyA2NzJjLTE3LjA2NjY2Ny04LjUzMzMzMy0zOC40LTIuMTMzMzMzLTQ5LjA2NjY2NyAxNy4wNjY2NjctOC41MzMzMzMgMTcuMDY2NjY3LTIuMTMzMzMzIDM4LjQgMTcuMDY2NjY3IDQ5LjA2NjY2NmwzODQgMTkyYzQuMjY2NjY3IDIuMTMzMzMzIDEwLjY2NjY2NyA0LjI2NjY2NyAxNy4wNjY2NjYgNC4yNjY2NjdzMTAuNjY2NjY3LTIuMTMzMzMzIDE3LjA2NjY2Ny00LjI2NjY2N2wzODQtMTkyYzE3LjA2NjY2Ny04LjUzMzMzMyAyNS42LTI5Ljg2NjY2NyAxNy4wNjY2NjctNDkuMDY2NjY2LTEyLjgtMTkuMi0zNC4xMzMzMzMtMjUuNi01My4zMzMzMzQtMTcuMDY2NjY3eiIgZmlsbD0iI2RiZGJkYiIgcC1pZD0iMjQzOSI+PC9wYXRoPjxwYXRoIGQ9Ik04NzguOTMzMzMzIDQ4MEw1MTIgNjYzLjQ2NjY2NyAxNDUuMDY2NjY3IDQ4MGMtMTcuMDY2NjY3LTguNTMzMzMzLTM4LjQtMi4xMzMzMzMtNDkuMDY2NjY3IDE3LjA2NjY2Ny04LjUzMzMzMyAxNy4wNjY2NjctMi4xMzMzMzMgMzguNCAxNy4wNjY2NjcgNDkuMDY2NjY2bDM4NCAxOTJjNC4yNjY2NjcgMi4xMzMzMzMgMTAuNjY2NjY3IDQuMjY2NjY3IDE3LjA2NjY2NiA0LjI2NjY2N3MxMC42NjY2NjctMi4xMzMzMzMgMTcuMDY2NjY3LTQuMjY2NjY3bDM4NC0xOTJjMTcuMDY2NjY3LTguNTMzMzMzIDI1LjYtMjkuODY2NjY3IDE3LjA2NjY2Ny00OS4wNjY2NjYtMTIuOC0xOS4yLTM0LjEzMzMzMy0yNS42LTUzLjMzMzMzNC0xNy4wNjY2Njd6IiBmaWxsPSIjZGJkYmRiIiBwLWlkPSIyNDQwIj48L3BhdGg+PC9zdmc+";
   const extensionId = "layerManager";
+  const DEFAULT_LAYERS_STRING = "UI,Default,Background";
+  const DEFAULT_LAYER = "Default";
   if (Scratch.extensions.unsandboxed === false) {
     throw new Error("Sandboxed mode is not supported.");
   }
@@ -744,6 +746,7 @@
           this,
           drawableID,
           order,
+          group,
           optIsRelative,
           optMin
         );
@@ -804,7 +807,7 @@
 
     // NOTE: Modified by FurryR
     for (const target of vm.runtime.targets) {
-      if (typeof target.drawableID === "number") {
+      if (typeof target.drawableID === "number" && !target.isStage) {
         const drawable = vm.renderer._allDrawables[target.drawableID];
         // // gandi: use for layer management
         drawable._layerIndex = 0;
@@ -826,16 +829,6 @@
         this._layerFolder.remove(this._id);
       }
     };
-    const _addToDrawList = vm.renderer._addToDrawList;
-    vm.renderer._addToDrawList = function (drawableID, group) {
-      // NOTE: Modified by FurryR
-      _addToDrawList.call(this, drawableID, group);
-
-      // 如果是sprite，记录到layerManger的defaultFolder
-      if (group === "sprite") {
-        this.layerManager.defaultFolderDrawableAddTo.add(drawableID);
-      }
-    };
     const _createDrawable = vm.renderer.createDrawable;
     /**
      * Create a new Drawable and add it to the scene.
@@ -855,6 +848,10 @@
          */
         if (typeof drawable._layerFolder === "undefined")
           drawable._layerFolder = null;
+        // 如果是sprite，记录到layerManger的defaultFolder
+        if (group === "sprite") {
+          this.layerManager.defaultFolderDrawableAddTo.add(res);
+        }
       }
       return res;
     };
@@ -867,15 +864,18 @@
       this.renderer = this.runtime.renderer;
       this.layerManager = this.renderer.layerManager;
       this.rootFolder = this.layerManager.rootFolder;
+      this.COMMENT_CONFIG_MAGIC = ' // _layerManagerConfig_';
 
       // 初始化，劫持函数、生成默认层级
       const intervalId = setInterval(() => {
         if (this.runtime.targets.length > 0) {
           clearInterval(intervalId);
           this.hackScratchFunctions();
+          this.__generateLayerLevelsFromList(DEFAULT_LAYERS_STRING.split(","), DEFAULT_LAYER);
+          this.parseExtOptions();
+          this.runtime.requestToolboxExtensionsUpdate();
         }
       }, 1000);
-
       // // 项目加载完成
       // runtime.on('PROJECT_LOADED', () => {
       //   this.__defineDefaultLevels();
@@ -921,7 +921,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: `${extensionId}.setLayerManager`,
-              default: "[OP] the layer manager",
+              default: "[OP] layer sorting",
               description: "Enable or disable the layer manager.",
             }),
             arguments: {
@@ -951,7 +951,7 @@
             blockType: Scratch.BlockType.LABEL,
             text: Scratch.translate({
               id: `${extensionId}.div1`,
-              default: "🏗️ Layer Hierarchy",
+              default: " Layer Hierarchy",
               description: "Layer Hierachy category.",
             }),
           },
@@ -960,7 +960,7 @@
             blockType: Scratch.BlockType.BUTTON,
             text: Scratch.translate({
               id: `${extensionId}.checkLayerLevelsButton`,
-              default: "Output layer hierarchy to DevTools Console",
+              default: "Display layer hierarchy",
               description: "Display layer hierarchy.",
             }),
             func: "checkLayerLevelsButton",
@@ -971,7 +971,7 @@
             text: Scratch.translate({
               id: `${extensionId}.defineLayerLevels`,
               default:
-                "define layer hierarchy (above to below)[LEVELS], and set [LEVEL] as the default layer",
+                "define layer hierarchy [LEVELS] (above to below), and set [LEVEL] as the default layer",
               description: "Define layer hierarchy.",
             }),
             arguments: {
@@ -979,7 +979,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   id: `${extensionId}.defaultLevels`,
-                  default: "UI,Default,Background",
+                  default: DEFAULT_LAYERS_STRING,
                   description: "Default hierarchy.",
                 }),
               },
@@ -987,7 +987,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   id: `${extensionId}.defaultLevel`,
-                  default: "Default",
+                  default: DEFAULT_LAYER,
                   description: "Default selected hierarchy.",
                 }),
               },
@@ -1009,7 +1009,7 @@
               LEVEL: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "LEVELS",
-                defaultValue: "-",
+                // defaultValue: '-'
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1020,9 +1020,10 @@
           // NOTE: Modified by FurryR
           {
             blockType: Scratch.BlockType.LABEL,
+            filter: [Scratch.TargetType.SPRITE],
             text: Scratch.translate({
               id: `${extensionId}.div2`,
-              default: "🔄 Sprite Order in Layer",
+              default: " Sprite Order in Layer",
               description: "Sprite Order category.",
             }),
           },
@@ -1030,6 +1031,7 @@
           {
             opcode: "setTargetLayerLevel",
             blockType: Scratch.BlockType.COMMAND,
+            filter: [Scratch.TargetType.SPRITE],
             text: Scratch.translate({
               id: `${extensionId}.setTargetLayerLevel`,
               default: "move [TARGET] to the layer [LEVEL]",
@@ -1043,7 +1045,7 @@
               LEVEL: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "LEVELS",
-                defaultValue: "-",
+                // defaultValue: '-'
               },
             },
           },
@@ -1051,6 +1053,7 @@
           {
             opcode: "setTargetLayerPriority",
             blockType: Scratch.BlockType.COMMAND,
+            filter: [Scratch.TargetType.SPRITE],
             text: Scratch.translate({
               id: `${extensionId}.setTargetLayerPriority`,
               default: "set [TARGET] z-index in layer to[PRIORITY]",
@@ -1072,6 +1075,7 @@
             opcode: "getTargetLayerInfo",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
+            filter: [Scratch.TargetType.SPRITE],
             text: Scratch.translate({
               id: `${extensionId}.getTargetLayerInfo`,
               default: "[TARGET][INFO]",
@@ -1095,7 +1099,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: `${extensionId}.setCanvasLayerLevel`,
-              default: "🖼️set [TARGET] canvas's layer to [LEVEL]",
+              default: "set [TARGET] canvas's layer to [LEVEL]",
               description: "set canvas layer level (for CCWCanvasV2).",
             }),
             hideFromPalette: !this.canvasExtensionDetected,
@@ -1107,7 +1111,7 @@
               LEVEL: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "LEVELS",
-                defaultValue: "-",
+                // defaultValue: '-'
               },
             },
           },
@@ -1117,7 +1121,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: `${extensionId}.setCanvasLayerPriority`,
-              default: "🖼️set [TARGET] canvas's z-index in layer to[PRIORITY]",
+              default: "set [TARGET] canvas's z-index in layer to[PRIORITY]",
               description:
                 "set canvas layer z-index aka priority (for CCWCanvasV2).",
             }),
@@ -1139,7 +1143,7 @@
             hideFromPalette: !this.quakeExtensionDetected,
             text: Scratch.translate({
               id: `${extensionId}.div3`,
-              default: "✨ Post Effect for Layer (with Quake)",
+              default: " Post Effect for Layer (with Quake)",
               description:
                 "Post effect for layer with Gandi Quake. Does nothing on Turbowarp.",
             }),
@@ -1157,7 +1161,7 @@
               LEVEL: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "LEVELS",
-                defaultValue: "-",
+                // defaultValue: "-",
               },
             },
           },
@@ -1180,7 +1184,7 @@
               LEVEL: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "LEVELS",
-                defaultValue: "-",
+                // defaultValue: '-'
               },
             },
           },
@@ -1249,7 +1253,7 @@
             {
               text: Scratch.translate({
                 id: `${extensionId}.activate`,
-                default: "activate",
+                default: "enable",
                 description: "Activate.",
               }),
               value: "on",
@@ -1257,7 +1261,7 @@
             {
               text: Scratch.translate({
                 id: `${extensionId}.deactivate`,
-                default: "deactivate",
+                default: "disable",
                 description: "Deactivate.",
               }),
               value: "off",
@@ -1348,14 +1352,9 @@
     }
     // NOTE: Modified by FurryR
     checkLayerLevelsButton() {
-      console.info(
-        Scratch.translate({
-          id: `${extensionId}.infoHeader`,
-          default: "Layer Hierarchy",
-          description: "Layer Hierarchy info header.",
-        })
-      );
-      this.__printFolderInGandiTerminal(this.rootFolder);
+      const output = this.__printFolderInGandiTerminal(this.rootFolder, true);
+      // maybe pop up an alert (or other sth) is better than in console?
+      alert(output.join("\n"));
       // ;(this._terminalShowed = 1),
       //   this._terminalShowed
       //     ? (this.runtime.logSystem.show(),
@@ -1368,6 +1367,65 @@
       //       ),
       //       this.__printFolderInGandiTerminal(e.rootFolder))
       //     : this.runtime.logSystem.hide()
+    }
+
+    // ========================================================================== //
+    //     save & parse options in stage comment
+    //     so that the layer hierarchy can be loaded automatically next time
+    //     codes modified from tw runtime
+
+    findOrCreateOptionsComment (createIfNotExist = false) {
+      const id = '_layerManagerConfigComment_';
+      const target = this.runtime.getTargetForStage();
+      const comments = target.comments;
+      for (const comment of Object.values(comments)) {
+          if (comment.text.includes(this.COMMENT_CONFIG_MAGIC)) {
+              return comment;
+          }
+      }
+      // find by id
+      if (target.comments[id]) return target.comments[id];
+      if (createIfNotExist) {
+        target.createComment(id, null, '-', 50, 150, 350, 170, false);
+        return target.comments[id];
+      }
+      return null;
+    }
+    generateExtOptions () {
+      const options = {
+        layers: this.__getLayerLevelNames(),
+        default: this.layerManager.defaultFolderDrawableAddTo.name
+      };
+      return options;
+    }
+    storeExtOptions () {
+      const options = this.generateExtOptions();
+      // TODO: translate
+      const text = `Configuration for layer manager.(can be deleted to remove the stored settings)\n${JSON.stringify(options)}${this.COMMENT_CONFIG_MAGIC}`;
+      const existingComment = this.findOrCreateOptionsComment(true);
+      existingComment.text = text;
+      this.runtime.emitProjectChanged();
+    }
+    parseExtOptions () {
+      const comment = this.findOrCreateOptionsComment();
+      if (!comment) return;
+      const lineWithMagic = comment.text.split('\n').find(i => i.endsWith(this.COMMENT_CONFIG_MAGIC));
+      if (!lineWithMagic) return;
+      const jsonText = lineWithMagic.substr(0, lineWithMagic.length - this.COMMENT_CONFIG_MAGIC.length);
+      let parsed;
+      try {
+          parsed = JSON.parse(jsonText);
+          if (!parsed || typeof parsed !== 'object') {
+              throw new Error('Invalid object');
+          }
+      } catch (e) {
+          console.warn('LayerManger config comment has invalid JSON', e);
+          return;
+      }
+
+      if (Array.isArray(parsed.layers) && parsed.default) {
+          this.__generateLayerLevelsFromList(parsed.layers, Scratch.Cast.toString(parsed.default));
+      }
     }
 
     // ========================================================================== //
@@ -1406,12 +1464,15 @@
       }
       return folders;
     }
+    __getLayerLevelNames() {
+      return this.rootFolder.items
+      .filter((item) => typeof item === "object")
+      .map((item) => item.name)
+      .reverse();
+    }
     __getLayerLevelsMenu() {
       // 读取层级名称
-      const levels = this.rootFolder.items
-        .filter((item) => typeof item === "object")
-        .map((item) => item.name)
-        .reverse();
+      const levels = this.__getLayerLevelNames();
       // const folders = [];
       if (levels.length === 0) {
         levels.push({
@@ -1573,10 +1634,29 @@
         }
       );
     }
-    __printFolderInGandiTerminal(folder, pref = "", pref2 = "") {
+    __printFolderInGandiTerminal(
+      folder,
+      printTitle = false,
+      pref = "",
+      pref2 = "",
+      output = []
+    ) {
       const logSys = console; // this.runtime.logSystem
       const getRound = (num) => parseFloat(num.toFixed(2));
-      const zIndex = (num) => `\x1b[0;97m(${getRound(num)})\x1b[0;92m`;
+      const zIndex = (num) => `(${getRound(num)})`;
+      const print = (info) => {
+        logSys.log(info);
+        output.push(info);
+      };
+      if (printTitle) {
+        print(
+          Scratch.translate({
+            id: `${extensionId}.infoHeader`,
+            default: "====== Layer Hierarchy ======",
+            description: "Layer Hierarchy info header.",
+          })
+        );
+      }
       // const zIndex = ()=>'';
       const items = [...folder.items]
         .reverse()
@@ -1584,24 +1664,29 @@
           if (typeof item === "object") return item;
           return this.runtime.getTargetByDrawableId(item);
         })
-        .filter((item) => item && item.isOriginal !== false);
+        .filter((item) => item);
 
       items.forEach((item, idx) => {
         const p = pref2 + pref + (idx === items.length - 1 ? "└" : "├");
-        if (item.isOriginal !== true) {
-          logSys.info(`${p}\x1b[0;93m📁  ${item.name}\x1b[0m`); // ${zIndex(item.layerIndex)}
+        if (item.isOriginal === undefined) {
+          print(`${p} ${item.name}`); // ${zIndex(item.layerIndex)}
           this.__printFolderInGandiTerminal(
             item,
+            false,
             `${pref} `,
-            idx === items.length - 1 ? " " : "│"
+            idx === items.length - 1 ? " " : "│",
+            output
           );
         } else {
           const { name } = item.sprite;
           // const name =this.getFolderAndSpriteName(item.sprite.name).spriteName;
           const idx = this.renderer.getDrawableLayerIndex(item.drawableID);
-          logSys.info(`${p}${zIndex(idx)}${name}`);
+          print(
+            `${p}${zIndex(idx)}${name}${item.isOriginal ? "" : "(clone)"}`
+          );
         }
       });
+      return output;
     }
 
     // ========================================================================== //
@@ -1627,6 +1712,7 @@
       if (lvString === "") return;
       const levels = lvString.split(",").map((str) => str.trim());
       this.__generateLayerLevelsFromList(levels, Scratch.Cast.toString(LEVEL));
+      this.storeExtOptions();
     }
 
     __removeFolder1AndMoveItemsToFolder2(folder1, folder2) {
