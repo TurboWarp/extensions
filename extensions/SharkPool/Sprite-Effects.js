@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.3.2
+// Version V.1.4.0
 
 (function (Scratch) {
   "use strict";
@@ -18,14 +18,23 @@
 
   let sprite = true;
   let nameOffset = 0;
-  let allFilters = [];
   let displacementSrCs = [];
   let maskOptions = [0, 0, 100];
+  let allFilters = [];
+  /* 
+    Note: Canvas Filter Application
+    The reason I use: "Scratch.renderer.canvas.parentNode.parentNode.parentNode"
+
+    Is due to the "Canvas Effects" Extension not allowing other extensions
+    to apply effects to the Canvas. I use 2 other parentNodes because the
+    filter attributes are amplified for some reason :/
+  */
+  let canvas = Scratch.renderer.canvas.parentNode.parentNode.parentNode;
 
   // This function was ripped from Looks Plus by Lily
   const requireNonPackagedRuntime = () => {
     if (runtime.isPackaged) {
-      alert(`To use this block, the creator of the packaged project must uncheck "Remove raw asset data after loading to save RAM" under advanced settings in the packager.`);
+      alert(`For Sprite Effects Blocks to work, the creator of the packaged project must uncheck "Remove raw asset data after loading to save RAM" under advanced settings in the packager.`);
       return false;
     }
     return true;
@@ -587,14 +596,8 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "apply filter [FILTER] to canvas with name [NAME]",
             arguments: {
-              FILTER: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "insert sprite/custom filter"
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "filter-1"
-              }
+              FILTER: { type: Scratch.ArgumentType.STRING, defaultValue: "insert sprite/custom filter" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "filter-1" }
             },
           },
           {
@@ -602,16 +605,26 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "remove filter named [NAME] from canvas",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "filter-1"
-              }
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "filter-1" }
             },
           },
           {
             opcode: "removeAllFilters",
             blockType: Scratch.BlockType.COMMAND,
             text: "remove all canvas filters"
+          },
+          {
+            func: "canvasWarn",
+            blockType: Scratch.BlockType.BUTTON,
+            text: "Canvas Effects Compatibility"
+          },
+          {
+            opcode: "toggleCompat",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "toggle compatibility with Canvas Effects [ON_OFF]",
+            arguments: {
+              ON_OFF: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" }
+            },
           }
         ],
         menus: {
@@ -645,6 +658,7 @@
             acceptReporters: false,
             items: [{"text":"erase", "value":"out"}, {"text":"overlay", "value":" "}]
           },
+          TOGGLE:  ["on", "off"],
           BLENDING: {
             acceptReporters: true,
             items: [
@@ -669,6 +683,13 @@
     filterWarn() {
       alert(`Unfortunately, due to various limitations, not ALL effects (especially the Formatting Blocks) will work on the Canvas...
         \nYou are welcome to experiment by making your own svg filters and using them on the canvas!`);
+    }
+
+    toggleCompat(args) { canvas = args.ON_OFF === "on" ? vm.renderer.canvas.parentNode.parentNode.parentNode : vm.renderer.canvas }
+    canvasWarn() {
+      alert(`Canvas Effects, created by TheShovel, was coded to not work with extensions like Sprite Effects,
+        \nToggling Compatibility "off" will cause Sprite Effects Canvas Filters to not Work with Canvas Effects
+        \nToggling Compatibility "on" will cause Sprite Effects Canvas Filters to Work with Canvas Effects, but will have Weird Visual Bugs`);
     }
 
     setSpriteEffect(args, util) { return this.setMainEffect(args, false, util) }
@@ -846,22 +867,11 @@
     }
 
     async setHue(args, isImage, util) {
-      let targetColorHex = args.COLOR;
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
-        targetColorHex = targetColorHex.replace(/^#/, "");
-        const r = parseInt(targetColorHex.slice(0, 2), 16);
-        const g = parseInt(targetColorHex.slice(2, 4), 16);
-        const b = parseInt(targetColorHex.slice(4, 6), 16);
-        const filterMatrix = [
-          r / 255, 0, 0, 0, 0,
-          0, g / 255, 0, 0, 0,
-          0, 0, b / 255, 0, 0,
-          0, 0, 0, 1, 0
-        ].join(" ");
-        const filterElement = `<filter id="hue"><feColorMatrix in="SourceGraphic" type="matrix" values="${filterMatrix}"></feColorMatrix></filter>`;
+        const filterElement = `<filter id="hue"><feColorMatrix in="SourceGraphic" type="matrix" values="${this.hexMap(args.COLOR)}"></feColorMatrix></filter>`;
         return this.filterApplier(svg, filterElement, "hue");
       }
       return svg;
@@ -910,9 +920,15 @@
           effect = "color-split";
           filterElement = `<filter id="color-split"><feFlood flood-color="${args.COLOR1}" flood-opacity="0.5" result="RED"/><feFlood flood-color="${args.COLOR2}" flood-opacity="0.5" result="GREEN"/><feFlood flood-color="${args.COLOR3}" flood-opacity="0.5" result="BLUE"/><feComposite operator="in" in="RED" in2="SourceAlpha" result="RED"/><feComposite operator="in" in="GREEN" in2="SourceAlpha" result="GREEN"/><feComposite operator="in" in="BLUE" in2="SourceAlpha" result="BLUE"/><feOffset in="RED" dx="${args.X * -1}" dy="${args.Y}" result="RED_OFF"/><feOffset in="GREEN" dx="${args.X}" dy="${args.Y * -1}" result="GREEN_OFF"/><feOffset in="BLUE" dx="0" dy="0" result="BLUE_OFF"/><feBlend mode="screen" in="RED_OFF" in2="GREEN_OFF" result="RG"/><feBlend mode="screen" in="RG" in2="BLUE_OFF" result="FINAL_RESULT"/></filter>`;
         } else if (args.EFFECT.includes("chromatic")) {
-          const colors = [this.hexToHs(args.COLOR1), this.hexToHs(args.COLOR2)];
           effect = "chromatic-abberation";
-          filterElement = `<filter id="chromatic-abberation"><feOffset in="SourceGraphic" dx="${args.X}" dy="${args.Y}" result="layer-one" /><feComponentTransfer in="layer-one" result="customColor1"><feFuncR type="table" tableValues="${colors[0].h}, ${colors[0].s}, 1" /><feFuncG type="discrete" tableValues="0" /><feFuncB type="discrete" tableValues="0" /></feComponentTransfer><feOffset in="SourceGraphic" dx="${args.X * -1}" dy="${args.Y * -1}" result="layer-two" /><feComponentTransfer in="layer-two" result="customColor2"><feFuncR type="discrete" tableValues="0" /><feFuncG type="identity" /><feFuncB type="table" tableValues="${colors[1].h}, ${colors[1].s}, 1" /></feComponentTransfer><feBlend in="customColor1" in2="customColor2" mode="screen" result="color-split" /></filter>`;
+          filterElement = `
+          <filter id="chromatic-abberation">
+            <feOffset in="SourceGraphic" dx="${args.X}" dy="${args.Y}" result="layer-one" />
+            <feColorMatrix in="layer-one" result="customColor1" type="matrix" values="${this.hexMap(args.COLOR1)}"></feColorMatrix>
+            <feOffset in="SourceGraphic" dx="${args.X * -1}" dy="${args.Y * -1}" result="layer-two" />
+            <feColorMatrix in="layer-two" result="customColor2" type="matrix" values="${this.hexMap(args.COLOR2)}"></feColorMatrix>
+            <feBlend in="customColor1" in2="customColor2" mode="screen" result="color-split" />
+          </filter>`;
         } else {
           effect = "abberation";
           filterElement = `<filter id="abberation"><feFlood flood-color="${args.COLOR1}" flood-opacity="0.5" result="RED"/><feFlood flood-color="${args.COLOR2}" flood-opacity="0.5" result="GREEN"/><feComposite operator="in" in="SourceGraphic" in2="SourceAlpha" result="BLUE" /><feComposite operator="in" in="RED" in2="SourceAlpha" result="RED"/><feComposite operator="in" in="GREEN" in2="SourceAlpha" result="GREEN"/><feComposite operator="in" in="BLUE" in2="SourceAlpha" result="BLUE"/><feOffset in="RED" dx="${args.X * -1}" dy="${args.Y}" result="RED_OFF"/><feOffset in="GREEN" dx="${args.X}" dy="${args.Y * -1}" result="GREEN_OFF"/><feOffset in="BLUE" dx="0" dy="0" result="BLUE_OFF"/><feBlend mode="screen" in="RED_OFF" in2="GREEN_OFF" result="RG"/><feBlend mode="screen" in="RG" in2="BLUE_OFF" result="FINAL_RESULT"/><feComposite operator="over" in="SourceGraphic" in2="FINAL_RESULT" /></filter>`;
@@ -960,11 +976,11 @@
         const widthMatch = /width="([^"]*)"/.exec(svg);
         const heightMatch = /height="([^"]*)"/.exec(svg);
         const pos = [
-          Scratch.Cast.toNumber(args.X) + Scratch.Cast.toNumber(widthMatch ? parseFloat(widthMatch[1]) / 2 : parseFloat(Scratch.renderer.canvas.style.width) / 2),
-          (Scratch.Cast.toNumber(args.Y) * -1) + Scratch.Cast.toNumber(heightMatch ? parseFloat(heightMatch[1]) / 2 : parseFloat(Scratch.renderer.canvas.style.height) / 2)
+          Scratch.Cast.toNumber(args.X) + Scratch.Cast.toNumber(widthMatch ? parseFloat(widthMatch[1]) / 2 : parseFloat(vm.renderer.canvas.width / 4)),
+          (Scratch.Cast.toNumber(args.Y) * -1) + Scratch.Cast.toNumber(heightMatch ? parseFloat(heightMatch[1]) / 2 : parseFloat(vm.renderer.canvas.height / 4))
         ];
-        const off = args.SPRITE === "_canvas_" ? vm.renderer.canvas.width / vm.runtime.stageWidth : 1;
-        const filterElement = `<filter id="lighting"><feSpecularLighting result="specOut" specularExponent="20" lighting-color="${args.COLOR}"><fePointLight x="${pos[0] * 1}" y="${pos[1] * 1}" z="${Scratch.Cast.toNumber(args.NUM) * off}" /></feSpecularLighting><feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" /></filter>`;
+        const off = args.SPRITE === "_canvas_" ? vm.renderer.canvas.width / vm.runtime.stageWidth: 1;
+        const filterElement = `<filter id="lighting"><feSpecularLighting result="specOut" specularExponent="20" lighting-color="${args.COLOR}"><fePointLight x="${pos[0]}" y="${pos[1]}" z="${Scratch.Cast.toNumber(args.NUM) * off}" /></feSpecularLighting><feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" /></filter>`;
         return this.filterApplier(svg, filterElement, "lighting");
       }
       return svg;
@@ -1155,15 +1171,14 @@
         svgFilterOuter.appendChild(svgFilter);
         document.body.appendChild(svgFilterOuter);
         allFilters.push(filterID);
-        const existingFilter = Scratch.renderer.canvas.parentNode.parentNode.parentNode.style.filter;
+        const existingFilter = canvas.style.filter;
         const filterString = existingFilter ? `${existingFilter} url(#${filterID})` : `url(#${filterID})`;
-        Scratch.renderer.canvas.parentNode.parentNode.parentNode.style.filter = filterString;
+        canvas.style.filter = filterString;
       } else { console.error("Invalid Filter, Cancelled Application") }
     }
 
     removeCanvasFilter(args) {
       args.NAME = Scratch.Cast.toString(args.NAME).replaceAll(" ", "_");
-      const canvas = Scratch.renderer.canvas.parentNode.parentNode.parentNode;
       if (canvas.style.filter.includes(`url("#${args.NAME}")`)) {
         canvas.style.filter = canvas.style.filter.replace(`url(#${args.NAME})`, "").trim();
         const array = canvas.style.filter.split(" ");
@@ -1181,7 +1196,14 @@
         const filterSel = document.getElementById(`SP-canvas-${allFilters[i]}`);
         if (filterSel) document.body.removeChild(filterSel);
       }
-      Scratch.renderer.canvas.parentNode.parentNode.parentNode.style.filter = "";
+      // Sometimes the allFilters array will lose filters because of the GUI, this fixes it
+      const guiFilters = document.querySelectorAll(`[id^="SP-canvas-filter-"]`);
+      if (guiFilters.length > 0) {
+        for (let i = 0; i < guiFilters.length; i++) {
+          document.body.removeChild(guiFilters[i]);
+        }
+      }
+      canvas.style.filter = "";
       allFilters = [];
     }
 
@@ -1222,6 +1244,7 @@
     }
 
     async findAsset(util) {
+      if (!requireNonPackagedRuntime()) return "<>";
       const currentCostume = util.target.currentCostume;
       let myAsset = util.target.sprite.costumes;
       myAsset = myAsset[currentCostume];
@@ -1240,8 +1263,7 @@
           canvas.width = width;
           canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
-          const dataUri = canvas.toDataURL();
-          resolve(dataUri);
+          resolve(canvas.toDataURL());
         };
         img.onerror = (error) => { resolve("Invalid Image") };
         img.src = `data:image/svg+xml;base64,${btoa(svg)}`;
@@ -1251,13 +1273,13 @@
     getTargets(includeCanvas) {
       const spriteNames = [];
       spriteNames.push({ text : "myself", value: "_myself_" });
+      if (includeCanvas) spriteNames.push({ text : "Canvas", value: "_canvas_" });
+      spriteNames.push({ text : "Stage", value: "_stage_" });
       const targets = Scratch.vm.runtime.targets;
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) spriteNames.push({ text : target.getName(), value : target.getName() });
       }
-      spriteNames.push({ text : "Stage", value: "_stage_" });
-      if (includeCanvas) spriteNames.push({ text : "Canvas", value: "_canvas_" });
       return spriteNames.length > 0 ? spriteNames : [""];
     }
 
@@ -1267,26 +1289,18 @@
       return {"r" : (bigint >> 16) & 255, "g" :(bigint >> 8) & 255, "b" : bigint & 255};
     }
 
-    hexToHs(hex) {
+    hexMap(hex) {
       hex = hex.replace(/^#/, "");
-      const bigint = parseInt(hex, 16);
-      const r = ((bigint >> 16) & 255) / 255;
-      const g = ((bigint >> 8) & 255) / 255;
-      const b = (bigint & 255) / 255;
-
-      const max = Math.max(r, g, b);
-      const min = Math.min(r, g, b);
-      let delta = max - min;
-      let h = 0;
-      if (delta !== 0) {
-        switch (max) {
-          case r: { h = ((g - b) / delta + (g < b ? 6 : 0)) / 6; break }
-          case g: { h = ((b - r) / delta + 2) / 6; break }
-          case b: { h = ((r - g) / delta + 4) / 6; break }
-        }
-      }
-      const s = max === 0 ? 0 : delta / max;
-      return { h: Math.round(h * 360) / 100, s: Math.round(s * 50) / 100 };
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+      const filterMatrix = [
+        r / 255, 0, 0, 0, 0,
+        0, g / 255, 0, 0, 0,
+        0, 0, b / 255, 0, 0,
+        0, 0, 0, 1, 0
+      ].join(" ");
+      return filterMatrix;
     }
 
     filterApplier(svg, filter, name) {
@@ -1327,6 +1341,8 @@
       } catch (error) { console.error("Error fetching resources: ", error) }
       /* eslint-enable */
     }
+
+    packaged() { return vm.renderer.canvas.width > vm.runtime.stageWidth }
   }
 
   Scratch.extensions.register(new SPspriteEffects());
