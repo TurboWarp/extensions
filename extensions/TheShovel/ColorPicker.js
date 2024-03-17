@@ -2,7 +2,7 @@
 // ID: shovelColorPicker
 // Description: Access your system's color picker.
 // By: TheShovel
-// License: MIT AND MPL-2.0
+// License: MIT
 
 (function (Scratch) {
   "use strict";
