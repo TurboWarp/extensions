@@ -1,6 +1,6 @@
-// Name: insertHTML
-// ID: samuelloufinserthtml
-// Description: Add HTML elements over the stage.
+// Name: HTML Inputs
+// ID: samuelloufhtmlinputs
+// Description: Add HTML inputs over the stage.
 // By: SamuelLouf <https://scratch.mit.edu/users/samuellouf/>
 
 (function (Scratch) {
@@ -137,11 +137,11 @@
 
   Scratch.vm.runtime.on("RUNTIME_DISPOSED", closeElements);
 
-  class insertHTML {
+  class HTMLInputs {
     getInfo() {
       return {
-        name: "insertHTML",
-        id: "samuelloufinserthtml",
+        name: "HTML Inputs",
+        id: "samuelloufhtmlinputs",
         blocks: [
           label("Create"),
           {
@@ -672,5 +672,5 @@
     }
   }
 
-  Scratch.extensions.register(new insertHTML());
+  Scratch.extensions.register(new HTMLInputs());
 })(Scratch);
