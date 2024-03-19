@@ -90,7 +90,7 @@ while keeping general compatability. (made with box2D js es6) */
         color2: "#4eb88a",
         menuIconURI: menuIconURI,
         docsURI:
-          "https://pooiod7.neocities.org/markdown/#/projects/scratch/extensions/other/markdown/box2D",
+          "https://extensions.turbowarp.org/pooiod7/BoxedPhysics",
         blocks: [
           { blockType: Scratch.BlockType.LABEL, text: "Define objects" }, // ---- Define objects ---
           {
