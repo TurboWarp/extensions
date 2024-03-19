@@ -1,9 +1,5 @@
 # Boxed Physics
 
-Physics for Scratch3 with Box2D.
-
----
-
 Boxed Physics is an extension for Scratch 3 that allows you to add 2D physics simulations to your Scratch projects. 
 This documentation will guide you through the process of using Boxed Physics.
 
