@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.4.0
+// Version V.1.4.1
 
 (function (Scratch) {
   "use strict";
@@ -221,12 +221,13 @@
           {
             opcode: "glitchSprite",
             blockType: Scratch.BlockType.REPORTER,
-            text: "apply glitch effect to [SPRITE] with offset x [X] y [Y] thickness [NUM] on [axis]",
+            text: "apply glitch effect to [SPRITE] with [LINE] lines offset x [X] y [Y] thickness [NUM] on [axis]",
             hideFromPalette: !sprite,
             arguments: {
               axis: { type: Scratch.ArgumentType.STRING, menu: "AXISES" },
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS2" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              LINE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
@@ -234,12 +235,13 @@
           {
             opcode: "glitchImage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "apply glitch effect to [SPRITE] with offset x [X] y [Y] thickness [NUM] on [axis]",
+            text: "apply glitch effect to [SPRITE] with [LINE] lines offset x [X] y [Y] thickness [NUM] on [axis]",
             hideFromPalette: sprite,
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
               axis: { type: Scratch.ArgumentType.STRING, menu: "AXISES" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              LINE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
@@ -921,14 +923,7 @@
           filterElement = `<filter id="color-split"><feFlood flood-color="${args.COLOR1}" flood-opacity="0.5" result="RED"/><feFlood flood-color="${args.COLOR2}" flood-opacity="0.5" result="GREEN"/><feFlood flood-color="${args.COLOR3}" flood-opacity="0.5" result="BLUE"/><feComposite operator="in" in="RED" in2="SourceAlpha" result="RED"/><feComposite operator="in" in="GREEN" in2="SourceAlpha" result="GREEN"/><feComposite operator="in" in="BLUE" in2="SourceAlpha" result="BLUE"/><feOffset in="RED" dx="${args.X * -1}" dy="${args.Y}" result="RED_OFF"/><feOffset in="GREEN" dx="${args.X}" dy="${args.Y * -1}" result="GREEN_OFF"/><feOffset in="BLUE" dx="0" dy="0" result="BLUE_OFF"/><feBlend mode="screen" in="RED_OFF" in2="GREEN_OFF" result="RG"/><feBlend mode="screen" in="RG" in2="BLUE_OFF" result="FINAL_RESULT"/></filter>`;
         } else if (args.EFFECT.includes("chromatic")) {
           effect = "chromatic-abberation";
-          filterElement = `
-          <filter id="chromatic-abberation">
-            <feOffset in="SourceGraphic" dx="${args.X}" dy="${args.Y}" result="layer-one" />
-            <feColorMatrix in="layer-one" result="customColor1" type="matrix" values="${this.hexMap(args.COLOR1)}"></feColorMatrix>
-            <feOffset in="SourceGraphic" dx="${args.X * -1}" dy="${args.Y * -1}" result="layer-two" />
-            <feColorMatrix in="layer-two" result="customColor2" type="matrix" values="${this.hexMap(args.COLOR2)}"></feColorMatrix>
-            <feBlend in="customColor1" in2="customColor2" mode="screen" result="color-split" />
-          </filter>`;
+          filterElement = `<filter id="chromatic-abberation"><feOffset in="SourceGraphic" dx="${args.X}" dy="${args.Y}" result="layer-one" /><feColorMatrix in="layer-one" result="customColor1" type="matrix" values="${this.hexMap(args.COLOR1)}"></feColorMatrix><feOffset in="SourceGraphic" dx="${args.X * -1}" dy="${args.Y * -1}" result="layer-two" /><feColorMatrix in="layer-two" result="customColor2" type="matrix" values="${this.hexMap(args.COLOR2)}"></feColorMatrix><feBlend in="customColor1" in2="customColor2" mode="screen" result="color-split" /></filter>`;
         } else {
           effect = "abberation";
           filterElement = `<filter id="abberation"><feFlood flood-color="${args.COLOR1}" flood-opacity="0.5" result="RED"/><feFlood flood-color="${args.COLOR2}" flood-opacity="0.5" result="GREEN"/><feComposite operator="in" in="SourceGraphic" in2="SourceAlpha" result="BLUE" /><feComposite operator="in" in="RED" in2="SourceAlpha" result="RED"/><feComposite operator="in" in="GREEN" in2="SourceAlpha" result="GREEN"/><feComposite operator="in" in="BLUE" in2="SourceAlpha" result="BLUE"/><feOffset in="RED" dx="${args.X * -1}" dy="${args.Y}" result="RED_OFF"/><feOffset in="GREEN" dx="${args.X}" dy="${args.Y * -1}" result="GREEN_OFF"/><feOffset in="BLUE" dx="0" dy="0" result="BLUE_OFF"/><feBlend mode="screen" in="RED_OFF" in2="GREEN_OFF" result="RG"/><feBlend mode="screen" in="RG" in2="BLUE_OFF" result="FINAL_RESULT"/><feComposite operator="over" in="SourceGraphic" in2="FINAL_RESULT" /></filter>`;
@@ -976,11 +971,11 @@
         const widthMatch = /width="([^"]*)"/.exec(svg);
         const heightMatch = /height="([^"]*)"/.exec(svg);
         const pos = [
-          Scratch.Cast.toNumber(args.X) + Scratch.Cast.toNumber(widthMatch ? parseFloat(widthMatch[1]) / 2 : parseFloat(vm.renderer.canvas.width / 4)),
-          (Scratch.Cast.toNumber(args.Y) * -1) + Scratch.Cast.toNumber(heightMatch ? parseFloat(heightMatch[1]) / 2 : parseFloat(vm.renderer.canvas.height / 4))
+          Scratch.Cast.toNumber(args.X) + (vm.runtime.stageWidth / 2),
+          (Scratch.Cast.toNumber(args.Y) * -1) + (vm.runtime.stageHeight / 2)
         ];
-        const off = args.SPRITE === "_canvas_" ? vm.renderer.canvas.width / vm.runtime.stageWidth: 1;
-        const filterElement = `<filter id="lighting"><feSpecularLighting result="specOut" specularExponent="20" lighting-color="${args.COLOR}"><fePointLight x="${pos[0]}" y="${pos[1]}" z="${Scratch.Cast.toNumber(args.NUM) * off}" /></feSpecularLighting><feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" /></filter>`;
+        const off = args.SPRITE === "_canvas_" ? canvas.getBoundingClientRect().width / vm.runtime.stageWidth: 1;
+        const filterElement = `<filter id="lighting"><feSpecularLighting result="specOut" specularExponent="20" lighting-color="${args.COLOR}"><fePointLight x="${pos[0] * off}" y="${pos[1] * off}" z="${Scratch.Cast.toNumber(args.NUM) * off}" /></feSpecularLighting><feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" /></filter>`;
         return this.filterApplier(svg, filterElement, "lighting");
       }
       return svg;
@@ -995,8 +990,8 @@
         const widthMatch = /width="([^"]*)"/.exec(svg);
         const heightMatch = /height="([^"]*)"/.exec(svg);
         const size = [
-          Scratch.Cast.toNumber(widthMatch ? parseFloat(widthMatch[1]) : parseFloat(Scratch.renderer.canvas.style.width)),
-          Scratch.Cast.toNumber(heightMatch ? parseFloat(heightMatch[1]) : parseFloat(Scratch.renderer.canvas.style.height))
+          Scratch.Cast.toNumber(widthMatch ? parseFloat(widthMatch[1]) : parseFloat(canvas.getBoundingClientRect().width)),
+          Scratch.Cast.toNumber(heightMatch ? parseFloat(heightMatch[1]) : parseFloat(canvas.getBoundingClientRect().height))
         ];
         const filterElement = `<filter id="advLight"><feImage xlink:href="${source}" result="normalMap" width="${size[0]}" height="${size[1]}" x="1" y="1" /><feComponentTransfer in="normalMap"><feFuncR type="discrete" tableValues="0" /><feFuncG type="discrete" tableValues="0" /><feFuncB type="table" tableValues="0 1" /></feComponentTransfer><feBlend in="SourceGraphic" in2="normalMap" mode="${args.BLEND}" /><feComposite in2="SourceAlpha" operator="in" /></filter>`;
         return this.filterApplier(svg, filterElement, "advLight");
@@ -1010,9 +1005,8 @@
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         let source;
-        if (override) {
-          source = args.EFFECT.startsWith("data:image/") ? args.EFFECT : `data:image/svg+xml;base64,${btoa(args.EFFECT)}`;
-        } else { source = args.EFFECT === "bulge" ? 0 : args.EFFECT === "whirl" ? 1 : args.EFFECT === "ripple" ? 2 : 3 }
+        if (override) source = args.EFFECT.startsWith("data:image/") ? args.EFFECT : `data:image/svg+xml;base64,${btoa(args.EFFECT)}`;
+        else source = args.EFFECT === "bulge" ? 0 : args.EFFECT === "whirl" ? 1 : args.EFFECT === "ripple" ? 2 : 3;
         const mul = args.SPRITE === "_canvas_" ? vm.renderer.canvas.width / vm.runtime.stageWidth * 2 : 1;
         const amts = [Scratch.Cast.toNumber(args.NUM), Scratch.Cast.toNumber(args.X), Scratch.Cast.toNumber(args.Y)];
         if (!displacementSrCs[2] && !override) await this.getSources();
@@ -1020,7 +1014,7 @@
         tableValue[1] = (100 - tableValue[0]) / 2;
         const filterElement =`<filter id="${override ? "customDistort" : args.EFFECT}" xmlns:xlink="http://www.w3.org/1999/xlink">
         <feImage id="dMapS" xlink:href="${override ? source : displacementSrCs[source]}" x="${(tableValue[1] + amts[1]) * mul}%" y="${(tableValue[1] - amts[2]) * mul}%" width="${tableValue[0] * mul}%" height="${tableValue[0] * mul}%" result="distortImg" />
-        <feDisplacementMap id="dMapRes" xChannelSelector="R" yChannelSelector="G" in="SourceGraphic" in2="distortImg" result="displacementMap" color-interpolation-filters="sRGB" scale="${amts[0]}" /><feComposite operator="in" in2="distortImg"></feComposite>
+        <feDisplacementMap id="dMapRes" xChannelSelector="R" yChannelSelector="G" in="SourceGraphic" in2="distortImg" result="displacementMap" color-interpolation-filters="sRGB" scale="${amts[0] * mul}" /><feComposite operator="in" in2="distortImg"></feComposite>
         ${amts[0] < 0 && args.EFFECT !== "ripple" ? "" : `<feComposite operator="over" in2="SourceGraphic"></feComposite>`}</filter>`;
         return this.filterApplier(svg, filterElement, override ? "customDistort" : args.EFFECT);
       }
@@ -1028,9 +1022,7 @@
     }
 
     async distortPreset(args) {
-      const source = {
-        bulge : 0, whirl : 1, ripple : 2, shockwave : 3
-      };
+      const source = { bulge : 0, whirl : 1, ripple : 2, shockwave : 3 };
       if (!displacementSrCs[2]) await this.getSources();
       return displacementSrCs[source[args.TYPE]] || "";
     }
@@ -1040,17 +1032,15 @@
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
-        const off = (vm.renderer.canvas.width / vm.runtime.stageWidth) * (vm.renderer.canvas.width / vm.runtime.stageWidth);
-        const mul = args.SPRITE === "_canvas_" ? [off * 1000, args.NUM * (off * 10)] : [200, args.NUM];
-        const axis = args.axis === "x axis" ? 1 : args.axis === "y axis" ? 2 : 3;
-        const filterElement = `<filter id="glitch"><feOffset in="SourceGraphic" dx="${args.X}" dy="${args.Y}" result="off1b"/><feOffset in="SourceGraphic" dx="-${args.X}" dy="${args.Y}" result="off2b"/>
-          <feMerge ${axis === 1 ? `x="-50%" y="${Math.random() * 100}%"` : axis === 2 ? `x="${Math.random() * 100}%" y="-50%"` : `x="${Math.random() * 100}%" y="${Math.random() * 100}%"`}
-            width="${axis === 1 || axis === 3 ? `${mul[0]}%` : mul[1] + "%"}" height="${axis > 1 ? `${mul[0]}%` : mul[1] + "%"}" result="merge1">
-            <feMergeNode in="SourceGraphic" /><feMergeNode in="off1b" /></feMerge><feColorMatrix in="merge1" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 ${Math.random() * 0.5 + 0.5} 0" result="tinted1"/>
-          <feMerge ${axis === 1 ? `x="-50%" y="${Math.random() * 100}%"` : axis === 2 ? `x="${Math.random() * 100}%" y="-50%"` : `x="${Math.random() * 100}%" y="${Math.random() * 100}%"`} 
-            width="${axis === 1 || axis === 3 ? `${mul[0]}%` : mul[1] + "%"}" height="${axis > 1 ? `${mul[0]}%` : mul[1] + "%"}" result="merge2">
-            <feMergeNode in="SourceGraphic" /><feMergeNode in="off2b" /></feMerge><feColorMatrix in="merge2" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 ${Math.random() * 0.5 + 0.5} 0" result="tinted2"/>
-          <feMerge><feMergeNode in="SourceGraphic" /><feMergeNode in="tinted1" /><feMergeNode in="tinted2" /></feMerge></filter>`;
+        const mul = args.SPRITE === "_canvas_" ? 999 : 100;
+        const axis = args.axis === "x axis" ? [true, false] : args.axis === "y axis" ? [false, true] : [true, true];
+        let allMerges = "";
+        let mergeTxt = "";
+        for (let i = 1; i < args.LINE; i++) {
+          allMerges+= `<feMergeNode in="merge${i}" />`;
+          mergeTxt+= `<feOffset in="SourceGraphic" dx="${args.X * (Math.random() > 0.5 ? 1 : -1)}" dy="${args.Y * (Math.random() > 0.5 ? 1 : -1)}" result="off${i}"/><feMerge x="${axis[0] ? Math.random() * mul : 0}%" y="${axis[1] ? Math.random() * mul : 0}%" width="${axis[0] ? args.NUM : mul}%" height="${axis[1] ? args.NUM : mul}%" result="merge${i}"><feMergeNode in="SourceGraphic" /><feMergeNode in="off${i}" /></feMerge>`;
+        }
+        const filterElement = `<filter id="glitch">${mergeTxt}<feMerge><feMergeNode in="SourceGraphic" />${allMerges}</feMerge></filter>`;
         return this.filterApplier(svg, filterElement, "glitch");
       }
       return svg;
@@ -1341,8 +1331,6 @@
       } catch (error) { console.error("Error fetching resources: ", error) }
       /* eslint-enable */
     }
-
-    packaged() { return vm.renderer.canvas.width > vm.runtime.stageWidth }
   }
 
   Scratch.extensions.register(new SPspriteEffects());
