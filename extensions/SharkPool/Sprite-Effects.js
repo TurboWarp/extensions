@@ -971,8 +971,8 @@
         const widthMatch = /width="([^"]*)"/.exec(svg);
         const heightMatch = /height="([^"]*)"/.exec(svg);
         const pos = [
-          Scratch.Cast.toNumber(args.X) + (vm.runtime.stageWidth / 2),
-          (Scratch.Cast.toNumber(args.Y) * -1) + (vm.runtime.stageHeight / 2)
+          Scratch.Cast.toNumber(args.X) + Scratch.Cast.toNumber(widthMatch ? parseFloat(widthMatch[1]) / 2 : (vm.runtime.stageWidth / 2)),
+          (Scratch.Cast.toNumber(args.Y) * -1) + Scratch.Cast.toNumber(heightMatch ? parseFloat(heightMatch[1]) / 2 : (vm.runtime.stageHeight / 2))
         ];
         const off = args.SPRITE === "_canvas_" ? canvas.getBoundingClientRect().width / vm.runtime.stageWidth: 1;
         const filterElement = `<filter id="lighting"><feSpecularLighting result="specOut" specularExponent="20" lighting-color="${args.COLOR}"><fePointLight x="${pos[0] * off}" y="${pos[1] * off}" z="${Scratch.Cast.toNumber(args.NUM) * off}" /></feSpecularLighting><feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" /></filter>`;
