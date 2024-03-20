@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.4.2
+// Version V.1.4.3
 
 (function (Scratch) {
   "use strict";
@@ -14,7 +14,6 @@
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
-  Scratch.vm.extensionManager.loadExtensionURL("https://extensions.turbowarp.org/Lily/Skins.js");
 
   let sprite = true;
   let nameOffset = 0;
