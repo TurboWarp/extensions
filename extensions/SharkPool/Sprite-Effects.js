@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.4.1
+// Version V.1.4.2
 
 (function (Scratch) {
   "use strict";
@@ -1052,7 +1052,7 @@
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (args.SPRITE === args.SPRITE2) return svg; // do nothing if youre masking yourself
       let svg2;
-      if (args.SPRITE === "_myself_") svg2 = await this.findAsset(util);
+      if (args.SPRITE2 === "_myself_") svg2 = await this.findAsset(util);
       else svg2 = isImage ? await this.getImage(args.SPRITE2) : await this.getSVG(args.SPRITE2);
       const multiply = args.SPRITE === "_canvas_" ? [Scratch.renderer.canvas.width * 2, Scratch.renderer.canvas.height * 2,
         vm.renderer.canvas.width / vm.runtime.stageWidth] : [100, 100, 1];
