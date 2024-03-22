@@ -43,34 +43,6 @@
   //?And some fun statistics
   let trianglesDrawn = 0;
   let inDrawRegion = false;
-  let penPlusDrawRegion = {
-    enter: () => {
-      trianglesDrawn = 0;
-      inDrawRegion = true;
-      gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
-      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-      renderer.dirty = true;
-    },
-    exit: () => {
-      inDrawRegion = false;
-      gl.bindFramebuffer(
-        gl.FRAMEBUFFER,
-        renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
-      );
-
-      triFunctions.drawOnScreen();
-
-      //Quick clear the pen+ frame buffer
-      gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-
-      gl.bindFramebuffer(
-        gl.FRAMEBUFFER,
-        renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
-      );
-      gl.useProgram(penPlusShaders.pen.program);
-    },
-  };
 
   //?Buffer handling and pen loading
   {
@@ -488,12 +460,6 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
   }
-  //renderer.oldEnterDrawRegion = renderer.enterDrawRegion;
-  //renderer.enterDrawRegion = (region) => {
-  //  console.log(region)
-  //  renderer.oldEnterDrawRegion(region);
-  //  drawnFirst = false;
-  //};
 
   //?Override pen Clear with pen+
   renderer.penClear = (penSkinID) => {
@@ -516,274 +482,8 @@
     skin.clear();
   };
 
-  //Pen+ advanced options update
-  //I plan to add more later
-  const penPlusAdvancedSettings = {
-    wValueUnderFlow: false,
-    useDepthBuffer: true,
-    _ClampZ: false,
-    _maxDepth: 1000,
-  };
-
   //?Have this here for ez pz tri drawing on the canvas
   const triFunctions = {
-    drawTri: (x1, y1, x2, y2, x3, y3, penColor, targetID) => {
-      if (!inDrawRegion) renderer.enterDrawRegion(penPlusDrawRegion);
-      trianglesDrawn += 1;
-      //? get triangle attributes for current sprite.
-      const triAttribs = triangleAttributesOfAllSprites[targetID];
-
-      if (triAttribs) {
-        vertexBufferData = new Float32Array([
-          x1,
-          -y1,
-          triAttribs[5],
-          triAttribs[6],
-          penColor[0] * triAttribs[2],
-          penColor[1] * triAttribs[3],
-          penColor[2] * triAttribs[4],
-          penColor[3] * triAttribs[7],
-
-          x2,
-          -y2,
-          triAttribs[13],
-          triAttribs[14],
-          penColor[0] * triAttribs[10],
-          penColor[1] * triAttribs[11],
-          penColor[2] * triAttribs[12],
-          penColor[3] * triAttribs[15],
-
-          x3,
-          -y3,
-          triAttribs[21],
-          triAttribs[22],
-          penColor[0] * triAttribs[18],
-          penColor[1] * triAttribs[19],
-          penColor[2] * triAttribs[20],
-          penColor[3] * triAttribs[23],
-        ]);
-      } else {
-        vertexBufferData = new Float32Array([
-          x1,
-          -y1,
-          1,
-          1,
-          penColor[0],
-          penColor[1],
-          penColor[2],
-          penColor[3],
-
-          x2,
-          -y2,
-          1,
-          1,
-          penColor[0],
-          penColor[1],
-          penColor[2],
-          penColor[3],
-
-          x3,
-          -y3,
-          1,
-          1,
-          penColor[0],
-          penColor[1],
-          penColor[2],
-          penColor[3],
-        ]);
-      }
-
-      //? Bind Positional Data
-
-      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.STATIC_DRAW);
-      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-
-      gl.vertexAttribPointer(
-        a_position_Location_untext,
-        4,
-        gl.FLOAT,
-        false,
-        f32_8,
-        0
-      );
-      gl.vertexAttribPointer(
-        a_color_Location_untext,
-        4,
-        gl.FLOAT,
-        false,
-        f32_8,
-        f32_4
-      );
-
-      gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
-
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-    },
-
-    drawTextTri: (x1, y1, x2, y2, x3, y3, targetID, texture) => {
-      if (!inDrawRegion) renderer.enterDrawRegion(penPlusDrawRegion);
-      trianglesDrawn += 1;
-      //? get triangle attributes for current sprite.
-      const triAttribs = triangleAttributesOfAllSprites[targetID];
-      if (triAttribs) {
-        vertexBufferData = new Float32Array([
-          x1,
-          -y1,
-          penPlusAdvancedSettings.useDepthBuffer ? triAttribs[5] : 0,
-          triAttribs[6],
-          triAttribs[2],
-          triAttribs[3],
-          triAttribs[4],
-          triAttribs[7],
-          triAttribs[0],
-          triAttribs[1],
-
-          x2,
-          -y2,
-          penPlusAdvancedSettings.useDepthBuffer ? triAttribs[13] : 0,
-          triAttribs[14],
-          triAttribs[10],
-          triAttribs[11],
-          triAttribs[12],
-          triAttribs[15],
-          triAttribs[8],
-          triAttribs[9],
-
-          x3,
-          -y3,
-          penPlusAdvancedSettings.useDepthBuffer ? triAttribs[21] : 0,
-          triAttribs[22],
-          triAttribs[18],
-          triAttribs[19],
-          triAttribs[20],
-          triAttribs[23],
-          triAttribs[16],
-          triAttribs[17],
-        ]);
-      } else {
-        vertexBufferData = new Float32Array([
-          x1,
-          -y1,
-          0,
-          1,
-          1,
-          1,
-          1,
-          1,
-          0,
-          0,
-
-          x2,
-          -y2,
-          0,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-
-          x3,
-          -y3,
-          0,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          0,
-        ]);
-      }
-      //? Bind Positional Data
-      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
-
-      gl.vertexAttribPointer(
-        a_position_Location_text,
-        4,
-        gl.FLOAT,
-        false,
-        f32_10,
-        0
-      );
-      gl.vertexAttribPointer(
-        a_color_Location_text,
-        4,
-        gl.FLOAT,
-        false,
-        f32_10,
-        f32_4
-      );
-      gl.vertexAttribPointer(
-        a_textCoord_Location_text,
-        2,
-        gl.FLOAT,
-        false,
-        f32_10,
-        f32_8
-      );
-
-      gl.useProgram(penPlusShaders.textured.ProgramInf.program);
-
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, currentFilter);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
-      gl.uniform1i(u_texture_Location_text, 0);
-
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-    },
-
-    //? this is so I don't have to go through the hassle of replacing default scratch shaders
-    //? many of curse words where exchanged between me and a pillow while writing this extension
-    //? but I have previaled!
-    drawOnScreen: () => {
-      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-      vertexBufferData = new Float32Array([
-        -1, -1, 0, 1, 0, 1,
-
-        1, -1, 0, 1, 1, 1,
-
-        1, 1, 0, 1, 1, 0,
-
-        -1, -1, 0, 1, 0, 1,
-
-        -1, 1, 0, 1, 0, 0,
-
-        1, 1, 0, 1, 1, 0,
-      ]);
-
-      //? Bind Positional Data
-      gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
-
-      gl.vertexAttribPointer(
-        a_position_Location_draw,
-        4,
-        gl.FLOAT,
-        false,
-        f32_6,
-        0
-      );
-      gl.vertexAttribPointer(
-        a_textCoord_Location_draw,
-        2,
-        gl.FLOAT,
-        false,
-        f32_6,
-        f32_4
-      );
-
-      gl.useProgram(penPlusShaders.draw.ProgramInf.program);
-
-      gl.uniform1i(u_depthTexture_Location_draw, 1);
-
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-      gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
-    },
-
     setValueAccordingToCaseTriangle: (
       targetId,
       attribute,
@@ -862,33 +562,6 @@
           triangleAttributesOfAllSprites[targetId][offset] = valuetoSet;
         }
       }
-    },
-  };
-
-  //?Color Library
-  const colors = {
-    hexToRgb: (hex) => {
-      if (typeof hex == "string") {
-        const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return {
-          r: parseInt(splitHex[1], 16),
-          g: parseInt(splitHex[2], 16),
-          b: parseInt(splitHex[3], 16),
-        };
-      }
-      hex = Scratch.Cast.toNumber(hex);
-      return {
-        r: Math.floor(hex / 65536),
-        g: Math.floor(hex / 256) % 256,
-        b: hex % 256,
-      };
-    },
-
-    rgbtoSColor: ({ R, G, B }) => {
-      R = Math.min(Math.max(R, 0), 100) * 2.55;
-      G = Math.min(Math.max(G, 0), 100) * 2.55;
-      B = Math.min(Math.max(B, 0), 100) * 2.55;
-      return (Math.ceil(R) * 256 + Math.ceil(G)) * 256 + Math.ceil(B);
     },
   };
 
@@ -1097,6 +770,331 @@
   };
 
   class extension {
+    //?Our functions that allow for extra rendering things.
+    renderFunctions={
+      drawTri: (x1, y1, x2, y2, x3, y3, penColor, targetID) => {
+        if (!inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+        trianglesDrawn += 1;
+        //? get triangle attributes for current sprite.
+        const triAttribs = triangleAttributesOfAllSprites[targetID];
+  
+        if (triAttribs) {
+          vertexBufferData = new Float32Array([
+            x1,
+            -y1,
+            triAttribs[5],
+            triAttribs[6],
+            penColor[0] * triAttribs[2],
+            penColor[1] * triAttribs[3],
+            penColor[2] * triAttribs[4],
+            penColor[3] * triAttribs[7],
+  
+            x2,
+            -y2,
+            triAttribs[13],
+            triAttribs[14],
+            penColor[0] * triAttribs[10],
+            penColor[1] * triAttribs[11],
+            penColor[2] * triAttribs[12],
+            penColor[3] * triAttribs[15],
+  
+            x3,
+            -y3,
+            triAttribs[21],
+            triAttribs[22],
+            penColor[0] * triAttribs[18],
+            penColor[1] * triAttribs[19],
+            penColor[2] * triAttribs[20],
+            penColor[3] * triAttribs[23],
+          ]);
+        } else {
+          vertexBufferData = new Float32Array([
+            x1,
+            -y1,
+            1,
+            1,
+            penColor[0],
+            penColor[1],
+            penColor[2],
+            penColor[3],
+  
+            x2,
+            -y2,
+            1,
+            1,
+            penColor[0],
+            penColor[1],
+            penColor[2],
+            penColor[3],
+  
+            x3,
+            -y3,
+            1,
+            1,
+            penColor[0],
+            penColor[1],
+            penColor[2],
+            penColor[3],
+          ]);
+        }
+  
+        //? Bind Positional Data
+  
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.STATIC_DRAW);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+  
+        gl.vertexAttribPointer(
+          a_position_Location_untext,
+          4,
+          gl.FLOAT,
+          false,
+          f32_8,
+          0
+        );
+        gl.vertexAttribPointer(
+          a_color_Location_untext,
+          4,
+          gl.FLOAT,
+          false,
+          f32_8,
+          f32_4
+        );
+  
+        gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
+  
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      },
+  
+      drawTextTri: (x1, y1, x2, y2, x3, y3, targetID, texture) => {
+        if (!inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+        trianglesDrawn += 1;
+        //? get triangle attributes for current sprite.
+        const triAttribs = triangleAttributesOfAllSprites[targetID];
+        if (triAttribs) {
+          vertexBufferData = new Float32Array([
+            x1,
+            -y1,
+            penPlusAdvancedSettings.useDepthBuffer ? triAttribs[5] : 0,
+            triAttribs[6],
+            triAttribs[2],
+            triAttribs[3],
+            triAttribs[4],
+            triAttribs[7],
+            triAttribs[0],
+            triAttribs[1],
+  
+            x2,
+            -y2,
+            penPlusAdvancedSettings.useDepthBuffer ? triAttribs[13] : 0,
+            triAttribs[14],
+            triAttribs[10],
+            triAttribs[11],
+            triAttribs[12],
+            triAttribs[15],
+            triAttribs[8],
+            triAttribs[9],
+  
+            x3,
+            -y3,
+            penPlusAdvancedSettings.useDepthBuffer ? triAttribs[21] : 0,
+            triAttribs[22],
+            triAttribs[18],
+            triAttribs[19],
+            triAttribs[20],
+            triAttribs[23],
+            triAttribs[16],
+            triAttribs[17],
+          ]);
+        } else {
+          vertexBufferData = new Float32Array([
+            x1,
+            -y1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+  
+            x2,
+            -y2,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+  
+            x3,
+            -y3,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+          ]);
+        }
+        //? Bind Positional Data
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
+  
+        gl.vertexAttribPointer(
+          a_position_Location_text,
+          4,
+          gl.FLOAT,
+          false,
+          f32_10,
+          0
+        );
+        gl.vertexAttribPointer(
+          a_color_Location_text,
+          4,
+          gl.FLOAT,
+          false,
+          f32_10,
+          f32_4
+        );
+        gl.vertexAttribPointer(
+          a_textCoord_Location_text,
+          2,
+          gl.FLOAT,
+          false,
+          f32_10,
+          f32_8
+        );
+  
+        gl.useProgram(penPlusShaders.textured.ProgramInf.program);
+  
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, currentFilter);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
+        gl.uniform1i(u_texture_Location_text, 0);
+  
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      },
+
+      //? this is so I don't have to go through the hassle of replacing default scratch shaders
+      //? many of curse words where exchanged between me and a pillow while writing this extension
+      //? but I have previaled!
+      reRenderPenLayer: () => {
+        gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
+        vertexBufferData = new Float32Array([
+          -1, -1, 0, 1, 0, 1,
+
+          1, -1, 0, 1, 1, 1,
+
+          1, 1, 0, 1, 1, 0,
+
+          -1, -1, 0, 1, 0, 1,
+
+          -1, 1, 0, 1, 0, 0,
+
+          1, 1, 0, 1, 1, 0,
+        ]);
+
+        //? Bind Positional Data
+        gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
+
+        gl.vertexAttribPointer(
+          a_position_Location_draw,
+          4,
+          gl.FLOAT,
+          false,
+          f32_6,
+          0
+        );
+        gl.vertexAttribPointer(
+          a_textCoord_Location_draw,
+          2,
+          gl.FLOAT,
+          false,
+          f32_6,
+          f32_4
+        );
+
+        gl.useProgram(penPlusShaders.draw.ProgramInf.program);
+
+        gl.uniform1i(u_depthTexture_Location_draw, 1);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
+      },
+    }
+
+    //?The Draw region! extra cool!
+    penPlusDrawRegion = {
+      enter: () => {
+        trianglesDrawn = 0;
+        inDrawRegion = true;
+        gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
+        gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
+        renderer.dirty = true;
+      },
+      exit: () => {
+        inDrawRegion = false;
+        gl.bindFramebuffer(
+          gl.FRAMEBUFFER,
+          renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
+        );
+  
+        this.renderFunctions.reRenderPenLayer();
+  
+        //Quick clear the pen+ frame buffer
+        gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+  
+        gl.bindFramebuffer(
+          gl.FRAMEBUFFER,
+          renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
+        );
+        gl.useProgram(penPlusShaders.pen.program);
+      },
+    };
+
+    //?The neat color library I made
+    colorLib = {
+      hexToRgb: (hex) => {
+        if (typeof hex == "string") {
+          const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+          return {
+            r: parseInt(splitHex[1], 16),
+            g: parseInt(splitHex[2], 16),
+            b: parseInt(splitHex[3], 16),
+          };
+        }
+        hex = Scratch.Cast.toNumber(hex);
+        return {
+          r: Math.floor(hex / 65536),
+          g: Math.floor(hex / 256) % 256,
+          b: hex % 256,
+        };
+      },
+  
+      rgbtoSColor: ({ R, G, B }) => {
+        R = Math.min(Math.max(R, 0), 100) * 2.55;
+        G = Math.min(Math.max(G, 0), 100) * 2.55;
+        B = Math.min(Math.max(B, 0), 100) * 2.55;
+        return (Math.ceil(R) * 256 + Math.ceil(G)) * 256 + Math.ceil(B);
+      },
+    }
+
+    //?Just some advanced settings
+    AdvancedSettings = {
+      wValueUnderFlow: false,
+      useDepthBuffer: true,
+      _ClampZ: false,
+      _maxDepth: 1000,
+    };
+
     getInfo() {
       return {
         blocks: [
@@ -1548,7 +1546,17 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Advanced Blocks",
+            text: "Advanced",
+          },
+          {
+            blockType: Scratch.BlockType.BUTTON,
+            func: "button_shadereditor",
+            text: "Shader Editor"
+          }
+
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Extras"
           },
           {
             opcode: "getTrianglesDrawn",
@@ -2260,7 +2268,7 @@
       y2 = Scratch.Cast.toNumber(y2) * dHeight * mul;
       y3 = Scratch.Cast.toNumber(y3) * dHeight * mul;
 
-      triFunctions.drawTri(
+      this.renderFunctions.drawTri(
         x1,
         y1,
         x2,
@@ -2316,7 +2324,7 @@
       y3 = Scratch.Cast.toNumber(y3) * dHeight * mul;
 
       if (currentTexture != null && typeof currentTexture != "undefined") {
-        triFunctions.drawTextTri(
+        this.renderFunctions.drawTextTri(
           x1,
           y1,
           x2,
@@ -2329,7 +2337,7 @@
       }
     }
     RGB2HEX({ R, G, B }) {
-      return colors.rgbtoSColor({ R: R, G: G, B: B });
+      return this.colorLib.rgbtoSColor({ R: R, G: G, B: B });
     }
     HSV2RGB({ H, S, V }) {
       S = S / 100;
@@ -2364,7 +2372,7 @@
       Primes[0] = (Primes[0] + M) * 255;
       Primes[1] = (Primes[1] + M) * 255;
       Primes[2] = (Primes[2] + M) * 255;
-      return colors.rgbtoSColor({
+      return this.colorLib.rgbtoSColor({
         R: Primes[0] / 2.55,
         G: Primes[1] / 2.55,
         B: Primes[2] / 2.55,
@@ -2487,13 +2495,13 @@
           y = Math.floor(y - 1);
           const colorIndex = (y * curCostume.width + x) * 4;
           if (textureData[colorIndex] && x < curCostume.width && x >= 0) {
-            return colors.rgbtoSColor({
+            return this.colorLib.rgbtoSColor({
               R: textureData[colorIndex] / 2.55,
               G: textureData[colorIndex + 1] / 2.55,
               B: textureData[colorIndex + 2] / 2.55,
             });
           }
-          return colors.rgbtoSColor({ R: 100, G: 100, B: 100 });
+          return this.colorLib.rgbtoSColor({ R: 100, G: 100, B: 100 });
         }
       }
     }
