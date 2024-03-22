@@ -473,93 +473,93 @@
     skin.clear();
   };
 
-  //?Have this here for ez pz tri drawing on the canvas
-  const triFunctions = {
-    setValueAccordingToCaseTriangle: (
-      targetId,
-      attribute,
-      value,
-      wholeTri,
-      offset
-    ) => {
-      offset = offset + attribute || attribute;
-      let valuetoSet = 0;
-      switch (attribute) {
-        //U
-        case 0:
-          valuetoSet = value;
-          break;
-        //V
-        case 1:
-          valuetoSet = value;
-          break;
+  class extension {
+    //?Stores our attributes
+    triangleAttributesOfAllSprites = {};
+    squareAttributesOfAllSprites = {};
 
-        //100 since that is what scratch users are accustomed to.
-        //R
-        case 2:
-          valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
-          break;
-        //G
-        case 3:
-          valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
-          break;
-        //B
-        case 4:
-          valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
-          break;
-
-        //Clamp to 0 so we can't go behind the stage.
-        //Z
-        case 5:
-          if (this.AdvancedSettings._ClampZ) {
-            if (value < 0) {
-              valuetoSet = 0;
+    attributeEditors = {
+      triangle: (
+        targetId,
+        attribute,
+        value,
+        wholeTri,
+        offset
+      ) => {
+        offset = offset + attribute || attribute;
+        let valuetoSet = 0;
+        switch (attribute) {
+          //U
+          case 0:
+            valuetoSet = value;
+            break;
+          //V
+          case 1:
+            valuetoSet = value;
+            break;
+  
+          //100 since that is what scratch users are accustomed to.
+          //R
+          case 2:
+            valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
+            break;
+          //G
+          case 3:
+            valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
+            break;
+          //B
+          case 4:
+            valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
+            break;
+  
+          //Clamp to 0 so we can't go behind the stage.
+          //Z
+          case 5:
+            if (this.AdvancedSettings._ClampZ) {
+              if (value < 0) {
+                valuetoSet = 0;
+                break;
+              }
+              //convert to depth space for best accuracy
+              valuetoSet = value;
               break;
             }
             //convert to depth space for best accuracy
             valuetoSet = value;
             break;
-          }
-          //convert to depth space for best accuracy
-          valuetoSet = value;
-          break;
-
-        //Clamp to 1 so we don't accidentally clip.
-        //W
-        case 6:
-          if (this.AdvancedSettings.wValueUnderFlow == true) {
-            valuetoSet = value;
-          } else {
-            valuetoSet = Math.max(value, 1);
-          }
-          break;
-        //Transparency
-        //Same story as color
-        case 7:
-          valuetoSet = Math.min(Math.max(value, 0), 1000) * 0.01;
-          break;
-
-        //Just break if value isn't valid
-        default:
-          break;
-      }
-      //Check if the index even exists.
-      if (attribute >= 0 && attribute <= 7) {
-        if (wholeTri) {
-          triangleAttributesOfAllSprites[targetId][attribute] = valuetoSet;
-          triangleAttributesOfAllSprites[targetId][attribute + 8] = valuetoSet;
-          triangleAttributesOfAllSprites[targetId][attribute + 16] = valuetoSet;
-        } else {
-          triangleAttributesOfAllSprites[targetId][offset] = valuetoSet;
+  
+          //Clamp to 1 so we don't accidentally clip.
+          //W
+          case 6:
+            if (this.AdvancedSettings.wValueUnderFlow == true) {
+              valuetoSet = value;
+            } else {
+              valuetoSet = Math.max(value, 1);
+            }
+            break;
+          //Transparency
+          //Same story as color
+          case 7:
+            valuetoSet = Math.min(Math.max(value, 0), 1000) * 0.01;
+            break;
+  
+          //Just break if value isn't valid
+          default:
+            break;
         }
-      }
-    },
-  };
+        //Check if the index even exists.
+        if (attribute >= 0 && attribute <= 7) {
+          if (wholeTri) {
+            this.triangleAttributesOfAllSprites[targetId][attribute] = valuetoSet;
+            this.triangleAttributesOfAllSprites[targetId][attribute + 8] = valuetoSet;
+            this.triangleAttributesOfAllSprites[targetId][attribute + 16] = valuetoSet;
+          } else {
+            this.triangleAttributesOfAllSprites[targetId][offset] = valuetoSet;
+          }
+        }
+      },
+    }
 
-  class extension {
-    //?Stores our attributes
-    triangleAttributesOfAllSprites = {};
-    squareAttributesOfAllSprites = {};
     //?Our functions that allow for extra rendering things.
     renderFunctions={
       drawTri: (x1, y1, x2, y2, x3, y3, penColor, targetID) => {
@@ -1093,6 +1093,8 @@
     trianglesDrawn = 0;
     inDrawRegion = false;
 
+    IFrame = undefined;
+
     getInfo() {
       return {
         blocks: [
@@ -1146,10 +1148,14 @@
             },
             filter: "sprite",
           },
+          /*
+          //* there is a good reason I hid these.
+          //* they are buggy
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Square Pen Blocks",
           },
+          */
           {
             disableMonitor: true,
             opcode: "squareDown",
@@ -1157,6 +1163,7 @@
             text: "stamp pen square",
             arguments: {},
             filter: "sprite",
+            hideFromPalette:true
           },
           {
             disableMonitor: true,
@@ -1167,6 +1174,7 @@
               tex: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
             },
             filter: "sprite",
+            hideFromPalette:true
           },
           {
             disableMonitor: true,
@@ -1182,6 +1190,7 @@
               number: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
             },
             filter: "sprite",
+            hideFromPalette:true
           },
           {
             disableMonitor: true,
@@ -1196,6 +1205,7 @@
               },
             },
             filter: "sprite",
+            hideFromPalette:true
           },
           {
             disableMonitor: true,
@@ -1209,6 +1219,7 @@
               },
             },
             filter: "sprite",
+            hideFromPalette:true
           },
           {
             disableMonitor: true,
@@ -1217,7 +1228,9 @@
             text: "reset square Attributes",
             arguments: {},
             filter: "sprite",
+            hideFromPalette:true
           },
+          //End of hidden blocks
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Triangle Blocks",
@@ -2112,7 +2125,7 @@
       if (!this.triangleAttributesOfAllSprites[targetId]) {
         this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
       }
-      triFunctions.setValueAccordingToCaseTriangle(
+      this.attributeEditors.setValueAccordingToCaseTriangle(
         targetId,
         Scratch.Cast.toNumber(attribute),
         value,
@@ -2126,7 +2139,7 @@
       if (!this.triangleAttributesOfAllSprites[targetId]) {
         this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
       }
-      triFunctions.setValueAccordingToCaseTriangle(
+      this.attributeEditors.setValueAccordingToCaseTriangle(
         targetId,
         Scratch.Cast.toNumber(wholeAttribute),
         value,
@@ -2145,7 +2158,7 @@
 
       const calcColor = Scratch.Cast.toRgbColorObject(color);
 
-      triFunctions.setValueAccordingToCaseTriangle(
+      this.attributeEditors.setValueAccordingToCaseTriangle(
         targetId,
         2,
         calcColor.r / 2.55,
@@ -2153,7 +2166,7 @@
         trianglePointStart
       );
 
-      triFunctions.setValueAccordingToCaseTriangle(
+      this.attributeEditors.setValueAccordingToCaseTriangle(
         targetId,
         3,
         calcColor.g / 2.55,
@@ -2161,7 +2174,7 @@
         trianglePointStart
       );
 
-      triFunctions.setValueAccordingToCaseTriangle(
+      this.attributeEditors.setValueAccordingToCaseTriangle(
         targetId,
         4,
         calcColor.b / 2.55,
@@ -2180,7 +2193,7 @@
 
       const calcColor = Scratch.Cast.toRgbColorObject(color);
 
-      triFunctions.setValueAccordingToCaseTriangle(
+      this.attributeEditors.setValueAccordingToCaseTriangle(
         targetId,
         2,
         calcColor.r / 2.55,
@@ -2188,7 +2201,7 @@
         trianglePointStart
       );
 
-      triFunctions.setValueAccordingToCaseTriangle(
+      this.attributeEditors.setValueAccordingToCaseTriangle(
         targetId,
         3,
         calcColor.g / 2.55,
@@ -2196,7 +2209,7 @@
         trianglePointStart
       );
 
-      triFunctions.setValueAccordingToCaseTriangle(
+      this.attributeEditors.setValueAccordingToCaseTriangle(
         targetId,
         4,
         calcColor.b / 2.55,
@@ -2536,7 +2549,6 @@
           break;
       }
     }
-    runtime = Scratch.vm.runtime;
   }
 
   //? A small hack to stop the renderer from immediatly dying. And to allow for immediate use
