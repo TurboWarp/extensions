@@ -1758,6 +1758,23 @@
 
       return ["no pen+ costumes!"];
     }
+    getCostumeDataURI_costume_MenuFunction() {
+      const myCostumes = runtime._editingTarget.sprite.costumes;
+
+      let readCostumes = [];
+      for (
+        let curCostumeID = 0;
+        curCostumeID < myCostumes.length;
+        curCostumeID++
+      ) {
+        const currentCostume = myCostumes[curCostumeID].name;
+        readCostumes.push(currentCostume);
+      }
+
+      return readCostumes;
+    }
+
+    //?Default pen helpers
     isPenDown(args, util) {
       checkForPen(util);
       const curTarget = util.target;
@@ -1796,6 +1813,8 @@
         y2
       );
     }
+
+    //!Useless square blocks
     squareDown(arg, util) {
       //Just a simple thing to allow for pen drawing
       const curTarget = util.target;
@@ -2131,6 +2150,8 @@
         1, 1, 90, 1, 0, 1, 0, 1, 1, 1, 1, 0,
       ];
     }
+
+    //?Triangle stuffs
     setTriangleFilterMode({ filter }) {
       currentFilter = filter;
     }
@@ -2363,6 +2384,8 @@
         );
       }
     }
+
+    //?Color Stuff
     RGB2HEX({ R, G, B }) {
       return this.colorLib.rgbtoSColor({ R: R, G: G, B: B });
     }
@@ -2405,6 +2428,8 @@
         B: Primes[2] / 2.55,
       });
     }
+
+    //?Image/costume Api
     setDURIclampmode({ clampMode }) {
       penPlusImportWrapMode = clampMode;
     }
@@ -2447,21 +2472,6 @@
           curTarget.sprite.costumes_[costIndex].asset.encodeDataURI();
         return curCostume;
       }
-    }
-    getCostumeDataURI_costume_MenuFunction() {
-      const myCostumes = runtime._editingTarget.sprite.costumes;
-
-      let readCostumes = [];
-      for (
-        let curCostumeID = 0;
-        curCostumeID < myCostumes.length;
-        curCostumeID++
-      ) {
-        const currentCostume = myCostumes[curCostumeID].name;
-        readCostumes.push(currentCostume);
-      }
-
-      return readCostumes;
     }
     getDimensionOf({ dimension, costume }, util) {
       //Just a simple thing to allow for pen drawing
@@ -2546,6 +2556,8 @@
         return "";
       }
     }
+
+    //?Neato
     getTrianglesDrawn() {
       return this.trianglesDrawn;
     }
@@ -2567,6 +2579,7 @@
       }
     }
 
+    //?Custom Shaders
     openShaderEditor() {
         const bgFade = document.createElement("div");
         bgFade.style.width = "100%";
