@@ -39,11 +39,6 @@
 
   let lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
-  //?Link some stuff to the draw region
-  //?And some fun statistics
-  let trianglesDrawn = 0;
-  let inDrawRegion = false;
-
   //?Buffer handling and pen loading
   {
     gl.bindTexture(gl.TEXTURE_2D, depthBufferTexture);
@@ -231,10 +226,6 @@
     // width* height*  rotation  u-mul u     v-mul   v    r g b transparency
     1, 1, 90, 1, 0, 1, 0, 1, 1, 1, 1, 1,
   ];
-
-  const triangleAttributesOfAllSprites = {}; //!it dawned on me I have to do this
-
-  const squareAttributesOfAllSprites = {}; //?Doing this for part 2
 
   //?Get Shaders
   const penPlusShaders = {
@@ -520,7 +511,7 @@
         //Clamp to 0 so we can't go behind the stage.
         //Z
         case 5:
-          if (penPlusAdvancedSettings._ClampZ) {
+          if (this.AdvancedSettings._ClampZ) {
             if (value < 0) {
               valuetoSet = 0;
               break;
@@ -536,7 +527,7 @@
         //Clamp to 1 so we don't accidentally clip.
         //W
         case 6:
-          if (penPlusAdvancedSettings.wValueUnderFlow == true) {
+          if (this.AdvancedSettings.wValueUnderFlow == true) {
             valuetoSet = value;
           } else {
             valuetoSet = Math.max(value, 1);
@@ -565,218 +556,17 @@
     },
   };
 
-  const textureFunctions = {
-    createBlankPenPlusTextureInfo: function (
-      width,
-      height,
-      color,
-      name,
-      clamp
-    ) {
-      const texture = penPlusCostumeLibrary[name]
-        ? penPlusCostumeLibrary[name].texture
-        : gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      // Fill the texture with a 1x1 blue pixel.
-
-      const pixelData = new Uint8Array(width * height * 4);
-
-      const decodedColor = Scratch.Cast.toRgbColorObject(color);
-
-      for (let pixelID = 0; pixelID < pixelData.length / 4; pixelID++) {
-        pixelData[pixelID * 4] = decodedColor.r;
-        pixelData[pixelID * 4 + 1] = decodedColor.g;
-        pixelData[pixelID * 4 + 2] = decodedColor.b;
-        pixelData[pixelID * 4 + 3] = 255;
-      }
-
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
-
-      gl.texImage2D(
-        gl.TEXTURE_2D,
-        0,
-        gl.RGBA,
-        width,
-        height,
-        0,
-        gl.RGBA,
-        gl.UNSIGNED_BYTE,
-        pixelData
-      );
-
-      penPlusCostumeLibrary[name] = {
-        texture: texture,
-        width: width,
-        height: height,
-      };
-    },
-    createPenPlusTextureInfo: function (url, name, clamp) {
-      const texture = penPlusCostumeLibrary[name]
-        ? penPlusCostumeLibrary[name].texture
-        : gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      // Fill the texture with a 1x1 blue pixel.
-      gl.texImage2D(
-        gl.TEXTURE_2D,
-        0,
-        gl.RGBA,
-        1,
-        1,
-        0,
-        gl.RGBA,
-        gl.UNSIGNED_BYTE,
-        new Uint8Array([0, 0, 255, 255])
-      );
-
-      // Let's assume all images are not a power of 2
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
-      return new Promise((resolve, reject) => {
-        Scratch.canFetch(url).then((allowed) => {
-          if (!allowed) {
-            reject(false);
-          }
-          // Permission is checked earlier.
-          // eslint-disable-next-line no-restricted-syntax
-          const image = new Image();
-          image.onload = function () {
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texImage2D(
-              gl.TEXTURE_2D,
-              0,
-              gl.RGBA,
-              gl.RGBA,
-              gl.UNSIGNED_BYTE,
-              image
-            );
-            penPlusCostumeLibrary[name] = {
-              texture: texture,
-              width: image.width,
-              height: image.height,
-            };
-            resolve(texture);
-          };
-          image.crossOrigin = "anonymous";
-          image.src = url;
-        });
-      });
-    },
-
-    getTextureData: (texture, width, height) => {
-      //?Initilize the temp framebuffer and assign it
-      const readBuffer = gl.createFramebuffer();
-
-      lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-
-      gl.bindFramebuffer(gl.FRAMEBUFFER, readBuffer);
-
-      gl.framebufferTexture2D(
-        gl.FRAMEBUFFER,
-        gl.COLOR_ATTACHMENT0,
-        gl.TEXTURE_2D,
-        texture,
-        0
-      );
-
-      //?make sure to unbind the framebuffer and delete it!
-      const removeBuffer = () => {
-        gl.deleteFramebuffer(readBuffer);
-      };
-
-      //?if sucessful read
-      if (
-        gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE
-      ) {
-        //?Make an array to write the pixels onto
-        let dataArray = new Uint8Array(width * height * 4);
-        gl.readPixels(
-          0,
-          0,
-          width,
-          height,
-          gl.RGBA,
-          gl.UNSIGNED_BYTE,
-          dataArray
-        );
-
-        //?Remove Buffer data and return data
-        removeBuffer();
-        return dataArray;
-      }
-
-      //?If not return undefined
-      removeBuffer();
-      return undefined;
-    },
-
-    getTextureAsURI: (texture, width, height) => {
-      //?Initilize the temp framebuffer and assign it
-      const readBuffer = gl.createFramebuffer();
-
-      lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-
-      gl.bindFramebuffer(gl.FRAMEBUFFER, readBuffer);
-
-      gl.framebufferTexture2D(
-        gl.FRAMEBUFFER,
-        gl.COLOR_ATTACHMENT0,
-        gl.TEXTURE_2D,
-        texture,
-        0
-      );
-
-      //?make sure to unbind the framebuffer and delete it!
-      const removeBuffer = () => {
-        gl.deleteFramebuffer(readBuffer);
-      };
-
-      //?if sucessful read
-      if (
-        gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE
-      ) {
-        //?Make an array to write the pixels onto
-        let dataArray = new Uint8Array(width * height * 4);
-        gl.readPixels(
-          0,
-          0,
-          width,
-          height,
-          gl.RGBA,
-          gl.UNSIGNED_BYTE,
-          dataArray
-        );
-
-        //Make an invisible canvas
-        const dataURICanvas = document.createElement("canvas");
-        dataURICanvas.width = width;
-        dataURICanvas.height = height;
-        const dataURIContext = dataURICanvas.getContext("2d");
-
-        // Copy the pixels to a 2D canvas
-        const imageData = dataURIContext.createImageData(width, height);
-        imageData.data.set(dataArray);
-        dataURIContext.putImageData(imageData, 0, 0);
-
-        //?Remove Buffer data and return data
-        removeBuffer();
-        return dataURICanvas.toDataURL();
-      }
-
-      //?If not return undefined
-      removeBuffer();
-      return undefined;
-    },
-  };
-
   class extension {
+    //?Stores our attributes
+    triangleAttributesOfAllSprites = {};
+    squareAttributesOfAllSprites = {};
     //?Our functions that allow for extra rendering things.
     renderFunctions={
       drawTri: (x1, y1, x2, y2, x3, y3, penColor, targetID) => {
-        if (!inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
-        trianglesDrawn += 1;
+        if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+        this.trianglesDrawn += 1;
         //? get triangle attributes for current sprite.
-        const triAttribs = triangleAttributesOfAllSprites[targetID];
+        const triAttribs = this.triangleAttributesOfAllSprites[targetID];
   
         if (triAttribs) {
           vertexBufferData = new Float32Array([
@@ -867,15 +657,15 @@
       },
   
       drawTextTri: (x1, y1, x2, y2, x3, y3, targetID, texture) => {
-        if (!inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
-        trianglesDrawn += 1;
+        if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+        this.trianglesDrawn += 1;
         //? get triangle attributes for current sprite.
-        const triAttribs = triangleAttributesOfAllSprites[targetID];
+        const triAttribs = this.triangleAttributesOfAllSprites[targetID];
         if (triAttribs) {
           vertexBufferData = new Float32Array([
             x1,
             -y1,
-            penPlusAdvancedSettings.useDepthBuffer ? triAttribs[5] : 0,
+            this.AdvancedSettings.useDepthBuffer ? triAttribs[5] : 0,
             triAttribs[6],
             triAttribs[2],
             triAttribs[3],
@@ -886,7 +676,7 @@
   
             x2,
             -y2,
-            penPlusAdvancedSettings.useDepthBuffer ? triAttribs[13] : 0,
+            this.AdvancedSettings.useDepthBuffer ? triAttribs[13] : 0,
             triAttribs[14],
             triAttribs[10],
             triAttribs[11],
@@ -897,7 +687,7 @@
   
             x3,
             -y3,
-            penPlusAdvancedSettings.useDepthBuffer ? triAttribs[21] : 0,
+            this.AdvancedSettings.useDepthBuffer ? triAttribs[21] : 0,
             triAttribs[22],
             triAttribs[18],
             triAttribs[19],
@@ -1033,14 +823,14 @@
     //?The Draw region! extra cool!
     penPlusDrawRegion = {
       enter: () => {
-        trianglesDrawn = 0;
-        inDrawRegion = true;
+        this.trianglesDrawn = 0;
+        this.inDrawRegion = true;
         gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
         gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
         renderer.dirty = true;
       },
       exit: () => {
-        inDrawRegion = false;
+        this.inDrawRegion = false;
         gl.bindFramebuffer(
           gl.FRAMEBUFFER,
           renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
@@ -1094,6 +884,214 @@
       _ClampZ: false,
       _maxDepth: 1000,
     };
+
+    textureFunctions = {
+      createBlankPenPlusTextureInfo: function (
+        width,
+        height,
+        color,
+        name,
+        clamp
+      ) {
+        const texture = penPlusCostumeLibrary[name]
+          ? penPlusCostumeLibrary[name].texture
+          : gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        // Fill the texture with a 1x1 blue pixel.
+  
+        const pixelData = new Uint8Array(width * height * 4);
+  
+        const decodedColor = Scratch.Cast.toRgbColorObject(color);
+  
+        for (let pixelID = 0; pixelID < pixelData.length / 4; pixelID++) {
+          pixelData[pixelID * 4] = decodedColor.r;
+          pixelData[pixelID * 4 + 1] = decodedColor.g;
+          pixelData[pixelID * 4 + 2] = decodedColor.b;
+          pixelData[pixelID * 4 + 3] = 255;
+        }
+  
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
+  
+        gl.texImage2D(
+          gl.TEXTURE_2D,
+          0,
+          gl.RGBA,
+          width,
+          height,
+          0,
+          gl.RGBA,
+          gl.UNSIGNED_BYTE,
+          pixelData
+        );
+  
+        penPlusCostumeLibrary[name] = {
+          texture: texture,
+          width: width,
+          height: height,
+        };
+      },
+      createPenPlusTextureInfo: function (url, name, clamp) {
+        const texture = penPlusCostumeLibrary[name]
+          ? penPlusCostumeLibrary[name].texture
+          : gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        // Fill the texture with a 1x1 blue pixel.
+        gl.texImage2D(
+          gl.TEXTURE_2D,
+          0,
+          gl.RGBA,
+          1,
+          1,
+          0,
+          gl.RGBA,
+          gl.UNSIGNED_BYTE,
+          new Uint8Array([0, 0, 255, 255])
+        );
+  
+        // Let's assume all images are not a power of 2
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
+        return new Promise((resolve, reject) => {
+          Scratch.canFetch(url).then((allowed) => {
+            if (!allowed) {
+              reject(false);
+            }
+            // Permission is checked earlier.
+            // eslint-disable-next-line no-restricted-syntax
+            const image = new Image();
+            image.onload = function () {
+              gl.bindTexture(gl.TEXTURE_2D, texture);
+              gl.texImage2D(
+                gl.TEXTURE_2D,
+                0,
+                gl.RGBA,
+                gl.RGBA,
+                gl.UNSIGNED_BYTE,
+                image
+              );
+              penPlusCostumeLibrary[name] = {
+                texture: texture,
+                width: image.width,
+                height: image.height,
+              };
+              resolve(texture);
+            };
+            image.crossOrigin = "anonymous";
+            image.src = url;
+          });
+        });
+      },
+  
+      getTextureData: (texture, width, height) => {
+        //?Initilize the temp framebuffer and assign it
+        const readBuffer = gl.createFramebuffer();
+  
+        lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+  
+        gl.bindFramebuffer(gl.FRAMEBUFFER, readBuffer);
+  
+        gl.framebufferTexture2D(
+          gl.FRAMEBUFFER,
+          gl.COLOR_ATTACHMENT0,
+          gl.TEXTURE_2D,
+          texture,
+          0
+        );
+  
+        //?make sure to unbind the framebuffer and delete it!
+        const removeBuffer = () => {
+          gl.deleteFramebuffer(readBuffer);
+        };
+  
+        //?if sucessful read
+        if (
+          gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE
+        ) {
+          //?Make an array to write the pixels onto
+          let dataArray = new Uint8Array(width * height * 4);
+          gl.readPixels(
+            0,
+            0,
+            width,
+            height,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            dataArray
+          );
+  
+          //?Remove Buffer data and return data
+          removeBuffer();
+          return dataArray;
+        }
+  
+        //?If not return undefined
+        removeBuffer();
+        return undefined;
+      },
+  
+      getTextureAsURI: (texture, width, height) => {
+        //?Initilize the temp framebuffer and assign it
+        const readBuffer = gl.createFramebuffer();
+  
+        lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+  
+        gl.bindFramebuffer(gl.FRAMEBUFFER, readBuffer);
+  
+        gl.framebufferTexture2D(
+          gl.FRAMEBUFFER,
+          gl.COLOR_ATTACHMENT0,
+          gl.TEXTURE_2D,
+          texture,
+          0
+        );
+  
+        //?make sure to unbind the framebuffer and delete it!
+        const removeBuffer = () => {
+          gl.deleteFramebuffer(readBuffer);
+        };
+  
+        //?if sucessful read
+        if (
+          gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE
+        ) {
+          //?Make an array to write the pixels onto
+          let dataArray = new Uint8Array(width * height * 4);
+          gl.readPixels(
+            0,
+            0,
+            width,
+            height,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            dataArray
+          );
+  
+          //Make an invisible canvas
+          const dataURICanvas = document.createElement("canvas");
+          dataURICanvas.width = width;
+          dataURICanvas.height = height;
+          const dataURIContext = dataURICanvas.getContext("2d");
+  
+          // Copy the pixels to a 2D canvas
+          const imageData = dataURIContext.createImageData(width, height);
+          imageData.data.set(dataArray);
+          dataURIContext.putImageData(imageData, 0, 0);
+  
+          //?Remove Buffer data and return data
+          removeBuffer();
+          return dataURICanvas.toDataURL();
+        }
+  
+        //?If not return undefined
+        removeBuffer();
+        return undefined;
+      },
+    };
+
+    //Statistical Stuff
+    trianglesDrawn = 0;
+    inDrawRegion = false;
 
     getInfo() {
       return {
@@ -1550,10 +1548,9 @@
           },
           {
             blockType: Scratch.BlockType.BUTTON,
-            func: "button_shadereditor",
+            func: "openShaderEditor",
             text: "Shader Editor"
-          }
-
+          },
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Extras"
@@ -1783,18 +1780,18 @@
         : renderer._nativeSize;
 
       if (
-        typeof triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
+        typeof this.triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
         "undefined"
       ) {
-        triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] =
+        this.triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] =
           triangleDefaultAttributes;
       }
 
-      if (typeof squareAttributesOfAllSprites[curTarget.id] == "undefined") {
-        squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+      if (typeof this.squareAttributesOfAllSprites[curTarget.id] == "undefined") {
+        this.squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
-      const myAttributes = squareAttributesOfAllSprites[curTarget.id];
+      const myAttributes = this.squareAttributesOfAllSprites[curTarget.id];
 
       //trying my best to reduce memory usage
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
@@ -1852,21 +1849,21 @@
 
       const Attribute_ID = "squareStamp_" + curTarget.id;
 
-      triangleAttributesOfAllSprites[Attribute_ID][2] = myAttributes[7];
-      triangleAttributesOfAllSprites[Attribute_ID][3] = myAttributes[8];
-      triangleAttributesOfAllSprites[Attribute_ID][4] = myAttributes[9];
-      triangleAttributesOfAllSprites[Attribute_ID][5] = myAttributes[11];
-      triangleAttributesOfAllSprites[Attribute_ID][7] = myAttributes[10];
-      triangleAttributesOfAllSprites[Attribute_ID][10] = myAttributes[7];
-      triangleAttributesOfAllSprites[Attribute_ID][11] = myAttributes[8];
-      triangleAttributesOfAllSprites[Attribute_ID][12] = myAttributes[9];
-      triangleAttributesOfAllSprites[Attribute_ID][13] = myAttributes[11];
-      triangleAttributesOfAllSprites[Attribute_ID][15] = myAttributes[10];
-      triangleAttributesOfAllSprites[Attribute_ID][18] = myAttributes[7];
-      triangleAttributesOfAllSprites[Attribute_ID][19] = myAttributes[8];
-      triangleAttributesOfAllSprites[Attribute_ID][20] = myAttributes[9];
-      triangleAttributesOfAllSprites[Attribute_ID][21] = myAttributes[11];
-      triangleAttributesOfAllSprites[Attribute_ID][23] = myAttributes[10];
+      this.triangleAttributesOfAllSprites[Attribute_ID][2] = myAttributes[7];
+      this.triangleAttributesOfAllSprites[Attribute_ID][3] = myAttributes[8];
+      this.triangleAttributesOfAllSprites[Attribute_ID][4] = myAttributes[9];
+      this.triangleAttributesOfAllSprites[Attribute_ID][5] = myAttributes[11];
+      this.triangleAttributesOfAllSprites[Attribute_ID][7] = myAttributes[10];
+      this.triangleAttributesOfAllSprites[Attribute_ID][10] = myAttributes[7];
+      this.triangleAttributesOfAllSprites[Attribute_ID][11] = myAttributes[8];
+      this.triangleAttributesOfAllSprites[Attribute_ID][12] = myAttributes[9];
+      this.triangleAttributesOfAllSprites[Attribute_ID][13] = myAttributes[11];
+      this.triangleAttributesOfAllSprites[Attribute_ID][15] = myAttributes[10];
+      this.triangleAttributesOfAllSprites[Attribute_ID][18] = myAttributes[7];
+      this.triangleAttributesOfAllSprites[Attribute_ID][19] = myAttributes[8];
+      this.triangleAttributesOfAllSprites[Attribute_ID][20] = myAttributes[9];
+      this.triangleAttributesOfAllSprites[Attribute_ID][21] = myAttributes[11];
+      this.triangleAttributesOfAllSprites[Attribute_ID][23] = myAttributes[10];
 
       this.drawSolidTri(
         {
@@ -1906,18 +1903,18 @@
         : renderer._nativeSize;
 
       if (
-        typeof triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
+        typeof this.triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
         "undefined"
       ) {
-        triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] =
+        this.triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] =
           triangleDefaultAttributes;
       }
 
-      if (typeof squareAttributesOfAllSprites[curTarget.id] == "undefined") {
-        squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+      if (typeof this.squareAttributesOfAllSprites[curTarget.id] == "undefined") {
+        this.squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
-      const myAttributes = squareAttributesOfAllSprites[curTarget.id];
+      const myAttributes = this.squareAttributesOfAllSprites[curTarget.id];
 
       //trying my best to reduce memory usage
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
@@ -1973,38 +1970,38 @@
       y3 += sprYoff;
       y4 += sprYoff;
       const Attribute_ID = "squareStamp_" + curTarget.id;
-      triangleAttributesOfAllSprites[Attribute_ID][0] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][0] =
         (0 + myAttributes[4]) * myAttributes[3];
-      triangleAttributesOfAllSprites[Attribute_ID][1] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][1] =
         (1 + myAttributes[6]) * myAttributes[5];
 
-      triangleAttributesOfAllSprites[Attribute_ID][2] = myAttributes[7];
-      triangleAttributesOfAllSprites[Attribute_ID][3] = myAttributes[8];
-      triangleAttributesOfAllSprites[Attribute_ID][4] = myAttributes[9];
-      triangleAttributesOfAllSprites[Attribute_ID][5] = myAttributes[11];
-      triangleAttributesOfAllSprites[Attribute_ID][8] = myAttributes[10];
+      this.triangleAttributesOfAllSprites[Attribute_ID][2] = myAttributes[7];
+      this.triangleAttributesOfAllSprites[Attribute_ID][3] = myAttributes[8];
+      this.triangleAttributesOfAllSprites[Attribute_ID][4] = myAttributes[9];
+      this.triangleAttributesOfAllSprites[Attribute_ID][5] = myAttributes[11];
+      this.triangleAttributesOfAllSprites[Attribute_ID][8] = myAttributes[10];
 
-      triangleAttributesOfAllSprites[Attribute_ID][8] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][8] =
         (1 + myAttributes[4]) * myAttributes[3];
-      triangleAttributesOfAllSprites[Attribute_ID][9] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][9] =
         (1 + myAttributes[6]) * myAttributes[5];
 
-      triangleAttributesOfAllSprites[Attribute_ID][10] = myAttributes[7];
-      triangleAttributesOfAllSprites[Attribute_ID][11] = myAttributes[8];
-      triangleAttributesOfAllSprites[Attribute_ID][12] = myAttributes[9];
-      triangleAttributesOfAllSprites[Attribute_ID][13] = myAttributes[11];
-      triangleAttributesOfAllSprites[Attribute_ID][16] = myAttributes[10];
+      this.triangleAttributesOfAllSprites[Attribute_ID][10] = myAttributes[7];
+      this.triangleAttributesOfAllSprites[Attribute_ID][11] = myAttributes[8];
+      this.triangleAttributesOfAllSprites[Attribute_ID][12] = myAttributes[9];
+      this.triangleAttributesOfAllSprites[Attribute_ID][13] = myAttributes[11];
+      this.triangleAttributesOfAllSprites[Attribute_ID][16] = myAttributes[10];
 
-      triangleAttributesOfAllSprites[Attribute_ID][16] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][16] =
         (1 + myAttributes[4]) * myAttributes[3];
-      triangleAttributesOfAllSprites[Attribute_ID][17] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][17] =
         (0 + myAttributes[6]) * myAttributes[5];
 
-      triangleAttributesOfAllSprites[Attribute_ID][18] = myAttributes[7];
-      triangleAttributesOfAllSprites[Attribute_ID][19] = myAttributes[8];
-      triangleAttributesOfAllSprites[Attribute_ID][20] = myAttributes[9];
-      triangleAttributesOfAllSprites[Attribute_ID][21] = myAttributes[11];
-      triangleAttributesOfAllSprites[Attribute_ID][24] = myAttributes[10];
+      this.triangleAttributesOfAllSprites[Attribute_ID][18] = myAttributes[7];
+      this.triangleAttributesOfAllSprites[Attribute_ID][19] = myAttributes[8];
+      this.triangleAttributesOfAllSprites[Attribute_ID][20] = myAttributes[9];
+      this.triangleAttributesOfAllSprites[Attribute_ID][21] = myAttributes[11];
+      this.triangleAttributesOfAllSprites[Attribute_ID][24] = myAttributes[10];
 
       this.drawTexTri(
         {
@@ -2019,19 +2016,19 @@
         util
       );
 
-      triangleAttributesOfAllSprites[Attribute_ID][0] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][0] =
         (0 + myAttributes[4]) * myAttributes[3];
-      triangleAttributesOfAllSprites[Attribute_ID][1] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][1] =
         (1 + myAttributes[6]) * myAttributes[5];
 
-      triangleAttributesOfAllSprites[Attribute_ID][8] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][8] =
         (1 + myAttributes[4]) * myAttributes[3];
-      triangleAttributesOfAllSprites[Attribute_ID][9] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][9] =
         (0 + myAttributes[6]) * myAttributes[5];
 
-      triangleAttributesOfAllSprites[Attribute_ID][16] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][16] =
         (0 + myAttributes[4]) * myAttributes[3];
-      triangleAttributesOfAllSprites[Attribute_ID][17] =
+      this.triangleAttributesOfAllSprites[Attribute_ID][17] =
         (0 + myAttributes[6]) * myAttributes[5];
       this.drawTexTri(
         {
@@ -2048,8 +2045,8 @@
     }
     setStampAttribute({ target, number }, util) {
       const curTarget = util.target;
-      if (!squareAttributesOfAllSprites[curTarget.id]) {
-        squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+      if (!this.squareAttributesOfAllSprites[curTarget.id]) {
+        this.squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
       let valuetoSet = number;
@@ -2057,50 +2054,50 @@
       const attributeNum = Scratch.Cast.toNumber(target);
       if (attributeNum >= 7) {
         if (attributeNum == 11) {
-          if (penPlusAdvancedSettings._ClampZ) {
+          if (this.AdvancedSettings._ClampZ) {
             Math.min(
-              Math.max(valuetoSet / penPlusAdvancedSettings._maxDepth, 0),
+              Math.max(valuetoSet / this.AdvancedSettings._maxDepth, 0),
               1
             );
             return;
           }
-          valuetoSet = valuetoSet / penPlusAdvancedSettings._maxDepth;
-          squareAttributesOfAllSprites[curTarget.id][attributeNum] =
-            valuetoSet / penPlusAdvancedSettings._maxDepth;
+          valuetoSet = valuetoSet / this.AdvancedSettings._maxDepth;
+          this.squareAttributesOfAllSprites[curTarget.id][attributeNum] =
+            valuetoSet / this.AdvancedSettings._maxDepth;
           return;
         }
-        squareAttributesOfAllSprites[curTarget.id][attributeNum] =
+        this.squareAttributesOfAllSprites[curTarget.id][attributeNum] =
           Math.min(Math.max(valuetoSet, 0), 100) * 0.01;
         return;
       }
-      squareAttributesOfAllSprites[curTarget.id][attributeNum] = valuetoSet;
+      this.squareAttributesOfAllSprites[curTarget.id][attributeNum] = valuetoSet;
     }
     getStampAttribute({ target }, util) {
       const curTarget = util.target;
-      if (!squareAttributesOfAllSprites[curTarget.id]) {
-        squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+      if (!this.squareAttributesOfAllSprites[curTarget.id]) {
+        this.squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
-      return squareAttributesOfAllSprites[curTarget.id][
+      return this.squareAttributesOfAllSprites[curTarget.id][
         Scratch.Cast.toNumber(target)
       ];
     }
     tintSquare({ color }, util) {
       const curTarget = util.target;
 
-      if (!squareAttributesOfAllSprites[curTarget.id]) {
-        squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+      if (!this.squareAttributesOfAllSprites[curTarget.id]) {
+        this.squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
       }
 
       const calcColor = Scratch.Cast.toRgbColorObject(color);
 
-      squareAttributesOfAllSprites[curTarget.id][7] = calcColor.r / 255;
-      squareAttributesOfAllSprites[curTarget.id][8] = calcColor.g / 255;
-      squareAttributesOfAllSprites[curTarget.id][9] = calcColor.b / 255;
+      this.squareAttributesOfAllSprites[curTarget.id][7] = calcColor.r / 255;
+      this.squareAttributesOfAllSprites[curTarget.id][8] = calcColor.g / 255;
+      this.squareAttributesOfAllSprites[curTarget.id][9] = calcColor.b / 255;
     }
     resetSquareAttributes(args, util) {
       const curTarget = util.target;
-      squareAttributesOfAllSprites[curTarget.id] = [
+      this.squareAttributesOfAllSprites[curTarget.id] = [
         1, 1, 90, 1, 0, 1, 0, 1, 1, 1, 1, 0,
       ];
     }
@@ -2112,8 +2109,8 @@
 
       const targetId = util.target.id;
 
-      if (!triangleAttributesOfAllSprites[targetId]) {
-        triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
+      if (!this.triangleAttributesOfAllSprites[targetId]) {
+        this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
       }
       triFunctions.setValueAccordingToCaseTriangle(
         targetId,
@@ -2126,8 +2123,8 @@
     setWholeTrianglePointAttribute({ wholeAttribute, value }, util) {
       const targetId = util.target.id;
 
-      if (!triangleAttributesOfAllSprites[targetId]) {
-        triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
+      if (!this.triangleAttributesOfAllSprites[targetId]) {
+        this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
       }
       triFunctions.setValueAccordingToCaseTriangle(
         targetId,
@@ -2142,8 +2139,8 @@
 
       const targetId = util.target.id;
 
-      if (!triangleAttributesOfAllSprites[targetId]) {
-        triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
+      if (!this.triangleAttributesOfAllSprites[targetId]) {
+        this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
       }
 
       const calcColor = Scratch.Cast.toRgbColorObject(color);
@@ -2177,8 +2174,8 @@
 
       const targetId = util.target.id;
 
-      if (!triangleAttributesOfAllSprites[targetId]) {
-        triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
+      if (!this.triangleAttributesOfAllSprites[targetId]) {
+        this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
       }
 
       const calcColor = Scratch.Cast.toRgbColorObject(color);
@@ -2212,11 +2209,11 @@
 
       const targetId = util.target.id;
 
-      if (!triangleAttributesOfAllSprites[targetId]) {
-        triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
+      if (!this.triangleAttributesOfAllSprites[targetId]) {
+        this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
       }
       let value =
-        triangleAttributesOfAllSprites[targetId][
+        this.triangleAttributesOfAllSprites[targetId][
           trianglePointStart + attribute
         ];
 
@@ -2227,7 +2224,7 @@
     }
     resetWholeTriangleAttributes(args, util) {
       const targetId = util.target.id;
-      triangleAttributesOfAllSprites[targetId] = [
+      this.triangleAttributesOfAllSprites[targetId] = [
         0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1,
         1, 1, 1,
       ];
@@ -2241,10 +2238,10 @@
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
 
-      //if (triangleAttributesOfAllSprites[curTarget.id]) {
-      //  triangleAttributesOfAllSprites[curTarget.id][5] = 1;
-      //  triangleAttributesOfAllSprites[curTarget.id][13] = 1;
-      //  triangleAttributesOfAllSprites[curTarget.id][21] = 1;
+      //if (this.triangleAttributesOfAllSprites[curTarget.id]) {
+      //  this.triangleAttributesOfAllSprites[curTarget.id][5] = 1;
+      //  this.triangleAttributesOfAllSprites[curTarget.id][13] = 1;
+      //  this.triangleAttributesOfAllSprites[curTarget.id][21] = 1;
       //}
 
       //?Renderer Freaks out if we don't do this so do it.
@@ -2383,7 +2380,7 @@
     }
     addBlankIMG({ color, width, height, name }) {
       //Just a simple thing to allow for pen drawing
-      textureFunctions.createBlankPenPlusTextureInfo(
+      this.textureFunctions.createBlankPenPlusTextureInfo(
         width,
         height,
         color,
@@ -2393,7 +2390,7 @@
     }
     addIMGfromDURI({ dataURI, name }) {
       //Just a simple thing to allow for pen drawing
-      textureFunctions.createPenPlusTextureInfo(
+      this.textureFunctions.createPenPlusTextureInfo(
         dataURI,
         "!" + name,
         penPlusImportWrapMode
@@ -2446,7 +2443,7 @@
     setpixelcolor({ x, y, color, costume }) {
       const curCostume = penPlusCostumeLibrary[costume];
       if (curCostume) {
-        const textureData = textureFunctions.getTextureData(
+        const textureData = this.textureFunctions.getTextureData(
           curCostume.texture,
           curCostume.width,
           curCostume.height
@@ -2485,7 +2482,7 @@
     getpixelcolor({ x, y, costume }) {
       const curCostume = penPlusCostumeLibrary[costume];
       if (curCostume) {
-        const textureData = textureFunctions.getTextureData(
+        const textureData = this.textureFunctions.getTextureData(
           curCostume.texture,
           curCostume.width,
           curCostume.height
@@ -2508,7 +2505,7 @@
     getPenPlusCostumeURI({ costume }) {
       const curCostume = penPlusCostumeLibrary[costume];
       if (curCostume) {
-        const textureData = textureFunctions.getTextureAsURI(
+        const textureData = this.textureFunctions.getTextureAsURI(
           curCostume.texture,
           curCostume.width,
           curCostume.height
@@ -2520,19 +2517,19 @@
       }
     }
     getTrianglesDrawn() {
-      return trianglesDrawn;
+      return this.trianglesDrawn;
     }
     turnAdvancedSettingOff({ Setting, onOrOff }) {
       if (onOrOff == "on") {
-        penPlusAdvancedSettings[Setting] = true;
+        this.AdvancedSettings[Setting] = true;
         return;
       }
-      penPlusAdvancedSettings[Setting] = false;
+      this.AdvancedSettings[Setting] = false;
     }
     setAdvancedOptionValueTo({ setting, value }) {
       switch (setting) {
         case "depthMax":
-          penPlusAdvancedSettings._maxDepth = Math.max(value, 100);
+          this.AdvancedSettings._maxDepth = Math.max(value, 100);
           break;
 
         default:
