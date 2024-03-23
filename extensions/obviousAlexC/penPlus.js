@@ -1129,6 +1129,12 @@
       }
 
       this.shaders = runtime.extensionStorage["oac_PENPLUS"].shaders;*/
+
+      this.shaders = {
+        "garbomuffin":{},
+        "davey":{},
+        "fortnite":{}
+      };
     }
 
     getInfo() {
@@ -2632,7 +2638,7 @@
       bgFade.style.left = "0px";
       bgFade.style.top = "0px";
 
-      bgFade.style.backgroundColor = "#00000055";
+      bgFade.style.backgroundColor = "var(--ui-modal-overlay)";
       bgFade.style.filter = "opacity(0%)";
 
       bgFade.style.zIndex = "10000";
@@ -2709,6 +2715,8 @@
       document.body.appendChild(this.IFrame);
     }
 
+
+    //! HEED THY WARNING LOTS OF JAVASCRIPT BASED HTML AHEAD !//
     openShaderManager(reason) {
       reason = reason || "save";
       //penguin one liner support
@@ -2724,7 +2732,7 @@
       bgFade.style.left = "0px";
       bgFade.style.top = "0px";
 
-      bgFade.style.backgroundColor = "#00000055";
+      bgFade.style.backgroundColor = "var(--ui-modal-overlay)";
 
       bgFade.style.zIndex = "10001";
 
@@ -2800,31 +2808,37 @@
       shaderManager.style.top = "50%";
       shaderManager.style.left = "50%";
       shaderManager.style.borderRadius = "8px";
+      shaderManager.style.borderColor = (Scratch.extensions.isPenguinMod) ? "hsla(0, 100%, 100%, 0.25)" : "var(--ui-white-transparent)";
+      shaderManager.style.borderWidth = "4px";
+      shaderManager.style.borderStyle = "solid";
       shaderManager.style.aspectRatio = "5/3";
       shaderManager.style.transform = "translate(-50%,25%)";
       shaderManager.style.zIndex = "10002";
 
+      //!DONT FORGET THIS IS HERE
       shaderManager.style.textAlign = "center";
 
       shaderManager.style.color = "#ffffff";
 
       document.body.appendChild(shaderManager);
 
-      const bryunnnyuu = document.createElement("div");
+      //This is the text that shows up on-top of the modal
+      const topText = document.createElement("div");
 
-      bryunnnyuu.style.width = "100%";
-      bryunnnyuu.style.height = "48px";
-      bryunnnyuu.style.top = "0px";
-      bryunnnyuu.style.left = "0px";
-      bryunnnyuu.style.position = "absolute";
-      bryunnnyuu.style.transform = "translate(0%,12px)";
+      topText.style.width = "100%";
+      topText.style.height = "48px";
+      topText.style.top = "0px";
+      topText.style.left = "0px";
+      topText.style.position = "absolute";
+      topText.style.transform = "translate(0%,12px)";
 
-      bryunnnyuu.style.fontSize = "24px";
+      topText.style.fontSize = "24px";
 
-      bryunnnyuu.innerHTML = "Shader Manager";
+      topText.innerHTML = "Shader Manager";
 
-      shaderManager.appendChild(bryunnnyuu);
+      shaderManager.appendChild(topText);
 
+      //Then we have the inner panel. Where most of the ui goes
       const shaderPanel = document.createElement("div");
 
       shaderPanel.style.backgroundColor = backgroundColor;
@@ -2833,29 +2847,32 @@
       shaderPanel.style.position = "absolute";
       shaderPanel.style.top = "48px";
       shaderPanel.style.left = "0%";
+      shaderPanel.style.borderBottomLeftRadius = "4px";
+      shaderPanel.style.borderBottomRightRadius = "4px";
 
       shaderManager.appendChild(shaderPanel);
 
+      //Since I'm using a switch we do this.
       let menuSpecificVars = {};
 
       switch (reason) {
         case "save":
+          //The neat background color. Using a filter to limit the amount of colouring operations
           menuSpecificVars.savePanel = document.createElement("div");
 
           menuSpecificVars.savePanel.style.width = "60%";
           menuSpecificVars.savePanel.style.height = "100%";
-          menuSpecificVars.savePanel.style.borderWidth = "5px";
           menuSpecificVars.savePanel.style.backgroundColor = menuBarBackground;
           menuSpecificVars.savePanel.style.filter = "opacity(50%)";
           menuSpecificVars.savePanel.style.position = "absolute";
 
           shaderPanel.appendChild(menuSpecificVars.savePanel);
 
+          //The actual container no filter to avoid buggy things
           menuSpecificVars.saveStuffHolder = document.createElement("div");
 
           menuSpecificVars.saveStuffHolder.style.width = "60%";
           menuSpecificVars.saveStuffHolder.style.height = "100%";
-          menuSpecificVars.saveStuffHolder.style.borderWidth = "5px";
           menuSpecificVars.saveStuffHolder.style.backgroundColor = "#00000000";
           menuSpecificVars.saveStuffHolder.style.position = "absolute";
 
@@ -2878,12 +2895,86 @@
           menuSpecificVars.shadername.style.transform = "translate(-50%,0%)";
           menuSpecificVars.shadername.style.height = "2rem";
           menuSpecificVars.shadername.style.color = textColor;
-
           menuSpecificVars.shadername.style.zIndex = "10005";
 
+          menuSpecificVars.shadername.placeholder = "Shader Name";
+
+          //I dunno why prettier feels the need to do this. I feel like it makes it more unreadable.
           menuSpecificVars.saveStuffHolder.appendChild(
             menuSpecificVars.shadername
           );
+
+          //A container containing already existing shaders and some text to accompony them.
+          menuSpecificVars.existingShaderHolder = document.createElement("div");
+
+          menuSpecificVars.existingShaderHolder.style.width = "40%";
+          menuSpecificVars.existingShaderHolder.style.height = "100%";
+          menuSpecificVars.existingShaderHolder.style.left = "60%";
+          menuSpecificVars.existingShaderHolder.style.backgroundColor = "#00000000";
+          menuSpecificVars.existingShaderHolder.style.position = "absolute";
+
+          shaderPanel.appendChild(menuSpecificVars.existingShaderHolder);
+
+          menuSpecificVars.existingText = document.createElement("div");
+
+          menuSpecificVars.existingText.style.width = "100%";
+          menuSpecificVars.existingText.style.height = "48px";
+          menuSpecificVars.existingText.style.top = "0px";
+          menuSpecificVars.existingText.style.left = "0px";
+          menuSpecificVars.existingText.style.position = "absolute";
+          menuSpecificVars.existingText.style.transform = "translate(0%,8px)";
+          menuSpecificVars.existingText.style.color = textColor;
+    
+          menuSpecificVars.existingText.style.fontSize = "16px";
+    
+          menuSpecificVars.existingText.innerHTML = "Project Shaders";
+    
+          menuSpecificVars.existingShaderHolder.appendChild(menuSpecificVars.existingText);
+
+          //The background for existing shaders
+          menuSpecificVars.existingDivBackground = document.createElement("div");
+
+          menuSpecificVars.existingDivBackground.style.backgroundColor = menuBarBackground;
+          menuSpecificVars.existingDivBackground.style.width = "100%";
+          menuSpecificVars.existingDivBackground.style.height = "calc(100% - 32px)";
+          menuSpecificVars.existingDivBackground.style.position = "absolute";
+          menuSpecificVars.existingDivBackground.style.top = "32px";
+          menuSpecificVars.existingDivBackground.style.left = "0%";
+          menuSpecificVars.existingDivBackground.style.filter = "opacity(25%)";
+    
+          menuSpecificVars.existingShaderHolder.appendChild(menuSpecificVars.existingDivBackground);
+
+          //The container for existing shaders
+          menuSpecificVars.existingDiv = document.createElement("div");
+
+          menuSpecificVars.existingDiv.style.backgroundColor = "#00000000";
+          menuSpecificVars.existingDiv.style.width = "100%";
+          menuSpecificVars.existingDiv.style.height = "calc(100% - 32px)";
+          menuSpecificVars.existingDiv.style.position = "absolute";
+          menuSpecificVars.existingDiv.style.top = "32px";
+          menuSpecificVars.existingDiv.style.left = "0%";
+    
+          menuSpecificVars.existingShaderHolder.appendChild(menuSpecificVars.existingDiv);
+
+          Object.keys(this.shaders).forEach(shader => {
+            const shaderDiv = document.createElement("div");
+            shaderDiv.style.width = "100%";
+            shaderDiv.style.height = "48px";
+            shaderDiv.style.color = "#ffffff";
+            shaderDiv.style.backgroundColor = menuBarBackground;
+    
+            menuSpecificVars.existingDiv.appendChild(shaderDiv);
+
+            const nameDiv = document.createElement("div");
+            nameDiv.style.position = "absolute";
+            nameDiv.style.width = "100%";
+            nameDiv.style.height = "48px";
+            nameDiv.style.transform = "translate(5%,5%)";
+            nameDiv.style.textAlign = "left";
+            nameDiv.innerText = shader;
+
+            shaderDiv.appendChild(nameDiv);
+          });
           break;
 
         default:
