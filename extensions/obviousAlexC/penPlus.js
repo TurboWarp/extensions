@@ -479,13 +479,7 @@
     squareAttributesOfAllSprites = {};
 
     attributeEditors = {
-      triangle: (
-        targetId,
-        attribute,
-        value,
-        wholeTri,
-        offset
-      ) => {
+      triangle: (targetId, attribute, value, wholeTri, offset) => {
         offset = offset + attribute || attribute;
         let valuetoSet = 0;
         switch (attribute) {
@@ -497,7 +491,7 @@
           case 1:
             valuetoSet = value;
             break;
-  
+
           //100 since that is what scratch users are accustomed to.
           //R
           case 2:
@@ -511,7 +505,7 @@
           case 4:
             valuetoSet = Math.min(Math.max(value, 0), 100) * 0.01;
             break;
-  
+
           //Clamp to 0 so we can't go behind the stage.
           //Z
           case 5:
@@ -527,7 +521,7 @@
             //convert to depth space for best accuracy
             valuetoSet = value;
             break;
-  
+
           //Clamp to 1 so we don't accidentally clip.
           //W
           case 6:
@@ -542,7 +536,7 @@
           case 7:
             valuetoSet = Math.min(Math.max(value, 0), 1000) * 0.01;
             break;
-  
+
           //Just break if value isn't valid
           default:
             break;
@@ -550,24 +544,28 @@
         //Check if the index even exists.
         if (attribute >= 0 && attribute <= 7) {
           if (wholeTri) {
-            this.triangleAttributesOfAllSprites[targetId][attribute] = valuetoSet;
-            this.triangleAttributesOfAllSprites[targetId][attribute + 8] = valuetoSet;
-            this.triangleAttributesOfAllSprites[targetId][attribute + 16] = valuetoSet;
+            this.triangleAttributesOfAllSprites[targetId][attribute] =
+              valuetoSet;
+            this.triangleAttributesOfAllSprites[targetId][attribute + 8] =
+              valuetoSet;
+            this.triangleAttributesOfAllSprites[targetId][attribute + 16] =
+              valuetoSet;
           } else {
             this.triangleAttributesOfAllSprites[targetId][offset] = valuetoSet;
           }
         }
       },
-    }
+    };
 
     //?Our functions that allow for extra rendering things.
-    renderFunctions={
+    renderFunctions = {
       drawTri: (x1, y1, x2, y2, x3, y3, penColor, targetID) => {
-        if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+        if (!this.inDrawRegion)
+          renderer.enterDrawRegion(this.penPlusDrawRegion);
         this.trianglesDrawn += 1;
         //? get triangle attributes for current sprite.
         const triAttribs = this.triangleAttributesOfAllSprites[targetID];
-  
+
         if (triAttribs) {
           vertexBufferData = new Float32Array([
             x1,
@@ -578,7 +576,7 @@
             penColor[1] * triAttribs[3],
             penColor[2] * triAttribs[4],
             penColor[3] * triAttribs[7],
-  
+
             x2,
             -y2,
             triAttribs[13],
@@ -587,7 +585,7 @@
             penColor[1] * triAttribs[11],
             penColor[2] * triAttribs[12],
             penColor[3] * triAttribs[15],
-  
+
             x3,
             -y3,
             triAttribs[21],
@@ -607,7 +605,7 @@
             penColor[1],
             penColor[2],
             penColor[3],
-  
+
             x2,
             -y2,
             1,
@@ -616,7 +614,7 @@
             penColor[1],
             penColor[2],
             penColor[3],
-  
+
             x3,
             -y3,
             1,
@@ -627,13 +625,13 @@
             penColor[3],
           ]);
         }
-  
+
         //? Bind Positional Data
-  
+
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.STATIC_DRAW);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-  
+
         gl.vertexAttribPointer(
           a_position_Location_untext,
           4,
@@ -650,14 +648,15 @@
           f32_8,
           f32_4
         );
-  
+
         gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
-  
+
         gl.drawArrays(gl.TRIANGLES, 0, 3);
       },
-  
+
       drawTextTri: (x1, y1, x2, y2, x3, y3, targetID, texture) => {
-        if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+        if (!this.inDrawRegion)
+          renderer.enterDrawRegion(this.penPlusDrawRegion);
         this.trianglesDrawn += 1;
         //? get triangle attributes for current sprite.
         const triAttribs = this.triangleAttributesOfAllSprites[targetID];
@@ -673,7 +672,7 @@
             triAttribs[7],
             triAttribs[0],
             triAttribs[1],
-  
+
             x2,
             -y2,
             this.AdvancedSettings.useDepthBuffer ? triAttribs[13] : 0,
@@ -684,7 +683,7 @@
             triAttribs[15],
             triAttribs[8],
             triAttribs[9],
-  
+
             x3,
             -y3,
             this.AdvancedSettings.useDepthBuffer ? triAttribs[21] : 0,
@@ -708,7 +707,7 @@
             1,
             0,
             0,
-  
+
             x2,
             -y2,
             0,
@@ -719,7 +718,7 @@
             1,
             1,
             1,
-  
+
             x3,
             -y3,
             0,
@@ -735,7 +734,7 @@
         //? Bind Positional Data
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
-  
+
         gl.vertexAttribPointer(
           a_position_Location_text,
           4,
@@ -760,14 +759,14 @@
           f32_10,
           f32_8
         );
-  
+
         gl.useProgram(penPlusShaders.textured.ProgramInf.program);
-  
+
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, currentFilter);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
         gl.uniform1i(u_texture_Location_text, 0);
-  
+
         gl.drawArrays(gl.TRIANGLES, 0, 3);
       },
 
@@ -818,7 +817,7 @@
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
       },
-    }
+    };
 
     //?The Draw region! extra cool!
     penPlusDrawRegion = {
@@ -835,13 +834,13 @@
           gl.FRAMEBUFFER,
           renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
         );
-  
+
         this.renderFunctions.reRenderPenLayer();
-  
+
         //Quick clear the pen+ frame buffer
         gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
         gl.clear(gl.COLOR_BUFFER_BIT);
-  
+
         gl.bindFramebuffer(
           gl.FRAMEBUFFER,
           renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
@@ -854,7 +853,9 @@
     colorLib = {
       hexToRgb: (hex) => {
         if (typeof hex == "string") {
-          const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+          const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(
+            hex
+          );
           return {
             r: parseInt(splitHex[1], 16),
             g: parseInt(splitHex[2], 16),
@@ -868,14 +869,14 @@
           b: hex % 256,
         };
       },
-  
+
       rgbtoSColor: ({ R, G, B }) => {
         R = Math.min(Math.max(R, 0), 100) * 2.55;
         G = Math.min(Math.max(G, 0), 100) * 2.55;
         B = Math.min(Math.max(B, 0), 100) * 2.55;
         return (Math.ceil(R) * 256 + Math.ceil(G)) * 256 + Math.ceil(B);
       },
-    }
+    };
 
     //?Just some advanced settings
     AdvancedSettings = {
@@ -898,21 +899,21 @@
           : gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         // Fill the texture with a 1x1 blue pixel.
-  
+
         const pixelData = new Uint8Array(width * height * 4);
-  
+
         const decodedColor = Scratch.Cast.toRgbColorObject(color);
-  
+
         for (let pixelID = 0; pixelID < pixelData.length / 4; pixelID++) {
           pixelData[pixelID * 4] = decodedColor.r;
           pixelData[pixelID * 4 + 1] = decodedColor.g;
           pixelData[pixelID * 4 + 2] = decodedColor.b;
           pixelData[pixelID * 4 + 3] = 255;
         }
-  
+
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
-  
+
         gl.texImage2D(
           gl.TEXTURE_2D,
           0,
@@ -924,7 +925,7 @@
           gl.UNSIGNED_BYTE,
           pixelData
         );
-  
+
         penPlusCostumeLibrary[name] = {
           texture: texture,
           width: width,
@@ -948,7 +949,7 @@
           gl.UNSIGNED_BYTE,
           new Uint8Array([0, 0, 255, 255])
         );
-  
+
         // Let's assume all images are not a power of 2
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
@@ -982,15 +983,15 @@
           });
         });
       },
-  
+
       getTextureData: (texture, width, height) => {
         //?Initilize the temp framebuffer and assign it
         const readBuffer = gl.createFramebuffer();
-  
+
         lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-  
+
         gl.bindFramebuffer(gl.FRAMEBUFFER, readBuffer);
-  
+
         gl.framebufferTexture2D(
           gl.FRAMEBUFFER,
           gl.COLOR_ATTACHMENT0,
@@ -998,12 +999,12 @@
           texture,
           0
         );
-  
+
         //?make sure to unbind the framebuffer and delete it!
         const removeBuffer = () => {
           gl.deleteFramebuffer(readBuffer);
         };
-  
+
         //?if sucessful read
         if (
           gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE
@@ -1019,25 +1020,25 @@
             gl.UNSIGNED_BYTE,
             dataArray
           );
-  
+
           //?Remove Buffer data and return data
           removeBuffer();
           return dataArray;
         }
-  
+
         //?If not return undefined
         removeBuffer();
         return undefined;
       },
-  
+
       getTextureAsURI: (texture, width, height) => {
         //?Initilize the temp framebuffer and assign it
         const readBuffer = gl.createFramebuffer();
-  
+
         lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-  
+
         gl.bindFramebuffer(gl.FRAMEBUFFER, readBuffer);
-  
+
         gl.framebufferTexture2D(
           gl.FRAMEBUFFER,
           gl.COLOR_ATTACHMENT0,
@@ -1045,12 +1046,12 @@
           texture,
           0
         );
-  
+
         //?make sure to unbind the framebuffer and delete it!
         const removeBuffer = () => {
           gl.deleteFramebuffer(readBuffer);
         };
-  
+
         //?if sucessful read
         if (
           gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE
@@ -1066,23 +1067,23 @@
             gl.UNSIGNED_BYTE,
             dataArray
           );
-  
+
           //Make an invisible canvas
           const dataURICanvas = document.createElement("canvas");
           dataURICanvas.width = width;
           dataURICanvas.height = height;
           const dataURIContext = dataURICanvas.getContext("2d");
-  
+
           // Copy the pixels to a 2D canvas
           const imageData = dataURIContext.createImageData(width, height);
           imageData.data.set(dataArray);
           dataURIContext.putImageData(imageData, 0, 0);
-  
+
           //?Remove Buffer data and return data
           removeBuffer();
           return dataURICanvas.toDataURL();
         }
-  
+
         //?If not return undefined
         removeBuffer();
         return undefined;
@@ -1096,29 +1097,26 @@
     IFrame = undefined;
 
     constructor() {
-      window.addEventListener(
-        "message",
-        (event) => {
-            let eventType = event.data.type;
+      window.addEventListener("message", (event) => {
+        let eventType = event.data.type;
 
-            console.log(event.data);
+        console.log(event.data);
 
-            if (!eventType) return;
+        if (!eventType) return;
 
-            switch (eventType) {
-                case "EDITOR_CLOSE":
-                    this.IFrame.closeIframe();
-                    break;
+        switch (eventType) {
+          case "EDITOR_CLOSE":
+            this.IFrame.closeIframe();
+            break;
 
-                case "DATA_SEND":
-                    this.openShaderManager("save")
-                    break;
-            
-                default:
-                    break;
-            }
+          case "DATA_SEND":
+            this.openShaderManager("save");
+            break;
+
+          default:
+            break;
         }
-      );
+      });
 
       this.setupExtensionStorage();
     }
@@ -1201,7 +1199,7 @@
             text: "stamp pen square",
             arguments: {},
             filter: "sprite",
-            hideFromPalette:true
+            hideFromPalette: true,
           },
           {
             disableMonitor: true,
@@ -1212,7 +1210,7 @@
               tex: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
             },
             filter: "sprite",
-            hideFromPalette:true
+            hideFromPalette: true,
           },
           {
             disableMonitor: true,
@@ -1228,7 +1226,7 @@
               number: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
             },
             filter: "sprite",
-            hideFromPalette:true
+            hideFromPalette: true,
           },
           {
             disableMonitor: true,
@@ -1243,7 +1241,7 @@
               },
             },
             filter: "sprite",
-            hideFromPalette:true
+            hideFromPalette: true,
           },
           {
             disableMonitor: true,
@@ -1257,7 +1255,7 @@
               },
             },
             filter: "sprite",
-            hideFromPalette:true
+            hideFromPalette: true,
           },
           {
             disableMonitor: true,
@@ -1266,7 +1264,7 @@
             text: "reset square Attributes",
             arguments: {},
             filter: "sprite",
-            hideFromPalette:true
+            hideFromPalette: true,
           },
           //End of hidden blocks
           {
@@ -1600,16 +1598,21 @@
           {
             blockType: Scratch.BlockType.BUTTON,
             func: "openShaderEditor",
-            text: "Shader Editor"
+            text: "Shader Editor",
+          },
+          {
+            blockType: Scratch.BlockType.BUTTON,
+            func: "openShaderManager",
+            text: "Shader Manager",
           },
           {
             blockType: Scratch.BlockType.REPORTER,
-            opcode:"getAllShaders",
-            text:"shaders in project"
+            opcode: "getAllShaders",
+            text: "shaders in project",
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Extras"
+            text: "Extras",
           },
           {
             opcode: "getTrianglesDrawn",
@@ -1764,7 +1767,9 @@
 
       let penPlusCostumes = this.penPlusCostumesFunction();
 
-      return (penPlusCostumes != ["no pen+ costumes!"]) ? readCostumes.concat(penPlusCostumes) : readCostumes;
+      return penPlusCostumes != ["no pen+ costumes!"]
+        ? readCostumes.concat(penPlusCostumes)
+        : readCostumes;
     }
     penPlusCostumesFunction() {
       const readCostumes = [];
@@ -1850,15 +1855,19 @@
         : renderer._nativeSize;
 
       if (
-        typeof this.triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
-        "undefined"
+        typeof this.triangleAttributesOfAllSprites[
+          "squareStamp_" + curTarget.id
+        ] == "undefined"
       ) {
         this.triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] =
           triangleDefaultAttributes;
       }
 
-      if (typeof this.squareAttributesOfAllSprites[curTarget.id] == "undefined") {
-        this.squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+      if (
+        typeof this.squareAttributesOfAllSprites[curTarget.id] == "undefined"
+      ) {
+        this.squareAttributesOfAllSprites[curTarget.id] =
+          squareDefaultAttributes;
       }
 
       const myAttributes = this.squareAttributesOfAllSprites[curTarget.id];
@@ -1973,15 +1982,19 @@
         : renderer._nativeSize;
 
       if (
-        typeof this.triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] ==
-        "undefined"
+        typeof this.triangleAttributesOfAllSprites[
+          "squareStamp_" + curTarget.id
+        ] == "undefined"
       ) {
         this.triangleAttributesOfAllSprites["squareStamp_" + curTarget.id] =
           triangleDefaultAttributes;
       }
 
-      if (typeof this.squareAttributesOfAllSprites[curTarget.id] == "undefined") {
-        this.squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+      if (
+        typeof this.squareAttributesOfAllSprites[curTarget.id] == "undefined"
+      ) {
+        this.squareAttributesOfAllSprites[curTarget.id] =
+          squareDefaultAttributes;
       }
 
       const myAttributes = this.squareAttributesOfAllSprites[curTarget.id];
@@ -2116,7 +2129,8 @@
     setStampAttribute({ target, number }, util) {
       const curTarget = util.target;
       if (!this.squareAttributesOfAllSprites[curTarget.id]) {
-        this.squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+        this.squareAttributesOfAllSprites[curTarget.id] =
+          squareDefaultAttributes;
       }
 
       let valuetoSet = number;
@@ -2140,12 +2154,14 @@
           Math.min(Math.max(valuetoSet, 0), 100) * 0.01;
         return;
       }
-      this.squareAttributesOfAllSprites[curTarget.id][attributeNum] = valuetoSet;
+      this.squareAttributesOfAllSprites[curTarget.id][attributeNum] =
+        valuetoSet;
     }
     getStampAttribute({ target }, util) {
       const curTarget = util.target;
       if (!this.squareAttributesOfAllSprites[curTarget.id]) {
-        this.squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+        this.squareAttributesOfAllSprites[curTarget.id] =
+          squareDefaultAttributes;
       }
 
       return this.squareAttributesOfAllSprites[curTarget.id][
@@ -2156,7 +2172,8 @@
       const curTarget = util.target;
 
       if (!this.squareAttributesOfAllSprites[curTarget.id]) {
-        this.squareAttributesOfAllSprites[curTarget.id] = squareDefaultAttributes;
+        this.squareAttributesOfAllSprites[curTarget.id] =
+          squareDefaultAttributes;
       }
 
       const calcColor = Scratch.Cast.toRgbColorObject(color);
@@ -2182,7 +2199,8 @@
       const targetId = util.target.id;
 
       if (!this.triangleAttributesOfAllSprites[targetId]) {
-        this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
+        this.triangleAttributesOfAllSprites[targetId] =
+          triangleDefaultAttributes;
       }
       this.attributeEditors.setValueAccordingToCaseTriangle(
         targetId,
@@ -2196,7 +2214,8 @@
       const targetId = util.target.id;
 
       if (!this.triangleAttributesOfAllSprites[targetId]) {
-        this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
+        this.triangleAttributesOfAllSprites[targetId] =
+          triangleDefaultAttributes;
       }
       this.attributeEditors.setValueAccordingToCaseTriangle(
         targetId,
@@ -2212,7 +2231,8 @@
       const targetId = util.target.id;
 
       if (!this.triangleAttributesOfAllSprites[targetId]) {
-        this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
+        this.triangleAttributesOfAllSprites[targetId] =
+          triangleDefaultAttributes;
       }
 
       const calcColor = Scratch.Cast.toRgbColorObject(color);
@@ -2247,7 +2267,8 @@
       const targetId = util.target.id;
 
       if (!this.triangleAttributesOfAllSprites[targetId]) {
-        this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
+        this.triangleAttributesOfAllSprites[targetId] =
+          triangleDefaultAttributes;
       }
 
       const calcColor = Scratch.Cast.toRgbColorObject(color);
@@ -2282,7 +2303,8 @@
       const targetId = util.target.id;
 
       if (!this.triangleAttributesOfAllSprites[targetId]) {
-        this.triangleAttributesOfAllSprites[targetId] = triangleDefaultAttributes;
+        this.triangleAttributesOfAllSprites[targetId] =
+          triangleDefaultAttributes;
       }
       let value =
         this.triangleAttributesOfAllSprites[targetId][
@@ -2602,86 +2624,98 @@
 
     //?Custom Shaders
     openShaderEditor() {
-        const bgFade = document.createElement("div");
-        bgFade.style.width = "100%";
-        bgFade.style.height = "100%";
+      const bgFade = document.createElement("div");
+      bgFade.style.width = "100%";
+      bgFade.style.height = "100%";
 
-        bgFade.style.position = "absolute";
-        bgFade.style.left = "0px";
-        bgFade.style.top = "0px";
+      bgFade.style.position = "absolute";
+      bgFade.style.left = "0px";
+      bgFade.style.top = "0px";
 
-        bgFade.style.backgroundColor = "#00000055";
-        bgFade.style.filter = "opacity(0%)";
+      bgFade.style.backgroundColor = "#00000055";
+      bgFade.style.filter = "opacity(0%)";
 
-        bgFade.style.zIndex = "10000";
+      bgFade.style.zIndex = "10000";
 
-        document.body.appendChild(bgFade);
-        
-        this.IFrame = document.createElement("iframe");
-        this.IFrame.style.width = "80%";
-        this.IFrame.style.height = "80%";
+      document.body.appendChild(bgFade);
 
-        this.IFrame.style.position = "absolute";
-        this.IFrame.style.left = "10%";
-        this.IFrame.style.top = "100%";
+      this.IFrame = document.createElement("iframe");
+      this.IFrame.style.width = "80%";
+      this.IFrame.style.height = "80%";
 
-        this.IFrame.style.borderRadius = "32px";
-        this.IFrame.style.borderWidth = "0px";
+      this.IFrame.style.position = "absolute";
+      this.IFrame.style.left = "10%";
+      this.IFrame.style.top = "100%";
 
-        this.IFrame.style.filter = "drop-shadow(0px 0px 16px #ffffff)";
+      this.IFrame.style.borderRadius = "32px";
+      this.IFrame.style.borderWidth = "0px";
 
-        this.IFrame.style.zIndex = "10001";
+      this.IFrame.style.filter = "drop-shadow(0px 0px 16px #ffffff)";
 
-        this.IFrame.onload = () => {
-          this.IFrame.contentWindow.postMessage(
-                { type: "REGISTER_PARENT", exitButton:true, exportText:`Export to ${
-                            window.location.hostname.split(".")[0]
-                            .replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();})
-                    }` 
-                },
-                this.IFrame.src
-            );
-        }
+      this.IFrame.style.zIndex = "10001";
 
-        this.IFrame.closeIframe = () => {
-            document.body.style.overflowY = "hidden";
-            let animation = 0;
-            let oldInterval = setInterval(() => {
-                if (animation < -90) {
-                    document.body.style.overflowY = "inherit";
-                    document.body.removeChild(this.IFrame);
-                    document.body.removeChild(bgFade);
-                    clearInterval(oldInterval);
-                }
+      this.IFrame.onload = () => {
+        this.IFrame.contentWindow.postMessage(
+          {
+            type: "REGISTER_PARENT",
+            exitButton: true,
+            exportText: `Export to ${window.location.hostname
+              .split(".")[0]
+              .replace(/\w\S*/g, function (txt) {
+                return (
+                  txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+                );
+              })}`,
+          },
+          this.IFrame.src
+        );
+      };
 
-                this.IFrame.style.top = animation + "%";
-                bgFade.style.filter = `opacity(${100 - Math.abs(animation - 10)}%)`;
-                animation += (-100 - animation) * 0.05;
-            },16)
-        }
-
-        this.IFrame.src = "https://pen-group.github.io/penPlus-shader-editor/Source/";
-
-        //Popup animation
+      this.IFrame.closeIframe = () => {
         document.body.style.overflowY = "hidden";
-        let animation = 100;
+        let animation = 0;
         let oldInterval = setInterval(() => {
-            if (Math.abs(animation - 10) < 1) {
-                document.body.style.overflowY = "inherit";
-                clearInterval(oldInterval);
-            }
+          if (animation < -90) {
+            document.body.style.overflowY = "inherit";
+            document.body.removeChild(this.IFrame);
+            document.body.removeChild(bgFade);
+            clearInterval(oldInterval);
+          }
 
-            this.IFrame.style.top = animation + "%";
-            bgFade.style.filter = `opacity(${100 - Math.abs(animation - 10)}%)`;
-            animation += (10 - animation) * 0.05;
-        },16)
+          this.IFrame.style.top = animation + "%";
+          bgFade.style.filter = `opacity(${100 - Math.abs(animation - 10)}%)`;
+          animation += (-100 - animation) * 0.05;
+        }, 16);
+      };
 
-        //Add the IFrame to the body
-        document.body.appendChild(this.IFrame);
+      this.IFrame.src =
+        "https://pen-group.github.io/penPlus-shader-editor/Source/";
+
+      //Popup animation
+      document.body.style.overflowY = "hidden";
+      let animation = 100;
+      let oldInterval = setInterval(() => {
+        if (Math.abs(animation - 10) < 1) {
+          document.body.style.overflowY = "inherit";
+          clearInterval(oldInterval);
+        }
+
+        this.IFrame.style.top = animation + "%";
+        bgFade.style.filter = `opacity(${100 - Math.abs(animation - 10)}%)`;
+        animation += (10 - animation) * 0.05;
+      }, 16);
+
+      //Add the IFrame to the body
+      document.body.appendChild(this.IFrame);
     }
 
     openShaderManager(reason) {
-      reason = reason || "save"
+      reason = reason || "save";
+      //penguin one liner support
+      //for some reason it sends the entire workspace when a button is clicked?
+      if (Scratch.extensions.isPenguinMod)
+        typeof reason != "string" ? (reason = "save") : (reason = reason);
+
       const bgFade = document.createElement("div");
       bgFade.style.width = "100%";
       bgFade.style.height = "100%";
@@ -2711,7 +2745,7 @@
 ⠀⣸⠀⢠⠀⠀⢸⡀⠀⠀⢻⡀⠀⢸⣿⣿⠀⠀⠀⠀⡼⣇⢸⣿⣿⠀⠀⠀⢀⠏⠀⠀⢸⠀⠇
 ⠀⠓⠈⢃⠀⠀⠀⡇⠀⠀⠀⣗⠦⣀⣿⡇⠀⣀⠤⠊⠀⠈⠺⢿⣃⣀⠤⠔⢸⠀⠀⠀⣼⠑⢼
 ⠀⠀⠀⢸⡀⣀⣾⣷⡀⠀⢸⣯⣦⡀⠀⠀⠀⢇⣀⣀⠐⠦⣀⠘⠀⠀⢀⣰⣿⣄⠀⠀⡟⠀⠀
-⠀⠀⠀⠀⠛⠁⣿⣿⣧⠀⣿⣿⣿⣿⣦⣀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣴⣿⣿⡿⠈⠢⣼⡇⠀⠀
+⠀⠀⠀⠀⠛⠁⣿⣿⣧⠀⣿⣿⣿⣿⣦⣀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣴⣿⣿⡿⠈⠢⣼⡇⠀⠀           Bryunyeuuuuuu
 ⠀⠀⠀⠀⠀⠀⠈⠁⠈⠻⠈⢻⡿⠉⣿⠿⠛⡇⠒⠒⢲⠺⢿⣿⣿⠉⠻⡿⠁⠀⠀⠈⠁⠀⠀          Smooth criminal
 ⢀⠤⠒⠦⡀⠀⠀⠀⠀⠀⠀⠀⢀⠞⠉⠆⠀⠀⠉⠉⠉⠀⠀⡝⣍⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⡎⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⡰⠋⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⢡⠈⢦⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -2732,7 +2766,34 @@
       */
       const shaderManager = document.createElement("div");
 
-      shaderManager.style.backgroundColor = "var(--menu-bar-background)";
+      //Also if this looks bad it's due to prettier
+      //I support friendly competition!
+      const menuBarBackground = Scratch.extensions.isPenguinMod
+      //This is penguinmod blue
+        ? "#009CCC"
+        //Turbowarp
+        : "var(--menu-bar-background)";
+
+      //Of course due to the GUI version differences I need to conduct some checks on these
+      const backgroundColor = Scratch.extensions.isPenguinMod
+      //Wierd old turbowarp vm thingy right here
+        ? document.body.getAttribute("theme") == "dark"
+          ? "var(--ui-primary)"
+          : "white"
+        //New accent stuff me likey.
+        : "var(--ui-modal-background)";
+
+      //But in general its fine
+      const textColor = Scratch.extensions.isPenguinMod
+        ? document.body.getAttribute("theme") == "dark"
+          ? "white"
+          : "black"
+          //Again with the accents. Me likey
+        : "var(--ui-modal-foreground)";
+
+
+      //Create our menu modal
+      shaderManager.style.backgroundColor = menuBarBackground;
       shaderManager.style.width = "50%";
       shaderManager.style.height = "50%";
       shaderManager.style.position = "relative";
@@ -2745,7 +2806,7 @@
 
       shaderManager.style.textAlign = "center";
 
-      shaderManager.style.color = "#ffffff"
+      shaderManager.style.color = "#ffffff";
 
       document.body.appendChild(shaderManager);
 
@@ -2766,7 +2827,7 @@
 
       const shaderPanel = document.createElement("div");
 
-      shaderPanel.style.backgroundColor = "var(--ui-modal-background)";
+      shaderPanel.style.backgroundColor = backgroundColor;
       shaderPanel.style.width = "100%";
       shaderPanel.style.height = "calc(100% - 48px)";
       shaderPanel.style.position = "absolute";
@@ -2780,30 +2841,30 @@
       switch (reason) {
         case "save":
           menuSpecificVars.savePanel = document.createElement("div");
-          
+
           menuSpecificVars.savePanel.style.width = "60%";
           menuSpecificVars.savePanel.style.height = "100%";
           menuSpecificVars.savePanel.style.borderWidth = "5px";
-          menuSpecificVars.savePanel.style.backgroundColor = "var(--menu-bar-background)";
+          menuSpecificVars.savePanel.style.backgroundColor = menuBarBackground;
           menuSpecificVars.savePanel.style.filter = "opacity(50%)";
           menuSpecificVars.savePanel.style.position = "absolute";
 
           shaderPanel.appendChild(menuSpecificVars.savePanel);
 
           menuSpecificVars.saveStuffHolder = document.createElement("div");
-          
+
           menuSpecificVars.saveStuffHolder.style.width = "60%";
           menuSpecificVars.saveStuffHolder.style.height = "100%";
           menuSpecificVars.saveStuffHolder.style.borderWidth = "5px";
           menuSpecificVars.saveStuffHolder.style.backgroundColor = "#00000000";
           menuSpecificVars.saveStuffHolder.style.position = "absolute";
 
-
           shaderPanel.appendChild(menuSpecificVars.saveStuffHolder);
 
+          //A whole lotta hub jubba for the input box. Though I want it to be supported natively even in a non GUI enviornment
           menuSpecificVars.shadername = document.createElement("input");
           menuSpecificVars.shadername.type = "text";
-          menuSpecificVars.shadername.style.backgroundColor = "var(--ui-modal-background)";
+          menuSpecificVars.shadername.style.backgroundColor = backgroundColor;
           menuSpecificVars.shadername.style.fontSize = "1rem";
           menuSpecificVars.shadername.style.fontWeight = "bold";
           menuSpecificVars.shadername.style.borderRadius = "4px";
@@ -2816,23 +2877,27 @@
           menuSpecificVars.shadername.style.left = "50%";
           menuSpecificVars.shadername.style.transform = "translate(-50%,0%)";
           menuSpecificVars.shadername.style.height = "2rem";
-          menuSpecificVars.shadername.style.color = "var(--ui-modal-foreground)";
+          menuSpecificVars.shadername.style.color = textColor;
 
           menuSpecificVars.shadername.style.zIndex = "10005";
 
-          menuSpecificVars.saveStuffHolder.appendChild(menuSpecificVars.shadername);
+          menuSpecificVars.saveStuffHolder.appendChild(
+            menuSpecificVars.shadername
+          );
           break;
-      
+
         default:
           break;
       }
 
-      this.shaders = {"demo":true};
+      this.shaders = { demo: true };
     }
 
     getAllShaders() {
       //!Pain.json
-      return (Object.keys(this.shaders).length == 0) ? "none yet" : JSON.stringify(Object.keys(this.shaders));
+      return Object.keys(this.shaders).length == 0
+        ? "none yet"
+        : JSON.stringify(Object.keys(this.shaders));
     }
   }
 
