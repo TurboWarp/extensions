@@ -1111,7 +1111,7 @@
                     break;
 
                 case "DATA_SEND":
-                    this.openSaveMenu()
+                    this.openShaderManager("save")
                     break;
             
                 default:
@@ -1125,12 +1125,12 @@
 
     //Stolen from lily :3
     setupExtensionStorage() {
-      if (!runtime.extensionStorage["oac_PENPLUS"]) {
+      /*if (!runtime.extensionStorage["oac_PENPLUS"]) {
         runtime.extensionStorage["oac_PENPLUS"] = {};
         runtime.extensionStorage["oac_PENPLUS"].shaders = [];
       }
 
-      this.shaders = runtime.extensionStorage["oac_PENPLUS"].shaders;
+      this.shaders = runtime.extensionStorage["oac_PENPLUS"].shaders;*/
     }
 
     getInfo() {
@@ -2680,7 +2680,8 @@
         document.body.appendChild(this.IFrame);
     }
 
-    openSaveMenu() {
+    openShaderManager(reason) {
+      reason = reason || "save"
       const bgFade = document.createElement("div");
       bgFade.style.width = "100%";
       bgFade.style.height = "100%";
@@ -2742,7 +2743,89 @@
       shaderManager.style.transform = "translate(-50%,25%)";
       shaderManager.style.zIndex = "10002";
 
+      shaderManager.style.textAlign = "center";
+
+      shaderManager.style.color = "#ffffff"
+
       document.body.appendChild(shaderManager);
+
+      const bryunnnyuu = document.createElement("div");
+
+      bryunnnyuu.style.width = "100%";
+      bryunnnyuu.style.height = "48px";
+      bryunnnyuu.style.top = "0px";
+      bryunnnyuu.style.left = "0px";
+      bryunnnyuu.style.position = "absolute";
+      bryunnnyuu.style.transform = "translate(0%,12px)";
+
+      bryunnnyuu.style.fontSize = "24px";
+
+      bryunnnyuu.innerHTML = "Shader Manager";
+
+      shaderManager.appendChild(bryunnnyuu);
+
+      const shaderPanel = document.createElement("div");
+
+      shaderPanel.style.backgroundColor = "var(--ui-modal-background)";
+      shaderPanel.style.width = "100%";
+      shaderPanel.style.height = "calc(100% - 48px)";
+      shaderPanel.style.position = "absolute";
+      shaderPanel.style.top = "48px";
+      shaderPanel.style.left = "0%";
+
+      shaderManager.appendChild(shaderPanel);
+
+      let menuSpecificVars = {};
+
+      switch (reason) {
+        case "save":
+          menuSpecificVars.savePanel = document.createElement("div");
+          
+          menuSpecificVars.savePanel.style.width = "60%";
+          menuSpecificVars.savePanel.style.height = "100%";
+          menuSpecificVars.savePanel.style.borderWidth = "5px";
+          menuSpecificVars.savePanel.style.backgroundColor = "var(--menu-bar-background)";
+          menuSpecificVars.savePanel.style.filter = "opacity(50%)";
+          menuSpecificVars.savePanel.style.position = "absolute";
+
+          shaderPanel.appendChild(menuSpecificVars.savePanel);
+
+          menuSpecificVars.saveStuffHolder = document.createElement("div");
+          
+          menuSpecificVars.saveStuffHolder.style.width = "60%";
+          menuSpecificVars.saveStuffHolder.style.height = "100%";
+          menuSpecificVars.saveStuffHolder.style.borderWidth = "5px";
+          menuSpecificVars.saveStuffHolder.style.backgroundColor = "#00000000";
+          menuSpecificVars.saveStuffHolder.style.position = "absolute";
+
+
+          shaderPanel.appendChild(menuSpecificVars.saveStuffHolder);
+
+          menuSpecificVars.shadername = document.createElement("input");
+          menuSpecificVars.shadername.type = "text";
+          menuSpecificVars.shadername.style.backgroundColor = "var(--ui-modal-background)";
+          menuSpecificVars.shadername.style.fontSize = "1rem";
+          menuSpecificVars.shadername.style.fontWeight = "bold";
+          menuSpecificVars.shadername.style.borderRadius = "4px";
+          menuSpecificVars.shadername.style.borderWidth = "1px";
+          menuSpecificVars.shadername.style.borderStyle = "solid";
+          menuSpecificVars.shadername.style.borderColor = "#404040";
+          menuSpecificVars.shadername.style.color = "#ffffff";
+          menuSpecificVars.shadername.style.position = "absolute";
+          menuSpecificVars.shadername.style.top = "10%";
+          menuSpecificVars.shadername.style.left = "50%";
+          menuSpecificVars.shadername.style.transform = "translate(-50%,0%)";
+          menuSpecificVars.shadername.style.height = "2rem";
+          menuSpecificVars.shadername.style.color = "var(--ui-modal-foreground)";
+
+          menuSpecificVars.shadername.style.zIndex = "10005";
+
+          menuSpecificVars.saveStuffHolder.appendChild(menuSpecificVars.shadername);
+          break;
+      
+        default:
+          break;
+      }
 
       this.shaders = {"sex":true};
     }
