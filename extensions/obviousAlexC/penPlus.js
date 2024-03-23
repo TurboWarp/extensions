@@ -2827,7 +2827,7 @@
           break;
       }
 
-      this.shaders = {"sex":true};
+      this.shaders = {"demo":true};
     }
 
     getAllShaders() {
