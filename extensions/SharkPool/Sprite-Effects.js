@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.4.3
+// Version V.1.5.0
 
 (function (Scratch) {
   "use strict";
@@ -269,6 +269,32 @@
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
           },
+          {
+            opcode: "vhsSprite",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "apply vhs effect to [SPRITE] offset x [X] y [Y] on [axis] at [NUM]%",
+            hideFromPalette: !sprite,
+            arguments: {
+              axis: { type: Scratch.ArgumentType.STRING, menu: "AXISES" },
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS2" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+            },
+          },
+          {
+            opcode: "vhsImage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "apply vhs effect to [SPRITE] offset x [X] y [Y] on [axis] at [NUM]%",
+            hideFromPalette: sprite,
+            arguments: {
+              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
+              axis: { type: Scratch.ArgumentType.STRING, menu: "AXISES" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+            },
+          },
           "---",
           {
             opcode: "distortSprite",
@@ -483,7 +509,6 @@
             opcode: "unClipSPR",
             blockType: Scratch.BlockType.REPORTER,
             text: "resize viewbox of [SPRITE] by [NUM]%",
-            hideFromPalette: !sprite,
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
@@ -493,7 +518,6 @@
             opcode: "unClipIMG",
             blockType: Scratch.BlockType.REPORTER,
             text: "resize viewbox of [SPRITE] by [NUM]%",
-            hideFromPalette: sprite,
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
@@ -730,6 +754,10 @@
 
     tileSprite(args, util) { return this.addTile(args, false, util) }
     async tileImage(args) { return await this.addTile(args, true) }
+
+    vhsSprite(args, util) { return this.setVHS(args, false, util) }
+    async vhsImage(args) { return await this.setVHS(args, true) }
+
 
     applySpriteLight(args, util) { return this.lighting(args, false, util) }
     async applyImageLight(args) { return await this.lighting(args, true) }
@@ -1041,6 +1069,24 @@
         }
         const filterElement = `<filter id="glitch">${mergeTxt}<feMerge><feMergeNode in="SourceGraphic" />${allMerges}</feMerge></filter>`;
         return this.filterApplier(svg, filterElement, "glitch");
+      }
+      return svg;
+    }
+
+    async setVHS(args, isImage, util) {
+      let svg;
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
+      if (svg) {
+        const full = vm.renderer.canvas.getBoundingClientRect().width > Scratch.vm.runtime.stageWidth ? 1 : 1.9;
+        const mul = args.SPRITE === "_canvas_" ? [runtime.stageHeight / full, runtime.stageWidth / full] : [100, 100];
+        const axis = args.axis === "x axis" ? [true, false] : args.axis === "y axis" ? [false, true] : [true, true];
+        const amts = [
+          Scratch.Cast.toNumber(args.X), Scratch.Cast.toNumber(args.Y), Scratch.Cast.toNumber(args.NUM)
+        ];
+        if (amts[2] === 0) return svg; // 0% vhs effect is just the original image
+        const filterElement = `<filter id="vhs"><feOffset in="SourceGraphic" dx="${amts[0]}" dy="${amts[1]}" result="off"/><feMerge in="SourceGraphic" x="${axis[0] ? (100 - amts[2]) * ( mul[0] / 100) : 0}%" y="${axis[1] ? (100 - amts[2]) * ( mul[1] / 100) : 0}%" width="${axis[0] ? amts[2] * mul[0] : mul[0]}%" height="${axis[1] ? amts[2] * mul[1] : mul[1]}%" result="merge1"><feMergeNode in="off" /><feMergeNode in="merge1" /></feMerge><feMerge in="off" x="0%" y="0%" width="${axis[0] ? mul[0] - amts[2] : mul[0]}%" height="${axis[1] ? mul[1] - amts[2] : mul[1]}%" result="merge2"><feMergeNode in="SourceGraphic" /><feMergeNode in="merge2" /></feMerge><feMerge>${amts[2] < 100 ? `<feMergeNode in="merge1" /><feMergeNode in="merge2" />` : `<feMergeNode in="merge1" />`}</feMerge></filter>`;
+        return this.filterApplier(svg, filterElement, "vhs");
       }
       return svg;
     }
