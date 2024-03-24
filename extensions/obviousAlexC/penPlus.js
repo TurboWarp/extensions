@@ -2749,8 +2749,7 @@
       reason = reason || "save";
       //penguin one liner support
       //for some reason it sends the entire workspace when a button is clicked?
-      if (Scratch.extensions.isPenguinMod)
-        typeof reason != "string" ? (reason = "save") : (reason = reason);
+      if (Scratch.extensions.isPenguinMod && typeof reason != "string") reason = "save";
 
       const bgFade = document.createElement("div");
       bgFade.style.width = "100%";
