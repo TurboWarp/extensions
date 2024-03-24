@@ -1111,6 +1111,11 @@
 
           case "DATA_SEND":
             this.openShaderManager("save");
+            this.savingData = {
+              projectData:event.data.projectData,
+              fragShader:event.data.fragShader,
+              vertShader:event.data.vertShader
+            }
             break;
 
           default:
@@ -1118,29 +1123,48 @@
         }
       });
 
+      vm.runtime.on("PROJECT_LOADED", this.setupExtensionStorage);
       this.setupExtensionStorage();
     }
 
     //Stolen from lily :3
     setupExtensionStorage() {
-      /*if (!runtime.extensionStorage["oac_PENPLUS"]) {
-        runtime.extensionStorage["oac_PENPLUS"] = {};
-        runtime.extensionStorage["oac_PENPLUS"].shaders = [];
+      //Penguinmod saving support
+      if (Scratch.extensions.isPenguinMod) {
+        this.serialize = () => {
+          return JSON.stringify(this.shaders);
+        }
+
+        this.deserialize = (serialized) => {
+          this.shaders = JSON.parse(serialized);
+        }
+
+        this.shaders = {};
+      }
+      else {
+        if (!runtime.extensionStorage["penP"]) {
+          runtime.extensionStorage["penP"] = Object.create(null);
+          runtime.extensionStorage["penP"].shaders = Object.create(null);
+        }
+  
+        //For some reason tw saving just doesn't work lol
+        this.shaders = runtime.extensionStorage["penP"].shaders;
+        console.log(this.shaders);
       }
 
-      this.shaders = runtime.extensionStorage["oac_PENPLUS"].shaders;*/
-
-      this.shaders = {
-        "garbomuffin":{
-          modifyDate:0
-        },
-        "davey":{
-          modifyDate:1711256196886
-        },
-        "fortnite":{
-          modifyDate:1711206196886
-        }
+      this.savingData = {
+        projectData:undefined,
+        fragShader:undefined,
+        vertShader:undefined
       };
+    }
+
+    saveShader(name, data) {
+      //Create data in the json object
+      this.shaders[name] = {
+        projectData:data,
+        modifyDate:Date.now()
+      }
     }
 
     getInfo() {
@@ -2946,6 +2970,7 @@
           menuSpecificVars.shadername.style.height = "2rem";
           menuSpecificVars.shadername.style.color = textColor;
           menuSpecificVars.shadername.style.zIndex = "10005";
+          menuSpecificVars.shadername.maxLength = 20;
 
           menuSpecificVars.shadername.placeholder = "Shader Name";
 
@@ -2969,6 +2994,11 @@
           menuSpecificVars.saveButton.style.left = "50%";
           menuSpecificVars.saveButton.style.backgroundColor = menuBarBackground;
           menuSpecificVars.saveButton.style.transform = "translate(-50%,0%)";
+
+          menuSpecificVars.saveButton.onclick = () => {
+            if (menuSpecificVars.shadername.value.length == 0) return;
+            this.saveShader(menuSpecificVars.shadername.value,this.savingData)
+          }
 
           menuSpecificVars.saveStuffHolder.appendChild(menuSpecificVars.saveButton);
 
@@ -3023,6 +3053,7 @@
           menuSpecificVars.existingDiv.style.left = "0%";
     
           menuSpecificVars.existingShaderHolder.appendChild(menuSpecificVars.existingDiv);
+          console.log(this.shaders);
 
           Object.keys(this.shaders).forEach(shader => {
             const shaderDiv = document.createElement("div");
@@ -3033,6 +3064,10 @@
             shaderDiv.style.backgroundColor = menuBarBackground;
 
             shaderDiv.style.cursor = "pointer";
+
+            shaderDiv.onclick = () => {
+              this.saveShader(shader,this.savingData)
+            }
     
             menuSpecificVars.existingDiv.appendChild(shaderDiv);
 
