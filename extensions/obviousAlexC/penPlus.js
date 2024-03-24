@@ -1174,6 +1174,11 @@
       };
     }
 
+    deleteShader(name) {
+      //Create data in the json object
+      delete this.shaders[name] 
+    }
+
     getInfo() {
       return {
         blocks: [
@@ -2756,7 +2761,7 @@
 
     //! HEED THY WARNING LOTS OF JAVASCRIPT BASED HTML AHEAD !//
     //Just a helper function so the main one isn't too cluttered
-    _shaderManagerModal(menuBarBackground,backgroundColor,textColor) {
+    _shaderManagerModal(menuBarBackground,backgroundColor) {
       //!Janky remedy for turbowarp saving
       this.getShaders();
 
@@ -2870,7 +2875,7 @@
 
       closeMenu.style.width = "1.75rem";
       closeMenu.style.height = "1.75rem";
-      closeMenu.style.backgroundColor = "var(--ui-black-transparent)";
+      closeMenu.style.backgroundColor = (Scratch.extensions.isPenguinMod) ? "hsla(0, 0%, 0%, 0.15)" : "var(--ui-black-transparent)";
       closeMenu.style.position = "absolute";
       closeMenu.style.left = "calc(100% - 2rem)";
       closeMenu.style.top = "0.25rem";
@@ -2912,7 +2917,18 @@
 
       closeMenu.appendChild(xImage);
 
-      return shaderPanel;
+      return {
+        shaderPanel:shaderPanel,
+        closeFunc:() => {
+          document.body.removeChild(bgFade);
+          document.body.removeChild(shaderManager);
+        },
+        resizeFunc:(width,height) => {
+          shaderManager.style.aspectRatio = width + "/" + height;
+          shaderManager.style.width = (width > height) ? "auto" : width+"%";
+          shaderManager.style.height = (height >= width) ? "auto" : height+"%";
+        }
+      };
     }
 
     //Then this decides the contents of said modal while gathering some info
@@ -2942,15 +2958,15 @@
         : //Again with the accents. Me likey
           "var(--ui-modal-foreground)";
 
-      const shaderPanel = this._shaderManagerModal(menuBarBackground,backgroundColor,textColor);
+      const {shaderPanel, closeFunc, resizeFunc} = this._shaderManagerModal(menuBarBackground,backgroundColor);
 
       //If we don't have a reason assign a default value
-      reason = reason || "save";
+      reason = reason || "manager";
 
       //penguin one liner support
       //for some reason it sends the entire workspace when a button is clicked?
       if (Scratch.extensions.isPenguinMod && typeof reason != "string")
-        reason = "save";
+        reason = "manager";
 
       //Since I'm using a switch we do this.
       let menuSpecificVars = {};
@@ -3024,8 +3040,7 @@
           menuSpecificVars.saveButton.onclick = () => {
             if (menuSpecificVars.shadername.value.length == 0) return;
             this.saveShader(menuSpecificVars.shadername.value, this.savingData);
-            document.body.removeChild(bgFade);
-            document.body.removeChild(shaderManager);
+            closeFunc();
           };
 
           menuSpecificVars.saveStuffHolder.appendChild(
@@ -3108,8 +3123,7 @@
 
             shaderDiv.onclick = () => {
               this.saveShader(shader, this.savingData);
-              document.body.removeChild(bgFade);
-              document.body.removeChild(shaderManager);
+              closeFunc();
             };
 
             menuSpecificVars.existingDiv.appendChild(shaderDiv);
@@ -3125,6 +3139,147 @@
             nameDiv.innerText = `${shader}\nModified: ${modifyDate.getDate()}/${modifyDate.getMonth() + 1}/${modifyDate.getFullYear()} ${(modifyDate.getHours() % 12 == 0) ? 12 : (modifyDate.getHours() % 12)}:${modifyDate.getMinutes()} ${(modifyDate.getHours() > 11 ? "PM" : "AM")}`;
 
             shaderDiv.appendChild(nameDiv);
+          });
+          break;
+
+        case "manager":
+          //Resize this manager to fit better
+          resizeFunc(25,30)
+          //A container containing already existing shaders and some text to accompony them.
+          menuSpecificVars.existingShaderHolder = document.createElement("div");
+
+          menuSpecificVars.existingShaderHolder.style.width = "100%";
+          menuSpecificVars.existingShaderHolder.style.height = "100%";
+          menuSpecificVars.existingShaderHolder.style.left = "0%";
+          menuSpecificVars.existingShaderHolder.style.backgroundColor =
+            "#00000000";
+          menuSpecificVars.existingShaderHolder.style.position = "absolute";
+
+          shaderPanel.appendChild(menuSpecificVars.existingShaderHolder);
+
+          menuSpecificVars.existingText = document.createElement("div");
+
+          menuSpecificVars.existingText.style.width = "100%";
+          menuSpecificVars.existingText.style.height = "48px";
+          menuSpecificVars.existingText.style.top = "0px";
+          menuSpecificVars.existingText.style.left = "0px";
+          menuSpecificVars.existingText.style.position = "absolute";
+          menuSpecificVars.existingText.style.transform = "translate(0%,8px)";
+          menuSpecificVars.existingText.style.color = textColor;
+
+          menuSpecificVars.existingText.style.fontSize = "16px";
+
+          menuSpecificVars.existingText.innerHTML = "Project Shaders";
+
+          menuSpecificVars.existingShaderHolder.appendChild(
+            menuSpecificVars.existingText
+          );
+
+          //The background for existing shaders
+          menuSpecificVars.existingDivBackground =
+            document.createElement("div");
+
+          menuSpecificVars.existingDivBackground.style.backgroundColor =
+            menuBarBackground;
+          menuSpecificVars.existingDivBackground.style.width = "100%";
+          menuSpecificVars.existingDivBackground.style.height =
+            "calc(100% - 32px)";
+          menuSpecificVars.existingDivBackground.style.position = "absolute";
+          menuSpecificVars.existingDivBackground.style.top = "32px";
+          menuSpecificVars.existingDivBackground.style.left = "0%";
+          menuSpecificVars.existingDivBackground.style.filter = "opacity(25%)";
+
+          menuSpecificVars.existingShaderHolder.appendChild(
+            menuSpecificVars.existingDivBackground
+          );
+
+          //The container for existing shaders
+          menuSpecificVars.existingDiv = document.createElement("div");
+
+          menuSpecificVars.existingDiv.style.backgroundColor = "#00000000";
+          menuSpecificVars.existingDiv.style.width = "100%";
+          menuSpecificVars.existingDiv.style.height = "calc(100% - 32px)";
+          menuSpecificVars.existingDiv.style.position = "absolute";
+          menuSpecificVars.existingDiv.style.top = "32px";
+          menuSpecificVars.existingDiv.style.left = "0%";
+          menuSpecificVars.existingDiv.style.overflowY = "auto";
+          menuSpecificVars.existingDiv.style.overflowX = "hidden";
+
+          menuSpecificVars.existingShaderHolder.appendChild(
+            menuSpecificVars.existingDiv
+          );
+
+          Object.keys(this.shaders).forEach((shader) => {
+            const shaderDiv = document.createElement("div");
+            shaderDiv.style.width = "100%";
+            shaderDiv.style.height = "48px";
+            shaderDiv.style.color = "#ffffff";
+            shaderDiv.style.marginBottom = "2px";
+            shaderDiv.style.backgroundColor = menuBarBackground;
+
+            shaderDiv.style.cursor = "pointer";
+
+            menuSpecificVars.existingDiv.appendChild(shaderDiv);
+
+            const modifyDate = new Date(this.shaders[shader].modifyDate);
+
+            const nameDiv = document.createElement("div");
+            nameDiv.style.position = "relative";
+            nameDiv.style.width = "100%";
+            nameDiv.style.height = "48px";
+            nameDiv.style.top = "0px";
+            nameDiv.style.left = "0px";
+            nameDiv.style.transform = "translate(5%,5%)";
+            nameDiv.style.textAlign = "left";
+            nameDiv.innerText = `${shader}\nModified: ${modifyDate.getDate()}/${modifyDate.getMonth() + 1}/${modifyDate.getFullYear()} ${(modifyDate.getHours() % 12 == 0) ? 12 : (modifyDate.getHours() % 12)}:${modifyDate.getMinutes()} ${(modifyDate.getHours() > 11 ? "PM" : "AM")}`;
+
+            shaderDiv.appendChild(nameDiv);
+
+            //The actual container no filter to avoid buggy things
+            const closeMenu = document.createElement("div");
+      
+            closeMenu.style.width = "1.75rem";
+            closeMenu.style.height = "1.75rem";
+            closeMenu.style.backgroundColor = (Scratch.extensions.isPenguinMod) ? "hsla(0, 0%, 0%, 0.15)" : "var(--ui-black-transparent)";
+            closeMenu.style.position = "absolute";
+            closeMenu.style.left = "calc(100% - 2rem)";
+            closeMenu.style.borderRadius = "50%";
+            closeMenu.style.alignItems = "center";
+            closeMenu.style.justifyContent = "center";
+            closeMenu.style.display = "flex";
+            closeMenu.style.cursor = "pointer";
+            closeMenu.style.transition = "all 0.15s ease-out";
+            closeMenu.style.transform = "translate(-50%,-135%)";
+      
+            //Animation stuffs
+            closeMenu.onmouseenter = () => {
+              closeMenu.style.transform = "translate(-50%,-135%) scale(1.1,1.1)";
+            };
+      
+            //More animation
+            closeMenu.onmouseleave = () => {
+              closeMenu.style.transform = "translate(-50%,-135%) scale(1,1)";
+            };
+      
+            //Just the close button
+            closeMenu.onclick = () => {
+              menuSpecificVars.existingDiv.removeChild(shaderDiv);
+              this.deleteShader(shader);
+            };
+      
+            shaderDiv.appendChild(closeMenu);
+      
+            //The close button for the menu
+            const xImage = document.createElement("img");
+            xImage.src =
+              "data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3LjQ4IDcuNDgiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDpub25lO3N0cm9rZTojZmZmO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2Utd2lkdGg6MnB4O308L3N0eWxlPjwvZGVmcz48dGl0bGU+aWNvbi0tYWRkPC90aXRsZT48bGluZSBjbGFzcz0iY2xzLTEiIHgxPSIzLjc0IiB5MT0iNi40OCIgeDI9IjMuNzQiIHkyPSIxIi8+PGxpbmUgY2xhc3M9ImNscy0xIiB4MT0iMSIgeTE9IjMuNzQiIHgyPSI2LjQ4IiB5Mj0iMy43NCIvPjwvc3ZnPg==";
+      
+            xImage.style.width = "0.75rem";
+            xImage.style.height = "0.75rem";
+            xImage.style.margin = "0.25rem";
+            xImage.style.transform = "rotate(45deg)";
+      
+            closeMenu.appendChild(xImage);
           });
           break;
 
