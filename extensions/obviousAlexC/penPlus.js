@@ -2638,7 +2638,7 @@
       bgFade.style.left = "0px";
       bgFade.style.top = "0px";
 
-      bgFade.style.backgroundColor = "var(--ui-modal-overlay)";
+      bgFade.style.backgroundColor = "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
       bgFade.style.filter = "opacity(0%)";
 
       bgFade.style.zIndex = "10000";
@@ -2648,15 +2648,14 @@
       this.IFrame = document.createElement("iframe");
       this.IFrame.style.width = "80%";
       this.IFrame.style.height = "80%";
+      this.IFrame.style.borderRadius = "8px";
+      this.IFrame.style.borderColor = (Scratch.extensions.isPenguinMod) ? "hsla(0, 100%, 100%, 0.25)" : "var(--ui-white-transparent)";
+      this.IFrame.style.borderWidth = "4px";
+      this.IFrame.style.borderStyle = "solid";
 
       this.IFrame.style.position = "absolute";
       this.IFrame.style.left = "10%";
       this.IFrame.style.top = "100%";
-
-      this.IFrame.style.borderRadius = "32px";
-      this.IFrame.style.borderWidth = "0px";
-
-      this.IFrame.style.filter = "drop-shadow(0px 0px 16px #ffffff)";
 
       this.IFrame.style.zIndex = "10001";
 
@@ -2732,7 +2731,7 @@
       bgFade.style.left = "0px";
       bgFade.style.top = "0px";
 
-      bgFade.style.backgroundColor = "var(--ui-modal-overlay)";
+      bgFade.style.backgroundColor = "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
 
       bgFade.style.zIndex = "10001";
 
