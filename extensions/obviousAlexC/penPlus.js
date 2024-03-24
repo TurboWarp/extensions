@@ -190,10 +190,6 @@
       runtime.extensionManager.loadExtensionIdSync("pen");
     }
   }
-
-  //?Ported from Pen+ version 5
-  //?Just a costume library for data uris
-  const penPlusCostumeLibrary = {};
   let penPlusImportWrapMode = gl.CLAMP_TO_EDGE;
 
   const checkForPen = (util) => {
@@ -894,8 +890,8 @@
         name,
         clamp
       ) {
-        const texture = penPlusCostumeLibrary[name]
-          ? penPlusCostumeLibrary[name].texture
+        const texture = this.penPlusCostumeLibrary[name]
+          ? this.penPlusCostumeLibrary[name].texture
           : gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         // Fill the texture with a 1x1 blue pixel.
@@ -926,15 +922,15 @@
           pixelData
         );
 
-        penPlusCostumeLibrary[name] = {
+        this.penPlusCostumeLibrary[name] = {
           texture: texture,
           width: width,
           height: height,
         };
       },
       createPenPlusTextureInfo: function (url, name, clamp) {
-        const texture = penPlusCostumeLibrary[name]
-          ? penPlusCostumeLibrary[name].texture
+        const texture = this.penPlusCostumeLibrary[name]
+          ? this.penPlusCostumeLibrary[name].texture
           : gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         // Fill the texture with a 1x1 blue pixel.
@@ -971,7 +967,7 @@
                 gl.UNSIGNED_BYTE,
                 image
               );
-              penPlusCostumeLibrary[name] = {
+              this.penPlusCostumeLibrary[name] = {
                 texture: texture,
                 width: image.width,
                 height: image.height,
@@ -1095,6 +1091,8 @@
     inDrawRegion = false;
 
     IFrame = undefined;
+
+    penPlusCostumeLibrary = {};
 
     constructor() {
       window.addEventListener("message", (event) => {
@@ -1661,6 +1659,125 @@
             text: "shaders in project",
           },
           {
+            disableMonitor: true,
+            opcode: "drawShaderTri",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "draw triangle using [shader] between [x1] [y1], [x2] [y2] and [x3] [y3]",
+            arguments: {
+              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              x1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              x2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              x3: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              y3: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
+            filter: "sprite",
+          },
+          "---",
+          {
+            disableMonitor: true,
+            opcode: "setTextureInShader",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set texture [uniformName] in [shader] to [texture]",
+            arguments: {
+              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
+              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              texture: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" }
+            },
+            filter: "sprite",
+          },
+          {
+            disableMonitor: true,
+            opcode: "setNumberInShader",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set number [uniformName] in [shader] to [number]",
+            arguments: {
+              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
+              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              number: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+            },
+            filter: "sprite",
+          },
+          {
+            disableMonitor: true,
+            opcode: "setVec2InShader",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set vector 2 [uniformName] in [shader] to [numberX] [numberY]",
+            arguments: {
+              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
+              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              numberX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+            },
+            filter: "sprite",
+          },
+          {
+            disableMonitor: true,
+            opcode: "setVec3InShader",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set vector 3 [uniformName] in [shader] to [numberX] [numberY] [numberZ]",
+            arguments: {
+              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
+              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              numberX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              numberZ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+            },
+            filter: "sprite",
+          },
+          {
+            disableMonitor: true,
+            opcode: "setVec4InShader",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set vector 4 [uniformName] in [shader] to [numberX] [numberY] [numberZ] [numberW]",
+            arguments: {
+              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
+              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              numberX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              numberZ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              numberW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+            },
+            filter: "sprite",
+          },
+          {
+            disableMonitor: true,
+            opcode: "setMatrixInShader",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set matrix [uniformName] in [shader] to [list]",
+            arguments: {
+              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
+              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              list: { type: Scratch.ArgumentType.STRING, menu: "listMenu"}
+            },
+            filter: "sprite",
+          },
+          {
+            disableMonitor: true,
+            opcode: "setMatrixInShaderArray",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set matrix [uniformName] in [shader] to [array]",
+            arguments: {
+              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
+              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              array: { type: Scratch.ArgumentType.STRING, defaultValue: "[0,0,0,0]"}
+            },
+            filter: "sprite",
+          },
+          {
+            disableMonitor: true,
+            opcode: "setCubeInShader",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set cubemap [uniformName] in [shader] to [cubemap]",
+            arguments: {
+              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
+              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              cubemap: { type: Scratch.ArgumentType.STRING, menu: "penPlusCubemaps"}
+            },
+            filter: "sprite",
+          },
+          {
             blockType: Scratch.BlockType.LABEL,
             text: "Extras",
           },
@@ -1772,6 +1889,10 @@
             items: "penPlusCostumesFunction",
             acceptReporters: true,
           },
+          penPlusShaders: {
+            items: "shaderMenu",
+            acceptReporters: true,
+          },
           advancedSettingsMenu: {
             items: [
               { text: "allow 'Corner Pinch < 1'", value: "wValueUnderFlow" },
@@ -1791,6 +1912,14 @@
           getDimensionOf_dimension_Menu: {
             items: ["width", "height"],
             acceptReporters: true,
+          },
+          listMenu: {
+            acceptReporters: true,
+            items: "_getLists",
+          },
+          penPlusCubemaps: {
+            acceptReporters: true,
+            items: "_getCubemaps",
           },
         },
         name: "Pen+ V7",
@@ -1823,7 +1952,7 @@
     }
     penPlusCostumesFunction() {
       const readCostumes = [];
-      const keys = Object.keys(penPlusCostumeLibrary);
+      const keys = Object.keys(this.penPlusCostumeLibrary);
       if (keys.length > 0) {
         for (let curCostumeID = 0; curCostumeID < keys.length; curCostumeID++) {
           const currentCostume = keys[curCostumeID];
@@ -1833,6 +1962,14 @@
       }
 
       return ["no pen+ costumes!"];
+    }
+    shaderMenu() {
+      //!Janky remedy for turbowarp saving
+      this.getShaders();
+      //!Pain.json
+      return Object.keys(this.shaders).length == 0
+        ? ["none yet"]
+        : Object.keys(this.shaders);
     }
     getCostumeDataURI_costume_MenuFunction() {
       const myCostumes = runtime._editingTarget.sprite.costumes;
@@ -1849,6 +1986,37 @@
 
       return readCostumes;
     }
+    _getCubemaps() {
+
+    }
+    //From lily's list tools
+    _getLists() {
+      // @ts-expect-error - Blockly not typed yet
+      // eslint-disable-next-line no-undef
+      const lists =
+        typeof Blockly === "undefined"
+          ? []
+          : Blockly.getMainWorkspace()
+              .getVariableMap()
+              .getVariablesOfType("list")
+              .map((model) => model.name);
+      if (lists.length > 0) {
+        return lists;
+      } else {
+        return [""];
+      }
+    }
+    //And the associated helper function
+    _getVarObjectFromName(name, util, type) {
+      const stageTarget = runtime.getTargetForStage();
+      const target = util.target;
+      let listObject = Object.create(null);
+  
+      listObject = stageTarget.lookupVariableByNameAndType(name, type);
+      if (listObject) return listObject;
+      listObject = target.lookupVariableByNameAndType(name, type);
+      if (listObject) return listObject;
+    };
 
     //?Default pen helpers
     isPenDown(args, util) {
@@ -2423,8 +2591,8 @@
     drawTexTri({ x1, y1, x2, y2, x3, y3, tex }, util) {
       const curTarget = util.target;
       let currentTexture = null;
-      if (penPlusCostumeLibrary[tex]) {
-        currentTexture = penPlusCostumeLibrary[tex].texture;
+      if (this.penPlusCostumeLibrary[tex]) {
+        currentTexture = this.penPlusCostumeLibrary[tex].texture;
       } else {
         const costIndex = curTarget.getCostumeIndexByName(
           Scratch.Cast.toString(tex)
@@ -2546,13 +2714,13 @@
     }
     removeIMGfromDURI({ name }, util) {
       //Just a simple thing to allow for pen drawing
-      if (penPlusCostumeLibrary["!" + name]) {
-        delete penPlusCostumeLibrary["!" + name];
+      if (this.penPlusCostumeLibrary["!" + name]) {
+        delete this.penPlusCostumeLibrary["!" + name];
       }
     }
     doesIMGexist({ name }, util) {
       //Just a simple thing to allow for pen drawing
-      return typeof penPlusCostumeLibrary["!" + name] != "undefined";
+      return typeof this.penPlusCostumeLibrary["!" + name] != "undefined";
     }
     getCostumeDataURI({ costume }, util) {
       //Just a simple thing to allow for pen drawing
@@ -2568,13 +2736,13 @@
     }
     getDimensionOf({ dimension, costume }, util) {
       //Just a simple thing to allow for pen drawing
-      const costIndex = penPlusCostumeLibrary[costume];
+      const costIndex = this.penPlusCostumeLibrary[costume];
       if (costIndex) {
         return costIndex[dimension];
       }
     }
     setpixelcolor({ x, y, color, costume }) {
-      const curCostume = penPlusCostumeLibrary[costume];
+      const curCostume = this.penPlusCostumeLibrary[costume];
       if (curCostume) {
         const textureData = this.textureFunctions.getTextureData(
           curCostume.texture,
@@ -2613,7 +2781,7 @@
       }
     }
     getpixelcolor({ x, y, costume }) {
-      const curCostume = penPlusCostumeLibrary[costume];
+      const curCostume = this.penPlusCostumeLibrary[costume];
       if (curCostume) {
         const textureData = this.textureFunctions.getTextureData(
           curCostume.texture,
@@ -2636,7 +2804,7 @@
       }
     }
     getPenPlusCostumeURI({ costume }) {
-      const curCostume = penPlusCostumeLibrary[costume];
+      const curCostume = this.penPlusCostumeLibrary[costume];
       if (curCostume) {
         const textureData = this.textureFunctions.getTextureAsURI(
           curCostume.texture,
@@ -3317,12 +3485,7 @@
     }
 
     getAllShaders() {
-      //!Janky remedy for turbowarp saving
-      this.getShaders();
-      //!Pain.json
-      return Object.keys(this.shaders).length == 0
-        ? "none yet"
-        : JSON.stringify(Object.keys(this.shaders));
+      return JSON.stringify(this.shaderMenu())
     }
   }
 
