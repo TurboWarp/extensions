@@ -2720,7 +2720,6 @@
       document.body.appendChild(this.IFrame);
     }
 
-
     //! HEED THY WARNING LOTS OF JAVASCRIPT BASED HTML AHEAD !//
     openShaderManager(reason) {
       reason = reason || "save";
@@ -2908,6 +2907,24 @@
           menuSpecificVars.saveStuffHolder.appendChild(
             menuSpecificVars.shadername
           );
+
+          //Save Button
+          menuSpecificVars.saveButton = document.createElement("button");
+
+          menuSpecificVars.saveButton.innerText = "Save";
+          menuSpecificVars.saveButton.style.cursor = "pointer";
+          menuSpecificVars.saveButton.style.padding = "0.75rem 1rem";
+          menuSpecificVars.saveButton.style.borderRadius = "0.25rem";
+          menuSpecificVars.saveButton.style.boxSizing = "border-box";
+          menuSpecificVars.saveButton.style.borderStyle = "solid";
+          menuSpecificVars.saveButton.style.borderWidth = "0px";
+          menuSpecificVars.saveButton.style.position = "absolute";
+          menuSpecificVars.saveButton.style.top = "20%";
+          menuSpecificVars.saveButton.style.left = "50%";
+          menuSpecificVars.saveButton.style.backgroundColor = menuBarBackground;
+          menuSpecificVars.saveButton.style.transform = "translate(-50%,0%)";
+
+          menuSpecificVars.saveStuffHolder.appendChild(menuSpecificVars.saveButton);
 
           //A container containing already existing shaders and some text to accompony them.
           menuSpecificVars.existingShaderHolder = document.createElement("div");
