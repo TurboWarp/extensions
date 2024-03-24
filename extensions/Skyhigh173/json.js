@@ -7,7 +7,7 @@
 (function (Scratch) {
   "use strict";
   /*
-   * JSON extension v2.6 by skyhigh173 (English Version)
+   * JSON extension v2.6 by skyhigh173
    * Do not remove this comment
    */
 
@@ -119,7 +119,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '["TurboWarp","scratch"]',
+                defaultValue: sampleJSON.list,
               },
             },
           },
@@ -147,7 +147,7 @@
           {
             opcode: "json_minify",
             blockType: Scratch.BlockType.REPORTER,
-            text: "minify JSON [json]",
+            text: "minify [json]",
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -158,12 +158,47 @@
           {
             opcode: "json_flip",
             blockType: Scratch.BlockType.REPORTER,
-            text: "flip key-value pair in JSON [json]",
+            text: "flip key-value pair in [json]",
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"key":"value","key2":"value2"}',
+                defaultValue: sampleJSON.mulkeyval,
               },
+            },
+          },
+          "---",
+          {
+            opcode: "json_get_path",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get value by path [path] in [json]",
+            arguments: {
+              path: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '["key","inner",1]',
+              },
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"key":{"inner":[true,false]}}',
+              },
+            },
+          },
+          {
+            opcode: "json_set_path",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "set value by path [path] in [json] to [data]",
+            arguments: {
+              path: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '["key","inner",1]',
+              },
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"key":{"inner":[true,false]}}',
+              },
+              data: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'value'
+              }
             },
           },
           makeLabel("JSON Strings"),
@@ -174,7 +209,7 @@
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"key":"value","key2":"value2"}',
+                defaultValue: sampleJSON.mulkeyval,
               },
             },
           },
@@ -189,7 +224,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"key":"value"}',
+                defaultValue: sampleJSON.keyval,
               },
             },
           },
@@ -208,7 +243,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"key":"value"}',
+                defaultValue: sampleJSON.keyval,
               },
             },
           },
@@ -223,7 +258,7 @@
               },
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"key":"value","key2":"value2"}',
+                defaultValue: sampleJSON.mulkeyval,
               },
             },
           },
@@ -235,7 +270,7 @@
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "[1,2,3]",
+                defaultValue: sampleJSON.intList,
               },
             },
           },
@@ -648,7 +683,11 @@
       }
     }
 
-    // return object if its json else string
+    /**
+     * Checks if the input is valid JSON or not, then return it
+     * @param {*} json 
+     * @returns {Object|Any}
+     */
     json_valid_return(json) {
       if (typeof json != "string") {
         return json;
@@ -729,8 +768,33 @@
     json_flip({ json }) {
       try {
         json = Object.entries(JSON.parse(json));
-        json = json.map(([k, v]) => [v, k]);
-        return JSON.stringify(Object.fromEntries(json));
+        let result = {};
+        let store = (key,val) => {
+          // invalid key
+          if (typeof key === "object") return;
+          if (typeof result[key] == "undefined") {
+            // new key
+            result[key] = val;
+          } else {
+            // multiple key exists
+            if (Array.isArray(result[key])) {
+              result[key] = result[key].push(val);
+            } else {
+              result[key] = [result[key], val];
+            }
+          }
+        };
+        for (const i of json) {
+          if (Array.isArray(i[1])) {
+            // map to different keys
+            for (const key of i[1]) {
+              store(key, i[0]);
+            }
+          } else {
+            store(i[1], i[0]);
+          }
+        }
+        return JSON.stringify(result);
       } catch {
         return "";
       }
@@ -824,21 +888,67 @@
       return this.json_length({ json: json });
     }
 
+    json_get_path({ path, json }) {
+      try {
+        path = JSON.parse(path);
+        json = JSON.parse(json);
+        for (let key of path) {
+          if (Array.isArray(json)) {
+            if (key == 0) return "";
+            if (key > 0) key--;
+            key += key < 0 ? json.length : 0;
+            if (key >= json.length || key < 0) return "";
+          }
+          json = json[key];
+        }
+        if (typeof json == "object") {
+          return JSON.stringify(json);
+        } else {
+          return json;
+        }
+      } catch {
+        return "";
+      }
+    }
+
+    json_set_path({ path, json, data }) {
+      try {
+        path = JSON.parse(path);
+        json = JSON.parse(json);
+        let obj = json;
+        data = this.json_valid_return(data);
+        let count = path.length;
+        for (let key of path) {
+          if (Array.isArray(obj)) {
+            if (key == 0) return "";
+            if (key > 0) key--;
+            key += key < 0 ? obj.length : 0;
+            if (key >= obj.length || key < 0) return "";
+          }
+          count--;
+          if (count == 0) {
+            obj[key] = data;
+          } else {
+            obj = obj[key];
+          }
+        }
+        return JSON.stringify(json);
+      } catch {
+        return "";
+      }
+    }
+
     json_array_get({ item, json }) {
       // 1...length : array content, -1...-length : reverse array content, 0 : ERROR
       try {
+        json = JSON.parse(json);
         item = Scratch.Cast.toNumber(item);
         if (item == 0) return "";
-        if (item > 0) {
-          item--;
-        }
-        json = JSON.parse(json);
-        let result;
-        if (item >= 0) {
-          result = json[item];
-        } else {
-          result = json[json.length + item];
-        }
+        if (item > 0) item--;
+        item += item < 0 ? json.length : 0;
+        if (item >= json.length || item < 0) return "";
+
+        let result = json[item];
         if (typeof result == "object") {
           return JSON.stringify(result);
         } else {
