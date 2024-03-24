@@ -1178,7 +1178,7 @@
 
     deleteShader(name) {
       //Create data in the json object
-      delete this.shaders[name] 
+      delete this.shaders[name];
     }
 
     getInfo() {
@@ -2708,21 +2708,17 @@
 
         if (window.location.hostname.split(".").length > 2) {
           hostname = window.location.hostname.split(".")[1];
-        }
-        else {
-          hostname = window.location.hostname.split(".")[0]
+        } else {
+          hostname = window.location.hostname.split(".")[0];
         }
 
         this.IFrame.contentWindow.postMessage(
           {
             type: "REGISTER_PARENT",
             exitButton: true,
-            exportText: `Export to ${hostname
-              .replace(/\w\S*/g, function (txt) {
-                return (
-                  txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-                );
-              })}`,
+            exportText: `Export to ${hostname.replace(/\w\S*/g, function (txt) {
+              return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            })}`,
           },
           this.IFrame.src
         );
@@ -2779,39 +2775,41 @@
         this._shadowBorder = "hsla(0, 100%, 100%, 0.25)";
         return;
       }
-      
+
       //Also if this looks bad it's due to prettier
       //I support friendly competition!
       this._menuBarBackground = Scratch.extensions.isPenguinMod
-      ? //This is penguinmod blue
-        "#009CCC"
-      : //Turbowarp
-        "var(--menu-bar-background)";
+        ? //This is penguinmod blue
+          "#009CCC"
+        : //Turbowarp
+          "var(--menu-bar-background)";
 
       //Of course due to the GUI version differences I need to conduct some checks on these
       this._defaultBackgroundColor = Scratch.extensions.isPenguinMod
-      ? //Wierd old turbowarp vm thingy right here
-        document.body.getAttribute("theme") == "dark"
-        ? "var(--ui-primary)"
-        : "white"
-      : //New accent stuff me likey.
-        "var(--ui-modal-background)";
+        ? //Wierd old turbowarp vm thingy right here
+          document.body.getAttribute("theme") == "dark"
+          ? "var(--ui-primary)"
+          : "white"
+        : //New accent stuff me likey.
+          "var(--ui-modal-background)";
 
       //But in general its fine
       this._textColor = Scratch.extensions.isPenguinMod
-      ? document.body.getAttribute("theme") == "dark"
-        ? "white"
-        : "black"
-      : //Again with the accents. Me likey
-        "var(--ui-modal-foreground)";
+        ? document.body.getAttribute("theme") == "dark"
+          ? "white"
+          : "black"
+        : //Again with the accents. Me likey
+          "var(--ui-modal-foreground)";
 
-      this._buttonShadow = (Scratch.extensions.isPenguinMod) ? "hsla(0, 0%, 0%, 0.15)" : "var(--ui-black-transparent)";
+      this._buttonShadow = Scratch.extensions.isPenguinMod
+        ? "hsla(0, 0%, 0%, 0.15)"
+        : "var(--ui-black-transparent)";
 
       this.fade = "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
 
       this._shadowBorder = Scratch.extensions.isPenguinMod
-      ? "hsla(0, 100%, 100%, 0.25)"
-      : "var(--ui-white-transparent)";
+        ? "hsla(0, 100%, 100%, 0.25)"
+        : "var(--ui-white-transparent)";
     }
 
     //Just a helper function so the main one isn't too cluttered
@@ -2969,22 +2967,22 @@
       closeMenu.appendChild(xImage);
 
       return {
-        shaderPanel:shaderPanel,
-        closeFunc:() => {
+        shaderPanel: shaderPanel,
+        closeFunc: () => {
           document.body.removeChild(bgFade);
           document.body.removeChild(shaderManager);
         },
-        resizeFunc:(width,height) => {
+        resizeFunc: (width, height) => {
           shaderManager.style.aspectRatio = width + "/" + height;
-          shaderManager.style.width = (width > height) ? "auto" : width+"%";
-          shaderManager.style.height = (height >= width) ? "auto" : height+"%";
-        }
+          shaderManager.style.width = width > height ? "auto" : width + "%";
+          shaderManager.style.height = height >= width ? "auto" : height + "%";
+        },
       };
     }
 
     //Then this decides the contents of said modal while gathering some info
     openShaderManager(reason) {
-      const {shaderPanel, closeFunc, resizeFunc} = this._shaderManagerModal();
+      const { shaderPanel, closeFunc, resizeFunc } = this._shaderManagerModal();
 
       //If we don't have a reason assign a default value
       reason = reason || "manager";
@@ -3004,7 +3002,8 @@
 
           menuSpecificVars.savePanel.style.width = "60%";
           menuSpecificVars.savePanel.style.height = "100%";
-          menuSpecificVars.savePanel.style.backgroundColor = this._menuBarBackground;
+          menuSpecificVars.savePanel.style.backgroundColor =
+            this._menuBarBackground;
           menuSpecificVars.savePanel.style.filter = "opacity(50%)";
           menuSpecificVars.savePanel.style.position = "absolute";
 
@@ -3023,7 +3022,8 @@
           //A whole lotta hub jubba for the input box. Though I want it to be supported natively even in a non GUI enviornment
           menuSpecificVars.shadername = document.createElement("input");
           menuSpecificVars.shadername.type = "text";
-          menuSpecificVars.shadername.style.backgroundColor = this._defaultBackgroundColor;
+          menuSpecificVars.shadername.style.backgroundColor =
+            this._defaultBackgroundColor;
           menuSpecificVars.shadername.style.fontSize = "1rem";
           menuSpecificVars.shadername.style.fontWeight = "bold";
           menuSpecificVars.shadername.style.borderRadius = "4px";
@@ -3060,7 +3060,8 @@
           menuSpecificVars.saveButton.style.position = "absolute";
           menuSpecificVars.saveButton.style.top = "20%";
           menuSpecificVars.saveButton.style.left = "50%";
-          menuSpecificVars.saveButton.style.backgroundColor = this._menuBarBackground;
+          menuSpecificVars.saveButton.style.backgroundColor =
+            this._menuBarBackground;
           menuSpecificVars.saveButton.style.transform = "translate(-50%,0%)";
 
           menuSpecificVars.saveButton.onclick = () => {
@@ -3162,7 +3163,7 @@
             nameDiv.style.height = "48px";
             nameDiv.style.transform = "translate(5%,5%)";
             nameDiv.style.textAlign = "left";
-            nameDiv.innerText = `${shader}\nModified: ${modifyDate.getDate()}/${modifyDate.getMonth() + 1}/${modifyDate.getFullYear()} ${(modifyDate.getHours() % 12 == 0) ? 12 : (modifyDate.getHours() % 12)}:${modifyDate.getMinutes()} ${(modifyDate.getHours() > 11 ? "PM" : "AM")}`;
+            nameDiv.innerText = `${shader}\nModified: ${modifyDate.getDate()}/${modifyDate.getMonth() + 1}/${modifyDate.getFullYear()} ${modifyDate.getHours() % 12 == 0 ? 12 : modifyDate.getHours() % 12}:${modifyDate.getMinutes()} ${modifyDate.getHours() > 11 ? "PM" : "AM"}`;
 
             shaderDiv.appendChild(nameDiv);
           });
@@ -3170,7 +3171,7 @@
 
         case "manager":
           //Resize this manager to fit better
-          resizeFunc(25,30)
+          resizeFunc(25, 30);
           //A container containing already existing shaders and some text to accompony them.
           menuSpecificVars.existingShaderHolder = document.createElement("div");
 
@@ -3257,13 +3258,13 @@
             nameDiv.style.left = "0px";
             nameDiv.style.transform = "translate(5%,5%)";
             nameDiv.style.textAlign = "left";
-            nameDiv.innerText = `${shader}\nModified: ${modifyDate.getDate()}/${modifyDate.getMonth() + 1}/${modifyDate.getFullYear()} ${(modifyDate.getHours() % 12 == 0) ? 12 : (modifyDate.getHours() % 12)}:${modifyDate.getMinutes()} ${(modifyDate.getHours() > 11 ? "PM" : "AM")}`;
+            nameDiv.innerText = `${shader}\nModified: ${modifyDate.getDate()}/${modifyDate.getMonth() + 1}/${modifyDate.getFullYear()} ${modifyDate.getHours() % 12 == 0 ? 12 : modifyDate.getHours() % 12}:${modifyDate.getMinutes()} ${modifyDate.getHours() > 11 ? "PM" : "AM"}`;
 
             shaderDiv.appendChild(nameDiv);
 
             //The actual container no filter to avoid buggy things
             const closeMenu = document.createElement("div");
-      
+
             closeMenu.style.width = "1.75rem";
             closeMenu.style.height = "1.75rem";
             closeMenu.style.backgroundColor = this._buttonShadow;
@@ -3276,35 +3277,36 @@
             closeMenu.style.cursor = "pointer";
             closeMenu.style.transition = "all 0.15s ease-out";
             closeMenu.style.transform = "translate(-50%,-135%)";
-      
+
             //Animation stuffs
             closeMenu.onmouseenter = () => {
-              closeMenu.style.transform = "translate(-50%,-135%) scale(1.1,1.1)";
+              closeMenu.style.transform =
+                "translate(-50%,-135%) scale(1.1,1.1)";
             };
-      
+
             //More animation
             closeMenu.onmouseleave = () => {
               closeMenu.style.transform = "translate(-50%,-135%) scale(1,1)";
             };
-      
+
             //Just the close button
             closeMenu.onclick = () => {
               menuSpecificVars.existingDiv.removeChild(shaderDiv);
               this.deleteShader(shader);
             };
-      
+
             shaderDiv.appendChild(closeMenu);
-      
+
             //The close button for the menu
             const xImage = document.createElement("img");
             xImage.src =
               "data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3LjQ4IDcuNDgiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDpub25lO3N0cm9rZTojZmZmO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2Utd2lkdGg6MnB4O308L3N0eWxlPjwvZGVmcz48dGl0bGU+aWNvbi0tYWRkPC90aXRsZT48bGluZSBjbGFzcz0iY2xzLTEiIHgxPSIzLjc0IiB5MT0iNi40OCIgeDI9IjMuNzQiIHkyPSIxIi8+PGxpbmUgY2xhc3M9ImNscy0xIiB4MT0iMSIgeTE9IjMuNzQiIHgyPSI2LjQ4IiB5Mj0iMy43NCIvPjwvc3ZnPg==";
-      
+
             xImage.style.width = "0.75rem";
             xImage.style.height = "0.75rem";
             xImage.style.margin = "0.25rem";
             xImage.style.transform = "rotate(45deg)";
-      
+
             closeMenu.appendChild(xImage);
           });
           break;
