@@ -42,6 +42,9 @@
     });
   };
 
+  // Security Stuff
+  let internalUserPass, internalUserAnswer, internalAnswer;
+
   let currentCaptcha = null;
   let captchaInfo = {
     passed: false, difficulty: "easy",
@@ -230,8 +233,34 @@
 
   class SPcaptcha {
     constructor() {
-      Scratch.vm.runtime.on("PROJECT_START", () => { this.closeCaptcha() });
-      Scratch.vm.runtime.on("PROJECT_STOP_ALL", () => { this.closeCaptcha() });
+      vm.runtime.on("PROJECT_START", () => { this.closeCaptcha() });
+      vm.runtime.on("PROJECT_STOP_ALL", () => { this.closeCaptcha() });
+
+      // Helper Function to Prevent Users from auto-passing Captchas
+      // Of course, theyre might be other workarounds but :/
+      vm.runtime.on("BEFORE_EXECUTE", () => {
+        // Currently I just reset the function, perhaps we could stop the project, but whatever
+        const openUserPass = vm.runtime._primitives.SPcaptcha_userPassed;
+        if (openUserPass !== internalUserPass) {
+          vm.runtime._primitives.SPcaptcha_userPassed = function() {
+            return internalUserPass.apply(this, arguments);
+          };
+        }
+
+        const openAnswer = vm.runtime._primitives.SPcaptcha_getAnswer;
+        if (openAnswer !== internalAnswer) {
+          vm.runtime._primitives.SPcaptcha_getAnswer = function() {
+            return internalAnswer.apply(this, arguments);
+          };
+        }
+
+        const openUserAnswer = vm.runtime._primitives.SPcaptcha_getResponse;
+        if (openUserAnswer !== internalUserAnswer) {
+          vm.runtime._primitives.SPcaptcha_getResponse = function() {
+            return internalUserAnswer.apply(this, arguments);
+          };
+        }
+      });
     }
     getInfo() {
       return {
@@ -546,4 +575,15 @@
   }
 
   Scratch.extensions.register(new SPcaptcha());
+
+  // Security Feature Enabler
+  function checkPrimitives() {
+    internalUserPass = vm.runtime._primitives.SPcaptcha_userPassed;
+    internalUserAnswer = vm.runtime._primitives.SPcaptcha_getResponse;
+    internalAnswer = vm.runtime._primitives.SPcaptcha_getAnswer;
+    if (internalUserPass === undefined || internalUserAnswer === undefined || internalAnswer === undefined) {
+      setTimeout(checkPrimitives, 10);
+    }
+  }
+  checkPrimitives();
 })(Scratch);
