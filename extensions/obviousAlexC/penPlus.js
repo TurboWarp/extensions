@@ -1123,6 +1123,8 @@
 
       vm.runtime.on("PROJECT_LOADED", this.setupExtensionStorage);
       this.setupExtensionStorage();
+
+      this._setupTheme();
     }
 
     //Stolen from lily :3
@@ -2680,8 +2682,7 @@
       bgFade.style.left = "0px";
       bgFade.style.top = "0px";
 
-      bgFade.style.backgroundColor =
-        "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
+      bgFade.style.backgroundColor = this.fade;
       bgFade.style.filter = "opacity(0%)";
 
       bgFade.style.zIndex = "10000";
@@ -2692,9 +2693,7 @@
       this.IFrame.style.width = "80%";
       this.IFrame.style.height = "80%";
       this.IFrame.style.borderRadius = "8px";
-      this.IFrame.style.borderColor = Scratch.extensions.isPenguinMod
-        ? "hsla(0, 100%, 100%, 0.25)"
-        : "var(--ui-white-transparent)";
+      this.IFrame.style.borderColor = this._shadowBorder;
       this.IFrame.style.borderWidth = "4px";
       this.IFrame.style.borderStyle = "solid";
 
@@ -2705,12 +2704,20 @@
       this.IFrame.style.zIndex = "10001";
 
       this.IFrame.onload = () => {
+        let hostname = "project";
+
+        if (window.location.hostname.split(".").length > 2) {
+          hostname = window.location.hostname.split(".")[1];
+        }
+        else {
+          hostname = window.location.hostname.split(".")[0]
+        }
+
         this.IFrame.contentWindow.postMessage(
           {
             type: "REGISTER_PARENT",
             exitButton: true,
-            exportText: `Export to ${window.location.hostname
-              .split(".")[0]
+            exportText: `Export to ${hostname
               .replace(/\w\S*/g, function (txt) {
                 return (
                   txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
@@ -2760,8 +2767,55 @@
     }
 
     //! HEED THY WARNING LOTS OF JAVASCRIPT BASED HTML AHEAD !//
+    //Modal themes
+    _setupTheme() {
+      //Use a predefined pen+ theme if packaged
+      if (Scratch.vm.runtime.isPackaged) {
+        this._menuBarBackground = "#0FBD8C";
+        this._defaultBackgroundColor = "white";
+        this._textColor = "black";
+        this._buttonShadow = "hsla(0, 0%, 0%, 0.15)";
+        this.fade = "#0FBD8CDD";
+        this._shadowBorder = "hsla(0, 100%, 100%, 0.25)";
+        return;
+      }
+      
+      //Also if this looks bad it's due to prettier
+      //I support friendly competition!
+      this._menuBarBackground = Scratch.extensions.isPenguinMod
+      ? //This is penguinmod blue
+        "#009CCC"
+      : //Turbowarp
+        "var(--menu-bar-background)";
+
+      //Of course due to the GUI version differences I need to conduct some checks on these
+      this._defaultBackgroundColor = Scratch.extensions.isPenguinMod
+      ? //Wierd old turbowarp vm thingy right here
+        document.body.getAttribute("theme") == "dark"
+        ? "var(--ui-primary)"
+        : "white"
+      : //New accent stuff me likey.
+        "var(--ui-modal-background)";
+
+      //But in general its fine
+      this._textColor = Scratch.extensions.isPenguinMod
+      ? document.body.getAttribute("theme") == "dark"
+        ? "white"
+        : "black"
+      : //Again with the accents. Me likey
+        "var(--ui-modal-foreground)";
+
+      this._buttonShadow = (Scratch.extensions.isPenguinMod) ? "hsla(0, 0%, 0%, 0.15)" : "var(--ui-black-transparent)";
+
+      this.fade = "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
+
+      this._shadowBorder = Scratch.extensions.isPenguinMod
+      ? "hsla(0, 100%, 100%, 0.25)"
+      : "var(--ui-white-transparent)";
+    }
+
     //Just a helper function so the main one isn't too cluttered
-    _shaderManagerModal(menuBarBackground,backgroundColor) {
+    _shaderManagerModal() {
       //!Janky remedy for turbowarp saving
       this.getShaders();
 
@@ -2773,8 +2827,7 @@
       bgFade.style.left = "0px";
       bgFade.style.top = "0px";
 
-      bgFade.style.backgroundColor =
-        "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
+      bgFade.style.backgroundColor = this.fade;
 
       bgFade.style.zIndex = "10001";
 
@@ -2817,16 +2870,14 @@
       const shaderManager = document.createElement("div");
 
       //Create our menu modal
-      shaderManager.style.backgroundColor = menuBarBackground;
+      shaderManager.style.backgroundColor = this._menuBarBackground;
       shaderManager.style.width = "50%";
       shaderManager.style.height = "50%";
       shaderManager.style.position = "relative";
       shaderManager.style.top = "50%";
       shaderManager.style.left = "50%";
       shaderManager.style.borderRadius = "8px";
-      shaderManager.style.borderColor = Scratch.extensions.isPenguinMod
-        ? "hsla(0, 100%, 100%, 0.25)"
-        : "var(--ui-white-transparent)";
+      shaderManager.style.borderColor = this._shadowBorder;
       shaderManager.style.borderWidth = "4px";
       shaderManager.style.borderStyle = "solid";
       shaderManager.style.aspectRatio = "5/3";
@@ -2859,7 +2910,7 @@
       //Then we have the inner panel. Where most of the ui goes
       const shaderPanel = document.createElement("div");
 
-      shaderPanel.style.backgroundColor = backgroundColor;
+      shaderPanel.style.backgroundColor = this._defaultBackgroundColor;
       shaderPanel.style.width = "100%";
       shaderPanel.style.height = "calc(100% - 48px)";
       shaderPanel.style.position = "absolute";
@@ -2875,7 +2926,7 @@
 
       closeMenu.style.width = "1.75rem";
       closeMenu.style.height = "1.75rem";
-      closeMenu.style.backgroundColor = (Scratch.extensions.isPenguinMod) ? "hsla(0, 0%, 0%, 0.15)" : "var(--ui-black-transparent)";
+      closeMenu.style.backgroundColor = this._buttonShadow;
       closeMenu.style.position = "absolute";
       closeMenu.style.left = "calc(100% - 2rem)";
       closeMenu.style.top = "0.25rem";
@@ -2933,32 +2984,7 @@
 
     //Then this decides the contents of said modal while gathering some info
     openShaderManager(reason) {
-      //Also if this looks bad it's due to prettier
-      //I support friendly competition!
-      const menuBarBackground = Scratch.extensions.isPenguinMod
-        ? //This is penguinmod blue
-          "#009CCC"
-        : //Turbowarp
-          "var(--menu-bar-background)";
-
-      //Of course due to the GUI version differences I need to conduct some checks on these
-      const backgroundColor = Scratch.extensions.isPenguinMod
-        ? //Wierd old turbowarp vm thingy right here
-          document.body.getAttribute("theme") == "dark"
-          ? "var(--ui-primary)"
-          : "white"
-        : //New accent stuff me likey.
-          "var(--ui-modal-background)";
-
-      //But in general its fine
-      const textColor = Scratch.extensions.isPenguinMod
-        ? document.body.getAttribute("theme") == "dark"
-          ? "white"
-          : "black"
-        : //Again with the accents. Me likey
-          "var(--ui-modal-foreground)";
-
-      const {shaderPanel, closeFunc, resizeFunc} = this._shaderManagerModal(menuBarBackground,backgroundColor);
+      const {shaderPanel, closeFunc, resizeFunc} = this._shaderManagerModal();
 
       //If we don't have a reason assign a default value
       reason = reason || "manager";
@@ -2978,7 +3004,7 @@
 
           menuSpecificVars.savePanel.style.width = "60%";
           menuSpecificVars.savePanel.style.height = "100%";
-          menuSpecificVars.savePanel.style.backgroundColor = menuBarBackground;
+          menuSpecificVars.savePanel.style.backgroundColor = this._menuBarBackground;
           menuSpecificVars.savePanel.style.filter = "opacity(50%)";
           menuSpecificVars.savePanel.style.position = "absolute";
 
@@ -2997,7 +3023,7 @@
           //A whole lotta hub jubba for the input box. Though I want it to be supported natively even in a non GUI enviornment
           menuSpecificVars.shadername = document.createElement("input");
           menuSpecificVars.shadername.type = "text";
-          menuSpecificVars.shadername.style.backgroundColor = backgroundColor;
+          menuSpecificVars.shadername.style.backgroundColor = this._defaultBackgroundColor;
           menuSpecificVars.shadername.style.fontSize = "1rem";
           menuSpecificVars.shadername.style.fontWeight = "bold";
           menuSpecificVars.shadername.style.borderRadius = "4px";
@@ -3010,7 +3036,7 @@
           menuSpecificVars.shadername.style.left = "50%";
           menuSpecificVars.shadername.style.transform = "translate(-50%,0%)";
           menuSpecificVars.shadername.style.height = "2rem";
-          menuSpecificVars.shadername.style.color = textColor;
+          menuSpecificVars.shadername.style.color = this._textColor;
           menuSpecificVars.shadername.style.zIndex = "10005";
           menuSpecificVars.shadername.maxLength = 20;
 
@@ -3034,7 +3060,7 @@
           menuSpecificVars.saveButton.style.position = "absolute";
           menuSpecificVars.saveButton.style.top = "20%";
           menuSpecificVars.saveButton.style.left = "50%";
-          menuSpecificVars.saveButton.style.backgroundColor = menuBarBackground;
+          menuSpecificVars.saveButton.style.backgroundColor = this._menuBarBackground;
           menuSpecificVars.saveButton.style.transform = "translate(-50%,0%)";
 
           menuSpecificVars.saveButton.onclick = () => {
@@ -3067,7 +3093,7 @@
           menuSpecificVars.existingText.style.left = "0px";
           menuSpecificVars.existingText.style.position = "absolute";
           menuSpecificVars.existingText.style.transform = "translate(0%,8px)";
-          menuSpecificVars.existingText.style.color = textColor;
+          menuSpecificVars.existingText.style.color = this._textColor;
 
           menuSpecificVars.existingText.style.fontSize = "16px";
 
@@ -3082,7 +3108,7 @@
             document.createElement("div");
 
           menuSpecificVars.existingDivBackground.style.backgroundColor =
-            menuBarBackground;
+            this._menuBarBackground;
           menuSpecificVars.existingDivBackground.style.width = "100%";
           menuSpecificVars.existingDivBackground.style.height =
             "calc(100% - 32px)";
@@ -3117,7 +3143,7 @@
             shaderDiv.style.height = "48px";
             shaderDiv.style.color = "#ffffff";
             shaderDiv.style.marginBottom = "2px";
-            shaderDiv.style.backgroundColor = menuBarBackground;
+            shaderDiv.style.backgroundColor = this._menuBarBackground;
 
             shaderDiv.style.cursor = "pointer";
 
@@ -3165,7 +3191,7 @@
           menuSpecificVars.existingText.style.left = "0px";
           menuSpecificVars.existingText.style.position = "absolute";
           menuSpecificVars.existingText.style.transform = "translate(0%,8px)";
-          menuSpecificVars.existingText.style.color = textColor;
+          menuSpecificVars.existingText.style.color = this._textColor;
 
           menuSpecificVars.existingText.style.fontSize = "16px";
 
@@ -3180,7 +3206,7 @@
             document.createElement("div");
 
           menuSpecificVars.existingDivBackground.style.backgroundColor =
-            menuBarBackground;
+            this._menuBarBackground;
           menuSpecificVars.existingDivBackground.style.width = "100%";
           menuSpecificVars.existingDivBackground.style.height =
             "calc(100% - 32px)";
@@ -3215,7 +3241,7 @@
             shaderDiv.style.height = "48px";
             shaderDiv.style.color = "#ffffff";
             shaderDiv.style.marginBottom = "2px";
-            shaderDiv.style.backgroundColor = menuBarBackground;
+            shaderDiv.style.backgroundColor = this._menuBarBackground;
 
             shaderDiv.style.cursor = "pointer";
 
@@ -3240,7 +3266,7 @@
       
             closeMenu.style.width = "1.75rem";
             closeMenu.style.height = "1.75rem";
-            closeMenu.style.backgroundColor = (Scratch.extensions.isPenguinMod) ? "hsla(0, 0%, 0%, 0.15)" : "var(--ui-black-transparent)";
+            closeMenu.style.backgroundColor = this._buttonShadow;
             closeMenu.style.position = "absolute";
             closeMenu.style.left = "calc(100% - 2rem)";
             closeMenu.style.borderRadius = "50%";
