@@ -1131,9 +1131,15 @@
       this.shaders = runtime.extensionStorage["oac_PENPLUS"].shaders;*/
 
       this.shaders = {
-        "garbomuffin":{},
-        "davey":{},
-        "fortnite":{}
+        "garbomuffin":{
+          modifyDate:0
+        },
+        "davey":{
+          modifyDate:1711256196886
+        },
+        "fortnite":{
+          modifyDate:1711206196886
+        }
       };
     }
 
@@ -2960,9 +2966,14 @@
             shaderDiv.style.width = "100%";
             shaderDiv.style.height = "48px";
             shaderDiv.style.color = "#ffffff";
+            shaderDiv.style.marginBottom = "2px";
             shaderDiv.style.backgroundColor = menuBarBackground;
+
+            shaderDiv.style.cursor = "pointer";
     
             menuSpecificVars.existingDiv.appendChild(shaderDiv);
+
+            const modifyDate = new Date(this.shaders[shader].modifyDate)
 
             const nameDiv = document.createElement("div");
             nameDiv.style.position = "absolute";
@@ -2970,7 +2981,7 @@
             nameDiv.style.height = "48px";
             nameDiv.style.transform = "translate(5%,5%)";
             nameDiv.style.textAlign = "left";
-            nameDiv.innerText = shader;
+            nameDiv.innerText = `${shader}\nModified: ${modifyDate.getDate()}/${modifyDate.getMonth() + 1}/${modifyDate.getFullYear()}`;
 
             shaderDiv.appendChild(nameDiv);
           });
