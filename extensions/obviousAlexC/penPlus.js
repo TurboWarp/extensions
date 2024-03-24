@@ -2755,17 +2755,10 @@
     }
 
     //! HEED THY WARNING LOTS OF JAVASCRIPT BASED HTML AHEAD !//
-    openShaderManager(reason) {
+    //Just a helper function so the main one isn't too cluttered
+    _shaderManagerModal(menuBarBackground,backgroundColor,textColor) {
       //!Janky remedy for turbowarp saving
       this.getShaders();
-
-      //If we don't have a reason assign a default value
-      reason = reason || "save";
-
-      //penguin one liner support
-      //for some reason it sends the entire workspace when a button is clicked?
-      if (Scratch.extensions.isPenguinMod && typeof reason != "string")
-        reason = "save";
 
       const bgFade = document.createElement("div");
       bgFade.style.width = "100%";
@@ -2817,31 +2810,6 @@
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⣿⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀
       */
       const shaderManager = document.createElement("div");
-
-      //Also if this looks bad it's due to prettier
-      //I support friendly competition!
-      const menuBarBackground = Scratch.extensions.isPenguinMod
-        ? //This is penguinmod blue
-          "#009CCC"
-        : //Turbowarp
-          "var(--menu-bar-background)";
-
-      //Of course due to the GUI version differences I need to conduct some checks on these
-      const backgroundColor = Scratch.extensions.isPenguinMod
-        ? //Wierd old turbowarp vm thingy right here
-          document.body.getAttribute("theme") == "dark"
-          ? "var(--ui-primary)"
-          : "white"
-        : //New accent stuff me likey.
-          "var(--ui-modal-background)";
-
-      //But in general its fine
-      const textColor = Scratch.extensions.isPenguinMod
-        ? document.body.getAttribute("theme") == "dark"
-          ? "white"
-          : "black"
-        : //Again with the accents. Me likey
-          "var(--ui-modal-foreground)";
 
       //Create our menu modal
       shaderManager.style.backgroundColor = menuBarBackground;
@@ -2944,6 +2912,46 @@
 
       closeMenu.appendChild(xImage);
 
+      return shaderPanel;
+    }
+
+    //Then this decides the contents of said modal while gathering some info
+    openShaderManager(reason) {
+      //Also if this looks bad it's due to prettier
+      //I support friendly competition!
+      const menuBarBackground = Scratch.extensions.isPenguinMod
+        ? //This is penguinmod blue
+          "#009CCC"
+        : //Turbowarp
+          "var(--menu-bar-background)";
+
+      //Of course due to the GUI version differences I need to conduct some checks on these
+      const backgroundColor = Scratch.extensions.isPenguinMod
+        ? //Wierd old turbowarp vm thingy right here
+          document.body.getAttribute("theme") == "dark"
+          ? "var(--ui-primary)"
+          : "white"
+        : //New accent stuff me likey.
+          "var(--ui-modal-background)";
+
+      //But in general its fine
+      const textColor = Scratch.extensions.isPenguinMod
+        ? document.body.getAttribute("theme") == "dark"
+          ? "white"
+          : "black"
+        : //Again with the accents. Me likey
+          "var(--ui-modal-foreground)";
+
+      const shaderPanel = this._shaderManagerModal(menuBarBackground,backgroundColor,textColor);
+
+      //If we don't have a reason assign a default value
+      reason = reason || "save";
+
+      //penguin one liner support
+      //for some reason it sends the entire workspace when a button is clicked?
+      if (Scratch.extensions.isPenguinMod && typeof reason != "string")
+        reason = "save";
+
       //Since I'm using a switch we do this.
       let menuSpecificVars = {};
 
@@ -3016,6 +3024,8 @@
           menuSpecificVars.saveButton.onclick = () => {
             if (menuSpecificVars.shadername.value.length == 0) return;
             this.saveShader(menuSpecificVars.shadername.value, this.savingData);
+            document.body.removeChild(bgFade);
+            document.body.removeChild(shaderManager);
           };
 
           menuSpecificVars.saveStuffHolder.appendChild(
@@ -3079,6 +3089,8 @@
           menuSpecificVars.existingDiv.style.position = "absolute";
           menuSpecificVars.existingDiv.style.top = "32px";
           menuSpecificVars.existingDiv.style.left = "0%";
+          menuSpecificVars.existingDiv.style.overflowY = "auto";
+          menuSpecificVars.existingDiv.style.overflowX = "hidden";
 
           menuSpecificVars.existingShaderHolder.appendChild(
             menuSpecificVars.existingDiv
@@ -3096,6 +3108,8 @@
 
             shaderDiv.onclick = () => {
               this.saveShader(shader, this.savingData);
+              document.body.removeChild(bgFade);
+              document.body.removeChild(shaderManager);
             };
 
             menuSpecificVars.existingDiv.appendChild(shaderDiv);
@@ -3108,7 +3122,7 @@
             nameDiv.style.height = "48px";
             nameDiv.style.transform = "translate(5%,5%)";
             nameDiv.style.textAlign = "left";
-            nameDiv.innerText = `${shader}\nModified: ${modifyDate.getDate()}/${modifyDate.getMonth() + 1}/${modifyDate.getFullYear()}`;
+            nameDiv.innerText = `${shader}\nModified: ${modifyDate.getDate()}/${modifyDate.getMonth() + 1}/${modifyDate.getFullYear()} ${(modifyDate.getHours() % 12 == 0) ? 12 : (modifyDate.getHours() % 12)}:${modifyDate.getMinutes()} ${(modifyDate.getHours() > 11 ? "PM" : "AM")}`;
 
             shaderDiv.appendChild(nameDiv);
           });
