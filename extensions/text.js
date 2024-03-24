@@ -2,7 +2,7 @@
 // ID: strings
 // Description: Manipulate characters and text.
 // Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
-// License: MIT AND LGPL-3.0
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";

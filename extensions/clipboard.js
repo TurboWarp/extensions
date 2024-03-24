@@ -105,12 +105,16 @@
 
     clipboard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        return Scratch.canReadClipboard().then((allowed) => {
-          if (allowed) {
-            return navigator.clipboard.readText();
-          }
-          return "";
-        });
+        return Scratch.canReadClipboard()
+          .then((allowed) => {
+            if (allowed) {
+              return navigator.clipboard.readText() ?? "";
+            }
+            return "";
+          })
+          .catch(() => {
+            return "";
+          });
       }
       return "";
     }

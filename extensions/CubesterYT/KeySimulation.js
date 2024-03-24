@@ -2,7 +2,7 @@
 // ID: cubesterKeySimulation
 // Description: Simulate key presses and mouse clicks.
 // By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
-// License: MIT AND LGPL-3.0
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -129,6 +129,21 @@
               AND_WAIT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "AND_WAIT",
+              },
+            },
+          },
+          {
+            opcode: "moveMouse",
+            text: Scratch.translate("move mouse to x: [X] y: [Y]"),
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              X: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              Y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
               },
             },
           },
@@ -276,6 +291,12 @@
           button: Scratch.Cast.toNumber(args.BUTTON),
         });
       });
+    }
+
+    moveMouse(args) {
+      simulatedX = Scratch.Cast.toNumber(args.X);
+      simulatedY = Scratch.Cast.toNumber(args.Y);
+      postMouseData({});
     }
   }
 
