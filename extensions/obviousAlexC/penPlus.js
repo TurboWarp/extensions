@@ -1112,10 +1112,10 @@
           case "DATA_SEND":
             this.openShaderManager("save");
             this.savingData = {
-              projectData:event.data.projectData,
-              fragShader:event.data.fragShader,
-              vertShader:event.data.vertShader
-            }
+              projectData: event.data.projectData,
+              fragShader: event.data.fragShader,
+              vertShader: event.data.vertShader,
+            };
             break;
 
           default:
@@ -1133,38 +1133,37 @@
       if (Scratch.extensions.isPenguinMod) {
         this.serialize = () => {
           return JSON.stringify(this.shaders);
-        }
+        };
 
         this.deserialize = (serialized) => {
           this.shaders = JSON.parse(serialized);
-        }
+        };
 
         this.shaders = {};
-      }
-      else {
+      } else {
         if (!runtime.extensionStorage["penP"]) {
           runtime.extensionStorage["penP"] = Object.create(null);
           runtime.extensionStorage["penP"].shaders = Object.create(null);
         }
-  
+
         //For some reason tw saving just doesn't work lol
         this.shaders = runtime.extensionStorage["penP"].shaders;
         console.log(this.shaders);
       }
 
       this.savingData = {
-        projectData:undefined,
-        fragShader:undefined,
-        vertShader:undefined
+        projectData: undefined,
+        fragShader: undefined,
+        vertShader: undefined,
       };
     }
 
     saveShader(name, data) {
       //Create data in the json object
       this.shaders[name] = {
-        projectData:data,
-        modifyDate:Date.now()
-      }
+        projectData: data,
+        modifyDate: Date.now(),
+      };
     }
 
     getInfo() {
@@ -2668,7 +2667,8 @@
       bgFade.style.left = "0px";
       bgFade.style.top = "0px";
 
-      bgFade.style.backgroundColor = "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
+      bgFade.style.backgroundColor =
+        "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
       bgFade.style.filter = "opacity(0%)";
 
       bgFade.style.zIndex = "10000";
@@ -2679,7 +2679,9 @@
       this.IFrame.style.width = "80%";
       this.IFrame.style.height = "80%";
       this.IFrame.style.borderRadius = "8px";
-      this.IFrame.style.borderColor = (Scratch.extensions.isPenguinMod) ? "hsla(0, 100%, 100%, 0.25)" : "var(--ui-white-transparent)";
+      this.IFrame.style.borderColor = Scratch.extensions.isPenguinMod
+        ? "hsla(0, 100%, 100%, 0.25)"
+        : "var(--ui-white-transparent)";
       this.IFrame.style.borderWidth = "4px";
       this.IFrame.style.borderStyle = "solid";
 
@@ -2749,7 +2751,8 @@
       reason = reason || "save";
       //penguin one liner support
       //for some reason it sends the entire workspace when a button is clicked?
-      if (Scratch.extensions.isPenguinMod && typeof reason != "string") reason = "save";
+      if (Scratch.extensions.isPenguinMod && typeof reason != "string")
+        reason = "save";
 
       const bgFade = document.createElement("div");
       bgFade.style.width = "100%";
@@ -2759,7 +2762,8 @@
       bgFade.style.left = "0px";
       bgFade.style.top = "0px";
 
-      bgFade.style.backgroundColor = "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
+      bgFade.style.backgroundColor =
+        "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
 
       bgFade.style.zIndex = "10001";
 
@@ -2804,28 +2808,27 @@
       //Also if this looks bad it's due to prettier
       //I support friendly competition!
       const menuBarBackground = Scratch.extensions.isPenguinMod
-      //This is penguinmod blue
-        ? "#009CCC"
-        //Turbowarp
-        : "var(--menu-bar-background)";
+        ? //This is penguinmod blue
+          "#009CCC"
+        : //Turbowarp
+          "var(--menu-bar-background)";
 
       //Of course due to the GUI version differences I need to conduct some checks on these
       const backgroundColor = Scratch.extensions.isPenguinMod
-      //Wierd old turbowarp vm thingy right here
-        ? document.body.getAttribute("theme") == "dark"
+        ? //Wierd old turbowarp vm thingy right here
+          document.body.getAttribute("theme") == "dark"
           ? "var(--ui-primary)"
           : "white"
-        //New accent stuff me likey.
-        : "var(--ui-modal-background)";
+        : //New accent stuff me likey.
+          "var(--ui-modal-background)";
 
       //But in general its fine
       const textColor = Scratch.extensions.isPenguinMod
         ? document.body.getAttribute("theme") == "dark"
           ? "white"
           : "black"
-          //Again with the accents. Me likey
-        : "var(--ui-modal-foreground)";
-
+        : //Again with the accents. Me likey
+          "var(--ui-modal-foreground)";
 
       //Create our menu modal
       shaderManager.style.backgroundColor = menuBarBackground;
@@ -2835,7 +2838,9 @@
       shaderManager.style.top = "50%";
       shaderManager.style.left = "50%";
       shaderManager.style.borderRadius = "8px";
-      shaderManager.style.borderColor = (Scratch.extensions.isPenguinMod) ? "hsla(0, 100%, 100%, 0.25)" : "var(--ui-white-transparent)";
+      shaderManager.style.borderColor = Scratch.extensions.isPenguinMod
+        ? "hsla(0, 100%, 100%, 0.25)"
+        : "var(--ui-white-transparent)";
       shaderManager.style.borderWidth = "4px";
       shaderManager.style.borderStyle = "solid";
       shaderManager.style.aspectRatio = "5/3";
@@ -2899,30 +2904,31 @@
       //Animation stuffs
       closeMenu.onmouseenter = () => {
         closeMenu.style.transform = "translate(-50%,25%) scale(1.1,1.1)";
-      }
+      };
 
       //More animation
       closeMenu.onmouseleave = () => {
         closeMenu.style.transform = "translate(-50%,25%) scale(1,1)";
-      }
+      };
 
       //Just the close button
       closeMenu.onclick = () => {
         document.body.removeChild(bgFade);
         document.body.removeChild(shaderManager);
-      }
+      };
 
       shaderManager.appendChild(closeMenu);
 
       //The close button for the menu
-      const xImage = document.createElement("img")
-      xImage.src = "data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3LjQ4IDcuNDgiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDpub25lO3N0cm9rZTojZmZmO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2Utd2lkdGg6MnB4O308L3N0eWxlPjwvZGVmcz48dGl0bGU+aWNvbi0tYWRkPC90aXRsZT48bGluZSBjbGFzcz0iY2xzLTEiIHgxPSIzLjc0IiB5MT0iNi40OCIgeDI9IjMuNzQiIHkyPSIxIi8+PGxpbmUgY2xhc3M9ImNscy0xIiB4MT0iMSIgeTE9IjMuNzQiIHgyPSI2LjQ4IiB5Mj0iMy43NCIvPjwvc3ZnPg==";
+      const xImage = document.createElement("img");
+      xImage.src =
+        "data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3LjQ4IDcuNDgiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDpub25lO3N0cm9rZTojZmZmO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2Utd2lkdGg6MnB4O308L3N0eWxlPjwvZGVmcz48dGl0bGU+aWNvbi0tYWRkPC90aXRsZT48bGluZSBjbGFzcz0iY2xzLTEiIHgxPSIzLjc0IiB5MT0iNi40OCIgeDI9IjMuNzQiIHkyPSIxIi8+PGxpbmUgY2xhc3M9ImNscy0xIiB4MT0iMSIgeTE9IjMuNzQiIHgyPSI2LjQ4IiB5Mj0iMy43NCIvPjwvc3ZnPg==";
 
       xImage.style.width = "0.75rem";
       xImage.style.height = "0.75rem";
       xImage.style.margin = "0.25rem";
       xImage.style.transform = "rotate(45deg)";
-      
+
       closeMenu.appendChild(xImage);
 
       //Since I'm using a switch we do this.
@@ -2996,10 +3002,12 @@
 
           menuSpecificVars.saveButton.onclick = () => {
             if (menuSpecificVars.shadername.value.length == 0) return;
-            this.saveShader(menuSpecificVars.shadername.value,this.savingData)
-          }
+            this.saveShader(menuSpecificVars.shadername.value, this.savingData);
+          };
 
-          menuSpecificVars.saveStuffHolder.appendChild(menuSpecificVars.saveButton);
+          menuSpecificVars.saveStuffHolder.appendChild(
+            menuSpecificVars.saveButton
+          );
 
           //A container containing already existing shaders and some text to accompony them.
           menuSpecificVars.existingShaderHolder = document.createElement("div");
@@ -3007,7 +3015,8 @@
           menuSpecificVars.existingShaderHolder.style.width = "40%";
           menuSpecificVars.existingShaderHolder.style.height = "100%";
           menuSpecificVars.existingShaderHolder.style.left = "60%";
-          menuSpecificVars.existingShaderHolder.style.backgroundColor = "#00000000";
+          menuSpecificVars.existingShaderHolder.style.backgroundColor =
+            "#00000000";
           menuSpecificVars.existingShaderHolder.style.position = "absolute";
 
           shaderPanel.appendChild(menuSpecificVars.existingShaderHolder);
@@ -3021,25 +3030,32 @@
           menuSpecificVars.existingText.style.position = "absolute";
           menuSpecificVars.existingText.style.transform = "translate(0%,8px)";
           menuSpecificVars.existingText.style.color = textColor;
-    
+
           menuSpecificVars.existingText.style.fontSize = "16px";
-    
+
           menuSpecificVars.existingText.innerHTML = "Project Shaders";
-    
-          menuSpecificVars.existingShaderHolder.appendChild(menuSpecificVars.existingText);
+
+          menuSpecificVars.existingShaderHolder.appendChild(
+            menuSpecificVars.existingText
+          );
 
           //The background for existing shaders
-          menuSpecificVars.existingDivBackground = document.createElement("div");
+          menuSpecificVars.existingDivBackground =
+            document.createElement("div");
 
-          menuSpecificVars.existingDivBackground.style.backgroundColor = menuBarBackground;
+          menuSpecificVars.existingDivBackground.style.backgroundColor =
+            menuBarBackground;
           menuSpecificVars.existingDivBackground.style.width = "100%";
-          menuSpecificVars.existingDivBackground.style.height = "calc(100% - 32px)";
+          menuSpecificVars.existingDivBackground.style.height =
+            "calc(100% - 32px)";
           menuSpecificVars.existingDivBackground.style.position = "absolute";
           menuSpecificVars.existingDivBackground.style.top = "32px";
           menuSpecificVars.existingDivBackground.style.left = "0%";
           menuSpecificVars.existingDivBackground.style.filter = "opacity(25%)";
-    
-          menuSpecificVars.existingShaderHolder.appendChild(menuSpecificVars.existingDivBackground);
+
+          menuSpecificVars.existingShaderHolder.appendChild(
+            menuSpecificVars.existingDivBackground
+          );
 
           //The container for existing shaders
           menuSpecificVars.existingDiv = document.createElement("div");
@@ -3050,11 +3066,13 @@
           menuSpecificVars.existingDiv.style.position = "absolute";
           menuSpecificVars.existingDiv.style.top = "32px";
           menuSpecificVars.existingDiv.style.left = "0%";
-    
-          menuSpecificVars.existingShaderHolder.appendChild(menuSpecificVars.existingDiv);
+
+          menuSpecificVars.existingShaderHolder.appendChild(
+            menuSpecificVars.existingDiv
+          );
           console.log(this.shaders);
 
-          Object.keys(this.shaders).forEach(shader => {
+          Object.keys(this.shaders).forEach((shader) => {
             const shaderDiv = document.createElement("div");
             shaderDiv.style.width = "100%";
             shaderDiv.style.height = "48px";
@@ -3065,12 +3083,12 @@
             shaderDiv.style.cursor = "pointer";
 
             shaderDiv.onclick = () => {
-              this.saveShader(shader,this.savingData)
-            }
-    
+              this.saveShader(shader, this.savingData);
+            };
+
             menuSpecificVars.existingDiv.appendChild(shaderDiv);
 
-            const modifyDate = new Date(this.shaders[shader].modifyDate)
+            const modifyDate = new Date(this.shaders[shader].modifyDate);
 
             const nameDiv = document.createElement("div");
             nameDiv.style.position = "absolute";
