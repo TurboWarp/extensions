@@ -1142,7 +1142,7 @@
         //Doing this to remedy the janky turbowarp saving system.
         this.getShaders = () => {
           return this.shaders;
-        }
+        };
       } else {
         if (!runtime.extensionStorage["penP"]) {
           runtime.extensionStorage["penP"] = Object.create(null);
@@ -1156,7 +1156,7 @@
         this.getShaders = () => {
           this.shaders = runtime.extensionStorage["penP"].shaders;
           return runtime.extensionStorage["penP"].shaders;
-        }
+        };
       }
 
       this.savingData = {
