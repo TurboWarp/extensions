@@ -2856,6 +2856,52 @@
 
       shaderManager.appendChild(shaderPanel);
 
+      //The actual container no filter to avoid buggy things
+      const closeMenu = document.createElement("div");
+
+      closeMenu.style.width = "1.75rem";
+      closeMenu.style.height = "1.75rem";
+      closeMenu.style.backgroundColor = "var(--ui-black-transparent)";
+      closeMenu.style.position = "absolute";
+      closeMenu.style.left = "calc(100% - 2rem)";
+      closeMenu.style.top = "0.25rem";
+      closeMenu.style.borderRadius = "50%";
+      closeMenu.style.alignItems = "center";
+      closeMenu.style.justifyContent = "center";
+      closeMenu.style.display = "flex";
+      closeMenu.style.cursor = "pointer";
+      closeMenu.style.transition = "all 0.15s ease-out";
+      closeMenu.style.transform = "translate(-50%,25%)";
+
+      //Animation stuffs
+      closeMenu.onmouseenter = () => {
+        closeMenu.style.transform = "translate(-50%,25%) scale(1.1,1.1)";
+      }
+
+      //More animation
+      closeMenu.onmouseleave = () => {
+        closeMenu.style.transform = "translate(-50%,25%) scale(1,1)";
+      }
+
+      //Just the close button
+      closeMenu.onclick = () => {
+        document.body.removeChild(bgFade);
+        document.body.removeChild(shaderManager);
+      }
+
+      shaderManager.appendChild(closeMenu);
+
+      //The close button for the menu
+      const xImage = document.createElement("img")
+      xImage.src = "data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3LjQ4IDcuNDgiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDpub25lO3N0cm9rZTojZmZmO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2Utd2lkdGg6MnB4O308L3N0eWxlPjwvZGVmcz48dGl0bGU+aWNvbi0tYWRkPC90aXRsZT48bGluZSBjbGFzcz0iY2xzLTEiIHgxPSIzLjc0IiB5MT0iNi40OCIgeDI9IjMuNzQiIHkyPSIxIi8+PGxpbmUgY2xhc3M9ImNscy0xIiB4MT0iMSIgeTE9IjMuNzQiIHgyPSI2LjQ4IiB5Mj0iMy43NCIvPjwvc3ZnPg==";
+
+      xImage.style.width = "0.75rem";
+      xImage.style.height = "0.75rem";
+      xImage.style.margin = "0.25rem";
+      xImage.style.transform = "rotate(45deg)";
+      
+      closeMenu.appendChild(xImage);
+
       //Since I'm using a switch we do this.
       let menuSpecificVars = {};
 
@@ -3007,8 +3053,6 @@
         default:
           break;
       }
-
-      this.shaders = { demo: true };
     }
 
     getAllShaders() {
