@@ -1100,8 +1100,6 @@
       window.addEventListener("message", (event) => {
         let eventType = event.data.type;
 
-        console.log(event.data);
-
         if (!eventType) return;
 
         switch (eventType) {
@@ -1140,6 +1138,11 @@
         };
 
         this.shaders = {};
+
+        //Doing this to remedy the janky turbowarp saving system.
+        this.getShaders = () => {
+          return this.shaders;
+        }
       } else {
         if (!runtime.extensionStorage["penP"]) {
           runtime.extensionStorage["penP"] = Object.create(null);
@@ -1148,7 +1151,12 @@
 
         //For some reason tw saving just doesn't work lol
         this.shaders = runtime.extensionStorage["penP"].shaders;
-        console.log(this.shaders);
+
+        //Remedy for the turbowarp saving system being jank.
+        this.getShaders = () => {
+          this.shaders = runtime.extensionStorage["penP"].shaders;
+          return runtime.extensionStorage["penP"].shaders;
+        }
       }
 
       this.savingData = {
@@ -2748,7 +2756,12 @@
 
     //! HEED THY WARNING LOTS OF JAVASCRIPT BASED HTML AHEAD !//
     openShaderManager(reason) {
+      //!Janky remedy for turbowarp saving
+      this.getShaders();
+
+      //If we don't have a reason assign a default value
       reason = reason || "save";
+
       //penguin one liner support
       //for some reason it sends the entire workspace when a button is clicked?
       if (Scratch.extensions.isPenguinMod && typeof reason != "string")
@@ -3070,7 +3083,6 @@
           menuSpecificVars.existingShaderHolder.appendChild(
             menuSpecificVars.existingDiv
           );
-          console.log(this.shaders);
 
           Object.keys(this.shaders).forEach((shader) => {
             const shaderDiv = document.createElement("div");
@@ -3108,6 +3120,8 @@
     }
 
     getAllShaders() {
+      //!Janky remedy for turbowarp saving
+      this.getShaders();
       //!Pain.json
       return Object.keys(this.shaders).length == 0
         ? "none yet"
