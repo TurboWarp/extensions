@@ -3544,10 +3544,10 @@
           curCostume.texture,
           curCostume.width,
           curCostume.height
-        );;
+        );
 
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[args.name]);
-        gl.texImage2D(cubemapSetup[faceID].texture.side, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureData);
+        gl.texImage2D(cubemapSetup[faceID].texture.side, 0, gl.RGBA,curCostume.width,curCostume.height,0,gl.RGBA,gl.UNSIGNED_BYTE,textureData);
 
         gl.texParameteri(
           gl.TEXTURE_CUBE_MAP,
