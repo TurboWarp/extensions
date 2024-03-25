@@ -1238,14 +1238,10 @@
             },
             filter: "sprite",
           },
-          /*
-          //* there is a good reason I hid these.
-          //* they are buggy
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Square Pen Blocks",
           },
-          */
           {
             disableMonitor: true,
             opcode: "squareDown",
@@ -1253,7 +1249,6 @@
             text: "stamp pen square",
             arguments: {},
             filter: "sprite",
-            hideFromPalette: true,
           },
           {
             disableMonitor: true,
@@ -1264,7 +1259,6 @@
               tex: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
             },
             filter: "sprite",
-            hideFromPalette: true,
           },
           {
             disableMonitor: true,
@@ -1280,7 +1274,6 @@
               number: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
             },
             filter: "sprite",
-            hideFromPalette: true,
           },
           {
             disableMonitor: true,
@@ -1295,7 +1288,6 @@
               },
             },
             filter: "sprite",
-            hideFromPalette: true,
           },
           {
             disableMonitor: true,
@@ -1309,7 +1301,6 @@
               },
             },
             filter: "sprite",
-            hideFromPalette: true,
           },
           {
             disableMonitor: true,
@@ -1318,7 +1309,6 @@
             text: "reset square Attributes",
             arguments: {},
             filter: "sprite",
-            hideFromPalette: true,
           },
           //End of hidden blocks
           {
@@ -1791,6 +1781,32 @@
               front: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
               bottom: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
               top: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
+            },
+            filter: "sprite",
+          },
+          {
+            disableMonitor: true,
+            opcode: "doesCubemapexist",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "does [name] exist as a cubemap",
+            arguments: {
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Image",
+              },
+            },
+            filter: "sprite",
+          },
+          {
+            disableMonitor: true,
+            opcode: "removeCubemapfromDURI",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "remove cubemap named [name]",
+            arguments: {
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Image",
+              },
             },
             filter: "sprite",
           },
@@ -3507,58 +3523,95 @@
     }
 
     //?Cubemaps
-    createCubemap(args) {
+    createCubemap({ left, right, back, front, bottom, top, name },util) {
       const cubemapSetup = [
         {
-          texture:args.left,
+          texture:left,
           side:gl.TEXTURE_CUBE_MAP_NEGATIVE_X
         },
         {
-          texture:args.right,
+          texture:right,
           side:gl.TEXTURE_CUBE_MAP_POSITIVE_X
         },
         {
-          texture:args.back,
+          texture:back,
           side:gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
         },
         {
-          texture:args.front,
+          texture:front,
           side:gl.TEXTURE_CUBE_MAP_POSITIVE_Z
         },
         {
-          texture:args.bottom,
+          texture:bottom,
           side:gl.TEXTURE_CUBE_MAP_NEGATIVE_Y
         },
         {
-          texture:args.top,
+          texture:top,
           side:gl.TEXTURE_CUBE_MAP_POSITIVE_Y
         },
       ];
 
-      this.penPlusCubemap[args.name] = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[args.name]);
+      this.penPlusCubemap[name] = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[name]);
 
       for (let faceID = 0; faceID < 6; faceID++) {
-        const curCostume = this.penPlusCostumeLibrary[cubemapSetup[faceID].texture]
-        const textureData = this.textureFunctions.getTextureData(
-          curCostume.texture,
-          curCostume.width,
-          curCostume.height
-        );
+        const curTarget = util.target;
+        const curCostume = this.penPlusCostumeLibrary[cubemapSetup[faceID].texture] || curTarget.getCostumeIndexByName(Scratch.Cast.toString(cubemapSetup[faceID].texture));
+        
+        if (this.penPlusCostumeLibrary[cubemapSetup[faceID].texture]) {
+          const textureData = this.textureFunctions.getTextureData(
+            curCostume.texture,
+            curCostume.width,
+            curCostume.height
+          );
+  
+          gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[name]);
+          gl.texImage2D(cubemapSetup[faceID].texture.side, 0, gl.RGBA,curCostume.width,curCostume.height,0,gl.RGBA,gl.UNSIGNED_BYTE,textureData);
+  
+          gl.texParameteri(
+            gl.TEXTURE_CUBE_MAP,
+            gl.TEXTURE_MIN_FILTER,
+            currentFilter
+          );
+          gl.texParameteri(
+            gl.TEXTURE_CUBE_MAP,
+            gl.TEXTURE_MAG_FILTER,
+            currentFilter
+          );
+        }
+        else {
+          if (curCostume >= 0) {
+            const costumeURI = curTarget.sprite.costumes_[curCostume].asset.encodeDataURI();
+            
+            //Neat stuff here
+            const image = new Image();
+            image.onload = () => {
+              gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[name]);
+              gl.texImage2D(cubemapSetup[faceID].texture.side,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);
+      
+              gl.texParameteri(
+                gl.TEXTURE_CUBE_MAP,
+                gl.TEXTURE_MIN_FILTER,
+                currentFilter
+              );
+              gl.texParameteri(
+                gl.TEXTURE_CUBE_MAP,
+                gl.TEXTURE_MAG_FILTER,
+                currentFilter
+              );
+            }
 
-        gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[args.name]);
-        gl.texImage2D(cubemapSetup[faceID].texture.side, 0, gl.RGBA,curCostume.width,curCostume.height,0,gl.RGBA,gl.UNSIGNED_BYTE,textureData);
-
-        gl.texParameteri(
-          gl.TEXTURE_CUBE_MAP,
-          gl.TEXTURE_MIN_FILTER,
-          currentFilter
-        );
-        gl.texParameteri(
-          gl.TEXTURE_CUBE_MAP,
-          gl.TEXTURE_MAG_FILTER,
-          currentFilter
-        );
+            image.src = costumeURI;
+          }
+        }
+      }
+    }
+    doesCubemapexist({ name }, util) {
+      return typeof this.penPlusCubemap[name] != "undefined";
+    }
+    removeCubemapfromDURI({ name }, util) {
+      if (this.penPlusCubemap[name]) {
+        delete this.penPlusCubemap[name];
       }
     }
   }
