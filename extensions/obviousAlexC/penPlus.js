@@ -1820,7 +1820,6 @@
             text: "Triangles Drawn",
           },
           {
-            disableMonitor: true,
             opcode: "turnAdvancedSettingOff",
             blockType: Scratch.BlockType.COMMAND,
             text: "turn advanced setting [Setting] [onOrOff]",
@@ -1833,7 +1832,11 @@
             },
           },
           {
-            disableMonitor: true,
+            opcode: "clearDepth",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Erase Depth"
+          },
+          {
             opcode: "setAdvancedOptionValueTo",
             blockType: Scratch.BlockType.COMMAND,
             text: "set [setting] to [value]",
@@ -2853,6 +2856,14 @@
     }
 
     //?Neato
+    clearDepth() {
+      lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+      //Pen+ Overrides default pen Clearing
+      gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
+      gl.clear(gl.DEPTH_BUFFER_BIT);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
+      renderer.dirty = true;
+    }
     getTrianglesDrawn() {
       return this.trianglesDrawn;
     }
