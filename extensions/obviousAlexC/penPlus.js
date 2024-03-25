@@ -434,6 +434,8 @@
   const depthVertexBuffer = gl.createBuffer();
   let vertexBufferData = null;
 
+  let parentExtension = null;
+
   {
     gl.enableVertexAttribArray(a_position_Location_untext);
     gl.enableVertexAttribArray(a_color_Location_untext);
@@ -473,6 +475,9 @@
     //?Stores our attributes
     triangleAttributesOfAllSprites = {};
     squareAttributesOfAllSprites = {};
+      
+    penPlusCostumeLibrary = {};
+    penPlusCubemap = {};
 
     attributeEditors = {
       triangle: (targetId, attribute, value, wholeTri, offset) => {
@@ -890,8 +895,8 @@
         name,
         clamp
       ) {
-        const texture = this.penPlusCostumeLibrary[name]
-          ? this.penPlusCostumeLibrary[name].texture
+        const texture = parentExtension.penPlusCostumeLibrary[name]
+          ? parentExtension.penPlusCostumeLibrary[name].texture
           : gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         // Fill the texture with a 1x1 blue pixel.
@@ -922,16 +927,17 @@
           pixelData
         );
 
-        this.penPlusCostumeLibrary[name] = {
+        parentExtension.penPlusCostumeLibrary[name] = {
           texture: texture,
           width: width,
           height: height,
         };
       },
       createPenPlusTextureInfo: function (url, name, clamp) {
-        const texture = this.penPlusCostumeLibrary[name]
-          ? this.penPlusCostumeLibrary[name].texture
+        const texture = parentExtension.penPlusCostumeLibrary[name]
+          ? parentExtension.penPlusCostumeLibrary[name].texture
           : gl.createTexture();
+
         gl.bindTexture(gl.TEXTURE_2D, texture);
         // Fill the texture with a 1x1 blue pixel.
         gl.texImage2D(
@@ -967,7 +973,7 @@
                 gl.UNSIGNED_BYTE,
                 image
               );
-              this.penPlusCostumeLibrary[name] = {
+              parentExtension.penPlusCostumeLibrary[name] = {
                 texture: texture,
                 width: image.width,
                 height: image.height,
@@ -1092,8 +1098,6 @@
 
     IFrame = undefined;
 
-    penPlusCostumeLibrary = {};
-
     constructor() {
       window.addEventListener("message", (event) => {
         let eventType = event.data.type;
@@ -1118,6 +1122,8 @@
             break;
         }
       });
+
+      parentExtension = this;
 
       vm.runtime.on("PROJECT_LOADED", this.setupExtensionStorage);
       this.setupExtensionStorage();
@@ -1676,7 +1682,6 @@
           },
           "---",
           {
-            disableMonitor: true,
             opcode: "setTextureInShader",
             blockType: Scratch.BlockType.COMMAND,
             text: "set texture [uniformName] in [shader] to [texture]",
@@ -1688,7 +1693,6 @@
             filter: "sprite",
           },
           {
-            disableMonitor: true,
             opcode: "setNumberInShader",
             blockType: Scratch.BlockType.COMMAND,
             text: "set number [uniformName] in [shader] to [number]",
@@ -1700,7 +1704,6 @@
             filter: "sprite",
           },
           {
-            disableMonitor: true,
             opcode: "setVec2InShader",
             blockType: Scratch.BlockType.COMMAND,
             text: "set vector 2 [uniformName] in [shader] to [numberX] [numberY]",
@@ -1713,7 +1716,6 @@
             filter: "sprite",
           },
           {
-            disableMonitor: true,
             opcode: "setVec3InShader",
             blockType: Scratch.BlockType.COMMAND,
             text: "set vector 3 [uniformName] in [shader] to [numberX] [numberY] [numberZ]",
@@ -1727,7 +1729,6 @@
             filter: "sprite",
           },
           {
-            disableMonitor: true,
             opcode: "setVec4InShader",
             blockType: Scratch.BlockType.COMMAND,
             text: "set vector 4 [uniformName] in [shader] to [numberX] [numberY] [numberZ] [numberW]",
@@ -1742,7 +1743,6 @@
             filter: "sprite",
           },
           {
-            disableMonitor: true,
             opcode: "setMatrixInShader",
             blockType: Scratch.BlockType.COMMAND,
             text: "set matrix [uniformName] in [shader] to [list]",
@@ -1754,7 +1754,6 @@
             filter: "sprite",
           },
           {
-            disableMonitor: true,
             opcode: "setMatrixInShaderArray",
             blockType: Scratch.BlockType.COMMAND,
             text: "set matrix [uniformName] in [shader] to [array]",
@@ -1766,7 +1765,6 @@
             filter: "sprite",
           },
           {
-            disableMonitor: true,
             opcode: "setCubeInShader",
             blockType: Scratch.BlockType.COMMAND,
             text: "set cubemap [uniformName] in [shader] to [cubemap]",
@@ -1774,6 +1772,25 @@
               uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
               shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
               cubemap: { type: Scratch.ArgumentType.STRING, menu: "penPlusCubemaps"}
+            },
+            filter: "sprite",
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Cubemaps"
+          },
+          {
+            opcode:"createCubemap",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "create cubemap named [name] from left [left] right [right] back [back] front [front] bottom [bottom] top [top]",
+            arguments: {
+              name: { type: Scratch.ArgumentType.STRING, defaultValue: "Name" },
+              left: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
+              right: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
+              back: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
+              front: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
+              bottom: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
+              top: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
             },
             filter: "sprite",
           },
@@ -1987,7 +2004,8 @@
       return readCostumes;
     }
     _getCubemaps() {
-
+      if (Object.keys(this.penPlusCubemap).length == 0) return ["No cubemaps yet!"]
+      return Object.keys(this.penPlusCubemap);
     }
     //From lily's list tools
     _getLists() {
@@ -3486,6 +3504,62 @@
 
     getAllShaders() {
       return JSON.stringify(this.shaderMenu())
+    }
+
+    //?Cubemaps
+    createCubemap(args) {
+      const cubemapSetup = [
+        {
+          texture:args.left,
+          side:gl.TEXTURE_CUBE_MAP_NEGATIVE_X
+        },
+        {
+          texture:args.right,
+          side:gl.TEXTURE_CUBE_MAP_POSITIVE_X
+        },
+        {
+          texture:args.back,
+          side:gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
+        },
+        {
+          texture:args.front,
+          side:gl.TEXTURE_CUBE_MAP_POSITIVE_Z
+        },
+        {
+          texture:args.bottom,
+          side:gl.TEXTURE_CUBE_MAP_NEGATIVE_Y
+        },
+        {
+          texture:args.top,
+          side:gl.TEXTURE_CUBE_MAP_POSITIVE_Y
+        },
+      ];
+
+      this.penPlusCubemap[args.name] = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[args.name]);
+
+      for (let faceID = 0; faceID < 6; faceID++) {
+        const curCostume = this.penPlusCostumeLibrary[cubemapSetup[faceID].texture]
+        const textureData = this.textureFunctions.getTextureData(
+          curCostume.texture,
+          curCostume.width,
+          curCostume.height
+        );;
+
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[args.name]);
+        gl.texImage2D(cubemapSetup[faceID].texture.side, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureData);
+
+        gl.texParameteri(
+          gl.TEXTURE_CUBE_MAP,
+          gl.TEXTURE_MIN_FILTER,
+          currentFilter
+        );
+        gl.texParameteri(
+          gl.TEXTURE_CUBE_MAP,
+          gl.TEXTURE_MAG_FILTER,
+          currentFilter
+        );
+      }
     }
   }
 
