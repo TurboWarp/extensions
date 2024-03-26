@@ -390,11 +390,11 @@
           ? Math.round(totalSeconds % 60)
               .toString()
               .padStart(2, "0")
-          : (totalSeconds % 60).toFixed(3);
-      const minutes = Math.round((totalSeconds / 60) % 60)
+          : (totalSeconds % 60).toFixed(3).padStart(6, "0");
+      const minutes = Math.floor((totalSeconds / 60) % 60)
         .toString()
         .padStart(2, "0");
-      const hours = Math.round(totalSeconds / 3600)
+      const hours = Math.floor(totalSeconds / 3600)
         .toString()
         .padStart(2, "0");
       return `${hours}:${minutes}:${seconds}`;
