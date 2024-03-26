@@ -40,6 +40,9 @@
 
   let lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
+  //?Neato uniform for universally transforming triangles to fit the screen
+  let transform_Matrix = [0,0,0,0,0,0,0,0,0];
+
   //?Buffer handling and pen loading
   {
     gl.bindTexture(gl.TEXTURE_2D, depthBufferTexture);
@@ -110,6 +113,9 @@
       nativeSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
+
+      transform_Matrix[0] = 2 / nativeSize[0];
+      transform_Matrix[1] = 2 / nativeSize[1];
 
       lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
@@ -232,11 +238,13 @@
                     attribute highp vec4 a_position;
                     attribute highp vec4 a_color;
                     varying highp vec4 v_color;
+
+                    uniform highp mat3 u_transform;
                     
                     void main()
                     {
                         v_color = a_color;
-                        gl_Position = a_position * vec4(a_position.w,a_position.w,-1.0/a_position.w,1);
+                        gl_Position = a_position * vec4(a_position.w * u_transform[0][0],a_position.w * u_transform[0][1],-1.0/a_position.w,1);
                     }
                 `,
         frag: `
@@ -368,47 +376,51 @@
 
   //? Create program info
   {
-    console.log(twgl.createProgramInfo(gl,[penPlusShaders.untextured.Shaders.vert,
-      penPlusShaders.untextured.Shaders.frag]));
-    penPlusShaders.untextured.ProgramInf =
-      penPlusShaders.createAndCompileShaders(
-        penPlusShaders.untextured.Shaders.vert,
-        penPlusShaders.untextured.Shaders.frag
-      );
-    penPlusShaders.textured.ProgramInf = penPlusShaders.createAndCompileShaders(
+    penPlusShaders.untextured.ProgramInf = twgl.createProgramInfo(gl, [
+      penPlusShaders.untextured.Shaders.vert,
+      penPlusShaders.untextured.Shaders.frag,
+    ]);
+    penPlusShaders.textured.ProgramInf = twgl.createProgramInfo(gl, [
       penPlusShaders.textured.Shaders.vert,
-      penPlusShaders.textured.Shaders.frag
-    );
+      penPlusShaders.textured.Shaders.frag,
+    ]);
 
-    penPlusShaders.draw.ProgramInf = penPlusShaders.createAndCompileShaders(
+    //Only used on the draw buffer! for when stuff is drawn to the canvas!
+    penPlusShaders.draw.ProgramInf = twgl.createProgramInfo(gl, [
       penPlusShaders.draw.Shaders.vert,
-      penPlusShaders.draw.Shaders.frag
-    );
+      penPlusShaders.draw.Shaders.frag,
+    ]);
   }
 
-  //?Untextured
-  const a_position_Location_untext = gl.getAttribLocation(
-    penPlusShaders.untextured.ProgramInf.program,
-    "a_position"
-  );
-  const a_color_Location_untext = gl.getAttribLocation(
-    penPlusShaders.untextured.ProgramInf.program,
-    "a_color"
-  );
+  let bufferInfo = twgl.createBufferInfoFromArrays(gl, {
+    a_color: { numComponents: 4, data: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
+    a_position: {
+      numComponents: 4,
+      data: [0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1],
+    },
+    a_texCoord: { numComponents: 2, data: [0, 0, 1, 0, 1, 1] },
+  });
 
-  //?Textured
-  const a_position_Location_text = gl.getAttribLocation(
-    penPlusShaders.textured.ProgramInf.program,
-    "a_position"
-  );
-  const a_color_Location_text = gl.getAttribLocation(
-    penPlusShaders.textured.ProgramInf.program,
-    "a_color"
-  );
-  const a_textCoord_Location_text = gl.getAttribLocation(
-    penPlusShaders.textured.ProgramInf.program,
-    "a_texCoord"
-  );
+  //Just for our eyes sakes
+  // prettier-ignore
+  let reRenderInfo = twgl.createBufferInfoFromArrays(gl, {
+    a_position:    { numComponents: 4, data: [
+      -1, -1, 0, 1,
+      1, -1, 0, 1,
+      1, 1, 0, 1,
+      -1, -1, 0, 1,
+      1, 1, 0, 1,
+      -1, 1, 0, 1
+    ]},
+    a_texCoord: { numComponents: 2, data: [
+      0,1,
+      0,0,
+      1,0,
+      0,1,
+      0,0,
+      1,0
+    ]}
+  });
 
   //?Uniforms
   const u_texture_Location_text = gl.getUniformLocation(
@@ -422,36 +434,7 @@
     "u_drawTex"
   );
 
-  const a_position_Location_draw = gl.getAttribLocation(
-    penPlusShaders.draw.ProgramInf.program,
-    "a_position"
-  );
-
-  const a_textCoord_Location_draw = gl.getAttribLocation(
-    penPlusShaders.textured.ProgramInf.program,
-    "a_texCoord"
-  );
-
-  //?Enables Attributes
-  const vertexBuffer = gl.createBuffer();
-  const depthVertexBuffer = gl.createBuffer();
-  let vertexBufferData = null;
-
   let parentExtension = null;
-
-  {
-    gl.enableVertexAttribArray(a_position_Location_untext);
-    gl.enableVertexAttribArray(a_color_Location_untext);
-    gl.enableVertexAttribArray(a_position_Location_text);
-    gl.enableVertexAttribArray(a_color_Location_text);
-    gl.enableVertexAttribArray(a_textCoord_Location_text);
-    gl.enableVertexAttribArray(a_position_Location_draw);
-    gl.enableVertexAttribArray(a_textCoord_Location_draw);
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
-    gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
-  }
 
   //?Override pen Clear with pen+
   renderer.penClear = (penSkinID) => {
@@ -481,7 +464,7 @@
     //?Stores our attributes
     triangleAttributesOfAllSprites = {};
     squareAttributesOfAllSprites = {};
-      
+
     penPlusCostumeLibrary = {};
     penPlusCubemap = {};
 
@@ -567,98 +550,62 @@
     //?Our functions that allow for extra rendering things.
     renderFunctions = {
       drawTri: (x1, y1, x2, y2, x3, y3, penColor, targetID) => {
-        if (!this.inDrawRegion)
-          renderer.enterDrawRegion(this.penPlusDrawRegion);
+        // prettier-ignore
+        if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+
         this.trianglesDrawn += 1;
         //? get triangle attributes for current sprite.
         const triAttribs = this.triangleAttributesOfAllSprites[targetID];
 
+        let inputInfo = {};
+
         if (triAttribs) {
-          vertexBufferData = new Float32Array([
-            x1,
-            -y1,
-            triAttribs[5],
-            triAttribs[6],
-            penColor[0] * triAttribs[2],
-            penColor[1] * triAttribs[3],
-            penColor[2] * triAttribs[4],
-            penColor[3] * triAttribs[7],
-
-            x2,
-            -y2,
-            triAttribs[13],
-            triAttribs[14],
-            penColor[0] * triAttribs[10],
-            penColor[1] * triAttribs[11],
-            penColor[2] * triAttribs[12],
-            penColor[3] * triAttribs[15],
-
-            x3,
-            -y3,
-            triAttribs[21],
-            triAttribs[22],
-            penColor[0] * triAttribs[18],
-            penColor[1] * triAttribs[19],
-            penColor[2] * triAttribs[20],
-            penColor[3] * triAttribs[23],
-          ]);
+          //Just for our eyes sakes
+          // prettier-ignore
+          inputInfo = {
+            a_position: new Float32Array([
+              x1,-y1,triAttribs[5],triAttribs[6],
+              x2,-y2,triAttribs[13],triAttribs[14],
+              x3,-y3,triAttribs[21],triAttribs[22]
+            ]),
+            a_color: new Float32Array([
+              penColor[0] * triAttribs[2],penColor[1] * triAttribs[3],penColor[2] * triAttribs[4],penColor[3] * triAttribs[7],
+              penColor[0] * triAttribs[10],penColor[1] * triAttribs[11],penColor[2] * triAttribs[12],penColor[3] * triAttribs[15],
+              penColor[0] * triAttribs[18],penColor[1] * triAttribs[19],penColor[2] * triAttribs[20],penColor[3] * triAttribs[23]
+            ])
+          };
         } else {
-          vertexBufferData = new Float32Array([
-            x1,
-            -y1,
-            1,
-            1,
-            penColor[0],
-            penColor[1],
-            penColor[2],
-            penColor[3],
-
-            x2,
-            -y2,
-            1,
-            1,
-            penColor[0],
-            penColor[1],
-            penColor[2],
-            penColor[3],
-
-            x3,
-            -y3,
-            1,
-            1,
-            penColor[0],
-            penColor[1],
-            penColor[2],
-            penColor[3],
-          ]);
+          //Just for our eyes sakes
+          // prettier-ignore
+          inputInfo = {
+            a_position: new Float32Array([
+              x1,-y1,1,1,
+              x2,-y2,1,1,
+              x3,-y3,1,1
+            ]),
+            a_color: new Float32Array([
+              penColor[0],penColor[1],penColor[2],penColor[3],
+              penColor[0],penColor[1],penColor[2],penColor[3],
+              penColor[0],penColor[1],penColor[2],penColor[3]
+            ])
+          };
         }
 
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_position.buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_position, gl.DYNAMIC_DRAW);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_color.buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_color, gl.DYNAMIC_DRAW);
+
         //? Bind Positional Data
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.STATIC_DRAW);
+        twgl.setBuffersAndAttributes(gl, penPlusShaders.untextured.ProgramInf, bufferInfo);
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-
-        gl.vertexAttribPointer(
-          a_position_Location_untext,
-          4,
-          gl.FLOAT,
-          false,
-          f32_8,
-          0
-        );
-        gl.vertexAttribPointer(
-          a_color_Location_untext,
-          4,
-          gl.FLOAT,
-          false,
-          f32_8,
-          f32_4
-        );
 
         gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
 
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        twgl.setUniforms(penPlusShaders.untextured.ProgramInf, {u_transform:transform_Matrix});
+        
+        twgl.drawBufferInfo(gl, bufferInfo);
       },
 
       drawTextTri: (x1, y1, x2, y2, x3, y3, targetID, texture) => {
@@ -782,46 +729,15 @@
       //? but I have previaled!
       reRenderPenLayer: () => {
         gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-        vertexBufferData = new Float32Array([
-          -1, -1, 0, 1, 0, 1,
-
-          1, -1, 0, 1, 1, 1,
-
-          1, 1, 0, 1, 1, 0,
-
-          -1, -1, 0, 1, 0, 1,
-
-          -1, 1, 0, 1, 0, 0,
-
-          1, 1, 0, 1, 1, 0,
-        ]);
-
-        //? Bind Positional Data
-        gl.bindBuffer(gl.ARRAY_BUFFER, depthVertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
-
-        gl.vertexAttribPointer(
-          a_position_Location_draw,
-          4,
-          gl.FLOAT,
-          false,
-          f32_6,
-          0
-        );
-        gl.vertexAttribPointer(
-          a_textCoord_Location_draw,
-          2,
-          gl.FLOAT,
-          false,
-          f32_6,
-          f32_4
-        );
 
         gl.useProgram(penPlusShaders.draw.ProgramInf.program);
 
         gl.uniform1i(u_depthTexture_Location_draw, 1);
 
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        twgl.setBuffersAndAttributes(gl, penPlusShaders.untextured.ProgramInf, reRenderInfo);
+
+        twgl.drawBufferInfo(gl, reRenderInfo);
+
         gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
       },
     };
@@ -1106,10 +1022,10 @@
 
     IFrame = undefined;
 
-    blockIcons={
-      undo:"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOS40NDU0NCIgaGVpZ2h0PSIxMC42MzM1MSIgdmlld0JveD0iMCwwLDE5LjQ0NTQ0LDEwLjYzMzUxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjMxLjE1NDU0LC0xNzMuNTc1OTkpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjMyLjIxNTIsMTc0LjMxYzAuNjM2NCwtMC4yMTIxMyAxLjM0MzUsLTAuMDcwNzEgMS43Njc3NywwLjM1MzU1bDEuMTMxMzcsMS4xMzEzN2MwLjk4OTk1LC0wLjg0ODUzIDIuMTIxMzIsLTEuNDE0MjEgMy4zMjM0LC0xLjc2Nzc3YzEuODM4NDgsLTAuNTY1NjkgMy44ODkwOSwtMC42MzY0IDUuNzk4MjgsMGMxLjgzODQ4LDAuNTY1NjkgMy4zOTQxMSwxLjY5NzA2IDQuNTI1NDgsMy4yNTI2OWMxLjA2MDY2LDEuNDg0OTIgMS42OTcwNiwzLjI1MjY5IDEuODM4NDgsNS4wOTExN2MwLDAuOTg5OTUgLTAuODQ4NTMsMS44Mzg0OCAtMS44Mzg0OCwxLjgzODQ4Yy0wLjg0ODUzLDAgLTEuNjI2MzUsLTAuNjM2NCAtMS43Njc3NywtMS40ODQ5MmwtMC4wNzA3MSwtMC4wNzA3MWMtMC4yMTIxMywtMS4wNjA2NiAtMC43MDcxMSwtMS45Nzk5IC0xLjQxNDIxLC0yLjY4NzAxYy0wLjcwNzExLC0wLjcwNzExIC0xLjU1NTYzLC0xLjEzMTM3IC0yLjU0NTU4LC0xLjI3Mjc5Yy0xLjM0MzUsLTAuMjEyMTMgLTIuNzU3NzIsMC4yMTIxMyAtMy43NDc2NywxLjIwMjA4bDEuMDYwNjYsMS4wNjA2NmMwLjYzNjQsMC42MzY0IDAuNzA3MTEsMS42OTcwNiAwLDIuNDA0MTZjLTAuMjgyODQsMC4yODI4NCAtMC43Nzc4MiwwLjQ5NDk3IC0xLjIwMjA4LDAuNDk0OTdsLTYuMjIyNTQsMGMtMC45MTkyNCwtMC4wNzA3MSAtMS42MjYzNSwtMC43Nzc4MiAtMS42OTcwNiwtMS42OTcwNmwwLC02LjM2Mzk2YzAsLTAuNzA3MTEgMC40MjQyNiwtMS4yNzI3OSAxLjA2MDY2LC0xLjQ4NDkyeiIgZmlsbC1vcGFjaXR5PSIwLjM3MjU1IiBmaWxsPSIjMDAwMDAwIi8+PHBhdGggZD0iTTIzMy4yNzU4NSwxNzUuMzcwNjVsMS44Mzg0OCwxLjgzODQ4YzEuMDYwNjYsLTEuMDYwNjYgMi4yNjI3NCwtMS44Mzg0OCAzLjY3Njk2LC0yLjI2Mjc0YzEuNjk3MDYsLTAuNTY1NjkgMy40NjQ4MiwtMC40OTQ5NyA1LjE2MTg4LDAuMDcwNzFjMS42MjYzNSwwLjQ5NDk3IDMuMTExMjcsMS41NTU2MyA0LjAzMDUxLDIuODk5MTRjMC45ODk5NSwxLjI3Mjc5IDEuNTU1NjMsMi45Njk4NSAxLjYyNjM1LDQuNTk2MTljMC4wNzA3MSwwLjQ5NDk3IC0wLjM1MzU1LDAuOTE5MjQgLTAuNzc3ODIsMC45MTkyNGMtMC40OTQ5NywwLjA3MDcxIC0wLjkxOTI0LC0wLjM1MzU1IC0wLjkxOTI0LC0wLjc3NzgydjBjLTAuMjEyMTMsLTEuMjAyMDggLTAuNzc3ODIsLTIuMzMzNDUgLTEuNjI2MzUsLTMuMTgxOThjLTAuODQ4NTMsLTAuODQ4NTMgLTEuODM4NDgsLTEuNDE0MjEgLTMuMDQwNTYsLTEuNjI2MzVjLTEuMDYwNjYsLTAuMjEyMTMgLTIuMTkyMDMsLTAuMDcwNzEgLTMuMjUyNjksMC40MjQyNmMtMC44NDg1MywwLjQyNDI2IC0xLjU1NTYzLDAuOTg5OTUgLTIuMTIxMzIsMS44Mzg0OGwxLjY5NzA2LDEuNjk3MDZjMC4yODI4NCwwLjI4Mjg0IDAuMjgyODQsMC43MDcxMSAwLDAuOTg5OTVjLTAuMTQxNDIsMC4xNDE0MiAtMC4yODI4NCwwLjE0MTQyIC0wLjQyNDI2LDAuMTQxNDJsLTYuMjIyNTQsMGMtMC40MjQyNiwwIC0wLjcwNzExLC0wLjI4Mjg0IC0wLjYzNjQsLTAuNjM2NGwwLC02LjIyMjU0YzAsLTAuNDI0MjYgMC4xNDE0MiwtMC43MDcxMSAwLjQyNDI2LC0wLjg0ODUzYzAuMjgyODQsLTAuMTQxNDIgMC40MjQyNiwwIDAuNTY1NjksMC4xNDE0MnoiIGZpbGw9IiNmZmZmZmYiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjo4Ljg0NTQ2Mzg5MDkwNTQ3ODo2LjQyNDAxMjQ0MTg5NTI4Ni0tPg==",
-      redo:"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOS40NDU0NCIgaGVpZ2h0PSIxMC42MzM1MSIgdmlld0JveD0iMCwwLDE5LjQ0NTQ0LDEwLjYzMzUxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjMxLjE1NDU0LC0xNzMuNTc1OTcpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjQ5LjUzOTMyLDE3NC4zMDk5OWMwLjYzNjQsMC4yMTIxMyAxLjA2MDY2LDAuNzc3ODEgMS4wNjA2NiwxLjQ4NDkydjYuMzYzOTZjLTAuMDcwNzEsMC45MTkyNCAtMC43Nzc4MiwxLjYyNjM1IC0xLjY5NzA2LDEuNjk3MDZoLTYuMjIyNTRjLTAuNDI0MjYsMCAtMC45MTkyNCwtMC4yMTIxMyAtMS4yMDIwOCwtMC40OTQ5N2MtMC43MDcxMSwtMC43MDcxIC0wLjYzNjQsLTEuNzY3NzYgMCwtMi40MDQxNmwxLjA2MDY2LC0xLjA2MDY2Yy0wLjk4OTk1LC0wLjk4OTk1IC0yLjQwNDE3LC0xLjQxNDIxIC0zLjc0NzY3LC0xLjIwMjA4Yy0wLjk4OTk1LDAuMTQxNDIgLTEuODM4NDcsMC41NjU2OCAtMi41NDU1OCwxLjI3Mjc5Yy0wLjcwNzEsMC43MDcxMSAtMS4yMDIwOCwxLjYyNjM1IC0xLjQxNDIxLDIuNjg3MDFsLTAuMDcwNzEsMC4wNzA3MWMtMC4xNDE0MiwwLjg0ODUyIC0wLjkxOTI0LDEuNDg0OTIgLTEuNzY3NzcsMS40ODQ5MmMtMC45ODk5NSwwIC0xLjgzODQ4LC0wLjg0ODUzIC0xLjgzODQ4LC0xLjgzODQ4YzAuMTQxNDIsLTEuODM4NDggMC43Nzc4MiwtMy42MDYyNSAxLjgzODQ4LC01LjA5MTE3YzEuMTMxMzcsLTEuNTU1NjMgMi42ODcsLTIuNjg3IDQuNTI1NDgsLTMuMjUyNjljMS45MDkxOSwtMC42MzY0IDMuOTU5OCwtMC41NjU2OSA1Ljc5ODI4LDBjMS4yMDIwOCwwLjM1MzU2IDIuMzMzNDUsMC45MTkyNCAzLjMyMzQsMS43Njc3N2wxLjEzMTM3LC0xLjEzMTM3YzAuNDI0MjcsLTAuNDI0MjYgMS4xMzEzNywtMC41NjU2OCAxLjc2Nzc3LC0wLjM1MzU1eiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIGZpbGwtb3BhY2l0eT0iMC4zNzI1NSIgZmlsbD0iIzAwMDAwMCIvPjxwYXRoIGQ9Ik0yNDguNDc4NjYsMTc1LjM3MDY0YzAuMTQxNDMsLTAuMTQxNDIgMC4yODI4NSwtMC4yODI4NCAwLjU2NTY5LC0wLjE0MTQyYzAuMjgyODQsMC4xNDE0MiAwLjQyNDI2LDAuNDI0MjcgMC40MjQyNiwwLjg0ODUzdjYuMjIyNTRjMC4wNzA3MSwwLjM1MzU2IC0wLjIxMjE0LDAuNjM2NCAtMC42MzY0LDAuNjM2NGgtNi4yMjI1NGMtMC4xNDE0MiwwIC0wLjI4Mjg0LDAgLTAuNDI0MjYsLTAuMTQxNDJjLTAuMjgyODQsLTAuMjgyODQgLTAuMjgyODQsLTAuNzA3MTEgMCwtMC45ODk5NWwxLjY5NzA2LC0xLjY5NzA2Yy0wLjU2NTY5LC0wLjg0ODUzIC0xLjI3Mjc5LC0xLjQxNDIyIC0yLjEyMTMyLC0xLjgzODQ4Yy0xLjA2MDY2LC0wLjQ5NDk3IC0yLjE5MjAzLC0wLjYzNjM5IC0zLjI1MjY5LC0wLjQyNDI2Yy0xLjIwMjA4LDAuMjEyMTQgLTIuMTkyMDMsMC43Nzc4MiAtMy4wNDA1NiwxLjYyNjM1Yy0wLjg0ODUzLDAuODQ4NTMgLTEuNDE0MjIsMS45Nzk5IC0xLjYyNjM1LDMuMTgxOTh2MGMwLDAuNDI0MjcgLTAuNDI0MjcsMC44NDg1MyAtMC45MTkyNCwwLjc3NzgyYy0wLjQyNDI3LDAgLTAuODQ4NTMsLTAuNDI0MjcgLTAuNzc3ODIsLTAuOTE5MjRjMC4wNzA3MiwtMS42MjYzNCAwLjYzNjQsLTMuMzIzNCAxLjYyNjM1LC00LjU5NjE5YzAuOTE5MjQsLTEuMzQzNTEgMi40MDQxNiwtMi40MDQxNyA0LjAzMDUxLC0yLjg5OTE0YzEuNjk3MDYsLTAuNTY1NjggMy40NjQ4MiwtMC42MzY0IDUuMTYxODgsLTAuMDcwNzFjMS40MTQyMiwwLjQyNDI2IDIuNjE2MywxLjIwMjA4IDMuNjc2OTYsMi4yNjI3NGwxLjgzODQ4LC0xLjgzODQ4eiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIGZpbGw9IiNmZmZmZmYiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjo4Ljg0NTQ2Mzg5MDkwNTQyMTo2LjQyNDAyNTQ1ODI2MTQ2OC0tPg==",
-    }
+    blockIcons = {
+      undo: "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOS40NDU0NCIgaGVpZ2h0PSIxMC42MzM1MSIgdmlld0JveD0iMCwwLDE5LjQ0NTQ0LDEwLjYzMzUxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjMxLjE1NDU0LC0xNzMuNTc1OTkpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjMyLjIxNTIsMTc0LjMxYzAuNjM2NCwtMC4yMTIxMyAxLjM0MzUsLTAuMDcwNzEgMS43Njc3NywwLjM1MzU1bDEuMTMxMzcsMS4xMzEzN2MwLjk4OTk1LC0wLjg0ODUzIDIuMTIxMzIsLTEuNDE0MjEgMy4zMjM0LC0xLjc2Nzc3YzEuODM4NDgsLTAuNTY1NjkgMy44ODkwOSwtMC42MzY0IDUuNzk4MjgsMGMxLjgzODQ4LDAuNTY1NjkgMy4zOTQxMSwxLjY5NzA2IDQuNTI1NDgsMy4yNTI2OWMxLjA2MDY2LDEuNDg0OTIgMS42OTcwNiwzLjI1MjY5IDEuODM4NDgsNS4wOTExN2MwLDAuOTg5OTUgLTAuODQ4NTMsMS44Mzg0OCAtMS44Mzg0OCwxLjgzODQ4Yy0wLjg0ODUzLDAgLTEuNjI2MzUsLTAuNjM2NCAtMS43Njc3NywtMS40ODQ5MmwtMC4wNzA3MSwtMC4wNzA3MWMtMC4yMTIxMywtMS4wNjA2NiAtMC43MDcxMSwtMS45Nzk5IC0xLjQxNDIxLC0yLjY4NzAxYy0wLjcwNzExLC0wLjcwNzExIC0xLjU1NTYzLC0xLjEzMTM3IC0yLjU0NTU4LC0xLjI3Mjc5Yy0xLjM0MzUsLTAuMjEyMTMgLTIuNzU3NzIsMC4yMTIxMyAtMy43NDc2NywxLjIwMjA4bDEuMDYwNjYsMS4wNjA2NmMwLjYzNjQsMC42MzY0IDAuNzA3MTEsMS42OTcwNiAwLDIuNDA0MTZjLTAuMjgyODQsMC4yODI4NCAtMC43Nzc4MiwwLjQ5NDk3IC0xLjIwMjA4LDAuNDk0OTdsLTYuMjIyNTQsMGMtMC45MTkyNCwtMC4wNzA3MSAtMS42MjYzNSwtMC43Nzc4MiAtMS42OTcwNiwtMS42OTcwNmwwLC02LjM2Mzk2YzAsLTAuNzA3MTEgMC40MjQyNiwtMS4yNzI3OSAxLjA2MDY2LC0xLjQ4NDkyeiIgZmlsbC1vcGFjaXR5PSIwLjM3MjU1IiBmaWxsPSIjMDAwMDAwIi8+PHBhdGggZD0iTTIzMy4yNzU4NSwxNzUuMzcwNjVsMS44Mzg0OCwxLjgzODQ4YzEuMDYwNjYsLTEuMDYwNjYgMi4yNjI3NCwtMS44Mzg0OCAzLjY3Njk2LC0yLjI2Mjc0YzEuNjk3MDYsLTAuNTY1NjkgMy40NjQ4MiwtMC40OTQ5NyA1LjE2MTg4LDAuMDcwNzFjMS42MjYzNSwwLjQ5NDk3IDMuMTExMjcsMS41NTU2MyA0LjAzMDUxLDIuODk5MTRjMC45ODk5NSwxLjI3Mjc5IDEuNTU1NjMsMi45Njk4NSAxLjYyNjM1LDQuNTk2MTljMC4wNzA3MSwwLjQ5NDk3IC0wLjM1MzU1LDAuOTE5MjQgLTAuNzc3ODIsMC45MTkyNGMtMC40OTQ5NywwLjA3MDcxIC0wLjkxOTI0LC0wLjM1MzU1IC0wLjkxOTI0LC0wLjc3NzgydjBjLTAuMjEyMTMsLTEuMjAyMDggLTAuNzc3ODIsLTIuMzMzNDUgLTEuNjI2MzUsLTMuMTgxOThjLTAuODQ4NTMsLTAuODQ4NTMgLTEuODM4NDgsLTEuNDE0MjEgLTMuMDQwNTYsLTEuNjI2MzVjLTEuMDYwNjYsLTAuMjEyMTMgLTIuMTkyMDMsLTAuMDcwNzEgLTMuMjUyNjksMC40MjQyNmMtMC44NDg1MywwLjQyNDI2IC0xLjU1NTYzLDAuOTg5OTUgLTIuMTIxMzIsMS44Mzg0OGwxLjY5NzA2LDEuNjk3MDZjMC4yODI4NCwwLjI4Mjg0IDAuMjgyODQsMC43MDcxMSAwLDAuOTg5OTVjLTAuMTQxNDIsMC4xNDE0MiAtMC4yODI4NCwwLjE0MTQyIC0wLjQyNDI2LDAuMTQxNDJsLTYuMjIyNTQsMGMtMC40MjQyNiwwIC0wLjcwNzExLC0wLjI4Mjg0IC0wLjYzNjQsLTAuNjM2NGwwLC02LjIyMjU0YzAsLTAuNDI0MjYgMC4xNDE0MiwtMC43MDcxMSAwLjQyNDI2LC0wLjg0ODUzYzAuMjgyODQsLTAuMTQxNDIgMC40MjQyNiwwIDAuNTY1NjksMC4xNDE0MnoiIGZpbGw9IiNmZmZmZmYiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjo4Ljg0NTQ2Mzg5MDkwNTQ3ODo2LjQyNDAxMjQ0MTg5NTI4Ni0tPg==",
+      redo: "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOS40NDU0NCIgaGVpZ2h0PSIxMC42MzM1MSIgdmlld0JveD0iMCwwLDE5LjQ0NTQ0LDEwLjYzMzUxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjMxLjE1NDU0LC0xNzMuNTc1OTcpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjQ5LjUzOTMyLDE3NC4zMDk5OWMwLjYzNjQsMC4yMTIxMyAxLjA2MDY2LDAuNzc3ODEgMS4wNjA2NiwxLjQ4NDkydjYuMzYzOTZjLTAuMDcwNzEsMC45MTkyNCAtMC43Nzc4MiwxLjYyNjM1IC0xLjY5NzA2LDEuNjk3MDZoLTYuMjIyNTRjLTAuNDI0MjYsMCAtMC45MTkyNCwtMC4yMTIxMyAtMS4yMDIwOCwtMC40OTQ5N2MtMC43MDcxMSwtMC43MDcxIC0wLjYzNjQsLTEuNzY3NzYgMCwtMi40MDQxNmwxLjA2MDY2LC0xLjA2MDY2Yy0wLjk4OTk1LC0wLjk4OTk1IC0yLjQwNDE3LC0xLjQxNDIxIC0zLjc0NzY3LC0xLjIwMjA4Yy0wLjk4OTk1LDAuMTQxNDIgLTEuODM4NDcsMC41NjU2OCAtMi41NDU1OCwxLjI3Mjc5Yy0wLjcwNzEsMC43MDcxMSAtMS4yMDIwOCwxLjYyNjM1IC0xLjQxNDIxLDIuNjg3MDFsLTAuMDcwNzEsMC4wNzA3MWMtMC4xNDE0MiwwLjg0ODUyIC0wLjkxOTI0LDEuNDg0OTIgLTEuNzY3NzcsMS40ODQ5MmMtMC45ODk5NSwwIC0xLjgzODQ4LC0wLjg0ODUzIC0xLjgzODQ4LC0xLjgzODQ4YzAuMTQxNDIsLTEuODM4NDggMC43Nzc4MiwtMy42MDYyNSAxLjgzODQ4LC01LjA5MTE3YzEuMTMxMzcsLTEuNTU1NjMgMi42ODcsLTIuNjg3IDQuNTI1NDgsLTMuMjUyNjljMS45MDkxOSwtMC42MzY0IDMuOTU5OCwtMC41NjU2OSA1Ljc5ODI4LDBjMS4yMDIwOCwwLjM1MzU2IDIuMzMzNDUsMC45MTkyNCAzLjMyMzQsMS43Njc3N2wxLjEzMTM3LC0xLjEzMTM3YzAuNDI0MjcsLTAuNDI0MjYgMS4xMzEzNywtMC41NjU2OCAxLjc2Nzc3LC0wLjM1MzU1eiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIGZpbGwtb3BhY2l0eT0iMC4zNzI1NSIgZmlsbD0iIzAwMDAwMCIvPjxwYXRoIGQ9Ik0yNDguNDc4NjYsMTc1LjM3MDY0YzAuMTQxNDMsLTAuMTQxNDIgMC4yODI4NSwtMC4yODI4NCAwLjU2NTY5LC0wLjE0MTQyYzAuMjgyODQsMC4xNDE0MiAwLjQyNDI2LDAuNDI0MjcgMC40MjQyNiwwLjg0ODUzdjYuMjIyNTRjMC4wNzA3MSwwLjM1MzU2IC0wLjIxMjE0LDAuNjM2NCAtMC42MzY0LDAuNjM2NGgtNi4yMjI1NGMtMC4xNDE0MiwwIC0wLjI4Mjg0LDAgLTAuNDI0MjYsLTAuMTQxNDJjLTAuMjgyODQsLTAuMjgyODQgLTAuMjgyODQsLTAuNzA3MTEgMCwtMC45ODk5NWwxLjY5NzA2LC0xLjY5NzA2Yy0wLjU2NTY5LC0wLjg0ODUzIC0xLjI3Mjc5LC0xLjQxNDIyIC0yLjEyMTMyLC0xLjgzODQ4Yy0xLjA2MDY2LC0wLjQ5NDk3IC0yLjE5MjAzLC0wLjYzNjM5IC0zLjI1MjY5LC0wLjQyNDI2Yy0xLjIwMjA4LDAuMjEyMTQgLTIuMTkyMDMsMC43Nzc4MiAtMy4wNDA1NiwxLjYyNjM1Yy0wLjg0ODUzLDAuODQ4NTMgLTEuNDE0MjIsMS45Nzk5IC0xLjYyNjM1LDMuMTgxOTh2MGMwLDAuNDI0MjcgLTAuNDI0MjcsMC44NDg1MyAtMC45MTkyNCwwLjc3NzgyYy0wLjQyNDI3LDAgLTAuODQ4NTMsLTAuNDI0MjcgLTAuNzc3ODIsLTAuOTE5MjRjMC4wNzA3MiwtMS42MjYzNCAwLjYzNjQsLTMuMzIzNCAxLjYyNjM1LC00LjU5NjE5YzAuOTE5MjQsLTEuMzQzNTEgMi40MDQxNiwtMi40MDQxNyA0LjAzMDUxLC0yLjg5OTE0YzEuNjk3MDYsLTAuNTY1NjggMy40NjQ4MiwtMC42MzY0IDUuMTYxODgsLTAuMDcwNzFjMS40MTQyMiwwLjQyNDI2IDIuNjE2MywxLjIwMjA4IDMuNjc2OTYsMi4yNjI3NGwxLjgzODQ4LC0xLjgzODQ4eiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIGZpbGw9IiNmZmZmZmYiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjo4Ljg0NTQ2Mzg5MDkwNTQyMTo2LjQyNDAyNTQ1ODI2MTQ2OC0tPg==",
+    };
 
     constructor() {
       window.addEventListener("message", (event) => {
@@ -1673,7 +1589,10 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "draw triangle using [shader] between [x1] [y1], [x2] [y2] and [x3] [y3]",
             arguments: {
-              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
               x1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               x2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
@@ -1689,9 +1608,18 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set texture [uniformName] in [shader] to [texture]",
             arguments: {
-              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
-              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
-              texture: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" }
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+              texture: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "costumeMenu",
+              },
             },
             filter: "sprite",
           },
@@ -1700,9 +1628,15 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set number [uniformName] in [shader] to [number]",
             arguments: {
-              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
-              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
-              number: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+              number: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
             filter: "sprite",
           },
@@ -1711,10 +1645,16 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set vector 2 [uniformName] in [shader] to [numberX] [numberY]",
             arguments: {
-              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
-              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
               numberX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+              numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
             filter: "sprite",
           },
@@ -1723,11 +1663,17 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set vector 3 [uniformName] in [shader] to [numberX] [numberY] [numberZ]",
             arguments: {
-              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
-              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
               numberX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              numberZ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+              numberZ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
             filter: "sprite",
           },
@@ -1736,12 +1682,18 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set vector 4 [uniformName] in [shader] to [numberX] [numberY] [numberZ] [numberW]",
             arguments: {
-              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
-              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
               numberX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               numberZ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              numberW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+              numberW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
             filter: "sprite",
           },
@@ -1750,9 +1702,15 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set matrix [uniformName] in [shader] to [list]",
             arguments: {
-              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
-              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
-              list: { type: Scratch.ArgumentType.STRING, menu: "listMenu"}
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+              list: { type: Scratch.ArgumentType.STRING, menu: "listMenu" },
             },
             filter: "sprite",
           },
@@ -1761,9 +1719,18 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set matrix [uniformName] in [shader] to [array]",
             arguments: {
-              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
-              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
-              array: { type: Scratch.ArgumentType.STRING, defaultValue: "[0,0,0,0]"}
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+              array: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "[0,0,0,0]",
+              },
             },
             filter: "sprite",
           },
@@ -1772,28 +1739,40 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set cubemap [uniformName] in [shader] to [cubemap]",
             arguments: {
-              uniformName: { type: Scratch.ArgumentType.STRING, defaultValue: "Uniform" },
-              shader: {type: Scratch.ArgumentType.STRING, menu: "penPlusShaders"},
-              cubemap: { type: Scratch.ArgumentType.STRING, menu: "penPlusCubemaps"}
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+              cubemap: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusCubemaps",
+              },
             },
             filter: "sprite",
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Cubemaps"
+            text: "Cubemaps",
           },
           {
-            opcode:"createCubemap",
+            opcode: "createCubemap",
             blockType: Scratch.BlockType.COMMAND,
             text: "create cubemap named [name] from left [left] right [right] back [back] front [front] bottom [bottom] top [top]",
             arguments: {
               name: { type: Scratch.ArgumentType.STRING, defaultValue: "Name" },
-              left: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
-              right: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
-              back: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
-              front: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
-              bottom: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
-              top: {type: Scratch.ArgumentType.STRING, menu: "costumeMenu"},
+              left: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
+              right: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
+              back: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
+              front: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
+              bottom: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "costumeMenu",
+              },
+              top: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
             },
             filter: "sprite",
           },
@@ -1847,7 +1826,7 @@
           {
             opcode: "clearDepth",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Erase Depth"
+            text: "Erase Depth",
           },
           {
             opcode: "setAdvancedOptionValueTo",
@@ -2036,7 +2015,8 @@
       return readCostumes;
     }
     _getCubemaps() {
-      if (Object.keys(this.penPlusCubemap).length == 0) return ["No cubemaps yet!"]
+      if (Object.keys(this.penPlusCubemap).length == 0)
+        return ["No cubemaps yet!"];
       return Object.keys(this.penPlusCubemap);
     }
     //From lily's list tools
@@ -2061,12 +2041,12 @@
       const stageTarget = runtime.getTargetForStage();
       const target = util.target;
       let listObject = Object.create(null);
-  
+
       listObject = stageTarget.lookupVariableByNameAndType(name, type);
       if (listObject) return listObject;
       listObject = target.lookupVariableByNameAndType(name, type);
       if (listObject) return listObject;
-    };
+    }
 
     //?Default pen helpers
     isPenDown(args, util) {
@@ -2619,13 +2599,13 @@
         ? 2 * ((canvas.width + canvas.height) / (typSize[0] + typSize[1]))
         : 2;
       //Paratheses because I know some obscure browser will screw this up.
-      x1 = Scratch.Cast.toNumber(x1) * dWidth * mul;
-      x2 = Scratch.Cast.toNumber(x2) * dWidth * mul;
-      x3 = Scratch.Cast.toNumber(x3) * dWidth * mul;
+      x1 = Scratch.Cast.toNumber(x1);
+      x2 = Scratch.Cast.toNumber(x2);
+      x3 = Scratch.Cast.toNumber(x3);
 
-      y1 = Scratch.Cast.toNumber(y1) * dHeight * mul;
-      y2 = Scratch.Cast.toNumber(y2) * dHeight * mul;
-      y3 = Scratch.Cast.toNumber(y3) * dHeight * mul;
+      y1 = Scratch.Cast.toNumber(y1);
+      y2 = Scratch.Cast.toNumber(y2);
+      y3 = Scratch.Cast.toNumber(y3);
 
       this.renderFunctions.drawTri(
         x1,
@@ -3543,35 +3523,35 @@
     }
 
     getAllShaders() {
-      return JSON.stringify(this.shaderMenu())
+      return JSON.stringify(this.shaderMenu());
     }
 
     //?Cubemaps
-    createCubemap({ left, right, back, front, bottom, top, name },util) {
+    createCubemap({ left, right, back, front, bottom, top, name }, util) {
       const cubemapSetup = [
         {
-          texture:left,
-          side:gl.TEXTURE_CUBE_MAP_NEGATIVE_X
+          texture: left,
+          side: gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
         },
         {
-          texture:right,
-          side:gl.TEXTURE_CUBE_MAP_POSITIVE_X
+          texture: right,
+          side: gl.TEXTURE_CUBE_MAP_POSITIVE_X,
         },
         {
-          texture:back,
-          side:gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
+          texture: back,
+          side: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
         },
         {
-          texture:front,
-          side:gl.TEXTURE_CUBE_MAP_POSITIVE_Z
+          texture: front,
+          side: gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
         },
         {
-          texture:bottom,
-          side:gl.TEXTURE_CUBE_MAP_NEGATIVE_Y
+          texture: bottom,
+          side: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
         },
         {
-          texture:top,
-          side:gl.TEXTURE_CUBE_MAP_POSITIVE_Y
+          texture: top,
+          side: gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
         },
       ];
 
@@ -3580,18 +3560,32 @@
 
       for (let faceID = 0; faceID < 6; faceID++) {
         const curTarget = util.target;
-        const curCostume = this.penPlusCostumeLibrary[cubemapSetup[faceID].texture] || curTarget.getCostumeIndexByName(Scratch.Cast.toString(cubemapSetup[faceID].texture));
-        
+        const curCostume =
+          this.penPlusCostumeLibrary[cubemapSetup[faceID].texture] ||
+          curTarget.getCostumeIndexByName(
+            Scratch.Cast.toString(cubemapSetup[faceID].texture)
+          );
+
         if (this.penPlusCostumeLibrary[cubemapSetup[faceID].texture]) {
           const textureData = this.textureFunctions.getTextureData(
             curCostume.texture,
             curCostume.width,
             curCostume.height
           );
-  
+
           gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[name]);
-          gl.texImage2D(cubemapSetup[faceID].texture.side, 0, gl.RGBA,curCostume.width,curCostume.height,0,gl.RGBA,gl.UNSIGNED_BYTE,textureData);
-  
+          gl.texImage2D(
+            cubemapSetup[faceID].texture.side,
+            0,
+            gl.RGBA,
+            curCostume.width,
+            curCostume.height,
+            0,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            textureData
+          );
+
           gl.texParameteri(
             gl.TEXTURE_CUBE_MAP,
             gl.TEXTURE_MIN_FILTER,
@@ -3602,17 +3596,24 @@
             gl.TEXTURE_MAG_FILTER,
             currentFilter
           );
-        }
-        else {
+        } else {
           if (curCostume >= 0) {
-            const costumeURI = curTarget.sprite.costumes_[curCostume].asset.encodeDataURI();
-            
+            const costumeURI =
+              curTarget.sprite.costumes_[curCostume].asset.encodeDataURI();
+
             //Neat stuff here
             const image = new Image();
             image.onload = () => {
               gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[name]);
-              gl.texImage2D(cubemapSetup[faceID].texture.side,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);
-      
+              gl.texImage2D(
+                cubemapSetup[faceID].texture.side,
+                0,
+                gl.RGBA,
+                gl.RGBA,
+                gl.UNSIGNED_BYTE,
+                image
+              );
+
               gl.texParameteri(
                 gl.TEXTURE_CUBE_MAP,
                 gl.TEXTURE_MIN_FILTER,
@@ -3623,7 +3624,7 @@
                 gl.TEXTURE_MAG_FILTER,
                 currentFilter
               );
-            }
+            };
 
             image.src = costumeURI;
           }
