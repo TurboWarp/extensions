@@ -41,7 +41,7 @@
   let lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
   //?Neato uniform for universally transforming triangles to fit the screen
-  let transform_Matrix = [0,0,0,0,0,0,0,0,0];
+  let transform_Matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   //?Buffer handling and pen loading
   {
@@ -600,12 +600,18 @@
         gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_color, gl.DYNAMIC_DRAW);
 
         //? Bind Positional Data
-        twgl.setBuffersAndAttributes(gl, penPlusShaders.untextured.ProgramInf, bufferInfo);
+        twgl.setBuffersAndAttributes(
+          gl,
+          penPlusShaders.untextured.ProgramInf,
+          bufferInfo
+        );
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
         gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
 
-        twgl.setUniforms(penPlusShaders.untextured.ProgramInf, {u_transform:transform_Matrix});
+        twgl.setUniforms(penPlusShaders.untextured.ProgramInf, {
+          u_transform: transform_Matrix,
+        });
 
         twgl.drawBufferInfo(gl, bufferInfo);
       },
@@ -679,11 +685,18 @@
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
 
         //? Bind Positional Data
-        twgl.setBuffersAndAttributes(gl, penPlusShaders.textured.ProgramInf, bufferInfo);
+        twgl.setBuffersAndAttributes(
+          gl,
+          penPlusShaders.textured.ProgramInf,
+          bufferInfo
+        );
 
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-        twgl.setUniforms(penPlusShaders.textured.ProgramInf, {u_texture:texture,u_transform:transform_Matrix});
+        twgl.setUniforms(penPlusShaders.textured.ProgramInf, {
+          u_texture: texture,
+          u_transform: transform_Matrix,
+        });
 
         twgl.drawBufferInfo(gl, bufferInfo);
       },
@@ -698,7 +711,11 @@
 
         gl.uniform1i(u_depthTexture_Location_draw, 1);
 
-        twgl.setBuffersAndAttributes(gl, penPlusShaders.untextured.ProgramInf, reRenderInfo);
+        twgl.setBuffersAndAttributes(
+          gl,
+          penPlusShaders.untextured.ProgramInf,
+          reRenderInfo
+        );
 
         twgl.drawBufferInfo(gl, reRenderInfo);
 
@@ -1018,30 +1035,39 @@
 
       parentExtension = this;
 
-      vm.runtime.on("PROJECT_LOADED", this.setupExtensionStorage);
-      this.setupExtensionStorage();
+      vm.runtime.on("PROJECT_LOADED", this._setupExtensionStorage);
+      this._setupExtensionStorage();
 
       this._setupTheme();
     }
 
+    _parseProjectShaders(shaders) {
+      Object.keys(shaders).forEach((shaderKey) => {
+        let shader = shaders[shaderKey];
+        console.log(shader);
+      });
+    }
+
     //Stolen from lily :3
-    setupExtensionStorage() {
+    _setupExtensionStorage() {
       //Penguinmod saving support
       if (Scratch.extensions.isPenguinMod) {
-        this.serialize = () => {
-          return JSON.stringify(this.shaders);
+        parentExtension.serialize = () => {
+          return JSON.stringify(parentExtension.shaders);
         };
 
-        this.deserialize = (serialized) => {
-          this.shaders = JSON.parse(serialized);
+        parentExtension.deserialize = (serialized) => {
+          parentExtension.shaders = JSON.parse(serialized);
         };
 
-        this.shaders = {};
+        parentExtension.shaders = {};
 
         //Doing this to remedy the janky turbowarp saving system.
-        this.getShaders = () => {
-          return this.shaders;
+        parentExtension.getShaders = () => {
+          return parentExtension.shaders;
         };
+
+        parentExtension._parseProjectShaders(parentExtension.shaders);
       } else {
         if (!runtime.extensionStorage["penP"]) {
           runtime.extensionStorage["penP"] = Object.create(null);
@@ -1049,16 +1075,18 @@
         }
 
         //For some reason tw saving just doesn't work lol
-        this.shaders = runtime.extensionStorage["penP"].shaders;
+        parentExtension.shaders = runtime.extensionStorage["penP"].shaders;
 
         //Remedy for the turbowarp saving system being jank.
-        this.getShaders = () => {
-          this.shaders = runtime.extensionStorage["penP"].shaders;
+        parentExtension.getShaders = () => {
+          parentExtension.shaders = runtime.extensionStorage["penP"].shaders;
           return runtime.extensionStorage["penP"].shaders;
         };
+        //seems inconsistant. Should check on behavior of desired trait.
+        parentExtension._parseProjectShaders(runtime.extensionStorage["penP"].shaders);
       }
 
-      this.savingData = {
+      parentExtension.savingData = {
         projectData: undefined,
         fragShader: undefined,
         vertShader: undefined,
@@ -1955,8 +1983,6 @@
       return ["no pen+ costumes!"];
     }
     shaderMenu() {
-      //!Janky remedy for turbowarp saving
-      this.getShaders();
       //!Pain.json
       return Object.keys(this.shaders).length == 0
         ? ["none yet"]
@@ -1982,7 +2008,7 @@
         return ["No cubemaps yet!"];
       return Object.keys(this.penPlusCubemap);
     }
-    //From lily's list tools
+    //From lily's list tools... With permission of course.
     _getLists() {
       // @ts-expect-error - Blockly not typed yet
       // eslint-disable-next-line no-undef
@@ -2973,9 +2999,6 @@
 
     //Just a helper function so the main one isn't too cluttered
     _shaderManagerModal() {
-      //!Janky remedy for turbowarp saving
-      this.getShaders();
-
       const bgFade = document.createElement("div");
       bgFade.style.width = "100%";
       bgFade.style.height = "100%";
