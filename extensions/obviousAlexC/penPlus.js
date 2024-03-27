@@ -268,12 +268,14 @@
                     
                     varying highp vec4 v_color;
                     varying highp vec2 v_texCoord;
+
+                    uniform highp mat3 u_transform;
                     
                     void main()
                     {
                         v_color = a_color;
                         v_texCoord = a_texCoord;
-                        gl_Position = a_position * vec4(a_position.w,a_position.w,-1.0/a_position.w,1);
+                        gl_Position = a_position * vec4(a_position.w * u_transform[0][0],a_position.w * u_transform[0][1],-1.0/a_position.w,1);
                     }
                 `,
         frag: `
@@ -604,124 +606,86 @@
         gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
 
         twgl.setUniforms(penPlusShaders.untextured.ProgramInf, {u_transform:transform_Matrix});
-        
+
         twgl.drawBufferInfo(gl, bufferInfo);
       },
 
       drawTextTri: (x1, y1, x2, y2, x3, y3, targetID, texture) => {
-        if (!this.inDrawRegion)
-          renderer.enterDrawRegion(this.penPlusDrawRegion);
+        // prettier-ignore
+        if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+
         this.trianglesDrawn += 1;
+
         //? get triangle attributes for current sprite.
         const triAttribs = this.triangleAttributesOfAllSprites[targetID];
+
+        let inputInfo = {};
+
         if (triAttribs) {
-          vertexBufferData = new Float32Array([
-            x1,
-            -y1,
-            this.AdvancedSettings.useDepthBuffer ? triAttribs[5] : 0,
-            triAttribs[6],
-            triAttribs[2],
-            triAttribs[3],
-            triAttribs[4],
-            triAttribs[7],
-            triAttribs[0],
-            triAttribs[1],
-
-            x2,
-            -y2,
-            this.AdvancedSettings.useDepthBuffer ? triAttribs[13] : 0,
-            triAttribs[14],
-            triAttribs[10],
-            triAttribs[11],
-            triAttribs[12],
-            triAttribs[15],
-            triAttribs[8],
-            triAttribs[9],
-
-            x3,
-            -y3,
-            this.AdvancedSettings.useDepthBuffer ? triAttribs[21] : 0,
-            triAttribs[22],
-            triAttribs[18],
-            triAttribs[19],
-            triAttribs[20],
-            triAttribs[23],
-            triAttribs[16],
-            triAttribs[17],
-          ]);
+          //Just for our eyes sakes
+          // prettier-ignore
+          inputInfo = {
+            a_position: new Float32Array([
+              x1,-y1,triAttribs[5],triAttribs[6],
+              x2,-y2,triAttribs[13],triAttribs[14],
+              x3,-y3,triAttribs[21],triAttribs[22]
+            ]),
+            a_color: new Float32Array([
+              triAttribs[2],triAttribs[3],triAttribs[4],triAttribs[7],
+              triAttribs[10],triAttribs[11],triAttribs[12],triAttribs[15],
+              triAttribs[18],triAttribs[19],triAttribs[20],triAttribs[23]
+            ]),
+            a_texCoord: new Float32Array([
+              triAttribs[0],triAttribs[1],
+              triAttribs[8],triAttribs[9],
+              triAttribs[16],triAttribs[17]
+            ])
+          };
         } else {
-          vertexBufferData = new Float32Array([
-            x1,
-            -y1,
-            0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            0,
-            0,
-
-            x2,
-            -y2,
-            0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-
-            x3,
-            -y3,
-            0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            0,
-          ]);
+          //Just for our eyes sakes
+          // prettier-ignore
+          inputInfo = {
+            a_position: new Float32Array([
+              x1,-y1,1,1,
+              x2,-y2,1,1,
+              x3,-y3,1,1
+            ]),
+            a_color: new Float32Array([
+              1,1,1,1,
+              1,1,1,1,
+              1,1,1,1
+            ]),
+            a_texCoord: new Float32Array([
+              0,0,
+              0,1,
+              1,1
+            ])
+          };
         }
-        //? Bind Positional Data
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, vertexBufferData, gl.DYNAMIC_DRAW);
 
-        gl.vertexAttribPointer(
-          a_position_Location_text,
-          4,
-          gl.FLOAT,
-          false,
-          f32_10,
-          0
-        );
-        gl.vertexAttribPointer(
-          a_color_Location_text,
-          4,
-          gl.FLOAT,
-          false,
-          f32_10,
-          f32_4
-        );
-        gl.vertexAttribPointer(
-          a_textCoord_Location_text,
-          2,
-          gl.FLOAT,
-          false,
-          f32_10,
-          f32_8
-        );
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_position.buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_position, gl.DYNAMIC_DRAW);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_color.buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_color, gl.DYNAMIC_DRAW);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_texCoord.buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_texCoord, gl.DYNAMIC_DRAW);
 
         gl.useProgram(penPlusShaders.textured.ProgramInf.program);
 
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, currentFilter);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
-        gl.uniform1i(u_texture_Location_text, 0);
 
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        //? Bind Positional Data
+        twgl.setBuffersAndAttributes(gl, penPlusShaders.textured.ProgramInf, bufferInfo);
+
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+
+        twgl.setUniforms(penPlusShaders.textured.ProgramInf, {u_texture:texture,u_transform:transform_Matrix});
+
+        twgl.drawBufferInfo(gl, bufferInfo);
       },
 
       //? this is so I don't have to go through the hassle of replacing default scratch shaders
@@ -1924,7 +1888,6 @@
           advancedSettingsMenu: {
             items: [
               { text: "allow 'Corner Pinch < 1'", value: "wValueUnderFlow" },
-              { text: "toggle depth buffer", value: "useDepthBuffer" },
               { text: "clamp depth value", value: "_ClampZ" },
             ],
             acceptReporters: true,
@@ -2590,14 +2553,9 @@
 
       //trying my best to reduce memory usage
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-      const dWidth = 1 / nativeSize[0];
-      const dHeight = 1 / nativeSize[1];
 
       //correction for HQ pen
       const typSize = renderer._nativeSize;
-      const mul = renderer.useHighQualityRender
-        ? 2 * ((canvas.width + canvas.height) / (typSize[0] + typSize[1]))
-        : 2;
       //Paratheses because I know some obscure browser will screw this up.
       x1 = Scratch.Cast.toNumber(x1);
       x2 = Scratch.Cast.toNumber(x2);
@@ -2645,22 +2603,17 @@
 
       //trying my best to reduce memory usage
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-      const dWidth = 1 / nativeSize[0];
-      const dHeight = 1 / nativeSize[1];
 
       //correction for HQ pen
       const typSize = renderer._nativeSize;
-      const mul = renderer.useHighQualityRender
-        ? 2 * ((canvas.width + canvas.height) / (typSize[0] + typSize[1]))
-        : 2;
       //Paratheses because I know some obscure browser will screw this up.
-      x1 = Scratch.Cast.toNumber(x1) * dWidth * mul;
-      x2 = Scratch.Cast.toNumber(x2) * dWidth * mul;
-      x3 = Scratch.Cast.toNumber(x3) * dWidth * mul;
+      x1 = Scratch.Cast.toNumber(x1);
+      x2 = Scratch.Cast.toNumber(x2);
+      x3 = Scratch.Cast.toNumber(x3);
 
-      y1 = Scratch.Cast.toNumber(y1) * dHeight * mul;
-      y2 = Scratch.Cast.toNumber(y2) * dHeight * mul;
-      y3 = Scratch.Cast.toNumber(y3) * dHeight * mul;
+      y1 = Scratch.Cast.toNumber(y1);
+      y2 = Scratch.Cast.toNumber(y2);
+      y3 = Scratch.Cast.toNumber(y3);
 
       if (currentTexture != null && typeof currentTexture != "undefined") {
         this.renderFunctions.drawTextTri(
