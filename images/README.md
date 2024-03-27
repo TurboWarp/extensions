@@ -298,3 +298,8 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Lily/Video.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
+
+## veggiecan/mobilekeyboard.svg
+ - Created by Veggiecan0419
+
+
