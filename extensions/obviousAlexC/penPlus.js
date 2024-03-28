@@ -8,10 +8,6 @@
   "use strict";
 
   //?some smaller optimizations just store the multiplacation for later
-  const f32_4 = 4 * Float32Array.BYTES_PER_ELEMENT;
-  const f32_6 = 6 * Float32Array.BYTES_PER_ELEMENT;
-  const f32_8 = 8 * Float32Array.BYTES_PER_ELEMENT;
-  const f32_10 = 10 * Float32Array.BYTES_PER_ELEMENT;
   const d2r = 0.0174533;
 
   //?Declare most of the main repo's we are going to use around the scratch vm
@@ -269,7 +265,7 @@
                     varying highp vec4 v_color;
                     varying highp vec2 v_texCoord;
 
-                    uniform highp mat3 u_transform;
+                    uniform highp mat4 u_transform;
                     
                     void main()
                     {
@@ -1084,7 +1080,7 @@
             break;
 
           case "vec4":
-            length = 16;
+            length = 12;
             break;
 
           default:
@@ -1103,8 +1099,10 @@
         };
       });
 
-      this.programs[shaderName].buffer =
-        twgl.createBufferInfoFromArrays(bufferInitilizer);
+      this.programs[shaderName].buffer = twgl.createBufferInfoFromArrays(
+        gl,
+        bufferInitilizer
+      );
     }
 
     _parseProjectShaders() {
@@ -3431,6 +3429,7 @@
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
 
+      //Safe to assume they have a buffer;
       const buffer = this.programs[shader].buffer;
 
       this.trianglesDrawn += 1;
@@ -3489,6 +3488,7 @@
       const keys = Object.keys(inputInfo);
 
       keys.forEach((key) => {
+        if (!buffer.attribs[key]) return;
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer.attribs[key].buffer);
         gl.bufferData(
           gl.ARRAY_BUFFER,
@@ -3506,7 +3506,7 @@
       this.programs[shader].uniformDat.u_res = nativeSize;
 
       //? Bind Positional Data
-      twgl.setBuffersAndAttributes(gl, this.programs[shader].info, bufferInfo);
+      twgl.setBuffersAndAttributes(gl, this.programs[shader].info, buffer);
 
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
@@ -4561,8 +4561,5 @@
 
     penPlusShaders.pen.program = shaderManager._shaderCache.line[0].program;
   }
-
-  const penPlus = new extension();
-  console.log(Object.keys(penPlus));
-  Scratch.extensions.register(penPlus);
+  Scratch.extensions.register(new extension());
 })(Scratch);
