@@ -1,4 +1,4 @@
-// Name: Pen Plus V6
+// Name: Pen Plus V7
 // ID: penP
 // Description: Advanced rendering capabilities.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
