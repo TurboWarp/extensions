@@ -1044,7 +1044,8 @@
             shader.projectData.vertShader,
             shader.projectData.fragShader,
           ]),
-          uniformDat:{}
+          uniformDat:{},
+          attribDat:{}
         }
       });
     }
@@ -1107,7 +1108,8 @@
           data.vertShader,
           data.fragShader,
         ]),
-        uniformDat:{}
+        uniformDat:{},
+        attribDat:{}
       }
     }
 
@@ -1173,6 +1175,10 @@
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Square Pen Blocks",
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "(Temporarily broken)",
           },
           {
             disableMonitor: true,
@@ -1242,7 +1248,6 @@
             arguments: {},
             filter: "sprite",
           },
-          //End of hidden blocks
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Triangle Blocks",
@@ -1624,7 +1629,6 @@
                 menu: "costumeMenu",
               },
             },
-            filter: "sprite",
           },
           {
             opcode: "setNumberInShader",
@@ -1641,7 +1645,6 @@
               },
               number: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
-            filter: "sprite",
           },
           {
             opcode: "setVec2InShader",
@@ -1659,7 +1662,6 @@
               numberX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
-            filter: "sprite",
           },
           {
             opcode: "setVec3InShader",
@@ -1678,7 +1680,6 @@
               numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               numberZ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
-            filter: "sprite",
           },
           {
             opcode: "setVec4InShader",
@@ -1698,7 +1699,6 @@
               numberZ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               numberW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
-            filter: "sprite",
           },
           {
             opcode: "setMatrixInShader",
@@ -1715,7 +1715,6 @@
               },
               list: { type: Scratch.ArgumentType.STRING, menu: "listMenu" },
             },
-            filter: "sprite",
           },
           {
             opcode: "setMatrixInShaderArray",
@@ -1735,7 +1734,6 @@
                 defaultValue: "[0,0,0,0]",
               },
             },
-            filter: "sprite",
           },
           {
             opcode: "setCubeInShader",
@@ -1755,7 +1753,114 @@
                 menu: "penPlusCubemaps",
               },
             },
-            filter: "sprite",
+          },
+          {
+            opcode: "getNumberInShader",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get value of number [uniformName] in [shader]",
+            arguments: {
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+            },
+          },
+          {
+            opcode: "getVec2InShader",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get value of [component] in vector 2 [uniformName] in [shader]",
+            arguments: {
+              component: {type: Scratch.ArgumentType.STRING, menu: "vec2Component"},
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+            },
+          },
+          {
+            opcode: "getVec3InShader",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get value of [component] in vector 3 [uniformName] in [shader]",
+            arguments: {
+              component: {type: Scratch.ArgumentType.STRING, menu: "vec3Component"},
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+            },
+          },
+          {
+            opcode: "getVec4InShader",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get value of [component] in vector 4 [uniformName] in [shader]",
+            arguments: {
+              component: {type: Scratch.ArgumentType.STRING, menu: "vec4Component"},
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+            },
+          },
+          {
+            opcode: "getMatrixInShader",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get value of matrix [uniformName] in [shader] as an array",
+            arguments: {
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+            },
+          },
+          {
+            opcode: "getTextureInShader",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get the texture of [uniformName] in [shader]",
+            arguments: {
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+            },
+          },
+          {
+            opcode: "getCubemapInShader",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get the cubemap of [uniformName] in [shader]",
+            arguments: {
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+            },
           },
           "---",
           {
@@ -1774,7 +1879,6 @@
               },
               number: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
-            filter: "sprite",
           },
           {
             opcode: "setArrayVec2InShader",
@@ -1793,7 +1897,6 @@
               numberX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
-            filter: "sprite",
           },
           {
             opcode: "setArrayVec3InShader",
@@ -1813,7 +1916,6 @@
               numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               numberZ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
-            filter: "sprite",
           },
           {
             opcode: "setArrayVec4InShader",
@@ -1834,7 +1936,73 @@
               numberZ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               numberW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
-            filter: "sprite",
+          },
+          {
+            opcode: "getArrayNumberInShader",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get item [item]'s value in number array [uniformName] in [shader]",
+            arguments: {
+              item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+            },
+          },
+          {
+            opcode: "getArrayVec2InShader",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get item [item]'s [component] value in vector 2 array [uniformName] in [shader]",
+            arguments: {
+              item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              component: {type: Scratch.ArgumentType.STRING, menu: "vec2Component"},
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+            },
+          },
+          {
+            opcode: "getArrayVec3InShader",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get item [item]'s [component] value in vector 3 array [uniformName] in [shader]",
+            arguments: {
+              item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              component: {type: Scratch.ArgumentType.STRING, menu: "vec3Component"},
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+            },
+          },
+          {
+            opcode: "getArrayVec4InShader",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get item [item]'s [component] value in vector 4 array [uniformName] in [shader]",
+            arguments: {
+              item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              component: {type: Scratch.ArgumentType.STRING, menu: "vec4Component"},
+              uniformName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Uniform",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+            },
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -2030,6 +2198,18 @@
             acceptReporters: true,
             items: "_getCubemaps",
           },
+          vec2Component: {
+            items: [{text:"x",value:0}, {text:"y",value:1}], 
+            acceptReporters: true
+          },
+          vec3Component: {
+            items: [{text:"x",value:0}, {text:"y",value:1}, {text:"z",value:2}], 
+            acceptReporters: true
+          },
+          vec4Component: {
+            items: [{text:"x",value:0}, {text:"y",value:1}, {text:"z",value:2}, {text:"w",value:3}], 
+            acceptReporters: true
+          }
         },
         name: "Pen+ V7",
         id: "penP",
@@ -3184,6 +3364,71 @@
       this.programs[shader].uniformDat[uniformName] = this.penPlusCubemap[cubemap];
     }
 
+    getNumberInShader({ uniformName, shader }){
+      if (!this.programs[shader]) return 0;
+      if (!this.programs[shader].uniformDat[uniformName]) return 0;
+      return this.programs[shader].uniformDat[uniformName];
+    }
+
+    getVec2InShader({ component, uniformName, shader }){
+      if (!this.programs[shader]) return 0;
+      if (!this.programs[shader].uniformDat[uniformName]) return 0;
+      if (!this.programs[shader].uniformDat[uniformName][component]) return 0;
+      return this.programs[shader].uniformDat[uniformName][component];
+    }
+
+    getVec3InShader({ component, uniformName, shader }){
+      if (!this.programs[shader]) return 0;
+      if (!this.programs[shader].uniformDat[uniformName]) return 0;
+      if (!this.programs[shader].uniformDat[uniformName][component]) return 0;
+      return this.programs[shader].uniformDat[uniformName][component];
+    }
+
+    getVec4InShader({ component, uniformName, shader }){
+      if (!this.programs[shader]) return 0;
+      if (!this.programs[shader].uniformDat[uniformName]) return 0;
+      if (!this.programs[shader].uniformDat[uniformName][component]) return 0;
+      return this.programs[shader].uniformDat[uniformName][component];
+    }
+
+    getMatrixInShader({ uniformName, shader }){
+      if (!this.programs[shader]) return 0;
+      if (!this.programs[shader].uniformDat[uniformName]) return 0;
+      return JSON.stringify(this.programs[shader].uniformDat[uniformName]);
+    }
+
+    getTextureInShader({ uniformName, shader }, util){
+      if (!this.programs[shader]) return "";
+      if (!this.programs[shader].uniformDat[uniformName]) return "";
+      const text = this.programs[shader].uniformDat[uniformName];
+      let foundValue = Object.keys(this.penPlusCostumeLibrary).find(key => this.penPlusCostumeLibrary[key] === text);
+      //if we cannot find it in the pen+ library look for it in the scratch costume library
+      if (!foundValue) {
+        const curCostumes = util.target.sprite.costumes_;
+        if (!curCostumes) return "";
+        for (let costumeID = 0; costumeID < curCostumes.length; costumeID++) {
+          const costume = curCostumes[costumeID];
+          
+          if (costume != util.target.currentCostume) {
+            util.target.setCostume(costume);
+          }
+          
+          const texture = renderer._allSkins[costume.skinId].getTexture();
+
+          if (texture !== text) return costume.name;
+        }
+      }
+      return foundValue;
+    }
+
+    getCubemapInShader({ uniformName, shader }){
+      if (!this.programs[shader]) return 0;
+      if (!this.programs[shader].uniformDat[uniformName]) return 0;
+      const text = this.programs[shader].uniformDat[uniformName];
+      return Object.keys(this.penPlusCubemap).find(key => this.penPlusCubemap[key] === text);
+    }
+
+
     //For arrays!
     setArrayNumberInShader({ item, uniformName, shader, number }) {
       if (!this.programs[shader]) return;
@@ -3208,6 +3453,34 @@
       if (item < 1) return;
       this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`] = [numberX,numberY,numberZ,numberW];
     }
+
+    getArrayNumberInShader({ item, uniformName, shader }){
+      if (!this.programs[shader]) return 0;
+      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`]) return 0;
+      return this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`];
+    }
+
+    getArrayVec2InShader({ item, component, uniformName, shader }){
+      if (!this.programs[shader]) return 0;
+      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`]) return 0;
+      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component]) return 0;
+      return this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component];
+    }
+
+    getArrayVec3InShader({ item, component, uniformName, shader }){
+      if (!this.programs[shader]) return 0;
+      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`]) return 0;
+      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component]) return 0;
+      return this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component];
+    }
+
+    getArrayVec4InShader({ item, component, uniformName, shader }){
+      if (!this.programs[shader]) return;
+      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`]) return 0;
+      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component]) return 0;
+      return this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component];
+    }
+
 
     //! HEED THY WARNING LOTS OF JAVASCRIPT BASED HTML AHEAD !//
     //Modal themes
