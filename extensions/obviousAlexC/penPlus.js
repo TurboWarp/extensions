@@ -1040,13 +1040,13 @@
       Object.keys(this.shaders).forEach((shaderKey) => {
         let shader = this.shaders[shaderKey];
         this.programs[shaderKey] = {
-          info:twgl.createProgramInfo(gl, [
+          info: twgl.createProgramInfo(gl, [
             shader.projectData.vertShader,
             shader.projectData.fragShader,
           ]),
-          uniformDat:{},
-          attribDat:{}
-        }
+          uniformDat: {},
+          attribDat: {},
+        };
       });
     }
 
@@ -1104,13 +1104,10 @@
       };
 
       this.programs[name] = {
-        info:twgl.createProgramInfo(gl, [
-          data.vertShader,
-          data.fragShader,
-        ]),
-        uniformDat:{},
-        attribDat:{}
-      }
+        info: twgl.createProgramInfo(gl, [data.vertShader, data.fragShader]),
+        uniformDat: {},
+        attribDat: {},
+      };
     }
 
     deleteShader(name) {
@@ -1576,6 +1573,11 @@
             blockType: Scratch.BlockType.LABEL,
             text: "Advanced",
           },
+          //Custom Shader Blocks
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Custom Shaders",
+          },
           {
             blockType: Scratch.BlockType.BUTTON,
             func: "openShaderEditor",
@@ -1774,7 +1776,10 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "get value of [component] in vector 2 [uniformName] in [shader]",
             arguments: {
-              component: {type: Scratch.ArgumentType.STRING, menu: "vec2Component"},
+              component: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "vec2Component",
+              },
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Uniform",
@@ -1790,7 +1795,10 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "get value of [component] in vector 3 [uniformName] in [shader]",
             arguments: {
-              component: {type: Scratch.ArgumentType.STRING, menu: "vec3Component"},
+              component: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "vec3Component",
+              },
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Uniform",
@@ -1806,7 +1814,10 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "get value of [component] in vector 4 [uniformName] in [shader]",
             arguments: {
-              component: {type: Scratch.ArgumentType.STRING, menu: "vec4Component"},
+              component: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "vec4Component",
+              },
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Uniform",
@@ -1959,7 +1970,10 @@
             text: "get item [item]'s [component] value in vector 2 array [uniformName] in [shader]",
             arguments: {
               item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-              component: {type: Scratch.ArgumentType.STRING, menu: "vec2Component"},
+              component: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "vec2Component",
+              },
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Uniform",
@@ -1976,7 +1990,10 @@
             text: "get item [item]'s [component] value in vector 3 array [uniformName] in [shader]",
             arguments: {
               item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-              component: {type: Scratch.ArgumentType.STRING, menu: "vec3Component"},
+              component: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "vec3Component",
+              },
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Uniform",
@@ -1993,7 +2010,10 @@
             text: "get item [item]'s [component] value in vector 4 array [uniformName] in [shader]",
             arguments: {
               item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-              component: {type: Scratch.ArgumentType.STRING, menu: "vec4Component"},
+              component: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "vec4Component",
+              },
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Uniform",
@@ -2199,17 +2219,29 @@
             items: "_getCubemaps",
           },
           vec2Component: {
-            items: [{text:"x",value:0}, {text:"y",value:1}], 
-            acceptReporters: true
+            items: [
+              { text: "x", value: 0 },
+              { text: "y", value: 1 },
+            ],
+            acceptReporters: true,
           },
           vec3Component: {
-            items: [{text:"x",value:0}, {text:"y",value:1}, {text:"z",value:2}], 
-            acceptReporters: true
+            items: [
+              { text: "x", value: 0 },
+              { text: "y", value: 1 },
+              { text: "z", value: 2 },
+            ],
+            acceptReporters: true,
           },
           vec4Component: {
-            items: [{text:"x",value:0}, {text:"y",value:1}, {text:"z",value:2}, {text:"w",value:3}], 
-            acceptReporters: true
-          }
+            items: [
+              { text: "x", value: 0 },
+              { text: "y", value: 1 },
+              { text: "z", value: 2 },
+              { text: "w", value: 3 },
+            ],
+            acceptReporters: true,
+          },
         },
         name: "Pen+ V7",
         id: "penP",
@@ -3216,7 +3248,7 @@
     }
 
     //?Shader blocks
-    drawShaderTri({ shader, x1,y1,x2,y2,x3,y3 }, util) {
+    drawShaderTri({ shader, x1, y1, x2, y2, x3, y3 }, util) {
       if (!this.programs[shader]) return;
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
@@ -3284,20 +3316,20 @@
       gl.useProgram(this.programs[shader].info.program);
 
       //Just use the real scratch timer.
-      this.programs[shader].uniformDat.u_timer = runtime.ext_scratch3_sensing.getTimer({},util);
+      this.programs[shader].uniformDat.u_timer =
+        runtime.ext_scratch3_sensing.getTimer({}, util);
       this.programs[shader].uniformDat.u_transform = transform_Matrix;
       this.programs[shader].uniformDat.u_res = nativeSize;
 
       //? Bind Positional Data
-      twgl.setBuffersAndAttributes(
-        gl,
-        this.programs[shader].info,
-        bufferInfo
-      );
+      twgl.setBuffersAndAttributes(gl, this.programs[shader].info, bufferInfo);
 
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-      twgl.setUniforms(this.programs[shader].info, this.programs[shader].uniformDat);
+      twgl.setUniforms(
+        this.programs[shader].info,
+        this.programs[shader].uniformDat
+      );
 
       twgl.drawBufferInfo(gl, bufferInfo);
     }
@@ -3306,9 +3338,11 @@
       if (!this.programs[shader]) return;
 
       const curTarget = util.target;
-      
-      let curCostume = this.penPlusCostumeLibrary[texture] || curTarget.getCostumeIndexByName(Scratch.Cast.toString(texture));
-      if ((!this.penPlusCostumeLibrary[curCostume]) && (curCostume >= 0)) {
+
+      let curCostume =
+        this.penPlusCostumeLibrary[texture] ||
+        curTarget.getCostumeIndexByName(Scratch.Cast.toString(texture));
+      if (!this.penPlusCostumeLibrary[curCostume] && curCostume >= 0) {
         const curCostumeObject = curTarget.sprite.costumes_[curCostume];
         if (curCostume != curTarget.currentCostume) {
           curTarget.setCostume(curCostume);
@@ -3327,92 +3361,115 @@
 
     setVec2InShader({ uniformName, shader, numberX, numberY }) {
       if (!this.programs[shader]) return;
-      this.programs[shader].uniformDat[uniformName] = [numberX,numberY];
+      this.programs[shader].uniformDat[uniformName] = [numberX, numberY];
     }
 
     setVec3InShader({ uniformName, shader, numberX, numberY, numberZ }) {
       if (!this.programs[shader]) return;
-      this.programs[shader].uniformDat[uniformName] = [numberX,numberY,numberZ];
+      this.programs[shader].uniformDat[uniformName] = [
+        numberX,
+        numberY,
+        numberZ,
+      ];
     }
 
-    setVec4InShader({ uniformName, shader, numberX, numberY, numberZ, numberW }) {
+    setVec4InShader({
+      uniformName,
+      shader,
+      numberX,
+      numberY,
+      numberZ,
+      numberW,
+    }) {
       if (!this.programs[shader]) return;
-      this.programs[shader].uniformDat[uniformName] = [numberX,numberY,numberZ,numberW];
+      this.programs[shader].uniformDat[uniformName] = [
+        numberX,
+        numberY,
+        numberZ,
+        numberW,
+      ];
     }
 
-    setMatrixInShader({ uniformName, shader, list },util){
+    setMatrixInShader({ uniformName, shader, list }, util) {
       if (!this.programs[shader]) return;
-      let listOBJ = this._getVarObjectFromName(list,util,"list").value;
-      let converted = listOBJ.map(function(str) { return parseInt(str); });
-      
+      let listOBJ = this._getVarObjectFromName(list, util, "list").value;
+      let converted = listOBJ.map(function (str) {
+        return parseInt(str);
+      });
+
       this.programs[shader].uniformDat[uniformName] = converted;
     }
 
-    setMatrixInShaderArray({ uniformName, shader, array }){
+    setMatrixInShaderArray({ uniformName, shader, array }) {
       if (!this.programs[shader]) return;
       let converted = JSON.parse(array);
       //Make sure its an array
       if (!Array.isArray(converted)) return;
-      converted = converted.map(function(str) { return parseInt(str); });
+      converted = converted.map(function (str) {
+        return parseInt(str);
+      });
 
       this.programs[shader][uniformName] = converted;
     }
 
-    setCubeInShader({ uniformName, shader, cubemap }){
+    setCubeInShader({ uniformName, shader, cubemap }) {
       if (!this.programs[shader]) return;
       if (!this.penPlusCubemap[cubemap]) return;
-      this.programs[shader].uniformDat[uniformName] = this.penPlusCubemap[cubemap];
+      this.programs[shader].uniformDat[uniformName] =
+        this.penPlusCubemap[cubemap];
     }
 
-    getNumberInShader({ uniformName, shader }){
+    getNumberInShader({ uniformName, shader }) {
       if (!this.programs[shader]) return 0;
       if (!this.programs[shader].uniformDat[uniformName]) return 0;
       return this.programs[shader].uniformDat[uniformName];
     }
 
-    getVec2InShader({ component, uniformName, shader }){
+    getVec2InShader({ component, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
       if (!this.programs[shader].uniformDat[uniformName]) return 0;
       if (!this.programs[shader].uniformDat[uniformName][component]) return 0;
       return this.programs[shader].uniformDat[uniformName][component];
     }
 
-    getVec3InShader({ component, uniformName, shader }){
+    getVec3InShader({ component, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
       if (!this.programs[shader].uniformDat[uniformName]) return 0;
       if (!this.programs[shader].uniformDat[uniformName][component]) return 0;
       return this.programs[shader].uniformDat[uniformName][component];
     }
 
-    getVec4InShader({ component, uniformName, shader }){
+    getVec4InShader({ component, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
       if (!this.programs[shader].uniformDat[uniformName]) return 0;
       if (!this.programs[shader].uniformDat[uniformName][component]) return 0;
       return this.programs[shader].uniformDat[uniformName][component];
     }
 
-    getMatrixInShader({ uniformName, shader }){
+    getMatrixInShader({ uniformName, shader }) {
       if (!this.programs[shader]) return 0;
       if (!this.programs[shader].uniformDat[uniformName]) return 0;
       return JSON.stringify(this.programs[shader].uniformDat[uniformName]);
     }
 
-    getTextureInShader({ uniformName, shader }, util){
+    getTextureInShader({ uniformName, shader }, util) {
       if (!this.programs[shader]) return "";
       if (!this.programs[shader].uniformDat[uniformName]) return "";
       const text = this.programs[shader].uniformDat[uniformName];
-      let foundValue = Object.keys(this.penPlusCostumeLibrary).find(key => this.penPlusCostumeLibrary[key] === text);
+      let foundValue = Object.keys(this.penPlusCostumeLibrary).find(
+        (key) => this.penPlusCostumeLibrary[key] === text
+      );
       //if we cannot find it in the pen+ library look for it in the scratch costume library
       if (!foundValue) {
         const curCostumes = util.target.sprite.costumes_;
         if (!curCostumes) return "";
         for (let costumeID = 0; costumeID < curCostumes.length; costumeID++) {
           const costume = curCostumes[costumeID];
-          
+
           if (costume != util.target.currentCostume) {
             util.target.setCostume(costume);
           }
-          
+
           const texture = renderer._allSkins[costume.skinId].getTexture();
 
           if (texture !== text) return costume.name;
@@ -3421,13 +3478,14 @@
       return foundValue;
     }
 
-    getCubemapInShader({ uniformName, shader }){
+    getCubemapInShader({ uniformName, shader }) {
       if (!this.programs[shader]) return 0;
       if (!this.programs[shader].uniformDat[uniformName]) return 0;
       const text = this.programs[shader].uniformDat[uniformName];
-      return Object.keys(this.penPlusCubemap).find(key => this.penPlusCubemap[key] === text);
+      return Object.keys(this.penPlusCubemap).find(
+        (key) => this.penPlusCubemap[key] === text
+      );
     }
-
 
     //For arrays!
     setArrayNumberInShader({ item, uniformName, shader, number }) {
@@ -3439,48 +3497,99 @@
     setArrayVec2InShader({ item, uniformName, shader, numberX, numberY }) {
       if (!this.programs[shader]) return;
       if (item < 1) return;
-      this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`] = [numberX,numberY];
+      this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`] = [
+        numberX,
+        numberY,
+      ];
     }
 
-    setArrayVec3InShader({ item, uniformName, shader, numberX, numberY, numberZ }) {
+    setArrayVec3InShader({
+      item,
+      uniformName,
+      shader,
+      numberX,
+      numberY,
+      numberZ,
+    }) {
       if (!this.programs[shader]) return;
       if (item < 1) return;
-      this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`] = [numberX,numberY,numberZ];
+      this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`] = [
+        numberX,
+        numberY,
+        numberZ,
+      ];
     }
 
-    setArrayVec4InShader({ item, uniformName, shader, numberX, numberY, numberZ, numberW }) {
+    setArrayVec4InShader({
+      item,
+      uniformName,
+      shader,
+      numberX,
+      numberY,
+      numberZ,
+      numberW,
+    }) {
       if (!this.programs[shader]) return;
       if (item < 1) return;
-      this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`] = [numberX,numberY,numberZ,numberW];
+      this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`] = [
+        numberX,
+        numberY,
+        numberZ,
+        numberW,
+      ];
     }
 
-    getArrayNumberInShader({ item, uniformName, shader }){
+    getArrayNumberInShader({ item, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
-      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`]) return 0;
+      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`])
+        return 0;
       return this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`];
     }
 
-    getArrayVec2InShader({ item, component, uniformName, shader }){
+    getArrayVec2InShader({ item, component, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
-      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`]) return 0;
-      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component]) return 0;
-      return this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component];
+      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`])
+        return 0;
+      if (
+        !this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][
+          component
+        ]
+      )
+        return 0;
+      return this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][
+        component
+      ];
     }
 
-    getArrayVec3InShader({ item, component, uniformName, shader }){
+    getArrayVec3InShader({ item, component, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
-      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`]) return 0;
-      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component]) return 0;
-      return this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component];
+      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`])
+        return 0;
+      if (
+        !this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][
+          component
+        ]
+      )
+        return 0;
+      return this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][
+        component
+      ];
     }
 
-    getArrayVec4InShader({ item, component, uniformName, shader }){
+    getArrayVec4InShader({ item, component, uniformName, shader }) {
       if (!this.programs[shader]) return;
-      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`]) return 0;
-      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component]) return 0;
-      return this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][component];
+      if (!this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`])
+        return 0;
+      if (
+        !this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][
+          component
+        ]
+      )
+        return 0;
+      return this.programs[shader].uniformDat[`${uniformName}[${item - 1}]`][
+        component
+      ];
     }
-
 
     //! HEED THY WARNING LOTS OF JAVASCRIPT BASED HTML AHEAD !//
     //Modal themes
@@ -4176,6 +4285,6 @@
   }
 
   const penPlus = new extension();
-  console.log(Object.keys(penPlus))
+  console.log(Object.keys(penPlus));
   Scratch.extensions.register(penPlus);
 })(Scratch);
