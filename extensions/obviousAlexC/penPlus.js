@@ -1038,7 +1038,6 @@
 
     _createAttributedatForShader(shaderName) {
       const shaderDat = this.programs[shaderName];
-      console.log(shaderDat);
       //Make sure required info exists
       if (!shaderDat) return;
       if (!shaderDat.info) return;
@@ -1047,14 +1046,22 @@
       const attributeDat = shaderDat.info.attribSetters;
       const attributes = Object.keys(attributeDat);
 
+      const bufferInitilizer = {};
+
       //Loop through every attribute and add the appropriate data.
-      attributes.forEach(attributeKey => {
+      attributes.forEach((attributeKey) => {
         //Create the array
-        this.programs[shaderName].attribDat[attributeKey] = {type:"unknown",data:[]};
+        this.programs[shaderName].attribDat[attributeKey] = {
+          type: "unknown",
+          data: [],
+        };
 
         //Search using regex
         const regexSearcher = new RegExp(`.*${attributeKey}.*\n?`);
-        let searchResult = this.shaders[shaderName].projectData.vertShader.match(regexSearcher)[0];
+        let searchResult =
+          this.shaders[shaderName].projectData.vertShader.match(
+            regexSearcher
+          )[0];
 
         //Remove whitespace at the beginning for easy extraction
         while (searchResult.charAt(0) == " ") {
@@ -1063,7 +1070,7 @@
 
         //determine the length of the array through type
         const split = searchResult.split(" ");
-        const type = (split.length < 4) ? split[1] : split[2];
+        const type = split.length < 4 ? split[1] : split[2];
         let length = 3;
         this.programs[shaderName].attribDat[attributeKey].type = type;
 
@@ -1079,16 +1086,25 @@
           case "vec4":
             length = 16;
             break;
-        
+
           default:
             break;
         }
 
+        //Add data to data array.
         for (let i = 0; i < length; i++) {
           this.programs[shaderName].attribDat[attributeKey].data.push(0);
         }
+
+        //Add the data to our buffer initilizer.
+        bufferInitilizer[attributeKey] = {
+          numComponents: Math.floor(length / 3),
+          data: this.programs[shaderName].attribDat[attributeKey].data,
+        };
       });
-      console.log(this.programs[shaderName].attribDat);
+
+      this.programs[shaderName].buffer =
+        twgl.createBufferInfoFromArrays(bufferInitilizer);
     }
 
     _parseProjectShaders() {
@@ -2093,7 +2109,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "attribute",
               },
-              pointID:{
+              pointID: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
                 menu: "pointMenu",
@@ -2114,7 +2130,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "attribute",
               },
-              pointID:{
+              pointID: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
                 menu: "pointMenu",
@@ -2136,7 +2152,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "attribute",
               },
-              pointID:{
+              pointID: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
                 menu: "pointMenu",
@@ -2159,7 +2175,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "attribute",
               },
-              pointID:{
+              pointID: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "1",
                 menu: "pointMenu",
@@ -2249,6 +2265,7 @@
             text: "Erase Depth",
           },
           {
+            hideFromPallete: true,
             opcode: "setAdvancedOptionValueTo",
             blockType: Scratch.BlockType.COMMAND,
             text: "set [setting] to [value]",
@@ -3414,6 +3431,8 @@
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
 
+      const buffer = this.programs[shader].buffer;
+
       this.trianglesDrawn += 1;
 
       const targetID = util.target.id;
@@ -3421,58 +3440,62 @@
       //? get triangle attributes for current sprite.
       const triAttribs = this.triangleAttributesOfAllSprites[targetID];
 
-      let inputInfo = {};
+      let inputInfo = JSON.parse(
+        JSON.stringify(this.programs[shader].attribDat)
+      );
 
       if (triAttribs) {
         //Just for our eyes sakes
         // prettier-ignore
-        inputInfo = {
-          a_position: new Float32Array([
-            x1,-y1,triAttribs[5],triAttribs[6],
-            x2,-y2,triAttribs[13],triAttribs[14],
-            x3,-y3,triAttribs[21],triAttribs[22]
-          ]),
-          a_color: new Float32Array([
-            triAttribs[2],triAttribs[3],triAttribs[4],triAttribs[7],
-            triAttribs[10],triAttribs[11],triAttribs[12],triAttribs[15],
-            triAttribs[18],triAttribs[19],triAttribs[20],triAttribs[23]
-          ]),
-          a_texCoord: new Float32Array([
-            triAttribs[0],triAttribs[1],
-            triAttribs[8],triAttribs[9],
-            triAttribs[16],triAttribs[17]
-          ])
-        };
+        inputInfo.a_position = {data: [
+          x1,-y1,triAttribs[5],triAttribs[6],
+          x2,-y2,triAttribs[13],triAttribs[14],
+          x3,-y3,triAttribs[21],triAttribs[22]
+        ]}
+        // prettier-ignore
+        inputInfo.a_color = {data: [
+          triAttribs[2],triAttribs[3],triAttribs[4],triAttribs[7],
+          triAttribs[10],triAttribs[11],triAttribs[12],triAttribs[15],
+          triAttribs[18],triAttribs[19],triAttribs[20],triAttribs[23]
+        ]}
+        // prettier-ignore
+        inputInfo.a_texCoord = {data:[
+          triAttribs[0],triAttribs[1],
+          triAttribs[8],triAttribs[9],
+          triAttribs[16],triAttribs[17]
+        ]}
       } else {
         //Just for our eyes sakes
         // prettier-ignore
-        inputInfo = {
-          a_position: new Float32Array([
-            x1,-y1,1,1,
-            x2,-y2,1,1,
-            x3,-y3,1,1
-          ]),
-          a_color: new Float32Array([
-            1,1,1,1,
-            1,1,1,1,
-            1,1,1,1
-          ]),
-          a_texCoord: new Float32Array([
-            0,0,
-            0,1,
-            1,1
-          ])
-        };
+        inputInfo.a_position = {data: [
+          x1,-y1,1,1,
+          x2,-y2,1,1,
+          x3,-y3,1,1
+        ]}
+        // prettier-ignore
+        inputInfo.a_color = {data: [
+          1,1,1,1,
+          1,1,1,1,
+          1,1,1,1
+        ]}
+        // prettier-ignore
+        inputInfo.a_texCoord = {data: [
+          0,0,
+          0,1,
+          1,1
+        ]}
       }
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_position.buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_position, gl.DYNAMIC_DRAW);
+      const keys = Object.keys(inputInfo);
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_color.buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_color, gl.DYNAMIC_DRAW);
-
-      gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_texCoord.buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_texCoord, gl.DYNAMIC_DRAW);
+      keys.forEach((key) => {
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.attribs[key].buffer);
+        gl.bufferData(
+          gl.ARRAY_BUFFER,
+          new Float32Array(inputInfo[key].data),
+          gl.DYNAMIC_DRAW
+        );
+      });
 
       gl.useProgram(this.programs[shader].info.program);
 
@@ -3753,14 +3776,98 @@
     }
 
     //Attributes
-    setNumberAttributeInShader(){}
+    setNumberAttributeInShader({ attributeName, pointID, shader, number }) {
+      if (!this.programs[shader]) return;
+      if (!this.programs[shader].attribDat[attributeName]) return;
 
-    setVec2AttributeInShader(){}
+      //Get the type and make sure its the desired one
+      let type = this.programs[shader].attribDat[attributeName].type;
+      if (!(type == "int" || type == "float")) return;
 
-    setVec3AttributeInShader(){}
+      //If the attribute is an integer force it to be one
+      if (type == "int") number = Math.floor(number);
 
-    setVec4AttributeInShader(){}
+      //Set the data in the array
+      this.programs[shader].attribDat[attributeName].data[pointID - 1] = number;
+    }
 
+    setVec2AttributeInShader({
+      attributeName,
+      pointID,
+      shader,
+      numberX,
+      numberY,
+    }) {
+      if (!this.programs[shader]) return;
+      if (!this.programs[shader].attribDat[attributeName]) return;
+
+      //Get the type and make sure its the desired one
+      let type = this.programs[shader].attribDat[attributeName].type;
+      if (!(type == "vec2")) return;
+
+      pointID -= 1;
+      pointID *= 2;
+
+      //Set the data in the array
+      this.programs[shader].attribDat[attributeName].data[pointID] = numberX;
+      this.programs[shader].attribDat[attributeName].data[pointID + 1] =
+        numberY;
+    }
+
+    setVec3AttributeInShader({
+      attributeName,
+      pointID,
+      shader,
+      numberX,
+      numberY,
+      numberZ,
+    }) {
+      if (!this.programs[shader]) return;
+      if (!this.programs[shader].attribDat[attributeName]) return;
+
+      //Get the type and make sure its the desired one
+      let type = this.programs[shader].attribDat[attributeName].type;
+      if (!(type == "vec3")) return;
+
+      pointID -= 1;
+      pointID *= 3;
+
+      //Set the data in the array
+      this.programs[shader].attribDat[attributeName].data[pointID] = numberX;
+      this.programs[shader].attribDat[attributeName].data[pointID + 1] =
+        numberY;
+      this.programs[shader].attribDat[attributeName].data[pointID + 2] =
+        numberZ;
+    }
+
+    setVec4AttributeInShader({
+      attributeName,
+      pointID,
+      shader,
+      numberX,
+      numberY,
+      numberZ,
+      numberW,
+    }) {
+      if (!this.programs[shader]) return;
+      if (!this.programs[shader].attribDat[attributeName]) return;
+
+      //Get the type and make sure its the desired one
+      let type = this.programs[shader].attribDat[attributeName].type;
+      if (!(type == "vec4")) return;
+
+      pointID -= 1;
+      pointID *= 4;
+
+      //Set the data in the array
+      this.programs[shader].attribDat[attributeName].data[pointID] = numberX;
+      this.programs[shader].attribDat[attributeName].data[pointID + 1] =
+        numberY;
+      this.programs[shader].attribDat[attributeName].data[pointID + 2] =
+        numberZ;
+      this.programs[shader].attribDat[attributeName].data[pointID + 3] =
+        numberW;
+    }
 
     //! HEED THY WARNING LOTS OF JAVASCRIPT BASED HTML AHEAD !//
     //Modal themes
