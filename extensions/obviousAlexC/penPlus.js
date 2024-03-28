@@ -1036,6 +1036,24 @@
       this._setupTheme();
     }
 
+    _createAttributedatForShader(shaderName) {
+      const shaderDat = this.programs[shaderName];
+      console.log(shaderDat);
+      //Make sure required info exists
+      if (!shaderDat) return;
+      if (!shaderDat.info) return;
+      if (!shaderDat.info.attribSetters) return;
+      //Store info
+      const attributeDat = shaderDat.info.attribSetters;
+      const attributes = Object.keys(attributeDat);
+
+      //Loop through every attribute and add the appropriate data.
+      attributes.forEach(attribute => {
+        console.log(attribute);
+        this.programs[shaderName].attribDat = {};
+      })
+    }
+
     _parseProjectShaders() {
       Object.keys(this.shaders).forEach((shaderKey) => {
         let shader = this.shaders[shaderKey];
@@ -1047,6 +1065,8 @@
           uniformDat: {},
           attribDat: {},
         };
+
+        this._createAttributedatForShader(shaderKey);
       });
     }
 
@@ -1108,6 +1128,8 @@
         uniformDat: {},
         attribDat: {},
       };
+
+      this._createAttributedatForShader(name);
     }
 
     deleteShader(name) {
@@ -2024,6 +2046,97 @@
               },
             },
           },
+          "---",
+          {
+            opcode: "setNumberAttributeInShader",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set number attribute [attributeName] of point [pointID] in [shader] to [number]",
+            arguments: {
+              attributeName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "attribute",
+              },
+              pointID:{
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "1",
+                menu: "pointMenu",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+              number: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+            },
+          },
+          {
+            opcode: "setVec2AttributeInShader",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set vector 2 attribute [attributeName] of point [pointID] in [shader] to [numberX] [numberY]",
+            arguments: {
+              attributeName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "attribute",
+              },
+              pointID:{
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "1",
+                menu: "pointMenu",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+              numberX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+            },
+          },
+          {
+            opcode: "setVec3AttributeInShader",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set vector 3 attribute [attributeName] of point [pointID] in [shader] to [numberX] [numberY] [numberZ]",
+            arguments: {
+              attributeName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "attribute",
+              },
+              pointID:{
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "1",
+                menu: "pointMenu",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+              numberX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              numberZ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+            },
+          },
+          {
+            opcode: "setVec4AttributeInShader",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set vector 4 attribute [attributeName] of point [pointID] in [shader] to [numberX] [numberY] [numberZ] [numberW]",
+            arguments: {
+              attributeName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "attribute",
+              },
+              pointID:{
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "1",
+                menu: "pointMenu",
+              },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+              numberX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              numberY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              numberZ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              numberW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+            },
+          },
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Cubemaps",
@@ -2930,8 +3043,6 @@
       //trying my best to reduce memory usage
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
 
-      //correction for HQ pen
-      const typSize = renderer._nativeSize;
       //Paratheses because I know some obscure browser will screw this up.
       x1 = Scratch.Cast.toNumber(x1);
       x2 = Scratch.Cast.toNumber(x2);
@@ -2959,6 +3070,7 @@
     RGB2HEX({ R, G, B }) {
       return this.colorLib.rgbtoSColor({ R: R, G: G, B: B });
     }
+
     HSV2RGB({ H, S, V }) {
       S = S / 100;
       V = V / 100;
@@ -3003,6 +3115,7 @@
     setDURIclampmode({ clampMode }) {
       penPlusImportWrapMode = clampMode;
     }
+
     addBlankIMG({ color, width, height, name }) {
       //Just a simple thing to allow for pen drawing
       this.textureFunctions.createBlankPenPlusTextureInfo(
@@ -3013,6 +3126,7 @@
         penPlusImportWrapMode
       );
     }
+
     addIMGfromDURI({ dataURI, name }) {
       //Just a simple thing to allow for pen drawing
       this.textureFunctions.createPenPlusTextureInfo(
@@ -3021,16 +3135,19 @@
         penPlusImportWrapMode
       );
     }
+
     removeIMGfromDURI({ name }, util) {
       //Just a simple thing to allow for pen drawing
       if (this.penPlusCostumeLibrary["!" + name]) {
         delete this.penPlusCostumeLibrary["!" + name];
       }
     }
+
     doesIMGexist({ name }, util) {
       //Just a simple thing to allow for pen drawing
       return typeof this.penPlusCostumeLibrary["!" + name] != "undefined";
     }
+
     getCostumeDataURI({ costume }, util) {
       //Just a simple thing to allow for pen drawing
       const curTarget = util.target;
@@ -3043,6 +3160,7 @@
         return curCostume;
       }
     }
+
     getDimensionOf({ dimension, costume }, util) {
       //Just a simple thing to allow for pen drawing
       const costIndex = this.penPlusCostumeLibrary[costume];
@@ -3050,6 +3168,7 @@
         return costIndex[dimension];
       }
     }
+
     setpixelcolor({ x, y, color, costume }) {
       const curCostume = this.penPlusCostumeLibrary[costume];
       if (curCostume) {
@@ -3089,6 +3208,7 @@
         }
       }
     }
+
     getpixelcolor({ x, y, costume }) {
       const curCostume = this.penPlusCostumeLibrary[costume];
       if (curCostume) {
@@ -3112,6 +3232,7 @@
         }
       }
     }
+
     getPenPlusCostumeURI({ costume }) {
       const curCostume = this.penPlusCostumeLibrary[costume];
       if (curCostume) {
@@ -3136,9 +3257,11 @@
       gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
       renderer.dirty = true;
     }
+
     getTrianglesDrawn() {
       return this.trianglesDrawn;
     }
+
     turnAdvancedSettingOff({ Setting, onOrOff }) {
       if (onOrOff == "on") {
         this.AdvancedSettings[Setting] = true;
@@ -3146,6 +3269,7 @@
       }
       this.AdvancedSettings[Setting] = false;
     }
+
     setAdvancedOptionValueTo({ setting, value }) {
       switch (setting) {
         case "depthMax":
@@ -3590,6 +3714,16 @@
         component
       ];
     }
+
+    //Attributes
+    setNumberAttributeInShader(){}
+
+    setVec2AttributeInShader(){}
+
+    setVec3AttributeInShader(){}
+
+    setVec4AttributeInShader(){}
+
 
     //! HEED THY WARNING LOTS OF JAVASCRIPT BASED HTML AHEAD !//
     //Modal themes
