@@ -1048,10 +1048,47 @@
       const attributes = Object.keys(attributeDat);
 
       //Loop through every attribute and add the appropriate data.
-      attributes.forEach(attribute => {
-        console.log(attribute);
-        this.programs[shaderName].attribDat = {};
-      })
+      attributes.forEach(attributeKey => {
+        //Create the array
+        this.programs[shaderName].attribDat[attributeKey] = {type:"unknown",data:[]};
+
+        //Search using regex
+        const regexSearcher = new RegExp(`.*${attributeKey}.*\n?`);
+        let searchResult = this.shaders[shaderName].projectData.vertShader.match(regexSearcher)[0];
+
+        //Remove whitespace at the beginning for easy extraction
+        while (searchResult.charAt(0) == " ") {
+          searchResult = searchResult.replace(" ", "");
+        }
+
+        //determine the length of the array through type
+        const split = searchResult.split(" ");
+        const type = (split.length < 4) ? split[1] : split[2];
+        let length = 3;
+        this.programs[shaderName].attribDat[attributeKey].type = type;
+
+        switch (type) {
+          case "vec2":
+            length = 6;
+            break;
+
+          case "vec3":
+            length = 9;
+            break;
+
+          case "vec4":
+            length = 16;
+            break;
+        
+          default:
+            break;
+        }
+
+        for (let i = 0; i < length; i++) {
+          this.programs[shaderName].attribDat[attributeKey].data.push(0);
+        }
+      });
+      console.log(this.programs[shaderName].attribDat);
     }
 
     _parseProjectShaders() {
