@@ -4501,7 +4501,8 @@
             const costumeURI =
               curTarget.sprite.costumes_[curCostume].asset.encodeDataURI();
 
-            //Neat stuff here
+            //Only used for images we got permission to fetch before. Don't need this.
+            // eslint-disable-next-line
             const image = new Image();
             image.onload = () => {
               gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[name]);
@@ -4526,6 +4527,7 @@
               );
             };
 
+            // eslint-disable-next-line
             image.src = costumeURI;
           }
         }
