@@ -2,7 +2,7 @@
 // ID: griffpatch
 // Description: Two dimensional physics.
 // Original: griffpatch <https://scratch.mit.edu/users/griffpatch/>
-// License: BSD-3-Clause AND MIT
+// License: BSD-3-Clause AND MIT AND Zlib
 
 /*!
  * This is based on https://github.com/griffpatch/scratch-vm/tree/box2d/src/extensions/scratch3_griffpatch
