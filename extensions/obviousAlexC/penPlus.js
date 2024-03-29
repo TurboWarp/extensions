@@ -2906,7 +2906,7 @@
         this.triangleAttributesOfAllSprites[targetId] =
           triangleDefaultAttributes;
       }
-      this.attributeEditors.setValueAccordingToCaseTriangle(
+      this.attributeEditors.triangle(
         targetId,
         Scratch.Cast.toNumber(attribute),
         value,
@@ -2921,7 +2921,7 @@
         this.triangleAttributesOfAllSprites[targetId] =
           triangleDefaultAttributes;
       }
-      this.attributeEditors.setValueAccordingToCaseTriangle(
+      this.attributeEditors.triangle(
         targetId,
         Scratch.Cast.toNumber(wholeAttribute),
         value,
@@ -2941,7 +2941,7 @@
 
       const calcColor = Scratch.Cast.toRgbColorObject(color);
 
-      this.attributeEditors.setValueAccordingToCaseTriangle(
+      this.attributeEditors.triangle(
         targetId,
         2,
         calcColor.r / 2.55,
@@ -2949,7 +2949,7 @@
         trianglePointStart
       );
 
-      this.attributeEditors.setValueAccordingToCaseTriangle(
+      this.attributeEditors.triangle(
         targetId,
         3,
         calcColor.g / 2.55,
@@ -2957,7 +2957,7 @@
         trianglePointStart
       );
 
-      this.attributeEditors.setValueAccordingToCaseTriangle(
+      this.attributeEditors.triangle(
         targetId,
         4,
         calcColor.b / 2.55,
@@ -2977,7 +2977,7 @@
 
       const calcColor = Scratch.Cast.toRgbColorObject(color);
 
-      this.attributeEditors.setValueAccordingToCaseTriangle(
+      this.attributeEditors.triangle(
         targetId,
         2,
         calcColor.r / 2.55,
@@ -2985,7 +2985,7 @@
         trianglePointStart
       );
 
-      this.attributeEditors.setValueAccordingToCaseTriangle(
+      this.attributeEditors.triangle(
         targetId,
         3,
         calcColor.g / 2.55,
@@ -2993,7 +2993,7 @@
         trianglePointStart
       );
 
-      this.attributeEditors.setValueAccordingToCaseTriangle(
+      this.attributeEditors.triangle(
         targetId,
         4,
         calcColor.b / 2.55,
@@ -3428,6 +3428,8 @@
       if (!this.programs[shader]) return;
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+      
+      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
 
       //Safe to assume they have a buffer;
       const buffer = this.programs[shader].buffer;
@@ -3509,7 +3511,6 @@
       twgl.setBuffersAndAttributes(gl, this.programs[shader].info, buffer);
 
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-
       twgl.setUniforms(
         this.programs[shader].info,
         this.programs[shader].uniformDat
@@ -3520,6 +3521,8 @@
 
     setTextureInShader({ uniformName, shader, texture }, util) {
       if (!this.programs[shader]) return;
+
+      console.log(texture);
 
       const curTarget = util.target;
 
@@ -3534,8 +3537,13 @@
 
         curCostume = renderer._allSkins[curCostumeObject.skinId].getTexture();
       }
+      else if(this.penPlusCostumeLibrary[texture]) {
+        curCostume = curCostume.texture;
+      }
 
-      this.programs[shader].uniformDat[uniformName] = texture;
+      console.log(curCostume)
+
+      this.programs[shader].uniformDat[uniformName] = curCostume;
     }
 
     setNumberInShader({ uniformName, shader, number }) {
