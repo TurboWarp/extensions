@@ -3213,7 +3213,7 @@
       );
       if (costIndex >= 0) {
         const curCostume =
-          curTarget.sprite.costumes_[costIndex].asset.encodeDataURI();
+          curTarget.sprite.costumes[costIndex].asset.encodeDataURI();
         return curCostume;
       }
     }
@@ -3514,8 +3514,6 @@
 
       //? Bind Positional Data
       twgl.setBuffersAndAttributes(gl, this.programs[shader].info, buffer);
-
-      console.log(this.programs[shader]);
 
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       twgl.setUniforms(
