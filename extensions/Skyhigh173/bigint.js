@@ -11,36 +11,7 @@
    * @param {unknown} x
    * @returns {bigint}
    */
-
   const bi = (x) => {
-    let str, idx, flag;
-    switch (typeof x) {
-      case "bigint":
-        return x;
-      case "string":
-        // try to parse things like '8n'
-        str = x[x.length - 1] === "n" ? x.slice(0, -1) : x;
-        // remove decimals
-        idx = str.indexOf(".");
-        str = idx === -1 ? str : str.substring(0, idx);
-        //determine if only numbers are included
-        flag = /^\d+$/.test(str);
-        if (flag) {
-          try {
-            return BigInt(str);
-          } catch (e) {
-            return 0n;
-          }
-        } else return 0n;
-      default:
-        try {
-          return BigInt(Math.trunc(x));
-        } catch (e) {
-          return 0n;
-        }
-    }
-    /*
-    // old way
     if (typeof x === "string") {
       // Try to parse things like '8n'
       if (x.charAt(x.length - 1) === "n") {
@@ -68,7 +39,6 @@
     } catch (e) {
       return 0n;
     }
-    */
   };
 
   const makeLabel = (text) => ({
@@ -80,13 +50,13 @@
     getInfo() {
       return {
         id: "skyhigh173BigInt",
-        name: Scratch.translate("BigInt"),
+        name: "BigInt",
         color1: "#59C093",
         blocks: [
           {
             opcode: "from",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("To BigInt [text]"),
+            text: "To BigInt [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -97,7 +67,7 @@
           {
             opcode: "to",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("To Number [text]"),
+            text: "To Number [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -105,7 +75,7 @@
               },
             },
           },
-          makeLabel(Scratch.translate("Arithmetic")),
+          makeLabel("Arithmetic"),
           {
             opcode: "add",
             blockType: Scratch.BlockType.REPORTER,
@@ -184,7 +154,7 @@
           {
             opcode: "mod",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[a] mod [b]"),
+            text: "[a] mod [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
@@ -216,7 +186,7 @@
               },
             },
           },
-          makeLabel(Scratch.translate("Logic")),
+          makeLabel("Logic"),
           {
             opcode: "lt",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -307,7 +277,7 @@
               },
             },
           },
-          makeLabel(Scratch.translate("Bitwise")),
+          makeLabel("Bitwise"),
           {
             opcode: "and",
             blockType: Scratch.BlockType.REPORTER,
