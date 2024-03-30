@@ -1,7 +1,7 @@
 // Name: Mobile keyboard
 // ID: mobilekeyboard0419
 // Description: Show the keyboard on mobile devices and get the users input without showing any input modal.
-// License: MIT
+// License: MPL-2.0
 // By: veggiecan0419
 (function (Scratch) {
   "use strict";
