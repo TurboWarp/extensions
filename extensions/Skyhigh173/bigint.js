@@ -12,6 +12,9 @@
    * @returns {bigint}
    */
   const bi = (x) => {
+    if (typeof x === "bigint") {
+      return x; //If the input is already of type BigInt, return directly
+    }
     if (typeof x === "string") {
       // Try to parse things like '8n'
       if (x.charAt(x.length - 1) === "n") {
