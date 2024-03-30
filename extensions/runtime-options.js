@@ -1,7 +1,7 @@
 // Name: Runtime Options
 // ID: runtimeoptions
 // Description: Get and modify turbo mode, framerate, interpolation, clone limit, stage size, and more.
-// License: MIT AND LGPL-3.0
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
