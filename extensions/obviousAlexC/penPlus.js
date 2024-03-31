@@ -114,8 +114,8 @@
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
 
-      transform_Matrix[0] = 2 / nativeSize[0];
-      transform_Matrix[1] = 2 / nativeSize[1];
+      transform_Matrix[0] = 2 / renderer._nativeSize[0];
+      transform_Matrix[1] = 2 / renderer._nativeSize[1];
 
       lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
