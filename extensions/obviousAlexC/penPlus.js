@@ -7,6 +7,10 @@
 (function (Scratch) {
   "use strict";
 
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error("Pen+ must run unsandboxed");
+  }
+
   //?some smaller optimizations just store the multiplacation for later
   const d2r = 0.0174533;
 
@@ -1134,10 +1138,9 @@
         };
 
         parentExtension.deserialize = (serialized) => {
-          parentExtension.shaders = JSON.parse(serialized);
+          parentExtension.shaders = JSON.parse(serialized) || {};
+          parentExtension._parseProjectShaders();
         };
-
-        parentExtension.shaders = {};
 
         //Doing this to remedy the janky turbowarp saving system.
         parentExtension.getShaders = () => {
