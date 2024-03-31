@@ -1130,7 +1130,6 @@
 
     //Stolen from lily :3
     _setupExtensionStorage() {
-      this.programs = {};
       //Penguinmod saving support
       if (Scratch.extensions.isPenguinMod) {
         parentExtension.serialize = () => {
@@ -1138,6 +1137,7 @@
         };
 
         parentExtension.deserialize = (serialized) => {
+          this.programs = {};
           parentExtension.shaders = JSON.parse(serialized) || {};
           parentExtension._parseProjectShaders();
         };
@@ -1146,9 +1146,8 @@
         parentExtension.getShaders = () => {
           return parentExtension.shaders;
         };
-
-        parentExtension._parseProjectShaders();
       } else {
+        this.programs = {};
         if (!runtime.extensionStorage["penP"]) {
           runtime.extensionStorage["penP"] = Object.create(null);
           runtime.extensionStorage["penP"].shaders = Object.create(null);
