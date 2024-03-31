@@ -1022,6 +1022,10 @@
             };
             break;
 
+          case "DATA_REQUEST":
+            this.openShaderManager("load");
+            break;
+
           default:
             break;
         }
@@ -3379,6 +3383,9 @@
           {
             type: "REGISTER_PARENT",
             exitButton: true,
+            importText: `Import from ${hostname.replace(/\w\S*/g, function (txt) {
+              return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            })}`,
             exportText: `Export to ${hostname.replace(/\w\S*/g, function (txt) {
               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             })}`,
@@ -4417,6 +4424,112 @@
             xImage.style.transform = "rotate(45deg)";
 
             closeMenu.appendChild(xImage);
+          });
+          break;
+
+        case "load":
+          //Resize this manager to fit better
+          resizeFunc(25, 30);
+          //A container containing already existing shaders and some text to accompony them.
+          menuSpecificVars.existingShaderHolder = document.createElement("div");
+
+          menuSpecificVars.existingShaderHolder.style.width = "100%";
+          menuSpecificVars.existingShaderHolder.style.height = "100%";
+          menuSpecificVars.existingShaderHolder.style.left = "0%";
+          menuSpecificVars.existingShaderHolder.style.backgroundColor =
+            "#00000000";
+          menuSpecificVars.existingShaderHolder.style.position = "absolute";
+
+          shaderPanel.appendChild(menuSpecificVars.existingShaderHolder);
+
+          menuSpecificVars.existingText = document.createElement("div");
+
+          menuSpecificVars.existingText.style.width = "100%";
+          menuSpecificVars.existingText.style.height = "48px";
+          menuSpecificVars.existingText.style.top = "0px";
+          menuSpecificVars.existingText.style.left = "0px";
+          menuSpecificVars.existingText.style.position = "absolute";
+          menuSpecificVars.existingText.style.transform = "translate(0%,8px)";
+          menuSpecificVars.existingText.style.color = this._textColor;
+
+          menuSpecificVars.existingText.style.fontSize = "16px";
+
+          menuSpecificVars.existingText.innerHTML = "Project Shaders";
+
+          menuSpecificVars.existingShaderHolder.appendChild(
+            menuSpecificVars.existingText
+          );
+
+          //The background for existing shaders
+          menuSpecificVars.existingDivBackground =
+            document.createElement("div");
+
+          menuSpecificVars.existingDivBackground.style.backgroundColor =
+            this._menuBarBackground;
+          menuSpecificVars.existingDivBackground.style.width = "100%";
+          menuSpecificVars.existingDivBackground.style.height =
+            "calc(100% - 32px)";
+          menuSpecificVars.existingDivBackground.style.position = "absolute";
+          menuSpecificVars.existingDivBackground.style.top = "32px";
+          menuSpecificVars.existingDivBackground.style.left = "0%";
+          menuSpecificVars.existingDivBackground.style.filter = "opacity(25%)";
+
+          menuSpecificVars.existingShaderHolder.appendChild(
+            menuSpecificVars.existingDivBackground
+          );
+
+          //The container for existing shaders
+          menuSpecificVars.existingDiv = document.createElement("div");
+
+          menuSpecificVars.existingDiv.style.backgroundColor = "#00000000";
+          menuSpecificVars.existingDiv.style.width = "100%";
+          menuSpecificVars.existingDiv.style.height = "calc(100% - 32px)";
+          menuSpecificVars.existingDiv.style.position = "absolute";
+          menuSpecificVars.existingDiv.style.top = "32px";
+          menuSpecificVars.existingDiv.style.left = "0%";
+          menuSpecificVars.existingDiv.style.overflowY = "auto";
+          menuSpecificVars.existingDiv.style.overflowX = "hidden";
+
+          menuSpecificVars.existingShaderHolder.appendChild(
+            menuSpecificVars.existingDiv
+          );
+
+          Object.keys(this.shaders).forEach((shader) => {
+            const shaderDiv = document.createElement("div");
+            shaderDiv.style.width = "100%";
+            shaderDiv.style.height = "48px";
+            shaderDiv.style.color = "#ffffff";
+            shaderDiv.style.marginBottom = "2px";
+            shaderDiv.style.backgroundColor = this._menuBarBackground;
+
+            shaderDiv.style.cursor = "pointer";
+
+            shaderDiv.onclick = () => {
+              this.IFrame.contentWindow.postMessage(
+                {
+                  type: "DATA_LOAD",
+                  projectData: this.shaders[shader].projectData.projectData
+                },
+                this.IFrame.src
+              );
+              closeFunc()
+            }
+
+            menuSpecificVars.existingDiv.appendChild(shaderDiv);
+
+            const modifyDate = new Date(this.shaders[shader].modifyDate);
+
+            const nameDiv = document.createElement("div");
+            nameDiv.style.position = "relative";
+            nameDiv.style.width = "100%";
+            nameDiv.style.height = "48px";
+            nameDiv.style.top = "0px";
+            nameDiv.style.left = "0px";
+            nameDiv.style.transform = "translate(5%,5%)";
+            nameDiv.style.textAlign = "left";
+            nameDiv.innerText = `${shader}\nModified: ${modifyDate.getDate()}/${modifyDate.getMonth() + 1}/${modifyDate.getFullYear()} ${modifyDate.getHours() % 12 == 0 ? 12 : modifyDate.getHours() % 12}:${modifyDate.getMinutes()} ${modifyDate.getHours() > 11 ? "PM" : "AM"}`;
+
+            shaderDiv.appendChild(nameDiv);
           });
           break;
 
