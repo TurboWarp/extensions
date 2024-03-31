@@ -420,12 +420,6 @@
     ]}
   });
 
-  //?Depth
-  const u_depthTexture_Location_draw = gl.getUniformLocation(
-    penPlusShaders.draw.ProgramInf.program,
-    "u_drawTex"
-  );
-
   let parentExtension = null;
 
   //?Override pen Clear with pen+
@@ -706,7 +700,7 @@
         );
 
         twgl.setUniforms(penPlusShaders.draw.ProgramInf, {
-          u_drawTex: depthBufferTexture
+          u_drawTex: depthBufferTexture,
         });
 
         twgl.drawBufferInfo(gl, reRenderInfo);
@@ -3430,7 +3424,7 @@
       if (!this.programs[shader]) return;
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
-      
+
       gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
 
       //Safe to assume they have a buffer;
@@ -3536,8 +3530,7 @@
         }
 
         curCostume = renderer._allSkins[curCostumeObject.skinId].getTexture();
-      }
-      else if(this.penPlusCostumeLibrary[texture]) {
+      } else if (this.penPlusCostumeLibrary[texture]) {
         curCostume = curCostume.texture;
       }
 
