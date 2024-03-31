@@ -1025,6 +1025,10 @@
 
       parentExtension = this;
 
+      //For addon development. Just something fun I plan to do in the future.
+      //Others are allowed to join!
+      vm.runtime.ext_obviousalexc_penPlus = this;
+
       vm.runtime.on("PROJECT_LOADED", this._setupExtensionStorage);
       this._setupExtensionStorage();
 
