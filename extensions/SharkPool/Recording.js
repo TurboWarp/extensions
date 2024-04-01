@@ -3,11 +3,10 @@
 // Description: Record your voice while you run your projects!
 // By: SharkPool
 
-// Version 1.1.2
+// Version 1.1.3
 
 (function (Scratch) {
   "use strict";
-
   if (!Scratch.extensions.unsandboxed) throw new Error("Recording must run unsandboxed");
 
   const vm = Scratch.vm;
@@ -56,10 +55,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "recording mode [MODE]",
             arguments: {
-              MODE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "MODE"
-              }
+              MODE: { type: Scratch.ArgumentType.STRING, menu: "MODE" }
             }
           },
           {
@@ -67,10 +63,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "record for [TIME] seconds",
             arguments: {
-              TIME: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
-              }
+              TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
             }
           },
           {
@@ -95,10 +88,7 @@
             text: "when mic turns [ON_OFF]",
             isEdgeActivated: false,
             arguments: {
-              ON_OFF: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "ACTIVE"
-              }
+              ON_OFF: { type: Scratch.ArgumentType.STRING, menu: "ACTIVE" }
             }
           },
           {
@@ -112,10 +102,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "recorded audio as [TYPE]",
             arguments: {
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "FILETYPES",
-              }
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "FILETYPES" }
             }
           },
           {
@@ -123,14 +110,8 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "save recording to [SPRITE] named [NAME]",
             arguments: {
-              SPRITE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "TARGETS"
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Recording 1"
-              }
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "Recording 1" }
             }
           },
           {
@@ -138,45 +119,24 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "download recording named [NAME] as [TYPE]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Recording_1"
-              },
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "FILETYPES"
-              }
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "Recording_1" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "FILETYPES" }
             }
           }
         ],
         menus: {
           MODE: {
             acceptReporters: true,
-            items: ["enabled", "disabled"],
+            items: ["enabled", "disabled"]
           },
           FILETYPES: {
             acceptReporters: true,
-            items: ["mp3", "wav", "mpeg", "ogg"],
+            items: ["mp3", "wav", "mpeg", "ogg"]
           },
           ACTIVE: ["on", "off"],
-          TARGETS: {
-            acceptReporters: true,
-            items: "_getTargets",
-          },
+          TARGETS: { acceptReporters: true, items: "_getTargets" },
         },
       };
-    }
-
-    recordingSet(args) {
-      if (args.MODE === "enabled") {
-        if (!warningSent) {
-          const confirmed = window.confirm("Allow access to record Microphone Audio? Be aware of privacy concerns if you Accept.");
-          if (confirmed) {
-            this.startRecording();
-            warningSent = true;
-          } else { return }
-        } else { this.startRecording() }
-      } else { this.stopRecording() }
     }
 
     _getTargets() {
@@ -189,6 +149,41 @@
       return spriteNames.length > 0 ? spriteNames : [""];
     }
 
+    recordingSet(args, util) {
+      if (args.MODE === "enabled") {
+        if (!warningSent) {
+          const confirmed = window.confirm("Allow access to record Microphone Audio? Be aware of privacy concerns if you Accept.");
+          if (!confirmed) return;
+          else {
+            this.startRecording();
+            warningSent = true;
+          }
+        } else { this.startRecording() }
+      } else { this.stopRecording() }
+      runtime.requestRedraw(); // Redraw to Allow Time to Setup Mic/Save Recording Data/etc
+    }
+
+    recordForX(args, util) {
+      if (!warningSent) {
+        const confirmed = window.confirm("Allow access to record Microphone Audio? Be aware of privacy concerns if you Accept.");
+        if (!confirmed) return;
+        else {
+          this.startRecording();
+          warningSent = true;
+        }
+      } else { this.startRecording() }
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          const time = Math.abs(args.TIME * 1000);
+          setTimeout(() => {
+            this.stopRecording();
+            resolve();
+          }, time);
+        }, 150); // Short time to set up mic
+      });
+      runtime.requestRedraw(); // Redraw to Allow Time to Setup Mic/Save Recording Data/etc
+    }
+
     isRecordingMic() { return this.isRecording }
 
     clearRecording() {
@@ -196,25 +191,6 @@
       setTimeout(() => { this.recording = "", audioChunks = [] }, 10);
     }
     clearRecording2() { this.recording = "", audioChunks = [] }
-
-    recordForX(args) {
-      if (!warningSent) {
-        const confirmed = window.confirm("Allow access to record Microphone Audio? Be aware of privacy concerns if you Accept.");
-        if (confirmed) {
-          this.startRecording();
-          warningSent = true;
-        } else { return }
-      } else { this.startRecording() }
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            const time = Math.abs(args.TIME * 1000);
-            setTimeout(() => {
-              this.stopRecording();
-              resolve();
-            }, time);
-          }, 150); // Short time to set up mic
-        });
-    }
 
     recordedAudio(args) {
       return this.recording ? this.convertBlobToBase64(this.recording, args.TYPE) : "Nothing has been Recorded!";
@@ -224,8 +200,7 @@
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64Data = reader.result.split(",")[1];
-          const formattedData = `data:audio/${TYPE};base64,${base64Data}`;
-          resolve(formattedData);
+          resolve(`data:audio/${TYPE};base64,${base64Data}`);
         };
         reader.onerror = reject;
         reader.readAsDataURL(blob);
@@ -250,7 +225,7 @@
             vm.addSound(
               {
                 md5: `${asset.assetId}.${asset.dataFormat}`,
-                asset: asset, name: Scratch.Cast.toString(args.NAME),
+                asset: asset, name: Scratch.Cast.toString(args.NAME)
               },
               target,
             );
@@ -260,10 +235,7 @@
 
     async saveRecording2(args) {
       if (this.recording) {
-        const audioData = await this.convertBlobToBase64(
-          this.recording,
-          args.TYPE,
-        );
+        const audioData = await this.convertBlobToBase64(this.recording, args.TYPE);
         const fileName = `${Scratch.Cast.toString(args.NAME)}.${args.TYPE}`;
         downloadURL(audioData, fileName);
       }
@@ -302,7 +274,8 @@
         const sum = Items.reduce((acc, val) => acc + val, 0);
         const averageLoudness = sum / Items.length;
         return Math.round(averageLoudness / 7) + 1;
-      } else { return 0 }
+      }
+      return 0;
     }
 
     stopRecording() {
