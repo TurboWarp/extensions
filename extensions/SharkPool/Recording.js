@@ -177,11 +177,11 @@
           const time = Math.abs(args.TIME * 1000);
           setTimeout(() => {
             this.stopRecording();
+            runtime.requestRedraw(); // Redraw to Allow Time to Setup Mic/Save Recording Data/etc
             resolve();
           }, time);
         }, 150); // Short time to set up mic
       });
-      runtime.requestRedraw(); // Redraw to Allow Time to Setup Mic/Save Recording Data/etc
     }
 
     isRecordingMic() { return this.isRecording }
