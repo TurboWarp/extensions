@@ -3,7 +3,7 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.3.0
+// Version 1.3.1
 
 (function (Scratch) {
   "use strict";
@@ -535,7 +535,7 @@
       let typeElement, isHex, buttonClickFunc, container;
 
       const hexColorRegex = /^#([0-9A-F]{3}){1,2}$/i;
-      const Vvalue = util.target.lookupOrCreateVariable(nameID, nameID).value;
+      const Vvalue = xmlEscape(util.target.lookupOrCreateVariable(nameID, nameID).value);
       const isChecked = Vvalue === "true" || Vvalue === 1 ? true : false;
       nameID = name.replace(/[<>]/g, "");
       this.removeAllMonitorsUpdateListeners();
@@ -569,7 +569,7 @@
               <div class="monitor_label_ci1ok">${nameID}</div>
             </div>
             <div class="monitor_row_2y_kM">
-              <input type="text" id="text_${variableId}" class="monitor_slider_1CHwk no-drag" value="${xmlEscape(Vvalue)}">
+              <input type="text" id="text_${variableId}" class="monitor_slider_1CHwk no-drag" value="${Vvalue}">
             </div>`;
           variableMonitor.appendChild(container);
           typeElement = container.querySelector(`[id="text_${variableId}"]`);
@@ -615,7 +615,7 @@
           });
           break;
         case "color":
-          if (hexColorRegex.test(Vvalue)) isHex = xmlEscape(Vvalue);
+          if (hexColorRegex.test(Vvalue)) isHex = Vvalue;
           else isHex = "#ff0000";
           if (variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`)) {
             container = variableMonitor.querySelector(`[class^="monitor_default-monitor_SPnew1"]`);
