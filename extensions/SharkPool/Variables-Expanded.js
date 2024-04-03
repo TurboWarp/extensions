@@ -3,7 +3,7 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.3.1
+// Version 1.3.2
 
 (function (Scratch) {
   "use strict";
@@ -838,28 +838,27 @@
       if (!variableMonitor) return;
       let currentTransform = variableMonitor.style.transform;
       let currentFilterEffect = variableMonitor.style.filter || "";
-      let setEffect = EFFECT;
-      let amountIn = AMOUNT;
-
-      if (setEffect === "saturation") setEffect = "saturate";
-      else if (setEffect === "hue") setEffect = "hue-rotate";
-      else if (setEffect === "direction") {
-        setEffect = "rotate";
-        amountIn = AMOUNT - 90;
+      if (EFFECT === "saturation") EFFECT = "saturate";
+      else if (EFFECT === "hue") EFFECT = "hue-rotate";
+      else if (EFFECT === "direction") {
+        EFFECT = "rotate";
+        AMOUNT = AMOUNT - 90;
+      } else if (EFFECT === "scale" || EFFECT === "scale x" || EFFECT === "scale y") {
+        AMOUNT = AMOUNT / 100;
+        EFFECT = EFFECT.replace("x", "X").replace("y", "Y").replaceAll(" ", "");
       }
-      else if (setEffect === "scale") amountIn = AMOUNT / 100;
-      else if (setEffect === "brightness") amountIn = AMOUNT + 100;
-      else if (setEffect === "skew x") setEffect = "skewX";
-      else if (setEffect === "skew y") setEffect = "skewY";
-      const regex = new RegExp(`${setEffect}\\([^)]+\\)`, "g");
+      else if (EFFECT === "brightness") AMOUNT = AMOUNT + 100;
+      else if (EFFECT === "skew x") EFFECT = "skewX";
+      else if (EFFECT === "skew y") EFFECT = "skewY";
+
+      const regex = new RegExp(`${EFFECT}\\([^)]+\\)`, "g");
       currentTransform = currentTransform.replace(regex, "").trim();
       currentFilterEffect = currentFilterEffect.replace(regex, "").trim();
-
-      if (setEffect === "scale" || setEffect === "rotate" || setEffect.includes("skew")) {
-        currentTransform += ` ${setEffect}(${amountIn}${setEffect === "rotate" || setEffect.includes("skew") ? "deg" : ""})`;
+      if (EFFECT.includes("scale") || EFFECT === "rotate" || EFFECT.includes("skew")) {
+        currentTransform += ` ${EFFECT}(${AMOUNT}${EFFECT === "rotate" || EFFECT.includes("skew") ? "deg" : ""})`;
         variableMonitor.style.transform = currentTransform.trim();
       } else {
-        currentFilterEffect += ` ${setEffect}(${amountIn}${setEffect === "blur" ? "px" : setEffect === "hue-rotate" ? "deg" : "%"})`;
+        currentFilterEffect += ` ${EFFECT}(${AMOUNT}${EFFECT === "blur" ? "px" : EFFECT === "hue-rotate" ? "deg" : "%"})`;
         variableMonitor.style.filter = currentFilterEffect.trim();
       }
     }
@@ -870,28 +869,28 @@
       if (!variableMonitor) return "";
       const currentTransform = variableMonitor.style.transform;
       const currentFilterEffect = variableMonitor.style.filter || "";
+    
       const setEffect = {
         saturation: "saturate", hue: "hue-rotate",
-        direction: "rotate", scale: "scale",
+        direction: "rotate", scale: "scale", "scale x": "scaleX", "scale y": "scaleY",
         brightness: "brightness", opacity: "opacity",
         "skew x": "skewX", "skew y": "skewY",
       }[args.EFFECT] || args.EFFECT;
       const defaultV = {
         saturation: 100, hue: 0,
-        direction: 90, scale: 100,
+        direction: 90, scale: 100, "scale x": 100, "scale y": 100,
         brightness: 0, opacity: 100,
       }[args.EFFECT] || 0;
-
+    
       const regex = new RegExp(`${setEffect}\\(([^)]+)\\)`);
       const transformMatch = currentTransform.match(regex);
       const filterMatch = currentFilterEffect.match(regex);
-
       if (filterMatch || transformMatch) {
         const valueWithUnits = (filterMatch || transformMatch)[1];
         const numericValue = parseFloat(valueWithUnits.replace(/[^0-9.-]/g, ""));
         if (setEffect === "brightness") return numericValue - 100;
         else if (setEffect === "rotate") return numericValue + 90;
-        else if (setEffect === "scale") return numericValue * 100;
+        else if (setEffect.includes("scale")) return numericValue * 100;
         else return numericValue;
       } else { return defaultV }
     }
