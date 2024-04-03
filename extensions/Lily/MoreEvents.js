@@ -2,6 +2,7 @@
 // ID: lmsMoreEvents
 // Description: Start your scripts in new ways.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// By: Veggiecan0419
 // License: MIT AND LGPL-3.0
 
 (function (Scratch) {
@@ -9,6 +10,7 @@
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
+  const s3e = runtime.ext_scratch3_event;
 
   const stopIcon =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAQlBMVEUAAAC/UFC8Q0OzTU24SEi4SEi3SEi4R0e4SEi4SEi4SEi4SEi7SUm8SUnMTk7MT0/OT0/PT0/gVVXiVVXsWVn///+CoOd2AAAAC3RSTlMAEBMUu7zLz9D8/dIXnJwAAAABYktHRBXl2PmjAAAAxklEQVRIx+3WwRKDIBAD0JWqVEOtWv7/W3twOqKwELzW3N9wYhORMMYiztgZUZMUAKxqmh5Kno/MG256nzI59Z2mB+BWH+XzUt5RhWoyQjFZkTQFkTBFERlCnAwlDoYUgaHFblpaeL86AK0MvNjMIABmT2cGIAAWniw3ucm/k9ovduEjXzgXtUfJmtrTt9VZzYH9FSB/xvfKZMsiLFmuko61zBTfucjL9RpXf6nEU2MhPxXS86J+kORmjz6V6seViOnG8oT7ApMcjsYZwhXCAAAAAElFTkSuQmCC";
@@ -76,6 +78,28 @@
     { text: "8", value: "8" },
     { text: "9", value: "9" },
   ];
+
+  s3e._broadcast = function (broadcastOption, util, target) {
+    let threads = util.startHats(
+      "event_whenbroadcastreceived",
+      {
+        BROADCAST_OPTION: broadcastOption,
+      },
+      target
+    );
+    this.runtime.lmsLastBroadcastSent = broadcastOption;
+    let lmsThreads = util.startHats(
+      "lmsMoreEvents_whenbroadcastreceived",
+      {},
+      target
+    );
+    if (lmsThreads) {
+      threads.push(...lmsThreads);
+    }
+    threads.forEach((thread) => (thread.broadcastName = broadcastOption));
+    this.runtime.emit("BROADCAST_SENT", broadcastOption);
+    return threads;
+  };
 
   var lastValues = {};
   var runTimer = 0;
@@ -340,6 +364,32 @@
           "---",
 
           {
+            // Intentional: opcode not camelCase for VM parity
+            opcode: "whenbroadcastreceived",
+            blockType: Scratch.BlockType.HAT,
+            text: "when I receive [BROADCAST_OPTION]",
+            isEdgeActivated: false,
+            shouldRestartExistingThreads: true,
+            arguments: {
+              BROADCAST_OPTION: {
+                type: null,
+              },
+            },
+            hideFromPalette: true,
+            extensions: ["colours_event"],
+          },
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: '<block type="lmsMoreEvents_whenbroadcastreceived"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value></block>',
+          },
+          {
+            opcode: "broadcastName",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "broadcast name",
+            disableMonitor: true,
+            extensions: ["colours_event"],
+          },
+          {
             opcode: "broadcastToTarget",
             blockType: Scratch.BlockType.COMMAND,
             text: "broadcast [BROADCAST_OPTION] to [TARGET]",
@@ -465,6 +515,12 @@
           },
           "---",
           {
+            opcode: "lastBroadcast",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "last broadcast sent",
+            extensions: ["colours_event"],
+          },
+          {
             blockType: Scratch.BlockType.EVENT,
             opcode: "beforeSave",
             text: "before project saves",
@@ -546,6 +602,16 @@
       return util.ioQuery("keyboard", "getKeyIsDown", [key]);
     }
 
+    whenbroadcastreceived(args, util) {
+      const broadcastOption = Scratch.Cast.toString(args.BROADCAST_OPTION);
+      return broadcastOption === runtime.lmsLastBroadcastSent;
+    }
+
+    broadcastName(args, util) {
+      const broadcastName = util.thread.broadcastName;
+      return broadcastName ? broadcastName : "";
+    }
+
     broadcastToTarget(args, util) {
       const broadcastOption = Scratch.Cast.toString(args.BROADCAST_OPTION);
       if (!broadcastOption) return;
@@ -559,13 +625,7 @@
       for (const clone of cloneTargets) {
         startedThreads = [
           ...startedThreads,
-          ...util.startHats(
-            "event_whenbroadcastreceived",
-            {
-              BROADCAST_OPTION: broadcastOption,
-            },
-            clone
-          ),
+          ...s3e._broadcast(broadcastOption, util, clone),
         ];
         if (data) {
           startedThreads.forEach((thread) => (thread.receivedData = args.DATA));
@@ -593,13 +653,7 @@
           for (const clone of cloneTargets) {
             util.stackFrame.startedThreads = [
               ...util.stackFrame.startedThreads,
-              ...util.startHats(
-                "event_whenbroadcastreceived",
-                {
-                  BROADCAST_OPTION: broadcastOption,
-                },
-                clone
-              ),
+              ...s3e._broadcast(broadcastOption, util, clone),
             ];
             if (data) {
               util.stackFrame.startedThreads.forEach(
@@ -635,9 +689,7 @@
 
       const data = Scratch.Cast.toString(args.DATA);
 
-      let threads = util.startHats("event_whenbroadcastreceived", {
-        BROADCAST_OPTION: broadcast,
-      });
+      let threads = s3e._broadcast(broadcast, util);
       threads.forEach((thread) => (thread.receivedData = data));
     }
 
@@ -653,11 +705,9 @@
       if (util.stackFrame.broadcastVar) {
         const broadcastOption = util.stackFrame.broadcastVar;
         if (!util.stackFrame.startedThreads) {
-          util.stackFrame.startedThreads = util.startHats(
-            "event_whenbroadcastreceived",
-            {
-              BROADCAST_OPTION: broadcastOption,
-            }
+          util.stackFrame.startedThreads = s3e._broadcast(
+            broadcastOption,
+            util
           );
           if (util.stackFrame.startedThreads.length === 0) {
             return;
@@ -688,6 +738,11 @@
     receivedData(args, util) {
       const received = util.thread.receivedData;
       return received ? received : "";
+    }
+
+    lastBroadcast(args, util) {
+      const lastBroadcast = runtime.lmsLastBroadcastSent;
+      return lastBroadcast ? lastBroadcast : "";
     }
 
     _getTargetFromMenu(targetName) {
