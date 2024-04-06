@@ -273,10 +273,14 @@
                             switch (error.code) {
                                 case error.PERMISSION_DENIED:
                                     resolve('Access was denied.')
+                                    /* falls through */
                                 case error.POSITION_UNAVAILABLE:
                                     resolve('Location is unavalible.')
+                                    /* falls through */
                                 case error.TIMEOUT:
                                     resolve('Request timed out.')
+                                    /* falls through */
+                                default:
                                     resolve()
                             }
                             console.log(error);
@@ -307,6 +311,7 @@
                                 case error.TIMEOUT:
                                     resolve('Request timed out.')
                                     /* falls through */
+                                default:
                                     resolve()
                             }
                             console.log(error);
