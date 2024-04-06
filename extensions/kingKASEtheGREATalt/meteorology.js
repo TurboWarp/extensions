@@ -313,6 +313,7 @@
                                     /* falls through */
                                 default:
                                     resolve()
+                                    /* falls through */
                             }
                             console.log(error);
                         }
