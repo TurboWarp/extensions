@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.5.0
+// Version V.1.6.0
 
 (function (Scratch) {
   "use strict";
@@ -295,6 +295,28 @@
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
           },
+          {
+            opcode: "ditherSprite",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "apply dither effect to [SPRITE] width [W] height [H]",
+            hideFromPalette: !sprite,
+            arguments: {
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
+              W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+            },
+          },
+          {
+            opcode: "ditherImage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "apply dither effect to [SPRITE] width [W] height [H]",
+            hideFromPalette: sprite,
+            arguments: {
+              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
+              W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+            },
+          },
           "---",
           {
             opcode: "distortSprite",
@@ -357,6 +379,30 @@
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Formatting" },
+          {
+            opcode: "patternSprite",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "replace [COLOR] with pattern [PAT] scale [SIZE] in [SPRITE]",
+            hideFromPalette: !sprite,
+            arguments: {
+              PAT: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
+              SIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
+              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
+            },
+          },
+          {
+            opcode: "patternImage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "replace [COLOR] with pattern [PAT] scale [SIZE] in [SPRITE]",
+            hideFromPalette: sprite,
+            arguments: {
+              PAT: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
+              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
+              SIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
+              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
+            },
+          },
           {
             opcode: "outlineSprite",
             blockType: Scratch.BlockType.REPORTER,
@@ -706,7 +752,7 @@
 
     sourceSwitch() { sprite = sprite ? false : true, Scratch.vm.extensionManager.refreshBlocks() }
     filterWarn() {
-      alert(`Unfortunately, due to various limitations, not ALL effects (especially the Formatting Blocks) will work on the Canvas...
+      alert(`Unfortunately, due to various limitations, not ALL effects (like some Formatting Blocks) will work on the Canvas...
         \nYou are welcome to experiment by making your own svg filters and using them on the canvas!`);
     }
 
@@ -719,7 +765,6 @@
 
     setSpriteEffect(args, util) { return this.setMainEffect(args, false, util) }
     async setImageEffect(args) { return await this.setMainEffect(args, true) }
-
     applyCustomSprite(args, util) { return this.customFilter(args, false, util) }
     async applyCustomImage(args) { return await this.customFilter(args, true) }
 
@@ -728,26 +773,18 @@
 
     setSpriteBlend(args, util) { return this.blendType(args, false, util) }
     async setImageBlend(args) { return await this.blendType(args, true) }
-
     hueSprite(args, util) { return this.setHue(args, false, util) }
     async hueImage(args) { return await this.setHue(args, true) }
 
-    spriteShadow(args, util) { return this.addShadow(args, false, util) }
-    async imageShadow(args) { return await this.addShadow(args, true) }
-
-    outlineSprite(args, util) { return this.addOutline(args, false, util) }
-    async outlineImage(args) { return await this.addOutline(args, true) }
-
     splitSprite(args, util) { return this.colorSplit(args, false, util) }
     async splitImage(args) { return await this.colorSplit(args, true) }
-
-    waveSprite(args, util) { return this.waveEffect(args, false, util) }
-    async waveImage(args) { return await this.waveEffect(args, true) }
 
     distortSprite(args, util) { return this.setDistort(args, false, false, util) }
     async distortImage(args) { return await this.setDistort(args, true, false) }
     distortSpriteImage(args, util) { return this.setDistort(args, false, true, util) }
     async distortImageImage(args) { return await this.setDistort(args, true, true) }
+    waveSprite(args, util) { return this.waveEffect(args, false, util) }
+    async waveImage(args) { return await this.waveEffect(args, true) }
 
     glitchSprite(args, util) { return this.setGlitch(args, false, util) }
     async glitchImage(args) { return await this.setGlitch(args, true) }
@@ -758,15 +795,23 @@
     vhsSprite(args, util) { return this.setVHS(args, false, util) }
     async vhsImage(args) { return await this.setVHS(args, true) }
 
+    ditherSprite(args, util) { return this.dither(args, false, util) }
+    async ditherImage(args) { return await this.dither(args, true) }
 
+    patternSprite(args, util) { return this.addPattern(args, false, util) }
+    async patternImage(args) { return await this.addPattern(args, true) }
+
+    outlineSprite(args, util) { return this.addOutline(args, false, util) }
+    async outlineImage(args) { return await this.addOutline(args, true) }
     applySpriteLight(args, util) { return this.lighting(args, false, util) }
     async applyImageLight(args) { return await this.lighting(args, true) }
     advSpriteLight(args, util) { return this.advLighting(args, false, util) }
     async advImageLight(args) { return await this.advLighting(args, true) }
+    spriteShadow(args, util) { return this.addShadow(args, false, util) }
+    async imageShadow(args) { return await this.addShadow(args, true) }
 
     maskSprite(args, util) { return this.mask(args, false, util) }
     async maskImage(args) { return await this.mask(args, true) }
-
     unClipSPR(args, util) { return this.updateView(args, false, util) }
     async unClipIMG(args) { return await this.updateView(args, true) }
 
@@ -983,9 +1028,40 @@
           Scratch.Cast.toNumber(atts[1] ? parseFloat(atts[1][1]) : 100)
         ];
         const amts = [Math.abs(100 - Scratch.Cast.toNumber(args.NUM)), Scratch.Cast.toNumber(args.x), Scratch.Cast.toNumber(args.y)];
-         const filterElement =
-         `<filter id="tile"><feImage x="${amts[1]}" y="${amts[2]}" width="${amts[0] / atts[0] * 100}%" height="${amts[0] / atts[1] * 100}%" xlink:href="${await this.svgToBitmap(svg, atts[0], atts[1])}"/><feTile /></filter>`;
+        const filterElement =
+        `<filter id="tile"><feImage x="${amts[1]}" y="${amts[2]}" width="${amts[0] / atts[0] * 100}%" height="${amts[0] / atts[1] * 100}%" xlink:href="${await this.svgToBitmap(svg, atts[0], atts[1])}"/><feTile /></filter>`;
         return this.filterApplier(svg, filterElement, "tile");
+      }
+      return svg;
+    }
+
+    async addPattern(args, isImage, util) {
+      let svg;
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
+      let svg2 = await this.getImage(args.PAT);
+      if (svg && svg2) {
+        let atts = [/width="([^"]*)"/.exec(svg2), /height="([^"]*)"/.exec(svg2)];
+        atts = [
+          Scratch.Cast.toNumber(atts[0] ? parseFloat(atts[0][1]) : 100),
+          Scratch.Cast.toNumber(atts[1] ? parseFloat(atts[1][1]) : 100),
+          Scratch.Cast.toNumber(args.SIZE) / 100
+        ];
+        const nameGen = `pat-${Math.random()}`; // People may use multiple patterns
+        const pattern =`<defs><pattern id="${nameGen}" patternUnits="userSpaceOnUse" width="${atts[0]}" height="${atts[1]}" patternTransform="scale(${atts[2]})"><image xlink:href="${await this.svgToBitmap(svg2, atts[0], atts[1])}" x="0" y="0" width="${atts[0]}" height="${atts[1]}" /></pattern></defs>`;
+        return this.patternApply(svg, pattern, nameGen, args.COLOR);
+      }
+      return svg;
+    }
+    patternApply(svg, pattern, name, color) {
+      if (nameOffset > 100) nameOffset = 0;
+      let svgTag = svg.indexOf(">");
+      if (svgTag > -1) {
+        svgTag = svg.indexOf(">");
+        let appliedSVG = `${svg.substring(0, svgTag)} >${pattern.slice(0, -1)}${svg.slice(svgTag)}`;
+        appliedSVG = appliedSVG.replaceAll(color, `url(#${name})`);
+        // replace needs to be repeated twice to avoid the new name being used in other namespaces
+        return appliedSVG.replace(`#${name})`, `#${name}${nameOffset})`).replace(`"${name}"`, `"${name}${nameOffset}"`);
       }
       return svg;
     }
@@ -1087,6 +1163,18 @@
         if (amts[2] === 0) return svg; // 0% vhs effect is just the original image
         const filterElement = `<filter id="vhs"><feOffset in="SourceGraphic" dx="${amts[0]}" dy="${amts[1]}" result="off"/><feMerge in="SourceGraphic" x="${axis[0] ? (100 - amts[2]) * ( mul[0] / 100) : 0}%" y="${axis[1] ? (100 - amts[2]) * ( mul[1] / 100) : 0}%" width="${axis[0] ? amts[2] * mul[0] : mul[0]}%" height="${axis[1] ? amts[2] * mul[1] : mul[1]}%" result="merge1"><feMergeNode in="off" /><feMergeNode in="merge1" /></feMerge><feMerge in="off" x="0%" y="0%" width="${axis[0] ? mul[0] - amts[2] : mul[0]}%" height="${axis[1] ? mul[1] - amts[2] : mul[1]}%" result="merge2"><feMergeNode in="SourceGraphic" /><feMergeNode in="merge2" /></feMerge><feMerge>${amts[2] < 100 ? `<feMergeNode in="merge1" /><feMergeNode in="merge2" />` : `<feMergeNode in="merge1" />`}</feMerge></filter>`;
         return this.filterApplier(svg, filterElement, "vhs");
+      }
+      return svg;
+    }
+
+    async dither(args, isImage, util) {
+      let svg;
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
+      if (svg) {
+        const size = [Scratch.Cast.toNumber(args.W), Scratch.Cast.toNumber(args.H)];
+        const filterElement = `<filter id="dither" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%"><feImage width="${size[0]}" height="${size[1]}" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAASElEQVR42gXBgQAAIAxFwW8QwhBCCCGEIYQQQgghhBBCCEMYwutOkphzYmbsvdG9l9YaEYG7o1or5xxKKay1UGYyxuC9R++dD7yGJkTj6F0HAAAAAElFTkSuQmCC"/><feTile/><feComposite operator="in" in2="SourceGraphic"/><feComposite operator="arithmetic" k1="0" k2="1" k3="1" k4="-0.5" in="SourceGraphic"/><feComponentTransfer><feFuncR type="discrete" tableValues="0 1"/><feFuncG type="discrete" tableValues="0 1"/><feFuncB type="discrete" tableValues="0 1"/></feComponentTransfer></filter>`
+        return this.filterApplier(svg, filterElement, "dither");
       }
       return svg;
     }
@@ -1342,7 +1430,7 @@
       nameOffset++;
       if (nameOffset > 100) nameOffset = 0;
       let svgTag = svg.indexOf(">");
-      if (svgTag !== -1) {
+      if (svgTag > -1) {
         let url = `filter="url(#${name})"`;
         if (svg.includes("filter=\"url(")) {
           const regex = /filter="url\([^"]+\)"/g;
