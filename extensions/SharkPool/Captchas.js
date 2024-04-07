@@ -3,7 +3,7 @@
 // Description: Captchas to Check if Users are Human or not
 // By: SharkPool
 
-// Version V.1.0.0
+// Version V.1.0.1
 
 (function (Scratch) {
   "use strict";
@@ -227,6 +227,7 @@
       }
     });
     render.addOverlay(container, "scale-centered");
+    input.focus();
     captchaInfo.answer = capTxt;
     currentCaptcha = container;
   }
@@ -240,25 +241,19 @@
       // Of course, theyre might be other workarounds but :/
       vm.runtime.on("BEFORE_EXECUTE", () => {
         // Currently I just reset the function, perhaps we could stop the project, but whatever
-        const openUserPass = vm.runtime._primitives.SPcaptcha_userPassed;
-        if (openUserPass !== internalUserPass) {
-          vm.runtime._primitives.SPcaptcha_userPassed = function() {
-            return internalUserPass.apply(this, arguments);
-          };
+        const openUserPass = vm.runtime._primitives.SPcaptcha_userPassed.toString();
+        if (internalUserPass && openUserPass !== internalUserPass.toString()) {
+          vm.runtime._primitives.SPcaptcha_userPassed = eval(internalUserPass.toString());
         }
 
-        const openAnswer = vm.runtime._primitives.SPcaptcha_getAnswer;
-        if (openAnswer !== internalAnswer) {
-          vm.runtime._primitives.SPcaptcha_getAnswer = function() {
-            return internalAnswer.apply(this, arguments);
-          };
+        const openAnswer = vm.runtime._primitives.SPcaptcha_getAnswer.toString();
+        if (internalAnswer && openAnswer !== internalAnswer.toString()) {
+          vm.runtime._primitives.SPcaptcha_getAnswer = eval(internalAnswer.toString());
         }
 
-        const openUserAnswer = vm.runtime._primitives.SPcaptcha_getResponse;
-        if (openUserAnswer !== internalUserAnswer) {
-          vm.runtime._primitives.SPcaptcha_getResponse = function() {
-            return internalUserAnswer.apply(this, arguments);
-          };
+        const openUserAnswer = vm.runtime._primitives.SPcaptcha_getResponse.toString();
+        if (internalUserAnswer && openUserAnswer !== internalUserAnswer.toString()) {
+          vm.runtime._primitives.SPcaptcha_getResponse = eval(internalUserAnswer.toString());
         }
       });
     }
