@@ -3,7 +3,7 @@
 // Description: Captchas to Check if Users are Human or not
 // By: SharkPool
 
-// Version V.1.0.1
+// Version V.1.0.2
 
 (function (Scratch) {
   "use strict";
@@ -85,9 +85,9 @@
     let darkAmt = 35 * (DIFF - 1);
     const color = { r: rngCom(), g: rngCom(), b: rngCom() };
     if (color.r < 80 && color.g < 80 && color.b < 80) darkAmt += 80;
-    color.r = Math.max(0, color.r - darkAmt);
-    color.g = Math.max(0, color.g - darkAmt);
-    color.b = Math.max(0, color.b - darkAmt);
+    color.r = Math.max(50, color.r - darkAmt);
+    color.g = Math.max(50, color.g - darkAmt);
+    color.b = Math.max(50, color.b - darkAmt);
     return RGBA2hex(color);
   }
   function RGBA2hex(rgb) {
@@ -213,6 +213,7 @@
       captchaInfo.passed = input.value === capTxt;
       if (visSetting.autoClose) {
         render.removeOverlay(container);
+        captchaInfo.answer = capTxt;
         currentCaptcha = null;
       }
       vm.runtime.startHats("SPcaptcha_whenAnswered");
@@ -228,7 +229,6 @@
     });
     render.addOverlay(container, "scale-centered");
     input.focus();
-    captchaInfo.answer = capTxt;
     currentCaptcha = container;
   }
 
@@ -306,7 +306,7 @@
           {
             opcode: "getAnswer",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current Captcha answer"
+            text: "last Captcha answer"
           },
           {
             opcode: "getResponse",
