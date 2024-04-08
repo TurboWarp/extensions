@@ -7,6 +7,7 @@
 // Full git repository at https://sr.ht/~reesericci/turbowarp.sh
 
 ((Scratch) => {
+  'use strict';
   // src/connection.js
   var Connection = class _Connection {
     constructor(username, host, identity, proxy) {
@@ -16,7 +17,7 @@
       this.proxy = proxy || this.host;
     }
     connect() {
-      return goConnect(this.username, this.host, this.identity, this.proxy);
+      return goConnect(this.username, this.host, this.identity, this.proxy); // eslint-disable-line no-undef
     }
     toString() {
       return JSON.stringify({
@@ -180,19 +181,19 @@
       return Connection.parse(CONNECTION).toFriendlyString();
     }
     execute({ COMMAND }) {
-      return goExecute(COMMAND);
+      return goExecute(COMMAND); // eslint-disable-line no-undef
     }
     executeReporter({ COMMAND }) {
-      return goExecute(COMMAND);
+      return goExecute(COMMAND); // eslint-disable-line no-undef
     }
     disconnect() {
-      return goDisconnect();
+      return goDisconnect(); // eslint-disable-line no-undef
     }
     workingDirectory() {
       return this.execute({ COMMAND: "pwd" });
     }
     isConnected() {
-      return goConnected();
+      return goConnected(); // eslint-disable-line no-undef
     }
   };
 
