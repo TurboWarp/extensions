@@ -7,7 +7,7 @@
 // Full git repository at https://sr.ht/~reesericci/turbowarp.sh
 
 ((Scratch) => {
-  'use strict';
+  "use strict";
   // src/connection.js
   var Connection = class _Connection {
     constructor(username, host, identity, proxy) {
@@ -24,7 +24,7 @@
         username: this.username,
         host: this.host,
         identity: this.identity,
-        proxy: this.proxy
+        proxy: this.proxy,
       });
     }
     toFriendlyString() {
@@ -32,7 +32,12 @@
     }
     static parse(encoded) {
       let parsed = JSON.parse(encoded);
-      return new _Connection(parsed.username, parsed.host, parsed.identity, parsed.proxy);
+      return new _Connection(
+        parsed.username,
+        parsed.host,
+        parsed.identity,
+        parsed.proxy
+      );
     }
   };
 
@@ -52,17 +57,17 @@
             arguments: {
               USER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "user"
+                defaultValue: "user",
               },
               HOST: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "host"
+                defaultValue: "host",
               },
               IDENTITY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "identity file"
-              }
-            }
+                defaultValue: "identity file",
+              },
+            },
           },
           {
             opcode: "connectionWithProxy",
@@ -71,21 +76,21 @@
             arguments: {
               USER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "user"
+                defaultValue: "user",
               },
               HOST: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "host"
+                defaultValue: "host",
               },
               IDENTITY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "identity file"
+                defaultValue: "identity file",
               },
               PROXY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "wss://"
-              }
-            }
+                defaultValue: "wss://",
+              },
+            },
           },
           {
             opcode: "connect",
@@ -94,19 +99,19 @@
             arguments: {
               CONNECTION: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "connection"
-              }
-            }
+                defaultValue: "connection",
+              },
+            },
           },
           {
             opcode: "isConnected",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is connected?"
+            text: "is connected?",
           },
           {
             opcode: "disconnect",
             blockType: Scratch.BlockType.COMMAND,
-            text: "disconnect"
+            text: "disconnect",
           },
           {
             opcode: "execute",
@@ -115,9 +120,9 @@
             arguments: {
               COMMAND: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "ls"
-              }
-            }
+                defaultValue: "ls",
+              },
+            },
           },
           {
             opcode: "executeReporter",
@@ -126,24 +131,24 @@
             arguments: {
               COMMAND: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "ls"
-              }
-            }
+                defaultValue: "ls",
+              },
+            },
           },
           {
             opcode: "workingDirectory",
             blockType: Scratch.BlockType.REPORTER,
-            text: "working directory"
+            text: "working directory",
           },
           {
             opcode: "activeConnection",
             blockType: Scratch.BlockType.REPORTER,
-            text: "active connection"
+            text: "active connection",
           },
           {
             opcode: "friendlyActiveConnection",
             blockType: Scratch.BlockType.REPORTER,
-            text: "friendly active connection"
+            text: "friendly active connection",
           },
           {
             opcode: "friendlyConnection",
@@ -152,11 +157,11 @@
             arguments: {
               CONNECTION: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "connection"
-              }
-            }
-          }
-        ]
+                defaultValue: "connection",
+              },
+            },
+          },
+        ],
       };
     }
     connectionWithProxy({ USER, HOST, IDENTITY, PROXY }) {
@@ -198,7 +203,9 @@
   };
 
   // src/index.js
-  import("https://cdn.jsdelivr.net/npm/@turbowarp.sh/client@^1.0.0-rc6/dist/index.js").then((Client) => {
+  import(
+    "https://cdn.jsdelivr.net/npm/@turbowarp.sh/client@^1.0.0-rc6/dist/index.js"
+  ).then((Client) => {
     new Client.default();
   });
   Scratch.extensions.register(new SSHExtension());
