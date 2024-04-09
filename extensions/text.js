@@ -125,6 +125,43 @@
           "---",
 
           {
+            opcode: "get_line",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get line [LINE] from [STRING]",
+            arguments: {
+              LINE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello, world!\nGoodbye, world!",
+              },
+            },
+          },
+          {
+            opcode: "get_lines",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get lines [FROM] to [TO] from [STRING]",
+            arguments: {
+              FROM: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+              TO: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 3,
+              },
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello, world!\nHey!\nHi!\nI'm excluded!",
+              },
+            },
+          },
+
+          "---",
+
+          {
             opcode: "replace",
             blockType: Scratch.BlockType.REPORTER,
             text: "replace [SUBSTRING] in [STRING] with [REPLACE]",
@@ -185,6 +222,7 @@
           },
 
           "---",
+
           {
             opcode: "replaceRegex",
             blockType: Scratch.BlockType.REPORTER,
@@ -418,6 +456,33 @@
 
       // indexOf returns -1 when no matches are found, we can just +1
       return found + 1;
+    }
+
+    get_line(args, util) {
+      const lineNum = Math.floor(args.LINE);
+      const text = args.STRING;
+      const lines = text.split("\n");
+      if (lineNum < 1 || lineNum > lines.length) {
+        return "";
+      }
+      return lines[lineNum - 1];
+    }
+
+    get_lines(args, util) {
+      const minLines = Math.floor(args.FROM);
+      const maxLines = Math.floor(args.TO);
+      const text = args.STRING;
+      const lines = text.split("\n");
+      if (
+        minLines < 1 ||
+        minLines > lines.length ||
+        maxLines < 1 ||
+        maxLines > lines.length ||
+        minLines > maxLines
+      ) {
+        return "";
+      }
+      return lines.slice(minLines - 1, maxLines).join("\n");
     }
 
     repeat(args, util) {
