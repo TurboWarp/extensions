@@ -48,7 +48,7 @@
       return {
         id: "ssh",
         name: "Shell",
-        docsURI: "https://sr.ht/~reesericci/turbowarp.sh/",
+        docsURI: "https://extensions.turbowarp.org/reesericci/turbowarp-sh",
         blocks: [
           {
             opcode: "connection",
