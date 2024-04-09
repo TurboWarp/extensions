@@ -48,6 +48,9 @@
       return {
         id: "ssh",
         name: "Shell",
+        color1: "#859900",
+        color2: "#687800",
+        color3: "#4C5700",
         docsURI: "https://extensions.turbowarp.org/reesericci/turbowarp-sh",
         blocks: [
           {
