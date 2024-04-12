@@ -4,6 +4,8 @@
 // By: HirujaSJ <https://scratch.mit.edu/users/CODINGHIRUJA/>
 
 (function () {
+  "use strict";
+
   var Extension = function () {};
 
   Extension.prototype.getInfo = function () {
