@@ -368,7 +368,7 @@
       util.thread.stopThisScript;
     }
 
-    isReceived(args, util) {
+    isReceived(args) {
       const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
       const blockIds = this._getMessageHats(broadcast, "IDs");
       let waiting = false;
