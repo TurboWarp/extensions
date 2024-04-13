@@ -3,7 +3,7 @@
 // Description: New Powerful Message Blocks that work with Vanilla Blocks!
 // By: SharkPool
 
-// Version 1.0.0
+// Version 1.0.1
 
 (function (Scratch) {
   "use strict";
@@ -19,9 +19,9 @@
     constructor() {
       runtime.on("AFTER_EXECUTE", () => {
         for (const thread of runtime.threads) {
-          if (thread.messageFlag) {
+          if (Math.round(thread.messageFlag / 10) === Math.round(Date.now() / 10)) {
             // Give a couple more frames for "<is () received?>" to report true
-            setTimeout(function() { thread.messageFlag = false }, 10);
+            setTimeout(function() { delete thread.messageFlag }, 10);
           }
         }
       });
@@ -368,15 +368,16 @@
       util.thread.stopThisScript;
     }
 
-    isReceived(args) {
+    isReceived(args, util) {
       const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
       const blockIds = this._getMessageHats(broadcast, "IDs");
       let waiting = false;
       for (const ID of blockIds) {
         const thread = runtime.threads.find(thread => thread.topBlock === ID);
-        if (thread) {
-          if (thread.messageFlag === undefined) thread.messageFlag = true;
-          if (thread.messageFlag) waiting = true;
+        if (thread && thread.messageFlag === undefined) {
+          thread.messageFlag = Date.now();
+          waiting = true;
+          break;
         }
       }
       return waiting;
