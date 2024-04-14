@@ -406,7 +406,7 @@
         return 0;
       }
       const monthIndex = Math.round(Scratch.Cast.toNumber(args.MONTH));
-      if (monthIndex < 0 || monthIndex >= 12) {
+      if (monthIndex < 0 || monthIndex >= 13) {
         return 0;
       }
       const date = new Date(year, monthIndex, 0);
