@@ -6,12 +6,10 @@
 // Version: 1.0.0
 
 (function (Scratch) {
-class XmerUtilities {
 	"use strict";
-	
+class XmerUtilities {
   constructor() {
     this.icon = "data:image/png;base64,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",
-	  
     this.pressedKeys = {};
     this.setupEventListeners();
     this.hasInteracted = false;
@@ -637,7 +635,7 @@ class XmerUtilities {
         const options = {
             body: args.text,
         };
-        const notification = new Notification(title, options);
+        const _notification = new Notification(title, options);
       } else if (Notification.permission !== "denied") {
         Notification.requestPermission().then(function (permission) {
          if (permission === "granted") {
@@ -655,7 +653,7 @@ class XmerUtilities {
     this.customTitle = args.title;
   }
   
-  async playSound({ url }) {
+  playSound({ url }) {
     try {
       const existingAudio = this.playingSounds.get(url);
       if (existingAudio) {
@@ -669,16 +667,17 @@ class XmerUtilities {
         this.stopSound();
       }
 
-      const audio = new Audio(url);
-      audio.volume = this.volume / 100;
-      audio.addEventListener('ended', () => {
-        this.isPlaying = false;
-        this.currentSoundURL = '';
-        if (this.waitingPromise) {
-          this.waitingPromise.resolve();
-          this.waitingPromise = null;
-        }
-      });
+      if (await Scratch.canFetch(url)) {
+		const audio = new Audio(url);
+		audio.volume = this.volume / 100;
+		audio.addEventListener('ended', () => {
+			this.isPlaying = false;
+			this.currentSoundURL = '';
+			if (this.waitingPromise) {
+				this.waitingPromise.resolve();
+				this.waitingPromise = null;
+			}
+		});
       audio.play();
       this.playingSounds.set(url, audio);
       this.currentSoundURL = url;
@@ -690,7 +689,7 @@ class XmerUtilities {
     }
   }
 
-  async playSoundAndWait({ url }) {
+  playSoundAndWait({ url }) {
     try {
       const existingAudio = this.playingSounds.get(url);
       if (existingAudio) {
@@ -711,21 +710,32 @@ class XmerUtilities {
         this.stopSound();
       }
 
-      const promise = new Promise((resolve) => {
-        const audio = new Audio(url);
-        audio.volume = this.volume / 100;
-        audio.addEventListener('ended', () => {
-          this.isPlaying = false;
-          this.currentSoundURL = '';
-          resolve();
-        });
-        audio.play();
-        this.playingSounds.set(url, audio);
-        this.currentSoundURL = url;
-        this.isPlaying = true;
-        this.errorStatus = '';
-        this.waitingPromise = { resolve };
-      });
+      const promise = new Promise(async (resolve) => {
+		try {
+			if (await Scratch.canFetch(url)) {
+				const audio = new Audio(url);
+				audio.volume = this.volume / 100;
+				audio.addEventListener('ended', () => {
+					this.isPlaying = false;
+					this.currentSoundURL = '';
+					resolve();
+				});
+				audio.play();
+				this.playingSounds.set(url, audio);
+				this.currentSoundURL = url;
+				this.isPlaying = true;
+				this.errorStatus = '';
+				this.waitingPromise = { resolve };
+			} else {
+				console.error('URL erişilemez');
+				resolve();
+			}
+		} catch (error) {
+			console.error('Audio oynatma hatası:', error);
+			resolve();
+		}
+	});
+
       return promise;
     } catch (error) {
       console.error('Error playing sound:', error);
@@ -825,7 +835,7 @@ class XmerUtilities {
     }
   }
 
-  async openFile() {
+  openFile() {
     try {
       const fileInput = document.createElement('input');
       fileInput.type = 'file';
