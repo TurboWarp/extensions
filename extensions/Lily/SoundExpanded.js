@@ -49,7 +49,7 @@
           {
             opcode: "startLoopingBeginEnd",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start looping [SOUND] loop start [START] secs end [END] secs",
+            text: "start looping [SOUND] loop region [START] to [END] secs",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -123,7 +123,7 @@
           {
             opcode: "playSoundToAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: "play sound [SOUND] from [START] secs to [END] secs until done",
+            text: "play sound [SOUND] from [START] to [END] secs until done",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -142,7 +142,7 @@
           {
             opcode: "playSoundTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start sound [SOUND] from [START] secs to [END] secs",
+            text: "start sound [SOUND] from [START] to [END] secs",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
