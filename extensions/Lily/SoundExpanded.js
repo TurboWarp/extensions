@@ -310,11 +310,21 @@
     }
 
     startLoopingBegin(args, util) {
-      this._startLooping(util, args.SOUND, Scratch.Cast.toNumber(args.START), 0);
+      this._startLooping(
+        util,
+        args.SOUND,
+        Scratch.Cast.toNumber(args.START),
+        0
+      );
     }
 
     startLoopingBeginEnd(args, util) {
-      this._startLooping(util, args.SOUND, Scratch.Cast.toNumber(args.START), Scratch.Cast.toNumber(args.END));
+      this._startLooping(
+        util,
+        args.SOUND,
+        Scratch.Cast.toNumber(args.START),
+        Scratch.Cast.toNumber(args.END)
+      );
     }
 
     stopLooping(args, util) {
@@ -349,16 +359,29 @@
         const { sprite } = target;
         const { soundId } = sprite.sounds[index];
         const start = Math.max(Scratch.Cast.toNumber(args.START), 0);
-        const end = args.END == undefined ? undefined : Scratch.Cast.toNumber(args.END);
+        const end =
+          args.END == undefined ? undefined : Scratch.Cast.toNumber(args.END);
         if (sprite.soundBank) {
           if (storeWaiting === true) {
             // @ts-expect-error not typed
-            Scratch.vm.runtime.ext_scratch3_sound._addWaitingSound(target.id, soundId);
+            Scratch.vm.runtime.ext_scratch3_sound._addWaitingSound(
+              target.id,
+              soundId
+            );
           } else {
             // @ts-expect-error not typed
-            Scratch.vm.runtime.ext_scratch3_sound._removeWaitingSound(target.id, soundId);
+            Scratch.vm.runtime.ext_scratch3_sound._removeWaitingSound(
+              target.id,
+              soundId
+            );
           }
-          return this._playSoundBankSound(sprite.soundBank, target, soundId, start, end);
+          return this._playSoundBankSound(
+            sprite.soundBank,
+            target,
+            soundId,
+            start,
+            end
+          );
         }
       }
     }
@@ -387,8 +410,8 @@
     // https://github.com/scratchfoundation/scratch-audio/blob/6fb4b142a5f3198483e4c4f992fb623d5e9d1ed5/src/SoundPlayer.js#L253
     _playSoundPlayer(player, start, end) {
       if (player.isStarting) {
-        player.emit('stop');
-        player.emit('play');
+        player.emit("stop");
+        player.emit("play");
         return;
       }
 
@@ -413,7 +436,7 @@
       const { currentTime, DECAY_DURATION } = player.audioEngine;
       player.startingUntil = currentTime + DECAY_DURATION;
 
-      player.emit('play');
+      player.emit("play");
     }
 
     playSoundAt(args, util) {
