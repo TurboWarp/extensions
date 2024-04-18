@@ -60,7 +60,7 @@
               },
               END: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "5",
+                defaultValue: "4",
               },
             },
             extensions: ["colours_sounds"],
@@ -93,7 +93,7 @@
           {
             opcode: "playSoundAtAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: "play sound [SOUND] at [START]s until done",
+            text: "play sound [SOUND] from [START]s until done",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -108,7 +108,7 @@
           {
             opcode: "playSoundAt",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start sound [SOUND] at [START]s",
+            text: "start sound [SOUND] from [START]s",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -123,7 +123,7 @@
           {
             opcode: "playSoundToAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: "play sound [SOUND] at [START]s to [END]s until done",
+            text: "play sound [SOUND] from [START]s to [END]s until done",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -142,7 +142,7 @@
           {
             opcode: "playSoundTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start sound [SOUND] at [START]s to [END]s",
+            text: "start sound [SOUND] from [START]s to [END]s",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
