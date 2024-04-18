@@ -34,7 +34,7 @@
           {
             opcode: "startLoopingBegin",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start looping [SOUND] loop start [START] secs",
+            text: "start looping [SOUND] loop start [START] seconds",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -49,7 +49,7 @@
           {
             opcode: "startLoopingBeginEnd",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start looping [SOUND] loop region [START] to [END] secs",
+            text: "start looping [SOUND] loop region [START] to [END] seconds",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -93,7 +93,7 @@
           {
             opcode: "playSoundAtAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: "play sound [SOUND] from [START] secs until done",
+            text: "play sound [SOUND] from [START] seconds until done",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -108,7 +108,7 @@
           {
             opcode: "playSoundAt",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start sound [SOUND] from [START] secs",
+            text: "start sound [SOUND] from [START] seconds",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -123,7 +123,7 @@
           {
             opcode: "playSoundToAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: "play sound [SOUND] from [START] to [END] secs until done",
+            text: "play sound [SOUND] from [START] to [END] seconds until done",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -142,7 +142,7 @@
           {
             opcode: "playSoundTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start sound [SOUND] from [START] to [END] secs",
+            text: "start sound [SOUND] from [START] to [END] seconds",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
