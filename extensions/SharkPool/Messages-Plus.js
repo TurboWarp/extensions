@@ -3,7 +3,7 @@
 // Description: New Powerful Message Blocks that work with Vanilla Blocks!
 // By: SharkPool
 
-// Version 1.0.1
+// Version 1.1.0
 
 (function (Scratch) {
   "use strict";
@@ -11,6 +11,17 @@
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
+  const originalStartHats = vm.runtime.startHats;
+
+  runtime.startHats = function (opcode, fields, target) {
+    let threads = originalStartHats.call(this, opcode, fields, target);
+    if (opcode === "event_whenbroadcastreceived") {
+      const name = fields.BROADCAST_OPTION;
+      const startedThreads = runtime.startHats("SPmessagePlus_whenAnyBroadcast");
+      startedThreads.forEach((thread) => (thread.messageName = name));
+    }
+    return threads;
+  };
 
   const menuIconURI =
 "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI2My42Nzk1NSIgaGVpZ2h0PSI2My42Nzk1NiIgdmlld0JveD0iMCwwLDYzLjY3OTU1LDYzLjY3OTU2Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjA4LjE2MDIyLC0xNDguMTYwMjIpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMTAuMTYwMjMsMTgwYzAsLTE2LjQ4MDA1IDEzLjM1OTcyLC0yOS44Mzk3OCAyOS44Mzk3OCwtMjkuODM5NzhjMTYuNDgwMDUsMCAyOS44Mzk3NywxMy4zNTk3MiAyOS44Mzk3NywyOS44Mzk3OGMwLDE2LjQ4MDA1IC0xMy4zNTk3MiwyOS44Mzk3OCAtMjkuODM5NzcsMjkuODM5NzhjLTE2LjQ4MDA1LDAgLTI5LjgzOTc4LC0xMy4zNTk3MiAtMjkuODM5NzgsLTI5LjgzOTc4eiIgZmlsbD0iI2ZmYmYwMCIgc3Ryb2tlPSIjY2M5OTAwIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNMjE4Ljk3MTc2LDE3OC42MjQ5MmMtMC4xODQ2NiwtOS4wODY3NyA1LjAzMzYsLTExLjk5NjkyIDguOTYzOTksLTExLjk5NjkyYzQuNzgyODgsMCAxNS4zNzA5LC0wLjI3NjA1IDIzLjUyMjA0LDBjMy45ODAyLDAuMTM0NzkgOS43NjIyMywzLjE1MjU0IDkuNTcwNTgsMTEuOTk2OTJjLTAuMTgxMzgsOC4zNzAyNiAtNi42NDAyOCwxMC45MTg1NCAtOS42Mzc5NywxMC45MTg1NGMtMi43Mjg3NiwwIC03LjI5MTYzLDAgLTEyLjQ2ODcxLDBjLTEuMzY4OCwwIC01LjIwMzEsNy4yMjUwNyAtMTEuNDU3NzMsNy4wMDk0NGMtNC40MzYwNiwtMC4xNTI5NCAyLjUyMTY3LC03LjAwOTQ0IDAuNzQxMzksLTcuMDA5NDRjLTUuMjc5MTksMCAtOS4xMDUwNiwtNC41OTQzIC05LjIzMzU5LC0xMC45MTg1NHoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTI0Ni43ODQ4MywxOTIuOTgzOXYtMy4xNzU5NGgtMy4xNzU5NGMtMS41MzAyNCwwIC0yLjc3MDc0LC0xLjEzNDQyIC0yLjc3MDc0LC0yLjUzMzhjMCwtMS4zOTkzOCAxLjI0MDUsLTIuNTMzODEgMi43NzA3NCwtMi41MzM4MWgzLjE3NTk0di0zLjE3NTk0YzAsLTEuNTMwMjQgMS4xMzQ0MiwtMi43NzA3NCAyLjUzMzgxLC0yLjc3MDc0YzEuMzk5MzgsMCAyLjUzMzgsMS4yNDA1IDIuNTMzOCwyLjc3MDc0djMuMTc1OTRoMy4xNzU5NWMxLjUzMDIzLDAgMi43NzA3MywxLjEzNDQyIDIuNzcwNzMsMi41MzM4MWMwLDEuMzk5MzggLTEuMjQwNSwyLjUzMzgxIC0yLjc3MDczLDIuNTMzODFoLTMuMTc1OTV2My4xNzU5NGMwLDEuNTMwMjQgLTEuMTM0NDIsMi43NzA3NCAtMi41MzM4LDIuNzcwNzRjLTEuMzk5MzgsMCAtMi41MzM4MSwtMS4yNDA1IC0yLjUzMzgxLC0yLjc3MDc0eiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZiZjAwIiBzdHJva2Utd2lkdGg9IjYiLz48cGF0aCBkPSJNMjQ2Ljc4NDgzLDE5Mi45ODM5di0zLjE3NTk0aC0zLjE3NTk0Yy0xLjUzMDI0LDAgLTIuNzcwNzQsLTEuMTM0NDIgLTIuNzcwNzQsLTIuNTMzOGMwLC0xLjM5OTM4IDEuMjQwNSwtMi41MzM4IDIuNzcwNzQsLTIuNTMzOGgzLjE3NTk0di0zLjE3NTk0YzAsLTEuNTMwMjQgMS4xMzQ0MiwtMi43NzA3NCAyLjUzMzgsLTIuNzcwNzRjMS4zOTkzOCwwIDIuNTMzOCwxLjI0MDUgMi41MzM4LDIuNzcwNzR2My4xNzU5NGgzLjE3NTk0YzEuNTMwMjQsMCAyLjc3MDc0LDEuMTM0NDIgMi43NzA3NCwyLjUzMzhjMCwxLjM5OTM4IC0xLjI0MDUsMi41MzM4IC0yLjc3MDc0LDIuNTMzOGgtMy4xNzU5NHYzLjE3NTk0YzAsMS41MzAyNCAtMS4xMzQ0MiwyLjc3MDc0IC0yLjUzMzgsMi43NzA3NGMtMS4zOTkzOCwwIC0yLjUzMzgsLTEuMjQwNSAtMi41MzM4LC0yLjc3MDc0eiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiLz48L2c+PC9nPjwvc3ZnPg==";
@@ -35,6 +46,23 @@
         color3: "#CC9900",
         menuIconURI,
         blocks: [
+          {
+            opcode: "whenAnyBroadcast",
+            blockType: Scratch.BlockType.EVENT,
+            extensions: ["colours_event"],
+            isEdgeActivated: false,
+            shouldRestartExistingThreads: true,
+            text: "when any broadcast is received"
+          },
+          {
+            opcode: "messageName",
+            blockType: Scratch.BlockType.REPORTER,
+            extensions: ["colours_event"],
+            allowDropAnywhere: true,
+            disableMonitor: true,
+            text: "broadcast name"
+          },
+          "---",
           {
             opcode: "broadcastTarget",
             blockType: Scratch.BlockType.COMMAND,
@@ -263,6 +291,15 @@
     }
 
     // Blocks
+
+    messageName(args, util) {
+      const name = util.thread.messageName;
+      if (!name) return "";
+      const allBroadcasts = Object.values(runtime.getTargetForStage().variables)
+        .filter(vari => vari.type === "broadcast_msg").map(vari => vari.value);
+      const match = allBroadcasts.find(value => value.toUpperCase() === name);
+      return match ? match : "";
+    }
 
     broadcastTarget(args, util) { this.broadcastDataTarget({ ...args, DATA : "" }, util) }
 
