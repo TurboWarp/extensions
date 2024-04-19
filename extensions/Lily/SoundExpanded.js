@@ -28,9 +28,39 @@
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
               },
+            },
+            extensions: ["colours_sounds"],
+          },
+          {
+            opcode: "startLoopingBegin",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "start looping [SOUND] loop start [START] seconds",
+            arguments: {
+              SOUND: {
+                type: Scratch.ArgumentType.SOUND,
+              },
               START: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+                defaultValue: "2",
+              },
+            },
+            extensions: ["colours_sounds"],
+          },
+          {
+            opcode: "startLoopingBeginEnd",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "start looping [SOUND] loop region [START] to [END] seconds",
+            arguments: {
+              SOUND: {
+                type: Scratch.ArgumentType.SOUND,
+              },
+              START: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "2",
+              },
+              END: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "4",
               },
             },
             extensions: ["colours_sounds"],
@@ -60,6 +90,74 @@
 
           "---",
 
+          {
+            opcode: "playSoundAtAndWait",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "play sound [SOUND] from [START] seconds until done",
+            arguments: {
+              SOUND: {
+                type: Scratch.ArgumentType.SOUND,
+              },
+              START: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "2",
+              },
+            },
+            extensions: ["colours_sounds"],
+          },
+          {
+            opcode: "playSoundAt",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "start sound [SOUND] from [START] seconds",
+            arguments: {
+              SOUND: {
+                type: Scratch.ArgumentType.SOUND,
+              },
+              START: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "2",
+              },
+            },
+            extensions: ["colours_sounds"],
+          },
+          {
+            opcode: "playSoundToAndWait",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "play sound [SOUND] from [START] to [END] seconds until done",
+            arguments: {
+              SOUND: {
+                type: Scratch.ArgumentType.SOUND,
+              },
+              START: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "2",
+              },
+              END: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "4",
+              },
+            },
+            extensions: ["colours_sounds"],
+          },
+          {
+            opcode: "playSoundTo",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "start sound [SOUND] from [START] to [END] seconds",
+            arguments: {
+              SOUND: {
+                type: Scratch.ArgumentType.SOUND,
+              },
+              START: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "2",
+              },
+              END: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "4",
+              },
+            },
+            extensions: ["colours_sounds"],
+          },
           {
             opcode: "stopSound",
             blockType: Scratch.BlockType.COMMAND,
@@ -187,8 +285,8 @@
       };
     }
 
-    startLooping(args, util) {
-      const index = this._getSoundIndex(args.SOUND, util);
+    _startLooping(util, sound, loopStart, loopEnd) {
+      const index = this._getSoundIndex(sound, util);
       if (index < 0) return 0;
       const target = util.target;
       const sprite = util.target.sprite;
@@ -203,6 +301,30 @@
 
       if (!soundPlayer.outputNode) return;
       soundPlayer.outputNode.loop = true;
+      soundPlayer.outputNode.loopStart = loopStart;
+      soundPlayer.outputNode.loopEnd = loopEnd;
+    }
+
+    startLooping(args, util) {
+      this._startLooping(util, args.SOUND, 0, 0);
+    }
+
+    startLoopingBegin(args, util) {
+      this._startLooping(
+        util,
+        args.SOUND,
+        Scratch.Cast.toNumber(args.START),
+        0
+      );
+    }
+
+    startLoopingBeginEnd(args, util) {
+      this._startLooping(
+        util,
+        args.SOUND,
+        Scratch.Cast.toNumber(args.START),
+        Scratch.Cast.toNumber(args.END)
+      );
     }
 
     stopLooping(args, util) {
@@ -227,6 +349,110 @@
 
       if (!soundPlayer.outputNode) return false;
       return soundPlayer.outputNode.loop;
+    }
+
+    // https://github.com/scratchfoundation/scratch-vm/blob/7c1187cc1fe1c763ef61598875acd4fc9a0c8c2e/src/blocks/scratch3_sound.js#L164
+    _playSoundAt(args, util, storeWaiting) {
+      const index = this._getSoundIndex(args.SOUND, util);
+      if (index >= 0) {
+        const { target } = util;
+        const { sprite } = target;
+        const { soundId } = sprite.sounds[index];
+        const start = Math.max(Scratch.Cast.toNumber(args.START), 0);
+        const end =
+          args.END == undefined ? undefined : Scratch.Cast.toNumber(args.END);
+        if (sprite.soundBank) {
+          if (storeWaiting === true) {
+            // @ts-expect-error not typed
+            Scratch.vm.runtime.ext_scratch3_sound._addWaitingSound(
+              target.id,
+              soundId
+            );
+          } else {
+            // @ts-expect-error not typed
+            Scratch.vm.runtime.ext_scratch3_sound._removeWaitingSound(
+              target.id,
+              soundId
+            );
+          }
+          return this._playSoundBankSound(
+            sprite.soundBank,
+            target,
+            soundId,
+            start,
+            end
+          );
+        }
+      }
+    }
+
+    // https://github.com/scratchfoundation/scratch-audio/blob/6fb4b142a5f3198483e4c4f992fb623d5e9d1ed5/src/SoundBank.js#L89
+    _playSoundBankSound(bank, target, soundId, start, end) {
+      const effects = bank.getSoundEffects(soundId);
+      const player = bank.getSoundPlayer(soundId);
+
+      if (bank.playerTargets.get(soundId) !== target) {
+        // make sure to stop the old sound, effectively "forking" the output
+        // when the target switches before we adjust it's effects
+        player.stop();
+      }
+
+      bank.playerTargets.set(soundId, target);
+      effects.addSoundPlayer(player);
+      effects.setEffectsFromTarget(target);
+      player.connect(effects);
+
+      this._playSoundPlayer(player, start, end);
+
+      return player.finished();
+    }
+
+    // https://github.com/scratchfoundation/scratch-audio/blob/6fb4b142a5f3198483e4c4f992fb623d5e9d1ed5/src/SoundPlayer.js#L253
+    _playSoundPlayer(player, start, end) {
+      if (player.isStarting) {
+        player.emit("stop");
+        player.emit("play");
+        return;
+      }
+
+      if (player.isPlaying) {
+        player.stop();
+      }
+
+      if (player.initialized) {
+        player._createSource();
+      } else {
+        player.initialize();
+      }
+
+      if (end === undefined) {
+        player.outputNode.start(0, start);
+      } else {
+        player.outputNode.start(0, start, Math.max(end - start, 0));
+      }
+
+      player.isPlaying = true;
+
+      const { currentTime, DECAY_DURATION } = player.audioEngine;
+      player.startingUntil = currentTime + DECAY_DURATION;
+
+      player.emit("play");
+    }
+
+    playSoundAt(args, util) {
+      this._playSoundAt(args, util);
+    }
+
+    playSoundAtAndWait(args, util) {
+      return this._playSoundAt(args, util, true);
+    }
+
+    playSoundTo(args, util) {
+      this._playSoundAt(args, util);
+    }
+
+    playSoundToAndWait(args, util) {
+      return this._playSoundAt(args, util, true);
     }
 
     stopSound(args, util) {
