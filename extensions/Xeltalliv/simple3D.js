@@ -3498,7 +3498,7 @@ void main() {
 		color1: "#5CB1D6",
 		color2: "#47A8D1",
 		color3: "#2E8EB8",
-		docsURI: "hello",
+		docsURI: "https://extensions.turbowarp.org/Xeltalliv/simple3D",
 		blocks: [
 			...definitions
 		],
