@@ -818,7 +818,7 @@
 			this.resizeCanvas();
 		}
 	}
-	function addSimple3DLayer() {
+	function addSimple3DLayer(publicApi) {
 		// Register new drawable group "simple3D"
 		let index = renderer._groupOrdering.indexOf("video");
 		let copy = renderer._groupOrdering.slice();
@@ -843,6 +843,8 @@
 			skin.updateContent(canvas);
 			runtime.requestRedraw();
 		}
+		
+		publicApi.redraw = redraw;
 	}
 	const vshSrc = `
 precision highp float;
@@ -1376,7 +1378,7 @@ void main() {
 		lastTextMeasurement = null;
 	}
 	resetEverything();
-	addSimple3DLayer();
+	addSimple3DLayer(publicApi);
 
 	const definitions = [
 		{

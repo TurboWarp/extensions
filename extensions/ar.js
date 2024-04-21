@@ -401,6 +401,8 @@
   // Patching renderer.draw() to draw to xr framebuffer instead of canvas
   const drawOrig = renderer.draw.bind(renderer);
   const drawXR = function () {
+    if (s3dApi.redraw) s3dApi.redraw(); // ADDED
+
     const bl = this.xr.renderState.baseLayer; // ADDED
     if (!bl) return; // Should fix very rare crash during exiting  // ADDED
 
@@ -835,6 +837,33 @@
       }
     }
   }
+
+  const s3dApi = runtime.ext_xeltallivsimple3d ?? (runtime.ext_xeltallivsimple3d = {});
+  const externalTransforms = s3dApi.externalTransforms ?? (s3dApi.externalTransforms = {});
+  externalTransforms["ar_combined"] = {
+    name: "AR: combined",
+    get() {
+      return xrCombinedMatrix?.slice() ?? [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
+    }
+  };
+  externalTransforms["ar_projection"] = {
+    name: "AR: view to projected",
+    get() {
+      return xrProjectionMatrix?.slice() ?? [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
+    }
+  };
+  externalTransforms["ar_view"] = {
+    name: "AR: world to view",
+    get() {
+      return xrTransform?.matrix?.slice() ?? [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
+    }
+  };
+  externalTransforms["ar_inverse_view"] = {
+    name: "AR: world to view (inverse)",
+    get() {
+      return xrTransform?.inverse?.matrix?.slice() ?? [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
+    }
+  };
 
   Scratch.extensions.register(new ARExtension());
 })(Scratch);
