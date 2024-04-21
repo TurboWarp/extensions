@@ -1235,7 +1235,7 @@ void main() {
 		"not same": gl.NOTEQUAL,
 		"everything": gl.ALWAYS
 	}
-	const Primitives  = {
+	const Primitives = {
 		"points": gl.POINTS,
 		"lines": gl.LINES,
 		"line loop": gl.LINE_LOOP,
@@ -1243,6 +1243,11 @@ void main() {
 		"triangles": gl.TRIANGLES,
 		"triangle strip": gl.TRIANGLE_STRIP,
 		"triangle fan": gl.TRIANGLE_FAN,
+	}
+	const ClearLayers = {
+		"color": gl.COLOR_BUFFER_BIT,
+		"depth": gl.DEPTH_BUFFER_BIT,
+		"color and depth": (gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT),
 	}
 	const texture = getDefaultTexture();
 	const meshes = new Map();
@@ -1337,15 +1342,16 @@ void main() {
 				LAYERS: {
 					type: ArgumentType.STRING,
 					menu: "clearLayers",
-					defaultValue: ""+(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+					defaultValue: "color and depth"
 				},
 			},
 			def: function({LAYERS}) {
+				if (!hasOwnProperty.call(ClearLayers, LAYERS)) return;
 				if (gl.getParameter(gl.DEPTH_WRITEMASK)) {
-					gl.clear(Cast.toNumber(LAYERS));
+					gl.clear(ClearLayers[LAYERS]);
 				} else {
 					gl.depthMask(true);
-					gl.clear(Cast.toNumber(LAYERS));
+					gl.clear(ClearLayers[LAYERS]);
 					gl.depthMask(false);
 				}
 				renderer.dirty = true;   //TODO: only do this when rendering to
@@ -3520,15 +3526,11 @@ void main() {
 				items: "externalTransforms"
 			},
 			clearLayers: {
-				acceptReporters: false,
-				items: [
-					{text: "color", value: ""+gl.COLOR_BUFFER_BIT},
-					{text: "depth", value: ""+gl.DEPTH_BUFFER_BIT},
-					{text: "color and depth", value: ""+(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)},
-				]
+				acceptReporters: true,
+				items: Object.keys(ClearLayers)
 			},
 			primitives: {
-				acceptReporters: false,
+				acceptReporters: true,
 				items: Object.keys(Primitives)
 			},
 			onOff: {

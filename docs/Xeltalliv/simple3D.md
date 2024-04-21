@@ -43,7 +43,7 @@ For now let's not worry about transformations and just draw something as is.
 First step would be to clear the screen:
 ```scratch
 set clear color R: (0.5) G: (0.5) B: (0.5) A: (1) :: sensing
-clear [color and depth v] :: sensing
+clear (color and depth v) :: sensing
 ```
 After running that the screen should turn gray.
 Now let's draw 2 triangles arranged into a rectange. First create a mesh:
@@ -113,7 +113,7 @@ Create another list `indices` and fill it with:
 Now reupload XY positions and upload the list of indices into the mesh, clear the screen and draw the mesh again. Result should look the same.
 ```scratch
 set clear color R: (0.5) G: (0.5) B: (0.5) A: (1) :: sensing
-clear [color and depth v] :: sensing
+clear (color and depth v) :: sensing
 create mesh [my mesh] :: sensing
 set [my mesh] positions XY [posX v] [posY v] :: sensing
 set [my mesh] vertex indices [indices v] :: sensing
@@ -126,10 +126,10 @@ With triangle strip, the first 2 vertices are processed normally, and then each 
 With triangle fan, the first 2 vertices are processed normally, and then each subsequent vertex get combined with the previous one and the first one into a triangle.
 ```scratch
 set clear color R: (0.5) G: (0.5) B: (0.5) A: (1) :: sensing
-clear [color and depth v] :: sensing
+clear (color and depth v) :: sensing
 create mesh [my mesh] :: sensing
 set [my mesh] positions XY [posX v] [posY v] :: sensing
-set [my mesh] primitives [line loop v] :: sensing
+set [my mesh] primitives (traingle strip v) :: sensing
 draw [my mesh] :: sensing
 ```
 Result should once again look the same.
@@ -285,7 +285,7 @@ Resets everything to the initial state as if the extension was freshly loaded. I
 
 ---
 ```scratch
-clear [color and depth v] :: sensing
+clear (color and depth v) :: sensing
 ```
 Clears the color and/or depth of the selected render target
 
@@ -528,7 +528,7 @@ configure [importing from file v] transformation :: sensing
 
 ---
 ```scratch
-set [my mesh] primitives [points v] :: sensing
+set [my mesh] primitives (points v) :: sensing
 ```
 Used for changing the way vertices are assembled into primitives.
 - With triangles, vertices are grouped by 3 into triangles.
