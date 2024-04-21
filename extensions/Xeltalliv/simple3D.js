@@ -1123,6 +1123,11 @@ void main() {
 		}
 		return texture;
 	}
+	/*
+	 * Profiler has shown that this was the main bottleneck, so:
+	 * - loops were unrolled
+	 * - Cast.toNumber was replaced with unary plus
+	 */
 	function compact(target, names, typedArray, scale=1) {
 		const lists = names.map(name => target.lookupVariableByNameAndType(name, "list"));
 		if (lists.includes(null)) return null;
@@ -1131,15 +1136,83 @@ void main() {
 		if (lists.find(list => list.value.length !== targetLength)) return null;
 		const value = new typedArray(targetLength * listCount);
 		if (scale !== 1) {
-			for(let i=0, j=0; i<targetLength; i++) {
-				for(let k=0; k<listCount; k++) {
-					value[j++] = Cast.toNumber(lists[k].value[i]) * scale;
+			if (listCount == 1) {
+				const list0 = lists[0].value;
+				for(let i=0; i<targetLength; i++) {
+					value[i] = list0[i] * scale;
+				}
+			} else if (listCount == 2) {
+				const list0 = lists[0].value;
+				const list1 = lists[1].value;
+				for(let i=0, j=0; i<targetLength; i++, j+=2) {
+					value[j] = list0[i] * scale;
+					value[j+1] = list1[i] * scale;
+				}
+			} else if (listCount == 3) {
+				const list0 = lists[0].value;
+				const list1 = lists[1].value;
+				const list2 = lists[2].value;
+				for(let i=0, j=0; i<targetLength; i++, j+=3) {
+					value[j] = list0[i] * scale;
+					value[j+1] = list1[i] * scale;
+					value[j+2] = list2[i] * scale;
+				}
+			} else if (listCount == 4) {
+				const list0 = lists[0].value;
+				const list1 = lists[1].value;
+				const list2 = lists[2].value;
+				const list3 = lists[3].value;
+				for(let i=0, j=0; i<targetLength; i++, j+=4) {
+					value[j  ] = list0[i] * scale;
+					value[j+1] = list1[i] * scale;
+					value[j+2] = list2[i] * scale;
+					value[j+3] = list3[i] * scale;
+				}
+			} else { // Unused
+				for(let i=0, j=0; i<targetLength; i++) {
+					for(let k=0; k<listCount; k++) {
+						value[j++] = lists[k].value[i] * scale;
+					}
 				}
 			}
 		} else {
-			for(let i=0, j=0; i<targetLength; i++) {
-				for(let k=0; k<listCount; k++) {
-					value[j++] = Cast.toNumber(lists[k].value[i]);
+			if (listCount == 1) {
+				const list0 = lists[0].value;
+				for(let i=0; i<targetLength; i++) {
+					value[i] = +list0[i];
+				}
+			} else if (listCount == 2) {
+				const list0 = lists[0].value;
+				const list1 = lists[1].value;
+				for(let i=0, j=0; i<targetLength; i++, j+=2) {
+					value[j] = +list0[i];
+					value[j+1] = +list1[i];
+				}
+			} else if (listCount == 3) {
+				const list0 = lists[0].value;
+				const list1 = lists[1].value;
+				const list2 = lists[2].value;
+				for(let i=0, j=0; i<targetLength; i++, j+=3) {
+					value[j  ] = +list0[i];
+					value[j+1] = +list1[i];
+					value[j+2] = +list2[i];
+				}
+			} else if (listCount == 4) {
+				const list0 = lists[0].value;
+				const list1 = lists[1].value;
+				const list2 = lists[2].value;
+				const list3 = lists[3].value;
+				for(let i=0, j=0; i<targetLength; i++, j+=4) {
+					value[j  ] = +list0[i];
+					value[j+1] = +list1[i];
+					value[j+2] = +list2[i];
+					value[j+3] = +list3[i];
+				}
+			} else { // Unused
+				for(let i=0, j=0; i<targetLength; i++) {
+					for(let k=0; k<listCount; k++) {
+						value[j++] = +lists[k].value[i];
+					}
 				}
 			}
 		}
