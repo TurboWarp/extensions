@@ -3,6 +3,7 @@
 // Description: Manage your data inside your stack (or substack).
 // By: SimonShiki <https://scratch.mit.edu/users/SinanGentoo/>
 // Original: Skyhigh173
+// License: AGPL-3.0-or-later
 
 (function (Scratch) {
   "use strict";
@@ -21,186 +22,219 @@
   const TYPE_UNKNOWN = 4;
   const TYPE_NUMBER_NAN = 5;
   class TypedInput {
-    constructor (source, type) {
-        // for debugging
-        if (typeof type !== 'number') throw new Error('type is invalid');
-        this.source = source;
-        this.type = type;
+    constructor(source, type) {
+      // for debugging
+      if (typeof type !== "number") throw new Error("type is invalid");
+      this.source = source;
+      this.type = type;
     }
 
-    asNumber () {
-        if (this.type === TYPE_NUMBER) return this.source;
-        if (this.type === TYPE_NUMBER_NAN) return `(${this.source} || 0)`;
-        return `(+${this.source} || 0)`;
+    asNumber() {
+      if (this.type === TYPE_NUMBER) return this.source;
+      if (this.type === TYPE_NUMBER_NAN) return `(${this.source} || 0)`;
+      return `(+${this.source} || 0)`;
     }
 
-    asNumberOrNaN () {
-        if (this.type === TYPE_NUMBER || this.type === TYPE_NUMBER_NAN) return this.source;
-        return `(+${this.source})`;
-    }
-
-    asString () {
-        if (this.type === TYPE_STRING) return this.source;
-        return `("" + ${this.source})`;
-    }
-
-    asBoolean () {
-        if (this.type === TYPE_BOOLEAN) return this.source;
-        return `toBoolean(${this.source})`;
-    }
-
-    asColor () {
-        return this.asUnknown();
-    }
-
-    asUnknown () {
+    asNumberOrNaN() {
+      if (this.type === TYPE_NUMBER || this.type === TYPE_NUMBER_NAN)
         return this.source;
+      return `(+${this.source})`;
     }
 
-    asSafe () {
-        return this.asUnknown();
+    asString() {
+      if (this.type === TYPE_STRING) return this.source;
+      return `("" + ${this.source})`;
     }
 
-    isAlwaysNumber () {
-        return this.type === TYPE_NUMBER;
+    asBoolean() {
+      if (this.type === TYPE_BOOLEAN) return this.source;
+      return `toBoolean(${this.source})`;
     }
 
-    isAlwaysNumberOrNaN () {
-        return this.type === TYPE_NUMBER || this.type === TYPE_NUMBER_NAN;
+    asColor() {
+      return this.asUnknown();
     }
 
-    isNeverNumber () {
-        return false;
+    asUnknown() {
+      return this.source;
+    }
+
+    asSafe() {
+      return this.asUnknown();
+    }
+
+    isAlwaysNumber() {
+      return this.type === TYPE_NUMBER;
+    }
+
+    isAlwaysNumberOrNaN() {
+      return this.type === TYPE_NUMBER || this.type === TYPE_NUMBER_NAN;
+    }
+
+    isNeverNumber() {
+      return false;
     }
   }
 
   class ScopeVar {
-    constructor () {
-        this.patchCompiler();
-        Scratch.vm.runtime.ext_shikiScopeVar = this;
+    constructor() {
+      this.patchCompiler();
+      Scratch.vm.runtime.ext_shikiScopeVar = this;
     }
 
-    patchCompiler () {
-        const dangerousExports = Scratch.vm.exports?.i_will_not_ask_for_help_when_these_break && Scratch.vm.exports.i_will_not_ask_for_help_when_these_break();
-        // Don't patch older Turbowarp VM
-        if (!dangerousExports) {
-            return;
-        }
-        const ASTGen = dangerousExports.ScriptTreeGenerator;
-        const IRGen = dangerousExports.IRGenerator;
-        const JSGen = dangerousExports.JSGenerator;
+    patchCompiler() {
+      const dangerousExports =
+        Scratch.vm.exports?.i_will_not_ask_for_help_when_these_break &&
+        Scratch.vm.exports.i_will_not_ask_for_help_when_these_break();
+      // Don't patch older Turbowarp VM
+      if (!dangerousExports) {
+        return;
+      }
+      const ASTGen = dangerousExports.ScriptTreeGenerator;
+      const IRGen = dangerousExports.IRGenerator;
+      const JSGen = dangerousExports.JSGenerator;
 
-        // AST part
-        const ast_descendInput = ASTGen.prototype.descendInput;
-        ASTGen.prototype.descendInput = function (block, ...otherParams) {
-            switch (block.opcode) {
-            case 'shikiScopeVar_get':
-                if (!this._hasScopeVar) {
-                    return {
-                        kind: 'constant',
-                        value: ''
-                    };
-                }
-                return {
-                    kind: 'shikiScopeVar.get',
-                    name:this.descendInputOfBlock(block, 'VAR')
-                };
-            default:
-                return ast_descendInput.call(this, block, ...otherParams);
+      // AST part
+      const ast_descendInput = ASTGen.prototype.descendInput;
+      ASTGen.prototype.descendInput = function (block, ...otherParams) {
+        switch (block.opcode) {
+          case "shikiScopeVar_get":
+            if (!this._hasScopeVar) {
+              return {
+                kind: "constant",
+                value: "",
+              };
             }
+            return {
+              kind: "shikiScopeVar.get",
+              name: this.descendInputOfBlock(block, "VAR"),
+            };
+          default:
+            return ast_descendInput.call(this, block, ...otherParams);
         }
+      };
 
-        const ast_descendStackedBlock = ASTGen.prototype.descendStackedBlock;
-        ASTGen.prototype.descendStackedBlock = function (block, ...otherParams) {
-            switch (block.opcode) {
-            case 'shikiScopeVar_scope':
-                return {
-                    kind: 'shikiScopeVar.scope',
-                    scoped: this.descendSubstack(block, 'SUBSTACK')
-                };
-            case 'shikiScopeVar_create':
-                if (!this._hasScopeVar) this._hasScopeVar = true;
-                return {
-                    kind: 'shikiScopeVar.create',
-                    name: this.descendInputOfBlock(block, 'VAR'),
-                    value: this.descendInputOfBlock(block, 'VALUE')
-                };
-            case 'shikiScopeVar_set':
-                if (!this._hasScopeVar) this._hasScopeVar = true;
-                return {
-                    kind: 'shikiScopeVar.set',
-                    name: this.descendInputOfBlock(block, 'VAR'),
-                    value: this.descendInputOfBlock(block, 'VALUE')
-                };
-            case 'shikiScopeVar_change':
-                if (!this._hasScopeVar) this._hasScopeVar = true;
-                return {
-                    kind: 'shikiScopeVar.change',
-                    name:this.descendInputOfBlock(block, 'VAR'),
-                    increment: this.descendInputOfBlock(block, 'INCREMENT')
-                };
-            default:
-                return ast_descendStackedBlock.call(this, block, ...otherParams);
-            }
+      const ast_descendStackedBlock = ASTGen.prototype.descendStackedBlock;
+      ASTGen.prototype.descendStackedBlock = function (block, ...otherParams) {
+        switch (block.opcode) {
+          case "shikiScopeVar_scope":
+            return {
+              kind: "shikiScopeVar.scope",
+              scoped: this.descendSubstack(block, "SUBSTACK"),
+            };
+          case "shikiScopeVar_create":
+            if (!this._hasScopeVar) this._hasScopeVar = true;
+            return {
+              kind: "shikiScopeVar.create",
+              name: this.descendInputOfBlock(block, "VAR"),
+              value: this.descendInputOfBlock(block, "VALUE"),
+            };
+          case "shikiScopeVar_set":
+            if (!this._hasScopeVar) this._hasScopeVar = true;
+            return {
+              kind: "shikiScopeVar.set",
+              name: this.descendInputOfBlock(block, "VAR"),
+              value: this.descendInputOfBlock(block, "VALUE"),
+            };
+          case "shikiScopeVar_change":
+            if (!this._hasScopeVar) this._hasScopeVar = true;
+            return {
+              kind: "shikiScopeVar.change",
+              name: this.descendInputOfBlock(block, "VAR"),
+              increment: this.descendInputOfBlock(block, "INCREMENT"),
+            };
+          default:
+            return ast_descendStackedBlock.call(this, block, ...otherParams);
         }
+      };
 
-        // IR Part
-        const ir_generateScriptTree = IRGen.prototype.generateScriptTree;
-        IRGen.prototype.generateScriptTree = function (generator, topBlockId, ...otherParams) {
-            const result = ir_generateScriptTree.call(this, generator, topBlockId, ...otherParams);
-            if (generator._hasScopeVar) this._hasScopeVar = true;
-            return result;
-        }
+      // IR Part
+      const ir_generateScriptTree = IRGen.prototype.generateScriptTree;
+      IRGen.prototype.generateScriptTree = function (
+        generator,
+        topBlockId,
+        ...otherParams
+      ) {
+        const result = ir_generateScriptTree.call(
+          this,
+          generator,
+          topBlockId,
+          ...otherParams
+        );
+        if (generator._hasScopeVar) this._hasScopeVar = true;
+        return result;
+      };
 
-        const ir_generate = IRGen.prototype.generate;
-        IRGen.prototype.generate = function (...otherParams) {
-            const ir = ir_generate.call(this, ...otherParams);
-            if (this._hasScopeVar) ir._hasScopeVar = true;
-            return ir;
-        }
+      const ir_generate = IRGen.prototype.generate;
+      IRGen.prototype.generate = function (...otherParams) {
+        const ir = ir_generate.call(this, ...otherParams);
+        if (this._hasScopeVar) ir._hasScopeVar = true;
+        return ir;
+      };
 
-        // JS Part
-        const js_descendStack = JSGen.prototype.descendStack;
-        JSGen.prototype.descendStack = function (nodes, frame, ...otherParams) {
-            if (this.ir._hasScopeVar) {
-                // simulate sequencer logic, but may have a negative impact on performance
-                // a better solution is use 'let', but not now
-                if (this.frames.length < 1 && !this.script.isProcedure) this.source += 'thread.pushStack();\n';
-                this.source += 'thread.pushStack();\n';
-            }
-            js_descendStack.call(this, nodes, frame, otherParams);
-            if (this.ir._hasScopeVar) this.source += 'thread.popStack();\n';
+      // JS Part
+      const js_descendStack = JSGen.prototype.descendStack;
+      JSGen.prototype.descendStack = function (nodes, frame, ...otherParams) {
+        if (this.ir._hasScopeVar) {
+          // simulate sequencer logic, but may have a negative impact on performance
+          // a better solution is use 'let', but not now
+          if (this.frames.length < 1 && !this.script.isProcedure)
+            this.source += "thread.pushStack();\n";
+          this.source += "thread.pushStack();\n";
         }
+        js_descendStack.call(this, nodes, frame, otherParams);
+        if (this.ir._hasScopeVar) this.source += "thread.popStack();\n";
+      };
 
-        const js_descendInput = JSGen.prototype.descendInput;
-        JSGen.prototype.descendInput = function (node, ...otherParams) {
-            switch (node.kind) {
-            case 'shikiScopeVar.get':
-                return new TypedInput(`runtime.ext_shikiScopeVar._get(${this.descendInput(node.name).asString()}, thread)`, TYPE_UNKNOWN);
-            default:
-                return js_descendInput.call(this, node, ...otherParams);
-            }
+      const js_descendInput = JSGen.prototype.descendInput;
+      JSGen.prototype.descendInput = function (node, ...otherParams) {
+        switch (node.kind) {
+          case "shikiScopeVar.get":
+            return new TypedInput(
+              `runtime.ext_shikiScopeVar._get(${this.descendInput(
+                node.name
+              ).asString()}, thread)`,
+              TYPE_UNKNOWN
+            );
+          default:
+            return js_descendInput.call(this, node, ...otherParams);
         }
+      };
 
-        const js_descendStackedBlock = JSGen.prototype.descendStackedBlock;
-        JSGen.prototype.descendStackedBlock = function (node, ...otherParams) {
-            switch (node.kind) {
-            case 'shikiScopeVar.scope':
-                this.descendStack.call(this, node.scoped, {isLoop: false, isLastBlock: false});
-                break;
-            case 'shikiScopeVar.create':
-                this.source += `runtime.ext_shikiScopeVar._create(${this.descendInput(node.name).asString()}, ${this.descendInput(node.value).asUnknown()}, thread);\n`;
-                break;
-            case 'shikiScopeVar.set':
-                this.source += `runtime.ext_shikiScopeVar._set(${this.descendInput(node.name).asString()}, ${this.descendInput(node.value).asUnknown()}, thread);\n`;
-                break;
-            case 'shikiScopeVar.change':
-                this.source += `runtime.ext_shikiScopeVar._change(${this.descendInput(node.name).asString()}, ${this.descendInput(node.increment).asNumberOrNaN()}, thread);\n`;
-                break;
-            default:
-                return js_descendStackedBlock.call(this, node, ...otherParams);
-            }
+      const js_descendStackedBlock = JSGen.prototype.descendStackedBlock;
+      JSGen.prototype.descendStackedBlock = function (node, ...otherParams) {
+        switch (node.kind) {
+          case "shikiScopeVar.scope":
+            this.descendStack.call(this, node.scoped, {
+              isLoop: false,
+              isLastBlock: false,
+            });
+            break;
+          case "shikiScopeVar.create":
+            this.source += `runtime.ext_shikiScopeVar._create(${this.descendInput(
+              node.name
+            ).asString()}, ${this.descendInput(
+              node.value
+            ).asUnknown()}, thread);\n`;
+            break;
+          case "shikiScopeVar.set":
+            this.source += `runtime.ext_shikiScopeVar._set(${this.descendInput(
+              node.name
+            ).asString()}, ${this.descendInput(
+              node.value
+            ).asUnknown()}, thread);\n`;
+            break;
+          case "shikiScopeVar.change":
+            this.source += `runtime.ext_shikiScopeVar._change(${this.descendInput(
+              node.name
+            ).asString()}, ${this.descendInput(
+              node.increment
+            ).asNumberOrNaN()}, thread);\n`;
+            break;
+          default:
+            return js_descendStackedBlock.call(this, node, ...otherParams);
         }
+      };
     }
 
     getInfo() {
@@ -338,7 +372,7 @@
       this._create(varName, value, util.thread);
     }
 
-    _create (varName, value, thread) {
+    _create(varName, value, thread) {
       const stackFrames = thread.stackFrames;
       const outerStackFrame = stackFrames[stackFrames.length - 2];
       const vars = this._initScope(outerStackFrame);
@@ -350,9 +384,9 @@
       this._set(varName, Cast.toString(args.VALUE), util.thread);
     }
 
-    _set (varName, value, thread) {
-        const vars = this._getVarObjByName(varName, thread);
-        vars[varName] = value;
+    _set(varName, value, thread) {
+      const vars = this._getVarObjByName(varName, thread);
+      vars[varName] = value;
     }
 
     change(args, util) {
@@ -361,9 +395,9 @@
       this._change(varName, dValue, util.thread);
     }
 
-    _change (varName, delta, thread) {
-        const vars = this._getVarObjByName(varName, thread);
-        vars[varName] = Cast.toNumber(vars[varName]) + delta;
+    _change(varName, delta, thread) {
+      const vars = this._getVarObjByName(varName, thread);
+      vars[varName] = Cast.toNumber(vars[varName]) + delta;
     }
 
     get(args, util) {
@@ -371,9 +405,9 @@
       return this._get(varName, util.thread);
     }
 
-    _get (varName, thread) {
-        const vars = this._getVarObjByName(varName, thread);
-        return vars[varName] ?? "";
+    _get(varName, thread) {
+      const vars = this._getVarObjByName(varName, thread);
+      return vars[varName] ?? "";
     }
   }
 
