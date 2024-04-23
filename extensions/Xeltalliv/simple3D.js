@@ -820,10 +820,17 @@
 	}
 	function addSimple3DLayer(publicApi) {
 		// Register new drawable group "simple3D"
+		// To undertsand how this patch works, first understand how those are interconnected:
+		// renderer._groupOrdering => renderer._layerGroups => renderer._drawList => renderer._allDrawables
 		let index = renderer._groupOrdering.indexOf("video");
-		let copy = renderer._groupOrdering.slice();
-		copy.splice(index, 0, "simple3D");
-		renderer.setLayerGroupOrdering(copy);
+		renderer._groupOrdering.splice(index+1, 0, "simple3D");
+		renderer._layerGroups["simple3D"] = {
+			groupIndex: 0,
+			drawListOffset: renderer._layerGroups["video"].drawListOffset
+		};
+		for (let i = 0; i < renderer._groupOrdering.length; i++) {
+			renderer._layerGroups[renderer._groupOrdering[i]].groupIndex = i;
+		}
 
 		// Create drawable and skin
 		const skinId = renderer._nextSkinId++;
