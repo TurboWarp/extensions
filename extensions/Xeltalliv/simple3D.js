@@ -751,14 +751,7 @@
 			this.resolveFn(output.data);
 		}
 	}
-	function getSkin(renderer) {
-		// Obtain Skin
-		const tempSkin = renderer.createTextSkin("say", "", true);
-		const Skin = renderer._allSkins[tempSkin].__proto__.__proto__.constructor;
-		renderer.destroySkin(tempSkin);
-		return Skin;
-	}
-	class SimpleSkin extends (getSkin(Scratch.vm.renderer)) {
+	class SimpleSkin extends Scratch.vm.renderer.exports.Skin {
 		constructor(id, renderer) {
 			super(id, renderer);
 			const gl = renderer.gl;
