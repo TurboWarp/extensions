@@ -1104,8 +1104,8 @@ void main() {
 			return program;
 		}
 		clear() {
-			for(const {program} of this.programs) {
-				gl.deleteProgram(program);
+			for(const key in this.programs) {
+				gl.deleteProgram(this.programs[key].program);
 			}
 			this.programs = {};
 		}
