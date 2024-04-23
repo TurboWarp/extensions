@@ -109,8 +109,6 @@
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
 
-    let resizeCall = false;
-
     const updateCanvasSize = () => {
       nativeSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
@@ -168,7 +166,6 @@
     canvas.addEventListener("resize", updateCanvasSize);
     vm.runtime.on("STAGE_SIZE_CHANGED", () => {
       updateCanvasSize();
-      resizeCall = true;
     });
     
     let lastCanvasSize = [canvas.width, canvas.height];
@@ -4806,7 +4803,6 @@
       gl.useProgram(penPlusShaders.untextured.ProgramInf.program);
 
       twgl.setUniforms(penPlusShaders.textured.ProgramInf, {
-        u_texture: texture,
         u_transform: transform_Matrix,
       });
 
@@ -4829,7 +4825,7 @@
       })
     }
 
-    renderTexturedTrisFromList({ list }, util) {
+    renderTexturedTrisFromList({ list, texture }, util) {
       const { triData, listLength, successful} = this._getTriDataFromList(list,util);
       if (!successful) return;
 
@@ -4870,6 +4866,7 @@
       gl.useProgram(penPlusShaders.textured.ProgramInf.program);
 
       twgl.setUniforms(penPlusShaders.textured.ProgramInf, {
+        u_texture: texture,
         u_transform: transform_Matrix,
       });
 
