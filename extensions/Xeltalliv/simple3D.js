@@ -1279,7 +1279,6 @@ void main() {
 	const runtime = vm.runtime;
 
 	const extensionId = "xeltallivSimple3D";
-	const hasOwnProperty = Object.prototype.hasOwnProperty;
 	const canvas = document.createElement("canvas");
 	const gl = canvas.getContext("webgl2");
 	if (!gl) alert("Simple 3D extension failed to get WebGL2 conetxt. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2");
@@ -1421,7 +1420,7 @@ void main() {
 				},
 			},
 			def: function({LAYERS}) {
-				if (!hasOwnProperty.call(ClearLayers, LAYERS)) return;
+				if (!Object.hasOwn(ClearLayers, LAYERS)) return;
 				if (gl.getParameter(gl.DEPTH_WRITEMASK)) {
 					gl.clear(ClearLayers[LAYERS]);
 				} else {
@@ -1575,7 +1574,7 @@ void main() {
 			def: function({NAME, PROP}) {
 				const mesh = meshes.get(Cast.toString(NAME));
 				if (PROP == "exists") return !!mesh;
-				if (!mesh || !hasOwnProperty.call(MeshPropFns, PROP)) return "";
+				if (!mesh || !Object.hasOwn(MeshPropFns, PROP)) return "";
 				return MeshPropFns[PROP](mesh) ?? "";
 			}
 		},
@@ -1855,7 +1854,7 @@ void main() {
 					"Z+": "zpos",
 					"Z-": "zneg",
 				}
-				if (!hasOwnProperty.call(lookup, SIDE)) return;
+				if (!Object.hasOwn(lookup, SIDE)) return;
 				textureObj[lookup[SIDE]].loading = true;
 				mesh.update();
 				const onData = function(data) {
@@ -2125,7 +2124,7 @@ void main() {
 				const mesh = meshes.get(Cast.toString(NAME));
 				const primitivesName = Cast.toString(PRIMITIVES);
 				if (!mesh) return;
-				if (!hasOwnProperty.call(Primitives, primitivesName)) return;
+				if (!Object.hasOwn(Primitives, primitivesName)) return;
 				mesh.myData.primitives = Primitives[primitivesName];
 				mesh.myData.primitivesName = primitivesName;
 				mesh.update();
@@ -3345,7 +3344,7 @@ void main() {
 					"Z+": "zpos",
 					"Z-": "zneg"
 				}
-				if (!hasOwnProperty.call(lookup, SIDE)) return;
+				if (!Object.hasOwn(lookup, SIDE)) return;
 				mesh.data.texture[lookup[SIDE]].setAsRenderTarget();
 			}
 		},
