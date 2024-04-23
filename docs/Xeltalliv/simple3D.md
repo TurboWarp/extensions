@@ -19,9 +19,9 @@
 
 
 ## What is this <a name="description"></a>
-**Simple 3D** is an extension by [Vadik1](https://scratch.mit.edu/users/Vadik1) meant to enable creation of GPU accelerated 3D projects. It's is not designed for making graphically complex 3D projects (for that, see upcoming Pen+ v7 and WebGL 2 extensions, both with programmable shaders) and instead it's main focus is allowing people to create 3D projects easily and quickly. Nevertheless, despite lack of programmable shaders, it is still quite powerful. It covers the wide range of usages from something as high level as making an AR project in less than 20 blocks with models loaded from OBJ files, to something more low level like doing all the calculations on CPU and streaming transformed polygons every frame (like [Pen+](https://extensions.turbowarp.org/obviousAlexC/penPlus.js)). And of course everything inbetween.
+**Simple 3D** is an extension by [Vadik1](https://scratch.mit.edu/users/Vadik1) meant to enable creation of GPU accelerated 3D projects. It is is not designed for making graphically complex 3D projects (for that, see upcoming Pen+ v7 and WebGL 2 extensions, both with programmable shaders) and instead it's main focus is allowing people to create 3D projects easily and quickly. Nevertheless, despite lack of programmable shaders, it is still quite powerful. It covers the wide range of usages from something as high level as making an AR project in less than 20 blocks with models loaded from OBJ files, to something more low level like doing all the calculations on CPU and streaming transformed polygons every frame (like [Pen+](https://extensions.turbowarp.org/obviousAlexC/penPlus.js)). And of course everything in-between.
 
-It could also be useful for making certain kinds of 2D projects, thanks to it's ability to render large quanities of similar objects with instansing (e.g particles), construct 2D meshes out of triangles, rendering into textures allowing multi-pass rendering and more advanced clipping than [Clipping &amp; Blending](https://extensions.turbowarp.org/Xeltalliv/clippingblending.js) extension. It can be used for 2D image processing that can for example later be used as costumes using [Skins](https://extensions.turbowarp.org/Lily/Skins.js) extension.
+It could also be useful for making certain kinds of 2D projects, thanks to it's ability to render large quantities of similar objects with instancing (e.g particles), construct 2D meshes out of triangles, rendering into textures allowing multi-pass rendering and more advanced clipping than [Clipping &amp; Blending](https://extensions.turbowarp.org/Xeltalliv/clippingblending.js) extension. It can be used for 2D image processing that can for example later be used as costumes using [Skins](https://extensions.turbowarp.org/Lily/Skins.js) extension. It's skinning system with vertex weights can be used for skeletal animation of 2D characters, or even smoothly extending menus.
 
 ## How it works <a name="main-concepts"></a>
 Scratch has a background layer, a video layer, a pen layer and a sprite layer. This extension adds another layer - simple3D between video and pen layers. High quality pen mode also affcts it.
@@ -32,11 +32,11 @@ Meshes store a 3D model data and can be drawn. They are kind of like costumes in
 
 It works the same way with this extension. If you have 10 identical 3D boxes, you will only create one mesh. Then every frame, first clear the screen, and after that loop over the list, for each box, setting up the correct transformation and drawing that one mesh.
 
-So in short, **this extension doesn't have any kind of scenes, objects, cameras, etc**, you have to keep track of it yourself.
+So in short, **this extension does not have any kind of scenes, objects, cameras, etc**, you have to keep track of it yourself.
 
 ---
 
-3D models consist of vertices which together form primitives (points, lines, triangles). Each vertex has either 2D (XY) or 3D (XYZ) location decribed with 2 or 3 numbers respectively. Before drawing the mesh, you would usually set up tranformation, which tells how to take those initial locations and transform them to correct location on your 2D screen. The typical way to do it, is to chain multiple simple transformations together. Simple transformations can be translation (ofsetting), rotation, scaling, mirroring, skewing, etc.
+3D models consist of vertices which together form primitives (points, lines, triangles). Each vertex has either 2D (XY) or 3D (XYZ) location described with 2 or 3 numbers respectively. Before drawing the mesh, you would usually set up transformation, which tells how to take those initial locations and transform them to correct location on your 2D screen. The typical way to do it, is to chain multiple simple transformations together. Simple transformations can be translation (offsetting), rotation, scaling, mirroring, skewing, etc.
 
 ## Drawing things <a name="simple-drawing"></a>
 For now let's not worry about transformations and just draw something as is.
@@ -46,7 +46,7 @@ set clear color R: (0.5) G: (0.5) B: (0.5) A: (1) :: sensing
 clear (color and depth v) :: sensing
 ```
 After running that the screen should turn gray.
-Now let's draw 2 triangles arranged into a rectange. First create a mesh:
+Now let's draw 2 triangles arranged into a rectangle. First create a mesh:
 ```scratch
 create mesh [my mesh] :: sensing
 ```
@@ -79,10 +79,10 @@ draw [my mesh] :: sensing
 ```
 The result should look something like this:
 ![white rectangle on gray background](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAloAAAHEAgMAAACcsWzXAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV/TSkUqImYQcchQnSyCiohTrUIRKoRaoVUH89EvaNKQpLg4Cq4FBz8Wqw4uzro6uAqC4AeIs4OToouU+L+k0CLGg+N+vLv3uHsHcI2KolmhOKDptplOJoRsblUIvyIEHv2YxbikWMacKKbgO77uEWDrXYxl+Z/7c/SqeUsBAgJxXDFMm3iDeHrTNhjvE/NKSVKJz4nHTLog8SPTZY/fGBdd5lgmb2bS88Q8sVDsYLmDlZKpEU8RR1VNp3wu67HKeIuxVqkprXuyF0by+soy02kOI4lFLEGEABk1lFGBjRitOikW0rSf8PEPuX6RXDK5ylDIsYAqNEiuH+wPfndrFSYnvKRIAuh6cZyPESC8CzTrjvN97DjNEyD4DFzpbX+1Acx8kl5va9EjoG8buLhua/IecLkDDD4Zkim5UpAmVygA72f0TTlg4BboWfN6a+3j9AHIUFepG+DgEBgtUva6z7u7O3v790yrvx8KVHLj7WPAsgAAAAlQTFRFNDQ0gICA////76SQuwAAAAlwSFlzAAAYTAAAGHQBn6hAIAAAAAd0SU1FB+gEFBIAAu2UQ3UAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAABNUlEQVR42u3OUQkAIBAFsCthH0toR01pAX+FB24JVhWqjUTdy8vLy8vLy8vLy8vr99fcEZaXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5fX7RXGy8vLy8vLy8vLy8vr/SvUAWUTfy76T1mWAAAAAElFTkSuQmCC)
-The screen coordinate system used by this extension isn't scratch's typical 480x360 (from -240 to 240 for X and from -180 to 180 for Y), but instead it is 2x2 (from -1 to 1 on both axis). It's the same as in WebGL and OpenGL.
-Here we created triangles that have vertex coordinates at -0.9 and 0.9, which doesn't qiute reach the boundaries of the screen, even though it gets close.
+The screen coordinate system used by this extension is not scratch's typical 480x360 (from -240 to 240 for X and from -180 to 180 for Y), but instead it is 2x2 (from -1 to 1 on both axis). It is the same as in WebGL and OpenGL.
+Here we created triangles that have vertex coordinates at -0.9 and 0.9, which does not quite reach the boundaries of the screen, even though it gets close.
 
-Also, here we specified 6 vertices. Each tiangle has 3 vertices, so 6/3=2 it was treated as 2 triangles.
+Also, here we specified 6 vertices. Each triangle has 3 vertices, so 6/3=2 it was treated as 2 triangles.
 But specifying 3 vertices per each triangle is not the only way. In cases when some vertices are the same for multiple triangles, there are ways to specify once and reuse them rather than duplicating the data. There are 2 main ways to do it:
 
 ### List of indices
@@ -144,7 +144,7 @@ Same applies to "line strip" and "line loop".
 The typical sequence of simple transformation for 3D project goes like this:
 First you start off with having a 3D model in it's own coordinate system (model space), with all vertex positions stored relatively from it's origin. The first step would be to transform it to the world coordinate system. If the object has it's own rotation, rotate every vertex around it's origin (0,0,0) by correct amount of degrees. If it is scaled, scale them. Then once that is done, offset every vertex by object's world position. Now positions of all of the vertices are in the world coordinate system (world space).
 
-The next step is to transfrorm them to the coordinate system relatively to the viewer, where viewer is at X:0, Y:0, Z:0 and is always facing negative Z. In 3D projects on normal scratch it is common for viewer to face positive Z, where the more Z something has, the further away it is in front of the viewer, but in case of this extension, it was designed like most software outside scratch - the **less** Z something has, the further it is in front of the viewer. To do this transformation, first subtract camera position from position of every vertex. That will place the camera in the origin of the world and make everything relatively to it, but rotation isn't taken into a count yet. To do it, rotate every point by negated/inverse camera rotation.
+The next step is to transfrorm them to the coordinate system relatively to the viewer, where viewer is at X:0, Y:0, Z:0 and is always facing negative Z. In 3D projects on normal scratch it is common for viewer to face positive Z, where the more Z something has, the further away it is in front of the viewer, but in case of this extension, it was designed like most software outside scratch - the **less** Z something has, the further it is in front of the viewer. To do this transformation, first subtract camera position from position of every vertex. That will place the camera in the origin of the world and make everything relatively to it, but rotation is not taken into a count yet. To do it, rotate every point by negated/inverse camera rotation.
 
 What you now have are 3D positions relatively to the camera. But your screen is 2D, so the last step is to do the projection. The general gist of it is that you divide all X and Y by Z, so that the further something is, the smaller it is and the closer it is to the center of the screen. And while doing that, clipping everything that goes offscreen or too close and behind you.
 
@@ -154,7 +154,7 @@ You first transform X, Y, Z into X, Y, Z and W of the clip space and then GPU au
 X, Y, Z by W, so X, Y, Z end up in range from -1 to 1. Where W is the actual depth, while Z is depth converted to the correct range to be used with the
 depth buffer (everything below -1 and above 1 gets clipped) (too far and too close).
 
-If that sounded complicated, don't worry, Simple3D extension mostly handles it for you.
+If that sounded complicated, do not worry, Simple3D extension mostly handles it for you.
 </details>
 
 So let's recap:
@@ -170,7 +170,7 @@ rotate by negative camera orientation
 
 convert to clip space
 
-divide X,Y,Z by depth W (done by GPU, can't be controlled)
+divide X,Y,Z by depth W (done by GPU, cannot be controlled)
 draw to the screen at X,Y. Use Z for depth check.
 ```
 
@@ -267,7 +267,7 @@ For each vertex, the UV texture coordinates at it are calculated as follows:
 
 ### Pixel Colors
 For each pixel, the final color calculation goes as follows:
-1. texture is read or white if texture isn't provided
+1. texture is read or white if texture is not provided
 2. multipled by interpolated vertex color RGBA
 3. alpha threshold check is performed
 4. make opaque is applied
@@ -307,7 +307,7 @@ The second argument controls when check passes whether only color should be upda
 **Depth test and write are values that are saved separately for each render target.**
 All 6 sides of the cube texture share those values.
 
-For stage, default values are "closer" and "on". **However, for textures used as render targets default values are "everything" and "off".** Memory for storing depth isn't even allocated until depth write is set to "on".
+For stage, default values are "closer" and "on". **However, for textures used as render targets default values are "everything" and "off".** Memory for storing depth is not even allocated until depth write is set to "on".
 
 
 ### Meshes <a name="blocks-meshes"></a>
@@ -378,7 +378,7 @@ set [my mesh] texture coordinates UVW [listU v] [listV v] [listW v] :: sensing
 Used to upload texture coordinates into the mesh.
 The 2 component one is used for 2D textures. Specifies 2D coordinates on a texture, which go from 0 to 1. But values outside of those bounds are also valid and useful.
 The 3 component one is used for cube textures (cubemaps). Specifies 3D direction from the center, which will be intersected with the cube around it.
-If texture coordinates are specified, but texture isn't, the default texture is used.
+If texture coordinates are specified, but texture is not, the default texture is used.
 
 ---
 ```scratch
@@ -428,7 +428,7 @@ set [my mesh] texture anisotropic filtering (16 v) :: sensing
 Used for setting anisotropic filtering.
 1 is no anisotropic filtering.
 16 is maximum.
-**It isn't supported on all GPUs! Maximum value also varies depending on GPU.**
+**It is not supported on all GPUs! Maximum value also varies depending on GPU.**
 Always setting it to 16, regardless of whether it is supported or what values are supported is still totally fine. Performance on underpowered devices that support it will no be fine though. So adding a toggle is a good idea.
 
 Default for mesh 1.
@@ -440,7 +440,7 @@ set [my mesh] bone indices [listIndices v] weights [listWeights v] count per ver
 Used for setting bone indices and weights.
 Count per vertex must be in range between 1 and 4.
 Indices start from 1.
-Weights aren't used when count per vertex is 1.
+Weights are not used when count per vertex is 1.
 Length of supplied indices and weights lists have to match and be divisible by "count per vertex".
 
 ---
@@ -450,7 +450,7 @@ set [my mesh] [original v] transforms [listTransforms v] :: sensing
 Used for setting original and current transforms of each bone.
 Transforms on how to get from original to current will be calculated and applied to vertices based on their bone indices and weights.
 Supplied list of transforms must have length divisible by 16. If not, operation fails.
-When setting one of the transforms, while the other one isn't defined or has different length, the one being set will be set to both.
+When setting one of the transforms, while the other one is not defined or has different length, the one being set will be set to both.
 
 ---
 ```scratch
@@ -476,7 +476,7 @@ Texture coordinates:
 
 Setting positioning is required for instancing to activate.
 
-All defined catergories have to have data for the same amount of instances. If the amount of instances inferred from the length of those lists do not match, mesh isn't valid for drawing and can't be drawn.
+All defined catergories have to have data for the same amount of instances. If the amount of instances inferred from the length of those lists do not match, mesh is not valid for drawing and cannot be drawn.
 
 ---
 ```scratch
@@ -489,11 +489,11 @@ Having it set to 1 or above enables partial update mode.
 Having it set to 0 or below disables partial update mode and makes lists update fully.
 In partial update mode you can only update existing data. If your new data is too long and goes out of bounds of what is already set for the mesh, the operation will fail.
 **If you accidentally enabled it and want to disable it, set it to 0, not 1!**
-That is because while both update list from the start, when you have it at 1, partial update mode is enabled and you can't resize the data. If you try to upload more it will fail. If you try to upload less, the end will remain unchanged.
+That is because while both update list from the start, when you have it at 1, partial update mode is enabled and you cannot resize the data. If you try to upload more it will fail. If you try to upload less, the end will remain unchanged.
 
 **This is one of 2 properties that is not inherited.** This is done for performance reasons and to reduce chances of misuse.
 
-**If you need to update data fully, don't use partial update mode at offset 1 to "save memory". It only makes things worse.** Only use it when you need to update only relatively a small section of data.
+**If you need to update data fully, do not use partial update mode at offset 1 to "save memory". It only makes things worse.** Only use it when you need to update only relatively a small section of data.
 
 Default for mesh is 0.
 
@@ -504,9 +504,9 @@ set [my mesh] optimize next uploaded lists for being [rarely v] updated :: sensi
 Used for hinting GPU driver on how the data should be prepared. Different GPU drivers will handle it differently.
 
 Usually you create mesh, set static data once, then toggle this to one of the frequent modes and start updating some that frequent data.
-If you suddenly need to update static data again, don't forget to temporarily switch it to "rarely", before setting that data.
+If you suddenly need to update static data again, do not forget to temporarily switch it to "rarely", before setting that data.
 
-This only affects vertex related data. It doesn't affect uploading texture pixel data from a list.
+This only affects vertex related data. It does not affect uploading texture pixel data from a list.
 
 **This is one of 2 properties that is not inherited.** This is done for performance reasons and to reduce chances of misuse.
 
@@ -516,15 +516,18 @@ Deafult for mesh is "rarely".
 ```scratch
 set [my mesh] from [.obj .mtl v] [list v] :: sensing
 ```
-Decodes a 3D model file and uploads it into a mesh. Block continues instantly, but the upload finishes with a delay using a separate thread.
+Decodes a 3D model file and uploads it into a mesh. Block continues instantly, but the model loading is performed in a separate thread, and it finishes with a delay.
+
 File formats:
- - [obj](https://en.wikipedia.org/wiki/Wavefront_.obj_file) file format doesn't have a standartized way to do vertex colors. This block implements a non-standart way used in Blender.
+ - [obj](https://en.wikipedia.org/wiki/Wavefront_.obj_file) file format does not have a standartized way to do vertex colors. This block implements a non-standart way used in Blender.
  - [off](https://en.wikipedia.org/wiki/OFF_(file_format)) file format is quite neat for scratch as it supports both vertex and face colors and is even simpler than obj.
 
 Imported model is affected by transformation set with:
 ```scratch
 configure [importing from file v] transformation :: sensing
 ```
+
+**Note: This block is designed as a more of a shortcut for quick testing, rather than a main way of loading 3D models. For anything more complex make your own 3D model parser.**
 
 ---
 ```scratch
@@ -597,7 +600,7 @@ Use partial updates to add any extra polygons after the range that is being draw
 To remove polygons, move the ones from the end of the drawing range to location of the remove one and then shring the drawing
 range at the end.
 
-Deafult for mesh is not set. Once set, can't be undone.
+Deafult for mesh is not set. Once set, cannot be undone.
 
 ---
 ```scratch
@@ -614,8 +617,8 @@ draw mesh [my mesh] :: sensing
 ```
 Draws the specified mesh one or multiple (instancing) times, but only if it is valid.
 
-Mesh is invalid and can't be drawn if:
- - vertex positions aren't set
+Mesh is invalid and cannot be drawn if:
+ - vertex positions are not set
  - lists that were uploaded to it imply mismatching amounts of vertices or instances
 
 This block may cause stutter when drawing something for the first time, as it will need to generate and compile shaders.
@@ -626,7 +629,7 @@ This block may cause stutter when drawing something for the first time, as it wi
 (texture from URL [https://extensions.turbowarp.org/dango.png] :: sensing)
 ```
 Creates texture from image at specified URL.
-Will show a prompt if URL isn't approved.
+Will show a prompt if URL is not approved.
 🐢 Texture gets loaded with a delay.
 
 ---
@@ -634,9 +637,9 @@ Will show a prompt if URL isn't approved.
 (texture from costume [costume1 v] :: sensing)
 ```
 Creates texture from costume.
-🐢 **Texture gets loaded with a delay. When doing image processing, don't attempt to load and instantly draw. It wouldn't show up!**
+🐢 **Texture gets loaded with a delay. When doing image processing, do not attempt to load and instantly draw. It would not show up!**
 
-**Don't forget: bitmap costumes have 2x2 subpixels, which here are counted as pixels.** So don't be surprized when your seemingly 8x8 costume turns into 16x16 texture.
+**Do not forget: bitmap costumes have 2x2 subpixels, which here are counted as pixels.** So do not be surprized when your seemingly 8x8 costume turns into 16x16 texture.
 
 ---
 ```scratch
@@ -682,7 +685,7 @@ Transformation `importing from file` affects how the block below works:
 ```scratch
 set [my mesh] from [.obj .mtl v] [list v] :: sensing
 ```
-Transformation `custom` doesn't affect anything. Use it for your own calculations.
+Transformation `custom` does not affect anything. Use it for your own calculations.
 
 ---
 ```scratch
@@ -698,7 +701,7 @@ The whole range between "near" and "far" get mapped to the whole range of depth 
 So, setting near and far to be close to one another makes depth more precise.
 Setting near and far to vastly different value will cause Z-fighting issues caused by lack of precision.
 
-**Another thing to keep in mind is that this block requires aspect ratio.** To not bother it's users, it was decided to make it take aspect ratio of the currently active rendering target. Most projects don't change aspect ratio while running, but if you plan to support that, recalculate this every time after getting:
+**Another thing to keep in mind is that this block requires aspect ratio.** To not bother it's users, it was decided to make it take aspect ratio of the currently active rendering target. Most projects do not change aspect ratio while running, but if you plan to support that, recalculate this every time after getting:
 ```scratch
 when resolution changes :: sensing hat
 ```
@@ -742,7 +745,7 @@ Applies change to currently selected transformation
 wrapper {
 } :: sensing
 ```
-Saves all 5 transformations (not just currently selected) when entering, restores when exiting. For technical reasons doesn't currently restore, if the script inside called:
+Saves all 5 transformations (not just currently selected) when entering, restores when exiting. For technical reasons does not currently restore, if the script inside called:
 ```
 stop [this script v]
 ```
@@ -775,7 +778,7 @@ transform X (0) Y (0) Z (0) from [world space] to [model space] :: sensing
 transform direction X (0) Y (0) Z (0) from [world space] to [model space] :: sensing
 ```
 Transforms point from specified coordinate system to another. Convenient, but slower.
-Transform direction only applies rotations and doesn't apply offsets.
+Transform direction only applies rotations and does not apply offsets.
 
 "projected" is pre-division clip-space coordinates.
 "projected (scratch units)" does division by W and scaling to current stage size (e.g. 480x360). It can be used to determine where some point will end up on the screen with the current transformation to position sprite over it or draw something with pen.
@@ -792,7 +795,7 @@ Selects simple3D layer as an active render target.
 render to texture of [my mesh] :: sensing
 ```
 Selects 2D texture of specified mesh as an active render target.
-Fails if there is no texture or texture isn't 2D.
+Fails if there is no texture or texture is not 2D.
 
 ---
 
@@ -800,7 +803,7 @@ Fails if there is no texture or texture isn't 2D.
 render to cube texture (X+ v) of [my mesh] :: sensing
 ```
 Selects side of cube texture of specified mesh as an active render target.
-Fails if there is no texture, texture isn't cube or side isn't valid.
+Fails if there is no texture, texture is not cube or side is not valid.
 
 ---
 ```scratch
