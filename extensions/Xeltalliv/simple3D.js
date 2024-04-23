@@ -2531,7 +2531,6 @@ void main() {
 			opcode: "textureFromUrl",
 			blockType: BlockType.REPORTER,
 			text: "texture from URL [TEXURL]",
-			disableMonitor: true,
 			arguments: {
 				TEXURL: {
 					type: ArgumentType.STRING,
@@ -2569,7 +2568,6 @@ void main() {
 			opcode: "textureFromCostume",
 			blockType: BlockType.REPORTER,
 			text: "texture from costume [NAME]",
-			disableMonitor: true,
 			arguments: {
 				NAME: {
 					type: ArgumentType.STRING,
@@ -2604,7 +2602,6 @@ void main() {
 			opcode: "textureFromText",
 			blockType: BlockType.REPORTER,
 			text: "texture from text [TEXT] font [FONT] color [COLOR]",
-			disableMonitor: true,
 			arguments: {
 				TEXT: {
 					type: ArgumentType.STRING,
@@ -2649,7 +2646,6 @@ void main() {
 			opcode: "textureFromTextWithBorder",
 			blockType: BlockType.REPORTER,
 			text: "texture from text [TEXT] font [FONT] color [COLOR] border [BORDERSIZE] [BORDERCOLOR]",
-			disableMonitor: true,
 			arguments: {
 				TEXT: {
 					type: ArgumentType.STRING,
@@ -2707,7 +2703,6 @@ void main() {
 			opcode: "textureFromList",
 			blockType: BlockType.REPORTER,
 			text: "texture from list [NAME] at [POS] of size [WIDTH] [HEIGHT]",
-			disableMonitor: true,
 			arguments: {
 				NAME: {
 					type: ArgumentType.STRING,
@@ -2771,7 +2766,6 @@ void main() {
 			opcode: "textureFromSize",
 			blockType: BlockType.REPORTER,
 			text: "texture of size [WIDTH] [HEIGHT]",
-			disableMonitor: true,
 			arguments: {
 				WIDTH: {
 					type: ArgumentType.NUMBER,
@@ -2811,7 +2805,6 @@ void main() {
 			opcode: "measureText",
 			blockType: BlockType.COMMAND,
 			text: "measure text [TEXT] font [FONT]",
-			disableMonitor: true,
 			arguments: {
 				PROP: {
 					type: ArgumentType.STRING,
@@ -2840,7 +2833,6 @@ void main() {
 			opcode: "readMeasuredText",
 			blockType: BlockType.REPORTER,
 			text: "measured [DIR] size",
-			disableMonitor: true,
 			arguments: {
 				DIR: {
 					type: ArgumentType.STRING,
