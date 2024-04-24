@@ -1505,7 +1505,7 @@ void main() {
 				},
 			},
 			def: function({NAME}) {
-				NAME = Cast.toString(NAME);
+				NAME = Cast.toString(NAME).replaceAll(",","").trim();
 				if (NAME.length == 0) return;
 				meshes.get(NAME)?.destroy();
 				meshes.set(NAME, new Mesh(NAME));
