@@ -530,9 +530,7 @@
 
     setProjectVolume(args) {
       const value = Scratch.Cast.toNumber(args.VALUE);
-      const newVolume = Scratch.Cast.toNumber(
-        Math.max(Math.min(value, 1), 0)
-      );
+      const newVolume = Scratch.Cast.toNumber(Math.max(Math.min(value, 1), 0));
       runtime.audioEngine.inputNode.gain.value = newVolume;
     }
 
