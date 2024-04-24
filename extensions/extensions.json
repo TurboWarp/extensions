@@ -88,5 +88,6 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
+  "zacoons/webgpu",
   "Lily/McUtils" // McUtils should always be the last item.
 ]
