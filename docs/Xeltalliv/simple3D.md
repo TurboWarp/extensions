@@ -24,7 +24,7 @@
 It could also be useful for making certain kinds of 2D projects, thanks to it's ability to render large quantities of similar objects with instancing (e.g particles), construct 2D meshes out of triangles, rendering into textures allowing multi-pass rendering and more advanced clipping than [Clipping &amp; Blending](https://extensions.turbowarp.org/Xeltalliv/clippingblending.js) extension. It can be used for 2D image processing that can for example later be used as costumes using [Skins](https://extensions.turbowarp.org/Lily/Skins.js) extension. It's skinning system with vertex weights can be used for skeletal animation of 2D characters, or even smoothly extending menus.
 
 ## How it works <a name="main-concepts"></a>
-Scratch has a background layer, a video layer, a pen layer and a sprite layer. This extension adds another layer - simple3D between video and pen layers. High quality pen mode also affcts it.
+Scratch has a background layer, a video layer, a pen layer and a sprite layer. This extension adds another layer - simple3D between video and pen layers. High quality pen mode also affects it.
 
 The key concepts in this extension are the meshes and transformations.
 
