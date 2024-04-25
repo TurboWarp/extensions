@@ -16,15 +16,16 @@
 6.7. [Rendering into textures](#blocks-rendertargets)
 6.8. [Tinting and fog](#blocks-tinting-fog)
 6.9. [Resolution changes](#blocks-resolution)
-
+7. [Integration with other extensions](#ext-integration)
+7.1. [Augmented Reality extension](#ar-integration)
 
 ## What is this <a name="description"></a>
-**Simple 3D** is an extension by [Vadik1](https://scratch.mit.edu/users/Vadik1) meant to enable creation of GPU accelerated 3D projects. It is is not designed for making graphically complex 3D projects (for that, see upcoming Pen+ v7 and WebGL 2 extensions, both with programmable shaders) and instead it's main focus is allowing people to create 3D projects easily and quickly. Nevertheless, despite lack of programmable shaders, it is still quite powerful. It covers the wide range of usages from something as high level as making an AR project in less than 20 blocks with models loaded from OBJ files, to something more low level like doing all the calculations on CPU and streaming transformed polygons every frame (like [Pen+](https://extensions.turbowarp.org/obviousAlexC/penPlus.js)). And of course everything in-between.
+**Simple 3D** is an extension by [Vadik1](https://scratch.mit.edu/users/Vadik1) meant to enable creation of GPU accelerated 3D projects. It is is not designed for making graphically complex 3D projects (for that, see [Pen+ v7](https://github.com/TurboWarp/extensions/pull/1377) and [WebGL2](https://github.com/TurboWarp/extensions/discussions/378) extensions, both with programmable shaders) and instead it's main focus is allowing people to create 3D projects easily and quickly. Nevertheless, despite lack of programmable shaders, it is still quite powerful. It covers the wide range of usages from something as high level as making an [AR project in less than 20 blocks](#ar-example) with models loaded from OBJ files, to something more low level like doing all the calculations on CPU and streaming transformed polygons every frame (like [Pen+](https://extensions.turbowarp.org/obviousAlexC/penPlus.js)). And of course everything in-between.
 
-It could also be useful for making certain kinds of 2D projects, thanks to it's ability to render large quantities of similar objects with instancing (e.g particles), construct 2D meshes out of triangles, rendering into textures allowing multi-pass rendering and more advanced clipping than [Clipping &amp; Blending](https://extensions.turbowarp.org/Xeltalliv/clippingblending.js) extension. It can be used for 2D image processing that can for example later be used as costumes using [Skins](https://extensions.turbowarp.org/Lily/Skins.js) extension. It's skinning system with vertex weights can be used for skeletal animation of 2D characters, or even smoothly extending menus.
+It could also be useful for making certain kinds of 2D projects, thanks to it's ability to render large quantities of similar objects with instancing (e.g particles), construct 2D meshes out of triangles, rendering into textures allowing multi-pass rendering and more advanced clipping than [Clipping &amp; Blending](https://extensions.turbowarp.org/Xeltalliv/clippingblending.js) extension. It can be used for 2D image processing that can for example later be used as costumes using [Skins](https://extensions.turbowarp.org/Lily/Skins.js) extension. It's support of vertex weights and indices can be used for skeletal animation of 2D characters with deforming body parts rather than using rigid images, or even for smoothly extending UI elements.
 
 ## How it works <a name="main-concepts"></a>
-Scratch has a background layer, a video layer, a pen layer and a sprite layer. This extension adds another layer - simple3D between video and pen layers. High quality pen mode also affects it.
+Scratch has a background layer, a video layer, a pen layer and a sprite layer. This extension adds another layer - simple3D between video and pen layers. **High quality pen mode also affects it.**
 
 The key concepts in this extension are the meshes and transformations.
 
@@ -321,6 +322,8 @@ Lists all the mesh names separated by commas. Mainly meant to be used manually f
 create mesh [my mesh] :: sensing
 ```
 Creates an empty mesh with the specified name. If mesh with such name already exists, the old one gets fully deleted first.
+
+Also, whitespaces at both ends of the name, as well as any commas get removed from the mesh name. This is done for compatibility with "make mesh inhert" block.
 
 ---
 ```scratch
@@ -887,4 +890,50 @@ Technically those blocks could be workarounded by contantly checking with blocks
 render to stage :: sensing
 (render target [width v] :: sensing)
 (render target [height v] :: sensing)
+```
+
+## Integrations with other extensions <a name="ext-integration"></a>
+
+Simple 3D can have integrations with other extensions. If you are an extension developer, see `Scratch.vm.runtime.ext_xeltallivsimple3d` for that.
+
+### Augmented Reality extension <a name="ar-integration"></a>
+
+While it is possible to upload all 16 components from matrices provided by Augmented Reality extension into transforms of this extension,
+
+```scratch
+configure [to projected from view space v] transformation :: sensing
+set [i v] to (0)
+repeat (16)
+change [i v] by (1)
+replace item (i) of [list v] with (item (i) of [projection v] matrix :: #d10000)
+end
+start with saved in [list v] at (0) :: sensing
+```
+to make this process easier, an extra feature was added.
+
+When Simple 3D extension and Augmented Reality extension are present in the project at the same time, users get access to the following extra blocks:
+```scratch
+start with (AR: combined v) :: sensing
+start with (AR: view to projected v) :: sensing
+start with (AR: view to world v) :: sensing
+start with (AR: world to view v) :: sensing
+```
+Those blocks copy values from AR extension identically to the repeat loop example above, but do it in 1 block.
+An example of a simple 3D project using both extension is shown below: <a name="ar-example"></a>
+```scratch
+when flag clicked
+enter AR mode :: #d10000
+create mesh [my mesh] :: sensing
+set [my mesh] from [obj mtl v] [my 3D model v] :: sensing
+forever
+configure [to projected from view space v] transformation :: sensing
+start with (AR: view to projected v) :: sensing
+configure [to view space from world space v] transformation :: sensing
+start with (AR: world to view v) :: sensing
+clear [color and depth v] :: sensing
+draw mesh [my mesh] :: sensing
+end
+
+when stage clicked
+move everything by x: (hit position [x v] :: #d10000) y: (hit position [y v] :: #d10000) z: (hit position [z v] :: #d10000) :: #d10000
 ```
