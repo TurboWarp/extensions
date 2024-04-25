@@ -849,6 +849,10 @@
 	const vshSrc = `
 precision highp float;
 
+#ifndef INTERPOLATION
+#define INTERPOLATION
+#endif
+
 in vec4 a_position;
 #ifdef COLORS
 in vec4 a_color;
@@ -893,15 +897,15 @@ in vec2 a_instanceUV;
 in vec4 a_instanceUV;
 #endif
 
-out vec4 v_color;
+INTERPOLATION out vec4 v_color;
 #ifdef TEXTURES
 #if TEXTURES == 2
-out vec2 v_uv;
+INTERPOLATION out vec2 v_uv;
 #elif TEXTURES == 3
-out vec3 v_uv;
+INTERPOLATION out vec3 v_uv;
 #endif
 #endif
-out vec3 v_viewpos;
+INTERPOLATION out vec3 v_viewpos;
 
 uniform mat4 u_projection;
 uniform mat4 u_view;
@@ -1011,15 +1015,19 @@ void main() {
 	const fshSrc = `
 precision mediump float;
 
-in vec4 v_color;
+#ifndef INTERPOLATION
+#define INTERPOLATION
+#endif
+
+centroid in vec4 v_color;
 #ifdef TEXTURES
 #if TEXTURES == 2
-in vec2 v_uv;
+INTERPOLATION in vec2 v_uv;
 #elif TEXTURES == 3
-in vec3 v_uv;
+INTERPOLATION in vec3 v_uv;
 #endif
 #endif
-in vec3 v_viewpos;
+INTERPOLATION in vec3 v_viewpos;
 
 out vec4 outColor;
 
@@ -2236,6 +2244,28 @@ void main() {
 			}
 		},
 		{
+			opcode: "setMeshCentroidInterpolation",
+			blockType: BlockType.COMMAND,
+			text: "set [NAME] accurate interpolation [USECENTROID]",
+			arguments: {
+				NAME: {
+					type: ArgumentType.STRING,
+					defaultValue: "my mesh"
+				},
+				USECENTROID: {
+					type: ArgumentType.STRING,
+					menu: "onOff"
+				},
+			},
+			def: function({NAME, USECENTROID}, {target}) {
+				const mesh = meshes.get(Cast.toString(NAME));
+				const useCentroid = Cast.toBoolean(USECENTROID);
+				if (!mesh) return;
+				mesh.myData.useCentroidInterpolation = useCentroid;
+				mesh.update();
+			}
+		},
+		{
 			opcode: "setMeshDrawRange",
 			blockType: BlockType.COMMAND,
 			text: "set [NAME] vertex draw range from [START] to [END]",
@@ -2330,6 +2360,7 @@ void main() {
 					flags.push(`SKINNING ${mesh.buffers.boneIndices.size}`);
 					flags.push(`BONE_COUNT ${mesh.bonesDiff.length/16}`);
 				}
+				if (mesh.data.useCentroidInterpolation) flags.push("INTERPOLATION centroid");
 				if (mesh.data.alphaTest > 0) flags.push("ALPHATEST");
 				if (mesh.data.makeOpaque) flags.push("MAKE_OPAQUE");
 				if (mesh.data.billboarding) flags.push("BILLBOARD");
