@@ -853,13 +853,13 @@
     }
   };
   externalTransforms["ar_view"] = {
-    name: "AR: world to view",
+    name: "AR: view to world",
     get() {
       return xrTransform?.matrix?.slice() ?? [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
     }
   };
   externalTransforms["ar_inverse_view"] = {
-    name: "AR: world to view (inverse)",
+    name: "AR: world to view",
     get() {
       return xrTransform?.inverse?.matrix?.slice() ?? [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
     }
