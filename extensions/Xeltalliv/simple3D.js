@@ -2571,8 +2571,7 @@ void main() {
 			text: "texture from costume [NAME]",
 			arguments: {
 				NAME: {
-					type: ArgumentType.STRING,
-					menu: "costumes"
+					type: ArgumentType.COSTUME
 				},
 			},
 			def: function({NAME}, {target}) {
