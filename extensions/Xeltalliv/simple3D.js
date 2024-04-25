@@ -1287,12 +1287,12 @@ void main() {
 	gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 	const Blendings = {
 		"overwrite color (fastest for opaque)": [false],
-		"default": [true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
-		"additive": [true, gl.ONE, gl.ONE, gl.FUNC_ADD],
-		"subtractive": [true, gl.ONE, gl.ONE, gl.FUNC_SUBTRACT],
-		"multiply": [true, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
-		"invert": [true, gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.FUNC_ADD],
-		"invisible": [true, gl.ZERO, gl.ONE, gl.FUNC_ADD],
+		"default": [true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
+		"additive": [true, gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_ADD],
+		"subtractive": [true, gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
+		"multiply": [true, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
+		"invert": [true, gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.FUNC_ADD],
+		"invisible": [true, gl.ZERO, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD],
 	};
 	const Cullings = {
 		"nothing": [false],
@@ -1371,7 +1371,7 @@ void main() {
 		imageSource = null;
 		imageSourceSync = null;
 		currentBlending = "unset";
-		currentBlendingProps = [null, null, null, null];
+		currentBlendingProps = [null, null, null, null, null, null];
 		currentCulling = 0;
 		currentCullingProps = [null, null];
 		lastTextMeasurement = null;
@@ -2409,10 +2409,10 @@ void main() {
 						currentBlendingProps[0] = props[0];
 					}
 					if (props[0]) {
-						gl.blendFunc(props[1], props[2]);
-						if (props[3] !== currentBlendingProps[3]) {
-							gl.blendEquation(props[3]);
-							currentBlendingProps[3] = props[3];
+						gl.blendFuncSeparate(props[1], props[2], props[3], props[4]);
+						if (props[5] !== currentBlendingProps[5]) {
+							gl.blendEquation(props[5]);
+							currentBlendingProps[5] = props[5];
 						}
 					}
 				}
