@@ -1378,6 +1378,7 @@ void main() {
 	}
 	resetEverything();
 	addSimple3DLayer(publicApi);
+	runtime.on("PROJECT_LOADED", resetEverything);
 
 	const definitions = [
 		{
