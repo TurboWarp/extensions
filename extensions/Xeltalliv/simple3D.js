@@ -934,7 +934,9 @@ void main() {
 #ifdef FOG_IN_MODEL_SPACE
 	v_viewpos = pos.xyz;
 #endif
+#ifdef INSTANCING
 	pos = u_model * pos;
+#endif
 #ifdef INSTANCE_POS_SCALE
 	pos.xyz *= a_instanceTransform.w;
 #endif
@@ -948,10 +950,16 @@ void main() {
 #ifdef INSTANCE_MATRIX
 	pos = a_instanceTransform * pos;
 #endif
+#ifndef INSTANCING
+	pos = u_model * pos;
+#endif
 	vec4 view = u_view * pos;
 #ifdef BILLBOARD
 #ifdef INSTANCE_MATRIX
 	pos2 = a_instanceTransform * vec4(pos2.xyz, 0);
+#endif
+#ifndef INSTANCING
+	pos2 = u_model * vec4(pos2.xyz, 0);
 #endif
 	view += pos2;
 #ifdef FOG_IN_WORLD_SPACE
@@ -2327,6 +2335,7 @@ void main() {
 				if (mesh.data.billboarding) flags.push("BILLBOARD");
 				if (mesh.data.uvOffset) flags.push("UV_OFFSET");
 				if (mesh.buffers.instanceTransforms) {
+					flags.push("INSTANCING");
 					if (mesh.buffers.instanceTransforms.size == 3)  flags.push("INSTANCE_POS");
 					if (mesh.buffers.instanceTransforms.size == 4)  flags.push("INSTANCE_POS_SCALE");
 					if (mesh.buffers.instanceTransforms.size == 16) flags.push("INSTANCE_MATRIX");
