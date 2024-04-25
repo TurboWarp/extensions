@@ -1,15 +1,15 @@
 // Name: WebGPU
 // ID: webgpu
-// Description: WebGPU binding for Scratch.
+// Description: WebGPU bindings for TurboWarp.
 // By: zacoons
-// License: MIT
+// License: CC-0
 
 // todo
 // - support for other primitive types than f32
 // - figure out a better way to pass around buffers and layouts and such
 // - uniforms/inputs
-// - ability to write list to GPU buffer
 // - destroy the device when the session is ended
+// - add support for writing to MAP_WRITE buffers
 
 (function (Scratch) {
   "use strict";
@@ -95,15 +95,15 @@
           {
             opcode: "createBuffer",
             blockType: Scratch.BlockType.REPORTER,
-            text: "⋯ create buffer with size [SIZE] and usage [USAGE]",
+            text: "⋯ create buffer with bytesize [SIZE] and usage [USAGE]",
             arguments: {
               SIZE: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "",
+                defaultValue: 4,
               },
               USAGE: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 64,
+                defaultValue: 140,
               },
             },
             disableMonitor: true,
@@ -121,7 +121,7 @@
             disableMonitor: true,
           },
           {
-            opcode: "readBuffer",
+            opcode: "readBufferToList",
             blockType: Scratch.BlockType.COMMAND,
             text: "⋯ read buffer [BUFFER] to list [LIST_ID]",
             arguments: {
@@ -172,7 +172,7 @@
           {
             opcode: "createComputePipeline",
             blockType: Scratch.BlockType.REPORTER,
-            text: "|| create compute pipeline with layout [LAYOUT] and module [MODULE_NAME]",
+            text: "|| create pipeline with layout [LAYOUT] and module [MODULE_NAME]",
             arguments: {
               LAYOUT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -198,7 +198,7 @@
           {
             opcode: "beginComputePass",
             blockType: Scratch.BlockType.COMMAND,
-            text: "🗍 begin compute pipeline [PIPELINE]",
+            text: "🗍|| begin pipeline [PIPELINE]",
             arguments: {
               PIPELINE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -209,7 +209,7 @@
           {
             opcode: "setComputePassBindGroup",
             blockType: Scratch.BlockType.COMMAND,
-            text: "🗍 set bind group [BIND_GROUP_IDX] to [BIND_GROUP] on compute pipeline",
+            text: "🗍|| set bind group [BIND_GROUP_IDX] to [BIND_GROUP] on pipeline",
             arguments: {
               BIND_GROUP_IDX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -223,7 +223,7 @@
           {
             opcode: "dispatchComputePass",
             blockType: Scratch.BlockType.COMMAND,
-            text: "🗍 dispatch compute pipeline with dimensions [X] [Y] [Z]",
+            text: "🗍|| dispatch pipeline with dimensions [X] [Y] [Z]",
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -266,6 +266,21 @@
             opcode: "newQueue",
             blockType: Scratch.BlockType.COMMAND,
             text: "≫ new queue",
+          },
+          {
+            opcode: "writeListToBuffer",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "≫ write list [LIST_ID] to buffer [BUFFER]",
+            arguments: {
+              LIST_ID: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "lists",
+              },
+              BUFFER: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "",
+              },
+            },
           },
           {
             opcode: "addCommandBufferToQueue",
@@ -410,7 +425,7 @@
           return 0;
       }
     }
-    readBuffer({ BUFFER, LIST_ID }) {
+    readBufferToList({ BUFFER, LIST_ID }) {
       const buf = this.buffers[BUFFER];
       return buf.mapAsync(GPUMapMode.READ).then(() => {
         const arrayBuffer = buf.getMappedRange();
@@ -494,6 +509,13 @@
     newQueue() {
       this.tmp = [];
     }
+    writeListToBuffer({ LIST_ID, BUFFER }) {
+      this.dev.queue.writeBuffer(
+        this.buffers[BUFFER],
+        0,
+        new Float32Array(this._getList(LIST_ID))
+      );
+    }
     addCommandBufferToQueue({ COMMAND_BUFFER }) {
       this.tmp.push(this.commandBuffers[COMMAND_BUFFER]);
     }
@@ -505,6 +527,7 @@
     _resetAttrs() {
       this.dev?.destroy();
       this.dev = undefined;
+      for (const b of this.buffers || []) b.destroy();
 
       this.modules = {};
       this.bindGroupLayouts = [];
@@ -543,6 +566,16 @@
       }
 
       return names.length ? names : [""];
+    }
+    _getList(listId) {
+      for (const t of Scratch.vm.runtime.targets) {
+        for (const varId in t.variables) {
+          const varObj = t.variables[varId];
+          if (varId === listId && varObj.type === "list") {
+            return varObj.value;
+          }
+        }
+      }
     }
     _setList(listId, val) {
       for (const t of Scratch.vm.runtime.targets) {
