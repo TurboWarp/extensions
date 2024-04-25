@@ -2874,7 +2874,7 @@ void main() {
 		{
 			opcode: "matStartWithPerspective",
 			blockType: BlockType.COMMAND,
-			text: "start with perspective FOV [FOV] near [NEAR] far [FAR]",
+			text: "start with perspective FOV: [FOV] near: [NEAR] far: [FAR]",
 			arguments: {
 				FOV: {
 					type: ArgumentType.NUMBER,
@@ -2901,7 +2901,7 @@ void main() {
 		{
 			opcode: "matStartWithOrthographic",
 			blockType: BlockType.COMMAND,
-			text: "start with orthographic near [NEAR] far [FAR]",
+			text: "start with orthographic near: [NEAR] far: [FAR]",
 			arguments: {
 				NEAR: {
 					type: ArgumentType.NUMBER,
@@ -2969,7 +2969,7 @@ void main() {
 		{
 			opcode: "matMove",
 			blockType: BlockType.COMMAND,
-			text: "move X [X] Y [Y] Z [Z]",
+			text: "move X: [X] Y: [Y] Z: [Z]",
 			arguments: {
 				X: {
 					type: ArgumentType.NUMBER,
@@ -3018,7 +3018,7 @@ void main() {
 		{
 			opcode: "matScale",
 			blockType: BlockType.COMMAND,
-			text: "scale X [X] Y [Y] Z [Z]",
+			text: "scale X: [X] Y: [Y] Z: [Z]",
 			arguments: {
 				X: {
 					type: ArgumentType.NUMBER,
@@ -3126,7 +3126,7 @@ void main() {
 		{
 			opcode: "matTransform",
 			blockType: BlockType.COMMAND,
-			text: "transform X [X] Y [Y] Z [Z]",
+			text: "transform X: [X] Y: [Y] Z: [Z]",
 			arguments: {
 				X: {
 					type: ArgumentType.NUMBER,
@@ -3152,7 +3152,7 @@ void main() {
 		{
 			opcode: "matTransformFromTo",
 			blockType: BlockType.COMMAND,
-			text: "transform X [X] Y [Y] Z [Z] from [FROM] to [TO]",
+			text: "transform X: [X] Y: [Y] Z: [Z] from [FROM] to [TO]",
 			arguments: {
 				X: {
 					type: ArgumentType.NUMBER,
@@ -3211,7 +3211,7 @@ void main() {
 		{
 			opcode: "matTransformFromToDir",
 			blockType: BlockType.COMMAND,
-			text: "transform direction X [X] Y [Y] Z [Z] from [FROM] to [TO]",
+			text: "transform direction X: [X] Y: [Y] Z: [Z] from [FROM] to [TO]",
 			arguments: {
 				X: {
 					type: ArgumentType.NUMBER,
