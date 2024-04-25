@@ -593,6 +593,15 @@ Default for mesh is "off".
 
 ---
 ```scratch
+set [my mesh] accurate interpolation [on v] :: sensing
+```
+Used for enabling a more accurate interpolation method which doesn't have issues of texture coordinates extrapolating outside of the specified range on the triangle edges, causing unpleasant looking seams. It is more computationally expensive and should only be used when that is an issue.
+Enabling mipmapping and/or anisatropic filtering may prevent it from working and reintroduce seams.
+
+Default for mesh is "off".
+
+---
+```scratch
 set [my mesh] vertex draw range from (1) to (6) :: sensing
 ```
 Used for drawing mesh partially by only drawing some range of the vertices.
