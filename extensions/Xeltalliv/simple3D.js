@@ -366,11 +366,11 @@
 			if (!ext_af) return;
 			if (!this.hasMipmap && value > 1) {
 				this.hasMipmap = true;
-				gl.generateMipmap(gl.TEXTURE_2D);
+				gl.generateMipmap(this.target);
 			}
 			this.anisotropy = value;
-			gl.bindTexture(gl.TEXTURE_2D, this.texture);
-			gl.texParameterf(gl.TEXTURE_2D, ext_af.TEXTURE_MAX_ANISOTROPY_EXT, value);
+			gl.bindTexture(this.target, this.texture);
+			gl.texParameterf(this.target, ext_af.TEXTURE_MAX_ANISOTROPY_EXT, value);
 		}
 		setDepth(test, write) {
 			this.depthTest = test;
@@ -448,7 +448,7 @@
 			if (this.framebuffer) return this.framebuffer;
 			this.framebuffer = gl.createFramebuffer();
 			gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.shared.texture, 0);
+			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, this.target, this.shared.texture, 0);
 			return this.framebuffer;
 		}
 		createDepthBuffer() {
