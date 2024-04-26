@@ -8,8 +8,8 @@ As of writing this, WebGPU is an experimental feature. See the [browser compatib
 
 WebGPU has five steps to running code on the GPU.
 
-1. Write shader code which will execute on each thread of the GPU.
-2. Setup layouts for describing how this shader module expects to receive data.
+1. Write shader code which will execute on each GPU thread you launch.
+2. Setup layouts for describing how your shader module expects to receive data.
 3. Create buffers with the data you want to pass into the shader module.
 4. Bind those buffers to the shader module.
 5. Take off!
@@ -82,19 +82,31 @@ Then let's make a layout for the pipeline.
 set [pl v] to (||? create pipeline layout :: #00cc77) :: #ff8d1b
 ```
 
+Now we have a bind group layout which requires one entry `@binding(0)` and a pipeline layout which requires one bind group `@group(0)`.
+
 ### Creating the Storage Buffer
 
 Before we create the actual bind group or pipeline, we need a buffer to bind to.
 
 ```scratch
-set [storageBuf v] to (⋯ create buffer with bytesize [25600000] and usage ((⋯ usage (STORAGE v) :: #00cc77) or (⋯ usage (COPY_SRC v) :: #00cc77) :: #16cce6) :: #00cc77) :: #ff8d1b
+set [storageBuf v] to (⋯ create buffer with bytesize [25600000] and usage () :: #00cc77) :: #ff8d1b
 ```
 
-This extension only supports float32 buffers currently so the bytesize of a buffer will always be `4 * length`. As such, we have created a buffer of 6,400,000 floats.
+Since we are going to be using floats we want the bytesize to be `4 * length = 4 * 6,400,000 = 25,600,000`.
 
-The usage of this buffer is as the destination of a copy, storage, or as the source of a copy. But the usage doesn't include `MAP_WRITE` or `MAP_READ`, which means it can't be written to or read from by the CPU. So we'll need two more buffers for such purposes later. See the [buffer usage table](https://developer.mozilla.org/en-US/docs/Web/API/GPUBuffer/usage) on the MDN docs for more info.
+As for the usage of this buffer, it will be used for three things:
 
-As you can see, I've used another extension for combining the usage flags. It is the [Bitwise](https://extensions.turbowarp.org/bitwise) operators extension. If you don't want to use that extension, you could simply input `140` for the usage instead.
+1. Storage, because it needs to store the output of the GPU;
+2. The destination of a copy, because it needs to have input written to it; or
+3. The source of a copy, because it needs to be copied to the output buffer.
+
+```scratch
+((⋯ usage (COPY_DST v) :: #00cc77) or ((⋯ usage (STORAGE v) :: #00cc77) or (⋯ usage (COPY_SRC v) :: #00cc77) :: #16cce6) :: #16cce6)
+```
+
+As you can see, I've used the [Bitwise](https://extensions.turbowarp.org/bitwise) extension for combining the usage flags. If you don't want to use that extension, you can put `140` for the usage instead.
+
+See the [buffer usage table](https://developer.mozilla.org/en-US/docs/Web/API/GPUBuffer/usage) on the MDN docs for more info.
 
 ### Creating the Bind Group and Pipeline
 
@@ -110,7 +122,9 @@ set [p v] to (|| create pipeline with layout (pl) and module (get sqrt v) :: #00
 
 ### Creating the CPU Accessible Buffer
 
-As mentioned above, we still need a buffer which can be accessed by CPU for reading from the storage buffer.
+We still need a buffer which can be accessed by CPU so we can actually read the output. We do this with the `MAP_READ` usage flag.
+
+We can't simply read from the storage buffer because the `MAP_READ` flag can only be combined with the `COPY_DST` flag. Again, please refer to the MDN docs.
 
 ```scratch
 set [outputBuf v] to (⋯ create buffer with bytesize [25600000] and usage ((⋯ usage (MAP_READ v) :: #00cc77) or (⋯ usage (COPY_DST v) :: #00cc77) :: #16cce6) :: #00cc77) :: #ff8d1b
@@ -128,15 +142,15 @@ Now we need to provide a series of steps to be run on the GPU.
 🗍|| set bind group [0] to (bg) on pipeline :: #00cc77
 ```
 
-Now in the shader code above you'll see that the `main` function is decorated with `@workgroup_size(256)`. So when we dispatch the pipeline next with
+In the shader code above you'll see that the `main` function is decorated with `@workgroup_size(256)`. So when we dispatch the pipeline next with
 
 ```scratch
 🗍|| dispatch pipeline with dimensions [25000] [1] [1] :: #00cc77
 ```
 
-we are telling it to dispatch 25,000 workgroups of 256 threads each, which is `25,000 * 256 = 6,400,000` threads, so our shader will run on each item of the list.
+we are telling it to dispatch 25,000 workgroups of 256 threads each, which is `25,000 * 256 = 6,400,000` threads. That's one thread for each item in our list.
 
-Next we tell it to copy the internal storage buffer to the output buffer. Then we create the command buffer.
+Finally, we tell it to copy the internal storage buffer to the output buffer. Then we create the command buffer.
 
 ```scratch
 🗍 copy buffer (storageBuf) to buffer (outputBuf) :: #00cc77
@@ -147,17 +161,17 @@ set [cmds v] to (🗍 create command buffer :: #00cc77) :: #ff8d1b
 
 We still haven't actually run any code on the GPU yet. But that's about to change.
 
-Let's write some data to our storage buffer.
+Let's begin a queue on the GPU, write some data to our storage buffer, add the command buffer, then submit the queue for execution.
 
 ```scratch
 ≫ new queue :: #00cc77
-≫ write list (input v) to buffer (storageBuf) :: #00cc77
+≫ write list (input v) with type (Float32 v) to buffer (storageBuf) :: #00cc77
 ≫ add command buffer (cmds) to queue :: #00cc77
 ≫ submit queue :: #00cc77
 ```
 
-BAM! You just run code on the GPU. Now let's check the results.
+BAM! You just run code on the GPU. Now you can check the results.
 
 ```scratch
-⋯ read buffer (outputBuf) to list (output v) :: #00cc77
+⋯ read buffer (outputBuf) to list (output v) with type (Float32 v) :: #00cc77
 ```

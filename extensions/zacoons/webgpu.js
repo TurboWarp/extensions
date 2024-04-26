@@ -5,11 +5,8 @@
 // License: CC-0
 
 // todo
-// - support for other primitive types than f32
-// - figure out a better way to pass around buffers and layouts and such
-// - uniforms/inputs
-// - destroy the device when the session is ended
 // - add support for writing to MAP_WRITE buffers
+// - fix linting and val errors and check for bugs
 
 (function (Scratch) {
   "use strict";
@@ -26,7 +23,23 @@
 
   class GPUExtension {
     constructor() {
+      Scratch.vm.on("PROJECT_RUN_STOP", () => {
+        this._resetAttrs();
+      });
       this._resetAttrs();
+
+      this.types = {
+        Int8: Int8Array,
+        Uint8: Uint8Array,
+        Int16: Int16Array,
+        Uint16: Uint16Array,
+        Int32: Int32Array,
+        Uint32: Uint32Array,
+        Float32: Float32Array,
+        Float64: Float64Array,
+        Int64: BigInt64Array,
+        Uint64: BigUint64Array,
+      };
     }
 
     getInfo() {
@@ -123,7 +136,7 @@
           {
             opcode: "readBufferToList",
             blockType: Scratch.BlockType.COMMAND,
-            text: "⋯ read buffer [BUFFER] to list [LIST_ID]",
+            text: "⋯ read buffer [BUFFER] to list [LIST_ID] with type [TYPE]",
             arguments: {
               BUFFER: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -132,6 +145,10 @@
               LIST_ID: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "lists",
+              },
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "types",
               },
             },
           },
@@ -270,11 +287,15 @@
           {
             opcode: "writeListToBuffer",
             blockType: Scratch.BlockType.COMMAND,
-            text: "≫ write list [LIST_ID] to buffer [BUFFER]",
+            text: "≫ write list [LIST_ID] with type [TYPE] to buffer [BUFFER]",
             arguments: {
               LIST_ID: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "lists",
+              },
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "types",
               },
               BUFFER: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -326,6 +347,10 @@
           lists: {
             acceptReporters: true,
             items: "_getLists",
+          },
+          types: {
+            acceptReporters: true,
+            items: Object.keys(this.types),
           },
         },
       };
@@ -425,11 +450,11 @@
           return 0;
       }
     }
-    readBufferToList({ BUFFER, LIST_ID }) {
+    readBufferToList({ BUFFER, LIST_ID, TYPE }) {
       const buf = this.buffers[BUFFER];
       return buf.mapAsync(GPUMapMode.READ).then(() => {
         const arrayBuffer = buf.getMappedRange();
-        this._setList(LIST_ID, Array.from(new Float32Array(arrayBuffer)));
+        this._setList(LIST_ID, Array.from(new this.types[TYPE](arrayBuffer)));
         buf.unmap();
       });
     }
@@ -509,11 +534,11 @@
     newQueue() {
       this.tmp = [];
     }
-    writeListToBuffer({ LIST_ID, BUFFER }) {
+    writeListToBuffer({ LIST_ID, TYPE, BUFFER }) {
       this.dev.queue.writeBuffer(
         this.buffers[BUFFER],
         0,
-        new Float32Array(this._getList(LIST_ID))
+        this.types[TYPE].from(this._getList(LIST_ID))
       );
     }
     addCommandBufferToQueue({ COMMAND_BUFFER }) {
