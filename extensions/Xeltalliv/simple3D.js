@@ -1304,10 +1304,10 @@ void main() {
 	const Blendings = {
 		"overwrite color (fastest for opaque)": [false],
 		"default": [true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
-		"additive": [true, gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_ADD],
+		"additive": [true, gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD],
 		"subtractive": [true, gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
 		"multiply": [true, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
-		"invert": [true, gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.FUNC_ADD],
+		"invert": [true, gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE, gl.FUNC_ADD],
 		"invisible": [true, gl.ZERO, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD],
 	};
 	const Cullings = {
