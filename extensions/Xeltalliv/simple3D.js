@@ -178,26 +178,26 @@
 			];
 		},
 		multiplyVec: function(a, b) {
-			var a00 = a[0 * 4 + 0];
-			var a01 = a[0 * 4 + 1];
-			var a02 = a[0 * 4 + 2];
-			var a03 = a[0 * 4 + 3];
-			var a10 = a[1 * 4 + 0];
-			var a11 = a[1 * 4 + 1];
-			var a12 = a[1 * 4 + 2];
-			var a13 = a[1 * 4 + 3];
-			var a20 = a[2 * 4 + 0];
-			var a21 = a[2 * 4 + 1];
-			var a22 = a[2 * 4 + 2];
-			var a23 = a[2 * 4 + 3];
-			var a30 = a[3 * 4 + 0];
-			var a31 = a[3 * 4 + 1];
-			var a32 = a[3 * 4 + 2];
-			var a33 = a[3 * 4 + 3];
-			var b00 = b[0 * 4 + 0];
-			var b01 = b[0 * 4 + 1];
-			var b02 = b[0 * 4 + 2];
-			var b03 = b[0 * 4 + 3];
+			const a00 = a[0 * 4 + 0];
+			const a01 = a[0 * 4 + 1];
+			const a02 = a[0 * 4 + 2];
+			const a03 = a[0 * 4 + 3];
+			const a10 = a[1 * 4 + 0];
+			const a11 = a[1 * 4 + 1];
+			const a12 = a[1 * 4 + 2];
+			const a13 = a[1 * 4 + 3];
+			const a20 = a[2 * 4 + 0];
+			const a21 = a[2 * 4 + 1];
+			const a22 = a[2 * 4 + 2];
+			const a23 = a[2 * 4 + 3];
+			const a30 = a[3 * 4 + 0];
+			const a31 = a[3 * 4 + 1];
+			const a32 = a[3 * 4 + 2];
+			const a33 = a[3 * 4 + 3];
+			const b00 = b[0 * 4 + 0];
+			const b01 = b[0 * 4 + 1];
+			const b02 = b[0 * 4 + 2];
+			const b03 = b[0 * 4 + 3];
 			return [
 				b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30,
 				b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31,
