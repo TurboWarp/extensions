@@ -3613,9 +3613,7 @@ void main() {
 		color2: "#47A8D1",
 		color3: "#2E8EB8",
 		docsURI: "https://extensions.turbowarp.org/Xeltalliv/simple3D",
-		blocks: [
-			...definitions
-		],
+		blocks: definitions,
 		menus: {
 			lists: {
 				acceptReporters: false,
