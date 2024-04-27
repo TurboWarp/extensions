@@ -3,7 +3,7 @@
 // Description: New Powerful Message Blocks that work with Vanilla Blocks!
 // By: SharkPool
 
-// Version 1.1.0
+// Version 1.2.0
 
 (function (Scratch) {
   "use strict";
@@ -17,8 +17,8 @@
     let threads = originalStartHats.call(this, opcode, fields, target);
     if (opcode === "event_whenbroadcastreceived") {
       const name = fields.BROADCAST_OPTION;
-      const startedThreads = runtime.startHats("SPmessagePlus_whenAnyBroadcast");
-      startedThreads.forEach((thread) => (thread.messageName = name));
+      threads = [...threads, ...runtime.startHats("SPmessagePlus_whenAnyBroadcast")];
+      threads.forEach((thread) => (thread.messageName = name));
     }
     return threads;
   };
@@ -298,7 +298,7 @@
       const allBroadcasts = Object.values(runtime.getTargetForStage().variables)
         .filter(vari => vari.type === "broadcast_msg").map(vari => vari.value);
       const match = allBroadcasts.find(value => value.toUpperCase() === name);
-      return match ? match : "";
+      return match ? match : name; // return original name in case its a dynamic message
     }
 
     broadcastTarget(args, util) { this.broadcastDataTarget({ ...args, DATA : "" }, util) }
