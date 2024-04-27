@@ -674,6 +674,9 @@
 					color[3] = 1 - arr[1];
 				}
 			}
+			if (this.output.uv.length/2 !== this.output.rgba.length/4) {
+				this.output.uv = null;
+			}
 		}
 		addPoly(vs, fallback) {
 			for(let i=2; i<vs.length; i++) {
@@ -684,10 +687,12 @@
 		}
 		addVertex(idx, idxUV, fallback) {
 			const v = this.vertPos[idx>0 ? idx : this.vertPos.length+idx];
-			const u = this.vertUV[idxUV>0 ? idxUV : this.vertUV.length+idxUV];
 			this.output.xyz.push(v[0], v[1], v[2]);
-			this.output.rgba.push(v[3] ?? fallback[0], v[4] ?? fallback[1] ?? 1, v[5] ?? fallback[2] ?? 1, v[6] ?? fallback[3] ?? 1);
-			this.output.uv.push(u[0], 1-u[1]);
+			this.output.rgba.push(v[3] ?? fallback[0] ?? 1, v[4] ?? fallback[1] ?? 1, v[5] ?? fallback[2] ?? 1, v[6] ?? fallback[3] ?? 1);
+			if (idxUV !== undefined) {
+				const u = this.vertUV[idxUV>0 ? idxUV : this.vertUV.length+idxUV];
+				this.output.uv.push(u[0], 1-u[1]);
+			}
 		}
 	}
 	onmessage = (evt) => {
