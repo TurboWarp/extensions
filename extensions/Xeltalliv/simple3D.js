@@ -638,7 +638,8 @@
 			const vertUV = this.vertUV = [null];
 			this.output = {
 				xyz: [],
-				rgba: []
+				rgba: [],
+				uv: []
 			}
 			for(let i=0; i<dataArr.length; i++) {
 				const arr = dataArr[i];
@@ -686,6 +687,7 @@
 			const u = this.vertUV[idxUV>0 ? idxUV : this.vertUV.length+idxUV];
 			this.output.xyz.push(v[0], v[1], v[2]);
 			this.output.rgba.push(v[3] ?? fallback[0], v[4] ?? fallback[1] ?? 1, v[5] ?? fallback[2] ?? 1, v[6] ?? fallback[3] ?? 1);
+			this.output.uv.push(u[0], 1-u[1]);
 		}
 	}
 	onmessage = (evt) => {
