@@ -362,6 +362,26 @@
             extensions: ["colours_operators"],
           },
           {
+            opcode: "is_in_range_block",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "[A] is in range [B] - [C]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "",
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              C: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+            },
+            extensions: ["colours_operators"],
+          },
+          {
             opcode: "scale_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "map [A] from range [m1] - [M1] to range [m2] - [M2]",
@@ -579,6 +599,13 @@
         return C;
       } else {
         return A;
+      }
+    }
+    is_in_range_block({ A, B, C }) {
+      if (A >= B && A <= C) {
+        return true;
+      } else {
+        return false;
       }
     }
     scale_block({ A, m1, M1, m2, M2 }) {
