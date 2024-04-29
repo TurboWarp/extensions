@@ -517,20 +517,21 @@ Deafult for mesh is "rarely".
 
 ---
 ```scratch
-set [my mesh] from [.obj .mtl v] [list v] :: sensing
+set [my mesh] from [obj mtl v] [list v] :: sensing
+set [my mesh] from [off v] [list v] :: sensing
 ```
-Decodes a 3D model file and uploads it into a mesh. Block continues instantly, but the model loading is performed in a separate thread, and it finishes with a delay.
+Decodes a 3D model file and uploads it into a mesh. Block continues instantly, but the model loading is performed in a separate thread, and it finishes with a delay. Currently, only one thread is used, so everything is queued and processed one by one. In the future, multiple threads might be used.
+
+**Note: This block is designed as a more of a shortcut for quick testing, rather than the main way of loading 3D models. For anything more complex make your own 3D model parser.**
 
 File formats:
- - [obj](https://en.wikipedia.org/wiki/Wavefront_.obj_file) file format does not have a standartized way to do vertex colors. This block implements a non-standart way used in Blender.
- - [off](https://en.wikipedia.org/wiki/OFF_(file_format)) file format is quite neat for scratch as it supports both vertex and face colors and is even simpler than obj.
+ - [obj](https://en.wikipedia.org/wiki/Wavefront_.obj_file) is a very common and well known 3D model file format. It supports UV texture coordinates, materials with colors and textures. However it does not have a standartized way to do vertex colors. This block implements a non-standart but widely supported way to represent vertex colors as 4th - 7th elements of `v`. The OBJ and MTL specification describes a lot of features, only some of which are currently (or even can be) supported by this importer. In particular, there is currently no way to import models which use multiple textures as this extensions only supports 1 texture per mesh. Normals and anything lighting related isn't and can't be supported. **In case both OBJ and MTL files need to be imported, combine them all into 1 list sequentially, first all of the MTL files and then the OBJ file.**
+ - [off](https://en.wikipedia.org/wiki/OFF_(file_format)) is a not that well known, but very simple file format. Is is quite neat for the use in scratch in general, as it's simpler than OBJ and unlike it, natively supports both vertex and face colors. It does not support textures or texture coordinates. You can read more about it and find a lot of example models [here](http://web.archive.org/web/20230331211230/https://people.sc.fsu.edu/~jburkardt/data/off/off.html). Since the format is so simple, this importer supports all features of it.
 
 Imported model is affected by transformation set with:
 ```scratch
 configure [importing from file v] transformation :: sensing
 ```
-
-**Note: This block is designed as a more of a shortcut for quick testing, rather than a main way of loading 3D models. For anything more complex make your own 3D model parser.**
 
 ---
 ```scratch
