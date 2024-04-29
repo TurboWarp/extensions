@@ -4,11 +4,10 @@
 // By: SharkPool
 // By: Ashimee <https://scratch.mit.edu/users/0znzw/>
 
-// Version V.1.0.1
+// Version V.1.1.0
 
 (function (Scratch) {
   "use strict";
-
   if (!Scratch.extensions.unsandboxed) throw new Error("Font Manager must be run unsandboxed");
 
   const extensionId = "SPASfontManager";
@@ -67,12 +66,13 @@
           {
             opcode: "customFonts",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all custom fonts"
+            hideFromPalette: true,
+            text: "added font data"
           },
           {
             opcode: "customFontAtts",
             blockType: Scratch.BlockType.REPORTER,
-            text: "custom font [THING]",
+            text: "added font [THING]",
             disableMonitor: true,
             arguments: {
               THING: { type: Scratch.ArgumentType.STRING, menu: "INFO" }
@@ -84,6 +84,15 @@
             text: "font [NAME] exists?",
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "Comic Sans MS" }
+            }
+          },
+          {
+            opcode: "data4Font",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[DATA] of font [NAME]",
+            arguments: {
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "Comic Sans MS" },
+              DATA: { type: Scratch.ArgumentType.STRING, menu: "DATA" }
             }
           },
           "---",
@@ -124,7 +133,7 @@
           {
             opcode: "whenFont",
             blockType: Scratch.BlockType.EVENT,
-            text: "when font [ATT]",
+            text: "when font is [ATT]",
             isEdgeActivated: false,
             arguments: {
               ATT: { type: Scratch.ArgumentType.STRING, menu: "ATT" }
@@ -141,7 +150,11 @@
           },
         ],
         menus: {
-          INFO: ["names", "fallbacks"],
+          INFO: ["names", "fallbacks", "data"],
+          DATA: {
+            acceptReporters: true,
+            items: ["fallback", "is system", "data.uri", "format"]
+          },
           ATT: {
             acceptReporters: false,
             items: ["added", "removed"]
@@ -199,6 +212,7 @@
     customFonts() { return JSON.stringify(manage.fonts) }
 
     customFontAtts(args) {
+      if (args.THING === "data") return JSON.stringify(manage.fonts);
       let ogArray = manage.fonts;
       let newArray = [];
       for (let i = 0; i < ogArray.length; i++) {
@@ -208,6 +222,19 @@
     }
 
     fontExists(args) { return manage.hasFont(Scratch.Cast.toString(args.NAME)) }
+
+    data4Font(args) {
+      args = this.cast(args);
+      const font = manage.fonts.find(item => item.family === args.NAME);
+      if (font === undefined) return "";
+      // Packaging Doesnt remove Font Assets, no need to check (good!)
+      switch (args.DATA) {
+        case "is system": return font.system;
+        case "data.uri": return font.asset ? font.asset.encodeDataURI() : "";
+        case "format": return font.asset ? font.asset.dataFormat : "";
+        default: return font.fallback;
+      }
+    }
 
     addSystemFont(args) {
       args = this.cast(args);
