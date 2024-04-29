@@ -285,12 +285,16 @@
 			if (this.width == 0) return 1;
 			return this.width/this.height;
 		}
+		destroy() {
+			if (currentRenderTarget == this) {
+				canvasRenderTarget.setAsRenderTarget();
+			}
+		}
 	}
 	class CanvasRenderTarget extends RenderTarget {
 		constructor() {
 			super();
-			this.depthTest = "closer";
-			this.depthWrite = true;
+			this.reset();
 		}
 		get width() {
 			return canvas.width;
@@ -307,6 +311,10 @@
 		}
 		get hasDepthBuffer() {
 			return true;
+		}
+		reset() {
+			this.depthTest = "closer";
+			this.depthWrite = true;
 		}
 	}
 	class Texture {
@@ -480,6 +488,7 @@
 		destroy() {
 			if (this.depthTexture) gl.deleteRenderbuffer(this.depthTexture);
 			if (this.framebuffer) gl.deleteFramebuffer(this.framebuffer);
+			super.destroy();
 		}
 	}
 	class Mesh {
@@ -1376,7 +1385,8 @@ void main() {
 	let lastTextMeasurement;
 
 	function resetEverything() {
-		currentRenderTarget = canvasRenderTarget;
+		canvasRenderTarget.reset();
+		canvasRenderTarget.setAsRenderTarget();
 		transforms = {
 			modelToWorld: m4.identity(),
 			worldToView: m4.identity(),
