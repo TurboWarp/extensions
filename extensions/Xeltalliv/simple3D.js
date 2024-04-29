@@ -2901,6 +2901,31 @@ void main() {
 		},
 		{
 			blockType: BlockType.LABEL,
+			text: "Fonts"
+		},
+		{
+			opcode: "getFont",
+			blockType: BlockType.REPORTER,
+			text: "font [FONT] of size [SIZE]",
+			arguments: {
+				FONT: {
+					type: ArgumentType.STRING,
+					menu: "fonts",
+					defaultValue: "Sans Serif",
+				},
+				SIZE: {
+					type: ArgumentType.STRING,
+					defaultValue: 32,
+				},
+			},
+			def: function({FONT, SIZE}) {
+				FONT = Cast.toString(FONT);
+				SIZE = Math.min(Math.max(Cast.toNumber(SIZE), 1), 1000);
+				return `${SIZE}px ${FONT}`;
+			}
+		},
+		{
+			blockType: BlockType.LABEL,
 			text: "View transformations"
 		},
 		{
@@ -3622,6 +3647,10 @@ void main() {
 		docsURI: "https://extensions.turbowarp.org/Xeltalliv/simple3D",
 		blocks: definitions,
 		menus: {
+			fonts: {
+				acceptReporters: false,
+				items: "fontsMenu"
+			},
 			lists: {
 				acceptReporters: false,
 				items: "listsMenu"
@@ -3778,6 +3807,22 @@ void main() {
 		getInfo() {
 			definitions.find(b => b.opcode == "matStartWithExternal").hideFromPalette = Object.keys(externalTransforms).length == 0;
 			return extInfo;
+		}
+		fontsMenu() {
+			const defaultFonts = [
+				"Sans Serif",
+				"Serif",
+				"Handwriting",
+				"Marker",
+				"Curly",
+				"Pixel"
+			];
+			// Based on https://github.com/TurboWarp/extensions/blob/a6f5944f52163792780ae550fbf2822ce425714d/extensions/lab/text.js#L1198-L1205
+			const customFonts = runtime.fontManager ? runtime.fontManager.getFonts().map((i) => ({
+				text: i.name,
+				value: i.family,
+			})) : [];
+			return [...defaultFonts, ...customFonts];
 		}
 		listsMenu() {
 			const stage = vm.runtime.getTargetForStage();

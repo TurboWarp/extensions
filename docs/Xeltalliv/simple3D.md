@@ -11,11 +11,12 @@
 6.2. [Meshes](#blocks-meshes)
 6.3. [Textures](#blocks-textures)
 6.4. [Text measurement](#blocks-text-measurement)
-6.5. [View transformations](#blocks-view-transformations)
-6.6. [Manual transformations](#blocks-manual-transformations)
-6.7. [Rendering into textures](#blocks-rendertargets)
-6.8. [Tinting and fog](#blocks-tinting-fog)
-6.9. [Resolution changes](#blocks-resolution)
+6.5. [Fonts](#blocks-fonts)
+6.6. [View transformations](#blocks-view-transformations)
+6.7. [Manual transformations](#blocks-manual-transformations)
+6.8. [Rendering into textures](#blocks-rendertargets)
+6.9. [Tinting and fog](#blocks-tinting-fog)
+6.10. [Resolution changes](#blocks-resolution)
 7. [Integration with other extensions](#ext-integration)
 7.1. [Augmented Reality extension](#ar-integration)
 
@@ -662,6 +663,7 @@ Creates texture from costume.
 Creates texture with specified text.
 ⚡ Texture gets loaded instantly.
 Border extends texture by it's value of pixels in all 4 directions.
+For more information on the font argument syntax, see [CSS Specification](https://drafts.csswg.org/css-fonts/#font-prop).
 
 ---
 ```scratch
@@ -686,6 +688,13 @@ measure text [Hello World!] font [italic bold 32px sans-serif] :: sensing
 ```
 Used for measuring how the text texture was or will be generated.
 Outputs 4 sizes. Sizes can be negative.
+
+
+### Fonts <a name="blocks-fonts"></a>
+```scratch
+(font [Sans Serif] of size [32] :: sensing)
+```
+Used for getting internal names of default and custom fonts. It is not neccesary to use.
 
 
 ### View transformations <a name="blocks-view-transformations"></a>
