@@ -3655,17 +3655,13 @@ void main() {
 				acceptReporters: false,
 				items: "listsMenu"
 			},
-			textures: {
-				acceptReporters: true,
-				items: "texturesMenu"
-			},
 			costumes: {
 				acceptReporters: true,
-				items: "costumes"
+				items: "costumesMenu"
 			},
 			externalTransforms: {
 				acceptReporters: true,
-				items: "externalTransforms"
+				items: "externalTransformsMenu"
 			},
 			clearLayers: {
 				acceptReporters: true,
@@ -3834,12 +3830,12 @@ void main() {
 			if (all.length == 0) return ["list"];
 			return all;
 		}
-		costumes() {
+		costumesMenu() {
 			let editingTarget = vm.editingTarget;
 			if (editingTarget) return editingTarget.getCostumes().map(e => e.name);
 			return ["costume 1"];
 		}
-		externalTransforms() {
+		externalTransformsMenu() {
 			const out = [];
 			for(let key in externalTransforms) {
 				out.push({
