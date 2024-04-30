@@ -2,11 +2,11 @@
 // ID: webgpu
 // Description: WebGPU bindings for TurboWarp.
 // By: zacoons
-// License: CC-0
+// License: CC0-1.0
 
 // todo
+// - add sample project after release
 // - add support for writing to MAP_WRITE buffers
-// - fix linting and val errors and check for bugs
 
 (function (Scratch) {
   "use strict";
@@ -504,8 +504,6 @@
       this.tmp.computePass.setPipeline(this.tmp.pipeline);
     }
     setComputePassBindGroup({ BIND_GROUP_IDX, BIND_GROUP }) {
-      const bindGroup = this.bindGroups[BIND_GROUP];
-      if (BIND_GROUP === "auto") bindGroup = this.dev.createBindGroup();
       this.tmp.computePass.setBindGroup(
         BIND_GROUP_IDX,
         this.bindGroups[BIND_GROUP]
@@ -562,6 +560,7 @@
       this.pipelines = [];
       this.commandBuffers = [];
 
+      /** @type {any} */
       this.tmp = undefined;
     }
     _getModuleNames() {
