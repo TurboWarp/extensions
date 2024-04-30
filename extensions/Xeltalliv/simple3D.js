@@ -1081,6 +1081,7 @@ void main() {
 	float fog = (length(v_viewpos) - u_fog_dist.x) / u_fog_dist.y;
 	color.rgb = mix(color.rgb, u_fog_color, clamp(fog, 0.0, 1.0));
 #endif
+	color.a = clamp(color.a, 0.0, 1.0);
 	color.rgb *= color.a;
 	outColor = color;
 }
