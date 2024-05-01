@@ -28,6 +28,56 @@
       this._setup();
     }
 
+    _setup() {
+      this.canvas = Scratch.vm.runtime.renderer.canvas;
+      this.canvasDiv = this.canvas.parentElement;
+      
+      /**
+       * update touch list
+       * @param {TouchEvent} e 
+       */
+      const upd = e => {
+        this._touches = [...e.touches];
+        // update position
+        this._touches.forEach(t => {
+          // if theres a new finger...
+          const idx = this._fingers.findIndex(f => f?.identifier === t.identifier);
+          if (idx == -1) {
+            this._fingers.push(t);
+            // extra infos
+            this._fingers.at(-1).date = Date.now();
+            this._fingers.at(-1).prevX = t.clientX;
+            this._fingers.at(-1).prevY = t.clientY;
+            this._fingers.at(-1).prevDate = Date.now();
+            this._fingers.at(-1).nowDate = Date.now();
+          } else {
+            const finger = this._fingers[idx];
+            const date = finger.date, oldX = finger.clientX, oldY = finger.clientY, oldDate = finger.nowDate;
+            this._fingers[idx] = t;
+            this._fingers[idx].date = date;
+            this._fingers[idx].prevX = oldX;
+            this._fingers[idx].prevY = oldY;
+            this._fingers[idx].prevDate = oldDate;
+            this._fingers[idx].nowDate = Date.now();
+          }
+        })
+        this._fingers.forEach((t, index) => {
+          // if the finger releases...
+          if (this._touches.findIndex(f => f.identifier === t?.identifier) == -1) {
+            this._fingers[index] = null;
+          }
+        })
+        // clear trailing null values
+        while (this._fingers.length > 0 && this._fingers.at(-1) === null) { this._fingers.pop(); }
+      }
+
+      // do not use this.canvasDiv because event will lost after 'see inside' or change page
+      window.addEventListener('touchstart', upd);
+      window.addEventListener('touchmove', upd);
+      window.addEventListener('touchend', upd);
+    }
+
+
     get bound() {
       return this.canvas.getBoundingClientRect();
     }
@@ -156,55 +206,6 @@
       };
     }
 
-    _setup() {
-      this.canvas = Scratch.vm.runtime.renderer.canvas;
-      this.canvasDiv = this.canvas.parentElement;
-      
-      // update touchList
-      /**
-       * @param {TouchEvent} e 
-       */
-      const upd = e => {
-        this._touches = [...e.touches];
-        // update position
-        this._touches.forEach(t => {
-          // if theres a new finger...
-          const idx = this._fingers.findIndex(f => f?.identifier === t.identifier);
-          if (idx == -1) {
-            this._fingers.push(t);
-            // extra infos
-            this._fingers.at(-1).date = Date.now();
-            this._fingers.at(-1).prevX = t.clientX;
-            this._fingers.at(-1).prevY = t.clientY;
-            this._fingers.at(-1).prevDate = Date.now();
-            this._fingers.at(-1).nowDate = Date.now();
-          } else {
-            const finger = this._fingers[idx];
-            const date = finger.date, oldX = finger.clientX, oldY = finger.clientY, oldDate = finger.nowDate;
-            this._fingers[idx] = t;
-            this._fingers[idx].date = date;
-            this._fingers[idx].prevX = oldX;
-            this._fingers[idx].prevY = oldY;
-            this._fingers[idx].prevDate = oldDate;
-            this._fingers[idx].nowDate = Date.now();
-          }
-        })
-        this._fingers.forEach((t, index) => {
-          // if the finger releases...
-          if (this._touches.findIndex(f => f.identifier === t?.identifier) == -1) {
-            this._fingers[index] = null;
-          }
-        })
-        // clear trailing null values
-        while (this._fingers.length > 0 && this._fingers.at(-1) === null) { this._fingers.pop(); }
-      }
-
-      // do not use this.canvasDiv because event will lost after 'see inside' or change page
-      window.addEventListener('touchstart', upd);
-      window.addEventListener('touchmove', upd);
-      window.addEventListener('touchend', upd);
-    }
-
     touchAvailable() {
       return window.navigator.maxTouchPoints > 0;
     }
@@ -232,24 +233,26 @@
       return ID < this._fingers.length && this._fingers[ID] !== null;
     }
 
-    touchingCondition = (f, util) => f !== null && util.target.isTouchingPoint(this._propMap.x(f) + this.bound.width / 2, this.bound.height / 2 - this._propMap.y(f));
+    _touchingCondition(f, util) {
+      return f !== null && util.target.isTouchingPoint(this._propMap.x(f) + this.bound.width / 2, this.bound.height / 2 - this._propMap.y(f));
+    }
 
-    touchingFinger({}, util) {
+    touchingFinger(_, util) {
       return this._fingers.find((f) => {
-        return this.touchingCondition(f, util);
+        return this._touchingCondition(f, util);
       }) !== undefined;
     }
 
-    touchingFingerCount({}, util) {
+    touchingFingerCount(_, util) {
       return this._fingers.reduce((total, f) => {
-        return total + (this.touchingCondition(f, util) ? 1 : 0); 
+        return total + (this._touchingCondition(f, util) ? 1 : 0); 
       }, 0);
     }
 
     touchingFingerID({ ID }, util) {
       ID = Scratch.Cast.toNumber(ID);
       const result = this._fingers.findIndex(f => {
-        return this.touchingCondition(f, util) && (--ID <= 0);
+        return this._touchingCondition(f, util) && (--ID <= 0);
       }) + 1;
       return result == 0 ? '' : result;
     }
