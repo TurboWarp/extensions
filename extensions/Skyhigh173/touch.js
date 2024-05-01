@@ -169,7 +169,6 @@
         })
         // clear trailing null values
         while (this._fingers.length > 0 && this._fingers.at(-1) === null) { this._fingers.pop(); }
-        console.log(this._fingers)
       }
       this.canvasDiv.addEventListener('touchstart', e => upd(e));
       this.canvasDiv.addEventListener('touchmove', e => upd(e));
