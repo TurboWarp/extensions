@@ -541,6 +541,7 @@
 				}
 			}
 			if (length == -1) return false;
+			return true;
 		}
 		destroy() {
 			for(let name in this.myBuffers) {
