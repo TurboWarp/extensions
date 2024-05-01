@@ -107,7 +107,35 @@
                 defaultValue: 1
               }
             }
-          }
+          },
+          '---',
+          {
+            opcode: 'touchingFinger',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'touching any finger?',
+            disableMonitor: true,
+            filter: [Scratch.TargetType.SPRITE]
+          },
+          {
+            opcode: 'touchingFingerCount',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'current touching finger count',
+            disableMonitor: true,
+            filter: [Scratch.TargetType.SPRITE]
+          },
+          {
+            opcode: 'touchingFingerID',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'current touching finger [X] ID',
+            disableMonitor: true,
+            filter: [Scratch.TargetType.SPRITE],
+            arguments: {
+              X: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1
+              }
+            }
+          },
         ],
         menus: {
           prop: {
@@ -170,9 +198,11 @@
         // clear trailing null values
         while (this._fingers.length > 0 && this._fingers.at(-1) === null) { this._fingers.pop(); }
       }
-      this.canvasDiv.addEventListener('touchstart', e => upd(e));
-      this.canvasDiv.addEventListener('touchmove', e => upd(e));
-      this.canvasDiv.addEventListener('touchend', e => upd(e));
+
+      // do not use this.canvasDiv because event will lost after 'see inside' or change page
+      window.addEventListener('touchstart', upd);
+      window.addEventListener('touchmove', upd);
+      window.addEventListener('touchend', upd);
     }
 
     touchAvailable() {
@@ -200,6 +230,28 @@
     fingerExists({ ID }) {
       ID = Scratch.Cast.toNumber(ID) - 1;
       return ID < this._fingers.length && this._fingers[ID] !== null;
+    }
+
+    touchingCondition = (f, util) => f !== null && util.target.isTouchingPoint(this._propMap.x(f) + this.bound.width / 2, this.bound.height / 2 - this._propMap.y(f));
+
+    touchingFinger({}, util) {
+      return this._fingers.find((f) => {
+        return this.touchingCondition(f, util);
+      }) !== undefined;
+    }
+
+    touchingFingerCount({}, util) {
+      return this._fingers.reduce((total, f) => {
+        return total + (this.touchingCondition(f, util) ? 1 : 0); 
+      }, 0);
+    }
+
+    touchingFingerID({ ID }, util) {
+      ID = Scratch.Cast.toNumber(ID);
+      const result = this._fingers.findIndex(f => {
+        return this.touchingCondition(f, util) && (--ID <= 0);
+      }) + 1;
+      return result == 0 ? '' : result;
     }
   }
   Scratch.extensions.register(new MultiTouchExtension());
