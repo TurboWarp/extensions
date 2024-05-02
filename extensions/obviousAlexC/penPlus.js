@@ -4,6 +4,9 @@
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
 // License: MIT
 
+// With permission from Sharkpool-SP to use his pen layer data uri block!
+// Thanks dude!
+
 (function (Scratch) {
   "use strict";
 
@@ -31,10 +34,15 @@
     ? [canvas.width, canvas.height]
     : renderer._nativeSize;
 
-  //?create the depth buffer's texture  
+  //?create the depth buffer's texture
   const triBufferAttachments = [
-    { format: gl.RGBA, type: gl.UNSIGNED_BYTE, min: gl.LINEAR, wrap: gl.CLAMP_TO_EDGE },
-    { format: gl.DEPTH_STENCIL, },
+    {
+      format: gl.RGBA,
+      type: gl.UNSIGNED_BYTE,
+      min: gl.LINEAR,
+      wrap: gl.CLAMP_TO_EDGE,
+    },
+    { format: gl.DEPTH_STENCIL },
   ];
   const triBufferInfo = twgl.createFramebufferInfo(gl, triBufferAttachments);
 
@@ -56,7 +64,13 @@
       transform_Matrix[0] = 2 / renderer._nativeSize[0];
       transform_Matrix[1] = -2 / renderer._nativeSize[1];
       let lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-      twgl.resizeFramebufferInfo(gl, triBufferInfo, triBufferAttachments, Scratch.Cast.toNumber(nativeSize[0]),Scratch.Cast.toNumber(nativeSize[1]));
+      twgl.resizeFramebufferInfo(
+        gl,
+        triBufferInfo,
+        triBufferAttachments,
+        Scratch.Cast.toNumber(nativeSize[0]),
+        Scratch.Cast.toNumber(nativeSize[1])
+      );
       gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
     };
 
@@ -70,14 +84,17 @@
     vm.runtime.on("STAGE_SIZE_CHANGED", () => {
       updateCanvasSize();
     });
-    
+
     let lastCanvasSize = [canvas.clientWidth, canvas.clientHeight];
     vm.runtime.on("BEFORE_EXECUTE", () => {
-      if (lastCanvasSize[0] != canvas.clientWidth || lastCanvasSize[1] != canvas.clientHeight) {
+      if (
+        lastCanvasSize[0] != canvas.clientWidth ||
+        lastCanvasSize[1] != canvas.clientHeight
+      ) {
         lastCanvasSize = [canvas.clientWidth, canvas.clientHeight];
         updateCanvasSize();
       }
-    })
+    });
 
     //?Make sure pen is loaded!
     if (!Scratch.vm.extensionManager.isExtensionLoaded("pen")) {
@@ -330,18 +347,23 @@
   //?Override pen Clear with pen+
   renderer.penClear = (penSkinID) => {
     lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-      //Pen+ Overrides default pen Clearing
-      gl.bindFramebuffer(gl.FRAMEBUFFER, triBufferInfo.framebuffer);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+    //Pen+ Overrides default pen Clearing
+    gl.bindFramebuffer(gl.FRAMEBUFFER, triBufferInfo.framebuffer);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
-      gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
-      gl.clearColor(renderer._backgroundColor4f[0], renderer._backgroundColor4f[1], renderer._backgroundColor4f[2], renderer._backgroundColor4f[3]);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
+    gl.clearColor(
+      renderer._backgroundColor4f[0],
+      renderer._backgroundColor4f[1],
+      renderer._backgroundColor4f[2],
+      renderer._backgroundColor4f[3]
+    );
 
-      //Old clearing
-      renderer.dirty = true;
-      const skin = /** @type {PenSkin} */ renderer._allSkins[penSkinID];
-      skin.clear();
+    //Old clearing
+    renderer.dirty = true;
+    const skin = /** @type {PenSkin} */ renderer._allSkins[penSkinID];
+    skin.clear();
   };
 
   class extension {
@@ -613,20 +635,37 @@
         this.trianglesDrawn = 0;
         this.inDrawRegion = true;
         if (this.currentRenderTexture != triBufferInfo) {
-          if (this.currentRenderTexture.resizing && (this.currentRenderTexture.width != nativeSize[0] || this.currentRenderTexture.height != nativeSize[1])) {
-            twgl.resizeFramebufferInfo(gl, this.currentRenderTexture, triBufferAttachments, Scratch.Cast.toNumber(nativeSize[0]),Scratch.Cast.toNumber(nativeSize[1]));
+          if (
+            this.currentRenderTexture.resizing &&
+            (this.currentRenderTexture.width != nativeSize[0] ||
+              this.currentRenderTexture.height != nativeSize[1])
+          ) {
+            twgl.resizeFramebufferInfo(
+              gl,
+              this.currentRenderTexture,
+              triBufferAttachments,
+              Scratch.Cast.toNumber(nativeSize[0]),
+              Scratch.Cast.toNumber(nativeSize[1])
+            );
           }
           //Resize our variables to be viewport accurate
-          gl.viewport(0,0,this.currentRenderTexture.width,this.currentRenderTexture.height);
+          gl.viewport(
+            0,
+            0,
+            this.currentRenderTexture.width,
+            this.currentRenderTexture.height
+          );
           transform_Matrix[0] = 2 / this.currentRenderTexture.width;
           transform_Matrix[1] = -2 / this.currentRenderTexture.width;
-        }
-        else {
+        } else {
           gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
           transform_Matrix[0] = 2 / nativeSize[0];
           transform_Matrix[1] = -2 / nativeSize[1];
         }
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.currentRenderTexture.framebuffer);
+        gl.bindFramebuffer(
+          gl.FRAMEBUFFER,
+          this.currentRenderTexture.framebuffer
+        );
         renderer.dirty = true;
       },
       exit: () => {
@@ -645,7 +684,12 @@
         gl.clearColor(0, 0, 0, 0);
         gl.bindFramebuffer(gl.FRAMEBUFFER, triBufferInfo.framebuffer);
         gl.clear(gl.COLOR_BUFFER_BIT);
-        gl.clearColor(renderer._backgroundColor4f[0], renderer._backgroundColor4f[1], renderer._backgroundColor4f[2], renderer._backgroundColor4f[3]);
+        gl.clearColor(
+          renderer._backgroundColor4f[0],
+          renderer._backgroundColor4f[1],
+          renderer._backgroundColor4f[2],
+          renderer._backgroundColor4f[3]
+        );
 
         /*gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
 
@@ -696,12 +740,7 @@
     };
 
     textureFunctions = {
-      createBlankPenPlusTextureInfo: function (
-        width,
-        height,
-        color,
-        name
-      ) {
+      createBlankPenPlusTextureInfo: function (width, height, color, name) {
         const texture = parentExtension.penPlusCostumeLibrary[name]
           ? parentExtension.penPlusCostumeLibrary[name].texture
           : gl.createTexture();
@@ -911,12 +950,12 @@
     shaders = {};
     programs = {};
 
-    extensionVersion = "7.0.0 B1";
+    extensionVersion = "7.0.0";
 
     prefixes = {
-      penPlusTextures:"",
-      renderTextures:"",
-    }
+      penPlusTextures: "",
+      renderTextures: "",
+    };
 
     renderTextures = {};
     currentRenderTexture = triBufferInfo;
@@ -962,17 +1001,17 @@
       vm.runtime.ext_obviousalexc_penPlus = this;
 
       vm.runtime.on("PROJECT_LOADED", this._setupExtensionStorage);
-      
+
       //Remove clone data from cache;
       vm.runtime.on("targetWasRemoved", (clone) => {
-        const cloneID = clone.id
-        Object.keys(clone.variables).forEach(key => {
+        const cloneID = clone.id;
+        Object.keys(clone.variables).forEach((key) => {
           //Yeah this is me. You are probably wondering how I got here?
           //Welp it all started on 3DGAS
-          if (this.listCache[key+cloneID]) {
-            delete this.listCache[key+cloneID];
+          if (this.listCache[key + cloneID]) {
+            delete this.listCache[key + cloneID];
           }
-        })
+        });
       });
 
       this._setupExtensionStorage();
@@ -1090,48 +1129,61 @@
         const split = searchResult.split(" ");
         const type = split.length < 4 ? split[1] : split[2];
         //Try to extract array data
-        const arrayLength = Scratch.Cast.toNumber((split.length < 4 ? split[2] : split[3]).replace(uniformKey,"").replaceAll(/[\[\];]/g,""));
+        const arrayLength = Scratch.Cast.toNumber(
+          (split.length < 4 ? split[2] : split[3])
+            .replace(uniformKey, "")
+            .replaceAll(/[\[\];]/g, "")
+        );
 
         this.programs[shaderName].uniformDec[uniformKey].type = type;
         //Add data for array stuff
-        this.programs[shaderName].uniformDec[uniformKey].arrayLength = arrayLength;
-        this.programs[shaderName].uniformDec[uniformKey].isArray = (arrayLength > 0);
+        this.programs[shaderName].uniformDec[uniformKey].arrayLength =
+          arrayLength;
+        this.programs[shaderName].uniformDec[uniformKey].isArray =
+          arrayLength > 0;
 
         if (arrayLength == 0) return;
-        
-        const createArray = (lengthMul) => {
-          return Array.apply(null, Array(arrayLength * lengthMul)).map(() => { return 0; });
-        }
 
+        const createArray = (lengthMul) => {
+          return Array.apply(null, Array(arrayLength * lengthMul)).map(() => {
+            return 0;
+          });
+        };
 
         switch (type) {
           case "float":
-            this.programs[shaderName].uniformDec[uniformKey].arrayData = createArray(1);
+            this.programs[shaderName].uniformDec[uniformKey].arrayData =
+              createArray(1);
             break;
 
           case "int":
-            this.programs[shaderName].uniformDec[uniformKey].arrayData = createArray(1);
+            this.programs[shaderName].uniformDec[uniformKey].arrayData =
+              createArray(1);
             break;
 
           case "vec2":
-            this.programs[shaderName].uniformDec[uniformKey].arrayData = createArray(2);
+            this.programs[shaderName].uniformDec[uniformKey].arrayData =
+              createArray(2);
             break;
 
           case "vec3":
-            this.programs[shaderName].uniformDec[uniformKey].arrayData = createArray(3);
+            this.programs[shaderName].uniformDec[uniformKey].arrayData =
+              createArray(3);
             break;
 
           case "vec4":
-            this.programs[shaderName].uniformDec[uniformKey].arrayData = createArray(4);
+            this.programs[shaderName].uniformDec[uniformKey].arrayData =
+              createArray(4);
             break;
-        
+
           default:
             break;
         }
 
         //Data that will be sent to the GPU to initilize the array
         //But we will keep it in the declaration
-        this.programs[shaderName].uniformDat[uniformKey] = this.programs[shaderName].uniformDec[uniformKey].arrayData;
+        this.programs[shaderName].uniformDat[uniformKey] =
+          this.programs[shaderName].uniformDec[uniformKey].arrayData;
       });
     }
 
@@ -1157,7 +1209,8 @@
       //pre 7.0.0B1 detection
       if (!oldInfo.version) {
         this.prefixes.penPlusTextures = "!";
-        if (!Scratch.extensions.isPenguinMod) runtime.extensionStorage["penP"].prefixes = this.prefixes;
+        if (!Scratch.extensions.isPenguinMod)
+          runtime.extensionStorage["penP"].prefixes = this.prefixes;
         console.log("Loaded patch for pre Version 7.0.0B1 texture prefixes");
       }
     }
@@ -1168,9 +1221,9 @@
       if (Scratch.extensions.isPenguinMod) {
         parentExtension.serialize = () => {
           return JSON.stringify({
-            shaders:parentExtension.shaders,
-            version:parentExtension.extensionVersion,
-            prefixes:parentExtension.prefixes
+            shaders: parentExtension.shaders,
+            version: parentExtension.extensionVersion,
+            prefixes: parentExtension.prefixes,
           });
         };
 
@@ -1184,8 +1237,7 @@
             if (parentExtension.extensionVersion != deserializedData.version) {
               parentExtension._updateRelevantInfo(deserializedData);
             }
-          }
-          else {
+          } else {
             parentExtension.shaders = deserializedData || {};
             parentExtension._updateRelevantInfo(deserializedData);
           }
@@ -1201,14 +1253,19 @@
         if (!runtime.extensionStorage["penP"]) {
           runtime.extensionStorage["penP"] = Object.create(null);
           runtime.extensionStorage["penP"].shaders = Object.create(null);
-          runtime.extensionStorage["penP"].version = parentExtension.extensionVersion;
+          runtime.extensionStorage["penP"].version =
+            parentExtension.extensionVersion;
           runtime.extensionStorage["penP"].prefixes = parentExtension.prefixes;
         }
 
-        if (parentExtension.extensionVersion != runtime.extensionStorage["penP"].version) {
+        if (
+          parentExtension.extensionVersion !=
+          runtime.extensionStorage["penP"].version
+        ) {
           parentExtension._updateRelevantInfo(runtime.extensionStorage["penP"]);
           console.log(runtime.extensionStorage["penP"]);
-          runtime.extensionStorage["penP"].version = parentExtension.extensionVersion;
+          runtime.extensionStorage["penP"].version =
+            parentExtension.extensionVersion;
         }
 
         //For some reason tw saving just doesn't work lol
@@ -1307,7 +1364,18 @@
             },
             filter: "sprite",
           },
-
+          {
+            disableMonitor: true,
+            opcode: "stampSprite",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "stamp [sprite]",
+            arguments: {
+              sprite: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "spriteMenu",
+              },
+            },
+          },
 
           {
             blockType: Scratch.BlockType.LABEL,
@@ -1382,24 +1450,9 @@
             filter: "sprite",
           },
 
-
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Triangle Blocks",
-          },
-          {
-            disableMonitor: true,
-            opcode: "setTriangleFilterMode",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "set triangle filter mode to [filter]",
-            arguments: {
-              filter: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 9728,
-                menu: "filterType",
-              },
-            },
-            filter: "sprite",
           },
           {
             disableMonitor: true,
@@ -1530,7 +1583,6 @@
             },
             filter: "sprite",
           },
-
 
           {
             blockType: Scratch.BlockType.LABEL,
@@ -1715,13 +1767,11 @@
             },
           },
 
-
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Advanced",
           },
 
-          
           //Custom Shader Blocks
           {
             blockType: Scratch.BlockType.LABEL,
@@ -1946,7 +1996,7 @@
             arguments: {
               component: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "vec2Component"
+                menu: "vec2Component",
               },
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2332,7 +2382,6 @@
             filter: "sprite",
           },
 
-
           {
             blockType: Scratch.BlockType.LABEL,
             text: "List Based Rendering",
@@ -2342,7 +2391,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "draw solid triangles from list [list]",
             arguments: {
-              list: {  type: Scratch.ArgumentType.STRING, menu: "listMenu" },
+              list: { type: Scratch.ArgumentType.STRING, menu: "listMenu" },
             },
             filter: "sprite",
           },
@@ -2351,7 +2400,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "draw textured triangles from list [list] using [tex]",
             arguments: {
-              list: {  type: Scratch.ArgumentType.STRING, menu: "listMenu" },
+              list: { type: Scratch.ArgumentType.STRING, menu: "listMenu" },
               tex: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
             },
             filter: "sprite",
@@ -2361,8 +2410,11 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "draw shader triangles from list [list] using [shader]",
             arguments: {
-              list: {  type: Scratch.ArgumentType.STRING, menu: "listMenu" },
-              shader: { type: Scratch.ArgumentType.STRING, menu: "penPlusShaders" },
+              list: { type: Scratch.ArgumentType.STRING, menu: "listMenu" },
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
             },
             filter: "sprite",
           },
@@ -2409,7 +2461,6 @@
             filter: "sprite",
           },
 
-
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Render Textures",
@@ -2419,7 +2470,10 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "create render texture named [name]",
             arguments: {
-              name: {  type: Scratch.ArgumentType.STRING, defaultValue:"render texture" },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "render texture",
+              },
             },
           },
           {
@@ -2427,9 +2481,12 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "create render texture named [name] of size [width] [height]",
             arguments: {
-              name: {  type: Scratch.ArgumentType.STRING, defaultValue:"render texture" },
-              width: {  type: Scratch.ArgumentType.NUMBER, defaultValue:128 },
-              height: {  type: Scratch.ArgumentType.NUMBER, defaultValue:128 },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "render texture",
+              },
+              width: { type: Scratch.ArgumentType.NUMBER, defaultValue: 128 },
+              height: { type: Scratch.ArgumentType.NUMBER, defaultValue: 128 },
             },
           },
           {
@@ -2437,7 +2494,10 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "remove render texture named [name]",
             arguments: {
-              name: {  type: Scratch.ArgumentType.STRING, defaultValue:"render texture" },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "render texture",
+              },
             },
           },
           {
@@ -2445,16 +2505,16 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "does render texture named [name] exist?",
             arguments: {
-              name: {  type: Scratch.ArgumentType.STRING, defaultValue:"render texture" },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "render texture",
+              },
             },
           },
           {
             opcode: "getRenderTextures",
             blockType: Scratch.BlockType.REPORTER,
             text: "render textures",
-            arguments: {
-              name: {  type: Scratch.ArgumentType.STRING, defaultValue:"render texture" },
-            },
           },
           "---",
           {
@@ -2462,7 +2522,10 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "render tris and squares to [name]",
             arguments: {
-              name: {  type: Scratch.ArgumentType.STRING, menu:"renderTextures" },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "renderTextures",
+              },
             },
           },
           {
@@ -2470,19 +2533,32 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "clear pen from [name]",
             arguments: {
-              name: {  type: Scratch.ArgumentType.STRING, menu:"renderTextures" },
+              name: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "renderTexturesOnly",
+              },
             },
           },
-
 
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Extras",
           },
           {
+            opcode: "getPenPVersion",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Pen+ version",
+          },
+          {
             opcode: "getTrianglesDrawn",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Triangles Drawn",
+            text: "triangles drawn",
+          },
+          {
+            opcode: "getPenRenderLayer",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "data uri of pen layer",
+            disableMonitor: true,
           },
           "---",
           {
@@ -2495,6 +2571,20 @@
                 menu: "cullMode",
               },
             },
+          },
+          {
+            disableMonitor: true,
+            opcode: "setTriangleFilterMode",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set texture filter mode to [filter]",
+            arguments: {
+              filter: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 9728,
+                menu: "filterType",
+              },
+            },
+            filter: "sprite",
           },
           "---",
           {
@@ -2530,6 +2620,21 @@
               },
             },
           },
+          {
+            opcode: "setPrefix",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set the prefix for [prefix] to [value]",
+            arguments: {
+              prefix: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "prefixTypes",
+              },
+              value: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "!",
+              },
+            },
+          },
         ],
         menus: {
           hsvMenu: {
@@ -2539,7 +2644,7 @@
               "brightness",
               "transparency",
               "hex code",
-              "size"
+              "size",
             ],
             acceptReporters: true,
           },
@@ -2609,6 +2714,10 @@
             items: "getRenderTexturesAndStage",
             acceptReporters: true,
           },
+          renderTexturesOnly: {
+            items: "getRenderTexturesWarning",
+            acceptReporters: true,
+          },
           penPlusShaders: {
             items: "shaderMenu",
             acceptReporters: true,
@@ -2672,10 +2781,28 @@
             ],
             acceptReporters: true,
           },
+          spriteMenu: {
+            items: "getSprites",
+            acceptReporters: true,
+          },
+          prefixTypes: {
+            items: [
+              {
+                text: "Pen+ Costumes",
+                value: "penPlusTextures",
+              },
+              {
+                text: "Render Textures",
+                value: "renderTextures",
+              },
+            ],
+            acceptReporters: true,
+          },
         },
         name: "Pen+ V7",
         id: "penP",
-        docsURI:"https://pen-group.github.io/docs/?page=extensions%2FpenPlus%2Fmain",
+        docsURI:
+          "https://pen-group.github.io/docs/?page=extensions%2FpenPlus%2Fmain",
         menuIconURI:
           "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzMi45OTk3MiIgaGVpZ2h0PSIzMi44ODIwNyIgdmlld0JveD0iMCwwLDMyLjk5OTcyLDMyLjg4MjA3Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjI0LC0xNjMuOTk5OTMpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIyOC43NTMsMTk0LjYwMmwtNC4yNSwxLjc4bDEuNzgzLC00LjIzN2MxLjIxOCwtMi44OTIgMi45MDcsLTUuNDIzIDUuMDMsLTcuNTM4bDE5Ljc1LC0xOS42NzdjMC44NDYsLTAuODQyIDIuNjUsLTAuNDEgNC4wMzIsMC45NjdjMS4zOCwxLjM3NSAxLjgxNiwzLjE3MyAwLjk3LDQuMDE1bC0xOS43NSwxOS42NzhjLTIuMTIzLDIuMTE2IC00LjY2NCwzLjggLTcuNTY1LDUuMDEyIiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIzNi44NTgsMTczLjQyOGMwLDAgMi42MTYsMi4yMiA0LjM1LC0xLjU0NmMzLjc1MiwtOC4xNSA4LjIwMiwtNS43NzIgOC4yMDIsLTUuNzcyIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI1Ni40MiwxNjguODI1YzAsMC40NjMgLTAuMTQsMC44NzMgLTAuNDMyLDEuMTY0bC05LjMzNSw5LjNjMC4yODIsLTAuMjkgMC40MSwtMC42NjggMC40MSwtMS4xMmMwLC0wLjg3NCAtMC41MDcsLTEuOTYzIC0xLjQwNiwtMi44NjhjLTEuMzYyLC0xLjM1OCAtMy4xNDcsLTEuOCAtNC4wMDIsLTAuOTlsOS4zMzUsLTkuMzAxYzAuODQ0LC0wLjg0IDIuNjUsLTAuNDEgNC4wMzUsMC45NmMwLjg5OCwwLjkwNCAxLjM5NiwxLjk4MiAxLjM5NiwyLjg1NU0yMzAuNTE1LDE5My43NzRjLTAuNTczLDAuMzAyIC0xLjE1NywwLjU3IC0xLjc2NCwwLjgzbC00LjI1MSwxLjc3OGwxLjc4NiwtNC4yMzVjMC4yNTgsLTAuNjA0IDAuNTMsLTEuMTg2IDAuODMzLC0xLjc1N2MwLjY5LDAuMTgzIDEuNDQ4LDAuNjI1IDIuMTA4LDEuMjgyYzAuNjYsMC42NTggMS4xMDIsMS40MTIgMS4yODcsMi4xMDIiIGZpbGw9IiM0Yzk3ZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjU2LjQ5OCwxNjguNzQ4YzAsMC40NjQgLTAuMTQsMC44NzQgLTAuNDMzLDEuMTY1bC0xOS43NDIsMTkuNjhjLTIuMTMsMi4xMSAtNC42NzMsMy43OTMgLTcuNTcyLDUuMDFsLTQuMjUxLDEuNzc3bDAuOTc0LC0yLjMxNmwxLjkyNSwtMC44MDhjMi44OTgsLTEuMjE4IDUuNDQsLTIuOSA3LjU3LC01LjAxbDE5Ljc0MywtMTkuNjhjMC4yOTIsLTAuMjkyIDAuNDMyLC0wLjcwMiAwLjQzMiwtMS4xNjVjMCwtMC42NDYgLTAuMjcsLTEuNCAtMC43OCwtMi4xMjJjMC4yNSwwLjE3MiAwLjUsMC4zNzcgMC43MzcsMC42MTRjMC44OTgsMC45MDUgMS4zOTYsMS45ODMgMS4zOTYsMi44NTYiIGZpbGw9IiM1NzVlNzUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjNTc1ZTc1IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG9wYWNpdHk9IjAuMTUiLz48cGF0aCBkPSJNMjM4LjQ1LDE3Mi44M2MwLDAuNSAtMC40MDQsMC45MDUgLTAuOTA0LDAuOTA1Yy0wLjUsMCAtMC45MDUsLTAuNDA1IC0wLjkwNSwtMC45MDRjMCwtMC41IDAuNDA3LC0wLjkwMyAwLjkwNiwtMC45MDNjMC41LDAgMC45MDQsMC40MDQgMC45MDQsMC45MDR6IiBmaWxsPSIjNTc1ZTc1IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iIzU3NWU3NSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI0NC45OTgwNywxODcuMDUyOThoOS41MTc2NSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PHBhdGggZD0iTTI0OS43NTY4OSwxOTEuODExOHYtOS41MTc2NSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTY6MTYuMDAwMDY5MjMwODQyMTQzLS0+",
         blockIconURI:
@@ -2698,23 +2825,29 @@
 
       let penPlusCostumes = this.penPlusCostumesFunction();
 
-      return penPlusCostumes != ["no pen+ costumes!"]
-        ? readCostumes.concat(penPlusCostumes)
-        : readCostumes;
+      if (penPlusCostumes[0] != "no pen+ costumes!") {
+        readCostumes = readCostumes.concat(penPlusCostumes);
+      }
+
+      let penplusRenderTextures = this.getRenderTexturesMenu();
+
+      if (penPlusCostumes.length > 0) {
+        readCostumes = readCostumes.concat(penplusRenderTextures);
+      }
+
+      return readCostumes;
     }
+
     penPlusCostumesFunction() {
       const readCostumes = [];
       const keys = Object.keys(this.penPlusCostumeLibrary);
       if (keys.length > 0) {
-        for (let curCostumeID = 0; curCostumeID < keys.length; curCostumeID++) {
-          const currentCostume = keys[curCostumeID];
-          readCostumes.push(currentCostume);
-        }
-        return readCostumes;
+        return keys;
       }
 
       return ["no pen+ costumes!"];
     }
+
     shaderMenu() {
       //!Pain.json
       return Object.keys(this.shaders).length == 0
@@ -2740,6 +2873,35 @@
       if (Object.keys(this.penPlusCubemap).length == 0)
         return ["No cubemaps yet!"];
       return Object.keys(this.penPlusCubemap);
+    }
+    getRenderTexturesMenu() {
+      return Object.keys(this.renderTextures);
+    }
+    getRenderTexturesWarning() {
+      return Object.keys(this.renderTextures).length > 0
+        ? Object.keys(this.renderTextures)
+        : ["No Render Textures Yet!"];
+    }
+    getRenderTexturesAndStage() {
+      let renderTextures = ["Scratch Stage"];
+      return renderTextures;
+    }
+    getSprites() {
+      const sprites = [];
+      for (const target of vm.runtime.targets) {
+        if (target.isOriginal && !target.isStage) {
+          sprites.push(target.getName());
+        }
+      }
+      if (sprites.length === 0) {
+        return [
+          {
+            text: "No sprites exist!",
+            value: " ",
+          },
+        ];
+      }
+      return sprites;
     }
     //From lily's list tools... With permission of course.
     _getLists() {
@@ -2780,16 +2942,17 @@
       gl.deleteFramebuffer(fbi.framebuffer);
     }
 
-    _locateTextureObject(name,util) {
+    _locateTextureObject(name, util) {
       const curTarget = util.target;
       let currentTexture = null;
       if (this.penPlusCostumeLibrary[name]) {
         currentTexture = this.penPlusCostumeLibrary[name].texture;
-      } 
-      else if (this.renderTextures[name] && (name != this.currentRenderTexture.name)) {
+      } else if (
+        this.renderTextures[name] &&
+        name != this.currentRenderTexture.name
+      ) {
         currentTexture = this.renderTextures[name].attachments[0];
-      }
-      else {
+      } else {
         const costIndex = curTarget.getCostumeIndexByName(
           Scratch.Cast.toString(name)
         );
@@ -2800,7 +2963,8 @@
             curTarget.setCostume(costIndex);
           }
 
-          currentTexture = renderer._allSkins[curCostume.skinId]._uniforms.u_skin;
+          currentTexture =
+            renderer._allSkins[curCostume.skinId]._uniforms.u_skin;
         }
       }
 
@@ -2825,21 +2989,34 @@
       const curTarget = util.target;
       switch (HSV) {
         case "size":
-          return curTarget["_customState"]["Scratch.pen"].penAttributes.diameter;
+          return curTarget["_customState"]["Scratch.pen"].penAttributes
+            .diameter;
 
         case "hex code":
           //convert the rgb to hex
-          let r = Math.floor(curTarget["_customState"]["Scratch.pen"].penAttributes.color4f[0] * 255).toString(16);
+          let r = Math.floor(
+            curTarget["_customState"]["Scratch.pen"].penAttributes.color4f[0] *
+              255
+          ).toString(16);
           r = r.length == 1 ? "0" + r : r;
-          let g = Math.floor(curTarget["_customState"]["Scratch.pen"].penAttributes.color4f[1] * 255).toString(16);
+          let g = Math.floor(
+            curTarget["_customState"]["Scratch.pen"].penAttributes.color4f[1] *
+              255
+          ).toString(16);
           g = g.length == 1 ? "0" + g : g;
-          let b = Math.floor(curTarget["_customState"]["Scratch.pen"].penAttributes.color4f[2] * 255).toString(16);
+          let b = Math.floor(
+            curTarget["_customState"]["Scratch.pen"].penAttributes.color4f[2] *
+              255
+          ).toString(16);
           b = b.length == 1 ? "0" + b : b;
-          let a = Math.floor(curTarget["_customState"]["Scratch.pen"].penAttributes.color4f[3] * 255).toString(16);
+          let a = Math.floor(
+            curTarget["_customState"]["Scratch.pen"].penAttributes.color4f[3] *
+              255
+          ).toString(16);
           a = a.length == 1 ? "0" + a : a;
 
           return `#${r}${g}${b}${a}`;
-      
+
         default:
           return curTarget["_customState"]["Scratch.pen"][HSV];
       }
@@ -2869,11 +3046,20 @@
         y2
       );
     }
+    stampSprite({ sprite }) {
+      const originalTarget = vm.runtime.getSpriteTargetByName(sprite);
+      if (!originalTarget) {
+        return;
+      }
+      runtime.ext_pen._stamp(originalTarget);
+    }
 
     _getDefaultTriAttributes() {
       return [
         // U V  TINT R G B  Z W transparency U V  TINT R G B  Z W transparency U V  TINT R G B  Z W transparency
-        0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1,
+        0,
+        0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1,
+        1, 1,
       ];
     }
 
@@ -2895,7 +3081,7 @@
       this.trianglesDrawn += 2;
 
       const curTarget = util.target;
-      
+
       //Get triangle attributes
       if (
         typeof this.squareAttributesOfAllSprites[curTarget.id] == "undefined"
@@ -2913,26 +3099,62 @@
       const spritex = curTarget.x;
       const spritey = -curTarget.y;
 
-      const width = attrib.diameter * myAttributes[0]
-      const height = attrib.diameter * myAttributes[1]
+      const width = attrib.diameter * myAttributes[0];
+      const height = attrib.diameter * myAttributes[1];
 
       let inputInfo = {
         a_position: new Float32Array([
-          width * -0.5, height * -0.5,1,myAttributes[11],
-          width * 0.5,  height * -0.5,1,myAttributes[11],
-          width * 0.5,  height * 0.5,1,myAttributes[11],
-          width * -0.5, height * -0.5,1,myAttributes[11],
-          width * -0.5, height * 0.5,1,myAttributes[11],
-          width * 0.5,  height * 0.5,1,myAttributes[11]
+          width * -0.5,
+          height * -0.5,
+          1,
+          myAttributes[11],
+          width * 0.5,
+          height * -0.5,
+          1,
+          myAttributes[11],
+          width * 0.5,
+          height * 0.5,
+          1,
+          myAttributes[11],
+          width * -0.5,
+          height * -0.5,
+          1,
+          myAttributes[11],
+          width * -0.5,
+          height * 0.5,
+          1,
+          myAttributes[11],
+          width * 0.5,
+          height * 0.5,
+          1,
+          myAttributes[11],
         ]),
         a_color: new Float32Array([
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10]
-        ])
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+        ]),
       };
 
       gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_position.buffer);
@@ -2981,7 +3203,7 @@
       this.trianglesDrawn += 2;
 
       const curTarget = util.target;
-      
+
       //Get triangle attributes
       if (
         typeof this.squareAttributesOfAllSprites[curTarget.id] == "undefined"
@@ -2993,43 +3215,85 @@
       const myAttributes = this.squareAttributesOfAllSprites[curTarget.id];
 
       const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
-      
-      let currentTexture = this._locateTextureObject(tex,util);
+
+      let currentTexture = this._locateTextureObject(tex, util);
       if (!currentTexture) return;
 
       //? get triangle attributes for current sprite.
       const spritex = curTarget.x;
       const spritey = -curTarget.y;
 
-      const width = attrib.diameter * myAttributes[0]
-      const height = attrib.diameter * myAttributes[1]
+      const width = attrib.diameter * myAttributes[0];
+      const height = attrib.diameter * myAttributes[1];
 
       let inputInfo = {
         a_position: new Float32Array([
-          width * -0.5, height * -0.5,1,myAttributes[11],
-          width * 0.5,  height * -0.5,1,myAttributes[11],
-          width * 0.5,  height * 0.5,1,myAttributes[11],
-          width * -0.5, height * -0.5,1,myAttributes[11],
-          width * -0.5, height * 0.5,1,myAttributes[11],
-          width * 0.5,  height * 0.5,1,myAttributes[11]
+          width * -0.5,
+          height * -0.5,
+          1,
+          myAttributes[11],
+          width * 0.5,
+          height * -0.5,
+          1,
+          myAttributes[11],
+          width * 0.5,
+          height * 0.5,
+          1,
+          myAttributes[11],
+          width * -0.5,
+          height * -0.5,
+          1,
+          myAttributes[11],
+          width * -0.5,
+          height * 0.5,
+          1,
+          myAttributes[11],
+          width * 0.5,
+          height * 0.5,
+          1,
+          myAttributes[11],
         ]),
         a_color: new Float32Array([
           //Wow that was very cool
-          myAttributes[7],myAttributes[8],myAttributes[9],myAttributes[10],
-          myAttributes[7],myAttributes[8],myAttributes[9],myAttributes[10],
-          myAttributes[7],myAttributes[8],myAttributes[9],myAttributes[10],
-          myAttributes[7],myAttributes[8],myAttributes[9],myAttributes[10],
-          myAttributes[7],myAttributes[8],myAttributes[9],myAttributes[10],
-          myAttributes[7],myAttributes[8],myAttributes[9],myAttributes[10]
+          myAttributes[7],
+          myAttributes[8],
+          myAttributes[9],
+          myAttributes[10],
+          myAttributes[7],
+          myAttributes[8],
+          myAttributes[9],
+          myAttributes[10],
+          myAttributes[7],
+          myAttributes[8],
+          myAttributes[9],
+          myAttributes[10],
+          myAttributes[7],
+          myAttributes[8],
+          myAttributes[9],
+          myAttributes[10],
+          myAttributes[7],
+          myAttributes[8],
+          myAttributes[9],
+          myAttributes[10],
+          myAttributes[7],
+          myAttributes[8],
+          myAttributes[9],
+          myAttributes[10],
         ]),
         a_texCoord: new Float32Array([
-          myAttributes[4], myAttributes[5] + myAttributes[6],
-          myAttributes[3] + myAttributes[4], myAttributes[5] + myAttributes[6],
-          myAttributes[3] + myAttributes[4], myAttributes[6],
-          myAttributes[4], myAttributes[5] + myAttributes[6],
-          myAttributes[4], myAttributes[6],
-          myAttributes[3] + myAttributes[4], myAttributes[6]
-        ])
+          myAttributes[4],
+          myAttributes[5] + myAttributes[6],
+          myAttributes[3] + myAttributes[4],
+          myAttributes[5] + myAttributes[6],
+          myAttributes[3] + myAttributes[4],
+          myAttributes[6],
+          myAttributes[4],
+          myAttributes[5] + myAttributes[6],
+          myAttributes[4],
+          myAttributes[6],
+          myAttributes[3] + myAttributes[4],
+          myAttributes[6],
+        ]),
       };
 
       gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_position.buffer);
@@ -3130,7 +3394,8 @@
     }
     resetSquareAttributes(args, util) {
       const curTarget = util.target;
-      this.squareAttributesOfAllSprites[curTarget.id] = this._getDefaultSquareAttributes();
+      this.squareAttributesOfAllSprites[curTarget.id] =
+        this._getDefaultSquareAttributes();
     }
 
     //?Triangle stuffs
@@ -3309,7 +3574,7 @@
     }
     drawTexTri({ x1, y1, x2, y2, x3, y3, tex }, util) {
       const curTarget = util.target;
-      let currentTexture = this._locateTextureObject(tex,util);
+      let currentTexture = this._locateTextureObject(tex, util);
 
       nativeSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
@@ -3422,7 +3687,11 @@
 
     doesIMGexist({ name }, util) {
       //Just a simple thing to allow for pen drawing
-      return typeof this.penPlusCostumeLibrary[this.prefixes.penPlusTextures + name] != "undefined";
+      return (
+        typeof this.penPlusCostumeLibrary[
+          this.prefixes.penPlusTextures + name
+        ] != "undefined"
+      );
     }
 
     getCostumeDataURI({ costume }, util) {
@@ -3535,6 +3804,10 @@
       renderer.dirty = true;
     }
 
+    getPenPVersion() {
+      return this.extensionVersion;
+    }
+
     getTrianglesDrawn() {
       return this.trianglesDrawn;
     }
@@ -3556,6 +3829,11 @@
         default:
           break;
       }
+    }
+
+    setPrefix({ prefix, value }) {
+      //That simple
+      this.prefixes[prefix] = value;
     }
 
     //?Custom Shaders
@@ -3602,9 +3880,14 @@
           {
             type: "REGISTER_PARENT",
             exitButton: true,
-            importText: `Import from ${hostname.replace(/\w\S*/g, function (txt) {
-              return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            })}`,
+            importText: `Import from ${hostname.replace(
+              /\w\S*/g,
+              function (txt) {
+                return (
+                  txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+                );
+              }
+            )}`,
             exportText: `Export to ${hostname.replace(/\w\S*/g, function (txt) {
               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             })}`,
@@ -3747,7 +4030,7 @@
       twgl.drawBufferInfo(gl, bufferInfo);
     }
 
-    drawShaderSquare({ shader },util) {
+    drawShaderSquare({ shader }, util) {
       if (!this.programs[shader]) return;
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
@@ -3761,7 +4044,7 @@
       this.trianglesDrawn += 2;
 
       const curTarget = util.target;
-      
+
       //Get triangle attributes
       if (
         typeof this.squareAttributesOfAllSprites[curTarget.id] == "undefined"
@@ -3779,26 +4062,62 @@
       const spritex = curTarget.x;
       const spritey = -curTarget.y;
 
-      const width = attrib.diameter * myAttributes[0]
-      const height = attrib.diameter * myAttributes[1]
+      const width = attrib.diameter * myAttributes[0];
+      const height = attrib.diameter * myAttributes[1];
 
       let inputInfo = {
         a_position: new Float32Array([
-          width * -0.5, height * 0.5,1,myAttributes[11],
-          width * 0.5,  height * 0.5,1,myAttributes[11],
-          width * 0.5,  height * -0.5,1,myAttributes[11],
-          width * -0.5, height * 0.5,1,myAttributes[11],
-          width * -0.5, height * -0.5,1,myAttributes[11],
-          width * 0.5,  height * -0.5,1,myAttributes[11]
+          width * -0.5,
+          height * 0.5,
+          1,
+          myAttributes[11],
+          width * 0.5,
+          height * 0.5,
+          1,
+          myAttributes[11],
+          width * 0.5,
+          height * -0.5,
+          1,
+          myAttributes[11],
+          width * -0.5,
+          height * 0.5,
+          1,
+          myAttributes[11],
+          width * -0.5,
+          height * -0.5,
+          1,
+          myAttributes[11],
+          width * 0.5,
+          height * -0.5,
+          1,
+          myAttributes[11],
         ]),
         a_color: new Float32Array([
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
-          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10]
-        ])
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],
+          penColor[1] * myAttributes[8],
+          penColor[2] * myAttributes[9],
+          penColor[3] * myAttributes[10],
+        ]),
       };
 
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer.attribs.a_position.buffer);
@@ -3843,28 +4162,28 @@
     }
 
     setTextureInShader({ uniformName, shader, texture }, util) {
-      if (this._isUniformArray(shader,uniformName)) return;
+      if (this._isUniformArray(shader, uniformName)) return;
 
       const curTarget = util.target;
 
-      let curCostume = this._locateTextureObject(texture,util);
+      let curCostume = this._locateTextureObject(texture, util);
       if (!curCostume) return;
 
       this.programs[shader].uniformDat[uniformName] = curCostume;
     }
 
     setNumberInShader({ uniformName, shader, number }) {
-      if (this._isUniformArray(shader,uniformName)) return;
+      if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = number;
     }
 
     setVec2InShader({ uniformName, shader, numberX, numberY }) {
-      if (this._isUniformArray(shader,uniformName)) return;
+      if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = [numberX, numberY];
     }
 
     setVec3InShader({ uniformName, shader, numberX, numberY, numberZ }) {
-      if (this._isUniformArray(shader,uniformName)) return;
+      if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = [
         numberX,
         numberY,
@@ -3880,7 +4199,7 @@
       numberZ,
       numberW,
     }) {
-      if (this._isUniformArray(shader,uniformName)) return;
+      if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = [
         numberX,
         numberY,
@@ -3890,7 +4209,7 @@
     }
 
     setMatrixInShader({ uniformName, shader, list }, util) {
-      if (this._isUniformArray(shader,uniformName)) return;
+      if (this._isUniformArray(shader, uniformName)) return;
       let listOBJ = this._getVarObjectFromName(list, util, "list").value;
       let converted = listOBJ.map(function (str) {
         return parseFloat(str);
@@ -3900,7 +4219,7 @@
     }
 
     setMatrixInShaderArray({ uniformName, shader, array }) {
-      if (this._isUniformArray(shader,uniformName)) return;
+      if (this._isUniformArray(shader, uniformName)) return;
       let converted = JSON.parse(array);
       //Make sure its an array
       if (!Array.isArray(converted)) return;
@@ -3912,7 +4231,7 @@
     }
 
     setCubeInShader({ uniformName, shader, cubemap }) {
-      if (this._isUniformArray(shader,uniformName)) return;
+      if (this._isUniformArray(shader, uniformName)) return;
       if (!this.penPlusCubemap[cubemap]) return;
       this.programs[shader].uniformDat[uniformName] =
         this.penPlusCubemap[cubemap];
@@ -3920,14 +4239,14 @@
 
     getNumberInShader({ uniformName, shader }) {
       if (!this.programs[shader]) return 0;
-      if (this._isUniformArray(shader,uniformName)) return 0;
+      if (this._isUniformArray(shader, uniformName)) return 0;
       if (!this.programs[shader].uniformDat[uniformName]) return 0;
       return this.programs[shader].uniformDat[uniformName];
     }
 
     getVec2InShader({ component, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
-      if (this._isUniformArray(shader,uniformName)) return 0;
+      if (this._isUniformArray(shader, uniformName)) return 0;
       if (!this.programs[shader].uniformDat[uniformName]) return 0;
       if (!this.programs[shader].uniformDat[uniformName][component]) return 0;
       return this.programs[shader].uniformDat[uniformName][component];
@@ -3935,7 +4254,7 @@
 
     getVec3InShader({ component, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
-      if (this._isUniformArray(shader,uniformName)) return 0;
+      if (this._isUniformArray(shader, uniformName)) return 0;
       if (!this.programs[shader].uniformDat[uniformName]) return 0;
       if (!this.programs[shader].uniformDat[uniformName][component]) return 0;
       return this.programs[shader].uniformDat[uniformName][component];
@@ -3943,7 +4262,7 @@
 
     getVec4InShader({ component, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
-      if (this._isUniformArray(shader,uniformName)) return 0;
+      if (this._isUniformArray(shader, uniformName)) return 0;
       if (!this.programs[shader].uniformDat[uniformName]) return 0;
       if (!this.programs[shader].uniformDat[uniformName][component]) return 0;
       return this.programs[shader].uniformDat[uniformName][component];
@@ -3951,14 +4270,14 @@
 
     getMatrixInShader({ uniformName, shader }) {
       if (!this.programs[shader]) return 0;
-      if (this._isUniformArray(shader,uniformName)) return 0;
+      if (this._isUniformArray(shader, uniformName)) return 0;
       if (!this.programs[shader].uniformDat[uniformName]) return 0;
       return JSON.stringify(this.programs[shader].uniformDat[uniformName]);
     }
 
     getTextureInShader({ uniformName, shader }, util) {
       if (!this.programs[shader]) return "";
-      if (this._isUniformArray(shader,uniformName)) return "";
+      if (this._isUniformArray(shader, uniformName)) return "";
       if (!this.programs[shader].uniformDat[uniformName]) return "";
       const text = this.programs[shader].uniformDat[uniformName];
       let foundValue = Object.keys(this.penPlusCostumeLibrary).find(
@@ -3985,7 +4304,7 @@
 
     getCubemapInShader({ uniformName, shader }) {
       if (!this.programs[shader]) return "";
-      if (this._isUniformArray(shader,uniformName)) return "";
+      if (this._isUniformArray(shader, uniformName)) return "";
       if (!this.programs[shader].uniformDat[uniformName]) return "";
       const text = this.programs[shader].uniformDat[uniformName];
       return Object.keys(this.penPlusCubemap).find(
@@ -4002,18 +4321,26 @@
 
     //For arrays!
     setArrayNumberInShader({ item, uniformName, shader, number }) {
-      if (!this._isUniformArray(shader,uniformName)) return;
-      if (item < 1 || item > this.programs[shader].uniformDec[uniformName].arrayLength) return;
-      item = item - 1
-      this.programs[shader].uniformDat[uniformName][item] = number
+      if (!this._isUniformArray(shader, uniformName)) return;
+      if (
+        item < 1 ||
+        item > this.programs[shader].uniformDec[uniformName].arrayLength
+      )
+        return;
+      item = item - 1;
+      this.programs[shader].uniformDat[uniformName][item] = number;
     }
 
     setArrayVec2InShader({ item, uniformName, shader, numberX, numberY }) {
-      if (!this._isUniformArray(shader,uniformName)) return;
-      if (item < 1 || item > this.programs[shader].uniformDec[uniformName].arrayLength) return;
-      item -= (item - 1) * 2
-      this.programs[shader].uniformDat[uniformName][item] = numberX
-      this.programs[shader].uniformDat[uniformName][item + 1] = numberY
+      if (!this._isUniformArray(shader, uniformName)) return;
+      if (
+        item < 1 ||
+        item > this.programs[shader].uniformDec[uniformName].arrayLength
+      )
+        return;
+      item -= (item - 1) * 2;
+      this.programs[shader].uniformDat[uniformName][item] = numberX;
+      this.programs[shader].uniformDat[uniformName][item + 1] = numberY;
     }
 
     setArrayVec3InShader({
@@ -4024,12 +4351,16 @@
       numberY,
       numberZ,
     }) {
-      if (!this._isUniformArray(shader,uniformName)) return;
-      if (item < 1 || item > this.programs[shader].uniformDec[uniformName].arrayLength) return;
-      item = (item - 1) * 3
-      this.programs[shader].uniformDat[uniformName][item] = numberX
-      this.programs[shader].uniformDat[uniformName][item + 1] = numberY
-      this.programs[shader].uniformDat[uniformName][item + 2] = numberZ
+      if (!this._isUniformArray(shader, uniformName)) return;
+      if (
+        item < 1 ||
+        item > this.programs[shader].uniformDec[uniformName].arrayLength
+      )
+        return;
+      item = (item - 1) * 3;
+      this.programs[shader].uniformDat[uniformName][item] = numberX;
+      this.programs[shader].uniformDat[uniformName][item + 1] = numberY;
+      this.programs[shader].uniformDat[uniformName][item + 2] = numberZ;
     }
 
     setArrayVec4InShader({
@@ -4041,45 +4372,71 @@
       numberZ,
       numberW,
     }) {
-      if (!this._isUniformArray(shader,uniformName)) return;
-      if (item < 1 || item > this.programs[shader].uniformDec[uniformName].arrayLength) return;
-      item = (item - 1) * 4
-      this.programs[shader].uniformDat[uniformName][item] = numberX
-      this.programs[shader].uniformDat[uniformName][item + 1] = numberY
-      this.programs[shader].uniformDat[uniformName][item + 2] = numberZ
-      this.programs[shader].uniformDat[uniformName][item + 3] = numberW
+      if (!this._isUniformArray(shader, uniformName)) return;
+      if (
+        item < 1 ||
+        item > this.programs[shader].uniformDec[uniformName].arrayLength
+      )
+        return;
+      item = (item - 1) * 4;
+      this.programs[shader].uniformDat[uniformName][item] = numberX;
+      this.programs[shader].uniformDat[uniformName][item + 1] = numberY;
+      this.programs[shader].uniformDat[uniformName][item + 2] = numberZ;
+      this.programs[shader].uniformDat[uniformName][item + 3] = numberW;
     }
 
     getArrayNumberInShader({ item, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
-      if (!this._isUniformArray(shader,uniformName)) return 0;
-      if (item < 1 || item > this.programs[shader].uniformDec[uniformName].arrayLength) return;
+      if (!this._isUniformArray(shader, uniformName)) return 0;
+      if (
+        item < 1 ||
+        item > this.programs[shader].uniformDec[uniformName].arrayLength
+      )
+        return;
       item -= 1;
-      return this.programs[shader].uniformDat[uniformName][item]
+      return this.programs[shader].uniformDat[uniformName][item];
     }
 
     getArrayVec2InShader({ item, component, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
-      if (!this._isUniformArray(shader,uniformName)) return 0;
-      if (item < 1 || item > this.programs[shader].uniformDec[uniformName].arrayLength) return;
+      if (!this._isUniformArray(shader, uniformName)) return 0;
+      if (
+        item < 1 ||
+        item > this.programs[shader].uniformDec[uniformName].arrayLength
+      )
+        return;
       item = (item - 1) * 2;
-      return this.programs[shader].uniformDat[uniformName][item + component] || 0;
+      return (
+        this.programs[shader].uniformDat[uniformName][item + component] || 0
+      );
     }
 
     getArrayVec3InShader({ item, component, uniformName, shader }) {
       if (!this.programs[shader]) return 0;
-      if (!this._isUniformArray(shader,uniformName)) return 0;
-      if (item < 1 || item > this.programs[shader].uniformDec[uniformName].arrayLength) return;
+      if (!this._isUniformArray(shader, uniformName)) return 0;
+      if (
+        item < 1 ||
+        item > this.programs[shader].uniformDec[uniformName].arrayLength
+      )
+        return;
       item = (item - 1) * 3;
-      return this.programs[shader].uniformDat[uniformName][item + component] || 0;
+      return (
+        this.programs[shader].uniformDat[uniformName][item + component] || 0
+      );
     }
 
     getArrayVec4InShader({ item, component, uniformName, shader }) {
       if (!this.programs[shader]) return;
-      if (!this._isUniformArray(shader,uniformName)) return 0;
-      if (item < 1 || item > this.programs[shader].uniformDec[uniformName].arrayLength) return;
+      if (!this._isUniformArray(shader, uniformName)) return 0;
+      if (
+        item < 1 ||
+        item > this.programs[shader].uniformDec[uniformName].arrayLength
+      )
+        return;
       item = (item - 1) * 4;
-      return this.programs[shader].uniformDat[uniformName][item + component] || 0;
+      return (
+        this.programs[shader].uniformDat[uniformName][item + component] || 0
+      );
     }
 
     //Attributes
@@ -4185,11 +4542,15 @@
     _handlePMvsEM(variableName) {
       switch (variableName) {
         case "--menu-bar-background":
-          return (Scratch.extensions.isElectraMod) ? "hsla(244, 23%, 48%, 1)" : "#009CCC";
+          return Scratch.extensions.isElectraMod
+            ? "hsla(244, 23%, 48%, 1)"
+            : "#009CCC";
 
         case "--ui-modal-overlay":
-          return (Scratch.extensions.isElectraMod) ? "var(--ui-modal-overlay, hsla(244, 23%, 48%, 0.9))" : "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
-      
+          return Scratch.extensions.isElectraMod
+            ? "var(--ui-modal-overlay, hsla(244, 23%, 48%, 0.9))"
+            : "var(--ui-modal-overlay, hsla(194, 100%, 65%, 0.9))";
+
         default:
           break;
       }
@@ -4409,7 +4770,7 @@
         },
         nameFunc: (name) => {
           topText.innerHTML = name;
-        }
+        },
       };
     }
 
@@ -4825,12 +5186,12 @@
               this.IFrame.contentWindow.postMessage(
                 {
                   type: "DATA_LOAD",
-                  projectData: this.shaders[shader].projectData.projectData
+                  projectData: this.shaders[shader].projectData.projectData,
                 },
                 this.IFrame.src
               );
-              closeFunc()
-            }
+              closeFunc();
+            };
 
             menuSpecificVars.existingDiv.appendChild(shaderDiv);
 
@@ -4977,15 +5338,16 @@
       }
     }
 
-    _getTriDataFromList(list,util) {
+    _getTriDataFromList(list, util) {
       //Might be bad code? I dunno
       const listREF = this._getVarObjectFromName(list, util, "list");
+      if (!listREF) return { successful: false };
       const refinedID = listREF.id + util.target.id;
-      
+
       this.listCache[refinedID] = this.listCache[refinedID] || {};
 
       const listOBJ = listREF.value;
-      if (!listOBJ) return {successful:false};
+      if (!listOBJ) return { successful: false };
       let merged = {};
 
       if (this.listCache[refinedID].prev != listOBJ) {
@@ -4993,39 +5355,40 @@
         listOBJ.map(function (str) {
           const obj = JSON.parse(str);
           //Check through each object
-          Object.keys(obj).forEach(key => {
+          Object.keys(obj).forEach((key) => {
             //Merge the keys if possible
             //!!No built in function for this to my knowledge!!
             if (!merged[key]) {
               merged[key] = obj[key];
-            }
-            else {
+            } else {
               merged[key].push(...obj[key]);
             }
-          })
+          });
         });
-        this.listCache[refinedID] = {prev:listREF.value,dat:merged};
-      }
-      else {
+        this.listCache[refinedID] = { prev: listREF.value, dat: merged };
+      } else {
         merged = this.listCache[refinedID].dat;
       }
-      return {triData:merged, listLength:listOBJ.length,successful:true};
+      return { triData: merged, listLength: listOBJ.length, successful: true };
     }
 
     //?List based rendering
     renderSolidTrisFromList({ list }, util) {
-      const { triData, listLength, successful} = this._getTriDataFromList(list,util);
+      const { triData, listLength, successful } = this._getTriDataFromList(
+        list,
+        util
+      );
       if (!successful) return;
 
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
 
-      if ((!triData.a_position) || (!triData.a_color)) return;
+      if (!triData.a_position || !triData.a_color) return;
 
       //Make sure we have the triangle data updating accordingly
       this.trianglesDrawn += listLength;
       bufferInfo.numElements = listLength * 3;
-      
+
       // prettier-ignore
       let inputInfo = {
         a_position: new Float32Array(triData.a_position),
@@ -5058,38 +5421,49 @@
       bufferInfo.numElements = 3;
     }
 
-    solidTriDef({x1,y1,c1,x2,y2,c2,x3,y3,c3}) {
+    solidTriDef({ x1, y1, c1, x2, y2, c2, x3, y3, c3 }) {
       c1 = Scratch.Cast.toRgbColorObject(c1);
       c2 = Scratch.Cast.toRgbColorObject(c2);
       c3 = Scratch.Cast.toRgbColorObject(c3);
       return JSON.stringify({
-        a_position: [
-          x1,y1,0,1,x2,y2,0,1,x3,y3,0,1
+        a_position: [x1, y1, 0, 1, x2, y2, 0, 1, x3, y3, 0, 1],
+        a_color: [
+          c1.r / 255,
+          c1.g / 255,
+          c1.b / 255,
+          1,
+          c2.r / 255,
+          c2.g / 255,
+          c2.b / 255,
+          1,
+          c3.r / 255,
+          c3.g / 255,
+          c3.b / 255,
+          1,
         ],
-        a_color:[
-          c1.r/255,c1.g/255,c1.b/255,1,
-          c2.r/255,c2.g/255,c2.b/255,1,
-          c3.r/255,c3.g/255,c3.b/255,1
-        ]
-      })
+      });
     }
 
     renderTexturedTrisFromList({ list, tex }, util) {
-      const { triData, listLength, successful} = this._getTriDataFromList(list,util);
+      const { triData, listLength, successful } = this._getTriDataFromList(
+        list,
+        util
+      );
       if (!successful) return;
 
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
 
-      if ((!triData.a_position) || (!triData.a_color) || (!triData.a_texCoord)) return;
+      if (!triData.a_position || !triData.a_color || !triData.a_texCoord)
+        return;
 
-      let currentTexture = this._locateTextureObject(tex,util);
+      let currentTexture = this._locateTextureObject(tex, util);
       if (!currentTexture) return;
 
       //Make sure we have the triangle data updating accordingly
       this.trianglesDrawn += listLength;
       bufferInfo.numElements = listLength * 3;
-      
+
       // prettier-ignore
       let inputInfo = {
         a_position: new Float32Array(triData.a_position),
@@ -5127,42 +5501,49 @@
       bufferInfo.numElements = 3;
     }
 
-    texTriDef({x1,y1,c1,x2,y2,c2,x3,y3,c3, u1,v1,u2,v2,u3,v3}) {
+    texTriDef({ x1, y1, c1, x2, y2, c2, x3, y3, c3, u1, v1, u2, v2, u3, v3 }) {
       c1 = Scratch.Cast.toRgbColorObject(c1);
       c2 = Scratch.Cast.toRgbColorObject(c2);
       c3 = Scratch.Cast.toRgbColorObject(c3);
       return JSON.stringify({
-        a_position: [
-          x1,y1,0,1,x2,y2,0,1,x3,y3,0,1
+        a_position: [x1, y1, 0, 1, x2, y2, 0, 1, x3, y3, 0, 1],
+        a_color: [
+          c1.r / 255,
+          c1.g / 255,
+          c1.b / 255,
+          1,
+          c2.r / 255,
+          c2.g / 255,
+          c2.b / 255,
+          1,
+          c3.r / 255,
+          c3.g / 255,
+          c3.b / 255,
+          1,
         ],
-        a_color:[
-          c1.r/255,c1.g/255,c1.b/255,1,
-          c2.r/255,c2.g/255,c2.b/255,1,
-          c3.r/255,c3.g/255,c3.b/255,1
-        ],
-        a_texCoord:[
-          u1,v1,
-          u2,v2,
-          u3,v3
-        ]
-      })
+        a_texCoord: [u1, v1, u2, v2, u3, v3],
+      });
     }
 
     renderShaderTrisFromList({ list, shader }, util) {
-      const { triData, listLength, successful} = this._getTriDataFromList(list,util);
+      const { triData, listLength, successful } = this._getTriDataFromList(
+        list,
+        util
+      );
       if (!successful) return;
 
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
 
-      if ((!triData.a_position) || (!triData.a_color) || (!triData.a_texCoord)) return;
+      if (!triData.a_position || !triData.a_color || !triData.a_texCoord)
+        return;
 
       if (!this.programs[shader]) return;
 
       //Make sure we have the triangle data updating accordingly
       this.trianglesDrawn += listLength;
       bufferInfo.numElements = listLength * 3;
-      
+
       // prettier-ignore
       let inputInfo = {
         a_position: new Float32Array(triData.a_position),
@@ -5180,14 +5561,10 @@
       gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_texCoord, gl.DYNAMIC_DRAW);
 
       //? Bind Positional Data
-      twgl.setBuffersAndAttributes(
-        gl,
-        this.programs[shader].info,
-        bufferInfo
-      );
+      twgl.setBuffersAndAttributes(gl, this.programs[shader].info, bufferInfo);
 
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-      
+
       //Just use the real scratch timer.
       this.programs[shader].uniformDat.u_timer =
         runtime.ext_scratch3_sensing.getTimer({}, util);
@@ -5226,18 +5603,15 @@
       return JSON.stringify(Object.keys(this.renderTextures));
     }
 
-    getRenderTexturesAndStage() {
-      let renderTextures = ["Scratch Stage"];
-      renderTextures.push(...Object.keys(this.renderTextures));
-      return renderTextures;
-    }
-
     createRenderTexture({ name }) {
       if (name == "Scratch Stage") return;
       if (this.renderTextures[this.prefixes.renderTextures + name]) {
-        this._deleteFramebuffer(this.renderTextures[this.prefixes.renderTextures + name]);
+        this._deleteFramebuffer(
+          this.renderTextures[this.prefixes.renderTextures + name]
+        );
       }
-      this.renderTextures[this.prefixes.renderTextures + name] = twgl.createFramebufferInfo(gl, triBufferAttachments);
+      this.renderTextures[this.prefixes.renderTextures + name] =
+        twgl.createFramebufferInfo(gl, triBufferAttachments);
       this.renderTextures[this.prefixes.renderTextures + name].resizing = true;
       this.renderTextures[this.prefixes.renderTextures + name].name = name;
     }
@@ -5245,10 +5619,19 @@
     createRenderTextureOfSize({ name, width, height }) {
       if (name == "Scratch Stage") return;
       if (this.renderTextures[this.prefixes.renderTextures + name]) {
-        this._deleteFramebuffer(this.renderTextures[this.prefixes.renderTextures + name]);
+        this._deleteFramebuffer(
+          this.renderTextures[this.prefixes.renderTextures + name]
+        );
       }
-      this.renderTextures[this.prefixes.renderTextures + name] = twgl.createFramebufferInfo(gl, triBufferAttachments);
-      twgl.resizeFramebufferInfo(gl, this.renderTextures[this.prefixes.renderTextures + name], triBufferAttachments, width, height)
+      this.renderTextures[this.prefixes.renderTextures + name] =
+        twgl.createFramebufferInfo(gl, triBufferAttachments);
+      twgl.resizeFramebufferInfo(
+        gl,
+        this.renderTextures[this.prefixes.renderTextures + name],
+        triBufferAttachments,
+        width,
+        height
+      );
       this.renderTextures[this.prefixes.renderTextures + name].resizing = false;
       this.renderTextures[this.prefixes.renderTextures + name].name = name;
     }
@@ -5257,10 +5640,18 @@
       if (this.renderTextures[name]) {
         this.currentRenderTexture = this.renderTextures[name];
 
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.currentRenderTexture.framebuffer);
-        gl.clearColor(0,0,0,0);
+        gl.bindFramebuffer(
+          gl.FRAMEBUFFER,
+          this.currentRenderTexture.framebuffer
+        );
+        gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.clearColor(renderer._backgroundColor4f[0], renderer._backgroundColor4f[1], renderer._backgroundColor4f[2], renderer._backgroundColor4f[3]);
+        gl.clearColor(
+          renderer._backgroundColor4f[0],
+          renderer._backgroundColor4f[1],
+          renderer._backgroundColor4f[2],
+          renderer._backgroundColor4f[3]
+        );
       }
     }
 
@@ -5270,7 +5661,10 @@
         //If we are deleting the one we are on failsafe to the default stage buffer
         if (this.currentRenderTexture.name == name) {
           this.currentRenderTexture = triBufferInfo;
-          gl.bindFramebuffer(gl.FRAMEBUFFER, this.currentRenderTexture.framebuffer);
+          gl.bindFramebuffer(
+            gl.FRAMEBUFFER,
+            this.currentRenderTexture.framebuffer
+          );
         }
         //Delete the framebuffer
         this._deleteFramebuffer(this.renderTextures[name]);
@@ -5280,23 +5674,48 @@
 
     doesRenderTextureExist({ name }) {
       if (name == "Scratch Stage") return true;
-      return (typeof this.renderTextures[name] != "undefined")
+      return typeof this.renderTextures[name] != "undefined";
     }
 
     targetRenderTexture({ name }) {
       if (name == "Scratch Stage") {
         this.currentRenderTexture = triBufferInfo;
-      }
-      else if (this.renderTextures[name]) {
+      } else if (this.renderTextures[name]) {
         this.currentRenderTexture = this.renderTextures[name];
       }
 
       if (this.inDrawRegion) {
-        gl.viewport(0,0,this.currentRenderTexture.width,this.currentRenderTexture.height);
+        gl.viewport(
+          0,
+          0,
+          this.currentRenderTexture.width,
+          this.currentRenderTexture.height
+        );
         transform_Matrix[0] = 2 / this.currentRenderTexture.width;
         transform_Matrix[1] = -2 / this.currentRenderTexture.width;
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.currentRenderTexture.framebuffer);
+        gl.bindFramebuffer(
+          gl.FRAMEBUFFER,
+          this.currentRenderTexture.framebuffer
+        );
       }
+    }
+
+    //By Sharkpool-SP commented by Alex
+    getPenRenderLayer() {
+      //Grabbing the drawable for the pen layer
+      const penID = vm.runtime.ext_pen?._penDrawableId;
+      if (!penID) return "";
+
+      //If we can grab it create a canvas and parse the image data into a data uri
+      const imageData =
+        vm.runtime.renderer.extractDrawableScreenSpace(penID).imageData;
+      var canvas = document.createElement("canvas");
+      canvas.width = imageData.width;
+      canvas.height = imageData.height;
+      canvas.getContext("2d").putImageData(imageData, 0, 0);
+
+      //Return it as a png? Why png specifically I dunno.
+      return canvas.toDataURL("image/png");
     }
   }
 
