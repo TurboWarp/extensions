@@ -1132,7 +1132,7 @@
         const arrayLength = Scratch.Cast.toNumber(
           (split.length < 4 ? split[2] : split[3])
             .replace(uniformKey, "")
-            .replaceAll(/[\[\];]/g, "")
+            .replaceAll(/[[\];]/g, "")
         );
 
         this.programs[shaderName].uniformDec[uniformKey].type = type;
@@ -2839,7 +2839,6 @@
     }
 
     penPlusCostumesFunction() {
-      const readCostumes = [];
       const keys = Object.keys(this.penPlusCostumeLibrary);
       if (keys.length > 0) {
         return keys;
@@ -2992,7 +2991,7 @@
           return curTarget["_customState"]["Scratch.pen"].penAttributes
             .diameter;
 
-        case "hex code":
+        case "hex code": {
           //convert the rgb to hex
           let r = Math.floor(
             curTarget["_customState"]["Scratch.pen"].penAttributes.color4f[0] *
@@ -3016,6 +3015,7 @@
           a = a.length == 1 ? "0" + a : a;
 
           return `#${r}${g}${b}${a}`;
+        }
 
         default:
           return curTarget["_customState"]["Scratch.pen"][HSV];
@@ -4163,8 +4163,6 @@
 
     setTextureInShader({ uniformName, shader, texture }, util) {
       if (this._isUniformArray(shader, uniformName)) return;
-
-      const curTarget = util.target;
 
       let curCostume = this._locateTextureObject(texture, util);
       if (!curCostume) return;
