@@ -41,7 +41,7 @@
   let lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
   //?Neato uniform for universally transforming triangles to fit the screen
-  let transform_Matrix = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  let transform_Matrix = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   //?Buffer handling and pen loading
   {
@@ -54,7 +54,7 @@
         : renderer._nativeSize;
 
       transform_Matrix[0] = 2 / renderer._nativeSize[0];
-      transform_Matrix[1] = 2 / renderer._nativeSize[1];
+      transform_Matrix[1] = -2 / renderer._nativeSize[1];
       let lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
       twgl.resizeFramebufferInfo(gl, triBufferInfo, triBufferAttachments, Scratch.Cast.toNumber(nativeSize[0]),Scratch.Cast.toNumber(nativeSize[1]));
       gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
@@ -330,18 +330,18 @@
   //?Override pen Clear with pen+
   renderer.penClear = (penSkinID) => {
     lastFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-    //Pen+ Overrides default pen Clearing
-    gl.bindFramebuffer(gl.FRAMEBUFFER, triBufferInfo.framebuffer);
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+      //Pen+ Overrides default pen Clearing
+      gl.bindFramebuffer(gl.FRAMEBUFFER, triBufferInfo.framebuffer);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
-    gl.clearColor(renderer._backgroundColor4f[0], renderer._backgroundColor4f[1], renderer._backgroundColor4f[2], renderer._backgroundColor4f[3]);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, lastFB);
+      gl.clearColor(renderer._backgroundColor4f[0], renderer._backgroundColor4f[1], renderer._backgroundColor4f[2], renderer._backgroundColor4f[3]);
 
-    //Old clearing
-    renderer.dirty = true;
-    const skin = /** @type {PenSkin} */ renderer._allSkins[penSkinID];
-    skin.clear();
+      //Old clearing
+      renderer.dirty = true;
+      const skin = /** @type {PenSkin} */ renderer._allSkins[penSkinID];
+      skin.clear();
   };
 
   class extension {
@@ -450,9 +450,9 @@
           // prettier-ignore
           inputInfo = {
             a_position: new Float32Array([
-              x1,-y1,triAttribs[5],triAttribs[6],
-              x2,-y2,triAttribs[13],triAttribs[14],
-              x3,-y3,triAttribs[21],triAttribs[22]
+              x1,y1,triAttribs[5],triAttribs[6],
+              x2,y2,triAttribs[13],triAttribs[14],
+              x3,y3,triAttribs[21],triAttribs[22]
             ]),
             a_color: new Float32Array([
               penColor[0] * triAttribs[2],penColor[1] * triAttribs[3],penColor[2] * triAttribs[4],penColor[3] * triAttribs[7],
@@ -465,9 +465,9 @@
           // prettier-ignore
           inputInfo = {
             a_position: new Float32Array([
-              x1,-y1,1,1,
-              x2,-y2,1,1,
-              x3,-y3,1,1
+              x1,y1,1,1,
+              x2,y2,1,1,
+              x3,y3,1,1
             ]),
             a_color: new Float32Array([
               penColor[0],penColor[1],penColor[2],penColor[3],
@@ -517,9 +517,9 @@
           // prettier-ignore
           inputInfo = {
             a_position: new Float32Array([
-              x1,-y1,triAttribs[5],triAttribs[6],
-              x2,-y2,triAttribs[13],triAttribs[14],
-              x3,-y3,triAttribs[21],triAttribs[22]
+              x1,y1,triAttribs[5],triAttribs[6],
+              x2,y2,triAttribs[13],triAttribs[14],
+              x3,y3,triAttribs[21],triAttribs[22]
             ]),
             a_color: new Float32Array([
               triAttribs[2],triAttribs[3],triAttribs[4],triAttribs[7],
@@ -537,9 +537,9 @@
           // prettier-ignore
           inputInfo = {
             a_position: new Float32Array([
-              x1,-y1,1,1,
-              x2,-y2,1,1,
-              x3,-y3,1,1
+              x1,y1,1,1,
+              x2,y2,1,1,
+              x3,y3,1,1
             ]),
             a_color: new Float32Array([
               1,1,1,1,
@@ -566,10 +566,6 @@
         gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_texCoord, gl.DYNAMIC_DRAW);
 
         gl.useProgram(penPlusShaders.textured.ProgramInf.program);
-
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, currentFilter);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
 
         //? Bind Positional Data
         twgl.setBuffersAndAttributes(
@@ -616,8 +612,21 @@
         }
         this.trianglesDrawn = 0;
         this.inDrawRegion = true;
-        gl.bindFramebuffer(gl.FRAMEBUFFER, triBufferInfo.framebuffer);
-        gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
+        if (this.currentRenderTexture != triBufferInfo) {
+          if (this.currentRenderTexture.resizing && (this.currentRenderTexture.width != nativeSize[0] || this.currentRenderTexture.height != nativeSize[1])) {
+            twgl.resizeFramebufferInfo(gl, this.currentRenderTexture, triBufferAttachments, Scratch.Cast.toNumber(nativeSize[0]),Scratch.Cast.toNumber(nativeSize[1]));
+          }
+          //Resize our variables to be viewport accurate
+          gl.viewport(0,0,this.currentRenderTexture.width,this.currentRenderTexture.height);
+          transform_Matrix[0] = 2 / this.currentRenderTexture.width;
+          transform_Matrix[1] = -2 / this.currentRenderTexture.width;
+        }
+        else {
+          gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
+          transform_Matrix[0] = 2 / nativeSize[0];
+          transform_Matrix[1] = -2 / nativeSize[1];
+        }
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.currentRenderTexture.framebuffer);
         renderer.dirty = true;
       },
       exit: () => {
@@ -902,7 +911,15 @@
     shaders = {};
     programs = {};
 
+    extensionVersion = "7.0.0 B1";
+
+    prefixes = {
+      penPlusTextures:"",
+      renderTextures:"",
+    }
+
     renderTextures = {};
+    currentRenderTexture = triBufferInfo;
 
     blockIcons = {
       undo: "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOS40NDU0NCIgaGVpZ2h0PSIxMC42MzM1MSIgdmlld0JveD0iMCwwLDE5LjQ0NTQ0LDEwLjYzMzUxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjMxLjE1NDU0LC0xNzMuNTc1OTkpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjMyLjIxNTIsMTc0LjMxYzAuNjM2NCwtMC4yMTIxMyAxLjM0MzUsLTAuMDcwNzEgMS43Njc3NywwLjM1MzU1bDEuMTMxMzcsMS4xMzEzN2MwLjk4OTk1LC0wLjg0ODUzIDIuMTIxMzIsLTEuNDE0MjEgMy4zMjM0LC0xLjc2Nzc3YzEuODM4NDgsLTAuNTY1NjkgMy44ODkwOSwtMC42MzY0IDUuNzk4MjgsMGMxLjgzODQ4LDAuNTY1NjkgMy4zOTQxMSwxLjY5NzA2IDQuNTI1NDgsMy4yNTI2OWMxLjA2MDY2LDEuNDg0OTIgMS42OTcwNiwzLjI1MjY5IDEuODM4NDgsNS4wOTExN2MwLDAuOTg5OTUgLTAuODQ4NTMsMS44Mzg0OCAtMS44Mzg0OCwxLjgzODQ4Yy0wLjg0ODUzLDAgLTEuNjI2MzUsLTAuNjM2NCAtMS43Njc3NywtMS40ODQ5MmwtMC4wNzA3MSwtMC4wNzA3MWMtMC4yMTIxMywtMS4wNjA2NiAtMC43MDcxMSwtMS45Nzk5IC0xLjQxNDIxLC0yLjY4NzAxYy0wLjcwNzExLC0wLjcwNzExIC0xLjU1NTYzLC0xLjEzMTM3IC0yLjU0NTU4LC0xLjI3Mjc5Yy0xLjM0MzUsLTAuMjEyMTMgLTIuNzU3NzIsMC4yMTIxMyAtMy43NDc2NywxLjIwMjA4bDEuMDYwNjYsMS4wNjA2NmMwLjYzNjQsMC42MzY0IDAuNzA3MTEsMS42OTcwNiAwLDIuNDA0MTZjLTAuMjgyODQsMC4yODI4NCAtMC43Nzc4MiwwLjQ5NDk3IC0xLjIwMjA4LDAuNDk0OTdsLTYuMjIyNTQsMGMtMC45MTkyNCwtMC4wNzA3MSAtMS42MjYzNSwtMC43Nzc4MiAtMS42OTcwNiwtMS42OTcwNmwwLC02LjM2Mzk2YzAsLTAuNzA3MTEgMC40MjQyNiwtMS4yNzI3OSAxLjA2MDY2LC0xLjQ4NDkyeiIgZmlsbC1vcGFjaXR5PSIwLjM3MjU1IiBmaWxsPSIjMDAwMDAwIi8+PHBhdGggZD0iTTIzMy4yNzU4NSwxNzUuMzcwNjVsMS44Mzg0OCwxLjgzODQ4YzEuMDYwNjYsLTEuMDYwNjYgMi4yNjI3NCwtMS44Mzg0OCAzLjY3Njk2LC0yLjI2Mjc0YzEuNjk3MDYsLTAuNTY1NjkgMy40NjQ4MiwtMC40OTQ5NyA1LjE2MTg4LDAuMDcwNzFjMS42MjYzNSwwLjQ5NDk3IDMuMTExMjcsMS41NTU2MyA0LjAzMDUxLDIuODk5MTRjMC45ODk5NSwxLjI3Mjc5IDEuNTU1NjMsMi45Njk4NSAxLjYyNjM1LDQuNTk2MTljMC4wNzA3MSwwLjQ5NDk3IC0wLjM1MzU1LDAuOTE5MjQgLTAuNzc3ODIsMC45MTkyNGMtMC40OTQ5NywwLjA3MDcxIC0wLjkxOTI0LC0wLjM1MzU1IC0wLjkxOTI0LC0wLjc3NzgydjBjLTAuMjEyMTMsLTEuMjAyMDggLTAuNzc3ODIsLTIuMzMzNDUgLTEuNjI2MzUsLTMuMTgxOThjLTAuODQ4NTMsLTAuODQ4NTMgLTEuODM4NDgsLTEuNDE0MjEgLTMuMDQwNTYsLTEuNjI2MzVjLTEuMDYwNjYsLTAuMjEyMTMgLTIuMTkyMDMsLTAuMDcwNzEgLTMuMjUyNjksMC40MjQyNmMtMC44NDg1MywwLjQyNDI2IC0xLjU1NTYzLDAuOTg5OTUgLTIuMTIxMzIsMS44Mzg0OGwxLjY5NzA2LDEuNjk3MDZjMC4yODI4NCwwLjI4Mjg0IDAuMjgyODQsMC43MDcxMSAwLDAuOTg5OTVjLTAuMTQxNDIsMC4xNDE0MiAtMC4yODI4NCwwLjE0MTQyIC0wLjQyNDI2LDAuMTQxNDJsLTYuMjIyNTQsMGMtMC40MjQyNiwwIC0wLjcwNzExLC0wLjI4Mjg0IC0wLjYzNjQsLTAuNjM2NGwwLC02LjIyMjU0YzAsLTAuNDI0MjYgMC4xNDE0MiwtMC43MDcxMSAwLjQyNDI2LC0wLjg0ODUzYzAuMjgyODQsLTAuMTQxNDIgMC40MjQyNiwwIDAuNTY1NjksMC4xNDE0MnoiIGZpbGw9IiNmZmZmZmYiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjo4Ljg0NTQ2Mzg5MDkwNTQ3ODo2LjQyNDAxMjQ0MTg5NTI4Ni0tPg==",
@@ -945,6 +962,19 @@
       vm.runtime.ext_obviousalexc_penPlus = this;
 
       vm.runtime.on("PROJECT_LOADED", this._setupExtensionStorage);
+      
+      //Remove clone data from cache;
+      vm.runtime.on("targetWasRemoved", (clone) => {
+        const cloneID = clone.id
+        Object.keys(clone.variables).forEach(key => {
+          //Yeah this is me. You are probably wondering how I got here?
+          //Welp it all started on 3DGAS
+          if (this.listCache[key+cloneID]) {
+            delete this.listCache[key+cloneID];
+          }
+        })
+      });
+
       this._setupExtensionStorage();
 
       this._setupTheme();
@@ -1122,17 +1152,43 @@
       });
     }
 
+    //So I can track and fix potentially extension breaking problems
+    _updateRelevantInfo(oldInfo) {
+      //pre 7.0.0B1 detection
+      if (!oldInfo.version) {
+        this.prefixes.penPlusTextures = "!";
+        if (!Scratch.extensions.isPenguinMod) runtime.extensionStorage["penP"].prefixes = this.prefixes;
+        console.log("Loaded patch for pre Version 7.0.0B1 texture prefixes");
+      }
+    }
+
     //Stolen from lily :3
     _setupExtensionStorage() {
       //Penguinmod saving support
       if (Scratch.extensions.isPenguinMod) {
         parentExtension.serialize = () => {
-          return JSON.stringify(parentExtension.shaders);
+          return JSON.stringify({
+            shaders:parentExtension.shaders,
+            version:parentExtension.extensionVersion,
+            prefixes:parentExtension.prefixes
+          });
         };
 
         parentExtension.deserialize = (serialized) => {
+          let deserializedData = JSON.parse(serialized);
           this.programs = {};
-          parentExtension.shaders = JSON.parse(serialized) || {};
+          if (deserializedData.version) {
+            parentExtension.shaders = deserializedData.shaders;
+            parentExtension.prefixes = deserializedData.prefixes;
+
+            if (parentExtension.extensionVersion != deserializedData.version) {
+              parentExtension._updateRelevantInfo(deserializedData);
+            }
+          }
+          else {
+            parentExtension.shaders = deserializedData || {};
+            parentExtension._updateRelevantInfo(deserializedData);
+          }
           parentExtension._parseProjectShaders();
         };
 
@@ -1145,10 +1201,19 @@
         if (!runtime.extensionStorage["penP"]) {
           runtime.extensionStorage["penP"] = Object.create(null);
           runtime.extensionStorage["penP"].shaders = Object.create(null);
+          runtime.extensionStorage["penP"].version = parentExtension.extensionVersion;
+          runtime.extensionStorage["penP"].prefixes = parentExtension.prefixes;
+        }
+
+        if (parentExtension.extensionVersion != runtime.extensionStorage["penP"].version) {
+          parentExtension._updateRelevantInfo(runtime.extensionStorage["penP"]);
+          console.log(runtime.extensionStorage["penP"]);
+          runtime.extensionStorage["penP"].version = parentExtension.extensionVersion;
         }
 
         //For some reason tw saving just doesn't work lol
         parentExtension.shaders = runtime.extensionStorage["penP"].shaders;
+        parentExtension.prefixes = runtime.extensionStorage["penP"].prefixes;
 
         //Remedy for the turbowarp saving system being jank.
         parentExtension.getShaders = () => {
@@ -1242,6 +1307,8 @@
             },
             filter: "sprite",
           },
+
+
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Square Pen Blocks",
@@ -1314,6 +1381,8 @@
             arguments: {},
             filter: "sprite",
           },
+
+
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Triangle Blocks",
@@ -1461,6 +1530,8 @@
             },
             filter: "sprite",
           },
+
+
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Color",
@@ -1643,10 +1714,14 @@
               },
             },
           },
+
+
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Advanced",
           },
+
+          
           //Custom Shader Blocks
           {
             blockType: Scratch.BlockType.LABEL,
@@ -1672,6 +1747,25 @@
             opcode: "drawShaderTri",
             blockType: Scratch.BlockType.COMMAND,
             text: "draw triangle using [shader] between [x1] [y1], [x2] [y2] and [x3] [y3]",
+            arguments: {
+              shader: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "penPlusShaders",
+              },
+              x1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              x2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              x3: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              y3: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
+            filter: "sprite",
+          },
+          {
+            disableMonitor: true,
+            opcode: "drawShaderSquare",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "draw square using [shader]",
             arguments: {
               shader: {
                 type: Scratch.ArgumentType.STRING,
@@ -2237,6 +2331,8 @@
             },
             filter: "sprite",
           },
+
+
           {
             blockType: Scratch.BlockType.LABEL,
             text: "List Based Rendering",
@@ -2312,6 +2408,73 @@
             },
             filter: "sprite",
           },
+
+
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Render Textures",
+          },
+          {
+            opcode: "createRenderTexture",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "create render texture named [name]",
+            arguments: {
+              name: {  type: Scratch.ArgumentType.STRING, defaultValue:"render texture" },
+            },
+          },
+          {
+            opcode: "createRenderTextureOfSize",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "create render texture named [name] of size [width] [height]",
+            arguments: {
+              name: {  type: Scratch.ArgumentType.STRING, defaultValue:"render texture" },
+              width: {  type: Scratch.ArgumentType.NUMBER, defaultValue:128 },
+              height: {  type: Scratch.ArgumentType.NUMBER, defaultValue:128 },
+            },
+          },
+          {
+            opcode: "removeRenderTexture",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "remove render texture named [name]",
+            arguments: {
+              name: {  type: Scratch.ArgumentType.STRING, defaultValue:"render texture" },
+            },
+          },
+          {
+            opcode: "doesRenderTextureExist",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "does render texture named [name] exist?",
+            arguments: {
+              name: {  type: Scratch.ArgumentType.STRING, defaultValue:"render texture" },
+            },
+          },
+          {
+            opcode: "getRenderTextures",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "render textures",
+            arguments: {
+              name: {  type: Scratch.ArgumentType.STRING, defaultValue:"render texture" },
+            },
+          },
+          "---",
+          {
+            opcode: "targetRenderTexture",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "render tris and squares to [name]",
+            arguments: {
+              name: {  type: Scratch.ArgumentType.STRING, menu:"renderTextures" },
+            },
+          },
+          {
+            opcode: "clearRenderTexture",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "clear pen from [name]",
+            arguments: {
+              name: {  type: Scratch.ArgumentType.STRING, menu:"renderTextures" },
+            },
+          },
+
+
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Extras",
@@ -2440,6 +2603,10 @@
           costumeMenu: { items: "costumeMenuFunction", acceptReporters: true },
           penPlusCostumes: {
             items: "penPlusCostumesFunction",
+            acceptReporters: true,
+          },
+          renderTextures: {
+            items: "getRenderTexturesAndStage",
             acceptReporters: true,
           },
           penPlusShaders: {
@@ -2602,6 +2769,50 @@
       listObject = target.lookupVariableByNameAndType(name, type);
       if (listObject) return listObject;
     }
+    _deleteFramebuffer(fbi) {
+      for (const attachment of fbi.attachments) {
+        if (attachment instanceof WebGLTexture) {
+          gl.deleteTexture(attachment);
+        } else {
+          gl.deleteRenderbuffer(attachment);
+        }
+      }
+      gl.deleteFramebuffer(fbi.framebuffer);
+    }
+
+    _locateTextureObject(name,util) {
+      const curTarget = util.target;
+      let currentTexture = null;
+      if (this.penPlusCostumeLibrary[name]) {
+        currentTexture = this.penPlusCostumeLibrary[name].texture;
+      } 
+      else if (this.renderTextures[name] && (name != this.currentRenderTexture.name)) {
+        currentTexture = this.renderTextures[name].attachments[0];
+      }
+      else {
+        const costIndex = curTarget.getCostumeIndexByName(
+          Scratch.Cast.toString(name)
+        );
+        if (costIndex >= 0) {
+          const curCostume = curTarget.sprite.costumes[costIndex];
+
+          if (costIndex != curTarget.currentCostume) {
+            curTarget.setCostume(costIndex);
+          }
+
+          currentTexture = renderer._allSkins[curCostume.skinId]._uniforms.u_skin;
+        }
+      }
+
+      if (currentTexture) {
+        //Set the filter mode
+        gl.bindTexture(gl.TEXTURE_2D, currentTexture);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, currentFilter);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, currentFilter);
+      }
+
+      return currentTexture;
+    }
 
     //?Default pen helpers
     isPenDown(args, util) {
@@ -2707,12 +2918,12 @@
 
       let inputInfo = {
         a_position: new Float32Array([
-          width * -0.5, height * 0.5,1,myAttributes[11],
-          width * 0.5,  height * 0.5,1,myAttributes[11],
-          width * 0.5,  height * -0.5,1,myAttributes[11],
-          width * -0.5, height * 0.5,1,myAttributes[11],
           width * -0.5, height * -0.5,1,myAttributes[11],
-          width * 0.5,  height * -0.5,1,myAttributes[11]
+          width * 0.5,  height * -0.5,1,myAttributes[11],
+          width * 0.5,  height * 0.5,1,myAttributes[11],
+          width * -0.5, height * -0.5,1,myAttributes[11],
+          width * -0.5, height * 0.5,1,myAttributes[11],
+          width * 0.5,  height * 0.5,1,myAttributes[11]
         ]),
         a_color: new Float32Array([
           penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
@@ -2783,23 +2994,8 @@
 
       const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
       
-      let currentTexture = null;
-      if (this.penPlusCostumeLibrary[tex]) {
-        currentTexture = this.penPlusCostumeLibrary[tex].texture;
-      } else {
-        const costIndex = curTarget.getCostumeIndexByName(
-          Scratch.Cast.toString(tex)
-        );
-        if (costIndex >= 0) {
-          const curCostume = curTarget.sprite.costumes[costIndex];
-
-          if (costIndex != curTarget.currentCostume) {
-            curTarget.setCostume(costIndex);
-          }
-
-          currentTexture = renderer._allSkins[curCostume.skinId]._uniforms.u_skin;
-        }
-      }
+      let currentTexture = this._locateTextureObject(tex,util);
+      if (!currentTexture) return;
 
       //? get triangle attributes for current sprite.
       const spritex = curTarget.x;
@@ -2810,12 +3006,12 @@
 
       let inputInfo = {
         a_position: new Float32Array([
-          width * -0.5, height * 0.5,1,myAttributes[11],
-          width * 0.5,  height * 0.5,1,myAttributes[11],
-          width * 0.5,  height * -0.5,1,myAttributes[11],
-          width * -0.5, height * 0.5,1,myAttributes[11],
           width * -0.5, height * -0.5,1,myAttributes[11],
-          width * 0.5,  height * -0.5,1,myAttributes[11]
+          width * 0.5,  height * -0.5,1,myAttributes[11],
+          width * 0.5,  height * 0.5,1,myAttributes[11],
+          width * -0.5, height * -0.5,1,myAttributes[11],
+          width * -0.5, height * 0.5,1,myAttributes[11],
+          width * 0.5,  height * 0.5,1,myAttributes[11]
         ]),
         a_color: new Float32Array([
           //Wow that was very cool
@@ -3113,23 +3309,7 @@
     }
     drawTexTri({ x1, y1, x2, y2, x3, y3, tex }, util) {
       const curTarget = util.target;
-      let currentTexture = null;
-      if (this.penPlusCostumeLibrary[tex]) {
-        currentTexture = this.penPlusCostumeLibrary[tex].texture;
-      } else {
-        const costIndex = curTarget.getCostumeIndexByName(
-          Scratch.Cast.toString(tex)
-        );
-        if (costIndex >= 0) {
-          const curCostume = curTarget.sprite.costumes[costIndex];
-
-          if (costIndex != curTarget.currentCostume) {
-            curTarget.setCostume(costIndex);
-          }
-
-          currentTexture = renderer._allSkins[curCostume.skinId]._uniforms.u_skin;
-        }
-      }
+      let currentTexture = this._locateTextureObject(tex,util);
 
       nativeSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
@@ -3219,7 +3399,7 @@
         width,
         height,
         color,
-        "!" + name,
+        this.prefixes.penPlusTextures + name,
         gl.CLAMP_TO_EDGE
       );
     }
@@ -3228,21 +3408,21 @@
       //Just a simple thing to allow for pen drawing
       this.textureFunctions.createPenPlusTextureInfo(
         dataURI,
-        "!" + name,
+        this.prefixes.penPlusTextures + name,
         gl.CLAMP_TO_EDGE
       );
     }
 
     removeIMGfromDURI({ name }, util) {
       //Just a simple thing to allow for pen drawing
-      if (this.penPlusCostumeLibrary["!" + name]) {
-        delete this.penPlusCostumeLibrary["!" + name];
+      if (this.penPlusCostumeLibrary[this.prefixes.penPlusTextures + name]) {
+        delete this.penPlusCostumeLibrary[this.prefixes.penPlusTextures + name];
       }
     }
 
     doesIMGexist({ name }, util) {
       //Just a simple thing to allow for pen drawing
-      return typeof this.penPlusCostumeLibrary["!" + name] != "undefined";
+      return typeof this.penPlusCostumeLibrary[this.prefixes.penPlusTextures + name] != "undefined";
     }
 
     getCostumeDataURI({ costume }, util) {
@@ -3517,9 +3697,9 @@
         //Just for our eyes sakes
         // prettier-ignore
         inputInfo.a_position = {data: [
-          x1,-y1,1,1,
-          x2,-y2,1,1,
-          x3,-y3,1,1
+          x1,y1,1,1,
+          x2,y2,1,1,
+          x3,y3,1,1
         ]}
         // prettier-ignore
         inputInfo.a_color = {data: [
@@ -3567,21 +3747,108 @@
       twgl.drawBufferInfo(gl, bufferInfo);
     }
 
+    drawShaderSquare({ shader },util) {
+      if (!this.programs[shader]) return;
+      // prettier-ignore
+      if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+      checkForPen(util);
+
+      //Safe to assume they have a buffer;
+      const buffer = this.programs[shader].buffer;
+
+      //Make sure we have the triangle data updating accordingly
+      buffer.numElements = 6;
+      this.trianglesDrawn += 2;
+
+      const curTarget = util.target;
+      
+      //Get triangle attributes
+      if (
+        typeof this.squareAttributesOfAllSprites[curTarget.id] == "undefined"
+      ) {
+        this.squareAttributesOfAllSprites[curTarget.id] =
+          this._getDefaultSquareAttributes();
+      }
+
+      const myAttributes = this.squareAttributesOfAllSprites[curTarget.id];
+
+      const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
+      const penColor = attrib.color4f;
+
+      //? get triangle attributes for current sprite.
+      const spritex = curTarget.x;
+      const spritey = -curTarget.y;
+
+      const width = attrib.diameter * myAttributes[0]
+      const height = attrib.diameter * myAttributes[1]
+
+      let inputInfo = {
+        a_position: new Float32Array([
+          width * -0.5, height * 0.5,1,myAttributes[11],
+          width * 0.5,  height * 0.5,1,myAttributes[11],
+          width * 0.5,  height * -0.5,1,myAttributes[11],
+          width * -0.5, height * 0.5,1,myAttributes[11],
+          width * -0.5, height * -0.5,1,myAttributes[11],
+          width * 0.5,  height * -0.5,1,myAttributes[11]
+        ]),
+        a_color: new Float32Array([
+          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10],
+          penColor[0] * myAttributes[7],penColor[1] * myAttributes[8],penColor[2] * myAttributes[9],penColor[3] * myAttributes[10]
+        ])
+      };
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer.attribs.a_position.buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_position, gl.DYNAMIC_DRAW);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer.attribs.a_color.buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_color, gl.DYNAMIC_DRAW);
+
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      gl.useProgram(this.programs[shader].info.program);
+
+      //Just use the real scratch timer.
+      this.programs[shader].uniformDat.u_timer =
+        runtime.ext_scratch3_sensing.getTimer({}, util);
+      this.programs[shader].uniformDat.u_transform = transform_Matrix;
+      this.programs[shader].uniformDat.u_res = nativeSize;
+
+      transform_Matrix[2] = spritex;
+      transform_Matrix[3] = spritey;
+
+      transform_Matrix[4] = Math.cos(myAttributes[2] * d2r);
+      transform_Matrix[5] = Math.sin(myAttributes[2] * d2r);
+
+      //? Bind Positional Data
+      twgl.setBuffersAndAttributes(gl, this.programs[shader].info, buffer);
+
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      twgl.setUniforms(
+        this.programs[shader].info,
+        this.programs[shader].uniformDat
+      );
+
+      transform_Matrix[2] = 0;
+      transform_Matrix[3] = 0;
+
+      transform_Matrix[4] = 0;
+      transform_Matrix[5] = 1;
+
+      twgl.drawBufferInfo(gl, buffer);
+
+      buffer.numElements = 3;
+    }
+
     setTextureInShader({ uniformName, shader, texture }, util) {
       if (this._isUniformArray(shader,uniformName)) return;
 
       const curTarget = util.target;
 
-      let curCostume =
-        this.penPlusCostumeLibrary[texture] ||
-        curTarget.getCostumeIndexByName(Scratch.Cast.toString(texture));
-      if (!this.penPlusCostumeLibrary[curCostume] && curCostume >= 0) {
-        const curCostumeObject = curTarget.sprite.costumes[curCostume];
-
-        curCostume = renderer._allSkins[curCostumeObject.skinId]._uniforms.u_skin;
-      } else if (this.penPlusCostumeLibrary[texture]) {
-        curCostume = curCostume.texture;
-      }
+      let curCostume = this._locateTextureObject(texture,util);
+      if (!curCostume) return;
 
       this.programs[shader].uniformDat[uniformName] = curCostume;
     }
@@ -4713,13 +4980,16 @@
     _getTriDataFromList(list,util) {
       //Might be bad code? I dunno
       const listREF = this._getVarObjectFromName(list, util, "list");
-
-      this.listCache[listREF.id] = this.listCache[listREF.id] || {};
+      const refinedID = listREF.id + util.target.id;
+      
+      this.listCache[refinedID] = this.listCache[refinedID] || {};
 
       const listOBJ = listREF.value;
       if (!listOBJ) return {successful:false};
       let merged = {};
-      if (this.listCache[listREF.id].prev != listOBJ) {
+
+      if (this.listCache[refinedID].prev != listOBJ) {
+        //Map the list object if we can't find something
         listOBJ.map(function (str) {
           const obj = JSON.parse(str);
           //Check through each object
@@ -4734,10 +5004,10 @@
             }
           })
         });
-        this.listCache[listREF.id] = {prev:listREF.value,dat:merged};
+        this.listCache[refinedID] = {prev:listREF.value,dat:merged};
       }
       else {
-        merged = this.listCache[listREF.id].dat;
+        merged = this.listCache[refinedID].dat;
       }
       return {triData:merged, listLength:listOBJ.length,successful:true};
     }
@@ -4813,25 +5083,7 @@
 
       if ((!triData.a_position) || (!triData.a_color) || (!triData.a_texCoord)) return;
 
-      const curTarget = util.target;
-      let currentTexture = null;
-      if (this.penPlusCostumeLibrary[tex]) {
-        currentTexture = this.penPlusCostumeLibrary[tex].texture;
-      } else {
-        const costIndex = curTarget.getCostumeIndexByName(
-          Scratch.Cast.toString(tex)
-        );
-        if (costIndex >= 0) {
-          const curCostume = curTarget.sprite.costumes[costIndex];
-
-          if (costIndex != curTarget.currentCostume) {
-            curTarget.setCostume(costIndex);
-          }
-
-          currentTexture = renderer._allSkins[curCostume.skinId]._uniforms.u_skin;
-        }
-      }
-
+      let currentTexture = this._locateTextureObject(tex,util);
       if (!currentTexture) return;
 
       //Make sure we have the triangle data updating accordingly
@@ -4967,6 +5219,83 @@
       gl.cullFace(this.cullMode);
       if (this.inDrawRegion) {
         gl.enable(gl.CULL_FACE);
+      }
+    }
+
+    getRenderTextures() {
+      return JSON.stringify(Object.keys(this.renderTextures));
+    }
+
+    getRenderTexturesAndStage() {
+      let renderTextures = ["Scratch Stage"];
+      renderTextures.push(...Object.keys(this.renderTextures));
+      return renderTextures;
+    }
+
+    createRenderTexture({ name }) {
+      if (name == "Scratch Stage") return;
+      if (this.renderTextures[this.prefixes.renderTextures + name]) {
+        this._deleteFramebuffer(this.renderTextures[this.prefixes.renderTextures + name]);
+      }
+      this.renderTextures[this.prefixes.renderTextures + name] = twgl.createFramebufferInfo(gl, triBufferAttachments);
+      this.renderTextures[this.prefixes.renderTextures + name].resizing = true;
+      this.renderTextures[this.prefixes.renderTextures + name].name = name;
+    }
+
+    createRenderTextureOfSize({ name, width, height }) {
+      if (name == "Scratch Stage") return;
+      if (this.renderTextures[this.prefixes.renderTextures + name]) {
+        this._deleteFramebuffer(this.renderTextures[this.prefixes.renderTextures + name]);
+      }
+      this.renderTextures[this.prefixes.renderTextures + name] = twgl.createFramebufferInfo(gl, triBufferAttachments);
+      twgl.resizeFramebufferInfo(gl, this.renderTextures[this.prefixes.renderTextures + name], triBufferAttachments, width, height)
+      this.renderTextures[this.prefixes.renderTextures + name].resizing = false;
+      this.renderTextures[this.prefixes.renderTextures + name].name = name;
+    }
+
+    clearRenderTexture({ name }) {
+      if (this.renderTextures[name]) {
+        this.currentRenderTexture = this.renderTextures[name];
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.currentRenderTexture.framebuffer);
+        gl.clearColor(0,0,0,0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.clearColor(renderer._backgroundColor4f[0], renderer._backgroundColor4f[1], renderer._backgroundColor4f[2], renderer._backgroundColor4f[3]);
+      }
+    }
+
+    removeRenderTexture({ name }) {
+      if (name == "Scratch Stage") return;
+      if (this.renderTextures[name]) {
+        //If we are deleting the one we are on failsafe to the default stage buffer
+        if (this.currentRenderTexture.name == name) {
+          this.currentRenderTexture = triBufferInfo;
+          gl.bindFramebuffer(gl.FRAMEBUFFER, this.currentRenderTexture.framebuffer);
+        }
+        //Delete the framebuffer
+        this._deleteFramebuffer(this.renderTextures[name]);
+        delete this.renderTextures[name];
+      }
+    }
+
+    doesRenderTextureExist({ name }) {
+      if (name == "Scratch Stage") return true;
+      return (typeof this.renderTextures[name] != "undefined")
+    }
+
+    targetRenderTexture({ name }) {
+      if (name == "Scratch Stage") {
+        this.currentRenderTexture = triBufferInfo;
+      }
+      else if (this.renderTextures[name]) {
+        this.currentRenderTexture = this.renderTextures[name];
+      }
+
+      if (this.inDrawRegion) {
+        gl.viewport(0,0,this.currentRenderTexture.width,this.currentRenderTexture.height);
+        transform_Matrix[0] = 2 / this.currentRenderTexture.width;
+        transform_Matrix[1] = -2 / this.currentRenderTexture.width;
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.currentRenderTexture.framebuffer);
       }
     }
   }
