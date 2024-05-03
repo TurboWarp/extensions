@@ -1830,7 +1830,7 @@ void main() {
 				if (texture !== "[texture data]") return;
 				const wrap = Cast.toString(WRAP) == "repeat" ? gl.REPEAT : gl.CLAMP_TO_EDGE;
 				const filter = Cast.toString(FILTER) == "blurred" ? gl.LINEAR : gl.NEAREST;
-				let textureObj = mesh.myData.texture ?? (mesh.myData.texture = new Texture2D());
+				let textureObj = mesh.myData.texture ?? (mesh.myData.texture = new Texture2D(mesh));
 				if (!(textureObj instanceof Texture2D)) return;
 				textureObj.main.loading = true;
 				mesh.update();
@@ -1905,7 +1905,7 @@ void main() {
 				if (texture !== "[texture data]") return;
 				const wrap = Cast.toString(WRAP) == "repeat" ? gl.REPEAT : gl.CLAMP_TO_EDGE;
 				const filter = Cast.toString(FILTER) == "blurred" ? gl.LINEAR : gl.NEAREST;
-				let textureObj = mesh.myData.texture ?? (mesh.myData.texture = new TextureCube());
+				let textureObj = mesh.myData.texture ?? (mesh.myData.texture = new TextureCube(mesh));
 				if (!(textureObj instanceof TextureCube)) return;
 				const lookup = {
 					"X+": "xpos",
@@ -3483,10 +3483,12 @@ void main() {
 			arguments: {
 				PROPERTY: {
 					type: ArgumentType.STRING,
-					menu: "renderTargetProperty"
+					menu: "renderTargetProperty",
+					defaultValue: "width"
 				}
 			},
 			def: function({PROPERTY}) {
+				if (PROPERTY == "mesh name") return currentRenderTarget.getMesh()?.name ?? "";
 				if (PROPERTY == "width") return currentRenderTarget.width;
 				if (PROPERTY == "height") return currentRenderTarget.height;
 				if (PROPERTY == "aspect ratio") return currentRenderTarget.getAspectRatio();
@@ -3819,7 +3821,7 @@ void main() {
 			},
 			renderTargetProperty: {
 				acceptReporters: false,
-				items: ["width", "height", "aspect ratio", "depth test", "depth write", "has depth storage", "image as data URI", "is valid for being drawn to"]
+				items: ["mesh name", "width", "height", "aspect ratio", "depth test", "depth write", "has depth storage", "image as data URI", "is valid for being drawn to"]
 			},
 			powersOfTwo: {
 				acceptReporters: true,
