@@ -2923,6 +2923,7 @@
     }
     getRenderTexturesAndStage() {
       let renderTextures = ["Scratch Stage"];
+      renderTextures.push(...Object.keys(this.renderTextures));
       return renderTextures;
     }
     getSprites() {
