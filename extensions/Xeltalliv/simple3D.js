@@ -1406,6 +1406,8 @@ void main() {
 	let lastTextMeasurement;
 
 	function resetEverything() {
+		gl.clearColor(0, 0, 0, 0);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		canvasRenderTarget.reset();
 		canvasRenderTarget.setAsRenderTarget();
 		transforms = {
@@ -1431,6 +1433,13 @@ void main() {
 		currentCulling = 0;
 		currentCullingProps = [null, null];
 		lastTextMeasurement = null;
+		for(const mesh of meshes.values()) {
+			mesh.destroy();
+		}
+		meshes.clear();
+		programs.clear();
+		renderer.dirty = true;
+		runtime.requestRedraw();
 	}
 	resetEverything();
 	addSimple3DLayer(publicApi);
@@ -1456,11 +1465,6 @@ void main() {
 			blockType: BlockType.COMMAND,
 			text: "reset everything",
 			def: function() {
-				for(const mesh of meshes.values()) {
-					mesh.destroy();
-				}
-				meshes.clear();
-				programs.clear();
 				resetEverything();
 			}
 		},
