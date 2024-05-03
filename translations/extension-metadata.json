@@ -971,6 +971,8 @@
         "runtime-options@name": "Параметри виконання"
     },
     "zh-cn": {
+        "Arkos/moreDataTypes@description": "引入对象等高级数据结构，支持嵌套对象。",
+        "Arkos/moreDataTypes@name": "高级数据结构",
         "-SIPC-/consoles@description": "一个能与内置于浏览器开发工具中的 JavaScript 控制台交互的积木块。",
         "-SIPC-/consoles@name": "控制台",
         "-SIPC-/time@description": "一些关于时间与日期的积木。",
