@@ -263,6 +263,9 @@
 		}
 	}
 	class RenderTarget {
+		constructor() {
+			this.destroyed = false;
+		}
 		setAsRenderTarget() {
 			currentRenderTarget = this;
 			gl.bindFramebuffer(gl.FRAMEBUFFER, this.getFramebuffer());
@@ -286,9 +289,7 @@
 			return this.width/this.height;
 		}
 		destroy() {
-			if (currentRenderTarget == this) {
-				canvasRenderTarget.setAsRenderTarget();
-			}
+			this.destroyed = true;
 		}
 	}
 	class CanvasRenderTarget extends RenderTarget {
@@ -305,11 +306,20 @@
 		getFramebuffer() {
 			return null;
 		}
+		getMesh() {
+			return null;
+		}
 		setDepth(test, write) {
 			this.depthTest = test;
 			this.depthWrite = write;
 		}
 		get hasDepthBuffer() {
+			return true;
+		}
+		isLoading() {
+			return false;
+		}
+		checkIfValid() {
 			return true;
 		}
 		reset() {
@@ -318,7 +328,8 @@
 		}
 	}
 	class Texture {
-		constructor(target) {
+		constructor(target, mesh) {
+			this.mesh = mesh;
 			this.target = target;
 			this.texture = gl.createTexture();
 			this.width = 0;
@@ -329,7 +340,6 @@
 			this.filter = gl.NEAREST;
 			this.mipFilter = gl.NEAREST;
 			this.mipEnabled = false;
-			this.hasMipmap = false; // anisotropy requires mipmap even when not using mipmap filtering
 			this.anisotropy = 1;
 			this.hasDepthBuffer = false;
 			this.update();
@@ -361,24 +371,27 @@
 				}
 			}
 			this.update();
-			if (this.mipEnabled) gl.generateMipmap(this.target);
+			this.maybeRegenMipmap();
 			if (ext_af) gl.texParameterf(this.target, ext_af.TEXTURE_MAX_ANISOTROPY_EXT, this.anisotropy);
 		}
 		setMipmapState(enabled, filter) {
-			if (enabled) gl.generateMipmap(this.target);
+			if (enabled && !this.isLoading()) gl.generateMipmap(this.target);
 			this.mipEnabled = enabled;
 			this.mipFilter = filter;
 			this.update();
+			this.maybeRegenMipmap();
 		}
 		setAnisotropy(value) {
 			if (!ext_af) return;
-			if (!this.hasMipmap && value > 1) {
-				this.hasMipmap = true;
-				gl.generateMipmap(this.target);
-			}
 			this.anisotropy = value;
 			gl.bindTexture(this.target, this.texture);
+			this.maybeRegenMipmap();
 			gl.texParameterf(this.target, ext_af.TEXTURE_MAX_ANISOTROPY_EXT, value);
+		}
+		maybeRegenMipmap() {
+			if ((this.mipEnabled || this.anisotropy > 1) && !this.isLoading()) {
+				gl.generateMipmap(this.target);
+			}
 		}
 		setDepth(test, write) {
 			this.depthTest = test;
@@ -390,7 +403,7 @@
 				}
 			}
 		}
-		isLoading() {
+		isLoading() { // TODO: optimize: make sides report their state changes, rather than asking them every time
 			for (const side of this.sides) {
 				if (side.loading) return true;
 			}
@@ -402,15 +415,15 @@
 		}
 	}
 	class Texture2D extends Texture {
-		constructor() {
-			super(gl.TEXTURE_2D);
+		constructor(mesh) {
+			super(gl.TEXTURE_2D, mesh);
 			this.main = new TextureSide(this, gl.TEXTURE_2D);
 			this.sides = [this.main];
 		}
 	}
 	class TextureCube extends Texture {
-		constructor() {
-			super(gl.TEXTURE_CUBE_MAP);
+		constructor(mesh) {
+			super(gl.TEXTURE_CUBE_MAP, mesh);
 			this.xpos = new TextureSide(this, gl.TEXTURE_CUBE_MAP_POSITIVE_X);
 			this.xneg = new TextureSide(this, gl.TEXTURE_CUBE_MAP_NEGATIVE_X);
 			this.ypos = new TextureSide(this, gl.TEXTURE_CUBE_MAP_POSITIVE_Y);
@@ -428,8 +441,10 @@
 			this.depthTexture = null;
 			this.framebuffer = null;
 			this.loading = false;
+			this.uninitialized = true;
 		}
 		resetTexture(width, height) {
+			this.uninitialized = false;
 			gl.texImage2D(this.target, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 			if (this.depthTexture) {
 				gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthTexture);
@@ -438,6 +453,7 @@
 			if (currentRenderTarget == this) this.updateViewport();
 		}
 		setTexture(data, width, height, wrap, filter) {
+			this.uninitialized = false;
 			this.loading = false;
 			this.shared.bindTexture();
 			if (data instanceof HTMLImageElement || data instanceof HTMLCanvasElement) {
@@ -485,6 +501,12 @@
 		setDepth(test, write) {
 			this.shared.setDepth(test, write);
 		}
+		getMesh() {
+			return this.shared.mesh;
+		}
+		checkIfValid() {
+			return !(this.uninitialized || this.destroyed);
+		}
 		destroy() {
 			if (this.depthTexture) gl.deleteRenderbuffer(this.depthTexture);
 			if (this.framebuffer) gl.deleteFramebuffer(this.framebuffer);
@@ -498,10 +520,6 @@
 			this.myBuffers = {};
 			this.data = {};
 			this.myData = {};
-			// texture
-			// primitives
-			// blending
-			// culling
 			this.uploadOffset = -1;
 			this.uploadUsage = gl.STATIC_DRAW;
 			this.dependants = new Set();
@@ -528,6 +546,7 @@
 			return false;
 		}
 		checkIfValid() {
+			if (currentRenderTarget.getMesh() == this) return false;
 			let length = -1;
 			let lengthIns = -1;
 			for(const name in this.buffers) {
@@ -2350,6 +2369,8 @@ void main() {
 				NAME = Cast.toString(NAME);
 				const mesh = meshes.get(NAME);
 				if (!mesh) return;
+				if (!currentRenderTarget.checkIfValid()) return;
+				if (currentRenderTarget.getMesh() == mesh) return;
 
 				// TODO: only recompute this after one or more buffers were changed
 				let length = -1;
@@ -3439,6 +3460,7 @@ void main() {
 			def: function({DSTLIST}, {target}) {
 				const list = target.lookupVariableByNameAndType(Cast.toString(DSTLIST), "list");
 				if (!list) return;
+				if (!currentRenderTarget.checkIfValid) return;
 				const width  = currentRenderTarget.width;
 				const height = currentRenderTarget.height;
 				if (width == 0 || height == 0) return;
@@ -3463,10 +3485,12 @@ void main() {
 			def: function({PROPERTY}) {
 				if (PROPERTY == "width") return currentRenderTarget.width;
 				if (PROPERTY == "height") return currentRenderTarget.height;
+				if (PROPERTY == "aspect ratio") return currentRenderTarget.getAspectRatio();
 				if (PROPERTY == "depth test") return currentRenderTarget.depthTest;
 				if (PROPERTY == "depth write") return currentRenderTarget.depthWrite;
 				if (PROPERTY == "has depth storage") return currentRenderTarget.hasDepthBuffer;
 				if (PROPERTY == "image as data URI") {
+					if (!currentRenderTarget.checkIfValid) return "";
 					const width  = currentRenderTarget.width;
 					const height = currentRenderTarget.height;
 					if (width == 0 || height == 0) return "";
@@ -3486,6 +3510,7 @@ void main() {
 					ctx.putImageData(imgData, 0, 0);
 					return canv.toDataURL();
 				}
+				if (PROPERTY == "is valid for being drawn to") return currentRenderTarget.checkIfValid();
 			}
 		},
 		{
@@ -3790,7 +3815,7 @@ void main() {
 			},
 			renderTargetProperty: {
 				acceptReporters: false,
-				items: ["width", "height", "depth test", "depth write", "has depth storage", "image as data URI"]
+				items: ["width", "height", "aspect ratio", "depth test", "depth write", "has depth storage", "image as data URI", "is valid for being drawn to"]
 			},
 			powersOfTwo: {
 				acceptReporters: true,
