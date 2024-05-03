@@ -2460,6 +2460,31 @@
             },
             filter: "sprite",
           },
+          "---",
+
+          {
+            opcode: "editTriDef",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "set the [attribute] of point [id] to [value] in [def]",
+            arguments: {
+              attribute: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "depth value",
+                menu: "defAttribMenu",
+              },
+              id: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "1",
+                menu: "pointMenu",
+              },
+              value: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              def: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "tri definition here",
+              },
+            },
+            filter: "sprite",
+          },
 
           {
             blockType: Scratch.BlockType.LABEL,
@@ -2798,6 +2823,21 @@
             ],
             acceptReporters: true,
           },
+          defAttribMenu: {
+            items: [
+              "x",
+              "y",
+              "depth value",
+              "corner pinch",
+              "U value",
+              "V value",
+              "red tint",
+              "green tint",
+              "blue tint",
+              "transparency",
+            ],
+            acceptReporters: true,
+          },
         },
         name: "Pen+ V7",
         id: "penP",
@@ -2831,7 +2871,7 @@
 
       let penplusRenderTextures = this.getRenderTexturesMenu();
 
-      if (penPlusCostumes.length > 0) {
+      if (penplusRenderTextures.length > 0) {
         readCostumes = readCostumes.concat(penplusRenderTextures);
       }
 
@@ -5579,6 +5619,78 @@
       twgl.drawBufferInfo(gl, bufferInfo);
 
       bufferInfo.numElements = 3;
+    }
+
+    editTriDef({ attribute, id, value, def }) {
+      id = Scratch.Cast.toNumber(id);
+      value = Scratch.Cast.toNumber(value);
+
+      //Ignore reductive values
+      if (!(id > 0 && id <= 3)) return def;
+      if (!value) return def;
+
+      //Parse it
+      let parsed = JSON.parse(def);
+      if (!parsed) return def;
+      id -= 1;
+
+      //handleAttributes
+      switch (attribute) {
+        case "x":
+          if (!parsed["a_position"]) break;
+          parsed["a_position"][id * 4] = value;
+          break;
+
+        case "y":
+          if (!parsed["a_position"]) break;
+          parsed["a_position"][id * 4 + 1] = value;
+          break;
+
+        case "depth value":
+          if (!parsed["a_position"]) break;
+          parsed["a_position"][id * 4 + 2] = value;
+          break;
+
+        case "corner pinch":
+          if (!parsed["a_position"]) break;
+          parsed["a_position"][id * 4 + 3] = value;
+          break;
+
+        case "red tint":
+          if (!parsed["a_color"]) break;
+          parsed["a_color"][id * 4] = value / 100;
+          break;
+
+        case "green tint":
+          if (!parsed["a_color"]) break;
+          parsed["a_color"][id * 4 + 1] = value / 100;
+          break;
+
+        case "blue tint":
+          if (!parsed["a_color"]) break;
+          parsed["a_color"][id * 4 + 2] = value / 100;
+          break;
+
+        case "transparency":
+          if (!parsed["a_color"]) break;
+          parsed["a_color"][id * 4 + 3] = value / 100;
+          break;
+
+        case "U value":
+          if (!parsed["a_texCoord"]) break;
+          parsed["a_texCoord"][id * 2] = value;
+          break;
+
+        case "V value":
+          if (!parsed["a_texCoord"]) break;
+          parsed["a_texCoord"][id * 2 + 1] = value;
+          break;
+
+        default:
+          break;
+      }
+
+      return JSON.stringify(parsed);
     }
 
     setCullMode({ direction }) {
