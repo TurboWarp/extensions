@@ -55,6 +55,20 @@
             text: "🗲 init GPU",
             disableMonitor: true,
           },
+          {
+            opcode: "createModule",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "📄 create module named [NAME] with code [CODE]",
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+              },
+              CODE: {
+                type: Scratch.ArgumentType.STRING,
+              },
+            },
+            disableMonitor: true,
+          },
 
           label("Bind Group Layouts"),
           {
@@ -379,6 +393,12 @@
           });
         }
       }
+    }
+
+    createModule({ NAME, CODE }) {
+      this.modules[NAME] = this.dev.createShaderModule({
+        code: CODE,
+      });
     }
 
     // bind group layouts
