@@ -234,9 +234,6 @@
       },
       ProgramInf: null,
     },
-    pen: {
-      program: null,
-    },
     createAndCompileShaders: (vert, frag) => {
       //? compile vertex Shader
       const vertShader = gl.createShader(gl.VERTEX_SHADER);
@@ -1217,6 +1214,7 @@
 
     //Stolen from lily :3
     _setupExtensionStorage() {
+      runtime.ext_pen._getPenLayerID();
       //Penguinmod saving support
       if (Scratch.extensions.isPenguinMod) {
         parentExtension.serialize = () => {
@@ -5822,24 +5820,5 @@
   }
 
   //? A small hack to stop the renderer from immediatly dying. And to allow for immediate use
-  {
-    if (!Scratch.vm.renderer._penSkinId) {
-      Scratch.vm.renderer.createPenSkin();
-    }
-    renderer.penClear(Scratch.vm.renderer._penSkinId);
-    Scratch.vm.renderer.penLine(
-      Scratch.vm.renderer._penSkinId,
-      {
-        color4f: [0, 0, 1, 1],
-        diameter: 1,
-      },
-      0,
-      0,
-      0,
-      0
-    );
-
-    penPlusShaders.pen.program = shaderManager._shaderCache.line[0].program;
-  }
   Scratch.extensions.register(new extension());
 })(Scratch);
