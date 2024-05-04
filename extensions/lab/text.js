@@ -1337,7 +1337,7 @@
       const popup = Scratch.translate({
         id: "disableCompatibilityMode",
         default:
-          "This will enable new blocks and features that WILL NOT WORK in the offical Scratch Lab.\n\nDo you wish to continue?",
+          "This will enable new blocks and features that WILL NOT WORK in the official Scratch Lab.\n\nDo you wish to continue?",
       });
       if (confirm(popup)) {
         compatibilityMode = false;
