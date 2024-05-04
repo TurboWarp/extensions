@@ -143,7 +143,7 @@
                     void main()
                     {
                         v_color = a_color;
-                        gl_Position = (rotation(a_position) + vec4(u_transform[0][2],u_transform[0][3],0,0)) * vec4(a_position.w * u_transform[0][0],a_position.w * u_transform[0][1],0.001,1);
+                        gl_Position = (rotation(a_position) + vec4(u_transform[0][2],u_transform[0][3],0,0)) * vec4(a_position.w * u_transform[0][0],a_position.w * u_transform[0][1],1,1) - vec4(0,0,1,0);
                     }
                 `,
         frag: `
@@ -185,7 +185,7 @@
                     {
                         v_color = a_color;
                         v_texCoord = a_texCoord;
-                        gl_Position = (rotation(a_position) + vec4(u_transform[0][2],u_transform[0][3],0,0)) * vec4(a_position.w * u_transform[0][0],a_position.w * u_transform[0][1],0.001,1);
+                        gl_Position = (rotation(a_position) + vec4(u_transform[0][2],u_transform[0][3],0,0)) * vec4(a_position.w * u_transform[0][0],a_position.w * u_transform[0][1],1,1) - vec4(0,0,1,0);
                     }
                 `,
         frag: `
@@ -659,8 +659,8 @@
           transform_Matrix[1] = -2 / this.currentRenderTexture.width;
         } else {
           gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-          transform_Matrix[0] = 2 / nativeSize[0];
-          transform_Matrix[1] = -2 / nativeSize[1];
+          transform_Matrix[0] = 2 / renderer._nativeSize[0];
+          transform_Matrix[1] = -2 / renderer._nativeSize[1];
         }
         gl.bindFramebuffer(
           gl.FRAMEBUFFER,
