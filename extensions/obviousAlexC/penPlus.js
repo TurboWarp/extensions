@@ -3138,7 +3138,7 @@
 
       //? get triangle attributes for current sprite.
       const spritex = curTarget.x;
-      const spritey = -curTarget.y;
+      const spritey = curTarget.y;
 
       const width = attrib.diameter * myAttributes[0];
       const height = attrib.diameter * myAttributes[1];
@@ -3262,7 +3262,7 @@
 
       //? get triangle attributes for current sprite.
       const spritex = curTarget.x;
-      const spritey = -curTarget.y;
+      const spritey = curTarget.y;
 
       const width = attrib.diameter * myAttributes[0];
       const height = attrib.diameter * myAttributes[1];
@@ -4101,7 +4101,7 @@
 
       //? get triangle attributes for current sprite.
       const spritex = curTarget.x;
-      const spritey = -curTarget.y;
+      const spritey = curTarget.y;
 
       const width = attrib.diameter * myAttributes[0];
       const height = attrib.diameter * myAttributes[1];
