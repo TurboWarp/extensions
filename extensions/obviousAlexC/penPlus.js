@@ -5404,11 +5404,25 @@
             }
           });
         });
-        this.listCache[refinedID] = { prev: listREF.value, dat: merged };
-      } else {
-        merged = this.listCache[refinedID].dat;
+
+        //Parse these into F32 arrays for performance.
+        const keys = Object.keys(merged);
+        keys.forEach((key) => {
+          merged[key] = new Float32Array(merged[key]);
+        });
+
+        this.listCache[refinedID] = {
+          prev: listREF.value,
+          dat: merged,
+          keys: keys,
+        };
       }
-      return { triData: merged, listLength: listOBJ.length, successful: true };
+      return {
+        triData: this.listCache[refinedID].dat,
+        listLength: listOBJ.length,
+        keys: this.listCache[refinedID].keys,
+        successful: true,
+      };
     }
 
     //?List based rendering
@@ -5428,17 +5442,11 @@
       this.trianglesDrawn += listLength;
       bufferInfo.numElements = listLength * 3;
 
-      // prettier-ignore
-      let inputInfo = {
-        a_position: new Float32Array(triData.a_position),
-        a_color: new Float32Array(triData.a_color)
-      };
-
       gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_position.buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_position, gl.DYNAMIC_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, triData.a_position, gl.DYNAMIC_DRAW);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_color.buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_color, gl.DYNAMIC_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, triData.a_color, gl.DYNAMIC_DRAW);
 
       //? Bind Positional Data
       twgl.setBuffersAndAttributes(
@@ -5503,21 +5511,14 @@
       this.trianglesDrawn += listLength;
       bufferInfo.numElements = listLength * 3;
 
-      // prettier-ignore
-      let inputInfo = {
-        a_position: new Float32Array(triData.a_position),
-        a_color: new Float32Array(triData.a_color),
-        a_texCoord: new Float32Array(triData.a_texCoord)
-      };
-
       gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_position.buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_position, gl.DYNAMIC_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, triData.a_position, gl.DYNAMIC_DRAW);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_color.buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_color, gl.DYNAMIC_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, triData.a_color, gl.DYNAMIC_DRAW);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_texCoord.buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_texCoord, gl.DYNAMIC_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, triData.a_texCoord, gl.DYNAMIC_DRAW);
 
       //? Bind Positional Data
       twgl.setBuffersAndAttributes(
@@ -5565,10 +5566,8 @@
     }
 
     renderShaderTrisFromList({ list, shader }, util) {
-      const { triData, listLength, successful } = this._getTriDataFromList(
-        list,
-        util
-      );
+      const { triData, listLength, successful, keys } =
+        this._getTriDataFromList(list, util);
       if (!successful) return;
 
       // prettier-ignore
@@ -5584,20 +5583,13 @@
       bufferInfo.numElements = listLength * 3;
 
       // prettier-ignore
-      let inputInfo = {
-        a_position: new Float32Array(triData.a_position),
-        a_color: new Float32Array(triData.a_color),
-        a_texCoord: new Float32Array(triData.a_texCoord)
-      };
-
-      gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_position.buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_position, gl.DYNAMIC_DRAW);
-
-      gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_color.buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_color, gl.DYNAMIC_DRAW);
-
-      gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs.a_texCoord.buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_texCoord, gl.DYNAMIC_DRAW);
+      keys.forEach(key => {
+        //Check to see if the key exists here
+        if (!bufferInfo.attribs[key]) return;
+        //Then use the key in the shader
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.attribs[key].buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, triData[key], gl.DYNAMIC_DRAW);
+      });
 
       //? Bind Positional Data
       twgl.setBuffersAndAttributes(gl, this.programs[shader].info, bufferInfo);
