@@ -23,7 +23,6 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const renderer = runtime.renderer;
-  const shaderManager = renderer._shaderManager;
   const twgl = renderer.exports.twgl;
 
   const canvas = renderer.canvas;
