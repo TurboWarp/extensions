@@ -1,6 +1,6 @@
-// Name: WebGPU
-// ID: webgpu
-// Description: WebGPU bindings for TurboWarp.
+// Name: WebGPU Compute
+// ID: zacoonswgpucompute
+// Description: WebGPU compute bindings for TurboWarp.
 // By: zacoons
 // License: CC0-1.0
 
@@ -12,7 +12,7 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed)
-    throw new Error("WebGPU extension must be run unsandboxed.");
+    throw new Error("WebGPU Compute extension must be run unsandboxed.");
 
   function label(text) {
     return {
@@ -21,7 +21,7 @@
     };
   }
 
-  class GPUExtension {
+  class Extension {
     constructor() {
       Scratch.vm.on("PROJECT_RUN_STOP", () => {
         this._resetAttrs();
@@ -44,10 +44,10 @@
 
     getInfo() {
       return {
-        id: "webgpu",
-        name: "WebGPU",
+        id: "zacoonswgpucompute",
+        name: "WebGPU Compute",
         color1: "#00cc77",
-        docsURI: "https://extensions.turbowarp.org/webgpu",
+        docsURI: "https://extensions.turbowarp.org/wgpuCompute",
         blocks: [
           {
             opcode: "init",
@@ -359,7 +359,7 @@
             items: "_getModuleNames",
           },
           lists: {
-            acceptReporters: true,
+            acceptReporters: false,
             items: "_getLists",
           },
           types: {
@@ -373,24 +373,28 @@
     init() {
       this._resetAttrs();
 
-      if (!navigator.gpu) return false;
-
-      return navigator.gpu.requestAdapter().then(async (adapter) => {
-        this.dev = await adapter.requestDevice();
-        this._createModules();
-        return true;
-      });
+      try {
+        return navigator.gpu.requestAdapter().then(async (adapter) => {
+          this.dev = await adapter.requestDevice();
+          this._createModules();
+          return true;
+        });
+      } catch {
+        return false;
+      }
     }
     _createModules() {
       for (const commentName in Scratch.vm.editingTarget.comments) {
         const c = Scratch.vm.editingTarget.comments[commentName];
         if (c.text.startsWith("name:")) {
           const firstLineEndIdx = c.text.indexOf("\n");
-          const name = c.text.slice(5, firstLineEndIdx).trim();
-          const code = c.text.slice(firstLineEndIdx, c.text.length).trim();
-          this.modules[name] = this.dev.createShaderModule({
-            code: code,
-          });
+          if (firstLineEndIdx > 0) {
+            const name = c.text.slice(5, firstLineEndIdx).trim();
+            const code = c.text.slice(firstLineEndIdx, c.text.length).trim();
+            this.modules[name] = this.dev.createShaderModule({
+              code: code,
+            });
+          }
         }
       }
     }
@@ -598,9 +602,12 @@
       const names = [];
 
       const globalVars = Object.entries(
-        Scratch.vm.runtime.targets[0].variables
+        Scratch.vm.runtime.getTargetForStage().variables
       );
-      const localVars = Object.entries(Scratch.vm.editingTarget.variables);
+      const localVars =
+        Scratch.vm.editingTarget !== Scratch.vm.runtime.getTargetForStage()
+          ? Object.entries(Scratch.vm.editingTarget.variables)
+          : [];
       for (const [varId, varObj] of globalVars.concat(localVars)) {
         if (varObj.type === "list")
           names.push({
@@ -634,5 +641,5 @@
     }
   }
 
-  Scratch.extensions.register(new GPUExtension());
+  Scratch.extensions.register(new Extension());
 })(Scratch);
