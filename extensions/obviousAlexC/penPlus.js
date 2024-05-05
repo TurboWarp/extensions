@@ -3153,6 +3153,7 @@
           width * 0.5,
           height * 0.5,
           1,
+
           myAttributes[11],
           width * -0.5,
           height * -0.5,
@@ -3180,6 +3181,7 @@
           penColor[1] * myAttributes[8],
           penColor[2] * myAttributes[9],
           penColor[3] * myAttributes[10],
+
           penColor[0] * myAttributes[7],
           penColor[1] * myAttributes[8],
           penColor[2] * myAttributes[9],
@@ -3277,6 +3279,7 @@
           width * 0.5,
           height * 0.5,
           1,
+
           myAttributes[11],
           width * -0.5,
           height * -0.5,
@@ -3305,6 +3308,7 @@
           myAttributes[8],
           myAttributes[9],
           myAttributes[10],
+
           myAttributes[7],
           myAttributes[8],
           myAttributes[9],
@@ -3325,6 +3329,7 @@
           myAttributes[5] + myAttributes[6],
           myAttributes[3] + myAttributes[4],
           myAttributes[6],
+
           myAttributes[4],
           myAttributes[5] + myAttributes[6],
           myAttributes[4],
@@ -4116,6 +4121,7 @@
           width * 0.5,
           height * -0.5,
           1,
+
           myAttributes[11],
           width * -0.5,
           height * 0.5,
@@ -4143,6 +4149,7 @@
           penColor[1] * myAttributes[8],
           penColor[2] * myAttributes[9],
           penColor[3] * myAttributes[10],
+
           penColor[0] * myAttributes[7],
           penColor[1] * myAttributes[8],
           penColor[2] * myAttributes[9],
@@ -4156,6 +4163,21 @@
           penColor[2] * myAttributes[9],
           penColor[3] * myAttributes[10],
         ]),
+        a_texCoord: new Float32Array([
+          myAttributes[4],
+          myAttributes[5] + myAttributes[6],
+          myAttributes[3] + myAttributes[4],
+          myAttributes[5] + myAttributes[6],
+          myAttributes[3] + myAttributes[4],
+          myAttributes[6],
+
+          myAttributes[4],
+          myAttributes[5] + myAttributes[6],
+          myAttributes[4],
+          myAttributes[6],
+          myAttributes[3] + myAttributes[4],
+          myAttributes[6],
+        ]),
       };
 
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer.attribs.a_position.buffer);
@@ -4163,6 +4185,9 @@
 
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer.attribs.a_color.buffer);
       gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_color, gl.DYNAMIC_DRAW);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer.attribs.a_texCoord.buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, inputInfo.a_texCoord, gl.DYNAMIC_DRAW);
 
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       gl.useProgram(this.programs[shader].info.program);
