@@ -2716,7 +2716,7 @@ void main() {
 					canv.height = m.fontBoundingBoxAscent + m.fontBoundingBoxDescent;
 					ctx.clearRect(0, 0, canv.width, canv.height);
 					ctx.font = FONT;
-					ctx.fillStyle = `rgba(${COLOR.r},${COLOR.g},${COLOR.b},${COLOR.a ?? 255})`;
+					ctx.fillStyle = `rgba(${COLOR.r},${COLOR.g},${COLOR.b},${(COLOR.a ?? 255) / 255})`;
 					ctx.fillText(TEXT, m.actualBoundingBoxLeft, m.fontBoundingBoxAscent);
 					imageSourceSync = {
 						width: canv.width,
@@ -2771,8 +2771,8 @@ void main() {
 					ctx.clearRect(0, 0, canv.width, canv.height);
 					ctx.font = FONT;
 					ctx.lineWidth = BORDERSIZE;
-					ctx.fillStyle = `rgba(${COLOR.r},${COLOR.g},${COLOR.b},${COLOR.a ?? 255})`;
-					ctx.strokeStyle = `rgba(${BORDERCOLOR.r},${BORDERCOLOR.g},${BORDERCOLOR.b},${BORDERCOLOR.a ?? 255})`;
+					ctx.fillStyle = `rgba(${COLOR.r},${COLOR.g},${COLOR.b},${(COLOR.a ?? 255) / 255})`;
+					ctx.strokeStyle = `rgba(${BORDERCOLOR.r},${BORDERCOLOR.g},${BORDERCOLOR.b},${(BORDERCOLOR.a ?? 255) / 255})`;
 					ctx.fillText(TEXT, m.actualBoundingBoxLeft + BORDERSIZE, m.fontBoundingBoxAscent + BORDERSIZE);
 					ctx.strokeText(TEXT, m.actualBoundingBoxLeft + BORDERSIZE, m.fontBoundingBoxAscent + BORDERSIZE);
 					imageSourceSync = {
