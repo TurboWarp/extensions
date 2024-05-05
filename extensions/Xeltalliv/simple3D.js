@@ -1382,7 +1382,7 @@ void main() {
 	const meshes = new Map();
 	const programs = new ProgramManager();
 	const modelDecoder = new ModelDecoder();
-	const publicApi = runtime.ext_xeltallivsimple3Dapi ?? (runtime.ext_xeltallivsimple3Dapi = {});
+	const publicApi = runtime.ext_xeltallivSimple3Dapi ?? (runtime.ext_xeltallivSimple3Dapi = {});
 	const externalTransforms = publicApi.externalTransforms ?? (publicApi.externalTransforms = {});
 	const canvasRenderTarget = new CanvasRenderTarget();
 

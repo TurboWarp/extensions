@@ -838,7 +838,7 @@
     }
   }
 
-  const s3dApi = runtime.ext_xeltallivsimple3Dapi ?? (runtime.ext_xeltallivsimple3Dapi = {});
+  const s3dApi = runtime.ext_xeltallivSimple3Dapi ?? (runtime.ext_xeltallivSimple3Dapi = {});
   const externalTransforms = s3dApi.externalTransforms ?? (s3dApi.externalTransforms = {});
   externalTransforms["ar_combined"] = {
     name: "AR: combined",
