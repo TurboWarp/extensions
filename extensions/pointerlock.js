@@ -105,6 +105,13 @@
     return ret;
   };
 
+  vm.runtime.on("PROJECT_LOADED", () => {
+    isPointerLockEnabled = false;
+    if (isLocked) {
+      document.exitPointerLock();
+    }
+  });
+
   class Pointerlock {
     getInfo() {
       return {
