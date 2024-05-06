@@ -298,3 +298,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Lily/Video.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
+
+## Xeltalliv/simple3D.png
+ - Created by [@Xeltalliv](https://github.com/Xeltalliv).
+ - Font is Deja Vu Sans.
