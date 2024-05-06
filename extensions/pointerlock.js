@@ -105,6 +105,13 @@
     return ret;
   };
 
+  vm.runtime.on("PROJECT_LOADED", () => {
+    isPointerLockEnabled = false;
+    if (isLocked) {
+      document.exitPointerLock();
+    }
+  });
+
   class Pointerlock {
     getInfo() {
       return {
@@ -148,7 +155,7 @@
     }
 
     setLocked(args) {
-      isPointerLockEnabled = args.enabled === "true";
+      isPointerLockEnabled = Scratch.Cast.toBoolean(args.enabled) === true;
       if (!isPointerLockEnabled && isLocked) {
         document.exitPointerLock();
       }
