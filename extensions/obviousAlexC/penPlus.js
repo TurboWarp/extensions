@@ -644,6 +644,11 @@
               Scratch.Cast.toNumber(nativeSize[0]),
               Scratch.Cast.toNumber(nativeSize[1])
             );
+            transform_Matrix[0] = 2 / renderer._nativeSize[0];
+            transform_Matrix[1] = -2 / renderer._nativeSize[1];
+          } else {
+            transform_Matrix[0] = 2 / this.currentRenderTexture.width;
+            transform_Matrix[1] = -2 / this.currentRenderTexture.height;
           }
           //Resize our variables to be viewport accurate
           gl.viewport(
@@ -652,8 +657,6 @@
             this.currentRenderTexture.width,
             this.currentRenderTexture.height
           );
-          transform_Matrix[0] = 2 / this.currentRenderTexture.width;
-          transform_Matrix[1] = -2 / this.currentRenderTexture.width;
         } else {
           gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
           transform_Matrix[0] = 2 / renderer._nativeSize[0];
@@ -5807,6 +5810,8 @@
         this.currentRenderTexture = triBufferInfo;
       } else if (this.renderTextures[name]) {
         this.currentRenderTexture = this.renderTextures[name];
+      } else {
+        this.currentRenderTexture = triBufferInfo;
       }
 
       if (this.inDrawRegion) {
@@ -5816,8 +5821,27 @@
           this.currentRenderTexture.width,
           this.currentRenderTexture.height
         );
-        transform_Matrix[0] = 2 / this.currentRenderTexture.width;
-        transform_Matrix[1] = -2 / this.currentRenderTexture.width;
+
+        if (
+          name == "Scratch Stage" ||
+          (this.currentRenderTexture.resizing &&
+            (this.currentRenderTexture.width != nativeSize[0] ||
+              this.currentRenderTexture.height != nativeSize[1]))
+        ) {
+          twgl.resizeFramebufferInfo(
+            gl,
+            this.currentRenderTexture,
+            triBufferAttachments,
+            Scratch.Cast.toNumber(nativeSize[0]),
+            Scratch.Cast.toNumber(nativeSize[1])
+          );
+          transform_Matrix[0] = 2 / renderer._nativeSize[0];
+          transform_Matrix[1] = -2 / renderer._nativeSize[1];
+        } else {
+          transform_Matrix[0] = 2 / this.currentRenderTexture.width;
+          transform_Matrix[1] = -2 / this.currentRenderTexture.height;
+        }
+
         gl.bindFramebuffer(
           gl.FRAMEBUFFER,
           this.currentRenderTexture.framebuffer
