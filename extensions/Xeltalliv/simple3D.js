@@ -3464,7 +3464,7 @@ void main() {
 			def: function({DSTLIST}, {target}) {
 				const list = target.lookupVariableByNameAndType(Cast.toString(DSTLIST), "list");
 				if (!list) return;
-				if (!currentRenderTarget.checkIfValid) return;
+				if (!currentRenderTarget.checkIfValid()) return;
 				const width  = currentRenderTarget.width;
 				const height = currentRenderTarget.height;
 				if (width == 0 || height == 0) return;
@@ -3496,7 +3496,7 @@ void main() {
 				if (PROPERTY == "depth write") return currentRenderTarget.depthWrite;
 				if (PROPERTY == "has depth storage") return currentRenderTarget.hasDepthBuffer;
 				if (PROPERTY == "image as data URI") {
-					if (!currentRenderTarget.checkIfValid) return "";
+					if (!currentRenderTarget.checkIfValid()) return "";
 					const width  = currentRenderTarget.width;
 					const height = currentRenderTarget.height;
 					if (width == 0 || height == 0) return "";
