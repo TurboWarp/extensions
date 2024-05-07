@@ -14,7 +14,11 @@ module.exports = {
     Scratch: 'readonly',
     ScratchBlocks: 'readonly',
     ScratchExtensions: 'readonly',
-    scaffolding: 'readonly'
+    scaffolding: 'readonly',
+
+    GPUBufferUsage: 'readonly',
+    GPUShaderStage: 'readonly',
+    GPUMapMode: 'readonly'
   },
   rules: {
     // Unused variables commonly indicate logic errors
