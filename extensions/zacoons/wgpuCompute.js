@@ -373,15 +373,16 @@
     init() {
       this._resetAttrs();
 
-      try {
-        return navigator.gpu.requestAdapter().then(async (adapter) => {
+      if (!navigator.gpu) return false;
+
+      return navigator.gpu
+        .requestAdapter()
+        .then(async (adapter) => {
           this.dev = await adapter.requestDevice();
           this._createModules();
           return true;
-        });
-      } catch {
-        return false;
-      }
+        })
+        .catch(() => false);
     }
     _createModules() {
       for (const commentName in Scratch.vm.editingTarget.comments) {
