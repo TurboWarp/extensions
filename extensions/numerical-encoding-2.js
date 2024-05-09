@@ -164,7 +164,7 @@
 
       return {
         id: "numericalencoding2",
-        name: Scratch.translate("Numerical Encoding v2"),
+        name: Scratch.translate("Numerical Encoding V2"),
         blocks: [
           {
             blockType: Scratch.BlockType.REPORTER,
