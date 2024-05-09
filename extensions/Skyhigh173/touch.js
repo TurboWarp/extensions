@@ -9,11 +9,9 @@
 
   /**
    * @typedef Finger
-   * @property {number} date
-   * @property {number} prevX
-   * @property {number} prevY
-   * @property {number} prevDate
-   * @property {number} nowDate
+   * @property {number} startingDate when first detected
+   * @property {number} dx change since previous frame
+   * @property {number} dy change since previous frame
    */
 
   class MultiTouchExtension {
@@ -35,6 +33,8 @@
        */
       this._fingers = [];
       this._setup();
+
+      Scratch.vm.runtime.on("AFTER_EXECUTE", this._resetDeltas.bind(this));
     }
 
     _setup() {
@@ -50,30 +50,24 @@
 
         // update position
         this._touches.forEach((touch) => {
-          const finger = /** @type {Touch & Finger} */ (touch);
+          // finger may not actually be a Finger yet here
+          const newFinger = /** @type {Touch & Finger} */ (touch);
 
           // if theres a new finger...
           const idx = this._fingers.findIndex(
             (finger) => finger?.identifier === touch.identifier
           );
           if (idx === -1) {
-            finger.date = performance.now();
-            finger.prevX = touch.clientX;
-            finger.prevY = touch.clientY;
-            finger.prevDate = performance.now();
-            finger.nowDate = performance.now();
-            this._fingers.push(finger);
+            newFinger.startingDate = performance.now();
+            newFinger.dx = 0;
+            newFinger.dy = 0;
+            this._fingers.push(newFinger);
           } else {
-            const date = finger.date;
-            const oldX = finger.clientX;
-            const oldY = finger.clientY;
-            const oldDate = finger.nowDate;
-            finger.date = date;
-            finger.prevX = oldX;
-            finger.prevY = oldY;
-            finger.prevDate = oldDate;
-            finger.nowDate = performance.now();
-            this._fingers[idx] = finger;
+            const oldFinger = this._fingers[idx];
+            newFinger.startingDate = oldFinger.startingDate;
+            newFinger.dx = oldFinger.dx + newFinger.clientX - oldFinger.clientX;
+            newFinger.dy = oldFinger.dy + newFinger.clientY - oldFinger.clientY;
+            this._fingers[idx] = newFinger;
           }
         });
 
@@ -102,6 +96,13 @@
       window.addEventListener("touchend", update);
     }
 
+    _resetDeltas() {
+      for (const finger of this._fingers) {
+        finger.dx = 0;
+        finger.dy = 0;
+      }
+    }
+
     _getCanvasBounds() {
       return this.canvas.getBoundingClientRect();
     }
@@ -111,7 +112,15 @@
     _map(x, sRmin, sRmax, tRmin, tRmax) {
       return ((tRmax - tRmin) / (sRmax - sRmin)) * (x - sRmin) + tRmin;
     }
-    _toScratchX(clientX) {
+    _scaleToScratchX(clientX) {
+      const bounds = this._getCanvasBounds();
+      return clientX * Scratch.vm.runtime.stageWidth / bounds.width;
+    }
+    _scaleToScratchY(clientY) {
+      const bounds = this._getCanvasBounds();
+      return clientY * Scratch.vm.runtime.stageHeight / bounds.height;
+    }
+    _boundToScratchX(clientX) {
       const bounds = this._getCanvasBounds();
       const min = -Scratch.vm.runtime.stageWidth / 2;
       const max = Scratch.vm.runtime.stageWidth / 2;
@@ -121,7 +130,7 @@
         max
       );
     }
-    _toScratchY(clientY) {
+    _boundToScratchY(clientY) {
       const bounds = this._getCanvasBounds();
       const min = -Scratch.vm.runtime.stageHeight / 2;
       const max = Scratch.vm.runtime.stageHeight / 2;
@@ -132,11 +141,12 @@
       );
     }
 
+    /** @type {Record<string, (t: Touch & Finger) => number>} */
     _propMap = {
-      x: (t) => this._toScratchX(t.clientX),
-      y: (t) => this._toScratchY(t.clientY),
-      dx: (t) => this._toScratchX(t.clientX) - this._toScratchX(t.prevX),
-      dy: (t) => this._toScratchY(t.clientY) - this._toScratchY(t.prevY),
+      x: (t) => this._boundToScratchX(t.clientX),
+      y: (t) => this._boundToScratchY(t.clientY),
+      dx: (t) => this._scaleToScratchX(t.dx),
+      dy: (t) => this._scaleToScratchY(-t.dy),
       sx: (t) => this._propMap.dx(t) / ((t.nowDate - t.prevDate) / 1000),
       sy: (t) => this._propMap.dy(t) / ((t.nowDate - t.prevDate) / 1000),
       duration: (t) => (performance.now() - t.date) / 1000,
@@ -310,6 +320,7 @@
     touchAvailable() {
       return window.navigator.maxTouchPoints > 0;
     }
+
     maxMultiTouch() {
       return window.navigator.maxTouchPoints;
     }
@@ -323,38 +334,45 @@
     }
 
     propOfFinger({ PROP, ID }) {
-      PROP = this._propMap[PROP];
+      PROP = Scratch.Cast.toString(PROP);
+      if (!Object.prototype.hasOwnProperty.call(this._propMap, PROP)) {
+        return "";
+      }
+
       ID = Scratch.Cast.toNumber(ID) - 1;
-      if (ID >= this._fingers.length || this._fingers[ID] === null) return "";
-      return PROP(this._fingers[ID]);
+      if (!this._fingers[ID]) {
+        return "";
+      }
+
+      return this._propMap[PROP](this._fingers[ID]);
     }
 
     fingerExists({ ID }) {
       ID = Scratch.Cast.toNumber(ID) - 1;
-      return ID < this._fingers.length && this._fingers[ID] !== null;
+      return !!this._fingers[ID];
     }
 
-    _touchingCondition(f, util) {
-      return (
-        f !== null &&
-        util.target.isTouchingPoint(
-          this._propMap.x(f) + this.bound.width / 2,
-          this.bound.height / 2 - this._propMap.y(f)
-        )
+    _touchingFinger(finger, target) {
+      if (!finger) {
+        return;
+      }
+
+      const bounds = this._getCanvasBounds();
+      return target.isTouchingPoint(
+        this._propMap.x(finger) + bounds.width / 2,
+        bounds.height / 2 - this._propMap.y(finger)
       );
     }
 
     touchingFinger(_, util) {
-      return (
-        this._fingers.find((f) => {
-          return this._touchingCondition(f, util);
-        }) !== undefined
+      return !!this._fingers.find((finger) =>
+        this._touchingFinger(finger, util.target)
       );
     }
 
     touchingFingerCount(_, util) {
-      return this._fingers.reduce((total, f) => {
-        return total + (this._touchingCondition(f, util) ? 1 : 0);
+      return this._fingers.reduce((total, finger) => {
+        return total + (this._touchingFinger(finger, util.target) ? 1 : 0);
       }, 0);
     }
 
@@ -362,7 +380,7 @@
       ID = Scratch.Cast.toNumber(ID);
       const result =
         this._fingers.findIndex((f) => {
-          return this._touchingCondition(f, util) && --ID <= 0;
+          return this._touchingFinger(f, util.target) && --ID <= 0;
         }) + 1;
       return result == 0 ? "" : result;
     }
