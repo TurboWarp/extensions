@@ -268,6 +268,47 @@
           },
           "---",
           {
+            opcode: "between_or_equal",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "[A] ≤ [B] ≤ [C]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "50",
+              },
+              C: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+            },
+            extensions: ["colours_operators"],
+          },
+          {
+            opcode: "between",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "[A] < [B] < [C]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "50",
+              },
+              C: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+            },
+            extensions: ["colours_operators"],
+          },
+          "---",
+          {
             opcode: "nand_block",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "[A] nand [B]",
@@ -345,26 +386,6 @@
             opcode: "clamp_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "clamp [A] between [B] and [C]",
-            arguments: {
-              A: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "",
-              },
-              B: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0",
-              },
-              C: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "100",
-              },
-            },
-            extensions: ["colours_operators"],
-          },
-          {
-            opcode: "is_in_range_block",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "[A] is in range [B] - [C]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -589,6 +610,12 @@
     xnor_block({ A, B }) {
       return cast.toBoolean(A) === cast.toBoolean(B);
     }
+    between_or_equal({ A, B, C }) {
+      return cast.compare(A, B) <= 0 && cast.compare(B, C) <= 0;
+    }
+    between({ A, B, C }) {
+      return cast.compare(A, B) < 0 && cast.compare(B, C) < 0;
+    }
     exactly_cont_block({ A, B }) {
       return cast.toString(A).includes(cast.toString(B));
     }
@@ -599,13 +626,6 @@
         return C;
       } else {
         return A;
-      }
-    }
-    is_in_range_block({ A, B, C }) {
-      if (A >= B && A <= C) {
-        return true;
-      } else {
-        return false;
       }
     }
     scale_block({ A, m1, M1, m2, M2 }) {
