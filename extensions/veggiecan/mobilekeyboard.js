@@ -119,7 +119,9 @@
           {
             opcode: "setSelectedText",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("select text starting at position in text [START] ending at position [END]"),
+            text: Scratch.translate(
+              "select text starting at position in text [START] ending at position [END]"
+            ),
             arguments: {
               START: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -172,9 +174,11 @@
     }
 
     showKeyboard(type) {
-      const input = document.createElement(type === 'textarea' ? 'textarea' : "input");
-      if (type !== 'textarea') {
-        (/** @type {HTMLInputElement} */ (input)).type = type;
+      const input = document.createElement(
+        type === "textarea" ? "textarea" : "input"
+      );
+      if (type !== "textarea") {
+        /** @type {HTMLInputElement} */ (input).type = type;
       }
       input.style.position = "absolute";
       input.style.top = "0";
@@ -209,13 +213,13 @@
         }
       };
 
-      input.addEventListener('input', () => {
+      input.addEventListener("input", () => {
         this.typedText = input.value;
       });
 
-      if (type !== 'textarea') {
+      if (type !== "textarea") {
         input.addEventListener("keydown", (event) => {
-          if ((/** @type {KeyboardEvent} */ (event)).key === 'Enter') {
+          if (/** @type {KeyboardEvent} */ (event).key === "Enter") {
             input.blur();
           }
         });
@@ -273,7 +277,9 @@
 
     isAnySelected() {
       if (this.inputElement) {
-        return this.inputElement.selectionEnd !== this.inputElement.selectionStart;
+        return (
+          this.inputElement.selectionEnd !== this.inputElement.selectionStart
+        );
       }
       return false;
     }
