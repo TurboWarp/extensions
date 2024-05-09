@@ -358,7 +358,7 @@
 
     _touchingFinger(finger, target) {
       if (!finger) {
-        return;
+        return false;
       }
 
       const bounds = this._getCanvasBounds();
