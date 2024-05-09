@@ -40,7 +40,6 @@
 
   const DEFAULT_COLOR = "#575e75";
   const DEFAULT_FONT = "Handwriting";
-  const DEFAULT_WIDTH = vm.runtime.stageWidth;
   const DEFAULT_ALIGN = ALIGN_CENTER;
   const DEFAULT_FONT_SIZE = 24;
   const DEFAULT_OUTLINE_WIDTH = 0; // 0 = no outline
@@ -159,7 +158,7 @@
 
       this.text = "";
       this.color = DEFAULT_COLOR;
-      this.textWidth = DEFAULT_WIDTH;
+      this.textWidth = vm.runtime.stageWidth;
       this.fontFamily = DEFAULT_FONT;
       this.baseFontSize = DEFAULT_FONT_SIZE;
       this.align = DEFAULT_ALIGN;
@@ -1338,7 +1337,7 @@
       const popup = Scratch.translate({
         id: "disableCompatibilityMode",
         default:
-          "This will enable new blocks and features that WILL NOT WORK in the offical Scratch Lab.\n\nDo you wish to continue?",
+          "This will enable new blocks and features that WILL NOT WORK in the official Scratch Lab.\n\nDo you wish to continue?",
       });
       if (confirm(popup)) {
         compatibilityMode = false;
@@ -1401,7 +1400,7 @@
 
     resetWidth(args, util) {
       const state = this._getState(util.target);
-      state.skin.setWidth(DEFAULT_WIDTH);
+      state.skin.setWidth(vm.runtime.stageWidth);
     }
 
     startAnimate(args, util) {

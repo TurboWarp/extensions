@@ -20,10 +20,17 @@
     Scratch.vm.runtime.startHats("shovelColorPicker_whenChanged");
   });
 
+  let wasMovedThisTick = false;
+  Scratch.vm.runtime.on("AFTER_EXECUTE", () => {
+    // browser will relayout will happen automatically at the end of the frame; we won't need to do anything
+    wasMovedThisTick = false;
+  });
+
   let x = 0;
   let y = 0;
   const updatePosition = () => {
     input.style.transform = `translate(${x}px, ${-y}px)`;
+    wasMovedThisTick = true;
   };
   updatePosition();
 
@@ -48,11 +55,11 @@
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+                defaultValue: "0",
               },
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+                defaultValue: "0",
               },
             },
           },
@@ -118,6 +125,12 @@
     }
 
     showPicker() {
+      // force re-layout if input was moved in the same tick, otherwise in Chrome it will appear in the old location
+      // this can be slow, so we avoid it when we can
+      if (wasMovedThisTick) {
+        input.getBoundingClientRect();
+        wasMovedThisTick = false;
+      }
       input.click();
     }
 
@@ -136,9 +149,13 @@
     }
 
     setPos(args) {
-      x = Scratch.Cast.toNumber(args.X);
-      y = Scratch.Cast.toNumber(args.Y);
-      updatePosition();
+      const newX = Scratch.Cast.toNumber(args.X);
+      const newY = Scratch.Cast.toNumber(args.Y);
+      if (x !== newX || y !== newY) {
+        x = newX;
+        y = newY;
+        updatePosition();
+      }
     }
 
     getPos(args) {
