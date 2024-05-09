@@ -147,10 +147,10 @@
       y: (t) => this._boundToScratchY(t.clientY),
       dx: (t) => this._scaleToScratchX(t.dx),
       dy: (t) => this._scaleToScratchY(-t.dy),
-      sx: (t) => this._propMap.dx(t) / ((t.nowDate - t.prevDate) / 1000),
-      sy: (t) => this._propMap.dy(t) / ((t.nowDate - t.prevDate) / 1000),
-      duration: (t) => (performance.now() - t.date) / 1000,
-      force: (t) => t.force,
+      sx: (t) => this._scaleToScratchX(t.dx) / (Scratch.vm.runtime.currentStepTime / 1000),
+      sy: (t) => this._scaleToScratchY(-t.dy) / (Scratch.vm.runtime.currentStepTime / 1000),
+      duration: (t) => (performance.now() - t.startingDate) / 1000,
+      force: (t) => t.force * 100,
     };
 
     getInfo() {
