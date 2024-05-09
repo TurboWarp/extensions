@@ -7,10 +7,19 @@
 (function (Scratch) {
   'use strict';
 
+  /**
+   * @typedef Finger
+   * @property {number} date
+   * @property {number} prevX
+   * @property {number} prevY
+   * @property {number} prevDate
+   * @property {number} nowDate
+   */
+
   class MultiTouchExtension {
     constructor() {
       /**
-       * @type {HTMLDivElement}
+       * @type {HTMLElement}
        */
       this.canvasDiv = null;
       /**
@@ -22,7 +31,7 @@
        */
       this._touches = [];
       /**
-       * @type {Array.<null|Touch>}
+       * @type {Array.<null|(Finger & Touch)>}
        */
       this._fingers = [];
       this._setup();
@@ -36,47 +45,54 @@
        * update touch list
        * @param {TouchEvent} e 
        */
-      const upd = e => {
+      const update = e => {
         this._touches = [...e.touches];
+
         // update position
-        this._touches.forEach(t => {
+        this._touches.forEach(touch => {
+          const finger = /** @type {Touch & Finger} */ (touch);
+
           // if theres a new finger...
-          const idx = this._fingers.findIndex(f => f?.identifier === t.identifier);
-          if (idx == -1) {
-            this._fingers.push(t);
-            // extra infos
-            this._fingers.at(-1).date = Date.now();
-            this._fingers.at(-1).prevX = t.clientX;
-            this._fingers.at(-1).prevY = t.clientY;
-            this._fingers.at(-1).prevDate = Date.now();
-            this._fingers.at(-1).nowDate = Date.now();
+          const idx = this._fingers.findIndex(finger => finger?.identifier === touch.identifier);
+          if (idx === -1) {
+            finger.date = Date.now();
+            finger.prevX = touch.clientX;
+            finger.prevY = touch.clientY;
+            finger.prevDate = Date.now();
+            finger.nowDate = Date.now();
+            this._fingers.push(finger);
           } else {
-            const finger = this._fingers[idx];
-            const date = finger.date, oldX = finger.clientX, oldY = finger.clientY, oldDate = finger.nowDate;
-            this._fingers[idx] = t;
-            this._fingers[idx].date = date;
-            this._fingers[idx].prevX = oldX;
-            this._fingers[idx].prevY = oldY;
-            this._fingers[idx].prevDate = oldDate;
-            this._fingers[idx].nowDate = Date.now();
+            const date = finger.date;
+            const oldX = finger.clientX;
+            const oldY = finger.clientY;
+            const oldDate = finger.nowDate;
+            finger.date = date;
+            finger.prevX = oldX;
+            finger.prevY = oldY;
+            finger.prevDate = oldDate;
+            finger.nowDate = Date.now();
+            this._fingers[idx] = finger;
           }
-        })
+        });
+
         this._fingers.forEach((t, index) => {
           // if the finger releases...
-          if (this._touches.findIndex(f => f.identifier === t?.identifier) == -1) {
+          if (this._touches.findIndex(f => f.identifier === t?.identifier) === -1) {
             this._fingers[index] = null;
           }
-        })
+        });
+
         // clear trailing null values
-        while (this._fingers.length > 0 && this._fingers.at(-1) === null) { this._fingers.pop(); }
+        while (this._fingers.length > 0 && this._fingers[this._fingers.length - 1] === null) {
+          this._fingers.pop();
+        }
       }
 
       // do not use this.canvasDiv because event will lost after 'see inside' or change page
-      window.addEventListener('touchstart', upd);
-      window.addEventListener('touchmove', upd);
-      window.addEventListener('touchend', upd);
+      window.addEventListener('touchstart', update);
+      window.addEventListener('touchmove', update);
+      window.addEventListener('touchend', update);
     }
-
 
     get bound() {
       return this.canvas.getBoundingClientRect();
