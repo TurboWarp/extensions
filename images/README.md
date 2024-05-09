@@ -298,3 +298,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Lily/Video.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
+
+## Gandi/LayerManager.png
+ - Created by Arkos
+ - Contains AI-generated content from [Baidu AI Studio](https://aistudio.baidu.com/community/app/2848?source=appCenter) (based on Stable Diffusion XL)
