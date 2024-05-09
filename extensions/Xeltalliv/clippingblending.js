@@ -152,6 +152,8 @@
       const proto = vm.runtime.targets[0].__proto__;
       const osa = proto.onStopAll;
       proto.onStopAll = function () {
+        this.clipbox = null;
+        this.blendMode = "default";
         this.renderer.updateDrawableClipBox.call(
           renderer,
           this.drawableID,
