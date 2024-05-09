@@ -1,61 +1,68 @@
 // Name: Close Control
-// ID: closecontrol
+// ID: xmerclosecontrol
 // Description: Ask before closing the tab.
 // By: XmerOriginals
 
 (function (Scratch) {
   "use strict";
 
-  class CloseControl {
-    constructor() {
-      this.closeControlEnabled = false;
-      this.handleCloseRequest = this.handleCloseRequest.bind(this);
-      window.addEventListener('beforeunload', this.handleCloseRequest);  
+  let enabled = false;
+
+  window.addEventListener("beforeunload", (e) => {
+    if (enabled) {
+      e.preventDefault();
     }
-  
+  });
+
+  class CloseControl {
     getInfo() {
       return {
-        id: 'closecontrol',
-        name: 'Close Control',
+        id: "xmerclosecontrol",
+        name: Scratch.translate("Close Control"),
         blocks: [
           {
-            opcode: 'enableCloseControl',
+            opcode: "setControl",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Enable close control',
+            text: Scratch.translate("set ask before closing tab to [OPTION]"),
+            arguments: {
+              OPTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "option",
+              },
+            },
           },
           {
-            opcode: 'disableCloseControl',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Disable close control',
-          },
-          {
-            opcode: 'isCloseControlEnabled',
+            opcode: "getControl",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'Is close control enabled?',
+            text: Scratch.translate("is close control enabled?"),
           },
-        ]
+        ],
+        menus: {
+          option: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("enabled"),
+                value: "true",
+              },
+              {
+                text: Scratch.translate("disabled"),
+                value: "false",
+              },
+            ],
+          },
+        },
       };
     }
-  
-    enableCloseControl() {
-      this.closeControlEnabled = true;
+
+    setControl({ OPTION }) {
+      enabled = Scratch.Cast.toBoolean(OPTION);
     }
-  
-    disableCloseControl() {
-      this.closeControlEnabled = false;
-    }
-  
-    isCloseControlEnabled() {
-      return this.closeControlEnabled;
-    }
-    
-    handleCloseRequest(event) {
-      if (this.closeControlEnabled) {
-        event.preventDefault();
-        const confirmation = confirm;
-      }
+
+    getControl() {
+      return enabled;
     }
   }
-  
+
   Scratch.extensions.register(new CloseControl());
-}(Scratch));
+})(Scratch);
