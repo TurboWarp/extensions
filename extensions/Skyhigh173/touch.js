@@ -57,11 +57,11 @@
             (finger) => finger?.identifier === touch.identifier
           );
           if (idx === -1) {
-            finger.date = Date.now();
+            finger.date = performance.now();
             finger.prevX = touch.clientX;
             finger.prevY = touch.clientY;
-            finger.prevDate = Date.now();
-            finger.nowDate = Date.now();
+            finger.prevDate = performance.now();
+            finger.nowDate = performance.now();
             this._fingers.push(finger);
           } else {
             const date = finger.date;
@@ -72,7 +72,7 @@
             finger.prevX = oldX;
             finger.prevY = oldY;
             finger.prevDate = oldDate;
-            finger.nowDate = Date.now();
+            finger.nowDate = performance.now();
             this._fingers[idx] = finger;
           }
         });
@@ -139,7 +139,7 @@
       dy: (t) => this._toScratchY(t.clientY) - this._toScratchY(t.prevY),
       sx: (t) => this._propMap.dx(t) / ((t.nowDate - t.prevDate) / 1000),
       sy: (t) => this._propMap.dy(t) / ((t.nowDate - t.prevDate) / 1000),
-      duration: (t) => (Date.now() - t.date) / 1000,
+      duration: (t) => (performance.now() - t.date) / 1000,
       force: (t) => t.force,
     };
 
