@@ -114,11 +114,11 @@
     }
     _scaleToScratchX(clientX) {
       const bounds = this._getCanvasBounds();
-      return clientX * Scratch.vm.runtime.stageWidth / bounds.width;
+      return (clientX * Scratch.vm.runtime.stageWidth) / bounds.width;
     }
     _scaleToScratchY(clientY) {
       const bounds = this._getCanvasBounds();
-      return clientY * Scratch.vm.runtime.stageHeight / bounds.height;
+      return (clientY * Scratch.vm.runtime.stageHeight) / bounds.height;
     }
     _boundToScratchX(clientX) {
       const bounds = this._getCanvasBounds();
@@ -147,8 +147,12 @@
       y: (t) => this._boundToScratchY(t.clientY),
       dx: (t) => this._scaleToScratchX(t.dx),
       dy: (t) => this._scaleToScratchY(-t.dy),
-      sx: (t) => this._scaleToScratchX(t.dx) / (Scratch.vm.runtime.currentStepTime / 1000),
-      sy: (t) => this._scaleToScratchY(-t.dy) / (Scratch.vm.runtime.currentStepTime / 1000),
+      sx: (t) =>
+        this._scaleToScratchX(t.dx) /
+        (Scratch.vm.runtime.currentStepTime / 1000),
+      sy: (t) =>
+        this._scaleToScratchY(-t.dy) /
+        (Scratch.vm.runtime.currentStepTime / 1000),
       duration: (t) => (performance.now() - t.startingDate) / 1000,
       force: (t) => t.force * 100,
     };
