@@ -6,6 +6,9 @@
 (function (Scratch) {
   "use strict";
 
+  const textEncoder = new TextEncoder();
+  const textDecoder = new TextDecoder();
+
   /**
    * @param {Uint8Array} bytes
    * @returns {string}
@@ -113,9 +116,6 @@
 
     return result;
   };
-
-  const textEncoder = new TextEncoder();
-  const textDecoder = new TextDecoder();
 
   /**
    * @param {string} text
