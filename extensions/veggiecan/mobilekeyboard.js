@@ -18,13 +18,10 @@
 
   class MobileKeyboard {
     constructor() {
-      this.typedText = "";
-      this.cursorPosition = 0;
       this.keyboardOpen = false;
       this.waitCallback = null;
-      this.deafultvalue = "";
+      this.defaultValue = "";
       this.inputElement = null;
-      this.lastSelected = 0;
     }
 
     getInfo() {
@@ -72,7 +69,7 @@
             text: Scratch.translate("is keyboard open?"),
           },
           {
-            opcode: "setDeafultValue",
+            opcode: "setDefaultValue",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set text box's default value to [VALUE]"),
             arguments: {
@@ -175,9 +172,10 @@
     }
 
     showKeyboard(type) {
-      const self = this;
-      const input = document.createElement("input");
-      input.type = type;
+      const input = document.createElement(type === 'textarea' ? 'textarea' : "input");
+      if (type !== 'textarea') {
+        (/** @type {HTMLInputElement} */ (input)).type = type;
+      }
       input.style.position = "absolute";
       input.style.top = "0";
       input.style.left = "0";
@@ -187,94 +185,59 @@
       input.style.padding = "0px";
       input.style.border = "none";
       input.style.backgroundColor = "#fff";
-      input.value = self.deafultvalue;
-      const keydownListener = function (event) {
-        if (event.keyCode === 13) {
-          self.keyboardOpen = false;
-          input.style.display = "none";
-          input.removeEventListener("keydown", keydownListener);
-          if (self.waitCallback) {
-            self.waitCallback();
-            self.waitCallback = null;
-          }
+      input.value = this.defaultValue;
+
+      this.typedText = this.defaultValue;
+      this.keyboardOpen = true;
+      this.inputElement = input;
+
+      document.body.appendChild(input);
+      input.focus();
+      input.click();
+
+      const done = () => {
+        this.keyboardOpen = false;
+        this.inputElement = null;
+
+        if (input.parentNode) {
+          input.parentNode.removeChild(input);
+        }
+
+        if (this.waitCallback) {
+          this.waitCallback();
+          this.waitCallback = null;
         }
       };
-      input.addEventListener("keydown", keydownListener);
-      document.body.appendChild(input);
-      input.focus();
-      input.click();
-      self.typedText = self.deafultvalue;
-      this.keyboardOpen = true;
-      input.addEventListener("blur", function () {
-        //TODO: See if there is a way to sense if the keyboard is closed while the textbox is still in focus (could happen)
-        self.keyboardOpen = false;
-        input.style.display = "none";
-        input.removeEventListener("keydown", keydownListener);
-        if (self.waitCallback) {
-          self.waitCallback();
-          self.waitCallback = null;
-        }
-      });
-      this.inputElement = input;
-    }
 
-    showKeyboardAllowNewline() {
-      const self = this;
-      const input = document.createElement("textarea");
-      input.style.position = "absolute";
-      input.style.top = "0";
-      input.style.left = "0";
-      input.style.width = "1px";
-      input.style.height = "1px";
-      input.style.fontSize = "1px";
-      input.style.padding = "0px";
-      input.style.border = "none";
-      input.style.backgroundColor = "#fff";
-      input.value = self.deafultvalue;
-      document.body.appendChild(input);
-      input.focus();
-      input.click();
-      self.typedText = self.deafultvalue;
-      this.keyboardOpen = true;
-      input.addEventListener("blur", function () {
-        //TODO:See if there is a way to sense if the keyboard is closed while the textbox is still in focus (could happen)
-        self.keyboardOpen = false;
-        input.style.display = "none";
-        if (self.waitCallback) {
-          self.waitCallback();
-          self.waitCallback = null;
-        }
+      input.addEventListener('input', () => {
+        this.typedText = input.value;
       });
-      this.inputElement = input;
+
+      if (type !== 'textarea') {
+        input.addEventListener("keydown", (event) => {
+          if ((/** @type {KeyboardEvent} */ (event)).key === 'Enter') {
+            input.blur();
+          }
+        });
+      }
+
+      input.addEventListener("blur", () => {
+        done();
+      });
     }
 
     showKeyboardBlock(args) {
-      if (args.TYPE === "textarea") {
-        this.showKeyboardAllowNewline();
-      } else {
-        this.showKeyboard(args.TYPE);
-      }
+      this.showKeyboard(args.TYPE);
     }
 
     showKeyboardAndWaitBlock(args) {
-      const self = this;
-      if (args.TYPE === "textarea") {
-        return new Promise(function (resolve) {
-          self.waitCallback = resolve;
-          self.showKeyboardAllowNewline();
-        });
-      } else {
-        return new Promise(function (resolve) {
-          self.waitCallback = resolve;
-          self.showKeyboard(args.TYPE);
-        });
-      }
+      return new Promise((resolve) => {
+        this.waitCallback = resolve;
+        this.showKeyboard(args.TYPE);
+      });
     }
 
     typedTextSinceKeyboardOpened() {
-      if (this.inputElement) {
-        this.typedText = this.inputElement.value;
-      }
       return this.typedText;
     }
 
@@ -282,36 +245,37 @@
       return this.keyboardOpen;
     }
 
-    setDeafultValue(args) {
-      this.deafultvalue = args.VALUE;
+    setDefaultValue(args) {
+      this.defaultValue = Scratch.Cast.toString(args.VALUE);
     }
 
     setCurrentValue(args) {
       if (this.inputElement) {
-        this.inputElement.value = args.TEXT;
+        const text = Scratch.Cast.toString(args.TEXT);
+        this.inputElement.value = text;
+        this.typedText = text;
       }
     }
 
     getCursorPosition() {
       if (this.inputElement) {
-        this.cursorPosition = this.inputElement.selectionStart;
+        return this.inputElement.selectionStart;
       }
-      return this.cursorPosition;
+      return -1;
     }
 
     getSelectionEnd() {
       if (this.inputElement) {
-        this.lastSelected = this.inputElement.selectionEnd;
+        return this.inputElement.selectionEnd;
       }
-      return this.lastSelected;
+      return -1;
     }
 
     isAnySelected() {
       if (this.inputElement) {
-        this.lastSelected = this.inputElement.selectionEnd;
-        this.cursorPosition = this.inputElement.selectionStart;
+        return this.inputElement.selectionEnd !== this.inputElement.selectionStart;
       }
-      return !(this.lastSelected === this.cursorPosition);
+      return false;
     }
 
     setCursorPosition(args) {
@@ -319,6 +283,7 @@
         this.inputElement.setSelectionRange(args.INDEX, args.INDEX);
       }
     }
+
     setSelectedText(args) {
       if (this.inputElement) {
         this.inputElement.setSelectionRange(args.START, args.END);
