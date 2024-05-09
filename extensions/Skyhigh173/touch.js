@@ -102,36 +102,41 @@
       window.addEventListener("touchend", update);
     }
 
-    get bound() {
+    _getCanvasBounds() {
       return this.canvas.getBoundingClientRect();
     }
-
     _clamp(min, x, max) {
       return Math.max(Math.min(x, max), min);
     }
-    _scale(x, sRmin, sRmax, tRmin, tRmax) {
+    _map(x, sRmin, sRmax, tRmin, tRmax) {
       return ((tRmax - tRmin) / (sRmax - sRmin)) * (x - sRmin) + tRmin;
+    }
+    _toScratchX(clientX) {
+      const bounds = this._getCanvasBounds();
+      const min = -Scratch.vm.runtime.stageWidth / 2;
+      const max = Scratch.vm.runtime.stageWidth / 2;
+      return this._clamp(
+        min,
+        this._map(clientX, bounds.left, bounds.right, min, max),
+        max
+      );
+    }
+    _toScratchY(clientY) {
+      const bounds = this._getCanvasBounds();
+      const min = -Scratch.vm.runtime.stageHeight / 2;
+      const max = Scratch.vm.runtime.stageHeight / 2;
+      return this._clamp(
+        min,
+        this._map(clientY, bounds.bottom, bounds.top, min, max),
+        max
+      );
     }
 
     _propMap = {
-      // map client coord to scratch coord
-      _x: (clientX) =>
-        this._clamp(
-          -240,
-          this._scale(clientX, this.bound.left, this.bound.right, -240, 240),
-          240
-        ),
-      _y: (clientY) =>
-        this._clamp(
-          -180,
-          this._scale(clientY, this.bound.bottom, this.bound.top, -180, 180),
-          180
-        ),
-
-      x: (t) => this._propMap._x(t.clientX),
-      y: (t) => this._propMap._y(t.clientY),
-      dx: (t) => this._propMap._x(t.clientX) - this._propMap._x(t.prevX),
-      dy: (t) => this._propMap._y(t.clientY) - this._propMap._y(t.prevY),
+      x: (t) => this._toScratchX(t.clientX),
+      y: (t) => this._toScratchY(t.clientY),
+      dx: (t) => this._toScratchX(t.clientX) - this._toScratchX(t.prevX),
+      dy: (t) => this._toScratchY(t.clientY) - this._toScratchY(t.prevY),
       sx: (t) => this._propMap.dx(t) / ((t.nowDate - t.prevDate) / 1000),
       sy: (t) => this._propMap.dy(t) / ((t.nowDate - t.prevDate) / 1000),
       duration: (t) => (Date.now() - t.date) / 1000,
