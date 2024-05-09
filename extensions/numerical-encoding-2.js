@@ -12,7 +12,7 @@
    */
   const encodeBinary = (bytes) => {
     // Pre-allocating buffer seems to be much faster than string concatenation
-    const buffer = new Uint8Array(Math.ceil(bytes.length * 8 / 3));
+    const buffer = new Uint8Array(Math.ceil((bytes.length * 8) / 3));
     let ptr = 0;
 
     for (var i = 0; i <= bytes.length - 3; i += 3) {
@@ -65,7 +65,7 @@
    * @returns {Uint8Array}
    */
   const decodeBinary = (string) => {
-    const encodedBytes = Math.floor(string.length * 3 / 8);
+    const encodedBytes = Math.floor((string.length * 3) / 8);
     const result = new Uint8Array(encodedBytes);
     let ptr = 0;
 
@@ -158,8 +158,9 @@
   class NumericalEncodingV2 {
     getInfo() {
       const example = Scratch.translate({
-        default: 'Hello',
-        description: 'Used as default input value to show how the encoding works'
+        default: "Hello",
+        description:
+          "Used as default input value to show how the encoding works",
       });
 
       return {
@@ -168,35 +169,35 @@
         blocks: [
           {
             blockType: Scratch.BlockType.REPORTER,
-            opcode: 'encode',
-            text: Scratch.translate('encode [TEXT] as numbers'),
+            opcode: "encode",
+            text: Scratch.translate("encode [TEXT] as numbers"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: example
-              }
-            }
+                defaultValue: example,
+              },
+            },
           },
           {
             blockType: Scratch.BlockType.REPORTER,
-            opcode: 'decode',
-            text: Scratch.translate('decode [TEXT] as text'),
+            opcode: "decode",
+            text: Scratch.translate("decode [TEXT] as text"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: encodeText(example)
-              }
-            }
-          }
+                defaultValue: encodeText(example),
+              },
+            },
+          },
         ],
       };
     }
 
-    encode ({ TEXT }) {
-      return encodeText(Scratch.Cast.toString(TEXT))
+    encode({ TEXT }) {
+      return encodeText(Scratch.Cast.toString(TEXT));
     }
 
-    decode ({ TEXT }) {
+    decode({ TEXT }) {
       return decodeText(Scratch.Cast.toString(TEXT));
     }
   }
