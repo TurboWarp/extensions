@@ -127,7 +127,16 @@
    * @param {string} text
    * @returns {string}
    */
-  const decodeText = (text) => textDecoder.decode(decodeBinary(text));
+  const decodeText = (text) => {
+    // All characters must be in range [1, 8]
+    for (let i = 0; i < text.length; i++) {
+      const ch = text.charCodeAt(i);
+      if (ch < 49 || ch > 56) {
+        return "";
+      }
+    }
+    return textDecoder.decode(decodeBinary(text));
+  };
 
   // Uncomment this to validate that the encoding and decoding is correct.
   /*
