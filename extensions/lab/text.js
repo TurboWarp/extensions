@@ -36,7 +36,7 @@
     "Marker",
     "Curly",
     "Pixel",
-    "Scratch"
+    "Scratch",
   ];
 
   const DEFAULT_COLOR = "#575e75";
