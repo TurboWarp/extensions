@@ -1,6 +1,6 @@
 // Name: Numerical Encoding v2
 // ID: numericalencoding2
-// Description: More efficiently encode strings as numbers for cloud variables.
+// Description: Encode strings as numbers for cloud variables. Much more efficient than V1.
 // License: MPL-2.0
 
 (function (Scratch) {
@@ -11,7 +11,9 @@
    * @returns {string}
    */
   const encodeBinary = (bytes) => {
-    let result = '';
+    // Pre-allocating buffer seems to be much faster than string concatenation
+    const buffer = new Uint8Array(Math.ceil(bytes.length * 8 / 3));
+    let ptr = 0;
 
     for (var i = 0; i <= bytes.length - 3; i += 3) {
       // AAAAAAAA BBBBBBBB CCCCCCCC
@@ -19,43 +21,43 @@
       const a = bytes[i];
       const b = bytes[i + 1];
       const c = bytes[i + 2];
-      result += a >> 5;
-      result += (a >> 2) & 0b111;
-      result += ((a & 0b11) << 1) | (b >> 7);
-      result += (b >> 4) & 0b111;
-      result += (b >> 1) & 0b111;
-      result += ((b & 0b1) << 2) | (c >> 6);
-      result += (c >> 3) & 0b111;
-      result += c & 0b111;
+      buffer[ptr++] = 48 + (a >> 5);
+      buffer[ptr++] = 48 + ((a >> 2) & 0b111);
+      buffer[ptr++] = 48 + (((a & 0b11) << 1) | (b >> 7));
+      buffer[ptr++] = 48 + ((b >> 4) & 0b111);
+      buffer[ptr++] = 48 + ((b >> 1) & 0b111);
+      buffer[ptr++] = 48 + (((b & 0b1) << 2) | (c >> 6));
+      buffer[ptr++] = 48 + ((c >> 3) & 0b111);
+      buffer[ptr++] = 48 + (c & 0b111);
     }
 
     switch (bytes.length - i) {
       case 1: {
         // AAAAAAAA
         // 11122233 3
-        const a = bytes[bytes.length - 1];
-        result += a >> 5;
-        result += (a >> 2) & 0b111;
-        result += (a & 0b11) << 1;
+        const a = bytes[i];
+        buffer[ptr++] = 48 + (a >> 5);
+        buffer[ptr++] = 48 + ((a >> 2) & 0b111);
+        buffer[ptr++] = 48 + ((a & 0b11) << 1);
         break;
       }
 
       case 2: {
         // AAAAAAAA BBBBBBBB
         // 11122233 34445556 66
-        const a = bytes[bytes.length - 2];
-        const b = bytes[bytes.length - 1];
-        result += a >> 5;
-        result += (a >> 2) & 0b111;
-        result += ((a & 0b11) << 1) | (b >> 7);
-        result += (b >> 4) & 0b111;
-        result += (b >> 1) & 0b111;
-        result += (b & 0b1) << 2;
+        const a = bytes[i];
+        const b = bytes[i + 1];
+        buffer[ptr++] = 48 + (a >> 5);
+        buffer[ptr++] = 48 + ((a >> 2) & 0b111);
+        buffer[ptr++] = 48 + (((a & 0b11) << 1) | (b >> 7));
+        buffer[ptr++] = 48 + ((b >> 4) & 0b111);
+        buffer[ptr++] = 48 + ((b >> 1) & 0b111);
+        buffer[ptr++] = 48 + ((b & 0b1) << 2);
         break;
       }
     }
 
-    return result;
+    return textDecoder.decode(buffer);
   };
 
   /**
@@ -78,21 +80,18 @@
       const f = string.charCodeAt(i + 5) - 48;
       const g = string.charCodeAt(i + 6) - 48;
       const h = string.charCodeAt(i + 7) - 48;
-      result[ptr] = (a << 5) | (b << 2) | (c >> 1);
-      ptr++;
-      result[ptr] = ((c & 0b1) << 7) | (d << 4) | (e << 1) | (f >> 2);
-      ptr++;
-      result[ptr] = ((f & 0b11) << 6) | (g << 3) | h;
-      ptr++;
+      result[ptr++] = (a << 5) | (b << 2) | (c >> 1);
+      result[ptr++] = ((c & 0b1) << 7) | (d << 4) | (e << 1) | (f >> 2);
+      result[ptr++] = ((f & 0b11) << 6) | (g << 3) | h;
     }
 
     switch (encodedBytes - ptr) {
       case 1: {
         // AAA BBB CCC
         // 111 111 11
-        const a = string.charCodeAt(string.length - 3) - 48;
-        const b = string.charCodeAt(string.length - 2) - 48;
-        const c = string.charCodeAt(string.length - 1) - 48;
+        const a = string.charCodeAt(i) - 48;
+        const b = string.charCodeAt(i + 1) - 48;
+        const c = string.charCodeAt(i + 2) - 48;
         result[ptr] = (a << 5) | (b << 2) | (c >> 1);
         break;
       }
@@ -100,14 +99,13 @@
       case 2: {
         // AAA BBB CCC DDD EEE FFF
         // 111 111 112 222 222 2
-        const a = string.charCodeAt(string.length - 6) - 48;
-        const b = string.charCodeAt(string.length - 5) - 48;
-        const c = string.charCodeAt(string.length - 4) - 48;
-        const d = string.charCodeAt(string.length - 3) - 48;
-        const e = string.charCodeAt(string.length - 2) - 48;
-        const f = string.charCodeAt(string.length - 1) - 48;
-        result[ptr] = (a << 5) | (b << 2) | (c >> 1);
-        ptr++;
+        const a = string.charCodeAt(i) - 48;
+        const b = string.charCodeAt(i + 1) - 48;
+        const c = string.charCodeAt(i + 2) - 48;
+        const d = string.charCodeAt(i + 3) - 48;
+        const e = string.charCodeAt(i + 4) - 48;
+        const f = string.charCodeAt(i + 5) - 48;
+        result[ptr++] = (a << 5) | (b << 2) | (c >> 1);
         result[ptr] = ((c & 0b1) << 7) | (d << 4) | (e << 1) | (f >> 2);
         break;
       }
