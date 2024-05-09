@@ -170,7 +170,7 @@
       proto.makeClone = function () {
         const newTarget = mc.call(this);
         if (this.clipbox || this.blendMode) {
-          newTarget.clipbox = Object.assign({}, this.clipbox);
+          newTarget.clipbox = this.clipbox ? Object.assign({}, this.clipbox) : null;
           newTarget.blendMode = this.blendMode;
           renderer.updateDrawableClipBox.call(
             renderer,
