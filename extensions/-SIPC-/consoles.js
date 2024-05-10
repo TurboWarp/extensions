@@ -99,7 +99,9 @@
           {
             opcode: "groupCollapsed",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("create collapsed log group named [string]"),
+            text: Scratch.translate(
+              "create collapsed log group named [string]"
+            ),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -128,9 +130,7 @@
           {
             opcode: "Timerlog",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "print time of log timer named [string]"
-            ),
+            text: Scratch.translate("print time of log timer named [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
