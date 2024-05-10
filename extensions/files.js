@@ -1,6 +1,7 @@
 // Name: Files
 // ID: files
 // Description: Read and download files.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -232,7 +233,10 @@
   const downloadBlob = (blob, file) => {
     const url = URL.createObjectURL(blob);
     downloadURL(url, file);
-    URL.revokeObjectURL(url);
+    // Some old browsers process Blob URLs asynchronously
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
   };
 
   /**

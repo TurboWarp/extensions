@@ -2,6 +2,7 @@
 // ID: lmsMoreEvents
 // Description: Start your scripts in new ways.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -225,12 +226,14 @@
                 dataURI: stopIcon,
               },
             },
+            extensions: ["colours_event"],
           },
           {
             opcode: "forever",
             blockType: Scratch.BlockType.EVENT,
             text: "forever",
             isEdgeActivated: false,
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -249,6 +252,7 @@
                 menu: "boolean",
               },
             },
+            extensions: ["colours_event"],
           },
           {
             opcode: "whileTrueFalse",
@@ -264,6 +268,7 @@
                 menu: "boolean",
               },
             },
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -281,6 +286,7 @@
                 type: null,
               },
             },
+            extensions: ["colours_event"],
           },
           {
             opcode: "everyDuration",
@@ -293,6 +299,7 @@
                 defaultValue: 3,
               },
             },
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -313,6 +320,7 @@
                 menu: "action",
               },
             },
+            extensions: ["colours_event"],
           },
           {
             opcode: "whileKeyPressed",
@@ -326,6 +334,7 @@
                 menu: "keyboardButtons",
               },
             },
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -344,6 +353,7 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
           {
             opcode: "broadcastToTargetAndWait",
@@ -359,6 +369,7 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -376,6 +387,7 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
           {
             opcode: "broadcastDataAndWait",
@@ -390,6 +402,7 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
           {
             blockType: Scratch.BlockType.XML,
@@ -401,6 +414,7 @@
             text: "received data",
             disableMonitor: true,
             allowDropAnywhere: true,
+            extensions: ["colours_event"],
           },
 
           "---",
@@ -423,6 +437,7 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
           {
             opcode: "broadcastDataToTargetAndWait",
@@ -442,6 +457,7 @@
               },
             },
             hideFromPalette: true,
+            extensions: ["colours_event"],
           },
           {
             blockType: Scratch.BlockType.XML,
@@ -454,6 +470,7 @@
             text: "before project saves",
             shouldRestartExistingThreads: true,
             isEdgeActivated: false,
+            extensions: ["colours_event"],
           },
           {
             blockType: Scratch.BlockType.EVENT,
@@ -461,6 +478,7 @@
             text: "after project saves",
             shouldRestartExistingThreads: true,
             isEdgeActivated: false,
+            extensions: ["colours_event"],
           },
         ],
         menus: {

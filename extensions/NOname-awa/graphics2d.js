@@ -2,6 +2,7 @@
 // ID: nonameawagraph
 // Description: Blocks to compute lengths, angles, and areas in two dimensions.
 // By: NOname-awa
+// License: MIT
 
 (function (Scratch) {
   "use strict";

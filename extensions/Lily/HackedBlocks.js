@@ -3,6 +3,7 @@
 // Description: Various "hacked blocks" that work in Scratch but are not visible in the palette.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // By: pumpkinhasapatch
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";

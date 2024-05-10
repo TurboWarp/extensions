@@ -2,6 +2,7 @@
 // ID: DTcameracontrols
 // Description: Move the visible part of the stage.
 // By: DT
+// License: MIT
 
 ((Scratch) => {
   "use strict";

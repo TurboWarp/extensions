@@ -2,6 +2,7 @@
 // ID: Bitwise
 // Description: Blocks that operate on the binary representation of numbers in computers.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+// License: MIT AND MPL-2.0
 
 ((Scratch) => {
   "use strict";

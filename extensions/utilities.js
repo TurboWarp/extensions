@@ -2,6 +2,7 @@
 // ID: utilities
 // Description: A bunch of interesting blocks.
 // Original: Sheep_maker <https://scratch.mit.edu/users/Sheep_maker/>
+// License: MIT AND MPL-2.0
 
 /*!
  * This is based on:
@@ -150,6 +151,7 @@
                 defaultValue: "apple",
               },
             },
+            allowDropAnywhere: true,
           },
           {
             opcode: "letters",

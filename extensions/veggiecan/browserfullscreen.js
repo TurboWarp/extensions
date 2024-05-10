@@ -2,6 +2,7 @@
 // ID: fullscreen0419
 // Description: Enter and exit fullscreen mode.
 // By: Veggiecan0419
+// License: MIT
 
 (function (Scratch) {
   "use strict";

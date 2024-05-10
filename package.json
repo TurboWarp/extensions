@@ -15,26 +15,28 @@
     "type": "git",
     "url": "git+https://github.com/TurboWarp/extensions.git"
   },
-  "license": "MIT",
+  "license": "MIT AND LGPL-3.0-only AND GPL-3.0-only AND CC-BY-SA-4.0 AND CC-BY-4.0 AND CC-BY-2.5 AND CC0-1.0 AND Apache-2.0 AND MPL-2.0",
   "bugs": {
     "url": "https://github.com/TurboWarp/extensions/issues"
   },
   "homepage": "https://github.com/TurboWarp/extensions#readme",
   "dependencies": {
+    "@turbowarp/json": "^0.1.2",
     "@turbowarp/scratchblocks": "^3.6.4",
     "@turbowarp/types": "git+https://github.com/TurboWarp/types-tw.git#tw",
-    "adm-zip": "^0.5.10",
-    "chokidar": "^3.5.3",
-    "ejs": "^3.1.9",
-    "express": "^4.18.2",
-    "image-size": "^1.0.2",
-    "markdown-it": "^14.0.0"
+    "adm-zip": "^0.5.12",
+    "chokidar": "^3.6.0",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "image-size": "^1.1.1",
+    "markdown-it": "^14.1.0"
   },
   "devDependencies": {
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.0",
     "espree": "^9.6.1",
     "esquery": "^1.5.0",
-    "prettier": "^3.1.1"
+    "prettier": "^3.2.4",
+    "spdx-expression-parse": "^4.0.0"
   },
   "private": true
 }

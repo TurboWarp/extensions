@@ -1,4 +1,5 @@
 [
+  // This file supports comments
   "lab/text",
   "stretch",
   "gamepad",
@@ -24,9 +25,12 @@
   "penplus",
   "Lily/Skins",
   "obviousAlexC/SensingPlus",
+  "CubesterYT/KeySimulation",
   "Lily/ClonesPlus",
   "Lily/LooksPlus",
   "Lily/MoreEvents",
+  "Lily/ListTools",
+  "veggiecan/mobilekeyboard",
   "NexusKitten/moremotion",
   "CubesterYT/WindowControls",
   "veggiecan/browserfullscreen",
@@ -60,6 +64,8 @@
   "SharkPool/Font-Manager",
   "DNin/wake-lock",
   "Skyhigh173/json",
+  "mbw/xml",
+  "numerical-encoding-2",
   "cs2627883/numericalencoding",
   "DT/cameracontrols",
   "TheShovel/CanvasEffects",
@@ -85,5 +91,5 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
-  "Lily/McUtils"
+  "Lily/McUtils" // McUtils should always be the last item.
 ]

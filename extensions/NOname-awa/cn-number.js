@@ -1,21 +1,7 @@
 (function (Scratch) {
   "use strict";
 
-  let Number2,
-    null2,
-    units,
-    Number_in,
-    uppercase,
-    i,
-    N_Z,
-    o,
-    j,
-    After_decimal_point,
-    unit,
-    k,
-    C_Number,
-    m,
-    n;
+  let i, N_Z, o, j, After_decimal_point, unit, k, C_Number, m, n;
 
   class CNNUMBER {
     getInfo() {

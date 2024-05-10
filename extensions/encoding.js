@@ -2,6 +2,7 @@
 // ID: Encoding
 // Description: Encode and decode strings into their unicode numbers, base 64, or URLs.
 // By: -SIPC-
+// License: MIT
 
 (function (Scratch) {
   "use strict";

@@ -2,6 +2,7 @@
 // ID: nkcontrols
 // Description: Show and hide the project's controls.
 // By: NamelessCat <https://scratch.mit.edu/users/NexusKitten/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -71,6 +72,7 @@
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "hideOption",
@@ -82,6 +84,7 @@
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
           "---",
           {
@@ -94,6 +97,7 @@
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
           "---",
           {
@@ -106,6 +110,7 @@
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
         ],
         menus: {

@@ -2,6 +2,7 @@
 // ID: RixxyX
 // Description: Various utility blocks.
 // By: RixTheTyrunt <https://scratch.mit.edu/users/RixTheTyrunt/>
+// License: MIT
 
 /*!
  * Originally created by https://scratch.mit.edu/users/RixTheTyrunt/

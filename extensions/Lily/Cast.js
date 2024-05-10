@@ -2,6 +2,7 @@
 // ID: lmsCast
 // Description: Convert values between types.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -17,7 +18,7 @@
           {
             opcode: "toType",
             blockType: Scratch.BlockType.REPORTER,
-            text: "cast [INPUT] to [TYPE]",
+            text: Scratch.translate("cast [INPUT] to [TYPE]"),
             allowDropAnywhere: true,
             disableMonitor: true,
             arguments: {
@@ -34,7 +35,7 @@
           {
             opcode: "typeOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: "type of [INPUT]",
+            text: Scratch.translate("type of [INPUT]"),
             disableMonitor: true,
             arguments: {
               INPUT: {
@@ -47,7 +48,24 @@
         menus: {
           type: {
             acceptReporters: true,
-            items: ["number", "string", "boolean", "default"],
+            items: [
+              {
+                text: Scratch.translate("number"),
+                value: "number",
+              },
+              {
+                text: Scratch.translate("string"),
+                value: "string",
+              },
+              {
+                text: Scratch.translate("boolean"),
+                value: "boolean",
+              },
+              {
+                text: Scratch.translate("default"),
+                value: "default",
+              },
+            ],
           },
         },
       };

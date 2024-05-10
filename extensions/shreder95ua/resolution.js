@@ -2,6 +2,7 @@
 // ID: shreder95resolution
 // Description: Get the resolution of the primary screen.
 // By: shreder95ua <https://scratch.mit.edu/users/shreder95ua/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";

@@ -2,6 +2,7 @@
 // ID: itch
 // Description: Blocks that interact with the itch.io website. Unofficial.
 // By: softed <https://scratch.mit.edu/users/softed/>
+// License: MIT
 
 ((Scratch) => {
   "use strict";

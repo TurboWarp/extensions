@@ -3,6 +3,7 @@
 // Description: Move, resize, rename the window, enter fullscreen, get screen size, and more.
 // By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
 // Original: BlueDome77
+// License: MIT
 
 // Version V.1.0.0
 

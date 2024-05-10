@@ -2,6 +2,7 @@
 // ID: sipcconsole
 // Description: Blocks that interact with the JavaScript console built in to your browser's developer tools.
 // By: -SIPC-
+// License: MIT
 
 (function (Scratch) {
   "use strict";
