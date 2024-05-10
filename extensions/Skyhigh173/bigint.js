@@ -3,6 +3,7 @@
 // Description: Math blocks that work on infinitely large integers (no decimals).
 // By: Skyhigh173
 // License: MIT
+// Context: BigInt is short for "Big Integer" which can be infinitely big. "number" refers to normal numbers that have limits.
 
 (function (Scratch) {
   "use strict";
@@ -11,10 +12,9 @@
    * @param {unknown} x
    * @returns {bigint}
    */
-
   const bi = (x) => {
     if (typeof x === "bigint") {
-      return x; //If the input is already of type BigInt, return directly
+      return x;
     }
     if (typeof x === "string") {
       // Try to parse things like '8n'
@@ -60,7 +60,7 @@
           {
             opcode: "from",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("To BigInt [text]"),
+            text: Scratch.translate("convert number [text] to BigInt"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -71,7 +71,7 @@
           {
             opcode: "to",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("To Number [text]"),
+            text: Scratch.translate("convert BigInt [text] to number"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -158,7 +158,10 @@
           {
             opcode: "mod",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[a] mod [b]"),
+            text: Scratch.translate({
+              default: "[a] mod [b]",
+              description: "mod refers to modulo"
+            }),
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
