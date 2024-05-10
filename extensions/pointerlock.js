@@ -88,7 +88,6 @@
     isLocked = document.pointerLockElement === canvas;
   });
   document.addEventListener("pointerlockerror", (e) => {
-    // eslint-disable-next-line no-console
     console.error("Pointer lock error", e);
   });
 
