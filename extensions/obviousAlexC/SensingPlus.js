@@ -839,7 +839,7 @@
     }
 
     isPackaged() {
-      return typeof scaffolding !== 'undefined';
+      return typeof scaffolding !== "undefined";
     }
 
     clonesOfSprite({ Sprite }) {
