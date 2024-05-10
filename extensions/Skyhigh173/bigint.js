@@ -160,7 +160,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               default: "[a] mod [b]",
-              description: "mod refers to modulo"
+              description: "mod refers to modulo",
             }),
             arguments: {
               a: {
