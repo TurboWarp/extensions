@@ -655,7 +655,6 @@
 
     getVariables() {
       // @ts-expect-error - Blockly not typed yet
-      // eslint-disable-next-line no-undef
       const variables =
         typeof Blockly === "undefined"
           ? []

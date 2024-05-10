@@ -71,7 +71,7 @@
       if (!supported) {
         console.error(
           (arFail =
-            "WebXR exists in the browser you are using, but 'immersive-ar' session type is not supported")
+            "WebXR exists in the browser you are using, but 'immersive-ar' session type is not supported (it can only work on mobile)")
         );
       } else {
         arFail = null;
