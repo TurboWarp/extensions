@@ -2947,7 +2947,6 @@
     //From lily's list tools... With permission of course.
     _getLists() {
       // @ts-expect-error - Blockly not typed yet
-      // eslint-disable-next-line no-undef
       const lists =
         typeof Blockly === "undefined"
           ? []
@@ -5393,7 +5392,6 @@
               );
             };
 
-            // eslint-disable-next-line
             image.src = costumeURI;
           }
         }
