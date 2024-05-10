@@ -1,6 +1,6 @@
 // Name: Font Manager
 // ID: SPASfontManager
-// Description: Add, Delete, and Manage Fonts
+// Description: Add, delete, and manage fonts.
 // By: SharkPool
 // By: Ashimee <https://scratch.mit.edu/users/0znzw/>
 
