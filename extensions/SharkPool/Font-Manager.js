@@ -23,7 +23,7 @@
     storage.DataFormat.TTF,
     storage.DataFormat.OTF,
     storage.DataFormat.WOFF,
-    storage.DataFormat.WOFF2
+    storage.DataFormat.WOFF2,
   ];
 
   const menuIconURI =
@@ -82,7 +82,7 @@
               },
               DATA: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "DATA"
+                menu: "DATA",
               },
             },
           },
@@ -90,7 +90,9 @@
           {
             opcode: "addSystemFont",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("add system font named [NAME] with fallback [BACKUP]"),
+            text: Scratch.translate(
+              "add system font named [NAME] with fallback [BACKUP]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -98,14 +100,16 @@
               },
               BACKUP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FALLBACKS"
+                menu: "FALLBACKS",
               },
             },
           },
           {
             opcode: "addCustomFont",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("add custom font named [NAME] with fallback [BACKUP] from URL [URL]"),
+            text: Scratch.translate(
+              "add custom font named [NAME] with fallback [BACKUP] from URL [URL]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -117,7 +121,7 @@
               },
               BACKUP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FALLBACKS"
+                menu: "FALLBACKS",
               },
             },
           },
@@ -146,7 +150,7 @@
             arguments: {
               ADDED: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "ADDED_FIELD"
+                menu: "ADDED_FIELD",
               },
             },
           },
@@ -158,7 +162,7 @@
             arguments: {
               ADDED: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "ADDED_INPUT"
+                menu: "ADDED_INPUT",
               },
             },
           },
@@ -169,47 +173,47 @@
             items: [
               {
                 text: Scratch.translate("fallback"),
-                value: "fallback"
+                value: "fallback",
               },
               {
                 text: Scratch.translate("is system"),
-                value: "is system"
+                value: "is system",
               },
               {
                 text: Scratch.translate("data: uri"),
-                value: "data: uri"
+                value: "data: uri",
               },
               {
                 text: Scratch.translate("format"),
-                value: "format"
-              }
-            ]
+                value: "format",
+              },
+            ],
           },
           ADDED_FIELD: {
             acceptReporters: false,
             items: [
               {
                 text: Scratch.translate("added"),
-                value: "added"
+                value: "added",
               },
               {
                 text: Scratch.translate("removed"),
-                value: "removed"
-              }
-            ]
+                value: "removed",
+              },
+            ],
           },
           ADDED_INPUT: {
             acceptReporters: true,
             items: [
               {
                 text: Scratch.translate("added"),
-                value: "added"
+                value: "added",
               },
               {
                 text: Scratch.translate("removed"),
-                value: "removed"
-              }
-            ]
+                value: "removed",
+              },
+            ],
           },
           FALLBACKS: [
             "Sans Serif",
@@ -222,14 +226,14 @@
           ],
           FILES: {
             acceptReporters: true,
-            items: FONT_EXTENSIONS.map(i => `.${i}`),
+            items: FONT_EXTENSIONS.map((i) => `.${i}`),
           },
         },
       };
     }
 
     fontNames() {
-      return JSON.stringify(fontManager.fonts.map(i => i.family));
+      return JSON.stringify(fontManager.fonts.map((i) => i.family));
     }
 
     fontAdded(args) {
@@ -273,7 +277,9 @@
 
         // font files should have a content-type of font/ttf, font/otf, etc.
         // if we can't detect it, we'll just assume it's ttf, browser can figure it out anyways
-        const contentType = (response.headers.get('content-type') || '').toLowerCase();
+        const contentType = (
+          response.headers.get("content-type") || ""
+        ).toLowerCase();
         let dataFormat = vm.runtime.storage.DataFormat.TTF;
         for (const extension of FONT_EXTENSIONS) {
           if (contentType === `font/${extension}`) {
@@ -289,7 +295,11 @@
           null,
           true
         );
-        fontManager.addCustomFont(name, Scratch.Cast.toString(args.BACKUP), asset);
+        fontManager.addCustomFont(
+          name,
+          Scratch.Cast.toString(args.BACKUP),
+          asset
+        );
       } catch (e) {
         console.warn(e);
       }
@@ -297,7 +307,9 @@
 
     removeFont(args) {
       const name = args.NAME;
-      const index = fontManager.fonts.findIndex(i => i.family === Scratch.Cast.toString(name));
+      const index = fontManager.fonts.findIndex(
+        (i) => i.family === Scratch.Cast.toString(name)
+      );
       if (index !== -1) {
         fontManager.deleteFont(index);
       }
@@ -309,12 +321,12 @@
 
     fontsChanged(args, util) {
       const added = Scratch.Cast.toString(args.ADDED);
-      if (added === 'added') {
+      if (added === "added") {
         return JSON.stringify(this.addedFonts);
-      } else if (added === 'removed') {
+      } else if (added === "removed") {
         return JSON.stringify(this.removedFonts);
       } else {
-        return '';
+        return "";
       }
     }
 
@@ -326,21 +338,21 @@
           this.removedFonts.push(family);
         }
       }
-      for (const {family} of fontManager.fonts) {
+      for (const { family } of fontManager.fonts) {
         if (!this.oldFonts.includes(family)) {
           this.addedFonts.push(family);
         }
       }
-      this.oldFonts = fontManager.fonts.map(i => i.family);
+      this.oldFonts = fontManager.fonts.map((i) => i.family);
 
       if (this.addedFonts.length) {
         Scratch.vm.runtime.startHats(`${extensionId}_whenFont`, {
-          ADDED: 'added'
+          ADDED: "added",
         });
       }
       if (this.removedFonts.length) {
         Scratch.vm.runtime.startHats(`${extensionId}_whenFont`, {
-          ADDED: 'removed'
+          ADDED: "removed",
         });
       }
     }
