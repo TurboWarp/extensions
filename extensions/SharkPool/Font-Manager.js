@@ -8,26 +8,40 @@
 
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed)
+
+  if (!Scratch.extensions.unsandboxed) {
     throw new Error("Font Manager must be run unsandboxed");
+  }
 
   const extensionId = "SPASfontManager";
   const vm = Scratch.vm;
   const runtime = vm.runtime;
-  const Asset = vm.runtime.storage.Asset;
+  const storage = runtime.storage;
   const fontManager = runtime.fontManager;
 
-  let oldFonts = [];
-  const hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+  const FONT_EXTENSIONS = [
+    storage.DataFormat.TTF,
+    storage.DataFormat.OTF,
+    storage.DataFormat.WOFF,
+    storage.DataFormat.WOFF2
+  ];
 
   const menuIconURI =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMDIuMzMzMzQiIGhlaWdodD0iMTAyLjMzMzM0IiB2aWV3Qm94PSIwLDAsMTAyLjMzMzM0LDEwMi4zMzMzNCI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE4OC44MzUyMywtMTI4LjU2MDQ0KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0xODguODM1MjMsMTc5LjcyNzExYzAsLTI4LjI1ODU3IDIyLjkwODEsLTUxLjE2NjY3IDUxLjE2NjY3LC01MS4xNjY2N2MyOC4yNTg1NywwIDUxLjE2NjY3LDIyLjkwODEgNTEuMTY2NjcsNTEuMTY2NjdjMCwyOC4yNTg1NyAtMjIuOTA4MSw1MS4xNjY2NyAtNTEuMTY2NjcsNTEuMTY2NjdjLTI4LjI1ODU3LDAgLTUxLjE2NjY3LC0yMi45MDgxIC01MS4xNjY2NywtNTEuMTY2Njd6IiBmaWxsPSIjMWM0ZTQ1IiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMTkzLjgxMTkyLDE3OS43MjcxMmMwLC0yNS41MTAwMiAyMC42Nzk5NSwtNDYuMTg5OTcgNDYuMTg5OTcsLTQ2LjE4OTk3YzI1LjUxMDAyLDAgNDYuMTg5OTcsMjAuNjc5OTUgNDYuMTg5OTcsNDYuMTg5OTdjMCwyNS41MTAwMiAtMjAuNjc5OTUsNDYuMTg5OTcgLTQ2LjE4OTk3LDQ2LjE4OTk3Yy0yNS41MTAwMiwwIC00Ni4xODk5NywtMjAuNjc5OTUgLTQ2LjE4OTk3LC00Ni4xODk5N3oiIGZpbGw9IiMyYjdkNmUiIHN0cm9rZS13aWR0aD0iMCIvPjxwYXRoIGQ9Ik0yNTcuNDI2MTUsMTg3LjY2NzUxYzAsMi42OTA0OSAtMi4xODg4Myw0Ljg3OTMyIC00Ljg3OTMyLDQuODc5MzJjLTIuNjkwNDksMCAtNC44NzkzMiwtMi4xODg4MyAtNC44NzkzMiwtNC44NzkzMmMwLC0yLjY5MDQ5IDIuMTg4ODMsLTQuODc5MzIgNC44NzkzMiwtNC44NzkzMmMyLjY5MDQ5LDAgNC44NzkzMiwyLjE4ODgzIDQuODc5MzIsNC44NzkzMnoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMSIvPjxwYXRoIGQ9Ik0yNjcuODgxODUsMTYzLjc0NjRjMCw2LjYzMDAxIDAsMzguNTU5MDggMCwzOC41NTkwOGMwLDIuMzA5NzIgLTEuODcyNTUsNC4xODIyOCAtNC4xODIyOCw0LjE4MjI4aC00Ny4zOTkxM2MtMi4zMDk3MiwwIC00LjE4MjI4LC0xLjg3MjU1IC00LjE4MjI4LC00LjE4MjI4YzAsMCAwLC00MC4yNTQ1IDAsLTQ2LjE3NDk2YzAsLTEuNDA5ODEgMS4zNDM5OSwtMi42MTgyNyAyLjUzMDAyLC0yLjYxODI3YzIuMTEwNzUsMCA5LjA2MzMyLDAgMTIuMzkxOTMsMGMxLjEwMjI5LDAgMi4zMTA2LDAuNTAzNDQgMi45ODcyMSwxLjE4MDA2YzEuMDgzODcsMS4wODM4NyAyLjYxMjExLDIuNjEyMSAzLjIyNzA3LDMuMjI3MDZjMC41MTQ0OSwwLjUxNDQ5IDEuODI5MDEsMS4xNjkyNSAyLjk1MDU4LDEuMTY5MjVjNS4zOTM3NSwwIDIxLjQ2NzgxLDAgMjYuMjAzNzcsMGMyLjUyOTkyLDAgNS40NzMxLDIuMzUzNDcgNS40NzMxLDQuNjU3Nzh6TTI0My45Mzc3OCwxOTUuNTc2MTljLTIuMDM3NTUsLTQuNTQzNzUgLTkuNDkxNTMsLTIxLjE2NjIyIC0xMS4zNTMzNSwtMjUuMzE4MTFjLTAuODEzMjUsLTEuODEzNTUgLTIuNDgyOTcsLTEuOTQxMDQgLTMuMjUyNTEsLTAuMjE2ODJjLTEuNzYxNTIsMy45NDY4NCAtOC44Mzg1LDE5LjgwMzQyIC0xMS4xNjU0MiwyNS4wMTcwOGMtMC40Njk1NSwxLjA1MjA3IC0wLjIxMTUyLDEuNjcwNzcgMC40NTYyMiwxLjY3MDc3YzAuODQ0MjIsMCAxLjkwMTk1LDAgMi4zNjM2NCwwYzAuNDQxMDYsMCAxLjIyOTk2LC0wLjQ4Mjc4IDEuNDQyMDksLTAuOTU4MDdjMC42MTY5NCwtMS4zODIyOCAzLjYxNjc4LC04LjEwMzUzIDMuNjE2NzgsLTguMTAzNTNoOS43NjI3OWMwLDAgMy4wODg4LDYuODg4MjkgMy42ODQ5Nyw4LjIxNzc5YzAuMTkxMDMsMC40MjYwMiAwLjg3MDQsMC44NDM4MSAxLjQ5MzM3LDAuODQzODFjMC43OTQxMywwIDEuODAxMDQsMCAyLjI3MjczLDBjMC41MDAwNSwwIDEuMDA3ODgsLTAuNDE4ODIgMC42Nzg2OSwtMS4xNTI5MnpNMjYwLjQ0MDkxLDE3OC42MDU5MWMtMC40NjM5MSwwIC0xLjQ2MTEsMCAtMi4xODE4MiwwYy0wLjQ3NzAzLDAgLTAuODMyOTQsMC41NjM4MiAtMC44MzI5NCwwLjgxNjgyYzAsMC4yMTk1NCAwLDAuNjE1MDYgMCwwLjYxNTA2Yy0xLjQwOTU2LC0wLjkwNDc0IC0zLjA4MzU2LC0xLjQzMTg4IC00Ljg3OTMyLC0xLjQzMTg4Yy00Ljk5NjYyLDAgLTkuMDYxNiw0LjA2NTA4IC05LjA2MTYsOS4wNjE2YzAsNC45OTY2MiA0LjA2NDk4LDkuMDYxNiA5LjA2MTYsOS4wNjE2YzEuNzk1NzYsMCAzLjQ2OTc2LC0wLjUyNzE0IDQuODc5MzIsLTEuNDMyYzAsMCAwLDAuMzY4MjYgMCwwLjU4MDE2YzAsMC4yNTY3NiAwLjM1NDYsMC44NTE4NCAwLjgzMjk0LDAuODUxODRjMC43NTAwMiwwIDEuODA0MjQsMCAyLjI3MjczLDBjMC40NTE3NiwwIDEuMDc2NjEsLTAuNzE3MTkgMS4wNzY2MSwtMS44NTE4NGMwLC0zLjY4NjggMCwtMTEuNzgxMDUgMCwtMTRjMCwtMS4wOTg0NCAtMC42ODc3NCwtMi4yNzEzNiAtMS4xNjc1MiwtMi4yNzEzNnoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMSIvPjxwYXRoIGQ9Ik0yMzIuOTc3OTEsMTgzLjQ4NTIzYy0wLjcwOTExLDAgLTIuODcxOTMsMCAtNC4xMzA2NCwwYy0wLjU1NTk4LDAgLTAuNzA3MjYsLTAuNTExNTUgLTAuMzg5NTMsLTEuMjIzNDNjMC41NjUzNywtMS4yNjY3NCAxLjQxMzg1LC0zLjE2Nzg0IDEuNzYyODcsLTMuOTQ5ODVjMC4yOTg5NywtMC42Njk4NiAxLjEzNzkxLC0wLjU2Njc3IDEuNDYwNDgsMC4xNTI1NmMwLjM2NTE0LDAuODE0MjUgMS4yMjk3LDIuNzQyMjEgMS43NzQ5NSwzLjk1ODExYzAuMjgwNTEsMC42MjU1NCAtMC4wMzQzNCwxLjA2MjYxIC0wLjQ3ODEzLDEuMDYyNjF6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEiLz48ZyBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXdlaWdodD0ibm9ybWFsIiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ic3RhcnQiLz48ZyBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXdlaWdodD0ibm9ybWFsIiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ic3RhcnQiLz48ZyBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXdlaWdodD0ibm9ybWFsIiBmb250LXNpemU9IjEyIiB0ZXh0LWFuY2hvcj0ic3RhcnQiLz48cGF0aCBkPSJNMjM2LjI4NDgyLDE1Ni4yNzQzYzAsMCAxLjM0Mzk4LC0yLjYxODI3IDIuNTMwMDIsLTIuNjE4MjdjMi4xMTA3NSwwIDkuMDYzMzIsMCAxMi4zOTE5MywwYzEuMTAyMjksMCAyLjMxMDYsMC41MDM0NCAyLjk4NzIxLDEuMTgwMDZjMS4wODM4NywxLjA4Mzg3IDEuOTk4MTQsMS40NzQ4MSAwLjgxNDY3LDEuNDcyNjNjLTMuMjk3MDcsLTAuMDA2MDYgLTE4LjcyMzgzLC0wLjAzNDQyIC0xOC43MjM4MywtMC4wMzQ0MnoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMSIvPjxwYXRoIGQ9IiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iIiBmaWxsPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSIiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMSIvPjxwYXRoIGQ9IiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9nPjwvZz48L3N2Zz4=";
 
   class SPASfontManager {
     constructor() {
-      this.difference = { cleared: true };
+      /** @type {string[]} */
+      this.oldFonts = [];
+
+      /** @type {string[]} */
+      this.addedFonts = [];
+
+      /** @type {string[]} */
+      this.removedFonts = [];
+
       fontManager.on("change", () => {
-        this.onChanged();
+        this._onchange();
       });
     }
 
@@ -41,21 +55,15 @@
         menuIconURI,
         blocks: [
           {
-            opcode: "customFontAtts",
+            opcode: "fontNames",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("added font [THING]"),
+            text: Scratch.translate("added font names"),
             disableMonitor: true,
-            arguments: {
-              THING: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "INFO"
-              },
-            },
           },
           {
-            opcode: "fontExists",
+            opcode: "fontAdded",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("font [NAME] exists?"),
+            text: Scratch.translate("font [NAME] added?"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -64,7 +72,7 @@
             },
           },
           {
-            opcode: "data4Font",
+            opcode: "fontDetail",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[DATA] of font [NAME]"),
             arguments: {
@@ -97,19 +105,15 @@
           {
             opcode: "addCustomFont",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("add custom font named [NAME] with fallback [BACKUP] font data.uri [DATA] file type [FILE]"),
+            text: Scratch.translate("add custom font named [NAME] with fallback [BACKUP] from URL [URL]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Pusab",
               },
-              DATA: {
+              URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ".ttf, .otf, .woff, .woff2",
-              },
-              FILE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "FILES"
+                defaultValue: "",
               },
               BACKUP: {
                 type: Scratch.ArgumentType.STRING,
@@ -118,9 +122,9 @@
             },
           },
           {
-            opcode: "deleteFont",
+            opcode: "removeFont",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete font [NAME]",
+            text: "remove font [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -129,20 +133,20 @@
             },
           },
           {
-            opcode: "deleteAllFonts",
+            opcode: "removeAllFonts",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete all fonts",
+            text: "remove all fonts",
           },
           "---",
           {
             opcode: "whenFont",
             blockType: Scratch.BlockType.EVENT,
-            text: "when font is [ATT]",
+            text: "when font is [ADDED]",
             isEdgeActivated: false,
             arguments: {
-              ATT: {
+              ADDED: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "ATT"
+                menu: "ADDED_FIELD"
               },
             },
           },
@@ -150,32 +154,16 @@
             disableMonitor: true,
             opcode: "fontsChanged",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[ATT] fonts",
+            text: "[ADDED] fonts",
             arguments: {
-              ATT: {
+              ADDED: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "ATT"
+                menu: "ADDED_INPUT"
               },
             },
           },
         ],
         menus: {
-          INFO: {
-            items: [
-              {
-                text: Scratch.translate("names"),
-                value: "names"
-              },
-              {
-                text: Scratch.translate("fallbacks"),
-                value: "fallbacks"
-              },
-              {
-                text: Scratch.translate("data"),
-                value: "data"
-              },
-            ]
-          },
           DATA: {
             acceptReporters: true,
             items: [
@@ -188,8 +176,8 @@
                 value: "is system"
               },
               {
-                text: Scratch.translate("data.uri"),
-                value: "data.uri"
+                text: Scratch.translate("data: uri"),
+                value: "data: uri"
               },
               {
                 text: Scratch.translate("format"),
@@ -197,8 +185,21 @@
               }
             ]
           },
-          ATT: {
+          ADDED_FIELD: {
             acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("added"),
+                value: "added"
+              },
+              {
+                text: Scratch.translate("removed"),
+                value: "removed"
+              }
+            ]
+          },
+          ADDED_INPUT: {
+            acceptReporters: true,
             items: [
               {
                 text: Scratch.translate("added"),
@@ -221,160 +222,127 @@
           ],
           FILES: {
             acceptReporters: true,
-            items: [
-              ".ttf",
-              ".otf",
-              ".woff",
-              ".woff2"
-            ],
+            items: FONT_EXTENSIONS.map(i => `.${i}`),
           },
         },
       };
     }
 
-    async dataUrlToArrBuff(dataURL) {
-      const data = await Scratch.fetch(dataURL);
-      return await data.arrayBuffer();
+    fontNames() {
+      return JSON.stringify(fontManager.fonts.map(i => i.family));
     }
 
-    genID(len) {
-      // https://github.com/TurboWarp/scratch-vm/blob/develop/src/util/uid.js
-      const soup =
-        "!#%()*+,-./:;=?@[]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      const id = [];
-      for (let i = 0; i < len; i++) {
-        id[i] = soup.charAt(Math.random() * soup.length);
-      }
-      return id.join("");
-    }
-
-    async createFont(fontType, name, dataURL, uid) {
-      const fontAsset = new Asset(
-        {
-          contentType: "application/octet-stream",
-          runtimeFormat: fontType,
-          name,
-          immutable: true,
-        },
-        uid ?? this.genID(20),
-        fontType,
-        new Uint8Array(await this.dataUrlToArrBuff(dataURL)),
-        true
-      );
-      return fontAsset;
-    }
-
-    fontNames(fontsArray) {
-      return structuredClone(fontsArray.map((font) => font.family));
-    }
-
-    // ^ internal functions (Thank you <https://github.com/Ashimee> <3)
-    // Ashimee also made the event block
-
-    cast(args, func) {
-      let obj = args;
-      for (let key in obj) {
-        if (hasOwn(obj, key))
-          obj[key] = Scratch.Cast[`to${func ?? "String"}`](obj[key]);
-      }
-      return obj;
-    }
-
-    customFontAtts(args) {
-      if (args.THING === "data") return JSON.stringify(fontManager.fonts);
-      let ogArray = fontManager.fonts;
-      let newArray = [];
-      for (let i = 0; i < ogArray.length; i++) {
-        newArray[i] =
-          ogArray[i][args.THING === "names" ? "family" : "fallback"];
-      }
-      return JSON.stringify(newArray);
-    }
-
-    fontExists(args) {
+    fontAdded(args) {
       return fontManager.hasFont(Scratch.Cast.toString(args.NAME));
     }
 
-    data4Font(args) {
-      args = this.cast(args);
-      const font = fontManager.fonts.find((item) => item.family === args.NAME);
-      if (font === undefined) return "";
-      // Packaging Doesnt remove Font Assets, no need to check (good!)
-      switch (args.DATA) {
+    fontDetail(args) {
+      const name = Scratch.Cast.toString(args.NAME);
+      const font = fontManager.fonts.find((item) => item.family === name);
+      if (!font) return "";
+      switch (Scratch.Cast.toString(args.DATA)) {
         case "is system":
           return font.system;
-        case "data.uri":
+        case "data: uri":
           return font.asset ? font.asset.encodeDataURI() : "";
         case "format":
           return font.asset ? font.asset.dataFormat : "";
-        default:
+        case "fallback":
           return font.fallback;
       }
+      return "";
     }
 
     addSystemFont(args) {
-      args = this.cast(args);
-      oldFonts = structuredClone(fontManager.fonts);
-      if (fontManager.isValidFamily(args.NAME))
-        fontManager.addSystemFont(args.NAME, args.BACKUP);
+      const name = Scratch.Cast.toString(args.NAME);
+      if (fontManager.isValidFamily(name)) {
+        fontManager.addSystemFont(name, Scratch.Cast.toString(args.BACKUP));
+      }
     }
 
     async addCustomFont(args) {
-      args = this.cast(args);
-      if (!args.DATA.startsWith("data:")) return;
-      if (!this.fontsMenu().includes(args.FILE)) return;
-      oldFonts = structuredClone(fontManager.fonts);
-      const myFont = await this.createFont(
-        args.FILE.replace(".", ""),
-        args.NAME,
-        args.DATA
-      );
-      fontManager.addCustomFont(args.NAME, args.BACKUP, myFont);
+      const name = Scratch.Cast.toString(args.NAME);
+      if (!fontManager.isValidFamily(name)) {
+        return;
+      }
+
+      try {
+        const response = await Scratch.fetch(Scratch.Cast.toString(args.URL));
+        const arrayBuffer = await response.arrayBuffer();
+        const uint8array = new Uint8Array(arrayBuffer);
+
+        // font files should have a content-type of font/ttf, font/otf, etc.
+        // if we can't detect it, we'll just assume it's ttf, browser can figure it out anyways
+        const contentType = (response.headers.get('content-type') || '').toLowerCase();
+        let dataFormat = vm.runtime.storage.DataFormat.TTF;
+        for (const extension of FONT_EXTENSIONS) {
+          if (contentType === `font/${extension}`) {
+            dataFormat = extension;
+            break;
+          }
+        }
+
+        const asset = vm.runtime.storage.createAsset(
+          vm.runtime.storage.AssetType.Font,
+          dataFormat,
+          uint8array,
+          null,
+          true
+        );
+        fontManager.addCustomFont(name, Scratch.Cast.toString(args.BACKUP), asset);
+      } catch (e) {
+        console.warn(e);
+      }
     }
 
-    deleteFont(args) {
-      const names = this.customFontAtts({ THING: "names" });
-      const index = names.indexOf(Scratch.Cast.toString(args.NAME));
-      oldFonts = structuredClone(fontManager.fonts);
-      if (index > -1) fontManager.deleteFont(this.customFonts()[index]);
+    removeFont(args) {
+      const name = args.NAME;
+      const index = fontManager.fonts.findIndex(i => i.family === Scratch.Cast.toString(name));
+      if (index !== -1) {
+        fontManager.deleteFont(index);
+      }
     }
 
-    deleteAllFonts() {
-      oldFonts = structuredClone(fontManager.fonts);
+    removeAllFonts() {
       fontManager.clear();
     }
 
     fontsChanged(args, util) {
-      args = this.cast(args);
-      const difference = util.thread.fontDifference;
-      if (!difference) return "[]";
-      if (args.ATT == "clear") return JSON.stringify(difference.oldFontNames);
-      if (difference.added && args.ATT.toLowerCase() === "removed") return;
-      return JSON.stringify(difference.dif);
+      const added = Scratch.Cast.toString(args.ADDED);
+      if (added === 'added') {
+        return JSON.stringify(this.addedFonts);
+      } else if (added === 'removed') {
+        return JSON.stringify(this.removedFonts);
+      } else {
+        return '';
+      }
     }
 
-    onChanged() {
-      const oldFontNames = this.fontNames(oldFonts),
-        fontNames = this.fontNames(structuredClone(fontManager.fonts));
-      const added = oldFontNames.length < fontNames.length;
-      const difference = {
-        oldFonts: oldFontNames,
-        added,
-      };
-      if (added)
-        difference.dif = fontNames.filter(
-          (fontName) => !oldFontNames.includes(fontName)
-        );
-      else
-        difference.dif = oldFontNames.filter(
-          (fontName) => !fontNames.includes(fontName)
-        );
-      const threads = runtime.startHats(`${extensionId}_whenFont`, {
-        ATT: added ? "added" : "removed",
-      });
-      threads.forEach((thread) => (thread.fontDifference = difference));
-      oldFonts = null;
-      oldFonts = [];
+    _onchange() {
+      this.removedFonts = [];
+      this.addedFonts = [];
+      for (const family of this.oldFonts) {
+        if (!fontManager.hasFont(family)) {
+          this.removedFonts.push(family);
+        }
+      }
+      for (const {family} of fontManager.fonts) {
+        if (!this.oldFonts.includes(family)) {
+          this.addedFonts.push(family);
+        }
+      }
+      this.oldFonts = fontManager.fonts.map(i => i.family);
+
+      if (this.addedFonts.length) {
+        Scratch.vm.runtime.startHats(`${extensionId}_whenFont`, {
+          ADDED: 'added'
+        });
+      }
+      if (this.removedFonts.length) {
+        Scratch.vm.runtime.startHats(`${extensionId}_whenFont`, {
+          ADDED: 'removed'
+        });
+      }
     }
   }
 
