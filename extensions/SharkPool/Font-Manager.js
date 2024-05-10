@@ -41,12 +41,6 @@
         menuIconURI,
         blocks: [
           {
-            opcode: "customFonts",
-            blockType: Scratch.BlockType.REPORTER,
-            hideFromPalette: true,
-            text: "added font data",
-          },
-          {
             opcode: "customFontAtts",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("added font [THING]"),
@@ -284,10 +278,6 @@
           obj[key] = Scratch.Cast[`to${func ?? "String"}`](obj[key]);
       }
       return obj;
-    }
-
-    customFonts() {
-      return JSON.stringify(fontManager.fonts);
     }
 
     customFontAtts(args) {
