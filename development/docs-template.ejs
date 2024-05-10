@@ -42,17 +42,20 @@
         font-weight: bold;
         font-size: 1.1em;
       }
-      nav > * {
+      nav > div {
         display: flex;
-        align-items: center;
         max-width: 600px;
         margin: 0 auto;
-        padding: 0.5rem 0.25rem;
+      }
+      nav a {
+        display: flex;
         gap: 0.5rem;
+        padding: 0.5rem 0.25rem 0.5rem 0;
+        align-items: center;
         text-decoration: none;
         color: inherit !important;
       }
-      nav > *:hover {
+      nav a:hover {
         text-decoration: underline;
       }
       nav img {
@@ -115,6 +118,7 @@
         width: 100%;
         overflow-x: auto;
         white-space: pre;
+        line-height: 42px; /* reasonable estimation to reduce layout shift */
       }
       .render-scratchblocks svg {
         display: block;
@@ -128,10 +132,12 @@
   </head>
   <body>
     <nav role="navigation">
+      <div>
       <a href="/">
         <img src="/turbowarp.svg" alt="">
         <span>TurboWarp Extension Gallery</span>
       </a>
+      </div>
     </nav>
 
     <main class="container">

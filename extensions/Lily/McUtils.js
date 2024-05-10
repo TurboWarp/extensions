@@ -2,6 +2,8 @@
 // ID: lmsmcutils
 // Description: Helpful utilities for any fast food employee.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// Context: Joke extension based on McDonalds, a fast food chain.
+// License: MIT AND LGPL-3.0
 
 /*!
  * Credit to NexusKitten (NamelessCat) for the idea
@@ -65,6 +67,13 @@
               },
             },
           },
+          {
+            opcode: "grimaceBlock",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "🎂",
+            extensions: ["colours_looks"],
+            hideFromPalette: new Date().getMonth() !== 5,
+          },
         ],
         menus: {
           iceCreamMenu: {
@@ -105,11 +114,16 @@
     }
 
     placeOrder(args, util) {
-      if (args.INPUT.includes("ice cream")) {
+      const text = Scratch.Cast.toString(args.INPUT);
+      if (text.includes("ice cream")) {
         return false;
       } else {
         return args.INPUT;
       }
+    }
+
+    grimaceBlock(args, util) {
+      return "All good things are purple, including Scratch <3";
     }
   }
   Scratch.extensions.register(new lmsmcutils());

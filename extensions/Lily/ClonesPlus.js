@@ -2,6 +2,7 @@
 // ID: lmsclonesplus
 // Description: Expansion of Scratch's clone features.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -68,6 +69,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "createCloneWithVar",
@@ -84,6 +86,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -103,12 +106,15 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "touchingMainSprite",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "touching main sprite?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -136,6 +142,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "getVariableOfClone",
@@ -157,6 +164,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "setVariableOfMainSprite",
@@ -173,6 +181,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "getVariableOfMainSprite",
@@ -186,6 +195,7 @@
                 menu: "variablesMenu",
               },
             },
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -205,6 +215,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "getThingOfClone",
@@ -227,6 +238,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "getThingOfMainSprite",
@@ -241,6 +253,7 @@
                 menu: "thingOfMenu",
               },
             },
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -255,6 +268,7 @@
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "stopScriptsInClone",
@@ -271,12 +285,14 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "stopScriptsInMainSprite",
             blockType: Scratch.BlockType.COMMAND,
             text: "stop scripts in main sprite",
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -291,6 +307,7 @@
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "deleteCloneWithVar",
@@ -307,6 +324,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -316,6 +334,8 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is clone?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -324,6 +344,7 @@
             opcode: "cloneCount",
             blockType: Scratch.BlockType.REPORTER,
             text: "clone count",
+            extensions: ["colours_control"],
           },
           {
             opcode: "spriteCloneCount",
@@ -336,6 +357,7 @@
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_control"],
           },
         ],
         menus: {

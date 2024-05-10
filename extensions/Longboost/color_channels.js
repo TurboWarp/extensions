@@ -1,6 +1,7 @@
 // Name: RGB Channels
 // ID: lbdrawtest
 // Description: Only render or stamp certain RGB channels.
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -8,6 +9,11 @@
   const gl = renderer._gl;
   let channel_array = [true, true, true, true];
   class LBdrawtest {
+    constructor() {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this.clearEffects();
+      });
+    }
     getInfo() {
       return {
         id: "lbdrawtest",
@@ -24,12 +30,15 @@
             opcode: "true",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "true",
+            hideFromPalette: true,
+            disableMonitor: true,
           },
           {
             opcode: "false",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "false",
             hideFromPalette: true,
+            disableMonitor: true,
           },
           {
             opcode: "enabledCheck",
@@ -43,9 +52,29 @@
             },
           },
           {
+            opcode: "drawSelected",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set colors red:[R]green:[G]blue:[B]",
+            arguments: {
+              R: {
+                type: Scratch.ArgumentType.MENU,
+                menu: "ENABLED_MENU",
+              },
+              G: {
+                type: Scratch.ArgumentType.MENU,
+                menu: "ENABLED_MENU",
+              },
+              B: {
+                type: Scratch.ArgumentType.MENU,
+                menu: "ENABLED_MENU",
+              },
+            },
+          },
+          {
             opcode: "draw",
             blockType: Scratch.BlockType.COMMAND,
             text: "only draw colors:[R]green:[G]blue:[B]",
+            hideFromPalette: true,
             arguments: {
               R: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -91,6 +120,19 @@
             acceptReporters: true,
             items: ["red", "green", "blue"],
           },
+          ENABLED_MENU: {
+            acceptReporters: true,
+            items: [
+              {
+                text: "off",
+                value: "false",
+              },
+              {
+                text: "on",
+                value: "true",
+              },
+            ],
+          },
         },
       };
     }
@@ -113,6 +155,22 @@
       } else {
         return false;
       }
+    }
+
+    drawSelected({ R, G, B }) {
+      channel_array = [
+        Scratch.Cast.toBoolean(R),
+        Scratch.Cast.toBoolean(G),
+        Scratch.Cast.toBoolean(B),
+        true,
+      ];
+      gl.colorMask(
+        channel_array[0],
+        channel_array[1],
+        channel_array[2],
+        channel_array[3]
+      );
+      Scratch.vm.renderer.dirty = true;
     }
 
     draw({ R, G, B }) {

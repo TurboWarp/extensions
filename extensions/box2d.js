@@ -2,9 +2,24 @@
 // ID: griffpatch
 // Description: Two dimensional physics.
 // Original: griffpatch <https://scratch.mit.edu/users/griffpatch/>
+// License: BSD-3-Clause AND MIT AND Zlib
 
 /*!
  * This is based on https://github.com/griffpatch/scratch-vm/tree/box2d/src/extensions/scratch3_griffpatch
+ * by griffpatch, which has this license attached:
+ *
+ * Copyright (c) 2016, Massachusetts Institute of Technology
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /* eslint-disable */
@@ -2124,13 +2139,13 @@
         dX > 0
           ? (aabb.upperBound.x - this.p1.x) / dX
           : dX < 0
-          ? (aabb.lowerBound.x - this.p1.x) / dX
-          : Number.POSITIVE_INFINITY,
+            ? (aabb.lowerBound.x - this.p1.x) / dX
+            : Number.POSITIVE_INFINITY,
         dY > 0
           ? (aabb.upperBound.y - this.p1.y) / dY
           : dY < 0
-          ? (aabb.lowerBound.y - this.p1.y) / dY
-          : Number.POSITIVE_INFINITY
+            ? (aabb.lowerBound.y - this.p1.y) / dY
+            : Number.POSITIVE_INFINITY
       );
       this.p2.x = this.p1.x + dX * lambda;
       this.p2.y = this.p1.y + dY * lambda;
@@ -2142,13 +2157,13 @@
         dX > 0
           ? (aabb.upperBound.x - this.p2.x) / dX
           : dX < 0
-          ? (aabb.lowerBound.x - this.p2.x) / dX
-          : Number.POSITIVE_INFINITY,
+            ? (aabb.lowerBound.x - this.p2.x) / dX
+            : Number.POSITIVE_INFINITY,
         dY > 0
           ? (aabb.upperBound.y - this.p2.y) / dY
           : dY < 0
-          ? (aabb.lowerBound.y - this.p2.y) / dY
-          : Number.POSITIVE_INFINITY
+            ? (aabb.lowerBound.y - this.p2.y) / dY
+            : Number.POSITIVE_INFINITY
       );
       this.p1.x = this.p2.x + dX * lambda;
       this.p1.y = this.p2.y + dY * lambda;
@@ -12119,8 +12134,6 @@
   // const Cast = require('../../util/cast');
   // const Runtime = require('../../engine/runtime');
   // const RenderedTarget = require('../../sprites/rendered-target');
-  // const formatMessage = require('format-message');
-  const formatMessage = (obj) => obj.default;
   // const MathUtil = require('../../util/math-util');
   // const Timer = require('../../util/timer');
   // const Matter = require('matterJs/matter');
@@ -12244,6 +12257,14 @@
     body.CreateFixture(fixDef);
     bodies[id] = body;
     return body;
+  };
+
+  const _removeBody = function (id) {
+    if (!bodies[id]) return;
+
+    world.DestroyBody(bodies[id]);
+    delete bodies[id];
+    delete prevPos[id];
   };
 
   const _applyForce = function (id, ftype, x, y, dir, pow) {
@@ -12414,28 +12435,51 @@
     fixDef.shape = new b2PolygonShape();
     bodyDef.angle = 0;
 
+    const { stageWidth, stageHeight } = Scratch.vm.runtime;
+    const stageBounds = {
+      left: -stageWidth / 2,
+      right: stageWidth / 2,
+      top: stageHeight / 2,
+      bottom: -stageHeight / 2,
+    };
+
     if (type === STAGE_TYPE_OPTIONS.BOXED) {
-      fixDef.shape.SetAsBox(250 / zoom, 10 / zoom);
-      bodyDef.position.Set(0, -190 / zoom);
+      // For the ceiling boxes...
+      // use a width equivalent to the stage width + 10, with a thickness of 10
+      fixDef.shape.SetAsBox((stageWidth + 10) / zoom, 10 / zoom);
+      // create one such box at the bottom of the stage, accounting for thickness...
+      bodyDef.position.Set(0, (stageBounds.bottom - 10) / zoom);
       createStageBody();
-      bodyDef.position.Set(0, 1000 / zoom);
+      // and one 820 units above the top of the stage.
+      bodyDef.position.Set(0, (stageBounds.top + 820) / zoom);
       createStageBody();
-      fixDef.shape.SetAsBox(10 / zoom, 800 / zoom);
-      bodyDef.position.Set(-250 / zoom, 540 / zoom);
+      // For the left & right wall boxes...
+      // use a height equivalent to the stage height + 820, with a thickness of 10
+      fixDef.shape.SetAsBox(10 / zoom, (stageHeight + 820) / zoom);
+      // create a box at the left of the stage...
+      bodyDef.position.Set((stageBounds.left - 10) / zoom, 0);
       createStageBody();
-      bodyDef.position.Set(250 / zoom, 540 / zoom);
+      // and one at the right of the stage.
+      bodyDef.position.Set((stageBounds.right + 10) / zoom, 0);
       createStageBody();
     } else if (type === STAGE_TYPE_OPTIONS.FLOOR) {
-      fixDef.shape.SetAsBox(5000 / zoom, 100 / zoom);
-      bodyDef.position.Set(0, -280 / zoom);
+      // All floor boxes are positioned at the bottom of the stage, accounting for
+      // the thickness of 100.
+      const floorY = (stageBounds.bottom - 100) / zoom;
+
+      // The floor boxes have a width of the stage width + 4520 units, and a
+      // thickness of 100 units.
+      fixDef.shape.SetAsBox((stageWidth + 4520) / zoom, 100 / zoom);
+      // Floor boxes are created at different intervals throughout the bottom of the stage.
+      bodyDef.position.Set(0, floorY);
       createStageBody();
-      bodyDef.position.Set(-10000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.left - 5000, floorY);
       createStageBody();
-      bodyDef.position.Set(10000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.right + 5000, floorY);
       createStageBody();
-      bodyDef.position.Set(-20000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.left - 15000, floorY);
       createStageBody();
-      bodyDef.position.Set(20000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.right + 15000, floorY);
       createStageBody();
     }
 
@@ -12445,6 +12489,8 @@
       bodies[bodyID].SetAwake(true);
     }
   };
+
+  let tickRate = 30;
 
   const blockIconURI =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmE9Imh0dHA6Ly9ucy5hZG9iZS5jb20vQWRvYmVTVkdWaWV3ZXJFeHRlbnNpb25zLzMuMC8iDQoJIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSItMy43IC0zLjcgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTMuNyAtMy43IDQwIDQwIg0KCSB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxkZWZzPg0KPC9kZWZzPg0KPHJlY3QgeD0iOC45IiB5PSIxLjUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxLjUiIHk9IjE2LjMiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxNi4zIiB5PSIxNi4zIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMxNjlGQjAiIHN0cm9rZS13aWR0aD0iMyIgd2lkdGg9IjE0LjgiIGhlaWdodD0iMTQuOCIvPg0KPC9zdmc+";
@@ -12489,6 +12535,7 @@
         delete bodies[body];
         delete prevPos[body];
       }
+      tickRate = 30;
       // todo: delete joins?
     }
 
@@ -12506,7 +12553,7 @@
     getInfo() {
       return {
         id: "griffpatch",
-        name: formatMessage({
+        name: Scratch.translate({
           id: "griffpatch.categoryName",
           default: "Physics",
           description: "Label for the Griffpatch extension category",
@@ -12520,9 +12567,9 @@
           {
             opcode: "setStage",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setStage",
-              default: "setup stage [stageType]",
+              default: "set stage boundaries to [stageType]",
               description: "Set the stage type",
             }),
             arguments: {
@@ -12536,7 +12583,7 @@
           {
             opcode: "setGravity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setGravity",
               default: "set gravity to x: [gx] y: [gy]",
               description: "Set the gravity",
@@ -12555,7 +12602,7 @@
           {
             opcode: "getGravityX",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getGravityX",
               default: "gravity x",
               description: "Get the gravity's x value",
@@ -12564,7 +12611,7 @@
           {
             opcode: "getGravityY",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getGravityY",
               default: "gravity y",
               description: "Get the gravity's y value",
@@ -12576,7 +12623,7 @@
           {
             opcode: "setPhysics",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setPhysics",
               default: "enable for [shape] mode [mode]",
               description: "Enable Physics for this Sprite",
@@ -12595,10 +12642,21 @@
             },
             filter: [Scratch.TargetType.SPRITE],
           },
+          {
+            opcode: "disablePhysics",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate({
+              id: "griffpatch.disablePhysics",
+              default: "disable physics for this sprite",
+              description: "Disable Physics for this Sprite",
+            }),
+            arguments: {},
+            filter: [Scratch.TargetType.SPRITE],
+          },
           // {
           //     opcode: 'setPhysics',
           //     blockType: BlockType.COMMAND,
-          //     text: formatMessage({
+          //     text: Scratch.translate({
           //         id: 'griffpatch.setPhysics',
           //         default: 'enable physics for sprite [shape]',
           //         description: 'Enable Physics for this Sprite'
@@ -12614,7 +12672,7 @@
           // {
           //     opcode: 'setPhysicsAll',
           //     blockType: BlockType.COMMAND,
-          //     text: formatMessage({
+          //     text: Scratch.translate({
           //         id: 'griffpatch.setPhysicsAll',
           //         default: 'enable physics for all sprites',
           //         description: 'Enable Physics For All Sprites'
@@ -12626,10 +12684,36 @@
           {
             opcode: "doTick",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.doTick",
               default: "step simulation",
               description: "Run a single tick of the physics simulation",
+            }),
+          },
+          {
+            opcode: "setTickRate",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate({
+              id: "griffpatch.setTickRate",
+              default: "set simulation rate to [rate]/s",
+              description:
+                "Set the number of physics simulation steps to run per second",
+            }),
+            arguments: {
+              rate: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 30,
+              },
+            },
+          },
+          {
+            opcode: "getTickRate",
+            blockType: BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "griffpatch.getTickRate",
+              default: "simulation rate",
+              description:
+                "Get the number of physics simulation steps to run per second",
             }),
           },
 
@@ -12638,7 +12722,7 @@
           {
             opcode: "setPosition",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setPosition",
               default: "go to x: [x] y: [y] [space]",
               description: "Position Sprite",
@@ -12669,7 +12753,7 @@
           {
             opcode: "setVelocity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setVelocity",
               default: "set velocity to sx: [sx] sy: [sy]",
               description: "Set Velocity",
@@ -12689,7 +12773,7 @@
           {
             opcode: "changeVelocity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.changeVelocity",
               default: "change velocity by sx: [sx] sy: [sy]",
               description: "Change Velocity",
@@ -12708,7 +12792,7 @@
           },
           {
             opcode: "getVelocityX",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getVelocityX",
               default: "x velocity",
               description: "get the x velocity",
@@ -12718,7 +12802,7 @@
           },
           {
             opcode: "getVelocityY",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getVelocityY",
               default: "y velocity",
               description: "get the y velocity",
@@ -12732,7 +12816,7 @@
           {
             opcode: "applyForce",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.applyForce",
               default: "push with force [force] in direction [dir]",
               description: "Push this object in a given direction",
@@ -12752,7 +12836,7 @@
           {
             opcode: "applyAngForce",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.applyAngForce",
               default: "spin with force [force]",
               description: "Push this object in a given direction",
@@ -12771,7 +12855,7 @@
           {
             opcode: "setAngVelocity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setAngVelocity",
               default: "set angular velocity to [force]",
               description: "Set the angular velocity of the sprite",
@@ -12787,7 +12871,7 @@
           {
             opcode: "getAngVelocity",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getAngVelocity",
               default: "angular velocity",
               description: "Get the angular velocity of the sprite",
@@ -12800,9 +12884,9 @@
           {
             opcode: "setStatic",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setStatic",
-              default: "set fixed [static]",
+              default: "set fixed to [static]",
               description: "Sets whether this block is static or dynamic",
             }),
             arguments: {
@@ -12816,13 +12900,14 @@
           },
           {
             opcode: "getStatic",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getStatic",
               default: "fixed?",
               description: "get whether this sprite is fixed",
             }),
             blockType: BlockType.BOOLEAN,
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
 
           "---",
@@ -12830,9 +12915,9 @@
           {
             opcode: "setDensity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setDensity",
-              default: "set density [density]",
+              default: "set density to [density]",
               description: "Set the density of the object",
             }),
             arguments: {
@@ -12848,7 +12933,7 @@
             opcode: "setDensityValue",
             func: "setDensity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setDensityValue",
               default: "set density to [density]",
               description: "Set the density of the object",
@@ -12864,7 +12949,7 @@
           {
             opcode: "getDensity",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getDensity",
               default: "density",
               description: "Get the density of the object",
@@ -12877,9 +12962,9 @@
           {
             opcode: "setFriction",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setFriction",
-              default: "set friction [friction]",
+              default: "set friction to [friction]",
               description: "Set the friction of the object",
             }),
             arguments: {
@@ -12895,7 +12980,7 @@
             opcode: "setFrictionValue",
             func: "setFriction",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setFrictionValue",
               default: "set friction to [friction]",
               description: "Set the friction value of the object",
@@ -12911,7 +12996,7 @@
           {
             opcode: "getFriction",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getFriction",
               default: "friction",
               description: "Get the friction of the object",
@@ -12924,9 +13009,9 @@
           {
             opcode: "setRestitution",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setRestitution",
-              default: "set bounce [restitution]",
+              default: "set bounce to [restitution]",
               description: "Set the bounce of the object",
             }),
             arguments: {
@@ -12942,7 +13027,7 @@
             opcode: "setRestitutionValue",
             func: "setRestitution",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setRestitutionValue",
               default: "set bounce to [restitution]",
               description: "Set the bounce value of the object",
@@ -12958,7 +13043,7 @@
           {
             opcode: "getRestitution",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getRestitution",
               default: "bounce",
               description: "Get the bounce value of the object",
@@ -12971,7 +13056,7 @@
           {
             opcode: "setProperties",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setProperties",
               default:
                 "set density [density] roughness [friction] bounce [restitution]",
@@ -13000,7 +13085,7 @@
           // {
           //     opcode: 'pinSprite',
           //     blockType: BlockType.COMMAND,
-          //     text: formatMessage({
+          //     text: Scratch.translate({
           //         id: 'griffpatch.pinSprite',
           //         default: 'pin to world at sprite\'s x: [x] y: [y]',
           //         description: 'Pin the sprite'
@@ -13021,9 +13106,9 @@
 
           {
             opcode: "getTouching",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getTouching",
-              default: "touching [where]",
+              default: "list sprites touching [where]",
               description: "get the name of any sprites we are touching",
             }),
             blockType: BlockType.REPORTER,
@@ -13044,9 +13129,9 @@
           {
             opcode: "setScroll",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setScroll",
-              default: "set scroll x: [ox] y: [oy]",
+              default: "set scroll to x: [ox] y: [oy]",
               description: "Sets whether this block is static or dynamic",
             }),
             arguments: {
@@ -13063,7 +13148,7 @@
           {
             opcode: "changeScroll",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.changeScroll",
               default: "change scroll by x: [ox] y: [oy]",
               description: "Sets whether this block is static or dynamic",
@@ -13081,7 +13166,7 @@
           },
           {
             opcode: "getScrollX",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getScrollX",
               default: "x scroll",
               description: "get the x scroll",
@@ -13090,7 +13175,7 @@
           },
           {
             opcode: "getScrollY",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getScrollY",
               default: "y scroll",
               description: "get the y scroll",
@@ -13220,7 +13305,7 @@
       this._checkMoved();
 
       // world.Step(1 / 30, 10, 10);
-      world.Step(1 / 30, 10, 10);
+      world.Step(1 / tickRate, 10, 10);
       world.ClearForces();
 
       for (const targetID in bodies) {
@@ -13247,6 +13332,18 @@
 
         prevPos[targetID] = { x: target.x, y: target.y, dir: target.direction };
       }
+    }
+
+    setTickRate(args) {
+      let rate = Scratch.Cast.toNumber(args.rate);
+      if (Number.isNaN(rate) || rate === Infinity) rate = 30;
+      rate = Math.max(rate, 0.01);
+
+      tickRate = rate;
+    }
+
+    getTickRate() {
+      return tickRate;
     }
 
     _checkMoved() {
@@ -13407,6 +13504,10 @@
       }
 
       return body;
+    }
+
+    disablePhysics(args, util) {
+      _removeBody(util.target.id);
     }
 
     /**

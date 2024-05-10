@@ -119,7 +119,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Based on https://github.com/ScratchCE/scratch-gui/blob/develop/src/lib/libraries/extensions/strings/strings.png by [@JoshsAccount](https://scratch.mit.edu/users/JoshsAccount/) under [The GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html).
 
 ## Lily/lmsutils.svg
- - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/271#issuecomment-1475119545.
+ - Created by [@HamsterCreativity](https://scratch.mit.edu/users/HamsterCreativity/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464.
 
 ## 0832/rxFS2.svg
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1604175329.
@@ -142,7 +142,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## TheShovel/CanvasEffects.svg
  - Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1526886264.
 
-## cs2627883/numericalencoding.svg
+## numerical-encoding-2.svg
  - Created by [@NexusKitten](https://scratch.mit.edu/users/namelesscat/).
  - Silkscreen font used under [Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
  - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
@@ -248,8 +248,8 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Alestore/nfcwarp.svg
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636726352
 
-## veggiecan/LongmanDictionary.svg 
-- Created by [veggiecan](https://github.com/veggiecan0419)
+## veggiecan/LongmanDictionary.png
+- Created by Veggiecan0419
 - The ship is based on [this](https://www.ldoceonline.com/external/images/logo_home_smartphone.svg?version=1.2.61) logo from the [ldoceonline](https://www.ldoceonline.com/) website
 
 ## Lily/Skins.svg
@@ -269,9 +269,37 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Lily/AllMenus.svg
  - Created by [YogaindoCR](https://github.com/YogaindoCR) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1681839774
 
+## Lily/ListTools.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
+ - Background "blobs" by Scratch.
+
 ## Lily/MoreEvents.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
  - Background "blobs" by Scratch.
 
 ## DNin/wake-lock.svg
  - Created by [NexusKitten](https://github.com/NexusKitten) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1690949400
+
+## veggiecan/browserfullscreen.png
+ - Created by Veggiecan0419
+
+## NexusKitten/controlcontrols.svg
+ - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464
+
+## Lily/SoundExpanded.svg
+ - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464
+
+## Lily/Assets.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
+ - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+## iframe.svg
+ - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694716263
+
+## Lily/Video.svg
+ - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
+
+## veggiecan/mobilekeyboard.svg
+ - Created by Veggiecan0419
+
+

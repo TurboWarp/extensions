@@ -31,7 +31,7 @@ Import sound from [https://extensions.turbowarp.org/meow.mp3] name [Meow]
 Imports a sound from any Scratch-compatible sound file. The sound imports into the current sprite/backdrop the user has selected.
 
 ```scratch
-Import project from [https://theshovel.github.io/Bullet-Hell/Bullet%20Hell]
+Import project from [https://extensions.turbowarp.org/samples/Box2D.sb3]
 ```
 
 Imports a full project from a link. This project will completely replace the contents of the current one. If the project is unsandboxed, it will ask permission before swapping contents.

@@ -2,6 +2,7 @@
 // ID: zxmushroom63searchparams
 // Description: Interact with URL search parameters: the part of the URL after a question mark.
 // By: ZXMushroom63
+// License: MIT
 
 (function (Scratch) {
   "use strict";

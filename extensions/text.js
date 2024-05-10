@@ -2,6 +2,7 @@
 // ID: strings
 // Description: Manipulate characters and text.
 // Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -163,7 +164,7 @@
           {
             opcode: "unicodeof",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Unicode of [STRING]",
+            text: "unicode of [STRING]",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -174,7 +175,7 @@
           {
             opcode: "unicodefrom",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Unicode [NUM] as letter",
+            text: "unicode [NUM] as letter",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,

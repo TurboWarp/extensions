@@ -2,6 +2,7 @@
 // ID: gsaHTTPRequests
 // Description: Comprehensive extension for interacting with external websites.
 // By: RedMan13 <https://scratch.mit.edu/users/RedMan13/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -211,8 +212,8 @@
 
       return defaultRequest;
     }
-    static get defualtResponse() {
-      const defualtResponse = {
+    static get defaultResponse() {
+      const defaultResponse = {
         text: "",
         status: "",
         statusText: "",
@@ -221,7 +222,7 @@
         url: "",
       };
 
-      return defualtResponse;
+      return defaultResponse;
     }
 
     /**
@@ -230,6 +231,10 @@
     constructor() {
       this.clearAll();
       this.showingExtra = false;
+
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this.clearAll();
+      });
     }
     getInfo() {
       return {
@@ -548,7 +553,7 @@
 
     clearAll() {
       this.request = WebRequests.defaultRequest;
-      this.response = WebRequests.defualtResponse;
+      this.response = WebRequests.defaultResponse;
     }
 
     /* ------- DATA READING -------- */

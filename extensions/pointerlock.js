@@ -1,6 +1,7 @@
 // Name: Pointerlock
 // ID: pointerlock
 // Description: Adds blocks for mouse locking. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the pointerlock experiment.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -104,16 +105,23 @@
     return ret;
   };
 
+  vm.runtime.on("PROJECT_LOADED", () => {
+    isPointerLockEnabled = false;
+    if (isLocked) {
+      document.exitPointerLock();
+    }
+  });
+
   class Pointerlock {
     getInfo() {
       return {
         id: "pointerlock",
-        name: "Pointerlock",
+        name: Scratch.translate("Pointerlock"),
         blocks: [
           {
             opcode: "setLocked",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set pointer lock [enabled]",
+            text: Scratch.translate("set pointer lock [enabled]"),
             arguments: {
               enabled: {
                 type: Scratch.ArgumentType.STRING,
@@ -125,7 +133,7 @@
           {
             opcode: "isLocked",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is pointer locked?",
+            text: Scratch.translate("pointer locked?"),
           },
         ],
         menus: {
@@ -133,11 +141,11 @@
             acceptReporters: true,
             items: [
               {
-                text: "enabled",
+                text: Scratch.translate("enabled"),
                 value: "true",
               },
               {
-                text: "disabled",
+                text: Scratch.translate("disabled"),
                 value: "false",
               },
             ],
@@ -147,7 +155,7 @@
     }
 
     setLocked(args) {
-      isPointerLockEnabled = args.enabled === "true";
+      isPointerLockEnabled = Scratch.Cast.toBoolean(args.enabled) === true;
       if (!isPointerLockEnabled && isLocked) {
         document.exitPointerLock();
       }

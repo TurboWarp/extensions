@@ -19,6 +19,10 @@
 
       this.createdImages = new Set();
       this.validImages = new Set();
+
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this.deleteAllImages();
+      });
     }
 
     getInfo() {
@@ -29,7 +33,7 @@
           {
             opcode: "getImage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "new image from URL [IMAGEURL]",
+            text: Scratch.translate("new image from URL [IMAGEURL]"),
             arguments: {
               IMAGEURL: {
                 type: Scratch.ArgumentType.STRING,
@@ -43,7 +47,7 @@
           {
             opcode: "penTrailsImage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "pen trails as image",
+            text: Scratch.translate("pen trails as image"),
             arguments: {},
             hideFromPalette: true,
           },
@@ -51,7 +55,7 @@
           {
             opcode: "queryImage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[QUERY] of image [IMG]",
+            text: Scratch.translate("[QUERY] of image [IMG]"),
             arguments: {
               QUERY: {
                 type: Scratch.ArgumentType.STRING,
@@ -71,7 +75,9 @@
           {
             opcode: "drawImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stamp image [IMG] at x: [X] y: [Y] x scale: [XSCALE] y scale: [YSCALE]",
+            text: Scratch.translate(
+              "stamp image [IMG] at x: [X] y: [Y] x scale: [XSCALE] y scale: [YSCALE]"
+            ),
             arguments: {
               IMG: {
                 // Intentional null input to require dropping a block in
@@ -100,7 +106,7 @@
           {
             opcode: "switchToImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "switch costume to image [IMG]",
+            text: Scratch.translate("switch costume to image [IMG]"),
             arguments: {
               IMG: {
                 // Intentional null input to require dropping a block in
@@ -112,20 +118,20 @@
           {
             opcode: "imageID",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current image ID",
+            text: Scratch.translate("current image ID"),
             arguments: {},
             disableMonitor: true,
           },
           {
             opcode: "resetCostume",
             blockType: Scratch.BlockType.COMMAND,
-            text: "switch back to costume",
+            text: Scratch.translate("switch back to costume"),
             arguments: {},
           },
           {
             opcode: "deleteImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete image [IMG]",
+            text: Scratch.translate("delete image [IMG]"),
             arguments: {
               IMG: {
                 type: null,
@@ -136,31 +142,50 @@
           {
             opcode: "deleteAllImages",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete all images",
+            text: Scratch.translate("delete all images"),
             arguments: {},
           },
         ],
         menus: {
           queryImage: {
             acceptReporters: false,
-            items: this._queryImageMenu(),
+            items: [
+              {
+                text: Scratch.translate("width"),
+                value: QueryImage.WIDTH,
+              },
+              {
+                text: Scratch.translate("height"),
+                value: QueryImage.HEIGHT,
+              },
+              {
+                text: Scratch.translate("top"),
+                value: QueryImage.TOP,
+              },
+              {
+                text: Scratch.translate("bottom"),
+                value: QueryImage.BOTTOM,
+              },
+              {
+                text: Scratch.translate("left"),
+                value: QueryImage.LEFT,
+              },
+              {
+                text: Scratch.translate("right"),
+                value: QueryImage.RIGHT,
+              },
+              {
+                text: Scratch.translate("rotation center x"),
+                value: QueryImage.ROTATION_CENTER_X,
+              },
+              {
+                text: Scratch.translate("rotation center y"),
+                value: QueryImage.ROTATION_CENTER_Y,
+              },
+            ],
           },
         },
       };
-    }
-
-    _queryImageMenu() {
-      const get = (param) => QueryImage[param];
-      return [
-        get("WIDTH"),
-        get("HEIGHT"),
-        get("TOP"),
-        get("BOTTOM"),
-        get("LEFT"),
-        get("RIGHT"),
-        get("ROTATION_CENTER_X"),
-        get("ROTATION_CENTER_Y"),
-      ];
     }
 
     _createdImage(id) {

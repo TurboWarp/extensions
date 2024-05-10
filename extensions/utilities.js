@@ -2,6 +2,7 @@
 // ID: utilities
 // Description: A bunch of interesting blocks.
 // Original: Sheep_maker <https://scratch.mit.edu/users/Sheep_maker/>
+// License: MIT AND MPL-2.0
 
 /*!
  * This is based on:
@@ -103,11 +104,13 @@
             opcode: "trueBlock",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "true",
+            disableMonitor: true,
           },
           {
             opcode: "falseBlock",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "false",
+            disableMonitor: true,
           },
           {
             opcode: "exponent",
@@ -148,6 +151,7 @@
                 defaultValue: "apple",
               },
             },
+            allowDropAnywhere: true,
           },
           {
             opcode: "letters",
@@ -277,11 +281,11 @@
     }
 
     isLessOrEqual({ A, B }) {
-      return A <= B;
+      return Scratch.Cast.compare(A, B) <= 0;
     }
 
     isMoreOrEqual({ A, B }) {
-      return A >= B;
+      return Scratch.Cast.compare(A, B) >= 0;
     }
 
     trueBlock() {
@@ -293,6 +297,8 @@
     }
 
     exponent({ A, B }) {
+      A = Scratch.Cast.toNumber(A);
+      B = Scratch.Cast.toNumber(B);
       return Math.pow(A, B);
     }
 
@@ -309,10 +315,13 @@
     }
 
     clamp({ INPUT, MIN, MAX }) {
+      INPUT = Scratch.Cast.toNumber(INPUT);
+      MIN = Scratch.Cast.toNumber(MIN);
+      MAX = Scratch.Cast.toNumber(MAX);
       if (MIN > MAX) {
-        return Scratch.Cast.toNumber(Math.min(Math.max(INPUT, MAX), MIN));
+        return Math.min(Math.max(INPUT, MAX), MIN);
       } else {
-        return Scratch.Cast.toNumber(Math.min(Math.max(INPUT, MIN), MAX));
+        return Math.min(Math.max(INPUT, MIN), MAX);
       }
     }
 

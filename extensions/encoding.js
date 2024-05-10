@@ -2,6 +2,7 @@
 // ID: Encoding
 // Description: Encode and decode strings into their unicode numbers, base 64, or URLs.
 // By: -SIPC-
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -414,7 +415,7 @@
     getInfo() {
       return {
         id: "Encoding",
-        name: "Encoding",
+        name: Scratch.translate("Encoding"),
         color1: "#6495ed",
         color2: "#739fee",
         color3: "#83aaf0",
@@ -424,7 +425,7 @@
           {
             opcode: "encode",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Encode [string] in [code]",
+            text: Scratch.translate("Encode [string] in [code]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -440,11 +441,11 @@
           {
             opcode: "decode",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Decode [string] with [code]",
+            text: Scratch.translate("Decode [string] with [code]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "VHVyYm9XYXJw",
+                defaultValue: btoa("apple"), // don't translate because btoa() will error in Chinese ...
               },
               code: {
                 type: Scratch.ArgumentType.STRING,
@@ -456,7 +457,7 @@
           {
             opcode: "hash",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Hash [string] with [hash]",
+            text: Scratch.translate("Hash [string] with [hash]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -475,7 +476,9 @@
           {
             opcode: "Conversioncodes",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Convert the character [string] to [CodeList]",
+            text: Scratch.translate(
+              "Convert the character [string] to [CodeList]"
+            ),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -491,7 +494,9 @@
           {
             opcode: "Restorecode",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[string] corresponding to the [CodeList] character",
+            text: Scratch.translate(
+              "[string] corresponding to the [CodeList] character"
+            ),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -510,7 +515,9 @@
           {
             opcode: "Randomstrings",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Randomly generated [position] character string",
+            text: Scratch.translate(
+              "Randomly generated [position] character string"
+            ),
             arguments: {
               position: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -521,7 +528,9 @@
           {
             opcode: "Fontgenerationstring",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Use [wordbank] to generate a random [position] character string",
+            text: Scratch.translate(
+              "Use [wordbank] to generate a random [position] character string"
+            ),
             arguments: {
               wordbank: {
                 type: Scratch.ArgumentType.STRING,

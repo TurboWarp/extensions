@@ -2,27 +2,10 @@
 // ID: nonameawagraph
 // Description: Blocks to compute lengths, angles, and areas in two dimensions.
 // By: NOname-awa
+// License: MIT
 
 (function (Scratch) {
   "use strict";
-  Scratch.translate.setup({
-    zh: {
-      name: "图形 2D",
-      line_section: "（[x1],[y1]）到（[x2],[y2]）的距离",
-      ray_direction: "（[x1],[y1]）到（[x2],[y2]）的方向",
-      triangle: "三角形（[x1],[y1]）（[x2],[y2]）（[x3],[y3]）的 [CS]",
-      triangle_s: "三角形 [s1] [s2] [s3] 的面积",
-      quadrilateral:
-        "四边形（[x1],[y1]）（[x2],[y2]）（[x3],[y3]）（[x4],[y4]）的 [CS]",
-      graph: "图形 [graph] 的 [CS]",
-      round: "[rd] 为 [a] 的圆的 [CS]",
-      pi: "派",
-      radius: "半径",
-      diameter: "直径",
-      area: "面积",
-      circumference: "周长",
-    },
-  });
   class graph {
     getInfo() {
       return {

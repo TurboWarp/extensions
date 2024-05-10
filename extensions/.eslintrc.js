@@ -84,6 +84,26 @@ module.exports = {
       {
         selector: 'Program > :not(ExpressionStatement[expression.type=CallExpression][expression.callee.type=/FunctionExpression/])',
         message: 'All extension code must be within (function (Scratch) { ... })(Scratch);'
+      },
+      {
+        selector: 'CallExpression[callee.object.object.name=Scratch][callee.object.property.name=translate][callee.property.name=setup]',
+        message: 'Do not call Scratch.translate.setup() yourself. Just use Scratch.translate() and let the build script handle it.'
+      },
+      {
+        selector: 'MethodDefinition[key.name=getInfo] Property[key.name=id][value.callee.property.name=translate]',
+        message: 'Do not translate extension ID'
+      },
+      {
+        selector: 'MethodDefinition[key.name=docsURI] Property[key.name=id][value.callee.property.name=translate]',
+        message: 'Do not translate docsURI'
+      },
+      {
+        selector: 'MethodDefinition[key.name=getInfo] Property[key.name=opcode][value.callee.property.name=translate]',
+        message: 'Do not translate block opcode'
+      },
+      {
+        selector: 'MemberExpression[object.name=window][property.name=vm]',
+        message: 'Use Scratch.vm instead of window.vm'
       }
     ]
   }

@@ -1,6 +1,7 @@
 // Name: Mouse Cursor
 // ID: MouseCursor
 // Description: Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -140,6 +141,19 @@
     return [+a || 0, +b || 0];
   };
 
+  /**
+   * @param {string} size eg. "48x84"
+   * @returns {string}
+   */
+  const formatUnreliableSize = (size) =>
+    Scratch.translate(
+      {
+        default: "{size} (unreliable)",
+        description: "[size] is replaced with a size in pixels such as '48x48'",
+      },
+      { size }
+    );
+
   const cursors = [
     "default",
     "pointer",
@@ -212,16 +226,22 @@
           scrollDistanceUp++;
         }
       }
+
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this.setCur({
+          cur: "default",
+        });
+      });
     }
     getInfo() {
       return {
         id: "MouseCursor",
-        name: "Mouse Cursor",
+        name: Scratch.translate("Mouse Cursor"),
         blocks: [
           {
             opcode: "setCur",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set cursor to [cur]",
+            text: Scratch.translate("set cursor to [cur]"),
             arguments: {
               cur: {
                 type: Scratch.ArgumentType.STRING,
@@ -233,7 +253,9 @@
           {
             opcode: "setCursorImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set cursor to current costume center: [position] max size: [size]",
+            text: Scratch.translate(
+              "set cursor to current costume center: [position] max size: [size]"
+            ),
             arguments: {
               position: {
                 type: Scratch.ArgumentType.STRING,
@@ -250,12 +272,12 @@
           {
             opcode: "hideCur",
             blockType: Scratch.BlockType.COMMAND,
-            text: "hide cursor",
+            text: Scratch.translate("hide cursor"),
           },
           {
             opcode: "getCur",
             blockType: Scratch.BlockType.REPORTER,
-            text: "cursor",
+            text: Scratch.translate("cursor"),
           },
           "---",
           {
@@ -323,11 +345,11 @@
             acceptReporters: true,
             items: [
               // [x, y] where x is [0=left, 100=right] and y is [0=top, 100=bottom]
-              { text: "top left", value: "0,0" },
-              { text: "top right", value: "100,0" },
-              { text: "bottom left", value: "0,100" },
-              { text: "bottom right", value: "100,100" },
-              { text: "center", value: "50,50" },
+              { text: Scratch.translate("top left"), value: "0,0" },
+              { text: Scratch.translate("top right"), value: "100,0" },
+              { text: Scratch.translate("bottom left"), value: "0,100" },
+              { text: Scratch.translate("bottom right"), value: "100,100" },
+              { text: Scratch.translate("center"), value: "50,50" },
             ],
           },
           imageSizes: {
@@ -341,9 +363,9 @@
               { text: "12x12", value: "12x12" },
               { text: "16x16", value: "16x16" },
               { text: "32x32", value: "32x32" },
-              { text: "48x48 (unreliable)", value: "48x48" },
-              { text: "64x64 (unreliable)", value: "64x64" },
-              { text: "128x128 (unreliable)", value: "128x128" },
+              { text: formatUnreliableSize("48x48"), value: "48x48" },
+              { text: formatUnreliableSize("64x64"), value: "64x64" },
+              { text: formatUnreliableSize("128x128"), value: "128x128" },
             ],
           },
           direction: {
