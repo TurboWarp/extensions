@@ -36,7 +36,6 @@
   IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   */
-  /* eslint-disable */
   const md5 = (function () {
     /**
      * Add integers, wrapping at 2^32.
@@ -409,7 +408,6 @@
 
     return md5;
   })();
-  /* eslint-enable */
 
   class Encoding {
     getInfo() {
