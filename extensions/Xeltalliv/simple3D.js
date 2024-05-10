@@ -1537,7 +1537,7 @@ void main() {
 			},
 			def: function({TEST, WRITE}) {
 				let test = Cast.toString(TEST);
-				if (!DepthTests[test]) test = "everything";
+				if (!Object.hasOwn(DepthTests, test)) return;
 				currentRenderTarget.setDepth(test, Cast.toBoolean(WRITE));
 				currentRenderTarget.updateDepth();
 			}
@@ -1999,7 +1999,7 @@ void main() {
 				},
 			},
 			def: function({NAME, INDICES, WEIGHTS, COUNT}, {target}) {
-				COUNT = Cast.toNumber(COUNT) | 0;
+				COUNT = Math.floor(Cast.toNumber(COUNT));
 				if (COUNT < 1 || COUNT > 4) return;
 				const mesh = meshes.get(Cast.toString(NAME));
 				let valueI = compact(target, [INDICES], Uint8Array), valueW;
@@ -2210,6 +2210,7 @@ void main() {
 				const mesh = meshes.get(Cast.toString(NAME));
 				const blending = Cast.toString(BLENDING);
 				if (!mesh) return;
+				if (!Object.hasOwn(Blendings, blending)) return;
 				mesh.myData.blending = blending;
 				mesh.update();
 			}
@@ -2232,6 +2233,7 @@ void main() {
 				const mesh = meshes.get(Cast.toString(NAME));
 				const culling = Cast.toString(CULLING);
 				if (!mesh) return;
+				if (!Object.hasOwn(Cullings, culling)) return;
 				mesh.myData.culling = culling;
 				mesh.update();
 			}
@@ -2329,8 +2331,8 @@ void main() {
 			},
 			def: function({NAME, START, END}, {target}) {
 				const mesh = meshes.get(Cast.toString(NAME));
-				const start = Cast.toNumber(START)-1;
-				const end = Cast.toNumber(END);
+				const start = Math.floor(Cast.toNumber(START))-1;
+				const end = Math.floor(Cast.toNumber(END));
 				if (!mesh) return;
 				mesh.myData.drawRange = [start, Math.max(0, end-start)];
 				mesh.update();
@@ -2976,7 +2978,7 @@ void main() {
 				},
 			},
 			def: function({TRANSFORM}, {target}) {
-				if (transforms[TRANSFORM]) {
+				if (Object.hasOwn(transforms, TRANSFORM)) {
 					selectedTransform = TRANSFORM;
 				}
 			}
@@ -3049,8 +3051,9 @@ void main() {
 				}
 			},
 			def: function({SOURCE}, util) {
+				if (!Object.hasOwn(externalTransforms, SOURCE)) return;
 				const src = externalTransforms[SOURCE];
-				if (src) transforms[selectedTransform] = src.get() ?? m4.identity();
+				transforms[selectedTransform] = src.get() ?? m4.identity();
 			}
 		},
 		{
@@ -3068,10 +3071,10 @@ void main() {
 				},
 			},
 			def: function({SRCLIST, POS}, {target}) {
-				const pos = Cast.toNumber(POS);
+				const pos = Math.floor(Cast.toNumber(POS));
 				const list = target.lookupVariableByNameAndType(Cast.toString(SRCLIST), "list");
 				if (!list) return;
-				if (pos < 1 || !Number.isFinite(pos)) return;
+				if (!Number.isFinite(pos) || pos < 1 || pos+15 > list.value.length) return;
 
 				transforms[selectedTransform] = list.value.slice(pos-1, pos+15).map(Cast.toNumber);
 			}
@@ -3183,7 +3186,7 @@ void main() {
 				},
 			},
 			def: function({DSTLIST, POS}, {target}) {
-				const pos = Cast.toNumber(POS) - 1;
+				const pos = Math.floor(Cast.toNumber(POS)) - 1;
 				const list = target.lookupVariableByNameAndType(Cast.toString(DSTLIST), "list");
 				if (!list) return;
 				if (pos < 0 || !Number.isFinite(pos)) return;
@@ -3517,6 +3520,7 @@ void main() {
 					return canv.toDataURL();
 				}
 				if (PROPERTY == "is valid for being drawn to") return currentRenderTarget.checkIfValid();
+				return "";
 			}
 		},
 		{
