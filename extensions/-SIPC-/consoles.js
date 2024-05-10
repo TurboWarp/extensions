@@ -25,13 +25,24 @@
           {
             opcode: "Emptying",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Clear Console"),
+            text: Scratch.translate("clear console"),
             arguments: {},
+          },
+          {
+            opcode: "Journal",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("log [string]"),
+            arguments: {
+              string: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("log"),
+              },
+            },
           },
           {
             opcode: "Information",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Information [string]"),
+            text: Scratch.translate("log information [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -40,20 +51,9 @@
             },
           },
           {
-            opcode: "Journal",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Journal [string]"),
-            arguments: {
-              string: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Journal"),
-              },
-            },
-          },
-          {
             opcode: "Warning",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Warning [string]"),
+            text: Scratch.translate("log warning [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -64,7 +64,7 @@
           {
             opcode: "Error",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Error [string]"),
+            text: Scratch.translate("log error [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -75,7 +75,7 @@
           {
             opcode: "debug",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Debug [string]"),
+            text: Scratch.translate("log debug [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -88,7 +88,7 @@
           {
             opcode: "group",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Create a group named [string]"),
+            text: Scratch.translate("create log group named [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -99,7 +99,7 @@
           {
             opcode: "groupCollapsed",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Create a collapsed group named [string]"),
+            text: Scratch.translate("create collapsed log group named [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -110,14 +110,14 @@
           {
             opcode: "groupEnd",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Exit the current group"),
+            text: Scratch.translate("exit current log group"),
             arguments: {},
           },
           "---",
           {
             opcode: "Timeron",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Start a timer named [string]"),
+            text: Scratch.translate("start log timer named [string]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -129,7 +129,7 @@
             opcode: "Timerlog",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Print the time run by the timer named [string]"
+              "print time of log timer named [string]"
             ),
             arguments: {
               string: {
@@ -142,7 +142,7 @@
             opcode: "Timeroff",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "End the timer named [string] and print the time elapsed from start to end"
+              "end log timer named [string] and print time elapsed from start to end"
             ),
             arguments: {
               string: {
