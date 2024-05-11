@@ -266,6 +266,9 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## NexusKitten/moremotion.svg;
  - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1646987348
 
+## XmerOriginals/closecontrol.svg
+ - Created by [XmerStudio](https://github.com/XmerStudio) in https://github.com/TurboWarp/extensions/pull/1384
+
 ## Lily/AllMenus.svg
  - Created by [YogaindoCR](https://github.com/YogaindoCR) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1681839774
 
