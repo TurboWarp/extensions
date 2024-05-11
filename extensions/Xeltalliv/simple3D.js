@@ -568,7 +568,10 @@
 			}
 			this.myData.texture?.destroy();
 			for(const otherMesh of this.dependants) {
-				otherMesh.dependencies.delete(this.name);
+				otherMesh.dependencies.delete(this);
+			}
+			for(const otherMesh of this.dependencies) {
+				otherMesh.dependants.delete(this);
 			}
 			for(const otherMesh of this.dependants) {
 				otherMesh.update();
@@ -1608,6 +1611,9 @@ void main() {
 				const parentMeshes = Cast.toString(NAMES).split(",").map(s => meshes.get(s.trim())).filter(m => m);
 				for(let otherMesh of parentMeshes) {
 					if (otherMesh.dependsOn(mesh)) return;
+				}
+				for(let otherMesh of mesh.dependencies) {
+					otherMesh.dependants.delete(mesh);
 				}
 				mesh.dependencies = new Set(parentMeshes);
 				for(let otherMesh of parentMeshes) {
