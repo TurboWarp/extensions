@@ -1054,36 +1054,38 @@
         //determine the length of the array through type
         const split = searchResult.split(" ");
         const type = split.length < 4 ? split[1] : split[2];
-        let length = 3;
-        this.programs[shaderName].attribDat[attributeKey].type = type;
+        if (split && (split[1] || split[2])) {
+          let length = 3;
+          this.programs[shaderName].attribDat[attributeKey].type = type;
 
-        switch (type) {
-          case "vec2":
-            length = 6;
-            break;
+          switch (type) {
+            case "vec2":
+              length = 6;
+              break;
 
-          case "vec3":
-            length = 9;
-            break;
+            case "vec3":
+              length = 9;
+              break;
 
-          case "vec4":
-            length = 12;
-            break;
+            case "vec4":
+              length = 12;
+              break;
 
-          default:
-            break;
+            default:
+              break;
+          }
+
+          //Add data to data array.
+          for (let i = 0; i < length; i++) {
+            this.programs[shaderName].attribDat[attributeKey].data.push(0);
+          }
+
+          //Add the data to our buffer initilizer.
+          bufferInitilizer[attributeKey] = {
+            numComponents: Math.floor(length / 3),
+            data: this.programs[shaderName].attribDat[attributeKey].data,
+          };
         }
-
-        //Add data to data array.
-        for (let i = 0; i < length; i++) {
-          this.programs[shaderName].attribDat[attributeKey].data.push(0);
-        }
-
-        //Add the data to our buffer initilizer.
-        bufferInitilizer[attributeKey] = {
-          numComponents: Math.floor(length / 3),
-          data: this.programs[shaderName].attribDat[attributeKey].data,
-        };
       });
 
       this.programs[shaderName].buffer = twgl.createBufferInfoFromArrays(
@@ -1128,62 +1130,64 @@
         //determine the type of the uniform
         const split = searchResult.split(" ");
         const type = split.length < 4 ? split[1] : split[2];
-        //Try to extract array data
-        const arrayLength = Scratch.Cast.toNumber(
-          (split.length < 4 ? split[2] : split[3])
-            .replace(uniformKey, "")
-            .replaceAll(/[[\];]/g, "")
-        );
+        if (split && (split[2] || split[3])) {
+          //Try to extract array data
+          const arrayLength = Scratch.Cast.toNumber(
+            (split.length < 4 ? split[2] : split[3])
+              .replace(uniformKey, "")
+              .replaceAll(/[[\];]/g, "")
+          );
 
-        this.programs[shaderName].uniformDec[uniformKey].type = type;
-        //Add data for array stuff
-        this.programs[shaderName].uniformDec[uniformKey].arrayLength =
-          arrayLength;
-        this.programs[shaderName].uniformDec[uniformKey].isArray =
-          arrayLength > 0;
+          this.programs[shaderName].uniformDec[uniformKey].type = type;
+          //Add data for array stuff
+          this.programs[shaderName].uniformDec[uniformKey].arrayLength =
+            arrayLength;
+          this.programs[shaderName].uniformDec[uniformKey].isArray =
+            arrayLength > 0;
 
-        if (arrayLength == 0) return;
+          if (arrayLength == 0) return;
 
-        const createArray = (lengthMul) => {
-          return Array.apply(null, Array(arrayLength * lengthMul)).map(() => {
-            return 0;
-          });
-        };
+          const createArray = (lengthMul) => {
+            return Array.apply(null, Array(arrayLength * lengthMul)).map(() => {
+              return 0;
+            });
+          };
 
-        switch (type) {
-          case "float":
-            this.programs[shaderName].uniformDec[uniformKey].arrayData =
-              createArray(1);
-            break;
+          switch (type) {
+            case "float":
+              this.programs[shaderName].uniformDec[uniformKey].arrayData =
+                createArray(1);
+              break;
 
-          case "int":
-            this.programs[shaderName].uniformDec[uniformKey].arrayData =
-              createArray(1);
-            break;
+            case "int":
+              this.programs[shaderName].uniformDec[uniformKey].arrayData =
+                createArray(1);
+              break;
 
-          case "vec2":
-            this.programs[shaderName].uniformDec[uniformKey].arrayData =
-              createArray(2);
-            break;
+            case "vec2":
+              this.programs[shaderName].uniformDec[uniformKey].arrayData =
+                createArray(2);
+              break;
 
-          case "vec3":
-            this.programs[shaderName].uniformDec[uniformKey].arrayData =
-              createArray(3);
-            break;
+            case "vec3":
+              this.programs[shaderName].uniformDec[uniformKey].arrayData =
+                createArray(3);
+              break;
 
-          case "vec4":
-            this.programs[shaderName].uniformDec[uniformKey].arrayData =
-              createArray(4);
-            break;
+            case "vec4":
+              this.programs[shaderName].uniformDec[uniformKey].arrayData =
+                createArray(4);
+              break;
 
-          default:
-            break;
+            default:
+              break;
+          }
+
+          //Data that will be sent to the GPU to initilize the array
+          //But we will keep it in the declaration
+          this.programs[shaderName].uniformDat[uniformKey] =
+            this.programs[shaderName].uniformDec[uniformKey].arrayData;
         }
-
-        //Data that will be sent to the GPU to initilize the array
-        //But we will keep it in the declaration
-        this.programs[shaderName].uniformDat[uniformKey] =
-          this.programs[shaderName].uniformDec[uniformKey].arrayData;
       });
     }
 
@@ -2947,6 +2951,7 @@
     //From lily's list tools... With permission of course.
     _getLists() {
       // @ts-expect-error - Blockly not typed yet
+      // eslint-disable-next-line no-undef
       const lists =
         typeof Blockly === "undefined"
           ? []
@@ -5392,6 +5397,7 @@
               );
             };
 
+            // eslint-disable-next-line
             image.src = costumeURI;
           }
         }
