@@ -197,7 +197,8 @@
                 text: Scratch.translate({
                   default: "added",
                   id: "added_field_added",
-                  description: "Used in the context 'when font is added', an event block"
+                  description:
+                    "Used in the context 'when font is added', an event block",
                 }),
                 value: "added",
               },
@@ -205,7 +206,8 @@
                 text: Scratch.translate({
                   default: "removed",
                   id: "added_field_removed",
-                  description: "Used in the context 'when font is removed', an event block"
+                  description:
+                    "Used in the context 'when font is removed', an event block",
                 }),
                 value: "removed",
               },
@@ -218,7 +220,8 @@
                 text: Scratch.translate({
                   default: "added",
                   id: "added_input_added",
-                  description: "Used in the context 'added fonts' for a block that reports a list of fonts that were just added"
+                  description:
+                    "Used in the context 'added fonts' for a block that reports a list of fonts that were just added",
                 }),
                 value: "added",
               },
@@ -226,7 +229,8 @@
                 text: Scratch.translate({
                   default: "removed",
                   id: "added_input_removed",
-                  description: "Used in the context 'removed fonts' for a block that reports a list of fonts that were just removed"
+                  description:
+                    "Used in the context 'removed fonts' for a block that reports a list of fonts that were just removed",
                 }),
                 value: "removed",
               },
