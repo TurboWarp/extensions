@@ -2,6 +2,7 @@
 // ID: xmerclosecontrol
 // Description: Ask before closing the tab.
 // By: XmerOriginals
+// License: MPL-2.0
 
 (function (Scratch) {
   "use strict";
