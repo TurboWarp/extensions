@@ -281,7 +281,13 @@
       );
     }
     ray_direction(args) {
-      return (Math.atan2(args.x2 - args.x1, args.y2 - args.y1) * 180) / Math.PI;
+      // Added by NexusKitten
+      // 由 NexusKitten 添加
+      const dx =
+        Scratch.Cast.toNumber(args.x2) - Scratch.Cast.toNumber(args.x1);
+      const dy =
+        Scratch.Cast.toNumber(args.y2) - Scratch.Cast.toNumber(args.y1);
+      return (Math.atan2(dx, dy) * 180) / Math.PI;
     }
     vertical(args) {
       if (isNaN(args.a) || isNaN(args.b)) {
