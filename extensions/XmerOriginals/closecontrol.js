@@ -1,6 +1,6 @@
-// Name: Close Control
+// Name: Ask Before Closing Tab
 // ID: xmerclosecontrol
-// Description: Ask before closing the tab.
+// Description: Show a prompt when someone tries to close the tab.
 // By: XmerOriginals
 // License: MPL-2.0
 
@@ -19,7 +19,7 @@
     getInfo() {
       return {
         id: "xmerclosecontrol",
-        name: Scratch.translate("Close Control"),
+        name: Scratch.translate("Ask Before Closing Tab"),
         blocks: [
           {
             opcode: "setControl",
@@ -35,7 +35,7 @@
           {
             opcode: "getControl",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is close control enabled?"),
+            text: Scratch.translate("ask before closing tab enabled?"),
           },
         ],
         menus: {
