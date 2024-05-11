@@ -58,7 +58,7 @@
           {
             opcode: "fontNames",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("added font names"),
+            text: Scratch.translate("all custom fonts"),
             disableMonitor: true,
           },
           {
@@ -109,7 +109,7 @@
             opcode: "addCustomFont",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "add custom font named [NAME] with fallback [BACKUP] from URL [URL]"
+              "add font named [NAME] with fallback [BACKUP] from URL [URL]"
             ),
             arguments: {
               NAME: {
@@ -129,7 +129,7 @@
           {
             opcode: "removeFont",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove font [NAME]",
+            text: Scratch.translate("remove font [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -140,13 +140,13 @@
           {
             opcode: "removeAllFonts",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove all fonts",
+            text: Scratch.translate("remove all fonts"),
           },
           "---",
           {
             opcode: "whenFont",
             blockType: Scratch.BlockType.EVENT,
-            text: "when font is [ADDED]",
+            text: Scratch.translate("when font is [ADDED]"),
             isEdgeActivated: false,
             arguments: {
               ADDED: {
@@ -159,7 +159,7 @@
             disableMonitor: true,
             opcode: "fontsChanged",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[ADDED] fonts",
+            text: Scratch.translate("[ADDED] fonts"),
             arguments: {
               ADDED: {
                 type: Scratch.ArgumentType.STRING,
@@ -194,11 +194,21 @@
             acceptReporters: false,
             items: [
               {
-                text: Scratch.translate("added"),
+                text: Scratch.translate({
+                  default: "added",
+                  id: "added_field_added",
+                  description:
+                    "Used in the context 'when font is added', an event block",
+                }),
                 value: "added",
               },
               {
-                text: Scratch.translate("removed"),
+                text: Scratch.translate({
+                  default: "removed",
+                  id: "added_field_removed",
+                  description:
+                    "Used in the context 'when font is removed', an event block",
+                }),
                 value: "removed",
               },
             ],
@@ -207,11 +217,21 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("added"),
+                text: Scratch.translate({
+                  default: "added",
+                  id: "added_input_added",
+                  description:
+                    "Used in the context 'added fonts' for a block that reports a list of fonts that were just added",
+                }),
                 value: "added",
               },
               {
-                text: Scratch.translate("removed"),
+                text: Scratch.translate({
+                  default: "removed",
+                  id: "added_input_removed",
+                  description:
+                    "Used in the context 'removed fonts' for a block that reports a list of fonts that were just removed",
+                }),
                 value: "removed",
               },
             ],
