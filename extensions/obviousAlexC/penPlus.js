@@ -2950,7 +2950,6 @@
     }
     //From lily's list tools... With permission of course.
     _getLists() {
-      // eslint-disable-next-line no-undef
       const lists =
         typeof Blockly === "undefined"
           ? []
@@ -3723,7 +3722,7 @@
       //Just a simple thing to allow for pen drawing
       this.textureFunctions.createPenPlusTextureInfo(
         dataURI,
-        this.prefixes.penPlusTextures + name,
+        this.prefixes.penPlusTextures + name
       );
     }
 
