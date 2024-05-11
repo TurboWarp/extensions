@@ -281,7 +281,7 @@
       );
     }
     ray_direction(args) {
-      return Math.atan2(args.x2 - args.x1, args.y2 - args.y1) * 180 / Math.PI;
+      return (Math.atan2(args.x2 - args.x1, args.y2 - args.y1) * 180) / Math.PI;
     }
     vertical(args) {
       if (isNaN(args.a) || isNaN(args.b)) {
