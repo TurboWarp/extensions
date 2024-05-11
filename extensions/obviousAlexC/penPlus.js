@@ -2950,7 +2950,6 @@
     }
     //From lily's list tools... With permission of course.
     _getLists() {
-      // @ts-expect-error - Blockly not typed yet
       // eslint-disable-next-line no-undef
       const lists =
         typeof Blockly === "undefined"
@@ -3716,8 +3715,7 @@
         width,
         height,
         color,
-        this.prefixes.penPlusTextures + name,
-        gl.CLAMP_TO_EDGE
+        this.prefixes.penPlusTextures + name
       );
     }
 
@@ -3726,7 +3724,6 @@
       this.textureFunctions.createPenPlusTextureInfo(
         dataURI,
         this.prefixes.penPlusTextures + name,
-        gl.CLAMP_TO_EDGE
       );
     }
 
@@ -5397,7 +5394,6 @@
               );
             };
 
-            // eslint-disable-next-line
             image.src = costumeURI;
           }
         }
