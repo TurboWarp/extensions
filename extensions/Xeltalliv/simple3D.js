@@ -2355,8 +2355,8 @@ void main() {
 			},
 			def: function({NAME, START, END}, {target}) {
 				const mesh = meshes.get(Cast.toString(NAME));
-				const start = Math.floor(Cast.toNumber(START))-1;
-				const end = Math.floor(Cast.toNumber(END));
+				const start = Math.max(1, Math.floor(Cast.toNumber(START)))-1;
+				const end = Math.max(0, Math.floor(Cast.toNumber(END)));
 				if (!mesh) return;
 				mesh.myData.drawRange = [start, Math.max(0, end-start)];
 				mesh.update();
