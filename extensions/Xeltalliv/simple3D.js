@@ -600,7 +600,7 @@
 		"texture depth test": mesh => mesh.data.texture?.depthTest,
 		"texture is 2D": mesh => mesh.data.texture instanceof Texture2D,
 		"texture is cube": mesh => mesh.data.texture instanceof TextureCube,
-		"texture is loading": mesh => mesh.data.texture.isLoading(),
+		"texture is loading": mesh => mesh.data.texture?.isLoading?.(),
 
 		"primitive type": mesh => mesh.data.primitivesName ?? "triangles",
 		"blending type": mesh => mesh.data.blending ?? "default",
