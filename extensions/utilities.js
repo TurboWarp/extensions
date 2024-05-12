@@ -105,7 +105,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate({
               default: "true",
-              description: "Block that returns true"
+              description: "Block that returns true",
             }),
             disableMonitor: true,
           },
@@ -114,7 +114,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate({
               default: "false",
-              description: "Block that returns false"
+              description: "Block that returns false",
             }),
             disableMonitor: true,
           },
@@ -138,7 +138,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               default: "pi",
-              description: "Block that returns 3.1415..."
+              description: "Block that returns 3.1415...",
             }),
           },
           {
@@ -229,7 +229,8 @@
 
             text: Scratch.translate({
               default: "[PATH] of [JSON_STRING]",
-              description: "PATH is a string like \"fruit/apples\" and JSON_STRING is an object like {\"fruit\":{\"apples\":3}}. 3 would be reported in this example."
+              description:
+                'PATH is a string like "fruit/apples" and JSON_STRING is an object like {"fruit":{"apples":3}}. 3 would be reported in this example.',
             }),
             arguments: {
               PATH: {
