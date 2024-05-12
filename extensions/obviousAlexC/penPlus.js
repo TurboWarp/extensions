@@ -805,6 +805,7 @@
           Scratch.canFetch(url).then((allowed) => {
             if (!allowed) {
               reject(false);
+              return;
             }
             // Permission is checked earlier.
             // eslint-disable-next-line no-restricted-syntax
