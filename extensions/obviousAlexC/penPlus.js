@@ -947,8 +947,8 @@
     culling = false;
     cullMode = 0;
 
-    shaders = {};
-    programs = {};
+    shaders = Object.create(null);
+    programs = Object.create(null);
 
     extensionVersion = "7.0.0";
 
@@ -957,7 +957,7 @@
       renderTextures: "",
     };
 
-    renderTextures = {};
+    renderTextures = Object.create(null);
     currentRenderTexture = triBufferInfo;
 
     blockIcons = {
