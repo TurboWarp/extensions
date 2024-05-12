@@ -388,7 +388,7 @@
 			gl.texParameterf(this.target, ext_af.TEXTURE_MAX_ANISOTROPY_EXT, value);
 		}
 		maybeRegenMipmap() {
-			if ((this.mipEnabled || this.anisotropy > 1) && !this.isLoading()) {
+			if ((this.mipEnabled || this.anisotropy > 1) && !this.isLoading() && !this.hasFailedToLoad()) {
 				gl.generateMipmap(this.target);
 			}
 		}
@@ -405,6 +405,12 @@
 		isLoading() { // TODO: optimize: make sides report their state changes, rather than asking them every time
 			for (const side of this.sides) {
 				if (side.loading) return true;
+			}
+			return false;
+		}
+		hasFailedToLoad() {
+			for (const side of this.sides) {
+				if (side.failedToLoad) return true;
 			}
 			return false;
 		}
@@ -440,6 +446,7 @@
 			this.depthTexture = null;
 			this.framebuffer = null;
 			this.loading = false;
+			this.failedToLoad = false;
 			this.uninitialized = true;
 		}
 		resetTexture(width, height) {
@@ -454,6 +461,7 @@
 		setTexture(data, width, height, wrap, filter) {
 			this.uninitialized = false;
 			this.loading = false;
+			this.failedToLoad = false;
 			this.shared.bindTexture();
 			if (data instanceof HTMLImageElement || data instanceof HTMLCanvasElement) {
 				gl.texImage2D(this.target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data);
@@ -601,6 +609,7 @@
 		"texture is 2D": mesh => mesh.data.texture instanceof Texture2D,
 		"texture is cube": mesh => mesh.data.texture instanceof TextureCube,
 		"texture is loading": mesh => mesh.data.texture?.isLoading?.(),
+		"texture has failed to load": mesh => mesh.data.texture?.hasFailedToLoad?.(),
 
 		"primitive type": mesh => mesh.data.primitivesName ?? "triangles",
 		"blending type": mesh => mesh.data.blending ?? "default",
@@ -1838,9 +1847,14 @@ void main() {
 				let textureObj = mesh.myData.texture ?? (mesh.myData.texture = new Texture2D(mesh));
 				if (!(textureObj instanceof Texture2D)) return;
 				textureObj.main.loading = true;
+				textureObj.main.failedToLoad = false;
 				mesh.update();
 				const onData = function(data) {
-					if (data == null || mesh.destroyed) return;
+					if (data == null || mesh.destroyed) {
+						textureObj.main.loading = false;
+						textureObj.main.failedToLoad = true;
+						return;
+					}
 					textureObj.main.setTexture(data.data, data.width, data.height, wrap, filter);
 				}
 				if (imageSourceSync) {
@@ -1922,9 +1936,14 @@ void main() {
 				}
 				if (!Object.hasOwn(lookup, SIDE)) return;
 				textureObj[lookup[SIDE]].loading = true;
+				textureObj[lookup[SIDE]].failedToLoad = false;
 				mesh.update();
 				const onData = function(data) {
-					if (data == null || mesh.destroyed) return;
+					if (data == null || mesh.destroyed) {
+						textureObj[lookup[SIDE]].loading = false;
+						textureObj[lookup[SIDE]].failedToLoad = true;
+						return;
+					}
 					textureObj[lookup[SIDE]].setTexture(data.data, data.width, data.height, wrap, filter);
 				}
 				if (imageSourceSync) {
