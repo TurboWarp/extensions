@@ -4767,7 +4767,7 @@
 
       topText.style.fontSize = "24px";
 
-      topText.innerHTML = "Shader Manager";
+      topText.textContent = "Shader Manager";
 
       shaderManager.appendChild(topText);
 
@@ -4844,7 +4844,7 @@
           shaderManager.style.height = height >= width ? "auto" : height + "%";
         },
         nameFunc: (name) => {
-          topText.innerHTML = name;
+          topText.textContent = name;
         },
       };
     }
@@ -4967,7 +4967,7 @@
 
           menuSpecificVars.existingText.style.fontSize = "16px";
 
-          menuSpecificVars.existingText.innerHTML = "Project Shaders";
+          menuSpecificVars.existingText.textContent = "Project Shaders";
 
           menuSpecificVars.existingShaderHolder.appendChild(
             menuSpecificVars.existingText
@@ -5065,7 +5065,7 @@
 
           menuSpecificVars.existingText.style.fontSize = "16px";
 
-          menuSpecificVars.existingText.innerHTML = "Project Shaders";
+          menuSpecificVars.existingText.textContent = "Project Shaders";
 
           menuSpecificVars.existingShaderHolder.appendChild(
             menuSpecificVars.existingText
@@ -5207,7 +5207,7 @@
 
           menuSpecificVars.existingText.style.fontSize = "16px";
 
-          menuSpecificVars.existingText.innerHTML = "Project Shaders";
+          menuSpecificVars.existingText.textContent = "Project Shaders";
 
           menuSpecificVars.existingShaderHolder.appendChild(
             menuSpecificVars.existingText
