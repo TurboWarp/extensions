@@ -3,7 +3,7 @@
 // Description: Display Text in Your Projects!
 // By: SharkPool
 
-// Version V.1.3.4
+// Version V.1.4.0
 
 (function (Scratch) {
   "use strict";
@@ -17,10 +17,11 @@
 
   const render = Scratch.vm.renderer;
   let allText = [];
+  let clickedTxts = [];
   let lastRecdVals = {};
   const fontMenu = [
-    "Sans Serif", "Serif", "Handwriting",
-    "Marker", "Curly", "Pixel"
+    "Scratch", "Sans Serif", "Serif",
+    "Handwriting", "Marker", "Curly", "Pixel"
   ];
 
   const xmlEscape = function (unsafe) {
@@ -84,6 +85,14 @@
             },
           },
           {
+            opcode: "resetTxt",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "reset text settings with ID [ID]",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" }
+            },
+          },
+          {
             opcode: "removeAllTxt",
             blockType: Scratch.BlockType.COMMAND,
             text: "remove all text"
@@ -109,15 +118,6 @@
             opcode: "allIDs",
             blockType: Scratch.BlockType.REPORTER,
             text: "all text IDs"
-          },
-          "---",
-          {
-            opcode: "debug",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "toggle debug mode [TOGGLE]",
-            arguments: {
-              TOGGLE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" }
-            },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Formatting" },
           {
@@ -203,7 +203,7 @@
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" }
             },
           },
-          { blockType: Scratch.BlockType.LABEL, text: "Text Visuals" },
+          "---",
           {
             opcode: "setTextColor",
             blockType: Scratch.BlockType.COMMAND,
@@ -345,6 +345,32 @@
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" }
             },
           },
+          { blockType: Scratch.BlockType.LABEL, text: "Advanced" },
+          {
+            opcode: "debug",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "toggle debug mode [TOGGLE]",
+            arguments: {
+              TOGGLE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" }
+            },
+          },
+          {
+            opcode: "makeClick",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "toggle clicking for ID [ID] [TYPE]",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" }
+            },
+          },
+          {
+            opcode: "isClicked",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "ID [ID] clicked?",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" }
+            },
+          }
         ],
         menus: {
           TOGGLE: ["on", "off"],
@@ -408,7 +434,7 @@
               { text: "scale x", value: "scaleX" },
               { text: "scale y", value: "scaleY" },
               { text: "skew x", value: "skewX" },
-              { text: "skew y", value: "skewY" },
+              { text: "skew y", value: "skewY" }
             ]
           }
         }
@@ -455,11 +481,14 @@
 
     printTxt(args) {
       args.ID = this.fixID(args.ID);
+      const textDiv = document.createElement("div");
+      textDiv.style.transformOrigin = "left top";
       const newTextElement = document.createElement("div");
       newTextElement.innerHTML = xmlEscape(args.TXT).replace(/\n/g, "<br>");
       newTextElement.id = `SP_Text-Ext-${args.ID}`;
       newTextElement.classList.add(args.ID);
-      render.addOverlay(newTextElement, "scale-centered");
+      textDiv.appendChild(newTextElement);
+      render.addOverlay(textDiv, "scale-centered");
       allText.push(`#SP_Text-Ext-${args.ID}`);
       const box = newTextElement.getBoundingClientRect();
       if (lastRecdVals.textMAR === undefined) this.setMargins({ ID : args.ID, WIDTH : box.width / 2, HEIGHT : box.height });
@@ -494,18 +523,29 @@
       args.ID = this.fixID(args.ID);
       const elementsToRemove = document.querySelectorAll(`#SP_Text-Ext-${args.ID}`);
       elementsToRemove.forEach((element) => {
-        render.removeOverlay(element);
+        render.removeOverlay(element.parentNode);
+        element.removeEventListener("click", this.handleClick);
         const index = allText.indexOf(`#SP_Text-Ext-${args.ID}`);
         if (index !== -1) allText.splice(index, 1);
+      });
+    }
+
+    resetTxt(args) {
+      Object.keys(lastRecdVals).forEach(key => {
+        if (lastRecdVals[key].inputs.ID === args.ID) delete lastRecdVals[key];
       });
     }
 
     removeAllTxt() {
       for (let i = 0; i < allText.length; i++) {
         const elementsToRemove = document.querySelectorAll(allText[i]);
-        elementsToRemove.forEach((element) => { render.removeOverlay(element) });
+        elementsToRemove.forEach((element) => {
+          render.removeOverlay(element.parentNode)
+          element.removeEventListener("click", this.handleClick);
+        });
       }
       allText = [];
+      clickedTxts = [];
     }
 
     displayedTexts(args) {
@@ -889,6 +929,29 @@
         wave : `<svg><path d="M24.4375,98.67214c0,0 38.3049,-22.48612 65.97496,-23c27.67006,-0.51388 44.8836,19.04663 76.52154,23.35359c37.46107,5.09968 76.066,-17.35359 76.066,-17.35359"/></svg>`
       };
       return presets[args.ARC];
+    }
+
+    makeClick(args) {
+      const elements = document.querySelectorAll(`#SP_Text-Ext-${this.fixID(args.ID)}`);
+      elements.forEach((element) => {
+        if (args.TYPE === "on") {
+          element.style.pointerEvents = "auto";
+          element.style.cursor = "pointer";
+        } else {
+          element.style.pointerEvents = "none";
+          element.style.cursor = "none";
+        }
+        element.removeEventListener("click", this.handleClick);
+        if (args.TYPE === "on") element.addEventListener("click", this.handleClick);
+      });
+    }
+
+    isClicked(args) { return clickedTxts.indexOf(this.fixID(args.ID)) > -1 }
+
+    handleClick(event) {
+      clickedTxts.push(event.target.className);
+      const index = clickedTxts.length - 1;
+      setTimeout(function() { clickedTxts.splice(index, 1) }, 100);
     }
   }
 
