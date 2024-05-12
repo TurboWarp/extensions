@@ -28,7 +28,7 @@
     getInfo() {
       return {
         id: "images",
-        name: "Images",
+        name: Scratch.translate("Images"),
         blocks: [
           {
             opcode: "getImage",
