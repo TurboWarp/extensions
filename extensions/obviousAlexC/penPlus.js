@@ -3885,7 +3885,13 @@
     }
 
     //?Custom Shaders
-    openShaderEditor() {
+    async openShaderEditor() {
+      const frameSource = "https://pen-group.github.io/penPlus-shader-editor/Source/";
+
+      if (!await Scratch.canEmbed(frameSource)) {
+        return;
+      }
+
       const bgFade = document.createElement("div");
       bgFade.style.width = "100%";
       bgFade.style.height = "100%";
@@ -3961,8 +3967,7 @@
         }, 16);
       };
 
-      this.IFrame.src =
-        "https://pen-group.github.io/penPlus-shader-editor/Source/";
+      this.IFrame.src = frameSource;
 
       //Popup animation
       document.body.style.overflowY = "hidden";
