@@ -2636,7 +2636,10 @@ void main() {
 				imageSourceSync = null;
 				imageSource = new Promise((resolve, reject) => {
 					Scratch.canFetch(TEXURL).then((result) => {
-						if (!result) return;
+						if (!result) {
+							resolve(null);
+							return;
+						}
 						// eslint-disable-next-line no-restricted-syntax
 						const img = new Image();
 						if ((new URL(TEXURL, window.location.href)).origin !== window.location.origin) {
@@ -2654,7 +2657,9 @@ void main() {
 						img.onerror = function() {
 							resolve(null);
 						}
-					}).catch(() => {});
+					}).catch(() => {
+						resolve(null);
+					});
 				});
 				return "[texture data]";
 			}
