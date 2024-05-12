@@ -3887,9 +3887,10 @@
 
     //?Custom Shaders
     async openShaderEditor() {
-      const frameSource = "https://pen-group.github.io/penPlus-shader-editor/Source/";
+      const frameSource =
+        "https://pen-group.github.io/penPlus-shader-editor/Source/";
 
-      if (!await Scratch.canEmbed(frameSource)) {
+      if (!(await Scratch.canEmbed(frameSource))) {
         return;
       }
 
@@ -4067,7 +4068,8 @@
       gl.useProgram(this.programs[shader].info.program);
 
       //Just use the real scratch timer.
-      this.programs[shader].uniformDat.u_timer = runtime.ioDevices.clock.projectTimer();
+      this.programs[shader].uniformDat.u_timer =
+        runtime.ioDevices.clock.projectTimer();
       this.programs[shader].uniformDat.u_transform = transform_Matrix;
       this.programs[shader].uniformDat.u_res = nativeSize;
 
@@ -4207,7 +4209,8 @@
       gl.useProgram(this.programs[shader].info.program);
 
       //Just use the real scratch timer.
-      this.programs[shader].uniformDat.u_timer = runtime.ioDevices.clock.projectTimer();
+      this.programs[shader].uniformDat.u_timer =
+        runtime.ioDevices.clock.projectTimer();
       this.programs[shader].uniformDat.u_transform = transform_Matrix;
       this.programs[shader].uniformDat.u_res = nativeSize;
 
