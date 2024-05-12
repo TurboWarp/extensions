@@ -375,7 +375,6 @@
 			if (ext_af) gl.texParameterf(this.target, ext_af.TEXTURE_MAX_ANISOTROPY_EXT, this.anisotropy);
 		}
 		setMipmapState(enabled, filter) {
-			if (enabled && !this.isLoading()) gl.generateMipmap(this.target);
 			this.mipEnabled = enabled;
 			this.mipFilter = filter;
 			this.update();
