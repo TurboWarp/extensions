@@ -4066,8 +4066,7 @@
       gl.useProgram(this.programs[shader].info.program);
 
       //Just use the real scratch timer.
-      this.programs[shader].uniformDat.u_timer =
-        runtime.ext_scratch3_sensing.getTimer({}, util);
+      this.programs[shader].uniformDat.u_timer = runtime.ioDevices.clock.projectTimer();
       this.programs[shader].uniformDat.u_transform = transform_Matrix;
       this.programs[shader].uniformDat.u_res = nativeSize;
 
@@ -4207,8 +4206,7 @@
       gl.useProgram(this.programs[shader].info.program);
 
       //Just use the real scratch timer.
-      this.programs[shader].uniformDat.u_timer =
-        runtime.ext_scratch3_sensing.getTimer({}, util);
+      this.programs[shader].uniformDat.u_timer = runtime.ioDevices.clock.projectTimer();
       this.programs[shader].uniformDat.u_transform = transform_Matrix;
       this.programs[shader].uniformDat.u_res = nativeSize;
 
