@@ -1503,33 +1503,37 @@ void main() {
     "mask": [true, gl.ZERO, gl.SRC_ALPHA, gl.ZERO, gl.SRC_ALPHA, gl.FUNC_ADD],
     "erase": [true, gl.ZERO, gl.ONE_MINUS_SRC_ALPHA, gl.ZERO, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
   };
+  // prettier-ignore
   const Cullings = {
-    nothing: [false],
+    "nothing": [false],
     "back faces": [true, gl.BACK],
     "front faces": [true, gl.FRONT],
   };
+  // prettier-ignore
   const DepthTests = {
-    nothing: gl.NEVER,
-    closer: gl.LESS,
-    same: gl.EQUAL,
-    further: gl.GREATER,
+    "nothing": gl.NEVER,
+    "closer": gl.LESS,
+    "same": gl.EQUAL,
+    "further": gl.GREATER,
     "closer or same": gl.LEQUAL,
     "further or same": gl.GEQUAL,
     "not same": gl.NOTEQUAL,
-    everything: gl.ALWAYS,
+    "everything": gl.ALWAYS,
   };
+  // prettier-ignore
   const Primitives = {
-    points: gl.POINTS,
-    lines: gl.LINES,
+    "points": gl.POINTS,
+    "lines": gl.LINES,
     "line loop": gl.LINE_LOOP,
     "line strip": gl.LINE_STRIP,
-    triangles: gl.TRIANGLES,
+    "triangles": gl.TRIANGLES,
     "triangle strip": gl.TRIANGLE_STRIP,
     "triangle fan": gl.TRIANGLE_FAN,
   };
+  // prettier-ignore
   const ClearLayers = {
-    color: gl.COLOR_BUFFER_BIT,
-    depth: gl.DEPTH_BUFFER_BIT,
+    "color": gl.COLOR_BUFFER_BIT,
+    "depth": gl.DEPTH_BUFFER_BIT,
     "color and depth": gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
   };
   const texture = getDefaultTexture();
