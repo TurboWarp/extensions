@@ -1843,7 +1843,7 @@ void main() {
 					defaultValue: "my mesh"
 				},
 				TEXTURE: {
-					type: ArgumentType.EMPTY,
+					type: null,
 				},
 				WRAP: {
 					type: ArgumentType.STRING,
@@ -1923,7 +1923,7 @@ void main() {
 					menu: "cubeSide"
 				},
 				TEXTURE: {
-					type: ArgumentType.EMPTY,
+					type: null,
 				},
 				WRAP: {
 					type: ArgumentType.STRING,
