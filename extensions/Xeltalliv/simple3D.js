@@ -3905,7 +3905,8 @@ void main() {
 				"Handwriting",
 				"Marker",
 				"Curly",
-				"Pixel"
+				"Pixel",
+				"Scratch"
 			];
 			// Based on https://github.com/TurboWarp/extensions/blob/a6f5944f52163792780ae550fbf2822ce425714d/extensions/lab/text.js#L1198-L1205
 			const customFonts = runtime.fontManager ? runtime.fontManager.getFonts().map((i) => ({
