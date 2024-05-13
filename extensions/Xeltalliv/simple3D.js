@@ -1470,7 +1470,10 @@ void main() {
 			def: function() {
 				const url = new URL(location);
 				url.searchParams.set("project_url","https://extensions.turbowarp.org/samples/Simple3D%20template.sb3");
-				Scratch.openWindow(url.href);
+				// Exempted from Scratch.openWindow as it is in response to a user gesture and it does not
+				// bring in third-party websites at all.
+				// eslint-disable-next-line no-restricted-syntax
+				window.open(url.href);
 			}
 		},
 		{
