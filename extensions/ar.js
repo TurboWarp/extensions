@@ -849,9 +849,9 @@
         // prettier-ignore
         xrCombinedMatrix?.slice() ?? [
           1, 0, 0, 0,
-          1, 0, 0, 0,
           0, 1, 0, 0,
-          0, 0, 1,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
         ]
       );
     },
@@ -863,9 +863,9 @@
         // prettier-ignore
         xrProjectionMatrix?.slice() ?? [
           1, 0, 0, 0,
-          1, 0, 0, 0,
           0, 1, 0, 0,
-          0, 0, 1,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
         ]
       );
     },
@@ -877,9 +877,9 @@
         // prettier-ignore
         xrTransform?.matrix?.slice() ?? [
           1, 0, 0, 0,
-          1, 0, 0, 0,
           0, 1, 0, 0,
-          0, 0, 1,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
         ]
       );
     },
@@ -891,9 +891,9 @@
         // prettier-ignore
         xrTransform?.inverse?.matrix?.slice() ?? [
           1, 0, 0, 0,
-          1, 0, 0, 0,
           0, 1, 0, 0,
-          0, 0, 1,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
         ]
       );
     },
