@@ -5,7 +5,7 @@
 // License: MPL-2.0 AND BSD-3-Clause
 // Version: 1.0.0
 
-(function(Scratch) {
+(function (Scratch) {
   "use strict";
 
   /*
@@ -13,7 +13,7 @@
    * All lessons can be found on https://github.com/gfxfundamentals/webgl-fundamentals/tree/master
    * licensed under BSD 3-Clause license
    */
-  
+
   /*
    * Copyright 2021 GFXFundamentals.
    * All rights reserved.
@@ -44,6 +44,7 @@
    * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
    * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    */
+  // prettier-ignore
   const m4 = {
     perspective(fieldOfViewInRadians, aspect, near, far) {
       const f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
@@ -295,7 +296,7 @@
     }
     getAspectRatio() {
       if (this.width == 0) return 1;
-      return this.width/this.height;
+      return this.width / this.height;
     }
     destroy() {
       this.destroyed = true;
@@ -359,8 +360,12 @@
     update() {
       let minFilter = this.filter;
       if (this.mipEnabled) {
-        const lookup = [[gl.NEAREST_MIPMAP_NEAREST, gl.NEAREST_MIPMAP_LINEAR], [gl.LINEAR_MIPMAP_NEAREST, gl.LINEAR_MIPMAP_LINEAR]];
-        minFilter = lookup[+(this.filter == gl.LINEAR)][+(this.mipFilter == gl.LINEAR)];
+        const lookup = [
+          [gl.NEAREST_MIPMAP_NEAREST, gl.NEAREST_MIPMAP_LINEAR],
+          [gl.LINEAR_MIPMAP_NEAREST, gl.LINEAR_MIPMAP_LINEAR],
+        ];
+        minFilter =
+          lookup[+(this.filter == gl.LINEAR)][+(this.mipFilter == gl.LINEAR)];
       }
       gl.bindTexture(this.target, this.texture);
       gl.texParameteri(this.target, gl.TEXTURE_WRAP_S, this.wrap);
@@ -381,7 +386,12 @@
       }
       this.update();
       this.maybeRegenMipmap();
-      if (ext_af) gl.texParameterf(this.target, ext_af.TEXTURE_MAX_ANISOTROPY_EXT, this.anisotropy);
+      if (ext_af)
+        gl.texParameterf(
+          this.target,
+          ext_af.TEXTURE_MAX_ANISOTROPY_EXT,
+          this.anisotropy
+        );
     }
     setMipmapState(enabled, filter) {
       this.mipEnabled = enabled;
@@ -397,7 +407,11 @@
       gl.texParameterf(this.target, ext_af.TEXTURE_MAX_ANISOTROPY_EXT, value);
     }
     maybeRegenMipmap() {
-      if ((this.mipEnabled || this.anisotropy > 1) && !this.isLoading() && !this.hasFailedToLoad()) {
+      if (
+        (this.mipEnabled || this.anisotropy > 1) &&
+        !this.isLoading() &&
+        !this.hasFailedToLoad()
+      ) {
         gl.generateMipmap(this.target);
       }
     }
@@ -411,7 +425,8 @@
         }
       }
     }
-    isLoading() { // TODO: optimize: make sides report their state changes, rather than asking them every time
+    isLoading() {
+      // TODO: optimize: make sides report their state changes, rather than asking them every time
       for (const side of this.sides) {
         if (side.loading) return true;
       }
@@ -444,7 +459,14 @@
       this.yneg = new TextureSide(this, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y);
       this.zpos = new TextureSide(this, gl.TEXTURE_CUBE_MAP_POSITIVE_Z);
       this.zneg = new TextureSide(this, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z);
-      this.sides = [this.xpos, this.xneg, this.ypos, this.yneg, this.zpos, this.zneg];
+      this.sides = [
+        this.xpos,
+        this.xneg,
+        this.ypos,
+        this.yneg,
+        this.zpos,
+        this.zneg,
+      ];
     }
   }
   class TextureSide extends RenderTarget {
@@ -460,10 +482,25 @@
     }
     resetTexture(width, height) {
       this.uninitialized = false;
-      gl.texImage2D(this.target, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+      gl.texImage2D(
+        this.target,
+        0,
+        gl.RGBA,
+        width,
+        height,
+        0,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        null
+      );
       if (this.depthTexture) {
         gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthTexture);
-        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT24, width, height);
+        gl.renderbufferStorage(
+          gl.RENDERBUFFER,
+          gl.DEPTH_COMPONENT24,
+          width,
+          height
+        );
       }
       if (currentRenderTarget == this) this.updateViewport();
     }
@@ -472,15 +509,33 @@
       this.loading = false;
       this.failedToLoad = false;
       this.shared.bindTexture();
-      if (data instanceof HTMLImageElement || data instanceof HTMLCanvasElement) {
+      if (
+        data instanceof HTMLImageElement ||
+        data instanceof HTMLCanvasElement
+      ) {
         gl.texImage2D(this.target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data);
       } else {
-        gl.texImage2D(this.target, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+        gl.texImage2D(
+          this.target,
+          0,
+          gl.RGBA,
+          width,
+          height,
+          0,
+          gl.RGBA,
+          gl.UNSIGNED_BYTE,
+          data
+        );
       }
       this.shared.setTextureProps(this, width, height, wrap, filter);
       if (this.depthTexture) {
         gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthTexture);
-        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT24, width, height);
+        gl.renderbufferStorage(
+          gl.RENDERBUFFER,
+          gl.DEPTH_COMPONENT24,
+          width,
+          height
+        );
       }
       if (currentRenderTarget == this) this.updateViewport();
     }
@@ -488,7 +543,13 @@
       if (this.framebuffer) return this.framebuffer;
       this.framebuffer = gl.createFramebuffer();
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, this.target, this.shared.texture, 0);
+      gl.framebufferTexture2D(
+        gl.FRAMEBUFFER,
+        gl.COLOR_ATTACHMENT0,
+        this.target,
+        this.shared.texture,
+        0
+      );
       return this.framebuffer;
     }
     createDepthBuffer() {
@@ -496,8 +557,18 @@
       gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
       this.depthTexture = gl.createRenderbuffer();
       gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthTexture);
-      gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT24, this.width, this.height);
-      gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthTexture);
+      gl.renderbufferStorage(
+        gl.RENDERBUFFER,
+        gl.DEPTH_COMPONENT24,
+        this.width,
+        this.height
+      );
+      gl.framebufferRenderbuffer(
+        gl.FRAMEBUFFER,
+        gl.DEPTH_ATTACHMENT,
+        gl.RENDERBUFFER,
+        this.depthTexture
+      );
     }
     get depthTest() {
       return this.shared.depthTest;
@@ -544,19 +615,19 @@
     update() {
       const buffers = {};
       const data = {};
-      for(const otherMesh of this.dependencies) {
+      for (const otherMesh of this.dependencies) {
         Object.assign(buffers, otherMesh.buffers);
         Object.assign(data, otherMesh.data);
       }
       this.buffers = Object.assign(buffers, this.myBuffers);
       this.data = Object.assign(data, this.myData);
-      for(const otherMesh of this.dependants) {
+      for (const otherMesh of this.dependants) {
         otherMesh.update();
       }
     }
     dependsOn(mesh) {
       if (mesh == this) return true;
-      for(const otherMesh of this.dependencies) {
+      for (const otherMesh of this.dependencies) {
         if (otherMesh.dependsOn(mesh)) return true;
       }
       return false;
@@ -565,7 +636,7 @@
       if (currentRenderTarget.getMesh() == this) return false;
       let length = -1;
       let lengthIns = -1;
-      for(const name in this.buffers) {
+      for (const name in this.buffers) {
         const buffer = this.buffers[name];
         if (buffer.type == 0) {
           if (length == -1) length = buffer.length;
@@ -579,60 +650,70 @@
       return true;
     }
     destroy() {
-      for(let name in this.myBuffers) {
+      for (let name in this.myBuffers) {
         this.myBuffers[name].destroy();
       }
       this.myData.texture?.destroy();
-      for(const otherMesh of this.dependants) {
+      for (const otherMesh of this.dependants) {
         otherMesh.dependencies.delete(this);
       }
-      for(const otherMesh of this.dependencies) {
+      for (const otherMesh of this.dependencies) {
         otherMesh.dependants.delete(this);
       }
-      for(const otherMesh of this.dependants) {
+      for (const otherMesh of this.dependants) {
         otherMesh.update();
       }
       //TODO: continue
     }
   }
   const MeshPropFns = {
-    "inherits from": mesh => Array.from(mesh.dependencies).map(m => m.name).join(","),
-    "is inherited by": mesh => Array.from(mesh.dependants).map(m => m.name).join(","),
-    "is valid for drawing": mesh => mesh.checkIfValid(),
-    "has vertex indices": mesh => !!mesh.buffers.indices,
-    "has positions": mesh => !!mesh.buffers.position,
-    "has colors": mesh => !!mesh.buffers.colors,
-    "has texture coordinates": mesh => !!mesh.buffers.texCoords,
-    "has bone indices/weights": mesh => !!mesh.buffers.boneIndices,
-    "has bones": mesh => !!mesh.data.bonesDiff,
-    "has instanced positions": mesh => !!mesh.buffers.instanceTransforms,
-    "has instanced colors": mesh => !!mesh.buffers.instanceColors,
-    "has instanced uvs": mesh => !!mesh.buffers.instanceUVOffsets,
+    "inherits from": (mesh) =>
+      Array.from(mesh.dependencies)
+        .map((m) => m.name)
+        .join(","),
+    "is inherited by": (mesh) =>
+      Array.from(mesh.dependants)
+        .map((m) => m.name)
+        .join(","),
+    "is valid for drawing": (mesh) => mesh.checkIfValid(),
+    "has vertex indices": (mesh) => !!mesh.buffers.indices,
+    "has positions": (mesh) => !!mesh.buffers.position,
+    "has colors": (mesh) => !!mesh.buffers.colors,
+    "has texture coordinates": (mesh) => !!mesh.buffers.texCoords,
+    "has bone indices/weights": (mesh) => !!mesh.buffers.boneIndices,
+    "has bones": (mesh) => !!mesh.data.bonesDiff,
+    "has instanced positions": (mesh) => !!mesh.buffers.instanceTransforms,
+    "has instanced colors": (mesh) => !!mesh.buffers.instanceColors,
+    "has instanced uvs": (mesh) => !!mesh.buffers.instanceUVOffsets,
 
-    "has texture": mesh => !!mesh.data.texture,
-    "texture width": mesh => mesh.data.texture?.width,
-    "texture height": mesh => mesh.data.texture?.height,
-    "texture stores depth": mesh => mesh.data.texture?.hasDepthBuffer,
-    "texture depth write": mesh => mesh.data.texture?.depthWrite,
-    "texture depth test": mesh => mesh.data.texture?.depthTest,
-    "texture is 2D": mesh => mesh.data.texture instanceof Texture2D,
-    "texture is cube": mesh => mesh.data.texture instanceof TextureCube,
-    "texture is loading": mesh => mesh.data.texture?.isLoading?.(),
-    "texture has failed to load": mesh => mesh.data.texture?.hasFailedToLoad?.(),
+    "has texture": (mesh) => !!mesh.data.texture,
+    "texture width": (mesh) => mesh.data.texture?.width,
+    "texture height": (mesh) => mesh.data.texture?.height,
+    "texture stores depth": (mesh) => mesh.data.texture?.hasDepthBuffer,
+    "texture depth write": (mesh) => mesh.data.texture?.depthWrite,
+    "texture depth test": (mesh) => mesh.data.texture?.depthTest,
+    "texture is 2D": (mesh) => mesh.data.texture instanceof Texture2D,
+    "texture is cube": (mesh) => mesh.data.texture instanceof TextureCube,
+    "texture is loading": (mesh) => mesh.data.texture?.isLoading?.(),
+    "texture has failed to load": (mesh) =>
+      mesh.data.texture?.hasFailedToLoad?.(),
 
-    "primitive type": mesh => mesh.data.primitivesName ?? "triangles",
-    "blending type": mesh => mesh.data.blending ?? "default",
-    "culling type": mesh => mesh.data.culling ?? "nothing",
-    "alpha threshold": mesh => mesh.data.alphaTest ?? 0,
-    "makes opaque": mesh => !!mesh.data.makeOpaque,
-    "has billboarding": mesh => !!mesh.data.billboarding,
-    "has vertex draw range": mesh => !!mesh.data.drawRange,
-    "vertex draw range start": mesh => mesh.data.drawRange && mesh.data.drawRange[0] + 1,
-    "vertex draw range end": mesh => mesh.data.drawRange && (mesh.data.drawRange[0] + mesh.data.drawRange[1]),
-    "vertex draw range length": mesh => mesh.data.drawRange && mesh.data.drawRange[1],
+    "primitive type": (mesh) => mesh.data.primitivesName ?? "triangles",
+    "blending type": (mesh) => mesh.data.blending ?? "default",
+    "culling type": (mesh) => mesh.data.culling ?? "nothing",
+    "alpha threshold": (mesh) => mesh.data.alphaTest ?? 0,
+    "makes opaque": (mesh) => !!mesh.data.makeOpaque,
+    "has billboarding": (mesh) => !!mesh.data.billboarding,
+    "has vertex draw range": (mesh) => !!mesh.data.drawRange,
+    "vertex draw range start": (mesh) =>
+      mesh.data.drawRange && mesh.data.drawRange[0] + 1,
+    "vertex draw range end": (mesh) =>
+      mesh.data.drawRange && mesh.data.drawRange[0] + mesh.data.drawRange[1],
+    "vertex draw range length": (mesh) =>
+      mesh.data.drawRange && mesh.data.drawRange[1],
 
-    "partial list update enabled": mesh => mesh.uploadOffset >= 0,
-  }
+    "partial list update enabled": (mesh) => mesh.uploadOffset >= 0,
+  };
   const workerSrc = `
   class OffModelImporter {
     constructor(dataRaw) {
@@ -786,20 +867,22 @@
   class ModelDecoder {
     constructor() {
       this.worker = null;
-      this.last = new Promise(res => res());
+      this.last = new Promise((res) => res());
       this.resolveFn = null;
     }
     async decode(type, array, importMatrix) {
       if (!this.worker) {
-        this.worker = new Worker(`data:text/javascript;base64,${btoa(workerSrc)}`);
+        this.worker = new Worker(
+          `data:text/javascript;base64,${btoa(workerSrc)}`
+        );
         this.worker.onmessage = this.handle.bind(this);
       }
       let onceDone;
       const previous = this.last;
-      this.last = new Promise(res => onceDone = res);
+      this.last = new Promise((res) => (onceDone = res));
       await previous;
-      this.worker.postMessage({type, array, importMatrix});
-      const output = await new Promise(res => this.resolveFn = res);
+      this.worker.postMessage({ type, array, importMatrix });
+      const output = await new Promise((res) => (this.resolveFn = res));
       onceDone();
       return output;
     }
@@ -819,17 +902,17 @@
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
       this._texture = texture;
       this._nativeSize = renderer.getNativeSize();
-      this._rotationCenter = [this._nativeSize[0]/2, this._nativeSize[1]/2];
-      renderer.on('NativeSizeChanged', this.onNativeSizeChanged.bind(this));
+      this._rotationCenter = [this._nativeSize[0] / 2, this._nativeSize[1] / 2];
+      renderer.on("NativeSizeChanged", this.onNativeSizeChanged.bind(this));
       const urq = renderer._updateRenderQuality.bind(renderer);
       renderer._updateRenderQuality = (...args) => {
         urq(args);
         this.resizeCanvas();
-      }
+      };
       this.resizeCanvas();
     }
     dispose() {
-      if(this._texture) {
+      if (this._texture) {
         this._renderer.gl.deleteTexture(this._texture);
         this._texture = null;
       }
@@ -845,25 +928,33 @@
       const gl = this._renderer.gl;
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
       gl.bindTexture(gl.TEXTURE_2D, this._texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        canvas
+      );
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
       this.emitWasAltered();
     }
     resizeCanvas() {
       if (renderer.useHighQualityRender) {
-        canvas.width  = renderer.canvas.width;
+        canvas.width = renderer.canvas.width;
         canvas.height = renderer.canvas.height;
       } else {
-        canvas.width  = this._nativeSize[0];
+        canvas.width = this._nativeSize[0];
         canvas.height = this._nativeSize[1];
       }
-      if (currentRenderTarget == canvasRenderTarget) currentRenderTarget.updateViewport();
+      if (currentRenderTarget == canvasRenderTarget)
+        currentRenderTarget.updateViewport();
       runtime.startHats(`${extensionId}_whenCanvasResized`);
       this.updateContent();
     }
     onNativeSizeChanged(event) {
       this._nativeSize = event.newSize;
-      this._rotationCenter = [this._nativeSize[0]/2, this._nativeSize[1]/2];
+      this._rotationCenter = [this._nativeSize[0] / 2, this._nativeSize[1] / 2];
       this.resizeCanvas();
     }
   }
@@ -872,10 +963,10 @@
     // To undertsand how this patch works, first understand how those are interconnected:
     // renderer._groupOrdering => renderer._layerGroups => renderer._drawList => renderer._allDrawables
     let index = renderer._groupOrdering.indexOf("video");
-    renderer._groupOrdering.splice(index+1, 0, "simple3D");
+    renderer._groupOrdering.splice(index + 1, 0, "simple3D");
     renderer._layerGroups["simple3D"] = {
       groupIndex: 0,
-      drawListOffset: renderer._layerGroups["video"].drawListOffset
+      drawListOffset: renderer._layerGroups["video"].drawListOffset,
     };
     for (let i = 0; i < renderer._groupOrdering.length; i++) {
       renderer._layerGroups[renderer._groupOrdering[i]].groupIndex = i;
@@ -890,16 +981,16 @@
     redraw();
 
     const drawOriginal = renderer.draw;
-    renderer.draw = function() {
-      if(this.dirty) redraw();
+    renderer.draw = function () {
+      if (this.dirty) redraw();
       drawOriginal.call(this);
-    }
+    };
 
     function redraw() {
       skin.updateContent(canvas);
       runtime.requestRedraw();
     }
-    
+
     publicApi.redraw = redraw;
   }
   const vshSrc = `
@@ -1128,7 +1219,8 @@ void main() {
 `;
   function compileProgram(flags) {
     console.log("Compiling program with flags:", flags);
-    const defines = "#version 300 es\n" + flags.map(flag => `#define ${flag}\n`).join("");
+    const defines =
+      "#version 300 es\n" + flags.map((flag) => `#define ${flag}\n`).join("");
     const vsh = gl.createShader(gl.VERTEX_SHADER);
     const fsh = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(vsh, defines + vshSrc);
@@ -1155,17 +1247,17 @@ void main() {
     gl.useProgram(program);
     const aloc = {};
     const numAttribs = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
-    for(let i = 0; i < numAttribs; i++) {
+    for (let i = 0; i < numAttribs; i++) {
       const info = gl.getActiveAttrib(program, i);
       aloc[info.name.split("[")[0]] = gl.getAttribLocation(program, info.name);
     }
     const uloc = {};
     const numUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-    for(let i = 0; i < numUniforms; i++) {
+    for (let i = 0; i < numUniforms; i++) {
       const info = gl.getActiveUniform(program, i);
       uloc[info.name.split("[")[0]] = gl.getUniformLocation(program, info.name);
     }
-    return {program, aloc, uloc}
+    return { program, aloc, uloc };
   }
   class ProgramManager {
     constructor() {
@@ -1173,14 +1265,14 @@ void main() {
     }
     get(flags) {
       const key = flags.join("-");
-      let program = this.programs[key]
+      let program = this.programs[key];
       if (program) return program;
-      program = compileProgram(flags)
+      program = compileProgram(flags);
       this.programs[key] = program;
       return program;
     }
     clear() {
-      for(const key in this.programs) {
+      for (const key in this.programs) {
         if (this.programs[key].program) {
           gl.deleteProgram(this.programs[key].program);
         }
@@ -1197,10 +1289,18 @@ void main() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     // eslint-disable-next-line no-restricted-syntax
     const image = new Image();
-    image.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAABg2lDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpUUqDnYQcchQneyiIo61FYpQIdQKrTqYvPQPmjQkKS6OgmvBwZ/FqoOLs64OroIg+APi7OCk6CIl3pcUWsT44PI+znvncN99gNCqMc3qSwCabpvZdFLMF1bF0CsEhAGqmMwsY16SMvBdX/cI8P0uzrP87/25BtWixYCASJxghmkTbxDPbtoG533iKKvIKvE58aRJDRI/cl3x+I1z2WWBZ0bNXDZFHCUWyz2s9DCrmBrxDHFM1XTKF/Ieq5y3OGu1Buv0yV8YKeory1ynGkMai1iCBBEKGqiiBhtx2nVSLGTpPOnjH3X9ErkUclXByLGAOjTIrh/8D37P1ipNT3lJkSTQ/+I4H+NAaBdoNx3n+9hx2idA8Bm40rv+eguY+yS92dViR8DQNnBx3dWUPeByBxh5MmRTdqUglVAqAe9n9E0FYPgWGFjz5tY5x+kDkKNZZW6Ag0NgokzZ6z7vDvfO7d87nfn9ACRZcoedT/mXAAAAGFBMVEVtbW11dXVtbf+EhIT/bW2goKBt/21t//8Qh6V7AAAACXBIWXMAABhMAAAYdAGfqEAgAAAAB3RJTUUH6AIIAA4YBFj9GAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABjSURBVAjXPctBDkAwFIThqdey91ygnIAoa9EzcIBGLyDS69MW/26+ZIAvZYwhZkbpNy/saKGOyUjmFeQ2J5Z+SUJNFi+TfK+/uKJCtENbhT2gYO7UNT+ie03nfoLqV4os4X/dFf0TKILDS0AAAAAASUVORK5CYII="
-    image.onload = function() {
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    }
+    image.src =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAABg2lDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpUUqDnYQcchQneyiIo61FYpQIdQKrTqYvPQPmjQkKS6OgmvBwZ/FqoOLs64OroIg+APi7OCk6CIl3pcUWsT44PI+znvncN99gNCqMc3qSwCabpvZdFLMF1bF0CsEhAGqmMwsY16SMvBdX/cI8P0uzrP87/25BtWixYCASJxghmkTbxDPbtoG533iKKvIKvE58aRJDRI/cl3x+I1z2WWBZ0bNXDZFHCUWyz2s9DCrmBrxDHFM1XTKF/Ieq5y3OGu1Buv0yV8YKeory1ynGkMai1iCBBEKGqiiBhtx2nVSLGTpPOnjH3X9ErkUclXByLGAOjTIrh/8D37P1ipNT3lJkSTQ/+I4H+NAaBdoNx3n+9hx2idA8Bm40rv+eguY+yS92dViR8DQNnBx3dWUPeByBxh5MmRTdqUglVAqAe9n9E0FYPgWGFjz5tY5x+kDkKNZZW6Ag0NgokzZ6z7vDvfO7d87nfn9ACRZcoedT/mXAAAAGFBMVEVtbW11dXVtbf+EhIT/bW2goKBt/21t//8Qh6V7AAAACXBIWXMAABhMAAAYdAGfqEAgAAAAB3RJTUUH6AIIAA4YBFj9GAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABjSURBVAjXPctBDkAwFIThqdey91ygnIAoa9EzcIBGLyDS69MW/26+ZIAvZYwhZkbpNy/saKGOyUjmFeQ2J5Z+SUJNFi+TfK+/uKJCtENbhT2gYO7UNT+ie03nfoLqV4os4X/dFf0TKILDS0AAAAAASUVORK5CYII=";
+    image.onload = function () {
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        image
+      );
+    };
     return texture;
   }
   /*
@@ -1208,49 +1308,52 @@ void main() {
    * - loops were unrolled
    * - Cast.toNumber was replaced with unary plus
    */
-  function compact(target, names, typedArray, scale=1) {
-    const lists = names.map(name => target.lookupVariableByNameAndType(name, "list"));
+  function compact(target, names, typedArray, scale = 1) {
+    const lists = names.map((name) =>
+      target.lookupVariableByNameAndType(name, "list")
+    );
     if (lists.includes(null)) return null;
     const targetLength = lists[0].value.length;
     const listCount = lists.length;
-    if (lists.find(list => list.value.length !== targetLength)) return null;
+    if (lists.find((list) => list.value.length !== targetLength)) return null;
     const value = new typedArray(targetLength * listCount);
     if (scale !== 1) {
       if (listCount == 1) {
         const list0 = lists[0].value;
-        for(let i=0; i<targetLength; i++) {
+        for (let i = 0; i < targetLength; i++) {
           value[i] = list0[i] * scale;
         }
       } else if (listCount == 2) {
         const list0 = lists[0].value;
         const list1 = lists[1].value;
-        for(let i=0, j=0; i<targetLength; i++, j+=2) {
+        for (let i = 0, j = 0; i < targetLength; i++, j += 2) {
           value[j] = list0[i] * scale;
-          value[j+1] = list1[i] * scale;
+          value[j + 1] = list1[i] * scale;
         }
       } else if (listCount == 3) {
         const list0 = lists[0].value;
         const list1 = lists[1].value;
         const list2 = lists[2].value;
-        for(let i=0, j=0; i<targetLength; i++, j+=3) {
+        for (let i = 0, j = 0; i < targetLength; i++, j += 3) {
           value[j] = list0[i] * scale;
-          value[j+1] = list1[i] * scale;
-          value[j+2] = list2[i] * scale;
+          value[j + 1] = list1[i] * scale;
+          value[j + 2] = list2[i] * scale;
         }
       } else if (listCount == 4) {
         const list0 = lists[0].value;
         const list1 = lists[1].value;
         const list2 = lists[2].value;
         const list3 = lists[3].value;
-        for(let i=0, j=0; i<targetLength; i++, j+=4) {
-          value[j  ] = list0[i] * scale;
-          value[j+1] = list1[i] * scale;
-          value[j+2] = list2[i] * scale;
-          value[j+3] = list3[i] * scale;
+        for (let i = 0, j = 0; i < targetLength; i++, j += 4) {
+          value[j] = list0[i] * scale;
+          value[j + 1] = list1[i] * scale;
+          value[j + 2] = list2[i] * scale;
+          value[j + 3] = list3[i] * scale;
         }
-      } else { // Unused
-        for(let i=0, j=0; i<targetLength; i++) {
-          for(let k=0; k<listCount; k++) {
+      } else {
+        // Unused
+        for (let i = 0, j = 0; i < targetLength; i++) {
+          for (let k = 0; k < listCount; k++) {
             value[j++] = lists[k].value[i] * scale;
           }
         }
@@ -1258,39 +1361,40 @@ void main() {
     } else {
       if (listCount == 1) {
         const list0 = lists[0].value;
-        for(let i=0; i<targetLength; i++) {
+        for (let i = 0; i < targetLength; i++) {
           value[i] = +list0[i];
         }
       } else if (listCount == 2) {
         const list0 = lists[0].value;
         const list1 = lists[1].value;
-        for(let i=0, j=0; i<targetLength; i++, j+=2) {
+        for (let i = 0, j = 0; i < targetLength; i++, j += 2) {
           value[j] = +list0[i];
-          value[j+1] = +list1[i];
+          value[j + 1] = +list1[i];
         }
       } else if (listCount == 3) {
         const list0 = lists[0].value;
         const list1 = lists[1].value;
         const list2 = lists[2].value;
-        for(let i=0, j=0; i<targetLength; i++, j+=3) {
-          value[j  ] = +list0[i];
-          value[j+1] = +list1[i];
-          value[j+2] = +list2[i];
+        for (let i = 0, j = 0; i < targetLength; i++, j += 3) {
+          value[j] = +list0[i];
+          value[j + 1] = +list1[i];
+          value[j + 2] = +list2[i];
         }
       } else if (listCount == 4) {
         const list0 = lists[0].value;
         const list1 = lists[1].value;
         const list2 = lists[2].value;
         const list3 = lists[3].value;
-        for(let i=0, j=0; i<targetLength; i++, j+=4) {
-          value[j  ] = +list0[i];
-          value[j+1] = +list1[i];
-          value[j+2] = +list2[i];
-          value[j+3] = +list3[i];
+        for (let i = 0, j = 0; i < targetLength; i++, j += 4) {
+          value[j] = +list0[i];
+          value[j + 1] = +list1[i];
+          value[j + 2] = +list2[i];
+          value[j + 3] = +list3[i];
         }
-      } else { // Unused
-        for(let i=0, j=0; i<targetLength; i++) {
-          for(let k=0; k<listCount; k++) {
+      } else {
+        // Unused
+        for (let i = 0, j = 0; i < targetLength; i++) {
+          for (let k = 0; k < listCount; k++) {
             value[j++] = +lists[k].value[i];
           }
         }
@@ -1304,7 +1408,7 @@ void main() {
     let maxNum = 0;
     let value = [];
     let restarts = [];
-    for(let i=0; i<list.value.length; i++) {
+    for (let i = 0; i < list.value.length; i++) {
       let num = Cast.toNumber(list.value[i]) - 1;
       if (num < 0) {
         restarts.push(i);
@@ -1324,15 +1428,23 @@ void main() {
       typedArray = Uint8Array;
       restartIndex = 255;
     }
-    for(let i of restarts) {
+    for (let i of restarts) {
       value[i] = restartIndex;
     }
     return new typedArray(value);
   }
-  function uploadBuffer(mesh, name, value, size, type, target=gl.ARRAY_BUFFER) {
+  function uploadBuffer(
+    mesh,
+    name,
+    value,
+    size,
+    type,
+    target = gl.ARRAY_BUFFER
+  ) {
     if (!mesh || !value) return;
     if (mesh.uploadOffset < 0) {
-      const buffer = mesh.myBuffers[name] ?? (mesh.myBuffers[name] = new Buffer(type));
+      const buffer =
+        mesh.myBuffers[name] ?? (mesh.myBuffers[name] = new Buffer(type));
       gl.bindBuffer(target, buffer.buffer);
       gl.bufferData(target, value, mesh.uploadUsage);
       buffer.size = size;
@@ -1341,13 +1453,23 @@ void main() {
       mesh.update();
     } else {
       const buffer = mesh.myBuffers[name];
-      if (!buffer || buffer.size !== size || mesh.uploadOffset * size + value.length > buffer.length * size) return;
+      if (
+        !buffer ||
+        buffer.size !== size ||
+        mesh.uploadOffset * size + value.length > buffer.length * size
+      )
+        return;
       gl.bindBuffer(target, buffer.buffer);
-      gl.bufferSubData(target, mesh.uploadOffset * size * value.BYTES_PER_ELEMENT, value);
+      gl.bufferSubData(
+        target,
+        mesh.uploadOffset * size * value.BYTES_PER_ELEMENT,
+        value
+      );
     }
   }
 
-  if (!Scratch.extensions.unsandboxed) throw new Error("Simple 3D extension must be run unsandboxed");
+  if (!Scratch.extensions.unsandboxed)
+    throw new Error("Simple 3D extension must be run unsandboxed");
 
   const ArgumentType = Scratch.ArgumentType;
   const BlockType = Scratch.BlockType;
@@ -1359,10 +1481,17 @@ void main() {
   const extensionId = "xeltallivSimple3D";
   const canvas = document.createElement("canvas");
   const gl = canvas.getContext("webgl2");
-  if (!gl) alert("Simple 3D extension failed to get WebGL2 conetxt. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2");
-  const ext_af = gl.getExtension("EXT_texture_filter_anisotropic") || gl.getExtension("MOZ_EXT_texture_filter_anisotropic") || gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+  if (!gl)
+    alert(
+      "Simple 3D extension failed to get WebGL2 conetxt. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2"
+    );
+  const ext_af =
+    gl.getExtension("EXT_texture_filter_anisotropic") ||
+    gl.getExtension("MOZ_EXT_texture_filter_anisotropic") ||
+    gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
   gl.enable(gl.DEPTH_TEST);
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+  // prettier-ignore
   const Blendings = {
     "overwrite color (fastest for opaque)": [false],
     "default": [true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
@@ -1375,40 +1504,42 @@ void main() {
     "erase": [true, gl.ZERO, gl.ONE_MINUS_SRC_ALPHA, gl.ZERO, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
   };
   const Cullings = {
-    "nothing": [false],
+    nothing: [false],
     "back faces": [true, gl.BACK],
     "front faces": [true, gl.FRONT],
   };
   const DepthTests = {
-    "nothing": gl.NEVER,
-    "closer": gl.LESS,
-    "same": gl.EQUAL,
-    "further": gl.GREATER,
+    nothing: gl.NEVER,
+    closer: gl.LESS,
+    same: gl.EQUAL,
+    further: gl.GREATER,
     "closer or same": gl.LEQUAL,
     "further or same": gl.GEQUAL,
     "not same": gl.NOTEQUAL,
-    "everything": gl.ALWAYS
-  }
+    everything: gl.ALWAYS,
+  };
   const Primitives = {
-    "points": gl.POINTS,
-    "lines": gl.LINES,
+    points: gl.POINTS,
+    lines: gl.LINES,
     "line loop": gl.LINE_LOOP,
     "line strip": gl.LINE_STRIP,
-    "triangles": gl.TRIANGLES,
+    triangles: gl.TRIANGLES,
     "triangle strip": gl.TRIANGLE_STRIP,
     "triangle fan": gl.TRIANGLE_FAN,
-  }
+  };
   const ClearLayers = {
-    "color": gl.COLOR_BUFFER_BIT,
-    "depth": gl.DEPTH_BUFFER_BIT,
-    "color and depth": (gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT),
-  }
+    color: gl.COLOR_BUFFER_BIT,
+    depth: gl.DEPTH_BUFFER_BIT,
+    "color and depth": gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
+  };
   const texture = getDefaultTexture();
   const meshes = new Map();
   const programs = new ProgramManager();
   const modelDecoder = new ModelDecoder();
-  const publicApi = runtime.ext_xeltallivSimple3Dapi ?? (runtime.ext_xeltallivSimple3Dapi = {});
-  const externalTransforms = publicApi.externalTransforms ?? (publicApi.externalTransforms = {});
+  const publicApi =
+    runtime.ext_xeltallivSimple3Dapi ?? (runtime.ext_xeltallivSimple3Dapi = {});
+  const externalTransforms =
+    publicApi.externalTransforms ?? (publicApi.externalTransforms = {});
   const canvasRenderTarget = new CanvasRenderTarget();
 
   let currentRenderTarget;
@@ -1440,14 +1571,14 @@ void main() {
       worldToView: m4.identity(),
       viewToProjected: m4.identity(),
       import: m4.identity(),
-      custom: m4.identity()
+      custom: m4.identity(),
     };
-    transformed = [0,0,0,0];
+    transformed = [0, 0, 0, 0];
     selectedTransform = "viewToProjected";
-    colorMultiplier = [1,1,1,1];
-    colorAdder = [0,0,0,0];
-    fogColor = [1,1,1];
-    fogDistance = [10,90];
+    colorMultiplier = [1, 1, 1, 1];
+    colorAdder = [0, 0, 0, 0];
+    fogColor = [1, 1, 1];
+    fogDistance = [10, 90];
     fogEnabled = false;
     fogPosition = null;
     fogSpace = "view space";
@@ -1458,7 +1589,7 @@ void main() {
     currentCulling = 0;
     currentCullingProps = [null, null];
     lastTextMeasurement = null;
-    for(const mesh of meshes.values()) {
+    for (const mesh of meshes.values()) {
       mesh.destroy();
     }
     meshes.clear();
@@ -1475,14 +1606,17 @@ void main() {
       blockType: BlockType.BUTTON,
       text: "Open sample project",
       func: "getSampleProject",
-      def: function() {
+      def: function () {
         const url = new URL(location.href);
-        url.searchParams.set("project_url","https://extensions.turbowarp.org/samples/Simple3D%20template.sb3");
+        url.searchParams.set(
+          "project_url",
+          "https://extensions.turbowarp.org/samples/Simple3D%20template.sb3"
+        );
         // Exempted from Scratch.openWindow as it is in response to a user gesture and it does not
         // bring in third-party websites at all.
         // eslint-disable-next-line no-restricted-syntax
         window.open(url.href);
-      }
+      },
     },
     {
       blockType: BlockType.LABEL,
@@ -1492,9 +1626,9 @@ void main() {
       opcode: "resetEverything",
       blockType: BlockType.COMMAND,
       text: "reset everything",
-      def: function() {
+      def: function () {
         resetEverything();
-      }
+      },
     },
     "---",
     {
@@ -1505,10 +1639,10 @@ void main() {
         LAYERS: {
           type: ArgumentType.STRING,
           menu: "clearLayers",
-          defaultValue: "color and depth"
+          defaultValue: "color and depth",
         },
       },
-      def: function({LAYERS}) {
+      def: function ({ LAYERS }) {
         if (!hasOwn(ClearLayers, LAYERS)) return;
         if (gl.getParameter(gl.DEPTH_WRITEMASK)) {
           gl.clear(ClearLayers[LAYERS]);
@@ -1517,9 +1651,9 @@ void main() {
           gl.clear(ClearLayers[LAYERS]);
           gl.depthMask(false);
         }
-        renderer.dirty = true;   //TODO: only do this when rendering to
+        renderer.dirty = true; //TODO: only do this when rendering to
         runtime.requestRedraw(); //TODO: main canvas, not to framebuffers
-      }
+      },
     },
     {
       opcode: "clearColor",
@@ -1543,9 +1677,14 @@ void main() {
           defaultValue: 1,
         },
       },
-      def: function({RED, GREEN, BLUE, ALPHA}) {
-        gl.clearColor(Cast.toNumber(RED), Cast.toNumber(GREEN), Cast.toNumber(BLUE), Cast.toNumber(ALPHA));
-      }
+      def: function ({ RED, GREEN, BLUE, ALPHA }) {
+        gl.clearColor(
+          Cast.toNumber(RED),
+          Cast.toNumber(GREEN),
+          Cast.toNumber(BLUE),
+          Cast.toNumber(ALPHA)
+        );
+      },
     },
     {
       opcode: "depth",
@@ -1555,20 +1694,20 @@ void main() {
         TEST: {
           type: ArgumentType.STRING,
           defaultValue: "closer",
-          menu: "depthTest"
+          menu: "depthTest",
         },
         WRITE: {
           type: ArgumentType.STRING,
           defaultValue: "true",
-          menu: "onOff"
+          menu: "onOff",
         },
       },
-      def: function({TEST, WRITE}) {
+      def: function ({ TEST, WRITE }) {
         let test = Cast.toString(TEST);
         if (!hasOwn(DepthTests, test)) return;
         currentRenderTarget.setDepth(test, Cast.toBoolean(WRITE));
         currentRenderTarget.updateDepth();
-      }
+      },
     },
     {
       blockType: BlockType.LABEL,
@@ -1579,9 +1718,9 @@ void main() {
       blockType: BlockType.REPORTER,
       text: "all meshes",
       disableMonitor: true,
-      def: function() {
+      def: function () {
         return Array.from(meshes.keys()).join(",");
-      }
+      },
     },
     {
       opcode: "createMesh",
@@ -1590,15 +1729,15 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
       },
-      def: function({NAME}) {
-        NAME = Cast.toString(NAME).replace(/,/g,"").trim();
+      def: function ({ NAME }) {
+        NAME = Cast.toString(NAME).replace(/,/g, "").trim();
         if (NAME.length == 0) return;
         meshes.get(NAME)?.destroy();
         meshes.set(NAME, new Mesh(NAME));
-      }
+      },
     },
     {
       opcode: "deleteMesh",
@@ -1607,14 +1746,14 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
       },
-      def: function({NAME}) {
+      def: function ({ NAME }) {
         NAME = Cast.toString(NAME);
         meshes.get(NAME)?.destroy();
         meshes.delete(NAME);
-      }
+      },
     },
     {
       opcode: "inheritMeshes",
@@ -1623,29 +1762,32 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh 3"
+          defaultValue: "my mesh 3",
         },
         NAMES: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh 1,my mesh 2"
+          defaultValue: "my mesh 1,my mesh 2",
         },
       },
-      def: function({NAME, NAMES}) {
+      def: function ({ NAME, NAMES }) {
         const mesh = meshes.get(Cast.toString(NAME));
         if (!mesh) return;
-        const parentMeshes = Cast.toString(NAMES).split(",").map(s => meshes.get(s.trim())).filter(m => m);
-        for(let otherMesh of parentMeshes) {
+        const parentMeshes = Cast.toString(NAMES)
+          .split(",")
+          .map((s) => meshes.get(s.trim()))
+          .filter((m) => m);
+        for (let otherMesh of parentMeshes) {
           if (otherMesh.dependsOn(mesh)) return;
         }
-        for(let otherMesh of mesh.dependencies) {
+        for (let otherMesh of mesh.dependencies) {
           otherMesh.dependants.delete(mesh);
         }
         mesh.dependencies = new Set(parentMeshes);
-        for(let otherMesh of parentMeshes) {
+        for (let otherMesh of parentMeshes) {
           otherMesh.dependants.add(mesh);
         }
         mesh.update();
-      }
+      },
     },
     {
       opcode: "meshInfo",
@@ -1656,19 +1798,19 @@ void main() {
         PROP: {
           type: ArgumentType.STRING,
           menu: "meshProperties",
-          defaultValue: "inherits from"
+          defaultValue: "inherits from",
         },
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
       },
-      def: function({NAME, PROP}) {
+      def: function ({ NAME, PROP }) {
         const mesh = meshes.get(Cast.toString(NAME));
         if (PROP == "exists") return !!mesh;
         if (!mesh || !hasOwn(MeshPropFns, PROP)) return "";
         return MeshPropFns[PROP](mesh) ?? "";
-      }
+      },
     },
     "---",
     {
@@ -1678,19 +1820,19 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         INDICES: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
       },
-      def: function({NAME, INDICES}, {target}) {
+      def: function ({ NAME, INDICES }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const value = compactIndices(target, INDICES);
         if (!mesh || !value) return;
         uploadBuffer(mesh, "indices", value, 1, -1, gl.ELEMENT_ARRAY_BUFFER);
-      }
+      },
     },
     {
       opcode: "setMeshPositionsXY",
@@ -1699,26 +1841,26 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         X: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         Y: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         Z: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
       },
-      def: function({NAME, X, Y}, {target}) {
+      def: function ({ NAME, X, Y }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const value = compact(target, [X, Y], Float32Array);
         uploadBuffer(mesh, "position", value, 2, 0);
-      }
+      },
     },
     {
       opcode: "setMeshPositionsXYZ",
@@ -1727,26 +1869,26 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         X: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         Y: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         Z: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
       },
-      def: function({NAME, X, Y, Z}, {target}) {
+      def: function ({ NAME, X, Y, Z }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const value = compact(target, [X, Y, Z], Float32Array);
         uploadBuffer(mesh, "position", value, 3, 0);
-      }
+      },
     },
     {
       opcode: "setMeshColorsRGB",
@@ -1755,26 +1897,26 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         R: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         G: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         B: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
       },
-      def: function({NAME, R, G, B}, {target}) {
+      def: function ({ NAME, R, G, B }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const value = compact(target, [R, G, B], Uint8Array);
         uploadBuffer(mesh, "colors", value, 3, 0);
-      }
+      },
     },
     {
       opcode: "setMeshColorsRGBA",
@@ -1783,30 +1925,30 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         R: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         G: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         B: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         A: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
       },
-      def: function({NAME, R, G, B, A}, {target}) {
+      def: function ({ NAME, R, G, B, A }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const value = compact(target, [R, G, B, A], Uint8Array);
         uploadBuffer(mesh, "colors", value, 4, 0);
-      }
+      },
     },
     {
       opcode: "setMeshTexCoordUV",
@@ -1815,23 +1957,23 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         U: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         V: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
       },
-      def: function({NAME, U, V}, {target}) {
+      def: function ({ NAME, U, V }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const value = compact(target, [U, V], Float32Array);
         if (!mesh || !value) return;
         uploadBuffer(mesh, "texCoords", value, 2, 0);
-      }
+      },
     },
     {
       opcode: "setMeshTexture",
@@ -1840,46 +1982,55 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         TEXTURE: {
           type: null,
         },
         WRAP: {
           type: ArgumentType.STRING,
-          menu: "textureWrap"
+          menu: "textureWrap",
         },
         FILTER: {
           type: ArgumentType.STRING,
-          menu: "textureFilter"
+          menu: "textureFilter",
         },
       },
-      def: function({NAME, TEXTURE, WRAP, FILTER}, {target}) {
+      def: function ({ NAME, TEXTURE, WRAP, FILTER }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         if (!mesh) return;
         const texture = Cast.toString(TEXTURE);
         if (texture !== "[texture data]") return;
-        const wrap = Cast.toString(WRAP) == "repeat" ? gl.REPEAT : gl.CLAMP_TO_EDGE;
-        const filter = Cast.toString(FILTER) == "blurred" ? gl.LINEAR : gl.NEAREST;
-        let textureObj = mesh.myData.texture ?? (mesh.myData.texture = new Texture2D(mesh));
+        const wrap =
+          Cast.toString(WRAP) == "repeat" ? gl.REPEAT : gl.CLAMP_TO_EDGE;
+        const filter =
+          Cast.toString(FILTER) == "blurred" ? gl.LINEAR : gl.NEAREST;
+        let textureObj =
+          mesh.myData.texture ?? (mesh.myData.texture = new Texture2D(mesh));
         if (!(textureObj instanceof Texture2D)) return;
         textureObj.main.loading = true;
         textureObj.main.failedToLoad = false;
         mesh.update();
-        const onData = function(data) {
+        const onData = function (data) {
           if (data == null || mesh.destroyed) {
             textureObj.main.loading = false;
             textureObj.main.failedToLoad = true;
             return;
           }
-          textureObj.main.setTexture(data.data, data.width, data.height, wrap, filter);
-        }
+          textureObj.main.setTexture(
+            data.data,
+            data.width,
+            data.height,
+            wrap,
+            filter
+          );
+        };
         if (imageSourceSync) {
           onData(imageSourceSync);
         } else {
           imageSource.then(onData);
         }
-      }
+      },
     },
     {
       opcode: "setMeshTexCoordUVW",
@@ -1888,26 +2039,26 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         U: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         V: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         W: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
       },
-      def: function({NAME, U, V, W}, {target}) {
+      def: function ({ NAME, U, V, W }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const value = compact(target, [U, V, W], Float32Array);
         uploadBuffer(mesh, "texCoords", value, 3, 0);
-      }
+      },
     },
     {
       opcode: "setMeshCubeTexture",
@@ -1916,32 +2067,35 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         SIDE: {
           type: ArgumentType.STRING,
-          menu: "cubeSide"
+          menu: "cubeSide",
         },
         TEXTURE: {
           type: null,
         },
         WRAP: {
           type: ArgumentType.STRING,
-          menu: "textureWrap"
+          menu: "textureWrap",
         },
         FILTER: {
           type: ArgumentType.STRING,
-          menu: "textureFilter"
+          menu: "textureFilter",
         },
       },
-      def: function({NAME, SIDE, TEXTURE, WRAP, FILTER}, {target}) {
+      def: function ({ NAME, SIDE, TEXTURE, WRAP, FILTER }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         if (!mesh) return;
         const texture = Cast.toString(TEXTURE);
         if (texture !== "[texture data]") return;
-        const wrap = Cast.toString(WRAP) == "repeat" ? gl.REPEAT : gl.CLAMP_TO_EDGE;
-        const filter = Cast.toString(FILTER) == "blurred" ? gl.LINEAR : gl.NEAREST;
-        let textureObj = mesh.myData.texture ?? (mesh.myData.texture = new TextureCube(mesh));
+        const wrap =
+          Cast.toString(WRAP) == "repeat" ? gl.REPEAT : gl.CLAMP_TO_EDGE;
+        const filter =
+          Cast.toString(FILTER) == "blurred" ? gl.LINEAR : gl.NEAREST;
+        let textureObj =
+          mesh.myData.texture ?? (mesh.myData.texture = new TextureCube(mesh));
         if (!(textureObj instanceof TextureCube)) return;
         const lookup = {
           "X+": "xpos",
@@ -1950,25 +2104,31 @@ void main() {
           "Y-": "yneg",
           "Z+": "zpos",
           "Z-": "zneg",
-        }
+        };
         if (!hasOwn(lookup, SIDE)) return;
         textureObj[lookup[SIDE]].loading = true;
         textureObj[lookup[SIDE]].failedToLoad = false;
         mesh.update();
-        const onData = function(data) {
+        const onData = function (data) {
           if (data == null || mesh.destroyed) {
             textureObj[lookup[SIDE]].loading = false;
             textureObj[lookup[SIDE]].failedToLoad = true;
             return;
           }
-          textureObj[lookup[SIDE]].setTexture(data.data, data.width, data.height, wrap, filter);
-        }
+          textureObj[lookup[SIDE]].setTexture(
+            data.data,
+            data.width,
+            data.height,
+            wrap,
+            filter
+          );
+        };
         if (imageSourceSync) {
           onData(imageSourceSync);
         } else {
           imageSource.then(onData);
         }
-      }
+      },
     },
     {
       opcode: "setMeshTextureMipmap",
@@ -1977,22 +2137,24 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         MIPMAPPING: {
           type: ArgumentType.STRING,
-          menu: "textureMipmapping"
+          menu: "textureMipmapping",
         },
       },
-      def: function({NAME, MIPMAPPING}, {target}) {
+      def: function ({ NAME, MIPMAPPING }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         if (!mesh) return;
         const textureObj = mesh.myData.texture;
         if (!textureObj) return;
         if (MIPMAPPING == "off") textureObj.setMipmapState(false, gl.NEAREST);
-        if (MIPMAPPING == "sharp transitions") textureObj.setMipmapState(true, gl.NEAREST);
-        if (MIPMAPPING == "smooth transitions") textureObj.setMipmapState(true, gl.LINEAR);
-      }
+        if (MIPMAPPING == "sharp transitions")
+          textureObj.setMipmapState(true, gl.NEAREST);
+        if (MIPMAPPING == "smooth transitions")
+          textureObj.setMipmapState(true, gl.LINEAR);
+      },
     },
     {
       opcode: "setMeshTextureAnisotropy",
@@ -2001,21 +2163,23 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         ANISOTROPY: {
           type: ArgumentType.STRING,
           menu: "powersOfTwo",
-          defaultValue: 16
+          defaultValue: 16,
         },
       },
-      def: function({NAME, ANISOTROPY}, {target}) {
+      def: function ({ NAME, ANISOTROPY }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         if (!mesh) return;
         const textureObj = mesh.myData.texture;
         if (!textureObj) return;
-        textureObj.setAnisotropy(Math.max(1, Math.round(Cast.toNumber(ANISOTROPY))));
-      }
+        textureObj.setAnisotropy(
+          Math.max(1, Math.round(Cast.toNumber(ANISOTROPY)))
+        );
+      },
     },
     {
       opcode: "setMeshWeights",
@@ -2024,36 +2188,42 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         INDICES: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         WEIGHTS: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         COUNT: {
           type: ArgumentType.NUMBER,
-          defaultValue: 3
+          defaultValue: 3,
         },
       },
-      def: function({NAME, INDICES, WEIGHTS, COUNT}, {target}) {
+      def: function ({ NAME, INDICES, WEIGHTS, COUNT }, { target }) {
         COUNT = Math.floor(Cast.toNumber(COUNT));
         if (COUNT < 1 || COUNT > 4) return;
         const mesh = meshes.get(Cast.toString(NAME));
-        let valueI = compact(target, [INDICES], Uint8Array), valueW;
+        let valueI = compact(target, [INDICES], Uint8Array),
+          valueW;
         if (!mesh || !valueI || valueI.length % COUNT > 0) return;
         if (COUNT > 1) {
           valueW = compact(target, [WEIGHTS], Uint16Array, 65535);
-          if (!valueW || valueW.length % COUNT > 0 || valueW.length !== valueI.length) return;
+          if (
+            !valueW ||
+            valueW.length % COUNT > 0 ||
+            valueW.length !== valueI.length
+          )
+            return;
         }
         uploadBuffer(mesh, "boneIndices", valueI, COUNT, 0);
         if (COUNT > 1) {
           uploadBuffer(mesh, "boneWeights", valueW, COUNT, 0);
         }
-      }
+      },
     },
     {
       opcode: "setMeshTransforms",
@@ -2062,35 +2232,48 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         TRANSFORMS: {
           type: ArgumentType.STRING,
-          menu: "skinningTransforms"
+          menu: "skinningTransforms",
         },
         MATRIXES: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
       },
-      def: function({NAME, TRANSFORMS, MATRIXES}, {target}) {
+      def: function ({ NAME, TRANSFORMS, MATRIXES }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
-        const list = target.lookupVariableByNameAndType(Cast.toString(MATRIXES), "list");
+        const list = target.lookupVariableByNameAndType(
+          Cast.toString(MATRIXES),
+          "list"
+        );
         if (!mesh || !list) return;
         const value = list.value.map(Cast.toNumber);
         const value2 = [];
-        for(let i=0; i<value.length; i+=16) {
-          value2.push(value.slice(i,i+16));
+        for (let i = 0; i < value.length; i += 16) {
+          value2.push(value.slice(i, i + 16));
         }
-        if (TRANSFORMS == "original" || !mesh.bonesOrig || mesh.bonesOrig.length !== value2.length) mesh.bonesOrig = value2.map(m4.inverse);
-        if (TRANSFORMS == "current" || !mesh.bonesCurr || mesh.bonesCurr.length !== value2.length) mesh.bonesCurr = value2;
+        if (
+          TRANSFORMS == "original" ||
+          !mesh.bonesOrig ||
+          mesh.bonesOrig.length !== value2.length
+        )
+          mesh.bonesOrig = value2.map(m4.inverse);
+        if (
+          TRANSFORMS == "current" ||
+          !mesh.bonesCurr ||
+          mesh.bonesCurr.length !== value2.length
+        )
+          mesh.bonesCurr = value2;
         const diff = [];
-        for(let i=0; i<mesh.bonesCurr.length; i++) {
+        for (let i = 0; i < mesh.bonesCurr.length; i++) {
           diff.push(m4.multiply(mesh.bonesCurr[i], mesh.bonesOrig[i]));
         }
         mesh.bonesDiff = diff.flat();
         mesh.update();
-      }
+      },
     },
     {
       opcode: "setMeshInstances",
@@ -2099,32 +2282,64 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         PROPERTY: {
           type: ArgumentType.STRING,
-          menu: "instanceProperty"
+          menu: "instanceProperty",
         },
         SRCLIST: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
       },
-      def: function({NAME, PROPERTY, SRCLIST}, {target}) {
+      def: function ({ NAME, PROPERTY, SRCLIST }, { target }) {
         let bufferName, size, type;
-        if (PROPERTY == "transforms"             ) {bufferName = "instanceTransforms"; size = 16; type = Float32Array;}
-        if (PROPERTY == "XY positions"           ) {bufferName = "instanceTransforms"; size = 2;  type = Float32Array;}
-        if (PROPERTY == "XYZ positions"          ) {bufferName = "instanceTransforms"; size = 3;  type = Float32Array;}
-        if (PROPERTY == "XYZ positions and sizes") {bufferName = "instanceTransforms"; size = 4;  type = Float32Array;}
-        if (PROPERTY == "RGB colors"             ) {bufferName = "instanceColors";     size = 3;  type = Float32Array;}
-        if (PROPERTY == "RGBA colors"            ) {bufferName = "instanceColors";     size = 4;  type = Float32Array;}
-        if (PROPERTY == "UV offsets"             ) {bufferName = "instanceUVOffsets";  size = 2;  type = Float32Array;}
-        if (PROPERTY == "UV offsets and sizes"   ) {bufferName = "instanceUVOffsets";  size = 4;  type = Float32Array;}
+        if (PROPERTY == "transforms") {
+          bufferName = "instanceTransforms";
+          size = 16;
+          type = Float32Array;
+        }
+        if (PROPERTY == "XY positions") {
+          bufferName = "instanceTransforms";
+          size = 2;
+          type = Float32Array;
+        }
+        if (PROPERTY == "XYZ positions") {
+          bufferName = "instanceTransforms";
+          size = 3;
+          type = Float32Array;
+        }
+        if (PROPERTY == "XYZ positions and sizes") {
+          bufferName = "instanceTransforms";
+          size = 4;
+          type = Float32Array;
+        }
+        if (PROPERTY == "RGB colors") {
+          bufferName = "instanceColors";
+          size = 3;
+          type = Float32Array;
+        }
+        if (PROPERTY == "RGBA colors") {
+          bufferName = "instanceColors";
+          size = 4;
+          type = Float32Array;
+        }
+        if (PROPERTY == "UV offsets") {
+          bufferName = "instanceUVOffsets";
+          size = 2;
+          type = Float32Array;
+        }
+        if (PROPERTY == "UV offsets and sizes") {
+          bufferName = "instanceUVOffsets";
+          size = 4;
+          type = Float32Array;
+        }
         if (!bufferName) return;
         const mesh = meshes.get(Cast.toString(NAME));
         const value = compact(target, [SRCLIST], type);
         uploadBuffer(mesh, bufferName, value, size, 1);
-      }
+      },
     },
     {
       opcode: "setMeshUploadOffset",
@@ -2133,18 +2348,18 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         OFFSET: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
       },
-      def: function({NAME, OFFSET}, {target}) {
+      def: function ({ NAME, OFFSET }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         if (!mesh) return;
-        mesh.uploadOffset = Cast.toNumber(OFFSET)-1;
-      }
+        mesh.uploadOffset = Cast.toNumber(OFFSET) - 1;
+      },
     },
     {
       opcode: "setBufferUsageHint",
@@ -2152,21 +2367,21 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         USAGE: {
           type: ArgumentType.STRING,
           menu: "bufferUsage",
-          defaultValue: "rarely"
-        }
+          defaultValue: "rarely",
+        },
       },
-      def: function({NAME, USAGE}) {
+      def: function ({ NAME, USAGE }) {
         const mesh = meshes.get(Cast.toString(NAME));
         if (!mesh) return;
         if (USAGE == "rarely") mesh.uploadUsage = gl.STATIC_DRAW;
         if (USAGE == "frequently fully") mesh.uploadUsage = gl.STREAM_DRAW;
         if (USAGE == "frequently partially") mesh.uploadUsage = gl.DYNAMIC_DRAW;
-      }
+      },
     },
     {
       opcode: "setMeshFromFile",
@@ -2175,23 +2390,27 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         FILETYPE: {
           type: ArgumentType.STRING,
-          menu: "filetype"
+          menu: "filetype",
         },
         SRCLIST: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
       },
-      def: function({NAME, FILETYPE, SRCLIST}, {target}) {
-        (async function() {
+      def: function ({ NAME, FILETYPE, SRCLIST }, { target }) {
+        (async function () {
           const mesh = meshes.get(Cast.toString(NAME));
           const list = target.lookupVariableByNameAndType(SRCLIST, "list");
           if (!mesh || !list) return;
-          let output = await modelDecoder.decode(FILETYPE, list.value, transforms.import);
+          let output = await modelDecoder.decode(
+            FILETYPE,
+            list.value,
+            transforms.import
+          );
           if (!output) return;
           if (output.xyz) {
             const value = new Float32Array(output.xyz);
@@ -2206,7 +2425,7 @@ void main() {
             uploadBuffer(mesh, "texCoords", value, 2, 0);
           }
         })();
-      }
+      },
     },
     {
       opcode: "setMeshPrimitives",
@@ -2215,14 +2434,14 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         PRIMITIVES: {
           type: ArgumentType.STRING,
-          menu: "primitives"
+          menu: "primitives",
         },
       },
-      def: function({NAME, PRIMITIVES}, {target}) {
+      def: function ({ NAME, PRIMITIVES }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const primitivesName = Cast.toString(PRIMITIVES);
         if (!mesh) return;
@@ -2230,7 +2449,7 @@ void main() {
         mesh.myData.primitives = Primitives[primitivesName];
         mesh.myData.primitivesName = primitivesName;
         mesh.update();
-      }
+      },
     },
     {
       opcode: "setMeshBlending",
@@ -2239,22 +2458,22 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         BLENDING: {
           type: ArgumentType.STRING,
           menu: "blending",
-          defaultValue: "default"
+          defaultValue: "default",
         },
       },
-      def: function({NAME, BLENDING}, {target}) {
+      def: function ({ NAME, BLENDING }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const blending = Cast.toString(BLENDING);
         if (!mesh) return;
         if (!hasOwn(Blendings, blending)) return;
         mesh.myData.blending = blending;
         mesh.update();
-      }
+      },
     },
     {
       opcode: "setMeshCulling",
@@ -2263,21 +2482,21 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         CULLING: {
           type: ArgumentType.STRING,
-          menu: "culling"
+          menu: "culling",
         },
       },
-      def: function({NAME, CULLING}, {target}) {
+      def: function ({ NAME, CULLING }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const culling = Cast.toString(CULLING);
         if (!mesh) return;
         if (!hasOwn(Cullings, culling)) return;
         mesh.myData.culling = culling;
         mesh.update();
-      }
+      },
     },
     {
       opcode: "setMeshAlphaTest",
@@ -2286,11 +2505,11 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         ALPHATEST: {
           type: ArgumentType.STRING,
-          defaultValue: 0.5
+          defaultValue: 0.5,
         },
         MAKEOPAQUE: {
           type: ArgumentType.STRING,
@@ -2298,7 +2517,7 @@ void main() {
           defaultValue: "true",
         },
       },
-      def: function({NAME, ALPHATEST, MAKEOPAQUE}, {target}) {
+      def: function ({ NAME, ALPHATEST, MAKEOPAQUE }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const alphaTest = Cast.toNumber(ALPHATEST);
         const makeOpaque = Cast.toBoolean(MAKEOPAQUE);
@@ -2306,7 +2525,7 @@ void main() {
         mesh.myData.alphaTest = alphaTest;
         mesh.myData.makeOpaque = makeOpaque;
         mesh.update();
-      }
+      },
     },
     {
       opcode: "setMeshBillboarding",
@@ -2315,20 +2534,20 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         BILLBOARDING: {
           type: ArgumentType.STRING,
-          menu: "onOff"
+          menu: "onOff",
         },
       },
-      def: function({NAME, BILLBOARDING}, {target}) {
+      def: function ({ NAME, BILLBOARDING }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const billboarding = Cast.toBoolean(BILLBOARDING);
         if (!mesh) return;
         mesh.myData.billboarding = billboarding;
         mesh.update();
-      }
+      },
     },
     {
       opcode: "setMeshCentroidInterpolation",
@@ -2337,20 +2556,20 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         USECENTROID: {
           type: ArgumentType.STRING,
-          menu: "onOff"
+          menu: "onOff",
         },
       },
-      def: function({NAME, USECENTROID}, {target}) {
+      def: function ({ NAME, USECENTROID }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         const useCentroid = Cast.toBoolean(USECENTROID);
         if (!mesh) return;
         mesh.myData.useCentroidInterpolation = useCentroid;
         mesh.update();
-      }
+      },
     },
     {
       opcode: "setMeshDrawRange",
@@ -2359,25 +2578,25 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         START: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
         END: {
           type: ArgumentType.NUMBER,
-          defaultValue: 6
+          defaultValue: 6,
         },
       },
-      def: function({NAME, START, END}, {target}) {
+      def: function ({ NAME, START, END }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
-        const start = Math.max(1, Math.floor(Cast.toNumber(START)))-1;
+        const start = Math.max(1, Math.floor(Cast.toNumber(START))) - 1;
         const end = Math.max(0, Math.floor(Cast.toNumber(END)));
         if (!mesh) return;
-        mesh.myData.drawRange = [start, Math.max(0, end-start)];
+        mesh.myData.drawRange = [start, Math.max(0, end - start)];
         mesh.update();
-      }
+      },
     },
     {
       opcode: "setMeshTexCoordOffsetUV",
@@ -2386,7 +2605,7 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
         U: {
           type: ArgumentType.NUMBER,
@@ -2395,12 +2614,12 @@ void main() {
           type: ArgumentType.NUMBER,
         },
       },
-      def: function({NAME, U, V}, {target}) {
+      def: function ({ NAME, U, V }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
         if (!mesh) return;
         mesh.myData.uvOffset = [Cast.toNumber(U), Cast.toNumber(V)];
         mesh.update();
-      }
+      },
     },
     {
       opcode: "drawMesh",
@@ -2409,10 +2628,10 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
       },
-      def: function({NAME}, util) {
+      def: function ({ NAME }, util) {
         NAME = Cast.toString(NAME);
         const mesh = meshes.get(NAME);
         if (!mesh) return;
@@ -2422,7 +2641,7 @@ void main() {
         // TODO: only recompute this after one or more buffers were changed
         let length = -1;
         let lengthIns = -1;
-        for(const name in mesh.buffers) {
+        for (const name in mesh.buffers) {
           const buffer = mesh.buffers[name];
           if (buffer.type == 0) {
             if (length == -1) length = buffer.length;
@@ -2437,35 +2656,45 @@ void main() {
         // TODO: keep list of per mesh flags, list of global flags, and simply concatenate them here
         let flags = [];
         if (mesh.buffers.colors) flags.push("COLORS");
-        if (mesh.buffers.texCoords) flags.push(`TEXTURES ${mesh.buffers.texCoords.size}`);
+        if (mesh.buffers.texCoords)
+          flags.push(`TEXTURES ${mesh.buffers.texCoords.size}`);
         if (fogEnabled) {
           flags.push("FOG");
-          if (fogSpace == "view space" ) flags.push("FOG_IN_VIEW_SPACE");
+          if (fogSpace == "view space") flags.push("FOG_IN_VIEW_SPACE");
           if (fogSpace == "world space") flags.push("FOG_IN_WORLD_SPACE");
           if (fogSpace == "model space") flags.push("FOG_IN_MODEL_SPACE");
           if (fogPosition) flags.push("FOG_POS");
         }
         if (mesh.buffers.boneIndices && mesh.bonesDiff) {
           flags.push(`SKINNING ${mesh.buffers.boneIndices.size}`);
-          flags.push(`BONE_COUNT ${mesh.bonesDiff.length/16}`);
+          flags.push(`BONE_COUNT ${mesh.bonesDiff.length / 16}`);
         }
-        if (mesh.data.useCentroidInterpolation) flags.push("INTERPOLATION centroid");
+        if (mesh.data.useCentroidInterpolation)
+          flags.push("INTERPOLATION centroid");
         if (mesh.data.alphaTest > 0) flags.push("ALPHATEST");
         if (mesh.data.makeOpaque) flags.push("MAKE_OPAQUE");
         if (mesh.data.billboarding) flags.push("BILLBOARD");
         if (mesh.data.uvOffset) flags.push("UV_OFFSET");
         if (mesh.buffers.instanceTransforms) {
           flags.push("INSTANCING");
-          if (mesh.buffers.instanceTransforms.size == 3)  flags.push("INSTANCE_POS");
-          if (mesh.buffers.instanceTransforms.size == 4)  flags.push("INSTANCE_POS_SCALE");
-          if (mesh.buffers.instanceTransforms.size == 16) flags.push("INSTANCE_MATRIX");
+          if (mesh.buffers.instanceTransforms.size == 3)
+            flags.push("INSTANCE_POS");
+          if (mesh.buffers.instanceTransforms.size == 4)
+            flags.push("INSTANCE_POS_SCALE");
+          if (mesh.buffers.instanceTransforms.size == 16)
+            flags.push("INSTANCE_MATRIX");
         }
         if (mesh.buffers.instanceColors) flags.push("INSTANCE_COLOR");
-        if (mesh.buffers.instanceUVOffsets) flags.push(mesh.buffers.instanceUVOffsets.size == 4 ? "INSTANCE_UVS" : "INSTANCE_UV");
+        if (mesh.buffers.instanceUVOffsets)
+          flags.push(
+            mesh.buffers.instanceUVOffsets.size == 4
+              ? "INSTANCE_UVS"
+              : "INSTANCE_UV"
+          );
         const program = programs.get(flags);
         if (!program.program) return;
         gl.useProgram(program.program);
-        
+
         // TODO: replace the following slow monstrosity with fast VAOs
         if (mesh.buffers.indices) {
           gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.buffers.indices.buffer);
@@ -2473,59 +2702,146 @@ void main() {
 
         gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffers.position.buffer);
         gl.enableVertexAttribArray(program.aloc.a_position);
-        gl.vertexAttribPointer(program.aloc.a_position, mesh.buffers.position.size, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(
+          program.aloc.a_position,
+          mesh.buffers.position.size,
+          gl.FLOAT,
+          false,
+          0,
+          0
+        );
 
         if (mesh.buffers.colors) {
           gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffers.colors.buffer);
           gl.enableVertexAttribArray(program.aloc.a_color);
-          gl.vertexAttribPointer(program.aloc.a_color, mesh.buffers.colors.size, gl.UNSIGNED_BYTE, true, 0, 0);
+          gl.vertexAttribPointer(
+            program.aloc.a_color,
+            mesh.buffers.colors.size,
+            gl.UNSIGNED_BYTE,
+            true,
+            0,
+            0
+          );
         }
         if (mesh.buffers.texCoords) {
           gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffers.texCoords.buffer);
           gl.enableVertexAttribArray(program.aloc.a_uv);
-          gl.vertexAttribPointer(program.aloc.a_uv, mesh.buffers.texCoords.size, gl.FLOAT, false, 0, 0);
+          gl.vertexAttribPointer(
+            program.aloc.a_uv,
+            mesh.buffers.texCoords.size,
+            gl.FLOAT,
+            false,
+            0,
+            0
+          );
         }
         if (mesh.buffers.boneIndices) {
           gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffers.boneIndices.buffer);
           gl.enableVertexAttribArray(program.aloc.a_index);
-          gl.vertexAttribPointer(program.aloc.a_index, mesh.buffers.boneIndices.size, gl.BYTE, false, 0, 0);
+          gl.vertexAttribPointer(
+            program.aloc.a_index,
+            mesh.buffers.boneIndices.size,
+            gl.BYTE,
+            false,
+            0,
+            0
+          );
         }
         if (mesh.buffers.boneWeights) {
           gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffers.boneWeights.buffer);
           gl.enableVertexAttribArray(program.aloc.a_weight);
-          gl.vertexAttribPointer(program.aloc.a_weight, mesh.buffers.boneWeights.size, gl.UNSIGNED_SHORT, true, 0, 0);
+          gl.vertexAttribPointer(
+            program.aloc.a_weight,
+            mesh.buffers.boneWeights.size,
+            gl.UNSIGNED_SHORT,
+            true,
+            0,
+            0
+          );
         }
         if (mesh.buffers.instanceTransforms) {
-          gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffers.instanceTransforms.buffer);
+          gl.bindBuffer(
+            gl.ARRAY_BUFFER,
+            mesh.buffers.instanceTransforms.buffer
+          );
           if (mesh.buffers.instanceTransforms.size == 16) {
-            gl.enableVertexAttribArray(program.aloc.a_instanceTransform  );
-            gl.enableVertexAttribArray(program.aloc.a_instanceTransform+1);
-            gl.enableVertexAttribArray(program.aloc.a_instanceTransform+2);
-            gl.enableVertexAttribArray(program.aloc.a_instanceTransform+3);
-            gl.vertexAttribPointer(program.aloc.a_instanceTransform  , 4, gl.FLOAT, false, 64,  0);
-            gl.vertexAttribPointer(program.aloc.a_instanceTransform+1, 4, gl.FLOAT, false, 64, 16);
-            gl.vertexAttribPointer(program.aloc.a_instanceTransform+2, 4, gl.FLOAT, false, 64, 32);
-            gl.vertexAttribPointer(program.aloc.a_instanceTransform+3, 4, gl.FLOAT, false, 64, 48);
-            gl.vertexAttribDivisor(program.aloc.a_instanceTransform  , 1);
-            gl.vertexAttribDivisor(program.aloc.a_instanceTransform+1, 1);
-            gl.vertexAttribDivisor(program.aloc.a_instanceTransform+2, 1);
-            gl.vertexAttribDivisor(program.aloc.a_instanceTransform+3, 1);
+            gl.enableVertexAttribArray(program.aloc.a_instanceTransform);
+            gl.enableVertexAttribArray(program.aloc.a_instanceTransform + 1);
+            gl.enableVertexAttribArray(program.aloc.a_instanceTransform + 2);
+            gl.enableVertexAttribArray(program.aloc.a_instanceTransform + 3);
+            gl.vertexAttribPointer(
+              program.aloc.a_instanceTransform,
+              4,
+              gl.FLOAT,
+              false,
+              64,
+              0
+            );
+            gl.vertexAttribPointer(
+              program.aloc.a_instanceTransform + 1,
+              4,
+              gl.FLOAT,
+              false,
+              64,
+              16
+            );
+            gl.vertexAttribPointer(
+              program.aloc.a_instanceTransform + 2,
+              4,
+              gl.FLOAT,
+              false,
+              64,
+              32
+            );
+            gl.vertexAttribPointer(
+              program.aloc.a_instanceTransform + 3,
+              4,
+              gl.FLOAT,
+              false,
+              64,
+              48
+            );
+            gl.vertexAttribDivisor(program.aloc.a_instanceTransform, 1);
+            gl.vertexAttribDivisor(program.aloc.a_instanceTransform + 1, 1);
+            gl.vertexAttribDivisor(program.aloc.a_instanceTransform + 2, 1);
+            gl.vertexAttribDivisor(program.aloc.a_instanceTransform + 3, 1);
           } else {
             gl.enableVertexAttribArray(program.aloc.a_instanceTransform);
-            gl.vertexAttribPointer(program.aloc.a_instanceTransform, mesh.buffers.instanceTransforms.size, gl.FLOAT, false, 0, 0);
+            gl.vertexAttribPointer(
+              program.aloc.a_instanceTransform,
+              mesh.buffers.instanceTransforms.size,
+              gl.FLOAT,
+              false,
+              0,
+              0
+            );
             gl.vertexAttribDivisor(program.aloc.a_instanceTransform, 1);
           }
         }
         if (mesh.buffers.instanceColors) {
           gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffers.instanceColors.buffer);
           gl.enableVertexAttribArray(program.aloc.a_instanceColor);
-          gl.vertexAttribPointer(program.aloc.a_instanceColor, mesh.buffers.instanceColors.size, gl.FLOAT, false, 0, 0);
+          gl.vertexAttribPointer(
+            program.aloc.a_instanceColor,
+            mesh.buffers.instanceColors.size,
+            gl.FLOAT,
+            false,
+            0,
+            0
+          );
           gl.vertexAttribDivisor(program.aloc.a_instanceColor, 1);
         }
         if (mesh.buffers.instanceUVOffsets) {
           gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffers.instanceUVOffsets.buffer);
           gl.enableVertexAttribArray(program.aloc.a_instanceUV);
-          gl.vertexAttribPointer(program.aloc.a_instanceUV, mesh.buffers.instanceUVOffsets.size, gl.FLOAT, false, 0, 0);
+          gl.vertexAttribPointer(
+            program.aloc.a_instanceUV,
+            mesh.buffers.instanceUVOffsets.size,
+            gl.FLOAT,
+            false,
+            0,
+            0
+          );
           gl.vertexAttribDivisor(program.aloc.a_instanceUV, 1);
         }
 
@@ -2565,7 +2881,10 @@ void main() {
 
         if (mesh.buffers.texCoords) {
           gl.activeTexture(gl.TEXTURE0);
-          gl.bindTexture(mesh.data.texture?.target ?? gl.TEXTURE_2D, mesh.data.texture?.texture ?? texture);
+          gl.bindTexture(
+            mesh.data.texture?.target ?? gl.TEXTURE_2D,
+            mesh.data.texture?.texture ?? texture
+          );
           gl.uniform1i(program.uloc.u_texture, 0);
         }
 
@@ -2574,7 +2893,8 @@ void main() {
         if (fogEnabled) {
           gl.uniform3fv(program.uloc.u_fog_color, fogColor);
           gl.uniform2fv(program.uloc.u_fog_dist, fogDistance);
-          if (fogPosition) gl.uniform3fv(program.uloc.u_fog_position, fogPosition);
+          if (fogPosition)
+            gl.uniform3fv(program.uloc.u_fog_position, fogPosition);
         }
         if (mesh.data.alphaTest > 0) {
           gl.uniform1f(program.uloc.u_alpha_threshold, mesh.data.alphaTest);
@@ -2587,34 +2907,74 @@ void main() {
           gl.uniform2fv(program.uloc.u_uvOffset, mesh.data.uvOffset);
         }
 
-        gl.uniformMatrix4fv(program.uloc.u_projection, false, transforms.viewToProjected);
+        gl.uniformMatrix4fv(
+          program.uloc.u_projection,
+          false,
+          transforms.viewToProjected
+        );
         gl.uniformMatrix4fv(program.uloc.u_view, false, transforms.worldToView);
-        gl.uniformMatrix4fv(program.uloc.u_model, false, transforms.modelToWorld);
+        gl.uniformMatrix4fv(
+          program.uloc.u_model,
+          false,
+          transforms.modelToWorld
+        );
 
         let start = 0;
-        let amount = mesh.buffers.indices ? mesh.buffers.indices.length : length;
+        let amount = mesh.buffers.indices
+          ? mesh.buffers.indices.length
+          : length;
         if (mesh.data.drawRange) {
-          const size = mesh.buffers.indices ? mesh.buffers.indices.bytesPerEl : 1;
+          const size = mesh.buffers.indices
+            ? mesh.buffers.indices.bytesPerEl
+            : 1;
           start = mesh.data.drawRange[0] * size;
           const end = Math.min(start + mesh.data.drawRange[1], amount);
           amount = end - start;
         }
         if (mesh.buffers.instanceTransforms) {
           if (mesh.buffers.indices) {
-            const indexTypes = [null, gl.UNSIGNED_BYTE, gl.UNSIGNED_SHORT, null, gl.UNSIGNED_INT];
-            gl.drawElementsInstanced(mesh.data.primitives ?? gl.TRIANGLES, amount, indexTypes[mesh.buffers.indices.bytesPerEl], start, mesh.buffers.instanceTransforms.length);
+            const indexTypes = [
+              null,
+              gl.UNSIGNED_BYTE,
+              gl.UNSIGNED_SHORT,
+              null,
+              gl.UNSIGNED_INT,
+            ];
+            gl.drawElementsInstanced(
+              mesh.data.primitives ?? gl.TRIANGLES,
+              amount,
+              indexTypes[mesh.buffers.indices.bytesPerEl],
+              start,
+              mesh.buffers.instanceTransforms.length
+            );
           } else {
-            gl.drawArraysInstanced(mesh.data.primitives ?? gl.TRIANGLES, start, amount, mesh.buffers.instanceTransforms.length);
+            gl.drawArraysInstanced(
+              mesh.data.primitives ?? gl.TRIANGLES,
+              start,
+              amount,
+              mesh.buffers.instanceTransforms.length
+            );
           }
         } else {
           if (mesh.buffers.indices) {
-            const indexTypes = [null, gl.UNSIGNED_BYTE, gl.UNSIGNED_SHORT, null, gl.UNSIGNED_INT];
-            gl.drawElements(mesh.data.primitives ?? gl.TRIANGLES, amount, indexTypes[mesh.buffers.indices.bytesPerEl], start);
+            const indexTypes = [
+              null,
+              gl.UNSIGNED_BYTE,
+              gl.UNSIGNED_SHORT,
+              null,
+              gl.UNSIGNED_INT,
+            ];
+            gl.drawElements(
+              mesh.data.primitives ?? gl.TRIANGLES,
+              amount,
+              indexTypes[mesh.buffers.indices.bytesPerEl],
+              start
+            );
           } else {
             gl.drawArrays(mesh.data.primitives ?? gl.TRIANGLES, start, amount);
           }
         }
-        renderer.dirty = true;   //TODO: only do this when rendering to
+        renderer.dirty = true; //TODO: only do this when rendering to
         runtime.requestRedraw(); //TODO: main canvas, not to framebuffers
 
         if (mesh.buffers.colors) {
@@ -2631,14 +2991,14 @@ void main() {
         }
         if (mesh.buffers.instanceTransforms) {
           if (mesh.buffers.instanceTransforms.size == 16) {
-            gl.disableVertexAttribArray(program.aloc.a_instanceTransform  );
-            gl.disableVertexAttribArray(program.aloc.a_instanceTransform+1);
-            gl.disableVertexAttribArray(program.aloc.a_instanceTransform+2);
-            gl.disableVertexAttribArray(program.aloc.a_instanceTransform+3);
-            gl.vertexAttribDivisor(program.aloc.a_instanceTransform  , 0);
-            gl.vertexAttribDivisor(program.aloc.a_instanceTransform+1, 0);
-            gl.vertexAttribDivisor(program.aloc.a_instanceTransform+2, 0);
-            gl.vertexAttribDivisor(program.aloc.a_instanceTransform+3, 0);
+            gl.disableVertexAttribArray(program.aloc.a_instanceTransform);
+            gl.disableVertexAttribArray(program.aloc.a_instanceTransform + 1);
+            gl.disableVertexAttribArray(program.aloc.a_instanceTransform + 2);
+            gl.disableVertexAttribArray(program.aloc.a_instanceTransform + 3);
+            gl.vertexAttribDivisor(program.aloc.a_instanceTransform, 0);
+            gl.vertexAttribDivisor(program.aloc.a_instanceTransform + 1, 0);
+            gl.vertexAttribDivisor(program.aloc.a_instanceTransform + 2, 0);
+            gl.vertexAttribDivisor(program.aloc.a_instanceTransform + 3, 0);
           } else {
             gl.disableVertexAttribArray(program.aloc.a_instanceTransform);
             gl.vertexAttribDivisor(program.aloc.a_instanceTransform, 0);
@@ -2652,11 +3012,11 @@ void main() {
           gl.disableVertexAttribArray(program.aloc.a_instanceUV);
           gl.vertexAttribDivisor(program.aloc.a_instanceUV, 0);
         }
-      }
+      },
     },
     {
       blockType: BlockType.LABEL,
-      text: "Textures"
+      text: "Textures",
     },
     {
       opcode: "textureFromUrl",
@@ -2665,40 +3025,45 @@ void main() {
       arguments: {
         TEXURL: {
           type: ArgumentType.STRING,
-          defaultValue: "https://extensions.turbowarp.org/dango.png"
+          defaultValue: "https://extensions.turbowarp.org/dango.png",
         },
       },
-      def: function({TEXURL}, {target}) {
+      def: function ({ TEXURL }, { target }) {
         imageSourceSync = null;
         imageSource = new Promise((resolve, reject) => {
-          Scratch.canFetch(TEXURL).then((result) => {
-            if (!result) {
+          Scratch.canFetch(TEXURL)
+            .then((result) => {
+              if (!result) {
+                resolve(null);
+                return;
+              }
+              // eslint-disable-next-line no-restricted-syntax
+              const img = new Image();
+              if (
+                new URL(TEXURL, window.location.href).origin !==
+                window.location.origin
+              ) {
+                img.crossOrigin = "";
+              }
+              img.src = TEXURL;
+              img.onload = function () {
+                // This takes time, so no imageSourceSync
+                resolve({
+                  width: img.width,
+                  height: img.height,
+                  data: img,
+                });
+              };
+              img.onerror = function () {
+                resolve(null);
+              };
+            })
+            .catch(() => {
               resolve(null);
-              return;
-            }
-            // eslint-disable-next-line no-restricted-syntax
-            const img = new Image();
-            if ((new URL(TEXURL, window.location.href)).origin !== window.location.origin) {
-              img.crossOrigin = "";
-            }
-            img.src = TEXURL;
-            img.onload = function() {
-              // This takes time, so no imageSourceSync
-              resolve({
-                width: img.width,
-                height: img.height,
-                data: img
-              });
-            }
-            img.onerror = function() {
-              resolve(null);
-            }
-          }).catch(() => {
-            resolve(null);
-          });
+            });
         });
         return "[texture data]";
-      }
+      },
     },
     {
       opcode: "textureFromCostume",
@@ -2706,10 +3071,10 @@ void main() {
       text: "texture from costume [NAME]",
       arguments: {
         NAME: {
-          type: ArgumentType.COSTUME
+          type: ArgumentType.COSTUME,
         },
       },
-      def: function({NAME}, {target}) {
+      def: function ({ NAME }, { target }) {
         imageSourceSync = null;
         imageSource = new Promise((resolve, reject) => {
           const costumeIndex = target.getCostumeIndexByName(NAME);
@@ -2718,20 +3083,20 @@ void main() {
           // eslint-disable-next-line no-restricted-syntax
           const img = new Image();
           img.src = costume.asset.encodeDataURI();
-          img.onload = function() {
+          img.onload = function () {
             // This takes time, so no imageSourceSync
             resolve({
               width: img.width,
               height: img.height,
-              data: img
+              data: img,
             });
-          }
-          img.onerror = function() {
+          };
+          img.onerror = function () {
             resolve(null);
-          }
+          };
         });
         return "[texture data]";
-      }
+      },
     },
     {
       opcode: "textureFromText",
@@ -2749,9 +3114,9 @@ void main() {
         COLOR: {
           type: ArgumentType.COLOR,
           defaultValue: "#ffff00",
-        }
+        },
       },
-      def: function({TEXT, FONT, COLOR}) {
+      def: function ({ TEXT, FONT, COLOR }) {
         TEXT = Cast.toString(TEXT);
         FONT = Cast.toString(FONT);
         COLOR = Cast.toRgbColorObject(COLOR);
@@ -2770,12 +3135,12 @@ void main() {
           imageSourceSync = {
             width: canv.width,
             height: canv.height,
-            data: canv
+            data: canv,
           };
           resolve(imageSourceSync);
         });
         return "[texture data]";
-      }
+      },
     },
     {
       opcode: "textureFromTextWithBorder",
@@ -2801,9 +3166,9 @@ void main() {
         BORDERCOLOR: {
           type: ArgumentType.COLOR,
           defaultValue: "#000000",
-        }
+        },
       },
-      def: function({TEXT, FONT, COLOR, BORDERSIZE, BORDERCOLOR}) {
+      def: function ({ TEXT, FONT, COLOR, BORDERSIZE, BORDERCOLOR }) {
         TEXT = Cast.toString(TEXT);
         FONT = Cast.toString(FONT);
         COLOR = Cast.toRgbColorObject(COLOR);
@@ -2815,24 +3180,34 @@ void main() {
           const ctx = canv.getContext("2d");
           ctx.font = FONT;
           const m = ctx.measureText(TEXT);
-          canv.width = m.actualBoundingBoxLeft + m.actualBoundingBoxRight + 2 * BORDERSIZE;
-          canv.height = m.fontBoundingBoxAscent + m.fontBoundingBoxDescent + 2 * BORDERSIZE;
+          canv.width =
+            m.actualBoundingBoxLeft + m.actualBoundingBoxRight + 2 * BORDERSIZE;
+          canv.height =
+            m.fontBoundingBoxAscent + m.fontBoundingBoxDescent + 2 * BORDERSIZE;
           ctx.clearRect(0, 0, canv.width, canv.height);
           ctx.font = FONT;
           ctx.lineWidth = BORDERSIZE;
           ctx.fillStyle = `rgba(${COLOR.r},${COLOR.g},${COLOR.b},${(COLOR.a ?? 255) / 255})`;
           ctx.strokeStyle = `rgba(${BORDERCOLOR.r},${BORDERCOLOR.g},${BORDERCOLOR.b},${(BORDERCOLOR.a ?? 255) / 255})`;
-          ctx.fillText(TEXT, m.actualBoundingBoxLeft + BORDERSIZE, m.fontBoundingBoxAscent + BORDERSIZE);
-          ctx.strokeText(TEXT, m.actualBoundingBoxLeft + BORDERSIZE, m.fontBoundingBoxAscent + BORDERSIZE);
+          ctx.fillText(
+            TEXT,
+            m.actualBoundingBoxLeft + BORDERSIZE,
+            m.fontBoundingBoxAscent + BORDERSIZE
+          );
+          ctx.strokeText(
+            TEXT,
+            m.actualBoundingBoxLeft + BORDERSIZE,
+            m.fontBoundingBoxAscent + BORDERSIZE
+          );
           imageSourceSync = {
             width: canv.width,
             height: canv.height,
-            data: canv
+            data: canv,
           };
           resolve(imageSourceSync);
         });
         return "[texture data]";
-      }
+      },
     },
     {
       opcode: "textureFromList",
@@ -2841,22 +3216,22 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         POS: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
         WIDTH: {
           type: ArgumentType.NUMBER,
-          defaultValue: 16
+          defaultValue: 16,
         },
         HEIGHT: {
           type: ArgumentType.NUMBER,
-          defaultValue: 16
+          defaultValue: 16,
         },
       },
-      def: function({NAME, POS, WIDTH, HEIGHT}, {target}) {
+      def: function ({ NAME, POS, WIDTH, HEIGHT }, { target }) {
         let retStatus = "[texture data]";
         imageSourceSync = null;
         imageSource = new Promise((resolve, reject) => {
@@ -2864,7 +3239,12 @@ void main() {
           const height = Cast.toNumber(HEIGHT);
           const listName = Cast.toString(NAME);
           const lengthRequired = width * height * 4;
-          if (width < 1 || height < 1 || !Number.isFinite(width) || !Number.isFinite(height)) {
+          if (
+            width < 1 ||
+            height < 1 ||
+            !Number.isFinite(width) ||
+            !Number.isFinite(height)
+          ) {
             retStatus = "invalid texture size";
             resolve(null);
             return;
@@ -2881,21 +3261,23 @@ void main() {
             resolve(null);
             return;
           }
-          if (list.value.length < pos+lengthRequired) {
+          if (list.value.length < pos + lengthRequired) {
             retStatus = "insufficient list length";
             resolve(null);
             return;
           }
-          const values = list.value.slice(pos, pos+lengthRequired).map(Cast.toNumber);
+          const values = list.value
+            .slice(pos, pos + lengthRequired)
+            .map(Cast.toNumber);
           imageSourceSync = {
             width: width,
             height: height,
-            data: new Uint8Array(values)
+            data: new Uint8Array(values),
           };
           resolve(imageSourceSync);
         });
         return retStatus;
-      }
+      },
     },
     {
       opcode: "textureFromSize",
@@ -2904,20 +3286,25 @@ void main() {
       arguments: {
         WIDTH: {
           type: ArgumentType.NUMBER,
-          defaultValue: 16
+          defaultValue: 16,
         },
         HEIGHT: {
           type: ArgumentType.NUMBER,
-          defaultValue: 16
+          defaultValue: 16,
         },
       },
-      def: function({WIDTH, HEIGHT}, {target}) {
+      def: function ({ WIDTH, HEIGHT }, { target }) {
         let retStatus = "[texture data]";
         imageSourceSync = null;
         imageSource = new Promise((resolve, reject) => {
           const width = Cast.toNumber(WIDTH);
           const height = Cast.toNumber(HEIGHT);
-          if (width < 1 || height < 1 || !Number.isFinite(width) || !Number.isFinite(height)) {
+          if (
+            width < 1 ||
+            height < 1 ||
+            !Number.isFinite(width) ||
+            !Number.isFinite(height)
+          ) {
             retStatus = "invalid texture size";
             resolve(null);
             return;
@@ -2925,16 +3312,16 @@ void main() {
           imageSourceSync = {
             width: width,
             height: height,
-            data: null
+            data: null,
           };
           resolve(imageSourceSync);
         });
         return retStatus;
-      }
+      },
     },
     {
       blockType: BlockType.LABEL,
-      text: "Text measurement"
+      text: "Text measurement",
     },
     {
       opcode: "measureText",
@@ -2952,9 +3339,9 @@ void main() {
         FONT: {
           type: ArgumentType.STRING,
           defaultValue: "italic bold 32px sans-serif",
-        }
+        },
       },
-      def: function({PROP, TEXT, FONT}) {
+      def: function ({ PROP, TEXT, FONT }) {
         PROP = Cast.toString(PROP);
         TEXT = Cast.toString(TEXT);
         FONT = Cast.toString(FONT);
@@ -2962,7 +3349,7 @@ void main() {
         const ctx = canv.getContext("2d");
         ctx.font = FONT;
         lastTextMeasurement = ctx.measureText(TEXT);
-      }
+      },
     },
     {
       opcode: "readMeasuredText",
@@ -2975,7 +3362,7 @@ void main() {
           defaultValue: "up",
         },
       },
-      def: function({DIR}) {
+      def: function ({ DIR }) {
         if (!lastTextMeasurement) return 0;
         DIR = Cast.toString(DIR);
         if (DIR == "up") return lastTextMeasurement.fontBoundingBoxAscent;
@@ -2983,11 +3370,11 @@ void main() {
         if (DIR == "left") return lastTextMeasurement.actualBoundingBoxLeft;
         if (DIR == "right") return lastTextMeasurement.actualBoundingBoxRight;
         return 0;
-      }
+      },
     },
     {
       blockType: BlockType.LABEL,
-      text: "Fonts"
+      text: "Fonts",
     },
     {
       opcode: "getFont",
@@ -3004,15 +3391,15 @@ void main() {
           defaultValue: 32,
         },
       },
-      def: function({FONT, SIZE}) {
+      def: function ({ FONT, SIZE }) {
         FONT = Cast.toString(FONT);
         SIZE = Math.min(Math.max(Cast.toNumber(SIZE), 1), 1000);
         return `${SIZE}px ${FONT}`;
-      }
+      },
     },
     {
       blockType: BlockType.LABEL,
-      text: "View transformations"
+      text: "View transformations",
     },
     {
       opcode: "matSelect",
@@ -3021,14 +3408,14 @@ void main() {
       arguments: {
         TRANSFORM: {
           type: ArgumentType.STRING,
-          menu: "renderTransforms"
+          menu: "renderTransforms",
         },
       },
-      def: function({TRANSFORM}, {target}) {
+      def: function ({ TRANSFORM }, { target }) {
         if (hasOwn(transforms, TRANSFORM)) {
           selectedTransform = TRANSFORM;
         }
-      }
+      },
     },
     {
       opcode: "matStartWithPerspective",
@@ -3037,25 +3424,25 @@ void main() {
       arguments: {
         FOV: {
           type: ArgumentType.NUMBER,
-          defaultValue: 90
+          defaultValue: 90,
         },
         NEAR: {
           type: ArgumentType.NUMBER,
-          defaultValue: 0.01
+          defaultValue: 0.01,
         },
         FAR: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1000
+          defaultValue: 1000,
         },
       },
-      def: function({FOV, NEAR, FAR}) {
+      def: function ({ FOV, NEAR, FAR }) {
         transforms[selectedTransform] = m4.perspective(
-          Cast.toNumber(FOV) / 180 * Math.PI,
+          (Cast.toNumber(FOV) / 180) * Math.PI,
           currentRenderTarget.getAspectRatio(),
           Cast.toNumber(NEAR),
-          Cast.toNumber(FAR),
+          Cast.toNumber(FAR)
         );
-      }
+      },
     },
     {
       opcode: "matStartWithOrthographic",
@@ -3064,28 +3451,28 @@ void main() {
       arguments: {
         NEAR: {
           type: ArgumentType.NUMBER,
-          defaultValue: 0.01
+          defaultValue: 0.01,
         },
         FAR: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1000
+          defaultValue: 1000,
         },
       },
-      def: function({NEAR, FAR}) {
+      def: function ({ NEAR, FAR }) {
         transforms[selectedTransform] = m4.orthographic(
           currentRenderTarget.getAspectRatio(),
           Cast.toNumber(NEAR),
-          Cast.toNumber(FAR),
+          Cast.toNumber(FAR)
         );
-      }
+      },
     },
     {
       opcode: "matStartWithIdentity",
       blockType: BlockType.COMMAND,
       text: "start with no transformation",
-      def: function() {
+      def: function () {
         transforms[selectedTransform] = m4.identity();
-      }
+      },
     },
     {
       opcode: "matStartWithExternal",
@@ -3094,14 +3481,14 @@ void main() {
       arguments: {
         SOURCE: {
           type: ArgumentType.STRING,
-          menu: "externalTransforms"
-        }
+          menu: "externalTransforms",
+        },
       },
-      def: function({SOURCE}, util) {
+      def: function ({ SOURCE }, util) {
         if (!hasOwn(externalTransforms, SOURCE)) return;
         const src = externalTransforms[SOURCE];
         transforms[selectedTransform] = src.get() ?? m4.identity();
-      }
+      },
     },
     {
       opcode: "matStartWithSavedIn",
@@ -3110,21 +3497,27 @@ void main() {
       arguments: {
         SRCLIST: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         POS: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
       },
-      def: function({SRCLIST, POS}, {target}) {
+      def: function ({ SRCLIST, POS }, { target }) {
         const pos = Math.floor(Cast.toNumber(POS));
-        const list = target.lookupVariableByNameAndType(Cast.toString(SRCLIST), "list");
+        const list = target.lookupVariableByNameAndType(
+          Cast.toString(SRCLIST),
+          "list"
+        );
         if (!list) return;
-        if (!Number.isFinite(pos) || pos < 1 || pos+15 > list.value.length) return;
+        if (!Number.isFinite(pos) || pos < 1 || pos + 15 > list.value.length)
+          return;
 
-        transforms[selectedTransform] = list.value.slice(pos-1, pos+15).map(Cast.toNumber);
-      }
+        transforms[selectedTransform] = list.value
+          .slice(pos - 1, pos + 15)
+          .map(Cast.toNumber);
+      },
     },
     {
       opcode: "matMove",
@@ -3141,14 +3534,14 @@ void main() {
           type: ArgumentType.NUMBER,
         },
       },
-      def: function({X, Y, Z}) {
+      def: function ({ X, Y, Z }) {
         transforms[selectedTransform] = m4.translate(
           transforms[selectedTransform],
           Cast.toNumber(X),
           Cast.toNumber(Y),
           Cast.toNumber(Z)
         );
-      }
+      },
     },
     {
       opcode: "matRotate",
@@ -3157,13 +3550,13 @@ void main() {
       arguments: {
         AXIS: {
           type: ArgumentType.STRING,
-          menu: "axis"
+          menu: "axis",
         },
         ANGLE: {
           type: ArgumentType.ANGLE,
         },
       },
-      def: function({AXIS, ANGLE}) {
+      def: function ({ AXIS, ANGLE }) {
         let fn;
         if (AXIS == "X") fn = m4.xRotate;
         if (AXIS == "Y") fn = m4.yRotate;
@@ -3171,9 +3564,9 @@ void main() {
         if (!fn) return;
         transforms[selectedTransform] = fn(
           transforms[selectedTransform],
-          Cast.toNumber(ANGLE) / 180 * Math.PI
+          (Cast.toNumber(ANGLE) / 180) * Math.PI
         );
-      }
+      },
     },
     {
       opcode: "matScale",
@@ -3193,20 +3586,20 @@ void main() {
           defaultValue: 1,
         },
       },
-      def: function({X, Y, Z}) {
+      def: function ({ X, Y, Z }) {
         transforms[selectedTransform] = m4.scale(
           transforms[selectedTransform],
           Cast.toNumber(X),
           Cast.toNumber(Y),
           Cast.toNumber(Z)
         );
-      }
+      },
     },
     {
       opcode: "matWrapper",
       blockType: BlockType.CONDITIONAL,
       text: "wrapper",
-      def: function(_, util) {
+      def: function (_, util) {
         if (util.stackFrame.undoWrapper) {
           util.stackFrame.undoWrapper = false;
           transforms = util.stackFrame.mat3Dstack.pop();
@@ -3216,7 +3609,7 @@ void main() {
           util.stackFrame.mat3Dstack.push(Object.assign({}, transforms));
           util.startBranch(1, true);
         }
-      }
+      },
     },
     {
       opcode: "matSaveInto",
@@ -3225,29 +3618,32 @@ void main() {
       arguments: {
         DSTLIST: {
           type: ArgumentType.STRING,
-          menu: "lists"
+          menu: "lists",
         },
         POS: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
       },
-      def: function({DSTLIST, POS}, {target}) {
+      def: function ({ DSTLIST, POS }, { target }) {
         const pos = Math.floor(Cast.toNumber(POS)) - 1;
-        const list = target.lookupVariableByNameAndType(Cast.toString(DSTLIST), "list");
+        const list = target.lookupVariableByNameAndType(
+          Cast.toString(DSTLIST),
+          "list"
+        );
         if (!list) return;
         if (pos < 0 || !Number.isFinite(pos)) return;
 
         const value = list.value;
         const mat = transforms[selectedTransform];
-        while (value.length < pos+15) {
+        while (value.length < pos + 15) {
           value.push(0);
         }
-        for(let i=0; i<16; i++) {
-          value[pos+i] = mat[i];
+        for (let i = 0; i < 16; i++) {
+          value[pos + i] = mat[i];
         }
         list._monitorUpToDate = false;
-      }
+      },
     },
     {
       opcode: "matReset",
@@ -3256,12 +3652,13 @@ void main() {
       arguments: {
         COMPONENT: {
           type: ArgumentType.NUMBER,
-          menu: "matComponent"
+          menu: "matComponent",
         },
       },
-      def: function({COMPONENT}) {
+      def: function ({ COMPONENT }) {
         const a = transforms[selectedTransform];
         if (COMPONENT == "rotation") {
+          // prettier-ignore
           transforms[selectedTransform] = [
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -3270,6 +3667,7 @@ void main() {
           ];
         }
         if (COMPONENT == "offset") {
+          // prettier-ignore
           transforms[selectedTransform] = [
             a[0], a[1], a[2], 0,
             a[4], a[5], a[6], 0,
@@ -3277,11 +3675,11 @@ void main() {
             0, 0, 0, 1,
           ];
         }
-      }
+      },
     },
     {
       blockType: BlockType.LABEL,
-      text: "Manual transformations"
+      text: "Manual transformations",
     },
     {
       opcode: "matTransform",
@@ -3298,15 +3696,10 @@ void main() {
           type: ArgumentType.NUMBER,
         },
       },
-      def: function({X, Y, Z}) {
-        const vec = [
-          Cast.toNumber(X),
-          Cast.toNumber(Y),
-          Cast.toNumber(Z),
-          1
-        ];
+      def: function ({ X, Y, Z }) {
+        const vec = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z), 1];
         transformed = m4.multiplyVec(transforms[selectedTransform], vec);
-      }
+      },
     },
 
     {
@@ -3326,26 +3719,32 @@ void main() {
         FROM: {
           type: ArgumentType.STRING,
           menu: "vectorTransformsMin2",
-          defaultValue: "world space"
+          defaultValue: "world space",
         },
         TO: {
           type: ArgumentType.STRING,
           menu: "vectorTransforms",
-          defaultValue: "model space"
+          defaultValue: "model space",
         },
       },
-      def: function({X, Y, Z, FROM, TO}) {
-        const lookup = {"projected":4, "projected (scratch units)":4, "view space":3, "world space":2, "model space":1};
-        const lookup2 = [null, transforms.modelToWorld, transforms.worldToView, transforms.viewToProjected];
+      def: function ({ X, Y, Z, FROM, TO }) {
+        const lookup = {
+          projected: 4,
+          "projected (scratch units)": 4,
+          "view space": 3,
+          "world space": 2,
+          "model space": 1,
+        };
+        const lookup2 = [
+          null,
+          transforms.modelToWorld,
+          transforms.worldToView,
+          transforms.viewToProjected,
+        ];
         let from = lookup[FROM];
         let to = lookup[TO];
         if (!from || !to) return;
-        const vec = [
-          Cast.toNumber(X),
-          Cast.toNumber(Y),
-          Cast.toNumber(Z),
-          1
-        ];
+        const vec = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z), 1];
         if (from == to) {
           transformed = vec;
           return;
@@ -3356,17 +3755,17 @@ void main() {
           swapped = true;
         }
         let totalMat = lookup2[from];
-        for(let i=from+1; i<to; i++) {
+        for (let i = from + 1; i < to; i++) {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
         if (swapped) totalMat = m4.inverse(totalMat);
         transformed = m4.multiplyVec(totalMat, vec);
         if (TO == "projected (scratch units)") {
-          transformed[0] /= transformed[3] * runtime.stageWidth / 2
-          transformed[1] /= transformed[3] * runtime.stageHeight / 2;
-          transformed[2]  = transformed[3];
+          transformed[0] /= (transformed[3] * runtime.stageWidth) / 2;
+          transformed[1] /= (transformed[3] * runtime.stageHeight) / 2;
+          transformed[2] = transformed[3];
         }
-      }
+      },
     },
     {
       opcode: "matTransformFromToDir",
@@ -3385,26 +3784,32 @@ void main() {
         FROM: {
           type: ArgumentType.STRING,
           menu: "vectorTransformsMin2",
-          defaultValue: "world space"
+          defaultValue: "world space",
         },
         TO: {
           type: ArgumentType.STRING,
           menu: "vectorTransformsMin1",
-          defaultValue: "model space"
+          defaultValue: "model space",
         },
       },
-      def: function({X, Y, Z, FROM, TO}) {
-        const lookup = {"projected":4, "projected (scratch units)":4, "view space":3, "world space":2, "model space":1};
-        const lookup2 = [null, transforms.modelToWorld, transforms.worldToView, transforms.viewToProjected];
+      def: function ({ X, Y, Z, FROM, TO }) {
+        const lookup = {
+          projected: 4,
+          "projected (scratch units)": 4,
+          "view space": 3,
+          "world space": 2,
+          "model space": 1,
+        };
+        const lookup2 = [
+          null,
+          transforms.modelToWorld,
+          transforms.worldToView,
+          transforms.viewToProjected,
+        ];
         let from = lookup[FROM];
         let to = lookup[TO];
         if (!from || !to) return;
-        const vec = [
-          Cast.toNumber(X),
-          Cast.toNumber(Y),
-          Cast.toNumber(Z),
-          1
-        ];
+        const vec = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z), 1];
         if (from == to) {
           transformed = vec;
           return;
@@ -3415,13 +3820,13 @@ void main() {
           swapped = true;
         }
         let totalMat = lookup2[from];
-        for(let i=from+1; i<to; i++) {
+        for (let i = from + 1; i < to; i++) {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
         totalMat[12] = totalMat[13] = totalMat[14] = 0;
         if (swapped) totalMat = m4.inverse(totalMat);
         transformed = m4.multiplyVec(totalMat, vec);
-      }
+      },
     },
     {
       opcode: "matTransformResult",
@@ -3431,26 +3836,26 @@ void main() {
       arguments: {
         AXIS: {
           type: ArgumentType.STRING,
-          menu: "axis"
+          menu: "axis",
         },
       },
-      def: function({AXIS}) {
-        const lookup = {X:1, Y:2, Z:3};
+      def: function ({ AXIS }) {
+        const lookup = { X: 1, Y: 2, Z: 3 };
         const index = lookup[AXIS];
-        return index ? transformed[index-1] : "";
-      }
+        return index ? transformed[index - 1] : "";
+      },
     },
     {
       blockType: BlockType.LABEL,
-      text: "Rendering into textures"
+      text: "Rendering into textures",
     },
     {
       opcode: "renderToStage",
       blockType: BlockType.COMMAND,
       text: "render to stage",
-      def: function() {
+      def: function () {
         canvasRenderTarget.setAsRenderTarget();
-      }
+      },
     },
     {
       opcode: "renderToTexture",
@@ -3459,16 +3864,16 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
       },
-      def: function({NAME}) {
+      def: function ({ NAME }) {
         const mesh = meshes.get(Cast.toString(NAME));
         if (!mesh) return;
         if (!mesh.data.texture) return;
         if (!(mesh.data.texture instanceof Texture2D)) return;
         mesh.data.texture.main.setAsRenderTarget();
-      }
+      },
     },
     {
       opcode: "renderToCubeTexture",
@@ -3477,14 +3882,14 @@ void main() {
       arguments: {
         SIDE: {
           type: ArgumentType.STRING,
-          menu: "cubeSide"
+          menu: "cubeSide",
         },
         NAME: {
           type: ArgumentType.STRING,
-          defaultValue: "my mesh"
+          defaultValue: "my mesh",
         },
       },
-      def: function({SIDE, NAME}) {
+      def: function ({ SIDE, NAME }) {
         const mesh = meshes.get(Cast.toString(NAME));
         if (!mesh) return;
         if (!mesh.data.texture) return;
@@ -3495,11 +3900,11 @@ void main() {
           "Y+": "ypos",
           "Y-": "yneg",
           "Z+": "zpos",
-          "Z-": "zneg"
-        }
+          "Z-": "zneg",
+        };
         if (!hasOwn(lookup, SIDE)) return;
         mesh.data.texture[lookup[SIDE]].setAsRenderTarget();
-      }
+      },
     },
     {
       opcode: "readRenderTarget",
@@ -3508,21 +3913,24 @@ void main() {
       arguments: {
         DSTLIST: {
           type: ArgumentType.STRING,
-          menu: "lists"
-        }
+          menu: "lists",
+        },
       },
-      def: function({DSTLIST}, {target}) {
-        const list = target.lookupVariableByNameAndType(Cast.toString(DSTLIST), "list");
+      def: function ({ DSTLIST }, { target }) {
+        const list = target.lookupVariableByNameAndType(
+          Cast.toString(DSTLIST),
+          "list"
+        );
         if (!list) return;
         if (!currentRenderTarget.checkIfValid()) return;
-        const width  = currentRenderTarget.width;
+        const width = currentRenderTarget.width;
         const height = currentRenderTarget.height;
         if (width == 0 || height == 0) return;
         const pixels = new Uint8ClampedArray(width * height * 4);
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
         list.value = Array.from(pixels);
         list._monitorUpToDate = false;
-      }
+      },
     },
     {
       opcode: "renderTargetInfo",
@@ -3534,29 +3942,33 @@ void main() {
         PROPERTY: {
           type: ArgumentType.STRING,
           menu: "renderTargetProperty",
-          defaultValue: "width"
-        }
+          defaultValue: "width",
+        },
       },
-      def: function({PROPERTY}) {
-        if (PROPERTY == "mesh name") return currentRenderTarget.getMesh()?.name ?? "";
+      def: function ({ PROPERTY }) {
+        if (PROPERTY == "mesh name")
+          return currentRenderTarget.getMesh()?.name ?? "";
         if (PROPERTY == "width") return currentRenderTarget.width;
         if (PROPERTY == "height") return currentRenderTarget.height;
-        if (PROPERTY == "aspect ratio") return currentRenderTarget.getAspectRatio();
+        if (PROPERTY == "aspect ratio")
+          return currentRenderTarget.getAspectRatio();
         if (PROPERTY == "depth test") return currentRenderTarget.depthTest;
         if (PROPERTY == "depth write") return currentRenderTarget.depthWrite;
-        if (PROPERTY == "has depth storage") return currentRenderTarget.hasDepthBuffer;
+        if (PROPERTY == "has depth storage")
+          return currentRenderTarget.hasDepthBuffer;
         if (PROPERTY == "image as data URI") {
           if (!currentRenderTarget.checkIfValid()) return "";
-          const width  = currentRenderTarget.width;
+          const width = currentRenderTarget.width;
           const height = currentRenderTarget.height;
           if (width == 0 || height == 0) return "";
           const pixels = new Uint8ClampedArray(width * height * 4);
           gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-          for(let i=0; i<pixels.length; i+=4) { // Internally we store everything with permultiplied alpha. Undoing it
-            const alpha = pixels[i+3] / 255
-            pixels[i+0] /= alpha;
-            pixels[i+1] /= alpha;
-            pixels[i+2] /= alpha;
+          for (let i = 0; i < pixels.length; i += 4) {
+            // Internally we store everything with permultiplied alpha. Undoing it
+            const alpha = pixels[i + 3] / 255;
+            pixels[i + 0] /= alpha;
+            pixels[i + 1] /= alpha;
+            pixels[i + 2] /= alpha;
           }
           const canv = document.createElement("canvas");
           canv.width = width;
@@ -3566,13 +3978,14 @@ void main() {
           ctx.putImageData(imgData, 0, 0);
           return canv.toDataURL();
         }
-        if (PROPERTY == "is valid for being drawn to") return currentRenderTarget.checkIfValid();
+        if (PROPERTY == "is valid for being drawn to")
+          return currentRenderTarget.checkIfValid();
         return "";
-      }
+      },
     },
     {
       blockType: BlockType.LABEL,
-      text: "Tinting and fog"
+      text: "Tinting and fog",
     },
     {
       opcode: "setGlobalColor",
@@ -3581,35 +3994,35 @@ void main() {
       arguments: {
         OPERATION: {
           type: ArgumentType.STRING,
-          menu: "globalColor"
+          menu: "globalColor",
         },
         RED: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
         GREEN: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
         BLUE: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
         ALPHA: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
       },
-      def: function({OPERATION, RED, GREEN, BLUE, ALPHA}) {
+      def: function ({ OPERATION, RED, GREEN, BLUE, ALPHA }) {
         const color = [
           Cast.toNumber(RED),
           Cast.toNumber(GREEN),
           Cast.toNumber(BLUE),
-          Cast.toNumber(ALPHA)
+          Cast.toNumber(ALPHA),
         ];
         if (OPERATION == "multiplier") colorMultiplier = color;
         if (OPERATION == "adder") colorAdder = color;
-      }
+      },
     },
     {
       opcode: "setFogEnabled",
@@ -3618,12 +4031,12 @@ void main() {
       arguments: {
         STATE: {
           type: ArgumentType.STRING,
-          menu: "onOff"
+          menu: "onOff",
         },
       },
-      def: function({STATE}) {
+      def: function ({ STATE }) {
         fogEnabled = Cast.toBoolean(STATE);
-      }
+      },
     },
     {
       opcode: "setFogColor",
@@ -3632,24 +4045,24 @@ void main() {
       arguments: {
         RED: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
         GREEN: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
         BLUE: {
           type: ArgumentType.NUMBER,
-          defaultValue: 1
+          defaultValue: 1,
         },
       },
-      def: function({RED, GREEN, BLUE}) {
+      def: function ({ RED, GREEN, BLUE }) {
         fogColor = [
           Cast.toNumber(RED),
           Cast.toNumber(GREEN),
-          Cast.toNumber(BLUE)
+          Cast.toNumber(BLUE),
         ];
-      }
+      },
     },
     {
       opcode: "setFogDistance",
@@ -3658,18 +4071,18 @@ void main() {
       arguments: {
         NEAR: {
           type: ArgumentType.NUMBER,
-          defaultValue: 10
+          defaultValue: 10,
         },
         FAR: {
           type: ArgumentType.NUMBER,
-          defaultValue: 100
+          defaultValue: 100,
         },
       },
-      def: function({NEAR, FAR}) {
+      def: function ({ NEAR, FAR }) {
         NEAR = Cast.toNumber(NEAR);
         FAR = Cast.toNumber(FAR);
-        fogDistance = [NEAR, FAR-NEAR];
-      }
+        fogDistance = [NEAR, FAR - NEAR];
+      },
     },
     {
       opcode: "setFogPosition",
@@ -3679,58 +4092,55 @@ void main() {
         SPACE: {
           type: ArgumentType.STRING,
           defaultValue: "view space",
-          menu: "fogSpace"
+          menu: "fogSpace",
         },
         X: {
           type: ArgumentType.NUMBER,
-          defaultValue: 0
+          defaultValue: 0,
         },
         Y: {
           type: ArgumentType.NUMBER,
-          defaultValue: 0
+          defaultValue: 0,
         },
         Z: {
           type: ArgumentType.NUMBER,
-          defaultValue: 0
+          defaultValue: 0,
         },
       },
-      def: function({SPACE, X, Y, Z}) {
+      def: function ({ SPACE, X, Y, Z }) {
         fogSpace = Cast.toString(SPACE);
-        fogPosition = [
-          Cast.toNumber(X),
-          Cast.toNumber(Y),
-          Cast.toNumber(Z)
-        ];
-        if (fogPosition[0] == 0 && fogPosition[1] == 0 && fogPosition[2] == 0) fogPosition = null;
-      }
+        fogPosition = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z)];
+        if (fogPosition[0] == 0 && fogPosition[1] == 0 && fogPosition[2] == 0)
+          fogPosition = null;
+      },
     },
     {
       blockType: BlockType.LABEL,
-      text: "Resolution changes"
+      text: "Resolution changes",
     },
     {
       opcode: "whenCanvasResized",
       blockType: BlockType.EVENT,
       text: "when resolution changes",
-      isEdgeActivated: false
+      isEdgeActivated: false,
     },
     {
       opcode: "canvasWidth",
       blockType: BlockType.REPORTER,
       text: "stage width",
-      def: function() {
+      def: function () {
         return canvas.width;
-      }
+      },
     },
     {
       opcode: "canvasHeight",
       blockType: BlockType.REPORTER,
       text: "stage height",
-      def: function() {
+      def: function () {
         return canvas.height;
-      }
-    }
-  ]
+      },
+    },
+  ];
 
   const extInfo = {
     id: extensionId,
@@ -3743,159 +4153,192 @@ void main() {
     menus: {
       fonts: {
         acceptReporters: false,
-        items: "fontsMenu"
+        items: "fontsMenu",
       },
       lists: {
         acceptReporters: false,
-        items: "listsMenu"
+        items: "listsMenu",
       },
       costumes: {
         acceptReporters: true,
-        items: "costumesMenu"
+        items: "costumesMenu",
       },
       externalTransforms: {
         acceptReporters: true,
-        items: "externalTransformsMenu"
+        items: "externalTransformsMenu",
       },
       clearLayers: {
         acceptReporters: true,
-        items: Object.keys(ClearLayers)
+        items: Object.keys(ClearLayers),
       },
       primitives: {
         acceptReporters: true,
-        items: Object.keys(Primitives)
+        items: Object.keys(Primitives),
       },
       onOff: {
         acceptReporters: true,
         items: [
-          {text: "on", value: "true"},
-          {text: "off", value: "false"},
-        ]
+          { text: "on", value: "true" },
+          { text: "off", value: "false" },
+        ],
       },
       meshProperties: {
         acceptReporters: false,
-        items: ["exists", ...Object.keys(MeshPropFns)]
+        items: ["exists", ...Object.keys(MeshPropFns)],
       },
       axis: {
         acceptReporters: false,
-        items: ["X", "Y", "Z"]
+        items: ["X", "Y", "Z"],
       },
       textureWrap: {
         acceptReporters: false,
-        items: ["clamp to edge", "repeat"]
+        items: ["clamp to edge", "repeat"],
       },
       textureFilter: {
         acceptReporters: false,
-        items: ["pixelated", "blurred"]
+        items: ["pixelated", "blurred"],
       },
       textureMipmapping: {
         acceptReporters: false,
-        items: ["off", "sharp transitions", "smooth transitions"]
+        items: ["off", "sharp transitions", "smooth transitions"],
       },
       cubeSide: {
         acceptReporters: true,
-        items: ["X+", "X-", "Y+", "Y-", "Z+", "Z-"]
+        items: ["X+", "X-", "Y+", "Y-", "Z+", "Z-"],
       },
       blending: {
         acceptReporters: true,
-        items: Object.keys(Blendings)
+        items: Object.keys(Blendings),
       },
       culling: {
         acceptReporters: true,
-        items: Object.keys(Cullings)
+        items: Object.keys(Cullings),
       },
       skinningTransforms: {
         acceptReporters: true,
-        items: ["original", "current"]
+        items: ["original", "current"],
       },
       renderTransforms: {
         acceptReporters: false,
-        items: [{
-          text: "to projected from view space",
-          value: "viewToProjected",
-        }, {
-          text: "to view space from world space",
-          value: "worldToView",
-        }, {
-          text: "to world space from model space",
-          value: "modelToWorld",
-        }, {
-          text: "importing from file",
-          value: "import",
-        }, {
-          text: "custom",
-          value: "custom"
-        }]
+        items: [
+          {
+            text: "to projected from view space",
+            value: "viewToProjected",
+          },
+          {
+            text: "to view space from world space",
+            value: "worldToView",
+          },
+          {
+            text: "to world space from model space",
+            value: "modelToWorld",
+          },
+          {
+            text: "importing from file",
+            value: "import",
+          },
+          {
+            text: "custom",
+            value: "custom",
+          },
+        ],
       },
       matComponent: {
         acceptReporters: true,
-        items: ["offset", "rotation"]
+        items: ["offset", "rotation"],
       },
       vectorTransforms: {
         acceptReporters: false,
-        items: ["projected (scratch units)", "projected", "view space", "world space", "model space"]
+        items: [
+          "projected (scratch units)",
+          "projected",
+          "view space",
+          "world space",
+          "model space",
+        ],
       },
       vectorTransformsMin1: {
         acceptReporters: false,
-        items: ["projected", "view space", "world space", "model space"]
+        items: ["projected", "view space", "world space", "model space"],
       },
       vectorTransformsMin2: {
         acceptReporters: false,
-        items: ["view space", "world space", "model space"]
+        items: ["view space", "world space", "model space"],
       },
       fogSpace: {
         acceptReporters: false,
-        items: ["view space", "world space", "model space"]
+        items: ["view space", "world space", "model space"],
       },
       renderTargetProp: {
         acceptReporters: false,
-        items: ["width", "height"]
+        items: ["width", "height"],
       },
       filetype: {
         acceptReporters: false,
-        items: ["obj mtl", "off"]
+        items: ["obj mtl", "off"],
       },
       globalColor: {
         acceptReporters: false,
-        items: ["multiplier", "adder"]
+        items: ["multiplier", "adder"],
       },
       alphaTestMode: {
         acceptReporters: false,
         items: [
-          {text: "preserve opacity", value: "false"},
-          {text: "make opaque", value: "true"},
-        ]
+          { text: "preserve opacity", value: "false" },
+          { text: "make opaque", value: "true" },
+        ],
       },
       instanceProperty: {
         acceptReporters: false,
-        items: ["transforms", "XY positions", "XYZ positions", "XYZ positions and sizes", "RGB colors", "RGBA colors", "UV offsets", "UV offsets and sizes"]
+        items: [
+          "transforms",
+          "XY positions",
+          "XYZ positions",
+          "XYZ positions and sizes",
+          "RGB colors",
+          "RGBA colors",
+          "UV offsets",
+          "UV offsets and sizes",
+        ],
       },
       renderTargetProperty: {
         acceptReporters: false,
-        items: ["mesh name", "width", "height", "aspect ratio", "depth test", "depth write", "has depth storage", "image as data URI", "is valid for being drawn to"]
+        items: [
+          "mesh name",
+          "width",
+          "height",
+          "aspect ratio",
+          "depth test",
+          "depth write",
+          "has depth storage",
+          "image as data URI",
+          "is valid for being drawn to",
+        ],
       },
       powersOfTwo: {
         acceptReporters: true,
-        items: ["1", "2", "4", "8", "16"]
+        items: ["1", "2", "4", "8", "16"],
       },
       depthTest: {
         acceptReporters: true,
-        items: Object.keys(DepthTests)
+        items: Object.keys(DepthTests),
       },
       directions: {
         acceptReporters: true,
-        items: ["up", "down", "left", "right"]
+        items: ["up", "down", "left", "right"],
       },
       bufferUsage: {
         acceptReporters: true,
-        items: ["rarely", "frequently fully", "frequently partially"]
-      }
-    }
+        items: ["rarely", "frequently fully", "frequently partially"],
+      },
+    },
   };
 
   class Extension {
     getInfo() {
-      definitions.find(b => b.opcode == "matStartWithExternal").hideFromPalette = Object.keys(externalTransforms).length == 0;
+      definitions.find(
+        (b) => b.opcode == "matStartWithExternal"
+      ).hideFromPalette = Object.keys(externalTransforms).length == 0;
       return extInfo;
     }
     fontsMenu() {
@@ -3906,20 +4349,31 @@ void main() {
         "Marker",
         "Curly",
         "Pixel",
-        "Scratch"
+        "Scratch",
       ];
       // Based on https://github.com/TurboWarp/extensions/blob/a6f5944f52163792780ae550fbf2822ce425714d/extensions/lab/text.js#L1198-L1205
-      const customFonts = runtime.fontManager ? runtime.fontManager.getFonts().map((i) => ({
-        text: i.name,
-        value: i.family,
-      })) : [];
+      const customFonts = runtime.fontManager
+        ? runtime.fontManager.getFonts().map((i) => ({
+            text: i.name,
+            value: i.family,
+          }))
+        : [];
       return [...defaultFonts, ...customFonts];
     }
     listsMenu() {
       const stage = vm.runtime.getTargetForStage();
-      const editingTarget = vm.editingTarget !== stage ? vm.editingTarget : null;
-      const local = editingTarget ? Object.values(editingTarget.variables).filter(v => v.type == "list").map(v => v.name) : [];
-      const global = stage ? Object.values(stage.variables).filter(v => v.type == "list").map(v => v.name) : [];
+      const editingTarget =
+        vm.editingTarget !== stage ? vm.editingTarget : null;
+      const local = editingTarget
+        ? Object.values(editingTarget.variables)
+            .filter((v) => v.type == "list")
+            .map((v) => v.name)
+        : [];
+      const global = stage
+        ? Object.values(stage.variables)
+            .filter((v) => v.type == "list")
+            .map((v) => v.name)
+        : [];
       const all = [...local, ...global];
       all.sort();
       if (all.length == 0) return ["list"];
@@ -3927,24 +4381,25 @@ void main() {
     }
     costumesMenu() {
       let editingTarget = vm.editingTarget;
-      if (editingTarget) return editingTarget.getCostumes().map(e => e.name);
+      if (editingTarget) return editingTarget.getCostumes().map((e) => e.name);
       return ["costume 1"];
     }
     externalTransformsMenu() {
       const out = [];
-      for(let key in externalTransforms) {
+      for (let key in externalTransforms) {
         out.push({
           value: key,
-          text: externalTransforms[key].name
+          text: externalTransforms[key].name,
         });
       }
-      if (out.length == 0) out.push({value: "", text:"- no external sources -"});
+      if (out.length == 0)
+        out.push({ value: "", text: "- no external sources -" });
       return out;
     }
   }
 
-  for(let block of definitions) {
-    if(block == "---") continue;
+  for (let block of definitions) {
+    if (block == "---") continue;
     Extension.prototype[block.opcode ?? block.func] = block.def;
   }
 
