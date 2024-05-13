@@ -48,6 +48,33 @@
               id: "ray_direction",
               default: "direction of ([x1],[y1]) to ([x2],[y2])",
             }),
+            hideFromPalette: true,
+            arguments: {
+              x1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              y1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              x2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+              y2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+            },
+          },
+          {
+            opcode: "ray_direction2",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "ray_direction",
+              default: "direction of ([x1],[y1]) to ([x2],[y2])",
+            }),
             arguments: {
               x1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -283,6 +310,19 @@
     ray_direction(args) {
       // Added by NexusKitten
       // 由 NexusKitten 添加
+      const dx =
+        Scratch.Cast.toNumber(args.x2) - Scratch.Cast.toNumber(args.x1);
+      const dy =
+        Scratch.Cast.toNumber(args.y2) - Scratch.Cast.toNumber(args.y1);
+      if (dx === 0 && dy === 0) {
+        return 0;
+      } else if (dy < 0) {
+        return (180 / Math.PI) * Math.atan(dx / dy) + 180;
+      } else {
+        return (180 / Math.PI) * Math.atan(dx / dy);
+      }
+    }
+    ray_direction2(args) {
       const dx =
         Scratch.Cast.toNumber(args.x2) - Scratch.Cast.toNumber(args.x1);
       const dy =
