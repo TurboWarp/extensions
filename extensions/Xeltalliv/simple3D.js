@@ -1140,7 +1140,10 @@ void main() {
 		}
 		gl.deleteShader(vsh);
 		gl.deleteShader(fsh);
-		if (!success) return {};
+		if (!success) {
+			gl.deleteProgram(program);
+			return {};
+		}
 		gl.useProgram(program);
 		const aloc = {};
 		const numAttribs = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
@@ -1170,7 +1173,9 @@ void main() {
 		}
 		clear() {
 			for(const key in this.programs) {
-				gl.deleteProgram(this.programs[key].program);
+				if (this.programs[key].program) {
+					gl.deleteProgram(this.programs[key].program);
+				}
 			}
 			this.programs = {};
 		}
@@ -2447,6 +2452,7 @@ void main() {
 				if (mesh.buffers.instanceColors) flags.push("INSTANCE_COLOR");
 				if (mesh.buffers.instanceUVOffsets) flags.push(mesh.buffers.instanceUVOffsets.size == 4 ? "INSTANCE_UVS" : "INSTANCE_UV");
 				const program = programs.get(flags);
+				if (!program.program) return;
 				gl.useProgram(program.program);
 				
 				// TODO: replace the following slow monstrosity with fast VAOs
