@@ -251,6 +251,14 @@
 	};
 	/* End of m4 */
 
+	/**
+	 * hasOwn but it works in older browsers
+	 * @param {object} obj
+	 * @param {string} name
+	 * @returns {boolean}
+	 */
+	const hasOwn = (obj, name) => Object.prototype.hasOwnProperty.call(obj, name);
+
 	class Buffer {
 		constructor(type) {
 			this.buffer = gl.createBuffer();
@@ -1501,7 +1509,7 @@ void main() {
 				},
 			},
 			def: function({LAYERS}) {
-				if (!Object.hasOwn(ClearLayers, LAYERS)) return;
+				if (!hasOwn(ClearLayers, LAYERS)) return;
 				if (gl.getParameter(gl.DEPTH_WRITEMASK)) {
 					gl.clear(ClearLayers[LAYERS]);
 				} else {
@@ -1557,7 +1565,7 @@ void main() {
 			},
 			def: function({TEST, WRITE}) {
 				let test = Cast.toString(TEST);
-				if (!Object.hasOwn(DepthTests, test)) return;
+				if (!hasOwn(DepthTests, test)) return;
 				currentRenderTarget.setDepth(test, Cast.toBoolean(WRITE));
 				currentRenderTarget.updateDepth();
 			}
@@ -1658,7 +1666,7 @@ void main() {
 			def: function({NAME, PROP}) {
 				const mesh = meshes.get(Cast.toString(NAME));
 				if (PROP == "exists") return !!mesh;
-				if (!mesh || !Object.hasOwn(MeshPropFns, PROP)) return "";
+				if (!mesh || !hasOwn(MeshPropFns, PROP)) return "";
 				return MeshPropFns[PROP](mesh) ?? "";
 			}
 		},
@@ -1943,7 +1951,7 @@ void main() {
 					"Z+": "zpos",
 					"Z-": "zneg",
 				}
-				if (!Object.hasOwn(lookup, SIDE)) return;
+				if (!hasOwn(lookup, SIDE)) return;
 				textureObj[lookup[SIDE]].loading = true;
 				textureObj[lookup[SIDE]].failedToLoad = false;
 				mesh.update();
@@ -2218,7 +2226,7 @@ void main() {
 				const mesh = meshes.get(Cast.toString(NAME));
 				const primitivesName = Cast.toString(PRIMITIVES);
 				if (!mesh) return;
-				if (!Object.hasOwn(Primitives, primitivesName)) return;
+				if (!hasOwn(Primitives, primitivesName)) return;
 				mesh.myData.primitives = Primitives[primitivesName];
 				mesh.myData.primitivesName = primitivesName;
 				mesh.update();
@@ -2243,7 +2251,7 @@ void main() {
 				const mesh = meshes.get(Cast.toString(NAME));
 				const blending = Cast.toString(BLENDING);
 				if (!mesh) return;
-				if (!Object.hasOwn(Blendings, blending)) return;
+				if (!hasOwn(Blendings, blending)) return;
 				mesh.myData.blending = blending;
 				mesh.update();
 			}
@@ -2266,7 +2274,7 @@ void main() {
 				const mesh = meshes.get(Cast.toString(NAME));
 				const culling = Cast.toString(CULLING);
 				if (!mesh) return;
-				if (!Object.hasOwn(Cullings, culling)) return;
+				if (!hasOwn(Cullings, culling)) return;
 				mesh.myData.culling = culling;
 				mesh.update();
 			}
@@ -3017,7 +3025,7 @@ void main() {
 				},
 			},
 			def: function({TRANSFORM}, {target}) {
-				if (Object.hasOwn(transforms, TRANSFORM)) {
+				if (hasOwn(transforms, TRANSFORM)) {
 					selectedTransform = TRANSFORM;
 				}
 			}
@@ -3090,7 +3098,7 @@ void main() {
 				}
 			},
 			def: function({SOURCE}, util) {
-				if (!Object.hasOwn(externalTransforms, SOURCE)) return;
+				if (!hasOwn(externalTransforms, SOURCE)) return;
 				const src = externalTransforms[SOURCE];
 				transforms[selectedTransform] = src.get() ?? m4.identity();
 			}
@@ -3489,7 +3497,7 @@ void main() {
 					"Z+": "zpos",
 					"Z-": "zneg"
 				}
-				if (!Object.hasOwn(lookup, SIDE)) return;
+				if (!hasOwn(lookup, SIDE)) return;
 				mesh.data.texture[lookup[SIDE]].setAsRenderTarget();
 			}
 		},
