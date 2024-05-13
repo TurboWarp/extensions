@@ -2,7 +2,7 @@
 // ID: xeltallivSimple3D
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
-// License: MPL-2.0
+// License: MPL-2.0 AND BSD-3-Clause
 // Version: 1.0.0
 
 (function(Scratch) {
