@@ -2413,7 +2413,7 @@ void main() {
           if (!mesh || !list) return;
           let output = await modelDecoder.decode(
             FILETYPE,
-            list.value,
+            list.value.slice(),
             transforms.import
           );
           if (!output) return;
