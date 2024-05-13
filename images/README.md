@@ -305,4 +305,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## veggiecan/mobilekeyboard.svg
  - Created by Veggiecan0419
 
-
+## Xeltalliv/simple3D.png
+ - Created by [@Xeltalliv](https://github.com/Xeltalliv).
+ - Font is Deja Vu Sans.
