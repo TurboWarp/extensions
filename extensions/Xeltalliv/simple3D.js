@@ -1476,7 +1476,7 @@ void main() {
 			text: "Open sample project",
 			func: "getSampleProject",
 			def: function() {
-				const url = new URL(location);
+				const url = new URL(location.href);
 				url.searchParams.set("project_url","https://extensions.turbowarp.org/samples/Simple3D%20template.sb3");
 				// Exempted from Scratch.openWindow as it is in response to a user gesture and it does not
 				// bring in third-party websites at all.
