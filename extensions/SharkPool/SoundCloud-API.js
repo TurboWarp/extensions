@@ -3,7 +3,7 @@
 // Description: Fetch Songs and Statistics from Soundcloud (Unofficial)
 // By: SharkPool
 
-// Version V.1.0.1
+// Version V.1.0.2
 
 /* !IMPORTANT!
   In this Extension, I use regulare fetch()
@@ -89,6 +89,13 @@
             opcode: "getClientID",
             blockType: Scratch.BlockType.REPORTER,
             text: "client ID"
+          },
+          { blockType: Scratch.BlockType.LABEL, text: "Must be True for Extension to Work" },
+          {
+            opcode: "testClient",
+            blockType: Scratch.BlockType.BOOLEAN,
+            disableMonitor: true,
+            text: "test client ID"
           },
           "---",
           {
@@ -226,6 +233,19 @@
     setClient(args) { clientID = Scratch.Cast.toString(args.ID) }
 
     getClientID() { return clientID }
+
+    async testClient() {
+      try {
+        const url = `https://api-auth.soundcloud.com/oauth/session?client_id=${clientID}`;
+        if (!await Scratch.canFetch(url)) return false;
+        // eslint-disable-next-line
+        const response = await fetch(`${proxy}${url}`);
+        if (!response.ok) return false;
+        const responseData = await response.json();
+        return Object.keys(responseData).length > 0;
+      } catch { return false }
+      return false;
+    }
 
     async extractID(args) {
       try {
