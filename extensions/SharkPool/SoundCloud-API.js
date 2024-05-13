@@ -244,7 +244,6 @@
         const responseData = await response.json();
         return Object.keys(responseData).length > 0;
       } catch { return false }
-      return false;
     }
 
     async extractID(args) {
