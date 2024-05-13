@@ -1,3 +1,9 @@
+// Name: Images
+// ID: images
+// Description: Some blocks for working with images.
+// Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
+// License: MIT
+
 (function (Scratch) {
   "use strict";
   const QueryImage = {
