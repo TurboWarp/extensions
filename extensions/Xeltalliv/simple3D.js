@@ -3656,7 +3656,7 @@ void main() {
       text: "reset transformation's [COMPONENT]",
       arguments: {
         COMPONENT: {
-          type: ArgumentType.NUMBER,
+          type: ArgumentType.STRING,
           menu: "matComponent",
         },
       },
