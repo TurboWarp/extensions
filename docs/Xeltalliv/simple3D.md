@@ -21,16 +21,16 @@
 7.1. [Augmented Reality extension](#ar-integration)
 
 ## What is this <a name="description"></a>
-**Simple 3D** is an extension by [Vadik1](https://scratch.mit.edu/users/Vadik1) meant to enable creation of GPU accelerated 3D projects. It is is not designed for making graphically complex 3D projects (for that, see [Pen+ v7](https://github.com/TurboWarp/extensions/pull/1377) and [WebGL2](https://github.com/TurboWarp/extensions/discussions/378) extensions, both with programmable shaders) and instead it's main focus is allowing people to create 3D projects easily and quickly. Nevertheless, despite lack of programmable shaders, it is still quite powerful. It covers the wide range of usages from something as high level as making an [AR project in less than 20 blocks](#ar-example) with models loaded from OBJ files, to something more low level like doing all the calculations on CPU and streaming transformed polygons every frame (like [Pen+](https://extensions.turbowarp.org/obviousAlexC/penPlus.js)). And of course everything in-between.
+**Simple 3D** is an extension by [Vadik1](https://scratch.mit.edu/users/Vadik1) meant to enable creation of GPU accelerated 3D projects. It is not designed for making graphically complex 3D projects (for that, see [Pen+ v7](https://github.com/TurboWarp/extensions/pull/1377) and [WebGL2](https://github.com/TurboWarp/extensions/discussions/378) extensions, both with programmable shaders) and instead it's main focus is allowing people to create 3D projects easily and quickly. Nevertheless, despite lack of programmable shaders, it is still quite powerful. It covers the wide range of usages from something as high level as making an [AR project in less than 20 blocks](#ar-example) with models loaded from OBJ files, to something more low level like doing all the calculations on CPU and streaming transformed polygons every frame (like [Pen+](https://extensions.turbowarp.org/obviousAlexC/penPlus.js)). And of course everything in-between.
 
-It could also be useful for making certain kinds of 2D projects, thanks to it's ability to render large quantities of similar objects with instancing (e.g particles), construct 2D meshes out of triangles, rendering into textures allowing multi-pass rendering and more advanced clipping than [Clipping &amp; Blending](https://extensions.turbowarp.org/Xeltalliv/clippingblending.js) extension. It can be used for 2D image processing that can for example later be used as costumes using [Skins](https://extensions.turbowarp.org/Lily/Skins.js) extension. It's support of vertex weights and indices can be used for skeletal animation of 2D characters with deforming body parts rather than using rigid images, or even for smoothly extending UI elements.
+It could also be useful for making certain kinds of 2D projects, thanks to it's ability to render large quantities of similar objects with instancing (e.g. particles), construct 2D meshes out of triangles, rendering into textures allowing multi-pass rendering and more advanced clipping than [Clipping &amp; Blending](https://extensions.turbowarp.org/Xeltalliv/clippingblending.js) extension. It can be used for 2D image processing that can for example later be used as costumes using [Skins](https://extensions.turbowarp.org/Lily/Skins.js) extension. It's support of vertex weights and indices can be used for skeletal animation of 2D characters with deforming body parts rather than using rigid images, or even for smoothly extending UI elements.
 
 ## How it works <a name="main-concepts"></a>
 Scratch has a background layer, a video layer, a pen layer and a sprite layer. This extension adds another layer - simple3D between video and pen layers. **High quality pen mode also affects it.**
 
 The key concepts in this extension are the meshes and transformations.
 
-Meshes store a 3D model data and can be drawn. They are kind of like costumes in stamp-based project. That is, if you want to make a project that draws many copies of some costume in different locations using stamps, you will only have 1 costume, store all the locations in a list in whatever format you consider appropriate, and every frame you will clear the screen and re-stamp that costume in all the locations from a list. 
+Meshes store the 3D model data and can be drawn. They are kind of like costumes in a stamp-based project. That is, if you want to make a project that draws many copies of some costume in different locations using stamps, you will only have 1 costume, store all the locations in a list in whatever format you consider appropriate, and every frame you will clear the screen and re-stamp that costume in all the locations from the list. 
 
 It works the same way with this extension. If you have 10 identical 3D boxes, you will only create one mesh. Then every frame, first clear the screen, and after that loop over the list, for each box, setting up the correct transformation and drawing that one mesh.
 
@@ -52,7 +52,7 @@ Now let's draw 2 triangles arranged into a rectangle. First create a mesh:
 ```scratch
 create mesh [my mesh] :: sensing
 ```
-The create 2 lists `posX` and `posY`.
+Then create 2 lists `posX` and `posY`.
 Fill `posX` with:
 ```
 -0.9
@@ -82,10 +82,10 @@ draw [my mesh] :: sensing
 The result should look something like this:
 ![white rectangle on gray background](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAloAAAHEAgMAAACcsWzXAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV/TSkUqImYQcchQnSyCiohTrUIRKoRaoVUH89EvaNKQpLg4Cq4FBz8Wqw4uzro6uAqC4AeIs4OToouU+L+k0CLGg+N+vLv3uHsHcI2KolmhOKDptplOJoRsblUIvyIEHv2YxbikWMacKKbgO77uEWDrXYxl+Z/7c/SqeUsBAgJxXDFMm3iDeHrTNhjvE/NKSVKJz4nHTLog8SPTZY/fGBdd5lgmb2bS88Q8sVDsYLmDlZKpEU8RR1VNp3wu67HKeIuxVqkprXuyF0by+soy02kOI4lFLEGEABk1lFGBjRitOikW0rSf8PEPuX6RXDK5ylDIsYAqNEiuH+wPfndrFSYnvKRIAuh6cZyPESC8CzTrjvN97DjNEyD4DFzpbX+1Acx8kl5va9EjoG8buLhua/IecLkDDD4Zkim5UpAmVygA72f0TTlg4BboWfN6a+3j9AHIUFepG+DgEBgtUva6z7u7O3v790yrvx8KVHLj7WPAsgAAAAlQTFRFNDQ0gICA////76SQuwAAAAlwSFlzAAAYTAAAGHQBn6hAIAAAAAd0SU1FB+gEFBIAAu2UQ3UAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAABNUlEQVR42u3OUQkAIBAFsCthH0toR01pAX+FB24JVhWqjUTdy8vLy8vLy8vLy8vr99fcEZaXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5fX7RXGy8vLy8vLy8vLy8vr/SvUAWUTfy76T1mWAAAAAElFTkSuQmCC)
 The screen coordinate system used by this extension is not scratch's typical 480x360 (from -240 to 240 for X and from -180 to 180 for Y), but instead it is 2x2 (from -1 to 1 on both axis). It is the same as in WebGL and OpenGL.
-Here we created triangles that have vertex coordinates at -0.9 and 0.9, which does not quite reach the boundaries of the screen, even though it gets close.
+Here we created triangles that have vertex coordinates at -0.9 and 0.9, which do not quite reach the boundaries of the screen, even though they get close.
 
-Also, here we specified 6 vertices. Each triangle has 3 vertices, so 6/3=2 it was treated as 2 triangles.
-But specifying 3 vertices per each triangle is not the only way. In cases when some vertices are the same for multiple triangles, there are ways to specify once and reuse them rather than duplicating the data. There are 2 main ways to do it:
+Also, here we specified 6 vertices. Each triangle has 3 vertices, so it was treated as 6/3=2 triangles.
+But specifying 3 vertices per each triangle is not the only way. In cases when some vertices are the same for multiple triangles, there are ways to specify them once and reuse them afterwards rather than duplicating the data. There are 2 main ways to do it:
 
 ### List of indices
 With this way, there is a way to create another list which will reference which vertices to use in which order. To add it to our example:
@@ -138,7 +138,7 @@ Result should once again look the same.
 
 ### Primitive restart index
 "triangle strips" and "triangle fans" are no doubt efficient, but when using it you only get 1 long continious thing of triangles, meaning that to draw many "strips" or "fans" you will have to call "draw mesh" many times, cancelling the efficiency.
-However there is a solutions for it. You can use "triangle strips" and "triangle fans" together with list of indices. If you specify index 0 or below, it will interrupt the previous chain of triangles and restart a new one.
+However there is a solution for it. You can use "triangle strips" and "triangle fans" together with list of indices. If you specify index 0 or below, it will interrupt the previous chain of triangles and restart a new one.
 
 Same applies to "line strip" and "line loop".
 
@@ -146,18 +146,16 @@ Same applies to "line strip" and "line loop".
 The typical sequence of simple transformation for 3D project goes like this:
 First you start off with having a 3D model in it's own coordinate system (model space), with all vertex positions stored relatively from it's origin. The first step would be to transform it to the world coordinate system. If the object has it's own rotation, rotate every vertex around it's origin (0,0,0) by correct amount of degrees. If it is scaled, scale them. Then once that is done, offset every vertex by object's world position. Now positions of all of the vertices are in the world coordinate system (world space).
 
-The next step is to transfrorm them to the coordinate system relatively to the viewer, where viewer is at X:0, Y:0, Z:0 and is always facing negative Z. In 3D projects on normal scratch it is common for viewer to face positive Z, where the more Z something has, the further away it is in front of the viewer, but in case of this extension, it was designed like most software outside scratch - the **less** Z something has, the further it is in front of the viewer. To do this transformation, first subtract camera position from position of every vertex. That will place the camera in the origin of the world and make everything relatively to it, but rotation is not taken into a count yet. To do it, rotate every point by negated/inverse camera rotation.
+The next step is to transfrorm them to the coordinate system relatively to the viewer, where viewer is at X:0, Y:0, Z:0 and is always facing negative Z. In 3D projects on normal scratch it is common for viewer to face positive Z, where the more Z something has, the further away it is in front of the viewer, but in case of this extension, it was designed like most software outside scratch - the **less** Z something has, the further it is in front of the viewer. To do this transformation, first subtract camera position from position of every vertex. That will place the camera in the origin of the world and make everything relatively to it, but rotation is still not taken into a count. To use it, rotate every point by negated/inverse camera rotation.
 
 What you now have are 3D positions relatively to the camera. But your screen is 2D, so the last step is to do the projection. The general gist of it is that you divide all X and Y by Z, so that the further something is, the smaller it is and the closer it is to the center of the screen. And while doing that, clipping everything that goes offscreen or too close and behind you.
 
-<details>
-<summary>But in reality it's somewhat more complicated.</summary>
+But in reality it's somewhat more complicated.
 You first transform X, Y, Z into X, Y, Z and W of the clip space and then GPU automatically clips X, Y and Z to the rangle from -W to W, and then divides
 X, Y, Z by W, so X, Y, Z end up in range from -1 to 1. Where W is the actual depth, while Z is depth converted to the correct range to be used with the
 depth buffer (everything below -1 and above 1 gets clipped) (too far and too close).
 
 If that sounded complicated, do not worry, Simple3D extension mostly handles it for you.
-</details>
 
 So let's recap:
 ```
@@ -176,7 +174,7 @@ divide X,Y,Z by depth W (done by GPU, cannot be controlled)
 draw to the screen at X,Y. Use Z for depth check.
 ```
 
-And now it's time to write some actual Simple3D scratch blocks code.
+And now it's time to make some actual Simple3D scratch blocks code.
 In Simple3D those transformations are combined into 1 big transformation, and all the steps have to be specified in reverse.
 ```scratch
 start with perspective FOV (90) near (0.01) far (1000) :: sensing
@@ -207,19 +205,21 @@ draw mesh [my mesh] :: sensing
 } :: sensing
 end
 ```
-This will work and it is efficient, howerver this extension also provides advanced features like fog, instancing, billboarding, which need to intervine in some of the intermdeiate steps.
+This will work and it is efficient, however this extension also provides advanced features like fog, instancing, billboarding, which need to intervine in some of the intermediate steps.
 And when you create one large transformation by youself, it has no way of doing that. Which is why, currently the correct way to setup transformations is like this:
 ```scratch
-configure [to projected from view space] transformation :: sensing
+configure [to projected from view space v] transformation :: sensing
 start with perspective FOV (90) near (0.01) far (1000) :: sensing
 
-configure [to view space from world space] transformation :: sensing
+configure [to view space from world space v] transformation :: sensing
+start with no transformation :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
 rotate around [Y v] by ((0) - (camRotY)) degrees :: sensing
 move X ((0) - (camX)) Y ((0) - (camY)) Z ((0) - (camZ)) :: sensing
 repeat (10)
 ...
-configure [to world space from model space] transformation :: sensing
+configure [to world space from model space v] transformation :: sensing
+start with no transformation :: sensing
 move X (objectX) Y (objectY) Z (objectZ) :: sensing
 rotate around [Y v] by (objectRotY) degrees :: sensing
 rotate around [X v] by (objectRotX) degrees :: sensing
@@ -227,7 +227,7 @@ scale X (objectSizeX) Y (objectSizeY) Z (objectSizeZ) :: sensing
 draw mesh [my mesh] :: sensing
 end
 ```
-The extension allows you to split your larget transformation into 3 separate transformations, which will be applied sequentially, allowing some of the features to do their thing inbetween.
+The extension allows you to split your large transformation into 3 separate transformations, which will be applied sequentially, allowing some of the features to do their thing inbetween.
 It also allows you to easily got between different coordinate systems using those blocks:
 ```scratch
 transform X (0) Y (0) Z (0) from [world space v] to [model space v] :: sensing
@@ -289,7 +289,7 @@ Resets everything to the initial state as if the extension was freshly loaded. I
 ```scratch
 clear (color and depth v) :: sensing
 ```
-Clears the color and/or depth of the selected render target
+Clears the color and/or depth of the selected render target.
 
 ---
 ```scratch
@@ -304,10 +304,10 @@ Clear color is a global value.
 set depth test (closer v) write (on v) :: sensing
 ```
 Before new pixel is drawn, it's depth is compared to the pixel already drawn on that location.
-If it passes according to the check in the first argument of this block, it gets drawn. If it fails, it gets discarded, and whatever was there remains there.
-The second argument controls when check passes whether only color should be updated or both color and depth value. Turning this off can be useful for drawing transparent things, which should react to already drawn opaque things, while not modifying depth to not interfer with one another.
+If it passes according to the check in the first argument of this block, it gets drawn. If it fails, the new pixel gets discarded, and whatever was there remains there.
+The second argument controls when check passes whether only color should be updated or both color and depth value. Turning this off can be useful for drawing transparent things, which should react to already drawn opaque things, while not modifying depth to not interfer with each other.
 **Depth test and write are values that are saved separately for each render target.**
-All 6 sides of the cube texture share those values.
+Despite all 6 sides of the cube texture being different render targets, they still share those values.
 
 For stage, default values are "closer" and "on". **However, for textures used as render targets default values are "everything" and "off".** Memory for storing depth is not even allocated until depth write is set to "on".
 
@@ -337,8 +337,8 @@ Deletes mesh with the specified name.
 make mesh [my mesh 3] inherit from meshes [my mesh 1,my mesh 2] :: sensing
 ```
 Sets up the first mesh to inherit any lists or properties from multiple other meshes. 
-If multiple other meshes has the same property, the last one takes the priority.
-If any of the specified meshes to inherit form a cyclic dependancy, the whole operation fails.
+If multiple other meshes have the same property, the last one takes the priority.
+If any of the specified meshes to inherit form a cyclic dependancy, the entire operation fails.
 Names are provided in a comma separated list. Mesh names are trimmed from spaces on both ends. So `my mesh 1,my mesh 2`, `my mesh 1, my mesh 2`, and `    my mesh 1    ,   my mesh 2   ` will all behave the same.
 
 This is the a key feature meant to avoid data duplication. When using it, nothing that could be expensive is duplicated.
@@ -644,6 +644,8 @@ This block may cause stutter when drawing something for the first time, as it wi
 ```
 Creates texture from image at specified URL.
 Will show a prompt if URL is not approved.
+If an image fails to load, you can usually open browser console and see what the error is. (F12 or Ctrl+Shift+I)
+**Note that websites cannot access any data from any other websites unless those other sites explicetly allow it. The correct term for it is CORS (Cross Origin Resource Sharing). You can use some CORS proxy to bypass it.**
 🐢 Texture gets loaded with a delay.
 
 ---
@@ -669,7 +671,7 @@ For more information on the font argument syntax, see [CSS Specification](https:
 ```scratch
 (texture from list [list v] at (1) of size (16) (16) :: sensing)
 ```
-Creates texture from RGBA data in a list. Each pixel represented with list 4 elements, each in range between 0 and 255. Elements are: red, green, blue, alpha.
+Creates texture from RGBA data in a list. Each pixel is represented with list 4 elements, each in range between 0 and 255. Elements are: red, green, blue, alpha.
 Note that it is not alpha, red, green, blue used by many pen projects on scratch.
 ⚡ Texture gets loaded instantly.
 
@@ -768,9 +770,11 @@ wrapper {
 } :: sensing
 ```
 Saves all 5 transformations (not just currently selected) when entering, restores when exiting. For technical reasons does not currently restore, if the script inside called:
-```
+```scratch
 stop [this script v]
 ```
+
+**Also has 1 frame delay to exit, because it is technically treated as a loop. And similarly to loops, you can use `run without screen refresh` custom blocks to remove the delay.**
 
 ---
 ```scratch
@@ -784,7 +788,7 @@ reset transformation's [offset/rotation] :: sensing
 ```
 Resets offset or rotation of the transformation.
 
-Rotation without offset can be useful for transforming directions.
+Rotation without offset can be useful for transforming directions or drawing skyboxes.
 Offset without rotation can be useful for positioning something at the end of the long chain of transformations, but rotating it independently afterwards relatively to the world.
 
 
@@ -913,7 +917,7 @@ render to stage :: sensing
 
 ## Integrations with other extensions <a name="ext-integration"></a>
 
-Simple 3D can have integrations with other extensions. If you are an extension developer, see `Scratch.vm.runtime.ext_xeltallivsimple3d` for that.
+Simple 3D can have integrations with other extensions. If you are an extension developer, see `Scratch.vm.runtime.ext_xeltallivSimple3Dapi` for that.
 
 ### Augmented Reality extension <a name="ar-integration"></a>
 

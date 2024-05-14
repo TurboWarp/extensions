@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.0.0
+// Version: 1.0.1
 
 (function (Scratch) {
   "use strict";
@@ -3656,7 +3656,7 @@ void main() {
       text: "reset transformation's [COMPONENT]",
       arguments: {
         COMPONENT: {
-          type: ArgumentType.NUMBER,
+          type: ArgumentType.STRING,
           menu: "matComponent",
         },
       },
@@ -3766,8 +3766,10 @@ void main() {
         if (swapped) totalMat = m4.inverse(totalMat);
         transformed = m4.multiplyVec(totalMat, vec);
         if (TO == "projected (scratch units)") {
-          transformed[0] /= (transformed[3] * runtime.stageWidth) / 2;
-          transformed[1] /= (transformed[3] * runtime.stageHeight) / 2;
+          transformed[0] =
+            ((transformed[0] / transformed[3]) * runtime.stageWidth) / 2;
+          transformed[1] =
+            ((transformed[1] / transformed[3]) * runtime.stageHeight) / 2;
           transformed[2] = transformed[3];
         }
       },
