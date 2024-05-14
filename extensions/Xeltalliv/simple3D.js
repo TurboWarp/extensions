@@ -3766,8 +3766,10 @@ void main() {
         if (swapped) totalMat = m4.inverse(totalMat);
         transformed = m4.multiplyVec(totalMat, vec);
         if (TO == "projected (scratch units)") {
-          transformed[0] = (transformed[0] / transformed[3] * runtime.stageWidth) / 2;
-          transformed[1] = (transformed[1] / transformed[3] * runtime.stageHeight) / 2;
+          transformed[0] =
+            ((transformed[0] / transformed[3]) * runtime.stageWidth) / 2;
+          transformed[1] =
+            ((transformed[1] / transformed[3]) * runtime.stageHeight) / 2;
           transformed[2] = transformed[3];
         }
       },
