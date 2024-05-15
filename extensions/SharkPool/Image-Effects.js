@@ -594,7 +594,7 @@
 
     applyOpaque(imageData, percentage) {
       const data = imageData.data;
-      const percent = Math.max(Scratch.Cast.toNumber(percentage) / 100, 0);
+      const percent = Math.max((Scratch.Cast.toNumber(percentage) + 100) / 100, 0);
       for (let i = 0; i < data.length; i += 4) {
         data[i + 3] = data[i + 3] * percent;
       }
