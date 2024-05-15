@@ -981,6 +981,8 @@
       renderTextures: "",
     };
 
+    addonTextureFunctions = [];
+
     renderTextures = Object.create(null);
     currentRenderTexture = triBufferInfo;
 
@@ -2902,6 +2904,14 @@
       if (penplusRenderTextures.length > 0) {
         readCostumes = readCostumes.concat(penplusRenderTextures);
       }
+
+      //For custom addons to be able to add their own texture lists.
+      this.addonTextureFunctions.forEach(func => {
+        let functionTextures = func();
+        if (functionTextures.length > 0) {
+          readCostumes = readCostumes.concat(functionTextures);
+        }
+      });
 
       return readCostumes;
     }
