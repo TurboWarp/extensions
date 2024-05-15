@@ -3,7 +3,7 @@
 // Description: Apply a variety of new effects to the data URI of Images or Costumes.
 // By: SharkPool
 
-// Version V.2.3.2
+// Version V.2.3.5
 
 (function (Scratch) {
   "use strict";
@@ -308,7 +308,7 @@
             arguments: {
               URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
+              COLOR: { type: Scratch.ArgumentType.COLOR }
             }
           },
           {
@@ -319,7 +319,7 @@
               URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               NUM2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
+              COLOR: { type: Scratch.ArgumentType.COLOR }
             }
           },
           { blockType: Scratch.BlockType.LABEL, text: "Image Conversions" },
@@ -411,7 +411,7 @@
           EFFECTS: {
             acceptReporters: true,
             items: [
-              "Saturation", "Glitch", "Chunk Glitch", "Clip Glitch",
+              "Saturation", "Opaque", "Glitch", "Chunk Glitch", "Clip Glitch",
               "Vignette", "Ripple", "Displacement", "Posterize",
               "Blur", "Scanlines", "Grain", "Cubism",
             ]
@@ -589,6 +589,14 @@
       for (let i = 0; i < data.length; i += 4) {
         const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
         for (let j = 0; j < 3; j++) { data[i + j] = avg + (data[i + j] - avg) * percent }
+      }
+    }
+
+    applyOpaque(imageData, percentage) {
+      const data = imageData.data;
+      const percent = Math.max(Scratch.Cast.toNumber(percentage) / 100, 0);
+      for (let i = 0; i < data.length; i += 4) {
+        data[i + 3] = data[i + 3] * percent;
       }
     }
 
