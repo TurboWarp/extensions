@@ -4132,7 +4132,7 @@
       this.programs[shader].uniformDat.u_timer =
         runtime.ioDevices.clock.projectTimer();
       this.programs[shader].uniformDat.u_transform = transform_Matrix;
-      this.programs[shader].uniformDat.u_res = nativeSize;
+      this.programs[shader].uniformDat.u_res = [this.currentRenderTexture.width,this.currentRenderTexture.height];
 
       //? Bind Positional Data
       twgl.setBuffersAndAttributes(gl, this.programs[shader].info, buffer);
@@ -4273,7 +4273,7 @@
       this.programs[shader].uniformDat.u_timer =
         runtime.ioDevices.clock.projectTimer();
       this.programs[shader].uniformDat.u_transform = transform_Matrix;
-      this.programs[shader].uniformDat.u_res = nativeSize;
+      this.programs[shader].uniformDat.u_res = [this.currentRenderTexture.width,this.currentRenderTexture.height];
 
       transform_Matrix[2] = spritex;
       transform_Matrix[3] = spritey;
@@ -5698,7 +5698,7 @@
       this.programs[shader].uniformDat.u_timer =
         runtime.ext_scratch3_sensing.getTimer({}, util);
       this.programs[shader].uniformDat.u_transform = transform_Matrix;
-      this.programs[shader].uniformDat.u_res = nativeSize;
+      this.programs[shader].uniformDat.u_res = [this.currentRenderTexture.width,this.currentRenderTexture.height];
 
       gl.useProgram(this.programs[shader].info.program);
 
