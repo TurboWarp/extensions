@@ -308,3 +308,8 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Xeltalliv/simple3D.png
  - Created by [@Xeltalliv](https://github.com/Xeltalliv).
  - Font is Deja Vu Sans.
+
+## josueart/anthropic.svg
+ - Created by [@NotFenixio](https://github.com/NotFenixio)
+ - Claude logo by Anthropic
+ - Font is SF Pro, made by Apple (I'm not even an Apple user!). 
