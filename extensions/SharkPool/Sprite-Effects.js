@@ -1167,7 +1167,7 @@
       return svg;
     }
 
-    async distortPreset(args) {
+    distortPreset(args) {
       const source = { bulge : 0, whirl : 1, ripple : 2, shockwave : 3 };
       return displacementSrCs[source[args.TYPE]] || "";
     }
