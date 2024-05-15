@@ -233,6 +233,7 @@
                     {
                       gl_FragColor = texture2D(u_drawTex, v_texCoord);
                       gl_FragColor.rgb = clamp(gl_FragColor.rgb / (gl_FragColor.a + 1e-3), 0.0, 1.0);
+                      gl_FragColor.rgb *= gl_FragColor.a;
                     }
                 `,
       },
@@ -1234,7 +1235,7 @@
     //So I can track and fix potentially extension breaking problems
     _updateRelevantInfo(oldInfo) {
       //pre 7.0.0B1 detection
-      if (!oldInfo.version) {
+      if (oldInfo.version == "6.5.3" || !oldInfo.version) {
         this.prefixes.penPlusTextures = "!";
         if (!Scratch.extensions.isPenguinMod)
           runtime.extensionStorage["penP"].prefixes = this.prefixes;
@@ -1278,11 +1279,11 @@
         };
       } else {
         this.programs = {};
+        let oldVersion = "6.5.3";
         if (!runtime.extensionStorage["penP"]) {
           runtime.extensionStorage["penP"] = Object.create(null);
           runtime.extensionStorage["penP"].shaders = Object.create(null);
-          runtime.extensionStorage["penP"].version =
-            parentExtension.extensionVersion;
+          runtime.extensionStorage["penP"].version = oldVersion;
           runtime.extensionStorage["penP"].prefixes = parentExtension.prefixes;
         }
 
@@ -1291,7 +1292,6 @@
           runtime.extensionStorage["penP"].version
         ) {
           parentExtension._updateRelevantInfo(runtime.extensionStorage["penP"]);
-          console.log(runtime.extensionStorage["penP"]);
           runtime.extensionStorage["penP"].version =
             parentExtension.extensionVersion;
         }
@@ -3610,6 +3610,11 @@
       checkForPen(util);
       const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
 
+      if (!this.triangleAttributesOfAllSprites[curTarget.id]) {
+        this.triangleAttributesOfAllSprites[curTarget.id] =
+          this._getDefaultTriAttributes();
+      }
+
       nativeSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
@@ -3648,6 +3653,11 @@
     drawTexTri({ x1, y1, x2, y2, x3, y3, tex }, util) {
       const curTarget = util.target;
       let currentTexture = this._locateTextureObject(tex, util);
+
+      if (!this.triangleAttributesOfAllSprites[curTarget.id]) {
+        this.triangleAttributesOfAllSprites[curTarget.id] =
+          this._getDefaultTriAttributes();
+      }
 
       nativeSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
@@ -4013,6 +4023,11 @@
       this.trianglesDrawn += 1;
 
       const targetID = util.target.id;
+
+      if (!this.triangleAttributesOfAllSprites[targetID]) {
+        this.triangleAttributesOfAllSprites[targetID] =
+          this._getDefaultTriAttributes();
+      }
 
       //? get triangle attributes for current sprite.
       const triAttribs = this.triangleAttributesOfAllSprites[targetID];
