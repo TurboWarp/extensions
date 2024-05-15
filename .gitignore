@@ -8,3 +8,4 @@ build-l10n
 # Various operating system caches
 thumbs.db
 .DS_Store
+.vscode
