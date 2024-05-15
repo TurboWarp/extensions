@@ -962,6 +962,11 @@
       },
     };
 
+    events = {
+      shaderSaved:[],
+      editorClosed:[],
+    }
+
     //Statistical Stuff
     trianglesDrawn = 0;
     inDrawRegion = false;
@@ -1000,6 +1005,7 @@
         switch (eventType) {
           case "EDITOR_CLOSE":
             this.IFrame.closeIframe();
+            this.dispatchEvent("editorClosed")
             break;
 
           case "DATA_SEND":
@@ -1332,7 +1338,27 @@
         attribDat: {},
       };
 
+      //Dispatch events for addons to catch.
+      this.dispatchEvent("shaderSaved",{
+        projectData: data,
+        vertexShader: data.vertShader,
+        fragmentShader: data.fragShader
+      })
+
       this._createAttributedatForShader(name);
+    }
+
+    dispatchEvent(eventName,data) {
+      if(!this.events[eventName]) return;
+      this.events[eventName].forEach(eventFunction => {
+        eventFunction(data || {});
+      })
+    }
+
+    //For custom events
+    addEventListener(eventName,eventFunction) {
+      if(!this.events[eventName]) return;
+      this.events[eventName].push(eventFunction);
     }
 
     deleteShader(name) {
