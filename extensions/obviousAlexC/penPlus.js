@@ -233,6 +233,7 @@
                     {
                       gl_FragColor = texture2D(u_drawTex, v_texCoord);
                       gl_FragColor.rgb = clamp(gl_FragColor.rgb / (gl_FragColor.a + 1e-3), 0.0, 1.0);
+                      gl_FragColor.rgb *= gl_FragColor.a;
                     }
                 `,
       },
@@ -961,6 +962,11 @@
       },
     };
 
+    events = {
+      shaderSaved: [],
+      editorClosed: [],
+    };
+
     //Statistical Stuff
     trianglesDrawn = 0;
     inDrawRegion = false;
@@ -980,6 +986,8 @@
       renderTextures: "",
     };
 
+    addonTextureFunctions = [];
+
     renderTextures = Object.create(null);
     currentRenderTexture = triBufferInfo;
 
@@ -997,6 +1005,7 @@
         switch (eventType) {
           case "EDITOR_CLOSE":
             this.IFrame.closeIframe();
+            this.dispatchEvent("editorClosed");
             break;
 
           case "DATA_SEND":
@@ -1234,7 +1243,7 @@
     //So I can track and fix potentially extension breaking problems
     _updateRelevantInfo(oldInfo) {
       //pre 7.0.0B1 detection
-      if (!oldInfo.version) {
+      if (oldInfo.version == "6.5.3" || !oldInfo.version) {
         this.prefixes.penPlusTextures = "!";
         if (!Scratch.extensions.isPenguinMod)
           runtime.extensionStorage["penP"].prefixes = this.prefixes;
@@ -1278,11 +1287,11 @@
         };
       } else {
         this.programs = {};
+        let oldVersion = "6.5.3";
         if (!runtime.extensionStorage["penP"]) {
           runtime.extensionStorage["penP"] = Object.create(null);
           runtime.extensionStorage["penP"].shaders = Object.create(null);
-          runtime.extensionStorage["penP"].version =
-            parentExtension.extensionVersion;
+          runtime.extensionStorage["penP"].version = oldVersion;
           runtime.extensionStorage["penP"].prefixes = parentExtension.prefixes;
         }
 
@@ -1291,7 +1300,6 @@
           runtime.extensionStorage["penP"].version
         ) {
           parentExtension._updateRelevantInfo(runtime.extensionStorage["penP"]);
-          console.log(runtime.extensionStorage["penP"]);
           runtime.extensionStorage["penP"].version =
             parentExtension.extensionVersion;
         }
@@ -1330,7 +1338,27 @@
         attribDat: {},
       };
 
+      //Dispatch events for addons to catch.
+      this.dispatchEvent("shaderSaved", {
+        projectData: data,
+        vertexShader: data.vertShader,
+        fragmentShader: data.fragShader,
+      });
+
       this._createAttributedatForShader(name);
+    }
+
+    dispatchEvent(eventName, data) {
+      if (!this.events[eventName]) return;
+      this.events[eventName].forEach((eventFunction) => {
+        eventFunction(data || {});
+      });
+    }
+
+    //For custom events
+    addEventListener(eventName, eventFunction) {
+      if (!this.events[eventName]) return;
+      this.events[eventName].push(eventFunction);
     }
 
     deleteShader(name) {
@@ -2903,6 +2931,14 @@
         readCostumes = readCostumes.concat(penplusRenderTextures);
       }
 
+      //For custom addons to be able to add their own texture lists.
+      this.addonTextureFunctions.forEach((func) => {
+        let functionTextures = func();
+        if (functionTextures.length > 0) {
+          readCostumes = readCostumes.concat(functionTextures);
+        }
+      });
+
       return readCostumes;
     }
 
@@ -3610,6 +3646,11 @@
       checkForPen(util);
       const attrib = curTarget["_customState"]["Scratch.pen"].penAttributes;
 
+      if (!this.triangleAttributesOfAllSprites[curTarget.id]) {
+        this.triangleAttributesOfAllSprites[curTarget.id] =
+          this._getDefaultTriAttributes();
+      }
+
       nativeSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
@@ -3648,6 +3689,11 @@
     drawTexTri({ x1, y1, x2, y2, x3, y3, tex }, util) {
       const curTarget = util.target;
       let currentTexture = this._locateTextureObject(tex, util);
+
+      if (!this.triangleAttributesOfAllSprites[curTarget.id]) {
+        this.triangleAttributesOfAllSprites[curTarget.id] =
+          this._getDefaultTriAttributes();
+      }
 
       nativeSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
@@ -4014,6 +4060,11 @@
 
       const targetID = util.target.id;
 
+      if (!this.triangleAttributesOfAllSprites[targetID]) {
+        this.triangleAttributesOfAllSprites[targetID] =
+          this._getDefaultTriAttributes();
+      }
+
       //? get triangle attributes for current sprite.
       const triAttribs = this.triangleAttributesOfAllSprites[targetID];
 
@@ -4081,7 +4132,10 @@
       this.programs[shader].uniformDat.u_timer =
         runtime.ioDevices.clock.projectTimer();
       this.programs[shader].uniformDat.u_transform = transform_Matrix;
-      this.programs[shader].uniformDat.u_res = nativeSize;
+      this.programs[shader].uniformDat.u_res = [
+        this.currentRenderTexture.width,
+        this.currentRenderTexture.height,
+      ];
 
       //? Bind Positional Data
       twgl.setBuffersAndAttributes(gl, this.programs[shader].info, buffer);
@@ -4222,7 +4276,10 @@
       this.programs[shader].uniformDat.u_timer =
         runtime.ioDevices.clock.projectTimer();
       this.programs[shader].uniformDat.u_transform = transform_Matrix;
-      this.programs[shader].uniformDat.u_res = nativeSize;
+      this.programs[shader].uniformDat.u_res = [
+        this.currentRenderTexture.width,
+        this.currentRenderTexture.height,
+      ];
 
       transform_Matrix[2] = spritex;
       transform_Matrix[3] = spritey;
@@ -5647,7 +5704,10 @@
       this.programs[shader].uniformDat.u_timer =
         runtime.ext_scratch3_sensing.getTimer({}, util);
       this.programs[shader].uniformDat.u_transform = transform_Matrix;
-      this.programs[shader].uniformDat.u_res = nativeSize;
+      this.programs[shader].uniformDat.u_res = [
+        this.currentRenderTexture.width,
+        this.currentRenderTexture.height,
+      ];
 
       gl.useProgram(this.programs[shader].info.program);
 
