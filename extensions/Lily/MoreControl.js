@@ -1,8 +1,9 @@
 // Name: More Control
-// ID: lmsSpMoreControl
+// ID: lmsSpAsMoreControl
 // Description: More conditional and loop statements.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // By: SharkPool <https://scratch.mit.edu/users/DemonX5/>
+// By: Ashimee <https://scratch.mit.edu/users/0znzw/>
 // License: LGPL-3.0
 
 (function (Scratch) {
@@ -11,7 +12,7 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const Cast = Scratch.Cast;
-  const regeneratedReporters = ["lmsSpMoreControl_forArg"];
+  const regeneratedReporters = ["lmsSpAsMoreControl_forArg"];
 
   class Frame {
     constructor(isLoop) {
@@ -49,22 +50,22 @@
 
   cst_patch(JSGP, {
     descendStackedBlock(originalFn, node) {
-      if (node.kind === "lmsSpMoreControl.withoutScreenRefresh") {
+      if (node.kind === "lmsSpAsMoreControl.withoutScreenRefresh") {
         const previousWarp = this.isWarp;
         this.isWarp = true;
         this.descendStack(
           node.code,
-          new Frame(false, "lmsSpMoreControl.withoutScreenRefresh")
+          new Frame(false, "lmsSpAsMoreControl.withoutScreenRefresh")
         );
         this.isWarp = previousWarp;
         return;
       }
-      if (node.kind === "lmsSpMoreControl.withScreenRefresh") {
+      if (node.kind === "lmsSpAsMoreControl.withScreenRefresh") {
         const previousWarp = this.isWarp;
         this.isWarp = false;
         this.descendStack(
           node.code,
-          new Frame(false, "lmsSpMoreControl.withScreenRefresh")
+          new Frame(false, "lmsSpAsMoreControl.withScreenRefresh")
         );
         this.isWarp = previousWarp;
         return;
@@ -75,9 +76,9 @@
 
   cst_patch(STGP, {
     descendStackedBlock(originalFn, block) {
-      if (block.opcode === "lmsSpMoreControl_withoutScreenRefresh") {
+      if (block.opcode === "lmsSpAsMoreControl_withoutScreenRefresh") {
         return {
-          kind: "lmsSpMoreControl.withoutScreenRefresh",
+          kind: "lmsSpAsMoreControl.withoutScreenRefresh",
           condition: {
             kind: "constant",
             value: true,
@@ -85,9 +86,9 @@
           code: this.descendSubstack(block, "SUBSTACK"),
         };
       }
-      if (block.opcode === "lmsSpMoreControl_withScreenRefresh") {
+      if (block.opcode === "lmsSpAsMoreControl_withScreenRefresh") {
         return {
-          kind: "lmsSpMoreControl.withScreenRefresh",
+          kind: "lmsSpAsMoreControl.withScreenRefresh",
           condition: {
             kind: "constant",
             value: true,
@@ -141,16 +142,8 @@
        * This can be used by other extensions safely.
        * Credit is appreciated.
        */
-      vm.on("EXTENSION_ADDED", tryUseScratchBlocks);
-      vm.on("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
-
-      tryUseScratchBlocks();
-
-      function tryUseScratchBlocks() {
-        if (!window.ScratchBlocks) return;
-        vm.removeListener("EXTENSION_ADDED", tryUseScratchBlocks);
-        vm.removeListener("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
-
+      // If Scratch.gui is not defined then we are (most likely) packaged
+      if (Scratch.gui) Scratch.gui.getBlockly().then(ScratchBlocks => {
         const originalCheck =
           ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter;
 
@@ -161,7 +154,7 @@
           if (result) return result;
           return block.isShadow() && regeneratedReporters.includes(block.type);
         };
-      }
+      });
 
       /**
        * Override to add in the "output" and "outputShape"
@@ -186,7 +179,7 @@
 
     getInfo() {
       return {
-        id: "lmsSpMoreControl",
+        id: "lmsSpAsMoreControl",
         name: "More Control",
         color1: "#FFAB19",
         color2: "#EC9C13",
@@ -431,7 +424,7 @@
           "---",
           {
             blockType: Scratch.BlockType.XML,
-            xml: `<block type="lmsSpMoreControl_for"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="lmsSpMoreControl_forUntil"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="lmsSpMoreControl_forEachList"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpMoreControl_menu_lists"><field name="lists"></field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="lmsSpMoreControl_forEachArray"><value name="I"><shadow type="lmsSpMoreControl_forArg"></shadow></value><value name="ARRAY"><shadow type="text"><field name="TEXT">[]</field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block>`,
+            xml: `<block type="lmsSpAsMoreControl_for"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="B"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="lmsSpAsMoreControl_forUntil"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="A"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="lmsSpAsMoreControl_forEachList"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="LIST"><shadow type="lmsSpAsMoreControl_menu_lists"><field name="lists"></field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block><block type="lmsSpAsMoreControl_forEachArray"><value name="I"><shadow type="lmsSpAsMoreControl_forArg"></shadow></value><value name="ARRAY"><shadow type="text"><field name="TEXT">[]</field></shadow></value><value name="STEP"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block>`,
           },
           {
             opcode: "for",
@@ -620,7 +613,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpMoreControl_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -642,7 +635,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpMoreControl_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -659,7 +652,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpMoreControl_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -673,7 +666,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpMoreControl_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -685,7 +678,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpMoreControl_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -697,7 +690,7 @@
       const outerC = this._getOuterCFromOpcode(
         util.thread,
         blockId,
-        "lmsSpMoreControl_switch"
+        "lmsSpAsMoreControl_switch"
       );
       if (!outerC) return;
 
@@ -1287,10 +1280,13 @@
 
     /**
      * Function used to show the very oversized if/else block.
-     * @returns {boolean} True if username is "funny is allowed :)".
+     * @returns {boolean} True if username is "funny_is_allowed".
      */
     _showFunnyBlock() {
-      return runtime.ioDevices.userData._username !== "funny is allowed :)";
+      // The old username: "funny is allowed :)",
+      // Only worked when making MoreControls because there was a (now fixed) bug,
+      // in the Regexp GarboMuffin used.
+      return runtime.ioDevices.userData._username !== "funny_is_allowed";
     }
   }
 
