@@ -142,7 +142,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## TheShovel/CanvasEffects.svg
  - Created by @Pizzalover4783 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1526886264.
 
-## cs2627883/numericalencoding.svg
+## numerical-encoding-2.svg
  - Created by [@NexusKitten](https://scratch.mit.edu/users/namelesscat/).
  - Silkscreen font used under [Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
  - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
@@ -266,6 +266,9 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## NexusKitten/moremotion.svg;
  - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1646987348
 
+## XmerOriginals/closecontrol.svg
+ - Created by [XmerStudio](https://github.com/XmerStudio) in https://github.com/TurboWarp/extensions/pull/1384
+
 ## Lily/AllMenus.svg
  - Created by [YogaindoCR](https://github.com/YogaindoCR) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1681839774
 
@@ -298,3 +301,10 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## Lily/Video.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
+
+## veggiecan/mobilekeyboard.svg
+ - Created by Veggiecan0419
+
+## Xeltalliv/simple3D.png
+ - Created by [@Xeltalliv](https://github.com/Xeltalliv).
+ - Font is Deja Vu Sans.

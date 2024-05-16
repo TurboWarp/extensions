@@ -268,6 +268,47 @@
           },
           "---",
           {
+            opcode: "between_or_equal",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "[A] ≤ [B] ≤ [C]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "50",
+              },
+              C: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+            },
+            extensions: ["colours_operators"],
+          },
+          {
+            opcode: "between",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "[A] < [B] < [C]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "50",
+              },
+              C: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+            },
+            extensions: ["colours_operators"],
+          },
+          "---",
+          {
             opcode: "nand_block",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "[A] nand [B]",
@@ -568,6 +609,12 @@
     }
     xnor_block({ A, B }) {
       return cast.toBoolean(A) === cast.toBoolean(B);
+    }
+    between_or_equal({ A, B, C }) {
+      return cast.compare(A, B) <= 0 && cast.compare(B, C) <= 0;
+    }
+    between({ A, B, C }) {
+      return cast.compare(A, B) < 0 && cast.compare(B, C) < 0;
     }
     exactly_cont_block({ A, B }) {
       return cast.toString(A).includes(cast.toString(B));

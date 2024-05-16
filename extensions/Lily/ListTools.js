@@ -627,7 +627,6 @@
 
     _getLists() {
       // @ts-expect-error - Blockly not typed yet
-      // eslint-disable-next-line no-undef
       const lists =
         typeof Blockly === "undefined"
           ? []

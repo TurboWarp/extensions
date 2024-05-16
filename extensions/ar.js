@@ -71,7 +71,7 @@
       if (!supported) {
         console.error(
           (arFail =
-            "WebXR exists in the browser you are using, but 'immersive-ar' session type is not supported")
+            "WebXR exists in the browser you are using, but 'immersive-ar' session type is not supported (it can only work on mobile)")
         );
       } else {
         arFail = null;
@@ -401,6 +401,8 @@
   // Patching renderer.draw() to draw to xr framebuffer instead of canvas
   const drawOrig = renderer.draw.bind(renderer);
   const drawXR = function () {
+    if (s3dApi.redraw) s3dApi.redraw(); // ADDED
+
     const bl = this.xr.renderState.baseLayer; // ADDED
     if (!bl) return; // Should fix very rare crash during exiting  // ADDED
 
@@ -835,6 +837,67 @@
       }
     }
   }
+
+  const s3dApi =
+    runtime.ext_xeltallivSimple3Dapi ?? (runtime.ext_xeltallivSimple3Dapi = {});
+  const externalTransforms =
+    s3dApi.externalTransforms ?? (s3dApi.externalTransforms = {});
+  externalTransforms["ar_combined"] = {
+    name: "AR: combined",
+    get() {
+      return (
+        // prettier-ignore
+        xrCombinedMatrix?.slice() ?? [
+          1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
+        ]
+      );
+    },
+  };
+  externalTransforms["ar_projection"] = {
+    name: "AR: view to projected",
+    get() {
+      return (
+        // prettier-ignore
+        xrProjectionMatrix?.slice() ?? [
+          1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
+        ]
+      );
+    },
+  };
+  externalTransforms["ar_view"] = {
+    name: "AR: view to world",
+    get() {
+      return (
+        // prettier-ignore
+        xrTransform?.matrix?.slice() ?? [
+          1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
+        ]
+      );
+    },
+  };
+  externalTransforms["ar_inverse_view"] = {
+    name: "AR: world to view",
+    get() {
+      return (
+        // prettier-ignore
+        xrTransform?.inverse?.matrix?.slice() ?? [
+          1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
+        ]
+      );
+    },
+  };
 
   Scratch.extensions.register(new ARExtension());
 })(Scratch);
