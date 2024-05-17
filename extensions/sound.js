@@ -1,7 +1,7 @@
 // Name: Sound
 // ID: notSound
 // Description: Play sounds from URLs.
-// License: MIT AND LGPL-3.0
+// License: MIT AND MPL-2.0
 
 ((Scratch) => {
   "use strict";

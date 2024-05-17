@@ -1,7 +1,7 @@
 // Name: Pointerlock
 // ID: pointerlock
 // Description: Adds blocks for mouse locking. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the pointerlock experiment.
-// License: MIT AND LGPL-3.0
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -88,7 +88,6 @@
     isLocked = document.pointerLockElement === canvas;
   });
   document.addEventListener("pointerlockerror", (e) => {
-    // eslint-disable-next-line no-console
     console.error("Pointer lock error", e);
   });
 
@@ -104,6 +103,13 @@
     }
     return ret;
   };
+
+  vm.runtime.on("PROJECT_LOADED", () => {
+    isPointerLockEnabled = false;
+    if (isLocked) {
+      document.exitPointerLock();
+    }
+  });
 
   class Pointerlock {
     getInfo() {
@@ -148,7 +154,7 @@
     }
 
     setLocked(args) {
-      isPointerLockEnabled = args.enabled === "true";
+      isPointerLockEnabled = Scratch.Cast.toBoolean(args.enabled) === true;
       if (!isPointerLockEnabled && isLocked) {
         document.exitPointerLock();
       }

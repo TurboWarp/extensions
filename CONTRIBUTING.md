@@ -44,7 +44,7 @@ Extensions must be self-contained. All libraries and hardcoded resources should 
 
 **We are not lawyers. This is not legal advice.**
 
-Everything in this repository must be available under an open source license. You can use any license you want, but we **STRONGLY** recommend using the [GNU Lesser General Public License version 3](licenses/GPL-3.0.txt) for all new extensions.
+Everything in this repository must be available under an open source license. You can use any license you want, but we **STRONGLY** recommend using the [Mozilla Public License verison 2.0](licenses/MPL-2.0.txt) for all new extensions.
 
 The following licenses are banned for being [incompatible the GPLv3](https://www.gnu.org/licenses/license-list.en.html), so do not use any code, images, etc. under them:
 
@@ -66,7 +66,7 @@ All extensions should need a metadata comment at the *very* start of the file, b
 // Description: Does a very cool thing. This must have punctuation at the end!
 // By: GarboMuffin <https://scratch.mit.edu/users/GarboMuffin/>
 // Original: TestMuffin
-// License: LGPL-3.0
+// License: MPL-2.0
 ```
 
 You must use line comments; block comments `/* */` will not work. These fields are **REQUIRED**:
@@ -74,7 +74,7 @@ You must use line comments; block comments `/* */` will not work. These fields a
  - `Name` will appear on the website. It should be similar to the name returned by getInfo().
  - `ID` should be identical to the id returned by getInfo().
  - `Description` will appear on the website.
- - `License` describes the license that the extension's code is under. It should be a valid [SPDX license](https://spdx.org/licenses/) expression. (use `LGPL-3.0` if you are unsure)
+ - `License` describes the license that the extension's code is under. It should be a valid [SPDX license](https://spdx.org/licenses/) expression. (use `MPL-2.0` if you are unsure)
 
 `By` is optionally used to credit the author of the extension (you!). `Original` is used if the extension is based on or ported from somewhere else. They both use the same format of `Name` or `Name <https://scratch.mit.edu/users/username>`. Links to places other than Scratch are not allowed at this time. You can repeat both of these as many times as needed, just add another `// By: ...` comment after.
 

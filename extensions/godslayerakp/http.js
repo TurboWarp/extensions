@@ -658,7 +658,6 @@
       this.request.body.delete(name);
     }
 
-    // eslint-disable-next-line require-await
     async sendRequest(args) {
       const url = Cast.toString(args.url);
       const options = this.request.options;
