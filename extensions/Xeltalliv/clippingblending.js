@@ -152,6 +152,8 @@
       const proto = vm.runtime.targets[0].__proto__;
       const osa = proto.onStopAll;
       proto.onStopAll = function () {
+        this.clipbox = null;
+        this.blendMode = "default";
         this.renderer.updateDrawableClipBox.call(
           renderer,
           this.drawableID,
@@ -168,7 +170,9 @@
       proto.makeClone = function () {
         const newTarget = mc.call(this);
         if (this.clipbox || this.blendMode) {
-          newTarget.clipbox = Object.assign({}, this.clipbox);
+          newTarget.clipbox = this.clipbox
+            ? Object.assign({}, this.clipbox)
+            : null;
           newTarget.blendMode = this.blendMode;
           renderer.updateDrawableClipBox.call(
             renderer,

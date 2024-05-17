@@ -130,8 +130,6 @@
     }
   };
 
-  const isPackaged = Scratch.vm.runtime.isPackaged;
-
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const canvas = runtime.renderer.canvas;
@@ -841,7 +839,7 @@
     }
 
     isPackaged() {
-      return isPackaged;
+      return typeof scaffolding !== "undefined";
     }
 
     clonesOfSprite({ Sprite }) {
