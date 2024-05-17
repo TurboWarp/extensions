@@ -1,6 +1,6 @@
 // Name: Extendable Blocks
 // ID: cst1229extendable
-// Description: Blocks with a variable number of inputs.
+// Description: Blocks with inputs that can be added and removed.
 // By: CST1229 <https://scratch.mit.edu/users/CST1229/>
 // License: LGPL-3.0
 
@@ -12,9 +12,6 @@
   }
 
   const exId = "cst1229extendable";
-
-  // A high branchCount for old compiler versions
-  const MAX_EXTENDABLE_BRANCHES = 75;
 
   const menuIconURI =
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhodG1sPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmlld0JveD0iMCAwIDQwIDQwIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxOCIgZmlsbD0iIzU5YzA1OSIgc3Ryb2tlPSIjMzg5NDM4IiBzdHJva2Utd2lkdGg9IjQiIHBhaW50LW9yZGVyPSJzdHJva2UgbWFya2VycyBmaWxsIiBzdHlsZT0iZm9udC12YXJpYXRpb24tc2V0dGluZ3M6bm9ybWFsIi8+PGltYWdlIHhsaW5rOmhyZWY9ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QmtZWFJoTFc1aGJXVTlJa3hoZVdWeUlERWlJSGh0Ykc1elBTSm9kSFJ3T2k4dmQzZDNMbmN6TG05eVp5OHlNREF3TDNOMlp5SWdkbWxsZDBKdmVEMGlNQ0F3SURFd0lERXpJaUIwY21GdWMyWnZjbTA5SW5OallXeGxLQzB4TENBeEtTSStQSEJoZEdnZ1pEMGlUVE11TmpVdU1UUTFZVEl1TkRFZ01pNDBNU0F3SURBZ01TQXhMamN5TGpjeGJETXVPVElnTXk0NU1tRXlMalExSURJdU5EVWdNQ0F3SURFZ01DQXpMalExYkMwekxqa3lJRE11T1RGaE1pNDBNaUF5TGpReUlEQWdNQ0F4TFRFdU56SXVOeklnTWk0ME9DQXlMalE0SURBZ01DQXhMVEV1TnpNdExqY3hZeTB1TWpRdExqSTVMUzQzTVMwdU56SXRMamN4TFRVdU5qVWdNQzAwTGprekxqUTJMVFV1TXprdU56RXROUzQyTkdFeUxqUTBJREl1TkRRZ01DQXdJREVnTVM0M015MHVOekY2SWlCbWFXeHNQU0lqTWpNeFpqSXdJaUJ2Y0dGamFYUjVQU0l1TVNJdlBqeHdZWFJvSUdROUlrMDRMams0TlNBMkxqVXhZVEV1TkRNZ01TNDBNeUF3SURBZ01TMHVORElnTVd3dE15NDVNaUF6TGprMFlURXVORFFnTVM0ME5DQXdJREFnTVMweUlEQmpMUzQxTmkwdU5UWXRMalUyTFRrdU16RWdNQzA1TGpnM1lURXVORFFnTVM0ME5DQXdJREFnTVNBeUlEQnNNeTQ1TWlBekxqa3lZVEV1TkRNZ01TNDBNeUF3SURBZ01TQXVORElnTVM0d01Yb2lJR1pwYkd3OUlpTm1abVlpTHo0OEwzTjJaejQ9IiB3aWR0aD0iMTYiIGhlaWdodD0iMzIiIHg9IjQiIHk9IjQiLz48aW1hZ2UgeGxpbms6aHJlZj0iZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCa1lYUmhMVzVoYldVOUlreGhlV1Z5SURFaUlIaHRiRzV6UFNKb2RIUndPaTh2ZDNkM0xuY3pMbTl5Wnk4eU1EQXdMM04yWnlJZ2RtbGxkMEp2ZUQwaU1DQXdJREV3SURFeklqNDhjR0YwYUNCa1BTSk5NeTQyTlM0eE5EVmhNaTQwTVNBeUxqUXhJREFnTUNBeElERXVOekl1TnpGc015NDVNaUF6TGpreVlUSXVORFVnTWk0ME5TQXdJREFnTVNBd0lETXVORFZzTFRNdU9USWdNeTQ1TVdFeUxqUXlJREl1TkRJZ01DQXdJREV0TVM0M01pNDNNaUF5TGpRNElESXVORGdnTUNBd0lERXRNUzQzTXkwdU56RmpMUzR5TkMwdU1qa3RMamN4TFM0M01pMHVOekV0TlM0Mk5TQXdMVFF1T1RNdU5EWXROUzR6T1M0M01TMDFMalkwWVRJdU5EUWdNaTQwTkNBd0lEQWdNU0F4TGpjekxTNDNNWG9pSUdacGJHdzlJaU15TXpGbU1qQWlJRzl3WVdOcGRIazlJaTR4SWk4K1BIQmhkR2dnWkQwaVRUZ3VPVGcxSURZdU5URmhNUzQwTXlBeExqUXpJREFnTUNBeExTNDBNaUF4YkMwekxqa3lJRE11T1RSaE1TNDBOQ0F4TGpRMElEQWdNQ0F4TFRJZ01HTXRMalUyTFM0MU5pMHVOVFl0T1M0ek1TQXdMVGt1T0RkaE1TNDBOQ0F4TGpRMElEQWdNQ0F4SURJZ01Hd3pMamt5SURNdU9USmhNUzQwTXlBeExqUXpJREFnTUNBeElDNDBNaUF4TGpBeGVpSWdabWxzYkQwaUkyWm1aaUl2UGp3dmMzWm5QZz09IiB3aWR0aD0iMTYiIGhlaWdodD0iMzIiIHg9IjIwIiB5PSI0Ii8+PC9zdmc+";
@@ -162,6 +159,23 @@
           },
           "---",
           {
+            opcode: "joinWith",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "joinwith",
+              default: "join",
+              description:
+                "Beginning of the 'join (...) with []' block. Text inputs follow after this",
+            }),
+            arguments: {},
+            mutator: "cst_extendable",
+            extensions: ["colours_operators", "cst_extendable_joinwith"],
+            disableMonitor: true,
+
+            // currently somewhat broken
+            hideFromPalette: true,
+          },
+          {
             opcode: "extendArray",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
@@ -189,7 +203,6 @@
                 defaultValue: 1,
               },
             },
-            branchCount: MAX_EXTENDABLE_BRANCHES,
             mutator: "cst_extendable",
             extensions: ["colours_control", "cst_extendable_branch"],
           },
@@ -198,9 +211,9 @@
             blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate({
               default: "if",
-              description: "Beginning of the extendable if blocks. Ideally should match vanilla Scratch's strings",
+              description:
+                "Beginning of the extendable if blocks. Ideally should match vanilla Scratch's strings",
             }),
-            branchCount: MAX_EXTENDABLE_BRANCHES,
             mutator: "cst_extendable",
             extensions: ["colours_control", "cst_extendable_if"],
           },
@@ -209,9 +222,9 @@
             blockType: Scratch.BlockType.CONDITIONAL,
             text: Scratch.translate({
               default: "if",
-              description: "Beginning of the extendable if blocks. Ideally should match vanilla Scratch's strings",
+              description:
+                "Beginning of the extendable if blocks. Ideally should match vanilla Scratch's strings",
             }),
-            branchCount: MAX_EXTENDABLE_BRANCHES,
             mutator: "cst_extendable",
             extensions: ["colours_control", "cst_extendable_if_else"],
           },
@@ -228,7 +241,6 @@
                 defaultValue: "",
               },
             },
-            branchCount: MAX_EXTENDABLE_BRANCHES,
             mutator: "cst_extendable",
             extensions: ["colours_control", "cst_extendable_switch"],
           },
@@ -322,6 +334,23 @@
       } catch (e) {
         return "[]";
       }
+    }
+    joinWith(args, util) {
+      const prefix = "ARG";
+      const mutation = this.getCurrentMutation(args, util);
+      const inputCount = Scratch.Cast.toNumber(mutation?.inputcount);
+      console.log(inputCount);
+      const joiner = Scratch.Cast.toString(args[prefix + inputCount]);
+      if (inputCount <= 0) return "";
+
+      let string = "";
+      for (let i = 0; i < inputCount; i++) {
+        string += Scratch.Cast.toString(args[prefix + i]);
+        if (i + 1 < inputCount) {
+          string += joiner;
+        }
+      }
+      return string;
     }
     extendAnd(args, util) {
       const mutation = this.getCurrentMutation(args, util);
@@ -500,8 +529,16 @@
       "cst_extendable",
       {
         domToMutation(xmlElement) {
-          this.inputCount = Number(xmlElement.getAttribute("inputcount"));
-          if (isNaN(this.inputCount)) this.inputCount = 2;
+          this.inputCount = Math.floor(
+            Number(xmlElement.getAttribute("inputcount"))
+          );
+          this.inputCount = Math.min(
+            Math.max(this.minInputs, this.inputCount),
+            this.maxInputs
+          );
+          if (isNaN(this.inputCount) || !Number.isFinite(this.inputCount))
+            this.inputCount = this.minInputs;
+          this.prevInputCount = this.inputCount;
           // HACK: fixes alt+drag duplicate not adding blocks inside
           this.updateDisplay_(true);
         },
@@ -522,10 +559,27 @@
           );
         },
 
-        // Disconnects all blocks in extendable inputs, and returns them.
+        // Disconnects all blocks in extendable inputs and returns them.
         disconnectOldBlocks_() {
-          // Remove old stuff
           const connectionMap = {};
+          const hasEndBlocks = this.extendableDefsEnd.length > 0;
+          const hasStartBlocks = this.extendableDefsStart.length > 0;
+          const prevEndIndex =
+            this.prevInputCount + (this.extendableDefsStart.length > 0);
+
+          // Reattach end blocks when inputs are added/removed
+          const reattachMap = Object.create(null);
+          if (hasEndBlocks) {
+            for (const def of this.extendableDefsEnd) {
+              const input = this.getInput(
+                this.getExtendableInput(def.id, prevEndIndex)
+              );
+              if (input && input.connection) {
+                reattachMap[input.name] = def.id;
+              }
+            }
+          }
+
           for (const input of this.inputList) {
             if (input.connection && this.isExtendableInput(input)) {
               const target = input.connection.targetBlock();
@@ -533,7 +587,24 @@
                 shadow: input.connection.getShadowDom(),
                 block: target,
               };
-              connectionMap[input.name] = saveInfo;
+
+              let name = input.name;
+              if (reattachMap[name]) {
+                name = this.getExtendableInput(
+                  reattachMap[name],
+                  this.inputCount + hasStartBlocks
+                );
+                if (connectionMap[name]) {
+                  connectionMap["$UNUSED" + name] = connectionMap[name];
+                  delete connectionMap[name];
+                }
+              }
+
+              if (connectionMap[name]) {
+                connectionMap["$UNUSED" + name] = saveInfo;
+              } else {
+                connectionMap[name] = saveInfo;
+              }
 
               // Remove the shadow DOM, then disconnect the block.	Otherwise a shadow
               // block will respawn instantly, and we'd have to remove it when we remove
@@ -595,8 +666,8 @@
         },
 
         // Populates an argument.
-        // Puts existing blocks back in, or creates new ones
-        populateArgument_(index, connectionMap, id, input, def) {
+        // Puts existing blocks back in or creates new ones.
+        populateArgument_(connectionMap, id, input, def) {
           let oldBlock = null;
           let oldShadow = null;
 
@@ -670,13 +741,7 @@
             if (def.check) {
               input.setCheck(def.check);
             }
-            this.populateArgument_(
-              this.inputCount,
-              connectionMap,
-              id,
-              input,
-              def
-            );
+            this.populateArgument_(connectionMap, id, input, def);
           }
         },
 
@@ -685,38 +750,8 @@
           ScratchBlocks.Events.setGroup(true);
           const oldMutation = ScratchBlocks.Xml.domToText(this.mutationToDom());
           this.inputCount++;
-          const plusInputs = this.extendableDefsStart.length > 0 ? 1 : 0;
 
-          const reconnect = {};
-          if (this.extendableDefsEnd.length > 0) {
-            // Reattach ending blocks to the next input
-            for (const def of this.extendableDefsEnd) {
-              const name = this.getExtendableInput(
-                def.id,
-                this.inputCount + plusInputs - 1
-              );
-              const input = this.inputList.find((i) => i.name == name);
-              if (input && input.connection && input.connection.isConnected()) {
-                const block = input.connection.targetBlock();
-                block.unplug();
-                const nextName = this.getExtendableInput(
-                  def.id,
-                  this.inputCount + plusInputs
-                );
-                reconnect[nextName] = block;
-              }
-            }
-          }
           this.updateDisplay_();
-          for (const name of Object.keys(reconnect)) {
-            const input = this.inputList.find((i) => i.name == name);
-            const block = reconnect[name];
-            if (input && input.connection && block.workspace) {
-              if (block.outputConnection)
-                block.outputConnection.connect(input.connection);
-              else block.previousConnection.connect(input.connection);
-            }
-          }
 
           // i have no idea if this is the correct way or not
           const newMutation = ScratchBlocks.Xml.domToText(this.mutationToDom());
@@ -737,41 +772,12 @@
           this.inputCount--;
           const plusInputs = this.extendableDefsStart.length > 0 ? 1 : 0;
 
-          const reconnect = {};
-          if (this.extendableDefsEnd.length > 0) {
-            // Reattach ending blocks to the last input
-            for (const def of this.extendableDefsEnd) {
-              const name = this.getExtendableInput(
-                def.id,
-                this.inputCount + plusInputs + 1
-              );
-              const input = this.inputList.find((i) => i.name == name);
-              if (input && input.connection && input.connection.isConnected()) {
-                const block = input.connection.targetBlock();
-                block.unplug();
-                const prevName = this.getExtendableInput(
-                  def.id,
-                  this.inputCount + plusInputs
-                );
-                reconnect[prevName] = block;
-              }
-            }
-          }
           for (const def of this.extendableDefs) {
             this.removeInput(
               this.getExtendableInput(def.id, this.inputCount + plusInputs)
             );
           }
           this.updateDisplay_();
-          for (const name of Object.keys(reconnect)) {
-            const input = this.inputList.find((i) => i.name == name);
-            const block = reconnect[name];
-            if (input && input.connection && block.workspace) {
-              if (block.outputConnection)
-                block.outputConnection.connect(input.connection);
-              else block.previousConnection.connect(input.connection);
-            }
-          }
 
           const newMutation = ScratchBlocks.Xml.domToText(this.mutationToDom());
           const ev = new ScratchBlocks.Events.BlockChange(
@@ -854,9 +860,11 @@
           )
             return;
 
-          if (this.isInFlyout) ScratchBlocks.Events.disable();
-
           const wasRendered = this.rendered;
+          if (this.isInFlyout) {
+            ScratchBlocks.Events.disable();
+          }
+
           this.rendered = false;
           this.extendableUpdatedDisplay = true;
 
@@ -876,6 +884,7 @@
             this,
             connectionMap
           );
+          this.prevInputCount = this.inputCount;
 
           this.rendered = wasRendered;
           if (wasRendered) {
@@ -883,7 +892,9 @@
             this.render();
           }
 
-          if (this.isInFlyout) ScratchBlocks.Events.enable();
+          if (this.isInFlyout) {
+            ScratchBlocks.Events.enable();
+          }
         },
       },
       function () {
@@ -905,6 +916,9 @@
         this.maxInputs = Infinity;
         // If true, clears all blockInfo labels.
         this.clearLabels = false;
+
+        // Internal.
+        this.prevInputCount = this.inputCount;
       }
     );
 
@@ -1006,15 +1020,17 @@
           createInput(
             ScratchBlocks.DUMMY_INPUT,
             "WORD",
-            this.type === exId + "_extendAnd" ? Scratch.translate({
-              default: "and",
-              description:
-                'Text inserted between inputs on the extendable "and" block. Ideally should match vanilla Scratch\'s strings',
-            }) : Scratch.translate({
-              default: "or",
-              description:
-                'Text inserted between inputs on the extendable "or" block. Ideally should match vanilla Scratch\'s strings',
-            })
+            this.type === exId + "_extendAnd"
+              ? Scratch.translate({
+                  default: "and",
+                  description:
+                    'Text inserted between inputs on the extendable "and" block. Ideally should match vanilla Scratch\'s strings',
+                })
+              : Scratch.translate({
+                  default: "or",
+                  description:
+                    'Text inserted between inputs on the extendable "or" block. Ideally should match vanilla Scratch\'s strings',
+                })
           )
         );
         this.inputCount = 1;
@@ -1033,17 +1049,25 @@
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
       ];
       this.extendableDefs = [
-        createInput(ScratchBlocks.DUMMY_INPUT, "ELSE_WORD", Scratch.translate({
-          default: "else if",
-          description:
-            'Text inserted after a C input and before a boolean input on the extendable if blocks.',
-        })),
+        createInput(
+          ScratchBlocks.DUMMY_INPUT,
+          "ELSE_WORD",
+          Scratch.translate({
+            default: "else if",
+            description:
+              "Text inserted after a C input and before a boolean input on the extendable if blocks.",
+          })
+        ),
         createInput(ScratchBlocks.INPUT_VALUE, "CONDITION", "Boolean"),
-        createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", Scratch.translate({
-          default: "then",
-          description:
-            'Text inserted before a C input on the extendable if blocks. Ideally should match vanilla Scratch\'s strings',
-        })),
+        createInput(
+          ScratchBlocks.DUMMY_INPUT,
+          "THEN_WORD",
+          Scratch.translate({
+            default: "then",
+            description:
+              "Text inserted before a C input on the extendable if blocks. Ideally should match vanilla Scratch's strings",
+          })
+        ),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
       ];
       this.inputCount = 0;
@@ -1052,32 +1076,48 @@
     ScratchBlocks.Extensions.register("cst_extendable_if_else", function () {
       this.extendableDefsStart = [
         createInput(ScratchBlocks.INPUT_VALUE, "CONDITION", "Boolean"),
-        createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", Scratch.translate({
-          default: "then",
-          description:
-            'Text inserted before a C input on the extendable if blocks. Ideally should match vanilla Scratch\'s strings',
-        })),
+        createInput(
+          ScratchBlocks.DUMMY_INPUT,
+          "THEN_WORD",
+          Scratch.translate({
+            default: "then",
+            description:
+              "Text inserted before a C input on the extendable if blocks. Ideally should match vanilla Scratch's strings",
+          })
+        ),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
-        createInput(ScratchBlocks.DUMMY_INPUT, "ELSE_WORD", Scratch.translate({
-          default: "else",
-          description:
-            'Text inserted before the last C input on the extendable if-else block. Ideally should match vanilla Scratch\'s strings',
-        })),
+        createInput(
+          ScratchBlocks.DUMMY_INPUT,
+          "ELSE_WORD",
+          Scratch.translate({
+            default: "else",
+            description:
+              "Text inserted before the last C input on the extendable if-else block. Ideally should match vanilla Scratch's strings",
+          })
+        ),
       ];
       this.extendableDefs = [
         createInput(ScratchBlocks.DUMMY_INPUT, "IF_WORD", "if"),
         createInput(ScratchBlocks.INPUT_VALUE, "CONDITION", "Boolean"),
-        createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", Scratch.translate({
-          default: "then",
-          description:
-            'Text inserted before a C input on the extendable if blocks. Ideally should match vanilla Scratch\'s strings',
-        })),
+        createInput(
+          ScratchBlocks.DUMMY_INPUT,
+          "THEN_WORD",
+          Scratch.translate({
+            default: "then",
+            description:
+              "Text inserted before a C input on the extendable if blocks. Ideally should match vanilla Scratch's strings",
+          })
+        ),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
-        createInput(ScratchBlocks.DUMMY_INPUT, "ELSE_WORD", Scratch.translate({
-          default: "else",
-          description:
-            'Text inserted before the last C input on the extendable if-else block. Ideally should match vanilla Scratch\'s strings',
-        })),
+        createInput(
+          ScratchBlocks.DUMMY_INPUT,
+          "ELSE_WORD",
+          Scratch.translate({
+            default: "else",
+            description:
+              "Text inserted before the last C input on the extendable if-else block. Ideally should match vanilla Scratch's strings",
+          })
+        ),
       ];
       this.extendableDefsEnd = [
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
@@ -1087,11 +1127,15 @@
     });
     ScratchBlocks.Extensions.register("cst_extendable_switch", function () {
       this.extendableDefs = [
-        createInput(ScratchBlocks.DUMMY_INPUT, "CASE_WORD", Scratch.translate({
-          default: "case",
-          description:
-            'Text inserted between C and text inputs on the extendable switch block',
-        })),
+        createInput(
+          ScratchBlocks.DUMMY_INPUT,
+          "CASE_WORD",
+          Scratch.translate({
+            default: "case",
+            description:
+              "Text inserted between C and text inputs on the extendable switch block",
+          })
+        ),
         createInput(
           ScratchBlocks.INPUT_VALUE,
           "CASE_VALUE",
@@ -1103,14 +1147,51 @@
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
       ];
       this.extendableDefsEnd = [
-        createInput(ScratchBlocks.DUMMY_INPUT, "DEFAULT_WORD", Scratch.translate({
-          default: "default",
-          description:
-            'Text inserted before the last C input on the extendable switch block',
-        })),
+        createInput(
+          ScratchBlocks.DUMMY_INPUT,
+          "DEFAULT_WORD",
+          Scratch.translate({
+            default: "default",
+            description:
+              "Text inserted before the last C input on the extendable switch block",
+          })
+        ),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
       ];
       this.inputCount = 1;
+      this.minInputs = 0;
+    });
+    ScratchBlocks.Extensions.register("cst_extendable_joinwith", function () {
+      this.extendableDefs = [
+        createInput(
+          ScratchBlocks.INPUT_VALUE,
+          "ARG",
+          null,
+          "text",
+          "TEXT",
+          "word"
+        ),
+      ];
+      this.extendableDefsEnd = [
+        createInput(
+          ScratchBlocks.DUMMY_INPUT,
+          "WORD_WORD",
+          Scratch.translate({
+            default: "with",
+            description:
+              "Text inserted before the last input on the 'join (...) with []' block",
+          })
+        ),
+        createInput(
+          ScratchBlocks.INPUT_VALUE,
+          "ARG",
+          null,
+          "text",
+          "TEXT",
+          "_"
+        ),
+      ];
+      this.inputCount = 2;
       this.minInputs = 0;
     });
 
