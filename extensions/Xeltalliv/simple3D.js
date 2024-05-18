@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.0.1
+// Version: 1.0.2
 
 (function (Scratch) {
   "use strict";
@@ -3829,6 +3829,9 @@ void main() {
         let totalMat = lookup2[from];
         for (let i = from + 1; i < to; i++) {
           totalMat = m4.multiply(lookup2[i], totalMat);
+        }
+        if (from + 1 == to) {
+          totalMat = totalMat.slice();
         }
         totalMat[12] = totalMat[13] = totalMat[14] = 0;
         if (swapped) totalMat = m4.inverse(totalMat);
