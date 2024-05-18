@@ -634,6 +634,7 @@
     }
     checkIfValid() {
       if (currentRenderTarget.getMesh() == this) return false;
+      if (!this.buffers.position) return false;
       let length = -1;
       let lengthIns = -1;
       for (const name in this.buffers) {
@@ -2642,6 +2643,7 @@ void main() {
         if (!mesh) return;
         if (!currentRenderTarget.checkIfValid()) return;
         if (currentRenderTarget.getMesh() == mesh) return;
+        if (!mesh.buffers.position) return;
 
         // TODO: only recompute this after one or more buffers were changed
         let length = -1;
