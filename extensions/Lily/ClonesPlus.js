@@ -48,7 +48,7 @@
     getInfo() {
       return {
         id: "lmsclonesplus",
-        name: "Clones+",
+        name: Scratch.translate("Clones+"),
         color1: "#FFAB19",
         color2: "#EC9C13",
         color3: "#CF8B17",
