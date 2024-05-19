@@ -687,7 +687,12 @@
       if (variables.length > 0) {
         return variables;
       } else {
-        return [{ text: Scratch.translate("sclect a vaiable for this sprite only"), value: "" }];
+        return [
+          {
+            text: Scratch.translate("sclect a vaiable for this sprite only"),
+            value: "",
+          },
+        ];
       }
     }
   }
