@@ -206,7 +206,7 @@
           {
             opcode: "listRuntimeVariables",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("active runtime variables")
+            text: Scratch.translate("active runtime variables"),
           },
         ],
       };

@@ -650,7 +650,7 @@
         if (myself === curTarget.name) {
           display = Scratch.translate({
             default: "myself",
-            description: "Item in a dropdown that refers to the current sprite"
+            description: "Item in a dropdown that refers to the current sprite",
           });
         }
         if (targets[index].isOriginal) {
