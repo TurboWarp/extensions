@@ -648,7 +648,10 @@
         const curTarget = targets[index].sprite;
         let display = curTarget.name;
         if (myself === curTarget.name) {
-          display = Scratch.translate("myself");
+          display = Scratch.translate({
+            default: "myself",
+            description: "Item in a dropdown that refers to the current sprite"
+          });
         }
         if (targets[index].isOriginal) {
           const jsonOBJ = {
@@ -661,7 +664,7 @@
       if (spriteNames.length > 0) {
         return spriteNames;
       } else {
-        return [{ text: Scratch.translate("create a sprite"), value: 0 }]; //this should never happen but it's a failsafe
+        return [{ text: "", value: 0 }]; //this should never happen but it's a failsafe
       }
     }
 
@@ -687,12 +690,7 @@
       if (variables.length > 0) {
         return variables;
       } else {
-        return [
-          {
-            text: Scratch.translate("sclect a vaiable for this sprite only"),
-            value: "",
-          },
-        ];
+        return [{ text: "", value: "" }];
       }
     }
   }
