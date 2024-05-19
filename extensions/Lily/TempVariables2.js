@@ -35,7 +35,7 @@
     getInfo() {
       return {
         id: "lmsTempVars2",
-        name: "Temporary Variables",
+        name: Scratch.translate("Temporary Variables"),
         color1: "#FF791A",
         color2: "#E15D00",
         blocks: [
