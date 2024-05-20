@@ -718,12 +718,12 @@
   const workerSrc = `
   class OffModelImporter {
     constructor(dataRaw) {
-      const dataStr = dataRaw.map(str => str.replaceAll("\t", " ").trim()).filter(str => str.length && str[0] !== "#");
-      const dataArr = dataStr.map(str => str.split(" ").filter(e => e).map(e => +e));
+      const dataStr = dataRaw.map(str => str.split("#")[0].replaceAll("\t", " ").trim()).filter(str => str.length);
+      const dataArr = dataStr.map(str => str.split(" ").filter(e => e));
       let i = 0;
-      if (dataStr[i] == "OFF") i++;
+      if (dataStr[i].endsWith("OFF")) i++;
       if (dataArr[i].length !== 3) return false;
-      const [vertexCount, faceCount, edgeCount] = dataArr[i]; i++;
+      const [vertexCount, faceCount, edgeCount] = dataArr[i].map(n => +n); i++;
       const vertices = dataArr.slice(i, i+vertexCount); i += vertexCount;
       const faces = dataArr.slice(i, i+faceCount); i += faceCount;
       this.vertices = vertices;
@@ -732,7 +732,8 @@
         rgba: []
       }
       for(const face of faces) {
-        this.addPoly(face.slice(1, 1+face[0]), face.slice(1+face[0]));
+        const nVerts = +face[0];
+        this.addPoly(face.slice(1, 1+nVerts), face.slice(1+nVerts));
       }
       let hasColor = false;
       const rgba = this.output.rgba;
@@ -745,6 +746,7 @@
       if (!hasColor) delete this.output.rgba;
     }
     addPoly(vs, fallback) {
+      fallback = fallback.map(this.parseColor);
       if (fallback.length == 3) fallback.push(1);
       for(let i=2; i<vs.length; i++) {
         this.addVertex(vs[  0], fallback);
@@ -754,8 +756,14 @@
     }
     addVertex(idx, fallback) {
       const v = this.vertices[idx];
-      this.output.xyz.push(v[0], v[1], v[2]);
-      this.output.rgba.push(v[3] ?? fallback[0] ?? 1, v[4] ?? fallback[1] ?? 1, v[5] ?? fallback[2] ?? 1, v[6] ?? fallback[3] ?? 1);
+      this.output.xyz.push(+v[0], +v[1], +v[2]);
+      this.output.rgba.push(this.parseColor(v[3]) ?? fallback[0] ?? 1, this.parseColor(v[4]) ?? fallback[1] ?? 1, this.parseColor(v[5]) ?? fallback[2] ?? 1, this.parseColor(v[6]) ?? fallback[3] ?? 1);
+    }
+    parseColor(string) {
+      const number = +string;
+      if (!Number.isFinite(number)) return undefined;
+      if (string.indexOf(".") == -1) return number / 255;
+      return number;
     }
   }
   class ObjModelImporter {
