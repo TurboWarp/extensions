@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.0.1
+// Version: 1.0.2
 
 (function (Scratch) {
   "use strict";
@@ -634,6 +634,7 @@
     }
     checkIfValid() {
       if (currentRenderTarget.getMesh() == this) return false;
+      if (!this.buffers.position) return false;
       let length = -1;
       let lengthIns = -1;
       for (const name in this.buffers) {
@@ -717,12 +718,12 @@
   const workerSrc = `
   class OffModelImporter {
     constructor(dataRaw) {
-      const dataStr = dataRaw.map(str => str.replaceAll("\t", " ").trim()).filter(str => str.length && str[0] !== "#");
-      const dataArr = dataStr.map(str => str.split(" ").filter(e => e).map(e => +e));
+      const dataStr = dataRaw.map(str => str.split("#")[0].replaceAll("\t", " ").trim()).filter(str => str.length);
+      const dataArr = dataStr.map(str => str.split(" ").filter(e => e));
       let i = 0;
-      if (dataStr[i] == "OFF") i++;
+      if (dataStr[i].endsWith("OFF")) i++;
       if (dataArr[i].length !== 3) return false;
-      const [vertexCount, faceCount, edgeCount] = dataArr[i]; i++;
+      const [vertexCount, faceCount, edgeCount] = dataArr[i].map(n => +n); i++;
       const vertices = dataArr.slice(i, i+vertexCount); i += vertexCount;
       const faces = dataArr.slice(i, i+faceCount); i += faceCount;
       this.vertices = vertices;
@@ -731,7 +732,8 @@
         rgba: []
       }
       for(const face of faces) {
-        this.addPoly(face.slice(1, 1+face[0]), face.slice(1+face[0]));
+        const nVerts = +face[0];
+        this.addPoly(face.slice(1, 1+nVerts), face.slice(1+nVerts));
       }
       let hasColor = false;
       const rgba = this.output.rgba;
@@ -744,6 +746,7 @@
       if (!hasColor) delete this.output.rgba;
     }
     addPoly(vs, fallback) {
+      fallback = fallback.map(this.parseColor);
       if (fallback.length == 3) fallback.push(1);
       for(let i=2; i<vs.length; i++) {
         this.addVertex(vs[  0], fallback);
@@ -753,8 +756,14 @@
     }
     addVertex(idx, fallback) {
       const v = this.vertices[idx];
-      this.output.xyz.push(v[0], v[1], v[2]);
-      this.output.rgba.push(v[3] ?? fallback[0], v[4] ?? fallback[1] ?? 1, v[5] ?? fallback[2] ?? 1, v[6] ?? fallback[3] ?? 1);
+      this.output.xyz.push(+v[0], +v[1], +v[2]);
+      this.output.rgba.push(this.parseColor(v[3]) ?? fallback[0] ?? 1, this.parseColor(v[4]) ?? fallback[1] ?? 1, this.parseColor(v[5]) ?? fallback[2] ?? 1, this.parseColor(v[6]) ?? fallback[3] ?? 1);
+    }
+    parseColor(string) {
+      const number = +string;
+      if (!Number.isFinite(number)) return undefined;
+      if (string.indexOf(".") == -1) return number / 255;
+      return number;
     }
   }
   class ObjModelImporter {
@@ -789,7 +798,7 @@
           materialLast = arr[1];
           materials[materialLast] = [1,1,1,1];
         }
-        if (arr[0] == "Ka") {
+        if (arr[0] == "Kd") {
           const color = materials[materialLast];
           color[0] = +arr[1];
           color[1] = +arr[2];
@@ -845,9 +854,12 @@
         const a = importMatrix;
         if (needsScaling) {
           for(let i=0; i<xyz.length; i+=3) {
-            xyz[i  ] = xyz[i] * a[0] + xyz[i+1] * a[4] + xyz[i+2] * a[8] + a[12];
-            xyz[i+1] = xyz[i] * a[1] + xyz[i+1] * a[5] + xyz[i+2] * a[9] + a[13];
-            xyz[i+2] = xyz[i] * a[2] + xyz[i+1] * a[6] + xyz[i+2] * a[10] + a[14];
+            const x = xyz[i];
+            const y = xyz[i+1];
+            const z = xyz[i+2];
+            xyz[i  ] = x * a[0] + y * a[4] + z * a[8] + a[12];
+            xyz[i+1] = x * a[1] + y * a[5] + z * a[9] + a[13];
+            xyz[i+2] = x * a[2] + y * a[6] + z * a[10] + a[14];
           }
         }
       }
@@ -2642,6 +2654,7 @@ void main() {
         if (!mesh) return;
         if (!currentRenderTarget.checkIfValid()) return;
         if (currentRenderTarget.getMesh() == mesh) return;
+        if (!mesh.buffers.position) return;
 
         // TODO: only recompute this after one or more buffers were changed
         let length = -1;
@@ -3829,6 +3842,9 @@ void main() {
         let totalMat = lookup2[from];
         for (let i = from + 1; i < to; i++) {
           totalMat = m4.multiply(lookup2[i], totalMat);
+        }
+        if (from + 1 == to) {
+          totalMat = totalMat.slice();
         }
         totalMat[12] = totalMat[13] = totalMat[14] = 0;
         if (swapped) totalMat = m4.inverse(totalMat);
