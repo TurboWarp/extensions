@@ -846,9 +846,12 @@
         const a = importMatrix;
         if (needsScaling) {
           for(let i=0; i<xyz.length; i+=3) {
-            xyz[i  ] = xyz[i] * a[0] + xyz[i+1] * a[4] + xyz[i+2] * a[8] + a[12];
-            xyz[i+1] = xyz[i] * a[1] + xyz[i+1] * a[5] + xyz[i+2] * a[9] + a[13];
-            xyz[i+2] = xyz[i] * a[2] + xyz[i+1] * a[6] + xyz[i+2] * a[10] + a[14];
+            const x = xyz[i];
+            const y = xyz[i+1];
+            const z = xyz[i+2];
+            xyz[i  ] = x * a[0] + y * a[4] + z * a[8] + a[12];
+            xyz[i+1] = x * a[1] + y * a[5] + z * a[9] + a[13];
+            xyz[i+2] = x * a[2] + y * a[6] + z * a[10] + a[14];
           }
         }
       }
