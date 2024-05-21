@@ -4536,7 +4536,7 @@
         item < 1 ||
         item > this.programs[shader].uniformDec[uniformName].arrayLength
       )
-        return;
+        return "";
       item -= 1;
       return this.programs[shader].uniformDat[uniformName][item];
     }
@@ -4548,7 +4548,7 @@
         item < 1 ||
         item > this.programs[shader].uniformDec[uniformName].arrayLength
       )
-        return;
+        return "";
       item = (item - 1) * 2;
       return (
         this.programs[shader].uniformDat[uniformName][item + component] || 0
@@ -4562,7 +4562,7 @@
         item < 1 ||
         item > this.programs[shader].uniformDec[uniformName].arrayLength
       )
-        return;
+        return "";
       item = (item - 1) * 3;
       return (
         this.programs[shader].uniformDat[uniformName][item + component] || 0
@@ -4576,7 +4576,7 @@
         item < 1 ||
         item > this.programs[shader].uniformDec[uniformName].arrayLength
       )
-        return;
+        return "";
       item = (item - 1) * 4;
       return (
         this.programs[shader].uniformDat[uniformName][item + component] || 0
