@@ -85,6 +85,21 @@
               },
             },
           },
+          {
+            opcode: "setTextContent",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("set text of [XML] to [VALUE]"),
+            arguments: {
+              XML: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "<hello>world</hello>",
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "world!",
+              },
+            },
+          },
           "---",
           {
             opcode: "attributes",
@@ -340,6 +355,20 @@
         return "";
       }
       return xml.textContent;
+    }
+
+    /**
+     * @param {object} args
+     * @param {unknown} args.XML
+     * @param {unknown} args.VALUE
+     */
+    setTextContent({ XML, VALUE }) {
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
+      if (xml === null) {
+        return "";
+      }
+      xml.textContent = VALUE;
+      return this.xmlToString(xml);
     }
 
     /**
