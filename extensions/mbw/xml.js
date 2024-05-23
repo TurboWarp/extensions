@@ -367,7 +367,7 @@
       if (xml === null) {
         return "";
       }
-	  	xml.textContent = VALUE;
+      xml.textContent = VALUE;
       return this.xmlToString(xml);
     }
 
