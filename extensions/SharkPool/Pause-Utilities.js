@@ -20,9 +20,12 @@
 "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzMS40NzcxNCIgaGVpZ2h0PSIzMS40NzcxNCIgdmlld0JveD0iMCwwLDMxLjQ3NzE0LDMxLjQ3NzE0Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjI0LjI2MTQzLC0xNjQuMjYxNDMpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMjQuMjYxNDMsMTk1LjczODU3di0zMS40NzcxNGgzMS40NzcxNHYzMS40NzcxNHoiIGZpbGw9IiM1ZjViNDkiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTIzMS41MjgxOSwxODguNDk5MTN2LTE3LjA0MjMxaDQuNDI2Nzl2MTcuMDQxMzV6TTI0NC4wNzE5NiwxODguNDk5MTN2LTE3LjA0MjMxaDQuNDI3ODJ2MTcuMDQxMzV6IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGw9IiNmZmFlMDAiIHN0cm9rZT0iI2Q4OTQwMCIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9nPjwvZz48L3N2Zz4=";
 
   // Inject Pause Event
+  // Save original function if it exists
+  let ogPauseFunc = Object.getOwnPropertyDescriptor(runtime.ioDevices.clock, "_paused")?.set;
   Object.defineProperty(runtime.ioDevices.clock, "_paused", {
     set: function(value) {
       this._pausedValue = value;
+      if (ogPauseFunc) ogPauseFunc.call(this, value);
       if (value) this.SP_whilePaused();
       else this.SP_unpaused();
     },
@@ -54,6 +57,7 @@
     for (let i = 0; i < runtime.threads.length; i++) {
       const thread = runtime.threads[i];
       if (thread.status === undefined) thread.status = 4;
+      if (thread.status === 5) thread.status = 0; // PenguinMod
     }
   });
 
@@ -69,6 +73,7 @@
         }, 1);
       }
     });
+    if (Scratch.extensions.isPenguinMod && projectPaused) runtime._step();
   });
 
   class SPPause {
