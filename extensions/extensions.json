@@ -94,5 +94,6 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
+  "veggiecan/CustomControls",
   "Lily/McUtils" // McUtils should always be the last item.
 ]
