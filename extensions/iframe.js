@@ -153,6 +153,17 @@
               },
             },
           },
+          {
+            opcode: "executeJS",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("execute JS [JS]"),
+            arguments: {
+              JS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: `alert('${Scratch.translate("Hello World!")}')`,
+              },
+            },
+          },
           "---",
           {
             opcode: "show",
@@ -299,6 +310,16 @@
       const url = `data:text/html;,${encodeURIComponent(
         Scratch.Cast.toString(HTML)
       )}`;
+      if (await Scratch.canEmbed(url)) {
+        createFrame(url);
+      }
+    }
+
+    async executeJS({ JS }) {
+      closeFrame();
+      const url = `data:text/html;,<script>${encodeURIComponent(
+        Scratch.Cast.toString(JS)
+      )}</script>`;
       if (await Scratch.canEmbed(url)) {
         createFrame(url);
       }
