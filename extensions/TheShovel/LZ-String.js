@@ -350,6 +350,8 @@
       return {
         id: "shovellzcompress",
         name: "LZ Compress",
+        color1: "#2f3463",
+        color2: "#2b2f59",
         blocks: [
           {
             opcode: "compress",
