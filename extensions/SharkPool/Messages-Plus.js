@@ -3,7 +3,7 @@
 // Description: New Powerful Message Blocks that work with Vanilla Blocks!
 // By: SharkPool
 
-// Version 1.2.0
+// Version 1.2.1
 
 (function (Scratch) {
   "use strict";
@@ -274,19 +274,16 @@
 
     _getMessageHats(name, type) {
       const IDs = [];
-      const targets = runtime.targets;
-      for (let index = 0; index < targets.length; index++) {
-        const target = targets[index];
-        for (const [blockID, block] of Object.entries(target.blocks._blocks)) {
-          if (
-            block.opcode === "event_whenbroadcastreceived" && block.fields &&
-            block.fields.BROADCAST_OPTION.value === name
-          ) {
-            if (type === "IDs") IDs.push(blockID);
-            else IDs.push(target);
-          }
+      runtime.allScriptsByOpcodeDo("event_whenbroadcastreceived", (script, target) => {
+        const {
+          blockId: topBlockId,
+          fieldsOfInputs: hatFields
+        } = script;
+        if (hatFields.BROADCAST_OPTION.value === name.toUpperCase()) {
+          if (type === "IDs") IDs.push(topBlockId);
+          else IDs.push(target);
         }
-      }
+      })
       return IDs;
     }
 
