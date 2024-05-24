@@ -2,7 +2,7 @@
 // ID: customControls0419
 // Description: Customize your project's controls!
 // By: Veggiecan0419
-// Liscense: MPL-2.0
+// License: MPL-2.0
 
 (function (Scratch) {
   "use strict";
