@@ -1253,8 +1253,12 @@
 
     toggleMenuEmbed() {
       menuEmbedded = !menuEmbedded;
+      const toggleButton = blocks.find(
+        // @ts-ignore
+        (block) => block.func === "toggleMenuEmbed"
+      );
       // @ts-ignore
-      blocks[blocks.length - 1].text = menuEmbedded
+      toggleButton.text = menuEmbedded
         ? "Use text input instead of menu"
         : "Use menu instead of text input";
       blocks.forEach((block) => {
