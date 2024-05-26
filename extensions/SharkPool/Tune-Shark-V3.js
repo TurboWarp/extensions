@@ -2,9 +2,9 @@
 // ID: SPtuneShark3
 // Description: Advanced Audio Engine, giving Complex Sound Control
 // By: SharkPool
+// License: MIT AND LGPL-3.0
 
 // Version V.3.0.01
-// Credit to HOME for the song "Resonance" being used as the default audio link
 
 (function (Scratch) {
   "use strict";
@@ -95,7 +95,7 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
             text: "import sound from URL [URL] named [NAME]",
             blockIconURI: settingsIconURI,
             arguments: {
-              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://tinyurl.com/Resonance-Home" },
+              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://extensions.turbowarp.org/meow.mp3" },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }
             },
           },
