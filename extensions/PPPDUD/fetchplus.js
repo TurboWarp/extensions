@@ -2,8 +2,9 @@
 // ID: fetchplus
 // Description: Make requests to the broader internet and use CORS proxies.
 // License: MPL-2.0
-'use strict'
+
 (function (Scratch) {
+  'use strict'
 class AsyncExtension {
   getInfo() {
     return {
