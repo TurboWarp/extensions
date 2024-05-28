@@ -3,6 +3,7 @@
 // Description: Make requests to the broader internet and use CORS proxies.
 // License: MPL-2.0
 
+(function (Scratch) {
 class AsyncExtension {
   getInfo() {
     return {
@@ -10,7 +11,7 @@ class AsyncExtension {
       name: 'Fetch+',
       blocks: [
         {
-          opcode: 'fetch',
+          opcode: 'fetch_norm',
           text: 'fetch [URL]',
           blockType: Scratch.BlockType.REPORTER,
           arguments: {
@@ -23,7 +24,7 @@ class AsyncExtension {
 
         {
             opcode: 'cors_fetch',
-            text: 'fetch with proxy [URL]',
+            text: 'fetch with CORS proxy [URL]',
             blockType: Scratch.BlockType.REPORTER,
             arguments: {
               URL: {
@@ -35,8 +36,8 @@ class AsyncExtension {
       ]
     };
   }
-  fetch (args) {
-    return fetch(args.URL)
+  fetch_norm (args) {
+    return Scratch.fetch(args.URL)
       .then((response) => {
         return response.text();
       })
@@ -47,7 +48,7 @@ class AsyncExtension {
   }
 
   cors_fetch(args) {
-    return fetch('https://corsproxy.io/?' + encodeURIComponent(args.URL))
+    return Scratch.fetch('https://corsproxy.io/?' + encodeURIComponent(args.URL))
       .then((response) => {
         return response.text();
       })
@@ -58,3 +59,4 @@ class AsyncExtension {
   }
 }
 Scratch.extensions.register(new AsyncExtension());
+})(Scratch);
