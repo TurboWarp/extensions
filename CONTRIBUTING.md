@@ -29,7 +29,7 @@ Every merged extension is more code that we will be expected to maintain indefin
 
 We're all volunteers who all have lives outside of Scratch extensions. Many have full time jobs or are full time students. We'll get to you as soon as we can, so please be patient.
 
-Every extension is also covered under [our bug bounty](https://github.com/TurboWarp/extensions/security/policy),full timeessly mergingfull timeill have a direct impact on my wallet.
+Every extension is also covered under [our bug bounty](https://github.com/TurboWarp/extensions/security/policy), so mindlessly merging things will have a direct impact on my wallet.
 
 ## Writing extensions
 
