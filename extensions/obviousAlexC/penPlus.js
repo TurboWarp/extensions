@@ -416,7 +416,8 @@
       github: {
         handle: (url) => {
           //Remember github uses the [username].github.io/[reponame];
-          return url.split("/")[3];
+          let githubURL = url.split("/");
+          return githubURL.length > 4 ? url.split("/")[3] : url.split("/")[2].split(".")[0];
         },
       },
       //those .app domains
@@ -4021,7 +4022,7 @@
       let returnedURL = "project";
       const splitURL = window.location.hostname.split(".");
       if (splitURL.length > 2) {
-        returnedURL = splitURL[1];
+        returnedURL = splitURL[1].toLowerCase();
         if (this.urlHandleTypes[returnedURL]) {
           //IF WE DO HAVE TO DO SOME SPECIAL HANDLING!
           const handleType = this.urlHandleTypes[returnedURL].handle;
