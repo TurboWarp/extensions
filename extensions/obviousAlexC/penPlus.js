@@ -4406,6 +4406,7 @@
     }
 
     setTextureInShader({ uniformName, shader, texture }, util) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
 
       let curCostume = this._locateTextureObject(texture, util);
@@ -4415,16 +4416,19 @@
     }
 
     setNumberInShader({ uniformName, shader, number }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = number;
     }
 
     setVec2InShader({ uniformName, shader, numberX, numberY }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = [numberX, numberY];
     }
 
     setVec3InShader({ uniformName, shader, numberX, numberY, numberZ }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = [
         numberX,
@@ -4441,6 +4445,7 @@
       numberZ,
       numberW,
     }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = [
         numberX,
@@ -4451,6 +4456,7 @@
     }
 
     setMatrixInShader({ uniformName, shader, list }, util) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       let listOBJ = this._getVarObjectFromName(list, util, "list").value;
       let converted = listOBJ.map(function (str) {
@@ -4461,6 +4467,7 @@
     }
 
     setMatrixInShaderArray({ uniformName, shader, array }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       let converted = JSON.parse(array);
       //Make sure its an array
@@ -4473,6 +4480,7 @@
     }
 
     setCubeInShader({ uniformName, shader, cubemap }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       if (!this.penPlusCubemap[cubemap]) return;
       this.programs[shader].uniformDat[uniformName] =
@@ -4563,6 +4571,7 @@
 
     //For arrays!
     setArrayNumberInShader({ item, uniformName, shader, number }) {
+      if (!this.programs[shader]) return;
       if (!this._isUniformArray(shader, uniformName)) return;
       if (
         item < 1 ||
@@ -4574,6 +4583,7 @@
     }
 
     setArrayVec2InShader({ item, uniformName, shader, numberX, numberY }) {
+      if (!this.programs[shader]) return;
       if (!this._isUniformArray(shader, uniformName)) return;
       if (
         item < 1 ||
@@ -4593,6 +4603,7 @@
       numberY,
       numberZ,
     }) {
+      if (!this.programs[shader]) return;
       if (!this._isUniformArray(shader, uniformName)) return;
       if (
         item < 1 ||
@@ -4614,6 +4625,7 @@
       numberZ,
       numberW,
     }) {
+      if (!this.programs[shader]) return;
       if (!this._isUniformArray(shader, uniformName)) return;
       if (
         item < 1 ||
