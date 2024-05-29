@@ -410,7 +410,7 @@
 
     //?Shader editor settings
     //?These are used when initilizing the shader editor!
-    isExperimental = true;
+    isExperimental = false;
     urlHandleTypes = {
       //github... we handle github differently.
       github: {
