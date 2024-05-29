@@ -417,7 +417,9 @@
         handle: (url) => {
           //Remember github uses the [username].github.io/[reponame];
           let githubURL = url.split("/");
-          return githubURL.length > 4 ? url.split("/")[3] : url.split("/")[2].split(".")[0];
+          return githubURL.length > 4
+            ? url.split("/")[3]
+            : url.split("/")[2].split(".")[0];
         },
       },
       //those .app domains
