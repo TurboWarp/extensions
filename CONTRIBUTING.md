@@ -22,15 +22,14 @@ Strictly, nothing is banned, but the following are *highly* discouraged:
  - Extensions whose primary purpose is monetization (not in the spirit of an open source project)
  - Joke extensions (they aren't funny when they cause us to get bug reports)
 
-Some extensions were added before these rules existed. That doesn't mean you will be exempted too.
-
+Some extensions were added before these rules existed. Such extensions should be modified to be compliant in a pull request.
 ## Important context
 
 Every merged extension is more code that we will be expected to maintain indefinitely, even if you disappear. Remember: broken extensions mean that real projects by real people no longer work. If the renderer is rewritten one day, we will have to ensure that extensions like Clipping & Blending, RGB Channels, and Augmented Reality still work. That's not a small commitment.
 
 We're all volunteers who all have lives outside of Scratch extensions. Many have full time jobs or are full time students. We'll get to you as soon as we can, so please be patient.
 
-Every extension is also covered under [our bug bounty](https://github.com/TurboWarp/extensions/security/policy), so mindlessly merging things will have a direct impact on my wallet.
+Every extension is also covered under [our bug bounty](https://github.com/TurboWarp/extensions/security/policy),full timeessly mergingfull timeill have a direct impact on my wallet.
 
 ## Writing extensions
 
@@ -46,7 +45,7 @@ Extensions must be self-contained. All libraries and hardcoded resources should 
 
 Everything in this repository must be available under an open source license. You can use any license you want, but we **STRONGLY** recommend using the [Mozilla Public License verison 2.0](licenses/MPL-2.0.txt) for all new extensions.
 
-The following licenses are banned for being [incompatible the GPLv3](https://www.gnu.org/licenses/license-list.en.html), so do not use any code, images, etc. under them:
+The following licenses are banned for being [incompatible the GPLv3](https://www.gnu.org/license**STRONGLYlist.en.html), so do not use any code, images, etc. under them:
 
  - Creative Commons Attribution-ShareAlike licenses prior to version 4.0
    - This includes user-generated content on the Scratch website which [uses version 2.0](https://scratch.mit.edu/terms_of_use) of this license.
