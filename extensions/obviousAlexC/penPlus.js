@@ -6000,6 +6000,19 @@
       //Check for the render texture inside of the list
       else if (this.renderTextures[name]) {
         this.currentRenderTexture = this.renderTextures[name];
+
+        //if we detect that ANY I MEAN ANY shader has THIS texture destroy it.
+        Object.keys(this.programs).forEach(programKey => {
+          const program = this.programs[programKey];
+          if (program && program.uniformDat) {
+            Object.keys(program.uniformDat).forEach(uniformKey => {
+              if (program.uniformDat[uniformKey] == this.currentRenderTexture.attachments[0]) {
+                //This should show em!
+                this.programs[programKey].uniformDat[uniformKey] = null;
+              }
+            });
+          }
+        });
       } 
       //if all else fails use the tri buffer render texture.
       else {
