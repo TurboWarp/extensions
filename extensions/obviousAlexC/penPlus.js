@@ -3094,14 +3094,14 @@
     _locateTextureObject(name, util) {
       //Get the current target
       const curTarget = util.target;
-      
+
       //Set current texture to null
       let currentTexture = null;
 
       //Look for it in the pen+ costume library
       if (this.penPlusCostumeLibrary[name]) {
         currentTexture = this.penPlusCostumeLibrary[name].texture;
-      } 
+      }
 
       //Look for it in render textures
       else if (
@@ -3109,7 +3109,7 @@
         name != this.currentRenderTexture.name
       ) {
         currentTexture = this.renderTextures[name].attachments[0];
-      } 
+      }
 
       //Hopefully it is in the costumes
       else {
@@ -5996,24 +5996,27 @@
       //Check for the scratch stage
       if (name == "Scratch Stage") {
         this.currentRenderTexture = triBufferInfo;
-      } 
+      }
       //Check for the render texture inside of the list
       else if (this.renderTextures[name]) {
         this.currentRenderTexture = this.renderTextures[name];
 
         //if we detect that ANY I MEAN ANY shader has THIS texture destroy it.
-        Object.keys(this.programs).forEach(programKey => {
+        Object.keys(this.programs).forEach((programKey) => {
           const program = this.programs[programKey];
           if (program && program.uniformDat) {
-            Object.keys(program.uniformDat).forEach(uniformKey => {
-              if (program.uniformDat[uniformKey] == this.currentRenderTexture.attachments[0]) {
+            Object.keys(program.uniformDat).forEach((uniformKey) => {
+              if (
+                program.uniformDat[uniformKey] ==
+                this.currentRenderTexture.attachments[0]
+              ) {
                 //This should show em!
                 this.programs[programKey].uniformDat[uniformKey] = null;
               }
             });
           }
         });
-      } 
+      }
       //if all else fails use the tri buffer render texture.
       else {
         this.currentRenderTexture = triBufferInfo;
