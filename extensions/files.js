@@ -1,6 +1,7 @@
 // Name: Files
 // ID: files
 // Description: Read and download files.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -23,6 +24,20 @@
   const AS_DATA_URL = "url";
 
   /**
+   * @param {HTMLInputElement} input
+   * @returns {boolean}
+   */
+  const isCancelEventSupported = (input) => {
+    if ("oncancel" in input) {
+      // Chrome 113+, Safari 16.4+
+      return true;
+    }
+    // Firefox is weird. cancel is supported since Firefox 91, but oncancel doesn't exist.
+    // Firefox 91 is from August 2021. That's old enough to not care about previous versions.
+    return navigator.userAgent.includes("Firefox");
+  };
+
+  /**
    * @param {string} accept See MODE_ constants above
    * @param {string} as See AS_ constants above
    * @returns {Promise<string>} format given by as parameter
@@ -33,14 +48,15 @@
       // so we have to show our own UI anyways. We may as well use this to implement some nice features
       // that native file pickers don't have:
       //  - Easy drag+drop
-      //  - Reliable cancel button (input cancel event is still basically nonexistent)
+      //  - Reliable cancel button (input cancel event is still not perfect)
       //    This is important so we can make this just a reporter instead of a command+hat block.
-      //    Without an interface, the script would be stalled if the prompt was just cancelled.
+      //    Without an interface, the script would be stalled if the prompt was cancelled.
 
       /** @param {string} text */
       const callback = (text) => {
         _resolve(text);
-        outer.remove();
+        Scratch.vm.renderer.removeOverlay(outer);
+        Scratch.vm.runtime.off("PROJECT_STOP_ALL", handleProjectStopped);
         document.body.removeEventListener("keydown", handleKeyDown);
       };
 
@@ -80,21 +96,22 @@
         capture: true,
       });
 
+      const handleProjectStopped = () => {
+        callback("");
+      };
+      Scratch.vm.runtime.on("PROJECT_STOP_ALL", handleProjectStopped);
+
       const INITIAL_BORDER_COLOR = "#888";
       const DROPPING_BORDER_COLOR = "#03a9fc";
 
       const outer = document.createElement("div");
-      outer.className = "extension-content";
-      outer.style.position = "fixed";
-      outer.style.top = "0";
-      outer.style.left = "0";
+      outer.style.pointerEvents = "auto";
       outer.style.width = "100%";
       outer.style.height = "100%";
       outer.style.display = "flex";
       outer.style.alignItems = "center";
       outer.style.justifyContent = "center";
       outer.style.background = "rgba(0, 0, 0, 0.5)";
-      outer.style.zIndex = "20000";
       outer.style.color = "black";
       outer.style.colorScheme = "light";
       outer.addEventListener("dragover", (e) => {
@@ -148,17 +165,38 @@
       });
 
       const title = document.createElement("div");
-      title.textContent = "Select or drop file";
+      title.textContent = Scratch.translate("Select or drop file");
       title.style.fontSize = "1.5em";
       title.style.marginBottom = "8px";
       modal.appendChild(title);
 
       const subtitle = document.createElement("div");
-      const formattedAccept = accept || "any";
-      subtitle.textContent = `Accepted formats: ${formattedAccept}`;
+      const formattedAccept = accept || Scratch.translate("any");
+      subtitle.textContent = Scratch.translate(
+        {
+          default: "Accepted formats: {formats}",
+          description:
+            "[formats] is replaced with a comma-separated list of file types eg: .txt, .mp3, .png or the word any",
+        },
+        {
+          formats: formattedAccept,
+        }
+      );
       modal.appendChild(subtitle);
 
-      document.body.appendChild(outer);
+      // To avoid the script getting stalled forever, if cancel isn't supported, we'll just forcibly
+      // show our modal.
+      if (
+        openFileSelectorMode === MODE_ONLY_SELECTOR &&
+        !isCancelEventSupported(input)
+      ) {
+        openFileSelectorMode = MODE_IMMEDIATELY_SHOW_SELECTOR;
+      }
+
+      if (openFileSelectorMode !== MODE_ONLY_SELECTOR) {
+        const overlay = Scratch.vm.renderer.addOverlay(outer, "scale");
+        overlay.container.style.zIndex = "100";
+      }
 
       if (
         openFileSelectorMode === MODE_IMMEDIATELY_SHOW_SELECTOR ||
@@ -172,7 +210,6 @@
         input.addEventListener("cancel", () => {
           callback("");
         });
-        outer.remove();
       }
     });
 
@@ -196,7 +233,10 @@
   const downloadBlob = (blob, file) => {
     const url = URL.createObjectURL(blob);
     downloadURL(url, file);
-    URL.revokeObjectURL(url);
+    // Some old browsers process Blob URLs asynchronously
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
   };
 
   /**
@@ -233,7 +273,7 @@
     getInfo() {
       return {
         id: "files",
-        name: "Files",
+        name: Scratch.translate("Files"),
         color1: "#fcb103",
         color2: "#db9a37",
         color3: "#db8937",
@@ -241,14 +281,14 @@
           {
             opcode: "showPicker",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a file",
+            text: Scratch.translate("open a file"),
             disableMonitor: true,
             hideFromPalette: true,
           },
           {
             opcode: "showPickerExtensions",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a [extension] file",
+            text: Scratch.translate("open a [extension] file"),
             arguments: {
               extension: {
                 type: Scratch.ArgumentType.STRING,
@@ -261,7 +301,7 @@
           {
             opcode: "showPickerAs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a file as [as]",
+            text: Scratch.translate("open a file as [as]"),
             arguments: {
               as: {
                 type: Scratch.ArgumentType.STRING,
@@ -272,7 +312,7 @@
           {
             opcode: "showPickerExtensionsAs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a [extension] file as [as]",
+            text: Scratch.translate("open a [extension] file as [as]"),
             arguments: {
               extension: {
                 type: Scratch.ArgumentType.STRING,
@@ -290,22 +330,22 @@
           {
             opcode: "download",
             blockType: Scratch.BlockType.COMMAND,
-            text: "download [text] as [file]",
+            text: Scratch.translate("download [text] as [file]"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, world!",
+                defaultValue: Scratch.translate("Hello, world!"),
               },
               file: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "save.txt",
+                defaultValue: Scratch.translate("save.txt"),
               },
             },
           },
           {
             opcode: "downloadURL",
             blockType: Scratch.BlockType.COMMAND,
-            text: "download URL [url] as [file]",
+            text: Scratch.translate("download URL [url] as [file]"),
             arguments: {
               url: {
                 type: Scratch.ArgumentType.STRING,
@@ -313,7 +353,7 @@
               },
               file: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "save.txt",
+                defaultValue: Scratch.translate("save.txt"),
               },
             },
           },
@@ -323,7 +363,7 @@
           {
             opcode: "setOpenMode",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set open file selector mode to [mode]",
+            text: Scratch.translate("set open file selector mode to [mode]"),
             arguments: {
               mode: {
                 type: Scratch.ArgumentType.STRING,
@@ -338,7 +378,7 @@
             acceptReporters: true,
             items: [
               {
-                text: "text",
+                text: Scratch.translate("text"),
                 value: AS_TEXT,
               },
               {
@@ -351,12 +391,17 @@
             acceptReporters: true,
             items: [
               {
-                text: "show modal",
+                text: Scratch.translate("show modal"),
                 value: MODE_MODAL,
               },
               {
-                text: "open selector immediately",
+                text: Scratch.translate("open selector immediately"),
                 value: MODE_IMMEDIATELY_SHOW_SELECTOR,
+              },
+              {
+                // Will not work if the browser doesn't think we are responding to a click event.
+                text: Scratch.translate("only show selector (unreliable)"),
+                value: MODE_ONLY_SELECTOR,
               },
             ],
           },

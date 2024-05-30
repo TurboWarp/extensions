@@ -2,11 +2,10 @@
 // ID: AR
 // Description: Shows image from camera and performs motion tracking, allowing 3D projects to correctly overlay virtual objects on real world.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
-
-  /* globals XRWebGLLayer, XRRigidTransform, XRWebGLLayer */
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("AR extension must be run unsandboxed");
@@ -29,17 +28,16 @@
   let xrSession = null;
   let xrState = false;
   let xrRefSpace;
-  let xrViewSpace;
   let xrProjectionMatrix;
   let xrTransform;
   let xrCombinedMatrix;
   let xrHitTestSource;
   let hitPosition;
-  let hitPositionAvailible;
+  let hitPositionAvailable = false;
   let oldWidth = 0;
   let oldHeight = 0;
   let xrNeedsResize = false;
-  let poseAvailible = false;
+  let poseAvailable = false;
   let enterARDone = [];
 
   let stageWrapper;
@@ -73,7 +71,7 @@
       if (!supported) {
         console.error(
           (arFail =
-            "WebXR exists in the browser you are using, but 'immersive-ar' session type is not supported")
+            "WebXR exists in the browser you are using, but 'immersive-ar' session type is not supported (it can only work on mobile)")
         );
       } else {
         arFail = null;
@@ -84,11 +82,10 @@
   const onSuccess = function (session) {
     xrSession = session;
     xrRefSpace = null;
-    xrViewSpace = null;
     xrHitTestSource = null;
     hitPosition = null;
-    hitPositionAvailible = false;
-    poseAvailible = false;
+    hitPositionAvailable = false;
+    poseAvailable = false;
 
     session.updateRenderState({
       baseLayer: new XRWebGLLayer(session, gl, {
@@ -105,7 +102,6 @@
     session
       .requestReferenceSpace("viewer")
       .then((viewSpace) => {
-        xrViewSpace = viewSpace;
         return session.requestHitTestSource({ space: viewSpace });
       })
       .then((hts) => {
@@ -266,11 +262,11 @@
           borderThing["transform"] = ""; // Removes translateX
         }
       }
-      poseAvailible = false;
+      poseAvailable = false;
       if (xrRefSpace) {
         const pose = frame.getViewerPose(xrRefSpace);
         if (pose) {
-          poseAvailible = true;
+          poseAvailable = true;
           xrProjectionMatrix = pose.views[0].projectionMatrix;
           xrTransform = pose.views[0].transform;
           const inverseTransformMatrix = xrTransform.inverse.matrix;
@@ -326,11 +322,11 @@
           ];
         }
       }
-      hitPositionAvailible = false;
+      hitPositionAvailable = false;
       if (xrHitTestSource) {
         const hitTestResults = frame.getHitTestResults(xrHitTestSource);
         if (hitTestResults.length > 0) {
-          hitPositionAvailible = true;
+          hitPositionAvailable = true;
           hitPosition =
             hitTestResults[0].getPose(xrRefSpace).transform.position;
         }
@@ -405,6 +401,8 @@
   // Patching renderer.draw() to draw to xr framebuffer instead of canvas
   const drawOrig = renderer.draw.bind(renderer);
   const drawXR = function () {
+    if (s3dApi.redraw) s3dApi.redraw(); // ADDED
+
     const bl = this.xr.renderState.baseLayer; // ADDED
     if (!bl) return; // Should fix very rare crash during exiting  // ADDED
 
@@ -502,7 +500,6 @@
       }
       stageWrapperParent = stageWrapper.parentElement;
 
-      const noop = () => {};
       navigator.xr
         .requestSession("immersive-ar", {
           requiredFeatures: ["hit-test", "dom-overlay"],
@@ -542,9 +539,9 @@
             arguments: {},
           },
           {
-            opcode: "isFeatureAvailible",
+            opcode: "isFeatureAvailible", // unfixable typo
             blockType: BlockType.BOOLEAN,
-            text: "is [FEATURE] availible?",
+            text: "is [FEATURE] available?",
             arguments: {
               FEATURE: {
                 type: ArgumentType.STRING,
@@ -731,7 +728,7 @@
         if (arFail !== "shown") {
           // AR is used on mobile, where accessing browser console to see what's wrong can be an issue
           alert(
-            "Project attempted to start AR even though it's not avalible. The reason: " +
+            "AR is not available because: " +
               arFail +
               ". This message will only be shown once."
           );
@@ -822,9 +819,9 @@
         case "ar":
           return !arFail;
         case "pose":
-          return poseAvailible;
+          return poseAvailable;
         case "hit position":
-          return hitPositionAvailible;
+          return hitPositionAvailable;
         default:
           return false;
       }
@@ -840,6 +837,67 @@
       }
     }
   }
+
+  const s3dApi =
+    runtime.ext_xeltallivSimple3Dapi ?? (runtime.ext_xeltallivSimple3Dapi = {});
+  const externalTransforms =
+    s3dApi.externalTransforms ?? (s3dApi.externalTransforms = {});
+  externalTransforms["ar_combined"] = {
+    name: "AR: combined",
+    get() {
+      return (
+        // prettier-ignore
+        xrCombinedMatrix?.slice() ?? [
+          1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
+        ]
+      );
+    },
+  };
+  externalTransforms["ar_projection"] = {
+    name: "AR: view to projected",
+    get() {
+      return (
+        // prettier-ignore
+        xrProjectionMatrix?.slice() ?? [
+          1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
+        ]
+      );
+    },
+  };
+  externalTransforms["ar_view"] = {
+    name: "AR: view to world",
+    get() {
+      return (
+        // prettier-ignore
+        xrTransform?.matrix?.slice() ?? [
+          1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
+        ]
+      );
+    },
+  };
+  externalTransforms["ar_inverse_view"] = {
+    name: "AR: world to view",
+    get() {
+      return (
+        // prettier-ignore
+        xrTransform?.inverse?.matrix?.slice() ?? [
+          1, 0, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
+        ]
+      );
+    },
+  };
 
   Scratch.extensions.register(new ARExtension());
 })(Scratch);

@@ -2,6 +2,7 @@
 // ID: lmsSkins
 // Description: Have your sprites render as other images or costumes.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -222,7 +223,7 @@
     }
 
     async registerSVGSkin(args) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       const svgData = Cast.toString(args.SVG);
 
       let oldSkinId = null;
@@ -247,7 +248,7 @@
         return;
       }
 
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       const costumeIndex = util.target.getCostumeIndexByName(args.COSTUME);
       if (costumeIndex === -1) return;
       const costume = util.target.sprite.costumes[costumeIndex];
@@ -274,7 +275,7 @@
     }
 
     async registerURLSkin(args) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       const url = Cast.toString(args.URL);
 
       let oldSkinId = null;
@@ -293,12 +294,12 @@
     }
 
     getSkinLoaded(args) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       return !!createdSkins[skinName];
     }
 
     setSkin(args, util) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       if (!createdSkins[skinName]) return;
 
       const targetName = Cast.toString(args.TARGET);
@@ -325,12 +326,12 @@
 
       const skinId = renderer._allDrawables[drawableID].skin._id;
       const skinName = this._getSkinNameFromID(skinId);
-      return skinName ? skinName : "";
+      return skinName ? skinName.replace("lms-", "") : "";
     }
 
     getSkinAttribute(args) {
       const skins = renderer._allSkins;
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
 
       if (!createdSkins[skinName]) return 0;
       const skinId = createdSkins[skinName];
@@ -350,7 +351,7 @@
     }
 
     deleteSkin(args) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       if (!createdSkins[skinName]) return;
       const skinId = createdSkins[skinName];
 
@@ -367,7 +368,7 @@
     }
 
     restoreTargets(args) {
-      const skinName = Cast.toString(args.NAME);
+      const skinName = `lms-${Cast.toString(args.NAME)}`;
       if (!createdSkins[skinName]) return;
       const skinId = createdSkins[skinName];
 

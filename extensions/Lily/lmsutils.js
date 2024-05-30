@@ -2,6 +2,7 @@
 // ID: lmsutilsblocks
 // Description: Previously called LMS Utilities.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -141,12 +142,14 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is clone?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
           {
             opcode: "spriteClicked",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "sprite clicked?",
             filter: [Scratch.TargetType.SPRITE],
+            disableMonitor: true,
           },
 
           "---",
@@ -1339,6 +1342,7 @@
         return "Other";
       }
       if (args.DROPDOWN === "browser") {
+        if (user.includes("Edg")) return "Edge";
         if (user.includes("Chrome")) return "Chrome";
         if (user.includes("MSIE")) return "Internet Explorer";
         if (user.includes("Firefox")) return "Firefox";

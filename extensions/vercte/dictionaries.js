@@ -2,10 +2,16 @@
 // ID: verctedictionaries
 // Description: Use the power of dictionaries in your project.
 // By: Vercte <https://scratch.mit.edu/users/lolecksdeehaha/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
   let dictionaries = new Map();
+
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    dictionaries.clear();
+  });
+
   class DictionaryExtension {
     getInfo() {
       return {
