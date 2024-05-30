@@ -1316,6 +1316,16 @@ void main() {
     };
     return texture;
   }
+  // requireNonPackagedRuntime by LilyMakesThings
+  function requireNonPackagedRuntime(blockName) {
+    if (runtime.isPackaged) {
+      alert(
+        `To use the Simple3D ${blockName} block, the creator of the packaged project must uncheck "Remove raw asset data after loading to save RAM" under advanced settings in the packager.`
+      );
+      return false;
+    }
+    return true;
+  }
   /*
    * Profiler has shown that this was the main bottleneck, so:
    * - loops were unrolled
@@ -3095,6 +3105,10 @@ void main() {
       def: function ({ NAME }, { target }) {
         imageSourceSync = null;
         imageSource = new Promise((resolve, reject) => {
+          if (!requireNonPackagedRuntime("texture from costume")) {
+            resolve(null);
+            return;
+          }
           const costumeIndex = target.getCostumeIndexByName(NAME);
           if (costumeIndex == -1) return;
           const costume = target.sprite.costumes[costumeIndex];

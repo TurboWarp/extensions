@@ -657,6 +657,8 @@ Creates texture from costume.
 
 **Do not forget: bitmap costumes have 2x2 subpixels, which here are counted as pixels.** So do not be surprized when your seemingly 8x8 costume turns into 16x16 texture.
 
+**When using TurboWarp Packager, you need to disable "Remove raw asset data after loading to save RAM" in order for this block to work.**
+
 ---
 ```scratch
 (texture from text [Hello World!] font [italic bold 32px sans-serif] color (#ffff00) :: sensing)
