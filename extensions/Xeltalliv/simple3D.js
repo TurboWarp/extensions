@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.0.2
+// Version: 1.0.3
 
 (function (Scratch) {
   "use strict";
@@ -2946,8 +2946,8 @@ void main() {
             ? mesh.buffers.indices.bytesPerEl
             : 1;
           start = mesh.data.drawRange[0] * size;
-          const end = Math.min(start + mesh.data.drawRange[1], amount);
-          amount = end - start;
+          const end = Math.min(mesh.data.drawRange[0] + mesh.data.drawRange[1], amount);
+          amount = end - mesh.data.drawRange[0];
         }
         if (mesh.buffers.instanceTransforms) {
           if (mesh.buffers.indices) {
