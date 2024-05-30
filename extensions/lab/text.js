@@ -875,6 +875,14 @@
           {
             opcode: "getLines",
             blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("# of lines"),
+            hideFromPalette: true,
+            disableMonitor: true,
+            extensions: ["colours_looks"],
+          },
+          {
+            opcode: "getLinesV2",
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("# of lines [WITH_WORDWRAP]"),
             hideFromPalette: compatibilityMode,
             arguments: {
@@ -1389,6 +1397,16 @@
     }
 
     getLines(args, util) {
+      const drawableID = util.target.drawableID;
+      const skin = renderer._allDrawables[drawableID].skin;
+      if (!(skin instanceof TextCostumeSkin)) return 0;
+
+      const state = this._getState(util.target);
+      const text = state.skin.text;
+      return text.split("\n").length;
+    }
+
+    getLinesV2(args, util) {
       const drawableID = util.target.drawableID;
       const skin = renderer._allDrawables[drawableID].skin;
       if (!(skin instanceof TextCostumeSkin)) return 0;
