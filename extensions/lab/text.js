@@ -875,8 +875,14 @@
           {
             opcode: "getLines",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("# of lines"),
+            text: Scratch.translate("# of lines [WITH_WORDWRAP]"),
             hideFromPalette: compatibilityMode,
+            arguments: {
+              WITH_WORDWRAP: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "twWordwrap",
+              },
+            },
             disableMonitor: true,
             extensions: ["colours_looks"],
           },
@@ -1179,6 +1185,16 @@
             acceptReporters: true,
             items: "getFonts",
           },
+          twWordwrap: {
+            acceptReporters: true,
+            items: [{
+              text: Scratch.translate('with wordwrap'),
+              value: 'with wordwrap',
+            }, {
+              text: Scratch.translate('without wordwrap'),
+              value: 'without wordwrap',
+            }]
+          },
         },
       };
     }
@@ -1378,7 +1394,8 @@
       if (!(skin instanceof TextCostumeSkin)) return 0;
 
       const state = this._getState(util.target);
-      const text = state.skin.text;
+      const text = state.skin.text, lines = state.skin.lines;
+      if (Scratch.Cast.toString(args.WITH_WORDWRAP) == 'with wordwrap') return lines.length;
       return text.split("\n").length;
     }
 
