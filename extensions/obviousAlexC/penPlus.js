@@ -11,6 +11,25 @@
 //About supporting you mod.
 //    --Thanks ObviousAlexC
 
+//if you are looking for extension settings search up /* EXTENSION SETTINGS */
+
+//7.1.5 patch notes
+
+/*
+  * -- Added -- *
+  * Extension settings
+  * Added a patch for mods with different or "Unique" urls Suggested on discord
+  * This little patch notes section
+
+  ? -- Changed -- ?
+  ? Added a fix for render textures not removing themselves politely.
+  ? General bug fixes
+  ? Fixed CSS bugs
+
+  ! -- Removed -- !
+  ! Herobrine?
+*/
+
 (function (Scratch) {
   "use strict";
 
@@ -387,6 +406,39 @@
   };
 
   class extension {
+    /* EXTENSION SETTINGS */
+
+    //?Shader editor settings
+    //?These are used when initilizing the shader editor!
+    isExperimental = false;
+    urlHandleTypes = {
+      //github... we handle github differently.
+      github: {
+        handle: (url) => {
+          //Remember github uses the [username].github.io/[reponame];
+          let githubURL = url.split("/");
+          return githubURL.length > 4
+            ? url.split("/")[3]
+            : url.split("/")[2].split(".")[0];
+        },
+      },
+      //those .app domains
+      vercel: {
+        handle: 0,
+      },
+      netlify: {
+        handle: 0,
+      },
+      web: {
+        handle: 0,
+      },
+      js: {
+        handle: 0,
+      },
+    };
+
+    extensionVersion = "7.1.5";
+
     //?Stores our attributes
     triangleAttributesOfAllSprites = {};
     squareAttributesOfAllSprites = {};
@@ -978,8 +1030,6 @@
 
     shaders = Object.create(null);
     programs = Object.create(null);
-
-    extensionVersion = "7.0.0";
 
     prefixes = {
       penPlusTextures: "",
@@ -3045,16 +3095,27 @@
     }
 
     _locateTextureObject(name, util) {
+      //Get the current target
       const curTarget = util.target;
+
+      //Set current texture to null
       let currentTexture = null;
+
+      //Look for it in the pen+ costume library
       if (this.penPlusCostumeLibrary[name]) {
         currentTexture = this.penPlusCostumeLibrary[name].texture;
-      } else if (
+      }
+
+      //Look for it in render textures
+      else if (
         this.renderTextures[name] &&
         name != this.currentRenderTexture.name
       ) {
         currentTexture = this.renderTextures[name].attachments[0];
-      } else {
+      }
+
+      //Hopefully it is in the costumes
+      else {
         const costIndex = curTarget.getCostumeIndexByName(
           Scratch.Cast.toString(name)
         );
@@ -3070,6 +3131,7 @@
         }
       }
 
+      //If so edit the attributes of said texture.
       if (currentTexture) {
         //Set the filter mode
         gl.bindTexture(gl.TEXTURE_2D, currentTexture);
@@ -3690,11 +3752,13 @@
       const curTarget = util.target;
       let currentTexture = this._locateTextureObject(tex, util);
 
+      //Triangle attributes
       if (!this.triangleAttributesOfAllSprites[curTarget.id]) {
         this.triangleAttributesOfAllSprites[curTarget.id] =
           this._getDefaultTriAttributes();
       }
 
+      //Get the resolution
       nativeSize = renderer.useHighQualityRender
         ? [canvas.width, canvas.height]
         : renderer._nativeSize;
@@ -3773,6 +3837,7 @@
     }
 
     //?Image/costume Api
+    //? this block broke. Thus why it no longer has functionality.
     setDURIclampmode({ clampMode }) {
       return;
     }
@@ -3953,15 +4018,52 @@
       this.prefixes[prefix] = value;
     }
 
+    //People went crazy in the pen+ project forum. So here I am...
+    //Please people don't do this again...
+    __determineHostName() {
+      let returnedURL = "project";
+      const splitURL = window.location.hostname.split(".");
+      if (splitURL.length > 2) {
+        returnedURL = splitURL[1].toLowerCase();
+        if (this.urlHandleTypes[returnedURL]) {
+          //IF WE DO HAVE TO DO SOME SPECIAL HANDLING!
+          const handleType = this.urlHandleTypes[returnedURL].handle;
+          switch (typeof handleType) {
+            //If it is a number we get the split number.
+            case "number":
+              returnedURL = splitURL[handleType];
+              break;
+
+            //If it is a string use the string
+            case "string":
+              returnedURL = handleType;
+              break;
+
+            //If it is a function we run the function.
+            case "function":
+              returnedURL = handleType(window.location.href);
+              break;
+          }
+        }
+      } else {
+        returnedURL = splitURL[0];
+      }
+
+      return returnedURL;
+    }
+
     //?Custom Shaders
     async openShaderEditor() {
+      //Handle experimental versions
       const frameSource =
-        "https://pen-group.github.io/penPlus-shader-editor/Source/";
+        "https://pen-group.github.io/penPlus-shader-editor/Source/" +
+        (this.isExperimental ? "?experimental=true" : "");
 
       if (!(await Scratch.canEmbed(frameSource))) {
         return;
       }
 
+      //Styling the background and IFrame
       const bgFade = document.createElement("div");
       bgFade.style.width = "100%";
       bgFade.style.height = "100%";
@@ -3992,14 +4094,9 @@
 
       this.IFrame.style.zIndex = "10001";
 
+      //Determine the Set up the initial variables
       this.IFrame.onload = () => {
-        let hostname = "project";
-
-        if (window.location.hostname.split(".").length > 2) {
-          hostname = window.location.hostname.split(".")[1];
-        } else {
-          hostname = window.location.hostname.split(".")[0];
-        }
+        let hostname = this.__determineHostName();
 
         this.IFrame.contentWindow.postMessage(
           {
@@ -4017,6 +4114,7 @@
               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             })}`,
           },
+          //Target URL
           this.IFrame.src
         );
       };
@@ -4308,6 +4406,7 @@
     }
 
     setTextureInShader({ uniformName, shader, texture }, util) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
 
       let curCostume = this._locateTextureObject(texture, util);
@@ -4317,16 +4416,19 @@
     }
 
     setNumberInShader({ uniformName, shader, number }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = number;
     }
 
     setVec2InShader({ uniformName, shader, numberX, numberY }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = [numberX, numberY];
     }
 
     setVec3InShader({ uniformName, shader, numberX, numberY, numberZ }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = [
         numberX,
@@ -4343,6 +4445,7 @@
       numberZ,
       numberW,
     }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       this.programs[shader].uniformDat[uniformName] = [
         numberX,
@@ -4353,6 +4456,7 @@
     }
 
     setMatrixInShader({ uniformName, shader, list }, util) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       let listOBJ = this._getVarObjectFromName(list, util, "list").value;
       let converted = listOBJ.map(function (str) {
@@ -4363,6 +4467,7 @@
     }
 
     setMatrixInShaderArray({ uniformName, shader, array }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       let converted = JSON.parse(array);
       //Make sure its an array
@@ -4375,6 +4480,7 @@
     }
 
     setCubeInShader({ uniformName, shader, cubemap }) {
+      if (!this.programs[shader]) return;
       if (this._isUniformArray(shader, uniformName)) return;
       if (!this.penPlusCubemap[cubemap]) return;
       this.programs[shader].uniformDat[uniformName] =
@@ -4465,6 +4571,7 @@
 
     //For arrays!
     setArrayNumberInShader({ item, uniformName, shader, number }) {
+      if (!this.programs[shader]) return;
       if (!this._isUniformArray(shader, uniformName)) return;
       if (
         item < 1 ||
@@ -4476,6 +4583,7 @@
     }
 
     setArrayVec2InShader({ item, uniformName, shader, numberX, numberY }) {
+      if (!this.programs[shader]) return;
       if (!this._isUniformArray(shader, uniformName)) return;
       if (
         item < 1 ||
@@ -4495,6 +4603,7 @@
       numberY,
       numberZ,
     }) {
+      if (!this.programs[shader]) return;
       if (!this._isUniformArray(shader, uniformName)) return;
       if (
         item < 1 ||
@@ -4516,6 +4625,7 @@
       numberZ,
       numberW,
     }) {
+      if (!this.programs[shader]) return;
       if (!this._isUniformArray(shader, uniformName)) return;
       if (
         item < 1 ||
@@ -4688,8 +4798,8 @@
       switch (variableName) {
         case "--menu-bar-background":
           return Scratch.extensions.isElectraMod
-            ? "hsla(244, 23%, 48%, 1)"
-            : "#009CCC";
+            ? "var(--menu-bar-background, hsla(244, 23%, 48%, 1))"
+            : "var(--menu-bar-background, #009CCC)";
 
         case "--ui-modal-overlay":
           return Scratch.extensions.isElectraMod
@@ -5814,12 +5924,17 @@
     }
 
     createRenderTexture({ name }) {
+      //If it is named scratch stage get that stuff out of here
       if (name == "Scratch Stage") return;
+
+      //if the render texture exists delete it
       if (this.renderTextures[this.prefixes.renderTextures + name]) {
         this._deleteFramebuffer(
           this.renderTextures[this.prefixes.renderTextures + name]
         );
       }
+
+      //Add it
       this.renderTextures[this.prefixes.renderTextures + name] =
         twgl.createFramebufferInfo(gl, triBufferAttachments);
       this.renderTextures[this.prefixes.renderTextures + name].resizing = true;
@@ -5827,12 +5942,17 @@
     }
 
     createRenderTextureOfSize({ name, width, height }) {
+      //If it is named scratch stage get that stuff out of here
       if (name == "Scratch Stage") return;
+
+      //if the render texture exists delete it
       if (this.renderTextures[this.prefixes.renderTextures + name]) {
         this._deleteFramebuffer(
           this.renderTextures[this.prefixes.renderTextures + name]
         );
       }
+
+      //Add it
       this.renderTextures[this.prefixes.renderTextures + name] =
         twgl.createFramebufferInfo(gl, triBufferAttachments);
       twgl.resizeFramebufferInfo(
@@ -5888,14 +6008,36 @@
     }
 
     targetRenderTexture({ name }) {
+      //Check for the scratch stage
       if (name == "Scratch Stage") {
         this.currentRenderTexture = triBufferInfo;
-      } else if (this.renderTextures[name]) {
+      }
+      //Check for the render texture inside of the list
+      else if (this.renderTextures[name]) {
         this.currentRenderTexture = this.renderTextures[name];
-      } else {
+
+        //if we detect that ANY I MEAN ANY shader has THIS texture destroy it.
+        Object.keys(this.programs).forEach((programKey) => {
+          const program = this.programs[programKey];
+          if (program && program.uniformDat) {
+            Object.keys(program.uniformDat).forEach((uniformKey) => {
+              if (
+                program.uniformDat[uniformKey] ==
+                this.currentRenderTexture.attachments[0]
+              ) {
+                //This should show em!
+                this.programs[programKey].uniformDat[uniformKey] = null;
+              }
+            });
+          }
+        });
+      }
+      //if all else fails use the tri buffer render texture.
+      else {
         this.currentRenderTexture = triBufferInfo;
       }
 
+      //Do some fixes if we are already in the pen+ draw region!
       if (this.inDrawRegion) {
         gl.viewport(
           0,
