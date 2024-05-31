@@ -42,7 +42,7 @@
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "keyboardtypes",
-                defaultValue: "alphabetical",
+                defaultValue: Scratch.translate("alphabetical"),
               },
             },
           },
@@ -54,7 +54,7 @@
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "keyboardtypes",
-                defaultValue: "alphabetical",
+                defaultValue: Scratch.translate("alphabetical"),
               },
             },
           },
