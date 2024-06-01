@@ -2956,7 +2956,10 @@ void main() {
             ? mesh.buffers.indices.bytesPerEl
             : 1;
           start = mesh.data.drawRange[0] * size;
-          const end = Math.min(mesh.data.drawRange[0] + mesh.data.drawRange[1], amount);
+          const end = Math.min(
+            mesh.data.drawRange[0] + mesh.data.drawRange[1],
+            amount
+          );
           amount = end - mesh.data.drawRange[0];
         }
         if (mesh.buffers.instanceTransforms) {
