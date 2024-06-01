@@ -2705,7 +2705,7 @@ void main() {
         if (mesh.data.uvOffset) flags.push("UV_OFFSET");
         if (mesh.buffers.instanceTransforms) {
           flags.push("INSTANCING");
-          if (mesh.buffers.instanceTransforms.size == 3)
+          if (mesh.buffers.instanceTransforms.size <= 3)
             flags.push("INSTANCE_POS");
           if (mesh.buffers.instanceTransforms.size == 4)
             flags.push("INSTANCE_POS_SCALE");
