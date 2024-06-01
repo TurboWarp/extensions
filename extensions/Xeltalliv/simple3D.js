@@ -3419,7 +3419,7 @@ void main() {
           defaultValue: "Sans Serif",
         },
         SIZE: {
-          type: ArgumentType.STRING,
+          type: ArgumentType.NUMBER,
           defaultValue: 32,
         },
       },
