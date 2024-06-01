@@ -3014,7 +3014,7 @@
     getCostumeDataURI_costume_MenuFunction() {
       if (!runtime) return ["No costumes?"];
       if (!runtime._editingTarget) return ["No costumes?"];
-      
+
       const myCostumes = runtime._editingTarget.sprite.costumes;
 
       let readCostumes = [];
