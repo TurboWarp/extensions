@@ -2957,6 +2957,10 @@
     }
     //Menus
     costumeMenuFunction() {
+      if (!runtime) return ["no costumes?"];
+      if (!runtime._editingTarget) return ["no costumes?"];
+      if (!runtime._editingTarget.sprite) return ["no costumes?"];
+
       const myCostumes = runtime._editingTarget.sprite.costumes;
 
       let readCostumes = [];
@@ -3008,6 +3012,9 @@
         : Object.keys(this.shaders);
     }
     getCostumeDataURI_costume_MenuFunction() {
+      if (!runtime) return ["No costumes?"];
+      if (!runtime._editingTarget) return ["No costumes?"];
+
       const myCostumes = runtime._editingTarget.sprite.costumes;
 
       let readCostumes = [];
