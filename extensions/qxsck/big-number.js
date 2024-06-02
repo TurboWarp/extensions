@@ -7,9 +7,7 @@
 (function (Scratch) {
   "use strict";
   class bigNumber {
-    constructor(runtime) {
-      this.runtime = runtime ?? Scratch?.vm?.runtime;
-
+    constructor() {
       this.tenTimes = function (val) {
         return 10n ** BigInt(val);
       };
@@ -102,7 +100,7 @@
           b = Math.trunc(this.toNum(num2)),
           flag = 0;
         if (a.num === 0n) return "0";
-        else if (b.num === 0n) return "1";
+        else if (b === 0) return "1";
         if (b < 0) (flag = 1), (b = -b);
         let result = a.num ** BigInt(b);
         if (!flag) return this.formatNum(result, a.len * b);
@@ -113,10 +111,6 @@
         if (b.num === 0n) return "0";
         let result = a.num % b.num;
         return this.formatNum(result, a.len);
-      };
-
-      this.formatMessage = function (id) {
-        return Scratch.translate({ id: id, default: i10ndefaultValue[id] });
       };
     }
 
@@ -363,5 +357,5 @@
       return a.num !== b.num;
     }
   }
-  Scratch.extensions.register(new bigNumber(Scratch?.vm?.runtime));
+  Scratch.extensions.register(new bigNumber());
 })(Scratch);
