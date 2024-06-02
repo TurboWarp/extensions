@@ -3,7 +3,7 @@
 // Description: Control Scripts
 // By: SharkPool
 
-// Version V.1.4.0
+// Version V.1.4.1
 
 (function (Scratch) {
   "use strict";
@@ -148,11 +148,12 @@
       };
     }
 
+    // Helper Funcs
     getTargets(spritesOnly) {
       const spriteNames = [];
       if (spritesOnly) spriteNames.push({ text : "myself", value: "_myself_" });
       else spriteNames.push({ text : "Stage", value: "_stage_" });
-      const targets = Scratch.vm.runtime.targets;
+      const targets = runtime.targets;
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) spriteNames.push({ text : target.getName(), value : target.getName() });
@@ -169,7 +170,7 @@
 
     check4Deletion(topBlock) {
       // Make sure the called script exists and is not deleted
-      const targets = Scratch.vm.runtime.targets;
+      const targets = runtime.targets;
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) {
@@ -180,7 +181,7 @@
     }
 
     checkThreads(topBlock) {
-      // is Script running
+      // is Script via Block ID running
       const threads = runtime.threads;
       for (let i = 0; i < threads.length; i++) {
         const item = threads[i].topBlock;
@@ -189,15 +190,31 @@
       return false;
     }
 
-    removeLog(args) {
-      const ID = Scratch.Cast.toString(args.ID).replaceAll(" ", "-");
-      Object.keys(storedScripts).forEach(key => {
-        if (key.includes(`SP-${ID}+`)) delete storedScripts[key];
-      });
+    getIndex(thread, id) {
+      let curBlock = thread.topBlock;
+      let ind = 0;
+      while(curBlock !== id) {
+        ind++;
+        const blockInfo = thread.blockContainer.getBlock(curBlock);
+        if (blockInfo.next !== null) curBlock = blockInfo.next;
+        else return ind;
+      }
+      return ind;
     }
 
-    removeLogs() { storedScripts = {} }
+    pushNew(sourceThread, target, blockID, isClick) {
+      const thread = runtime._pushThread(blockID, target, { stackClick: isClick });
+      // add any missing keys (Variables/Check/etc) in threads
+      Object.keys(sourceThread).forEach(key => {
+        if (!(key in thread)) thread[key] = sourceThread[key];
+      });
+      Object.keys(sourceThread.stackFrames[0]).forEach(key => {
+        if (!(key in thread.stackFrames[0])) thread.stackFrames[0][key] = sourceThread.stackFrames[0][key];
+      });
+      return thread;
+    }
 
+    // Block Funcs
     logScript(args, util) {
       const ID = Scratch.Cast.toString(args.ID).replaceAll(" ", "-");
       const blockID = util.thread.isCompiled ? util.thread.peekStack() : util.thread.peekStackFrame().op.id;
@@ -217,17 +234,15 @@
         id : blockID, ind : { topBlock: blockID }, target : util.target, indexBlock : this.getIndex(util.thread, blockID)
       };
     }
-    getIndex(thread, id) {
-      let curBlock = thread.topBlock;
-      let ind = 0;
-      while(curBlock !== id) {
-        ind++;
-        const blockInfo = thread.blockContainer.getBlock(curBlock);
-        if (blockInfo.next !== null) curBlock = blockInfo.next;
-        else return ind;
-      }
-      return ind;
+
+    removeLog(args) {
+      const ID = Scratch.Cast.toString(args.ID).replaceAll(" ", "-");
+      Object.keys(storedScripts).forEach(key => {
+        if (key.includes(`SP-${ID}+`)) delete storedScripts[key];
+      });
     }
+
+    removeLogs() { storedScripts = {} }
 
     runScript(args, overrideTarget) {
       // Needs to be a Promise, Stopped then Started Threads get Confused
@@ -244,7 +259,7 @@
                 if (args.TYPE === "start") {
                   promises.push(
                     new Promise((resolveThread, rejectThread) => {
-                      const thread = vm.runtime._pushThread(index.topBlock, storedScripts[key].target, { stackClick: true });
+                      const thread = runtime._pushThread(index.topBlock, storedScripts[key].target, { stackClick: true });
                       if (overrideTarget !== undefined) {
                         thread.target = overrideTarget;
                         thread.overriden = storedScripts[key].target; // custom key usable for other blocks
@@ -308,7 +323,7 @@
               }
               if (newID) {
                 runtime._stopThread(index);
-                vm.runtime._pushThread(newID, storedScripts[key].target, { stackClick: true });
+                runtime._pushThread(newID, storedScripts[key].target, { stackClick: true });
               }
             } else { console.error("Script Was Deleted!") }
           } catch {}
@@ -332,9 +347,9 @@
         }
         if (num >= 0) util.stopThisScript();
         if (newID && newID !== myID) {
-          if (thread.overriden === undefined) vm.runtime._pushThread(newID, util.target);
+          if (thread.overriden === undefined) this.pushNew(thread, util.target, newID, thread.stackClick);
           else {
-            const newThread = vm.runtime._pushThread(newID, thread.overriden);
+            const newThread = this.pushNew(thread, thread.overriden, newID, thread.stackClick);
             newThread.target = util.target;
             if (runtime.compilerOptions.enabled) newThread.tryCompile();
           }
@@ -389,18 +404,23 @@
       </defs></svg>`;
     document.body.append(grad1);
   }
-  if (typeof scaffolding === "undefined") addLinearGradientToBody();
-
-  function documentChangedCallback(mutationsList, observer) {
-    var pathElements = document.querySelectorAll("g[data-category=\"Script Control\"] path");
-    pathElements.forEach(function(pathElement) {
-      var currentFill = pathElement.getAttribute("fill");
-      pathElement.setAttribute("fill", currentFill.replace(/#3a6062/g, "url(#SPscripts-GRAD1)"));
-    });
-  }
-  if (typeof scaffolding === "undefined") {
-    var observer = new MutationObserver(documentChangedCallback);
-    observer.observe(document.documentElement, { childList: true, subtree: true });
-  }
+  if (Scratch.gui) Scratch.gui.getBlockly().then((ScratchBlocks) => {
+    addLinearGradientToBody();
+    if (!ScratchBlocks?.SPgradients?.patched) { // New Gradient Patch by Ashimee <3
+      ScratchBlocks.SPgradients = {gradientUrls: {}, patched: false};
+      const BSP = ScratchBlocks.BlockSvg.prototype, BSPR = BSP.render;
+      BSP.render = function(...args) {
+        const res = BSPR.apply(this, args);
+        let category;
+        if (this?.svgPath_ && (category = this.type.slice(0, this.type.indexOf("_"))) && ScratchBlocks.SPgradients.gradientUrls[category]) {
+          const urls = ScratchBlocks.SPgradients.gradientUrls[category];
+          if (urls) this.svgPath_.setAttribute("fill", urls[0]);
+        }
+        return res;
+      }
+      ScratchBlocks.SPgradients.patched = true;
+    }
+    ScratchBlocks.SPgradients.gradientUrls["SPscripts"] = ["url(#SPscripts-GRAD1)"];
+  });
   Scratch.extensions.register(new SPscripts());
 })(Scratch);
