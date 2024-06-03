@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.0.02
+// Version V.3.1.0
 
 (function (Scratch) {
   "use strict";
@@ -64,20 +64,31 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
       runtime.on("BEFORE_EXECUTE", () => {
         const projectVal = scratchAudio.inputNode.gain.value;
         Object.keys(soundBank).forEach(key => {
-          const curVol = Math.min(100, Math.max(0, soundBank[key].vol)) / 100;
-          soundBank[key].context.volume = curVol * projectVal;
+          const bank = soundBank[key];
+          const sound = bank.context;
+          // Clamp Volume to Project Volume
+          const curVol = Math.min(100, Math.max(0, bank.vol)) / 100;
+          sound.volume = curVol * projectVal;
+
+          // Apply Speed Changes
+          if (bank.speed !== 1 && sound.playing) {
+            const lastplay = sound.lastTimePlayed;
+            const time = Math.abs(lastplay - sound.sourceNode.context.currentTime);
+            sound.stop();
+            sound.play(0, time * bank.speed);
+            sound.lastTimePlayed = lastplay;
+            this.patchLinks(sound.sourceNode, bank);
+          }
         });
       });
       runtime.on("SP_PROJECT_PAUSE", () => {
-        if (runtime.ioDevices.clock._paused) {
-          Object.keys(soundBank).forEach(key => { soundBank[key].context.pause() });
-        } else {
+        if (runtime.ioDevices.clock._paused) Object.keys(soundBank).forEach(key => { soundBank[key].context.pause() });
+        else {
           Object.keys(soundBank).forEach(key => {
             const thisSound = soundBank[key].context;
             if (thisSound.paused) {
               thisSound.play();
-              thisSound.sourceNode.playbackRate.value = soundBank[key].pitch;
-              thisSound.sourceNode.gainSuccessor.gain.value = soundBank[key].gain;
+              this.patchLinks(thisSound.sourceNode, soundBank[key]);
             }
           });
         }
@@ -419,13 +430,13 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
           toggleMenu: ["on", "off"],
           bindMenu: ["bind", "unBind"],
           typePass: ["highpass", "lowpass"],
-          singleEffects: ["pitch", "pan", "gain", "distortion"],
+          singleEffects: ["pitch", "detune", "speed", "pan", "gain", "distortion"],
           soundProps: {
             acceptReporters: true,
             items: [
               "length", "current time", "source", "binds", "volume", "pitch",
-              "pan", "gain", "distortion", "reverb", "delay", "tremolo",
-              "fuzz", "highpass", "lowpass", "flanger", "compressor"
+              "detune", "speed", "pan", "gain", "distortion", "reverb", "delay",
+              "tremolo", "fuzz", "highpass", "lowpass", "flanger", "compressor"
             ]
           },
           soundBools: {
@@ -435,8 +446,8 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
           effectMenu: {
             acceptReporters: true,
             items: [
-              "all effects", "pitch", "pan", "gain", "distortion", "reverb", "delay",
-              "tremolo", "fuzz", "highpass", "lowpass", "flanger", "compressor"
+              "all effects", "pitch", "detune", "speed", "pan", "gain", "distortion", "reverb",
+              "delay", "tremolo", "fuzz", "highpass", "lowpass", "flanger", "compressor"
             ]
           }
         },
@@ -449,9 +460,17 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
       return sounds.indexOf(sounds.filter((sound) => { return sound.name === name })[0]);
     }
 
-    calcTime(leng, start, currentT) {
-      const time = Math.abs(start - currentT);
+    calcTime(leng, start, currentT, isLoop, loopStart) {
+      let time = Math.abs(start - currentT);
+      if (isLoop) return (Math.max(0, time % (leng - loopStart)) + loopStart);
       return Math.min(leng, Math.max(0, time));
+    }
+
+    modTime(number, opts) {
+      number = number / opts.pitch;
+      number = number / opts.speed;
+      number = number / ((opts.detune / 1000) + 1);
+      return number;
     }
 
     updateEffect(effect, sound, name, args) {
@@ -509,24 +528,29 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
         if (sound.playing && con.overlap) {
           const clone = sound.clone(); // Clone context to Menu for Control Purposes
           const newName = `${con.name}_COPY_${Math.random()}`;
-          soundBank[newName] = { context: clone, vol: con.vol, overlap: false, gain: con.gain, pitch: con.pitch };
+          soundBank[newName] = {
+            ...sound,
+            context: clone, name: newName, loopParm: [0, 0], overlap: false,
+            overlays: [], isBind: false, binds: {}
+          };
           clone.play();
           clone.sourceNode.playbackRate.value = con.pitch;
+          clone.sourceNode.gainSuccessor.gain.value = con.gain;
           con.overlays.push(clone);
           clone.on("end", function() { delete soundBank[newName] });
         } else {
-          sound.play(0, atTime);
-          sound.sourceNode.playbackRate.value = con.pitch;
-          sound.sourceNode.gainSuccessor.gain.value = con.gain;
+          sound.play(0, sound.loop ? con.loopParm[0] : atTime);
+          const srcNode = sound.sourceNode;
+          this.patchLinks(srcNode, con);
           if (Object.keys(con.binds).length > 0) {
             Object.keys(con.binds).forEach(key => {
               const thisSound = con.binds[key];
               const context = thisSound.context;
               context.play(0, atTime);
-              context.sourceNode.playbackRate.value = thisSound.pitch;
-              context.sourceNode.gainSuccessor.gain.value = thisSound.gain;
+              this.patchLinks(context.sourceNode, thisSound);
             });
           }
+          if (sound.loop) this.loopParams({ NAME : con.name , START : con.loopParm[0], END : con.loopParm[1] });
         }
       } catch {
         console.warn("Audio has not Loaded Yet, Ignore Next Error");
@@ -543,14 +567,19 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
         for (let i = 0; i < sound.overlays.length; i++) { sound.overlays[i].pause() }
       } else if (type === "play") {
         sound.context.play();
-        sound.context.sourceNode.playbackRate.value = sound.pitch;
-        sound.context.sourceNode.gainSuccessor.gain.value = sound.gain;
+        this.patchLinks(sound.context.sourceNode, sound);
         for (let i = 0; i < sound.overlays.length; i++) {
           sound.overlays[i].play();
-          sound.overlays[i].sourceNode.playbackRate.value = sound.pitch;
-          sound.overlays[i].sourceNode.gainSuccessor.gain.value = sound.gain;
+          this.patchLinks(sound.overlays[i].sourceNode, sound);
         }
       }
+    }
+
+    patchLinks(src, sound) {
+      src.playbackRate.value = sound.pitch;
+      src.detune.value = sound.detune;
+      src.gainSuccessor.gain.value = sound.gain;
+      if (src.loop) this.loopParams({ NAME : sound.name , START : sound.loopParm[0], END : sound.loopParm[1] });
     }
 
     // Block Funcs
@@ -566,8 +595,8 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
             engine.stop();
             engine.volume = 1;
             soundBank[args.NAME] = {
-              context: engine, name: args.NAME, src: args.URL,
-              effects: {}, vol: 100, gain: 1, pitch: 1,
+              context: engine, name: args.NAME, src: args.URL, effects: {},
+              vol: 100, gain: 1, pitch: 1, detune: 0, speed: 1, loopParm: [0, 0],
               overlap: false, overlays: [], isBind: false, binds: {}
             };
             resolve();
@@ -641,7 +670,6 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
       if (sound === undefined) return;
       const time = Scratch.Cast.toNumber(args.TIME);
       const max = Scratch.Cast.toNumber(args.MAX);
-
       this.play(sound.context, time, sound);
       await new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -670,8 +698,7 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
       else {
         Object.keys(soundBank).forEach(key => {
           soundBank[key].context.play();
-          soundBank[key].context.sourceNode.playbackRate.value = soundBank[key].pitch;
-          soundBank[key].context.sourceNode.gainSuccessor.gain.value = soundBank[key].gain;
+          this.patchLinks(soundBank[key].context.sourceNode, soundBank[key]);
         });
       }
     }
@@ -688,6 +715,7 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
       sound.context.loop = args.TYPE === "on";
+      if (args.TYPE === "off") this.typeOverlay(sound, "stop");
     }
 
     loopParams(args) {
@@ -697,6 +725,7 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
       const srcNode = sound.context.sourceNode;
       srcNode.loopStart = Scratch.Cast.toNumber(args.START);
       srcNode.loopEnd = Scratch.Cast.toNumber(args.END);
+      sound.loopParm = [srcNode.loopStart, srcNode.loopEnd];
     }
 
     deleteSound(args) {
@@ -738,13 +767,20 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
       if (sound === undefined) return 0;
       const src = sound.context.sourceNode;
       switch (args.PROP) {
-        case "length": return src.buffer.duration / sound.pitch;
+        case "length": return this.modTime(src.buffer.duration, sound);
         case "current time": return !sound.context.playing ? 0 : 
-          this.calcTime(src.buffer.duration, sound.context.lastTimePlayed, src.context.currentTime, src) / sound.pitch;
+          this.modTime(
+            this.calcTime(
+              sound.context.loop ? sound.loopParm[1] : src.buffer.duration, sound.context.lastTimePlayed, 
+              src.context.currentTime, sound.context.loop, sound.loopParm[0]
+            ), sound
+          );
         case "source": return sound.src;
         case "binds": return JSON.stringify(Object.keys(sound.binds));
         case "volume": return sound.vol;
         case "pitch": return Math.round((sound.pitch - 1) * 100);
+        case "detune": return sound.detune / 10;
+        case "speed": return sound.speed * 100;
         case "gain": return sound.gain * 100;
         case "pan": return sound.effects[args.PROP.toUpperCase()]?.options.pan * 100 || 0;
         case "distortion": return sound.effects[args.PROP.toUpperCase()]?.options.gain * 100 || 0;
@@ -789,47 +825,39 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
     resetEffect(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
-      const oldPitch = sound.context.sourceNode.playbackRate.value; // In-case the Engine Resets it
-      const oldGain = sound.context.sourceNode.gainSuccessor.gain.value; // In-case the Engine Resets it
       if (args.EFFECT === "all effects") {
         const effects = sound.effects;
         Object.keys(effects).forEach(key => { sound.context.removeEffect(effects[key]) });
         sound.effects = {};
       }
-      if (args.EFFECT === "all effects" || args.EFFECT === "pitch") {
-        sound.context.sourceNode.playbackRate.value = 1;
-        sound.pitch = 1;
-      }
-      if (args.EFFECT === "all effects" || args.EFFECT === "gain") {
-        sound.context.sourceNode.gainSuccessor.gain.value = 1;
-        sound.gain = 1;
-      }
+      if (args.EFFECT === "all effects" || args.EFFECT === "pitch") sound.pitch = 1;
+      if (args.EFFECT === "all effects" || args.EFFECT === "detune") sound.detune = 0;
+      if (args.EFFECT === "all effects" || args.EFFECT === "speed") sound.speed = 1;
+      if (args.EFFECT === "all effects" || args.EFFECT === "gain") sound.gain = 1;
       const name = args.EFFECT.toUpperCase();
       if (sound.effects[name] !== undefined) {
         sound.context.removeEffect(sound.effects[name]);
         delete sound.effects[name];
       }
-      sound.context.sourceNode.playbackRate.value = oldPitch;
-      sound.context.sourceNode.gainSuccessor.gain.value = oldGain;
+      this.patchLinks(sound.context.sourceNode, sound);
     }
 
     setThing(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
       const value = Scratch.Cast.toNumber(args.VALUE) / 100;
-      if (args.TYPE === "pitch") {
-        sound.pitch = Math.max(0, value + 1)
-        sound.context.sourceNode.playbackRate.value = sound.pitch;
-      } else if (args.TYPE === "gain") {
-        sound.gain = value;
-        sound.context.sourceNode.gainSuccessor.gain.value = value;
-      } else if (args.TYPE === "pan") {
+      if (args.TYPE === "pitch") sound.pitch = Math.max(0, value + 1);
+      else if (args.TYPE === "detune") sound.detune = value * 1000;
+      else if (args.TYPE === "speed") sound.speed = Math.max(0, value);
+      else if (args.TYPE === "gain") sound.gain = value;
+      else if (args.TYPE === "pan") {
         const pan = new Pizzicato.Effects.StereoPanner({ pan: Math.max(-1, Math.min(1, value)) });
-        this.updateEffect(pan, sound, "PAN", args);
+        return this.updateEffect(pan, sound, "PAN", args);
       } else {
         const distort = new Pizzicato.Effects.Distortion({ gain: value });
-        this.updateEffect(distort, sound, "DISTORTION", args);
+        return this.updateEffect(distort, sound, "DISTORTION", args);
       }
+      this.patchLinks(sound.context.sourceNode, sound);
     }
 
     setReverb(args) {
