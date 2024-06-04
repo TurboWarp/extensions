@@ -399,7 +399,7 @@
         runtime.requestRedraw();
         util.yield();
       } else if (!util.stackTimerFinished()) util.yield();
-      util.thread.stopThisScript;
+      util.thread.stopThisScript();
     }
 
     isReceived(args) {
