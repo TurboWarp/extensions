@@ -34,7 +34,7 @@
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "john",
+                defaultValue: "griffpatch",
               },
             },
           },
@@ -49,7 +49,7 @@
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "717954208",
+                defaultValue: "60917032",
               },
             },
           },
@@ -60,7 +60,7 @@
             arguments: {
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "717954208",
+                defaultValue: "60917032",
               },
             },
           },
@@ -71,7 +71,7 @@
             arguments: {
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "717954208",
+                defaultValue: "60917032",
               },
             },
           },
@@ -92,7 +92,7 @@
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "john",
+                defaultValue: "griffpatch",
               },
             },
           },
@@ -107,7 +107,7 @@
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "john",
+                defaultValue: "griffpatch",
               },
             },
           },
@@ -124,7 +124,7 @@
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "717954208",
+                defaultValue: "60917032",
               },
             },
           },
