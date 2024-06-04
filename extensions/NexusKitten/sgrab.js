@@ -76,7 +76,7 @@
             },
           },
 
-          '---',
+          "---",
           {
             blockType: Scratch.BlockType.XML,
             xml: "<sep gap='12'/><label text='The blocks below rely on a third-party'/><sep gap='-12'/><label text='API that is currently offline.'/>",
@@ -273,7 +273,7 @@
         if (args.WHAT === "about me") {
           return jsonData.profile.bio ?? "";
         } else if (args.WHAT === "wiwo") {
-          return jsonData.profile.status   ?? "";
+          return jsonData.profile.status ?? "";
         } else if (args.WHAT === "location") {
           return jsonData.profile.country ?? "";
         } else if (args.WHAT === "status") {
