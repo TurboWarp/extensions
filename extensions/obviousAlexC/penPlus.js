@@ -3133,11 +3133,10 @@
             curTarget.setCostume(costIndex);
           }
 
-          currentTexture =
-            renderer._allSkins[curCostume.skinId]._texture;
+          currentTexture = renderer._allSkins[curCostume.skinId]._texture;
 
-          if (!currentTexture) currentTexture = renderer._allSkins[curCostume.skinId].getTexture();
-          
+          if (!currentTexture)
+            currentTexture = renderer._allSkins[curCostume.skinId].getTexture();
         }
       }
 
