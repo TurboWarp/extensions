@@ -387,7 +387,7 @@ If texture coordinates are specified, but texture is not, the default texture is
 ---
 ```scratch
 set [my mesh] texture () [clamp to edge v] [pixelated v] :: sensing
-set [my mesh] cube texture [X+] () [clamp to edge v] [pixelated v] :: sensing
+set [my mesh] cube texture (X+ v) () [clamp to edge v] [pixelated v] :: sensing
 ```
 Used to upload texture into the mesh.
 Calling this block depending on the type of texture used either uploads texture instantly (e.g. empty or text) or schedules texture to be uploaded into the mesh some time in the future (e.g. load from url or from costume).
@@ -527,7 +527,7 @@ Decodes a 3D model file and uploads it into a mesh. Block continues instantly, b
 
 File formats:
  - [obj](https://en.wikipedia.org/wiki/Wavefront_.obj_file) is a very common and well known 3D model file format. It supports UV texture coordinates, materials with colors and textures. However it does not have a standartized way to do vertex colors. This block implements a non-standart but widely supported way to represent vertex colors as 4th - 7th elements of `v`. The OBJ and MTL specification describes a lot of features, only some of which are currently (or even can be) supported by this importer. In particular, there is currently no way to import models which use multiple textures as this extensions only supports 1 texture per mesh. Normals and anything lighting related isn't and can't be supported. **In case both OBJ and MTL files need to be imported, combine them all into 1 list sequentially, first all of the MTL files and then the OBJ file.**
- - [off](https://en.wikipedia.org/wiki/OFF_(file_format)) is a not that well known, but very simple file format. Is is quite neat for the use in scratch in general, as it's simpler than OBJ and unlike it, natively supports both vertex and face colors. It does not support textures or texture coordinates. You can read more about it and find a lot of example models [here](http://web.archive.org/web/20230331211230/https://people.sc.fsu.edu/~jburkardt/data/off/off.html). Since the format is so simple, this importer supports all features of it.
+ - [off](https://en.wikipedia.org/wiki/OFF_(file_format)) is a not that well known, but very simple file format. Is is quite neat for the use in scratch in general, as it's simpler than OBJ and unlike it, natively supports both vertex and face colors. It does not support textures or texture coordinates. You can read more about it and find a lot of example models [here](http://web.archive.org/web/20230331211230/https://people.sc.fsu.edu/~jburkardt/data/off/off.html).
 
 Imported model is affected by transformation set with:
 ```scratch
@@ -585,7 +585,7 @@ Default for mesh is threshold:0 preserve opacity.
 
 ---
 ```scratch
-set [my mesh] billboarding [on v] :: sensing
+set [my mesh] billboarding (on v) :: sensing
 ```
 Used for enabling and disabling billboarding.
 When billboarding is enabled, the mesh is always facing in the opposite direction to your look direction (behind you).
@@ -595,7 +595,7 @@ Default for mesh is "off".
 
 ---
 ```scratch
-set [my mesh] accurate interpolation [on v] :: sensing
+set [my mesh] accurate interpolation (on v) :: sensing
 ```
 Used for enabling a more accurate interpolation method which doesn't have issues of texture coordinates extrapolating outside of the specified range on the triangle edges, causing unpleasant looking seams. It is more computationally expensive and should only be used when that is an issue.
 Enabling mipmapping and/or anisatropic filtering may prevent it from working and reintroduce seams.
@@ -657,6 +657,8 @@ Creates texture from costume.
 
 **Do not forget: bitmap costumes have 2x2 subpixels, which here are counted as pixels.** So do not be surprized when your seemingly 8x8 costume turns into 16x16 texture.
 
+**When using TurboWarp Packager, you need to disable "Remove raw asset data after loading to save RAM" in order for this block to work.**
+
 ---
 ```scratch
 (texture from text [Hello World!] font [italic bold 32px sans-serif] color (#ffff00) :: sensing)
@@ -686,7 +688,7 @@ Creates black texture of given size.
 ### Text measurement <a name="blocks-text-measurement"></a>
 ```scratch
 measure text [Hello World!] font [italic bold 32px sans-serif] :: sensing
-(measure [up v] size ::sensing)
+(measured (up v) size ::sensing)
 ```
 Used for measuring how the text texture was or will be generated.
 Outputs 4 sizes. Sizes can be negative.
@@ -701,7 +703,7 @@ Used for getting internal names of default and custom fonts. It is not neccesary
 
 ### View transformations <a name="blocks-view-transformations"></a>
 ```scratch
-configure [to projected from view space] transformation :: sensing
+configure [to projected from view space v] transformation :: sensing
 ```
 Used for switching between which of the few transformations is currently active for editing.
 Transformations `to world space from model space`, `to view space from world space`, `to projected from view space` are 3 sequential transformation used for drawing, explained at the top of this page.
@@ -784,7 +786,7 @@ Overwites 16 elements in list starting from the specified item, with the numbers
 
 ---
 ```scratch
-reset transformation's [offset/rotation] :: sensing
+reset transformation's (offset v) :: sensing
 ```
 Resets offset or rotation of the transformation.
 
@@ -800,8 +802,8 @@ Transforms point using currently selected transformation. It is the fastest way 
 
 ---
 ```scratch
-transform X (0) Y (0) Z (0) from [world space] to [model space] :: sensing
-transform direction X (0) Y (0) Z (0) from [world space] to [model space] :: sensing
+transform X (0) Y (0) Z (0) from [world space v] to [model space v] :: sensing
+transform direction X (0) Y (0) Z (0) from [world space v] to [model space v] :: sensing
 ```
 Transforms point from specified coordinate system to another. Convenient, but slower.
 Transform direction only applies rotations and does not apply offsets.

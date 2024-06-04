@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.0.2
+// Version: 1.0.3
 
 (function (Scratch) {
   "use strict";
@@ -1315,6 +1315,16 @@ void main() {
       );
     };
     return texture;
+  }
+  // requireNonPackagedRuntime by LilyMakesThings
+  function requireNonPackagedRuntime(blockName) {
+    if (runtime.isPackaged) {
+      alert(
+        `To use the Simple3D ${blockName} block, the creator of the packaged project must uncheck "Remove raw asset data after loading to save RAM" under advanced settings in the packager.`
+      );
+      return false;
+    }
+    return true;
   }
   /*
    * Profiler has shown that this was the main bottleneck, so:
@@ -2695,7 +2705,7 @@ void main() {
         if (mesh.data.uvOffset) flags.push("UV_OFFSET");
         if (mesh.buffers.instanceTransforms) {
           flags.push("INSTANCING");
-          if (mesh.buffers.instanceTransforms.size == 3)
+          if (mesh.buffers.instanceTransforms.size <= 3)
             flags.push("INSTANCE_POS");
           if (mesh.buffers.instanceTransforms.size == 4)
             flags.push("INSTANCE_POS_SCALE");
@@ -2946,8 +2956,11 @@ void main() {
             ? mesh.buffers.indices.bytesPerEl
             : 1;
           start = mesh.data.drawRange[0] * size;
-          const end = Math.min(start + mesh.data.drawRange[1], amount);
-          amount = end - start;
+          const end = Math.min(
+            mesh.data.drawRange[0] + mesh.data.drawRange[1],
+            amount
+          );
+          amount = end - mesh.data.drawRange[0];
         }
         if (mesh.buffers.instanceTransforms) {
           if (mesh.buffers.indices) {
@@ -3095,6 +3108,10 @@ void main() {
       def: function ({ NAME }, { target }) {
         imageSourceSync = null;
         imageSource = new Promise((resolve, reject) => {
+          if (!requireNonPackagedRuntime("texture from costume")) {
+            resolve(null);
+            return;
+          }
           const costumeIndex = target.getCostumeIndexByName(NAME);
           if (costumeIndex == -1) return;
           const costume = target.sprite.costumes[costumeIndex];
@@ -3405,7 +3422,7 @@ void main() {
           defaultValue: "Sans Serif",
         },
         SIZE: {
-          type: ArgumentType.STRING,
+          type: ArgumentType.NUMBER,
           defaultValue: 32,
         },
       },
