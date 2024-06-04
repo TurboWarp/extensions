@@ -231,6 +231,9 @@
         const response = await Scratch.fetch(
           "https://scratchdb.lefty.one/v3/user/info/" + args.WHO
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         if (args.WHAT === "follower") {
           return jsonData.statistics.followers ?? "";
@@ -248,6 +251,9 @@
         const response = await Scratch.fetch(
           "https://scratchdb.lefty.one/v3/user/info/" + args.WHO
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         if (args.WHAT === "follower") {
           return jsonData.statistics.ranks.followers ?? "";
@@ -269,6 +275,9 @@
         const response = await Scratch.fetch(
           `https://trampoline.turbowarp.org/api/users/${args.WHO}`
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         if (args.WHAT === "about me") {
           return jsonData.profile.bio ?? "";
@@ -291,6 +300,9 @@
         const response = await Scratch.fetch(
           `https://trampoline.turbowarp.org/api/projects/${args.WHO}`
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         if (args.WHAT === "love") {
           return jsonData.stats.loves ?? "";
@@ -310,6 +322,9 @@
         const response = await Scratch.fetch(
           "https://scratchdb.lefty.one/v3/project/info/" + args.WHO
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         if (args.WHAT === "love") {
           return jsonData.statistics.ranks.loves ?? "";
@@ -329,6 +344,9 @@
         const response = await Scratch.fetch(
           `https://trampoline.turbowarp.org/api/projects/${args.WHO}`
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         return jsonData.title ?? "";
       } catch (error) {
@@ -340,6 +358,9 @@
         const response = await Scratch.fetch(
           `https://trampoline.turbowarp.org/api/projects/${args.WHO}`
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         return jsonData.author.username ?? "";
       } catch (error) {
