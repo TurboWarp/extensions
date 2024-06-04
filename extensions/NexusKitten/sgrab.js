@@ -266,17 +266,18 @@
     async usergrab2(args) {
       try {
         const response = await Scratch.fetch(
-          "https://scratchdb.lefty.one/v3/user/info/" + args.WHO
+          `https://trampoline.turbowarp.org/api/users/${args.WHO}`
         );
         const jsonData = await response.json();
         if (args.WHAT === "about me") {
-          return jsonData.bio ?? "";
+          return jsonData.profile.bio ?? "";
         } else if (args.WHAT === "wiwo") {
-          return jsonData.work ?? "";
+          return jsonData.profile.status   ?? "";
         } else if (args.WHAT === "location") {
-          return jsonData.country ?? "";
+          return jsonData.profile.country ?? "";
         } else if (args.WHAT === "status") {
-          return jsonData.status ?? "";
+          // ScratchDB would tell us whether they are a New Scratcher but api.scratch.mit.edu doesn't
+          return jsonData.scratchteam ? "Scratch Team" : "Scratcher";
         } else {
           return "";
         }
@@ -287,15 +288,15 @@
     async projectgrab(args) {
       try {
         const response = await Scratch.fetch(
-          "https://scratchdb.lefty.one/v3/project/info/" + args.WHO
+          `https://trampoline.turbowarp.org/api/projects/${args.WHO}`
         );
         const jsonData = await response.json();
         if (args.WHAT === "love") {
-          return jsonData.statistics.loves ?? "";
+          return jsonData.stats.loves ?? "";
         } else if (args.WHAT === "favorite") {
-          return jsonData.statistics.favorites ?? "";
+          return jsonData.stats.favorites ?? "";
         } else if (args.WHAT === "view") {
-          return jsonData.statistics.views ?? "";
+          return jsonData.stats.views ?? "";
         } else {
           return "";
         }
@@ -325,7 +326,7 @@
     async idtoname(args) {
       try {
         const response = await Scratch.fetch(
-          "https://scratchdb.lefty.one/v3/project/info/" + args.WHO
+          `https://trampoline.turbowarp.org/api/projects/${args.WHO}`
         );
         const jsonData = await response.json();
         return jsonData.title ?? "";
@@ -336,10 +337,10 @@
     async idtoowner(args) {
       try {
         const response = await Scratch.fetch(
-          "https://scratchdb.lefty.one/v3/project/info/" + args.WHO
+          `https://trampoline.turbowarp.org/api/projects/${args.WHO}`
         );
         const jsonData = await response.json();
-        return jsonData.username ?? "";
+        return jsonData.author.username ?? "";
       } catch (error) {
         return "";
       }
