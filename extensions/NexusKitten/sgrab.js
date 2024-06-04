@@ -24,8 +24,62 @@
         color2: "#EBAF00",
         blocks: [
           {
+            opcode: "usergrab2",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("[WHAT] of user [WHO]"),
+            arguments: {
+              WHAT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "WHAT5",
+              },
+              WHO: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "john",
+              },
+            },
+          },
+          {
+            opcode: "projectgrab",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("grab [WHAT] count of project id [WHO]"),
+            arguments: {
+              WHAT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "WHAT3",
+              },
+              WHO: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "717954208",
+              },
+            },
+          },
+          {
+            opcode: "idtoname",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("name of project id [WHO]"),
+            arguments: {
+              WHO: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "717954208",
+              },
+            },
+          },
+          {
+            opcode: "idtoowner",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("creator of project id [WHO]"),
+            arguments: {
+              WHO: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "717954208",
+              },
+            },
+          },
+
+          '---',
+          {
             blockType: Scratch.BlockType.XML,
-            xml: "<sep gap='6'/><label text='S-Grab relies on a third-party API that'/><sep gap='-12'/><label text='is very unreliable. Use this with caution.'/><sep gap='24'/>",
+            xml: "<sep gap='12'/><label text='The blocks below rely on a third-party'/><sep gap='-12'/><label text='API that is currently offline.'/>",
           },
           {
             opcode: "usergrab",
@@ -58,37 +112,6 @@
             },
           },
           {
-            opcode: "usergrab2",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[WHAT] of user [WHO]"),
-            arguments: {
-              WHAT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "WHAT5",
-              },
-              WHO: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "john",
-              },
-            },
-          },
-          "---",
-          {
-            opcode: "projectgrab",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("grab [WHAT] count of project id [WHO]"),
-            arguments: {
-              WHAT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "WHAT3",
-              },
-              WHO: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "717954208",
-              },
-            },
-          },
-          {
             opcode: "rankprojectgrab",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
@@ -99,28 +122,6 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "WHAT4",
               },
-              WHO: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "717954208",
-              },
-            },
-          },
-          {
-            opcode: "idtoname",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("name of project id [WHO]"),
-            arguments: {
-              WHO: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "717954208",
-              },
-            },
-          },
-          {
-            opcode: "idtoowner",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("creator of project id [WHO]"),
-            arguments: {
               WHO: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "717954208",
