@@ -4,7 +4,8 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.1.0
+// Version V.3.1.1
+// Thanks to HOME for the song "Resonance" being used as the default audio link
 
 (function (Scratch) {
   "use strict";
@@ -108,7 +109,7 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
             text: "import sound from URL [URL] named [NAME]",
             blockIconURI: settingsIconURI,
             arguments: {
-              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://extensions.turbowarp.org/meow.mp3" },
+              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://tinyurl.com/Resonance-Home" },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }
             },
           },
@@ -460,9 +461,11 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
       return sounds.indexOf(sounds.filter((sound) => { return sound.name === name })[0]);
     }
 
-    calcTime(leng, start, currentT, isLoop, loopStart) {
+    calcTime(leng, start, currentT, sound) {
+      leng = this.modTime(leng, sound);
+      const loopStart = sound.loopParm[0];
       let time = Math.abs(start - currentT);
-      if (isLoop) return (Math.max(0, time % (leng - loopStart)) + loopStart);
+      if (sound.context.loop) return (Math.max(0, time % (leng - loopStart)) + loopStart);
       return Math.min(leng, Math.max(0, time));
     }
 
@@ -769,11 +772,9 @@ return this.node.connect(e)},o.Effects.RingModulator.prototype=Object.create(f,{
       switch (args.PROP) {
         case "length": return this.modTime(src.buffer.duration, sound);
         case "current time": return !sound.context.playing ? 0 : 
-          this.modTime(
-            this.calcTime(
-              sound.context.loop ? sound.loopParm[1] : src.buffer.duration, sound.context.lastTimePlayed, 
-              src.context.currentTime, sound.context.loop, sound.loopParm[0]
-            ), sound
+          this.calcTime(
+            sound.context.loop ? sound.loopParm[1] : src.buffer.duration,
+            sound.context.lastTimePlayed, src.context.currentTime, sound
           );
         case "source": return sound.src;
         case "binds": return JSON.stringify(Object.keys(sound.binds));
