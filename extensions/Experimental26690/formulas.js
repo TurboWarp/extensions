@@ -28,8 +28,8 @@
 */
 
 
-
-//Variables for preformance optimization or somthing
+(function (Scratch) {
+    //Variables for performance optimization or something
 const pi = Math.PI;
 
 //Actual extension
@@ -487,7 +487,7 @@ class Formulas {
     pi() {
         return pi;
     }
-    slope() {
+    slope({A, B, X, Y}) {
         A = Scratch.Cast.toNumber(A);
         B = Scratch.Cast.toNumber(B);
         X = Scratch.Cast.toNumber(X);
@@ -501,3 +501,4 @@ class Formulas {
   }
   
   Scratch.extensions.register(new Formulas());
+})(Scratch);
