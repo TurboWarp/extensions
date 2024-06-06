@@ -29,6 +29,7 @@
 
 
 (function (Scratch) {
+    "use strict";
     //Variables for performance optimization or something
 const pi = Math.PI;
 
