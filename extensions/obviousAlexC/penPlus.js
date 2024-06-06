@@ -4824,7 +4824,7 @@
     //Modal themes
     _setupTheme() {
       //Use a predefined pen+ theme if packaged
-      if (Scratch.vm.runtime.isPackaged) {
+      if (typeof scaffolding !== "undefined") {
         this._menuBarBackground = "#0FBD8C";
         this._defaultBackgroundColor = "white";
         this._textColor = "black";
