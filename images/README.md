@@ -240,7 +240,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
 
 ## clipboard.svg
- - Created by [@AdamMady](https://github.com/AdamMady/)
+ - Created by [@Skyhigh173](https://github.com/Skyhigh173) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1751679667
 
 ## godslayerakp/http.svg
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636912111
