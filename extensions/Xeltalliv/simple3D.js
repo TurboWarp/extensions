@@ -1506,7 +1506,7 @@ void main() {
   const gl = canvas.getContext("webgl2");
   if (!gl)
     alert(
-      "Simple 3D extension failed to get WebGL2 conetxt. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2"
+      "Simple 3D extension failed to get WebGL2 context. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2"
     );
   const ext_af =
     gl.getExtension("EXT_texture_filter_anisotropic") ||
