@@ -67,7 +67,7 @@
           // Change to array split by ','
           .split(",")
           // Change to numbers in milliseconds
-          .map((val) => Scratch.Cast.toNumber(val.trim()) * 1000);
+          .map((val) => Scratch.Cast.toNumber(val) * 1000);
         navigator.vibrate(pattern);
       }
     }
