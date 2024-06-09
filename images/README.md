@@ -175,9 +175,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/) in https://github.com/TurboWarp/extensions/pull/656.
 
 ## obviousAlexC/SensingPlus.svg
- - Created by [@David-Orangemoon](https://scratch.mit.edu/users/pinksheep2917/) in https://github.com/TurboWarp/extensions/pull/379.
- - Scratch Cat is a trademark of the Scratch Foundation.
- - Font is Deja Vu Sans.
+ - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
 
 ## lab/text.svg
  - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).
