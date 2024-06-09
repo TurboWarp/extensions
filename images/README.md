@@ -313,3 +313,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## CST1229/images.svg
  - Created by [@mcnole25](https://github.com/mcnole25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-2122654376
+
+## shreder95ua/resolution.svg
+ - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
