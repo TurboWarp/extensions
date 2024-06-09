@@ -316,3 +316,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## shreder95ua/resolution.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
+
+## CubesterYT/KeySimulation.svg
+ - Created by [@SharkPool-SP](https://github.com/SharkPool-SP/)
