@@ -70,7 +70,9 @@
           {
             opcode: "replaceAllOfItem",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("replace all [ITEM1] with [ITEM2] in [LIST]"),
+            text: Scratch.translate(
+              "replace all [ITEM1] with [ITEM2] in [LIST]"
+            ),
             arguments: {
               ITEM1: {
                 type: Scratch.ArgumentType.STRING,
@@ -280,7 +282,7 @@
           {
             opcode: "forEachListItemNum",
             blockType: Scratch.BlockType.LOOP,
-            text:Scratch.translate ("for each item # [VAR] in [LIST]"),
+            text: Scratch.translate("for each item # [VAR] in [LIST]"),
             hideFromPalette:
               !runtime.extensionManager.isExtensionLoaded("lmsTempVars2"),
             arguments: {
@@ -631,9 +633,9 @@
         typeof Blockly === "undefined"
           ? []
           : Blockly.getMainWorkspace()
-            .getVariableMap()
-            .getVariablesOfType("list")
-            .map((model) => model.name);
+              .getVariableMap()
+              .getVariablesOfType("list")
+              .map((model) => model.name);
       if (lists.length > 0) {
         return lists;
       } else {

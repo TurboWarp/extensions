@@ -178,7 +178,9 @@
           {
             opcode: "replaceWords",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate ("replace first [INPUTA] with [INPUTB] in [STRING]"),
+            text: Scratch.translate(
+              "replace first [INPUTA] with [INPUTB] in [STRING]"
+            ),
             disableMonitor: true,
             arguments: {
               INPUTA: {
@@ -213,7 +215,9 @@
           {
             opcode: "itemOfFromString",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("item [INPUTA] of [INPUTB] split by [INPUTC]"),
+            text: Scratch.translate(
+              "item [INPUTA] of [INPUTB] split by [INPUTC]"
+            ),
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -244,7 +248,7 @@
           {
             opcode: "stringToLowerCase",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate ("[STRING] to lowercase"),
+            text: Scratch.translate("[STRING] to lowercase"),
             disableMonitor: true,
             arguments: {
               STRING: {
@@ -301,7 +305,7 @@
           {
             opcode: "xnorBoolean",
             blockType: Scratch.BlockType.BOOLEAN,
-            text:Scratch.translate ("[INPUTA] xnor [INPUTB]"),
+            text: Scratch.translate("[INPUTA] xnor [INPUTB]"),
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -316,7 +320,7 @@
           {
             opcode: "nandBoolean",
             blockType: Scratch.BlockType.BOOLEAN,
-            text:Scratch.translate( "[INPUTA] nand [INPUTB]"),
+            text: Scratch.translate("[INPUTA] nand [INPUTB]"),
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -359,7 +363,7 @@
           {
             opcode: "angleReporter",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate ("angle [ANGLE]"),
+            text: Scratch.translate("angle [ANGLE]"),
             hideFromPalette: hideLegacyBlocks,
             arguments: {
               ANGLE: {
@@ -371,7 +375,7 @@
           {
             opcode: "matrixReporter",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate ("matrix [MATRIX]"),
+            text: Scratch.translate("matrix [MATRIX]"),
             hideFromPalette: hideLegacyBlocks,
             arguments: {
               MATRIX: {
@@ -383,7 +387,7 @@
           {
             opcode: "noteReporter",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate ("note [NOTE]"),
+            text: Scratch.translate("note [NOTE]"),
             hideFromPalette: hideLegacyBlocks,
             arguments: {
               NOTE: {
@@ -465,7 +469,7 @@
           {
             opcode: "stringCheckBoolean",
             blockType: Scratch.BlockType.BOOLEAN,
-            text:Scratch.translate ("[INPUT] is [DROPDOWN]"),
+            text: Scratch.translate("[INPUT] is [DROPDOWN]"),
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -500,7 +504,7 @@
           {
             opcode: "decodeFromBlock",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate( "decode [STRING] from [DROPDOWN]"),
+            text: Scratch.translate("decode [STRING] from [DROPDOWN]"),
             disableMonitor: true,
             hideFromPalette: hideLegacyBlocks,
             arguments: {
@@ -563,7 +567,7 @@
           {
             opcode: "normaliseValue",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate ("normalise [INPUT]"),
+            text: Scratch.translate("normalise [INPUT]"),
             disableMonitor: true,
             arguments: {
               INPUT: {
@@ -575,7 +579,9 @@
           {
             opcode: "clampNumber",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate ("clamp [INPUTA] between [INPUTB] and [INPUTC]"),
+            text: Scratch.translate(
+              "clamp [INPUTA] between [INPUTB] and [INPUTC]"
+            ),
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -597,7 +603,7 @@
           {
             opcode: "setVariableTo",
             blockType: Scratch.BlockType.COMMAND,
-            text:Scratch.translate ("set variable [INPUTA] to [INPUTB]"),
+            text: Scratch.translate("set variable [INPUTA] to [INPUTB]"),
             hideFromPalette: hideLegacyBlocks,
             arguments: {
               INPUTA: {
@@ -642,7 +648,7 @@
           {
             opcode: "deleteVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text:Scratch.translate ("delete variable [INPUT]"),
+            text: Scratch.translate("delete variable [INPUT]"),
             hideFromPalette: hideLegacyBlocks,
             arguments: {
               INPUT: {
@@ -654,7 +660,7 @@
           {
             opcode: "deleteAllVariables",
             blockType: Scratch.BlockType.COMMAND,
-            text:Scratch.translate ("delete all variables"),
+            text: Scratch.translate("delete all variables"),
             hideFromPalette: hideLegacyBlocks,
           },
           {
@@ -670,13 +676,13 @@
           {
             opcode: "greenFlag",
             blockType: Scratch.BlockType.COMMAND,
-            text:Scratch.translate ("green flag"),
+            text: Scratch.translate("green flag"),
             hideFromPalette: hideLegacyBlocks,
           },
           {
             opcode: "setUsername",
             blockType: Scratch.BlockType.COMMAND,
-            text:Scratch.translate ("set username to [INPUT]"),
+            text: Scratch.translate("set username to [INPUT]"),
             hideFromPalette: hideLegacyBlocks,
             arguments: {
               INPUT: {
@@ -691,7 +697,9 @@
           {
             opcode: "setSpriteSVG",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("replace SVG data for costume [INPUTA] with [INPUTB]"),
+            text: Scratch.translate(
+              "replace SVG data for costume [INPUTA] with [INPUTB]"
+            ),
             hideFromPalette: hideLegacyBlocks,
             arguments: {
               INPUTA: {
@@ -750,7 +758,7 @@
           {
             opcode: "goToLink",
             blockType: Scratch.BlockType.COMMAND,
-            text:Scratch.translate( "open link [INPUT] in new tab"),
+            text: Scratch.translate("open link [INPUT] in new tab"),
             hideFromPalette: hideLegacyBlocks,
             arguments: {
               INPUT: {
@@ -798,7 +806,7 @@
           {
             opcode: "isUserMobile",
             blockType: Scratch.BlockType.BOOLEAN,
-            text:Scratch.translate ("is mobile?"),
+            text: Scratch.translate("is mobile?"),
           },
           {
             opcode: "screenReporter",
@@ -829,7 +837,7 @@
           {
             opcode: "osBrowserDetails",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate ("get [DROPDOWN] of user"),
+            text: Scratch.translate("get [DROPDOWN] of user"),
             disableMonitor: true,
             arguments: {
               DROPDOWN: {
@@ -937,7 +945,7 @@
           {
             func: "showLegacyBlocks",
             blockType: Scratch.BlockType.BUTTON,
-            text:Scratch.translate( "Show Legacy Blocks"),
+            text: Scratch.translate("Show Legacy Blocks"),
             hideFromPalette: !hideLegacyBlocks,
           },
           {
@@ -975,7 +983,8 @@
               {
                 text: Scratch.translate("random"),
                 value: "random",
-              }],
+              },
+            ],
           },
           screenReporterMenu: {
             acceptReporters: true,
@@ -987,7 +996,7 @@
               {
                 text: Scratch.translate("height"),
                 value: "height",
-              }
+              },
             ],
           },
           windowReporterMenu: {
@@ -1081,7 +1090,9 @@
     showLegacyBlocks() {
       if (
         confirm(
-          Scratch.translate("Are you sure you want to show legacy blocks? \n \n These blocks were removed because they were buggy or implemented better in other extensions.")
+          Scratch.translate(
+            "Are you sure you want to show legacy blocks? \n \n These blocks were removed because they were buggy or implemented better in other extensions."
+          )
         )
       ) {
         hideLegacyBlocks = false;

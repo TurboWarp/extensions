@@ -260,7 +260,9 @@
         blocks: [
           {
             opcode: "tweenValue",
-            text: Scratch.translate("[MODE] ease [DIRECTION] [START] to [END] by [AMOUNT]%"),
+            text: Scratch.translate(
+              "[MODE] ease [DIRECTION] [START] to [END] by [AMOUNT]%"
+            ),
             disableMonitor: true,
             blockType: BlockType.REPORTER,
             arguments: {
@@ -288,7 +290,9 @@
           },
           {
             opcode: "tweenVariable",
-            text: Scratch.translate("tween variable [VAR] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]"),
+            text: Scratch.translate(
+              "tween variable [VAR] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]"
+            ),
             blockType: BlockType.COMMAND,
             arguments: {
               VAR: {
@@ -315,7 +319,9 @@
           },
           {
             opcode: "tweenXY",
-            text: Scratch.translate("tween to x: [X] y: [Y] over [SEC] seconds using [MODE] ease [DIRECTION]"),
+            text: Scratch.translate(
+              "tween to x: [X] y: [Y] over [SEC] seconds using [MODE] ease [DIRECTION]"
+            ),
             blockType: BlockType.COMMAND,
             arguments: {
               PROPERTY: {
@@ -346,7 +352,9 @@
           },
           {
             opcode: "tweenProperty",
-            text: Scratch.translate("tween [PROPERTY] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]"),
+            text: Scratch.translate(
+              "tween [PROPERTY] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]"
+            ),
             blockType: BlockType.COMMAND,
             arguments: {
               PROPERTY: {
@@ -389,7 +397,7 @@
                 value: "quad",
               },
               {
-                text: Scratch.translate('cubic'),
+                text: Scratch.translate("cubic"),
                 value: "cubic",
               },
               {
@@ -397,7 +405,7 @@
                 value: "quart",
               },
               {
-                text: Scratch.translate('quint'),
+                text: Scratch.translate("quint"),
                 value: "quint",
               },
               {
@@ -405,7 +413,7 @@
                 value: "expo",
               },
               {
-                text: Scratch.translate('circ'),
+                text: Scratch.translate("circ"),
                 value: "circ",
               },
               {
@@ -417,7 +425,7 @@
                 value: "elastic",
               },
               {
-                text: Scratch.translate('bounce'),
+                text: Scratch.translate("bounce"),
                 value: "bounce",
               },
             ],
@@ -434,7 +442,7 @@
                 value: "out",
               },
               {
-                text: Scratch.translate('in out'),
+                text: Scratch.translate("in out"),
                 value: "in out",
               },
             ],
@@ -459,7 +467,7 @@
                 value: "direction",
               },
               {
-                text: Scratch.translate('size'),
+                text: Scratch.translate("size"),
                 value: "size",
               },
             ],

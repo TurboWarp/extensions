@@ -58,7 +58,7 @@
           {
             opcode: "hideSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text:Scratch.translate ("hide [TARGET]"),
+            text: Scratch.translate("hide [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -145,7 +145,7 @@
           {
             opcode: "costumeAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate ("[ATTRIBUTE] of [COSTUME]"),
+            text: Scratch.translate("[ATTRIBUTE] of [COSTUME]"),
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -173,7 +173,7 @@
           {
             opcode: "replaceCostumeContent",
             blockType: Scratch.BlockType.COMMAND,
-            text:Scratch.translate ("set [TYPE] for [COSTUME] to [CONTENT]"),
+            text: Scratch.translate("set [TYPE] for [COSTUME] to [CONTENT]"),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -204,7 +204,9 @@
           {
             opcode: "costumeContent",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[CONTENT] of costume # [COSTUME] of [TARGET]"),
+            text: Scratch.translate(
+              "[CONTENT] of costume # [COSTUME] of [TARGET]"
+            ),
             arguments: {
               CONTENT: {
                 type: Scratch.ArgumentType.STRING,
@@ -228,7 +230,7 @@
           {
             opcode: "replaceColors",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate ("replace [COLOR1] with [COLOR2] in [SVG]"),
+            text: Scratch.translate("replace [COLOR1] with [COLOR2] in [SVG]"),
             arguments: {
               COLOR1: {
                 type: Scratch.ArgumentType.COLOR,
@@ -248,7 +250,7 @@
           {
             opcode: "colorHex",
             blockType: Scratch.BlockType.REPORTER,
-            text:Scratch.translate ("hex of [COLOR]"),
+            text: Scratch.translate("hex of [COLOR]"),
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
