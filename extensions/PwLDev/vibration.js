@@ -1,6 +1,6 @@
 // Name: Vibration
 // ID: pwldevvibration
-// Description: Control the device's vibration. Only works on Android.
+// Description: Control the device's vibration. Only works on Chrome for Android.
 // By: PwLDev <https://scratch.mit.edu/users/PwLDev/>
 // License: MPL-2.0
 
@@ -22,7 +22,7 @@
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Only works on Android."),
+            text: Scratch.translate("Only works on Chrome for Android."),
           },
           {
             opcode: "start",
@@ -32,6 +32,17 @@
               SECONDS: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "2",
+              },
+            },
+          },
+          {
+            opcode: "startPattern",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("play vibration pattern [PATTERN]"),
+            arguments: {
+              PATTERN: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "1, 0.5, 1, 0.5, 1",
               },
             },
           },
@@ -47,6 +58,18 @@
     start(args) {
       if (navigator.vibrate) {
         navigator.vibrate(Scratch.Cast.toNumber(args.SECONDS) * 1000);
+      }
+    }
+
+    startPattern(args) {
+      if (navigator.vibrate) {
+        const pattern = Scratch.Cast.toString(args.PATTERN)
+          // Change to array split by ','
+          .split(",")
+          // Change to numbers in milliseconds
+          .map((val) => Scratch.Cast.toNumber(val.trim()) * 1000);
+        console.log(pattern);
+        navigator.vibrate(pattern);
       }
     }
 
