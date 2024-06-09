@@ -198,7 +198,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Based on image created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1595164040
 
 ## qxsck/data-analysis.svg
- - Based on image created by [@Flappy25](https://github.com/Flappy25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1575100933
+ - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
 
 ## mdwalters/notifications.svg
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1637077987
