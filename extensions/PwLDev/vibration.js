@@ -68,7 +68,6 @@
           .split(",")
           // Change to numbers in milliseconds
           .map((val) => Scratch.Cast.toNumber(val.trim()) * 1000);
-        console.log(pattern);
         navigator.vibrate(pattern);
       }
     }
