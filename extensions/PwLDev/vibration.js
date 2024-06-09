@@ -15,7 +15,7 @@
     getInfo() {
       return {
         id: "pwldevvibration",
-        name: "Vibration",
+        name: Scratch.translate("Vibration"),
         color1: "#45a15c",
         color2: "#317041",
         color3: "#35523c",
@@ -23,22 +23,22 @@
           {
             opcode: "startVibration",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start vibration",
+            text: Scratch.translate("start vibration"),
           },
           {
             opcode: "stopVibration",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop vibrations",
+            text: Scratch.translate("stop vibrations"),
           },
           "---",
           {
             opcode: "timedVibration",
             blockType: Scratch.BlockType.COMMAND,
-            text: "vibrate for [SECONDS] seconds",
+            text: Scratch.translate("vibrate for [SECONDS] seconds"),
             arguments: {
               SECONDS: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 2,
+                defaultValue: "2",
               },
             },
           },
