@@ -883,12 +883,16 @@
           {
             opcode: "getLinesV2",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("# of lines [WITH_WORDWRAP]"),
+            text: Scratch.translate({
+              default: "# of lines [WITH_WORD_WRAP]",
+              description:
+                "[WITH_WORD_WRAP] is a menu with choices 'with word wrap' and 'without word wrap'",
+            }),
             hideFromPalette: compatibilityMode,
             arguments: {
-              WITH_WORDWRAP: {
+              WITH_WORD_WRAP: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "twWordwrap",
+                menu: "twWordWrap",
               },
             },
             disableMonitor: true,
@@ -1193,15 +1197,18 @@
             acceptReporters: true,
             items: "getFonts",
           },
-          twWordwrap: {
+          twWordWrap: {
             acceptReporters: true,
-            items: [{
-              text: Scratch.translate('with wordwrap'),
-              value: 'with wordwrap',
-            }, {
-              text: Scratch.translate('without wordwrap'),
-              value: 'without wordwrap',
-            }]
+            items: [
+              {
+                text: Scratch.translate("with word wrap"),
+                value: "with word wrap",
+              },
+              {
+                text: Scratch.translate("without word wrap"),
+                value: "without word wrap",
+              },
+            ],
           },
         },
       };
@@ -1412,9 +1419,10 @@
       if (!(skin instanceof TextCostumeSkin)) return 0;
 
       const state = this._getState(util.target);
-      const text = state.skin.text, lines = state.skin.lines;
-      if (Scratch.Cast.toString(args.WITH_WORDWRAP) == 'with wordwrap') return lines.length;
-      return text.split("\n").length;
+      if (Scratch.Cast.toString(args.WITH_WORD_WRAP) === "with word wrap") {
+        return state.skin.lines.length;
+      }
+      return state.skin.text.split("\n").length;
     }
 
     setAlignment(args, util) {
