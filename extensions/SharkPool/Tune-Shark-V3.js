@@ -52,8 +52,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
 
   let soundBank = {};
   let settings = { flagCtrl : false, canSave : false };
-  const load = () => {
-    const storage = runtime.extensionStorage["SPtuneShark3"];
+  const load = (storage) => {
     if (storage === undefined) return;
     settings = storage.settings;
     soundBank = storage.bank;
@@ -66,7 +65,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
       });
     }
   };
-  load();
+  load(runtime.extensionStorage["SPtuneShark3"]);
 
   class SPtuneShark3 {
     constructor() {
@@ -1001,7 +1000,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
         const convertBank = JSON.parse(JSON.stringify(soundBank));
         Object.values(convertBank).forEach(item => delete item.context);
         runtime.extensionStorage["SPtuneShark3"] = { bank : convertBank, settings };
-      } else { runtime.extensionStorage["SPtuneShark3"] = {} }
+      } else { runtime.extensionStorage["SPtuneShark3"] = undefined }
     }
   }
 
