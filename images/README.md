@@ -112,7 +112,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Based on an image by [@SIPC](https://github.com/SIPC) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1431207669.
 
 ## Skyhigh173/json.svg
- - Created by @Skyhigh173 in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1457973080.
+ - Based on work by [@xTvii] in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796.
 
 ## text.svg
  - Based on https://github.com/ScratchCE/scratch-gui/blob/develop/src/lib/libraries/extensions/strings/strings.png by [@JoshsAccount](https://scratch.mit.edu/users/JoshsAccount/) under [The GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html).
