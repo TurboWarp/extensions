@@ -268,7 +268,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [XmerStudio](https://github.com/XmerStudio) in https://github.com/TurboWarp/extensions/pull/1384
 
 ## Lily/AllMenus.svg
- - Created by [YogaindoCR](https://github.com/YogaindoCR) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1681839774
+ - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
 
 ## Lily/ListTools.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings).
