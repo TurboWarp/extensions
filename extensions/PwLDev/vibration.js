@@ -1,6 +1,6 @@
 // Name: Vibration
 // ID: pwldevvibration
-// Description: Access and control the device's vibration. Only available in some devices.
+// Description: Control the device's vibration. Only works on Android.
 // By: PwLDev <https://scratch.mit.edu/users/PwLDev/>
 // License: MPL-2.0
 
@@ -21,20 +21,13 @@
         color3: "#35523c",
         blocks: [
           {
-            opcode: "startVibration",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("start vibration"),
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Only works on Android."),
           },
           {
-            opcode: "stopVibration",
+            opcode: "start",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("stop vibrations"),
-          },
-          "---",
-          {
-            opcode: "timedVibration",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("vibrate for [SECONDS] seconds"),
+            text: Scratch.translate("start vibrating for [SECONDS] seconds"),
             arguments: {
               SECONDS: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -42,20 +35,25 @@
               },
             },
           },
+          {
+            opcode: "stop",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("stop vibrating"),
+          },
         ],
       };
     }
 
-    startVibration() {
-      navigator.vibrate(5000);
+    start(args) {
+      if (navigator.vibrate) {
+        navigator.vibrate(Scratch.Cast.toNumber(args.SECONDS) * 1000);
+      }
     }
 
-    stopVibration() {
-      navigator.vibrate(0);
-    }
-
-    timedVibration(args) {
-      navigator.vibrate(args.SECONDS * 1000);
+    stop() {
+      if (navigator.vibrate) {
+        navigator.vibrate(0);
+      }
     }
   }
 
