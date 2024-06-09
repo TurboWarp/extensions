@@ -308,5 +308,8 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@Xeltalliv](https://github.com/Xeltalliv).
  - Font is Deja Vu Sans.
 
-## Clay/htmlEncode
+## Clay/htmlEncode.svg
  - Created by [@ClaytonTDM](https://github.com/ClaytonTDM) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
+
+## CST1229/images.svg
+ - Created by [@mcnole25](https://github.com/mcnole25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-2122654376
