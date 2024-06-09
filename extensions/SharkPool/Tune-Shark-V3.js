@@ -4,8 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.1.2
-// Thanks to HOME for the song "Resonance" being used as the default audio link
+// Version V.3.1.21
 
 (function (Scratch) {
   "use strict";
@@ -52,33 +51,50 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
   });
 
   let soundBank = {};
-  let flagCtrl = false;
+  let settings = { flagCtrl : false, canSave : false };
+  const load = () => {
+    const storage = runtime.extensionStorage["SPtuneShark3"];
+    if (storage === undefined) return;
+    settings = storage.settings;
+    soundBank = storage.bank;
+    for (const item in soundBank) {
+      soundBank[item].loaded = false;
+      const engine = new Pizzicato.Sound(soundBank[item].src, () => {
+        engine.sourceNode = engine.getSourceNode();
+        soundBank[item].context = engine;
+        soundBank[item].loaded = true;
+      });
+    }
+  };
+  load();
 
   class SPtuneShark3 {
     constructor() {
       runtime.on("PROJECT_START", () => {
-        if (flagCtrl) this.ctrlSounds({ CONTROL : "stop" });
+        if (settings.flagCtrl) this.ctrlSounds({ CONTROL : "stop" });
       });
       runtime.on("PROJECT_STOP_ALL", () => {
-        if (flagCtrl) this.ctrlSounds({ CONTROL : "stop" });
+        if (settings.flagCtrl) this.ctrlSounds({ CONTROL : "stop" });
       });
       runtime.on("BEFORE_EXECUTE", () => {
         const projectVal = scratchAudio.inputNode.gain.value;
         Object.keys(soundBank).forEach(key => {
           const bank = soundBank[key];
-          const sound = bank.context;
-          // Clamp Volume to Project Volume
-          const curVol = Math.min(100, Math.max(0, bank.vol)) / 100;
-          sound.volume = curVol * projectVal;
+          if (bank.loaded) {
+            const sound = bank.context;
+            // Clamp Volume to Project Volume
+            const curVol = Math.min(100, Math.max(0, bank.vol)) / 100;
+            sound.volume = curVol * projectVal;
 
-          // Apply Speed Changes
-          if (bank.speed !== 1 && sound.playing) {
-            const lastplay = sound.lastTimePlayed;
-            const time = Math.abs(lastplay - sound.sourceNode.context.currentTime);
-            sound.stop();
-            sound.play(0, time * bank.speed);
-            sound.lastTimePlayed = lastplay;
-            this.patchLinks(sound.sourceNode, bank);
+            // Apply Speed Changes
+            if (bank.speed !== 1 && sound.playing) {
+              const lastplay = sound.lastTimePlayed;
+              const time = Math.abs(lastplay - sound.sourceNode.context.currentTime);
+              sound.stop();
+              sound.play(0, time * bank.speed);
+              sound.lastTimePlayed = lastplay;
+              this.patchLinks(sound.sourceNode, bank);
+            }
           }
         });
       });
@@ -109,7 +125,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
             text: "import sound from URL [URL] named [NAME]",
             blockIconURI: settingsIconURI,
             arguments: {
-              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://tinyurl.com/Resonance-Home" },
+              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://extensions.turbowarp.org/meow.mp3" },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }
             },
           },
@@ -142,6 +158,15 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "bindMenu" },
               NAME2: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound2" }
+            },
+          },
+          {
+            opcode: "save2Project",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "[SAVE] all sounds to project",
+            blockIconURI: settingsIconURI,
+            arguments: {
+              SAVE: { type: Scratch.ArgumentType.STRING, menu: "saveMenu" }
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Audio Playback" },
@@ -441,6 +466,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
           }
         ],
         menus: {
+          saveMenu: ["save", "dont save"],
           un_pauseMenu: ["pause", "unpause"],
           playMenu: ["start", "stop", "pause", "unpause"],
           toggleMenu: ["on", "off"],
@@ -486,10 +512,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
     }
 
     modTime(number, opts) {
-      number = number / opts.pitch;
-      number = number / opts.speed;
-      number = number / ((opts.detune / 1000) + 1);
-      return number;
+      return number / (opts.pitch * opts.speed * ((opts.detune / 1000) + 1));
     }
 
     updateEffect(effect, sound, name, args) {
@@ -608,15 +631,11 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
         if (!args.URL) return resolve();
         const engine = new Pizzicato.Sound(args.URL, () => {
           try {
-            // Expose Buffers
-            engine.volume = 0;
-            engine.play();
-            engine.stop();
-            engine.volume = 1;
+            engine.sourceNode = engine.getSourceNode();
             soundBank[args.NAME] = {
               context: engine, name: args.NAME, src: args.URL, effects: {},
-              vol: 100, gain: 1, pitch: 1, detune: 0, speed: 1, loopParm: [0, 0],
-              overlap: false, overlays: [], isBind: false, binds: {}
+              loaded: true, vol: 100, gain: 1, pitch: 1, detune: 0, speed: 1, 
+              loopParm: [0, 0], overlap: false, overlays: [], isBind: false, binds: {}
             };
             resolve();
           } catch {
@@ -722,7 +741,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
       }
     }
 
-    enableControl(args) { flagCtrl = args.ON_OFF === "on" }
+    enableControl(args) { settings.flagCtrl = args.ON_OFF === "on" }
 
     toggleOverlap(args) {
       const sound = soundBank[args.NAME];
@@ -771,7 +790,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
       const sound = soundBank[args.NAME];
       if (sound === undefined) return false;
       switch (args.CONTROL) {
-        case "exists": return true;
+        case "exists": return sound.loaded;
         case "playing": return sound.context.playing;
         case "paused": return sound.context.paused;
         case "looped": return sound.context.loop;
@@ -974,6 +993,15 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
         high_band_gain: Scratch.Cast.toNumber(args.HIGH) / 10
       });
       this.updateEffect(equalizer, sound, "EQUALIZER", args);
+    }
+
+    save2Project(args) {
+      settings.canSave = args.SAVE === "save";
+      if (settings.canSave) {
+        const convertBank = JSON.parse(JSON.stringify(soundBank));
+        Object.values(convertBank).forEach(item => delete item.context);
+        runtime.extensionStorage["SPtuneShark3"] = { bank : convertBank, settings };
+      } else { runtime.extensionStorage["SPtuneShark3"] = {} }
     }
   }
 
