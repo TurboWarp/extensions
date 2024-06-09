@@ -307,3 +307,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Xeltalliv/simple3D.png
  - Created by [@Xeltalliv](https://github.com/Xeltalliv).
  - Font is Deja Vu Sans.
+
+## Clay/htmlEncode
+ - Created by [@ClaytonTDM](https://github.com/ClaytonTDM) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
