@@ -37,7 +37,7 @@
     getInfo() {
       return {
         id: "lmsLooksPlus",
-        name: "Looks+",
+        name: Scratch.translate("Looks+"),
         color1: "#9966FF",
         color2: "#855CD6",
         color3: "#774DCB",
@@ -46,7 +46,7 @@
           {
             opcode: "showSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show [TARGET]",
+            text: Scratch.translate("show [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -58,7 +58,7 @@
           {
             opcode: "hideSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "hide [TARGET]",
+            text:Scratch.translate ("hide [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -70,7 +70,7 @@
           {
             opcode: "spriteVisible",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[TARGET] visible?",
+            text: Scratch.translate("[TARGET] visible?"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -85,7 +85,7 @@
           {
             opcode: "setLayerTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set layer # of [TARGET] to [LAYER]",
+            text: Scratch.translate("set layer # of [TARGET] to [LAYER]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -101,7 +101,7 @@
           {
             opcode: "spriteLayerNumber",
             blockType: Scratch.BlockType.REPORTER,
-            text: "layer # of [TARGET]",
+            text: Scratch.translate("layer # of [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -113,7 +113,7 @@
           {
             opcode: "effectValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[EFFECT] effect of [TARGET]",
+            text: Scratch.translate("[EFFECT] effect of [TARGET]"),
             arguments: {
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -133,7 +133,7 @@
           {
             opcode: "targetCostumeNumber",
             blockType: Scratch.BlockType.REPORTER,
-            text: "# of costumes in [TARGET]",
+            text: Scratch.translate("# of costumes in [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -145,7 +145,7 @@
           {
             opcode: "costumeAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[ATTRIBUTE] of [COSTUME]",
+            text:Scratch.translate ("[ATTRIBUTE] of [COSTUME]"),
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -163,7 +163,7 @@
           {
             opcode: "snapshotStage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "snapshot stage",
+            text: Scratch.translate("snapshot stage"),
             disableMonitor: true,
             extensions: ["colours_looks"],
           },
@@ -173,7 +173,7 @@
           {
             opcode: "replaceCostumeContent",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [TYPE] for [COSTUME] to [CONTENT]",
+            text:Scratch.translate ("set [TYPE] for [COSTUME] to [CONTENT]"),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -193,7 +193,7 @@
           {
             opcode: "restoreCostumeContent",
             blockType: Scratch.BlockType.COMMAND,
-            text: "restore content for [COSTUME]",
+            text: Scratch.translate("restore content for [COSTUME]"),
             arguments: {
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
@@ -204,7 +204,7 @@
           {
             opcode: "costumeContent",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[CONTENT] of costume # [COSTUME] of [TARGET]",
+            text: Scratch.translate("[CONTENT] of costume # [COSTUME] of [TARGET]"),
             arguments: {
               CONTENT: {
                 type: Scratch.ArgumentType.STRING,
@@ -228,7 +228,7 @@
           {
             opcode: "replaceColors",
             blockType: Scratch.BlockType.REPORTER,
-            text: "replace [COLOR1] with [COLOR2] in [SVG]",
+            text:Scratch.translate ("replace [COLOR1] with [COLOR2] in [SVG]"),
             arguments: {
               COLOR1: {
                 type: Scratch.ArgumentType.COLOR,
@@ -248,7 +248,7 @@
           {
             opcode: "colorHex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "hex of [COLOR]",
+            text:Scratch.translate ("hex of [COLOR]"),
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -264,31 +264,31 @@
             acceptReporters: false,
             items: [
               {
-                text: "color",
+                text: Scratch.translate("color"),
                 value: "color",
               },
               {
-                text: "fisheye",
+                text: Scratch.translate("fisheye"),
                 value: "fisheye",
               },
               {
-                text: "whirl",
+                text: Scratch.translate("whirl"),
                 value: "whirl",
               },
               {
-                text: "pixelate",
+                text: Scratch.translate("pixelate"),
                 value: "pixelate",
               },
               {
-                text: "mosaic",
+                text: Scratch.translate("mosaic"),
                 value: "mosaic",
               },
               {
-                text: "brightness",
+                text: Scratch.translate("brightness"),
                 value: "brightness",
               },
               {
-                text: "ghost",
+                text: Scratch.translate("ghost"),
                 value: "ghost",
               },
             ],
@@ -297,23 +297,23 @@
             acceptReporters: false,
             items: [
               {
-                text: "width",
+                text: Scratch.translate("width"),
                 value: "width",
               },
               {
-                text: "height",
+                text: Scratch.translate("height"),
                 value: "height",
               },
               {
-                text: "format",
+                text: Scratch.translate("format"),
                 value: "format",
               },
               {
-                text: "rotation center x",
+                text: Scratch.translate("rotation center x"),
                 value: "rotationCenterX",
               },
               {
-                text: "rotation center y",
+                text: Scratch.translate("rotation center y"),
                 value: "rotationCenterY",
               },
             ],
@@ -322,11 +322,11 @@
             acceptReporters: false,
             items: [
               {
-                text: "content",
+                text: Scratch.translate("content"),
                 value: "content",
               },
               {
-                text: "dataURI",
+                text: Scratch.translate("dataURI"),
                 value: "dataURI",
               },
             ],
