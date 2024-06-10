@@ -49,23 +49,23 @@
     getInfo() {
       return {
         id: "mdwaltersnotifications",
-        name: "Notifications",
+        name: Scratch.translate("Notifications"),
         blocks: [
           {
             opcode: "requestPermission",
             blockType: Scratch.BlockType.COMMAND,
-            text: "request notification permission",
+            text: Scratch.translate("request notification permission"),
           },
           {
             opcode: "hasPermission",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "has notification permission",
+            text: Scratch.translate("has notification permission"),
             disableMonitor: true,
           },
           {
             opcode: "showNotification",
             blockType: Scratch.BlockType.COMMAND,
-            text: "create notification with text [text]",
+            text: Scratch.translate("create notification with text [text]"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -76,7 +76,7 @@
           {
             opcode: "closeNotification",
             blockType: Scratch.BlockType.COMMAND,
-            text: "close notification",
+            text: Scratch.translate("close notification"),
           },
         ],
       };
