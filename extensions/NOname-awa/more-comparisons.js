@@ -12,7 +12,7 @@
     getInfo() {
       return {
         id: "nonameawacomparisons",
-        name: "More Comparisons",
+        name: Scratch.translate("More Comparisons"),
         color1: "#00a889",
         color2: "#1e8c76",
         color3: "#1e8c76",
@@ -20,14 +20,14 @@
           {
             opcode: "true",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "true",
+            text: Scratch.translate("true"),
             arguments: {},
             disableMonitor: true,
           },
           {
             opcode: "false",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "false",
+            text: Scratch.translate("false"),
             arguments: {},
             disableMonitor: true,
           },
