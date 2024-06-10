@@ -1,7 +1,7 @@
 // Name: Notifications
 // ID: notification
 // Description: Use notifications in your projects! Extended by h3ldll.
-// By: h3ldll <https://scratch.mit.edu/h3ldotdll>
+// By: h3ldotdll <https://scratch.mit.edu/h3ldotdll>
 // Original: mdwalters
 // License: MIT
 
