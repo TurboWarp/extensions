@@ -327,7 +327,10 @@
           ? []
           : [
               {
-                text: Scratch.translate("scale"),
+                text: Scratch.translate({
+                  default: "scale",
+                  description: "Scale as in upscale/downscale",
+                }),
                 value: "scale",
               },
             ]),

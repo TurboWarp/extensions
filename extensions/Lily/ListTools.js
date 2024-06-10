@@ -362,7 +362,7 @@
                 value: "descending",
               },
               {
-                text: Scratch.translate("randomised"),
+                text: Scratch.translate("randomized"),
                 value: "randomised",
               },
             ],

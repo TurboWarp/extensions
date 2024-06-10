@@ -69,7 +69,10 @@
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, world!",
+                defaultValue: Scratch.translate({
+                  default: "Hello, world!",
+                  description: "Default text in the create notification block",
+                }),
               },
             },
           },
@@ -95,7 +98,10 @@
 
     async _showNotification(text) {
       if (await this.hasPermission()) {
-        const title = "Notification from project";
+        const title = Scratch.translate({
+          default: "Notification from project",
+          description: "Title of notifications created by the project",
+        });
         const options = {
           body: text,
         };
