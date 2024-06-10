@@ -65,7 +65,7 @@
       if (navigator.vibrate) {
         const pattern = Scratch.Cast.toString(args.PATTERN)
           .match(/[\w\-.]+/g) // Make into array
-          ?.map((val) => Scratch.Cast.toNumber(val) * 1000) // Convert to numbers in milliseconds
+          ?.map((val) => Scratch.Cast.toNumber(val) * 1000); // Convert to numbers in milliseconds
         if (pattern) {
           navigator.vibrate(pattern);
         }
