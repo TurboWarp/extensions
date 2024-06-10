@@ -358,7 +358,9 @@
           {
             opcode: "broadcastToTargetAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("broadcast [BROADCAST_OPTION] to [TARGET] and wait"),
+            text: Scratch.translate(
+              "broadcast [BROADCAST_OPTION] to [TARGET] and wait"
+            ),
             arguments: {
               BROADCAST_OPTION: {
                 type: null,
@@ -377,7 +379,9 @@
           {
             opcode: "broadcastData",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("broadcast [BROADCAST_OPTION] with data [DATA]"),
+            text: Scratch.translate(
+              "broadcast [BROADCAST_OPTION] with data [DATA]"
+            ),
             arguments: {
               BROADCAST_OPTION: {
                 type: null,
@@ -392,7 +396,9 @@
           {
             opcode: "broadcastDataAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("broadcast [BROADCAST_OPTION] with data [DATA] and wait"),
+            text: Scratch.translate(
+              "broadcast [BROADCAST_OPTION] with data [DATA] and wait"
+            ),
             arguments: {
               BROADCAST_OPTION: {
                 type: null,
@@ -422,7 +428,9 @@
           {
             opcode: "broadcastDataToTarget",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA]"),
+            text: Scratch.translate(
+              "broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA]"
+            ),
             func: "broadcastToTarget",
             arguments: {
               BROADCAST_OPTION: {
@@ -442,7 +450,9 @@
           {
             opcode: "broadcastDataToTargetAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA] and wait"),
+            text: Scratch.translate(
+              "broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA] and wait"
+            ),
             func: "broadcastToTargetAndWait",
             arguments: {
               BROADCAST_OPTION: {
