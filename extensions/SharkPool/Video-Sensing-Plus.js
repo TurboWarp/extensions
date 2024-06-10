@@ -14,13 +14,9 @@
 
   if (!Scratch.vm.extensionManager.isExtensionLoaded("videoSensing")) runtime.extensionManager.loadExtensionIdSync("videoSensing");
 
-  function hexToRgb(hex) {
-    return [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
-  }
-
   const canvasElement = document.createElement("canvas");
   let canUse = false;
-  async function hasFrontOrBackCamera() {
+  function hasFrontOrBackCamera() {
     const user = navigator.userAgent;
     canUse = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(user);
   }
@@ -231,7 +227,6 @@
       canvas.width = imageData.width;
       canvas.height = imageData.height;
       context.putImageData(imageData, 0, 0);
-      const dataURL = canvas.toDataURL();
       return canvas.toDataURL();
     }
 
