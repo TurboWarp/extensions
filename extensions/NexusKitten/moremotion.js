@@ -29,7 +29,7 @@
             text:
               typeof ScratchBlocks !== "undefined"
                 ? ScratchBlocks.Msg["MOTION_STAGE_SELECTED"]
-                : "Stage selected: no motion blocks",
+                : Scratch.translate("Stage selected: no motion blocks"),
           },
           {
             filter: [Scratch.TargetType.SPRITE],
