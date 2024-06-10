@@ -1,6 +1,6 @@
 // Name: Notifications
 // ID: notification
-// Description: Use notifications in your projects! Extended by h3ldll
+// Description: Use notifications in your projects! Extended by h3ldll.
 // By: h3ldll <https://scratch.mit.edu/h3ldotdll>
 // Original: mdwalters
 // License: MIT
@@ -104,9 +104,7 @@
             new Notification(args.TITLE, {
               body: args.BODY,
             })
-          } else {
-            throw new error('Error: couldnt get notification permission from browser')
-          }
+          } 
         })
       }
       sendtaggednotif(args) {
@@ -116,8 +114,6 @@
               body: args.BODY,
               tag: args.TAG,
             })
-          } else {
-            throw new error('Error: couldnt get notification permission from browser')
           }
         })
       }
@@ -128,8 +124,6 @@
               body: args.BODY,
               icon: args.IMG,
             })
-          } else {
-            throw new error('Error: couldnt get notification permission from browser')
           }
         })
       }
