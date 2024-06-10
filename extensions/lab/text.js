@@ -1420,6 +1420,9 @@
 
       const state = this._getState(util.target);
       if (Scratch.Cast.toString(args.WITH_WORD_WRAP) === "with word wrap") {
+        if (state.skin._needsReflow()) {
+          state.skin._reflowText();
+        }
         return state.skin.lines.length;
       }
       return state.skin.text.split("\n").length;
