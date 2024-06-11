@@ -14,12 +14,27 @@
     "extension_wedo_tilt_menu",
 
     // Unused menu in More Events that won't be translated
-    "lmsMoreEvents_menu_state"
+    "lmsMoreEvents_menu_state",
   ];
 
-  Scratch.vm.addListener("BLOCKSINFO_UPDATE", refreshMenus);
+  const escapeXML = (text) =>
+    text.replace(/["'&<>]/g, (i) => {
+      switch (i) {
+        case "&":
+          return "&amp;";
+        case '"':
+          return "&apos;";
+        case "'":
+          return "&quot;";
+        case ">":
+          return "&gt;";
+        case "<":
+          return "&lt;";
+      }
+      return "";
+    });
 
-  function refreshMenus() {
+  const refreshMenus = () => {
     if (!window.ScratchBlocks) return;
     Scratch.vm.removeListener("BLOCKSINFO_UPDATE", refreshMenus);
 
@@ -30,12 +45,15 @@
     );
 
     const menuBlocks = allBlocks.map(
-      (item) => '<block id="' + item + '" type="' + item + '"/>'
+      (item) =>
+        '<block id="' + escapeXML(item) + '" type="' + escapeXML(item) + '"/>'
     );
 
     blockXML = menuBlocks.join("");
     Scratch.vm.runtime.extensionManager.refreshBlocks();
-  }
+  };
+
+  Scratch.vm.addListener("BLOCKSINFO_UPDATE", refreshMenus);
 
   class AllMenus {
     constructor() {
