@@ -529,7 +529,7 @@
             ],
           },
           // This menu is unused, however we can't remove it as that could break projects
-          // that use the menu through the All Menus block.
+          // that use the menu through the All Menus extension.
           state: {
             acceptReporters: false,
             items: [
