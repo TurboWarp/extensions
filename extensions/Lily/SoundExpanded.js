@@ -323,7 +323,8 @@
 
     _startLooping(util, sound, loopStart, loopEnd) {
       const index = this._getSoundIndex(sound, util);
-      if (index < 0) return 0;
+      if (index < 0) return;
+
       const target = util.target;
       const sprite = util.target.sprite;
 
@@ -336,9 +337,11 @@
       }
 
       if (!soundPlayer.outputNode) return;
+
       soundPlayer.outputNode.loop = true;
       soundPlayer.outputNode.loopStart = loopStart;
-      soundPlayer.outputNode.loopEnd = loopEnd;
+      // If loopEnd is the default of 0, then loopStart is ignored
+      soundPlayer.outputNode.loopEnd = loopEnd || soundPlayer.outputNode.buffer.duration;
     }
 
     startLooping(args, util) {
