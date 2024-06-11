@@ -528,17 +528,14 @@
               },
             ],
           },
+          // This menu is unused, however we can't remove it as that could break projects
+          // that use the menu through the All Menus block.
           state: {
             acceptReporters: false,
             items: [
-              {
-                text: Scratch.translate("enabled"),
-                value: "enabled",
-              },
-              {
-                text: Scratch.translate("disabled"),
-                value: "disabled",
-              },
+              // Unused, so don't bother translating
+              "enabled",
+              "disabled"
             ],
           },
         },
