@@ -5,7 +5,7 @@
 // License: MIT AND LGPL-3.0
 
 // Attribution is not required, but greatly appreciated.
-// Frame Block Added By SharkPool
+
 (function (Scratch) {
   "use strict";
 
@@ -240,6 +240,7 @@
             },
           },
           {
+            // Frame Block Added By SharkPool
             opcode: "getFrame",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("frame of video [NAME] at [TIME] seconds"),
