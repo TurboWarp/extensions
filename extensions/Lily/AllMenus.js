@@ -7,8 +7,15 @@
 (function (Scratch) {
   "use strict";
 
-  var blockXML;
-  const blacklist = ["looks_costumenumbername", "extension_wedo_tilt_menu"];
+  let blockXML;
+
+  const blocklist = [
+    "looks_costumenumbername",
+    "extension_wedo_tilt_menu",
+
+    // Unused menu in More Events that won't be translated
+    "lmsMoreEvents_menu_state"
+  ];
 
   Scratch.vm.addListener("BLOCKSINFO_UPDATE", refreshMenus);
 
@@ -19,7 +26,7 @@
     let allBlocks = Object.keys(ScratchBlocks.Blocks);
 
     allBlocks = allBlocks.filter(
-      (item) => item.includes("menu") && !blacklist.includes(item)
+      (item) => item.includes("menu") && !blocklist.includes(item)
     );
 
     const menuBlocks = allBlocks.map(
