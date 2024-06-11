@@ -535,7 +535,7 @@
             items: [
               // Unused, so don't bother translating
               "enabled",
-              "disabled"
+              "disabled",
             ],
           },
         },
