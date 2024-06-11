@@ -45,7 +45,7 @@
 
   const highlightAnimation = (outlineColor, backgroundColor) => [
     [
-      { outline: "#0000 2px solid", backgroundColor: "revert-layer" },
+      { outline: "#0000 2px solid" },
       {
         outline: outlineColor + " 2px solid",
         backgroundColor: backgroundColor,
@@ -57,7 +57,7 @@
         outline: outlineColor + " 2px solid",
         backgroundColor: backgroundColor,
       },
-      { outline: "#0000 2px solid", backgroundColor: "revert-layer" },
+      { outline: "#0000 2px solid" },
     ],
     { duration: 1700 },
   ];
