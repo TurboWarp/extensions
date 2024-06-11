@@ -341,7 +341,8 @@
       soundPlayer.outputNode.loop = true;
       soundPlayer.outputNode.loopStart = loopStart;
       // If loopEnd is the default of 0, then loopStart is ignored
-      soundPlayer.outputNode.loopEnd = loopEnd || soundPlayer.outputNode.buffer.duration;
+      soundPlayer.outputNode.loopEnd =
+        loopEnd || soundPlayer.outputNode.buffer.duration;
     }
 
     startLooping(args, util) {
