@@ -206,7 +206,12 @@
       } else if (args.OPTION === "stop" && stopButton) {
         stopButton.animate(...highlightAnimation("#b84848", "#b848482e"));
       } else if (args.OPTION === "fullscreen" && fullScreen) {
-        fullScreen.animate(...highlightAnimation("#666", "var(--ui-tertiary, hsla(215, 50%, 90%, 1))"));
+        fullScreen.animate(
+          ...highlightAnimation(
+            "#666",
+            "var(--ui-tertiary, hsla(215, 50%, 90%, 1))"
+          )
+        );
       }
     }
 
