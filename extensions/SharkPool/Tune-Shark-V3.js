@@ -4,7 +4,8 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.1.22
+// Version V.3.1.3
+// Thanks to HOME for the song "Resonance" being used as the default audio link
 
 (function (Scratch) {
   "use strict";
@@ -65,7 +66,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
       });
     }
   };
-  load(runtime.extensionStorage["SPtuneShark3"]);
+  if (!Scratch.extensions.isPenguinMod) load(runtime.extensionStorage["SPtuneShark3"]);
 
   class SPtuneShark3 {
     constructor() {
@@ -124,7 +125,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
             text: "import sound from URL [URL] named [NAME]",
             blockIconURI: settingsIconURI,
             arguments: {
-              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://extensions.turbowarp.org/meow.mp3" },
+              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://tinyurl.com/Resonance-Home" },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }
             },
           },
@@ -248,6 +249,16 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
             opcode: "toggleLoop",
             blockType: Scratch.BlockType.COMMAND,
             text: "toggle sound [NAME] looping [TYPE]",
+            blockIconURI: settingsIconURI,
+            arguments: {
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "toggleMenu" }
+            },
+          },
+          {
+            opcode: "toggleReverse",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "toggle sound [NAME] reverse mode [TYPE]",
             blockIconURI: settingsIconURI,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
@@ -483,7 +494,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
           },
           soundBools: {
             acceptReporters: true,
-            items: ["exists", "playing", "paused", "looped", "overlaped", "binded"]
+            items: ["exists", "playing", "paused", "looped", "overlaped", "reversed", "binded"]
           },
           effectMenu: {
             acceptReporters: true,
@@ -633,7 +644,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
             engine.sourceNode = engine.getSourceNode();
             soundBank[args.NAME] = {
               context: engine, name: args.NAME, src: args.URL, effects: {},
-              loaded: true, vol: 100, gain: 1, pitch: 1, detune: 0, speed: 1, 
+              loaded: true, reversed: false, vol: 100, gain: 1, pitch: 1, detune: 0, speed: 1, 
               loopParm: [0, 0], overlap: false, overlays: [], isBind: false, binds: {}
             };
             resolve();
@@ -755,6 +766,24 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
       if (args.TYPE === "off") this.typeOverlay(sound, "stop");
     }
 
+    toggleReverse(args) {
+      const sound = soundBank[args.NAME];
+      if (sound === undefined) return;
+      if (sound.reversed === (args.TYPE === "on")) return;
+      sound.reversed = args.TYPE === "on";
+      this.typeOverlay(sound, "stop");
+      const node = sound.context.sourceNode;
+      const reverseBuffer = (audioBuffer) => {
+        for (let i = 0; i < audioBuffer.numberOfChannels; i++) {
+          audioBuffer.getChannelData(i).reverse();
+        }
+        return audioBuffer;
+      }
+      const bufferSource = node.context.createBufferSource();
+      bufferSource.buffer = reverseBuffer(node.buffer);
+      bufferSource.connect(node.context.destination);
+    }
+
     loopParams(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
@@ -794,6 +823,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
         case "paused": return sound.context.paused;
         case "looped": return sound.context.loop;
         case "overlaped": return sound.overlap;
+        case "reversed": return sound.reversed;
         case "binded": return sound.isBind;
         default: return false;
       }
@@ -996,12 +1026,24 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
 
     save2Project(args) {
       settings.canSave = args.SAVE === "save";
+      if (!Scratch.extensions.isPenguinMod) {
+        if (settings.canSave) {
+          const convertBank = JSON.parse(JSON.stringify(soundBank));
+          Object.values(convertBank).forEach(item => delete item.context);
+          runtime.extensionStorage["SPtuneShark3"] = { bank : convertBank, settings };
+        } else { runtime.extensionStorage["SPtuneShark3"] = undefined }
+      }
+    }
+
+    // PenguinMod Storage
+    serialize() {
       if (settings.canSave) {
         const convertBank = JSON.parse(JSON.stringify(soundBank));
         Object.values(convertBank).forEach(item => delete item.context);
-        runtime.extensionStorage["SPtuneShark3"] = { bank : convertBank, settings };
-      } else { runtime.extensionStorage["SPtuneShark3"] = undefined }
+        return { SPtuneShark3 : { bank : convertBank, settings } }
+      }
     }
+    deserialize(data) { load(data.SPtuneShark3) }
   }
 
   Scratch.extensions.register(new SPtuneShark3());
