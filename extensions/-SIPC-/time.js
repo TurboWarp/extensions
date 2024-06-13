@@ -50,7 +50,7 @@
           {
             opcode: "Timedata",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get [Timedata] from [timestamp]"),
+            text: Scratch.translate("[Timedata] from [timestamp]"),
             arguments: {
               timestamp: {
                 type: Scratch.ArgumentType.NUMBER,

@@ -349,14 +349,14 @@
     getInfo() {
       return {
         id: "shovellzcompress",
-        name: "LZ Compress",
+        name: Scratch.translate("LZ Compress"),
         color1: "#2f3463",
         color2: "#2b2f59",
         blocks: [
           {
             opcode: "compress",
             blockType: Scratch.BlockType.REPORTER,
-            text: "compress [TEXT] to [TYPE]",
+            text: Scratch.translate("compress [TEXT] to [TYPE]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -371,7 +371,7 @@
           {
             opcode: "decompress",
             blockType: Scratch.BlockType.REPORTER,
-            text: "decompress [TEXT] from [TYPE]",
+            text: Scratch.translate("decompress [TEXT] from [TYPE]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -388,11 +388,14 @@
           COMPRESSIONTYPES: {
             acceptReporters: true,
             items: [
-              "Raw",
-              "Base64",
-              "EncodedURIComponent",
-              "Uint8Array",
-              "UTF16",
+              { text: Scratch.translate("Raw"), value: "Raw" },
+              { text: Scratch.translate("Base64"), value: "Base64" },
+              {
+                text: Scratch.translate("EncodedURIComponent"),
+                value: "EncodedURIComponent",
+              },
+              { text: Scratch.translate("Uint8Array"), value: "Unit8Array" },
+              { text: Scratch.translate("UTF16"), value: "UTF16" },
             ],
           },
         },

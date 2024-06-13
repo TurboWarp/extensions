@@ -113,7 +113,7 @@
           {
             opcode: "getListJoin",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get list [LIST] joined by [STRING]"),
+            text: Scratch.translate("list [LIST] joined by [STRING]"),
             disableMonitor: true,
             arguments: {
               LIST: {

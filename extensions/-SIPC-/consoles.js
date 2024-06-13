@@ -35,7 +35,7 @@
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("log"),
+                defaultValue: Scratch.translate("Log"),
               },
             },
           },
@@ -92,7 +92,7 @@
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("group"),
+                defaultValue: Scratch.translate("Group"),
               },
             },
           },
@@ -105,7 +105,7 @@
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("group"),
+                defaultValue: Scratch.translate("Group"),
               },
             },
           },

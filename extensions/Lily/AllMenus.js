@@ -65,7 +65,7 @@
     getInfo() {
       return {
         id: "lmsAllMenus",
-        name: "All Menus",
+        name: Scratch.translate("All Menus"),
         blocks: [
           {
             blockType: Scratch.BlockType.XML,

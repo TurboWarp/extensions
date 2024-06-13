@@ -23,7 +23,9 @@
           {
             opcode: "managerReporter",
             blockType: Scratch.BlockType.REPORTER,
-            text: "if [INPUTA] is manager then [INPUTB] else [INPUTC]",
+            text: Scratch.translate(
+              "if [INPUTA] is manager then [INPUTB] else [INPUTC]"
+            ),
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -39,7 +41,7 @@
           {
             opcode: "icecreammachine",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is ice cream machine [INPUT]",
+            text: Scratch.translate("is ice cream machine [INPUT]"),
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -50,7 +52,7 @@
           {
             opcode: "talkToManager",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "talk to manager [INPUT]",
+            text: Scratch.translate("talk to manager [INPUT]"),
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -60,7 +62,7 @@
           {
             opcode: "placeOrder",
             blockType: Scratch.BlockType.REPORTER,
-            text: "place order [INPUT]",
+            text: Scratch.translate("place order [INPUT]"),
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -80,11 +82,11 @@
             acceptReporters: true,
             items: [
               {
-                text: "working",
+                text: Scratch.translate("working"),
                 value: "working",
               },
               {
-                text: "broken",
+                text: Scratch.translate("broken"),
                 value: "broken",
               },
             ],

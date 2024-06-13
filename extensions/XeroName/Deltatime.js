@@ -29,7 +29,7 @@
     getInfo() {
       return {
         id: "dtbyxeroname",
-        name: "Deltatime",
+        name: Scratch.translate("Deltatime"),
         color1: "#333333",
         color2: "#444444",
         color3: "#ffffff",
