@@ -11,7 +11,7 @@
     getInfo() {
       const defaultValue = Scratch.translate({
         default: "comment",
-        description: "Default comment value"
+        description: "Default comment value",
       });
       return {
         id: "lmscomments",
@@ -28,7 +28,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: defaultValue
+                defaultValue: defaultValue,
               },
             },
           },
@@ -39,7 +39,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ,
+                defaultValue: defaultValue,
               },
             },
           },
@@ -50,7 +50,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: defaultValue
+                defaultValue: defaultValue,
               },
             },
           },
@@ -62,7 +62,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: defaultValue
+                defaultValue: defaultValue,
               },
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -77,7 +77,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: defaultValue
+                defaultValue: defaultValue,
               },
               INPUT: {
                 type: Scratch.ArgumentType.BOOLEAN,

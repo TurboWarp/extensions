@@ -25,7 +25,8 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               default: "if [INPUTA] is manager then [INPUTB] else [INPUTC]",
-              description: "This is a joke block equivalent to 'if [INPUTA] then [INPUTB] else [INPUTC]"
+              description:
+                "This is a joke block equivalent to 'if [INPUTA] then [INPUTB] else [INPUTC]",
             }),
             arguments: {
               INPUTA: {
@@ -44,7 +45,8 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate({
               default: "is ice cream machine [INPUT]",
-              description: "This is a joke block. [INPUT] can be 'working' (reports false) and 'broken' (reports true) because the machine is always broken."
+              description:
+                "This is a joke block. [INPUT] can be 'working' (reports false) and 'broken' (reports true) because the machine is always broken.",
             }),
             arguments: {
               INPUT: {
@@ -58,7 +60,8 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate({
               default: "talk to manager [INPUT]",
-              description: "This is a joke block that just reports whatever you put into it."
+              description:
+                "This is a joke block that just reports whatever you put into it.",
             }),
             arguments: {
               INPUT: {
@@ -71,7 +74,8 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               default: "place order [INPUT]",
-              description: "This is a joke block that just reports whatever yout put into it, except if it contains 'ice cream', then false because the machine is always broken."
+              description:
+                "This is a joke block that just reports whatever yout put into it, except if it contains 'ice cream', then false because the machine is always broken.",
             }),
             arguments: {
               INPUT: {
@@ -94,14 +98,16 @@
               {
                 text: Scratch.translate({
                   default: "working",
-                  description: "Used in context 'is ice cream machine [working]?', a joke block"
+                  description:
+                    "Used in context 'is ice cream machine [working]?', a joke block",
                 }),
                 value: "working",
               },
               {
                 text: Scratch.translate({
                   default: "broken",
-                  description: "Used in context 'is ice cream machine [broken]?', a joke block"
+                  description:
+                    "Used in context 'is ice cream machine [broken]?', a joke block",
                 }),
                 value: "broken",
               },

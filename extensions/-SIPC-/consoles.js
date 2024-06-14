@@ -37,7 +37,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   default: "Log",
-                  description: "Default value"
+                  description: "Default value",
                 }),
               },
             },
@@ -51,7 +51,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   default: "Information",
-                  description: "Default value"
+                  description: "Default value",
                 }),
               },
             },
@@ -65,7 +65,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   default: "Warning",
-                  description: "Default value"
+                  description: "Default value",
                 }),
               },
             },
@@ -79,7 +79,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   default: "Error",
-                  description: "Default value"
+                  description: "Default value",
                 }),
               },
             },
@@ -93,7 +93,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   default: "Debug",
-                  description: "Default value"
+                  description: "Default value",
                 }),
               },
             },
@@ -109,7 +109,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   default: "Group",
-                  description: "Default value"
+                  description: "Default value",
                 }),
               },
             },
@@ -125,7 +125,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   default: "Group",
-                  description: "Default value"
+                  description: "Default value",
                 }),
               },
             },
@@ -146,7 +146,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   default: "Time",
-                  description: "Default value"
+                  description: "Default value",
                 }),
               },
             },
@@ -160,7 +160,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   default: "Time",
-                  description: "Default value"
+                  description: "Default value",
                 }),
               },
             },
@@ -176,7 +176,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
                   default: "Time",
-                  description: "Default value"
+                  description: "Default value",
                 }),
               },
             },
