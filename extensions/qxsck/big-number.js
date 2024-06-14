@@ -48,7 +48,7 @@
         let str = String(num),
           P = str.indexOf(".");
         P = P === -1 ? str.length - 1 : P;
-        let noDecNumber=str.replace(".", "");
+        let noDecNumber = str.replace(".", "");
         let try_ = Number(noDecNumber);
         let [str_, len_] = isNaN(try_)
           ? ["0", 0]
