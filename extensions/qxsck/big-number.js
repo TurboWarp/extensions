@@ -44,7 +44,7 @@
         return result_;
       };
 
-      this.toBigNUmber = function (num) {
+      this.toBigNumber = function (num) {
         let str = String(num),
           P = str.indexOf(".");
         P = P === -1 ? str.length - 1 : P;
@@ -62,8 +62,8 @@
         };
       };
       this.toSamePer = function (num, num2) {
-        let a = this.toBigNUmber(num),
-          b = this.toBigNUmber(num2);
+        let a = this.toBigNumber(num),
+          b = this.toBigNumber(num2);
         let len = Math.max(a.len, b.len);
         if (len === a.len) b.num = b.num * this.tenTimes(len - b.len);
         else a.num = a.num * this.tenTimes(len - a.len);
@@ -96,7 +96,7 @@
         return this.formatNum(result, 100);
       };
       this.powFunc = function (num, num2) {
-        let a = this.toBigNUmber(num),
+        let a = this.toBigNumber(num),
           b = Math.trunc(this.toNum(num2)),
           flag = 0;
         if (a.num === 0n) return "0";
