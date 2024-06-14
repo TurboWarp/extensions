@@ -572,7 +572,7 @@
               MATRIX: {
                 type: ArgumentType.STRING,
                 menu: "xrMatrix",
-                defaultValue: Scratch.translate("combined"),
+                defaultValue: "combined",
               },
               ITEM: {
                 type: ArgumentType.NUMBER,
