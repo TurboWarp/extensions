@@ -110,7 +110,7 @@
           {
             opcode: "get",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("key [KEY]"),
+            text: Scratch.translate("get key [KEY]"),
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
