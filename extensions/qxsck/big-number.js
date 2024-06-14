@@ -48,17 +48,16 @@
         let str = String(num),
           P = str.indexOf(".");
         P = P === -1 ? str.length - 1 : P;
-        let str_ = str.replace(".", "");
-        let try_ = Number(str_);
-        str_ = isNaN(try_) ? "0" : str_.indexOf(".") === -1 ? str_ : "0";
-        let len = isNaN(try_)
-          ? 0
-          : str_.indexOf(".") === -1
-            ? str.length - P - 1
-            : 0;
+        let noDecNumber=str.replace(".", "");
+        let try_ = Number(noDecNumber);
+        let [str_, len_] = isNaN(try_)
+          ? ["0", 0]
+          : noDecNumber.indexOf(".") === -1
+            ? [noDecNumber, str.length - P - 1]
+            : ["0", 0];
         return {
           num: BigInt(str_),
-          len: len,
+          len: len_,
         };
       };
       this.toSamePer = function (num, num2) {
