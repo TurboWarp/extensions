@@ -59,7 +59,7 @@
           {
             opcode: "hasPermission",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("has notification permission"),
+            text: Scratch.translate("has notification permission?"),
             disableMonitor: true,
           },
           {

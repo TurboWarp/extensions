@@ -54,18 +54,18 @@
           {
             opcode: "drawSelected",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set colors red:[R]green:[G]blue:[B]"),
+            text: Scratch.translate("set colors red:[R] green:[G] blue:[B]"),
             arguments: {
               R: {
-                type: Scratch.ArgumentType.MENU,
+                type: Scratch.ArgumentType.STRING,
                 menu: "ENABLED_MENU",
               },
               G: {
-                type: Scratch.ArgumentType.MENU,
+                type: Scratch.ArgumentType.STRING,
                 menu: "ENABLED_MENU",
               },
               B: {
-                type: Scratch.ArgumentType.MENU,
+                type: Scratch.ArgumentType.STRING,
                 menu: "ENABLED_MENU",
               },
             },
@@ -73,7 +73,7 @@
           {
             opcode: "draw",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("only draw colors:[R]green:[G]blue:[B]"),
+            text: Scratch.translate("only draw colors:[R] green:[G] blue:[B]"),
             hideFromPalette: true,
             arguments: {
               R: {
@@ -101,7 +101,7 @@
           {
             opcode: "drawDepth",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("enable depth mask?[DRAW]"),
+            text: Scratch.translate("enable depth mask? [DRAW]"),
             hideFromPalette: true,
             arguments: {
               DRAW: {

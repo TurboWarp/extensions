@@ -837,7 +837,7 @@
           {
             opcode: "osBrowserDetails",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get [DROPDOWN] of user"),
+            text: Scratch.translate("[DROPDOWN] of user"),
             disableMonitor: true,
             arguments: {
               DROPDOWN: {

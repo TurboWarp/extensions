@@ -284,7 +284,7 @@
     getInfo() {
       return {
         id: "xeltallivclipblend",
-        name: "Clipping & Blending",
+        name: Scratch.translate("Clipping & Blending"),
         color1: "#9966FF",
         color2: "#855CD6",
         color3: "#774DCB",
@@ -293,7 +293,9 @@
           {
             opcode: "setClipbox",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set clipping box x1:[X1] y1:[Y1] x2:[X2] y2:[Y2]",
+            text: Scratch.translate(
+              "set clipping box x1:[X1] y1:[Y1] x2:[X2] y2:[Y2]"
+            ),
             arguments: {
               X1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -318,18 +320,18 @@
           {
             opcode: "clearClipbox",
             blockType: Scratch.BlockType.COMMAND,
-            text: "clear clipping box",
+            text: Scratch.translate("clear clipping box"),
             filter: [Scratch.TargetType.SPRITE],
             extensions: ["colours_looks"],
           },
           {
             opcode: "getClipbox",
             blockType: Scratch.BlockType.REPORTER,
-            text: "clipping box [PROP]",
+            text: Scratch.translate("clipping box [PROP]"),
             arguments: {
               PROP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "width",
+                defaultValue: Scratch.translate("width"),
                 menu: "props",
               },
             },
@@ -340,11 +342,11 @@
           {
             opcode: "setBlend",
             blockType: Scratch.BlockType.COMMAND,
-            text: "use [BLENDMODE] blending ",
+            text: Scratch.translate("use [BLENDMODE] blending"),
             arguments: {
               BLENDMODE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "default",
+                defaultValue: Scratch.translate("default"),
                 menu: "blends",
               },
             },
@@ -354,7 +356,7 @@
           {
             opcode: "getBlend",
             blockType: Scratch.BlockType.REPORTER,
-            text: "blending",
+            text: Scratch.translate("blending"),
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             extensions: ["colours_looks"],
@@ -363,11 +365,11 @@
           {
             opcode: "setAdditiveBlend",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn additive blending [STATE]",
+            text: Scratch.translate("turn additive blending [STATE]"),
             arguments: {
               STATE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "on",
+                defaultValue: Scratch.translate("on"),
                 menu: "states",
               },
             },
@@ -378,7 +380,7 @@
           {
             opcode: "getAdditiveBlend",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is additive blending on?",
+            text: Scratch.translate("is additive blending on?"),
             filter: [Scratch.TargetType.SPRITE],
             hideFromPalette: true,
             disableMonitor: true,
@@ -388,15 +390,31 @@
         menus: {
           states: {
             acceptReporters: true,
-            items: ["on", "off"],
+            items: [
+              { text: Scratch.translate("on"), value: "on" },
+              { text: Scratch.translate("off"), value: "off" },
+            ],
           },
           blends: {
             acceptReporters: true,
-            items: ["default", "additive", "subtract", "multiply", "invert"],
+            items: [
+              { text: Scratch.translate("default"), value: "default" },
+              { text: Scratch.translate("additive"), value: "additive" },
+              { text: Scratch.translate("subtract"), value: "subtract" },
+              { text: Scratch.translate("multiply"), value: "multiply" },
+              { text: Scratch.translate("invert"), value: "invert" },
+            ],
           },
           props: {
             acceptReporters: true,
-            items: ["width", "height", "min x", "min y", "max x", "max y"],
+            items: [
+              { text: Scratch.translate("width"), value: "width" },
+              { text: Scratch.translate("height"), value: "height" },
+              { text: Scratch.translate("min x"), value: "min x" },
+              { text: Scratch.translate("min y"), value: "min y" },
+              { text: Scratch.translate("max x"), value: "max x" },
+              { text: Scratch.translate("max y"), value: "max y" },
+            ],
           },
         },
       };
