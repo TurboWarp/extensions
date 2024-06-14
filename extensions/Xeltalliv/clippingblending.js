@@ -331,7 +331,7 @@
             arguments: {
               PROP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("width"),
+                defaultValue: "width",
                 menu: "props",
               },
             },
@@ -346,7 +346,7 @@
             arguments: {
               BLENDMODE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("default"),
+                defaultValue: "default",
                 menu: "blends",
               },
             },
@@ -369,7 +369,7 @@
             arguments: {
               STATE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("on"),
+                defaultValue: "on",
                 menu: "states",
               },
             },
