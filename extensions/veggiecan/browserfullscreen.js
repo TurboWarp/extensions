@@ -88,10 +88,10 @@
       };
     }
     fullscreen(args) {
-      const action = args.ACTION;
-      if (action === "enter") {
+      const action = Scratch.Cast.toString(args.ACTION).toLowerCase();
+      if (action === "enter" && !document.fullscreenElement) {
         document.documentElement.requestFullscreen();
-      } else if (action === "exit") {
+      } else if (action === "exit" && document.fullscreenElement) {
         document.exitFullscreen();
       }
     }
