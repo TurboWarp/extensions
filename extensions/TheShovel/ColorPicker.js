@@ -107,7 +107,10 @@
           RGBMenu: {
             acceptReporters: true,
             items: [
-              { text: Scratch.translate("hex"), value: "hex" },
+              { text: Scratch.translate({
+                default: "hex",
+                description: "Referring to a hex color code like #ff4c4c"
+              }), value: "hex" },
               { text: Scratch.translate("red"), value: "red" },
               { text: Scratch.translate("green"), value: "green" },
               { text: Scratch.translate("blue"), value: "blue" },

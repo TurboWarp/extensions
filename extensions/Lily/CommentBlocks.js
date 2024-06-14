@@ -9,6 +9,10 @@
 
   class CommentBlocks {
     getInfo() {
+      const defaultValue = Scratch.translate({
+        default: "comment",
+        description: "Default comment value"
+      });
       return {
         id: "lmscomments",
         name: Scratch.translate("Comment Blocks"),
@@ -24,7 +28,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("comment"),
+                defaultValue: defaultValue
               },
             },
           },
@@ -35,7 +39,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("comment"),
+                defaultValue: ,
               },
             },
           },
@@ -46,7 +50,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("comment"),
+                defaultValue: defaultValue
               },
             },
           },
@@ -58,7 +62,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("comment"),
+                defaultValue: defaultValue
               },
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -73,7 +77,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("comment"),
+                defaultValue: defaultValue
               },
               INPUT: {
                 type: Scratch.ArgumentType.BOOLEAN,

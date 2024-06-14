@@ -391,11 +391,20 @@
               { text: Scratch.translate("Raw"), value: "Raw" },
               { text: Scratch.translate("Base64"), value: "Base64" },
               {
-                text: Scratch.translate("EncodedURIComponent"),
+                text: Scratch.translate({
+                  default: "EncodedURIComponent",
+                  description: "A type of encoding that happens to also be used in URLs."
+                }),
                 value: "EncodedURIComponent",
               },
-              { text: Scratch.translate("Uint8Array"), value: "Unit8Array" },
-              { text: Scratch.translate("UTF16"), value: "UTF16" },
+              { text: Scratch.translate({
+                default: "Uint8Array",
+                description: "An array of bytes."
+              }), value: "Unit8Array" },
+              { text: Scratch.translate({
+                default: "UTF16",
+                description: "A type of unicode encoding. For almost all languages this translates to just 'UTF16'"
+              }), value: "UTF16" },
             ],
           },
         },

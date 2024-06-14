@@ -15,7 +15,7 @@
     getInfo() {
       return {
         id: "audiostr",
-        name: Scratch.translate("AudioStream 🔊"),
+        name: Scratch.translate("AudioStream") + " 🔊",
         color1: "#ba45ac",
         color2: "#a8399b",
         color3: "#942c88",

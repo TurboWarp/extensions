@@ -2178,7 +2178,7 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Batch Blocks",
+            text: Scratch.translate("Batch Blocks"),
           },
           {
             opcode: "batchAdd",
