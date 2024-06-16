@@ -38,7 +38,7 @@
       this.storage.URL = prompt('URL: ');
     }
     load() {
-      fetch(this.storage.URL)
+      Scratch.fetch(this.storage.URL)
         .then((r) => r.arrayBuffer())
         .then((buffer) => Scratch.vm.loadProject(buffer))
         .then(() => { })
