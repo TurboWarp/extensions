@@ -289,8 +289,10 @@
    */
 
   function toHex(color) {
-    if (!color) return "";
-    if (color.startsWith("rgb")) {
+    color = "" + color;
+    // (Very confusing) valid rgba regex
+    const regex = /^rgba?\(((\d+),\s*){2,3}(\d+)\)$/;
+    if (regex.test(color)) {
       return (
         "#" +
         color
@@ -305,15 +307,19 @@
   }
 
   /**
-   * Makes sure a color is a  valid hex code. Otherwise it returns black (#000000)
+   * Makes sure a color is a  valid hex code. If it is rgba, it converts it to hex. Else, it returns black (#000000)
    * @param {string} color - The color to validate
    * @returns {string} - The color
    */
 
   function validateColor(color) {
-    color = Scratch.Cast.toString(color);
+    color = "" + color;
     const regex = /^#([0-9a-fA-F]{3,4}){1,2}$/;
-    return regex.test(color) ? color : "#000000";
+    if (regex.test(color)) return color;
+    // Might be rgba, lets check
+    let asHex = toHex(color);
+    if (asHex) return asHex;
+    return "#000000";
   }
 
   /**
@@ -395,6 +401,45 @@
     });
     // @ts-ignore
     ele.cControlHasListeners = true;
+  }
+
+  /**
+   * The highlight animation definitions
+   * @param {string} borderColor - The color of the border
+   * @param {string} backgroundColor - The color of the background
+   */
+
+  function highlightAnimation(borderColor, backgroundColor) {
+    return [
+      [
+        {
+          outline: "#0000 2px solid",
+        },
+        {
+          outline: borderColor + " 2px solid",
+          backgroundColor: backgroundColor,
+        },
+        {
+          outline: "#0000 2px solid",
+        },
+        {
+          outline: borderColor + " 2px solid",
+        },
+        {
+          outline: "#0000 2px solid",
+        },
+        {
+          outline: borderColor + " 2px solid",
+          backgroundColor: backgroundColor,
+        },
+        {
+          outline: "#0000 2px solid",
+        },
+      ],
+      {
+        duration: 1700,
+      },
+    ];
   }
 
   let eleType = "button";
@@ -687,6 +732,27 @@
 
     "---",
 
+    {
+      opcode: "highlight",
+      blockType: Scratch.BlockType.COMMAND,
+      text: Scratch.translate(
+        "highlight [CONTROL] border: [BORDER] background color: [BACKGROUND]"
+      ),
+      arguments: {
+        CONTROL: {
+          type: Scratch.ArgumentType.STRING,
+          defaultValue: Scratch.translate("my control"),
+        },
+        BORDER: {
+          type: Scratch.ArgumentType.COLOR,
+          defaultValue: "#ff7700",
+        },
+        BACKGROUND: {
+          type: Scratch.ArgumentType.COLOR,
+          defaultValue: "#ff9933",
+        },
+      },
+    },
     {
       opcode: "propertyOf",
       blockType: Scratch.BlockType.REPORTER,
@@ -1254,6 +1320,19 @@
       // @ts-ignore
       if (!controlElement?.cControlIsCustom) return;
       controlElement?.remove();
+    }
+
+    highlight(args) {
+      const control = Scratch.Cast.toString(args.CONTROL).toLowerCase();
+      let borderColor = Scratch.Cast.toString(args.BORDER);
+      borderColor = validateColor(borderColor);
+      let backgroundColor = Scratch.Cast.toString(args.BACKGROUND);
+      backgroundColor = validateColor(backgroundColor);
+      const controlElement = getControlByName(control);
+      if (!controlElement) return;
+      const animation = highlightAnimation(borderColor, backgroundColor);
+      // @ts-ignore
+      controlElement.animate(...animation);
     }
 
     propertyOf(args) {
