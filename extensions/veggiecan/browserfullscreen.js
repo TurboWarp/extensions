@@ -23,12 +23,12 @@
         color2: "#C77612",
         color3: "#9D5D0E",
         blockIconURI: icon,
-        name: "Browser Fullscreen",
+        name: Scratch.translate("Browser Fullscreen"),
         blocks: [
           {
             opcode: "fullscreen",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[ACTION] fullscreen",
+            text: Scratch.translate("[ACTION] fullscreen"),
             arguments: {
               ACTION: {
                 type: Scratch.ArgumentType.STRING,
@@ -40,13 +40,13 @@
           {
             opcode: "isInFullscreen",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "in browser fullscreen?",
+            text: Scratch.translate("in browser fullscreen?"),
             arguments: {},
           },
           {
             opcode: "whenfullscreen",
             blockType: Scratch.BlockType.EVENT,
-            text: "when browser fullscreen [ENABLED]",
+            text: Scratch.translate("when browser fullscreen [ENABLED]"),
             isEdgeActivated: false,
             arguments: {
               ENABLED: {
@@ -61,11 +61,11 @@
             acceptReporters: true,
             items: [
               {
-                text: "enter",
+                text: Scratch.translate("enter"),
                 value: "enter",
               },
               {
-                text: "exit",
+                text: Scratch.translate("exit"),
                 value: "exit",
               },
             ],
@@ -75,11 +75,11 @@
             acceptReporters: false,
             items: [
               {
-                text: "entered",
+                text: Scratch.translate("entered"),
                 value: "entered",
               },
               {
-                text: "exited",
+                text: Scratch.translate("exited"),
                 value: "exited",
               },
             ],
@@ -88,10 +88,10 @@
       };
     }
     fullscreen(args) {
-      const action = args.ACTION;
-      if (action === "enter") {
+      const action = Scratch.Cast.toString(args.ACTION).toLowerCase();
+      if (action === "enter" && !document.fullscreenElement) {
         document.documentElement.requestFullscreen();
-      } else if (action === "exit") {
+      } else if (action === "exit" && document.fullscreenElement) {
         document.exitFullscreen();
       }
     }

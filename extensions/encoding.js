@@ -423,7 +423,7 @@
           {
             opcode: "encode",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Encode [string] in [code]"),
+            text: Scratch.translate("encode [string] in [code]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -439,7 +439,7 @@
           {
             opcode: "decode",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Decode [string] with [code]"),
+            text: Scratch.translate("decode [string] with [code]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -455,7 +455,7 @@
           {
             opcode: "hash",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Hash [string] with [hash]"),
+            text: Scratch.translate("hash [string] with [hash]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -475,7 +475,7 @@
             opcode: "Conversioncodes",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "Convert the character [string] to [CodeList]"
+              "convert the character [string] to [CodeList]"
             ),
             arguments: {
               string: {
@@ -514,7 +514,7 @@
             opcode: "Randomstrings",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "Randomly generated [position] character string"
+              "randomly generated [position] character string"
             ),
             arguments: {
               position: {
@@ -527,7 +527,7 @@
             opcode: "Fontgenerationstring",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "Use [wordbank] to generate a random [position] character string"
+              "use [wordbank] to generate a random [position] character string"
             ),
             arguments: {
               wordbank: {

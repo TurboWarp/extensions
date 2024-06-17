@@ -24,8 +24,62 @@
         color2: "#EBAF00",
         blocks: [
           {
+            opcode: "usergrab2",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("[WHAT] of user [WHO]"),
+            arguments: {
+              WHAT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "WHAT5",
+              },
+              WHO: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "griffpatch",
+              },
+            },
+          },
+          {
+            opcode: "projectgrab",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("grab [WHAT] count of project id [WHO]"),
+            arguments: {
+              WHAT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "WHAT3",
+              },
+              WHO: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "60917032",
+              },
+            },
+          },
+          {
+            opcode: "idtoname",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("name of project id [WHO]"),
+            arguments: {
+              WHO: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "60917032",
+              },
+            },
+          },
+          {
+            opcode: "idtoowner",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("creator of project id [WHO]"),
+            arguments: {
+              WHO: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "60917032",
+              },
+            },
+          },
+
+          "---",
+          {
             blockType: Scratch.BlockType.XML,
-            xml: "<sep gap='6'/><label text='S-Grab relies on a third-party API that'/><sep gap='-12'/><label text='is very unreliable. Use this with caution.'/><sep gap='24'/>",
+            xml: "<sep gap='12'/><label text='The blocks below rely on a third-party'/><sep gap='-12'/><label text='API that is currently offline.'/>",
           },
           {
             opcode: "usergrab",
@@ -38,7 +92,7 @@
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "john",
+                defaultValue: "griffpatch",
               },
             },
           },
@@ -53,38 +107,7 @@
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "john",
-              },
-            },
-          },
-          {
-            opcode: "usergrab2",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[WHAT] of user [WHO]"),
-            arguments: {
-              WHAT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "WHAT5",
-              },
-              WHO: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "john",
-              },
-            },
-          },
-          "---",
-          {
-            opcode: "projectgrab",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("grab [WHAT] count of project id [WHO]"),
-            arguments: {
-              WHAT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "WHAT3",
-              },
-              WHO: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "717954208",
+                defaultValue: "griffpatch",
               },
             },
           },
@@ -101,29 +124,7 @@
               },
               WHO: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "717954208",
-              },
-            },
-          },
-          {
-            opcode: "idtoname",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("name of project id [WHO]"),
-            arguments: {
-              WHO: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "717954208",
-              },
-            },
-          },
-          {
-            opcode: "idtoowner",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("creator of project id [WHO]"),
-            arguments: {
-              WHO: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "717954208",
+                defaultValue: "60917032",
               },
             },
           },
@@ -230,6 +231,9 @@
         const response = await Scratch.fetch(
           "https://scratchdb.lefty.one/v3/user/info/" + args.WHO
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         if (args.WHAT === "follower") {
           return jsonData.statistics.followers ?? "";
@@ -247,6 +251,9 @@
         const response = await Scratch.fetch(
           "https://scratchdb.lefty.one/v3/user/info/" + args.WHO
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         if (args.WHAT === "follower") {
           return jsonData.statistics.ranks.followers ?? "";
@@ -266,17 +273,21 @@
     async usergrab2(args) {
       try {
         const response = await Scratch.fetch(
-          "https://scratchdb.lefty.one/v3/user/info/" + args.WHO
+          `https://trampoline.turbowarp.org/api/users/${args.WHO}`
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         if (args.WHAT === "about me") {
-          return jsonData.bio ?? "";
+          return jsonData.profile.bio ?? "";
         } else if (args.WHAT === "wiwo") {
-          return jsonData.work ?? "";
+          return jsonData.profile.status ?? "";
         } else if (args.WHAT === "location") {
-          return jsonData.country ?? "";
+          return jsonData.profile.country ?? "";
         } else if (args.WHAT === "status") {
-          return jsonData.status ?? "";
+          // ScratchDB would tell us whether they are a New Scratcher but api.scratch.mit.edu doesn't
+          return jsonData.scratchteam ? "Scratch Team" : "Scratcher";
         } else {
           return "";
         }
@@ -287,15 +298,18 @@
     async projectgrab(args) {
       try {
         const response = await Scratch.fetch(
-          "https://scratchdb.lefty.one/v3/project/info/" + args.WHO
+          `https://trampoline.turbowarp.org/api/projects/${args.WHO}`
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         if (args.WHAT === "love") {
-          return jsonData.statistics.loves ?? "";
+          return jsonData.stats.loves ?? "";
         } else if (args.WHAT === "favorite") {
-          return jsonData.statistics.favorites ?? "";
+          return jsonData.stats.favorites ?? "";
         } else if (args.WHAT === "view") {
-          return jsonData.statistics.views ?? "";
+          return jsonData.stats.views ?? "";
         } else {
           return "";
         }
@@ -308,6 +322,9 @@
         const response = await Scratch.fetch(
           "https://scratchdb.lefty.one/v3/project/info/" + args.WHO
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         if (args.WHAT === "love") {
           return jsonData.statistics.ranks.loves ?? "";
@@ -325,8 +342,11 @@
     async idtoname(args) {
       try {
         const response = await Scratch.fetch(
-          "https://scratchdb.lefty.one/v3/project/info/" + args.WHO
+          `https://trampoline.turbowarp.org/api/projects/${args.WHO}`
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
         return jsonData.title ?? "";
       } catch (error) {
@@ -336,10 +356,13 @@
     async idtoowner(args) {
       try {
         const response = await Scratch.fetch(
-          "https://scratchdb.lefty.one/v3/project/info/" + args.WHO
+          `https://trampoline.turbowarp.org/api/projects/${args.WHO}`
         );
+        if (!response.ok) {
+          return "";
+        }
         const jsonData = await response.json();
-        return jsonData.username ?? "";
+        return jsonData.author.username ?? "";
       } catch (error) {
         return "";
       }

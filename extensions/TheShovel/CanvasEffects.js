@@ -110,12 +110,12 @@
     getInfo() {
       return {
         id: "theshovelcanvaseffects",
-        name: "Canvas Effects",
+        name: Scratch.translate("Canvas Effects"),
         blocks: [
           {
             opcode: "seteffect",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set canvas [EFFECT] to [NUMBER]",
+            text: Scratch.translate("set canvas [EFFECT] to [NUMBER]"),
             arguments: {
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -129,7 +129,7 @@
           {
             opcode: "changeEffect",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change canvas [EFFECT] by [NUMBER]",
+            text: Scratch.translate("change canvas [EFFECT] by [NUMBER]"),
             arguments: {
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -144,7 +144,7 @@
           {
             opcode: "geteffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get canvas [EFFECT]",
+            text: Scratch.translate("get canvas [EFFECT]"),
             arguments: {
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -161,7 +161,9 @@
           {
             opcode: "setBorder",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set canvas border to [WIDTH] pixels [STYLE] with color [COLOR1] and background [COLOR2]",
+            text: Scratch.translate(
+              "set canvas border to [WIDTH] pixels [STYLE] with color [COLOR1] and background [COLOR2]"
+            ),
             arguments: {
               STYLE: {
                 type: Scratch.ArgumentType.STRING,
@@ -184,7 +186,9 @@
           {
             opcode: "renderscale",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set canvas render size to width: [X] height: [Y]",
+            text: Scratch.translate(
+              "set canvas render size to width: [X] height: [Y]"
+            ),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -199,7 +203,9 @@
           {
             opcode: "setrendermode",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set canvas resize rendering mode [EFFECT]",
+            text: Scratch.translate(
+              "set canvas resize rendering mode [EFFECT]"
+            ),
             arguments: {
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -215,7 +221,16 @@
           },
           RENDERMODE: {
             acceptReporters: true,
-            items: ["pixelated", "default"],
+            items: [
+              {
+                text: Scratch.translate("pixelated"),
+                value: "pixelated",
+              },
+              {
+                text: Scratch.translate("default"),
+                value: "default",
+              },
+            ],
           },
           EFFECTGETMENU: {
             acceptReporters: true,
@@ -224,15 +239,42 @@
           borderTypes: {
             acceptReporters: true,
             items: [
-              "dotted",
-              "dashed",
-              "solid",
-              "double",
-              "groove",
-              "ridge",
-              "inset",
-              "outset",
-              "none",
+              {
+                text: Scratch.translate("dotted"),
+                value: "dotted",
+              },
+              {
+                text: Scratch.translate("dashed"),
+                value: "dashed",
+              },
+              {
+                text: Scratch.translate("solid"),
+                value: "solid",
+              },
+              {
+                text: Scratch.translate("double"),
+                value: "double",
+              },
+              {
+                text: Scratch.translate("groove"),
+                value: "groove",
+              },
+              {
+                text: Scratch.translate("ridge"),
+                value: "ridge",
+              },
+              {
+                text: Scratch.translate("inset"),
+                value: "inset",
+              },
+              {
+                text: Scratch.translate("outset"),
+                value: "outset",
+              },
+              {
+                text: Scratch.translate("none"),
+                value: "none",
+              },
             ],
           },
         },
@@ -241,26 +283,108 @@
 
     _getMenuItems(isGetter) {
       return [
-        "blur",
-        "contrast",
-        "saturation",
-        "color shift",
-        "brightness",
-        "invert",
-        ...(isGetter ? ["resize rendering mode"] : []),
-        "sepia",
-        "transparency",
-        ...(isGetter ? [] : ["scale"]),
-        "scale X",
-        "scale Y",
-        "skew X",
-        "skew Y",
-        "offset X",
-        "offset Y",
-        "rotation",
-        "border radius",
+        {
+          text: Scratch.translate("blur"),
+          value: "blur",
+        },
+        {
+          text: Scratch.translate("contrast"),
+          value: "contrast",
+        },
+        {
+          text: Scratch.translate("saturation"),
+          value: "saturation",
+        },
+        {
+          text: Scratch.translate("color shift"),
+          value: "color shift",
+        },
+        {
+          text: Scratch.translate("brightness"),
+          value: "brightness",
+        },
+        {
+          text: Scratch.translate("invert"),
+          value: "invert",
+        },
         ...(isGetter
-          ? ["border width", "border style", "border color", "background"]
+          ? [
+              {
+                text: Scratch.translate("resize rendering mode"),
+                value: "resize rendering mode",
+              },
+            ]
+          : []),
+        {
+          text: Scratch.translate("sepia"),
+          value: "sepia",
+        },
+        {
+          text: Scratch.translate("transparency"),
+          value: "transparency",
+        },
+        ...(isGetter
+          ? []
+          : [
+              {
+                text: Scratch.translate({
+                  default: "scale",
+                  description: "Scale as in upscale/downscale",
+                }),
+                value: "scale",
+              },
+            ]),
+        {
+          text: Scratch.translate("scale X"),
+          value: "scale X",
+        },
+        {
+          text: Scratch.translate("scale Y"),
+          value: "scale Y",
+        },
+        {
+          text: Scratch.translate("skew X"),
+          value: "skew X",
+        },
+        {
+          text: Scratch.translate("skew Y"),
+          value: "skew Y",
+        },
+        {
+          text: Scratch.translate("offset X"),
+          value: "offset X",
+        },
+        {
+          text: Scratch.translate("offset Y"),
+          value: "offset Y",
+        },
+        {
+          text: Scratch.translate("rotation"),
+          value: "rotation",
+        },
+        {
+          text: Scratch.translate("border radius"),
+          value: "border radius",
+        },
+        ...(isGetter
+          ? [
+              {
+                text: Scratch.translate("border width"),
+                value: "border width",
+              },
+              {
+                text: Scratch.translate("border style"),
+                value: "border style",
+              },
+              {
+                text: Scratch.translate("border color"),
+                value: "border color",
+              },
+              {
+                text: Scratch.translate("background"),
+                value: "background",
+              },
+            ]
           : []),
       ];
     }
