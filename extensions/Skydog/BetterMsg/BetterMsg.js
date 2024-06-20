@@ -8045,7 +8045,7 @@ ${replacement}`;
         "BetterMsg.question": "Question",
         "BetterMsg.animOk": "With animation",
         "BetterMsg.animNo": "Without animation",
-        "BetterMsg.alert": "[open] browser native alert dialog",
+        "BetterMsg.alerts": "[open] browser native alert dialog",
         "BetterMsg.oalert": "Override",
         "BetterMsg.calert": "Restore"
       }
