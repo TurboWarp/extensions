@@ -1,12 +1,12 @@
 // Name: Better Message
 // Version: 1.0.0
 // ID: BetterMsg
-// Description: 更好的弹窗！美观|实用|丰富
+// Description(zh-CN): 更好的弹窗！美观|实用|丰富
+// Description(en-US):Better message! Beautiful | Practical | Rich
 // By: Skydog
 // License: MIT
-// 本拓展经过开发者严格的法律审查，不涉及任何违法行为。
-// 使用本拓展造成的任何后果与开发者无关。
-
+// This extension has been subjected to strict legal scrutiny by the developer and does not involve any illegal behavior.
+// The developer is not responsible for any consequences of using this extension.
 
 (() => {
   var __create = Object.create;
