@@ -6,6 +6,8 @@
 // Version: 1.0.0
 
 (function (Scratch) {
+  "use strict";
+
   class SecurityKey {
     constructor() {
       this.supported = false;
