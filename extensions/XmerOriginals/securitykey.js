@@ -18,37 +18,37 @@
     getInfo() {
       return {
         blockIconURI:
-          "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPg0KPHN2ZyB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0xMy4xNDI3IDIwLjk5OTlDMTAuODA3NyAxOS41NDM4IDkuMjUyNTQgMTYuOTUyMiA5LjI1MjU0IDEzLjk5NjhDOS4yNTI1NCAxMi40NzgzIDEwLjQ4MzMgMTEuMjQ3NiAxMi4wMDA4IDExLjI0NzZDMTMuNTE4NCAxMS4yNDc2IDE0Ljc0OTEgMTIuNDc4MyAxNC43NDkxIDEzLjk5NjhDMTQuNzQ5MSAxNS41MTUzIDE1Ljk3OTggMTYuNzQ2IDE3LjQ5NzQgMTYuNzQ2QzE5LjAxNDkgMTYuNzQ2IDIwLjI0NTcgMTUuNTE1MyAyMC4yNDU3IDEzLjk5NjhDMjAuMjQ1NyA5LjQ0MTM5IDE2LjU1NDQgNS43NDkyMiAxMi4wMDE3IDUuNzQ5MjJDNy40NDkwNyA1Ljc0OTIyIDMuNzU3ODEgOS40NDEzOSAzLjc1NzgxIDEzLjk5NjhDMy43NTc4MSAxNS4wMTIyIDMuODcxNDUgMTYuMDAxIDQuMDgwMzggMTYuOTU0TTguNDkwMjcgMjAuMjk4OUM3LjIzOTM4IDE4LjUxMzggNi41MDM1MSAxNi4zNDE5IDYuNTAzNTEgMTMuOTk2OEM2LjUwMzUxIDEwLjk1OTkgOC45NjQwNSA4LjQ5ODQ0IDExLjk5OTIgOC40OTg0NEMxNS4wMzQzIDguNDk4NDQgMTcuNDk0OCAxMC45NTk5IDE3LjQ5NDggMTMuOTk2OE0xNy43OTI3IDE5LjQ4MDZDMTcuNjkzNyAxOS40ODYxIDE3LjU5NjYgMTkuNDk1MyAxNy40OTY3IDE5LjQ5NTNDMTQuNDYxNiAxOS40OTUzIDEyLjAwMTEgMTcuMDMzOCAxMi4wMDExIDEzLjk5NjlNMTkuNjczNCA2LjQ3NjgyQzE3Ljc5OTMgNC4zNDgwMiAxNS4wNTkzIDMgMTIuMDAwNCAzQzguOTQxNDEgMyA2LjIwMTM4IDQuMzQ4MDIgNC4zMjczNCA2LjQ3NjgyIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+DQo8L3N2Zz4=",
-        color1: "#5ef726",
-        color2: "#1fbd00",
-        color3: "#0ecc00",
+          "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8ZGVzYz5DcmVhdGVkIHdpdGggRmFicmljLmpzIDMuNS4wPC9kZXNjPgo8ZGVmcz4KPC9kZWZzPgo8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmZmZmZmIi8+CjxnIHRyYW5zZm9ybT0ibWF0cml4KDI3LjIwMTkgMCAwIDI3LjIwMTkgNTEyLjAwMDQgNTEyLjAwMDMpIiBpZD0iMjM0MzEzIj4KPHBhdGggc3R5bGU9InN0cm9rZTogcmdiKDAsMCwwKTsgc3Ryb2tlLXdpZHRoOiAyMjsgc3Ryb2tlLWRhc2hhcnJheTogbm9uZTsgc3Ryb2tlLWxpbmVjYXA6IHJvdW5kOyBzdHJva2UtZGFzaG9mZnNldDogMDsgc3Ryb2tlLWxpbmVqb2luOiByb3VuZDsgc3Ryb2tlLW1pdGVybGltaXQ6IDQ7IGlzLWN1c3RvbS1mb250OiBub25lOyBmb250LWZpbGUtdXJsOiBub25lOyBmaWxsOiBub25lOyBmaWxsLXJ1bGU6IG5vbnplcm87IG9wYWNpdHk6IDE7IiB2ZWN0b3ItZWZmZWN0PSJub24tc2NhbGluZy1zdHJva2UiIHRyYW5zZm9ybT0iIHRyYW5zbGF0ZSgtMTIuMDAxOCwgLTEyKSIgZD0iTSAxMy4xNDI3IDIwLjk5OTkgQyAxMC44MDc3IDE5LjU0MzggOS4yNTI1NCAxNi45NTIyIDkuMjUyNTQgMTMuOTk2OCBDIDkuMjUyNTQgMTIuNDc4MyAxMC40ODMzIDExLjI0NzYgMTIuMDAwOCAxMS4yNDc2IEMgMTMuNTE4NCAxMS4yNDc2IDE0Ljc0OTEgMTIuNDc4MyAxNC43NDkxIDEzLjk5NjggQyAxNC43NDkxIDE1LjUxNTMgMTUuOTc5OCAxNi43NDYgMTcuNDk3NCAxNi43NDYgQyAxOS4wMTQ5IDE2Ljc0NiAyMC4yNDU3IDE1LjUxNTMgMjAuMjQ1NyAxMy45OTY4IEMgMjAuMjQ1NyA5LjQ0MTM5IDE2LjU1NDQgNS43NDkyMiAxMi4wMDE3IDUuNzQ5MjIgQyA3LjQ0OTA3IDUuNzQ5MjIgMy43NTc4MSA5LjQ0MTM5IDMuNzU3ODEgMTMuOTk2OCBDIDMuNzU3ODEgMTUuMDEyMiAzLjg3MTQ1IDE2LjAwMSA0LjA4MDM4IDE2Ljk1NCBNIDguNDkwMjcgMjAuMjk4OSBDIDcuMjM5MzggMTguNTEzOCA2LjUwMzUxIDE2LjM0MTkgNi41MDM1MSAxMy45OTY4IEMgNi41MDM1MSAxMC45NTk5IDguOTY0MDUgOC40OTg0NCAxMS45OTkyIDguNDk4NDQgQyAxNS4wMzQzIDguNDk4NDQgMTcuNDk0OCAxMC45NTk5IDE3LjQ5NDggMTMuOTk2OCBNIDE3Ljc5MjcgMTkuNDgwNiBDIDE3LjY5MzcgMTkuNDg2MSAxNy41OTY2IDE5LjQ5NTMgMTcuNDk2NyAxOS40OTUzIEMgMTQuNDYxNiAxOS40OTUzIDEyLjAwMTEgMTcuMDMzOCAxMi4wMDExIDEzLjk5NjkgTSAxOS42NzM0IDYuNDc2ODIgQyAxNy43OTkzIDQuMzQ4MDIgMTUuMDU5MyAzIDEyLjAwMDQgMyBDIDguOTQxNDEgMyA2LjIwMTM4IDQuMzQ4MDIgNC4zMjczNCA2LjQ3NjgyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9nPgo8ZyB0cmFuc2Zvcm09Im1hdHJpeCg1LjY5NTQgMCAwIDUuNjk1NCA1MTIuMDAwOCA1MTIuMDAwOCkiIGlkPSI1MjkxMDIiPgo8cGF0aCBzdHlsZT0ic3Ryb2tlOiByZ2IoMCwwLDApOyBzdHJva2Utd2lkdGg6IDIyOyBzdHJva2UtZGFzaGFycmF5OiBub25lOyBzdHJva2UtbGluZWNhcDogYnV0dDsgc3Ryb2tlLWRhc2hvZmZzZXQ6IDA7IHN0cm9rZS1saW5lam9pbjogbWl0ZXI7IHN0cm9rZS1taXRlcmxpbWl0OiA0OyBpcy1jdXN0b20tZm9udDogbm9uZTsgZm9udC1maWxlLXVybDogbm9uZTsgZmlsbDogbm9uZTsgZmlsbC1ydWxlOiBub256ZXJvOyBvcGFjaXR5OiAxOyIgdmVjdG9yLWVmZmVjdD0ibm9uLXNjYWxpbmctc3Ryb2tlIiB0cmFuc2Zvcm09IiB0cmFuc2xhdGUoLTY3LjUsIC02Ny41KSIgZD0iTSAxMzIuNSA2Ny41IEMgMTMyLjUgMTAzLjM5OSAxMDMuMzk5IDEzMi41IDY3LjUgMTMyLjUgQyAzMS42MDE1IDEzMi41IDIuNSAxMDMuMzk5IDIuNSA2Ny41IEMgMi41IDMxLjYwMTUgMzEuNjAxNSAyLjUgNjcuNSAyLjUgQyAxMDMuMzk5IDIuNSAxMzIuNSAzMS42MDE1IDEzMi41IDY3LjUgWiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjwvZz4KPC9zdmc+",
+        "color1": "#299900",
+        "color2": "#2b8f00",
+        "color3": "#246600",
         id: "securitykey",
         name: "Security Key",
         blocks: [
           {
             opcode: "isSupported",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Is security key supported?",
+            text: "security key supported?",
           },
           {
             opcode: "requestAuthentication",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Request security key authentication",
+            text: "request security key authentication",
           },
           {
             opcode: "isAuthenticated",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Is authenticated?",
+            text: "authenticated?",
           },
           {
             opcode: "isAuthenticationFailed",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Is authentication failed?",
+            text: "authentication failed?",
           },
           {
             opcode: "getStatus",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Status",
+            text: "status",
           },
         ],
       };
