@@ -10151,8 +10151,10 @@ ${replacement}`;
       "zh-cn": {
         "BetterMsg.name": "\u66F4\u597D\u7684\u5F39\u7A97",
         // 注：虽然我使用的库支持HTML，但是有监管风险，故没有使用。
-        "BetterMsg.help":
-          "\u6240\u6709\u5F39\u7A97\u652F\u6301BBcode\u548CMarkdown\uFF0C\u4F18\u5148\u89E3\u6790Markdown",
+        "BetterMsg.help1":
+          "所有弹窗文本（标题、文字）支持BBcode",
+        "BetterMsg.help2":"和Markdown",
+        "BetterMsg.help3":"优先解析Markdown",
         "BetterMsg.thank":
           "\u611F\u8C22 \u767D\u732B@CCW \u63D0\u4F9B\u7684BBcode\u89E3\u6790\u4F9D\u8D56\uFF01",
         "BetterMsg.openModal":
@@ -10175,8 +10177,10 @@ ${replacement}`;
       },
       en: {
         "BetterMsg.name": "Skydog's Better Message",
-        "BetterMsg.help":
-          "All popups support BBcode and Markdown, prioritizing parsing of Markdown",
+        "BetterMsg.help1":
+          "BBcode support for all popup text (title, text)",
+        "BetterMsg.help2": "and Markdown",
+        "BetterMsg.help3": "Prioritize Markdown parsing", 
         "BetterMsg.thank":
           "Thanks to \u767D\u732B @ CCW for the BBcode parsing dependency!",
         "BetterMsg.openModal":
@@ -10214,7 +10218,9 @@ ${replacement}`;
           blockIconURI: BetterMsgIconUrl,
           menuIconURI: BetterMsgIconUrl,
           blocks: [
-            "---" + i10n("BetterMsg.help"),
+            i10n("BetterMsg.help1"),
+            i10n('BetterMsg.help2'),
+            i10n('BetterMsg.help3'),
             {
               blockType: Scratch2.BlockType.COMMAND,
               opcode: "openModal",
@@ -10307,7 +10313,7 @@ ${replacement}`;
                 },
               },
             },
-            "---" + i10n("BetterMsg.thank"),
+            i10n("BetterMsg.thank"),
           ],
           menus: {
             type: [
