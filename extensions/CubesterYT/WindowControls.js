@@ -20,10 +20,10 @@
   }
 
   const isFullscreenEnabled = () => {
-    if (typeof document.fullscreenElement !== 'undefined') {
+    if (typeof document.fullscreenElement !== "undefined") {
       return document.fullscreenElement !== null;
     }
-    if (typeof document.webkitFullscreenElement !== 'undefined') {
+    if (typeof document.webkitFullscreenElement !== "undefined") {
       return document.webkitFullscreenElement !== null;
     }
     return false;
