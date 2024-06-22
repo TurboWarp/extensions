@@ -17,14 +17,16 @@
         id: "globalCoordinate",
         color1: "#2ea4a4",
         menuIconURI: icon,
-        name: "Global Coordinate",
+        name: Scratch.translate("Global Coordinate"),
         blocks: [
           {
             opcode: "SET",
             filter: [Scratch.TargetType.SPRITE],
             blockType: Scratch.BlockType.COMMAND,
             blockIconURI: icon,
-            text: "go to x: [x] y: [y] direction [r] size [s] - use screens [screen]",
+            text: Scratch.translate(
+              "go to x: [x] y: [y] direction [r] size [s] - use screens [screen]"
+            ),
             arguments: {
               x: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -52,7 +54,9 @@
             opcode: "rotation_mode",
             filter: [Scratch.TargetType.SPRITE],
             blockType: Scratch.BlockType.COMMAND,
-            text: "set screens [screen] 's rotation mode to [m]",
+            text: Scratch.translate(
+              "set screens [screen]'s rotation mode to [m]"
+            ),
             arguments: {
               screen: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -67,7 +71,9 @@
           {
             opcode: "set",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set screens [screen] 's x: [x] y: [y] direction: [r] size: [s]",
+            text: Scratch.translate(
+              "set screens [screen] 's x: [x] y: [y] direction: [r] size: [s]"
+            ),
             arguments: {
               x: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -95,7 +101,7 @@
           {
             opcode: "Set_Co",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set screens [screen] 's x [x] y: [y]",
+            text: Scratch.translate("set screens [screen] 's x [x] y: [y]"),
             arguments: {
               x: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -114,7 +120,7 @@
           {
             opcode: "Set_GX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set screens [screen] 's x to [x]",
+            text: Scratch.translate("set screens [screen] 's x to [x]"),
             arguments: {
               x: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -129,7 +135,7 @@
           {
             opcode: "Set_GY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set screens [screen] 's y to: [y]",
+            text: Scratch.translate("set screens [screen] 's y to: [y]"),
             arguments: {
               y: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -145,7 +151,7 @@
           {
             opcode: "CX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change screens [screen] 's x by [x]",
+            text: Scratch.translate("change screens [screen] 's x by [x]"),
             arguments: {
               x: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -160,7 +166,7 @@
           {
             opcode: "CY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change screens [screen] 's y by [y]",
+            text: Scratch.translate("change screens [screen] 's y by [y]"),
             arguments: {
               y: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -176,7 +182,7 @@
           {
             opcode: "Set_GR",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set screens [screen] 's direction [r]",
+            text: Scratch.translate("set screens [screen] 's direction [r]"),
             arguments: {
               r: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -191,7 +197,9 @@
           {
             opcode: "TR",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn [tr_icon] [r] degrees - screens [screen]",
+            text: Scratch.translate(
+              "turn [tr_icon] [r] degrees - screens [screen]"
+            ),
             arguments: {
               r: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -210,7 +218,9 @@
           {
             opcode: "TL",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn [tr_icon] [r] degrees - screens [screen]",
+            text: Scratch.translate(
+              "turn [tr_icon] [r] degrees - screens [screen]"
+            ),
             arguments: {
               r: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -230,7 +240,7 @@
           {
             opcode: "Set_si",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set screens [screen] 's size [s]",
+            text: Scratch.translate("set screens [screen] 's size [s]"),
             arguments: {
               s: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -245,7 +255,7 @@
           {
             opcode: "CS",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change screens [screen] 's size by [s]",
+            text: Scratch.translate("change screens [screen] 's size by [s]"),
             arguments: {
               s: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -261,7 +271,7 @@
           {
             opcode: "x",
             blockType: Scratch.BlockType.REPORTER,
-            text: "screens [screen] x",
+            text: Scratch.translate("screens [screen] x"),
             arguments: {
               screen: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -272,7 +282,7 @@
           {
             opcode: "y",
             blockType: Scratch.BlockType.REPORTER,
-            text: "screens [screen] y",
+            text: Scratch.translate("screens [screen] y"),
             arguments: {
               screen: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -283,7 +293,7 @@
           {
             opcode: "r",
             blockType: Scratch.BlockType.REPORTER,
-            text: "screens [screen] direction",
+            text: Scratch.translate("screens [screen] direction"),
             arguments: {
               screen: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -294,7 +304,7 @@
           {
             opcode: "s",
             blockType: Scratch.BlockType.REPORTER,
-            text: "screens [screen] size",
+            text: Scratch.translate("screens [screen] size"),
             arguments: {
               screen: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -305,7 +315,9 @@
           {
             opcode: "rm",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "screens [screen] rotation mode is screen?",
+            text: Scratch.translate(
+              "screens [screen] rotation mode is screen?"
+            ),
             arguments: {
               screen: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -319,11 +331,11 @@
             acceptReporters: true,
             items: [
               {
-                text: "center of stage",
+                text: Scratch.translate("center of stage"),
                 value: "0",
               },
               {
-                text: "center of screen",
+                text: Scratch.translate("center of screen"),
                 value: "1",
               },
             ],

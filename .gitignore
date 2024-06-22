@@ -8,3 +8,10 @@ build-l10n
 # Various operating system caches
 thumbs.db
 .DS_Store
+
+# Popular editors
+.vscode
+.idea
+*.sublime-workspace
+
+# Tip: .git/info/exclude is your personal gitignore for things that don't belong here
