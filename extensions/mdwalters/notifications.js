@@ -18,7 +18,7 @@
       }
 
       const allowedByBrowser = await Notification.requestPermission();
-      if (allowedByBrowser === 'denied') {
+      if (allowedByBrowser === "denied") {
         throw new Error("Denied by browser");
       }
 
