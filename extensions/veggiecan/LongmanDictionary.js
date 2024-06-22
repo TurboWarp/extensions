@@ -23,27 +23,31 @@
         color3: "#3C6874",
         menuIconURI: longmamlogomenu,
         blockIconURI: longmamlogoblocks,
-        name: "Longman Dictionary",
+        name: Scratch.translate("Longman Dictionary"),
         blocks: [
           {
             opcode: "define",
             blockType: Scratch.BlockType.REPORTER,
-            text: "primary definition of [word] in the Longman Dictionary",
+            text: Scratch.translate(
+              "primary definition of [word] in the longman dictionary"
+            ),
             arguments: {
               word: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "cat",
+                defaultValue: Scratch.translate("cat"),
               },
             },
           },
           {
             opcode: "getalldefs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all definitions of [word] in the Longman Dictionary",
+            text: Scratch.translate(
+              "all definitions of [word] in the longman dictionary"
+            ),
             arguments: {
               word: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "cat",
+                defaultValue: Scratch.translate("cat"),
               },
             },
           },

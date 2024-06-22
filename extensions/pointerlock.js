@@ -88,7 +88,6 @@
     isLocked = document.pointerLockElement === canvas;
   });
   document.addEventListener("pointerlockerror", (e) => {
-    // eslint-disable-next-line no-console
     console.error("Pointer lock error", e);
   });
 
@@ -104,6 +103,13 @@
     }
     return ret;
   };
+
+  vm.runtime.on("PROJECT_LOADED", () => {
+    isPointerLockEnabled = false;
+    if (isLocked) {
+      document.exitPointerLock();
+    }
+  });
 
   class Pointerlock {
     getInfo() {
@@ -148,7 +154,7 @@
     }
 
     setLocked(args) {
-      isPointerLockEnabled = args.enabled === "true";
+      isPointerLockEnabled = Scratch.Cast.toBoolean(args.enabled) === true;
       if (!isPointerLockEnabled && isLocked) {
         document.exitPointerLock();
       }

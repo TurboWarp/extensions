@@ -4,20 +4,20 @@
     getInfo() {
       return {
         id: "utilitiesCodegio",
-        name: "Utilities",
+        name: Scratch.translate("Utilities"),
         color1: "#0fbd8c",
 
         blocks: [
           {
             opcode: "newline",
             blockType: Scratch.BlockType.REPORTER,
-            text: "New Line",
+            text: Scratch.translate("new line"),
           },
 
           {
             opcode: "strict_equality",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Strict Equality | [one]=[two]",
+            text: Scratch.translate("strictly [one] = [two]?"),
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
@@ -33,19 +33,19 @@
           {
             opcode: "returntrue",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "true",
+            text: Scratch.translate("true"),
           },
 
           {
             opcode: "returnfalse",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "false",
+            text: Scratch.translate("false"),
           },
 
           {
             opcode: "exponent",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[one] ^ [two]",
+            text: Scratch.translate("[one] ^ [two]"),
             arguments: {
               one: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -61,7 +61,7 @@
           {
             opcode: "color",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Hex [color]",
+            text: Scratch.translate("hex: [color]"),
             arguments: {
               color: {
                 type: Scratch.ArgumentType.COLOR,
@@ -73,35 +73,35 @@
           {
             opcode: "monitor_width",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Screen | Width",
+            text: Scratch.translate("screen width"),
           },
 
           {
             opcode: "monitor_height",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Screen | Height",
+            text: Scratch.translate("screen height"),
           },
 
           {
             opcode: "window_width",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Window | Width",
+            text: Scratch.translate("window width"),
           },
 
           {
             opcode: "window_height",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Window | Height",
+            text: Scratch.translate("window height"),
           },
 
           {
             opcode: "alert_ext",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Alert | Text: [one]",
+            text: Scratch.translate("alert: [one]"),
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Alert...",
+                defaultValue: Scratch.translate("Alert"),
               },
             },
           },
@@ -109,11 +109,11 @@
           {
             opcode: "confirm_ext",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Confirm | Text: [one]",
+            text: Scratch.translate("confirm: [one]"),
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Confirm...",
+                defaultValue: Scratch.translate("Confirm"),
               },
             },
           },
@@ -121,11 +121,11 @@
           {
             opcode: "prompt_ext",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Prompt | Text: [one] Default: [two]",
+            text: Scratch.translate("prompt [one] with default: [two]"),
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Enter Username:",
+                defaultValue: Scratch.translate("Enter Username"),
               },
               two: {
                 type: Scratch.ArgumentType.STRING,
@@ -137,7 +137,7 @@
           {
             opcode: "open_link",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Open | Link: [one]",
+            text: Scratch.translate("open link: [one]"),
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
@@ -149,7 +149,7 @@
           {
             opcode: "redirect",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Redirect | Link: [one]",
+            text: Scratch.translate("redirect to: [one]"),
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
@@ -161,19 +161,19 @@
           {
             opcode: "get_current_url",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Current URL",
+            text: Scratch.translate("current URL"),
           },
 
           {
             opcode: "get_current_url_hash",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Current URL hash (#)",
+            text: Scratch.translate("current URL hash (#)"),
           },
 
           {
             opcode: "set_clipboard",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set clipboard | Text: [one]",
+            text: Scratch.translate("set clipboard to: [one]"),
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
@@ -185,29 +185,31 @@
           {
             opcode: "get_clipboard",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Clipboard",
+            text: Scratch.translate("clipboard"),
           },
 
           {
             opcode: "get_browser",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Browser",
+            text: Scratch.translate("browser"),
           },
 
           {
             opcode: "get_os",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Operating System",
+            text: Scratch.translate("operating system"),
           },
 
           {
             opcode: "consoleLog",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Console | Log: [input] Font: [font] Size [size] Color [color]",
+            text: Scratch.translate(
+              "console log [input] with font: [font] size: [size] and color: [color]"
+            ),
             arguments: {
               input: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello World!",
+                defaultValue: Scratch.translate("Hello World!"),
               },
               font: {
                 type: Scratch.ArgumentType.STRING,
@@ -228,7 +230,7 @@
           {
             opcode: "consoleClear",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Console | Clear",
+            text: Scratch.translate("clear console"),
           },
         ],
         menus: {
