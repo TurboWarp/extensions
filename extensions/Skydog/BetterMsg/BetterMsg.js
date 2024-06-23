@@ -10136,7 +10136,7 @@ ${replacement}`;
   }).call(obj);
   var { bbcode } = obj;
   var bbcode_default = bbcode;
-/* eslint-enable */
+  /* eslint-enable */
   // src/index.js
   var import_sweetalert2 = __toESM(require_sweetalert2_all());
   (function (Scratch2) {
