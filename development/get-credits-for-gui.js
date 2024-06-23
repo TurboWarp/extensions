@@ -1,8 +1,9 @@
-const fs = require("fs");
-const path = require("path");
-const https = require("https");
-const fsUtils = require("./fs-utils");
-const parseMetadata = require("./parse-extension-metadata");
+import fs from "node:fs";
+import pathUtil from "node:path";
+import urlUtil from "node:url";
+import https from "node:https";
+import fsUtils from "./fs-utils.js";
+import parseMetadata from "./parse-extension-metadata.js";
 
 class AggregatePersonInfo {
   /** @param {Person} person */
@@ -62,7 +63,8 @@ const run = async () => {
    */
   const aggregate = new Map();
 
-  const extensionRoot = path.resolve(__dirname, "../extensions/");
+  const dirname = pathUtil.dirname(urlUtil.fileURLToPath(import.meta.url));
+  const extensionRoot = pathUtil.resolve(dirname, "../extensions/");
   for (const [name, absolutePath] of fsUtils.recursiveReadDirectory(
     extensionRoot
   )) {
