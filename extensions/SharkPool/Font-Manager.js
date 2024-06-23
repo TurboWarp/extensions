@@ -2,7 +2,7 @@
 // ID: SPASfontManager
 // Description: Add, delete, and manage fonts.
 // By: SharkPool
-// By: Ashimee <https://scratch.mit.edu/users/0znzw/>
+// By: 0znzw <https://scratch.mit.edu/users/0znzw/>
 // License: MIT
 
 // Version V.1.1.0
