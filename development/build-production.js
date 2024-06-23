@@ -1,8 +1,10 @@
-const pathUtil = require("path");
-const Builder = require("./builder");
+import pathUtil from "node:path";
+import urlUtil from "node:url";
+import Builder from "./builder.js";
 
-const outputDirectory = pathUtil.join(__dirname, "../build");
-const l10nOutput = pathUtil.join(__dirname, "../build-l10n");
+const dirname = pathUtil.dirname(urlUtil.fileURLToPath(import.meta.url));
+const outputDirectory = pathUtil.join(dirname, "../build");
+const l10nOutput = pathUtil.join(dirname, "../build-l10n");
 
 const builder = new Builder("production");
 const build = builder.build();

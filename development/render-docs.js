@@ -1,6 +1,7 @@
-const path = require("path");
-const MarkdownIt = require("markdown-it");
-const renderTemplate = require("./render-template");
+import pathUtil from "node:path";
+import urlUtil from "node:url";
+import MarkdownIt from "markdown-it";
+import renderTemplate from "./render-template.js";
 
 const md = new MarkdownIt({
   html: true,
@@ -63,7 +64,8 @@ const renderDocs = (markdownSource, slug) => {
 
   const bodyHTML = md.renderer.render(tokens, md.options, env);
 
-  return renderTemplate(path.join(__dirname, "docs-template.ejs"), {
+  const dirname = pathUtil.dirname(urlUtil.fileURLToPath(import.meta.url));
+  return renderTemplate(pathUtil.join(dirname, "docs-template.ejs"), {
     slug,
     headerHTML,
     headerText,
@@ -72,4 +74,4 @@ const renderDocs = (markdownSource, slug) => {
   });
 };
 
-module.exports = renderDocs;
+export default renderDocs;
