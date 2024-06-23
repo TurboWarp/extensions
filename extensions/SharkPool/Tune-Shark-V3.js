@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.1.3
+// Version V.3.1.31
 // Thanks to HOME for the song "Resonance" being used as the default audio link
 
 (function (Scratch) {
@@ -642,6 +642,7 @@ a.Util.isInRange(e,0,1)&&(this.options.mix=e,this.dryGainNode.gain.value=s.Util.
         const engine = new Pizzicato.Sound(args.URL, () => {
           try {
             engine.sourceNode = engine.getSourceNode();
+            engine.attack = 0;
             soundBank[args.NAME] = {
               context: engine, name: args.NAME, src: args.URL, effects: {},
               loaded: true, reversed: false, vol: 100, gain: 1, pitch: 1, detune: 0, speed: 1, 
