@@ -1,6 +1,6 @@
-import * as espree from "espree";
-import esquery from "esquery";
-import parseMetadata from "./parse-extension-metadata.js";
+const espree = require("espree");
+const esquery = require("esquery");
+const parseMetadata = require("./parse-extension-metadata");
 
 /**
  * @fileoverview Parses extension code to find calls to Scratch.translate() and statically
@@ -120,4 +120,4 @@ const parseTranslations = (js) => {
   return result;
 };
 
-export default parseTranslations;
+module.exports = parseTranslations;

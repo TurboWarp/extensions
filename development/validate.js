@@ -1,5 +1,5 @@
-import Builder from "./builder.js";
-import * as Colors from "./colors.js";
+const Builder = require("./builder");
+const Colors = require("./colors");
 
 const builder = new Builder("production");
 const errors = builder.validate();

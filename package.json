@@ -1,7 +1,6 @@
 {
   "name": "@turbowarp/extensions",
   "version": "0.0.1",
-  "type": "module",
   "description": "Unsandboxed extensions for TurboWarp",
   "scripts": {
     "start": "node development/server.js",
