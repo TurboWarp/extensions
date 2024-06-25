@@ -155,6 +155,3 @@
 
   Scratch.extensions.register(new TurboHook2());
 })(Scratch);
-
-  Scratch.extensions.register(new TurboHook2());
-})(Scratch);
