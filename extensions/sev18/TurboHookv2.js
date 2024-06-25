@@ -1,5 +1,5 @@
-// Name: TurboHook2
-// ID: sev18TurboHook2
+// Name: TurboHookV2
+// ID: sev18TurboHookV2
 // Description: Allows you to use webhooks but improves with more options.
 // By: sev18 <https://scratch.mit.edu/users/sev18/> (original by CubesterYT <https://scratch.mit.edu/users/CubesterYT/>)
 // License: MIT
@@ -19,20 +19,20 @@
     }
   };
 
-  class TurboHook2 {
+  class TurboHookV2 {
     constructor() {
       this.currentEmbed = { embeds: [{}] };
     }
 
     getInfo() {
       return {
-        id: "sev18TurboHook2",
-        name: Scratch.translate("TurboHook2"),
+        id: "sev18TurboHookV2",
+        name: Scratch.translate("TurboHookV2"),
         color1: "#3c48c2",
         color2: "#2f39a1",
         color3: "#28318f",
         menuIconURI: icon,
-        docsURI: "https://extensions.turbowarp.org/fcures/TurboHook2",
+        docsURI: "https://extensions.turbowarp.org/fcures/TurboHookV2",
 
         blocks: [
           {
@@ -153,5 +153,5 @@
     }
   }
 
-  Scratch.extensions.register(new TurboHook2());
+  Scratch.extensions.register(new TurboHookV2());
 })(Scratch);
