@@ -1,3 +1,10 @@
+// Name: time utills
+// ID: unknowntimeutils
+// Description: utilities for time 
+// By: unknown07724
+// License: MIT
+
+
 class timeutills {
   getInfo() {
     return {
@@ -7,7 +14,7 @@ class timeutills {
                {
           opcode: 'wait',
           blockType: Scratch.BlockType.BOOLEAN,
-          text: 'wait [ONE] in milliseconds',
+          text: 'wait [MS] in milliseconds',
           arguments: {
             MS: {
               type: Scratch.ArgumentType.NUMBER
@@ -24,9 +31,5 @@ class timeutills {
     return new Promise(resolve => setTimeout(resolve, args.MS));
 }
 
-  hello() {
-    return 'World!';
-  }
-}
 
 Scratch.extensions.register(new HelloWorld());
