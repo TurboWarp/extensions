@@ -20,6 +20,10 @@
   };
 
   class TurboHook2 {
+    constructor() {
+      this.currentEmbed = { embeds: [{}] };
+    }
+
     getInfo() {
       return {
         id: "sev18TurboHook2",
@@ -67,26 +71,18 @@
           PARAMS: {
             acceptReporters: true,
             items: [
-              {
-                text: Scratch.translate("content"),
-                value: "content",
-              },
-              {
-                text: Scratch.translate("name"),
-                value: "name",
-              },
-              {
-                text: Scratch.translate("icon"),
-                value: "icon",
-              },
-              {
-                text: Scratch.translate("embeds:title"),
-                value: "embeds:title",
-              },
-              {
-                text: Scratch.translate("embeds:description"),
-                value: "embeds:description",
-              },
+              { text: Scratch.translate("content"), value: "content" },
+              { text: Scratch.translate("name"), value: "name" },
+              { text: Scratch.translate("icon"), value: "icon" },
+              { text: Scratch.translate("embeds:title"), value: "embeds:title" },
+              { text: Scratch.translate("embeds:description"), value: "embeds:description" },
+              { text: Scratch.translate("embeds:url"), value: "embeds:url" },
+              { text: Scratch.translate("embeds:color"), value: "embeds:color" },
+              { text: Scratch.translate("embeds:timestamp"), value: "embeds:timestamp" },
+              { text: Scratch.translate("embeds:footer"), value: "embeds:footer" },
+              { text: Scratch.translate("embeds:image"), value: "embeds:image" },
+              { text: Scratch.translate("embeds:thumbnail"), value: "embeds:thumbnail" },
+              { text: Scratch.translate("embeds:author"), value: "embeds:author" }
             ],
           },
         },
@@ -106,27 +102,49 @@
         body: JSON.stringify(data),
       });
     }
+
     params({ MENU, DATA }) {
       DATA = Scratch.Cast.toString(DATA);
-      if (MENU == "content") {
-        return JSON.stringify({ content: DATA });
-      } else if (MENU == "name") {
-        return JSON.stringify({ username: DATA });
-      } else if (MENU == "icon") {
-        return JSON.stringify({ avatar_url: DATA });
-      } else if (MENU == "embeds:title") {
-        return JSON.stringify({ embeds:
-          [{
-          "title": DATA }] 
-          });
-      } else if (MENU == "embeds:description") {
-        return JSON.stringify({ embeds:
-          [{
-          "description": DATA }] 
-          });
+      switch (MENU) {
+        case "content":
+          return JSON.stringify({ content: DATA });
+        case "name":
+          return JSON.stringify({ username: DATA });
+        case "icon":
+          return JSON.stringify({ avatar_url: DATA });
+        case "embeds:title":
+          this.currentEmbed.embeds[0].title = DATA;
+          break;
+        case "embeds:description":
+          this.currentEmbed.embeds[0].description = DATA;
+          break;
+        case "embeds:url":
+          this.currentEmbed.embeds[0].url = DATA;
+          break;
+        case "embeds:color":
+          this.currentEmbed.embeds[0].color = DATA;
+          break;
+        case "embeds:timestamp":
+          this.currentEmbed.embeds[0].timestamp = DATA;
+          break;
+        case "embeds:footer":
+          this.currentEmbed.embeds[0].footer = { text: DATA };
+          break;
+        case "embeds:image":
+          this.currentEmbed.embeds[0].image = { url: DATA };
+          break;
+        case "embeds:thumbnail":
+          this.currentEmbed.embeds[0].thumbnail = { url: DATA };
+          break;
+        case "embeds:author":
+          this.currentEmbed.embeds[0].author = { name: DATA };
+          break;
+        default:
+          return "{}";
       }
-      return "{}";
+      return JSON.stringify(this.currentEmbed);
     }
+
     connector({ STRING1, STRING2 }) {
       return JSON.stringify({
         ...parseOrEmptyObject(STRING1),
@@ -134,6 +152,9 @@
       });
     }
   }
+
+  Scratch.extensions.register(new TurboHook2());
+})(Scratch);
 
   Scratch.extensions.register(new TurboHook2());
 })(Scratch);
