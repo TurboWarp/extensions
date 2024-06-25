@@ -83,6 +83,10 @@
                 text: Scratch.translate("embeds:title"),
                 value: "embeds:title",
               },
+              {
+                text: Scratch.translate("embeds:description"),
+                value: "embeds:description",
+              },
             ],
           },
         },
@@ -114,6 +118,11 @@
         return JSON.stringify({ embeds:
           [{
           "title": DATA }] 
+          });
+      } else if (MENU == "embeds:description") {
+        return JSON.stringify({ embeds:
+          [{
+          "description": DATA }] 
           });
       }
       return "{}";
