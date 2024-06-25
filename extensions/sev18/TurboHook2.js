@@ -103,14 +103,14 @@
       });
     }
     params({ MENU, DATA }) {
-      // DATA = Scratch.Cast.toString(DATA);
+      DATA = Scratch.Cast.toString(DATA);
       if (MENU == "content") {
         return JSON.stringify({ content: DATA });
       } else if (MENU == "name") {
         return JSON.stringify({ username: DATA });
       } else if (MENU == "icon") {
         return JSON.stringify({ avatar_url: DATA });
-      } else if (MENU == "title") {
+      } else if (MENU == "embeds") {
         return JSON.stringify({ embeds: DATA });
       }
       return "{}";
