@@ -109,7 +109,7 @@
         let result = a.num ** BigInt(b);
         let num_;
         if (!flag) num_ = this.formatNum(result, a.len * b);
-        else nnum_um = this.divFunc("1", this.formatNum(result, a.len * b));
+        else num_ = this.divFunc("1", this.formatNum(result, a.len * b));
         return this.roundFunc(num_, this.maxPrecision);
       };
       this.modFunc = function (num, num2) {
