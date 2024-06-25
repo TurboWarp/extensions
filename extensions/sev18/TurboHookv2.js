@@ -38,7 +38,7 @@
           {
             opcode: "webhook",
             text: Scratch.translate(
-              "webhook data: [hookDATA] webhook url: [hookURL]"
+              "webhook data: [hookDATA] webhook url: [hookURL]",
             ),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
@@ -74,15 +74,39 @@
               { text: Scratch.translate("content"), value: "content" },
               { text: Scratch.translate("name"), value: "name" },
               { text: Scratch.translate("icon"), value: "icon" },
-              { text: Scratch.translate("embeds:title"), value: "embeds:title" },
-              { text: Scratch.translate("embeds:description"), value: "embeds:description" },
+              {
+                text: Scratch.translate("embeds:title"),
+                value: "embeds:title",
+              },
+              {
+                text: Scratch.translate("embeds:description"),
+                value: "embeds:description",
+              },
               { text: Scratch.translate("embeds:url"), value: "embeds:url" },
-              { text: Scratch.translate("embeds:color"), value: "embeds:color" },
-              { text: Scratch.translate("embeds:timestamp"), value: "embeds:timestamp" },
-              { text: Scratch.translate("embeds:footer"), value: "embeds:footer" },
-              { text: Scratch.translate("embeds:image"), value: "embeds:image" },
-              { text: Scratch.translate("embeds:thumbnail"), value: "embeds:thumbnail" },
-              { text: Scratch.translate("embeds:author"), value: "embeds:author" }
+              {
+                text: Scratch.translate("embeds:color"),
+                value: "embeds:color",
+              },
+              {
+                text: Scratch.translate("embeds:timestamp"),
+                value: "embeds:timestamp",
+              },
+              {
+                text: Scratch.translate("embeds:footer"),
+                value: "embeds:footer",
+              },
+              {
+                text: Scratch.translate("embeds:image"),
+                value: "embeds:image",
+              },
+              {
+                text: Scratch.translate("embeds:thumbnail"),
+                value: "embeds:thumbnail",
+              },
+              {
+                text: Scratch.translate("embeds:author"),
+                value: "embeds:author",
+              },
             ],
           },
         },
