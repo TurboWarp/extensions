@@ -1,15 +1,16 @@
-// Name: time utills
-// ID: unknowntimeutils
-// Description: utilities for time 
-// By: unknown07724
-// License: MIT
+// Name: Time utills
+// ID: unknowntimeutills
+// Description: 
+// By: Unknown <https://scratch.mit.edu/users/unknown07724/>
+// Original: Unknown
+// License: MPL-2.0
 
 
 class timeutills {
   getInfo() {
     return {
       id: 'unknowntimeutills',
-      name: 'timeutills',
+      name: 'time utills',
       blocks: [
                {
           opcode: 'wait',
