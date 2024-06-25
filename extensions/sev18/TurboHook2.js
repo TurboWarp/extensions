@@ -1,6 +1,6 @@
 // Name: TurboHook2
 // ID: sev18TurboHook2
-// Description: Allows you to use webhooks but improved with more options.
+// Description: Allows you to use webhooks but improves with more options.
 // By: sev18 <https://scratch.mit.edu/users/sev18/> (original by CubesterYT <https://scratch.mit.edu/users/CubesterYT/>)
 // License: MIT
 
@@ -28,7 +28,7 @@
         color2: "#2f39a1",
         color3: "#28318f",
         menuIconURI: icon,
-        docsURI: "https://extensions.turbowarp.org/CubesterYT/TurboHook2",
+        docsURI: "https://extensions.turbowarp.org/fcures/TurboHook2",
 
         blocks: [
           {
@@ -92,7 +92,6 @@
     webhook({ hookDATA, hookURL }) {
       const data = parseOrEmptyObject(hookDATA);
       if (!data.content) {
-        // Typically this can't be empty, so put something there if they forgot to
         data.content = "(empty)";
       }
       Scratch.fetch(hookURL, {
@@ -104,7 +103,7 @@
       });
     }
     params({ MENU, DATA }) {
-      DATA = Scratch.Cast.toString(DATA);
+      // DATA = Scratch.Cast.toString(DATA);
       if (MENU == "content") {
         return JSON.stringify({ content: DATA });
       } else if (MENU == "name") {
