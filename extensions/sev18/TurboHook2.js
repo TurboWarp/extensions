@@ -80,20 +80,8 @@
                 value: "icon",
               },
               {
-                text: Scratch.translate("title"),
-                value: "title",
-              },
-              {
-                text: Scratch.translate("url"),
-                value: "url",
-              },
-              {
-                text: Scratch.translate("icon_url"),
-                value: "icon_url",
-              },
-              {
-                text: Scratch.translate("description"),
-                value: "description",
+                text: Scratch.translate("embeds"),
+                value: "embeds",
               },
             ],
           },
@@ -124,7 +112,7 @@
       } else if (MENU == "icon") {
         return JSON.stringify({ avatar_url: DATA });
       } else if (MENU == "title") {
-        return JSON.stringify({ title: DATA });
+        return JSON.stringify({ embeds: DATA });
       }
       return "{}";
     }
