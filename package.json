@@ -16,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/TurboWarp/extensions.git"
   },
-  "license": "MIT AND LGPL-3.0-only AND GPL-3.0-only AND CC-BY-SA-4.0 AND CC-BY-4.0 AND CC-BY-2.5 AND CC0-1.0 AND Apache-2.0 AND MPL-2.0",
+  "license": "MIT AND LGPL-3.0-only AND GPL-3.0-only AND CC-BY-SA-4.0 AND CC-BY-4.0 AND CC-BY-2.5 AND CC0-1.0 AND Apache-2.0 AND MPL-2.0 AND BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/TurboWarp/extensions/issues"
   },
