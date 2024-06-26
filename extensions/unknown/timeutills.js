@@ -1,6 +1,6 @@
 // Name: Time utills
 // ID: unknowntimeutills
-// Description: 
+// Description: utilities for time.
 // By: Unknown <https://scratch.mit.edu/users/unknown07724/>
 // Original: Unknown
 // License: MPL-2.0
