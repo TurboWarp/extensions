@@ -1,6 +1,6 @@
 // Name: Time utills
 // ID: unknowntimeutills
-// Description: utilities for time.
+// Description: utilities for waiting a amount of milliseconds.
 // By: Unknown <https://scratch.mit.edu/users/unknown07724/>
 // Original: Unknown
 // License: MPL-2.0
@@ -33,4 +33,4 @@ class timeutills {
 }
 
 
-Scratch.extensions.register(new HelloWorld());
+Scratch.extensions.register(new unknowntimeutills());
