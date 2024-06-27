@@ -51,7 +51,7 @@
     getInfo() {
       return {
         id: "SPmessagePlus",
-        name: "Messages+",
+        name: Scratch.translate("Messages+"),
         color1: "#FFBF00",
         color2: "#E6AC00",
         color3: "#CC9900",
@@ -63,7 +63,7 @@
             extensions: ["colours_event"],
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
-            text: "when any broadcast is received",
+            text: Scratch.translate("when any broadcast is received"),
           },
           {
             opcode: "messageName",
@@ -71,7 +71,7 @@
             extensions: ["colours_event"],
             allowDropAnywhere: true,
             disableMonitor: true,
-            text: "broadcast name",
+            text: Scratch.translate("broadcast name"),
           },
           "---",
           {
@@ -79,7 +79,7 @@
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_event"],
             hideFromPalette: true,
-            text: "broadcast [BROADCAST_OPTION] to [TARGET] and [WAIT]",
+            text: Scratch.translate("broadcast [BROADCAST_OPTION] to [TARGET] and [WAIT]"),
             arguments: {
               BROADCAST_OPTION: { type: null },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
@@ -91,7 +91,7 @@
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_event"],
             hideFromPalette: true,
-            text: "broadcast [BROADCAST_OPTION] with data [DATA] to [TARGET] and [WAIT]",
+            text: Scratch.translate("broadcast [BROADCAST_OPTION] with data [DATA] to [TARGET] and [WAIT]"),
             arguments: {
               BROADCAST_OPTION: { type: null },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
@@ -110,7 +110,7 @@
             opcode: "broadcastArray",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_event"],
-            text: "broadcast [MESSAGES] with data [DATA] to [TARGET] and [WAIT]",
+            text: Scratch.translate("broadcast [MESSAGES] with data [DATA] to [TARGET] and [WAIT]"),
             arguments: {
               MESSAGES: {
                 type: Scratch.ArgumentType.STRING,
@@ -127,7 +127,7 @@
             extensions: ["colours_event"],
             allowDropAnywhere: true,
             disableMonitor: true,
-            text: "received data",
+            text: Scratch.translate("received data"),
           },
           {
             opcode: "otherData",
@@ -136,7 +136,7 @@
             allowDropAnywhere: true,
             disableMonitor: true,
             hideFromPalette: true,
-            text: "received data from [BROADCAST_OPTION] in [TARGET]",
+            text: Scratch.translate("received data from [BROADCAST_OPTION] in [TARGET]"),
             arguments: {
               BROADCAST_OPTION: { type: null },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
@@ -147,7 +147,7 @@
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_event"],
             hideFromPalette: true,
-            text: "broadcast [BROADCAST_OPTION] to [TARGET]",
+            text: Scratch.translate("broadcast [BROADCAST_OPTION] to [TARGET]"),
             arguments: {
               BROADCAST_OPTION: { type: null },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
@@ -158,7 +158,7 @@
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_event"],
             hideFromPalette: true,
-            text: "broadcast [BROADCAST_OPTION] with data [DATA] to [TARGET]",
+            text: Scratch.translate("broadcast [BROADCAST_OPTION] with data [DATA] to [TARGET]"),
             arguments: {
               BROADCAST_OPTION: { type: null },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
@@ -179,11 +179,11 @@
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_event"],
             isTerminal: true,
-            text: "respond [DATA]",
+            text: Scratch.translate("respond [DATA]"),
             arguments: {
               DATA: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "received!",
+                defaultValue: Scratch.translate("received!"),
               },
             },
           },
@@ -194,7 +194,7 @@
             extensions: ["colours_event"],
             disableMonitor: true,
             hideFromPalette: true,
-            text: "is [BROADCAST_OPTION] received?",
+            text: Scratch.translate("is [BROADCAST_OPTION] received?"),
             arguments: {
               BROADCAST_OPTION: { type: null },
             },
@@ -205,7 +205,7 @@
             extensions: ["colours_event"],
             disableMonitor: true,
             hideFromPalette: true,
-            text: "is [BROADCAST_OPTION] waiting?",
+            text: Scratch.translate("is [BROADCAST_OPTION] waiting?"),
             arguments: {
               BROADCAST_OPTION: { type: null },
             },
@@ -216,7 +216,7 @@
             extensions: ["colours_event"],
             disableMonitor: true,
             hideFromPalette: true,
-            text: "receivers of [BROADCAST_OPTION]",
+            text: Scratch.translate("receivers of [BROADCAST_OPTION]"),
             arguments: {
               BROADCAST_OPTION: { type: null },
             },
@@ -235,7 +235,16 @@
             acceptReporters: true,
             items: "_getTargets",
           },
-          SHOULD_WAIT: ["continue", "wait"],
+          SHOULD_WAIT: [
+            {
+              text: Scratch.translate("continue"),
+              value: "continue"
+            },
+            {
+              text: Scratch.translate("wait"),
+              value: "wait"
+            }
+          ],
         },
       };
     }
@@ -244,9 +253,10 @@
 
     _getTargets() {
       const spriteNames = [
-        { text: "All Sprites", value: "_all_" },
-        { text: "Stage", value: "_stage_" },
-        { text: "myself", value: "_myself_" },
+        // TODO: _all_ is not a reserved value
+        { text: Scratch.translate("all sprites"), value: "_all_" },
+        { text: Scratch.translate("stage"), value: "_stage_" },
+        { text: Scratch.translate("myself"), value: "_myself_" },
       ];
       const targets = runtime.targets;
       for (let index = 1; index < targets.length; index++) {
@@ -256,7 +266,7 @@
           spriteNames.push({ text: targetName, value: targetName });
         }
       }
-      return spriteNames.length > 0 ? spriteNames : [""];
+      return spriteNames;
     }
 
     _getTargetFromMenu(targetName, util) {
