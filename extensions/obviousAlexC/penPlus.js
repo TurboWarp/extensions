@@ -1393,6 +1393,7 @@
         projectData: data,
         vertexShader: data.vertShader,
         fragmentShader: data.fragShader,
+        name: name,
       });
 
       this._createAttributedatForShader(name);
