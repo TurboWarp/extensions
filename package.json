@@ -1,6 +1,7 @@
 {
   "name": "@turbowarp/extensions",
   "version": "0.0.1",
+  "type": "module",
   "description": "Unsandboxed extensions for TurboWarp",
   "scripts": {
     "start": "node development/server.js",
@@ -15,7 +16,7 @@
     "type": "git",
     "url": "git+https://github.com/TurboWarp/extensions.git"
   },
-  "license": "MIT AND LGPL-3.0-only AND GPL-3.0-only AND CC-BY-SA-4.0 AND CC-BY-4.0 AND CC-BY-2.5 AND CC0-1.0 AND Apache-2.0 AND MPL-2.0",
+  "license": "MIT AND LGPL-3.0-only AND GPL-3.0-only AND CC-BY-SA-4.0 AND CC-BY-4.0 AND CC-BY-2.5 AND CC0-1.0 AND Apache-2.0 AND MPL-2.0 AND BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/TurboWarp/extensions/issues"
   },
@@ -24,7 +25,7 @@
     "@turbowarp/json": "^0.1.2",
     "@turbowarp/scratchblocks": "^3.6.4",
     "@turbowarp/types": "git+https://github.com/TurboWarp/types-tw.git#tw",
-    "adm-zip": "^0.5.13",
+    "adm-zip": "^0.5.14",
     "chokidar": "^3.6.0",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
@@ -32,10 +33,10 @@
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
-    "eslint": "^9.4.0",
+    "eslint": "^9.5.0",
     "espree": "^9.6.1",
     "esquery": "^1.5.0",
-    "prettier": "^3.3.0",
+    "prettier": "^3.3.2",
     "spdx-expression-parse": "^4.0.0"
   },
   "private": true
