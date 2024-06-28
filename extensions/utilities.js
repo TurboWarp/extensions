@@ -214,7 +214,7 @@
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: Scratch.translate("get content from [URL]"),
+            text: Scratch.translate("content from [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,

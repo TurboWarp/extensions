@@ -1,10 +1,18 @@
-const fs = require("fs");
-const AdmZip = require("adm-zip");
-const pathUtil = require("path");
-const ExtendedJSON = require("@turbowarp/json");
-const compatibilityAliases = require("./compatibility-aliases");
-const parseMetadata = require("./parse-extension-metadata");
-const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
+import fs from "node:fs";
+import pathUtil from "node:path";
+import urlUtil from "node:url";
+import AdmZip from "adm-zip";
+import ExtendedJSON from "@turbowarp/json";
+import spdxParser from "spdx-expression-parse";
+import sizeOfImage from "image-size";
+import compatibilityAliases from "./compatibility-aliases.js";
+import parseMetadata from "./parse-extension-metadata.js";
+import renderTemplate from "./render-template.js";
+import renderDocs from "./render-docs.js";
+import parseTranslations from "./parse-extension-translations.js";
+import fsUtils from "./fs-utils.js";
+
+const dirname = pathUtil.dirname(urlUtil.fileURLToPath(import.meta.url));
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -213,7 +221,6 @@ class ExtensionFile extends BuildFile {
       );
     }
 
-    const spdxParser = require("spdx-expression-parse");
     try {
       // Don't care about the result -- just see if it parses.
       spdxParser(metadata.license);
@@ -264,7 +271,6 @@ class ExtensionFile extends BuildFile {
       },
     };
 
-    const parseTranslations = require("./parse-extension-translations");
     const jsCode = fs.readFileSync(this.sourcePath, "utf-8");
     const unprefixedRuntimeStrings = parseTranslations(jsCode);
     const runtimeStrings = Object.fromEntries(
@@ -290,7 +296,7 @@ class HomepageFile extends BuildFile {
     samples,
     mode
   ) {
-    super(pathUtil.join(__dirname, "homepage-template.ejs"));
+    super(pathUtil.join(dirname, "homepage-template.ejs"));
 
     /** @type {Record<string, ExtensionFile>} */
     this.extensionFiles = extensionFiles;
@@ -344,8 +350,6 @@ class HomepageFile extends BuildFile {
   }
 
   read() {
-    const renderTemplate = require("./render-template");
-
     const mostRecentExtensions = Object.entries(this.extensionFiles)
       .sort((a, b) => b[1].getLastModified() - a[1].getLastModified())
       .slice(0, 5)
@@ -470,7 +474,6 @@ class JSONMetadataFile extends BuildFile {
 
 class ImageFile extends BuildFile {
   validate() {
-    const sizeOfImage = require("image-size");
     const contents = this.read();
     const { width, height } = sizeOfImage(contents);
     const aspectRatio = width / height;
@@ -541,7 +544,6 @@ class DocsFile extends BuildFile {
   }
 
   read() {
-    const renderDocs = require("./render-docs");
     const markdown = super.read().toString("utf-8");
     return renderDocs(markdown, this.extensionSlug);
   }
@@ -605,7 +607,7 @@ class Build {
   }
 
   export(root) {
-    mkdirp(root);
+    fsUtils.mkdirp(root);
 
     for (const [relativePath, file] of Object.entries(this.files)) {
       const directoryName = pathUtil.dirname(relativePath);
@@ -659,7 +661,7 @@ class Build {
    * @param {string} root
    */
   exportL10N(root) {
-    mkdirp(root);
+    fsUtils.mkdirp(root);
 
     const groups = this.generateL10N();
     for (const [name, strings] of Object.entries(groups)) {
@@ -685,12 +687,12 @@ class Builder {
       this.mode = mode;
     }
 
-    this.extensionsRoot = pathUtil.join(__dirname, "../extensions");
-    this.websiteRoot = pathUtil.join(__dirname, "../website");
-    this.imagesRoot = pathUtil.join(__dirname, "../images");
-    this.docsRoot = pathUtil.join(__dirname, "../docs");
-    this.samplesRoot = pathUtil.join(__dirname, "../samples");
-    this.translationsRoot = pathUtil.join(__dirname, "../translations");
+    this.extensionsRoot = pathUtil.join(dirname, "../extensions");
+    this.websiteRoot = pathUtil.join(dirname, "../website");
+    this.imagesRoot = pathUtil.join(dirname, "../images");
+    this.docsRoot = pathUtil.join(dirname, "../docs");
+    this.samplesRoot = pathUtil.join(dirname, "../samples");
+    this.translationsRoot = pathUtil.join(dirname, "../translations");
   }
 
   build() {
@@ -708,7 +710,7 @@ class Builder {
      * @type {Record<string, Record<string, Record<string, string>>>}
      */
     const translations = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of fsUtils.recursiveReadDirectory(
       this.translationsRoot
     )) {
       if (!filename.endsWith(".json")) {
@@ -721,7 +723,7 @@ class Builder {
 
     /** @type {Record<string, ExtensionFile>} */
     const extensionFiles = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of fsUtils.recursiveReadDirectory(
       this.extensionsRoot
     )) {
       if (!filename.endsWith(".js")) {
@@ -742,7 +744,7 @@ class Builder {
 
     /** @type {Record<string, ImageFile>} */
     const extensionImages = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of fsUtils.recursiveReadDirectory(
       this.imagesRoot
     )) {
       const extension = pathUtil.extname(filename);
@@ -762,7 +764,7 @@ class Builder {
 
     /** @type {Map<string, SampleFile[]>} */
     const samples = new Map();
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of fsUtils.recursiveReadDirectory(
       this.samplesRoot
     )) {
       if (!filename.endsWith(".sb3")) {
@@ -781,14 +783,14 @@ class Builder {
       build.files[`/samples/${filename}`] = file;
     }
 
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of fsUtils.recursiveReadDirectory(
       this.websiteRoot
     )) {
       build.files[`/${filename}`] = new BuildFile(absolutePath);
     }
 
     if (this.mode !== "desktop") {
-      for (const [filename, absolutePath] of recursiveReadDirectory(
+      for (const [filename, absolutePath] of fsUtils.recursiveReadDirectory(
         this.docsRoot
       )) {
         if (!filename.endsWith(".md")) {
@@ -801,7 +803,7 @@ class Builder {
       }
 
       const scratchblocksPath = pathUtil.join(
-        __dirname,
+        dirname,
         "../node_modules/@turbowarp/scratchblocks/build/scratchblocks.min.js"
       );
       build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
@@ -853,9 +855,9 @@ class Builder {
     return null;
   }
 
-  startWatcher(callback) {
+  async startWatcher(callback) {
     // Load chokidar lazily.
-    const chokidar = require("chokidar");
+    const chokidar = await import("chokidar");
     callback(this.tryBuild());
     chokidar
       .watch(
@@ -893,4 +895,4 @@ class Builder {
   }
 }
 
-module.exports = Builder;
+export default Builder;

@@ -1,5 +1,5 @@
-const fs = require("fs");
-const pathUtil = require("path");
+import fs from "node:fs";
+import pathUtil from "node:path";
 
 /**
  * Recursively read a directory.
@@ -47,7 +47,7 @@ const mkdirp = (directory) => {
   }
 };
 
-module.exports = {
+export default {
   recursiveReadDirectory,
   mkdirp,
 };

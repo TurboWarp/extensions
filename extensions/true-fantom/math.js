@@ -102,7 +102,7 @@
     getInfo() {
       return {
         id: "truefantommath",
-        name: "Math",
+        name: Scratch.translate("Math"),
 
         color1: "#59c059",
 
@@ -368,7 +368,7 @@
           {
             opcode: "exactly_cont_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[A] exactly contains [B] ?",
+            text: Scratch.translate("[A] exactly contains [B]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -385,7 +385,7 @@
           {
             opcode: "clamp_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "clamp [A] between [B] and [C]",
+            text: Scratch.translate("clamp [A] between [B] and [C]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -405,7 +405,9 @@
           {
             opcode: "scale_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "map [A] from range [m1] - [M1] to range [m2] - [M2]",
+            text: Scratch.translate(
+              "map [A] from range [m1] - [M1] to range [m2] - [M2]"
+            ),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -434,7 +436,7 @@
           {
             opcode: "trunc2_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "trunc of [A] with [B] digits after dot",
+            text: Scratch.translate("trunc of [A] with [B] digits after dot"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -450,7 +452,7 @@
           {
             opcode: "trunc_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "trunc of [A]",
+            text: Scratch.translate("trunc of [A]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -463,7 +465,7 @@
           {
             opcode: "is_multiple_of_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[A] is multiple of [B] ?",
+            text: Scratch.translate("[A] is multiple of [B]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -480,7 +482,7 @@
           {
             opcode: "log_with_base_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "log of [A] with base [B]",
+            text: Scratch.translate("log of [A] with base [B]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -516,7 +518,7 @@
           {
             opcode: "is_safe_number_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is safe number [A] ?",
+            text: Scratch.translate("is safe number [A]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -529,7 +531,7 @@
           {
             opcode: "is_number_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is number [A] ?",
+            text: Scratch.translate("is number [A]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -541,7 +543,7 @@
           {
             opcode: "is_int_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is int [A] ?",
+            text: Scratch.translate("is int [A]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -553,7 +555,7 @@
           {
             opcode: "is_float_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is float [A] ?",
+            text: Scratch.translate("is float [A]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
