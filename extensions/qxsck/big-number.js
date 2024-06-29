@@ -6,6 +6,7 @@
 
 (function (Scratch) {
   "use strict";
+
   class bigNumber {
     constructor() {
       this.maxPrecision = 100;
@@ -120,6 +121,20 @@
         return this.roundFunc(num_, this.maxPrecision);
       };
 
+      this.absFunc = function (num) {
+        return num.replace("-", "");
+      };
+      this.maxMinFunc = function (oper, num, num2) {
+        let a, b;
+        switch (oper) {
+          case "max":
+            ({ num: a, num2: b } = this.toSamePer(num, num2));
+            return a.num < b.num ? str2 : str;
+          case "min":
+            ({ num: a, num2: b } = this.toSamePer(num, num2));
+            return a.num > b.num ? str2 : str;
+        }
+      };
       this.roundFunc = function (num, num2) {
         let a = this.toBigNumber(num),
           round = Math.trunc(this.toNum(num2)),
@@ -146,17 +161,10 @@
         let aa = this.formatNum(a.num, a.len),
           bb = this.formatNum(b.num, b.len),
           temp1 = aa,
-          temp2 = bb;
-        aa = this.binaryOper({
-          OPER: "min",
-          NUM: temp1,
-          NUM2: temp2,
-        });
-        bb = this.binaryOper({
-          OPER: "max",
-          NUM: temp1,
-          NUM2: temp2,
-        });
+          temp2 = bb,
+          per = a.len;
+        aa = this.maxMinFunc("min", temp1, temp2);
+        bb = this.maxMinFunc("max", temp1, temp2);
         let random_ = String(Math.random());
         random_ = this.roundFunc(random_, 10);
         let nums = this.toSamePer(aa, random_),
@@ -165,8 +173,26 @@
         (a = this.formatNum(a.num, a.len)),
           (b = this.formatNum(b.num, b.len)),
           (random_ = this.formatNum(random_.num, random_.len));
-        let different = this.mulFunc(this.subFunc(b, a), random_);
-        return this.addFunc(different, a);
+        let different = this.mulFunc(this.subFunc(b, a), random_),
+          randomNum = this.addFunc(different, a);
+        return this.roundFunc(randomNum, per);
+      };
+      this.sqrtFunc = function (x) {
+        if (x <= "0") {
+          return "0";
+        }
+        let last = "0";
+        let res = "1";
+        while (true) {
+          last = res;
+          res = this.divFunc(this.addFunc(res, this.divFunc(x, res)), "2");
+          if (
+            this.roundFunc(res, Math.trunc(this.maxPrecision / 2.5)) ===
+            this.roundFunc(last, Math.trunc(this.maxPrecision / 2.5))
+          )
+            break;
+        }
+        return res;
       };
     }
 
@@ -450,7 +476,7 @@
         ],
         menus: {
           "unaryOper.List": {
-            items: ["abs", "ceil", "floor", "trunc"],
+            items: ["abs", "ceil", "floor", "trunc", "sqrt"],
           },
           "binaryOper.List": {
             items: ["max", "min"],
@@ -519,7 +545,7 @@
         str = String(args.NUM);
       switch (oper) {
         case "abs":
-          return str.replace("-", "");
+          return this.absFunc(str);
         case "ceil":
           if (str.indexOf("-") !== -1) {
             if (str.indexOf(".") !== -1)
@@ -544,21 +570,19 @@
           if (str.indexOf(".") !== -1)
             str = this.replaceString(str, "0", str.indexOf(".") + 1);
           return this.roundFunc(str, 0);
+        case "sqrt":
+          return this.sqrtFunc(str);
       }
     }
     binaryOper(args) {
       let oper = args.OPER,
         str = String(args.NUM),
-        str2 = String(args.NUM2),
-        a,
-        b;
+        str2 = String(args.NUM2);
       switch (oper) {
         case "max":
-          ({ num: a, num2: b } = this.toSamePer(str, str2));
-          return a.num < b.num ? str2 : str;
+          this.maxMinFunc("max", str, str2);
         case "min":
-          ({ num: a, num2: b } = this.toSamePer(str, str2));
-          return a.num > b.num ? str2 : str;
+          this.maxMinFunc("min", str, str2);
       }
     }
     round(args) {
