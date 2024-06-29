@@ -129,10 +129,10 @@
         switch (oper) {
           case "max":
             ({ num: a, num2: b } = this.toSamePer(num, num2));
-            return a.num < b.num ? str2 : str;
+            return a.num < b.num ? num2 : num;
           case "min":
             ({ num: a, num2: b } = this.toSamePer(num, num2));
-            return a.num > b.num ? str2 : str;
+            return a.num > b.num ? num2 : num;
         }
       };
       this.roundFunc = function (num, num2) {
@@ -580,9 +580,9 @@
         str2 = String(args.NUM2);
       switch (oper) {
         case "max":
-          this.maxMinFunc("max", str, str2);
+          return this.maxMinFunc("max", str, str2);
         case "min":
-          this.maxMinFunc("min", str, str2);
+          return this.maxMinFunc("min", str, str2);
       }
     }
     round(args) {
