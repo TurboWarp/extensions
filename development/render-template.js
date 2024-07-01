@@ -1,5 +1,5 @@
-import fs from "node:fs";
-import ejs from "ejs";
+const fs = require("fs");
+const ejs = require("ejs");
 
 // TODO: Investigate the value of removing dependency on `ejs` and possibly writing our own DSL.
 
@@ -9,4 +9,4 @@ const renderTemplate = (path, data) => {
   return outputHTML;
 };
 
-export default renderTemplate;
+module.exports = renderTemplate;

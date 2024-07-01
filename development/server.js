@@ -1,5 +1,5 @@
-import express from "express";
-import Builder from "./builder.js";
+const express = require("express");
+const Builder = require("./builder");
 
 let mostRecentBuild = null;
 const builder = new Builder("development");
