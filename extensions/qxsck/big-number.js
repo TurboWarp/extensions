@@ -204,12 +204,12 @@
         blocks: [
           {
             blockType: "label",
-            text: Scratch.translate("🗂️Setting"),
+            text: Scratch.translate("🗂️Settings"),
           },
           {
             opcode: "setPrecision",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set max precision is [NUM]"),
+            text: Scratch.translate("set max precision to [NUM]"),
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.STRING,
