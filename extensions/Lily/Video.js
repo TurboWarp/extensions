@@ -239,6 +239,22 @@
               },
             },
           },
+          {
+            // Frame Block Added By SharkPool
+            opcode: "getFrame",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("frame of video [NAME] at [TIME] seconds"),
+            arguments: {
+              TIME: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my video",
+              },
+            },
+          },
           "---",
           {
             opcode: "pause",
@@ -464,6 +480,29 @@
         default:
           return 0;
       }
+    }
+
+    getFrame(args) {
+      const time = Cast.toString(args.TIME);
+      const videoName = Cast.toString(args.NAME);
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return "";
+
+      const videoElement = videoSkin.videoElement;
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      return new Promise((resolve, reject) => {
+        if (videoElement.readyState >= 1) {
+          canvas.width = videoElement.videoWidth;
+          canvas.height = videoElement.videoHeight;
+          videoElement.currentTime = time;
+          videoElement.addEventListener("seeked", function onSeeked() {
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL());
+            videoElement.removeEventListener("seeked", onSeeked);
+          }, { once: true });
+        }
+      });
     }
 
     pause(args) {
