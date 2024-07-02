@@ -1,7 +1,6 @@
 {
   "name": "@turbowarp/extensions",
   "version": "0.0.1",
-  "type": "module",
   "description": "Unsandboxed extensions for TurboWarp",
   "scripts": {
     "start": "node development/server.js",
@@ -33,7 +32,7 @@
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
-    "eslint": "^9.5.0",
+    "eslint": "^9.6.0",
     "espree": "^9.6.1",
     "esquery": "^1.5.0",
     "prettier": "^3.3.2",
