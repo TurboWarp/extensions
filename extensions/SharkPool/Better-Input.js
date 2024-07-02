@@ -1048,12 +1048,13 @@
       this.activeOverlays = this.activeOverlays.filter((overlay) => !overlaysToRemove.includes(overlay));
       this.activeUI = [];
       this.askBoxInfo[0] = 0;
+      this.isDropdownOpen = false;
       // Remove "Bugged" Boxes, bugged boxes is a intentional feature, ask for more info
       const bugged = document.querySelectorAll(`[class^="SP-ask-box"]`);
       bugged.forEach((box) => { box.parentNode.removeChild(box) });
     }
 
-    resetInput() { this.userInput = this.askBoxInfo[1] > 1 ? "[]" : "" }
+    resetInput() { this.userInput = this.askBoxInfo[1] > 1 ? [] : "" }
 
     askAndWaitForInput(args) {
       if (this.askBoxInfo[0] < this.askBoxInfo[1] ) {
