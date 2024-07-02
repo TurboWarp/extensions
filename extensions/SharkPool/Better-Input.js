@@ -3,7 +3,7 @@
 // Description: Expansion of the "ask and wait" Blocks
 // By: SharkPool
 
-// Version V.4.1.0
+// Version V.4.1.1
 
 (function (Scratch) {
   "use strict";
@@ -161,6 +161,10 @@
           {
             opcode: "removeAskBoxes", blockType: Scratch.BlockType.COMMAND,
             text: "remove all ask boxes"
+          },
+          {
+            opcode: "resetInput", blockType: Scratch.BlockType.COMMAND,
+            text: "reset user input"
           },
           { blockType: Scratch.BlockType.LABEL, text: "Formatting" },
           {
@@ -1049,6 +1053,8 @@
       bugged.forEach((box) => { box.parentNode.removeChild(box) });
     }
 
+    resetInput() { this.userInput = this.askBoxInfo[1] > 1 ? "[]" : "" }
+
     askAndWaitForInput(args) {
       if (this.askBoxInfo[0] < this.askBoxInfo[1] ) {
         return this.askAndWait(args).then(() => { return this.getUserInput() });
@@ -1058,6 +1064,8 @@
     askAndWait(args) {
       if (this.askBoxInfo[0] < this.askBoxInfo[1]) {
         const question = args.question;
+        let hasDecreased = false; // for the box counter
+        const index = this.askBoxInfo[0];
         this.isWaitingForInput = true;
         this.lastPressBtn = "";
         this.askBoxInfo[0]++;
@@ -1092,8 +1100,14 @@
             const overlayInput = this.forceInput === "Enter Key" ? "Enter" : this.forceInput === "Shift + Enter Key" ? "ShiftEnter" : this.forceInput;
             const handleKeydown = (event) => {
               if ((overlayInput === "ShiftEnter" && event.shiftKey && event.key === "Enter") || event.key === overlayInput) {
-                this.userInput = inputField.value;
-                this.closeOverlay(overlay);
+                if (this.askBoxInfo[1] == 1) this.userInput = inputField.value;
+                else {
+                  const newInput = [...this.userInput];
+                  newInput[index] = inputField.value;
+                  this.userInput = newInput;
+                }
+                this.closeOverlay(overlay, hasDecreased);
+                hasDecreased = true;
                 resolve();
               }
             };
@@ -1121,7 +1135,14 @@
           inputField.style.fontSize = this.fontSize;
           inputField.style.margin = "0 auto";
           inputField.type = this.isInputEnabled.toLowerCase();
-          inputField.addEventListener("input", () => { this.userInput = inputField.value });
+          inputField.addEventListener("input", () => {
+            if (this.askBoxInfo[1] == 1) this.userInput = inputField.value;
+            else {
+              const newInput = [...this.userInput];
+              newInput[index] = inputField.value;
+              this.userInput = newInput;
+            }
+          });
           const buttonContainer = document.createElement("div");
           buttonContainer.classList.add("button-container");
           for (const buttonName in this.buttonJSON) {
@@ -1139,8 +1160,14 @@
               button.style.display = "inline-block";
               button.addEventListener("click", () => {
                 this.lastPressBtn = buttonInfo.name;
-                this.userInput = this.isInputEnabled === "Disabled" ? buttonInfo.name : inputField.value;
-                this.closeOverlay(overlay);
+                if (this.askBoxInfo[1] == 1) this.userInput = this.isInputEnabled === "Disabled" ? buttonInfo.name : inputField.value;
+                else {
+                  const newInput = [...this.userInput];
+                  newInput[index] = this.isInputEnabled === "Disabled" ? buttonInfo.name : inputField.value;
+                  this.userInput = newInput;
+                }
+                this.closeOverlay(overlay, hasDecreased);
+                hasDecreased = true;
                 resolve();
               });
               buttonContainer.appendChild(button);
@@ -1174,7 +1201,12 @@
                 } else { selectedOptions.push(label) }
                 inputField.value = selectedOptions.length > 0 ? JSON.stringify(selectedOptions) : "";
               } else { inputField.value = label }
-              this.userInput = inputField.value;
+              if (this.askBoxInfo[1] == 1) this.userInput = inputField.value;
+              else {
+                const newInput = [...this.userInput];
+                newInput[index] = inputField.value;
+                this.userInput = newInput;
+              }
             });
             optionLabel.appendChild(optionRadio);
             optionLabel.appendChild(document.createTextNode(" " + label));
@@ -1209,7 +1241,12 @@
           slider.addEventListener("input", () => {
             valueDisplay.textContent = slider.value;
             inputField.value = slider.value;
-            this.userInput = valueDisplay.textContent;
+            if (this.askBoxInfo[1] == 1) this.userInput = valueDisplay.textContent;
+            else {
+              const newInput = [...this.userInput];
+              newInput[index] = valueDisplay.textContent;
+              this.userInput = newInput;
+            }
           });
           for (const item of this.uiOrder) {
             switch (item) {
@@ -1274,27 +1311,29 @@
         });
       }
     }
-    closeOverlay(overlay) {
+    closeOverlay(overlay, doneBefore) {
       if (this.askBoxInfo[0] < 2) this.isWaitingForInput = false;
       this.isDropdownOpen = false;
-      this.askBoxInfo[0]--;
-      let usedBG = document.querySelectorAll(".SP-ask-boxBG");
-      usedBG = usedBG[usedBG.length - 1];
-      // ^ Prioritizes Textboxes on Window
-      const index = this.activeOverlays.indexOf(overlay);
-      setTimeout(() => {
-        if (index !== -1) {
-          this.activeOverlays.splice(index, 1);
-          this.askBoxPromises.splice(index, 1);
-        }
-        delete this.activeUI[overlay];
-        if (this.appendTarget[0] === "window") document.body.removeChild(overlay);
-        else vm.renderer.removeOverlay(overlay);
-        if (usedBG) {
-          if (usedBG.id === "window") document.body.removeChild(usedBG);
-          else vm.renderer.removeOverlay(usedBG);
-        }
-      }, this.Timeout * 1000);
+      if (!doneBefore) {
+        this.askBoxInfo[0]--;
+        let usedBG = document.querySelectorAll(".SP-ask-boxBG");
+        usedBG = usedBG[usedBG.length - 1];
+        // ^ Prioritizes Textboxes on Window
+        const index = this.activeOverlays.indexOf(overlay);
+        setTimeout(() => {
+          if (index !== -1) {
+            this.activeOverlays.splice(index, 1);
+            this.askBoxPromises.splice(index, 1);
+          }
+          delete this.activeUI[overlay];
+          if (this.appendTarget[0] === "window") document.body.removeChild(overlay);
+          else vm.renderer.removeOverlay(overlay);
+          if (usedBG) {
+            if (usedBG.id === "window") document.body.removeChild(usedBG);
+            else vm.renderer.removeOverlay(usedBG);
+          }
+        }, this.Timeout * 1000);
+      }
     }
 
     setButton(args) {
@@ -1321,16 +1360,19 @@
 
     isDropdown() { return this.isDropdownOpen }
 
-    setMaxBoxCount(args) { this.askBoxInfo[1] = args.MAX }
-
-    setTimeout(args) {
-      this.Timeout = args.TIME;
-      this.Condition = args.CONDITION;
+    setMaxBoxCount(args) {
+      this.askBoxInfo[1] = Scratch.Cast.toNumber(args.MAX);
+      if (this.askBoxInfo[1] > 1 && !Array.isArray(this.userInput)) this.userInput = [this.userInput];
     }
+
+    setTimeout(args) { this.Timeout = Scratch.Cast.toNumber(args.TIME) }
 
     reportTimeout() { return this.Timeout }
 
-    getUserInput() { return this.userInput === null ? "" : this.userInput }
+    getUserInput() {
+      if (this.askBoxInfo[1] > 1) return this.userInput === null ? "[]" : JSON.stringify(this.userInput);
+      else return this.userInput === null ? "" : this.userInput;
+    }
 
     getBoxInfo(args) {
       if (args.INFO.includes("button")) {
