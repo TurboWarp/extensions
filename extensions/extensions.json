@@ -9,6 +9,7 @@
   "cursor",
   "runtime-options",
   "fetch",
+  "pppdud/fetchplus",
   "text",
   "local-storage",
   "true-fantom/base",
