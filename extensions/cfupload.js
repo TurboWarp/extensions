@@ -22,7 +22,7 @@
     const blob = new Blob([data], { type: "text/plain" });
     formData.append("file", blob, filename);
 
-    fetch(link, {
+    Scratch.fetch(link, {
       method: "POST",
       body: formData,
     })
