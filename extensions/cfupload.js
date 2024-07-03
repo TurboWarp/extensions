@@ -4,6 +4,7 @@
 // By: Codefoxy <https://scratch.mit.edu/users/odavido123Daptoper/>
 // Original: Codefoxy
 // License: MIT AND MPL-2.0
+
 (function (Scratch) {
   "use strict";
 
@@ -11,16 +12,26 @@
     throw new Error("files extension must be run unsandboxed");
   }
 
+  const formDataEntries = {};
+
   /**
    * @param {string} data Data to upload
    * @param {string} filename Name of the file
    * @param {string} link URL to upload to
+   * @param {string} formName Form name for the file
    * @returns {Promise<string>} A promise that resolves to the server response data
    */
-  const uploadFileToLink = (data, filename, link) => {
+  const uploadFileToLink = (data, filename, link, formName) => {
     const formData = new FormData();
     const blob = new Blob([data], { type: "text/plain" });
-    formData.append("file", blob, filename);
+    formData.append(formName, blob, filename);
+
+    // Add additional form data entries
+    for (const key in formDataEntries) {
+      if (formDataEntries.hasOwnProperty(key)) {
+        formData.append(key, formDataEntries[key]);
+      }
+    }
 
     return Scratch.fetch(link, {
       method: "POST",
@@ -47,7 +58,7 @@
           {
             opcode: "uploadFileToLink",
             blockType: Scratch.BlockType.REPORTER,
-            text: "upload [data] as [filename] to link [link]",
+            text: "upload [data] as [filename] to [link] as [formName]",
             arguments: {
               data: {
                 type: Scratch.ArgumentType.STRING,
@@ -61,6 +72,25 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "https://example.com/upload",
               },
+              formName: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "fileToUpload",
+              },
+            },
+          },
+          {
+            opcode: "addFormData",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "add formdata [key]: [value]",
+            arguments: {
+              key: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "key",
+              },
+              value: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "value",
+              },
             },
           },
         ],
@@ -68,9 +98,14 @@
     }
 
     uploadFileToLink(args) {
-      return uploadFileToLink(args.data, args.filename, args.link);
+      return uploadFileToLink(args.data, args.filename, args.link, args.formName);
+    }
+
+    addFormData(args) {
+      formDataEntries[args.key] = args.value;
     }
   }
 
   Scratch.extensions.register(new Upload());
 })(Scratch);
+
