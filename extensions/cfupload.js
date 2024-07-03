@@ -39,11 +39,7 @@
     })
       .then((response) => response.text())
       .then((result) => {
-        try {
-          return JSON.stringify(JSON.parse(result));
-        } catch (error) {
-          return result;
-        }
+          return result
       })
       .catch((error) => {
         console.error("Error uploading file:", error);
