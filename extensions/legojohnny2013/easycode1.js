@@ -1,4 +1,9 @@
-//const { ReturnDocument } = require("typeorm");
+// Name: EasyCode
+// ID: LJ2013easycode
+// Description: Adds Lots and Lots of Blocks like Alert and Change Tab Title.
+// By: LegoJohnny2013 <https://scratch.mit.edu/users/LEGOJohnny2013/>
+// Original: TestMuffin
+// License: MPL-2.0
 (function(Scratch) {
   'use strict';
 //constants
@@ -69,7 +74,7 @@ let auth1url = 'https://discord.com/oauth2/authorize?client_id=12462768177872896
 
 
 if (!Scratch.extensions.unsandboxed) {
-  console.log('Easycode should run unsandboxed');
+  throw New Error('Easycode Must Run unsandboxed');
 }
 
 
@@ -79,7 +84,7 @@ if (!Scratch.extensions.unsandboxed) {
 class EasyCode {
   getInfo() {
     return {
-      id: 'easycode',
+      id: 'LJ2013easycode',
       color1: '#87b7fa',
       color2: '#6d93c9',
       docsURI: 'https://docs.turbowarp.org/development/extensions/docsURI-demo',
