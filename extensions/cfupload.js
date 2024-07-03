@@ -101,7 +101,12 @@
     }
 
     uploadFileToLink(args) {
-      return uploadFileToLink(args.data, args.filename, args.link, args.formName);
+      return uploadFileToLink(
+        args.data,
+        args.filename,
+        args.link,
+        args.formName,
+      );
     }
 
     addFormData(args) {
@@ -111,4 +116,3 @@
 
   Scratch.extensions.register(new Upload());
 })(Scratch);
-
