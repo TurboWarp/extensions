@@ -28,7 +28,7 @@
 
     // Add additional form data entries
     for (const key in formDataEntries) {
-      if (formDataEntries.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(formDataEntries, key)) {
         formData.append(key, formDataEntries[key]);
       }
     }
@@ -37,10 +37,13 @@
       method: "POST",
       body: formData,
     })
-      .then((response) => response.json())
+      .then((response) => response.text())
       .then((result) => {
-        console.log("Upload result:", result);
-        return JSON.stringify(result);
+        try {
+          return JSON.stringify(JSON.parse(result));
+        } catch (error) {
+          return result;
+        }
       })
       .catch((error) => {
         console.error("Error uploading file:", error);
@@ -107,5 +110,7 @@
   }
 
   Scratch.extensions.register(new Upload());
+})(Scratch);
+r(new Upload());
 })(Scratch);
 
