@@ -111,6 +111,4 @@
 
   Scratch.extensions.register(new Upload());
 })(Scratch);
-r(new Upload());
-})(Scratch);
 
