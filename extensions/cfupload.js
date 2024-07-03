@@ -4,7 +4,6 @@
 // By: Codefoxy <https://scratch.mit.edu/users/odavido123Daptoper/>
 // Original: Codefoxy
 // License: MIT AND MPL-2.0
-
 (function (Scratch) {
   "use strict";
 
@@ -39,7 +38,12 @@
     })
       .then((response) => response.text())
       .then((result) => {
-          return result
+        try {
+          return JSON.stringify(result);
+        } catch (error) {
+          console.error("Error parsing response as JSON:", error);
+          return result;
+        }
       })
       .catch((error) => {
         console.error("Error uploading file:", error);
