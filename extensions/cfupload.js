@@ -4,7 +4,6 @@
 // By: Codefoxy <https://scratch.mit.edu/users/odavido123Daptoper/>
 // Original: Codefoxy
 // License: MIT AND MPL-2.0
-
 (function (Scratch) {
   "use strict";
 
@@ -16,24 +15,25 @@
    * @param {string} data Data to upload
    * @param {string} filename Name of the file
    * @param {string} link URL to upload to
+   * @returns {Promise<string>} A promise that resolves to the server response data
    */
   const uploadFileToLink = (data, filename, link) => {
     const formData = new FormData();
     const blob = new Blob([data], { type: "text/plain" });
     formData.append("file", blob, filename);
 
-    Scratch.fetch(link, {
+    return Scratch.fetch(link, {
       method: "POST",
       body: formData,
     })
       .then((response) => response.json())
       .then((result) => {
         console.log("Upload result:", result);
-        alert(`File "${filename}" uploaded successfully!`);
+        return JSON.stringify(result);
       })
       .catch((error) => {
         console.error("Error uploading file:", error);
-        alert(`Failed to upload "${filename}". Please try again.`);
+        return `Failed to upload "${filename}". Error: ${error.message}`;
       });
   };
 
@@ -46,7 +46,7 @@
         blocks: [
           {
             opcode: "uploadFileToLink",
-            blockType: Scratch.BlockType.COMMAND,
+            blockType: Scratch.BlockType.REPORTER,
             text: "upload [data] as [filename] to link [link]",
             arguments: {
               data: {
@@ -68,7 +68,7 @@
     }
 
     uploadFileToLink(args) {
-      uploadFileToLink(args.data, args.filename, args.link);
+      return uploadFileToLink(args.data, args.filename, args.link);
     }
   }
 
