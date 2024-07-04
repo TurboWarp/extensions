@@ -1,6 +1,6 @@
 // Name: UltraWarp
-// ID: ultrawarp
-// Description: Play BeepBox/UltraBox songs in Scratch!
+// ID: clayultrawarp
+// Description: Play BeepBox/UltraBox songs in TurboWarp!
 // By: ClaytonTDM <https://scratch.mit.edu/users/ClaytonTDM/>
 // License: MPL-2.0
 
@@ -39,7 +39,7 @@ const makeLabel = (text) => ({
 class Ultrawarp {
     getInfo() {
         return {
-            id: "ultrawarp",
+            id: "clayultrawarp",
             name: "UltraWarp",
             menuIconURI: ubIcon,
             blockIconURI: ubIcon,
