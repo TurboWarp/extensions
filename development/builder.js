@@ -1,17 +1,23 @@
-const fs = require("fs");
-const AdmZip = require("adm-zip");
-const pathUtil = require("path");
-const ExtendedJSON = require("@turbowarp/json");
-const compatibilityAliases = require("./compatibility-aliases");
-const parseMetadata = require("./parse-extension-metadata");
-const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
+import fs from "node:fs/promises";
+import AdmZip from "adm-zip";
+import pathUtil from "node:path";
+import ExtendedJSON from "@turbowarp/json";
+import compatibilityAliases from "./compatibility-aliases.js";
+import parseMetadata from "./parse-extension-metadata.js";
+import { mkdirp, recursiveReadDirectory } from "./fs-utils.js";
+import * as espree from "espree";
+import esquery from "esquery";
+import { createHash } from "crypto";
+import urlUtil from "node:url";
+
+const dirname = pathUtil.dirname(urlUtil.fileURLToPath(import.meta.url));
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
  */
 
 /**
- * @typedef TranslatableString
+ * @typedef TranslatableStringretract
  * @property {string} string The English version of the string
  * @property {string} developer_comment Helper text to help translators
  */
@@ -110,12 +116,12 @@ class BuildFile {
     return pathUtil.extname(this.sourcePath);
   }
 
-  getLastModified() {
-    return fs.statSync(this.sourcePath).mtimeMs;
+  async getLastModified() {
+    return (await fs.stat(this.sourcePath)).mtimeMs;
   }
 
   read() {
-    return fs.readFileSync(this.sourcePath);
+    return fs.readFile(this.sourcePath);
   }
 
   validate() {
@@ -123,11 +129,10 @@ class BuildFile {
   }
 
   /**
-   * @returns {Record<string, Record<string, TranslatableString>>|null}
+   * @returns {Record<string, Record<string, TranslatableString>> | null | Promise<Record<string, Record<string, TranslatableString>> | null>}
    */
   getStrings() {
     // no-op by default, to be overridden
-    return null;
   }
 }
 
@@ -151,14 +156,62 @@ class ExtensionFile extends BuildFile {
     this.mode = mode;
   }
 
-  read() {
-    const data = fs.readFileSync(this.sourcePath, "utf-8");
+  async read() {
+    let data = await fs.readFile(this.sourcePath, "utf-8");
 
     if (this.mode !== "development") {
       const translations = filterTranslationsByPrefix(
         this.allTranslations,
         `${this.slug}@`
       );
+
+      // This process only runs on production builds.
+
+      const ast = espree.parse(data, {
+        ecmaVersion: 2022,
+        sourceType: "script",
+      });
+      /** @type {Set<string>} */
+      const dependencies = new Set();
+      const selector = esquery.parse("ImportExpression");
+      const matches = esquery.match(ast, selector);
+      for (const match of matches) {
+        if (match.source.type === "Literal") {
+          const value = match.source.value;
+          if (typeof value === "string") {
+            dependencies.add(value);
+          } else {
+            throw new Error(
+              `${this.sourcePath}: Invalid URL\n at char ${match.source.start}~${match.source.end}`
+            );
+          }
+        } else {
+          throw new Error(
+            `${this.sourcePath}: Dynamic URL is not supported\n at char ${match.source.start}~${match.source.end}`
+          );
+        }
+      }
+      await mkdirp("cache");
+      if (dependencies.size > 0)
+        console.group(`Processing dependencies for ${this.sourcePath}`);
+      for (const url of dependencies) {
+        const filename = createHash("sha256")
+          .setEncoding("utf-8")
+          .update(url)
+          .digest("hex");
+        let dependency;
+        try {
+          dependency = `data:text/javascript;base64,${await fs.readFile(`cache/${filename}.js`, "base64")}`;
+          console.log(`Using cached ${url} (${filename}.js)`);
+        } catch {
+          console.log(`Downloading ${url}`);
+          const data = Buffer.from(await (await fetch(url)).arrayBuffer());
+          await fs.writeFile(`cache/${filename}.js`, data);
+          dependency = `data:text/javascript;base64,${data.toString("base64")}`;
+        }
+        data = data.replaceAll(url, dependency);
+      }
+      if (dependencies.size > 0) console.groupEnd();
       if (translations !== null) {
         return insertAfterCommentsBeforeCode(
           data,
@@ -172,17 +225,17 @@ class ExtensionFile extends BuildFile {
     return data;
   }
 
-  getMetadata() {
-    const data = fs.readFileSync(this.sourcePath, "utf-8");
+  async getMetadata() {
+    const data = await fs.readFile(this.sourcePath, "utf-8");
     return parseMetadata(data);
   }
 
-  validate() {
+  async validate() {
     if (!this.featured) {
       return;
     }
 
-    const metadata = this.getMetadata();
+    const metadata = await this.getMetadata();
 
     if (!metadata.id) {
       throw new Error("Missing // ID:");
@@ -213,7 +266,7 @@ class ExtensionFile extends BuildFile {
       );
     }
 
-    const spdxParser = require("spdx-expression-parse");
+    const spdxParser = (await import("spdx-expression-parse")).default;
     try {
       // Don't care about the result -- just see if it parses.
       spdxParser(metadata.license);
@@ -238,12 +291,12 @@ class ExtensionFile extends BuildFile {
     }
   }
 
-  getStrings() {
+  async getStrings() {
     if (!this.featured) {
       return null;
     }
 
-    const metadata = this.getMetadata();
+    const metadata = await this.getMetadata();
     const slug = this.slug;
 
     const getMetadataDescription = (part) => {
@@ -264,8 +317,10 @@ class ExtensionFile extends BuildFile {
       },
     };
 
-    const parseTranslations = require("./parse-extension-translations");
-    const jsCode = fs.readFileSync(this.sourcePath, "utf-8");
+    const parseTranslations = (
+      await import("./parse-extension-translations.js")
+    ).default;
+    const jsCode = await fs.readFile(this.sourcePath, "utf-8");
     const unprefixedRuntimeStrings = parseTranslations(jsCode);
     const runtimeStrings = Object.fromEntries(
       Object.entries(unprefixedRuntimeStrings).map(([key, value]) => [
@@ -290,7 +345,7 @@ class HomepageFile extends BuildFile {
     samples,
     mode
   ) {
-    super(pathUtil.join(__dirname, "homepage-template.ejs"));
+    super(pathUtil.join(dirname, "homepage-template.ejs"));
 
     /** @type {Record<string, ExtensionFile>} */
     this.extensionFiles = extensionFiles;
@@ -343,23 +398,28 @@ class HomepageFile extends BuildFile {
     return `https://turbowarp.org/editor?project_url=${this.host}${path}`;
   }
 
-  read() {
-    const renderTemplate = require("./render-template");
+  async read() {
+    const renderTemplate = (await import("./render-template.js")).default;
 
     const mostRecentExtensions = Object.entries(this.extensionFiles)
       .sort((a, b) => b[1].getLastModified() - a[1].getLastModified())
       .slice(0, 5)
       .map((i) => i[0]);
-
     const extensionMetadata = Object.fromEntries(
-      this.featuredSlugs.map((slug) => [
-        slug,
-        {
-          ...this.extensionFiles[slug].getMetadata(),
-          hasDocumentation: this.withDocs.has(slug),
-          samples: this.samples.get(slug) || [],
-        },
-      ])
+      await (async () => {
+        const result = [];
+        for (const slug of this.featuredSlugs) {
+          result.push([
+            slug,
+            {
+              ...(await this.extensionFiles[slug].getMetadata()),
+              hasDocumentation: this.withDocs.has(slug),
+              samples: this.samples.get(slug) || [],
+            },
+          ]);
+        }
+        return result;
+      })()
     );
 
     return renderTemplate(this.sourcePath, {
@@ -409,12 +469,12 @@ class JSONMetadataFile extends BuildFile {
     return ".json";
   }
 
-  read() {
+  async read() {
     const extensions = [];
     for (const extensionSlug of this.featuredSlugs) {
       const extension = {};
       const file = this.extensionFiles[extensionSlug];
-      const metadata = file.getMetadata();
+      const metadata = await file.getMetadata();
       const image = this.extensionImages[extensionSlug];
 
       extension.slug = extensionSlug;
@@ -469,9 +529,9 @@ class JSONMetadataFile extends BuildFile {
 }
 
 class ImageFile extends BuildFile {
-  validate() {
-    const sizeOfImage = require("image-size");
-    const contents = this.read();
+  async validate() {
+    const sizeOfImage = (await import("image-size")).default;
+    const contents = await this.read();
     const { width, height } = sizeOfImage(contents);
     const aspectRatio = width / height;
     if (aspectRatio !== 2) {
@@ -485,15 +545,15 @@ class ImageFile extends BuildFile {
 }
 
 class SVGFile extends ImageFile {
-  validate() {
-    const contents = this.read();
+  async validate() {
+    const contents = await this.read();
     if (contents.includes("<text")) {
       throw new Error(
         "SVG must not contain <text> elements -- please convert the text to a path. This ensures it will display correctly on all devices."
       );
     }
 
-    super.validate();
+    await super.validate();
   }
 }
 
@@ -540,9 +600,9 @@ class DocsFile extends BuildFile {
     this.extensionSlug = extensionSlug;
   }
 
-  read() {
-    const renderDocs = require("./render-docs");
-    const markdown = super.read().toString("utf-8");
+  async read() {
+    const renderDocs = (await import("./render-docs.js")).default;
+    const markdown = (await super.read()).toString("utf-8");
     return renderDocs(markdown, this.extensionSlug);
   }
 
@@ -604,28 +664,28 @@ class Build {
     );
   }
 
-  export(root) {
+  async export(root) {
     mkdirp(root);
 
     for (const [relativePath, file] of Object.entries(this.files)) {
       const directoryName = pathUtil.dirname(relativePath);
-      fs.mkdirSync(pathUtil.join(root, directoryName), {
+      await fs.mkdir(pathUtil.join(root, directoryName), {
         recursive: true,
       });
-      fs.writeFileSync(pathUtil.join(root, relativePath), file.read());
+      await fs.writeFile(pathUtil.join(root, relativePath), await file.read());
     }
   }
 
   /**
-   * @returns {Record<string, Record<string, TranslatableString>>}
+   * @returns {Promise<Record<string, Record<string, TranslatableString>>>}
    */
-  generateL10N() {
+  async generateL10N() {
     const allStrings = {};
 
     for (const [filePath, file] of Object.entries(this.files)) {
       let fileStrings;
       try {
-        fileStrings = file.getStrings();
+        fileStrings = await file.getStrings();
       } catch (error) {
         console.error(error);
         throw new Error(
@@ -658,13 +718,13 @@ class Build {
   /**
    * @param {string} root
    */
-  exportL10N(root) {
-    mkdirp(root);
+  async exportL10N(root) {
+    await mkdirp(root);
 
-    const groups = this.generateL10N();
+    const groups = await this.generateL10N();
     for (const [name, strings] of Object.entries(groups)) {
       const filename = pathUtil.join(root, `exported-${name}.json`);
-      fs.writeFileSync(filename, JSON.stringify(strings, null, 2));
+      await fs.writeFile(filename, JSON.stringify(strings, null, 2));
     }
   }
 }
@@ -685,19 +745,19 @@ class Builder {
       this.mode = mode;
     }
 
-    this.extensionsRoot = pathUtil.join(__dirname, "../extensions");
-    this.websiteRoot = pathUtil.join(__dirname, "../website");
-    this.imagesRoot = pathUtil.join(__dirname, "../images");
-    this.docsRoot = pathUtil.join(__dirname, "../docs");
-    this.samplesRoot = pathUtil.join(__dirname, "../samples");
-    this.translationsRoot = pathUtil.join(__dirname, "../translations");
+    this.extensionsRoot = pathUtil.join(dirname, "../extensions");
+    this.websiteRoot = pathUtil.join(dirname, "../website");
+    this.imagesRoot = pathUtil.join(dirname, "../images");
+    this.docsRoot = pathUtil.join(dirname, "../docs");
+    this.samplesRoot = pathUtil.join(dirname, "../samples");
+    this.translationsRoot = pathUtil.join(dirname, "../translations");
   }
 
-  build() {
+  async build() {
     const build = new Build(this.mode);
 
     const featuredExtensionSlugs = ExtendedJSON.parse(
-      fs.readFileSync(
+      await fs.readFile(
         pathUtil.join(this.extensionsRoot, "extensions.json"),
         "utf-8"
       )
@@ -708,20 +768,20 @@ class Builder {
      * @type {Record<string, Record<string, Record<string, string>>>}
      */
     const translations = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.translationsRoot
     )) {
       if (!filename.endsWith(".json")) {
         continue;
       }
       const group = filename.split(".")[0];
-      const data = JSON.parse(fs.readFileSync(absolutePath, "utf-8"));
+      const data = JSON.parse(await fs.readFile(absolutePath, "utf-8"));
       translations[group] = data;
     }
 
     /** @type {Record<string, ExtensionFile>} */
     const extensionFiles = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.extensionsRoot
     )) {
       if (!filename.endsWith(".js")) {
@@ -742,7 +802,7 @@ class Builder {
 
     /** @type {Record<string, ImageFile>} */
     const extensionImages = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.imagesRoot
     )) {
       const extension = pathUtil.extname(filename);
@@ -762,7 +822,7 @@ class Builder {
 
     /** @type {Map<string, SampleFile[]>} */
     const samples = new Map();
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.samplesRoot
     )) {
       if (!filename.endsWith(".sb3")) {
@@ -781,14 +841,14 @@ class Builder {
       build.files[`/samples/${filename}`] = file;
     }
 
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.websiteRoot
     )) {
       build.files[`/${filename}`] = new BuildFile(absolutePath);
     }
 
     if (this.mode !== "desktop") {
-      for (const [filename, absolutePath] of recursiveReadDirectory(
+      for (const [filename, absolutePath] of await recursiveReadDirectory(
         this.docsRoot
       )) {
         if (!filename.endsWith(".md")) {
@@ -801,7 +861,7 @@ class Builder {
       }
 
       const scratchblocksPath = pathUtil.join(
-        __dirname,
+        dirname,
         "../node_modules/@turbowarp/scratchblocks/build/scratchblocks.min.js"
       );
       build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
@@ -836,12 +896,12 @@ class Builder {
     return build;
   }
 
-  tryBuild(...args) {
+  async tryBuild(...args) {
     const start = new Date();
     process.stdout.write(`[${start.toLocaleTimeString()}] Building... `);
 
     try {
-      const build = this.build(...args);
+      const build = await this.build(...args);
       const time = Date.now() - start.getTime();
       console.log(`done in ${time}ms`);
       return build;
@@ -853,10 +913,10 @@ class Builder {
     return null;
   }
 
-  startWatcher(callback) {
+  async startWatcher(callback) {
     // Load chokidar lazily.
-    const chokidar = require("chokidar");
-    callback(this.tryBuild());
+    const chokidar = (await import("chokidar")).default;
+    callback(await this.tryBuild());
     chokidar
       .watch(
         [
@@ -871,17 +931,17 @@ class Builder {
           ignoreInitial: true,
         }
       )
-      .on("all", () => {
-        callback(this.tryBuild());
+      .on("all", async () => {
+        callback(await this.tryBuild());
       });
   }
 
-  validate() {
+  async validate() {
     const errors = [];
-    const build = this.build();
+    const build = await this.build();
     for (const [fileName, file] of Object.entries(build.files)) {
       try {
-        file.validate();
+        await file.validate();
       } catch (e) {
         errors.push({
           fileName,
@@ -893,4 +953,4 @@ class Builder {
   }
 }
 
-module.exports = Builder;
+export default Builder;

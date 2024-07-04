@@ -1,9 +1,9 @@
-const express = require("express");
-const Builder = require("./builder");
+import express from "express";
+import Builder from "./builder.mjs";
 
 let mostRecentBuild = null;
 const builder = new Builder("development");
-builder.startWatcher((newBuild) => {
+await builder.startWatcher((newBuild) => {
   mostRecentBuild = newBuild;
 });
 
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/*", (req, res, next) => {
+app.get("/*", async (req, res, next) => {
   if (!mostRecentBuild) {
     res.contentType("text/plain");
     res.status(500);
@@ -50,7 +50,7 @@ app.get("/*", (req, res, next) => {
   }
 
   res.contentType(fileInBuild.getType());
-  res.send(fileInBuild.read());
+  res.send(await fileInBuild.read());
 });
 
 app.use((req, res) => {

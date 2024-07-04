@@ -1,15 +1,14 @@
-const js = require('@eslint/js');
-const globals = require('globals');
+import js from '@eslint/js';
+import globals from 'globals';
 
-module.exports = [
+export default [
   // Base on eslint recommended
   js.configs.recommended,
 
   // Common for all files
   {
     languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'commonjs'
+      ecmaVersion: 2022
     },
     rules: {
       // Unused variables commonly indicate logic errors
@@ -78,7 +77,8 @@ module.exports = [
       globals: {
         ...globals.commonjs,
         ...globals.node
-      }
+      },
+      sourceType: 'module'
     }
   },
 
@@ -95,7 +95,8 @@ module.exports = [
         ScratchBlocks: 'readonly',
         ScratchExtensions: 'readonly',
         scaffolding: 'readonly'
-      }
+      },
+      sourceType: 'script'
     },
     rules: {
       // Require each extension to use strict mode

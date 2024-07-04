@@ -1,8 +1,10 @@
-const fs = require("fs");
-const path = require("path");
-const https = require("https");
-const fsUtils = require("./fs-utils");
-const parseMetadata = require("./parse-extension-metadata");
+import { readFile } from "node:fs/promises";
+import { recursiveReadDirectory } from "./fs-utils.js";
+import parseMetadata from "./parse-extension-metadata.js";
+import pathUtil from "node:path";
+import urlUtil from "node:url";
+
+const dirname = pathUtil.dirname(urlUtil.fileURLToPath(import.meta.url));
 
 class AggregatePersonInfo {
   /** @param {Person} person */
@@ -23,38 +25,19 @@ class AggregatePersonInfo {
  * @param {string} username
  * @returns {Promise<string>}
  */
-const getUserID = (username) =>
-  new Promise((resolve, reject) => {
-    process.stdout.write(`Getting user ID for ${username}... `);
-    const request = https.get(`https://api.scratch.mit.edu/users/${username}`);
-
-    request.on("response", (response) => {
-      const data = [];
-      response.on("data", (newData) => {
-        data.push(newData);
-      });
-
-      response.on("end", () => {
-        const allData = Buffer.concat(data);
-        const json = JSON.parse(allData.toString("utf-8"));
-        const userID = String(json.id);
-        process.stdout.write(`${userID}\n`);
-        resolve(userID);
-      });
-
-      response.on("error", (error) => {
-        process.stdout.write("error\n");
-        reject(error);
-      });
-    });
-
-    request.on("error", (error) => {
-      process.stdout.write("error\n");
-      reject(error);
-    });
-
-    request.end();
-  });
+const getUserID = async (username) => {
+  process.stdout.write(`Getting user ID for ${username}... `);
+  const request = await fetch(`https://api.scratch.mit.edu/users/${username}`);
+  try {
+    const json = await request.json();
+    const userID = String(json.id);
+    process.stdout.write(`${userID}\n`);
+    return userID;
+  } catch (e) {
+    process.stdout.write("error\n");
+    throw e;
+  }
+};
 
 const run = async () => {
   /**
@@ -62,15 +45,15 @@ const run = async () => {
    */
   const aggregate = new Map();
 
-  const extensionRoot = path.resolve(__dirname, "../extensions/");
-  for (const [name, absolutePath] of fsUtils.recursiveReadDirectory(
+  const extensionRoot = pathUtil.resolve(dirname, "../extensions/");
+  for (const [name, absolutePath] of await recursiveReadDirectory(
     extensionRoot
   )) {
     if (!name.endsWith(".js")) {
       continue;
     }
 
-    const code = fs.readFileSync(absolutePath, "utf-8");
+    const code = await readFile(absolutePath, "utf-8");
     const metadata = parseMetadata(code);
 
     for (const person of [...metadata.by, ...metadata.original]) {
