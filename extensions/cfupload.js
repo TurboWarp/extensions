@@ -44,6 +44,7 @@
       .then((result) => {
         try {
           StatusCode = result.status;
+          RawRespond = result;
           return JSON.stringify(result);
         } catch (error) {
           return result;
@@ -101,6 +102,11 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "status code",
           },
+          {
+            opcode: "getRawRespond",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Raw Respond",
+          },
         ],
       };
     }
@@ -127,6 +133,9 @@
 
     getStatusCode() {
       return StatusCode; // Return the stored status code
+    }
+    getRawRespond() {
+      return RawRespond; // Return the stored status code
     }
   }
 
