@@ -10,7 +10,9 @@
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("files extension must be run unsandboxed");
   }
-
+  let a = {};
+  let apiurl = "";
+  let apiformname = "";
   const formDataEntries = {};
   let StatusCode = 0; // Variable to hold status code
   let RawRespond = ""; // Variable to hold raw Respond or scratch will crash
@@ -40,10 +42,10 @@
       .then((response) => {
         // Set StatusCode based on response status
         StatusCode = response.status;
+        return response.text(); // Assuming the response is text
       })
       .then((result) => {
         try {
-          StatusCode = result.status;
           RawRespond = result;
           return JSON.stringify(result);
         } catch (error) {
@@ -59,6 +61,21 @@
         name: "Upload",
         color1: "#fcb103",
         blocks: [
+          {
+            opcode: "addFormData",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "add formdata [key]: [value]",
+            arguments: {
+              key: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "key",
+              },
+              value: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "value",
+              },
+            },
+          },
           {
             opcode: "uploadFileToLink",
             blockType: Scratch.BlockType.REPORTER,
@@ -82,18 +99,23 @@
               },
             },
           },
+
           {
-            opcode: "addFormData",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "add formdata [key]: [value]",
+            opcode: "callapi",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Upload [data] to [Apis] as [name]",
             arguments: {
-              key: {
+              data: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key",
+                defaultValue: "Hello, World!",
               },
-              value: {
+              name: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "value",
+                defaultValue: "file.txt",
+              },
+              Apis: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "Apis",
               },
             },
           },
@@ -108,7 +130,43 @@
             text: "Raw Respond",
           },
         ],
+        menus: {
+          Apis: {
+            acceptReporters: false,
+            items: ["Catbox.moe", "file.io"],
+          },
+        },
       };
+    }
+    /**
+     * @param {string} data Data to upload
+     * @param {string} Apis apis menu
+     * @param {string} name Name of the file
+     * @returns {Promise<string>} Respond url
+     */
+    callapi(args) {
+      switch (args.Apis) {
+        case "Catbox.moe":
+          apiurl = "https://catbox.moe/user/api.php";
+          formDataEntries.reqtype = "fileupload";
+          apiformname = "fileToUpload";
+          break;
+        case "file.io":
+          apiurl = "https://file.io/?title=" + args.name;
+          apiformname = "file";
+          break;
+      }
+      return uploadFileToLink(args.data, args.name, apiurl, apiformname).then(
+        (response) => {
+          try {
+            a = JSON.parse(response); // Assuming response is JSON
+            return a;
+          } catch (error) {
+            console.error("Error parsing response as JSON:", error);
+            return response;
+          }
+        }
+      );
     }
 
     uploadFileToLink(args) {
