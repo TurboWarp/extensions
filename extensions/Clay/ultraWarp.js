@@ -2,7 +2,7 @@
 // ID: ultrawarp
 // Description: Play BeepBox/UltraBox songs in Scratch!
 // By: ClaytonTDM <https://scratch.mit.edu/users/ClaytonTDM/>
-// License: MIT
+// License: MPL-2.0
 
 // synth module
 var beepbox=function(exports){"use strict";
