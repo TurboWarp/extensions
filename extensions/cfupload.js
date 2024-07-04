@@ -135,7 +135,7 @@
       return StatusCode; // Return the stored status code
     }
     getRawRespond() {
-      return RawRespond; // Return the stored status code
+      return RawRespond;
     }
   }
 
