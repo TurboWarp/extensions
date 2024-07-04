@@ -1,5 +1,5 @@
-import Builder from "./builder.mjs";
-import { GREEN, BOLD, RESET, RED } from "./colors.mjs";
+import Builder from "./builder.js";
+import { GREEN, BOLD, RESET, RED } from "./colors.js";
 
 const builder = new Builder("development");
 const errors = await builder.validate();

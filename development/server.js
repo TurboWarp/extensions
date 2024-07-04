@@ -1,5 +1,5 @@
 import express from "express";
-import Builder from "./builder.mjs";
+import Builder from "./builder.js";
 
 let mostRecentBuild = null;
 const builder = new Builder("development");
