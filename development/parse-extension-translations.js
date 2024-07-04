@@ -1,5 +1,5 @@
-import * as espree from 'espree'
-import esquery from 'esquery'
+import * as espree from "espree";
+import esquery from "esquery";
 import parseMetadata from "./parse-extension-metadata.js";
 
 /**
