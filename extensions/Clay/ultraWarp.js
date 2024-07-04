@@ -2,7 +2,7 @@
 // ID: clayultrawarp
 // Description: Play BeepBox/UltraBox songs in TurboWarp!
 // By: ClaytonTDM <https://scratch.mit.edu/users/ClaytonTDM/>
-// License: MPL-2.0
+// License: MIT and MPL-2.0
 
 // synth module
 var beepbox=function(exports){"use strict";
