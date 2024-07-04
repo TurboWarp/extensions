@@ -13,7 +13,7 @@
 
   const formDataEntries = {};
   let StatusCode = 0; // Variable to hold status code
-
+  let StatusCode = 0; // Variable to hold raw Respond or scratch will crash
   /**
    * @param {string} data Data to upload
    * @param {string} filename Name of the file
