@@ -40,7 +40,7 @@
       .then((response) => {
         // Set StatusCode based on response status
         StatusCode = response.status;
-        })
+      })
       .then((result) => {
         try {
           StatusCode = result.status;
@@ -48,7 +48,7 @@
         } catch (error) {
           return result;
         }
-      })
+      });
   };
 
   class Upload {
