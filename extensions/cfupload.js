@@ -12,6 +12,7 @@
   }
 
   const formDataEntries = {};
+  let StatusCode = 0; // Variable to hold status code
 
   /**
    * @param {string} data Data to upload
@@ -36,19 +37,18 @@
       method: "POST",
       body: formData,
     })
-      .then((response) => response.text())
+      .then((response) => {
+        // Set StatusCode based on response status
+        StatusCode = response.status;
+        })
       .then((result) => {
         try {
+          StatusCode = result.status;
           return JSON.stringify(result);
         } catch (error) {
-          console.error("Error parsing response as JSON:", error);
           return result;
         }
       })
-      .catch((error) => {
-        console.error("Error uploading file:", error);
-        return `Failed to upload "${filename}". Error: ${error.message}`;
-      });
   };
 
   class Upload {
@@ -96,6 +96,11 @@
               },
             },
           },
+          {
+            opcode: "getStatusCode",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "status code",
+          },
         ],
       };
     }
@@ -106,13 +111,27 @@
         args.filename,
         args.link,
         args.formName
-      );
+      ).then((response) => {
+        try {
+          return JSON.parse(response); // Assuming response is JSON
+        } catch (error) {
+          console.error("Error parsing response as JSON:", error);
+          return response;
+        }
+      });
     }
 
     addFormData(args) {
       formDataEntries[args.key] = args.value;
     }
+
+    getStatusCode() {
+      return StatusCode; // Return the stored status code
+    }
   }
+
+  Scratch.extensions.register(new Upload());
+})(Scratch);
 
   Scratch.extensions.register(new Upload());
 })(Scratch);
