@@ -132,7 +132,7 @@
         ],
         menus: {
           Apis: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: ["Catbox.moe", "file.io"],
           },
         },
