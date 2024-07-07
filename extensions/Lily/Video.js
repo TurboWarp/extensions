@@ -491,18 +491,36 @@
       const videoElement = videoSkin.videoElement;
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("2d");
-      return new Promise((resolve, reject) => {
-        if (videoElement.readyState >= 1) {
+      if (!context) {
+        console.warn("2D rendering context not available");
+        return "";
+      }
+      if (videoElement.readyState >= 1) {
+        return new Promise((resolve, reject) => {
           canvas.width = videoElement.videoWidth;
           canvas.height = videoElement.videoHeight;
           videoElement.currentTime = time;
-          videoElement.addEventListener("seeked", function onSeeked() {
-            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-            resolve(canvas.toDataURL());
-            videoElement.removeEventListener("seeked", onSeeked);
-          }, { once: true });
-        }
-      });
+          // Timeout in case browser fails to seek (2 Seconds should be enough?)
+          const timeout = setTimeout(() => {
+            console.warn("browser wont perform 'seek' operation");
+            reject("Couldnt get frame, check console for more info");
+          }, 2000);
+          const onSeeked = () => {
+            clearTimeout(timeout);
+            try {
+              context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+              resolve(canvas.toDataURL());
+            } catch (error) {
+              console.warn(error);
+              reject("Couldnt get frame, check console for more info");
+            } finally {
+              videoElement.removeEventListener("seeked", onSeeked);
+            }
+          };
+          videoElement.addEventListener("seeked", onSeeked, { once: true });
+        });
+      }
+      return "";
     }
 
     pause(args) {
