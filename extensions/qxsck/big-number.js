@@ -1,4 +1,4 @@
-// Name: Big Number
+// Name: Big Decimal
 // ID: qxsckbignumber
 // Description: High precision operations. (Support decimals)
 // By: qxsck
@@ -199,7 +199,7 @@
     getInfo() {
       return {
         id: "qxsckbignumber",
-        name: Scratch.translate("Big Number"),
+        name: Scratch.translate("Big Decimal"),
         color1: "#ff8c3b",
         blocks: [
           {
