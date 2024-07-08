@@ -24,15 +24,17 @@
   };
 
   let fileHandle;
+  let folderHandle;
   let output = "";
   let storefd = null;
   let writeFail = false;
   let unsupportedBrowser = false;
   let mayOpenFilePicker = false;
+  let mayOpenFolderPicker = false;
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
-      "File System Access API cannot run on sandboxes. Please disable the sandbox when loading the extension."
+      "File System Access API cannot run on sandboxed mode.\nPlease disable the sandbox when loading the extension."
     );
   }
 
@@ -41,12 +43,16 @@
   );
 
   if (app.hasFSAccess) {
+    alert(
+    "🛠️   This extension is in development   🛠️\nTo prevent data loss, avoid using this on personal files or folders."
+    );
     console.log("Browser supports FSAAPI.");
   } else {
     unsupportedBrowser = true;
-    alert(
-      "Your current browser does not support File System Access API!\nThese blocks will not function.\nThere is a button in the palette to let you see supported browsers on MDN."
+    let QuitLoadingExt = confirm(
+      "Your current browser does not support File System Access API! This extension will not function here.\n\nKnown browsers that support this:\nChrome (v86+)\nEdge (v86+)\nOpera (v72+)\n\nFor more information, click \"Supported Browsers\" in the palette. Would you like to continue?"
     );
+    if (!QuitLoadingExt) throw new Error('User cancelled extension loading.')
   }
 
   class fsaapi98396 {
@@ -96,9 +102,14 @@
             text: "Permission Management",
           },
           {
-            opcode: "getUserPermissionFP",
+            opcode: "getUserPermissionFiP",
             blockType: Scratch.BlockType.COMMAND,
             text: "Request file picker permission",
+          },
+          {
+            opcode: 'getUserPermissionFoP',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Request folder picker permission'
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -163,7 +174,7 @@
           {
             opcode: "dirMultiFileOpen",
             blockType: Scratch.BlockType.COMMAND,
-            text: "(No Code Yet) Open a Directory",
+            text: "(Unfinished) Open a Directory",
           },
         ],
         menus: {
@@ -192,13 +203,22 @@
       );
     }
 
-    getUserPermissionFP() {
+    getUserPermissionFiP() {
       if (!mayOpenFilePicker) {
         mayOpenFilePicker = confirm(
           `Do you allow the following site to open your file picker?\n"${window.location.href}"`
         );
         if (!mayOpenFilePicker) throw new Error("Permission denied");
       }
+    }
+    getUserPermissionFoP() {
+      if (!mayOpenFolderPicker) {
+        mayOpenFolderPicker = confirm(
+          `Do you allow the following site to open your directory picker?\n"${window.location.href}"`
+        );
+        if (!mayOpenFolderPicker) throw new Error("Permission denied");
+      }
+
     }
 
     async rqFilePicker(args) {
@@ -318,10 +338,18 @@
     }
 
     writeAccessFailCheck() {
-      return writeFail || !mayOpenFilePicker;
+      return writeFail;
     }
 
-    async dirMultiFileOpen() {}
+    async dirMultiFileOpen() {
+      try{
+        [folderHandle] = await window.showDirectoryPicker()
+        
+
+      } catch (error) {
+        throw new Error(error);
+      }
+    }
   }
 
   Scratch.extensions.register(new fsaapi98396());
