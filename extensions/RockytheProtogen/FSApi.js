@@ -6,9 +6,13 @@
 
 /**
  * Credits:
+ *  https://www.w3schools.com/Js/
+ *  https://stackoverflow.com/questions/10147445/github-adding-commits-to-existing-pull-request
  *  https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
  *  https://github.com/TurboWarp/extensions/blob/master/extensions/files.js
- *
+ *  https://developer.mozilla.org/en-US/docs/Web/API/Window/
+ *  https://github.com/TurboWarp/extensions/blob/master/extensions/Lily/lmsutils.js
+ *  https://github.com/TurboWarp/extensions/pull/1594#issuecomment-2214487201
  */
 
 (function (Scratch) {
@@ -19,22 +23,23 @@
       "chooseFileSystemEntries" in window || "showOpenFilePicker" in window,
   };
 
-  let fileHandles;
+  let fileHandle;
   let output = "";
-  let storefd = "";
-  let storefhi = "";
+  let storefd = null;
   let writeFail = false;
   let unsupportedBrowser = false;
   let mayOpenFilePicker = false;
-  console.log(fileHandles); //This cannot be removed for some reason.
+
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
       "File System Access API cannot run on sandboxes. Please disable the sandbox when loading the extension."
     );
   }
+
   alert(
     "🛠️   This extension is in development   🛠️\nTo prevent data loss, avoid using this on personal files or folders."
   );
+
   if (app.hasFSAccess) {
     console.log("Browser supports FSAAPI.");
   } else {
@@ -46,7 +51,6 @@
 
   class fsaapi98396 {
     /**
-     * Code Import Section
      * Imported code for later use.
      */
     humanFileSize(bytes, si = false, dp = 1) {
@@ -75,6 +79,9 @@
       return {
         id: "fsaapi98396",
         name: "File System Access API",
+        color1: "#1565c0",
+        color2: "#9964b9",
+        color3: "#ffc107",
         docsURI:
           "https://developer.chrome.com/docs/capabilities/web-apis/file-system-access",
         blocks: [
@@ -123,7 +130,7 @@
           {
             opcode: "writeSingleFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "(Broken?) Write string [IN] to open file",
+            text: "Write string [IN] to open file",
             arguments: {
               IN: {
                 type: Scratch.ArgumentType.STRING,
@@ -157,119 +164,87 @@
     }
 
     getUserPermissionFP() {
-      return new Promise((resolve, reject) => {
-        if (!mayOpenFilePicker) {
-          mayOpenFilePicker = confirm(
-            `Do you allow the following site to open your file picker?\n"${window.location.href}"`
-          );
-          mayOpenFilePicker ? resolve() : reject();
-        } else {
-          resolve();
-        }
-      });
-    }
-
-    rqFilePicker() {
-      return new Promise((resolve, reject) => {
-        if (output === "" && mayOpenFilePicker) {
-          window
-            .showOpenFilePicker({ multiple: false })
-            .then(async (handles) => {
-              try {
-                output = "";
-                const fileHandle = handles[0];
-                await fileHandle.createWritable();
-                const file = await fileHandle.getFile();
-                output = JSON.stringify({
-                  type: file.kind,
-                  name: file.name,
-                  size: file.size,
-                  lastModified: file.lastModified,
-                  lastModifiedDate: file.lastModifiedDate,
-                });
-                if (file.size >= 25000000) {
-                  if (
-                    confirm(
-                      "This file is a rather large file, it could cause the site to freeze or crash!\nContinue anyway?\nSize:" +
-                        this.humanFileSize(file.size, true)
-                    )
-                  ) {
-                    console.log("Large file was imported");
-                  } else {
-                    reject;
-                  }
-                }
-                storefd = file;
-                storefhi = fileHandle;
-                resolve(output);
-              } catch (error) {
-                writeFail = true;
-                reject(error);
-              }
-            })
-            .catch(reject);
-        } else {
-          reject(
-            new Error("Could not prompt, check user input and try again.")
-          );
-        }
-      });
-    }
-
-    getOpenedFileData(args) {
-      if (output === "") {
-        return "";
+      if (!mayOpenFilePicker) {
+        mayOpenFilePicker = confirm(
+          `Do you allow the following site to open your file picker?\n"${window.location.href}"`
+        );
+        if (!mayOpenFilePicker) throw new Error("Permission denied");
       }
+    }
 
-      const file = storefd;
+    async rqFilePicker() {
+      try {
+        if (output === "" && mayOpenFilePicker) {
+          [fileHandle] = await window.showOpenFilePicker({ multiple: false });
+          const file = await fileHandle.getFile();
+          output = JSON.stringify({
+            type: file.type,
+            name: file.name,
+            size: file.size,
+            lastModified: file.lastModified,
+          });
+          if (file.size >= 25000000) {
+            if (
+              !confirm(
+                `This file is quite large (${this.humanFileSize(
+                  file.size,
+                  true
+                )}). It could cause the site to freeze or crash! Continue anyway?`
+              )
+            ) {
+              throw new Error("Large file import aborted by user");
+            }
+          }
+          storefd = file;
+        } else {
+          throw new Error("Could not prompt, check user input and try again.");
+        }
+      } catch (error) {
+        writeFail = true;
+        console.error("Error opening file:", error);
+        throw error;
+      }
+    }
 
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-          if (args.TYPE === "arrayBuffer") {
-            const arrayBuffer = reader.StreamOutResult;
-            const uint8Array = new Uint8Array(arrayBuffer);
-            resolve("[" + Array.from(uint8Array).toString() + "]");
-          } else if (args.TYPE === "text") {
-            resolve(reader.StreamOutResult);
-          } else {
-            console.log('Reading stream...');
-            const streamReader = file.stream().getReader();
-            const decoder = new TextDecoder();
-            let StreamOutResult = "";
-            const delay = 5;
-            const chunkSize = 1024;
-            
-            async function readChunks() {
-              while (true) {
-                const { done, value } = await streamReader.read();
-                if (done) {
-                  console.log('Stream reading complete.');
-                  resolve(StreamOutResult)
-                }
-            
-                StreamOutResult += decoder.decode(value, { stream: true });
-                console.log(StreamOutResult);
-            
-                if (value.length >= chunkSize) {
-                  console.log('waiting...');
-                  await new Promise(resolve => setTimeout(resolve, delay));
-                }
+    async getOpenedFileData(args) {
+      if (!storefd) return "";
+      try {
+        const file = await fileHandle.getFile(); // Re-acquire the file after writing
+        storefd = file;
+        if (args.TYPE === "arrayBuffer") {
+          const arrayBuffer = await file.arrayBuffer();
+          const uint8Array = new Uint8Array(arrayBuffer);
+          return "[" + Array.from(uint8Array).toString() + "]";
+        } else if (args.TYPE === "text") {
+          return await file.text();
+        } else if (args.TYPE === "stream") {
+          const streamReader = file.stream().getReader();
+          const decoder = new TextDecoder();
+          let StreamOutResult = "";
+          const chunkSize = 1024;
+          
+          async function readChunks() {
+            while (true) {
+              const { done, value } = await streamReader.read();
+              if (done) {
+                console.log('Stream reading complete.');
+                return StreamOutResult;
+              }
+              StreamOutResult += decoder.decode(value, { stream: true });
+              if (value.length >= chunkSize) {
+                await new Promise(resolve => setTimeout(resolve, 5));
               }
             }
-            
-            readChunks().catch(error => console.error('Error reading stream:', error));
-        };
-
-        reader.onerror = () => {
-          reject(new Error("Error reading file"));
-        };
-
-        if (args.TYPE === "arrayBuffer") {
-          reader.readAsArrayBuffer(file);
-        } else if (args.TYPE === "text") {
-          reader.readAsText(file);
+          }
+          
+          return await readChunks();
+        } else {
+          throw new Error("Invalid type specified");
         }
-      });
+      } catch (error) {
+        console.error('Error reading file:', error);
+        throw new Error("Error reading file");
+      }
     }
 
     getFileHandles() {
@@ -280,44 +255,32 @@
       return output === "";
     }
 
-    writeSingleFile(args) {
-      if (output !== "") {
-        const fileHandle = storefhi;
-
-        return new Promise((resolve, reject) => {
-          fileHandle
-            .createWritable()
-            .then((writable) => {
-              writable.pipeTo(args.IN);
-              console.log("Piped to file:" + args.IN);
-              resolve("File written successfully");
-            })
-            .catch(reject);
-        });
+    async writeSingleFile(args) {
+      if (fileHandle) {
+        try {
+          const writable = await fileHandle.createWritable();
+          await writable.write(args.IN);
+          await writable.close();
+          console.log("File written successfully");
+          storefd = await fileHandle.getFile(); // Re-acquire the file handle after writing
+        } catch (error) {
+          console.error("Error writing to file:", error);
+          throw new Error("Error writing to file");
+        }
       } else {
-        return Promise.reject("No file to write to!");
+        throw new Error("No file to write to!");
       }
     }
 
     closeSingleFile() {
-      const fileHandle = storefhi;
-      output = "";
-      storefd = "";
-
-      return new Promise((resolve, reject) => {
-        fileHandle
-          .createWritable()
-          .then((writable) => {
-            writable
-              .close()
-              .then(() => {
-                storefhi = "";
-                resolve("File closed successfully");
-              })
-              .catch(reject);
-          })
-          .catch(reject);
-      });
+      if (fileHandle) {
+        fileHandle = null;
+        storefd = null;
+        output = "";
+        console.log("File closed successfully");
+      } else {
+        throw new Error("No file to close!");
+      }
     }
 
     writeAccessFailCheck() {
