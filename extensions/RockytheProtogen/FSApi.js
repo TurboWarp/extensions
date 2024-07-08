@@ -4,14 +4,27 @@
 // By: Rocky the Protogen
 // License: GNU-GPL3
 
+/**
+ * Credits:
+ *  https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
+ *  https://github.com/TurboWarp/extensions/blob/master/extensions/files.js
+ *
+ */
+
 (function (Scratch) {
   "use strict";
+
+  const app = {
+    hasFSAccess:
+      "chooseFileSystemEntries" in window || "showOpenFilePicker" in window,
+  };
 
   let fileHandles;
   let output = "";
   let storefd = "";
   let storefhi = "";
   let writeFail = false;
+  let unsupportedBrowser = false;
   let mayOpenFilePicker = false;
   console.log(fileHandles); //This cannot be removed for some reason.
   if (!Scratch.extensions.unsandboxed) {
@@ -19,30 +32,45 @@
       "File System Access API cannot run on sandboxes. Please disable the sandbox when loading the extension."
     );
   }
-
-  // Browser Check
-  const nAgt = navigator.userAgent;
-  const verOffset =
-    nAgt.indexOf("OPR") !== -1 ||
-    nAgt.indexOf("Edg") !== -1 ||
-    nAgt.indexOf("Chrome") !== -1
-      ? nAgt.indexOf("OPR") !== -1 ||
-        nAgt.indexOf("Edg") !== -1 ||
-        nAgt.indexOf("Chrome") !== -1
-      : -1;
-
-  if (
-    verOffset === -1 ||
-    nAgt.indexOf("MSIE") !== -1 ||
-    nAgt.indexOf("Safari") !== -1 ||
-    nAgt.indexOf("Firefox") !== -1
-  ) {
+  alert(
+    "🛠️   This extension is in development   🛠️\nTo prevent data loss, avoid using this on personal files or folders."
+  );
+  if (app.hasFSAccess) {
+    console.log("Browser supports FSAAPI.");
+  } else {
+    unsupportedBrowser = true;
     alert(
-      "This browser might not be supported! Please use Edge, Chrome, or Opera. You will still be able to use the blocks, but they may not function."
+      "Your current browser does not support File System Access API!\nThese blocks will not function.\nThere is a button in the palette to let you see supported browsers."
     );
   }
 
   class fsaapi98396 {
+    /**
+     * Code Import Section
+     * Imported code for later use.
+     */
+    humanFileSize(bytes, si = false, dp = 1) {
+      const thresh = si ? 1000 : 1024;
+      if (Math.abs(bytes) < thresh) {
+        return bytes + " B";
+      }
+      const units = si
+        ? ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+        : ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
+      let u = -1;
+      const r = 10 ** dp;
+      do {
+        bytes /= thresh;
+        ++u;
+      } while (
+        Math.round(Math.abs(bytes) * r) / r >= thresh &&
+        u < units.length - 1
+      );
+      return bytes.toFixed(dp) + " " + units[u];
+    }
+    /**
+     * End of Imports
+     */
     getInfo() {
       return {
         id: "fsaapi98396",
@@ -50,6 +78,12 @@
         docsURI:
           "https://developer.chrome.com/docs/capabilities/web-apis/file-system-access",
         blocks: [
+          {
+            func: "getSupportedBrowsers",
+            blockType: Scratch.BlockType.BUTTON,
+            text: "Supported Browsers",
+            hideFromPalette: !unsupportedBrowser,
+          },
           {
             opcode: "getUserPermissionFP",
             blockType: Scratch.BlockType.COMMAND,
@@ -89,7 +123,7 @@
           {
             opcode: "writeSingleFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "(Broken?) Write array [IN] to open file",
+            text: "(Broken?) Write string [IN] to open file",
             arguments: {
               IN: {
                 type: Scratch.ArgumentType.STRING,
@@ -114,6 +148,12 @@
           },
         },
       };
+    }
+
+    getSupportedBrowsers() {
+      Scratch.openWindow(
+        "https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker#browser_compatibility"
+      );
     }
 
     getUserPermissionFP() {
@@ -147,6 +187,18 @@
                   lastModified: file.lastModified,
                   lastModifiedDate: file.lastModifiedDate,
                 });
+                if (file.size >= 25000000) {
+                  if (
+                    confirm(
+                      "This file is a rather large file, it could cause the site to freeze or crash!\nContinue anyway?\nSize:" +
+                        this.humanFileSize(file.size, true)
+                    )
+                  ) {
+                    console.log("Large file was imported");
+                  } else {
+                    reject;
+                  }
+                }
                 storefd = file;
                 storefhi = fileHandle;
                 resolve(output);
@@ -173,33 +225,39 @@
 
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-
-        reader.onload = () => {
           if (args.TYPE === "arrayBuffer") {
-            const arrayBuffer = reader.result;
+            const arrayBuffer = reader.StreamOutResult;
             const uint8Array = new Uint8Array(arrayBuffer);
             resolve("[" + Array.from(uint8Array).toString() + "]");
           } else if (args.TYPE === "text") {
-            resolve(reader.result);
+            resolve(reader.StreamOutResult);
           } else {
+            console.log('Reading stream...');
             const streamReader = file.stream().getReader();
             const decoder = new TextDecoder();
-            let result = "";
-
-            streamReader
-              .read()
-              .then(function processText({ done, value }) {
+            let StreamOutResult = "";
+            const delay = 5;
+            const chunkSize = 1024;
+            
+            async function readChunks() {
+              while (true) {
+                const { done, value } = await streamReader.read();
                 if (done) {
-                  resolve(result);
-                  return;
+                  console.log('Stream reading complete.');
+                  resolve(StreamOutResult)
                 }
-                result += decoder.decode(value, { stream: true });
-                return streamReader.read().then(processText);
-              })
-              .catch((error) => {
-                reject(new Error("Error reading stream: " + error));
-              });
-          }
+            
+                StreamOutResult += decoder.decode(value, { stream: true });
+                console.log(StreamOutResult);
+            
+                if (value.length >= chunkSize) {
+                  console.log('waiting...');
+                  await new Promise(resolve => setTimeout(resolve, delay));
+                }
+              }
+            }
+            
+            readChunks().catch(error => console.error('Error reading stream:', error));
         };
 
         reader.onerror = () => {
@@ -224,31 +282,15 @@
 
     writeSingleFile(args) {
       if (output !== "") {
-        const arrayIn = new Uint8Array(args.IN).buffer;
         const fileHandle = storefhi;
 
         return new Promise((resolve, reject) => {
           fileHandle
             .createWritable()
             .then((writable) => {
-              writable
-                .write(arrayIn)
-                .then(() => writable.close())
-                .then(async () => {
-                  output = "";
-                  const file = await fileHandle.getFile();
-                  output = JSON.stringify({
-                    type: file.kind,
-                    name: file.name,
-                    size: file.size,
-                    lastModified: file.lastModified,
-                    lastModifiedDate: file.lastModifiedDate,
-                  });
-                  storefd = file;
-                  storefhi = fileHandle;
-                  resolve("File written successfully");
-                })
-                .catch(reject);
+              writable.pipeTo(args.IN);
+              console.log("Piped to file:" + args.IN);
+              resolve("File written successfully");
             })
             .catch(reject);
         });
