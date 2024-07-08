@@ -2,6 +2,7 @@
 // ID: lmsVideo
 // Description: Play videos from URLs.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// Contributed to by: SharkPool
 // License: MIT AND LGPL-3.0
 
 // Attribution is not required, but greatly appreciated.
@@ -239,6 +240,21 @@
               },
             },
           },
+          {
+            opcode: "getFrame",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("frame of video [NAME] at [TIME] seconds"),
+            arguments: {
+              TIME: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my video",
+              },
+            },
+          },
           "---",
           {
             opcode: "pause",
@@ -466,6 +482,47 @@
       }
     }
 
+    getFrame(args) {
+      const time = Cast.toString(args.TIME);
+      const videoName = Cast.toString(args.NAME);
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return "";
+
+      const videoElement = videoSkin.videoElement;
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      if (!context) {
+        console.warn("2D rendering context not available");
+        return "";
+      }
+      if (videoElement.readyState >= 1) {
+        return new Promise((resolve, reject) => {
+          canvas.width = videoElement.videoWidth;
+          canvas.height = videoElement.videoHeight;
+          videoElement.currentTime = time;
+          // Timeout in case browser fails to seek (2 Seconds should be enough?)
+          const timeout = setTimeout(() => {
+            console.warn("browser wont perform 'seek' operation");
+            reject("Couldnt get frame, check console for more info");
+          }, 2000);
+          const onSeeked = () => {
+            clearTimeout(timeout);
+            try {
+              context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+              resolve(canvas.toDataURL());
+            } catch (error) {
+              console.warn(error);
+              reject("Couldnt get frame, check console for more info");
+            } finally {
+              videoElement.removeEventListener("seeked", onSeeked);
+            }
+          };
+          videoElement.addEventListener("seeked", onSeeked, { once: true });
+        });
+      }
+      return "";
+    }
+
     pause(args) {
       const videoName = Cast.toString(args.NAME);
       const videoSkin = this.videos[videoName];
@@ -500,7 +557,7 @@
       const videoSkin = this.videos[videoName];
       if (!videoSkin) return;
 
-      videoSkin.videoElement.volume = value / 100;
+      videoSkin.videoElement.volume = Math.min(1, Math.max(0, value / 100));
     }
 
     /** @returns {VM.Target|undefined} */
