@@ -22,8 +22,8 @@
   let output = "";
   let storefd = "";
   let storefhi = "";
-  let WriteFail = "False";
-  let MayOpenFilePicker;
+  let WriteFail = false;
+  let MayOpenFilePicker = false;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
       "File System Access API cannot run on sandboxes, it's too grainy!\nPlease disable the sandbox when loading the extension.\n Cheers! - Rocky"
@@ -96,6 +96,11 @@
           "https://developer.chrome.com/docs/capabilities/web-apis/file-system-access",
         blocks: [
           {
+            opcode: "getUserPermissionFP",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Request file picker permission",
+          },
+          {
             opcode: "rqFilePicker",
             blockType: Scratch.BlockType.COMMAND,
             text: "Request to open file",
@@ -161,9 +166,27 @@
       //idfk
       return fileHandles;
     }
+    getUserPermissionFP() {
+      return new Promise((resolve, reject) => {
+        if (MayOpenFilePicker == false) {
+          MayOpenFilePicker = confirm(
+            'Do you allow the following site to open your file picker?\n"' +
+              window.location.href +
+              '"'
+          );
+          if (MayOpenFilePicker) {
+            resolve();
+          } else {
+            reject();
+          }
+        } else {
+          resolve();
+        }
+      });
+    }
     rqFilePicker() {
       return new Promise((resolve, reject) => {
-        if (output == "") {
+        if ((output == "") & (MayOpenFilePicker == true)) {
           window
             .showOpenFilePicker()
             .then(async (fileHandles) => {
@@ -174,10 +197,10 @@
                 try {
                   await fileHandle.createWritable();
                 } catch (error) {
-                  WriteFail = "false";
+                  WriteFail = true;
                   reject(error);
                 }
-                WriteFail = "false";
+                WriteFail = false;
                 const file = await fileHandle.getFile();
                 const Prejson = {
                   type: file.kind,
@@ -206,14 +229,7 @@
       });
     }
     getOpenedFileData(args) {
-      if (MayOpenFilePicker == "false") {
-        MayOpenFilePicker = alert(
-          "Grant " +
-            window.location.href +
-            "permission to open your file browser?"
-        );
-      }
-      if ((output == "") & (MayOpenFilePicker == "true")) {
+      if (output == "") {
         return "";
       }
       try {
@@ -318,7 +334,44 @@
       });
     }
     writeaccessfailcheck() {
-      return WriteFail;
+      return WriteFail || !MayOpenFilePicker;
+    }
+
+    /**
+     * Beyond this is the permission checker to handle sudden permission changes,
+     * as the user can use external methods to revoke access to the files.
+     * This should be invoked on the file/folder being opened,
+     * and stopped when access is changed or the file is closed.
+     */
+    monitorPermissionChanges(handle, intervalTime = 5000) {
+      async () => {
+        const checkFileAccessPermission = async () => {
+          const options = { mode: "readwrite" };
+          const permissionStatus = await handle.queryPermission(options);
+
+          console.log(`Permission state: ${permissionStatus.state}`);
+
+          return permissionStatus.state;
+        };
+        let lastPermissionState = await checkFileAccessPermission;
+
+        setInterval(async () => {
+          const currentPermissionState = await checkFileAccessPermission;
+
+          if (currentPermissionState !== lastPermissionState) {
+            console.log(
+              `Permission state changed from ${lastPermissionState} to ${currentPermissionState}`
+            );
+
+            lastPermissionState = currentPermissionState;
+
+            if (currentPermissionState === "denied") {
+              console.log("Read/Write access has been revoked.");
+            }
+            return;
+          }
+        }, intervalTime);
+      };
     }
   }
   Scratch.extensions.register(new fsaapi98396());
