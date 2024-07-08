@@ -134,7 +134,7 @@
           {
             opcode: "writesinglefile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Write array [IN] to open file",
+            text: "(Broken?) Write array [IN] to open file",
             arguments: {
               IN: {
                 type: Scratch.ArgumentType.STRING,
@@ -144,7 +144,7 @@
           {
             opcode: "closesinglefile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "(Unfinished) Close File",
+            text: "Close File",
           },
           {
             opcode: "dirmultifileopen",
@@ -188,7 +188,7 @@
       return new Promise((resolve, reject) => {
         if ((output == "") & (MayOpenFilePicker == true)) {
           window
-            .showOpenFilePicker()
+            .showOpenFilePicker({ multiple: false })
             .then(async (fileHandles) => {
               try {
                 output = "";
@@ -303,13 +303,34 @@
     writesinglefile(args) {
       if (output !== "") {
         const arrayIn = new Uint8Array(args.IN).buffer;
-        const fileHandle = storefhi; // Use the stored file handle
+        const fileHandle = storefhi;
+
         return new Promise((resolve, reject) => {
           fileHandle
             .createWritable()
             .then((writable) => {
+              console.log("Writing to file:", arrayIn);
               return writable
                 .write(arrayIn)
+                .then(() => writable.close())
+                .then(async () => {
+                  output = "";
+                  const fileHandle = fileHandles[0];
+                  console.log(fileHandle);
+                  const file = await fileHandle.getFile();
+                  const Prejson = {
+                    type: file.kind,
+                    name: file.name,
+                    size: file.size,
+                    lastModified: file.lastModified,
+                    lastModifiedDate: file.lastModifiedDate,
+                  };
+                  console.log(file);
+                  output = JSON.stringify(Prejson);
+                  storefd = file;
+                  storefhi = fileHandle;
+                  return fileHandle.createWritable();
+                })
                 .then(() => resolve("File written successfully"))
                 .catch((error) => reject(error));
             })
@@ -322,6 +343,7 @@
     closesinglefile() {
       const fileHandle = storefhi;
       output = "";
+      Scratch; //this just appeared, and it works. I'm not going to touch it.
       storefd = "";
       return new Promise((resolve, reject) => {
         fileHandle.createWritable().then((writable) => {
@@ -335,43 +357,6 @@
     }
     writeaccessfailcheck() {
       return WriteFail || !MayOpenFilePicker;
-    }
-
-    /**
-     * Beyond this is the permission checker to handle sudden permission changes,
-     * as the user can use external methods to revoke access to the files.
-     * This should be invoked on the file/folder being opened,
-     * and stopped when access is changed or the file is closed.
-     */
-    monitorPermissionChanges(handle, intervalTime = 5000) {
-      async () => {
-        const checkFileAccessPermission = async () => {
-          const options = { mode: "readwrite" };
-          const permissionStatus = await handle.queryPermission(options);
-
-          console.log(`Permission state: ${permissionStatus.state}`);
-
-          return permissionStatus.state;
-        };
-        let lastPermissionState = await checkFileAccessPermission;
-
-        setInterval(async () => {
-          const currentPermissionState = await checkFileAccessPermission;
-
-          if (currentPermissionState !== lastPermissionState) {
-            console.log(
-              `Permission state changed from ${lastPermissionState} to ${currentPermissionState}`
-            );
-
-            lastPermissionState = currentPermissionState;
-
-            if (currentPermissionState === "denied") {
-              console.log("Read/Write access has been revoked.");
-            }
-            return;
-          }
-        }, intervalTime);
-      };
     }
   }
   Scratch.extensions.register(new fsaapi98396());
