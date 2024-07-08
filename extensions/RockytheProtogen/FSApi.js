@@ -11,9 +11,9 @@
  * Inspiration:
  *    GarboMuffin's Files Extension
  *        https://github.com/TurboWarp/extensions/blob/master/extensions/files.js
-*    Lily's LMS Utilities Extension
+ *    Lily's LMS Utilities Extension
  *        https://github.com/TurboWarp/extensions/blob/master/extensions/Lily/lmsutils.js
- * 
+ *
  */
 
 (function (Scratch) {
@@ -22,7 +22,8 @@
   let output = "";
   let storefd = "";
   let storefhi = "";
-
+  let WriteFail = "False";
+  let MayOpenFilePicker;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
       "File System Access API cannot run on sandboxes, it's too grainy!\nPlease disable the sandbox when loading the extension.\n Cheers! - Rocky"
@@ -39,7 +40,6 @@
   var nameOffset, verOffset, ix;
 
   //more ESLint trickery.
-
 
   // In Opera, the true version is after "OPR" or after "Version"
   if ((verOffset = nAgt.indexOf("OPR")) != -1) {
@@ -76,7 +76,15 @@
     );
   }
   //ESLint stuff, idk what I can remove here.
-  console.log(nVer + browserName + fullVersion + majorVersion + nameOffset + verOffset + ix);
+  console.log(
+    nVer +
+      browserName +
+      fullVersion +
+      majorVersion +
+      nameOffset +
+      verOffset +
+      ix
+  );
   //// End of Browser Check ////
 
   class fsaapi98396 {
@@ -91,6 +99,11 @@
             opcode: "rqFilePicker",
             blockType: Scratch.BlockType.COMMAND,
             text: "Request to open file",
+          },
+          {
+            opcode: "writeaccessfailcheck",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Access denied?",
           },
           {
             opcode: "outputchkr",
@@ -124,15 +137,15 @@
             },
           },
           {
-            opcode: 'closesinglefile',
+            opcode: "closesinglefile",
             blockType: Scratch.BlockType.COMMAND,
-            text: '(No Code Yet) Close File'
+            text: "(Unfinished) Close File",
           },
           {
-            opcode: 'dirmultifileopen',
+            opcode: "dirmultifileopen",
             blockType: Scratch.BlockType.COMMAND,
-            text: '(No Code Yet) Open a Directory'
-          }
+            text: "(No Code Yet) Open a Directory",
+          },
         ],
         menus: {
           TYPES: {
@@ -150,37 +163,57 @@
     }
     rqFilePicker() {
       return new Promise((resolve, reject) => {
-        window
-          .showOpenFilePicker()
-          .then(async (fileHandles) => {
-            try {
-              output = "";
-              const fileHandle = fileHandles[0];
-              console.log(fileHandle);
-              const file = await fileHandle.getFile();
-              const Prejson = {
-                type: file.kind,
-                name: file.name,
-                size: file.size,
-                lastModified: file.lastModified,
-                lastModifiedDate: file.lastModifiedDate,
-              };
-              console.log(file);
-              output = JSON.stringify(Prejson);
-              storefd = file;
-              storefhi = fileHandle;
-              resolve(output);
-            } catch (error) {
+        if (output == "") {
+          window
+            .showOpenFilePicker()
+            .then(async (fileHandles) => {
+              try {
+                output = "";
+                const fileHandle = fileHandles[0];
+                console.log(fileHandle);
+                try {
+                  await fileHandle.createWritable();
+                } catch (error) {
+                  WriteFail = "false";
+                  reject(error);
+                }
+                WriteFail = "false";
+                const file = await fileHandle.getFile();
+                const Prejson = {
+                  type: file.kind,
+                  name: file.name,
+                  size: file.size,
+                  lastModified: file.lastModified,
+                  lastModifiedDate: file.lastModifiedDate,
+                };
+                console.log(file);
+                output = JSON.stringify(Prejson);
+                storefd = file;
+                storefhi = fileHandle;
+                resolve(output);
+              } catch (error) {
+                reject(error);
+              }
+            })
+            .catch((error) => {
               reject(error);
-            }
-          })
-          .catch((error) => {
-            reject(error);
-          });
+            });
+        } else {
+          reject(
+            new Error("Could not prompt, check user input and try again.")
+          );
+        }
       });
     }
     getOpenedFileData(args) {
-      if (output == "") {
+      if (MayOpenFilePicker == "false") {
+        MayOpenFilePicker = alert(
+          "Grant " +
+            window.location.href +
+            "permission to open your file browser?"
+        );
+      }
+      if ((output == "") & (MayOpenFilePicker == "true")) {
         return "";
       }
       try {
@@ -269,6 +302,23 @@
       } else {
         return Promise.reject("No file to write to!");
       }
+    }
+    closesinglefile() {
+      const fileHandle = storefhi;
+      output = "";
+      storefd = "";
+      return new Promise((resolve, reject) => {
+        fileHandle.createWritable().then((writable) => {
+          return writable
+            .close()
+            .then(() => (storefhi = ""))
+            .then(() => resolve("File closed successfully"))
+            .catch((error) => reject(error));
+        });
+      });
+    }
+    writeaccessfailcheck() {
+      return WriteFail;
     }
   }
   Scratch.extensions.register(new fsaapi98396());
