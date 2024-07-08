@@ -45,7 +45,7 @@
   } else {
     unsupportedBrowser = true;
     alert(
-      "Your current browser does not support File System Access API!\nThese blocks will not function.\nThere is a button in the palette to let you see supported browsers."
+      "Your current browser does not support File System Access API!\nThese blocks will not function.\nThere is a button in the palette to let you see supported browsers on MDN."
     );
   }
 
@@ -92,14 +92,28 @@
             hideFromPalette: !unsupportedBrowser,
           },
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Permission Management",
+          },
+          {
             opcode: "getUserPermissionFP",
             blockType: Scratch.BlockType.COMMAND,
             text: "Request file picker permission",
           },
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Single File",
+          },
+          {
             opcode: "rqFilePicker",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Request to open file",
+            text: "Request a file starting in [LOC]",
+            arguments: {
+              LOC: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "LOCATIONS",
+              },
+            },
           },
           {
             opcode: "writeAccessFailCheck",
@@ -143,6 +157,10 @@
             text: "Close File",
           },
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Folders",
+          },
+          {
             opcode: "dirMultiFileOpen",
             blockType: Scratch.BlockType.COMMAND,
             text: "(No Code Yet) Open a Directory",
@@ -152,6 +170,17 @@
           TYPES: {
             acceptReporters: true,
             items: ["stream", "text", "arrayBuffer"],
+          },
+          LOCATIONS: {
+            acceptReporters: true,
+            items: [
+              "desktop",
+              "documents",
+              "downloads",
+              "music",
+              "pictures",
+              "videos",
+            ],
           },
         },
       };
@@ -172,10 +201,15 @@
       }
     }
 
-    async rqFilePicker() {
+    async rqFilePicker(args) {
       try {
+        writeFail = false;
         if (output === "" && mayOpenFilePicker) {
-          [fileHandle] = await window.showOpenFilePicker({ multiple: false });
+          [fileHandle] = await window.showOpenFilePicker({
+            multiple: false,
+            startIn: args.LOC,
+            mode: "readwrite",
+          });
           const file = await fileHandle.getFile();
           output = JSON.stringify({
             type: file.type,
@@ -222,27 +256,27 @@
           const decoder = new TextDecoder();
           let StreamOutResult = "";
           const chunkSize = 1024;
-          
+
           async function readChunks() {
             while (true) {
               const { done, value } = await streamReader.read();
               if (done) {
-                console.log('Stream reading complete.');
+                console.log("Stream reading complete.");
                 return StreamOutResult;
               }
               StreamOutResult += decoder.decode(value, { stream: true });
               if (value.length >= chunkSize) {
-                await new Promise(resolve => setTimeout(resolve, 5));
+                await new Promise((resolve) => setTimeout(resolve, 5));
               }
             }
           }
-          
+
           return await readChunks();
         } else {
           throw new Error("Invalid type specified");
         }
       } catch (error) {
-        console.error('Error reading file:', error);
+        console.error("Error reading file:", error);
         throw new Error("Error reading file");
       }
     }
@@ -286,6 +320,8 @@
     writeAccessFailCheck() {
       return writeFail || !mayOpenFilePicker;
     }
+
+    async dirMultiFileOpen() {}
   }
 
   Scratch.extensions.register(new fsaapi98396());
