@@ -6,13 +6,13 @@
 
 /**
  * Credits:
- *  https://www.w3schools.com/Js/
- *  https://stackoverflow.com/questions/10147445/github-adding-commits-to-existing-pull-request
- *  https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
- *  https://github.com/TurboWarp/extensions/blob/master/extensions/files.js
- *  https://developer.mozilla.org/en-US/docs/Web/API/Window/
- *  https://github.com/TurboWarp/extensions/blob/master/extensions/Lily/lmsutils.js
- *  https://github.com/TurboWarp/extensions/pull/1594#issuecomment-2214487201
+ *  Basics in JS: https://www.w3schools.com/Js/
+ *  How to add commits to pull rq: https://stackoverflow.com/questions/10147445/github-adding-commits-to-existing-pull-request
+ *  File size conversion: https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
+ *  Original files by GarboMuffin: https://github.com/TurboWarp/extensions/blob/master/extensions/files.js
+ *  MDN web docs: https://developer.mozilla.org/en-US/docs/Web/API/Window/
+ *  LMS Utils (Labels, Buttons): https://github.com/TurboWarp/extensions/blob/master/extensions/Lily/lmsutils.js
+ *  Fixes and proper cleanup (from @kindpump): https://github.com/TurboWarp/extensions/pull/1594#issuecomment-2214487201
  */
 
 (function (Scratch) {
@@ -28,6 +28,7 @@
   let output = "";
   let storefd = null;
   let writeFail = false;
+  let FolderData;
   let unsupportedBrowser = false;
   let mayOpenFilePicker = false;
   let mayOpenFolderPicker = false;
@@ -38,21 +39,17 @@
     );
   }
 
-  alert(
-    "🛠️   This extension is in development   🛠️\nTo prevent data loss, avoid using this on personal files or folders."
-  );
-
   if (app.hasFSAccess) {
     alert(
-    "🛠️   This extension is in development   🛠️\nTo prevent data loss, avoid using this on personal files or folders."
+      "🛠️   This extension is in development   🛠️\nTo prevent data loss, avoid using this on personal files or folders."
     );
     console.log("Browser supports FSAAPI.");
   } else {
     unsupportedBrowser = true;
     let QuitLoadingExt = confirm(
-      "Your current browser does not support File System Access API! This extension will not function here.\n\nKnown browsers that support this:\nChrome (v86+)\nEdge (v86+)\nOpera (v72+)\n\nFor more information, click \"Supported Browsers\" in the palette. Would you like to continue?"
+      'Your current browser does not support File System Access API! This extension will not function here.\n\nKnown browsers that support this:\nChrome (v86+)\nEdge (v86+)\nOpera (v72+)\n\nFor more information, click "Supported Browsers" in the palette. Would you like to continue?'
     );
-    if (!QuitLoadingExt) throw new Error('User cancelled extension loading.')
+    if (!QuitLoadingExt) throw new Error("User cancelled extension loading.");
   }
 
   class fsaapi98396 {
@@ -107,9 +104,9 @@
             text: "Request file picker permission",
           },
           {
-            opcode: 'getUserPermissionFoP',
+            opcode: "getUserPermissionFoP",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Request folder picker permission'
+            text: "Request folder picker permission",
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -218,7 +215,6 @@
         );
         if (!mayOpenFolderPicker) throw new Error("Permission denied");
       }
-
     }
 
     async rqFilePicker(args) {
@@ -341,14 +337,40 @@
       return writeFail;
     }
 
-    async dirMultiFileOpen() {
-      try{
-        [folderHandle] = await window.showDirectoryPicker()
-        
-
+    async dirMultiFileOpen(args) {
+      try {
+        folderHandle = await window.showDirectoryPicker();
+        FolderData = this.internalGetFolderContents(folderHandle);
       } catch (error) {
         throw new Error(error);
       }
+    }
+
+    async internalGetFolderContents(internalDirHandle) {
+      const dirHandle = internalDirHandle;
+
+      async function printDirectoryEntries(
+        handle,
+        path = "",
+        processed = new Set()
+      ) {
+        for await (const entry of handle.values()) {
+          const entryPath = path ? `${path}/${entry.name}` : entry.name;
+
+          processed.add(entryPath);
+
+          if (entry.kind === "directory") {
+            console.log("Directory:", entryPath);
+            const subDirHandle = await handle.getDirectoryHandle(entry.name);
+            await printDirectoryEntries(subDirHandle, entryPath, processed);
+          } else {
+            console.log("File:", entryPath);
+          }
+        }
+        return processed;
+      }
+
+      return await printDirectoryEntries(dirHandle);
     }
   }
 
