@@ -4,88 +4,43 @@
 // By: Rocky the Protogen
 // License: GNU-GPL3
 
-/**
- * Credits
- * Browser Check: https://stackoverflow.com/questions/11219582/how-to-detect-my-browser-version-and-operating-system-using-javascript
- * Some code is inspired by already existing extensions.
- * Inspiration:
- *    GarboMuffin's Files Extension
- *        https://github.com/TurboWarp/extensions/blob/master/extensions/files.js
- *    Lily's LMS Utilities Extension
- *        https://github.com/TurboWarp/extensions/blob/master/extensions/Lily/lmsutils.js
- *
- */
-
 (function (Scratch) {
   "use strict";
+
   let fileHandles;
   let output = "";
   let storefd = "";
   let storefhi = "";
-  let WriteFail = false;
-  let MayOpenFilePicker = false;
+  let writeFail = false;
+  let mayOpenFilePicker = false;
+  console.log(fileHandles); //This cannot be removed for some reason.
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
-      "File System Access API cannot run on sandboxes, it's too grainy!\nPlease disable the sandbox when loading the extension.\n Cheers! - Rocky"
+      "File System Access API cannot run on sandboxes. Please disable the sandbox when loading the extension."
     );
   }
 
-  //// Browser Check Start ////
-  //// From StackOverFlow :3 ////
-  var nVer = navigator.appVersion;
-  var nAgt = navigator.userAgent;
-  var browserName = navigator.appName;
-  var fullVersion = "" + parseFloat(navigator.appVersion);
-  var majorVersion = parseInt(navigator.appVersion, 10);
-  var nameOffset, verOffset, ix;
+  // Browser Check
+  const nAgt = navigator.userAgent;
+  const verOffset =
+    nAgt.indexOf("OPR") !== -1 ||
+    nAgt.indexOf("Edg") !== -1 ||
+    nAgt.indexOf("Chrome") !== -1
+      ? nAgt.indexOf("OPR") !== -1 ||
+        nAgt.indexOf("Edg") !== -1 ||
+        nAgt.indexOf("Chrome") !== -1
+      : -1;
 
-  //more ESLint trickery.
-
-  // In Opera, the true version is after "OPR" or after "Version"
-  if ((verOffset = nAgt.indexOf("OPR")) != -1) {
-    console.log();
-  }
-  // In MS Edge, the true version is after "Edg" in userAgent
-  else if ((verOffset = nAgt.indexOf("Edg")) != -1) {
-    console.log();
-  }
-  // In MSIE, the true version is after "MSIE" in userAgent
-  else if ((verOffset = nAgt.indexOf("MSIE")) != -1) {
+  if (
+    verOffset === -1 ||
+    nAgt.indexOf("MSIE") !== -1 ||
+    nAgt.indexOf("Safari") !== -1 ||
+    nAgt.indexOf("Firefox") !== -1
+  ) {
     alert(
-      "This browser might not be supported! Please use Edge, Chrome, or Opera.\nYou will still be able to use the blocks, but they may not function."
+      "This browser might not be supported! Please use Edge, Chrome, or Opera. You will still be able to use the blocks, but they may not function."
     );
   }
-  // In Chrome, the true version is after "Chrome"
-  else if ((verOffset = nAgt.indexOf("Chrome")) != -1) {
-    console.log();
-  }
-  // In Safari, the true version is after "Safari" or after "Version"
-  else if ((verOffset = nAgt.indexOf("Safari")) != -1) {
-    alert(
-      "This browser might not be supported! Please use Edge, Chrome, or Opera.\nYou will still be able to use the blocks, but they may not function."
-    );
-  }
-  // In Firefox, the true version is after "Firefox"
-  else if ((verOffset = nAgt.indexOf("Firefox")) != -1) {
-    alert(
-      "This browser might not be supported! Please use Edge, Chrome, or Opera.\nYou will still be able to use the blocks, but they may not function."
-    );
-  } else {
-    alert(
-      "This browser might not be supported! Please use Edge, Chrome, or Opera.\nYou will still be able to use the blocks, but they may not function."
-    );
-  }
-  //ESLint stuff, idk what I can remove here.
-  console.log(
-    nVer +
-      browserName +
-      fullVersion +
-      majorVersion +
-      nameOffset +
-      verOffset +
-      ix
-  );
-  //// End of Browser Check ////
 
   class fsaapi98396 {
     getInfo() {
@@ -106,17 +61,17 @@
             text: "Request to open file",
           },
           {
-            opcode: "writeaccessfailcheck",
+            opcode: "writeAccessFailCheck",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Access denied?",
           },
           {
-            opcode: "outputchkr",
+            opcode: "outputCheck",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Is JSON blank?",
           },
           {
-            opcode: "getfileHandles",
+            opcode: "getFileHandles",
             blockType: Scratch.BlockType.REPORTER,
             text: "Get information JSON",
           },
@@ -132,7 +87,7 @@
             },
           },
           {
-            opcode: "writesinglefile",
+            opcode: "writeSingleFile",
             blockType: Scratch.BlockType.COMMAND,
             text: "(Broken?) Write array [IN] to open file",
             arguments: {
@@ -142,12 +97,12 @@
             },
           },
           {
-            opcode: "closesinglefile",
+            opcode: "closeSingleFile",
             blockType: Scratch.BlockType.COMMAND,
             text: "Close File",
           },
           {
-            opcode: "dirmultifileopen",
+            opcode: "dirMultiFileOpen",
             blockType: Scratch.BlockType.COMMAND,
             text: "(No Code Yet) Open a Directory",
           },
@@ -160,67 +115,47 @@
         },
       };
     }
-    ESLintBait() {
-      //"Unused" variables I can't remove without breaking the script.
-      //Why you ask?
-      //idfk
-      return fileHandles;
-    }
+
     getUserPermissionFP() {
       return new Promise((resolve, reject) => {
-        if (MayOpenFilePicker == false) {
-          MayOpenFilePicker = confirm(
-            'Do you allow the following site to open your file picker?\n"' +
-              window.location.href +
-              '"'
+        if (!mayOpenFilePicker) {
+          mayOpenFilePicker = confirm(
+            `Do you allow the following site to open your file picker?\n"${window.location.href}"`
           );
-          if (MayOpenFilePicker) {
-            resolve();
-          } else {
-            reject();
-          }
+          mayOpenFilePicker ? resolve() : reject();
         } else {
           resolve();
         }
       });
     }
+
     rqFilePicker() {
       return new Promise((resolve, reject) => {
-        if ((output == "") & (MayOpenFilePicker == true)) {
+        if (output === "" && mayOpenFilePicker) {
           window
             .showOpenFilePicker({ multiple: false })
-            .then(async (fileHandles) => {
+            .then(async (handles) => {
               try {
                 output = "";
-                const fileHandle = fileHandles[0];
-                console.log(fileHandle);
-                try {
-                  await fileHandle.createWritable();
-                } catch (error) {
-                  WriteFail = true;
-                  reject(error);
-                }
-                WriteFail = false;
+                const fileHandle = handles[0];
+                await fileHandle.createWritable();
                 const file = await fileHandle.getFile();
-                const Prejson = {
+                output = JSON.stringify({
                   type: file.kind,
                   name: file.name,
                   size: file.size,
                   lastModified: file.lastModified,
                   lastModifiedDate: file.lastModifiedDate,
-                };
-                console.log(file);
-                output = JSON.stringify(Prejson);
+                });
                 storefd = file;
                 storefhi = fileHandle;
                 resolve(output);
               } catch (error) {
+                writeFail = true;
                 reject(error);
               }
             })
-            .catch((error) => {
-              reject(error);
-            });
+            .catch(reject);
         } else {
           reject(
             new Error("Could not prompt, check user input and try again.")
@@ -228,52 +163,30 @@
         }
       });
     }
+
     getOpenedFileData(args) {
-      if (output == "") {
+      if (output === "") {
         return "";
       }
-      try {
-        if (args.TYPE == "arrayBuffer") {
-          const file = storefd;
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
 
-            reader.onload = () => {
-              const arrayBuffer = reader.result;
-              const uint8Array = new Uint8Array(arrayBuffer);
-              const string = Array.from(uint8Array).toString();
-              resolve("[" + string + "]");
-            };
+      const file = storefd;
 
-            reader.onerror = () => {
-              reject(new Error("Error reading file"));
-            };
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
 
-            reader.readAsArrayBuffer(file);
-          });
-        } else if (args.TYPE == "text") {
-          const file = storefd;
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-
-            reader.onload = () => {
-              const text = reader.result;
-              resolve(text);
-            };
-            reader.onerror = () => {
-              reject(new Error("Error reading file"));
-            };
-
-            reader.readAsText(file);
-          });
-        } else if (args.TYPE == "stream") {
-          const file = storefd;
-          return new Promise((resolve, reject) => {
-            const reader = file.stream().getReader();
+        reader.onload = () => {
+          if (args.TYPE === "arrayBuffer") {
+            const arrayBuffer = reader.result;
+            const uint8Array = new Uint8Array(arrayBuffer);
+            resolve("[" + Array.from(uint8Array).toString() + "]");
+          } else if (args.TYPE === "text") {
+            resolve(reader.result);
+          } else {
+            const streamReader = file.stream().getReader();
             const decoder = new TextDecoder();
             let result = "";
 
-            reader
+            streamReader
               .read()
               .then(function processText({ done, value }) {
                 if (done) {
@@ -281,26 +194,35 @@
                   return;
                 }
                 result += decoder.decode(value, { stream: true });
-                return reader.read().then(processText);
+                return streamReader.read().then(processText);
               })
               .catch((error) => {
                 reject(new Error("Error reading stream: " + error));
               });
-          });
-        } else {
-          return "Invalid Read Method.\nMust be arrayBuffer, Text, or Stream.";
+          }
+        };
+
+        reader.onerror = () => {
+          reject(new Error("Error reading file"));
+        };
+
+        if (args.TYPE === "arrayBuffer") {
+          reader.readAsArrayBuffer(file);
+        } else if (args.TYPE === "text") {
+          reader.readAsText(file);
         }
-      } catch (error) {
-        throw new Error("Could not read. Reason:\n" + error);
-      }
+      });
     }
-    getfileHandles() {
+
+    getFileHandles() {
       return output;
     }
-    outputchkr() {
-      return output == "";
+
+    outputCheck() {
+      return output === "";
     }
-    writesinglefile(args) {
+
+    writeSingleFile(args) {
       if (output !== "") {
         const arrayIn = new Uint8Array(args.IN).buffer;
         const fileHandle = storefhi;
@@ -309,55 +231,57 @@
           fileHandle
             .createWritable()
             .then((writable) => {
-              console.log("Writing to file:", arrayIn);
-              return writable
+              writable
                 .write(arrayIn)
                 .then(() => writable.close())
                 .then(async () => {
                   output = "";
-                  const fileHandle = fileHandles[0];
-                  console.log(fileHandle);
                   const file = await fileHandle.getFile();
-                  const Prejson = {
+                  output = JSON.stringify({
                     type: file.kind,
                     name: file.name,
                     size: file.size,
                     lastModified: file.lastModified,
                     lastModifiedDate: file.lastModifiedDate,
-                  };
-                  console.log(file);
-                  output = JSON.stringify(Prejson);
+                  });
                   storefd = file;
                   storefhi = fileHandle;
-                  return fileHandle.createWritable();
+                  resolve("File written successfully");
                 })
-                .then(() => resolve("File written successfully"))
-                .catch((error) => reject(error));
+                .catch(reject);
             })
-            .catch((error) => reject(error));
+            .catch(reject);
         });
       } else {
         return Promise.reject("No file to write to!");
       }
     }
-    closesinglefile() {
+
+    closeSingleFile() {
       const fileHandle = storefhi;
       output = "";
-      Scratch; //this just appeared, and it works. I'm not going to touch it.
       storefd = "";
+
       return new Promise((resolve, reject) => {
-        fileHandle.createWritable().then((writable) => {
-          return writable
-            .close()
-            .then(() => (storefhi = ""))
-            .then(() => resolve("File closed successfully"))
-            .catch((error) => reject(error));
-        });
+        fileHandle
+          .createWritable()
+          .then((writable) => {
+            writable
+              .close()
+              .then(() => {
+                storefhi = "";
+                resolve("File closed successfully");
+              })
+              .catch(reject);
+          })
+          .catch(reject);
       });
     }
-    writeaccessfailcheck() {
-      return WriteFail || !MayOpenFilePicker;
+
+    writeAccessFailCheck() {
+      return writeFail || !mayOpenFilePicker;
     }
   }
+
   Scratch.extensions.register(new fsaapi98396());
 })(Scratch);
