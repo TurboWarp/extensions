@@ -6,13 +6,23 @@
 
 /**
  * Credits:
+ * 
  *  Basics in JS: https://www.w3schools.com/Js/
+ * 
  *  How to add commits to pull rq: https://stackoverflow.com/questions/10147445/github-adding-commits-to-existing-pull-request
+ * 
  *  File size conversion: https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
+ * 
  *  Original files by GarboMuffin: https://github.com/TurboWarp/extensions/blob/master/extensions/files.js
+ * 
  *  MDN web docs: https://developer.mozilla.org/en-US/docs/Web/API/Window/
+ * 
  *  LMS Utils (Labels, Buttons): https://github.com/TurboWarp/extensions/blob/master/extensions/Lily/lmsutils.js
+ * 
  *  Fixes and proper cleanup (from @kindpump): https://github.com/TurboWarp/extensions/pull/1594#issuecomment-2214487201
+ * 
+ *  Assets.js (for Extension check): https://github.com/TurboWarp/extensions/blob/master/extensions/Lily/Assets.js
+ * 
  */
 
 (function (Scratch) {
@@ -28,7 +38,7 @@
   let output = "";
   let storefd = null;
   let writeFail = false;
-  let FolderData;
+  let FolderData = null;
   let unsupportedBrowser = false;
   let mayOpenFilePicker = false;
   let mayOpenFolderPicker = false;
@@ -75,9 +85,19 @@
       );
       return bytes.toFixed(dp) + " " + units[u];
     }
+    async loadExtension(extUri) {
+      const url = Scratch.Cast.toString(extUri);
+      await Scratch.vm.extensionManager.loadExtensionURL(url);
+    }
+    getLoadedExtensions(args) {
+      return JSON.stringify(
+        Array.from(Scratch.vm.extensionManager._loadedExtensions.keys())
+      );
+    }
     /**
      * End of Imports
      */
+
     getInfo() {
       return {
         id: "fsaapi98396",
@@ -171,7 +191,18 @@
           {
             opcode: "dirMultiFileOpen",
             blockType: Scratch.BlockType.COMMAND,
-            text: "(Unfinished) Open a Directory",
+            text: "Open a Directory starting in [LOC]",
+            arguments: {
+              LOC: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "LOCATIONS",
+              },
+            },
+          },
+          {
+            opcode: 'getFolderContentsJSON',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Folder contents JSON'
           },
         ],
         menus: {
@@ -339,38 +370,46 @@
 
     async dirMultiFileOpen(args) {
       try {
-        folderHandle = await window.showDirectoryPicker();
+        folderHandle = await window.showDirectoryPicker({
+          multiple: false,
+          startIn: args.LOC,
+          mode: "readwrite",
+        });
         FolderData = this.internalGetFolderContents(folderHandle);
       } catch (error) {
         throw new Error(error);
       }
     }
 
+    getFolderContentsJSON() {
+      return FolderData;
+    }
+
+    //// Gets Folder Contents //// Not called directly by a block. ////
     async internalGetFolderContents(internalDirHandle) {
       const dirHandle = internalDirHandle;
 
-      async function printDirectoryEntries(
-        handle,
-        path = "",
-        processed = new Set()
-      ) {
+      async function collectDirectoryStructure(handle) {
+        const structure = {};
+
         for await (const entry of handle.values()) {
-          const entryPath = path ? `${path}/${entry.name}` : entry.name;
-
-          processed.add(entryPath);
-
           if (entry.kind === "directory") {
-            console.log("Directory:", entryPath);
             const subDirHandle = await handle.getDirectoryHandle(entry.name);
-            await printDirectoryEntries(subDirHandle, entryPath, processed);
+            structure[entry.name] =
+              await collectDirectoryStructure(subDirHandle);
           } else {
-            console.log("File:", entryPath);
+            if (!structure["files"]) {
+              structure["files"] = [];
+            }
+            structure["files"].push(entry.name);
           }
         }
-        return processed;
+
+        return structure;
       }
 
-      return await printDirectoryEntries(dirHandle);
+      const directoryStructure = await collectDirectoryStructure(dirHandle);
+      return JSON.stringify(directoryStructure, null, 2);
     }
   }
 
