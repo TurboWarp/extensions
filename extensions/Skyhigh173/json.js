@@ -597,20 +597,13 @@
     }
 
     json_is_valid({ json }) {
-      if (typeof json != "string") {
-        return false;
-      } else if (
-        (json.slice(0, 1) != "[" || json.slice(-1) != "]") &&
-        (json.slice(0, 1) != "{" || json.slice(-1) != "}")
-      ) {
-        return false;
-      } else {
-        try {
-          JSON.parse(json);
-          return true;
-        } catch {
+      try {
+        if (typeof JSON.parse(json) != "object") {
           return false;
         }
+        return true;
+      } catch {
+        return false;
       }
     }
 
