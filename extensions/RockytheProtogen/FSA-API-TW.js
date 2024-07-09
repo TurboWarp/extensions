@@ -28,39 +28,39 @@
 /**
  * Just in case you want to make it easy for yourself.
  * VSCode Extensions Installed:
- * 
+ *
  *  mgmcdermott.vscode-language-babel
- * 
+ *
  *  jeff-hykin.better-js-syntax
- * 
+ *
  *  moshfeu.compare-folders
- * 
+ *
  *  dbaeumer.vscode-eslint
- * 
+ *
  *  xabikos.JavaScriptSnippets
- * 
+ *
  *  ms-vscode.vscode-typescript-next
- * 
+ *
  *  sburg.vscode-javascript-booster
- * 
+ *
  *  cmstead.js-codeformer
- * 
+ *
  *  ms-edgedevtools.vscode-edge-devtools
- * 
+ *
  *  esbenp.prettier-vscode
- * 
+ *
  *  bysabi.prettier-vscode-standard
- * 
+ *
  *  rvest.vs-code-prettier-eslint
- * 
+ *
  *  numso.prettier-standard-vscode
- * 
+ *
  *  svipas.prettier-plus
- * 
+ *
  *  standard.vscode-standard
- * 
+ *
  *  lihui.vs-color-picker
- * 
+ *
  */
 
 (function (Scratch) {
@@ -269,7 +269,6 @@
       };
     }
 
-
     getSupportedBrowsers() {
       Scratch.openWindow(
         "https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker#browser_compatibility"
@@ -306,7 +305,7 @@
           if (file.type === "") {
             NoBlankFileType = "unknown";
           } else {
-            NoBlankFileType = file.type
+            NoBlankFileType = file.type;
           }
           const FileTypeUnblank = NoBlankFileType;
           output = JSON.stringify({
@@ -420,15 +419,19 @@
     }
 
     async dirMultiFileOpen(args) {
-      try {
-        folderHandle = await window.showDirectoryPicker({
-          multiple: false,
-          startIn: args.LOC,
-          mode: "readwrite",
-        });
-        FolderData = await this.internalGetFolderContents(folderHandle);
-      } catch (error) {
-        throw new Error(error);
+      if (mayOpenFolderPicker) {
+        try {
+          folderHandle = await window.showDirectoryPicker({
+            multiple: false,
+            startIn: args.LOC,
+            mode: "readwrite",
+          });
+          FolderData = await this.internalGetFolderContents(folderHandle);
+        } catch (error) {
+          throw new Error(error);
+        }
+      } else {
+        return "Access denied.";
       }
     }
 
@@ -440,7 +443,6 @@
 
     //// Gets Folder Contents //// Not called directly by a block. ////
     async internalGetFolderContents(internalDirHandle) {
-
       const dirHandle = internalDirHandle;
 
       async function collectDirectoryStructure(handle) {
@@ -454,13 +456,13 @@
           } else {
             if (!structure["files"]) {
               structure["files"] = [];
-            }   
+            }
             const fileHandle = await handle.getFileHandle(entry.name);
             const file = await fileHandle.getFile();
             if (file.type === "") {
               NoBlankFileType = "unknown";
             } else {
-              NoBlankFileType = file.type
+              NoBlankFileType = file.type;
             }
             structure["files"].push({
               type: NoBlankFileType,
