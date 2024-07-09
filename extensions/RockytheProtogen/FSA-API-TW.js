@@ -80,6 +80,7 @@
   let unsupportedBrowser = false;
   let mayOpenFilePicker = false;
   let mayOpenFolderPicker = false;
+  let NoBlankFileType;
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
@@ -135,14 +136,6 @@
         u < units.length - 1
       );
       return bytes.toFixed(dp) + " " + units[u];
-    }
-    async fileTypeCheck(FileType) {
-      await console.log('fileTypeCheck() Called!')
-      if (FileType === "") {
-        return "unknown";
-      } else {
-        return FileType;
-      }
     }
 
     /**
@@ -310,7 +303,12 @@
             mode: "readwrite",
           });
           const file = await fileHandle.getFile();
-          const FileTypeUnblank = this.fileTypeCheck(file.type);
+          if (file.type === "") {
+            NoBlankFileType = "unknown";
+          } else {
+            NoBlankFileType = file.type
+          }
+          const FileTypeUnblank = NoBlankFileType;
           output = JSON.stringify({
             type: FileTypeUnblank,
             name: file.name,
@@ -457,11 +455,15 @@
             if (!structure["files"]) {
               structure["files"] = [];
             }   
-            const FileTypeUnblank = this.fileTypeCheck(file.type);
             const fileHandle = await handle.getFileHandle(entry.name);
             const file = await fileHandle.getFile();
+            if (file.type === "") {
+              NoBlankFileType = "unknown";
+            } else {
+              NoBlankFileType = file.type
+            }
             structure["files"].push({
-              type: FileTypeUnblank,
+              type: NoBlankFileType,
               name: entry.name,
               size: file.size,
               lastModified: file.lastModified,
