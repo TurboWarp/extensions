@@ -71,12 +71,24 @@
       "chooseFileSystemEntries" in window || "showOpenFilePicker" in window,
   };
 
-  let fileHandle;
+  let fileHandle1;
+  let fileHandle2;
+  let fileHandle3;
+  let fileHandle4;
+  let fileHandle5;
   let folderHandle;
-  let output = "";
-  let storefd = null;
+  let storefd1 = null;
+  let storefd2 = null;
+  let storefd3 = null;
+  let storefd4 = null;
+  let storefd5 = null;
   let writeFail = false;
-  let FolderData = null;
+  let FolderData = "";
+  let output1 = null;
+  let output2 = null;
+  let output3 = null;
+  let output4 = null;
+  let output5 = null;
   let unsupportedBrowser = false;
   let mayOpenFilePicker = false;
   let mayOpenFolderPicker = false;
@@ -179,12 +191,16 @@
           {
             opcode: "rqFilePicker",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Request a file starting in [LOC]",
+            text: "Open a file starting in [LOC] with slot [NAME]",
             arguments: {
               LOC: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "LOCATIONS",
               },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "FILESAVES"
+              }
             },
           },
           {
@@ -195,38 +211,64 @@
           {
             opcode: "outputCheck",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Is JSON blank?",
+            text: "Is JSON [NAME] blank?",
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "FILESAVES"
+              }
+            }
           },
           {
             opcode: "getFileHandles",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get information JSON",
+            text: "Get information JSON for [NAME]",
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "FILESAVES"
+              }
+            }
           },
           {
             opcode: "getOpenedFileData",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Read file using [TYPE]",
+            text: "Read file [NAME] using [TYPE]",
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "TYPES",
               },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "FILESAVES"
+              }
             },
           },
           {
             opcode: "writeSingleFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Write string [IN] to open file",
+            text: "Write string [IN] to open file in [NAME]",
             arguments: {
               IN: {
                 type: Scratch.ArgumentType.STRING,
               },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "FILESAVES"
+              }
             },
           },
           {
             opcode: "closeSingleFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Close File",
+            text: "Empty slot [NAME]",
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "FILESAVES"
+              }
+            }
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -242,6 +284,11 @@
                 menu: "LOCATIONS",
               },
             },
+          },
+          {
+            opcode: "isFolderDataBlank",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "Is folder open?"
           },
           {
             opcode: "getFolderContentsJSON",
@@ -265,6 +312,16 @@
               "videos",
             ],
           },
+          FILESAVES: {
+            acceptReporters: true,
+            items: [
+              "Slot 1",
+              "Slot 2",
+              "Slot 3",
+              "Slot 4",
+              "Slot 5"
+            ]
+          }
         },
       };
     }
@@ -276,6 +333,8 @@
     }
 
     getUserPermissionFiP() {
+      //Remove folder picker permission when file picker permission is requested
+      mayOpenFolderPicker = false;
       if (!mayOpenFilePicker) {
         mayOpenFilePicker = confirm(
           `Do you allow the following site to open your file picker?\n"${window.location.href}"`
@@ -284,6 +343,8 @@
       }
     }
     getUserPermissionFoP() {
+      //vice-versa.
+      mayOpenFilePicker = false;
       if (!mayOpenFolderPicker) {
         mayOpenFolderPicker = confirm(
           `Do you allow the following site to open your directory picker?\n"${window.location.href}"`
@@ -294,13 +355,41 @@
 
     async rqFilePicker(args) {
       try {
+        let output = null;
+        let storefd = null;
+        let fileHandle;
+        //Set current slot
+        if (args.NAME == "Slot 1") {
+          output = output1
+        } else if (args.NAME == "Slot 2") {
+          output = output2
+        } else if (args.NAME == "Slot 3") {
+          output = output3
+        } else if (args.NAME == "Slot 4") {
+          output = output4
+        } else if (args.NAME == "Slot 5") {
+          output = output5
+        } else {
+          throw new Error("Not a slot.")
+        }
         writeFail = false;
-        if (output === "" && mayOpenFilePicker) {
+        if (output === null && mayOpenFilePicker) {
           [fileHandle] = await window.showOpenFilePicker({
             multiple: false,
             startIn: args.LOC,
             mode: "readwrite",
           });
+          if (args.NAME == "Slot 1") {
+            fileHandle1 = fileHandle
+          } else if (args.NAME == "Slot 2") {
+            fileHandle2 = fileHandle
+          } else if (args.NAME == "Slot 3") {
+            fileHandle3 = fileHandle
+          } else if (args.NAME == "Slot 4") {
+            fileHandle4 = fileHandle
+          } else if (args.NAME == "Slot 5") {
+            fileHandle5 = fileHandle
+          }
           const file = await fileHandle.getFile();
           if (file.type === "") {
             NoBlankFileType = "unknown";
@@ -327,6 +416,22 @@
             }
           }
           storefd = file;
+          if (args.NAME == "Slot 1") {
+            storefd1 = storefd
+            output1 = output
+          } else if (args.NAME == "Slot 2") {
+            storefd2 = storefd
+            output2 = output
+          } else if (args.NAME == "Slot 3") {
+            storefd3 = storefd
+            output3 = output
+          } else if (args.NAME == "Slot 4") {
+            storefd4 = storefd
+            output4 = output
+          } else if (args.NAME == "Slot 5") {
+            storefd5 = storefd
+            output5 = output
+          }
         } else {
           throw new Error("Could not prompt, check user input and try again.");
         }
@@ -338,10 +443,39 @@
     }
 
     async getOpenedFileData(args) {
+      let fileHandle;
+      let storefd;
+      if (args.NAME == "Slot 1") {
+        fileHandle = fileHandle1
+        storefd = storefd1
+      } else if (args.NAME == "Slot 2") {
+        fileHandle = fileHandle2
+        storefd = storefd2
+      } else if (args.NAME == "Slot 3") {
+        fileHandle = fileHandle3
+        storefd = storefd3
+      } else if (args.NAME == "Slot 4") {
+        fileHandle = fileHandle4
+        storefd = storefd4
+      } else if (args.NAME == "Slot 5") {
+        fileHandle = fileHandle5
+        storefd = storefd5
+      }
       if (!storefd) return "";
       try {
         const file = await fileHandle.getFile(); // Re-acquire the file after writing
         storefd = file;
+        if (args.NAME == "Slot 1") {
+          storefd1 = storefd
+        } else if (args.NAME == "Slot 2") {
+          storefd2 = storefd
+        } else if (args.NAME == "Slot 3") {
+          storefd3 = storefd
+        } else if (args.NAME == "Slot 4") {
+          storefd4 = storefd
+        } else if (args.NAME == "Slot 5") {
+          storefd5 = storefd
+        }
         if (args.TYPE === "arrayBuffer") {
           const arrayBuffer = await file.arrayBuffer();
           const uint8Array = new Uint8Array(arrayBuffer);
@@ -378,15 +512,60 @@
       }
     }
 
-    getFileHandles() {
+    getFileHandles(args) {
+      let output;
+      if (args.NAME == "Slot 1") {
+        output = output1
+      } else if (args.NAME == "Slot 2") {
+        output = output2
+      } else if (args.NAME == "Slot 3") {
+        output = output3
+      } else if (args.NAME == "Slot 4") {
+        output = output4
+      } else if (args.NAME == "Slot 5") {
+        output = output5
+      } else {
+        throw new Error("Not a slot.")
+      }
       return output;
     }
 
-    outputCheck() {
+    outputCheck(args) {
+      let output;
+      if (args.NAME == "Slot 1") {
+        output = output1
+      } else if (args.NAME == "Slot 2") {
+        output = output2
+      } else if (args.NAME == "Slot 3") {
+        output = output3
+      } else if (args.NAME == "Slot 4") {
+        output = output4
+      } else if (args.NAME == "Slot 5") {
+        output = output5
+      } else {
+        throw new Error("Not a slot.")
+      }
       return output === "";
     }
 
     async writeSingleFile(args) {
+      let fileHandle,storefd; //L e a r n i n g
+      if (args.NAME == "Slot 1") {
+        fileHandle = fileHandle1
+        storefd = storefd1
+      } else if (args.NAME == "Slot 2") {
+        fileHandle = fileHandle2
+        storefd = storefd2
+      } else if (args.NAME == "Slot 3") {
+        fileHandle = fileHandle3
+        storefd = storefd3
+      } else if (args.NAME == "Slot 4") {
+        fileHandle = fileHandle4
+        storefd = storefd4
+      } else if (args.NAME == "Slot 5") {
+        fileHandle = fileHandle5
+        storefd = storefd5
+      }
       if (fileHandle) {
         try {
           const writable = await fileHandle.createWritable();
@@ -394,6 +573,17 @@
           await writable.close();
           console.log("File written successfully");
           storefd = await fileHandle.getFile(); // Re-acquire the file handle after writing
+          if (args.NAME == "Slot 1") {
+            storefd1 = storefd
+          } else if (args.NAME == "Slot 2") {
+            storefd2 = storefd
+          } else if (args.NAME == "Slot 3") {
+            storefd3 = storefd
+          } else if (args.NAME == "Slot 4") {
+            storefd4 = storefd
+          } else if (args.NAME == "Slot 5") {
+            storefd5 = storefd
+          }
         } catch (error) {
           console.error("Error writing to file:", error);
           throw new Error("Error writing to file");
@@ -403,14 +593,53 @@
       }
     }
 
-    closeSingleFile() {
-      if (fileHandle) {
-        fileHandle = null;
-        storefd = null;
-        output = "";
-        console.log("File closed successfully");
-      } else {
-        throw new Error("No file to close!");
+    closeSingleFile(args) {
+
+      if (args.NAME == "Slot 1") {
+        if (fileHandle1) {
+          fileHandle1 = null;
+          storefd1 = null;
+          output1 = "";
+          console.log("File closed successfully");
+        } else {
+          throw new Error("No file to close!");
+        }
+      } else if (args.NAME == "Slot 2") {
+        if (fileHandle2) {
+          fileHandle2 = null;
+          storefd2 = null;
+          output2 = "";
+          console.log("File closed successfully");
+        } else {
+          throw new Error("No file to close!");
+        }
+      } else if (args.NAME == "Slot 3") {
+        if (fileHandle3) {
+          fileHandle3 = null;
+          storefd3 = null;
+          output3 = "";
+          console.log("File closed successfully");
+        } else {
+          throw new Error("No file to close!");
+        }
+      } else if (args.NAME == "Slot 4") {
+        if (fileHandle4) {
+          fileHandle4 = null;
+          storefd4 = null;
+          output4 = "";
+          console.log("File closed successfully");
+        } else {
+          throw new Error("No file to close!");
+        }
+      } else if (args.NAME == "Slot 5") {
+        if (fileHandle5) {
+          fileHandle5 = null;
+          storefd5 = null;
+          output5 = "";
+          console.log("File closed successfully");
+        } else {
+          throw new Error("No file to close!");
+        }
       }
     }
 
@@ -433,6 +662,10 @@
       } else {
         return "Access denied.";
       }
+    }
+
+    isFolderDataBlank() {
+      return FolderData !== "";
     }
 
     getFolderContentsJSON() {
