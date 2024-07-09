@@ -71,28 +71,28 @@
       "chooseFileSystemEntries" in window || "showOpenFilePicker" in window,
   };
 
-  let fileHandle1;
-  let fileHandle2;
-  let fileHandle3;
-  let fileHandle4;
-  let fileHandle5;
-  let folderHandle;
-  let storefd1;
-  let storefd2;
-  let storefd3;
-  let storefd4;
-  let storefd5;
-  let writeFail = false;
-  let FolderData = "";
-  let output1;
-  let output2;
-  let output3;
-  let output4;
-  let output5;
-  let unsupportedBrowser = false;
-  let mayOpenFilePicker = false;
-  let mayOpenFolderPicker = false;
-  let NoBlankFileType;
+  let fileHandle1,
+    fileHandle2,
+    fileHandle3,
+    fileHandle4,
+    fileHandle5,
+    folderHandle,
+    storefd1,
+    storefd2,
+    storefd3,
+    storefd4,
+    storefd5,
+    writeFail = false,
+    FolderData = "",
+    output1,
+    output2,
+    output3,
+    output4,
+    output5,
+    unsupportedBrowser = false,
+    mayOpenFilePicker = false,
+    mayOpenFolderPicker = false,
+    NoBlankFileType;
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
@@ -309,8 +309,55 @@
               },
             },
           },
+          {
+            opcode: "writeToFilePath",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Write [DATA] to file path [PATH]",
+            arguments: {
+              PATH: {
+                type: Scratch.ArgumentType.STRING,
+              },
+              DATA: {
+                type: Scratch.ArgumentType.STRING,
+              },
+            },
+          },
+          {
+            opcode: "folderCreate",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "[ACTION] [KIND] with path [NAME] and [INDX]",
+            arguments: {
+              ACTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "ACTIONS",
+              },
+              KIND: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "KINDS",
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+              },
+              INDX: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "INDEX",
+              },
+            },
+          },
         ],
         menus: {
+          INDEX: {
+            acceptReporters: true,
+            items: ["index", "keep"],
+          },
+          ACTIONS: {
+            acceptReporters: true,
+            items: ["Create", "Delete"],
+          },
+          KINDS: {
+            acceptReporters: true,
+            items: ["File", "Folder"],
+          },
           TYPES: {
             acceptReporters: true,
             items: ["stream", "text", "arrayBuffer"],
@@ -347,7 +394,7 @@
         mayOpenFilePicker = confirm(
           `Do you allow the following site to open your file picker?\n"${window.location.href}"`
         );
-        if (!mayOpenFilePicker) throw new Error("Permission denied");
+        if (!mayOpenFilePicker) console.error("Permission denied");
       }
     }
     getUserPermissionFoP() {
@@ -357,7 +404,7 @@
         mayOpenFolderPicker = confirm(
           `Do you allow the following site to open your directory picker?\n"${window.location.href}"`
         );
-        if (!mayOpenFolderPicker) throw new Error("Permission denied");
+        if (!mayOpenFolderPicker) console.error("Permission denied");
       }
     }
 
@@ -378,7 +425,7 @@
         } else if (args.NAME == "Slot 5") {
           output = output5;
         } else {
-          throw new Error("Not a slot.");
+          console.error("Not a slot.");
         }
         writeFail = false;
         if (output === "" && mayOpenFilePicker) {
@@ -420,7 +467,7 @@
                 )}). It could cause the site to freeze or crash! Continue anyway?`
               )
             ) {
-              throw new Error("Large file import aborted by user");
+              console.error("Large file import aborted by user");
             }
           }
           storefd = file;
@@ -441,7 +488,7 @@
             output5 = output;
           }
         } else {
-          throw new Error("Could not prompt, check user input and try again.");
+          console.error("Could not prompt, check user input and try again.");
         }
       } catch (error) {
         writeFail = true;
@@ -512,11 +559,11 @@
 
           return await readChunks();
         } else {
-          throw new Error("Invalid type specified");
+          console.error("Invalid type specified");
         }
       } catch (error) {
         console.error("Error reading file:", error);
-        throw new Error("Error reading file");
+        console.error("Error reading file");
       }
     } //arch btw
 
@@ -533,7 +580,7 @@
       } else if (args.NAME == "Slot 5") {
         output = output5;
       } else {
-        throw new Error("Not a slot.");
+        console.error("Not a slot.");
       }
       return output;
     }
@@ -551,7 +598,7 @@
       } else if (args.NAME == "Slot 5") {
         output = output5;
       } else {
-        throw new Error("Not a slot.");
+        console.error("Not a slot.");
       }
       return output === "";
     }
@@ -594,10 +641,10 @@
           }
         } catch (error) {
           console.error("Error writing to file:", error);
-          throw new Error("Error writing to file");
+          console.error("Error writing to file");
         }
       } else {
-        throw new Error("No file to write to!");
+        console.error("No file to write to!");
       }
     }
 
@@ -609,7 +656,7 @@
           output1 = "";
           console.log("File closed successfully");
         } else {
-          throw new Error("No file to close!");
+          console.error("No file to close!");
         }
       } else if (args.NAME == "Slot 2") {
         if (fileHandle2) {
@@ -618,7 +665,7 @@
           output2 = "";
           console.log("File closed successfully");
         } else {
-          throw new Error("No file to close!");
+          console.error("No file to close!");
         }
       } else if (args.NAME == "Slot 3") {
         if (fileHandle3) {
@@ -627,7 +674,7 @@
           output3 = "";
           console.log("File closed successfully");
         } else {
-          throw new Error("No file to close!");
+          console.error("No file to close!");
         }
       } else if (args.NAME == "Slot 4") {
         if (fileHandle4) {
@@ -636,7 +683,7 @@
           output4 = "";
           console.log("File closed successfully");
         } else {
-          throw new Error("No file to close!");
+          console.error("No file to close!");
         }
       } else if (args.NAME == "Slot 5") {
         if (fileHandle5) {
@@ -645,7 +692,7 @@
           output5 = "";
           console.log("File closed successfully");
         } else {
-          throw new Error("No file to close!");
+          console.error("No file to close!");
         }
       }
     }
@@ -669,7 +716,7 @@
           });
           FolderData = await this.internalGetFolderContents(folderHandle);
         } catch (error) {
-          throw new Error(error);
+          console.error(error);
         }
       } else {
         return "Access denied.";
@@ -743,7 +790,7 @@
     async getFileDataFromFolder(fileHandle, method) {
       if (!fileHandle) return "";
       try {
-        const file = await fileHandle.getFile(); // Re-acquire the file after writing
+        const file = await fileHandle.getFile();
         if (method === "arrayBuffer") {
           const arrayBuffer = await file.arrayBuffer();
           const uint8Array = new Uint8Array(arrayBuffer);
@@ -772,11 +819,111 @@
 
           return await readChunks();
         } else {
-          throw new Error("Invalid type specified");
+          console.error("Invalid type specified");
         }
       } catch (error) {
         console.error("Error reading file:", error);
-        throw new Error("Error reading file");
+        console.error("Error reading file");
+      }
+    }
+
+    async writeToFilePath(args) {
+      const parts = args.PATH.split("/").filter((part) => part);
+      let currentHandle = folderHandle;
+
+      for (let i = 0; i < parts.length - 1; i++) {
+        currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
+      }
+      const fileHandle = await currentHandle.getFileHandle(
+        parts[parts.length - 1]
+      );
+
+      const contents = await this.setFileDataFromFolder(fileHandle);
+      return contents;
+    }
+
+    async setFileDataFromFolder(fileHandle, string) {
+      if (fileHandle) {
+        try {
+          const writable = await fileHandle.createWritable();
+          await writable.write(string);
+          await writable.close();
+          console.log("File written successfully");
+        } catch (error) {
+          console.error("Error writing to file:", error);
+          console.error("Error writing to file");
+        }
+      } else {
+        console.error("No file to write to!");
+      }
+    }
+
+    async folderCreate(args) {
+      if ((args.ACTION == "Create") & (args.KIND == "File")) {
+        await this.internalFolderCreateFile(args.NAME);
+        if (args.INDX == "index")
+          await this.internalGetFolderContents(folderHandle);
+      } else if ((args.ACTION == "Delete") & (args.KIND == "File")) {
+        await this.internalFolderDeleteFile(args.NAME);
+        if (args.INDX == "index")
+          await this.internalGetFolderContents(folderHandle);
+      } else if ((args.ACTION == "Create") & (args.KIND == "Folder")) {
+        await this.internalFolderCreateFolder(args.NAME);
+        if (args.INDX == "index")
+          await this.internalGetFolderContents(folderHandle);
+      } else if ((args.ACTION == "Delete") & (args.KIND == "Folder")) {
+        await this.internalFolderDeleteFolder(args.NAME);
+        if (args.INDX == "index")
+          await this.internalGetFolderContents(folderHandle);
+      }
+    }
+
+    async internalFolderCreateFile(filename) {
+      try {
+        const fileHandle = await this.directoryHandle.getFileHandle(filename, {
+          create: true,
+        });
+        const writable = await fileHandle.createWritable();
+        await writable.write("");
+        await writable.close();
+        console.log(`File ${filename} created in ${this.directoryHandle.name}`);
+      } catch (err) {
+        console.error(`Error creating file ${filename}:`, err);
+      }
+    }
+
+    async internalFolderDeleteFile(filename) {
+      try {
+        await this.directoryHandle.removeEntry(filename);
+        console.log(
+          `File ${filename} deleted from ${this.directoryHandle.name}`
+        );
+      } catch (err) {
+        console.error(`Error deleting file ${filename}:`, err);
+      }
+    }
+
+    async internalFolderCreateFolder(foldername) {
+      try {
+        await this.directoryHandle.getDirectoryHandle(foldername, {
+          create: true,
+        });
+        console.log(
+          `Folder ${foldername} created in ${this.directoryHandle.name}`
+        );
+      } catch (err) {
+        console.error(`Error creating folder ${foldername}:`, err);
+      }
+    }
+
+    async internalFolderDeleteFolder(foldername) {
+      try {
+        await this.directoryHandle.removeEntry(foldername, { recursive: true });
+        console.log(
+          `Folder ${foldername} deleted from ${this.directoryHandle.name}`
+        );
+      } catch (err) {
+        console.error(`Error deleting folder ${foldername}:`, err);
       }
     }
 
