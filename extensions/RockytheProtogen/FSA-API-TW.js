@@ -742,7 +742,7 @@
 
         for await (const entry of handle.values()) {
           if (entry.kind === "directory") {
-            const subDirHandle = await handle.getDirectoryHandle(entry.name);
+            const subDirHandle = await handle.getfolderHandle(entry.name);
             structure[entry.name] =
               await collectDirectoryStructure(subDirHandle);
           } else {
@@ -777,7 +777,7 @@
       let currentHandle = folderHandle;
 
       for (let i = 0; i < parts.length - 1; i++) {
-        currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
+        currentHandle = await currentHandle.getfolderHandle(parts[i]);
       }
       const fileHandle = await currentHandle.getFileHandle(
         parts[parts.length - 1]
@@ -832,7 +832,7 @@
       let currentHandle = folderHandle;
 
       for (let i = 0; i < parts.length - 1; i++) {
-        currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
+        currentHandle = await currentHandle.getfolderHandle(parts[i]);
       }
       const fileHandle = await currentHandle.getFileHandle(
         parts[parts.length - 1]
@@ -880,13 +880,13 @@
 
     async internalFolderCreateFile(filename) {
       try {
-        const fileHandle = await this.directoryHandle.getFileHandle(filename, {
+        const fileHandle = await this.folderHandle.getFileHandle(filename, {
           create: true,
         });
         const writable = await fileHandle.createWritable();
         await writable.write("");
         await writable.close();
-        console.log(`File ${filename} created in ${this.directoryHandle.name}`);
+        console.log(`File ${filename} created in ${this.folderHandle.name}`);
       } catch (err) {
         console.error(`Error creating file ${filename}:`, err);
       }
@@ -894,9 +894,9 @@
 
     async internalFolderDeleteFile(filename) {
       try {
-        await this.directoryHandle.removeEntry(filename);
+        await this.folderHandle.removeEntry(filename);
         console.log(
-          `File ${filename} deleted from ${this.directoryHandle.name}`
+          `File ${filename} deleted from ${this.folderHandle.name}`
         );
       } catch (err) {
         console.error(`Error deleting file ${filename}:`, err);
@@ -905,11 +905,11 @@
 
     async internalFolderCreateFolder(foldername) {
       try {
-        await this.directoryHandle.getDirectoryHandle(foldername, {
+        await this.folderHandle.getfolderHandle(foldername, {
           create: true,
         });
         console.log(
-          `Folder ${foldername} created in ${this.directoryHandle.name}`
+          `Folder ${foldername} created in ${this.folderHandle.name}`
         );
       } catch (err) {
         console.error(`Error creating folder ${foldername}:`, err);
@@ -918,9 +918,9 @@
 
     async internalFolderDeleteFolder(foldername) {
       try {
-        await this.directoryHandle.removeEntry(foldername, { recursive: true });
+        await this.folderHandle.removeEntry(foldername, { recursive: true });
         console.log(
-          `Folder ${foldername} deleted from ${this.directoryHandle.name}`
+          `Folder ${foldername} deleted from ${this.folderHandle.name}`
         );
       } catch (err) {
         console.error(`Error deleting folder ${foldername}:`, err);
