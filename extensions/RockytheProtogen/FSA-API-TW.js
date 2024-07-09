@@ -6,22 +6,60 @@
 
 /**
  * Credits:
- * 
+ *
  *  Basics in JS: https://www.w3schools.com/Js/
- * 
+ *
  *  How to add commits to pull rq: https://stackoverflow.com/questions/10147445/github-adding-commits-to-existing-pull-request
- * 
+ *
  *  File size conversion: https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
- * 
+ *
  *  Original files by GarboMuffin: https://github.com/TurboWarp/extensions/blob/master/extensions/files.js
- * 
+ *
  *  MDN web docs: https://developer.mozilla.org/en-US/docs/Web/API/Window/
- * 
+ *
  *  LMS Utils (Labels, Buttons): https://github.com/TurboWarp/extensions/blob/master/extensions/Lily/lmsutils.js
- * 
+ *
  *  Fixes and proper cleanup (from @kindpump): https://github.com/TurboWarp/extensions/pull/1594#issuecomment-2214487201
- * 
+ *
  *  Assets.js (for Extension check): https://github.com/TurboWarp/extensions/blob/master/extensions/Lily/Assets.js
+ *
+ */
+
+/**
+ * Just in case you want to make it easy for yourself.
+ * VSCode Extensions Installed:
+ * 
+ *  mgmcdermott.vscode-language-babel
+ * 
+ *  jeff-hykin.better-js-syntax
+ * 
+ *  moshfeu.compare-folders
+ * 
+ *  dbaeumer.vscode-eslint
+ * 
+ *  xabikos.JavaScriptSnippets
+ * 
+ *  ms-vscode.vscode-typescript-next
+ * 
+ *  sburg.vscode-javascript-booster
+ * 
+ *  cmstead.js-codeformer
+ * 
+ *  ms-edgedevtools.vscode-edge-devtools
+ * 
+ *  esbenp.prettier-vscode
+ * 
+ *  bysabi.prettier-vscode-standard
+ * 
+ *  rvest.vs-code-prettier-eslint
+ * 
+ *  numso.prettier-standard-vscode
+ * 
+ *  svipas.prettier-plus
+ * 
+ *  standard.vscode-standard
+ * 
+ *  lihui.vs-color-picker
  * 
  */
 
@@ -61,7 +99,20 @@
     );
     if (!QuitLoadingExt) throw new Error("User cancelled extension loading.");
   }
-
+  let LoadedExtensions = JSON.stringify(
+    Array.from(Scratch.vm.extensionManager._loadedExtensions.keys())
+  );
+  if (!LoadedExtensions.includes("skyhigh173JSON"))
+    if (
+      confirm(
+        "Import JSON extension by Skyhigh173?\nThis tool will be crucial to get file data."
+      )
+    )
+      Scratch.vm.extensionManager
+        .loadExtensionURL("https://extensions.turbowarp.org/Skyhigh173/json.js")
+        .then(() => {
+          alert("Imported JSON extension by Skyhigh173.");
+        });
   class fsaapi98396 {
     /**
      * Imported code for later use.
@@ -85,15 +136,15 @@
       );
       return bytes.toFixed(dp) + " " + units[u];
     }
-    async loadExtension(extUri) {
-      const url = Scratch.Cast.toString(extUri);
-      await Scratch.vm.extensionManager.loadExtensionURL(url);
+    async fileTypeCheck(FileType) {
+      await console.log('fileTypeCheck() Called!')
+      if (FileType === "") {
+        return "unknown";
+      } else {
+        return FileType;
+      }
     }
-    getLoadedExtensions(args) {
-      return JSON.stringify(
-        Array.from(Scratch.vm.extensionManager._loadedExtensions.keys())
-      );
-    }
+
     /**
      * End of Imports
      */
@@ -200,9 +251,9 @@
             },
           },
           {
-            opcode: 'getFolderContentsJSON',
+            opcode: "getFolderContentsJSON",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Folder contents JSON'
+            text: "Folder contents JSON",
           },
         ],
         menus: {
@@ -224,6 +275,7 @@
         },
       };
     }
+
 
     getSupportedBrowsers() {
       Scratch.openWindow(
@@ -258,8 +310,9 @@
             mode: "readwrite",
           });
           const file = await fileHandle.getFile();
+          const FileTypeUnblank = this.fileTypeCheck(file.type);
           output = JSON.stringify({
-            type: file.type,
+            type: FileTypeUnblank,
             name: file.name,
             size: file.size,
             lastModified: file.lastModified,
@@ -375,7 +428,7 @@
           startIn: args.LOC,
           mode: "readwrite",
         });
-        FolderData = this.internalGetFolderContents(folderHandle);
+        FolderData = await this.internalGetFolderContents(folderHandle);
       } catch (error) {
         throw new Error(error);
       }
@@ -385,8 +438,11 @@
       return FolderData;
     }
 
+    async getFileInfoinDir(args) {} //Idk if I will implement yet.
+
     //// Gets Folder Contents //// Not called directly by a block. ////
     async internalGetFolderContents(internalDirHandle) {
+
       const dirHandle = internalDirHandle;
 
       async function collectDirectoryStructure(handle) {
@@ -400,8 +456,16 @@
           } else {
             if (!structure["files"]) {
               structure["files"] = [];
-            }
-            structure["files"].push(entry.name);
+            }   
+            const FileTypeUnblank = this.fileTypeCheck(file.type);
+            const fileHandle = await handle.getFileHandle(entry.name);
+            const file = await fileHandle.getFile();
+            structure["files"].push({
+              type: FileTypeUnblank,
+              name: entry.name,
+              size: file.size,
+              lastModified: file.lastModified,
+            });
           }
         }
 
