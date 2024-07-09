@@ -76,7 +76,7 @@
     function md5cmn(q, a, b, x, s, t) {
       return safeAdd(
         bitRotateLeft(safeAdd(safeAdd(a, q), safeAdd(x, t)), s),
-        b
+        b,
       );
     }
     /**
@@ -475,7 +475,7 @@
             opcode: "Conversioncodes",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "convert the character [string] to [CodeList]"
+              "convert the character [string] to [CodeList]",
             ),
             arguments: {
               string: {
@@ -493,7 +493,7 @@
             opcode: "Restorecode",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "[string] corresponding to the [CodeList] character"
+              "[string] corresponding to the [CodeList] character",
             ),
             arguments: {
               string: {
@@ -514,7 +514,7 @@
             opcode: "Randomstrings",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "randomly generated [position] character string"
+              "randomly generated [position] character string",
             ),
             arguments: {
               position: {
@@ -527,7 +527,7 @@
             opcode: "Fontgenerationstring",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "use [wordbank] to generate a random [position] character string"
+              "use [wordbank] to generate a random [position] character string",
             ),
             arguments: {
               wordbank: {
