@@ -77,18 +77,18 @@
   let fileHandle4;
   let fileHandle5;
   let folderHandle;
-  let storefd1 = null;
-  let storefd2 = null;
-  let storefd3 = null;
-  let storefd4 = null;
-  let storefd5 = null;
+  let storefd1;
+  let storefd2;
+  let storefd3;
+  let storefd4;
+  let storefd5;
   let writeFail = false;
   let FolderData = "";
-  let output1 = null;
-  let output2 = null;
-  let output3 = null;
-  let output4 = null;
-  let output5 = null;
+  let output1;
+  let output2;
+  let output3;
+  let output4;
+  let output5;
   let unsupportedBrowser = false;
   let mayOpenFilePicker = false;
   let mayOpenFolderPicker = false;
@@ -199,8 +199,8 @@
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FILESAVES"
-              }
+                menu: "FILESAVES",
+              },
             },
           },
           {
@@ -215,9 +215,9 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FILESAVES"
-              }
-            }
+                menu: "FILESAVES",
+              },
+            },
           },
           {
             opcode: "getFileHandles",
@@ -226,9 +226,9 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FILESAVES"
-              }
-            }
+                menu: "FILESAVES",
+              },
+            },
           },
           {
             opcode: "getOpenedFileData",
@@ -241,8 +241,8 @@
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FILESAVES"
-              }
+                menu: "FILESAVES",
+              },
             },
           },
           {
@@ -255,8 +255,8 @@
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FILESAVES"
-              }
+                menu: "FILESAVES",
+              },
             },
           },
           {
@@ -266,9 +266,9 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FILESAVES"
-              }
-            }
+                menu: "FILESAVES",
+              },
+            },
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -288,7 +288,7 @@
           {
             opcode: "isFolderDataBlank",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Is folder open?"
+            text: "Is folder open?",
           },
           {
             opcode: "getFolderContentsJSON",
@@ -314,14 +314,8 @@
           },
           FILESAVES: {
             acceptReporters: true,
-            items: [
-              "Slot 1",
-              "Slot 2",
-              "Slot 3",
-              "Slot 4",
-              "Slot 5"
-            ]
-          }
+            items: ["Slot 1", "Slot 2", "Slot 3", "Slot 4", "Slot 5"],
+          },
         },
       };
     }
@@ -355,40 +349,40 @@
 
     async rqFilePicker(args) {
       try {
-        let output = null;
-        let storefd = null;
+        let output;
+        let storefd;
         let fileHandle;
         //Set current slot
         if (args.NAME == "Slot 1") {
-          output = output1
+          output = output1;
         } else if (args.NAME == "Slot 2") {
-          output = output2
+          output = output2;
         } else if (args.NAME == "Slot 3") {
-          output = output3
+          output = output3;
         } else if (args.NAME == "Slot 4") {
-          output = output4
+          output = output4;
         } else if (args.NAME == "Slot 5") {
-          output = output5
+          output = output5;
         } else {
-          throw new Error("Not a slot.")
+          throw new Error("Not a slot.");
         }
         writeFail = false;
-        if (output === null && mayOpenFilePicker) {
+        if (output === "" && mayOpenFilePicker) {
           [fileHandle] = await window.showOpenFilePicker({
             multiple: false,
             startIn: args.LOC,
             mode: "readwrite",
           });
           if (args.NAME == "Slot 1") {
-            fileHandle1 = fileHandle
+            fileHandle1 = fileHandle;
           } else if (args.NAME == "Slot 2") {
-            fileHandle2 = fileHandle
+            fileHandle2 = fileHandle;
           } else if (args.NAME == "Slot 3") {
-            fileHandle3 = fileHandle
+            fileHandle3 = fileHandle;
           } else if (args.NAME == "Slot 4") {
-            fileHandle4 = fileHandle
+            fileHandle4 = fileHandle;
           } else if (args.NAME == "Slot 5") {
-            fileHandle5 = fileHandle
+            fileHandle5 = fileHandle;
           }
           const file = await fileHandle.getFile();
           if (file.type === "") {
@@ -417,20 +411,20 @@
           }
           storefd = file;
           if (args.NAME == "Slot 1") {
-            storefd1 = storefd
-            output1 = output
+            storefd1 = storefd;
+            output1 = output;
           } else if (args.NAME == "Slot 2") {
-            storefd2 = storefd
-            output2 = output
+            storefd2 = storefd;
+            output2 = output;
           } else if (args.NAME == "Slot 3") {
-            storefd3 = storefd
-            output3 = output
+            storefd3 = storefd;
+            output3 = output;
           } else if (args.NAME == "Slot 4") {
-            storefd4 = storefd
-            output4 = output
+            storefd4 = storefd;
+            output4 = output;
           } else if (args.NAME == "Slot 5") {
-            storefd5 = storefd
-            output5 = output
+            storefd5 = storefd;
+            output5 = output;
           }
         } else {
           throw new Error("Could not prompt, check user input and try again.");
@@ -446,35 +440,35 @@
       let fileHandle;
       let storefd;
       if (args.NAME == "Slot 1") {
-        fileHandle = fileHandle1
-        storefd = storefd1
+        fileHandle = fileHandle1;
+        storefd = storefd1;
       } else if (args.NAME == "Slot 2") {
-        fileHandle = fileHandle2
-        storefd = storefd2
+        fileHandle = fileHandle2;
+        storefd = storefd2;
       } else if (args.NAME == "Slot 3") {
-        fileHandle = fileHandle3
-        storefd = storefd3
+        fileHandle = fileHandle3;
+        storefd = storefd3;
       } else if (args.NAME == "Slot 4") {
-        fileHandle = fileHandle4
-        storefd = storefd4
+        fileHandle = fileHandle4;
+        storefd = storefd4;
       } else if (args.NAME == "Slot 5") {
-        fileHandle = fileHandle5
-        storefd = storefd5
+        fileHandle = fileHandle5;
+        storefd = storefd5;
       }
       if (!storefd) return "";
       try {
         const file = await fileHandle.getFile(); // Re-acquire the file after writing
         storefd = file;
         if (args.NAME == "Slot 1") {
-          storefd1 = storefd
+          storefd1 = storefd;
         } else if (args.NAME == "Slot 2") {
-          storefd2 = storefd
+          storefd2 = storefd;
         } else if (args.NAME == "Slot 3") {
-          storefd3 = storefd
+          storefd3 = storefd;
         } else if (args.NAME == "Slot 4") {
-          storefd4 = storefd
+          storefd4 = storefd;
         } else if (args.NAME == "Slot 5") {
-          storefd5 = storefd
+          storefd5 = storefd;
         }
         if (args.TYPE === "arrayBuffer") {
           const arrayBuffer = await file.arrayBuffer();
@@ -515,17 +509,17 @@
     getFileHandles(args) {
       let output;
       if (args.NAME == "Slot 1") {
-        output = output1
+        output = output1;
       } else if (args.NAME == "Slot 2") {
-        output = output2
+        output = output2;
       } else if (args.NAME == "Slot 3") {
-        output = output3
+        output = output3;
       } else if (args.NAME == "Slot 4") {
-        output = output4
+        output = output4;
       } else if (args.NAME == "Slot 5") {
-        output = output5
+        output = output5;
       } else {
-        throw new Error("Not a slot.")
+        throw new Error("Not a slot.");
       }
       return output;
     }
@@ -533,38 +527,38 @@
     outputCheck(args) {
       let output;
       if (args.NAME == "Slot 1") {
-        output = output1
+        output = output1;
       } else if (args.NAME == "Slot 2") {
-        output = output2
+        output = output2;
       } else if (args.NAME == "Slot 3") {
-        output = output3
+        output = output3;
       } else if (args.NAME == "Slot 4") {
-        output = output4
+        output = output4;
       } else if (args.NAME == "Slot 5") {
-        output = output5
+        output = output5;
       } else {
-        throw new Error("Not a slot.")
+        throw new Error("Not a slot.");
       }
       return output === "";
     }
 
     async writeSingleFile(args) {
-      let fileHandle,storefd; //L e a r n i n g
+      let fileHandle, storefd; //L e a r n i n g
       if (args.NAME == "Slot 1") {
-        fileHandle = fileHandle1
-        storefd = storefd1
+        fileHandle = fileHandle1;
+        storefd = storefd1;
       } else if (args.NAME == "Slot 2") {
-        fileHandle = fileHandle2
-        storefd = storefd2
+        fileHandle = fileHandle2;
+        storefd = storefd2;
       } else if (args.NAME == "Slot 3") {
-        fileHandle = fileHandle3
-        storefd = storefd3
+        fileHandle = fileHandle3;
+        storefd = storefd3;
       } else if (args.NAME == "Slot 4") {
-        fileHandle = fileHandle4
-        storefd = storefd4
+        fileHandle = fileHandle4;
+        storefd = storefd4;
       } else if (args.NAME == "Slot 5") {
-        fileHandle = fileHandle5
-        storefd = storefd5
+        fileHandle = fileHandle5;
+        storefd = storefd5;
       }
       if (fileHandle) {
         try {
@@ -574,15 +568,15 @@
           console.log("File written successfully");
           storefd = await fileHandle.getFile(); // Re-acquire the file handle after writing
           if (args.NAME == "Slot 1") {
-            storefd1 = storefd
+            storefd1 = storefd;
           } else if (args.NAME == "Slot 2") {
-            storefd2 = storefd
+            storefd2 = storefd;
           } else if (args.NAME == "Slot 3") {
-            storefd3 = storefd
+            storefd3 = storefd;
           } else if (args.NAME == "Slot 4") {
-            storefd4 = storefd
+            storefd4 = storefd;
           } else if (args.NAME == "Slot 5") {
-            storefd5 = storefd
+            storefd5 = storefd;
           }
         } catch (error) {
           console.error("Error writing to file:", error);
@@ -594,11 +588,10 @@
     }
 
     closeSingleFile(args) {
-
       if (args.NAME == "Slot 1") {
         if (fileHandle1) {
-          fileHandle1 = null;
-          storefd1 = null;
+          fileHandle1 = "";
+          storefd1 = "";
           output1 = "";
           console.log("File closed successfully");
         } else {
@@ -606,8 +599,8 @@
         }
       } else if (args.NAME == "Slot 2") {
         if (fileHandle2) {
-          fileHandle2 = null;
-          storefd2 = null;
+          fileHandle2 = "";
+          storefd2 = "";
           output2 = "";
           console.log("File closed successfully");
         } else {
@@ -615,8 +608,8 @@
         }
       } else if (args.NAME == "Slot 3") {
         if (fileHandle3) {
-          fileHandle3 = null;
-          storefd3 = null;
+          fileHandle3 = "";
+          storefd3 = "";
           output3 = "";
           console.log("File closed successfully");
         } else {
@@ -624,8 +617,8 @@
         }
       } else if (args.NAME == "Slot 4") {
         if (fileHandle4) {
-          fileHandle4 = null;
-          storefd4 = null;
+          fileHandle4 = "";
+          storefd4 = "";
           output4 = "";
           console.log("File closed successfully");
         } else {
@@ -633,8 +626,8 @@
         }
       } else if (args.NAME == "Slot 5") {
         if (fileHandle5) {
-          fileHandle5 = null;
-          storefd5 = null;
+          fileHandle5 = "";
+          storefd5 = "";
           output5 = "";
           console.log("File closed successfully");
         } else {
