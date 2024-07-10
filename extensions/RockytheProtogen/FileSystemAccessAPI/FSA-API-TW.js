@@ -94,6 +94,12 @@
     mayOpenFolderPicker = false,
     NoBlankFileType;
 
+  //initIcon
+  const FolderIcon =
+    "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDIwMDEwOTA0Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSLzIwMDEvUkVDLVNWRy0yMDAxMDkwNC9EVEQvc3ZnMTAuZHRkIj4KPCEtLSBDcmVhdGVkIHVzaW5nIEtyaXRhOiBodHRwczovL2tyaXRhLm9yZyAtLT4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIAogICAgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiCiAgICB4bWxuczprcml0YT0iaHR0cDovL2tyaXRhLm9yZy9uYW1lc3BhY2VzL3N2Zy9rcml0YSIKICAgIHhtbG5zOnNvZGlwb2RpPSJodHRwOi8vc29kaXBvZGkuc291cmNlZm9yZ2UubmV0L0RURC9zb2RpcG9kaS0wLmR0ZCIKICAgIHdpZHRoPSIxNS4zNnB0IgogICAgaGVpZ2h0PSIxNS4zNnB0IgogICAgdmlld0JveD0iMCAwIDE1LjM2IDE1LjM2Ij4KPGRlZnMvPgo8cmVjdCBpZD0ic2hhcGUwIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyLjYyNTAwMDAwMDk4MjU0LCAxLjMwNDk5OTkzMDIzOTMxKSIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49ImJldmVsIiB3aWR0aD0iNy4yIiBoZWlnaHQ9IjEwLjMyIi8+PHJlY3QgaWQ9InNoYXBlMSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMS4wNDE0ODQ3NDgzMjUwNywgNS43MTIzMTQzMjQwMTYzOCkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VkZjAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0iYmV2ZWwiIHdpZHRoPSIxMi41MTg1MTQ1MTM2NTc3IiBoZWlnaHQ9IjcuNjUyNjg0OTIwMTkyMTYiIHJ4PSIwLjY1NzE4OTM3MDExMDkwNCIgcnk9IjAuNTUyNTQ0ODMwODY1MDEiLz48cmVjdCBpZD0ic2hhcGUyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMC41NiwgNC4wOCkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VkZjAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0iYmV2ZWwiIHdpZHRoPSIzLjEyIiBoZWlnaHQ9IjEuNjgiIHJ4PSIwLjQ2NTAwMDg2NTYyMjE2NCIgcnk9IjAuNDY1MDAwODY1NjIyMTY0Ii8+PHJlY3QgaWQ9InNoYXBlMyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMS4yLCA1Ljc2KSIgZmlsbD0iI2VkZjAwMCIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiNlZGYwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49ImJldmVsIiB3aWR0aD0iMTIuMjQiIGhlaWdodD0iNy40NCIvPjxyZWN0IGlkPSJzaGFwZTQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEwLjgsIDQuMDgpIiBmaWxsPSIjZWRmMDAwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iI2VkZjAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0iYmV2ZWwiIHdpZHRoPSIyLjY0IiBoZWlnaHQ9IjEuNDQiLz48cmVjdCBpZD0ic2hhcGU1IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMy4yLCA1LjUyKSIgZmlsbD0iI2VkZjAwMCIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiNlZGYwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49ImJldmVsIiB3aWR0aD0iMC40OCIgaGVpZ2h0PSIwLjcyIi8+PHJlY3QgaWQ9InNoYXBlNiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOC44OCwgNC4wOCkiIGZpbGw9IiNlZGYwMDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjZWRmMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJiZXZlbCIgd2lkdGg9IjIuNCIgaGVpZ2h0PSIxLjQ0IiByeD0iMC40ODAwMDAwNjM3MDIxOTgiIHJ5PSIwLjQ4MDAwMDA2MzcwMjE5OCIvPjxwYXRoIGlkPSJzaGFwZTciIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMuMTE5OTk5Nzk1NjMwNjYsIDIuMzM5OTk5ODQ2NzIyOTkpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMC4wM0w1LjI4IDAiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz48cGF0aCBpZD0ic2hhcGU4IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzLjI1NDk5OTc4Njc4Nzc2LCAzLjM4OTk5OTc3Nzk0NDg1KSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDAuMDQ1TDUuMDEgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMuMTc5OTk5NzkxNzAwNDgsIDQuNzg0OTk5Njg2NTY4MTgpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMC4wM0w0Ljk1IDAiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz4KPC9zdmc+Cg==";
+  const FileIcon =
+    "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDIwMDEwOTA0Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSLzIwMDEvUkVDLVNWRy0yMDAxMDkwNC9EVEQvc3ZnMTAuZHRkIj4KPCEtLSBDcmVhdGVkIHVzaW5nIEtyaXRhOiBodHRwczovL2tyaXRhLm9yZyAtLT4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIAogICAgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiCiAgICB4bWxuczprcml0YT0iaHR0cDovL2tyaXRhLm9yZy9uYW1lc3BhY2VzL3N2Zy9rcml0YSIKICAgIHhtbG5zOnNvZGlwb2RpPSJodHRwOi8vc29kaXBvZGkuc291cmNlZm9yZ2UubmV0L0RURC9zb2RpcG9kaS0wLmR0ZCIKICAgIHdpZHRoPSIxNS4zNnB0IgogICAgaGVpZ2h0PSIxNS4zNnB0IgogICAgdmlld0JveD0iMCAwIDE1LjM2IDE1LjM2Ij4KPGRlZnMvPgo8cmVjdCBpZD0ic2hhcGUwIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzLjM2LCAxLjQ0KSIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49ImJldmVsIiB3aWR0aD0iOS4xMiIgaGVpZ2h0PSIxMi40OCIvPjxwYXRoIGlkPSJzaGFwZTEiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQuNDU0OTk5ODQwOTUzNTQsIDIuMjk0OTk5OTE4MDY2OTcpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMEw1LjU1NzkxIDAiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz48cGF0aCBpZD0ic2hhcGUyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0LjQ1NDk5OTg0MDk1MzU0LCAzLjc3OTk5OTg2NTA1MTQ4KSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDEuNzc2MzZlLTE1TDcuMTU1MTQgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUuMzc3NDk5ODA4MDE5NjcsIDUuMjY0OTk5ODEyMDM2KSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDEuNzc2MzZlLTE1TDYuMzAyNTcgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQuMTYyNDk5ODUxMzk1OTgsIDYuNDEyNDk5NzcxMDY5NDkpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMEw2LjUyNSAwIiBzb2RpcG9kaTpub2RldHlwZXM9ImNjIi8+PHBhdGggaWQ9InNoYXBlNSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNC40OTk5OTk4MzkzNDcwMSwgNy42OCkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIyIiBkPSJNMCAwTDMuMjY5NzQgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTYiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDguODg3NDk5NjgyNzEwMzQsIDcuNjgpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMEwzLjIyMDk5IDAiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz48cGF0aCBpZD0ic2hhcGU3IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0LjU0NDk5OTgzNzc0MDQ4LCA4LjY2MjQ5OTY5MDc0Mjk5KSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDBMMy4xMzUgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTgiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDguMzAyNDk5NzAzNTk1MjMsIDguNjM5OTk5NjkxNTQ2MjUpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMC4wMjI1TDMuODAyNSAwIiBzb2RpcG9kaTpub2RldHlwZXM9ImNjIi8+PHBhdGggaWQ9InNoYXBlOSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNC4yNzQ5OTk4NDczNzk2NiwgOS45Njc0OTk2NDQxNTM2MikiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIyIiBkPSJNMCAwTDMuMjQxMjUgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTEwIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4LjgxOTk5OTY4NTEyMDE0LCA5Ljg3NzQ5OTY0NzM2NjY4KSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDBMMi45OTI1IDAiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz48cGF0aCBpZD0ic2hhcGUxMSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOC4xNDQ5OTk3MDkyMTgwOCwgNi45MDc0OTk3NTMzOTc2NikiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIyIiBkPSJNMCAwTDAgNS4yNjUiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz48cGF0aCBpZD0ic2hhcGUxMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNS44OTQ5OTk3ODk1NDQ1OCwgMTIuMzk3NDk5NTU3NDAxKSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDEuNzc2MzZlLTE1TDUuNTEzNjUgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPgo8L3N2Zz4K";
+
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
       "File System Access API cannot run on sandboxed mode.\nPlease disable the sandbox when loading the extension."
@@ -161,8 +167,7 @@
         color1: "#1565c0",
         color2: "#9964b9",
         color3: "#ffc107",
-        docsURI:
-          "https://developer.chrome.com/docs/capabilities/web-apis/file-system-access",
+        docsURI: "",
         blocks: [
           {
             func: "getSupportedBrowsers",
@@ -178,11 +183,18 @@
             opcode: "getUserPermissionFiP",
             blockType: Scratch.BlockType.COMMAND,
             text: "Request file picker permission",
+            blockIconURI: FileIcon,
           },
           {
             opcode: "getUserPermissionFoP",
             blockType: Scratch.BlockType.COMMAND,
             text: "Request folder picker permission",
+            blockIconURI: FolderIcon,
+          },
+          {
+            opcode: "getPermissions",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Check permissions",
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -192,6 +204,7 @@
             opcode: "rqFilePicker",
             blockType: Scratch.BlockType.COMMAND,
             text: "Open a file starting in [LOC] with slot [NAME]",
+            blockIconURI: FileIcon,
             arguments: {
               LOC: {
                 type: Scratch.ArgumentType.STRING,
@@ -207,11 +220,13 @@
             opcode: "writeAccessFailCheck",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Access denied?",
+            blockIconURI: FileIcon,
           },
           {
             opcode: "outputCheck",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Is JSON [NAME] blank?",
+            text: "Is [NAME] occupied?",
+            blockIconURI: FileIcon,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -223,6 +238,7 @@
             opcode: "getFileHandles",
             blockType: Scratch.BlockType.REPORTER,
             text: "Get information JSON for [NAME]",
+            blockIconURI: FileIcon,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -234,6 +250,7 @@
             opcode: "getOpenedFileData",
             blockType: Scratch.BlockType.REPORTER,
             text: "Read file [NAME] using [TYPE]",
+            blockIconURI: FileIcon,
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -249,6 +266,7 @@
             opcode: "writeSingleFile",
             blockType: Scratch.BlockType.COMMAND,
             text: "Write string [IN] to open file in [NAME]",
+            blockIconURI: FileIcon,
             arguments: {
               IN: {
                 type: Scratch.ArgumentType.STRING,
@@ -263,6 +281,7 @@
             opcode: "closeSingleFile",
             blockType: Scratch.BlockType.COMMAND,
             text: "Empty slot [NAME]",
+            blockIconURI: FileIcon,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -278,6 +297,7 @@
             opcode: "dirMultiFileOpen",
             blockType: Scratch.BlockType.COMMAND,
             text: "Open a Directory starting in [LOC]",
+            blockIconURI: FolderIcon,
             arguments: {
               LOC: {
                 type: Scratch.ArgumentType.STRING,
@@ -289,16 +309,19 @@
             opcode: "isFolderDataBlank",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "Is folder open?",
+            blockIconURI: FolderIcon,
           },
           {
             opcode: "getFolderContentsJSON",
             blockType: Scratch.BlockType.REPORTER,
             text: "Folder contents JSON",
+            blockIconURI: FolderIcon,
           },
           {
             opcode: "readFileFromPath",
             blockType: Scratch.BlockType.REPORTER,
             text: "Read file path [PATH] using [TYPE]",
+            blockIconURI: FolderIcon,
             arguments: {
               PATH: {
                 type: Scratch.ArgumentType.STRING,
@@ -313,6 +336,7 @@
             opcode: "writeToFilePath",
             blockType: Scratch.BlockType.COMMAND,
             text: "Write [DATA] to file path [PATH]",
+            blockIconURI: FolderIcon,
             arguments: {
               PATH: {
                 type: Scratch.ArgumentType.STRING,
@@ -326,6 +350,7 @@
             opcode: "folderCreate",
             blockType: Scratch.BlockType.COMMAND,
             text: "[ACTION] [KIND] with path [NAME] and [INDX]",
+            blockIconURI: FolderIcon,
             arguments: {
               ACTION: {
                 type: Scratch.ArgumentType.STRING,
@@ -381,6 +406,16 @@
       };
     }
 
+    getPermissions() {
+      if (mayOpenFilePicker) {
+        return "Files";
+      } else if (mayOpenFolderPicker) {
+        return "Folders";
+      } else {
+        return "None";
+      }
+    }
+
     getSupportedBrowsers() {
       Scratch.openWindow(
         "https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker#browser_compatibility"
@@ -428,7 +463,8 @@
           console.error("Not a slot.");
         }
         writeFail = false;
-        if (output === "" && mayOpenFilePicker) {
+        console.log(output);
+        if ((output === undefined || output == "") && mayOpenFilePicker) {
           [fileHandle] = await window.showOpenFilePicker({
             multiple: false,
             startIn: args.LOC,
@@ -493,7 +529,6 @@
       } catch (error) {
         writeFail = true;
         console.error("Error opening file:", error);
-        throw error;
       }
     }
 
@@ -731,7 +766,6 @@
       return FolderData;
     }
 
-
     //// Gets Folder Contents //// Not called directly by a block. ////
     async internalGetFolderContents(internalDirHandle) {
       const dirHandle = internalDirHandle;
@@ -745,8 +779,8 @@
             structure[entry.name] =
               await collectDirectoryStructure(subDirHandle);
           } else {
-            if (!structure["files"]) {
-              structure["files"] = [];
+            if (!structure[".files"]) {
+              structure[".files"] = [];
             }
             const fileHandle = await handle.getFileHandle(entry.name);
             const file = await fileHandle.getFile();
@@ -755,7 +789,7 @@
             } else {
               NoBlankFileType = file.type;
             }
-            structure["files"].push({
+            structure[".files"].push({
               type: NoBlankFileType,
               name: entry.name,
               size: file.size,
@@ -884,12 +918,10 @@
       for (let i = 0; i < parts.length - 1; i++) {
         currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
       }
-      await currentHandle.getFileHandle(
-        parts[parts.length - 1], {
-          create: true
-        }
-      );
-      console.log('Created.')
+      await currentHandle.getFileHandle(parts[parts.length - 1], {
+        create: true,
+      });
+      console.log("Created.");
     }
 
     async internalFolderDeleteFile(filename, fh) {
@@ -899,10 +931,8 @@
       for (let i = 0; i < parts.length - 1; i++) {
         currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
       }
-      await currentHandle.removeEntry(
-        parts[parts.length - 1]
-      );
-      console.log('Deleted.')
+      await currentHandle.removeEntry(parts[parts.length - 1]);
+      console.log("Deleted.");
     }
 
     async internalFolderCreateFolder(foldername, fh) {
@@ -912,10 +942,10 @@
       for (let i = 0; i < parts.length - 1; i++) {
         currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
       }
-      await currentHandle.getDirectoryHandle(
-        parts[parts.length - 1], {create: true}
-      );
-      console.log('Created.')
+      await currentHandle.getDirectoryHandle(parts[parts.length - 1], {
+        create: true,
+      });
+      console.log("Created.");
     }
 
     async internalFolderDeleteFolder(foldername, fh) {
@@ -925,10 +955,10 @@
       for (let i = 0; i < parts.length - 1; i++) {
         currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
       }
-      await currentHandle.removeEntry(
-        parts[parts.length - 1], {recursive: true}
-      );
-      console.log('Deleted.')
+      await currentHandle.removeEntry(parts[parts.length - 1], {
+        recursive: true,
+      });
+      console.log("Deleted.");
     }
 
     /*
