@@ -4,6 +4,19 @@
 // By: Rocky the Protogen
 // License: GNU-GPL3
 
+
+
+/*
+WARNING!
+This version of the extension contains serious bugs that could hinder your project!
+DO NOT use this version. It *will* break, and *will* fail.
+This file is here for historical purposes.
+*/
+
+
+
+
+
 /**
  * Major thanks to kindpump! <https://github.com/kindpump>
  * Credits:
