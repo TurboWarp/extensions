@@ -5,112 +5,113 @@
 // License: GNU-GPL3
 
 /**
+ * Major thanks to kindpump! <https://github.com/kindpump>
  * Credits:
- *
  *  Basics in JS: https://www.w3schools.com/Js/
- *
  *  How to add commits to pull rq: https://stackoverflow.com/questions/10147445/github-adding-commits-to-existing-pull-request
- *
  *  File size conversion: https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
- *
  *  Original files by GarboMuffin: https://github.com/TurboWarp/extensions/blob/master/extensions/files.js
- *
  *  MDN web docs: https://developer.mozilla.org/en-US/docs/Web/API/Window/
- *
  *  LMS Utils (Labels, Buttons): https://github.com/TurboWarp/extensions/blob/master/extensions/Lily/lmsutils.js
- *
  *  Fixes and proper cleanup (from @kindpump): https://github.com/TurboWarp/extensions/pull/1594#issuecomment-2214487201
- *
  *  Assets.js (for Extension check): https://github.com/TurboWarp/extensions/blob/master/extensions/Lily/Assets.js
- *
  */
 
 /**
  * Just in case you want to make it easy for yourself.
  * VSCode Extensions Installed:
- *
  *  mgmcdermott.vscode-language-babel
- *
  *  jeff-hykin.better-js-syntax
- *
  *  moshfeu.compare-folders
- *
  *  dbaeumer.vscode-eslint
- *
  *  xabikos.JavaScriptSnippets
- *
  *  ms-vscode.vscode-typescript-next
- *
  *  sburg.vscode-javascript-booster
- *
  *  cmstead.js-codeformer
- *
  *  ms-edgedevtools.vscode-edge-devtools
- *
  *  esbenp.prettier-vscode
- *
  *  bysabi.prettier-vscode-standard
- *
  *  rvest.vs-code-prettier-eslint
- *
  *  numso.prettier-standard-vscode
- *
  *  svipas.prettier-plus
- *
  *  standard.vscode-standard
- *
  *  lihui.vs-color-picker
- *
  */
 
 (function (Scratch) {
   "use strict";
-
   const app = {
     hasFSAccess:
       "chooseFileSystemEntries" in window || "showOpenFilePicker" in window,
   };
-
+  
   //Unfortunately, the URI is currently unknown.
   const DocumentataionURI = ""
-
-  let fileHandle1,
-    fileHandle2,
-    fileHandle3,
-    fileHandle4,
-    fileHandle5,
-    folderHandle,
-    storefd1,
-    storefd2,
-    storefd3,
-    storefd4,
-    storefd5,
-    writeFail = false,
-    FolderData = "",
-    output1,
-    output2,
-    output3,
-    output4,
-    output5,
-    unsupportedBrowser = false,
-    mayOpenFilePicker = false,
-    mayOpenFolderPicker = false,
-    NoBlankFileType,
-    isdevbranch = false;
-
-  // initIcon
   
+  let fileHandle1,
+  fileHandle2,
+  fileHandle3,
+  fileHandle4,
+  fileHandle5,
+  folderHandle,
+  storefd1,
+  storefd2,
+  storefd3,
+  storefd4,
+  storefd5,
+  writeFail = false,
+  FolderData = "",
+  output1,
+  output2,
+  output3,
+  output4,
+  output5,
+  unsupportedBrowser = false,
+  mayOpenFilePicker = false,
+  mayOpenFolderPicker = false,
+  NoBlankFileType,
+  isdevbranch = false;
+  
+  //Slot Mappings
+  const handleSlotMapping = {
+    "Slot 1": fileHandle1,
+    "Slot 2": fileHandle2,
+    "Slot 3": fileHandle3,
+    "Slot 4": fileHandle4,
+    "Slot 5": fileHandle5
+  };
+  const outputSlotMapping = {
+    "Slot 1": output1,
+    "Slot 2": output2,
+    "Slot 3": output3,
+    "Slot 4": output4,
+    "Slot 5": output5
+  };
+  const storefdSlotMapping = {
+    "Slot 1": storefd1,
+    "Slot 2": storefd2,
+    "Slot 3": storefd3,
+    "Slot 4": storefd4,
+    "Slot 5": storefd5
+  };
+  /* Useable ways to store via mappings:
+      outputSlotMapping[args.NAME] = output;
+      storefdSlotMapping[args.NAME] = storefd;
+      handleSlotMapping[args.NAME] = fileHandle;
+  */
+
+  
+  // initIcon
     const FolderIcon =
     "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDIwMDEwOTA0Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSLzIwMDEvUkVDLVNWRy0yMDAxMDkwNC9EVEQvc3ZnMTAuZHRkIj4KPCEtLSBDcmVhdGVkIHVzaW5nIEtyaXRhOiBodHRwczovL2tyaXRhLm9yZyAtLT4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIAogICAgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiCiAgICB4bWxuczprcml0YT0iaHR0cDovL2tyaXRhLm9yZy9uYW1lc3BhY2VzL3N2Zy9rcml0YSIKICAgIHhtbG5zOnNvZGlwb2RpPSJodHRwOi8vc29kaXBvZGkuc291cmNlZm9yZ2UubmV0L0RURC9zb2RpcG9kaS0wLmR0ZCIKICAgIHdpZHRoPSIxNS4zNnB0IgogICAgaGVpZ2h0PSIxNS4zNnB0IgogICAgdmlld0JveD0iMCAwIDE1LjM2IDE1LjM2Ij4KPGRlZnMvPgo8cmVjdCBpZD0ic2hhcGUwIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyLjYyNTAwMDAwMDk4MjU0LCAxLjMwNDk5OTkzMDIzOTMxKSIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49ImJldmVsIiB3aWR0aD0iNy4yIiBoZWlnaHQ9IjEwLjMyIi8+PHJlY3QgaWQ9InNoYXBlMSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMS4wNDE0ODQ3NDgzMjUwNywgNS43MTIzMTQzMjQwMTYzOCkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VkZjAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0iYmV2ZWwiIHdpZHRoPSIxMi41MTg1MTQ1MTM2NTc3IiBoZWlnaHQ9IjcuNjUyNjg0OTIwMTkyMTYiIHJ4PSIwLjY1NzE4OTM3MDExMDkwNCIgcnk9IjAuNTUyNTQ0ODMwODY1MDEiLz48cmVjdCBpZD0ic2hhcGUyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMC41NiwgNC4wOCkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VkZjAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0iYmV2ZWwiIHdpZHRoPSIzLjEyIiBoZWlnaHQ9IjEuNjgiIHJ4PSIwLjQ2NTAwMDg2NTYyMjE2NCIgcnk9IjAuNDY1MDAwODY1NjIyMTY0Ii8+PHJlY3QgaWQ9InNoYXBlMyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMS4yLCA1Ljc2KSIgZmlsbD0iI2VkZjAwMCIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiNlZGYwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49ImJldmVsIiB3aWR0aD0iMTIuMjQiIGhlaWdodD0iNy40NCIvPjxyZWN0IGlkPSJzaGFwZTQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEwLjgsIDQuMDgpIiBmaWxsPSIjZWRmMDAwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iI2VkZjAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0iYmV2ZWwiIHdpZHRoPSIyLjY0IiBoZWlnaHQ9IjEuNDQiLz48cmVjdCBpZD0ic2hhcGU1IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMy4yLCA1LjUyKSIgZmlsbD0iI2VkZjAwMCIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiNlZGYwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49ImJldmVsIiB3aWR0aD0iMC40OCIgaGVpZ2h0PSIwLjcyIi8+PHJlY3QgaWQ9InNoYXBlNiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOC44OCwgNC4wOCkiIGZpbGw9IiNlZGYwMDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjZWRmMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJiZXZlbCIgd2lkdGg9IjIuNCIgaGVpZ2h0PSIxLjQ0IiByeD0iMC40ODAwMDAwNjM3MDIxOTgiIHJ5PSIwLjQ4MDAwMDA2MzcwMjE5OCIvPjxwYXRoIGlkPSJzaGFwZTciIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMuMTE5OTk5Nzk1NjMwNjYsIDIuMzM5OTk5ODQ2NzIyOTkpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMC4wM0w1LjI4IDAiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz48cGF0aCBpZD0ic2hhcGU4IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzLjI1NDk5OTc4Njc4Nzc2LCAzLjM4OTk5OTc3Nzk0NDg1KSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDAuMDQ1TDUuMDEgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMuMTc5OTk5NzkxNzAwNDgsIDQuNzg0OTk5Njg2NTY4MTgpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMC4wM0w0Ljk1IDAiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz4KPC9zdmc+Cg==";
     const FileIcon =
     "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDIwMDEwOTA0Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSLzIwMDEvUkVDLVNWRy0yMDAxMDkwNC9EVEQvc3ZnMTAuZHRkIj4KPCEtLSBDcmVhdGVkIHVzaW5nIEtyaXRhOiBodHRwczovL2tyaXRhLm9yZyAtLT4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIAogICAgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiCiAgICB4bWxuczprcml0YT0iaHR0cDovL2tyaXRhLm9yZy9uYW1lc3BhY2VzL3N2Zy9rcml0YSIKICAgIHhtbG5zOnNvZGlwb2RpPSJodHRwOi8vc29kaXBvZGkuc291cmNlZm9yZ2UubmV0L0RURC9zb2RpcG9kaS0wLmR0ZCIKICAgIHdpZHRoPSIxNS4zNnB0IgogICAgaGVpZ2h0PSIxNS4zNnB0IgogICAgdmlld0JveD0iMCAwIDE1LjM2IDE1LjM2Ij4KPGRlZnMvPgo8cmVjdCBpZD0ic2hhcGUwIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzLjM2LCAxLjQ0KSIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49ImJldmVsIiB3aWR0aD0iOS4xMiIgaGVpZ2h0PSIxMi40OCIvPjxwYXRoIGlkPSJzaGFwZTEiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQuNDU0OTk5ODQwOTUzNTQsIDIuMjk0OTk5OTE4MDY2OTcpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMEw1LjU1NzkxIDAiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz48cGF0aCBpZD0ic2hhcGUyIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0LjQ1NDk5OTg0MDk1MzU0LCAzLjc3OTk5OTg2NTA1MTQ4KSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDEuNzc2MzZlLTE1TDcuMTU1MTQgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUuMzc3NDk5ODA4MDE5NjcsIDUuMjY0OTk5ODEyMDM2KSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDEuNzc2MzZlLTE1TDYuMzAyNTcgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQuMTYyNDk5ODUxMzk1OTgsIDYuNDEyNDk5NzcxMDY5NDkpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMEw2LjUyNSAwIiBzb2RpcG9kaTpub2RldHlwZXM9ImNjIi8+PHBhdGggaWQ9InNoYXBlNSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNC40OTk5OTk4MzkzNDcwMSwgNy42OCkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIyIiBkPSJNMCAwTDMuMjY5NzQgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTYiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDguODg3NDk5NjgyNzEwMzQsIDcuNjgpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMEwzLjIyMDk5IDAiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz48cGF0aCBpZD0ic2hhcGU3IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0LjU0NDk5OTgzNzc0MDQ4LCA4LjY2MjQ5OTY5MDc0Mjk5KSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDBMMy4xMzUgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTgiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDguMzAyNDk5NzAzNTk1MjMsIDguNjM5OTk5NjkxNTQ2MjUpIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMC40OTkyIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMiIgZD0iTTAgMC4wMjI1TDMuODAyNSAwIiBzb2RpcG9kaTpub2RldHlwZXM9ImNjIi8+PHBhdGggaWQ9InNoYXBlOSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNC4yNzQ5OTk4NDczNzk2NiwgOS45Njc0OTk2NDQxNTM2MikiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIyIiBkPSJNMCAwTDMuMjQxMjUgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPjxwYXRoIGlkPSJzaGFwZTEwIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSg4LjgxOTk5OTY4NTEyMDE0LCA5Ljg3NzQ5OTY0NzM2NjY4KSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDBMMi45OTI1IDAiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz48cGF0aCBpZD0ic2hhcGUxMSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOC4xNDQ5OTk3MDkyMTgwOCwgNi45MDc0OTk3NTMzOTc2NikiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIwLjQ5OTIiIHN0cm9rZS1saW5lY2FwPSJzcXVhcmUiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIyIiBkPSJNMCAwTDAgNS4yNjUiIHNvZGlwb2RpOm5vZGV0eXBlcz0iY2MiLz48cGF0aCBpZD0ic2hhcGUxMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNS44OTQ5OTk3ODk1NDQ1OCwgMTIuMzk3NDk5NTU3NDAxKSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAuNDk5MiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIGQ9Ik0wIDEuNzc2MzZlLTE1TDUuNTEzNjUgMCIgc29kaXBvZGk6bm9kZXR5cGVzPSJjYyIvPgo8L3N2Zz4K";
-  
+
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
       "File System Access API cannot run on sandboxed mode.\nPlease disable the sandbox when loading the extension."
     );
   }
-
   if (app.hasFSAccess) {
     if (isdevbranch) {
       alert(
@@ -134,11 +135,9 @@
     );
     if (!QuitLoadingExt) throw new Error("User cancelled extension loading.");
   }
-
   let LoadedExtensions = JSON.stringify(
     Array.from(Scratch.vm.extensionManager._loadedExtensions.keys())
   );
-
   if (!LoadedExtensions.includes("skyhigh173JSON"))
     if (
       confirm(
@@ -150,8 +149,6 @@
         .then(() => {
           alert("Imported JSON extension by Skyhigh173.");
         });
-
-
   class fsaapi98396 {
     /**
      * Imported code for later use.
@@ -473,6 +470,7 @@
         let output;
         let storefd;
         let fileHandle;
+        output = outputSlotMapping[args.NAME];
         //Set current slot
         writeFail = false;
         console.log(output);
@@ -482,17 +480,7 @@
             startIn: args.LOC,
             mode: "readwrite",
           });
-          if (args.NAME == "Slot 1") {
-            fileHandle1 = fileHandle;
-          } else if (args.NAME == "Slot 2") {
-            fileHandle2 = fileHandle;
-          } else if (args.NAME == "Slot 3") {
-            fileHandle3 = fileHandle;
-          } else if (args.NAME == "Slot 4") {
-            fileHandle4 = fileHandle;
-          } else if (args.NAME == "Slot 5") {
-            fileHandle5 = fileHandle;
-          }
+          handleSlotMapping[args.NAME] = fileHandle;
           const file = await fileHandle.getFile();
           if (file.type === "") {
             NoBlankFileType = "unknown";
@@ -519,24 +507,8 @@
             }
           }
           storefd = file;
-          if (args.NAME == "Slot 1") {
-            storefd1 = storefd;
-            output1 = output;
-          } else if (args.NAME == "Slot 2") {
-            storefd2 = storefd;
-            output2 = output;
-          } else if (args.NAME == "Slot 3") {
-            storefd3 = storefd;
-            output3 = output;
-          } else if (args.NAME == "Slot 4") {
-            storefd4 = storefd;
-            output4 = output;
-          } else if (args.NAME == "Slot 5") {
-            storefd5 = storefd;
-            output5 = output;
-          }
-        } else {
-          console.error("Could not prompt, check user input and try again.");
+          outputSlotMapping[args.NAME] = output;
+          storefdSlotMapping[args.NAME] = storefd;
         }
       } catch (error) {
         writeFail = true;
@@ -546,37 +518,13 @@
     async getOpenedFileData(args) {
       let fileHandle;
       let storefd;
-      if (args.NAME == "Slot 1") {
-        fileHandle = fileHandle1;
-        storefd = storefd1;
-      } else if (args.NAME == "Slot 2") {
-        fileHandle = fileHandle2;
-        storefd = storefd2;
-      } else if (args.NAME == "Slot 3") {
-        fileHandle = fileHandle3;
-        storefd = storefd3;
-      } else if (args.NAME == "Slot 4") {
-        fileHandle = fileHandle4;
-        storefd = storefd4;
-      } else if (args.NAME == "Slot 5") {
-        fileHandle = fileHandle5;
-        storefd = storefd5;
-      }
+      storefd = storefdSlotMapping[args.NAME];
+      fileHandle = handleSlotMapping[args.NAME];    
       if (!storefd) return "";
       try {
         const file = await fileHandle.getFile(); // Re-acquire the file after writing
         storefd = file;
-        if (args.NAME == "Slot 1") {
-          storefd1 = storefd;
-        } else if (args.NAME == "Slot 2") {
-          storefd2 = storefd;
-        } else if (args.NAME == "Slot 3") {
-          storefd3 = storefd;
-        } else if (args.NAME == "Slot 4") {
-          storefd4 = storefd;
-        } else if (args.NAME == "Slot 5") {
-          storefd5 = storefd;
-        }
+        storefdSlotMapping[args.NAME] = storefd;
         if (args.TYPE === "arrayBuffer") {
           const arrayBuffer = await file.arrayBuffer();
           const uint8Array = new Uint8Array(arrayBuffer);
@@ -588,7 +536,6 @@
           const decoder = new TextDecoder();
           let StreamOutResult = "";
           const chunkSize = 1024;
-
           async function readChunks() {
             while (true) {
               const { done, value } = await streamReader.read();
@@ -602,7 +549,6 @@
               }
             }
           }
-
           return await readChunks();
         } else {
           console.error("Invalid type specified");
@@ -614,56 +560,19 @@
     } //arch btw
     getFileHandles(args) {
       let output;
-      if (args.NAME == "Slot 1") {
-        output = output1;
-      } else if (args.NAME == "Slot 2") {
-        output = output2;
-      } else if (args.NAME == "Slot 3") {
-        output = output3;
-      } else if (args.NAME == "Slot 4") {
-        output = output4;
-      } else if (args.NAME == "Slot 5") {
-        output = output5;
-      } else {
-        console.error("Not a slot.");
-      }
+      output = outputSlotMapping[args.NAME];
       return output;
     }
     outputCheck(args) {
       let output;
-      if (args.NAME == "Slot 1") {
-        output = output1;
-      } else if (args.NAME == "Slot 2") {
-        output = output2;
-      } else if (args.NAME == "Slot 3") {
-        output = output3;
-      } else if (args.NAME == "Slot 4") {
-        output = output4;
-      } else if (args.NAME == "Slot 5") {
-        output = output5;
-      } else {
-        console.error("Not a slot.");
-      }
-      return output === "";
+      output = outputSlotMapping[args.NAME];
+      console.log(output)
+      return output !== "";
     }
     async writeSingleFile(args) {
       let fileHandle, storefd; //L e a r n i n g
-      if (args.NAME == "Slot 1") {
-        fileHandle = fileHandle1;
-        storefd = storefd1;
-      } else if (args.NAME == "Slot 2") {
-        fileHandle = fileHandle2;
-        storefd = storefd2;
-      } else if (args.NAME == "Slot 3") {
-        fileHandle = fileHandle3;
-        storefd = storefd3;
-      } else if (args.NAME == "Slot 4") {
-        fileHandle = fileHandle4;
-        storefd = storefd4;
-      } else if (args.NAME == "Slot 5") {
-        fileHandle = fileHandle5;
-        storefd = storefd5;
-      }
+  storefd = storefdSlotMapping[args.NAME];
+  fileHandle = handleSlotMapping[args.NAME];
       if (fileHandle) {
         try {
           const writable = await fileHandle.createWritable();
@@ -671,17 +580,7 @@
           await writable.close();
           console.log("File written successfully");
           storefd = await fileHandle.getFile(); // Re-acquire the file handle after writing
-          if (args.NAME == "Slot 1") {
-            storefd1 = storefd;
-          } else if (args.NAME == "Slot 2") {
-            storefd2 = storefd;
-          } else if (args.NAME == "Slot 3") {
-            storefd3 = storefd;
-          } else if (args.NAME == "Slot 4") {
-            storefd4 = storefd;
-          } else if (args.NAME == "Slot 5") {
-            storefd5 = storefd;
-          }
+          storefdSlotMapping[args.NAME] = storefd;
         } catch (error) {
           console.error("Error writing to file:", error);
           console.error("Error writing to file");
@@ -691,52 +590,10 @@
       }
     }
     closeSingleFile(args) {
-      if (args.NAME == "Slot 1") {
-        if (fileHandle1) {
-          fileHandle1 = "";
-          storefd1 = "";
-          output1 = "";
-          console.log("File closed successfully");
-        } else {
-          console.error("No file to close!");
-        }
-      } else if (args.NAME == "Slot 2") {
-        if (fileHandle2) {
-          fileHandle2 = "";
-          storefd2 = "";
-          output2 = "";
-          console.log("File closed successfully");
-        } else {
-          console.error("No file to close!");
-        }
-      } else if (args.NAME == "Slot 3") {
-        if (fileHandle3) {
-          fileHandle3 = "";
-          storefd3 = "";
-          output3 = "";
-          console.log("File closed successfully");
-        } else {
-          console.error("No file to close!");
-        }
-      } else if (args.NAME == "Slot 4") {
-        if (fileHandle4) {
-          fileHandle4 = "";
-          storefd4 = "";
-          output4 = "";
-          console.log("File closed successfully");
-        } else {
-          console.error("No file to close!");
-        }
-      } else if (args.NAME == "Slot 5") {
-        if (fileHandle5) {
-          fileHandle5 = "";
-          storefd5 = "";
-          output5 = "";
-          console.log("File closed successfully");
-        } else {
-          console.error("No file to close!");
-        }
-      }
+      outputSlotMapping[args.NAME] = '';
+      storefdSlotMapping[args.NAME] = '';
+      handleSlotMapping[args.NAME] = '';
+
     }
     writeAccessFailCheck() {
       return writeFail;
