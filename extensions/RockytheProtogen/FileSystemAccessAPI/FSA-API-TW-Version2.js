@@ -4,78 +4,153 @@
 // By: Rocky the Protogen
 // License: GNU-GPL3
 
-(function(Scratch) {
+(async function(Scratch) {
     'use strict';
 
     //Define global varaibles
 
     /* File Info */
-    let fileHandle1, fileHandle2, fileHandle3, fileHandle4, fileHandle5;
-    let fimetadata1, fimetadata2, fimetadata3, fimetadata4, fimetadata5;
+    let fileHandle1 = '', fileHandle2 = '', fileHandle3 = '', fileHandle4 = '', fileHandle5 = '';
+    let fimetadata1 = '', fimetadata2 = '', fimetadata3 = '', fimetadata4 = '', fimetadata5 = '';
 
     /* Folder Info */
-    let folderHandle1, folderHandle2, folderHandle3, folderHandle4, folderHandle5;
-    let fometadata1, fometadata2, fometadata3, fometadata4, fometadata5;
+    let folderHandle1 = '', folderHandle2 = '', folderHandle3 = '', folderHandle4 = '', folderHandle5 = '';
+    let fometadata1 = '', fometadata2 = '', fometadata3 = '', fometadata4 = '', fometadata5 = '';
 
     //Define global const
     const app = {hasFSAccess: "chooseFileSystemEntries" in window || "showOpenFilePicker" in window};
     const bt = {reporter: Scratch.BlockType.REPORTER, boolean: Scratch.BlockType.BOOLEAN, command: Scratch.BlockType.COMMAND, label: Scratch.BlockType.LABEL, button: Scratch.BlockType.BUTTON}
-    const conv = Scratch.Cast()
-    const lo = console.log()
-    const te = console.error()
+    const conv = new Scratch.Cast()
+    const cs = console
 
-    const argtype = Scratch.ArgumentType.STRING
-    const fislotmenu = [1,2,3,4,5]
+    const argt = Scratch.ArgumentType.STRING
+    const fislotmenu = ['1','2','3','4','5']
     const fislot = {1: {file: fileHandle1, metadata: fimetadata1},2: {file: fileHandle2, metadata: fimetadata2},3: {file: fileHandle3, metadata: fimetadata3},4: {file: fileHandle4, metadata: fimetadata4},5: {file: fileHandle5, metadata: fimetadata5}}
-    const foslot = {1: {file: folderHandle1, fometadata1},2: {file: folderHandle2, fometadata2},3: {file: folderHandle3, fometadata3},4: {file: folderHandle4, fometadata4},5: {file: folderHandle5, fometadata5}}
+    const foslot = {1: {file: folderHandle1,metadata: fometadata1},2: {file: folderHandle2,metadata: fometadata2},3: {file: folderHandle3,metadata: fometadata3},4: {file: folderHandle4,metadata: fometadata4},5: {file: folderHandle5,metadata: fometadata5}}
 
     //Checks
-    if (!Scratch.extensions.unsandboxed) throw new Error('<Extension Name> must run unsandboxed');
+    if (!Scratch.extensions.unsandboxed) throw new Error('File System Access API must run unsandboxed');
+    if (!app.hasFSAccess) alert('Browser is incompatible: API not found.\nBlocks will not function.');
 
+    //Check extensions
+    let LoadedExtensions = JSON.stringify(Array.from(Scratch.vm.extensionManager._loadedExtensions.keys()));    
 
     //WOAH
     // 2 Classes? Yes!
     // Why? Separation.
-    // Doesn't say I can't... so I will
-
+    // Or, more specifically, to help the user recognise functions more easily.
+    // Doesn't say I can't... so I will.
     class files {
-        //Variables
         getInfo() {
           return {
             id: 'filesystemaccessapiv2files',
-            name: 'File System Access Files',
+            name: 'FSA Files',
             blocks: [
               {
-                opcode: 'OpenFile',
+                opcode: 'openFile',
                 blockType: bt.command,
-                text: 'Open a file'
-              }
-            ]
+                text: 'In FILE slot [num] open a file',
+                arguments: {
+                    num: {
+                        type: argt,
+                        menu: 'num'
+                    }
+                }
+              },
+              {
+                opcode: 'cancel',
+                blockType: bt.command,
+                text: 'Empty FILE slot [num]',
+                arguments: {
+                    num: {
+                        type: argt,
+                        menu: 'num'
+                    }
+                }
+              },
+              '---',
+              {
+                opcode: 'metadata',
+                blockType: bt.reporter,
+                text: 'FILE slot [num]\'s metadata',
+                arguments: {
+                    num: {
+                        type: argt,
+                        menu: 'num'
+                    }
+                }
+              },
+    ],
+            menus: {
+                num: {
+                    acceptReporters: true,
+                    items: fislotmenu
+                }
+            }
           };
         }
         //Functions
+        async openFile(args) { //Shows the file picker and gets file information.
+            const slot = fislot[args.num];
+            try {
+                if ((slot.file == '') && (slot.metadata == '')) {
+                    [slot.file] = await window.showOpenFilePicker()
+                    cs.log(slot.file)
+                    slot.metadata = await slot.file.getFile()
+                    cs.log(slot.metadata)
+                    if (slot.metadata.size >= 25000000) if (!confirm('This file exceeds 25 MB and could cause problems.\nIf you wish to continue, press OK.\nOtherwise, press cancel.')) await this.cancel(slot).then(cs.error('User has quit import.'));
+                }
+            } catch (err) {
+                cs.error('\nFailed to open.\n\nDetails:\n' + err)
+                return 'Failed to open.\nDetails:\n' + err;
+            }
+        }
 
+        metadata(args) {
+            const slot = fislot[args.num];
+            return JSON.stringify({name: slot.metadata.name,lastModified: slot.metadata.lastModified,lastModifiedDate: slot.metadata.lastModifiedDate,webkitRelativePath: slot.metadata.webkitRelativePath,size: slot.metadata.size,type: slot.metadata.type});
+        }
+
+        cancel(args,CurrentSlot) {
+            function recogslot(Block,Func) {if (!Block) {return Func} else {return fislot[Block]}}
+            const slot = recogslot(args.num,CurrentSlot)
+            slot.file = '';
+            slot.metadata = '';
+        }
       }
-  
+
 
     class folders {
       getInfo() {
         return {
           id: 'filesystemaccessapiv2folders',
-          name: 'File System Access Folders',
+          name: 'FSA Folders',
           blocks: [
             {
-              opcode: 'OpenFolder',
-              blockType: bt.command,
-              text: 'Open a Folder'
+                opcode: 'openFolder',
+                blockType: bt.command,
+                text: 'In FOLDER slot [num] open a folder',
+                arguments: {
+                    num: {
+                        type: argt,
+                        menu: 'num'
+                    }
+                }
+              }
+            ],
+            menus: {
+                num: {
+                    acceptReporters: true,
+                    items: fislotmenu
+                }
             }
-          ]
-        };
-      }
+      };
       //Functions
+    }
     }
 
     try {
+        if (!LoadedExtensions.includes("skyhigh173JSON")) Scratch.vm.extensionManager.loadExtensionURL("https://extensions.turbowarp.org/Skyhigh173/json.js")
         Scratch.extensions.register(new files())
         Scratch.extensions.register(new folders())
     } catch (err) {
