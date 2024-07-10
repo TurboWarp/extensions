@@ -92,7 +92,8 @@
     unsupportedBrowser = false,
     mayOpenFilePicker = false,
     mayOpenFolderPicker = false,
-    NoBlankFileType;
+    NoBlankFileType,
+    isdevbranch = false;
 
   //initIcon
   const FolderIcon =
@@ -107,9 +108,12 @@
   }
 
   if (app.hasFSAccess) {
-    alert(
-      "🛠️   This extension is in development   🛠️\nTo prevent data loss, avoid using this on personal files or folders."
-    );
+    if (isdevbranch) {
+      alert(
+        "🛠️   This extension is in development   🛠️\nTo prevent data loss, avoid using this on personal files or folders."
+      );
+    }
+
     console.log("Browser supports FSAAPI.");
   } else {
     unsupportedBrowser = true;
