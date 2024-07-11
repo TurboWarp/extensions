@@ -23,6 +23,7 @@
     fimetadata5 = "";
 
   /* Folder Info */
+  /*
   let folderHandle1 = "",
     folderHandle2 = "",
     folderHandle3 = "",
@@ -33,6 +34,7 @@
     fometadata3 = "",
     fometadata4 = "",
     fometadata5 = "";
+    */
 
   //Define global const
   const app = {
@@ -48,7 +50,6 @@
   };
   const j = JSON;
   const cs = console;
-  const idb = window.indexedDB;
 
   const argt = Scratch.ArgumentType.STRING;
   const fislotmenu = ["1", "2", "3", "4", "5"];
@@ -59,6 +60,7 @@
     4: { file: fileHandle4, metadata: fimetadata4 },
     5: { file: fileHandle5, metadata: fimetadata5 },
   };
+  /*
   const foslot = {
     1: { file: folderHandle1, metadata: fometadata1 },
     2: { file: folderHandle2, metadata: fometadata2 },
@@ -66,6 +68,7 @@
     4: { file: folderHandle4, metadata: fometadata4 },
     5: { file: folderHandle5, metadata: fometadata5 },
   };
+  */
 
   //Checks
   if (!Scratch.extensions.unsandboxed)
@@ -128,22 +131,24 @@
             blockType: bt.reporter,
             text: "Read FILE slot [num] with method [TYPE]",
             arguments: {
-              num: {
-                type: argt,
-                menu: "num",
-              },
-              TYPE: {
-                type: argt,
-                menu: "methods",
-              },
+              num: { type: argt, menu: "num" },
+              TYPE: { type: argt, menu: "methods" },
+            },
+          },
+          {
+            opcode: "store",
+            blockType: bt.command,
+            text: "[ss] > slot ([num]) <> store ([name])",
+            arguments: {
+              num: { type: argt, menu: "num" },
+              name: { type: argt },
+              ss: { type: argt, menu: "ss" },
             },
           },
         ],
         menus: {
-          num: {
-            acceptReporters: true,
-            items: fislotmenu,
-          },
+          ss: { acceptReporters: true, items: ["Push", "Pull"] },
+          num: { acceptReporters: true, items: fislotmenu },
           methods: {
             acceptReporters: true,
             items: ["stream", "arrayBuffer", "text", "slice"],
@@ -151,9 +156,7 @@
         },
       };
     }
-    //Functions
     async openFile(args) {
-      //Shows the file picker and gets file information.
       const slot = fislot[args.num];
       try {
         if (slot.file == "" && slot.metadata == "") {
@@ -161,7 +164,7 @@
           cs.log(slot.file);
           slot.metadata = await slot.file.getFile();
           cs.log(slot.metadata);
-          if (slot.metadata.size >= 75000000) {
+          if (slot.metadata.size >= 750000000) {
             await this.cancel(slot);
             alert("File exceeds 750 MB and will not be loaded.");
             cs.error(
@@ -183,7 +186,6 @@
         return "Failed to open.\nDetails:\n" + err;
       }
     }
-
     metadata(args) {
       const slot = fislot[args.num];
       return j.stringify({
@@ -195,7 +197,6 @@
         type: slot.metadata.type,
       });
     }
-
     cancel(args) {
       try {
         function recogslot(Block, Func) {
@@ -212,7 +213,6 @@
         cs.error(err);
       }
     }
-
     async getData(args) {
       try {
         const slot = fislot[args.num];
@@ -226,7 +226,6 @@
           const chunkSize = 1024;
           const decoder = new TextDecoder();
           const chunks = [];
-
           async function readChunks() {
             while (true) {
               const { done, value } = await streamReader.read();
@@ -243,6 +242,104 @@
         }
       } catch (err) {
         cs.error("File Read Error:\n" + err);
+      }
+    }
+    async store(args) {
+      const slot = fislot[args.num];
+      const storeName = args.name;
+      async function openDatabase(storeName) {
+        return await new Promise((resolve, reject) => {
+          const dbRequest = window.indexedDB.open("fileHandleStore", 3);
+          dbRequest.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (db.objectStoreNames.contains(storeName)) {
+              db.deleteObjectStore(storeName);
+            }
+            db.createObjectStore(storeName, {
+              keyPath: "id",
+              autoIncrement: true,
+            });
+          };
+          dbRequest.onsuccess = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(storeName)) {
+              db.close();
+              const newVersion = db.version + 1;
+              const upgradeRequest = window.indexedDB.open(
+                "fileHandleStore",
+                newVersion
+              );
+              upgradeRequest.onupgradeneeded = (event) => {
+                const upgradeDb = event.target.result;
+                if (upgradeDb.objectStoreNames.contains(storeName)) {
+                  upgradeDb.deleteObjectStore(storeName);
+                }
+                upgradeDb.createObjectStore(storeName, {
+                  keyPath: "id",
+                  autoIncrement: true,
+                });
+              };
+              upgradeRequest.onsuccess = (event) => {
+                resolve(event.target.result);
+              };
+              upgradeRequest.onerror = (event) => {
+                reject(new Error("Database upgrade failed"));
+              };
+            } else {
+              resolve(db);
+            }
+          };
+          dbRequest.onerror = (event) => {
+            reject(new Error("Database open failed"));
+          };
+        });
+      }
+      async function storeData(db, slotData, storeName) {
+        return await new Promise((resolve, reject) => {
+          const transaction = db.transaction(storeName, "readwrite");
+          const store = transaction.objectStore(storeName);
+          const request = store.add({ slotData });
+          request.onsuccess = () => {
+            resolve("Data stored successfully");
+          };
+          request.onerror = (event) => {
+            reject(new Error("Transaction failed"));
+          };
+        });
+      }
+      async function loadData(db, storeName) {
+        return await new Promise((resolve, reject) => {
+          const transaction = db.transaction(storeName, "readonly");
+          const store = transaction.objectStore(storeName);
+          const request = store.getAll();
+          request.onsuccess = () => {
+            resolve(request.result[0].slotData);
+          };
+          request.onerror = (event) => {
+            reject(new Error("Failed to load data"));
+          };
+        });
+      }
+      try {
+        const db = await openDatabase(storeName);
+        console.log("Database opened successfully");
+        switch (args.ss) {
+          case "Push": {
+            const storeMessage = await storeData(db, slot, storeName);
+            console.log(storeMessage);
+            break;
+          }
+          case "Pull": {
+            const data = await loadData(db, storeName);
+            fislot[args.num] = data
+            console.log("Data loaded successfully", data);
+            break;
+          }
+          default:
+            console.error("Unknown operation:", args.ss);
+        }
+      } catch (err) {
+        console.error("Operation failed:", err);
       }
     }
   }
