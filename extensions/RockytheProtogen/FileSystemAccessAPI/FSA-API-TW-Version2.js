@@ -15,8 +15,8 @@
     fileHandle2 = "",
     fileHandle3 = "",
     fileHandle4 = "",
-    fileHandle5 = "";
-  let fimetadata1 = "",
+    fileHandle5 = "",
+    fimetadata1 = "",
     fimetadata2 = "",
     fimetadata3 = "",
     fimetadata4 = "",
@@ -27,8 +27,8 @@
     folderHandle2 = "",
     folderHandle3 = "",
     folderHandle4 = "",
-    folderHandle5 = "";
-  let fometadata1 = "",
+    folderHandle5 = "",
+    fometadata1 = "",
     fometadata2 = "",
     fometadata3 = "",
     fometadata4 = "",
@@ -46,7 +46,7 @@
     label: Scratch.BlockType.LABEL,
     button: Scratch.BlockType.BUTTON,
   };
-  const conv = new Scratch.Cast();
+  const j = JSON
   const cs = console;
   const idb = window.indexedDB;
 
@@ -74,7 +74,7 @@
     alert("Browser is incompatible: API not found.\nBlocks will not function.");
 
   //Check extensions
-  let LoadedExtensions = JSON.stringify(
+  let LoadedExtensions = j.stringify(
     Array.from(Scratch.vm.extensionManager._loadedExtensions.keys())
   );
 
@@ -177,7 +177,7 @@
 
     metadata(args) {
       const slot = fislot[args.num];
-      return JSON.stringify({
+      return j.stringify({
         name: slot.metadata.name,
         lastModified: slot.metadata.lastModified,
         lastModifiedDate: slot.metadata.lastModifiedDate,
@@ -201,11 +201,16 @@
     }
 
     async getData(args) {
-      const slot = fislot[args.num];
+        const slot = fislot[args.num];
+        slot.metadata = await slot.file.getFile()
+        if (args.TYPE == "text") {
+            return slot.metadata.text();
+        }
+      
     }
   }
 
-  class folders {
+    class folders {
     getInfo() {
       return {
         id: "filesystemaccessapiv2folders",
@@ -232,7 +237,7 @@
       };
       //Functions
     }
-  }
+    }
 
   if (!LoadedExtensions.includes("skyhigh173JSON"))
     Scratch.vm.extensionManager.loadExtensionURL(
@@ -241,13 +246,13 @@
   try {
     Scratch.extensions
       .register(new files())
-      .then(
-        cs.log("File System Access API files module successfully registered.")
-      );
     Scratch.extensions
       .register(new folders())
-      .then(cs.log("File System Access API folders successfully registered."));
+
   } catch (err) {
+    cs.error(
+        "Failed to load a module!\nPlease report this issue.\nDetails:\n" + err
+    )
     alert(
       "Failed to load a module!\nPlease report this issue.\nDetails:\n" + err
     );
