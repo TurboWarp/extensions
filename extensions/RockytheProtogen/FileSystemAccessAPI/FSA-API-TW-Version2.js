@@ -86,13 +86,13 @@
             {
                 opcode: 'getData',
                 blockType: bt.reporter,
-                text: 'Read FILE slot [num] with method [type]',
+                text: 'Read FILE slot [num] with method [TYPE]',
                 arguments: {
                     num: {
                         type: argt,
                         menu: 'num'
                     },
-                    type: {
+                    TYPE: {
                         type: argt,
                         menu: 'methods'
                     }
@@ -106,14 +106,13 @@
                 },
                 methods: {
                     acceptReporters: true,
-                    items: ['stream','arrayBuffer','text']
+                    items: ['stream','arrayBuffer','text','slice']
                 }
             }
           };
         }
         //Functions
         async openFile(args) { //Shows the file picker and gets file information.
-            ToasterUi.addToast("This is a toast");
             const slot = fislot[args.num];
             try {
                 if ((slot.file == '') && (slot.metadata == '')) {
@@ -143,13 +142,8 @@
 
         async getData(args) {
             const slot = fislot[args.num];
-
-            const ab = (async() => {const arrayBuffer = await slot.file.arrayBuffer();const uint8Array = new Uint8Array(arrayBuffer);return "[" + Array.from(uint8Array).toString() + "]";})
-            const s = (async() =>{const streamReader = slot.file.stream().getReader();const decoder = new TextDecoder();let StreamOutResult = "";const chunkSize = 1024;async function readChunks() {while (true) {const { done, value } = await streamReader.read();if (done) {console.log("Stream reading complete.");return StreamOutResult;}StreamOutResult += decoder.decode(value, { stream: true });if (value.length >= chunkSize) {await new Promise((resolve) => setTimeout(resolve, 5));}}}return await readChunks();})
-            if (!slot.metadata) return "";
-            try {if (args.TYPE === "arrayBuffer") {return await ab;} else if (args.TYPE === "text") {return await slot.file.text();} else if (args.TYPE === "stream") {return await s;} else {console.error("Invalid type specified");}} catch (error) {console.error("Error reading file:", error);console.error("Error reading file");}
         }
-    }
+}
 
 
     class folders {
