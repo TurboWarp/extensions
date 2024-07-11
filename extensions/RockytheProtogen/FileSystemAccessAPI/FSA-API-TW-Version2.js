@@ -46,7 +46,7 @@
     label: Scratch.BlockType.LABEL,
     button: Scratch.BlockType.BUTTON,
   };
-  const j = JSON
+  const j = JSON;
   const cs = console;
   const idb = window.indexedDB;
 
@@ -201,16 +201,17 @@
     }
 
     async getData(args) {
-        const slot = fislot[args.num];
-        slot.metadata = await slot.file.getFile()
-        if (args.TYPE == "text") {
-            return slot.metadata.text();
-        }
-      
+      const slot = fislot[args.num];
+      slot.metadata = await slot.file.getFile();
+      if (args.TYPE == "text") {
+        return await slot.metadata.text();
+      } else if (args.TYPE == "arrayBuffer") {
+        return new Int8Array(await slot.metadata.arrayBuffer()).toString();
+      }
     }
   }
 
-    class folders {
+  class folders {
     getInfo() {
       return {
         id: "filesystemaccessapiv2folders",
@@ -237,22 +238,19 @@
       };
       //Functions
     }
-    }
+  }
 
   if (!LoadedExtensions.includes("skyhigh173JSON"))
     Scratch.vm.extensionManager.loadExtensionURL(
       "https://extensions.turbowarp.org/Skyhigh173/json.js"
     );
   try {
-    Scratch.extensions
-      .register(new files())
-    Scratch.extensions
-      .register(new folders())
-
+    Scratch.extensions.register(new files());
+    Scratch.extensions.register(new folders());
   } catch (err) {
     cs.error(
-        "Failed to load a module!\nPlease report this issue.\nDetails:\n" + err
-    )
+      "Failed to load a module!\nPlease report this issue.\nDetails:\n" + err
+    );
     alert(
       "Failed to load a module!\nPlease report this issue.\nDetails:\n" + err
     );
