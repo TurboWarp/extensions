@@ -138,23 +138,35 @@
               TYPE: { type: argt, menu: "methods" },
             },
           },
+          {opcode: "memWrite", blockType: bt.command, text: 'Write [in] as [type] to file slot [num] in memory', arguments: {in:{type: argt}, type:{type: argt, menu: 'wmethods'}, num:{type: argt, menu: 'num'}}},
+          {opcode: 'memPush', blockType: bt.command, text: 'Push changes of [num] to disk', arguments: {num: {type: argt, menu: 'num'}}},
+          '---',
+          {
+            blockType: bt.label,
+            text: 'Advanced File Blocks'
+          },
           {
             opcode: "store",
             blockType: bt.command,
-            text: "[ss] > slot ([num]) <> store ([name])",
+            text: "[ss] => slot ([num]) <=> store ([name])",
             arguments: {
               num: { type: argt, menu: "num" },
               name: { type: argt },
               ss: { type: argt, menu: "ss" },
             },
           },
+          '---',
         ],
         menus: {
           ss: { acceptReporters: true, items: ["Push", "Pull"] },
           num: { acceptReporters: true, items: fislotmenu },
           methods: {
             acceptReporters: true,
-            items: ["stream", "arrayBuffer", "text", "slice"],
+            items: ["stream", "arrayBuffer", "text"],
+          },
+          wmethods: {
+            acceptReporters: true,
+            items: ["arrayBuffer", "text"],
           },
         },
       };
@@ -325,36 +337,48 @@
       }
       try {
         const db = await openDatabase(storeName);
-        console.log("Database opened successfully");
+        cs.log("Database opened successfully");
         switch (args.ss) {
           case "Push": {
             const storeMessage = await storeData(db, slot, storeName);
-            console.log(storeMessage);
+            cs.log(storeMessage);
             break;
           }
           case "Pull": {
             const data = await loadData(db, storeName);
             fislot[args.num] = data
-            console.log("Data loaded successfully", data);
+            cs.log("Data loaded successfully", data);
             break;
           }
           default:
-            console.error("Unknown operation:", args.ss);
+            cs.error("Unknown operation:", args.ss);
         }
       } catch (err) {
-        console.error("Operation failed:", err);
+        cs.error("Operation failed:", err);
       }
     }
     async memWrite(args) {
-        if () {
-            const slot = fislot[args.num];
-            slot.commits[Object.keys(slot.commits).length + 1] = args.in
-        } else if () {
-            slot.commits[Object.keys(slot.commits).length + 1] = new TextDecoder("utf-8").decode(new Uint8Array(args.in));
+        const slot = fislot[args.num];
+        const type = args.type
+        if (args.type == 'text') {
+            slot.commits[Object.keys(slot.commits).length + 1] = {text: args.in, type: type}
+        } else if (args.type == 'arrayBuffer') {
+            cs.warn("Don't use arrayBuffer yet!")
+            //slot.commits[Object.keys(slot.commits).length + 1] = 
+        } else {
+            cs.error('Invalid method.')
         }
     cs.log(slot.commits)
     }
-  }
+    async memPush (args) {
+        const slot = fislot[args.num]
+        for (let [key, value] of Object.entries(slot.commits)) {
+
+            console.log(key, value);
+        }
+        slot.commits = {}
+    }
+}
 
   class folders {
     getInfo() {
