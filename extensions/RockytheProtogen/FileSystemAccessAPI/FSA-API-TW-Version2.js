@@ -207,9 +207,31 @@
         return await slot.metadata.text();
       } else if (args.TYPE == "arrayBuffer") {
         return new Int8Array(await slot.metadata.arrayBuffer()).toString();
-      }
+      } else if (args.TYPE == 'stream') {
+
+        const streamReader = slot.metadata.stream().getReader();
+
+        let StreamOutResult = "";
+        const chunkSize = 1024;
+        const decoder = new TextDecoder();
+        
+        async function readChunks() {
+            while (true) {
+                const { done, value } = await streamReader.read();
+                if (done) {
+                    console.log("Stream reading complete.");
+                    return StreamOutResult;
+                }
+                StreamOutResult += decoder.decode(value, { stream: true });
+                if (value.length >= chunkSize) {
+                    await new Promise((resolve) => setTimeout(resolve, 5));
+                }
+            }
+        }
+        
+        readChunks().then(result => console.log("Final result:", result));
     }
-  }
+}
 
   class folders {
     getInfo() {
