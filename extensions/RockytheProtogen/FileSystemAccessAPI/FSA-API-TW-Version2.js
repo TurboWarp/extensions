@@ -36,6 +36,9 @@
     fometadata5 = "";
     */
 
+  /* MEMORY ACTIONS */
+   let fileCommit1 = {}, fileCommit2 = {}, fileCommit3 = {}, fileCommit4 = {}, fileCommit5 = {};
+
   //Define global const
   const app = {
     hasFSAccess:
@@ -54,11 +57,11 @@
   const argt = Scratch.ArgumentType.STRING;
   const fislotmenu = ["1", "2", "3", "4", "5"];
   const fislot = {
-    1: { file: fileHandle1, metadata: fimetadata1 },
-    2: { file: fileHandle2, metadata: fimetadata2 },
-    3: { file: fileHandle3, metadata: fimetadata3 },
-    4: { file: fileHandle4, metadata: fimetadata4 },
-    5: { file: fileHandle5, metadata: fimetadata5 },
+    1: { file: fileHandle1, metadata: fimetadata1, commits: fileCommit1 },
+    2: { file: fileHandle2, metadata: fimetadata2, commits: fileCommit2 },
+    3: { file: fileHandle3, metadata: fimetadata3, commits: fileCommit3 },
+    4: { file: fileHandle4, metadata: fimetadata4, commits: fileCommit4 },
+    5: { file: fileHandle5, metadata: fimetadata5, commits: fileCommit5 },
   };
   /*
   const foslot = {
@@ -341,6 +344,15 @@
       } catch (err) {
         console.error("Operation failed:", err);
       }
+    }
+    async memWrite(args) {
+        if () {
+            const slot = fislot[args.num];
+            slot.commits[Object.keys(slot.commits).length + 1] = args.in
+        } else if () {
+            slot.commits[Object.keys(slot.commits).length + 1] = new TextDecoder("utf-8").decode(new Uint8Array(args.in));
+        }
+    cs.log(slot.commits)
     }
   }
 
