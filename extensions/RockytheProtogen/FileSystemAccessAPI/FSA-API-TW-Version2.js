@@ -162,9 +162,11 @@
           slot.metadata = await slot.file.getFile();
           cs.log(slot.metadata);
           if (slot.metadata.size >= 75000000) {
-            await this.cancel(slot)
-            alert("File exceeds 750 MB and will not be loaded.")
-            cs.error("File to large! Please choose a file that does not exceed 750 MB.");
+            await this.cancel(slot);
+            alert("File exceeds 750 MB and will not be loaded.");
+            cs.error(
+              "File to large! Please choose a file that does not exceed 750 MB."
+            );
           }
           if (slot.metadata.size >= 25000000)
             if (
@@ -172,8 +174,8 @@
                 "This file exceeds 25 MB and could cause problems.\nIf you wish to continue, press OK.\nOtherwise, press cancel."
               )
             ) {
-                await this.cancel(slot)
-                cs.error("User has quit import.");
+              await this.cancel(slot);
+              cs.error("User has quit import.");
             }
         }
       } catch (err) {
@@ -195,58 +197,55 @@
     }
 
     cancel(args) {
-        try {
-      function recogslot(Block, Func) {
-        if (!Block) {
-          return Func;
-        } else {
-          return fislot[Block];
+      try {
+        function recogslot(Block, Func) {
+          if (!Block) {
+            return Func;
+          } else {
+            return fislot[Block];
+          }
         }
+        const slot = recogslot(args.num, args);
+        slot.file = "";
+        slot.metadata = "";
+      } catch (err) {
+        cs.error(err);
       }
-      const slot = recogslot(args.num, args);
-      slot.file = "";
-      slot.metadata = "";
-    } catch (err) {
-        cs.error(err)
-    }
     }
 
     async getData(args) {
-        try {
-      const slot = fislot[args.num];
-      slot.metadata = await slot.file.getFile();
-      if (args.TYPE == "text") {
-        return await slot.metadata.text();
-      } else if (args.TYPE == "arrayBuffer") {
-        return new Int8Array(await slot.metadata.arrayBuffer()).toString();
-      } else if (args.TYPE == 'stream') {
+      try {
+        const slot = fislot[args.num];
+        slot.metadata = await slot.file.getFile();
+        if (args.TYPE == "text") {
+          return await slot.metadata.text();
+        } else if (args.TYPE == "arrayBuffer") {
+          return new Int8Array(await slot.metadata.arrayBuffer()).toString();
+        } else if (args.TYPE == "stream") {
+          const streamReader = slot.metadata.stream().getReader();
+          const chunkSize = 1024;
+          const decoder = new TextDecoder();
+          const chunks = [];
 
-        const streamReader = slot.metadata.stream().getReader();
-        const chunkSize = 1024;
-        const decoder = new TextDecoder();
-        const chunks = [];
-        
-        async function readChunks() {
+          async function readChunks() {
             while (true) {
-                const { done, value } = await streamReader.read();
-                if (done) {
-                    return chunks.join('');
-                }
-
-                chunks.push(decoder.decode(value, { stream: true }));
-
-                if (value.length >= chunkSize) {
-                    await new Promise((resolve) => setTimeout(resolve, 10));
-                }
+              const { done, value } = await streamReader.read();
+              if (done) {
+                return chunks.join("");
+              }
+              chunks.push(decoder.decode(value, { stream: true }));
+              if (value.length >= chunkSize) {
+                await new Promise((resolve) => setTimeout(resolve, 10));
+              }
             }
+          }
+          return await readChunks();
         }
-        return await readChunks()
+      } catch (err) {
+        cs.error("File Read Error:\n" + err);
+      }
     }
-        } catch (err) {
-            cs.error('File Read Error:\n' + err)
-        }
-    }
-}
+  }
 
   class folders {
     getInfo() {
