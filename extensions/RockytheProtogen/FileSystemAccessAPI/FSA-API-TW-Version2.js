@@ -161,13 +161,20 @@
           cs.log(slot.file);
           slot.metadata = await slot.file.getFile();
           cs.log(slot.metadata);
+          if (slot.metadata.size >= 75000000) {
+            await this.cancel(slot)
+            alert("File exceeds 750 MB and will not be loaded.")
+            cs.error("File to large! Please choose a file that does not exceed 750 MB.");
+          }
           if (slot.metadata.size >= 25000000)
             if (
               !confirm(
                 "This file exceeds 25 MB and could cause problems.\nIf you wish to continue, press OK.\nOtherwise, press cancel."
               )
-            )
-              await this.cancel(slot).then(cs.error("User has quit import."));
+            ) {
+                await this.cancel(slot)
+                cs.error("User has quit import.");
+            }
         }
       } catch (err) {
         cs.error("\nFailed to open.\n\nDetails:\n" + err);
@@ -187,7 +194,8 @@
       });
     }
 
-    cancel(args, CurrentSlot) {
+    cancel(args) {
+        try {
       function recogslot(Block, Func) {
         if (!Block) {
           return Func;
@@ -195,12 +203,16 @@
           return fislot[Block];
         }
       }
-      const slot = recogslot(args.num, CurrentSlot);
+      const slot = recogslot(args.num, args);
       slot.file = "";
       slot.metadata = "";
+    } catch (err) {
+        cs.error(err)
+    }
     }
 
     async getData(args) {
+        try {
       const slot = fislot[args.num];
       slot.metadata = await slot.file.getFile();
       if (args.TYPE == "text") {
@@ -210,26 +222,29 @@
       } else if (args.TYPE == 'stream') {
 
         const streamReader = slot.metadata.stream().getReader();
-
-        let StreamOutResult = "";
         const chunkSize = 1024;
         const decoder = new TextDecoder();
+        const chunks = [];
         
         async function readChunks() {
             while (true) {
                 const { done, value } = await streamReader.read();
                 if (done) {
-                    console.log("Stream reading complete.");
-                    return StreamOutResult;
+                    return chunks.join('');
                 }
-                StreamOutResult += decoder.decode(value, { stream: true });
+
+                chunks.push(decoder.decode(value, { stream: true }));
+
                 if (value.length >= chunkSize) {
-                    await new Promise((resolve) => setTimeout(resolve, 5));
+                    await new Promise((resolve) => setTimeout(resolve, 10));
                 }
             }
         }
-        
-        readChunks().then(result => console.log("Final result:", result));
+        return await readChunks()
+    }
+        } catch (err) {
+            cs.error('File Read Error:\n' + err)
+        }
     }
 }
 
