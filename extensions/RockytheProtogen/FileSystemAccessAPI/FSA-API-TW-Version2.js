@@ -4,8 +4,10 @@
 // By: Rocky the Protogen
 // License: GNU-GPL3
 
-(async function(Scratch) {
+
+(function(Scratch) { //for some reason this was async. Changed it back.
     'use strict';
+    //Imports
 
     //Define global varaibles
 
@@ -22,6 +24,9 @@
     const bt = {reporter: Scratch.BlockType.REPORTER, boolean: Scratch.BlockType.BOOLEAN, command: Scratch.BlockType.COMMAND, label: Scratch.BlockType.LABEL, button: Scratch.BlockType.BUTTON}
     const conv = new Scratch.Cast()
     const cs = console
+    const idb = window.indexedDB
+    //const toaster = require('toaster-ui');
+
 
     const argt = Scratch.ArgumentType.STRING
     const fislotmenu = ['1','2','3','4','5']
@@ -46,7 +51,7 @@
             id: 'filesystemaccessapiv2files',
             name: 'FSA Files',
             blocks: [
-              {
+            {
                 opcode: 'openFile',
                 blockType: bt.command,
                 text: 'In FILE slot [num] open a file',
@@ -56,8 +61,8 @@
                         menu: 'num'
                     }
                 }
-              },
-              {
+            },
+            {
                 opcode: 'cancel',
                 blockType: bt.command,
                 text: 'Empty FILE slot [num]',
@@ -67,9 +72,9 @@
                         menu: 'num'
                     }
                 }
-              },
+            },
               '---',
-              {
+            {
                 opcode: 'metadata',
                 blockType: bt.reporter,
                 text: 'FILE slot [num]\'s metadata',
@@ -79,18 +84,38 @@
                         menu: 'num'
                     }
                 }
-              },
-    ],
+            },
+            {
+                opcode: 'getData',
+                blockType: bt.reporter,
+                text: 'Read FILE slot [num] with method [type]',
+                arguments: {
+                    num: {
+                        type: argt,
+                        menu: 'num'
+                    },
+                    type: {
+                        type: argt,
+                        menu: 'methods'
+                    }
+                }
+            },
+        ],
             menus: {
                 num: {
                     acceptReporters: true,
                     items: fislotmenu
+                },
+                methods: {
+                    acceptReporters: true,
+                    items: ['stream','arrayBuffer','text']
                 }
             }
           };
         }
         //Functions
         async openFile(args) { //Shows the file picker and gets file information.
+            toaster.addToast("This is a toast");
             const slot = fislot[args.num];
             try {
                 if ((slot.file == '') && (slot.metadata == '')) {
@@ -117,7 +142,16 @@
             slot.file = '';
             slot.metadata = '';
         }
-      }
+
+        async getData(args) {
+            const slot = fislot[args.num];
+
+            const ab = (async() => {const arrayBuffer = await slot.file.arrayBuffer();const uint8Array = new Uint8Array(arrayBuffer);return "[" + Array.from(uint8Array).toString() + "]";})
+            const s = (async() =>{const streamReader = slot.file.stream().getReader();const decoder = new TextDecoder();let StreamOutResult = "";const chunkSize = 1024;async function readChunks() {while (true) {const { done, value } = await streamReader.read();if (done) {console.log("Stream reading complete.");return StreamOutResult;}StreamOutResult += decoder.decode(value, { stream: true });if (value.length >= chunkSize) {await new Promise((resolve) => setTimeout(resolve, 5));}}}return await readChunks();})
+            if (!slot.metadata) return "";
+            try {if (args.TYPE === "arrayBuffer") {return await ab;} else if (args.TYPE === "text") {return await slot.file.text();} else if (args.TYPE === "stream") {return await s;} else {console.error("Invalid type specified");}} catch (error) {console.error("Error reading file:", error);console.error("Error reading file");}
+        }
+    }
 
 
     class folders {
@@ -149,8 +183,8 @@
     }
     }
 
+    if (!LoadedExtensions.includes("skyhigh173JSON")) Scratch.vm.extensionManager.loadExtensionURL("https://extensions.turbowarp.org/Skyhigh173/json.js")
     try {
-        if (!LoadedExtensions.includes("skyhigh173JSON")) Scratch.vm.extensionManager.loadExtensionURL("https://extensions.turbowarp.org/Skyhigh173/json.js")
         Scratch.extensions.register(new files())
         Scratch.extensions.register(new folders())
     } catch (err) {
