@@ -37,7 +37,11 @@
     */
 
   /* MEMORY ACTIONS */
-   let fileCommit1 = {}, fileCommit2 = {}, fileCommit3 = {}, fileCommit4 = {}, fileCommit5 = {};
+  let fileCommit1 = {},
+    fileCommit2 = {},
+    fileCommit3 = {},
+    fileCommit4 = {},
+    fileCommit5 = {};
 
   //Define global const
   const app = {
@@ -138,12 +142,26 @@
               TYPE: { type: argt, menu: "methods" },
             },
           },
-          {opcode: "memWrite", blockType: bt.command, text: 'Write [in] as [type] to file slot [num] in memory', arguments: {in:{type: argt}, type:{type: argt, menu: 'wmethods'}, num:{type: argt, menu: 'num'}}},
-          {opcode: 'memPush', blockType: bt.command, text: 'Push changes of [num] to disk', arguments: {num: {type: argt, menu: 'num'}}},
-          '---',
+          {
+            opcode: "memWrite",
+            blockType: bt.command,
+            text: "Write [in] as [type] to file slot [num] in memory",
+            arguments: {
+              in: { type: argt },
+              type: { type: argt, menu: "wmethods" },
+              num: { type: argt, menu: "num" },
+            },
+          },
+          {
+            opcode: "memPush",
+            blockType: bt.command,
+            text: "Push changes of [num] to disk",
+            arguments: { num: { type: argt, menu: "num" } },
+          },
+          "---",
           {
             blockType: bt.label,
-            text: 'Advanced File Blocks'
+            text: "Advanced File Blocks",
           },
           {
             opcode: "store",
@@ -155,7 +173,7 @@
               ss: { type: argt, menu: "ss" },
             },
           },
-          '---',
+          "---",
         ],
         menus: {
           ss: { acceptReporters: true, items: ["Push", "Pull"] },
@@ -346,7 +364,7 @@
           }
           case "Pull": {
             const data = await loadData(db, storeName);
-            fislot[args.num] = data
+            fislot[args.num] = data;
             cs.log("Data loaded successfully", data);
             break;
           }
@@ -358,27 +376,30 @@
       }
     }
     async memWrite(args) {
-        const slot = fislot[args.num];
-        const type = args.type
-        if (args.type == 'text') {
-            slot.commits[Object.keys(slot.commits).length + 1] = {text: args.in, type: type}
-        } else if (args.type == 'arrayBuffer') {
-            cs.warn("Don't use arrayBuffer yet!")
-            //slot.commits[Object.keys(slot.commits).length + 1] = 
-        } else {
-            cs.error('Invalid method.')
-        }
-    cs.log(slot.commits)
+      const slot = fislot[args.num];
+      const type = args.type;
+      if (args.type == "text") {
+        slot.commits[Object.keys(slot.commits).length + 1] = {
+          text: args.in,
+          type: type,
+        };
+      } else if (args.type == "arrayBuffer") {
+        cs.warn("Don't use arrayBuffer yet!");
+        //slot.commits[Object.keys(slot.commits).length + 1] =
+      } else {
+        cs.error("Invalid method.");
+      }
+      cs.log(slot.commits);
     }
-    async memPush (args) {
-        const slot = fislot[args.num]
-        for (let [key, value] of Object.entries(slot.commits)) {
-
-            console.log(key, value);
-        }
-        slot.commits = {}
+    async memPush(args) {
+      const slot = fislot[args.num];
+      let pushFile = await slot.metadata.text();
+      for (let [key, value] of Object.entries(slot.commits)) {
+        console.log(key, value);
+      }
+      slot.commits = {};
     }
-}
+  }
 
   class folders {
     getInfo() {
