@@ -142,6 +142,7 @@
               TYPE: { type: argt, menu: "methods" },
             },
           },
+          "---",
           {
             opcode: "memWrite",
             blockType: bt.command,
@@ -388,7 +389,7 @@
     memWrite(args) {
       const slot = fislot[args.num];
       const type = args.type;
-      if (Object.keys(slot.commit).length >= 100) return;
+      if (Object.keys(slot.commits).length >= 10000) return;
       if (type == "text" || type == "arrayBuffer") {
         if (args.in == "::-da\\\\clear") {
           slot.commits[Object.keys(slot.commits).length + 1] = {
@@ -398,7 +399,7 @@
           slot.commits[Object.keys(slot.commits).length + 1] = {
             clear: false,
             type: type,
-            text: args.in
+            text: args.in,
           };
         }
       } else {
@@ -421,14 +422,18 @@
         if (value["clear"] == true) {
           pushFile = "";
         } else {
-          pushFile += "\n" + value;
+          if (pushFile == "") {
+            pushFile += value["text"];
+          } else {
+            pushFile += "\n" + value["text"];
+          }
         }
+        const PathTo = await slot.file.createWritable();
+        await PathTo.write(pushFile);
+        await PathTo.close();
+        slot.metadata = await slot.file.getFile();
+        slot.commits = {};
       }
-      slot.metadata.createWritable();
-      await slot.metadata.write(pushFile);
-      slot.metadata.close();
-      slot.metadata = await slot.file.getFile();
-      slot.commits = {};
     }
   }
 
