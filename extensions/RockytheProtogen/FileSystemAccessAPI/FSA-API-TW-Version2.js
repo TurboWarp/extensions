@@ -388,16 +388,22 @@
     memWrite(args) {
       const slot = fislot[args.num];
       const type = args.type;
-      if (Object.keys(slot.commit).length >= 100)
-        if (type == "text" || type == "arrayBuffer") {
-          if (args.in == "::-da\\\\clear") {
-            slot.commits[Object.keys(slot.commits).length + 1] = {
-              clear: true,
-            };
-          }
+      if (Object.keys(slot.commit).length >= 100) return;
+      if (type == "text" || type == "arrayBuffer") {
+        if (args.in == "::-da\\\\clear") {
+          slot.commits[Object.keys(slot.commits).length + 1] = {
+            clear: true,
+          };
         } else {
-          cs.error("Invalid method.");
+          slot.commits[Object.keys(slot.commits).length + 1] = {
+            clear: false,
+            type: type,
+            text: args.in
+          };
         }
+      } else {
+        cs.error("Invalid method.");
+      }
       cs.log(slot.commits);
     }
     async memPush(args) {
