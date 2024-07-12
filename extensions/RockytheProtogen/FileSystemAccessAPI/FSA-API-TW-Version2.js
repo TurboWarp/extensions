@@ -184,7 +184,7 @@
           },
           wmethods: {
             acceptReporters: true,
-            items: ["arrayBuffer", "text"],
+            items: [/*"arrayBuffer",*/ "text"],
           },
         },
       };
@@ -193,6 +193,7 @@
       const slot = fislot[args.num];
       try {
         if (slot.file == "" && slot.metadata == "") {
+          // @ts-ignore
           [slot.file] = await window.showOpenFilePicker();
           cs.log(slot.file);
           slot.metadata = await slot.file.getFile();
@@ -242,6 +243,7 @@
         const slot = recogslot(args.num, args);
         slot.file = "";
         slot.metadata = "";
+        slot.commits = {};
       } catch (err) {
         cs.error(err);
       }
@@ -284,6 +286,7 @@
         return await new Promise((resolve, reject) => {
           const dbRequest = window.indexedDB.open("fileHandleStore", 3);
           dbRequest.onupgradeneeded = (event) => {
+            // @ts-ignore
             const db = event.target.result;
             if (db.objectStoreNames.contains(storeName)) {
               db.deleteObjectStore(storeName);
@@ -294,6 +297,7 @@
             });
           };
           dbRequest.onsuccess = (event) => {
+            // @ts-ignore
             const db = event.target.result;
             if (!db.objectStoreNames.contains(storeName)) {
               db.close();
@@ -303,6 +307,7 @@
                 newVersion
               );
               upgradeRequest.onupgradeneeded = (event) => {
+                // @ts-ignore
                 const upgradeDb = event.target.result;
                 if (upgradeDb.objectStoreNames.contains(storeName)) {
                   upgradeDb.deleteObjectStore(storeName);
@@ -313,8 +318,10 @@
                 });
               };
               upgradeRequest.onsuccess = (event) => {
+                // @ts-ignore
                 resolve(event.target.result);
               };
+              // @ts-ignore
               upgradeRequest.onerror = (event) => {
                 reject(new Error("Database upgrade failed"));
               };
@@ -322,6 +329,7 @@
               resolve(db);
             }
           };
+          // @ts-ignore
           dbRequest.onerror = (event) => {
             reject(new Error("Database open failed"));
           };
@@ -335,6 +343,7 @@
           request.onsuccess = () => {
             resolve("Data stored successfully");
           };
+          // @ts-ignore
           request.onerror = (event) => {
             reject(new Error("Transaction failed"));
           };
@@ -348,6 +357,7 @@
           request.onsuccess = () => {
             resolve(request.result[0].slotData);
           };
+          // @ts-ignore
           request.onerror = (event) => {
             reject(new Error("Failed to load data"));
           };
@@ -375,28 +385,43 @@
         cs.error("Operation failed:", err);
       }
     }
-    async memWrite(args) {
+    memWrite(args) {
       const slot = fislot[args.num];
       const type = args.type;
-      if (args.type == "text") {
-        slot.commits[Object.keys(slot.commits).length + 1] = {
-          text: args.in,
-          type: type,
-        };
-      } else if (args.type == "arrayBuffer") {
-        cs.warn("Don't use arrayBuffer yet!");
-        //slot.commits[Object.keys(slot.commits).length + 1] =
-      } else {
-        cs.error("Invalid method.");
-      }
+      if (Object.keys(slot.commit).length >= 100)
+        if (type == "text" || type == "arrayBuffer") {
+          if (args.in == "::-da\\\\clear") {
+            slot.commits[Object.keys(slot.commits).length + 1] = {
+              clear: true,
+            };
+          }
+        } else {
+          cs.error("Invalid method.");
+        }
       cs.log(slot.commits);
     }
     async memPush(args) {
       const slot = fislot[args.num];
+      // eslint-disable-next-line no-constant-condition
+      if (slot.metadata == "") {
+        //Eslint loves complaining about this.
+        cs.warn("Not valid.");
+        return;
+      }
+      // @ts-ignore
       let pushFile = await slot.metadata.text();
       for (let [key, value] of Object.entries(slot.commits)) {
-        console.log(key, value);
+        cs.log(key, value["type"]);
+        if (value["clear"] == true) {
+          pushFile = "";
+        } else {
+          pushFile += "\n" + value;
+        }
       }
+      slot.metadata.createWritable();
+      await slot.metadata.write(pushFile);
+      slot.metadata.close();
+      slot.metadata = await slot.file.getFile();
       slot.commits = {};
     }
   }
@@ -445,4 +470,5 @@
       "Failed to load a module!\nPlease report this issue.\nDetails:\n" + err
     );
   }
+  // @ts-ignore
 })(Scratch);
