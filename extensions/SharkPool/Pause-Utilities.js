@@ -3,7 +3,7 @@
 // Description: Pause the Project and certain Scripts
 // By: SharkPool
 
-// Version V.1.7.0
+// Version V.1.7.01
 
 (function (Scratch) {
   "use strict";
@@ -99,7 +99,7 @@
           {
             opcode: "whenProjectPaused",
             blockType: Scratch.BlockType.EVENT,
-            text: "when project is paused",
+            text: "while project is paused",
             isEdgeActivated: false
           },
           {
