@@ -5,7 +5,6 @@
 // License: GNU-GPL3
 
 (function(Scratch) {
-    //for some reason this was async. Changed it back.
     "use strict";
 
     //Define global varaibles
@@ -23,18 +22,16 @@
         fimetadata5 = "";
 
     /* Folder Info */
-    /*
     let folderHandle1 = "",
-      folderHandle2 = "",
-      folderHandle3 = "",
-      folderHandle4 = "",
-      folderHandle5 = "",
-      fometadata1 = "",
-      fometadata2 = "",
-      fometadata3 = "",
-      fometadata4 = "",
-      fometadata5 = "";
-      */
+        folderHandle2 = "",
+        folderHandle3 = "",
+        folderHandle4 = "",
+        folderHandle5 = "",
+        fometadata1 = "",
+        fometadata2 = "",
+        fometadata3 = "",
+        fometadata4 = "",
+        fometadata5 = "";
 
     /* MEMORY ACTIONS */
     let fileCommit1 = {},
@@ -86,15 +83,28 @@
             commits: fileCommit5
         },
     };
-    /*
     const foslot = {
-      1: { file: folderHandle1, metadata: fometadata1 },
-      2: { file: folderHandle2, metadata: fometadata2 },
-      3: { file: folderHandle3, metadata: fometadata3 },
-      4: { file: folderHandle4, metadata: fometadata4 },
-      5: { file: folderHandle5, metadata: fometadata5 },
+        1: {
+            file: folderHandle1,
+            metadata: fometadata1
+        },
+        2: {
+            file: folderHandle2,
+            metadata: fometadata2
+        },
+        3: {
+            file: folderHandle3,
+            metadata: fometadata3
+        },
+        4: {
+            file: folderHandle4,
+            metadata: fometadata4
+        },
+        5: {
+            file: folderHandle5,
+            metadata: fometadata5
+        },
     };
-    */
 
     //Checks
     if (!Scratch.extensions.unsandboxed)
@@ -104,6 +114,7 @@
 
     //Check extensions
     let LoadedExtensions = j.stringify(
+        // @ts-ignore
         Array.from(Scratch.vm.extensionManager._loadedExtensions.keys())
     );
 
@@ -188,7 +199,7 @@
                     {
                         opcode: "memPush",
                         blockType: bt.command,
-                        text: "Push changes of [num] to disk",
+                        text: "Push changes of [num] to disk and clear",
                         arguments: {
                             num: {
                                 type: argt,
@@ -211,6 +222,17 @@
                         opcode: "memRead",
                         blockType: bt.reporter,
                         text: "Changes of [num] applied to memory",
+                        arguments: {
+                            num: {
+                                type: argt,
+                                menu: "num"
+                            }
+                        },
+                    },
+                    {
+                        opcode: "memClear",
+                        blockType: bt.reporter,
+                        text: "Clear changes of [num]",
                         arguments: {
                             num: {
                                 type: argt,
@@ -270,14 +292,12 @@
                     if (slot.file == "" && slot.metadata == "") {
                         // @ts-ignore
                         [slot.file] = await window.showOpenFilePicker();
-                        cs.log(slot.file);
                         slot.metadata = await slot.file.getFile();
-                        cs.log(slot.metadata);
                         if (slot.metadata.size > 750000000) {
                             await this.cancel(slot);
                             alert("File exceeds 750 MB and will not be loaded.");
                             cs.error(
-                                "File to large! Please choose a file that does not exceed 750 MB."
+                                "File too large! Please choose a file that does not exceed 750 MB."
                             );
                         }
                         if (slot.metadata.size >= 25000000)
@@ -455,17 +475,14 @@
                 }
                 try {
                     const db = await openDatabase(storeName);
-                    cs.log("Database opened successfully");
                     switch (args.ss) {
                         case "Push": {
-                            const storeMessage = await storeData(db, slot, storeName);
-                            cs.log(storeMessage);
+                            await storeData(db, slot, storeName);
                             break;
                         }
                         case "Pull": {
                             const data = await loadData(db, storeName);
                             fislot[args.num] = data;
-                            cs.log("Data loaded successfully", data);
                             break;
                         }
                         default:
@@ -498,7 +515,6 @@
                 } else {
                     cs.error("Invalid method.");
                 }
-                cs.log(slot.commits);
             } catch (err) {
                 cs.error(err)
             }
@@ -554,8 +570,7 @@
                 }
                 // @ts-ignore
                 let pushFile = await slot.metadata.text();
-                for (let [key, value] of Object.entries(slot.commits)) {
-                    cs.log(key, value["type"]);
+                for (let [value] of Object.entries(slot.commits)) {
                     if (value["clear"] == true) {
                         pushFile = "";
                     } else {
@@ -567,6 +582,14 @@
                     }
                 }
                 return pushFile;
+            } catch (err) {
+                cs.error(err)
+            }
+        }
+        memClear(args) {
+            try {
+                const slot = fislot[args.num]
+                slot.commits = {}
             } catch (err) {
                 cs.error(err)
             }
@@ -596,7 +619,10 @@
                     },
                 },
             };
-            //Functions
+        }
+        //Functions
+        openFolder(args) {
+            const slot = foslot[args.num]
         }
     }
 
