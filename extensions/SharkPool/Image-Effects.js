@@ -3,7 +3,7 @@
 // Description: Apply a variety of new effects to the data URI of Images or Costumes.
 // By: SharkPool
 
-// Version V.2.3.5
+// Version V.2.3.51
 
 (function (Scratch) {
   "use strict";
@@ -1180,7 +1180,7 @@
             const height = img.height;
             const svg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
               width="${width / 2}" height="${(height / 2) + 0.001}" viewBox="0,0,${width / 2},${(height / 2) + 0.001}">
-              <g transform="translate(${img.offsetLeft / -2},${img.offsetTop / -2})"><g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill="none" 
+              <g transform="translate(${img.offsetLeft / -2},${img.offsetTop / -2})"><g fill="none" 
               fill-rule="nonzero" stroke="none" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter" 
               stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" style="mix-blend-mode: normal">
               <image x="0" y="0" transform="scale(0.5,0.5)" width="${width}" height="${height + 0.002}" 
