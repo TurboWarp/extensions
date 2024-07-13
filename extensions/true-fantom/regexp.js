@@ -3,6 +3,7 @@
 // Description: Full interface for working with Regular Expressions.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
 // License: MIT
+// Context: RegExp is short for "Regular Expression", a sort of programming language. This extension uses [IMAGE] to indicate that the following input should contain a regular expression.
 
 ((Scratch) => {
   "use strict";
@@ -46,7 +47,7 @@
     getInfo() {
       return {
         id: "truefantomregexp",
-        name: "RegExp",
+        name: Scratch.translate("RegExp"),
 
         color1: "#e6282a",
 
@@ -56,7 +57,7 @@
           {
             opcode: "is_regexp_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [IMAGE] [A] ?",
+            text: Scratch.translate("is [IMAGE] [A] ?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -72,7 +73,7 @@
           {
             opcode: "regexp_equal_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[IMAGE] [A] = [IMAGE] [B]",
+            text: Scratch.translate("[IMAGE] [A] = [IMAGE] [B]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -92,7 +93,7 @@
           {
             opcode: "regexp_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[IMAGE] with pattern [A] and flags [B]",
+            text: Scratch.translate("[IMAGE] with pattern [A] and flags [B]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -111,7 +112,7 @@
           {
             opcode: "regexp_contains_flags_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[IMAGE] [A] contains flags [B] ?",
+            text: Scratch.translate("[IMAGE] [A] contains flags [B] ?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -130,7 +131,7 @@
           {
             opcode: "regexp_components_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[B] of [IMAGE] [A]",
+            text: Scratch.translate("[B] of [IMAGE] [A]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -150,7 +151,7 @@
           {
             opcode: "regexp_set_pattern_flags_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[IMAGE] set [B] of [IMAGE] [A] to [C]",
+            text: Scratch.translate("[IMAGE] set [B] of [IMAGE] [A] to [C]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -173,7 +174,7 @@
           {
             opcode: "regexp_add_flags_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[IMAGE] add flags [B] to [IMAGE] [A]",
+            text: Scratch.translate("[IMAGE] add flags [B] to [IMAGE] [A]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -192,7 +193,7 @@
           {
             opcode: "regexp_delete_flags_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[IMAGE] delete flags [B] of [IMAGE] [A]",
+            text: Scratch.translate("[IMAGE] delete flags [B] of [IMAGE] [A]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -212,7 +213,7 @@
           {
             opcode: "regexp_test_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[A] matches with [IMAGE] [B] ?",
+            text: Scratch.translate("[A] matches with [IMAGE] [B] ?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -231,7 +232,9 @@
           {
             opcode: "regexp_replace_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "replace matches of [A] with [IMAGE] [B] to [C]",
+            text: Scratch.translate(
+              "replace matches of [A] with [IMAGE] [B] to [C]"
+            ),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -254,7 +257,9 @@
           {
             opcode: "regexp_split_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[IMAGE2] [A] split by matches with [IMAGE1] [B]",
+            text: Scratch.translate(
+              "[IMAGE2] [A] split by matches with [IMAGE1] [B]"
+            ),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -277,7 +282,9 @@
           {
             opcode: "regexp_match_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[IMAGE2] match [C] of [A] with [IMAGE1] [B]",
+            text: Scratch.translate(
+              "[IMAGE2] match [C] of [A] with [IMAGE1] [B]"
+            ),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -305,11 +312,40 @@
         menus: {
           components_menu: {
             acceptReporters: false,
-            items: ["pattern", "flags"],
+            items: [
+              {
+                text: Scratch.translate("pattern"),
+                value: "pattern",
+              },
+              {
+                text: Scratch.translate("flags"),
+                value: "flags",
+              },
+            ],
           },
           match_menu: {
             acceptReporters: false,
-            items: ["values", "keys", "pairs", "map"],
+            items: [
+              {
+                text: Scratch.translate("values"),
+                value: "values",
+              },
+              {
+                text: Scratch.translate("keys"),
+                value: "keys",
+              },
+              {
+                text: Scratch.translate("pairs"),
+                value: "pairs",
+              },
+              {
+                text: Scratch.translate({
+                  default: "map",
+                  description: "This is the computer science kind of map.",
+                }),
+                value: "map",
+              },
+            ],
           },
         },
       };

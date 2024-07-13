@@ -36,11 +36,11 @@
         name: "JSON",
         color1: "#3271D0",
         blocks: [
-          makeLabel("General Utils"),
+          makeLabel(Scratch.translate("General Utils")),
           {
             opcode: "json_is_valid",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is JSON [json] valid?",
+            text: Scratch.translate("is JSON [json] valid?"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -51,7 +51,7 @@
           {
             opcode: "json_is",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [json] [types]?",
+            text: Scratch.translate("is [json] [types]?"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -68,7 +68,7 @@
           {
             opcode: "json_get_all",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all [Stype] of [json]",
+            text: Scratch.translate("all [Stype] of [json]"),
             arguments: {
               Stype: {
                 type: Scratch.ArgumentType.STRING,
@@ -83,7 +83,7 @@
           {
             opcode: "json_new",
             blockType: Scratch.BlockType.REPORTER,
-            text: "new [json]",
+            text: Scratch.translate("new [json]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -96,7 +96,7 @@
           {
             opcode: "json_has_key",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[json] contains key [key]?",
+            text: Scratch.translate("[json] contains key [key]?"),
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -111,7 +111,7 @@
           {
             opcode: "json_has_value",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[json] contains value [value]?",
+            text: Scratch.translate("[json] contains value [value]?"),
             arguments: {
               value: {
                 type: Scratch.ArgumentType.STRING,
@@ -126,7 +126,7 @@
           {
             opcode: "json_equal",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[json1] [equal] [json2]",
+            text: Scratch.translate("[json1] [equal] [json2]"),
             arguments: {
               json1: {
                 type: Scratch.ArgumentType.STRING,
@@ -205,7 +205,7 @@
           {
             opcode: "json_jlength",
             blockType: Scratch.BlockType.REPORTER,
-            text: "length of json [json]",
+            text: Scratch.translate("length of json [json]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -216,7 +216,7 @@
           {
             opcode: "json_get",
             blockType: Scratch.BlockType.REPORTER,
-            text: "value of [item] in [json]",
+            text: Scratch.translate("value of [item] in [json]"),
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -231,7 +231,7 @@
           {
             opcode: "json_set",
             blockType: Scratch.BlockType.REPORTER,
-            text: "set [item] in [json] to [value]",
+            text: Scratch.translate("set [item] in [json] to [value]"),
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -250,7 +250,7 @@
           {
             opcode: "json_delete",
             blockType: Scratch.BlockType.REPORTER,
-            text: "delete [item] in [json]",
+            text: Scratch.translate("delete [item] in [json]"),
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -262,11 +262,11 @@
               },
             },
           },
-          makeLabel("Array"),
+          makeLabel(Scratch.translate("Array")),
           {
             opcode: "json_length",
             blockType: Scratch.BlockType.REPORTER,
-            text: "length of array [json]",
+            text: Scratch.translate("length of array [json]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -277,7 +277,7 @@
           {
             opcode: "json_array_get",
             blockType: Scratch.BlockType.REPORTER,
-            text: "item [item] of array [json]",
+            text: Scratch.translate("item [item] of array [json]"),
             arguments: {
               item: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -292,7 +292,7 @@
           {
             opcode: "json_array_push",
             blockType: Scratch.BlockType.REPORTER,
-            text: "add [item] to array [json]",
+            text: Scratch.translate("add [item] to array [json]"),
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -307,7 +307,7 @@
           {
             opcode: "json_array_set",
             blockType: Scratch.BlockType.REPORTER,
-            text: "replace item [pos] of [json] with [item]",
+            text: Scratch.translate("replace item [pos] of [json] with [item]"),
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -326,7 +326,7 @@
           {
             opcode: "json_array_insert",
             blockType: Scratch.BlockType.REPORTER,
-            text: "insert [item] at [pos] of array [json]",
+            text: Scratch.translate("insert [item] at [pos] of array [json]"),
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -346,7 +346,7 @@
           {
             opcode: "json_array_delete",
             blockType: Scratch.BlockType.REPORTER,
-            text: "delete item [item] of array [json]",
+            text: Scratch.translate("delete item [item] of array [json]"),
             arguments: {
               item: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -361,7 +361,7 @@
           {
             opcode: "json_array_remove_all",
             blockType: Scratch.BlockType.REPORTER,
-            text: "delete all [item] in array [json]",
+            text: Scratch.translate("delete all [item] in array [json]"),
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -377,7 +377,7 @@
           {
             opcode: "json_array_itemH",
             blockType: Scratch.BlockType.REPORTER,
-            text: "item # of [item] in array [json]",
+            text: Scratch.translate("item # of [item] in array [json]"),
             arguments: {
               item: {
                 type: Scratch.ArgumentType.STRING,
@@ -389,11 +389,11 @@
               },
             },
           },
-          makeLabel("Advanced"),
+          makeLabel(Scratch.translate("Advanced")),
           {
             opcode: "json_array_from",
             blockType: Scratch.BlockType.REPORTER,
-            text: "array from text [json]",
+            text: Scratch.translate("array from text [json]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -404,7 +404,7 @@
           {
             opcode: "json_array_fromto",
             blockType: Scratch.BlockType.REPORTER,
-            text: "items [item] to [item2] of array [json]",
+            text: Scratch.translate("items [item] to [item2] of array [json]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -423,7 +423,7 @@
           {
             opcode: "json_array_reverse",
             blockType: Scratch.BlockType.REPORTER,
-            text: "reverse array [json]",
+            text: Scratch.translate("reverse array [json]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -434,7 +434,7 @@
           {
             opcode: "json_array_flat",
             blockType: Scratch.BlockType.REPORTER,
-            text: "flat array [json] by depth [depth]",
+            text: Scratch.translate("flat array [json] by depth [depth]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -449,7 +449,7 @@
           {
             opcode: "json_array_concat",
             blockType: Scratch.BlockType.REPORTER,
-            text: "concatenate array [json] [json2]",
+            text: Scratch.translate("concatenate array [json] [json2]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -464,7 +464,9 @@
           {
             opcode: "json_array_filter",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get all values with key [key] in array [json]",
+            text: Scratch.translate(
+              "get all values with key [key] in array [json]"
+            ),
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
@@ -479,7 +481,7 @@
           {
             opcode: "json_array_setlen",
             blockType: Scratch.BlockType.REPORTER,
-            text: "set length of array [json] to [len]",
+            text: Scratch.translate("set length of array [json] to [len]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -519,7 +521,9 @@
           {
             opcode: "json_array_create",
             blockType: Scratch.BlockType.REPORTER,
-            text: "create array by [text] with delimiter [d]",
+            text: Scratch.translate(
+              "create array by [text] with delimiter [d]"
+            ),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -534,7 +538,9 @@
           {
             opcode: "json_array_join",
             blockType: Scratch.BlockType.REPORTER,
-            text: "join string by array [json] with delimiter [d]",
+            text: Scratch.translate(
+              "join string by array [json] with delimiter [d]"
+            ),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -550,7 +556,7 @@
           {
             opcode: "json_array_sort",
             blockType: Scratch.BlockType.REPORTER,
-            text: "sort array [list] in [order] order",
+            text: Scratch.translate("sort array [list] in [order] order"),
             disableMonitor: true,
             arguments: {
               list: {
@@ -563,7 +569,7 @@
               },
             },
           },
-          makeLabel("Variables & Lists"),
+          makeLabel(Scratch.translate("Variables & Lists")),
           {
             opcode: "json_vm_export_var",
             blockType: Scratch.BlockType.REPORTER,
@@ -585,7 +591,7 @@
           {
             opcode: "json_vm_getlist",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get list [list] as array",
+            text: Scratch.translate("get list [list] as array"),
             arguments: {
               list: {
                 type: Scratch.ArgumentType.STRING,
@@ -596,7 +602,7 @@
           {
             opcode: "json_vm_setlist",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set list [list] to [json]",
+            text: Scratch.translate("set list [list] to [json]"),
             arguments: {
               list: {
                 type: Scratch.ArgumentType.STRING,
@@ -611,7 +617,20 @@
         ],
         menus: {
           get_all: {
-            items: ["keys", "values", "datas"],
+            items: [
+              {
+                text: Scratch.translate("keys"),
+                value: "keys",
+              },
+              {
+                text: Scratch.translate("values"),
+                value: "values",
+              },
+              {
+                text: Scratch.translate("datas"),
+                value: "datas",
+              },
+            ],
           },
           get_list: {
             acceptReporters: true,
@@ -619,7 +638,16 @@
           },
           types: {
             acceptReporters: true,
-            items: ["Object", "Array"],
+            items: [
+              {
+                text: Scratch.translate("Object"),
+                value: "Object",
+              },
+              {
+                text: Scratch.translate("Array"),
+                value: "Array",
+              },
+            ],
           },
           equal: {
             acceptReporters: true,
@@ -627,7 +655,16 @@
           },
           sort_order: {
             acceptReporters: true,
-            items: ["ascending", "descending"],
+            items: [
+              {
+                text: Scratch.translate("ascending"),
+                value: "ascending",
+              },
+              {
+                text: Scratch.translate("descending"),
+                value: "descending",
+              },
+            ],
           },
           filter_options: {
             items: ["includes", "starts with", "ends with"],
@@ -647,7 +684,7 @@
       if (uniqueLists.length === 0) {
         return [
           {
-            text: "select a list",
+            text: Scratch.translate("select a list"),
             value: "select a list",
           },
         ];
