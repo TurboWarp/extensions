@@ -27,7 +27,7 @@
         const stageX = clamp(
           (relX / rect.width - 0.5) * stageWidth,
           -stageWidth / 2,
-          stageWidth / 2,
+          stageWidth / 2
         );
         if (Scratch.vm.runtime.runtimeOptions.miscLimits) {
           return Math.round(stageX);
@@ -41,7 +41,7 @@
         const stageY = clamp(
           (relY / rect.height - 0.5) * -stageHeight,
           -stageHeight / 2,
-          stageHeight / 2,
+          stageHeight / 2
         );
         if (Scratch.vm.runtime.runtimeOptions.miscLimits) {
           return Math.round(stageY);
@@ -52,18 +52,18 @@
 
       this.canvas.addEventListener("pointerdown", (e) => {
         const existingTouch = this.ongoingTouches.findIndex(
-          (i) => i?.identifier === e.pointerId,
+          (i) => i?.identifier === e.pointerId
         ); // Depending on the user agent and pointer, events may not always have unique identifiers
         const i = existingTouch > 0 ? existingTouch : nextFreeTouchID();
         const canvasRect = this.canvas.getBoundingClientRect();
         const pressedTarget = Scratch.vm.runtime.ioDevices.mouse._pickTarget(
           e.offsetX,
-          e.offsetY,
+          e.offsetY
         );
         Scratch.vm.runtime.startHats(
           "dnintouches_whenSpritePressed",
           null,
-          pressedTarget,
+          pressedTarget
         );
         this.ongoingTouches[i] = {
           active: true,
@@ -80,7 +80,7 @@
       });
       document.addEventListener("pointermove", (e) => {
         const touch = this.ongoingTouches.find(
-          (i) => i?.identifier === e.pointerId,
+          (i) => i?.identifier === e.pointerId
         );
         if (!touch) return;
         const canvasRect = this.canvas.getBoundingClientRect();
@@ -91,14 +91,14 @@
       });
       document.addEventListener("pointerup", (e) => {
         const slot = this.ongoingTouches.find(
-          (i) => i?.identifier === e.pointerId,
+          (i) => i?.identifier === e.pointerId
         );
         if (!slot) return;
         slot.active = false;
       });
       document.addEventListener("pointercancel", (e) => {
         const slot = this.ongoingTouches.find(
-          (i) => i?.identifier === e.pointerId,
+          (i) => i?.identifier === e.pointerId
         );
         if (!slot) return;
         slot.active = false;
@@ -372,7 +372,7 @@
     maxTouchPoints() {
       return Math.max(
         navigator.maxTouchPoints,
-        window.matchMedia("(any-pointer)").matches, // Returns true (1) if a pointing device is connected
+        window.matchMedia("(any-pointer)").matches // Returns true (1) if a pointing device is connected
       );
     }
 
@@ -398,12 +398,12 @@
         switch (SELECTOR) {
           case "pressed": {
             if (touch?.pressedTarget.id === util.target.id) {
-              return i + 1 ?? "";
+              return i + 1;
             } else break;
           }
           case "contacted": {
             if (util.target.isTouchingPoint(touch.canvasX, touch.canvasY)) {
-              return i + 1 ?? "";
+              return i + 1;
             } else break;
           }
           default:
@@ -492,7 +492,7 @@
       if (!touch) return "";
       return Scratch.vm.runtime.ioDevices.mouse._pickTarget(
         touch.canvasX,
-        touch.canvasY,
+        touch.canvasY
       );
     }
 
