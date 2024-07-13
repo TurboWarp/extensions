@@ -4,7 +4,7 @@
 // By: Skyhigh173
 
 (function (Scratch) {
-  'use strict';
+  "use strict";
   // ! to editor:
   // ! pay attention to comments which contains '!' at the beginning.
   // ! they are important.
@@ -17,7 +17,8 @@
 
     // reviver for JSON.parse
     reviver(_, value) {
-      if (value instanceof Array || value instanceof Object) return new Map(Object.entries(value));
+      if (value instanceof Array || value instanceof Object)
+        return new Map(Object.entries(value));
       return value;
     },
 
@@ -81,437 +82,446 @@
       const res = func(tmp);
       if (inplaceReturn) tmp = res;
       return Map._e.fromArray(tmp);
-    }
+    },
   };
 
-  Map.prototype.toString = function() { return JSON.stringify(Object.fromEntries(this), Map._e.replacer); };
-
+  Map.prototype.toString = function () {
+    return JSON.stringify(Object.fromEntries(this), Map._e.replacer);
+  };
 
   const exampleJSON = {
-    empty: '{}',
+    empty: "{}",
     keyValue: '{"key":"value"}',
     keyValue2: '{"key2":"value2"}',
     double: '{"apple":"banana","one":"two"}',
-    array: '{"0":"a","1":"b","2":"c"}'
+    array: '{"0":"a","1":"b","2":"c"}',
   };
 
   const label = (text) => ({
-    blockType: 'label',
-    text: text
+    blockType: "label",
+    text: text,
   });
 
   class ObjectExtension {
     getInfo() {
       return {
-        id: 'skyhigh173object',
-        name: 'Object',
-        color1: '#9999FF',
+        id: "skyhigh173object",
+        name: "Object",
+        color1: "#9999FF",
         blocks: [
           {
-            opcode: 'newObject',
+            opcode: "newObject",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'new Object',
-            disableMonitor: true
+            text: Scratch.translate("new object"),
+            disableMonitor: true,
           },
           {
-            opcode: 'toJSON',
+            opcode: "toJSON",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[obj] to JSON',
+            text: Scratch.translate("[obj] to JSON"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.keyValue
-              }
-            }
+                defaultValue: exampleJSON.keyValue,
+              },
+            },
           },
           {
-            opcode: 'toMap',
+            opcode: "toMap",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[obj] to Object',
+            text: Scratch.translate("[obj] to object"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.keyValue
-              }
-            }
+                defaultValue: exampleJSON.keyValue,
+              },
+            },
           },
           {
-            opcode: 'keyval',
+            opcode: "keyval",
             blockType: Scratch.BlockType.REPORTER,
-            text: '{[key]: [val]}',
+            text: "{[key] : [val]}",
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'key'
+                defaultValue: "key",
               },
               val: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'value'
+                defaultValue: "value",
               },
-            }
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'set',
+            opcode: "set",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[obj] set [key] to value [value]',
+            text: Scratch.translate("[obj] set [key] to value [value]"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.empty
+                defaultValue: exampleJSON.empty,
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'key'
+                defaultValue: "key",
               },
               value: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'value'
+                defaultValue: "value",
               },
-            }
+            },
           },
           {
-            opcode: 'get',
+            opcode: "get",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[obj] get [key]',
+            text: Scratch.translate("[obj] get [key]"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.keyValue
+                defaultValue: exampleJSON.keyValue,
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'key'
-              }
-            }
+                defaultValue: "key",
+              },
+            },
           },
           {
-            opcode: 'delete',
+            opcode: "delete",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[obj] delete [key]',
+            text: Scratch.translate("[obj] delete [key]"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.keyValue
+                defaultValue: exampleJSON.keyValue,
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'key'
-              }
-            }
+                defaultValue: "key",
+              },
+            },
           },
           {
-            opcode: 'has',
+            opcode: "has",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[obj] has [key]?',
+            text: Scratch.translate("[obj] has [key]?"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.keyValue
+                defaultValue: exampleJSON.keyValue,
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'key'
-              }
-            }
+                defaultValue: "key",
+              },
+            },
           },
           {
-            opcode: 'length',
+            opcode: "length",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'size of [obj]',
+            text: Scratch.translate("size of [obj]"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.empty
-              }
-            }
+                defaultValue: exampleJSON.empty,
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'merge',
+            opcode: "merge",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'merge [obj1] with [obj2]',
+            text: Scratch.translate("merge [obj1] with [obj2]"),
             arguments: {
               obj1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.keyValue
+                defaultValue: exampleJSON.keyValue,
               },
               obj2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.keyValue2
-              }
-            }
+                defaultValue: exampleJSON.keyValue2,
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'indexOf',
+            opcode: "indexOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'index of key [key] in [obj]',
+            text: Scratch.translate("index of key [key] in [obj]"),
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'one'
+                defaultValue: "one",
               },
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.double
-              }
-            }
+                defaultValue: exampleJSON.double,
+              },
+            },
           },
           {
-            opcode: 'getWhole',
+            opcode: "getWhole",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'get whole from key [key] in [obj]',
+            text: Scratch.translate("get whole from key [key] in [obj]"),
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'one'
+                defaultValue: "one",
               },
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.double
-              }
-            }
+                defaultValue: exampleJSON.double,
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'keys',
+            opcode: "keys",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'keys of [obj]',
+            text: Scratch.translate("keys of [obj]"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.keyValue
-              }
-            }
+                defaultValue: exampleJSON.keyValue,
+              },
+            },
           },
           {
-            opcode: 'values',
+            opcode: "values",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'values of [obj]',
+            text: Scratch.translate("values of [obj]"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.keyValue
-              }
-            }
+                defaultValue: exampleJSON.keyValue,
+              },
+            },
           },
           {
-            opcode: 'entries',
+            opcode: "entries",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'entries of [obj]',
+            text: Scratch.translate("entries of [obj]"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.keyValue
-              }
-            }
+                defaultValue: exampleJSON.keyValue,
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'isObject',
+            opcode: "isObject",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is [obj] object?',
+            text: Scratch.translate("is [obj] object?"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ' '
-              }
-            }
+                defaultValue: " ",
+              },
+            },
           },
-          label('Indexed Object'),
+          label(Scratch.translate("Indexed Object")),
           {
-            opcode: 'toIndexed',
+            opcode: "toIndexed",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[obj] to indexed object',
+            text: Scratch.translate("[obj] to indexed object"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.keyValue
-              }
-            }
+                defaultValue: exampleJSON.keyValue,
+              },
+            },
           },
           {
-            opcode: 'toArray',
+            opcode: "toArray",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[obj] to Array',
+            text: Scratch.translate("[obj] to array"),
             arguments: {
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.array
-              }
-            }
+                defaultValue: exampleJSON.array,
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'item',
+            opcode: "item",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'item [idx] of [obj]',
+            text: Scratch.translate("item [idx] of [obj]"),
             arguments: {
               idx: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: -1
+                defaultValue: -1,
               },
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.array
-              }
-            }
+                defaultValue: exampleJSON.array,
+              },
+            },
           },
           {
-            opcode: 'push',
+            opcode: "push",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'push value [value] to [obj]',
+            text: Scratch.translate("push value [value] to [obj]"),
             arguments: {
               value: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'd'
+                defaultValue: "d",
               },
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.array
-              }
-            }
+                defaultValue: exampleJSON.array,
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'slice',
+            opcode: "slice",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'slice [obj] with [a] [b]',
+            text: Scratch.translate("slice [obj] with [a] [b]"),
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
+                defaultValue: 1,
               },
               b: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 2
+                defaultValue: 2,
               },
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.array
-              }
-            }
+                defaultValue: exampleJSON.array,
+              },
+            },
           },
           {
-            opcode: 'splice1',
+            opcode: "splice1",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'splice [obj] with [a]',
+            text: Scratch.translate("splice [obj] with [a]"),
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
+                defaultValue: 1,
               },
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.array
-              }
-            }
+                defaultValue: exampleJSON.array,
+              },
+            },
           },
           {
-            opcode: 'splice2',
+            opcode: "splice2",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'splice [obj] with [a] [b]',
+            text: Scratch.translate("splice [obj] with [a] [b]"),
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
+                defaultValue: 1,
               },
               b: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: 0,
               },
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.array
-              }
-            }
+                defaultValue: exampleJSON.array,
+              },
+            },
           },
           {
-            opcode: 'splice3',
+            opcode: "splice3",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'splice [obj] with [a] [b] [i]',
+            text: Scratch.translate("splice [obj] with [a] [b] [i]"),
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
+                defaultValue: 1,
               },
               b: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: 0,
               },
               i: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'z'
+                defaultValue: "z",
               },
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.array
-              }
-            }
+                defaultValue: exampleJSON.array,
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'listAsObject',
+            opcode: "listAsObject",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'list [list] as object',
+            text: Scratch.translate("list [list] as object"),
             arguments: {
               list: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'list'
-              }
-            }
+                menu: "list",
+              },
+            },
           },
           {
-            opcode: 'setListAsObject',
+            opcode: "setListAsObject",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set list [list] to object [obj]',
+            text: Scratch.translate("set list [list] to object [obj]"),
             arguments: {
               list: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'list'
+                menu: "list",
               },
               obj: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: exampleJSON.array
-              }
-            }
+                defaultValue: exampleJSON.array,
+              },
+            },
           },
         ],
         menus: {
           list: {
             acceptReporters: true,
-            items: 'getLists'
-          }
-        }
+            items: "getLists",
+          },
+        },
       };
     }
 
-    getLists () {
-      const globalLists = Object.values(Scratch.vm.runtime.getTargetForStage().variables).filter(x => x.type == 'list');
-      const localLists = Object.values(Scratch.vm.editingTarget.variables).filter(x => x.type == 'list');
+    getLists() {
+      const globalLists = Object.values(
+        Scratch.vm.runtime.getTargetForStage().variables
+      ).filter((x) => x.type == "list");
+      const localLists = Object.values(
+        Scratch.vm.editingTarget.variables
+      ).filter((x) => x.type == "list");
       const uniqueLists = [...new Set([...globalLists, ...localLists])];
       if (uniqueLists.length === 0) {
         return [
           {
-            text: 'select a list',
-            value: 'select a list'
-          }
+            text: "select a list",
+            value: "select a list",
+          },
         ];
       }
-      return uniqueLists.map(i => ({
+      return uniqueLists.map((i) => ({
         text: i.name,
-        value: i.id
+        value: i.id,
       }));
     }
 
     getScratchLists(util) {
-      const globalLists = Object.values(Scratch.vm.runtime.getTargetForStage().variables).filter(x => x.type == 'list');
-      const localLists = Object.values(util.target.variables).filter(x => x.type == 'list');
+      const globalLists = Object.values(
+        Scratch.vm.runtime.getTargetForStage().variables
+      ).filter((x) => x.type == "list");
+      const localLists = Object.values(util.target.variables).filter(
+        (x) => x.type == "list"
+      );
       const uniqueLists = [...new Set([...globalLists, ...localLists])];
-      return uniqueLists.map(i => ({
+      return uniqueLists.map((i) => ({
         text: i.name,
-        value: i.id
+        value: i.id,
       }));
     }
 
@@ -520,17 +530,19 @@
       try {
         let listVariable = util.target.lookupVariableById(list);
         if (listVariable == undefined) {
-          listVariable = this.getListsID(util).find(x => x.text === list).value;
+          listVariable = this.getListsID(util).find(
+            (x) => x.text === list
+          ).value;
           listVariable = util.target.lookupVariableById(listVariable);
         }
 
-        if (listVariable && listVariable.type === 'list') {
+        if (listVariable && listVariable.type === "list") {
           return Map._e.fromArray(listVariable.value);
         }
       } catch (e) {
         // ignore
       }
-      return '';
+      return "";
     }
 
     setListAsObject({ list, obj }, util) {
@@ -538,11 +550,13 @@
         let listVariable = util.target.lookupVariableById(list);
 
         if (listVariable == undefined) {
-          listVariable = this.getListsID(util).find(x => x.text === list).value;
+          listVariable = this.getListsID(util).find(
+            (x) => x.text === list
+          ).value;
           listVariable = util.target.lookupVariableById(listVariable);
         }
 
-        if (listVariable && listVariable.type === 'list') {
+        if (listVariable && listVariable.type === "list") {
           listVariable.value = this._toArray(Map._e.deepCopy(obj));
         }
       } catch (e) {
@@ -563,7 +577,10 @@
     }
 
     keyval(args) {
-      return new Map().set(Scratch.Cast.toString(args.key), Map._e.fromMapOrString(args.val));
+      return new Map().set(
+        Scratch.Cast.toString(args.key),
+        Map._e.fromMapOrString(args.val)
+      );
     }
 
     _toArray(obj) {
@@ -576,11 +593,15 @@
 
     set(args) {
       const value = Map._e.fromMapOrString(args.value);
-      return Map._e.deepCopy(args.obj).set(Scratch.Cast.toString(args.key), value);
+      return Map._e
+        .deepCopy(args.obj)
+        .set(Scratch.Cast.toString(args.key), value);
     }
 
     get(args) {
-      return Map._e.shallowCopy(args.obj).get(Scratch.Cast.toString(args.key)) ?? '';
+      return (
+        Map._e.shallowCopy(args.obj).get(Scratch.Cast.toString(args.key)) ?? ""
+      );
     }
 
     delete(args) {
@@ -598,7 +619,10 @@
     }
 
     merge(args) {
-      return new Map([...Map._e.shallowCopy(args.obj1), ...Map._e.shallowCopy(args.obj2)]);
+      return new Map([
+        ...Map._e.shallowCopy(args.obj1),
+        ...Map._e.shallowCopy(args.obj2),
+      ]);
     }
 
     isObject(args) {
@@ -610,17 +634,21 @@
     }
 
     values(args) {
-      return  Map._e.fromArray([...Map._e.shallowCopy(args.obj).values()]);
+      return Map._e.fromArray([...Map._e.shallowCopy(args.obj).values()]);
     }
 
     entries(args) {
       const obj = Map._e.shallowCopy(args.obj);
       // convert entries to map
-      return Map._e.fromArray(Array.from(obj.entries()).map(x => Map._e.fromArray(x)));
+      return Map._e.fromArray(
+        Array.from(obj.entries()).map((x) => Map._e.fromArray(x))
+      );
     }
 
     indexOf(args) {
-      return [...Map._e.shallowCopy(args.obj).keys()].indexOf(Scratch.Cast.toString(args.key));
+      return [...Map._e.shallowCopy(args.obj).keys()].indexOf(
+        Scratch.Cast.toString(args.key)
+      );
     }
 
     getWhole(args) {
@@ -636,7 +664,7 @@
 
     push(args) {
       const value = Map._e.fromMapOrString(args.value);
-      return Map._e.asArray(args.obj, x => x.push(value));
+      return Map._e.asArray(args.obj, (x) => x.push(value));
     }
 
     slice(args) {
@@ -645,16 +673,16 @@
     }
 
     splice1(args) {
-      return Map._e.asArray(args.obj, x => x.splice(args.a));
+      return Map._e.asArray(args.obj, (x) => x.splice(args.a));
     }
 
     splice2(args) {
-      return Map._e.asArray(args.obj, x => x.splice(args.a, args.b));
+      return Map._e.asArray(args.obj, (x) => x.splice(args.a, args.b));
     }
 
     splice3(args) {
       const value = Map._e.fromMapOrString(args.i);
-      return Map._e.asArray(args.obj, x => x.splice(args.a, args.b, value));
+      return Map._e.asArray(args.obj, (x) => x.splice(args.a, args.b, value));
     }
 
     item(args) {
