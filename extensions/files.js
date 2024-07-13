@@ -1,6 +1,7 @@
 // Name: Files
 // ID: files
 // Description: Read and download files.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -56,7 +57,9 @@
         _resolve(text);
         Scratch.vm.renderer.removeOverlay(outer);
         Scratch.vm.runtime.off("PROJECT_STOP_ALL", handleProjectStopped);
-        document.body.removeEventListener("keydown", handleKeyDown);
+        document.body.removeEventListener("keydown", handleKeyDown, {
+          capture: true,
+        });
       };
 
       let isReadingFile = false;
@@ -164,14 +167,23 @@
       });
 
       const title = document.createElement("div");
-      title.textContent = "Select or drop file";
+      title.textContent = Scratch.translate("Select or drop file");
       title.style.fontSize = "1.5em";
       title.style.marginBottom = "8px";
       modal.appendChild(title);
 
       const subtitle = document.createElement("div");
-      const formattedAccept = accept || "any";
-      subtitle.textContent = `Accepted formats: ${formattedAccept}`;
+      const formattedAccept = accept || Scratch.translate("any");
+      subtitle.textContent = Scratch.translate(
+        {
+          default: "Accepted formats: {formats}",
+          description:
+            "[formats] is replaced with a comma-separated list of file types eg: .txt, .mp3, .png or the word any",
+        },
+        {
+          formats: formattedAccept,
+        }
+      );
       modal.appendChild(subtitle);
 
       // To avoid the script getting stalled forever, if cancel isn't supported, we'll just forcibly
@@ -223,7 +235,10 @@
   const downloadBlob = (blob, file) => {
     const url = URL.createObjectURL(blob);
     downloadURL(url, file);
-    URL.revokeObjectURL(url);
+    // Some old browsers process Blob URLs asynchronously
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
   };
 
   /**
@@ -260,7 +275,7 @@
     getInfo() {
       return {
         id: "files",
-        name: "Files",
+        name: Scratch.translate("Files"),
         color1: "#fcb103",
         color2: "#db9a37",
         color3: "#db8937",
@@ -268,14 +283,14 @@
           {
             opcode: "showPicker",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a file",
+            text: Scratch.translate("open a file"),
             disableMonitor: true,
             hideFromPalette: true,
           },
           {
             opcode: "showPickerExtensions",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a [extension] file",
+            text: Scratch.translate("open a [extension] file"),
             arguments: {
               extension: {
                 type: Scratch.ArgumentType.STRING,
@@ -288,7 +303,7 @@
           {
             opcode: "showPickerAs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a file as [as]",
+            text: Scratch.translate("open a file as [as]"),
             arguments: {
               as: {
                 type: Scratch.ArgumentType.STRING,
@@ -299,7 +314,7 @@
           {
             opcode: "showPickerExtensionsAs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a [extension] file as [as]",
+            text: Scratch.translate("open a [extension] file as [as]"),
             arguments: {
               extension: {
                 type: Scratch.ArgumentType.STRING,
@@ -317,22 +332,22 @@
           {
             opcode: "download",
             blockType: Scratch.BlockType.COMMAND,
-            text: "download [text] as [file]",
+            text: Scratch.translate("download [text] as [file]"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, world!",
+                defaultValue: Scratch.translate("Hello, world!"),
               },
               file: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "save.txt",
+                defaultValue: Scratch.translate("save.txt"),
               },
             },
           },
           {
             opcode: "downloadURL",
             blockType: Scratch.BlockType.COMMAND,
-            text: "download URL [url] as [file]",
+            text: Scratch.translate("download URL [url] as [file]"),
             arguments: {
               url: {
                 type: Scratch.ArgumentType.STRING,
@@ -340,7 +355,7 @@
               },
               file: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "save.txt",
+                defaultValue: Scratch.translate("save.txt"),
               },
             },
           },
@@ -350,7 +365,7 @@
           {
             opcode: "setOpenMode",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set open file selector mode to [mode]",
+            text: Scratch.translate("set open file selector mode to [mode]"),
             arguments: {
               mode: {
                 type: Scratch.ArgumentType.STRING,
@@ -365,7 +380,7 @@
             acceptReporters: true,
             items: [
               {
-                text: "text",
+                text: Scratch.translate("text"),
                 value: AS_TEXT,
               },
               {
@@ -378,16 +393,16 @@
             acceptReporters: true,
             items: [
               {
-                text: "show modal",
+                text: Scratch.translate("show modal"),
                 value: MODE_MODAL,
               },
               {
-                text: "open selector immediately",
+                text: Scratch.translate("open selector immediately"),
                 value: MODE_IMMEDIATELY_SHOW_SELECTOR,
               },
               {
                 // Will not work if the browser doesn't think we are responding to a click event.
-                text: "only show selector (unreliable)",
+                text: Scratch.translate("only show selector (unreliable)"),
                 value: MODE_ONLY_SELECTOR,
               },
             ],

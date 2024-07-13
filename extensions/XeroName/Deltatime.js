@@ -1,7 +1,8 @@
-// Name: Deltatime
+// Name: Delta Time
 // ID: dtbyxeroname
 // Description: Precise delta timing blocks.
 // By: XeroName <https://scratch.mit.edu/users/plant2014/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -28,7 +29,7 @@
     getInfo() {
       return {
         id: "dtbyxeroname",
-        name: "Deltatime",
+        name: Scratch.translate("Delta Time"),
         color1: "#333333",
         color2: "#444444",
         color3: "#ffffff",

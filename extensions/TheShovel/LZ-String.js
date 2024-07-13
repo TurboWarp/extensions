@@ -1,6 +1,7 @@
 // Name: LZ Compress
 // ID: shovellzcompress
 // Description: Compress and decompress text using lz-string.
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -63,10 +64,10 @@
         return null == r
           ? ""
           : "" == r
-          ? null
-          : i._decompress(r.length, 32, function (n) {
-              return t(o, r.charAt(n));
-            });
+            ? null
+            : i._decompress(r.length, 32, function (n) {
+                return t(o, r.charAt(n));
+              });
       },
       compressToUTF16: function (o) {
         return null == o
@@ -79,10 +80,10 @@
         return null == r
           ? ""
           : "" == r
-          ? null
-          : i._decompress(r.length, 16384, function (o) {
-              return r.charCodeAt(o) - 32;
-            });
+            ? null
+            : i._decompress(r.length, 16384, function (o) {
+                return r.charCodeAt(o) - 32;
+              });
       },
       compressToUint8Array: function (r) {
         for (
@@ -121,11 +122,11 @@
         return null == r
           ? ""
           : "" == r
-          ? null
-          : ((r = r.replace(/ /g, "+")),
-            i._decompress(r.length, 32, function (o) {
-              return t(n, r.charAt(o));
-            }));
+            ? null
+            : ((r = r.replace(/ /g, "+")),
+              i._decompress(r.length, 32, function (o) {
+                return t(n, r.charAt(o));
+              }));
       },
       compress: function (o) {
         return i._compress(o, 16, function (o) {
@@ -231,10 +232,10 @@
         return null == r
           ? ""
           : "" == r
-          ? null
-          : i._decompress(r.length, 32768, function (o) {
-              return r.charCodeAt(o);
-            });
+            ? null
+            : i._decompress(r.length, 32768, function (o) {
+                return r.charCodeAt(o);
+              });
       },
       _decompress: function (o, n, e) {
         var t,
@@ -336,24 +337,26 @@
         // @ts-ignore
       })
     : "undefined" != typeof module && null != module
-    ? (module.exports = LZString)
-    : "undefined" != typeof angular &&
-      null != angular &&
-      angular.module("LZString", []).factory("LZString", function () {
-        return LZString;
-      });
+      ? (module.exports = LZString)
+      : "undefined" != typeof angular &&
+        null != angular &&
+        angular.module("LZString", []).factory("LZString", function () {
+          return LZString;
+        });
   /* eslint-enable */
 
   class lzcompress {
     getInfo() {
       return {
         id: "shovellzcompress",
-        name: "LZ Compress",
+        name: Scratch.translate("LZ Compress"),
+        color1: "#2f3463",
+        color2: "#2b2f59",
         blocks: [
           {
             opcode: "compress",
             blockType: Scratch.BlockType.REPORTER,
-            text: "compress [TEXT] to [TYPE]",
+            text: Scratch.translate("compress [TEXT] to [TYPE]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -368,7 +371,7 @@
           {
             opcode: "decompress",
             blockType: Scratch.BlockType.REPORTER,
-            text: "decompress [TEXT] from [TYPE]",
+            text: Scratch.translate("decompress [TEXT] from [TYPE]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -385,11 +388,31 @@
           COMPRESSIONTYPES: {
             acceptReporters: true,
             items: [
-              "Raw",
-              "Base64",
-              "EncodedURIComponent",
-              "Uint8Array",
-              "UTF16",
+              { text: Scratch.translate("Raw"), value: "Raw" },
+              { text: Scratch.translate("Base64"), value: "Base64" },
+              {
+                text: Scratch.translate({
+                  default: "EncodedURIComponent",
+                  description:
+                    "A type of encoding that happens to also be used in URLs.",
+                }),
+                value: "EncodedURIComponent",
+              },
+              {
+                text: Scratch.translate({
+                  default: "Uint8Array",
+                  description: "An array of bytes.",
+                }),
+                value: "Unit8Array",
+              },
+              {
+                text: Scratch.translate({
+                  default: "UTF16",
+                  description:
+                    "A type of unicode encoding. For almost all languages this translates to just 'UTF16'",
+                }),
+                value: "UTF16",
+              },
             ],
           },
         },

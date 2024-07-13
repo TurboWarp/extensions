@@ -2,6 +2,7 @@
 // ID: lmsVideo
 // Description: Play videos from URLs.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 // Attribution is not required, but greatly appreciated.
 
@@ -128,7 +129,7 @@
       return {
         id: "lmsVideo",
         color1: "#557882",
-        name: "Video",
+        name: Scratch.translate("Video"),
         blocks: [
           {
             blockType: Scratch.BlockType.XML,
@@ -137,7 +138,7 @@
           {
             opcode: "loadVideoURL",
             blockType: Scratch.BlockType.COMMAND,
-            text: "load video from URL [URL] as [NAME]",
+            text: Scratch.translate("load video from URL [URL] as [NAME]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -152,7 +153,7 @@
           {
             opcode: "deleteVideoURL",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete video [NAME]",
+            text: Scratch.translate("delete video [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -163,13 +164,13 @@
           {
             opcode: "getLoadedVideos",
             blockType: Scratch.BlockType.REPORTER,
-            text: "loaded videos",
+            text: Scratch.translate("loaded videos"),
           },
           "---",
           {
             opcode: "showVideo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show video [NAME] on [TARGET]",
+            text: Scratch.translate("show video [NAME] on [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -184,7 +185,7 @@
           {
             opcode: "stopShowingVideo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop showing video on [TARGET]",
+            text: Scratch.translate("stop showing video on [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -199,7 +200,7 @@
           {
             opcode: "getCurrentVideo",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current video on [TARGET]",
+            text: Scratch.translate("current video on [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -211,7 +212,7 @@
           {
             opcode: "startVideo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start video [NAME] at [DURATION] seconds",
+            text: Scratch.translate("start video [NAME] at [DURATION] seconds"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -226,7 +227,7 @@
           {
             opcode: "getAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[ATTRIBUTE] of video [NAME]",
+            text: Scratch.translate("[ATTRIBUTE] of video [NAME]"),
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -242,7 +243,7 @@
           {
             opcode: "pause",
             blockType: Scratch.BlockType.COMMAND,
-            text: "pause video [NAME]",
+            text: Scratch.translate("pause video [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -253,7 +254,7 @@
           {
             opcode: "resume",
             blockType: Scratch.BlockType.COMMAND,
-            text: "resume video [NAME]",
+            text: Scratch.translate("resume video [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -264,7 +265,7 @@
           {
             opcode: "getState",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "video [NAME] is [STATE]?",
+            text: Scratch.translate("video [NAME] is [STATE]?"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -280,7 +281,7 @@
           {
             opcode: "setVolume",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set volume of video [NAME] to [VALUE]",
+            text: Scratch.translate("set volume of video [NAME] to [VALUE]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -300,11 +301,41 @@
           },
           state: {
             acceptReporters: true,
-            items: ["playing", "paused"],
+            items: [
+              {
+                text: Scratch.translate("playing"),
+                value: "playing",
+              },
+              {
+                text: Scratch.translate("paused"),
+                value: "paused",
+              },
+            ],
           },
           attribute: {
             acceptReporters: false,
-            items: ["current time", "duration", "volume", "width", "height"],
+            items: [
+              {
+                text: Scratch.translate("current time"),
+                value: "current time",
+              },
+              {
+                text: Scratch.translate("duration"),
+                value: "duration",
+              },
+              {
+                text: Scratch.translate("volume"),
+                value: "volume",
+              },
+              {
+                text: Scratch.translate("width"),
+                value: "width",
+              },
+              {
+                text: Scratch.translate("height"),
+                value: "height",
+              },
+            ],
           },
         },
       };
