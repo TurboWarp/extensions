@@ -86,7 +86,7 @@
             opcode: "openItchWindow",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Open [prefix] itch.io [page] window with [width]width and [height]height"
+              "open [prefix] itch.io [page] window with [width]width and [height]height"
             ),
             arguments: {
               prefix: {
@@ -114,7 +114,7 @@
           {
             opcode: "getGameData",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Fetch game data [user][game][secret]"),
+            text: Scratch.translate("fetch game data [user][game][secret]"),
             arguments: {
               user: {
                 type: Scratch.ArgumentType.STRING,
@@ -133,9 +133,7 @@
           {
             opcode: "getGameDataJson",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "Return game data [user][game][secret] in .json"
-            ),
+            text: Scratch.translate("game data [user][game][secret] in .json"),
             arguments: {
               user: {
                 type: Scratch.ArgumentType.STRING,
@@ -154,13 +152,13 @@
           {
             opcode: "returnGameDataJson",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Return game data in .json"),
+            text: Scratch.translate("game data in .json"),
           },
           "---",
           {
             opcode: "returnGameData",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Return game [data]"),
+            text: Scratch.translate("game [data]"),
             arguments: {
               data: {
                 type: Scratch.ArgumentType.STRING,
@@ -172,7 +170,7 @@
           {
             opcode: "gameBool",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Game data?"),
+            text: Scratch.translate("game data?"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -181,9 +179,7 @@
           {
             opcode: "returnGameRewards",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "Return game rewards [rewards] by index:[index]"
-            ),
+            text: Scratch.translate("game rewards [rewards] by index:[index]"),
             arguments: {
               rewards: {
                 type: Scratch.ArgumentType.STRING,
@@ -199,22 +195,22 @@
           {
             opcode: "rewardsLenght", // fixing this typo would break projects
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Return rewards list length"),
+            text: Scratch.translate("rewards list length"),
           },
           {
             opcode: "rewardsBool",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Rewards?"),
+            text: Scratch.translate("rewards?"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Sub products"),
+            text: Scratch.translate("Sub Products"),
           },
           {
             opcode: "returnGameSubProducts",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "Return game sub products [subProducts] by index:[index]"
+              "game sub products [subProducts] by index:[index]"
             ),
             arguments: {
               subProducts: {
@@ -231,12 +227,12 @@
           {
             opcode: "subProductsLength",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Return sub products list length"),
+            text: Scratch.translate("sub products list length"),
           },
           {
             opcode: "subProductsBool",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Sub products?"),
+            text: Scratch.translate("sub products?"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -245,7 +241,7 @@
           {
             opcode: "returnGameSale",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Return game sale [sale]"),
+            text: Scratch.translate("game sale [sale]"),
             arguments: {
               sale: {
                 type: Scratch.ArgumentType.STRING,
@@ -257,7 +253,7 @@
           {
             opcode: "saleBool",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Sale?"),
+            text: Scratch.translate("sale?"),
           },
         ],
         menus: {

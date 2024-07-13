@@ -298,7 +298,7 @@
           {
             opcode: "supportsTouches",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Supports touches?"),
+            text: Scratch.translate("supports touches?"),
             blockIconURI: touchIco,
             arguments: {},
             extensions: ["colours_sensing"],
@@ -322,7 +322,7 @@
           {
             opcode: "isFingerDown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is Finger [ID] down?"),
+            text: Scratch.translate("is finger [ID] down?"),
             blockIconURI: touchIco,
             arguments: {
               ID: {
@@ -509,7 +509,7 @@
           {
             opcode: "getEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get this sprite's [effect] effect"),
+            text: Scratch.translate("this sprite's [effect] effect"),
             blockIconURI: effectIco,
             disableMonitor: true,
             arguments: {
@@ -631,7 +631,7 @@
             opcode: "getDeviceSpeed",
             blockIconURI: deviceVelIco,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get the [type] speed on the [axis] axis"),
+            text: Scratch.translate("[type] speed on the [axis] axis"),
             disableMonitor: true,
             arguments: {
               type: {

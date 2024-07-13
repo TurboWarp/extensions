@@ -38,7 +38,7 @@
     getInfo() {
       return {
         id: "shovelColorPicker",
-        name: "ColorPicker",
+        name: Scratch.translate("Color Picker"),
         color1: "#ff7db5",
         color2: "#e0649a",
         color3: "#c14d7f",
@@ -46,12 +46,12 @@
           {
             opcode: "showPicker",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show color picker",
+            text: Scratch.translate("show color picker"),
           },
           {
             opcode: "setPos",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set picker position to x: [X] y: [Y]",
+            text: Scratch.translate("set picker position to x: [X] y: [Y]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -66,7 +66,7 @@
           {
             opcode: "setColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set picker color to [COLOR]",
+            text: Scratch.translate("set picker color to [COLOR]"),
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -77,7 +77,7 @@
           {
             opcode: "getColor",
             blockType: Scratch.BlockType.REPORTER,
-            text: "color [TYPE] value",
+            text: Scratch.translate("color [TYPE] value"),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -88,7 +88,7 @@
           {
             opcode: "getPos",
             blockType: Scratch.BlockType.REPORTER,
-            text: "picker [COORD] position",
+            text: Scratch.translate("picker [COORD] position"),
             arguments: {
               COORD: {
                 type: Scratch.ArgumentType.STRING,
@@ -100,13 +100,24 @@
             opcode: "whenChanged",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text: "when color changed",
+            text: Scratch.translate("when color changed"),
           },
         ],
         menus: {
           RGBMenu: {
             acceptReporters: true,
-            items: ["hex", "red", "green", "blue"],
+            items: [
+              {
+                text: Scratch.translate({
+                  default: "hex",
+                  description: "Referring to a hex color code like #ff4c4c",
+                }),
+                value: "hex",
+              },
+              { text: Scratch.translate("red"), value: "red" },
+              { text: Scratch.translate("green"), value: "green" },
+              { text: Scratch.translate("blue"), value: "blue" },
+            ],
           },
           POSMenu: {
             acceptReporters: true,
