@@ -147,7 +147,7 @@
           {
             opcode: "json_minify",
             blockType: Scratch.BlockType.REPORTER,
-            text: "minify [json]",
+            text: Scratch.translate("minify [json]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -158,7 +158,7 @@
           {
             opcode: "json_flip",
             blockType: Scratch.BlockType.REPORTER,
-            text: "flip key-value pair in [json]",
+            text: Scratch.translate("flip key-value pair in [json]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -170,7 +170,7 @@
           {
             opcode: "json_get_path",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get value by path [path] in [json]",
+            text: Scratch.translate("value by path [path] in [json]"),
             arguments: {
               path: {
                 type: Scratch.ArgumentType.STRING,
@@ -185,7 +185,9 @@
           {
             opcode: "json_set_path",
             blockType: Scratch.BlockType.REPORTER,
-            text: "set value by path [path] in [json] to [data]",
+            text: Scratch.translate(
+              "set value by path [path] in [json] to [data]"
+            ),
             arguments: {
               path: {
                 type: Scratch.ArgumentType.STRING,
@@ -197,8 +199,8 @@
               },
               data: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'value'
-              }
+                defaultValue: "value",
+              },
             },
           },
           makeLabel("JSON Strings"),
@@ -497,7 +499,9 @@
             // requested by sharkpool, I will improve it when theres lambda function
             opcode: "json_array_textfilter",
             blockType: Scratch.BlockType.REPORTER,
-            text: "filter array [list] if text [options] [text] and return [type]",
+            text: Scratch.translate(
+              "filter array [list] if text [options] [text] and return [type]"
+            ),
             arguments: {
               list: {
                 type: Scratch.ArgumentType.STRING,
@@ -573,13 +577,13 @@
           {
             opcode: "json_vm_export_var",
             blockType: Scratch.BlockType.REPORTER,
-            text: "export all variables",
+            text: Scratch.translate("export all variables"),
             disableMonitor: true,
           },
           {
             opcode: "json_vm_import_var",
             blockType: Scratch.BlockType.COMMAND,
-            text: "import all variables from [json]",
+            text: Scratch.translate("import all variables from [json]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -667,7 +671,11 @@
             ],
           },
           filter_options: {
-            items: ["includes", "starts with", "ends with"],
+            items: [
+              { text: Scratch.translate("includes"), value: "includes" },
+              { text: Scratch.translate("starts with"), value: "starts with" },
+              { text: Scratch.translate("ends with"), value: "ends with" },
+            ],
           },
         },
       };
@@ -722,7 +730,7 @@
 
     /**
      * Checks if the input is valid JSON or not, then return it
-     * @param {*} json 
+     * @param {*} json
      * @returns {Object|Any}
      */
     json_valid_return(json) {
@@ -806,7 +814,7 @@
       try {
         json = Object.entries(JSON.parse(json));
         let result = {};
-        let store = (key,val) => {
+        let store = (key, val) => {
           // invalid key
           if (typeof key === "object") return;
           if (typeof result[key] == "undefined") {
