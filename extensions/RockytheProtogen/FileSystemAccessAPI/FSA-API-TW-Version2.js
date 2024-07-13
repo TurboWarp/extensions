@@ -196,6 +196,28 @@
                             }
                         },
                     },
+                    {
+                        opcode: "memChanges",
+                        blockType: bt.reporter,
+                        text: "Changes of [num] from memory",
+                        arguments: {
+                            num: {
+                                type: argt,
+                                menu: "num"
+                            }
+                        },
+                    },
+                    {
+                        opcode: "memRead",
+                        blockType: bt.reporter,
+                        text: "Changes of [num] applied to memory",
+                        arguments: {
+                            num: {
+                                type: argt,
+                                menu: "num"
+                            }
+                        },
+                    },
                     "---",
                     {
                         blockType: bt.label,
@@ -242,46 +264,54 @@
             };
         }
         async openFile(args) {
-            const slot = fislot[args.num];
             try {
-                if (slot.file == "" && slot.metadata == "") {
-                    // @ts-ignore
-                    [slot.file] = await window.showOpenFilePicker();
-                    cs.log(slot.file);
-                    slot.metadata = await slot.file.getFile();
-                    cs.log(slot.metadata);
-                    if (slot.metadata.size > 750000000) {
-                        await this.cancel(slot);
-                        alert("File exceeds 750 MB and will not be loaded.");
-                        cs.error(
-                            "File to large! Please choose a file that does not exceed 750 MB."
-                        );
-                    }
-                    if (slot.metadata.size >= 25000000)
-                        if (
-                            !confirm(
-                                "This file exceeds 25 MB and could cause problems.\nIf you wish to continue, press OK.\nOtherwise, press cancel."
-                            )
-                        ) {
+                const slot = fislot[args.num];
+                try {
+                    if (slot.file == "" && slot.metadata == "") {
+                        // @ts-ignore
+                        [slot.file] = await window.showOpenFilePicker();
+                        cs.log(slot.file);
+                        slot.metadata = await slot.file.getFile();
+                        cs.log(slot.metadata);
+                        if (slot.metadata.size > 750000000) {
                             await this.cancel(slot);
-                            cs.error("User has quit import.");
+                            alert("File exceeds 750 MB and will not be loaded.");
+                            cs.error(
+                                "File to large! Please choose a file that does not exceed 750 MB."
+                            );
                         }
+                        if (slot.metadata.size >= 25000000)
+                            if (
+                                !confirm(
+                                    "This file exceeds 25 MB and could cause problems.\nIf you wish to continue, press OK.\nOtherwise, press cancel."
+                                )
+                            ) {
+                                await this.cancel(slot);
+                                cs.error("User has quit import.");
+                            }
+                    }
+                } catch (err) {
+                    cs.error("\nFailed to open.\n\nDetails:\n" + err);
+                    return "Failed to open.\nDetails:\n" + err;
                 }
             } catch (err) {
-                cs.error("\nFailed to open.\n\nDetails:\n" + err);
-                return "Failed to open.\nDetails:\n" + err;
+                cs.error(err)
             }
         }
         metadata(args) {
-            const slot = fislot[args.num];
-            return j.stringify({
-                name: slot.metadata.name,
-                lastModified: slot.metadata.lastModified,
-                lastModifiedDate: slot.metadata.lastModifiedDate,
-                webkitRelativePath: slot.metadata.webkitRelativePath,
-                size: slot.metadata.size,
-                type: slot.metadata.type,
-            });
+            try {
+                const slot = fislot[args.num];
+                return j.stringify({
+                    name: slot.metadata.name,
+                    lastModified: slot.metadata.lastModified,
+                    lastModifiedDate: slot.metadata.lastModifiedDate,
+                    webkitRelativePath: slot.metadata.webkitRelativePath,
+                    size: slot.metadata.size,
+                    type: slot.metadata.type,
+                });
+            } catch (err) {
+                cs.error(err)
+            }
         }
         cancel(args) {
             try {
@@ -337,159 +367,208 @@
             }
         }
         async store(args) {
-            const slot = fislot[args.num];
-            const storeName = args.name;
-            async function openDatabase(storeName) {
-                return await new Promise((resolve, reject) => {
-                    const dbRequest = window.indexedDB.open("fileHandleStore", 3);
-                    dbRequest.onupgradeneeded = (event) => {
-                        // @ts-ignore
-                        const db = event.target.result;
-                        if (db.objectStoreNames.contains(storeName)) {
-                            db.deleteObjectStore(storeName);
-                        }
-                        db.createObjectStore(storeName, {
-                            keyPath: "id",
-                            autoIncrement: true,
-                        });
-                    };
-                    dbRequest.onsuccess = (event) => {
-                        // @ts-ignore
-                        const db = event.target.result;
-                        if (!db.objectStoreNames.contains(storeName)) {
-                            db.close();
-                            const newVersion = db.version + 1;
-                            const upgradeRequest = window.indexedDB.open(
-                                "fileHandleStore",
-                                newVersion
-                            );
-                            upgradeRequest.onupgradeneeded = (event) => {
-                                // @ts-ignore
-                                const upgradeDb = event.target.result;
-                                if (upgradeDb.objectStoreNames.contains(storeName)) {
-                                    upgradeDb.deleteObjectStore(storeName);
-                                }
-                                upgradeDb.createObjectStore(storeName, {
-                                    keyPath: "id",
-                                    autoIncrement: true,
-                                });
-                            };
-                            upgradeRequest.onsuccess = (event) => {
-                                // @ts-ignore
-                                resolve(event.target.result);
-                            };
-                            // @ts-ignore
-                            upgradeRequest.onerror = (event) => {
-                                reject(new Error("Database upgrade failed"));
-                            };
-                        } else {
-                            resolve(db);
-                        }
-                    };
-                    // @ts-ignore
-                    dbRequest.onerror = (event) => {
-                        reject(new Error("Database open failed"));
-                    };
-                });
-            }
-            async function storeData(db, slotData, storeName) {
-                return await new Promise((resolve, reject) => {
-                    const transaction = db.transaction(storeName, "readwrite");
-                    const store = transaction.objectStore(storeName);
-                    const request = store.add({
-                        slotData
-                    });
-                    request.onsuccess = () => {
-                        resolve("Data stored successfully");
-                    };
-                    // @ts-ignore
-                    request.onerror = (event) => {
-                        reject(new Error("Transaction failed"));
-                    };
-                });
-            }
-            async function loadData(db, storeName) {
-                return await new Promise((resolve, reject) => {
-                    const transaction = db.transaction(storeName, "readonly");
-                    const store = transaction.objectStore(storeName);
-                    const request = store.getAll();
-                    request.onsuccess = () => {
-                        resolve(request.result[0].slotData);
-                    };
-                    // @ts-ignore
-                    request.onerror = (event) => {
-                        reject(new Error("Failed to load data"));
-                    };
-                });
-            }
             try {
-                const db = await openDatabase(storeName);
-                cs.log("Database opened successfully");
-                switch (args.ss) {
-                    case "Push": {
-                        const storeMessage = await storeData(db, slot, storeName);
-                        cs.log(storeMessage);
-                        break;
+                const slot = fislot[args.num];
+                const storeName = args.name;
+                async function openDatabase(storeName) {
+                    return await new Promise((resolve, reject) => {
+                        const dbRequest = window.indexedDB.open("fileHandleStore", 3);
+                        dbRequest.onupgradeneeded = (event) => {
+                            // @ts-ignore
+                            const db = event.target.result;
+                            if (db.objectStoreNames.contains(storeName)) {
+                                db.deleteObjectStore(storeName);
+                            }
+                            db.createObjectStore(storeName, {
+                                keyPath: "id",
+                                autoIncrement: true,
+                            });
+                        };
+                        dbRequest.onsuccess = (event) => {
+                            // @ts-ignore
+                            const db = event.target.result;
+                            if (!db.objectStoreNames.contains(storeName)) {
+                                db.close();
+                                const newVersion = db.version + 1;
+                                const upgradeRequest = window.indexedDB.open(
+                                    "fileHandleStore",
+                                    newVersion
+                                );
+                                upgradeRequest.onupgradeneeded = (event) => {
+                                    // @ts-ignore
+                                    const upgradeDb = event.target.result;
+                                    if (upgradeDb.objectStoreNames.contains(storeName)) {
+                                        upgradeDb.deleteObjectStore(storeName);
+                                    }
+                                    upgradeDb.createObjectStore(storeName, {
+                                        keyPath: "id",
+                                        autoIncrement: true,
+                                    });
+                                };
+                                upgradeRequest.onsuccess = (event) => {
+                                    // @ts-ignore
+                                    resolve(event.target.result);
+                                };
+                                // @ts-ignore
+                                upgradeRequest.onerror = (event) => {
+                                    reject(new Error("Database upgrade failed"));
+                                };
+                            } else {
+                                resolve(db);
+                            }
+                        };
+                        // @ts-ignore
+                        dbRequest.onerror = (event) => {
+                            reject(new Error("Database open failed"));
+                        };
+                    });
+                }
+                async function storeData(db, slotData, storeName) {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = db.transaction(storeName, "readwrite");
+                        const store = transaction.objectStore(storeName);
+                        const request = store.add({
+                            slotData
+                        });
+                        request.onsuccess = () => {
+                            resolve("Data stored successfully");
+                        };
+                        // @ts-ignore
+                        request.onerror = (event) => {
+                            reject(new Error("Transaction failed"));
+                        };
+                    });
+                }
+                async function loadData(db, storeName) {
+                    return await new Promise((resolve, reject) => {
+                        const transaction = db.transaction(storeName, "readonly");
+                        const store = transaction.objectStore(storeName);
+                        const request = store.getAll();
+                        request.onsuccess = () => {
+                            resolve(request.result[0].slotData);
+                        };
+                        // @ts-ignore
+                        request.onerror = (event) => {
+                            reject(new Error("Failed to load data"));
+                        };
+                    });
+                }
+                try {
+                    const db = await openDatabase(storeName);
+                    cs.log("Database opened successfully");
+                    switch (args.ss) {
+                        case "Push": {
+                            const storeMessage = await storeData(db, slot, storeName);
+                            cs.log(storeMessage);
+                            break;
+                        }
+                        case "Pull": {
+                            const data = await loadData(db, storeName);
+                            fislot[args.num] = data;
+                            cs.log("Data loaded successfully", data);
+                            break;
+                        }
+                        default:
+                            cs.error("Unknown operation:", args.ss);
                     }
-                    case "Pull": {
-                        const data = await loadData(db, storeName);
-                        fislot[args.num] = data;
-                        cs.log("Data loaded successfully", data);
-                        break;
-                    }
-                    default:
-                        cs.error("Unknown operation:", args.ss);
+                } catch (err) {
+                    cs.error("Operation failed:", err);
                 }
             } catch (err) {
-                cs.error("Operation failed:", err);
+                cs.error(err)
             }
         }
         memWrite(args) {
-            const slot = fislot[args.num];
-            const type = args.type;
-            if (Object.keys(slot.commits).length >= 10000) return;
-            if (type == "text" || type == "arrayBuffer") {
-                if (args.in == "::-da\\\\clear") {
-                    slot.commits[Object.keys(slot.commits).length + 1] = {
-                        clear: true,
-                    };
+            try {
+                const slot = fislot[args.num];
+                const type = args.type;
+                if (Object.keys(slot.commits).length >= 10000) return;
+                if (type == "text" || type == "arrayBuffer") {
+                    if (args.in == "::-da\\\\clear") {
+                        slot.commits[Object.keys(slot.commits).length + 1] = {
+                            clear: true,
+                        };
+                    } else {
+                        slot.commits[Object.keys(slot.commits).length + 1] = {
+                            clear: false,
+                            type: type,
+                            text: args.in,
+                        };
+                    }
                 } else {
-                    slot.commits[Object.keys(slot.commits).length + 1] = {
-                        clear: false,
-                        type: type,
-                        text: args.in,
-                    };
+                    cs.error("Invalid method.");
                 }
-            } else {
-                cs.error("Invalid method.");
+                cs.log(slot.commits);
+            } catch (err) {
+                cs.error(err)
             }
-            cs.log(slot.commits);
         }
         async memPush(args) {
-            const slot = fislot[args.num];
-            if (slot.metadata == "") {
-                //Eslint loves complaining about this.
-                cs.warn("Not valid.");
-                return;
-            }
-            // @ts-ignore
-            let pushFile = await slot.metadata.text();
-            for (let [key, value] of Object.entries(slot.commits)) {
-                cs.log(key, value["type"]);
-                if (value["clear"] == true) {
-                    pushFile = "";
-                } else {
-                    if (pushFile == "") {
-                        pushFile += value["text"];
+            try {
+                const slot = fislot[args.num];
+                if (slot.metadata == "") {
+                    //Eslint loves complaining about this.
+                    cs.warn("Not valid.");
+                    return;
+                }
+                // @ts-ignore
+                let pushFile = await slot.metadata.text();
+                var i = 0,
+                    len = Object.keys(slot.commits).length;
+                while (i < len) {
+                    i++
+                    if (slot.commits[i["clear"]] == true) {
+                        pushFile = "";
                     } else {
-                        pushFile += "\n" + value["text"];
+                        if (pushFile == "") {
+                            pushFile += slot.commits[i["text"]];
+                        } else {
+                            pushFile += "\n" + slot.commits[i["text"]];
+                        }
+                    }
+                    const PathTo = await slot.file.createWritable();
+                    await PathTo.write(pushFile);
+                    await PathTo.close();
+                    slot.metadata = await slot.file.getFile();
+                    slot.commits = {};
+                }
+            } catch (err) {
+                cs.error(err)
+            }
+        }
+        async memChanges(args) {
+            try {
+                const slot = fislot[args.num];
+                return await j.stringify(slot.commits)
+            } catch (err) {
+                cs.error(err)
+            }
+        }
+        async memRead(args) {
+            try {
+                const slot = fislot[args.num];
+                if (slot.metadata == "") {
+                    //Eslint loves complaining about this.
+                    cs.warn("Not valid.");
+                    return;
+                }
+                // @ts-ignore
+                let pushFile = await slot.metadata.text();
+                for (let [key, value] of Object.entries(slot.commits)) {
+                    cs.log(key, value["type"]);
+                    if (value["clear"] == true) {
+                        pushFile = "";
+                    } else {
+                        if (pushFile == "") {
+                            pushFile += value["text"];
+                        } else {
+                            pushFile += "\n" + value["text"];
+                        }
                     }
                 }
-                const PathTo = await slot.file.createWritable();
-                await PathTo.write(pushFile);
-                await PathTo.close();
-                slot.metadata = await slot.file.getFile();
-                slot.commits = {};
+                return pushFile;
+            } catch (err) {
+                cs.error(err)
             }
         }
     }
