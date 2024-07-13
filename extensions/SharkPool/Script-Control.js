@@ -3,7 +3,7 @@
 // Description: Control Scripts
 // By: SharkPool
 
-// Version V.1.4.1
+// Version V.1.4.11
 
 (function (Scratch) {
   "use strict";
@@ -406,13 +406,13 @@
   }
   if (Scratch.gui) Scratch.gui.getBlockly().then((ScratchBlocks) => {
     addLinearGradientToBody();
-    if (!ScratchBlocks?.SPgradients?.patched) { // New Gradient Patch by Ashimee <3
+    if (!ScratchBlocks?.SPgradients?.patched) { // Gradient Patch by 0znzw & SharkPool
       ScratchBlocks.SPgradients = {gradientUrls: {}, patched: false};
       const BSP = ScratchBlocks.BlockSvg.prototype, BSPR = BSP.render;
       BSP.render = function(...args) {
         const res = BSPR.apply(this, args);
         let category;
-        if (this?.svgPath_ && (category = this.type.slice(0, this.type.indexOf("_"))) && ScratchBlocks.SPgradients.gradientUrls[category]) {
+        if (this?.svgPath_ && this?.category_ && (category = this.type.slice(0, this.type.indexOf("_"))) && ScratchBlocks.SPgradients.gradientUrls[category]) {
           const urls = ScratchBlocks.SPgradients.gradientUrls[category];
           if (urls) this.svgPath_.setAttribute("fill", urls[0]);
         }
