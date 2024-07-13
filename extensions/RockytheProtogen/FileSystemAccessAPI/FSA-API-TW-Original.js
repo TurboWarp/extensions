@@ -9,7 +9,7 @@ WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!
 
 This version of the extension contains serious bugs that could hinder your project!
 DO NOT use this version. It *will* break, and *will* fail.
-This file is here for historical purposes.
+This file is here for reference and will be removed shortly.
 
 WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!
 */

@@ -1,1 +1,0 @@
-This is where the original Krita files are for my extensions, feel free to use any of them as templates for your own.
