@@ -3,6 +3,29 @@
 // Description: Access and modify files and folders using FSA-API.
 // By: Rocky the Protogen
 // License: GNU-GPL3
+// Version: V2-RV1
+
+/*
+How to recognise versions:
+V - Version, major changes. Includes rewrites that break things.
+RV - Revision, minimal changes. Mostly bug fixes.
+
+Vx-RVx - Version x, Revision x
+
+If you are updating this file using a Pull Request:
+Change Revision by 1 for simple bug fixes. (Also change IDs to match.)
+Change Version by 1 for project-breaking alterations.
+Then add yourself to the attribution.
+*/
+
+/*
+Attribution:
+kindpump - https://github.com/kindpump - Contributed code and helped the extension to continue development.
+CubesterYT - https://github.com/CubesterYT - Providied advice on submitting a PR in turbowarp/extensions:master
+veggiecan0419 - https://github.com/veggiecan0419 - Asked a question
+Drago-Cuven - https://github.com/Drago-Cuven - Asked a question and provided ideas
+unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trhe current banner is based off of.
+*/
 
 (function(Scratch) {
     "use strict";
@@ -27,18 +50,23 @@
         folderHandle3 = "",
         folderHandle4 = "",
         folderHandle5 = "",
-        fometadata1 = "",
-        fometadata2 = "",
-        fometadata3 = "",
-        fometadata4 = "",
-        fometadata5 = "";
+        fileSys1 = "",
+        fileSys2 = "",
+        fileSys3 = "",
+        fileSys4 = "",
+        fileSys5 = "";
 
     /* MEMORY ACTIONS */
     let fileCommit1 = {},
         fileCommit2 = {},
         fileCommit3 = {},
         fileCommit4 = {},
-        fileCommit5 = {};
+        fileCommit5 = {},
+        folderCommit1 = {},
+        folderCommit2 = {},
+        folderCommit3 = {},
+        folderCommit4 = {},
+        folderCommit5 = {};
 
     //Define global const
     const app = {
@@ -60,49 +88,54 @@
         1: {
             file: fileHandle1,
             metadata: fimetadata1,
-            commits: fileCommit1
+            commits: fileCommit1,
         },
         2: {
             file: fileHandle2,
             metadata: fimetadata2,
-            commits: fileCommit2
+            commits: fileCommit2,
         },
         3: {
             file: fileHandle3,
             metadata: fimetadata3,
-            commits: fileCommit3
+            commits: fileCommit3,
         },
         4: {
             file: fileHandle4,
             metadata: fimetadata4,
-            commits: fileCommit4
+            commits: fileCommit4,
         },
         5: {
             file: fileHandle5,
             metadata: fimetadata5,
-            commits: fileCommit5
+            commits: fileCommit5,
         },
     };
     const foslot = {
         1: {
-            file: folderHandle1,
-            metadata: fometadata1
+            folder: folderHandle1,
+            fileSys: fileSys1,
+            commits: folderCommit1,
         },
         2: {
-            file: folderHandle2,
-            metadata: fometadata2
+            folder: folderHandle2,
+            fileSys: fileSys2,
+            commits: folderCommit2,
         },
         3: {
-            file: folderHandle3,
-            metadata: fometadata3
+            folder: folderHandle3,
+            fileSys: fileSys3,
+            commits: folderCommit3,
         },
         4: {
-            file: folderHandle4,
-            metadata: fometadata4
+            folder: folderHandle4,
+            fileSys: fileSys4,
+            commits: folderCommit4,
         },
         5: {
-            file: folderHandle5,
-            metadata: fometadata5
+            folder: folderHandle5,
+            fileSys: fileSys5,
+            commits: folderCommit5,
         },
     };
 
@@ -169,11 +202,11 @@
                         arguments: {
                             num: {
                                 type: argt,
-                                menu: "num"
+                                menu: "num",
                             },
                             TYPE: {
                                 type: argt,
-                                menu: "methods"
+                                menu: "methods",
                             },
                         },
                     },
@@ -184,15 +217,15 @@
                         text: "Write [in] as [type] to file slot [num] in memory",
                         arguments: {
                             in: {
-                                type: argt
+                                type: argt,
                             },
                             type: {
                                 type: argt,
-                                menu: "wmethods"
+                                menu: "wmethods",
                             },
                             num: {
                                 type: argt,
-                                menu: "num"
+                                menu: "num",
                             },
                         },
                     },
@@ -203,8 +236,8 @@
                         arguments: {
                             num: {
                                 type: argt,
-                                menu: "num"
-                            }
+                                menu: "num",
+                            },
                         },
                     },
                     {
@@ -214,8 +247,8 @@
                         arguments: {
                             num: {
                                 type: argt,
-                                menu: "num"
-                            }
+                                menu: "num",
+                            },
                         },
                     },
                     {
@@ -225,19 +258,19 @@
                         arguments: {
                             num: {
                                 type: argt,
-                                menu: "num"
-                            }
+                                menu: "num",
+                            },
                         },
                     },
                     {
                         opcode: "memClear",
-                        blockType: bt.reporter,
+                        blockType: bt.command,
                         text: "Clear changes of [num]",
                         arguments: {
                             num: {
                                 type: argt,
-                                menu: "num"
-                            }
+                                menu: "num",
+                            },
                         },
                     },
                     "---",
@@ -252,14 +285,14 @@
                         arguments: {
                             num: {
                                 type: argt,
-                                menu: "num"
+                                menu: "num",
                             },
                             name: {
-                                type: argt
+                                type: argt,
                             },
                             ss: {
                                 type: argt,
-                                menu: "ss"
+                                menu: "ss",
                             },
                         },
                     },
@@ -268,11 +301,11 @@
                 menus: {
                     ss: {
                         acceptReporters: true,
-                        items: ["Push", "Pull"]
+                        items: ["Push", "Pull"],
                     },
                     num: {
                         acceptReporters: true,
-                        items: fislotmenu
+                        items: fislotmenu,
                     },
                     methods: {
                         acceptReporters: true,
@@ -315,7 +348,7 @@
                     return "Failed to open.\nDetails:\n" + err;
                 }
             } catch (err) {
-                cs.error(err)
+                cs.error(err);
             }
         }
         metadata(args) {
@@ -330,7 +363,7 @@
                     type: slot.metadata.type,
                 });
             } catch (err) {
-                cs.error(err)
+                cs.error(err);
             }
         }
         cancel(args) {
@@ -372,9 +405,11 @@
                             if (done) {
                                 return chunks.join("");
                             }
-                            chunks.push(decoder.decode(value, {
-                                stream: true
-                            }));
+                            chunks.push(
+                                decoder.decode(value, {
+                                    stream: true,
+                                })
+                            );
                             if (value.length >= chunkSize) {
                                 await new Promise((resolve) => setTimeout(resolve, 10));
                             }
@@ -448,7 +483,7 @@
                         const transaction = db.transaction(storeName, "readwrite");
                         const store = transaction.objectStore(storeName);
                         const request = store.add({
-                            slotData
+                            slotData,
                         });
                         request.onsuccess = () => {
                             resolve("Data stored successfully");
@@ -492,7 +527,7 @@
                     cs.error("Operation failed:", err);
                 }
             } catch (err) {
-                cs.error(err)
+                cs.error(err);
             }
         }
         memWrite(args) {
@@ -516,7 +551,7 @@
                     cs.error("Invalid method.");
                 }
             } catch (err) {
-                cs.error(err)
+                cs.error(err);
             }
         }
         async memPush(args) {
@@ -532,7 +567,7 @@
                 var i = 0,
                     len = Object.keys(slot.commits).length;
                 while (i < len) {
-                    i++
+                    i++;
                     if (slot.commits[i["clear"]] == true) {
                         pushFile = "";
                     } else {
@@ -549,15 +584,15 @@
                     slot.commits = {};
                 }
             } catch (err) {
-                cs.error(err)
+                cs.error(err);
             }
         }
         async memChanges(args) {
             try {
                 const slot = fislot[args.num];
-                return await j.stringify(slot.commits)
+                return await j.stringify(slot.commits);
             } catch (err) {
-                cs.error(err)
+                cs.error(err);
             }
         }
         async memRead(args) {
@@ -583,15 +618,15 @@
                 }
                 return pushFile;
             } catch (err) {
-                cs.error(err)
+                cs.error(err);
             }
         }
         memClear(args) {
             try {
-                const slot = fislot[args.num]
-                slot.commits = {}
+                const slot = fislot[args.num];
+                slot.commits = {};
             } catch (err) {
-                cs.error(err)
+                cs.error(err);
             }
         }
     }
@@ -611,18 +646,81 @@
                             menu: "num",
                         },
                     },
+                }, {
+                    opcode: "cancel",
+                    blockType: bt.command,
+                    text: "Empty FOLDER slot [num]",
+                    arguments: {
+                        num: {
+                            type: argt,
+                            menu: "num",
+                        },
+                    },
                 }, ],
                 menus: {
+                    ss: {
+                        acceptReporters: true,
+                        items: ["Push", "Pull"],
+                    },
                     num: {
                         acceptReporters: true,
                         items: fislotmenu,
+                    },
+                    methods: {
+                        acceptReporters: true,
+                        items: ["stream", "arrayBuffer", "text"],
+                    },
+                    wmethods: {
+                        acceptReporters: true,
+                        items: [ /*"arrayBuffer",*/ "text"],
                     },
                 },
             };
         }
         //Functions
-        openFolder(args) {
-            const slot = foslot[args.num]
+        async openFolder(args) {
+            const slot = foslot[args.num];
+            // @ts-ignore
+            slot.folder = await window.showDirectoryPicker({
+                multiple: false,
+                startIn: args.LOC,
+                mode: "readwrite",
+            })
+            slot.fileSys = await this.iGFC(slot.folder)
+        }
+        async getIndex(args) {
+            const slot = foslot[args.num];
+            return await this.iGFC(slot.folder)
+        }
+        async iGFC(iDH) {
+            const dH = iDH;
+            async function cDS(hdl) {
+                const structure = {};
+                for await (const entry of hdl.values()) {
+                    if (entry.kind === "directory") {
+                        const sDH = await hdl.getDirectoryHandle(entry.name);
+                        structure[entry.name] =
+                            await cDS(sDH);
+                    } else {
+                        if (!structure["@\\\\files"]) { //Don't you dare name a folder or file this.
+                            structure["@\\\\files"] = [];
+                        }
+                        const fH = await hdl.getFileHandle(entry.name);
+                        const Fi = await fH.getFile();
+                        return j.stringify({
+                            name: Fi.name,
+                            lastModified: Fi.lastModified,
+                            lastModifiedDate: Fi.lastModifiedDate,
+                            webkitRelativePath: Fi.webkitRelativePath,
+                            size: Fi.size,
+                            type: Fi.type,
+                        });
+                    }
+                }
+                return structure;
+            }
+            const directoryStructure = await cDS(dH);
+            return JSON.stringify(directoryStructure, null, 2);
         }
     }
 
