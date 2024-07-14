@@ -465,6 +465,7 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                                     resolve(event.target.result);
                                 };
                                 // @ts-ignore
+                                // @ts-ignore
                                 upgradeRequest.onerror = (event) => {
                                     reject(new Error("Database upgrade failed"));
                                 };
@@ -472,6 +473,7 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                                 resolve(db);
                             }
                         };
+                        // @ts-ignore
                         // @ts-ignore
                         dbRequest.onerror = (event) => {
                             reject(new Error("Database open failed"));
@@ -489,6 +491,7 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                             resolve("Data stored successfully");
                         };
                         // @ts-ignore
+                        // @ts-ignore
                         request.onerror = (event) => {
                             reject(new Error("Transaction failed"));
                         };
@@ -502,6 +505,7 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                         request.onsuccess = () => {
                             resolve(request.result[0].slotData);
                         };
+                        // @ts-ignore
                         // @ts-ignore
                         request.onerror = (event) => {
                             reject(new Error("Failed to load data"));
@@ -637,26 +641,39 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                 id: "filesystemaccessapiv2folders",
                 name: "FSA Folders",
                 blocks: [{
-                    opcode: "openFolder",
-                    blockType: bt.command,
-                    text: "In FOLDER slot [num] open a folder",
-                    arguments: {
-                        num: {
-                            type: argt,
-                            menu: "num",
+                        opcode: "openFolder",
+                        blockType: bt.command,
+                        text: "In FOLDER slot [num] open a folder",
+                        arguments: {
+                            num: {
+                                type: argt,
+                                menu: "num",
+                            },
+                        },
+                    }, {
+                        opcode: "cancel",
+                        blockType: bt.command,
+                        text: "Empty FOLDER slot [num]",
+                        arguments: {
+                            num: {
+                                type: argt,
+                                menu: "num",
+                            },
                         },
                     },
-                }, {
-                    opcode: "cancel",
-                    blockType: bt.command,
-                    text: "Empty FOLDER slot [num]",
-                    arguments: {
-                        num: {
-                            type: argt,
-                            menu: "num",
-                        },
+                    "---",
+                    {
+                        opcode: "getIndex",
+                        blockType: bt.reporter,
+                        text: "Index of folder [num]",
+                        arguments: {
+                            num: {
+                                type: argt,
+                                menu: "num"
+                            }
+                        }
                     },
-                }, ],
+                ],
                 menus: {
                     ss: {
                         acceptReporters: true,
@@ -722,14 +739,27 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
             const directoryStructure = await cDS(dH);
             return JSON.stringify(directoryStructure, null, 2);
         }
+        cancel(args) {
+            try {
+                const slot = foslot[args.num];
+                slot.folder = "";
+                slot.metadata = "";
+                slot.commits = {};
+            } catch (err) {
+                cs.error(err);
+            }
+        }
     }
+
 
     if (!LoadedExtensions.includes("skyhigh173JSON"))
         Scratch.vm.extensionManager.loadExtensionURL(
             "https://extensions.turbowarp.org/Skyhigh173/json.js"
         );
     try {
+        // @ts-ignore
         Scratch.extensions.register(new files());
+        // @ts-ignore
         Scratch.extensions.register(new folders());
     } catch (err) {
         cs.error(
