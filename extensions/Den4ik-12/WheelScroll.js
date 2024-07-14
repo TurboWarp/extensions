@@ -8,7 +8,7 @@
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
-      'Wheel Scroll:\nExtension "Wheel Scroll" must run unsandboxed!\nPlease enable the unsandboxed mode when loading the extension.',
+      'Wheel Scroll:\nExtension "Wheel Scroll" must run unsandboxed!\nPlease enable the unsandboxed mode when loading the extension.'
     );
   }
 
@@ -29,12 +29,9 @@
     if (dir === "") {
       threads = runtime.startHats("Den4ik12WheelScroll_whenScroll");
     } else {
-      threads = runtime.startHats(
-        "Den4ik12WheelScroll_whenScrollDir",
-        {
-          SCROLL_TYPE: dir,
-        },
-      );
+      threads = runtime.startHats("Den4ik12WheelScroll_whenScrollDir", {
+        SCROLL_TYPE: dir,
+      });
     }
     threads.forEach((thread) => {
       thread.deltaX = e.deltaX;
@@ -57,7 +54,7 @@
       if (e.deltaX > 0) startWhenScrollEvent("r", e);
       if (e.deltaX < 0) startWhenScrollEvent("l", e);
     },
-    { passive: true },
+    { passive: true }
   );
 
   class WheelScroll {
@@ -130,7 +127,7 @@
         {
           text: "down",
           value: "d",
-        },
+        }
       );
       if (enabledOtherScrollParameters) {
         result.push(
@@ -153,7 +150,7 @@
           {
             text: "along the x-axis",
             value: "ax",
-          },
+          }
         );
       }
       result.push({
@@ -195,7 +192,7 @@
         enabledOtherScrollParameters
           ? true
           : confirm(
-              "Wheel Scroll:\nThis will enable other scroll types:\nto the left, to the right, out, in, along the x-axis, along the z-axis\n\nMost computer mouses do not support these scroll types.\n\nEnable these types?",
+              "Wheel Scroll:\nThis will enable other scroll types:\nto the left, to the right, out, in, along the x-axis, along the z-axis\n\nMost computer mouses do not support these scroll types.\n\nEnable these types?"
             )
       ) {
         enabledOtherScrollParameters = !enabledOtherScrollParameters;
