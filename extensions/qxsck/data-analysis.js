@@ -13,6 +13,20 @@
         name: Scratch.translate({ id: "name", default: "Data Analysis" }),
         blocks: [
           {
+            opcode: "sum",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "sum",
+              default: "sum of [NUMBERS]",
+            }),
+            arguments: {
+              NUMBERS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "1 2 3 4 5",
+              },
+            },
+          },
+          {
             opcode: "average",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
@@ -98,6 +112,13 @@
           },
         ],
       };
+    }
+
+    sum(args) {
+      const numbers = Scratch.Cast.toString(args.NUMBERS)
+        .split(" ")
+        .map(Number);
+      return numbers.reduce((a, b) => a + b, 0);
     }
 
     average(args) {

@@ -1,7 +1,7 @@
 // Name: Files
 // ID: files
 // Description: Read and download files.
-// License: MIT AND LGPL-3.0
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -57,7 +57,9 @@
         _resolve(text);
         Scratch.vm.renderer.removeOverlay(outer);
         Scratch.vm.runtime.off("PROJECT_STOP_ALL", handleProjectStopped);
-        document.body.removeEventListener("keydown", handleKeyDown);
+        document.body.removeEventListener("keydown", handleKeyDown, {
+          capture: true,
+        });
       };
 
       let isReadingFile = false;

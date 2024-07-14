@@ -35,16 +35,16 @@
     getInfo() {
       return {
         id: "lmsTempVars2",
-        name: "Temporary Variables",
+        name: Scratch.translate("Temporary Variables"),
         color1: "#FF791A",
         color2: "#E15D00",
         blocks: [
-          label("Thread Variables", false),
+          label(Scratch.translate("Thread Variables"), false),
 
           {
             opcode: "setThreadVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set thread var [VAR] to [STRING]",
+            text: Scratch.translate("set thread var [VAR] to [STRING]"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -59,7 +59,7 @@
           {
             opcode: "changeThreadVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change thread var [VAR] by [NUM]",
+            text: Scratch.translate("change thread var [VAR] by [NUM]"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -77,7 +77,7 @@
           {
             opcode: "getThreadVariable",
             blockType: Scratch.BlockType.REPORTER,
-            text: "thread var [VAR]",
+            text: Scratch.translate("thread var [VAR]"),
             disableMonitor: true,
             allowDropAnywhere: true,
             arguments: {
@@ -90,7 +90,7 @@
           {
             opcode: "threadVariableExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "thread var [VAR] exists?",
+            text: Scratch.translate("thread var [VAR] exists?"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -104,7 +104,7 @@
           {
             opcode: "forEachThreadVariable",
             blockType: Scratch.BlockType.LOOP,
-            text: "for [VAR] in [NUM]",
+            text: Scratch.translate("for [VAR] in [NUM]"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -119,18 +119,18 @@
           {
             opcode: "listThreadVariables",
             blockType: Scratch.BlockType.REPORTER,
-            text: "active thread variables",
+            text: Scratch.translate("active thread variables"),
             disableMonitor: true,
           },
 
           "---",
 
-          label("Runtime Variables", false),
+          label(Scratch.translate("Runtime Variables"), false),
 
           {
             opcode: "setRuntimeVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set runtime var [VAR] to [STRING]",
+            text: Scratch.translate("set runtime var [VAR] to [STRING]"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -145,7 +145,7 @@
           {
             opcode: "changeRuntimeVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change runtime var [VAR] by [NUM]",
+            text: Scratch.translate("change runtime var [VAR] by [NUM]"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -163,7 +163,7 @@
           {
             opcode: "getRuntimeVariable",
             blockType: Scratch.BlockType.REPORTER,
-            text: "runtime var [VAR]",
+            text: Scratch.translate("runtime var [VAR]"),
             disableMonitor: true,
             allowDropAnywhere: true,
             arguments: {
@@ -176,7 +176,7 @@
           {
             opcode: "runtimeVariableExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "runtime var [VAR] exists?",
+            text: Scratch.translate("runtime var [VAR] exists?"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -190,7 +190,7 @@
           {
             opcode: "deleteRuntimeVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete runtime var [VAR]",
+            text: Scratch.translate("delete runtime var [VAR]"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -201,12 +201,12 @@
           {
             opcode: "deleteAllRuntimeVariables",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete all runtime variables",
+            text: Scratch.translate("delete all runtime variables"),
           },
           {
             opcode: "listRuntimeVariables",
             blockType: Scratch.BlockType.REPORTER,
-            text: "active runtime variables",
+            text: Scratch.translate("active runtime variables"),
           },
         ],
       };
