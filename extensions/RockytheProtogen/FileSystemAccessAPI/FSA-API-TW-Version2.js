@@ -558,9 +558,11 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                             text: args.in,
                         };
                     }
+                    cs.log(slot.commits[Object.keys(slot.commits).length].text)
                 } else {
                     cs.error("Invalid method.");
                 }
+                cs.log(slot.commits)
             } catch (err) {
                 cs.error(err);
             }
@@ -569,7 +571,6 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
             try {
                 const slot = fislot[args.num];
                 if (slot.metadata == "") {
-                    //Eslint loves complaining about this.
                     cs.warn("Not valid.");
                     return;
                 }
@@ -583,10 +584,11 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                         pushFile = "";
                     } else {
                         if (pushFile == "") {
-                            pushFile += slot.commits[i["text"]];
+                            pushFile += slot.commits[i].text;
                         } else {
-                            pushFile += "\n" + slot.commits[i["text"]];
+                            pushFile += "\n" + slot.commits[i].text;
                         }
+                        cs.log(i + '\n' + slot.commits[i].text)
                     }
                     const PathTo = await slot.file.createWritable();
                     await PathTo.write(pushFile);
@@ -594,6 +596,7 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                     slot.metadata = await slot.file.getFile();
                     slot.commits = {};
                 }
+                cs.log(pushFile)
             } catch (err) {
                 cs.error(err);
             }
@@ -610,7 +613,6 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
             try {
                 const slot = fislot[args.num];
                 if (slot.metadata == "") {
-                    //Eslint loves complaining about this.
                     cs.warn("Not valid.");
                     return;
                 }
@@ -693,6 +695,10 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                             TYPE: {
                                 type: Scratch.ArgumentType.STRING,
                                 menu: "methods",
+                            },
+                            num: {
+                                type: argt,
+                                menu: "num",
                             },
                         },
                     },
