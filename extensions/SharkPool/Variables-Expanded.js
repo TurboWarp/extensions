@@ -20,8 +20,8 @@
   let varUpdateListener = {};
   runtime.on("BEFORE_EXECUTE", () => { runtime.startHats("DICandSPmonitorsPlus_whenButtonPressed") });
   runtime.on("MONITORS_UPDATE", () =>{
-    for (const [id, listener] of Object.entries(varUpdateListener)) {
-      listener.func(listener.inp);
+    for (const { func, inp } of Object.values(varUpdateListener)) {
+      func(inp);
     }
   });
 
@@ -383,7 +383,7 @@
       }
     }
 
-    async setMonitor(nameID, util, nameTxt, type) {
+    setMonitor(nameID, util, nameTxt, type) {
       const baseMonitors = {
         "normal readout": "default", "large readout": "large", "slider": "slider"
       };
@@ -598,7 +598,7 @@
       }
     }
 
-    async setSliderMinMaxOfVaribleTo(args, util) {
+    setSliderMinMaxOfVaribleTo(args, util) {
       const varId = this.findVariable(args.VARIABLE, util);
       if (!varId) return;
       const margins = [Scratch.Cast.toNumber(args.MIN), Scratch.Cast.toNumber(args.MAX)];
@@ -633,7 +633,7 @@
       return info.get(args.MINMAX === "min" ? "sliderMin" : "sliderMax");
     }
 
-    async setVariableToType(args, util) { await this.setMonitor(args.VARIABLE, util, args.VARIABLE, args.TYPE) }
+    setVariableToType(args, util) { this.setMonitor(args.VARIABLE, util, args.VARIABLE, args.TYPE) }
 
     getVariableType(args, util) { return this.getMonitor(args.VARIABLE, util) }
 
@@ -655,8 +655,7 @@
       return false;
     }
 
-    async setDisplay(args, util) {
-      const type = this.getMonitor(args.VARIABLE, util);
+    setDisplay(args, util) {
       let varId = this.findVariable(args.VARIABLE, util);
       const varLabels = document.querySelectorAll(`div[data-id="${varId}"][class*="monitor"] [class^="monitor_label"]`);
       // No need to xmlEscape, we edit with textContent
