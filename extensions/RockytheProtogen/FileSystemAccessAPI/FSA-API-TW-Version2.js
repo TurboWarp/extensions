@@ -574,13 +574,22 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                     cs.warn("Not valid.");
                     return;
                 }
+
                 // @ts-ignore
                 let pushFile = await slot.metadata.text();
                 var i = 0,
                     len = Object.keys(slot.commits).length;
+                cs.log(`Total commits: ${len}`);
+
                 while (i < len) {
                     i++;
-                    if (slot.commits[i["clear"]] == true) {
+                    cs.log(`Processing commit #${i}`);
+                    if (!slot.commits[i]) {
+                        cs.error(`Commit #${i} is undefined`);
+                        continue;
+                    }
+
+                    if (slot.commits[i].clear == true) {
                         pushFile = "";
                     } else {
                         if (pushFile == "") {
@@ -588,15 +597,17 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                         } else {
                             pushFile += "\n" + slot.commits[i].text;
                         }
-                        cs.log(i + '\n' + slot.commits[i].text)
+                        cs.log(`Commit text: ${slot.commits[i].text}`);
                     }
-                    const PathTo = await slot.file.createWritable();
-                    await PathTo.write(pushFile);
-                    await PathTo.close();
-                    slot.metadata = await slot.file.getFile();
-                    slot.commits = {};
                 }
-                cs.log(pushFile)
+
+                const PathTo = await slot.file.createWritable();
+                await PathTo.write(pushFile);
+                await PathTo.close();
+                slot.metadata = await slot.file.getFile();
+                slot.commits = {};
+                cs.log(pushFile);
+
             } catch (err) {
                 cs.error(err);
             }
