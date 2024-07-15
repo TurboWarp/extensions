@@ -3,7 +3,7 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.4.0
+// Version 1.4.01
 
 (function (Scratch) {
   "use strict";
@@ -20,8 +20,23 @@
   let varUpdateListener = {};
   runtime.on("BEFORE_EXECUTE", () => { runtime.startHats("DICandSPmonitorsPlus_whenButtonPressed") });
   runtime.on("MONITORS_UPDATE", () =>{
-    for (const { func, inp } of Object.values(varUpdateListener)) {
+    for (const [id, { func, inp }] of Object.entries(varUpdateListener)) {
       func(inp);
+      if (typeof scaffolding === "undefined") {
+        // Fix potential Custom Monitors that were Double-Clicked
+        const varMonitor = document.querySelector(`div[data-id="${id}"][class*="monitor"]`);
+        if (varMonitor) {
+          Array.from(varMonitor.children).forEach(child => {
+            if (
+              !child.className.includes("monitor_SPmonitorPlus") && !child.style.display
+            ) {
+              delete varUpdateListener[id];
+              const custMon = varMonitor.querySelector(`div[class^="monitor_default-monitor_SPmonitorPlus"`);
+              if (custMon) varMonitor.removeChild(custMon);
+            }
+          });
+        }
+      }
     }
   });
 
@@ -35,11 +50,6 @@
         color3: "#cc7015",
         menuIconURI,
         blocks: [
-          {
-            func: "notify",
-            blockType: Scratch.BlockType.BUTTON,
-            text: "Disclaimer"
-          },
           {
             opcode: "exists",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -228,7 +238,7 @@
           {
             opcode: "setInpColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [THING] of [VARIABLE] to [VALUE]",
+            text: "set [THING] color of [VARIABLE] to [VALUE]",
             arguments: {
               VALUE: { type: Scratch.ArgumentType.COLOR },
               THING: { type: Scratch.ArgumentType.STRING, menu: "elementMenu" },
@@ -247,7 +257,7 @@
           {
             opcode: "setEffect",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [EFFECT] color of [VARIABLE] to [AMOUNT]",
+            text: "set [EFFECT] of [VARIABLE] to [AMOUNT]",
             arguments: {
               AMOUNT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
               EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECTS" },
@@ -297,14 +307,6 @@
     }
 
     // Helper Functions
-    notify() {
-      alert(
-        "Any Visual Changes on Monitors will intentionally reset when visibility changes." +
-        "\nAdditionally, double-clicking Monitors while using Custom Types will display the default monitors." +
-        "\n\nThis is an editor-only feature and can be reset using the 'set monitor' block."
-      );
-    }
-
     getVariables() {
       const globalVars = Object.values(vm.runtime.getTargetForStage().variables).filter((x) => x.type == "");
       const localVars = Object.values(vm.editingTarget.variables).filter((x) => x.type == "");
@@ -393,7 +395,6 @@
       ];
       const isHexRegex = /^#([0-9A-F]{3}){1,2}$/i;
       const addVarListener = (id, inp, func) => { varUpdateListener[id] = { inp, func } }
-      const removeVarListener = (id) => { delete varUpdateListener[id] }
       const buttonClick = (ID, down) => {
         if (down) monitorButtons[ID] = { varName : ID, isDown : down, timeClick : Date.now() };
         else delete monitorButtons[ID];
@@ -409,7 +410,7 @@
       // Do Not Change This Class Name. We want to Preserve CSS Attributes
       container = varMonitor.querySelector(`div[class^="monitor_default-monitor_SPmonitorPlus"`);
       if (container) varMonitor.removeChild(container);
-      removeVarListener(varId);
+      delete varUpdateListener[varId];
 
       if (custMonitors.indexOf(type) > -1) {
         container = document.createElement("div");
