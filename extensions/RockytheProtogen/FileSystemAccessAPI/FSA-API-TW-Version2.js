@@ -555,7 +555,7 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                         slot.commits[Object.keys(slot.commits).length + 1] = {
                             clear: false,
                             type: type,
-                            text: args.in,
+                            text: args.in
                         };
                     }
                     cs.log(slot.commits[Object.keys(slot.commits).length].text)
