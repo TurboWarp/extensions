@@ -67,66 +67,111 @@
         0, 0, b, 1
       ];
     },
-    translation(tx, ty, tz) {
-      return [
-        1,  0,  0,  0,
-        0,  1,  0,  0,
-        0,  0,  1,  0,
-        tx, ty, tz, 1,
-      ];
-    },
-    xRotation(angleInRadians) {
-      const c = Math.cos(angleInRadians);
-      const s = Math.sin(angleInRadians);
-      return [
-        1, 0, 0, 0,
-        0, c, s, 0,
-        0, -s, c, 0,
-        0, 0, 0, 1,
-      ];
-    },
-    yRotation(angleInRadians) {
-      const c = Math.cos(angleInRadians);
-      const s = Math.sin(angleInRadians);
-      return [
-        c, 0, -s, 0,
-        0, 1, 0, 0,
-        s, 0, c, 0,
-        0, 0, 0, 1,
-      ];
-    },
-    zRotation(angleInRadians) {
-      const c = Math.cos(angleInRadians);
-      const s = Math.sin(angleInRadians);
-      return [
-        c,  s, 0, 0,
-        -s, c, 0, 0,
-        0,  0, 1, 0,
-        0,  0, 0, 1,
-      ];
-    },
-    scaling(sx, sy, sz) {
-      return [
-        sx, 0,  0,  0,
-        0, sy,  0,  0,
-        0,  0, sz,  0,
-        0,  0,  0,  1,
-      ];
-    },
     translate(m, tx, ty, tz) {
-      return m4.multiply(m, m4.translation(tx, ty, tz));
+      return [
+        m[0],
+        m[1],
+        m[2],
+        m[3],
+        m[4],
+        m[5],
+        m[6],
+        m[7],
+        m[8],
+        m[9],
+        m[10],
+        m[11],
+        tx * m[0] + ty * m[4] + tz * m[8] + m[12],
+        tx * m[1] + ty * m[5] + tz * m[9] + m[13],
+        tx * m[2] + ty * m[6] + tz * m[10] + m[14],
+        tx * m[3] + ty * m[7] + tz * m[11] + m[15],
+      ];
     },
     xRotate(m, angleInRadians) {
-      return m4.multiply(m, m4.xRotation(angleInRadians));
+      const c = Math.cos(angleInRadians);
+      const s = Math.sin(angleInRadians);
+      return [
+        m[0],
+        m[1],
+        m[2],
+        m[3],
+        c * m[4] + s * m[8],
+        c * m[5] + s * m[9],
+        c * m[6] + s * m[10],
+        c * m[7] + s * m[11],
+        c * m[8]  - s * m[4],
+        c * m[9]  - s * m[5],
+        c * m[10] - s * m[6],
+        c * m[11] - s * m[7],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     yRotate(m, angleInRadians) {
-      return m4.multiply(m, m4.yRotation(angleInRadians));
+      const c = Math.cos(angleInRadians);
+      const s = Math.sin(angleInRadians);
+      return [
+        c * m[0] - s * m[8],
+        c * m[1] - s * m[9],
+        c * m[2] - s * m[10],
+        c * m[3] - s * m[11],
+        m[4],
+        m[5],
+        m[6],
+        m[7],
+        s * m[0] + c * m[8],
+        s * m[1] + c * m[9],
+        s * m[2] + c * m[10],
+        s * m[3] + c * m[11],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     zRotate(m, angleInRadians) {
-      return m4.multiply(m, m4.zRotation(angleInRadians));
+      const c = Math.cos(angleInRadians);
+      const s = Math.sin(angleInRadians);
+      return [
+        c * m[0] + s * m[4],
+        c * m[1] + s * m[5],
+        c * m[2] + s * m[6],
+        c * m[3] + s * m[7],
+        c * m[4] - s * m[0],
+        c * m[5] - s * m[1],
+        c * m[6] - s * m[2],
+        c * m[7] - s * m[3],
+        m[8],
+        m[9],
+        m[10],
+        m[11],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     scale(m, sx, sy, sz) {
-      return m4.multiply(m, m4.scaling(sx, sy, sz));
+      return [
+        sx * m[0],
+        sx * m[1],
+        sx * m[2],
+        sx * m[3],
+        sy * m[4],
+        sy * m[5],
+        sy * m[6],
+        sy * m[7],
+        sz * m[8],
+        sz * m[9],
+        sz * m[10],
+        sz * m[11],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     multiply(a, b) {
       const a00 = a[0 * 4 + 0];
@@ -197,10 +242,10 @@
       const a31 = a[3 * 4 + 1];
       const a32 = a[3 * 4 + 2];
       const a33 = a[3 * 4 + 3];
-      const b00 = b[0 * 4 + 0];
-      const b01 = b[0 * 4 + 1];
-      const b02 = b[0 * 4 + 2];
-      const b03 = b[0 * 4 + 3];
+      const b00 = b[0];
+      const b01 = b[1];
+      const b02 = b[2];
+      const b03 = b[3];
       return [
         b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30,
         b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31,
@@ -225,23 +270,24 @@
       ];
     },
     inverse: function(m) {
-      const inv = m4.zero();
-      inv[0]  =  m[5] * m[10] * m[15] - m[5]  * m[11] * m[14] - m[9]  * m[6] * m[15] + m[9] * m[7] * m[14] + m[13] * m[6] * m[11] - m[13] * m[7] * m[10];
-      inv[4]  = -m[4] * m[10] * m[15] + m[4]  * m[11] * m[14] + m[8]  * m[6] * m[15] - m[8] * m[7] * m[14] - m[12] * m[6] * m[11] + m[12] * m[7] * m[10];
-      inv[8]  =  m[4] * m[9]  * m[15] - m[4]  * m[11] * m[13] - m[8]  * m[5] * m[15] + m[8] * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[9];
-      inv[12] = -m[4] * m[9]  * m[14] + m[4]  * m[10] * m[13] + m[8]  * m[5] * m[14] - m[8] * m[6] * m[13] - m[12] * m[5] * m[10] + m[12] * m[6] * m[9];
-      inv[1]  = -m[1] * m[10] * m[15] + m[1]  * m[11] * m[14] + m[9]  * m[2] * m[15] - m[9] * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10];
-      inv[5]  =  m[0] * m[10] * m[15] - m[0]  * m[11] * m[14] - m[8]  * m[2] * m[15] + m[8] * m[3] * m[14] + m[12] * m[2] * m[11] - m[12] * m[3] * m[10];
-      inv[9]  = -m[0] * m[9]  * m[15] + m[0]  * m[11] * m[13] + m[8]  * m[1] * m[15] - m[8] * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[9];
-      inv[13] =  m[0] * m[9]  * m[14] - m[0]  * m[10] * m[13] - m[8]  * m[1] * m[14] + m[8] * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[9];
-      inv[2]  =  m[1] * m[6]  * m[15] - m[1]  * m[7]  * m[14] - m[5]  * m[2] * m[15] + m[5] * m[3] * m[14] + m[13] * m[2] * m[7]  - m[13] * m[3] * m[6];
-      inv[6]  = -m[0] * m[6]  * m[15] + m[0]  * m[7]  * m[14] + m[4]  * m[2] * m[15] - m[4] * m[3] * m[14] - m[12] * m[2] * m[7]  + m[12] * m[3] * m[6];
-      inv[10] =  m[0] * m[5]  * m[15] - m[0]  * m[7]  * m[13] - m[4]  * m[1] * m[15] + m[4] * m[3] * m[13] + m[12] * m[1] * m[7]  - m[12] * m[3] * m[5];
-      inv[14] = -m[0] * m[5]  * m[14] + m[0]  * m[6]  * m[13] + m[4]  * m[1] * m[14] - m[4] * m[2] * m[13] - m[12] * m[1] * m[6]  + m[12] * m[2] * m[5];
-      inv[3]  = -m[1] * m[6]  * m[11] + m[1]  * m[7]  * m[10] + m[5]  * m[2] * m[11] - m[5] * m[3] * m[10] - m[9]  * m[2] * m[7]  + m[9]  * m[3] * m[6];
-      inv[7]  =  m[0] * m[6]  * m[11] - m[0]  * m[7]  * m[10] - m[4]  * m[2] * m[11] + m[4] * m[3] * m[10] + m[8]  * m[2] * m[7]  - m[8]  * m[3] * m[6];
-      inv[11] = -m[0] * m[5]  * m[11] + m[0]  * m[7]  * m[9]  + m[4]  * m[1] * m[11] - m[4] * m[3] * m[9]  - m[8]  * m[1] * m[7]  + m[8]  * m[3] * m[5];
-      inv[15] =  m[0] * m[5]  * m[10] - m[0]  * m[6]  * m[9]  - m[4]  * m[1] * m[10] + m[4] * m[2] * m[9]  + m[8]  * m[1] * m[6]  - m[8]  * m[2] * m[5];
+      const inv = [
+         m[5] * m[10] * m[15] - m[5]  * m[11] * m[14] - m[9]  * m[6] * m[15] + m[9] * m[7] * m[14] + m[13] * m[6] * m[11] - m[13] * m[7] * m[10],
+        -m[1] * m[10] * m[15] + m[1]  * m[11] * m[14] + m[9]  * m[2] * m[15] - m[9] * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10],
+         m[1] * m[6]  * m[15] - m[1]  * m[7]  * m[14] - m[5]  * m[2] * m[15] + m[5] * m[3] * m[14] + m[13] * m[2] * m[7]  - m[13] * m[3] * m[6],
+        -m[1] * m[6]  * m[11] + m[1]  * m[7]  * m[10] + m[5]  * m[2] * m[11] - m[5] * m[3] * m[10] - m[9]  * m[2] * m[7]  + m[9]  * m[3] * m[6],
+        -m[4] * m[10] * m[15] + m[4]  * m[11] * m[14] + m[8]  * m[6] * m[15] - m[8] * m[7] * m[14] - m[12] * m[6] * m[11] + m[12] * m[7] * m[10],
+         m[0] * m[10] * m[15] - m[0]  * m[11] * m[14] - m[8]  * m[2] * m[15] + m[8] * m[3] * m[14] + m[12] * m[2] * m[11] - m[12] * m[3] * m[10],
+        -m[0] * m[6]  * m[15] + m[0]  * m[7]  * m[14] + m[4]  * m[2] * m[15] - m[4] * m[3] * m[14] - m[12] * m[2] * m[7]  + m[12] * m[3] * m[6],
+         m[0] * m[6]  * m[11] - m[0]  * m[7]  * m[10] - m[4]  * m[2] * m[11] + m[4] * m[3] * m[10] + m[8]  * m[2] * m[7]  - m[8]  * m[3] * m[6],
+         m[4] * m[9]  * m[15] - m[4]  * m[11] * m[13] - m[8]  * m[5] * m[15] + m[8] * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[9],
+        -m[0] * m[9]  * m[15] + m[0]  * m[11] * m[13] + m[8]  * m[1] * m[15] - m[8] * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[9],
+         m[0] * m[5]  * m[15] - m[0]  * m[7]  * m[13] - m[4]  * m[1] * m[15] + m[4] * m[3] * m[13] + m[12] * m[1] * m[7]  - m[12] * m[3] * m[5],
+        -m[0] * m[5]  * m[11] + m[0]  * m[7]  * m[9]  + m[4]  * m[1] * m[11] - m[4] * m[3] * m[9]  - m[8]  * m[1] * m[7]  + m[8]  * m[3] * m[5],
+        -m[4] * m[9]  * m[14] + m[4]  * m[10] * m[13] + m[8]  * m[5] * m[14] - m[8] * m[6] * m[13] - m[12] * m[5] * m[10] + m[12] * m[6] * m[9],
+         m[0] * m[9]  * m[14] - m[0]  * m[10] * m[13] - m[8]  * m[1] * m[14] + m[8] * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[9],
+        -m[0] * m[5]  * m[14] + m[0]  * m[6]  * m[13] + m[4]  * m[1] * m[14] - m[4] * m[2] * m[13] - m[12] * m[1] * m[6]  + m[12] * m[2] * m[5],
+         m[0] * m[5]  * m[10] - m[0]  * m[6]  * m[9]  - m[4]  * m[1] * m[10] + m[4] * m[2] * m[9]  + m[8]  * m[1] * m[6]  - m[8]  * m[2] * m[5]
+      ];
       const det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
       if (det == 0) return m4.zero();
       const invDet = 1 / det;
