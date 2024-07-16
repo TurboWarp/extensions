@@ -87,7 +87,7 @@
       this.serverURL = args.URL;
     }
 
-    saveToServer(args) {
+    async saveToServer(args) {
       args.FILE = Scratch.Cast.toString(args.FILE);
       args.CONTENT = Scratch.Cast.toString(args.CONTENT);
 
@@ -99,7 +99,7 @@
         "&filename=./textfiles/" +
         encodeURIComponent(args.FILE);
 
-      return fetch(url)
+      return Scratch.fetch(url)
         .then((response) => response.text())
         .then((result) => result === "ok")
         .catch((error) => {
@@ -108,7 +108,7 @@
         });
     }
 
-    loadFromServer(args) {
+    async loadFromServer(args) {
       args.FILE = Scratch.Cast.toString(args.FILE);
 
       const url =
@@ -117,7 +117,7 @@
         "&filename=./textfiles/" +
         encodeURIComponent(args.FILE);
 
-      return fetch(url)
+      return Scratch.fetch(url)
         .then((response) => response.text())
         .then((text) => {
           if (text === "ERROR: file does not exist") {
@@ -137,7 +137,7 @@
       return args.DATA.length < 10001;
     }
 
-    deleteFromServer(args) {
+    async deleteFromServer(args) {
       args.FILE = Scratch.Cast.toString(args.FILE);
 
       const url =
@@ -146,7 +146,7 @@
         "&filename=./textfiles/" +
         encodeURIComponent(args.FILE);
 
-      return fetch(url)
+      return Scratch.fetch(url)
         .then((response) => response.text())
         .then((result) => result === "ok")
         .catch((error) => {
