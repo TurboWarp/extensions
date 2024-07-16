@@ -70,7 +70,7 @@
     getInfo() {
       return {
         id: "Den4ik12WheelScroll",
-        name: "Wheel Scroll",
+        name: Scratch.translate("Wheel Scroll"),
         color1: "#E74C3C",
         color2: "#CB4335",
         color3: "#B03A2E",
@@ -78,20 +78,20 @@
         blockIconURI: blockIcon,
         blocks: [
           {
-            text: "Note: Most computer mouses do not",
+            text: Scratch.translate("Note: Most computer mouses do not"),
             blockType: Scratch.BlockType.LABEL,
           },
           {
-            text: "have the ability to scroll along the x",
+            text: Scratch.translate("have the ability to scroll along the x"),
             blockType: Scratch.BlockType.LABEL,
           },
           {
-            text: "and z axes",
+            text: Scratch.translate("and z axes"),
             blockType: Scratch.BlockType.LABEL,
           },
           {
             opcode: "whenScrollDir",
-            text: "when mouse wheel scrolls [SCROLL_TYPE]",
+            text: Scratch.translate("when mouse wheel scrolls [SCROLL_TYPE]"),
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
             arguments: {
@@ -103,13 +103,13 @@
           },
           {
             opcode: "whenScroll",
-            text: "when mouse wheel scrolls",
+            text: Scratch.translate("when mouse wheel scrolls"),
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
           },
           {
             opcode: "getDelta",
-            text: "delta [DELTA_TYPE]",
+            text: Scratch.translate("delta [DELTA_TYPE]"),
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
             arguments: {
@@ -124,46 +124,51 @@
           SCROLL_TYPE: {
             items: [
               {
-                text: "up",
+                text: Scratch.translate("up"),
                 value: "u",
               },
               {
-                text: "down",
+                text: Scratch.translate("down"),
                 value: "d",
               },
               {
-                text: "to the left",
+                text: Scratch.translate("to the left"),
                 value: "l",
               },
               {
-                text: "to the right",
+                text: Scratch.translate("to the right"),
                 value: "r",
               },
               {
-                text: "out",
+                text: Scratch.translate("out"),
                 value: "o",
               },
               {
-                text: "in",
+                text: Scratch.translate("in"),
                 value: "i",
               },
               {
-                text: "along the x-axis",
+                text: Scratch.translate("along the x-axis"),
                 value: "ax",
               },
               {
-                text: "along the y-axis",
+                text: Scratch.translate("along the y-axis"),
                 value: "ay",
               },
               {
-                text: "along the z-axis",
+                text: Scratch.translate("along the z-axis"),
                 value: "az",
               },
             ],
           },
           DELTA_TYPE: {
             acceptReporters: true,
-            items: ["x", "y", "z", "mode"],
+            items: [
+              "x",
+              "y",
+              "z",
+              { text: Scratch.translate("mode"), value: "mode" },
+            ],
           },
         },
       };
