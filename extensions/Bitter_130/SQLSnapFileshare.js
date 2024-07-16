@@ -99,7 +99,7 @@
         "&filename=./textfiles/" +
         encodeURIComponent(args.FILE);
 
-      return Scratch.fetch(url)
+      return await Scratch.fetch(url)
         .then((response) => response.text())
         .then((result) => result === "ok")
         .catch((error) => {
@@ -117,7 +117,7 @@
         "&filename=./textfiles/" +
         encodeURIComponent(args.FILE);
 
-      return Scratch.fetch(url)
+      return await Scratch.fetch(url)
         .then((response) => response.text())
         .then((text) => {
           if (text === "ERROR: file does not exist") {
@@ -146,7 +146,7 @@
         "&filename=./textfiles/" +
         encodeURIComponent(args.FILE);
 
-      return Scratch.fetch(url)
+      return await Scratch.fetch(url)
         .then((response) => response.text())
         .then((result) => result === "ok")
         .catch((error) => {
