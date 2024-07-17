@@ -1181,7 +1181,7 @@ precision mediump float;
 #define INTERPOLATION
 #endif
 
-centroid in vec4 v_color;
+INTERPOLATION in vec4 v_color;
 #ifdef TEXTURES
 #if TEXTURES == 2
 INTERPOLATION in vec2 v_uv;
