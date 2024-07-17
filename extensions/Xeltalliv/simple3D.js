@@ -924,7 +924,10 @@
       this.resizeCanvas();
     }
     dispose() {
-      renderer.removeListener("NativeSizeChanged", this._boundOnNativeSizeChanged);
+      renderer.removeListener(
+        "NativeSizeChanged",
+        this._boundOnNativeSizeChanged
+      );
       if (this._texture) {
         this._renderer.gl.deleteTexture(this._texture);
         this._texture = null;
@@ -994,10 +997,10 @@
     renderer.updateDrawableSkinId(drawableId, skinId);
 
     // Detect resizing
-    drawable.setHighQuality = function(...args) {
+    drawable.setHighQuality = function (...args) {
       Object.getPrototypeOf(this).setHighQuality(...args);
       this.skin.resizeCanvas();
-    }
+    };
 
     // Support for SharkPool's Layer Control extension
     drawable.customDrawableName = "Simple3D Layer";
@@ -1023,7 +1026,8 @@
     const index = renderer._groupOrdering.indexOf("simple3D");
     if (index == -1) return;
     const start = renderer._layerGroups["simple3D"].drawListOffset;
-    const end = renderer._layerGroups[renderer._groupOrdering[index+1]].drawListOffset;
+    const end =
+      renderer._layerGroups[renderer._groupOrdering[index + 1]].drawListOffset;
     if (start !== end) return;
     renderer._groupOrdering.splice(index, 1);
     delete renderer._layerGroups["simple3D"];
@@ -1554,8 +1558,7 @@ void main() {
     gl.getExtension("EXT_texture_filter_anisotropic") ||
     gl.getExtension("MOZ_EXT_texture_filter_anisotropic") ||
     gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-  const ext_smi =
-    gl.getExtension("OES_shader_multisample_interpolation");
+  const ext_smi = gl.getExtension("OES_shader_multisample_interpolation");
   gl.enable(gl.DEPTH_TEST);
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
   // prettier-ignore
@@ -1761,7 +1764,7 @@ void main() {
         },
       },
       def: function ({ RED, GREEN, BLUE, ALPHA }) {
-        const alpha = Cast.toNumber(ALPHA)
+        const alpha = Cast.toNumber(ALPHA);
         gl.clearColor(
           Cast.toNumber(RED) * alpha,
           Cast.toNumber(GREEN) * alpha,
@@ -2730,8 +2733,10 @@ void main() {
         const mesh = meshes.get(Cast.toString(NAME));
         if (!mesh) return;
         if (MODE === "once at pixel center") mesh.myData.interpolation = "";
-        if (MODE === "once at midpoint of covered samples") mesh.myData.interpolation = "MSAA_CENTROID";
-        if (MODE === "separately for each sample" && ext_smi) mesh.myData.interpolation = "MSAA_SAMPLE";
+        if (MODE === "once at midpoint of covered samples")
+          mesh.myData.interpolation = "MSAA_CENTROID";
+        if (MODE === "separately for each sample" && ext_smi)
+          mesh.myData.interpolation = "MSAA_SAMPLE";
         mesh.update();
       },
     },
@@ -2834,8 +2839,7 @@ void main() {
           flags.push(`SKINNING ${mesh.buffers.boneIndices.size}`);
           flags.push(`BONE_COUNT ${mesh.bonesDiff.length / 16}`);
         }
-        if (mesh.data.interpolation)
-          flags.push(mesh.data.interpolation);
+        if (mesh.data.interpolation) flags.push(mesh.data.interpolation);
         if (mesh.data.alphaTest > 0) flags.push("ALPHATEST");
         if (mesh.data.makeOpaque) flags.push("MAKE_OPAQUE");
         if (mesh.data.billboarding) flags.push("BILLBOARD");
@@ -3354,9 +3358,13 @@ void main() {
           ctx.font = FONT;
           const m = ctx.measureText(TEXT);
           canv.width =
-            m.actualBoundingBoxLeft + m.actualBoundingBoxRight + 2 * BORDERSIZECEIL;
+            m.actualBoundingBoxLeft +
+            m.actualBoundingBoxRight +
+            2 * BORDERSIZECEIL;
           canv.height =
-            m.fontBoundingBoxAscent + m.fontBoundingBoxDescent + 2 * BORDERSIZECEIL;
+            m.fontBoundingBoxAscent +
+            m.fontBoundingBoxDescent +
+            2 * BORDERSIZECEIL;
           ctx.clearRect(0, 0, canv.width, canv.height);
           ctx.font = FONT;
           ctx.lineWidth = BORDERSIZE;
@@ -4526,8 +4534,8 @@ void main() {
         items: [
           "once at pixel center",
           "once at midpoint of covered samples",
-          "separately for each sample"
-        ]
+          "separately for each sample",
+        ],
       },
     },
   };
