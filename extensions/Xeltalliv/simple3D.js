@@ -1733,11 +1733,12 @@ void main() {
         },
       },
       def: function ({ RED, GREEN, BLUE, ALPHA }) {
+        const alpha = Cast.toNumber(ALPHA)
         gl.clearColor(
-          Cast.toNumber(RED),
-          Cast.toNumber(GREEN),
-          Cast.toNumber(BLUE),
-          Cast.toNumber(ALPHA)
+          Cast.toNumber(RED) * alpha,
+          Cast.toNumber(GREEN) * alpha,
+          Cast.toNumber(BLUE) * alpha,
+          alpha
         );
       },
     },
