@@ -3262,6 +3262,7 @@ void main() {
         COLOR = Cast.toRgbColorObject(COLOR);
         BORDERSIZE = Cast.toNumber(BORDERSIZE);
         BORDERCOLOR = Cast.toRgbColorObject(BORDERCOLOR);
+        const BORDERSIZECEIL = Math.ceil(BORDERSIZE);
         imageSourceSync = null;
         imageSource = new Promise((resolve, reject) => {
           const canv = document.createElement("canvas");
@@ -3269,9 +3270,9 @@ void main() {
           ctx.font = FONT;
           const m = ctx.measureText(TEXT);
           canv.width =
-            m.actualBoundingBoxLeft + m.actualBoundingBoxRight + 2 * BORDERSIZE;
+            m.actualBoundingBoxLeft + m.actualBoundingBoxRight + 2 * BORDERSIZECEIL;
           canv.height =
-            m.fontBoundingBoxAscent + m.fontBoundingBoxDescent + 2 * BORDERSIZE;
+            m.fontBoundingBoxAscent + m.fontBoundingBoxDescent + 2 * BORDERSIZECEIL;
           ctx.clearRect(0, 0, canv.width, canv.height);
           ctx.font = FONT;
           ctx.lineWidth = BORDERSIZE;
@@ -3279,13 +3280,13 @@ void main() {
           ctx.strokeStyle = `rgba(${BORDERCOLOR.r},${BORDERCOLOR.g},${BORDERCOLOR.b},${(BORDERCOLOR.a ?? 255) / 255})`;
           ctx.fillText(
             TEXT,
-            m.actualBoundingBoxLeft + BORDERSIZE,
-            m.fontBoundingBoxAscent + BORDERSIZE
+            m.actualBoundingBoxLeft + BORDERSIZECEIL,
+            m.fontBoundingBoxAscent + BORDERSIZECEIL
           );
           ctx.strokeText(
             TEXT,
-            m.actualBoundingBoxLeft + BORDERSIZE,
-            m.fontBoundingBoxAscent + BORDERSIZE
+            m.actualBoundingBoxLeft + BORDERSIZECEIL,
+            m.fontBoundingBoxAscent + BORDERSIZECEIL
           );
           imageSourceSync = {
             width: canv.width,
@@ -3457,6 +3458,7 @@ void main() {
         if (DIR == "down") return lastTextMeasurement.fontBoundingBoxDescent;
         if (DIR == "left") return lastTextMeasurement.actualBoundingBoxLeft;
         if (DIR == "right") return lastTextMeasurement.actualBoundingBoxRight;
+        if (DIR == "x step") return lastTextMeasurement.width;
         return 0;
       },
     },
@@ -4418,7 +4420,7 @@ void main() {
       },
       directions: {
         acceptReporters: true,
-        items: ["up", "down", "left", "right"],
+        items: ["up", "down", "left", "right", "x step"],
       },
       bufferUsage: {
         acceptReporters: true,
