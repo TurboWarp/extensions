@@ -1009,11 +1009,18 @@
     publicApi.redraw = redraw;
   }
   const vshSrc = `
-precision highp float;
-
+#ifdef MSAA_CENTROID
+#define INTERPOLATION centroid
+#endif
+#ifdef MSAA_SAMPLE
+#extension GL_OES_shader_multisample_interpolation : require
+#define INTERPOLATION sample
+#endif
 #ifndef INTERPOLATION
 #define INTERPOLATION
 #endif
+
+precision highp float;
 
 in vec4 a_position;
 #ifdef COLORS
@@ -1175,11 +1182,18 @@ void main() {
 }
 `;
   const fshSrc = `
-precision mediump float;
-
+#ifdef MSAA_CENTROID
+#define INTERPOLATION centroid
+#endif
+#ifdef MSAA_SAMPLE
+#extension GL_OES_shader_multisample_interpolation : require
+#define INTERPOLATION sample
+#endif
 #ifndef INTERPOLATION
 #define INTERPOLATION
 #endif
+
+precision mediump float;
 
 INTERPOLATION in vec4 v_color;
 #ifdef TEXTURES
@@ -1515,6 +1529,8 @@ void main() {
     gl.getExtension("EXT_texture_filter_anisotropic") ||
     gl.getExtension("MOZ_EXT_texture_filter_anisotropic") ||
     gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+  const ext_smi =
+    gl.getExtension("OES_shader_multisample_interpolation");
   gl.enable(gl.DEPTH_TEST);
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
   // prettier-ignore
@@ -2591,6 +2607,7 @@ void main() {
       opcode: "setMeshCentroidInterpolation",
       blockType: BlockType.COMMAND,
       text: "set [NAME] accurate interpolation [USECENTROID]",
+      hideFromPalette: true,
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2605,7 +2622,30 @@ void main() {
         const mesh = meshes.get(Cast.toString(NAME));
         const useCentroid = Cast.toBoolean(USECENTROID);
         if (!mesh) return;
-        mesh.myData.useCentroidInterpolation = useCentroid;
+        mesh.myData.interpolation = useCentroid ? "MSAA_CENTROID" : "";
+        mesh.update();
+      },
+    },
+    {
+      opcode: "setMeshMultiSampleInterpolation",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] compute color [MODE]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        MODE: {
+          type: ArgumentType.STRING,
+          menu: "multiSampleInterpolation",
+        },
+      },
+      def: function ({ NAME, MODE }, { target }) {
+        const mesh = meshes.get(Cast.toString(NAME));
+        if (!mesh) return;
+        if (MODE === "once at pixel center") mesh.myData.interpolation = "";
+        if (MODE === "once at midpoint of covered samples") mesh.myData.interpolation = "MSAA_CENTROID";
+        if (MODE === "separately for each sample") mesh.myData.interpolation = ext_smi ? "MSAA_SAMPLE" : "";
         mesh.update();
       },
     },
@@ -2708,8 +2748,8 @@ void main() {
           flags.push(`SKINNING ${mesh.buffers.boneIndices.size}`);
           flags.push(`BONE_COUNT ${mesh.bonesDiff.length / 16}`);
         }
-        if (mesh.data.useCentroidInterpolation)
-          flags.push("INTERPOLATION centroid");
+        if (mesh.data.interpolation)
+          flags.push(mesh.data.interpolation);
         if (mesh.data.alphaTest > 0) flags.push("ALPHATEST");
         if (mesh.data.makeOpaque) flags.push("MAKE_OPAQUE");
         if (mesh.data.billboarding) flags.push("BILLBOARD");
@@ -4381,6 +4421,14 @@ void main() {
       bufferUsage: {
         acceptReporters: true,
         items: ["rarely", "frequently fully", "frequently partially"],
+      },
+      multiSampleInterpolation: {
+        acceptReporters: true,
+        items: [
+          "once at pixel center",
+          "once at midpoint of covered samples",
+          "separately for each sample"
+        ]
       },
     },
   };
