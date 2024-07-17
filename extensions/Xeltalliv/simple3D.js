@@ -992,6 +992,9 @@
     renderer.updateDrawableSkinId(drawableId, skinId);
     redraw();
 
+    // Support for SharkPool's Layer Control extension
+    renderer._allDrawables[drawableId].customDrawableName = "Simple3D Layer";
+
     const drawOriginal = renderer.draw;
     renderer.draw = function () {
       if (this.dirty) redraw();
