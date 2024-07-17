@@ -3,7 +3,7 @@
 // Description: Relayer Pen, Video Camera, Backdrops, Sprites and More
 // By: SharkPool
 
-// Version V.1.1.0
+// Version V.1.1.1
 
 (function (Scratch) {
   "use strict";
@@ -129,6 +129,14 @@
         { text: Scratch.translate("Video Layer"), value: "_video_" },
         { text: Scratch.translate("Pen Layer"), value: "_pen_" }
       ];
+      // Custom Drawable Layer (CST's 3D or Simple3D Exts for Example)
+      for (var i = 0; i < render._allDrawables.length; i++) {
+        const drawable = render._allDrawables[i];
+        if (drawable !== undefined && drawable.customDrawableName !== undefined) spriteNames.push({
+          text: drawable.customDrawableName, value: `${i}=SP-custLayer`
+        });
+      }
+      // Sprites
       const targets = runtime.targets;
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
@@ -145,27 +153,34 @@
       if (args.TARGET === "_pen_") return runtime.ext_pen?._penDrawableId || "";
       const videoL = runtime.ioDevices.video._drawable;
       if (args.TARGET === "_video_") return videoL !== -1 ? videoL : "";
+      if (args.TARGET.includes("=SP-custLayer")) {
+        const layerID = parseInt(args.TARGET);
+        if (render._allDrawables[layerID]?.customDrawableName !== undefined) return layerID;
+      }
       const target = runtime.getSpriteTargetByName(args.TARGET);
       return target ? target.drawableID : "";
     }
 
     getOwner(args, util) {
       const ID = Scratch.Cast.toNumber(args.ID); // Empty Number Inputs are always 0?
+      if (ID < 0) return "";
       const penID = runtime.ext_pen?._penDrawableId || "";
       const videoL = runtime.ioDevices.video._drawable;
       const vidID = videoL !== -1 ? videoL : "";
       if (ID === penID) return "Pen Layer";
       if (ID === vidID) return "Video Layer";
-      if (ID < 0) return "";
-      const spriteNames = {};
-      const targets = runtime.targets;
-      for (let index = 0; index < targets.length; index++) {
-        const target = targets[index];
-        spriteNames[target.drawableID] = {
-          text: `${target.getName()}${target.isOriginal ? "" : " (Clone)"}`
-        };
+      // Sprite Check
+      for (const target of runtime.targets) {
+        if (target.drawableID === ID) return `${target.getName()}${target.isOriginal ? "" : " (Clone)"}`;
       }
-      return spriteNames[ID] ? spriteNames[ID].text : "";
+      // Custom Layer Check
+      for (var i = 0; i < render._allDrawables.length; i++) {
+        const drawable = render._allDrawables[i];
+        if (
+          drawable.customDrawableName !== undefined && i === ID
+        ) return drawable.customDrawableName;
+      }
+      return "";
     }
 
     reset() {
