@@ -902,6 +902,9 @@
     handle(output) {
       this.resolveFn(output.data);
     }
+    destroy() {
+      if (this.worker) this.worker.terminate();
+    }
   }
   class SimpleSkin extends Scratch.vm.renderer.exports.Skin {
     constructor(id, renderer) {
@@ -915,16 +918,13 @@
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
       this._texture = texture;
       this._nativeSize = renderer.getNativeSize();
+      this._boundOnNativeSizeChanged = this.onNativeSizeChanged.bind(this);
       this._rotationCenter = [this._nativeSize[0] / 2, this._nativeSize[1] / 2];
-      renderer.on("NativeSizeChanged", this.onNativeSizeChanged.bind(this));
-      const urq = renderer._updateRenderQuality.bind(renderer);
-      renderer._updateRenderQuality = (...args) => {
-        urq(args);
-        this.resizeCanvas();
-      };
+      renderer.on("NativeSizeChanged", this._boundOnNativeSizeChanged);
       this.resizeCanvas();
     }
     dispose() {
+      renderer.removeListener("NativeSizeChanged", this._boundOnNativeSizeChanged);
       if (this._texture) {
         this._renderer.gl.deleteTexture(this._texture);
         this._texture = null;
@@ -986,28 +986,51 @@
     }
 
     // Create drawable and skin
-    const skinId = renderer._nextSkinId++;
+    skinId = renderer._nextSkinId++;
     const skin = new SimpleSkin(skinId, renderer);
     renderer._allSkins[skinId] = skin;
-    const drawableId = renderer.createDrawable("simple3D");
+    drawableId = renderer.createDrawable("simple3D");
+    const drawable = renderer._allDrawables[drawableId];
     renderer.updateDrawableSkinId(drawableId, skinId);
-    redraw();
 
-    // Support for SharkPool's Layer Control extension
-    renderer._allDrawables[drawableId].customDrawableName = "Simple3D Layer";
-
-    const drawOriginal = renderer.draw;
-    renderer.draw = function () {
-      if (this.dirty) redraw();
-      drawOriginal.call(this);
-    };
-
-    function redraw() {
-      skin.updateContent(canvas);
-      runtime.requestRedraw();
+    // Detect resizing
+    drawable.setHighQuality = function(...args) {
+      Object.getPrototypeOf(this).setHighQuality(...args);
+      this.skin.resizeCanvas();
     }
 
-    publicApi.redraw = redraw;
+    // Support for SharkPool's Layer Control extension
+    drawable.customDrawableName = "Simple3D Layer";
+
+    if (!publicApi.redraw) {
+      const drawOriginal = renderer.draw;
+      renderer.draw = function () {
+        if (this.dirty && publicApi.redraw) publicApi.redraw();
+        drawOriginal.call(this);
+      };
+    }
+
+    publicApi.redraw = function () {
+      skin.updateContent(canvas);
+      runtime.requestRedraw();
+    };
+    publicApi.redraw();
+  }
+  function removeSimple3DLayer() {
+    renderer.destroyDrawable(drawableId, "simple3D");
+    renderer.destroySkin(skinId);
+
+    const index = renderer._groupOrdering.indexOf("simple3D");
+    if (index == -1) return;
+    const start = renderer._layerGroups["simple3D"].drawListOffset;
+    const end = renderer._layerGroups[renderer._groupOrdering[index+1]].drawListOffset;
+    if (start !== end) return;
+    renderer._groupOrdering.splice(index, 1);
+    delete renderer._layerGroups["simple3D"];
+    for (let i = 0; i < renderer._groupOrdering.length; i++) {
+      renderer._layerGroups[renderer._groupOrdering[i]].groupIndex = i;
+    }
+    publicApi.redraw = null;
   }
   const vshSrc = `
 #ifdef MSAA_CENTROID
@@ -1521,8 +1544,8 @@ void main() {
   const runtime = vm.runtime;
 
   const extensionId = "xeltallivSimple3D";
-  const canvas = document.createElement("canvas");
-  const gl = canvas.getContext("webgl2");
+  let canvas = document.createElement("canvas");
+  let gl = canvas.getContext("webgl2");
   if (!gl)
     alert(
       "Simple 3D extension failed to get WebGL2 context. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2"
@@ -1590,6 +1613,9 @@ void main() {
   const externalTransforms =
     publicApi.externalTransforms ?? (publicApi.externalTransforms = {});
   const canvasRenderTarget = new CanvasRenderTarget();
+
+  let drawableId = null;
+  let skinId = null;
 
   let currentRenderTarget;
   let transforms;
@@ -4512,6 +4538,19 @@ void main() {
         (b) => b.opcode == "matStartWithExternal"
       ).hideFromPalette = Object.keys(externalTransforms).length == 0;
       return extInfo;
+    }
+    dispose() {
+      resetEverything();
+      removeSimple3DLayer();
+      modelDecoder.destroy();
+      runtime.removeListener("PROJECT_LOADED", resetEverything);
+      canvas = null;
+      gl = null;
+      const noop = () => {};
+      for (let block of definitions) {
+        if (block == "---") continue;
+        Extension.prototype[block.opcode ?? block.func] = noop;
+      }
     }
     fontsMenu() {
       const defaultFonts = [
