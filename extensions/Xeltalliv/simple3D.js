@@ -2645,7 +2645,7 @@ void main() {
         if (!mesh) return;
         if (MODE === "once at pixel center") mesh.myData.interpolation = "";
         if (MODE === "once at midpoint of covered samples") mesh.myData.interpolation = "MSAA_CENTROID";
-        if (MODE === "separately for each sample") mesh.myData.interpolation = ext_smi ? "MSAA_SAMPLE" : "";
+        if (MODE === "separately for each sample" && ext_smi) mesh.myData.interpolation = "MSAA_SAMPLE";
         mesh.update();
       },
     },
