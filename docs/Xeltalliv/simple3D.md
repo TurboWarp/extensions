@@ -458,6 +458,22 @@ When setting one of the transforms, while the other one is not defined or has di
 
 ---
 ```scratch
+set [my mesh] interleaved [XY positions v] [list v] :: sensing
+```
+
+Used for setting vertex data. Does the same as those blocks:
+```scratch
+set [my mesh] positions XY [listX v] [listY v] :: sensing
+set [my mesh] positions XYZ [listX v] [listY v] [listZ v] :: sensing
+set [my mesh] colors RGB [listR v] [listG v] [listB v] :: sensing
+set [my mesh] colors RGBA [listR v] [listG v] [listB v] [listA v] :: sensing
+set [my mesh] texture coordinates UV [listU v] [listV v] :: sensing
+set [my mesh] texture coordinates UVW [listU v] [listV v] [listW v] :: sensing
+```
+but from a single list with all the components interleaved.
+
+---
+```scratch
 set [my mesh] instance [transfroms v] [list v] :: sensing
 ```
 Used for setting data for instancing: drawing the same mesh many times (can be over a million) in multiple locations.

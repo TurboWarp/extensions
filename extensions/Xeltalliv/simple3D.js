@@ -1483,6 +1483,7 @@ void main() {
     target = gl.ARRAY_BUFFER
   ) {
     if (!mesh || !value) return;
+    if (value.length % size !== 0) return;
     if (mesh.uploadOffset < 0) {
       const buffer =
         mesh.myBuffers[name] ?? (mesh.myBuffers[name] = new Buffer(type));
@@ -2330,6 +2331,62 @@ void main() {
         }
         mesh.bonesDiff = diff.flat();
         mesh.update();
+      },
+    },
+    {
+      opcode: "setMeshInterleaved",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] interleaved [PROPERTY] [SRCLIST]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        PROPERTY: {
+          type: ArgumentType.STRING,
+          menu: "interleavedProperty",
+        },
+        SRCLIST: {
+          type: ArgumentType.STRING,
+          menu: "lists",
+        },
+      },
+      def: function ({ NAME, PROPERTY, SRCLIST }, { target }) {
+        let bufferName, size, type;
+        if (PROPERTY == "XY positions") {
+          bufferName = "position";
+          size = 2;
+          type = Float32Array;
+        }
+        if (PROPERTY == "XYZ positions") {
+          bufferName = "position";
+          size = 3;
+          type = Float32Array;
+        }
+        if (PROPERTY == "RGB colors") {
+          bufferName = "colors";
+          size = 3;
+          type = Uint8Array;
+        }
+        if (PROPERTY == "RGBA colors") {
+          bufferName = "colors";
+          size = 4;
+          type = Uint8Array;
+        }
+        if (PROPERTY == "UV texture coordinates") {
+          bufferName = "texCoords";
+          size = 2;
+          type = Float32Array;
+        }
+        if (PROPERTY == "UVW texture coordinates") {
+          bufferName = "texCoords";
+          size = 3;
+          type = Float32Array;
+        }
+        if (!bufferName) return;
+        const mesh = meshes.get(Cast.toString(NAME));
+        const value = compact(target, [SRCLIST], type);
+        uploadBuffer(mesh, bufferName, value, size, 0);
       },
     },
     {
@@ -4395,6 +4452,17 @@ void main() {
           "RGBA colors",
           "UV offsets",
           "UV offsets and sizes",
+        ],
+      },
+      interleavedProperty: {
+        acceptReporters: false,
+        items: [
+          "XY positions",
+          "XYZ positions",
+          "RGB colors",
+          "RGBA colors",
+          "UV texture coordinates",
+          "UVW texture coordinates",
         ],
       },
       renderTargetProperty: {
