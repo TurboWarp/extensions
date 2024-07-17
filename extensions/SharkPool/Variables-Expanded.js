@@ -3,7 +3,7 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.4.02
+// Version 1.4.03
 
 (function (Scratch) {
   "use strict";
@@ -680,7 +680,7 @@
 
     setDisplay(args, util) {
       let varId = this.findVariable(args.VARIABLE, util);
-      const varLabels = document.querySelectorAll(`div[data-id="${varId}"][class*="monitor"] [class^="monitor_label"]`);
+      const varLabels = document.querySelectorAll(`div[data-id="${varId}"][class*="monitor"] [class*="label"]`);
       // No need to xmlEscape, we edit with textContent
       if (varLabels.length > 0) {
         for (var i = 0; i < varLabels.length; i++) {
