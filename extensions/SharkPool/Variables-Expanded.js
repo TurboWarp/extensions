@@ -3,7 +3,7 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.4.01
+// Version 1.4.02
 
 (function (Scratch) {
   "use strict";
@@ -413,6 +413,8 @@
       delete varUpdateListener[varId];
 
       if (custMonitors.indexOf(type) > -1) {
+        // Check if Custom CSS Exists
+        const newStyles = document.querySelector(`style[class="shovelcss-style"]`);
         container = document.createElement("div");
         container.className = "monitor_default-monitor_SPmonitorPlus";
         container.setAttribute("style", "padding: 5px 5px 5px 5px");
@@ -428,10 +430,13 @@
 
         // Label Creation
         const label = document.createElement("div");
-        label.className = varMonitor.firstChild.firstChild.className;
+        label.className = "monitor_row";
         const innerLabel = document.createElement("div");
-        innerLabel.className = varMonitor.firstChild.firstChild.firstChild.className;
+        innerLabel.className = "monitor_label";
         innerLabel.textContent = nameID;
+        innerLabel.style.fontWeight = 700;
+        innerLabel.style.margin = "0px 5px 0px 5px";
+        innerLabel.style.color = newStyles ? "auto" : "#575E75";
         label.appendChild(innerLabel);
 
         if (type === "audio") {
@@ -452,6 +457,23 @@
           else if (type === "color") {
             input.value = isHexRegex.test(variable.value) ? variable.value : "#000";
             input.style.height = "30px";
+            const colorStyle = document.createElement("style");
+            colorStyle.textContent = `
+              input[type="color"]::-webkit-color-swatch {
+                border: black solid 1px;
+                margin: 2px;
+                border-radius: 5px;
+              }
+              input[type="color"]::-webkit-color-swatch-wrapper {
+                padding: 0px;
+              }
+              input[type="color"]::-moz-color-swatch {
+                border: black solid 1px;
+                margin: 2px;
+                border-radius: 5px;
+              }
+            `;
+            input.append(colorStyle);
           } else if (type === "number") {
             input.value = Scratch.Cast.toNumber(variable.value);
             input.max = state.get("sliderMax");
