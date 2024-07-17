@@ -597,10 +597,48 @@ Default for mesh is "off".
 ```scratch
 set [my mesh] accurate interpolation (on v) :: sensing
 ```
+(DEPRECTATED)
 Used for enabling a more accurate interpolation method which doesn't have issues of texture coordinates extrapolating outside of the specified range on the triangle edges, causing unpleasant looking seams. It is more computationally expensive and should only be used when that is an issue.
 Enabling mipmapping and/or anisatropic filtering may prevent it from working and reintroduce seams.
 
 Default for mesh is "off".
+
+---
+```scratch
+set [my mesh] compute color (once at pixel center v) :: sensing
+```
+Replaces the deprectated "accurate interpolation" block.
+
+Changes how color of each pixel is computed when MSAA antialiasing is enabled.
+
+Sometimes it can be beneficial for visulas to make edges of rendered 3D graphics smoothed out instead of having sharply transitioning pixel colors. That is the problem that different antialiasing techniques are trying to slove. For now, in Simple3D extension MSAA antialiasing is always enabled for the main Simple3D layer, and always disabled when rendering to textures.
+
+The simplest way to do antialiasing is called [Supersampling](https://en.wikipedia.org/wiki/Supersampling) and consists of rendering the image at higher resoultion then what is needed and then downscaling it to lower resolution by averageing colors. It works, but it is quite slow.
+
+A cheaper alternative to supersampling is a technique known as [Multi-sample Antialiasing (MSAA)](https://en.wikipedia.org/wiki/Multisample_anti-aliasing). It still consists of rendering the image at higher resolution by giving each pixel multiple sub-pixels, however, the color for all the sub-pixels of a pixel is only computed once, usually based on position in the center of the pixel. At the end, the colors of all of the sub-pixels get averaged and the result is a rendered image with smooth edges. Sub-pixels are often referred as samples.
+
+Unlike supersampling, MSAA only smoothes out primitive edges and not the sharp pixelated transitions on the primitive itself (e.g. textures).
+
+- `once at pixel center`
+
+  This is a typical MSAA as described above.
+
+  It has an issue where if some of the samples on the edge of a pixel fall within the drawn primitive, but the center of a pixel doesn't, then the color will still be computed for the center of the pixel, causing passed in UV coordinates and vertex colors to be extrapolated beyond the specified range. It often results in visible texture seams casued by adjacent texture data bleeding into pixels that shouldn't have it or incorrect colors on edges.
+
+  Though, for most use cases this option is good enough with issue not being noticable. Since this is computationally the cheapest option, it is default.
+- `once at midpoint of covered samples`
+
+  This solves the issue described above by still computing color once, but instead of always doing it in the center of the pixel, which may not always fall within the primitive, it does it at the midpoint of all the samples that passed the inside-of-primitive check. Since all primitives are convex, this midpoint is also guaranteed to be within the primitive. This option is more computationally expensive, and as such, disabled by default.
+
+- `separately for each sample`
+
+  Computes color separately at each sample, turning this into Supersampling. This option relies on OES_shader_multisample_interpolation and as such isn't supported everywhere. It is also the most computationally expensive option.
+
+Note that enabling mipmapping and/or anisatropic filtering may reintroduce seams regardless of what was selected with this block.
+
+Using `separately for each sample` with fallback to `once at midpoint of covered samples` can be implemented by calling the block twice. Selecting `separately for each sample` when it isn't supported will do nothing and keep the previous value.
+
+Default for mesh is "once at pixel center".
 
 ---
 ```scratch
