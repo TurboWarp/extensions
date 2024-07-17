@@ -177,7 +177,7 @@ draw to the screen at X,Y. Use Z for depth check.
 And now it's time to make some actual Simple3D scratch blocks code.
 In Simple3D those transformations are combined into 1 big transformation, and all the steps have to be specified in reverse.
 ```scratch
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
 rotate around [Y v] by ((0) - (camRotY)) degrees :: sensing
 move X ((0) - (camX)) Y ((0) - (camY)) Z ((0) - (camZ)) :: sensing
@@ -190,7 +190,7 @@ draw mesh [my mesh] :: sensing
 
 Doing all of those steps again for every mesh you want to draw is inefficient. This is where doing steps in reverse becomes helpful. Combined with wrapper block, which saves the transformation when entering it, and restores it when exiting it, it is possible to do this:
 ```scratch
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
 rotate around [Y v] by ((0) - (camRotY)) degrees :: sensing
 move X ((0) - (camX)) Y ((0) - (camY)) Z ((0) - (camZ)) :: sensing
@@ -209,7 +209,7 @@ This will work and it is efficient, however this extension also provides advance
 And when you create one large transformation by youself, it has no way of doing that. Which is why, currently the correct way to setup transformations is like this:
 ```scratch
 configure [to projected from view space v] transformation :: sensing
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 
 configure [to view space from world space v] transformation :: sensing
 start with no transformation :: sensing
@@ -715,7 +715,7 @@ Transformation `custom` does not affect anything. Use it for your own calculatio
 
 ---
 ```scratch
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 ```
 Overwrites currently active transformation with the viewspace to clipspace conversion transformation for perspective projection.
 **Camera is assumed to be facing negative Z.**
@@ -734,7 +734,7 @@ when resolution changes :: sensing hat
 
 ---
 ```scratch
-start with orthographic near (0.01) far (1000) :: sensing
+start with orthographic near (0.1) far (1000) :: sensing
 ```
 Overwrites currently active transformation with the viewspace to clipspace conversion transformation for orthographic projection.
 **Camera is assumed to be facing negative Z.**
