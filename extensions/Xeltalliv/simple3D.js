@@ -11,7 +11,8 @@
   /*
    * A modified version of m4 library based on one of the earlier lessons on webglfundamentals.org
    * All lessons can be found on https://github.com/gfxfundamentals/webgl-fundamentals/tree/master
-   * licensed under BSD 3-Clause license
+   * licensed under BSD 3-Clause license.
+   * Only this section of the code is BSD 3-Clause. The rest of the extension is MPL-2.0.
    */
 
   /*
