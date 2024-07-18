@@ -1202,7 +1202,7 @@
         };
 
         //Search using regex
-        const regexSearcher = new RegExp(`.*${uniformKey}.*;?`);
+        const regexSearcher = new RegExp(`uniform.*${uniformKey}.*;?`);
         let searchResult =
           this.shaders[shaderName].projectData.vertShader.match(
             regexSearcher
