@@ -21,14 +21,13 @@ Then add yourself to the attribution.
 /*
 Attribution:
 kindpump - https://github.com/kindpump - Contributed code and helped the extension to continue development.
-CubesterYT - https://github.com/CubesterYT - Providied advice on submitting a PR in turbowarp/extensions:master
-veggiecan0419 - https://github.com/veggiecan0419 - Asked a question
-Drago-Cuven - https://github.com/Drago-Cuven - Asked a question and provided ideas
+CubesterYT - https://github.com/CubesterYT - Providied advice on submitting a PR in turbowarp/extensions:master.
+veggiecan0419 - https://github.com/veggiecan0419 - Asked a question.
+Drago-Cuven - https://github.com/Drago-Cuven - Asked a question and provided ideas.
 unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trhe current banner is based off of.
 */
 
-// TODO: Read file from folder.
-// TODO: Wrtie to file in folder
+// TODO: Wrtie to file in folder.
 
 (function(Scratch) {
     "use strict";
@@ -713,9 +712,49 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                             },
                         },
                     },
+                    "---",
+                    {
+                        opcode: "folderCreate",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "In slot [num] [ACTION] [KIND] [NAME] and [INDX]",
+                        //blockIconURI: FolderIcon,
+                        arguments: {
+                            ACTION: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "ACTIONS",
+                            },
+                            KIND: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "KINDS",
+                            },
+                            NAME: {
+                                type: Scratch.ArgumentType.STRING,
+                            },
+                            INDX: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "INDEX",
+                            },
+                            num: {
+                                type: argt,
+                                menu: "num",
+                            },
+                        },
+                    },
 
                 ],
                 menus: {
+                    INDEX: {
+                        acceptReporters: true,
+                        items: ["index", "keep"],
+                    },
+                    ACTIONS: {
+                        acceptReporters: true,
+                        items: ["Create", "Delete"],
+                    },
+                    KINDS: {
+                        acceptReporters: true,
+                        items: ["File", "Folder"],
+                    },
                     ss: {
                         acceptReporters: true,
                         items: ["Push", "Pull"],
@@ -835,7 +874,6 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                 cs.error("File Read Error:\n" + err);
             }
         }
-
         cancel(args) {
             try {
                 const slot = foslot[args.num];
@@ -846,6 +884,136 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                 cs.error(err);
             }
         }
+        async folderCreate(args) {
+            const slot = foslot[args.num];
+            if (
+                (args.ACTION == "Create") && (args.KIND == "File")
+            ) {
+                await this.iFCFi(args.NAME, args.num);
+                if (args.INDX == "index")
+                    await this.iGFC(slot.folder);
+            } else if (
+                (args.ACTION == "Delete") && (args.KIND == "File")
+            ) {
+                await this.iFDFi(args.NAME, args.num);
+                if (args.INDX == "index")
+                    await this.iGFC(slot.folder);
+            } else if (
+                (args.ACTION == "Create") && (args.KIND == "Folder")
+            ) {
+                await this.iFCFo(args.NAME, args.num);
+                if (args.INDX == "index")
+                    await this.iGFC(slot.folder);
+            } else if (
+                (args.ACTION == "Delete") && (args.KIND == "Folder")
+            ) {
+                await this.iFDFo(args.NAME, args.num);
+                if (args.INDX == "index")
+                    await this.iGFC(slot.folder);
+            }
+        }
+        async iFCFi(filename, fh) {
+            const slot = foslot[fh];
+            const parts = filename.split("/").filter((part) => part);
+            let currentHandle = slot.folder;
+
+            for (let i = 0; i < parts.length - 1; i++) {
+                currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
+            }
+            await currentHandle.getFileHandle(parts[parts.length - 1], {
+                create: true,
+            });
+            console.log("Created.");
+        }
+        async iFDFi(filename, fh) {
+            const slot = foslot[fh];
+            const parts = filename.split("/").filter((part) => part);
+            let currentHandle = slot.folder;
+
+            for (let i = 0; i < parts.length - 1; i++) {
+                currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
+            }
+            await currentHandle.removeEntry(parts[parts.length - 1]);
+            console.log("Deleted.");
+        }
+        async iFCFo(foldername, fh) {
+            const slot = foslot[fh];
+            const parts = foldername.split("/").filter((part) => part);
+            let currentHandle = slot.folder;
+
+            for (let i = 0; i < parts.length - 1; i++) {
+                currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
+            }
+            await currentHandle.getDirectoryHandle(parts[parts.length - 1], {
+                create: true,
+            });
+            console.log("Created.");
+        }
+        async iFDFo(foldername, fh) {
+            const slot = foslot[fh];
+            const parts = foldername.split("/").filter((part) => part);
+            let currentHandle = slot.folder;
+
+            for (let i = 0; i < parts.length - 1; i++) {
+                currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
+            }
+            await currentHandle.removeEntry(parts[parts.length - 1], {
+                recursive: true,
+            });
+            console.log("Deleted.");
+        }
+        async rFfP(args) {
+            const slot = foslot[args.num];
+            const parts = args.PATH.split("/").filter((part) => part);
+            let currentHandle = slot.folder;
+
+            for (let i = 0; i < parts.length - 1; i++) {
+                currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
+            }
+            const fileHandle = await currentHandle.getFileHandle(
+                parts[parts.length - 1]
+            );
+
+            const contents = await this.getFileDataFromFolder(fileHandle, args.TYPE);
+            return contents;
+        }
+        async memWrite(args) {
+            try {
+                const slot = foslot[args.num];
+                const parts = args.PATH.split("/").filter((part) => part);
+                let currentHandle = slot.folder;
+
+                for (let i = 0; i < parts.length - 1; i++) {
+                    currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
+                }
+                const fileHandler = await currentHandle.getFileHandle(
+                    parts[parts.length - 1]
+                );
+
+                const type = args.type;
+                if (Object.keys(slot.commits).length >= 10000) return;
+                if (type == "text" || type == "arrayBuffer") {
+                    if (args.in == "::-da\\\\clear") {
+                        slot.commits[Object.keys(slot.commits).length + 1] = {
+                            clear: true,
+                        };
+                    } else {
+                        slot.commits[Object.keys(slot.commits).length + 1] = {
+                            clear: false,
+                            type: type,
+                            text: args.in
+                        };
+                    }
+                    cs.log(slot.commits[Object.keys(slot.commits).length].text)
+                } else {
+                    cs.error("Invalid method.");
+                }
+                cs.log(slot.commits)
+            } catch (err) {
+                cs.error(err);
+            }
+        }
+
     }
 
     if (!LoadedExtensions.includes("skyhigh173JSON"))
