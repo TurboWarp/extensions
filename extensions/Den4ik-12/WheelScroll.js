@@ -79,20 +79,12 @@
         blockIconURI: blockIcon,
         blocks: [
           {
-            text: Scratch.translate("Note: Most computer mouses do not"),
-            blockType: Scratch.BlockType.LABEL,
-          },
-          {
-            text: Scratch.translate("have the ability to scroll along the x"),
-            blockType: Scratch.BlockType.LABEL,
-          },
-          {
-            text: Scratch.translate("and z axes"),
-            blockType: Scratch.BlockType.LABEL,
+            blockType: Scratch.BlockType.XML,
+            xml: "<sep gap='6'/><label text='Note: Most computer mouses do not'/><sep gap='-12'/><label text='have the ability to scroll along the x'/><sep gap='-12'/><label text='and z axes.'/><sep gap='24'/>",
           },
           {
             opcode: "whenScrollDir",
-            text: Scratch.translate("when mouse wheel scrolls [SCROLL_TYPE]"),
+            text: Scratch.translate("when mouse wheel scrolled [SCROLL_TYPE]"),
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
             arguments: {
@@ -104,7 +96,7 @@
           },
           {
             opcode: "whenScroll",
-            text: Scratch.translate("when mouse wheel scrolls"),
+            text: Scratch.translate("when mouse wheel scrolled"),
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
           },
