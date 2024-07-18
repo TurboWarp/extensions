@@ -441,7 +441,7 @@
       },
     };
 
-    extensionVersion = "7.1.5";
+    extensionVersion = "7.1.7";
 
     //?Stores our attributes
     triangleAttributesOfAllSprites = {};
