@@ -977,7 +977,35 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
             const contents = await this.getFileDataFromFolder(fileHandle, args.TYPE);
             return contents;
         }
-        async memWrite(args) {
+        memWrite(args) {
+            try {
+                const slot = foslot[args.num];
+                const type = args.type;
+                if (Object.keys(slot.commits).length >= 10000) return;
+                if (type == "text" || type == "arrayBuffer") {
+                    if (args.in == "::-da\\\\clear") {
+                        slot.commits[Object.keys(slot.commits).length + 1] = {
+                            clear: true,
+                            path: args.path,
+                        };
+                    } else {
+                        slot.commits[Object.keys(slot.commits).length + 1] = {
+                            clear: false,
+                            type: type,
+                            text: args.in,
+                            path: args.path
+                        };
+                    }
+                    cs.log(slot.commits[Object.keys(slot.commits).length].text)
+                } else {
+                    cs.error("Invalid method.");
+                }
+                cs.log(slot.commits)
+            } catch (err) {
+                cs.error(err);
+            }
+        }
+        async memPush(args) {
             try {
                 const slot = foslot[args.num];
                 const parts = args.PATH.split("/").filter((part) => part);
@@ -990,30 +1018,48 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
                     parts[parts.length - 1]
                 );
 
-                const type = args.type;
-                if (Object.keys(slot.commits).length >= 10000) return;
-                if (type == "text" || type == "arrayBuffer") {
-                    if (args.in == "::-da\\\\clear") {
-                        slot.commits[Object.keys(slot.commits).length + 1] = {
-                            clear: true,
-                        };
-                    } else {
-                        slot.commits[Object.keys(slot.commits).length + 1] = {
-                            clear: false,
-                            type: type,
-                            text: args.in
-                        };
-                    }
-                    cs.log(slot.commits[Object.keys(slot.commits).length].text)
-                } else {
-                    cs.error("Invalid method.");
+                if (fileHandler.getFile() == "") {
+                    cs.warn("Not valid.");
+                    return;
                 }
-                cs.log(slot.commits)
+
+                // @ts-ignore
+                const filemetadata = fileHandler.getFile();
+                let pushFile = await filemetadata.text();
+                var i = 0,
+                    len = Object.keys(slot.commits).length;
+                cs.log(`Total commits: ${len}`);
+
+                while (i < len) {
+                    i++;
+                    cs.log(`Processing commit #${i}`);
+                    if (!slot.commits[i]) {
+                        cs.error(`Commit #${i} is undefined`);
+                        continue;
+                    }
+
+                    if (slot.commits[i].clear == true) {
+                        pushFile = "";
+                    } else {
+                        if (pushFile == "") {
+                            pushFile += slot.commits[i].text;
+                        } else {
+                            pushFile += "\n" + slot.commits[i].text;
+                        }
+                        cs.log(`Commit text: ${slot.commits[i].text}`);
+                    }
+                }
+
+                const PathTo = await slot.file.createWritable();
+                await PathTo.write(pushFile);
+                await PathTo.close();
+                slot.commits = {};
+                cs.log(pushFile);
+
             } catch (err) {
                 cs.error(err);
             }
         }
-
     }
 
     if (!LoadedExtensions.includes("skyhigh173JSON"))
