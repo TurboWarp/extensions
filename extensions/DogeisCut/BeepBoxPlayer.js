@@ -2,6 +2,7 @@
 // ID: dogeiscutbeepboxplayer
 // Description: Play, edit, and read songs from any BeepBox mod directly from the URL!
 // By: DogeisCut <https://scratch.mit.edu/users/DogeisCut/>
+// License: MPL-2.0
 
 (function (Scratch) {
   "use strict";
