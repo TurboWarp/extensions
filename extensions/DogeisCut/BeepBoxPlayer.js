@@ -1,8 +1,10 @@
 // Name: Beepbox Player
 // ID: dogeiscutbeepboxplayer
-// Description: Play, edit, and read songs from any BeepBox mod directly from the URL or JSON!
+// Description: Play, edit, and read songs from any BeepBox mod directly from the URL!
 // By: DogeisCut <https://scratch.mit.edu/users/DogeisCut/>
 // License: MPL-2.0
+
+// Version 1.0.0
 
 //TODO: Synth deletion (and naming perhaps?)
 //TODO: Song validation blocks.
@@ -15,8 +17,6 @@
     throw new Error("'BeepBox Player' must run unsandboxed!");
   }
 
-  //So, i have to copy and paste the entire beepbox player code in here, as adding in scripts is not advised, it is... not pretty.
-  //Also, the source code uses `new Function()` but it doesnt take user input. I cannot remove this as beepbox it uses it to not have to branch on the number of voices. the fm code does the same
   /* eslint-disable*/
   // prettier-ignore
   var beepbox=function(e){"use strict";
@@ -47,8 +47,6 @@
   //the above minified code is a compiled version of https://github.com/DogeisCut/ultraabox-for-turbowarp/blob/main/synth/synth.ts
   //which is based on https://github.com/ultraabox/ultrabox_typescript/blob/main/synth/synth.ts
   /* eslint-enable*/
-
-  console.log(beepbox);
 
   const defaultSong =
     "j5N0sSuper%20Mario%20Bros%20Themen310s0k7l00e0ft2-a7g0fj07r1O_U00000000i0o443T0v0pu00f160qw42c00Oad030w2h0E0T0v0pu00f160qw42c00Oad030w2h0E0T0v0zu00f160qw42c00Oad030w1h0E0T2v0pu02f1a0qM412c00Oad040w0E0b4z8Ql6hkpUsiczhkp5hDxN8Od5hAl6u74z8Ql6hkpUsp267FAu7k2ewhOl4zG7dWgLFBYAnMp70Asxi8Zgbn5HyM979kyeChSrlAFBZigHi17n8V6Tp8Wd6PbX5yNo8X171At2wpsLF5ZoLHDdW2whQ2exh8WB8zIn3bQB0zE4t2FkeDFAugk2ewhQa171CnicL8y-ibXhvh8Xh78kyfg2RhqMI0hOd8zEAty0I5cLxp2Xn8X17nHSieRjFO-NoIm2eMhM97gE6nbV8LHBZwVLik2ewhQ80zJQOexrcLkk2ewhQaBgWuChWGwhQ2exg8W9BQ3bQ1v95YAnMh7j8V2AhWwm45wxo0zIQyeChOk3patEnQi-EhSi-zgcLj5ZALGkPFZchMhv05ZcLGk2eEhVcnMxvm8WxvkbVczRhvlbWF7lbWFvl8M0";
@@ -223,6 +221,29 @@
           },
           "---",
           {
+            opcode: "muteChannel",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "mute channel [CHANNEL]",
+            arguments: {
+              CHANNEL: {
+                type: Scratch.ArgumentType.NUMBER,
+                menu: "CHANNELS_MENU",
+              },
+            },
+          },
+          {
+            opcode: "unmuteChannel",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "unmute channel [CHANNEL]",
+            arguments: {
+              CHANNEL: {
+                type: Scratch.ArgumentType.NUMBER,
+                menu: "CHANNELS_MENU",
+              },
+            },
+          },
+          "---",
+          {
             opcode: "enableLooping",
             blockType: Scratch.BlockType.COMMAND,
             text: "enable looping",
@@ -285,24 +306,28 @@
         ],
         menus: {
           CURRENT_MENU: {
-            acceptReporters: false, //scratch consitsancy, also disables monitor if true, sorry!
+            acceptReporters: false,
             items: ["song", "bar", "beat", "part", "tick"],
           },
           SONG_MENU: {
-            acceptReporters: false, //scratch consitsancy, also disables monitor if true, sorry!
-            items: ["tempo", "channels", "volume", "title"],
+            acceptReporters: false,
+            items: ["tempo", "channels", "volume", "title", "json", "url"],
           },
           CURRENT_MENU_LIMITED: {
-            acceptReporters: false, //scratch consitsancy, also disables monitor if true, sorry!
+            acceptReporters: false,
             items: ["bar", "beat", "part"],
           },
           SONG_MENU_LIMITED: {
-            acceptReporters: false, //scratch consitsancy, also disables monitor if true, sorry!
+            acceptReporters: false,
             items: ["tempo", "title"],
           },
           SYNTHS_MENU: {
             acceptReporters: true,
             items: "getSynths",
+          },
+          CHANNELS_MENU: {
+            acceptReporters: true,
+            items: "getChannels",
           },
         },
       };
@@ -318,6 +343,18 @@
         });
       }
       return gettingSynths;
+    }
+
+    getChannels() {
+      const gettingChannels = [];
+      for (let i in synth.song.channels) {
+        let javascriptMoment = Scratch.Cast.toNumber(i) + 1;
+        gettingChannels.push({
+          text: Scratch.Cast.toString(javascriptMoment),
+          value: Scratch.Cast.toString(javascriptMoment),
+        });
+      }
+      return gettingChannels;
     }
 
     current(args) {
@@ -359,11 +396,15 @@
         case "tempo":
           return synth.song.tempo;
         case "channels":
-          return synth.song.channels.length;
+          return synth.song.getChannelCount();
         case "volume":
           return synth.volume * 100;
         case "title":
           return synth.song.title;
+        case "json":
+          return JSON.stringify(synth.song.toJsonObject());
+        case "url":
+          return synth.song.toBase64String();
       }
     }
     setSongValue(args) {
@@ -402,20 +443,16 @@
       }
     }
 
-    playSongWait(args) {
-      synth.activateAudio();
-      synth.play();
-      return new Promise((resolve, reject) => {
-        const checkIsPlaying = () => {
-          if (synth.isPlayingSong) {
-            setTimeout(checkIsPlaying, 100);
-          } else {
-            resolve();
-          }
-        };
-
-        checkIsPlaying();
-      });
+    playSongWait(args, util) {
+      if (synth.waitBlockNotPlay == false || synth.waitBlockNotPlay == null) {
+        this.playSong(args)
+        synth.waitBlockNotPlay = true
+      }
+      if (synth.isPlayingSong) {
+        util.yield();
+      } else {
+        synth.waitBlockNotPlay = false
+      }
     }
 
     pauseSong(args) {
@@ -439,6 +476,17 @@
       synth.volume = Math.max(Math.min(synth.volume * 100, 200), 0) / 100;
     }
 
+    muteChannel(args) {
+      var targetChannel = Scratch.Cast.toNumber(args.CHANNEL)-1
+      targetChannel = Math.min(Math.max(targetChannel, 0), synth.song.getChannelCount()-1)
+      synth.song.channels[targetChannel].muted = true
+    }
+    unmuteChannel(args) {
+      var targetChannel = Scratch.Cast.toNumber(args.CHANNEL)-1
+      targetChannel = Math.min(Math.max(targetChannel, 0), synth.song.getChannelCount()-1)
+      synth.song.channels[targetChannel].muted = false
+    }
+
     disableLooping(args) {
       synth.loopRepeatCount = 0;
     }
@@ -446,7 +494,7 @@
       synth.loopRepeatCount = -1;
     }
     looping(args) {
-      return synth.loopRepeatCount == -1 ? true : false;
+      return synth.loopRepeatCount === -1
     }
 
     createSynth(args) {
