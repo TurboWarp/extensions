@@ -445,13 +445,13 @@
 
     playSongWait(args, util) {
       if (synth.waitBlockNotPlay == false || synth.waitBlockNotPlay == null) {
-        this.playSong(args)
-        synth.waitBlockNotPlay = true
+        this.playSong(args);
+        synth.waitBlockNotPlay = true;
       }
       if (synth.isPlayingSong) {
         util.yield();
       } else {
-        synth.waitBlockNotPlay = false
+        synth.waitBlockNotPlay = false;
       }
     }
 
@@ -477,14 +477,20 @@
     }
 
     muteChannel(args) {
-      var targetChannel = Scratch.Cast.toNumber(args.CHANNEL)-1
-      targetChannel = Math.min(Math.max(targetChannel, 0), synth.song.getChannelCount()-1)
-      synth.song.channels[targetChannel].muted = true
+      var targetChannel = Scratch.Cast.toNumber(args.CHANNEL) - 1;
+      targetChannel = Math.min(
+        Math.max(targetChannel, 0),
+        synth.song.getChannelCount() - 1
+      );
+      synth.song.channels[targetChannel].muted = true;
     }
     unmuteChannel(args) {
-      var targetChannel = Scratch.Cast.toNumber(args.CHANNEL)-1
-      targetChannel = Math.min(Math.max(targetChannel, 0), synth.song.getChannelCount()-1)
-      synth.song.channels[targetChannel].muted = false
+      var targetChannel = Scratch.Cast.toNumber(args.CHANNEL) - 1;
+      targetChannel = Math.min(
+        Math.max(targetChannel, 0),
+        synth.song.getChannelCount() - 1
+      );
+      synth.song.channels[targetChannel].muted = false;
     }
 
     disableLooping(args) {
@@ -494,7 +500,7 @@
       synth.loopRepeatCount = -1;
     }
     looping(args) {
-      return synth.loopRepeatCount === -1
+      return synth.loopRepeatCount === -1;
     }
 
     createSynth(args) {
