@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.0.3
+// Version: 1.0.4
 
 (function (Scratch) {
   "use strict";
@@ -1629,6 +1629,14 @@ void main() {
   runtime.on("PROJECT_LOADED", resetEverything);
 
   const definitions = [
+    {
+      blockType: BlockType.BUTTON,
+      text: "Open extra resources",
+      func: "openSite",
+      def: function () {
+        Scratch.openWindow("https://xeltalliv.github.io/simple3d-extension/");
+      },
+    },
     {
       blockType: BlockType.BUTTON,
       text: "Open sample project",
