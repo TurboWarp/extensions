@@ -384,28 +384,6 @@
             arguments: {
               SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "<svg>" }
             }
-          },
-          // Deprecated
-          {
-            opcode: "clipImage", blockType: Scratch.BlockType.REPORTER,
-            text: "clip [CUTOUT] from [MAIN]", hideFromPalette: true,
-            arguments: {
-              MAIN: { type: Scratch.ArgumentType.STRING, defaultValue: "source-here" }, CUTOUT: { type: Scratch.ArgumentType.STRING, defaultValue: "cutout-here" }
-            }
-          },
-          {
-            opcode: "overlayImage", blockType: Scratch.BlockType.REPORTER,
-            text: "clip [CUTOUT] onto [MAIN]", hideFromPalette: true,
-            arguments: {
-              MAIN: { type: Scratch.ArgumentType.STRING, defaultValue: "source-here" }, CUTOUT: { type: Scratch.ArgumentType.STRING, defaultValue: "cutout-here" }
-            }
-          },
-          {
-            opcode: "convertHexToRGB", blockType: Scratch.BlockType.REPORTER,
-            text: "convert [HEX] to [CHANNEL]", hideFromPalette: true,
-            arguments: {
-              HEX: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }, CHANNEL: { type: Scratch.ArgumentType.STRING, menu: "CHANNELS" }
-            }
           }
         ],
         menus: {
@@ -414,8 +392,7 @@
           PIXELTYPE: ["total", "per line", "per row"],
           REMOVAL: ["under", "over", "equal to"],
           fileType: ["content", "dataURI"],
-          EFFECTS: { acceptReporters: true, items: imageEffectMenu },
-          CHANNELS: { acceptReporters: true, items: ["R", "G", "B"] } // Deprecated
+          EFFECTS: { acceptReporters: true, items: imageEffectMenu }
         },
       };
     }
@@ -473,7 +450,7 @@
       return new Promise((resolve) => {
         const color = hexToRgb(args.COLOR);
         const img = new Image();
-        img.onload = async () => {
+        img.onload = () => {
           const pixelData = this.printImg(img);
           const data = pixelData;
           for (let i = 0; i < data.length; i += 4) {
@@ -550,7 +527,6 @@
     applyChunkGlitch(imageData, amtIn) {
       const { data, width, height} = imageData;
       const newWidth = amtIn / 10;
-      const numLines = Math.floor(width * 1);
       for (let i = 0; i < Math.floor(width * 1); i++) {
         const linePos = Math.floor(Math.random() * height);
         const lineStart = linePos - Math.floor(newWidth / 2);
@@ -939,7 +915,6 @@
           maskImg.onload = () => {
             const scaleW = maskImg.width * (this.scale[0] / 50);
             const scaleH = maskImg.height * (this.scale[1] / 50);
-            const isMaskBigger = scaleW >= srcImg.width || scaleH >= srcImg.height;
             const cutX = this.cutPos[0] + (srcImg.width / 2) - (scaleW / 2);
             const cutY = this.cutPos[1] - (srcImg.height / 2) + (scaleH / 2);
             const { canvas, ctx } = this.createCanvasCtx(srcImg.width, srcImg.height);
@@ -1035,7 +1010,7 @@
         const img = new Image();
         img.src = this.confirmAsset(args.URI, "png");
         img.onload = () => {
-          const { canvas, ctx } = this.createCanvasCtx(img.width, img.height, img);
+          const ctx = this.createCanvasCtx(img.width, img.height, img).ctx;
           ctx.drawImage(img, 0, 0, img.width, img.height);
           const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
           svg.setAttribute("version", "1.1");
@@ -1101,7 +1076,7 @@
         const img = new Image();
         img.onload = () => {
           const pixelData = this.printImg(img);
-          const { canvas, ctx } = this.createCanvasCtx(img.width, img.height);
+          const ctx = this.createCanvasCtx(img.width, img.height).ctx;
           ctx.putImageData(new ImageData(new Uint8ClampedArray(pixelData), img.width, img.height), 0, 0);
           const factor = Scratch.Cast.toNumber(args.NUM) / 10;
           const weights = [0, -factor, 0, -factor, 1 + 4 * factor, -factor, 0, -factor, 0];
@@ -1275,11 +1250,6 @@
     }
 
     getShard(args) { return this.allShards[args.SHARD - 1] || "" }
-
-    // Deprecated
-    convertHexToRGB(args) { return hexToRgb(args.HEX)[{ R: 0, G: 1, B: 2 }[args.CHANNEL]] || "" }
-    clipImage(t){return new Promise((e,i)=>{let s=new Image;s.onload=()=>{let i=new Image;i.onload=()=>{let t=document.createElement("canvas");t.width=s.width,t.height=s.height;let a=t.getContext("2d"),h=i.width+this.scale[0],o=i.height+this.scale[1],n=this.cutPos[0]+s.width/2-h/2,r=this.cutPos[1]-s.height/2+o/2;a.drawImage(s,0,0),a.globalCompositeOperation="destination-in";let l=(this.cutoutDirection+270)*Math.PI/180;a.translate(n+h/2,-1*r+o/2),a.rotate(l),a.drawImage(i,-h/2,-o/2,h,o),a.setTransform(1,0,0,1,0,0),a.globalCompositeOperation="source-over",e(t.toDataURL("image/png"))},i.src=this.confirmAsset(t.CUTOUT,"png")},s.src=this.confirmAsset(t.MAIN,"png")})}
-    overlayImage(t){return new Promise((e,i)=>{let s=new Image;s.onload=()=>{let i=new Image;i.onload=()=>{let t=document.createElement("canvas");t.width=Math.max(s.width,i.width),t.height=Math.max(s.height,i.height);let a=t.getContext("2d");a.drawImage(s,0,0);let h=i.width+this.scale[0],o=i.height+this.scale[1],n=this.cutPos[0]+s.width/2-h/2,r=this.cutPos[1]-s.height/2+o/2;a.translate(n+h/2,-1*r+o/2),a.rotate((this.cutoutDirection+270)*Math.PI/180),a.drawImage(i,-h/2,-o/2,h,o),a.setTransform(1,0,0,1,0,0),e(t.toDataURL("image/png"))},i.src=this.confirmAsset(t.CUTOUT,"png")},s.src=this.confirmAsset(t.MAIN,"png")})}
   }
 
   Scratch.extensions.register(new imgEffectsSP());
