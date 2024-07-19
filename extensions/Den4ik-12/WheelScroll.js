@@ -1,7 +1,7 @@
 // Name: Wheel Scroll
 // ID: Den4ik12WheelScroll
 // Description: Blocks for detecting mouse wheel scrolling.
-// By: Den4ik-12 <https://scratch.mit.edu/users/Den4ik-12/>
+// By: Den4ik-12 <https://scratch.mit.edu/users/Den4ik-12-Eng/>
 // License: MPL-2.0
 
 (function (Scratch) {
