@@ -697,11 +697,6 @@
       const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
       let value;
       elements.forEach((element) => {
-        const centerW = parseFloat(element.style.width) / 2;
-        const computedStyle = window.getComputedStyle(element);
-        const lineHeight = computedStyle.getPropertyValue("line-height");
-        const fontSize = computedStyle.getPropertyValue("font-size");
-        const centerH = (lineHeight === "normal" ? parseFloat(fontSize) * 1.2 : parseFloat(lineHeight)) / 2;
         if (args.ATT === "z layer") value = element.parentNode.style.zIndex;
         else value = element.getAttribute("sptxtpos")?.split("|", 2)[args.ATT.includes("x") ? 0 : 1];
       });
