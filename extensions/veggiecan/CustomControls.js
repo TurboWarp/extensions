@@ -471,473 +471,21 @@
     eleOpacity = 100;
   }
 
-  /**
-   * The extension's blocks
-   */
-
-  const blocks = [
-    {
-      opcode: "createNewControl",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("create new [TYPE]"),
-      arguments: {
-        TYPE: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "controlTypeMenu",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "setControlName",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("set name to [NAME]"),
-      arguments: {
-        NAME: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "setControlIcon",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("set icon to [MODE] [ICON]"),
-      arguments: {
-        MODE: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "iconModeMenu",
-        },
-        ICON: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: "https://extensions.turbowarp.org/dango.png",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "setControlText",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("set text to [TEXT]"),
-      arguments: {
-        TEXT: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("Custom label"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "setControlColor",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("set text color to [COLOR]"),
-      arguments: {
-        COLOR: {
-          type: Scratch.ArgumentType.COLOR,
-          defaultValue: "#ff7700",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "setControlMargin",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("set [SIDE] margin to [MARGIN] px"),
-      arguments: {
-        SIDE: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "marginSideMenu",
-        },
-        MARGIN: {
-          type: Scratch.ArgumentType.NUMBER,
-          defaultValue: "10",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "setControlOpacity",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("set opacity to [OPACITY]%"),
-      arguments: {
-        OPACITY: {
-          type: Scratch.ArgumentType.NUMBER,
-          defaultValue: "50",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-
-    "---",
-
-    {
-      opcode: "appendControl",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("add control to [SIDE]"),
-      arguments: {
-        SIDE: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "rightLeftMenu",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "insertControl",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("add control [SIDE] [CONTROL]"),
-      arguments: {
-        SIDE: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "afterBeforeMenu",
-        },
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-
-    "---",
-
-    {
-      opcode: "setIconOf",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("set icon of [CONTROL] to [MODE] [ICON]"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-        MODE: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "iconModeMenu",
-        },
-        ICON: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: "https://extensions.turbowarp.org/robot.png",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "setTextOf",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("set text of [CONTROL] to [TEXT]"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-        TEXT: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("Custom label with new text"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "setColorOf",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("set text color of [CONTROL] to [COLOR]"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-        COLOR: {
-          type: Scratch.ArgumentType.COLOR,
-          defaultValue: "#7777ff",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "setMarginOf",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("set [SIDE] margin of [CONTROL] to [MARGIN] px"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-        SIDE: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "marginSideMenu",
-        },
-        MARGIN: {
-          type: Scratch.ArgumentType.NUMBER,
-          defaultValue: "10",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "setOpacityOf",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("set opacity of [CONTROL] to [OPACITY]%"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-        OPACITY: {
-          type: Scratch.ArgumentType.NUMBER,
-          defaultValue: "50",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-
-    "---",
-
-    {
-      opcode: "hide",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("hide [CONTROL]"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "show",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("show [CONTROL]"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "remove",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("remove [CONTROL]"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-
-    "---",
-
-    {
-      opcode: "highlight",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate(
-        "highlight [CONTROL] border: [BORDER] background color: [BACKGROUND]"
-      ),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-        BORDER: {
-          type: Scratch.ArgumentType.COLOR,
-          defaultValue: "#ff7700",
-        },
-        BACKGROUND: {
-          type: Scratch.ArgumentType.COLOR,
-          defaultValue: "#ff9933",
-        },
-      },
-    },
-    {
-      opcode: "propertyOf",
-      blockType: Scratch.BlockType.REPORTER,
-      text: Scratch.translate("[PROPERTY] of [CONTROL]"),
-      arguments: {
-        PROPERTY: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "controlPropertyMenu",
-        },
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "isHovered",
-      blockType: Scratch.BlockType.BOOLEAN,
-      text: Scratch.translate("[CONTROL] hovered?"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-
-    "---",
-
-    {
-      opcode: "isVisible",
-      blockType: Scratch.BlockType.BOOLEAN,
-      text: Scratch.translate("[CONTROL] visible?"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "isCustom",
-      blockType: Scratch.BlockType.BOOLEAN,
-      text: Scratch.translate("[CONTROL] is a custom control?"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "exists",
-      blockType: Scratch.BlockType.BOOLEAN,
-      text: Scratch.translate("[CONTROL] exists?"),
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-      },
-      extensions: ["colours_control"],
-    },
-
-    "---",
-
-    {
-      opcode: "allControls",
-      blockType: Scratch.BlockType.REPORTER,
-      disableMonitor: true,
-      text: Scratch.translate("all controls"),
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "controlsOnSide",
-      blockType: Scratch.BlockType.REPORTER,
-      text: Scratch.translate("controls on [SIDE]"),
-      arguments: {
-        SIDE: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "rightLeftMenu",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-
-    "---",
-
-    {
-      opcode: "whenEvent",
-      blockType: Scratch.BlockType.HAT,
-      text: Scratch.translate("when [CONTROL] [EVENT]"),
-      isEdgeActivated: false,
-      arguments: {
-        CONTROL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: Scratch.translate("my control"),
-        },
-        EVENT: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "eventTypeSquareMenu",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "lastEventTarget",
-      blockType: Scratch.BlockType.REPORTER,
-      text: Scratch.translate("last control [EVENT]"),
-      arguments: {
-        EVENT: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "eventTypeMenu",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-
-    "---",
-
-    {
-      func: "toggleMenuEmbed",
-      blockType: Scratch.BlockType.BUTTON,
-      text: Scratch.translate("Use controls menu istead of text input"),
-    },
-    {
-      opcode: "utilMenu",
-      blockType: Scratch.BlockType.REPORTER,
-      text: "[OPTION]",
-      arguments: {
-        OPTION: {
-          type: Scratch.ArgumentType.STRING,
-          menu: "utilMenu",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "barExists",
-      blockType: Scratch.BlockType.BOOLEAN,
-      disableMonitor: true,
-      text: Scratch.translate("control bar exists?"),
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "refreshControls",
-      blockType: Scratch.BlockType.COMMAND,
-      text: Scratch.translate("refresh controls"),
-      extensions: ["colours_control"],
-    },
-
-    "---",
-
-    // These may be in other extensions, but they fit here perfectly too
-    {
-      opcode: "canLoad",
-      blockType: Scratch.BlockType.BOOLEAN,
-      text: Scratch.translate("can load [URL]?"),
-      arguments: {
-        URL: {
-          type: Scratch.ArgumentType.STRING,
-          defaultValue: "https://extensions.turbowarp.org/dango.png",
-        },
-      },
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "isPackaged",
-      blockType: Scratch.BlockType.BOOLEAN,
-      text: Scratch.translate("is packaged?"),
-      extensions: ["colours_control"],
-    },
-    {
-      opcode: "colorScheme",
-      blockType: Scratch.BlockType.REPORTER,
-      text: Scratch.translate("color scheme"),
-      extensions: ["colours_control"],
-    },
-  ];
-
   let menuEmbedded = false;
+
+  function controlArg() {
+    if (menuEmbedded) {
+      return {
+        type: Scratch.ArgumentType.STRING,
+        menu: "utilMenu",
+      };
+    } else {
+      return {
+        type: Scratch.ArgumentType.STRING,
+        defaultValue: Scratch.translate("my control"),
+      };
+    }
+  }
 
   class CustomControls {
     constructor() {
@@ -966,7 +514,423 @@
         color1: "#ffab19",
         color2: "#ec9c13",
         color3: "#b87d17",
-        blocks,
+        blocks: [
+          {
+            opcode: "createNewControl",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("create new [TYPE]"),
+            arguments: {
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "controlTypeMenu",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "setControlName",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set name to [NAME]"),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("my control"),
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "setControlIcon",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set icon to [MODE] [ICON]"),
+            arguments: {
+              MODE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "iconModeMenu",
+              },
+              ICON: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "https://extensions.turbowarp.org/dango.png",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "setControlText",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set text to [TEXT]"),
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("Custom label"),
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "setControlColor",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set text color to [COLOR]"),
+            arguments: {
+              COLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#ff7700",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "setControlMargin",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set [SIDE] margin to [MARGIN] px"),
+            arguments: {
+              SIDE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "marginSideMenu",
+              },
+              MARGIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "10",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "setControlOpacity",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set opacity to [OPACITY]%"),
+            arguments: {
+              OPACITY: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "50",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+
+          "---",
+
+          {
+            opcode: "appendControl",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("add control to [SIDE]"),
+            arguments: {
+              SIDE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "rightLeftMenu",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "insertControl",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("add control [SIDE] [CONTROL]"),
+            arguments: {
+              SIDE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "afterBeforeMenu",
+              },
+              CONTROL: controlArg(),
+            },
+            extensions: ["colours_control"],
+          },
+
+          "---",
+
+          {
+            opcode: "setIconOf",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set icon of [CONTROL] to [MODE] [ICON]"),
+            arguments: {
+              CONTROL: controlArg(),
+              MODE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "iconModeMenu",
+              },
+              ICON: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "https://extensions.turbowarp.org/robot.png",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "setTextOf",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set text of [CONTROL] to [TEXT]"),
+            arguments: {
+              CONTROL: controlArg(),
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("Custom label with new text"),
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "setColorOf",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set text color of [CONTROL] to [COLOR]"),
+            arguments: {
+              CONTROL: controlArg(),
+              COLOR: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#7777ff",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "setMarginOf",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "set [SIDE] margin of [CONTROL] to [MARGIN] px"
+            ),
+            arguments: {
+              CONTROL: controlArg(),
+              SIDE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "marginSideMenu",
+              },
+              MARGIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "10",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "setOpacityOf",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set opacity of [CONTROL] to [OPACITY]%"),
+            arguments: {
+              CONTROL: controlArg(),
+              OPACITY: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "50",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+
+          "---",
+
+          {
+            opcode: "hide",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("hide [CONTROL]"),
+            arguments: {
+              CONTROL: controlArg(),
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "show",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("show [CONTROL]"),
+            arguments: {
+              CONTROL: controlArg(),
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "remove",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("remove [CONTROL]"),
+            arguments: {
+              CONTROL: controlArg(),
+            },
+            extensions: ["colours_control"],
+          },
+
+          "---",
+
+          {
+            opcode: "highlight",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "highlight [CONTROL] border: [BORDER] background color: [BACKGROUND]"
+            ),
+            arguments: {
+              CONTROL: controlArg(),
+              BORDER: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#ff7700",
+              },
+              BACKGROUND: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#ff9933",
+              },
+            },
+          },
+          {
+            opcode: "propertyOf",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("[PROPERTY] of [CONTROL]"),
+            arguments: {
+              PROPERTY: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "controlPropertyMenu",
+              },
+              CONTROL: controlArg(),
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "isHovered",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("[CONTROL] hovered?"),
+            arguments: {
+              CONTROL: controlArg(),
+            },
+            extensions: ["colours_control"],
+          },
+
+          "---",
+
+          {
+            opcode: "isVisible",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("[CONTROL] visible?"),
+            arguments: {
+              CONTROL: controlArg(),
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "isCustom",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("[CONTROL] is a custom control?"),
+            arguments: {
+              CONTROL: controlArg(),
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "exists",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("[CONTROL] exists?"),
+            arguments: {
+              CONTROL: controlArg(),
+            },
+            extensions: ["colours_control"],
+          },
+
+          "---",
+
+          {
+            opcode: "allControls",
+            blockType: Scratch.BlockType.REPORTER,
+            disableMonitor: true,
+            text: Scratch.translate("all controls"),
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "controlsOnSide",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("controls on [SIDE]"),
+            arguments: {
+              SIDE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "rightLeftMenu",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+
+          "---",
+
+          {
+            opcode: "whenEvent",
+            blockType: Scratch.BlockType.HAT,
+            text: Scratch.translate("when [CONTROL] [EVENT]"),
+            isEdgeActivated: false,
+            arguments: {
+              CONTROL: controlArg(),
+              EVENT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "eventTypeSquareMenu",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "lastEventTarget",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("last control [EVENT]"),
+            arguments: {
+              EVENT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "eventTypeMenu",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+
+          "---",
+
+          {
+            func: "toggleMenuEmbed",
+            blockType: Scratch.BlockType.BUTTON,
+            text: menuEmbedded
+              ? Scratch.translate("Use text input instead of menu")
+              : Scratch.translate("Use menu instead of text input"),
+          },
+          {
+            opcode: "utilMenu",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[OPTION]",
+            arguments: {
+              OPTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "utilMenu",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "barExists",
+            blockType: Scratch.BlockType.BOOLEAN,
+            disableMonitor: true,
+            text: Scratch.translate("control bar exists?"),
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "refreshControls",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("refresh controls"),
+            extensions: ["colours_control"],
+          },
+
+          "---",
+
+          // These may be in other extensions, but they fit here perfectly too
+          {
+            opcode: "canLoad",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("can load [URL]?"),
+            arguments: {
+              URL: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "https://extensions.turbowarp.org/dango.png",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "isPackaged",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("is packaged?"),
+            extensions: ["colours_control"],
+          },
+          {
+            opcode: "colorScheme",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("color scheme"),
+            extensions: ["colours_control"],
+          },
+        ],
         menus: {
           controlTypeMenu: {
             acceptReporters: true,
@@ -1332,7 +1296,12 @@
       if (!controlElement) return;
       const animation = highlightAnimation(borderColor, backgroundColor);
       // @ts-ignore
-      controlElement.animate(...animation);
+      if (control === "fullscreen" && !window.scaffolding) {
+        // Make it look like Control Controls
+        controlElement.firstChild?.animate(...animation);
+      } else {
+        controlElement.animate(...animation);
+      }
     }
 
     propertyOf(args) {
@@ -1454,38 +1423,15 @@
 
     toggleMenuEmbed() {
       menuEmbedded = !menuEmbedded;
-      const toggleButton = blocks.find(
-        // @ts-ignore
-        (block) => block.func === "toggleMenuEmbed"
-      );
-      // @ts-ignore
-      toggleButton.text = menuEmbedded
-        ? Scratch.translate("Use text input instead of menu")
-        : Scratch.translate("Use menu instead of text input");
-      blocks.forEach((block) => {
-        // @ts-ignore
-        if (block.arguments?.CONTROL) {
-          if (menuEmbedded) {
-            // @ts-ignore
-            block.arguments.CONTROL.menu = "utilMenu";
-            // @ts-ignore
-            delete block.arguments.CONTROL.defaultValue;
-          } else {
-            // @ts-ignore
-            delete block.arguments.CONTROL.menu;
-            // @ts-ignore
-            block.arguments.CONTROL.defaultValue = "my control";
-          }
-        }
-      });
       vm.runtime.extensionManager.refreshBlocks();
       // BUG?
-      if (menuEmbedded)
+      if (menuEmbedded) {
         alert(
           Scratch.translate(
             "You will have to leave the editor and come back in for the changes to come into effect"
           )
         );
+      }
     }
 
     utilMenu(args) {
