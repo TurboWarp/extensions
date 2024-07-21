@@ -962,21 +962,6 @@ unknown07724 - https://github.com/unknown07724 - Contributed a banner, which trh
             });
             console.log("Deleted.");
         }
-        async rFfP(args) {
-            const slot = foslot[args.num];
-            const parts = args.PATH.split("/").filter((part) => part);
-            let currentHandle = slot.folder;
-
-            for (let i = 0; i < parts.length - 1; i++) {
-                currentHandle = await currentHandle.getDirectoryHandle(parts[i]);
-            }
-            const fileHandle = await currentHandle.getFileHandle(
-                parts[parts.length - 1]
-            );
-
-            const contents = await this.getFileDataFromFolder(fileHandle, args.TYPE);
-            return contents;
-        }
         memWrite(args) {
             try {
                 const slot = foslot[args.num];
