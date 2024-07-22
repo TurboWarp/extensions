@@ -3,14 +3,14 @@
 // Description: Customize and Organize Lists Monitors.
 // By: SharkPool
 
-// Version 1.1.4
+// Version 2.0.0
 
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) throw new Error("Sty-Lists must run unsandboxed!");
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI2Mi4xNDI4NiIgaGVpZ2h0PSI2Mi4xNDI4NiIgdmlld0JveD0iMCwwLDYyLjE0Mjg2LDYyLjE0Mjg2Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjA4LjkyODU3LC0xNDguOTI4NTcpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMDguOTI4NTcsMTgwYzAsLTE3LjE2MDI3IDEzLjkxMTE2LC0zMS4wNzE0MyAzMS4wNzE0MywtMzEuMDcxNDNjMTcuMTYwMjcsMCAzMS4wNzE0MywxMy45MTExNiAzMS4wNzE0MywzMS4wNzE0M2MwLDE3LjE2MDI3IC0xMy45MTExNiwzMS4wNzE0MyAtMzEuMDcxNDMsMzEuMDcxNDNjLTE3LjE2MDI3LDAgLTMxLjA3MTQzLC0xMy45MTExNiAtMzEuMDcxNDMsLTMxLjA3MTQzeiIgZmlsbD0iI2NjNDYwMiIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjEyLjQ5Mjg4LDE4MGMwLC0xNS4xOTE3NiAxMi4zMTUzNiwtMjcuNTA3MTIgMjcuNTA3MTIsLTI3LjUwNzEyYzE1LjE5MTc2LDAgMjcuNTA3MTIsMTIuMzE1MzYgMjcuNTA3MTIsMjcuNTA3MTJjMCwxNS4xOTE3NiAtMTIuMzE1MzYsMjcuNTA3MTIgLTI3LjUwNzEyLDI3LjUwNzEyYy0xNS4xOTE3NiwwIC0yNy41MDcxMiwtMTIuMzE1MzYgLTI3LjUwNzEyLC0yNy41MDcxMnoiIGZpbGw9IiNmZjY2MWEiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTI1My4xNjc2NiwxODcuNTc0NDFjMCwwLjAxNTY1IC0wLjAwMzY3LDAuMDMwODMgLTAuMDA0NiwwLjA0NjQ3djQuNzYzNzljMC4wMDAwMSwwLjU3MzggLTAuNDYzMjYsMS4wMzk5NSAtMS4wMzcwNSwxLjA0MzV2MC4wMDA5MmgtMTYuMjg3MjZ2LTAuMDAwNDVjLTAuNTczNzksLTAuMDAzNTQgLTEuMDM3MDYsLTAuNDY5NyAtMS4wMzcwNSwtMS4wNDM1aC0wLjAwNTA2di00Ljc1NDU5Yy0wLjAwMDkyLC0wLjAxODg3IC0wLjAwNTUyLC0wLjAzNjM1IC0wLjAwNTUyLC0wLjA1NTY3YzAuMDAwMjYsLTAuNTc2NDUgMC40Njc1LC0xLjA0MzY5IDEuMDQzOTUsLTEuMDQzOTRsMC4wMDQxNCwwLjAwMDQ2di0wLjAwMDQ2bDE2LjI4NzI0LDAuMDAwNDZjMC41NzUzMywwLjAwMTAyIDEuMDQxMTgsMC40Njc3IDEuMDQxMTgsMS4wNDMwMnpNMjI5LjkwMzkxLDE4Ni44MzU4MmMwLjE5NTY0LDAuMTk1OCAwLjMwNTQxLDAuNDYxMzQgMC4zMDUxNywwLjczODEzdjQuODA5OGMtMC4wMDAyNiwwLjU3NjQ1IC0wLjQ2NzQ5LDEuMDQzNjkgLTEuMDQzOTQsMS4wNDM5NWgtNC44MTAyNmMtMC41NzYzNywtMC4wMDAyNiAtMS4wNDM0OSwtMC40Njc1NyAtMS4wNDM0OSwtMS4wNDM5NXYtNC44MDk4YzAuMDAwMjYsLTAuNTc2NDUgMC40Njc1LC0xLjA0MzY5IDEuMDQzOTUsLTEuMDQzOTRoNC44MTA3MWMwLjI3Njc4LDAgMC41NDIyMiwwLjExMDAxIDAuNzM3ODYsMC4zMDU4MXpNMjUzLjE2NzY2LDE3Ni4wNzY3MmMwLDAuMDE1NjUgLTAuMDAzNjcsMC4wMzA4MiAtMC4wMDQ2LDAuMDQ2NDd2NC43NjM3OWMwLjAwMDAxLDAuNTczOCAtMC40NjMyNiwxLjAzOTk0IC0xLjAzNzA1LDEuMDQzNDl2MC4wMDA5MmgtMTYuMjg3MjZ2LTAuMDAwNDVjLTAuNTczNzksLTAuMDAzNTQgLTEuMDM3MDYsLTAuNDY5NyAtMS4wMzcwNSwtMS4wNDM0OWgtMC4wMDUwNnYtNC43NTQ1OGMtMC4wMDA5MiwtMC4wMTg4NyAtMC4wMDU1MiwtMC4wMzYzNSAtMC4wMDU1MiwtMC4wNTU2OGMwLjAwMDI2LC0wLjU3NjQ1IDAuNDY3NSwtMS4wNDM2OSAxLjA0Mzk1LC0xLjA0Mzk0bDAuMDA0MTQsMC4wMDA0NnYtMC4wMDA0NmwxNi4yODcyNCwwLjAwMDQ2YzAuNTc1MzMsMC4wMDEwMiAxLjA0MTE4LDAuNDY3NyAxLjA0MTE4LDEuMDQzMDN6TTIyOS45MDM5MSwxNzUuMzM4MTNjMC4xOTU2NCwwLjE5NTggMC4zMDU0MSwwLjQ2MTM0IDAuMzA1MTcsMC43MzgxM3Y0LjgwOThjLTAuMDAwMjYsMC41NzY0NSAtMC40Njc0OSwxLjA0MzcgLTEuMDQzOTQsMS4wNDM5NWgtNC44MTAyNmMtMC41NzYzNywtMC4wMDAyNiAtMS4wNDM0OSwtMC40Njc1OCAtMS4wNDM0OSwtMS4wNDM5NXYtNC44MDk4YzAuMDAwMjYsLTAuNTc2NDUgMC40Njc1LC0xLjA0MzcgMS4wNDM5NSwtMS4wNDM5NWg0LjgxMDcxYzAuMjc2NzgsMCAwLjU0MjIyLDAuMTEwMDIgMC43Mzc4NiwwLjMwNTgyek0yMzQuNzk2MiwxNjkuNDI0NzJ2LTQuNzU1MDVjLTAuMDAwOTIsLTAuMDE4ODcgLTAuMDA1NTIsLTAuMDM2MzUgLTAuMDA1NTIsLTAuMDU1NjdjMC4wMDAyNiwtMC41NzY0NSAwLjQ2NzUsLTEuMDQzNjkgMS4wNDM5NSwtMS4wNDM5NWwwLjAwNDE0LDAuMDAwNDV2LTAuMDAwNDVoMTYuMjg3MjZ2MC4wMDA0NWMwLjU3NTQ3LDAuMDAxMjYgMS4wNDEzOSwwLjQ2ODAxIDEuMDQxNjUsMS4wNDM1YzAsMC4wMTU2NSAtMC4wMDM2NywwLjAzMDgzIC0wLjAwNDYsMC4wNDY0N3Y0Ljc2Mzc5YzAuMDAwMDEsMC41NzM4IC0wLjQ2MzI2LDEuMDM5OTQgLTEuMDM3MDUsMS4wNDM0OXYwLjAwMDkyaC0xNi4yODcyNnYtMC4wMDA0NmMtMC41NzM3OSwtMC4wMDM1NCAtMS4wMzcwNiwtMC40Njk2OSAtMS4wMzcwNSwtMS4wNDM0OWgtMC4wMDUwNnpNMjI5LjkwNDA1LDE2My44NzU3M2MwLjE5NTY2LDAuMTk1ODMgMC4zMDU0LDAuNDYxNDQgMC4zMDUwMywwLjczODI2djQuODA5OGMtMC4wMDAyNiwwLjU3NjQ1IC0wLjQ2NzQ5LDEuMDQzNjkgLTEuMDQzOTQsMS4wNDM5NWgtNC44MTAyNmMtMC41NzYzNywtMC4wMDAyNiAtMS4wNDM0OSwtMC40Njc1NyAtMS4wNDM0OSwtMS4wNDM5NXYtNC44MDk4YzAuMDAwMjYsLTAuNTc2NDUgMC40Njc1LC0xLjA0MzY5IDEuMDQzOTUsLTEuMDQzOTVoNC44MTA3MWMwLjI3NjgzLC0wLjAwMDEyIDAuNTQyMzQsMC4xMDk4NSAwLjczOCwwLjMwNTY4eiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjU1LjY5MDQxLDE4MS45OTEzYzAuNTIwODgsMC4wMDAyMyAwLjk0MzA5LDAuNDIyNDQgMC45NDMzMiwwLjk0MzMxdjQuMjQyNjJ2Ni4yMzM1OWgtNi4yMzM2bC00LjI0NDcxLC0wLjAwMDQxYy0wLjUyLC0wLjAwMTE1IC0wLjk0MSwtMC4zMzMwNCAtMC45NDEyMywtMC44NTMwNWMwLC0wLjAxNDE0IDAuMDA0MTYsLTQuNDM2NDEgMC4wMDQxNiwtNC40MzY0MWMtMC4wMDAwMSwtMC41MTg0OCAwLjQ2MzUzLC0wLjk4NDYzIDAuOTgyLC0wLjk4NzgzbDQuMTk5NzcsMC4wNDQxbDAuMDAwNDEsLTQuMjM4ODhjMC4wMDMyLC0wLjUxODQ3IDAuNDI0NDIsLTAuOTM3MDggMC45NDI5LC0wLjkzNzA3YzAsMCA0LjMyOTUxLC0wLjAwOTk3IDQuMzQ2OTcsLTAuMDA5OTd6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNmZjY2MWEiIHN0cm9rZS13aWR0aD0iNiIvPjxwYXRoIGQ9Ik0yNTUuNjkwNDEsMTgxLjk5MTNjMC41MjA4OCwwLjAwMDIzIDAuOTQzMDksMC40MjI0NCAwLjk0MzMyLDAuOTQzMzF2NC4yNDI2Mmw0LjIzODg3LDAuMDAwNDFjMC41MTg0NywwLjAwMzIgMC45MzcwOCwwLjQyNDQxIDAuOTM3MDgsMC45NDI4OWMwLDAgMC4wMDk5Nyw0LjMyOTUyIDAuMDA5OTcsNC4zNDY5N2MtMC4wMDAyMywwLjUyMDg4IC0wLjQyMjQzLDAuOTQzMDggLTAuOTQzMzEsMC45NDMzMWgtNC4yNDI2MWwtMC4wMDA0Miw0LjI0NDcxYy0wLjAwMTE1LDAuNTIgLTAuNDY3ODIsMC45NDEgLTAuOTg3ODIsMC45NDEyM2MtMC4wMTQxNCwwIC00LjI1NjcsLTAuMDA0MTYgLTQuMjU2NywtMC4wMDQxNmMtMC41MTg0OCwwLjAwMDAxIC0wLjk4NDYyLC0wLjQxODYgLTAuOTg3ODIsLTAuOTM3MDdsLTAuMDAwODMsLTQuMjQ0NzFsLTQuMjQ0NzEsLTAuMDAwNDFjLTAuNTIsLTAuMDAxMTUgLTAuOTQxLC0wLjMzMzA0IC0wLjk0MTIzLC0wLjg1MzA1YzAsLTAuMDE0MTQgMC4wMDQxNiwtNC40MzY0MSAwLjAwNDE2LC00LjQzNjQxYy0wLjAwMDAxLC0wLjUxODQ4IDAuNDYzNTMsLTAuOTg0NjMgMC45ODIwMSwtMC45ODc4M2w0LjE5OTc3LDAuMDQ0MWwwLjAwMDQxLC00LjIzODg4YzAuMDAzMiwtMC41MTg0NyAwLjQyNDQyLC0wLjkzNzA4IDAuOTQyOSwtMC45MzcwN2MwLDAgNC4zMjk1MSwtMC4wMDk5NyA0LjM0Njk3LC0wLjAwOTk3eiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSIjZmY2NjFhIiBzdHJva2Utd2lkdGg9IjAiLz48L2c+PC9nPjwvc3ZnPg==";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2Mi4xNDMiIGhlaWdodD0iNjIuMTQzIiB2aWV3Qm94PSIwIDAgNjIuMTQzIDYyLjE0MyI+PGcgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6bm9ybWFsIj48cGF0aCBkPSJNMCAzMS4wNzFDMCAxMy45MTEgMTMuOTEgMCAzMS4wNzEgMGMxNy4xNiAwIDMxLjA3MSAxMy45MSAzMS4wNzEgMzEuMDcxIDAgMTcuMTYtMTMuOTEgMzEuMDcxLTMxLjA3MSAzMS4wNzFDMTMuOTExIDYyLjE0MiAwIDQ4LjIzMiAwIDMxLjA3MSIgZmlsbD0iI2NjNDYwMiIvPjxwYXRoIGQ9Ik0zLjU2NCAzMS4wNzFjMC0xNS4xOTIgMTIuMzE1LTI3LjUwNyAyNy41MDctMjcuNTA3czI3LjUwNyAxMi4zMTUgMjcuNTA3IDI3LjUwNy0xMi4zMTUgMjcuNTA3LTI3LjUwNyAyNy41MDdTMy41NjQgNDYuMjYzIDMuNTY0IDMxLjA3MSIgZmlsbD0iI2ZmNjYxYSIvPjxwYXRoIGQ9Im00NC4yMzkgMzguNjQ1LS4wMDUuMDQ3djQuNzY0YzAgLjU3My0uNDYzIDEuMDQtMS4wMzcgMS4wNDN2LjAwMUgyNi45MWExLjA0MyAxLjA0MyAwIDAgMS0xLjAzNy0xLjA0NGgtLjAwNXYtNC43NTRjLS4wMDEtLjAyLS4wMDYtLjAzNy0uMDA2LS4wNTYgMC0uNTc3LjQ2OC0xLjA0NCAxLjA0NC0xLjA0NGgxNi4yOTFhMS4wNDMgMS4wNDMgMCAwIDEgMS4wNDIgMS4wNDNtLTIzLjI2NC0uNzM4Yy4xOTYuMTk2LjMwNS40NjEuMzA1LjczOHY0LjgxYzAgLjU3Ni0uNDY3IDEuMDQzLTEuMDQ0IDEuMDQ0aC00LjgxYTEuMDQ0IDEuMDQ0IDAgMCAxLTEuMDQ0LTEuMDQ0di00LjgxYzAtLjU3Ni40NjgtMS4wNDQgMS4wNDQtMS4wNDRoNC44MTFjLjI3NyAwIC41NDIuMTEuNzM4LjMwNm0yMy4yNjQtMTAuNzYtLjAwNS4wNDd2NC43NjRjMCAuNTc0LS40NjMgMS4wNC0xLjAzNyAxLjA0M3YuMDAxSDI2LjkxYTEuMDQzIDEuMDQzIDAgMCAxLTEuMDM3LTEuMDQ0aC0uMDA1di00Ljc1NGMtLjAwMS0uMDE5LS4wMDYtLjAzNi0uMDA2LS4wNTYgMC0uNTc2LjQ2OC0xLjA0MyAxLjA0NC0xLjA0NGgxNi4yOTFhMS4wNDMgMS4wNDMgMCAwIDEgMS4wNDIgMS4wNDRtLTIzLjI2NC0uNzM4Yy4xOTYuMTk2LjMwNS40NjEuMzA1LjczOHY0LjgxYzAgLjU3Ny0uNDY3IDEuMDQ0LTEuMDQ0IDEuMDQ0aC00LjgxYTEuMDQ0IDEuMDQ0IDAgMCAxLTEuMDQ0LTEuMDQ0di00LjgxYzAtLjU3Ni40NjgtMS4wNDMgMS4wNDQtMS4wNDRoNC44MTFjLjI3NyAwIC41NDIuMTEuNzM4LjMwNm00Ljg5Mi01LjkxM3YtNC43NTVjMC0uMDItLjAwNS0uMDM3LS4wMDUtLjA1NiAwLS41NzYuNDY3LTEuMDQ0IDEuMDQ0LTEuMDQ0aDE2LjI5MWExLjA0NCAxLjA0NCAwIDAgMSAxLjA0MiAxLjA0NGwtLjAwNS4wNDZ2NC43NjRjMCAuNTc0LS40NjMgMS4wNC0xLjAzNyAxLjA0NEgyNi45MWExLjA0MyAxLjA0MyAwIDAgMS0xLjAzNy0xLjA0M3ptLTQuODkyLTUuNTVjLjE5Ni4xOTcuMzA1LjQ2Mi4zMDUuNzM5djQuODFjMCAuNTc2LS40NjcgMS4wNDMtMS4wNDQgMS4wNDRoLTQuODFhMS4wNDQgMS4wNDQgMCAwIDEtMS4wNDQtMS4wNDR2LTQuODFjMC0uNTc2LjQ2OC0xLjA0NCAxLjA0NC0xLjA0NGg0LjgxMWMuMjc3IDAgLjU0Mi4xMS43MzguMzA2IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTQ2Ljc2MSAzMy4wNjJjLjUyMSAwIC45NDQuNDIzLjk0NC45NDR2MTAuNDc2SDM3LjIyNmMtLjUyLS4wMDItLjk0LS4zMzQtLjk0LS44NTRsLjAwMy00LjQzNmMwLS41MTkuNDY0LS45ODUuOTgyLS45ODhsNC4yLjA0NHYtNC4yMzlhLjk0My45NDMgMCAwIDEgLjk0My0uOTM3eiIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZmY2NjFhIiBzdHJva2Utd2lkdGg9IjYiLz48cGF0aCBkPSJNNDYuNzYxIDMzLjA2MmMuNTIxIDAgLjk0NC40MjMuOTQ0Ljk0NHY0LjI0Mmg0LjIzOWEuOTQzLjk0MyAwIDAgMSAuOTM3Ljk0NGwuMDEgNC4zNDZhLjk0NC45NDQgMCAwIDEtLjk0NC45NDRoLTQuMjQydjQuMjQ1Yy0uMDAyLjUyLS40NjkuOTQtLjk4OS45NGwtNC4yNTYtLjAwM2MtLjUxOSAwLS45ODUtLjQxOS0uOTg4LS45Mzd2LTQuMjQ1aC00LjI0NmMtLjUyLS4wMDItLjk0LS4zMzQtLjk0LS44NTRsLjAwMy00LjQzNmMwLS41MTkuNDY0LS45ODUuOTgyLS45ODhsNC4yLjA0NHYtNC4yMzlhLjk0My45NDMgMCAwIDEgLjk0My0uOTM3eiIgZmlsbD0iI2ZmZiIvPjwvZz48L3N2Zz4=";
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -18,21 +18,8 @@
     "Scratch", "Sans Serif", "Serif",
     "Handwriting", "Marker", "Curly", "Pixel"
   ];
-
-  const xmlEscape = function (unsafe) {
-    return Scratch.Cast.toString(unsafe).replace(/[<>&'"]/g, c => {
-      switch (c) {
-        case "<": return "&lt;";
-        case ">": return "&gt;";
-        case "&": return "&amp;";
-        case "'": return "&apos;";
-        case "\"": return "&quot;";
-      }
-    });
-  };
-
   let listDocs;
-  if (runtime.isPackaged) {
+  if (typeof scaffolding !== "undefined") {
     listDocs = {
       body : "sc-monitor-root",
       value : "sc-monitor-row-value-outer", value2 : "sc-monitor-row-value-inner",
@@ -53,7 +40,26 @@
       row : "monitor_list-row", span : "span"
     };
   }
+  let visualLists = {};
+
   class SPlistMonitors {
+    constructor() {
+      runtime.on("MONITORS_UPDATE", () =>{
+        for (const [id, { util }] of Object.entries(visualLists)) {
+          const monitor = document.querySelector(`div[data-id="${id}"][class*="monitor"]`);
+          if (!monitor) delete visualLists[id];
+          else {
+            const monBody = typeof scaffolding !== "undefined" ? monitor : monitor.querySelector(`div[class^="${listDocs.body}"]`);
+            this.stretchList({
+              LIST: id, WIDTH: parseFloat(monBody.style.width),
+              HEIGHT: parseFloat(monBody.style.height), SECRET: true
+            }, util);
+            const columns = monitor.getAttribute("SPcolumnCnt") || 1;
+            if (columns > 1) this.renderList({ LIST: id, NUM: columns, SECRET: true }, util);
+          }
+        }
+      });
+    }
     getInfo() {
       return {
         id: "SPlistMonitors",
@@ -68,10 +74,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "does [LIST] exist?",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "my list"
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, defaultValue: "my list" },
             },
           },
           {
@@ -79,10 +82,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is [LIST] showing?",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
             },
           },
           {
@@ -90,14 +90,16 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "create list named [LIST] [TYPE]",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "my list",
-              },
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "listTypes",
-              }
+              LIST: { type: Scratch.ArgumentType.STRING, defaultValue: "my list" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "listTypes" }
+            },
+          },
+          {
+            opcode: "deleteList",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "delete list [LIST]",
+            arguments: {
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" }
             },
           },
           "---",
@@ -106,14 +108,8 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "render [LIST] with [NUM] columns",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
-              NUM: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 2,
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 2 }
             },
           },
           {
@@ -121,10 +117,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "# of columns in [LIST]",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" }
             },
           },
           "---",
@@ -133,18 +126,9 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "stretch [LIST] to width: [WIDTH] and height: [HEIGHT]",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
-              WIDTH: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 200,
-              },
-              HEIGHT: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 200,
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
+              WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 200 },
+              HEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 200 }
             },
           },
           {
@@ -152,14 +136,8 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "get [THING] of [LIST]",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
-              THING: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "ATTS",
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
+              THING: { type: Scratch.ArgumentType.STRING, menu: "ATTS" }
             },
           },
           "---",
@@ -168,56 +146,20 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "turn [THING] in [LIST] [ON_OFF]",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
-              THING: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "listUtils",
-              },
-              ON_OFF: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "ON_OFF",
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
+              THING: { type: Scratch.ArgumentType.STRING, menu: "listUtils" },
+              ON_OFF: { type: Scratch.ArgumentType.STRING, menu: "ON_OFF" }
             },
           },
-          {
-            opcode: "formatItems",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "align item text to [ALIGN] in [LIST]",
-            arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
-              ALIGN: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "ALIGN",
-              },
-            },
-          },
-          {
-            blockType: Scratch.BlockType.XML,
-            xml: "<sep gap=\"6\"/><label text=\"Positioning\"/><sep gap=\"-12\"/><sep gap=\"12\"/>",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Positioning" },
           {
             opcode: "setPosition",
             blockType: Scratch.BlockType.COMMAND,
             text: "set position of [LIST] to x: [x] y: [y]",
             arguments: {
-              x: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
+              x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
           },
           {
@@ -225,14 +167,8 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "current [POSITION] of [LIST]",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
-              POSITION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "POSITIONS",
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
+              POSITION: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" }
             },
           },
           "---",
@@ -241,29 +177,26 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set scrollbar position of [LIST] to [SCROLL]%",
             arguments: {
-              SCROLL: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 50,
-              },
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
+              SCROLL: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 }
             },
           },
-          {
-            blockType: Scratch.BlockType.XML,
-            xml: "<sep gap=\"6\"/><label text=\"Effects\"/><sep gap=\"-12\"/><sep gap=\"12\"/>",
-          },
+          { blockType: Scratch.BlockType.LABEL, text: "Formatting and Effects" },
           {
             opcode: "resetAll",
             blockType: Scratch.BlockType.COMMAND,
             text: "reset all changes to [LIST]",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
+            },
+          },
+          {
+            opcode: "formatItems",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "align item text to [ALIGN] in [LIST]",
+            arguments: {
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
+              ALIGN: { type: Scratch.ArgumentType.STRING, menu: "ALIGN" }
             },
           },
           {
@@ -271,18 +204,9 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set [DISPLAY] name of [LIST] to [NAME]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "my cooler list",
-              },
-              DISPLAY: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "list_displays",
-              },
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "my cooler list" },
+              DISPLAY: { type: Scratch.ArgumentType.STRING, menu: "list_displays" },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" }
             },
           },
           {
@@ -290,18 +214,9 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set color of item # [NUM] in [LIST] to [COLOR]",
             arguments: {
-              NUM: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
-              },
-              COLOR: {
-                type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#0000ff",
-              },
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#0000ff" },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" }
             },
           },
           {
@@ -309,18 +224,9 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set name of label # [NUM] in [LIST] to [VALUE]",
             arguments: {
-              NUM: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
-              },
-              VALUE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "item 1",
-              },
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: "item 1" },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" }
             },
           },
           {
@@ -328,14 +234,8 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set font of [LIST] to [FONT]",
             arguments: {
-              FONT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "allFonts",
-              },
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              FONT: { type: Scratch.ArgumentType.STRING, menu: "allFonts" },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" }
             },
           },
           "---",
@@ -344,10 +244,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "reset effects of [LIST]",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" }
             },
           },
           {
@@ -355,18 +252,9 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set [EFFECT] of [LIST] to [AMOUNT]",
             arguments: {
-              AMOUNT: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 5,
-              },
-              EFFECT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "EFFECTS",
-              },
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              AMOUNT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECTS" },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" }
             },
           },
           {
@@ -374,18 +262,9 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "scale [LIST] to x: [x] y: [y]",
             arguments: {
-              x: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 200,
-              },
-              y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100,
-              },
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
+              x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 200 },
+              y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" }
             },
           },
           {
@@ -393,510 +272,438 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "current [EFFECT] of [LIST]",
             arguments: {
-              LIST: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "lists"
-              },
-              EFFECT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "ALL_EFFECTS",
-              },
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
+              EFFECT: { type: Scratch.ArgumentType.STRING, menu: "ALL_EFFECTS" }
             },
           }
         ],
         menus: {
-          ATTS: {
-            acceptReporters: true,
-            items: ["width", "height"]
-          },
-          lists: {
-            acceptReporters: true,
-            items: "getLists"
-          },
-          allFonts: {
-            acceptReporters: true,
-            items: "getFonts"
-          },
+          lists: { acceptReporters: true, items: "getLists" },
+          allFonts: { acceptReporters: true, items: "getFonts" },
+          EFFECTS: { acceptReporters: true, items: this.getEffects(false) },
+          ALL_EFFECTS: { acceptReporters: true, items: this.getEffects(true) },
           POSITIONS: ["x", "y"],
           list_displays: ["header", "footer"],
           listTypes: ["globally", "for this sprite only"],
           listUtils: ["click events", "text highlighting", "numbered items", "+ and = buttons"],
           ON_OFF: ["on", "off"],
-          ALIGN: {
-            acceptReporters: true,
-            items: ["left", "right", "center"]
-          },
-          EFFECTS: {
-            acceptReporters: true,
-            items: this.getEffects(false)
-          },
-          ALL_EFFECTS: {
-            acceptReporters: true,
-            items: this.getEffects(true)
-          }
+          ATTS: { acceptReporters: true, items: ["width", "height"] },
+          ALIGN: { acceptReporters: true, items: ["left", "right", "center"] }
         }
       }
     }
 
-    // Thank you SkyHigh173 for the getLists and find list functions :))
+    // Helper Funcs
     getLists() {
-      const globalLists = Object.values(
-        vm.runtime.getTargetForStage().variables
-      ).filter((x) => x.type == "list");
-      const localLists = Object.values(vm.editingTarget.variables).filter(
-        (x) => x.type == "list"
-      );
-      const uniqueLists = [...new Set([...globalLists, ...localLists])];
-      if (uniqueLists.length === 0) return [{ text: "make a list", value: "make a list" }];
-      return uniqueLists.map((i) => ({ text: i.name, value: i.id }));
-    }
-
-    lookForList(list, util) {
-      const byId = util.target.lookupVariableById(list);
-      if (byId && byId.type === "list") return JSON.stringify(byId.id);
-      const byName = util.target.lookupVariableByNameAndType(list, "list");
-      if (byName) return JSON.stringify(byName.id);
-      return;
+      const globalLists = Object.values(runtime.getTargetForStage().variables).filter((x) => x.type == "list");
+      const localLists = Object.values(vm.editingTarget.variables).filter((x) => x.type == "list");
+      const listMenu = [...new Set([...globalLists, ...localLists])];
+      if (listMenu.length === 0) return [{ text: "make a list", value: "make a list" }];
+      return listMenu.map((i) => ({ text: i.name, value: i.id }));
     }
 
     getFonts() {
-      const customFonts = Scratch.vm.runtime.fontManager
-        ? Scratch.vm.runtime.fontManager.getFonts().map((i) => ({
-        text: i.name, value: i.family })) : [];
+      const customFonts = runtime.fontManager ? runtime.fontManager.getFonts().map((i) => ({ text: i.name, value: i.family })) : [];
       return [...builtInFonts, ...customFonts];
     }
 
     getEffects(enable) {
       return [
-        "blur", "saturation", "contrast",
-        "brightness", "hue", "opacity",
-        "sepia", "invert", "direction",
+        "blur", "saturation", "contrast", "brightness",
+        "hue", "opacity", "sepia", "invert", "direction",
         ...(enable ? ["scale x", "scale y"] : []),
         "skew x", "skew y"
       ];
     }
 
-    renderList(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      let footer = runtime.isPackaged ? document.querySelector(`[data-id=${list}] ${listDocs.grid}`) : "";
-      args.NUM = args.NUM > 0 ? Math.round(args.NUM) : 1;
-      const parentList = document.querySelector(`[data-id=${list}] ${listDocs.grid}`);
-      if (parentList === null) return;
-      let listWidth = parseFloat(parentList.style.width) || parentList.getBoundingClientRect().width / 2;
-      listWidth = listWidth / args.NUM;
-      list = document.querySelector(`[data-id=${list}] ${listDocs.contain}`);
-      const itemsHTML = this.getListArray(args.LIST, util);
-      if (itemsHTML[1] === 0 || list === null) return;
-      const newContainer = document.createElement("div");
-      newContainer.className = listDocs.contain;
+    getListID(idName, util) {
+      const byId = util.target.lookupVariableById(idName);
+      if (byId && byId.type === "list") return byId.id;
+      const byName = util.target.lookupVariableByNameAndType(idName, "list");
+      return byName ? byName.id : undefined;
+    }
 
-      newContainer.setAttribute("role", "rowgroup");
-      newContainer.style.width = "auto";
-      newContainer.style.height = runtime.isPackaged && footer ? window.getComputedStyle(footer).height :
-        `${((itemsHTML[1] * 24) / args.NUM) + 24}px`;
-      newContainer.style.maxWidth = parentList.style.width;
-      newContainer.style.maxHeight = list.style.maxHeight;
-      newContainer.style.overflow = "scroll";
-      newContainer.style.position = "relative";
+    getMonitor(id, util, returnID) {
+      id = this.getListID(id, util);
+      if (!id) return returnID ? {} : undefined;
+      if (returnID) return { id, listMon: document.querySelector(`div[data-id="${id}"][class*="monitor"]`) };
+      else return document.querySelector(`div[data-id="${id}"][class*="monitor"]`);
+    }
 
-      newContainer.innerHTML = itemsHTML[0];
-      list.parentNode.replaceChild(newContainer, list);
-      function reorderIntoColumns(numColumns) {
-        const items = newContainer.querySelectorAll(`[class^="${listDocs.row}"]`);
-        for (let i = 0; i < items.length; i++) {
-          const column = i % numColumns;
-          const top = Math.floor(i / numColumns) * items[0].offsetHeight;
-          items[i].style.top = top + "px";
-          items[i].style.left = (column * listWidth) + "px";
-          items[i].style.width = 100 / numColumns + "%";
+    applyChanges(listMon, id) {
+      const list = visualLists[id];
+      if (list === undefined) return;
+      if (list.listenerApplied === undefined) {
+        list.listenerApplied = true;
+        const container = listMon.querySelector(listDocs.grid);
+        container.addEventListener("scroll", () => { this.applyChanges(listMon, id) });
+      }
+      const allItems = listMon.querySelectorAll(`div[class^="${listDocs.body}"] [class^="${listDocs.value}"]`);
+      const changedLabels = list.labels, changedColors = list.colors;
+      const isPackaged = typeof scaffolding !== "undefined";
+      allItems.forEach((item, i) => {
+        if (isPackaged ? item.parentNode.getAttribute("data-index") == i : item.getAttribute("dataindex") == i) {
+          if (changedLabels && changedLabels[i]) item.previousSibling.textContent = changedLabels[i];
+          if (changedColors && changedColors[i]) item.style.background = changedColors[i];
         }
-      }
-      reorderIntoColumns(args.NUM);
-      parentList.scrollTop = 0;
-    }
-
-    getColumns(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return 0;
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      list = list.querySelector(`[class^="${listDocs.contain}"]`);
-      if (list === null) return 1;
-
-      const items = Array.from(list.querySelectorAll(`[class^="${listDocs.row}"]`));
-      if (items.length === 0) return 1;
-      const firstItem = items[0];
-      const itemWidth = parseFloat(firstItem.style.width);
-      if (!isNaN(itemWidth) && itemWidth > 0) {
-        const numColumns = 100 / itemWidth;
-        return Math.round(numColumns);
-      }
-      return 1;
-    }
-
-    getListArray(list, util) {
-      const items = util.target.lookupVariableById(list).value;
-      let allItems = document.querySelectorAll(`[data-id="${list}"]`);
-      allItems = allItems[allItems.length - 1];
-      allItems = allItems.querySelectorAll(`[class^="${listDocs.ind}"`);
-      let html = "";
-      if (items.length === 0) return ["", 0];
-      try {
-        const elementClasses = {
-          row : allItems[0].parentNode.className,
-          index : allItems[0].className,
-          outerV : allItems[0].nextElementSibling.className,
-          innerV : allItems[0].nextElementSibling.children[0].className
-        };
-        for (let i = 0; i < items.length; i++) {
-          const value = allItems[i] ? xmlEscape(allItems[i].textContent) : i + 1;
-          html += `
-            <div class="${elementClasses.row}" style="height: 24px; left: 0px; position: absolute; top: ${i * 24}px; width: 100%;">
-              <div class="${elementClasses.index}">${value}</div>
-              <div class="${elementClasses.outerV}" dataindex="${i}" style="background: rgb(252, 102, 44);">
-                <div class="${elementClasses.innerV}">${xmlEscape(items[i])}</div>
-              </div>
-            </div>`;
-        }
-      } catch { return ["", 0] }
-      return [html, items.length];
-    }
-
-    isShowing(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return false;
-      list = runtime.getMonitorState().get(args.LIST);
-      if (!list) return false;
-      return list.visible;
-    }
-
-    listExists(args, util) { return Scratch.Cast.toBoolean(this.lookForList(args.LIST, util)) }
-
-    stretchList(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      args.WIDTH = Scratch.Cast.toNumber(args.WIDTH), args.HEIGHT = Scratch.Cast.toNumber(args.HEIGHT);
-      args.WIDTH = args.WIDTH < 1 || args.WIDTH === Infinity ? 100 : args.WIDTH;
-      args.HEIGHT = args.HEIGHT < 1 || args.HEIGHT === Infinity ? 200 : args.HEIGHT;
-
-      runtime.requestUpdateMonitor(new Map([
-        ["id", list.match(/"([^"]+)"/)[1]],
-        ["width", args.WIDTH], ["height", args.HEIGHT]
-      ]));
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      if (!list || (list && list.classList.contains("blocklyDraggable"))) return;
-      if (!runtime.isPackaged) {
-        list = list.querySelector(`[class^="${listDocs.body}"]`);
-        list.style.cssText = `width: ${args.WIDTH}px; height: ${args.HEIGHT}px;`;
-        let items = list.querySelector(listDocs.grid);
-        if (items) items.style.cssText = `width: ${args.WIDTH}px;`;
-        items = list.querySelector(listDocs.contain);
-        if (items) items.style.cssText = `width: auto; height: ${Scratch.vm.runtime.stageHeight}px; max-width: ${args.WIDTH}px; max-height: ${Scratch.vm.runtime.stageHeight}px; overflow: hidden; position: relative;`;
-      }
-      this.renderList({"LIST":args.LIST, "NUM": this.getColumns(args, util)}, util);
-    }
-
-    getAtt(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return "";
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      if (!list || (list && list.classList.contains("blocklyDraggable"))) return "";
-      list = runtime.isPackaged ? list : list.querySelector(`[class^="${listDocs.body}"]`);
-      return parseFloat(list.style[args.THING]);
-    }
-
-    chooseOption(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      if (args.THING === "click events") {
-        list.style.pointerEvents = args.ON_OFF === "off" ? "none" : "auto";
-      } else if (args.THING === "text highlighting") {
-        const items = list.querySelectorAll(`[class^="${listDocs.value2}"]`);
-        items.forEach(item => {
-          item.style.userSelect = args.ON_OFF === "off" ? "none " : "auto";
-          item.style.webkitUserSelect = args.ON_OFF === "off" ? "none" : "auto"; //apple devices need this for some reason
-        });
-      } else if (args.THING === "numbered items") {
-        const numberedItems = list.querySelectorAll(`[class^="${listDocs.ind}"]`);
-        numberedItems.forEach(item => { item.style.display = args.ON_OFF === "off" ? "none" : "block" });
-      } else {
-        let button1 = list.querySelector(`[class^="${listDocs.addButton}"]`);
-        let button2 = runtime.isPackaged ? button1 : list.querySelector(`[class^="monitor_resize-handle"]`);
-        if (button1 === null || button2 === null) {
-          const buttons = list.querySelectorAll(".no-drag");
-          buttons.forEach(button => { button.style.display = args.ON_OFF === "off" ? "none" : "block" });
-        } else {
-          button1.style.display = args.ON_OFF === "off" ? "none" : "block";
-          button2.style.display = args.ON_OFF === "off" ? "none" : "block";
-        }
-        let text = list.querySelector(`[class^="${listDocs.foot}"]`);
-        text.style.margin = "0 auto";
-      }
-    }
-
-    formatItems(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      list = list.querySelector(listDocs.contain);
-      if (list === null) return;
-      const items = Array.from(list.querySelectorAll(`[class^="${listDocs.value}"]`));
-      function reorder() {
-        for (let i = 0; i < items.length; i++) {
-          items[i].style.textAlign = args.ALIGN;
-        }
-      }
-      reorder();
-    }
-
-    setPosition(args, util) {
-      const canvas = [Scratch.vm.runtime.stageWidth / 2, Scratch.vm.runtime.stageHeight / 2];
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      if (!list || (list && list.classList.contains("blocklyDraggable"))) return;
-
-      const box = runtime.isPackaged ? list : list.querySelector(`[class^="${listDocs.body}"]`);
-      const sizeOffset = [parseFloat(box.style.width), parseFloat(box.style.height)];
-      let x = Scratch.Cast.toNumber(args.x) + canvas[0] - (sizeOffset[0] / 2);
-      let y = (Scratch.Cast.toNumber(args.y) - canvas[1] + (sizeOffset[1] / 2)) * -1;
-
-      let styleAttribute = list.getAttribute("style");
-      const transformRegex = runtime.isPackaged ? /transform:([^;]+);/ : /transform:([^;]+); top:([^;]+); left:([^;]+);/;
-      const transformMatch = styleAttribute.match(transformRegex);
-      if (transformMatch) {
-        const updatedTransform = transformMatch[1].replace(/translate\([^)]+\)/, `translate(${x}px, ${y}px)`);
-        styleAttribute = styleAttribute.replace(transformRegex, `transform:${updatedTransform}; top: 5; left: 5;`);
-        list.setAttribute("style", styleAttribute);
-      }
-    }
-
-    currentPos(args, util) {
-      const canvas = [Scratch.vm.runtime.stageWidth / 2, Scratch.vm.runtime.stageHeight / 2];
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return "";
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      if (!list || (list && list.classList.contains("blocklyDraggable"))) return "";
-
-      const box = runtime.isPackaged ? list : list.querySelector(`[class^="${listDocs.body}"]`);
-      const sizeOffset = [parseFloat(box.style.width), parseFloat(box.style.height)];
-      const styleAttribute = list.getAttribute("style");
-      if (styleAttribute) {
-        const match = styleAttribute.match(/transform\s*:\s*translate\((-?\d+(?:\.\d+)?px),\s*(-?\d+(?:\.\d+)?px)\)/);
-        if (match) {
-          if (args.POSITION === "x") return parseInt(match[1]) - canvas[0] + (sizeOffset[0] / 2);
-          else return ((parseInt(match[2]) * -1) + canvas[1]) - (sizeOffset[1] / 2);
-        }
-      }
-      return "";
-    }
-
-    setScroll(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      list = document.querySelector(`[data-id=${list}] ${listDocs.grid}`);
-      if (list === null) return;
-      const scroll = (args.SCROLL / 100) * (list.scrollHeight - list.clientHeight);
-      list.scrollTop = scroll;
-    }
-
-    resetAll(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      return new Promise(resolve => {
-        list = list.match(/"([^"]+)"/)[1];
-        this.changeMonitorVisibility(list, false);
-        setTimeout(() => {
-          this.changeMonitorVisibility(list, true);
-          setTimeout(() => { resolve() }, 1);
-        }, 25);
       });
     }
 
-    changeMonitorVisibility(id, visible) {
-      runtime.monitorBlocks.changeBlock({
-        id: id, element: "checkbox", value: visible
-      }, runtime);
-    }
-
-    setDisplay(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      let label;
-      if (args.DISPLAY === "header") {
-        label = document.querySelector(`[data-id=${list}] ${listDocs.pkg1}[class^="${listDocs.head}"]`);
-      } else {
-        label = document.querySelector(`[data-id=${list}] ${listDocs.pkg1}[class^="${listDocs.foot}"] ${listDocs.span}`);
-      }
-      if (label) label.textContent = xmlEscape(args.NAME);
-    }
-
-    resetEffects(list, currentTransform) {
-      const translationRegex = /translate\(([^,]+),\s*([^)]+)\)/;
-      const matches = currentTransform.match(translationRegex);
-      let translation = matches ? `translate(${matches[1]}, ${matches[2]})` : "";
-      translation = translation.replace(/scale\([^,]+,\s*[^)]+\)/g, "scale(1)");
-      list.style.filter = "";
-      list.style.transform = translation;
-    }
-
-    setEffect(args, util) { this.listEffect(args.LIST, args.EFFECT, args.AMOUNT, util) }
-
-    listEffect(LIST, EFFECT, AMOUNT, util) {
-      let list = this.lookForList(LIST, util);
-      if (!list) return;
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      let currentTransform = list.style.transform || "";
-      let currentFilterEffect = list.style.filter || "";
-      let setEffect = EFFECT;
-      let amountIn = AMOUNT;
-      if (setEffect === "saturation") setEffect = "saturate";
-      else if (setEffect === "hue") setEffect = "hue-rotate";
-      else if (setEffect === "direction") {
-        setEffect = "rotate";
-        amountIn = AMOUNT - 90;
-      }
-      else if (setEffect === "brightness") amountIn = AMOUNT + 100;
-      else if (setEffect === "skew x") setEffect = "skewX";
-      else if (setEffect === "skew y") setEffect = "skewY";
-      const regex = new RegExp(`${setEffect}\\([^)]+\\)`, "g");
-      currentTransform = currentTransform.replace(regex, "").trim();
-      currentFilterEffect = currentFilterEffect.replace(regex, "").trim();
-      if (setEffect === "rotate" || setEffect.includes("skew")) {
-        currentTransform += ` ${setEffect}(${amountIn}deg)`;
-        list.style.transform = currentTransform.trim();
-      } else {
-        currentFilterEffect += ` ${setEffect}(${amountIn}${setEffect === "blur" ? "px" : setEffect === "hue-rotate" ? "deg" : "%"})`;
-        list.style.filter = currentFilterEffect.trim();
-      }
-    }
-
-    stretchEffect(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      if (!list || (list && list.classList.contains("blocklyDraggable"))) return;
-      let existingTransform = list.style.transform || "";
-      existingTransform = existingTransform.replace(/scale\([^)]*\)/g, "");
-      list.style.transform = `${existingTransform} scale(${args.x / 100}, ${args.y / 100})`;
-    }
-
-    currentEffect(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return "";
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      const currentTransform = list.style.transform || "";
-      const currentFilterEffect = list.style.filter || "";
-      const setEffect = {
-        saturation: "saturate",
-        hue: "hue-rotate", direction: "rotate",
-        "scale x": "scale", "scale y": "scale",
-        brightness: "brightness",
-        opacity: "opacity",
-        "skew x": "skewX", "skew y": "skewY",
-      }[args.EFFECT] || args.EFFECT;
-      const defaultV = {
-        saturation: 100, hue: 0, direction: 90,
-        "scale x": 100, "scale y": 100,
-        brightness: 0, opacity: 100,
-      }[args.EFFECT] || 0;
-
-      const regex = new RegExp(`${setEffect}\\(([^)]+)\\)`);
-      const transformMatch = currentTransform.match(regex);
-      const filterMatch = currentFilterEffect.match(regex);
-      if (filterMatch || transformMatch) {
-        const valueWithUnits = (filterMatch || transformMatch)[1];
-        const numericValue = parseFloat(valueWithUnits.replace(/[^0-9.-]/g, ""));
-        if (setEffect === "brightness") return numericValue - 100;
-        else if (setEffect === "rotate") return numericValue + 90;
-        else if (setEffect === "scale") {
-          const arr = valueWithUnits.split(", ");
-          return arr[args.EFFECT.includes("x") ? 0 : 1] * 100;
-        } else { return numericValue }
-      } else { return defaultV }
-    }
-
-    resetEffect(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      let currentTransform = list.style.transform || "";
-      this.resetEffects(list, currentTransform);
-    }
-
-    setFont(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      list.style.fontFamily = args.FONT;
-    }
-
-    setColor(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      args.NUM = Math.abs(args.NUM);
-      if (!args.COLOR.includes("gradient")) {
-        args.COLOR = args.COLOR.replace(/^#/, "");
-        const bigint = parseInt(args.COLOR, 16);
-        args.COLOR = `rgb(${(bigint >> 16) & 255}, ${(bigint >> 8) & 255}, ${bigint & 255})`;
-      }
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      const targetElement = list.querySelectorAll(`[class^="${listDocs.body}"] [class^="${listDocs.value}"]`)[args.NUM - 1];
-      if (targetElement) targetElement.style.background = xmlEscape(args.COLOR);
-    }
-
-    setLabel(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (!list) return;
-      args.NUM = Math.abs(args.NUM);
-      list = document.querySelectorAll(`[data-id=${list}]`);
-      list = list[list.length - 1];
-      const targetElement = list.querySelectorAll(`[class^="${listDocs.ind}"`)[args.NUM - 1];
-      if (targetElement) targetElement.textContent = xmlEscape(args.VALUE);
-    }
-
-    makeList(args, util) {
-      let list = this.lookForList(args.LIST, util);
-      if (list) return;
-      if (args.TYPE === "for this sprite only") {
-        util.target.createVariable(this.generateId(), args.LIST, "list");
-      } else {
-        runtime.getTargetForStage().createVariable(this.generateId(), args.LIST, "list");
-      }
-      return this.refresh();
-    }
-
-    refresh() {
-      if (!runtime.isPackaged) {
-        Scratch.vm.emitWorkspaceUpdate();
-        window.ScratchBlocks.getMainWorkspace().toolboxRefreshEnabled_ = true;
-        window.ScratchBlocks.getMainWorkspace().refreshToolboxSelection_();
-        window.ScratchBlocks.getMainWorkspace().toolboxRefreshEnabled_ = false;
-        setTimeout(function() { vm.runtime.requestBlocksUpdate() }, 10);
-      }
-    }
-
-    generateId() {
+    genId() {
+      // Used for creating IDs for variables
       const soup = "!#%()*+,-./:;=?@[]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       const id = [];
       for (let i = 0; i < 20; i++) {
         id[i] = soup.charAt(Math.random() * soup.length);
       }
       return id.join("");
+    }
+
+    refresh() {
+      // Use to refresh the toolbox to show new/deleted lists
+      if (typeof scaffolding === "undefined") {
+        vm.emitWorkspaceUpdate();
+        const workspace = ScratchBlocks.getMainWorkspace();
+        workspace.toolboxRefreshEnabled_ = true;
+        workspace.refreshToolboxSelection_();
+        workspace.toolboxRefreshEnabled_ = false;
+        setTimeout(function() { runtime.requestBlocksUpdate() }, 10);
+      }
+    }
+
+    // Block Funcs
+    isShowing(args, util) {
+      const id = this.getListID(args.LIST, util);
+      if (!id) return false;
+      return runtime.getMonitorState().get(id)?.visible || false;
+    }
+
+    listExists(args, util) { return Scratch.Cast.toBoolean(this.getListID(args.LIST, util)) }
+
+    makeList(args, util) {
+      const listName = Scratch.Cast.toString(args.LIST);
+      if (this.getListID(args.LIST, util)) return;
+      if (args.TYPE === "for this sprite only") util.target.createVariable(this.genId(), listName, "list");
+      else runtime.getTargetForStage().createVariable(this.genId(), listName, "list");
+      return this.refresh();
+    }
+
+    deleteList(args, util) {
+      const id = this.getListID(args.LIST, util);
+      if (!id) return;
+      runtime.getTargetForStage().deleteVariable(id)
+      util.target.deleteVariable(id);
+      return this.refresh();
+    }
+
+    renderList(args, util) {
+      const { id, listMon } = this.getMonitor(args.LIST, util, true);
+      if (!listMon) return;
+      const items = util.target.lookupVariableById(id).value;
+      const columnCnt = Math.min(100, Math.round(Scratch.Cast.toNumber(args.NUM)));
+      listMon.setAttribute("SPcolumnCnt", columnCnt);
+      let container = listMon.querySelector(`div[class^="SPstyLists-columnRender"`);
+      if (container) container.parentNode.removeChild(container);
+      if (items.length === 0) return;
+      // From this point onward, we know theres at least 1 item present. We can grab the classnames from that item,
+      // that way we dont lose CSS properties and support for Custom Styles
+      let itemDiv = [], listContain = listMon.querySelector(listDocs.contain);
+      if (!listContain) return; // shouldnt happen, but check just in case
+      const firstItem = listMon.querySelector(`[class^="${listDocs.row}"]`);
+      const itemClasses = [firstItem.className]; // Always 4 Items
+      firstItem.querySelectorAll("*").forEach(el => {itemClasses.push(el.className) });
+      if (columnCnt === 1) listContain.style.display = "";
+      else {
+        const isPackaged = typeof scaffolding !== "undefined";
+        listContain.style.display = "none";
+        container = document.createElement("div");
+        container.className = "SPstyLists-columnRender";
+        container.style.overflow = "scroll";
+        container.style.overflowX = "hidden";
+        container.style.height = "100%";
+        container.style.position = "relative";
+        container.addEventListener("scroll", () => { this.applyChanges(listMon, id) });
+        for (let i = 0; i < Math.ceil(items.length / columnCnt); i++) {
+          const row = document.createElement("div");
+          row.className = itemClasses[0];
+          row.style.position = "absolute";
+          row.style.width = "100%";
+          row.style.height = "24px";
+          row.style.top = `${i * 24}px`;
+          for (let j = 0; j < columnCnt; j++) {
+            const listItem = items[i * columnCnt + j];
+            const item = document.createElement("div");
+            item.className = itemClasses[0];
+            item.setAttribute("data-index", i * columnCnt + j);
+            item.style.width = `${100 / columnCnt}%`;
+            item.style.left = `${(100 / columnCnt) * j}%`;
+            const index = document.createElement("div");
+            index.className = itemClasses[1];
+            index.textContent = i * columnCnt + j + 1;
+            item.appendChild(index);
+
+            const value = document.createElement("div");
+            value.className = itemClasses[2];
+            value.style.background = "#ff661a";
+            value.style.color = "#fff";
+            value.setAttribute("dataindex", i * columnCnt + j);
+            const valueInner = document.createElement("div");
+            valueInner.className = itemClasses[3];
+            valueInner.textContent = listItem || "";
+            value.appendChild(valueInner);
+            item.appendChild(value);
+            if (!listItem) item.style.opacity = "0"; // Use Ghost Items to keep items separated
+            row.appendChild(item);
+          }
+          itemDiv.push(row)
+        }
+        container.append(...itemDiv);
+        listContain.parentNode.insertBefore(container, listContain);
+        if (args.SECRET === undefined) visualLists[id] = { ...visualLists[id], util };
+        this.applyChanges(listMon, id);
+      }
+    }
+
+    getColumns(args, util) {
+      const listMon= this.getMonitor(args.LIST, util);
+      if (!listMon) return 0;
+      return listMon ? listMon.getAttribute("SPcolumnCnt") || 1 : 1;
+    }
+
+    stretchList(args, util) {
+      const id = this.getListID(args.LIST, util);
+      if (!id) return;
+      const width = Math.max(1, Math.min(99999, Scratch.Cast.toNumber(args.WIDTH)));
+      const height = Math.max(1, Math.min(99999, Scratch.Cast.toNumber(args.HEIGHT)));
+      if (args.SECRET === undefined) visualLists[id] = { ...visualLists[id], util };
+      if (typeof scaffolding === "undefined") {
+        // Editor Monitor GUI cant Force Visual Updates, we need to do it Manually
+        const listMon = document.querySelector(`div[data-id="${id}"] [class*="monitor_list"]`);
+        if (!listMon) return;
+        const outerModal = listMon.querySelector(listDocs.grid);
+        const innerModal = listMon.querySelector(listDocs.contain);
+        listMon.style.width = `${width}px`; listMon.style.height = `${height}px`;
+        outerModal.style.width = `${width}px`; outerModal.style.height = `${height}px`;
+        if (innerModal) {
+          innerModal.style.width = "auto";
+          innerModal.style.maxWidth = `${width}px`;
+        }
+      }
+      runtime.requestUpdateMonitor(new Map([["id", id], ["width", width], ["height", height]]));
+    }
+
+    getAtt(args, util) {
+      let listMon = this.getMonitor(args.LIST, util);
+      if (!listMon) return "";
+      listMon = typeof scaffolding !== "undefined" ? listMon : listMon.querySelector(`div[class^="${listDocs.body}"]`);
+      return parseFloat(listMon.style[args.THING === "width" ? "width" : "height"]);
+    }
+
+    chooseOption(args, util) {
+      const listMon = this.getMonitor(args.LIST, util);
+      if (!listMon) return;
+      const disable = args.ON_OFF === "off";
+      if (args.THING === "click events") listMon.style.pointerEvents = disable ? "none" : "auto";
+      else if (args.THING === "text highlighting") {
+        const items = listMon.querySelectorAll(`div[class^="${listDocs.value2}"]`);
+        items.forEach(item => {
+          item.style.userSelect = disable ? "none " : "auto";
+          item.style.webkitUserSelect = disable ? "none" : "auto";
+        });
+      } else if (args.THING === "numbered items") {
+        const numberedItems = listMon.querySelectorAll(`div[class^="${listDocs.ind}"]`);
+        numberedItems.forEach(item => { item.style.display = disable ? "none" : "block" });
+      } else if (args.THING === "+ and = buttons") {
+        let button1 = listMon.querySelector(`div[class^="${listDocs.addButton}"]`);
+        let button2 = typeof scaffolding !== "undefined" ? button1 : listMon.querySelector(`div[class^="monitor_resize-handle"]`);
+        if (button1 === null || button2 === null) {
+          const buttons = listMon.querySelectorAll(".no-drag");
+          buttons.forEach(button => { button.style.display = disable ? "none" : "block" });
+        } else {
+          button1.style.display = disable ? "none" : "block";
+          button2.style.display = disable ? "none" : "block";
+        }
+        let text = listMon.querySelector(`div[class^="${listDocs.foot}"]`);
+        text.style.margin = "0 auto";
+      }
+    }
+
+    setPosition(args, util) {
+      const { id, listMon } = this.getMonitor(args.LIST, util, true);
+      if (!listMon) return;
+      const canvas = [runtime.stageWidth / 2, runtime.stageHeight / 2];
+      const regex = /transform:([^;]+);/;
+
+      const box = typeof scaffolding !== "undefined" ? listMon : listMon.querySelector(`div[class^="${listDocs.body}"]`);
+      const sizeOffset = [parseFloat(box.style.width), parseFloat(box.style.height)];
+      const x = Scratch.Cast.toNumber(args.x) + canvas[0] - (sizeOffset[0] / 2);
+      const y = (Scratch.Cast.toNumber(args.y) - canvas[1] + (sizeOffset[1] / 2)) * -1;
+
+      let styleAtt = listMon.getAttribute("style");
+      const transformMatch = styleAtt.match(regex);
+      if (transformMatch) {
+        const newTransform = transformMatch[1].replace(/translate\([^)]+\)/, `translate(${x}px, ${y}px)`);
+        listMon.setAttribute("style", styleAtt.replace(regex, `transform:${newTransform}; top: 5; left: 5;`));
+        runtime.requestUpdateMonitor(new Map([["id", id], ["x", x], ["y", y]]));
+      }
+    }
+
+    currentPos(args, util) {
+      const listMon = this.getMonitor(args.LIST, util);
+      if (!listMon) return "";
+      const canvas = [runtime.stageWidth / 2, runtime.stageHeight / 2];
+      const box = typeof scaffolding !== "undefined" ? listMon : listMon.querySelector(`div[class^="${listDocs.body}"]`);
+      const sizeOffset = [parseFloat(box.style.width), parseFloat(box.style.height)];
+      const styleAtt = listMon.getAttribute("style");
+      if (styleAtt) {
+        const match = styleAtt.match(/transform\s*:\s*translate\((-?\d+(?:\.\d+)?px),\s*(-?\d+(?:\.\d+)?px)\)/);
+        if (match) return args.POSITION === "x" ? parseInt(match[1]) - canvas[0] + (sizeOffset[0] / 2) :
+          ((parseInt(match[2]) * -1) + canvas[1]) - (sizeOffset[1] / 2);
+      }
+      return "";
+    }
+
+    setScroll(args, util) {
+      const id = this.getListID(args.LIST, util);
+      if (!id) return;
+      let grid = document.querySelector(`div[data-id="${id}"] ${listDocs.grid}`);
+      let spGrid = document.querySelector(`div[data-id="${id}"] [class^="SPstyLists-columnRender"`);
+      const value = Scratch.Cast.toNumber(args.SCROLL) / 100;
+      if (spGrid !== null) spGrid.scrollTop = value * (spGrid.scrollHeight - spGrid.clientHeight);
+      else if (grid !== null) grid.scrollTop = value * (grid.scrollHeight - grid.clientHeight);
+    }
+
+    resetAll(args, util) {
+      const id = this.getListID(args.LIST, util);
+      if (!id || !this.isShowing(args, util)) return;
+      const setVisible = (id, visible) => {
+        runtime.monitorBlocks.changeBlock({ id: id, element: "checkbox", value: visible }, runtime);
+      }
+      const onVisUpdate = () => {
+        runtime.once("AFTER_EXECUTE", () => { 
+          setVisible(id, true);
+          runtime.off("MONITORS_UPDATE", onVisUpdate);
+        });
+      };
+      runtime.once("MONITORS_UPDATE", onVisUpdate);
+      setVisible(id, false);
+    }
+
+    formatItems(args, util) {
+      let listMon = this.getMonitor(args.LIST, util);
+      if (!listMon) return;
+      listMon = listMon.querySelector(listDocs.contain);
+      if (listMon === null) return;
+      const items = Array.from(listMon.querySelectorAll(`div[class^="${listDocs.value}"]`));
+      items.forEach(item => { item.style.textAlign = args.ALIGN });
+    }
+
+    setDisplay(args, util) {
+      const id = this.getListID(args.LIST, util);
+      if (!id) return;
+      let label;
+      if (args.DISPLAY === "header") label = document.querySelector(`div[data-id="${id}"] ${listDocs.pkg1}[class^="${listDocs.head}"]`);
+      else label = document.querySelector(`div[data-id="${id}"] ${listDocs.pkg1}[class^="${listDocs.foot}"] ${listDocs.span}`);
+      if (label) label.textContent = args.NAME;
+    }
+
+    setColor(args, util) {
+      const { id, listMon } = this.getMonitor(args.LIST, util, true);
+      if (!listMon) return;
+      const index = Math.max(0, Scratch.Cast.toNumber(args.NUM) - 1);
+      const currentList = visualLists[id] || {};
+      visualLists[id] = { ...currentList, util, colors: { ...currentList.colors, [index]: args.COLOR } };
+      this.applyChanges(listMon, id);
+    }
+
+    setLabel(args, util) {
+      const { id, listMon } = this.getMonitor(args.LIST, util, true);
+      if (!listMon) return;
+      const index = Math.max(0, Scratch.Cast.toNumber(args.NUM) - 1);
+      const currentList = visualLists[id] || {};
+      visualLists[id] = { ...currentList, util, labels: { ...currentList.labels, [index]: args.VALUE } };
+      this.applyChanges(listMon, id);
+    }
+
+    setFont(args, util) {
+      const listMon = this.getMonitor(args.LIST, util);
+      if (listMon) listMon.style.fontFamily = args.FONT;
+    }
+
+    resetEffect(args, util) {
+      const listMon = this.getMonitor(args.LIST, util);
+      if (!listMon) return;
+      let curTransform = listMon.style.transform || "";
+      const matches = curTransform.match(/translate\(([^,]+),\s*([^)]+)\)/);
+      let translation = matches ? `translate(${matches[1]}, ${matches[2]})` : "";
+      listMon.style.transform = translation.replace(/scale\([^,]+,\s*[^)]+\)/g, "scale(1)");
+      listMon.style.filter = "";
+    }
+
+    setEffect(args, util) {
+      const listMon = this.getMonitor(args.LIST, util);
+      if (!listMon) return;
+      let curTransform = listMon.style.transform || "";
+      let curFilter = listMon.style.filter || "";
+      let effect = args.EFFECT, amountIn = Scratch.Cast.toNumber(args.AMOUNT);
+      if (effect === "saturation") effect = "saturate";
+      else if (effect === "hue") effect = "hue-rotate";
+      else if (effect === "brightness") amountIn += 100;
+      else if (effect === "skew x") effect = "skewX";
+      else if (effect === "skew y") effect = "skewY";
+      else if (effect === "direction") {
+        effect = "rotate";
+        amountIn -= 90;
+      }
+      const regex = new RegExp(`${effect}\\([^)]+\\)`, "g");
+      curTransform = curTransform.replace(regex, "").trim();
+      curFilter = curFilter.replace(regex, "").trim();
+      if (effect === "rotate" || effect.includes("skew")) {
+        curTransform += ` ${effect}(${amountIn}deg)`;
+        listMon.style.transform = curTransform.trim();
+      } else {
+        curFilter += ` ${effect}(${amountIn}${effect === "blur" ? "px" : effect === "hue-rotate" ? "deg" : "%"})`;
+        listMon.style.filter = curFilter.trim();
+      }
+    }
+
+    stretchEffect(args, util) {
+      const listMon = this.getMonitor(args.LIST, util);
+      if (!listMon) return;
+      let curTransform = listMon.style.transform || "";
+      const scaleTxt = `scale(${Scratch.Cast.toNumber(args.x) / 100}, ${Scratch.Cast.toNumber(args.y) / 100})`;
+      listMon.style.transform = `${curTransform.replace(/scale\([^)]*\)/g, "")} ${scaleTxt}`;
+    }
+
+    currentEffect(args, util) {
+      const listMon = this.getMonitor(args.LIST, util);
+      if (!listMon) return "";
+      const effect = Scratch.Cast.toString(args.EFFECT);
+      const curTransform = listMon.style.transform || "";
+      const curFilter = listMon.style.filter || "";
+      const setEffect = {
+        saturation: "saturate", hue: "hue-rotate", direction: "rotate",
+        "scale x": "scale", "scale y": "scale",
+        brightness: "brightness", opacity: "opacity",
+        "skew x": "skewX", "skew y": "skewY"
+      }[effect] || effect;
+      const defaultV = {
+        saturation: 100, hue: 0, direction: 90,
+        "scale x": 100, "scale y": 100,
+        brightness: 0, opacity: 100
+      }[effect] || 0;
+
+      const regex = new RegExp(`${setEffect}\\(([^)]+)\\)`);
+      const transformMatch = curTransform.match(regex);
+      const filterMatch = curFilter.match(regex);
+      if (filterMatch || transformMatch) {
+        const unitVal = (filterMatch || transformMatch)[1];
+        const pureVal = parseFloat(unitVal.replace(/[^0-9.-]/g, ""));
+        if (setEffect === "brightness") return pureVal - 100;
+        else if (setEffect === "rotate") return pureVal + 90;
+        else if (setEffect === "scale") return unitVal.split(", ")[effect.includes("x") ? 0 : 1] * 100;
+        else return pureVal
+      } else { return defaultV }
     }
   }
 
