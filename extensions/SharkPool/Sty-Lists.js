@@ -414,7 +414,6 @@
       firstItem.querySelectorAll("*").forEach(el => {itemClasses.push(el.className) });
       if (columnCnt === 1) listContain.style.display = "";
       else {
-        const isPackaged = typeof scaffolding !== "undefined";
         listContain.style.display = "none";
         container = document.createElement("div");
         container.className = "SPstyLists-columnRender";
