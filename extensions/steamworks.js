@@ -9,7 +9,7 @@
 
   /* globals Steamworks */
 
-  const canUseSteamworks = typeof Steamworks !== 'undefined' && Steamworks.ok();
+  const canUseSteamworks = typeof Steamworks !== "undefined" && Steamworks.ok();
 
   class SteamworksExtension {
     getInfo() {
