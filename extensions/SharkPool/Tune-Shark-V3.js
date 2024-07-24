@@ -5,7 +5,6 @@
 // License: MIT AND LGPL-3.0
 
 // Version V.3.3.0
-// Thanks to HOME for the song "Resonance" being used as the default audio link
 
 (function (Scratch) {
   "use strict";
@@ -123,7 +122,7 @@
             text: "import sound from URL [URL] named [NAME]",
             blockIconURI: settingsIconURI,
             arguments: {
-              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://tinyurl.com/Resonance-Home" },
+              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://extensions.turbowarp.org/meow.mp3" },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }
             },
           },
