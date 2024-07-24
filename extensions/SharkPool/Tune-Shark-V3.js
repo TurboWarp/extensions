@@ -5,6 +5,7 @@
 // License: MIT AND LGPL-3.0
 
 // Version V.3.3.0
+// Thanks to HOME for the song "Resonance" being used as the default audio link
 
 (function (Scratch) {
   "use strict";
@@ -122,7 +123,7 @@
             text: "import sound from URL [URL] named [NAME]",
             blockIconURI: settingsIconURI,
             arguments: {
-              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://extensions.turbowarp.org/meow.mp3" },
+              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://tinyurl.com/Resonance-Home" },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }
             },
           },
@@ -976,8 +977,8 @@
       else if (args.TYPE === "detune") sound.detune = value * 1000;
       else if (args.TYPE === "speed") sound.speed = Math.max(0, value);
       else if (args.TYPE === "gain") sound.gain = value;
-      else if (args.TYPE === "attack") sound.context.attack = value;
-      else if (args.TYPE === "release") sound.context.release = value;
+      else if (args.TYPE === "attack") sound.context.attack = Math.max(0, value);
+      else if (args.TYPE === "release") sound.context.release = Math.max(0, value);
       else if (args.TYPE === "pan") {
         const pan = new Pizzicato.Effects.StereoPanner({ pan: Math.max(-1, Math.min(1, value)) });
         return this.updateEffect(pan, sound, "PAN", args);
