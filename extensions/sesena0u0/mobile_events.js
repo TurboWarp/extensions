@@ -20,6 +20,12 @@
         color2: "#50aa50",
         color3: "#50aa50",
         menuIconURI,
+        menus: {
+          xOrY: [
+            { text: "x", value: "x" },
+            { text: "y", value: "y" },
+          ],
+        },
         blocks: [
           {
             opcode: "checkSwipe",
@@ -47,19 +53,30 @@
             text: "is pinch close detected?",
           },
           {
-            opcode: "getTouchCount",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "number of touches",
-          },
-          {
             opcode: "isLandscape",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is landscape?",
           },
           {
-            opcode: "getSwipeDirection",
+            opcode: "isMobile",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is mobile device?",
+          },
+          {
+            opcode: "isTouchSupported",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is touchscreen supported?",
+          },
+          "---",
+          {
+            opcode: "getScreenWidth",
             blockType: Scratch.BlockType.REPORTER,
-            text: "swipe direction",
+            text: "screen width",
+          },
+          {
+            opcode: "getScreenHeight",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "screen height",
           },
           {
             opcode: "getOrientation",
@@ -67,9 +84,30 @@
             text: "device orientation",
           },
           {
-            opcode: "isMobile",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "is mobile device?",
+            opcode: "getTouchCount",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "number of touches",
+          },
+          {
+            opcode: "getTouchPosition",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "position [XY] of touch [T]",
+            arguments: {
+              T: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+              XY: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "xOrY",
+                defaultValue: "x",
+              },
+            },
+          },
+          {
+            opcode: "getSwipeDirection",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "swipe direction",
           },
           "---",
           {
@@ -114,9 +152,9 @@
       this.currentDistances = [];
       this.touchThreshold = 50;
       this.timeThreshold = 300;
-      this.longPressThreshold = 500; // Temps en ms pour considérer un long press
+      this.longPressThreshold = 500;
       this.touchCount = 0;
-      this.swipeDirection = 0; // Direction du swipe en degrés
+      this.swipeDirection = 0;
 
       document.addEventListener(
         "touchstart",
@@ -142,6 +180,7 @@
 
     handleTouchStart(e) {
       this.touchCount = e.touches.length;
+      this.touchPositions = Array.from(e.touches);
       const touch = e.touches[0];
       this.startX = touch.screenX;
       this.startY = touch.screenY;
@@ -155,37 +194,40 @@
         this.isLongPress = true;
       }, this.longPressThreshold);
 
-      // Stocker les distances initiales pour les pincements
       if (this.touchCount >= 2) {
         this.startDistances = [this.getDistance(e.touches)];
       }
     }
 
     handleTouchMove(e) {
-      const touch = e.touches[0];
-      const diffX = touch.screenX - this.startX;
-      const diffY = touch.screenY - this.startY;
-      const diffTime = new Date().getTime() - this.startTime;
+      this.touchPositions = Array.from(e.touches);
 
-      if (diffTime >= this.longPressThreshold) {
-        clearTimeout(this.longPressTimeout);
-        this.isLongPress = true;
-      } else if (
-        Math.abs(diffX) > this.touchThreshold ||
-        Math.abs(diffY) > this.touchThreshold
-      ) {
-        clearTimeout(this.longPressTimeout);
-      }
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        const diffX = touch.screenX - this.startX;
+        const diffY = touch.screenY - this.startY;
+        const diffTime = new Date().getTime() - this.startTime;
 
-      // Détecter les pincements
-      if (e.touches.length >= 2) {
-        this.currentDistances = [this.getDistance(e.touches)];
-        const distanceDiff = this.currentDistances[0] - this.startDistances[0];
+        if (diffTime >= this.longPressThreshold) {
+          clearTimeout(this.longPressTimeout);
+          this.isLongPress = true;
+        } else if (
+          Math.abs(diffX) > this.touchThreshold ||
+          Math.abs(diffY) > this.touchThreshold
+        ) {
+          clearTimeout(this.longPressTimeout);
+        }
 
-        if (distanceDiff > this.touchThreshold) {
-          this.isPinchOpen = true;
-        } else if (distanceDiff < -this.touchThreshold) {
-          this.isPinchClose = true;
+        if (e.touches.length >= 2) {
+          this.currentDistances = [this.getDistance(e.touches)];
+          const distanceDiff =
+            this.currentDistances[0] - this.startDistances[0];
+
+          if (distanceDiff > this.touchThreshold) {
+            this.isPinchOpen = true;
+          } else if (distanceDiff < -this.touchThreshold) {
+            this.isPinchClose = true;
+          }
         }
       }
     }
@@ -193,34 +235,31 @@
     handleTouchEnd(e) {
       clearTimeout(this.longPressTimeout);
       this.touchCount = e.touches.length;
+      this.touchPositions = Array.from(e.touches);
 
-      if (this.touchCount > 0) {
-        // Si d'autres touches sont encore présentes, ne pas réinitialiser isLongPress
-        return;
-      }
+      if (this.touchCount === 0) {
+        const touch = e.changedTouches[0];
+        const diffX = touch.screenX - this.startX;
+        const diffY = touch.screenY - this.startY;
+        const diffTime = new Date().getTime() - this.startTime;
 
-      const touch = e.changedTouches[0];
-      const diffX = touch.screenX - this.startX;
-      const diffY = touch.screenY - this.startY;
-      const diffTime = new Date().getTime() - this.startTime;
-
-      if (diffTime < this.timeThreshold) {
-        if (
-          Math.abs(diffX) > this.touchThreshold ||
-          Math.abs(diffY) > this.touchThreshold
-        ) {
-          this.isSwipe = true;
-          this.calculateSwipeDirection(diffX, diffY);
+        if (diffTime < this.timeThreshold) {
+          if (
+            Math.abs(diffX) > this.touchThreshold ||
+            Math.abs(diffY) > this.touchThreshold
+          ) {
+            this.isSwipe = true;
+            this.calculateSwipeDirection(diffX, diffY);
+          } else {
+            this.isTap = true;
+          }
         } else {
-          this.isTap = true;
+          this.isLongPress = false;
         }
-      } else {
-        this.isLongPress = false;
-      }
 
-      // Réinitialiser les distances de pincement après la fin de l'événement tactile
-      this.startDistances = [];
-      this.currentDistances = [];
+        this.startDistances = [];
+        this.currentDistances = [];
+      }
     }
 
     handleOrientation(e) {
@@ -246,7 +285,7 @@
         angle += 360;
       }
 
-      this.swipeDirection = angle;
+      this.swipeDirection = Math.round(angle);
     }
 
     checkSwipe() {
@@ -280,7 +319,11 @@
     }
 
     isMobile() {
-      return /Mobi|Android/i.test(navigator.userAgent);
+      return /Mobi|Android|iPad|iPhone/i.test(navigator.userAgent);
+    }
+
+    isTouchSupported() {
+      return "ontouchstart" in window || navigator.maxTouchPoints > 0;
     }
 
     getTouchCount() {
@@ -317,6 +360,67 @@
 
     whenPinchClose() {
       return this.isPinchClose;
+    }
+
+    getScreenWidth() {
+      return window.innerWidth;
+    }
+
+    getScreenHeight() {
+      return window.innerHeight;
+    }
+
+    boundToProjectX(clientX) {
+      const bounds = this.getCanvasBounds();
+      const min = -Scratch.vm.runtime.stageWidth / 2;
+      const max = Scratch.vm.runtime.stageWidth / 2;
+      return this.specifiPlace(
+        min,
+        this.map(clientX, bounds.left, bounds.right, min, max),
+        max
+      );
+    }
+
+    boundToProjectY(clientY) {
+      const bounds = this.getCanvasBounds();
+      const min = -Scratch.vm.runtime.stageHeight / 2;
+      const max = Scratch.vm.runtime.stageHeight / 2;
+      return this.specifiPlace(
+        min,
+        this.map(clientY, bounds.bottom, bounds.top, min, max),
+        max
+      );
+    }
+
+    getCanvasBounds() {
+      return document.querySelector("canvas").getBoundingClientRect();
+    }
+
+    map(value, inMin, inMax, outMin, outMax) {
+      return ((value - inMin) / (inMax - inMin)) * (outMax - outMin) + outMin;
+    }
+
+    specifiPlace(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    getTouchPosition(args) {
+      const touchIndex = parseInt(args.T) - 1;
+      const coordinate = args.XY;
+
+      if (touchIndex < 0 || touchIndex >= this.touchCount) {
+        return 0;
+      }
+
+      const touch = this.touchPositions[touchIndex];
+
+      if (coordinate === "x") {
+        return touch ? Math.round(this.boundToProjectX(touch.clientX)) : 0;
+      } else if (coordinate === "y") {
+        return touch ? Math.round(this.boundToProjectY(touch.clientY)) : 0;
+      }
+
+      return 0;
     }
   }
 
