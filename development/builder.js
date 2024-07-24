@@ -179,7 +179,7 @@ class ExtensionFile extends BuildFile {
         if (match.source.type === "Literal") {
           const value = match.source.value;
           if (typeof value === "string") {
-            dependencies.add(value);
+            if (!value.startsWith("data:")) dependencies.add(value);
           } else {
             throw new Error(
               `${this.sourcePath}: Invalid URL\n at char ${match.source.start}~${match.source.end}`
