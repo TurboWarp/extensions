@@ -79,15 +79,15 @@
 
           {
             blockType: Scratch.BlockType.BOOLEAN,
-            opcode: "getUserOwns",
+            opcode: "getInstalled",
             text: Scratch.translate({
-              default: "user owns [TYPE] with ID [ID]?",
-              description: "eg. 'user owns DLC with ID Extra_Skins_DLC'",
+              default: "[TYPE] [ID] installed?",
+              description: "eg. can be read as 'DLC 1234 installed?'",
             }),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "ownType",
+                menu: "installType",
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -95,28 +95,6 @@
               },
             },
           },
-
-          // "---",
-
-          // {
-          //   blockType: Scratch.BlockType.COMMAND,
-          //   opcode: "updateLeaderboard",
-          //   text: "set score on leaderboard [LEADERBOARD] to [VALUE] by [METHOD]",
-          //   arguments: {
-          //     LEADERBOARD: {
-          //       type: Scratch.ArgumentType.STRING,
-          //       defaultValue: "",
-          //     },
-          //     VALUE: {
-          //       type: Scratch.ArgumentType.NUMBER,
-          //       defaultValue: "",
-          //     },
-          //     METHOD: {
-          //       type: Scratch.ArgumentType.STRING,
-          //       menu: "leaderboardUpdateMethod",
-          //     },
-          //   },
-          // },
 
           "---",
 
@@ -179,7 +157,7 @@
             ],
           },
 
-          ownType: {
+          installType: {
             acceptReporters: true,
             items: [
               {
@@ -245,7 +223,7 @@
       );
     }
 
-    getUserOwns({ TYPE, ID }) {
+    getInstalled({ TYPE, ID }) {
       if (!canUseSteamworks) return false;
       if (TYPE === "DLC") {
         return Steamworks.apps.isDlcInstalled(Scratch.Cast.toNumber(ID));
@@ -253,20 +231,17 @@
       return false;
     }
 
-    // async updateLeaderboard({ LEADERBOARD, VALUE, METHOD }) {
-    //   if (!canUseSteamworks) return;
-    //   await Steamworks.leaderboard.uploadScore(
-    //     Scratch.Cast.toString(LEADERBOARD),
-    //     Scratch.Cast.toNumber(VALUE),
-    //     METHOD === "forcibly updating",
-    //     []
-    //   );
-    // }
-
     openInOverlay({ TYPE, DATA }) {
-      if (!canUseSteamworks) return;
       if (TYPE === "URL") {
-        Steamworks.overlay.activateToWebPage(Scratch.Cast.toString(DATA));
+        const url = Scratch.Cast.toString(DATA);
+        if (canUseSteamworks) {
+          // This will always be a packaged environment so don't need to bother
+          // with canOpenWindow()
+          Steamworks.overlay.activateToWebPage(DATA);
+        } else {
+          // Don't await result, we don't care
+          Scratch.openWindow(url);
+        }
       }
     }
   }
