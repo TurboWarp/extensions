@@ -3,25 +3,18 @@
 // Description: Control Visuals of Sprites, Backdrops, Pen, Video, and More!
 // By: SharkPool
 
-// Version V.1.1.0
+// Version V.1.2.0
 
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) throw new Error("Render Control must run unsandboxed!");
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI4NS4zMDMyNiIgaGVpZ2h0PSI4NS4zMDMyNiIgdmlld0JveD0iMCwwLDg1LjMwMzI2LDg1LjMwMzI2Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTk3LjM0ODM3LC0xMzcuMzQ4MzcpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0xOTkuMzQ4MzcsMTgwYzAsLTIyLjQ1MTI3IDE4LjIwMDM1LC00MC42NTE2MyA0MC42NTE2MywtNDAuNjUxNjNjMjIuNDUxMjcsMCA0MC42NTE2MywxOC4yMDAzNSA0MC42NTE2Myw0MC42NTE2M2MwLDIyLjQ1MTI3IC0xOC4yMDAzNSw0MC42NTE2MyAtNDAuNjUxNjMsNDAuNjUxNjNjLTIyLjQ1MTI3LDAgLTQwLjY1MTYzLC0xOC4yMDAzNSAtNDAuNjUxNjMsLTQwLjY1MTYzeiIgZmlsbD0iIzUzODZiNSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiMyZjRjNjciIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjQyLjIyNjU5LDIwNC4yMjA1OWwtMy45NjQyMSwxLjY2MDNsMS42NjMxLC0zLjk1MjA4YzEuMTM2MSwtMi42OTc1MyAyLjcxMTUyLC01LjA1ODMzIDQuNjkxNzYsLTcuMDMxMTFsMTguNDIxOTIsLTE4LjM1MzgzYzAuNzg5MTEsLTAuNzg1MzggMi40NzE4LC0wLjM4MjQzIDMuNzYwODcsMC45MDE5N2MxLjI4NzIsMS4yODI1NCAxLjY5Mzg4LDIuOTU5NjMgMC45MDQ3NywzLjc0NTAxbC0xOC40MjE5MiwxOC4zNTQ3NmMtMS45ODAyNCwxLjk3MzcxIC00LjM1MDM3LDMuNTQ0NDcgLTcuMDU2MjksNC42NzQ5NyIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI0OS43ODY1NywxODQuNDcwNDNjMCwwIDIuNDQwMDksMi4wNzA3MiA0LjA1NzQ5LC0xLjQ0MjA0YzMuNDk5NywtNy42MDE5NiA3LjY1MDQ2LC01LjM4Mzg2IDcuNjUwNDYsLTUuMzgzODYiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTEuMjcxNTIsMTgzLjkxMjY0YzAsMC40NjYzOCAtMC4zNzY4MywwLjg0NDE0IC0wLjg0MzIxLDAuODQ0MTRjLTAuNDY2MzgsMCAtMC44NDQxNCwtMC4zNzc3NyAtMC44NDQxNCwtMC44NDMyMWMwLC0wLjQ2NjM4IDAuMzc5NjMsLTAuODQyMjggMC44NDUwOCwtMC44NDIyOGMwLjQ2NjM4LDAgMC44NDMyMSwwLjM3NjgzIDAuODQzMjEsMC44NDMyMXoiIGZpbGw9IiNmZmZmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTMuNjM0MjUsMTcwLjE0NjcyYy0yLjI4MDc2LDAgLTQuMTI5NjgsLTEuODQ4OTIgLTQuMTI5NjgsLTQuMTI5Njh2LTQuNTcyMjljMCwtMi4yODA3NiAxLjg0ODkyLC00LjEyOTY4IDQuMTI5NjgsLTQuMTI5NjhoNC41NzIyOWMyLjI4MDc2LDAgNC4xMjk2OCwxLjg0ODkyIDQuMTI5NjgsNC4xMjk2OHY0LjU3MjI5YzAsMi4yODA3NiAtMS44NDg5Miw0LjEyOTY4IC00LjEyOTY4LDQuMTI5Njh6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yMzcuMTM2NDEsMTcwLjE0NjcyYy0yLjI4MDc2LDAgLTQuMTI5NjgsLTEuODQ4OTIgLTQuMTI5NjgsLTQuMTI5Njh2LTQuNTcyMjljMCwtMi4yODA3NiAxLjg0ODkyLC00LjEyOTY4IDQuMTI5NjgsLTQuMTI5NjhoNC41NzIyOWMyLjI4MDc2LDAgNC4xMjk2OCwxLjg0ODkyIDQuMTI5NjgsNC4xMjk2OHY0LjU3MjI5YzAsMi4yODA3NiAtMS44NDg5Miw0LjEyOTY4IC00LjEyOTY4LDQuMTI5Njh6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yMjAuNjM4NTcsMTcwLjE0NjcyYy0yLjI4MDc2LDAgLTQuMTI5NjgsLTEuODQ4OTIgLTQuMTI5NjgsLTQuMTI5Njh2LTQuNTcyMjljMCwtMi4yODA3NiAxLjg0ODkyLC00LjEyOTY4IDQuMTI5NjgsLTQuMTI5NjhoNC41NzIyOWMyLjI4MDc2LDAgNC4xMjk2OCwxLjg0ODkyIDQuMTI5NjgsNC4xMjk2OHY0LjU3MjI5YzAsMi4yODA3NiAtMS44NDg5Miw0LjEyOTY4IC00LjEyOTY4LDQuMTI5Njh6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yMjAuNjM4NTcsMTg2LjY0NDU1Yy0yLjI4MDc2LDAgLTQuMTI5NjgsLTEuODQ4OTIgLTQuMTI5NjgsLTQuMTI5Njh2LTQuNTcyMjljMCwtMi4yODA3NiAxLjg0ODkyLC00LjEyOTY4IDQuMTI5NjgsLTQuMTI5NjhoNC41NzIyOWMyLjI4MDc2LDAgNC4xMjk2OCwxLjg0ODkyIDQuMTI5NjgsNC4xMjk2OHY0LjU3MjI5YzAsMi4yODA3NiAtMS44NDg5Miw0LjEyOTY4IC00LjEyOTY4LDQuMTI5Njh6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yMjAuNjM4NTcsMjAzLjE0MjM5Yy0yLjI4MDc2LDAgLTQuMTI5NjgsLTEuODQ4OTIgLTQuMTI5NjgsLTQuMTI5Njh2LTQuNTcyMjljMCwtMi4yODA3NiAxLjg0ODkyLC00LjEyOTY4IDQuMTI5NjgsLTQuMTI5NjhoNC41NzIyOWMyLjI4MDc2LDAgNC4xMjk2OCwxLjg0ODkyIDQuMTI5NjgsNC4xMjk2OHY0LjU3MjI5YzAsMi4yODA3NiAtMS44NDg5Miw0LjEyOTY4IC00LjEyOTY4LDQuMTI5Njh6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yMzcuMTM2NDEsMTg2LjY0NDU1Yy0yLjI4MDc2LDAgLTQuMTI5NjgsLTEuODQ4OTIgLTQuMTI5NjgsLTQuMTI5Njh2LTQuNTcyMjljMCwtMi4yODA3NiAxLjg0ODkyLC00LjEyOTY4IDQuMTI5NjgsLTQuMTI5NjhoNC41NzIyOWMyLjI4MDc2LDAgNC4xMjk2OCwxLjg0ODkyIDQuMTI5NjgsNC4xMjk2OHY0LjU3MjI5YzAsMi4yODA3NiAtMS44NDg5Miw0LjEyOTY4IC00LjEyOTY4LDQuMTI5Njh6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjwvZz48L2c+PC9zdmc+";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NS4zMDMiIGhlaWdodD0iODUuMzAzIiB2aWV3Qm94PSIwIDAgODUuMzAzIDg1LjMwMyI+PGcgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIj48cGF0aCBkPSJNMiA0Mi42NTJDMiAyMC4yMDEgMjAuMiAyIDQyLjY1MiAyYzIyLjQ1MSAwIDQwLjY1MiAxOC4yIDQwLjY1MiA0MC42NTIgMCAyMi40NTEtMTguMiA0MC42NTItNDAuNjUyIDQwLjY1MkMyMC4yMDEgODMuMzA0IDIgNjUuMTA0IDIgNDIuNjUyeiIgZmlsbD0iIzUzODZiNSIgc3Ryb2tlPSIjMmY0YzY3IiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJtNDQuODc5IDY2Ljg3Mi0zLjk2NSAxLjY2IDEuNjYzLTMuOTUxYzEuMTM3LTIuNjk4IDIuNzEyLTUuMDU5IDQuNjkyLTcuMDMxbDE4LjQyMi0xOC4zNTRjLjc5LS43ODYgMi40NzItLjM4MyAzLjc2MS45MDIgMS4yODcgMS4yODIgMS42OTQgMi45Ni45MDUgMy43NDVMNTEuOTM1IDYyLjE5OGMtMS45OCAxLjk3My00LjM1IDMuNTQ0LTcuMDU2IDQuNjc1IiBmaWxsPSIjZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTUyLjQzOSA0Ny4xMjJzMi40NCAyLjA3MSA0LjA1Ny0xLjQ0MmMzLjUtNy42MDIgNy42NS01LjM4MyA3LjY1LTUuMzgzIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik01My45MjQgNDYuNTY1YS44NDMuODQzIDAgMSAxLS44NDMtLjg0MmMuNDY3IDAgLjg0My4zNzcuODQzLjg0NHoiIGZpbGw9IiNmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNNTYuMjg2IDMyLjc5OWE0LjEzIDQuMTMgMCAwIDEtNC4xMy00LjEzdi00LjU3MmE0LjEzIDQuMTMgMCAwIDEgNC4xMy00LjEzaDQuNTczYTQuMTMgNC4xMyAwIDAgMSA0LjEzIDQuMTN2NC41NzJhNC4xMyA0LjEzIDAgMCAxLTQuMTMgNC4xM3ptLTE2LjQ5OCAwYTQuMTMgNC4xMyAwIDAgMS00LjEzLTQuMTN2LTQuNTcyYTQuMTMgNC4xMyAwIDAgMSA0LjEzLTQuMTNoNC41NzNhNC4xMyA0LjEzIDAgMCAxIDQuMTMgNC4xM3Y0LjU3MmE0LjEzIDQuMTMgMCAwIDEtNC4xMyA0LjEzem0tMTYuNDk3IDBhNC4xMyA0LjEzIDAgMCAxLTQuMTMtNC4xM3YtNC41NzJhNC4xMyA0LjEzIDAgMCAxIDQuMTMtNC4xM2g0LjU3MmE0LjEzIDQuMTMgMCAwIDEgNC4xMyA0LjEzdjQuNTcyYTQuMTMgNC4xMyAwIDAgMS00LjEzIDQuMTN6bTAgMTYuNDk4YTQuMTMgNC4xMyAwIDAgMS00LjEzLTQuMTN2LTQuNTcyYTQuMTMgNC4xMyAwIDAgMSA0LjEzLTQuMTNoNC41NzJhNC4xMyA0LjEzIDAgMCAxIDQuMTMgNC4xM3Y0LjU3MmE0LjEzIDQuMTMgMCAwIDEtNC4xMyA0LjEzem0wIDE2LjQ5N2E0LjEzIDQuMTMgMCAwIDEtNC4xMy00LjEzdi00LjU3MmE0LjEzIDQuMTMgMCAwIDEgNC4xMy00LjEzaDQuNTcyYTQuMTMgNC4xMyAwIDAgMSA0LjEzIDQuMTN2NC41NzNhNC4xMyA0LjEzIDAgMCAxLTQuMTMgNC4xM3ptMTYuNDk3LTE2LjQ5N2E0LjEzIDQuMTMgMCAwIDEtNC4xMy00LjEzdi00LjU3MmE0LjEzIDQuMTMgMCAwIDEgNC4xMy00LjEzaDQuNTczYTQuMTMgNC4xMyAwIDAgMSA0LjEzIDQuMTN2NC41NzJhNC4xMyA0LjEzIDAgMCAxLTQuMTMgNC4xM3oiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const render = vm.renderer;
-
-  const ScratchEffects = [
-    { text: "color", value: "color" }, { text: "fisheye", value: "fisheye", },
-    { text: "whirl", value: "whirl" }, { text: "pixelate", value: "pixelate" },
-    { text: "mosaic", value: "mosaic" }, { text: "brightness", value: "brightness" },
-    { text: "ghost", value: "ghost" }
-  ];
 
   class SPrenderControl {
     getInfo() {
@@ -36,25 +29,42 @@
           {
             opcode: "getID",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get ID of [TARGET]",
+            text: Scratch.translate("get ID layer of [TARGET]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            }
+          },
+          {
+            opcode: "getOwner",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("get owner of layer ID [ID]"),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             }
           },
           "---",
           {
             opcode: "exportID",
             blockType: Scratch.BlockType.REPORTER,
-            text: "export ID [ID] as data.uri",
+            text: Scratch.translate("export ID [ID] as data.uri"),
             arguments: {
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
+            }
+          },
+          {
+            opcode: "setQuality",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set quality of ID [ID] to [NUM]"),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
             }
           },
           "---",
           {
             opcode: "effectID",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [EFFECT] of ID [ID] to [NUM]",
+            text: Scratch.translate("set [EFFECT] of ID [ID] to [NUM]"),
             arguments: {
               EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECTS" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
@@ -64,7 +74,7 @@
           {
             opcode: "resetID",
             blockType: Scratch.BlockType.COMMAND,
-            text: "reset effects of ID [ID]",
+            text: Scratch.translate("reset effects of ID [ID]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             }
@@ -73,7 +83,7 @@
           {
             opcode: "scaleID",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set scale of ID [ID] to x [x] y [y]",
+            text: Scratch.translate("set scale of ID [ID] to x [x] y [y]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
@@ -83,7 +93,7 @@
           {
             opcode: "scaleOfID",
             blockType: Scratch.BlockType.REPORTER,
-            text: "scale [XY] of ID [ID]",
+            text: Scratch.translate("scale [XY] of ID [ID]"),
             arguments: {
               XY: { type: Scratch.ArgumentType.STRING, menu: "XY" },
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
@@ -93,7 +103,7 @@
           {
             opcode: "positionID",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set position of ID [ID] to x [x] y [y]",
+            text: Scratch.translate("set position of ID [ID] to x [x] y [y]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -103,7 +113,7 @@
           {
             opcode: "posOfID",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[XY] position of ID [ID]",
+            text: Scratch.translate("[XY] position of ID [ID]"),
             arguments: {
               XY: { type: Scratch.ArgumentType.STRING, menu: "XY" },
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
@@ -113,7 +123,7 @@
           {
             opcode: "directID",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set direction of ID [ID] to [ANGLE]",
+            text: Scratch.translate("set direction of ID [ID] to [ANGLE]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               ANGLE: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 }
@@ -122,7 +132,7 @@
           {
             opcode: "dirOfID",
             blockType: Scratch.BlockType.REPORTER,
-            text: "direction of ID [ID]",
+            text: Scratch.translate("direction of ID [ID]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             }
@@ -130,7 +140,7 @@
           {
             opcode: "rotateID",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set rotation center of ID [ID] to x [x] y [y]",
+            text: Scratch.translate("set rotation center of ID [ID] to x [x] y [y]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -140,7 +150,7 @@
           {
             opcode: "rotateOfID",
             blockType: Scratch.BlockType.REPORTER,
-            text: "rotation center [XY] of ID [ID]",
+            text: Scratch.translate("rotation center [XY] of ID [ID]"),
             arguments: {
               XY: { type: Scratch.ArgumentType.STRING, menu: "XY" },
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -149,55 +159,81 @@
         ],
         menus: {
           XY: ["x", "y"],
-          TARGETS: {
-            acceptReporters: true,
-            items: this._getTargets(true)
-          },
-          EFFECTS: {
-            acceptReporters: true,
-            items: ScratchEffects
-          }
+          TARGETS: { acceptReporters: true, items: "_getTargets" },
+          EFFECTS: { acceptReporters: true, items: "_getEffects" }
         }
       };
     }
 
-    _getTargets(enable) {
-      const spriteNames = [];
-      if (enable) spriteNames.push({ text: "myself", value: "_myself_" });
-      spriteNames.push({ text: "Stage", value: "_stage_" });
-      spriteNames.push({ text: "Video Layer", value: "_video_" });
-      spriteNames.push({ text: "Pen Layer", value: "_pen_" });
-      const targets = Scratch.vm.runtime.targets;
+    // Helper Funcs
+    _getTargets() {
+      const spriteNames = [
+        { text: Scratch.translate("myself"), value: "_myself_" },
+        { text: Scratch.translate("Stage"), value: "_stage_" },
+        { text: Scratch.translate("Video Layer"), value: "_video_" },
+        { text: Scratch.translate("Pen Layer"), value: "_pen_" }
+      ];
+      // Custom Drawable Layer (CST's 3D or Simple3D Exts for Example)
+      for (var i = 0; i < render._allDrawables.length; i++) {
+        const drawable = render._allDrawables[i];
+        if (drawable !== undefined && drawable.customDrawableName !== undefined) spriteNames.push({
+          text: drawable.customDrawableName, value: `${i}=SP-custLayer`
+        });
+      }
+      // Sprites
+      const targets = runtime.targets;
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
-        if (target.isOriginal) {
-          const targetName = target.getName();
-          spriteNames.push({ text: targetName, value: targetName });
-        }
+        if (target.isOriginal) spriteNames.push({ text: target.getName(), value: target.getName() });
       }
       return spriteNames.length > 0 ? spriteNames : [""];
     }
 
+    _getEffects() {
+      const effects = Object.keys(vm.editingTarget.effects);
+      return effects.length > 0 ? effects : [""];
+    }
+
+    // Block Funcs
     getID(args, util) {
       if (args.TARGET === "_myself_") return util.target.drawableID;
       if (args.TARGET === "_stage_") return runtime.getTargetForStage().drawableID;
-      if (args.TARGET === "_pen_") return this.findSpecial(render._allDrawables, "a_lineColorIndex");
+      if (args.TARGET === "_pen_") return runtime.ext_pen?._penDrawableId || "";
       const videoL = runtime.ioDevices.video._drawable;
       if (args.TARGET === "_video_") return videoL !== -1 ? videoL : "";
+      if (args.TARGET.includes("=SP-custLayer")) {
+        const layerID = parseInt(args.TARGET);
+        if (render._allDrawables[layerID]?.customDrawableName !== undefined) return layerID;
+      }
       const target = runtime.getSpriteTargetByName(args.TARGET);
       return target ? target.drawableID : "";
     }
-    // renderer._penSkinID doesnt work, we need to use this:
-    findSpecial(array, key) {
-      for (let i = 0; i < array.length; i++) {
-        if (array[i] && array[i].skin[key] !== undefined) return i;
+
+    getOwner(args, util) {
+      const ID = Scratch.Cast.toNumber(args.ID); // Empty Number Inputs are always 0?
+      if (ID < 0) return "";
+      const penID = runtime.ext_pen?._penDrawableId || "";
+      const videoL = runtime.ioDevices.video._drawable;
+      const vidID = videoL !== -1 ? videoL : "";
+      if (ID === penID) return "Pen Layer";
+      if (ID === vidID) return "Video Layer";
+      // Sprite Check
+      for (const target of runtime.targets) {
+        if (target.drawableID === ID) return `${target.getName()}${target.isOriginal ? "" : " (Clone)"}`;
+      }
+      // Custom Layer Check
+      for (var i = 0; i < render._allDrawables.length; i++) {
+        const drawable = render._allDrawables[i];
+        if (
+          drawable.customDrawableName !== undefined && i === ID
+        ) return drawable.customDrawableName;
       }
       return "";
     }
 
     exportID(args) {
-      if (vm.renderer._drawList.indexOf(args.ID) === -1) return "";
-      const imageData = vm.runtime.renderer.extractDrawableScreenSpace(args.ID).imageData;
+      if (render._drawList.indexOf(args.ID) === -1) return "";
+      const imageData = render.extractDrawableScreenSpace(args.ID).imageData;
       var canvas = document.createElement("canvas");
       canvas.width = imageData.width;
       canvas.height = imageData.height;
@@ -205,46 +241,54 @@
       return canvas.toDataURL("image/png");
     }
 
+    setQuality(args) {
+      const ID = Scratch.Cast.toNumber(args.ID);
+      if (render._drawList.indexOf(ID) === -1) return;
+      const value = Scratch.Cast.toNumber(args.NUM);
+      const drawable = render._allDrawables[ID];
+      const penID = runtime.ext_pen?._penDrawableId || "";
+      drawable.setHighQuality(true);
+      if (penID === ID) drawable.skin.setRenderQuality(Math.max(0.05, Math.min(34, value / 3))); // 3 is the max before webgl errors
+      else drawable.skin._maxTextureScale = Math.max(1, Math.min(100, Math.round(value)));
+      drawable.skin.emitWasAltered();
+    }
+
     effectID(args) {
       const num = Scratch.Cast.toNumber(args.NUM);
-      const allLay = vm.renderer._drawList;
-      if (!ScratchEffects.some(effect => effect.value === args.EFFECT)) return;
+      const allLay = render._drawList;
+      if (!this._getEffects().some(effect => effect === args.EFFECT)) return;
       if (allLay.indexOf(args.ID) !== -1) render._allDrawables[args.ID].updateEffect(args.EFFECT, num);
     }
 
     scaleID(args) {
-      const x = Scratch.Cast.toNumber(args.x);
-      const y = Scratch.Cast.toNumber(args.y);
-      const allLay = vm.renderer._drawList;
-      if (allLay.indexOf(args.ID) !== -1) render._allDrawables[args.ID].updateScale([x, y]);
+      const allLay = render._drawList;
+      if (allLay.indexOf(args.ID) !== -1) render._allDrawables[args.ID].updateScale([
+        Scratch.Cast.toNumber(args.x), Scratch.Cast.toNumber(args.y)
+      ]);
     }
 
     scaleOfID(args) {
       const allLay = vm.renderer._drawList;
-      if (allLay.indexOf(args.ID) !== -1) {
-        return render._allDrawables[args.ID]._scale[args.XY === "x" ? 0 : 1];
-      }
+      if (allLay.indexOf(args.ID) !== -1) return render._allDrawables[args.ID]._scale[args.XY === "x" ? 0 : 1];
       return 0;
     }
 
     directID(args) {
       const dir = Scratch.Cast.toNumber(args.ANGLE);
-      const allLay = vm.renderer._drawList;
+      const allLay = render._drawList;
       if (allLay.indexOf(args.ID) !== -1) render._allDrawables[args.ID].updateDirection(dir);
     }
 
     dirOfID(args) {
-      const allLay = vm.renderer._drawList;
-      if (allLay.indexOf(args.ID) !== -1) {
-        return render._allDrawables[args.ID]._direction;
-      }
+      const allLay = render._drawList;
+      if (allLay.indexOf(args.ID) !== -1) return render._allDrawables[args.ID]._direction;
       return 0;
     }
 
     rotateID(args) {
       const x = Scratch.Cast.toNumber(args.x);
       const y = Scratch.Cast.toNumber(args.y);
-      const allLay = vm.renderer._drawList;
+      const allLay = render._drawList;
       if (allLay.indexOf(args.ID) !== -1) {
         render._allDrawables[args.ID].skin._rotationCenter = new Float32Array([x, y, 0]);
         render._allDrawables[args.ID]._rotationCenterDirty = true;
@@ -252,7 +296,7 @@
     }
 
     rotateOfID(args) {
-      const allLay = vm.renderer._drawList;
+      const allLay = render._drawList;
       if (allLay.indexOf(args.ID) !== -1) return render._allDrawables[args.ID]._skinScale[args.XY === "x" ? 0 : 1] / 2;
       return 0;
     }
@@ -260,15 +304,13 @@
     positionID(args) {
       args.x = Scratch.Cast.toNumber(args.x);
       args.y = Scratch.Cast.toNumber(args.y);
-      const allLay = vm.renderer._drawList;
+      const allLay = render._drawList;
       if (allLay.indexOf(args.ID) !== -1) render._allDrawables[args.ID].updatePosition([args.x, args.y]);
     }
 
     posOfID(args) {
-      const allLay = vm.renderer._drawList;
-      if (allLay.indexOf(args.ID) !== -1) {
-        return render._allDrawables[args.ID]._position[args.XY === "x" ? 0 : 1];
-      }
+      const allLay = render._drawList;
+      if (allLay.indexOf(args.ID) !== -1) return render._allDrawables[args.ID]._position[args.XY === "x" ? 0 : 1];
       return 0;
     }
 
