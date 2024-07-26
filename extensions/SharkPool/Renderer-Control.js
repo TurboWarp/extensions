@@ -315,8 +315,9 @@
     }
 
     resetID(args) {
-      for (var i = 0; i < ScratchEffects.length; i++) {
-        this.effectID({ ID : args.ID, EFFECT : ScratchEffects[i].value, NUM : 0 });
+      const effects = this._getEffects();
+      for (var i = 0; i < effects.length; i++) {
+        this.effectID({ ID : args.ID, EFFECT : effects[i], NUM : 0 });
       }
     }
   }
