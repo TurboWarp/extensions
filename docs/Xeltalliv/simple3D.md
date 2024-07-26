@@ -177,7 +177,7 @@ draw to the screen at X,Y. Use Z for depth check.
 And now it's time to make some actual Simple3D scratch blocks code.
 In Simple3D those transformations are combined into 1 big transformation, and all the steps have to be specified in reverse.
 ```scratch
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
 rotate around [Y v] by ((0) - (camRotY)) degrees :: sensing
 move X ((0) - (camX)) Y ((0) - (camY)) Z ((0) - (camZ)) :: sensing
@@ -190,7 +190,7 @@ draw mesh [my mesh] :: sensing
 
 Doing all of those steps again for every mesh you want to draw is inefficient. This is where doing steps in reverse becomes helpful. Combined with wrapper block, which saves the transformation when entering it, and restores it when exiting it, it is possible to do this:
 ```scratch
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
 rotate around [Y v] by ((0) - (camRotY)) degrees :: sensing
 move X ((0) - (camX)) Y ((0) - (camY)) Z ((0) - (camZ)) :: sensing
@@ -209,7 +209,7 @@ This will work and it is efficient, however this extension also provides advance
 And when you create one large transformation by youself, it has no way of doing that. Which is why, currently the correct way to setup transformations is like this:
 ```scratch
 configure [to projected from view space v] transformation :: sensing
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 
 configure [to view space from world space v] transformation :: sensing
 start with no transformation :: sensing
@@ -458,6 +458,22 @@ When setting one of the transforms, while the other one is not defined or has di
 
 ---
 ```scratch
+set [my mesh] interleaved [XY positions v] [list v] :: sensing
+```
+
+Used for setting vertex data. Does the same as those blocks:
+```scratch
+set [my mesh] positions XY [listX v] [listY v] :: sensing
+set [my mesh] positions XYZ [listX v] [listY v] [listZ v] :: sensing
+set [my mesh] colors RGB [listR v] [listG v] [listB v] :: sensing
+set [my mesh] colors RGBA [listR v] [listG v] [listB v] [listA v] :: sensing
+set [my mesh] texture coordinates UV [listU v] [listV v] :: sensing
+set [my mesh] texture coordinates UVW [listU v] [listV v] [listW v] :: sensing
+```
+but from a single list with all the components interleaved.
+
+---
+```scratch
 set [my mesh] instance [transfroms v] [list v] :: sensing
 ```
 Used for setting data for instancing: drawing the same mesh many times (can be over a million) in multiple locations.
@@ -597,10 +613,48 @@ Default for mesh is "off".
 ```scratch
 set [my mesh] accurate interpolation (on v) :: sensing
 ```
+(DEPRECTATED)
 Used for enabling a more accurate interpolation method which doesn't have issues of texture coordinates extrapolating outside of the specified range on the triangle edges, causing unpleasant looking seams. It is more computationally expensive and should only be used when that is an issue.
 Enabling mipmapping and/or anisatropic filtering may prevent it from working and reintroduce seams.
 
 Default for mesh is "off".
+
+---
+```scratch
+set [my mesh] compute color (once at pixel center v) :: sensing
+```
+Replaces the deprectated "accurate interpolation" block.
+
+Changes how color of each pixel is computed when MSAA antialiasing is enabled.
+
+Sometimes it can be beneficial for visulas to make edges of rendered 3D graphics smoothed out instead of having sharply transitioning pixel colors. That is the problem that different antialiasing techniques are trying to slove. For now, in Simple3D extension MSAA antialiasing is always enabled for the main Simple3D layer, and always disabled when rendering to textures.
+
+The simplest way to do antialiasing is called [Supersampling](https://en.wikipedia.org/wiki/Supersampling) and consists of rendering the image at higher resoultion then what is needed and then downscaling it to lower resolution by averageing colors. It works, but it is quite slow.
+
+A cheaper alternative to supersampling is a technique known as [Multi-sample Antialiasing (MSAA)](https://en.wikipedia.org/wiki/Multisample_anti-aliasing). It still consists of rendering the image at higher resolution by giving each pixel multiple sub-pixels, however, the color for all the sub-pixels of a pixel is only computed once, usually based on position in the center of the pixel. At the end, the colors of all of the sub-pixels get averaged and the result is a rendered image with smooth edges. Sub-pixels are often referred as samples.
+
+Unlike supersampling, MSAA only smoothes out primitive edges and not the sharp pixelated transitions on the primitive itself (e.g. textures).
+
+- `once at pixel center`
+
+  This is a typical MSAA as described above.
+
+  It has an issue where if some of the samples on the edge of a pixel fall within the drawn primitive, but the center of a pixel doesn't, then the color will still be computed for the center of the pixel, causing passed in UV coordinates and vertex colors to be extrapolated beyond the specified range. It often results in visible texture seams casued by adjacent texture data bleeding into pixels that shouldn't have it or incorrect colors on edges.
+
+  Though, for most use cases this option is good enough with issue not being noticable. Since this is computationally the cheapest option, it is default.
+- `once at midpoint of covered samples`
+
+  This solves the issue described above by still computing color once, but instead of always doing it in the center of the pixel, which may not always fall within the primitive, it does it at the midpoint of all the samples that passed the inside-of-primitive check. Since all primitives are convex, this midpoint is also guaranteed to be within the primitive. This option is more computationally expensive, and as such, disabled by default.
+
+- `separately for each sample`
+
+  Computes color separately at each sample, turning this into Supersampling. This option relies on OES_shader_multisample_interpolation and as such isn't supported everywhere. It is also the most computationally expensive option.
+
+Note that enabling mipmapping and/or anisatropic filtering may reintroduce seams regardless of what was selected with this block.
+
+Using `separately for each sample` with fallback to `once at midpoint of covered samples` can be implemented by calling the block twice. Selecting `separately for each sample` when it isn't supported will do nothing and keep the previous value.
+
+Default for mesh is "once at pixel center".
 
 ---
 ```scratch
@@ -715,7 +769,7 @@ Transformation `custom` does not affect anything. Use it for your own calculatio
 
 ---
 ```scratch
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 ```
 Overwrites currently active transformation with the viewspace to clipspace conversion transformation for perspective projection.
 **Camera is assumed to be facing negative Z.**
@@ -734,7 +788,7 @@ when resolution changes :: sensing hat
 
 ---
 ```scratch
-start with orthographic near (0.01) far (1000) :: sensing
+start with orthographic near (0.1) far (1000) :: sensing
 ```
 Overwrites currently active transformation with the viewspace to clipspace conversion transformation for orthographic projection.
 **Camera is assumed to be facing negative Z.**

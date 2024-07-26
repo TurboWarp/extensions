@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.0.4
+// Version: 1.1.0
 
 (function (Scratch) {
   "use strict";
@@ -11,7 +11,8 @@
   /*
    * A modified version of m4 library based on one of the earlier lessons on webglfundamentals.org
    * All lessons can be found on https://github.com/gfxfundamentals/webgl-fundamentals/tree/master
-   * licensed under BSD 3-Clause license
+   * licensed under BSD 3-Clause license.
+   * Only this section of the code is BSD 3-Clause. The rest of the extension is MPL-2.0.
    */
 
   /*
@@ -901,6 +902,9 @@
     handle(output) {
       this.resolveFn(output.data);
     }
+    destroy() {
+      if (this.worker) this.worker.terminate();
+    }
   }
   class SimpleSkin extends Scratch.vm.renderer.exports.Skin {
     constructor(id, renderer) {
@@ -914,16 +918,16 @@
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
       this._texture = texture;
       this._nativeSize = renderer.getNativeSize();
+      this._boundOnNativeSizeChanged = this.onNativeSizeChanged.bind(this);
       this._rotationCenter = [this._nativeSize[0] / 2, this._nativeSize[1] / 2];
-      renderer.on("NativeSizeChanged", this.onNativeSizeChanged.bind(this));
-      const urq = renderer._updateRenderQuality.bind(renderer);
-      renderer._updateRenderQuality = (...args) => {
-        urq(args);
-        this.resizeCanvas();
-      };
+      renderer.on("NativeSizeChanged", this._boundOnNativeSizeChanged);
       this.resizeCanvas();
     }
     dispose() {
+      renderer.removeListener(
+        "NativeSizeChanged",
+        this._boundOnNativeSizeChanged
+      );
       if (this._texture) {
         this._renderer.gl.deleteTexture(this._texture);
         this._texture = null;
@@ -985,32 +989,66 @@
     }
 
     // Create drawable and skin
-    const skinId = renderer._nextSkinId++;
+    skinId = renderer._nextSkinId++;
     const skin = new SimpleSkin(skinId, renderer);
     renderer._allSkins[skinId] = skin;
-    const drawableId = renderer.createDrawable("simple3D");
+    drawableId = renderer.createDrawable("simple3D");
+    const drawable = renderer._allDrawables[drawableId];
     renderer.updateDrawableSkinId(drawableId, skinId);
-    redraw();
 
-    const drawOriginal = renderer.draw;
-    renderer.draw = function () {
-      if (this.dirty) redraw();
-      drawOriginal.call(this);
+    // Detect resizing
+    drawable.setHighQuality = function (...args) {
+      Object.getPrototypeOf(this).setHighQuality(...args);
+      this.skin.resizeCanvas();
     };
 
-    function redraw() {
-      skin.updateContent(canvas);
-      runtime.requestRedraw();
+    // Support for SharkPool's Layer Control extension
+    drawable.customDrawableName = "Simple3D Layer";
+
+    if (!publicApi.redraw) {
+      const drawOriginal = renderer.draw;
+      renderer.draw = function () {
+        if (this.dirty && publicApi.redraw) publicApi.redraw();
+        drawOriginal.call(this);
+      };
     }
 
-    publicApi.redraw = redraw;
+    publicApi.redraw = function () {
+      skin.updateContent(canvas);
+      runtime.requestRedraw();
+    };
+    publicApi.redraw();
+  }
+  function removeSimple3DLayer() {
+    renderer.destroyDrawable(drawableId, "simple3D");
+    renderer.destroySkin(skinId);
+
+    const index = renderer._groupOrdering.indexOf("simple3D");
+    if (index == -1) return;
+    const start = renderer._layerGroups["simple3D"].drawListOffset;
+    const end =
+      renderer._layerGroups[renderer._groupOrdering[index + 1]].drawListOffset;
+    if (start !== end) return;
+    renderer._groupOrdering.splice(index, 1);
+    delete renderer._layerGroups["simple3D"];
+    for (let i = 0; i < renderer._groupOrdering.length; i++) {
+      renderer._layerGroups[renderer._groupOrdering[i]].groupIndex = i;
+    }
+    publicApi.redraw = null;
   }
   const vshSrc = `
-precision highp float;
-
+#ifdef MSAA_CENTROID
+#define INTERPOLATION centroid
+#endif
+#ifdef MSAA_SAMPLE
+#extension GL_OES_shader_multisample_interpolation : require
+#define INTERPOLATION sample
+#endif
 #ifndef INTERPOLATION
 #define INTERPOLATION
 #endif
+
+precision highp float;
 
 in vec4 a_position;
 #ifdef COLORS
@@ -1172,13 +1210,20 @@ void main() {
 }
 `;
   const fshSrc = `
-precision mediump float;
-
+#ifdef MSAA_CENTROID
+#define INTERPOLATION centroid
+#endif
+#ifdef MSAA_SAMPLE
+#extension GL_OES_shader_multisample_interpolation : require
+#define INTERPOLATION sample
+#endif
 #ifndef INTERPOLATION
 #define INTERPOLATION
 #endif
 
-centroid in vec4 v_color;
+precision mediump float;
+
+INTERPOLATION in vec4 v_color;
 #ifdef TEXTURES
 #if TEXTURES == 2
 INTERPOLATION in vec2 v_uv;
@@ -1465,6 +1510,7 @@ void main() {
     target = gl.ARRAY_BUFFER
   ) {
     if (!mesh || !value) return;
+    if (value.length % size !== 0) return;
     if (mesh.uploadOffset < 0) {
       const buffer =
         mesh.myBuffers[name] ?? (mesh.myBuffers[name] = new Buffer(type));
@@ -1502,8 +1548,8 @@ void main() {
   const runtime = vm.runtime;
 
   const extensionId = "xeltallivSimple3D";
-  const canvas = document.createElement("canvas");
-  const gl = canvas.getContext("webgl2");
+  let canvas = document.createElement("canvas");
+  let gl = canvas.getContext("webgl2");
   if (!gl)
     alert(
       "Simple 3D extension failed to get WebGL2 context. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2"
@@ -1512,12 +1558,14 @@ void main() {
     gl.getExtension("EXT_texture_filter_anisotropic") ||
     gl.getExtension("MOZ_EXT_texture_filter_anisotropic") ||
     gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+  const ext_smi = gl.getExtension("OES_shader_multisample_interpolation");
   gl.enable(gl.DEPTH_TEST);
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
   // prettier-ignore
   const Blendings = {
     "overwrite color (fastest for opaque)": [false],
     "default": [true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
+    "default behind": [true, gl.ONE_MINUS_DST_ALPHA, gl.ONE, gl.ONE_MINUS_DST_ALPHA, gl.ONE, gl.FUNC_ADD],
     "additive": [true, gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD],
     "subtractive": [true, gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
     "multiply": [true, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
@@ -1568,6 +1616,9 @@ void main() {
   const externalTransforms =
     publicApi.externalTransforms ?? (publicApi.externalTransforms = {});
   const canvasRenderTarget = new CanvasRenderTarget();
+
+  let drawableId = null;
+  let skinId = null;
 
   let currentRenderTarget;
   let transforms;
@@ -1713,11 +1764,12 @@ void main() {
         },
       },
       def: function ({ RED, GREEN, BLUE, ALPHA }) {
+        const alpha = Cast.toNumber(ALPHA);
         gl.clearColor(
-          Cast.toNumber(RED),
-          Cast.toNumber(GREEN),
-          Cast.toNumber(BLUE),
-          Cast.toNumber(ALPHA)
+          Cast.toNumber(RED) * alpha,
+          Cast.toNumber(GREEN) * alpha,
+          Cast.toNumber(BLUE) * alpha,
+          alpha
         );
       },
     },
@@ -2311,6 +2363,62 @@ void main() {
       },
     },
     {
+      opcode: "setMeshInterleaved",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] interleaved [PROPERTY] [SRCLIST]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        PROPERTY: {
+          type: ArgumentType.STRING,
+          menu: "interleavedProperty",
+        },
+        SRCLIST: {
+          type: ArgumentType.STRING,
+          menu: "lists",
+        },
+      },
+      def: function ({ NAME, PROPERTY, SRCLIST }, { target }) {
+        let bufferName, size, type;
+        if (PROPERTY == "XY positions") {
+          bufferName = "position";
+          size = 2;
+          type = Float32Array;
+        }
+        if (PROPERTY == "XYZ positions") {
+          bufferName = "position";
+          size = 3;
+          type = Float32Array;
+        }
+        if (PROPERTY == "RGB colors") {
+          bufferName = "colors";
+          size = 3;
+          type = Uint8Array;
+        }
+        if (PROPERTY == "RGBA colors") {
+          bufferName = "colors";
+          size = 4;
+          type = Uint8Array;
+        }
+        if (PROPERTY == "UV texture coordinates") {
+          bufferName = "texCoords";
+          size = 2;
+          type = Float32Array;
+        }
+        if (PROPERTY == "UVW texture coordinates") {
+          bufferName = "texCoords";
+          size = 3;
+          type = Float32Array;
+        }
+        if (!bufferName) return;
+        const mesh = meshes.get(Cast.toString(NAME));
+        const value = compact(target, [SRCLIST], type);
+        uploadBuffer(mesh, bufferName, value, size, 0);
+      },
+    },
+    {
       opcode: "setMeshInstances",
       blockType: BlockType.COMMAND,
       text: "set [NAME] instance [PROPERTY] [SRCLIST]",
@@ -2588,6 +2696,7 @@ void main() {
       opcode: "setMeshCentroidInterpolation",
       blockType: BlockType.COMMAND,
       text: "set [NAME] accurate interpolation [USECENTROID]",
+      hideFromPalette: true,
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2602,7 +2711,32 @@ void main() {
         const mesh = meshes.get(Cast.toString(NAME));
         const useCentroid = Cast.toBoolean(USECENTROID);
         if (!mesh) return;
-        mesh.myData.useCentroidInterpolation = useCentroid;
+        mesh.myData.interpolation = useCentroid ? "MSAA_CENTROID" : "";
+        mesh.update();
+      },
+    },
+    {
+      opcode: "setMeshMultiSampleInterpolation",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] compute color [MODE]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        MODE: {
+          type: ArgumentType.STRING,
+          menu: "multiSampleInterpolation",
+        },
+      },
+      def: function ({ NAME, MODE }, { target }) {
+        const mesh = meshes.get(Cast.toString(NAME));
+        if (!mesh) return;
+        if (MODE === "once at pixel center") mesh.myData.interpolation = "";
+        if (MODE === "once at midpoint of covered samples")
+          mesh.myData.interpolation = "MSAA_CENTROID";
+        if (MODE === "separately for each sample" && ext_smi)
+          mesh.myData.interpolation = "MSAA_SAMPLE";
         mesh.update();
       },
     },
@@ -2705,8 +2839,7 @@ void main() {
           flags.push(`SKINNING ${mesh.buffers.boneIndices.size}`);
           flags.push(`BONE_COUNT ${mesh.bonesDiff.length / 16}`);
         }
-        if (mesh.data.useCentroidInterpolation)
-          flags.push("INTERPOLATION centroid");
+        if (mesh.data.interpolation) flags.push(mesh.data.interpolation);
         if (mesh.data.alphaTest > 0) flags.push("ALPHATEST");
         if (mesh.data.makeOpaque) flags.push("MAKE_OPAQUE");
         if (mesh.data.billboarding) flags.push("BILLBOARD");
@@ -3217,6 +3350,7 @@ void main() {
         COLOR = Cast.toRgbColorObject(COLOR);
         BORDERSIZE = Cast.toNumber(BORDERSIZE);
         BORDERCOLOR = Cast.toRgbColorObject(BORDERCOLOR);
+        const BORDERSIZECEIL = Math.ceil(BORDERSIZE);
         imageSourceSync = null;
         imageSource = new Promise((resolve, reject) => {
           const canv = document.createElement("canvas");
@@ -3224,9 +3358,13 @@ void main() {
           ctx.font = FONT;
           const m = ctx.measureText(TEXT);
           canv.width =
-            m.actualBoundingBoxLeft + m.actualBoundingBoxRight + 2 * BORDERSIZE;
+            m.actualBoundingBoxLeft +
+            m.actualBoundingBoxRight +
+            2 * BORDERSIZECEIL;
           canv.height =
-            m.fontBoundingBoxAscent + m.fontBoundingBoxDescent + 2 * BORDERSIZE;
+            m.fontBoundingBoxAscent +
+            m.fontBoundingBoxDescent +
+            2 * BORDERSIZECEIL;
           ctx.clearRect(0, 0, canv.width, canv.height);
           ctx.font = FONT;
           ctx.lineWidth = BORDERSIZE;
@@ -3234,13 +3372,13 @@ void main() {
           ctx.strokeStyle = `rgba(${BORDERCOLOR.r},${BORDERCOLOR.g},${BORDERCOLOR.b},${(BORDERCOLOR.a ?? 255) / 255})`;
           ctx.fillText(
             TEXT,
-            m.actualBoundingBoxLeft + BORDERSIZE,
-            m.fontBoundingBoxAscent + BORDERSIZE
+            m.actualBoundingBoxLeft + BORDERSIZECEIL,
+            m.fontBoundingBoxAscent + BORDERSIZECEIL
           );
           ctx.strokeText(
             TEXT,
-            m.actualBoundingBoxLeft + BORDERSIZE,
-            m.fontBoundingBoxAscent + BORDERSIZE
+            m.actualBoundingBoxLeft + BORDERSIZECEIL,
+            m.fontBoundingBoxAscent + BORDERSIZECEIL
           );
           imageSourceSync = {
             width: canv.width,
@@ -3412,6 +3550,7 @@ void main() {
         if (DIR == "down") return lastTextMeasurement.fontBoundingBoxDescent;
         if (DIR == "left") return lastTextMeasurement.actualBoundingBoxLeft;
         if (DIR == "right") return lastTextMeasurement.actualBoundingBoxRight;
+        if (DIR == "x step") return lastTextMeasurement.width;
         return 0;
       },
     },
@@ -3471,7 +3610,7 @@ void main() {
         },
         NEAR: {
           type: ArgumentType.NUMBER,
-          defaultValue: 0.01,
+          defaultValue: 0.1,
         },
         FAR: {
           type: ArgumentType.NUMBER,
@@ -3494,7 +3633,7 @@ void main() {
       arguments: {
         NEAR: {
           type: ArgumentType.NUMBER,
-          defaultValue: 0.01,
+          defaultValue: 0.1,
         },
         FAR: {
           type: ArgumentType.NUMBER,
@@ -4349,6 +4488,17 @@ void main() {
           "UV offsets and sizes",
         ],
       },
+      interleavedProperty: {
+        acceptReporters: false,
+        items: [
+          "XY positions",
+          "XYZ positions",
+          "RGB colors",
+          "RGBA colors",
+          "UV texture coordinates",
+          "UVW texture coordinates",
+        ],
+      },
       renderTargetProperty: {
         acceptReporters: false,
         items: [
@@ -4373,11 +4523,19 @@ void main() {
       },
       directions: {
         acceptReporters: true,
-        items: ["up", "down", "left", "right"],
+        items: ["up", "down", "left", "right", "x step"],
       },
       bufferUsage: {
         acceptReporters: true,
         items: ["rarely", "frequently fully", "frequently partially"],
+      },
+      multiSampleInterpolation: {
+        acceptReporters: true,
+        items: [
+          "once at pixel center",
+          "once at midpoint of covered samples",
+          "separately for each sample",
+        ],
       },
     },
   };
@@ -4388,6 +4546,19 @@ void main() {
         (b) => b.opcode == "matStartWithExternal"
       ).hideFromPalette = Object.keys(externalTransforms).length == 0;
       return extInfo;
+    }
+    dispose() {
+      resetEverything();
+      removeSimple3DLayer();
+      modelDecoder.destroy();
+      runtime.removeListener("PROJECT_LOADED", resetEverything);
+      canvas = null;
+      gl = null;
+      const noop = () => {};
+      for (let block of definitions) {
+        if (block == "---") continue;
+        Extension.prototype[block.opcode ?? block.func] = noop;
+      }
     }
     fontsMenu() {
       const defaultFonts = [
