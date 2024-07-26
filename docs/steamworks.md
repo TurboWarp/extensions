@@ -19,10 +19,10 @@ The blocks will not work in the editor, 32-bit environments, ARM environments, p
 
 When you package a project that uses the Steamworks extension, the packager willl ask you to enter your game's App ID, which you can find on the Steamworks website. If you don't have an App ID yet, see the demo game section below.
 
-You can just run the executable directly as usual; you don't need to start the game from Steam for Steamworks to function. There are a couple caveats:
+You can run the packaged executable directly as usual; you don't need to start the game from Steam for the Steamworks extension to function. However there are a couple caveats when doing this:
 
- - On macOS and Linux, the Steam overlay may not function
- - On Linux, Steam needs to be installed as a native package, not as a Flatpak/Snap as the sandbox will prevent the apps from communicating
+ - On macOS and Linux, when not started through Steam, the Steam Overlay may not work
+ - On Linux, when not started through Steam, Steamworks may not work if Steam is installed from Flatpak/Snap instead of as a native package
 
 ## Security considerations
 
@@ -32,7 +32,7 @@ The Steamworks extension is also inherently client-side, so a cheater could mani
 
 ## Demo game
 
-For testing the Steamworks extension without paying for a Steamworks Partner Program membership, you can use the free Steamworks demo game. It's called Spacewar and its App ID is `480`. You don't need to install Spacewar; rather you can use its App ID to test various Steamworks APIs.
+To test the Steamworks extension without paying for a Steamworks Partner Program membership, you can use the free Steamworks demo game. It's called Spacewar and its App ID is `480`. You don't need to install Spacewar; rather, you can use its App ID to test various Steamworks APIs.
 
 Spacewar has achievements with the following API Names, which can used for testing the achievement blocks:
 
@@ -57,7 +57,7 @@ Then you can get basic information about the user using:
 
 ## Achievements
 
-Achievements are created in the Steamworks website. The **API Name** of each achievement is what you need to provide in your project's code to the Steamworks extension.
+Achievements are created on the Steamworks website. The **API Name** of each achievement is what you need to provide in your project's code to the Steamworks extension.
 
 This would unlock the `ACH_WIN_ONE_GAME` achievement from Spacewar:
 
@@ -81,7 +81,7 @@ end
 
 ## DLC
 
-Each DLC has its own App ID which you can find in the Steamworks website. You can detect if it is installed using:
+Each DLC has its own App ID which you can find on the Steamworks website. You can detect if it is installed using:
 
 ```scratch
 if <(DLC v) [1234] installed? :: #136C9F> then
@@ -91,7 +91,7 @@ end
 
 ## Overlay
 
-The Steamworks extension has a block to open URLs in the Steam Overlay's web browser. If the overlay is not working, it might open in the Steam app instead. If that also doesn't work, it will open in the default web browser. Regardless it won't display the "The project wants to open a new window or tab" security prompt when packaged.
+The Steamworks extension has a block to open URLs in the Steam Overlay's web browser. If the overlay is not working, it might open in the Steam app instead. If that also doesn't work, it will open in the default web browser. Regardless, packaged projects never display security prompts like "The project wants to open a new window or tab".
 
 ```scratch
 open (URL v) [https://example.com/] in overlay :: #136C9F
