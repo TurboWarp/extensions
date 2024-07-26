@@ -1,8 +1,8 @@
 // Name: Steamworks
 // ID: steamworks
-// Description: Primitive integration with Valve's Steamworks API.
+// Description: Connect your project to Steamworks APIs.
 // License: MPL-2.0
-// Context: Probably don't try to translate "Steamworks".
+// Context: Probably don't translate the word "Steamworks".
 
 (function (Scratch) {
   "use strict";
@@ -16,7 +16,10 @@
       return {
         id: "steamworks",
         name: "Steamworks",
-        color1: "#0a4665",
+        color1: "#136C9F",
+        color2: "#105e8c",
+        color3: "#0d486b",
+        docsURI: "https://extensions.turbowarp.org/steamworks",
         blocks: [
           {
             blockType: Scratch.BlockType.BOOLEAN,
@@ -136,7 +139,6 @@
             },
           },
         ],
-
         menus: {
           userInfo: {
             acceptReporters: true,
