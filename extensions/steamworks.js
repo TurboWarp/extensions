@@ -170,11 +170,6 @@
             ],
           },
 
-          // leaderboardUpdateMethod: {
-          //   acceptReporters: true,
-          //   items: ["keeping the best score", "forcibly updating"],
-          // },
-
           overlayType: {
             acceptReporters: true,
             items: [
