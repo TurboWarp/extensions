@@ -319,3 +319,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## CubesterYT/KeySimulation.svg
  - Created by [@SharkPool-SP](https://github.com/SharkPool-SP/)
+
+## 40codeTeam/MediaSessApi.png
+ - Created by [@jexjws](https://github.com/jexjws).
+ - Some icon is from the [google noto emoji](https://github.com/googlefonts/noto-emoji) and the [GNOME Icon Library](https://flathub.org/apps/org.gnome.design.IconLibrary).

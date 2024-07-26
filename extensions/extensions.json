@@ -95,5 +95,6 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
+  "40codeTeam/MediaSessApi",
   "Lily/McUtils" // McUtils should always be the last item.
 ]
