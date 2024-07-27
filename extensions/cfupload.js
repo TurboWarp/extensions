@@ -63,7 +63,7 @@
       return {
         id: 'cfupload',
         name: 'Upload',
-        color1: '#fcb103',
+        color1: '#7a5a0d',
         blockIconURI: extensionicon,
         blocks: [
           {
