@@ -61,7 +61,6 @@
         id: 'cfupload',
         name: 'Upload',
         color1: '#ffe9b5',
-        blockIconURI: extensionicon,
         blocks: [
           {
             opcode: 'addFormData',
