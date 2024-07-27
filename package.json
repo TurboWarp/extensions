@@ -22,7 +22,7 @@
   "homepage": "https://github.com/TurboWarp/extensions#readme",
   "dependencies": {
     "@turbowarp/json": "^0.1.2",
-    "@turbowarp/scratchblocks": "^3.6.4",
+    "@turbowarp/scratchblocks": "^3.6.5",
     "@turbowarp/types": "git+https://github.com/TurboWarp/types-tw.git#tw",
     "adm-zip": "^0.5.14",
     "chokidar": "^3.6.0",
