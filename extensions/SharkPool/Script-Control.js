@@ -3,7 +3,7 @@
 // Description: Control Scripts
 // By: SharkPool
 
-// Version V.1.4.11
+// Version V.1.5.0
 
 (function (Scratch) {
   "use strict";
@@ -14,7 +14,7 @@
   let storedScripts = {};
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMTguMTU4IiBoZWlnaHQ9IjExOC4xNTgiIHZpZXdCb3g9IjAsMCwxMTguMTU4LDExOC4xNTgiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCB4MT0iMTk4LjIyNDgyIiB5MT0iMTM4LjIyNDgzIiB4Mj0iMjgxLjc3NTE2IiB5Mj0iMjIxLjc3NTE3IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgaWQ9ImNvbG9yLTEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzEzNTM0NyIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzFmMzMzNCIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IHgxPSIyMDIuMDk1IiB5MT0iMTQyLjA5NTAxIiB4Mj0iMjc3LjkwNDk3IiB5Mj0iMjE3LjkwNDk5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgaWQ9ImNvbG9yLTIiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzFlODM3MCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzNhNjA2MiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xODAuOTIwOTgsLTEyMC45MjEpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMTk4LjIyNDgyLDIyMS43NzUxN2MtMjMuMDcxNzgsLTIzLjA3MTc4IC0yMy4wNzE3OCwtNjAuNDc4NTUgMCwtODMuNTUwMzNjMjMuMDcxNzgsLTIzLjA3MTc4IDYwLjQ3ODU1LC0yMy4wNzE3OCA4My41NTAzMywwYzIzLjA3MTc4LDIzLjA3MTc4IDIzLjA3MTc4LDYwLjQ3ODU1IDAsODMuNTUwMzNjLTIzLjA3MTc4LDIzLjA3MTc4IC02MC40Nzg1NSwyMy4wNzE3OCAtODMuNTUwMzMsMHoiIGZpbGw9InVybCgjY29sb3ItMSkiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjAyLjA5NSwyMTcuOTA0OTljLTIwLjkzNDM1LC0yMC45MzQzNSAtMjAuOTM0MzUsLTU0Ljg3NTYzIDAsLTc1LjgwOTk3YzIwLjkzNDM1LC0yMC45MzQzNSA1NC44NzU2MywtMjAuOTM0MzUgNzUuODA5OTcsMGMyMC45MzQzNSwyMC45MzQzNSAyMC45MzQzNSw1NC44NzU2MyAwLDc1LjgwOTk3Yy0yMC45MzQzNSwyMC45MzQzNSAtNTQuODc1NjMsMjAuOTM0MzUgLTc1LjgwOTk3LDB6IiBmaWxsPSJ1cmwoI2NvbG9yLTIpIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTI4My41MzE5OSwxODguMzk3MzFjMC4yMjA2OCwyLjE1NTkgLTEuMDQ1NTgsNC4wNTM1NiAtMi44MjY1Miw0LjIzNTg1bC0zNC4xOTIyOSwzLjQ5OTc4Yy0wLjg1ODE5LDAuMDg3ODQgLTEuNjM2MSwwLjU3Nzg4IC0yLjE2MTA0LDEuMzczNTdsLTMuOTQ1ODQsNS45MTMyM2MtMC41MjU3NCwwLjc4Nzg3IC0xLjMwMjg1LDEuMjg1NzMgLTIuMTYxMDQsMS4zNzM1N2wtMTYuNjg2MzksMS43MDc5NWMtMC44NTgxOSwwLjA4Nzg0IC0xLjcyMDA2LC0wLjI0MjI3IC0yLjQwMDk3LC0wLjkwNjYzbC01LjA1NTUxLC00Ljk5MTg4Yy0wLjY4MTcxLC0wLjY3MjE5IC0xLjU0Mjc3LC0wLjk5NDQ3IC0yLjM5NDUsLTAuOTA3MjlsLTguNDA3NzQsMC44NjA1OGMtMS43ODA5MiwwLjE4MjI4IC0zLjQwNTM4LC0xLjQxOTQ4IC0zLjYyNjA1LC0zLjU3NTM4bC0zLjIwNjA5LC0zMS4zMjI5OWMtMC4yMjA2OCwtMi4xNTU5IDEuMDQ1NTgsLTQuMDUzNTYgMi44MjY1MiwtNC4yMzU4NWw4LjM0MzIyLC0wLjg1Mzk4YzAuODU4MTksLTAuMDg3ODQgMS43MjAwMywwLjI0MjI3IDIuMzk0NDgsMC45MDcyOWw1LjEyODAzLDUuMDYzNDFjMC42ODA5MiwwLjY2NDM2IDEuNTQyNzcsMC45OTQ0NyAyLjQwMDk3LDAuOTA2NjNsMTYuNjg2MzksLTEuNzA3OTVjMC44NTgxOSwtMC4wODc4NCAxLjYzNTMxLC0wLjU4NTcxIDIuMTYxMDQsLTEuMzczNTdsMy45OTU5MSwtNS45OTczMWMwLjUzMjIsLTAuNzg4NTMgMS4zMDkyOCwtMS4yODY0IDIuMTY3NDcsLTEuMzc0MjNsMzQuMTI3NzcsLTMuNDkzMTljMS43ODA5MiwtMC4xODIyOCAzLjQwNTM4LDEuNDE5NDggMy42MjYwNSwzLjU3NTM4ek0yNjAuOTI4OCwxNjAuMzA1NDdsLTEyLjUyMzc5LDEuMjgxODljLTguMDY5NSwwLjgyNTk2IC0xMy45NDE1Myw4LjAzNzEzIC0xMy4xMTU1NywxNi4xMDY2M2MwLjgyNTk2LDguMDY5NDggOC4wMzcxMywxMy45NDE1MSAxNi4xMDY2MywxMy4xMTU1NWwxMi41MjM3OSwtMS4yODE4OWM4LjA2OTUsLTAuODI1OTYgMTMuOTQxNTMsLTguMDM3MTIgMTMuMTE1NTcsLTE2LjEwNjYxYy0wLjgyNTk2LC04LjA2OTUgLTguMDM3MTMsLTEzLjk0MTUzIC0xNi4xMDY2MywtMTMuMTE1NTd6TTI2MC42MTAzOCwxNzUuMTAyMjVjMC41ODkzOSw1Ljc2NDE2IC0zLjYwNTIxLDEwLjkxNDgyIC05LjM2OTI3LDExLjUwNDgyYy0zLjcyOTIzLDAuMzgxNzIgLTcuMzc4NzksLTEuMjU1MjMgLTkuNTczNzksLTQuMjk0MTFjLTIuMTk0OTcsLTMuMDM4OSAtMi42MDE4OCwtNy4wMTgwMSAtMS4wNjczNiwtMTAuNDM4MjdjMS41MzQ1MiwtMy40MjAyNyA0Ljc3NzI1LC01Ljc2MTk1IDguNTA2NTUsLTYuMTQyOTJjNS43NjQxOSwtMC41ODg3OSAxMC45MTQ0NiwzLjYwNjMzIDExLjUwMzg3LDkuMzcwNDV6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9nPjwvZz48L3N2Zz4=";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTguMTU4IiBoZWlnaHQ9IjExOC4xNTgiIHZpZXdCb3g9IjAgMCAxMTguMTU4IDExOC4xNTgiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCB4MT0iMTk4LjIyNSIgeTE9IjEzOC4yMjUiIHgyPSIyODEuNzc1IiB5Mj0iMjIxLjc3NSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGlkPSJhIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxMzUzNDciLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxZjMzMzQiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCB4MT0iMjAyLjA5NSIgeTE9IjE0Mi4wOTUiIHgyPSIyNzcuOTA1IiB5Mj0iMjE3LjkwNSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGlkPSJiIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxZTgzNzAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzYTYwNjIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48ZyBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0xOTguMjI1IDIyMS43NzVjLTIzLjA3Mi0yMy4wNzItMjMuMDcyLTYwLjQ3OCAwLTgzLjU1czYwLjQ3OC0yMy4wNzIgODMuNTUgMCAyMy4wNzIgNjAuNDc4IDAgODMuNTUtNjAuNDc4IDIzLjA3Mi04My41NSAwIiBmaWxsPSJ1cmwoI2EpIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTgwLjkyMSAtMTIwLjkyMSkiLz48cGF0aCBkPSJNMjAyLjA5NSAyMTcuOTA1Yy0yMC45MzQtMjAuOTM0LTIwLjkzNC01NC44NzYgMC03NS44MXM1NC44NzYtMjAuOTM0IDc1LjgxIDAgMjAuOTM0IDU0Ljg3NiAwIDc1LjgxLTU0Ljg3NiAyMC45MzQtNzUuODEgMCIgZmlsbD0idXJsKCNiKSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE4MC45MjEgLTEyMC45MjEpIi8+PHBhdGggZD0iTTEwMi42MTEgNjcuNDc2Yy4yMiAyLjE1Ni0xLjA0NiA0LjA1NC0yLjgyNyA0LjIzNmwtMzQuMTkyIDMuNWMtLjg1OC4wODgtMS42MzYuNTc4LTIuMTYgMS4zNzRsLTMuOTQ3IDUuOTEzYy0uNTI1Ljc4OC0xLjMwMyAxLjI4NS0yLjE2IDEuMzczTDQwLjYzOCA4NS41OGMtLjg1OC4wODgtMS43Mi0uMjQyLTIuNDAxLS45MDZsLTUuMDU2LTQuOTkyYy0uNjgxLS42NzItMS41NDItLjk5NS0yLjM5NC0uOTA4bC04LjQwOC44NjFjLTEuNzguMTgyLTMuNDA1LTEuNDItMy42MjYtMy41NzVsLTMuMjA2LTMxLjMyM2MtLjIyLTIuMTU2IDEuMDQ2LTQuMDU0IDIuODI3LTQuMjM2bDguMzQzLS44NTRjLjg1OC0uMDg4IDEuNzIuMjQyIDIuMzk0LjkwN2w1LjEyOCA1LjA2NGMuNjgxLjY2NCAxLjU0My45OTQgMi40MDEuOTA2bDE2LjY4Ny0xLjcwOGMuODU4LS4wODggMS42MzUtLjU4NSAyLjE2LTEuMzczbDMuOTk3LTUuOTk4Yy41MzItLjc4OCAxLjMwOS0xLjI4NiAyLjE2Ny0xLjM3NGwzNC4xMjgtMy40OTJjMS43OC0uMTgyIDMuNDA1IDEuNDIgMy42MjYgMy41NzV6TTgwLjAwOCAzOS4zODRsLTEyLjUyNCAxLjI4MmMtOC4wNy44MjYtMTMuOTQyIDguMDM3LTEzLjExNiAxNi4xMDdzOC4wMzggMTMuOTQyIDE2LjEwNyAxMy4xMTZsMTIuNTI0LTEuMjgyYzguMDctLjgyNiAxMy45NDEtOC4wMzcgMTMuMTE1LTE2LjEwN3MtOC4wMzctMTMuOTQxLTE2LjEwNi0xMy4xMTZtLS4zMTkgMTQuNzk3Yy41OSA1Ljc2NC0zLjYwNSAxMC45MTUtOS4zNjkgMTEuNTA1YTEwLjQ5MiAxMC40OTIgMCAxIDEtMi4xMzQtMjAuODc1YzUuNzY0LS41ODkgMTAuOTE0IDMuNjA2IDExLjUwMyA5LjM3IiBmaWxsPSIjZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L2c+PC9zdmc+";
 
   class SPscripts {
     getInfo() {
@@ -142,7 +142,7 @@
           TARGETS2: { acceptReporters: true, items: this.getTargets(true) },
           CONTROL: {
             acceptReporters: true,
-            items: ["start", "stop", "restart"]
+            items: ["start", "stop", "restart", "pause", "unpause"]
           }
         },
       };
@@ -268,6 +268,14 @@
                       resolveThread();
                     })
                   );
+                } else if (args.TYPE.includes("pause")) {
+                  if (this.isScript(args)) {
+                    if (args.TYPE === "unpause") storedScripts[key].ind.status = storedScripts[key].status ?? 0;
+                    else {
+                      storedScripts[key].status = storedScripts[key].ind.status;
+                      storedScripts[key].ind.status = 5;
+                    }
+                  }
                 } else {
                   if (index !== -1) {
                     promises.push(
@@ -278,7 +286,7 @@
                     );
                   }
                 }
-              } else { console.error("Script Was Deleted!") }
+              } else { console.warn("Script Was Deleted!") }
             } catch (e) { reject(e) }
           }
         });
@@ -318,14 +326,12 @@
             const index = storedScripts[key].ind;
             if (this.check4Deletion(index.topBlock)) {
               let newID = index.topBlock;
-              for (let i = 0; i <= num; i++) {
-                newID = index.blockContainer.getNextBlock(newID);
-              }
+              for (let i = 0; i <= num; i++) { newID = index.blockContainer.getNextBlock(newID) }
               if (newID) {
                 runtime._stopThread(index);
                 runtime._pushThread(newID, storedScripts[key].target, { stackClick: true });
               }
-            } else { console.error("Script Was Deleted!") }
+            } else { console.warn("Script Was Deleted!") }
           } catch {}
         }
       });
