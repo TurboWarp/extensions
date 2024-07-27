@@ -266,7 +266,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1646987348
 
 ## XmerOriginals/closecontrol.svg
- - Created by [XmerStudio](https://github.com/XmerStudio) in https://github.com/TurboWarp/extensions/pull/1384
+ - Created by [xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1607
 
 ## Lily/AllMenus.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issuecomment-1751696386
