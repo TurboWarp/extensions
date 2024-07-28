@@ -21,6 +21,10 @@
       this.zipPaths = Object.create(null);
       this.zip = null;
 
+      // for developers who want to integrate their extensions with this one
+      // @ts-ignore
+      Scratch.vm.runtime.ext_cst1229zip = this;
+
       this.zipError = false;
 
       Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
