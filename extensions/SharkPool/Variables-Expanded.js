@@ -3,7 +3,7 @@
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
 
-// Version 1.4.03
+// Version 1.4.04
 
 (function (Scratch) {
   "use strict";
@@ -344,9 +344,10 @@
       // Use to refresh the toolbox to show new/deleted variables
       if (typeof scaffolding === "undefined") {
         vm.emitWorkspaceUpdate();
-        ScratchBlocks.getMainWorkspace().toolboxRefreshEnabled_ = true;
-        ScratchBlocks.getMainWorkspace().refreshToolboxSelection_();
-        ScratchBlocks.getMainWorkspace().toolboxRefreshEnabled_ = false;
+        const workspace = ScratchBlocks.getMainWorkspace();
+        workspace.toolboxRefreshEnabled_ = true;
+        workspace.refreshToolboxSelection_();
+        workspace.toolboxRefreshEnabled_ = false;
         setTimeout(() => { runtime.requestBlocksUpdate() }, 10);
       }
     }
@@ -355,9 +356,7 @@
       // Used for creating IDs for variables
       const soup = "!#%()*+,-./:;=?@[]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       const id = [];
-      for (let i = 0; i < 20; i++) {
-        id[i] = soup.charAt(Math.random() * soup.length);
-      }
+      for (let i = 0; i < 20; i++) { id[i] = soup.charAt(Math.random() * soup.length) }
       return id.join("");
     }
 
@@ -499,7 +498,7 @@
           container.appendChild(label);
           addVarListener(varId, input, checkUpdate);
         } else {
-          input.style.minWidth = "20px";
+          input.style.minWidth = type === "audio" ? "275px" : "20px";
           container.append(label, input);
           if (type !== "file" && type !== "audio" && type !== "image") addVarListener(varId, input, normUpdate);
         }
