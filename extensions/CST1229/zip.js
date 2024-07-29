@@ -784,7 +784,7 @@
             break;
           case "arrayBuffer":
             {
-              if (!DATA instanceof ArrayBuffer) return "";
+              if (!(DATA instanceof ArrayBuffer)) return "";
             }
             break;
         }
@@ -1021,7 +1021,7 @@
             break;
           case "arrayBuffer":
             {
-              if (!CONTENT instanceof ArrayBuffer) return "";
+              if (!(CONTENT instanceof ArrayBuffer)) return "";
               this.zips[this.zip].file(path, CONTENT, {
                 createFolders: true,
               });
