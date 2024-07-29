@@ -24,6 +24,7 @@
       // for developers who want to integrate their extensions with this one
       // @ts-ignore
       Scratch.vm.runtime.ext_cst1229zip = this;
+      this._showArrayBufferOption = false;
 
       this.zipError = false;
 
@@ -34,7 +35,7 @@
     }
 
     getInfo() {
-      return {
+      const meta = {
         id: "cst1229zip",
         name: Scratch.translate("Zip"),
         docsURI: "https://extensions.turbowarp.org/CST1229/zip",
@@ -618,6 +619,25 @@
           },
         },
       };
+      if (this._showArrayBufferOption) {
+        meta.menus.fileType.items.push({
+          text: Scratch.translate("arrayBuffer"),
+          value: "arrayBuffer",
+        });
+        meta.menus.getFileType.items.push({
+          text: Scratch.translate("arrayBuffer"),
+          value: "arrayBuffer",
+        });
+        meta.menus.writeFileType.items.push({
+          text: Scratch.translate("arrayBuffer"),
+          value: "arrayBuffer",
+        });
+        meta.menus.zipFileType.items.push({
+          text: Scratch.translate("arrayBuffer"),
+          value: "arrayBuffer",
+        });
+      }
+      return meta;
     }
 
     /// Utilities
@@ -735,7 +755,7 @@
       }
 
       try {
-        DATA = Scratch.Cast.toString(DATA);
+        if (TYPE !== "arrayBuffer") DATA = Scratch.Cast.toString(DATA);
 
         switch (TYPE) {
           case "base64":
@@ -760,6 +780,11 @@
               if (!/^(?:[01]{8})*$/i.test(DATA)) return;
               const dataArr = this.splitIntoParts(DATA, 8);
               DATA = Uint8Array.from(dataArr.map((o) => parseInt(o, 2)));
+            }
+            break;
+          case "arrayBuffer":
+            {
+              if (!DATA instanceof ArrayBuffer) return "";
             }
             break;
         }
@@ -825,6 +850,12 @@
             return data
               .map((data) => data.toString(2).padStart(8, "0"))
               .join("");
+          }
+          case "arrayBuffer": {
+            return await this.zips[this.zip].generateAsync({
+              type: "arraybuffer",
+              ...options,
+            });
           }
           default:
             return "";
@@ -913,6 +944,9 @@
               .map((data) => data.toString(2).padStart(8, "0"))
               .join("");
           }
+          case "arrayBuffer": {
+            return await obj.async("arraybuffer");
+          }
           default:
             return "";
         }
@@ -928,8 +962,8 @@
       if (!this.zip) return;
 
       FILE = Scratch.Cast.toString(FILE);
-      CONTENT = Scratch.Cast.toString(CONTENT);
       TYPE = Scratch.Cast.toString(TYPE);
+      if (TYPE !== "arrayBuffer") CONTENT = Scratch.Cast.toString(CONTENT);
       try {
         let path = this.normalize(this.zipPaths[this.zip], FILE);
         if (path.endsWith("/")) return;
@@ -981,6 +1015,14 @@
               const dataArr = this.splitIntoParts(CONTENT, 8);
               const data = Uint8Array.from(dataArr.map((o) => parseInt(o, 2)));
               this.zips[this.zip].file(path, data, {
+                createFolders: true,
+              });
+            }
+            break;
+          case "arrayBuffer":
+            {
+              if (!CONTENT instanceof ArrayBuffer) return "";
+              this.zips[this.zip].file(path, CONTENT, {
                 createFolders: true,
               });
             }
