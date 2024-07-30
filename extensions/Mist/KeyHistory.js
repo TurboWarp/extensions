@@ -1,6 +1,6 @@
-// Name: KeyHistory
+// Name: Key History
 // ID: KeyHistoryExtension
-// By: @mistium on discord
+// By: Mistium <https://scratch.mit.edu/users/M1stium>
 // Description: Store a list of previously pressed keys and clipboard events.
 // License: MPL-2.0
 // This Source Code is subject to the terms of the Mozilla Public License, v2.0,
@@ -9,6 +9,10 @@
 
 (function (Scratch) {
   "use strict";
+
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error(`'Key History' needs to be run unsandboxed.`);
+  }
 
   class KeyHistoryExtension {
     constructor() {
@@ -28,38 +32,50 @@
           {
             opcode: "getRecentKeys",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get recent keys",
+            text: "get recent keys",
           },
           {
             opcode: "deleteFirstKey",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Delete the first key from history",
+            text: "delete the first key from history",
           },
           {
             opcode: "deleteAllKeys",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Delete all keys from history",
+            text: "delete all keys from history",
           },
           {
             opcode: "AddKey",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Add [KEY] to key history",
+            text: "add [KEY] to key history",
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: " ",
+                defaultValue: "a",
               },
             },
           },
           {
+            opcode: "setMaxQueueSize",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "limit key history to [LENGTH] keys",
+            arguments: {
+              LENGTH: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100,
+              }
+            }
+          },
+          "---",
+          {
             opcode: "enableKeyHistory",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Enable key history",
+            text: "enable key history",
           },
           {
             opcode: "disableKeyHistory",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Disable key history",
+            text: "disable key history",
           },
         ],
       };
@@ -80,7 +96,11 @@
     }
 
     AddKey({ KEY }) {
-      this.addKeyToHistory(KEY);
+      this.addKeyToHistory(""+KEY);
+    }
+
+    setMaxQueueSize({ LENGTH }) {
+      this.max_key_history = +LENGTH || 0
     }
 
     onKeyDown(event) {
@@ -103,19 +123,13 @@
 
     onPaste(event) {
       const pastedText = event.clipboardData.getData("text/plain");
-      if (pastedText.trim() !== "") {
-        if (this.pasted == false) {
-          this.pasted = true;
-          this.addKeyToHistory(pastedText);
-        }
-        setTimeout(() => {
-          this.pasted = false;
-        }, 10);
+      if (typeof pastedText === 'string') {
+        this.addKeyToHistory(""+pastedText);
       }
     }
 
     isKeybind(key) {
-      return this.keybinds.includes(key);
+      return this.keybinds.includes(""+key);
     }
 
     addKeyToHistory(key) {
@@ -125,7 +139,7 @@
       }
 
       // Add the key to the end of the array
-      this.keyHistory.push(key);
+      this.keyHistory.push(""+key);
     }
 
     enableKeyHistory() {
