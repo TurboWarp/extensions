@@ -35,6 +35,11 @@
             text: "get recent keys",
           },
           {
+            opcode: "getFirstKey",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get first key",
+          },
+          {
             opcode: "deleteFirstKey",
             blockType: Scratch.BlockType.COMMAND,
             text: "delete the first key from history",
@@ -85,6 +90,10 @@
       return JSON.stringify(this.keyHistory);
     }
 
+    getFirstKey() {
+      return Scratch.Cast.toString(this.keyHistory[0])
+    }
+
     deleteFirstKey() {
       if (this.keyHistory.length > 0) {
         this.keyHistory.shift();
@@ -96,11 +105,11 @@
     }
 
     AddKey({ KEY }) {
-      this.addKeyToHistory("" + KEY);
+      this.addKeyToHistory(Scratch.Cast.toString(KEY));
     }
 
     setMaxQueueSize({ LENGTH }) {
-      this.max_key_history = +LENGTH || 0;
+      this.max_key_history = Scratch.Cast.toNumber(LENGTH);
     }
 
     onKeyDown(event) {
@@ -117,19 +126,17 @@
       // Add the pressed key to the history
       if (event.key && !this.pause) {
         const key = event.key;
-        this.addKeyToHistory(key);
+        this.addKeyToHistory(Scratch.Cast.toString(key));
       }
     }
 
     onPaste(event) {
       const pastedText = event.clipboardData.getData("text/plain");
-      if (typeof pastedText === "string") {
-        this.addKeyToHistory("" + pastedText);
-      }
+      this.addKeyToHistory(Scratch.Cast.toString(pastedText));
     }
 
     isKeybind(key) {
-      return this.keybinds.includes("" + key);
+      return this.keybinds.includes(Scratch.Cast.toString(key));
     }
 
     addKeyToHistory(key) {
@@ -139,7 +146,7 @@
       }
 
       // Add the key to the end of the array
-      this.keyHistory.push("" + key);
+      this.keyHistory.push(Scratch.Cast.toString(key));
     }
 
     enableKeyHistory() {
