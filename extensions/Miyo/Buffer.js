@@ -87,10 +87,11 @@
   // Cool little utility I made for waiting for extensions to load.
   const modExtension = (function () {
     // A check if the user is in the editor
-    // eslint-disable-next-line no-undef
     const inEditor = () =>
       !!(
+        // eslint-disable-next-line no-undef
         !ReduxStore?.getState?.()?.scratchGui?.mode.isPlayerOnly &&
+        // eslint-disable-next-line no-undef
         ReduxStore?.getState?.()?.scratchGui?.mode.hasEverEnteredEditor
       );
     // Wait for some extensions
@@ -100,7 +101,6 @@
       if (extension.id === extId) {
         // Load anything that needs loaded when our extension is added
         let fn = () => {};
-        // eslint-disable-next-line no-cond-assign
         while ((fn = registerOnLoad.shift())) {
           fn(inEditor());
         }
@@ -500,7 +500,7 @@
               { text: "current buffer name", value: "name" },
               { text: "current buffer length", value: "length" },
               { text: "current access method", value: "access" },
-              { text: "is little endiean enabled?", value: "le" },
+              { text: "is little endian enabled?", value: "le" },
             ],
             acceptReporters: true,
           },
