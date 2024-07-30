@@ -1,4 +1,5 @@
 // Name: KeyHistory
+// ID: keyhistoryextension
 // By: @mistium on discord
 // Description: Store a list of previously pressed keys and clipboard events.
 // License: MPL-2.0
