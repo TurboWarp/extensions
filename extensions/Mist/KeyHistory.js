@@ -17,7 +17,6 @@
   class KeyHistoryExtension {
     constructor() {
       this.keyHistory = [];
-      this.pasted = false;
       this.max_key_history = 100; // Adjust the maximum number of keys to keep in history
       this.keybinds = ["Ctrl", "Shift", "Alt"];
       this.pause = false;
