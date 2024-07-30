@@ -90,13 +90,11 @@
     }
 
     getFirstKey() {
-      return Scratch.Cast.toString(this.keyHistory[0])
+      return Scratch.Cast.toString(this.keyHistory[0]);
     }
 
     deleteFirstKey() {
-      if (this.keyHistory.length > 0) {
-        this.keyHistory.shift();
-      }
+      this.keyHistory.shift();
     }
 
     deleteAllKeys() {
