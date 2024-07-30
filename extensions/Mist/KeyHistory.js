@@ -9,21 +9,20 @@
 (function (Scratch) {
   "use strict";
 
-  const MAX_KEY_HISTORY = 100; // Adjust the maximum number of keys to keep in history
-
-  // Define keybinds
-  const keybinds = ["Ctrl", "Shift", "Alt"];
 
   class KeyHistoryExtension {
     constructor() {
       this.keyHistory = [];
       this.pasted = false;
+      this.max_key_history = 100; // Adjust the maximum number of keys to keep in history
+      this.keybinds = ["Ctrl", "Shift", "Alt"]
+      this.pause = false
     }
 
     getInfo() {
       return {
         id: 'keyhistoryextension',
-        name: 'Key History Extension',
+        name: 'Key History',
         color1: '#36644E',
         blocks: [
           {
@@ -51,6 +50,17 @@
                 defaultValue: " "
               },
             },
+          },
+          "---",
+          {
+            opcode: 'enableKeyHistory',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Enable key history',
+          },
+          {
+            opcode: 'disableKeyHistory',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Disable key history',
           },
         ],
       };
@@ -86,7 +96,7 @@
       }
 
       // Add the pressed key to the history
-      if (event.key && event.key.length === 1) {
+      if (event.key && !this.pause) {
         const key = event.key;
         this.addKeyToHistory(key);
       }
@@ -106,17 +116,25 @@
     }
 
     isKeybind(key) {
-      return keybinds.includes(key);
+      return this.keybinds.includes(key);
     }
 
     addKeyToHistory(key) {
       // Check if the maximum history size is reached
-      if (this.keyHistory.length >= MAX_KEY_HISTORY) {
+      if (this.keyHistory.length >= this.max_key_history) {
         this.keyHistory.pop(); // Remove the last element
       }
       
       // Add the key to the end of the array
       this.keyHistory.push(key);
+    }
+
+    enableKeyHistory() {
+      this.pause = false
+    }
+
+    disableKeyHistory() {
+      this.pause = true
     }
   }
 
