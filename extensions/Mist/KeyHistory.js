@@ -1,5 +1,5 @@
 // Name: Key History
-// ID: KeyHistoryExtension
+// ID: MistKeyHistoryExtension
 // By: Mistium <https://scratch.mit.edu/users/M1stium>
 // Description: Store a list of previously pressed keys and clipboard events.
 // License: MPL-2.0
@@ -24,7 +24,7 @@
 
     getInfo() {
       return {
-        id: "KeyHistoryExtension",
+        id: "MistKeyHistoryExtension",
         name: "Key History",
         color1: "#36644E",
         blocks: [
