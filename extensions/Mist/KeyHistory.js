@@ -63,8 +63,8 @@
               LENGTH: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 100,
-              }
-            }
+              },
+            },
           },
           "---",
           {
@@ -96,11 +96,11 @@
     }
 
     AddKey({ KEY }) {
-      this.addKeyToHistory(""+KEY);
+      this.addKeyToHistory("" + KEY);
     }
 
     setMaxQueueSize({ LENGTH }) {
-      this.max_key_history = +LENGTH || 0
+      this.max_key_history = +LENGTH || 0;
     }
 
     onKeyDown(event) {
@@ -123,13 +123,13 @@
 
     onPaste(event) {
       const pastedText = event.clipboardData.getData("text/plain");
-      if (typeof pastedText === 'string') {
-        this.addKeyToHistory(""+pastedText);
+      if (typeof pastedText === "string") {
+        this.addKeyToHistory("" + pastedText);
       }
     }
 
     isKeybind(key) {
-      return this.keybinds.includes(""+key);
+      return this.keybinds.includes("" + key);
     }
 
     addKeyToHistory(key) {
@@ -139,7 +139,7 @@
       }
 
       // Add the key to the end of the array
-      this.keyHistory.push(""+key);
+      this.keyHistory.push("" + key);
     }
 
     enableKeyHistory() {
