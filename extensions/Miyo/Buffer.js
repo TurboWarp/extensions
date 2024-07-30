@@ -87,13 +87,13 @@
   // Cool little utility I made for waiting for extensions to load.
   const modExtension = (function () {
     // A check if the user is in the editor
+    /* eslint-disable no-undef */
     const inEditor = () =>
       !!(
-        // eslint-disable-next-line no-undef
         !ReduxStore?.getState?.()?.scratchGui?.mode.isPlayerOnly &&
-        // eslint-disable-next-line no-undef
         ReduxStore?.getState?.()?.scratchGui?.mode.hasEverEnteredEditor
       );
+    /* eslint-enable no-undef */
     // Wait for some extensions
     const waiting = new Map(),
       registerOnLoad = [];
