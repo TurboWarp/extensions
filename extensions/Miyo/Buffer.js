@@ -241,37 +241,6 @@
       if (littleEndian) return this.buffer.writeUint32LE(val, idx);
       else return this.buffer.writeUint32BE(val, idx);
     }
-    // Unimplemented
-    getFloat16(idx, littleEndian = this.littleEndian) {
-      throw new Error("Unimplemented");
-    }
-    setFloat16(idx, val, littleEndian = this.littleEndian) {
-      throw new Error("Unimplemented");
-    }
-    getFloat32(idx, littleEndian = this.littleEndian) {
-      throw new Error("Unimplemented");
-    }
-    setFloat32(idx, val, littleEndian = this.littleEndian) {
-      throw new Error("Unimplemented");
-    }
-    getFloat64(idx, littleEndian = this.littleEndian) {
-      throw new Error("Unimplemented");
-    }
-    setFloat64(idx, val, littleEndian = this.littleEndian) {
-      throw new Error("Unimplemented");
-    }
-    getBigInt64(idx, littleEndian = this.littleEndian) {
-      throw new Error("Unimplemented");
-    }
-    setBigInt64(idx, val, littleEndian = this.littleEndian) {
-      throw new Error("Unimplemented");
-    }
-    getBigUint64(idx, littleEndian = this.littleEndian) {
-      throw new Error("Unimplemented");
-    }
-    setBigUint64(idx, val, littleEndian = this.littleEndian) {
-      throw new Error("Unimplemented");
-    }
   }
 
   class extension {
