@@ -470,7 +470,10 @@
       const content = args.CONTENT;
       if (contentType === "SVG") {
         try {
-          renderer.updateSVGSkin(costume.skinId, Scratch.Cast.toString(content));
+          renderer.updateSVGSkin(
+            costume.skinId,
+            Scratch.Cast.toString(content)
+          );
           renderer._allSkins[costume.skinId].doesNotMatchAsset = true;
         } catch (e) {
           console.error(e);
