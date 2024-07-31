@@ -86,11 +86,11 @@
     }
 
     getRecentKeys() {
-      return JSON.stringify(this.keyHistory);
+      return JSON.stringify(this.keyHistory ?? []);
     }
 
     getFirstKey() {
-      return Scratch.Cast.toString(this.keyHistory[0]);
+      return Scratch.Cast.toString(this.keyHistory[0] ?? "");
     }
 
     deleteFirstKey() {
@@ -102,11 +102,11 @@
     }
 
     AddKey({ KEY }) {
-      this.addKeyToHistory(Scratch.Cast.toString(KEY));
+      this.addKeyToHistory(Scratch.Cast.toString(KEY ?? ""));
     }
 
     setMaxQueueSize({ LENGTH }) {
-      this.max_key_history = Scratch.Cast.toNumber(LENGTH);
+      this.max_key_history = Scratch.Cast.toNumber(LENGTH ?? 0);
     }
 
     onKeyDown(event) {
@@ -129,7 +129,7 @@
 
     onPaste(event) {
       const pastedText = event.clipboardData.getData("text/plain");
-      this.addKeyToHistory(Scratch.Cast.toString(pastedText));
+      this.addKeyToHistory(Scratch.Cast.toString(pastedText ?? ""));
     }
 
     isKeybind(key) {
