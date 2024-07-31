@@ -1356,10 +1356,10 @@
 
     setSpriteSVG(args, util) {
       try {
-        Scratch.vm.runtime.renderer.updateSVGSkin(
-          util.target.sprite.costumes[args.INPUTA - 1].skinId,
-          args.INPUTB
-        );
+        const skinId = util.target.sprite.costumes[args.INPUTA - 1].skinId;
+        const renderer = Scratch.vm.runtime.renderer;
+        renderer.updateSVGSkin(skinId, Scratch.Cast.toString(args.INPUTB));
+        renderer._allSkins[skinId].doesNotMatchAsset = true;
       } catch (error) {
         return;
       }
