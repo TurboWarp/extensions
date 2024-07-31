@@ -469,8 +469,12 @@
       const contentType = args.TYPE;
       const content = args.CONTENT;
       if (contentType === "SVG") {
-        renderer.updateSVGSkin(costume.skinId, Scratch.Cast.toString(content));
-        renderer._allSkins[costume.skinId].doesNotMatchAsset = true;
+        try {
+          renderer.updateSVGSkin(costume.skinId, Scratch.Cast.toString(content));
+          renderer._allSkins[costume.skinId].doesNotMatchAsset = true;
+        } catch (e) {
+          console.error(e);
+        }
       } else {
         console.error("Options other than SVG are currently unavailable");
       }
@@ -500,14 +504,18 @@
         return;
       }
 
-      const content = costume.asset.decodeText();
-      const rotationCenterX = costume.rotationCenterX;
-      const rotationCenterY = costume.rotationCenterY;
-      renderer.updateSVGSkin(costume.skinId, content, [
-        rotationCenterX,
-        rotationCenterY,
-      ]);
-      renderer._allSkins[costume.skinId].doesNotMatchAsset = false;
+      try {
+        const content = costume.asset.decodeText();
+        const rotationCenterX = costume.rotationCenterX;
+        const rotationCenterY = costume.rotationCenterY;
+        renderer.updateSVGSkin(costume.skinId, content, [
+          rotationCenterX,
+          rotationCenterY,
+        ]);
+        renderer._allSkins[costume.skinId].doesNotMatchAsset = false;
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     costumeContent(args, util) {
