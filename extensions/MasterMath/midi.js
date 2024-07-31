@@ -21,9 +21,8 @@
 
   if (navigator.requestMIDIAccess) {
     navigator.requestMIDIAccess().then(onSuccess, onError);
-
+    
     function onSuccess(midiAccess) {
-
       midiAccess.onstatechange = (event) => {
         if (event.port.state == "connected") {
           midiInputDevices.push([`[id: "${event.port.id}"` + ` name: "${event.port.name}"]`]);
@@ -32,13 +31,11 @@
           midiInputDevices.splice([`[id: "${event.port.id}"` + ` name: "${event.port.name}"]`], 1);
           midiDeviceInfo.splice([event.port.id, event.port.name]);
         }
-        console.log(event.port.id, event.port.name, event.port.manufacturer, event.port.state);
       };
 
       function onMIDIMessage(event) {
         const [status, note, velocity] = event.data;
         const command = status & 0xF0;
-      
         if (command === 0x90 && velocity > 0) {
           notesOn.push(note);
           noteVelocities.push([note, velocity]);
