@@ -1361,9 +1361,8 @@
         renderer.updateSVGSkin(skinId, Scratch.Cast.toString(args.INPUTB));
         renderer._allSkins[skinId].doesNotMatchAsset = true;
       } catch (error) {
-        return;
+        console.error(error);
       }
-      Scratch.vm.emitTargetsUpdate();
     }
 
     alertBlock(args) {

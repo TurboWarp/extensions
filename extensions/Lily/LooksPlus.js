@@ -473,9 +473,7 @@
         renderer._allSkins[costume.skinId].doesNotMatchAsset = true;
       } else {
         console.error("Options other than SVG are currently unavailable");
-        return;
       }
-      Scratch.vm.emitTargetsUpdate();
     }
 
     restoreCostumeContent(args, util) {
