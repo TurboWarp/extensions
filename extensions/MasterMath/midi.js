@@ -23,12 +23,17 @@
     navigator.requestMIDIAccess().then(onSuccess, onError);
 
     function onSuccess(midiAccess) {
-      //List connected midi input devices
-      for (const entry of midiAccess.inputs) {
-        const input = entry[1];
-        midiInputDevices.push([`[id: "${input.id}"` + ` name: "${input.name}"]`]);
-        midiDeviceInfo.push([input.id, input.name]);
-      }
+
+      midiAccess.onstatechange = (event) => {
+        if (event.port.state == "connected") {
+          midiInputDevices.push([`[id: "${event.port.id}"` + ` name: "${event.port.name}"]`]);
+          midiDeviceInfo.push([event.port.id, event.port.name]);
+        } else if (event.port.state == "disconnected") {
+          midiInputDevices.splice([`[id: "${event.port.id}"` + ` name: "${event.port.name}"]`], 1);
+          midiDeviceInfo.splice([event.port.id, event.port.name]);
+        }
+        console.log(event.port.id, event.port.name, event.port.manufacturer, event.port.state);
+      };
 
       function onMIDIMessage(event) {
         const [status, note, velocity] = event.data;
@@ -37,16 +42,12 @@
         if (command === 0x90 && velocity > 0) {
           notesOn.push(note);
           noteVelocities.push([note, velocity]);
-
           lastNotePressed = note;
-
           Scratch.vm.runtime.startHats('midi_whenNotePressed');
         } else if (command === 0x80 || (command === 0x90 && velocity === 0)) {
+          lastNoteReleased = note;
           notesOn.splice(notesOn.indexOf(note), 1);
           noteVelocities.splice(noteVelocities.findIndex(subArray => subArray[0] === note), 1);
-
-          lastNoteReleased = note;
-
           Scratch.vm.runtime.startHats('midi_whenNoteReleased');
         } else {
           console.log(`Other MIDI Message: Status=${status}, Note=${note}, Velocity=${velocity}, Timestamp ${event.timeStamp}`);
@@ -96,6 +97,7 @@
               }
             }
           },
+          '---',
           {
             opcode: 'whenNotePressed',
             blockType: Scratch.BlockType.EVENT,
