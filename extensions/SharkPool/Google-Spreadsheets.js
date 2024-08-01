@@ -49,11 +49,6 @@
           },
           "---",
           {
-            opcode: "getContent", blockType: Scratch.BlockType.REPORTER,
-            text: "get data from sheet with ID [ID]", hideFromPalette: true, // Deprecated
-            arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: "" } }
-          },
-          {
             opcode: "getContentNew",
             blockType: Scratch.BlockType.REPORTER,
             text: "data from sheet named [NAME] with ID [ID]",
@@ -116,7 +111,6 @@
       }
     }
 
-    async getContent(args) { return await this.getSheetData(args.ID, "Sheet1") }
     async getContentNew(args) { return await this.getSheetData(args.ID, args.NAME) }
     async getSheetData(id, name) {
       const defaultReturn = encodingType === "2D Array" ? "[]" : "{}";
