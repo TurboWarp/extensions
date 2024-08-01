@@ -172,7 +172,7 @@
     }
 
     noteOn(args) {
-      return notesOn.includes(args.note);
+      return notesOn.includes(Number(args.note));
     }
 
     noteVelocity(args) {
