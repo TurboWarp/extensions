@@ -30,7 +30,7 @@
             blockIconURI: wenj,
             opcode: "start",
             blockType: Scratch.BlockType.COMMAND,
-            text: "New [STR] ",
+            text: Scratch.translate("new [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -42,7 +42,7 @@
             blockIconURI: wenj,
             opcode: "file",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set [STR] to [STR2] ",
+            text: Scratch.translate("set [STR] to [STR2]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -50,7 +50,7 @@
               },
               STR2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "rxFS is good!",
+                defaultValue: Scratch.translate("rxFS is good!"),
               },
             },
           },
@@ -58,7 +58,7 @@
             blockIconURI: wenj,
             opcode: "sync",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Change the location of [STR] to [STR2] ",
+            text: Scratch.translate("change the location of [STR] to [STR2]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -74,7 +74,7 @@
             blockIconURI: wenj,
             opcode: "del",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Delete [STR] ",
+            text: Scratch.translate("delete [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -86,7 +86,7 @@
             blockIconURI: wenj,
             opcode: "webin",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Load [STR] from the network",
+            text: Scratch.translate("load [STR] from the network"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -98,7 +98,7 @@
             blockIconURI: wenj,
             opcode: "open",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Open [STR]",
+            text: Scratch.translate("open [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -110,14 +110,14 @@
             blockIconURI: file,
             opcode: "clean",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Clear file system",
+            text: Scratch.translate("clear file system"),
             arguments: {},
           },
           {
             blockIconURI: file,
             opcode: "in",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Import file system from [STR]",
+            text: Scratch.translate("import file system from [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -129,14 +129,16 @@
             blockIconURI: file,
             opcode: "out",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Export file system",
+            text: Scratch.translate("export file system"),
             arguments: {},
           },
           {
             blockIconURI: file,
             opcode: "list",
             blockType: Scratch.BlockType.REPORTER,
-            text: "List the contents under the same folder [STR]",
+            text: Scratch.translate(
+              "list the contents under the same folder [STR]"
+            ),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -148,7 +150,7 @@
             blockIconURI: file,
             opcode: "search",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Search [STR]",
+            text: Scratch.translate("search [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,

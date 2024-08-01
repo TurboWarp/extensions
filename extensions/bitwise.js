@@ -31,7 +31,7 @@
     getInfo() {
       return {
         id: "Bitwise",
-        name: "Bitwise",
+        name: Scratch.translate("Bitwise"),
 
         color1: "#17cde6",
 
@@ -42,7 +42,7 @@
           {
             opcode: "isNumberBits",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [CENTRAL] binary?",
+            text: Scratch.translate("is [CENTRAL] binary?"),
             arguments: {
               CENTRAL: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -54,7 +54,10 @@
           {
             opcode: "toNumberBits",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[CENTRAL] to binary",
+            text: Scratch.translate({
+              default: "[CENTRAL] to binary",
+              description: "Blocks that converts number to binary",
+            }),
             arguments: {
               CENTRAL: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -65,7 +68,10 @@
           {
             opcode: "ofNumberBits",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[CENTRAL] to number",
+            text: Scratch.translate({
+              default: "[CENTRAL] to number",
+              description: "Block that converts binary to number",
+            }),
             arguments: {
               CENTRAL: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -153,7 +159,11 @@
           {
             opcode: "bitwiseAnd",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[LEFT] and [RIGHT]",
+            text: Scratch.translate({
+              default: "[LEFT] and [RIGHT]",
+              description:
+                "Block that does bitwise and (reports number with bits set only where both numbers had that bit)",
+            }),
             arguments: {
               LEFT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -168,7 +178,11 @@
           {
             opcode: "bitwiseOr",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[LEFT] or [RIGHT]",
+            text: Scratch.translate({
+              default: "[LEFT] or [RIGHT]",
+              description:
+                "Block that does bitwise or (reports number with bits set where either number had that bit)",
+            }),
             arguments: {
               LEFT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -183,7 +197,11 @@
           {
             opcode: "bitwiseXor",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[LEFT] xor [RIGHT]",
+            text: Scratch.translate({
+              default: "[LEFT] xor [RIGHT]",
+              description:
+                "Block that does bitwise eXclusive OR. (reports number with bits set only where exactly one of the numbers had that bit)",
+            }),
             arguments: {
               LEFT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -198,7 +216,11 @@
           {
             opcode: "bitwiseNot",
             blockType: Scratch.BlockType.REPORTER,
-            text: "not [CENTRAL]",
+            text: Scratch.translate({
+              default: "not [CENTRAL]",
+              description:
+                "Block that does a bitwise not. (flips all the bits in a number)",
+            }),
             arguments: {
               CENTRAL: {
                 type: Scratch.ArgumentType.NUMBER,
