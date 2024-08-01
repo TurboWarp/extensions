@@ -1,8 +1,3 @@
-// Name: Indexed Database
-// ID: ffghdfhIndexedDB
-// Description: Lets you use an IndexedDB database, allowing for you to store more than 5MB of data locally.
-// By: ffghdfh <https://scratch.mit.edu/users/medvezsolt07/>
-// License: LGPL-3.0
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) {
@@ -37,7 +32,8 @@
 
         request.onupgradeneeded = (event) => {
           const db = event.target.result;
-          db.createObjectStore("data", { keyPath: "key" });
+          db.createObjectStore("data",   
+ { keyPath: "key" });
         };
       });
     }
@@ -125,13 +121,19 @@
         return new Promise((resolve) => {
           request.onsuccess = () => {
             const result = {};
-            request.result.forEach(item => {
+            request.result.forEach((item) => {
               result[item.key] = item.value;
             });
             resolve(JSON.stringify(result));
           };
 
-          request.onerror = () => resolve("{}");
+          request.onerror = () => {
+            resolve("{}");
+          };
+
+          request.onerror = () => {
+            resolve("{}");
+          };
         });
       });
     }
@@ -187,7 +189,8 @@
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "",
+                defaultValue:   
+ "",
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
@@ -237,6 +240,7 @@
             opcode: "exportDB",
             blockType: Scratch.BlockType.REPORTER,
             text: "export db",
+            disableMonitor: true
           },
           {
             opcode: "importDB",
