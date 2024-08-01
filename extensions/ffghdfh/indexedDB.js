@@ -62,7 +62,7 @@
         return new Promise((resolve) => {
           request.onsuccess = () => {
             const value = request.result ? request.result.value : undefined;
-            resolve(value !== undefined ? value : "undefined");
+            resolve(value !== undefined ? value : "");
           };
 
           request.onerror = () => resolve("");
