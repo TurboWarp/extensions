@@ -115,6 +115,51 @@
       });
     }
 
+    // Export the entire database
+    _exportDB() {
+      return this._initDB().then((db) => {
+        const transaction = db.transaction(["data"], "readonly");
+        const store = transaction.objectStore("data");
+        const request = store.getAll();
+
+        return new Promise((resolve) => {
+          request.onsuccess = () => {
+            const result = {};
+            request.result.forEach(item => {
+              result[item.key] = item.value;
+            });
+            resolve(JSON.stringify(result));
+          };
+
+          request.onerror = () => resolve("{}");
+        });
+      });
+    }
+
+    // Import data into the database, replacing existing data
+    _importDB(data) {
+      return this._deleteAllKeys().then(() => {
+        const parsedData = JSON.parse(data);
+        const promises = Object.keys(parsedData).map(key => {
+          return this._setValue(key, parsedData[key]);
+        });
+        return Promise.all(promises);
+      });
+    }
+
+    // Merge data into the database, without replacing existing keys
+    _mergeDB(data) {
+      const parsedData = JSON.parse(data);
+      const promises = Object.keys(parsedData).map(key => {
+        return this._keyExists(key).then(exists => {
+          if (!exists) {
+            return this._setValue(key, parsedData[key]);
+          }
+        });
+      });
+      return Promise.all(promises);
+    }
+
     // Scratch blocks implementation
     getInfo() {
       return {
@@ -131,7 +176,7 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MyScratchDB",
+                defaultValue: "",
               },
             },
           },
@@ -142,22 +187,22 @@
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myKey",
+                defaultValue: "",
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myValue",
+                defaultValue: "",
               },
             },
           },
           {
             opcode: "getValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get value for key [KEY]",
+            text: "get key [KEY]",
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myKey",
+                defaultValue: "",
               },
             },
           },
@@ -173,7 +218,7 @@
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myKey",
+                defaultValue: "",
               },
             },
           },
@@ -184,7 +229,34 @@
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myKey",
+                defaultValue: "",
+              },
+            },
+          },
+          {
+            opcode: "exportDB",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "export db",
+          },
+          {
+            opcode: "importDB",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "import db from [DATA]",
+            arguments: {
+              DATA: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "",
+              },
+            },
+          },
+          {
+            opcode: "mergeDB",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "merge db from [DATA]",
+            arguments: {
+              DATA: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "",
               },
             },
           },
@@ -219,6 +291,20 @@
     keyExists(args) {
       const { KEY } = args;
       return this._keyExists(KEY);
+    }
+
+    exportDB() {
+      return this._exportDB();
+    }
+
+    importDB(args) {
+      const { DATA } = args;
+      return this._importDB(DATA);
+    }
+
+    mergeDB(args) {
+      const { DATA } = args;
+      return this._mergeDB(DATA);
     }
   }
 
