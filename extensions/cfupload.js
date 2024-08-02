@@ -4,17 +4,17 @@
 // By: Codefoxy <https://scratch.mit.edu/users/odavido123Daptoper/>
 // License: MIT AND MPL-2.0
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('Files extension must be run unsandboxed');
+    throw new Error("Files extension must be run unsandboxed");
   }
   let a = {};
-  let apiurl = '';
-  let apiformname = '';
+  let apiurl = "";
+  let apiformname = "";
   const formDataEntries = {};
   let StatusCode = 0; // Variable to hold status code
-  let RawRespond = ''; // Variable to hold raw Respond or Scratch will crash
+  let RawRespond = ""; // Variable to hold raw Respond or Scratch will crash
 
   /**
    * Upload a file to a specified link.
@@ -26,7 +26,7 @@
    */
   const uploadFileToLink = (data, filename, link, formName) => {
     const formData = new FormData();
-    const blob = new Blob([data], { type: 'text/plain' });
+    const blob = new Blob([data], { type: "text/plain" });
     formData.append(formName, blob, filename);
 
     // Add additional form data entries
@@ -37,7 +37,7 @@
     }
 
     return Scratch.fetch(link, {
-      method: 'POST',
+      method: "POST",
       body: formData,
     })
       .then((response) => {
@@ -58,82 +58,82 @@
   class Upload {
     getInfo() {
       return {
-        id: 'cfupload',
-        name: 'Upload',
-        color1: '#ffe9b5',
+        id: "cfupload",
+        name: "Upload",
+        color1: "#ffe9b5",
         blocks: [
           {
-            opcode: 'addFormData',
+            opcode: "addFormData",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Add formdata [key]: [value]',
+            text: "Add formdata [key]: [value]",
             arguments: {
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'key',
+                defaultValue: "key",
               },
               value: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'value',
+                defaultValue: "value",
               },
             },
           },
           {
-            opcode: 'uploadFileToLink',
+            opcode: "uploadFileToLink",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'upload [data] as [filename] to [link] as [formName]',
+            text: "upload [data] as [filename] to [link] as [formName]",
             arguments: {
               data: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Hello, world!',
+                defaultValue: "Hello, world!",
               },
               filename: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'file.txt',
+                defaultValue: "file.txt",
               },
               link: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'https://example.com/upload',
+                defaultValue: "https://example.com/upload",
               },
               formName: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'fileToUpload',
+                defaultValue: "fileToUpload",
               },
             },
           },
           {
-            opcode: 'callapi',
+            opcode: "callapi",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Upload [data] to [Apis] as [name]',
+            text: "Upload [data] to [Apis] as [name]",
             arguments: {
               data: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Hello, World!',
+                defaultValue: "Hello, World!",
               },
               name: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'file.txt',
+                defaultValue: "file.txt",
               },
               Apis: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'Apis',
+                menu: "Apis",
               },
             },
           },
           {
-            opcode: 'getStatusCode',
+            opcode: "getStatusCode",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'status code',
+            text: "status code",
           },
           {
-            opcode: 'getRawRespond',
+            opcode: "getRawRespond",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Raw Respond',
+            text: "Raw Respond",
           },
         ],
         menus: {
           Apis: {
             acceptReporters: true,
-            items: ['Catbox.moe', 'file.io'],
+            items: ["Catbox.moe", "file.io"],
           },
         },
       };
@@ -149,14 +149,14 @@
      */
     callapi(args) {
       switch (args.Apis) {
-        case 'Catbox.moe':
-          apiurl = 'https://catbox.moe/user/api.php';
-          formDataEntries.reqtype = 'fileupload';
-          apiformname = 'fileToUpload';
+        case "Catbox.moe":
+          apiurl = "https://catbox.moe/user/api.php";
+          formDataEntries.reqtype = "fileupload";
+          apiformname = "fileToUpload";
           break;
-        case 'file.io':
-          apiurl = 'https://file.io/?title=' + args.name;
-          apiformname = 'file';
+        case "file.io":
+          apiurl = "https://file.io/?title=" + args.name;
+          apiformname = "file";
           break;
       }
       return uploadFileToLink(args.data, args.name, apiurl, apiformname).then(
@@ -165,7 +165,7 @@
             a = JSON.parse(response); // Assuming response is JSON
             return a;
           } catch (error) {
-            console.error('Error parsing response as JSON:', error);
+            console.error("Error parsing response as JSON:", error);
             return response;
           }
         }
@@ -182,7 +182,7 @@
         try {
           return JSON.parse(response); // Assuming response is JSON
         } catch (error) {
-          console.error('Error parsing response as JSON:', error);
+          console.error("Error parsing response as JSON:", error);
           return response;
         }
       });
