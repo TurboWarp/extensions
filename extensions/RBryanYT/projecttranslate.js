@@ -50,8 +50,6 @@ Scratch.translate.setup(
 );
 
 (function(Scratch) {
-  const vm = Scratch.vm;
-
   'use strict';
 
   if (!Scratch.extensions.unsandboxed) {
