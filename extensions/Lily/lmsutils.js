@@ -1359,7 +1359,7 @@
         const skinId = util.target.sprite.costumes[args.INPUTA - 1].skinId;
         const renderer = Scratch.vm.runtime.renderer;
         renderer.updateSVGSkin(skinId, Scratch.Cast.toString(args.INPUTB));
-        renderer._allSkins[skinId].doesNotMatchAsset = true;
+        renderer._allSkins[skinId].differsFromAsset = true;
       } catch (error) {
         console.error(error);
       }

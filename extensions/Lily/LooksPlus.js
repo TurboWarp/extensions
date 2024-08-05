@@ -474,7 +474,7 @@
             costume.skinId,
             Scratch.Cast.toString(content)
           );
-          renderer._allSkins[costume.skinId].doesNotMatchAsset = true;
+          renderer._allSkins[costume.skinId].differsFromAsset = true;
         } catch (e) {
           console.error(e);
         }
@@ -503,7 +503,7 @@
         return;
       }
 
-      if (!renderer._allSkins[costume.skinId].doesNotMatchAsset) {
+      if (!renderer._allSkins[costume.skinId].differsFromAsset) {
         return;
       }
 
@@ -515,7 +515,7 @@
           rotationCenterX,
           rotationCenterY,
         ]);
-        renderer._allSkins[costume.skinId].doesNotMatchAsset = false;
+        renderer._allSkins[costume.skinId].differsFromAsset = false;
       } catch (e) {
         console.error(e);
       }
