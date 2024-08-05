@@ -599,7 +599,9 @@
     json_is_valid({ json }) {
       if (typeof json != "string") {
         return false;
-      } else if (
+      }
+      json = json.trim();
+      if (
         (json.slice(0, 1) != "[" || json.slice(-1) != "]") &&
         (json.slice(0, 1) != "{" || json.slice(-1) != "}")
       ) {
