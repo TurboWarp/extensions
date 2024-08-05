@@ -597,13 +597,22 @@
     }
 
     json_is_valid({ json }) {
-      try {
-        if (typeof JSON.parse(json) != "object") {
+      if (typeof json != "string") {
+        return false;
+      }
+      json = json.trim();
+      if (
+        (json.slice(0, 1) != "[" || json.slice(-1) != "]") &&
+        (json.slice(0, 1) != "{" || json.slice(-1) != "}")
+      ) {
+        return false;
+      } else {
+        try {
+          JSON.parse(json);
+          return true;
+        } catch {
           return false;
         }
-        return true;
-      } catch {
-        return false;
       }
     }
 
