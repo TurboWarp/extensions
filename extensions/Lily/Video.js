@@ -307,6 +307,21 @@
               },
             },
           },
+          {
+            opcode: "setPlaybackRate",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set playback rate of video [NAME] to [RATE]"),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my video",
+              },
+              RATE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "2",
+              },
+            },
+          }
         ],
         menus: {
           targets: {
@@ -348,6 +363,10 @@
               {
                 text: Scratch.translate("height"),
                 value: "height",
+              },
+              {
+                text: Scratch.translate("playback rate"),
+                value: "playback rate",
               },
             ],
           },
@@ -475,6 +494,8 @@
           return videoSkin.size[0];
         case "height":
           return videoSkin.size[1];
+        case "playback rate":
+          return videoSkin.videoElement.playbackRate;
         default:
           return 0;
       }
@@ -533,11 +554,26 @@
 
     setVolume(args) {
       const videoName = Cast.toString(args.NAME);
-      const value = Cast.toNumber(args.VALUE);
       const videoSkin = this.videos[videoName];
       if (!videoSkin) return;
 
+      const value = Cast.toNumber(args.VALUE);
       videoSkin.videoElement.volume = Math.min(1, Math.max(0, value / 100));
+    }
+
+    setPlaybackRate(args) {
+      const videoName = Cast.toString(args.NAME);
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
+
+      try {
+        const value = Cast.toNumber(args.RATE);
+        // Supposedly negative values will work in Safari but people probably shouldn't rely
+        // on that since others don't.
+        videoSkin.videoElement.playbackRate = Math.max(0, value);
+      } catch (e) {
+        console.warn(e);
+      }
     }
 
     /** @returns {VM.Target|undefined} */
