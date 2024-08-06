@@ -310,7 +310,9 @@
           {
             opcode: "setPlaybackRate",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set playback rate of video [NAME] to [RATE]"),
+            text: Scratch.translate(
+              "set playback rate of video [NAME] to [RATE]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -321,7 +323,7 @@
                 defaultValue: "2",
               },
             },
-          }
+          },
         ],
         menus: {
           targets: {
