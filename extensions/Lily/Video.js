@@ -243,7 +243,9 @@
           {
             opcode: "getFrame",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("screenshot of video [NAME] at current time"),
+            text: Scratch.translate(
+              "screenshot of video [NAME] at current time"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
