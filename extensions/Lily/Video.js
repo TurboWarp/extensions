@@ -2,6 +2,7 @@
 // ID: lmsVideo
 // Description: Play videos from URLs.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// By: SharkPool
 // License: MIT AND LGPL-3.0
 
 // Attribution is not required, but greatly appreciated.
@@ -239,6 +240,19 @@
               },
             },
           },
+          {
+            opcode: "getFrame",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "screenshot of video [NAME] at current time"
+            ),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my video",
+              },
+            },
+          },
           "---",
           {
             opcode: "pause",
@@ -466,6 +480,24 @@
       }
     }
 
+    getFrame(args) {
+      const videoName = Cast.toString(args.NAME);
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return "";
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        console.warn("2D rendering context not available");
+        return "";
+      }
+
+      canvas.width = videoSkin.videoElement.videoWidth;
+      canvas.height = videoSkin.videoElement.videoHeight;
+      ctx.drawImage(videoSkin.videoElement, 0, 0);
+      return canvas.toDataURL();
+    }
+
     pause(args) {
       const videoName = Cast.toString(args.NAME);
       const videoSkin = this.videos[videoName];
@@ -500,7 +532,7 @@
       const videoSkin = this.videos[videoName];
       if (!videoSkin) return;
 
-      videoSkin.videoElement.volume = value / 100;
+      videoSkin.videoElement.volume = Math.min(1, Math.max(0, value / 100));
     }
 
     /** @returns {VM.Target|undefined} */
