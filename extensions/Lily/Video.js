@@ -492,9 +492,14 @@
         return "";
       }
 
-      canvas.width = videoSkin.videoElement.videoWidth;
-      canvas.height = videoSkin.videoElement.videoHeight;
-      ctx.drawImage(videoSkin.videoElement, 0, 0);
+      const videoElement = videoSkin.videoElement;
+      if (videoElement.videoWidth === 0 || videoElement.videoHeight === 0) {
+        return "";
+      }
+
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
+      ctx.drawImage(videoElement, 0, 0);
       return canvas.toDataURL();
     }
 
