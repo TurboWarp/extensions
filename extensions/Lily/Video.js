@@ -2,7 +2,7 @@
 // ID: lmsVideo
 // Description: Play videos from URLs.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// Contributed to by: SharkPool
+// By: SharkPool
 // License: MIT AND LGPL-3.0
 
 // Attribution is not required, but greatly appreciated.
