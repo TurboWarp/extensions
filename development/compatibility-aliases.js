@@ -10,4 +10,4 @@ const extensions = {
   "/LukeManiaStudios/TempVariables2.js": "/Lily/TempVariables2.js",
 };
 
-module.exports = extensions;
+export default extensions;

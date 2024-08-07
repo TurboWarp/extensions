@@ -111,4 +111,4 @@ const parseMetadata = (extensionCode) => {
   return metadata;
 };
 
-module.exports = parseMetadata;
+export default parseMetadata;

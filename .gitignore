@@ -4,6 +4,7 @@ node_modules
 # Final built website and localizations
 build
 build-l10n
+cache
 
 # Various operating system caches
 thumbs.db
