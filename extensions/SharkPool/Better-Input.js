@@ -2,6 +2,7 @@
 // ID: BetterInputSP
 // Description: Expansion of the "ask and wait" Blocks.
 // By: SharkPool
+// License: MPL-2.0
 
 // Version V.4.2.0
 
