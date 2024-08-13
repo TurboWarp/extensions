@@ -367,7 +367,7 @@
       if (xml === null) {
         return "";
       }
-      xml.textContent = VALUE;
+      xml.textContent = Scratch.Cast.toString(VALUE);
       return this.xmlToString(xml);
     }
 
