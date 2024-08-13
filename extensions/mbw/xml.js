@@ -28,6 +28,24 @@
     xmlToString(element) {
       return element.outerHTML;
     }
+    /**
+     * @param {Element} element
+     * @param {string} query
+     */
+    resolveQuery(element, query) {
+      return element.matches(query) ? element : element.querySelector(query);
+    }
+    /**
+     * @param {Element} element
+     * @param {string} query
+     */
+    resolveQueryAll(element, query) {
+      const response = [...element.querySelectorAll(query)];
+      if (element.matches(query)) {
+        response.unshift(element);
+      }
+      return response;
+    }
 
     /** @returns {Scratch.Info} */
     getInfo() {
@@ -544,7 +562,7 @@
       if (xml === null) {
         return "";
       }
-      const child = xml.querySelector(Scratch.Cast.toString(QUERY));
+      const child = this.resolveQuery(xml, Scratch.Cast.toString(QUERY));
       return child !== null;
     }
 
@@ -558,7 +576,7 @@
       if (xml === null) {
         return "";
       }
-      const child = xml.querySelector(Scratch.Cast.toString(QUERY));
+      const child = this.resolveQuery(xml, Scratch.Cast.toString(QUERY));
       if (child === null) {
         return "";
       }
@@ -574,7 +592,7 @@
       if (xml === null) {
         return "";
       }
-      const child = xml.querySelectorAll(Scratch.Cast.toString(QUERY));
+      const child = this.resolveQueryAll(xml, Scratch.Cast.toString(QUERY));
       if (child.length === 0) {
         return "";
       }
