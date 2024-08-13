@@ -28,6 +28,24 @@
     xmlToString(element) {
       return element.outerHTML;
     }
+    /**
+     * @param {Element} element
+     * @param {string} query
+     */
+    resolveQuery(element, query) {
+      return element.matches(query) ? element : element.querySelector(query);
+    }
+    /**
+     * @param {Element} element
+     * @param {string} query
+     */
+    resolveQueryAll(element, query) {
+      const response = [...element.querySelectorAll(query)];
+      if (element.matches(query)) {
+        response.unshift(element);
+      }
+      return response;
+    }
 
     /** @returns {Scratch.Info} */
     getInfo() {
@@ -97,6 +115,32 @@
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "world!",
+              },
+            },
+          },
+          {
+            opcode: "innerHTML",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("inner elements of [XML]"),
+            arguments: {
+              XML: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '<hello><planet name="world" /></hello>',
+              },
+            },
+          },
+          {
+            opcode: "setInnerHTML",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("set inner elements of [XML] to [VALUE]"),
+            arguments: {
+              XML: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '<hello><planet name="world" /></hello>',
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '<planet name="mars" />',
               },
             },
           },
@@ -367,7 +411,41 @@
       if (xml === null) {
         return "";
       }
-      xml.textContent = VALUE;
+      xml.textContent = Scratch.Cast.toString(VALUE);
+      return this.xmlToString(xml);
+    }
+
+    /**
+     * @param {object} args
+     * @param {unknown} args.XML
+     */
+    innerHTML({ XML }) {
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
+      if (xml === null) {
+        return "";
+      }
+      return xml.innerHTML;
+    }
+
+    /**
+     * @param {object} args
+     * @param {unknown} args.XML
+     * @param {unknown} args.VALUE
+     */
+    setInnerHTML({ XML, VALUE }) {
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
+      if (xml === null) {
+        return "";
+      }
+      const value = Scratch.Cast.toString(VALUE);
+      // there needs to be exactly one parent element
+      const { xml: newXML } = this.stringToXml(
+        "<testElement>" + value + "</testElement>"
+      );
+      if (newXML === null) {
+        return "";
+      }
+      xml.innerHTML = Scratch.Cast.toString(value);
       return this.xmlToString(xml);
     }
 
@@ -544,7 +622,7 @@
       if (xml === null) {
         return "";
       }
-      const child = xml.querySelector(Scratch.Cast.toString(QUERY));
+      const child = this.resolveQuery(xml, Scratch.Cast.toString(QUERY));
       return child !== null;
     }
 
@@ -558,7 +636,7 @@
       if (xml === null) {
         return "";
       }
-      const child = xml.querySelector(Scratch.Cast.toString(QUERY));
+      const child = this.resolveQuery(xml, Scratch.Cast.toString(QUERY));
       if (child === null) {
         return "";
       }
@@ -574,7 +652,7 @@
       if (xml === null) {
         return "";
       }
-      const child = xml.querySelectorAll(Scratch.Cast.toString(QUERY));
+      const child = this.resolveQueryAll(xml, Scratch.Cast.toString(QUERY));
       if (child.length === 0) {
         return "";
       }
