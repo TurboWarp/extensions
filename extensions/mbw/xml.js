@@ -118,6 +118,32 @@
               },
             },
           },
+          {
+            opcode: "innerHTML",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("inner elements of [XML]"),
+            arguments: {
+              XML: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '<hello><planet name="world" /></hello>',
+              },
+            },
+          },
+          {
+            opcode: "setInnerHTML",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("set inner elements of [XML] to [VALUE]"),
+            arguments: {
+              XML: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '<hello><planet name="world" /></hello>',
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '<planet name="mars" />',
+              },
+            },
+          },
           "---",
           {
             opcode: "attributes",
@@ -386,6 +412,40 @@
         return "";
       }
       xml.textContent = Scratch.Cast.toString(VALUE);
+      return this.xmlToString(xml);
+    }
+
+    /**
+     * @param {object} args
+     * @param {unknown} args.XML
+     */
+    innerHTML({ XML }) {
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
+      if (xml === null) {
+        return "";
+      }
+      return xml.innerHTML;
+    }
+
+    /**
+     * @param {object} args
+     * @param {unknown} args.XML
+     * @param {unknown} args.VALUE
+     */
+    setInnerHTML({ XML, VALUE }) {
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
+      if (xml === null) {
+        return "";
+      }
+      const value = Scratch.Cast.toString(VALUE);
+      // there needs to be exactly one parent element
+      const { xml: newXML } = this.stringToXml(
+        "<testElement>" + value + "</testElement>"
+      );
+      if (newXML === null) {
+        return "";
+      }
+      xml.innerHTML = Scratch.Cast.toString(value);
       return this.xmlToString(xml);
     }
 
