@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.01
+// Version V.1.0.02
 
 (function (Scratch) {
   "use strict";
@@ -25,7 +25,7 @@
   // Community Spotlight Exports
   // Uses MIT Licence (https://github.com/Community-Spotlight)
   // eslint-disable-next-line
-  window.CSPromos={};const base="https://raw.githubusercontent.com/Community-Spotlight/";async function refreshPromos(){try{let e=await fetch(`${base}promotion-index/main/index.json`);if(!e.ok)throw Error("Couldn't fetch promotions!");window.CSPromos=await e.json()}catch(t){console.error(t)}}function getPromotion(e,t){let o=e=>e[Math.floor(Math.random()*e.length)];e="video"===e?"video":"image",t="object"==typeof t?t:{};let i=window.CSPromos;t.tags&&t.tags.length>0&&(i=Object.fromEntries(Object.entries(i).filter(([e,o])=>o.tags.some(e=>t.tags.includes(e.toLowerCase())))));let n=Object.keys(i).filter(t=>{let o=i[t];return"image"===e?Object.keys(o.media.images).length>0:"video"===e&&o.media.videos.length>0});if(0===n.length)return console.warn("CS -- No promotions found for the given parameters"),{};let r,a,s=0;for(;s<n.length;){let l=o(n);r=i[l];let m=r.media;if("image"===e){let g=m.images,d=g.find(e=>!t.aspectRatio||e.size===t.aspectRatio);a=d?`${d.size}.${d.type}`:null}else if("video"===e){let f=m.videos,h=f.find(e=>(!t.aspectRatio||e.size===t.aspectRatio)&&(!t.videoLength||e.length===t.videoLength));a=h?`sz${h.size.replace(":","x")}leng${h.length}.${h.type}`:null}if(a)break;s++}if(!a)return console.warn("CS -- No promotions found for the given parameters"),{};let p={...r};return delete p.media,{...p,url:`${base}promotion-media/main/${encodeURIComponent(p.id)}/${a}`}}
+  window.CSPromos={};const base="https://raw.githubusercontent.com/Community-Spotlight/";async function refreshPromos(){try{let e=await fetch(`${base}promotion-index/main/index.json`);if(!e.ok)throw Error("Couldn't fetch promotions!");window.CSPromos=await e.json()}catch(t){console.error(t)}}function getPromotion(e,t){let o=e=>e[Math.floor(Math.random()*e.length)];e="video"===e?"video":"image",t="object"==typeof t?t:{};let i={...window.CSPromos};t.tags&&t.tags.length>0&&(i=Object.fromEntries(Object.entries(i).filter(([e,o])=>o.tags.some(e=>t.tags.includes(e.toLowerCase())))));let n=Object.keys(i).filter(t=>{let o=i[t].media;return"image"===e?o.images.length>0:o.videos.length>0});if(0===n.length)return console.warn("CS -- No promotions found with given parameters"),{};let r,s,a=0,l=[...n];for(;a<n.length;){let m=o(l);r=i[m],l.splice(l.indexOf(m),1);let g=r.media;if("image"===e){let d=g.images.find(e=>!t.aspectRatio||e.size===t.aspectRatio);s=d?`${d.size}.${d.type}`:null}else if("video"===e){let f=g.videos.find(e=>(!t.aspectRatio||e.size===t.aspectRatio)&&(!t.videoLength||e.length===t.videoLength));s=f?`sz${f.size.replace(":","x")}leng${f.length}.${f.type}`:null}if(s)break;a++}if(!s)return console.warn("CS -- No promotions found with given parameters"),{};let h={...r};return delete h.media,{...h,url:`${base}promotion-media/main/${encodeURIComponent(h.id)}/${s}`}}
 
   class SPspotlight {
     constructor() {
@@ -154,7 +154,7 @@
           },
           VID_LENGTH: {
             acceptReporters: true,
-            items: ["5", "10", "15", "30"]
+            items: ["any", "5", "10", "15", "30"]
           }
         }
       };
@@ -224,11 +224,9 @@
     async getVidPromo(args) {
       if (!initialized) await this.refresh();
       if (["1:1", "4:3", "4:5", "16:9", "9:16"].indexOf(args.SIZE) === -1) return "{}";
-      return JSON.stringify(
-        getPromotion("video", {
-          tags, aspectRatio: args.SIZE, videoLength: Scratch.Cast.toNumber(args.LENGTH)
-        })
-      );
+      const obj = { tags, aspectRatio: args.SIZE };
+      if (args.LENGTH !== "any") obj.videoLength = Scratch.Cast.toNumber(args.LENGTH);
+      return JSON.stringify(getPromotion("video", obj));
     }
 
     async refresh() {
