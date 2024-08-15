@@ -3,35 +3,22 @@
 // Description: Implements the Box2D physics engine, adding joints, springs, sliders, and more.
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
 // Original: Griffpatch
-// License: LGPL-3.0
+// License: zlib
 
 /* This extension was originally based off of the Box2D Physics extension
 for ScratchX by Griffpatch, but has since deviated to have more features,
 while keeping general compatability. (made with box2D js es6) */
 
-(function (Scratch) {
-  "use strict";
-  var b2Dversion = "1.7.3";
+(function(Scratch) {
+  'use strict';
+  var b2Dversion = "1.8.1";
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Boxed Physics can't run in the sandbox");
+    throw new Error('Boxed Physics can\'t run in the sandbox');
   }
 
-  var b2Vec2,
-    b2AABB,
-    b2BodyDef,
-    b2Body,
-    b2FixtureDef,
-    b2Fixture,
-    b2World,
-    b2MassData,
-    b2PolygonShape,
-    b2CircleShape,
-    b2DebugDraw,
-    b2MouseJointDef;
-  var b2Dworld, fixDef;
-  var mousePVec, selectedBody, prb2djaxisX, prb2djaxisY, prb2djl, prb2dju;
-  var b2Dzoom = 50;
-  var b2Math;
+  var b2Vec2, b2AABB, b2BodyDef, b2Body, b2FixtureDef, b2Fixture, b2World, b2MassData, b2PolygonShape, b2CircleShape, b2DebugDraw, b2MouseJointDef;
+  var b2Dworld, fixDef; var mousePVec, selectedBody, prb2djaxisX, prb2djaxisY, prb2djl, prb2dju;
+  var b2Dzoom = 50; var b2Math;
 
   var physdebugmode = false;
   var wipblocks = false;
@@ -43,8 +30,7 @@ while keeping general compatability. (made with box2D js es6) */
 
   var bodyDef;
 
-  var uid_seq = 0;
-  var ujid_seq = 0;
+  var uid_seq = 0; var ujid_seq = 0;
   var categorySeq = 0;
 
   var bodies = {};
@@ -58,50 +44,50 @@ while keeping general compatability. (made with box2D js es6) */
 
   var simspeed = 0;
 
-  const menuIconURI =
-    "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmE9Imh0dHA6Ly9ucy5hZG9iZS5jb20vQWRvYmVTVkdWaWV3ZXJFeHRlbnNpb25zLzMuMC8iDQoJIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSItMy43IC0zLjcgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTMuNyAtMy43IDQwIDQwIg0KCSB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxkZWZzPg0KPC9kZWZzPg0KPHJlY3QgeD0iOC45IiB5PSIxLjUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxLjUiIHk9IjE2LjMiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxNi4zIiB5PSIxNi4zIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMxNjlGQjAiIHN0cm9rZS13aWR0aD0iMyIgd2lkdGg9IjE0LjgiIGhlaWdodD0iMTQuOCIvPg0KPC9zdmc+";
+  const menuIconURI = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmE9Imh0dHA6Ly9ucy5hZG9iZS5jb20vQWRvYmVTVkdWaWV3ZXJFeHRlbnNpb25zLzMuMC8iDQoJIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSItMy43IC0zLjcgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTMuNyAtMy43IDQwIDQwIg0KCSB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxkZWZzPg0KPC9kZWZzPg0KPHJlY3QgeD0iOC45IiB5PSIxLjUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxLjUiIHk9IjE2LjMiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxNi4zIiB5PSIxNi4zIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMxNjlGQjAiIHN0cm9rZS13aWR0aD0iMyIgd2lkdGg9IjE0LjgiIGhlaWdodD0iMTQuOCIvPg0KPC9zdmc+";
 
   class BoxPhys {
     constructor() {
       this.vm = Scratch.vm;
-      this.runtime = this.vm.runtime;
+      this.runtime = this.vm.runtime
+
+      this.turbowarp = window.location.href.indexOf('turbowarp.') > -1;
+
+      this.docs = Scratch.extensions.isPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics' : false ? 'https://extensions.turbowarp.org/pooiod7/BoxedPhysics",' : 'https://pooiod7.neocities.org/markdown/#/projects/scratch/extensions/other/markdown/box2D';
 
       // this is a penguinmod only thing
-      this.squaretype = Scratch.extensions.isPenguinMod
-        ? Scratch.BlockShape.SQUARE
-        : "";
+      this.squaretype = Scratch.extensions.isPenguinMod ? Scratch.BlockShape.SQUARE : false;
 
-      vm.runtime.on("PROJECT_LOADED", () => {
-        this.physoptions({ CONPHYS: true, WARMSTART: true, POS: 10, VEL: 10 });
+      vm.runtime.on('PROJECT_LOADED', () => {
+        this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
       });
-      this.vm.runtime.on("PROJECT_STOP", () => {
-        this.init({ SCALE: b2Dzoom, GRAVITY: -10, SCENE: "stage" });
+      this.vm.runtime.on('PROJECT_STOP', () => {
+        this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });
       });
-      vm.runtime.on("PROJECT_START", () => {
-        this.init({ SCALE: b2Dzoom, GRAVITY: -10, SCENE: "stage" });
+      vm.runtime.on('PROJECT_START', () => {
+        this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });
       });
-      this.init({ SCALE: b2Dzoom, GRAVITY: -10, SCENE: "stage" });
+      this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });
     }
     getInfo() {
       return {
-        id: "P7BoxPhys",
-        name: "Boxed Physics",
-        color1: "#2cb0c0",
-        color2: "#4eb88a",
+        id: 'P7BoxPhys',
+        name: physdebugmode || wipblocks ? 'Boxed Physics (debug)' : 'Boxed Physics',
+        color1: physdebugmode || wipblocks ? "#4b4a60" : "#2cb0c0",
+        color2: physdebugmode || wipblocks ? "#383747" : "#4eb88a",
         menuIconURI: menuIconURI,
-        docsURI:
-          "https://extensions.turbowarp.org/pooiod7/BoxedPhysics",
+        docsURI: this.docs,
         blocks: [
           { blockType: Scratch.BlockType.LABEL, text: "Define objects" }, // ---- Define objects ---
           {
-            opcode: "setBodyAttrs",
+            opcode: 'setBodyAttrs',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Define Type [BODYTYPE]  Density [DENSITY]  Friction [FRICTION]  Bounce [BOUNCE]",
+            text: 'Define Type [BODYTYPE]  Density [DENSITY]  Friction [FRICTION]  Bounce [BOUNCE]',
             arguments: {
               BODYTYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "BodyTypePK",
-                defaultValue: "dynamic",
+                menu: 'BodyTypePK',
+                defaultValue: 'dynamic',
               },
               DENSITY: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -118,9 +104,9 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "defineCircle",
+            opcode: 'defineCircle',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Define Circle, size: [SIZE]",
+            text: 'Define Circle, size: [SIZE]',
             arguments: {
               SIZE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -129,9 +115,9 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "defineRect",
+            opcode: 'defineRect',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Define Box, width: [WIDTH] height: [HEIGHT]",
+            text: 'Define Box, width: [WIDTH] height: [HEIGHT]',
             arguments: {
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -144,9 +130,9 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "definePoly",
+            opcode: 'definePoly',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Define Polygon, points: [POINTS]",
+            text: 'Define Polygon, points: [POINTS]',
             arguments: {
               POINTS: {
                 type: Scratch.ArgumentType.STRING,
@@ -155,19 +141,19 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "difineCostume",
+            opcode: 'difineCostume',
             blockType: Scratch.BlockType.COMMAND,
             filter: [Scratch.TargetType.SPRITE],
-            text: "Define pollygon as this costume",
+            text: 'Define pollygon as this costume',
           },
           {
-            opcode: "placeBody",
+            opcode: 'placeBody',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Make object [NAME] at x: [X]  y: [Y]  dir: [DIR]",
+            text: 'Make object [NAME] at x: [X]  y: [Y]  dir: [DIR]',
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Object",
+                defaultValue: 'Object',
               },
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -185,50 +171,55 @@ while keeping general compatability. (made with box2D js es6) */
           },
           { blockType: Scratch.BlockType.LABEL, text: "Modify objects" }, // ---- Modify objects ---
           {
-            opcode: "destroyBody",
+            opcode: 'destroyBody',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Destroy object [NAME]",
+            text: 'Destroy object [NAME]',
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Object",
+                defaultValue: 'Object',
               },
             },
           },
           {
-            opcode: "createNoCollideSet",
+            opcode: 'destroyBodys',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Disable collision between [NAMES]",
+            text: 'Destroy every object',
+          },
+          {
+            opcode: 'createNoCollideSet',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Disable collision between [NAMES]',
             arguments: {
               NAMES: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Object1 Object2",
+                defaultValue: 'Object1 Object2',
               },
             },
           },
           {
-            opcode: "createYesCollideSet",
+            opcode: 'createYesCollideSet',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Reset collision of objects [NAMES]",
+            text: 'Reset collision of objects [NAMES]',
             arguments: {
               NAMES: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Object1 Object2",
+                defaultValue: 'Object1 Object2',
               },
             },
           },
           {
-            opcode: "setBodyAttr",
+            opcode: 'setBodyAttr',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set [BODYATTR] of object [NAME] to [VALUE]",
+            text: 'Set [BODYATTR] of object [NAME] to [VALUE]',
             arguments: {
               BODYATTR: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "bodyAttr",
+                menu: 'bodyAttr',
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Object",
+                defaultValue: 'Object',
               },
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -237,18 +228,18 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "applyForceToBody",
+            opcode: 'applyForceToBody',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Apply [FORCETYPE] to object [NAME] at x: [X]  y: [Y]  power: [POWER]  dir: [DIR]",
+            text: 'Apply [FORCETYPE] to object [NAME] at x: [X]  y: [Y]  power: [POWER]  dir: [DIR]',
             arguments: {
               FORCETYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "ForceType",
-                defaultValue: "Impulse",
+                menu: 'ForceType',
+                defaultValue: 'Impulse',
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Object",
+                defaultValue: 'Object',
               },
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -269,18 +260,18 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "applyAngForceToBody",
+            opcode: 'applyAngForceToBody',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Apply Angular Impulse to object [NAME] power: [POWER]",
+            text: 'Apply Angular Impulse to object [NAME] power: [POWER]',
             arguments: {
               ANGFORCETYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "AngForceType",
-                defaultValue: "Impulse",
+                menu: 'AngForceType',
+                defaultValue: 'Impulse',
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Object",
+                defaultValue: 'Object',
               },
               POWER: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -289,28 +280,9 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "moveto",
+            opcode: 'changevel',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Move object [NAME] to x [X] y [Y]",
-            arguments: {
-              X: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              Y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Object",
-              },
-            },
-          },
-          {
-            opcode: "changevel",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Set Velocity of [NAME] to x [X] y [Y] dir [DIR]",
+            text: 'Set Velocity of [NAME] to x [X] y [Y] dir [DIR]',
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -331,9 +303,28 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "rotateto",
+            opcode: 'moveto',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set rotation of object [NAME] to [ROT]",
+            text: 'Move object [NAME] to x [X] y [Y]',
+            arguments: {
+              X: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              Y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Object",
+              },
+            },
+          },
+          {
+            opcode: 'rotateto',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Set rotation of object [NAME] to [ROT]',
             arguments: {
               ROT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -346,9 +337,9 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "clearvel",
+            opcode: 'clearvel',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Clear velocity of object [NAME]",
+            text: 'Clear velocity of object [NAME]',
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -357,25 +348,30 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "getBodyAttr",
+            opcode: 'getBodyAttr',
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get [BODYATTRREAD] from object [NAME]",
+            text: 'Get [BODYATTRREAD] from object [NAME]',
             arguments: {
               BODYATTRREAD: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "bodyAttrRead",
+                menu: 'bodyAttrRead',
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Object",
+                defaultValue: 'Object',
               },
             },
           },
           {
-            opcode: "getBodyIDAt",
+            opcode: 'getBodyIDAt',
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get object at x: [X]  y: [Y]",
+            text: 'Get body of type [type] at x: [X]  y: [Y]',
             arguments: {
+              type: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'BodyTypePK2',
+                defaultValue: 'any',
+              },
               X: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 0,
@@ -386,11 +382,17 @@ while keeping general compatability. (made with box2D js es6) */
               },
             },
           },
+          {
+            opcode: 'getobjects',
+            disableMonitor: true,
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'All objects',
+          },
           { blockType: Scratch.BlockType.LABEL, text: "Define joints" }, // ---- Define joints -----
           {
-            opcode: "defineSpring",
+            opcode: 'defineSpring',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Define Spring, Length: [LENGTH]  Damping: [DAMPING]  Freq: [FREQ]",
+            text: 'Define Spring, Length: [LENGTH]  Damping: [DAMPING]  Freq: [FREQ]',
             arguments: {
               LENGTH: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -407,41 +409,41 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "definePrismatic",
+            opcode: 'definePrismatic',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Define Slider, Angle: [DIR] Lower stop: [LOW] Upper stop: [HIGH]",
+            text: 'Define Slider, Angle: [DIR] Lower stop: [LOW] Upper stop: [HIGH]',
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "90",
+                defaultValue: '90',
               },
               LOW: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "-100",
+                defaultValue: '-100',
               },
               HIGH: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "100",
+                defaultValue: '100',
               },
             },
           },
           {
-            opcode: "createJointOfType",
+            opcode: 'createJointOfType',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Create Joint [JOINTID] of type [JOINTTYPE] between [BODY1] at [X1] [Y1] and [BODY2] at [X2] [Y2]",
+            text: 'Create Joint [JOINTID] of type [JOINTTYPE] between [BODY1] at [X1] [Y1] and [BODY2] at [X2] [Y2]',
             arguments: {
               JOINTID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Joint ID",
+                defaultValue: 'Joint',
               },
               JOINTTYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "JointType",
-                defaultValue: "Rotating",
+                menu: 'JointType',
+                defaultValue: 'Rotating',
               },
               BODY1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Object1",
+                defaultValue: 'Object1',
               },
               X1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -453,7 +455,7 @@ while keeping general compatability. (made with box2D js es6) */
               },
               BODY2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Object2",
+                defaultValue: 'Object2',
               },
               X2: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -467,29 +469,29 @@ while keeping general compatability. (made with box2D js es6) */
           },
           { blockType: Scratch.BlockType.LABEL, text: "Modify joints" }, // ------ Modify joints ---
           {
-            opcode: "destroyJoint",
+            opcode: 'destroyJoint',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Destroy Joint [JOINTID]",
+            text: 'Destroy Joint [JOINTID]',
             arguments: {
               JOINTID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Joint ID",
+                defaultValue: 'Joint ID',
               },
             },
           },
           {
-            opcode: "setJointAttr",
+            opcode: 'setJointAttr',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set Joint [JOINTATTR] of joint [JOINTID] to [VALUE]",
+            text: 'Set [JOINTATTR] of joint [JOINTID] to [VALUE]',
             arguments: {
               JOINTATTR: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "JointAttr",
-                defaultValue: "Motor On",
+                menu: 'JointAttr',
+                defaultValue: 'Motor On',
               },
               JOINTID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Joint ID",
+                defaultValue: 'Joint ID',
               },
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -498,13 +500,13 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "setJointTarget",
+            opcode: 'setJointTarget',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set Mouse Joint Target [JOINTID] to x: [X]  y: [Y]",
+            text: 'Set Mouse Joint Target [JOINTID] to x: [X]  y: [Y]',
             arguments: {
               JOINTID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Joint ID",
+                defaultValue: 'Joint ID',
               },
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -517,25 +519,25 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "getJointAttr",
+            opcode: 'getJointAttr',
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get [JOINTATTRREAD] of joint: [JOINTID]",
+            text: 'Get [JOINTATTRREAD] of joint: [JOINTID]',
             arguments: {
               JOINTATTRREAD: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "JointAttrRead",
+                menu: 'JointAttrRead',
               },
               JOINTID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Joint ID",
+                defaultValue: 'Joint ID',
               },
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "World functions" }, // --- World functions --
           {
-            opcode: "init",
+            opcode: 'init',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Make World, scale 1m: [SCALE]  gravity: [GRAVITY]  scene: [SCENE]",
+            text: 'Make World, scale 1m: [SCALE]  gravity: [GRAVITY]  scene: [SCENE]',
             arguments: {
               SCALE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -547,15 +549,15 @@ while keeping general compatability. (made with box2D js es6) */
               },
               SCENE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "sceneType",
-                defaultValue: "closed stage",
+                menu: 'sceneType',
+                defaultValue: 'closed stage',
               },
             },
           },
           {
-            opcode: "physoptions",
+            opcode: 'physoptions',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set physics Position Iterations: [POS] Velocity Iterations: [VEL] Continuous Physics: [CONPHYS] Warm Starting: [WARMSTART]",
+            text: 'Set physics Position Iterations: [POS] Velocity Iterations: [VEL] Continuous Physics: [CONPHYS] Warm Starting: [WARMSTART]',
             arguments: {
               POS: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -576,14 +578,14 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "getsimspeed",
+            opcode: 'getsimspeed',
             blockType: Scratch.BlockType.REPORTER,
-            text: "Slow motion",
+            text: 'Slow motion',
           },
           {
-            opcode: "setsimspeed",
+            opcode: 'setsimspeed',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set slow motion to [VALUE]",
+            text: 'Set slow motion to [VALUE]',
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -592,21 +594,121 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "stepSimulation",
+            opcode: 'stepSimulation',
             blockType: Scratch.BlockType.COMMAND,
-            text: "Step Simulation",
+            text: 'Step Simulation',
           },
+          { blockType: Scratch.BlockType.LABEL, text: "Math functions" }, // ---- Math functions -----
+          {
+            opcode: 'rotatePoint',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Get [PART] from point x [X] y [Y] rotated by [ANGLE]',
+            arguments: {
+              X: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              Y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              ANGLE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              PART: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'xy',
+                defaultValue: 'x',
+              },
+            },
+          },
+          {
+            opcode: 'rotationFromPoint',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Get rotation from x [x1] y [y1] to x [x2] y [y2]',
+            arguments: {
+              x1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              y1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              x2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              y2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+          },
+          {
+            opcode: "magnitudeOfPoint",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Magnitude of x [a1] y [a2]",
+            arguments: {
+              a1: { 
+                type: Scratch.ArgumentType.STRING, 
+                defaultValue: "0" 
+              },
+              a2: { 
+                type: Scratch.ArgumentType.STRING, 
+                defaultValue: "0" 
+              },
+            },
+          },
+          {
+            opcode: "distanceOfPoint",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Distance between x [a1] y [a2] and x [b1] y [b2]",
+            arguments: {
+              a1: { 
+                type: Scratch.ArgumentType.STRING, 
+                defaultValue: "0" 
+              },
+              a2: { 
+                type: Scratch.ArgumentType.STRING, 
+                defaultValue: "0" 
+              },
+              b1: { 
+                type: Scratch.ArgumentType.STRING, 
+                defaultValue: "0" 
+              },
+              b2: { 
+                type: Scratch.ArgumentType.STRING, 
+                defaultValue: "0" 
+              },
+            },
+          },
+
+          
           {
             hideFromPalette: !physdebugmode && !wipblocks,
             blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
-            text: "Upcoming blocks (can brake projects)",
+            text: "Upcoming blocks (can brake projects)"
           },
           {
-            opcode: "get_debug",
+            opcode: 'ignore',
+            hideFromPalette: !physdebugmode && !wipblocks,
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Ignore [VALUE]',
+            arguments: {
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "",
+              },
+            },
+          },
+          {
+            opcode: 'get_debug',
             hideFromPalette: !physdebugmode && !wipblocks,
             blockType: Scratch.BlockType.REPORTER,
             blockShape: this.squaretype,
-            text: "Get debug [VAL]",
+            text: 'Get debug [VAL]',
             arguments: {
               VAL: {
                 type: Scratch.ArgumentType.STRING,
@@ -615,10 +717,10 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
           {
-            opcode: "ispoly",
+            opcode: 'ispoly',
             hideFromPalette: !physdebugmode && !wipblocks,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Is [POINTS] a polygon?",
+            text: 'Is [POINTS] a polygon?',
             arguments: {
               POINTS: {
                 type: Scratch.ArgumentType.STRING,
@@ -628,54 +730,37 @@ while keeping general compatability. (made with box2D js es6) */
           },
         ],
         menus: {
-          sceneType: ["boxed stage", "closed stage", "opened stage", "nothing"],
-          BodyTypePK: ["dynamic", "static"],
-          bodyAttr: ["damping", "rotational damping"],
-          bodyAttrRead: [
-            "x",
-            "y",
-            "Xvel",
-            "Yvel",
-            "Dvel",
-            "direction",
-            "awake",
-          ],
-          ForceType: ["Impulse", "World Impulse"],
-          AngForceType: ["Impulse"],
-          JointType: ["Rotating", "Spring", "Weld", "Slider", "Mouse"],
-          JointAttr: [
-            "Motor On",
-            "Motor Speed",
-            "Max Torque",
-            "Limits On",
-            "Lower Limit",
-            "Upper Limit",
-          ],
-          JointAttrRead: [
-            "Angle",
-            "Speed",
-            "Motor Torque",
-            "Reaction Torque",
-            "Tension",
-          ],
+          sceneType: ['boxed stage', 'closed stage', 'opened stage', 'nothing'],
+          BodyTypePK: ['dynamic', 'static'],
+          BodyTypePK2: ['dynamic', 'static', 'any'],
+          bodyAttr: ['damping', 'rotational damping'],
+          bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake'],
+          ForceType: ['Impulse', 'World Impulse'],
+          AngForceType: ['Impulse'],
+          JointType: ['Rotating', 'Spring', 'Weld', 'Slider', 'Mouse'],
+          JointAttr: ['Motor On', 'Motor Speed', 'Max Torque', 'Limits On', 'Lower Limit', 'Upper Limit'],
+          JointAttrRead: ['Angle', 'Speed', 'Motor Torque', 'Reaction Torque', 'Tension'],
+          xyp: ['x', 'y', 'point'],
+          xy: ['x', 'y'],
         },
       };
     }
 
+    ignore() { }
     get_debug(args) {
-      try {
-        args = args.VAL;
-      } catch (error) {
-        args = args;
-      }
+      try { args = args.VAL } catch (error) { args = args; }
       if (args == "version") {
         return b2Dversion;
       } else if (args == "lib") {
-        return "Box2D JS es6 (a port of Box2D flash)";
+        return "Box2D JS es6 (Uli Hecht's port of Box2D flash)";
       } else if (args === "maker") {
         return "pooiod7";
+      } else if (args === "base") {
+        return "Box2D Physics by griffpatch for ScratchX (Scratch 2.0)";
+      } else if (args === "docs") {
+        return this.docs;
       } else {
-        return '["version", "lib", "maker"]';
+        return '["version", "lib", "maker", "base", "docs"]';
       }
     }
 
@@ -695,22 +780,22 @@ while keeping general compatability. (made with box2D js es6) */
       b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef;
 
       b2Dworld = new b2World(
-        new b2Vec2(0, args.GRAVITY), // args.GRAVITY (10)
-        true, // allow sleep
+        new b2Vec2(0, args.GRAVITY) // args.GRAVITY (10)
+        , true                     // allow sleep
       );
 
       b2Dzoom = args.SCALE;
 
-      fixDef = new b2FixtureDef();
-      fixDef.density = 1.0; // 1.0
-      fixDef.friction = 0.5; // 0.5
-      fixDef.restitution = 0.2; // 0.2
+      fixDef = new b2FixtureDef;
+      fixDef.density = 1.0;		    // 1.0
+      fixDef.friction = 0.5;		 // 0.5
+      fixDef.restitution = 0.2;	// 0.2
 
-      bodyDef = new b2BodyDef();
+      bodyDef = new b2BodyDef;
 
-      if (args.SCENE == "closed stage" || args.SCENE == "stage") {
+      if (args.SCENE == 'closed stage' || args.SCENE == 'stage') {
         bodyDef.type = b2Body.b2_staticBody;
-        fixDef.shape = new b2PolygonShape();
+        fixDef.shape = new b2PolygonShape;
         fixDef.shape.SetAsBox(250 / b2Dzoom, 10 / b2Dzoom);
         bodyDef.position.Set(0, -190 / b2Dzoom);
         b2Dworld.CreateBody(bodyDef).CreateFixture(fixDef);
@@ -721,15 +806,15 @@ while keeping general compatability. (made with box2D js es6) */
         b2Dworld.CreateBody(bodyDef).CreateFixture(fixDef);
         bodyDef.position.Set(250 / b2Dzoom, 540 / b2Dzoom);
         b2Dworld.CreateBody(bodyDef).CreateFixture(fixDef);
-      } else if (args.SCENE == "opened stage") {
+      } else if (args.SCENE == 'opened stage') {
         bodyDef.type = b2Body.b2_staticBody;
-        fixDef.shape = new b2PolygonShape();
+        fixDef.shape = new b2PolygonShape;
         fixDef.shape.SetAsBox(9999999, 10 / b2Dzoom);
         bodyDef.position.Set(0, -190 / b2Dzoom);
         b2Dworld.CreateBody(bodyDef).CreateFixture(fixDef);
-      } else if (args.SCENE == "boxed stage") {
+      } else if (args.SCENE == 'boxed stage') {
         bodyDef.type = b2Body.b2_staticBody;
-        fixDef.shape = new b2PolygonShape();
+        fixDef.shape = new b2PolygonShape;
         fixDef.shape.SetAsBox(250 / b2Dzoom, 10 / b2Dzoom);
         bodyDef.position.Set(0, -190 / b2Dzoom);
         b2Dworld.CreateBody(bodyDef).CreateFixture(fixDef);
@@ -757,6 +842,45 @@ while keeping general compatability. (made with box2D js es6) */
       bodyDef.type = b2Body.b2_dynamicBody;
     }
 
+    rotatePoint(args) {
+      var radians = args.ANGLE * Math.PI / 180;
+      var cos = Math.cos(radians);
+      var sin = Math.sin(radians);
+      var nx = (cos * args.X) - (sin * args.Y);
+      var ny = (sin * args.X) + (cos * args.Y);
+      if (args.PART == "x") {
+        return nx;
+      } else if (args.PART == "y") {
+        return ny;
+      } else {
+        return '["'+nx+'", "'+ny+'"]';
+      }
+    }
+
+    magnitudeOfPoint(args) {
+      if (args) {
+        return Math.sqrt(Math.pow(args.a1, 2) + Math.pow(args.a2, 2));
+      }
+      return 0;
+    }
+    
+    distanceOfPoint(args) {
+      if (args.a1 && args.a2 && args.b1 && args.b2) {
+        return Math.sqrt(Math.pow(args.a1 - args.b1, 2) + Math.pow(args.a2 - args.b2, 2));
+      }
+      return 0;
+    }
+
+    rotationFromPoint({ x1, x2, y1, y2}) {
+      let angleRad = Math.atan2(y2 - y1, x2 - x1);
+      let angleDeg = angleRad * (180 / Math.PI);
+      let Angle = 90 - angleDeg;
+      if (Angle > 180) {
+        Angle -= 360;
+      }
+      return Angle;
+    }
+
     setJointTarget(args) {
       var joint = joints[args.JOINTID];
       if (joint) {
@@ -766,7 +890,7 @@ while keeping general compatability. (made with box2D js es6) */
 
     clearvel(args) {
       var body = bodies[args.NAME];
-      if (!body) return "";
+      if (!body) return '';
 
       body.SetLinearVelocity(new b2Vec2(0, 0));
       body.SetAngularVelocity(0);
@@ -774,11 +898,11 @@ while keeping general compatability. (made with box2D js es6) */
 
     changevel(args) {
       var body = bodies[args.NAME];
-      if (!body) return "";
+      if (!body) return '';
 
       body.SetLinearVelocity(new b2Vec2(args.X, args.Y));
       body.SetAngularVelocity(args.DIR);
-      body.SetAwake(true);
+      body.SetAwake(true)
     }
 
     setBodyAttrs(args) {
@@ -787,32 +911,29 @@ while keeping general compatability. (made with box2D js es6) */
       var fric = args.FRICTION;
       var rest = args.BOUNCE;
 
-      bodyDef.type =
-        stat === "static" ? b2Body.b2_staticBody : b2Body.b2_dynamicBody;
-      fixDef.density = dens; // 1.0
-      fixDef.friction = fric; // 0.5
-      fixDef.restitution = rest; // 0.2
+      bodyDef.type = stat === 'static' ? b2Body.b2_staticBody : b2Body.b2_dynamicBody;
+      fixDef.density = dens;		    // 1.0
+      fixDef.friction = fric;		   // 0.5
+      fixDef.restitution = rest;	// 0.2
     }
 
     defineCircle(args) {
-      fixDef.shape = new b2CircleShape();
+      fixDef.shape = new b2CircleShape;
       fixDef.shape.SetRadius(args.SIZE / 2 / b2Dzoom);
     }
 
     defineRect(args) {
-      fixDef.shape = new b2PolygonShape();
-      fixDef.shape.SetAsBox(
-        args.WIDTH / 2 / b2Dzoom,
-        args.HEIGHT / 2 / b2Dzoom,
-      );
+      fixDef.shape = new b2PolygonShape;
+      fixDef.shape.SetAsBox(args.WIDTH / 2 / b2Dzoom, args.HEIGHT / 2 / b2Dzoom);
     }
 
-    difineCostume(args, util) {
-      const target = util.target;
-      if (target.isStage) {
-        return;
-      }
-      try {
+    difineCostume(_, util) {
+      try { // does not work with hidden sprites
+        const target = util.target;
+        if (target.isStage) {
+          return;
+        }
+        
         const r = this.runtime.renderer;
         const drawable = r._allDrawables[target.drawableID];
 
@@ -842,14 +963,8 @@ while keeping general compatability. (made with box2D js es6) */
 
         let prev = null;
         for (let i = hullPoints.length - 1; i >= 0; i--) {
-          const b2Vec = new b2Vec2(
-            hullPoints[i].x / b2Dzoom,
-            hullPoints[i].y / b2Dzoom,
-          );
-          if (
-            prev !== null &&
-            b2Math.SubtractVV(b2Vec, prev).LengthSquared() > Number.MIN_VALUE
-          ) {
+          const b2Vec = new b2Vec2(hullPoints[i].x / b2Dzoom, hullPoints[i].y / b2Dzoom);
+          if (prev !== null && b2Math.SubtractVV(b2Vec, prev).LengthSquared() > Number.MIN_VALUE) {
             vertices.push(b2Vec);
           }
           prev = b2Vec;
@@ -871,19 +986,17 @@ while keeping general compatability. (made with box2D js es6) */
     }
 
     definePoly(args) {
-      fixDef.shape = new b2PolygonShape();
+      fixDef.shape = new b2PolygonShape;
       var points = args.POINTS;
 
-      // this feature does not work yet :(
-      if (points.charAt(0) === "<") {
-        console.warn(
-          "svg object conversion is not yet supported, use [Define costume]",
-        );
+      // this feature does not work yet :( 
+      if (points.charAt(0) === '<') {
+        console.warn("svg object conversion is not yet supported, use [Define costume]");
         //points = this.svgtopoints(points);
       }
 
       try {
-        var pts = points.split(" ");
+        var pts = points.split(' ');
         for (var i = 0; i < pts.length; i++) {
           if (pts[i].length == 0) {
             pts.splice(i, 1);
@@ -893,20 +1006,15 @@ while keeping general compatability. (made with box2D js es6) */
 
         var vertices = [];
         for (var i = pts.length; i > 0; i -= 2) {
-          vertices.push(
-            new b2Vec2(
-              parseFloat(pts[i - 2]) / b2Dzoom,
-              parseFloat(pts[i - 1]) / b2Dzoom,
-            ),
-          );
+          vertices.push(new b2Vec2(parseFloat(pts[i - 2]) / b2Dzoom, parseFloat(pts[i - 1]) / b2Dzoom));
         }
         fixDef.shape.SetAsArray(vertices);
         return true;
       } catch (error) {
-        fixDef.shape = new b2CircleShape();
+        fixDef.shape = new b2CircleShape;
         fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
         console.error("Incorrect polly format", points);
-        console.warn('Defaulting to "circle 100"');
+        console.warn("Defaulting to \"circle 100\"");
         return false;
       }
     }
@@ -935,7 +1043,7 @@ while keeping general compatability. (made with box2D js es6) */
         noCollideSeq = -noCollideSeq;
       }
       noCollideSeq -= 1;
-      var bids = args.NAMES.split(" ");
+      var bids = args.NAMES.split(' ');
       for (var i = 0; i < bids.length; i++) {
         var bid = bids[i];
         if (bid.length > 0) {
@@ -946,7 +1054,7 @@ while keeping general compatability. (made with box2D js es6) */
             while (fix) {
               var fdata = fix.GetFilterData();
               fdata.groupIndex = noCollideSeq;
-              console.log(noCollideSeq);
+              console.log(noCollideSeq)
               fix.SetFilterData(fdata);
               console.log(fix);
               fix = fix.GetNext();
@@ -961,7 +1069,7 @@ while keeping general compatability. (made with box2D js es6) */
         noCollideSeq = -noCollideSeq;
       }
       noCollideSeq += 1;
-      var bids = args.NAMES.split(" ");
+      var bids = args.NAMES.split(' ');
       for (var i = 0; i < bids.length; i++) {
         var bid = bids[i];
         if (bid.length > 0) {
@@ -972,12 +1080,34 @@ while keeping general compatability. (made with box2D js es6) */
             while (fix) {
               var fdata = fix.GetFilterData();
               fdata.groupIndex = noCollideSeq;
-              console.log(noCollideSeq);
+              console.log(noCollideSeq)
               fix.SetFilterData(fdata);
               console.log(fix);
               fix = fix.GetNext();
             }
           }
+        }
+      }
+    }
+
+    getobjects() {
+      var bodynames = [];
+      for (var bodyName in bodies) {
+        if (bodies.hasOwnProperty(bodyName)) {
+          if (bodynames.length > 0) {
+            bodynames.push(" " + bodyName);
+          } else {
+            bodynames.push(bodyName);
+          }
+        }
+      }
+      return Scratch.Cast.toString(bodynames);
+    }
+
+    destroyBodys() {
+      for (var bodyName in bodies) {
+        if (bodies.hasOwnProperty(bodyName)) {
+          this.destroyBody({NAME:bodyName});
         }
       }
     }
@@ -990,19 +1120,15 @@ while keeping general compatability. (made with box2D js es6) */
     }
 
     setBodyAttr(args) {
-      var bds = args.NAME.split(" ");
+      var bds = args.NAME.split(' ');
       for (var i = 0; i < bds.length; i++) {
         var id = bds[i];
         if (id.length > 0) {
           var body = bodies[id];
           if (body) {
             switch (args.BODYATTR) {
-              case "damping":
-                body.SetLinearDamping(args.VALUE);
-                break;
-              case "rotational damping":
-                body.GetAngularDamping(args.VALUE);
-                break;
+              case 'damping': body.SetLinearDamping(args.VALUE); break;
+              case 'rotational damping': body.GetAngularDamping(args.VALUE); break;
             }
           }
         }
@@ -1015,10 +1141,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       while (contacts) {
         if (contacts.contact.IsTouching()) {
-          var otherFixture =
-            contacts.contact.GetFixtureA() === obj
-              ? contacts.contact.GetFixtureB()
-              : contacts.contact.GetFixtureA();
+          var otherFixture = contacts.contact.GetFixtureA() === obj ? contacts.contact.GetFixtureB() : contacts.contact.GetFixtureA();
           var otherBody = otherFixture.GetBody();
           var otherUserData = otherBody.GetUserData();
 
@@ -1035,83 +1158,102 @@ while keeping general compatability. (made with box2D js es6) */
 
     getBodyAttr(args) {
       var body = bodies[args.NAME];
-      if (!body) return "";
+      if (!body) return '';
       switch (args.BODYATTRREAD) {
-        case "x":
-          return body.GetPosition().x * b2Dzoom;
-        case "y":
-          return body.GetPosition().y * b2Dzoom;
-        case "direction":
-          return 90 - body.GetAngle() / toRad;
-        case "Xvel":
-          return body.GetLinearVelocity().x;
-        case "Yvel":
-          return body.GetLinearVelocity().y;
-        case "Dvel":
-          return body.GetAngularVelocity();
-        case "awake":
-          return body.IsAwake() ? 1 : 0;
+        case 'x': return body.GetPosition().x * b2Dzoom;
+        case 'y': return body.GetPosition().y * b2Dzoom;
+        case 'direction': return 90 - (body.GetAngle() / toRad);
+        case 'Xvel': return body.GetLinearVelocity().x;
+        case 'Yvel': return body.GetLinearVelocity().y;
+        case 'Dvel': return body.GetAngularVelocity();
+        case 'awake': return body.IsAwake() ? 1 : 0;
 
-        case "Tension":
+        case 'Tension':
           // Assume that body is a b2Body object that represents the object
           var force = 0; // Initialize the force to 0
           var contact = body.GetContactList(); // Get the contact list
-          while (contact) {
-            // Loop through the contacts
+          while (contact) { // Loop through the contacts
             var impulse = contact.impulse; // Get the impulse object
             var normalImpulse = impulse.normalImpulses[0]; // Get the normal impulse
             var tangentImpulse = impulse.tangentImpulses[0]; // Get the tangent impulse
-            var impulseMagnitude = Math.sqrt(
-              normalImpulse * normalImpulse + tangentImpulse * tangentImpulse,
-            ); // Calculate the impulse magnitude
+            var impulseMagnitude = Math.sqrt(normalImpulse * normalImpulse + tangentImpulse * tangentImpulse); // Calculate the impulse magnitude
             force += impulseMagnitude; // Add the impulse magnitude to the force
             contact = contact.next; // Move to the next contact
           }
-          console.log(
-            "The force applied to the object by other objects is " +
-              force +
-              " N",
-          ); // Print the result
+          console.log("The force applied to the object by other objects is " + force + " N"); // Print the result
           return force;
 
         //case 'touching': return JSON.stringify(this.getTouchingObjectNames(body));
       }
-      return "";
+      return '';
     }
 
     moveto(args) {
       var body = bodies[args.NAME];
-      if (!body) return "";
+      if (!body) return '';
 
       var desiredPosition = new b2Vec2(args.X / b2Dzoom, args.Y / b2Dzoom);
       body.SetPosition(desiredPosition);
-      body.SetAwake(true);
+      body.SetAwake(true)
     }
 
     rotateto(args) {
       var body = bodies[args.NAME];
-      if (!body) return "";
+      if (!body) return '';
 
       var desiredRotation = (180 - args.ROT - 90) * toRad;
       body.SetAngle(desiredRotation);
-      body.SetAwake(true);
+      body.SetAwake(true)
     }
+
 
     getBodyCB(fixture) {
       if (fixture.GetBody().GetType() != b2Body.b2_staticBody) {
-        if (
-          fixture
-            .GetShape()
-            .TestPoint(fixture.GetBody().GetTransform(), mousePVec)
-        ) {
+        if (fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), mousePVec)) {
           selectedBody = fixture.GetBody();
           return false;
         }
       }
       return true;
-    }
+    };
 
     getBodyIDAt(args) {
+      if (args.type == "static") {
+        return this.getBodyIDAtstatic(args);
+      } else if (args.type == "dynamic") {
+        return this.getBodyIDAtdynamic(args);
+      } else {
+        return this.getBodyIDAtany(args);
+      }
+    }
+
+    getBodyIDAtany(args) {
+      var x = args.X;
+      var y = args.Y;
+
+      var mousePVec = new b2Vec2(x / b2Dzoom, y / b2Dzoom);
+      var aabb = new b2AABB();
+      aabb.lowerBound.Set(mousePVec.x - 0.001, mousePVec.y - 0.001);
+      aabb.upperBound.Set(mousePVec.x + 0.001, mousePVec.y + 0.001);
+
+      selectedBody = null;
+
+      // Define the callback to check fixtures within the AABB
+      var getStaticBodyCB = function(fixture) {
+        var body = fixture.GetBody();
+        if (fixture.TestPoint(mousePVec)) {  // Check if the point is within the fixture
+          selectedBody = body;
+          return false; // Stop querying once a hit is found
+        }
+        return true; // Continue querying other fixtures
+      };
+
+      b2Dworld.QueryAABB(getStaticBodyCB, aabb);
+
+      return selectedBody ? selectedBody.uid : '';
+    }
+
+    getBodyIDAtdynamic(args) {
       var x = args.X;
       var y = args.Y;
 
@@ -1124,18 +1266,46 @@ while keeping general compatability. (made with box2D js es6) */
       selectedBody = null;
       b2Dworld.QueryAABB(this.getBodyCB, aabb);
 
-      return selectedBody ? selectedBody.uid : "";
+      return selectedBody ? selectedBody.uid : '';
+    }
+
+    getBodyIDAtstatic(args) {
+      var x = args.X;
+      var y = args.Y;
+
+      var mousePVec = new b2Vec2(x / b2Dzoom, y / b2Dzoom);
+      var aabb = new b2AABB();
+      aabb.lowerBound.Set(mousePVec.x - 0.001, mousePVec.y - 0.001);
+      aabb.upperBound.Set(mousePVec.x + 0.001, mousePVec.y + 0.001);
+
+      selectedBody = null;
+
+      var getStaticBodyCB = function(fixture) {
+        var body = fixture.GetBody();
+        if (body.GetType() === b2Body.b2_staticBody) {
+          if (fixture.TestPoint(mousePVec)) {
+            selectedBody = body;
+            return false;
+          }
+        }
+        return true;
+      };
+
+      b2Dworld.QueryAABB(getStaticBodyCB, aabb);
+
+      return selectedBody ? selectedBody.uid : '';
     }
 
     applyAngForceToBody(args) {
-      var ftype = /*args.ANGFORCETYPE*/ "Impulse";
+      var ftype = /*args.ANGFORCETYPE*/ 'Impulse';
       var bodyID = args.NAME;
       var pow = args.POWER;
 
       var body = bodies[bodyID];
-      if (!body) return;
+      if (!body)
+        return;
 
-      if (ftype === "Impulse") {
+      if (ftype === 'Impulse') {
         body.ApplyTorque(-pow);
       }
     }
@@ -1148,20 +1318,15 @@ while keeping general compatability. (made with box2D js es6) */
       var dir = args.DIR;
 
       var body = bodies[args.NAME];
-      if (!body) return;
+      if (!body)
+        return;
 
       dir = (90 - dir) * toRad;
 
-      if (ftype === "Impulse") {
-        body.ApplyImpulse(
-          { x: pow * Math.cos(dir), y: pow * Math.sin(dir) },
-          body.GetWorldPoint({ x: x / b2Dzoom, y: y / b2Dzoom }),
-        );
-      } else if (ftype === "World Impulse") {
-        body.ApplyForce(
-          { x: pow * Math.cos(dir), y: pow * Math.sin(dir) },
-          { x: x / b2Dzoom, y: y / b2Dzoom },
-        );
+      if (ftype === 'Impulse') {
+        body.ApplyImpulse({ x: pow * Math.cos(dir), y: pow * Math.sin(dir) }, body.GetWorldPoint({ x: x / b2Dzoom, y: y / b2Dzoom }));
+      } else if (ftype === 'World Impulse') {
+        body.ApplyForce({ x: pow * Math.cos(dir), y: pow * Math.sin(dir) }, { x: x / b2Dzoom, y: y / b2Dzoom });
       }
     }
 
@@ -1176,7 +1341,7 @@ while keeping general compatability. (made with box2D js es6) */
     }
 
     definePrismatic(args) {
-      var directionRadians = args.DIR - (90 * Math.PI) / 180;
+      var directionRadians = args.DIR - 90 * Math.PI / 180;
       prb2djaxisX = Math.cos(directionRadians);
       prb2djaxisY = Math.sin(directionRadians);
       prb2dju = args.HIGH;
@@ -1189,24 +1354,24 @@ while keeping general compatability. (made with box2D js es6) */
       var bodyID = args.BODY1;
       var x = args.X1;
       var y = args.Y1;
-      var bodyID2 = args.BODY2;
+      var bodyID2 = args.BODY2
       var x2 = args.X2;
       var y2 = args.Y2;
 
       if (jName.length > 0) this.destroyJoint(jName);
 
-      if (bodyID == "") bodyID = null;
-      if (bodyID2 == "") bodyID2 = null;
-      if (!bodyID && !bodyID2) return "";
+      if (bodyID == '') bodyID = null;
+      if (bodyID2 == '') bodyID2 = null;
+      if (!bodyID && !bodyID2) return '';
 
       var body = bodyID ? bodies[bodyID] : b2Dworld.GetGroundBody();
       var body2 = bodyID2 ? bodies[bodyID2] : b2Dworld.GetGroundBody();
 
-      if (!body || !body2) return "";
+      if (!body || !body2) return '';
 
       var md;
       switch (typ) {
-        case "Spring":
+        case 'Spring':
           md = new Box2D.Dynamics.Joints.b2DistanceJointDef();
           md.length = defSpring.len;
           md.dampingRatio = defSpring.damp;
@@ -1217,7 +1382,7 @@ while keeping general compatability. (made with box2D js es6) */
           md.localAnchorB = { x: x2 / b2Dzoom, y: y2 / b2Dzoom };
           break;
 
-        case "Rotating":
+        case 'Rotating':
           md = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
           md.bodyA = body;
           md.bodyB = body2;
@@ -1225,14 +1390,9 @@ while keeping general compatability. (made with box2D js es6) */
           md.localAnchorB = { x: x2 / b2Dzoom, y: y2 / b2Dzoom };
           break;
 
-        case "Slider":
+        case 'Slider':
           md = new Box2D.Dynamics.Joints.b2PrismaticJointDef();
-          md.Initialize(
-            body,
-            body2,
-            body.GetWorldCenter(),
-            new b2Vec2(prb2djaxisX, prb2djaxisY),
-          );
+          md.Initialize(body, body2, body.GetWorldCenter(), new b2Vec2(prb2djaxisX, prb2djaxisY));
           md.enableLimit = true;
           md.lowerTranslation = prb2djl;
           md.upperTranslation = prb2dju;
@@ -1242,7 +1402,7 @@ while keeping general compatability. (made with box2D js es6) */
           md.localAnchorB = { x: x2 / b2Dzoom, y: y2 / b2Dzoom };
           break;
 
-        case "Weld":
+        case 'Weld':
           md = new Box2D.Dynamics.Joints.b2WeldJointDef();
           md.bodyA = body;
           md.bodyB = body2;
@@ -1250,9 +1410,9 @@ while keeping general compatability. (made with box2D js es6) */
           md.localAnchorB = { x: x2 / b2Dzoom, y: y2 / b2Dzoom };
           break;
 
-        case "Mouse":
+        case 'Mouse':
           var md = new b2MouseJointDef();
-          if (bodyID == "") {
+          if (bodyID == '') {
             md.bodyB = body2;
             md.target.Set(x2 / b2Dzoom, y2 / b2Dzoom);
           } else {
@@ -1275,7 +1435,7 @@ while keeping general compatability. (made with box2D js es6) */
         body2.SetAwake(true);
       }
 
-      if (jName.length == 0) jName = "_" + ++ujid_seq;
+      if (jName.length == 0) jName = '_' + (++ujid_seq);
       joints[jName] = joint;
     }
 
@@ -1293,49 +1453,25 @@ while keeping general compatability. (made with box2D js es6) */
       var val = args.VALUE;
 
       // JointAttr: ['Motor On','Motor Speed','Max Torque', 'Limits On','Lower Limit','Upper Limit'],
-      var jointids = jointID.split(" ");
+      var jointids = jointID.split(' ');
       for (var i = 0; i < jointids.length; i++) {
         var joint = joints[jointids[i]];
         if (joint) {
           try {
             switch (attr) {
-              case "Motor On":
-                joint.EnableMotor(val > 0);
-                break;
-              case "Motor Speed":
-                joint.SetMotorSpeed(val);
-                break;
-              case "Max Torque":
-                joint.SetMaxMotorTorque(val);
-                break;
+              case 'Motor On': joint.EnableMotor(val > 0); break;
+              case 'Motor Speed': joint.SetMotorSpeed(val); break;
+              case 'Max Torque': joint.SetMaxMotorTorque(val); break;
 
-              case "Limits On":
-                joint.EnableLimit(val > 0);
-                break;
+              case 'Limits On': joint.EnableLimit(val > 0); break;
 
-              case "Lower Limit":
-                joint.SetLimits(
-                  joint.GetJointAngle() + val * toRad,
-                  joint.GetUpperLimit(),
-                );
-                break;
-              case "Upper Limit":
-                joint.SetLimits(
-                  joint.GetLowerLimit(),
-                  joint.GetJointAngle() + val * toRad,
-                );
-                break;
+              case 'Lower Limit': joint.SetLimits(joint.GetJointAngle() + val * toRad, joint.GetUpperLimit()); break;
+              case 'Upper Limit': joint.SetLimits(joint.GetLowerLimit(), joint.GetJointAngle() + val * toRad); break;
             }
           } catch (error) {
             switch (attr) {
-              case "Lower Limit":
-                joint.GetLowerLimit().Set(new b2Vec2(val, val));
-                joint.SetLimits();
-                break;
-              case "Upper Limit":
-                joint.GetUpperLimit().Set(new b2Vec2(val, val));
-                joint.SetLimits();
-                break;
+              case 'Lower Limit': joint.GetLowerLimit().Set(new b2Vec2(val, val)); joint.SetLimits(); break;
+              case 'Upper Limit': joint.GetUpperLimit().Set(new b2Vec2(val, val)); joint.SetLimits(); break;
             }
           }
         }
@@ -1351,16 +1487,12 @@ while keeping general compatability. (made with box2D js es6) */
       if (joint) {
         try {
           switch (attr) {
-            case "Angle":
-              return joint.GetJointAngle() / toRad;
-            case "Speed":
-              return joint.GetJointSpeed();
-            case "Motor Torque":
-              return joint.GetMotorTorque();
-            case "Reaction Torque":
-              return joint.GetReactionTorque();
+            case 'Angle': return joint.GetJointAngle() / toRad;
+            case 'Speed': return joint.GetJointSpeed();
+            case 'Motor Torque': return joint.GetMotorTorque();
+            case 'Reaction Torque': return joint.GetReactionTorque();
 
-            case "Tension":
+            case 'Tension':
               var force = joint.GetReactionForce(1);
               var tension = Math.sqrt(force.x * force.x + force.y * force.y);
               if (!joint.GetBodyA().IsAwake() && !joint.GetBodyB().IsAwake()) {
@@ -1369,13 +1501,11 @@ while keeping general compatability. (made with box2D js es6) */
               return Math.floor(tension * 100) / 10;
 
             // Sliders only
-            case "Lower Limit":
-              return joint.GetLowerLimit();
-            case "Upper Limit":
-              return joint.GetUpperLimit();
+            case 'Lower Limit': return joint.GetLowerLimit();
+            case 'Upper Limit': return joint.GetUpperLimit();
           }
         } catch (error) {
-          return "";
+          return '';
         }
       }
     }
@@ -1403,9 +1533,7 @@ while keeping general compatability. (made with box2D js es6) */
 
     stepSimulation() {
       var secondsimspeed = Math.abs(simspeed + 29);
-      if (secondsimspeed == 0) {
-        secondsimspeed = 1;
-      }
+      if (secondsimspeed == 0) { secondsimspeed = 1 };
 
       b2Dworld.Step(1 / secondsimspeed, veliterations, positerations);
       b2Dworld.ClearForces();
@@ -1430,15 +1558,16 @@ while keeping general compatability. (made with box2D js es6) */
     * misrepresented as being the original software.
     * 3. This notice may not be removed or altered from any source distribution.
     | /// https://www.npmjs.com/package/box2d-es6 (the lib by itself)
-    */ // Prepare for 90% of this extensions code: the box2D_es6 lib.
+    */// Prepare for 90% of this extensions code: the box2D_es6 lib.
 
-  ("use strict");
+  'use strict';
 
   let Box2D = {};
 
-  ((a2j, undefined) => {
+  (((a2j, undefined) => {
+
     a2j.generateCallback = function generateCallback(context, cb) {
-      return function () {
+      return function() {
         cb.apply(context, arguments);
       };
     };
@@ -1446,45 +1575,36 @@ while keeping general compatability. (made with box2D js es6) */
     a2j.NVector = function NVector(length) {
       if (length === undefined) length = 0;
       const tmp = new Array(length || 0);
-      for (let i = 0; i < length; ++i) {
-        tmp[i] = 0;
-      }
+      for (let i = 0; i < length; ++i) { tmp[i] = 0; }
       return tmp;
     };
 
     a2j.is = function is(o1, o2) {
       if (o1 === null) return false;
-      if (o2 instanceof Function && o1 instanceof o2) return true;
-      if (
-        o1.constructor.__implements != undefined &&
-        o1.constructor.__implements[o2]
-      )
-        return true;
+      if ((o2 instanceof Function) && (o1 instanceof o2)) return true;
+      if ((o1.constructor.__implements != undefined) && (o1.constructor.__implements[o2])) return true;
       return false;
     };
 
-    a2j.parseUInt = (v) => Math.abs(parseInt(v));
-  })(Box2D);
+    a2j.parseUInt = v => Math.abs(parseInt(v));
+  }))(Box2D);
 
   // #TODO remove assignments from global namespace
   const Vector = Array;
   const Vector_a2j_Number = Box2D.NVector;
   // package structure
-  if (typeof Box2D === "undefined") Box2D = {};
-  if (typeof Box2D.Collision === "undefined") Box2D.Collision = {};
-  if (typeof Box2D.Collision.Shapes === "undefined")
-    Box2D.Collision.Shapes = {};
-  if (typeof Box2D.Common === "undefined") Box2D.Common = {};
-  if (typeof Box2D.Common.Math === "undefined") Box2D.Common.Math = {};
-  if (typeof Box2D.Dynamics === "undefined") Box2D.Dynamics = {};
-  if (typeof Box2D.Dynamics.Contacts === "undefined")
-    Box2D.Dynamics.Contacts = {};
-  if (typeof Box2D.Dynamics.Controllers === "undefined")
-    Box2D.Dynamics.Controllers = {};
-  if (typeof Box2D.Dynamics.Joints === "undefined") Box2D.Dynamics.Joints = {};
+  if (typeof (Box2D) === 'undefined') Box2D = {};
+  if (typeof (Box2D.Collision) === 'undefined') Box2D.Collision = {};
+  if (typeof (Box2D.Collision.Shapes) === 'undefined') Box2D.Collision.Shapes = {};
+  if (typeof (Box2D.Common) === 'undefined') Box2D.Common = {};
+  if (typeof (Box2D.Common.Math) === 'undefined') Box2D.Common.Math = {};
+  if (typeof (Box2D.Dynamics) === 'undefined') Box2D.Dynamics = {};
+  if (typeof (Box2D.Dynamics.Contacts) === 'undefined') Box2D.Dynamics.Contacts = {};
+  if (typeof (Box2D.Dynamics.Controllers) === 'undefined') Box2D.Dynamics.Controllers = {};
+  if (typeof (Box2D.Dynamics.Joints) === 'undefined') Box2D.Dynamics.Joints = {};
   // pre-definitions
-  (() => {
-    Box2D.Collision.IBroadPhase = "Box2D.Collision.IBroadPhase";
+  ((() => {
+    Box2D.Collision.IBroadPhase = 'Box2D.Collision.IBroadPhase';
 
     class b2AABB {
       constructor() {
@@ -1505,17 +1625,11 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       GetCenter() {
-        return new b2Vec2(
-          (this.lowerBound.x + this.upperBound.x) / 2,
-          (this.lowerBound.y + this.upperBound.y) / 2,
-        );
+        return new b2Vec2((this.lowerBound.x + this.upperBound.x) / 2, (this.lowerBound.y + this.upperBound.y) / 2);
       }
 
       GetExtents() {
-        return new b2Vec2(
-          (this.upperBound.x - this.lowerBound.x) / 2,
-          (this.upperBound.y - this.lowerBound.y) / 2,
-        );
+        return new b2Vec2((this.upperBound.x - this.lowerBound.x) / 2, (this.upperBound.y - this.lowerBound.y) / 2);
       }
 
       Contains(aabb) {
@@ -1528,7 +1642,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       RayCast(output, input) {
-        let tmin = -Number.MAX_VALUE;
+        let tmin = (-Number.MAX_VALUE);
         let tmax = Number.MAX_VALUE;
         const pX = input.p1.x;
         const pY = input.p1.y;
@@ -1541,15 +1655,14 @@ while keeping general compatability. (made with box2D js es6) */
         let t1 = 0;
         let t2 = 0;
         let t3 = 0;
-        let s = 0;
-        {
+        let s = 0; {
           if (absDX < Number.MIN_VALUE) {
             if (pX < this.lowerBound.x || this.upperBound.x < pX) return false;
           } else {
             inv_d = 1.0 / dX;
             t1 = (this.lowerBound.x - pX) * inv_d;
             t2 = (this.upperBound.x - pX) * inv_d;
-            s = -1.0;
+            s = (-1.0);
             if (t1 > t2) {
               t3 = t1;
               t1 = t2;
@@ -1564,15 +1677,14 @@ while keeping general compatability. (made with box2D js es6) */
             tmax = Math.min(tmax, t2);
             if (tmin > tmax) return false;
           }
-        }
-        {
+        } {
           if (absDY < Number.MIN_VALUE) {
             if (pY < this.lowerBound.y || this.upperBound.y < pY) return false;
           } else {
             inv_d = 1.0 / dY;
             t1 = (this.lowerBound.y - pY) * inv_d;
             t2 = (this.upperBound.y - pY) * inv_d;
-            s = -1.0;
+            s = (-1.0);
             if (t1 > t2) {
               t3 = t1;
               t1 = t2;
@@ -1643,8 +1755,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2BoundValues {
       constructor() {
         b2BoundValues.b2BoundValues.apply(this, arguments);
-        if (this.constructor === b2BoundValues)
-          this.b2BoundValues.apply(this, arguments);
+        if (this.constructor === b2BoundValues) this.b2BoundValues.apply(this, arguments);
       }
 
       b2BoundValues() {
@@ -1667,8 +1778,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2ContactID {
       constructor() {
         b2ContactID.b2ContactID.apply(this, arguments);
-        if (this.constructor === b2ContactID)
-          this.b2ContactID.apply(this, arguments);
+        if (this.constructor === b2ContactID) this.b2ContactID.apply(this, arguments);
       }
 
       static b2ContactID() {
@@ -1697,10 +1807,8 @@ while keeping general compatability. (made with box2D js es6) */
         if (value === undefined) value = 0;
         this._key = value;
         this.features._referenceEdge = this._key & 0x000000ff;
-        this.features._incidentEdge =
-          ((this._key & 0x0000ff00) >> 8) & 0x000000ff;
-        this.features._incidentVertex =
-          ((this._key & 0x00ff0000) >> 16) & 0x000000ff;
+        this.features._incidentEdge = ((this._key & 0x0000ff00) >> 8) & 0x000000ff;
+        this.features._incidentVertex = ((this._key & 0x00ff0000) >> 16) & 0x000000ff;
         this.features._flip = ((this._key & 0xff000000) >> 24) & 0x000000ff;
       }
     }
@@ -1754,7 +1862,7 @@ while keeping general compatability. (made with box2D js es6) */
         switch (shape.GetType()) {
           case b2Shape.e_circleShape:
             {
-              const circle = shape instanceof b2CircleShape ? shape : null;
+              const circle = (shape instanceof b2CircleShape ? shape : null);
               this.m_vertices = new Vector(1, true);
               this.m_vertices[0] = circle.m_p;
               this.m_count = 1;
@@ -1763,7 +1871,7 @@ while keeping general compatability. (made with box2D js es6) */
             break;
           case b2Shape.e_polygonShape:
             {
-              const polygon = shape instanceof b2PolygonShape ? shape : null;
+              const polygon = (shape instanceof b2PolygonShape ? shape : null);
               this.m_vertices = polygon.m_vertices;
               this.m_count = polygon.m_vertexCount;
               this.m_radius = polygon.m_radius;
@@ -1816,8 +1924,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2DynamicTree {
       constructor() {
         b2DynamicTree.b2DynamicTree.apply(this, arguments);
-        if (this.constructor === b2DynamicTree)
-          this.b2DynamicTree.apply(this, arguments);
+        if (this.constructor === b2DynamicTree) this.b2DynamicTree.apply(this, arguments);
       }
 
       b2DynamicTree() {
@@ -1851,14 +1958,8 @@ while keeping general compatability. (made with box2D js es6) */
           return false;
         }
         this.RemoveLeaf(proxy);
-        const extendX =
-          b2Settings.b2_aabbExtension +
-          b2Settings.b2_aabbMultiplier *
-            (displacement.x > 0 ? displacement.x : -displacement.x);
-        const extendY =
-          b2Settings.b2_aabbExtension +
-          b2Settings.b2_aabbMultiplier *
-            (displacement.y > 0 ? displacement.y : -displacement.y);
+        const extendX = b2Settings.b2_aabbExtension + b2Settings.b2_aabbMultiplier * (displacement.x > 0 ? displacement.x : (-displacement.x));
+        const extendY = b2Settings.b2_aabbExtension + b2Settings.b2_aabbMultiplier * (displacement.y > 0 ? displacement.y : (-displacement.y));
         proxy.aabb.lowerBound.x = aabb.lowerBound.x - extendX;
         proxy.aabb.lowerBound.y = aabb.lowerBound.y - extendY;
         proxy.aabb.upperBound.x = aabb.upperBound.x + extendX;
@@ -1876,8 +1977,7 @@ while keeping general compatability. (made with box2D js es6) */
           while (node.IsLeaf() == false) {
             node = (this.m_path >> bit) & 1 ? node.child2 : node.child1;
             bit = (bit + 1) & 31;
-          }
-          ++this.m_path;
+          } ++this.m_path;
           this.RemoveLeaf(node);
           this.InsertLeaf(node);
         }
@@ -1921,8 +2021,7 @@ while keeping general compatability. (made with box2D js es6) */
         let maxFraction = input.maxFraction;
         const segmentAABB = new b2AABB();
         let tX = 0;
-        let tY = 0;
-        {
+        let tY = 0; {
           tX = p1.x + maxFraction * (p2.x - p1.x);
           tY = p1.y + maxFraction * (p2.y - p1.y);
           segmentAABB.lowerBound.x = Math.min(p1.x, tX);
@@ -1940,10 +2039,7 @@ while keeping general compatability. (made with box2D js es6) */
           }
           const c = node.aabb.GetCenter();
           const h = node.aabb.GetExtents();
-          const separation =
-            Math.abs(v.x * (p1.x - c.x) + v.y * (p1.y - c.y)) -
-            abs_v.x * h.x -
-            abs_v.y * h.y;
+          const separation = Math.abs(v.x * (p1.x - c.x) + v.y * (p1.y - c.y)) - abs_v.x * h.x - abs_v.y * h.y;
           if (separation > 0.0) continue;
           if (node.IsLeaf()) {
             const subInput = new b2RayCastInput();
@@ -1997,30 +2093,15 @@ while keeping general compatability. (made with box2D js es6) */
           do {
             const child1 = sibling.child1;
             const child2 = sibling.child2;
-            const norm1 =
-              Math.abs(
-                (child1.aabb.lowerBound.x + child1.aabb.upperBound.x) / 2 -
-                  center.x,
-              ) +
-              Math.abs(
-                (child1.aabb.lowerBound.y + child1.aabb.upperBound.y) / 2 -
-                  center.y,
-              );
-            const norm2 =
-              Math.abs(
-                (child2.aabb.lowerBound.x + child2.aabb.upperBound.x) / 2 -
-                  center.x,
-              ) +
-              Math.abs(
-                (child2.aabb.lowerBound.y + child2.aabb.upperBound.y) / 2 -
-                  center.y,
-              );
+            const norm1 = Math.abs((child1.aabb.lowerBound.x + child1.aabb.upperBound.x) / 2 - center.x) + Math.abs((child1.aabb.lowerBound.y + child1.aabb.upperBound.y) / 2 - center.y);
+            const norm2 = Math.abs((child2.aabb.lowerBound.x + child2.aabb.upperBound.x) / 2 - center.x) + Math.abs((child2.aabb.lowerBound.y + child2.aabb.upperBound.y) / 2 - center.y);
             if (norm1 < norm2) {
               sibling = child1;
             } else {
               sibling = child2;
             }
-          } while (sibling.IsLeaf() == false);
+          }
+          while (sibling.IsLeaf() == false);
         }
         let node1 = sibling.parent;
         let node2 = this.AllocateNode();
@@ -2042,7 +2123,8 @@ while keeping general compatability. (made with box2D js es6) */
             node1.aabb.Combine(node1.child1.aabb, node1.child2.aabb);
             node2 = node1;
             node1 = node1.parent;
-          } while (node1);
+          }
+          while (node1);
         } else {
           node2.child1 = sibling;
           node2.child2 = leaf;
@@ -2151,17 +2233,17 @@ while keeping general compatability. (made with box2D js es6) */
           }
           const pair = __this.m_pairBuffer[__this.m_pairCount];
           pair.proxyA = proxy < queryProxy ? proxy : queryProxy;
-          pair.proxyB = proxy >= queryProxy ? proxy : queryProxy;
-          ++__this.m_pairCount;
+          pair.proxyB = proxy >= queryProxy ? proxy : queryProxy; ++__this.m_pairCount;
           return true;
         }
-        for (i = 0; i < __this.m_moveBuffer.length; ++i) {
+        for (i = 0;
+          i < __this.m_moveBuffer.length; ++i) {
           queryProxy = __this.m_moveBuffer[i];
           const fatAABB = __this.m_tree.GetFatAABB(queryProxy);
           __this.m_tree.Query(QueryCallback, fatAABB);
         }
         __this.m_moveBuffer.length = 0;
-        for (var i = 0; i < __this.m_pairCount; ) {
+        for (var i = 0; i < __this.m_pairCount;) {
           const primaryPair = __this.m_pairBuffer[i];
           const userDataA = __this.m_tree.GetUserData(primaryPair.proxyA);
           const userDataB = __this.m_tree.GetUserData(primaryPair.proxyB);
@@ -2169,13 +2251,9 @@ while keeping general compatability. (made with box2D js es6) */
           ++i;
           while (i < __this.m_pairCount) {
             const pair = __this.m_pairBuffer[i];
-            if (
-              pair.proxyA != primaryPair.proxyA ||
-              pair.proxyB != primaryPair.proxyB
-            ) {
+            if (pair.proxyA != primaryPair.proxyA || pair.proxyB != primaryPair.proxyB) {
               break;
-            }
-            ++i;
+            } ++i;
           }
         }
       }
@@ -2188,7 +2266,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_tree.RayCast(callback, input);
       }
 
-      Validate() {}
+      Validate() { }
 
       Rebalance(iterations) {
         if (iterations === undefined) iterations = 0;
@@ -2235,8 +2313,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2Manifold {
       constructor() {
         b2Manifold.b2Manifold.apply(this, arguments);
-        if (this.constructor === b2Manifold)
-          this.b2Manifold.apply(this, arguments);
+        if (this.constructor === b2Manifold) this.b2Manifold.apply(this, arguments);
       }
 
       static b2Manifold() {
@@ -2254,10 +2331,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       Reset() {
         for (let i = 0; i < b2Settings.b2_maxManifoldPoints; i++) {
-          (this.m_points[i] instanceof b2ManifoldPoint
-            ? this.m_points[i]
-            : null
-          ).Reset();
+          ((this.m_points[i] instanceof b2ManifoldPoint ? this.m_points[i] : null)).Reset();
         }
         this.m_localPlaneNormal.SetZero();
         this.m_localPoint.SetZero();
@@ -2268,10 +2342,7 @@ while keeping general compatability. (made with box2D js es6) */
       Set(m) {
         this.m_pointCount = m.m_pointCount;
         for (let i = 0; i < b2Settings.b2_maxManifoldPoints; i++) {
-          (this.m_points[i] instanceof b2ManifoldPoint
-            ? this.m_points[i]
-            : null
-          ).Set(m.m_points[i]);
+          ((this.m_points[i] instanceof b2ManifoldPoint ? this.m_points[i] : null)).Set(m.m_points[i]);
         }
         this.m_localPlaneNormal.SetV(m.m_localPlaneNormal);
         this.m_localPoint.SetV(m.m_localPoint);
@@ -2290,8 +2361,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2ManifoldPoint {
       constructor() {
         b2ManifoldPoint.b2ManifoldPoint.apply(this, arguments);
-        if (this.constructor === b2ManifoldPoint)
-          this.b2ManifoldPoint.apply(this, arguments);
+        if (this.constructor === b2ManifoldPoint) this.b2ManifoldPoint.apply(this, arguments);
       }
 
       static b2ManifoldPoint() {
@@ -2345,8 +2415,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2RayCastInput {
       constructor() {
         b2RayCastInput.b2RayCastInput.apply(this, arguments);
-        if (this.constructor === b2RayCastInput)
-          this.b2RayCastInput.apply(this, arguments);
+        if (this.constructor === b2RayCastInput) this.b2RayCastInput.apply(this, arguments);
       }
 
       static b2RayCastInput() {
@@ -2396,16 +2465,16 @@ while keeping general compatability. (made with box2D js es6) */
         const dX = this.p2.x - this.p1.x;
         const dY = this.p2.y - this.p1.y;
         let nX = dY;
-        let nY = -dX;
+        let nY = (-dX);
         const k_slop = 100.0 * Number.MIN_VALUE;
-        const denom = -(rX * nX + rY * nY);
+        const denom = (-(rX * nX + rY * nY));
         if (denom > k_slop) {
           const bX = s.x - this.p1.x;
           const bY = s.y - this.p1.y;
-          let a = bX * nX + bY * nY;
+          let a = (bX * nX + bY * nY);
           if (a >= 0.0 && a <= maxLambda * denom) {
-            const mu2 = -rX * bY + rY * bX;
-            if (-k_slop * denom <= mu2 && mu2 <= denom * (1.0 + k_slop)) {
+            const mu2 = (-rX * bY) + rY * bX;
+            if ((-k_slop * denom) <= mu2 && mu2 <= denom * (1.0 + k_slop)) {
               a /= denom;
               const nLen = Math.sqrt(nX * nX + nY * nY);
               nX /= nLen;
@@ -2427,37 +2496,17 @@ while keeping general compatability. (made with box2D js es6) */
       ExtendForward(aabb) {
         const dX = this.p2.x - this.p1.x;
         const dY = this.p2.y - this.p1.y;
-        const lambda = Math.min(
-          dX > 0
-            ? (aabb.upperBound.x - this.p1.x) / dX
-            : dX < 0
-              ? (aabb.lowerBound.x - this.p1.x) / dX
-              : Number.POSITIVE_INFINITY,
-          dY > 0
-            ? (aabb.upperBound.y - this.p1.y) / dY
-            : dY < 0
-              ? (aabb.lowerBound.y - this.p1.y) / dY
-              : Number.POSITIVE_INFINITY,
-        );
+        const lambda = Math.min(dX > 0 ? (aabb.upperBound.x - this.p1.x) / dX : dX < 0 ? (aabb.lowerBound.x - this.p1.x) / dX : Number.POSITIVE_INFINITY,
+          dY > 0 ? (aabb.upperBound.y - this.p1.y) / dY : dY < 0 ? (aabb.lowerBound.y - this.p1.y) / dY : Number.POSITIVE_INFINITY);
         this.p2.x = this.p1.x + dX * lambda;
         this.p2.y = this.p1.y + dY * lambda;
       }
 
       ExtendBackward(aabb) {
-        const dX = -this.p2.x + this.p1.x;
-        const dY = -this.p2.y + this.p1.y;
-        const lambda = Math.min(
-          dX > 0
-            ? (aabb.upperBound.x - this.p2.x) / dX
-            : dX < 0
-              ? (aabb.lowerBound.x - this.p2.x) / dX
-              : Number.POSITIVE_INFINITY,
-          dY > 0
-            ? (aabb.upperBound.y - this.p2.y) / dY
-            : dY < 0
-              ? (aabb.lowerBound.y - this.p2.y) / dY
-              : Number.POSITIVE_INFINITY,
-        );
+        const dX = (-this.p2.x) + this.p1.x;
+        const dY = (-this.p2.y) + this.p1.y;
+        const lambda = Math.min(dX > 0 ? (aabb.upperBound.x - this.p2.x) / dX : dX < 0 ? (aabb.lowerBound.x - this.p2.x) / dX : Number.POSITIVE_INFINITY,
+          dY > 0 ? (aabb.upperBound.y - this.p2.y) / dY : dY < 0 ? (aabb.lowerBound.y - this.p2.y) / dY : Number.POSITIVE_INFINITY);
         this.p1.x = this.p2.x + dX * lambda;
         this.p1.y = this.p2.y + dY * lambda;
       }
@@ -2502,20 +2551,12 @@ while keeping general compatability. (made with box2D js es6) */
           localPointB = this.m_proxyB.GetVertex(cache.indexB[0]);
           tVec = localPointA;
           tMat = transformA.R;
-          pointAX =
-            transformA.position.x +
-            (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-          pointAY =
-            transformA.position.y +
-            (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+          pointAX = transformA.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+          pointAY = transformA.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           tVec = localPointB;
           tMat = transformB.R;
-          pointBX =
-            transformB.position.x +
-            (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-          pointBY =
-            transformB.position.y +
-            (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+          pointBX = transformB.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+          pointBY = transformB.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           this.m_axis.x = pointBX - pointAX;
           this.m_axis.y = pointBY - pointAY;
           this.m_axis.Normalize();
@@ -2526,10 +2567,7 @@ while keeping general compatability. (made with box2D js es6) */
           localPointB = this.m_proxyB.GetVertex(cache.indexB[0]);
           this.m_localPoint.x = 0.5 * (localPointA1.x + localPointA2.x);
           this.m_localPoint.y = 0.5 * (localPointA1.y + localPointA2.y);
-          this.m_axis = b2Math.CrossVF(
-            b2Math.SubtractVV(localPointA2, localPointA1),
-            1.0,
-          );
+          this.m_axis = b2Math.CrossVF(b2Math.SubtractVV(localPointA2, localPointA1), 1.0);
           this.m_axis.Normalize();
           tVec = this.m_axis;
           tMat = transformA.R;
@@ -2537,20 +2575,12 @@ while keeping general compatability. (made with box2D js es6) */
           normalY = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
           tVec = this.m_localPoint;
           tMat = transformA.R;
-          pointAX =
-            transformA.position.x +
-            (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-          pointAY =
-            transformA.position.y +
-            (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+          pointAX = transformA.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+          pointAY = transformA.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           tVec = localPointB;
           tMat = transformB.R;
-          pointBX =
-            transformB.position.x +
-            (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-          pointBY =
-            transformB.position.y +
-            (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+          pointBX = transformB.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+          pointBY = transformB.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           s = (pointBX - pointAX) * normalX + (pointBY - pointAY) * normalY;
           if (s < 0.0) {
             this.m_axis.NegativeSelf();
@@ -2562,10 +2592,7 @@ while keeping general compatability. (made with box2D js es6) */
           localPointA = this.m_proxyA.GetVertex(cache.indexA[0]);
           this.m_localPoint.x = 0.5 * (localPointB1.x + localPointB2.x);
           this.m_localPoint.y = 0.5 * (localPointB1.y + localPointB2.y);
-          this.m_axis = b2Math.CrossVF(
-            b2Math.SubtractVV(localPointB2, localPointB1),
-            1.0,
-          );
+          this.m_axis = b2Math.CrossVF(b2Math.SubtractVV(localPointB2, localPointB1), 1.0);
           this.m_axis.Normalize();
           tVec = this.m_axis;
           tMat = transformB.R;
@@ -2573,20 +2600,12 @@ while keeping general compatability. (made with box2D js es6) */
           normalY = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
           tVec = this.m_localPoint;
           tMat = transformB.R;
-          pointBX =
-            transformB.position.x +
-            (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-          pointBY =
-            transformB.position.y +
-            (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+          pointBX = transformB.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+          pointBY = transformB.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           tVec = localPointA;
           tMat = transformA.R;
-          pointAX =
-            transformA.position.x +
-            (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-          pointAY =
-            transformA.position.y +
-            (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+          pointAX = transformA.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+          pointAY = transformA.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           s = (pointAX - pointBX) * normalX + (pointAY - pointBY) * normalY;
           if (s < 0.0) {
             this.m_axis.NegativeSelf();
@@ -2597,15 +2616,9 @@ while keeping general compatability. (made with box2D js es6) */
           localPointB1 = this.m_proxyB.GetVertex(cache.indexB[0]);
           localPointB2 = this.m_proxyB.GetVertex(cache.indexB[1]);
           const pA = b2Math.MulX(transformA, localPointA);
-          const dA = b2Math.MulMV(
-            transformA.R,
-            b2Math.SubtractVV(localPointA2, localPointA1),
-          );
+          const dA = b2Math.MulMV(transformA.R, b2Math.SubtractVV(localPointA2, localPointA1));
           const pB = b2Math.MulX(transformB, localPointB);
-          const dB = b2Math.MulMV(
-            transformB.R,
-            b2Math.SubtractVV(localPointB2, localPointB1),
-          );
+          const dB = b2Math.MulMV(transformB.R, b2Math.SubtractVV(localPointB2, localPointB1));
           const a = dA.x * dA.x + dA.y * dA.y;
           const e = dB.x * dB.x + dB.y * dB.y;
           const r = b2Math.SubtractVV(dB, dA);
@@ -2623,21 +2636,14 @@ while keeping general compatability. (made with box2D js es6) */
             s = b2Math.Clamp((b - c) / a, 0.0, 1.0);
           }
           localPointA = new b2Vec2();
-          localPointA.x =
-            localPointA1.x + s * (localPointA2.x - localPointA1.x);
-          localPointA.y =
-            localPointA1.y + s * (localPointA2.y - localPointA1.y);
+          localPointA.x = localPointA1.x + s * (localPointA2.x - localPointA1.x);
+          localPointA.y = localPointA1.y + s * (localPointA2.y - localPointA1.y);
           localPointB = new b2Vec2();
-          localPointB.x =
-            localPointB1.x + s * (localPointB2.x - localPointB1.x);
-          localPointB.y =
-            localPointB1.y + s * (localPointB2.y - localPointB1.y);
+          localPointB.x = localPointB1.x + s * (localPointB2.x - localPointB1.x);
+          localPointB.y = localPointB1.y + s * (localPointB2.y - localPointB1.y);
           if (s == 0.0 || s == 1.0) {
             this.m_type = b2SeparationFunction.e_faceB;
-            this.m_axis = b2Math.CrossVF(
-              b2Math.SubtractVV(localPointB2, localPointB1),
-              1.0,
-            );
+            this.m_axis = b2Math.CrossVF(b2Math.SubtractVV(localPointB2, localPointB1), 1.0);
             this.m_axis.Normalize();
             this.m_localPoint = localPointB;
             tVec = this.m_axis;
@@ -2646,30 +2652,19 @@ while keeping general compatability. (made with box2D js es6) */
             normalY = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
             tVec = this.m_localPoint;
             tMat = transformB.R;
-            pointBX =
-              transformB.position.x +
-              (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-            pointBY =
-              transformB.position.y +
-              (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+            pointBX = transformB.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+            pointBY = transformB.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
             tVec = localPointA;
             tMat = transformA.R;
-            pointAX =
-              transformA.position.x +
-              (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-            pointAY =
-              transformA.position.y +
-              (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+            pointAX = transformA.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+            pointAY = transformA.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
             sgn = (pointAX - pointBX) * normalX + (pointAY - pointBY) * normalY;
             if (s < 0.0) {
               this.m_axis.NegativeSelf();
             }
           } else {
             this.m_type = b2SeparationFunction.e_faceA;
-            this.m_axis = b2Math.CrossVF(
-              b2Math.SubtractVV(localPointA2, localPointA1),
-              1.0,
-            );
+            this.m_axis = b2Math.CrossVF(b2Math.SubtractVV(localPointA2, localPointA1), 1.0);
             this.m_localPoint = localPointA;
             tVec = this.m_axis;
             tMat = transformA.R;
@@ -2677,20 +2672,12 @@ while keeping general compatability. (made with box2D js es6) */
             normalY = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
             tVec = this.m_localPoint;
             tMat = transformA.R;
-            pointAX =
-              transformA.position.x +
-              (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-            pointAY =
-              transformA.position.y +
-              (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+            pointAX = transformA.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+            pointAY = transformA.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
             tVec = localPointB;
             tMat = transformB.R;
-            pointBX =
-              transformB.position.x +
-              (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-            pointBY =
-              transformB.position.y +
-              (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+            pointBX = transformB.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+            pointBY = transformB.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
             sgn = (pointBX - pointAX) * normalX + (pointBY - pointAY) * normalY;
             if (s < 0.0) {
               this.m_axis.NegativeSelf();
@@ -2709,40 +2696,37 @@ while keeping general compatability. (made with box2D js es6) */
         let seperation = 0;
         let normal;
         switch (this.m_type) {
-          case b2SeparationFunction.e_points: {
-            axisA = b2Math.MulTMV(transformA.R, this.m_axis);
-            axisB = b2Math.MulTMV(transformB.R, this.m_axis.GetNegative());
-            localPointA = this.m_proxyA.GetSupportVertex(axisA);
-            localPointB = this.m_proxyB.GetSupportVertex(axisB);
-            pointA = b2Math.MulX(transformA, localPointA);
-            pointB = b2Math.MulX(transformB, localPointB);
-            seperation =
-              (pointB.x - pointA.x) * this.m_axis.x +
-              (pointB.y - pointA.y) * this.m_axis.y;
-            return seperation;
-          }
-          case b2SeparationFunction.e_faceA: {
-            normal = b2Math.MulMV(transformA.R, this.m_axis);
-            pointA = b2Math.MulX(transformA, this.m_localPoint);
-            axisB = b2Math.MulTMV(transformB.R, normal.GetNegative());
-            localPointB = this.m_proxyB.GetSupportVertex(axisB);
-            pointB = b2Math.MulX(transformB, localPointB);
-            seperation =
-              (pointB.x - pointA.x) * normal.x +
-              (pointB.y - pointA.y) * normal.y;
-            return seperation;
-          }
-          case b2SeparationFunction.e_faceB: {
-            normal = b2Math.MulMV(transformB.R, this.m_axis);
-            pointB = b2Math.MulX(transformB, this.m_localPoint);
-            axisA = b2Math.MulTMV(transformA.R, normal.GetNegative());
-            localPointA = this.m_proxyA.GetSupportVertex(axisA);
-            pointA = b2Math.MulX(transformA, localPointA);
-            seperation =
-              (pointA.x - pointB.x) * normal.x +
-              (pointA.y - pointB.y) * normal.y;
-            return seperation;
-          }
+          case b2SeparationFunction.e_points:
+            {
+              axisA = b2Math.MulTMV(transformA.R, this.m_axis);
+              axisB = b2Math.MulTMV(transformB.R, this.m_axis.GetNegative());
+              localPointA = this.m_proxyA.GetSupportVertex(axisA);
+              localPointB = this.m_proxyB.GetSupportVertex(axisB);
+              pointA = b2Math.MulX(transformA, localPointA);
+              pointB = b2Math.MulX(transformB, localPointB);
+              seperation = (pointB.x - pointA.x) * this.m_axis.x + (pointB.y - pointA.y) * this.m_axis.y;
+              return seperation;
+            }
+          case b2SeparationFunction.e_faceA:
+            {
+              normal = b2Math.MulMV(transformA.R, this.m_axis);
+              pointA = b2Math.MulX(transformA, this.m_localPoint);
+              axisB = b2Math.MulTMV(transformB.R, normal.GetNegative());
+              localPointB = this.m_proxyB.GetSupportVertex(axisB);
+              pointB = b2Math.MulX(transformB, localPointB);
+              seperation = (pointB.x - pointA.x) * normal.x + (pointB.y - pointA.y) * normal.y;
+              return seperation;
+            }
+          case b2SeparationFunction.e_faceB:
+            {
+              normal = b2Math.MulMV(transformB.R, this.m_axis);
+              pointB = b2Math.MulX(transformB, this.m_localPoint);
+              axisA = b2Math.MulTMV(transformA.R, normal.GetNegative());
+              localPointA = this.m_proxyA.GetSupportVertex(axisA);
+              pointA = b2Math.MulX(transformA, localPointA);
+              seperation = (pointA.x - pointB.x) * normal.x + (pointA.y - pointB.y) * normal.y;
+              return seperation;
+            }
           default:
             b2Settings.b2Assert(false);
             return 0.0;
@@ -2755,8 +2739,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2Simplex {
       constructor() {
         b2Simplex.b2Simplex.apply(this, arguments);
-        if (this.constructor === b2Simplex)
-          this.b2Simplex.apply(this, arguments);
+        if (this.constructor === b2Simplex) this.b2Simplex.apply(this, arguments);
       }
 
       static b2Simplex() {
@@ -2792,11 +2775,7 @@ while keeping general compatability. (made with box2D js es6) */
         if (this.m_count > 1) {
           const metric1 = cache.metric;
           const metric2 = this.GetMetric();
-          if (
-            metric2 < 0.5 * metric1 ||
-            2.0 * metric1 < metric2 ||
-            metric2 < Number.MIN_VALUE
-          ) {
+          if (metric2 < 0.5 * metric1 || 2.0 * metric1 < metric2 || metric2 < Number.MIN_VALUE) {
             this.m_count = 0;
           }
         }
@@ -2827,15 +2806,16 @@ while keeping general compatability. (made with box2D js es6) */
         switch (this.m_count) {
           case 1:
             return this.m_v1.w.GetNegative();
-          case 2: {
-            const e12 = b2Math.SubtractVV(this.m_v2.w, this.m_v1.w);
-            const sgn = b2Math.CrossVV(e12, this.m_v1.w.GetNegative());
-            if (sgn > 0.0) {
-              return b2Math.CrossFV(1.0, e12);
-            } else {
-              return b2Math.CrossVF(e12, 1.0);
+          case 2:
+            {
+              const e12 = b2Math.SubtractVV(this.m_v2.w, this.m_v1.w);
+              const sgn = b2Math.CrossVV(e12, this.m_v1.w.GetNegative());
+              if (sgn > 0.0) {
+                return b2Math.CrossFV(1.0, e12);
+              } else {
+                return b2Math.CrossVF(e12, 1.0);
+              }
             }
-          }
           default:
             b2Settings.b2Assert(false);
             return new b2Vec2();
@@ -2850,10 +2830,7 @@ while keeping general compatability. (made with box2D js es6) */
           case 1:
             return this.m_v1.w;
           case 2:
-            return new b2Vec2(
-              this.m_v1.a * this.m_v1.w.x + this.m_v2.a * this.m_v2.w.x,
-              this.m_v1.a * this.m_v1.w.y + this.m_v2.a * this.m_v2.w.y,
-            );
+            return new b2Vec2(this.m_v1.a * this.m_v1.w.x + this.m_v2.a * this.m_v2.w.x, this.m_v1.a * this.m_v1.w.y + this.m_v2.a * this.m_v2.w.y);
           default:
             b2Settings.b2Assert(false);
             return new b2Vec2();
@@ -2876,14 +2853,8 @@ while keeping general compatability. (made with box2D js es6) */
             pB.y = this.m_v1.a * this.m_v1.wB.y + this.m_v2.a * this.m_v2.wB.y;
             break;
           case 3:
-            pB.x = pA.x =
-              this.m_v1.a * this.m_v1.wA.x +
-              this.m_v2.a * this.m_v2.wA.x +
-              this.m_v3.a * this.m_v3.wA.x;
-            pB.y = pA.y =
-              this.m_v1.a * this.m_v1.wA.y +
-              this.m_v2.a * this.m_v2.wA.y +
-              this.m_v3.a * this.m_v3.wA.y;
+            pB.x = pA.x = this.m_v1.a * this.m_v1.wA.x + this.m_v2.a * this.m_v2.wA.x + this.m_v3.a * this.m_v3.wA.x;
+            pB.y = pA.y = this.m_v1.a * this.m_v1.wA.y + this.m_v2.a * this.m_v2.wA.y + this.m_v3.a * this.m_v3.wA.y;
             break;
           default:
             b2Settings.b2Assert(false);
@@ -2901,10 +2872,7 @@ while keeping general compatability. (made with box2D js es6) */
           case 2:
             return b2Math.SubtractVV(this.m_v1.w, this.m_v2.w).Length();
           case 3:
-            return b2Math.CrossVV(
-              b2Math.SubtractVV(this.m_v2.w, this.m_v1.w),
-              b2Math.SubtractVV(this.m_v3.w, this.m_v1.w),
-            );
+            return b2Math.CrossVV(b2Math.SubtractVV(this.m_v2.w, this.m_v1.w), b2Math.SubtractVV(this.m_v3.w, this.m_v1.w));
           default:
             b2Settings.b2Assert(false);
             return 0.0;
@@ -2915,13 +2883,13 @@ while keeping general compatability. (made with box2D js es6) */
         const w1 = this.m_v1.w;
         const w2 = this.m_v2.w;
         const e12 = b2Math.SubtractVV(w2, w1);
-        const d12_2 = -(w1.x * e12.x + w1.y * e12.y);
+        const d12_2 = (-(w1.x * e12.x + w1.y * e12.y));
         if (d12_2 <= 0.0) {
           this.m_v1.a = 1.0;
           this.m_count = 1;
           return;
         }
-        const d12_1 = w2.x * e12.x + w2.y * e12.y;
+        const d12_1 = (w2.x * e12.x + w2.y * e12.y);
         if (d12_1 <= 0.0) {
           this.m_v2.a = 1.0;
           this.m_count = 1;
@@ -2942,17 +2910,17 @@ while keeping general compatability. (made with box2D js es6) */
         const w1e12 = b2Math.Dot(w1, e12);
         const w2e12 = b2Math.Dot(w2, e12);
         const d12_1 = w2e12;
-        const d12_2 = -w1e12;
+        const d12_2 = (-w1e12);
         const e13 = b2Math.SubtractVV(w3, w1);
         const w1e13 = b2Math.Dot(w1, e13);
         const w3e13 = b2Math.Dot(w3, e13);
         const d13_1 = w3e13;
-        const d13_2 = -w1e13;
+        const d13_2 = (-w1e13);
         const e23 = b2Math.SubtractVV(w3, w2);
         const w2e23 = b2Math.Dot(w2, e23);
         const w3e23 = b2Math.Dot(w3, e23);
         const d23_1 = w3e23;
-        const d23_2 = -w2e23;
+        const d23_2 = (-w2e23);
         const n123 = b2Math.CrossVV(e12, e13);
         const d123_1 = n123 * b2Math.CrossVV(w2, w3);
         const d123_2 = n123 * b2Math.CrossVV(w3, w1);
@@ -3060,8 +3028,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2WorldManifold {
       constructor() {
         b2WorldManifold.b2WorldManifold.apply(this, arguments);
-        if (this.constructor === b2WorldManifold)
-          this.b2WorldManifold.apply(this, arguments);
+        if (this.constructor === b2WorldManifold) this.b2WorldManifold.apply(this, arguments);
       }
 
       static b2WorldManifold() {
@@ -3095,16 +3062,12 @@ while keeping general compatability. (made with box2D js es6) */
             {
               tMat = xfA.R;
               tVec = manifold.m_localPoint;
-              const pointAX =
-                xfA.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-              const pointAY =
-                xfA.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+              const pointAX = xfA.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
+              const pointAY = xfA.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
               tMat = xfB.R;
               tVec = manifold.m_points[0].m_localPoint;
-              const pointBX =
-                xfB.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-              const pointBY =
-                xfB.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+              const pointBX = xfB.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
+              const pointBY = xfB.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
               const dX = pointBX - pointAX;
               const dY = pointBY - pointAY;
               const d2 = dX * dX + dY * dY;
@@ -3132,35 +3095,18 @@ while keeping general compatability. (made with box2D js es6) */
               normalY = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
               tMat = xfA.R;
               tVec = manifold.m_localPoint;
-              planePointX =
-                xfA.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-              planePointY =
-                xfA.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+              planePointX = xfA.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
+              planePointY = xfA.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
               this.m_normal.x = normalX;
               this.m_normal.y = normalY;
-              for (i = 0; i < manifold.m_pointCount; i++) {
+              for (i = 0;
+                i < manifold.m_pointCount; i++) {
                 tMat = xfB.R;
                 tVec = manifold.m_points[i].m_localPoint;
-                clipPointX =
-                  xfB.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-                clipPointY =
-                  xfB.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
-                this.m_points[i].x =
-                  clipPointX +
-                  0.5 *
-                    (radiusA -
-                      (clipPointX - planePointX) * normalX -
-                      (clipPointY - planePointY) * normalY -
-                      radiusB) *
-                    normalX;
-                this.m_points[i].y =
-                  clipPointY +
-                  0.5 *
-                    (radiusA -
-                      (clipPointX - planePointX) * normalX -
-                      (clipPointY - planePointY) * normalY -
-                      radiusB) *
-                    normalY;
+                clipPointX = xfB.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
+                clipPointY = xfB.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+                this.m_points[i].x = clipPointX + 0.5 * (radiusA - (clipPointX - planePointX) * normalX - (clipPointY - planePointY) * normalY - radiusB) * normalX;
+                this.m_points[i].y = clipPointY + 0.5 * (radiusA - (clipPointX - planePointX) * normalX - (clipPointY - planePointY) * normalY - radiusB) * normalY;
               }
             }
             break;
@@ -3172,35 +3118,18 @@ while keeping general compatability. (made with box2D js es6) */
               normalY = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
               tMat = xfB.R;
               tVec = manifold.m_localPoint;
-              planePointX =
-                xfB.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-              planePointY =
-                xfB.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
-              this.m_normal.x = -normalX;
-              this.m_normal.y = -normalY;
-              for (i = 0; i < manifold.m_pointCount; i++) {
+              planePointX = xfB.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
+              planePointY = xfB.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+              this.m_normal.x = (-normalX);
+              this.m_normal.y = (-normalY);
+              for (i = 0;
+                i < manifold.m_pointCount; i++) {
                 tMat = xfA.R;
                 tVec = manifold.m_points[i].m_localPoint;
-                clipPointX =
-                  xfA.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-                clipPointY =
-                  xfA.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
-                this.m_points[i].x =
-                  clipPointX +
-                  0.5 *
-                    (radiusB -
-                      (clipPointX - planePointX) * normalX -
-                      (clipPointY - planePointY) * normalY -
-                      radiusA) *
-                    normalX;
-                this.m_points[i].y =
-                  clipPointY +
-                  0.5 *
-                    (radiusB -
-                      (clipPointX - planePointX) * normalX -
-                      (clipPointY - planePointY) * normalY -
-                      radiusA) *
-                    normalY;
+                clipPointX = xfA.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
+                clipPointY = xfA.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+                this.m_points[i].x = clipPointX + 0.5 * (radiusB - (clipPointX - planePointX) * normalX - (clipPointY - planePointY) * normalY - radiusA) * normalX;
+                this.m_points[i].y = clipPointY + 0.5 * (radiusB - (clipPointX - planePointX) * normalX - (clipPointY - planePointY) * normalY - radiusA) * normalY;
               }
             }
             break;
@@ -3240,8 +3169,7 @@ while keeping general compatability. (made with box2D js es6) */
       set referenceEdge(value) {
         if (value === undefined) value = 0;
         this._referenceEdge = value;
-        this._m_id._key =
-          (this._m_id._key & 0xffffff00) | (this._referenceEdge & 0x000000ff);
+        this._m_id._key = (this._m_id._key & 0xffffff00) | (this._referenceEdge & 0x000000ff);
       }
 
       get incidentEdge() {
@@ -3251,9 +3179,7 @@ while keeping general compatability. (made with box2D js es6) */
       set incidentEdge(value) {
         if (value === undefined) value = 0;
         this._incidentEdge = value;
-        this._m_id._key =
-          (this._m_id._key & 0xffff00ff) |
-          ((this._incidentEdge << 8) & 0x0000ff00);
+        this._m_id._key = (this._m_id._key & 0xffff00ff) | ((this._incidentEdge << 8) & 0x0000ff00);
       }
 
       get incidentVertex() {
@@ -3263,9 +3189,7 @@ while keeping general compatability. (made with box2D js es6) */
       set incidentVertex(value) {
         if (value === undefined) value = 0;
         this._incidentVertex = value;
-        this._m_id._key =
-          (this._m_id._key & 0xff00ffff) |
-          ((this._incidentVertex << 16) & 0x00ff0000);
+        this._m_id._key = (this._m_id._key & 0xff00ffff) | ((this._incidentVertex << 16) & 0x00ff0000);
       }
 
       get flip() {
@@ -3275,8 +3199,7 @@ while keeping general compatability. (made with box2D js es6) */
       set flip(value) {
         if (value === undefined) value = 0;
         this._flip = value;
-        this._m_id._key =
-          (this._m_id._key & 0x00ffffff) | ((this._flip << 24) & 0xff000000);
+        this._m_id._key = (this._m_id._key & 0x00ffffff) | ((this._flip << 24) & 0xff000000);
       }
     }
 
@@ -3308,7 +3231,7 @@ while keeping general compatability. (made with box2D js es6) */
         return false;
       }
 
-      ComputeAABB(aabb, xf) {}
+      ComputeAABB(aabb, xf) { }
 
       ComputeMass(massData, density) {
         if (density === undefined) density = 0;
@@ -3326,14 +3249,13 @@ while keeping general compatability. (made with box2D js es6) */
     }
 
     Box2D.Collision.Shapes.b2Shape = b2Shape;
-    Box2D.Common.b2internal = "Box2D.Common.b2internal";
+    Box2D.Common.b2internal = 'Box2D.Common.b2internal';
 
     class b2CircleShape extends b2Shape {
       constructor() {
         super(...arguments);
         b2CircleShape.b2CircleShape.apply(this, arguments);
-        if (this.constructor === b2CircleShape)
-          this.b2CircleShape.apply(this, arguments);
+        if (this.constructor === b2CircleShape) this.b2CircleShape.apply(this, arguments);
       }
 
       static b2CircleShape() {
@@ -3350,44 +3272,36 @@ while keeping general compatability. (made with box2D js es6) */
       Set(other) {
         this.__super.Set.call(this, other);
         if (Box2D.is(other, b2CircleShape)) {
-          const other2 = other instanceof b2CircleShape ? other : null;
+          const other2 = (other instanceof b2CircleShape ? other : null);
           this.m_p.SetV(other2.m_p);
         }
       }
 
       TestPoint(transform, p) {
         const tMat = transform.R;
-        let dX =
-          transform.position.x +
-          (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y);
-        let dY =
-          transform.position.y +
-          (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y);
+        let dX = transform.position.x + (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y);
+        let dY = transform.position.y + (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y);
         dX = p.x - dX;
         dY = p.y - dY;
-        return dX * dX + dY * dY <= this.m_radius * this.m_radius;
+        return (dX * dX + dY * dY) <= this.m_radius * this.m_radius;
       }
 
       RayCast(output, input, transform) {
         const tMat = transform.R;
-        const positionX =
-          transform.position.x +
-          (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y);
-        const positionY =
-          transform.position.y +
-          (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y);
+        const positionX = transform.position.x + (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y);
+        const positionY = transform.position.y + (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y);
         const sX = input.p1.x - positionX;
         const sY = input.p1.y - positionY;
-        const b = sX * sX + sY * sY - this.m_radius * this.m_radius;
+        const b = (sX * sX + sY * sY) - this.m_radius * this.m_radius;
         const rX = input.p2.x - input.p1.x;
         const rY = input.p2.y - input.p1.y;
-        const c = sX * rX + sY * rY;
-        const rr = rX * rX + rY * rY;
+        const c = (sX * rX + sY * rY);
+        const rr = (rX * rX + rY * rY);
         const sigma = c * c - rr * b;
         if (sigma < 0.0 || rr < Number.MIN_VALUE) {
           return false;
         }
-        let a = -(c + Math.sqrt(sigma));
+        let a = (-(c + Math.sqrt(sigma)));
         if (a >= 0.0 && a <= input.maxFraction * rr) {
           a /= rr;
           output.fraction = a;
@@ -3401,32 +3315,24 @@ while keeping general compatability. (made with box2D js es6) */
 
       ComputeAABB(aabb, transform) {
         const tMat = transform.R;
-        const pX =
-          transform.position.x +
-          (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y);
-        const pY =
-          transform.position.y +
-          (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y);
+        const pX = transform.position.x + (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y);
+        const pY = transform.position.y + (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y);
         aabb.lowerBound.Set(pX - this.m_radius, pY - this.m_radius);
         aabb.upperBound.Set(pX + this.m_radius, pY + this.m_radius);
       }
 
       ComputeMass(massData, density) {
         if (density === undefined) density = 0;
-        massData.mass =
-          density * b2Settings.b2_pi * this.m_radius * this.m_radius;
+        massData.mass = density * b2Settings.b2_pi * this.m_radius * this.m_radius;
         massData.center.SetV(this.m_p);
-        massData.I =
-          massData.mass *
-          (0.5 * this.m_radius * this.m_radius +
-            (this.m_p.x * this.m_p.x + this.m_p.y * this.m_p.y));
+        massData.I = massData.mass * (0.5 * this.m_radius * this.m_radius + (this.m_p.x * this.m_p.x + this.m_p.y * this.m_p.y));
       }
 
       ComputeSubmergedArea(normal, offset, xf, c) {
         if (offset === undefined) offset = 0;
         const p = b2Math.MulX(xf, this.m_p);
-        const l = -(b2Math.Dot(normal, p) - offset);
-        if (l < -this.m_radius + Number.MIN_VALUE) {
+        const l = (-(b2Math.Dot(normal, p) - offset));
+        if (l < (-this.m_radius) + Number.MIN_VALUE) {
           return 0;
         }
         if (l > this.m_radius) {
@@ -3435,10 +3341,8 @@ while keeping general compatability. (made with box2D js es6) */
         }
         const r2 = this.m_radius * this.m_radius;
         const l2 = l * l;
-        const area =
-          r2 * (Math.asin(l / this.m_radius) + Math.PI / 2) +
-          l * Math.sqrt(r2 - l2);
-        const com = ((-2 / 3) * Math.pow(r2 - l2, 1.5)) / area;
+        const area = r2 * (Math.asin(l / this.m_radius) + Math.PI / 2) + l * Math.sqrt(r2 - l2);
+        const com = (-2 / 3 * Math.pow(r2 - l2, 1.5) / area);
         c.x = p.x + normal.x * com;
         c.y = p.y + normal.y * com;
         return area;
@@ -3474,8 +3378,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2EdgeChainDef {
       constructor() {
         b2EdgeChainDef.b2EdgeChainDef.apply(this, arguments);
-        if (this.constructor === b2EdgeChainDef)
-          this.b2EdgeChainDef.apply(this, arguments);
+        if (this.constructor === b2EdgeChainDef) this.b2EdgeChainDef.apply(this, arguments);
       }
 
       b2EdgeChainDef() {
@@ -3491,8 +3394,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2EdgeShape.b2EdgeShape.apply(this, arguments);
-        if (this.constructor === b2EdgeShape)
-          this.b2EdgeShape.apply(this, arguments);
+        if (this.constructor === b2EdgeShape) this.b2EdgeShape.apply(this, arguments);
       }
 
       static b2EdgeShape() {
@@ -3517,30 +3419,19 @@ while keeping general compatability. (made with box2D js es6) */
         const rX = input.p2.x - input.p1.x;
         const rY = input.p2.y - input.p1.y;
         tMat = transform.R;
-        const v1X =
-          transform.position.x +
-          (tMat.col1.x * this.m_v1.x + tMat.col2.x * this.m_v1.y);
-        const v1Y =
-          transform.position.y +
-          (tMat.col1.y * this.m_v1.x + tMat.col2.y * this.m_v1.y);
-        const nX =
-          transform.position.y +
-          (tMat.col1.y * this.m_v2.x + tMat.col2.y * this.m_v2.y) -
-          v1Y;
-        const nY = -(
-          transform.position.x +
-          (tMat.col1.x * this.m_v2.x + tMat.col2.x * this.m_v2.y) -
-          v1X
-        );
+        const v1X = transform.position.x + (tMat.col1.x * this.m_v1.x + tMat.col2.x * this.m_v1.y);
+        const v1Y = transform.position.y + (tMat.col1.y * this.m_v1.x + tMat.col2.y * this.m_v1.y);
+        const nX = transform.position.y + (tMat.col1.y * this.m_v2.x + tMat.col2.y * this.m_v2.y) - v1Y;
+        const nY = (-(transform.position.x + (tMat.col1.x * this.m_v2.x + tMat.col2.x * this.m_v2.y) - v1X));
         const k_slop = 100.0 * Number.MIN_VALUE;
-        const denom = -(rX * nX + rY * nY);
+        const denom = (-(rX * nX + rY * nY));
         if (denom > k_slop) {
           const bX = input.p1.x - v1X;
           const bY = input.p1.y - v1Y;
-          let a = bX * nX + bY * nY;
+          let a = (bX * nX + bY * nY);
           if (a >= 0.0 && a <= input.maxFraction * denom) {
-            const mu2 = -rX * bY + rY * bX;
-            if (-k_slop * denom <= mu2 && mu2 <= denom * (1.0 + k_slop)) {
+            const mu2 = (-rX * bY) + rY * bX;
+            if ((-k_slop * denom) <= mu2 && mu2 <= denom * (1.0 + k_slop)) {
               a /= denom;
               output.fraction = a;
               const nLen = Math.sqrt(nX * nX + nY * nY);
@@ -3555,18 +3446,10 @@ while keeping general compatability. (made with box2D js es6) */
 
       ComputeAABB(aabb, transform) {
         const tMat = transform.R;
-        const v1X =
-          transform.position.x +
-          (tMat.col1.x * this.m_v1.x + tMat.col2.x * this.m_v1.y);
-        const v1Y =
-          transform.position.y +
-          (tMat.col1.y * this.m_v1.x + tMat.col2.y * this.m_v1.y);
-        const v2X =
-          transform.position.x +
-          (tMat.col1.x * this.m_v2.x + tMat.col2.x * this.m_v2.y);
-        const v2Y =
-          transform.position.y +
-          (tMat.col1.y * this.m_v2.x + tMat.col2.y * this.m_v2.y);
+        const v1X = transform.position.x + (tMat.col1.x * this.m_v1.x + tMat.col2.x * this.m_v1.y);
+        const v1Y = transform.position.y + (tMat.col1.y * this.m_v1.x + tMat.col2.y * this.m_v1.y);
+        const v2X = transform.position.x + (tMat.col1.x * this.m_v2.x + tMat.col2.x * this.m_v2.y);
+        const v2Y = transform.position.y + (tMat.col1.y * this.m_v2.x + tMat.col2.y * this.m_v2.y);
         if (v1X < v2X) {
           aabb.lowerBound.x = v1X;
           aabb.upperBound.x = v2X;
@@ -3601,21 +3484,18 @@ while keeping general compatability. (made with box2D js es6) */
           if (d2 > 0) {
             return 0;
           } else {
-            v1.x = (-d2 / (d1 - d2)) * v1.x + (d1 / (d1 - d2)) * v2.x;
-            v1.y = (-d2 / (d1 - d2)) * v1.y + (d1 / (d1 - d2)) * v2.y;
+            v1.x = (-d2 / (d1 - d2) * v1.x) + d1 / (d1 - d2) * v2.x;
+            v1.y = (-d2 / (d1 - d2) * v1.y) + d1 / (d1 - d2) * v2.y;
           }
         } else {
           if (d2 > 0) {
-            v2.x = (-d2 / (d1 - d2)) * v1.x + (d1 / (d1 - d2)) * v2.x;
-            v2.y = (-d2 / (d1 - d2)) * v1.y + (d1 / (d1 - d2)) * v2.y;
-          } else {
-          }
+            v2.x = (-d2 / (d1 - d2) * v1.x) + d1 / (d1 - d2) * v2.x;
+            v2.y = (-d2 / (d1 - d2) * v1.y) + d1 / (d1 - d2) * v2.y;
+          } else { }
         }
         c.x = (v0.x + v1.x + v2.x) / 3;
         c.y = (v0.y + v1.y + v2.y) / 3;
-        return (
-          0.5 * ((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x))
-        );
+        return 0.5 * ((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x));
       }
 
       GetLength() {
@@ -3664,12 +3544,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       GetFirstVertex(xf) {
         const tMat = xf.R;
-        return new b2Vec2(
-          xf.position.x +
-            (tMat.col1.x * this.m_coreV1.x + tMat.col2.x * this.m_coreV1.y),
-          xf.position.y +
-            (tMat.col1.y * this.m_coreV1.x + tMat.col2.y * this.m_coreV1.y),
-        );
+        return new b2Vec2(xf.position.x + (tMat.col1.x * this.m_coreV1.x + tMat.col2.x * this.m_coreV1.y), xf.position.y + (tMat.col1.y * this.m_coreV1.x + tMat.col2.y * this.m_coreV1.y));
       }
 
       GetNextEdge() {
@@ -3684,19 +3559,11 @@ while keeping general compatability. (made with box2D js es6) */
         if (dX === undefined) dX = 0;
         if (dY === undefined) dY = 0;
         const tMat = xf.R;
-        const v1X =
-          xf.position.x +
-          (tMat.col1.x * this.m_coreV1.x + tMat.col2.x * this.m_coreV1.y);
-        const v1Y =
-          xf.position.y +
-          (tMat.col1.y * this.m_coreV1.x + tMat.col2.y * this.m_coreV1.y);
-        const v2X =
-          xf.position.x +
-          (tMat.col1.x * this.m_coreV2.x + tMat.col2.x * this.m_coreV2.y);
-        const v2Y =
-          xf.position.y +
-          (tMat.col1.y * this.m_coreV2.x + tMat.col2.y * this.m_coreV2.y);
-        if (v1X * dX + v1Y * dY > v2X * dX + v2Y * dY) {
+        const v1X = xf.position.x + (tMat.col1.x * this.m_coreV1.x + tMat.col2.x * this.m_coreV1.y);
+        const v1Y = xf.position.y + (tMat.col1.y * this.m_coreV1.x + tMat.col2.y * this.m_coreV1.y);
+        const v2X = xf.position.x + (tMat.col1.x * this.m_coreV2.x + tMat.col2.x * this.m_coreV2.y);
+        const v2Y = xf.position.y + (tMat.col1.y * this.m_coreV2.x + tMat.col2.y * this.m_coreV2.y);
+        if ((v1X * dX + v1Y * dY) > (v2X * dX + v2Y * dY)) {
           this.s_supportVec.x = v1X;
           this.s_supportVec.y = v1Y;
         } else {
@@ -3713,26 +3580,13 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_nextEdge = null;
         this.m_v1 = v1;
         this.m_v2 = v2;
-        this.m_direction.Set(
-          this.m_v2.x - this.m_v1.x,
-          this.m_v2.y - this.m_v1.y,
-        );
+        this.m_direction.Set(this.m_v2.x - this.m_v1.x, this.m_v2.y - this.m_v1.y);
         this.m_length = this.m_direction.Normalize();
-        this.m_normal.Set(this.m_direction.y, -this.m_direction.x);
-        this.m_coreV1.Set(
-          -b2Settings.b2_toiSlop * (this.m_normal.x - this.m_direction.x) +
-            this.m_v1.x,
-          -b2Settings.b2_toiSlop * (this.m_normal.y - this.m_direction.y) +
-            this.m_v1.y,
-        );
-        this.m_coreV2.Set(
-          -b2Settings.b2_toiSlop * (this.m_normal.x + this.m_direction.x) +
-            this.m_v2.x,
-          -b2Settings.b2_toiSlop * (this.m_normal.y + this.m_direction.y) +
-            this.m_v2.y,
-        );
+        this.m_normal.Set(this.m_direction.y, (-this.m_direction.x));
+        this.m_coreV1.Set((-b2Settings.b2_toiSlop * (this.m_normal.x - this.m_direction.x)) + this.m_v1.x, (-b2Settings.b2_toiSlop * (this.m_normal.y - this.m_direction.y)) + this.m_v1.y);
+        this.m_coreV2.Set((-b2Settings.b2_toiSlop * (this.m_normal.x + this.m_direction.x)) + this.m_v2.x, (-b2Settings.b2_toiSlop * (this.m_normal.y + this.m_direction.y)) + this.m_v2.y);
         this.m_cornerDir1 = this.m_normal;
-        this.m_cornerDir2.Set(-this.m_normal.x, -this.m_normal.y);
+        this.m_cornerDir2.Set((-this.m_normal.x), (-this.m_normal.y));
       }
 
       SetPrevEdge(edge, core, cornerDir, convex) {
@@ -3770,8 +3624,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2PolygonShape.b2PolygonShape.apply(this, arguments);
-        if (this.constructor === b2PolygonShape)
-          this.b2PolygonShape.apply(this, arguments);
+        if (this.constructor === b2PolygonShape) this.b2PolygonShape.apply(this, arguments);
       }
 
       static b2PolygonShape() {
@@ -3787,7 +3640,7 @@ while keeping general compatability. (made with box2D js es6) */
       Set(other) {
         this.__super.Set.call(this, other);
         if (Box2D.is(other, b2PolygonShape)) {
-          const other2 = other instanceof b2PolygonShape ? other : null;
+          const other2 = (other instanceof b2PolygonShape ? other : null);
           this.m_centroid.SetV(other2.m_centroid);
           this.m_vertexCount = other2.m_vertexCount;
           this.Reserve(this.m_vertexCount);
@@ -3803,7 +3656,8 @@ while keeping general compatability. (made with box2D js es6) */
         const v = new Vector();
         let i = 0;
         let tVec;
-        for (i = 0; i < vertices.length; ++i) {
+        for (i = 0;
+          i < vertices.length; ++i) {
           tVec = vertices[i];
           v.push(tVec);
         }
@@ -3817,24 +3671,20 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_vertexCount = vertexCount;
         this.Reserve(vertexCount);
         let i = 0;
-        for (i = 0; i < this.m_vertexCount; i++) {
+        for (i = 0;
+          i < this.m_vertexCount; i++) {
           this.m_vertices[i].SetV(vertices[i]);
         }
-        for (i = 0; i < this.m_vertexCount; ++i) {
+        for (i = 0;
+          i < this.m_vertexCount; ++i) {
           const i1 = parseInt(i);
           const i2 = parseInt(i + 1 < this.m_vertexCount ? i + 1 : 0);
-          const edge = b2Math.SubtractVV(
-            this.m_vertices[i2],
-            this.m_vertices[i1],
-          );
+          const edge = b2Math.SubtractVV(this.m_vertices[i2], this.m_vertices[i1]);
           b2Settings.b2Assert(edge.LengthSquared() > Number.MIN_VALUE);
           this.m_normals[i].SetV(b2Math.CrossVF(edge, 1.0));
           this.m_normals[i].Normalize();
         }
-        this.m_centroid = b2PolygonShape.ComputeCentroid(
-          this.m_vertices,
-          this.m_vertexCount,
-        );
+        this.m_centroid = b2PolygonShape.ComputeCentroid(this.m_vertices, this.m_vertexCount);
       }
 
       SetAsBox(hx, hy) {
@@ -3842,14 +3692,14 @@ while keeping general compatability. (made with box2D js es6) */
         if (hy === undefined) hy = 0;
         this.m_vertexCount = 4;
         this.Reserve(4);
-        this.m_vertices[0].Set(-hx, -hy);
-        this.m_vertices[1].Set(hx, -hy);
+        this.m_vertices[0].Set((-hx), (-hy));
+        this.m_vertices[1].Set(hx, (-hy));
         this.m_vertices[2].Set(hx, hy);
-        this.m_vertices[3].Set(-hx, hy);
-        this.m_normals[0].Set(0.0, -1.0);
+        this.m_vertices[3].Set((-hx), hy);
+        this.m_normals[0].Set(0.0, (-1.0));
         this.m_normals[1].Set(1.0, 0.0);
         this.m_normals[2].Set(0.0, 1.0);
-        this.m_normals[3].Set(-1.0, 0.0);
+        this.m_normals[3].Set((-1.0), 0.0);
         this.m_centroid.SetZero();
       }
 
@@ -3860,14 +3710,14 @@ while keeping general compatability. (made with box2D js es6) */
         if (angle === undefined) angle = 0.0;
         this.m_vertexCount = 4;
         this.Reserve(4);
-        this.m_vertices[0].Set(-hx, -hy);
-        this.m_vertices[1].Set(hx, -hy);
+        this.m_vertices[0].Set((-hx), (-hy));
+        this.m_vertices[1].Set(hx, (-hy));
         this.m_vertices[2].Set(hx, hy);
-        this.m_vertices[3].Set(-hx, hy);
-        this.m_normals[0].Set(0.0, -1.0);
+        this.m_vertices[3].Set((-hx), hy);
+        this.m_normals[0].Set(0.0, (-1.0));
         this.m_normals[1].Set(1.0, 0.0);
         this.m_normals[2].Set(0.0, 1.0);
-        this.m_normals[3].Set(-1.0, 0.0);
+        this.m_normals[3].Set((-1.0), 0.0);
         this.m_centroid = center;
         const xf = new b2Transform();
         xf.position = center;
@@ -3887,8 +3737,8 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_centroid.y = 0.5 * (v1.y + v2.y);
         this.m_normals[0] = b2Math.CrossVF(b2Math.SubtractVV(v2, v1), 1.0);
         this.m_normals[0].Normalize();
-        this.m_normals[1].x = -this.m_normals[0].x;
-        this.m_normals[1].y = -this.m_normals[0].y;
+        this.m_normals[1].x = (-this.m_normals[0].x);
+        this.m_normals[1].y = (-this.m_normals[0].y);
       }
 
       TestPoint(xf, p) {
@@ -3896,14 +3746,14 @@ while keeping general compatability. (made with box2D js es6) */
         const tMat = xf.R;
         let tX = p.x - xf.position.x;
         let tY = p.y - xf.position.y;
-        const pLocalX = tX * tMat.col1.x + tY * tMat.col1.y;
-        const pLocalY = tX * tMat.col2.x + tY * tMat.col2.y;
+        const pLocalX = (tX * tMat.col1.x + tY * tMat.col1.y);
+        const pLocalY = (tX * tMat.col2.x + tY * tMat.col2.y);
         for (let i = 0; i < this.m_vertexCount; ++i) {
           tVec = this.m_vertices[i];
           tX = pLocalX - tVec.x;
           tY = pLocalY - tVec.y;
           tVec = this.m_normals[i];
-          const dot = tVec.x * tX + tVec.y * tY;
+          const dot = (tVec.x * tX + tVec.y * tY);
           if (dot > 0.0) {
             return false;
           }
@@ -3921,23 +3771,23 @@ while keeping general compatability. (made with box2D js es6) */
         tX = input.p1.x - transform.position.x;
         tY = input.p1.y - transform.position.y;
         tMat = transform.R;
-        const p1X = tX * tMat.col1.x + tY * tMat.col1.y;
-        const p1Y = tX * tMat.col2.x + tY * tMat.col2.y;
+        const p1X = (tX * tMat.col1.x + tY * tMat.col1.y);
+        const p1Y = (tX * tMat.col2.x + tY * tMat.col2.y);
         tX = input.p2.x - transform.position.x;
         tY = input.p2.y - transform.position.y;
         tMat = transform.R;
-        const p2X = tX * tMat.col1.x + tY * tMat.col1.y;
-        const p2Y = tX * tMat.col2.x + tY * tMat.col2.y;
+        const p2X = (tX * tMat.col1.x + tY * tMat.col1.y);
+        const p2Y = (tX * tMat.col2.x + tY * tMat.col2.y);
         const dX = p2X - p1X;
         const dY = p2Y - p1Y;
-        let index = parseInt(-1);
+        let index = parseInt((-1));
         for (let i = 0; i < this.m_vertexCount; ++i) {
           tVec = this.m_vertices[i];
           tX = tVec.x - p1X;
           tY = tVec.y - p1Y;
           tVec = this.m_normals[i];
-          const numerator = tVec.x * tX + tVec.y * tY;
-          const denominator = tVec.x * dX + tVec.y * dY;
+          const numerator = (tVec.x * tX + tVec.y * tY);
+          const denominator = (tVec.x * dX + tVec.y * dY);
           if (denominator == 0.0) {
             if (numerator < 0.0) {
               return false;
@@ -3958,8 +3808,8 @@ while keeping general compatability. (made with box2D js es6) */
           output.fraction = lower;
           tMat = transform.R;
           tVec = this.m_normals[index];
-          output.normal.x = tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-          output.normal.y = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+          output.normal.x = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+          output.normal.y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           return true;
         }
         return false;
@@ -3968,18 +3818,14 @@ while keeping general compatability. (made with box2D js es6) */
       ComputeAABB(aabb, xf) {
         const tMat = xf.R;
         let tVec = this.m_vertices[0];
-        let lowerX =
-          xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-        let lowerY =
-          xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+        let lowerX = xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+        let lowerY = xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
         let upperX = lowerX;
         let upperY = lowerY;
         for (let i = 1; i < this.m_vertexCount; ++i) {
           tVec = this.m_vertices[i];
-          const vX =
-            xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-          const vY =
-            xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+          const vX = xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+          const vY = xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
           lowerX = lowerX < vX ? lowerX : vX;
           lowerY = lowerY < vY ? lowerY : vY;
           upperX = upperX > vX ? upperX : vX;
@@ -3994,10 +3840,8 @@ while keeping general compatability. (made with box2D js es6) */
       ComputeMass(massData, density) {
         if (density === undefined) density = 0;
         if (this.m_vertexCount == 2) {
-          massData.center.x =
-            0.5 * (this.m_vertices[0].x + this.m_vertices[1].x);
-          massData.center.y =
-            0.5 * (this.m_vertices[0].y + this.m_vertices[1].y);
+          massData.center.x = 0.5 * (this.m_vertices[0].x + this.m_vertices[1].x);
+          massData.center.y = 0.5 * (this.m_vertices[0].y + this.m_vertices[1].y);
           massData.mass = 0.0;
           massData.I = 0.0;
           return;
@@ -4011,17 +3855,13 @@ while keeping general compatability. (made with box2D js es6) */
         const k_inv3 = 1.0 / 3.0;
         for (let i = 0; i < this.m_vertexCount; ++i) {
           const p2 = this.m_vertices[i];
-          const p3 =
-            i + 1 < this.m_vertexCount
-              ? this.m_vertices[parseInt(i + 1)]
-              : this.m_vertices[0];
+          const p3 = i + 1 < this.m_vertexCount ? this.m_vertices[parseInt(i + 1)] : this.m_vertices[0];
           const e1X = p2.x - p1X;
           const e1Y = p2.y - p1Y;
           const e2X = p3.x - p1X;
           const e2Y = p3.y - p1Y;
           const D = e1X * e2Y - e1Y * e2X;
-          const triangleArea = 0.5 * D;
-          area += triangleArea;
+          const triangleArea = 0.5 * D; area += triangleArea;
           centerX += triangleArea * k_inv3 * (p1X + p2.x + p3.x);
           centerY += triangleArea * k_inv3 * (p1Y + p2.y + p3.y);
           const px = p1X;
@@ -4030,17 +3870,8 @@ while keeping general compatability. (made with box2D js es6) */
           const ey1 = e1Y;
           const ex2 = e2X;
           const ey2 = e2Y;
-          const intx2 =
-            k_inv3 *
-              (0.25 * (ex1 * ex1 + ex2 * ex1 + ex2 * ex2) +
-                (px * ex1 + px * ex2)) +
-            0.5 * px * px;
-          const inty2 =
-            k_inv3 *
-              (0.25 * (ey1 * ey1 + ey2 * ey1 + ey2 * ey2) +
-                (py * ey1 + py * ey2)) +
-            0.5 * py * py;
-          I += D * (intx2 + inty2);
+          const intx2 = k_inv3 * (0.25 * (ex1 * ex1 + ex2 * ex1 + ex2 * ex2) + (px * ex1 + px * ex2)) + 0.5 * px * px;
+          const inty2 = k_inv3 * (0.25 * (ey1 * ey1 + ey2 * ey1 + ey2 * ey2) + (py * ey1 + py * ey2)) + 0.5 * py * py; I += D * (intx2 + inty2);
         }
         massData.mass = density * area;
         centerX *= 1.0 / area;
@@ -4055,13 +3886,14 @@ while keeping general compatability. (made with box2D js es6) */
         const offsetL = offset - b2Math.Dot(normal, xf.position);
         const depths = new Vector_a2j_Number();
         let diveCount = 0;
-        let intoIndex = parseInt(-1);
-        let outoIndex = parseInt(-1);
+        let intoIndex = parseInt((-1));
+        let outoIndex = parseInt((-1));
         let lastSubmerged = false;
         let i = 0;
-        for (i = 0; i < this.m_vertexCount; ++i) {
+        for (i = 0;
+          i < this.m_vertexCount; ++i) {
           depths[i] = b2Math.Dot(normalL, this.m_vertices[i]) - offsetL;
-          const isSubmerged = depths[i] < -Number.MIN_VALUE;
+          const isSubmerged = depths[i] < (-Number.MIN_VALUE);
           if (i > 0) {
             if (isSubmerged) {
               if (!lastSubmerged) {
@@ -4089,7 +3921,7 @@ while keeping general compatability. (made with box2D js es6) */
             }
             break;
           case 1:
-            if (intoIndex == -1) {
+            if (intoIndex == (-1)) {
               intoIndex = this.m_vertexCount - 1;
             } else {
               outoIndex = this.m_vertexCount - 1;
@@ -4098,22 +3930,10 @@ while keeping general compatability. (made with box2D js es6) */
         }
         const intoIndex2 = parseInt((intoIndex + 1) % this.m_vertexCount);
         const outoIndex2 = parseInt((outoIndex + 1) % this.m_vertexCount);
-        const intoLamdda =
-          (0 - depths[intoIndex]) / (depths[intoIndex2] - depths[intoIndex]);
-        const outoLamdda =
-          (0 - depths[outoIndex]) / (depths[outoIndex2] - depths[outoIndex]);
-        const intoVec = new b2Vec2(
-          this.m_vertices[intoIndex].x * (1 - intoLamdda) +
-            this.m_vertices[intoIndex2].x * intoLamdda,
-          this.m_vertices[intoIndex].y * (1 - intoLamdda) +
-            this.m_vertices[intoIndex2].y * intoLamdda,
-        );
-        const outoVec = new b2Vec2(
-          this.m_vertices[outoIndex].x * (1 - outoLamdda) +
-            this.m_vertices[outoIndex2].x * outoLamdda,
-          this.m_vertices[outoIndex].y * (1 - outoLamdda) +
-            this.m_vertices[outoIndex2].y * outoLamdda,
-        );
+        const intoLamdda = (0 - depths[intoIndex]) / (depths[intoIndex2] - depths[intoIndex]);
+        const outoLamdda = (0 - depths[outoIndex]) / (depths[outoIndex2] - depths[outoIndex]);
+        const intoVec = new b2Vec2(this.m_vertices[intoIndex].x * (1 - intoLamdda) + this.m_vertices[intoIndex2].x * intoLamdda, this.m_vertices[intoIndex].y * (1 - intoLamdda) + this.m_vertices[intoIndex2].y * intoLamdda);
+        const outoVec = new b2Vec2(this.m_vertices[outoIndex].x * (1 - outoLamdda) + this.m_vertices[outoIndex2].x * outoLamdda, this.m_vertices[outoIndex].y * (1 - outoLamdda) + this.m_vertices[outoIndex2].y * outoLamdda);
         let area = 0;
         const center = new b2Vec2();
         let p2 = this.m_vertices[intoIndex2];
@@ -4123,13 +3943,10 @@ while keeping general compatability. (made with box2D js es6) */
           i = (i + 1) % this.m_vertexCount;
           if (i == outoIndex2) p3 = outoVec;
           else p3 = this.m_vertices[i];
-          const triangleArea =
-            0.5 *
-            ((p2.x - intoVec.x) * (p3.y - intoVec.y) -
-              (p2.y - intoVec.y) * (p3.x - intoVec.x));
+          const triangleArea = 0.5 * ((p2.x - intoVec.x) * (p3.y - intoVec.y) - (p2.y - intoVec.y) * (p3.x - intoVec.x));
           area += triangleArea;
-          center.x += (triangleArea * (intoVec.x + p2.x + p3.x)) / 3;
-          center.y += (triangleArea * (intoVec.y + p2.y + p3.y)) / 3;
+          center.x += triangleArea * (intoVec.x + p2.x + p3.x) / 3;
+          center.y += triangleArea * (intoVec.y + p2.y + p3.y) / 3;
           p2 = p3;
         }
         center.Multiply(1 / area);
@@ -4243,7 +4060,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       get color() {
-        return (this._r << 16) | (this._g << 8) | this._b;
+        return (this._r << 16) | (this._g << 8) | (this._b);
       }
     }
 
@@ -4274,7 +4091,7 @@ while keeping general compatability. (made with box2D js es6) */
         const c = Math.cos(angle);
         const s = Math.sin(angle);
         this.col1.x = c;
-        this.col2.x = -s;
+        this.col2.x = (-s);
         this.col1.y = s;
         this.col2.y = c;
       }
@@ -4330,8 +4147,8 @@ while keeping general compatability. (made with box2D js es6) */
           det = 1.0 / det;
         }
         out.col1.x = det * d;
-        out.col2.x = -det * b;
-        out.col1.y = -det * c;
+        out.col2.x = (-det * b);
+        out.col1.y = (-det * c);
         out.col2.y = det * a;
         return out;
       }
@@ -4468,28 +4285,13 @@ while keeping general compatability. (made with box2D js es6) */
         const a13 = this.col3.x;
         const a23 = this.col3.y;
         const a33 = this.col3.z;
-        let det =
-          a11 * (a22 * a33 - a32 * a23) +
-          a21 * (a32 * a13 - a12 * a33) +
-          a31 * (a12 * a23 - a22 * a13);
+        let det = a11 * (a22 * a33 - a32 * a23) + a21 * (a32 * a13 - a12 * a33) + a31 * (a12 * a23 - a22 * a13);
         if (det != 0.0) {
           det = 1.0 / det;
         }
-        out.x =
-          det *
-          (bX * (a22 * a33 - a32 * a23) +
-            bY * (a32 * a13 - a12 * a33) +
-            bZ * (a12 * a23 - a22 * a13));
-        out.y =
-          det *
-          (a11 * (bY * a33 - bZ * a23) +
-            a21 * (bZ * a13 - bX * a33) +
-            a31 * (bX * a23 - bY * a13));
-        out.z =
-          det *
-          (a11 * (a22 * bZ - a32 * bY) +
-            a21 * (a32 * bX - a12 * bZ) +
-            a31 * (a12 * bY - a22 * bX));
+        out.x = det * (bX * (a22 * a33 - a32 * a23) + bY * (a32 * a13 - a12 * a33) + bZ * (a12 * a23 - a22 * a13));
+        out.y = det * (a11 * (bY * a33 - bZ * a23) + a21 * (bZ * a13 - bX * a33) + a31 * (bX * a23 - bY * a13));
+        out.z = det * (a11 * (a22 * bZ - a32 * bY) + a21 * (a32 * bX - a12 * bZ) + a31 * (a12 * bY - a22 * bX));
         return out;
       }
     }
@@ -4539,10 +4341,8 @@ while keeping general compatability. (made with box2D js es6) */
         const angle = (1.0 - alpha) * this.a0 + alpha * this.a;
         xf.R.Set(angle);
         const tMat = xf.R;
-        xf.position.x -=
-          tMat.col1.x * this.localCenter.x + tMat.col2.x * this.localCenter.y;
-        xf.position.y -=
-          tMat.col1.y * this.localCenter.x + tMat.col2.y * this.localCenter.y;
+        xf.position.x -= (tMat.col1.x * this.localCenter.x + tMat.col2.x * this.localCenter.y);
+        xf.position.y -= (tMat.col1.y * this.localCenter.x + tMat.col2.y * this.localCenter.y);
       }
 
       Advance(t) {
@@ -4562,8 +4362,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2Transform {
       constructor() {
         b2Transform.b2Transform.apply(this, arguments);
-        if (this.constructor === b2Transform)
-          this.b2Transform.apply(this, arguments);
+        if (this.constructor === b2Transform) this.b2Transform.apply(this, arguments);
       }
 
       static b2Transform() {
@@ -4633,12 +4432,12 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       GetNegative() {
-        return new b2Vec2(-this.x, -this.y);
+        return new b2Vec2((-this.x), (-this.y));
       }
 
       NegativeSelf() {
-        this.x = -this.x;
-        this.y = -this.y;
+        this.x = (-this.x);
+        this.y = (-this.y);
       }
 
       Copy() {
@@ -4677,13 +4476,13 @@ while keeping general compatability. (made with box2D js es6) */
         if (s === undefined) s = 0;
         const tX = this.x;
         this.x = s * this.y;
-        this.y = -s * tX;
+        this.y = (-s * tX);
       }
 
       CrossFV(s) {
         if (s === undefined) s = 0;
         const tX = this.x;
-        this.x = -s * this.y;
+        this.x = (-s * this.y);
         this.y = s * tX;
       }
 
@@ -4698,8 +4497,8 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       Abs() {
-        if (this.x < 0) this.x = -this.x;
-        if (this.y < 0) this.y = -this.y;
+        if (this.x < 0) this.x = (-this.x);
+        if (this.y < 0) this.y = (-this.y);
       }
 
       Length() {
@@ -4707,7 +4506,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       LengthSquared() {
-        return this.x * this.x + this.y * this.y;
+        return (this.x * this.x + this.y * this.y);
       }
 
       Normalize() {
@@ -4763,13 +4562,13 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       GetNegative() {
-        return new b2Vec3(-this.x, -this.y, -this.z);
+        return new b2Vec3((-this.x), (-this.y), (-this.z));
       }
 
       NegativeSelf() {
-        this.x = -this.x;
-        this.y = -this.y;
-        this.z = -this.z;
+        this.x = (-this.x);
+        this.y = (-this.y);
+        this.z = (-this.z);
       }
 
       Copy() {
@@ -4813,22 +4612,15 @@ while keeping general compatability. (made with box2D js es6) */
 
       connectEdges(s1, s2, angle1) {
         if (angle1 === undefined) angle1 = 0;
-        const angle2 = Math.atan2(
-          s2.GetDirectionVector().y,
-          s2.GetDirectionVector().x,
-        );
+        const angle2 = Math.atan2(s2.GetDirectionVector().y, s2.GetDirectionVector().x);
         const coreOffset = Math.tan((angle2 - angle1) * 0.5);
         let core = b2Math.MulFV(coreOffset, s2.GetDirectionVector());
         core = b2Math.SubtractVV(core, s2.GetNormalVector());
         core = b2Math.MulFV(b2Settings.b2_toiSlop, core);
         core = b2Math.AddVV(core, s2.GetVertex1());
-        const cornerDir = b2Math.AddVV(
-          s1.GetDirectionVector(),
-          s2.GetDirectionVector(),
-        );
+        const cornerDir = b2Math.AddVV(s1.GetDirectionVector(), s2.GetDirectionVector());
         cornerDir.Normalize();
-        const convex =
-          b2Math.Dot(s1.GetDirectionVector(), s2.GetNormalVector()) > 0.0;
+        const convex = b2Math.Dot(s1.GetDirectionVector(), s2.GetNormalVector()) > 0.0;
         s1.SetNextEdge(s2, core, cornerDir, convex);
         s2.SetPrevEdge(s1, core, cornerDir, convex);
         return angle2;
@@ -4893,8 +4685,7 @@ while keeping general compatability. (made with box2D js es6) */
         if (this.m_flags & b2Body.e_activeFlag) {
           const broadPhase = this.m_world.m_contactManager.m_broadPhase;
           fixture.DestroyProxy(broadPhase);
-        } else {
-        }
+        } else { }
         fixture.Destroy();
         fixture.m_body = null;
         fixture.m_next = null;
@@ -4912,14 +4703,15 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_xf.position.SetV(position);
         const tMat = this.m_xf.R;
         const tVec = this.m_sweep.localCenter;
-        this.m_sweep.c.x = tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-        this.m_sweep.c.y = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+        this.m_sweep.c.x = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+        this.m_sweep.c.y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
         this.m_sweep.c.x += this.m_xf.position.x;
         this.m_sweep.c.y += this.m_xf.position.y;
         this.m_sweep.c0.SetV(this.m_sweep.c);
         this.m_sweep.a0 = this.m_sweep.a = angle;
         const broadPhase = this.m_world.m_contactManager.m_broadPhase;
-        for (f = this.m_fixtureList; f; f = f.m_next) {
+        for (f = this.m_fixtureList;
+          f; f = f.m_next) {
           f.Synchronize(broadPhase, this.m_xf, this.m_xf);
         }
         this.m_world.m_contactManager.FindNewContacts();
@@ -4984,14 +4776,11 @@ while keeping general compatability. (made with box2D js es6) */
       GetDefinition() {
         const bd = new b2BodyDef();
         bd.type = this.GetType();
-        bd.allowSleep =
-          (this.m_flags & b2Body.e_allowSleepFlag) == b2Body.e_allowSleepFlag;
+        bd.allowSleep = (this.m_flags & b2Body.e_allowSleepFlag) == b2Body.e_allowSleepFlag;
         bd.angle = this.GetAngle();
         bd.angularDamping = this.m_angularDamping;
         bd.angularVelocity = this.m_angularVelocity;
-        bd.fixedRotation =
-          (this.m_flags & b2Body.e_fixedRotationFlag) ==
-          b2Body.e_fixedRotationFlag;
+        bd.fixedRotation = (this.m_flags & b2Body.e_fixedRotationFlag) == b2Body.e_fixedRotationFlag;
         bd.bullet = (this.m_flags & b2Body.e_bulletFlag) == b2Body.e_bulletFlag;
         bd.awake = (this.m_flags & b2Body.e_awakeFlag) == b2Body.e_awakeFlag;
         bd.linearDamping = this.m_linearDamping;
@@ -5010,9 +4799,7 @@ while keeping general compatability. (made with box2D js es6) */
         }
         this.m_force.x += force.x;
         this.m_force.y += force.y;
-        this.m_torque +=
-          (point.x - this.m_sweep.c.x) * force.y -
-          (point.y - this.m_sweep.c.y) * force.x;
+        this.m_torque += ((point.x - this.m_sweep.c.x) * force.y - (point.y - this.m_sweep.c.y) * force.x);
       }
 
       ApplyTorque(torque) {
@@ -5035,10 +4822,7 @@ while keeping general compatability. (made with box2D js es6) */
         }
         this.m_linearVelocity.x += this.m_invMass * impulse.x;
         this.m_linearVelocity.y += this.m_invMass * impulse.y;
-        this.m_angularVelocity +=
-          this.m_invI *
-          ((point.x - this.m_sweep.c.x) * impulse.y -
-            (point.y - this.m_sweep.c.y) * impulse.x);
+        this.m_angularVelocity += this.m_invI * ((point.x - this.m_sweep.c.x) * impulse.y - (point.y - this.m_sweep.c.y) * impulse.x);
       }
 
       Split(callback) {
@@ -5048,7 +4832,7 @@ while keeping general compatability. (made with box2D js es6) */
         const body1 = this;
         const body2 = this.m_world.CreateBody(this.GetDefinition());
         let prev;
-        for (let f = body1.m_fixtureList; f; ) {
+        for (let f = body1.m_fixtureList; f;) {
           if (callback(f)) {
             const next = f.m_next;
             if (prev) {
@@ -5071,14 +4855,8 @@ while keeping general compatability. (made with box2D js es6) */
         body2.ResetMassData();
         const center1 = body1.GetWorldCenter();
         const center2 = body2.GetWorldCenter();
-        const velocity1 = b2Math.AddVV(
-          linearVelocity,
-          b2Math.CrossFV(angularVelocity, b2Math.SubtractVV(center1, center)),
-        );
-        const velocity2 = b2Math.AddVV(
-          linearVelocity,
-          b2Math.CrossFV(angularVelocity, b2Math.SubtractVV(center2, center)),
-        );
+        const velocity1 = b2Math.AddVV(linearVelocity, b2Math.CrossFV(angularVelocity, b2Math.SubtractVV(center1, center)));
+        const velocity2 = b2Math.AddVV(linearVelocity, b2Math.CrossFV(angularVelocity, b2Math.SubtractVV(center2, center)));
         body1.SetLinearVelocity(velocity1);
         body2.SetLinearVelocity(velocity2);
         body1.SetAngularVelocity(angularVelocity);
@@ -5090,7 +4868,8 @@ while keeping general compatability. (made with box2D js es6) */
 
       Merge(other) {
         let f;
-        for (f = other.m_fixtureList; f; ) {
+        for (f = other.m_fixtureList;
+          f;) {
           const next = f.m_next;
           other.m_fixtureCount--;
           f.m_next = this.m_fixtureList;
@@ -5142,25 +4921,16 @@ while keeping general compatability. (made with box2D js es6) */
           this.m_mass = 1.0;
         }
         this.m_invMass = 1.0 / this.m_mass;
-        if (
-          massData.I > 0.0 &&
-          (this.m_flags & b2Body.e_fixedRotationFlag) == 0
-        ) {
-          this.m_I =
-            massData.I -
-            this.m_mass *
-              (massData.center.x * massData.center.x +
-                massData.center.y * massData.center.y);
+        if (massData.I > 0.0 && (this.m_flags & b2Body.e_fixedRotationFlag) == 0) {
+          this.m_I = massData.I - this.m_mass * (massData.center.x * massData.center.x + massData.center.y * massData.center.y);
           this.m_invI = 1.0 / this.m_I;
         }
         const oldCenter = this.m_sweep.c.Copy();
         this.m_sweep.localCenter.SetV(massData.center);
         this.m_sweep.c0.SetV(b2Math.MulX(this.m_xf, this.m_sweep.localCenter));
         this.m_sweep.c.SetV(this.m_sweep.c0);
-        this.m_linearVelocity.x +=
-          this.m_angularVelocity * -(this.m_sweep.c.y - oldCenter.y);
-        this.m_linearVelocity.y +=
-          this.m_angularVelocity * +(this.m_sweep.c.x - oldCenter.x);
+        this.m_linearVelocity.x += this.m_angularVelocity * (-(this.m_sweep.c.y - oldCenter.y));
+        this.m_linearVelocity.y += this.m_angularVelocity * (+(this.m_sweep.c.x - oldCenter.x));
       }
 
       ResetMassData() {
@@ -5169,10 +4939,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_I = 0.0;
         this.m_invI = 0.0;
         this.m_sweep.localCenter.SetZero();
-        if (
-          this.m_type == b2Body.b2_staticBody ||
-          this.m_type == b2Body.b2_kinematicBody
-        ) {
+        if (this.m_type == b2Body.b2_staticBody || this.m_type == b2Body.b2_kinematicBody) {
           return;
         }
         const center = b2Vec2.Make(0, 0);
@@ -5194,10 +4961,7 @@ while keeping general compatability. (made with box2D js es6) */
           this.m_mass = 1.0;
           this.m_invMass = 1.0;
         }
-        if (
-          this.m_I > 0.0 &&
-          (this.m_flags & b2Body.e_fixedRotationFlag) == 0
-        ) {
+        if (this.m_I > 0.0 && (this.m_flags & b2Body.e_fixedRotationFlag) == 0) {
           this.m_I -= this.m_mass * (center.x * center.x + center.y * center.y);
           this.m_I *= this.m_inertiaScale;
           b2Settings.b2Assert(this.m_I > 0);
@@ -5210,18 +4974,13 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_sweep.localCenter.SetV(center);
         this.m_sweep.c0.SetV(b2Math.MulX(this.m_xf, this.m_sweep.localCenter));
         this.m_sweep.c.SetV(this.m_sweep.c0);
-        this.m_linearVelocity.x +=
-          this.m_angularVelocity * -(this.m_sweep.c.y - oldCenter.y);
-        this.m_linearVelocity.y +=
-          this.m_angularVelocity * +(this.m_sweep.c.x - oldCenter.x);
+        this.m_linearVelocity.x += this.m_angularVelocity * (-(this.m_sweep.c.y - oldCenter.y));
+        this.m_linearVelocity.y += this.m_angularVelocity * (+(this.m_sweep.c.x - oldCenter.x));
       }
 
       GetWorldPoint(localPoint) {
         const A = this.m_xf.R;
-        const u = new b2Vec2(
-          A.col1.x * localPoint.x + A.col2.x * localPoint.y,
-          A.col1.y * localPoint.x + A.col2.y * localPoint.y,
-        );
+        const u = new b2Vec2(A.col1.x * localPoint.x + A.col2.x * localPoint.y, A.col1.y * localPoint.x + A.col2.y * localPoint.y);
         u.x += this.m_xf.position.x;
         u.y += this.m_xf.position.y;
         return u;
@@ -5240,28 +4999,15 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       GetLinearVelocityFromWorldPoint(worldPoint) {
-        return new b2Vec2(
-          this.m_linearVelocity.x -
-            this.m_angularVelocity * (worldPoint.y - this.m_sweep.c.y),
-          this.m_linearVelocity.y +
-            this.m_angularVelocity * (worldPoint.x - this.m_sweep.c.x),
-        );
+        return new b2Vec2(this.m_linearVelocity.x - this.m_angularVelocity * (worldPoint.y - this.m_sweep.c.y), this.m_linearVelocity.y + this.m_angularVelocity * (worldPoint.x - this.m_sweep.c.x));
       }
 
       GetLinearVelocityFromLocalPoint(localPoint) {
         const A = this.m_xf.R;
-        const worldPoint = new b2Vec2(
-          A.col1.x * localPoint.x + A.col2.x * localPoint.y,
-          A.col1.y * localPoint.x + A.col2.y * localPoint.y,
-        );
+        const worldPoint = new b2Vec2(A.col1.x * localPoint.x + A.col2.x * localPoint.y, A.col1.y * localPoint.x + A.col2.y * localPoint.y);
         worldPoint.x += this.m_xf.position.x;
         worldPoint.y += this.m_xf.position.y;
-        return new b2Vec2(
-          this.m_linearVelocity.x -
-            this.m_angularVelocity * (worldPoint.y - this.m_sweep.c.y),
-          this.m_linearVelocity.y +
-            this.m_angularVelocity * (worldPoint.x - this.m_sweep.c.x),
-        );
+        return new b2Vec2(this.m_linearVelocity.x - this.m_angularVelocity * (worldPoint.y - this.m_sweep.c.y), this.m_linearVelocity.y + this.m_angularVelocity * (worldPoint.x - this.m_sweep.c.x));
       }
 
       GetLinearDamping() {
@@ -5354,10 +5100,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       IsFixedRotation() {
-        return (
-          (this.m_flags & b2Body.e_fixedRotationFlag) ==
-          b2Body.e_fixedRotationFlag
-        );
+        return (this.m_flags & b2Body.e_fixedRotationFlag) == b2Body.e_fixedRotationFlag;
       }
 
       SetActive(flag) {
@@ -5369,13 +5112,15 @@ while keeping general compatability. (made with box2D js es6) */
         if (flag) {
           this.m_flags |= b2Body.e_activeFlag;
           broadPhase = this.m_world.m_contactManager.m_broadPhase;
-          for (f = this.m_fixtureList; f; f = f.m_next) {
+          for (f = this.m_fixtureList;
+            f; f = f.m_next) {
             f.CreateProxy(broadPhase, this.m_xf);
           }
         } else {
           this.m_flags &= ~b2Body.e_activeFlag;
           broadPhase = this.m_world.m_contactManager.m_broadPhase;
-          for (f = this.m_fixtureList; f; f = f.m_next) {
+          for (f = this.m_fixtureList;
+            f; f = f.m_next) {
             f.DestroyProxy(broadPhase);
           }
           let ce = this.m_contactList;
@@ -5393,9 +5138,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       IsSleepingAllowed() {
-        return (
-          (this.m_flags & b2Body.e_allowSleepFlag) == b2Body.e_allowSleepFlag
-        );
+        return (this.m_flags & b2Body.e_allowSleepFlag) == b2Body.e_allowSleepFlag;
       }
 
       GetFixtureList() {
@@ -5455,8 +5198,8 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_sweep.a0 = this.m_sweep.a = bd.angle;
         const tMat = this.m_xf.R;
         const tVec = this.m_sweep.localCenter;
-        this.m_sweep.c.x = tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-        this.m_sweep.c.y = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+        this.m_sweep.c.x = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+        this.m_sweep.c.y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
         this.m_sweep.c.x += this.m_xf.position.x;
         this.m_sweep.c.y += this.m_xf.position.y;
         this.m_sweep.c0.SetV(this.m_sweep.c);
@@ -5494,13 +5237,12 @@ while keeping general compatability. (made with box2D js es6) */
         xf1.R.Set(this.m_sweep.a0);
         const tMat = xf1.R;
         const tVec = this.m_sweep.localCenter;
-        xf1.position.x =
-          this.m_sweep.c0.x - (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-        xf1.position.y =
-          this.m_sweep.c0.y - (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+        xf1.position.x = this.m_sweep.c0.x - (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+        xf1.position.y = this.m_sweep.c0.y - (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
         let f;
         const broadPhase = this.m_world.m_contactManager.m_broadPhase;
-        for (f = this.m_fixtureList; f; f = f.m_next) {
+        for (f = this.m_fixtureList;
+          f; f = f.m_next) {
           f.Synchronize(broadPhase, xf1, this.m_xf);
         }
       }
@@ -5509,17 +5251,12 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_xf.R.Set(this.m_sweep.a);
         const tMat = this.m_xf.R;
         const tVec = this.m_sweep.localCenter;
-        this.m_xf.position.x =
-          this.m_sweep.c.x - (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-        this.m_xf.position.y =
-          this.m_sweep.c.y - (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+        this.m_xf.position.x = this.m_sweep.c.x - (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+        this.m_xf.position.y = this.m_sweep.c.y - (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       }
 
       ShouldCollide(other) {
-        if (
-          this.m_type != b2Body.b2_dynamicBody &&
-          other.m_type != b2Body.b2_dynamicBody
-        ) {
+        if (this.m_type != b2Body.b2_dynamicBody && other.m_type != b2Body.b2_dynamicBody) {
           return false;
         }
         for (let jn = this.m_jointList; jn; jn = jn.next) {
@@ -5546,8 +5283,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2BodyDef {
       constructor() {
         b2BodyDef.b2BodyDef.apply(this, arguments);
-        if (this.constructor === b2BodyDef)
-          this.b2BodyDef.apply(this, arguments);
+        if (this.constructor === b2BodyDef) this.b2BodyDef.apply(this, arguments);
       }
 
       static b2BodyDef() {
@@ -5583,24 +5319,16 @@ while keeping general compatability. (made with box2D js es6) */
       ShouldCollide(fixtureA, fixtureB) {
         const filter1 = fixtureA.GetFilterData();
         const filter2 = fixtureB.GetFilterData();
-        if (
-          filter1.groupIndex == filter2.groupIndex &&
-          filter1.groupIndex != 0
-        ) {
+        if (filter1.groupIndex == filter2.groupIndex && filter1.groupIndex != 0) {
           return filter1.groupIndex > 0;
         }
-        const collide =
-          (filter1.maskBits & filter2.categoryBits) != 0 &&
-          (filter1.categoryBits & filter2.maskBits) != 0;
+        const collide = (filter1.maskBits & filter2.categoryBits) != 0 && (filter1.categoryBits & filter2.maskBits) != 0;
         return collide;
       }
 
       RayCollide(userData, fixture) {
         if (!userData) return true;
-        return this.ShouldCollide(
-          userData instanceof b2Fixture ? userData : null,
-          fixture,
-        );
+        return this.ShouldCollide((userData instanceof b2Fixture ? userData : null), fixture);
       }
     }
 
@@ -5612,12 +5340,8 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       static b2ContactImpulse() {
-        this.normalImpulses = new Vector_a2j_Number(
-          b2Settings.b2_maxManifoldPoints,
-        );
-        this.tangentImpulses = new Vector_a2j_Number(
-          b2Settings.b2_maxManifoldPoints,
-        );
+        this.normalImpulses = new Vector_a2j_Number(b2Settings.b2_maxManifoldPoints);
+        this.tangentImpulses = new Vector_a2j_Number(b2Settings.b2_maxManifoldPoints);
       }
     }
 
@@ -5628,10 +5352,10 @@ while keeping general compatability. (made with box2D js es6) */
         b2ContactListener.b2ContactListener.apply(this, arguments);
       }
 
-      BeginContact(contact) {}
-      EndContact(contact) {}
-      PreSolve(contact, oldManifold) {}
-      PostSolve(contact, impulse) {}
+      BeginContact(contact) { }
+      EndContact(contact) { }
+      PreSolve(contact, oldManifold) { }
+      PostSolve(contact, impulse) { }
     }
 
     Box2D.Dynamics.b2ContactListener = b2ContactListener;
@@ -5639,8 +5363,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2ContactManager {
       constructor() {
         b2ContactManager.b2ContactManager.apply(this, arguments);
-        if (this.constructor === b2ContactManager)
-          this.b2ContactManager.apply(this, arguments);
+        if (this.constructor === b2ContactManager) this.b2ContactManager.apply(this, arguments);
       }
 
       b2ContactManager() {
@@ -5653,10 +5376,8 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       AddPair(proxyUserDataA, proxyUserDataB) {
-        let fixtureA =
-          proxyUserDataA instanceof b2Fixture ? proxyUserDataA : null;
-        let fixtureB =
-          proxyUserDataB instanceof b2Fixture ? proxyUserDataB : null;
+        let fixtureA = (proxyUserDataA instanceof b2Fixture ? proxyUserDataA : null);
+        let fixtureB = (proxyUserDataB instanceof b2Fixture ? proxyUserDataB : null);
         let bodyA = fixtureA.GetBody();
         let bodyB = fixtureB.GetBody();
         if (bodyA == bodyB) return;
@@ -5707,9 +5428,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       FindNewContacts() {
-        this.m_broadPhase.UpdatePairs(
-          Box2D.generateCallback(this, this.AddPair),
-        );
+        this.m_broadPhase.UpdatePairs(Box2D.generateCallback(this, this.AddPair));
       }
 
       Destroy(c) {
@@ -5769,9 +5488,7 @@ while keeping general compatability. (made with box2D js es6) */
               this.Destroy(cNuke);
               continue;
             }
-            if (
-              this.m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false
-            ) {
+            if (this.m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false) {
               cNuke = c;
               c = cNuke.GetNext();
               this.Destroy(cNuke);
@@ -5799,17 +5516,16 @@ while keeping general compatability. (made with box2D js es6) */
     class b2DebugDraw {
       constructor() {
         b2DebugDraw.b2DebugDraw.apply(this, arguments);
-        if (this.constructor === b2DebugDraw)
-          this.b2DebugDraw.apply(this, arguments);
+        if (this.constructor === b2DebugDraw) this.b2DebugDraw.apply(this, arguments);
       }
 
-      b2DebugDraw() {}
+      b2DebugDraw() { }
 
       SetFlags(flags) {
         if (flags === undefined) flags = 0;
       }
 
-      GetFlags() {}
+      GetFlags() { }
 
       AppendFlags(flags) {
         if (flags === undefined) flags = 0;
@@ -5819,38 +5535,38 @@ while keeping general compatability. (made with box2D js es6) */
         if (flags === undefined) flags = 0;
       }
 
-      SetSprite(sprite) {}
-      GetSprite() {}
+      SetSprite(sprite) { }
+      GetSprite() { }
 
       SetDrawScale(drawScale) {
         if (drawScale === undefined) drawScale = 0;
       }
 
-      GetDrawScale() {}
+      GetDrawScale() { }
 
       SetLineThickness(lineThickness) {
         if (lineThickness === undefined) lineThickness = 0;
       }
 
-      GetLineThickness() {}
+      GetLineThickness() { }
 
       SetAlpha(alpha) {
         if (alpha === undefined) alpha = 0;
       }
 
-      GetAlpha() {}
+      GetAlpha() { }
 
       SetFillAlpha(alpha) {
         if (alpha === undefined) alpha = 0;
       }
 
-      GetFillAlpha() {}
+      GetFillAlpha() { }
 
       SetXFormScale(xformScale) {
         if (xformScale === undefined) xformScale = 0;
       }
 
-      GetXFormScale() {}
+      GetXFormScale() { }
 
       DrawPolygon(vertices, vertexCount, color) {
         if (vertexCount === undefined) vertexCount = 0;
@@ -5868,8 +5584,8 @@ while keeping general compatability. (made with box2D js es6) */
         if (radius === undefined) radius = 0;
       }
 
-      DrawSegment(p1, p2, color) {}
-      DrawTransform(xf) {}
+      DrawSegment(p1, p2, color) { }
+      DrawTransform(xf) { }
 
       static b2DebugDraw() {
         this.m_drawScale = 1.0;
@@ -5881,30 +5597,15 @@ while keeping general compatability. (made with box2D js es6) */
         // #WORKAROUND
         this.m_sprite = {
           graphics: {
-            clear: function () {
-              __this.m_ctx.clearRect(
-                0,
-                0,
-                __this.m_ctx.canvas.width,
-                __this.m_ctx.canvas.height,
-              );
-            },
-          },
+            clear: function() {
+              __this.m_ctx.clearRect(0, 0, __this.m_ctx.canvas.width, __this.m_ctx.canvas.height);
+            }
+          }
         };
       }
 
       _color(color, alpha) {
-        return (
-          "rgba(" +
-          ((color & 0xff0000) >> 16) +
-          "," +
-          ((color & 0xff00) >> 8) +
-          "," +
-          (color & 0xff) +
-          "," +
-          alpha +
-          ")"
-        );
+        return 'rgba(' + ((color & 0xFF0000) >> 16) + ',' + ((color & 0xFF00) >> 8) + ',' + (color & 0xFF) + ',' + alpha + ')';
       }
 
       b2DebugDraw() {
@@ -6022,14 +5723,7 @@ while keeping general compatability. (made with box2D js es6) */
         const drawScale = this.m_drawScale;
         s.beginPath();
         s.strokeStyle = this._color(color.color, this.m_alpha);
-        s.arc(
-          center.x * drawScale,
-          center.y * drawScale,
-          radius * drawScale,
-          0,
-          Math.PI * 2,
-          true,
-        );
+        s.arc(center.x * drawScale, center.y * drawScale, radius * drawScale, 0, Math.PI * 2, true);
         s.closePath();
         s.stroke();
       }
@@ -6046,10 +5740,7 @@ while keeping general compatability. (made with box2D js es6) */
         s.fillStyle = this._color(color.color, this.m_fillAlpha);
         s.arc(cx, cy, radius * drawScale, 0, Math.PI * 2, true);
         s.moveTo(cx, cy);
-        s.lineTo(
-          (center.x + axis.x * radius) * drawScale,
-          (center.y + axis.y * radius) * drawScale,
-        );
+        s.lineTo((center.x + axis.x * radius) * drawScale, (center.y + axis.y * radius) * drawScale);
         s.closePath();
         s.fill();
         s.stroke();
@@ -6072,17 +5763,11 @@ while keeping general compatability. (made with box2D js es6) */
         s.beginPath();
         s.strokeStyle = this._color(0xff0000, this.m_alpha);
         s.moveTo(xf.position.x * drawScale, xf.position.y * drawScale);
-        s.lineTo(
-          (xf.position.x + this.m_xformScale * xf.R.col1.x) * drawScale,
-          (xf.position.y + this.m_xformScale * xf.R.col1.y) * drawScale,
-        );
+        s.lineTo((xf.position.x + this.m_xformScale * xf.R.col1.x) * drawScale, (xf.position.y + this.m_xformScale * xf.R.col1.y) * drawScale);
 
         s.strokeStyle = this._color(0xff00, this.m_alpha);
         s.moveTo(xf.position.x * drawScale, xf.position.y * drawScale);
-        s.lineTo(
-          (xf.position.x + this.m_xformScale * xf.R.col2.x) * drawScale,
-          (xf.position.y + this.m_xformScale * xf.R.col2.y) * drawScale,
-        );
+        s.lineTo((xf.position.x + this.m_xformScale * xf.R.col2.x) * drawScale, (xf.position.y + this.m_xformScale * xf.R.col2.y) * drawScale);
         s.closePath();
         s.stroke();
       }
@@ -6095,8 +5780,8 @@ while keeping general compatability. (made with box2D js es6) */
         b2DestructionListener.b2DestructionListener.apply(this, arguments);
       }
 
-      SayGoodbyeJoint(joint) {}
-      SayGoodbyeFixture(fixture) {}
+      SayGoodbyeJoint(joint) { }
+      SayGoodbyeFixture(fixture) { }
     }
 
     Box2D.Dynamics.b2DestructionListener = b2DestructionListener;
@@ -6108,7 +5793,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       static b2FilterData() {
         this.categoryBits = 0x0001;
-        this.maskBits = 0xffff;
+        this.maskBits = 0xFFFF;
         this.groupIndex = 0;
       }
 
@@ -6126,8 +5811,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2Fixture {
       constructor() {
         b2Fixture.b2Fixture.apply(this, arguments);
-        if (this.constructor === b2Fixture)
-          this.b2Fixture.apply(this, arguments);
+        if (this.constructor === b2Fixture) this.b2Fixture.apply(this, arguments);
       }
 
       static b2Fixture() {
@@ -6151,8 +5835,7 @@ while keeping general compatability. (made with box2D js es6) */
           const contact = edge.contact;
           const fixtureA = contact.GetFixtureA();
           const fixtureB = contact.GetFixtureB();
-          if (fixtureA == this || fixtureB == this)
-            contact.SetSensor(fixtureA.IsSensor() || fixtureB.IsSensor());
+          if (fixtureA == this || fixtureB == this) contact.SetSensor(fixtureA.IsSensor() || fixtureB.IsSensor());
           edge = edge.next;
         }
       }
@@ -6289,10 +5972,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_shape.ComputeAABB(aabb1, transform1);
         this.m_shape.ComputeAABB(aabb2, transform2);
         this.m_aabb.Combine(aabb1, aabb2);
-        const displacement = b2Math.SubtractVV(
-          transform2.position,
-          transform1.position,
-        );
+        const displacement = b2Math.SubtractVV(transform2.position, transform1.position);
         broadPhase.MoveProxy(this.m_proxy, this.m_aabb, displacement);
       }
     }
@@ -6302,8 +5982,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2FixtureDef {
       constructor() {
         b2FixtureDef.b2FixtureDef.apply(this, arguments);
-        if (this.constructor === b2FixtureDef)
-          this.b2FixtureDef.apply(this, arguments);
+        if (this.constructor === b2FixtureDef) this.b2FixtureDef.apply(this, arguments);
       }
 
       static b2FixtureDef() {
@@ -6317,7 +5996,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.restitution = 0.0;
         this.density = 0.0;
         this.filter.categoryBits = 0x0001;
-        this.filter.maskBits = 0xffff;
+        this.filter.maskBits = 0xFFFF;
         this.filter.groupIndex = 0;
         this.isSensor = false;
       }
@@ -6343,7 +6022,7 @@ while keeping general compatability. (made with box2D js es6) */
         jointCapacity,
         allocator,
         listener,
-        contactSolver,
+        contactSolver
       ) {
         if (bodyCapacity === undefined) bodyCapacity = 0;
         if (contactCapacity === undefined) contactCapacity = 0;
@@ -6358,15 +6037,12 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_allocator = allocator;
         this.m_listener = listener;
         this.m_contactSolver = contactSolver;
-        for (i = this.m_bodies.length; i < bodyCapacity; i++) {
-          this.m_bodies[i] = null;
-        }
-        for (i = this.m_contacts.length; i < contactCapacity; i++) {
-          this.m_contacts[i] = null;
-        }
-        for (i = this.m_joints.length; i < jointCapacity; i++) {
-          this.m_joints[i] = null;
-        }
+        for (i = this.m_bodies.length;
+          i < bodyCapacity; i++) { this.m_bodies[i] = null; }
+        for (i = this.m_contacts.length;
+          i < contactCapacity; i++) { this.m_contacts[i] = null; }
+        for (i = this.m_joints.length;
+          i < jointCapacity; i++) { this.m_joints[i] = null; }
       }
 
       Clear() {
@@ -6380,56 +6056,46 @@ while keeping general compatability. (made with box2D js es6) */
         let j = 0;
         let b;
         let joint;
-        for (i = 0; i < this.m_bodyCount; ++i) {
+        for (i = 0;
+          i < this.m_bodyCount; ++i) {
           b = this.m_bodies[i];
           if (b.GetType() != b2Body.b2_dynamicBody) continue;
-          b.m_linearVelocity.x +=
-            step.dt * (gravity.x + b.m_invMass * b.m_force.x);
-          b.m_linearVelocity.y +=
-            step.dt * (gravity.y + b.m_invMass * b.m_force.y);
+          b.m_linearVelocity.x += step.dt * (gravity.x + b.m_invMass * b.m_force.x);
+          b.m_linearVelocity.y += step.dt * (gravity.y + b.m_invMass * b.m_force.y);
           b.m_angularVelocity += step.dt * b.m_invI * b.m_torque;
-          b.m_linearVelocity.Multiply(
-            b2Math.Clamp(1.0 - step.dt * b.m_linearDamping, 0.0, 1.0),
-          );
-          b.m_angularVelocity *= b2Math.Clamp(
-            1.0 - step.dt * b.m_angularDamping,
-            0.0,
-            1.0,
-          );
+          b.m_linearVelocity.Multiply(b2Math.Clamp(1.0 - step.dt * b.m_linearDamping, 0.0, 1.0));
+          b.m_angularVelocity *= b2Math.Clamp(1.0 - step.dt * b.m_angularDamping, 0.0, 1.0);
         }
-        this.m_contactSolver.Initialize(
-          step,
-          this.m_contacts,
-          this.m_contactCount,
-          this.m_allocator,
-        );
+        this.m_contactSolver.Initialize(step, this.m_contacts, this.m_contactCount, this.m_allocator);
         const contactSolver = this.m_contactSolver;
         contactSolver.InitVelocityConstraints(step);
-        for (i = 0; i < this.m_jointCount; ++i) {
+        for (i = 0;
+          i < this.m_jointCount; ++i) {
           joint = this.m_joints[i];
           joint.InitVelocityConstraints(step);
         }
-        for (i = 0; i < step.velocityIterations; ++i) {
-          for (j = 0; j < this.m_jointCount; ++j) {
+        for (i = 0;
+          i < step.velocityIterations; ++i) {
+          for (j = 0;
+            j < this.m_jointCount; ++j) {
             joint = this.m_joints[j];
             joint.SolveVelocityConstraints(step);
           }
           contactSolver.SolveVelocityConstraints();
         }
-        for (i = 0; i < this.m_jointCount; ++i) {
+        for (i = 0;
+          i < this.m_jointCount; ++i) {
           joint = this.m_joints[i];
           joint.FinalizeVelocityConstraints();
         }
         contactSolver.FinalizeVelocityConstraints();
-        for (i = 0; i < this.m_bodyCount; ++i) {
+        for (i = 0;
+          i < this.m_bodyCount; ++i) {
           b = this.m_bodies[i];
           if (b.GetType() == b2Body.b2_staticBody) continue;
           const translationX = step.dt * b.m_linearVelocity.x;
           const translationY = step.dt * b.m_linearVelocity.y;
-          if (
-            translationX * translationX + translationY * translationY >
-            b2Settings.b2_maxTranslationSquared
-          ) {
+          if ((translationX * translationX + translationY * translationY) > b2Settings.b2_maxTranslationSquared) {
             b.m_linearVelocity.Normalize();
             b.m_linearVelocity.x *= b2Settings.b2_maxTranslation * step.inv_dt;
             b.m_linearVelocity.y *= b2Settings.b2_maxTranslation * step.inv_dt;
@@ -6437,7 +6103,7 @@ while keeping general compatability. (made with box2D js es6) */
           const rotation = step.dt * b.m_angularVelocity;
           if (rotation * rotation > b2Settings.b2_maxRotationSquared) {
             if (b.m_angularVelocity < 0.0) {
-              b.m_angularVelocity = -b2Settings.b2_maxRotation * step.inv_dt;
+              b.m_angularVelocity = (-b2Settings.b2_maxRotation * step.inv_dt);
             } else {
               b.m_angularVelocity = b2Settings.b2_maxRotation * step.inv_dt;
             }
@@ -6449,16 +6115,14 @@ while keeping general compatability. (made with box2D js es6) */
           b.m_sweep.a += step.dt * b.m_angularVelocity;
           b.SynchronizeTransform();
         }
-        for (i = 0; i < step.positionIterations; ++i) {
-          const contactsOkay = contactSolver.SolvePositionConstraints(
-            b2Settings.b2_contactBaumgarte,
-          );
+        for (i = 0;
+          i < step.positionIterations; ++i) {
+          const contactsOkay = contactSolver.SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
           let jointsOkay = true;
-          for (j = 0; j < this.m_jointCount; ++j) {
+          for (j = 0;
+            j < this.m_jointCount; ++j) {
             joint = this.m_joints[j];
-            const jointOkay = joint.SolvePositionConstraints(
-              b2Settings.b2_contactBaumgarte,
-            );
+            const jointOkay = joint.SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
             jointsOkay = jointsOkay && jointOkay;
           }
           if (contactsOkay && jointsOkay) {
@@ -6468,13 +6132,10 @@ while keeping general compatability. (made with box2D js es6) */
         this.Report(contactSolver.m_constraints);
         if (allowSleep) {
           let minSleepTime = Number.MAX_VALUE;
-          const linTolSqr =
-            b2Settings.b2_linearSleepTolerance *
-            b2Settings.b2_linearSleepTolerance;
-          const angTolSqr =
-            b2Settings.b2_angularSleepTolerance *
-            b2Settings.b2_angularSleepTolerance;
-          for (i = 0; i < this.m_bodyCount; ++i) {
+          const linTolSqr = b2Settings.b2_linearSleepTolerance * b2Settings.b2_linearSleepTolerance;
+          const angTolSqr = b2Settings.b2_angularSleepTolerance * b2Settings.b2_angularSleepTolerance;
+          for (i = 0;
+            i < this.m_bodyCount; ++i) {
             b = this.m_bodies[i];
             if (b.GetType() == b2Body.b2_staticBody) {
               continue;
@@ -6483,11 +6144,7 @@ while keeping general compatability. (made with box2D js es6) */
               b.m_sleepTime = 0.0;
               minSleepTime = 0.0;
             }
-            if (
-              (b.m_flags & b2Body.e_allowSleepFlag) == 0 ||
-              b.m_angularVelocity * b.m_angularVelocity > angTolSqr ||
-              b2Math.Dot(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr
-            ) {
+            if ((b.m_flags & b2Body.e_allowSleepFlag) == 0 || b.m_angularVelocity * b.m_angularVelocity > angTolSqr || b2Math.Dot(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr) {
               b.m_sleepTime = 0.0;
               minSleepTime = 0.0;
             } else {
@@ -6496,7 +6153,8 @@ while keeping general compatability. (made with box2D js es6) */
             }
           }
           if (minSleepTime >= b2Settings.b2_timeToSleep) {
-            for (i = 0; i < this.m_bodyCount; ++i) {
+            for (i = 0;
+              i < this.m_bodyCount; ++i) {
               b = this.m_bodies[i];
               b.SetAwake(false);
             }
@@ -6507,41 +6165,35 @@ while keeping general compatability. (made with box2D js es6) */
       SolveTOI(subStep) {
         let i = 0;
         let j = 0;
-        this.m_contactSolver.Initialize(
-          subStep,
-          this.m_contacts,
-          this.m_contactCount,
-          this.m_allocator,
-        );
+        this.m_contactSolver.Initialize(subStep, this.m_contacts, this.m_contactCount, this.m_allocator);
         const contactSolver = this.m_contactSolver;
-        for (i = 0; i < this.m_jointCount; ++i) {
+        for (i = 0;
+          i < this.m_jointCount; ++i) {
           this.m_joints[i].InitVelocityConstraints(subStep);
         }
-        for (i = 0; i < subStep.velocityIterations; ++i) {
+        for (i = 0;
+          i < subStep.velocityIterations; ++i) {
           contactSolver.SolveVelocityConstraints();
-          for (j = 0; j < this.m_jointCount; ++j) {
+          for (j = 0;
+            j < this.m_jointCount; ++j) {
             this.m_joints[j].SolveVelocityConstraints(subStep);
           }
         }
-        for (i = 0; i < this.m_bodyCount; ++i) {
+        for (i = 0;
+          i < this.m_bodyCount; ++i) {
           const b = this.m_bodies[i];
           if (b.GetType() == b2Body.b2_staticBody) continue;
           const translationX = subStep.dt * b.m_linearVelocity.x;
           const translationY = subStep.dt * b.m_linearVelocity.y;
-          if (
-            translationX * translationX + translationY * translationY >
-            b2Settings.b2_maxTranslationSquared
-          ) {
+          if ((translationX * translationX + translationY * translationY) > b2Settings.b2_maxTranslationSquared) {
             b.m_linearVelocity.Normalize();
-            b.m_linearVelocity.x *=
-              b2Settings.b2_maxTranslation * subStep.inv_dt;
-            b.m_linearVelocity.y *=
-              b2Settings.b2_maxTranslation * subStep.inv_dt;
+            b.m_linearVelocity.x *= b2Settings.b2_maxTranslation * subStep.inv_dt;
+            b.m_linearVelocity.y *= b2Settings.b2_maxTranslation * subStep.inv_dt;
           }
           const rotation = subStep.dt * b.m_angularVelocity;
           if (rotation * rotation > b2Settings.b2_maxRotationSquared) {
             if (b.m_angularVelocity < 0.0) {
-              b.m_angularVelocity = -b2Settings.b2_maxRotation * subStep.inv_dt;
+              b.m_angularVelocity = (-b2Settings.b2_maxRotation * subStep.inv_dt);
             } else {
               b.m_angularVelocity = b2Settings.b2_maxRotation * subStep.inv_dt;
             }
@@ -6554,14 +6206,13 @@ while keeping general compatability. (made with box2D js es6) */
           b.SynchronizeTransform();
         }
         const k_toiBaumgarte = 0.75;
-        for (i = 0; i < subStep.positionIterations; ++i) {
-          const contactsOkay =
-            contactSolver.SolvePositionConstraints(k_toiBaumgarte);
+        for (i = 0;
+          i < subStep.positionIterations; ++i) {
+          const contactsOkay = contactSolver.SolvePositionConstraints(k_toiBaumgarte);
           let jointsOkay = true;
-          for (j = 0; j < this.m_jointCount; ++j) {
-            const jointOkay = this.m_joints[j].SolvePositionConstraints(
-              b2Settings.b2_contactBaumgarte,
-            );
+          for (j = 0;
+            j < this.m_jointCount; ++j) {
+            const jointOkay = this.m_joints[j].SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
             jointsOkay = jointsOkay && jointOkay;
           }
           if (contactsOkay && jointsOkay) {
@@ -6673,10 +6324,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_contactManager.m_broadPhase = broadPhase;
         for (let b = this.m_bodyList; b; b = b.m_next) {
           for (let f = b.m_fixtureList; f; f = f.m_next) {
-            f.m_proxy = broadPhase.CreateProxy(
-              oldBroadPhase.GetFatAABB(f.m_proxy),
-              f,
-            );
+            f.m_proxy = broadPhase.CreateProxy(oldBroadPhase.GetFatAABB(f.m_proxy), f);
           }
         }
       }
@@ -6750,8 +6398,7 @@ while keeping general compatability. (made with box2D js es6) */
         }
         if (b == this.m_bodyList) {
           this.m_bodyList = b.m_next;
-        }
-        --this.m_bodyCount;
+        } --this.m_bodyCount;
       }
 
       CreateJoint(def) {
@@ -6856,8 +6503,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       CreateController(controller) {
-        if (controller.m_world != this)
-          throw new Error("Controller can only be a member of one world");
+        if (controller.m_world != this) throw new Error('Controller can only be a member of one world');
         controller.m_next = this.m_controllerList;
         controller.m_prev = null;
         if (this.m_controllerList) this.m_controllerList.m_prev = controller;
@@ -6871,8 +6517,7 @@ while keeping general compatability. (made with box2D js es6) */
         controller.Clear();
         if (controller.m_next) controller.m_next.m_prev = controller.m_prev;
         if (controller.m_prev) controller.m_prev.m_next = controller.m_next;
-        if (controller == this.m_controllerList)
-          this.m_controllerList = controller.m_next;
+        if (controller == this.m_controllerList) this.m_controllerList = controller.m_next;
         --this.m_controllerCount;
       }
 
@@ -6969,9 +6614,11 @@ while keeping general compatability. (made with box2D js es6) */
         let vs = [new b2Vec2(), new b2Vec2(), new b2Vec2(), new b2Vec2()];
         const color = new b2Color(0, 0, 0);
         if (flags & b2DebugDraw.e_shapeBit) {
-          for (b = this.m_bodyList; b; b = b.m_next) {
+          for (b = this.m_bodyList;
+            b; b = b.m_next) {
             xf = b.m_xf;
-            for (f = b.GetFixtureList(); f; f = f.m_next) {
+            for (f = b.GetFixtureList();
+              f; f = f.m_next) {
               s = f.GetShape();
               if (b.IsActive() == false) {
                 color.Set(0.5, 0.5, 0.3);
@@ -6993,7 +6640,8 @@ while keeping general compatability. (made with box2D js es6) */
           }
         }
         if (flags & b2DebugDraw.e_jointBit) {
-          for (j = this.m_jointList; j; j = j.m_next) {
+          for (j = this.m_jointList;
+            j; j = j.m_next) {
             this.DrawJoint(j);
           }
         }
@@ -7004,11 +6652,7 @@ while keeping general compatability. (made with box2D js es6) */
         }
         if (flags & b2DebugDraw.e_pairBit) {
           color.Set(0.3, 0.9, 0.9);
-          for (
-            let contact = this.m_contactManager.m_contactList;
-            contact;
-            contact = contact.GetNext()
-          ) {
+          for (let contact = this.m_contactManager.m_contactList; contact; contact = contact.GetNext()) {
             const fixtureA = contact.GetFixtureA();
             const fixtureB = contact.GetFixtureB();
             const cA = fixtureA.GetAABB().GetCenter();
@@ -7019,11 +6663,13 @@ while keeping general compatability. (made with box2D js es6) */
         if (flags & b2DebugDraw.e_aabbBit) {
           bp = this.m_contactManager.m_broadPhase;
           vs = [new b2Vec2(), new b2Vec2(), new b2Vec2(), new b2Vec2()];
-          for (b = this.m_bodyList; b; b = b.GetNext()) {
+          for (b = this.m_bodyList;
+            b; b = b.GetNext()) {
             if (b.IsActive() == false) {
               continue;
             }
-            for (f = b.GetFixtureList(); f; f = f.GetNext()) {
+            for (f = b.GetFixtureList();
+              f; f = f.GetNext()) {
               const aabb = bp.GetFatAABB(f.m_proxy);
               vs[0].Set(aabb.lowerBound.x, aabb.lowerBound.y);
               vs[1].Set(aabb.upperBound.x, aabb.lowerBound.y);
@@ -7034,7 +6680,8 @@ while keeping general compatability. (made with box2D js es6) */
           }
         }
         if (flags & b2DebugDraw.e_centerOfMassBit) {
-          for (b = this.m_bodyList; b; b = b.m_next) {
+          for (b = this.m_bodyList;
+            b; b = b.m_next) {
             xf = b2World.s_xf;
             xf.R = b.m_xf.R;
             xf.position = b.GetWorldCenter();
@@ -7063,19 +6710,8 @@ while keeping general compatability. (made with box2D js es6) */
         const broadPhase = __this.m_contactManager.m_broadPhase;
 
         function WorldQueryWrapper(proxy) {
-          const fixture =
-            broadPhase.GetUserData(proxy) instanceof b2Fixture
-              ? broadPhase.GetUserData(proxy)
-              : null;
-          if (
-            b2Shape.TestOverlap(
-              shape,
-              transform,
-              fixture.GetShape(),
-              fixture.GetBody().GetTransform(),
-            )
-          )
-            return callback(fixture);
+          const fixture = (broadPhase.GetUserData(proxy) instanceof b2Fixture ? broadPhase.GetUserData(proxy) : null);
+          if (b2Shape.TestOverlap(shape, transform, fixture.GetShape(), fixture.GetBody().GetTransform())) return callback(fixture);
           return true;
         }
         const aabb = new b2AABB();
@@ -7088,22 +6724,13 @@ while keeping general compatability. (made with box2D js es6) */
         const broadPhase = __this.m_contactManager.m_broadPhase;
 
         function WorldQueryWrapper(proxy) {
-          const fixture =
-            broadPhase.GetUserData(proxy) instanceof b2Fixture
-              ? broadPhase.GetUserData(proxy)
-              : null;
+          const fixture = (broadPhase.GetUserData(proxy) instanceof b2Fixture ? broadPhase.GetUserData(proxy) : null);
           if (fixture.TestPoint(p)) return callback(fixture);
           return true;
         }
         const aabb = new b2AABB();
-        aabb.lowerBound.Set(
-          p.x - b2Settings.b2_linearSlop,
-          p.y - b2Settings.b2_linearSlop,
-        );
-        aabb.upperBound.Set(
-          p.x + b2Settings.b2_linearSlop,
-          p.y + b2Settings.b2_linearSlop,
-        );
+        aabb.lowerBound.Set(p.x - b2Settings.b2_linearSlop, p.y - b2Settings.b2_linearSlop);
+        aabb.upperBound.Set(p.x + b2Settings.b2_linearSlop, p.y + b2Settings.b2_linearSlop);
         broadPhase.Query(WorldQueryWrapper, aabb);
       }
 
@@ -7114,14 +6741,11 @@ while keeping general compatability. (made with box2D js es6) */
 
         function RayCastWrapper(input, proxy) {
           const userData = broadPhase.GetUserData(proxy);
-          const fixture = userData instanceof b2Fixture ? userData : null;
+          const fixture = (userData instanceof b2Fixture ? userData : null);
           const hit = fixture.RayCast(output, input);
           if (hit) {
             const fraction = output.fraction;
-            const point = new b2Vec2(
-              (1.0 - fraction) * point1.x + fraction * point2.x,
-              (1.0 - fraction) * point1.y + fraction * point2.y,
-            );
+            const point = new b2Vec2((1.0 - fraction) * point1.x + fraction * point2.x, (1.0 - fraction) * point1.y + fraction * point2.y);
             return callback(fixture, point, output.normal, fraction);
           }
           return input.maxFraction;
@@ -7174,23 +6798,13 @@ while keeping general compatability. (made with box2D js es6) */
 
       Solve(step) {
         let b;
-        for (
-          let controller = this.m_controllerList;
-          controller;
-          controller = controller.m_next
-        ) {
+        for (let controller = this.m_controllerList; controller; controller = controller.m_next) {
           controller.Step(step);
         }
         const island = this.m_island;
-        island.Initialize(
-          this.m_bodyCount,
-          this.m_contactCount,
-          this.m_jointCount,
-          null,
-          this.m_contactManager.m_contactListener,
-          this.m_contactSolver,
-        );
-        for (b = this.m_bodyList; b; b = b.m_next) {
+        island.Initialize(this.m_bodyCount, this.m_contactCount, this.m_jointCount, null, this.m_contactManager.m_contactListener, this.m_contactSolver);
+        for (b = this.m_bodyList;
+          b; b = b.m_next) {
           b.m_flags &= ~b2Body.e_islandFlag;
         }
         for (let c = this.m_contactList; c; c = c.m_next) {
@@ -7229,11 +6843,7 @@ while keeping general compatability. (made with box2D js es6) */
               if (ce.contact.m_flags & b2Contact.e_islandFlag) {
                 continue;
               }
-              if (
-                ce.contact.IsSensor() == true ||
-                ce.contact.IsEnabled() == false ||
-                ce.contact.IsTouching() == false
-              ) {
+              if (ce.contact.IsSensor() == true || ce.contact.IsEnabled() == false || ce.contact.IsTouching() == false) {
                 continue;
               }
               island.AddContact(ce.contact);
@@ -7270,11 +6880,13 @@ while keeping general compatability. (made with box2D js es6) */
             }
           }
         }
-        for (i = 0; i < stack.length; ++i) {
+        for (i = 0;
+          i < stack.length; ++i) {
           if (!stack[i]) break;
           stack[i] = null;
         }
-        for (b = this.m_bodyList; b; b = b.m_next) {
+        for (b = this.m_bodyList;
+          b; b = b.m_next) {
           if (b.IsAwake() == false || b.IsActive() == false) {
             continue;
           }
@@ -7295,35 +6907,28 @@ while keeping general compatability. (made with box2D js es6) */
         let cEdge;
         let j;
         const island = this.m_island;
-        island.Initialize(
-          this.m_bodyCount,
-          b2Settings.b2_maxTOIContactsPerIsland,
-          b2Settings.b2_maxTOIJointsPerIsland,
-          null,
-          this.m_contactManager.m_contactListener,
-          this.m_contactSolver,
-        );
+        island.Initialize(this.m_bodyCount, b2Settings.b2_maxTOIContactsPerIsland, b2Settings.b2_maxTOIJointsPerIsland, null, this.m_contactManager.m_contactListener, this.m_contactSolver);
         const queue = b2World.s_queue;
-        for (b = this.m_bodyList; b; b = b.m_next) {
+        for (b = this.m_bodyList;
+          b; b = b.m_next) {
           b.m_flags &= ~b2Body.e_islandFlag;
           b.m_sweep.t0 = 0.0;
         }
         let c;
-        for (c = this.m_contactList; c; c = c.m_next) {
+        for (c = this.m_contactList;
+          c; c = c.m_next) {
           c.m_flags &= ~(b2Contact.e_toiFlag | b2Contact.e_islandFlag);
         }
-        for (j = this.m_jointList; j; j = j.m_next) {
+        for (j = this.m_jointList;
+          j; j = j.m_next) {
           j.m_islandFlag = false;
         }
-        for (;;) {
+        for (; ;) {
           let minContact = null;
           let minTOI = 1.0;
-          for (c = this.m_contactList; c; c = c.m_next) {
-            if (
-              c.IsSensor() == true ||
-              c.IsEnabled() == false ||
-              c.IsContinuous() == false
-            ) {
+          for (c = this.m_contactList;
+            c; c = c.m_next) {
+            if (c.IsSensor() == true || c.IsEnabled() == false || c.IsContinuous() == false) {
               continue;
             }
             let toi = 1.0;
@@ -7334,11 +6939,7 @@ while keeping general compatability. (made with box2D js es6) */
               fB = c.m_fixtureB;
               bA = fA.m_body;
               bB = fB.m_body;
-              if (
-                (bA.GetType() != b2Body.b2_dynamicBody ||
-                  bA.IsAwake() == false) &&
-                (bB.GetType() != b2Body.b2_dynamicBody || bB.IsAwake() == false)
-              ) {
+              if ((bA.GetType() != b2Body.b2_dynamicBody || bA.IsAwake() == false) && (bB.GetType() != b2Body.b2_dynamicBody || bB.IsAwake() == false)) {
                 continue;
               }
               let t0 = bA.m_sweep.t0;
@@ -7376,10 +6977,7 @@ while keeping general compatability. (made with box2D js es6) */
           bB.Advance(minTOI);
           minContact.Update(this.m_contactManager.m_contactListener);
           minContact.m_flags &= ~b2Contact.e_toiFlag;
-          if (
-            minContact.IsSensor() == true ||
-            minContact.IsEnabled() == false
-          ) {
+          if (minContact.IsSensor() == true || minContact.IsEnabled() == false) {
             bA.m_sweep.Set(b2World.s_backupA);
             bB.m_sweep.Set(b2World.s_backupB);
             bA.SynchronizeTransform();
@@ -7408,18 +7006,15 @@ while keeping general compatability. (made with box2D js es6) */
             if (b.GetType() != b2Body.b2_dynamicBody) {
               continue;
             }
-            for (cEdge = b.m_contactList; cEdge; cEdge = cEdge.next) {
+            for (cEdge = b.m_contactList;
+              cEdge; cEdge = cEdge.next) {
               if (island.m_contactCount == island.m_contactCapacity) {
                 break;
               }
               if (cEdge.contact.m_flags & b2Contact.e_islandFlag) {
                 continue;
               }
-              if (
-                cEdge.contact.IsSensor() == true ||
-                cEdge.contact.IsEnabled() == false ||
-                cEdge.contact.IsTouching() == false
-              ) {
+              if (cEdge.contact.IsSensor() == true || cEdge.contact.IsEnabled() == false || cEdge.contact.IsTouching() == false) {
                 continue;
               }
               island.AddContact(cEdge.contact);
@@ -7464,7 +7059,8 @@ while keeping general compatability. (made with box2D js es6) */
           subStep.positionIterations = step.positionIterations;
           island.SolveTOI(subStep);
           let i = 0;
-          for (i = 0; i < island.m_bodyCount; ++i) {
+          for (i = 0;
+            i < island.m_bodyCount; ++i) {
             b = island.m_bodies[i];
             b.m_flags &= ~b2Body.e_islandFlag;
             if (b.IsAwake() == false) {
@@ -7474,15 +7070,18 @@ while keeping general compatability. (made with box2D js es6) */
               continue;
             }
             b.SynchronizeFixtures();
-            for (cEdge = b.m_contactList; cEdge; cEdge = cEdge.next) {
+            for (cEdge = b.m_contactList;
+              cEdge; cEdge = cEdge.next) {
               cEdge.contact.m_flags &= ~b2Contact.e_toiFlag;
             }
           }
-          for (i = 0; i < island.m_contactCount; ++i) {
+          for (i = 0;
+            i < island.m_contactCount; ++i) {
             c = island.m_contacts[i];
             c.m_flags &= ~(b2Contact.e_toiFlag | b2Contact.e_islandFlag);
           }
-          for (i = 0; i < island.m_jointCount; ++i) {
+          for (i = 0;
+            i < island.m_jointCount; ++i) {
             j = island.m_joints[i];
             j.m_islandFlag = false;
           }
@@ -7506,7 +7105,7 @@ while keeping general compatability. (made with box2D js es6) */
             break;
           case b2Joint.e_pulleyJoint:
             {
-              const pulley = joint instanceof b2PulleyJoint ? joint : null;
+              const pulley = ((joint instanceof b2PulleyJoint ? joint : null));
               const s1 = pulley.GetGroundAnchorA();
               const s2 = pulley.GetGroundAnchorB();
               this.m_debugDraw.DrawSegment(s1, p1, color);
@@ -7518,11 +7117,9 @@ while keeping general compatability. (made with box2D js es6) */
             this.m_debugDraw.DrawSegment(p1, p2, color);
             break;
           default:
-            if (b1 != this.m_groundBody)
-              this.m_debugDraw.DrawSegment(x1, p1, color);
+            if (b1 != this.m_groundBody) this.m_debugDraw.DrawSegment(x1, p1, color);
             this.m_debugDraw.DrawSegment(p1, p2, color);
-            if (b2 != this.m_groundBody)
-              this.m_debugDraw.DrawSegment(x2, p2, color);
+            if (b2 != this.m_groundBody) this.m_debugDraw.DrawSegment(x2, p2, color);
         }
       }
 
@@ -7530,7 +7127,7 @@ while keeping general compatability. (made with box2D js es6) */
         switch (shape.m_type) {
           case b2Shape.e_circleShape:
             {
-              const circle = shape instanceof b2CircleShape ? shape : null;
+              const circle = ((shape instanceof b2CircleShape ? shape : null));
               const center = b2Math.MulX(xf, circle.m_p);
               const radius = circle.m_radius;
               const axis = xf.R.col1;
@@ -7540,11 +7137,12 @@ while keeping general compatability. (made with box2D js es6) */
           case b2Shape.e_polygonShape:
             {
               let i = 0;
-              const poly = shape instanceof b2PolygonShape ? shape : null;
+              const poly = ((shape instanceof b2PolygonShape ? shape : null));
               const vertexCount = parseInt(poly.GetVertexCount());
               const localVertices = poly.GetVertices();
               const vertices = new Vector(vertexCount);
-              for (i = 0; i < vertexCount; ++i) {
+              for (i = 0;
+                i < vertexCount; ++i) {
                 vertices[i] = b2Math.MulX(xf, localVertices[i]);
               }
               this.m_debugDraw.DrawSolidPolygon(vertices, vertexCount, color);
@@ -7552,12 +7150,8 @@ while keeping general compatability. (made with box2D js es6) */
             break;
           case b2Shape.e_edgeShape:
             {
-              const edge = shape instanceof b2EdgeShape ? shape : null;
-              this.m_debugDraw.DrawSegment(
-                b2Math.MulX(xf, edge.GetVertex1()),
-                b2Math.MulX(xf, edge.GetVertex2()),
-                color,
-              );
+              const edge = (shape instanceof b2EdgeShape ? shape : null);
+              this.m_debugDraw.DrawSegment(b2Math.MulX(xf, edge.GetVertex1()), b2Math.MulX(xf, edge.GetVertex2()), color);
             }
             break;
         }
@@ -7569,8 +7163,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2Contact {
       constructor() {
         b2Contact.b2Contact.apply(this, arguments);
-        if (this.constructor === b2Contact)
-          this.b2Contact.apply(this, arguments);
+        if (this.constructor === b2Contact) this.b2Contact.apply(this, arguments);
       }
 
       static b2Contact() {
@@ -7589,26 +7182,15 @@ while keeping general compatability. (made with box2D js es6) */
         const bodyB = this.m_fixtureB.GetBody();
         const shapeA = this.m_fixtureA.GetShape();
         const shapeB = this.m_fixtureB.GetShape();
-        worldManifold.Initialize(
-          this.m_manifold,
-          bodyA.GetTransform(),
-          shapeA.m_radius,
-          bodyB.GetTransform(),
-          shapeB.m_radius,
-        );
+        worldManifold.Initialize(this.m_manifold, bodyA.GetTransform(), shapeA.m_radius, bodyB.GetTransform(), shapeB.m_radius);
       }
 
       IsTouching() {
-        return (
-          (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag
-        );
+        return (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
       }
 
       IsContinuous() {
-        return (
-          (this.m_flags & b2Contact.e_continuousFlag) ==
-          b2Contact.e_continuousFlag
-        );
+        return (this.m_flags & b2Contact.e_continuousFlag) == b2Contact.e_continuousFlag;
       }
 
       SetSensor(sensor) {
@@ -7620,9 +7202,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       IsSensor() {
-        return (
-          (this.m_flags & b2Contact.e_sensorFlag) == b2Contact.e_sensorFlag
-        );
+        return (this.m_flags & b2Contact.e_sensorFlag) == b2Contact.e_sensorFlag;
       }
 
       SetEnabled(flag) {
@@ -7634,9 +7214,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       IsEnabled() {
-        return (
-          (this.m_flags & b2Contact.e_enabledFlag) == b2Contact.e_enabledFlag
-        );
+        return (this.m_flags & b2Contact.e_enabledFlag) == b2Contact.e_enabledFlag;
       }
 
       GetNext() {
@@ -7655,7 +7233,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_flags |= b2Contact.e_filterFlag;
       }
 
-      b2Contact() {}
+      b2Contact() { }
 
       Reset(fixtureA, fixtureB) {
         if (fixtureA === undefined) fixtureA = null;
@@ -7671,12 +7249,7 @@ while keeping general compatability. (made with box2D js es6) */
         }
         const bodyA = fixtureA.GetBody();
         const bodyB = fixtureB.GetBody();
-        if (
-          bodyA.GetType() != b2Body.b2_dynamicBody ||
-          bodyA.IsBullet() ||
-          bodyB.GetType() != b2Body.b2_dynamicBody ||
-          bodyB.IsBullet()
-        ) {
+        if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
           this.m_flags |= b2Contact.e_continuousFlag;
         }
         this.m_fixtureA = fixtureA;
@@ -7700,13 +7273,10 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_manifold = tManifold;
         this.m_flags |= b2Contact.e_enabledFlag;
         let touching = false;
-        const wasTouching =
-          (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
+        const wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
         const bodyA = this.m_fixtureA.m_body;
         const bodyB = this.m_fixtureB.m_body;
-        const aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(
-          this.m_fixtureB.m_aabb,
-        );
+        const aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
         if (this.m_flags & b2Contact.e_sensorFlag) {
           if (aabbOverlap) {
             const shapeA = this.m_fixtureA.GetShape();
@@ -7717,12 +7287,7 @@ while keeping general compatability. (made with box2D js es6) */
           }
           this.m_manifold.m_pointCount = 0;
         } else {
-          if (
-            bodyA.GetType() != b2Body.b2_dynamicBody ||
-            bodyA.IsBullet() ||
-            bodyB.GetType() != b2Body.b2_dynamicBody ||
-            bodyB.IsBullet()
-          ) {
+          if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
             this.m_flags |= b2Contact.e_continuousFlag;
           } else {
             this.m_flags &= ~b2Contact.e_continuousFlag;
@@ -7768,7 +7333,7 @@ while keeping general compatability. (made with box2D js es6) */
         }
       }
 
-      Evaluate() {}
+      Evaluate() { }
 
       ComputeTOI(sweepA, sweepB) {
         b2Contact.s_input.proxyA.Set(this.m_fixtureA.GetShape());
@@ -7799,17 +7364,7 @@ while keeping general compatability. (made with box2D js es6) */
       Evaluate() {
         const bA = this.m_fixtureA.GetBody();
         const bB = this.m_fixtureB.GetBody();
-        b2Collision.CollideCircles(
-          this.m_manifold,
-          this.m_fixtureA.GetShape() instanceof b2CircleShape
-            ? this.m_fixtureA.GetShape()
-            : null,
-          bA.m_xf,
-          this.m_fixtureB.GetShape() instanceof b2CircleShape
-            ? this.m_fixtureB.GetShape()
-            : null,
-          bB.m_xf,
-        );
+        b2Collision.CollideCircles(this.m_manifold, (this.m_fixtureA.GetShape() instanceof b2CircleShape ? this.m_fixtureA.GetShape() : null), bA.m_xf, (this.m_fixtureB.GetShape() instanceof b2CircleShape ? this.m_fixtureB.GetShape() : null), bB.m_xf);
       }
     }
 
@@ -7818,8 +7373,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2ContactConstraint {
       constructor() {
         b2ContactConstraint.b2ContactConstraint.apply(this, arguments);
-        if (this.constructor === b2ContactConstraint)
-          this.b2ContactConstraint.apply(this, arguments);
+        if (this.constructor === b2ContactConstraint) this.b2ContactConstraint.apply(this, arguments);
       }
 
       static b2ContactConstraint() {
@@ -7842,10 +7396,7 @@ while keeping general compatability. (made with box2D js es6) */
 
     class b2ContactConstraintPoint {
       constructor() {
-        b2ContactConstraintPoint.b2ContactConstraintPoint.apply(
-          this,
-          arguments,
-        );
+        b2ContactConstraintPoint.b2ContactConstraintPoint.apply(this, arguments);
       }
 
       static b2ContactConstraintPoint() {
@@ -7865,8 +7416,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2ContactFactory {
       constructor() {
         b2ContactFactory.b2ContactFactory.apply(this, arguments);
-        if (this.constructor === b2ContactFactory)
-          this.b2ContactFactory.apply(this, arguments);
+        if (this.constructor === b2ContactFactory) this.b2ContactFactory.apply(this, arguments);
       }
 
       b2ContactFactory(allocator) {
@@ -7895,36 +7445,11 @@ while keeping general compatability. (made with box2D js es6) */
             this.m_registers[i][j] = new b2ContactRegister();
           }
         }
-        this.AddType(
-          b2CircleContact.Create,
-          b2CircleContact.Destroy,
-          b2Shape.e_circleShape,
-          b2Shape.e_circleShape,
-        );
-        this.AddType(
-          b2PolyAndCircleContact.Create,
-          b2PolyAndCircleContact.Destroy,
-          b2Shape.e_polygonShape,
-          b2Shape.e_circleShape,
-        );
-        this.AddType(
-          b2PolygonContact.Create,
-          b2PolygonContact.Destroy,
-          b2Shape.e_polygonShape,
-          b2Shape.e_polygonShape,
-        );
-        this.AddType(
-          b2EdgeAndCircleContact.Create,
-          b2EdgeAndCircleContact.Destroy,
-          b2Shape.e_edgeShape,
-          b2Shape.e_circleShape,
-        );
-        this.AddType(
-          b2PolyAndEdgeContact.Create,
-          b2PolyAndEdgeContact.Destroy,
-          b2Shape.e_polygonShape,
-          b2Shape.e_edgeShape,
-        );
+        this.AddType(b2CircleContact.Create, b2CircleContact.Destroy, b2Shape.e_circleShape, b2Shape.e_circleShape);
+        this.AddType(b2PolyAndCircleContact.Create, b2PolyAndCircleContact.Destroy, b2Shape.e_polygonShape, b2Shape.e_circleShape);
+        this.AddType(b2PolygonContact.Create, b2PolygonContact.Destroy, b2Shape.e_polygonShape, b2Shape.e_polygonShape);
+        this.AddType(b2EdgeAndCircleContact.Create, b2EdgeAndCircleContact.Destroy, b2Shape.e_edgeShape, b2Shape.e_circleShape);
+        this.AddType(b2PolyAndEdgeContact.Create, b2PolyAndEdgeContact.Destroy, b2Shape.e_polygonShape, b2Shape.e_edgeShape);
       }
 
       Create(fixtureA, fixtureB) {
@@ -7997,8 +7522,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2ContactSolver {
       constructor() {
         b2ContactSolver.b2ContactSolver.apply(this, arguments);
-        if (this.constructor === b2ContactSolver)
-          this.b2ContactSolver.apply(this, arguments);
+        if (this.constructor === b2ContactSolver) this.b2ContactSolver.apply(this, arguments);
       }
 
       static b2ContactSolver() {
@@ -8006,7 +7530,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_constraints = new Vector();
       }
 
-      b2ContactSolver() {}
+      b2ContactSolver() { }
 
       Initialize(step, contacts, contactCount, allocator) {
         if (contactCount === undefined) contactCount = 0;
@@ -8018,10 +7542,10 @@ while keeping general compatability. (made with box2D js es6) */
         let tMat;
         this.m_constraintCount = contactCount;
         while (this.m_constraints.length < this.m_constraintCount) {
-          this.m_constraints[this.m_constraints.length] =
-            new b2ContactConstraint();
+          this.m_constraints[this.m_constraints.length] = new b2ContactConstraint();
         }
-        for (i = 0; i < contactCount; ++i) {
+        for (i = 0;
+          i < contactCount; ++i) {
           contact = contacts[i];
           const fixtureA = contact.m_fixtureA;
           const fixtureB = contact.m_fixtureB;
@@ -8032,14 +7556,8 @@ while keeping general compatability. (made with box2D js es6) */
           const bodyA = fixtureA.m_body;
           const bodyB = fixtureB.m_body;
           const manifold = contact.GetManifold();
-          const friction = b2Settings.b2MixFriction(
-            fixtureA.GetFriction(),
-            fixtureB.GetFriction(),
-          );
-          const restitution = b2Settings.b2MixRestitution(
-            fixtureA.GetRestitution(),
-            fixtureB.GetRestitution(),
-          );
+          const friction = b2Settings.b2MixFriction(fixtureA.GetFriction(), fixtureB.GetFriction());
+          const restitution = b2Settings.b2MixRestitution(fixtureA.GetRestitution(), fixtureB.GetRestitution());
           const vAX = bodyA.m_linearVelocity.x;
           const vAY = bodyA.m_linearVelocity.y;
           const vBX = bodyB.m_linearVelocity.x;
@@ -8047,13 +7565,7 @@ while keeping general compatability. (made with box2D js es6) */
           const wA = bodyA.m_angularVelocity;
           const wB = bodyB.m_angularVelocity;
           b2Settings.b2Assert(manifold.m_pointCount > 0);
-          b2ContactSolver.s_worldManifold.Initialize(
-            manifold,
-            bodyA.m_xf,
-            radiusA,
-            bodyB.m_xf,
-            radiusB,
-          );
+          b2ContactSolver.s_worldManifold.Initialize(manifold, bodyA.m_xf, radiusA, bodyB.m_xf, radiusB);
           const normalX = b2ContactSolver.s_worldManifold.m_normal.x;
           const normalY = b2ContactSolver.s_worldManifold.m_normal.y;
           const cc = this.m_constraints[i];
@@ -8077,52 +7589,33 @@ while keeping general compatability. (made with box2D js es6) */
             ccp.normalImpulse = cp.m_normalImpulse;
             ccp.tangentImpulse = cp.m_tangentImpulse;
             ccp.localPoint.SetV(cp.m_localPoint);
-            const rAX = (ccp.rA.x =
-              b2ContactSolver.s_worldManifold.m_points[k].x -
-              bodyA.m_sweep.c.x);
-            const rAY = (ccp.rA.y =
-              b2ContactSolver.s_worldManifold.m_points[k].y -
-              bodyA.m_sweep.c.y);
-            const rBX = (ccp.rB.x =
-              b2ContactSolver.s_worldManifold.m_points[k].x -
-              bodyB.m_sweep.c.x);
-            const rBY = (ccp.rB.y =
-              b2ContactSolver.s_worldManifold.m_points[k].y -
-              bodyB.m_sweep.c.y);
+            const rAX = ccp.rA.x = b2ContactSolver.s_worldManifold.m_points[k].x - bodyA.m_sweep.c.x;
+            const rAY = ccp.rA.y = b2ContactSolver.s_worldManifold.m_points[k].y - bodyA.m_sweep.c.y;
+            const rBX = ccp.rB.x = b2ContactSolver.s_worldManifold.m_points[k].x - bodyB.m_sweep.c.x;
+            const rBY = ccp.rB.y = b2ContactSolver.s_worldManifold.m_points[k].y - bodyB.m_sweep.c.y;
             let rnA = rAX * normalY - rAY * normalX;
             let rnB = rBX * normalY - rBY * normalX;
             rnA *= rnA;
             rnB *= rnB;
-            const kNormal =
-              bodyA.m_invMass +
-              bodyB.m_invMass +
-              bodyA.m_invI * rnA +
-              bodyB.m_invI * rnB;
+            const kNormal = bodyA.m_invMass + bodyB.m_invMass + bodyA.m_invI * rnA + bodyB.m_invI * rnB;
             ccp.normalMass = 1.0 / kNormal;
-            let kEqualized =
-              bodyA.m_mass * bodyA.m_invMass + bodyB.m_mass * bodyB.m_invMass;
-            kEqualized +=
-              bodyA.m_mass * bodyA.m_invI * rnA +
-              bodyB.m_mass * bodyB.m_invI * rnB;
+            let kEqualized = bodyA.m_mass * bodyA.m_invMass + bodyB.m_mass * bodyB.m_invMass;
+            kEqualized += bodyA.m_mass * bodyA.m_invI * rnA + bodyB.m_mass * bodyB.m_invI * rnB;
             ccp.equalizedMass = 1.0 / kEqualized;
             const tangentX = normalY;
-            const tangentY = -normalX;
+            const tangentY = (-normalX);
             let rtA = rAX * tangentY - rAY * tangentX;
             let rtB = rBX * tangentY - rBY * tangentX;
             rtA *= rtA;
             rtB *= rtB;
-            const kTangent =
-              bodyA.m_invMass +
-              bodyB.m_invMass +
-              bodyA.m_invI * rtA +
-              bodyB.m_invI * rtB;
+            const kTangent = bodyA.m_invMass + bodyB.m_invMass + bodyA.m_invI * rtA + bodyB.m_invI * rtB;
             ccp.tangentMass = 1.0 / kTangent;
             ccp.velocityBias = 0.0;
-            const tX = vBX + -wB * rBY - vAX - -wA * rAY;
-            const tY = vBY + wB * rBX - vAY - wA * rAX;
+            const tX = vBX + ((-wB * rBY)) - vAX - ((-wA * rAY));
+            const tY = vBY + (wB * rBX) - vAY - (wA * rAX);
             const vRel = cc.normal.x * tX + cc.normal.y * tY;
-            if (vRel < -b2Settings.b2_velocityThreshold) {
-              ccp.velocityBias += -cc.restitution * vRel;
+            if (vRel < (-b2Settings.b2_velocityThreshold)) {
+              ccp.velocityBias += (-cc.restitution * vRel);
             }
           }
           if (cc.pointCount == 2) {
@@ -8136,12 +7629,9 @@ while keeping general compatability. (made with box2D js es6) */
             const rn1B = ccp1.rB.x * normalY - ccp1.rB.y * normalX;
             const rn2A = ccp2.rA.x * normalY - ccp2.rA.y * normalX;
             const rn2B = ccp2.rB.x * normalY - ccp2.rB.y * normalX;
-            const k11 =
-              invMassA + invMassB + invIA * rn1A * rn1A + invIB * rn1B * rn1B;
-            const k22 =
-              invMassA + invMassB + invIA * rn2A * rn2A + invIB * rn2B * rn2B;
-            const k12 =
-              invMassA + invMassB + invIA * rn1A * rn2A + invIB * rn1B * rn2B;
+            const k11 = invMassA + invMassB + invIA * rn1A * rn1A + invIB * rn1B * rn1B;
+            const k22 = invMassA + invMassB + invIA * rn2A * rn2A + invIB * rn2B * rn2B;
+            const k12 = invMassA + invMassB + invIA * rn1A * rn2A + invIB * rn1B * rn2B;
             const k_maxConditionNumber = 100.0;
             if (k11 * k11 < k_maxConditionNumber * (k11 * k22 - k12 * k12)) {
               cc.K.col1.Set(k11, k12);
@@ -8169,32 +7659,30 @@ while keeping general compatability. (made with box2D js es6) */
           const normalX = c.normal.x;
           const normalY = c.normal.y;
           const tangentX = normalY;
-          const tangentY = -normalX;
+          const tangentY = (-normalX);
           const tX = 0;
           let j = 0;
           let tCount = 0;
           if (step.warmStarting) {
             tCount = c.pointCount;
-            for (j = 0; j < tCount; ++j) {
+            for (j = 0;
+              j < tCount; ++j) {
               const ccp = c.points[j];
               ccp.normalImpulse *= step.dtRatio;
               ccp.tangentImpulse *= step.dtRatio;
-              const PX =
-                ccp.normalImpulse * normalX + ccp.tangentImpulse * tangentX;
-              const PY =
-                ccp.normalImpulse * normalY + ccp.tangentImpulse * tangentY;
-              bodyA.m_angularVelocity -=
-                invIA * (ccp.rA.x * PY - ccp.rA.y * PX);
+              const PX = ccp.normalImpulse * normalX + ccp.tangentImpulse * tangentX;
+              const PY = ccp.normalImpulse * normalY + ccp.tangentImpulse * tangentY;
+              bodyA.m_angularVelocity -= invIA * (ccp.rA.x * PY - ccp.rA.y * PX);
               bodyA.m_linearVelocity.x -= invMassA * PX;
               bodyA.m_linearVelocity.y -= invMassA * PY;
-              bodyB.m_angularVelocity +=
-                invIB * (ccp.rB.x * PY - ccp.rB.y * PX);
+              bodyB.m_angularVelocity += invIB * (ccp.rB.x * PY - ccp.rB.y * PX);
               bodyB.m_linearVelocity.x += invMassB * PX;
               bodyB.m_linearVelocity.y += invMassB * PY;
             }
           } else {
             tCount = c.pointCount;
-            for (j = 0; j < tCount; ++j) {
+            for (j = 0;
+              j < tCount; ++j) {
               const ccp2 = c.points[j];
               ccp2.normalImpulse = 0.0;
               ccp2.tangentImpulse = 0.0;
@@ -8242,21 +7730,18 @@ while keeping general compatability. (made with box2D js es6) */
           const normalX = c.normal.x;
           const normalY = c.normal.y;
           const tangentX = normalY;
-          const tangentY = -normalX;
+          const tangentY = (-normalX);
           const friction = c.friction;
           const tX = 0;
-          for (j = 0; j < c.pointCount; j++) {
+          for (j = 0;
+            j < c.pointCount; j++) {
             ccp = c.points[j];
             dvX = vB.x - wB * ccp.rB.y - vA.x + wA * ccp.rA.y;
             dvY = vB.y + wB * ccp.rB.x - vA.y - wA * ccp.rA.x;
             vt = dvX * tangentX + dvY * tangentY;
-            lambda = ccp.tangentMass * -vt;
+            lambda = ccp.tangentMass * (-vt);
             maxFriction = friction * ccp.normalImpulse;
-            newImpulse = b2Math.Clamp(
-              ccp.tangentImpulse + lambda,
-              -maxFriction,
-              maxFriction,
-            );
+            newImpulse = b2Math.Clamp(ccp.tangentImpulse + lambda, (-maxFriction), maxFriction);
             lambda = newImpulse - ccp.tangentImpulse;
             PX = lambda * tangentX;
             PY = lambda * tangentY;
@@ -8271,10 +7756,10 @@ while keeping general compatability. (made with box2D js es6) */
           const tCount = parseInt(c.pointCount);
           if (c.pointCount == 1) {
             ccp = c.points[0];
-            dvX = vB.x + -wB * ccp.rB.y - vA.x - -wA * ccp.rA.y;
-            dvY = vB.y + wB * ccp.rB.x - vA.y - wA * ccp.rA.x;
+            dvX = vB.x + ((-wB * ccp.rB.y)) - vA.x - ((-wA * ccp.rA.y));
+            dvY = vB.y + (wB * ccp.rB.x) - vA.y - (wA * ccp.rA.x);
             vn = dvX * normalX + dvY * normalY;
-            lambda = -ccp.normalMass * (vn - ccp.velocityBias);
+            lambda = (-ccp.normalMass * (vn - ccp.velocityBias));
             newImpulse = ccp.normalImpulse + lambda;
             newImpulse = newImpulse > 0 ? newImpulse : 0.0;
             lambda = newImpulse - ccp.normalImpulse;
@@ -8304,10 +7789,10 @@ while keeping general compatability. (made with box2D js es6) */
             bX -= tMat.col1.x * aX + tMat.col2.x * aY;
             bY -= tMat.col1.y * aX + tMat.col2.y * aY;
             const k_errorTol = 0.001;
-            for (;;) {
+            for (; ;) {
               tMat = c.normalMass;
-              let xX = -(tMat.col1.x * bX + tMat.col2.x * bY);
-              let xY = -(tMat.col1.y * bX + tMat.col2.y * bY);
+              let xX = (-(tMat.col1.x * bX + tMat.col2.x * bY));
+              let xY = (-(tMat.col1.y * bX + tMat.col2.y * bY));
               if (xX >= 0.0 && xY >= 0.0) {
                 dX = xX - aX;
                 dY = xY - aY;
@@ -8317,25 +7802,15 @@ while keeping general compatability. (made with box2D js es6) */
                 P2Y = dY * normalY;
                 vA.x -= invMassA * (P1X + P2X);
                 vA.y -= invMassA * (P1Y + P2Y);
-                wA -=
-                  invIA *
-                  (cp1.rA.x * P1Y -
-                    cp1.rA.y * P1X +
-                    cp2.rA.x * P2Y -
-                    cp2.rA.y * P2X);
+                wA -= invIA * (cp1.rA.x * P1Y - cp1.rA.y * P1X + cp2.rA.x * P2Y - cp2.rA.y * P2X);
                 vB.x += invMassB * (P1X + P2X);
                 vB.y += invMassB * (P1Y + P2Y);
-                wB +=
-                  invIB *
-                  (cp1.rB.x * P1Y -
-                    cp1.rB.y * P1X +
-                    cp2.rB.x * P2Y -
-                    cp2.rB.y * P2X);
+                wB += invIB * (cp1.rB.x * P1Y - cp1.rB.y * P1X + cp2.rB.x * P2Y - cp2.rB.y * P2X);
                 cp1.normalImpulse = xX;
                 cp2.normalImpulse = xY;
                 break;
               }
-              xX = -cp1.normalMass * bX;
+              xX = (-cp1.normalMass * bX);
               xY = 0.0;
               vn1 = 0.0;
               vn2 = c.K.col1.y * xX + bY;
@@ -8348,26 +7823,16 @@ while keeping general compatability. (made with box2D js es6) */
                 P2Y = dY * normalY;
                 vA.x -= invMassA * (P1X + P2X);
                 vA.y -= invMassA * (P1Y + P2Y);
-                wA -=
-                  invIA *
-                  (cp1.rA.x * P1Y -
-                    cp1.rA.y * P1X +
-                    cp2.rA.x * P2Y -
-                    cp2.rA.y * P2X);
+                wA -= invIA * (cp1.rA.x * P1Y - cp1.rA.y * P1X + cp2.rA.x * P2Y - cp2.rA.y * P2X);
                 vB.x += invMassB * (P1X + P2X);
                 vB.y += invMassB * (P1Y + P2Y);
-                wB +=
-                  invIB *
-                  (cp1.rB.x * P1Y -
-                    cp1.rB.y * P1X +
-                    cp2.rB.x * P2Y -
-                    cp2.rB.y * P2X);
+                wB += invIB * (cp1.rB.x * P1Y - cp1.rB.y * P1X + cp2.rB.x * P2Y - cp2.rB.y * P2X);
                 cp1.normalImpulse = xX;
                 cp2.normalImpulse = xY;
                 break;
               }
               xX = 0.0;
-              xY = -cp2.normalMass * bY;
+              xY = (-cp2.normalMass * bY);
               vn1 = c.K.col2.x * xY + bX;
               vn2 = 0.0;
               if (xY >= 0.0 && vn1 >= 0.0) {
@@ -8379,20 +7844,10 @@ while keeping general compatability. (made with box2D js es6) */
                 P2Y = dY * normalY;
                 vA.x -= invMassA * (P1X + P2X);
                 vA.y -= invMassA * (P1Y + P2Y);
-                wA -=
-                  invIA *
-                  (cp1.rA.x * P1Y -
-                    cp1.rA.y * P1X +
-                    cp2.rA.x * P2Y -
-                    cp2.rA.y * P2X);
+                wA -= invIA * (cp1.rA.x * P1Y - cp1.rA.y * P1X + cp2.rA.x * P2Y - cp2.rA.y * P2X);
                 vB.x += invMassB * (P1X + P2X);
                 vB.y += invMassB * (P1Y + P2Y);
-                wB +=
-                  invIB *
-                  (cp1.rB.x * P1Y -
-                    cp1.rB.y * P1X +
-                    cp2.rB.x * P2Y -
-                    cp2.rB.y * P2X);
+                wB += invIB * (cp1.rB.x * P1Y - cp1.rB.y * P1X + cp2.rB.x * P2Y - cp2.rB.y * P2X);
                 cp1.normalImpulse = xX;
                 cp2.normalImpulse = xY;
                 break;
@@ -8410,20 +7865,10 @@ while keeping general compatability. (made with box2D js es6) */
                 P2Y = dY * normalY;
                 vA.x -= invMassA * (P1X + P2X);
                 vA.y -= invMassA * (P1Y + P2Y);
-                wA -=
-                  invIA *
-                  (cp1.rA.x * P1Y -
-                    cp1.rA.y * P1X +
-                    cp2.rA.x * P2Y -
-                    cp2.rA.y * P2X);
+                wA -= invIA * (cp1.rA.x * P1Y - cp1.rA.y * P1X + cp2.rA.x * P2Y - cp2.rA.y * P2X);
                 vB.x += invMassB * (P1X + P2X);
                 vB.y += invMassB * (P1Y + P2Y);
-                wB +=
-                  invIB *
-                  (cp1.rB.x * P1Y -
-                    cp1.rB.y * P1X +
-                    cp2.rB.x * P2Y -
-                    cp2.rB.y * P2X);
+                wB += invIB * (cp1.rB.x * P1Y - cp1.rB.y * P1X + cp2.rB.x * P2Y - cp2.rB.y * P2X);
                 cp1.normalImpulse = xX;
                 cp2.normalImpulse = xY;
                 break;
@@ -8470,17 +7915,11 @@ while keeping general compatability. (made with box2D js es6) */
             const rAY = point.y - bodyA.m_sweep.c.y;
             const rBX = point.x - bodyB.m_sweep.c.x;
             const rBY = point.y - bodyB.m_sweep.c.y;
-            minSeparation =
-              minSeparation < separation ? minSeparation : separation;
-            const C = b2Math.Clamp(
-              baumgarte * (separation + b2Settings.b2_linearSlop),
-              -b2Settings.b2_maxLinearCorrection,
-              0.0,
-            );
-            const impulse = -ccp.equalizedMass * C;
+            minSeparation = minSeparation < separation ? minSeparation : separation;
+            const C = b2Math.Clamp(baumgarte * (separation + b2Settings.b2_linearSlop), (-b2Settings.b2_maxLinearCorrection), 0.0);
+            const impulse = (-ccp.equalizedMass * C);
             const PX = impulse * normal.x;
-            const PY = impulse * normal.y;
-            bodyA.m_sweep.c.x -= invMassA * PX;
+            const PY = impulse * normal.y; bodyA.m_sweep.c.x -= invMassA * PX;
             bodyA.m_sweep.c.y -= invMassA * PY;
             bodyA.m_sweep.a -= invIA * (rAX * PY - rAY * PX);
             bodyA.SynchronizeTransform();
@@ -8490,7 +7929,7 @@ while keeping general compatability. (made with box2D js es6) */
             bodyB.SynchronizeTransform();
           }
         }
-        return minSeparation > -1.5 * b2Settings.b2_linearSlop;
+        return minSeparation > (-1.5 * b2Settings.b2_linearSlop);
       }
     }
 
@@ -8513,20 +7952,10 @@ while keeping general compatability. (made with box2D js es6) */
       Evaluate() {
         const bA = this.m_fixtureA.GetBody();
         const bB = this.m_fixtureB.GetBody();
-        this.b2CollideEdgeAndCircle(
-          this.m_manifold,
-          this.m_fixtureA.GetShape() instanceof b2EdgeShape
-            ? this.m_fixtureA.GetShape()
-            : null,
-          bA.m_xf,
-          this.m_fixtureB.GetShape() instanceof b2CircleShape
-            ? this.m_fixtureB.GetShape()
-            : null,
-          bB.m_xf,
-        );
+        this.b2CollideEdgeAndCircle(this.m_manifold, (this.m_fixtureA.GetShape() instanceof b2EdgeShape ? this.m_fixtureA.GetShape() : null), bA.m_xf, (this.m_fixtureB.GetShape() instanceof b2CircleShape ? this.m_fixtureB.GetShape() : null), bB.m_xf);
       }
 
-      b2CollideEdgeAndCircle(manifold, edge, xf1, circle, xf2) {}
+      b2CollideEdgeAndCircle(manifold, edge, xf1, circle, xf2) { }
     }
 
     Box2D.Dynamics.Contacts.b2EdgeAndCircleContact = b2EdgeAndCircleContact;
@@ -8535,8 +7964,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2NullContact.b2NullContact.apply(this, arguments);
-        if (this.constructor === b2NullContact)
-          this.b2NullContact.apply(this, arguments);
+        if (this.constructor === b2NullContact) this.b2NullContact.apply(this, arguments);
       }
 
       static b2NullContact() {
@@ -8547,7 +7975,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.__super.b2Contact.call(this);
       }
 
-      Evaluate() {}
+      Evaluate() { }
     }
 
     Box2D.Dynamics.Contacts.b2NullContact = b2NullContact;
@@ -8571,17 +7999,7 @@ while keeping general compatability. (made with box2D js es6) */
       Evaluate() {
         const bA = this.m_fixtureA.m_body;
         const bB = this.m_fixtureB.m_body;
-        b2Collision.CollidePolygonAndCircle(
-          this.m_manifold,
-          this.m_fixtureA.GetShape() instanceof b2PolygonShape
-            ? this.m_fixtureA.GetShape()
-            : null,
-          bA.m_xf,
-          this.m_fixtureB.GetShape() instanceof b2CircleShape
-            ? this.m_fixtureB.GetShape()
-            : null,
-          bB.m_xf,
-        );
+        b2Collision.CollidePolygonAndCircle(this.m_manifold, (this.m_fixtureA.GetShape() instanceof b2PolygonShape ? this.m_fixtureA.GetShape() : null), bA.m_xf, (this.m_fixtureB.GetShape() instanceof b2CircleShape ? this.m_fixtureB.GetShape() : null), bB.m_xf);
       }
     }
 
@@ -8606,20 +8024,10 @@ while keeping general compatability. (made with box2D js es6) */
       Evaluate() {
         const bA = this.m_fixtureA.GetBody();
         const bB = this.m_fixtureB.GetBody();
-        this.b2CollidePolyAndEdge(
-          this.m_manifold,
-          this.m_fixtureA.GetShape() instanceof b2PolygonShape
-            ? this.m_fixtureA.GetShape()
-            : null,
-          bA.m_xf,
-          this.m_fixtureB.GetShape() instanceof b2EdgeShape
-            ? this.m_fixtureB.GetShape()
-            : null,
-          bB.m_xf,
-        );
+        this.b2CollidePolyAndEdge(this.m_manifold, (this.m_fixtureA.GetShape() instanceof b2PolygonShape ? this.m_fixtureA.GetShape() : null), bA.m_xf, (this.m_fixtureB.GetShape() instanceof b2EdgeShape ? this.m_fixtureB.GetShape() : null), bB.m_xf);
       }
 
-      b2CollidePolyAndEdge(manifold, polygon, xf1, edge, xf2) {}
+      b2CollidePolyAndEdge(manifold, polygon, xf1, edge, xf2) { }
     }
 
     Box2D.Dynamics.Contacts.b2PolyAndEdgeContact = b2PolyAndEdgeContact;
@@ -8641,17 +8049,7 @@ while keeping general compatability. (made with box2D js es6) */
       Evaluate() {
         const bA = this.m_fixtureA.GetBody();
         const bB = this.m_fixtureB.GetBody();
-        b2Collision.CollidePolygons(
-          this.m_manifold,
-          this.m_fixtureA.GetShape() instanceof b2PolygonShape
-            ? this.m_fixtureA.GetShape()
-            : null,
-          bA.m_xf,
-          this.m_fixtureB.GetShape() instanceof b2PolygonShape
-            ? this.m_fixtureB.GetShape()
-            : null,
-          bB.m_xf,
-        );
+        b2Collision.CollidePolygons(this.m_manifold, (this.m_fixtureA.GetShape() instanceof b2PolygonShape ? this.m_fixtureA.GetShape() : null), bA.m_xf, (this.m_fixtureB.GetShape() instanceof b2PolygonShape ? this.m_fixtureB.GetShape() : null), bB.m_xf);
       }
     }
 
@@ -8659,19 +8057,13 @@ while keeping general compatability. (made with box2D js es6) */
 
     class b2PositionSolverManifold {
       constructor() {
-        b2PositionSolverManifold.b2PositionSolverManifold.apply(
-          this,
-          arguments,
-        );
-        if (this.constructor === b2PositionSolverManifold)
-          this.b2PositionSolverManifold.apply(this, arguments);
+        b2PositionSolverManifold.b2PositionSolverManifold.apply(this, arguments);
+        if (this.constructor === b2PositionSolverManifold) this.b2PositionSolverManifold.apply(this, arguments);
       }
 
       b2PositionSolverManifold() {
         this.m_normal = new b2Vec2();
-        this.m_separations = new Vector_a2j_Number(
-          b2Settings.b2_maxManifoldPoints,
-        );
+        this.m_separations = new Vector_a2j_Number(b2Settings.b2_maxManifoldPoints);
         this.m_points = new Vector(b2Settings.b2_maxManifoldPoints);
         for (let i = 0; i < b2Settings.b2_maxManifoldPoints; i++) {
           this.m_points[i] = new b2Vec2();
@@ -8692,20 +8084,12 @@ while keeping general compatability. (made with box2D js es6) */
             {
               tMat = cc.bodyA.m_xf.R;
               tVec = cc.localPoint;
-              const pointAX =
-                cc.bodyA.m_xf.position.x +
-                (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-              const pointAY =
-                cc.bodyA.m_xf.position.y +
-                (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+              const pointAX = cc.bodyA.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+              const pointAY = cc.bodyA.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
               tMat = cc.bodyB.m_xf.R;
               tVec = cc.points[0].localPoint;
-              const pointBX =
-                cc.bodyB.m_xf.position.x +
-                (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-              const pointBY =
-                cc.bodyB.m_xf.position.y +
-                (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+              const pointBX = cc.bodyB.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+              const pointBY = cc.bodyB.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
               const dX = pointBX - pointAX;
               const dY = pointBY - pointAY;
               const d2 = dX * dX + dY * dY;
@@ -8719,8 +8103,7 @@ while keeping general compatability. (made with box2D js es6) */
               }
               this.m_points[0].x = 0.5 * (pointAX + pointBX);
               this.m_points[0].y = 0.5 * (pointAY + pointBY);
-              this.m_separations[0] =
-                dX * this.m_normal.x + dY * this.m_normal.y - cc.radius;
+              this.m_separations[0] = dX * this.m_normal.x + dY * this.m_normal.y - cc.radius;
             }
             break;
           case b2Manifold.e_faceA:
@@ -8731,25 +8114,15 @@ while keeping general compatability. (made with box2D js es6) */
               this.m_normal.y = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
               tMat = cc.bodyA.m_xf.R;
               tVec = cc.localPoint;
-              planePointX =
-                cc.bodyA.m_xf.position.x +
-                (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-              planePointY =
-                cc.bodyA.m_xf.position.y +
-                (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+              planePointX = cc.bodyA.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+              planePointY = cc.bodyA.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
               tMat = cc.bodyB.m_xf.R;
-              for (i = 0; i < cc.pointCount; ++i) {
+              for (i = 0;
+                i < cc.pointCount; ++i) {
                 tVec = cc.points[i].localPoint;
-                clipPointX =
-                  cc.bodyB.m_xf.position.x +
-                  (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-                clipPointY =
-                  cc.bodyB.m_xf.position.y +
-                  (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-                this.m_separations[i] =
-                  (clipPointX - planePointX) * this.m_normal.x +
-                  (clipPointY - planePointY) * this.m_normal.y -
-                  cc.radius;
+                clipPointX = cc.bodyB.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+                clipPointY = cc.bodyB.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+                this.m_separations[i] = (clipPointX - planePointX) * this.m_normal.x + (clipPointY - planePointY) * this.m_normal.y - cc.radius;
                 this.m_points[i].x = clipPointX;
                 this.m_points[i].y = clipPointY;
               }
@@ -8763,29 +8136,19 @@ while keeping general compatability. (made with box2D js es6) */
               this.m_normal.y = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
               tMat = cc.bodyB.m_xf.R;
               tVec = cc.localPoint;
-              planePointX =
-                cc.bodyB.m_xf.position.x +
-                (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-              planePointY =
-                cc.bodyB.m_xf.position.y +
-                (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+              planePointX = cc.bodyB.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+              planePointY = cc.bodyB.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
               tMat = cc.bodyA.m_xf.R;
-              for (i = 0; i < cc.pointCount; ++i) {
+              for (i = 0;
+                i < cc.pointCount; ++i) {
                 tVec = cc.points[i].localPoint;
-                clipPointX =
-                  cc.bodyA.m_xf.position.x +
-                  (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-                clipPointY =
-                  cc.bodyA.m_xf.position.y +
-                  (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-                this.m_separations[i] =
-                  (clipPointX - planePointX) * this.m_normal.x +
-                  (clipPointY - planePointY) * this.m_normal.y -
-                  cc.radius;
+                clipPointX = cc.bodyA.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+                clipPointY = cc.bodyA.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+                this.m_separations[i] = (clipPointX - planePointX) * this.m_normal.x + (clipPointY - planePointY) * this.m_normal.y - cc.radius;
                 this.m_points[i].Set(clipPointX, clipPointY);
               }
-              this.m_normal.x *= -1;
-              this.m_normal.y *= -1;
+              this.m_normal.x *= (-1);
+              this.m_normal.y *= (-1);
             }
             break;
         }
@@ -8799,8 +8162,8 @@ while keeping general compatability. (made with box2D js es6) */
         b2Controller.b2Controller.apply(this, arguments);
       }
 
-      Step(step) {}
-      Draw(debugDraw) {}
+      Step(step) { }
+      Draw(debugDraw) { }
 
       AddBody(body) {
         const edge = new b2ControllerEdge();
@@ -8820,26 +8183,19 @@ while keeping general compatability. (made with box2D js es6) */
 
       RemoveBody(body) {
         let edge = body.m_controllerList;
-        while (edge && edge.controller != this) {
-          edge = edge.nextController;
-        }
+        while (edge && edge.controller != this) { edge = edge.nextController; }
         if (edge.prevBody) edge.prevBody.nextBody = edge.nextBody;
         if (edge.nextBody) edge.nextBody.prevBody = edge.prevBody;
-        if (edge.nextController)
-          edge.nextController.prevController = edge.prevController;
-        if (edge.prevController)
-          edge.prevController.nextController = edge.nextController;
+        if (edge.nextController) edge.nextController.prevController = edge.prevController;
+        if (edge.prevController) edge.prevController.nextController = edge.nextController;
         if (this.m_bodyList == edge) this.m_bodyList = edge.nextBody;
-        if (body.m_controllerList == edge)
-          body.m_controllerList = edge.nextController;
+        if (body.m_controllerList == edge) body.m_controllerList = edge.nextController;
         body.m_controllerCount--;
         this.m_bodyCount--;
       }
 
       Clear() {
-        while (this.m_bodyList) {
-          this.RemoveBody(this.m_bodyList.body);
-        }
+        while (this.m_bodyList) { this.RemoveBody(this.m_bodyList.body); }
       }
 
       GetNext() {
@@ -8864,11 +8220,8 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       static b2BuoyancyController() {
-        Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(
-          this,
-          arguments,
-        );
-        this.normal = new b2Vec2(0, -1);
+        Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(this, arguments);
+        this.normal = new b2Vec2(0, (-1));
         this.offset = 0;
         this.density = 0;
         this.velocity = new b2Vec2(0, 0);
@@ -8893,20 +8246,9 @@ while keeping general compatability. (made with box2D js es6) */
           const massc = new b2Vec2();
           let area = 0.0;
           let mass = 0.0;
-          for (
-            let fixture = body.GetFixtureList();
-            fixture;
-            fixture = fixture.GetNext()
-          ) {
+          for (let fixture = body.GetFixtureList(); fixture; fixture = fixture.GetNext()) {
             const sc = new b2Vec2();
-            const sarea = fixture
-              .GetShape()
-              .ComputeSubmergedArea(
-                this.normal,
-                this.offset,
-                body.GetTransform(),
-                sc,
-              );
+            const sarea = fixture.GetShape().ComputeSubmergedArea(this.normal, this.offset, body.GetTransform(), sc);
             area += sarea;
             areac.x += sarea * sc.x;
             areac.y += sarea * sc.y;
@@ -8930,14 +8272,9 @@ while keeping general compatability. (made with box2D js es6) */
           body.ApplyForce(buoyancyForce, massc);
           const dragForce = body.GetLinearVelocityFromWorldPoint(areac);
           dragForce.Subtract(this.velocity);
-          dragForce.Multiply(-this.linearDrag * area);
+          dragForce.Multiply((-this.linearDrag * area));
           body.ApplyForce(dragForce, areac);
-          body.ApplyTorque(
-            (-body.GetInertia() / body.GetMass()) *
-              area *
-              body.GetAngularVelocity() *
-              this.angularDrag,
-          );
+          body.ApplyTorque((-body.GetInertia() / body.GetMass() * area * body.GetAngularVelocity() * this.angularDrag));
         }
       }
 
@@ -8959,17 +8296,11 @@ while keeping general compatability. (made with box2D js es6) */
     class b2ConstantAccelController extends b2Controller {
       constructor() {
         super(...arguments);
-        b2ConstantAccelController.b2ConstantAccelController.apply(
-          this,
-          arguments,
-        );
+        b2ConstantAccelController.b2ConstantAccelController.apply(this, arguments);
       }
 
       static b2ConstantAccelController() {
-        Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(
-          this,
-          arguments,
-        );
+        Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(this, arguments);
         this.A = new b2Vec2(0, 0);
       }
 
@@ -8978,33 +8309,21 @@ while keeping general compatability. (made with box2D js es6) */
         for (let i = this.m_bodyList; i; i = i.nextBody) {
           const body = i.body;
           if (!body.IsAwake()) continue;
-          body.SetLinearVelocity(
-            new b2Vec2(
-              body.GetLinearVelocity().x + smallA.x,
-              body.GetLinearVelocity().y + smallA.y,
-            ),
-          );
+          body.SetLinearVelocity(new b2Vec2(body.GetLinearVelocity().x + smallA.x, body.GetLinearVelocity().y + smallA.y));
         }
       }
     }
 
-    Box2D.Dynamics.Controllers.b2ConstantAccelController =
-      b2ConstantAccelController;
+    Box2D.Dynamics.Controllers.b2ConstantAccelController = b2ConstantAccelController;
 
     class b2ConstantForceController extends b2Controller {
       constructor() {
         super(...arguments);
-        b2ConstantForceController.b2ConstantForceController.apply(
-          this,
-          arguments,
-        );
+        b2ConstantForceController.b2ConstantForceController.apply(this, arguments);
       }
 
       static b2ConstantForceController() {
-        Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(
-          this,
-          arguments,
-        );
+        Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(this, arguments);
         this.F = new b2Vec2(0, 0);
       }
 
@@ -9017,8 +8336,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
     }
 
-    Box2D.Dynamics.Controllers.b2ConstantForceController =
-      b2ConstantForceController;
+    Box2D.Dynamics.Controllers.b2ConstantForceController = b2ConstantForceController;
 
     function b2ControllerEdge() {
       b2ControllerEdge.b2ControllerEdge.apply(this, arguments);
@@ -9032,10 +8350,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       static b2GravityController() {
-        Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(
-          this,
-          arguments,
-        );
+        Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(this, arguments);
         this.G = 1;
         this.invSqr = true;
       }
@@ -9053,11 +8368,13 @@ while keeping general compatability. (made with box2D js es6) */
         let r2 = 0;
         let f = null;
         if (this.invSqr) {
-          for (i = this.m_bodyList; i; i = i.nextBody) {
+          for (i = this.m_bodyList;
+            i; i = i.nextBody) {
             body1 = i.body;
             p1 = body1.GetWorldCenter();
             mass1 = body1.GetMass();
-            for (j = this.m_bodyList; j != i; j = j.nextBody) {
+            for (j = this.m_bodyList;
+              j != i; j = j.nextBody) {
               body2 = j.body;
               p2 = body2.GetWorldCenter();
               dx = p2.x - p1.x;
@@ -9065,20 +8382,20 @@ while keeping general compatability. (made with box2D js es6) */
               r2 = dx * dx + dy * dy;
               if (r2 < Number.MIN_VALUE) continue;
               f = new b2Vec2(dx, dy);
-              f.Multiply(
-                (this.G / r2 / Math.sqrt(r2)) * mass1 * body2.GetMass(),
-              );
+              f.Multiply(this.G / r2 / Math.sqrt(r2) * mass1 * body2.GetMass());
               if (body1.IsAwake()) body1.ApplyForce(f, p1);
-              f.Multiply(-1);
+              f.Multiply((-1));
               if (body2.IsAwake()) body2.ApplyForce(f, p2);
             }
           }
         } else {
-          for (i = this.m_bodyList; i; i = i.nextBody) {
+          for (i = this.m_bodyList;
+            i; i = i.nextBody) {
             body1 = i.body;
             p1 = body1.GetWorldCenter();
             mass1 = body1.GetMass();
-            for (j = this.m_bodyList; j != i; j = j.nextBody) {
+            for (j = this.m_bodyList;
+              j != i; j = j.nextBody) {
               body2 = j.body;
               p2 = body2.GetWorldCenter();
               dx = p2.x - p1.x;
@@ -9086,9 +8403,9 @@ while keeping general compatability. (made with box2D js es6) */
               r2 = dx * dx + dy * dy;
               if (r2 < Number.MIN_VALUE) continue;
               f = new b2Vec2(dx, dy);
-              f.Multiply((this.G / r2) * mass1 * body2.GetMass());
+              f.Multiply(this.G / r2 * mass1 * body2.GetMass());
               if (body1.IsAwake()) body1.ApplyForce(f, p1);
-              f.Multiply(-1);
+              f.Multiply((-1));
               if (body2.IsAwake()) body2.ApplyForce(f, p2);
             }
           }
@@ -9101,17 +8418,11 @@ while keeping general compatability. (made with box2D js es6) */
     class b2TensorDampingController extends b2Controller {
       constructor() {
         super(...arguments);
-        b2TensorDampingController.b2TensorDampingController.apply(
-          this,
-          arguments,
-        );
+        b2TensorDampingController.b2TensorDampingController.apply(this, arguments);
       }
 
       static b2TensorDampingController() {
-        Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(
-          this,
-          arguments,
-        );
+        Box2D.Dynamics.Controllers.b2Controller.b2Controller.apply(this, arguments);
         this.T = new b2Mat22();
         this.maxTimestep = 0;
       }
@@ -9119,10 +8430,10 @@ while keeping general compatability. (made with box2D js es6) */
       SetAxisAligned(xDamping, yDamping) {
         if (xDamping === undefined) xDamping = 0;
         if (yDamping === undefined) yDamping = 0;
-        this.T.col1.x = -xDamping;
+        this.T.col1.x = (-xDamping);
         this.T.col1.y = 0;
         this.T.col2.x = 0;
-        this.T.col2.y = -yDamping;
+        this.T.col2.y = (-yDamping);
         if (xDamping > 0 || yDamping > 0) {
           this.maxTimestep = 1 / Math.max(xDamping, yDamping);
         } else {
@@ -9133,28 +8444,19 @@ while keeping general compatability. (made with box2D js es6) */
       Step(step) {
         let timestep = step.dt;
         if (timestep <= Number.MIN_VALUE) return;
-        if (timestep > this.maxTimestep && this.maxTimestep > 0)
-          timestep = this.maxTimestep;
+        if (timestep > this.maxTimestep && this.maxTimestep > 0) timestep = this.maxTimestep;
         for (let i = this.m_bodyList; i; i = i.nextBody) {
           const body = i.body;
           if (!body.IsAwake()) {
             continue;
           }
-          const damping = body.GetWorldVector(
-            b2Math.MulMV(this.T, body.GetLocalVector(body.GetLinearVelocity())),
-          );
-          body.SetLinearVelocity(
-            new b2Vec2(
-              body.GetLinearVelocity().x + damping.x * timestep,
-              body.GetLinearVelocity().y + damping.y * timestep,
-            ),
-          );
+          const damping = body.GetWorldVector(b2Math.MulMV(this.T, body.GetLocalVector(body.GetLinearVelocity())));
+          body.SetLinearVelocity(new b2Vec2(body.GetLinearVelocity().x + damping.x * timestep, body.GetLinearVelocity().y + damping.y * timestep));
         }
       }
     }
 
-    Box2D.Dynamics.Controllers.b2TensorDampingController =
-      b2TensorDampingController;
+    Box2D.Dynamics.Controllers.b2TensorDampingController = b2TensorDampingController;
 
     class b2Joint {
       constructor() {
@@ -9227,9 +8529,9 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_userData = def.userData;
       }
 
-      InitVelocityConstraints(step) {}
-      SolveVelocityConstraints(step) {}
-      FinalizeVelocityConstraints() {}
+      InitVelocityConstraints(step) { }
+      SolveVelocityConstraints(step) { }
+      FinalizeVelocityConstraints() { }
 
       SolvePositionConstraints(baumgarte) {
         if (baumgarte === undefined) baumgarte = 0;
@@ -9242,8 +8544,7 @@ while keeping general compatability. (made with box2D js es6) */
     class b2JointDef {
       constructor() {
         b2JointDef.b2JointDef.apply(this, arguments);
-        if (this.constructor === b2JointDef)
-          this.b2JointDef.apply(this, arguments);
+        if (this.constructor === b2JointDef) this.b2JointDef.apply(this, arguments);
       }
 
       b2JointDef() {
@@ -9261,8 +8562,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2DistanceJointDef.b2DistanceJointDef.apply(this, arguments);
-        if (this.constructor === b2DistanceJointDef)
-          this.b2DistanceJointDef.apply(this, arguments);
+        if (this.constructor === b2DistanceJointDef) this.b2DistanceJointDef.apply(this, arguments);
       }
 
       static b2DistanceJointDef() {
@@ -9298,8 +8598,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2FrictionJoint.b2FrictionJoint.apply(this, arguments);
-        if (this.constructor === b2FrictionJoint)
-          this.b2FrictionJoint.apply(this, arguments);
+        if (this.constructor === b2FrictionJoint) this.b2FrictionJoint.apply(this, arguments);
       }
 
       static b2FrictionJoint() {
@@ -9320,10 +8619,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       GetReactionForce(inv_dt) {
         if (inv_dt === undefined) inv_dt = 0;
-        return new b2Vec2(
-          inv_dt * this.m_linearImpulse.x,
-          inv_dt * this.m_linearImpulse.y,
-        );
+        return new b2Vec2(inv_dt * this.m_linearImpulse.x, inv_dt * this.m_linearImpulse.y);
       }
 
       GetReactionTorque(inv_dt) {
@@ -9369,14 +8665,14 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x;
         let rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
-        tX = tMat.col1.x * rAX + tMat.col2.x * rAY;
-        rAY = tMat.col1.y * rAX + tMat.col2.y * rAY;
+        tX = (tMat.col1.x * rAX + tMat.col2.x * rAY);
+        rAY = (tMat.col1.y * rAX + tMat.col2.y * rAY);
         rAX = tX;
         tMat = bB.m_xf.R;
         let rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x;
         let rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * rBX + tMat.col2.x * rBY;
-        rBY = tMat.col1.y * rBX + tMat.col2.y * rBY;
+        tX = (tMat.col1.x * rBX + tMat.col2.x * rBY);
+        rBY = (tMat.col1.y * rBX + tMat.col2.y * rBY);
         rBX = tX;
         const mA = bA.m_invMass;
         const mB = bB.m_invMass;
@@ -9388,12 +8684,12 @@ while keeping general compatability. (made with box2D js es6) */
         K.col1.y = 0.0;
         K.col2.y = mA + mB;
         K.col1.x += iA * rAY * rAY;
-        K.col2.x += -iA * rAX * rAY;
-        K.col1.y += -iA * rAX * rAY;
+        K.col2.x += (-iA * rAX * rAY);
+        K.col1.y += (-iA * rAX * rAY);
         K.col2.y += iA * rAX * rAX;
         K.col1.x += iB * rBY * rBY;
-        K.col2.x += -iB * rBX * rBY;
-        K.col1.y += -iB * rBX * rBY;
+        K.col2.x += (-iB * rBX * rBY);
+        K.col1.y += (-iB * rBX * rBY);
         K.col2.y += iB * rBX * rBX;
         K.GetInverse(this.m_linearMass);
         this.m_angularMass = iA + iB;
@@ -9407,12 +8703,10 @@ while keeping general compatability. (made with box2D js es6) */
           const P = this.m_linearImpulse;
           bA.m_linearVelocity.x -= mA * P.x;
           bA.m_linearVelocity.y -= mA * P.y;
-          bA.m_angularVelocity -=
-            iA * (rAX * P.y - rAY * P.x + this.m_angularImpulse);
+          bA.m_angularVelocity -= iA * (rAX * P.y - rAY * P.x + this.m_angularImpulse);
           bB.m_linearVelocity.x += mB * P.x;
           bB.m_linearVelocity.y += mB * P.y;
-          bB.m_angularVelocity +=
-            iB * (rBX * P.y - rBY * P.x + this.m_angularImpulse);
+          bB.m_angularVelocity += iB * (rBX * P.y - rBY * P.x + this.m_angularImpulse);
         } else {
           this.m_linearImpulse.SetZero();
           this.m_angularImpulse = 0.0;
@@ -9435,37 +8729,28 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x;
         let rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
-        tX = tMat.col1.x * rAX + tMat.col2.x * rAY;
-        rAY = tMat.col1.y * rAX + tMat.col2.y * rAY;
+        tX = (tMat.col1.x * rAX + tMat.col2.x * rAY);
+        rAY = (tMat.col1.y * rAX + tMat.col2.y * rAY);
         rAX = tX;
         tMat = bB.m_xf.R;
         let rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x;
         let rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * rBX + tMat.col2.x * rBY;
-        rBY = tMat.col1.y * rBX + tMat.col2.y * rBY;
+        tX = (tMat.col1.x * rBX + tMat.col2.x * rBY);
+        rBY = (tMat.col1.y * rBX + tMat.col2.y * rBY);
         rBX = tX;
-        let maxImpulse = 0;
-        {
+        let maxImpulse = 0; {
           const Cdot = wB - wA;
-          let impulse = -this.m_angularMass * Cdot;
+          let impulse = (-this.m_angularMass * Cdot);
           const oldImpulse = this.m_angularImpulse;
           maxImpulse = step.dt * this.m_maxTorque;
-          this.m_angularImpulse = b2Math.Clamp(
-            this.m_angularImpulse + impulse,
-            -maxImpulse,
-            maxImpulse,
-          );
+          this.m_angularImpulse = b2Math.Clamp(this.m_angularImpulse + impulse, (-maxImpulse), maxImpulse);
           impulse = this.m_angularImpulse - oldImpulse;
           wA -= iA * impulse;
           wB += iB * impulse;
-        }
-        {
+        } {
           const CdotX = vB.x - wB * rBY - vA.x + wA * rAY;
           const CdotY = vB.y + wB * rBX - vA.y - wA * rAX;
-          let impulseV = b2Math.MulMV(
-            this.m_linearMass,
-            new b2Vec2(-CdotX, -CdotY),
-          );
+          let impulseV = b2Math.MulMV(this.m_linearMass, new b2Vec2((-CdotX), (-CdotY)));
           const oldImpulseV = this.m_linearImpulse.Copy();
           this.m_linearImpulse.Add(impulseV);
           maxImpulse = step.dt * this.m_maxForce;
@@ -9497,8 +8782,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2FrictionJointDef.b2FrictionJointDef.apply(this, arguments);
-        if (this.constructor === b2FrictionJointDef)
-          this.b2FrictionJointDef.apply(this, arguments);
+        if (this.constructor === b2FrictionJointDef) this.b2FrictionJointDef.apply(this, arguments);
       }
 
       static b2FrictionJointDef() {
@@ -9528,8 +8812,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2GearJoint.b2GearJoint.apply(this, arguments);
-        if (this.constructor === b2GearJoint)
-          this.b2GearJoint.apply(this, arguments);
+        if (this.constructor === b2GearJoint) this.b2GearJoint.apply(this, arguments);
       }
 
       static b2GearJoint() {
@@ -9551,10 +8834,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       GetReactionForce(inv_dt) {
         if (inv_dt === undefined) inv_dt = 0;
-        return new b2Vec2(
-          inv_dt * this.m_impulse * this.m_J.linearB.x,
-          inv_dt * this.m_impulse * this.m_J.linearB.y,
-        );
+        return new b2Vec2(inv_dt * this.m_impulse * this.m_J.linearB.x, inv_dt * this.m_impulse * this.m_J.linearB.y);
       }
 
       GetReactionTorque(inv_dt) {
@@ -9567,9 +8847,7 @@ while keeping general compatability. (made with box2D js es6) */
         rX = tX;
         const PX = this.m_impulse * this.m_J.linearB.x;
         const PY = this.m_impulse * this.m_J.linearB.y;
-        return (
-          inv_dt * (this.m_impulse * this.m_J.angularB - rX * PY + rY * PX)
-        );
+        return inv_dt * (this.m_impulse * this.m_J.angularB - rX * PY + rY * PX);
       }
 
       GetRatio() {
@@ -9594,14 +8872,12 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_ground1 = def.joint1.GetBodyA();
         this.m_bodyA = def.joint1.GetBodyB();
         if (type1 == b2Joint.e_revoluteJoint) {
-          this.m_revolute1 =
-            def.joint1 instanceof b2RevoluteJoint ? def.joint1 : null;
+          this.m_revolute1 = (def.joint1 instanceof b2RevoluteJoint ? def.joint1 : null);
           this.m_groundAnchor1.SetV(this.m_revolute1.m_localAnchor1);
           this.m_localAnchor1.SetV(this.m_revolute1.m_localAnchor2);
           coordinate1 = this.m_revolute1.GetJointAngle();
         } else {
-          this.m_prismatic1 =
-            def.joint1 instanceof b2PrismaticJoint ? def.joint1 : null;
+          this.m_prismatic1 = (def.joint1 instanceof b2PrismaticJoint ? def.joint1 : null);
           this.m_groundAnchor1.SetV(this.m_prismatic1.m_localAnchor1);
           this.m_localAnchor1.SetV(this.m_prismatic1.m_localAnchor2);
           coordinate1 = this.m_prismatic1.GetJointTranslation();
@@ -9609,14 +8885,12 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_ground2 = def.joint2.GetBodyA();
         this.m_bodyB = def.joint2.GetBodyB();
         if (type2 == b2Joint.e_revoluteJoint) {
-          this.m_revolute2 =
-            def.joint2 instanceof b2RevoluteJoint ? def.joint2 : null;
+          this.m_revolute2 = (def.joint2 instanceof b2RevoluteJoint ? def.joint2 : null);
           this.m_groundAnchor2.SetV(this.m_revolute2.m_localAnchor1);
           this.m_localAnchor2.SetV(this.m_revolute2.m_localAnchor2);
           coordinate2 = this.m_revolute2.GetJointAngle();
         } else {
-          this.m_prismatic2 =
-            def.joint2 instanceof b2PrismaticJoint ? def.joint2 : null;
+          this.m_prismatic2 = (def.joint2 instanceof b2PrismaticJoint ? def.joint2 : null);
           this.m_groundAnchor2.SetV(this.m_prismatic2.m_localAnchor1);
           this.m_localAnchor2.SetV(this.m_prismatic2.m_localAnchor2);
           coordinate2 = this.m_prismatic2.GetJointTranslation();
@@ -9642,7 +8916,7 @@ while keeping general compatability. (made with box2D js es6) */
         let K = 0.0;
         this.m_J.SetZero();
         if (this.m_revolute1) {
-          this.m_J.angularA = -1.0;
+          this.m_J.angularA = (-1.0);
           K += bA.m_invI;
         } else {
           tMat = g1.m_xf.R;
@@ -9656,12 +8930,12 @@ while keeping general compatability. (made with box2D js es6) */
           rY = tMat.col1.y * rX + tMat.col2.y * rY;
           rX = tX;
           crug = rX * ugY - rY * ugX;
-          this.m_J.linearA.Set(-ugX, -ugY);
-          this.m_J.angularA = -crug;
+          this.m_J.linearA.Set((-ugX), (-ugY));
+          this.m_J.angularA = (-crug);
           K += bA.m_invMass + bA.m_invI * crug * crug;
         }
         if (this.m_revolute2) {
-          this.m_J.angularB = -this.m_ratio;
+          this.m_J.angularB = (-this.m_ratio);
           K += this.m_ratio * this.m_ratio * bB.m_invI;
         } else {
           tMat = g2.m_xf.R;
@@ -9675,27 +8949,18 @@ while keeping general compatability. (made with box2D js es6) */
           rY = tMat.col1.y * rX + tMat.col2.y * rY;
           rX = tX;
           crug = rX * ugY - rY * ugX;
-          this.m_J.linearB.Set(-this.m_ratio * ugX, -this.m_ratio * ugY);
-          this.m_J.angularB = -this.m_ratio * crug;
-          K +=
-            this.m_ratio *
-            this.m_ratio *
-            (bB.m_invMass + bB.m_invI * crug * crug);
+          this.m_J.linearB.Set((-this.m_ratio * ugX), (-this.m_ratio * ugY));
+          this.m_J.angularB = (-this.m_ratio * crug);
+          K += this.m_ratio * this.m_ratio * (bB.m_invMass + bB.m_invI * crug * crug);
         }
         this.m_mass = K > 0.0 ? 1.0 / K : 0.0;
         if (step.warmStarting) {
-          bA.m_linearVelocity.x +=
-            bA.m_invMass * this.m_impulse * this.m_J.linearA.x;
-          bA.m_linearVelocity.y +=
-            bA.m_invMass * this.m_impulse * this.m_J.linearA.y;
-          bA.m_angularVelocity +=
-            bA.m_invI * this.m_impulse * this.m_J.angularA;
-          bB.m_linearVelocity.x +=
-            bB.m_invMass * this.m_impulse * this.m_J.linearB.x;
-          bB.m_linearVelocity.y +=
-            bB.m_invMass * this.m_impulse * this.m_J.linearB.y;
-          bB.m_angularVelocity +=
-            bB.m_invI * this.m_impulse * this.m_J.angularB;
+          bA.m_linearVelocity.x += bA.m_invMass * this.m_impulse * this.m_J.linearA.x;
+          bA.m_linearVelocity.y += bA.m_invMass * this.m_impulse * this.m_J.linearA.y;
+          bA.m_angularVelocity += bA.m_invI * this.m_impulse * this.m_J.angularA;
+          bB.m_linearVelocity.x += bB.m_invMass * this.m_impulse * this.m_J.linearB.x;
+          bB.m_linearVelocity.y += bB.m_invMass * this.m_impulse * this.m_J.linearB.y;
+          bB.m_angularVelocity += bB.m_invI * this.m_impulse * this.m_J.angularB;
         } else {
           this.m_impulse = 0.0;
         }
@@ -9704,13 +8969,8 @@ while keeping general compatability. (made with box2D js es6) */
       SolveVelocityConstraints(step) {
         const bA = this.m_bodyA;
         const bB = this.m_bodyB;
-        const Cdot = this.m_J.Compute(
-          bA.m_linearVelocity,
-          bA.m_angularVelocity,
-          bB.m_linearVelocity,
-          bB.m_angularVelocity,
-        );
-        const impulse = -this.m_mass * Cdot;
+        const Cdot = this.m_J.Compute(bA.m_linearVelocity, bA.m_angularVelocity, bB.m_linearVelocity, bB.m_angularVelocity);
+        const impulse = (-this.m_mass * Cdot);
         this.m_impulse += impulse;
         bA.m_linearVelocity.x += bA.m_invMass * impulse * this.m_J.linearA.x;
         bA.m_linearVelocity.y += bA.m_invMass * impulse * this.m_J.linearA.y;
@@ -9738,7 +8998,7 @@ while keeping general compatability. (made with box2D js es6) */
           coordinate2 = this.m_prismatic2.GetJointTranslation();
         }
         const C = this.m_constant - (coordinate1 + this.m_ratio * coordinate2);
-        const impulse = -this.m_mass * C;
+        const impulse = (-this.m_mass * C);
         bA.m_sweep.c.x += bA.m_invMass * impulse * this.m_J.linearA.x;
         bA.m_sweep.c.y += bA.m_invMass * impulse * this.m_J.linearA.y;
         bA.m_sweep.a += bA.m_invI * impulse * this.m_J.angularA;
@@ -9757,8 +9017,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2GearJointDef.b2GearJointDef.apply(this, arguments);
-        if (this.constructor === b2GearJointDef)
-          this.b2GearJointDef.apply(this, arguments);
+        if (this.constructor === b2GearJointDef) this.b2GearJointDef.apply(this, arguments);
       }
 
       static b2GearJointDef() {
@@ -9805,13 +9064,7 @@ while keeping general compatability. (made with box2D js es6) */
       Compute(x1, a1, x2, a2) {
         if (a1 === undefined) a1 = 0;
         if (a2 === undefined) a2 = 0;
-        return (
-          this.linearA.x * x1.x +
-          this.linearA.y * x1.y +
-          this.angularA * a1 +
-          (this.linearB.x * x2.x + this.linearB.y * x2.y) +
-          this.angularB * a2
-        );
+        return (this.linearA.x * x1.x + this.linearA.y * x1.y) + this.angularA * a1 + (this.linearB.x * x2.x + this.linearB.y * x2.y) + this.angularB * a2;
       }
     }
 
@@ -9821,8 +9074,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2DistanceJoint.b2DistanceJoint.apply(this, arguments);
-        if (this.constructor === b2DistanceJoint)
-          this.b2DistanceJoint.apply(this, arguments);
+        if (this.constructor === b2DistanceJoint) this.b2DistanceJoint.apply(this, arguments);
       }
 
       static b2DistanceJoint() {
@@ -9842,10 +9094,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       GetReactionForce(inv_dt) {
         if (inv_dt === undefined) inv_dt = 0;
-        return new b2Vec2(
-          inv_dt * this.m_impulse * this.m_u.x,
-          inv_dt * this.m_impulse * this.m_u.y,
-        );
+        return new b2Vec2(inv_dt * this.m_impulse * this.m_u.x, inv_dt * this.m_impulse * this.m_u.y);
       }
 
       GetReactionTorque(inv_dt) {
@@ -9903,32 +9152,26 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
         let r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-        tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = bB.m_xf.R;
         let r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
         let r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
         this.m_u.x = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X;
         this.m_u.y = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y;
-        const length = Math.sqrt(
-          this.m_u.x * this.m_u.x + this.m_u.y * this.m_u.y,
-        );
+        const length = Math.sqrt(this.m_u.x * this.m_u.x + this.m_u.y * this.m_u.y);
         if (length > b2Settings.b2_linearSlop) {
           this.m_u.Multiply(1.0 / length);
         } else {
           this.m_u.SetZero();
         }
-        const cr1u = r1X * this.m_u.y - r1Y * this.m_u.x;
-        const cr2u = r2X * this.m_u.y - r2Y * this.m_u.x;
-        const invMass =
-          bA.m_invMass +
-          bA.m_invI * cr1u * cr1u +
-          bB.m_invMass +
-          bB.m_invI * cr2u * cr2u;
+        const cr1u = (r1X * this.m_u.y - r1Y * this.m_u.x);
+        const cr2u = (r2X * this.m_u.y - r2Y * this.m_u.x);
+        const invMass = bA.m_invMass + bA.m_invI * cr1u * cr1u + bB.m_invMass + bB.m_invI * cr2u * cr2u;
         this.m_mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
         if (this.m_frequencyHz > 0.0) {
           const C = length - this.m_length;
@@ -9963,22 +9206,21 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
         let r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-        let tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        let tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = bB.m_xf.R;
         let r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
         let r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
-        const v1X = bA.m_linearVelocity.x + -bA.m_angularVelocity * r1Y;
-        const v1Y = bA.m_linearVelocity.y + bA.m_angularVelocity * r1X;
-        const v2X = bB.m_linearVelocity.x + -bB.m_angularVelocity * r2Y;
-        const v2Y = bB.m_linearVelocity.y + bB.m_angularVelocity * r2X;
-        const Cdot = this.m_u.x * (v2X - v1X) + this.m_u.y * (v2Y - v1Y);
-        const impulse =
-          -this.m_mass * (Cdot + this.m_bias + this.m_gamma * this.m_impulse);
+        const v1X = bA.m_linearVelocity.x + ((-bA.m_angularVelocity * r1Y));
+        const v1Y = bA.m_linearVelocity.y + (bA.m_angularVelocity * r1X);
+        const v2X = bB.m_linearVelocity.x + ((-bB.m_angularVelocity * r2Y));
+        const v2Y = bB.m_linearVelocity.y + (bB.m_angularVelocity * r2X);
+        const Cdot = (this.m_u.x * (v2X - v1X) + this.m_u.y * (v2Y - v1Y));
+        const impulse = (-this.m_mass * (Cdot + this.m_bias + this.m_gamma * this.m_impulse));
         this.m_impulse += impulse;
         const PX = impulse * this.m_u.x;
         const PY = impulse * this.m_u.y;
@@ -10001,14 +9243,14 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
         let r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-        let tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        let tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = bB.m_xf.R;
         let r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
         let r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
         let dX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X;
         let dY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y;
@@ -10016,12 +9258,8 @@ while keeping general compatability. (made with box2D js es6) */
         dX /= length;
         dY /= length;
         let C = length - this.m_length;
-        C = b2Math.Clamp(
-          C,
-          -b2Settings.b2_maxLinearCorrection,
-          b2Settings.b2_maxLinearCorrection,
-        );
-        const impulse = -this.m_mass * C;
+        C = b2Math.Clamp(C, (-b2Settings.b2_maxLinearCorrection), b2Settings.b2_maxLinearCorrection);
+        const impulse = (-this.m_mass * C);
         this.m_u.Set(dX, dY);
         const PX = impulse * this.m_u.x;
         const PY = impulse * this.m_u.y;
@@ -10048,8 +9286,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2LineJoint.b2LineJoint.apply(this, arguments);
-        if (this.constructor === b2LineJoint)
-          this.b2LineJoint.apply(this, arguments);
+        if (this.constructor === b2LineJoint) this.b2LineJoint.apply(this, arguments);
       }
 
       static b2LineJoint() {
@@ -10074,14 +9311,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       GetReactionForce(inv_dt) {
         if (inv_dt === undefined) inv_dt = 0;
-        return new b2Vec2(
-          inv_dt *
-            (this.m_impulse.x * this.m_perp.x +
-              (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.x),
-          inv_dt *
-            (this.m_impulse.x * this.m_perp.y +
-              (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.y),
-        );
+        return new b2Vec2(inv_dt * (this.m_impulse.x * this.m_perp.x + (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.x), inv_dt * (this.m_impulse.x * this.m_perp.y + (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.y));
       }
 
       GetReactionTorque(inv_dt) {
@@ -10109,14 +9339,14 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
         let r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-        let tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        let tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = bB.m_xf.R;
         let r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
         let r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
         const p1X = bA.m_sweep.c.x + r1X;
         const p1Y = bA.m_sweep.c.y + r1Y;
@@ -10129,11 +9359,7 @@ while keeping general compatability. (made with box2D js es6) */
         const v2 = bB.m_linearVelocity;
         const w1 = bA.m_angularVelocity;
         const w2 = bB.m_angularVelocity;
-        const speed =
-          dX * (-w1 * axis.y) +
-          dY * (w1 * axis.x) +
-          (axis.x * (v2.x + -w2 * r2Y - v1.x - -w1 * r1Y) +
-            axis.y * (v2.y + w2 * r2X - v1.y - w1 * r1X));
+        const speed = (dX * ((-w1 * axis.y)) + dY * (w1 * axis.x)) + (axis.x * (((v2.x + ((-w2 * r2Y))) - v1.x) - ((-w1 * r1Y))) + axis.y * (((v2.y + (w2 * r2X)) - v1.y) - (w1 * r1X)));
         return speed;
       }
 
@@ -10208,7 +9434,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_localAnchor1.SetV(def.localAnchorA);
         this.m_localAnchor2.SetV(def.localAnchorB);
         this.m_localXAxis1.SetV(def.localAxisA);
-        this.m_localYAxis1.x = -this.m_localXAxis1.y;
+        this.m_localYAxis1.x = (-this.m_localXAxis1.y);
         this.m_localYAxis1.y = this.m_localXAxis1.x;
         this.m_impulse.SetZero();
         this.m_motorMass = 0.0;
@@ -10236,34 +9462,27 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let r1X = this.m_localAnchor1.x - this.m_localCenterA.x;
         let r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
-        tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = bB.m_xf.R;
         let r2X = this.m_localAnchor2.x - this.m_localCenterB.x;
         let r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
         const dX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X;
         const dY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y;
         this.m_invMassA = bA.m_invMass;
         this.m_invMassB = bB.m_invMass;
         this.m_invIA = bA.m_invI;
-        this.m_invIB = bB.m_invI;
-        {
+        this.m_invIB = bB.m_invI; {
           this.m_axis.SetV(b2Math.MulMV(xf1.R, this.m_localXAxis1));
           this.m_a1 = (dX + r1X) * this.m_axis.y - (dY + r1Y) * this.m_axis.x;
           this.m_a2 = r2X * this.m_axis.y - r2Y * this.m_axis.x;
-          this.m_motorMass =
-            this.m_invMassA +
-            this.m_invMassB +
-            this.m_invIA * this.m_a1 * this.m_a1 +
-            this.m_invIB * this.m_a2 * this.m_a2;
-          this.m_motorMass =
-            this.m_motorMass > Number.MIN_VALUE ? 1.0 / this.m_motorMass : 0.0;
-        }
-        {
+          this.m_motorMass = this.m_invMassA + this.m_invMassB + this.m_invIA * this.m_a1 * this.m_a1 + this.m_invIB * this.m_a2 * this.m_a2;
+          this.m_motorMass = this.m_motorMass > Number.MIN_VALUE ? 1.0 / this.m_motorMass : 0.0;
+        } {
           this.m_perp.SetV(b2Math.MulMV(xf1.R, this.m_localYAxis1));
           this.m_s1 = (dX + r1X) * this.m_perp.y - (dY + r1Y) * this.m_perp.x;
           this.m_s2 = r2X * this.m_perp.y - r2Y * this.m_perp.x;
@@ -10271,20 +9490,14 @@ while keeping general compatability. (made with box2D js es6) */
           const m2 = this.m_invMassB;
           const i1 = this.m_invIA;
           const i2 = this.m_invIB;
-          this.m_K.col1.x =
-            m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
-          this.m_K.col1.y =
-            i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
+          this.m_K.col1.x = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
+          this.m_K.col1.y = i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
           this.m_K.col2.x = this.m_K.col1.y;
-          this.m_K.col2.y =
-            m1 + m2 + i1 * this.m_a1 * this.m_a1 + i2 * this.m_a2 * this.m_a2;
+          this.m_K.col2.y = m1 + m2 + i1 * this.m_a1 * this.m_a1 + i2 * this.m_a2 * this.m_a2;
         }
         if (this.m_enableLimit) {
           const jointTransition = this.m_axis.x * dX + this.m_axis.y * dY;
-          if (
-            b2Math.Abs(this.m_upperTranslation - this.m_lowerTranslation) <
-            2.0 * b2Settings.b2_linearSlop
-          ) {
+          if (b2Math.Abs(this.m_upperTranslation - this.m_lowerTranslation) < 2.0 * b2Settings.b2_linearSlop) {
             this.m_limitState = b2Joint.e_equalLimits;
           } else if (jointTransition <= this.m_lowerTranslation) {
             if (this.m_limitState != b2Joint.e_atLowerLimit) {
@@ -10310,18 +9523,10 @@ while keeping general compatability. (made with box2D js es6) */
           this.m_impulse.x *= step.dtRatio;
           this.m_impulse.y *= step.dtRatio;
           this.m_motorImpulse *= step.dtRatio;
-          const PX =
-            this.m_impulse.x * this.m_perp.x +
-            (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.x;
-          const PY =
-            this.m_impulse.x * this.m_perp.y +
-            (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.y;
-          const L1 =
-            this.m_impulse.x * this.m_s1 +
-            (this.m_motorImpulse + this.m_impulse.y) * this.m_a1;
-          const L2 =
-            this.m_impulse.x * this.m_s2 +
-            (this.m_motorImpulse + this.m_impulse.y) * this.m_a2;
+          const PX = this.m_impulse.x * this.m_perp.x + (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.x;
+          const PY = this.m_impulse.x * this.m_perp.y + (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.y;
+          const L1 = this.m_impulse.x * this.m_s1 + (this.m_motorImpulse + this.m_impulse.y) * this.m_a1;
+          const L2 = this.m_impulse.x * this.m_s2 + (this.m_motorImpulse + this.m_impulse.y) * this.m_a2;
           bA.m_linearVelocity.x -= this.m_invMassA * PX;
           bA.m_linearVelocity.y -= this.m_invMassA * PY;
           bA.m_angularVelocity -= this.m_invIA * L1;
@@ -10346,19 +9551,11 @@ while keeping general compatability. (made with box2D js es6) */
         let L1 = 0;
         let L2 = 0;
         if (this.m_enableMotor && this.m_limitState != b2Joint.e_equalLimits) {
-          const Cdot =
-            this.m_axis.x * (v2.x - v1.x) +
-            this.m_axis.y * (v2.y - v1.y) +
-            this.m_a2 * w2 -
-            this.m_a1 * w1;
+          const Cdot = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1;
           let impulse = this.m_motorMass * (this.m_motorSpeed - Cdot);
           const oldImpulse = this.m_motorImpulse;
           const maxImpulse = step.dt * this.m_maxMotorForce;
-          this.m_motorImpulse = b2Math.Clamp(
-            this.m_motorImpulse + impulse,
-            -maxImpulse,
-            maxImpulse,
-          );
+          this.m_motorImpulse = b2Math.Clamp(this.m_motorImpulse + impulse, (-maxImpulse), maxImpulse);
           impulse = this.m_motorImpulse - oldImpulse;
           PX = impulse * this.m_axis.x;
           PY = impulse * this.m_axis.y;
@@ -10371,29 +9568,18 @@ while keeping general compatability. (made with box2D js es6) */
           v2.y += this.m_invMassB * PY;
           w2 += this.m_invIB * L2;
         }
-        const Cdot1 =
-          this.m_perp.x * (v2.x - v1.x) +
-          this.m_perp.y * (v2.y - v1.y) +
-          this.m_s2 * w2 -
-          this.m_s1 * w1;
-        if (
-          this.m_enableLimit &&
-          this.m_limitState != b2Joint.e_inactiveLimit
-        ) {
-          const Cdot2 =
-            this.m_axis.x * (v2.x - v1.x) +
-            this.m_axis.y * (v2.y - v1.y) +
-            this.m_a2 * w2 -
-            this.m_a1 * w1;
+        const Cdot1 = this.m_perp.x * (v2.x - v1.x) + this.m_perp.y * (v2.y - v1.y) + this.m_s2 * w2 - this.m_s1 * w1;
+        if (this.m_enableLimit && this.m_limitState != b2Joint.e_inactiveLimit) {
+          const Cdot2 = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1;
           const f1 = this.m_impulse.Copy();
-          const df = this.m_K.Solve(new b2Vec2(), -Cdot1, -Cdot2);
+          const df = this.m_K.Solve(new b2Vec2(), (-Cdot1), (-Cdot2));
           this.m_impulse.Add(df);
           if (this.m_limitState == b2Joint.e_atLowerLimit) {
             this.m_impulse.y = b2Math.Max(this.m_impulse.y, 0.0);
           } else if (this.m_limitState == b2Joint.e_atUpperLimit) {
             this.m_impulse.y = b2Math.Min(this.m_impulse.y, 0.0);
           }
-          const b = -Cdot1 - (this.m_impulse.y - f1.y) * this.m_K.col2.x;
+          const b = (-Cdot1) - (this.m_impulse.y - f1.y) * this.m_K.col2.x;
           let f2r = 0;
           if (this.m_K.col1.x != 0.0) {
             f2r = b / this.m_K.col1.x + f1.x;
@@ -10416,7 +9602,7 @@ while keeping general compatability. (made with box2D js es6) */
         } else {
           let df2 = 0;
           if (this.m_K.col1.x != 0.0) {
-            df2 = -Cdot1 / this.m_K.col1.x;
+            df2 = ((-Cdot1)) / this.m_K.col1.x;
           } else {
             df2 = 0.0;
           }
@@ -10463,14 +9649,14 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = R1;
         let r1X = this.m_localAnchor1.x - this.m_localCenterA.x;
         let r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
-        tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = R2;
         let r2X = this.m_localAnchor2.x - this.m_localCenterB.x;
         let r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
         const dX = c2.x + r2X - c1.x - r1X;
         const dY = c2.y + r2Y - c1.y - r1Y;
@@ -10479,31 +9665,16 @@ while keeping general compatability. (made with box2D js es6) */
           this.m_a1 = (dX + r1X) * this.m_axis.y - (dY + r1Y) * this.m_axis.x;
           this.m_a2 = r2X * this.m_axis.y - r2Y * this.m_axis.x;
           const translation = this.m_axis.x * dX + this.m_axis.y * dY;
-          if (
-            b2Math.Abs(this.m_upperTranslation - this.m_lowerTranslation) <
-            2.0 * b2Settings.b2_linearSlop
-          ) {
-            C2 = b2Math.Clamp(
-              translation,
-              -b2Settings.b2_maxLinearCorrection,
-              b2Settings.b2_maxLinearCorrection,
-            );
+          if (b2Math.Abs(this.m_upperTranslation - this.m_lowerTranslation) < 2.0 * b2Settings.b2_linearSlop) {
+            C2 = b2Math.Clamp(translation, (-b2Settings.b2_maxLinearCorrection), b2Settings.b2_maxLinearCorrection);
             linearError = b2Math.Abs(translation);
             active = true;
           } else if (translation <= this.m_lowerTranslation) {
-            C2 = b2Math.Clamp(
-              translation - this.m_lowerTranslation + b2Settings.b2_linearSlop,
-              -b2Settings.b2_maxLinearCorrection,
-              0.0,
-            );
+            C2 = b2Math.Clamp(translation - this.m_lowerTranslation + b2Settings.b2_linearSlop, (-b2Settings.b2_maxLinearCorrection), 0.0);
             linearError = this.m_lowerTranslation - translation;
             active = true;
           } else if (translation >= this.m_upperTranslation) {
-            C2 = b2Math.Clamp(
-              translation - this.m_upperTranslation + b2Settings.b2_linearSlop,
-              0.0,
-              b2Settings.b2_maxLinearCorrection,
-            );
+            C2 = b2Math.Clamp(translation - this.m_upperTranslation + b2Settings.b2_linearSlop, 0.0, b2Settings.b2_maxLinearCorrection);
             linearError = translation - this.m_upperTranslation;
             active = true;
           }
@@ -10520,24 +9691,20 @@ while keeping general compatability. (made with box2D js es6) */
           m2 = this.m_invMassB;
           i1 = this.m_invIA;
           i2 = this.m_invIB;
-          this.m_K.col1.x =
-            m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
-          this.m_K.col1.y =
-            i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
+          this.m_K.col1.x = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
+          this.m_K.col1.y = i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
           this.m_K.col2.x = this.m_K.col1.y;
-          this.m_K.col2.y =
-            m1 + m2 + i1 * this.m_a1 * this.m_a1 + i2 * this.m_a2 * this.m_a2;
-          this.m_K.Solve(impulse, -C1, -C2);
+          this.m_K.col2.y = m1 + m2 + i1 * this.m_a1 * this.m_a1 + i2 * this.m_a2 * this.m_a2;
+          this.m_K.Solve(impulse, (-C1), (-C2));
         } else {
           m1 = this.m_invMassA;
           m2 = this.m_invMassB;
           i1 = this.m_invIA;
           i2 = this.m_invIB;
-          const k11 =
-            m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
+          const k11 = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
           let impulse1 = 0;
           if (k11 != 0.0) {
-            impulse1 = -C1 / k11;
+            impulse1 = ((-C1)) / k11;
           } else {
             impulse1 = 0.0;
           }
@@ -10558,10 +9725,7 @@ while keeping general compatability. (made with box2D js es6) */
         bB.m_sweep.a = a2;
         bA.SynchronizeTransform();
         bB.SynchronizeTransform();
-        return (
-          linearError <= b2Settings.b2_linearSlop &&
-          angularError <= b2Settings.b2_angularSlop
-        );
+        return linearError <= b2Settings.b2_linearSlop && angularError <= b2Settings.b2_angularSlop;
       }
     }
 
@@ -10571,8 +9735,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2LineJointDef.b2LineJointDef.apply(this, arguments);
-        if (this.constructor === b2LineJointDef)
-          this.b2LineJointDef.apply(this, arguments);
+        if (this.constructor === b2LineJointDef) this.b2LineJointDef.apply(this, arguments);
       }
 
       static b2LineJointDef() {
@@ -10609,8 +9772,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2MouseJoint.b2MouseJoint.apply(this, arguments);
-        if (this.constructor === b2MouseJoint)
-          this.b2MouseJoint.apply(this, arguments);
+        if (this.constructor === b2MouseJoint) this.b2MouseJoint.apply(this, arguments);
       }
 
       static b2MouseJoint() {
@@ -10687,8 +9849,8 @@ while keeping general compatability. (made with box2D js es6) */
         const tX = this.m_target.x - this.m_bodyB.m_xf.position.x;
         const tY = this.m_target.y - this.m_bodyB.m_xf.position.y;
         const tMat = this.m_bodyB.m_xf.R;
-        this.m_localAnchor.x = tX * tMat.col1.x + tY * tMat.col1.y;
-        this.m_localAnchor.y = tX * tMat.col2.x + tY * tMat.col2.y;
+        this.m_localAnchor.x = (tX * tMat.col1.x + tY * tMat.col1.y);
+        this.m_localAnchor.y = (tX * tMat.col2.x + tY * tMat.col2.y);
         this.m_maxForce = def.maxForce;
         this.m_impulse.SetZero();
         this.m_frequencyHz = def.frequencyHz;
@@ -10706,22 +9868,19 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_gamma = step.dt * (d + step.dt * k);
         this.m_gamma = this.m_gamma != 0 ? 1 / this.m_gamma : 0.0;
         this.m_beta = step.dt * k * this.m_gamma;
-        let tMat;
-        tMat = b.m_xf.R;
+        let tMat; tMat = b.m_xf.R;
         let rX = this.m_localAnchor.x - b.m_sweep.localCenter.x;
         let rY = this.m_localAnchor.y - b.m_sweep.localCenter.y;
-        const tX = tMat.col1.x * rX + tMat.col2.x * rY;
-        rY = tMat.col1.y * rX + tMat.col2.y * rY;
+        const tX = (tMat.col1.x * rX + tMat.col2.x * rY); rY = (tMat.col1.y * rX + tMat.col2.y * rY);
         rX = tX;
         const invMass = b.m_invMass;
-        const invI = b.m_invI;
-        this.K1.col1.x = invMass;
+        const invI = b.m_invI; this.K1.col1.x = invMass;
         this.K1.col2.x = 0.0;
         this.K1.col1.y = 0.0;
         this.K1.col2.y = invMass;
         this.K2.col1.x = invI * rY * rY;
-        this.K2.col2.x = -invI * rX * rY;
-        this.K2.col1.y = -invI * rX * rY;
+        this.K2.col2.x = (-invI * rX * rY);
+        this.K2.col1.y = (-invI * rX * rY);
         this.K2.col2.y = invI * rX * rX;
         this.K.SetM(this.K1);
         this.K.AddM(this.K2);
@@ -10735,8 +9894,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_impulse.y *= step.dtRatio;
         b.m_linearVelocity.x += invMass * this.m_impulse.x;
         b.m_linearVelocity.y += invMass * this.m_impulse.y;
-        b.m_angularVelocity +=
-          invI * (rX * this.m_impulse.y - rY * this.m_impulse.x);
+        b.m_angularVelocity += invI * (rX * this.m_impulse.y - rY * this.m_impulse.x);
       }
 
       SolveVelocityConstraints(step) {
@@ -10747,16 +9905,16 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = b.m_xf.R;
         let rX = this.m_localAnchor.x - b.m_sweep.localCenter.x;
         let rY = this.m_localAnchor.y - b.m_sweep.localCenter.y;
-        tX = tMat.col1.x * rX + tMat.col2.x * rY;
-        rY = tMat.col1.y * rX + tMat.col2.y * rY;
+        tX = (tMat.col1.x * rX + tMat.col2.x * rY);
+        rY = (tMat.col1.y * rX + tMat.col2.y * rY);
         rX = tX;
-        const CdotX = b.m_linearVelocity.x + -b.m_angularVelocity * rY;
-        const CdotY = b.m_linearVelocity.y + b.m_angularVelocity * rX;
+        const CdotX = b.m_linearVelocity.x + ((-b.m_angularVelocity * rY));
+        const CdotY = b.m_linearVelocity.y + (b.m_angularVelocity * rX);
         tMat = this.m_mass;
         tX = CdotX + this.m_beta * this.m_C.x + this.m_gamma * this.m_impulse.x;
         tY = CdotY + this.m_beta * this.m_C.y + this.m_gamma * this.m_impulse.y;
-        let impulseX = -(tMat.col1.x * tX + tMat.col2.x * tY);
-        let impulseY = -(tMat.col1.y * tX + tMat.col2.y * tY);
+        let impulseX = (-(tMat.col1.x * tX + tMat.col2.x * tY));
+        let impulseY = (-(tMat.col1.y * tX + tMat.col2.y * tY));
         const oldImpulseX = this.m_impulse.x;
         const oldImpulseY = this.m_impulse.y;
         this.m_impulse.x += impulseX;
@@ -10784,8 +9942,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2MouseJointDef.b2MouseJointDef.apply(this, arguments);
-        if (this.constructor === b2MouseJointDef)
-          this.b2MouseJointDef.apply(this, arguments);
+        if (this.constructor === b2MouseJointDef) this.b2MouseJointDef.apply(this, arguments);
       }
 
       static b2MouseJointDef() {
@@ -10808,8 +9965,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2PrismaticJoint.b2PrismaticJoint.apply(this, arguments);
-        if (this.constructor === b2PrismaticJoint)
-          this.b2PrismaticJoint.apply(this, arguments);
+        if (this.constructor === b2PrismaticJoint) this.b2PrismaticJoint.apply(this, arguments);
       }
 
       static b2PrismaticJoint() {
@@ -10834,14 +9990,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       GetReactionForce(inv_dt) {
         if (inv_dt === undefined) inv_dt = 0;
-        return new b2Vec2(
-          inv_dt *
-            (this.m_impulse.x * this.m_perp.x +
-              (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.x),
-          inv_dt *
-            (this.m_impulse.x * this.m_perp.y +
-              (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.y),
-        );
+        return new b2Vec2(inv_dt * (this.m_impulse.x * this.m_perp.x + (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.x), inv_dt * (this.m_impulse.x * this.m_perp.y + (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.y));
       }
 
       GetReactionTorque(inv_dt) {
@@ -10869,14 +10018,14 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
         let r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-        let tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        let tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = bB.m_xf.R;
         let r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
         let r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
         const p1X = bA.m_sweep.c.x + r1X;
         const p1Y = bA.m_sweep.c.y + r1Y;
@@ -10889,11 +10038,7 @@ while keeping general compatability. (made with box2D js es6) */
         const v2 = bB.m_linearVelocity;
         const w1 = bA.m_angularVelocity;
         const w2 = bB.m_angularVelocity;
-        const speed =
-          dX * (-w1 * axis.y) +
-          dY * (w1 * axis.x) +
-          (axis.x * (v2.x + -w2 * r2Y - v1.x - -w1 * r1Y) +
-            axis.y * (v2.y + w2 * r2X - v1.y - w1 * r1X));
+        const speed = (dX * ((-w1 * axis.y)) + dY * (w1 * axis.x)) + (axis.x * (((v2.x + ((-w2 * r2Y))) - v1.x) - ((-w1 * r1Y))) + axis.y * (((v2.y + (w2 * r2X)) - v1.y) - (w1 * r1X)));
         return speed;
       }
 
@@ -10964,7 +10109,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_localAnchor1.SetV(def.localAnchorA);
         this.m_localAnchor2.SetV(def.localAnchorB);
         this.m_localXAxis1.SetV(def.localAxisA);
-        this.m_localYAxis1.x = -this.m_localXAxis1.y;
+        this.m_localYAxis1.x = (-this.m_localXAxis1.y);
         this.m_localYAxis1.y = this.m_localXAxis1.x;
         this.m_refAngle = def.referenceAngle;
         this.m_impulse.SetZero();
@@ -10993,34 +10138,27 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let r1X = this.m_localAnchor1.x - this.m_localCenterA.x;
         let r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
-        tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = bB.m_xf.R;
         let r2X = this.m_localAnchor2.x - this.m_localCenterB.x;
         let r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
         const dX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X;
         const dY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y;
         this.m_invMassA = bA.m_invMass;
         this.m_invMassB = bB.m_invMass;
         this.m_invIA = bA.m_invI;
-        this.m_invIB = bB.m_invI;
-        {
+        this.m_invIB = bB.m_invI; {
           this.m_axis.SetV(b2Math.MulMV(xf1.R, this.m_localXAxis1));
           this.m_a1 = (dX + r1X) * this.m_axis.y - (dY + r1Y) * this.m_axis.x;
           this.m_a2 = r2X * this.m_axis.y - r2Y * this.m_axis.x;
-          this.m_motorMass =
-            this.m_invMassA +
-            this.m_invMassB +
-            this.m_invIA * this.m_a1 * this.m_a1 +
-            this.m_invIB * this.m_a2 * this.m_a2;
-          if (this.m_motorMass > Number.MIN_VALUE)
-            this.m_motorMass = 1.0 / this.m_motorMass;
-        }
-        {
+          this.m_motorMass = this.m_invMassA + this.m_invMassB + this.m_invIA * this.m_a1 * this.m_a1 + this.m_invIB * this.m_a2 * this.m_a2;
+          if (this.m_motorMass > Number.MIN_VALUE) this.m_motorMass = 1.0 / this.m_motorMass;
+        } {
           this.m_perp.SetV(b2Math.MulMV(xf1.R, this.m_localYAxis1));
           this.m_s1 = (dX + r1X) * this.m_perp.y - (dY + r1Y) * this.m_perp.x;
           this.m_s2 = r2X * this.m_perp.y - r2Y * this.m_perp.x;
@@ -11028,25 +10166,19 @@ while keeping general compatability. (made with box2D js es6) */
           const m2 = this.m_invMassB;
           const i1 = this.m_invIA;
           const i2 = this.m_invIB;
-          this.m_K.col1.x =
-            m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
+          this.m_K.col1.x = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
           this.m_K.col1.y = i1 * this.m_s1 + i2 * this.m_s2;
-          this.m_K.col1.z =
-            i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
+          this.m_K.col1.z = i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
           this.m_K.col2.x = this.m_K.col1.y;
           this.m_K.col2.y = i1 + i2;
           this.m_K.col2.z = i1 * this.m_a1 + i2 * this.m_a2;
           this.m_K.col3.x = this.m_K.col1.z;
           this.m_K.col3.y = this.m_K.col2.z;
-          this.m_K.col3.z =
-            m1 + m2 + i1 * this.m_a1 * this.m_a1 + i2 * this.m_a2 * this.m_a2;
+          this.m_K.col3.z = m1 + m2 + i1 * this.m_a1 * this.m_a1 + i2 * this.m_a2 * this.m_a2;
         }
         if (this.m_enableLimit) {
           const jointTransition = this.m_axis.x * dX + this.m_axis.y * dY;
-          if (
-            b2Math.Abs(this.m_upperTranslation - this.m_lowerTranslation) <
-            2.0 * b2Settings.b2_linearSlop
-          ) {
+          if (b2Math.Abs(this.m_upperTranslation - this.m_lowerTranslation) < 2.0 * b2Settings.b2_linearSlop) {
             this.m_limitState = b2Joint.e_equalLimits;
           } else if (jointTransition <= this.m_lowerTranslation) {
             if (this.m_limitState != b2Joint.e_atLowerLimit) {
@@ -11072,20 +10204,10 @@ while keeping general compatability. (made with box2D js es6) */
           this.m_impulse.x *= step.dtRatio;
           this.m_impulse.y *= step.dtRatio;
           this.m_motorImpulse *= step.dtRatio;
-          const PX =
-            this.m_impulse.x * this.m_perp.x +
-            (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.x;
-          const PY =
-            this.m_impulse.x * this.m_perp.y +
-            (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.y;
-          const L1 =
-            this.m_impulse.x * this.m_s1 +
-            this.m_impulse.y +
-            (this.m_motorImpulse + this.m_impulse.z) * this.m_a1;
-          const L2 =
-            this.m_impulse.x * this.m_s2 +
-            this.m_impulse.y +
-            (this.m_motorImpulse + this.m_impulse.z) * this.m_a2;
+          const PX = this.m_impulse.x * this.m_perp.x + (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.x;
+          const PY = this.m_impulse.x * this.m_perp.y + (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.y;
+          const L1 = this.m_impulse.x * this.m_s1 + this.m_impulse.y + (this.m_motorImpulse + this.m_impulse.z) * this.m_a1;
+          const L2 = this.m_impulse.x * this.m_s2 + this.m_impulse.y + (this.m_motorImpulse + this.m_impulse.z) * this.m_a2;
           bA.m_linearVelocity.x -= this.m_invMassA * PX;
           bA.m_linearVelocity.y -= this.m_invMassA * PY;
           bA.m_angularVelocity -= this.m_invIA * L1;
@@ -11110,19 +10232,11 @@ while keeping general compatability. (made with box2D js es6) */
         let L1 = 0;
         let L2 = 0;
         if (this.m_enableMotor && this.m_limitState != b2Joint.e_equalLimits) {
-          const Cdot =
-            this.m_axis.x * (v2.x - v1.x) +
-            this.m_axis.y * (v2.y - v1.y) +
-            this.m_a2 * w2 -
-            this.m_a1 * w1;
+          const Cdot = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1;
           let impulse = this.m_motorMass * (this.m_motorSpeed - Cdot);
           const oldImpulse = this.m_motorImpulse;
           const maxImpulse = step.dt * this.m_maxMotorForce;
-          this.m_motorImpulse = b2Math.Clamp(
-            this.m_motorImpulse + impulse,
-            -maxImpulse,
-            maxImpulse,
-          );
+          this.m_motorImpulse = b2Math.Clamp(this.m_motorImpulse + impulse, (-maxImpulse), maxImpulse);
           impulse = this.m_motorImpulse - oldImpulse;
           PX = impulse * this.m_axis.x;
           PY = impulse * this.m_axis.y;
@@ -11135,31 +10249,20 @@ while keeping general compatability. (made with box2D js es6) */
           v2.y += this.m_invMassB * PY;
           w2 += this.m_invIB * L2;
         }
-        const Cdot1X =
-          this.m_perp.x * (v2.x - v1.x) +
-          this.m_perp.y * (v2.y - v1.y) +
-          this.m_s2 * w2 -
-          this.m_s1 * w1;
+        const Cdot1X = this.m_perp.x * (v2.x - v1.x) + this.m_perp.y * (v2.y - v1.y) + this.m_s2 * w2 - this.m_s1 * w1;
         const Cdot1Y = w2 - w1;
-        if (
-          this.m_enableLimit &&
-          this.m_limitState != b2Joint.e_inactiveLimit
-        ) {
-          const Cdot2 =
-            this.m_axis.x * (v2.x - v1.x) +
-            this.m_axis.y * (v2.y - v1.y) +
-            this.m_a2 * w2 -
-            this.m_a1 * w1;
+        if (this.m_enableLimit && this.m_limitState != b2Joint.e_inactiveLimit) {
+          const Cdot2 = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1;
           const f1 = this.m_impulse.Copy();
-          const df = this.m_K.Solve33(new b2Vec3(), -Cdot1X, -Cdot1Y, -Cdot2);
+          const df = this.m_K.Solve33(new b2Vec3(), (-Cdot1X), (-Cdot1Y), (-Cdot2));
           this.m_impulse.Add(df);
           if (this.m_limitState == b2Joint.e_atLowerLimit) {
             this.m_impulse.z = b2Math.Max(this.m_impulse.z, 0.0);
           } else if (this.m_limitState == b2Joint.e_atUpperLimit) {
             this.m_impulse.z = b2Math.Min(this.m_impulse.z, 0.0);
           }
-          const bX = -Cdot1X - (this.m_impulse.z - f1.z) * this.m_K.col3.x;
-          const bY = -Cdot1Y - (this.m_impulse.z - f1.z) * this.m_K.col3.y;
+          const bX = (-Cdot1X) - (this.m_impulse.z - f1.z) * this.m_K.col3.x;
+          const bY = (-Cdot1Y) - (this.m_impulse.z - f1.z) * this.m_K.col3.y;
           const f2r = this.m_K.Solve22(new b2Vec2(), bX, bY);
           f2r.x += f1.x;
           f2r.y += f1.y;
@@ -11179,7 +10282,7 @@ while keeping general compatability. (made with box2D js es6) */
           v2.y += this.m_invMassB * PY;
           w2 += this.m_invIB * L2;
         } else {
-          const df2 = this.m_K.Solve22(new b2Vec2(), -Cdot1X, -Cdot1Y);
+          const df2 = this.m_K.Solve22(new b2Vec2(), (-Cdot1X), (-Cdot1Y));
           this.m_impulse.x += df2.x;
           this.m_impulse.y += df2.y;
           PX = df2.x * this.m_perp.x;
@@ -11224,14 +10327,14 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = R1;
         let r1X = this.m_localAnchor1.x - this.m_localCenterA.x;
         let r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
-        tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = R2;
         let r2X = this.m_localAnchor2.x - this.m_localCenterB.x;
         let r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
         const dX = c2.x + r2X - c1.x - r1X;
         const dY = c2.y + r2Y - c1.y - r1Y;
@@ -11240,31 +10343,16 @@ while keeping general compatability. (made with box2D js es6) */
           this.m_a1 = (dX + r1X) * this.m_axis.y - (dY + r1Y) * this.m_axis.x;
           this.m_a2 = r2X * this.m_axis.y - r2Y * this.m_axis.x;
           const translation = this.m_axis.x * dX + this.m_axis.y * dY;
-          if (
-            b2Math.Abs(this.m_upperTranslation - this.m_lowerTranslation) <
-            2.0 * b2Settings.b2_linearSlop
-          ) {
-            C2 = b2Math.Clamp(
-              translation,
-              -b2Settings.b2_maxLinearCorrection,
-              b2Settings.b2_maxLinearCorrection,
-            );
+          if (b2Math.Abs(this.m_upperTranslation - this.m_lowerTranslation) < 2.0 * b2Settings.b2_linearSlop) {
+            C2 = b2Math.Clamp(translation, (-b2Settings.b2_maxLinearCorrection), b2Settings.b2_maxLinearCorrection);
             linearError = b2Math.Abs(translation);
             active = true;
           } else if (translation <= this.m_lowerTranslation) {
-            C2 = b2Math.Clamp(
-              translation - this.m_lowerTranslation + b2Settings.b2_linearSlop,
-              -b2Settings.b2_maxLinearCorrection,
-              0.0,
-            );
+            C2 = b2Math.Clamp(translation - this.m_lowerTranslation + b2Settings.b2_linearSlop, (-b2Settings.b2_maxLinearCorrection), 0.0);
             linearError = this.m_lowerTranslation - translation;
             active = true;
           } else if (translation >= this.m_upperTranslation) {
-            C2 = b2Math.Clamp(
-              translation - this.m_upperTranslation + b2Settings.b2_linearSlop,
-              0.0,
-              b2Settings.b2_maxLinearCorrection,
-            );
+            C2 = b2Math.Clamp(translation - this.m_upperTranslation + b2Settings.b2_linearSlop, 0.0, b2Settings.b2_maxLinearCorrection);
             linearError = translation - this.m_upperTranslation;
             active = true;
           }
@@ -11282,31 +10370,27 @@ while keeping general compatability. (made with box2D js es6) */
           m2 = this.m_invMassB;
           i1 = this.m_invIA;
           i2 = this.m_invIB;
-          this.m_K.col1.x =
-            m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
+          this.m_K.col1.x = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
           this.m_K.col1.y = i1 * this.m_s1 + i2 * this.m_s2;
-          this.m_K.col1.z =
-            i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
+          this.m_K.col1.z = i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
           this.m_K.col2.x = this.m_K.col1.y;
           this.m_K.col2.y = i1 + i2;
           this.m_K.col2.z = i1 * this.m_a1 + i2 * this.m_a2;
           this.m_K.col3.x = this.m_K.col1.z;
           this.m_K.col3.y = this.m_K.col2.z;
-          this.m_K.col3.z =
-            m1 + m2 + i1 * this.m_a1 * this.m_a1 + i2 * this.m_a2 * this.m_a2;
-          this.m_K.Solve33(impulse, -C1X, -C1Y, -C2);
+          this.m_K.col3.z = m1 + m2 + i1 * this.m_a1 * this.m_a1 + i2 * this.m_a2 * this.m_a2;
+          this.m_K.Solve33(impulse, (-C1X), (-C1Y), (-C2));
         } else {
           m1 = this.m_invMassA;
           m2 = this.m_invMassB;
           i1 = this.m_invIA;
           i2 = this.m_invIB;
-          const k11 =
-            m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
+          const k11 = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
           const k12 = i1 * this.m_s1 + i2 * this.m_s2;
           const k22 = i1 + i2;
           this.m_K.col1.Set(k11, k12, 0.0);
           this.m_K.col2.Set(k12, k22, 0.0);
-          const impulse1 = this.m_K.Solve22(new b2Vec2(), -C1X, -C1Y);
+          const impulse1 = this.m_K.Solve22(new b2Vec2(), (-C1X), (-C1Y));
           impulse.x = impulse1.x;
           impulse.y = impulse1.y;
           impulse.z = 0.0;
@@ -11325,10 +10409,7 @@ while keeping general compatability. (made with box2D js es6) */
         bB.m_sweep.a = a2;
         bA.SynchronizeTransform();
         bB.SynchronizeTransform();
-        return (
-          linearError <= b2Settings.b2_linearSlop &&
-          angularError <= b2Settings.b2_angularSlop
-        );
+        return linearError <= b2Settings.b2_linearSlop && angularError <= b2Settings.b2_angularSlop;
       }
     }
 
@@ -11338,8 +10419,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2PrismaticJointDef.b2PrismaticJointDef.apply(this, arguments);
-        if (this.constructor === b2PrismaticJointDef)
-          this.b2PrismaticJointDef.apply(this, arguments);
+        if (this.constructor === b2PrismaticJointDef) this.b2PrismaticJointDef.apply(this, arguments);
       }
 
       static b2PrismaticJointDef() {
@@ -11378,8 +10458,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2PulleyJoint.b2PulleyJoint.apply(this, arguments);
-        if (this.constructor === b2PulleyJoint)
-          this.b2PulleyJoint.apply(this, arguments);
+        if (this.constructor === b2PulleyJoint) this.b2PulleyJoint.apply(this, arguments);
       }
 
       static b2PulleyJoint() {
@@ -11402,10 +10481,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       GetReactionForce(inv_dt) {
         if (inv_dt === undefined) inv_dt = 0;
-        return new b2Vec2(
-          inv_dt * this.m_impulse * this.m_u2.x,
-          inv_dt * this.m_impulse * this.m_u2.y,
-        );
+        return new b2Vec2(inv_dt * this.m_impulse * this.m_u2.x, inv_dt * this.m_impulse * this.m_u2.y);
       }
 
       GetReactionTorque(inv_dt) {
@@ -11453,26 +10529,16 @@ while keeping general compatability. (made with box2D js es6) */
         const tX = 0;
         const tY = 0;
         this.m_ground = this.m_bodyA.m_world.m_groundBody;
-        this.m_groundAnchor1.x =
-          def.groundAnchorA.x - this.m_ground.m_xf.position.x;
-        this.m_groundAnchor1.y =
-          def.groundAnchorA.y - this.m_ground.m_xf.position.y;
-        this.m_groundAnchor2.x =
-          def.groundAnchorB.x - this.m_ground.m_xf.position.x;
-        this.m_groundAnchor2.y =
-          def.groundAnchorB.y - this.m_ground.m_xf.position.y;
+        this.m_groundAnchor1.x = def.groundAnchorA.x - this.m_ground.m_xf.position.x;
+        this.m_groundAnchor1.y = def.groundAnchorA.y - this.m_ground.m_xf.position.y;
+        this.m_groundAnchor2.x = def.groundAnchorB.x - this.m_ground.m_xf.position.x;
+        this.m_groundAnchor2.y = def.groundAnchorB.y - this.m_ground.m_xf.position.y;
         this.m_localAnchor1.SetV(def.localAnchorA);
         this.m_localAnchor2.SetV(def.localAnchorB);
         this.m_ratio = def.ratio;
         this.m_constant = def.lengthA + this.m_ratio * def.lengthB;
-        this.m_maxLength1 = b2Math.Min(
-          def.maxLengthA,
-          this.m_constant - this.m_ratio * b2PulleyJoint.b2_minPulleyLength,
-        );
-        this.m_maxLength2 = b2Math.Min(
-          def.maxLengthB,
-          (this.m_constant - b2PulleyJoint.b2_minPulleyLength) / this.m_ratio,
-        );
+        this.m_maxLength1 = b2Math.Min(def.maxLengthA, this.m_constant - this.m_ratio * b2PulleyJoint.b2_minPulleyLength);
+        this.m_maxLength2 = b2Math.Min(def.maxLengthB, (this.m_constant - b2PulleyJoint.b2_minPulleyLength) / this.m_ratio);
         this.m_impulse = 0.0;
         this.m_limitImpulse1 = 0.0;
         this.m_limitImpulse2 = 0.0;
@@ -11485,14 +10551,14 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
         let r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-        let tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        let tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = bB.m_xf.R;
         let r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
         let r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
         const p1X = bA.m_sweep.c.x + r1X;
         const p1Y = bA.m_sweep.c.y + r1Y;
@@ -11539,8 +10605,7 @@ while keeping general compatability. (made with box2D js es6) */
         const cr2u2 = r2X * this.m_u2.y - r2Y * this.m_u2.x;
         this.m_limitMass1 = bA.m_invMass + bA.m_invI * cr1u1 * cr1u1;
         this.m_limitMass2 = bB.m_invMass + bB.m_invI * cr2u2 * cr2u2;
-        this.m_pulleyMass =
-          this.m_limitMass1 + this.m_ratio * this.m_ratio * this.m_limitMass2;
+        this.m_pulleyMass = this.m_limitMass1 + this.m_ratio * this.m_ratio * this.m_limitMass2;
         this.m_limitMass1 = 1.0 / this.m_limitMass1;
         this.m_limitMass2 = 1.0 / this.m_limitMass2;
         this.m_pulleyMass = 1.0 / this.m_pulleyMass;
@@ -11548,14 +10613,10 @@ while keeping general compatability. (made with box2D js es6) */
           this.m_impulse *= step.dtRatio;
           this.m_limitImpulse1 *= step.dtRatio;
           this.m_limitImpulse2 *= step.dtRatio;
-          const P1X = (-this.m_impulse - this.m_limitImpulse1) * this.m_u1.x;
-          const P1Y = (-this.m_impulse - this.m_limitImpulse1) * this.m_u1.y;
-          const P2X =
-            (-this.m_ratio * this.m_impulse - this.m_limitImpulse2) *
-            this.m_u2.x;
-          const P2Y =
-            (-this.m_ratio * this.m_impulse - this.m_limitImpulse2) *
-            this.m_u2.y;
+          const P1X = ((-this.m_impulse) - this.m_limitImpulse1) * this.m_u1.x;
+          const P1Y = ((-this.m_impulse) - this.m_limitImpulse1) * this.m_u1.y;
+          const P2X = ((-this.m_ratio * this.m_impulse) - this.m_limitImpulse2) * this.m_u2.x;
+          const P2Y = ((-this.m_ratio * this.m_impulse) - this.m_limitImpulse2) * this.m_u2.y;
           bA.m_linearVelocity.x += bA.m_invMass * P1X;
           bA.m_linearVelocity.y += bA.m_invMass * P1Y;
           bA.m_angularVelocity += bA.m_invI * (r1X * P1Y - r1Y * P1X);
@@ -11576,14 +10637,14 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
         let r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-        let tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        let tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = bB.m_xf.R;
         let r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
         let r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
         let v1X = 0;
         let v1Y = 0;
@@ -11597,21 +10658,19 @@ while keeping general compatability. (made with box2D js es6) */
         let impulse = 0;
         let oldImpulse = 0;
         if (this.m_state == b2Joint.e_atUpperLimit) {
-          v1X = bA.m_linearVelocity.x + -bA.m_angularVelocity * r1Y;
-          v1Y = bA.m_linearVelocity.y + bA.m_angularVelocity * r1X;
-          v2X = bB.m_linearVelocity.x + -bB.m_angularVelocity * r2Y;
-          v2Y = bB.m_linearVelocity.y + bB.m_angularVelocity * r2X;
-          Cdot =
-            -(this.m_u1.x * v1X + this.m_u1.y * v1Y) -
-            this.m_ratio * (this.m_u2.x * v2X + this.m_u2.y * v2Y);
-          impulse = this.m_pulleyMass * -Cdot;
+          v1X = bA.m_linearVelocity.x + ((-bA.m_angularVelocity * r1Y));
+          v1Y = bA.m_linearVelocity.y + (bA.m_angularVelocity * r1X);
+          v2X = bB.m_linearVelocity.x + ((-bB.m_angularVelocity * r2Y));
+          v2Y = bB.m_linearVelocity.y + (bB.m_angularVelocity * r2X);
+          Cdot = (-(this.m_u1.x * v1X + this.m_u1.y * v1Y)) - this.m_ratio * (this.m_u2.x * v2X + this.m_u2.y * v2Y);
+          impulse = this.m_pulleyMass * ((-Cdot));
           oldImpulse = this.m_impulse;
           this.m_impulse = b2Math.Max(0.0, this.m_impulse + impulse);
           impulse = this.m_impulse - oldImpulse;
-          P1X = -impulse * this.m_u1.x;
-          P1Y = -impulse * this.m_u1.y;
-          P2X = -this.m_ratio * impulse * this.m_u2.x;
-          P2Y = -this.m_ratio * impulse * this.m_u2.y;
+          P1X = (-impulse * this.m_u1.x);
+          P1Y = (-impulse * this.m_u1.y);
+          P2X = (-this.m_ratio * impulse * this.m_u2.x);
+          P2Y = (-this.m_ratio * impulse * this.m_u2.y);
           bA.m_linearVelocity.x += bA.m_invMass * P1X;
           bA.m_linearVelocity.y += bA.m_invMass * P1Y;
           bA.m_angularVelocity += bA.m_invI * (r1X * P1Y - r1Y * P1X);
@@ -11620,35 +10679,29 @@ while keeping general compatability. (made with box2D js es6) */
           bB.m_angularVelocity += bB.m_invI * (r2X * P2Y - r2Y * P2X);
         }
         if (this.m_limitState1 == b2Joint.e_atUpperLimit) {
-          v1X = bA.m_linearVelocity.x + -bA.m_angularVelocity * r1Y;
-          v1Y = bA.m_linearVelocity.y + bA.m_angularVelocity * r1X;
-          Cdot = -(this.m_u1.x * v1X + this.m_u1.y * v1Y);
-          impulse = -this.m_limitMass1 * Cdot;
+          v1X = bA.m_linearVelocity.x + ((-bA.m_angularVelocity * r1Y));
+          v1Y = bA.m_linearVelocity.y + (bA.m_angularVelocity * r1X);
+          Cdot = (-(this.m_u1.x * v1X + this.m_u1.y * v1Y));
+          impulse = (-this.m_limitMass1 * Cdot);
           oldImpulse = this.m_limitImpulse1;
-          this.m_limitImpulse1 = b2Math.Max(
-            0.0,
-            this.m_limitImpulse1 + impulse,
-          );
+          this.m_limitImpulse1 = b2Math.Max(0.0, this.m_limitImpulse1 + impulse);
           impulse = this.m_limitImpulse1 - oldImpulse;
-          P1X = -impulse * this.m_u1.x;
-          P1Y = -impulse * this.m_u1.y;
+          P1X = (-impulse * this.m_u1.x);
+          P1Y = (-impulse * this.m_u1.y);
           bA.m_linearVelocity.x += bA.m_invMass * P1X;
           bA.m_linearVelocity.y += bA.m_invMass * P1Y;
           bA.m_angularVelocity += bA.m_invI * (r1X * P1Y - r1Y * P1X);
         }
         if (this.m_limitState2 == b2Joint.e_atUpperLimit) {
-          v2X = bB.m_linearVelocity.x + -bB.m_angularVelocity * r2Y;
-          v2Y = bB.m_linearVelocity.y + bB.m_angularVelocity * r2X;
-          Cdot = -(this.m_u2.x * v2X + this.m_u2.y * v2Y);
-          impulse = -this.m_limitMass2 * Cdot;
+          v2X = bB.m_linearVelocity.x + ((-bB.m_angularVelocity * r2Y));
+          v2Y = bB.m_linearVelocity.y + (bB.m_angularVelocity * r2X);
+          Cdot = (-(this.m_u2.x * v2X + this.m_u2.y * v2Y));
+          impulse = (-this.m_limitMass2 * Cdot);
           oldImpulse = this.m_limitImpulse2;
-          this.m_limitImpulse2 = b2Math.Max(
-            0.0,
-            this.m_limitImpulse2 + impulse,
-          );
+          this.m_limitImpulse2 = b2Math.Max(0.0, this.m_limitImpulse2 + impulse);
           impulse = this.m_limitImpulse2 - oldImpulse;
-          P2X = -impulse * this.m_u2.x;
-          P2Y = -impulse * this.m_u2.y;
+          P2X = (-impulse * this.m_u2.x);
+          P2Y = (-impulse * this.m_u2.y);
           bB.m_linearVelocity.x += bB.m_invMass * P2X;
           bB.m_linearVelocity.y += bB.m_invMass * P2Y;
           bB.m_angularVelocity += bB.m_invI * (r2X * P2Y - r2Y * P2X);
@@ -11684,14 +10737,14 @@ while keeping general compatability. (made with box2D js es6) */
           tMat = bA.m_xf.R;
           r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
           r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-          tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-          r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+          r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
           r1X = tX;
           tMat = bB.m_xf.R;
           r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
           r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-          tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-          r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+          tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+          r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
           r2X = tX;
           p1X = bA.m_sweep.c.x + r1X;
           p1Y = bA.m_sweep.c.y + r1Y;
@@ -11712,17 +10765,13 @@ while keeping general compatability. (made with box2D js es6) */
             this.m_u2.SetZero();
           }
           C = this.m_constant - length1 - this.m_ratio * length2;
-          linearError = b2Math.Max(linearError, -C);
-          C = b2Math.Clamp(
-            C + b2Settings.b2_linearSlop,
-            -b2Settings.b2_maxLinearCorrection,
-            0.0,
-          );
-          impulse = -this.m_pulleyMass * C;
-          p1X = -impulse * this.m_u1.x;
-          p1Y = -impulse * this.m_u1.y;
-          p2X = -this.m_ratio * impulse * this.m_u2.x;
-          p2Y = -this.m_ratio * impulse * this.m_u2.y;
+          linearError = b2Math.Max(linearError, (-C));
+          C = b2Math.Clamp(C + b2Settings.b2_linearSlop, (-b2Settings.b2_maxLinearCorrection), 0.0);
+          impulse = (-this.m_pulleyMass * C);
+          p1X = (-impulse * this.m_u1.x);
+          p1Y = (-impulse * this.m_u1.y);
+          p2X = (-this.m_ratio * impulse * this.m_u2.x);
+          p2Y = (-this.m_ratio * impulse * this.m_u2.y);
           bA.m_sweep.c.x += bA.m_invMass * p1X;
           bA.m_sweep.c.y += bA.m_invMass * p1Y;
           bA.m_sweep.a += bA.m_invI * (r1X * p1Y - r1Y * p1X);
@@ -11736,8 +10785,8 @@ while keeping general compatability. (made with box2D js es6) */
           tMat = bA.m_xf.R;
           r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
           r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-          tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-          r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+          r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
           r1X = tX;
           p1X = bA.m_sweep.c.x + r1X;
           p1Y = bA.m_sweep.c.y + r1Y;
@@ -11750,15 +10799,11 @@ while keeping general compatability. (made with box2D js es6) */
             this.m_u1.SetZero();
           }
           C = this.m_maxLength1 - length1;
-          linearError = b2Math.Max(linearError, -C);
-          C = b2Math.Clamp(
-            C + b2Settings.b2_linearSlop,
-            -b2Settings.b2_maxLinearCorrection,
-            0.0,
-          );
-          impulse = -this.m_limitMass1 * C;
-          p1X = -impulse * this.m_u1.x;
-          p1Y = -impulse * this.m_u1.y;
+          linearError = b2Math.Max(linearError, (-C));
+          C = b2Math.Clamp(C + b2Settings.b2_linearSlop, (-b2Settings.b2_maxLinearCorrection), 0.0);
+          impulse = (-this.m_limitMass1 * C);
+          p1X = (-impulse * this.m_u1.x);
+          p1Y = (-impulse * this.m_u1.y);
           bA.m_sweep.c.x += bA.m_invMass * p1X;
           bA.m_sweep.c.y += bA.m_invMass * p1Y;
           bA.m_sweep.a += bA.m_invI * (r1X * p1Y - r1Y * p1X);
@@ -11768,8 +10813,8 @@ while keeping general compatability. (made with box2D js es6) */
           tMat = bB.m_xf.R;
           r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
           r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-          tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-          r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+          tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+          r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
           r2X = tX;
           p2X = bB.m_sweep.c.x + r2X;
           p2Y = bB.m_sweep.c.y + r2Y;
@@ -11782,15 +10827,11 @@ while keeping general compatability. (made with box2D js es6) */
             this.m_u2.SetZero();
           }
           C = this.m_maxLength2 - length2;
-          linearError = b2Math.Max(linearError, -C);
-          C = b2Math.Clamp(
-            C + b2Settings.b2_linearSlop,
-            -b2Settings.b2_maxLinearCorrection,
-            0.0,
-          );
-          impulse = -this.m_limitMass2 * C;
-          p2X = -impulse * this.m_u2.x;
-          p2Y = -impulse * this.m_u2.y;
+          linearError = b2Math.Max(linearError, (-C));
+          C = b2Math.Clamp(C + b2Settings.b2_linearSlop, (-b2Settings.b2_maxLinearCorrection), 0.0);
+          impulse = (-this.m_limitMass2 * C);
+          p2X = (-impulse * this.m_u2.x);
+          p2Y = (-impulse * this.m_u2.y);
           bB.m_sweep.c.x += bB.m_invMass * p2X;
           bB.m_sweep.c.y += bB.m_invMass * p2Y;
           bB.m_sweep.a += bB.m_invI * (r2X * p2Y - r2Y * p2X);
@@ -11806,8 +10847,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2PulleyJointDef.b2PulleyJointDef.apply(this, arguments);
-        if (this.constructor === b2PulleyJointDef)
-          this.b2PulleyJointDef.apply(this, arguments);
+        if (this.constructor === b2PulleyJointDef) this.b2PulleyJointDef.apply(this, arguments);
       }
 
       static b2PulleyJointDef() {
@@ -11821,9 +10861,9 @@ while keeping general compatability. (made with box2D js es6) */
       b2PulleyJointDef() {
         this.__super.b2JointDef.call(this);
         this.type = b2Joint.e_pulleyJoint;
-        this.groundAnchorA.Set(-1.0, 1.0);
+        this.groundAnchorA.Set((-1.0), 1.0);
         this.groundAnchorB.Set(1.0, 1.0);
-        this.localAnchorA.Set(-1.0, 0.0);
+        this.localAnchorA.Set((-1.0), 0.0);
         this.localAnchorB.Set(1.0, 0.0);
         this.lengthA = 0.0;
         this.maxLengthA = 0.0;
@@ -11860,8 +10900,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2RevoluteJoint.b2RevoluteJoint.apply(this, arguments);
-        if (this.constructor === b2RevoluteJoint)
-          this.b2RevoluteJoint.apply(this, arguments);
+        if (this.constructor === b2RevoluteJoint) this.b2RevoluteJoint.apply(this, arguments);
       }
 
       static b2RevoluteJoint() {
@@ -11898,11 +10937,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
 
       GetJointAngle() {
-        return (
-          this.m_bodyB.m_sweep.a -
-          this.m_bodyA.m_sweep.a -
-          this.m_referenceAngle
-        );
+        return this.m_bodyB.m_sweep.a - this.m_bodyA.m_sweep.a - this.m_referenceAngle;
       }
 
       GetJointSpeed() {
@@ -11983,27 +11018,26 @@ while keeping general compatability. (made with box2D js es6) */
         const bB = this.m_bodyB;
         let tMat;
         let tX = 0;
-        if (this.m_enableMotor || this.m_enableLimit) {
-        }
+        if (this.m_enableMotor || this.m_enableLimit) { }
         tMat = bA.m_xf.R;
         let r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
         let r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-        tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-        r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+        tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+        r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
         r1X = tX;
         tMat = bB.m_xf.R;
         let r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
         let r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-        r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+        tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+        r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
         r2X = tX;
         const m1 = bA.m_invMass;
         const m2 = bB.m_invMass;
         const i1 = bA.m_invI;
         const i2 = bB.m_invI;
         this.m_mass.col1.x = m1 + m2 + r1Y * r1Y * i1 + r2Y * r2Y * i2;
-        this.m_mass.col2.x = -r1Y * r1X * i1 - r2Y * r2X * i2;
-        this.m_mass.col3.x = -r1Y * i1 - r2Y * i2;
+        this.m_mass.col2.x = (-r1Y * r1X * i1) - r2Y * r2X * i2;
+        this.m_mass.col3.x = (-r1Y * i1) - r2Y * i2;
         this.m_mass.col1.y = this.m_mass.col2.x;
         this.m_mass.col2.y = m1 + m2 + r1X * r1X * i1 + r2X * r2X * i2;
         this.m_mass.col3.y = r1X * i1 + r2X * i2;
@@ -12015,12 +11049,8 @@ while keeping general compatability. (made with box2D js es6) */
           this.m_motorImpulse = 0.0;
         }
         if (this.m_enableLimit) {
-          const jointAngle =
-            bB.m_sweep.a - bA.m_sweep.a - this.m_referenceAngle;
-          if (
-            b2Math.Abs(this.m_upperAngle - this.m_lowerAngle) <
-            2.0 * b2Settings.b2_angularSlop
-          ) {
+          const jointAngle = bB.m_sweep.a - bA.m_sweep.a - this.m_referenceAngle;
+          if (b2Math.Abs(this.m_upperAngle - this.m_lowerAngle) < 2.0 * b2Settings.b2_angularSlop) {
             this.m_limitState = b2Joint.e_equalLimits;
           } else if (jointAngle <= this.m_lowerAngle) {
             if (this.m_limitState != b2Joint.e_atLowerLimit) {
@@ -12047,12 +11077,10 @@ while keeping general compatability. (made with box2D js es6) */
           const PY = this.m_impulse.y;
           bA.m_linearVelocity.x -= m1 * PX;
           bA.m_linearVelocity.y -= m1 * PY;
-          bA.m_angularVelocity -=
-            i1 * (r1X * PY - r1Y * PX + this.m_motorImpulse + this.m_impulse.z);
+          bA.m_angularVelocity -= i1 * ((r1X * PY - r1Y * PX) + this.m_motorImpulse + this.m_impulse.z);
           bB.m_linearVelocity.x += m2 * PX;
           bB.m_linearVelocity.y += m2 * PY;
-          bB.m_angularVelocity +=
-            i2 * (r2X * PY - r2Y * PX + this.m_motorImpulse + this.m_impulse.z);
+          bB.m_angularVelocity += i2 * ((r2X * PY - r2Y * PX) + this.m_motorImpulse + this.m_impulse.z);
         } else {
           this.m_impulse.SetZero();
           this.m_motorImpulse = 0.0;
@@ -12079,47 +11107,40 @@ while keeping general compatability. (made with box2D js es6) */
         const i2 = bB.m_invI;
         if (this.m_enableMotor && this.m_limitState != b2Joint.e_equalLimits) {
           const Cdot = w2 - w1 - this.m_motorSpeed;
-          let impulse = this.m_motorMass * -Cdot;
+          let impulse = this.m_motorMass * ((-Cdot));
           const oldImpulse = this.m_motorImpulse;
           const maxImpulse = step.dt * this.m_maxMotorTorque;
-          this.m_motorImpulse = b2Math.Clamp(
-            this.m_motorImpulse + impulse,
-            -maxImpulse,
-            maxImpulse,
-          );
+          this.m_motorImpulse = b2Math.Clamp(this.m_motorImpulse + impulse, (-maxImpulse), maxImpulse);
           impulse = this.m_motorImpulse - oldImpulse;
           w1 -= i1 * impulse;
           w2 += i2 * impulse;
         }
-        if (
-          this.m_enableLimit &&
-          this.m_limitState != b2Joint.e_inactiveLimit
-        ) {
+        if (this.m_enableLimit && this.m_limitState != b2Joint.e_inactiveLimit) {
           tMat = bA.m_xf.R;
           r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
           r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-          tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-          r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+          r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
           r1X = tX;
           tMat = bB.m_xf.R;
           r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
           r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-          tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-          r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+          tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+          r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
           r2X = tX;
-          const Cdot1X = v2.x + -w2 * r2Y - v1.x - -w1 * r1Y;
-          const Cdot1Y = v2.y + w2 * r2X - v1.y - w1 * r1X;
+          const Cdot1X = v2.x + ((-w2 * r2Y)) - v1.x - ((-w1 * r1Y));
+          const Cdot1Y = v2.y + (w2 * r2X) - v1.y - (w1 * r1X);
           const Cdot2 = w2 - w1;
-          this.m_mass.Solve33(this.impulse3, -Cdot1X, -Cdot1Y, -Cdot2);
+          this.m_mass.Solve33(this.impulse3, (-Cdot1X), (-Cdot1Y), (-Cdot2));
           if (this.m_limitState == b2Joint.e_equalLimits) {
             this.m_impulse.Add(this.impulse3);
           } else if (this.m_limitState == b2Joint.e_atLowerLimit) {
             newImpulse = this.m_impulse.z + this.impulse3.z;
             if (newImpulse < 0.0) {
-              this.m_mass.Solve22(this.reduced, -Cdot1X, -Cdot1Y);
+              this.m_mass.Solve22(this.reduced, (-Cdot1X), (-Cdot1Y));
               this.impulse3.x = this.reduced.x;
               this.impulse3.y = this.reduced.y;
-              this.impulse3.z = -this.m_impulse.z;
+              this.impulse3.z = (-this.m_impulse.z);
               this.m_impulse.x += this.reduced.x;
               this.m_impulse.y += this.reduced.y;
               this.m_impulse.z = 0.0;
@@ -12127,10 +11148,10 @@ while keeping general compatability. (made with box2D js es6) */
           } else if (this.m_limitState == b2Joint.e_atUpperLimit) {
             newImpulse = this.m_impulse.z + this.impulse3.z;
             if (newImpulse > 0.0) {
-              this.m_mass.Solve22(this.reduced, -Cdot1X, -Cdot1Y);
+              this.m_mass.Solve22(this.reduced, (-Cdot1X), (-Cdot1Y));
               this.impulse3.x = this.reduced.x;
               this.impulse3.y = this.reduced.y;
-              this.impulse3.z = -this.m_impulse.z;
+              this.impulse3.z = (-this.m_impulse.z);
               this.m_impulse.x += this.reduced.x;
               this.m_impulse.y += this.reduced.y;
               this.m_impulse.z = 0.0;
@@ -12138,30 +11159,26 @@ while keeping general compatability. (made with box2D js es6) */
           }
           v1.x -= m1 * this.impulse3.x;
           v1.y -= m1 * this.impulse3.y;
-          w1 -=
-            i1 *
-            (r1X * this.impulse3.y - r1Y * this.impulse3.x + this.impulse3.z);
+          w1 -= i1 * (r1X * this.impulse3.y - r1Y * this.impulse3.x + this.impulse3.z);
           v2.x += m2 * this.impulse3.x;
           v2.y += m2 * this.impulse3.y;
-          w2 +=
-            i2 *
-            (r2X * this.impulse3.y - r2Y * this.impulse3.x + this.impulse3.z);
+          w2 += i2 * (r2X * this.impulse3.y - r2Y * this.impulse3.x + this.impulse3.z);
         } else {
           tMat = bA.m_xf.R;
           r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
           r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-          tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-          r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+          r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
           r1X = tX;
           tMat = bB.m_xf.R;
           r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
           r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-          tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-          r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+          tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+          r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
           r2X = tX;
-          const CdotX = v2.x + -w2 * r2Y - v1.x - -w1 * r1Y;
-          const CdotY = v2.y + w2 * r2X - v1.y - w1 * r1X;
-          this.m_mass.Solve22(this.impulse2, -CdotX, -CdotY);
+          const CdotX = v2.x + ((-w2 * r2Y)) - v1.x - ((-w1 * r1Y));
+          const CdotY = v2.y + (w2 * r2X) - v1.y - (w1 * r1X);
+          this.m_mass.Solve22(this.impulse2, (-CdotX), (-CdotY));
           this.m_impulse.x += this.impulse2.x;
           this.m_impulse.y += this.impulse2.y;
           v1.x -= m1 * this.impulse2.x;
@@ -12189,56 +11206,40 @@ while keeping general compatability. (made with box2D js es6) */
         let tX = 0;
         let impulseX = 0;
         let impulseY = 0;
-        if (
-          this.m_enableLimit &&
-          this.m_limitState != b2Joint.e_inactiveLimit
-        ) {
+        if (this.m_enableLimit && this.m_limitState != b2Joint.e_inactiveLimit) {
           const angle = bB.m_sweep.a - bA.m_sweep.a - this.m_referenceAngle;
           let limitImpulse = 0.0;
           if (this.m_limitState == b2Joint.e_equalLimits) {
-            C = b2Math.Clamp(
-              angle - this.m_lowerAngle,
-              -b2Settings.b2_maxAngularCorrection,
-              b2Settings.b2_maxAngularCorrection,
-            );
-            limitImpulse = -this.m_motorMass * C;
+            C = b2Math.Clamp(angle - this.m_lowerAngle, (-b2Settings.b2_maxAngularCorrection), b2Settings.b2_maxAngularCorrection);
+            limitImpulse = (-this.m_motorMass * C);
             angularError = b2Math.Abs(C);
           } else if (this.m_limitState == b2Joint.e_atLowerLimit) {
             C = angle - this.m_lowerAngle;
-            angularError = -C;
-            C = b2Math.Clamp(
-              C + b2Settings.b2_angularSlop,
-              -b2Settings.b2_maxAngularCorrection,
-              0.0,
-            );
-            limitImpulse = -this.m_motorMass * C;
+            angularError = (-C);
+            C = b2Math.Clamp(C + b2Settings.b2_angularSlop, (-b2Settings.b2_maxAngularCorrection), 0.0);
+            limitImpulse = (-this.m_motorMass * C);
           } else if (this.m_limitState == b2Joint.e_atUpperLimit) {
             C = angle - this.m_upperAngle;
             angularError = C;
-            C = b2Math.Clamp(
-              C - b2Settings.b2_angularSlop,
-              0.0,
-              b2Settings.b2_maxAngularCorrection,
-            );
-            limitImpulse = -this.m_motorMass * C;
+            C = b2Math.Clamp(C - b2Settings.b2_angularSlop, 0.0, b2Settings.b2_maxAngularCorrection);
+            limitImpulse = (-this.m_motorMass * C);
           }
           bA.m_sweep.a -= bA.m_invI * limitImpulse;
           bB.m_sweep.a += bB.m_invI * limitImpulse;
           bA.SynchronizeTransform();
           bB.SynchronizeTransform();
-        }
-        {
+        } {
           tMat = bA.m_xf.R;
           let r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
           let r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-          tX = tMat.col1.x * r1X + tMat.col2.x * r1Y;
-          r1Y = tMat.col1.y * r1X + tMat.col2.y * r1Y;
+          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+          r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
           r1X = tX;
           tMat = bB.m_xf.R;
           let r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
           let r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
-          tX = tMat.col1.x * r2X + tMat.col2.x * r2Y;
-          r2Y = tMat.col1.y * r2X + tMat.col2.y * r2Y;
+          tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
+          r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
           r2X = tX;
           let CX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X;
           let CY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y;
@@ -12255,8 +11256,8 @@ while keeping general compatability. (made with box2D js es6) */
             const uY = CY / CLength;
             const k = invMass1 + invMass2;
             const m = 1.0 / k;
-            impulseX = m * -CX;
-            impulseY = m * -CY;
+            impulseX = m * ((-CX));
+            impulseY = m * ((-CY));
             const k_beta = 0.5;
             bA.m_sweep.c.x -= k_beta * invMass1 * impulseX;
             bA.m_sweep.c.y -= k_beta * invMass1 * impulseY;
@@ -12270,17 +11271,17 @@ while keeping general compatability. (made with box2D js es6) */
           this.K1.col1.y = 0.0;
           this.K1.col2.y = invMass1 + invMass2;
           this.K2.col1.x = invI1 * r1Y * r1Y;
-          this.K2.col2.x = -invI1 * r1X * r1Y;
-          this.K2.col1.y = -invI1 * r1X * r1Y;
+          this.K2.col2.x = (-invI1 * r1X * r1Y);
+          this.K2.col1.y = (-invI1 * r1X * r1Y);
           this.K2.col2.y = invI1 * r1X * r1X;
           this.K3.col1.x = invI2 * r2Y * r2Y;
-          this.K3.col2.x = -invI2 * r2X * r2Y;
-          this.K3.col1.y = -invI2 * r2X * r2Y;
+          this.K3.col2.x = (-invI2 * r2X * r2Y);
+          this.K3.col1.y = (-invI2 * r2X * r2Y);
           this.K3.col2.y = invI2 * r2X * r2X;
           this.K.SetM(this.K1);
           this.K.AddM(this.K2);
           this.K.AddM(this.K3);
-          this.K.Solve(b2RevoluteJoint.tImpulse, -CX, -CY);
+          this.K.Solve(b2RevoluteJoint.tImpulse, (-CX), (-CY));
           impulseX = b2RevoluteJoint.tImpulse.x;
           impulseY = b2RevoluteJoint.tImpulse.y;
           bA.m_sweep.c.x -= bA.m_invMass * impulseX;
@@ -12292,10 +11293,7 @@ while keeping general compatability. (made with box2D js es6) */
           bA.SynchronizeTransform();
           bB.SynchronizeTransform();
         }
-        return (
-          positionError <= b2Settings.b2_linearSlop &&
-          angularError <= b2Settings.b2_angularSlop
-        );
+        return positionError <= b2Settings.b2_linearSlop && angularError <= b2Settings.b2_angularSlop;
       }
     }
 
@@ -12305,8 +11303,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2RevoluteJointDef.b2RevoluteJointDef.apply(this, arguments);
-        if (this.constructor === b2RevoluteJointDef)
-          this.b2RevoluteJointDef.apply(this, arguments);
+        if (this.constructor === b2RevoluteJointDef) this.b2RevoluteJointDef.apply(this, arguments);
       }
 
       static b2RevoluteJointDef() {
@@ -12344,8 +11341,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2WeldJoint.b2WeldJoint.apply(this, arguments);
-        if (this.constructor === b2WeldJoint)
-          this.b2WeldJoint.apply(this, arguments);
+        if (this.constructor === b2WeldJoint) this.b2WeldJoint.apply(this, arguments);
       }
 
       static b2WeldJoint() {
@@ -12391,22 +11387,22 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x;
         let rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
-        tX = tMat.col1.x * rAX + tMat.col2.x * rAY;
-        rAY = tMat.col1.y * rAX + tMat.col2.y * rAY;
+        tX = (tMat.col1.x * rAX + tMat.col2.x * rAY);
+        rAY = (tMat.col1.y * rAX + tMat.col2.y * rAY);
         rAX = tX;
         tMat = bB.m_xf.R;
         let rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x;
         let rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * rBX + tMat.col2.x * rBY;
-        rBY = tMat.col1.y * rBX + tMat.col2.y * rBY;
+        tX = (tMat.col1.x * rBX + tMat.col2.x * rBY);
+        rBY = (tMat.col1.y * rBX + tMat.col2.y * rBY);
         rBX = tX;
         const mA = bA.m_invMass;
         const mB = bB.m_invMass;
         const iA = bA.m_invI;
         const iB = bB.m_invI;
         this.m_mass.col1.x = mA + mB + rAY * rAY * iA + rBY * rBY * iB;
-        this.m_mass.col2.x = -rAY * rAX * iA - rBY * rBX * iB;
-        this.m_mass.col3.x = -rAY * iA - rBY * iB;
+        this.m_mass.col2.x = (-rAY * rAX * iA) - rBY * rBX * iB;
+        this.m_mass.col3.x = (-rAY * iA) - rBY * iB;
         this.m_mass.col1.y = this.m_mass.col2.x;
         this.m_mass.col2.y = mA + mB + rAX * rAX * iA + rBX * rBX * iB;
         this.m_mass.col3.y = rAX * iA + rBX * iB;
@@ -12419,18 +11415,10 @@ while keeping general compatability. (made with box2D js es6) */
           this.m_impulse.z *= step.dtRatio;
           bA.m_linearVelocity.x -= mA * this.m_impulse.x;
           bA.m_linearVelocity.y -= mA * this.m_impulse.y;
-          bA.m_angularVelocity -=
-            iA *
-            (rAX * this.m_impulse.y -
-              rAY * this.m_impulse.x +
-              this.m_impulse.z);
+          bA.m_angularVelocity -= iA * (rAX * this.m_impulse.y - rAY * this.m_impulse.x + this.m_impulse.z);
           bB.m_linearVelocity.x += mB * this.m_impulse.x;
           bB.m_linearVelocity.y += mB * this.m_impulse.y;
-          bB.m_angularVelocity +=
-            iB *
-            (rBX * this.m_impulse.y -
-              rBY * this.m_impulse.x +
-              this.m_impulse.z);
+          bB.m_angularVelocity += iB * (rBX * this.m_impulse.y - rBY * this.m_impulse.x + this.m_impulse.z);
         } else {
           this.m_impulse.SetZero();
         }
@@ -12452,20 +11440,20 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x;
         let rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
-        tX = tMat.col1.x * rAX + tMat.col2.x * rAY;
-        rAY = tMat.col1.y * rAX + tMat.col2.y * rAY;
+        tX = (tMat.col1.x * rAX + tMat.col2.x * rAY);
+        rAY = (tMat.col1.y * rAX + tMat.col2.y * rAY);
         rAX = tX;
         tMat = bB.m_xf.R;
         let rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x;
         let rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * rBX + tMat.col2.x * rBY;
-        rBY = tMat.col1.y * rBX + tMat.col2.y * rBY;
+        tX = (tMat.col1.x * rBX + tMat.col2.x * rBY);
+        rBY = (tMat.col1.y * rBX + tMat.col2.y * rBY);
         rBX = tX;
         const Cdot1X = vB.x - wB * rBY - vA.x + wA * rAY;
         const Cdot1Y = vB.y + wB * rBX - vA.y - wA * rAX;
         const Cdot2 = wB - wA;
         const impulse = new b2Vec3();
-        this.m_mass.Solve33(impulse, -Cdot1X, -Cdot1Y, -Cdot2);
+        this.m_mass.Solve33(impulse, (-Cdot1X), (-Cdot1Y), (-Cdot2));
         this.m_impulse.Add(impulse);
         vA.x -= mA * impulse.x;
         vA.y -= mA * impulse.y;
@@ -12486,14 +11474,14 @@ while keeping general compatability. (made with box2D js es6) */
         tMat = bA.m_xf.R;
         let rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x;
         let rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
-        tX = tMat.col1.x * rAX + tMat.col2.x * rAY;
-        rAY = tMat.col1.y * rAX + tMat.col2.y * rAY;
+        tX = (tMat.col1.x * rAX + tMat.col2.x * rAY);
+        rAY = (tMat.col1.y * rAX + tMat.col2.y * rAY);
         rAX = tX;
         tMat = bB.m_xf.R;
         let rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x;
         let rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
-        tX = tMat.col1.x * rBX + tMat.col2.x * rBY;
-        rBY = tMat.col1.y * rBX + tMat.col2.y * rBY;
+        tX = (tMat.col1.x * rBX + tMat.col2.x * rBY);
+        rBY = (tMat.col1.y * rBX + tMat.col2.y * rBY);
         rBX = tX;
         const mA = bA.m_invMass;
         const mB = bB.m_invMass;
@@ -12510,8 +11498,8 @@ while keeping general compatability. (made with box2D js es6) */
           iB *= 1.0;
         }
         this.m_mass.col1.x = mA + mB + rAY * rAY * iA + rBY * rBY * iB;
-        this.m_mass.col2.x = -rAY * rAX * iA - rBY * rBX * iB;
-        this.m_mass.col3.x = -rAY * iA - rBY * iB;
+        this.m_mass.col2.x = (-rAY * rAX * iA) - rBY * rBX * iB;
+        this.m_mass.col3.x = (-rAY * iA) - rBY * iB;
         this.m_mass.col1.y = this.m_mass.col2.x;
         this.m_mass.col2.y = mA + mB + rAX * rAX * iA + rBX * rBX * iB;
         this.m_mass.col3.y = rAX * iA + rBX * iB;
@@ -12519,7 +11507,7 @@ while keeping general compatability. (made with box2D js es6) */
         this.m_mass.col2.z = this.m_mass.col3.y;
         this.m_mass.col3.z = iA + iB;
         const impulse = new b2Vec3();
-        this.m_mass.Solve33(impulse, -C1X, -C1Y, -C2);
+        this.m_mass.Solve33(impulse, (-C1X), (-C1Y), (-C2));
         bA.m_sweep.c.x -= mA * impulse.x;
         bA.m_sweep.c.y -= mA * impulse.y;
         bA.m_sweep.a -= iA * (rAX * impulse.y - rAY * impulse.x + impulse.z);
@@ -12528,10 +11516,7 @@ while keeping general compatability. (made with box2D js es6) */
         bB.m_sweep.a += iB * (rBX * impulse.y - rBY * impulse.x + impulse.z);
         bA.SynchronizeTransform();
         bB.SynchronizeTransform();
-        return (
-          positionError <= b2Settings.b2_linearSlop &&
-          angularError <= b2Settings.b2_angularSlop
-        );
+        return positionError <= b2Settings.b2_linearSlop && angularError <= b2Settings.b2_angularSlop;
       }
     }
 
@@ -12541,8 +11526,7 @@ while keeping general compatability. (made with box2D js es6) */
       constructor() {
         super(...arguments);
         b2WeldJointDef.b2WeldJointDef.apply(this, arguments);
-        if (this.constructor === b2WeldJointDef)
-          this.b2WeldJointDef.apply(this, arguments);
+        if (this.constructor === b2WeldJointDef) this.b2WeldJointDef.apply(this, arguments);
       }
 
       static b2WeldJointDef() {
@@ -12567,9 +11551,9 @@ while keeping general compatability. (made with box2D js es6) */
     }
 
     Box2D.Dynamics.Joints.b2WeldJointDef = b2WeldJointDef;
-  })(); // definitions
+  }))(); // definitions
   Box2D.postDefs = [];
-  (() => {
+  ((() => {
     const b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
     const b2EdgeChainDef = Box2D.Collision.Shapes.b2EdgeChainDef;
     const b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape;
@@ -12622,9 +11606,9 @@ while keeping general compatability. (made with box2D js es6) */
       aabb.Combine(aabb1, aabb2);
       return aabb;
     };
-    b2Bound.b2Bound = () => {};
-    b2BoundValues.b2BoundValues = () => {};
-    b2Collision.b2Collision = () => {};
+    b2Bound.b2Bound = () => { };
+    b2BoundValues.b2BoundValues = () => { };
+    b2Collision.b2Collision = () => { };
     b2Collision.ClipSegmentToLine = (vOut, vIn, normal, offset) => {
       if (offset === undefined) offset = 0;
       let cv;
@@ -12651,8 +11635,7 @@ while keeping general compatability. (made with box2D js es6) */
         } else {
           cv2 = vIn[1];
           cv.id = cv2.id;
-        }
-        ++numOut;
+        } ++numOut;
       }
       return numOut;
     };
@@ -12667,13 +11650,11 @@ while keeping general compatability. (made with box2D js es6) */
       let tVec;
       tMat = xf1.R;
       tVec = normals1[edge1];
-      const normal1WorldX = tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-      const normal1WorldY = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+      const normal1WorldX = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+      const normal1WorldY = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tMat = xf2.R;
-      const normal1X =
-        tMat.col1.x * normal1WorldX + tMat.col1.y * normal1WorldY;
-      const normal1Y =
-        tMat.col2.x * normal1WorldX + tMat.col2.y * normal1WorldY;
+      const normal1X = (tMat.col1.x * normal1WorldX + tMat.col1.y * normal1WorldY);
+      const normal1Y = (tMat.col2.x * normal1WorldX + tMat.col2.y * normal1WorldY);
       let index = 0;
       let minDot = Number.MAX_VALUE;
       for (let i = 0; i < count2; ++i) {
@@ -12686,10 +11667,8 @@ while keeping general compatability. (made with box2D js es6) */
       }
       tVec = vertices1[edge1];
       tMat = xf1.R;
-      const v1X =
-        xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      const v1Y =
-        xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      const v1X = xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+      const v1Y = xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tVec = vertices2[index];
       tMat = xf2.R;
       let v2X = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
@@ -12712,13 +11691,13 @@ while keeping general compatability. (made with box2D js es6) */
       tVec = poly1.m_centroid;
       dX -= xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
       dY -= xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-      const dLocal1X = dX * xf1.R.col1.x + dY * xf1.R.col1.y;
-      const dLocal1Y = dX * xf1.R.col2.x + dY * xf1.R.col2.y;
+      const dLocal1X = (dX * xf1.R.col1.x + dY * xf1.R.col1.y);
+      const dLocal1Y = (dX * xf1.R.col2.x + dY * xf1.R.col2.y);
       let edge = 0;
-      let maxDot = -Number.MAX_VALUE;
+      let maxDot = (-Number.MAX_VALUE);
       for (let i = 0; i < count1; ++i) {
         tVec = normals1[i];
-        const dot = tVec.x * dLocal1X + tVec.y * dLocal1Y;
+        const dot = (tVec.x * dLocal1X + tVec.y * dLocal1Y);
         if (dot > maxDot) {
           maxDot = dot;
           edge = i;
@@ -12726,26 +11705,14 @@ while keeping general compatability. (made with box2D js es6) */
       }
       let s = b2Collision.EdgeSeparation(poly1, xf1, edge, poly2, xf2);
       const prevEdge = parseInt(edge - 1 >= 0 ? edge - 1 : count1 - 1);
-      const sPrev = b2Collision.EdgeSeparation(
-        poly1,
-        xf1,
-        prevEdge,
-        poly2,
-        xf2,
-      );
+      const sPrev = b2Collision.EdgeSeparation(poly1, xf1, prevEdge, poly2, xf2);
       const nextEdge = parseInt(edge + 1 < count1 ? edge + 1 : 0);
-      const sNext = b2Collision.EdgeSeparation(
-        poly1,
-        xf1,
-        nextEdge,
-        poly2,
-        xf2,
-      );
+      const sNext = b2Collision.EdgeSeparation(poly1, xf1, nextEdge, poly2, xf2);
       let bestEdge = 0;
       let bestSeparation = 0;
       let increment = 0;
       if (sPrev > s && sPrev > sNext) {
-        increment = -1;
+        increment = (-1);
         bestEdge = prevEdge;
         bestSeparation = sPrev;
       } else if (sNext > s) {
@@ -12757,10 +11724,8 @@ while keeping general compatability. (made with box2D js es6) */
         return s;
       }
       while (true) {
-        if (increment == -1)
-          edge = bestEdge - 1 >= 0 ? bestEdge - 1 : count1 - 1;
-        else edge = bestEdge + 1 < count1 ? bestEdge + 1 : 0;
-        s = b2Collision.EdgeSeparation(poly1, xf1, edge, poly2, xf2);
+        if (increment == (-1)) edge = bestEdge - 1 >= 0 ? bestEdge - 1 : count1 - 1;
+        else edge = bestEdge + 1 < count1 ? bestEdge + 1 : 0; s = b2Collision.EdgeSeparation(poly1, xf1, edge, poly2, xf2);
         if (s > bestSeparation) {
           bestEdge = edge;
           bestSeparation = s;
@@ -12782,17 +11747,17 @@ while keeping general compatability. (made with box2D js es6) */
       let tVec;
       tMat = xf1.R;
       tVec = normals1[edge1];
-      let normal1X = tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-      let normal1Y = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+      let normal1X = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+      let normal1Y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tMat = xf2.R;
-      const tX = tMat.col1.x * normal1X + tMat.col1.y * normal1Y;
-      normal1Y = tMat.col2.x * normal1X + tMat.col2.y * normal1Y;
+      const tX = (tMat.col1.x * normal1X + tMat.col1.y * normal1Y);
+      normal1Y = (tMat.col2.x * normal1X + tMat.col2.y * normal1Y);
       normal1X = tX;
       let index = 0;
       let minDot = Number.MAX_VALUE;
       for (let i = 0; i < count2; ++i) {
         tVec = normals2[i];
-        const dot = normal1X * tVec.x + normal1Y * tVec.y;
+        const dot = (normal1X * tVec.x + normal1Y * tVec.y);
         if (dot < minDot) {
           minDot = dot;
           index = i;
@@ -12804,20 +11769,16 @@ while keeping general compatability. (made with box2D js es6) */
       tClip = c[0];
       tVec = vertices2[i1];
       tMat = xf2.R;
-      tClip.v.x =
-        xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      tClip.v.y =
-        xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      tClip.v.x = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+      tClip.v.y = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tClip.id.features.referenceEdge = edge1;
       tClip.id.features.incidentEdge = i1;
       tClip.id.features.incidentVertex = 0;
       tClip = c[1];
       tVec = vertices2[i2];
       tMat = xf2.R;
-      tClip.v.x =
-        xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      tClip.v.y =
-        xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      tClip.v.x = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+      tClip.v.y = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tClip.id.features.referenceEdge = edge1;
       tClip.id.features.incidentEdge = i2;
       tClip.id.features.incidentVertex = 1;
@@ -12834,24 +11795,12 @@ while keeping general compatability. (made with box2D js es6) */
       const totalRadius = polyA.m_radius + polyB.m_radius;
       let edgeA = 0;
       b2Collision.s_edgeAO[0] = edgeA;
-      const separationA = b2Collision.FindMaxSeparation(
-        b2Collision.s_edgeAO,
-        polyA,
-        xfA,
-        polyB,
-        xfB,
-      );
+      const separationA = b2Collision.FindMaxSeparation(b2Collision.s_edgeAO, polyA, xfA, polyB, xfB);
       edgeA = b2Collision.s_edgeAO[0];
       if (separationA > totalRadius) return;
       let edgeB = 0;
       b2Collision.s_edgeBO[0] = edgeB;
-      const separationB = b2Collision.FindMaxSeparation(
-        b2Collision.s_edgeBO,
-        polyB,
-        xfB,
-        polyA,
-        xfA,
-      );
+      const separationB = b2Collision.FindMaxSeparation(b2Collision.s_edgeBO, polyB, xfB, polyA, xfA);
       edgeB = b2Collision.s_edgeBO[0];
       if (separationB > totalRadius) return;
       let poly1;
@@ -12896,55 +11845,34 @@ while keeping general compatability. (made with box2D js es6) */
       localTangent.Normalize();
       const localNormal = b2Collision.s_localNormal;
       localNormal.x = localTangent.y;
-      localNormal.y = -localTangent.x;
+      localNormal.y = (-localTangent.x);
       const planePoint = b2Collision.s_planePoint;
-      planePoint.Set(
-        0.5 * (local_v11.x + local_v12.x),
-        0.5 * (local_v11.y + local_v12.y),
-      );
+      planePoint.Set(0.5 * (local_v11.x + local_v12.x), 0.5 * (local_v11.y + local_v12.y));
       const tangent = b2Collision.s_tangent;
       tMat = xf1.R;
-      tangent.x = tMat.col1.x * localTangent.x + tMat.col2.x * localTangent.y;
-      tangent.y = tMat.col1.y * localTangent.x + tMat.col2.y * localTangent.y;
+      tangent.x = (tMat.col1.x * localTangent.x + tMat.col2.x * localTangent.y);
+      tangent.y = (tMat.col1.y * localTangent.x + tMat.col2.y * localTangent.y);
       const tangent2 = b2Collision.s_tangent2;
-      tangent2.x = -tangent.x;
-      tangent2.y = -tangent.y;
+      tangent2.x = (-tangent.x);
+      tangent2.y = (-tangent.y);
       const normal = b2Collision.s_normal;
       normal.x = tangent.y;
-      normal.y = -tangent.x;
+      normal.y = (-tangent.x);
       const v11 = b2Collision.s_v11;
       const v12 = b2Collision.s_v12;
-      v11.x =
-        xf1.position.x +
-        (tMat.col1.x * local_v11.x + tMat.col2.x * local_v11.y);
-      v11.y =
-        xf1.position.y +
-        (tMat.col1.y * local_v11.x + tMat.col2.y * local_v11.y);
-      v12.x =
-        xf1.position.x +
-        (tMat.col1.x * local_v12.x + tMat.col2.x * local_v12.y);
-      v12.y =
-        xf1.position.y +
-        (tMat.col1.y * local_v12.x + tMat.col2.y * local_v12.y);
+      v11.x = xf1.position.x + (tMat.col1.x * local_v11.x + tMat.col2.x * local_v11.y);
+      v11.y = xf1.position.y + (tMat.col1.y * local_v11.x + tMat.col2.y * local_v11.y);
+      v12.x = xf1.position.x + (tMat.col1.x * local_v12.x + tMat.col2.x * local_v12.y);
+      v12.y = xf1.position.y + (tMat.col1.y * local_v12.x + tMat.col2.y * local_v12.y);
       const frontOffset = normal.x * v11.x + normal.y * v11.y;
-      const sideOffset1 = -tangent.x * v11.x - tangent.y * v11.y + totalRadius;
+      const sideOffset1 = (-tangent.x * v11.x) - tangent.y * v11.y + totalRadius;
       const sideOffset2 = tangent.x * v12.x + tangent.y * v12.y + totalRadius;
       const clipPoints1 = b2Collision.s_clipPoints1;
       const clipPoints2 = b2Collision.s_clipPoints2;
       let np = 0;
-      np = b2Collision.ClipSegmentToLine(
-        clipPoints1,
-        incidentEdge,
-        tangent2,
-        sideOffset1,
-      );
+      np = b2Collision.ClipSegmentToLine(clipPoints1, incidentEdge, tangent2, sideOffset1);
       if (np < 2) return;
-      np = b2Collision.ClipSegmentToLine(
-        clipPoints2,
-        clipPoints1,
-        tangent,
-        sideOffset2,
-      );
+      np = b2Collision.ClipSegmentToLine(clipPoints2, clipPoints1, tangent, sideOffset2);
       if (np < 2) return;
       manifold.m_localPlaneNormal.SetV(localNormal);
       manifold.m_localPoint.SetV(planePoint);
@@ -12957,8 +11885,8 @@ while keeping general compatability. (made with box2D js es6) */
           tMat = xf2.R;
           const tX = cv.v.x - xf2.position.x;
           const tY = cv.v.y - xf2.position.y;
-          cp.m_localPoint.x = tX * tMat.col1.x + tY * tMat.col1.y;
-          cp.m_localPoint.y = tX * tMat.col2.x + tY * tMat.col2.y;
+          cp.m_localPoint.x = (tX * tMat.col1.x + tY * tMat.col1.y);
+          cp.m_localPoint.y = (tX * tMat.col2.x + tY * tMat.col2.y);
           cp.m_id.Set(cv.id);
           cp.m_id.features.flip = flip;
           ++pointCount;
@@ -12972,16 +11900,12 @@ while keeping general compatability. (made with box2D js es6) */
       let tVec;
       tMat = xf1.R;
       tVec = circle1.m_p;
-      const p1X =
-        xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      const p1Y =
-        xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      const p1X = xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+      const p1Y = xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tMat = xf2.R;
       tVec = circle2.m_p;
-      const p2X =
-        xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      const p2Y =
-        xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      const p2X = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
+      const p2Y = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       const dX = p2X - p1X;
       const dY = p2Y - p1Y;
       const distSqr = dX * dX + dY * dY;
@@ -12996,13 +11920,7 @@ while keeping general compatability. (made with box2D js es6) */
       manifold.m_points[0].m_localPoint.SetV(circle2.m_p);
       manifold.m_points[0].m_id.key = 0;
     };
-    b2Collision.CollidePolygonAndCircle = (
-      manifold,
-      polygon,
-      xf1,
-      circle,
-      xf2,
-    ) => {
+    b2Collision.CollidePolygonAndCircle = (manifold, polygon, xf1, circle, xf2) => {
       manifold.m_pointCount = 0;
       let tPoint;
       let dX = 0;
@@ -13018,11 +11936,11 @@ while keeping general compatability. (made with box2D js es6) */
       dX = cX - xf1.position.x;
       dY = cY - xf1.position.y;
       tMat = xf1.R;
-      const cLocalX = dX * tMat.col1.x + dY * tMat.col1.y;
-      const cLocalY = dX * tMat.col2.x + dY * tMat.col2.y;
+      const cLocalX = (dX * tMat.col1.x + dY * tMat.col1.y);
+      const cLocalY = (dX * tMat.col2.x + dY * tMat.col2.y);
       const dist = 0;
       let normalIndex = 0;
-      let separation = -Number.MAX_VALUE;
+      let separation = (-Number.MAX_VALUE);
       const radius = polygon.m_radius + circle.m_radius;
       const vertexCount = parseInt(polygon.m_vertexCount);
       const vertices = polygon.m_vertices;
@@ -13042,9 +11960,7 @@ while keeping general compatability. (made with box2D js es6) */
         }
       }
       const vertIndex1 = parseInt(normalIndex);
-      const vertIndex2 = parseInt(
-        vertIndex1 + 1 < vertexCount ? vertIndex1 + 1 : 0,
-      );
+      const vertIndex2 = parseInt(vertIndex1 + 1 < vertexCount ? vertIndex1 + 1 : 0);
       const v1 = vertices[vertIndex1];
       const v2 = vertices[vertIndex2];
       if (separation < Number.MIN_VALUE) {
@@ -13057,17 +11973,10 @@ while keeping general compatability. (made with box2D js es6) */
         manifold.m_points[0].m_id.key = 0;
         return;
       }
-      const u1 =
-        (cLocalX - v1.x) * (v2.x - v1.x) + (cLocalY - v1.y) * (v2.y - v1.y);
-      const u2 =
-        (cLocalX - v2.x) * (v1.x - v2.x) + (cLocalY - v2.y) * (v1.y - v2.y);
+      const u1 = (cLocalX - v1.x) * (v2.x - v1.x) + (cLocalY - v1.y) * (v2.y - v1.y);
+      const u2 = (cLocalX - v2.x) * (v1.x - v2.x) + (cLocalY - v2.y) * (v1.y - v2.y);
       if (u1 <= 0.0) {
-        if (
-          (cLocalX - v1.x) * (cLocalX - v1.x) +
-            (cLocalY - v1.y) * (cLocalY - v1.y) >
-          radius * radius
-        )
-          return;
+        if ((cLocalX - v1.x) * (cLocalX - v1.x) + (cLocalY - v1.y) * (cLocalY - v1.y) > radius * radius) return;
         manifold.m_pointCount = 1;
         manifold.m_type = b2Manifold.e_faceA;
         manifold.m_localPlaneNormal.x = cLocalX - v1.x;
@@ -13077,12 +11986,7 @@ while keeping general compatability. (made with box2D js es6) */
         manifold.m_points[0].m_localPoint.SetV(circle.m_p);
         manifold.m_points[0].m_id.key = 0;
       } else if (u2 <= 0) {
-        if (
-          (cLocalX - v2.x) * (cLocalX - v2.x) +
-            (cLocalY - v2.y) * (cLocalY - v2.y) >
-          radius * radius
-        )
-          return;
+        if ((cLocalX - v2.x) * (cLocalX - v2.x) + (cLocalY - v2.y) * (cLocalY - v2.y) > radius * radius) return;
         manifold.m_pointCount = 1;
         manifold.m_type = b2Manifold.e_faceA;
         manifold.m_localPlaneNormal.x = cLocalX - v2.x;
@@ -13094,9 +11998,7 @@ while keeping general compatability. (made with box2D js es6) */
       } else {
         const faceCenterX = 0.5 * (v1.x + v2.x);
         const faceCenterY = 0.5 * (v1.y + v2.y);
-        separation =
-          (cLocalX - faceCenterX) * normals[vertIndex1].x +
-          (cLocalY - faceCenterY) * normals[vertIndex1].y;
+        separation = (cLocalX - faceCenterX) * normals[vertIndex1].x + (cLocalY - faceCenterY) * normals[vertIndex1].y;
         if (separation > radius) return;
         manifold.m_pointCount = 1;
         manifold.m_type = b2Manifold.e_faceA;
@@ -13122,12 +12024,9 @@ while keeping general compatability. (made with box2D js es6) */
       return true;
     };
     Box2D.postDefs.push(() => {
-      Box2D.Collision.b2Collision.s_incidentEdge =
-        b2Collision.MakeClipPointVector();
-      Box2D.Collision.b2Collision.s_clipPoints1 =
-        b2Collision.MakeClipPointVector();
-      Box2D.Collision.b2Collision.s_clipPoints2 =
-        b2Collision.MakeClipPointVector();
+      Box2D.Collision.b2Collision.s_incidentEdge = b2Collision.MakeClipPointVector();
+      Box2D.Collision.b2Collision.s_clipPoints1 = b2Collision.MakeClipPointVector();
+      Box2D.Collision.b2Collision.s_clipPoints2 = b2Collision.MakeClipPointVector();
       Box2D.Collision.b2Collision.s_edgeAO = new Vector_a2j_Number(1);
       Box2D.Collision.b2Collision.s_edgeBO = new Vector_a2j_Number(1);
       Box2D.Collision.b2Collision.s_localTangent = new b2Vec2();
@@ -13141,7 +12040,7 @@ while keeping general compatability. (made with box2D js es6) */
       Box2D.Collision.b2Collision.b2CollidePolyTempVec = new b2Vec2();
       Box2D.Collision.b2Collision.b2_nullFeature = 0x000000ff;
     });
-    b2Distance.b2Distance = () => {};
+    b2Distance.b2Distance = () => { };
     b2Distance.Distance = (output, cache, input) => {
       ++b2Distance.b2_gjkCalls;
       const proxyA = input.proxyA;
@@ -13163,7 +12062,8 @@ while keeping general compatability. (made with box2D js es6) */
       let iter = 0;
       while (iter < k_maxIters) {
         saveCount = simplex.m_count;
-        for (i = 0; i < saveCount; i++) {
+        for (i = 0;
+          i < saveCount; i++) {
           saveA[i] = vertices[i].indexA;
           saveB[i] = vertices[i].indexB;
         }
@@ -13184,17 +12084,14 @@ while keeping general compatability. (made with box2D js es6) */
         }
         p = simplex.GetClosestPoint();
         distanceSqr2 = p.LengthSquared();
-        if (distanceSqr2 > distanceSqr1) {
-        }
+        if (distanceSqr2 > distanceSqr1) { }
         distanceSqr1 = distanceSqr2;
         const d = simplex.GetSearchDirection();
         if (d.LengthSquared() < Number.MIN_VALUE * Number.MIN_VALUE) {
           break;
         }
         const vertex = vertices[simplex.m_count];
-        vertex.indexA = proxyA.GetSupport(
-          b2Math.MulTMV(transformA.R, d.GetNegative()),
-        );
+        vertex.indexA = proxyA.GetSupport(b2Math.MulTMV(transformA.R, d.GetNegative()));
         vertex.wA = b2Math.MulX(transformA, proxyA.GetVertex(vertex.indexA));
         vertex.indexB = proxyB.GetSupport(b2Math.MulTMV(transformB.R, d));
         vertex.wB = b2Math.MulX(transformB, proxyB.GetVertex(vertex.indexB));
@@ -13202,7 +12099,8 @@ while keeping general compatability. (made with box2D js es6) */
         ++iter;
         ++b2Distance.b2_gjkIters;
         let duplicate = false;
-        for (i = 0; i < saveCount; i++) {
+        for (i = 0;
+          i < saveCount; i++) {
           if (vertex.indexA == saveA[i] && vertex.indexB == saveB[i]) {
             duplicate = true;
             break;
@@ -13210,14 +12108,11 @@ while keeping general compatability. (made with box2D js es6) */
         }
         if (duplicate) {
           break;
-        }
-        ++simplex.m_count;
+        } ++simplex.m_count;
       }
       b2Distance.b2_gjkMaxIters = b2Math.Max(b2Distance.b2_gjkMaxIters, iter);
       simplex.GetWitnessPoints(output.pointA, output.pointB);
-      output.distance = b2Math
-        .SubtractVV(output.pointA, output.pointB)
-        .Length();
+      output.distance = b2Math.SubtractVV(output.pointA, output.pointB).Length();
       output.iterations = iter;
       simplex.WriteCache(cache);
       if (input.useRadii) {
@@ -13246,12 +12141,12 @@ while keeping general compatability. (made with box2D js es6) */
       Box2D.Collision.b2Distance.s_saveA = new Vector_a2j_Number(3);
       Box2D.Collision.b2Distance.s_saveB = new Vector_a2j_Number(3);
     });
-    b2DistanceInput.b2DistanceInput = () => {};
-    b2DistanceProxy.b2DistanceProxy = () => {};
-    b2DynamicTree.b2DynamicTree = () => {};
+    b2DistanceInput.b2DistanceInput = () => { };
+    b2DistanceProxy.b2DistanceProxy = () => { };
+    b2DynamicTree.b2DynamicTree = () => { };
     b2DynamicTreeBroadPhase.__implements = {};
     b2DynamicTreeBroadPhase.__implements[IBroadPhase] = true;
-    b2DynamicTreePair.b2DynamicTreePair = () => {};
+    b2DynamicTreePair.b2DynamicTreePair = () => { };
     Box2D.postDefs.push(() => {
       Box2D.Collision.b2Manifold.e_circles = 0x0001;
       Box2D.Collision.b2Manifold.e_faceA = 0x0002;
@@ -13262,9 +12157,9 @@ while keeping general compatability. (made with box2D js es6) */
       Box2D.Collision.b2SeparationFunction.e_faceA = 0x02;
       Box2D.Collision.b2SeparationFunction.e_faceB = 0x04;
     });
-    b2SimplexVertex.b2SimplexVertex = () => {};
-    b2TimeOfImpact.b2TimeOfImpact = () => {};
-    b2TimeOfImpact.TimeOfImpact = (input) => {
+    b2SimplexVertex.b2SimplexVertex = () => { };
+    b2TimeOfImpact.b2TimeOfImpact = () => { };
+    b2TimeOfImpact.TimeOfImpact = input => {
       ++b2TimeOfImpact.b2_toiCalls;
       const proxyA = input.proxyA;
       const proxyB = input.proxyB;
@@ -13280,33 +12175,20 @@ while keeping general compatability. (made with box2D js es6) */
       let target = 0.0;
       b2TimeOfImpact.s_cache.count = 0;
       b2TimeOfImpact.s_distanceInput.useRadii = false;
-      for (;;) {
+      for (; ;) {
         sweepA.GetTransform(b2TimeOfImpact.s_xfA, alpha);
         sweepB.GetTransform(b2TimeOfImpact.s_xfB, alpha);
         b2TimeOfImpact.s_distanceInput.proxyA = proxyA;
         b2TimeOfImpact.s_distanceInput.proxyB = proxyB;
         b2TimeOfImpact.s_distanceInput.transformA = b2TimeOfImpact.s_xfA;
         b2TimeOfImpact.s_distanceInput.transformB = b2TimeOfImpact.s_xfB;
-        b2Distance.Distance(
-          b2TimeOfImpact.s_distanceOutput,
-          b2TimeOfImpact.s_cache,
-          b2TimeOfImpact.s_distanceInput,
-        );
+        b2Distance.Distance(b2TimeOfImpact.s_distanceOutput, b2TimeOfImpact.s_cache, b2TimeOfImpact.s_distanceInput);
         if (b2TimeOfImpact.s_distanceOutput.distance <= 0.0) {
           alpha = 1.0;
           break;
         }
-        b2TimeOfImpact.s_fcn.Initialize(
-          b2TimeOfImpact.s_cache,
-          proxyA,
-          b2TimeOfImpact.s_xfA,
-          proxyB,
-          b2TimeOfImpact.s_xfB,
-        );
-        const separation = b2TimeOfImpact.s_fcn.Evaluate(
-          b2TimeOfImpact.s_xfA,
-          b2TimeOfImpact.s_xfB,
-        );
+        b2TimeOfImpact.s_fcn.Initialize(b2TimeOfImpact.s_cache, proxyA, b2TimeOfImpact.s_xfA, proxyB, b2TimeOfImpact.s_xfB);
+        const separation = b2TimeOfImpact.s_fcn.Evaluate(b2TimeOfImpact.s_xfA, b2TimeOfImpact.s_xfB);
         if (separation <= 0.0) {
           alpha = 1.0;
           break;
@@ -13325,35 +12207,28 @@ while keeping general compatability. (made with box2D js es6) */
           }
           break;
         }
-        let newAlpha = alpha;
-        {
+        let newAlpha = alpha; {
           let x1 = alpha;
           let x2 = 1.0;
           let f1 = separation;
           sweepA.GetTransform(b2TimeOfImpact.s_xfA, x2);
           sweepB.GetTransform(b2TimeOfImpact.s_xfB, x2);
-          let f2 = b2TimeOfImpact.s_fcn.Evaluate(
-            b2TimeOfImpact.s_xfA,
-            b2TimeOfImpact.s_xfB,
-          );
+          let f2 = b2TimeOfImpact.s_fcn.Evaluate(b2TimeOfImpact.s_xfA, b2TimeOfImpact.s_xfB);
           if (f2 >= target) {
             alpha = 1.0;
             break;
           }
           let rootIterCount = 0;
-          for (;;) {
+          for (; ;) {
             let x = 0;
             if (rootIterCount & 1) {
-              x = x1 + ((target - f1) * (x2 - x1)) / (f2 - f1);
+              x = x1 + (target - f1) * (x2 - x1) / (f2 - f1);
             } else {
               x = 0.5 * (x1 + x2);
             }
             sweepA.GetTransform(b2TimeOfImpact.s_xfA, x);
             sweepB.GetTransform(b2TimeOfImpact.s_xfB, x);
-            const f = b2TimeOfImpact.s_fcn.Evaluate(
-              b2TimeOfImpact.s_xfA,
-              b2TimeOfImpact.s_xfB,
-            );
+            const f = b2TimeOfImpact.s_fcn.Evaluate(b2TimeOfImpact.s_xfA, b2TimeOfImpact.s_xfB);
             if (b2Math.Abs(f - target) < 0.025 * tolerance) {
               newAlpha = x;
               break;
@@ -13364,17 +12239,13 @@ while keeping general compatability. (made with box2D js es6) */
             } else {
               x2 = x;
               f2 = f;
-            }
-            ++rootIterCount;
+            } ++rootIterCount;
             ++b2TimeOfImpact.b2_toiRootIters;
             if (rootIterCount == 50) {
               break;
             }
           }
-          b2TimeOfImpact.b2_toiMaxRootIters = b2Math.Max(
-            b2TimeOfImpact.b2_toiMaxRootIters,
-            rootIterCount,
-          );
+          b2TimeOfImpact.b2_toiMaxRootIters = b2Math.Max(b2TimeOfImpact.b2_toiMaxRootIters, rootIterCount);
         }
         if (newAlpha < (1.0 + 100.0 * Number.MIN_VALUE) * alpha) {
           break;
@@ -13386,10 +12257,7 @@ while keeping general compatability. (made with box2D js es6) */
           break;
         }
       }
-      b2TimeOfImpact.b2_toiMaxIters = b2Math.Max(
-        b2TimeOfImpact.b2_toiMaxIters,
-        iter,
-      );
+      b2TimeOfImpact.b2_toiMaxIters = b2Math.Max(b2TimeOfImpact.b2_toiMaxIters, iter);
       return alpha;
     };
     Box2D.postDefs.push(() => {
@@ -13405,9 +12273,9 @@ while keeping general compatability. (made with box2D js es6) */
       Box2D.Collision.b2TimeOfImpact.s_fcn = new b2SeparationFunction();
       Box2D.Collision.b2TimeOfImpact.s_distanceOutput = new b2DistanceOutput();
     });
-    Features.Features = () => {};
-  })();
-  (() => {
+    Features.Features = () => { };
+  }))();
+  ((() => {
     const b2Color = Box2D.Common.b2Color;
     const b2internal = Box2D.Common.b2internal;
     const b2Settings = Box2D.Common.b2Settings;
@@ -13470,7 +12338,7 @@ while keeping general compatability. (made with box2D js es6) */
     const IBroadPhase = Box2D.Collision.IBroadPhase;
 
     b2CircleShape.prototype.__super = Box2D.Collision.Shapes.b2Shape.prototype;
-    b2EdgeChainDef.b2EdgeChainDef = () => {};
+    b2EdgeChainDef.b2EdgeChainDef = () => { };
     b2EdgeShape.prototype.__super = Box2D.Collision.Shapes.b2Shape.prototype;
     b2PolygonShape.prototype.__super = Box2D.Collision.Shapes.b2Shape.prototype;
     b2PolygonShape.AsArray = (vertices, vertexCount) => {
@@ -13520,9 +12388,8 @@ while keeping general compatability. (made with box2D js es6) */
         const e1Y = p2.y - p1Y;
         const e2X = p3.x - p1X;
         const e2Y = p3.y - p1Y;
-        const D = e1X * e2Y - e1Y * e2X;
-        const triangleArea = 0.5 * D;
-        area += triangleArea;
+        const D = (e1X * e2Y - e1Y * e2X);
+        const triangleArea = 0.5 * D; area += triangleArea;
         c.x += triangleArea * inv3 * (p1X + p2.x + p3.x);
         c.y += triangleArea * inv3 * (p1Y + p2.y + p3.y);
       }
@@ -13534,29 +12401,31 @@ while keeping general compatability. (made with box2D js es6) */
       if (count === undefined) count = 0;
       let i = 0;
       const p = new Vector(count + 1);
-      for (i = 0; i < count; ++i) {
+      for (i = 0;
+        i < count; ++i) {
         p[i] = vs[i];
       }
       p[count] = p[0];
       let minArea = Number.MAX_VALUE;
-      for (i = 1; i <= count; ++i) {
+      for (i = 1;
+        i <= count; ++i) {
         const root = p[parseInt(i - 1)];
         let uxX = p[i].x - root.x;
         let uxY = p[i].y - root.y;
         const length = Math.sqrt(uxX * uxX + uxY * uxY);
         uxX /= length;
         uxY /= length;
-        const uyX = -uxY;
+        const uyX = (-uxY);
         const uyY = uxX;
         let lowerX = Number.MAX_VALUE;
         let lowerY = Number.MAX_VALUE;
-        let upperX = -Number.MAX_VALUE;
-        let upperY = -Number.MAX_VALUE;
+        let upperX = (-Number.MAX_VALUE);
+        let upperY = (-Number.MAX_VALUE);
         for (let j = 0; j < count; ++j) {
           const dX = p[j].x - root.x;
           const dY = p[j].y - root.y;
-          const rX = uxX * dX + uxY * dY;
-          const rY = uyX * dX + uyY * dY;
+          const rX = (uxX * dX + uxY * dY);
+          const rY = (uyX * dX + uyY * dY);
           if (rX < lowerX) lowerX = rX;
           if (rY < lowerY) lowerY = rY;
           if (rX > upperX) upperX = rX;
@@ -13572,10 +12441,8 @@ while keeping general compatability. (made with box2D js es6) */
           const centerX = 0.5 * (lowerX + upperX);
           const centerY = 0.5 * (lowerY + upperY);
           const tMat = obb.R;
-          obb.center.x =
-            root.x + (tMat.col1.x * centerX + tMat.col2.x * centerY);
-          obb.center.y =
-            root.y + (tMat.col1.y * centerX + tMat.col2.y * centerY);
+          obb.center.x = root.x + (tMat.col1.x * centerX + tMat.col2.x * centerY);
+          obb.center.y = root.y + (tMat.col1.y * centerX + tMat.col2.y * centerY);
           obb.extents.x = 0.5 * (upperX - lowerX);
           obb.extents.y = 0.5 * (upperY - lowerY);
         }
@@ -13584,7 +12451,7 @@ while keeping general compatability. (made with box2D js es6) */
     Box2D.postDefs.push(() => {
       Box2D.Collision.Shapes.b2PolygonShape.s_mat = new b2Mat22();
     });
-    b2Shape.b2Shape = () => {};
+    b2Shape.b2Shape = () => { };
     b2Shape.TestOverlap = (shape1, transform1, shape2, transform2) => {
       const input = new b2DistanceInput();
       input.proxyA = new b2DistanceProxy();
@@ -13601,17 +12468,17 @@ while keeping general compatability. (made with box2D js es6) */
       return output.distance < 10.0 * Number.MIN_VALUE;
     };
     Box2D.postDefs.push(() => {
-      Box2D.Collision.Shapes.b2Shape.e_unknownShape = parseInt(-1);
+      Box2D.Collision.Shapes.b2Shape.e_unknownShape = parseInt((-1));
       Box2D.Collision.Shapes.b2Shape.e_circleShape = 0;
       Box2D.Collision.Shapes.b2Shape.e_polygonShape = 1;
       Box2D.Collision.Shapes.b2Shape.e_edgeShape = 2;
       Box2D.Collision.Shapes.b2Shape.e_shapeTypeCount = 3;
       Box2D.Collision.Shapes.b2Shape.e_hitCollide = 1;
       Box2D.Collision.Shapes.b2Shape.e_missCollide = 0;
-      Box2D.Collision.Shapes.b2Shape.e_startsInsideCollide = parseInt(-1);
+      Box2D.Collision.Shapes.b2Shape.e_startsInsideCollide = parseInt((-1));
     });
-  })();
-  (() => {
+  }))();
+  ((() => {
     const b2Color = Box2D.Common.b2Color;
     const b2internal = Box2D.Common.b2internal;
     const b2Settings = Box2D.Common.b2Settings;
@@ -13623,7 +12490,7 @@ while keeping general compatability. (made with box2D js es6) */
     const b2Vec2 = Box2D.Common.Math.b2Vec2;
     const b2Vec3 = Box2D.Common.Math.b2Vec3;
 
-    b2Settings.b2Settings = () => {};
+    b2Settings.b2Settings = () => { };
     b2Settings.b2MixFriction = (friction1, friction2) => {
       if (friction1 === undefined) friction1 = 0;
       if (friction2 === undefined) friction2 = 0;
@@ -13634,13 +12501,13 @@ while keeping general compatability. (made with box2D js es6) */
       if (restitution2 === undefined) restitution2 = 0;
       return restitution1 > restitution2 ? restitution1 : restitution2;
     };
-    b2Settings.b2Assert = (a) => {
+    b2Settings.b2Assert = a => {
       if (!a) {
-        throw "Assertion Failed";
+        throw 'Assertion Failed';
       }
     };
     Box2D.postDefs.push(() => {
-      Box2D.Common.b2Settings.VERSION = "2.1alpha";
+      Box2D.Common.b2Settings.VERSION = '2.1alpha';
       Box2D.Common.b2Settings.USHRT_MAX = 0x0000ffff;
       Box2D.Common.b2Settings.b2_pi = Math.PI;
       Box2D.Common.b2Settings.b2_maxManifoldPoints = 2;
@@ -13648,28 +12515,24 @@ while keeping general compatability. (made with box2D js es6) */
       Box2D.Common.b2Settings.b2_aabbMultiplier = 2.0;
       Box2D.Common.b2Settings.b2_polygonRadius = 2.0 * b2Settings.b2_linearSlop;
       Box2D.Common.b2Settings.b2_linearSlop = 0.005;
-      Box2D.Common.b2Settings.b2_angularSlop = (2.0 / 180.0) * b2Settings.b2_pi;
+      Box2D.Common.b2Settings.b2_angularSlop = 2.0 / 180.0 * b2Settings.b2_pi;
       Box2D.Common.b2Settings.b2_toiSlop = 8.0 * b2Settings.b2_linearSlop;
       Box2D.Common.b2Settings.b2_maxTOIContactsPerIsland = 32;
       Box2D.Common.b2Settings.b2_maxTOIJointsPerIsland = 32;
       Box2D.Common.b2Settings.b2_velocityThreshold = 1.0;
       Box2D.Common.b2Settings.b2_maxLinearCorrection = 0.2;
-      Box2D.Common.b2Settings.b2_maxAngularCorrection =
-        (8.0 / 180.0) * b2Settings.b2_pi;
+      Box2D.Common.b2Settings.b2_maxAngularCorrection = 8.0 / 180.0 * b2Settings.b2_pi;
       Box2D.Common.b2Settings.b2_maxTranslation = 2.0;
-      Box2D.Common.b2Settings.b2_maxTranslationSquared =
-        b2Settings.b2_maxTranslation * b2Settings.b2_maxTranslation;
+      Box2D.Common.b2Settings.b2_maxTranslationSquared = b2Settings.b2_maxTranslation * b2Settings.b2_maxTranslation;
       Box2D.Common.b2Settings.b2_maxRotation = 0.5 * b2Settings.b2_pi;
-      Box2D.Common.b2Settings.b2_maxRotationSquared =
-        b2Settings.b2_maxRotation * b2Settings.b2_maxRotation;
+      Box2D.Common.b2Settings.b2_maxRotationSquared = b2Settings.b2_maxRotation * b2Settings.b2_maxRotation;
       Box2D.Common.b2Settings.b2_contactBaumgarte = 0.2;
       Box2D.Common.b2Settings.b2_timeToSleep = 0.5;
       Box2D.Common.b2Settings.b2_linearSleepTolerance = 0.01;
-      Box2D.Common.b2Settings.b2_angularSleepTolerance =
-        (2.0 / 180.0) * b2Settings.b2_pi;
+      Box2D.Common.b2Settings.b2_angularSleepTolerance = 2.0 / 180.0 * b2Settings.b2_pi;
     });
-  })();
-  (() => {
+  }))();
+  ((() => {
     const b2AABB = Box2D.Collision.b2AABB;
     const b2Color = Box2D.Common.b2Color;
     const b2internal = Box2D.Common.b2internal;
@@ -13682,7 +12545,7 @@ while keeping general compatability. (made with box2D js es6) */
     const b2Vec2 = Box2D.Common.Math.b2Vec2;
     const b2Vec3 = Box2D.Common.Math.b2Vec3;
 
-    b2Mat22.FromAngle = (angle) => {
+    b2Mat22.FromAngle = angle => {
       if (angle === undefined) angle = 0;
       const mat = new b2Mat22();
       mat.Set(angle);
@@ -13693,8 +12556,8 @@ while keeping general compatability. (made with box2D js es6) */
       mat.SetVV(c1, c2);
       return mat;
     };
-    b2Math.b2Math = () => {};
-    b2Math.IsValid = (x) => {
+    b2Math.b2Math = () => { };
+    b2Math.IsValid = x => {
       if (x === undefined) x = 0;
       return isFinite(x);
     };
@@ -13702,19 +12565,16 @@ while keeping general compatability. (made with box2D js es6) */
     b2Math.CrossVV = (a, b) => a.x * b.y - a.y * b.x;
     b2Math.CrossVF = (a, s) => {
       if (s === undefined) s = 0;
-      const v = new b2Vec2(s * a.y, -s * a.x);
+      const v = new b2Vec2(s * a.y, (-s * a.x));
       return v;
     };
     b2Math.CrossFV = (s, a) => {
       if (s === undefined) s = 0;
-      const v = new b2Vec2(-s * a.y, s * a.x);
+      const v = new b2Vec2((-s * a.y), s * a.x);
       return v;
     };
     b2Math.MulMV = (A, v) => {
-      const u = new b2Vec2(
-        A.col1.x * v.x + A.col2.x * v.y,
-        A.col1.y * v.x + A.col2.y * v.y,
-      );
+      const u = new b2Vec2(A.col1.x * v.x + A.col2.x * v.y, A.col1.y * v.x + A.col2.y * v.y);
       return u;
     };
     b2Math.MulTMV = (A, v) => {
@@ -13729,8 +12589,8 @@ while keeping general compatability. (made with box2D js es6) */
     };
     b2Math.MulXT = (T, v) => {
       const a = b2Math.SubtractVV(v, T.position);
-      const tX = a.x * T.R.col1.x + a.y * T.R.col1.y;
-      a.y = a.x * T.R.col2.x + a.y * T.R.col2.y;
+      const tX = (a.x * T.R.col1.x + a.y * T.R.col1.y);
+      a.y = (a.x * T.R.col2.x + a.y * T.R.col2.y);
       a.x = tX;
       return a;
     };
@@ -13750,7 +12610,7 @@ while keeping general compatability. (made with box2D js es6) */
     b2Math.DistanceSquared = (a, b) => {
       const cX = a.x - b.x;
       const cY = a.y - b.y;
-      return cX * cX + cY * cY;
+      return (cX * cX + cY * cY);
     };
     b2Math.MulFV = (s, a) => {
       if (s === undefined) s = 0;
@@ -13758,40 +12618,28 @@ while keeping general compatability. (made with box2D js es6) */
       return v;
     };
     b2Math.AddMM = (A, B) => {
-      const C = b2Mat22.FromVV(
-        b2Math.AddVV(A.col1, B.col1),
-        b2Math.AddVV(A.col2, B.col2),
-      );
+      const C = b2Mat22.FromVV(b2Math.AddVV(A.col1, B.col1), b2Math.AddVV(A.col2, B.col2));
       return C;
     };
     b2Math.MulMM = (A, B) => {
-      const C = b2Mat22.FromVV(
-        b2Math.MulMV(A, B.col1),
-        b2Math.MulMV(A, B.col2),
-      );
+      const C = b2Mat22.FromVV(b2Math.MulMV(A, B.col1), b2Math.MulMV(A, B.col2));
       return C;
     };
     b2Math.MulTMM = (A, B) => {
-      const c1 = new b2Vec2(
-        b2Math.Dot(A.col1, B.col1),
-        b2Math.Dot(A.col2, B.col1),
-      );
-      const c2 = new b2Vec2(
-        b2Math.Dot(A.col1, B.col2),
-        b2Math.Dot(A.col2, B.col2),
-      );
+      const c1 = new b2Vec2(b2Math.Dot(A.col1, B.col1), b2Math.Dot(A.col2, B.col1));
+      const c2 = new b2Vec2(b2Math.Dot(A.col1, B.col2), b2Math.Dot(A.col2, B.col2));
       const C = b2Mat22.FromVV(c1, c2);
       return C;
     };
-    b2Math.Abs = (a) => {
+    b2Math.Abs = a => {
       if (a === undefined) a = 0;
-      return a > 0.0 ? a : -a;
+      return a > 0.0 ? a : (-a);
     };
-    b2Math.AbsV = (a) => {
+    b2Math.AbsV = a => {
       const b = new b2Vec2(b2Math.Abs(a.x), b2Math.Abs(a.y));
       return b;
     };
-    b2Math.AbsM = (A) => {
+    b2Math.AbsM = A => {
       const B = b2Mat22.FromVV(b2Math.AbsV(A.col1), b2Math.AbsV(A.col2));
       return B;
     };
@@ -13833,40 +12681,34 @@ while keeping general compatability. (made with box2D js es6) */
       r = (hi - lo) * r + lo;
       return r;
     };
-    b2Math.NextPowerOfTwo = (x) => {
+    b2Math.NextPowerOfTwo = x => {
       if (x === undefined) x = 0;
-      x |= (x >> 1) & 0x7fffffff;
-      x |= (x >> 2) & 0x3fffffff;
-      x |= (x >> 4) & 0x0fffffff;
-      x |= (x >> 8) & 0x00ffffff;
-      x |= (x >> 16) & 0x0000ffff;
+      x |= (x >> 1) & 0x7FFFFFFF;
+      x |= (x >> 2) & 0x3FFFFFFF;
+      x |= (x >> 4) & 0x0FFFFFFF;
+      x |= (x >> 8) & 0x00FFFFFF;
+      x |= (x >> 16) & 0x0000FFFF;
       return x + 1;
     };
-    b2Math.IsPowerOfTwo = (x) => {
+    b2Math.IsPowerOfTwo = x => {
       if (x === undefined) x = 0;
       const result = x > 0 && (x & (x - 1)) == 0;
       return result;
     };
     Box2D.postDefs.push(() => {
       Box2D.Common.Math.b2Math.b2Vec2_zero = new b2Vec2(0.0, 0.0);
-      Box2D.Common.Math.b2Math.b2Mat22_identity = b2Mat22.FromVV(
-        new b2Vec2(1.0, 0.0),
-        new b2Vec2(0.0, 1.0),
-      );
-      Box2D.Common.Math.b2Math.b2Transform_identity = new b2Transform(
-        b2Math.b2Vec2_zero,
-        b2Math.b2Mat22_identity,
-      );
+      Box2D.Common.Math.b2Math.b2Mat22_identity = b2Mat22.FromVV(new b2Vec2(1.0, 0.0), new b2Vec2(0.0, 1.0));
+      Box2D.Common.Math.b2Math.b2Transform_identity = new b2Transform(b2Math.b2Vec2_zero, b2Math.b2Mat22_identity);
     });
-    b2Vec2.b2Vec2 = () => {};
+    b2Vec2.b2Vec2 = () => { };
     b2Vec2.Make = (x_, y_) => {
       if (x_ === undefined) x_ = 0;
       if (y_ === undefined) y_ = 0;
       return new b2Vec2(x_, y_);
     };
-    b2Vec3.b2Vec3 = () => {};
-  })();
-  (() => {
+    b2Vec3.b2Vec3 = () => { };
+  }))();
+  ((() => {
     const b2ControllerEdge = Box2D.Dynamics.Controllers.b2ControllerEdge;
     const b2Mat22 = Box2D.Common.Math.b2Mat22;
     const b2Mat33 = Box2D.Common.Math.b2Mat33;
@@ -13931,22 +12773,18 @@ while keeping general compatability. (made with box2D js es6) */
     const b2CircleContact = Box2D.Dynamics.Contacts.b2CircleContact;
     const b2Contact = Box2D.Dynamics.Contacts.b2Contact;
     const b2ContactConstraint = Box2D.Dynamics.Contacts.b2ContactConstraint;
-    const b2ContactConstraintPoint =
-      Box2D.Dynamics.Contacts.b2ContactConstraintPoint;
+    const b2ContactConstraintPoint = Box2D.Dynamics.Contacts.b2ContactConstraintPoint;
     const b2ContactEdge = Box2D.Dynamics.Contacts.b2ContactEdge;
     const b2ContactFactory = Box2D.Dynamics.Contacts.b2ContactFactory;
     const b2ContactRegister = Box2D.Dynamics.Contacts.b2ContactRegister;
     const b2ContactResult = Box2D.Dynamics.Contacts.b2ContactResult;
     const b2ContactSolver = Box2D.Dynamics.Contacts.b2ContactSolver;
-    const b2EdgeAndCircleContact =
-      Box2D.Dynamics.Contacts.b2EdgeAndCircleContact;
+    const b2EdgeAndCircleContact = Box2D.Dynamics.Contacts.b2EdgeAndCircleContact;
     const b2NullContact = Box2D.Dynamics.Contacts.b2NullContact;
-    const b2PolyAndCircleContact =
-      Box2D.Dynamics.Contacts.b2PolyAndCircleContact;
+    const b2PolyAndCircleContact = Box2D.Dynamics.Contacts.b2PolyAndCircleContact;
     const b2PolyAndEdgeContact = Box2D.Dynamics.Contacts.b2PolyAndEdgeContact;
     const b2PolygonContact = Box2D.Dynamics.Contacts.b2PolygonContact;
-    const b2PositionSolverManifold =
-      Box2D.Dynamics.Contacts.b2PositionSolverManifold;
+    const b2PositionSolverManifold = Box2D.Dynamics.Contacts.b2PositionSolverManifold;
     const b2Controller = Box2D.Dynamics.Controllers.b2Controller;
     const b2DistanceJoint = Box2D.Dynamics.Joints.b2DistanceJoint;
     const b2DistanceJointDef = Box2D.Dynamics.Joints.b2DistanceJointDef;
@@ -13983,20 +12821,19 @@ while keeping general compatability. (made with box2D js es6) */
       Box2D.Dynamics.b2Body.b2_kinematicBody = 1;
       Box2D.Dynamics.b2Body.b2_dynamicBody = 2;
     });
-    b2ContactFilter.b2ContactFilter = () => {};
+    b2ContactFilter.b2ContactFilter = () => { };
     Box2D.postDefs.push(() => {
       Box2D.Dynamics.b2ContactFilter.b2_defaultFilter = new b2ContactFilter();
     });
-    b2ContactListener.b2ContactListener = () => {};
+    b2ContactListener.b2ContactListener = () => { };
     Box2D.postDefs.push(() => {
-      Box2D.Dynamics.b2ContactListener.b2_defaultListener =
-        new b2ContactListener();
+      Box2D.Dynamics.b2ContactListener.b2_defaultListener = new b2ContactListener();
     });
-    b2ContactManager.b2ContactManager = () => {};
+    b2ContactManager.b2ContactManager = () => { };
     Box2D.postDefs.push(() => {
       Box2D.Dynamics.b2ContactManager.s_evalCP = new b2ContactPoint();
     });
-    b2DebugDraw.b2DebugDraw = () => {};
+    b2DebugDraw.b2DebugDraw = () => { };
     Box2D.postDefs.push(() => {
       Box2D.Dynamics.b2DebugDraw.e_shapeBit = 0x0001;
       Box2D.Dynamics.b2DebugDraw.e_jointBit = 0x0002;
@@ -14005,12 +12842,12 @@ while keeping general compatability. (made with box2D js es6) */
       Box2D.Dynamics.b2DebugDraw.e_centerOfMassBit = 0x0010;
       Box2D.Dynamics.b2DebugDraw.e_controllerBit = 0x0020;
     });
-    b2DestructionListener.b2DestructionListener = () => {};
-    b2Island.b2Island = () => {};
+    b2DestructionListener.b2DestructionListener = () => { };
+    b2Island.b2Island = () => { };
     Box2D.postDefs.push(() => {
       Box2D.Dynamics.b2Island.s_impulse = new b2ContactImpulse();
     });
-    b2TimeStep.b2TimeStep = () => {};
+    b2TimeStep.b2TimeStep = () => { };
     Box2D.postDefs.push(() => {
       Box2D.Dynamics.b2World.s_timestep2 = new b2TimeStep();
       Box2D.Dynamics.b2World.s_xf = new b2Transform();
@@ -14022,8 +12859,8 @@ while keeping general compatability. (made with box2D js es6) */
       Box2D.Dynamics.b2World.e_newFixture = 0x0001;
       Box2D.Dynamics.b2World.e_locked = 0x0002;
     });
-  })();
-  (() => {
+  }))();
+  ((() => {
     const b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
     const b2EdgeChainDef = Box2D.Collision.Shapes.b2EdgeChainDef;
     const b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape;
@@ -14033,22 +12870,18 @@ while keeping general compatability. (made with box2D js es6) */
     const b2CircleContact = Box2D.Dynamics.Contacts.b2CircleContact;
     const b2Contact = Box2D.Dynamics.Contacts.b2Contact;
     const b2ContactConstraint = Box2D.Dynamics.Contacts.b2ContactConstraint;
-    const b2ContactConstraintPoint =
-      Box2D.Dynamics.Contacts.b2ContactConstraintPoint;
+    const b2ContactConstraintPoint = Box2D.Dynamics.Contacts.b2ContactConstraintPoint;
     const b2ContactEdge = Box2D.Dynamics.Contacts.b2ContactEdge;
     const b2ContactFactory = Box2D.Dynamics.Contacts.b2ContactFactory;
     const b2ContactRegister = Box2D.Dynamics.Contacts.b2ContactRegister;
     const b2ContactResult = Box2D.Dynamics.Contacts.b2ContactResult;
     const b2ContactSolver = Box2D.Dynamics.Contacts.b2ContactSolver;
-    const b2EdgeAndCircleContact =
-      Box2D.Dynamics.Contacts.b2EdgeAndCircleContact;
+    const b2EdgeAndCircleContact = Box2D.Dynamics.Contacts.b2EdgeAndCircleContact;
     const b2NullContact = Box2D.Dynamics.Contacts.b2NullContact;
-    const b2PolyAndCircleContact =
-      Box2D.Dynamics.Contacts.b2PolyAndCircleContact;
+    const b2PolyAndCircleContact = Box2D.Dynamics.Contacts.b2PolyAndCircleContact;
     const b2PolyAndEdgeContact = Box2D.Dynamics.Contacts.b2PolyAndEdgeContact;
     const b2PolygonContact = Box2D.Dynamics.Contacts.b2PolygonContact;
-    const b2PositionSolverManifold =
-      Box2D.Dynamics.Contacts.b2PositionSolverManifold;
+    const b2PositionSolverManifold = Box2D.Dynamics.Contacts.b2PositionSolverManifold;
     const b2Body = Box2D.Dynamics.b2Body;
     const b2BodyDef = Box2D.Dynamics.b2BodyDef;
     const b2ContactFilter = Box2D.Dynamics.b2ContactFilter;
@@ -14104,10 +12937,9 @@ while keeping general compatability. (made with box2D js es6) */
     const Features = Box2D.Collision.Features;
     const IBroadPhase = Box2D.Collision.IBroadPhase;
 
-    b2CircleContact.prototype.__super =
-      Box2D.Dynamics.Contacts.b2Contact.prototype;
-    b2CircleContact.Create = (allocator) => new b2CircleContact();
-    b2CircleContact.Destroy = (contact, allocator) => {};
+    b2CircleContact.prototype.__super = Box2D.Dynamics.Contacts.b2Contact.prototype;
+    b2CircleContact.Create = allocator => new b2CircleContact();
+    b2CircleContact.Destroy = (contact, allocator) => { };
     Box2D.postDefs.push(() => {
       Box2D.Dynamics.Contacts.b2Contact.e_sensorFlag = 0x0001;
       Box2D.Dynamics.Contacts.b2Contact.e_continuousFlag = 0x0002;
@@ -14118,42 +12950,33 @@ while keeping general compatability. (made with box2D js es6) */
       Box2D.Dynamics.Contacts.b2Contact.e_filterFlag = 0x0040;
       Box2D.Dynamics.Contacts.b2Contact.s_input = new b2TOIInput();
     });
-    b2ContactEdge.b2ContactEdge = () => {};
-    b2ContactFactory.b2ContactFactory = () => {};
-    b2ContactRegister.b2ContactRegister = () => {};
+    b2ContactEdge.b2ContactEdge = () => { };
+    b2ContactFactory.b2ContactFactory = () => { };
+    b2ContactRegister.b2ContactRegister = () => { };
     Box2D.postDefs.push(() => {
-      Box2D.Dynamics.Contacts.b2ContactSolver.s_worldManifold =
-        new b2WorldManifold();
-      Box2D.Dynamics.Contacts.b2ContactSolver.s_psm =
-        new b2PositionSolverManifold();
+      Box2D.Dynamics.Contacts.b2ContactSolver.s_worldManifold = new b2WorldManifold();
+      Box2D.Dynamics.Contacts.b2ContactSolver.s_psm = new b2PositionSolverManifold();
     });
-    b2EdgeAndCircleContact.prototype.__super =
-      Box2D.Dynamics.Contacts.b2Contact.prototype;
-    b2EdgeAndCircleContact.Create = (allocator) => new b2EdgeAndCircleContact();
-    b2EdgeAndCircleContact.Destroy = (contact, allocator) => {};
-    b2NullContact.prototype.__super =
-      Box2D.Dynamics.Contacts.b2Contact.prototype;
-    b2PolyAndCircleContact.prototype.__super =
-      Box2D.Dynamics.Contacts.b2Contact.prototype;
-    b2PolyAndCircleContact.Create = (allocator) => new b2PolyAndCircleContact();
-    b2PolyAndCircleContact.Destroy = (contact, allocator) => {};
-    b2PolyAndEdgeContact.prototype.__super =
-      Box2D.Dynamics.Contacts.b2Contact.prototype;
-    b2PolyAndEdgeContact.Create = (allocator) => new b2PolyAndEdgeContact();
-    b2PolyAndEdgeContact.Destroy = (contact, allocator) => {};
-    b2PolygonContact.prototype.__super =
-      Box2D.Dynamics.Contacts.b2Contact.prototype;
-    b2PolygonContact.Create = (allocator) => new b2PolygonContact();
-    b2PolygonContact.Destroy = (contact, allocator) => {};
-    b2PositionSolverManifold.b2PositionSolverManifold = () => {};
+    b2EdgeAndCircleContact.prototype.__super = Box2D.Dynamics.Contacts.b2Contact.prototype;
+    b2EdgeAndCircleContact.Create = allocator => new b2EdgeAndCircleContact();
+    b2EdgeAndCircleContact.Destroy = (contact, allocator) => { };
+    b2NullContact.prototype.__super = Box2D.Dynamics.Contacts.b2Contact.prototype;
+    b2PolyAndCircleContact.prototype.__super = Box2D.Dynamics.Contacts.b2Contact.prototype;
+    b2PolyAndCircleContact.Create = allocator => new b2PolyAndCircleContact();
+    b2PolyAndCircleContact.Destroy = (contact, allocator) => { };
+    b2PolyAndEdgeContact.prototype.__super = Box2D.Dynamics.Contacts.b2Contact.prototype;
+    b2PolyAndEdgeContact.Create = allocator => new b2PolyAndEdgeContact();
+    b2PolyAndEdgeContact.Destroy = (contact, allocator) => { };
+    b2PolygonContact.prototype.__super = Box2D.Dynamics.Contacts.b2Contact.prototype;
+    b2PolygonContact.Create = allocator => new b2PolygonContact();
+    b2PolygonContact.Destroy = (contact, allocator) => { };
+    b2PositionSolverManifold.b2PositionSolverManifold = () => { };
     Box2D.postDefs.push(() => {
-      Box2D.Dynamics.Contacts.b2PositionSolverManifold.circlePointA =
-        new b2Vec2();
-      Box2D.Dynamics.Contacts.b2PositionSolverManifold.circlePointB =
-        new b2Vec2();
+      Box2D.Dynamics.Contacts.b2PositionSolverManifold.circlePointA = new b2Vec2();
+      Box2D.Dynamics.Contacts.b2PositionSolverManifold.circlePointB = new b2Vec2();
     });
-  })();
-  (() => {
+  }))();
+  ((() => {
     const b2Body = Box2D.Dynamics.b2Body;
     const b2BodyDef = Box2D.Dynamics.b2BodyDef;
     const b2ContactFilter = Box2D.Dynamics.b2ContactFilter;
@@ -14184,32 +13007,23 @@ while keeping general compatability. (made with box2D js es6) */
     const b2MassData = Box2D.Collision.Shapes.b2MassData;
     const b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
     const b2Shape = Box2D.Collision.Shapes.b2Shape;
-    const b2BuoyancyController =
-      Box2D.Dynamics.Controllers.b2BuoyancyController;
-    const b2ConstantAccelController =
-      Box2D.Dynamics.Controllers.b2ConstantAccelController;
-    const b2ConstantForceController =
-      Box2D.Dynamics.Controllers.b2ConstantForceController;
+    const b2BuoyancyController = Box2D.Dynamics.Controllers.b2BuoyancyController;
+    const b2ConstantAccelController = Box2D.Dynamics.Controllers.b2ConstantAccelController;
+    const b2ConstantForceController = Box2D.Dynamics.Controllers.b2ConstantForceController;
     const b2Controller = Box2D.Dynamics.Controllers.b2Controller;
     const b2ControllerEdge = Box2D.Dynamics.Controllers.b2ControllerEdge;
     const b2GravityController = Box2D.Dynamics.Controllers.b2GravityController;
-    const b2TensorDampingController =
-      Box2D.Dynamics.Controllers.b2TensorDampingController;
+    const b2TensorDampingController = Box2D.Dynamics.Controllers.b2TensorDampingController;
 
-    b2BuoyancyController.prototype.__super =
-      Box2D.Dynamics.Controllers.b2Controller.prototype;
-    b2ConstantAccelController.prototype.__super =
-      Box2D.Dynamics.Controllers.b2Controller.prototype;
-    b2ConstantForceController.prototype.__super =
-      Box2D.Dynamics.Controllers.b2Controller.prototype;
-    b2Controller.b2Controller = () => {};
-    b2ControllerEdge.b2ControllerEdge = () => {};
-    b2GravityController.prototype.__super =
-      Box2D.Dynamics.Controllers.b2Controller.prototype;
-    b2TensorDampingController.prototype.__super =
-      Box2D.Dynamics.Controllers.b2Controller.prototype;
-  })();
-  (() => {
+    b2BuoyancyController.prototype.__super = Box2D.Dynamics.Controllers.b2Controller.prototype;
+    b2ConstantAccelController.prototype.__super = Box2D.Dynamics.Controllers.b2Controller.prototype;
+    b2ConstantForceController.prototype.__super = Box2D.Dynamics.Controllers.b2Controller.prototype;
+    b2Controller.b2Controller = () => { };
+    b2ControllerEdge.b2ControllerEdge = () => { };
+    b2GravityController.prototype.__super = Box2D.Dynamics.Controllers.b2Controller.prototype;
+    b2TensorDampingController.prototype.__super = Box2D.Dynamics.Controllers.b2Controller.prototype;
+  }))();
+  ((() => {
     const b2Color = Box2D.Common.b2Color;
     const b2internal = Box2D.Common.b2internal;
     const b2Settings = Box2D.Common.b2Settings;
@@ -14258,72 +13072,57 @@ while keeping general compatability. (made with box2D js es6) */
     const b2World = Box2D.Dynamics.b2World;
 
     b2DistanceJoint.prototype.__super = Box2D.Dynamics.Joints.b2Joint.prototype;
-    b2DistanceJointDef.prototype.__super =
-      Box2D.Dynamics.Joints.b2JointDef.prototype;
+    b2DistanceJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
     b2FrictionJoint.prototype.__super = Box2D.Dynamics.Joints.b2Joint.prototype;
-    b2FrictionJointDef.prototype.__super =
-      Box2D.Dynamics.Joints.b2JointDef.prototype;
+    b2FrictionJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
     b2GearJoint.prototype.__super = Box2D.Dynamics.Joints.b2Joint.prototype;
-    b2GearJointDef.prototype.__super =
-      Box2D.Dynamics.Joints.b2JointDef.prototype;
+    b2GearJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
     b2Joint.Create = (def, allocator) => {
       let joint = null;
       switch (def.type) {
         case b2Joint.e_distanceJoint:
           {
-            joint = new b2DistanceJoint(
-              def instanceof b2DistanceJointDef ? def : null,
-            );
+            joint = new b2DistanceJoint((def instanceof b2DistanceJointDef ? def : null));
           }
           break;
         case b2Joint.e_mouseJoint:
           {
-            joint = new b2MouseJoint(
-              def instanceof b2MouseJointDef ? def : null,
-            );
+            joint = new b2MouseJoint((def instanceof b2MouseJointDef ? def : null));
           }
           break;
         case b2Joint.e_prismaticJoint:
           {
-            joint = new b2PrismaticJoint(
-              def instanceof b2PrismaticJointDef ? def : null,
-            );
+            joint = new b2PrismaticJoint((def instanceof b2PrismaticJointDef ? def : null));
           }
           break;
         case b2Joint.e_revoluteJoint:
           {
-            joint = new b2RevoluteJoint(
-              def instanceof b2RevoluteJointDef ? def : null,
-            );
+            joint = new b2RevoluteJoint((def instanceof b2RevoluteJointDef ? def : null));
           }
           break;
         case b2Joint.e_pulleyJoint:
           {
-            joint = new b2PulleyJoint(
-              def instanceof b2PulleyJointDef ? def : null,
-            );
+            joint = new b2PulleyJoint((def instanceof b2PulleyJointDef ? def : null));
           }
           break;
         case b2Joint.e_gearJoint:
           {
-            joint = new b2GearJoint(def instanceof b2GearJointDef ? def : null);
+            joint = new b2GearJoint((def instanceof b2GearJointDef ? def : null));
           }
           break;
         case b2Joint.e_lineJoint:
           {
-            joint = new b2LineJoint(def instanceof b2LineJointDef ? def : null);
+            joint = new b2LineJoint((def instanceof b2LineJointDef ? def : null));
           }
           break;
         case b2Joint.e_weldJoint:
           {
-            joint = new b2WeldJoint(def instanceof b2WeldJointDef ? def : null);
+            joint = new b2WeldJoint((def instanceof b2WeldJointDef ? def : null));
           }
           break;
         case b2Joint.e_frictionJoint:
           {
-            joint = new b2FrictionJoint(
-              def instanceof b2FrictionJointDef ? def : null,
-            );
+            joint = new b2FrictionJoint((def instanceof b2FrictionJointDef ? def : null));
           }
           break;
         default:
@@ -14331,7 +13130,7 @@ while keeping general compatability. (made with box2D js es6) */
       }
       return joint;
     };
-    b2Joint.Destroy = (joint, allocator) => {};
+    b2Joint.Destroy = (joint, allocator) => { };
     Box2D.postDefs.push(() => {
       Box2D.Dynamics.Joints.b2Joint.e_unknownJoint = 0;
       Box2D.Dynamics.Joints.b2Joint.e_revoluteJoint = 1;
@@ -14348,41 +13147,32 @@ while keeping general compatability. (made with box2D js es6) */
       Box2D.Dynamics.Joints.b2Joint.e_atUpperLimit = 2;
       Box2D.Dynamics.Joints.b2Joint.e_equalLimits = 3;
     });
-    b2JointDef.b2JointDef = () => {};
-    b2JointEdge.b2JointEdge = () => {};
+    b2JointDef.b2JointDef = () => { };
+    b2JointEdge.b2JointEdge = () => { };
     b2LineJoint.prototype.__super = Box2D.Dynamics.Joints.b2Joint.prototype;
-    b2LineJointDef.prototype.__super =
-      Box2D.Dynamics.Joints.b2JointDef.prototype;
+    b2LineJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
     b2MouseJoint.prototype.__super = Box2D.Dynamics.Joints.b2Joint.prototype;
-    b2MouseJointDef.prototype.__super =
-      Box2D.Dynamics.Joints.b2JointDef.prototype;
-    b2PrismaticJoint.prototype.__super =
-      Box2D.Dynamics.Joints.b2Joint.prototype;
-    b2PrismaticJointDef.prototype.__super =
-      Box2D.Dynamics.Joints.b2JointDef.prototype;
+    b2MouseJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
+    b2PrismaticJoint.prototype.__super = Box2D.Dynamics.Joints.b2Joint.prototype;
+    b2PrismaticJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
     b2PulleyJoint.prototype.__super = Box2D.Dynamics.Joints.b2Joint.prototype;
     Box2D.postDefs.push(() => {
       Box2D.Dynamics.Joints.b2PulleyJoint.b2_minPulleyLength = 2.0;
     });
-    b2PulleyJointDef.prototype.__super =
-      Box2D.Dynamics.Joints.b2JointDef.prototype;
+    b2PulleyJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
     b2RevoluteJoint.prototype.__super = Box2D.Dynamics.Joints.b2Joint.prototype;
     Box2D.postDefs.push(() => {
       Box2D.Dynamics.Joints.b2RevoluteJoint.tImpulse = new b2Vec2();
     });
-    b2RevoluteJointDef.prototype.__super =
-      Box2D.Dynamics.Joints.b2JointDef.prototype;
+    b2RevoluteJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
     b2WeldJoint.prototype.__super = Box2D.Dynamics.Joints.b2Joint.prototype;
-    b2WeldJointDef.prototype.__super =
-      Box2D.Dynamics.Joints.b2JointDef.prototype;
-  })();
-  (() => {
+    b2WeldJointDef.prototype.__super = Box2D.Dynamics.Joints.b2JointDef.prototype;
+  }))();
+  ((() => {
     const b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
-  })();
+  }))();
   let i;
   for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
-
-  //module.exports = Box2D;
 
   Scratch.extensions.register(new BoxPhys());
 })(Scratch);
