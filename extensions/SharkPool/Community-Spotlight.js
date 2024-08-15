@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.0
+// Version V.1.0.01
 
 (function (Scratch) {
   "use strict";
@@ -34,8 +34,8 @@
       this.promoSpaceInfo = { pos: [0, 0], sz: [1, 1] };
       this.promoSpace = document.createElement("div");
       vm.renderer.addOverlay(this.promoSpace, "scale-centered");
-      vm.runtime.on("PROJECT_STOP_ALL", () => { this.promoSpace.style.display = "none" });
-      vm.runtime.on("PROJECT_START", () => { this.promoSpace.style.display = "none" });
+      vm.runtime.on("PROJECT_STOP_ALL", () => { this.deletePromo() });
+      vm.runtime.on("PROJECT_START", () => { this.deletePromo() });
     }
     getInfo() {
       return {
@@ -115,10 +115,15 @@
           {
             opcode: "visiblePromo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[TYPE] promo",
+            text: "[TYPE] displayed promo",
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "VISIBLE" }
             },
+          },
+          {
+            opcode: "deletePromo",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "delete displayed promo"
           },
           "---",
           {
@@ -180,8 +185,9 @@
       newSpace.style.transform = "translate(-50%, -50%)";
       let sz = args.SIZE.split(" ")[0];
       if (isVideo) {
-        newSpace.style.width = `${parseInt(sz.split(":")[0]) * 120}px`;
-        newSpace.style.height = `${parseInt(sz.split(":")[1]) * 120}px`;
+        const scaleAmt = sz === "1:1" ? 240 : 120;
+        newSpace.style.width = `${parseInt(sz.split(":")[0]) * scaleAmt}px`;
+        newSpace.style.height = `${parseInt(sz.split(":")[1]) * scaleAmt}px`;
       } else {
         newSpace.style.width = `${sz.split("x")[0]}px`;
         newSpace.style.height = `${sz.split("x")[1]}px`;
@@ -191,7 +197,8 @@
       this.promoSpace.firstChild?.remove();
       this.promoSpace.appendChild(div);
       this.updatePromo();
-      newSpace.addEventListener("click", () => {
+      newSpace.addEventListener("click", (e) => {
+        if (isVideo && e.target !== newSpace) return;
         Scratch.openWindow(promo["promoter-url"]);
       });
       if (isVideo) {
@@ -232,7 +239,7 @@
     activeTags() { return JSON.stringify(tags) }
 
     filterTags(args) {
-      try { tags = JSON.parse(args.TAGS) }
+      try { tags = JSON.parse(Scratch.Cast.toString(args.TAGS).toLowerCase()) }
       catch { tags = [] }
     }
 
@@ -251,9 +258,9 @@
       }), args);
     }
 
-    visiblePromo(args) {
-      this.promoSpace.style.display = args.TYPE === "show" ? "" : "none";
-    }
+    visiblePromo(args) { this.promoSpace.style.display = args.TYPE === "show" ? "" : "none" }
+
+    deletePromo() { this.promoSpace.firstChild?.remove() }
 
     setPromoPos(args) {
       this.promoSpaceInfo.pos = [
@@ -270,7 +277,7 @@
     }
   }
 
-  function addLinearGradientToBody() {
+  function addGradientToBody() {
     var grad = document.createElement("div");
     grad.innerHTML = `<svg><defs>
       <linearGradient x1="220" y1="-30" x2="240" y2="100" gradientUnits="userSpaceOnUse" id="SPspotlight-GRAD">
@@ -279,7 +286,7 @@
     document.body.appendChild(grad);
   }
   if (Scratch.gui) Scratch.gui.getBlockly().then((ScratchBlocks) => {
-    addLinearGradientToBody();
+    addGradientToBody();
     if (!ScratchBlocks?.SPgradients?.patched) { // Gradient Patch by 0znzw & SharkPool
       ScratchBlocks.SPgradients = {gradientUrls: {}, patched: false};
       const BSP = ScratchBlocks.BlockSvg.prototype, BSPR = BSP.render;
