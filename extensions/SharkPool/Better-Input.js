@@ -2,9 +2,8 @@
 // ID: BetterInputSP
 // Description: Expansion of the "ask and wait" Blocks.
 // By: SharkPool
-// License: MPL-2.0
 
-// Version V.4.2.0
+// Version V.4.2.01
 
 (function (Scratch) {
   "use strict";
@@ -43,7 +42,7 @@
 
   class BetterInputSP {
     constructor() {
-      this.activeOverlays = []; this.activeUI = []; this.askBoxPromises = [];
+      this.activeOverlays = []; this.askBoxPromises = [];
       this.isWaitingForInput = false; this.isDropdownOpen = false;
       this.userInput = " "; this.defaultValue = "";
       this.textBoxX = 0; this.textBoxY = 0;
@@ -976,10 +975,8 @@
       });
       this.askBoxPromises = [];
       this.activeOverlays = this.activeOverlays.filter((overlay) => !overlaysToRemove.includes(overlay));
-      this.activeUI = [];
       this.askBoxInfo[0] = 0;
       this.isDropdownOpen = false;
-      // Remove "Bugged" Boxes, bugged boxes is a intentional feature, ask for more info
       const bugged = document.querySelectorAll(`div[class^="SP-ask-box"]`);
       bugged.forEach((box) => { box.parentNode.removeChild(box) });
     }
@@ -1002,8 +999,7 @@
         this.askBoxInfo[0]++;
         let selectOpts = [];
         return new Promise((resolve) => {
-          const askBoxPromise = { resolve };
-          this.askBoxPromises.push(askBoxPromise);
+          this.askBoxPromises.push({ resolve });
           const overlay = document.createElement("div");
           overlay.classList.add("SP-ask-box");
           overlay.style.pointerEvents = "auto";
@@ -1030,12 +1026,7 @@
             const overlayInput = this.forceInput === "Enter Key" ? "Enter" : this.forceInput === "Shift + Enter Key" ? "ShiftEnter" : this.forceInput;
             const handleKeydown = (event) => {
               if ((overlayInput === "ShiftEnter" && event.shiftKey && event.key === "Enter") || event.key === overlayInput) {
-                if (this.askBoxInfo[1] == 1) this.userInput = inputField.value;
-                else {
-                  const newInput = [...this.userInput];
-                  newInput[index] = inputField.value;
-                  this.userInput = newInput;
-                }
+                setInpValue(inputField.value);
                 this.closeOverlay(overlay, hasDecreased);
                 hasDecreased = true;
                 resolve();
@@ -1065,14 +1056,16 @@
           inputField.style.fontSize = this.fontSize;
           inputField.style.margin = "0 auto";
           inputField.type = this.inputType.toLowerCase();
-          inputField.addEventListener("input", () => {
+          const setInpValue = (val) => {
+            inputField.value = val;
             if (this.askBoxInfo[1] == 1) this.userInput = inputField.value;
             else {
               const newInput = [...this.userInput];
               newInput[index] = inputField.value;
               this.userInput = newInput;
             }
-          });
+          }
+          inputField.addEventListener("input", () => { setInpValue(inputField.value) });
           const btnContain = document.createElement("div");
           btnContain.classList.add("button-container");
           for (const buttonName in this.buttonJSON) {
@@ -1088,12 +1081,7 @@
               btn.style.display = "inline-block";
               btn.addEventListener("click", () => {
                 this.lastPressBtn = btnInfo.name;
-                if (this.askBoxInfo[1] == 1) this.userInput = this.inputType === "Disabled" ? btnInfo.name : inputField.value;
-                else {
-                  const newInput = [...this.userInput];
-                  newInput[index] = this.inputType === "Disabled" ? btnInfo.name : inputField.value;
-                  this.userInput = newInput;
-                }
+                setInpValue(this.inputType === "Disabled" ? btnInfo.name : this.userInput);
                 this.closeOverlay(overlay, hasDecreased);
                 hasDecreased = true;
                 resolve();
@@ -1101,108 +1089,87 @@
               btnContain.appendChild(btn);
             }
           }
-
-          const dropdown = document.createElement("div");
-          dropdown.className = "dropdown";
-          let dropdwnBtn, dropdwnCont;
-          if (this.inputType === "Single Dropdown") {
-            dropdwnBtn = document.createElement("select");
-            this.optionList.forEach((label) => {
-              let opt = document.createElement("option");
-              opt.value = label; opt.text = label;
-              dropdwnBtn.appendChild(opt);
-            });
-            dropdwnBtn.addEventListener("input", () => {
-              inputField.value = dropdwnBtn.value;
-              if (this.askBoxInfo[1] == 1) this.userInput = inputField.value;
-              else {
-                const newInput = [...this.userInput];
-                newInput[index] = inputField.value;
-                this.userInput = newInput;
-              }
-            });
-            dropdwnBtn.dispatchEvent(new Event("input", { bubbles: true }));
-          } else {
-            dropdwnBtn = document.createElement("button");
-            dropdwnBtn.className = "dropbtn";
-            dropdwnBtn.innerHTML = xmlEscape(this.DropdownText).replace(/\n/g, "<br>");
-            dropdwnCont = document.createElement("div");
-            dropdwnCont.id = "myDropdown";
-            dropdwnCont.className = "dropdown-content";
-            dropdwnCont.style.display = "none";
-            this.optionList.forEach((label, index) => {
-              const optTxt = document.createElement("label");
-              optTxt.style.color = this.questionColor;
-              optTxt.textContent = "";
-              const optRadio = document.createElement("input");
-              optRadio.type = this.inputType === "Dropdown" ? "radio" : "checkbox";
-              optRadio.name = "dropdownOptions";
-              optRadio.value = index;
-              optRadio.classList.add("dropdown-radio");
-              optRadio.addEventListener("click", () => {
-                if (this.inputType === "Multi-Select Dropdown") {
-                  if (selectOpts.includes(label)) selectOpts = selectOpts.filter(item => item !== label);
-                  else selectOpts.push(label);
-                  inputField.value = selectOpts.length > 0 ? JSON.stringify(selectOpts) : "";
-                } else { inputField.value = label }
-                if (this.askBoxInfo[1] == 1) this.userInput = inputField.value;
-                else {
-                  const newInput = [...this.userInput];
-                  newInput[index] = inputField.value;
-                  this.userInput = newInput;
-                }
+          let dropdwnCont, dropdwnBtn, sliderContain, valTxt;
+          if (this.inputType.includes("Dropdown")) {
+            const dropdown = document.createElement("div");
+            dropdown.className = "dropdown";
+            if (this.inputType === "Single Dropdown") {
+              dropdwnBtn = document.createElement("select");
+              this.optionList.forEach((label) => {
+                let opt = document.createElement("option");
+                opt.value = label; opt.text = label;
+                dropdwnBtn.appendChild(opt);
               });
-              optTxt.append(optRadio, document.createTextNode(" " + label), document.createElement("br"));
-              dropdwnCont.appendChild(optTxt);
-            });
-            dropdwnBtn.addEventListener("click", () => {
-              this.lastPressBtn = this.DropdownText;
-              dropdwnCont.style.display = this.isDropdownOpen ? "none" : "block";
-              this.isDropdownOpen = !this.isDropdownOpen;
-            });
-          }
-
-          const sliderContain = document.createElement("div");
-          sliderContain.classList.add("slider-container");
-          const slider = document.createElement("input");
-          if (this.inputType.includes("Vertical")) slider.style.transform = "rotate(270deg)";
-          slider.type = "range";
-          slider.min = this.sliderInfo[0]; slider.max = this.sliderInfo[1]; slider.value = this.sliderInfo[2];
-          if (this.inputType.includes("Vertical")) {
-            for (let i = 0; i < 3; i++) { sliderContain.appendChild(document.createElement("br")) }
-            sliderContain.appendChild(slider);
-            for (let i = 0; i < 4; i++) { sliderContain.appendChild(document.createElement("br")) }
-          } else { sliderContain.appendChild(slider) }
-          const valTxt = document.createElement("span");
-          valTxt.classList.add("slider-value");
-          sliderContain.appendChild(valTxt);
-          valTxt.style.color = this.questionColor;
-          valTxt.textContent = slider.value;
-          slider.addEventListener("input", () => {
-            valTxt.textContent = slider.value;
-            inputField.value = slider.value;
-            if (this.askBoxInfo[1] == 1) this.userInput = valTxt.textContent;
-            else {
-              const newInput = [...this.userInput];
-              newInput[index] = valTxt.textContent;
-              this.userInput = newInput;
+              dropdwnBtn.addEventListener("input", () => { setInpValue(dropdwnBtn.value) });
+              setInpValue(dropdwnBtn.value);
+            } else {
+              dropdwnBtn = document.createElement("button");
+              dropdwnBtn.className = "dropbtn";
+              dropdwnBtn.innerHTML = xmlEscape(this.DropdownText).replace(/\n/g, "<br>");
+              dropdwnCont = document.createElement("div");
+              dropdwnCont.id = "myDropdown";
+              dropdwnCont.className = "dropdown-content";
+              dropdwnCont.style.display = "none";
+              this.optionList.forEach((label, index) => {
+                const optTxt = document.createElement("label");
+                optTxt.style.color = this.questionColor;
+                optTxt.textContent = "";
+                const optRadio = document.createElement("input");
+                optRadio.type = this.inputType === "Dropdown" ? "radio" : "checkbox";
+                optRadio.name = "dropdownOptions";
+                optRadio.value = index;
+                optRadio.classList.add("dropdown-radio");
+                optRadio.addEventListener("click", () => {
+                  if (this.inputType === "Multi-Select Dropdown") {
+                    if (selectOpts.includes(label)) selectOpts = selectOpts.filter(item => item !== label);
+                    else selectOpts.push(label);
+                    inputField.value = selectOpts.length > 0 ? JSON.stringify(selectOpts) : "";
+                  } else { inputField.value = label }
+                  setInpValue(inputField.value)
+                });
+                optTxt.append(optRadio, document.createTextNode(" " + label), document.createElement("br"));
+                dropdwnCont.appendChild(optTxt);
+              });
+              dropdwnBtn.addEventListener("click", () => {
+                this.lastPressBtn = this.DropdownText;
+                dropdwnCont.style.display = this.isDropdownOpen ? "none" : "block";
+                this.isDropdownOpen = !this.isDropdownOpen;
+              });
             }
-          });
+          } else if (this.inputType.includes("Slider")) {
+            sliderContain = document.createElement("div");
+            sliderContain.classList.add("slider-container");
+            const slider = document.createElement("input");
+            slider.type = "range";
+            slider.min = this.sliderInfo[0]; slider.max = this.sliderInfo[1]; slider.value = this.sliderInfo[2];
+            if (this.inputType.includes("Vertical")) {
+              slider.style.writingMode = "vertical-lr";
+              slider.style.direction = "rtl";
+            }
+            sliderContain.appendChild(slider);
+            valTxt = document.createElement("span");
+            valTxt.classList.add("slider-value");
+            sliderContain.appendChild(valTxt);
+            valTxt.style.color = this.questionColor;
+            valTxt.textContent = slider.value;
+            slider.addEventListener("input", () => {
+              valTxt.textContent = slider.value;
+              setInpValue(valTxt.textContent);
+            });
+            setInpValue(valTxt.textContent);
+          }
           for (const item of this.uiOrder) {
             switch (item) {
               case "question": { overlay.appendChild(questionText); break }
               case "input":
                 if (this.inputType !== "Disabled") {
-                  if (this.inputType === "Enabled" || this.inputType === "Color" ||
-                    this.inputType === "Number" || this.inputType === "Password"
-                  ) {
+                  const createBr = () => { return document.createElement("br") };
+                  if (this.inputType === "Single Dropdown") overlay.append(dropdwnBtn, createBr());
+                  else if (this.inputType.includes("Dropdown")) overlay.append(dropdwnBtn, dropdwnCont, createBr());
+                  else if (this.inputType.includes("Slider")) overlay.append(sliderContain, valTxt, createBr());
+                  else {
+                    setInpValue(this.defaultValue);
                     overlay.appendChild(inputField);
-                  } else if (this.inputType === "Single Dropdown") {
-                    overlay.append(dropdwnBtn, document.createElement("br"));
-                  } else if (this.inputType.includes("Dropdown")) {
-                    overlay.append(dropdwnBtn, dropdwnCont, document.createElement("br"));
-                  } else {
-                    overlay.append(sliderContain, valTxt, document.createElement("br"));
                   }
                 }
                 break;
@@ -1215,9 +1182,7 @@
             if (this.appendTarget[1]) document.body.appendChild(focusBG);
           }
           inputField.focus();
-          inputField.value = this.defaultValue;
           this.activeOverlays.push(overlay);
-          this.activeUI.push({ overlay: { button: btnContain, dropdown: dropdwnBtn, input: inputField } });
           if (this.appendTarget[0] === "window") {
             const resizeHandler = () => {
               overlay.style.left = `${this.textBoxX !== null ? 50 + this.textBoxX : 50}%`;
@@ -1265,7 +1230,6 @@
             this.activeOverlays.splice(index, 1);
             this.askBoxPromises.splice(index, 1);
           }
-          delete this.activeUI[overlay];
           if (this.appendTarget[0] === "window") document.body.removeChild(overlay);
           else vm.renderer.removeOverlay(overlay);
           if (usedBG) {
