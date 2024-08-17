@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.02
+// Version V.1.0.03
 
 (function (Scratch) {
   "use strict";
@@ -14,7 +14,8 @@
 "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3Ny4yMDUiIGhlaWdodD0iNzcuMjA1IiB2aWV3Qm94PSIwIDAgNzcuMjA1IDc3LjIwNSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IHgxPSIyMTIuNzA0IiB5MT0iMTUyLjcwNCIgeDI9IjI2Ny4yOTYiIHkyPSIyMDcuMjk2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgaWQ9ImEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzAwOTk0ZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwNzg5OSIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IHgxPSIyMTUuODk0IiB5MT0iMTU1Ljg5NCIgeDI9IjI2NC4xMDYiIHkyPSIyMDQuMTA2IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgaWQ9ImIiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzAwZmY4NCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwYzlmZiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxnIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTIxMi43MDQgMjA3LjI5NmMtMTUuMDc1LTE1LjA3NS0xNS4wNzUtMzkuNTE3IDAtNTQuNTkyczM5LjUxNy0xNS4wNzUgNTQuNTkyIDAgMTUuMDc1IDM5LjUxNyAwIDU0LjU5Mi0zOS41MTcgMTUuMDc1LTU0LjU5MiAwIiBmaWxsPSJ1cmwoI2EpIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjAxLjM5OCAtMTQxLjM5OCkiLz48cGF0aCBkPSJNMjE1Ljg5NCAyMDQuMTA2Yy0xMy4zMTMtMTMuMzE0LTEzLjMxMy0zNC44OTggMC00OC4yMTJzMzQuODk4LTEzLjMxMyA0OC4yMTIgMCAxMy4zMTMgMzQuODk4IDAgNDguMjEyLTM0Ljg5OCAxMy4zMTMtNDguMjEyIDAiIGZpbGw9InVybCgjYikiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMDEuMzk4IC0xNDEuMzk4KSIvPjxwYXRoIGQ9Im00Ny42MzQgMzcuMzI0LTctNS42OTQgMTQuNTI3LTEyLjc2NXMxLjM1LTEuNDI0IDIuMzE2LTEuMDFjMS41NjEuNjY4Ljg2NSAyLjI4OC44NjUgMi4yODh6TTE3LjQyNSA1MS45ODljLjQ4NS0uNDg4IDEuMDMzLS45MDYgMS41NS0xLjM2bDQuOTE3LTQuMzEzIDQuODk2LTQuMjk1IDcuOTc5IDEyLjcxM3MtLjAzMS4wOTItLjI0Ni40MzdjLS40NTcuNzM1LS43NDcgMS41MDMtMS40MTIgMi4xMDQtMS40NTkgMS4zMTUtMy41MiAxLjkxLTUuNDEzIDIuMjI5LTIuNDgyLjQyLTUuMDg4LjQwMS03LjU2LS4wNzYtMS44MTktLjM1Mi0zLjgxLS45NzQtNS4xNjMtMi4zMDctLjQ4Mi0uNDc1LS44Ny0xLjA2My0xLjAwMS0xLjczNmEyLjY0IDIuNjQgMCAwIDEgLjA1NC0xLjIzNGMuMTMzLS40NjMuNjI5LTEuMzkgMS4zOTktMi4xNjJtOC44Mi0uMTRjLTQuNDA3IDAtNy45OCAxLjM2OC03Ljk4IDMuMDU2czMuNTczIDMuMDU2IDcuOTggMy4wNTYgNy45OC0xLjM2OCA3Ljk4LTMuMDU2LTMuNTczLTMuMDU2LTcuOTgtMy4wNTZtMzEuODE2LTEuMzY5IDEuNDg0IDEuMzAyYy41NC40NzMuOTY5IDEuMDUxIDEuMzMgMS42N3EuMDAxLjAwNi4wMDUuMDFjLjI1LjQyOS40LjkxNC40IDEuNDEyIDAgMy4yNzMtNC44NzYgNC41MDItNy4zMzYgNC43MzItMy43MDYuMzQ3LTguMTM2LjI2NC0xMS4yMS0xLjgzNS0xLjAwOC0uNjg5LTEuNDM0LTEuNjEzLTIuMDQyLTIuNTlsLTEuNjM3LTIuNjNRMzEuOTkgNDEuMjA4IDI0LjkyOCAyOS44NjNsLTYuNTM0LTEwLjQ5NWMtLjYyMy0uOTk4IDEuMTY3LTIuNjYgMi4zMTEtMS42NTdsOC43MDMgNy42MzQgMjEuNzE1IDE5LjA0OHptLTYuOTkgMS4zNjljLTQuNDA3IDAtNy45OCAxLjM2OC03Ljk4IDMuMDU2czMuNTczIDMuMDU2IDcuOTggMy4wNTYgNy45OC0xLjM2OCA3Ljk4LTMuMDU2LTMuNTczLTMuMDU2LTcuOTgtMy4wNTYiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+Cg==";
 
   const vm = Scratch.vm;
-  const acceptableImages = [
+  const runtime = vm.runtime;
+  const acceptableImgs = [
     "250x250 Square", "300x250 Rectangle", "480x270 Widescreen",
     "300x50 Horizontal Banner", "50x300 Vertical Banner",
     "360x120 Large Horizontal Banner", "120x360 Large Vertical Banner"
@@ -27,6 +28,18 @@
   // eslint-disable-next-line
   window.CSPromos={};const base="https://raw.githubusercontent.com/Community-Spotlight/";async function refreshPromos(){try{let e=await fetch(`${base}promotion-index/main/index.json`);if(!e.ok)throw Error("Couldn't fetch promotions!");window.CSPromos=await e.json()}catch(t){console.error(t)}}function getPromotion(e,t){let o=e=>e[Math.floor(Math.random()*e.length)];e="video"===e?"video":"image",t="object"==typeof t?t:{};let i={...window.CSPromos};t.tags&&t.tags.length>0&&(i=Object.fromEntries(Object.entries(i).filter(([e,o])=>o.tags.some(e=>t.tags.includes(e.toLowerCase())))));let n=Object.keys(i).filter(t=>{let o=i[t].media;return"image"===e?o.images.length>0:o.videos.length>0});if(0===n.length)return console.warn("CS -- No promotions found with given parameters"),{};let r,s,a=0,l=[...n];for(;a<n.length;){let m=o(l);r=i[m],l.splice(l.indexOf(m),1);let g=r.media;if("image"===e){let d=g.images.find(e=>!t.aspectRatio||e.size===t.aspectRatio);s=d?`${d.size}.${d.type}`:null}else if("video"===e){let f=g.videos.find(e=>(!t.aspectRatio||e.size===t.aspectRatio)&&(!t.videoLength||e.length===t.videoLength));s=f?`sz${f.size.replace(":","x")}leng${f.length}.${f.type}`:null}if(s)break;a++}if(!s)return console.warn("CS -- No promotions found with given parameters"),{};let h={...r};return delete h.media,{...h,url:`${base}promotion-media/main/${encodeURIComponent(h.id)}/${s}`}}
 
+  // Create an Event for when Pause Project is Activated
+  // Save original function if it exists
+  let ogPauseFunc = Object.getOwnPropertyDescriptor(runtime.ioDevices.clock, "_paused")?.set;
+  Object.defineProperty(runtime.ioDevices.clock, "_paused", {
+    set: function(value) {
+      this._pausedValue = value;
+      runtime.emit("SP_CS_PROJECT_PAUSE", value);
+      if (ogPauseFunc) ogPauseFunc.call(this, value);
+    },
+    get: function() { return this._pausedValue }
+  });
+
   class SPspotlight {
     constructor() {
       // Initialize the Promotions
@@ -34,8 +47,15 @@
       this.promoSpaceInfo = { pos: [0, 0], sz: [1, 1] };
       this.promoSpace = document.createElement("div");
       vm.renderer.addOverlay(this.promoSpace, "scale-centered");
-      vm.runtime.on("PROJECT_STOP_ALL", () => { this.deletePromo() });
-      vm.runtime.on("PROJECT_START", () => { this.deletePromo() });
+      runtime.on("PROJECT_STOP_ALL", () => { this.deletePromo() });
+      runtime.on("PROJECT_START", () => { this.deletePromo() });
+      runtime.on("SP_CS_PROJECT_PAUSE", () => {
+        const video = this.promoSpace.querySelector("video");
+        if (video) {
+          if (runtime.ioDevices.clock._paused) video.pause();
+          else video.play();
+        }
+      });
     }
     getInfo() {
       return {
@@ -147,7 +167,7 @@
         ],
         menus: {
           VISIBLE: { acceptReporters: true, items: ["show", "hide"] },
-          IMGS: { acceptReporters: true, items: acceptableImages },
+          IMGS: { acceptReporters: true, items: acceptableImgs },
           VID_RATIO: {
             acceptReporters: true,
             items: ["1:1", "4:3", "4:5", "16:9", "9:16"]
@@ -216,7 +236,7 @@
     // Block Funcs
     async getImgPromo(args) {
       if (!initialized) await this.refresh();
-      if (acceptableImages.indexOf(args.SIZE) === -1) return "{}";
+      if (acceptableImgs.indexOf(args.SIZE) === -1) return "{}";
       const aspectRatio = args.SIZE.split(" ")[0];
       return JSON.stringify(getPromotion("image", { tags, aspectRatio }));
     }
@@ -243,7 +263,7 @@
 
     async showImgPromo(args) {
       if (!initialized) await this.refresh();
-      if (acceptableImages.indexOf(args.SIZE) === -1) return;
+      if (acceptableImgs.indexOf(args.SIZE) === -1) return;
       const aspectRatio = args.SIZE.split(" ")[0];
       this.displayPromo(getPromotion("image", { tags, aspectRatio }), args);
     }
