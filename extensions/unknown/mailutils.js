@@ -16,7 +16,7 @@ class Mailutils {
           },
           {
             opcode: 'mailprovider',
-            blockType: Scratch.BlockType.COMMAND,
+            blockType: Scratch.BlockType.REPORTER,
             text: 'mail provider of [email]',
             arguments: {
               email: {
