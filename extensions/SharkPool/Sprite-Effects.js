@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.7.0
+// Version V.1.7.01
 
 (function (Scratch) {
   "use strict";
@@ -1140,12 +1140,12 @@
         let filter, effect;
         const rgbColor = this.hexToRgb(args.COLOR);
         if (args.OUTLINE === "filled") {
-          effect = "outline";
-          if (supportM) filter = `<filter id="outline"><feMorphology operator="erode" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="xor" in="flood" in2="thickened" result="frame"/><feComposite operator="atop" in="frame" in2="SourceGraphic"/></filter>`;
+          effect = "filled-outline";
+          if (supportM) filter = `<filter id="filled-outline"><feMorphology operator="erode" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="xor" in="flood" in2="thickened" result="frame"/><feComposite operator="atop" in="frame" in2="SourceGraphic"/></filter>`;
           else filter = `<filter id="filled-outline"><feMorphology operator="dilate" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="in" in="flood" in2="thickened"/><feComposite operator="over" in="SourceGraphic" /></filter>`
         } else {
           effect = "solid-outline";
-          filter = `<filter id="outline"><feMorphology operator="dilate" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feComposite operator="over" in="SourceGraphic" in2="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="in" in="flood" in2="thickened"/></filter>`;
+          filter = `<filter id="solid-outline"><feMorphology operator="dilate" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feComposite operator="over" in="SourceGraphic" in2="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="in" in="flood" in2="thickened"/></filter>`;
         }
         return this.filterApplier(svg, filter, effect);
       }
