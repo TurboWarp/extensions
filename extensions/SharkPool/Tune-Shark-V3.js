@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.3.01
+// Version V.3.3.02
 
 (function (Scratch) {
   "use strict";
@@ -100,16 +100,8 @@
         });
       });
       runtime.on("SP_TUNE3_PROJECT_PAUSE", () => {
-        if (runtime.ioDevices.clock._paused) Object.keys(soundBank).forEach(key => { soundBank[key].context.pause() });
-        else {
-          Object.keys(soundBank).forEach(key => {
-            const thisSound = soundBank[key].context;
-            if (thisSound.paused) {
-              thisSound.play();
-              this.patchLinks(thisSound.sourceNode, soundBank[key]);
-            }
-          });
-        }
+        if (runtime.ioDevices.clock._paused) this.ctrlSounds({ CONTROL: "pause" });
+        else this.ctrlSounds({ CONTROL: "unpause" });
       });
     }
     getInfo() {
@@ -360,6 +352,11 @@
           },
           "---",
           {
+            opcode: "setThing", blockType: Scratch.BlockType.COMMAND, hideFromPalette: true, // deprecated
+            text: "set [TYPE] of sound [NAME] to [VALUE]", blockIconURI: nobIconURI,
+            arguments: { NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }, TYPE: { type: Scratch.ArgumentType.STRING, menu: "singleEffects" }, VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } },
+          },
+          {
             opcode: "setThingNew",
             blockType: Scratch.BlockType.COMMAND,
             text: "set [TYPE] of sound [NAME] to [VALUE]",
@@ -488,6 +485,7 @@
           }
         ],
         menus: {
+          singleEffects: allSingleEffects, // deprecated
           saveMenu: ["save", "dont save"],
           un_pauseMenu: ["pause", "unpause"],
           playMenu: ["start", "stop", "pause", "unpause"],
@@ -523,22 +521,24 @@
     // Helper Funcs
     getSoundIndex(name, target) {
       const sounds = target.sounds;
-      return sounds.indexOf(sounds.filter((sound) => { return sound.name === name })[0]);
+      return sounds.indexOf(sounds.filter((i) => { return i.name === name })[0]);
     }
 
-    calcTime(leng, start, currentT, sound) {
+    currentTime(sound, ctx, src) {
+      if (!ctx.playing && !ctx.paused) return 0;
+      let leng = ctx.loop && sound.loopParm[1] ? sound.loopParm[1] : src.buffer.duration;
       leng = this.modTime(leng, sound);
       const loopStart = sound.loopParm[0];
-      let time = Math.abs(start - currentT);
-      if (sound.context.loop) return (Math.max(0, time % (leng - loopStart)) + loopStart);
+      const now = ctx.paused ? sound.pauseTime : src.context.currentTime;
+      let time = Math.abs(ctx.lastTimePlayed - now);
+      if (ctx.loop) return (Math.max(0, time % (leng - loopStart)) + loopStart);
       return Math.min(leng, Math.max(0, time));
     }
 
     modTime(number, opts) { return number / (opts.pitch * opts.speed * ((opts.detune / 1000) + 1)) }
 
     updateEffect(effect, sound, name, args) {
-      delete args.NAME;
-      delete args.TYPE;
+      delete args.NAME; delete args.TYPE;
       effect.arguments = args; // Match Original Values, not Converted
       if (sound.effects[name] === undefined) {
         effect.id = name;
@@ -615,14 +615,14 @@
           const newName = `${con.name}_COPY_${Math.random()}`;
           soundBank[newName] = {
             ...sound,
-            context: clone, name: newName, loopParm: [0, 0], overlap: false,
-            overlays: [], isBind: false, binds: {}
+            context: clone, name: newName, loopParm: [0, 0], pauseTime: 0,
+            overlap: false, overlays: [], isBind: false, binds: {}
           };
           clone.play();
           clone.sourceNode.playbackRate.value = con.pitch;
           clone.sourceNode.gainSuccessor.gain.value = con.gain;
           con.overlays.push(clone);
-          clone.on("end", function() { delete soundBank[newName] });
+          clone.on("end", () => { delete soundBank[newName] });
         } else {
           sound.play(0, sound.loop ? con.loopParm[0] : atTime);
           const srcNode = sound.sourceNode;
@@ -644,15 +644,25 @@
     }
 
     typeOverlay(sound, type) {
+      const ctx = sound.context;
+      const src = ctx.sourceNode;
       if (type === "stop") {
-        sound.context.stop();
+        ctx.stop();
         for (let i = 0; i < sound.overlays.length; i++) { sound.overlays[i].stop() }
       } else if (type === "pause") {
-        sound.context.pause();
+        sound.pauseTime = src.context.currentTime;
+        ctx.pause();
         for (let i = 0; i < sound.overlays.length; i++) { sound.overlays[i].pause() }
-      } else if (type === "play") {
-        sound.context.play();
-        this.patchLinks(sound.context.sourceNode, sound);
+      } else {
+        if (type === "play") ctx.play();
+        else {
+          if (!ctx.paused) return;
+          const lastTime = this.currentTime(sound, ctx, src);
+          ctx.stop();
+          ctx.play(0, lastTime);
+          return this.patchLinks(ctx.sourceNode, sound);
+        }
+        this.patchLinks(src, sound);
         for (let i = 0; i < sound.overlays.length; i++) {
           sound.overlays[i].play();
           this.patchLinks(sound.overlays[i].sourceNode, sound);
@@ -677,7 +687,7 @@
             engine.sourceNode = engine.getSourceNode();
             engine.attack = 0;
             soundBank[args.NAME] = {
-              context: engine, name: args.NAME, src: args.URL, effects: {},
+              context: engine, name: args.NAME, src: args.URL, effects: {}, pauseTime: 0,
               loaded: true, reversed: false, vol: 100, gain: 1, pitch: 1, detune: 0, speed: 1, 
               loopParm: [0, 0], overlap: false, overlays: [], isBind: false, binds: {}
             };
@@ -715,7 +725,7 @@
           reader.readAsDataURL(audioBlob);
         });
         await this.importURL({ NAME: args.NAME2, URL: audioDataURL }, util);
-      } catch (error) { console.error(error.message) }
+      } catch (e) { console.error(e) }
     }
 
     bindSound(args) {
@@ -723,16 +733,13 @@
       const sound2 = soundBank[args.NAME2];
       if (sound1 === undefined || sound2 === undefined) return;
       const shouldBind = args.TYPE === "bind";
-      sound1.isBind = shouldBind;
-      sound2.isBind = shouldBind;
+      sound1.isBind = shouldBind; sound2.isBind = shouldBind;
       if (shouldBind) {
         if (sound1.binds[sound2.name]) this.typeOverlay(sound1.binds[sound2.name], "stop");
         if (sound2.binds[sound1.name]) this.typeOverlay(sound2.binds[sound1.name], "stop");
-        sound1.binds[sound2.name] = sound2;
-        sound2.binds[sound1.name] = sound1;
+        sound1.binds[sound2.name] = sound2; sound2.binds[sound1.name] = sound1;
       } else {
-        delete sound1.binds[sound2.name];
-        delete sound2.binds[sound1.name];
+        delete sound1.binds[sound2.name]; delete sound2.binds[sound1.name];
       }
     }
 
@@ -770,19 +777,14 @@
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
       if (args.UN_PAUSE === "pause") this.typeOverlay(sound, "pause");
-      else this.typeOverlay(sound, "play");
+      else this.typeOverlay(sound, "unpause");
     }
 
     ctrlSounds(args) {
       if (args.CONTROL === "start") Object.keys(soundBank).forEach(key => { this.play(soundBank[key].context, 0, soundBank[key]) });
       else if (args.CONTROL === "stop") Object.keys(soundBank).forEach(key => { soundBank[key].context.stop() });
-      else if (args.CONTROL === "pause") Object.keys(soundBank).forEach(key => { soundBank[key].context.pause() });
-      else {
-        Object.keys(soundBank).forEach(key => {
-          soundBank[key].context.play();
-          this.patchLinks(soundBank[key].context.sourceNode, soundBank[key]);
-        });
-      }
+      else if (args.CONTROL === "pause") Object.keys(soundBank).forEach(key => { this.typeOverlay(soundBank[key], "pause") });
+      else Object.keys(soundBank).forEach(key => { this.typeOverlay(soundBank[key], "unpause") });
     }
 
     enableControl(args) { settings.flagCtrl = args.ON_OFF === "on" }
@@ -807,9 +809,9 @@
       sound.reversed = args.TYPE === "on";
       this.typeOverlay(sound, "stop");
       const node = sound.context.sourceNode;
-      const reverseBuffer = (audioBuffer) => {
-        for (let i = 0; i < audioBuffer.numberOfChannels; i++) { audioBuffer.getChannelData(i).reverse() }
-        return audioBuffer;
+      const reverseBuffer = (buffer) => {
+        for (let i = 0; i < buffer.numberOfChannels; i++) { buffer.getChannelData(i).reverse() }
+        return buffer;
       }
       const bufferSource = node.context.createBufferSource();
       bufferSource.buffer = reverseBuffer(node.buffer);
@@ -832,7 +834,7 @@
     }
 
     deleteAllSounds() {
-      this.ctrlSounds({ CONTROL: "stop" });  
+      this.ctrlSounds({ CONTROL: "stop" });
       soundBank = {};
     }
 
@@ -867,11 +869,7 @@
       const src = sound.context.sourceNode;
       switch (args.PROP) {
         case "length": return this.modTime(src.buffer.duration, sound);
-        case "current time": return !sound.context.playing ? 0 : 
-          this.calcTime(
-            sound.context.loop && sound.loopParm[1] ? sound.loopParm[1] : src.buffer.duration,
-            sound.context.lastTimePlayed, src.context.currentTime, sound
-          );
+        case "current time": return this.currentTime(sound, sound.context, src);
         case "estimated bpm": return this.getBPM(src.buffer.getChannelData(0), src.buffer.sampleRate);
         case "source": return sound.src;
         case "binds": return JSON.stringify(Object.keys(sound.binds));
@@ -969,6 +967,7 @@
       this.patchLinks(sound.context.sourceNode, sound);
     }
 
+    setThing(args) { this.setThingNew(args) }
     setThingNew(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
