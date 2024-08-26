@@ -162,6 +162,7 @@
 
     dict_get({ KEY, DICT }) {
       if (!dictionaries.get(DICT)) return "null";
+      KEY = Scratch.Cast.toString(KEY);
       let dict = dictionaries.get(DICT);
       let value = dict.get(KEY);
       if (
@@ -180,6 +181,7 @@
     dict_property_defined({ KEY, DICT }) {
       if (!dictionaries.get(DICT)) return false;
       let dict = dictionaries.get(DICT);
+      KEY = Scratch.Cast.toString(KEY);
       return dict.get(KEY) === undefined ? false : true;
     }
 
@@ -194,6 +196,7 @@
         dictionaries.set(DICT, new Map());
       }
       let dict = dictionaries.get(DICT);
+      KEY = Scratch.Cast.toString(KEY);
       dict.set(KEY, VAL);
     }
 
@@ -202,6 +205,7 @@
         dictionaries.set(DICT, new Map());
       }
       let dict = dictionaries.get(DICT);
+      KEY = Scratch.Cast.toString(KEY);
       if (isNaN(+dict.get(KEY))) dict.set(KEY, 0);
       dict.set(KEY, dict.get(KEY) + BY);
     }
@@ -212,6 +216,7 @@
 
     dict_delete_key({ KEY, DICT }) {
       if (dictionaries.has(DICT)) {
+        KEY = Scratch.Cast.toString(KEY);
         dictionaries.get(DICT).delete(KEY);
       }
     }
