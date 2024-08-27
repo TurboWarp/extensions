@@ -813,7 +813,7 @@
       elements.forEach((element) => {
         if (effect === "rotate" || effect.includes("scale") || effect.includes("skew")) {
           const thisElement = effect === "rotate" ? element : element.parentNode;
-          const transformV = element.style.transform.split(" ");
+          const transformV = thisElement.style.transform.split(" ");
           const index = transformV.findIndex(value => value.includes(effect));
           if (index !== -1) {
             effectValue = transformV[index].replace(/[^\d.-]/g, "");
