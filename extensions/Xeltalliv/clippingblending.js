@@ -220,7 +220,8 @@
             clipbox.x_max != lastClipbox.x_max ||
             clipbox.y_max != lastClipbox.y_max))
       ) {
-        if (skin.a_lineColorIndex) {
+        if (skin.attribute_index || skin.a_lineColorIndex) {
+          // Supporting both before and after https://github.com/TurboWarp/scratch-render/pull/11
           skin._flushLines();
         }
         lastTarget = target;
