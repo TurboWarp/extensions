@@ -900,7 +900,7 @@
         case "pastebin.com":
           apiurl = "https://pastebin.com/api/api_post.php";
           let fileData = args.data;
-          if (base64 === "true") {
+          if (args.base64 === "true") {
             if (!isBase64(args.data)) {
               return "Base64 error: Invalid data";
             }
