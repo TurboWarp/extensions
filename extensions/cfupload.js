@@ -187,15 +187,24 @@
         }
       });
     }
-
+    /**
+     * Adds form data for the file upload.
+     * @param {Object} args - The block arguments.
+     * @param {string} args.key - The key for the form data.
+     * @param {string} args.value - The value for the form data.
+     */
     addFormData(args) {
       formDataEntries[args.key] = args.value;
     }
-
+    /**
+     * Get status code last request.
+     */
     getStatusCode() {
       return StatusCode; // Return the stored status code
     }
-
+    /**
+     * Get Raw Respond last request.
+     */
     getRawRespond() {
       return RawRespond;
     }
