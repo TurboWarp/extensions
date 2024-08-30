@@ -20,8 +20,7 @@
     getInfo() {
       return {
         id: exId,
-        text: Scratch.translate("Extendable Blocks"),
-        name: "Extendable Blocks",
+        name: Scratch.translate("Extendable Blocks"),
         menuIconURI: menuIconURI,
         blocks: [
           {
