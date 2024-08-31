@@ -3,7 +3,7 @@
 // Description: New Powerful Message Blocks that work with Vanilla Blocks!
 // By: SharkPool
 
-// Version 1.2.1
+// Version 1.3.0
 
 (function (Scratch) {
   "use strict";
@@ -11,36 +11,59 @@
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
-  const originalStartHats = vm.runtime.startHats;
 
+  const kMessageName = Symbol("kMessageName"); // May be defined on a Thread as a string
+  const kMessageFlag = Symbol("kMessageFlag"); // May be defined on a Thread as a number
+  const kReceivedData = Symbol("kReceivedData"); // May be defined on a Thread as any Scratch-compatible value
+
+  // TODO: _all_ is not actually a reserved value
+  const ALL = "_all_", STAGE = "_stage_", MYSELF = "_myself_", MYSELF2 = "_myselfOnly_";
+
+  let nonRestartedMsgs = [];
+
+  const ogStartHats = runtime.startHats;
   runtime.startHats = function (opcode, fields, target) {
-    let threads = originalStartHats.call(this, opcode, fields, target);
+    let threads = ogStartHats.call(this, opcode, fields, target);
     if (opcode === "event_whenbroadcastreceived") {
-      const name = fields.BROADCAST_OPTION;
       threads = [...threads, ...runtime.startHats("SPmessagePlus_whenAnyBroadcast")];
-      threads.forEach((thread) => (thread.messageName = name));
+      runtime.allScriptsByOpcodeDo(
+        "SPmessagePlus_whenReceived", (script, target) => {
+          // fields are evaluated in the hat, which makes it slower :(
+          const id = script.blockId;
+          const existing = runtime.threadMap.get(`${target.id}&${id}`);
+          if (existing) threads.push(runtime._restartThread(existing));
+          else threads.push(runtime._pushThread(id, target));
+        }
+      );
+      const name = fields.BROADCAST_OPTION;
+      for (const thread of threads) thread[kMessageName] = name;
     }
     return threads;
   };
 
+  const ogRestartThread = runtime._restartThread;
+  runtime._restartThread = function (thread) {
+    const name = thread[kMessageName];
+    if (name && nonRestartedMsgs.indexOf(name) > -1) return thread;
+    return ogRestartThread.call(this, thread);
+  };
+
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI2My42Nzk1NSIgaGVpZ2h0PSI2My42Nzk1NiIgdmlld0JveD0iMCwwLDYzLjY3OTU1LDYzLjY3OTU2Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjA4LjE2MDIyLC0xNDguMTYwMjIpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yMTAuMTYwMjMsMTgwYzAsLTE2LjQ4MDA1IDEzLjM1OTcyLC0yOS44Mzk3OCAyOS44Mzk3OCwtMjkuODM5NzhjMTYuNDgwMDUsMCAyOS44Mzk3NywxMy4zNTk3MiAyOS44Mzk3NywyOS44Mzk3OGMwLDE2LjQ4MDA1IC0xMy4zNTk3MiwyOS44Mzk3OCAtMjkuODM5NzcsMjkuODM5NzhjLTE2LjQ4MDA1LDAgLTI5LjgzOTc4LC0xMy4zNTk3MiAtMjkuODM5NzgsLTI5LjgzOTc4eiIgZmlsbD0iI2ZmYmYwMCIgc3Ryb2tlPSIjY2M5OTAwIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNMjE4Ljk3MTc2LDE3OC42MjQ5MmMtMC4xODQ2NiwtOS4wODY3NyA1LjAzMzYsLTExLjk5NjkyIDguOTYzOTksLTExLjk5NjkyYzQuNzgyODgsMCAxNS4zNzA5LC0wLjI3NjA1IDIzLjUyMjA0LDBjMy45ODAyLDAuMTM0NzkgOS43NjIyMywzLjE1MjU0IDkuNTcwNTgsMTEuOTk2OTJjLTAuMTgxMzgsOC4zNzAyNiAtNi42NDAyOCwxMC45MTg1NCAtOS42Mzc5NywxMC45MTg1NGMtMi43Mjg3NiwwIC03LjI5MTYzLDAgLTEyLjQ2ODcxLDBjLTEuMzY4OCwwIC01LjIwMzEsNy4yMjUwNyAtMTEuNDU3NzMsNy4wMDk0NGMtNC40MzYwNiwtMC4xNTI5NCAyLjUyMTY3LC03LjAwOTQ0IDAuNzQxMzksLTcuMDA5NDRjLTUuMjc5MTksMCAtOS4xMDUwNiwtNC41OTQzIC05LjIzMzU5LC0xMC45MTg1NHoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTI0Ni43ODQ4MywxOTIuOTgzOXYtMy4xNzU5NGgtMy4xNzU5NGMtMS41MzAyNCwwIC0yLjc3MDc0LC0xLjEzNDQyIC0yLjc3MDc0LC0yLjUzMzhjMCwtMS4zOTkzOCAxLjI0MDUsLTIuNTMzODEgMi43NzA3NCwtMi41MzM4MWgzLjE3NTk0di0zLjE3NTk0YzAsLTEuNTMwMjQgMS4xMzQ0MiwtMi43NzA3NCAyLjUzMzgxLC0yLjc3MDc0YzEuMzk5MzgsMCAyLjUzMzgsMS4yNDA1IDIuNTMzOCwyLjc3MDc0djMuMTc1OTRoMy4xNzU5NWMxLjUzMDIzLDAgMi43NzA3MywxLjEzNDQyIDIuNzcwNzMsMi41MzM4MWMwLDEuMzk5MzggLTEuMjQwNSwyLjUzMzgxIC0yLjc3MDczLDIuNTMzODFoLTMuMTc1OTV2My4xNzU5NGMwLDEuNTMwMjQgLTEuMTM0NDIsMi43NzA3NCAtMi41MzM4LDIuNzcwNzRjLTEuMzk5MzgsMCAtMi41MzM4MSwtMS4yNDA1IC0yLjUzMzgxLC0yLjc3MDc0eiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZiZjAwIiBzdHJva2Utd2lkdGg9IjYiLz48cGF0aCBkPSJNMjQ2Ljc4NDgzLDE5Mi45ODM5di0zLjE3NTk0aC0zLjE3NTk0Yy0xLjUzMDI0LDAgLTIuNzcwNzQsLTEuMTM0NDIgLTIuNzcwNzQsLTIuNTMzOGMwLC0xLjM5OTM4IDEuMjQwNSwtMi41MzM4IDIuNzcwNzQsLTIuNTMzOGgzLjE3NTk0di0zLjE3NTk0YzAsLTEuNTMwMjQgMS4xMzQ0MiwtMi43NzA3NCAyLjUzMzgsLTIuNzcwNzRjMS4zOTkzOCwwIDIuNTMzOCwxLjI0MDUgMi41MzM4LDIuNzcwNzR2My4xNzU5NGgzLjE3NTk0YzEuNTMwMjQsMCAyLjc3MDc0LDEuMTM0NDIgMi43NzA3NCwyLjUzMzhjMCwxLjM5OTM4IC0xLjI0MDUsMi41MzM4IC0yLjc3MDc0LDIuNTMzOGgtMy4xNzU5NHYzLjE3NTk0YzAsMS41MzAyNCAtMS4xMzQ0MiwyLjc3MDc0IC0yLjUzMzgsMi43NzA3NGMtMS4zOTkzOCwwIC0yLjUzMzgsLTEuMjQwNSAtMi41MzM4LC0yLjc3MDc0eiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiLz48L2c+PC9nPjwvc3ZnPg==";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2My42OCIgaGVpZ2h0PSI2My42OCIgdmlld0JveD0iMCAwIDYzLjY4IDYzLjY4Ij48cGF0aCBkPSJNMiAzMS44NEMyIDE1LjM2IDE1LjM2IDIgMzEuODQgMnMyOS44NCAxMy4zNiAyOS44NCAyOS44NC0xMy4zNiAyOS44NC0yOS44NCAyOS44NFMyIDQ4LjMyIDIgMzEuODR6IiBmaWxsPSIjZmZiZjAwIiBzdHJva2U9IiNjOTAiIHN0cm9rZS13aWR0aD0iNCIvPjxwYXRoIGQ9Ik0xMC44MTIgMzAuNDY1Yy0uMTg1LTkuMDg3IDUuMDMzLTExLjk5NyA4Ljk2NC0xMS45OTcgNC43ODMgMCAxNS4zNy0uMjc2IDIzLjUyMiAwIDMuOTguMTM1IDkuNzYyIDMuMTUzIDkuNTcgMTEuOTk3LS4xODEgOC4zNy02LjY0IDEwLjkxOC05LjYzOCAxMC45MThIMzAuNzYyYy0xLjM3IDAtNS4yMDMgNy4yMjYtMTEuNDU4IDcuMDEtNC40MzYtLjE1MyAyLjUyMi03LjAxLjc0MS03LjAxLTUuMjc5IDAtOS4xMDUtNC41OTQtOS4yMzMtMTAuOTE4IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTM4LjYyNSA0NC44MjR2LTMuMTc2aC0zLjE3NmMtMS41MyAwLTIuNzctMS4xMzQtMi43Ny0yLjUzNHMxLjI0LTIuNTM0IDIuNzctMi41MzRoMy4xNzZ2LTMuMTc2YzAtMS41MyAxLjEzNC0yLjc3IDIuNTM0LTIuNzdzMi41MzMgMS4yNCAyLjUzMyAyLjc3djMuMTc2aDMuMTc2YzEuNTMgMCAyLjc3MSAxLjEzNSAyLjc3MSAyLjUzNCAwIDEuNC0xLjI0IDIuNTM0LTIuNzcgMi41MzRoLTMuMTc3djMuMTc2YzAgMS41My0xLjEzNCAyLjc3LTIuNTMzIDIuNzdzLTIuNTM0LTEuMjQtMi41MzQtMi43N3oiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmYmYwMCIgc3Ryb2tlLXdpZHRoPSI2Ii8+PHBhdGggZD0iTTM4LjYyNSA0NC44MjR2LTMuMTc2aC0zLjE3NmMtMS41MyAwLTIuNzctMS4xMzQtMi43Ny0yLjUzNHMxLjI0LTIuNTM0IDIuNzctMi41MzRoMy4xNzZ2LTMuMTc2YzAtMS41MyAxLjEzNC0yLjc3IDIuNTM0LTIuNzdzMi41MzMgMS4yNCAyLjUzMyAyLjc3djMuMTc2aDMuMTc2YzEuNTMgMCAyLjc3MSAxLjEzNSAyLjc3MSAyLjUzNCAwIDEuNC0xLjI0IDIuNTM0LTIuNzcgMi41MzRoLTMuMTc3djMuMTc2YzAgMS41My0xLjEzNCAyLjc3LTIuNTMzIDIuNzdzLTIuNTM0LTEuMjQtMi41MzQtMi43NyIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==";
 
   class SPmessagePlus {
     constructor() {
       runtime.on("AFTER_EXECUTE", () => {
         for (const thread of runtime.threads) {
-          if (Math.round(thread.messageFlag / 10) === Math.round(Date.now() / 10)) {
-            // Give a couple more frames for "<is () received?>" to report true
-            setTimeout(function() { delete thread.messageFlag }, 10);
-          }
+          if (thread[kMessageFlag]) thread[kMessageFlag]--;
         }
       });
     }
+
     getInfo() {
       return {
         id: "SPmessagePlus",
-        name: "Messages+",
+        name: Scratch.translate("Messages+"),
         color1: "#FFBF00",
         color2: "#E6AC00",
         color3: "#CC9900",
@@ -52,15 +75,14 @@
             extensions: ["colours_event"],
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
-            text: "when any broadcast is received"
+            text: Scratch.translate("when any broadcast is received")
           },
           {
             opcode: "messageName",
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_event"],
-            allowDropAnywhere: true,
-            disableMonitor: true,
-            text: "broadcast name"
+            allowDropAnywhere: true, disableMonitor: true,
+            text: Scratch.translate("broadcast name")
           },
           "---",
           {
@@ -68,7 +90,7 @@
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_event"],
             hideFromPalette: true,
-            text: "broadcast [BROADCAST_OPTION] to [TARGET] and [WAIT]",
+            text: Scratch.translate("broadcast [BROADCAST_OPTION] to [TARGET] and [WAIT]"),
             arguments: {
               BROADCAST_OPTION: { type: null },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
@@ -80,7 +102,7 @@
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_event"],
             hideFromPalette: true,
-            text: "broadcast [BROADCAST_OPTION] with data [DATA] to [TARGET] and [WAIT]",
+            text: Scratch.translate("broadcast [BROADCAST_OPTION] with data [DATA] to [TARGET] and [WAIT]"),
             arguments: {
               BROADCAST_OPTION: { type: null },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
@@ -99,7 +121,7 @@
             opcode: "broadcastArray",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_event"],
-            text: "broadcast [MESSAGES] with data [DATA] to [TARGET] and [WAIT]",
+            text: Scratch.translate("broadcast [MESSAGES] with data [DATA] to [TARGET] and [WAIT]"),
             arguments: {
               MESSAGES: { type: Scratch.ArgumentType.STRING, defaultValue: `["message1", "message2"]` },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
@@ -111,18 +133,15 @@
             opcode: "receivedData",
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_event"],
-            allowDropAnywhere: true,
-            disableMonitor: true,
-            text: "received data"
+            allowDropAnywhere: true, disableMonitor: true,
+            text: Scratch.translate("received data")
           },
           {
             opcode: "otherData",
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_event"],
-            allowDropAnywhere: true,
-            disableMonitor: true,
-            hideFromPalette: true,
-            text: "received data from [BROADCAST_OPTION] in [TARGET]",
+            allowDropAnywhere: true, disableMonitor: true, hideFromPalette: true,
+            text: Scratch.translate("received data from [BROADCAST_OPTION] in [TARGET]"),
             arguments: {
               BROADCAST_OPTION: { type: null },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
@@ -133,7 +152,7 @@
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_event"],
             hideFromPalette: true,
-            text: "broadcast [BROADCAST_OPTION] to [TARGET]",
+            text: Scratch.translate("broadcast [BROADCAST_OPTION] to [TARGET]"),
             arguments: {
               BROADCAST_OPTION: { type: null },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
@@ -144,7 +163,7 @@
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_event"],
             hideFromPalette: true,
-            text: "broadcast [BROADCAST_OPTION] with data [DATA] to [TARGET]",
+            text: Scratch.translate("broadcast [BROADCAST_OPTION] with data [DATA] to [TARGET]"),
             arguments: {
               BROADCAST_OPTION: { type: null },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
@@ -165,9 +184,9 @@
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_event"],
             isTerminal: true,
-            text: "respond [DATA]",
+            text: Scratch.translate("respond [DATA]"),
             arguments: {
-              DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "received!" }
+              DATA: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("received!") }
             },
           },
           "---",
@@ -175,9 +194,8 @@
             opcode: "isReceived",
             blockType: Scratch.BlockType.BOOLEAN,
             extensions: ["colours_event"],
-            disableMonitor: true,
-            hideFromPalette: true,
-            text: "is [BROADCAST_OPTION] received?",
+            disableMonitor: true, hideFromPalette: true,
+            text: Scratch.translate("is [BROADCAST_OPTION] received?"),
             arguments: {
               BROADCAST_OPTION: { type: null }
             },
@@ -186,9 +204,8 @@
             opcode: "isWaiting",
             blockType: Scratch.BlockType.BOOLEAN,
             extensions: ["colours_event"],
-            disableMonitor: true,
-            hideFromPalette: true,
-            text: "is [BROADCAST_OPTION] waiting?",
+            disableMonitor: true, hideFromPalette: true,
+            text: Scratch.translate("is [BROADCAST_OPTION] waiting?"),
             arguments: {
               BROADCAST_OPTION: { type: null }
             },
@@ -197,11 +214,21 @@
             opcode: "receivers",
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_event"],
-            disableMonitor: true,
-            hideFromPalette: true,
-            text: "receivers of [BROADCAST_OPTION]",
+            disableMonitor: true, hideFromPalette: true,
+            text: Scratch.translate("receivers of [BROADCAST_OPTION]"),
             arguments: {
               BROADCAST_OPTION: { type: null }
+            },
+          },
+          {
+            opcode: "toggleRestart",
+            blockType: Scratch.BlockType.COMMAND,
+            extensions: ["colours_event"],
+            hideFromPalette: true,
+            text: Scratch.translate("set script restart for [BROADCAST_OPTION] to [TOGGLE]"),
+            arguments: {
+              BROADCAST_OPTION: { type: null },
+              TOGGLE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" }
             },
           },
           {
@@ -210,26 +237,74 @@
               <block type="SPmessagePlus_isReceived"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value></block>
               <block type="SPmessagePlus_isWaiting"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value></block>
               <block type="SPmessagePlus_receivers"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value></block>
+              <sep gap="36"/>
+              <block type="SPmessagePlus_toggleRestart"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TOGGLE"><shadow type="SPmessagePlus_TOGGLE_menu"></shadow></value></block>
             `,
-          }
+          },
+          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Slower than Normal 'when I receive'") },
+          {
+            opcode: "whenReceived",
+            blockType: Scratch.BlockType.HAT,
+            extensions: ["colours_event"],
+            isEdgeActivated: false, hideFromPalette: true,
+            shouldRestartExistingThreads: true,
+            text: Scratch.translate("when I receive [BROADCAST_OPTION]"),
+            arguments: {
+              BROADCAST_OPTION: { type: null }
+            },
+          },
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: `
+              <block type="SPmessagePlus_whenReceived"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value></block>
+            `,
+          },
         ],
         menus: {
-          TARGETS: {
-            acceptReporters: true,
-            items: "_getTargets",
-          },
-          SHOULD_WAIT: ["continue", "wait"],
+          TARGETS: { acceptReporters: true, items: "_getTargets" },
+          SHOULD_WAIT: [
+            {
+              text: Scratch.translate({
+                default: "continue",
+                description: "Used in context 'broadcast [...] to [...] and [continue]'. Won't wait for broadcasts to finish.",
+              }),
+              value: "continue"
+            },
+            {
+              text: Scratch.translate({
+                default: "wait",
+                description: "Used in context 'broadcast [...] to [...] and [wait]'. Will wait for broadcasts to finish.",
+              }),
+              value: "wait"
+            }
+          ],
+          TOGGLE: [
+            {
+              text: Scratch.translate({
+                default: "on",
+                description: "Allows only one instance of a broadcast, restarts old instance",
+              }),
+              value: "on"
+            },
+            {
+              text: Scratch.translate({
+                default: "off",
+                description: "Allows multiple instances of a broadcast, no restarts",
+              }),
+              value: "off"
+            }
+          ]
         },
       };
     }
 
-    // Helper Functions
-
+    // Helper Funcs
     _getTargets() {
       const spriteNames = [
-        { text: "All Sprites", value: "_all_" },
-        { text: "Stage", value: "_stage_" },
-        { text: "myself", value: "_myself_" }
+        { text: Scratch.translate("all sprites"), value: ALL },
+        { text: Scratch.translate("stage"), value: STAGE },
+        { text: Scratch.translate("myself and clones"), value: MYSELF },
+        { text: Scratch.translate("myself only"), value: MYSELF2 }
       ];
       const targets = runtime.targets;
       for (let index = 1; index < targets.length; index++) {
@@ -239,114 +314,120 @@
           spriteNames.push({ text: targetName, value: targetName });
         }
       }
-      return spriteNames.length > 0 ? spriteNames : [""];
+      return spriteNames;
     }
 
+    /**
+     * @param {string} targetName
+     * @param {VM.BlockUtility} util
+     * @returns {VM.Target|undefined}
+     */
     _getTargetFromMenu(targetName, util) {
-      if (targetName === "_all_") return undefined; // Scratch will default to all sprites
-      if (targetName === "_myself_") return util.target;
-      let target = Scratch.vm.runtime.getSpriteTargetByName(targetName);
-      if (targetName === "_stage_") target = runtime.getTargetForStage();
-      return target ? target : undefined;
+      if (targetName === ALL) return undefined;
+      if (targetName === STAGE) return util.runtime.getTargetForStage();
+      if (targetName === MYSELF || targetName === MYSELF2) return util.target;
+      return util.runtime.getSpriteTargetByName(targetName) || null;
     }
 
-    _broadcast(name, target, data, util) {
-      if (!name) return [];
-      let startedThreads = [];
-      target = this._getTargetFromMenu(target, util);
-      if (target === undefined) {
-        // Means ALL Sprites
-        startedThreads = [
-          ...util.startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: name })
-        ];
+    /**
+     * @param {string} broadcastName
+     * @param {string} targetName
+     * @param {unknown} data
+     * @param {VM.BlockUtility} util
+     * @returns {VM.Thread[]}
+     */
+    _broadcast(broadcastName, targetName, data, util) {
+      if (!broadcastName) return [];
+      const target = this._getTargetFromMenu(targetName, util);
+      let newThreads = [];
+      if (target) {
+        // MYSELF2 -> "myself only" is the executors instance
+        const clones = targetName === MYSELF2 ? [target] : target.sprite.clones;
+        for (const clone of clones) newThreads = newThreads.concat(util.startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: broadcastName }, clone));
       } else {
-        const cloneTargets = target.sprite.clones;
-        for (const clone of cloneTargets) {
-          startedThreads = [
-            ...startedThreads,
-            ...util.startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: name }, clone )
-          ];
-        }
+        // All sprites
+        newThreads = util.startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: broadcastName });
       }
-      if (data) startedThreads.forEach((thread) => (thread.receivedData = data));
-      return startedThreads;
+      for (const thread of newThreads) thread[kReceivedData] = data;
+      return newThreads;
     }
 
     _getMessageHats(name, type) {
       const IDs = [];
-      runtime.allScriptsByOpcodeDo("event_whenbroadcastreceived", (script, target) => {
-        const {
-          blockId: topBlockId,
-          fieldsOfInputs: hatFields
-        } = script;
-        if (hatFields.BROADCAST_OPTION.value === name.toUpperCase()) {
-          if (type === "IDs") IDs.push(topBlockId);
-          else IDs.push(target);
+      runtime.allScriptsByOpcodeDo(
+        "event_whenbroadcastreceived", (script, target) => {
+          const { blockId: topBlockId, fieldsOfInputs: hatFields } = script;
+          if (hatFields.BROADCAST_OPTION.value === name.toUpperCase()) {
+            IDs.push(type === "IDs" ? topBlockId : target);
+          }
         }
-      })
+      );
       return IDs;
     }
 
-    // Blocks
-
-    messageName(args, util) {
-      const name = util.thread.messageName;
-      if (!name) return "";
-      const allBroadcasts = Object.values(runtime.getTargetForStage().variables)
-        .filter(vari => vari.type === "broadcast_msg").map(vari => vari.value);
-      const match = allBroadcasts.find(value => value.toUpperCase() === name);
-      return match ? match : name; // return original name in case its a dynamic message
-    }
-
-    broadcastTarget(args, util) { this.broadcastDataTarget({ ...args, DATA : "" }, util) }
-
-    broadcastDataTarget(args, util) {
-      if (!util.stackFrame.broadcastVar) util.stackFrame.broadcastVar = Scratch.Cast.toString(args.BROADCAST_OPTION);
-      const data = Scratch.Cast.toString(args.DATA);
-      if (util.stackFrame.broadcastVar) {
-        const name = util.stackFrame.broadcastVar;
-        if (!util.stackFrame.startedThreads) {
-          util.stackFrame.startedThreads = this._broadcast(name, args.TARGET, data, util);
-          if (util.stackFrame.startedThreads.length === 0) return;
-        }
-        const waiting = util.stackFrame.startedThreads.some((thread) => runtime.threads.indexOf(thread) !== -1);
-        if (args.WAIT === "wait" && waiting) {
-          if (util.stackFrame.startedThreads.every((thread) => runtime.isWaitingThread(thread))) util.yieldTick();
-          else util.yield();
-        }
+    /**
+     * @param {VM.BlockUtility} util
+     */
+    _waitForStartedThreads(util) {
+      if (util.stackFrame.startedThreads.some((thread) => runtime.threads.indexOf(thread) !== -1)) {
+        const running = util.stackFrame.startedThreads.every((thread) => runtime.isWaitingThread(thread));
+        if (running) util.yieldTick();
+        else util.yield();
       }
     }
 
+    // Block Funcs
+    messageName(args, util) {
+      if (!Object.prototype.hasOwnProperty.call(util.thread, kMessageName)) return "";
+      const name = util.thread[kMessageName];
+      // The name stored on the thread is toUpperCase(), so lookup the user-facing name
+      const variable = util.runtime.getTargetForStage().lookupBroadcastByInputValue(name);
+      if (variable) return variable.name;
+      return name; // this is a dynamic message
+    }
+
+    broadcastTarget(args, util) {
+      this.broadcastDataTarget({ ...args, DATA: "" }, util);
+    }
+
+    broadcastDataTarget(args, util) {
+      if (!util.stackFrame.startedThreads) {
+        const name = Scratch.Cast.toString(args.BROADCAST_OPTION);
+        const data = Scratch.Cast.toString(args.DATA);
+        const newThreads = this._broadcast(name, args.TARGET, data, util);
+        if (
+          newThreads.length === 0 || Scratch.Cast.toString(args.WAIT) === "continue"
+        ) return;
+        util.stackFrame.startedThreads = newThreads;
+      }
+      this._waitForStartedThreads(util);
+    }
+
     broadcastArray(args, util) {
-      try {
-        if (!util.stackFrame.broadcastVar) {
-          util.stackFrame.broadcastVar = JSON.parse(Scratch.Cast.toString(args.MESSAGES));
+      if (!util.stackFrame.startedThreads) {
+        const namesTxt = Scratch.Cast.toString(args.MESSAGES);
+        let parsedNames;
+        try {
+          // try parsing and removing duplicates
+          parsedNames = [...new Set(JSON.parse(namesTxt))];
+        } catch (e) {
+          console.warn(e);
+          return;
         }
         const data = Scratch.Cast.toString(args.DATA);
-        const messages = util.stackFrame.broadcastVar;
-        if (messages.length > 0) {
-          if (!util.stackFrame.startedThreads) {
-            util.stackFrame.startedThreads = [];
-            for (let i = 0; i < messages.length; i++) {
-              util.stackFrame.startedThreads = [
-                ...util.stackFrame.startedThreads,
-                ...this._broadcast(messages[i], args.TARGET, data, util)
-              ];
-            }
-            if (util.stackFrame.startedThreads.length === 0) return;
-          }
-          const waiting = util.stackFrame.startedThreads.some((thread) => runtime.threads.indexOf(thread) !== -1);
-          if (args.WAIT === "wait" && waiting) {
-            if (util.stackFrame.startedThreads.every((thread) => runtime.isWaitingThread(thread))) util.yieldTick();
-            else util.yield();
-          }
-        }
-      } catch {}
+        const newThreads = [];
+        for (const name of parsedNames) newThreads.concat(this._broadcast(name, args.TARGET, data, util));
+        if (
+          newThreads.length === 0 || Scratch.Cast.toString(args.WAIT) === "continue"
+        ) return;
+        util.stackFrame.startedThreads = newThreads;
+      }
+      this._waitForStartedThreads(util);
     }
 
     receivedData(args, util) {
-      const received = util.thread.receivedData;
-      return received ? received : "";
+      if (!Object.prototype.hasOwnProperty.call(util.thread, kReceivedData)) return "";
+      return util.thread[kReceivedData];
     }
 
     otherData(args, util) {
@@ -355,7 +436,7 @@
       let received = "";
       const target = this._getTargetFromMenu(args.TARGET, util);
       for (const ID of blockIds) {
-        const thread = runtime.threads.find(thread => thread.topBlock === ID);
+        const thread = runtime.threads.find((thread) => thread.topBlock === ID);
         if (thread && thread.receivedData !== undefined) {
           if (!target) received = thread.receivedData;
           else if (target.id === thread.target.id) received = thread.receivedData;
@@ -364,7 +445,9 @@
       return received;
     }
 
-    broadcastReturn(args, util) { return this.broadcastReturnData({ ...args, DATA : "" }, util) || "" }
+    broadcastReturn(args, util) {
+      return this.broadcastReturnData({ ...args, DATA: "" }, util) || "";
+    }
 
     broadcastReturnData(args, util) {
       if (!util.stackFrame.broadcastVar) util.stackFrame.broadcastVar = Scratch.Cast.toString(args.BROADCAST_OPTION);
@@ -373,7 +456,9 @@
       if (util.stackFrame.broadcastVar) {
         const name = util.stackFrame.broadcastVar;
         if (!util.stackFrame.startedThreads) {
-          util.stackFrame.startedThreads = this._broadcast(name, args.TARGET, data, util);
+          util.stackFrame.startedThreads = this._broadcast(
+            name, args.TARGET, data, util
+          );
           if (util.stackFrame.startedThreads.length === 0) return;
         }
         const waiting = util.stackFrame.startedThreads.some((thread) => runtime.threads.indexOf(thread) !== -1);
@@ -384,7 +469,8 @@
           }
         }
         if (!response && waiting) {
-          if (util.stackFrame.startedThreads.every((thread) => runtime.isWaitingThread(thread))) util.yieldTick();
+          if (util.stackFrame.startedThreads.every((thread) => runtime.isWaitingThread(thread)))
+            util.yieldTick();
           else util.yield();
         }
       }
@@ -407,7 +493,7 @@
       const blockIds = this._getMessageHats(broadcast, "IDs");
       let waiting = false;
       for (const ID of blockIds) {
-        const thread = runtime.threads.find(thread => thread.topBlock === ID);
+        const thread = runtime.threads.find((thread) => thread.topBlock === ID);
         if (thread && thread.messageFlag === undefined) {
           thread.messageFlag = Date.now();
           waiting = true;
@@ -422,7 +508,7 @@
       const blockIds = this._getMessageHats(broadcast, "IDs");
       let waiting = false;
       for (const ID of blockIds) {
-        const thread = runtime.threads.find(thread => thread.topBlock === ID);
+        const thread = runtime.threads.find((thread) => thread.topBlock === ID);
         if (thread) {
           waiting = true;
           break;
@@ -439,6 +525,20 @@
         targets[i] = targets[i].isOriginal ? name : `${name} (clone)`;
       }
       return JSON.stringify(targets);
+    }
+
+    toggleRestart(args) {
+      const msg = Scratch.Cast.toString(args.BROADCAST_OPTION).toUpperCase();
+      const index = nonRestartedMsgs.indexOf(msg);
+      if (args.TOGGLE === "on" && index > -1) nonRestartedMsgs.splice(index, 1);
+      else if (args.TOGGLE === "off" && index === -1) nonRestartedMsgs.push(msg);
+    }
+
+    whenReceived(args, util) {
+      const messageName = util.thread[kMessageName];
+      const inputName = Scratch.Cast.toString(args.BROADCAST_OPTION).toUpperCase();
+      if (messageName) return inputName === messageName;
+      return false;
     }
   }
 
