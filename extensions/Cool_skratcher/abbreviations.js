@@ -1,5 +1,5 @@
 // Name: Number Abbiviation!
-// ID: cool_skratcher-abbreviate
+// ID: cool_abbreviate
 // Description: Adds blocks to convert any big number to way less text like: 1200000 -> 1.2M.
 // By: cool_skratcher <https://scratch.mit.edu/users/cool_skratcher/>
 // License: MIT
@@ -10,7 +10,7 @@
   class Abbreviation {
     getInfo() {
       return {
-        id: "cool_skratcher-abbreviate",
+        id: "cool_abbreviate",
         name: "Abbreviation!",
         color1: "#9dd13d",
         color2: "#8fbe37",
