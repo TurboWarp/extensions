@@ -3,7 +3,7 @@
 // Description: Display Text in Your Projects!
 // By: SharkPool
 
-// Version V.1.4.3
+// Version V.1.4.4
 
 (function (Scratch) {
   "use strict";
@@ -22,7 +22,7 @@
     "Scratch", "Sans Serif", "Serif", "Handwriting", "Marker", "Curly", "Pixel"
   ];
 
-  let allText = [], clickedTxts = [], lastRecdVals = {};
+  let allText = [], clickedTxts = [], txtSettings = {};
 
   const xmlEscape = function (unsafe) {
     unsafe = String(unsafe);
@@ -74,14 +74,6 @@
             opcode: "removeTxt",
             blockType: Scratch.BlockType.COMMAND,
             text: "remove text with ID [ID]",
-            arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" }
-            },
-          },
-          {
-            opcode: "resetTxt",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "reset text settings with ID [ID]",
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" }
             },
@@ -348,6 +340,34 @@
               TOGGLE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" }
             },
           },
+          "---",
+          {
+            opcode: "resetTxt",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "reset text settings with ID [ID]",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" }
+            },
+          },
+          {
+            opcode: "reuseStyle",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "reuse text settings in ID [ID] for ID [ID2]",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" },
+              ID2: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text2" }
+            },
+          },
+          "---",
+          {
+            opcode: "toggleSelect",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "toggle highlighting for ID [ID] [TYPE]",
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-text" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" }
+            },
+          },
           {
             opcode: "makeClick",
             blockType: Scratch.BlockType.COMMAND,
@@ -437,12 +457,14 @@
 
     // Helper Funcs
     allFonts() {
-      const customFonts = Scratch.vm.runtime.fontManager ? Scratch.vm.runtime.fontManager.getFonts().map((i) => ({ text: i.name, value: i.family })) : [];
+      const customFonts = runtime.fontManager ? runtime.fontManager.getFonts().map((i) => ({ text: i.name, value: i.family })) : [];
       return [...fontMenu, ...customFonts];
     }
 
     fixID(ID) {
-      return xmlEscape(Scratch.Cast.toString(ID).replaceAll(" ", "_").replaceAll(/[#%(),.{}[/\]$@^*&'";:]/g, "-"));
+      ID = xmlEscape(Scratch.Cast.toString(ID).replaceAll(" ", "_").replaceAll(/[#%(),.{}[/\]$@^*&'";:]/g, "-"));
+      txtSettings[ID] = { ...txtSettings[ID] };
+      return ID;
     }
 
     handleClick(e) {
@@ -453,15 +475,34 @@
       setTimeout(() => { clickedTxts.splice(index, 1) }, 100);
     }
 
+    updateStyles(txtSetting, optOverrideName) {
+      const propsd2Func = [
+        ["textMAR", "setMargins"], ["preTxt1", "presetTextPosition"],
+        ["textCLR", "setTextColor"], ["textLIN", "setLine"],
+        ["textOUT", "setTextOutline"], ["textSHA", "setTextDropShadow"],
+        ["txtFont", "setTextFont"], ["txtFontSZ", "setFontSize"],
+        ["txtALI", "setTextAlignment"], ["lineDIS", "setTextSpacing"],
+        ["letDIS", "setTextSpacing"], ["textOVR", "setOverflow"],
+        ["txtFontTK", "setThick"]
+      ];
+      if (optOverrideName) {
+        for (const [id, func] of propsd2Func) {
+          if (txtSetting[id]) this[func]({ ...txtSetting[id], ID: optOverrideName });
+        }
+      } else {
+        for (const [id, func] of propsd2Func) {
+          if (txtSetting[id]) this[func](txtSetting[id]);
+        }
+      }
+    }
+
     // Block Funcs
     debug(args) {
       const toggle = args.TOGGLE === "on" ? "solid" : "none";
       const elements = document.querySelectorAll(`div[id^="SP_Text-Ext-"]`);
       elements.forEach((element) => {
-        element.style.border = toggle;
-        element.style.borderWidth = "1px";
-        const color = element.style.textAlign === "center" ? "#00ff00" : element.style.textAlign === "right" ? "#0000ff" : "#ff0000";
-        element.style.borderColor = color;
+        element.style.border = toggle; element.style.borderWidth = "1px";
+        element.style.borderColor = element.style.textAlign === "center" ? "#00ff00" : element.style.textAlign === "right" ? "blue" : "red";
       });
       const cross = document.getElementById(`SP_Text-Debug-Cross`);
       if (toggle === "none" && cross) cross.parentNode.removeChild(cross);
@@ -480,35 +521,22 @@
     }
 
     printTxt(args) {
-      args.ID = this.fixID(args.ID);
+      const ID = this.fixID(args.ID);
+      const settings = txtSettings[ID];
       const textDiv = document.createElement("div");
       textDiv.style.transformOrigin = "left top";
       const txtElement = document.createElement("div");
       txtElement.innerHTML = xmlEscape(args.TXT).replace(/\n/g, "<br>");
-      txtElement.id = `SP_Text-Ext-${args.ID}`;
-      txtElement.classList.add(args.ID);
+      txtElement.id = `SP_Text-Ext-${ID}`;
+      txtElement.classList.add(ID);
+      txtElement.style.userSelect = "none";
       txtElement.setAttribute("sptxtpos", "120|-10");
       textDiv.appendChild(txtElement);
       render.addOverlay(textDiv, "scale-centered");
-      allText.push(`#SP_Text-Ext-${args.ID}`);
+      allText.push(`#SP_Text-Ext-${ID}`);
       const box = txtElement.getBoundingClientRect();
-      if (lastRecdVals.textMAR === undefined) this.setMargins({ ID : args.ID, WIDTH : box.width / 2, HEIGHT : box.height });
-
-      // add formatting (if any)
-      const propertiesAndMethods = [
-        ["textMAR", "setMargins"], ["preTxt1", "presetTextPosition"],
-        ["textCLR", "setTextColor"], ["textLIN", "setLine"],
-        ["textOUT", "setTextOutline"], ["textSHA", "setTextDropShadow"],
-        ["txtFont", "setTextFont"], ["txtFontSZ", "setFontSize"],
-        ["txtALI", "setTextAlignment"], ["lineDIS", "setTextSpacing"],
-        ["letDIS", "setTextSpacing"], ["textOVR", "setOverflow"],
-        ["txtFontTK", "setThick"]
-      ];
-      for (const [property, method] of propertiesAndMethods) {
-        if (lastRecdVals[property] && lastRecdVals[property].inputs.ID === args.ID) {
-          this[method](lastRecdVals[property].inputs);
-        }
-      }
+      if (settings.textMAR === undefined) this.setMargins({ ID, WIDTH : box.width / 2, HEIGHT : box.height });
+      this.updateStyles(settings); // add formatting (if any)
     }
 
     replaceTxt(args) {
@@ -518,19 +546,13 @@
     }
 
     removeTxt(args) {
-      args.ID = this.fixID(args.ID);
-      const elementsToRemove = document.querySelectorAll(`div[id="SP_Text-Ext-${args.ID}"]`);
+      const ID = this.fixID(args.ID);
+      const elementsToRemove = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elementsToRemove.forEach((element) => {
         render.removeOverlay(element.parentNode);
         element.removeEventListener("click", this.handleClick);
-        const index = allText.indexOf(`#SP_Text-Ext-${args.ID}`);
+        const index = allText.indexOf(`#SP_Text-Ext-${ID}`);
         if (index !== -1) allText.splice(index, 1);
-      });
-    }
-
-    resetTxt(args) {
-      Object.keys(lastRecdVals).forEach(key => {
-        if (lastRecdVals[key].inputs.ID === args.ID) delete lastRecdVals[key];
       });
     }
 
@@ -538,7 +560,7 @@
       for (let i = 0; i < allText.length; i++) {
         const elementsToRemove = document.querySelectorAll(allText[i]);
         elementsToRemove.forEach((element) => {
-          render.removeOverlay(element.parentNode)
+          render.removeOverlay(element.parentNode);
           element.removeEventListener("click", this.handleClick);
         });
       }
@@ -568,7 +590,8 @@
     makeGradient(args) { return `${args.TYPE}-gradient(${args.ANGLE}deg, ${args.COLOR1}, ${args.COLOR2})` }
 
     setTextColor(args) {
-      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const ID = this.fixID(args.ID);
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elements.forEach((element) => {
         element.style.color = args.COLOR;
         if (args.COLOR.includes("gradient")) {
@@ -583,25 +606,28 @@
           element.style.webkitBackgroundClip = "initial";
         }
       });
-      lastRecdVals["textCLR"] = {inputs: args};
+      txtSettings[ID]["textCLR"] = { ...args };
     }
 
     setTextDropShadow(args) {
-      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const ID = this.fixID(args.ID);
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elements.forEach((element) => {
         element.style.textShadow = args.z === 0 ? "none" : `${args.x}px ${args.y * -1}px ${args.z}px ${args.COLOR}`;
       });
-      lastRecdVals["textSHA"] = {inputs: args};
+      txtSettings[ID]["textSHA"] = { ...args };
     }
 
     setOverflow(args) {
-      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const ID = this.fixID(args.ID);
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elements.forEach((element) => { element.style.overflow = args.TYPE });
-      lastRecdVals["textOVR"] = {inputs: args};
+      txtSettings[ID]["textOVR"] = { ...args };
     }
 
     setTextOutline(args) {
-      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const ID = this.fixID(args.ID);
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elements.forEach((element) => {
         element.style.webkitTextStrokeColor = args.COLOR;
         element.style.webkitTextStrokeWidth = `${args.THICKNESS}px`;
@@ -611,68 +637,77 @@
         element.style.mozTextStrokeColor = args.COLOR;
         element.style.mozTextStrokeWidth = `${args.THICKNESS}px`;
       });
-      lastRecdVals["textOUT"] = {inputs: args};
+      txtSettings[ID]["textOUT"] = { ...args };
     }
 
     setLine(args) {
+      const ID = this.fixID(args.ID);
       const lineType = args.TYPE2.replace("strike", "line-");
-      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elements.forEach((element) => {
         element.style.textDecorationLine = lineType;
         element.style.textDecorationStyle = args.TYPE1;
         element.style.textDecorationThickness = `${args.THICK}px`;
         element.style.textDecorationColor = args.COLOR;
       });
-      lastRecdVals["textLIN"] = {inputs: args};
+      txtSettings[ID]["textLIN"] = { ...args };
     }
 
     setMargins(args) {
-      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const ID = this.fixID(args.ID);
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elements.forEach((element) => {
         element.style.width = `${args.WIDTH}px`;
         element.style.height = `${args.HEIGHT}px`;
       });
-      lastRecdVals["textMAR"] = {inputs: args};
+      txtSettings[ID]["textMAR"] = { ...args };
     }
 
     setTextAlignment(args) {
-      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const ID = this.fixID(args.ID);
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elements.forEach((element) => { element.style.textAlign = args.ALIGNMENT });
-      lastRecdVals["txtALI"] = {inputs: args};
+      txtSettings[ID]["txtALI"] = { ...args };
     }
 
     setTextFont(args) {
-      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const ID = this.fixID(args.ID);
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elements.forEach((element) => { element.style.fontFamily = args.FONT });
-      lastRecdVals["txtFont"] = {inputs: args};
+      txtSettings[ID]["txtFont"] = { ...args };
     }
 
     setFontSize(args) {
-      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const ID = this.fixID(args.ID);
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elements.forEach((element) => { element.style.fontSize = `${args.SIZE}px` });
-      lastRecdVals["txtFontSZ"] = {inputs: args};
+      txtSettings[ID]["txtFontSZ"] = { ...args };
     }
 
     setThick(args) {
-      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const ID = this.fixID(args.ID);
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elements.forEach((element) => { element.style.fontWeight = args.NUM * 9 });
-      lastRecdVals["txtFontTK"] = {inputs: args};
+      txtSettings[ID]["txtFontTK"] = { ...args };
     }
 
     setTextSpacing(args) {
-      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const ID = this.fixID(args.ID);
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
       elements.forEach((element) => {
         element.style[args.ATT === "letter" ? "letterSpacing" : "lineHeight"] = `${args.SPACING}px`;
       });
-      lastRecdVals["letDIS"] = {inputs: {ID : args.ID, SPACING : args.SPACING, ATT : "letter"}};
-      lastRecdVals["lineDIS"] = {inputs: {ID : args.ID, SPACING : args.SPACING, ATT : "line"}};
+      txtSettings[ID]["letDIS"] = { ID, SPACING : args.SPACING, ATT : "letter" };
+      txtSettings[ID]["lineDIS"] = { ID, SPACING : args.SPACING, ATT : "line" };
     }
 
     presetTextPosition(args) {
-      if (args.isPrint === undefined) lastRecdVals["preTxt1"] = {inputs: {...args, isPrint: true}};
+      const ID = this.fixID(args.ID);
+      if (args.isPrint === undefined) txtSettings[ID]["preTxt1"] = { ...args, isPrint: true };
       else {
+        const pos = [Scratch.Cast.toNumber(args.X), Scratch.Cast.toNumber(args.Y)];
         runtime.once("AFTER_EXECUTE", () => {
-          const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+          const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`);
           const element = elements[elements.length - 1];
           const centerW = parseFloat(element.style.width) / 2;
           const computedStyle = window.getComputedStyle(element);
@@ -681,18 +716,19 @@
           const centerH = (lineHeight === "normal" ? parseFloat(fontSize) * 1.2 : parseFloat(lineHeight)) / 2;
 
           let transform = element.style.transform;
-          const string = `translate(${args.X - centerW}px, ${(args.Y * -1) - centerH}px)`;
+          const string = `translate(${pos[0] - centerW}px, ${(pos[1] * -1) - centerH}px)`;
           if (transform.includes("translate")) transform = transform.replace(/translate\([^)]*\)/, string);
           else transform += ` ${string}`;
           element.style.transform = transform.trim();
           element.style.position = "absolute";
-          element.setAttribute("sptxtpos", `${args.X}|${args.Y}`);
+          element.setAttribute("sptxtpos", `${pos[0]}|${pos[1]}`);
         });
       }
     }
 
     setTextPosition(args) {
       const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      const pos = [Scratch.Cast.toNumber(args.X), Scratch.Cast.toNumber(args.Y)];
       elements.forEach((element) => {
         let centerW = parseFloat(element.style.width) / 2;
         if (isNaN(centerW)) centerW = (element.getBoundingClientRect().width ?? 0 ) / 2;
@@ -702,12 +738,12 @@
         const centerH = (lineHeight === "normal" ? parseFloat(fontSize) * 1.2 : parseFloat(lineHeight)) / 2;
 
         let transform = element.style.transform;
-        const string = `translate(${args.X - centerW}px, ${(args.Y * -1) - centerH}px)`;
+        const string = `translate(${pos[0] - centerW}px, ${(pos[1] * -1) - centerH}px)`;
         if (transform.includes("translate")) transform = transform.replace(/translate\([^)]*\)/, string);
         else transform += ` ${string}`;
         element.style.transform = transform.trim();
         element.style.position = "absolute";
-        element.setAttribute("sptxtpos", `${args.X}|${args.Y}`);
+        element.setAttribute("sptxtpos", `${pos[0]}|${pos[1]}`);
       });
     }
 
@@ -836,21 +872,24 @@
     }
 
     setTextCurve(args) {
-      args.ID = this.fixID(args.ID)
+      // TODO clean this up and add more availiable text stylings
+      // Perhaps make the entire extension rely on svgs?
+      const ID = this.fixID(args.ID);
+      const settings = txtSettings[ID];
       const regex = args.ARC.includes("<svg") ? /<path[^>]*d="([^"]*)"/ : /<path[^>]*d="([^"]*)"/;
       const match = args.ARC.match(regex);
-      const outline = lastRecdVals["textOUT"] !== undefined ? lastRecdVals["textOUT"] : "";
+      const outline = settings["textOUT"] !== undefined ? settings["textOUT"] : "";
       if (match && match[1]) {
-        const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${args.ID}"]`)
+        const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${ID}"]`)
         elements.forEach((element) => {
           const existingSvg = element.querySelector("svg");
           if (existingSvg) {
             const path = existingSvg.querySelector("path");
             path.setAttribute("d", match[1]);
             const textFill = existingSvg.querySelector("text");
-            textFill.setAttribute("fill", element.style.color === "transparent" ? "#000000" : element.style.color);
+            textFill.setAttribute("fill", element.style.color === "transparent" ? "#000" : element.style.color);
             const textPathFill = existingSvg.querySelector("textPath");
-            textPathFill.setAttribute("href", `#MyPath-${args.ID}`);
+            textPathFill.setAttribute("href", `#MyPath-${ID}`);
             textPathFill.textContent = element.textContent;
 
             const textStroke = existingSvg.querySelector("text");
@@ -858,13 +897,13 @@
             textStroke.setAttribute("stroke", outline ? outline.inputs.COLOR ?? "#00000000" : "#00000000");
             textStroke.setAttribute("stroke-width", outline ? outline.inputs.THICKNESS ?? 1 : 1);
             const textPathStroke = existingSvg.querySelector("textPath");
-            textPathStroke.setAttribute("href", `#MyPath-${args.ID}`);
+            textPathStroke.setAttribute("href", `#MyPath-${ID}`);
             textPathStroke.textContent = element.textContent;
           } else {
             const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            path.setAttribute("id", `MyPath-${args.ID}`);
+            path.setAttribute("id", `MyPath-${ID}`);
             path.setAttribute("d", match[1]);
             defs.appendChild(path);
 
@@ -873,16 +912,16 @@
             textStroke.setAttribute("stroke", outline ? outline.inputs.COLOR : "#00000000");
             textStroke.setAttribute("stroke-width", outline ? outline.inputs.THICKNESS : 1);
             const textPathStroke = document.createElementNS("http://www.w3.org/2000/svg", "textPath");
-            textPathStroke.setAttribute("href", `#MyPath-${args.ID}`);
+            textPathStroke.setAttribute("href", `#MyPath-${ID}`);
             textPathStroke.textContent = element.textContent;
             textStroke.appendChild(textPathStroke);
 
             svg.appendChild(defs);
             svg.appendChild(textStroke);
             const textFill = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            textFill.setAttribute("fill", element.style.color === "transparent" ? "#000000" : element.style.color);
+            textFill.setAttribute("fill", element.style.color === "transparent" ? "#000" : element.style.color);
             const textPathFill = document.createElementNS("http://www.w3.org/2000/svg", "textPath");
-            textPathFill.setAttribute("href", `#MyPath-${args.ID}`);
+            textPathFill.setAttribute("href", `#MyPath-${ID}`);
             textPathFill.textContent = element.textContent;
             textFill.appendChild(textPathFill);
             svg.appendChild(textFill);
@@ -894,13 +933,28 @@
     }
 
     presetCurve(args) {
-      const presets = {
-        circle : `<svg><path d="M41.9375,89.5c0,-37.83151 30.66849,-68.5 68.5,-68.5c37.83151,0 68.5,30.66849 68.5,68.5c0,37.83151 -30.66849,68.5 -68.5,68.5c-37.83151,0 -68.5,-30.66849 -68.5,-68.5z"/></svg`,
-        hill : `<svg><path d="M37.4375,89.5c0,0 43.00879,-31 74.5,-31c31.49121,0 71.5,31 71.5,31"/></svg`,
-        dip : `<svg><path d="M37.4375,89.5c0,0 42.00879,25 73.5,25c31.49121,0 72.5,-25 72.5,-25"/></svg>`,
-        wave : `<svg><path d="M24.4375,98.67214c0,0 38.3049,-22.48612 65.97496,-23c27.67006,-0.51388 44.8836,19.04663 76.52154,23.35359c37.46107,5.09968 76.066,-17.35359 76.066,-17.35359"/></svg>`
-      };
-      return presets[args.ARC];
+      return {
+        circle: `<svg><path d="M41.9375,89.5c0,-37.83151 30.66849,-68.5 68.5,-68.5c37.83151,0 68.5,30.66849 68.5,68.5c0,37.83151 -30.66849,68.5 -68.5,68.5c-37.83151,0 -68.5,-30.66849 -68.5,-68.5z"/></svg>`,
+        hill: `<svg><path d="M37.4375,89.5c0,0 43.00879,-31 74.5,-31c31.49121,0 71.5,31 71.5,31"/></svg>`,
+        dip: `<svg><path d="M37.4375,89.5c0,0 42.00879,25 73.5,25c31.49121,0 72.5,-25 72.5,-25"/></svg>`,
+        wave: `<svg><path d="M24.4375,98.67214c0,0 38.3049,-22.48612 65.97496,-23c27.67006,-0.51388 44.8836,19.04663 76.52154,23.35359c37.46107,5.09968 76.066,-17.35359 76.066,-17.35359"/></svg>`
+      }[args.ARC];
+    }
+
+    resetTxt(args) { delete txtSettings[this.fixID(args.ID)] }
+
+    reuseStyle(args) {
+      const ID = this.fixID(args.ID2);
+      this.updateStyles(txtSettings[this.fixID(args.ID)], this.fixID(args.ID2));
+    }
+
+    toggleSelect(args) {
+      const type = args.TYPE === "on" ? "auto" : "none";
+      const elements = document.querySelectorAll(`div[id="SP_Text-Ext-${this.fixID(args.ID)}"]`);
+      elements.forEach((element) => {
+        element.style.userSelect = type; element.style.webkitUserSelect = type; element.style.mozUserSelect = type;
+        element.style.pointerEvents = type;
+      });
     }
 
     makeClick(args) {
