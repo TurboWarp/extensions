@@ -697,8 +697,7 @@
       elements.forEach((element) => {
         element.style[args.ATT === "letter" ? "letterSpacing" : "lineHeight"] = `${args.SPACING}px`;
       });
-      txtSettings[ID]["letDIS"] = { ID, SPACING : args.SPACING, ATT : "letter" };
-      txtSettings[ID]["lineDIS"] = { ID, SPACING : args.SPACING, ATT : "line" };
+      txtSettings[ID][args.ATT === "letter" ? "letDIS" : "lineDIS"] = { ...args, ID };
     }
 
     presetTextPosition(args) {
@@ -944,7 +943,6 @@
     resetTxt(args) { delete txtSettings[this.fixID(args.ID)] }
 
     reuseStyle(args) {
-      const ID = this.fixID(args.ID2);
       this.updateStyles(txtSettings[this.fixID(args.ID)], this.fixID(args.ID2));
     }
 
