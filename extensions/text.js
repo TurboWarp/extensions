@@ -75,7 +75,7 @@
             opcode: "letters_of",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "letters [LETTER1] to [LETTER2] of [STRING]"
+              "letters [LETTER1] to [LETTER2] of [STRING]",
             ),
             arguments: {
               LETTER1: {
@@ -155,7 +155,7 @@
             opcode: "replace",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "replace [SUBSTRING] in [STRING] with [REPLACE]"
+              "replace [SUBSTRING] in [STRING] with [REPLACE]",
             ),
             arguments: {
               SUBSTRING: {
@@ -218,7 +218,7 @@
             opcode: "replaceRegex",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "replace regex /[REGEX]/[FLAGS] in [STRING] with [REPLACE]"
+              "replace regex /[REGEX]/[FLAGS] in [STRING] with [REPLACE]",
             ),
             arguments: {
               REGEX: {
@@ -377,52 +377,52 @@
           "---",
 
           {
-            opcode: 'endsAt',
+            opcode: "endsAt",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate('[STRING] ends with [SUBSTRING]?'),
+            text: Scratch.translate("[STRING] ends with [SUBSTRING]?"),
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'apple'
+                defaultValue: "apple",
               },
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'banana'
-              }
-            }
+                defaultValue: "banana",
+              },
+            },
           },
 
           "---",
 
           {
-            opcode: 'backwards',
+            opcode: "backwards",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('[STRING] backwards'),
+            text: Scratch.translate("[STRING] backwards"),
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'apple'
-              }
-            }
+                defaultValue: "apple",
+              },
+            },
           },
 
           "---",
 
           {
-            opcode: 'trim',
+            opcode: "trim",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('trim [STRING] at [METHOD]'),
+            text: Scratch.translate("trim [STRING] at [METHOD]"),
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '   apple   '
+                defaultValue: "   apple   ",
               },
               METHOD: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "trimMethod"
-              }
-            }
-          }
+                menu: "trimMethod",
+              },
+            },
+          },
         ],
         menus: {
           textCase: {
@@ -433,19 +433,19 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate('both sides'),
-                value: 'both'
+                text: Scratch.translate("both sides"),
+                value: "both",
               },
               {
-                text: Scratch.translate('the end'),
-                value: 'front'
+                text: Scratch.translate("the end"),
+                value: "front",
               },
               {
-                text: Scratch.translate('the start'),
-                value: 'back'
-              }
-            ]
-          }
+                text: Scratch.translate("the start"),
+                value: "back",
+              },
+            ],
+          },
         },
       };
     }
@@ -508,7 +508,7 @@
           STRING: args.STRING,
           ITEM: 0,
         },
-        util
+        util,
       );
       return splitCache.arr.length - 1 || 0;
     }
@@ -553,7 +553,7 @@
 
         return args.STRING.replace(
           new RegExp(args.REGEX, args.FLAGS),
-          args.REPLACE
+          args.REPLACE,
         );
       } catch (e) {
         console.error(e);
@@ -658,7 +658,7 @@
         case CaseParam.MIXEDCASE:
           return Array.from(string)
             .map((char, index) =>
-              index % 2 === 0 ? char.toUpperCase() : char.toLowerCase()
+              index % 2 === 0 ? char.toUpperCase() : char.toLowerCase(),
             )
             .join("");
         case CaseParam.TITLECASE:
@@ -682,28 +682,25 @@
       }
     }
     endsAt(args) {
-      let STRING = args.STRING
+      let STRING = args.STRING;
       return STRING.endsWith(args.SUBSTRING);
     }
     backwards(args) {
       let backwardsText = Array.from(args.STRING);
       backwardsText.reverse();
-      return backwardsText.join('');
+      return backwardsText.join("");
     }
     trim(args) {
       let method = args.METHOD;
       let STRING = args.STRING;
-      if(method == "both") {
+      if (method == "both") {
         return STRING.trim();
-      }
-      else if(method == "front") {
+      } else if (method == "front") {
         return STRING.trimEnd();
-      }
-      else if(method == "back") {
+      } else if (method == "back") {
         return STRING.trimStart();
-      }
-      else {
-        return 'Please select a valid method!';
+      } else {
+        return "Please select a valid method!";
       }
     }
   }
