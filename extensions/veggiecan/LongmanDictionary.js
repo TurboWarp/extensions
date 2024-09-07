@@ -82,9 +82,9 @@
           const parser = new DOMParser();
           const htmlDocument = parser.parseFromString(text, "text/html");
           const definitionElements = htmlDocument.querySelectorAll(".DEF");
-          const definitions = Array.from(definitionElements).map(
-            (element) => element.textContent
-          );
+          const definitions = Array.from(definitionElements)
+            .map((element) => element.textContent.trim())
+            .join(", ");
           return definitions;
         })
         .catch((error) => {
