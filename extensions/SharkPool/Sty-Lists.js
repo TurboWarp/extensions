@@ -3,14 +3,14 @@
 // Description: Customize and Organize Lists Monitors.
 // By: SharkPool
 
-// Version 2.0.0
+// Version 2.0.1
 
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) throw new Error("Sty-Lists must run unsandboxed!");
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2Mi4xNDMiIGhlaWdodD0iNjIuMTQzIiB2aWV3Qm94PSIwIDAgNjIuMTQzIDYyLjE0MyI+PGcgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6bm9ybWFsIj48cGF0aCBkPSJNMCAzMS4wNzFDMCAxMy45MTEgMTMuOTEgMCAzMS4wNzEgMGMxNy4xNiAwIDMxLjA3MSAxMy45MSAzMS4wNzEgMzEuMDcxIDAgMTcuMTYtMTMuOTEgMzEuMDcxLTMxLjA3MSAzMS4wNzFDMTMuOTExIDYyLjE0MiAwIDQ4LjIzMiAwIDMxLjA3MSIgZmlsbD0iI2NjNDYwMiIvPjxwYXRoIGQ9Ik0zLjU2NCAzMS4wNzFjMC0xNS4xOTIgMTIuMzE1LTI3LjUwNyAyNy41MDctMjcuNTA3czI3LjUwNyAxMi4zMTUgMjcuNTA3IDI3LjUwNy0xMi4zMTUgMjcuNTA3LTI3LjUwNyAyNy41MDdTMy41NjQgNDYuMjYzIDMuNTY0IDMxLjA3MSIgZmlsbD0iI2ZmNjYxYSIvPjxwYXRoIGQ9Im00NC4yMzkgMzguNjQ1LS4wMDUuMDQ3djQuNzY0YzAgLjU3My0uNDYzIDEuMDQtMS4wMzcgMS4wNDN2LjAwMUgyNi45MWExLjA0MyAxLjA0MyAwIDAgMS0xLjAzNy0xLjA0NGgtLjAwNXYtNC43NTRjLS4wMDEtLjAyLS4wMDYtLjAzNy0uMDA2LS4wNTYgMC0uNTc3LjQ2OC0xLjA0NCAxLjA0NC0xLjA0NGgxNi4yOTFhMS4wNDMgMS4wNDMgMCAwIDEgMS4wNDIgMS4wNDNtLTIzLjI2NC0uNzM4Yy4xOTYuMTk2LjMwNS40NjEuMzA1LjczOHY0LjgxYzAgLjU3Ni0uNDY3IDEuMDQzLTEuMDQ0IDEuMDQ0aC00LjgxYTEuMDQ0IDEuMDQ0IDAgMCAxLTEuMDQ0LTEuMDQ0di00LjgxYzAtLjU3Ni40NjgtMS4wNDQgMS4wNDQtMS4wNDRoNC44MTFjLjI3NyAwIC41NDIuMTEuNzM4LjMwNm0yMy4yNjQtMTAuNzYtLjAwNS4wNDd2NC43NjRjMCAuNTc0LS40NjMgMS4wNC0xLjAzNyAxLjA0M3YuMDAxSDI2LjkxYTEuMDQzIDEuMDQzIDAgMCAxLTEuMDM3LTEuMDQ0aC0uMDA1di00Ljc1NGMtLjAwMS0uMDE5LS4wMDYtLjAzNi0uMDA2LS4wNTYgMC0uNTc2LjQ2OC0xLjA0MyAxLjA0NC0xLjA0NGgxNi4yOTFhMS4wNDMgMS4wNDMgMCAwIDEgMS4wNDIgMS4wNDRtLTIzLjI2NC0uNzM4Yy4xOTYuMTk2LjMwNS40NjEuMzA1LjczOHY0LjgxYzAgLjU3Ny0uNDY3IDEuMDQ0LTEuMDQ0IDEuMDQ0aC00LjgxYTEuMDQ0IDEuMDQ0IDAgMCAxLTEuMDQ0LTEuMDQ0di00LjgxYzAtLjU3Ni40NjgtMS4wNDMgMS4wNDQtMS4wNDRoNC44MTFjLjI3NyAwIC41NDIuMTEuNzM4LjMwNm00Ljg5Mi01LjkxM3YtNC43NTVjMC0uMDItLjAwNS0uMDM3LS4wMDUtLjA1NiAwLS41NzYuNDY3LTEuMDQ0IDEuMDQ0LTEuMDQ0aDE2LjI5MWExLjA0NCAxLjA0NCAwIDAgMSAxLjA0MiAxLjA0NGwtLjAwNS4wNDZ2NC43NjRjMCAuNTc0LS40NjMgMS4wNC0xLjAzNyAxLjA0NEgyNi45MWExLjA0MyAxLjA0MyAwIDAgMS0xLjAzNy0xLjA0M3ptLTQuODkyLTUuNTVjLjE5Ni4xOTcuMzA1LjQ2Mi4zMDUuNzM5djQuODFjMCAuNTc2LS40NjcgMS4wNDMtMS4wNDQgMS4wNDRoLTQuODFhMS4wNDQgMS4wNDQgMCAwIDEtMS4wNDQtMS4wNDR2LTQuODFjMC0uNTc2LjQ2OC0xLjA0NCAxLjA0NC0xLjA0NGg0LjgxMWMuMjc3IDAgLjU0Mi4xMS43MzguMzA2IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTQ2Ljc2MSAzMy4wNjJjLjUyMSAwIC45NDQuNDIzLjk0NC45NDR2MTAuNDc2SDM3LjIyNmMtLjUyLS4wMDItLjk0LS4zMzQtLjk0LS44NTRsLjAwMy00LjQzNmMwLS41MTkuNDY0LS45ODUuOTgyLS45ODhsNC4yLjA0NHYtNC4yMzlhLjk0My45NDMgMCAwIDEgLjk0My0uOTM3eiIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZmY2NjFhIiBzdHJva2Utd2lkdGg9IjYiLz48cGF0aCBkPSJNNDYuNzYxIDMzLjA2MmMuNTIxIDAgLjk0NC40MjMuOTQ0Ljk0NHY0LjI0Mmg0LjIzOWEuOTQzLjk0MyAwIDAgMSAuOTM3Ljk0NGwuMDEgNC4zNDZhLjk0NC45NDQgMCAwIDEtLjk0NC45NDRoLTQuMjQydjQuMjQ1Yy0uMDAyLjUyLS40NjkuOTQtLjk4OS45NGwtNC4yNTYtLjAwM2MtLjUxOSAwLS45ODUtLjQxOS0uOTg4LS45Mzd2LTQuMjQ1aC00LjI0NmMtLjUyLS4wMDItLjk0LS4zMzQtLjk0LS44NTRsLjAwMy00LjQzNmMwLS41MTkuNDY0LS45ODUuOTgyLS45ODhsNC4yLjA0NHYtNC4yMzlhLjk0My45NDMgMCAwIDEgLjk0My0uOTM3eiIgZmlsbD0iI2ZmZiIvPjwvZz48L3N2Zz4=";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2Mi4xNDMiIGhlaWdodD0iNjIuMTQzIiB2aWV3Qm94PSIwIDAgNjIuMTQzIDYyLjE0MyI+PHBhdGggZD0iTTAgMzEuMDcxQzAgMTMuOTExIDEzLjkxIDAgMzEuMDcxIDBjMTcuMTYgMCAzMS4wNzEgMTMuOTEgMzEuMDcxIDMxLjA3MSAwIDE3LjE2LTEzLjkxIDMxLjA3MS0zMS4wNzEgMzEuMDcxQzEzLjkxMSA2Mi4xNDIgMCA0OC4yMzIgMCAzMS4wNzEiIGZpbGw9IiNjYzQ2MDIiLz48cGF0aCBkPSJNMy41NjQgMzEuMDcxYzAtMTUuMTkyIDEyLjMxNS0yNy41MDcgMjcuNTA3LTI3LjUwN3MyNy41MDcgMTIuMzE1IDI3LjUwNyAyNy41MDctMTIuMzE1IDI3LjUwNy0yNy41MDcgMjcuNTA3UzMuNTY0IDQ2LjI2MyAzLjU2NCAzMS4wNzEiIGZpbGw9IiNmZjY2MWEiLz48cGF0aCBkPSJtNDQuMjM5IDM4LjY0NS0uMDA1LjA0N3Y0Ljc2NGMwIC41NzMtLjQ2MyAxLjA0LTEuMDM3IDEuMDQzdi4wMDFIMjYuOTFhMS4wNDMgMS4wNDMgMCAwIDEtMS4wMzctMS4wNDRoLS4wMDV2LTQuNzU0Yy0uMDAxLS4wMi0uMDA2LS4wMzctLjAwNi0uMDU2IDAtLjU3Ny40NjgtMS4wNDQgMS4wNDQtMS4wNDRoMTYuMjkxYTEuMDQzIDEuMDQzIDAgMCAxIDEuMDQyIDEuMDQzbS0yMy4yNjQtLjczOGMuMTk2LjE5Ni4zMDUuNDYxLjMwNS43Mzh2NC44MWMwIC41NzYtLjQ2NyAxLjA0My0xLjA0NCAxLjA0NGgtNC44MWExLjA0NCAxLjA0NCAwIDAgMS0xLjA0NC0xLjA0NHYtNC44MWMwLS41NzYuNDY4LTEuMDQ0IDEuMDQ0LTEuMDQ0aDQuODExYy4yNzcgMCAuNTQyLjExLjczOC4zMDZtMjMuMjY0LTEwLjc2LS4wMDUuMDQ3djQuNzY0YzAgLjU3NC0uNDYzIDEuMDQtMS4wMzcgMS4wNDN2LjAwMUgyNi45MWExLjA0MyAxLjA0MyAwIDAgMS0xLjAzNy0xLjA0NGgtLjAwNXYtNC43NTRjLS4wMDEtLjAxOS0uMDA2LS4wMzYtLjAwNi0uMDU2IDAtLjU3Ni40NjgtMS4wNDMgMS4wNDQtMS4wNDRoMTYuMjkxYTEuMDQzIDEuMDQzIDAgMCAxIDEuMDQyIDEuMDQ0bS0yMy4yNjQtLjczOGMuMTk2LjE5Ni4zMDUuNDYxLjMwNS43Mzh2NC44MWMwIC41NzctLjQ2NyAxLjA0NC0xLjA0NCAxLjA0NGgtNC44MWExLjA0NCAxLjA0NCAwIDAgMS0xLjA0NC0xLjA0NHYtNC44MWMwLS41NzYuNDY4LTEuMDQzIDEuMDQ0LTEuMDQ0aDQuODExYy4yNzcgMCAuNTQyLjExLjczOC4zMDZtNC44OTItNS45MTN2LTQuNzU1YzAtLjAyLS4wMDUtLjAzNy0uMDA1LS4wNTYgMC0uNTc2LjQ2Ny0xLjA0NCAxLjA0NC0xLjA0NGgxNi4yOTFhMS4wNDQgMS4wNDQgMCAwIDEgMS4wNDIgMS4wNDRsLS4wMDUuMDQ2djQuNzY0YzAgLjU3NC0uNDYzIDEuMDQtMS4wMzcgMS4wNDRIMjYuOTFhMS4wNDMgMS4wNDMgMCAwIDEtMS4wMzctMS4wNDN6bS00Ljg5Mi01LjU1Yy4xOTYuMTk3LjMwNS40NjIuMzA1LjczOXY0LjgxYzAgLjU3Ni0uNDY3IDEuMDQzLTEuMDQ0IDEuMDQ0aC00LjgxYTEuMDQ0IDEuMDQ0IDAgMCAxLTEuMDQ0LTEuMDQ0di00LjgxYzAtLjU3Ni40NjgtMS4wNDQgMS4wNDQtMS4wNDRoNC44MTFjLjI3NyAwIC41NDIuMTEuNzM4LjMwNiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik00Ni43NjEgMzMuMDYyYy41MjEgMCAuOTQ0LjQyMy45NDQuOTQ0djEwLjQ3NkgzNy4yMjZjLS41Mi0uMDAyLS45NC0uMzM0LS45NC0uODU0bC4wMDMtNC40MzZjMC0uNTE5LjQ2NC0uOTg1Ljk4Mi0uOTg4bDQuMi4wNDR2LTQuMjM5YS45NDMuOTQzIDAgMCAxIC45NDMtLjkzN3oiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2ZmNjYxYSIgc3Ryb2tlLXdpZHRoPSI2Ii8+PHBhdGggZD0iTTQ2Ljc2MSAzMy4wNjJjLjUyMSAwIC45NDQuNDIzLjk0NC45NDR2NC4yNDJoNC4yMzlhLjk0My45NDMgMCAwIDEgLjkzNy45NDRsLjAxIDQuMzQ2YS45NDQuOTQ0IDAgMCAxLS45NDQuOTQ0aC00LjI0MnY0LjI0NWMtLjAwMi41Mi0uNDY5Ljk0LS45ODkuOTRsLTQuMjU2LS4wMDNjLS41MTkgMC0uOTg1LS40MTktLjk4OC0uOTM3di00LjI0NWgtNC4yNDZjLS41Mi0uMDAyLS45NC0uMzM0LS45NC0uODU0bC4wMDMtNC40MzZjMC0uNTE5LjQ2NC0uOTg1Ljk4Mi0uOTg4bDQuMi4wNDR2LTQuMjM5YS45NDMuOTQzIDAgMCAxIC45NDMtLjkzN3oiIGZpbGw9IiNmZmYiLz48L3N2Zz4=";
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -336,16 +336,16 @@
       if (list.listenerApplied === undefined) {
         list.listenerApplied = true;
         const container = listMon.querySelector(listDocs.grid);
-        container.addEventListener("scroll", () => { this.applyChanges(listMon, id) });
+        container.addEventListener("scroll", () => this.applyChanges(listMon, id));
       }
-      const allItems = listMon.querySelectorAll(`div[class^="${listDocs.body}"] [class^="${listDocs.value}"]`);
-      const changedLabels = list.labels, changedColors = list.colors;
       const isPackaged = typeof scaffolding !== "undefined";
-      allItems.forEach((item, i) => {
-        if (isPackaged ? item.parentNode.getAttribute("data-index") == i : item.getAttribute("dataindex") == i) {
-          if (changedLabels && changedLabels[i]) item.previousSibling.textContent = changedLabels[i];
-          if (changedColors && changedColors[i]) item.style.background = changedColors[i];
-        }
+      const allItems = listMon.querySelectorAll(`div[class^="${listDocs.body}"] [class^="${listDocs.value}"]`);
+      const newLabels = list.labels || {}, newColors = list.colors || {};
+      allItems.forEach((item) => {
+        const i = isPackaged ? item.parentNode.getAttribute("data-index") : item.getAttribute("dataindex");
+        if (newLabels[i]) item.previousSibling.textContent = newLabels[i];
+        if (isPackaged) item.style.background = newColors[i] || ""; // Labels auto reset, colors do not
+        else if (newColors[i]) item.style.background = newColors[i];
       });
     }
 
@@ -367,7 +367,7 @@
         workspace.toolboxRefreshEnabled_ = true;
         workspace.refreshToolboxSelection_();
         workspace.toolboxRefreshEnabled_ = false;
-        setTimeout(function() { runtime.requestBlocksUpdate() }, 10);
+        setTimeout(() => { runtime.requestBlocksUpdate() }, 10);
       }
     }
 
@@ -421,7 +421,7 @@
         container.style.overflowX = "hidden";
         container.style.height = "100%";
         container.style.position = "relative";
-        container.addEventListener("scroll", () => { this.applyChanges(listMon, id) });
+        container.addEventListener("scroll", () => this.applyChanges(listMon, id));
         for (let i = 0; i < Math.ceil(items.length / columnCnt); i++) {
           const row = document.createElement("div");
           row.className = itemClasses[0];
@@ -619,8 +619,9 @@
       const { id, listMon } = this.getMonitor(args.LIST, util, true);
       if (!listMon) return;
       const index = Math.max(0, Scratch.Cast.toNumber(args.NUM) - 1);
+      const val = args.VALUE.replaceAll(" ", " ");
       const currentList = visualLists[id] || {};
-      visualLists[id] = { ...currentList, util, labels: { ...currentList.labels, [index]: args.VALUE } };
+      visualLists[id] = { ...currentList, util, labels: { ...currentList.labels, [index]: val } };
       this.applyChanges(listMon, id);
     }
 
