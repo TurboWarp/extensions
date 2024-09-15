@@ -550,7 +550,7 @@
       const id = this.getTargetId(args.SPRITE, util, false);
       const encodedId = this.makeEncodedID(id);
       if (!encodedId) return;
-      if (!allBubbles[encodedId]) this.addDefault(target);
+      if (!allBubbles[encodedId]) this.addDefault(id);
       let element = allBubbles[encodedId].element;
       if (!element) return;
       const setter = args.TYPE === "arrow" ? element.querySelector(`div[id="arrow-ID"]`) : element;
