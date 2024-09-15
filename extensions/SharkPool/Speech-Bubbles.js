@@ -3,18 +3,17 @@
 // Description: Customizable Speech Bubbles
 // By: SharkPool
 
-// Version V.1.1.0
+// Version V.1.3.0
 
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) throw new Error("Speech Bubbles must run unsandboxed");
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI2Ny4wNTgxNCIgaGVpZ2h0PSI2Ny4wNTgxNCIgdmlld0JveD0iMCwwLDY3LjA1ODE0LDY3LjA1ODE0Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjA2LjQ3MDkzLC0xNDYuNDcwOTMpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjA4LjIyMDkzLDE4MGMwLC0xNy41NTEwOSAxNC4yMjc5OCwtMzEuNzc5MDcgMzEuNzc5MDcsLTMxLjc3OTA3YzE3LjU1MTA5LDAgMzEuNzc5MDcsMTQuMjI3OTggMzEuNzc5MDcsMzEuNzc5MDdjMCwxNy41NTEwOSAtMTQuMjI3OTgsMzEuNzc5MDcgLTMxLjc3OTA3LDMxLjc3OTA3Yy0xNy41NTEwOSwwIC0zMS43NzkwNywtMTQuMjI3OTggLTMxLjc3OTA3LC0zMS43NzkwN3oiIGZpbGw9IiM5OTY2ZmYiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjNzc0ZGNiIiBzdHJva2Utd2lkdGg9IjMuNSIvPjxwYXRoIGQ9Ik0yMTUuNjIxMDEsMTg1LjYyNjI1Yy0yLjM3MDA3LC04LjU1NzI2IDEuODY2NjYsLTEyLjU3MjggNS41ODczMSwtMTMuNTIyMzRjNC41Mjc2NiwtMS4xNTU1IDE0LjQ4Mzk4LC0zLjk3NDc4IDIyLjI2Njg0LC01LjY4MjY5YzMuODAwMzYsLTAuODMzOTYgMTAuMDAyOSwwLjYyNTg2IDExLjk1ODE5LDkuMDQ0NThjMS44NTA0Nyw3Ljk2NzQyIC0zLjY0ODEzLDExLjk0MDExIC02LjQ4NTg2LDEyLjY2NDMzYy0yLjU4MzE0LDAuNjU5MjQgLTYuOTAyNTIsMS43NjE1OCAtMTEuODAzMzQsMy4wMTIzMWMtMS4yOTU3NiwwLjMzMDY5IC0zLjE3OTk1LDguMDk2NTQgLTkuMTUyOTEsOS40MDM0N2MtNC4yMzYyOSwwLjkyNjkzIDAuNjkzNjksLTcuMjQ0NjEgLTAuOTkxNTksLTYuODE0NTFjLTQuOTk3NDksMS4yNzU0IC05LjcyOTEyLC0yLjE0OTQ0IC0xMS4zNzg2NiwtOC4xMDUxNXoiIGZpbGw9IiNmZmZmZmYiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjNzc0ZGNiIiBzdHJva2Utd2lkdGg9IjAiLz48ZyBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIj48cGF0aCBkPSJNMjU1LjczNjcxLDE5MC41OTgwNmMwLjc1OTA2LDAuNDM3OTYgMS42OTM5MSwwLjQzNzk2IDIuNDUyOTcsMGwxLjcyNjQzLC0wLjk5NDhjMC44MTY5NywtMC40Njk0NiAxLjcyOTQ3LDAuNDQzMDQgMS4yNTksMS4yNTlsLTAuOTkzNzksMS43Mjc0NGMtMC40Mzc5NiwwLjc1OTA2IC0wLjQzNzk2LDEuNjkzOTEgLTAuMDAxMDIsMi40NTE5NWwwLjk5NDgsMS43MjY0M2MwLjQ2OTQ2LDAuODE2OTggLTAuNDQzMDQsMS43Mjk0OCAtMS4yNjAwMiwxLjI2MDAybC0xLjcyNjQzLC0wLjk5NDhjLTAuNzU4MDQsLTAuNDM2OTUgLTEuNjkyODksLTAuNDM2OTQgLTIuNDUwOTQsMGwtMS43Mjc0NSwwLjk5Mzc5Yy0wLjgxNTk2LDAuNDcwNDcgLTEuNzI4NDYsLTAuNDQyMDIgLTEuMjU5LC0xLjI1OWwwLjk5NDgsLTEuNzI2NDNjMC40MzY5NSwtMC43NTgwNCAwLjQzNjk0LC0xLjY5Mjg5IC0wLjAwMTAxLC0yLjQ1MTk1bC0wLjk5NDgsLTEuNzI2NDNjLTAuNDY5NDYsLTAuODE2OTggMC40NDMwNCwtMS43Mjk0OCAxLjI2MDAyLC0xLjI2MDAyeiIvPjwvZz48ZyBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIj48cGF0aCBkPSJNMjQwLjYwMTcsMTU3LjI2MTQzYy0wLjMwMjU2LDAuOTM0MTEgLTAuMDg0MTIsMS45NTg1MiAwLjU3MzE2LDIuNjg3OTZsMS40OTM1LDEuNjU5MzhjMC43MDUzMywwLjc4NTU1IC0wLjA4MTM3LDEuOTk4NjggLTEuMDg1NDQsMS42NzM4bC0yLjEyNTE1LC0wLjY4NTM2Yy0wLjkzNDExLC0wLjMwMjU2IC0xLjk1ODUyLC0wLjA4NDEyIC0yLjY4NzA5LDAuNTcxODFsLTEuNjU5MzgsMS40OTM1Yy0wLjc4NTU1LDAuNzA1MzMgLTEuOTk4NjksLTAuMDgxMzcgLTEuNjc1MTQsLTEuMDg2MzFsMC42ODY3MSwtMi4xMjQyN2MwLjMwMTY4LC0wLjkzMjc2IDAuMDgzMjQsLTEuOTU3MTcgLTAuNTcyNjksLTIuNjg1NzRsLTEuNDkyNjMsLTEuNjYwNzNjLTAuNzA2MiwtMC43ODQyIDAuMDgwNSwtMS45OTczMyAxLjA4NTQ0LC0xLjY3Mzc5bDIuMTI0MjcsMC42ODY3MWMwLjkzMjc2LDAuMzAxNjggMS45NTcxNywwLjA4MzI0IDIuNjg2NjEsLTAuNTc0MDNsMS42NTkzOCwtMS40OTM1YzAuNzg1NTUsLTAuNzA1MzMgMS45OTg2OSwwLjA4MTM3IDEuNjc1MTQsMS4wODYzMXoiLz48L2c+PGcgZmlsbD0iI2ZmZmZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSI+PHBhdGggZD0iTTI2Mi4wNjc1NSwxNzAuMzI5OTljMC4zMTU3MiwwLjU5MTMzIDAuOTIyNywwLjk2OTQgMS41OTI2NiwwLjk5MjAxbDEuNTIzMjQsMC4wNTIyOWMwLjcyMDMsMC4wMjU1OSAwLjk0Mzc0LDAuOTg3MDggMC4zMDgyOCwxLjMyNjZsLTEuMzQzODQsMC43MTk3Yy0wLjU5MTMzLDAuMzE1NzIgLTAuOTY5NCwwLjkyMjcgLTAuOTkyMjYsMS41OTE1OWwtMC4wNTIyOSwxLjUyMzI0Yy0wLjAyNTU4LDAuNzIwMyAtMC45ODcwOCwwLjk0Mzc0IC0xLjMyNzY3LDAuMzA4NTNsLTAuNzE4NjMsLTEuMzQ0MDljLTAuMzE1NDcsLTAuNTkwMjYgLTAuOTIyNDUsLTAuOTY4MzMgLTEuNTkxMzQsLTAuOTkxMTlsLTEuNTIzNDksLTAuMDUzMzZjLTAuNzIwMDUsLTAuMDI0NTIgLTAuOTQzNDksLTAuOTg2MDEgLTAuMzA4MjgsLTEuMzI2NmwxLjM0NDEsLTAuNzE4NjJjMC41OTAyNiwtMC4zMTU0NyAwLjk2ODMyLC0wLjkyMjQ2IDAuOTkwOTQsLTEuNTkyNDFsMC4wNTIyOSwtMS41MjMyNGMwLjAyNTU4LC0wLjcyMDMgMC45ODcwOCwtMC45NDM3NCAxLjMyNzY3LC0wLjMwODUzeiIvPjwvZz48L2c+PC9nPjwvc3ZnPg==";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2Ny4wNTgiIGhlaWdodD0iNjcuMDU4IiB2aWV3Qm94PSIwIDAgNjcuMDU4IDY3LjA1OCI+PHBhdGggZD0iTTEuNzUgMzMuNTNjMC0xNy41NTEgMTQuMjI5LTMxLjc4IDMxLjc4LTMxLjc4czMxLjc4IDE0LjIyOSAzMS43OCAzMS43OC0xNC4yMjkgMzEuNzgtMzEuNzggMzEuNzhTMS43NSA1MS4wODEgMS43NSAzMy41M3oiIGZpbGw9IiM5NmYiIHN0cm9rZT0iIzc3NGRjYiIgc3Ryb2tlLXdpZHRoPSIzLjUiLz48cGF0aCBkPSJNOS4xNTEgMzkuMTU2Yy0yLjM3LTguNTU3IDEuODY3LTEyLjU3MyA1LjU4Ny0xMy41MjIgNC41MjgtMS4xNTYgMTQuNDg0LTMuOTc1IDIyLjI2Ny01LjY4MyAzLjgtLjgzNCAxMC4wMDMuNjI2IDExLjk1OCA5LjA0NSAxLjg1IDcuOTY3LTMuNjQ4IDExLjk0LTYuNDg2IDEyLjY2NGwtMTEuODAzIDMuMDEyYy0xLjI5Ni4zMzEtMy4xOCA4LjA5Ny05LjE1MyA5LjQwNC00LjIzNi45MjcuNjk0LTcuMjQ1LS45OTEtNi44MTUtNC45OTggMS4yNzYtOS43My0yLjE0OS0xMS4zNzktOC4xMDUiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNDkuMjY3IDQ0LjEyOGEyLjQ1IDIuNDUgMCAwIDAgMi40NTMgMGwxLjcyNi0uOTk1Yy44MTctLjQ3IDEuNzMuNDQzIDEuMjYgMS4yNmwtLjk5NSAxLjcyN2EyLjQ2IDIuNDYgMCAwIDAgMCAyLjQ1MmwuOTk0IDEuNzI2Yy40Ny44MTctLjQ0MyAxLjczLTEuMjYgMS4yNmwtMS43MjYtLjk5NWEyLjQ2IDIuNDYgMCAwIDAtMi40NTEgMGwtMS43MjguOTk0Yy0uODE2LjQ3LTEuNzI4LS40NDItMS4yNTktMS4yNTlsLjk5NS0xLjcyNmEyLjQ2IDIuNDYgMCAwIDAgMC0yLjQ1MmwtLjk5Ni0xLjcyN2MtLjQ3LS44MTcuNDQzLTEuNzMgMS4yNi0xLjI2ek0zNC4xMzIgMTAuNzkxYTIuNzUgMi43NSAwIDAgMCAuNTczIDIuNjg4bDEuNDkzIDEuNjZjLjcwNi43ODUtLjA4MSAxLjk5OC0xLjA4NSAxLjY3NGwtMi4xMjUtLjY4NmEyLjc1IDIuNzUgMCAwIDAtMi42ODcuNTcybC0xLjY2IDEuNDk0Yy0uNzg1LjcwNS0xLjk5OC0uMDgyLTEuNjc1LTEuMDg3bC42ODctMi4xMjRhMi43NSAyLjc1IDAgMCAwLS41NzMtMi42ODZsLTEuNDkyLTEuNjZjLS43MDctLjc4NS4wOC0xLjk5OCAxLjA4NS0xLjY3NGwyLjEyNC42ODZhMi43NSAyLjc1IDAgMCAwIDIuNjg3LS41NzRsMS42Ni0xLjQ5M2MuNzg1LS43MDUgMS45OTguMDgxIDEuNjc0IDEuMDg2ek01NS41OTggMjMuODZjLjMxNS41OTEuOTIyLjk3IDEuNTkyLjk5MmwxLjUyMy4wNTJjLjcyLjAyNi45NDQuOTg3LjMwOSAxLjMyN2wtMS4zNDQuNzJjLS41OTEuMzE1LS45Ny45MjItLjk5MiAxLjU5MWwtLjA1MyAxLjUyM2MtLjAyNS43Mi0uOTg3Ljk0NC0xLjMyNy4zMDlsLS43MTktMS4zNDRhMS44OCAxLjg4IDAgMCAwLTEuNTkxLS45OTFsLTEuNTI0LS4wNTRjLS43Mi0uMDI0LS45NDMtLjk4Ni0uMzA4LTEuMzI2bDEuMzQ0LS43MTljLjU5LS4zMTUuOTY4LS45MjIuOTkxLTEuNTkybC4wNTItMS41MjRjLjAyNi0uNzIuOTg3LS45NDMgMS4zMjgtLjMwOHoiIGZpbGw9IiNmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==";
   const blockIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI2MS4yODgyMSIgaGVpZ2h0PSI2MS4yODgyMSIgdmlld0JveD0iMCwwLDYxLjI4ODIxLDYxLjI4ODIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjA5LjM1NTksLTE0OS4zNTU5KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTIwOS4zNTU5LDIxMC42NDQxdi02MS4yODgyMWg2MS4yODgyMXY2MS4yODgyMXoiIGZpbGw9IiM5OTY2ZmYiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiLz48cGF0aCBkPSJNMjE1LjYyMTAxLDE4NS42MjYyNWMtMi4zNzAwNywtOC41NTcyNiAxLjg2NjY2LC0xMi41NzI4IDUuNTg3MzEsLTEzLjUyMjM0YzQuNTI3NjYsLTEuMTU1NSAxNC40ODM5OCwtMy45NzQ3OCAyMi4yNjY4NCwtNS42ODI2OWMzLjgwMDM2LC0wLjgzMzk2IDEwLjAwMjksMC42MjU4NiAxMS45NTgxOSw5LjA0NDU4YzEuODUwNDcsNy45Njc0MiAtMy42NDgxMywxMS45NDAxMSAtNi40ODU4NiwxMi42NjQzM2MtMi41ODMxNCwwLjY1OTI0IC02LjkwMjUyLDEuNzYxNTggLTExLjgwMzM0LDMuMDEyMzFjLTEuMjk1NzYsMC4zMzA2OSAtMy4xNzk5NSw4LjA5NjU0IC05LjE1MjkxLDkuNDAzNDdjLTQuMjM2MjksMC45MjY5MyAwLjY5MzY5LC03LjI0NDYxIC0wLjk5MTU5LC02LjgxNDUxYy00Ljk5NzQ5LDEuMjc1NCAtOS43MjkxMiwtMi4xNDk0NCAtMTEuMzc4NjYsLTguMTA1MTV6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0iIzc3NGRjYiIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTI1NS43MzY3MSwxOTAuNTk4MDZjMC43NTkwNiwwLjQzNzk2IDEuNjkzOTEsMC40Mzc5NiAyLjQ1Mjk3LDBsMS43MjY0MywtMC45OTQ4YzAuODE2OTcsLTAuNDY5NDYgMS43Mjk0NywwLjQ0MzA0IDEuMjU5LDEuMjU5bC0wLjk5Mzc5LDEuNzI3NDRjLTAuNDM3OTYsMC43NTkwNiAtMC40Mzc5NiwxLjY5MzkxIC0wLjAwMTAyLDIuNDUxOTVsMC45OTQ4LDEuNzI2NDNjMC40Njk0NiwwLjgxNjk4IC0wLjQ0MzA0LDEuNzI5NDggLTEuMjYwMDIsMS4yNjAwMmwtMS43MjY0MywtMC45OTQ4Yy0wLjc1ODA0LC0wLjQzNjk1IC0xLjY5Mjg5LC0wLjQzNjk0IC0yLjQ1MDk0LDBsLTEuNzI3NDUsMC45OTM3OWMtMC44MTU5NiwwLjQ3MDQ3IC0xLjcyODQ2LC0wLjQ0MjAyIC0xLjI1OSwtMS4yNTlsMC45OTQ4LC0xLjcyNjQzYzAuNDM2OTUsLTAuNzU4MDQgMC40MzY5NCwtMS42OTI4OSAtMC4wMDEwMSwtMi40NTE5NWwtMC45OTQ4LC0xLjcyNjQzYy0wLjQ2OTQ2LC0wLjgxNjk4IDAuNDQzMDQsLTEuNzI5NDggMS4yNjAwMiwtMS4yNjAwMnoiIGZpbGw9IiNmZmZmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjQwLjYwMTcsMTU3LjI2MTQzYy0wLjMwMjU2LDAuOTM0MTEgLTAuMDg0MTIsMS45NTg1MiAwLjU3MzE2LDIuNjg3OTZsMS40OTM1LDEuNjU5MzhjMC43MDUzMywwLjc4NTU1IC0wLjA4MTM3LDEuOTk4NjggLTEuMDg1NDQsMS42NzM4bC0yLjEyNTE1LC0wLjY4NTM2Yy0wLjkzNDExLC0wLjMwMjU2IC0xLjk1ODUyLC0wLjA4NDEyIC0yLjY4NzA5LDAuNTcxODFsLTEuNjU5MzgsMS40OTM1Yy0wLjc4NTU1LDAuNzA1MzMgLTEuOTk4NjksLTAuMDgxMzcgLTEuNjc1MTQsLTEuMDg2MzFsMC42ODY3MSwtMi4xMjQyN2MwLjMwMTY4LC0wLjkzMjc2IDAuMDgzMjQsLTEuOTU3MTcgLTAuNTcyNjksLTIuNjg1NzRsLTEuNDkyNjMsLTEuNjYwNzNjLTAuNzA2MiwtMC43ODQyIDAuMDgwNSwtMS45OTczMyAxLjA4NTQ0LC0xLjY3Mzc5bDIuMTI0MjcsMC42ODY3MWMwLjkzMjc2LDAuMzAxNjggMS45NTcxNywwLjA4MzI0IDIuNjg2NjEsLTAuNTc0MDNsMS42NTkzOCwtMS40OTM1YzAuNzg1NTUsLTAuNzA1MzMgMS45OTg2OSwwLjA4MTM3IDEuNjc1MTQsMS4wODYzMXoiIGZpbGw9IiNmZmZmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNMjYyLjA2NzU1LDE3MC4zMjk5OWMwLjMxNTcyLDAuNTkxMzMgMC45MjI3LDAuOTY5NCAxLjU5MjY2LDAuOTkyMDFsMS41MjMyNCwwLjA1MjI5YzAuNzIwMywwLjAyNTU5IDAuOTQzNzQsMC45ODcwOCAwLjMwODI4LDEuMzI2NmwtMS4zNDM4NCwwLjcxOTdjLTAuNTkxMzMsMC4zMTU3MiAtMC45Njk0LDAuOTIyNyAtMC45OTIyNiwxLjU5MTU5bC0wLjA1MjI5LDEuNTIzMjRjLTAuMDI1NTgsMC43MjAzIC0wLjk4NzA4LDAuOTQzNzQgLTEuMzI3NjcsMC4zMDg1M2wtMC43MTg2MywtMS4zNDQwOWMtMC4zMTU0NywtMC41OTAyNiAtMC45MjI0NSwtMC45NjgzMyAtMS41OTEzNCwtMC45OTExOWwtMS41MjM0OSwtMC4wNTMzNmMtMC43MjAwNSwtMC4wMjQ1MiAtMC45NDM0OSwtMC45ODYwMSAtMC4zMDgyOCwtMS4zMjY2bDEuMzQ0MSwtMC43MTg2MmMwLjU5MDI2LC0wLjMxNTQ3IDAuOTY4MzIsLTAuOTIyNDYgMC45OTA5NCwtMS41OTI0MWwwLjA1MjI5LC0xLjUyMzI0YzAuMDI1NTgsLTAuNzIwMyAwLjk4NzA4LC0wLjk0Mzc0IDEuMzI3NjcsLTAuMzA4NTN6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9nPjwvZz48L3N2Zz4=";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MS4yODgiIGhlaWdodD0iNjEuMjg4IiB2aWV3Qm94PSIwIDAgNjEuMjg4IDYxLjI4OCI+PHBhdGggZD0iTTAgNjEuMjg4VjBoNjEuMjg4djYxLjI4OHoiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNNi4yNjUgMzYuMjdjLTIuMzctOC41NTcgMS44NjctMTIuNTczIDUuNTg3LTEzLjUyMiA0LjUyOC0xLjE1NiAxNC40ODQtMy45NzUgMjIuMjY3LTUuNjgzIDMuOC0uODM0IDEwLjAwMy42MjYgMTEuOTU4IDkuMDQ1IDEuODUgNy45NjctMy42NDggMTEuOTQtNi40ODYgMTIuNjY0bC0xMS44MDMgMy4wMTJjLTEuMjk2LjMzMS0zLjE4IDguMDk3LTkuMTUzIDkuNDA0LTQuMjM2LjkyNy42OTQtNy4yNDUtLjk5MS02LjgxNS00Ljk5OCAxLjI3Ni05LjczLTIuMTQ5LTExLjM3OS04LjEwNSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik00Ni4zODEgNDEuMjQyYTIuNDUgMi40NSAwIDAgMCAyLjQ1MyAwbDEuNzI2LS45OTVjLjgxNy0uNDcgMS43My40NDMgMS4yNiAxLjI2bC0uOTk1IDEuNzI3YTIuNDYgMi40NiAwIDAgMCAwIDIuNDUybC45OTQgMS43MjZjLjQ3LjgxNy0uNDQzIDEuNzMtMS4yNiAxLjI2bC0xLjcyNi0uOTk1YTIuNDYgMi40NiAwIDAgMC0yLjQ1MSAwbC0xLjcyOC45OTRjLS44MTYuNDctMS43MjgtLjQ0Mi0xLjI1OS0xLjI1OWwuOTk1LTEuNzI2YTIuNDYgMi40NiAwIDAgMCAwLTIuNDUybC0uOTk2LTEuNzI3Yy0uNDctLjgxNy40NDMtMS43MyAxLjI2LTEuMjZ6TTMxLjI0NiA3LjkwNWEyLjc1IDIuNzUgMCAwIDAgLjU3MyAyLjY4OGwxLjQ5MyAxLjY2Yy43MDYuNzg1LS4wODEgMS45OTgtMS4wODUgMS42NzRsLTIuMTI1LS42ODZhMi43NSAyLjc1IDAgMCAwLTIuNjg3LjU3MmwtMS42NiAxLjQ5NGMtLjc4NS43MDUtMS45OTgtLjA4Mi0xLjY3NS0xLjA4N2wuNjg3LTIuMTI0YTIuNzUgMi43NSAwIDAgMC0uNTczLTIuNjg2bC0xLjQ5Mi0xLjY2Yy0uNzA3LS43ODUuMDgtMS45OTggMS4wODUtMS42NzRsMi4xMjQuNjg2YTIuNzUgMi43NSAwIDAgMCAyLjY4Ny0uNTc0bDEuNjYtMS40OTNjLjc4NS0uNzA1IDEuOTk4LjA4MSAxLjY3NCAxLjA4NnptMjEuNDY2IDEzLjA2OWMuMzE1LjU5MS45MjIuOTcgMS41OTIuOTkybDEuNTIzLjA1MmMuNzIuMDI2Ljk0NC45ODcuMzA5IDEuMzI3bC0xLjM0NC43MmMtLjU5MS4zMTUtLjk3LjkyMi0uOTkyIDEuNTkxbC0uMDUzIDEuNTIzYy0uMDI1LjcyLS45ODcuOTQ0LTEuMzI3LjMwOWwtLjcxOS0xLjM0NGExLjg4IDEuODggMCAwIDAtMS41OTEtLjk5MWwtMS41MjQtLjA1NGMtLjcyLS4wMjQtLjk0My0uOTg2LS4zMDgtMS4zMjZsMS4zNDQtLjcxOWMuNTktLjMxNS45NjgtLjkyMi45OTEtMS41OTJsLjA1Mi0xLjUyNGMuMDI2LS43Mi45ODctLjk0MyAxLjMyOC0uMzA4eiIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIi8+PC9zdmc+";
 
-  let allBubbles = {};
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const render = vm.renderer;
@@ -23,6 +22,8 @@
     "Scratch", "Sans Serif", "Serif",
     "Handwriting", "Marker", "Curly", "Pixel"
   ];
+
+  let allBubbles = {};
 
   const xmlEscape = function (unsafe) {
     unsafe = String(unsafe);
@@ -39,19 +40,23 @@
 
   class speechSP {
     constructor() {
-      runtime.on("PROJECT_START", () => {this.shutUp({ SPRITE: "_all_" }) });
+      runtime.on("PROJECT_START", () => { this.shutUp({ SPRITE: "_all_" }) });
       runtime.on("PROJECT_STOP_ALL", () => { this.shutUp({ SPRITE: "_all_" }) });
       runtime.on("AFTER_EXECUTE", () => {
-        for (var i = 1; i < runtime.targets.length; i++) {
-          const targetInfo = runtime.targets[i];
-          const id = `#SP_Speech-Ext-${btoa(targetInfo.id).replaceAll("=", "_").replaceAll("/", "-")}`;
-          const element = document.querySelector(`div[id="${id.substring(1)}"]`);
-          if (element) {
-            let curTransform = element.style.transform || "";
-            curTransform = curTransform.replace(/translate\([^)]*\)/g, "");
-            const translate = `translate(${targetInfo.x + allBubbles[id].offset[0]}px, ${(targetInfo.y + allBubbles[id].offset[1]) * -1}px)`;
-            element.style.transform = `${curTransform} ${translate}`;
-          }
+        const values = Object.values(allBubbles);
+        for (let i = 0; i < values.length; i++) {
+          const obj = values[i];
+          let target = runtime.getTargetById(obj.id);
+          if (!target) target = runtime.getSpriteTargetByName(obj.id);
+          if (!target) continue;
+          let element = obj.element;
+          if (!element) continue;
+          const computed = window.getComputedStyle(element);
+          const x = obj.offset[0] - (parseFloat(computed.width) / 2);
+          const y = obj.offset[1] + (parseFloat(computed.height) / 2);
+          let curTransform = element.parentNode.style.transform || "";
+          curTransform = curTransform.replace(/translate\([^)]*\)/g, "");
+          element.parentNode.style.transform = `${curTransform} translate(${target.x + x}px, ${(target.y + y) * -1}px)`;
         }
       });
     }
@@ -152,7 +157,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set bubble [TYPE] color of [SPRITE] to [COLOR]",
             arguments: {
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
+              COLOR: { type: Scratch.ArgumentType.COLOR },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "COLOR" },
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             }
@@ -215,9 +220,9 @@
             arguments: {
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              z: { type: Scratch.ArgumentType.NUMBER, defaultValue: 2 },
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
-              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS2" }
+              z: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              COLOR: { type: Scratch.ArgumentType.COLOR },
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             }
           },
           "---",
@@ -233,14 +238,6 @@
             }
           },
           {
-            opcode: "resetEffect",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "reset all bubble styling of [SPRITE]",
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
-            }
-          },
-          {
             opcode: "getEffect",
             blockType: Scratch.BlockType.REPORTER,
             text: "get [EFFECT] of [TYPE] in [SPRITE]",
@@ -250,6 +247,14 @@
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS2" }
             }
           },
+          {
+            opcode: "resetEffect",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "reset all bubble styling of [SPRITE]",
+            arguments: {
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            }
+          }
         ],
         menus: {
           TARGETS: { acceptReporters: true, items: this.getTargets(true) },
@@ -271,21 +276,14 @@
       };
     }
 
-    isFull() {
-      const values = [parseFloat(render.canvas.style.width), runtime.stageWidth];
-      if (values[0] > values[1]) return (render.canvas.width / runtime.stageWidth) * 1.5;
-      else return 2;
-    }
-
     allFonts() {
       const customFonts = runtime.fontManager ? runtime.fontManager.getFonts().map((i) => ({ text: i.name, value: i.family })) : [];
       return [...fontMenu, ...customFonts];
     }
 
-    getTargets(includeAll) {
-      const spriteNames = [];
-      spriteNames.push({ text : "myself", value: "_myself_" });
-      if (includeAll) spriteNames.push({ text : "all sprites", value: "_all_" });
+    getTargets(optAll) {
+      const spriteNames = [{ text : "myself", value: "_myself_" }];
+      if (optAll) spriteNames.push({ text : "all sprites", value: "_all_" });
       const targets = runtime.targets;
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
@@ -304,42 +302,46 @@
       ];
     }
 
-    speech(txt, target) {
-      target = btoa(target).replaceAll("=", "_").replaceAll("/", "-");
+    speech(txt, id) {
+      const encodedId = this.makeEncodedID(id);
+      if (!encodedId) return;
       try {
-        const elements = document.querySelectorAll(`div[id="SP_Speech-Ext-${target}"] div[id="text-ID"]`);
+        const elements = document.querySelectorAll(`div[id="SP_Speech-Ext-${encodedId}"] div[id="text-ID"]`);
         if (elements.length > 0) elements.forEach((element) => { element.innerHTML = xmlEscape(txt).replace(/\n/g, "<br>") });
-        else this.saySpeech(txt, target);
+        else this.saySpeech(txt, encodedId, id);
       } catch { return }
     }
 
-    saySpeech(txt, target) {
-      if (!allBubbles[`#SP_Speech-Ext-${target}`]) this.addDefault(target);
-      allBubbles[`#SP_Speech-Ext-${target}`].stopped = false; // failsafe
-      const newTxtElement = document.createElement("div");
-      const styles = allBubbles[`#SP_Speech-Ext-${target}`].styles;
-      Object.assign(newTxtElement.style, styles);
+    saySpeech(txt, encodedId, id) {
+      if (!allBubbles[encodedId]) this.addDefault(id);
+      const div = document.createElement("div");
+      const txtParent = document.createElement("div");
+      const styles = allBubbles[encodedId].styles;
+      Object.assign(txtParent.style, styles);
 
       const textEl = document.createElement("div");
       textEl.id = "text-ID";
       textEl.innerHTML = xmlEscape(txt).replace(/\n/g, "<br>");
-      newTxtElement.appendChild(textEl);
+      txtParent.appendChild(textEl);
+
       const arrowElement = document.createElement("div");
       arrowElement.id = "arrow-ID";
-      const arrowStyles = allBubbles[`#SP_Speech-Ext-${target}`].arrowStyles;
+      const arrowStyles = allBubbles[encodedId].arrowStyles;
       Object.assign(arrowElement.style, arrowStyles);
 
-      newTxtElement.appendChild(arrowElement);
-      newTxtElement.id = `SP_Speech-Ext-${target}`;
-      newTxtElement.classList.add(target);
-      render.addOverlay(newTxtElement, "scale-centered");
+      txtParent.appendChild(arrowElement);
+      txtParent.id = `SP_Speech-Ext-${encodedId}`;
+      txtParent.classList.add(encodedId);
+      div.appendChild(txtParent);
+      render.addOverlay(div, "scale-centered");
+      allBubbles[encodedId].element = txtParent;
     }
 
-    addDefault(target) {
-      allBubbles[`#SP_Speech-Ext-${target}`] = {
-        target: target,
-        stopped: false,
-        offset: [0, 0],
+    addDefault(id) {
+      const encodedId = this.makeEncodedID(id);
+      if (!encodedId) return;
+      allBubbles[encodedId] = {
+        id, offset: [75, 0],
         styles: {
           width: "150px",
           background: "#00bfb6",
@@ -349,7 +351,7 @@
           textAlign: "center",
           fontWeight: "900",
           fontSize: "15px",
-          color: "#ffffff",
+          color: "#fff",
           fontFamily: "arial",
           position: "relative",
           pointerEvents: "none",
@@ -373,144 +375,139 @@
       };
     }
 
-    setBubbleAtt(type, value, target, target2) {
-      const applyUpdate = (newTarget) => {
-        const encodeTarget = btoa(newTarget).replaceAll("=", "_").replaceAll("/", "-");
-        const key = `#SP_Speech-Ext-${encodeTarget}`;
-        if (!allBubbles[key]) this.addDefault(encodeTarget);
-        allBubbles[key][target2][type] = value;
-        this.updateElement(key, allBubbles[key]);
+    setBubbleAtt(type, value, id, focus) {
+      const applyUpdate = (key) => {
+        const encodedId = this.makeEncodedID(id);
+        if (!encodedId) return;
+        if (!allBubbles[encodedId]) this.addDefault(id);
+        allBubbles[encodedId][focus][type] = value;
+        this.updateElement(encodedId, allBubbles[encodedId]);
       };
-      if (target !== "_all_") applyUpdate(Scratch.Cast.toString(target));
+      if (id !== "_all_") applyUpdate(id);
       else {
-        const sprites = this.getTargets(false);
-        for (let i = 1; i < sprites.length; i++) { applyUpdate(sprites[i].value) }
+        const list = this.getTargets(false);
+        for (let i = 1; i < list.length; i++) applyUpdate(list[i].value);
       }
     }
 
-    updateElement(key, object) {
-      const elements = document.querySelectorAll(`div[id="${key.substring(1)}"]`);
-      elements.forEach((element) => {
-        let translate = element.style.transform.match(/translate\(([^,]+),([^)]+)\)/);
-        translate = translate ? `translate(${translate[1]},${translate[2]})` : "";
-        Object.assign(element.style, object.styles);
-        element.style.transform = `${translate} ${object.styles.transform}`;
-        element.style.filter = object.styles.filter;
-        const arrowElement = element.querySelector(`div[id="arrow-ID"]`);
-        Object.assign(arrowElement.style, object.arrowStyles);
-        arrowElement.style.transform = object.arrowStyles.transform;
-        arrowElement.style.filter = object.arrowStyles.filter;
-      });
+    updateElement(id, obj) {
+      const element = document.querySelector(`div[id="SP_Speech-Ext-${id}"]`);
+      if (!element) return;
+      Object.assign(element.style, obj.styles);
+      element.style.transform = obj.styles.transform;
+      element.style.filter = obj.styles.filter;
+      const arrowElement = element.querySelector(`div[id="arrow-ID"]`);
+      Object.assign(arrowElement.style, obj.arrowStyles);
+      arrowElement.style.transform = obj.arrowStyles.transform;
+      arrowElement.style.filter = obj.arrowStyles.filter;
+    }
+
+    getTargetId(txt, util, allowAll) {
+      if (txt === "_all_" && allowAll) return "_all_";
+      else if (txt === "_myself_") return util.target.id;
+      else {
+        const idTarg = runtime.getTargetById(txt);
+        if (idTarg !== undefined) return idTarg.id;
+        return runtime.getSpriteTargetByName(txt)?.id || undefined;
+      }
+    }
+
+    makeEncodedID(id) {
+      if (id === undefined) return undefined;
+      try {
+        return btoa(id).replaceAll("=", "_").replaceAll("/", "-");
+      } catch {
+        return undefined;
+      }
     }
 
     //Speech
     sayThis(args, util) {
-      const target = args.SPRITE === "_myself_" ? util.target.id : args.SPRITE;
-      if (target !== "_all_") this.speech(args.SPEECH, target);
+      const id = this.getTargetId(args.SPRITE, util, true);
+      if (id !== "_all_") this.speech(args.SPEECH, id);
       else {
         const list = this.getTargets(false);
-        for (let i = 1; i < list.length; i++) { this.speech(args.SPEECH, list[i].value) }
+        for (let i = 1; i < list.length; i++) this.speech(args.SPEECH, list[i].value);
       }
     }
 
     shutUp(args, util) {
-      let target = args.SPRITE === "_myself_" ? util.target.id : args.SPRITE;
-      try { target = btoa(target).replaceAll("=", "_").replaceAll("/", "-") } catch {}
-      const shutUpTarget = (key) => {
-        const elementsToRemove = document.querySelectorAll(`div[id="${key.substring(1)}"]`);
-        elementsToRemove.forEach((element) => {
-          render.removeOverlay(element);
-          allBubbles[key].stopped = true;
-        });
+      const id = this.getTargetId(args.SPRITE, util, true);
+      const encodedId = this.makeEncodedID(id);
+      if (!encodedId) return;
+      const shutTarget = (key) => {
+        const removables = document.querySelectorAll(`div[id="SP_Speech-Ext-${key}"]`);
+        removables.forEach((element) => render.removeOverlay(element.parentNode));
       };
-      if (args.SPRITE === "_all_") Object.keys(allBubbles).forEach(shutUpTarget);
-      else shutUpTarget(`#SP_Speech-Ext-${target}`);
+      if (id === "_all_") Object.keys(allBubbles).forEach(shutTarget);
+      else shutTarget(encodedId);
     }
 
     isYapping(args, util) {
-      let target = args.SPRITE === "_myself_" ? util.target.id : args.SPRITE;
-      target = btoa(target).replaceAll("=", "_").replaceAll("/", "-");
-      try {
-        const con1 = !allBubbles[`#SP_Speech-Ext-${target}`].stopped;
-        const con2 = document.querySelector(`div[id="SP_Speech-Ext-${target}"]`);
-        return Scratch.Cast.toBoolean(con1 && con2);
-      } catch (e) { return false }
+      let id = this.getTargetId(args.SPRITE, util, false);
+      id = this.makeEncodedID(id);
+      if (!id) return false;
+      return document.querySelector(`div[id="SP_Speech-Ext-${id}"]`) !== null;
     }
 
     //Positions
     bubbleOffset(args, util) {
-      let target = args.SPRITE === "_myself_" ? util.target.id : args.SPRITE;
-      target = btoa(target).replaceAll("=", "_").replaceAll("/", "-");
-      if (!allBubbles[`#SP_Speech-Ext-${target}`]) this.addDefault(target);
+      const id = this.getTargetId(args.SPRITE, util, true);
+      const encodedId = this.makeEncodedID(id);
+      if (!encodedId) return;
+      if (!allBubbles[encodedId]) this.addDefault(id);
       const setOff = (key) => {
-        const elements = document.querySelectorAll(`div[id="${key.substring(1)}"]`);
-        elements.forEach((element) => {
-          const box = element.getBoundingClientRect();
-          allBubbles[key].offset = [
-            Scratch.Cast.toNumber(args.x) - (box.width / this.isFull()),
-            Scratch.Cast.toNumber(args.y) + (box.height / this.isFull())
-          ];
-        });
+        allBubbles[key].offset = [Scratch.Cast.toNumber(args.x), Scratch.Cast.toNumber(args.y)];
       };
-      if (args.SPRITE === "_all_") Object.keys(allBubbles).forEach(setOff);
-      else setOff(`#SP_Speech-Ext-${target}`);
+      if (id === "_all_") Object.keys(allBubbles).forEach(setOff);
+      else setOff(encodedId);
     }
 
     getOffset(args, util) {
-      let target = args.SPRITE === "_myself_" ? util.target.id : args.SPRITE;
-      target = btoa(target).replaceAll("=", "_").replaceAll("/", "-");
-      try {
-        const key = `#SP_Speech-Ext-${target}`;
-        let offset = allBubbles[key].offset;
-        offset = offset[args.POS === "x" ? 0 : 1];
-        const element = document.querySelector(`div[id="${key.substring(1)}"]`).getBoundingClientRect();
-        return offset + (args.POS === "x" ? element.width / this.isFull() : element.height / -this.isFull());
-      } catch (e) { return 0 }
+      let id = this.getTargetId(args.SPRITE, util, false);
+      id = this.makeEncodedID(id);
+      if (!id) return 0;
+      return allBubbles[id]?.offset[args.POS === "x" ? 0 : 1] || 0;
     }
 
     //Customization
     bubbleWidth(args, util) {
       this.setBubbleAtt(
         "width", `${Math.abs(Scratch.Cast.toNumber(args.WIDTH))}px`,
-        args.SPRITE === "_myself_" ? util.target.id : args.SPRITE,
-        "styles"
+        this.getTargetId(args.SPRITE, util, true), "styles"
       );
     }
 
     bubblePads(args, util) {
       this.setBubbleAtt(
         args.TYPE === "padding" ? "padding" : "borderRadius", 
-        `${Scratch.Cast.toNumber(args.NUM)}px`, args.SPRITE === "_myself_" ? util.target.id : args.SPRITE,
+        `${Scratch.Cast.toNumber(args.NUM)}px`, this.getTargetId(args.SPRITE, util, true),
         "styles"
       );
     }
 
     bubbleFont(args, util) {
       this.setBubbleAtt(
-        "fontFamily", args.FONT, args.SPRITE === "_myself_" ? util.target.id : args.SPRITE,
-        "styles"
+        "fontFamily", args.FONT, this.getTargetId(args.SPRITE, util, true), "styles"
       );
     }
 
     bubbleFontSize(args, util) {
       this.setBubbleAtt(
         "fontSize", `${Math.abs(Scratch.Cast.toNumber(args.NUM))}px`,
-        args.SPRITE === "_myself_" ? util.target.id : args.SPRITE,
-        "styles"
+        this.getTargetId(args.SPRITE, util, true), "styles"
       );
     }
 
     bubbleBold(args, util) {
       this.setBubbleAtt(
-        "fontWeight", args.NUM, args.SPRITE === "_myself_" ? util.target.id : args.SPRITE,
-        "styles"
+        "fontWeight", args.NUM, this.getTargetId(args.SPRITE, util, true), "styles"
       );
     }
 
     bubbleAlign(args, util) {
       this.setBubbleAtt(
-        "textAlign", args.TYPE, args.SPRITE === "_myself_" ? util.target.id : args.SPRITE,
-        "styles"
+        "textAlign", args.TYPE, this.getTargetId(args.SPRITE, util, true), "styles"
       );
     }
 
@@ -518,19 +515,16 @@
       if (args.TYPE === "arrow") {
         this.setBubbleAtt(
           "borderLeft", `10px solid ${args.COLOR}`,
-          args.SPRITE === "_myself_" ? util.target.id : args.SPRITE,
-          "arrowStyles"
+          this.getTargetId(args.SPRITE, util, true), "arrowStyles"
         );
         this.setBubbleAtt(
           "borderTop", `10px solid ${args.COLOR}`,
-          args.SPRITE === "_myself_" ? util.target.id : args.SPRITE,
-          "arrowStyles"
+          this.getTargetId(args.SPRITE, util, true), "arrowStyles"
         );
       } else {
         this.setBubbleAtt(
           args.TYPE === "background" ? "background" : "color", args.COLOR,
-          args.SPRITE === "_myself_" ? util.target.id : args.SPRITE,
-          "styles"
+          this.getTargetId(args.SPRITE, util, true), "styles"
         );
       }
     }
@@ -540,130 +534,132 @@
         if (canFetch) {
           this.setBubbleAtt(
             "background", `url(${encodeURI(args.URL)})`,
-            args.SPRITE === "_myself_" ? util.target.id : args.SPRITE,
-            "styles"
+            this.getTargetId(args.SPRITE, util, true), "styles"
           );
         }
       });
     }
 
     arrowPos(args, util) {
-      const target = args.SPRITE === "_myself_" ? util.target.id : args.SPRITE;
+      const target = this.getTargetId(args.SPRITE, util, true);
       this.setBubbleAtt("left", `${Scratch.Cast.toNumber(args.x)}px`, target, "arrowStyles");
       this.setBubbleAtt("top", `${Scratch.Cast.toNumber(args.y) * -1}px`, target, "arrowStyles");
     }
 
-    getEffect(args, util) {
-      args.EFFECT = Scratch.Cast.toString(args.EFFECT).replaceAll(" ", "");
-      if (args.EFFECT === "saturation") args.EFFECT = "saturate";
-      if (args.EFFECT === "hue") args.EFFECT = "hue-rotate";
-      if (args.EFFECT === "direction") args.EFFECT = "rotate";
-      let target = args.SPRITE === "_myself_" ? util.target.id : args.SPRITE;
-      target = btoa(target).replaceAll("=", "_").replaceAll("/", "-");
-      const key = `#SP_Speech-Ext-${target}`;
-      if (!allBubbles[key]) this.addDefault(target);
-      let path = allBubbles[key][args.TYPE === "arrow" ? "arrowStyles" : "styles"];
-      path = path[args.EFFECT.includes("scale") || args.EFFECT.includes("skew") || args.EFFECT === "rotate"
-        ? "transform" : "filter"];
-      const filterProps = path.match(/[\w-]+\([^)]+\)/g) || [];
-      const filterObject = {};
-      filterProps.forEach(property => {
-        const [name, value] = property.split("(");
-        filterObject[name.toLowerCase()] = value.replace(/\)$/, "");
-      });
-      try {
-        if (args.EFFECT.includes("scale")) {
-          const value = filterObject["scale"].split(",");
-          return value[args.EFFECT.includes("x") ? 0 : 1] * 100;
-        } else {
-          let number = Scratch.Cast.toNumber(filterObject[args.EFFECT].replace("px", "").replace("deg", ""));
-          if (args.EFFECT === "saturate" || args.EFFECT === "invert" || args.EFFECT === "sepia") number = number * 100;
-          if (args.EFFECT === "contrast" || args.EFFECT === "brightness") number = number * 100 - 100;
-          if (args.EFFECT === "opacity") number = (number * -100) + 100;
-          if (args.EFFECT === "rotate") number = number + 90;
-          return number;
-        }
-      } catch { return "" }
+    setStretch(args, util) {
+      const id = this.getTargetId(args.SPRITE, util, false);
+      const encodedId = this.makeEncodedID(id);
+      if (!encodedId) return;
+      if (!allBubbles[encodedId]) this.addDefault(target);
+      let element = allBubbles[encodedId].element;
+      if (!element) return;
+      const setter = args.TYPE === "arrow" ? element.querySelector(`div[id="arrow-ID"]`) : element;
+      let curTransform = setter.style.transform || "";
+      curTransform = curTransform.replace(/scale\([^)]*\)/g, "");
+      const value = `scale(${Scratch.Cast.toNumber(args.x) / 100},${Scratch.Cast.toNumber(args.y) / 100})`;
+      setter.style.transform = `${curTransform} ${value}`;
+      this.setBubbleAtt(
+        "transform", (`${curTransform} ${value}`).trim(), id,
+        args.TYPE === "arrow" ? "arrowStyles" : "styles"
+      );
+    }
+
+    setGlow(args, util) {
+      const id = this.getTargetId(args.SPRITE, util, true);
+      const encodedId = this.makeEncodedID(id);
+      if (!encodedId) return;
+      const color = args.z === 0 ? "none" : `${args.x}px ${args.y * -1}px ${args.z}px ${args.COLOR}`;
+      const applyGlow = (key) => {
+        const elements = document.querySelectorAll(`div[id="SP_Speech-Ext-${key}"]`);
+        elements.forEach((element) => {
+          element.style.boxShadow = color;
+          allBubbles[key].styles.boxShadow = color;
+        });
+      };
+      if (id === "_all_") Object.keys(allBubbles).forEach(applyGlow);
+      else applyGlow(encodedId);
     }
 
     setEffect(args, util) {
-      const target = args.SPRITE === "_myself_" ? util.target.id : args.SPRITE;
-      const key = btoa(target).replaceAll("=", "_").replaceAll("/", "-");
-      if (!allBubbles[`#SP_Speech-Ext-${key}`]) this.addDefault(key);
-      let element = document.querySelector(`div[id="SP_Speech-Ext-${key}"]`);
+      const id = this.getTargetId(args.SPRITE, util, false);
+      const encodedId = this.makeEncodedID(id);
+      if (!encodedId) return;
+      if (!allBubbles[encodedId]) this.addDefault(id);
+      let element = allBubbles[encodedId].element;
       if (!element) return;
       if (args.TYPE === "arrow") element = element.querySelector(`div[id="arrow-ID"]`);
       let effect = Scratch.Cast.toString(args.EFFECT).replaceAll(" ", "");
       let term = "";
       const source = effect.includes("skew") || effect === "direction" ? "transform" : "filter";
       if (effect === "blur") term = "px";
-      if (effect === "saturation") effect = "saturate";
-      if (effect === "hue") { effect = "hue-rotate"; term = "deg" }
-      if (effect === "direction") { effect = "rotate"; term = "deg" }
-      if (effect === "skewx") { effect = "skewX"; term = "deg" }
-      if (effect === "skewy") { effect = "skewY"; term = "deg" }
+      else if (effect === "saturation") effect = "saturate";
+      else if (effect === "hue") { effect = "hue-rotate"; term = "deg" }
+      else if (effect === "direction") { effect = "rotate"; term = "deg" }
+      else if (effect === "skewx") { effect = "skewX"; term = "deg" }
+      else if (effect === "skewy") { effect = "skewY"; term = "deg" }
       let value = Scratch.Cast.toNumber(args.NUM);
       if (effect === "saturate" || effect === "invert" || effect === "sepia") value = value / 100;
-      if (effect === "contrast" || effect === "brightness") value = (value + 100) / 100;
-      if (effect === "opacity") value = (100 - value) / 100;
-      if (effect === "rotate") value = value - 90;
+      else if (effect === "contrast" || effect === "brightness") value = (value + 100) / 100;
+      else if (effect === "opacity") value = (100 - value) / 100;
+      else if (effect === "rotate") value = value - 90;
       value = `${effect}(${value}${term})`;
 
-      let curSource = element.style[source] || "";
+      const setter = effect.includes("skew") ? element.parentNode : element;
+      let curSource = setter.style[source] || "";
       curSource = curSource.replace(new RegExp(`${effect}\\([^)]*\\)`, "g"), "");
-      element.style[source] = `${curSource} ${value}`;
-      this.setBubbleAtt(
-        source, `${curSource} ${value}`.trim(), target,
-        args.TYPE === "arrow" ? "arrowStyles" : "styles"
+      setter.style[source] = `${curSource} ${value}`;
+      element.style.transformOrigin = "center";
+      if (!effect.includes("skew")) this.setBubbleAtt(
+        source, (`${curSource} ${value}`).trim(), id, args.TYPE === "arrow" ? "arrowStyles" : "styles"
       );
     }
 
-    setStretch(args, util) {
-      const target = args.SPRITE === "_myself_" ? util.target.id : args.SPRITE;
-      const key = btoa(target).replaceAll("=", "_").replaceAll("/", "-");
-      if (!allBubbles[`#SP_Speech-Ext-${key}`]) this.addDefault(key);
-      let element = document.querySelector(`div[id="SP_Speech-Ext-${key}"]`);
-      if (!element) return;
-      if (args.TYPE === "arrow") element = element.querySelector(`div[id="arrow-ID"]`);
-      let curTransform = element.style.transform || "";
-      curTransform = curTransform.replace(/scale\([^)]*\)/g, "");
-      const value = `scale(${Scratch.Cast.toNumber(args.x) / 100},${Scratch.Cast.toNumber(args.y) / 100})`;
-      element.style.transform = `${curTransform} ${value}`;
-      this.setBubbleAtt(
-        "transform", `${curTransform} ${value}`.trim(), target,
-        args.TYPE === "arrow" ? "arrowStyles" : "styles"
-      );
-    }
-
-    setGlow(args, util) {
-      let target = args.SPRITE === "_myself_" ? util.target.id : args.SPRITE;
-      target = btoa(target).replaceAll("=", "_").replaceAll("/", "-");
-      const color = args.z === 0 ? "none" : `${args.x}px ${args.y * -1}px ${args.z}px ${args.COLOR}`;
-      const applyGlow = (key) => {
-        const elements = document.querySelectorAll(`div[id="${key.substring(1)}"]`);
-        elements.forEach((element) => {
-          element.style.boxShadow = color;
-          allBubbles[key].styles.boxShadow = color;
-        });
-      };
-      if (args.SPRITE === "_all_") Object.keys(allBubbles).forEach(applyGlow);
-      else applyGlow(`#SP_Speech-Ext-${target.replaceAll(" ", "-")}`);
+    getEffect(args, util) {
+      let effect = Scratch.Cast.toString(args.EFFECT).replaceAll(" ", "");
+      if (effect === "saturation") effect = "saturate";
+      if (effect === "hue") effect = "hue-rotate";
+      if (effect === "direction") effect = "rotate";
+      const id = this.getTargetId(args.SPRITE, util, false);
+      const encodedId = this.makeEncodedID(id);
+      if (!encodedId) return;
+      if (!allBubbles[encodedId]) this.addDefault(id);
+      let path = allBubbles[encodedId][args.TYPE === "arrow" ? "arrowStyles" : "styles"];
+      path = path[effect.includes("scale") || effect.includes("skew") || effect === "rotate" ? "transform" : "filter"];
+      const filterProps = path.match(/[\w-]+\([^)]+\)/g) || [];
+      const filterObj = {};
+      filterProps.forEach(property => {
+        const [name, value] = property.split("(");
+        filterObj[name.toLowerCase()] = value.replace(/\)$/, "");
+      });
+      try {
+        if (effect.includes("scale")) {
+          const value = filterObj["scale"].split(",");
+          return value[effect.includes("x") ? 0 : 1] * 100;
+        } else {
+          let number = Scratch.Cast.toNumber(filterObj[effect].replace("px", "").replace("deg", ""));
+          if (effect === "saturate" || effect === "invert" || effect === "sepia") number = number * 100;
+          else if (effect === "contrast" || effect === "brightness") number = number * 100 - 100;
+          else if (effect === "opacity") number = (number * -100) + 100;
+          else if (effect === "rotate") number = number + 90;
+          return number;
+        }
+      } catch { return "" }
     }
 
     resetEffect(args, util) {
       const effects = this.getEffects(false);
       const defaultVals = [0, 100, 0, 0, 0, 0, 0, 0, 90, 0, 0];
-      let target = args.SPRITE === "_myself_" ? util.target.id : args.SPRITE;
-      const setEffects = (key) => {
+      const id = this.getTargetId(args.SPRITE, util, true);
+      const reseter = (obj) => {
         for (let i = 0; i < defaultVals.length; i++) {
-          this.setEffect({ TYPE : "bubble", EFFECT: effects[i], NUM: defaultVals[i], SPRITE: target });
-          this.setEffect({ TYPE : "arrow", EFFECT: effects[i], NUM: defaultVals[i], SPRITE: target });
+          this.setEffect({ TYPE : "bubble", EFFECT: effects[i], NUM: defaultVals[i], SPRITE: obj.id });
+          this.setEffect({ TYPE : "arrow", EFFECT: effects[i], NUM: defaultVals[i], SPRITE: obj.id });
         }
-        this.setStretch({ TYPE : "bubble", x: 100, y: 100, SPRITE: target });
-        this.setStretch({ TYPE : "arrow", x: 100, y: 100, SPRITE: target });
+        this.setStretch({ TYPE : "bubble", x: 100, y: 100, SPRITE: obj.id });
+        this.setStretch({ TYPE : "arrow", x: 100, y: 100, SPRITE: obj.id });
       };
-      if (args.SPRITE === "_all_") Object.keys(allBubbles).forEach(setEffects);
-      else setEffects(Scratch.Cast.toString(target));
+      if (id === "_all_") Object.values(allBubbles).forEach(reseter);
+      else reseter({ id });
     }
   }
 
