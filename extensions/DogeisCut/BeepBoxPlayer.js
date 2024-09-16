@@ -4,7 +4,7 @@
 // By: DogeisCut <https://scratch.mit.edu/users/DogeisCut/>
 // License: MPL-2.0
 
-// Version 1.0.1
+// Version 1.1.1
 
 //TODO: Synth deletion (and naming perhaps?)
 //TODO: Song validation blocks.
@@ -13,6 +13,14 @@
 //TODO: loop point blocks
 //TODO: set channel (x) current (y) to (z) block (like volume n stuff, things that modulation can affect) (and it's currasponding change by block)
 //TODO: song length in seconds, and perhaps how far in the song you are in seconds (rn you have to calculate it with the bpm)
+// make sure this has outro, intro and loop options 
+//TODO: optimise song json and url to only generate on song change
+//TODO: beats per bar data n stuff, and amount of bars
+//TODO: song completion percentage (((((((bar*24)*beatsPerBar)+((beat*24)+part))+(tick/2))/beatsPerBar)/24)/totalBars)
+//TODO: All option on unmute and mute block
+//TODO: perhaps split some of the "current" and "song" block functionality into seperate blocks
+
+//MAYBETODO: raw synth/beepbox function block somehow?
 
 (function (Scratch) {
   "use strict";
@@ -337,6 +345,20 @@
       };
     }
 
+    caluclateSongCompletionPercentage() {
+      return (synth.bar * 24 * synth.beatsPerBar + synth.beat * 24 + synth.part + synth.tick / 2) / (synth.beatsPerBar * 24 * synth.barCount);
+    }
+
+    samplesToTime(samples) {
+      const rawSeconds = Math.round(samples / synth.samplesPerSecond);
+      const rawSecondsUnrounded = samples / synth.samplesPerSecond;
+      const seconds = rawSeconds % 60;
+      const minutes = Math.floor(rawSeconds / 60);
+      return {'rawSeconds': rawSeconds, 'rawSecondsUnrounded': rawSecondsUnrounded, 'minutes': minutes, 'fullTimeString': (minutes + ":" + (seconds < 10 ? "0" : "") + seconds)};
+    }
+
+    /*menus*/
+
     getSynths() {
       const gettingSynths = [];
       for (let i in synths) {
@@ -373,6 +395,10 @@
           return synth.part;
         case "tick":
           return synth.tick;
+        case "progress ratio":
+          return this.caluclateSongCompletionPercentage();
+        case "progress seconds":
+          return this.samplesToTime(synth.getTotalSamples(true, true, 0))["rawSecondsUnrounded"] * this.caluclateSongCompletionPercentage();
       }
     }
     setCurrentValue(args) {
@@ -395,6 +421,7 @@
           break;
       }
     }
+
     song(args) {
       switch (args.WHAT) {
         case "tempo":
@@ -409,6 +436,10 @@
           return JSON.stringify(synth.song.toJsonObject());
         case "url":
           return synth.song.toBase64String();
+        case "samples ()":
+          return synth.getTotalSamples;
+        case "length":
+          return this.samplesToTime(synth.getTotalSamples(true, true, 0))["rawSecondsUnrounded"];
       }
     }
     setSongValue(args) {
@@ -421,6 +452,8 @@
           return;
       }
     }
+    
+    /*blocks*/
 
     playingSong(args) {
       return synth.isPlayingSong;
