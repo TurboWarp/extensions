@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MPL-2.0
 
-// Version V.4.2.01
+// Version V.4.2.02
 
 (function (Scratch) {
   "use strict";
@@ -716,6 +716,7 @@
           if (buttonInfo) {
             button.style.color = buttonInfo.textColor;
             button.style.fontFamily = this.fontFamily;
+            button.style.fontSize = this.fontSize;
             button.style.borderRadius = `${buttonInfo.borderRadius}px`;
             button.style.border = buttonInfo.border;
             button.style.padding = buttonInfo.padding;
