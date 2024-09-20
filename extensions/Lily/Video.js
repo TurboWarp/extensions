@@ -19,15 +19,15 @@
   // if it's not in the DOM in a place the browser thinks is visible. That means we can't
   // use display: none.
   // See https://github.com/TurboWarp/scratch-render/issues/12
-  const elementContainer = document.createElement('div');
-  elementContainer.className = 'tw-extensions-lily-videos-container';
-  elementContainer.style.pointerEvents = 'none';
-  elementContainer.style.position = 'absolute';
-  elementContainer.style.opacity = '0';
-  elementContainer.style.width = '0';
-  elementContainer.style.height = '0';
-  elementContainer.style.visibility = 'hidden';
-  elementContainer.ariaHidden = 'true';
+  const elementContainer = document.createElement("div");
+  elementContainer.className = "tw-extensions-lily-videos-container";
+  elementContainer.style.pointerEvents = "none";
+  elementContainer.style.position = "absolute";
+  elementContainer.style.opacity = "0";
+  elementContainer.style.width = "0";
+  elementContainer.style.height = "0";
+  elementContainer.style.visibility = "hidden";
+  elementContainer.ariaHidden = "true";
   document.body.appendChild(elementContainer);
 
   const BitmapSkin = runtime.renderer.exports.BitmapSkin;
