@@ -15,6 +15,21 @@
   const renderer = vm.renderer;
   const Cast = Scratch.Cast;
 
+  // In some versions of Chrome, it seems that trying to render a <video> returns pure black
+  // if it's not in the DOM in a place the browser thinks is visible. That means we can't
+  // use display: none.
+  // See https://github.com/TurboWarp/scratch-render/issues/12
+  const elementContainer = document.createElement('div');
+  elementContainer.className = 'tw-extensions-lily-videos-container';
+  elementContainer.style.pointerEvents = 'none';
+  elementContainer.style.position = 'absolute';
+  elementContainer.style.opacity = '0';
+  elementContainer.style.width = '0';
+  elementContainer.style.height = '0';
+  elementContainer.style.visibility = 'hidden';
+  elementContainer.ariaHidden = 'true';
+  document.body.appendChild(elementContainer);
+
   const BitmapSkin = runtime.renderer.exports.BitmapSkin;
   class VideoSkin extends BitmapSkin {
     constructor(id, renderer, videoName, videoSrc) {
@@ -49,6 +64,10 @@
       };
       this.videoElement.src = videoSrc;
       this.videoElement.currentTime = 0;
+
+      // <video> must be in the DOM for it to render (see comments above)
+      elementContainer.appendChild(this.videoElement);
+      this.videoElement.tabIndex = -1;
 
       this.videoDirty = true;
 
@@ -106,6 +125,7 @@
     dispose() {
       super.dispose();
       this.videoElement.pause();
+      this.videoElement.remove();
     }
   }
 
