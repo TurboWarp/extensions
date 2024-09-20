@@ -1,12 +1,15 @@
-const path = require("path");
-const MarkdownIt = require("markdown-it");
-const renderTemplate = require("./render-template");
+import pathUtil from "node:path";
+import MarkdownIt from "markdown-it";
+import renderTemplate from "./render-template.js";
+import urlUtil from "node:url";
 
 const md = new MarkdownIt({
   html: true,
   linkify: true,
   breaks: true,
 });
+
+const dirname = pathUtil.dirname(urlUtil.fileURLToPath(import.meta.url));
 
 md.renderer.rules.fence = function (tokens, idx, options, env, self) {
   const token = tokens[idx];
@@ -28,7 +31,7 @@ md.renderer.rules.fence = function (tokens, idx, options, env, self) {
 /**
  * @param {string} markdownSource Markdown code
  * @param {string} slug Path slug like 'TestMuffin/fetch'
- * @returns {string} HTML source code
+ * @returns {Promise<string>} HTML source code
  */
 const renderDocs = (markdownSource, slug) => {
   const env = {};
@@ -63,7 +66,7 @@ const renderDocs = (markdownSource, slug) => {
 
   const bodyHTML = md.renderer.render(tokens, md.options, env);
 
-  return renderTemplate(path.join(__dirname, "docs-template.ejs"), {
+  return renderTemplate(pathUtil.join(dirname, "docs-template.ejs"), {
     slug,
     headerHTML,
     headerText,
@@ -72,4 +75,4 @@ const renderDocs = (markdownSource, slug) => {
   });
 };
 
-module.exports = renderDocs;
+export default renderDocs;

@@ -1,26 +1,26 @@
-const fs = require("fs");
-const pathUtil = require("path");
+import * as fs from "node:fs/promises";
+import pathUtil from "node:path";
 
 /**
  * Recursively read a directory.
  * @param {string} directory
- * @returns {Array<[string, string]>} List of tuples [name, absolutePath].
+ * @returns {Promise<Array<[string, string]>>} List of tuples [name, absolutePath].
  * The return result includes files in subdirectories, but not the subdirectories themselves.
  */
-const recursiveReadDirectory = (directory) => {
+const recursiveReadDirectory = async (directory) => {
   const result = [];
-  for (const name of fs.readdirSync(directory)) {
+  for (const name of await fs.readdir(directory)) {
     if (name.startsWith(".")) {
       // Ignore .eslintrc.js, .DS_Store, etc.
       continue;
     }
     const absolutePath = pathUtil.join(directory, name);
-    const stat = fs.statSync(absolutePath);
+    const stat = await fs.stat(absolutePath);
     if (stat.isDirectory()) {
       for (const [
         relativeToChildName,
         childAbsolutePath,
-      ] of recursiveReadDirectory(absolutePath)) {
+      ] of await recursiveReadDirectory(absolutePath)) {
         // This always needs to use / on all systems
         result.push([`${name}/${relativeToChildName}`, childAbsolutePath]);
       }
@@ -35,9 +35,9 @@ const recursiveReadDirectory = (directory) => {
  * Synchronous create a directory and any parents. Does nothing if the folder already exists.
  * @param {string} directory
  */
-const mkdirp = (directory) => {
+const mkdirp = async (directory) => {
   try {
-    fs.mkdirSync(directory, {
+    await fs.mkdir(directory, {
       recursive: true,
     });
   } catch (e) {
@@ -47,7 +47,4 @@ const mkdirp = (directory) => {
   }
 };
 
-module.exports = {
-  recursiveReadDirectory,
-  mkdirp,
-};
+export { recursiveReadDirectory, mkdirp };
