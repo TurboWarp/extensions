@@ -10,55 +10,55 @@
   class SweetAlert {
     getInfo() {
       return {
-        id: 'sweetalert',
-        name: 'Sweet Alert',
-        color1: '#425436',
+        id: "sweetalert",
+        name: "Sweet Alert",
+        color1: "#425436",
         blocks: [
           {
-            opcode: 'showAlert',
+            opcode: "showAlert",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'show sweet alert with title [TITLE] and text [TEXT] of type [TYPE] button text [BTEXT]',
+            text: "show sweet alert with title [TITLE] and text [TEXT] of type [TYPE] button text [BTEXT]",
             arguments: {
               TITLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Title',
+                defaultValue: "Title",
               },
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'This is a modern alert!',
+                defaultValue: "This is a modern alert!",
               },
               BTEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'OK',
+                defaultValue: "OK",
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'alertTypes',
-                defaultValue: 'success',
+                menu: "alertTypes",
+                defaultValue: "success",
               },
             },
           },
           {
-            opcode: 'showInputAlert',
+            opcode: "showInputAlert",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'ask [QUESTION] with default [DEFAULT_TEXT] of type [TYPE] empty text warn [EMTEXT]',
+            text: "ask [QUESTION] with default [DEFAULT_TEXT] of type [TYPE] empty text warn [EMTEXT]",
             arguments: {
               QUESTION: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'What is your name?',
+                defaultValue: "What is your name?",
               },
               DEFAULT_TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Enter your name here...',
+                defaultValue: "Enter your name here...",
               },
               EMTEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'You need to enter something!',
+                defaultValue: "You need to enter something!",
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'alertTypes',
-                defaultValue: 'question',
+                menu: "alertTypes",
+                defaultValue: "question",
               },
             },
           },
@@ -66,7 +66,7 @@
         menus: {
           alertTypes: {
             acceptReporters: true,
-            items: ['success', 'error', 'warning', 'info', 'question'],
+            items: ["success", "error", "warning", "info", "question"],
           },
         },
       };
@@ -89,7 +89,7 @@
       return new Promise((resolve) => {
         window.Swal.fire({
           title: QUESTION,
-          input: 'text',
+          input: "text",
           inputPlaceholder: DEFAULT_TEXT,
           icon: TYPE,
           showCancelButton: true,
@@ -109,11 +109,10 @@
     }
   }
 
-  const script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+  const script = document.createElement("script");
+  script.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
   script.onload = () => {
     Scratch.extensions.register(new SweetAlert());
   };
   document.head.appendChild(script);
-
 })(Scratch);
