@@ -1,4 +1,3 @@
-// @turbowarp/extensions@0.0.1
 // Name: Sweet Alert
 // ID: sweetalert
 // Description: It allows you to send modern alerts using the Sweet Alert library.
@@ -76,7 +75,7 @@
     showAlert(args) {
       const { TITLE, TEXT, BTEXT, TYPE } = args;
 
-      Swal.fire({
+      window.Swal.fire({
         title: TITLE,
         text: TEXT,
         icon: TYPE,
@@ -88,7 +87,7 @@
       const { QUESTION, DEFAULT_TEXT, EMTEXT, TYPE } = args;
 
       return new Promise((resolve) => {
-        Swal.fire({
+        window.Swal.fire({
           title: QUESTION,
           input: 'text',
           inputPlaceholder: DEFAULT_TEXT,
