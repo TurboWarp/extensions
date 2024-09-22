@@ -1,6 +1,7 @@
+// @turbowarp/extensions@0.0.1
 // Name: Sweet Alert
 // ID: sweetalert
-// Description: It allows you to send modern alerts using the Sweet Alert library. 'https://cdn.jsdelivr.net/npm/sweetalert2@11'
+// Description: It allows you to send modern alerts using the Sweet Alert library.
 // By: XmerOriginals <https://scratch.mit.edu/users/XmerOriginals/>
 // License: MPL-2.0
 
@@ -27,7 +28,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'This is a modern alert!',
               },
-			  BTEXT: {
+              BTEXT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'OK',
               },
@@ -51,7 +52,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'Enter your name here...',
               },
-			  EMTEXT: {
+              EMTEXT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'You need to enter something!',
               },
@@ -73,35 +74,29 @@
     }
 
     showAlert(args) {
-      const title = args.TITLE;
-      const text = args.TEXT;
-	  const btext = args.BTEXT;
-      const type = args.TYPE;
+      const { TITLE, TEXT, BTEXT, TYPE } = args;
 
       Swal.fire({
-        title: title,
-        text: text,
-        icon: type,
-        confirmButtonText: btext,
+        title: TITLE,
+        text: TEXT,
+        icon: TYPE,
+        confirmButtonText: BTEXT,
       });
     }
 
     showInputAlert(args) {
-      const question = args.QUESTION;
-      const defaultText = args.DEFAULT_TEXT;
-	  const emtext = args.EMTEXT;
-      const type = args.TYPE;
+      const { QUESTION, DEFAULT_TEXT, EMTEXT, TYPE } = args;
 
       return new Promise((resolve) => {
         Swal.fire({
-          title: question,
+          title: QUESTION,
           input: 'text',
-          inputPlaceholder: defaultText,
-          icon: type,
+          inputPlaceholder: DEFAULT_TEXT,
+          icon: TYPE,
           showCancelButton: true,
           inputValidator: (value) => {
             if (!value) {
-              return emtext;
+              return EMTEXT;
             }
           },
         }).then((result) => {
