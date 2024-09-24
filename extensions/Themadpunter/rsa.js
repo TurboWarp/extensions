@@ -1,6 +1,7 @@
 // Name: RSA
 // ID: themadpunter-rsa
-// Description: Encrypt text and files using RSA, the world's best asymmetric encryption algorithm. 
+// Description: Encrypt text and files using RSA, the world's best asymmetric encryption algorithm.
+// By: Themadpunter <https://scratch.mit.edu/users/The_Mad_Punter/>
 // License: MIT
 
 (function(Scratch) {
