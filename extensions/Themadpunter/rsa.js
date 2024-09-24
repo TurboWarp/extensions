@@ -1,3 +1,8 @@
+// Name: RSA
+// ID: themadpunter-rsa
+// Description: Encrypt text and files using RSA, the world's best asymmetric encryption algorithm. 
+// License: MIT
+
 (function(Scratch) {
     'use strict';
 
