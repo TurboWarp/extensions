@@ -1,0 +1,178 @@
+(function() {
+    const extension = {
+        getInfo: function() {
+            return {
+                id: 'hamzaMath',
+                name: 'HamzaMath',
+                color: '#006400',
+                blocks: [
+                    // Separator between the two groups
+                    {
+                        opcode: 'separator1',
+                        blockType: Scratch.BlockType.LABEL,
+                        text: '--- Calculate ---',
+                        group: 'Calculates' // Group for arithmetic operations
+                    },
+                    // Arithmetic operations group
+                    {
+                        opcode: 'calculate',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Calculate: [EXPRESSION]',
+                        arguments: {
+                            EXPRESSION: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '1 + 1'
+                            }
+                        },
+                        group: 'Calculates' // Group for the blocks
+                    },
+                    {
+                        opcode: 'addMultiple',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Add: [NUMBERS]',
+                        arguments: {
+                            NUMBERS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '1, 2, 3'
+                            }
+                        },
+                        group: 'Calculates' // Group for the blocks
+                    },
+                    {
+                        opcode: 'calculateMultiple',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Multiple: [NUMBERS]',
+                        arguments: {
+                            NUMBERS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '1, 2, 3'
+                            }
+                        },
+                        group: 'Calculates' // Group for the blocks
+                    },
+                    {
+                        opcode: 'subtract',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Subtract: [NUMBERS]',
+                        arguments: {
+                            NUMBERS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '1, 2'
+                            }
+                        },
+                        group: 'Calculates' // Group for the blocks
+                    },
+                    {
+                        opcode: 'multiply',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Multiply: [NUMBERS]',
+                        arguments: {
+                            NUMBERS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '1, 2'
+                            }
+                        },
+                        group: 'Calculates' // Group for the blocks
+                    },
+                    {
+                        opcode: 'divide',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Divide: [NUMBERS]',
+                        arguments: {
+                            NUMBERS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '1, 2'
+                            }
+                        },
+                        group: 'Calculates' // Group for the blocks
+                    },
+                    {
+                        opcode: 'modulus',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Modulus: [NUMBERS]',
+                        arguments: {
+                            NUMBERS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '1, 2'
+                            }
+                        },
+                        group: 'Calculates' // Group for the blocks
+                    },
+                    // Separator between the two groups
+                    {
+                        opcode: 'separator2',
+                        blockType: Scratch.BlockType.LABEL,
+                        text: '--- Convert ---',
+                        group: 'Convert' // Conversion group
+                    },
+                    // Conversion group
+                    {
+                        opcode: 'toPositive',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Convert [NUMBER] to positive',
+                        arguments: {
+                            NUMBER: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        },
+                        group: 'Convert' // Conversion group
+                    },
+                    {
+                        opcode: 'toNegative',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Convert [NUMBER] to negative',
+                        arguments: {
+                            NUMBER: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        },
+                        group: 'Convert' // Conversion group
+                    }
+                ]
+            };
+        },
+        calculate: function(args) {
+            try {
+                const result = eval(args.EXPRESSION);
+                return result;
+            } catch (error) {
+                return 'Error'; // Return error message for invalid expression
+            }
+        },
+        addMultiple: function(args) {
+            const numbers = args.NUMBERS.split(',').map(Number);
+            return numbers.reduce((sum, num) => sum + num, 0); // Sum the numbers
+        },
+        calculateMultiple: function(args) {
+            const numbers = args.NUMBERS.split(',').map(Number);
+            return numbers.reduce((sum, num) => sum + num, 0); // Sum the numbers
+        },
+        subtract: function(args) {
+            const numbers = args.NUMBERS.split(',').map(Number);
+            return numbers.reduce((diff, num) => diff - num); // Subtract the numbers
+        },
+        multiply: function(args) {
+            const numbers = args.NUMBERS.split(',').map(Number);
+            return numbers.reduce((product, num) => product * num, 1); // Multiply the numbers
+        },
+        divide: function(args) {
+            const numbers = args.NUMBERS.split(',').map(Number);
+            if (numbers.includes(0)) return 'Error: Division by zero'; // Check for division by zero
+            return numbers.reduce((quotient, num) => quotient / num); // Divide the numbers
+        },
+        modulus: function(args) {
+            const numbers = args.NUMBERS.split(',').map(Number);
+            return numbers.reduce((result, num) => result % num); // Modulus of the numbers
+        },
+        toPositive: function(args) {
+            return Math.abs(args.NUMBER); // Convert the number to positive
+        },
+        toNegative: function(args) {
+            return -Math.abs(args.NUMBER); // Convert the number to negative
+        }
+    };
+
+    Scratch.extensions.register(extension);
+})();
