@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.7.01
+// Version V.1.7.03
 
 (function (Scratch) {
   "use strict";
@@ -31,7 +31,7 @@
     // if it isnt, we DOMPurify the filter before returning
     const input = container.getBlock(blockID).inputs.FILTER;
     const filterInput = container.getBlock(input.block).opcode;
-    string = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="SP-canvas-${id}"><filter id="${id}">${string}</filter></svg>`;
+    string = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><filter id="${id}">${string}</filter></svg>`;
     if (filterInput.startsWith("SPspriteEffects_") && !filterInput.includes("applyCustom")) {
       // applyCustom is the only block that has user inputted filter support
       return string;
@@ -59,7 +59,7 @@
     // support for when the GUI uses different parent elements on the canvas (SupportM = true)
     const thisCanv = supportM ? render.canvas : render.canvas.parentNode.parentNode.parentNode;
     let string = "";
-    for (let i = 0; i < allFilters.length; i++) { string += `url("#${allFilters[i]}") ` }
+    for (let i = 0; i < allFilters.length; i++) string += `url("#${allFilters[i]}") `;
     let curFilter = thisCanv.style.filter || "";
     curFilter = curFilter.replace(string.trim(), "").trim();
     thisCanv.style.filter = `${curFilter.trim()} ${string}`;
@@ -81,6 +81,16 @@
       return false;
     }
     return true;
+  };
+
+  const xmlEscape = function (unsafe) {
+    // when this is used, most unsafe characters are safe in filter IDs
+    return cast.toString(unsafe).replace(/[" ]/g, c => {
+      switch (c) {
+        case "\"": return "-'";
+        case " ": return "_";
+      }
+    });
   };
 
   class SPspriteEffects {
@@ -168,7 +178,7 @@
             text: "apply hue [COLOR] to [SPRITE]",
             hideFromPalette: !sprite,
             arguments: {
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
+              COLOR: { type: Scratch.ArgumentType.COLOR },
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
@@ -178,7 +188,7 @@
             text: "apply hue [COLOR] to [SPRITE]",
             hideFromPalette: sprite,
             arguments: {
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
+              COLOR: { type: Scratch.ArgumentType.COLOR },
               SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" }
             },
           },
@@ -464,7 +474,7 @@
               OUTLINE: { type: Scratch.ArgumentType.STRING, menu: "OUTLINES" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
+              COLOR: { type: Scratch.ArgumentType.COLOR }
             },
           },
           {
@@ -476,7 +486,7 @@
               OUTLINE: { type: Scratch.ArgumentType.STRING, menu: "OUTLINES" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
               SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
+              COLOR: { type: Scratch.ArgumentType.COLOR }
             },
           },
           {
@@ -485,7 +495,7 @@
             text: "add shadow to [SPRITE] at x [X] y [Y] colored [COLOR] at [NUM]%",
             hideFromPalette: !sprite,
             arguments: {
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
+              COLOR: { type: Scratch.ArgumentType.COLOR },
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -498,7 +508,7 @@
             text: "add shadow to [SPRITE] at x [X] y [Y] colored [COLOR] at [NUM]%",
             hideFromPalette: sprite,
             arguments: {
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
+              COLOR: { type: Scratch.ArgumentType.COLOR },
               SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -512,7 +522,7 @@
             hideFromPalette: !sprite,
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS2" },
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
+              COLOR: { type: Scratch.ArgumentType.COLOR },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
@@ -525,7 +535,7 @@
             hideFromPalette: sprite,
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
+              COLOR: { type: Scratch.ArgumentType.COLOR },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
@@ -841,7 +851,7 @@
 
     async getImage(image) {
       if (image.startsWith("data:image/")) {
-        return await new Promise((resolve, reject) => {
+        return await new Promise((resolve) => {
           // eslint-disable-next-line
           const img = new Image();
           img.onload = () => {
@@ -853,7 +863,7 @@
               xlink:href="${img.src}"/></g></g></svg>`;
             resolve(svg.replace(/\s+$/, ""));
           };
-          img.onerror = reject;
+          img.onerror = () => { resolve("") };
           img.src = image;
         });
       } else { return image }
@@ -895,11 +905,6 @@
         if (target.isOriginal) spriteNames.push({ text : target.getName(), value : target.getName() });
       }
       return spriteNames.length > 0 ? spriteNames : [""];
-    }
-
-    hexToRgb(hex) {
-      const bigint = parseInt(hex.replace(/^#/, ""), 16);
-      return {"r" : (bigint >> 16) & 255, "g" :(bigint >> 8) & 255, "b" : bigint & 255};
     }
 
     hexMap(hex) {
@@ -1125,7 +1130,7 @@
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
-        const rgbColor = this.hexToRgb(args.COLOR);
+        const rgbColor = cast.toRgbColorObject(args.COLOR);
         const filter = `<filter id="shadow"><feDropShadow dx="${args.X}" dy="${args.Y * -1}" stdDeviation="${args.NUM / 2}" flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})"/></filter>`;
         return this.filterApplier(svg, filter, "shadow");
       }
@@ -1138,7 +1143,7 @@
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         let filter, effect;
-        const rgbColor = this.hexToRgb(args.COLOR);
+        const rgbColor = cast.toRgbColorObject(args.COLOR);
         if (args.OUTLINE === "filled") {
           effect = "filled-outline";
           if (supportM) filter = `<filter id="filled-outline"><feMorphology operator="erode" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="xor" in="flood" in2="thickened" result="frame"/><feComposite operator="atop" in="frame" in2="SourceGraphic"/></filter>`;
@@ -1442,39 +1447,41 @@
       const container = util.thread.blockContainer;
       let filter = args.FILTER;
       const match = filter.match(/<filter(?:\s[^>]*)?>((?:.|\n)*?)<\/filter>/i);
-      if (match && match[1]) {
+      if (match && match[1]) {xmlEscape
         filter = match[1].replace(/\s+$/, "");
-        const filterID = cast.toString(args.NAME).replaceAll(" ", "_");
-        const oldFilter = document.querySelector(`svg[id^="SP-canvas-${filterID}"]`);
-        if (oldFilter) return oldFilter.parentNode.innerHTML = tryPure(filter, filterID, thisBlock, container);
+        const name = xmlEscape(args.NAME);
+        const oldFilter = document.querySelector(`div[id^="SP-canvas-${name}"]`);
+        if (oldFilter) {
+          oldFilter.innerHTML = tryPure(filter, name, thisBlock, container);
+          oldFilter.id = `SP-canvas-${name}`; // the DOM will un-xmlEscape the ID
+          return;
+        }
         const svg = document.createElement("div");
-        svg.innerHTML = tryPure(filter, filterID, thisBlock, container);
+        svg.innerHTML = tryPure(filter, name, thisBlock, container);
+        svg.id = `SP-canvas-${name}`; // the DOM will un-xmlEscape the ID
         document.body.appendChild(svg);
-        allFilters.push(filterID);
+        allFilters.push(name);
         const curFilter = canvas.style.filter;
-        canvas.style.filter = curFilter ? `${curFilter} url(#${filterID})` : `url(#${filterID})`;
+        if (!curFilter.includes(`url(#${name})`)) canvas.style.filter = curFilter ? `${curFilter} url(#${name})` : `url(#${name})`;
       } else { console.warn("Invalid Filter, Cancelled Application") }
     }
 
     removeCanvasFilter(args) {
-      const name = cast.toString(args.NAME).replaceAll(" ", "_");
-      if (canvas.style.filter.includes(`url("#${name}")`)) {
-        canvas.style.filter = canvas.style.filter.replace(`url(#${name})`, "").trim();
-        const array = canvas.style.filter.split(" ");
-        if (array.length === 1 && canvas.style.filter.includes(name)) canvas.style.filter = "";
-        const filterSel = document.querySelector(`svg[id^="SP-canvas-${name}"]`);
+      const curFilter = canvas.style.filter;
+      const name = xmlEscape(args.NAME);
+      if (curFilter.includes(`url("#${name}")`)) {
+        canvas.style.filter = curFilter.replaceAll(`url("#${name}")`, "").trim();
+        const filterSel = document.querySelector(`div[id^="SP-canvas-${name}"]`);
         if (filterSel) {
-          document.body.removeChild(filterSel.parentNode);
+          filterSel.remove();
           allFilters.splice(allFilters.indexOf(name), 1);
         }
       } else { console.warn("Filter not found, Cancelled Deletion") }
     }
 
     removeAllFilters(args) {
-      const filters = document.querySelectorAll(`svg[id^="SP-canvas-"]`);
-      if (filters.length > 0) {
-        for (let i = 0; i < filters.length; i++) { document.body.removeChild(filters[i].parentNode) }
-      }
+      const filters = document.querySelectorAll(`div[id^="SP-canvas-"]`);
+      if (filters.length > 0) for (let i = 0; i < filters.length; i++) filters[i].remove();
       canvas.style.filter = "";
       allFilters = [];
     }
