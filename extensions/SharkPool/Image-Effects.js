@@ -393,28 +393,6 @@
             arguments: {
               SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "<svg>" }
             }
-          },
-          // Deprecated
-          {
-            opcode: "clipImage", blockType: Scratch.BlockType.REPORTER,
-            text: "clip [CUTOUT] from [MAIN]", hideFromPalette: true,
-            arguments: {
-              MAIN: { type: Scratch.ArgumentType.STRING, defaultValue: "source-here" }, CUTOUT: { type: Scratch.ArgumentType.STRING, defaultValue: "cutout-here" }
-            }
-          },
-          {
-            opcode: "overlayImage", blockType: Scratch.BlockType.REPORTER,
-            text: "clip [CUTOUT] onto [MAIN]", hideFromPalette: true,
-            arguments: {
-              MAIN: { type: Scratch.ArgumentType.STRING, defaultValue: "source-here" }, CUTOUT: { type: Scratch.ArgumentType.STRING, defaultValue: "cutout-here" }
-            }
-          },
-          {
-            opcode: "convertHexToRGB", blockType: Scratch.BlockType.REPORTER,
-            text: "convert [HEX] to [CHANNEL]", hideFromPalette: true,
-            arguments: {
-              HEX: { type: Scratch.ArgumentType.COLOR }, CHANNEL: { type: Scratch.ArgumentType.STRING, menu: "CHANNELS" }
-            }
           }
         ],
         menus: {
@@ -424,8 +402,7 @@
           REMOVAL: ["under", "over", "equal to"],
           DOMINANT: ["most", "least"],
           fileType: ["content", "dataURI"],
-          EFFECTS: { acceptReporters: true, items: imageEffectMenu },
-          CHANNELS: { acceptReporters: true, items: ["R", "G", "B"] } // Deprecated
+          EFFECTS: { acceptReporters: true, items: imageEffectMenu }
         },
       };
     }
@@ -1297,11 +1274,6 @@
     }
 
     getShard(args) { return this.allShards[args.SHARD - 1] || "" }
-
-    // Deprecated
-    convertHexToRGB(args) { return hexToRgb(args.HEX)[{ R: 0, G: 1, B: 2 }[args.CHANNEL]] || "" }
-    clipImage(t){return new Promise((e,i)=>{let s=new Image;s.onload=()=>{let i=new Image;i.onload=()=>{let t=document.createElement("canvas");t.width=s.width,t.height=s.height;let a=t.getContext("2d"),h=i.width+this.scale[0],o=i.height+this.scale[1],n=this.cutPos[0]+s.width/2-h/2,r=this.cutPos[1]-s.height/2+o/2;a.drawImage(s,0,0),a.globalCompositeOperation="destination-in";let l=(this.cutoutDirection+270)*Math.PI/180;a.translate(n+h/2,-1*r+o/2),a.rotate(l),a.drawImage(i,-h/2,-o/2,h,o),a.setTransform(1,0,0,1,0,0),a.globalCompositeOperation="source-over",e(t.toDataURL("image/png"))},i.src=this.convertAsset(t.CUTOUT,"png")},s.src=this.convertAsset(t.MAIN,"png")})}
-    overlayImage(t){return new Promise((e,i)=>{let s=new Image;s.onload=()=>{let i=new Image;i.onload=()=>{let t=document.createElement("canvas");t.width=Math.max(s.width,i.width),t.height=Math.max(s.height,i.height);let a=t.getContext("2d");a.drawImage(s,0,0);let h=i.width+this.scale[0],o=i.height+this.scale[1],n=this.cutPos[0]+s.width/2-h/2,r=this.cutPos[1]-s.height/2+o/2;a.translate(n+h/2,-1*r+o/2),a.rotate((this.cutoutDirection+270)*Math.PI/180),a.drawImage(i,-h/2,-o/2,h,o),a.setTransform(1,0,0,1,0,0),e(t.toDataURL("image/png"))},i.src=this.convertAsset(t.CUTOUT,"png")},s.src=this.convertAsset(t.MAIN,"png")})}
   }
 
   Scratch.extensions.register(new imgEffectsSP());
