@@ -3,26 +3,26 @@
 // Description: Apply a variety of new effects to the data URI of Images or Costumes.
 // By: SharkPool
 
-// Version V.2.4.0
+// Version V.2.4.1
 
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) throw new Error("Image Effects must run unsandboxed");
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMzUuNzMwNjQiIGhlaWdodD0iMTM1LjczMDY0IiB2aWV3Qm94PSIwLDAsMTM1LjczMDY0LDEzNS43MzA2NCI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE3Mi4xMzQ2OCwtMTEyLjEzNDY4KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsPSIjOTk2NmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMTc1Ljg4NDY4LDE4MGMwLC0zNS40MDk5MSAyOC43MDU0MSwtNjQuMTE1MzIgNjQuMTE1MzIsLTY0LjExNTMyYzM1LjQwOTkxLDAgNjQuMTE1MzIsMjguNzA1NDEgNjQuMTE1MzIsNjQuMTE1MzJjMCwzNS40MDk5MSAtMjguNzA1NDEsNjQuMTE1MzIgLTY0LjExNTMyLDY0LjExNTMyYy0zNS40MDk5MSwwIC02NC4xMTUzMiwtMjguNzA1NDEgLTY0LjExNTMyLC02NC4xMTUzMnoiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBzdHJva2U9IiM3NzRkY2IiIHN0cm9rZS13aWR0aD0iNy41Ii8+PHBhdGggZD0iTTI0MC40NDQ3MSwxNzMuMjY3NjJjNC4wOTQ5MiwtMS42NzM4NiA5LjMwMjQ5LC0xLjE5MDEgMTIuMTM5MDIsLTUuMDU1MzljMi45NDAxOSwtNC4wMDY1NSAzLjgyMTg1LC0xMi4zNTQ5MyA0LjQ0ODA0LC0xNy4yNTg2MWMwLjYxMDA3LC00Ljc3NzQ5IDEuNzYyMTIsLTQuNjEwOTMgMi42MzYyMywwLjI0MTA0YzAuOTI1MDIsNS4xMzQ1MyAyLjAzNDk4LDEzLjY3Njk1IDQuNjU0MTcsMTcuMjQ2MDhjMi45OTI4OSw0LjA3ODM3IDguOTIyODMsMy44NDQ2MiAxMy4zMDU3Miw1LjUyMjUyYzMuMDc3MjksMS4xNzgwNyAyLjgwMzA3LDEuODUyNzYgLTAuNTU3NTMsMi41NjMxOGMtNC4zMTUyNSwwLjkxMjIyIC05LjkwMjk2LDEuNjU3MSAtMTIuOTE1ODksNS43NjI3N2MtMy4xNzkwMyw0LjMzMjAyIC00LjI2MTk4LDE0LjY4OTEyIC01LjAwNjEyLDIwLjg0MjU5Yy0wLjUxMDM2LDQuMjIwMjYgLTEuOTQ5MjEsMi40MjI2MiAtMi4yMTYzMiwwLjI3NjAxYy0wLjc3MDA3LC02LjE4ODY3IC0xLjk2NjQ1LC0xNi44MzA3NiAtNS41MjIxNiwtMjEuNjc2MDdjLTIuNTE2NjgsLTMuNDI5NDQgLTYuNjk2MjksLTQuMDQ3ODUgLTEwLjExNzcyLC01LjAwMDM5Yy00LjYxNjIsLTEuMjg1MTggLTUuMTMyNDYsLTEuNzEyMTUgLTAuODQ3NDUsLTMuNDYzNzJ6IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjE1Ii8+PHBhdGggZD0iTTI1Mi41ODM3MywxNjguMjEyMjNjMi45NDAxOSwtNC4wMDY1NSAyLjgyMTg1LC0xMi4zNTQ5MiAzLjQ0ODA0LC0xNy4yNTg2YzAuNjEwMDcsLTQuNzc3NDkgMy44NzMyMywtNC42MTA5MyA0Ljc0NzM0LDAuMjQxMDRjMC45MjUwMiw1LjEzNDUzIDAuOTIzODcsMTMuNjc2OTUgMy41NDMwNiwxNy4yNDYwOGMyLjk5Mjg5LDQuMDc4MzcgOC4zNjcyNywyLjczMzUxIDEyLjc1MDE2LDQuNDExNGMzLjA3NzI5LDEuMTc4MDcgMy4zNTg2MywzLjg1Mjc2IC0wLjAwMTk3LDQuNTYzMThjLTQuMzE1MjUsMC45MTIyMiAtOS45MDI5NiwwLjc2ODIxIC0xMi45MTU4OSw0Ljg3Mzg4Yy0zLjE3OTAzLDQuMzMyMDIgLTMuNDg0MiwxNC45MTEzNCAtNC4yMjgzMywyMS4wNjQ4MWMtMC41MTAzNiw0LjIyMDI2IC0zLjcyNjk5LDIuMjAwNCAtMy45OTQxLDAuMDUzNzljLTAuNzcwMDcsLTYuMTg4NjcgLTAuOTY2NDUsLTE2LjgzMDc2IC00LjUyMjE2LC0yMS42NzYwN2MtMi41MTY2OCwtMy40Mjk0NCAtNy40NzQwNywtMy4zODExOCAtMTAuODk1NSwtNC4zMzM3MmMtNC42MTYyLC0xLjI4NTE4IC00LjM1NDY4LC0zLjI2NzcxIC0wLjA2OTY3LC01LjAxOTI4YzAsMCA5LjMwMjQ5LC0wLjMwMTIzIDEyLjEzOTAyLC00LjE2NjUxeiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTIxNC4xNjUzMSwxNTIuMzM0NzJjMS40OTI4MiwtMS42NDY2OSAxLjk0MDQ3LC01LjA3Nzg3IDIuMjU4NCwtNy4wOTMyOGMwLjMwOTc1LC0xLjk2MzU1IDAuODk0NjcsLTEuODk1MDkgMS4zMzg0OSwwLjA5OTA2YzAuNDY5NjYsMi4xMTAyOSAxLjAzMzIyLDUuNjIxMjMgMi4zNjMwNiw3LjA4ODE0YzEuNTE5NTgsMS42NzYyMSA0LjUzMDM3LDEuNTgwMTMgNi43NTU3LDIuMjY5NzVjMS41NjI0MywwLjQ4NDE4IDEuNDIzMiwwLjc2MTQ4IC0wLjI4MzA3LDEuMDUzNDZjLTIuMTkwOTgsMC4zNzQ5MiAtNS4wMjgwMSwwLjY4MTA3IC02LjU1Nzc2LDIuMzY4NWMtMS42MTQwOCwxLjc4MDQ2IC0yLjE2MzkzLDYuMDM3MjIgLTIuNTQxNzUsOC41NjYyOWMtMC4yNTkxMiwxLjczNDUyIC0wLjk4OTY3LDAuOTk1NyAtMS4xMjUyOSwwLjExMzQ0Yy0wLjM5MDk5LC0yLjU0MzU0IC0wLjk5ODQyLC02LjkxNzQ0IC0yLjgwMzc2LC04LjkwODg2Yy0xLjI3Nzc5LC0xLjQwOTUgLTMuMzk5OSwtMS42NjM2NyAtNS4xMzcwNiwtMi4wNTUxNmMtMi4zNDM3NywtMC41MjgyMSAtMi42MDU5LC0wLjcwMzcgLTAuNDMwMjcsLTEuNDIzNTljMCwwIDQuNzIzMTMsLTAuNDg5MTIgNi4xNjMzMSwtMi4wNzc3NXoiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNMjE0LjE2NTMxLDE1Mi4zMzQ3MmMxLjQ5MjgyLC0xLjY0NjY5IDEuMjczODEsLTQuOTY2NzYgMS41OTE3NCwtNi45ODIxN2MwLjMwOTc1LC0xLjk2MzU1IDIuMTE2ODksLTIuMDA2MiAyLjU2MDcsLTAuMDEyMDVjMC40Njk2NiwyLjExMDI5IDAuNDc3NjcsNS42MjEyMyAxLjgwNzUxLDcuMDg4MTRjMS41MTk1OCwxLjY3NjIxIDQuMzA4MTUsMC42MzU2OCA2LjUzMzQ4LDEuMzI1M2MxLjU2MjQzLDAuNDg0MTggMS42NDU0MiwyLjI2MTQ4IC0wLjA2MDg1LDIuNTUzNDZjLTIuMTkwOTgsMC4zNzQ5MiAtNS4wMjgwMSwwLjEyNTUyIC02LjU1Nzc2LDEuODEyOTVjLTEuNjE0MDgsMS43ODA0NiAtMS4xNjM5Myw2LjAzNzIyIC0xLjU0MTc1LDguNTY2MjljLTAuMjU5MTIsMS43MzQ1MiAtMi43Njc0NSwwLjk5NTcgLTIuOTAzMDcsMC4xMTM0NGMtMC4zOTA5OSwtMi41NDM1NCAtMC4yMjA2NCwtNi45MTc0NCAtMi4wMjU5OCwtOC45MDg4NmMtMS4yNzc3OSwtMS40MDk1IC00LjI4ODc5LC0wLjk5NyAtNi4wMjU5NSwtMS4zODg0OWMtMi4wMDQ1OCwtMC40NTE3NyAtMS4yNjQyMSwtMi4yMDEwOCAtMC4wMDA1MiwtMi42OTgwOWMwLjIxMzgyLC0wLjA4NDA5IDUuMTgyMjgsMC4xMTg3MSA2LjYyMjQ2LC0xLjQ2OTkyeiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTIyMC44NTY0LDIwNC44MDk1MWMxLjU2MTg4LC0xLjk1NjIgMi4wMzAyNSwtNi4wMzIyOSAyLjM2Mjg5LC04LjQyNjUyYzAuMzI0MDgsLTIuMzMyNjIgMC45MzYwNiwtMi4yNTEyOSAxLjQwMDQxLDAuMTE3NjhjMC40OTEzOSwyLjUwNjkzIDEuMDgxMDIsNi42Nzc3OSAyLjQ3MjM5LDguNDIwNDFjMS41ODk4OSwxLjk5MTI2IDQuNzM5OTgsMS44NzcxNCA3LjA2ODI1LDIuNjk2MzdjMS42MzQ3MiwwLjU3NTIgMS40ODkwNSwwLjkwNDYxIC0wLjI5NjE3LDEuMjUxNDdjLTIuMjkyMzUsMC40NDUzOCAtNS4yNjA2NCwwLjgwOTA4IC02Ljg2MTE2LDIuODEzNjhjLTEuNjg4NzUsMi4xMTUxMSAtMi4yNjQwNSw3LjE3MTk4IC0yLjY1OTM1LDEwLjE3NjQxYy0wLjI3MTExLDIuMDYwNTQgLTEuMDM1NDUsMS4xODI4NSAtMS4xNzczNSwwLjEzNDc2Yy0wLjQwOTA4LC0zLjAyMTYyIC0xLjA0NDYxLC04LjIxNzY0IC0yLjkzMzQ4LC0xMC41ODMzNmMtMS4zMzY5MSwtMS42NzQ0MiAtMy41NTcxOSwtMS45NzYzNyAtNS4zNzQ3MSwtMi40NDE0NWMtMi40NTIyLC0wLjYyNzQ5IC0yLjcyNjQ2LC0wLjgzNTk1IC0wLjQ1MDE5LC0xLjY5MTE2YzAsMCA0Ljk0MTY1LC0wLjU4MTA3IDYuNDQ4NDYsLTIuNDY4M3oiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNMjIwLjg1NjQsMjA0LjgwOTUxYzEuNTYxODgsLTEuOTU2MiAxLjM2MzU4LC02LjAzMjI5IDEuNjk2MjIsLTguNDI2NTJjMC4zMjQwOCwtMi4zMzI2MiAyLjM4MDUsLTIuMjUxMjkgMi44NDQ4NiwwLjExNzY4YzAuNDkxMzksMi41MDY5MyAwLjMwMzI0LDYuNjc3NzkgMS42OTQ2LDguNDIwNDFjMS41ODk4OSwxLjk5MTI2IDQuMjk1NTMsMC45NDY1OCA2LjYyMzgxLDEuNzY1ODJjMS42MzQ3MiwwLjU3NTIgMS45MzM0OSwyLjM5MDcyIDAuMTQ4MjgsMi43Mzc1OGMtMi4yOTIzNSwwLjQ0NTM4IC01LjI2MDY0LDAuMjUzNTIgLTYuODYxMTYsMi4yNTgxM2MtMS42ODg3NSwyLjExNTExIC0xLjQ4NjI3LDcuMTcxOTggLTEuODgxNTYsMTAuMTc2NDFjLTAuMjcxMTEsMi4wNjA1NCAtMi41OTEwMSwxLjE4Mjg1IC0yLjczMjksMC4xMzQ3NmMtMC40MDkwOCwtMy4wMjE2MiAtMC4yNjY4MywtOC4yMTc2NCAtMi4xNTU3LC0xMC41ODMzNmMtMS4zMzY5MSwtMS42NzQ0MiAtNC4wMDE2NCwtMS41MzE5MyAtNS44MTkxNiwtMS45OTcwMWMtMi40NTIyLC0wLjYyNzQ5IC0yLjI4MjAxLC0xLjgzNTk1IC0wLjAwNTc0LC0yLjY5MTE2YzAsMCA0Ljk0MTY0LC0wLjAyNTUyIDYuNDQ4NDUsLTEuOTEyNzV6IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjAiLz48L2c+PC9nPjwvc3ZnPg==";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMzUuNzMxIiBoZWlnaHQ9IjEzNS43MzEiIHZpZXdCb3g9IjAgMCAxMzUuNzMxIDEzNS43MzEiPjxnIGZpbGw9IiM5NmYiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTMuNzUgNjcuODY1YzAtMzUuNDEgMjguNzA1LTY0LjExNSA2NC4xMTUtNjQuMTE1czY0LjExNSAyOC43MDUgNjQuMTE1IDY0LjExNS0yOC43MDUgNjQuMTE1LTY0LjExNSA2NC4xMTVTMy43NSAxMDMuMjc1IDMuNzUgNjcuODY1eiIgc3Ryb2tlPSIjNzc0ZGNiIiBzdHJva2Utd2lkdGg9IjcuNSIvPjxwYXRoIGQ9Ik02OC4zMSA2MS4xMzNjNC4wOTUtMS42NzQgOS4zMDItMS4xOSAxMi4xMzktNS4wNTYgMi45NC00LjAwNiAzLjgyMi0xMi4zNTUgNC40NDgtMTcuMjU4LjYxLTQuNzc4IDEuNzYyLTQuNjExIDIuNjM2LjI0LjkyNSA1LjEzNSAyLjAzNSAxMy42NzggNC42NTQgMTcuMjQ3IDIuOTkzIDQuMDc4IDguOTIzIDMuODQ0IDEzLjMwNiA1LjUyMiAzLjA3NyAxLjE3OCAyLjgwMyAxLjg1My0uNTU4IDIuNTYzLTQuMzE1LjkxMy05LjkwMyAxLjY1OC0xMi45MTYgNS43NjMtMy4xNzkgNC4zMzItNC4yNjIgMTQuNjktNS4wMDYgMjAuODQzLS41MSA0LjIyLTEuOTQ5IDIuNDIyLTIuMjE2LjI3Ni0uNzctNi4xODktMS45NjYtMTYuODMxLTUuNTIyLTIxLjY3Ni0yLjUxNy0zLjQzLTYuNjk2LTQuMDQ4LTEwLjExOC01LTQuNjE2LTEuMjg2LTUuMTMyLTEuNzEzLS44NDctMy40NjR6IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMTUiLz48cGF0aCBkPSJNODAuNDQ5IDU2LjA3N2MyLjk0LTQuMDA2IDIuODIyLTEyLjM1NSAzLjQ0OC0xNy4yNTguNjEtNC43NzggMy44NzMtNC42MTEgNC43NDcuMjQuOTI1IDUuMTM1LjkyNCAxMy42NzggMy41NDMgMTcuMjQ3IDIuOTkzIDQuMDc4IDguMzY3IDIuNzMzIDEyLjc1IDQuNDExIDMuMDc4IDEuMTc4IDMuMzU5IDMuODUzLS4wMDIgNC41NjMtNC4zMTUuOTEzLTkuOTAzLjc2OS0xMi45MTYgNC44NzQtMy4xNzkgNC4zMzItMy40ODQgMTQuOTEyLTQuMjI4IDIxLjA2NS0uNTEgNC4yMi0zLjcyNyAyLjItMy45OTQuMDU0LS43Ny02LjE4OS0uOTY2LTE2LjgzMS00LjUyMi0yMS42NzYtMi41MTctMy40My03LjQ3NC0zLjM4MS0xMC44OTYtNC4zMzQtNC42MTYtMS4yODUtNC4zNTQtMy4yNjgtLjA3LTUuMDIgMCAwIDkuMzAzLS4zIDEyLjE0LTQuMTY2Ii8+PHBhdGggZD0iTTQyLjAzIDQwLjJjMS40OTMtMS42NDcgMS45NC01LjA3OCAyLjI1OS03LjA5NC4zMS0xLjk2My44OTQtMS44OTUgMS4zMzguMS40NyAyLjExIDEuMDMzIDUuNjIgMi4zNjMgNy4wODggMS41MiAxLjY3NiA0LjUzIDEuNTggNi43NTYgMi4yNyAxLjU2Mi40ODQgMS40MjMuNzYtLjI4MyAxLjA1My0yLjE5MS4zNzUtNS4wMjguNjgtNi41NTggMi4zNjgtMS42MTQgMS43OC0yLjE2NCA2LjAzOC0yLjU0MiA4LjU2Ny0uMjU5IDEuNzM0LS45OS45OTUtMS4xMjUuMTEzLS4zOS0yLjU0My0uOTk4LTYuOTE3LTIuODA0LTguOTA5LTEuMjc3LTEuNDEtMy40LTEuNjYzLTUuMTM3LTIuMDU1LTIuMzQ0LS41MjgtMi42MDYtLjcwNC0uNDMtMS40MjQgMCAwIDQuNzIzLS40ODkgNi4xNjMtMi4wNzd6IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNNDIuMDMgNDAuMmMxLjQ5My0xLjY0NyAxLjI3NC00Ljk2NyAxLjU5Mi02Ljk4Mi4zMS0xLjk2NCAyLjExNy0yLjAwNyAyLjU2LS4wMTMuNDcgMi4xMS40NzggNS42MjIgMS44MDggNy4wODkgMS41MiAxLjY3NiA0LjMwOC42MzUgNi41MzQgMS4zMjUgMS41NjIuNDg0IDEuNjQ1IDIuMjYxLS4wNjEgMi41NTMtMi4xOTEuMzc1LTUuMDI4LjEyNi02LjU1OCAxLjgxMy0xLjYxNCAxLjc4LTEuMTY0IDYuMDM4LTEuNTQyIDguNTY3LS4yNTkgMS43MzQtMi43NjcuOTk1LTIuOTAzLjExMy0uMzktMi41NDMtLjIyLTYuOTE3LTIuMDI2LTguOTA5LTEuMjc3LTEuNDEtNC4yODgtLjk5Ny02LjAyNi0xLjM4OC0yLjAwNC0uNDUyLTEuMjY0LTIuMjAxIDAtMi42OTguMjE0LS4wODQgNS4xODIuMTE4IDYuNjIyLTEuNDciLz48cGF0aCBkPSJNNDguNzIxIDkyLjY3NWMxLjU2Mi0xLjk1NyAyLjAzLTYuMDMzIDIuMzYzLTguNDI3LjMyNC0yLjMzMy45MzYtMi4yNTEgMS40LjExOC40OTIgMi41MDcgMS4wODIgNi42NzcgMi40NzMgOC40MiAxLjU5IDEuOTkxIDQuNzQgMS44NzcgNy4wNjggMi42OTYgMS42MzUuNTc2IDEuNDkuOTA1LS4yOTYgMS4yNTItMi4yOTIuNDQ1LTUuMjYuODA5LTYuODYxIDIuODE0LTEuNjg5IDIuMTE1LTIuMjY0IDcuMTcyLTIuNjYgMTAuMTc2LS4yNyAyLjA2LTEuMDM1IDEuMTgzLTEuMTc3LjEzNS0uNDA5LTMuMDIyLTEuMDQ0LTguMjE4LTIuOTMzLTEwLjU4NC0xLjMzNy0xLjY3NC0zLjU1Ny0xLjk3Ni01LjM3NS0yLjQ0MS0yLjQ1Mi0uNjI4LTIuNzI2LS44MzYtLjQ1LTEuNjkxIDAgMCA0Ljk0Mi0uNTgxIDYuNDQ4LTIuNDY4eiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTQ4LjcyMSA5Mi42NzVjMS41NjItMS45NTcgMS4zNjQtNi4wMzMgMS42OTctOC40MjcuMzI0LTIuMzMzIDIuMzgtMi4yNTEgMi44NDQuMTE4LjQ5MiAyLjUwNy4zMDQgNi42NzcgMS42OTUgOC40MiAxLjU5IDEuOTkxIDQuMjk2Ljk0NyA2LjYyNCAxLjc2NiAxLjYzNS41NzUgMS45MzMgMi4zOS4xNDggMi43MzctMi4yOTIuNDQ2LTUuMjYuMjU0LTYuODYxIDIuMjU5LTEuNjg5IDIuMTE1LTEuNDg2IDcuMTcyLTEuODgyIDEwLjE3Ni0uMjcgMi4wNi0yLjU5IDEuMTgzLTIuNzMyLjEzNS0uNDEtMy4wMjItLjI2Ny04LjIxOC0yLjE1Ni0xMC41ODQtMS4zMzctMS42NzQtNC4wMDItMS41MzItNS44Mi0xLjk5Ny0yLjQ1Mi0uNjI3LTIuMjgxLTEuODM2LS4wMDUtMi42OSAwIDAgNC45NDItLjAyNiA2LjQ0OC0xLjkxNHoiLz48L2c+PC9zdmc+";
 
-  function hexToRgb(hex) {
-    // returns [r,g,b,a]
+  const cast = Scratch.Cast;
+  const hexToRgb = (hex) => {
     return [
       parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16),
-      hex.length === 9 ? parseInt(hex.slice(7, 9), 16) / 255 : 255
+      hex.length === 9 ? parseInt(hex.slice(7, 9), 16) : 255
     ];
-  }
-  function rgbaToHex(r, g, b, a) {
+  };
+  const rgbaToHex = (r, g, b, a) => {
     const alpha = a !== undefined ? Math.round(a).toString(16).padStart(2, "0") : "";
     return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}${alpha}`;
-  }
+  };
   const imageEffectMenu = [
     "Saturation", "Opaque", "Glitch", "Chunk Glitch", "Clip Glitch", "Vignette",
     "Ripple", "Displacement", "Posterize", "Blur", "Scanlines", "Grain", "Cubism",
@@ -49,7 +49,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "apply hue [COLOR] to URI [SVG]",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               COLOR: { type: Scratch.ArgumentType.COLOR }
             }
           },
@@ -60,7 +60,7 @@
             text: "remove color [COLOR] from [DATA_URI]",
             arguments: {
               COLOR: { type: Scratch.ArgumentType.COLOR },
-              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" }
+              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" }
             }
           },
           {
@@ -70,7 +70,7 @@
             arguments: {
               COLOR: { type: Scratch.ArgumentType.COLOR },
               REPLACE: { type: Scratch.ArgumentType.COLOR, defaultValue: "#00ff00" },
-              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" }
+              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" }
             }
           },
           {
@@ -88,7 +88,7 @@
             text: "set [EFFECT] effect of URI [SVG] to [PERCENTAGE]%",
             arguments: {
               EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECTS" },
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               PERCENTAGE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 }
             }
           },
@@ -97,7 +97,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "set bulge effect of URI [SVG] to [STRENGTH]% at x [CENTER_X] y [CENTER_Y]",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               STRENGTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               CENTER_X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               CENTER_Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
@@ -108,7 +108,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "set wave effect of URI [SVG] to amplitude x [AMPX] y [AMPY] and frequency x [FREQX] y [FREQY]",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               AMPX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               AMPY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               FREQX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
@@ -120,7 +120,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "set line glitch of URI [SVG] to [PERCENTAGE]% on [DIRECT] axis and line width [WIDTH]",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               PERCENTAGE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               DIRECT: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" },
               WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
@@ -131,7 +131,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "set abberation of URI [SVG] to colors [COLOR1] and [COLOR2] at [PERCENTAGE]% on [DIRECT] axis",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               PERCENTAGE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
               COLOR1: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
               COLOR2: { type: Scratch.ArgumentType.COLOR, defaultValue: "#00f7ff" },
@@ -144,7 +144,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "remove pixels from URI [SVG] [REMOVE] [THRESHOLD]% transparency",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               THRESHOLD: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               REMOVE: { type: Scratch.ArgumentType.STRING, menu: "REMOVAL" }
             }
@@ -152,12 +152,11 @@
           {
             opcode: "applyEdgeOutlineEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: "add outline to URI [SVG] thickness [THICKNESS] color [COLOR] opacity [A]%",
+            text: "add outline to URI [SVG] thickness [THICKNESS] color [COLOR]",
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               THICKNESS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
-              A: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
+              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
             }
           },
           { blockType: Scratch.BlockType.LABEL, text: "Clipping" },
@@ -254,7 +253,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "crack [URI] into [SHARDS] shards",
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               SHARDS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
             }
           },
@@ -268,11 +267,21 @@
           },
           { blockType: Scratch.BlockType.LABEL, text: "Pixels" },
           {
+            opcode: "commonCol",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[TYPE] common color in [URI]",
+            arguments: {
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "DOMINANT" },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" }
+            }
+          },
+          "---",
+          {
             opcode: "numPixels",
             blockType: Scratch.BlockType.REPORTER,
             text: "number of pixels [TYPE] in [URI]",
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "PIXELTYPE" }
             }
           },
@@ -281,7 +290,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "get hex of pixel #[NUM] in [URI]",
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
             }
           },
@@ -290,7 +299,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "set color of pixel #[NUM] to [COLOR] in [URI]",
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               COLOR: { type: Scratch.ArgumentType.COLOR }
             }
@@ -300,7 +309,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "set color of pixels from #[NUM] to [NUM2] to [COLOR] in [URI]",
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               NUM2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
               COLOR: { type: Scratch.ArgumentType.COLOR }
@@ -322,7 +331,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "convert bitmap URI [URI] to svg [TYPE]",
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "fileType" }
             }
           },
@@ -331,7 +340,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "make svg with image URI [URI] to svg [TYPE]",
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "fileType" }
             }
           },
@@ -340,7 +349,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "upscale image URI [URI] by [NUM] %",
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
             }
           },
@@ -350,7 +359,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "stretch URI [URI] to width [W] height [H]",
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue:  "svg/data-uri" },
+              URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
               W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 200 },
               H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
             }
@@ -384,6 +393,28 @@
             arguments: {
               SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "<svg>" }
             }
+          },
+          // Deprecated
+          {
+            opcode: "clipImage", blockType: Scratch.BlockType.REPORTER,
+            text: "clip [CUTOUT] from [MAIN]", hideFromPalette: true,
+            arguments: {
+              MAIN: { type: Scratch.ArgumentType.STRING, defaultValue: "source-here" }, CUTOUT: { type: Scratch.ArgumentType.STRING, defaultValue: "cutout-here" }
+            }
+          },
+          {
+            opcode: "overlayImage", blockType: Scratch.BlockType.REPORTER,
+            text: "clip [CUTOUT] onto [MAIN]", hideFromPalette: true,
+            arguments: {
+              MAIN: { type: Scratch.ArgumentType.STRING, defaultValue: "source-here" }, CUTOUT: { type: Scratch.ArgumentType.STRING, defaultValue: "cutout-here" }
+            }
+          },
+          {
+            opcode: "convertHexToRGB", blockType: Scratch.BlockType.REPORTER,
+            text: "convert [HEX] to [CHANNEL]", hideFromPalette: true,
+            arguments: {
+              HEX: { type: Scratch.ArgumentType.COLOR }, CHANNEL: { type: Scratch.ArgumentType.STRING, menu: "CHANNELS" }
+            }
           }
         ],
         menus: {
@@ -391,8 +422,10 @@
           MASKING: ["clip", "mask", "overlay"],
           PIXELTYPE: ["total", "per line", "per row"],
           REMOVAL: ["under", "over", "equal to"],
+          DOMINANT: ["most", "least"],
           fileType: ["content", "dataURI"],
-          EFFECTS: { acceptReporters: true, items: imageEffectMenu }
+          EFFECTS: { acceptReporters: true, items: imageEffectMenu },
+          CHANNELS: { acceptReporters: true, items: ["R", "G", "B"] } // Deprecated
         },
       };
     }
@@ -414,8 +447,7 @@
 
     createCanvasCtx(w, h, img, x, y) {
       const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
+      canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext("2d");
       if (img !== undefined) ctx.drawImage(img, x, y);
       return { canvas, ctx };
@@ -437,36 +469,34 @@
       return { width: maxX - minX + 1, height: maxY - minY + 1, offsetX: minX, offsetY: minY };
     }
 
-    confirmAsset(input, type) {
+    convertAsset(input, type) {
       if (!input || !(input.startsWith("data:image/") || input.startsWith("<svg"))) return menuIconURI;
       if (type === "png") return input.startsWith("data:image/") ? input : `data:image/svg+xml;base64,${btoa(input)}`;
       else return input.startsWith("data:image/") ? this.makeSVGimage({ URI : input, TYPE : "content" }) : input;
     }
 
     // Block Funcs
-    setSoftness(args) { this.softness = Scratch.Cast.toNumber(args.AMT) }
+    setSoftness(args) { this.softness = cast.toNumber(args.AMT) }
 
     applyHueEffect(args) {
       return new Promise((resolve) => {
         const color = hexToRgb(args.COLOR);
         const img = new Image();
         img.onload = () => {
-          const pixelData = this.printImg(img);
-          const data = pixelData;
+          const data = this.printImg(img);
           for (let i = 0; i < data.length; i += 4) {
             data[i] = Math.min(255, (data[i] * color[0]) / 255);
             data[i + 1] = Math.min(255, (data[i + 1] * color[1]) / 255);
             data[i + 2] = Math.min(255, (data[i + 2] * color[2]) / 255);
+            data[i + 3] = Math.min(255, (data[i + 3] * (color[3] ?? 255)) / 255);
           }
-          resolve(this.exportImg(img, pixelData));
+          resolve(this.exportImg(img, data));
         };
-        img.src = this.confirmAsset(args.SVG, "png");
+        img.src = this.convertAsset(args.SVG, "png");
       });
     }
 
-    deleteColor(args) {
-      return this.replaceColor({ COLOR : args.COLOR, REPLACE : "#00000000", DATA_URI : args.DATA_URI });
-    }
+    deleteColor(args) { return this.replaceColor({ ...args, REPLACE : "#00000000" }) }
 
     replaceColor(args) {
       const colRem = hexToRgb(args.COLOR);
@@ -482,24 +512,24 @@
           }
           resolve(this.exportImg(imageElement, pixelData));
         };
-        imageElement.src = this.confirmAsset(args.DATA_URI, "png");
+        imageElement.src = this.convertAsset(args.DATA_URI, "png");
       });
     }
 
     applyEffect(args) {
       return new Promise((resolve) => {
-        const percent = Scratch.Cast.toNumber(args.PERCENTAGE);
+        const percent = cast.toNumber(args.PERCENTAGE);
         const img = new Image();
         img.onload = async () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width, img.height, img, 0, 0);
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const effectFunc = this[`apply${Scratch.Cast.toString(args.EFFECT).replaceAll(" ", "")}`];
+          const effectFunc = this[`apply${cast.toString(args.EFFECT).replaceAll(" ", "")}`];
           if (effectFunc && typeof effectFunc === "function") await effectFunc(imageData, percent);
           else resolve("");
           ctx.putImageData(imageData, 0, 0);
           resolve(canvas.toDataURL());
         };
-        img.src = this.confirmAsset(args.SVG, "png");
+        img.src = this.convertAsset(args.SVG, "png");
       });
     }
     applySaturation(imageData, amtIn) {
@@ -513,14 +543,14 @@
     applyOpaque(imageData, amtIn) {
       const data = imageData.data;
       amtIn = Math.max((amtIn + 100) / 100, 0);
-      for (let i = 0; i < data.length; i += 4) { data[i + 3] = data[i + 3] * amtIn }
+      for (let i = 0; i < data.length; i += 4) data[i + 3] = data[i + 3] * amtIn;
     }
     applyGlitch(imageData, amtIn) {
       const data = imageData.data;
       for (let i = 0; i < data.length; i += 4) {
         if (Math.random() * 100 <= amtIn) {
           const rnd = () => (Math.random() - 0.5) * amtIn * 3;
-          for (let j = 0; j < 3; j++) { data[i + j] = (data[i + j] + rnd()) % 256 }
+          for (let j = 0; j < 3; j++) data[i + j] = (data[i + j] + rnd()) % 256;
         }
       }
     }
@@ -572,7 +602,7 @@
           const distance = Math.sqrt(center[0] * center[0] + center[1] * center[1]);
           let vigAMT = (amtIn < 0) ? 1 - (distance / maxDistance) * (amtIn / 100) : ((maxDistance - distance) / maxDistance) * (amtIn / 100);
           vigAMT = Math.max(0, Math.min(1, vigAMT));
-          for (let i = 0; i < 3; i++) { data[index + i] = Math.round(data[index + i] * vigAMT) }
+          for (let i = 0; i < 3; i++) data[index + i] = Math.round(data[index + i] * vigAMT);
         }
       }
     }
@@ -633,13 +663,13 @@
               const offsetY = y + ky;
               if (offsetX >= 0 && offsetX < width && offsetY >= 0 && offsetY < height) {
                 const pixelX = (offsetY * width + offsetX) * 4;
-                for (let i = 0; i < 4; i++) { sum[i] += data[pixelX + i] }
+                for (let i = 0; i < 4; i++) sum[i] += data[pixelX + i];
                 count++;
               }
             }
           }
           const pixelY = (y * width + x) * 4;
-          if (count > 0) for (let i = 0; i < 4; i++) { data[pixelY + i] = sum[i] / count }
+          if (count > 0) for (let i = 0; i < 4; i++) data[pixelY + i] = sum[i] / count;
         }
       }
     }
@@ -705,12 +735,12 @@
 
     applyBulgeEffect(args) {
       return new Promise((resolve) => {
-        const strength = Scratch.Cast.toNumber(args.STRENGTH) / 100;
+        const strength = cast.toNumber(args.STRENGTH) / 100;
         const img = new Image();
         img.onload = () => {
           const canvasSize = Math.max(img.width, img.height) * 2;
-          let centerX = Scratch.Cast.toNumber(args.CENTER_X) / 100;
-          let centerY = Scratch.Cast.toNumber(args.CENTER_Y) / -100;
+          let centerX = cast.toNumber(args.CENTER_X) / 100;
+          let centerY = cast.toNumber(args.CENTER_Y) / -100;
           const { canvas, ctx } = this.createCanvasCtx(canvasSize, canvasSize);
           const offsetX = (canvas.width - img.width) / 2;
           const offsetY = (canvas.height - img.height) / 2;
@@ -722,7 +752,7 @@
           const newCanvas = this.createCanvasCtx(bounds.width, bounds.height, canvas, -bounds.offsetX, -bounds.offsetY).canvas;
           resolve(newCanvas.toDataURL());
         };
-        img.src = this.confirmAsset(args.SVG, "png");
+        img.src = this.convertAsset(args.SVG, "png");
       });
     }
     bulgeApplier(imageData, centerX, centerY, strength) {
@@ -746,10 +776,10 @@
 
     applyWaveEffect(args) {
       return new Promise((resolve) => {
-        const ampX = Scratch.Cast.toNumber(args.AMPX) / 10;
-        const ampY = Scratch.Cast.toNumber(args.AMPY) / 10;
-        const freqX = Scratch.Cast.toNumber(args.FREQX) / 100;
-        const freqY = Scratch.Cast.toNumber(args.FREQY) / 100;
+        const ampX = cast.toNumber(args.AMPX) / 10;
+        const ampY = cast.toNumber(args.AMPY) / 10;
+        const freqX = cast.toNumber(args.FREQX) / 100;
+        const freqY = cast.toNumber(args.FREQY) / 100;
         const img = new Image();
         img.onload = () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width, img.height, img, 0, 0);
@@ -758,7 +788,7 @@
           ctx.putImageData(imageData, 0, 0);
           resolve(canvas.toDataURL());
         };
-        img.src = this.confirmAsset(args.SVG, "png");
+        img.src = this.convertAsset(args.SVG, "png");
       });
     }
     waveApplier(imageData, ampX, ampY, freqX, freqY) {
@@ -780,7 +810,7 @@
 
     removeTransparencyEffect(args) {
       return new Promise((resolve) => {
-        const threshold = Scratch.Cast.toNumber(args.THRESHOLD) / 100;
+        const threshold = cast.toNumber(args.THRESHOLD) / 100;
         const img = new Image();
         img.onload = () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width, img.height, img, 0, 0);
@@ -789,7 +819,7 @@
           ctx.putImageData(imageData, 0, 0);
           resolve(canvas.toDataURL());
         };
-        img.src = this.confirmAsset(args.SVG, "png");
+        img.src = this.convertAsset(args.SVG, "png");
       });
     }
     transparncyApplier(imageData, threshold, removeUnder) {
@@ -808,8 +838,8 @@
 
     applyLineGlitchEffect(args) {
       return new Promise((resolve) => {
-        const amtIn = Scratch.Cast.toNumber(args.PERCENTAGE) / 100;
-        const width = Scratch.Cast.toNumber(args.WIDTH) / 50;
+        const amtIn = cast.toNumber(args.PERCENTAGE) / 100;
+        const width = cast.toNumber(args.WIDTH) / 50;
         const img = new Image();
         img.onload = () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width, img.height, img, 0, 0);
@@ -818,7 +848,7 @@
           ctx.putImageData(imageData, 0, 0);
           resolve(canvas.toDataURL());
         };
-        img.src = this.confirmAsset(args.SVG, "png");
+        img.src = this.convertAsset(args.SVG, "png");
       });
     }
     lineApplier(imageData, amtIn, direct, widthInp) {
@@ -843,9 +873,8 @@
 
     applyEdgeOutlineEffect(args) {
       return new Promise((resolve) => {
-        const thick = Math.ceil(Scratch.Cast.toNumber(args.THICKNESS) / 4);
+        const thick = Math.ceil(cast.toNumber(args.THICKNESS) / 4);
         const color = hexToRgb(args.COLOR);
-        color[3] = this.clamp(args.A, 0, 100) * 2.55;
         const img = new Image();
         img.onload = () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width + (thick * 2), img.height + (thick * 2), img, thick, thick);
@@ -854,13 +883,11 @@
           ctx.putImageData(imageData, 0, 0);
           resolve(canvas.toDataURL());
         };
-        img.src = this.confirmAsset(args.SVG, "png");
+        img.src = this.convertAsset(args.SVG, "png");
       });
     }
     outlineApplier(imageData, thick, rgba) {
-      const data = imageData.data;
-      const width = imageData.width;
-      const height = imageData.height;
+      let { data, width, height } = imageData;
       const copyData = new Uint8ClampedArray(data);
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
@@ -884,25 +911,25 @@
       }
     }
 
-    setCutout(args) { this.cutPos = [Scratch.Cast.toNumber(args.X), Scratch.Cast.toNumber(args.Y)] }
+    setCutout(args) { this.cutPos = [cast.toNumber(args.X), cast.toNumber(args.Y)] }
     changeCutout(args) {
-      this.cutPos = [this.cutPos[0] + Scratch.Cast.toNumber(args.X),
-      this.cutPos[1] + Scratch.Cast.toNumber(args.Y)];
+      this.cutPos = [this.cutPos[0] + cast.toNumber(args.X),
+      this.cutPos[1] + cast.toNumber(args.Y)];
     }
     currentCut(args) { return this.cutPos[args.POS === "X" ? 0 : 1] }
 
-    setScale(args) { this.scale = [Scratch.Cast.toNumber(args.SIZE), Scratch.Cast.toNumber(args.Y)] }
+    setScale(args) { this.scale = [cast.toNumber(args.SIZE), cast.toNumber(args.Y)] }
     changeScale(args) {
-      this.scale = [this.scale[0] + Scratch.Cast.toNumber(args.SIZE),
-      this.scale[1] + Scratch.Cast.toNumber(args.Y)];
+      this.scale = [this.scale[0] + cast.toNumber(args.SIZE),
+      this.scale[1] + cast.toNumber(args.Y)];
     }
     currentScale(args) { return this.scale[args.POS === "X" ? 0 : 1] }
 
-    setDirection(args) { this.cutoutDirection = Scratch.Cast.toNumber(args.ANGLE) }
+    setDirection(args) { this.cutoutDirection = cast.toNumber(args.ANGLE) }
     changeDirection(args) {
-      let direction = this.cutoutDirection + Scratch.Cast.toNumber(args.ANGLE);
-      if (direction > 180) { direction = -180 + Scratch.Cast.toNumber(args.ANGLE) }
-      if (direction < -180) { direction = 180 + Scratch.Cast.toNumber(args.ANGLE) }
+      let direction = this.cutoutDirection + cast.toNumber(args.ANGLE);
+      if (direction > 180) { direction = -180 + cast.toNumber(args.ANGLE) }
+      if (direction < -180) { direction = 180 + cast.toNumber(args.ANGLE) }
       this.cutoutDirection = direction;
     }
     currentDir() { return this.cutoutDirection }
@@ -928,15 +955,15 @@
             if (args.TYPE === "clip") ctx.globalCompositeOperation = "source-over";
             resolve(canvas.toDataURL("image/png"));
           };
-          maskImg.src = this.confirmAsset(args.MASK, "png");
+          maskImg.src = this.convertAsset(args.MASK, "png");
         };
-        srcImg.src = this.confirmAsset(args.IMG, "png");
+        srcImg.src = this.convertAsset(args.IMG, "png");
       });
     }
 
     applyAbberationEffect(args) {
       return new Promise((resolve) => {
-        const amtIn = Scratch.Cast.toNumber(args.PERCENTAGE);
+        const amtIn = cast.toNumber(args.PERCENTAGE);
         const img = new Image();
         img.onload = () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width + Math.abs(amtIn) * 5, img.height + Math.abs(amtIn) * 5, img, Math.abs(amtIn) * 2.5, Math.abs(amtIn) * 2.5);
@@ -945,13 +972,11 @@
           ctx.putImageData(imageData, 0, 0);
           resolve(canvas.toDataURL());
         };
-        img.src = this.confirmAsset(args.SVG, "png");
+        img.src = this.convertAsset(args.SVG, "png");
       });
     }
     applyChromAb(imageData, color1, color2, amtIn, dir) {
-      const data = imageData.data;
-      let width = imageData.width;
-      let height = imageData.height;
+      let { data, width, height } = imageData;
       const copy1 = new Uint8ClampedArray(data.length);
       const copy2 = new Uint8ClampedArray(data.length);
       const rgb1 = hexToRgb(color1);
@@ -999,21 +1024,20 @@
       });
     }
     svgToBitmap(args) {
-      return this.stretch(this.confirmAsset(args.SVG, "png"), Math.abs(Scratch.Cast.toNumber(args.WIDTH)), Math.abs(Scratch.Cast.toNumber(args.HEIGHT)));
+      return this.stretch(this.convertAsset(args.SVG, "png"), Math.abs(cast.toNumber(args.WIDTH)), Math.abs(cast.toNumber(args.HEIGHT)));
     }
     stretchImg(args) {
-      return this.stretch(this.confirmAsset(args.URI, "png"), Math.abs(Scratch.Cast.toNumber(args.W)), Math.abs(Scratch.Cast.toNumber(args.H)));
+      return this.stretch(this.convertAsset(args.URI, "png"), Math.abs(cast.toNumber(args.W)), Math.abs(cast.toNumber(args.H)));
     }
 
     convertImageToSVG(args) {
       return new Promise((resolve) => {
         const img = new Image();
-        img.src = this.confirmAsset(args.URI, "png");
+        img.src = this.convertAsset(args.URI, "png");
         img.onload = () => {
           const ctx = this.createCanvasCtx(img.width, img.height, img).ctx;
           ctx.drawImage(img, 0, 0, img.width, img.height);
           const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-          svg.setAttribute("version", "1.1");
           svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
           svg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
           svg.setAttribute("width", img.width.toFixed(5));
@@ -1057,16 +1081,15 @@
           // eslint-disable-next-line
           const img = new Image();
           img.onload = () => {
-            const width = img.width;
-            const height = img.height;
-            const svg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+            const { width, height } = img;
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
               width="${width / 2}" height="${(height / 2) + 0.001}" viewBox="0,0,${width / 2},${(height / 2) + 0.001}">
               <g transform="translate(${img.offsetLeft / -2},${img.offsetTop / -2})">
               <image x="0" y="0" transform="scale(0.5,0.5)" width="${width}" height="${height + 0.002}" 
               xlink:href="${img.src}"/></g></svg>`;
             resolve(args.TYPE === "dataURI" ? `data:image/svg+xml;base64,${btoa(svg)}` : svg);
           };
-          img.src = this.confirmAsset(args.URI, "png");
+          img.src = this.convertAsset(args.URI, "png");
         });
       } else { return args.URI }
     }
@@ -1078,12 +1101,12 @@
           const pixelData = this.printImg(img);
           const ctx = this.createCanvasCtx(img.width, img.height).ctx;
           ctx.putImageData(new ImageData(new Uint8ClampedArray(pixelData), img.width, img.height), 0, 0);
-          const factor = Scratch.Cast.toNumber(args.NUM) / 10;
+          const factor = cast.toNumber(args.NUM) / 10;
           const weights = [0, -factor, 0, -factor, 1 + 4 * factor, -factor, 0, -factor, 0];
           this.sharpen(ctx, img.width, img.height, weights, 25);
           resolve(this.exportImg(img, ctx.getImageData(0, 0, img.width, img.height).data));
         };
-        img.src = this.confirmAsset(args.URI, "png");
+        img.src = this.convertAsset(args.URI, "png");
       });
     }
     sharpen(ctx, width, height, weights, alphaThreshold) {
@@ -1120,8 +1143,8 @@
 
     audioToImage(args) {
       const audioURI = args.AUDIO_URI;
-      const imageWidth = Math.abs(Scratch.Cast.toString(args.W));
-      const { canvas, ctx } = this.createCanvasCtx(imageWidth, Math.abs(Scratch.Cast.toString(args.H)));
+      const imageWidth = Math.abs(cast.toString(args.W));
+      const { canvas, ctx } = this.createCanvasCtx(imageWidth, Math.abs(cast.toString(args.H)));
       for (let i = 0; i < audioURI.length; i++) {
         const charCode = audioURI.charCodeAt(i);
         ctx.fillStyle = `rgb(${(charCode * 2) % 256},${(charCode * 3) % 256},${(charCode * 4) % 256})`;
@@ -1158,8 +1181,8 @@
       if (translateMatch) translateValues = [parseFloat(translateMatch[1]), parseFloat(translateMatch[2])];
       values = `${viewBoxValues},${translateValues}`;
       values = values.split(",");
-      values = values.map(item => Scratch.Cast.toNumber(item));
-      amt = Scratch.Cast.toNumber(amt);
+      values = values.map(item => cast.toNumber(item));
+      amt = cast.toNumber(amt);
       if (values.length > 3) {
         svg = svg.replace(/viewBox="([^"]+)"/, `viewBox="${values[0]},${values[1]},${values[2] + (amt * 2)},${values[3] + (amt * 2)}"`);
         svg = svg.replace(/width="([^"]+)"/, `width="${values[2] + (amt * 2)}"`);
@@ -1169,7 +1192,30 @@
       return svg;
     }
 
-    removeThorns(args) { return args.SVG.replaceAll("linejoin=\"miter\"", "linejoin=\"round\"") }
+    removeThorns(args) {
+      return cast.toString(args.SVG).replaceAll("linejoin=\"miter\"", "linejoin=\"round\"");
+    }
+
+    commonCol(args) {
+      const img = new Image();
+      img.src = this.convertAsset(args.URI, "png");
+      return new Promise((resolve) => {
+        img.onload = () => {
+          const data = this.printImg(img);
+          const colorCnt = {};
+          for (let i = 0; i < data.length; i += 4) {
+            if (data[i + 3] === 0) continue;
+            const key = `${data[i]},${data[i + 1]},${data[i + 2]},${data[i + 3]}`;
+            colorCnt[key] = (colorCnt[key] || 0) + 1;
+          }
+          let rgb = null;
+          if (args.TYPE === "most") rgb = Object.keys(colorCnt).reduce((a, b) => colorCnt[a] > colorCnt[b] ? a : b);
+          else rgb = Object.keys(colorCnt).reduce((a, b) => colorCnt[a] < colorCnt[b] ? a : b);
+          rgb = rgb.split(",").map(Number);
+          resolve(rgbaToHex(...rgb));
+        };
+      });
+    }
 
     numPixels(args) {
       const img = new Image();
@@ -1184,26 +1230,27 @@
     setPixel(args) { return this.setPixels(args) }
     setPixels(args) {
       const img = new Image();
-      img.src = this.confirmAsset(args.URI, "png");
+      img.src = this.convertAsset(args.URI, "png");
       return new Promise((resolve) => {
         img.onload = () => {
-          const startNum = Scratch.Cast.toNumber(args.NUM);
-          const endNum = Scratch.Cast.toNumber(args.NUM2) || startNum;
+          const startNum = cast.toNumber(args.NUM);
+          const endNum = cast.toNumber(args.NUM2) || startNum;
           const pixelData = this.printImg(img);
           for (let num = startNum; num <= endNum && num <= img.width * img.height; num++) {
             const rgb = hexToRgb(args.COLOR);
-            for (let i = 0; i < 4; i++) { pixelData[((num - 1) * 4) + i] = rgb[i] }
+            for (let i = 0; i < 4; i++) pixelData[((num - 1) * 4) + i] = rgb[i];
           }
           resolve(this.exportImg(img, pixelData));
         };
       });
     }
+
     getPixel(args) {
       const img = new Image();
-      img.src = this.confirmAsset(args.URI, "png");
+      img.src = this.convertAsset(args.URI, "png");
       return new Promise((resolve) => {
         img.onload = () => {
-          const targetPixel = Scratch.Cast.toNumber(args.NUM);
+          const targetPixel = cast.toNumber(args.NUM);
           const pixelData = this.printImg(img);
           if (targetPixel >= 1 && targetPixel <= img.width * img.height) {
             const pixelIndex = (targetPixel - 1) * 4;
@@ -1217,7 +1264,7 @@
     crackImage(args) {
       const cracks = Math.max(2, args.SHARDS);
       const img = new Image();
-      img.src = this.confirmAsset(args.URI, "png");
+      img.src = this.convertAsset(args.URI, "png");
       const newWidth = img.width * 4;
       const newHeight = img.height * 4;
       this.allShards = [];
@@ -1250,6 +1297,11 @@
     }
 
     getShard(args) { return this.allShards[args.SHARD - 1] || "" }
+
+    // Deprecated
+    convertHexToRGB(args) { return hexToRgb(args.HEX)[{ R: 0, G: 1, B: 2 }[args.CHANNEL]] || "" }
+    clipImage(t){return new Promise((e,i)=>{let s=new Image;s.onload=()=>{let i=new Image;i.onload=()=>{let t=document.createElement("canvas");t.width=s.width,t.height=s.height;let a=t.getContext("2d"),h=i.width+this.scale[0],o=i.height+this.scale[1],n=this.cutPos[0]+s.width/2-h/2,r=this.cutPos[1]-s.height/2+o/2;a.drawImage(s,0,0),a.globalCompositeOperation="destination-in";let l=(this.cutoutDirection+270)*Math.PI/180;a.translate(n+h/2,-1*r+o/2),a.rotate(l),a.drawImage(i,-h/2,-o/2,h,o),a.setTransform(1,0,0,1,0,0),a.globalCompositeOperation="source-over",e(t.toDataURL("image/png"))},i.src=this.convertAsset(t.CUTOUT,"png")},s.src=this.convertAsset(t.MAIN,"png")})}
+    overlayImage(t){return new Promise((e,i)=>{let s=new Image;s.onload=()=>{let i=new Image;i.onload=()=>{let t=document.createElement("canvas");t.width=Math.max(s.width,i.width),t.height=Math.max(s.height,i.height);let a=t.getContext("2d");a.drawImage(s,0,0);let h=i.width+this.scale[0],o=i.height+this.scale[1],n=this.cutPos[0]+s.width/2-h/2,r=this.cutPos[1]-s.height/2+o/2;a.translate(n+h/2,-1*r+o/2),a.rotate((this.cutoutDirection+270)*Math.PI/180),a.drawImage(i,-h/2,-o/2,h,o),a.setTransform(1,0,0,1,0,0),e(t.toDataURL("image/png"))},i.src=this.convertAsset(t.CUTOUT,"png")},s.src=this.convertAsset(t.MAIN,"png")})}
   }
 
   Scratch.extensions.register(new imgEffectsSP());
