@@ -24,7 +24,7 @@
     "@turbowarp/json": "^0.1.2",
     "@turbowarp/scratchblocks": "^3.6.5",
     "@turbowarp/types": "git+https://github.com/TurboWarp/types-tw.git#tw",
-    "adm-zip": "^0.5.14",
+    "adm-zip": "^0.5.16",
     "chokidar": "^3.6.0",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
@@ -32,7 +32,7 @@
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
-    "eslint": "^9.8.0",
+    "eslint": "^9.9.1",
     "espree": "^9.6.1",
     "esquery": "^1.6.0",
     "prettier": "^3.3.3",
