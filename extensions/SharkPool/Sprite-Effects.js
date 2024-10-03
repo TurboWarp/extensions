@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.7.03
+// Version V.1.7.04
 
 (function (Scratch) {
   "use strict";
@@ -33,7 +33,7 @@
     const filterInput = container.getBlock(input.block).opcode;
     string = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><filter id="${id}">${string}</filter></svg>`;
     if (filterInput.startsWith("SPspriteEffects_") && !filterInput.includes("applyCustom")) {
-      // "applyCustom" is the only block that has user inputted filter support
+      // applyCustom is the only block that has user inputted filter support
       return string;
     }
     const pureSVG = render.exports.SVGRenderer.DOMPurify.sanitize(string, {
@@ -923,24 +923,23 @@
     filterApplier(svg, filter, name) {
       nameOffset++;
       if (nameOffset > 100) nameOffset = 0;
+      // add filter to body
       let svgTag = svg.indexOf(">");
-      if (svgTag > -1) {
-        let url = `filter="url(#${name})"`;
-        if (svg.includes("filter=\"url(")) {
-          const regex = /filter="url\([^"]+\)"/g;
-          const curFilters = svg.match(regex);
-          if (curFilters) {
-            const filterString = curFilters.join(" ").slice(0, -1);
-            url = `${filterString} url(#${name})"`;
-            svg = svg.replace(regex, "");
-          }
-        }
-        svgTag = svg.indexOf(">");
-        let newSVG = `${svg.substring(0, svgTag)} ${url}>${filter.replace(/\s+$/, "").slice(0, -1)}${svg.slice(svgTag)}`;
-        // replace needs to be repeated twice to avoid the new name being used in other namespaces
-        return newSVG.replace(`#${name})`, `#${name}${nameOffset})`).replace(`"${name}"`, `"${name}${nameOffset}"`);
+      if (svgTag < 0) return svg;
+      svg = `${svg.substring(0, svgTag + 1)}${filter.replace(/\s+$/, "").slice(0, -1)}${svg.slice(svgTag)}`;
+
+      // create group and add filter string
+      const oldFilters = svg.match(/<g filter="url\([^"]+\)">/g);
+      const filterInd = svg.lastIndexOf("</filter>") + 9;
+      let match, group = "";
+      if (oldFilters === null) {
+        group = `<g filter="url(#${name})">`;
+        svg = `${svg.substring(0, svg.indexOf("</svg>"))}</g></svg>`;
+      } else {
+        match = oldFilters[0];
+        svg = svg.replace(match, `${match.substring(0, match.indexOf("\">"))} url(#${name})">`);
       }
-      return svg;
+      return `${svg.substring(0, filterInd)}${group}${svg.slice(filterInd)}`;
     }
 
     // Block Funcs
