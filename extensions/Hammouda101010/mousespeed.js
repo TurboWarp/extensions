@@ -94,7 +94,7 @@
     }
 
     getMouseSpeed() { //Gets Mouse Speed
-        return Math.round(this.speed.toFixed(2) / 50);  // Return the speed rounded to 2 decimal places
+        return Math.round(this.speed / 50);  // Return the speed rounded to 2 decimal places
      }
     mouseFaster(args) { //Checks if mouse speed is greater than the SPEED arg
      return this.getMouseSpeed() > args.SPEED;
