@@ -1,6 +1,6 @@
 // Name: Mouse Speed
 // ID: hammouda101010mousespeed
-// Description: Get The Speed of the Mouse
+// Description: Get The Speed of the Mouse.
 // By: Hammouda101010 <https://scratch.mit.edu/users/hammouda101010/>
 // License: MIT
 
