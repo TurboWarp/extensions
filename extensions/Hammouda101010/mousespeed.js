@@ -1,4 +1,3 @@
-
 // Name: Mouse Speed
 // ID: hammouda101010mousespeed
 // Description: Get The Speed of the Mouse
