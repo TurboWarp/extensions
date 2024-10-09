@@ -18,6 +18,7 @@
 
   // Scratch's VM
   const vm = Scratch.vm;
+  let tolerence = 50 // Tolerence of the mouse's speed
 
   class MouseSpeed {
     constructor() {
@@ -60,10 +61,21 @@
             arguments: {
               SPEED: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 50,
+                defaultValue: 50
               },
             },
           },
+          {
+            opcode: "mouseTolerence",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set mouse tolerence to [TOLERENCE]",
+            arguments:{
+              TOLERENCE: {
+                type: Scratch.ArgumentType.NUMBER,
+                deafultValue: 50
+              }
+            }
+          }
         ],
       };
     }
@@ -98,11 +110,15 @@
 
     getMouseSpeed() {
       //Gets Mouse Speed
-      return Math.round(this.speed / 50); // Return the rounded speed
+      return Math.round(this.speed / tolerence); // Return the rounded speed
     }
     mouseFaster(args) {
       // Checks if mouse speed is greater than the SPEED arg
       return this.getMouseSpeed() > args.SPEED;
+    }
+    mouseTolerence(args) {
+      //sets the mouse's tolerence
+      tolerence = args.TOLERENCE
     }
   }
   Scratch.extensions.register(new MouseSpeed());
