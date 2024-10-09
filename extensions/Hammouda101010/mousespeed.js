@@ -88,6 +88,11 @@
                 defaultValue: 100
               }
             }
+          },
+          {
+            opcode: "mouseLimitRemove",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "remove mouse limit"
           }
         ],
       };
@@ -125,6 +130,7 @@
       return Math.min(Math.max(num, min), max);
     }
 
+    //The Extension Blocks
 
     getMouseSpeed() {
       //Gets Mouse Speed
@@ -145,6 +151,9 @@
     }
     mouseLimit(args) {
       this.limit = args.LIMIT
+    }
+    mouseLimitRemove(){
+      this.limit = null
     }
   }
   Scratch.extensions.register(new MouseSpeed());
