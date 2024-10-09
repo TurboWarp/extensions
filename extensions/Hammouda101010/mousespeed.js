@@ -18,7 +18,6 @@
 
   // Scratch's VM
   const vm = Scratch.vm;
-  this.tolerence = 50 // Tolerence of the mouse's speed
 
   class MouseSpeed {
     constructor() {
