@@ -8,7 +8,7 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("This Hello World example must run unsandboxed");
+    throw new Error("Mouse Speed must run unsandboxed, silly");
   }
   // Block Icons
   const blocksIcon =
@@ -106,7 +106,22 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Hats & Events",
+            text: "Sprites Speed"
+          },
+          {
+            opcode: "mouseSpriteFaster",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is mouse faster than [SPRITE]?",
+            arguments: {
+              SPRITE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "myself",
+              },
+            },
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Hats & Events"
           },
           {
             opcode: "whenMouseFaster",
