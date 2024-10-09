@@ -25,7 +25,6 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const targets = vm.runtime.targets;
-  const Cast = Scratch.Cast
 
   class MouseSpeed {
     constructor() {
@@ -109,8 +108,7 @@
             blockType: Scratch.BlockType.COMMAND,
             blockIconURI: noLimitIcon,
             text: "remove mouse speed limit",
-          },
-         
+          },  
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Hats & Events"
@@ -228,9 +226,9 @@
     }
   }
 
-  vm.runtime.on("BEFORE_EXECUTE", () => {
+  runtime.on("BEFORE_EXECUTE", () => {
     // startHats is the same as before!
-    vm.runtime.startHats("mousespeed_whenMouseFaster");
+    runtime.startHats("mousespeed_whenMouseFaster");
   });
 
   Scratch.extensions.register(new MouseSpeed());
