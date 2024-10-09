@@ -24,7 +24,7 @@
   // Scratch's VM
   const vm = Scratch.vm;
   const runtime = vm.runtime;
-  const targets = vm.runtime.targets;
+
 
   class MouseSpeed {
     constructor() {
@@ -125,31 +125,8 @@
             },
           },
         ],
-        menus: {
-          SPRITE_MENU: {
-            acceptReporters: true,
-            items: "getSprites"
-          }
-        }
       };
-    }
-
-    //gets all sprites
-    getSprites() {
-      const sprites = [{ text: 'myself', value: '_myself_' }];
-      const allTargets = targets;
-
-      for (const target of allTargets) {
-          if (!target.isStage) {
-              sprites.push({
-                  text: target.getName(),
-                  value: target.getName()
-              });
-          }
-      }
-
-      return sprites;
-  }
+    }   
 
     // Handles Mouse Speed
     handleMouseMove(event) {
