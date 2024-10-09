@@ -23,6 +23,9 @@
 
   // Scratch's VM
   const vm = Scratch.vm;
+  const runtime = vm.runtime;
+  const targets = vm.runtime.targets;
+  const Cast = Scratch.Cast
 
   class MouseSpeed {
     constructor() {
@@ -34,6 +37,9 @@
       this.speed = 0; // Speed of the mouse
       this.limit = null; //Mouse's speed limit
       this.tolerance = 50; // Tolerance of the mouse's speed
+      this.prevTime = null;
+      this.prevX = null;
+      this.prevY = null
 
       // Bind this to the event listener to track mouse movement
       vm.renderer.canvas.addEventListener(
@@ -104,21 +110,7 @@
             blockIconURI: noLimitIcon,
             text: "remove mouse speed limit",
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Sprites Speed"
-          },
-          {
-            opcode: "mouseSpriteFaster",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "is mouse faster than [SPRITE]?",
-            arguments: {
-              SPRITE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "myself",
-              },
-            },
-          },
+         
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Hats & Events"
@@ -135,8 +127,31 @@
             },
           },
         ],
+        menus: {
+          SPRITE_MENU: {
+            acceptReporters: true,
+            items: "getSprites"
+          }
+        }
       };
     }
+
+    //gets all sprites
+    getSprites() {
+      const sprites = [{ text: 'myself', value: '_myself_' }];
+      const allTargets = targets;
+
+      for (const target of allTargets) {
+          if (!target.isStage) {
+              sprites.push({
+                  text: target.getName(),
+                  value: target.getName()
+              });
+          }
+      }
+
+      return sprites;
+  }
 
     // Handles Mouse Speed
     handleMouseMove(event) {
@@ -165,6 +180,10 @@
       this.lastY = this.mouseY;
       this.lastTime = currentTime;
     }
+
+
+    
+  
 
     clamp(num, min, max) {
       return Math.min(Math.max(num, min), max);
@@ -201,6 +220,8 @@
     mouseLimitRemove() {
       this.limit = null;
     }
+
+    
 
     whenMouseFaster(args) {
       return this.getMouseSpeed() > args.SPEED;
