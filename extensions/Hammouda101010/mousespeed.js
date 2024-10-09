@@ -71,7 +71,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set mouse speed tolerance to [TOLERANCE]",
             arguments:{
-              tolerance: {
+              TOLERANCE: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 50
               }
@@ -79,7 +79,7 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Mouse Limit"
+            text: "Mouse Speed Limit"
           },
           {
             opcode: "mouseLimit",
@@ -96,6 +96,10 @@
             opcode: "mouseLimitRemove",
             blockType: Scratch.BlockType.COMMAND,
             text: "remove mouse speed limit"
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Hats & Events"
           },
           {
             opcode: "whenMouseFaster",
