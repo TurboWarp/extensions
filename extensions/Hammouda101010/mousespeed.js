@@ -28,7 +28,7 @@
       this.lastTime = performance.now(); // Last time the mouse was updated
       this.speed = 0; // Speed of the mouse
       this.limit = null //Mouse's speed limit
-      this.tolerence = 50 // Tolerence of the mouse's speed
+      this.tolerance = 50 // Tolerance of the mouse's speed
 
       // Bind this to the event listener to track mouse movement
       vm.renderer.canvas.addEventListener(
@@ -67,15 +67,19 @@
             },
           },
           {
-            opcode: "mouseTolerence",
+            opcode: "mouseTolerance",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set mouse tolerence to [TOLERENCE]",
+            text: "set mouse speed tolerance to [TOLERANCE]",
             arguments:{
-              TOLERENCE: {
+              tolerance: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 50
               }
             }
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: "Mouse Limit"
           },
           {
             opcode: "mouseLimit",
@@ -91,7 +95,18 @@
           {
             opcode: "mouseLimitRemove",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove mouse limit"
+            text: "remove mouse speed limit"
+          },
+          {
+            opcode: "whenMouseFaster",
+            blockType: Scratch.BlockType.HAT,
+            text: "when mouse is faster than [SPEED]",
+            arguments: {
+              SPEED: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 50
+              }
+            }
           }
         ],
       };
@@ -134,26 +149,42 @@
     getMouseSpeed() {
       //Gets Mouse Speed
       if (this.limit === null) {
-        return Math.round(this.speed / this.tolerence); // Return the rounded speed
+        return Math.round(this.speed / this.tolerance); // Return the rounded speed
       }
       else{
-        return this.clamp(Math.round(this.speed / this.tolerence), 0, this.limit); // Return the limited rounded speed
+        return this.clamp(Math.round(this.speed / this.tolerance), 0, this.limit); // Return the limited rounded speed
       }
     }
     mouseFaster(args) {
       // Checks if mouse speed is greater than the SPEED arg
       return this.getMouseSpeed() > args.SPEED;
     }
-    mouseTolerence(args) {
-      //sets the mouse's tolerence
-      this.tolerence = args.TOLERENCE
+
+    mouseTolerance(args) {
+      //sets the mouse's tolerance
+      this.tolerance = args.TOLERANCE
     }
+
     mouseLimit(args) {
       this.limit = args.LIMIT
     }
+
     mouseLimitRemove(){
       this.limit = null
     }
+    
+    whenMouseFaster(args) {
+      return this.getMouseSpeed() > args.SPEED
+    }
+
+    
+    
   }
+
+  vm.runtime.on("BEFORE_EXECUTE", () => {
+    // startHats is the same as before!
+    vm.runtime.startHats("mousespeed_whenMouseFaster");
+  });
+
   Scratch.extensions.register(new MouseSpeed());
 })(Scratch);
