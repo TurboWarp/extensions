@@ -18,7 +18,7 @@
 
   // Scratch's VM
   const vm = Scratch.vm;
-  let tolerence = 50 // Tolerence of the mouse's speed
+  this.tolerence = 50 // Tolerence of the mouse's speed
 
   class MouseSpeed {
     constructor() {
@@ -28,6 +28,8 @@
       this.lastY = 0; // Previous mouse Y position
       this.lastTime = performance.now(); // Last time the mouse was updated
       this.speed = 0; // Speed of the mouse
+      this.limit = null //Mouse's speed limit
+      this.tolerence = 50 // Tolerence of the mouse's speed
 
       // Bind this to the event listener to track mouse movement
       vm.renderer.canvas.addEventListener(
@@ -72,7 +74,18 @@
             arguments:{
               TOLERENCE: {
                 type: Scratch.ArgumentType.NUMBER,
-                deafultValue: 50
+                defaultValue: 50
+              }
+            }
+          },
+          {
+            opcode: "mouseLimit",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set mouse speed limit to [LIMIT]",
+            arguments:{
+              LIMIT:{
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100
               }
             }
           }
@@ -108,9 +121,19 @@
       this.lastTime = currentTime;
     }
 
+    clamp(num, min, max) {
+      return Math.min(Math.max(num, min), max);
+    }
+
+
     getMouseSpeed() {
       //Gets Mouse Speed
-      return Math.round(this.speed / tolerence); // Return the rounded speed
+      if (this.limit === null) {
+        return Math.round(this.speed / this.tolerence); // Return the rounded speed
+      }
+      else{
+        return this.clamp(Math.round(this.speed / this.tolerence), 0, this.limit); // Return the limited rounded speed
+      }
     }
     mouseFaster(args) {
       // Checks if mouse speed is greater than the SPEED arg
@@ -118,7 +141,10 @@
     }
     mouseTolerence(args) {
       //sets the mouse's tolerence
-      tolerence = args.TOLERENCE
+      this.tolerence = args.TOLERENCE
+    }
+    mouseLimit(args) {
+      this.limit = args.LIMIT
     }
   }
   Scratch.extensions.register(new MouseSpeed());
