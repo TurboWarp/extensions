@@ -64,7 +64,9 @@
       }
       findMod(args){
         let search = mods.find((mod) => mod.name === args.NAME);
-        return search;
+        if (!search) {
+            return `Could not Find ${args.NAME}`;
+        }
       }
     }
     Scratch.extensions.register(new MyExtension());
