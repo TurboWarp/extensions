@@ -72,7 +72,7 @@
         let search = mods.find((mod) => mod.name === args.NAME);
         if (!search) {
             console.error(`Could Not Find "${args.NAME}"`)
-            throw new Error (`Could Not Find "${args.NAME}"`);
+            return `Could Not Find "${args.NAME}"`;
         }
         else {
             return `name: ${search.name}, id: ${search.id}`
