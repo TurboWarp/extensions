@@ -59,7 +59,9 @@
         };
       }
       newMod(args) {
-        mods.push({name: args.NAME, id: newID(5)})
+        if (!mods.some(mod => args.NAME === mod.name)){
+        mods.push({name: args.NAME, id: newID(7)})
+        }
         console.log(mods)
       }
       findMod(args){
@@ -69,7 +71,7 @@
             return `Could not Find "${args.NAME}"`;
         }
         else {
-            return `name: ${search.name} id: ${search.id}`
+            return `name: ${search.name}, id: ${search.id}`
         }
       }
     }
