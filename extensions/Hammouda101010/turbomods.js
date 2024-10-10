@@ -59,7 +59,7 @@
         };
       }
       newMod(args) {
-        mods.push({mname: args.NAME, id: newID(5)})
+        mods.push({name: args.NAME, id: newID(5)})
         console.log(mods)
       }
       findMod(args){
