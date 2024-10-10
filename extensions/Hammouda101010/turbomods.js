@@ -2,7 +2,7 @@
     'use strict';
 
     if (!Scratch.extensions.unsandboxed) {
-        throw new Error('Extension Name must run unsandboxed');
+        throw new Error("Turbomodz must run unsandboxed");
       }
 
       const vm = Scratch.vm;
@@ -60,15 +60,19 @@
       }
       newMod(args) {
         if (!mods.some(mod => args.NAME === mod.name)){
-        mods.push({name: args.NAME, id: newID(7)})
+            mods.push({name: args.NAME, id: newID(7)})
+            console.log(mods)
         }
-        console.log(mods)
+        else {
+            console.warn("This Mod Already Exists")
+        }
+            console.log(mods)
       }
       findMod(args){
         let search = mods.find((mod) => mod.name === args.NAME);
         if (!search) {
-            console.error(`Could not Find "${args.NAME}"`)
-            return `Could not Find "${args.NAME}"`;
+            console.error(`Could Not Find "${args.NAME}"`)
+            throw new Error (`Could Not Find "${args.NAME}"`);
         }
         else {
             return `name: ${search.name}, id: ${search.id}`
