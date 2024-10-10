@@ -16,8 +16,8 @@
 
       // Scratch Vm & APIs
       const vm = Scratch.vm;
-      const runtime = vm.runtime;
-      const Cast = Scratch.Cast;
+      // const runtime = vm.runtime;
+      // const Cast = Scratch.Cast;
       
       let mods = [] //Creates a List of Mods
 
