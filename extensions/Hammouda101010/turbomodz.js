@@ -152,6 +152,41 @@
                     }
                   }
                 },
+                {
+                  opcode: "ImportLabel",
+                  blockType: BlockType.LABEL,
+                  text: "Importing & Exporting Mods"
+                },
+                {
+                  opcode: "exportMod",
+                  blockType: BlockType.COMMAND,
+                  text: "export mod [MOD] as [EXT]",
+                  arguments: {
+                    MOD: {
+                      type: ArgumentType.STRING,
+                      menu: "MODS_MENU"
+                    },
+                    EXT: {
+                      type: ArgumentType.STRING,
+                      defaultValue: "twmod"
+                    }
+                  }
+                },
+                {
+                  opcode: "importMod",
+                  blockType: BlockType.COMMAND,
+                  text: "import mod [MOD] as [EXT]",
+                  arguments: {
+                    MOD: {
+                      type: ArgumentType.STRING,
+                      menu: "MODS_MENU"
+                    },
+                    EXT: {
+                      type: ArgumentType.STRING,
+                      defaultValue: "twmod"
+                    }
+                  }
+                }
               ],
             menus:{
               GET_TYPE_MENU: {
@@ -247,8 +282,12 @@
         mods[modindex][key].push(item)
       }
 
+      // Find a costume/sound by name in the current target
       findCostumeByName(costumeName, target) {
         return target.getCostumes().find(c => c.name === costumeName);
+      }
+      findSoundByName(soundName, target) {
+        return target.getSounds().find(s => s.name === soundName);
       }
   
       // Function to convert a costume to a Data: URL
@@ -256,6 +295,7 @@
         if (!costume) {
           return 'Invalid costume';
         }
+        
   
         // If the costume is a vector (SVG), return the data URI as is
         if (costume.asset && costume.asset.dataFormat === 'svg') {
@@ -293,6 +333,15 @@
         return dataURL + `#${spriteName}`; // Appending sprite name as a fragment for identification
       }
 
+      async convertSoundToDataURL(sound) {
+        if (!sound || !sound.asset) {
+          return 'Invalid sound';
+        }
+  
+        // Return the data URI of the sound asset
+        return sound.asset.encodeDataURI();
+      }
+
       // The Blocks
 
       // Creates a New Mod
@@ -307,8 +356,8 @@
             
       }
 
-      //Gets a Mod
-      getMod(args){
+      //Gets a Mod's JSON depending on the menu's choice
+      getMod(args){ 
         switch (args.TYPE) {
           case "JSON":
             return this.findMod(args.NAME)
@@ -319,7 +368,7 @@
         }
       }
 
-      addSpritetoMod(args){
+      addSpritetoMod(args){ // Check if URL is Image
         if (this.isSprite(args.URL)) {
           this.addModItem(args.MOD, "sprites", args.URL)}
         else {
@@ -327,7 +376,7 @@
         }
       }
       addImagetoMod(args){
-        if (this.isImage(args.URL)) {
+        if (this.isImage(args.URL)) { // Check if URL is Image
           this.addModItem(args.MOD, "costumes", args.URL)}
         else {
           console.error("Invalid Image/Costume URL/Data URL")
@@ -340,16 +389,40 @@
         // Find the costume by name
         const costume = this.findCostumeByName(costumeName, target);
 
-          // Call the helper function to convert the costume to a data URL
-        const costumeURL = await this.convertCostumeToDataURL(costume);
-        this.addModItem(args.MOD, "costumes", costumeURL)
+        // Get the sprite name directly from the target
+        const spriteName = target.getName(); // Get the name of the sprite
+
+
+        // Get Costume URL 
+        const costumeURL = await this.convertCostumeToDataURL(costume, spriteName);
+
+        this.addModItem(args.MOD, "costumes", costumeURL); // Finally, add it to the mod.
       }
       addSoundUrltoMod(args) {
-        if (this.isImage(args.URL)) {
+        if (this.isSound(args.URL)) { // Checks if URL is Sound
           this.addModItem(args.MOD, "sounds", args.URL)}
         else {
           console.error("Invalid Sound URL/Data URL")
         }
+      }
+      async addSoundtoMod(args, util) {
+        const soundName = args.SOUND;  // Get the selected sound name
+        const target = util.target;  // Get the current sprite (target)
+
+        // Find the sound by name
+        const sound = this.findSoundByName(soundName, target);
+
+        // Get Sound URL
+        const soundURL = await this.convertSoundToDataURL(sound);
+        this.addModItem(args.MOD, "sounds", soundURL); // Finally, add it to the mod
+      }
+      // TODO #1:
+      // Find a Way to Import and Export Mods
+      exportMod(args) {
+        //placeholder
+      }
+      importMod(args) {
+        //placeholder
       }
     }
     Scratch.extensions.register(new TurboModz());
