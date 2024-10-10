@@ -13,15 +13,19 @@
         throw new Error("Turbomodz must run unsandboxed");
       }
 
+
+      // Scratch Vm & APIs
       const vm = Scratch.vm;
       const runtime = vm.runtime;
       const Cast = Scratch.Cast;
       
-      let mods = []
+      let mods = [] //Creates a List of Mods
 
+      //Block & Argument Type Constants
       const BlockType = Scratch.BlockType;
       const ArgumentType = Scratch.ArgumentType;
 
+      // Function That Creates New IDs
       const newID = (length) => {
         let result = '';
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -53,19 +57,47 @@
                   }
                 },
                 {
-                    opcode: "findMod",
+                    opcode: "getMod",
                     blockType: BlockType.REPORTER,
-                    text: "find mod called [NAME]",
+                    text: "get mod called [NAME] as [TYPE]",
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
                             defaultValue: "foobar mod"
+                        },
+                        TYPE: {
+                          type: ArgumentType.STRING,
+                          menu: "GET_TYPE_MENU"
                         }
                     }
                 }
-            ]
+            ],
+            menus:{
+              GET_TYPE_MENU: {
+                acceptReporters: false,
+                items: [
+                  "JSON",
+                  "Text",
+                  "Array"
+                ]
+              }
+            } 
         };
       }
+      
+      //Creates a New Mod if it doesn't exist, otherwise send a warning.
+
+      findMod(name) {
+        let search = mods.find((mod) => mod.name === name);
+        if (!search) {
+            console.error(`Could Not Find "${name}"`)
+            return `Could Not Find "${name}"`;
+        }
+        else {
+            return search
+        }
+      }
+
       newMod(args) {
         if (!mods.some(mod => args.NAME === mod.name)){
             mods.push({name: args.NAME, id: newID(7)})
@@ -76,14 +108,15 @@
         }
             
       }
-      findMod(args){
-        let search = mods.find((mod) => mod.name === args.NAME);
-        if (!search) {
-            console.error(`Could Not Find "${args.NAME}"`)
-            return `Could Not Find "${args.NAME}"`;
-        }
-        else {
-            return `name: ${search.name}, id: ${search.id}`
+      //gets a mod's json
+      getMod(args){
+        switch (args.TYPE) {
+          case "JSON":
+            return this.findMod(args.NAME)
+          case "Text":
+            return JSON.stringify(this.findMod(args.NAME))
+          case "Array":
+            return Object.values(this.findMod(args.NAME))
         }
       }
     }
