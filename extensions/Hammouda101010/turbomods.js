@@ -1,3 +1,11 @@
+// Name: TurboModz
+// ID: hamturbomodz
+// Description: Implement Mods into Your Projects. Inspired by Asset Manager and Other Extensions>
+// By: Hammouda101010 <https://scratch.mit.edu/users/Hammouda101010/>
+// License: MIT AND LGPL-3.0
+
+
+
 (function(Scratch) {
     'use strict';
 
@@ -27,7 +35,7 @@
       }
 
 
-    class MyExtension {
+    class TurboModz {
       getInfo () {
         return {
             id: "turbomods",
@@ -66,7 +74,7 @@
         else {
             console.warn("This Mod Already Exists")
         }
-            console.log(mods)
+            
       }
       findMod(args){
         let search = mods.find((mod) => mod.name === args.NAME);
@@ -79,5 +87,5 @@
         }
       }
     }
-    Scratch.extensions.register(new MyExtension());
+    Scratch.extensions.register(new TurboModz());
   })(Scratch);
