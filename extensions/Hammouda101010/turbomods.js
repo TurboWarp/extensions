@@ -59,13 +59,17 @@
         };
       }
       newMod(args) {
-        mods.push({modname: args.NAME, modid: newID(5)})
+        mods.push({mname: args.NAME, id: newID(5)})
         console.log(mods)
       }
       findMod(args){
         let search = mods.find((mod) => mod.name === args.NAME);
         if (!search) {
-            return `Could not Find ${args.NAME}`;
+            console.error(`Could not Find "${args.NAME}"`)
+            return `Could not Find "${args.NAME}"`;
+        }
+        else {
+            return `name: ${search.name} id: ${search.id}`
         }
       }
     }
