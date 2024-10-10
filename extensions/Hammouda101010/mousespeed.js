@@ -204,7 +204,6 @@
   }
 
   runtime.on("BEFORE_EXECUTE", () => {
-    // startHats is the same as before!
     runtime.startHats("mousespeed_whenMouseFaster");
   });
 
