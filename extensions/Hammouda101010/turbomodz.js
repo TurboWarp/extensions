@@ -429,8 +429,7 @@
         // Check if the URL is a data URL
         if (
           parsedUrl.protocol === "data:" &&
-          parsedUrl.pathname.startsWith("application/x.scratch.sprite3;") ||
-          parsedUrl.pathname.startsWith("application/octet-stream;")
+          (parsedUrl.pathname.startsWith("application/x.scratch.sprite3;") || parsedUrl.pathname.startsWith("application/octet-stream;"))
         ) {
           return true;
         }
