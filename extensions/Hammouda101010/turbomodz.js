@@ -261,11 +261,11 @@
           {
             opcode: "importMod",
             blockType: BlockType.COMMAND,
-            text: "import new mod to project",
+            text: "import new [MOD] mod to project",
             arguments: {
               MOD: {
-                type: ArgumentType.STRING,
-                menu: "MODS_MENU",
+                type: ArgumentType.IMAGE,
+                dataURI: blocksIconURI
               },
               EXT: {
                 type: ArgumentType.STRING,
