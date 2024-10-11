@@ -12,7 +12,7 @@
   }
 
   // Scratch Vm & APIs
-  const vm = Scratch.vm;
+  // const vm = Scratch.vm;
   // const runtime = vm.runtime;
   const Cast = Scratch.Cast;
 
