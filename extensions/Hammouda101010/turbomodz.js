@@ -41,8 +41,9 @@
       return {
         id: "turbomods",
         name: "TurboModz",
-        color1: "#000000",
-        color2: "#000000",
+        // de2aff
+        color1: "#e84cff",
+        color2: "#e200fd",
         blocks: [
           {
             opcode: "newMod",
@@ -278,7 +279,16 @@
 
     addModItem(name, key, item) {
       let modindex = mods.indexOf(this.findMod(name));
-      mods[modindex][key].push(item);
+      if (key in mods[modindex]){
+        switch (Array.isArray(mods[modindex][key] )){
+          case true:
+            mods[modindex][key].push(item);
+            break;
+          default:
+            mods[modindex][key] = item;
+            break;
+        }
+      }
     }
 
     // Find a costume/sound by name in the current target
@@ -337,7 +347,7 @@
       }
 
       // Return the data URI of the sound asset
-      return sound.asset.encodeDataURI();
+      return await sound.asset.encodeDataURI();
     }
 
     // The Blocks
@@ -424,8 +434,8 @@
       const soundURL = await this.convertSoundToDataURL(sound);
       this.addModItem(args.MOD, "sounds", soundURL); // Finally, add it to the mod
     }
-    // TODO #1:
-    // Find a Way to Import and Export Mods
+    /* TODO #1:
+       Find a Way to Import and Export Mods */
     exportMod(args) {
       //placeholder
     }
