@@ -25,7 +25,6 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
 
-
   class MouseSpeed {
     constructor() {
       this.mouseX = 0; // Current mouse X position
@@ -38,7 +37,7 @@
       this.tolerance = 50; // Tolerance of the mouse's speed
       this.prevTime = null;
       this.prevX = null;
-      this.prevY = null
+      this.prevY = null;
 
       // Bind this to the event listener to track mouse movement
       vm.renderer.canvas.addEventListener(
@@ -108,10 +107,10 @@
             blockType: Scratch.BlockType.COMMAND,
             blockIconURI: noLimitIcon,
             text: "remove mouse speed limit",
-          },  
+          },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Hats & Events"
+            text: "Hats & Events",
           },
           {
             opcode: "whenMouseFaster",
@@ -126,7 +125,7 @@
           },
         ],
       };
-    }   
+    }
 
     // Handles Mouse Speed
     handleMouseMove(event) {
@@ -155,10 +154,6 @@
       this.lastY = this.mouseY;
       this.lastTime = currentTime;
     }
-
-
-    
-  
 
     clamp(num, min, max) {
       return Math.min(Math.max(num, min), max);
@@ -195,8 +190,6 @@
     mouseLimitRemove() {
       this.limit = null;
     }
-
-    
 
     whenMouseFaster(args) {
       return this.getMouseSpeed() > args.SPEED;
