@@ -220,7 +220,13 @@
           {
             opcode: "loadMod",
             blockType: BlockType.COMMAND,
-            text: "load [MOD] mod in project"
+            text: "load [MOD] mod in project",
+            arguments: {
+              MOD: {
+                type: ArgumentType.STRING,
+                menu: "MODS_MENU",
+              }
+            }
           },
           {
             opcode: "unLoadMod",
