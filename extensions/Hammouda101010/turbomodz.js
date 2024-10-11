@@ -553,7 +553,7 @@
        Find a Way to Get Runtime Values */
 
     loadMod(args) {
-      const confirmLoad = confirm("WARNING: This May Take a Long and May Cause Lag. It Can Also Break the Entire Project. Continiue?")
+      const confirmLoad = confirm("WARNING: This May Take a Long Time and May Cause Heavy Lag. It Can Also Break the Entire Project. Continiue?")
       if (confirmLoad){
         isLoading = true
         isLoading = false
