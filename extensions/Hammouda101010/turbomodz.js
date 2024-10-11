@@ -17,6 +17,7 @@
   const Cast = Scratch.Cast;
 
   let mods = []; //Creates a List of Mods
+  let isLoading = false
 
   //Block & Argument Type Constants
   const BlockType = Scratch.BlockType;
@@ -237,6 +238,22 @@
             opcode: "unLoadMod",
             blockType: BlockType.COMMAND,
             text: "unload all mods in project"
+          },
+          {
+            opcode: "ModpackLabel",
+            blockType: BlockType.LABEL,
+            text: "Mod-Packs",
+          },
+          {
+            opcode: "newModPack",
+            blockType: BlockType.COMMAND,
+            text: "create new modpack named [NAME]",
+            arguments: {
+              NAME: {
+                type: ArgumentType.STRING,
+                defaultValue: "foobar modpack"
+              }
+            }
           },
           {
             opcode: "ImportLabel",
@@ -536,7 +553,12 @@
        Find a Way to Get Runtime Values */
 
     loadMod(args) {
-      //placeholder
+      const confirmLoad = confirm("WARNING: This May Take a Long and May Cause Lag. It Can Also Break the Entire Project. Continiue?")
+      if (confirmLoad){
+        isLoading = true
+        isLoading = false
+      }
+      
     }
     unLoadMod(args) {
       //placeholder
