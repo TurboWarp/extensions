@@ -179,11 +179,11 @@
     }
 }
 
-  const addSound = async (args, util) => {
+  const addSound = async (url, name, util) => {
     const targetId = util.target.id;
-    const assetName = Cast.toString(args.NAME);
+    const assetName = Cast.toString(name);
 
-    const res = await Scratch.fetch(args.URL);
+    const res = await Scratch.fetch(url);
     const buffer = await res.arrayBuffer();
 
     const storage = runtime.storage;
@@ -351,6 +351,11 @@
             opcode: "unLoadMod",
             blockType: BlockType.COMMAND,
             text: "unload all mods in project"
+          },
+          {
+            opcode: "isLoadingMod",
+            blockType: BlockType.BOOLEAN,
+            text: "is project loading a mod?"
           },
           {
             opcode: "ModpackLabel",
@@ -569,13 +574,13 @@
     }
     
 
-    async convertSoundToDataURL(sound) {
+    async convertSoundToDataURL(sound, spriteName) {
       if (!sound || !sound.asset) {
         return "Invalid sound";
       }
 
       // Return the data URI of the sound asset
-      return await sound.asset.encodeDataURI();
+      return await sound.asset.encodeDataURI() + `#${spriteName}`;
     }
 
     // The Blocks
@@ -645,6 +650,7 @@
     }
     addSoundUrltoMod(args) {
       if (this.isSound(args.URL)) {
+        
         // Checks if URL is Sound
         this.addModItem(args.MOD, "sounds", args.URL);
       } else {
@@ -657,9 +663,14 @@
 
       // Find the sound by name
       const sound = this.findSoundByName(soundName, target);
+      // Get Sprite's Name
+      const spriteName = target.getName();
 
       // Get Sound URL
-      const soundURL = await this.convertSoundToDataURL(sound);
+      const soundURL = await this.convertSoundToDataURL(
+        sound, spriteName
+      );
+
       this.addModItem(args.MOD, "sounds", soundURL); // Finally, add it to the mod
     }
     /* TODO #2:
@@ -669,12 +680,31 @@
       const confirmLoad = confirm("WARNING: This May Take a Long Time and May Cause Heavy Lag. It Can Also Break the Entire Project. Continiue?")
       if (confirmLoad){
         isLoading = true
+        // First, Load all Sprites
+        for (let i of this.findMod(args.MOD)["sprites"]){
+          i = new URL(i)
+          addSprite(i)
+        }
+        // Then, Load all Costumes
+        for (let i of this.findMod(args.MOD)["costumes"]){
+          i = new URL(i)
+          addCostume(i, i.hash.substr(1))
+        }
+        // After That, Load all Sounds
+        for (let i of this.findMod(args.MOD)["sounds"]){
+          i = new URL(i)
+          addSound(i, i.hash.substr(1))
+        }
         isLoading = false
       }
       
     }
     unLoadMod(args) {
       //placeholder
+    }
+
+    isLoadingMod() {
+      return isLoading
     }
 
     exportMod(args) {
