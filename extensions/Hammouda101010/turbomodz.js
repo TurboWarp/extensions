@@ -381,38 +381,49 @@
     findCostumeByName(costumeName, target) {
       return target.getCostumes().find((c) => c.name === costumeName);
     }
+    
     findSoundByName(soundName, target) {
       return target.getSounds().find((s) => s.name === soundName);
     }
-
+    
     // Function to convert a costume to a Data: URL
     async convertCostumeToDataURL(costume, spriteName) {
       if (!costume) {
         return "Invalid costume";
       }
-
+    
       // If the costume is a vector (SVG), return the data URI as is
       if (costume.asset && costume.asset.dataFormat === "svg") {
         return costume.asset.encodeDataURI();
       }
-
+    
       // For bitmaps (PNG, JPEG), use the canvas to generate the data URL
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("2d");
-
+    
       // Set the canvas size to the costume size
       canvas.width = costume.size[0];
       canvas.height = costume.size[1];
-
+    
       // Draw the bitmap costume on the canvas
+      // Check if the URL for the costume asset can be fetched
+      const url = costume.asset.encodeDataURI();
+    
+      // Ensure that `await Scratch.canFetch(url)` is checked first
+      if (!(await Scratch.canFetch(url))) {
+        return "Cannot fetch the costume asset.";
+      }
+    
       // eslint-disable-next-line no-restricted-syntax
       const image = new Image();
-      image.src = costume.asset.encodeDataURI();
+      image.src = url;
+    
       await new Promise((resolve) => {
         image.onload = resolve;
       });
+    
       context.drawImage(image, 0, 0);
-
+    
       // Create the data URL based on the original costume format
       let dataURL;
       if (costume.asset.dataFormat === "png") {
@@ -422,11 +433,11 @@
       } else {
         dataURL = canvas.toDataURL(); // Default to PNG if format is unrecognized
       }
-
+    
       // Optionally append the sprite name as a query parameter or as part of a comment in the data URL
-      // This won't affect the functionality but can serve as an identifier
       return dataURL + `#${spriteName}`; // Appending sprite name as a fragment for identification
     }
+    
 
     async convertSoundToDataURL(sound) {
       if (!sound || !sound.asset) {
