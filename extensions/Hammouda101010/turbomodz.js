@@ -14,7 +14,7 @@
   // Scratch Vm & APIs
   const vm = Scratch.vm;
   // const runtime = vm.runtime;
-  // const Cast = Scratch.Cast;
+  const Cast = Scratch.Cast;
 
   let mods = []; //Creates a List of Mods
 
@@ -34,6 +34,66 @@
       counter += 1;
     }
     return result;
+  };
+
+
+  const readFile = () => {
+    return new Promise((resolve, reject) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+
+        input.onchange = (event) => {
+            const target = event.target;
+
+            // Ensure that the target is an HTMLInputElement and has files
+            if (target && target instanceof HTMLInputElement && target.files?.[0]) {
+                const file = target.files[0];
+
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    resolve(e.target?.result);
+                };
+
+                reader.onerror = (e) => {
+                    reject(`Error reading file: ${reader.error?.message || 'Unknown error'}`);
+                };
+
+                reader.readAsText(file);
+            } else {
+                reject('No file selected');
+            }
+        };
+
+        input.click();
+    });
+};
+
+
+
+
+
+  // Credits to Files Extension for These Functions.
+  const downloadURL = (url, file) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = file;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
+
+  /**
+   * @param {Blob} blob Data to download
+   * @param {string} file Name of the file
+   */
+  const downloadBlob = (blob, file) => {
+    const url = URL.createObjectURL(blob);
+    downloadURL(url, file);
+    // Some old browsers process Blob URLs asynchronously
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
   };
 
   class TurboModz {
@@ -153,6 +213,21 @@
             },
           },
           {
+            opcode: "LoadLabel",
+            blockType: BlockType.LABEL,
+            text: "Loading Mods",
+          },
+          {
+            opcode: "loadMod",
+            blockType: BlockType.COMMAND,
+            text: "load [MOD] mod in project"
+          },
+          {
+            opcode: "unLoadMod",
+            blockType: BlockType.COMMAND,
+            text: "unload all mods in project"
+          },
+          {
             opcode: "ImportLabel",
             blockType: BlockType.LABEL,
             text: "Importing & Exporting Mods",
@@ -160,22 +235,22 @@
           {
             opcode: "exportMod",
             blockType: BlockType.COMMAND,
-            text: "export mod [MOD] as [EXT]",
+            text: "export mod [MOD] as [FILE]",
             arguments: {
               MOD: {
                 type: ArgumentType.STRING,
                 menu: "MODS_MENU",
               },
-              EXT: {
+              FILE: {
                 type: ArgumentType.STRING,
-                defaultValue: "twmod",
+                defaultValue: ".twmod",
               },
             },
           },
           {
             opcode: "importMod",
             blockType: BlockType.COMMAND,
-            text: "import mod [MOD] as [EXT]",
+            text: "import new mod to project",
             arguments: {
               MOD: {
                 type: ArgumentType.STRING,
@@ -224,7 +299,7 @@
     isImage(url) {
       // Checks if URL Redirects to an Image
       try {
-        const validFormats = ["png", "svg+xml", "jpeg", "webp"];
+        const validFormats = ["png", "svg", "sbg+xml", "jpeg", "jpg", "bmp", "gif"];
         const parsedUrl = new URL(url);
         // Checks if the URL is a data URL
         if (parsedUrl.protocol === "data:" && url.startsWith("data:image/")) {
@@ -375,7 +450,7 @@
         case "JSON":
           return this.findMod(args.NAME);
         case "text":
-          return JSON.stringify(this.findMod(args.NAME));
+          return Cast.toString(JSON.stringify(this.findMod(args.NAME)));
         case "array":
           return Object.values(this.findMod(args.NAME));
       }
@@ -434,14 +509,35 @@
       const soundURL = await this.convertSoundToDataURL(sound);
       this.addModItem(args.MOD, "sounds", soundURL); // Finally, add it to the mod
     }
-    /* TODO #1:
-       Find a Way to Import and Export Mods */
-    exportMod(args) {
+    /* TODO #2:
+       Find a Way to Get Runtime Values */
+
+    loadMod(args) {
       //placeholder
     }
-    importMod(args) {
+    unLoadMod(args) {
       //placeholder
+    }
+
+    exportMod(args) {
+      const mod_JSON = JSON.stringify(this.findMod(args.MOD))
+      downloadBlob(
+        new Blob([Cast.toString(mod_JSON)]),
+        Cast.toString(args.MOD.replaceAll(" ", "_") + args.FILE)
+      );
+    }
+    async importMod(args) {
+      let mod_JSON = await readFile()
+      .then(result => result)
+      .catch(error => error);
+
+      if (!mod_JSON){
+        console.error("Please put an appropriate file")
+      }
+      mod_JSON = JSON.parse(Cast.toString(mod_JSON))
+      mods.push(mod_JSON)
     }
   }
+  // @ts-ignore
   Scratch.extensions.register(new TurboModz());
 })(Scratch);
