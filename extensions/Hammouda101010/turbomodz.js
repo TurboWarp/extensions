@@ -99,12 +99,29 @@
   // End of File Extension Scripts
 
   // Credits to Asset Manager, Made by LilyMakeThings
+
+  const _typeIsBitmap = (type) => {
+    return (
+      type === "image/png" ||
+      type === "image/bmp" ||
+      type === "image/jpg" ||
+      type === "image/jpeg" ||
+      type === "image/jfif" ||
+      type === "image/webp" ||
+      type === "image/gif"
+    );
+  }
+
   const addSprite = async (spriteurl, util) => {
     const url = Cast.toString(spriteurl);
 
     const response = await Scratch.fetch(url);
     const json = await response.arrayBuffer();
-    return json;
+    try {
+      await vm.addSprite(json);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   const addCostume = async (url, name, util) => {
@@ -146,13 +163,20 @@
       true
     );
     const md5ext = `${asset.assetId}.${asset.dataFormat}`;
-    return [md5ext,
-    {
-      asset,
-      md5ext,
-      name: assetName,
-    },
-    targetId]
+    try {
+      await vm.addCostume(
+        md5ext,
+        {
+          asset,
+          // @ts-ignore
+          md5ext,
+          name: assetName,
+        },
+        targetId
+      );
+    } catch (e) {
+      console.error(e);
+    }
 }
 
   const addSound = async (args, util) => {
@@ -170,12 +194,19 @@
       null,
       true
     );
-    return [{
-      asset,
-      md5: asset.assetId + "." + asset.dataFormat,
-      name: assetName,
-    },
-    targetId]
+    try {
+        await vm.addSound(
+          // @ts-ignore
+          {
+            asset,
+            md5: asset.assetId + "." + asset.dataFormat,
+            name: assetName,
+          },
+          targetId
+        );
+      } catch (e) {
+        console.error(e);
+      }
   }
   // End of Asset Manager Scripts
 
