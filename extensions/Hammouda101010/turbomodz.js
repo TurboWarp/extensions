@@ -84,11 +84,17 @@
   const isSprite = (url) => {
     try {
       const parsedUrl = new URL(url);
-      return /\.sprite3$/i.test(parsedUrl.pathname);
+      
+      // Check for .sprite3 file extension or application/x.scratch.sprite3 data URL
+      const isDataUrl = parsedUrl.protocol === "data:" && parsedUrl.pathname.startsWith("application/x.scratch.sprite3");
+      const isFileExtension = /\.sprite3$/i.test(parsedUrl.pathname);
+      
+      return isDataUrl || isFileExtension;
     } catch (e) {
-      return false;
+      return false; // Return false if URL parsing fails
     }
   };
+  
 
   const isImage = (url) => {
     try {
