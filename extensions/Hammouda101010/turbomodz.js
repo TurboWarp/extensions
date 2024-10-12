@@ -219,6 +219,7 @@
         md5ext,
         {
           asset,
+          // @ts-ignore
           md5ext,
           name: assetName,
         },
@@ -246,6 +247,7 @@
     );
     try {
       await vm.addSound(
+        // @ts-ignore
         {
           asset,
           md5: asset.assetId + "." + asset.dataFormat,
