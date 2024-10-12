@@ -521,13 +521,15 @@ class TurboModz {
 
     const url = costume.asset.encodeDataURI();
 
-    if (!(await Scratch.canFetch(url))) {
+    if (!(await Scratch.canFetch(url))) { // eslint-disable-next-line no-restricted-syntax
       return "Cannot fetch the costume asset.";
     }
-    // eslint-disable-next-line no-restricted-syntax
-
+    
+    
     const image = new Image();
-    image.src = url;
+    if ((await Scratch.canFetch(url))) { // eslint-disable-next-line no-restricted-syntax
+      image.src = url;
+    }
 
     await new Promise((resolve) => {
       image.onload = resolve;
