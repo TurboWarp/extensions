@@ -524,6 +524,7 @@ class TurboModz {
     if (!(await Scratch.canFetch(url))) {
       return "Cannot fetch the costume asset.";
     }
+    // eslint-disable-next-line no-restricted-syntax
 
     const image = new Image();
     image.src = url;
