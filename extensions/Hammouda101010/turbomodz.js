@@ -72,13 +72,14 @@
     });
   };
 
-  const addAssetToMod = (url, modName, key, validatorFn, errorMessage) => {
+  const addAssetToMod = (context, url, modName, key, validatorFn, errorMessage) => {
     if (validatorFn(url)) {
-      this.addModItem(modName, key, url);
+      context.addModItem(modName, key, url); // Use the passed context
     } else {
       console.error(errorMessage);
     }
   };
+  
 
   const isSprite = (url) => {
     try {
@@ -611,6 +612,7 @@
 
     addSpritetoMod(args) {
       addAssetToMod(
+        this,
         args.URL,
         args.MOD,
         "sprites",
@@ -620,6 +622,7 @@
     }
     addImagetoMod(args) {
       addAssetToMod(
+        this,
         args.URL,
         args.MOD,
         "costumes",
