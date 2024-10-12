@@ -72,6 +72,55 @@
     });
   };
 
+  const addAssetToMod = (url, modName, key, validatorFn, errorMessage) => {
+    if (validatorFn(url)) {
+      this.addModItem(modName, key, url);
+    } else {
+      console.error(errorMessage);
+    }
+  };
+
+  const isSprite = (url) => {
+    try {
+      const parsedUrl = new URL(url);
+      return /\.sprite3$/i.test(parsedUrl.pathname);
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const isImage = (url) => {
+    try {
+      const validFormats = ["png", "svg", "jpeg", "jpg", "bmp", "gif"];
+      return validFormats.some((format) =>
+        url.startsWith(`data:image/${format};`)
+      );
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const isSound = (url) => {
+    try {
+      const validFormats = ["mp3", "wav", "ogg", "mpeg"];
+      return validFormats.some((format) =>
+        url.startsWith(`data:audio/${format};`)
+      );
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const loadModAssets = async (assets, loadFunction) => {
+    for (let asset of assets) {
+      try {
+        await loadFunction(new URL(asset));
+      } catch (e) {
+        console.error(`Failed to load asset: ${e}`);
+      }
+    }
+  };
+
   // Credits to Files Extension for These Functions.
   const downloadURL = (url, file) => {
     const link = document.createElement("a");
@@ -414,62 +463,11 @@
     }
 
     // URL Checking Functions
-    isSprite(url) {
-      try {
-        const parsedUrl = new URL(url);
-        if (
-          parsedUrl.protocol === "data:" &&
-          (parsedUrl.pathname.startsWith("application/x.scratch.sprite3;") ||
-            parsedUrl.pathname.startsWith("application/octet-stream;"))
-        ) {
-          return true;
-        }
-        const urlPattern = /\.sprite3$/i;
-        return urlPattern.test(parsedUrl.pathname);
-      } catch (e) {
-        return false;
-      }
-    }
+    
 
-    isImage(url) {
-      try {
-        const validFormats = [
-          "png",
-          "svg",
-          "sbg+xml",
-          "jpeg",
-          "jpg",
-          "bmp",
-          "gif",
-        ];
-        const parsedUrl = new URL(url);
-        if (parsedUrl.protocol === "data:" && url.startsWith("data:image/")) {
-          return validFormats.some((format) =>
-            url.startsWith(`data:image/${format};`)
-          );
-        }
-        const urlPattern = new RegExp(`\\.(${validFormats.join("|")})$`, "i");
-        return urlPattern.test(parsedUrl.pathname);
-      } catch (e) {
-        return false;
-      }
-    }
+    
 
-    isSound(url) {
-      try {
-        const validFormats = ["mp3", "wav", "ogg", "mpeg"];
-        const parsedUrl = new URL(url);
-        if (parsedUrl.protocol === "data:" && url.startsWith("data:audio/")) {
-          return validFormats.some((format) =>
-            url.startsWith(`data:audio/${format};`)
-          );
-        }
-        const urlPattern = new RegExp(`\\.(${validFormats.join("|")})$`, "i");
-        return urlPattern.test(parsedUrl.pathname);
-      } catch (e) {
-        return false;
-      }
-    }
+  
 
     // Gets all Mods
     getMods() {
@@ -543,7 +541,9 @@
       }
 
       // Create a new image and load it
+      /* eslint-disable*/
       const image = new Image();
+      /* eslint-enable*/
       image.src = url;
 
       // Return a promise that resolves when the image loads
@@ -610,18 +610,22 @@
     }
 
     addSpritetoMod(args) {
-      if (this.isSprite(args.URL)) {
-        this.addModItem(args.MOD, "sprites", args.URL);
-      } else {
-        console.error("Invalid Sprite URL/Data URL");
-      }
+      addAssetToMod(
+        args.URL,
+        args.MOD,
+        "sprites",
+        isSprite,
+        "Invalid Sprite URL/Data URL"
+      );
     }
     addImagetoMod(args) {
-      if (this.isImage(args.URL)) {
-        this.addModItem(args.MOD, "costumes", args.URL);
-      } else {
-        console.error("Invalid Image/Costume URL/Data URL");
-      }
+      addAssetToMod(
+        args.URL,
+        args.MOD,
+        "costumes",
+        isImage,
+        "Invalid Image/Costume URL/Data URL"
+      );
     }
     async addCostumetoMod(args, util) {
       const costumeName = args.COSTUME;
@@ -636,14 +640,23 @@
         spriteName
       );
 
-      this.addModItem(args.MOD, "costumes", costumeURL);
+      addAssetToMod(
+        costumeURL,
+        args.MOD,
+        "costumes",
+        isImage,
+        "Invalid Image/Costume URL/Data URL"
+      );
     }
     addSoundUrltoMod(args) {
-      if (this.isSound(args.URL)) {
-        this.addModItem(args.MOD, "sounds", args.URL);
-      } else {
-        console.error("Invalid Sound URL/Data URL");
-      }
+
+      addAssetToMod(
+        args.URL,
+        args.MOD,
+        "sounds",
+        isSound,
+        "Invalid Sound URL/Data URL"
+      );
     }
     async addSoundtoMod(args, util) {
       const soundName = args.SOUND;
@@ -655,27 +668,28 @@
 
       const soundURL = await this.convertSoundToDataURL(sound, spriteName);
 
-      this.addModItem(args.MOD, "sounds", soundURL);
+      
+      addAssetToMod(
+        soundURL,
+        args.MOD,
+        "sounds",
+        isSound,
+        "Invalid Sound URL/Data URL"
+      );
     }
 
-    loadMod(args, util) {
+    async loadMod(args, util) {
       const confirmLoad = confirm(
         "WARNING: This May Take a Long Time and May Cause Heavy Lag. It Can Also Break the Entire Project. Continiue?"
       );
       if (confirmLoad) {
         isLoading = true;
-        for (let i of this.findMod(args.MOD)["sprites"]) {
-          i = new URL(i);
-          addSprite(i);
-        }
-        for (let i of this.findMod(args.MOD)["costumes"]) {
-          i = new URL(i);
-          addCostume(i, i.hash.substr(1));
-        }
-        for (let i of this.findMod(args.MOD)["sounds"]) {
-          i = new URL(i);
-          addSound(i, i.hash.substr(1));
-        }
+        const mod = this.findMod(args.MOD);
+
+        await loadModAssets(mod.sprites, addSprite);
+        await loadModAssets(mod.costumes, addCostume);
+        await loadModAssets(mod.sounds, addSound);
+
         isLoading = false;
       }
     }
