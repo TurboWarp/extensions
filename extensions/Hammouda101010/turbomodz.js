@@ -6,20 +6,14 @@
   }
 
   const vm = Scratch.vm;
-  // @ts-ignore
-  const runtime = vm.runtime;
-  // @ts-ignore
-  const Cast = Scratch.Cast;
-
   let mods = [];
   let isLoading = false;
 
-  // @ts-ignore
+  // Block & Argument Types from Scratch
   const BlockType = Scratch.BlockType;
-  // @ts-ignore
   const ArgumentType = Scratch.ArgumentType;
 
-  // @ts-ignore
+  // Function That Creates New IDs
   const newID = (length) => {
     let result = "";
     const characters =
@@ -33,6 +27,7 @@
     return result;
   };
 
+  // Function for reading files
   const readFile = () => {
     return new Promise((resolve, reject) => {
       const input = document.createElement("input");
@@ -48,7 +43,6 @@
             resolve(e.target?.result);
           };
 
-          // @ts-ignore
           reader.onerror = (e) => {
             reject(
               `Error reading file: ${reader.error?.message || "Unknown error"}`
@@ -65,6 +59,7 @@
     });
   };
 
+  // Function to download a blob
   const downloadBlob = (blob, file) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -78,9 +73,9 @@
     }, 1000);
   };
 
-  // @ts-ignore
+  // Function to add items to mod
   const addModItem = (name, key, item) => {
-    let modindex = mods.indexOf(this.findMod(name));
+    let modindex = mods.indexOf(findMod(name));
     if (key in mods[modindex]) {
       if (Array.isArray(mods[modindex][key])) {
         mods[modindex][key].push(item);
@@ -93,51 +88,18 @@
   // Unified function for adding assets to mods (sprites, images, sounds)
   const addAssetToMod = (url, modName, key, validatorFn, errorMessage) => {
     if (validatorFn(url)) {
-      this.addModItem(modName, key, url);
+      addModItem(modName, key, url);
     } else {
       console.error(errorMessage);
     }
   };
 
-  // @ts-ignore
-  const isSprite = (url) => {
-    try {
-      const parsedUrl = new URL(url);
-      return /\.sprite3$/i.test(parsedUrl.pathname);
-    } catch (e) {
-      return false;
-    }
-  };
+  // Validators for assets
+  const isSprite = (url) => /\.sprite3$/i.test(new URL(url).pathname);
+  const isImage = (url) => /\.(png|svg|jpeg|jpg|bmp|gif)$/i.test(new URL(url).pathname);
+  const isSound = (url) => /\.(mp3|wav|ogg|mpeg)$/i.test(new URL(url).pathname);
 
-  // @ts-ignore
-  const isImage = (url) => {
-    try {
-      const validFormats = ["png", "svg", "jpeg", "jpg", "bmp", "gif"];
-      // @ts-ignore
-      const parsedUrl = new URL(url);
-      return validFormats.some((format) =>
-        url.startsWith(`data:image/${format};`)
-      );
-    } catch (e) {
-      return false;
-    }
-  };
-
-  // @ts-ignore
-  const isSound = (url) => {
-    try {
-      const validFormats = ["mp3", "wav", "ogg", "mpeg"];
-      // @ts-ignore
-      const parsedUrl = new URL(url);
-      return validFormats.some((format) =>
-        url.startsWith(`data:audio/${format};`)
-      );
-    } catch (e) {
-      return false;
-    }
-  };
-
-  // Async version of loading mods
+  // Load mod assets asynchronously
   const loadModAssets = async (assets, loadFunction) => {
     for (let asset of assets) {
       try {
@@ -148,6 +110,27 @@
     }
   };
 
+  // Placeholder functions for loading assets
+  const addSprite = async (url) => {
+    const response = await Scratch.fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    await vm.addSprite(arrayBuffer);
+  };
+
+  const addCostume = async (url, name) => {
+    const res = await Scratch.fetch(url);
+    const blob = await res.blob();
+    const targetId = vm.runtime.targets[0].id;
+    await vm.addCostume(url, { name }, targetId);
+  };
+
+  const addSound = async (url, name) => {
+    const res = await Scratch.fetch(url);
+    const buffer = await res.arrayBuffer();
+    const targetId = vm.runtime.targets[0].id;
+    await vm.addSound({ asset: buffer, name }, targetId);
+  };
+
   class TurboModz {
     getInfo() {
       return {
@@ -156,7 +139,7 @@
         color1: "#e84cff",
         color2: "#e200fd",
         blocks: [
-          // Block definitions remain the same...
+          // Blocks remain unchanged
         ],
         menus: {
           GET_TYPE_MENU: {
@@ -171,14 +154,12 @@
       };
     }
 
-    // Unified functions for adding sprites, images, and sounds
     addSpritetoMod(args) {
       addAssetToMod(
         args.URL,
         args.MOD,
         "sprites",
-        // @ts-ignore
-        this.isSprite,
+        isSprite,
         "Invalid Sprite URL/Data URL"
       );
     }
@@ -188,8 +169,7 @@
         args.URL,
         args.MOD,
         "costumes",
-        // @ts-ignore
-        this.isImage,
+        isImage,
         "Invalid Image/Costume URL/Data URL"
       );
     }
@@ -199,8 +179,7 @@
         args.URL,
         args.MOD,
         "sounds",
-        // @ts-ignore
-        this.isSound,
+        isSound,
         "Invalid Sound URL/Data URL"
       );
     }
@@ -211,22 +190,14 @@
       );
       if (confirmLoad) {
         isLoading = true;
-        // @ts-ignore
         const mod = this.findMod(args.MOD);
-
-        // Load assets asynchronously
-        // @ts-ignore
         await loadModAssets(mod.sprites, addSprite);
-        // @ts-ignore
         await loadModAssets(mod.costumes, addCostume);
-        // @ts-ignore
         await loadModAssets(mod.sounds, addSound);
-
         isLoading = false;
       }
     }
 
-    // @ts-ignore
     async importMod(args) {
       try {
         const mod_JSON = await readFile();
@@ -238,12 +209,19 @@
     }
 
     exportMod(args) {
-      // @ts-ignore
       const mod_JSON = JSON.stringify(this.findMod(args.MOD));
       downloadBlob(
         new Blob([mod_JSON]),
         args.MOD.replaceAll(" ", "_") + args.FILE
       );
+    }
+
+    findMod(name) {
+      return mods.find((mod) => mod.name === name);
+    }
+
+    getMods() {
+      return mods.length > 0 ? mods.map((mod) => mod.name) : ["no mods yet!"];
     }
   }
 
