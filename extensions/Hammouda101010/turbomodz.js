@@ -513,51 +513,61 @@
       return target.getSounds().find((s) => s.name === soundName);
     }
 
-    // Function to convert a costume to a Data: URL
+
+// Function to convert a costume to a Data: URL
     async convertCostumeToDataURL(costume, spriteName) {
       if (!costume) {
         return "Invalid costume";
       }
 
+      // If the costume is a vector (SVG), return the data URI as is
       if (costume.asset && costume.asset.dataFormat === "svg") {
         return costume.asset.encodeDataURI();
       }
 
+      // For bitmaps (PNG, JPEG), use the canvas to generate the data URL
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("2d");
 
+      // Set the canvas size to the costume size
       canvas.width = costume.size[0];
       canvas.height = costume.size[1];
 
+      // Get the URL for the costume asset
       const url = costume.asset.encodeDataURI();
 
-      if (!(await Scratch.canFetch(url))) {
-        // eslint-disable-next-line no-restricted-syntax
-        return "Cannot fetch the costume asset.";
+      // Check if the URL can be fetched
+      const canFetch = await Scratch.canFetch(url);
+      if (!canFetch) {
+        return "Cannot fetch the costume asset."; // Return if the URL can't be fetched
       }
 
+      // Create a new image and load it
       const image = new Image();
-      if (await Scratch.canFetch(url)) {
-        // eslint-disable-next-line no-restricted-syntax
-        image.src = url;
-      }
+      image.src = url;
 
-      await new Promise((resolve) => {
-        image.onload = resolve;
+      // Return a promise that resolves when the image loads
+      return new Promise((resolve, reject) => {
+        image.onload = () => {
+          context.drawImage(image, 0, 0); // Draw the image on the canvas
+
+          // Create the data URL based on the original costume format
+          let dataURL;
+          if (costume.asset.dataFormat === "png") {
+            dataURL = canvas.toDataURL("image/png");
+          } else if (costume.asset.dataFormat === "jpeg") {
+            dataURL = canvas.toDataURL("image/jpeg");
+          } else {
+            dataURL = canvas.toDataURL(); // Default to PNG if format is unrecognized
+          }
+
+          resolve(dataURL + `#${spriteName}`); // Return the data URL with sprite name
+        };
+
+        image.onerror = () => {
+          reject("Failed to load image."); // Reject the promise if image loading fails
+        };
       });
-
-      context.drawImage(image, 0, 0);
-
-      let dataURL;
-      if (costume.asset.dataFormat === "png") {
-        dataURL = canvas.toDataURL("image/png");
-      } else if (costume.asset.dataFormat === "jpeg") {
-        dataURL = canvas.toDataURL("image/jpeg");
-      } else {
-        dataURL = canvas.toDataURL();
-      }
-
-      return dataURL + `#${spriteName}`;
     }
 
     async convertSoundToDataURL(sound, spriteName) {
