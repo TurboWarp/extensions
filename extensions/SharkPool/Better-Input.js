@@ -2,9 +2,8 @@
 // ID: BetterInputSP
 // Description: Expansion of the "ask and wait" Blocks.
 // By: SharkPool
-// License: MPL-2.0
 
-// Version V.4.2.02
+// Version V.4.2.1
 
 (function (Scratch) {
   "use strict";
@@ -680,8 +679,9 @@
       }
       const inputField = overlay.querySelector(this.inputType.includes("Single") ? "select" : "input");
       if (inputField) {
+        const inpWidth = parseInt(this.mainUIinfo.dimensions[0]);
         inputField.style.width = this.inputType === "Color" || this.inputType.includes("Single") ? "100%" :
-          this.inputType === "Horizontal Slider" ? "95%" : "auto";
+          this.inputType === "Horizontal Slider" ? "95%" : isNaN(inpWidth) || this.inputType.includes("Dropdown") ? "auto" : `${inpWidth - 10}px`;
         inputField.style.background = "";
         inputField.style.fontFamily = this.fontFamily;
         inputField.style[this.inputFieldColor.includes("gradient") ? "backgroundImage" : "backgroundColor"] = this.inputFieldColor;
@@ -1102,8 +1102,17 @@
                 dropdwnBtn.appendChild(opt);
               });
               dropdwnBtn.addEventListener("input", () => { setInpValue(dropdwnBtn.value) });
+              dropdwnBtn.value = this.defaultValue || dropdwnBtn.value;
               setInpValue(dropdwnBtn.value);
             } else {
+              const isMulti = this.inputType.includes("Multi-Select");
+              let defaultOpts = [];
+              if (isMulti) {
+                try {
+                  defaultOpts = JSON.parse(this.defaultValue);
+                  selectOpts = defaultOpts;
+                } catch {}
+              }
               dropdwnBtn = document.createElement("button");
               dropdwnBtn.className = "dropbtn";
               dropdwnBtn.innerHTML = xmlEscape(this.DropdownText).replace(/\n/g, "<br>");
@@ -1117,11 +1126,13 @@
                 optTxt.textContent = "";
                 const optRadio = document.createElement("input");
                 optRadio.type = this.inputType === "Dropdown" ? "radio" : "checkbox";
+                if (isMulti) optRadio.checked = defaultOpts.indexOf(label) > -1;
+                else optRadio.checked = label === this.defaultValue;
                 optRadio.name = "dropdownOptions";
                 optRadio.value = index;
                 optRadio.classList.add("dropdown-radio");
                 optRadio.addEventListener("click", () => {
-                  if (this.inputType === "Multi-Select Dropdown") {
+                  if (isMulti) {
                     if (selectOpts.includes(label)) selectOpts = selectOpts.filter(item => item !== label);
                     else selectOpts.push(label);
                     inputField.value = selectOpts.length > 0 ? JSON.stringify(selectOpts) : "";
@@ -1136,6 +1147,7 @@
                 dropdwnCont.style.display = this.isDropdownOpen ? "none" : "block";
                 this.isDropdownOpen = !this.isDropdownOpen;
               });
+              setInpValue(this.defaultValue);
             }
           } else if (this.inputType.includes("Slider")) {
             sliderContain = document.createElement("div");
