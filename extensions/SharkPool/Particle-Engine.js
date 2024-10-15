@@ -28,7 +28,7 @@
   const engineTag = Symbol("particleEngine");
 
   const optionList = {
-    maxP: { val: 30, inf: 0 }, emission: { val: 28, inf: 0 }, time: { val: 0.2, inf: 0.3 },
+    maxP: { val: 30, inf: 0 }, emission: { val: 28, inf: 0 },
     time: { val: 0.2, inf: 0.3 }, speed: { val: 15, inf: 0 },
     xPos: { val: 10, inf: 0 }, yPos: { val: 0, inf: 0 },
     gravX: { val: 0, inf: 0 }, gravY: { val: -2, inf: 0 },
@@ -95,6 +95,7 @@
   };
 
   const newTexture = (url, callback) => {
+    // eslint-disable-next-line
     const img = new Image();
     img.crossOrigin = "Anonymous";
     img.src = url;
@@ -259,8 +260,8 @@
         particle.y -= particle.gravY * ind;
 
         let opacity = 1;
-        if (ind < particle.fIn) opacity = ind / particle.fIn;
-        else if (ind > conLife - particle.fOut) opacity = (conLife - ind) / particle.fOut;
+        if (ind < fIn) opacity = ind / fIn;
+        else if (ind > conLife - fOut) opacity = (conLife - ind) / fOut;
         opacity = Math.max(0, Math.min(opacity, 1));
         const t = Math.max(0, Math.min(ind / conLife, 1));
         const shifted = shiftHue(sCol.val, sCol.inf, eCol.val, eCol.inf, t);
@@ -708,8 +709,8 @@
             type = args.TYPE;
             val = Scratch.Cast.toNumber(args.VAL);
           }
-          let opt = engine.emitters[args.NAME].opts[args.TYPE];
-          if (opt) engine.emitters[args.NAME].opts[args.TYPE] = { val, inf: Scratch.Cast.toNumber(args.INT) };
+          let opt = engine.emitters[args.NAME].opts[type];
+          if (opt) engine.emitters[args.NAME].opts[type] = { val, inf: Scratch.Cast.toNumber(args.INT) };
         }
       }
     }
