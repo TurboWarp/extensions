@@ -583,12 +583,12 @@
     getSprites() {
       const spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
-      const myself = Scratch.vm.runtime.getEditingTarget().getName();
+      const editingTarget = Scratch.vm.runtime.getEditingTarget();
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) {
           const targetName = target.getName();
-          if (targetName === myself) {
+          if (target === editingTarget) {
             spriteNames.unshift({
               text: "this sprite",
               value: targetName,
