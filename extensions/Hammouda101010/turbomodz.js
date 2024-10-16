@@ -13,11 +13,110 @@
 
   // Scratch Vm & APIs
   const vm = Scratch.vm;
+  const renderer = Scratch.renderer;
+  const vmRenderer = vm.renderer;
   const runtime = vm.runtime;
   const Cast = Scratch.Cast;
 
+  // Credits to Runtime Values
+  const TURBO_MODE = "turbo mode";
+  const INTERPOLATION = "interpolation";
+  const REMOVE_FENCING = "remove fencing";
+  const REMOVE_MISC_LIMITS = "remove misc limits";
+  const HIGH_QUALITY_PEN = "high quality pen";
+  const FRAMERATE = "framerate";
+  const CLONE_LIMIT = "clone limit";
+  const STAGE_SIZE = "stage size";
+  const USERNAME = "username";
+
+  /** @param {string} what */
+  const emitChanged = (what) =>
+    runtime.startHats("runtimeoptions_whenChange", {
+      WHAT: what,
+    });
+
+  /**
+   * @template T
+   * @param {T} obj
+   * @returns {T}
+   */
+  const shallowCopy = (obj) => Object.assign({}, obj);
+
+  let previousRuntimeOptions = shallowCopy(runtime.runtimeOptions);
+
+  vm.on("TURBO_MODE_OFF", () => emitChanged(TURBO_MODE));
+  vm.on("TURBO_MODE_ON", () => emitChanged(TURBO_MODE));
+  vm.on("INTERPOLATION_CHANGED", () => emitChanged(INTERPOLATION));
+  vm.on("RUNTIME_OPTIONS_CHANGED", (newOptions) => {
+    if (newOptions.fencing !== previousRuntimeOptions.fencing) {
+      emitChanged(REMOVE_FENCING);
+    }
+    if (newOptions.miscLimits !== previousRuntimeOptions.miscLimits) {
+      emitChanged(REMOVE_MISC_LIMITS);
+    }
+    if (newOptions.maxClones !== previousRuntimeOptions.maxClones) {
+      emitChanged(CLONE_LIMIT);
+    }
+    previousRuntimeOptions = shallowCopy(newOptions);
+  });
+  vmRenderer.on("UseHighQualityRenderChanged", () =>
+    emitChanged(HIGH_QUALITY_PEN)
+  );
+  vm.on("FRAMERATE_CHANGED", () => emitChanged(FRAMERATE));
+  vm.on("STAGE_SIZE_CHANGED", () => emitChanged(STAGE_SIZE));
+
+  const originalPostData = runtime.ioDevices.userData.postData;
+  runtime.ioDevices.userData.postData = function (data) {
+    const newUsername = data.username !== this._username;
+    originalPostData.call(this, data);
+    if (newUsername) {
+      emitChanged(USERNAME);
+    }
+  };
+
+  // Functions from Runtime Values
+  const setStageDimesions = (width, height) => {
+    width = Cast.toNumber(width);
+    height = Cast.toNumber(height);
+    vm.setStageSize(width, height);
+  }
+
+  const setEnabled = ( thing, enabled ) => {
+    enabled = Cast.toBoolean(enabled);
+
+    if (thing === TURBO_MODE) {
+      vm.setTurboMode(enabled);
+    } else if (thing === INTERPOLATION) {
+      vm.setInterpolation(enabled);
+    } else if (thing === REMOVE_FENCING) {
+      vm.setRuntimeOptions({
+        fencing: !enabled,
+      });
+    } else if (thing === REMOVE_MISC_LIMITS) {
+      vm.setRuntimeOptions({
+        miscLimits: !enabled,
+      });
+    } else if (thing === HIGH_QUALITY_PEN) {
+      renderer.setUseHighQualityRender(enabled);
+    }
+  }
+
+  const setFPS = ( fps ) => {
+    fps = Cast.toNumber(fps);
+    vm.setFramerate(fps);
+  }
+
+  const setCloneLimit = ( limit ) => {
+    limit = Cast.toNumber(limit);
+    vm.setRuntimeOptions({
+      maxClones: limit,
+    });
+  }
+
+  // End of Runtime Values Code i think
+
   let mods = []; //Creates a List of Mods
-  let isLoading = false;
+  let isLoading = false; // Create isLoading Variable duh.
 
   //Block & Argument Type Constants
   const BlockType = Scratch.BlockType;
