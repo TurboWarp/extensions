@@ -565,10 +565,12 @@
     getLists() {
       const globalLists = Object.values(
         vm.runtime.getTargetForStage().variables
-      ).filter((x) => x.type == "list");
-      const localLists = Object.values(vm.editingTarget.variables).filter(
-        (x) => x.type == "list"
-      );
+      ).filter((x) => x.type === "list");
+      const localLists = vm.editingTarget
+        ? Object.values(vm.editingTarget.variables).filter(
+            (x) => x.type === "list"
+          )
+        : [];
       const uniqueLists = [...new Set([...globalLists, ...localLists])];
       if (uniqueLists.length === 0) {
         return [
