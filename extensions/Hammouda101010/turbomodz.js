@@ -265,14 +265,14 @@
   const downloadBlob = (blob, file) => {
     const url = URL.createObjectURL(blob);
     downloadURL(url, file);
-    
+
     URL.revokeObjectURL(url);
   };
   // End of File Extension Scripts
 
   // Credits to Asset Manager, Made by LilyMakeThings
 
-  const _typeIsBitmap = (type) => {
+  const typeIsBitmap = (type) => {
     return (
       type === "image/png" ||
       type === "image/bmp" ||
@@ -304,11 +304,11 @@
     const res = await Scratch.fetch(url);
     const blob = await res.blob();
 
-    if (!(this._typeIsBitmap(blob.type) || blob.type === "image/svg+xml")) {
+    if (!(typeIsBitmap(blob.type) || blob.type === "image/svg+xml")) {
       console.error(`Invalid MIME type: ${blob.type}`);
       return;
     }
-    const assetType = this._typeIsBitmap(blob.type)
+    const assetType = typeIsBitmap(blob.type)
       ? runtime.storage.AssetType.ImageBitmap
       : runtime.storage.AssetType.ImageVector;
 
@@ -386,7 +386,7 @@
   class TurboModz {
     getInfo() {
       return {
-        id: "turbomods",
+        id: "turbomodz",
         name: "TurboModz",
         color1: "#e84cff",
         color2: "#e200fd",
@@ -396,7 +396,7 @@
           {
             opcode: "newMod",
             blockType: BlockType.COMMAND,
-            text: "create new mod called [NAME]",
+            text: Scratch.translate("create new mod called [NAME]"),
             arguments: {
               NAME: {
                 type: ArgumentType.STRING,
@@ -407,7 +407,7 @@
           {
             opcode: "getMod",
             blockType: BlockType.REPORTER,
-            text: "get mod called [NAME] as [TYPE]",
+            text: Scratch.translate("get mod called [NAME] as [TYPE]"),
             arguments: {
               NAME: {
                 type: ArgumentType.STRING,
@@ -422,16 +422,16 @@
           {
             opcode: "ModLabel",
             blockType: BlockType.LABEL,
-            text: "Project Modding",
+            text: Scratch.translate("Project Modding"),
           },
           {
             opcode: "addSpritetoMod",
             blockType: BlockType.COMMAND,
-            text: "add sprite [URL] to mod:[MOD]",
+            text: Scratch.translate("add sprite [URL] to mod:[MOD]"),
             arguments: {
               URL: {
                 type: ArgumentType.STRING,
-                defaultValue: "Data URL or URL",
+                defaultValue: "https://example.com/Sprite1.sprite3",
               },
               MOD: {
                 type: ArgumentType.STRING,
@@ -443,11 +443,11 @@
           {
             opcode: "addImagetoMod",
             blockType: BlockType.COMMAND,
-            text: "add image [URL] to mod:[MOD]",
+            text: Scratch.translate("add image [URL] to mod:[MOD]"),
             arguments: {
               URL: {
                 type: ArgumentType.STRING,
-                defaultValue: "URL or Data URL",
+                defaultValue: "https://example.com/image.png",
               },
               MOD: {
                 type: ArgumentType.STRING,
@@ -458,7 +458,7 @@
           {
             opcode: "addCostumetoMod",
             blockType: BlockType.COMMAND,
-            text: "add costume [COSTUME] to mod:[MOD]",
+            text: Scratch.translate("add costume [COSTUME] to mod:[MOD]"),
             arguments: {
               COSTUME: {
                 type: ArgumentType.COSTUME,
@@ -473,7 +473,7 @@
           {
             opcode: "addSoundUrltoMod",
             blockType: BlockType.COMMAND,
-            text: "add sound url [URL] to mod:[MOD]",
+            text: Scratch.translate("add sound url [URL] to mod:[MOD]"),
             arguments: {
               URL: {
                 type: ArgumentType.STRING,
@@ -488,11 +488,33 @@
           {
             opcode: "addSoundtoMod",
             blockType: BlockType.COMMAND,
-            text: "add sound [SOUND] to mod:[MOD]",
+            text: Scratch.translate("add sound [SOUND] to mod:[MOD]"),
             arguments: {
               SOUND: {
                 type: ArgumentType.SOUND,
                 defaultValue: "",
+              },
+              MOD: {
+                type: ArgumentType.STRING,
+                menu: "MODS_MENU",
+              },
+            },
+          },
+          "---",
+          {
+            opcode: "triggerRuntimetoMod",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate("set [RUNTIME] to [ENABLED] in mod:[MOD]"),
+            arguments: {
+              RUNTIME: {
+                type: ArgumentType.STRING,
+                menu: "RUNTIME_MENU",
+                defaultValue: "turbo mode",
+              },
+              ENABLED: {
+                type: ArgumentType.STRING,
+                menu: "ENABLED_MENU",
+                defaultValue: "enabled",
               },
               MOD: {
                 type: ArgumentType.STRING,
@@ -508,7 +530,7 @@
           {
             opcode: "loadMod",
             blockType: BlockType.COMMAND,
-            text: "load [MOD] mod in project",
+            text: Scratch.translate("load [MOD] mod in project"),
             arguments: {
               MOD: {
                 type: ArgumentType.STRING,
@@ -519,12 +541,12 @@
           {
             opcode: "unLoadMod",
             blockType: BlockType.COMMAND,
-            text: "unload all mods in project",
+            text: Scratch.translate("unload all mods in project"),
           },
           {
             opcode: "isLoadingMod",
             blockType: BlockType.BOOLEAN,
-            text: "is project loading a mod?",
+            text: Scratch.translate("is project loading a mod?"),
           },
           {
             opcode: "ModpackLabel",
@@ -534,7 +556,7 @@
           {
             opcode: "newModPack",
             blockType: BlockType.COMMAND,
-            text: "create new modpack named [NAME]",
+            text: Scratch.translate("create new modpack named [NAME]"),
             arguments: {
               NAME: {
                 type: ArgumentType.STRING,
@@ -550,7 +572,7 @@
           {
             opcode: "exportMod",
             blockType: BlockType.COMMAND,
-            text: "export mod [MOD] as [FILE]",
+            text: Scratch.translate("export mod [MOD] as [FILE]"),
             arguments: {
               MOD: {
                 type: ArgumentType.STRING,
@@ -565,7 +587,7 @@
           {
             opcode: "importMod",
             blockType: BlockType.COMMAND,
-            text: "import new [MOD] mod to project",
+            text: Scratch.translate("import new [MOD] mod to project"),
             arguments: {
               MOD: {
                 type: ArgumentType.IMAGE,
@@ -581,11 +603,61 @@
         menus: {
           GET_TYPE_MENU: {
             acceptReporters: false,
-            items: ["JSON", "text", "array"],
+            items: [
+            {
+              text: Scratch.translate("JSON"),
+              value: "JSON"
+            },
+            {
+              text: Scratch.translate("text"),
+              value: "text"
+            }, {
+              text: Scratch.translate("array"),
+              value: "array"
+            },
+          ],
           },
           MODS_MENU: {
             acceptReporters: true,
             items: "getMods",
+          },
+          ENABLED_MENU: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("enabled"),
+                value: "true",
+              },
+              {
+                text: Scratch.translate("disabled"),
+                value: "false",
+              },
+            ],
+          },
+          RUNTIME_MENU: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("turbo mode"),
+                value: TURBO_MODE,
+              },
+              {
+                text: Scratch.translate("interpolation"),
+                value: INTERPOLATION,
+              },
+              {
+                text: Scratch.translate("remove fencing"),
+                value: REMOVE_FENCING,
+              },
+              {
+                text: Scratch.translate("remove misc limits"),
+                value: REMOVE_MISC_LIMITS,
+              },
+              {
+                text: Scratch.translate("high quality pen"),
+                value: HIGH_QUALITY_PEN,
+              },
+            ],
           },
         },
       };
@@ -799,6 +871,13 @@
         isSound,
         "Invalid Sound URL/Data URL"
       );
+    }
+
+    triggerRuntimetoMod(args) {
+      let modindex = mods.indexOf(this.findMod(args.MOD));
+      const runtimeVal = Cast.toString(args.RUNTIME)
+      
+      mods[modindex]["runtime_values"][runtimeVal] = Cast.toBoolean(args.ENABLED)
     }
 
     async loadMod(args, util) {
