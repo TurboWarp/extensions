@@ -2,7 +2,7 @@
 // ID: hamturbomodz
 // Description: Implement Mods into Your Projects. Inspired by Asset Manager and Other Extensions.
 // By: Hammouda101010 <https://scratch.mit.edu/users/Hammouda101010/>
-// License: MIT AND LGPL-3.0
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -615,7 +615,7 @@
           sprites: [],
           costumes: [],
           sounds: [],
-          runtime_values: [],
+          runtime_values: {},
         });
         console.log(mods);
       } else {
