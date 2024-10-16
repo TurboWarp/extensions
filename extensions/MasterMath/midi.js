@@ -32,7 +32,7 @@
         } else if (event.port.state == "disconnected") {
           midiInputDevices.splice(
             [`[id: "${event.port.id}"` + ` name: "${event.port.name}"]`],
-            1,
+            1
           );
           midiDeviceInfo.splice([event.port.id, event.port.name]);
         }
@@ -51,12 +51,12 @@
           notesOn.splice(notesOn.indexOf(note), 1);
           noteVelocities.splice(
             noteVelocities.findIndex((subArray) => subArray[0] === note),
-            1,
+            1
           );
           Scratch.vm.runtime.startHats("midi_whenNoteReleased");
         } else {
           console.log(
-            `Other MIDI Message: Status=${status}, Note=${note}, Velocity=${velocity}, Timestamp ${event.timeStamp}`,
+            `Other MIDI Message: Status=${status}, Note=${note}, Velocity=${velocity}, Timestamp ${event.timeStamp}`
           );
         }
       }
