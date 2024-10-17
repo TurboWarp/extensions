@@ -27,7 +27,7 @@
   const FRAMERATE = "framerate";
   const CLONE_LIMIT = "clone limit";
   const STAGE_SIZE = "stage size";
-  const USERNAME = "username";
+  
 
   /** @param {string} what */
   const emitChanged = (what) =>
@@ -65,14 +65,6 @@
   vm.on("FRAMERATE_CHANGED", () => emitChanged(FRAMERATE));
   vm.on("STAGE_SIZE_CHANGED", () => emitChanged(STAGE_SIZE));
 
-  const originalPostData = runtime.ioDevices.userData.postData;
-  runtime.ioDevices.userData.postData = function (data) {
-    const newUsername = data.username !== this._username;
-    originalPostData.call(this, data);
-    if (newUsername) {
-      emitChanged(USERNAME);
-    }
-  };
 
   // Functions from Runtime Values
   const setStageDimesions = (width, height) => {
@@ -141,35 +133,37 @@
     return new Promise((resolve, reject) => {
       const input = document.createElement("input");
       input.type = "file";
-
+  
       input.onchange = (event) => {
         const target = event.target;
-
+  
         // Ensure that the target is an HTMLInputElement and has files
         if (target && target instanceof HTMLInputElement && target.files?.[0]) {
           const file = target.files[0];
-
+  
           const reader = new FileReader();
-
+  
           reader.onload = (e) => {
             resolve(e.target?.result);
           };
-
+  
           reader.onerror = (e) => {
             reject(
               `Error reading file: ${reader.error?.message || "Unknown error"}`
             );
           };
-
+  
           reader.readAsText(file);
         } else {
-          reject("No file selected");
+          // If no file is selected, resolve with null to indicate cancellation
+          resolve(null);
         }
       };
-
+  
       input.click();
     });
   };
+  
 
   const addAssetToMod = (
     context,
@@ -523,6 +517,71 @@
             },
           },
           {
+            opcode: "fpsLimittoMod",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate("set FPS limit to [FPS] in mod:[MOD]"),
+            arguments: {
+              FPS: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 60,
+              },
+              MOD: {
+                type: ArgumentType.STRING,
+                menu: "MODS_MENU",
+              },
+            },
+          },
+          {
+            opcode: "cloneLimittoMod",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate("set clone limit to [LIMIT] in mod:[MOD]"),
+            arguments: {
+              LIMIT: {
+                type: ArgumentType.STRING,
+                menu: "CLONE_LIMIT_MENU",
+              },
+              MOD: {
+                type: ArgumentType.STRING,
+                menu: "MODS_MENU",
+              },
+            },
+          },
+          {
+            opcode: "stageSizeinMod",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate("set stage size to width:[WIDTH] height:[HEIGHT] in mod:[MOD]"),
+            arguments: {
+              WIDTH: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 480
+              },
+              HEIGHT: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 360
+              },
+              MOD: {
+                type: ArgumentType.STRING,
+                menu: "MODS_MENU",
+              },
+            },
+          },
+          "---",
+          {
+            opcode: "CSSInMod",
+            type: BlockType.COMMAND,
+            text: Scratch.translate("add CSS [CSS] to mod:[MOD]"),
+            arguments: {
+              CSS: {
+                type: ArgumentType.STRING,
+                defaultValue: ""
+              },
+              MOD: {
+                type: ArgumentType.STRING,
+                menu: "MODS_MENU",
+              },
+            },
+          },
+          {
             opcode: "LoadLabel",
             blockType: BlockType.LABEL,
             text: "Loading Mods",
@@ -659,6 +718,19 @@
               },
             ],
           },
+          CLONE_LIMIT_MENU: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("default (300)"),
+                value: "300",
+              },
+              {
+                text: Scratch.translate("infinite"),
+                value: "Infinity",
+              },
+            ]
+          }
         },
       };
     }
@@ -784,7 +856,16 @@
           sprites: [],
           costumes: [],
           sounds: [],
-          runtime_values: {},
+          runtime_values: {
+            turbo_mode: false,
+            interpolation: false,
+            remove_fencing: false,
+            remove_misc_limits: false,
+            high_quality_pen: false,
+            framerate: 30,
+            clone_limit: 300,
+            stage_size: "480x360"
+          },
         });
         console.log(mods);
       } else {
@@ -875,7 +956,7 @@
 
     triggerRuntimetoMod(args) {
       let modindex = mods.indexOf(this.findMod(args.MOD));
-      const runtimeVal = Cast.toString(args.RUNTIME)
+      const runtimeVal = Cast.toString(args.RUNTIME).replace(" ", "_")
       
       mods[modindex]["runtime_values"][runtimeVal] = Cast.toBoolean(args.ENABLED)
     }
