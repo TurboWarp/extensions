@@ -45,7 +45,13 @@
           notesOn.push(note);
           noteVelocities.push([note, velocity]);
           lastNotePressed = note;
-          Scratch.vm.runtime.startHats("midi_whenNotePressed");
+          Scratch.vm.runtime.startHats("midi_whenAnyNote", {
+            pressedReleased: "pressed",
+          });
+          Scratch.vm.runtime.startHats("midi_whenNote", {
+            note: note,
+            pressedReleased: "pressed",
+          });
         } else if (command === 0x80 || (command === 0x90 && velocity === 0)) {
           lastNoteReleased = note;
           notesOn.splice(notesOn.indexOf(note), 1);
@@ -53,7 +59,13 @@
             noteVelocities.findIndex((subArray) => subArray[0] === note),
             1
           );
-          Scratch.vm.runtime.startHats("midi_whenNoteReleased");
+          Scratch.vm.runtime.startHats("midi_whenAnyNote", {
+            pressedReleased: "released",
+          });
+          Scratch.vm.runtime.startHats("midi_whenNote", {
+            note: note,
+            pressedReleased: "released",
+          });
         } else {
           console.log(
             `Other MIDI Message: Status=${status}, Note=${note}, Velocity=${velocity}, Timestamp ${event.timeStamp}`
@@ -105,18 +117,36 @@
           },
           "---",
           {
-            opcode: "whenNotePressed",
+            opcode: "whenAnyNote",
             blockType: Scratch.BlockType.EVENT,
-            text: "when any note pressed",
+            text: "when any note [pressedReleased]",
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
+            arguments: {
+              pressedReleased: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "pressed",
+                menu: "pressedReleased",
+              },
+            },
           },
           {
-            opcode: "whenNoteReleased",
+            opcode: "whenNote",
             blockType: Scratch.BlockType.EVENT,
-            text: "when any note released",
+            text: "when note [note] [pressedReleased]",
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
+            arguments: {
+              note: {
+                type: Scratch.ArgumentType.NOTE,
+                defaultValue: 60,
+              },
+              pressedReleased: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "pressed",
+                menu: "pressedReleased",
+              },
+            },
           },
           {
             opcode: "noteOn",
@@ -147,22 +177,27 @@
             disableMonitor: true,
           },
           {
-            opcode: "lastNotePressed",
+            opcode: "lastNote",
             blockType: Scratch.BlockType.REPORTER,
-            text: "last note pressed",
+            text: "last note [pressedReleased]",
             disableMonitor: true,
-          },
-          {
-            opcode: "lastNoteReleased",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "last note released",
-            disableMonitor: true,
+            arguments: {
+              pressedReleased: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "pressed",
+                menu: "pressedReleased",
+              },
+            },
           },
         ],
         menus: {
           infoMenu: {
             acceptReporters: false,
             items: ["name", "id"],
+          },
+          pressedReleased: {
+            acceptReporters: false,
+            items: ["pressed", "released"],
           },
         },
       };
@@ -198,12 +233,12 @@
       return notesOn;
     }
 
-    lastNotePressed() {
-      return lastNotePressed;
-    }
-
-    lastNoteReleased() {
-      return lastNoteReleased;
+    lastNote({ pressedReleased }) {
+      if (pressedReleased == "pressed") {
+        return lastNotePressed;
+      } else {
+        return lastNoteReleased;
+      }
     }
   }
 
