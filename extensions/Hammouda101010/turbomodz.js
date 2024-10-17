@@ -1028,8 +1028,11 @@
         isLoading = false;
       }
     }
-    unLoadMod(args) {
-      //placeholder
+    unLoadMod(util) {
+      const targets = runtime.targets
+      for (let target in targets) {
+        console.log(target)
+      }
     }
 
     isLoadingMod() {
