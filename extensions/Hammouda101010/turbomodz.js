@@ -129,10 +129,13 @@
   };
 
   // Function That Reads Files
-  const readFile = () => {
+  const readFile = (acceptedFormats) => {
     return new Promise((resolve, reject) => {
       const input = document.createElement("input");
       input.type = "file";
+  
+      // Set the accepted file format (e.g., ".twmod")
+      input.accept = acceptedFormats;
   
       input.onchange = (event) => {
         const target = event.target;
@@ -163,6 +166,7 @@
       input.click();
     });
   };
+  
   
 
   const addAssetToMod = (
@@ -646,15 +650,15 @@
           {
             opcode: "importMod",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate("import new [MOD] mod to project"),
+            text: Scratch.translate("import new [MOD] mod to project as [FORMAT]"),
             arguments: {
               MOD: {
                 type: ArgumentType.IMAGE,
                 dataURI: blocksIconURI,
               },
-              EXT: {
+              FORMAT: {
                 type: ArgumentType.STRING,
-                defaultValue: "twmod",
+                defaultValue: ".twmod",
               },
             },
           },
@@ -992,16 +996,26 @@
       );
     }
     async importMod(args) {
-      let mod_JSON = await readFile()
+      let mod_JSON = await readFile(args.FORMAT)
         .then((result) => result)
-        .catch((error) => error);
-
+        .catch((error) => {
+          console.error("Error during file reading:", error);
+          return null;
+        });
+    
       if (!mod_JSON) {
-        console.error("Please put an appropriate file");
+        console.warn("Mod file selection was canceled or no mod file selected.");
+        return;
       }
-      mod_JSON = JSON.parse(Cast.toString(mod_JSON));
-      mods.push(mod_JSON);
+    
+      try {
+        mod_JSON = JSON.parse(Cast.toString(mod_JSON));
+        mods.push(mod_JSON);
+      } catch (error) {
+        console.error(`Invalid mod file format. Please provide a valid mod file with the "${args.FORMAT}" extension.`);
+      }
     }
+    
   }
   // @ts-ignore
   Scratch.extensions.register(new TurboModz());
