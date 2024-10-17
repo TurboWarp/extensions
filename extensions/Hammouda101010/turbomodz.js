@@ -651,11 +651,19 @@
             opcode: "isLoadingMod",
             blockType: BlockType.BOOLEAN,
             text: Scratch.translate("is project loading a mod?"),
+            disableMonitor: true
           },
           {
             opcode: "isProjectModded",
-            blocktype: BlockType.BOOLEAN,
-            text: Scratch.translate("is project modded?")
+            blockType: BlockType.BOOLEAN,
+            text: Scratch.translate("is project [IMAGE] modded?"),
+            disableMonitor: true,
+            arguments: {
+              IMAGE: {
+                type: ArgumentType.IMAGE,
+                dataURI: blocksIconURI,
+              },
+            }
           },
           {
             opcode: "ModpackLabel",
@@ -1069,6 +1077,11 @@
         loadedMod = true;
       }
     }
+
+    isProjectModded() {
+      return Cast.toBoolean(loadedMod);
+    }
+
     unLoadMod(util) {
       const targets = runtime.targets;
       for (let target in targets) {
@@ -1079,10 +1092,6 @@
 
     isLoadingMod() {
       return isLoading;
-    }
-
-    isProjectModded() {
-      return loadedMod;
     }
 
     exportMod(args) {
