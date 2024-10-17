@@ -284,16 +284,25 @@
 
   const addSprite = async (spriteUrl) => {
     const url = Cast.toString(spriteUrl);
-
-    const response = await Scratch.fetch(url);
-    const json = await response.arrayBuffer();
-
+  
     try {
-      await vm.addSprite(json);
+      const response = await Scratch.fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
+  
+      // Extract sprite name from the URL
+      let spriteName = url.split('/').pop();
+      spriteName = spriteName.split('.')[0];
+  
+      // Prefix the sprite name with "Mod//"
+      const moddedSpriteName = `Mod//${spriteName}`;
+  
+      // @ts-ignore
+      await vm.addSprite(arrayBuffer, moddedSpriteName);
     } catch (e) {
       console.error(e);
     }
   };
+  
 
   const addCostume = async (url, name, util) => {
     const targetId = util.target.id;
@@ -967,7 +976,7 @@
 
     async loadMod(args, util) {
       const confirmLoad = confirm(
-        "WARNING: This May Take a Long Time and May Cause Heavy Lag. It Can Also Break the Entire Project. Continiue?"
+        "WARNING: This May Take a Long Time and Cause Heavy Lag. It Can Also Break the Entire Project. Continiue?"
       );
       if (confirmLoad) {
         isLoading = true;
