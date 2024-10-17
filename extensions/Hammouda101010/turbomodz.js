@@ -17,6 +17,8 @@
   const vmRenderer = vm.renderer;
   const runtime = vm.runtime;
   const Cast = Scratch.Cast;
+  // @ts-ignore
+  const JSZip = vm.exports.JSZip;
 
   // Credits to Runtime Values
   const TURBO_MODE = "turbo mode";
@@ -283,25 +285,34 @@
   };
 
   const addSprite = async (spriteUrl) => {
-    const url = Cast.toString(spriteUrl);
-  
-    try {
-      const response = await Scratch.fetch(url);
-      const arrayBuffer = await response.arrayBuffer();
-  
-      // Extract sprite name from the URL
-      let spriteName = url.split('/').pop();
-      spriteName = spriteName.split('.')[0];
-  
-      // Prefix the sprite name with "Mod//"
-      const moddedSpriteName = `Mod//${spriteName}`;
-  
-      // @ts-ignore
-      await vm.addSprite(arrayBuffer, moddedSpriteName);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const url = Cast.toString(spriteUrl);
+
+  try {
+    const response = await Scratch.fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+
+    // Unzip the .sprite3 file (ZIP archive)
+    const zip = await JSZip.loadAsync(arrayBuffer);
+
+    // Find and modify the sprite JSON metadata
+    const spriteJson = await zip.file("sprite.json").async("string");
+    const spriteData = JSON.parse(spriteJson);
+
+    // Extract sprite name from the URL and set the new name
+    let spriteName = url.split('/').pop(); // Get the last part of the URL
+    spriteName = spriteName.split('.')[0]; // Remove the file extension
+    spriteData.name = `Mod//${spriteName}`; // Set new name
+    
+    zip.file("sprite.json", JSON.stringify(spriteData));
+    
+    const updatedArrayBuffer = await zip.generateAsync({ type: "arraybuffer" });
+
+    await vm.addSprite(updatedArrayBuffer);
+  } catch (e) {
+    console.error(e);
+  }
+};
+
   
 
   const addCostume = async (url, name, util) => {
