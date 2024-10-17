@@ -1074,6 +1074,7 @@
       for (let target in targets) {
         console.log(target);
       }
+      loadedMod = false;
     }
 
     isLoadingMod() {
