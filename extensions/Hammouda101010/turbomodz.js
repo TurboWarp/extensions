@@ -303,7 +303,6 @@
       const name = target.sprite.name; // Get the last part of the URL
 
       // Change the target's name directly
-      // @ts-ignore
       target.sprite.name = `Mod//${name}`;
 
       console.log(target);
@@ -441,6 +440,7 @@
               },
             },
           },
+          "---",
           {
             opcode: "getMod",
             blockType: BlockType.REPORTER,
@@ -453,6 +453,36 @@
               TYPE: {
                 type: ArgumentType.STRING,
                 menu: "GET_TYPE_MENU",
+              },
+            },
+          },
+          {
+            opcode: "getKeyofMod",
+            blockType: BlockType.REPORTER,
+            text: Scratch.translate("get [KEY] of mod called [MOD]"),
+            arguments: {
+              MOD: {
+                type: ArgumentType.STRING,
+                menu: "MODS_MENU",
+              },
+              KEY: {
+                type: ArgumentType.STRING,
+                menu: "GET_KEY_MENU",
+              },
+            },
+          },
+          {
+            opcode: "getRuntimeValofMod",
+            blockType: BlockType.REPORTER,
+            text: Scratch.translate("get runtime value of [KEY] of mod called [MOD]"),
+            arguments: {
+              MOD: {
+                type: ArgumentType.STRING,
+                menu: "MODS_MENU",
+              },
+              KEY: {
+                type: ArgumentType.STRING,
+                menu: "RUNTIME_VAL_MENU",
               },
             },
           },
@@ -656,14 +686,8 @@
           {
             opcode: "isProjectModded",
             blockType: BlockType.BOOLEAN,
-            text: Scratch.translate("is project [IMAGE] modded?"),
-            disableMonitor: true,
-            arguments: {
-              IMAGE: {
-                type: ArgumentType.IMAGE,
-                dataURI: blocksIconURI,
-              },
-            }
+            text: Scratch.translate("is project modded?"),
+            disableMonitor: false
           },
           {
             opcode: "ModpackLabel",
@@ -755,7 +779,7 @@
             ],
           },
           RUNTIME_MENU: {
-            acceptReporters: true,
+            acceptReporters: false,
             items: [
               {
                 text: Scratch.translate("turbo mode"),
@@ -780,7 +804,7 @@
             ],
           },
           CLONE_LIMIT_MENU: {
-            acceptReporters: true,
+            acceptReporters: false,
             items: [
               {
                 text: Scratch.translate("default (300)"),
@@ -792,6 +816,38 @@
               },
             ],
           },
+          GET_KEY_MENU: {
+            acceptReporters: true,
+            items: [
+              {text: Scratch.translate("name"), value: "name"},
+              {text: Scratch.translate("id"), value: "id"},
+              {text: Scratch.translate("sprites"), value: "sprites"},
+              {text: Scratch.translate("costumes"), value: "costumes"},
+              {text: Scratch.translate("sounds"), value: "sounds"},
+              {text: Scratch.translate("runtime_values"), value: "runtime_values"} 
+            ]
+          },
+          RUNTIME_VAL_MENU: {
+            acceptReporters: true,
+            items: [
+              {text: Scratch.translate("turbo mode"), value: "turbo_mode"},
+              {text: Scratch.translate("interpolation"), value: "interpolation"},
+              {text: Scratch.translate("remove fencing"), value: "remove_fencing"},
+              {text: Scratch.translate("remove misc limits"), value: "remove_misc_limits"},
+              {text: Scratch.translate("high quality pen"), value: "high_quality_pen"},
+              {text: Scratch.translate("fps"), value: "framerate"},
+              {text: Scratch.translate("stage size"), value: "stage_size"},
+            ] /*runtime_values: {
+              turbo_mode: false,
+              interpolation: false,
+              remove_fencing: false,
+              remove_misc_limits: false,
+              high_quality_pen: false,
+              framerate: 30,
+              clone_limit: 300,
+              stage_size: "480x360",
+            }, */
+          }
         },
       };
     }
@@ -810,8 +866,14 @@
     findMod(name) {
       let search = mods.find((mod) => mod.name === name);
       if (!search) {
-        console.error(`Could Not Find "${name}"`);
-        return `Could Not Find "${name}"`;
+        switch (name) {
+          case "no mods yet!":
+            console.error("There is No Existing Mod. Create or Import a Mod First");
+            return "There is No Existing Mod. Create or Import a Mod First";
+          default:
+            console.error(`Could Not Find "${name}"`);
+            return `Could Not Find "${name}"`; 
+          }
       } else {
         return search;
       }
@@ -944,6 +1006,14 @@
         case "array":
           return Object.values(this.findMod(args.NAME));
       }
+    }
+
+    // Reporters to Avoid Using External Extensions
+    getKeyofMod(args) {
+      return Cast.toString(this.findMod(args.MOD)[args.KEY])
+    }
+    getRuntimeValofMod(args) {
+      return Cast.toString(this.findMod(args.MOD)["runtime_values"][args.KEY])
     }
 
     addSpritetoMod(args) {
