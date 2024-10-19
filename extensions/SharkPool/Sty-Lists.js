@@ -3,7 +3,7 @@
 // Description: Customize and Organize Lists Monitors.
 // By: SharkPool
 
-// Version 2.0.1
+// Version 2.0.11
 
 (function (Scratch) {
   "use strict";
@@ -353,9 +353,7 @@
       // Used for creating IDs for variables
       const soup = "!#%()*+,-./:;=?@[]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       const id = [];
-      for (let i = 0; i < 20; i++) {
-        id[i] = soup.charAt(Math.random() * soup.length);
-      }
+      for (let i = 0; i < 20; i++) id[i] = soup.charAt(Math.random() * soup.length);
       return id.join("");
     }
 
@@ -451,7 +449,7 @@
             valueInner.textContent = listItem || "";
             value.appendChild(valueInner);
             item.appendChild(value);
-            if (!listItem) item.style.opacity = "0"; // Use Ghost Items to keep items separated
+            if (listItem === undefined) item.style.opacity = "0"; // Use Ghost Items to keep items separated
             row.appendChild(item);
           }
           itemDiv.push(row)
