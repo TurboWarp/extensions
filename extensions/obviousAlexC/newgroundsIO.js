@@ -9672,7 +9672,7 @@
         if (loggedIn) {
           NGIO.keepSessionAlive();
         }
-        NGIO.unlockMedal(medalID);
+        NGIO.unlockMedal(Scratch.Cast.toNumber(medalID));
       }
     }
 
@@ -9682,7 +9682,7 @@
         if (loggedIn) {
           NGIO.keepSessionAlive();
         }
-        return NGIO.getMedal(medalID).unlocked;
+        return NGIO.getMedal(Scratch.Cast.toNumber(medalID)).unlocked;
       } else {
         return false;
       }
