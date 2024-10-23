@@ -21,11 +21,13 @@ The A-frame libary is licensed under the MIT license, which can be found at http
 */
 
 //Start the extension
-(function(Scratch) {
-  'use strict';
+(function (Scratch) {
+  "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('This extension must run unsandboxed for it to work properly.');
+    throw new Error(
+      "This extension must run unsandboxed for it to work properly."
+    );
   }
 
   const vm = Scratch.vm;
@@ -56,15 +58,20 @@ The A-frame libary is licensed under the MIT license, which can be found at http
   let initialStageWidth = runtime.stageWidth;
   let initialStageHeight = runtime.stageHeight;
 
-  AScene.addEventListener('enter-vr', function () {
+  AScene.addEventListener("enter-vr", function () {
     inVR = true;
     // Resize stage to its initial size to prevent WebGL texture errors.
-    vm.setStageSize(Scratch.Cast.toNumber(initialStageWidth), Scratch.Cast.toNumber(initialStageHeight));
+    vm.setStageSize(
+      Scratch.Cast.toNumber(initialStageWidth),
+      Scratch.Cast.toNumber(initialStageHeight)
+    );
     //Scale the display to match the camera size while maintaining the ratio of the Scratch Stage.
     requestAnimationFrame(() => {
       const plane = document.getElementById("scratchStageVRDisplay");
       const canvas = AScene.renderer.domElement;
-      const fov = THREE.MathUtils.degToRad(document.getElementById("AframeCamera").components.camera.data.fov);
+      const fov = THREE.MathUtils.degToRad(
+        document.getElementById("AframeCamera").components.camera.data.fov
+      );
       const canvasAspect = canvas.width / canvas.height;
       const stageAspect = runtime.stageWidth / runtime.stageHeight;
       let height = 2 * Math.tan(fov / 2);
@@ -90,57 +97,80 @@ The A-frame libary is licensed under the MIT license, which can be found at http
       plane.object3D.position.set(0, 0, -1);
     });
   });
-  
-  AScene.addEventListener('exit-vr', function () {
+
+  AScene.addEventListener("exit-vr", function () {
     inVR = false;
-    vm.setStageSize(Scratch.Cast.toNumber(initialStageWidth), Scratch.Cast.toNumber(initialStageHeight));
+    vm.setStageSize(
+      Scratch.Cast.toNumber(initialStageWidth),
+      Scratch.Cast.toNumber(initialStageHeight)
+    );
   });
 
   //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  let inVR = false
+  let inVR = false;
 
   let cameraOrientationX, cameraOrientationY, cameraOrientationZ;
 
   let cameraPosX, cameraPosY, cameraPosZ;
 
-  let leftControllerOrientationX, leftControllerOrientationY, leftControllerOrientationZ;
+  let leftControllerOrientationX,
+    leftControllerOrientationY,
+    leftControllerOrientationZ;
 
   let leftControllerPositionX, leftControllerPositionY, leftControllerPositionZ;
 
-  let rightControllerOrientationX, rightControllerOrientationY, rightControllerOrientationZ;
+  let rightControllerOrientationX,
+    rightControllerOrientationY,
+    rightControllerOrientationZ;
 
-  let rightControllerPositionX, rightControllerPositionY, rightControllerPositionZ;
+  let rightControllerPositionX,
+    rightControllerPositionY,
+    rightControllerPositionZ;
 
-  let rightTriggerPressed, leftTriggerPressed, rightThumbstickPressed, leftThumbstickPressed, rightGripPressed, leftGripPressed = false;
+  let rightTriggerPressed,
+    leftTriggerPressed,
+    rightThumbstickPressed,
+    leftThumbstickPressed,
+    rightGripPressed,
+    leftGripPressed = false;
 
-  let aButtonPressed, bButtonPressed, xButtonPressed, yButtonPressed = false;
+  let aButtonPressed,
+    bButtonPressed,
+    xButtonPressed,
+    yButtonPressed = false;
   // TODO: Add more buttons for controllers of other platforms.
-  let leftThumbstickX, leftThumbstickY, rightThumbstickX, rightThumbstickY, rightThumbstickDirection, leftThumbstickDirection;
+  let leftThumbstickX,
+    leftThumbstickY,
+    rightThumbstickX,
+    rightThumbstickY,
+    rightThumbstickDirection,
+    leftThumbstickDirection;
 
   let lastButtonPressed;
 
-  let rightControllerConnected,leftControllerConnected = false;
+  let rightControllerConnected,
+    leftControllerConnected = false;
   //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   let display = document.getElementById("scratchStageVRDisplay");
   let material;
-  AFRAME.registerComponent('update-display', {
-    dependencies: ['geometry', 'material'],
+  AFRAME.registerComponent("update-display", {
+    dependencies: ["geometry", "material"],
     init: function () {
-      material = display.getObject3D('mesh').material;
+      material = display.getObject3D("mesh").material;
     },
     tick: function () {
       runtime.frameLoop.stepCallback();
       material.map.needsUpdate = true;
-    }
+    },
   });
 
   let xrProjectionMatrix;
   let xrTransform;
   let xrCombinedMatrix;
   //Matrix processing code from the AR extension.
-  AFRAME.registerComponent('pose-matrices', {
+  AFRAME.registerComponent("pose-matrices", {
     tick: function () {
-      if (inVR == true) { 
+      if (inVR == true) {
         var frame = this.el.frame;
         var xrRefSpace = this.el.renderer.xr.getReferenceSpace();
         if (xrRefSpace) {
@@ -202,20 +232,20 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           }
         }
       }
-    }
+    },
   });
 
   let rotation;
-  AFRAME.registerComponent('camera-logger', {
+  AFRAME.registerComponent("camera-logger", {
     tick: function () {
-      rotation = this.el.getAttribute('rotation');
+      rotation = this.el.getAttribute("rotation");
       //Switch rotation Yaw = Y and Pitch = X to Yaw = X and Pitch = Y to match most Scratch 3D engines
       this.el.object3D.rotation.set(
         THREE.MathUtils.degToRad(rotation.y),
         THREE.MathUtils.degToRad(rotation.x),
-        THREE.MathUtils.degToRad(rotation.z),
+        THREE.MathUtils.degToRad(rotation.z)
       );
-      rotation = this.el.getAttribute('rotation');
+      rotation = this.el.getAttribute("rotation");
       cameraOrientationX = rotation.x;
       cameraOrientationY = rotation.y;
       cameraOrientationZ = rotation.z;
@@ -225,87 +255,87 @@ The A-frame libary is licensed under the MIT license, which can be found at http
     },
   });
 
-  AFRAME.registerComponent('custom-controls', {
+  AFRAME.registerComponent("custom-controls", {
     schema: {
-      hand: {default: ''},
+      hand: { default: "" },
     },
-    
+
     update: function () {
       var hand = this.data.hand;
       var el = this.el;
       var controlConfiguration = {
         hand: hand,
         model: false,
-        orientationOffset: {x: 0, y: 0, z: hand === 'left' ? 90 : -90}
+        orientationOffset: { x: 0, y: 0, z: hand === "left" ? 90 : -90 },
       };
 
-      el.setAttribute('vive-controls', controlConfiguration);
-      el.setAttribute('oculus-touch-controls', controlConfiguration);
-      el.setAttribute('windows-motion-controls', controlConfiguration);
-    }
+      el.setAttribute("vive-controls", controlConfiguration);
+      el.setAttribute("oculus-touch-controls", controlConfiguration);
+      el.setAttribute("windows-motion-controls", controlConfiguration);
+    },
   });
 
-  AFRAME.registerComponent('right-controller-manager', {
+  AFRAME.registerComponent("right-controller-manager", {
     init: function () {
-      this.el.addEventListener('thumbstickmoved', this.logThumbstick);
-      this.el.addEventListener('triggerchanged', this.logTrigger);
-      this.el.addEventListener('gripchanged', this.logGrip);
-      this.el.addEventListener('controllerconnected', function() {
+      this.el.addEventListener("thumbstickmoved", this.logThumbstick);
+      this.el.addEventListener("triggerchanged", this.logTrigger);
+      this.el.addEventListener("gripchanged", this.logGrip);
+      this.el.addEventListener("controllerconnected", function () {
         rightControllerConnected = true;
       });
-      this.el.addEventListener('controllerdisconnected', function() {
+      this.el.addEventListener("controllerdisconnected", function () {
         rightControllerConnected = false;
       });
 
       var el = this.el;
 
-      el.addEventListener('triggerdown', function() {
+      el.addEventListener("triggerdown", function () {
         rightTriggerPressed = true;
         lastButtonPressed = "right trigger";
-        runtime.startHats('blockifyvr_whenAnyButtonPressed');
+        runtime.startHats("blockifyvr_whenAnyButtonPressed");
       });
 
-      el.addEventListener('triggerup', function() {
+      el.addEventListener("triggerup", function () {
         rightTriggerPressed = false;
       });
 
-      el.addEventListener('thumbstickdown', function() {
+      el.addEventListener("thumbstickdown", function () {
         rightThumbstickPressed = true;
         lastButtonPressed = "right thumbstick";
-        runtime.startHats('blockifyvr_whenAnyButtonPressed');
+        runtime.startHats("blockifyvr_whenAnyButtonPressed");
       });
 
-      el.addEventListener('thumbstickup', function() {
+      el.addEventListener("thumbstickup", function () {
         rightThumbstickPressed = false;
       });
-      
-      el.addEventListener('gripdown', function() {
+
+      el.addEventListener("gripdown", function () {
         rightGripPressed = true;
         lastButtonPressed = "right grip";
-        runtime.startHats('blockifyvr_whenAnyButtonPressed');
+        runtime.startHats("blockifyvr_whenAnyButtonPressed");
       });
 
-      el.addEventListener('gripup', function() {
+      el.addEventListener("gripup", function () {
         rightGripPressed = false;
       });
 
-      el.addEventListener('abuttondown', function() {
+      el.addEventListener("abuttondown", function () {
         aButtonPressed = true;
         lastButtonPressed = "A";
-        runtime.startHats('blockifyvr_whenAnyButtonPressed');
+        runtime.startHats("blockifyvr_whenAnyButtonPressed");
       });
 
-      el.addEventListener('abuttonup', function() {
+      el.addEventListener("abuttonup", function () {
         aButtonPressed = false;
       });
 
-      el.addEventListener('bbuttondown', function() {
+      el.addEventListener("bbuttondown", function () {
         bButtonPressed = true;
         lastButtonPressed = "B";
-        runtime.startHats('blockifyvr_whenAnyButtonPressed');
+        runtime.startHats("blockifyvr_whenAnyButtonPressed");
       });
 
-      el.addEventListener('bbuttonup', function() {
+      el.addEventListener("bbuttonup", function () {
         bButtonPressed = false;
       });
     },
@@ -323,7 +353,8 @@ The A-frame libary is licensed under the MIT license, which can be found at http
     logThumbstick: function (evt) {
       rightThumbstickX = evt.detail.x;
       rightThumbstickY = evt.detail.y;
-      rightThumbstickDirection = Math.atan2(rightThumbstickY, rightThumbstickX) * 180 / Math.PI + 90;
+      rightThumbstickDirection =
+        (Math.atan2(rightThumbstickY, rightThumbstickX) * 180) / Math.PI + 90;
     },
 
     logTrigger: function (evt) {
@@ -332,70 +363,70 @@ The A-frame libary is licensed under the MIT license, which can be found at http
 
     logGrip: function (evt) {
       rightGripAmount = evt.detail.value;
-    }
+    },
   });
 
-  AFRAME.registerComponent('left-controller-manager', {
+  AFRAME.registerComponent("left-controller-manager", {
     init: function () {
-      this.el.addEventListener('thumbstickmoved', this.logThumbstick);
-      this.el.addEventListener('triggerchanged', this.logTrigger);
-      this.el.addEventListener('gripchanged', this.logGrip);
-      this.el.addEventListener('controllerconnected', function() {
+      this.el.addEventListener("thumbstickmoved", this.logThumbstick);
+      this.el.addEventListener("triggerchanged", this.logTrigger);
+      this.el.addEventListener("gripchanged", this.logGrip);
+      this.el.addEventListener("controllerconnected", function () {
         leftControllerConnected = true;
       });
-      this.el.addEventListener('controllerdisconnected', function() {
+      this.el.addEventListener("controllerdisconnected", function () {
         leftControllerConnected = false;
       });
 
-      let el = this.el
+      let el = this.el;
 
-      el.addEventListener('triggerdown', function() {
+      el.addEventListener("triggerdown", function () {
         leftTriggerPressed = true;
         lastButtonPressed = "left trigger";
-        runtime.startHats('blockifyvr_whenAnyButtonPressed');
+        runtime.startHats("blockifyvr_whenAnyButtonPressed");
       });
 
-      el.addEventListener('triggerup', function() {
+      el.addEventListener("triggerup", function () {
         leftTriggerPressed = false;
       });
 
-      el.addEventListener('thumbstickdown', function() {
+      el.addEventListener("thumbstickdown", function () {
         leftThumbstickPressed = true;
         lastButtonPressed = "left thumbstick";
-        runtime.startHats('blockifyvr_whenAnyButtonPressed');
+        runtime.startHats("blockifyvr_whenAnyButtonPressed");
       });
 
-      el.addEventListener('thumbstickup', function() {
+      el.addEventListener("thumbstickup", function () {
         leftThumbstickPressed = false;
       });
-      
-      el.addEventListener('gripdown', function() {
+
+      el.addEventListener("gripdown", function () {
         leftGripPressed = true;
         lastButtonPressed = "left grip";
-        runtime.startHats('blockifyvr_whenAnyButtonPressed');
+        runtime.startHats("blockifyvr_whenAnyButtonPressed");
       });
 
-      el.addEventListener('gripup', function() {
+      el.addEventListener("gripup", function () {
         leftGripPressed = false;
       });
 
-      el.addEventListener('xbuttondown', function() {
+      el.addEventListener("xbuttondown", function () {
         xButtonPressed = true;
         lastButtonPressed = "X";
-        runtime.startHats('blockifyvr_whenAnyButtonPressed');
+        runtime.startHats("blockifyvr_whenAnyButtonPressed");
       });
 
-      el.addEventListener('xbuttonup', function() {
+      el.addEventListener("xbuttonup", function () {
         xButtonPressed = false;
       });
 
-      el.addEventListener('ybuttondown', function() {
+      el.addEventListener("ybuttondown", function () {
         yButtonPressed = true;
         lastButtonPressed = "Y";
-        runtime.startHats('blockifyvr_whenAnyButtonPressed');
+        runtime.startHats("blockifyvr_whenAnyButtonPressed");
       });
 
-      el.addEventListener('ybuttonup', function() {
+      el.addEventListener("ybuttonup", function () {
         yButtonPressed = false;
       });
     },
@@ -404,7 +435,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
       leftControllerOrientationX = this.el.object3D.rotation.x;
       leftControllerOrientationY = this.el.object3D.rotation.y;
       leftControllerOrientationZ = this.el.object3D.rotation.z;
-    
+
       leftControllerPositionX = this.el.object3D.position.x;
       leftControllerPositionY = this.el.object3D.position.y;
       leftControllerPositionZ = this.el.object3D.position.z;
@@ -413,7 +444,8 @@ The A-frame libary is licensed under the MIT license, which can be found at http
     logThumbstick: function (evt) {
       leftThumbstickX = evt.detail.x;
       leftThumbstickY = evt.detail.y;
-      leftThumbstickDirection = Math.atan2(leftThumbstickY, leftThumbstickX) * 180 / Math.PI + 90;
+      leftThumbstickDirection =
+        (Math.atan2(leftThumbstickY, leftThumbstickX) * 180) / Math.PI + 90;
     },
 
     logTrigger: function (evt) {
@@ -422,68 +454,69 @@ The A-frame libary is licensed under the MIT license, which can be found at http
 
     logGrip: function (evt) {
       leftGripAmount = evt.detail.value;
-    }
+    },
   });
 
-  const icon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJkAAACZCAYAAAA8XJi6AAAABmJLR0QA/wD/AP+gvaeTAAAMYklEQVR42u1de3AV1Rk/NzCoHXklu3t5KRHQajvtjI5oX390LNNOLYJFxPJUxlbrjBZfFQZHG1AQpoXcu+EpIQkveYgPIIiVUuWhSBQICW8YgQodCySEV+URsv2+vZcSyE1y9+7dvWd3fz/mZxi82T37nd89e853vvN9QgQd+e3aiUhOTxFRHxa69ucsXS0IRdWlIV39mH5WEI8Qq+OsJRrxn5f/7Yj5udjnl/Lv83XM6/F1+fpAgBDRwiJfezArqo4nQZSGotqhuGgcpnKQfq7g+/L9xfSwhs7wC/7WSRG6MpA6t4Q6ea87gkqae7MiarGIKr8TUzrnoLO8hKh6K/Fl6sSN9V5vspPbuZFesaPFZLUHOlFGFCidhK6OpI7a4hFRNU1d3Syi2kvmcwEZRJ7IEnq4F020l1DHXPCFuBryEs3nVpuLiDzREp3uFqaqN9I85gnqgD0+FVZjPMCjNVarToJWZFlRZSIZuyZg4rqWJ2jBMEHoHVSIIl2Y3Cab5id5ZNyTARfXtTxDYovCHWIHeo/r4pN5iKtp1piLBLYXYEVgygNkvP0QkCXuNxcIQDOY0rErGWsVBGOLK9mOEFMid0RsxXgKIkkLz5or0SWiBcTFyO+QS0ZZD2E4wvUY1WgOEY9kgCCc40laGAwNoFuiyw3kqZ8DAbhHczOe7B4MgU3KvokeugwdnxFuFfnhbv4WWDT8C4rhqkJnZ5THRUHOfT71famP+Xgj22u8SL7IJ/0jLkOEsqLaWHSsdKzLimhjuH98IDBVR4fKvCDQZph+Sk+CHIEksCJ0pAeEFtUWeC9eLSawxehALwlNXeydHYLYK7IQHedFoSlz5X91mgJTpqHDPD2izZZ6MYBVpD/IQaKSOlrV4egg/7g3qD8fldCTD0erv6idl2dnIBZoeAyd4kuhVWV+r7M493pqzJfoDF+zXMzs9J3MTfQRrhOUFWdRhgIOtSHogCCtOJVBmYgJQ0Rr0I7eUai8a1tGiMkPLNe5syMQVUfA2EF+barPOCyw9jfTjU7D2MFOjyAKwrc4pjEcvAXjLHUofFrrB+OC/39tRpQ+6T7h3UrCnKtgpnNvpDXJS1QdBaOCCaI1XkxTGoF27TjxGowKJvSdcf44+zFi6hswJtjEyfTX7CmM8uAj0w7YDE/byvYYz9EKQ4LNbaCPT01hE5XWmIuBSWcO0rPbpBBloTwH44EWtptGpLIJfgDGAy3wgLVzmxGlN4wGpjCa3Z/8HqWuLYPRQMvUlfeSdL4qHTm1EIwGppSSKqmiY7ECDTAY6NxWE31wK4wFpsyI+kVz4TzdZW389+f9zBj696eMF9a9aozaMDaw5OdnO3xv3k/lHc2aLAwbq3grVYP7rxxubD++2wAaovL4LqNf6aMyrjJHNfGqVD6XpaGtCjoZs3csgJKSwKzt80x7SfTK3NBIbv022SGJanbPqCyBeiygaMdbMo1mtYlDgOjwpiyN/G3pMKgmBfRZPkSi8OwEFetoJ71ElgaWH9sOxaSALUcrZIrMKEzkupCivuRtc+6FWmygR0lPWYS2+9q8FmFZvgGPfPB7KMUGeDUuTSK9q4IZJTru9vTHI6EUG2D7yePKCPetPx8bL0vDnl37MpRiA2w/ieZlr9efj5VCZBCZA1xeL7RH/RdEBpE5EshY71ylAZFBZI5M/s3Yfz3nHogMInNs8p+v3MWb4gP8KLLN/9lmFO9caEz4Ujf3QDd9s9mooz8ygNvB7eF2cfu4nexI9aXIyHNBItNe8ovIuPPm7367UYdkbtGdRuH2+caluksZERff983KuUZXakei9t065x5jwe6ltr4M0oksorzA7oupfhDZt7XnjEGrnkzqHn1XDDVOXzjjqsD4fg8sH5xU+wZ/+EfjXO15X4iMMqQXsPtiqddFxt/8IR8+Zek+v37/EaO2rta1Eczq5jUHJvpCZFzikP7yiddFtnDPuynda2blHFdENq2iOKX2Ldm7zPMiC0W0NSyySq+L7I65P0npXl1m/9Dx+RmPlp0Lf5ByyLnnRcYVTeg/h70sMg7NtnO/T/9d5qjI1h/53Fb7dlbt8bbIyNEvuEiTl0XGq0k795u6rchRkRWUF9pq31t73vH6SHZUyJYy3arI9PJZtu43ZtNfHRUZX99O+/j5PC6ykzySnfeyyNivZOd+PCl3ElO2zbbVPl7UeFxk53gku4Q5GeZkDvKS50cyrC69MZKdhp/MWUyvKAmunyw+J6uCxx8ef6dXl4e9LjKv7F0mKzT+wvDz+EJkMT+ZWuGnKAxebXI0Q2NRGBxek8koDI4CyW0kCuO7c35keTXpgZFsK4vsn36MJ+P4rPrxZGXfbJEqnozbUz+ebOvRSl/Gk1F+ldUssrcRGYvIWAdDfRb5Jp7MabC/ikeccWX5RsnORcbu6n0QWbLxZH6KjHUC+2sOGL98r3+COCnNXKEePPU1RNZcZKxfY/zTAZ43KTNva7K94TfvSNt8ypciM2P8Izk9IbKGOHPhrJn8JZk2847D2Yv/hcgSiky98/K5yzqI7Gq8unGCpXa/VjYJImv03KWZpkA7BJFdwYlzNUb7GT0stZs/z78HkV3Fr+rnwlgBkV3BK5+9kVLbZRjN5BKZ8v6VrD66Og4iS30Uk2k0kzarj8jXHkR+MnujmCyjmVT5ySJKn2vLQEsx+R/wweOeHMVkGc0eKn1Mokl/B/WaynDqPhkax5vbXh3FZBjNupfcLYvIdjbMfh1Ri2UZZjPh3Kz6ttpoO71bWtqfQw7ck+dPuf4MnGRGovnYrAR1lZSBsjSQ473cxvPrXknrM4z+9HXXn6H3skEyOWH7S1+RhLPfuIWPDn1itNQ7pL1sz9rDn7n2DFzBRf6KJDF/2UaZaitxzSCnsergGqP1tFxHnqHd9O7Gmq/XOf4MfFZBqtpKUXV9E7XH1dGyVRzjEjgVx3emvWP4msM/esZooYcdbT+PkH/4x3OWj7Ylg23HdphTC+mqxFFh3iZKQ4e7yVpD8fa5PzZj3+3Uuxy5YYzx+OoRxt0Le5mhOu5OhDXj3kW/Mu9vt94l24FDtaWtd0l1U5spcq9uRgVaMHVqm5qvQS5ZECPoLcaCFJvDVLUDffgCDAamwIuU7bqjSAYhXVsGg4Ep8F2RNCJKbxgMtPyqjKr3Jy+yJaIFlyyB4UBLJW5IN8ISdOVZGA604Bv7k7CMiUpr+uUTMCCYBKtpwXijSAUUmTEBBgSTOMA7TqSMWDDjKRgSbIKnGwQnWh7NJKrqC0o4ikW1scI2YiFANTAomHAuRud2RVqArSYwoV9MeV6kDXmiFV10DwwL1suguE/oPa4TaUU03BfGBa/4xZTfCCdAF18JA4OccUA4hmj7m+HSCDxPiUnZNwlHEVVHwNBBjhdTnxaOI09k0c3WweCB5Fruf+EKaLhkHwmMHijWiCkduwpXEVEfhuEDtZocKDIBmVIbgI6mHCgUGUNx7vWhiPoFOsLX3Comd7lBZBQxt8YxdIYvj7dViYLwLUIKFOTcJ1vdTNC2wM7TyaOfC6kQywpUh87xBetERBsmZERWRBuDDvJFdMVfhLQwREi2Wk2g5ZXkVCE9YkKbhQ7zosCUue559O2Czt+R0Baj4zw1gi22fm5SDqHNRgd6Ik5/Po1gLYUnEXt1RtCRUr8ip3vnFdmE0OiMQB7cGxK6KaReRaa0oa4Ng8NWIkdrVBsqfAlzZ0A9jk7OKI/J58l3JBZN24TOzgi3yLMX6UL0Bi0IitDpLofrkN1F4EBVK3inHyJwlCdpX3mwCDQopBdnBhyMyadQLAFcdnMoT+C4Xdp41izY4DkPvnsBkKUQic2Dt46fi/TFXC3ci+ZqOyAYS9zLh3sgHiugJC/kMHwRKUWTSN/EBRrYXkCKoNy1PL9AjrSGGQ453aqY1rY9RJIuUGrReNbHoI9s1WaO1imdcyAKp8BZlmMr0aDlSztgrhhntm8LEbg3Z8viBQJ9q5eE/FsLiiopK6vNCb1n4738Ai4aFVsklPkkSmKTOZmnYmroXCkFF+5G6a1G0cn2DSGJaqo3w4shLqnMr8PAbGD7BbzyiqoDeHOYOnGXZMLaxQduzFdh2jJIAxI4eamoAeW+5dUZdfLykHtFyr7i8o7mqjCi9OGVMjojUMLLbkNzursocvchngfR6KKbJ60i2hoSRznNjw7Fc7FVx19rl19v8X8z/385f55/j3/fnE/pWj/zunz9gON/eK+JqlO6cBsAAAAASUVORK5CYII=";
+  const icon =
+    "data:image/png;base64,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";
 
   class BlockifyVR {
     getInfo() {
       return {
-        id: 'blockifyvr', 
-        color1: '#00a616',
-        color2: '#02ad19', 
-        color3: '#128211', 
-        name: 'BlockifyVR',
+        id: "blockifyvr",
+        color1: "#00a616",
+        color2: "#02ad19",
+        color3: "#128211",
+        name: "BlockifyVR",
         menuIconURI: icon,
         blockIconURI: icon,
         //docsURI: 'https://extensions.turbowarp.org/-MasterMath-/BlockifyVR', //TODO: update this URL when the extension is finished. Create a Turbowarp documentation page and include an optional link to the documentation on the website.
         blocks: [
           {
-            blockType: 'label',
-            text: 'Utilities',
+            blockType: "label",
+            text: "Utilities",
           },
           {
-            opcode: 'toggleVrMode',
+            opcode: "toggleVrMode",
             blockType: Scratch.BlockType.COMMAND,
-            text: '[enterExit] vr mode',
+            text: "[enterExit] vr mode",
             arguments: {
               enterExit: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "enter",
-                menu: 'toggleVrMode',
-              }
-            }
+                menu: "toggleVrMode",
+              },
+            },
           },
           {
-            opcode: 'inVR',
+            opcode: "inVR",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'in vr?',
-            disableMonitor: 'true',
+            text: "in vr?",
+            disableMonitor: "true",
           },
           {
-            opcode: 'headsetConnected',
+            opcode: "headsetConnected",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is headset connected?',
-            disableMonitor: 'true',
+            text: "is headset connected?",
+            disableMonitor: "true",
           },
           {
-            opcode: 'controllerConnected',
+            opcode: "controllerConnected",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is controller [controller] connected?',
+            text: "is controller [controller] connected?",
             arguments: {
               controller: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'controllerMenu',
-                defaultValue: 'left controller',
-              }
-            }
+                menu: "controllerMenu",
+                defaultValue: "left controller",
+              },
+            },
           },
           //* Matrix block code from the Augmented Reality extension.
           {
-            opcode: 'getMatrix',
+            opcode: "getMatrix",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'item [ITEM] of [MATRIX] matrix',
+            text: "item [ITEM] of [MATRIX] matrix",
             arguments: {
               ITEM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -491,137 +524,137 @@ The A-frame libary is licensed under the MIT license, which can be found at http
               },
               MATRIX: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'matrix',
-                defaultValue: 'combined',
+                menu: "matrix",
+                defaultValue: "combined",
               },
             },
           },
           {
-            opcode: 'getStageWidth',
+            opcode: "getStageWidth",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'stage width',
-            disableMonitor: 'true',
+            text: "stage width",
+            disableMonitor: "true",
           },
           {
-            opcode: 'getStageHeight',
+            opcode: "getStageHeight",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'stage height',
-            disableMonitor: 'true',
+            text: "stage height",
+            disableMonitor: "true",
           },
           "---",
           {
-            blockType: 'label',
-            text: 'Transformations',
+            blockType: "label",
+            text: "Transformations",
           },
           {
-            opcode: 'positionOf',
+            opcode: "positionOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[position] of [Device]',
+            text: "[position] of [Device]",
             arguments: {
-              position:{
+              position: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'x-position',
-                menu: 'positionMenu',
+                defaultValue: "x-position",
+                menu: "positionMenu",
               },
               Device: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'headset',
-                menu: 'deviceMenu',
-              }
-            }
+                defaultValue: "headset",
+                menu: "deviceMenu",
+              },
+            },
           },
           {
-            opcode: 'rotationOf',
+            opcode: "rotationOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[direction] of [device]',
+            text: "[direction] of [device]",
             arguments: {
               direction: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'x-rotation',
-                menu: 'rotationMenu',
+                defaultValue: "x-rotation",
+                menu: "rotationMenu",
               },
               device: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'headset',
-                menu: 'deviceMenu',
-              }
-            }
+                defaultValue: "headset",
+                menu: "deviceMenu",
+              },
+            },
           },
           "---",
           {
-            blockType: 'label',
-            text: 'Controller Input',
+            blockType: "label",
+            text: "Controller Input",
           },
           {
-            opcode: 'whenAnyButtonPressed',
+            opcode: "whenAnyButtonPressed",
             blockType: Scratch.BlockType.EVENT,
-            text: 'when any button pressed',
+            text: "when any button pressed",
             isEdgeActivated: false,
           },
           {
-            opcode: 'isButtonPressed',
+            opcode: "isButtonPressed",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'button [button] pressed?',
+            text: "button [button] pressed?",
             arguments: {
               button: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'left trigger',
-                menu: 'buttonMenu',
-              }
-            }
+                defaultValue: "left trigger",
+                menu: "buttonMenu",
+              },
+            },
           },
           {
-            opcode: 'triggerGripValue',
+            opcode: "triggerGripValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: '[button] value',
+            text: "[button] value",
             arguments: {
               button: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'left trigger',
-                menu: 'floatButtonMenu',
-              }
-            }
+                defaultValue: "left trigger",
+                menu: "floatButtonMenu",
+              },
+            },
           },
           {
-            opcode: 'lastButtonPressed',
+            opcode: "lastButtonPressed",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'last button pressed',
+            text: "last button pressed",
             disableMonitor: true,
           },
           {
-            opcode: 'thumbstickDirection',
+            opcode: "thumbstickDirection",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'thumbstick [value] of [controller]',
+            text: "thumbstick [value] of [controller]",
             arguments: {
               value: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'direction',
-                menu: 'value',
+                defaultValue: "direction",
+                menu: "value",
               },
               controller: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'left controller',
-                menu: 'controllerMenu',
-              }
-            }
+                defaultValue: "left controller",
+                menu: "controllerMenu",
+              },
+            },
           },
           {
-            opcode: 'isThumbstickDirection',
+            opcode: "isThumbstickDirection",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is [controller] thumbstick direction [direction]?',
+            text: "is [controller] thumbstick direction [direction]?",
             arguments: {
               controller: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'left controller',
-                menu: 'controllerMenu',
+                defaultValue: "left controller",
+                menu: "controllerMenu",
               },
               direction: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'up',
-                menu: 'cardinalDirection',
-              }
-            }
-          }
+                defaultValue: "up",
+                menu: "cardinalDirection",
+              },
+            },
+          },
         ],
         menus: {
           toggleVrMode: {
@@ -629,7 +662,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
             items: ["enter", "exit"],
           },
           rotationMenu: {
-            acceptReporters: false, 
+            acceptReporters: false,
             items: ["x-rotation", "y-rotation", "z-rotation"],
           },
           deviceMenu: {
@@ -647,7 +680,18 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           },
           buttonMenu: {
             acceptReporters: false,
-            items: ["left trigger", "right trigger", "left grip", "right grip", "A", "B", "X", "Y", "left thumbstick", "right thumbstick"],
+            items: [
+              "left trigger",
+              "right trigger",
+              "left grip",
+              "right grip",
+              "A",
+              "B",
+              "X",
+              "Y",
+              "left thumbstick",
+              "right thumbstick",
+            ],
           },
           floatButtonMenu: {
             acceptReporters: false,
@@ -665,16 +709,16 @@ The A-frame libary is licensed under the MIT license, which can be found at http
             acceptReporters: false,
             items: ["up", "down", "left", "right"],
           },
-        }
+        },
       };
     }
 
-    toggleVrMode({enterExit}) {
-      if (enterExit == 'enter') {
-        if (confirm('Would you like to enter VR mode?') == true) {
+    toggleVrMode({ enterExit }) {
+      if (enterExit == "enter") {
+        if (confirm("Would you like to enter VR mode?") == true) {
           AScene.enterVR(); //enter VR mode
         }
-      } else if (enterExit == 'exit') {
+      } else if (enterExit == "exit") {
         AScene.exitVR();
       }
     }
@@ -687,11 +731,11 @@ The A-frame libary is licensed under the MIT license, which can be found at http
       return AFRAME.utils.device.checkHeadsetConnected();
     }
 
-    controllerConnected({controller}) {
-      if (controller == 'left controller') {
+    controllerConnected({ controller }) {
+      if (controller == "left controller") {
         return leftControllerConnected;
       }
-      if (controller == 'right controller') {
+      if (controller == "right controller") {
         return rightControllerConnected;
       }
     }
@@ -722,194 +766,193 @@ The A-frame libary is licensed under the MIT license, which can be found at http
     getStageWidth() {
       return runtime.stageWidth;
     }
-    
+
     getStageHeight() {
       return runtime.stageHeight;
     }
 
-    positionOf({position,Device}) { 
-      if (position == 'x-position' && Device == 'headset') {
+    positionOf({ position, Device }) {
+      if (position == "x-position" && Device == "headset") {
         return cameraPosX;
-      } 
-      
-      if (position == 'y-position' && Device == 'headset') {
+      }
+
+      if (position == "y-position" && Device == "headset") {
         return cameraPosY;
-      } 
-      
-      if (position == 'z-position' && Device == 'headset') {
+      }
+
+      if (position == "z-position" && Device == "headset") {
         return cameraPosZ;
-      } 
-      
-      if (position == 'x-position' && Device == 'left controller') {
+      }
+
+      if (position == "x-position" && Device == "left controller") {
         return leftControllerPositionX;
-      } 
-      
-      if (position == 'y-position' && Device == 'left controller') {
+      }
+
+      if (position == "y-position" && Device == "left controller") {
         return leftControllerPositionY;
       }
-      
-      if (position == 'z-position' && Device == 'left controller') {
+
+      if (position == "z-position" && Device == "left controller") {
         return leftControllerPositionZ;
-      } 
-      
-      if (position == 'x-position' && Device == 'right controller') {
+      }
+
+      if (position == "x-position" && Device == "right controller") {
         return rightControllerPositionX;
-      } 
-      
-      if (position == 'y-position' && Device == 'right controller') {
+      }
+
+      if (position == "y-position" && Device == "right controller") {
         return rightControllerPositionY;
       }
 
-      if (position == 'z-position' && Device == 'right controller') {
+      if (position == "z-position" && Device == "right controller") {
         return rightControllerPositionZ;
       }
     }
 
-    rotationOf({direction,device}) {
-      if (direction == 'x-rotation' && device == 'headset') {
+    rotationOf({ direction, device }) {
+      if (direction == "x-rotation" && device == "headset") {
         return cameraOrientationX;
-      } 
-      
-      if (direction == 'y-rotation' && device == 'headset') {
+      }
+
+      if (direction == "y-rotation" && device == "headset") {
         return cameraOrientationY;
-      } 
+      }
 
-      if (direction == 'z-rotation' && device == 'headset') {
+      if (direction == "z-rotation" && device == "headset") {
         return cameraOrientationZ;
-      } 
+      }
 
-      if (direction == 'x-rotation' && device == 'left controller') {
+      if (direction == "x-rotation" && device == "left controller") {
         return leftControllerOrientationX;
       }
 
-      if (direction == 'y-rotation' && device == 'left controller') {
+      if (direction == "y-rotation" && device == "left controller") {
         return leftControllerOrientationY;
       }
 
-      if (direction == 'z-rotation' && device == 'left controller') {
+      if (direction == "z-rotation" && device == "left controller") {
         return leftControllerOrientationZ;
-      } 
+      }
 
-      if (direction == 'x-rotation' && device == 'right controller') {
+      if (direction == "x-rotation" && device == "right controller") {
         return rightControllerOrientationX;
-      } 
+      }
 
-      if (direction == 'y-rotation' && device == 'right controller') {
+      if (direction == "y-rotation" && device == "right controller") {
         return rightControllerOrientationY;
       }
 
-      if (direction == 'z-rotation' && device == 'right controller') {
+      if (direction == "z-rotation" && device == "right controller") {
         return rightControllerOrientationZ;
       }
-      
     }
 
-    isButtonPressed({button}) {
-      if (button == 'left trigger') {
+    isButtonPressed({ button }) {
+      if (button == "left trigger") {
         return leftTriggerPressed;
       }
 
-      if (button == 'right trigger') {
+      if (button == "right trigger") {
         return rightTriggerPressed;
-      } 
-      
-      if (button == 'left grip') {
+      }
+
+      if (button == "left grip") {
         return leftGripPressed;
       }
 
-      if (button == 'right grip') {
+      if (button == "right grip") {
         return rightGripPressed;
       }
 
-      if (button == 'left trigger') {
+      if (button == "left trigger") {
         return leftTriggerPressed;
-      } 
+      }
 
-      if (button == 'left thumbstick') {
+      if (button == "left thumbstick") {
         return leftThumbstickPressed;
-      } 
+      }
 
-      if (button == 'right thumbstick') {
+      if (button == "right thumbstick") {
         return rightThumbstickPressed;
-      } 
+      }
 
-      if (button == 'A') {
+      if (button == "A") {
         return aButtonPressed;
-      } 
+      }
 
-      if (button == 'B') {
+      if (button == "B") {
         return bButtonPressed;
-      } 
+      }
 
-      if (button == 'X') {
+      if (button == "X") {
         return xButtonPressed;
-      } 
+      }
 
-      if (button == 'Y') {
+      if (button == "Y") {
         return yButtonPressed;
       }
     }
-    
-    triggerGripValue({button}) {
-      if (button == 'left trigger') {
+
+    triggerGripValue({ button }) {
+      if (button == "left trigger") {
         return leftTriggerAmount;
       }
 
-      if (button == 'right trigger') {
+      if (button == "right trigger") {
         return rightTriggerAmount;
       }
 
-      if (button == 'left grip') {
+      if (button == "left grip") {
         return leftGripAmount;
       }
 
-      if (button == 'right grip') {
+      if (button == "right grip") {
         return rightGripAmount;
       }
     }
 
-    thumbstickDirection({value,controller}) {
+    thumbstickDirection({ value, controller }) {
       //left controller
-      if (value == 'x value' && controller == 'left controller') {
+      if (value == "x value" && controller == "left controller") {
         return leftThumbstickX;
       }
 
-      if (value == 'y value' && controller == 'left controller') {
+      if (value == "y value" && controller == "left controller") {
         return leftThumbstickY;
       }
 
-      if (value == 'direction' && controller == 'left controller' ) {
+      if (value == "direction" && controller == "left controller") {
         return leftThumbstickDirection;
       }
 
       //right controller
-      if (value == 'x value' && controller == 'right controller') {
+      if (value == "x value" && controller == "right controller") {
         return rightThumbstickX;
       }
 
-      if (value == 'y value' && controller == 'right controller') {
+      if (value == "y value" && controller == "right controller") {
         return rightThumbstickY;
       }
 
-      if (value == 'direction' && controller == 'right controller' ) {
+      if (value == "direction" && controller == "right controller") {
         return rightThumbstickDirection;
       }
     }
 
-    isThumbstickDirection({controller,direction}) {
-      if (controller == 'left controller') {
-          if (leftThumbstickY > 0.95 && direction == "up") {
-            return true;
-          } else if (leftThumbstickY < -0.95 && direction == "down") {
-            return true;
-          } else if (leftThumbstickX < -0.95 && direction == "left") {
-            return true;
-          } else if (leftThumbstickX > 0.95 && direction == "right") {
-            return true;
-          } else {
-            return false;
-          }
-      } else if (controller == 'right controller') {
+    isThumbstickDirection({ controller, direction }) {
+      if (controller == "left controller") {
+        if (leftThumbstickY > 0.95 && direction == "up") {
+          return true;
+        } else if (leftThumbstickY < -0.95 && direction == "down") {
+          return true;
+        } else if (leftThumbstickX < -0.95 && direction == "left") {
+          return true;
+        } else if (leftThumbstickX > 0.95 && direction == "right") {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (controller == "right controller") {
         if (rightThumbstickY > 0.95 && direction == "up") {
           return true;
         } else if (rightThumbstickY < -0.95 && direction == "down") {
@@ -921,10 +964,10 @@ The A-frame libary is licensed under the MIT license, which can be found at http
         } else {
           return false;
         }
-      } 
+      }
     }
-    
-    lastButtonPressed() { 
+
+    lastButtonPressed() {
       return lastButtonPressed;
     }
   }
