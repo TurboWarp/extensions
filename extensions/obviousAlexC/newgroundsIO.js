@@ -9286,7 +9286,7 @@
             text: Scratch.translate("unlock medal [medalID]"),
             arguments: {
               medalID: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: Scratch.translate("MedalID"),
               },
             },
