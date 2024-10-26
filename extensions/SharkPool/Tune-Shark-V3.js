@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.3.03
+// Version V.3.3.1
 
 (function (Scratch) {
   "use strict";
@@ -15,14 +15,13 @@
   const blockIconURI =
 "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3OC45NzQiIGhlaWdodD0iNzguOTc0IiB2aWV3Qm94PSIwIDAgNzguOTc0IDc4Ljk3NCI+PGcgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIj48cGF0aCBkPSJNMCA3OC45NzRWMGg3OC45NzR2NzguOTc0eiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Im02MS4yMDIgNTMuODM2LS4wMDItLjAwM2MtLjA2OCAzLjcxLTMuMzM3IDcuMjgtOC4wMTYgOC40MTYtNS4zNTkgMS4zMDItMTAuNTM4LTEuMDgtMTEuNTY4LTUuMzJzMi40OC04LjczMyA3LjgzOS0xMC4wMzVjMi40NC0uNTkzIDQuODQtLjQyIDYuODMxLjM0MnYtMjAuNTZjLTE0Ljg1IDEuMDAzLTI2LjI5OCA1LjAwNi0yNi4yOTggNS4wMDZ2MjcuNjQ0Yy40OSA0LjAxNC0yLjkxNiA4LjA3OC03Ljk3IDkuMzA2LTUuMzU4IDEuMzAxLTEwLjUzNy0xLjA4MS0xMS41NjctNS4zMjFzMi40OC04LjczMyA3LjgzOC0xMC4wMzVjMi40ODYtLjYwNCA0LjkzMy0uNDE0IDYuOTQ2LjM4NGwuMDEyLTM2Ljk5OHMxNi4xOS03LjI5IDM1Ljk1NS02LjYzM3oiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
 
-  const settingsIconURI =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3OC45NzQiIGhlaWdodD0iNzguOTc0IiB2aWV3Qm94PSIwIDAgNzguOTc0IDc4Ljk3NCI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiID48cGF0aCBkPSJtNjQuNTMzIDQyLjYxIDIuMDQyLjg1NWE1LjAyIDUuMDIgMCAwIDEgMi42OSA2LjU3bC0xLjM3IDMuMjc0YTUuMDIgNS4wMiAwIDAgMS02LjU3IDIuNjlsLTIuMDQyLS44NTVhMjUgMjUgMCAwIDEtNC4yOTUgNC4yNmwuODQgMi4wNWE1LjAyIDUuMDIgMCAwIDEtMi43NDIgNi41NDhsLTMuMjg1IDEuMzQ1YTUuMDIgNS4wMiAwIDAgMS02LjU0OC0yLjc0MmwtLjg0LTIuMDVhMjUgMjUgMCAwIDEtNi4wNDktLjAyMmwtLjg1NSAyLjA0MmE1LjAyIDUuMDIgMCAwIDEtNi41NyAyLjY5bC0zLjI3NC0xLjM3YTUuMDIgNS4wMiAwIDAgMS0yLjY5LTYuNTdsLjg1NS0yLjA0MmEyNSAyNSAwIDAgMS00LjI2LTQuMjk1bC0yLjA1Ljg0YTUuMDIgNS4wMiAwIDAgMS02LjU0OC0yLjc0MmwtMS4zNDUtMy4yODVhNS4wMiA1LjAyIDAgMCAxIDIuNzQyLTYuNTQ4bDIuMDUtLjg0YTI1IDI1IDAgMCAxIC4wMjItNi4wNDlsLTIuMDQyLS44NTVhNS4wMiA1LjAyIDAgMCAxLTIuNjktNi41N2wxLjM3LTMuMjc0YTUuMDIgNS4wMiAwIDAgMSA2LjU3LTIuNjlsMi4wNDIuODU1YTI1IDI1IDAgMCAxIDQuMjk1LTQuMjZsLS44NC0yLjA1YTUuMDIgNS4wMiAwIDAgMSAyLjc0Mi02LjU0OGwzLjI4NS0xLjM0NWE1LjAyIDUuMDIgMCAwIDEgNi41NDggMi43NDJsLjg0IDIuMDVhMjUgMjUgMCAwIDEgNi4wNDkuMDIybC44NTUtMi4wNDJhNS4wMiA1LjAyIDAgMCAxIDYuNTctMi42OWwzLjI3NCAxLjM3YTUuMDIgNS4wMiAwIDAgMSAyLjY5IDYuNTdsLS44NTUgMi4wNDJhMjUgMjUgMCAwIDEgNC4yNiA0LjI5NWwyLjA1LS44NGE1LjAyIDUuMDIgMCAwIDEgNi41NDggMi43NDJsMS4zNDUgMy4yODVhNS4wMiA1LjAyIDAgMCAxLTIuNzQyIDYuNTQ4bC0yLjA1Ljg0YTI1IDI1IDAgMCAxLS4wMjIgNi4wNDltLTM3LjQ5OC04LjMzOGMtMi44OCA2Ljg3Ny4zNiAxNC43ODcgNy4yMzcgMTcuNjY3czE0Ljc4Ny0uMzYgMTcuNjY3LTcuMjM3LS4zNi0xNC43ODctNy4yMzctMTcuNjY3LTE0Ljc4Ny4zNi0xNy42NjcgNy4yMzciIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMCA3OC45NzRWMGg3OC45NzR2NzguOTc0eiIgZmlsbD0ibm9uZSIvPjwvZz48L3N2Zz4=";
-  const nobIconURI =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3OC45NzQiIGhlaWdodD0iNzguOTc0IiB2aWV3Qm94PSIwIDAgNzguOTc0IDc4Ljk3NCI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0wIDc4Ljk3NFYwaDc4Ljk3NHY3OC45NzR6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTM3Ljk2MSAxMC44NDdhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQtMi4xMDRWNS42OTJjMC0xLjE2My45NDItMi4xMDUgMi4xMDQtMi4xMDVoMy4wNTJjMS4xNjIgMCAyLjEwNC45NDIgMi4xMDQgMi4xMDV2My4wNTFhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQgMi4xMDV6bTAgNjQuNTRhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQtMi4xMDV2LTMuMDUxYzAtMS4xNjIuOTQyLTIuMTA1IDIuMTA0LTIuMTA1aDMuMDUyYzEuMTYyIDAgMi4xMDQuOTQzIDIuMTA0IDIuMTA1djMuMDUxYTIuMTA1IDIuMTA1IDAgMCAxLTIuMTA0IDIuMTA1em0yMC42OTgtNTcuMjNhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NmwyLjE1OC0yLjE1OGEyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDB6TTEzLjAyMyA2My43OTNhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NmwyLjE1OC0yLjE1OGEyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDB6bTU1LjEwNC0yNS44MzJjMC0xLjE2Mi45NDItMi4xMDQgMi4xMDQtMi4xMDRoMy4wNTFjMS4xNjMgMCAyLjEwNS45NDIgMi4xMDUgMi4xMDR2My4wNTJhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDUgMi4xMDRoLTMuMDUxYTIuMTA1IDIuMTA1IDAgMCAxLTIuMTA1LTIuMTA0em0tNjQuNTQgMGMwLTEuMTYyLjk0Mi0yLjEwNCAyLjEwNS0yLjEwNGgzLjA1MWMxLjE2MiAwIDIuMTA1Ljk0MiAyLjEwNSAyLjEwNHYzLjA1MmEyLjEwNSAyLjEwNSAwIDAgMS0yLjEwNSAyLjEwNEg1LjY5MmEyLjEwNSAyLjEwNSAwIDAgMS0yLjEwNS0yLjEwNHptNTcuMjMgMjAuNjk4YTIuMTA1IDIuMTA1IDAgMCAxIDIuOTc2IDBsMi4xNTggMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEgMCAyLjk3NmwtMi4xNTggMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEtMi45NzYgMGwtMi4xNTgtMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NnpNMTUuMTgxIDEzLjAyM2EyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDBsLTIuMTU4LTIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAtMi45NzZ6bTguNDE2IDEwLjQzYzcuNTQ2LTcuNTQ3IDE5LjA2NS04LjcwMiAyNy44MjctMy40NjUtLjEyNS4wOS0xMy4yNjQgMTcuODcyLTEyLjEzMyAxOS4wMDNsMS4wMzcgMS4wMzdjMS4xMyAxLjEzIDE4LjkxMy0xMi4wMDggMTkuMDAzLTEyLjEzMyA1LjIzNyA4Ljc2MiA0LjA4MiAyMC4yOC0zLjQ2NSAyNy44MjgtOC45MTEgOC45MS0yMy4zNTkgOC45MS0zMi4yNyAwLTguOTEtOC45MTEtOC45MS0yMy4zNTkgMC0zMi4yNyIgZmlsbD0iI2ZmZiIvPjwvZz48L3N2Zz4=";
-  const stopSign =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNCAxNCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggc3R5bGU9ImZpbGw6I2VjNTk1OTtzdHJva2U6I2I4NDg0ODtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbGluZWpvaW46cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MTAiIGQ9Ik00LjMuNWg1LjRsMy44IDMuOHY1LjRsLTMuOCAzLjhINC4zTC41IDkuN1Y0LjN6Ii8+PC9zdmc+";
-  const startFlag =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNi42MyAxNy41Ij48cGF0aCBkPSJNLjc1IDJhNi40NCA2LjQ0IDAgMCAxIDcuNjkgMGgwYTYuNDQgNi40NCAwIDAgMCA3LjY5IDB2MTAuNGE2LjQ0IDYuNDQgMCAwIDEtNy42OSAwaDBhNi40NCA2LjQ0IDAgMCAwLTcuNjkgMCIgc3R5bGU9ImZpbGw6IzRjYmY1NjtzdHJva2U6IzQ1OTkzZDtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbGluZWpvaW46cm91bmQiLz48cGF0aCBzdHlsZT0iZmlsbDojNGNiZjU2O3N0cm9rZTojNDU5OTNkO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2Utd2lkdGg6MS41cHgiIGQ9Ik0uNzUgMTYuNzV2LTE2Ii8+PC9zdmc+";
+  const extraIcons = {
+    set: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3OC45NzQiIGhlaWdodD0iNzguOTc0IiB2aWV3Qm94PSIwIDAgNzguOTc0IDc4Ljk3NCI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiID48cGF0aCBkPSJtNjQuNTMzIDQyLjYxIDIuMDQyLjg1NWE1LjAyIDUuMDIgMCAwIDEgMi42OSA2LjU3bC0xLjM3IDMuMjc0YTUuMDIgNS4wMiAwIDAgMS02LjU3IDIuNjlsLTIuMDQyLS44NTVhMjUgMjUgMCAwIDEtNC4yOTUgNC4yNmwuODQgMi4wNWE1LjAyIDUuMDIgMCAwIDEtMi43NDIgNi41NDhsLTMuMjg1IDEuMzQ1YTUuMDIgNS4wMiAwIDAgMS02LjU0OC0yLjc0MmwtLjg0LTIuMDVhMjUgMjUgMCAwIDEtNi4wNDktLjAyMmwtLjg1NSAyLjA0MmE1LjAyIDUuMDIgMCAwIDEtNi41NyAyLjY5bC0zLjI3NC0xLjM3YTUuMDIgNS4wMiAwIDAgMS0yLjY5LTYuNTdsLjg1NS0yLjA0MmEyNSAyNSAwIDAgMS00LjI2LTQuMjk1bC0yLjA1Ljg0YTUuMDIgNS4wMiAwIDAgMS02LjU0OC0yLjc0MmwtMS4zNDUtMy4yODVhNS4wMiA1LjAyIDAgMCAxIDIuNzQyLTYuNTQ4bDIuMDUtLjg0YTI1IDI1IDAgMCAxIC4wMjItNi4wNDlsLTIuMDQyLS44NTVhNS4wMiA1LjAyIDAgMCAxLTIuNjktNi41N2wxLjM3LTMuMjc0YTUuMDIgNS4wMiAwIDAgMSA2LjU3LTIuNjlsMi4wNDIuODU1YTI1IDI1IDAgMCAxIDQuMjk1LTQuMjZsLS44NC0yLjA1YTUuMDIgNS4wMiAwIDAgMSAyLjc0Mi02LjU0OGwzLjI4NS0xLjM0NWE1LjAyIDUuMDIgMCAwIDEgNi41NDggMi43NDJsLjg0IDIuMDVhMjUgMjUgMCAwIDEgNi4wNDkuMDIybC44NTUtMi4wNDJhNS4wMiA1LjAyIDAgMCAxIDYuNTctMi42OWwzLjI3NCAxLjM3YTUuMDIgNS4wMiAwIDAgMSAyLjY5IDYuNTdsLS44NTUgMi4wNDJhMjUgMjUgMCAwIDEgNC4yNiA0LjI5NWwyLjA1LS44NGE1LjAyIDUuMDIgMCAwIDEgNi41NDggMi43NDJsMS4zNDUgMy4yODVhNS4wMiA1LjAyIDAgMCAxLTIuNzQyIDYuNTQ4bC0yLjA1Ljg0YTI1IDI1IDAgMCAxLS4wMjIgNi4wNDltLTM3LjQ5OC04LjMzOGMtMi44OCA2Ljg3Ny4zNiAxNC43ODcgNy4yMzcgMTcuNjY3czE0Ljc4Ny0uMzYgMTcuNjY3LTcuMjM3LS4zNi0xNC43ODctNy4yMzctMTcuNjY3LTE0Ljc4Ny4zNi0xNy42NjcgNy4yMzciIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMCA3OC45NzRWMGg3OC45NzR2NzguOTc0eiIgZmlsbD0ibm9uZSIvPjwvZz48L3N2Zz4=",
+    nob: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3OC45NzQiIGhlaWdodD0iNzguOTc0IiB2aWV3Qm94PSIwIDAgNzguOTc0IDc4Ljk3NCI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0wIDc4Ljk3NFYwaDc4Ljk3NHY3OC45NzR6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTM3Ljk2MSAxMC44NDdhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQtMi4xMDRWNS42OTJjMC0xLjE2My45NDItMi4xMDUgMi4xMDQtMi4xMDVoMy4wNTJjMS4xNjIgMCAyLjEwNC45NDIgMi4xMDQgMi4xMDV2My4wNTFhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQgMi4xMDV6bTAgNjQuNTRhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQtMi4xMDV2LTMuMDUxYzAtMS4xNjIuOTQyLTIuMTA1IDIuMTA0LTIuMTA1aDMuMDUyYzEuMTYyIDAgMi4xMDQuOTQzIDIuMTA0IDIuMTA1djMuMDUxYTIuMTA1IDIuMTA1IDAgMCAxLTIuMTA0IDIuMTA1em0yMC42OTgtNTcuMjNhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NmwyLjE1OC0yLjE1OGEyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDB6TTEzLjAyMyA2My43OTNhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NmwyLjE1OC0yLjE1OGEyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDB6bTU1LjEwNC0yNS44MzJjMC0xLjE2Mi45NDItMi4xMDQgMi4xMDQtMi4xMDRoMy4wNTFjMS4xNjMgMCAyLjEwNS45NDIgMi4xMDUgMi4xMDR2My4wNTJhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDUgMi4xMDRoLTMuMDUxYTIuMTA1IDIuMTA1IDAgMCAxLTIuMTA1LTIuMTA0em0tNjQuNTQgMGMwLTEuMTYyLjk0Mi0yLjEwNCAyLjEwNS0yLjEwNGgzLjA1MWMxLjE2MiAwIDIuMTA1Ljk0MiAyLjEwNSAyLjEwNHYzLjA1MmEyLjEwNSAyLjEwNSAwIDAgMS0yLjEwNSAyLjEwNEg1LjY5MmEyLjEwNSAyLjEwNSAwIDAgMS0yLjEwNS0yLjEwNHptNTcuMjMgMjAuNjk4YTIuMTA1IDIuMTA1IDAgMCAxIDIuOTc2IDBsMi4xNTggMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEgMCAyLjk3NmwtMi4xNTggMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEtMi45NzYgMGwtMi4xNTgtMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NnpNMTUuMTgxIDEzLjAyM2EyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDBsLTIuMTU4LTIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAtMi45NzZ6bTguNDE2IDEwLjQzYzcuNTQ2LTcuNTQ3IDE5LjA2NS04LjcwMiAyNy44MjctMy40NjUtLjEyNS4wOS0xMy4yNjQgMTcuODcyLTEyLjEzMyAxOS4wMDNsMS4wMzcgMS4wMzdjMS4xMyAxLjEzIDE4LjkxMy0xMi4wMDggMTkuMDAzLTEyLjEzMyA1LjIzNyA4Ljc2MiA0LjA4MiAyMC4yOC0zLjQ2NSAyNy44MjgtOC45MTEgOC45MS0yMy4zNTkgOC45MS0zMi4yNyAwLTguOTEtOC45MTEtOC45MS0yMy4zNTkgMC0zMi4yNyIgZmlsbD0iI2ZmZiIvPjwvZz48L3N2Zz4=",
+    flag: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNi42MyAxNy41Ij48cGF0aCBkPSJNLjc1IDJhNi40NCA2LjQ0IDAgMCAxIDcuNjkgMGgwYTYuNDQgNi40NCAwIDAgMCA3LjY5IDB2MTAuNGE2LjQ0IDYuNDQgMCAwIDEtNy42OSAwaDBhNi40NCA2LjQ0IDAgMCAwLTcuNjkgMCIgc3R5bGU9ImZpbGw6IzRjYmY1NjtzdHJva2U6IzQ1OTkzZDtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbGluZWpvaW46cm91bmQiLz48cGF0aCBzdHlsZT0iZmlsbDojNGNiZjU2O3N0cm9rZTojNDU5OTNkO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2Utd2lkdGg6MS41cHgiIGQ9Ik0uNzUgMTYuNzV2LTE2Ii8+PC9zdmc+",
+    stop: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNCAxNCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggc3R5bGU9ImZpbGw6I2VjNTk1OTtzdHJva2U6I2I4NDg0ODtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbGluZWpvaW46cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MTAiIGQ9Ik00LjMuNWg1LjRsMy44IDMuOHY1LjRsLTMuOCAzLjhINC4zTC41IDkuN1Y0LjN6Ii8+PC9zdmc+"
+  };
+  for (const key in extraIcons) extraIcons[key] = "data:image/svg+xml;base64,PHN2Zy" + extraIcons[key];
 
   // Modified Pizzicato Library (Web Audio API, but with Premade Effects and Stuff)
   // uses MIT License
@@ -32,12 +31,17 @@
   document.body.appendChild(scriptElement);
   /* global Pizzicato */
 
-  const vm = Scratch.vm;
+  const { vm, Cast } = Scratch;
   const runtime = vm.runtime;
   const scratchAudio = runtime.audioEngine;
-  const allSingleEffects = [
+
+  const simpleEffects = [
     "pitch", "detune", "speed", "pan",
     "gain", "distortion", "attack", "release"
+  ];
+  const complexEffects = [
+    "reverb", "delay", "tremolo", "fuzz", "bitcrush",
+    "highpass", "lowpass", "flanger", "compressor", "equalizer"
   ];
 
   let soundBank = {};
@@ -72,10 +76,10 @@
   class SPtuneShark3 {
     constructor() {
       runtime.on("PROJECT_START", () => {
-        if (settings.flagCtrl) this.ctrlSounds({ CONTROL : "stop" });
+        if (settings.flagCtrl) this.ctrlSounds({ CONTROL: "stop" });
       });
       runtime.on("PROJECT_STOP_ALL", () => {
-        if (settings.flagCtrl) this.ctrlSounds({ CONTROL : "stop" });
+        if (settings.flagCtrl) this.ctrlSounds({ CONTROL: "stop" });
       });
       runtime.on("BEFORE_EXECUTE", () => {
         const projectVal = scratchAudio.inputNode.gain.value;
@@ -115,7 +119,7 @@
             opcode: "importURL",
             blockType: Scratch.BlockType.COMMAND,
             text: "import sound from URL [URL] named [NAME]",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
               URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://extensions.turbowarp.org/meow.mp3" },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }
@@ -125,7 +129,7 @@
             opcode: "importMenu",
             blockType: Scratch.BlockType.COMMAND,
             text: "import sound [SOUND] named [NAME]",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
               SOUND: { type: Scratch.ArgumentType.SOUND },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }
@@ -135,7 +139,7 @@
             opcode: "convertSound",
             blockType: Scratch.BlockType.COMMAND,
             text: "convert sound [NAME1] from URL to URI and save to [NAME2]",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
               NAME1: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               NAME2: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound2" }
@@ -145,7 +149,7 @@
             opcode: "bindSound",
             blockType: Scratch.BlockType.COMMAND,
             text: "[TYPE] sound [NAME2] and sound [NAME]",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "bindMenu" },
               NAME2: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
@@ -156,7 +160,7 @@
             opcode: "save2Project",
             blockType: Scratch.BlockType.COMMAND,
             text: "[SAVE] all sounds to project",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
               SAVE: { type: Scratch.ArgumentType.STRING, menu: "saveMenu" }
             },
@@ -220,10 +224,10 @@
             opcode: "enableControl",
             blockType: Scratch.BlockType.COMMAND,
             text: "toggle sound link to [GO] [STOP] [ON_OFF]",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
-              GO: { type: Scratch.ArgumentType.IMAGE, dataURI: startFlag },
-              STOP: { type: Scratch.ArgumentType.IMAGE, dataURI: stopSign },
+              GO: { type: Scratch.ArgumentType.IMAGE, dataURI: extraIcons.flag },
+              STOP: { type: Scratch.ArgumentType.IMAGE, dataURI: extraIcons.stop },
               ON_OFF: { type: Scratch.ArgumentType.STRING, menu: "toggleMenu" }
             }
           },
@@ -231,17 +235,7 @@
             opcode: "toggleOverlap",
             blockType: Scratch.BlockType.COMMAND,
             text: "toggle sound [NAME] overlapping [TYPE]",
-            blockIconURI: settingsIconURI,
-            arguments: {
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
-              TYPE: { type: Scratch.ArgumentType.STRING, menu: "toggleMenu" }
-            },
-          },
-          {
-            opcode: "toggleLoop",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "toggle sound [NAME] looping [TYPE]",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "toggleMenu" }
@@ -251,7 +245,17 @@
             opcode: "toggleReverse",
             blockType: Scratch.BlockType.COMMAND,
             text: "toggle sound [NAME] reverse mode [TYPE]",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
+            arguments: {
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "toggleMenu" }
+            },
+          },
+          {
+            opcode: "toggleLoop",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "toggle sound [NAME] looping [TYPE]",
+            blockIconURI: extraIcons.set,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "toggleMenu" }
@@ -261,7 +265,7 @@
             opcode: "loopParams",
             blockType: Scratch.BlockType.COMMAND,
             text: "sound [NAME] loop start [START] end [END]",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               START: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -273,7 +277,7 @@
             opcode: "deleteSound",
             blockType: Scratch.BlockType.COMMAND,
             text: "delete sound [NAME]",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }
             },
@@ -282,26 +286,37 @@
             opcode: "deleteAllSounds",
             blockType: Scratch.BlockType.COMMAND,
             text: "delete all sounds",
-            blockIconURI: settingsIconURI
+            blockIconURI: extraIcons.set
           },
           {
             opcode: "allSounds",
             blockType: Scratch.BlockType.REPORTER,
             text: "all sounds",
-            blockIconURI: settingsIconURI
+            blockIconURI: extraIcons.set
           },
           {
             opcode: "allPlaySounds",
             blockType: Scratch.BlockType.REPORTER,
             text: "all playing sounds",
-            blockIconURI: settingsIconURI
+            blockIconURI: extraIcons.set
           },
           "---",
+          {
+            opcode: "whenSound",
+            blockType: Scratch.BlockType.HAT,
+            text: "when sound [NAME] [CONTROL]",
+            isEdgeActivated: false,
+            blockIconURI: extraIcons.set,
+            arguments: {
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
+              CONTROL: { type: Scratch.ArgumentType.STRING, menu: "hatPlayer" }
+            },
+          },
           {
             opcode: "soundCheck",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "sound [NAME] [CONTROL] ?",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               CONTROL: { type: Scratch.ArgumentType.STRING, menu: "soundBools" }
@@ -311,7 +326,7 @@
             opcode: "soundProperty",
             blockType: Scratch.BlockType.REPORTER,
             text: "[PROP] of sound [NAME]",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               PROP: { type: Scratch.ArgumentType.STRING, menu: "soundProps" }
@@ -321,7 +336,7 @@
             opcode: "getLoudTime",
             blockType: Scratch.BlockType.REPORTER,
             text: "[TYPE] of sound [NAME] at time [TIME]",
-            blockIconURI: settingsIconURI,
+            blockIconURI: extraIcons.set,
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "loudProps" },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
@@ -333,7 +348,7 @@
             opcode: "setVol",
             blockType: Scratch.BlockType.COMMAND,
             text: "set volume of sound [NAME] to [NUM]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
@@ -343,7 +358,7 @@
             opcode: "resetEffect",
             blockType: Scratch.BlockType.COMMAND,
             text: "reset [EFFECT] of sound [NAME]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               EFFECT: { type: Scratch.ArgumentType.STRING, menu: "effectMenu" },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }
@@ -351,15 +366,10 @@
           },
           "---",
           {
-            opcode: "setThing", blockType: Scratch.BlockType.COMMAND, hideFromPalette: true, // deprecated
-            text: "set [TYPE] of sound [NAME] to [VALUE]", blockIconURI: nobIconURI,
-            arguments: { NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" }, TYPE: { type: Scratch.ArgumentType.STRING, menu: "singleEffects" }, VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } },
-          },
-          {
             opcode: "setThingNew",
             blockType: Scratch.BlockType.COMMAND,
             text: "set [TYPE] of sound [NAME] to [VALUE]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "singleEffectNew" },
@@ -370,7 +380,7 @@
             opcode: "setReverb",
             blockType: Scratch.BlockType.COMMAND,
             text: "set reverb of sound [NAME] to time [TIME] decay [DECAY] mix [MIX]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
@@ -382,7 +392,7 @@
             opcode: "setDelay",
             blockType: Scratch.BlockType.COMMAND,
             text: "set delay of sound [NAME] to time [TIME] feedback [FEED] mix [MIX]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               FEED: { type: Scratch.ArgumentType.NUMBER, defaultValue: 60 },
@@ -394,7 +404,7 @@
             opcode: "setTremolo",
             blockType: Scratch.BlockType.COMMAND,
             text: "set tremolo of sound [NAME] to speed [SPEED] depth [DEPTH] mix [MIX]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               SPEED: { type: Scratch.ArgumentType.NUMBER, defaultValue: 35 },
@@ -407,7 +417,7 @@
             opcode: "setFuzz",
             blockType: Scratch.BlockType.COMMAND,
             text: "set fuzz of sound [NAME] to low [LOW] med-low [MED1] med-high [MED2] high [HIGH] mix [MIX]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               LOW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 60 },
@@ -421,10 +431,10 @@
             opcode: "setBitcrush",
             blockType: Scratch.BlockType.COMMAND,
             text: "set bitcrush of sound [NAME] bits [BITS] freq [FREQ]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
-              BITS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
+              BITS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 65 },
               FREQ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 60000 }
             },
           },
@@ -432,7 +442,7 @@
             opcode: "setPass",
             blockType: Scratch.BlockType.COMMAND,
             text: "set [TYPE] of sound [NAME] to frequency [FREQ] peak [PEAK]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "typePass" },
@@ -444,7 +454,7 @@
             opcode: "setFlanger",
             blockType: Scratch.BlockType.COMMAND,
             text: "set flanger of sound [NAME] to time [TIME] speed [SPEED] depth [DEPTH] feed [FEED] mix [MIX]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 45 },
@@ -458,7 +468,7 @@
             opcode: "setCompress",
             blockType: Scratch.BlockType.COMMAND,
             text: "set compressor of sound [NAME] to threshold [THRESH] knee [KNEE] attack [ATTACK] release [RELEASE] ratio [RATIO]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               THRESH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
@@ -472,7 +482,7 @@
             opcode: "setEqualize",
             blockType: Scratch.BlockType.COMMAND,
             text: "set equalizer of sound [NAME] to gain low [LOW] mid [MID] high [HIGH] cutoff low [CUT_LOW] cutoff high [CUT_HIGH]",
-            blockIconURI: nobIconURI,
+            blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
               LOW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
@@ -484,22 +494,20 @@
           }
         ],
         menus: {
-          singleEffects: allSingleEffects, // deprecated
           saveMenu: ["save", "dont save"],
           un_pauseMenu: ["pause", "unpause"],
           playMenu: ["start", "stop", "pause", "unpause"],
+          hatPlayer: ["starts", "stops"],
           toggleMenu: ["on", "off"],
           bindMenu: ["bind", "unBind"],
           loudProps: ["loudness", "raw noise", "tone"],
           typePass: ["highpass", "lowpass"],
-          singleEffectNew: { acceptReporters: true, items: allSingleEffects },
+          singleEffectNew: { acceptReporters: true, items: simpleEffects },
           soundProps: {
             acceptReporters: true,
             items: [
-              "length", "current time", "estimated bpm", "source", "binds", "volume", "pitch", "detune",
-              "speed", "pan", "gain", "distortion", "attack", "release", "reverb", "delay", "tremolo",
-              "fuzz", "bitcrush", "highpass", "lowpass", "flanger", "compressor", "equalizer"
-            ]
+              "length", "current time", "estimated bpm", "source", "binds", "volume",
+            ].concat(simpleEffects, complexEffects)
           },
           soundBools: {
             acceptReporters: true,
@@ -507,35 +515,13 @@
           },
           effectMenu: {
             acceptReporters: true,
-            items: [
-              "all effects", "pitch", "detune", "speed", "pan", "gain", "distortion",
-              "attack", "release", "reverb", "delay", "tremolo", "fuzz", "bitcrush",
-              "highpass", "lowpass", "flanger", "compressor", "equalizer"
-            ]
+            items: ["all effects"].concat(simpleEffects, complexEffects)
           }
         },
       };
     }
 
     // Helper Funcs
-    getSoundIndex(name, target) {
-      const sounds = target.sounds;
-      return sounds.indexOf(sounds.filter((i) => { return i.name === name })[0]);
-    }
-
-    currentTime(sound, ctx, src) {
-      if (!ctx.playing && !ctx.paused) return 0;
-      let leng = ctx.loop && sound.loopParm[1] ? sound.loopParm[1] : src.buffer.duration;
-      leng = this.modTime(leng, sound);
-      const loopStart = sound.loopParm[0];
-      const now = ctx.paused ? sound.pauseTime : src.context.currentTime;
-      let time = Math.abs(ctx.lastTimePlayed - now);
-      if (ctx.loop) return (Math.max(0, time % (leng - loopStart)) + loopStart);
-      return Math.min(leng, Math.max(0, time));
-    }
-
-    modTime(number, opts) { return number / (opts.pitch * opts.speed * ((opts.detune / 1000) + 1)) }
-
     updateEffect(effect, sound, name, args) {
       delete args.NAME; delete args.TYPE;
       effect.arguments = args; // Match Original Values, not Converted
@@ -558,14 +544,14 @@
           }
           case "DISTORTION": { return thisEffect.gain = options.gain }
           case "BITCRUSH": {
-            thisEffect.frequency = Math.max(30000, Scratch.Cast.toNumber(args.FREQ));
-            thisEffect.bits = Math.max(10, Scratch.Cast.toNumber(args.BITS)) / 10;
+            thisEffect.frequency = Math.max(30000, Cast.toNumber(args.FREQ));
+            thisEffect.bits = Math.max(10, Cast.toNumber(args.BITS)) / 10;
             return;
           }
           case "LOWPASS":
           case "HIGHPASS": {
-            const freq = Scratch.Cast.toNumber(args.FREQ);
-            const peak = Scratch.Cast.toNumber(args.PEAK) / 5;
+            const freq = Cast.toNumber(args.FREQ);
+            const peak = Cast.toNumber(args.PEAK) / 5;
             thisEffect.filterNode.frequency.value = freq;
             thisEffect.inputNode.frequency.value = freq;
             thisEffect.frequency = freq;
@@ -577,9 +563,9 @@
           case "COMPRESSOR": {
             const node = thisEffect.compressorNode;
             const values = {
-              threshold: Math.min(0, Math.max(-100, Scratch.Cast.toNumber(args.THRESH) * -1)),
-              ratio: Scratch.Cast.toNumber(args.RATIO) / 5, attack: Math.min(0, Math.max(1, Scratch.Cast.toNumber(args.ATTACK) / 100)),
-              release: Math.min(0, Math.max(1, Scratch.Cast.toNumber(args.RELEASE) / 100)), knee: Scratch.Cast.toNumber(args.KNEE) / 2.5
+              threshold: Math.min(0, Math.max(-100, Cast.toNumber(args.THRESH) * -1)),
+              ratio: Cast.toNumber(args.RATIO) / 5, attack: Math.min(0, Math.max(1, Cast.toNumber(args.ATTACK) / 100)),
+              release: Math.min(0, Math.max(1, Cast.toNumber(args.RELEASE) / 100)), knee: Cast.toNumber(args.KNEE) / 2.5
             };
             Object.keys(values).forEach(key => { node[key].value = values[key] });
             return;
@@ -591,8 +577,7 @@
 
     getBPM(data, sampleRate) {
       const peaks = [];
-      let lastPeakIndex = 0;
-      let max = 0.1;
+      let lastPeakIndex = 0, max = 0.1;
       for (let i = 0; i < data.length; i++) { if (data[i] > max) max = data[i] }
       for (let i = 0; i < data.length; i++) {
         if (data[i] > max - 0.1 && i - lastPeakIndex > sampleRate / 4) {
@@ -601,7 +586,7 @@
         }
       }
       const intervals = [];
-      for (let i = 1; i < peaks.length; i++) { intervals.push(peaks[i] - peaks[i - 1]) }
+      for (let i = 1; i < peaks.length; i++) intervals.push(peaks[i] - peaks[i - 1]);
       const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
       const value = Math.round((sampleRate / avgInterval) * 60);
       return isNaN(value) ? 0 : value;
@@ -615,7 +600,7 @@
           soundBank[newName] = {
             ...sound,
             context: clone, name: newName, loopParm: [0, 0], pauseTime: 0,
-            overlap: false, overlays: [], isBind: false, binds: {}
+            rateChange: [0,0], overlap: false, overlays: [], isBind: false, binds: {}
           };
           clone.play();
           clone.sourceNode.playbackRate.value = con.pitch;
@@ -623,6 +608,7 @@
           con.overlays.push(clone);
           clone.on("end", () => { delete soundBank[newName] });
         } else {
+          con.rateChange = [0,0];
           sound.play(0, sound.loop ? con.loopParm[0] : atTime);
           const srcNode = sound.sourceNode;
           this.patchLinks(srcNode, con);
@@ -636,6 +622,7 @@
           }
           if (sound.loop) this.loopParams({ NAME : con.name , START : con.loopParm[0], END : con.loopParm[1] });
         }
+        this.startHats({ name: con.name, type: "starts" });
       } catch {
         console.warn("Audio has not Loaded Yet, Ignore Next Error");
         sound.stop(); // Reset
@@ -647,12 +634,15 @@
       const src = ctx.sourceNode;
       if (type === "stop") {
         ctx.stop();
-        for (let i = 0; i < sound.overlays.length; i++) { sound.overlays[i].stop() }
+        for (let i = 0; i < sound.overlays.length; i++) sound.overlays[i].stop();
+        this.startHats({ name: sound.name, type: "stops" });
       } else if (type === "pause") {
         sound.pauseTime = src.context.currentTime;
         ctx.pause();
-        for (let i = 0; i < sound.overlays.length; i++) { sound.overlays[i].pause() }
+        for (let i = 0; i < sound.overlays.length; i++) sound.overlays[i].pause();
+        this.startHats({ name: sound.name, type: "stops" });
       } else {
+        this.startHats({ name: sound.name, type: "starts" });
         if (type === "play") ctx.play();
         else {
           if (!ctx.paused) return;
@@ -669,11 +659,42 @@
       }
     }
 
-    patchLinks(src, sound) {
+    currentTime(sound, ctx, src) {
+      if (!ctx.playing && !ctx.paused) return 0;
+      const rate = sound.pitch * sound.speed * Math.pow(2, sound.detune / 1200);
+      const leng = ctx.loop && sound.loopParm[1] ? sound.loopParm[1] : src.buffer.duration;
+      const loopStart = sound.loopParm[0];
+      const now = ctx.paused ? sound.pauseTime : src.context.currentTime;
+      let time = now - ctx.lastTimePlayed;
+      time = sound.rateChange[1] + ((time - sound.rateChange[0]) * rate);
+      if (ctx.loop) return Math.max(0, time % (leng - loopStart) + 0.00001) + loopStart;
+      return Math.min(leng, Math.max(0, time));
+    }
+
+    patchLinks(src, sound, optShifters) {
+      if (optShifters) {
+        const ctx = sound.context;
+        if (
+          optShifters[0] !== sound.pitch || optShifters[1] !== sound.detune || optShifters[2] !== sound.speed
+        ) sound.rateChange = [
+          this.currentTime(sound, ctx, src),
+          (ctx.paused ? sound.pauseTime : src.context.currentTime) - ctx.lastTimePlayed
+        ];
+      }
       src.playbackRate.value = sound.pitch;
       src.detune.value = sound.detune;
       src.gainSuccessor.gain.value = sound.gain;
       if (src.loop) this.loopParams({ NAME : sound.name , START : sound.loopParm[0], END : sound.loopParm[1] });
+    }
+
+    startHats(data) {
+      let newThreads = [];
+      runtime.allScriptsByOpcodeDo("SPtuneShark3_whenSound", (script, target) => {
+        const thread = runtime._pushThread(script.blockId, target);
+        thread.SPts3Data = data;
+        newThreads.push(thread);
+      });
+      return newThreads;
     }
 
     // Block Funcs
@@ -687,12 +708,13 @@
             engine.attack = 0;
             soundBank[args.NAME] = {
               context: engine, name: args.NAME, src: args.URL, effects: {}, pauseTime: 0,
-              loaded: true, reversed: false, vol: 100, gain: 1, pitch: 1, detune: 0, speed: 1, 
-              loopParm: [0, 0], overlap: false, overlays: [], isBind: false, binds: {}
+              rateChange: [0,0], loaded: true, reversed: false, vol: 100, gain: 1, pitch: 1,
+              detune: 0, speed: 1, loopParm: [0, 0], overlap: false, overlays: [],
+              isBind: false, binds: {}
             };
             resolve();
           } catch {
-            // File is Corrupted / Doesnt Exist / is a unedited Scratch Sound
+            // File is Corrupted/Doesnt Exist/is a unedited Scratch Sound
             alert("Tune Shark V3 Cant Import this Sound, File may be Corrupted or Non-Existent");
             resolve();
           }
@@ -701,15 +723,14 @@
     }
 
     async importMenu(args, util) {
-      const target = util.target.sprite;
-      const index = this.getSoundIndex(args.SOUND, target);
-      if (index < 0) return;
       if (runtime.isPackaged) {
         alert(`For "Import Scratch Sound" (Tune Shark) to Work, Disable "Remove raw asset data after loading to save RAM" under advanced settings in the packager.`);
         return;
       }
-      const sound = target.sounds[index].asset.encodeDataURI();
-      await this.importURL({ ...args, URL: sound }, util);
+      const name = Cast.toString(args.SOUND);
+      const target = util.target.sprite;
+      const sound = target.sounds.filter((i) => { return i.name === name })[0];
+      if (sound) await this.importURL({ ...args, URL: sound.asset.encodeDataURI() }, util);
     }
 
     async convertSound(args, util) {
@@ -749,15 +770,15 @@
 
     startSoundAt(args) {
       const sound = soundBank[args.NAME];
-      const time = Scratch.Cast.toNumber(args.TIME);
+      const time = Cast.toNumber(args.TIME);
       if (sound !== undefined) this.play(sound.context, time, sound);
     }
 
     async playAndStop(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
-      const time = Scratch.Cast.toNumber(args.TIME);
-      const max = Scratch.Cast.toNumber(args.MAX);
+      const time = Cast.toNumber(args.TIME);
+      const max = Cast.toNumber(args.MAX);
       this.play(sound.context, time, sound);
       await new Promise((resolve) => {
         setTimeout(() => {
@@ -809,7 +830,7 @@
       this.typeOverlay(sound, "stop");
       const node = sound.context.sourceNode;
       const reverseBuffer = (buffer) => {
-        for (let i = 0; i < buffer.numberOfChannels; i++) { buffer.getChannelData(i).reverse() }
+        for (let i = 0; i < buffer.numberOfChannels; i++) buffer.getChannelData(i).reverse();
         return buffer;
       }
       const bufferSource = node.context.createBufferSource();
@@ -822,8 +843,8 @@
       if (sound === undefined) return;
       sound.context.loop = true;
       const srcNode = sound.context.sourceNode;
-      srcNode.loopStart = Scratch.Cast.toNumber(args.START);
-      srcNode.loopEnd = Scratch.Cast.toNumber(args.END);
+      srcNode.loopStart = Cast.toNumber(args.START);
+      srcNode.loopEnd = Cast.toNumber(args.END);
       sound.loopParm = [srcNode.loopStart, srcNode.loopEnd];
     }
 
@@ -838,7 +859,7 @@
     }
 
     deleteAllSounds() {
-      for (let name in soundBank) this.deleteSound({ NAME: name });
+      for (let name in soundBank) this.deleteSound({ NAME: name })
     }
 
     allSounds() { return JSON.stringify(Object.keys(soundBank)) }
@@ -849,6 +870,11 @@
         if (innerSrc.context.playing) players.push(key);
       });
       return JSON.stringify(players);
+    }
+
+    whenSound(args, util) {
+      const data = util.thread.SPts3Data ?? {};
+      return args.CONTROL === data.type && args.NAME === data.name;
     }
 
     soundCheck(args) {
@@ -871,7 +897,7 @@
       if (sound === undefined) return 0;
       const src = sound.context.sourceNode;
       switch (args.PROP) {
-        case "length": return this.modTime(src.buffer.duration, sound);
+        case "length": return src.buffer.duration;
         case "current time": return this.currentTime(sound, sound.context, src);
         case "estimated bpm": return this.getBPM(src.buffer.getChannelData(0), src.buffer.sampleRate);
         case "source": return sound.src;
@@ -896,7 +922,7 @@
     getLoudTime(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return 0;
-      const time = Scratch.Cast.toNumber(args.TIME);
+      const time = Cast.toNumber(args.TIME);
       const duration = sound.context.sourceNode.buffer.duration;
       if (time < 0 || time > duration) return 0;
       const audioBuffer = sound.context.sourceNode.buffer;
@@ -934,7 +960,7 @@
         if (bestTau > 0) return sampleRate / bestTau;
         return 0;
       } else {
-        for (let i = startSample; i < endSample; i++) { sample += channelData[i] * channelData[i] }
+        for (let i = startSample; i < endSample; i++) sample += channelData[i] * channelData[i];
         const rms = Math.sqrt(sample / (endSample - startSample));
         const dB = 20 * Math.log10(rms);
         sample = Math.min(Math.max((dB + 50) / 50, 0), 1) * 100;
@@ -945,36 +971,42 @@
     setVol(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
-      sound.vol = Math.max(0, Scratch.Cast.toNumber(args.NUM));
+      sound.vol = Math.max(0, Cast.toNumber(args.NUM));
     }
 
     resetEffect(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
-      if (args.EFFECT === "all effects") {
+      const ctx = sound.context;
+      const effect = Cast.toString(args.EFFECT);
+      const name = effect.toUpperCase();
+      const ogShifters = [sound.pitch, sound.detune, sound.speed];
+      if (effect === "pitch") sound.pitch = 1;
+      else if (effect === "detune") sound.detune = 0;
+      else if (effect === "speed") sound.speed = 1;
+      else if (effect === "gain") sound.gain = 1;
+      else if (effect === "attack") sound.context.attack = 0;
+      else if (effect === "release") sound.context.release = 0;
+      else if (effect === "all effects") {
+        sound.pitch = 1; sound.detune = 0; sound.speed = 1;
+        sound.gain = 1; sound.context.attack = 0; sound.context.release = 0;
         const effects = sound.effects;
-        Object.keys(effects).forEach(key => { sound.context.removeEffect(effects[key]) });
+        Object.keys(effects).forEach(key => { ctx.removeEffect(effects[key]) });
         sound.effects = {};
       }
-      if (args.EFFECT === "all effects" || args.EFFECT === "pitch") sound.pitch = 1;
-      if (args.EFFECT === "all effects" || args.EFFECT === "detune") sound.detune = 0;
-      if (args.EFFECT === "all effects" || args.EFFECT === "speed") sound.speed = 1;
-      if (args.EFFECT === "all effects" || args.EFFECT === "gain") sound.gain = 1;
-      if (args.EFFECT === "all effects" || args.EFFECT === "attack") sound.context.attack = 0;
-      if (args.EFFECT === "all effects" || args.EFFECT === "release") sound.context.release = 0;
-      const name = args.EFFECT.toUpperCase();
       if (sound.effects[name] !== undefined) {
-        sound.context.removeEffect(sound.effects[name]);
+        ctx.removeEffect(sound.effects[name]);
         delete sound.effects[name];
       }
-      this.patchLinks(sound.context.sourceNode, sound);
+      this.patchLinks(ctx.sourceNode, sound, ogShifters);
     }
 
-    setThing(args) { this.setThingNew(args) }
     setThingNew(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
-      const value = Scratch.Cast.toNumber(args.VALUE) / 100;
+      const ctx = sound.context;
+      const value = Cast.toNumber(args.VALUE) / 100;
+      const ogShifters = [sound.pitch, sound.detune, sound.speed];
       if (args.TYPE === "pitch") sound.pitch = Math.max(0, value + 1);
       else if (args.TYPE === "detune") sound.detune = value * 1000;
       else if (args.TYPE === "speed") sound.speed = Math.max(0, value);
@@ -988,15 +1020,15 @@
         const distort = new Pizzicato.Effects.Distortion({ gain: value });
         return this.updateEffect(distort, sound, "DISTORTION", args);
       }
-      this.patchLinks(sound.context.sourceNode, sound);
+      this.patchLinks(ctx.sourceNode, sound, ogShifters);
     }
 
     setReverb(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
       const reverb = new Pizzicato.Effects.Reverb({
-        time: Scratch.Cast.toNumber(args.TIME) / 10, decay: Scratch.Cast.toNumber(args.DECAY) / 10,
-        mix: Scratch.Cast.toNumber(args.MIX) / 100,
+        time: Cast.toNumber(args.TIME) / 10, decay: Cast.toNumber(args.DECAY) / 10,
+        mix: Cast.toNumber(args.MIX) / 100,
       });
       this.updateEffect(reverb, sound, "REVERB", args);
     }
@@ -1005,8 +1037,8 @@
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
       const delay = new Pizzicato.Effects.Delay({
-        time: Math.min(1, Math.max(0, Scratch.Cast.toNumber(args.TIME) / 100)),
-        decay: Scratch.Cast.toNumber(args.FEED) / 100, mix: Scratch.Cast.toNumber(args.MIX) / 100,
+        time: Math.min(1, Math.max(0, Cast.toNumber(args.TIME) / 100)),
+        decay: Cast.toNumber(args.FEED) / 100, mix: Cast.toNumber(args.MIX) / 100,
       });
       this.updateEffect(delay, sound, "DELAY", args);
     }
@@ -1015,11 +1047,11 @@
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
       const fuzz = new Pizzicato.Effects.Quadrafuzz({
-        lowGain: Math.min(1, Math.max(0, Scratch.Cast.toNumber(args.LOW) / 100)),
-        midLowGain: Math.min(1, Math.max(0, Scratch.Cast.toNumber(args.MED1) / 100)),
-        midHighGain: Math.min(1, Math.max(0, Scratch.Cast.toNumber(args.MED2) / 100)),
-        highGain: Math.min(1, Math.max(0, Scratch.Cast.toNumber(args.HIGH) / 100)),
-        mix: Scratch.Cast.toNumber(args.MIX) / 100
+        lowGain: Math.min(1, Math.max(0, Cast.toNumber(args.LOW) / 100)),
+        midLowGain: Math.min(1, Math.max(0, Cast.toNumber(args.MED1) / 100)),
+        midHighGain: Math.min(1, Math.max(0, Cast.toNumber(args.MED2) / 100)),
+        highGain: Math.min(1, Math.max(0, Cast.toNumber(args.HIGH) / 100)),
+        mix: Cast.toNumber(args.MIX) / 100
       });
       this.updateEffect(fuzz, sound, "FUZZ", args);
     }
@@ -1027,14 +1059,12 @@
     setBitcrush(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
-      /* NOTE: Bitcrusher uses "ScriptProcessorNode" wich is deprecated.
-        From what Ive tested and read online, ending support for this doesnt seem to be 
-        going anywhere. If a problem emerges we need to try and find a way to
-        use "AudioWorkletNodes" instead which is more complicated to use.
+      /* NOTE: Bitcrusher uses "ScriptProcessorNode"
+        despite being "deprecated" they are still widely used
       */
       const bitcrush = new Pizzicato.Effects.Bitcrusher({
-        bits: Math.max(10, Scratch.Cast.toNumber(args.BITS)) / 10,
-        frequency : Math.max(30000, Scratch.Cast.toNumber(args.FREQ))
+        bits: Math.max(10, Cast.toNumber(args.BITS)) / 10,
+        frequency : Math.max(30000, Cast.toNumber(args.FREQ))
       });
       this.updateEffect(bitcrush, sound, "BITCRUSH", args);
     }
@@ -1043,9 +1073,9 @@
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
       const distort = new Pizzicato.Effects.Tremolo({
-        speed: Scratch.Cast.toNumber(args.SPEED) / 5,
-        depth: Scratch.Cast.toNumber(args.DEPTH) / 100,
-        mix: Scratch.Cast.toNumber(args.MIX) / 100
+        speed: Cast.toNumber(args.SPEED) / 5,
+        depth: Cast.toNumber(args.DEPTH) / 100,
+        mix: Cast.toNumber(args.MIX) / 100
       });
       this.updateEffect(distort, sound, "TREMOLO", args);
     }
@@ -1053,7 +1083,7 @@
     setPass(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
-      const json = { frequency: Scratch.Cast.toNumber(args.FREQ), peak:Scratch.Cast.toNumber(args.PEAK) / 5 };
+      const json = { frequency: Cast.toNumber(args.FREQ), peak:Cast.toNumber(args.PEAK) / 5 };
       if (args.TYPE === "highpass") {
         const highpass = new Pizzicato.Effects.HighPassFilter(json);
         this.updateEffect(highpass, sound, "HIGHPASS", args);
@@ -1067,9 +1097,9 @@
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
       const flang = new Pizzicato.Effects.Flanger({
-        time: Scratch.Cast.toNumber(args.TIME) / 100, speed: Scratch.Cast.toNumber(args.SPEED) / 100,
-        depth: Scratch.Cast.toNumber(args.DEPTH) / 100, feedback: Scratch.Cast.toNumber(args.FEED) / 100,
-        mix: Scratch.Cast.toNumber(args.MIX) / 100
+        time: Cast.toNumber(args.TIME) / 100, speed: Cast.toNumber(args.SPEED) / 100,
+        depth: Cast.toNumber(args.DEPTH) / 100, feedback: Cast.toNumber(args.FEED) / 100,
+        mix: Cast.toNumber(args.MIX) / 100
       });
       this.updateEffect(flang, sound, "FLANGER", args);
     }
@@ -1078,9 +1108,9 @@
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
       const compress = new Pizzicato.Effects.Compressor({
-        threshold: Math.min(0, Math.max(-100, Scratch.Cast.toNumber(args.THRESH) * -1)),
-        ratio: Scratch.Cast.toNumber(args.RATIO) / 5, attack: Math.min(0, Math.max(1, Scratch.Cast.toNumber(args.ATTACK) / 100)),
-        release: Math.min(0, Math.max(1, Scratch.Cast.toNumber(args.RELEASE) / 100)), knee: Scratch.Cast.toNumber(args.KNEE) / 2.5
+        threshold: Math.min(0, Math.max(-100, Cast.toNumber(args.THRESH) * -1)),
+        ratio: Cast.toNumber(args.RATIO) / 5, attack: Math.min(0, Math.max(1, Cast.toNumber(args.ATTACK) / 100)),
+        release: Math.min(0, Math.max(1, Cast.toNumber(args.RELEASE) / 100)), knee: Cast.toNumber(args.KNEE) / 2.5
       });
       this.updateEffect(compress, sound, "COMPRESSOR", args);
     }
@@ -1089,11 +1119,11 @@
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
       const equalizer = new Pizzicato.Effects.ThreeBandEqualizer({
-        cutoff_frequency_high: 12000 + (Scratch.Cast.toNumber(args.CUT_HIGH) * 120),
-        cutoff_frequency_low: 12000 + (Scratch.Cast.toNumber(args.CUT_LOW) * 120),
-        low_band_gain: Scratch.Cast.toNumber(args.LOW) / 10,
-        mid_band_gain: Scratch.Cast.toNumber(args.MID) / 10,
-        high_band_gain: Scratch.Cast.toNumber(args.HIGH) / 10
+        cutoff_frequency_high: 12000 + (Cast.toNumber(args.CUT_HIGH) * 120),
+        cutoff_frequency_low: 12000 + (Cast.toNumber(args.CUT_LOW) * 120),
+        low_band_gain: Cast.toNumber(args.LOW) / 10,
+        mid_band_gain: Cast.toNumber(args.MID) / 10,
+        high_band_gain: Cast.toNumber(args.HIGH) / 10
       });
       this.updateEffect(equalizer, sound, "EQUALIZER", args);
     }
