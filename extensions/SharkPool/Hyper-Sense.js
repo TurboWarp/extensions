@@ -3,7 +3,7 @@
 // Description: Cool New Sensing Blocks
 // By: SharkPool
 
-// Version 3.0.1 (TW Ver)
+// Version 3.0.2 (TW Ver)
 
 (function (Scratch) {
   "use strict";
@@ -17,14 +17,14 @@
   const render = vm.renderer;
 
   let curPressKey = null, pressedKeys = {};
-  let mousePos = [0, 0, 0, 0], scrollDist = 0, oldScroll = [0, 0, 0];
+  let mousePos = [0, 0, 0, 0], scrollDist = 0, oldScroll = [0, 0];
   let publicVars = {}, askAs = "sprite", loudnessArray = [];
 
   class HyperSenseSP {
     constructor() {
       runtime.on("BEFORE_EXECUTE", () => {
         runtime.startHats("HyperSenseSP_whenKeyPressed");
-        oldScroll[2] += (0 - oldScroll[2]) / 4;
+        oldScroll[1] += (0 - oldScroll[1]) / 4;
         mousePos[2] += (0 - mousePos[2]) / 3;
         mousePos[3] += (0 - mousePos[3]) / 3;
         Object.keys(pressedKeys).forEach(key => { pressedKeys[key] += 0.1 });
@@ -432,7 +432,7 @@
 
     handleScroll = (event) => {
       scrollDist += event.deltaY;
-      oldScroll[2] = event.deltaY;
+      oldScroll[1] = event.deltaY;
       if (this.scrollWheelBool({ EVENT:"up", SECRET: true })) runtime.startHats("HyperSenseSP_scrollWheelHat", { EVENT: "up" });
       if (this.scrollWheelBool({ EVENT:"down", SECRET: true })) runtime.startHats("HyperSenseSP_scrollWheelHat", { EVENT: "down" });
     };
@@ -464,15 +464,23 @@
 
     // Block Funcs
     monitorScrollWheel() { return scrollDist }
-    scrollVel() { return oldScroll[2] * -1 }
+    scrollVel() { return oldScroll[1] * -1 }
 
     setScrollDistance(args) { scrollDist = Scratch.Cast.toNumber(args.DISTANCE) }
     changeScrollDistance(args) { scrollDist += Scratch.Cast.toNumber(args.DISTANCE) }
 
-    scrollWheelBool(args) {
-      const i = args.SECRET ? 0 : 1;
-      const status = args.EVENT === "down" ? scrollDist > oldScroll[i] : scrollDist < oldScroll[i];
-      if (status) oldScroll[i] = scrollDist;
+    scrollWheelBool(args, util) {
+      let oldVal;
+      if (args.SECRET) oldVal = oldScroll[0];
+      else {
+        if (util.thread.stackFrames[0].oldVal === undefined) util.thread.stackFrames[0].oldVal = 0;
+        oldVal = util.thread.stackFrames[0].oldVal;
+      }
+      const status = args.EVENT === "down" ? scrollDist > oldVal : scrollDist < oldVal;
+      if (status) {
+        if (args.SECRET) oldScroll[0] = scrollDist;
+        else util.thread.stackFrames[0].oldVal = scrollDist;
+      }
       return Scratch.Cast.toBoolean(status);
     }
 
