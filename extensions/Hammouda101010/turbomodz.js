@@ -20,7 +20,7 @@
   // @ts-ignore
 
   // Proxies
-  const cors_proxy = "https://corsproxy.io/?";
+  // const cors_proxy = "https://api.codetabs.com/v1/proxy?quest="
 
   // Credits to Runtime Values
   const TURBO_MODE = "turbo mode";
@@ -286,7 +286,7 @@
   };
 
   const addSprite = async (spriteUrl, util) => {
-    const url = cors_proxy + encodeURIComponent(Cast.toString(spriteUrl));
+    const url = spriteUrl
 
     try {
       const response = await Scratch.fetch(url);
@@ -315,9 +315,7 @@
     const targetId = util.target.id;
     const assetName = Cast.toString(name);
 
-    const res = await Scratch.fetch(
-      cors_proxy + encodeURIComponent(Cast.toString(url))
-    );
+    const res = await Scratch.fetch(url);
     const blob = await res.blob();
 
     if (!(typeIsBitmap(blob.type) || blob.type === "image/svg+xml")) {
@@ -369,9 +367,7 @@
     const targetId = util.target.id;
     const assetName = Cast.toString(name);
 
-    const res = await Scratch.fetch(
-      cors_proxy + encodeURIComponent(Cast.toString(url))
-    );
+    const res = await Scratch.fetch(url);
     const buffer = await res.arrayBuffer();
 
     const storage = runtime.storage;
@@ -1154,8 +1150,12 @@
 
     unLoadMod(util) {
       const targets = runtime.targets;
-      for (let target in targets) {
-        console.log(target);
+      for (const target of targets) {
+        if (target.isOriginal && !target.isStage) {
+          if(target.sprite.name.includes("Mod//")){
+            vm.deleteSprite(target.id);
+          }
+        }
       }
       loadedMod = false;
     }
