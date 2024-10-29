@@ -3,7 +3,7 @@
 // Description: New Powerful Message Blocks that work with Vanilla Blocks!
 // By: SharkPool
 
-// Version 1.3.0
+// Version 1.3.1
 
 (function (Scratch) {
   "use strict";
@@ -19,7 +19,7 @@
   // TODO: _all_ is not actually a reserved value
   const ALL = "_all_", STAGE = "_stage_", MYSELF = "_myself_", MYSELF2 = "_myselfOnly_";
 
-  let nonRestartedMsgs = [];
+  let nonRestartedMsgs = [], threadedMsgs = [];
 
   const ogStartHats = runtime.startHats;
   runtime.startHats = function (opcode, fields, target) {
@@ -44,7 +44,10 @@
   const ogRestartThread = runtime._restartThread;
   runtime._restartThread = function (thread) {
     const name = thread[kMessageName];
-    if (name && nonRestartedMsgs.indexOf(name) > -1) return thread;
+    if (name) {
+      if (threadedMsgs.indexOf(name) > -1) return runtime._pushThread(thread.topBlock, thread.target);
+      else if (nonRestartedMsgs.indexOf(name) > -1) return thread;
+    }
     return ogRestartThread.call(this, thread);
   };
 
@@ -232,6 +235,17 @@
             },
           },
           {
+            opcode: "toggleOverlap",
+            blockType: Scratch.BlockType.COMMAND,
+            extensions: ["colours_event"],
+            hideFromPalette: true,
+            text: Scratch.translate("set script overlap for [BROADCAST_OPTION] to [TOGGLE]"),
+            arguments: {
+              BROADCAST_OPTION: { type: null },
+              TOGGLE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" }
+            },
+          },
+          {
             blockType: Scratch.BlockType.XML,
             xml: `
               <block type="SPmessagePlus_isReceived"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value></block>
@@ -239,6 +253,7 @@
               <block type="SPmessagePlus_receivers"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value></block>
               <sep gap="36"/>
               <block type="SPmessagePlus_toggleRestart"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TOGGLE"><shadow type="SPmessagePlus_TOGGLE_menu"></shadow></value></block>
+              <block type="SPmessagePlus_toggleOverlap"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TOGGLE"><shadow type="SPmessagePlus_TOGGLE_menu"></shadow></value></block>
             `,
           },
           { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Slower than Normal 'when I receive'") },
@@ -532,6 +547,13 @@
       const index = nonRestartedMsgs.indexOf(msg);
       if (args.TOGGLE === "on" && index > -1) nonRestartedMsgs.splice(index, 1);
       else if (args.TOGGLE === "off" && index === -1) nonRestartedMsgs.push(msg);
+    }
+
+    toggleOverlap(args) {
+      const msg = Scratch.Cast.toString(args.BROADCAST_OPTION).toUpperCase();
+      const index = threadedMsgs.indexOf(msg);
+      if (args.TOGGLE === "on" && index > -1) threadedMsgs.push(msg);
+      else if (args.TOGGLE === "off" && index === -1) threadedMsgs.splice(index, 1);
     }
 
     whenReceived(args, util) {
