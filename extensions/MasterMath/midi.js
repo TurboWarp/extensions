@@ -25,16 +25,23 @@
     function onSuccess(midiAccess) {
       midiAccess.onstatechange = (event) => {
         if (event.port.state == "connected") {
-          midiInputDevices.push([
-            `[id: "${event.port.id}"` + ` name: "${event.port.name}"]`,
-          ]);
+          midiInputDevices.push(
+            `[id: "${event.port.id}" name: "${event.port.name}"]`
+          );
           midiDeviceInfo.push([event.port.id, event.port.name]);
         } else if (event.port.state == "disconnected") {
-          midiInputDevices.splice(
-            [`[id: "${event.port.id}"` + ` name: "${event.port.name}"]`],
-            1
+          // Find and remove from midiInputDevices
+          const inputIndex = midiInputDevices.findIndex(
+            (item) =>
+              item === `[id: "${event.port.id}" name: "${event.port.name}"]`
           );
-          midiDeviceInfo.splice([event.port.id, event.port.name]);
+          if (inputIndex !== -1) midiInputDevices.splice(inputIndex, 1);
+
+          // Find and remove from midiDeviceInfo
+          const infoIndex = midiDeviceInfo.findIndex(
+            (item) => item[0] === event.port.id
+          );
+          if (infoIndex !== -1) midiDeviceInfo.splice(infoIndex, 1);
         }
       };
 
