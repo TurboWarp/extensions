@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.2.0.0
+// Version V.2.0.01
 
 (function (Scratch) {
   "use strict";
@@ -51,10 +51,11 @@
         doForEachAnimation((anim) => { anim.playing = false });
       });
       runtime.on("AFTER_EXECUTE", () => {
+        if (runtime.ioDevices.clock._paused) return;
         doForEachAnimation((anim) => {
           if (anim.playing) {
             const isReverse = anim.playType === 2 || anim.playType === 4;
-            anim.timer += anim.fps / 1000;
+            anim.timer += 0.01;
             if (anim.timer > anim.buffer) {
               anim.buffer += anim.fps / 1000;
               if (isReverse) anim.currentFrame--;
