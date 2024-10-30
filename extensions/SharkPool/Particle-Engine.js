@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.0
+// Version V.1.0.1
 
 (function (Scratch) {
   "use strict";
@@ -42,6 +42,8 @@
     sCol: { val: { h: 0.83, s: 1, l: 0.5 }, inf: 0 }, eCol: { val: { h: 0.5, s: 1, l: 0.5 }, inf: 0 }
   };
   let defaultTexture, tabBlured = false;
+  let deltaTime = 0, prevTime = 0;
+
   const allEngines = {};
 
   // Util Funcs
@@ -185,7 +187,10 @@
     const skinId = render._nextSkinId++;
     const skin = new particleSkin(skinId, render);
     render._allSkins[skinId] = skin;
-    const engine = { drawableId, drawable, skinId, skin, canvas, ctx, target, emitters: {}, data: {} };
+    const engine = {
+      drawableId, drawable, skinId, skin, canvas, ctx, target,
+      emitters: {}, data: {}, interpolate: false
+    };
 
     target[engineTag] = engine;
     allEngines[targetName] = engine;
@@ -211,8 +216,8 @@
     delete allEngines[target.getName()];
   };
 
-  const updateEngine = (engine) => {
-    const { canvas, ctx, emitters, data } = engine;
+  const updateEngine = (engine, fps) => {
+    const { canvas, ctx, emitters, data, interpolate } = engine;
     const { width, height } = canvas;
     ctx.clearRect(0, 0, width, height);
     for (const key in emitters) {
@@ -220,6 +225,7 @@
       const { texture, pos, opts } = emitter;
       emitter.frameCnt++;
       if (!texture) continue;
+      const delta = interpolate ? deltaTime * fps : 1;
       const maxP = Math.round(rng(opts.maxP.val, opts.maxP.inf));
       const emit = (maxP + 1) - Math.round(rng(opts.emission.val, opts.emission.inf));
       const rPos = [pos[0] - (texture.width / 4), pos[1] + (texture.height / 4)];
@@ -254,10 +260,10 @@
         const tanAccelX = Math.cos(tanAngle) * accelTan * ind;
         const tanAccelY = Math.sin(tanAngle) * accelTan * ind;
   
-        particle.x += Math.cos((dir * Math.PI) / 180) * particle.speed + radAccelX + tanAccelX;
-        particle.y += Math.sin((dir * Math.PI) / 180) * particle.speed + radAccelY + tanAccelY;
-        particle.x -= particle.gravX * ind;
-        particle.y -= particle.gravY * ind;
+        particle.x += (Math.cos((dir * Math.PI) / 180) * particle.speed + radAccelX + tanAccelX) * delta;
+        particle.y += (Math.sin((dir * Math.PI) / 180) * particle.speed + radAccelY + tanAccelY) * delta;
+        particle.x -= particle.gravX * ind * delta;
+        particle.y -= particle.gravY * ind * delta;
 
         let opacity = 1;
         if (ind < fIn) opacity = ind / fIn;
@@ -269,7 +275,7 @@
         const brightness = 0.299 * shifted.r + 0.587 * shifted.g + 0.114 * shifted.b;
   
         particle.ind++;
-        particle.life -= 0.01;
+        particle.life -= 0.01 * delta;
         if (particle.life <= 0) {
           data[key].splice(i, 1);
           continue;
@@ -286,11 +292,13 @@
           texture.height * particle.size * Math.abs(particle.streX)
         );
         ctx.restore();
-        particle.dir += (eDir - particle.dir) / conLife;
-        particle.spin += (eSpin - particle.spin) / conLife;
-        particle.size += (eSize - particle.size) / conLife;
-        particle.streX += (eStreX - particle.streX) / conLife;
-        particle.streY += (eStreY - particle.streY) / conLife;
+
+        const deltaFactor = delta / conLife;
+        particle.dir += (eDir - particle.dir) * deltaFactor;
+        particle.spin += (eSpin - particle.spin) * deltaFactor;
+        particle.size += (eSize - particle.size) * deltaFactor;
+        particle.streX += (eStreX - particle.streX) * deltaFactor;
+        particle.streY += (eStreY - particle.streY) * deltaFactor;
       }
     }
   };
@@ -311,12 +319,30 @@
 
   window.addEventListener("focus", () => { tabBlured = false });
   window.addEventListener("blur", () => { tabBlured = true });
+  runtime.on("BEFORE_EXECUTE", () => {
+    const now = performance.now();
+    deltaTime = prevTime === 0 ? 0 : (now - prevTime) / 1000;
+    prevTime = now;
+  });
   runtime.on("AFTER_EXECUTE", () => {
     if (tabBlured || runtime.ioDevices.clock._paused) return;
+    const fps = runtime.frameLoop.framerate;
+    const frameTime = 1000 / fps;
     const engines = Object.values(allEngines);
     for (let i = 0; i < engines.length; i++) {
       const engine = engines[i];
-      updateEngine(engine);
+      let remainingTime = deltaTime * 1000;
+      if (engine.interpolate) {
+        const updatesNeeded = Math.floor(remainingTime / frameTime);
+        for (let j = 0; j < updatesNeeded; j++) {
+          updateEngine(engine, fps);
+          remainingTime -= frameTime;
+          if (remainingTime < frameTime) break;
+        }
+        if (remainingTime > 0) updateEngine(engine, fps);
+      } else {
+        updateEngine(engine, fps);
+      }
       engine.skin.setContent(engine.canvas);
     }
   });
@@ -402,6 +428,16 @@
             text: "[TARGET] engine layer",
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            },
+          },
+          "---",
+          {
+            opcode: "setEngineOpt",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set interpolation in [TARGET] engine [TYPE]",
+            arguments: {
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "ALL_TARG" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLER" }
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Emitters" },
@@ -520,6 +556,7 @@
           ACTION: ["created", "visible"],
           VISIBLE: ["show", "hide"],
           POS: ["x", "y"],
+          TOGGLER: ["on", "off"],
           TEXTURES: {
             acceptReporters: true, items: ["circle", "square", "triangle", "star"]
           },
@@ -633,6 +670,11 @@
     getLayer(args) {
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) return render.getDrawableOrder(target[engineTag].drawableId);
+    }
+
+    setEngineOpt(args) {
+      const target = this.getSprite(args.TARGET);
+      if (target && target[engineTag]) target[engineTag].interpolate = args.TYPE === "on";
     }
 
     createEmitter(args) {
