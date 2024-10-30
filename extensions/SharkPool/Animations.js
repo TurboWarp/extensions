@@ -2,8 +2,9 @@
 // ID: SPanimations
 // Description: Play Animations for your Sprites
 // By: SharkPool
+// Licence: MIT
 
-// Version V.1.5.0
+// Version V.2.0.0
 
 (function (Scratch) {
   "use strict";
@@ -11,27 +12,77 @@
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
-  let allAnimations = [];
-  let keyFramesPlaying = [];
+  const render = vm.renderer;
+  const specialID = `SPspecialID${Math.random()}`;
+  const playTypes = {
+    "normally": 1,
+    "in reverse": 2,
+    "looped normally": 3,
+    "looped reversed": 4
+  };
+
+  let allAnimations = {};
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMjcuNTA5OTIiIGhlaWdodD0iMTI3LjUwOTkyIiB2aWV3Qm94PSIwLDAsMTI3LjUwOTkyLDEyNy41MDk5MiI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE3Ni4yNDUwNCwtMTE2LjI0NTA0KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMTc2LjI0NTA0LDE4MGMwLC0zNS4yMTA4OSAyOC41NDQwNywtNjMuNzU0OTYgNjMuNzU0OTYsLTYzLjc1NDk2YzM1LjIxMDg5LDAgNjMuNzU0OTYsMjguNTQ0MDcgNjMuNzU0OTYsNjMuNzU0OTZjMCwzNS4yMTA4OSAtMjguNTQ0MDcsNjMuNzU0OTYgLTYzLjc1NDk2LDYzLjc1NDk2Yy0zNS4yMTA4OSwwIC02My43NTQ5NiwtMjguNTQ0MDcgLTYzLjc1NDk2LC02My43NTQ5NnoiIGZpbGw9IiM0NDQ0NDQiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIi8+PHBhdGggZD0iTTE4Mi4xMTk0OSwxODBjMCwtMzEuOTY2NTMgMjUuOTEzOTksLTU3Ljg4MDUxIDU3Ljg4MDUxLC01Ny44ODA1MWMzMS45NjY1MywwIDU3Ljg4MDUxLDI1LjkxMzk5IDU3Ljg4MDUxLDU3Ljg4MDUxYzAsMzEuOTY2NTMgLTI1LjkxMzk5LDU3Ljg4MDUxIC01Ny44ODA1MSw1Ny44ODA1MWMtMzEuOTY2NTMsMCAtNTcuODgwNTEsLTI1LjkxMzk5IC01Ny44ODA1MSwtNTcuODgwNTF6IiBmaWxsPSIjN2E3YTdhIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIvPjxwYXRoIGQ9Ik0xOTkuOTQwMTEsMjA2Ljc3NDU5Yy01LjYxMjgsLTguMTI0OCAtMy41NzY0MywtMTkuMjYxMzMgNC41NDgzNywtMjQuODc0MTRjOC4xMjQ4LC01LjYxMjggMTkuMjYxMzMsLTMuNTc2NDMgMjQuODc0MTMsNC41NDgzN2M1LjYxMjgsOC4xMjQ4IDMuNTc2NDMsMTkuMjYxMzMgLTQuNTQ4MzYsMjQuODc0MTRjLTguMTI0OCw1LjYxMjggLTE5LjI2MTMzLDMuNTc2NDMgLTI0Ljg3NDE0LC00LjU0ODM3eiIgZmlsbD0iIzg5ODk4OSIgc3Ryb2tlPSIjN2E3YTdhIiBzdHJva2Utd2lkdGg9IjIuNSIvPjxwYXRoIGQ9Ik0yMDQuMzU1MDMsMTk2LjU4ODg2Yy02LjMzMDY1LC05LjE2MzkyIC00LjAzMzg0LC0yMS43MjQ3NSA1LjEzMDA4LC0yOC4wNTU0YzkuMTYzOTIsLTYuMzMwNjUgMjEuNzI0NzUsLTQuMDMzODQgMjguMDU1NCw1LjEzMDA4YzYuMzMwNjUsOS4xNjM5MiA0LjAzMzg0LDIxLjcyNDc1IC01LjEzMDA4LDI4LjA1NTRjLTkuMTYzOTIsNi4zMzA2NSAtMjEuNzI0NzUsNC4wMzM4NCAtMjguMDU1NDEsLTUuMTMwMDh6IiBmaWxsPSIjOWQ5ZDlkIiBzdHJva2U9IiM3YTdhN2EiIHN0cm9rZS13aWR0aD0iMi41Ii8+PHBhdGggZD0iTTIxMi4zOTAwMiwxODkuNTcyNTVjLTcuNDE2MTIsLTEwLjczNTE4IC00LjcyNTQ4LC0yNS40NDk3MSA2LjAwOTcsLTMyLjg2NTgyYzEwLjczNTE4LC03LjQxNjEyIDI1LjQ0OTcxLC00LjcyNTQ5IDMyLjg2NTgyLDYuMDA5NjljNy40MTYxMiwxMC43MzUxOCA0LjcyNTQ4LDI1LjQ0OTcxIC02LjAwOTY5LDMyLjg2NTgzYy0xMC43MzUxOCw3LjQxNjEyIC0yNS40NDk3MSw0LjcyNTQ4IC0zMi44NjU4MywtNi4wMDk2OXoiIGZpbGw9IiNhZWFlYWUiIHN0cm9rZT0iIzdhN2E3YSIgc3Ryb2tlLXdpZHRoPSIyLjUiLz48cGF0aCBkPSJNMjIzLjU1NTkxLDE4NS43NzU4OWMtOC4wMzQxMiwtMTEuNjI5NzcgLTUuMTE5MjcsLTI3LjU3MDUyIDYuNTEwNSwtMzUuNjA0NjRjMTEuNjI5NzcsLTguMDM0MTIgMjcuNTcwNTIsLTUuMTE5MjcgMzUuNjA0NjQsNi41MTA1YzguMDM0MTIsMTEuNjI5NzcgNS4xMTkyNywyNy41NzA1MiAtNi41MTA1LDM1LjYwNDY0Yy0xMS42Mjk3Nyw4LjAzNDEyIC0yNy41NzA1Miw1LjExOTI3IC0zNS42MDQ2NCwtNi41MTA1eiIgZmlsbD0iI2JhYmFiYSIgc3Ryb2tlPSIjN2E3YTdhIiBzdHJva2Utd2lkdGg9IjIuNSIvPjxwYXRoIGQ9Ik0yMzEuOTYyODUsMTg5LjYxOTY5Yy04LjgyODcxLC0xMi43Nzk5NyAtNS42MjU1OCwtMzAuMjk3MjcgNy4xNTQzOSwtMzkuMTI1OTdjMTIuNzc5OTcsLTguODI4NzEgMzAuMjk3MjcsLTUuNjI1NTggMzkuMTI1OTcsNy4xNTQzOWM4LjgyODcxLDEyLjc3OTk3IDUuNjI1NTgsMzAuMjk3MjcgLTcuMTU0MzksMzkuMTI1OTdjLTEyLjc3OTk3LDguODI4NzEgLTMwLjI5NzI3LDUuNjI1NTggLTM5LjEyNTk3LC03LjE1NDM5eiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiLz48L2c+PC9nPjwvc3ZnPg==";
-
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjcuNTEiIGhlaWdodD0iMTI3LjUxIiB2aWV3Qm94PSIwIDAgMTI3LjUxIDEyNy41MSI+PHBhdGggZD0iTTAgNjMuNzU1QzAgMjguNTQ1IDI4LjU0NCAwIDYzLjc1NSAwczYzLjc1NSAyOC41NDQgNjMuNzU1IDYzLjc1NS0yOC41NDQgNjMuNzU1LTYzLjc1NSA2My43NTVTMCA5OC45NjYgMCA2My43NTUiIGZpbGw9IiM0NDQiLz48cGF0aCBkPSJNNS44NzUgNjMuNzU1YzAtMzEuOTY3IDI1LjkxMy01Ny44OCA1Ny44OC01Ny44OHM1Ny44OCAyNS45MTMgNTcuODggNTcuODgtMjUuOTEzIDU3Ljg4LTU3Ljg4IDU3Ljg4LTU3Ljg4LTI1LjkxMy01Ny44OC01Ny44OCIgZmlsbD0iIzdhN2E3YSIvPjxwYXRoIGQ9Ik0yMy42OTUgOTAuNTNjLTUuNjEzLTguMTI1LTMuNTc2LTE5LjI2MiA0LjU0OC0yNC44NzVzMTkuMjYyLTMuNTc2IDI0Ljg3NSA0LjU0OSAzLjU3NiAxOS4yNjEtNC41NDkgMjQuODc0LTE5LjI2MSAzLjU3Ni0yNC44NzQtNC41NDh6IiBmaWxsPSIjODk4OTg5IiBzdHJva2U9IiM3YTdhN2EiIHN0cm9rZS13aWR0aD0iMi41Ii8+PHBhdGggZD0iTTI4LjExIDgwLjM0NGMtNi4zMy05LjE2NC00LjAzNC0yMS43MjUgNS4xMy0yOC4wNTZzMjEuNzI1LTQuMDMzIDI4LjA1NiA1LjEzIDQuMDMzIDIxLjcyNS01LjEzIDI4LjA1Ni0yMS43MjUgNC4wMzQtMjguMDU2LTUuMTN6IiBmaWxsPSIjOWQ5ZDlkIiBzdHJva2U9IiM3YTdhN2EiIHN0cm9rZS13aWR0aD0iMi41Ii8+PHBhdGggZD0iTTM2LjE0NSA3My4zMjhjLTcuNDE2LTEwLjczNi00LjcyNS0yNS40NSA2LjAxLTMyLjg2NnMyNS40NS00LjcyNiAzMi44NjYgNi4wMWM3LjQxNiAxMC43MzUgNC43MjUgMjUuNDUtNi4wMSAzMi44NjVzLTI1LjQ1IDQuNzI2LTMyLjg2Ni02LjAxeiIgZmlsbD0iI2FlYWVhZSIgc3Ryb2tlPSIjN2E3YTdhIiBzdHJva2Utd2lkdGg9IjIuNSIvPjxwYXRoIGQ9Ik00Ny4zMTEgNjkuNTMxYy04LjAzNC0xMS42My01LjEyLTI3LjU3IDYuNTEtMzUuNjA1czI3LjU3LTUuMTE5IDM1LjYwNSA2LjUxYzguMDM0IDExLjYzIDUuMTIgMjcuNTcxLTYuNTEgMzUuNjA1LTExLjYzIDguMDM1LTI3LjU3MSA1LjEyLTM1LjYwNS02LjUxeiIgZmlsbD0iI2JhYmFiYSIgc3Ryb2tlPSIjN2E3YTdhIiBzdHJva2Utd2lkdGg9IjIuNSIvPjxwYXRoIGQ9Ik01NS43MTggNzMuMzc1Yy04LjgyOS0xMi43OC01LjYyNi0zMC4yOTggNy4xNTQtMzkuMTI2IDEyLjc4LTguODI5IDMwLjI5OC01LjYyNiAzOS4xMjYgNy4xNTQgOC44MjkgMTIuNzggNS42MjYgMzAuMjk3LTcuMTU0IDM5LjEyNnMtMzAuMjk3IDUuNjI2LTM5LjEyNi03LjE1NCIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==";
   const blockIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI4NS4zMzE1MyIgaGVpZ2h0PSI4NS4zMzE1MyIgdmlld0JveD0iMCwwLDg1LjMzMTUzLDg1LjMzMTUzIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTk3LjMzNDIzLC0xMzcuMzM0MjQpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjgyLjY2NTc2LDEzNy4zMzQyNHY4NS4zMzE1M2gtODUuMzMxNTN2LTg1LjMzMTUzeiIgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aW5kZXgmcXVvdDs6bnVsbH0iIGZpbGw9IiM3YTdhN2EiLz48cGF0aCBkPSJNMjUyLjMwNDA3LDE2Mi42OTU5NWMyLjc2MTQzLDAgNSwyLjIzODU3IDUsNXY0MC40NTkyYzAsMi43NjE0MyAtMi4yMzg1OCw1IC01LDVoLTQwLjQ1OTJjLTIuNzYxNDMsMCAtNSwtMi4yMzg1NyAtNSwtNXYtNDAuNDU5MmMwLC0yLjc2MTQzIDIuMjM4NTcsLTUgNSwtNXoiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBmaWxsPSIjOTI5MjkyIi8+PHBhdGggZD0iTTI2MC4yMjk2LDE1NC43NzA0MmMyLjc2MTQyLDAgNSwyLjIzODU3IDUsNXY0MC40NTkyYzAsMi43NjE0MyAtMi4yMzg1OCw1IC01LDVoLTQwLjQ1OTJjLTIuNzYxNDMsMCAtNSwtMi4yMzg1NyAtNSwtNXYtNDAuNDU5MmMwLC0yLjc2MTQzIDIuMjM4NTcsLTUgNSwtNXoiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBmaWxsPSIjYzBjMGMwIi8+PHBhdGggZD0iTTI2OC4xNTUxMywxNDYuODQ0ODljMi43NjE0MiwwIDUsMi4yMzg1OCA1LDV2NDAuNDU5MmMwLDIuNzYxNDIgLTIuMjM4NTgsNSAtNSw1aC00MC40NTkyYy0yLjc2MTQyLDAgLTUsLTIuMjM4NTggLTUsLTV2LTQwLjQ1OTJjMCwtMi43NjE0MiAyLjIzODU4LC01IDUsLTV6IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgZmlsbD0iI2ZmZmZmZiIvPjwvZz48L2c+PC9zdmc+";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NS4zMzIiIGhlaWdodD0iODUuMzMyIiB2aWV3Qm94PSIwIDAgODUuMzMyIDg1LjMzMiI+PHBhdGggZD0iTTU0Ljk3IDI1LjM2MmE1IDUgMCAwIDEgNSA1djQwLjQ2YTUgNSAwIDAgMS01IDVIMTQuNTFhNSA1IDAgMCAxLTUtNXYtNDAuNDZhNSA1IDAgMCAxIDUtNXoiIGZpbGw9IiM5MjkyOTIiLz48cGF0aCBkPSJNNjIuODk2IDE3LjQzNmE1IDUgMCAwIDEgNSA1djQwLjQ2YTUgNSAwIDAgMS01IDVoLTQwLjQ2YTUgNSAwIDAgMS01LTV2LTQwLjQ2YTUgNSAwIDAgMSA1LTV6IiBmaWxsPSJzaWx2ZXIiLz48cGF0aCBkPSJNNzAuODIxIDkuNTExYTUgNSAwIDAgMSA1IDV2NDAuNDZhNSA1IDAgMCAxLTUgNWgtNDAuNDZhNSA1IDAgMCAxLTUtNXYtNDAuNDZhNSA1IDAgMCAxIDUtNXoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=";
 
   const playIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI4NS4zMzE1MyIgaGVpZ2h0PSI4NS4zMzE1MyIgdmlld0JveD0iMCwwLDg1LjMzMTUzLDg1LjMzMTUzIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTk3LjMzNDIzLC0xMzcuMzM0MjUpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMTk3LjMzNDI0LDIyMi42NjU3OHYtODUuMzMxNTNoODUuMzMxNTN2ODUuMzMxNTN6IiBmaWxsPSIjN2E3YTdhIi8+PHBhdGggZD0iTTIyNC43NjQ3MSwxNTMuNTYxNDdjNS40MjY0MSwzLjEzMjk0IDI2Ljc0NzY2LDE1LjQ0Mjc3IDM4LjMwODU4LDIyLjExNzQ3YzQuNTIyMTIsMi42MTA4NSA0LjU4MjEyLDYuMDczNTIgMC4xNDI5Myw4LjYzNjQ5Yy0xMS4zMDM3NCw2LjUyNjIyIC0zMi4xNDE1OSwxOC41NTY5NiAtMzcuNzc1NDcsMjEuODA5NjhjLTIuNzYzODEsMS41OTU2OSAtNS42MDYsMC43MzAwNiAtNS42MDYsLTMuMTk2ODhjMCwtMTIuMjEwNjkgMCwtMzguMTU0NjIgMCwtNDUuMTc1NTJjMCwtMy40MjY0MiAyLjQ1NDg1LC01LjYyMDI2IDQuOTI5OTYsLTQuMTkxMjV6IiBmaWxsPSIjZmZmZmZmIi8+PC9nPjwvZz48L3N2Zz4=";
-
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NS4zMzIiIGhlaWdodD0iODUuMzMyIiB2aWV3Qm94PSIwIDAgODUuMzMyIDg1LjMzMiI+PHBhdGggZD0ibTI3LjQzMSAxNi4yMjcgMzguMzA4IDIyLjExOGM0LjUyMiAyLjYxIDQuNTgyIDYuMDczLjE0MyA4LjYzNmwtMzcuNzc1IDIxLjgxYy0yLjc2NCAxLjU5Ni01LjYwNi43My01LjYwNi0zLjE5N1YyMC40MTljMC0zLjQyNyAyLjQ1NS01LjYyIDQuOTMtNC4xOTIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=";
   const keyIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI4NS4zMzE1MyIgaGVpZ2h0PSI4NS4zMzE1MyIgdmlld0JveD0iMCwwLDg1LjMzMTUzLDg1LjMzMTUzIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTk3LjMzNDIzLC0xMzcuMzM0MjMpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTI4Mi42NjU3NywxMzcuMzM0MjN2ODUuMzMxNTNoLTg1LjMzMTUzdi04NS4zMzE1M3oiIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2luZGV4JnF1b3Q7Om51bGx9IiBmaWxsPSIjN2E3YTdhIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjA2LjA1MjMxLDE2Mi41NjM4M2MwLC02LjkzMDQ5IDUuNjE4MjcsLTEyLjU0ODc2IDEyLjU0ODc2LC0xMi41NDg3NmM2LjkzMDQ5LDAgMTIuNTQ4NzYsNS42MTgyNyAxMi41NDg3NiwxMi41NDg3NmMwLDYuOTMwNDkgLTUuNjE4MjcsMTIuNTQ4NzYgLTEyLjU0ODc2LDEyLjU0ODc2Yy02LjkzMDQ5LDAgLTEyLjU0ODc2LC01LjYxODI3IC0xMi41NDg3NiwtMTIuNTQ4NzZ6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMjM4LjI4MjgsMTkyLjE1MjQ4YzAsLTkuODQ4NTggNy45ODM4NSwtMTcuODMyNDQgMTcuODMyNDQsLTE3LjgzMjQ0YzkuODQ4NTgsMCAxNy44MzI0NCw3Ljk4Mzg1IDE3LjgzMjQ0LDE3LjgzMjQ0YzAsOS44NDg1OCAtNy45ODM4NiwxNy44MzI0NCAtMTcuODMyNDQsMTcuODMyNDRjLTkuODQ4NTgsMCAtMTcuODMyNDQsLTcuOTgzODYgLTE3LjgzMjQ0LC0xNy44MzI0NHoiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0yMjEuMTQwOTcsMTY0LjMxODg3bDMwLjM4MTIsMjUuNjI1ODgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L2c+PC9nPjwvc3ZnPg==";
-  
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NS4zMzIiIGhlaWdodD0iODUuMzMyIiB2aWV3Qm94PSIwIDAgODUuMzMyIDg1LjMzMiI+PHBhdGggZD0iTTguNzE4IDI1LjIzYzAtNi45MyA1LjYxOS0xMi41NDkgMTIuNTUtMTIuNTQ5IDYuOTMgMCAxMi41NDggNS42MTggMTIuNTQ4IDEyLjU0OXMtNS42MTggMTIuNTQ5LTEyLjU0OSAxMi41NDlTOC43MTggMzIuMTYgOC43MTggMjUuMjI5bTMyLjIzMSAyOS41ODljMC05Ljg0OCA3Ljk4NC0xNy44MzIgMTcuODMyLTE3LjgzMnMxNy44MzMgNy45ODQgMTcuODMzIDE3LjgzMmMwIDkuODUtNy45ODQgMTcuODMzLTE3LjgzMyAxNy44MzNzLTE3LjgzMi03Ljk4NC0xNy44MzItMTcuODMzIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0ibTIzLjgwNyAyNi45ODUgMzAuMzgxIDI1LjYyNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==";
+
+  function doForEachAnimation(func) {
+    const targets = Object.values(allAnimations);
+    for (let i = 0; i < targets.length; i++) {
+      const targetCache = targets[i];
+      const targAnims = Object.values(targetCache);
+      for (let j = 0; j < targAnims.length; j++) func(targAnims[j]);
+    }
+  }
+
   class SPanimations {
     constructor() {
-      Scratch.vm.runtime.on("PROJECT_STOP_ALL", () => {
-        allAnimations.forEach(animationObject => {
-          const args = { NAME: Object.keys(animationObject)[0] };
-          this.stopAnimation(args);
+      runtime.on("PROJECT_STOP_ALL", () => {
+        doForEachAnimation((anim) => { anim.playing = false });
+      });
+      runtime.on("PROJECT_START", () => {
+        doForEachAnimation((anim) => { anim.playing = false });
+      });
+      runtime.on("AFTER_EXECUTE", () => {
+        doForEachAnimation((anim) => {
+          if (anim.playing) {
+            const isReverse = anim.playType === 2 || anim.playType === 4;
+            anim.timer += anim.fps / 1000;
+            if (anim.timer > anim.buffer) {
+              anim.buffer += anim.fps / 1000;
+              if (isReverse) anim.currentFrame--;
+              else anim.currentFrame++;
+
+              // determine if this frame is a keyframe/costume
+              const thisFrame = anim.frames[anim.currentFrame] ?? "";
+              if (thisFrame.startsWith(specialID)) {
+                const keyframe = anim.specialFrames[thisFrame];
+                if (keyframe.type === "pause") anim.buffer += keyframe.secs;
+                else this.keyframeUpdate(keyframe, anim, true);
+              } else if (thisFrame) {
+                const index = anim.target.getCostumeIndexByName(thisFrame);
+                if (index > -1) anim.target.setCostume(index);
+                else console.warn(`Animations -- Invalid Costume (${thisFrame})`);
+              }
+            }
+            // complete any unfinished keyframes
+            anim.keyBuffers.forEach((key) => { this.keyframeUpdate(key, anim, false) });
+
+            const frameCnt = anim.frames.length;
+            const frameCheck = isReverse ? anim.currentFrame <= 0: anim.currentFrame >= frameCnt;
+            if (frameCheck && anim.keyBuffers.length === 0) {
+              this.resetAnimPlayer(anim);
+              if (isReverse) anim.currentFrame = frameCnt;
+              if (anim.playType < 3) anim.playing = false;
+            }
+          }
         });
       });
     }
@@ -50,10 +101,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "make new animation named [NAME]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" }
             },
           },
           {
@@ -61,10 +109,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "delete animation named [NAME]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" }
             },
           },
           {
@@ -77,10 +122,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: "animation [NAME] exists?",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" }
             },
           },
           {
@@ -88,10 +130,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "all [TYPE] animations",
             arguments: {
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "pullTypes"
-              },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "pullTypes" }
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Frames" },
@@ -100,11 +139,8 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "add [COSTUME] to [NAME]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              COSTUME: { type: Scratch.ArgumentType.COSTUME },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              COSTUME: { type: Scratch.ArgumentType.COSTUME }
             },
           },
           {
@@ -112,11 +148,8 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "remove [COSTUME] from [NAME]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              COSTUME: { type: Scratch.ArgumentType.COSTUME },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              COSTUME: { type: Scratch.ArgumentType.COSTUME }
             },
           },
           {
@@ -124,12 +157,9 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "add costumes from [COS1] to [COS2] to [NAME]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
               COS1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-              COS2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              COS2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
             },
           },
           {
@@ -137,12 +167,9 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "remove frames [COS1] to [COS2] from [NAME]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
               COS1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-              COS2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+              COS2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
             },
           },
           "---",
@@ -151,18 +178,9 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "add a [SECOND] second pause to [NAME] with ID [ID]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              SECOND: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 3
-              },
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "pause1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              SECOND: { type: Scratch.ArgumentType.NUMBER, defaultValue: 3 },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "pause1" }
             },
           },
           {
@@ -170,14 +188,8 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "remove pause frame from [NAME] with ID [ID]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "pause1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "pause1" }
             },
           },
           "---",
@@ -186,10 +198,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "number of frames in [NAME]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" }
             },
           },
           {
@@ -197,10 +206,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "all frames in [NAME]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1",
-              }
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" }
             },
           },
           {
@@ -208,14 +214,8 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "frame # [FRAME] in [NAME]",
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              FRAME: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              FRAME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Playback" },
@@ -225,14 +225,8 @@
             text: "set FPS of [NAME] to [FPS]",
             blockIconURI: playIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              FPS: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 30
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              FPS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 30 }
             },
           },
           {
@@ -241,14 +235,8 @@
             text: "play animation [NAME] [TYPE]",
             blockIconURI: playIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "playBack"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "playBack" }
             },
           },
           {
@@ -257,14 +245,8 @@
             text: "play animation [NAME] [TYPE] until done",
             blockIconURI: playIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "playBack"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "playBack" }
             },
           },
           {
@@ -273,10 +255,7 @@
             text: "stop animation [NAME]",
             blockIconURI: playIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" }
             },
           },
           "---",
@@ -286,10 +265,7 @@
             text: "FPS of [NAME]",
             blockIconURI: playIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" }
             },
           },
           {
@@ -298,10 +274,7 @@
             text: "is [NAME] playing?",
             blockIconURI: playIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" }
             },
           },
           {
@@ -310,10 +283,7 @@
             text: "current frame of [NAME]",
             blockIconURI: playIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" }
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Keyframes" },
@@ -323,18 +293,12 @@
             text: "add keyframe position to [NAME] with ID [ID] start x [x] y [y] end x [x2] y [y2]",
             blockIconURI: keyIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "key1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "key1" },
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               x2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
-              y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
           },
           {
@@ -343,16 +307,10 @@
             text: "add keyframe direction to [NAME] with ID [ID] start [DIR1] end [DIR2]",
             blockIconURI: keyIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "key1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "key1" },
               DIR1: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 },
-              DIR2: { type: Scratch.ArgumentType.ANGLE, defaultValue: 0 },
+              DIR2: { type: Scratch.ArgumentType.ANGLE, defaultValue: 0 }
             },
           },
           {
@@ -361,16 +319,10 @@
             text: "add keyframe scale to [NAME] with ID [ID] start [scale]% end [scale2]%",
             blockIconURI: keyIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "key1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "key1" },
               scale: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
-              scale2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 150 },
+              scale2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 150 }
             },
           },
           {
@@ -379,18 +331,12 @@
             text: "add keyframe stretch to [NAME] with ID [ID] start width [x] height [y] end width [x2] height [y2]",
             blockIconURI: keyIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "key1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "key1" },
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
               x2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 200 },
-              y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
+              y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 }
             },
           },
           "---",
@@ -400,418 +346,270 @@
             text: "remove keyframe with ID [ID] from [NAME]",
             blockIconURI: keyIconURI,
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "animation 1"
-              },
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "key1"
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "animation-1" },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "key1" }
             },
           },
         ],
         menus: {
-          playBack: ["normally", "in reverse", "looped normally", "looped reversed"],
-          pullTypes: {
-            acceptReporters: true,
-            items: ["existing", "playing"],
-          },
+          playBack: Object.keys(playTypes),
+          pullTypes: { acceptReporters: true, items: ["existing", "playing"] }
         }
       };
     }
 
+    // Helper Funcs
+    getAnim(name, util, forAll) {
+      if (forAll) {
+        let animSearch = undefined;
+        doForEachAnimation((anim) => {
+          if (anim.name === name) animSearch = anim;
+        });
+        return animSearch;
+      }
+      const anim = allAnimations[util.target.id]?.[name];
+      if (anim) return anim;
+      return this.createAnimation({ NAME: name, SECRET: true }, util);
+    }
+
+    resetAnimPlayer(anim) {
+      anim.buffer = anim.fps / 1000;
+      anim.timer = 0;
+      anim.currentFrame = -1;
+    }
+
+    keyframeUpdate(data, anim, init) {
+      const target = anim.target;
+      let { type, start, end, x1, x2, y1, y2 } = data;
+      if (data.startStamp === undefined) data.startStamp = Date.now();
+      const elapsedTime = Date.now() - data.startStamp;
+      const progress = Math.min(elapsedTime / (anim.fps * 20), 1);
+      let delta1, delta2;
+      switch (type) {
+        case "pos":
+          delta1 = x2 - x1;
+          delta2 = y2 - y1;
+          target.setXY(x1 + delta1 * progress, y1 + delta2 * progress);
+          break;
+        case "dir":
+          delta1 = end - start;
+          target.setDirection(start + delta1 * progress);
+          break;
+        case "size":
+          delta1 = end - start;
+          target.setSize(start + delta1 * progress);
+          break;
+        case "stretch":
+          delta1 = x2 - x1;
+          delta2 = y2 - y1;
+          render._allDrawables[target.drawableID].updateScale([
+            x1 + delta1 * progress, y1 + delta2 * progress
+          ]);
+          break;
+      }
+      if (progress === 1) {
+        delete data.startStamp;
+        anim.keyBuffers.splice(anim.keyBuffers.indexOf(data), 1);
+      } else if (init) anim.keyBuffers.push(data);
+    }
+
+    // Block Funcs
     createAnimation(args, util) {
-      allAnimations.push({
-        [args.NAME]: {
-          name: args.NAME, target: util.target,
-          fps: 10, frames: [],
-          playing: false, currentFrame: 0
-        }
-      });
+      const name = Scratch.Cast.toString(args.NAME);
+      const id = util.target.id;
+      if (allAnimations[id] === undefined) allAnimations[id] = {};
+      const obj = {
+        name, buffer: 0, timer: 0,
+        playing: false, playType: 0,
+        fps: 10, target: util.target,
+        frames: [], specialFrames: {},
+        keyBuffers: [], currentFrame: -1
+      };
+      allAnimations[id][name] = obj;
+      if (args.SECRET) return obj;
     }
 
-    removeAnimation(args) {
-      this.stopPlayingAnimation(args.NAME);
-      const indexToRemove = allAnimations.findIndex((animation) => Object.keys(animation)[0] === args.NAME);
-      if (indexToRemove !== -1) { allAnimations.splice(indexToRemove, 1) }
+    removeAnimation(args, util) {
+      const name = Scratch.Cast.toString(args.NAME);
+      if (this.isExists(args, util)) delete allAnimations[util.target.id][name];
     }
 
-    removeAll() {
-      allAnimations.forEach(animationObject => {
-        const args = { NAME: Object.keys(animationObject)[0] };
-        this.stopAnimation(args);
-      });
-      allAnimations = [];
-    }
+    removeAll() { allAnimations = {} }
 
-    isExists(args) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      return Scratch.Cast.toBoolean(animation);
+    isExists(args, util) {
+      const name = Scratch.Cast.toString(args.NAME);
+      return Scratch.Cast.toBoolean(this.getAnim(args.NAME, "", true));
     }
 
     addFrame(args, util) {
-      let animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (!animation) {
-        this.createAnimation(args, util);
-        animation = allAnimations.find((animation) => animation[args.NAME]);
-      }
-      if (util.target !== animation[args.NAME].target) {
-        console.error(`This Animation can only be ran in "${animation[args.NAME].target.sprite.name}"`);
-        return;
-      }
-      if (animation) { animation[args.NAME].frames.push(args.COSTUME) }
-    }
-
-    addAllFrames(args, util) {
-      args.COS1 = args.COS1 < 1 ? 1 : Math.round(args.COS1) - 1;
-      args.COS2 = args.COS2 < 1 ? 1 : args.COS2 > util.target.sprite.costumes_.length ? util.target.sprite.costumes_.length : Math.round(args.COS2);
-      let animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (!animation) {
-        this.createAnimation(args, util);
-        animation = allAnimations.find((animation) => animation[args.NAME]);
-      }
-      if (util.target !== animation[args.NAME].target) {
-        console.error(`This Animation can only be ran in "${animation[args.NAME].target.sprite.name}"`);
-        return;
-      }
-      if (animation) {
-        for (let i = args.COS1; i < args.COS2; i++) {
-          animation[args.NAME].frames.push(util.target.getCostumes()[i].name);
-        }
-      }
-    }
-
-    removeAllFrames(args, util) {
-      args.COS1 = args.COS1 < 1 ? 1 : Math.round(args.COS1) - 1;
-      args.COS2 = args.COS2 < 1 ? 1 : args.COS2 > util.target.sprite.costumes_.length ? util.target.sprite.costumes_.length : Math.round(args.COS2);
-      let animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        if (util.target !== animation[args.NAME].target) {
-          console.error(`This Animation belongs to and can only be ran in "${animation[args.NAME].target.sprite.name}"`);
-          return;
-        }
-        animation[args.NAME].frames = animation[args.NAME].frames.filter(frame => {
-          const frameIndex = util.target.getCostumes().findIndex(costume => costume.name === frame);
-          return frameIndex < args.COS1 || frameIndex >= args.COS2;
-        });
-      }
+      const anim = this.getAnim(args.NAME, util);
+      anim.frames.push(Scratch.Cast.toString(args.COSTUME));
     }
 
     removeFrame(args, util) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        if (util.target !== animation[args.NAME].target) {
-          console.error(`This Animation can only be ran in "${animation[args.NAME].target.sprite.name}"`);
-          return;
-        }
-        animation[args.NAME].frames = animation[args.NAME].frames.filter(frame => frame !== args.COSTUME);
-      }
+      const anim = this.getAnim(args.NAME, util);
+      const ind = anim.frames.indexOf(Scratch.Cast.toString(args.COSTUME));
+      if (ind > -1) anim.frames.splice(ind, 1);
+    }
+
+    addAllFrames(args, util) {
+      const costumes = util.target.getCostumes();
+      const start = Math.min(costumes.length, Math.max(1, Math.round(Scratch.Cast.toNumber(args.COS1))));
+      const end = Math.min(costumes.length, Math.max(start, Math.round(Scratch.Cast.toNumber(args.COS2))));
+      const anim = this.getAnim(args.NAME, util);
+      for (let i = start - 1; i < end; i++) anim.frames.push(costumes[i].name);
+    }
+
+    removeAllFrames(args, util) {
+      const costumes = util.target.getCostumes();
+      const start = Math.min(costumes.length, Math.max(1, Math.round(Scratch.Cast.toNumber(args.COS1))));
+      const end = Math.min(costumes.length, Math.max(start, Math.round(Scratch.Cast.toNumber(args.COS2))));
+      const anim = this.getAnim(args.NAME, util);
+      anim.frames.splice(start - 1, end - (start - 1));
     }
 
     addPause(args, util) {
-      let animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (!animation) {
-        this.createAnimation(args, util);
-        animation = allAnimations.find((animation) => animation[args.NAME]);
-      }
-      if (animation) {
-        const SECS = Math.abs(args.SECOND) * 1000;
-        animation[args.NAME].frames.push({
-          [`spKF4!PZ${args.ID}`]: { secs: SECS }
-        });
-      }
+      const id = `${specialID}pause-${Scratch.Cast.toString(args.ID)}`;
+      const anim = this.getAnim(args.NAME, util);
+      anim.frames.push(id);
+      anim.specialFrames[id] = {
+        type: "pause",
+        secs: Scratch.Cast.toNumber(args.SECOND)
+      };
     }
 
-    removePause(args) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        animation[args.NAME].frames = animation[args.NAME].frames.filter(frame => !frame.includes(args.ID));
-      }
+    removePause(args, util) {
+      this.deleteKeyframe(args, util); // works the same way
     }
 
     numFrames(args) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) return animation[args.NAME].frames.length;
-      else  return "Animation Doesnt Exist!";
-    }
-
-    currentFrame(args) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) return animation[args.NAME].currentFrame;
-      else return "Animation Doesnt Exist!";
+      const anim = this.getAnim(args.NAME, "", true);
+      return anim ? anim.frames.length : 0;
     }
 
     frameNames(args) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) return JSON.stringify(animation[args.NAME].frames);
-      else return "Animation Doesnt Exist!";
+      const anim = this.getAnim(args.NAME, "", true);
+      if (!anim) return "[]";
+      const rawFrames = structuredClone(anim.frames);
+      rawFrames.forEach((frame, i) => { rawFrames[i] = frame.replace(specialID, "") });
+      return anim ? JSON.stringify(rawFrames) : "[]";
     }
 
     frameName(args) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        const newFrame = Math.abs(Math.round(args.FRAME)) - 1;
-        return (animation[args.NAME].frames[newFrame]) ? JSON.stringify(animation[args.NAME].frames[newFrame]) : "";
-      } else { return "Animation Doesnt Exist!" }
+      const anim = this.getAnim(args.NAME, "", true);
+      const ind = Scratch.Cast.toNumber(args.FRAME) - 1;
+      return anim ? anim.frames[ind].replace(specialID, "") ?? "" : "";
     }
 
     allAnimationsX(args) {
-      if (args.TYPE === "playing") {
-       const playingAnimations = allAnimations.filter(animationObj => animationObj[Object.keys(animationObj)[0]].playing === true);
-        return JSON.stringify(playingAnimations.map(animationObj => Object.keys(animationObj)[0]));
-      } else {
-        return JSON.stringify(allAnimations.map(animationObj => Object.keys(animationObj)[0]));
+      let array = [];
+      if (args.TYPE === "existing") doForEachAnimation((anim) => { array.push(anim.name) });
+      else {
+        doForEachAnimation((anim) => {
+          if (anim.playing) array.push(anim.name);
+        });
       }
+      return JSON.stringify(array);
     }
 
-    setFPS(args) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        animation[args.NAME].fps = args.FPS === 0 ? 1 : Math.abs(Scratch.Cast.toNumber(args.FPS));
-      }
+    setFPS(args, util) {
+      const anim = this.getAnim(args.NAME, util);
+      anim.fps = Scratch.Cast.toNumber(args.FPS);
     }
 
-    playBackWait(args) {
-      this.playBack(args);
-      return new Promise((resolve, reject) => {
-        const animationPlay = () => {
-          this.isPlaying(args) ? setTimeout(animationPlay, 100) : resolve();
-        };
-        setTimeout(animationPlay, 100);
-      });
+    playBack(args, util) {
+      const anim = this.getAnim(args.NAME, util);
+      this.resetAnimPlayer(anim);
+      anim.playType = playTypes[args.TYPE] ?? 1;
+      if (anim.playType === 2 || anim.playType === 4) anim.currentFrame = anim.frames.length;
+      anim.playing = true;
     }
 
-    playBack(args) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        this.stopPlayingAnimation(args.NAME);
-        //stoping animation is not instant, this is to prevent dual animations
-        setTimeout(() => {
-          const myAnimation = animation[args.NAME];
-          myAnimation.playing = true;
-          const target = myAnimation.target;
-          let frameIndex = args.TYPE.includes("reverse") ? myAnimation.frames.length - 1 : 0;
-          myAnimation.currentFrame = frameIndex;
-          const numFrames = myAnimation.frames.length;
-          if (numFrames === 0) return;
-          const playNextFrame = () => {
-            if (myAnimation.playing === true) {
-              myAnimation.currentFrame = frameIndex;
-              if (Object.keys(myAnimation.frames[frameIndex]).some(key => key.includes("spKF4!"))) {
-                if (Object.keys(myAnimation.frames[frameIndex]).some(key => key.includes("PZ"))) {
-                  const keys = Object.keys(myAnimation.frames[frameIndex]);
-                  /* eslint-disable */
-                  for (const key of keys) {
-                    const delayTime = myAnimation.frames[frameIndex][key].secs;
-                    setTimeout(() => { handleNextFrame() }, delayTime);
-                    return;
-                  }
-                  /* eslint-enable */
-                } else { this._setKeyframe(target, myAnimation.frames[frameIndex], myAnimation) }
-              } else { this._setCostume(target, myAnimation.frames[frameIndex]) }
-              handleNextFrame();
-            } else { myAnimation.playing = false }
-          };
-          const handleNextFrame = () => {
-            if (args.TYPE.includes("reverse")) {
-              frameIndex--;
-              if (frameIndex < 0) {
-                if (args.TYPE.includes("looped")) frameIndex = numFrames - 1;
-                else {
-                  myAnimation.playing = false;
-                  return;
-                }
-              }
-            } else {
-              frameIndex++;
-              if (frameIndex >= numFrames) {
-                if (args.TYPE.includes("looped")) frameIndex = 0;
-                else {
-                  myAnimation.playing = false;
-                  return;
-                }
-              }
-            }
-            setTimeout(playNextFrame, 1000 / myAnimation.fps);
-          };
-          playNextFrame();
-        }, 100);
-      }
+    playBackWait(args, util) {
+      const anim = this.getAnim(args.NAME, util);
+      if (util.stackFrame.executed === undefined) {
+        this.resetAnimPlayer(anim);
+        anim.playType = playTypes[args.TYPE] ?? 1;
+        if (anim.playType === 2 || anim.playType === 4) anim.currentFrame = anim.frames.length;
+        anim.playing = true;
+        util.stackFrame.executed = true;
+        util.yield();
+      } else if (anim.playing) util.yield();
     }
 
-    stopAnimation(args) { this.stopPlayingAnimation(args.NAME) }
-
-    stopPlayingAnimation(name) {
-      const animation = allAnimations.find((animation) => animation[name]);
-      if (animation) animation[name].playing = false;
+    stopAnimation(args, util) {
+      const anim = this.getAnim(args.NAME, util);
+      anim.playing = false;
     }
 
     currentFPS(args) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) return animation[args.NAME].fps;
-      else return "Animation Doesnt Exist!";
+      const anim = this.getAnim(args.NAME, "", true);
+      return anim ? anim.fps : "";
     }
 
     isPlaying(args) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) return animation[args.NAME].playing;
-      else return false;
+      const anim = this.getAnim(args.NAME, "", true);
+      return anim ? anim.playing : false;
     }
 
-    _setCostume(target, requestedCostume, optZeroIndex) {
-      if (typeof requestedCostume === "number") {
-        target.setCostume(optZeroIndex ? requestedCostume : requestedCostume - 1);
-      } else {
-        const costumeIndex = target.getCostumeIndexByName(requestedCostume.toString());
-        if (costumeIndex !== -1) target.setCostume(costumeIndex);
-        else if (requestedCostume === "next costume") target.setCostume(target.currentCostume + 1);
-        else if (requestedCostume === "previous costume") target.setCostume(target.currentCostume - 1);
-        else if (!(isNaN(requestedCostume) || Scratch.Cast.isWhiteSpace(requestedCostume))) {
-          target.setCostume(optZeroIndex ? Number(requestedCostume) : Number(requestedCostume) - 1);
-        }
-      }
-      return [];
+    currentFrame(args) {
+      const anim = this.getAnim(args.NAME, "", true);
+      return anim ? Math.max(1, Math.min(anim.currentFrame + 1, anim.frames.length)) : 0;
     }
 
     addPosition(args, util) {
-      let animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (!animation) {
-        this.createAnimation(args, util);
-        animation = allAnimations.find((animation) => animation[args.NAME]);
-      }
-      if (animation) {
-        const keyframe = {
-          [`spKF4!XY${args.ID}`]: {
-            x1: args.x, y1: args.y,
-            x2: args.x2, y2: args.y2,
-          }
-        };
-        animation[args.NAME].frames.push(keyframe);
-      }
-    }
-
-    addStretch(args, util) {
-      let animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (!animation) {
-        this.createAnimation(args, util);
-        animation = allAnimations.find((animation) => animation[args.NAME]);
-      }
-      if (animation) {
-        const keyframe = {
-          [`spKF4!WH${args.ID}`]: {
-            x1: args.x, y1: args.y,
-            x2: args.x2, y2: args.y2,
-          }
-        };
-        animation[args.NAME].frames.push(keyframe);
-      }
+      const id = `${specialID}pos-${Scratch.Cast.toString(args.ID)}`;
+      const anim = this.getAnim(args.NAME, util);
+      anim.frames.push(id);
+      anim.specialFrames[id] = {
+        type: "pos",
+        x1: Scratch.Cast.toNumber(args.x), x2: Scratch.Cast.toNumber(args.x2),
+        y1: Scratch.Cast.toNumber(args.y), y2: Scratch.Cast.toNumber(args.y2)
+      };
     }
 
     addDirection(args, util) {
-      let animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (!animation) {
-        this.createAnimation(args, util);
-        animation = allAnimations.find((animation) => animation[args.NAME]);
-      }
-      if (animation) {
-        const keyframe = {
-          [`spKF4!DIR${args.ID}`]: {
-            dir1: args.DIR1, dir2: args.DIR2,
-          }
-        };
-        animation[args.NAME].frames.push(keyframe);
-      }
+      const id = `${specialID}dir-${Scratch.Cast.toString(args.ID)}`;
+      const anim = this.getAnim(args.NAME, util);
+      anim.frames.push(id);
+      anim.specialFrames[id] = {
+        type: "dir",
+        start: Scratch.Cast.toNumber(args.DIR1),
+        end: Scratch.Cast.toNumber(args.DIR2)
+      };
     }
 
     addScale(args, util) {
-      let animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (!animation) {
-        this.createAnimation(args, util);
-        animation = allAnimations.find((animation) => animation[args.NAME]);
-      }
-      if (animation) {
-        const keyframe = {
-          [`spKF4!SZ${args.ID}`]: {
-            size1: args.scale, size2: args.scale2,
-          }
-        };
-        animation[args.NAME].frames.push(keyframe);
-      }
+      const id = `${specialID}size-${Scratch.Cast.toString(args.ID)}`;
+      const anim = this.getAnim(args.NAME, util);
+      anim.frames.push(id);
+      anim.specialFrames[id] = {
+        type: "size",
+        start: Scratch.Cast.toNumber(args.scale),
+        end: Scratch.Cast.toNumber(args.scale2)
+      };
     }
 
-    deleteKeyframe(args) {
-      const animation = allAnimations.find((animation) => animation[args.NAME]);
-      if (animation) {
-        animation[args.NAME].frames = animation[args.NAME].frames.filter(frame => {
-          for (const key in frame) {
-            if (key.startsWith("spKF4!") && key.endsWith(args.ID)) return false;
-          }
-          return true;
-        });
-      }
+    addStretch(args, util) {
+      const id = `${specialID}stretch-${Scratch.Cast.toString(args.ID)}`;
+      const anim = this.getAnim(args.NAME, util);
+      anim.frames.push(id);
+      anim.specialFrames[id] = {
+        type: "stretch",
+        x1: Scratch.Cast.toNumber(args.x), x2: Scratch.Cast.toNumber(args.x2),
+        y1: Scratch.Cast.toNumber(args.y), y2: Scratch.Cast.toNumber(args.y2)
+      };
     }
 
-    _setKeyframe(target, keyframe, data) {
-      let startTime, startX, startY, deltaX, deltaY, startSize, deltaSize, startDir, deltaDir;
-      if (!keyFramesPlaying.some(item => JSON.stringify(item) === JSON.stringify([data, keyframe]))) {
-        keyFramesPlaying.push([data, keyframe]);
+    deleteKeyframe(args, util) {
+      const id = Scratch.Cast.toString(args.ID);
+      const anim = this.getAnim(args.NAME, util);
+      const specialFrames = anim.frames.filter((frame) => { return frame.startsWith(specialID) });
+      const frame = specialFrames.find((frame) => { return frame.endsWith(id) });
+      if (frame !== undefined) {
+        anim.frames.splice(anim.frames.indexOf(frame), 1);
+        delete anim.specialFrames[frame];
       }
-      keyFramesPlaying.push([data, keyframe]);
-      const key = keyframe[Object.keys(keyframe)[0]];
-      const animationDuration = data.fps * 20;
-      if (JSON.stringify(keyframe).includes("DIR")) {
-        startDir = key.dir1;
-        deltaDir = key.dir2 - key.dir1;
-      } else if (JSON.stringify(keyframe).includes("SZ")) {
-        startSize = key.size1;
-        deltaSize = key.size2 - key.size1;
-      } else {
-        startX = key.x1;
-        startY = key.y1;
-        deltaX = key.x2 - key.x1;
-        deltaY = key.y2 - key.y1;
-      }
-      if (JSON.stringify(keyframe).includes("XY")) {
-        const animateXY = (timestamp) => {
-          if (!startTime) startTime = timestamp;
-          const elapsedTime = timestamp - startTime;
-          const progress = Math.min(elapsedTime / animationDuration, 1);
-          target.setXY(startX + deltaX * progress, startY + deltaY * progress);
-          if (progress < 1) requestAnimationFrame(animateXY);
-        };
-        requestAnimationFrame(animateXY);
-      } else if (JSON.stringify(keyframe).includes("WH")) {
-        const animateXY = (timestamp) => {
-          if (!startTime) startTime = timestamp;
-          const elapsedTime = timestamp - startTime;
-          const progress = Math.min(elapsedTime / animationDuration, 1);
-          vm.renderer._allDrawables[target.drawableID].updateScale([
-            startX + deltaX * progress, startY + deltaY * progress
-          ]);
-          if (progress < 1) requestAnimationFrame(animateXY);
-        };
-        requestAnimationFrame(animateXY);
-      } else if (JSON.stringify(keyframe).includes("DIR")) {
-        const animateDirection = (timestamp) => {
-          if (!startTime) startTime = timestamp;
-          const elapsedTime = timestamp - startTime;
-          const progress = Math.min(elapsedTime / animationDuration, 1);
-          target.setDirection(startDir + deltaDir * progress);
-          if (progress < 1) requestAnimationFrame(animateDirection);
-        };
-        requestAnimationFrame(animateDirection);
-      } else if (JSON.stringify(keyframe).includes("SZ")) {
-        const animateSize = (timestamp) => {
-          if (!startTime) startTime = timestamp;
-          const elapsedTime = timestamp - startTime;
-          const progress = Math.min(elapsedTime / animationDuration, 1);
-          target.setSize(startSize + deltaSize * progress);
-          if (progress < 1) requestAnimationFrame(animateSize);
-        };
-        requestAnimationFrame(animateSize);
-      }
-      keyFramesPlaying = keyFramesPlaying.filter(item => JSON.stringify(item) !== JSON.stringify([data, keyframe]));
     }
   }
 
