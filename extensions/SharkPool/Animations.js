@@ -438,7 +438,6 @@
     removeAll() { allAnimations = {} }
 
     isExists(args, util) {
-      const name = Scratch.Cast.toString(args.NAME);
       return Scratch.Cast.toBoolean(this.getAnim(args.NAME, "", true));
     }
 
