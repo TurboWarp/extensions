@@ -1398,10 +1398,9 @@
           if (con) svg = svg.replace(/(style="[^"]*transform:[^"]*)/, `$1 rotate(${cast.toNumber(args.DIR) - 90}deg)`);
           else svg = svg.replace(`width="${width}" height="${height}"`, `width="${width}" height="${height}" style="transform-origin: center; transform: rotate(${cast.toNumber(args.DIR) - 90}deg)"`);
         } else if (type === 2) {
-          let vals, viewboxVals = "";
+          let vals = "";
           const viewboxMatch = svg.match(/viewBox="([^"]+)"/);
-          if (viewboxMatch) viewboxVals = viewboxMatch[1].split(/\s*,\s*/).map(parseFloat);
-          vals = viewboxVals.split(",");
+          if (viewboxMatch) vals = viewboxMatch[1].split(/\s*,\s*/);
           if (vals.length > 1) {
             svg = svg.replace(`width="${width}" height="${height}"`, `width="${width * Math.abs(x)}" height="${height * Math.abs(y)}"`);
             svg = svg.replace(/viewBox="([^"]+)"/, `viewBox="${vals[0]},${vals[1]},${width * Math.abs(x)},${height * Math.abs(y)}"`);
