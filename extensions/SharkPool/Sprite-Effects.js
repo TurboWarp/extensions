@@ -3,7 +3,7 @@
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
 
-// Version V.1.7.04
+// Version V.1.7.1
 
 (function (Scratch) {
   "use strict";
@@ -31,7 +31,7 @@
     // if it isnt, we DOMPurify the filter before returning
     const input = container.getBlock(blockID).inputs.FILTER;
     const filterInput = container.getBlock(input.block).opcode;
-    string = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><filter id="${id}">${string}</filter></svg>`;
+    string = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><filter filterUnits="userSpaceOnUse" id="${id}">${string}</filter></svg>`;
     if (filterInput.startsWith("SPspriteEffects_") && !filterInput.includes("applyCustom")) {
       // applyCustom is the only block that has user inputted filter support
       return string;
@@ -433,12 +433,9 @@
             },
           },
           {
-            opcode: "toggleDistScale",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "toggle distortion scaling [ON_OFF]",
-            arguments: {
-              ON_OFF: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" }
-            },
+            opcode: "toggleDistScale", blockType: Scratch.BlockType.COMMAND,
+            text: "toggle distortion scaling [ON_OFF]", hideFromPalette: true, // deprecated for now
+            arguments: { ON_OFF: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" } },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Formatting" },
           {
@@ -661,7 +658,7 @@
             hideFromPalette: !sprite,
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-              DIR: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 }
+              DIR: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 }
             },
           },
           {
@@ -671,7 +668,7 @@
             hideFromPalette: sprite,
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              DIR: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 }
+              DIR: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 }
             },
           },
           {
@@ -838,10 +835,10 @@
       input = cast.toString(input);
       const target = input === "_stage_" ? runtime.getTargetForStage() : runtime.getSpriteTargetByName(input);
       if (!target) {
-        if (!reqPackagedRAM()) return "<>";
+        if (!reqPackagedRAM()) return "<svg></svg>";
         // Assume the user inputted a SVG instead of a sprite
-        if (input.includes("<") && input.includes(">")) return input;
-        else return "<>";
+        if (input.startsWith("<svg") && input.includes("</svg>")) return input;
+        else return "<svg></svg>";
       }
       const costume = target.getCostumes()[target.currentCostume];
       //if bitmap, convert to svg
@@ -870,11 +867,11 @@
     }
 
     async findAsset(util) {
-      if (!reqPackagedRAM()) return "<>";
+      if (!reqPackagedRAM()) return "<svg></svg>";
       const currentCostume = util.target.currentCostume;
       let myAsset = util.target.sprite.costumes;
       myAsset = myAsset[currentCostume];
-      //if bitmap, convert to svg
+      // if bitmap, convert to svg
       if (myAsset.dataFormat === "png") return await this.getImage(myAsset.asset.encodeDataURI());
       else return myAsset.asset.decodeText();
     }
@@ -926,6 +923,7 @@
       // add filter to body
       let svgTag = svg.indexOf(">");
       if (svgTag < 0) return svg;
+      filter = filter.replace("<filter", `<filter filterUnits="userSpaceOnUse"`);
       svg = `${svg.substring(0, svgTag + 1)}${filter.replace(/\s+$/, "").slice(0, -1)}${svg.slice(svgTag)}`;
 
       // create group and add filter string
@@ -1281,21 +1279,20 @@
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
-        let source;
+        let source, tableValue;
         if (override) source = args.EFFECT.startsWith("data:image/") ? args.EFFECT : `data:image/svg+xml;base64,${btoa(args.EFFECT)}`;
         else source = args.EFFECT === "bulge" ? 0 : args.EFFECT === "whirl" ? 1 : args.EFFECT === "ripple" ? 2 : 3;
         const mul = args.SPRITE === "_canvas_" ? render.canvas.width / runtime.stageWidth * 2 : 1;
         const amts = [cast.toNumber(args.NUM), cast.toNumber(args.X), cast.toNumber(args.Y)];
-        let tableValue;
         if (!distortionScale) {
-          if (args.SPRITE === "_canvas_") tableValue = [Math.max(render.canvas.width, render.canvas.height) / (mul * 2), 0];
+          if (args.SPRITE === "_canvas_") tableValue = [render.canvas.width / 2, render.canvas.height / 2];
           else tableValue = [100, 0];
         } else {
-          tableValue = [100 + 2 * (100 - amts[0]) / 2];
-          tableValue[1] = (100 - tableValue[0]) / 2;
+          // deprecated feature, for now...
+          tableValue = [render.canvas.width / 2, render.canvas.height / 2];
         }
         const filter =`<filter id="${override ? "customDistort" : args.EFFECT}" xmlns:xlink="http://www.w3.org/1999/xlink">
-          <feImage id="dMapS" xlink:href="${override ? source : displaceSrCs[source]}" x="${(tableValue[1] + amts[1]) * mul}%" y="${(tableValue[1] - amts[2]) * mul}%" width="${tableValue[0] * mul}%" height="${tableValue[0] * mul}%" result="distortImg" />
+          <feImage id="dMapS" xlink:href="${override ? source : displaceSrCs[source]}" x="${-tableValue[0] + amts[1]}" y="${(tableValue[1] / -4) - amts[2]}" width="${tableValue[0]}%" height="${tableValue[1]}%" result="distortImg" />
           <feDisplacementMap id="dMapRes" xChannelSelector="R" yChannelSelector="G" in="SourceGraphic" in2="distortImg" result="displacementMap" color-interpolation-filters="sRGB" scale="${amts[0] * mul}" /><feComposite operator="in" in2="distortImg"></feComposite>
         ${amts[0] < 0 && args.EFFECT !== "ripple" ? "" : `<feComposite operator="over" in2="SourceGraphic"></feComposite>`}</filter>`;
         return this.filterApplier(svg, filter, override ? "customDistort" : args.EFFECT);
@@ -1401,11 +1398,17 @@
           if (con) svg = svg.replace(/(style="[^"]*transform:[^"]*)/, `$1 rotate(${cast.toNumber(args.DIR) - 90}deg)`);
           else svg = svg.replace(`width="${width}" height="${height}"`, `width="${width}" height="${height}" style="transform-origin: center; transform: rotate(${cast.toNumber(args.DIR) - 90}deg)"`);
         } else if (type === 2) {
-          svg = svg.replace(`width="${width}" height="${height}"`, `width="${width * Math.abs(x)}" height="${height * Math.abs(y)}"`);
-          svg = svg.replace(`viewBox="0,0,${width},${height}"`, `viewBox="0,0,${width * Math.abs(x)},${height * Math.abs(y)}"`);
-          svg = svg.replace(`(${currentX},`, `(${currentX * (x) + (args.x < 0 ? width * Math.abs(x) : 0)},`);
-          svg = svg.replace(`,${currentY})`, `,${currentY * (y) + (args.y < 0 ? height * Math.abs(y) : 0)})`);
-          transform = `scale(${x}, ${y})`;
+          let vals, viewboxVals = "";
+          const viewboxMatch = svg.match(/viewBox="([^"]+)"/);
+          if (viewboxMatch) viewboxVals = viewboxMatch[1].split(/\s*,\s*/).map(parseFloat);
+          vals = viewboxVals.split(",");
+          if (vals.length > 1) {
+            svg = svg.replace(`width="${width}" height="${height}"`, `width="${width * Math.abs(x)}" height="${height * Math.abs(y)}"`);
+            svg = svg.replace(/viewBox="([^"]+)"/, `viewBox="${vals[0]},${vals[1]},${width * Math.abs(x)},${height * Math.abs(y)}"`);
+            svg = svg.replace(`(${currentX},`, `(${currentX * (x) + (args.x < 0 ? width * Math.abs(x) : 0)},`);
+            svg = svg.replace(`,${currentY})`, `,${currentY * (y) + (args.y < 0 ? height * Math.abs(y) : 0)})`);
+            transform = `scale(${x}, ${y})`;
+          }
         } else {
           if (con) svg = svg.replace(/(style="[^"]*transform:[^"]*)/, `$1 skew(${args.x}deg, ${args.y}deg)`);
           else svg = svg.replace(`width="${width}" height="${height}"`, `width="${width}" height="${height}" style="transform-origin: center; transform: skew(${args.x}deg, ${args.y}deg)"`);
@@ -1446,7 +1449,7 @@
       const container = util.thread.blockContainer;
       let filter = args.FILTER;
       const match = filter.match(/<filter(?:\s[^>]*)?>((?:.|\n)*?)<\/filter>/i);
-      if (match && match[1]) {xmlEscape
+      if (match && match[1]) {
         filter = match[1].replace(/\s+$/, "");
         const name = xmlEscape(args.NAME);
         const oldFilter = document.querySelector(`div[id^="SP-canvas-${name}"]`);
