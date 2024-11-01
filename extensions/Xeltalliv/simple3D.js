@@ -276,15 +276,35 @@
   class RenderTarget {
     constructor() {
       this.destroyed = false;
+      this.viewport = null;
+      this.scissors = null;
+      this.readarea = null;
     }
     setAsRenderTarget() {
       currentRenderTarget = this;
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.getFramebuffer());
       this.updateViewport();
       this.updateDepth();
+      this.updateScissorsEnabled();
+    }
+    updateScissorsEnabled() {
+      if (this.scissors) {
+        gl.enable(gl.SCISSOR_TEST);
+      } else {
+        gl.disable(gl.SCISSOR_TEST);
+      }
     }
     updateViewport() {
-      gl.viewport(0, 0, this.width, this.height);
+      const a = this.viewport;
+      const b = this.scissors;
+      if (a) {
+        gl.viewport(a.x, a.y, a.w, a.h);
+      } else {
+        gl.viewport(0, 0, this.width, this.height);
+      }
+      if (b) {
+        gl.scissor(b.x, b.y, b.w, b.h);
+      }
     }
     updateDepth() {
       if (this.depthTest == "everything" && !this.depthWrite) {
@@ -4158,11 +4178,10 @@ void main() {
         );
         if (!list) return;
         if (!currentRenderTarget.checkIfValid()) return;
-        const width = currentRenderTarget.width;
-        const height = currentRenderTarget.height;
-        if (width == 0 || height == 0) return;
-        const pixels = new Uint8ClampedArray(width * height * 4);
-        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        const {x, y, w, h} = currentRenderTarget.readarea;
+        if (w == 0 || h == 0) return;
+        const pixels = new Uint8ClampedArray(w * h * 4);
+        gl.readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
         list.value = Array.from(pixels);
         list._monitorUpToDate = false;
       },
@@ -4193,11 +4212,10 @@ void main() {
           return currentRenderTarget.hasDepthBuffer;
         if (PROPERTY == "image as data URI") {
           if (!currentRenderTarget.checkIfValid()) return "";
-          const width = currentRenderTarget.width;
-          const height = currentRenderTarget.height;
-          if (width == 0 || height == 0) return "";
-          const pixels = new Uint8ClampedArray(width * height * 4);
-          gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+          const {x, y, w, h} = currentRenderTarget.readarea;
+          if (w == 0 || h == 0) return "";
+          const pixels = new Uint8ClampedArray(w * h * 4);
+          gl.readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
           for (let i = 0; i < pixels.length; i += 4) {
             // Internally we store everything with permultiplied alpha. Undoing it
             const alpha = pixels[i + 3] / 255;
@@ -4206,16 +4224,94 @@ void main() {
             pixels[i + 2] /= alpha;
           }
           const canv = document.createElement("canvas");
-          canv.width = width;
-          canv.height = height;
+          canv.width = w;
+          canv.height = h;
           const ctx = canv.getContext("2d");
-          const imgData = new ImageData(pixels, width, height);
+          const imgData = new ImageData(pixels, w, h);
           ctx.putImageData(imgData, 0, 0);
           return canv.toDataURL();
         }
         if (PROPERTY == "is valid for being drawn to")
           return currentRenderTarget.checkIfValid();
+        if (PROPERTY == "has viewport box")
+          return currentRenderTarget.viewport !== null;
+        if (PROPERTY == "has clipping box")
+          return currentRenderTarget.scissors !== null;
+        if (PROPERTY == "has readback box")
+          return currentRenderTarget.readarea !== null;
         return "";
+      },
+    },
+    {
+      opcode: "setRenderTargetBox",
+      blockType: BlockType.COMMAND,
+      text: "set [BOXTYPE] to X1:[X1] Y1:[Y1] X2:[X2] Y2:[Y2]",
+      arguments: {
+        BOXTYPE: {
+          type: ArgumentType.STRING,
+          menu: "boxType",
+        },
+        X1: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 0,
+        },
+        Y1: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 0,
+        },
+        X2: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 100,
+        },
+        Y2: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 100,
+        },
+      },
+      def: function ({ BOXTYPE, X1, Y1, X2, Y2 }) {
+        X1 = Cast.toNumber(X1);
+        Y1 = Cast.toNumber(Y1);
+        X2 = Cast.toNumber(X2);
+        Y2 = Cast.toNumber(Y2);
+        const x = Math.min(X1, X2);
+        const y = Math.min(Y1, Y2);
+        const w = Math.max(X1, X2) - x;
+        const h = Math.max(Y1, Y2) - y;
+        if (BOXTYPE == "viewport box") {
+          currentRenderTarget.viewport = { x, y, w, h };
+        }
+        if (BOXTYPE == "clipping box") {
+          currentRenderTarget.scissors = { x, y, w, h };
+          currentRenderTarget.updateScissorsEnabled();
+        }
+        if (BOXTYPE == "readback box") {
+          currentRenderTarget.readarea = { x, y, w, h };
+        }
+        currentRenderTarget.updateViewport();
+      },
+    },
+    {
+      opcode: "clearRenderTargetBox",
+      blockType: BlockType.COMMAND,
+      text: "clear [BOXTYPE]",
+      arguments: {
+        BOXTYPE: {
+          type: ArgumentType.STRING,
+          menu: "boxType",
+        },
+      },
+      def: function ({ BOXTYPE }) {
+        if (BOXTYPE == "viewport box") {
+          currentRenderTarget.viewport = null;
+        }
+        if (BOXTYPE == "clipping box") {
+          currentRenderTarget.scissors = null;
+          currentRenderTarget.updateScissorsEnabled();
+        }
+        if (BOXTYPE == "readback box") {
+          currentRenderTarget.readarea = null;
+        }
+        currentRenderTarget.updateViewport();
       },
     },
     {
@@ -4559,6 +4655,9 @@ void main() {
           "has depth storage",
           "image as data URI",
           "is valid for being drawn to",
+          "has viewport box",
+          "has clipping box",
+          "has readback box",
         ],
       },
       powersOfTwo: {
@@ -4585,6 +4684,14 @@ void main() {
           "separately for each sample",
         ],
       },
+      boxType: {
+        acceptReporters: false,
+        items: [
+          "viewport box",
+          "clipping box",
+          "readback box",
+        ],
+      }
     },
   };
 
