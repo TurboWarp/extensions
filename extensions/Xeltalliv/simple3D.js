@@ -2357,7 +2357,7 @@ void main() {
               myData.bonesCurr = chunkArray(value, 16);
             }
           }
-        )
+        }
         if (TRANSFORMS == "current") {
           if (myData.bonesOrig) {
             myData.bonesCurr = chunkArray(value, 16);
@@ -2789,6 +2789,29 @@ void main() {
       },
     },
     {
+      opcode: "setMeshInstanceLimit",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] instance draw limit [END]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        END: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 10,
+        },
+      },
+      def: function ({ NAME, END }, { target }) {
+        const mesh = meshes.get(Cast.toString(NAME));
+        let end = Math.floor(Cast.toNumber(END));
+        if (end < 1) end = Infinity;
+        if (!mesh) return;
+        mesh.myData.maxInstances = end;
+        mesh.update();
+      },
+    },
+    {
       opcode: "setMeshTexCoordOffsetUV",
       blockType: BlockType.COMMAND,
       text: "set [NAME] texture coordinate offset UV [U] [V]",
@@ -3125,6 +3148,10 @@ void main() {
           amount = end - mesh.data.drawRange[0];
         }
         if (mesh.buffers.instanceTransforms) {
+          let instanceCount = mesh.buffers.instanceTransforms.length;
+          if (mesh.data.maxInstances && mesh.data.maxInstances < instanceCount) {
+            instanceCount = mesh.data.maxInstances;
+          }
           if (mesh.buffers.indices) {
             const indexTypes = [
               null,
@@ -3138,14 +3165,14 @@ void main() {
               amount,
               indexTypes[mesh.buffers.indices.bytesPerEl],
               start,
-              mesh.buffers.instanceTransforms.length
+              instanceCount
             );
           } else {
             gl.drawArraysInstanced(
               mesh.data.primitives ?? gl.TRIANGLES,
               start,
               amount,
-              mesh.buffers.instanceTransforms.length
+              instanceCount
             );
           }
         } else {
