@@ -4800,5 +4800,33 @@ void main() {
   }
   gl.__proto__ = ogl; //*/
 
+  publicApi.i_will_not_ask_for_help_when_these_break = () => {
+    console.warn("WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. WHEN your code breaks, do not expect help.\n\nProper stable APIs will be added later.");
+    return {
+      canvas,
+      gl,
+      definitions,
+      meshes,
+      programs,
+      modelDecoder,
+      uploadBuffer,
+      getFshSrc: () => fshSrc,
+      setFshSrc: (src) => {vshSrc = src},
+      getVshSrc: () => fshSrc,
+      setVshSrc: (src) => {vshSrc = src},
+      canvasRenderTarget,
+      resetEverything,
+      getTransforms: () => transforms,
+      setTransforms: (t) => {transforms = t},
+      getSelectedTransform: () => selectedTransform,
+      setSelectedTransform: (t) => {selectedTransform = t},
+      getWorkerSrc: () => workerSrc,
+      setWorkerSrc: (src) => {workerSrc = src},
+      extInfo,
+      Extension,
+      Blendings,
+    }
+  };
+
   Scratch.extensions.register(new Extension());
 })(Scratch);
