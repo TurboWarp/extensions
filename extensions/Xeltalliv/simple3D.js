@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.1.0
+// Version: 1.2.0
 
 (function (Scratch) {
   "use strict";
@@ -1536,6 +1536,13 @@ void main() {
       );
     }
   }
+  function chunkArray(array, size) {
+    const chunkedArray = [];
+    for (let i = 0; i < array.length; i += size) {
+      chunkedArray.push(array.slice(i, i + size));
+    }
+    return chunkedArray;
+  }
 
   if (!Scratch.extensions.unsandboxed)
     throw new Error("Simple 3D extension must be run unsandboxed");
@@ -2332,33 +2339,47 @@ void main() {
       },
       def: function ({ NAME, TRANSFORMS, MATRIXES }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
+        const myData = mesh.myData;
         const list = target.lookupVariableByNameAndType(
           Cast.toString(MATRIXES),
           "list"
         );
         if (!mesh || !list) return;
         const value = list.value.map(Cast.toNumber);
-        const value2 = [];
-        for (let i = 0; i < value.length; i += 16) {
-          value2.push(value.slice(i, i + 16));
-        }
-        if (
-          TRANSFORMS == "original" ||
-          !mesh.bonesOrig ||
-          mesh.bonesOrig.length !== value2.length
+
+        if (TRANSFORMS == "original") {
+          myData.bonesOrig = chunkArray(value, 16).map(m4.inverse);
+          if (!myData.bonesCurr) {
+            if (myData.bonesCurrRaw) {
+              myData.bonesCurr = chunkArray(myData.bonesCurrRaw, 16);
+              myData.bonesCurrRaw = null;
+            } else {
+              myData.bonesCurr = chunkArray(value, 16);
+            }
+          }
         )
-          mesh.bonesOrig = value2.map(m4.inverse);
-        if (
-          TRANSFORMS == "current" ||
-          !mesh.bonesCurr ||
-          mesh.bonesCurr.length !== value2.length
-        )
-          mesh.bonesCurr = value2;
-        const diff = [];
-        for (let i = 0; i < mesh.bonesCurr.length; i++) {
-          diff.push(m4.multiply(mesh.bonesCurr[i], mesh.bonesOrig[i]));
+        if (TRANSFORMS == "current") {
+          if (myData.bonesOrig) {
+            myData.bonesCurr = chunkArray(value, 16);
+            myData.bonesCurrRaw = null;
+          } else {
+            myData.bonesCurrRaw = value;
+          }
         }
-        mesh.bonesDiff = diff.flat();
+        if (myData.bonesOrig) {
+          const diff = [];
+          const end = Math.min(myData.bonesCurr.length, myData.bonesOrig.length);
+          let i = 0;
+          for (; i < end; i++) {
+            diff.push(m4.multiply(myData.bonesCurr[i], myData.bonesOrig[i]));
+          }
+          for (; i < myData.bonesCurr.length; i++) {
+            diff.push(myData.bonesCurr[i]);
+          }
+          myData.bonesDiff = diff.flat();
+        } else {
+          myData.bonesDiff = myData.bonesCurrRaw;
+        }
         mesh.update();
       },
     },
