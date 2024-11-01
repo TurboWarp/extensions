@@ -2,8 +2,9 @@
 // ID: imgEffectsSP
 // Description: Apply a variety of new effects to the data URI of Images or Costumes.
 // By: SharkPool
+// Licence: MIT
 
-// Version V.2.4.1
+// Version V.2.5.0
 
 (function (Scratch) {
   "use strict";
@@ -24,8 +25,8 @@
     return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}${alpha}`;
   };
   const imageEffectMenu = [
-    "Saturation", "Opaque", "Glitch", "Chunk Glitch", "Clip Glitch", "Vignette",
-    "Ripple", "Displacement", "Posterize", "Blur", "Scanlines", "Grain", "Cubism",
+    "Saturation", "Contrast", "Opaque", "Glitch", "Chunk Glitch", "Clip Glitch", "Vignette",
+    "Ripple", "Displacement", "Posterize", "Blur", "Sepia", "Scanlines", "Grain", "Cubism",
   ];
 
   class imgEffectsSP {
@@ -393,6 +394,28 @@
             arguments: {
               SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "<svg>" }
             }
+          },
+          // Deprecated
+          {
+            opcode: "clipImage", blockType: Scratch.BlockType.REPORTER,
+            text: "clip [CUTOUT] from [MAIN]", hideFromPalette: true,
+            arguments: {
+              MAIN: { type: Scratch.ArgumentType.STRING, defaultValue: "source-here" }, CUTOUT: { type: Scratch.ArgumentType.STRING, defaultValue: "cutout-here" }
+            }
+          },
+          {
+            opcode: "overlayImage", blockType: Scratch.BlockType.REPORTER,
+            text: "clip [CUTOUT] onto [MAIN]", hideFromPalette: true,
+            arguments: {
+              MAIN: { type: Scratch.ArgumentType.STRING, defaultValue: "source-here" }, CUTOUT: { type: Scratch.ArgumentType.STRING, defaultValue: "cutout-here" }
+            }
+          },
+          {
+            opcode: "convertHexToRGB", blockType: Scratch.BlockType.REPORTER,
+            text: "convert [HEX] to [CHANNEL]", hideFromPalette: true,
+            arguments: {
+              HEX: { type: Scratch.ArgumentType.COLOR }, CHANNEL: { type: Scratch.ArgumentType.STRING, menu: "CHANNELS" }
+            }
           }
         ],
         menus: {
@@ -402,7 +425,8 @@
           REMOVAL: ["under", "over", "equal to"],
           DOMINANT: ["most", "least"],
           fileType: ["content", "dataURI"],
-          EFFECTS: { acceptReporters: true, items: imageEffectMenu }
+          EFFECTS: { acceptReporters: true, items: imageEffectMenu },
+          CHANNELS: { acceptReporters: true, items: ["R", "G", "B"] } // Deprecated
         },
       };
     }
@@ -501,21 +525,26 @@
           const { canvas, ctx } = this.createCanvasCtx(img.width, img.height, img, 0, 0);
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const effectFunc = this[`apply${cast.toString(args.EFFECT).replaceAll(" ", "")}`];
-          if (effectFunc && typeof effectFunc === "function") await effectFunc(imageData, percent);
+          if (effectFunc && typeof effectFunc === "function") await effectFunc(imageData, percent, ctx);
           else resolve("");
-          ctx.putImageData(imageData, 0, 0);
+          if (imageData.isAltered === undefined) ctx.putImageData(imageData, 0, 0);
+          else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+            if (imageData.extraDraw) imageData.extraDraw(ctx);
+          }
           resolve(canvas.toDataURL());
         };
         img.src = this.convertAsset(args.SVG, "png");
       });
     }
-    applySaturation(imageData, amtIn) {
-      const data = imageData.data;
-      amtIn /= 100;
-      for (let i = 0; i < data.length; i += 4) {
-        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-        for (let j = 0; j < 3; j++) { data[i + j] = avg + (data[i + j] - avg) * amtIn }
-      }
+    applySaturation(imageData, amtIn, ctx) {
+      ctx.filter = `saturate(${Math.abs(amtIn)}%)${amtIn < 0 ? " invert(100%)" : ""}`;
+      imageData.isAltered = true;
+    }
+    applyContrast(imageData, amtIn, ctx) {
+      ctx.filter = `contrast(${Math.max(0, amtIn / 100) + 1})`;
+      imageData.isAltered = true;
     }
     applyOpaque(imageData, amtIn) {
       const data = imageData.data;
@@ -568,20 +597,21 @@
         }
       }
     }
-    applyVignette(imageData, amtIn) {
-      const { data, width, height} = imageData;
-      let center = [width / 2, height / 2];
-      const maxDistance = Math.sqrt(center[0] * center[0] + center[1] * center[1]);
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          const index = (y * width + x) * 4;
-          center = [Math.abs(x - center[0]), Math.abs(y - center[1])];
-          const distance = Math.sqrt(center[0] * center[0] + center[1] * center[1]);
-          let vigAMT = (amtIn < 0) ? 1 - (distance / maxDistance) * (amtIn / 100) : ((maxDistance - distance) / maxDistance) * (amtIn / 100);
-          vigAMT = Math.max(0, Math.min(1, vigAMT));
-          for (let i = 0; i < 3; i++) data[index + i] = Math.round(data[index + i] * vigAMT);
-        }
-      }
+    applyVignette(imageData, amtIn, ctx) {
+      const { width, height} = imageData;
+      const col = amtIn > 0 ? 255 : 0;
+      amtIn = Math.abs(amtIn) / 100;
+      const grad = ctx.createRadialGradient(
+        width / 2, height / 2, 0, width / 2, height / 2, Math.max(width, height) / 1.5
+      );
+      grad.addColorStop(0, `rgba(${col}, ${col}, ${col}, 0)`);
+      grad.addColorStop(1, `rgba(${col}, ${col}, ${col}, ${amtIn})`);
+      imageData.isAltered = true;
+      imageData.extraDraw = (ctx) => {
+        ctx.globalCompositeOperation = "source-atop";
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, width, height);
+      };
     }
     applyRipple(imageData, amtIn) {
       const { data, width, height} = imageData;
@@ -627,28 +657,13 @@
         }
       }
     }
-    applyBlur(imageData, amtIn) {
-      const { data, width, height} = imageData;
-      const radius = Math.floor((amtIn / 100) * 10);
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          let sum = [0, 0, 0, 0];
-          let count = 0;
-          for (let ky = -radius; ky <= radius; ky++) {
-            for (let kx = -radius; kx <= radius; kx++) {
-              const offsetX = x + kx;
-              const offsetY = y + ky;
-              if (offsetX >= 0 && offsetX < width && offsetY >= 0 && offsetY < height) {
-                const pixelX = (offsetY * width + offsetX) * 4;
-                for (let i = 0; i < 4; i++) sum[i] += data[pixelX + i];
-                count++;
-              }
-            }
-          }
-          const pixelY = (y * width + x) * 4;
-          if (count > 0) for (let i = 0; i < 4; i++) data[pixelY + i] = sum[i] / count;
-        }
-      }
+    applyBlur(imageData, amtIn, ctx) {
+      ctx.filter = `blur(${amtIn}px)`;
+      imageData.isAltered = true;
+    }
+    applySepia(imageData, amtIn, ctx) {
+      ctx.filter = `sepia(${amtIn}%)`;
+      imageData.isAltered = true;
     }
     applyScanlines(imageData, amtIn) {
       const { data, width, height} = imageData;
@@ -1274,6 +1289,11 @@
     }
 
     getShard(args) { return this.allShards[args.SHARD - 1] || "" }
+
+    // Deprecated
+    convertHexToRGB(args) { return hexToRgb(args.HEX)[{ R: 0, G: 1, B: 2 }[args.CHANNEL]] || "" }
+    clipImage(t){return new Promise((e,i)=>{let s=new Image;s.onload=()=>{let i=new Image;i.onload=()=>{let t=document.createElement("canvas");t.width=s.width,t.height=s.height;let a=t.getContext("2d"),h=i.width+this.scale[0],o=i.height+this.scale[1],n=this.cutPos[0]+s.width/2-h/2,r=this.cutPos[1]-s.height/2+o/2;a.drawImage(s,0,0),a.globalCompositeOperation="destination-in";let l=(this.cutoutDirection+270)*Math.PI/180;a.translate(n+h/2,-1*r+o/2),a.rotate(l),a.drawImage(i,-h/2,-o/2,h,o),a.setTransform(1,0,0,1,0,0),a.globalCompositeOperation="source-over",e(t.toDataURL("image/png"))},i.src=this.convertAsset(t.CUTOUT,"png")},s.src=this.convertAsset(t.MAIN,"png")})}
+    overlayImage(t){return new Promise((e,i)=>{let s=new Image;s.onload=()=>{let i=new Image;i.onload=()=>{let t=document.createElement("canvas");t.width=Math.max(s.width,i.width),t.height=Math.max(s.height,i.height);let a=t.getContext("2d");a.drawImage(s,0,0);let h=i.width+this.scale[0],o=i.height+this.scale[1],n=this.cutPos[0]+s.width/2-h/2,r=this.cutPos[1]-s.height/2+o/2;a.translate(n+h/2,-1*r+o/2),a.rotate((this.cutoutDirection+270)*Math.PI/180),a.drawImage(i,-h/2,-o/2,h,o),a.setTransform(1,0,0,1,0,0),e(t.toDataURL("image/png"))},i.src=this.convertAsset(t.CUTOUT,"png")},s.src=this.convertAsset(t.MAIN,"png")})}
   }
 
   Scratch.extensions.register(new imgEffectsSP());
