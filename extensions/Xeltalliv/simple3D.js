@@ -1825,8 +1825,10 @@ void main() {
           gl.clear(ClearLayers[LAYERS]);
           gl.depthMask(false);
         }
-        renderer.dirty = true; //TODO: only do this when rendering to
-        runtime.requestRedraw(); //TODO: main canvas, not to framebuffers
+        if (currentRenderTarget === canvasRenderTarget) {
+          renderer.dirty = true;
+          runtime.requestRedraw();
+        }
       },
     },
     {
@@ -3281,8 +3283,10 @@ void main() {
             gl.drawArrays(mesh.data.primitives ?? gl.TRIANGLES, start, amount);
           }
         }
-        renderer.dirty = true; //TODO: only do this when rendering to
-        runtime.requestRedraw(); //TODO: main canvas, not to framebuffers
+        if (currentRenderTarget === canvasRenderTarget) {
+          renderer.dirty = true;
+          runtime.requestRedraw();
+        }
 
         if (mesh.buffers.colors) {
           gl.disableVertexAttribArray(program.aloc.a_color);
