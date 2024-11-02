@@ -947,8 +947,11 @@
   class ModelDecoder {
     constructor() {
       this.worker = null;
+      this.timeout = -1;
       this.resolveFn = null;
       this.queue = [];
+      this.timeLimit = 90000;
+      this.boundHandle = this.handle.bind(this);
     }
     decode(type, array, importMatrix) {
       return new Promise((resolve) => {
@@ -963,26 +966,50 @@
         this.worker = new Worker(
           `data:text/javascript;base64,${btoa(workerSrc)}`
         );
-        this.worker.onmessage = this.handle.bind(this);
+        this.worker.addEventListener("message", this.boundHandle);
       }
       const { data, resolve } = this.queue.shift();
       this.resolveFn = resolve;
       this.busy = true;
       this.worker.postMessage(data);
+      this.timeout = setTimeout(this.restartWorker.bind(this), this.timeLimit);
     }
     handle(output) {
+      if (this.timeout !== -1) {
+        clearTimeout(this.timeout);
+        this.timeout = -1;
+      }
       this.resolveFn(output.data);
+      this.resolveFn = null;
       this.busy = false;
       this.tryMoveQueue();
     }
     clear() {
       for (const { resolve } of this.queue) {
-        resolve({});
+        resolve(null);
       }
       this.queue = [];
     }
     destroy() {
-      if (this.worker) this.worker.terminate();
+      this.clear();
+      this.destroyWorker();
+    }
+    destroyWorker() {
+      if (this.resolveFn) {
+        this.resolveFn(null);
+        this.resolveFn = null;
+      }
+      if (this.worker) {
+        this.worker.removeEventListener("message", this.boundHandle);
+        this.worker.terminate();
+        this.worker = null;
+        this.busy = false;
+      }
+    }
+    restartWorker() {
+      console.warn("Simple3D: Worker took too long to decode the model and was terminated");
+      this.destroyWorker();
+      this.tryMoveQueue();
     }
   }
   class SimpleSkin extends Scratch.vm.renderer.exports.Skin {
