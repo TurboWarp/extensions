@@ -8,6 +8,7 @@
   "pointerlock",
   "cursor",
   "runtime-options",
+  "fps-extension",
   "fetch",
   "text",
   "local-storage",
