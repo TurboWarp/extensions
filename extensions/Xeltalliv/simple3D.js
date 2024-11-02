@@ -1587,7 +1587,7 @@ void main() {
     let value = [];
     let restarts = [];
     for (let i = 0; i < list.value.length; i++) {
-      let num = Cast.toNumber(list.value[i]) - 1;
+      let num = Math.floor(Cast.toNumber(list.value[i]) - 1);
       if (num < 0) {
         restarts.push(i);
       } else if (num > maxNum) {
@@ -1596,6 +1596,9 @@ void main() {
       value.push(num);
     }
     let restartIndex, typedArray;
+    if (maxNum > 4294967294) {
+      alert(`Simple3D error: Found vertex index ${maxNum}. The maximum supported value is 4294967295.`);
+    }
     if (maxNum > 65534) {
       typedArray = Uint32Array;
       restartIndex = 4294967295;
