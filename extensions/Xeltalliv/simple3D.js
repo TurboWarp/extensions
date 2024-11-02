@@ -717,6 +717,25 @@
       if (length == -1) return false;
       return true;
     }
+    estimateListVRAM() {
+      let sum = 0;
+      for (const name in this.myBuffers) {
+        const buffer = this.myBuffers[name];
+        sum += buffer.length * buffer.size * buffer.bytesPerEl;
+      }
+      return sum;
+    }
+    estimateTextureVRAM() {
+      const texture = this.myData.texture;
+      if (!texture) return 0;
+      let pixelsVRAM = texture.width * texture.height * 4;
+      if (texture.hasDepthBuffer) pixelsVRAM *= 2;
+      if (texture instanceof TextureCube) pixelsVRAM *= 6;
+      return pixelsVRAM;
+    }
+    estimateVRAM() {
+      return this.estimateListVRAM() + this.estimateTextureVRAM();
+    }
     destroy() {
       for (let name in this.myBuffers) {
         this.myBuffers[name].destroy();
@@ -782,6 +801,9 @@
     "instance draw limit": (mesh) => mesh.data.maxInstances ?? Infinity,
 
     "partial list update enabled": (mesh) => mesh.uploadOffset >= 0,
+    "estimate own VRAM usage": (mesh) => mesh.estimateVRAM(),
+    "estimate own list VRAM usage": (mesh) => mesh.estimateListVRAM(),
+    "estimate own texture VRAM usage": (mesh) => mesh.estimateTextureVRAM(),
   };
   let workerSrc = `
   class OffModelImporter {
@@ -1597,7 +1619,9 @@ void main() {
     }
     let restartIndex, typedArray;
     if (maxNum > 4294967294) {
-      alert(`Simple3D error: Found vertex index ${maxNum}. The maximum supported value is 4294967295.`);
+      alert(
+        `Simple3D error: Found vertex index ${maxNum}. The maximum supported value is 4294967295.`
+      );
     }
     if (maxNum > 65534) {
       typedArray = Uint32Array;
