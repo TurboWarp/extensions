@@ -900,27 +900,39 @@
   class ModelDecoder {
     constructor() {
       this.worker = null;
-      this.last = new Promise((res) => res());
       this.resolveFn = null;
+      this.queue = [];
     }
-    async decode(type, array, importMatrix) {
+    decode(type, array, importMatrix) {
+      return new Promise((resolve) => {
+	      this.queue.push({ data: { type, array, importMatrix }, resolve });
+          this.tryMoveQueue();
+      });
+    }
+    tryMoveQueue() {
+      if (this.busy) return;
+      if (this.queue.length == 0) return;
       if (!this.worker) {
         this.worker = new Worker(
           `data:text/javascript;base64,${btoa(workerSrc)}`
         );
         this.worker.onmessage = this.handle.bind(this);
       }
-      let onceDone;
-      const previous = this.last;
-      this.last = new Promise((res) => (onceDone = res));
-      await previous;
-      this.worker.postMessage({ type, array, importMatrix });
-      const output = await new Promise((res) => (this.resolveFn = res));
-      onceDone();
-      return output;
+      const { data, resolve } = this.queue.shift();
+      this.resolveFn = resolve;
+      this.busy = true;
+      this.worker.postMessage(data);
     }
     handle(output) {
       this.resolveFn(output.data);
+      this.busy = false;
+      this.tryMoveQueue();
+    }
+    clear() {
+      for(const { resolve } of this.queue) {
+        resolve({});
+      }
+      this.queue = [];
     }
     destroy() {
       if (this.worker) this.worker.terminate();
@@ -1699,6 +1711,7 @@ void main() {
     }
     meshes.clear();
     programs.clear();
+    modelDecoder.clear();
     renderer.dirty = true;
     runtime.requestRedraw();
   }
