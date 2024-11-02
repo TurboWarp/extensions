@@ -2915,9 +2915,9 @@ void main() {
           if (fogSpace == "model space") flags.push("FOG_IN_MODEL_SPACE");
           if (fogPosition) flags.push("FOG_POS");
         }
-        if (mesh.buffers.boneIndices && mesh.bonesDiff) {
+        if (mesh.buffers.boneIndices && mesh.data.bonesDiff) {
           flags.push(`SKINNING ${mesh.buffers.boneIndices.size}`);
-          flags.push(`BONE_COUNT ${mesh.bonesDiff.length / 16}`);
+          flags.push(`BONE_COUNT ${mesh.data.bonesDiff.length / 16}`);
         }
         if (mesh.data.interpolation) flags.push(mesh.data.interpolation);
         if (mesh.data.alphaTest > 0) flags.push("ALPHATEST");
@@ -3149,8 +3149,8 @@ void main() {
           gl.uniform1f(program.uloc.u_alpha_threshold, mesh.data.alphaTest);
         }
 
-        if (mesh.bonesDiff) {
-          gl.uniformMatrix4fv(program.uloc.u_bones, false, mesh.bonesDiff);
+        if (mesh.data.bonesDiff) {
+          gl.uniformMatrix4fv(program.uloc.u_bones, false, mesh.data.bonesDiff);
         }
         if (mesh.data.uvOffset) {
           gl.uniform2fv(program.uloc.u_uvOffset, mesh.data.uvOffset);
