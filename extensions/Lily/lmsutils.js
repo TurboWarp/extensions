@@ -1240,19 +1240,20 @@
     }
 
     equalsExactly(args) {
+      // Intentionally not using Cast
       return args.ONE === args.TWO;
     }
 
     notEqualTo(args) {
-      return args.INPUTA != args.INPUTB;
+      return Scratch.Cast.compare(args.INPUTA, args.INPUTB) !== 0;
     }
 
     moreThanEqual(args) {
-      return args.INPUTA >= args.INPUTB;
+      return Scratch.Cast.compare(args.INPUTA, args.INPUTB) >= 0;
     }
 
     lessThanEqual(args) {
-      return args.INPUTA <= args.INPUTB;
+      return Scratch.Cast.compare(args.INPUTA, args.INPUTB) <= 0;
     }
 
     stringCheckBoolean(args) {
