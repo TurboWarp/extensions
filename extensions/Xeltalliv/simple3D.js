@@ -1007,7 +1007,9 @@
       }
     }
     restartWorker() {
-      console.warn("Simple3D: Worker took too long to decode the model and was terminated");
+      console.warn(
+        "Simple3D: Worker took too long to decode the model and was terminated"
+      );
       this.destroyWorker();
       this.tryMoveQueue();
     }
