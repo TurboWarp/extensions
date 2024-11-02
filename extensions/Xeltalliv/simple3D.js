@@ -736,7 +736,7 @@
 
     "partial list update enabled": (mesh) => mesh.uploadOffset >= 0,
   };
-  const workerSrc = `
+  let workerSrc = `
   class OffModelImporter {
     constructor(dataRaw) {
       const dataStr = dataRaw.map(str => str.split("#")[0].replaceAll("\t", " ").trim()).filter(str => str.length);
@@ -905,8 +905,8 @@
     }
     decode(type, array, importMatrix) {
       return new Promise((resolve) => {
-	      this.queue.push({ data: { type, array, importMatrix }, resolve });
-          this.tryMoveQueue();
+        this.queue.push({ data: { type, array, importMatrix }, resolve });
+        this.tryMoveQueue();
       });
     }
     tryMoveQueue() {
@@ -929,7 +929,7 @@
       this.tryMoveQueue();
     }
     clear() {
-      for(const { resolve } of this.queue) {
+      for (const { resolve } of this.queue) {
         resolve({});
       }
       this.queue = [];
@@ -1068,7 +1068,7 @@
     }
     publicApi.redraw = null;
   }
-  const vshSrc = `
+  let vshSrc = `
 #ifdef MSAA_CENTROID
 #define INTERPOLATION centroid
 #endif
@@ -1241,7 +1241,7 @@ void main() {
 #endif
 }
 `;
-  const fshSrc = `
+  let fshSrc = `
 #ifdef MSAA_CENTROID
 #define INTERPOLATION centroid
 #endif
@@ -2401,7 +2401,10 @@ void main() {
         }
         if (myData.bonesOrig) {
           const diff = [];
-          const end = Math.min(myData.bonesCurr.length, myData.bonesOrig.length);
+          const end = Math.min(
+            myData.bonesCurr.length,
+            myData.bonesOrig.length
+          );
           let i = 0;
           for (; i < end; i++) {
             diff.push(m4.multiply(myData.bonesCurr[i], myData.bonesOrig[i]));
@@ -3182,7 +3185,10 @@ void main() {
         }
         if (mesh.buffers.instanceTransforms) {
           let instanceCount = mesh.buffers.instanceTransforms.length;
-          if (mesh.data.maxInstances && mesh.data.maxInstances < instanceCount) {
+          if (
+            mesh.data.maxInstances &&
+            mesh.data.maxInstances < instanceCount
+          ) {
             instanceCount = mesh.data.maxInstances;
           }
           if (mesh.buffers.indices) {
@@ -4191,7 +4197,7 @@ void main() {
         );
         if (!list) return;
         if (!currentRenderTarget.checkIfValid()) return;
-        const {x, y, w, h} = currentRenderTarget.readarea;
+        const { x, y, w, h } = currentRenderTarget.readarea;
         if (w == 0 || h == 0) return;
         const pixels = new Uint8ClampedArray(w * h * 4);
         gl.readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
@@ -4225,7 +4231,7 @@ void main() {
           return currentRenderTarget.hasDepthBuffer;
         if (PROPERTY == "image as data URI") {
           if (!currentRenderTarget.checkIfValid()) return "";
-          const {x, y, w, h} = currentRenderTarget.readarea;
+          const { x, y, w, h } = currentRenderTarget.readarea;
           if (w == 0 || h == 0) return "";
           const pixels = new Uint8ClampedArray(w * h * 4);
           gl.readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
@@ -4699,12 +4705,8 @@ void main() {
       },
       boxType: {
         acceptReporters: false,
-        items: [
-          "viewport box",
-          "clipping box",
-          "readback box",
-        ],
-      }
+        items: ["viewport box", "clipping box", "readback box"],
+      },
     },
   };
 
@@ -4814,7 +4816,9 @@ void main() {
   gl.__proto__ = ogl; //*/
 
   publicApi.i_will_not_ask_for_help_when_these_break = () => {
-    console.warn("WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. WHEN your code breaks, do not expect help.\n\nProper stable APIs will be added later.");
+    console.warn(
+      "WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. WHEN your code breaks, do not expect help.\n\nProper stable APIs will be added later."
+    );
     return {
       canvas,
       gl,
@@ -4824,21 +4828,31 @@ void main() {
       modelDecoder,
       uploadBuffer,
       getFshSrc: () => fshSrc,
-      setFshSrc: (src) => {vshSrc = src},
-      getVshSrc: () => fshSrc,
-      setVshSrc: (src) => {vshSrc = src},
+      setFshSrc: (src) => {
+        fshSrc = src;
+      },
+      getVshSrc: () => vshSrc,
+      setVshSrc: (src) => {
+        vshSrc = src;
+      },
       canvasRenderTarget,
       resetEverything,
       getTransforms: () => transforms,
-      setTransforms: (t) => {transforms = t},
+      setTransforms: (t) => {
+        transforms = t;
+      },
       getSelectedTransform: () => selectedTransform,
-      setSelectedTransform: (t) => {selectedTransform = t},
+      setSelectedTransform: (t) => {
+        selectedTransform = t;
+      },
       getWorkerSrc: () => workerSrc,
-      setWorkerSrc: (src) => {workerSrc = src},
+      setWorkerSrc: (src) => {
+        workerSrc = src;
+      },
       extInfo,
       Extension,
       Blendings,
-    }
+    };
   };
 
   Scratch.extensions.register(new Extension());
