@@ -733,6 +733,8 @@
       mesh.data.drawRange && mesh.data.drawRange[0] + mesh.data.drawRange[1],
     "vertex draw range length": (mesh) =>
       mesh.data.drawRange && mesh.data.drawRange[1],
+    "instance draw limit": (mesh) =>
+      mesh.data.maxInstances ?? Infinity,
 
     "partial list update enabled": (mesh) => mesh.uploadOffset >= 0,
   };
