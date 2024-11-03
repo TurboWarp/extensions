@@ -236,15 +236,51 @@
               },
             ],
           },
-          FALLBACKS: [
-            "Sans Serif",
-            "Serif",
-            "Handwriting",
-            "Marker",
-            "Curly",
-            "Pixel",
-            "Scratch",
-          ],
+          FALLBACKS: {
+            acceptReporters: false,
+            items: [
+              {
+                text: 'Sans Serif',
+                value: 'Sans Serif'
+              },
+              {
+                text: 'Serif',
+                value: 'Serif'
+              },
+              {
+                text: 'Handwriting',
+                value: 'Handwriting'
+              },
+              {
+                text: 'Marker',
+                value: 'Marker'
+              },
+              {
+                text: 'Curly',
+                value: 'Curly'
+              },
+              {
+                text: 'Pixel',
+                value: 'Pixel'
+              },
+              {
+                text: 'Mopeds',
+                value: 'Scratch'
+              },
+              {
+                text: '中文',
+                value: '"Microsoft YaHei", "微软雅黑", STXihei, "华文细黑"',
+              },
+              {
+                text: '한국어',
+                value: 'Malgun Gothic',
+              },
+              {
+                text: '日本語',
+                value: '"ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic"',
+              },
+            ]
+          },
           FILES: {
             acceptReporters: true,
             items: FONT_EXTENSIONS.map((i) => `.${i}`),
