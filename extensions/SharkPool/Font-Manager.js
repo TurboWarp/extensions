@@ -280,14 +280,14 @@
 
     addSystemFont(args) {
       const name = Scratch.Cast.toString(args.NAME);
-      if (fontManager.isValidFamily(name)) {
+      if (fontManager.isValidSystemFont(name)) {
         fontManager.addSystemFont(name, Scratch.Cast.toString(args.BACKUP));
       }
     }
 
     async addCustomFont(args) {
       const name = Scratch.Cast.toString(args.NAME);
-      if (!fontManager.isValidFamily(name)) {
+      if (!fontManager.isValidCustomFont(name)) {
         return;
       }
 
