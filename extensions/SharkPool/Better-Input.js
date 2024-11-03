@@ -2,9 +2,9 @@
 // ID: BetterInputSP
 // Description: Expansion of the "ask and wait" Blocks.
 // By: SharkPool
-// License: MPL-2.0
+// Licence: MLP-2.0
 
-// Version V.4.2.1
+// Version V.4.2.11
 
 (function (Scratch) {
   "use strict";
@@ -583,7 +583,7 @@
           inputActionMenu: {
             acceptReporters: true,
             items: [
-              "None", "Text", "Password", "Number", "Color",
+              "None", "Text", "Text Area", "Password", "Number", "Color",
               "Dropdown", "Single Dropdown", "Multi-Select Dropdown",
               "Horizontal Slider", "Vertical Slider"
             ],
@@ -678,7 +678,7 @@
         text.style.textShadow = this.mainUIinfo.overlayTxtShad;
         this.tryOutline(text, this.mainUIinfo.overlayOutline[0], this.mainUIinfo.overlayOutline[1]);
       }
-      const inputField = overlay.querySelector(this.inputType.includes("Single") ? "select" : "input");
+      const inputField = overlay.querySelector(this.inputType.includes("Single") ? "select" : this.inputType === "Text Area" ? "textarea" : "input");
       if (inputField) {
         const inpWidth = parseInt(this.mainUIinfo.dimensions[0]);
         inputField.style.width = this.inputType === "Color" || this.inputType.includes("Single") ? "100%" :
@@ -1053,11 +1053,11 @@
           if (this.uiOrder[0] === "question") questionText.style.marginBottom = "10px";
           questionText.innerHTML = xmlEscape(question).replace(/\n/g, "<br>");
 
-          const inputField = document.createElement("input");
+          const inputField = document.createElement(this.inputType === "Text Area" ? "textarea" : "input");
           inputField.style.display = this.inputType ? "block" : "none";
           inputField.style.fontSize = this.fontSize;
           inputField.style.margin = "0 auto";
-          inputField.type = this.inputType.toLowerCase();
+          if (this.inputType !== "Text Area") inputField.type = this.inputType.toLowerCase();
           const setInpValue = (val) => {
             inputField.value = val;
             if (this.askBoxInfo[1] == 1) this.userInput = inputField.value;
