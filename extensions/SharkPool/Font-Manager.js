@@ -114,11 +114,11 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Pusab",
+                defaultValue: "Lobster",
               },
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "",
+                defaultValue: "https://extensions.turbowarp.org/Lobster.woff2",
               },
               BACKUP: {
                 type: Scratch.ArgumentType.STRING,
