@@ -1,7 +1,7 @@
 // Name: JSON
 // ID: skyhigh173JSON
 // Description: Handle JSON strings and arrays.
-// By: Skyhigh173
+// By: Skyhigh173 <https://scratch.mit.edu/users/Skyhigh173/>
 // License: MIT
 
 (function (Scratch) {
