@@ -260,7 +260,7 @@
           apiformname = "file";
           break;
         case "pastebin.com":
-          apiurl = "https://pastebin.com/api/api_post.php";
+          apiurl = "https://pastebin.com/api/api_post.php";// eslint-disable-line no-case-declarations
           let fileData = args.data;
 
           if (args.base64 === "true") {
