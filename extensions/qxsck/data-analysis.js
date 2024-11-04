@@ -1,7 +1,7 @@
 // Name: Data Analysis
 // ID: qxsckdataanalysis
 // Description: Blocks to compute means, medians, maximums, minimums, variances, and modes.
-// By: qxsck
+// By: qxsck <https://scratch.mit.edu/users/qxsck/>
 // License: MIT
 
 (function (Scratch) {
