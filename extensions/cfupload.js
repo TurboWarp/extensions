@@ -16,12 +16,15 @@
   let statusCode = 0;
   let rawResponse = "";
   const pastebinKey = "zvRcx16j8TYvEDimPAgdYisrSbZqWMPo";
-  const pinataJWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI1NjIxMjYzOS1hMDUwLTQ3ZWMtYTlkNC0xOTQ1ODNjNmE5ODMiLCJlbWFpbCI6InBpbmF0YUBjb2RlZm94eS5saW5rIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6IjU2ZTVjYThlZTBhOGM1OGEzMWUwIiwic2NvcGVkS2V5U2VjcmV0IjoiMWRmNjkwNGI4NTkwMTFmNmE3MDg5OGUxNmY2OTcyY2I5YjY5NjdkZTRkOTg4ZWIwYmNkYzUxMjM5ZTExNmM2NCIsImlhdCI6MTcyNTAxNjAyOX0.SCmIf8VXW7jfgE87x6Ing7Y10wniN_j1aZRBFjUAUh4";
-let process = ""; 
+  const pinataJWT =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI1NjIxMjYzOS1hMDUwLTQ3ZWMtYTlkNC0xOTQ1ODNjNmE5ODMiLCJlbWFpbCI6InBpbmF0YUBjb2RlZm94eS5saW5rIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6IjU2ZTVjYThlZTBhOGM1OGEzMWUwIiwic2NvcGVkS2V5U2VjcmV0IjoiMWRmNjkwNGI4NTkwMTFmNmE3MDg5OGUxNmY2OTcyY2I5YjY5NjdkZTRkOTg4ZWIwYmNkYzUxMjM5ZTExNmM2NCIsImlhdCI6MTcyNTAxNjAyOX0.SCmIf8VXW7jfgE87x6Ing7Y10wniN_j1aZRBFjUAUh4";
+  let process = "";
   let headersEntries = {};
 
   const isBase64 = (value) =>
-    /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/.test(value);
+    /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/.test(
+      value
+    );
 
   const uploadFileToLink = (
     data,
@@ -58,7 +61,7 @@ let process = "";
     return Scratch.fetch(link, {
       method: "POST",
       body: formData,
-      headers: headersEntries
+      headers: headersEntries,
     })
       .then((response) => {
         statusCode = response.status;
@@ -193,7 +196,13 @@ let process = "";
         menus: {
           Apis: {
             acceptReporters: true,
-            items: ["catbox.moe", "file.io", "0x0.st", "pastebin.com", "pinata.cloud"],
+            items: [
+              "catbox.moe",
+              "file.io",
+              "0x0.st",
+              "pastebin.com",
+              "pinata.cloud",
+            ],
           },
           MimeTypes: {
             acceptReporters: true,
@@ -224,7 +233,7 @@ let process = "";
               "application/vnd.oasis.opendocument.text",
               "application/zip",
               "application/x-tar",
-              "application/x-rar-compressed"
+              "application/x-rar-compressed",
             ],
           },
           tf: {
@@ -234,7 +243,7 @@ let process = "";
         },
       };
     }
-    
+
     callapi(args) {
       switch (args.Apis) {
         case "catbox.moe":
@@ -268,7 +277,7 @@ let process = "";
           return Scratch.fetch(apiurl, {
             method: "POST",
             headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
+              "Content-Type": "application/x-www-form-urlencoded",
             },
             body: new URLSearchParams({
               api_dev_key: pastebinKey,
@@ -279,7 +288,7 @@ let process = "";
           })
             .then((response) => response.text())
             .then((text) => {
-              return text.replace("pastebin.com/", "pastebin.com/raw/");;
+              return text.replace("pastebin.com/", "pastebin.com/raw/");
             })
             .catch((error) => {
               return error;
@@ -291,7 +300,7 @@ let process = "";
           break;
       }
 
-      process =  uploadFileToLink(
+      process = uploadFileToLink(
         args.data,
         args.name,
         apiurl,
@@ -301,13 +310,17 @@ let process = "";
       );
       switch (args.Apis) {
         case "pinata.cloud":
-          return "https://fuchsia-total-spider-341.mypinata.cloud/ipfs/" + JSON.parse(rawResponse).IpfsHash;
+          return (
+            "https://fuchsia-total-spider-341.mypinata.cloud/ipfs/" +
+            JSON.parse(rawResponse).IpfsHash
+          );
         case "file.io":
           return JSON.parse(rawResponse).link;
         case "catbox.moe":
         case "0x0.st":
           return process;
-    }}
+      }
+    }
 
     addFormData(args) {
       formDataEntries[args.key] = args.value;
@@ -339,9 +352,9 @@ let process = "";
         args.link,
         args.formName,
         args.mimeType,
-        args.base64)
+        args.base64
+      );
     }
   }
   Scratch.extensions.register(new Upload());
 })(Scratch);
-
