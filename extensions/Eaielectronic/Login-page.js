@@ -1,6 +1,7 @@
 // Name: Login
 // ID: usermanagement
 // Description: Allows you to create login forms.
+// By: Eaielectronic
 // By: SERPENT1867 <https://scratch.mit.edu/users/serpent1867/>
 // License: MPL-2.0
 class UserManagement {
