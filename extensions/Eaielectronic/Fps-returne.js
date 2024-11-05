@@ -1,7 +1,7 @@
 // Name: FPS returne
 // ID: fpsbasedreturn
 // Description: allows you to create games that run at the same speed, even if the FPS changes.
-// By: serpent1867 <https://scratch.mit.edu/users/serpent1867/>
+// By: SERPENT1867 <https://scratch.mit.edu/users/serpent1867/>
 // License: MPL-2.0
 class FPSBasedReturn {
     constructor() {
