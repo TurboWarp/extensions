@@ -1,5 +1,5 @@
 // Name: Scrolling bull
-// ID: scrollingTextBubble',
+// ID: scrollingTextBubble
 // Description: Create scrolling text bubbles and apply styles with Html tags.
 // By: Eaielectronic
 // By: SERPENT1867 <https://scratch.mit.edu/users/serpent1867/>
