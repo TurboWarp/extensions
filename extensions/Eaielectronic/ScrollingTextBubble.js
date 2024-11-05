@@ -6,6 +6,8 @@
 // License: MPL-2.0
 (function(Scratch) {
     'use strict';
+(function(Scratch) {
+    'use strict';
 
     class ScrollingTextBubble {
         constructor() {
@@ -191,7 +193,7 @@
 
         hideAllTextBubbles() {
             for (const spriteId in this.bubbles) {
-                if (this.bubbles.hasOwnProperty(spriteId)) {
+                if (Object.prototype.hasOwnProperty.call(this.bubbles, spriteId)) {
                     clearInterval(this.bubbles[spriteId].intervalId);
                     this.bubbles[spriteId].bubbleDiv.remove();
                     delete this.bubbles[spriteId];
@@ -273,4 +275,6 @@
     }
 
     Scratch.extensions.register(new ScrollingTextBubble());
+})(Scratch);
+
 })(Scratch);
