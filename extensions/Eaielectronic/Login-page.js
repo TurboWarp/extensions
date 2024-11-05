@@ -4,6 +4,8 @@
 // By: Eaielectronic
 // By: SERPENT1867 <https://scratch.mit.edu/users/serpent1867/>
 // License: MPL-2.0
+(function (Scratch) {
+   "use strict";
 class UserManagement {
     constructor() {
         this.users = [];
@@ -254,4 +256,5 @@ class UserManagement {
   }
   
   Scratch.extensions.register(new UserManagement());
+})(Scratch);
   
