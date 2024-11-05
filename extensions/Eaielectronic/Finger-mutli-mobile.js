@@ -1,7 +1,7 @@
 // Name: Finger ios/android
 // ID: multiTouchDetection
 // Description: Detect multiple fingers on mobile devices. Unlike sensing+ works on all mobile devices.
-// By: serpent1867 <https://scratch.mit.edu/users/serpent1867/+
+// By: SERPENT1867 <https://scratch.mit.edu/users/serpent1867/+
 // License: MPL-2.0
 (function (Scratch) {
     'use strict';
