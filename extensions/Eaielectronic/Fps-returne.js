@@ -4,6 +4,8 @@
 // By: Eaielectronic
 // By: SERPENT1867 <https://scratch.mit.edu/users/serpent1867/>
 // License: MPL-2.0
+(function (Scratch) {
+   "use strict";
 class FPSBasedReturn {
     constructor() {
         this.previousTime = null;  // Pour stocker l'heure de la dernière frame
@@ -72,3 +74,4 @@ class FPSBasedReturn {
 
 // Enregistrer l'extension dans TurboWarp
 Scratch.extensions.register(new FPSBasedReturn());
+    })(Scratch);
