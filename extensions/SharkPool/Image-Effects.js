@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.2.5.0
+// Version V.2.5.01
 
 (function (Scratch) {
   "use strict";
@@ -411,14 +411,17 @@
     // Helper Funcs
     clamp(value, min, max) { return Math.min(max, Math.max(min, value)) }
 
-    printImg(img, forceWid, forceHei) {
-      const { canvas, ctx } = this.createCanvasCtx(forceWid || img.width, forceHei || img.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    printImg(img, width, height) {
+      const { canvas, ctx } = this.createCanvasCtx(Math.abs(width) || img.width, Math.abs(height) || img.height);
+      ctx.save();
+      ctx.scale(width < 0 ? -1 : 1, height < 0 ? -1 : 1);
+      ctx.drawImage(img, width < 0 ? -Math.abs(width) : 0, height < 0 ? -Math.abs(height) : 0, canvas.width, canvas.height);
+      ctx.restore();
       return ctx.getImageData(0, 0, canvas.width, canvas.height).data;
     }
 
-    exportImg(img, pixelData, forceWid, forceHei) {
-      const { canvas, ctx } = this.createCanvasCtx(forceWid || img.width, forceHei || img.height);
+    exportImg(img, pixelData, width, height) {
+      const { canvas, ctx } = this.createCanvasCtx(Math.abs(width) || img.width, Math.abs(height) || img.height);
       ctx.putImageData(new ImageData(new Uint8ClampedArray(pixelData), canvas.width, canvas.height), 0, 0);
       return canvas.toDataURL();
     }
@@ -448,9 +451,11 @@
     }
 
     convertAsset(input, type) {
-      if (!input || !(input.startsWith("data:image/") || input.startsWith("<svg"))) return menuIconURI;
-      if (type === "png") return input.startsWith("data:image/") ? input : `data:image/svg+xml;base64,${btoa(input)}`;
-      else return input.startsWith("data:image/") ? this.makeSVGimage({ URI : input, TYPE : "content" }) : input;
+      if (input && (input.startsWith("http") || input.startsWith("data:image/") || input.startsWith("<svg"))) {
+        if (type === "png") return input.startsWith("<svg") ? `data:image/svg+xml;base64,${btoa(input)}` : input;
+        else return input.startsWith("data:image/") ? this.makeSVGimage({ URI: input, TYPE: "content" }) : input;
+      }
+      return menuIconURI;
     }
 
     // Block Funcs
@@ -460,6 +465,7 @@
       return new Promise((resolve) => {
         const color = hexToRgb(args.COLOR);
         const img = new Image();
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const data = this.printImg(img);
           for (let i = 0; i < data.length; i += 4) {
@@ -480,17 +486,18 @@
       const colRem = hexToRgb(args.COLOR);
       const colRep = hexToRgb(args.REPLACE);
       return new Promise(resolve => {
-        const imageElement = new Image();
-        imageElement.onload = () => {
-          const pixelData = this.printImg(imageElement);
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = () => {
+          const pixelData = this.printImg(img);
           for (let i = 0; i < pixelData.length; i += 4) {
             const [r, g, b] = pixelData.slice(i, i + 3);
             const inRange = (val, target) => val >= target - this.softness && val <= target + this.softness;
             if (inRange(r, colRem[0]) && inRange(g, colRem[1]) && inRange(b, colRem[2])) pixelData.set(colRep, i);
           }
-          resolve(this.exportImg(imageElement, pixelData));
+          resolve(this.exportImg(img, pixelData));
         };
-        imageElement.src = this.convertAsset(args.DATA_URI, "png");
+        img.src = this.convertAsset(args.DATA_URI, "png");
       });
     }
 
@@ -498,6 +505,7 @@
       return new Promise((resolve) => {
         const percent = cast.toNumber(args.PERCENTAGE);
         const img = new Image();
+        img.crossOrigin = "Anonymous";
         img.onload = async () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width, img.height, img, 0, 0);
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -706,6 +714,7 @@
       return new Promise((resolve) => {
         const strength = cast.toNumber(args.STRENGTH) / 100;
         const img = new Image();
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const canvasSize = Math.max(img.width, img.height) * 2;
           let centerX = cast.toNumber(args.CENTER_X) / 100;
@@ -750,6 +759,7 @@
         const freqX = cast.toNumber(args.FREQX) / 100;
         const freqY = cast.toNumber(args.FREQY) / 100;
         const img = new Image();
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width, img.height, img, 0, 0);
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -781,6 +791,7 @@
       return new Promise((resolve) => {
         const threshold = cast.toNumber(args.THRESHOLD) / 100;
         const img = new Image();
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width, img.height, img, 0, 0);
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -810,6 +821,7 @@
         const amtIn = cast.toNumber(args.PERCENTAGE) / 100;
         const width = cast.toNumber(args.WIDTH) / 50;
         const img = new Image();
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width, img.height, img, 0, 0);
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -845,6 +857,7 @@
         const thick = Math.ceil(cast.toNumber(args.THICKNESS) / 4);
         const color = hexToRgb(args.COLOR);
         const img = new Image();
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width + (thick * 2), img.height + (thick * 2), img, thick, thick);
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -906,8 +919,10 @@
     maskImage(args) {
       return new Promise((resolve) => {
         const srcImg = new Image();
+        srcImg.crossOrigin = "Anonymous";
         srcImg.onload = () => {
           const maskImg = new Image();
+          maskImg.crossOrigin = "Anonymous";
           maskImg.onload = () => {
             const scaleW = maskImg.width * (this.scale[0] / 50);
             const scaleH = maskImg.height * (this.scale[1] / 50);
@@ -934,6 +949,7 @@
       return new Promise((resolve) => {
         const amtIn = cast.toNumber(args.PERCENTAGE);
         const img = new Image();
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const { canvas, ctx } = this.createCanvasCtx(img.width + Math.abs(amtIn) * 5, img.height + Math.abs(amtIn) * 5, img, Math.abs(amtIn) * 2.5, Math.abs(amtIn) * 2.5);
           let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -986,6 +1002,7 @@
     stretch(src, w, h) {
       return new Promise((resolve) => {
         const img = new Image();
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           resolve(this.exportImg(img, this.printImg(img, w, h), w, h));
         };
@@ -993,16 +1010,17 @@
       });
     }
     svgToBitmap(args) {
-      return this.stretch(this.convertAsset(args.SVG, "png"), Math.abs(cast.toNumber(args.WIDTH)), Math.abs(cast.toNumber(args.HEIGHT)));
+      return this.stretch(this.convertAsset(args.SVG, "png"),cast.toNumber(args.WIDTH), cast.toNumber(args.HEIGHT));
     }
     stretchImg(args) {
-      return this.stretch(this.convertAsset(args.URI, "png"), Math.abs(cast.toNumber(args.W)), Math.abs(cast.toNumber(args.H)));
+      return this.stretch(this.convertAsset(args.URI, "png"), cast.toNumber(args.W), cast.toNumber(args.H));
     }
 
     convertImageToSVG(args) {
       return new Promise((resolve) => {
         const img = new Image();
         img.src = this.convertAsset(args.URI, "png");
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const ctx = this.createCanvasCtx(img.width, img.height, img).ctx;
           ctx.drawImage(img, 0, 0, img.width, img.height);
@@ -1049,6 +1067,7 @@
         return await new Promise((resolve) => {
           // eslint-disable-next-line
           const img = new Image();
+          img.crossOrigin = "Anonymous";
           img.onload = () => {
             const { width, height } = img;
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -1066,6 +1085,7 @@
     upscaleImage(args) {
       return new Promise((resolve) => {
         const img = new Image();
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const pixelData = this.printImg(img);
           const ctx = this.createCanvasCtx(img.width, img.height).ctx;
@@ -1169,6 +1189,7 @@
       const img = new Image();
       img.src = this.convertAsset(args.URI, "png");
       return new Promise((resolve) => {
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const data = this.printImg(img);
           const colorCnt = {};
@@ -1190,6 +1211,7 @@
       const img = new Image();
       img.src = this.confirmAsset(args.URI, "png");
       return new Promise((resolve) => {
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           resolve(args.TYPE === "total" ? img.width * img.height : args.TYPE === "per line" ? img.width : img.height);
         };
@@ -1201,6 +1223,7 @@
       const img = new Image();
       img.src = this.convertAsset(args.URI, "png");
       return new Promise((resolve) => {
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const startNum = cast.toNumber(args.NUM);
           const endNum = cast.toNumber(args.NUM2) || startNum;
@@ -1218,6 +1241,7 @@
       const img = new Image();
       img.src = this.convertAsset(args.URI, "png");
       return new Promise((resolve) => {
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           const targetPixel = cast.toNumber(args.NUM);
           const pixelData = this.printImg(img);
@@ -1238,6 +1262,7 @@
       const newHeight = img.height * 4;
       this.allShards = [];
       return new Promise((resolve) => {
+        img.crossOrigin = "Anonymous";
         img.onload = () => {
           for (let i = 0; i < cracks; i++) {
             if (this.allShards.length >= args.SHARDS) break;
