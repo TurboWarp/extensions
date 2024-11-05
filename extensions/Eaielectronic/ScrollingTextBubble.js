@@ -6,8 +6,6 @@
 // License: MPL-2.0
 (function(Scratch) {
     'use strict';
-(function(Scratch) {
-    'use strict';
 
     class ScrollingTextBubble {
         constructor() {
@@ -275,6 +273,4 @@
     }
 
     Scratch.extensions.register(new ScrollingTextBubble());
-})(Scratch);
-
 })(Scratch);
