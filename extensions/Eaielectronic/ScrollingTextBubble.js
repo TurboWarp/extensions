@@ -1,6 +1,7 @@
 // Name: Scrolling bull
 // ID: scrollingTextBubble',
 // Description: Create scrolling text bubbles and apply styles with Html tags.
+// By: Eaielectronic
 // By: SERPENT1867 <https://scratch.mit.edu/users/serpent1867/>
 // License: MPL-2.0
 (function(Scratch) {
