@@ -62,6 +62,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       );
       const canvasAspect = canvas.width / canvas.height;
       const stageAspect = runtime.stageWidth / runtime.stageHeight;
+      const material = plane.getObject3D('mesh').material;
 
       let height = 2 * Math.tan(fov / 2) * 1;
       let width = height * stageAspect;
@@ -73,6 +74,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
       plane.object3D.scale.set(width, height, 1);
       plane.object3D.position.set(0, 0, -1);
+      material.map.needsUpdate = true;
     });
   }
 
