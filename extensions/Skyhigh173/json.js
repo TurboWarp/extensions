@@ -1,7 +1,7 @@
 // Name: JSON
 // ID: skyhigh173JSON
 // Description: Handle JSON strings and arrays.
-// By: Skyhigh173 <https://scratch.mit.edu/users/Skyhigh173/>
+// By: Skyhigh173
 // License: MIT
 
 (function (Scratch) {
@@ -565,12 +565,10 @@
     getLists() {
       const globalLists = Object.values(
         vm.runtime.getTargetForStage().variables
-      ).filter((x) => x.type === "list");
-      const localLists = vm.editingTarget
-        ? Object.values(vm.editingTarget.variables).filter(
-            (x) => x.type === "list"
-          )
-        : [];
+      ).filter((x) => x.type == "list");
+      const localLists = Object.values(vm.editingTarget.variables).filter(
+        (x) => x.type == "list"
+      );
       const uniqueLists = [...new Set([...globalLists, ...localLists])];
       if (uniqueLists.length === 0) {
         return [
@@ -601,9 +599,7 @@
     json_is_valid({ json }) {
       if (typeof json != "string") {
         return false;
-      }
-      json = json.trim();
-      if (
+      } else if (
         (json.slice(0, 1) != "[" || json.slice(-1) != "]") &&
         (json.slice(0, 1) != "{" || json.slice(-1) != "}")
       ) {

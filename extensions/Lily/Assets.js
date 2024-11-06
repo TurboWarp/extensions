@@ -362,14 +362,8 @@
       const assetType = this._typeIsBitmap(blob.type)
         ? runtime.storage.AssetType.ImageBitmap
         : runtime.storage.AssetType.ImageVector;
-
-      // Bitmap data format is not actually enforced, but setting it to something that isn't in scratch-parser's
-      // known format list will throw an error when someone tries to load the project.
-      // (https://github.com/scratchfoundation/scratch-parser/blob/665f05d739a202d565a4af70a201909393d456b2/lib/sb3_definitions.json#L51)
       const dataType =
-        blob.type === "image/svg+xml"
-          ? runtime.storage.DataFormat.SVG
-          : runtime.storage.DataFormat.PNG;
+        blob.type === "image/svg+xml" ? "svg" : blob.type.split("/")[1];
 
       const arrayBuffer = await new Promise((resolve, reject) => {
         const fr = new FileReader();
@@ -558,9 +552,11 @@
 
       const costume = target.sprite.costumes[costumeIndex];
       switch (attribute) {
-        case "dataURI":
+        case "dataURI": { 
           if (!requireNonPackagedRuntime("dataURI of costume")) return "";
-          return costume.asset.encodeDataURI();
+          const base64 = vm.getExportedCostumeBase64(costume);
+          return `data:${costume.asset.assetType.contentType};base64,${base64}`;
+        }
         case "index":
           return costumeIndex + 1;
         case "format":

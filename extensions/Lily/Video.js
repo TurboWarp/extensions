@@ -2,7 +2,6 @@
 // ID: lmsVideo
 // Description: Play videos from URLs.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// By: SharkPool
 // License: MIT AND LGPL-3.0
 
 // Attribution is not required, but greatly appreciated.
@@ -14,21 +13,6 @@
   const runtime = vm.runtime;
   const renderer = vm.renderer;
   const Cast = Scratch.Cast;
-
-  // In some versions of Chrome, it seems that trying to render a <video> returns pure black
-  // if it's not in the DOM in a place the browser thinks is visible. That means we can't
-  // use display: none.
-  // See https://github.com/TurboWarp/scratch-render/issues/12
-  const elementContainer = document.createElement("div");
-  elementContainer.className = "tw-extensions-lily-videos-container";
-  elementContainer.style.pointerEvents = "none";
-  elementContainer.style.position = "absolute";
-  elementContainer.style.opacity = "0";
-  elementContainer.style.width = "0";
-  elementContainer.style.height = "0";
-  elementContainer.style.visibility = "hidden";
-  elementContainer.ariaHidden = "true";
-  document.body.appendChild(elementContainer);
 
   const BitmapSkin = runtime.renderer.exports.BitmapSkin;
   class VideoSkin extends BitmapSkin {
@@ -64,10 +48,6 @@
       };
       this.videoElement.src = videoSrc;
       this.videoElement.currentTime = 0;
-
-      // <video> must be in the DOM for it to render (see comments above)
-      elementContainer.appendChild(this.videoElement);
-      this.videoElement.tabIndex = -1;
 
       this.videoDirty = true;
 
@@ -125,7 +105,6 @@
     dispose() {
       super.dispose();
       this.videoElement.pause();
-      this.videoElement.remove();
     }
   }
 
@@ -150,7 +129,7 @@
       return {
         id: "lmsVideo",
         color1: "#557882",
-        name: Scratch.translate("Video"),
+        name: "Video",
         blocks: [
           {
             blockType: Scratch.BlockType.XML,
@@ -159,7 +138,7 @@
           {
             opcode: "loadVideoURL",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("load video from URL [URL] as [NAME]"),
+            text: "load video from URL [URL] as [NAME]",
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -174,7 +153,7 @@
           {
             opcode: "deleteVideoURL",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete video [NAME]"),
+            text: "delete video [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -185,13 +164,13 @@
           {
             opcode: "getLoadedVideos",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("loaded videos"),
+            text: "loaded videos",
           },
           "---",
           {
             opcode: "showVideo",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("show video [NAME] on [TARGET]"),
+            text: "show video [NAME] on [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -206,7 +185,7 @@
           {
             opcode: "stopShowingVideo",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("stop showing video on [TARGET]"),
+            text: "stop showing video on [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -221,7 +200,7 @@
           {
             opcode: "getCurrentVideo",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("current video on [TARGET]"),
+            text: "current video on [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -233,7 +212,7 @@
           {
             opcode: "startVideo",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("start video [NAME] at [DURATION] seconds"),
+            text: "start video [NAME] at [DURATION] seconds",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -248,7 +227,7 @@
           {
             opcode: "getAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[ATTRIBUTE] of video [NAME]"),
+            text: "[ATTRIBUTE] of video [NAME]",
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -260,24 +239,11 @@
               },
             },
           },
-          {
-            opcode: "getFrame",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "screenshot of video [NAME] at current time"
-            ),
-            arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "my video",
-              },
-            },
-          },
           "---",
           {
             opcode: "pause",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("pause video [NAME]"),
+            text: "pause video [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -288,7 +254,7 @@
           {
             opcode: "resume",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("resume video [NAME]"),
+            text: "resume video [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -299,7 +265,7 @@
           {
             opcode: "getState",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("video [NAME] is [STATE]?"),
+            text: "video [NAME] is [STATE]?",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -315,7 +281,7 @@
           {
             opcode: "setVolume",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set volume of video [NAME] to [VALUE]"),
+            text: "set volume of video [NAME] to [VALUE]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -327,23 +293,6 @@
               },
             },
           },
-          {
-            opcode: "setPlaybackRate",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set playback rate of video [NAME] to [RATE]"
-            ),
-            arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "my video",
-              },
-              RATE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "2",
-              },
-            },
-          },
         ],
         menus: {
           targets: {
@@ -352,45 +301,11 @@
           },
           state: {
             acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("playing"),
-                value: "playing",
-              },
-              {
-                text: Scratch.translate("paused"),
-                value: "paused",
-              },
-            ],
+            items: ["playing", "paused"],
           },
           attribute: {
             acceptReporters: false,
-            items: [
-              {
-                text: Scratch.translate("current time"),
-                value: "current time",
-              },
-              {
-                text: Scratch.translate("duration"),
-                value: "duration",
-              },
-              {
-                text: Scratch.translate("volume"),
-                value: "volume",
-              },
-              {
-                text: Scratch.translate("width"),
-                value: "width",
-              },
-              {
-                text: Scratch.translate("height"),
-                value: "height",
-              },
-              {
-                text: Scratch.translate("playback rate"),
-                value: "playback rate",
-              },
-            ],
+            items: ["current time", "duration", "volume", "width", "height"],
           },
         },
       };
@@ -516,34 +431,9 @@
           return videoSkin.size[0];
         case "height":
           return videoSkin.size[1];
-        case "playback rate":
-          return videoSkin.videoElement.playbackRate;
         default:
           return 0;
       }
-    }
-
-    getFrame(args) {
-      const videoName = Cast.toString(args.NAME);
-      const videoSkin = this.videos[videoName];
-      if (!videoSkin) return "";
-
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        console.warn("2D rendering context not available");
-        return "";
-      }
-
-      const videoElement = videoSkin.videoElement;
-      if (videoElement.videoWidth === 0 || videoElement.videoHeight === 0) {
-        return "";
-      }
-
-      canvas.width = videoElement.videoWidth;
-      canvas.height = videoElement.videoHeight;
-      ctx.drawImage(videoElement, 0, 0);
-      return canvas.toDataURL();
     }
 
     pause(args) {
@@ -576,26 +466,11 @@
 
     setVolume(args) {
       const videoName = Cast.toString(args.NAME);
-      const videoSkin = this.videos[videoName];
-      if (!videoSkin) return;
-
       const value = Cast.toNumber(args.VALUE);
-      videoSkin.videoElement.volume = Math.min(1, Math.max(0, value / 100));
-    }
-
-    setPlaybackRate(args) {
-      const videoName = Cast.toString(args.NAME);
       const videoSkin = this.videos[videoName];
       if (!videoSkin) return;
 
-      try {
-        const value = Cast.toNumber(args.RATE);
-        // Supposedly negative values will work in Safari but people probably shouldn't rely
-        // on that since others don't.
-        videoSkin.videoElement.playbackRate = Math.max(0, value);
-      } catch (e) {
-        console.warn(e);
-      }
+      videoSkin.videoElement.volume = value / 100;
     }
 
     /** @returns {VM.Target|undefined} */

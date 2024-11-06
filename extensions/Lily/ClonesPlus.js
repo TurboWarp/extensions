@@ -643,11 +643,11 @@
     getSprites() {
       let spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
-      const editingTarget = Scratch.vm.runtime.getEditingTarget();
+      const myself = Scratch.vm.runtime.getEditingTarget().sprite.name;
       for (let index = 1; index < targets.length; index++) {
-        const curTarget = targets[index];
-        let display = curTarget.getName();
-        if (editingTarget === curTarget) {
+        const curTarget = targets[index].sprite;
+        let display = curTarget.name;
+        if (myself === curTarget.name) {
           display = Scratch.translate({
             default: "myself",
             description: "Item in a dropdown that refers to the current sprite",
@@ -656,7 +656,7 @@
         if (targets[index].isOriginal) {
           const jsonOBJ = {
             text: display,
-            value: curTarget.getName(),
+            value: curTarget.name,
           };
           spriteNames.push(jsonOBJ);
         }

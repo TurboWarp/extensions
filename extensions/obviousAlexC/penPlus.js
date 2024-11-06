@@ -162,7 +162,7 @@
                         invec4.zw
                       );
                     }
-
+                    
                     void main()
                     {
                         v_color = a_color;
@@ -171,7 +171,7 @@
                 `,
         frag: `
                     varying highp vec4 v_color;
-
+    
                     void main()
                     {
                       gl_FragColor = v_color;
@@ -190,7 +190,7 @@
                     attribute highp vec4 a_position;
                     attribute highp vec4 a_color;
                     attribute highp vec2 a_texCoord;
-
+                    
                     varying highp vec4 v_color;
                     varying highp vec2 v_texCoord;
 
@@ -213,10 +213,10 @@
                 `,
         frag: `
                     uniform sampler2D u_texture;
-
+    
                     varying highp vec2 v_texCoord;
                     varying highp vec4 v_color;
-
+                    
                     void main()
                     {
                         gl_FragColor = texture2D(u_texture, mod(v_texCoord,1.0)) * v_color;
@@ -233,10 +233,10 @@
       Shaders: {
         vert: `
                     attribute highp vec4 a_position;
-
+    
                     varying highp vec2 v_texCoord;
                     attribute highp vec2 a_texCoord;
-
+                    
                     void main()
                     {
                         gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
@@ -245,9 +245,9 @@
                 `,
         frag: `
                     varying highp vec2 v_texCoord;
-
+    
                     uniform sampler2D u_drawTex;
-
+                    
                     void main()
                     {
                       gl_FragColor = texture2D(u_drawTex, v_texCoord);
@@ -357,26 +357,22 @@
   //Just for our eyes sakes
   // prettier-ignore
   let reRenderInfo = twgl.createBufferInfoFromArrays(gl, {
-    a_position: {
-      numComponents: 4, data: [
-        -1, -1, 0, 1,
-        1, -1, 0, 1,
-        1, 1, 0, 1,
-        -1, -1, 0, 1,
-        1, 1, 0, 1,
-        -1, 1, 0, 1
-      ]
-    },
-    a_texCoord: {
-      numComponents: 2, data: [
-        0, 1,
-        0, 0,
-        1, 0,
-        0, 1,
-        0, 0,
-        1, 0
-      ]
-    }
+    a_position:    { numComponents: 4, data: [
+      -1, -1, 0, 1,
+      1, -1, 0, 1,
+      1, 1, 0, 1,
+      -1, -1, 0, 1,
+      1, 1, 0, 1,
+      -1, 1, 0, 1
+    ]},
+    a_texCoord: { numComponents: 2, data: [
+      0,1,
+      0,0,
+      1,0,
+      0,1,
+      0,0,
+      1,0
+    ]}
   });
 
   twgl.setBuffersAndAttributes(
@@ -441,7 +437,7 @@
       },
     };
 
-    extensionVersion = "7.1.7";
+    extensionVersion = "7.1.5";
 
     //?Stores our attributes
     triangleAttributesOfAllSprites = {};
@@ -548,14 +544,14 @@
           // prettier-ignore
           inputInfo = {
             a_position: new Float32Array([
-              x1, y1, triAttribs[5], triAttribs[6],
-              x2, y2, triAttribs[13], triAttribs[14],
-              x3, y3, triAttribs[21], triAttribs[22]
+              x1,y1,triAttribs[5],triAttribs[6],
+              x2,y2,triAttribs[13],triAttribs[14],
+              x3,y3,triAttribs[21],triAttribs[22]
             ]),
             a_color: new Float32Array([
-              penColor[0] * triAttribs[2], penColor[1] * triAttribs[3], penColor[2] * triAttribs[4], penColor[3] * triAttribs[7],
-              penColor[0] * triAttribs[10], penColor[1] * triAttribs[11], penColor[2] * triAttribs[12], penColor[3] * triAttribs[15],
-              penColor[0] * triAttribs[18], penColor[1] * triAttribs[19], penColor[2] * triAttribs[20], penColor[3] * triAttribs[23]
+              penColor[0] * triAttribs[2],penColor[1] * triAttribs[3],penColor[2] * triAttribs[4],penColor[3] * triAttribs[7],
+              penColor[0] * triAttribs[10],penColor[1] * triAttribs[11],penColor[2] * triAttribs[12],penColor[3] * triAttribs[15],
+              penColor[0] * triAttribs[18],penColor[1] * triAttribs[19],penColor[2] * triAttribs[20],penColor[3] * triAttribs[23]
             ])
           };
         } else {
@@ -563,14 +559,14 @@
           // prettier-ignore
           inputInfo = {
             a_position: new Float32Array([
-              x1, y1, 1, 1,
-              x2, y2, 1, 1,
-              x3, y3, 1, 1
+              x1,y1,1,1,
+              x2,y2,1,1,
+              x3,y3,1,1
             ]),
             a_color: new Float32Array([
-              penColor[0], penColor[1], penColor[2], penColor[3],
-              penColor[0], penColor[1], penColor[2], penColor[3],
-              penColor[0], penColor[1], penColor[2], penColor[3]
+              penColor[0],penColor[1],penColor[2],penColor[3],
+              penColor[0],penColor[1],penColor[2],penColor[3],
+              penColor[0],penColor[1],penColor[2],penColor[3]
             ])
           };
         }
@@ -615,19 +611,19 @@
           // prettier-ignore
           inputInfo = {
             a_position: new Float32Array([
-              x1, y1, triAttribs[5], triAttribs[6],
-              x2, y2, triAttribs[13], triAttribs[14],
-              x3, y3, triAttribs[21], triAttribs[22]
+              x1,y1,triAttribs[5],triAttribs[6],
+              x2,y2,triAttribs[13],triAttribs[14],
+              x3,y3,triAttribs[21],triAttribs[22]
             ]),
             a_color: new Float32Array([
-              triAttribs[2], triAttribs[3], triAttribs[4], triAttribs[7],
-              triAttribs[10], triAttribs[11], triAttribs[12], triAttribs[15],
-              triAttribs[18], triAttribs[19], triAttribs[20], triAttribs[23]
+              triAttribs[2],triAttribs[3],triAttribs[4],triAttribs[7],
+              triAttribs[10],triAttribs[11],triAttribs[12],triAttribs[15],
+              triAttribs[18],triAttribs[19],triAttribs[20],triAttribs[23]
             ]),
             a_texCoord: new Float32Array([
-              triAttribs[0], triAttribs[1],
-              triAttribs[8], triAttribs[9],
-              triAttribs[16], triAttribs[17]
+              triAttribs[0],triAttribs[1],
+              triAttribs[8],triAttribs[9],
+              triAttribs[16],triAttribs[17]
             ])
           };
         } else {
@@ -635,19 +631,19 @@
           // prettier-ignore
           inputInfo = {
             a_position: new Float32Array([
-              x1, y1, 1, 1,
-              x2, y2, 1, 1,
-              x3, y3, 1, 1
+              x1,y1,1,1,
+              x2,y2,1,1,
+              x3,y3,1,1
             ]),
             a_color: new Float32Array([
-              1, 1, 1, 1,
-              1, 1, 1, 1,
-              1, 1, 1, 1
+              1,1,1,1,
+              1,1,1,1,
+              1,1,1,1
             ]),
             a_texCoord: new Float32Array([
-              0, 0,
-              0, 1,
-              1, 1
+              0,0,
+              0,1,
+              1,1
             ])
           };
         }
@@ -1202,7 +1198,7 @@
         };
 
         //Search using regex
-        const regexSearcher = new RegExp(`uniform.*${uniformKey}.*;?`);
+        const regexSearcher = new RegExp(`.*${uniformKey}.*;?`);
         let searchResult =
           this.shaders[shaderName].projectData.vertShader.match(
             regexSearcher
@@ -1397,7 +1393,6 @@
         projectData: data,
         vertexShader: data.vertShader,
         fragmentShader: data.fragShader,
-        name: name,
       });
 
       this._createAttributedatForShader(name);
@@ -1427,13 +1422,13 @@
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Pen Properties"),
+            text: "Pen Properties",
           },
           {
             disableMonitor: true,
             opcode: "isPenDown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("pen is down?"),
+            text: "pen is down?",
             arguments: {},
             filter: "sprite",
           },
@@ -1441,7 +1436,7 @@
             disableMonitor: true,
             opcode: "getPenHSV",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("pen [HSV]"),
+            text: "pen [HSV]",
             arguments: {
               HSV: {
                 type: Scratch.ArgumentType.STRING,
@@ -1455,7 +1450,7 @@
             disableMonitor: true,
             opcode: "drawDot",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("draw dot at [x] [y]"),
+            text: "draw dot at [x] [y]",
             arguments: {
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1466,7 +1461,7 @@
             disableMonitor: true,
             opcode: "drawLine",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("draw line from [x1] [y1] to [x2] [y2]"),
+            text: "draw line from [x1] [y1] to [x2] [y2]",
             arguments: {
               x1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1479,7 +1474,7 @@
             disableMonitor: true,
             opcode: "stampSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("stamp [sprite]"),
+            text: "stamp [sprite]",
             arguments: {
               sprite: {
                 type: Scratch.ArgumentType.STRING,
@@ -1490,13 +1485,13 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Square Pen Blocks"),
+            text: "Square Pen Blocks",
           },
           {
             disableMonitor: true,
             opcode: "squareDown",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("stamp pen square"),
+            text: "stamp pen square",
             arguments: {},
             filter: "sprite",
           },
@@ -1504,9 +1499,7 @@
             disableMonitor: true,
             opcode: "squareTexDown",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "stamp pen square with the texture of [tex]"
-            ),
+            text: "stamp pen square with the texture of [tex]",
             arguments: {
               tex: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
             },
@@ -1516,7 +1509,7 @@
             disableMonitor: true,
             opcode: "setStampAttribute",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set pen square's [target] to [number]"),
+            text: "set pen square's [target] to [number]",
             arguments: {
               target: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1531,7 +1524,7 @@
             disableMonitor: true,
             opcode: "getStampAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get pen square's [target]"),
+            text: "get pen square's [target]",
             arguments: {
               target: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1545,7 +1538,7 @@
             disableMonitor: true,
             opcode: "tintSquare",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("tint pen square to [color]"),
+            text: "tint pen square to [color]",
             arguments: {
               color: {
                 type: Scratch.ArgumentType.COLOR,
@@ -1558,22 +1551,20 @@
             disableMonitor: true,
             opcode: "resetSquareAttributes",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("reset square Attributes"),
+            text: "reset square Attributes",
             arguments: {},
             filter: "sprite",
           },
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Triangle Blocks"),
+            text: "Triangle Blocks",
           },
           {
             disableMonitor: true,
             opcode: "setTrianglePointAttribute",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set triangle point [point]'s [attribute] to [value]"
-            ),
+            text: "set triangle point [point]'s [attribute] to [value]",
             arguments: {
               point: {
                 type: Scratch.ArgumentType.STRING,
@@ -1593,9 +1584,7 @@
             disableMonitor: true,
             opcode: "setWholeTrianglePointAttribute",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set triangle's [wholeAttribute] to [value]"
-            ),
+            text: "set triangle's [wholeAttribute] to [value]",
             arguments: {
               wholeAttribute: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1610,7 +1599,7 @@
             disableMonitor: true,
             opcode: "tintTriPoint",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("tint triangle point [point] to [color]"),
+            text: "tint triangle point [point] to [color]",
             arguments: {
               point: {
                 type: Scratch.ArgumentType.STRING,
@@ -1628,7 +1617,7 @@
             disableMonitor: true,
             opcode: "tintTri",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("tint triangle to [color]"),
+            text: "tint triangle to [color]",
             arguments: {
               point: {
                 type: Scratch.ArgumentType.STRING,
@@ -1646,7 +1635,7 @@
             disableMonitor: true,
             opcode: "getTrianglePointAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get triangle point [point]'s [attribute]"),
+            text: "get triangle point [point]'s [attribute]",
             arguments: {
               point: {
                 type: Scratch.ArgumentType.STRING,
@@ -1665,7 +1654,7 @@
             disableMonitor: true,
             opcode: "resetWholeTriangleAttributes",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("reset triangle attributes"),
+            text: "reset triangle attributes",
             arguments: {},
             filter: "sprite",
           },
@@ -1673,9 +1662,7 @@
             disableMonitor: true,
             opcode: "drawSolidTri",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "draw triangle between [x1] [y1], [x2] [y2] and [x3] [y3]"
-            ),
+            text: "draw triangle between [x1] [y1], [x2] [y2] and [x3] [y3]",
             arguments: {
               x1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1690,9 +1677,7 @@
             disableMonitor: true,
             opcode: "drawTexTri",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "draw textured triangle between [x1] [y1], [x2] [y2] and [x3] [y3] with the texture [tex]"
-            ),
+            text: "draw textured triangle between [x1] [y1], [x2] [y2] and [x3] [y3] with the texture [tex]",
             arguments: {
               x1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1707,13 +1692,13 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Color"),
+            text: "Color",
           },
           {
             disableMonitor: true,
             opcode: "RGB2HEX",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("red [R] green [G] blue [B]"),
+            text: "red [R] green [G] blue [B]",
             arguments: {
               R: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               G: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1724,7 +1709,7 @@
             disableMonitor: true,
             opcode: "HSV2RGB",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("hue [H] saturation [S] value [V]"),
+            text: "hue [H] saturation [S] value [V]",
             arguments: {
               H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
@@ -1733,16 +1718,14 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Images"),
+            text: "Images",
           },
           //Useless block keep for compat
           {
             disableMonitor: true,
             opcode: "setDURIclampmode",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set imported image wrap mode to [clampMode]"
-            ),
+            text: "set imported image wrap mode to [clampMode]",
             hideFromPalette: true,
             arguments: {
               clampMode: {
@@ -1756,9 +1739,7 @@
             disableMonitor: true,
             opcode: "addBlankIMG",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "add blank image that is [color] and the size of [width], [height] named [name] to Pen+ Library"
-            ),
+            text: "add blank image that is [color] and the size of [width], [height] named [name] to Pen+ Library",
             arguments: {
               color: {
                 type: Scratch.ArgumentType.COLOR,
@@ -1776,9 +1757,7 @@
             disableMonitor: true,
             opcode: "addIMGfromDURI",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "add image named [name] from [dataURI] to Pen+ Library"
-            ),
+            text: "add image named [name] from [dataURI] to Pen+ Library",
             arguments: {
               dataURI: {
                 type: Scratch.ArgumentType.STRING,
@@ -1795,9 +1774,7 @@
             disableMonitor: true,
             opcode: "removeIMGfromDURI",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "remove image named [name] from Pen+ Library"
-            ),
+            text: "remove image named [name] from Pen+ Library",
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
@@ -1810,7 +1787,7 @@
             disableMonitor: true,
             opcode: "doesIMGexist",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("does [name] exist in Pen+ Library"),
+            text: "does [name] exist in Pen+ Library",
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
@@ -1824,7 +1801,7 @@
             disableMonitor: true,
             opcode: "getCostumeDataURI",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get data uri for costume [costume]"),
+            text: "get data uri for costume [costume]",
             arguments: {
               costume: {
                 type: Scratch.ArgumentType.STRING,
@@ -1837,9 +1814,7 @@
             disableMonitor: true,
             opcode: "getDimensionOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get the [dimension] of [costume] in pen+ costume library"
-            ),
+            text: "get the [dimension] of [costume] in pen+ costume library",
             arguments: {
               dimension: {
                 type: Scratch.ArgumentType.STRING,
@@ -1857,9 +1832,7 @@
             disableMonitor: true,
             opcode: "setpixelcolor",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set pixel [x] [y]'s color to [color] in [costume]"
-            ),
+            text: "set pixel [x] [y]'s color to [color] in [costume]",
             arguments: {
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
@@ -1877,7 +1850,7 @@
             disableMonitor: true,
             opcode: "getpixelcolor",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get pixel [x] [y]'s color in [costume]"),
+            text: "get pixel [x] [y]'s color in [costume]",
             arguments: {
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
@@ -1891,9 +1864,7 @@
             disableMonitor: true,
             opcode: "getPenPlusCostumeURI",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get data uri of [costume] in the pen+ costume library"
-            ),
+            text: "get data uri of [costume] in the pen+ costume library",
             arguments: {
               costume: {
                 type: Scratch.ArgumentType.STRING,
@@ -1904,36 +1875,34 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Advanced"),
+            text: "Advanced",
           },
 
           //Custom Shader Blocks
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Custom Shaders"),
+            text: "Custom Shaders",
           },
           {
             blockType: Scratch.BlockType.BUTTON,
             func: "openShaderEditor",
-            text: Scratch.translate("Shader Editor"),
+            text: "Shader Editor",
           },
           {
             blockType: Scratch.BlockType.BUTTON,
             func: "openShaderManager",
-            text: Scratch.translate("Shader Manager"),
+            text: "Shader Manager",
           },
           {
             blockType: Scratch.BlockType.REPORTER,
             opcode: "getAllShaders",
-            text: Scratch.translate("shaders in project"),
+            text: "shaders in project",
           },
           {
             disableMonitor: true,
             opcode: "drawShaderTri",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "draw triangle using [shader] between [x1] [y1], [x2] [y2] and [x3] [y3]"
-            ),
+            text: "draw triangle using [shader] between [x1] [y1], [x2] [y2] and [x3] [y3]",
             arguments: {
               shader: {
                 type: Scratch.ArgumentType.STRING,
@@ -1952,7 +1921,7 @@
             disableMonitor: true,
             opcode: "drawShaderSquare",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("draw square using [shader]"),
+            text: "draw square using [shader]",
             arguments: {
               shader: {
                 type: Scratch.ArgumentType.STRING,
@@ -1971,9 +1940,7 @@
           {
             opcode: "setTextureInShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set texture [uniformName] in [shader] to [texture]"
-            ),
+            text: "set texture [uniformName] in [shader] to [texture]",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -1992,9 +1959,7 @@
           {
             opcode: "setNumberInShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set number [uniformName] in [shader] to [number]"
-            ),
+            text: "set number [uniformName] in [shader] to [number]",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2010,9 +1975,7 @@
           {
             opcode: "setVec2InShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set vector 2 [uniformName] in [shader] to [numberX] [numberY]"
-            ),
+            text: "set vector 2 [uniformName] in [shader] to [numberX] [numberY]",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2029,9 +1992,7 @@
           {
             opcode: "setVec3InShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set vector 3 [uniformName] in [shader] to [numberX] [numberY] [numberZ]"
-            ),
+            text: "set vector 3 [uniformName] in [shader] to [numberX] [numberY] [numberZ]",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2049,9 +2010,7 @@
           {
             opcode: "setVec4InShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set vector 4 [uniformName] in [shader] to [numberX] [numberY] [numberZ] [numberW]"
-            ),
+            text: "set vector 4 [uniformName] in [shader] to [numberX] [numberY] [numberZ] [numberW]",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2070,9 +2029,7 @@
           {
             opcode: "setMatrixInShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set matrix [uniformName] in [shader] to [list]"
-            ),
+            text: "set matrix [uniformName] in [shader] to [list]",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2088,9 +2045,7 @@
           {
             opcode: "setMatrixInShaderArray",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set matrix [uniformName] in [shader] to [array]"
-            ),
+            text: "set matrix [uniformName] in [shader] to [array]",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2109,9 +2064,7 @@
           {
             opcode: "setCubeInShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set cubemap [uniformName] in [shader] to [cubemap]"
-            ),
+            text: "set cubemap [uniformName] in [shader] to [cubemap]",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2130,9 +2083,7 @@
           {
             opcode: "getNumberInShader",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get value of number [uniformName] in [shader]"
-            ),
+            text: "get value of number [uniformName] in [shader]",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2147,9 +2098,7 @@
           {
             opcode: "getVec2InShader",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get value of [component] in vector 2 [uniformName] in [shader]"
-            ),
+            text: "get value of [component] in vector 2 [uniformName] in [shader]",
             arguments: {
               component: {
                 type: Scratch.ArgumentType.STRING,
@@ -2168,9 +2117,7 @@
           {
             opcode: "getVec3InShader",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get value of [component] in vector 3 [uniformName] in [shader]"
-            ),
+            text: "get value of [component] in vector 3 [uniformName] in [shader]",
             arguments: {
               component: {
                 type: Scratch.ArgumentType.STRING,
@@ -2189,9 +2136,7 @@
           {
             opcode: "getVec4InShader",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get value of [component] in vector 4 [uniformName] in [shader]"
-            ),
+            text: "get value of [component] in vector 4 [uniformName] in [shader]",
             arguments: {
               component: {
                 type: Scratch.ArgumentType.STRING,
@@ -2210,9 +2155,7 @@
           {
             opcode: "getMatrixInShader",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get value of matrix [uniformName] in [shader] as an array"
-            ),
+            text: "get value of matrix [uniformName] in [shader] as an array",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2227,9 +2170,7 @@
           {
             opcode: "getTextureInShader",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get the texture of [uniformName] in [shader]"
-            ),
+            text: "get the texture of [uniformName] in [shader]",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2244,9 +2185,7 @@
           {
             opcode: "getCubemapInShader",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get the cubemap of [uniformName] in [shader]"
-            ),
+            text: "get the cubemap of [uniformName] in [shader]",
             arguments: {
               uniformName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2262,9 +2201,7 @@
           {
             opcode: "setArrayNumberInShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set item [item] in number array [uniformName] in [shader] to [number]"
-            ),
+            text: "set item [item] in number array [uniformName] in [shader] to [number]",
             arguments: {
               item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               uniformName: {
@@ -2281,9 +2218,7 @@
           {
             opcode: "setArrayVec2InShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set item [item] in vector 2 array [uniformName] in [shader] to [numberX] [numberY]"
-            ),
+            text: "set item [item] in vector 2 array [uniformName] in [shader] to [numberX] [numberY]",
             arguments: {
               item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               uniformName: {
@@ -2301,9 +2236,7 @@
           {
             opcode: "setArrayVec3InShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set item [item] in vector 3 array [uniformName] in [shader] to [numberX] [numberY] [numberZ]"
-            ),
+            text: "set item [item] in vector 3 array [uniformName] in [shader] to [numberX] [numberY] [numberZ]",
             arguments: {
               item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               uniformName: {
@@ -2322,9 +2255,7 @@
           {
             opcode: "setArrayVec4InShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set item [item] in vector 4 array [uniformName] in [shader] to [numberX] [numberY] [numberZ] [numberW]"
-            ),
+            text: "set item [item] in vector 4 array [uniformName] in [shader] to [numberX] [numberY] [numberZ] [numberW]",
             arguments: {
               item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               uniformName: {
@@ -2344,9 +2275,7 @@
           {
             opcode: "getArrayNumberInShader",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get item [item]'s value in number array [uniformName] in [shader]"
-            ),
+            text: "get item [item]'s value in number array [uniformName] in [shader]",
             arguments: {
               item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               uniformName: {
@@ -2362,9 +2291,7 @@
           {
             opcode: "getArrayVec2InShader",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get item [item]'s [component] value in vector 2 array [uniformName] in [shader]"
-            ),
+            text: "get item [item]'s [component] value in vector 2 array [uniformName] in [shader]",
             arguments: {
               item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               component: {
@@ -2384,9 +2311,7 @@
           {
             opcode: "getArrayVec3InShader",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get item [item]'s [component] value in vector 3 array [uniformName] in [shader]"
-            ),
+            text: "get item [item]'s [component] value in vector 3 array [uniformName] in [shader]",
             arguments: {
               item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               component: {
@@ -2406,9 +2331,7 @@
           {
             opcode: "getArrayVec4InShader",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get item [item]'s [component] value in vector 4 array [uniformName] in [shader]"
-            ),
+            text: "get item [item]'s [component] value in vector 4 array [uniformName] in [shader]",
             arguments: {
               item: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               component: {
@@ -2429,9 +2352,7 @@
           {
             opcode: "setNumberAttributeInShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set number attribute [attributeName] of point [pointID] in [shader] to [number]"
-            ),
+            text: "set number attribute [attributeName] of point [pointID] in [shader] to [number]",
             arguments: {
               attributeName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2452,9 +2373,7 @@
           {
             opcode: "setVec2AttributeInShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set vector 2 attribute [attributeName] of point [pointID] in [shader] to [numberX] [numberY]"
-            ),
+            text: "set vector 2 attribute [attributeName] of point [pointID] in [shader] to [numberX] [numberY]",
             arguments: {
               attributeName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2476,9 +2395,7 @@
           {
             opcode: "setVec3AttributeInShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set vector 3 attribute [attributeName] of point [pointID] in [shader] to [numberX] [numberY] [numberZ]"
-            ),
+            text: "set vector 3 attribute [attributeName] of point [pointID] in [shader] to [numberX] [numberY] [numberZ]",
             arguments: {
               attributeName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2501,9 +2418,7 @@
           {
             opcode: "setVec4AttributeInShader",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set vector 4 attribute [attributeName] of point [pointID] in [shader] to [numberX] [numberY] [numberZ] [numberW]"
-            ),
+            text: "set vector 4 attribute [attributeName] of point [pointID] in [shader] to [numberX] [numberY] [numberZ] [numberW]",
             arguments: {
               attributeName: {
                 type: Scratch.ArgumentType.STRING,
@@ -2526,14 +2441,12 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Cubemaps"),
+            text: "Cubemaps",
           },
           {
             opcode: "createCubemap",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "create cubemap named [name] from left [left] right [right] back [back] front [front] bottom [bottom] top [top]"
-            ),
+            text: "create cubemap named [name] from left [left] right [right] back [back] front [front] bottom [bottom] top [top]",
             arguments: {
               name: { type: Scratch.ArgumentType.STRING, defaultValue: "Name" },
               left: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
@@ -2552,7 +2465,7 @@
             disableMonitor: true,
             opcode: "doesCubemapexist",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("does [name] exist as a cubemap"),
+            text: "does [name] exist as a cubemap",
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
@@ -2565,7 +2478,7 @@
             disableMonitor: true,
             opcode: "removeCubemapfromDURI",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("remove cubemap named [name]"),
+            text: "remove cubemap named [name]",
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
@@ -2577,12 +2490,12 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("List Based Rendering"),
+            text: "List Based Rendering",
           },
           {
             opcode: "renderSolidTrisFromList",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("draw solid triangles from list [list]"),
+            text: "draw solid triangles from list [list]",
             arguments: {
               list: { type: Scratch.ArgumentType.STRING, menu: "listMenu" },
             },
@@ -2591,9 +2504,7 @@
           {
             opcode: "renderTexturedTrisFromList",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "draw textured triangles from list [list] using [tex]"
-            ),
+            text: "draw textured triangles from list [list] using [tex]",
             arguments: {
               list: { type: Scratch.ArgumentType.STRING, menu: "listMenu" },
               tex: { type: Scratch.ArgumentType.STRING, menu: "costumeMenu" },
@@ -2603,9 +2514,7 @@
           {
             opcode: "renderShaderTrisFromList",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "draw shader triangles from list [list] using [shader]"
-            ),
+            text: "draw shader triangles from list [list] using [shader]",
             arguments: {
               list: { type: Scratch.ArgumentType.STRING, menu: "listMenu" },
               shader: {
@@ -2619,9 +2528,7 @@
           {
             opcode: "solidTriDef",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "define solid tri [x1] [y1] [c1], [x2] [y2] [c2] and [x3] [y3] [c3]"
-            ),
+            text: "define solid tri [x1] [y1] [c1], [x2] [y2] [c2] and [x3] [y3] [c3]",
             arguments: {
               x1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -2638,9 +2545,7 @@
           {
             opcode: "texTriDef",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "define textured tri [x1] [y1] [c1], [x2] [y2] [c2] and [x3] [y3] [c3] with the uv's [u1] [v1], [u2] [v2] and [u3] [v3]"
-            ),
+            text: "define textured tri [x1] [y1] [c1], [x2] [y2] [c2] and [x3] [y3] [c3] with the uv's [u1] [v1], [u2] [v2] and [u3] [v3]",
             arguments: {
               x1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -2666,9 +2571,7 @@
           {
             opcode: "editTriDef",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "set the [attribute] of point [id] to [value] in [def]"
-            ),
+            text: "set the [attribute] of point [id] to [value] in [def]",
             arguments: {
               attribute: {
                 type: Scratch.ArgumentType.STRING,
@@ -2691,12 +2594,12 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Render Textures"),
+            text: "Render Textures",
           },
           {
             opcode: "createRenderTexture",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("create render texture named [name]"),
+            text: "create render texture named [name]",
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
@@ -2707,9 +2610,7 @@
           {
             opcode: "createRenderTextureOfSize",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "create render texture named [name] of size [width] [height]"
-            ),
+            text: "create render texture named [name] of size [width] [height]",
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
@@ -2722,7 +2623,7 @@
           {
             opcode: "removeRenderTexture",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("remove render texture named [name]"),
+            text: "remove render texture named [name]",
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
@@ -2733,7 +2634,7 @@
           {
             opcode: "doesRenderTextureExist",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("does render texture named [name] exist?"),
+            text: "does render texture named [name] exist?",
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
@@ -2744,13 +2645,13 @@
           {
             opcode: "getRenderTextures",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("render textures"),
+            text: "render textures",
           },
           "---",
           {
             opcode: "targetRenderTexture",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("render tris and squares to [name]"),
+            text: "render tris and squares to [name]",
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
@@ -2761,7 +2662,7 @@
           {
             opcode: "clearRenderTexture",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("clear pen from [name]"),
+            text: "clear pen from [name]",
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
@@ -2772,31 +2673,29 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Extras"),
+            text: "Extras",
           },
           {
             opcode: "getPenPVersion",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Pen+ version"),
-            disableMonitor: true,
+            text: "Pen+ version",
           },
           {
             opcode: "getTrianglesDrawn",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("triangles drawn"),
-            disableMonitor: true,
+            text: "triangles drawn",
           },
           {
             opcode: "getPenRenderLayer",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("data uri of pen layer"),
+            text: "data uri of pen layer",
             disableMonitor: true,
           },
           "---",
           {
             opcode: "setCullMode",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("hide triangles that turn [direction]"),
+            text: "hide triangles that turn [direction]",
             arguments: {
               direction: {
                 type: Scratch.ArgumentType.STRING,
@@ -2808,7 +2707,7 @@
             disableMonitor: true,
             opcode: "setTriangleFilterMode",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set texture filter mode to [filter]"),
+            text: "set texture filter mode to [filter]",
             arguments: {
               filter: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -2822,9 +2721,7 @@
           {
             opcode: "turnAdvancedSettingOff",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "turn advanced setting [Setting] [onOrOff]"
-            ),
+            text: "turn advanced setting [Setting] [onOrOff]",
             arguments: {
               Setting: {
                 type: Scratch.ArgumentType.STRING,
@@ -2836,13 +2733,13 @@
           {
             opcode: "clearDepth",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Erase Depth"),
+            text: "Erase Depth",
           },
           {
             hideFromPalette: true,
             opcode: "setAdvancedOptionValueTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set [setting] to [value]"),
+            text: "set [setting] to [value]",
             arguments: {
               setting: {
                 type: Scratch.ArgumentType.STRING,
@@ -2857,7 +2754,7 @@
           {
             opcode: "setPrefix",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set the prefix for [prefix] to [value]"),
+            text: "set the prefix for [prefix] to [value]",
             arguments: {
               prefix: {
                 type: Scratch.ArgumentType.STRING,
@@ -2873,102 +2770,72 @@
         menus: {
           hsvMenu: {
             items: [
-              {
-                text: Scratch.translate("color"),
-                value: "color",
-              },
-              {
-                text: Scratch.translate("saturation"),
-                value: "saturation",
-              },
-              {
-                text: Scratch.translate("brightness"),
-                value: "brightness",
-              },
-              {
-                text: Scratch.translate("transparency"),
-                value: "transparency",
-              },
-              {
-                text: Scratch.translate("hex code"),
-                value: "hex code",
-              },
-              {
-                text: Scratch.translate("size"),
-                value: "size",
-              },
+              "color",
+              "saturation",
+              "brightness",
+              "transparency",
+              "hex code",
+              "size",
             ],
             acceptReporters: true,
           },
           stampSquare: {
             items: [
-              { text: Scratch.translate("Width"), value: "0" },
-              { text: Scratch.translate("Height"), value: "1" },
-              { text: Scratch.translate("Rotation"), value: "2" },
-              { text: Scratch.translate("U-Multiplier"), value: "3" },
-              { text: Scratch.translate("U-Offset"), value: "4" },
-              { text: Scratch.translate("V-Multiplier"), value: "5" },
-              { text: Scratch.translate("V-Offset"), value: "6" },
-              { text: Scratch.translate("Red Tint"), value: "7" },
-              { text: Scratch.translate("Green Tint"), value: "8" },
-              { text: Scratch.translate("Blue Tint"), value: "9" },
-              { text: Scratch.translate("Transparency"), value: "10" },
-              { text: Scratch.translate("depth value"), value: "11" },
+              { text: "Width", value: "0" },
+              { text: "Height", value: "1" },
+              { text: "Rotation", value: "2" },
+              { text: "U-Multiplier", value: "3" },
+              { text: "U-Offset", value: "4" },
+              { text: "V-Multiplier", value: "5" },
+              { text: "V-Offset", value: "6" },
+              { text: "Red Tint", value: "7" },
+              { text: "Green Tint", value: "8" },
+              { text: "Blue Tint", value: "9" },
+              { text: "Transparency", value: "10" },
+              { text: "depth value", value: "11" },
             ],
             acceptReporters: true,
           },
           triAttribute: {
             items: [
-              { text: Scratch.translate("U value"), value: "0" },
-              { text: Scratch.translate("V value"), value: "1" },
-              { text: Scratch.translate("red tint"), value: "2" },
-              { text: Scratch.translate("green tint"), value: "3" },
-              { text: Scratch.translate("blue tint"), value: "4" },
-              { text: Scratch.translate("transparency"), value: "7" },
-              { text: Scratch.translate("corner pinch"), value: "6" },
-              { text: Scratch.translate("depth value"), value: "5" },
+              { text: "U value", value: "0" },
+              { text: "V value", value: "1" },
+              { text: "red tint", value: "2" },
+              { text: "green tint", value: "3" },
+              { text: "blue tint", value: "4" },
+              { text: "transparency", value: "7" },
+              { text: "corner pinch", value: "6" },
+              { text: "depth value", value: "5" },
             ],
             acceptReporters: true,
           },
           wholeTriAttribute: {
             items: [
-              { text: Scratch.translate("red tint"), value: "2" },
-              { text: Scratch.translate("green tint"), value: "3" },
-              { text: Scratch.translate("blue tint"), value: "4" },
-              { text: Scratch.translate("transparency"), value: "7" },
-              { text: Scratch.translate("depth value"), value: "5" },
+              { text: "red tint", value: "2" },
+              { text: "green tint", value: "3" },
+              { text: "blue tint", value: "4" },
+              { text: "transparency", value: "7" },
+              { text: "depth value", value: "5" },
             ],
             acceptReporters: true,
           },
           filterType: {
             items: [
-              { text: Scratch.translate("Closest"), value: "9728" },
-              { text: Scratch.translate("Linear"), value: "9729" },
+              { text: "Closest", value: "9728" },
+              { text: "Linear", value: "9729" },
             ],
             acceptReporters: true,
           },
           wrapType: {
             items: [
-              { text: Scratch.translate("Clamp"), value: "33071" },
-              { text: Scratch.translate("Repeat"), value: "10497" },
-              { text: Scratch.translate("Mirrored"), value: "33648" },
+              { text: "Clamp", value: "33071" },
+              { text: "Repeat", value: "10497" },
+              { text: "Mirrored", value: "33648" },
             ],
             acceptReporters: true,
           },
           pointMenu: { items: ["1", "2", "3"], acceptReporters: true },
-          onOffMenu: {
-            items: [
-              {
-                text: Scratch.translate("on"),
-                value: "on",
-              },
-              {
-                text: Scratch.translate("off"),
-                value: "off",
-              },
-            ],
-            acceptReporters: true,
-          },
+          onOffMenu: { items: ["on", "off"], acceptReporters: true },
           costumeMenu: { items: "costumeMenuFunction", acceptReporters: true },
           penPlusCostumes: {
             items: "penPlusCostumesFunction",
@@ -2988,24 +2855,13 @@
           },
           advancedSettingsMenu: {
             items: [
-              {
-                text: Scratch.translate("allow 'Corner Pinch < 1'"),
-                value: "wValueUnderFlow",
-              },
-              {
-                text: Scratch.translate("clamp depth value"),
-                value: "_ClampZ",
-              },
+              { text: "allow 'Corner Pinch < 1'", value: "wValueUnderFlow" },
+              { text: "clamp depth value", value: "_ClampZ" },
             ],
             acceptReporters: true,
           },
           advancedSettingValuesMenu: {
-            items: [
-              {
-                text: Scratch.translate("maximum depth value"),
-                value: "depthMax",
-              },
-            ],
+            items: [{ text: "maximum depth value", value: "depthMax" }],
             acceptReporters: false,
           },
           getCostumeDataURI_costume_Menu: {
@@ -3013,16 +2869,7 @@
             acceptReporters: true,
           },
           getDimensionOf_dimension_Menu: {
-            items: [
-              {
-                text: Scratch.translate("width"),
-                value: "width",
-              },
-              {
-                text: Scratch.translate("height"),
-                value: "height",
-              },
-            ],
+            items: ["width", "height"],
             acceptReporters: true,
           },
           listMenu: {
@@ -3059,9 +2906,9 @@
           },
           cullMode: {
             items: [
-              { text: Scratch.translate("neither way"), value: "0" },
-              { text: Scratch.translate("clock-wise"), value: "1028" },
-              { text: Scratch.translate("counter clock-wise"), value: "1029" },
+              { text: "neither way", value: "0" },
+              { text: "clock-wise", value: "1028" },
+              { text: "counter clock-wise", value: "1029" },
             ],
             acceptReporters: true,
           },
@@ -3072,11 +2919,11 @@
           prefixTypes: {
             items: [
               {
-                text: Scratch.translate("Pen+ Costumes"),
+                text: "Pen+ Costumes",
                 value: "penPlusTextures",
               },
               {
-                text: Scratch.translate("Render Textures"),
+                text: "Render Textures",
                 value: "renderTextures",
               },
             ],
@@ -3084,51 +2931,21 @@
           },
           defAttribMenu: {
             items: [
-              {
-                text: Scratch.translate("x"),
-                value: "x",
-              },
-              {
-                text: Scratch.translate("y"),
-                value: "y",
-              },
-              {
-                text: Scratch.translate("depth value"),
-                value: "depth value",
-              },
-              {
-                text: Scratch.translate("corner pinch"),
-                value: "corner pinch",
-              },
-              {
-                text: Scratch.translate("U value"),
-                value: "U value",
-              },
-              {
-                text: Scratch.translate("V value"),
-                value: "V value",
-              },
-              {
-                text: Scratch.translate("red tint"),
-                value: "red tint",
-              },
-              {
-                text: Scratch.translate("green tint"),
-                value: "green tint",
-              },
-              {
-                text: Scratch.translate("blue tint"),
-                value: "blue tint",
-              },
-              {
-                text: Scratch.translate("transparency"),
-                value: "transparency",
-              },
+              "x",
+              "y",
+              "depth value",
+              "corner pinch",
+              "U value",
+              "V value",
+              "red tint",
+              "green tint",
+              "blue tint",
+              "transparency",
             ],
             acceptReporters: true,
           },
         },
-        name: Scratch.translate("Pen+ V7"),
+        name: "Pen+ V7",
         id: "penP",
         docsURI:
           "https://pen-group.github.io/docs/?page=extensions%2FpenPlus%2Fmain",
@@ -4365,55 +4182,43 @@
       if (triAttribs) {
         //Just for our eyes sakes
         // prettier-ignore
-        inputInfo.a_position = {
-          data: [
-            x1, -y1, triAttribs[5], triAttribs[6],
-            x2, -y2, triAttribs[13], triAttribs[14],
-            x3, -y3, triAttribs[21], triAttribs[22]
-          ]
-        }
+        inputInfo.a_position = {data: [
+          x1,-y1,triAttribs[5],triAttribs[6],
+          x2,-y2,triAttribs[13],triAttribs[14],
+          x3,-y3,triAttribs[21],triAttribs[22]
+        ]}
         // prettier-ignore
-        inputInfo.a_color = {
-          data: [
-            triAttribs[2], triAttribs[3], triAttribs[4], triAttribs[7],
-            triAttribs[10], triAttribs[11], triAttribs[12], triAttribs[15],
-            triAttribs[18], triAttribs[19], triAttribs[20], triAttribs[23]
-          ]
-        }
+        inputInfo.a_color = {data: [
+          triAttribs[2],triAttribs[3],triAttribs[4],triAttribs[7],
+          triAttribs[10],triAttribs[11],triAttribs[12],triAttribs[15],
+          triAttribs[18],triAttribs[19],triAttribs[20],triAttribs[23]
+        ]}
         // prettier-ignore
-        inputInfo.a_texCoord = {
-          data: [
-            triAttribs[0], triAttribs[1],
-            triAttribs[8], triAttribs[9],
-            triAttribs[16], triAttribs[17]
-          ]
-        }
+        inputInfo.a_texCoord = {data:[
+          triAttribs[0],triAttribs[1],
+          triAttribs[8],triAttribs[9],
+          triAttribs[16],triAttribs[17]
+        ]}
       } else {
         //Just for our eyes sakes
         // prettier-ignore
-        inputInfo.a_position = {
-          data: [
-            x1, y1, 1, 1,
-            x2, y2, 1, 1,
-            x3, y3, 1, 1
-          ]
-        }
+        inputInfo.a_position = {data: [
+          x1,y1,1,1,
+          x2,y2,1,1,
+          x3,y3,1,1
+        ]}
         // prettier-ignore
-        inputInfo.a_color = {
-          data: [
-            1, 1, 1, 1,
-            1, 1, 1, 1,
-            1, 1, 1, 1
-          ]
-        }
+        inputInfo.a_color = {data: [
+          1,1,1,1,
+          1,1,1,1,
+          1,1,1,1
+        ]}
         // prettier-ignore
-        inputInfo.a_texCoord = {
-          data: [
-            0, 0,
-            0, 1,
-            1, 1
-          ]
-        }
+        inputInfo.a_texCoord = {data: [
+          0,0,
+          0,1,
+          1,1
+        ]}
       }
 
       const keys = Object.keys(inputInfo);

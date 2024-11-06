@@ -876,25 +876,7 @@
             opcode: "getLines",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("# of lines"),
-            hideFromPalette: true,
-            disableMonitor: true,
-            extensions: ["colours_looks"],
-          },
-          {
-            opcode: "getLinesV2",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "# of lines [WITH_WORD_WRAP]",
-              description:
-                "[WITH_WORD_WRAP] is a menu with choices 'with word wrap' and 'without word wrap'",
-            }),
             hideFromPalette: compatibilityMode,
-            arguments: {
-              WITH_WORD_WRAP: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "twWordWrap",
-              },
-            },
             disableMonitor: true,
             extensions: ["colours_looks"],
           },
@@ -1197,19 +1179,6 @@
             acceptReporters: true,
             items: "getFonts",
           },
-          twWordWrap: {
-            acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("with word wrap"),
-                value: "with word wrap",
-              },
-              {
-                text: Scratch.translate("without word wrap"),
-                value: "without word wrap",
-              },
-            ],
-          },
         },
       };
     }
@@ -1411,21 +1380,6 @@
       const state = this._getState(util.target);
       const text = state.skin.text;
       return text.split("\n").length;
-    }
-
-    getLinesV2(args, util) {
-      const drawableID = util.target.drawableID;
-      const skin = renderer._allDrawables[drawableID].skin;
-      if (!(skin instanceof TextCostumeSkin)) return 0;
-
-      const state = this._getState(util.target);
-      if (Scratch.Cast.toString(args.WITH_WORD_WRAP) === "with word wrap") {
-        if (state.skin._needsReflow()) {
-          state.skin._reflowText();
-        }
-        return state.skin.lines.length;
-      }
-      return state.skin.text.split("\n").length;
     }
 
     setAlignment(args, util) {

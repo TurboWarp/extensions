@@ -28,7 +28,7 @@
     getInfo() {
       return {
         id: "lmsData",
-        name: Scratch.translate("List Tools"),
+        name: "List Tools",
         color1: "#ff661a",
         color2: "#f2590d",
         color3: "#e64d00",
@@ -36,7 +36,7 @@
           {
             opcode: "deleteItems",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete items [NUM1] to [NUM2] of [LIST]"),
+            text: "delete items [NUM1] to [NUM2] of [LIST]",
             arguments: {
               NUM1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -55,7 +55,7 @@
           {
             opcode: "deleteAllOfItem",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete all [ITEM] in [LIST]"),
+            text: "delete all [ITEM] in [LIST]",
             arguments: {
               ITEM: {
                 type: Scratch.ArgumentType.STRING,
@@ -70,9 +70,7 @@
           {
             opcode: "replaceAllOfItem",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "replace all [ITEM1] with [ITEM2] in [LIST]"
-            ),
+            text: "replace all [ITEM1] with [ITEM2] in [LIST]",
             arguments: {
               ITEM1: {
                 type: Scratch.ArgumentType.STRING,
@@ -91,7 +89,7 @@
           {
             opcode: "repeatList",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("repeat [LIST1] [NUM] times in [LIST2]"),
+            text: "repeat [LIST1] [NUM] times in [LIST2]",
             arguments: {
               LIST1: {
                 type: Scratch.ArgumentType.STRING,
@@ -113,7 +111,7 @@
           {
             opcode: "getListJoin",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("list [LIST] joined by [STRING]"),
+            text: "get list [LIST] joined by [STRING]",
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -129,7 +127,7 @@
           {
             opcode: "timesItemAppears",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("# of times [ITEM] appears in [LIST]"),
+            text: "# of times [ITEM] appears in [LIST]",
             disableMonitor: true,
             arguments: {
               ITEM: {
@@ -145,7 +143,7 @@
           {
             opcode: "itemIndex",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("index # [INDEX] of item [ITEM] in [LIST]"),
+            text: "index # [INDEX] of item [ITEM] in [LIST]",
             disableMonitor: true,
             arguments: {
               INDEX: {
@@ -168,7 +166,7 @@
           {
             opcode: "listIsEmpty",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("[LIST] is empty?"),
+            text: "[LIST] is empty?",
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -180,7 +178,7 @@
           {
             opcode: "itemNumExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("item [NUM] exists in [LIST]?"),
+            text: "item [NUM] exists in [LIST]?",
             disableMonitor: true,
             arguments: {
               NUM: {
@@ -196,7 +194,7 @@
           {
             opcode: "orderIs",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("order of [LIST] is [ORDER]?"),
+            text: "order of [LIST] is [ORDER]?",
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -215,7 +213,7 @@
           {
             opcode: "orderList",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set order of [LIST] to [ORDER]"),
+            text: "set order of [LIST] to [ORDER]",
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -232,7 +230,7 @@
           {
             opcode: "setListToList",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set items of [LIST1] to [LIST2]"),
+            text: "set items of [LIST1] to [LIST2]",
             arguments: {
               LIST1: {
                 type: Scratch.ArgumentType.STRING,
@@ -247,7 +245,7 @@
           {
             opcode: "joinLists",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("concatenate [LIST1] onto [LIST2]"),
+            text: "concatenate [LIST1] onto [LIST2]",
             arguments: {
               LIST1: {
                 type: Scratch.ArgumentType.STRING,
@@ -265,7 +263,7 @@
           {
             opcode: "forEachListItem",
             blockType: Scratch.BlockType.LOOP,
-            text: Scratch.translate("for each item value [VAR] in [LIST]"),
+            text: "for each item value [VAR] in [LIST]",
             hideFromPalette:
               !runtime.extensionManager.isExtensionLoaded("lmsTempVars2"),
             arguments: {
@@ -282,7 +280,7 @@
           {
             opcode: "forEachListItemNum",
             blockType: Scratch.BlockType.LOOP,
-            text: Scratch.translate("for each item # [VAR] in [LIST]"),
+            text: "for each item # [VAR] in [LIST]",
             hideFromPalette:
               !runtime.extensionManager.isExtensionLoaded("lmsTempVars2"),
             arguments: {
@@ -302,7 +300,7 @@
           {
             opcode: "setListArray",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set [LIST] to array [ARRAY]"),
+            text: "set [LIST] to array [ARRAY]",
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -318,7 +316,7 @@
           {
             opcode: "getListArray",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[LIST] as array"),
+            text: "[LIST] as array",
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -350,19 +348,19 @@
             acceptReporters: false,
             items: [
               {
-                text: Scratch.translate("reversed"),
+                text: "reversed",
                 value: "reversed",
               },
               {
-                text: Scratch.translate("ascending"),
+                text: "ascending",
                 value: "ascending",
               },
               {
-                text: Scratch.translate("descending"),
+                text: "descending",
                 value: "descending",
               },
               {
-                text: Scratch.translate("randomized"),
+                text: "randomised",
                 value: "randomised",
               },
             ],
@@ -371,11 +369,11 @@
             acceptReporters: false,
             items: [
               {
-                text: Scratch.translate("ascending"),
+                text: "ascending",
                 value: "ascending",
               },
               {
-                text: Scratch.translate("descending"),
+                text: "descending",
                 value: "descending",
               },
             ],
@@ -384,15 +382,15 @@
             acceptReporters: false,
             items: [
               {
-                text: Scratch.translate("first"),
+                text: "first",
                 value: "first",
               },
               {
-                text: Scratch.translate("last"),
+                text: "last",
                 value: "last",
               },
               {
-                text: Scratch.translate("random"),
+                text: "random",
                 value: "random",
               },
             ],

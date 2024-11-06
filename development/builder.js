@@ -860,12 +860,12 @@ class Builder {
     chokidar
       .watch(
         [
-          this.extensionsRoot,
-          this.imagesRoot,
-          this.websiteRoot,
-          this.docsRoot,
-          this.samplesRoot,
-          this.translationsRoot,
+          `${this.extensionsRoot}/**/*`,
+          `${this.imagesRoot}/**/*`,
+          `${this.websiteRoot}/**/*`,
+          `${this.docsRoot}/**/*`,
+          `${this.samplesRoot}/**/*`,
+          `${this.translationsRoot}/**/*`,
         ],
         {
           ignoreInitial: true,

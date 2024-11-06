@@ -235,7 +235,10 @@
   const downloadBlob = (blob, file) => {
     const url = URL.createObjectURL(blob);
     downloadURL(url, file);
-    URL.revokeObjectURL(url);
+    // Some old browsers process Blob URLs asynchronously
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
   };
 
   /**

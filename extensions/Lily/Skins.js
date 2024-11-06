@@ -40,7 +40,7 @@
   const renderer = runtime.renderer;
   const Cast = Scratch.Cast;
 
-  var createdSkins = {};
+  var createdSkins = [];
 
   class Skins {
     constructor() {
@@ -56,7 +56,7 @@
     getInfo() {
       return {
         id: "lmsSkins",
-        name: Scratch.translate("Skins"),
+        name: "Skins",
         color1: "#6b56ff",
         color2: "#604de6",
         color3: "#5645cc",
@@ -65,7 +65,7 @@
           {
             opcode: "registerSVGSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("create SVG skin [SVG] as [NAME]"),
+            text: "create SVG skin [SVG] as [NAME]",
             arguments: {
               SVG: {
                 type: Scratch.ArgumentType.STRING,
@@ -83,7 +83,7 @@
           {
             opcode: "registerCostumeSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("load skin from [COSTUME] as [NAME]"),
+            text: "load skin from [COSTUME] as [NAME]",
             arguments: {
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
@@ -97,7 +97,7 @@
           {
             opcode: "registerURLSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("load skin from URL [URL] as [NAME]"),
+            text: "load skin from URL [URL] as [NAME]",
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -112,7 +112,7 @@
           {
             opcode: "getSkinLoaded",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("skin [NAME] is loaded?"),
+            text: "skin [NAME] is loaded?",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -126,7 +126,7 @@
           {
             opcode: "setSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set skin of [TARGET] to [NAME]"),
+            text: "set skin of [TARGET] to [NAME]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -141,7 +141,7 @@
           {
             opcode: "restoreSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("restore skin of [TARGET]"),
+            text: "restore skin of [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -152,7 +152,7 @@
           {
             opcode: "restoreTargets",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("restore targets with skin [NAME]"),
+            text: "restore targets with skin [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -166,7 +166,7 @@
           {
             opcode: "getCurrentSkin",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("current skin of [TARGET]"),
+            text: "current skin of [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -177,7 +177,7 @@
           {
             opcode: "getSkinAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[ATTRIBUTE] of skin [NAME]"),
+            text: "[ATTRIBUTE] of skin [NAME]",
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -195,7 +195,7 @@
           {
             opcode: "deleteSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete skin [NAME]"),
+            text: "delete skin [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -206,7 +206,7 @@
           {
             opcode: "deleteAllSkins",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete all skins"),
+            text: "delete all skins",
           },
         ],
         menus: {
@@ -216,16 +216,7 @@
           },
           skinAttributes: {
             acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("width"),
-                value: "width",
-              },
-              {
-                text: Scratch.translate("height"),
-                value: "height",
-              },
-            ],
+            items: ["width", "height"],
           },
         },
       };
@@ -371,9 +362,9 @@
 
     deleteAllSkins() {
       this._refreshTargets();
-      for (const skinName in createdSkins)
-        renderer.destroySkin(createdSkins[skinName]);
-      createdSkins = {};
+      for (let i = 0; i < createdSkins.length; i++)
+        renderer.destroySkin(createdSkins[i]);
+      createdSkins = [];
     }
 
     restoreTargets(args) {
