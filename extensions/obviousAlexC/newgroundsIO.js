@@ -9129,7 +9129,7 @@
     getInfo() {
       return {
         id: "NGIO",
-        name: "Newgrounds",
+        name: "Newgrounds!",
 
         color1: "#EB7522",
         color2: "#4F280E",
@@ -9142,22 +9142,22 @@
           {
             opcode: "onLoginSuccess",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when login success"),
+            text: "Login Successful",
           },
           {
             opcode: "onLoginRequired",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when login required"),
+            text: "If login required",
           },
           {
             opcode: "promptLogin",
             blockType: Scratch.BlockType.COMMAND, //skipLogin
-            text: Scratch.translate("prompt user login"),
+            text: "Prompt user Login",
           },
           {
             opcode: "skipLogin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("skip login"),
+            text: "Skip Login",
           },
 
           "---", //Game blocks
@@ -9165,7 +9165,7 @@
           {
             opcode: "setVersionNumber",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("change game version to [version]"),
+            text: "Change the game Version to[version]",
             arguments: {
               version: {
                 type: Scratch.ArgumentType.STRING,
@@ -9177,17 +9177,15 @@
           {
             opcode: "connect",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "connect to game: [gameID] with code: [code]"
-            ),
+            text: "Connect to game:[gameID] code:[code]",
             arguments: {
               gameID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("gameID"),
+                defaultValue: "gameID",
               },
               code: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Encryption Code"),
+                defaultValue: "Encryption Code",
               },
             },
           },
@@ -9196,23 +9194,23 @@
           {
             opcode: "isNewgrounds",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is newgrounds?"),
+            text: "Newgrounds?",
           },
           {
             opcode: "loggedIn",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("currently logged in?"),
+            text: "Logged In?",
             disableMonitor: true,
           },
           {
             opcode: "version",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("game version"),
+            text: "Game Version",
           },
           {
             opcode: "getStatus",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("API status"),
+            text: "Api Status",
           },
 
           "---", //User Blocks
@@ -9220,12 +9218,12 @@
           {
             opcode: "getIfSupporter",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is user a newgrounds supporter?"),
+            text: "Newgrounds Supporter?",
           },
           {
             opcode: "getUserDat",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("user [datType]"),
+            text: "User [datType]",
             arguments: {
               datType: {
                 type: Scratch.ArgumentType.STRING,
@@ -9238,16 +9236,16 @@
           {
             opcode: "onSaveCompletedHat",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when save completed"),
+            text: "On Save Completed",
           },
           {
             opcode: "saveData",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("save [Data] to slot [Slot]"),
+            text: "Save [Data] to slot [Slot]",
             arguments: {
               Data: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Data"),
+                defaultValue: "Data",
               },
               Slot: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -9258,7 +9256,7 @@
           {
             opcode: "doesSlotHaveData",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("does slot [Slot] have save data?"),
+            text: "Does slot [Slot] have save data?",
             arguments: {
               Slot: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -9269,7 +9267,7 @@
           {
             opcode: "getData",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("data from slot [Slot]"),
+            text: "Get data from slot [Slot]",
             arguments: {
               Slot: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -9283,22 +9281,22 @@
           {
             opcode: "unlockMedal",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("unlock medal [medalID]"),
+            text: "Unlock medal [medalID]",
             arguments: {
               medalID: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: Scratch.translate("MedalID"),
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "MedalID",
               },
             },
           },
           {
             opcode: "isMedalUnlocked",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is medal [medalID] unlocked?"),
+            text: "Is medal [medalID] unlocked?",
             arguments: {
               medalID: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: Scratch.translate("MedalID"),
+                defaultValue: "MedalID",
               },
             },
           },
@@ -9308,14 +9306,12 @@
           {
             opcode: "onScorePosted",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when score posted"),
+            text: "On Score Posted",
           },
           {
             opcode: "postScore",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "post score [score] to scoreboard [scoreBoardID]"
-            ),
+            text: "Post score [score] to scoreboard [scoreBoardID]",
             arguments: {
               scoreBoardID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -9330,9 +9326,7 @@
           {
             opcode: "getScore",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "[scoreDataType] of rank [rank] from scoreboard [scoreBoardID] from the timespan of [timeSpan]"
-            ),
+            text: "Get the [scoreDataType] of rank [rank] from scoreboard [scoreBoardID] from the timespan of [timeSpan]",
             arguments: {
               scoreBoardID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -9358,17 +9352,17 @@
           {
             opcode: "loadNewgrounds",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("open newgrounds"),
+            text: "Open Newgrounds",
           },
           {
             opcode: "loadMoreGames",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("open explore page"),
+            text: "Open explore page",
           },
           {
             opcode: "loadAuthor",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("open author page"),
+            text: "Open Author page",
           },
         ],
 
@@ -9377,19 +9371,19 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("username"),
+                text: "username",
                 value: "name",
               },
               {
-                text: Scratch.translate("id"),
+                text: "id",
                 value: "id",
               },
               {
-                text: Scratch.translate("score"),
+                text: "score",
                 value: "MedalScore",
               },
               {
-                text: Scratch.translate("profile picture"),
+                text: "profile picture",
                 value: "icon",
               },
             ],
@@ -9398,11 +9392,11 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("Today"),
+                text: "Today",
                 value: NGIO.PERIOD_TODAY,
               },
               {
-                text: Scratch.translate("All Time"),
+                text: "All Time",
                 value: NGIO.PERIOD_ALL_TIME,
               },
             ],
@@ -9411,27 +9405,27 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("username"),
+                text: "username",
                 value: "name",
               },
               {
-                text: Scratch.translate("id"),
+                text: "id",
                 value: "id",
               },
               {
-                text: Scratch.translate("is supporting?"),
+                text: "is supporting?",
                 value: "supporter",
               },
               {
-                text: Scratch.translate("profile picture"),
+                text: "profile picture",
                 value: "icon",
               },
               {
-                text: Scratch.translate("score"),
+                text: "score",
                 value: "rawScore",
               },
               {
-                text: Scratch.translate("formatted score"),
+                text: "formatted score",
                 value: "score",
               },
               {
@@ -9672,7 +9666,7 @@
         if (loggedIn) {
           NGIO.keepSessionAlive();
         }
-        NGIO.unlockMedal(Scratch.Cast.toNumber(medalID));
+        NGIO.unlockMedal(medalID);
       }
     }
 
@@ -9682,7 +9676,7 @@
         if (loggedIn) {
           NGIO.keepSessionAlive();
         }
-        return NGIO.getMedal(Scratch.Cast.toNumber(medalID)).unlocked;
+        return NGIO.getMedal(medalID).unlocked;
       } else {
         return false;
       }

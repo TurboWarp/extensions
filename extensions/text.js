@@ -24,41 +24,23 @@
     _initCaseMenu() {
       return [
         {
-          text: Scratch.translate({
-            default: "lowercase",
-            description: "If your language has lowercase, style it accordingly",
-          }),
+          text: "lowercase",
           value: CaseParam.LOWERCASE,
         },
         {
-          text: Scratch.translate({
-            default: "UPPERCASE",
-            description: "If your language has uppercase, style it accordingly",
-          }),
+          text: "UPPERCASE",
           value: CaseParam.UPPERCASE,
         },
         {
-          text: Scratch.translate({
-            default: "Title Case",
-            description:
-              "If your language has Title Case, style it accordingly. 'Abc' is title case and exactly title case but 'ABC' is only title case.",
-          }),
+          text: "Title Case",
           value: CaseParam.TITLECASE,
         },
         {
-          text: Scratch.translate({
-            default: "Exactly Title Case",
-            description:
-              "If your language has Title Case, style it accordingly. 'Abc' is title case and exactly title case but 'ABC' is only title case.",
-          }),
+          text: "Exactly Title Case",
           value: CaseParam.EXACTTITLECASE,
         },
         {
-          text: Scratch.translate({
-            default: "MiXeD CaSe",
-            description:
-              "If your language has mixed case, style it accordingly",
-          }),
+          text: "MiXeD CaSe",
           value: CaseParam.MIXEDCASE,
         },
       ];
@@ -66,16 +48,15 @@
 
     getInfo() {
       return {
-        // id "text" would conflict with Scratch Lab's Animated Text (lab/text.js)
+        // id "text" could conflict with Scratch Lab's Animated Text
+        // for mods which implement it or if it ever comes out
         id: "strings",
-        name: Scratch.translate("Text"),
+        name: "Text",
         blocks: [
           {
             opcode: "letters_of",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "letters [LETTER1] to [LETTER2] of [STRING]"
-            ),
+            text: "letters [LETTER1] to [LETTER2] of [STRING]",
             arguments: {
               LETTER1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -94,7 +75,7 @@
           {
             opcode: "split",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("item [ITEM] of [STRING] split by [SPLIT]"),
+            text: "item [ITEM] of [STRING] split by [SPLIT]",
             arguments: {
               ITEM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -113,11 +94,7 @@
           {
             opcode: "count",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "count [SUBSTRING] in [STRING]",
-              description:
-                "Counts how many time [SUBSTRING] appears in [STRING]",
-            }),
+            text: "count [SUBSTRING] in [STRING]",
             arguments: {
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -132,10 +109,7 @@
           {
             opcode: "indexof",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "index of [SUBSTRING] in [STRING]",
-              description: "Reports where [SUBSTRING] appears in [STRING]",
-            }),
+            text: "index of [SUBSTRING] in [STRING]",
             arguments: {
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -153,9 +127,7 @@
           {
             opcode: "replace",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "replace [SUBSTRING] in [STRING] with [REPLACE]"
-            ),
+            text: "replace [SUBSTRING] in [STRING] with [REPLACE]",
             arguments: {
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -174,7 +146,7 @@
           {
             opcode: "repeat",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("repeat [STRING] [REPEAT] times"),
+            text: "repeat [STRING] [REPEAT] times",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -192,7 +164,7 @@
           {
             opcode: "unicodeof",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("unicode of [STRING]"),
+            text: "unicode of [STRING]",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -203,7 +175,7 @@
           {
             opcode: "unicodefrom",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("unicode [NUM] as letter"),
+            text: "unicode [NUM] as letter",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -216,9 +188,7 @@
           {
             opcode: "replaceRegex",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "replace regex /[REGEX]/[FLAGS] in [STRING] with [REPLACE]"
-            ),
+            text: "replace regex /[REGEX]/[FLAGS] in [STRING] with [REPLACE]",
             arguments: {
               REGEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -241,12 +211,7 @@
           {
             opcode: "matchRegex",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default:
-                "item [ITEM] of [STRING] matched by regex /[REGEX]/[FLAGS]",
-              description:
-                "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
-            }),
+            text: "item [ITEM] of [STRING] matched by regex /[REGEX]/[FLAGS]",
             arguments: {
               ITEM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -269,11 +234,7 @@
           {
             opcode: "countRegex",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "count regex /[REGEX]/[FLAGS] in [STRING]",
-              description:
-                "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
-            }),
+            text: "count regex /[REGEX]/[FLAGS] in [STRING]",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -292,11 +253,7 @@
           {
             opcode: "testRegex",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate({
-              default: "[STRING] matches regex /[REGEX]/[FLAGS]?",
-              description:
-                "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
-            }),
+            text: "[STRING] matches regex /[REGEX]/[FLAGS]?",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -318,7 +275,7 @@
           {
             opcode: "identical",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is [OPERAND1] identical to [OPERAND2]?"),
+            text: "is [OPERAND1] identical to [OPERAND2]?",
             arguments: {
               OPERAND1: {
                 type: Scratch.ArgumentType.STRING,
@@ -336,10 +293,7 @@
           {
             opcode: "isCase",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate({
-              default: "is [STRING] [TEXTCASE]?",
-              description: "Example block context: <is [hello] [lowercase] ?>",
-            }),
+            text: "is [STRING] [TEXTCASE]?",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -355,11 +309,7 @@
           {
             opcode: "toCase",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "convert [STRING] to [TEXTCASE]",
-              description:
-                "Example block context: (convert [HELLO] to [lowercase])",
-            }),
+            text: "convert [STRING] to [TEXTCASE]",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,

@@ -48,33 +48,6 @@
               id: "ray_direction",
               default: "direction of ([x1],[y1]) to ([x2],[y2])",
             }),
-            hideFromPalette: true,
-            arguments: {
-              x1: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0",
-              },
-              y1: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0",
-              },
-              x2: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "100",
-              },
-              y2: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0",
-              },
-            },
-          },
-          {
-            opcode: "ray_direction2",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              id: "ray_direction",
-              default: "direction of ([x1],[y1]) to ([x2],[y2])",
-            }),
             arguments: {
               x1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -321,13 +294,6 @@
       } else {
         return (180 / Math.PI) * Math.atan(dx / dy);
       }
-    }
-    ray_direction2(args) {
-      const dx =
-        Scratch.Cast.toNumber(args.x2) - Scratch.Cast.toNumber(args.x1);
-      const dy =
-        Scratch.Cast.toNumber(args.y2) - Scratch.Cast.toNumber(args.y1);
-      return (Math.atan2(dx, dy) * 180) / Math.PI;
     }
     vertical(args) {
       if (isNaN(args.a) || isNaN(args.b)) {
