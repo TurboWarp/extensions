@@ -53,6 +53,9 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
   const AScene = document.querySelector("a-scene");
 
+  //TODO: Add button arguments to "when any button pressed"
+  //TODO: Move matrix block into transform catageory.
+
   function scaleDisplayPlane() {
     requestAnimationFrame(() => {
       const plane = document.getElementById("scratchStageVRDisplay");
@@ -62,7 +65,11 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       );
       const canvasAspect = canvas.width / canvas.height;
       const stageAspect = runtime.stageWidth / runtime.stageHeight;
+<<<<<<< Updated upstream
       const material = plane.getObject3D('mesh').material;
+=======
+      const material = plane.getObject3D("mesh").material;
+>>>>>>> Stashed changes
 
       let height = 2 * Math.tan(fov / 2) * 1;
       let width = height * stageAspect;
