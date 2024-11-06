@@ -2,7 +2,7 @@
 // ID: SPASfontManager
 // Description: Add, delete, and manage fonts.
 // By: SharkPool
-// By: 0znzw <https://scratch.mit.edu/users/0znzw/>
+// By: Ashimee <https://scratch.mit.edu/users/0znzw/>
 // License: MIT
 
 // Version V.1.1.0
@@ -114,11 +114,11 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Lobster",
+                defaultValue: "Pusab",
               },
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "https://extensions.turbowarp.org/Lobster.woff2",
+                defaultValue: "",
               },
               BACKUP: {
                 type: Scratch.ArgumentType.STRING,
@@ -236,52 +236,15 @@
               },
             ],
           },
-          FALLBACKS: {
-            acceptReporters: false,
-            items: [
-              {
-                text: "Sans Serif",
-                value: "Sans Serif",
-              },
-              {
-                text: "Serif",
-                value: "Serif",
-              },
-              {
-                text: "Handwriting",
-                value: "Handwriting",
-              },
-              {
-                text: "Marker",
-                value: "Marker",
-              },
-              {
-                text: "Curly",
-                value: "Curly",
-              },
-              {
-                text: "Pixel",
-                value: "Pixel",
-              },
-              {
-                text: "Mopeds",
-                value: "Scratch",
-              },
-              {
-                text: "中文",
-                value: '"Microsoft YaHei", "微软雅黑", STXihei, "华文细黑"',
-              },
-              {
-                text: "한국어",
-                value: "Malgun Gothic",
-              },
-              {
-                text: "日本語",
-                value:
-                  '"ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "MS PGothic"',
-              },
-            ],
-          },
+          FALLBACKS: [
+            "Sans Serif",
+            "Serif",
+            "Handwriting",
+            "Marker",
+            "Curly",
+            "Pixel",
+            "Scratch",
+          ],
           FILES: {
             acceptReporters: true,
             items: FONT_EXTENSIONS.map((i) => `.${i}`),
@@ -317,14 +280,14 @@
 
     addSystemFont(args) {
       const name = Scratch.Cast.toString(args.NAME);
-      if (fontManager.isValidSystemFont(name)) {
+      if (fontManager.isValidFamily(name)) {
         fontManager.addSystemFont(name, Scratch.Cast.toString(args.BACKUP));
       }
     }
 
     async addCustomFont(args) {
       const name = Scratch.Cast.toString(args.NAME);
-      if (!fontManager.isValidCustomFont(name)) {
+      if (!fontManager.isValidFamily(name)) {
         return;
       }
 

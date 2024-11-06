@@ -38,7 +38,7 @@
             blockIconURI: file,
             opcode: "start",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id: "start", default: "create [STR]" }),
+            text: Scratch.translate({ id: "start", default: "Create [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -52,7 +52,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "folder",
-              default: "set [STR] to [STR2]",
+              default: "Set [STR] to [STR2]",
             }),
             arguments: {
               STR: {
@@ -74,7 +74,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "sync",
-              default: "change the location of [STR] to [STR2]",
+              default: "Change the location of [STR] to [STR2]",
             }),
             arguments: {
               STR: {
@@ -91,7 +91,7 @@
             blockIconURI: file,
             opcode: "del",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id: "del", default: "delete [STR]" }),
+            text: Scratch.translate({ id: "del", default: "Delete [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -105,7 +105,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "webin",
-              default: "load [STR] from the web",
+              default: "Load [STR] from the web",
             }),
             arguments: {
               STR: {
@@ -118,7 +118,7 @@
             blockIconURI: file,
             opcode: "open",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id: "open", default: "open [STR]" }),
+            text: Scratch.translate({ id: "open", default: "Open [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -133,7 +133,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "clean",
-              default: "clear the file system",
+              default: "Clear the file system",
             }),
             arguments: {},
           },
@@ -143,7 +143,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "in",
-              default: "import file system from [STR]",
+              default: "Import file system from [STR]",
             }),
             arguments: {
               STR: {
@@ -158,7 +158,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "out",
-              default: "export file system",
+              default: "Export file system",
             }),
             arguments: {},
           },
@@ -168,7 +168,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "list",
-              default: "list all files under [STR]",
+              default: "List all files under [STR]",
             }),
             arguments: {
               STR: {
@@ -181,7 +181,7 @@
             blockIconURI: folder,
             opcode: "search",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id: "search", default: "search [STR]" }),
+            text: Scratch.translate({ id: "search", default: "Search [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,

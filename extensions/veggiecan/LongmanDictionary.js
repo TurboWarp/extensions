@@ -23,31 +23,27 @@
         color3: "#3C6874",
         menuIconURI: longmamlogomenu,
         blockIconURI: longmamlogoblocks,
-        name: Scratch.translate("Longman Dictionary"),
+        name: "Longman Dictionary",
         blocks: [
           {
             opcode: "define",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "primary definition of [word] in the longman dictionary"
-            ),
+            text: "primary definition of [word] in the Longman Dictionary",
             arguments: {
               word: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("cat"),
+                defaultValue: "cat",
               },
             },
           },
           {
             opcode: "getalldefs",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "all definitions of [word] in the longman dictionary"
-            ),
+            text: "all definitions of [word] in the Longman Dictionary",
             arguments: {
               word: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("cat"),
+                defaultValue: "cat",
               },
             },
           },
@@ -82,9 +78,9 @@
           const parser = new DOMParser();
           const htmlDocument = parser.parseFromString(text, "text/html");
           const definitionElements = htmlDocument.querySelectorAll(".DEF");
-          const definitions = Array.from(definitionElements)
-            .map((element) => element.textContent.trim())
-            .join(", ");
+          const definitions = Array.from(definitionElements).map(
+            (element) => element.textContent
+          );
           return definitions;
         })
         .catch((error) => {

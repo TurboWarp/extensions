@@ -7,53 +7,28 @@
 (function (Scratch) {
   "use strict";
 
-  let blockXML;
+  var blockXML;
+  const blacklist = ["looks_costumenumbername", "extension_wedo_tilt_menu"];
 
-  const blocklist = [
-    "looks_costumenumbername",
-    "extension_wedo_tilt_menu",
+  Scratch.vm.addListener("BLOCKSINFO_UPDATE", refreshMenus);
 
-    // Unused menu in More Events that won't be translated
-    "lmsMoreEvents_menu_state",
-  ];
-
-  const escapeXML = (text) =>
-    text.replace(/["'&<>]/g, (i) => {
-      switch (i) {
-        case "&":
-          return "&amp;";
-        case '"':
-          return "&apos;";
-        case "'":
-          return "&quot;";
-        case ">":
-          return "&gt;";
-        case "<":
-          return "&lt;";
-      }
-      return "";
-    });
-
-  const refreshMenus = () => {
+  function refreshMenus() {
     if (!window.ScratchBlocks) return;
     Scratch.vm.removeListener("BLOCKSINFO_UPDATE", refreshMenus);
 
     let allBlocks = Object.keys(ScratchBlocks.Blocks);
 
     allBlocks = allBlocks.filter(
-      (item) => item.includes("menu") && !blocklist.includes(item)
+      (item) => item.includes("menu") && !blacklist.includes(item)
     );
 
     const menuBlocks = allBlocks.map(
-      (item) =>
-        '<block id="' + escapeXML(item) + '" type="' + escapeXML(item) + '"/>'
+      (item) => '<block id="' + item + '" type="' + item + '"/>'
     );
 
     blockXML = menuBlocks.join("");
     Scratch.vm.runtime.extensionManager.refreshBlocks();
-  };
-
-  Scratch.vm.addListener("BLOCKSINFO_UPDATE", refreshMenus);
+  }
 
   class AllMenus {
     constructor() {
@@ -65,7 +40,7 @@
     getInfo() {
       return {
         id: "lmsAllMenus",
-        name: Scratch.translate("All Menus"),
+        name: "All Menus",
         blocks: [
           {
             blockType: Scratch.BlockType.XML,

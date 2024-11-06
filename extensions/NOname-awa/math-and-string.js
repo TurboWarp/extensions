@@ -7,7 +7,7 @@
         color2: "#48a100",
         color3: "#48a100",
         id: "nonameawamathandstring",
-        name: Scratch.translate("Math And String"),
+        name: "Math And String",
         blocks: [
           {
             opcode: "exponent",
@@ -54,7 +54,7 @@
           {
             opcode: "astrict",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("constrain [A] low [B] high [C]"),
+            text: "constrain [A] low [B] high [C]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -73,7 +73,7 @@
           {
             opcode: "round",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("round [A] to [B] decimal places"),
+            text: "Round [A] to [B] decimal places",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -320,11 +320,11 @@
           {
             opcode: "repeat",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("repeat [text] [n] times"),
+            text: "repeat [text] [n] times",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Text "),
+                defaultValue: "Text ",
               },
               n: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -335,24 +335,22 @@
           {
             opcode: "trim",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("trim spaces from both sides of [text]"),
+            text: "trim spaces from both sides of [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("   Text   "),
+                defaultValue: "   Text   ",
               },
             },
           },
           {
             opcode: "intercept",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "in text [text] get substring from [h] to [e]"
-            ),
+            text: "in text [text] get substring from [h] to [e]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("this is text test"),
+                defaultValue: "this is text test",
               },
               h: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -367,28 +365,26 @@
           {
             opcode: "replace",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("replace [o] of [text] with [n]"),
+            text: "replace [o] of [text] with [n]",
             arguments: {
               o: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("world"),
+                defaultValue: "world",
               },
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Hello world!"),
+                defaultValue: "Hello world!",
               },
               n: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Scratch"),
+                defaultValue: "Scratch",
               },
             },
           },
           {
             opcode: "Split",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "divide [text] according to [symbol] to take the [n] th item"
-            ),
+            text: "divide [text] according to [symbol] to take the [n] th item",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -408,33 +404,33 @@
           {
             opcode: "toUpperCase",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("upper case [text]"),
+            text: "UPPER CASE [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Text"),
+                defaultValue: "Text",
               },
             },
           },
           {
             opcode: "toLowerCase",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("lower case [text]"),
+            text: "lower case [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Text"),
+                defaultValue: "Text",
               },
             },
           },
           {
             opcode: "textToTitleCase",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("title case [text]"),
+            text: "Title Case [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("the text test"),
+                defaultValue: "the text test",
               },
             },
           },
@@ -442,45 +438,45 @@
           {
             opcode: "indexOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[a]'s first appearance in [text]"),
+            text: "[a] the first appearance in [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("The text test"),
+                defaultValue: "The text test",
               },
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("te"),
+                defaultValue: "te",
               },
             },
           },
           {
             opcode: "lastIndexOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[a]'s last occurrence in [text]"),
+            text: "[a] the position of last occurrence in [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("The text test"),
+                defaultValue: "The text test",
               },
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("te"),
+                defaultValue: "te",
               },
             },
           },
           {
             opcode: "countKeyword",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[a]'s number of occurrences in [text]"),
+            text: "[a] the number of occurrences in [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("The text test"),
+                defaultValue: "The text test",
               },
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("te"),
+                defaultValue: "te",
               },
             },
           },
@@ -488,22 +484,22 @@
           {
             opcode: "startsWith",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("does [a] begin with a text?"),
+            text: "does [a] begin with a text?",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Abc123"),
+                defaultValue: "Abc123",
               },
             },
           },
           {
             opcode: "matchTextWithPattern",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("match [text] as [pattern] - [flags]"),
+            text: "match [text] as [pattern] - [flags]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("abc"),
+                defaultValue: "abc",
               },
               pattern: {
                 type: Scratch.ArgumentType.STRING,
@@ -519,18 +515,18 @@
           {
             opcode: "ascii",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[a]'s ASCII"),
+            text: "[a]'s ascii",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("a"),
+                defaultValue: "a",
               },
             },
           },
           {
             opcode: "ascii_",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("ASCII [a] as text"),
+            text: "ascii is [a] 's text",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -542,7 +538,7 @@
           {
             opcode: "line_segment",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("line segment ([x1],[y1]) to ([x2],[y2])"),
+            text: "line segment ([x1],[y1]) to ([x2],[y2])",
             arguments: {
               x1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -566,9 +562,7 @@
           {
             opcode: "triangle",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "triangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) 's [CS]"
-            ),
+            text: "triangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) 's [CS]",
             arguments: {
               x1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -603,7 +597,7 @@
           {
             opcode: "triangle_s",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("triangle [s1] [s2] [s3] 's square"),
+            text: "triangle [s1] [s2] [s3] 's square",
             arguments: {
               s1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -622,9 +616,7 @@
           {
             opcode: "rectangle",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "rectangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) ([x4],[y4]) 's [CS]"
-            ),
+            text: "rectangle ([x1],[y1]) ([x2],[y2]) ([x3],[y3]) ([x4],[y4]) 's [CS]",
             arguments: {
               x1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -667,7 +659,7 @@
           {
             opcode: "graph",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("graph [graph] 's [CS]"),
+            text: "graph [graph] 's [CS]",
             arguments: {
               graph: {
                 type: Scratch.ArgumentType.STRING,
@@ -683,7 +675,7 @@
           {
             opcode: "circle",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("circle: [rd][a] 's [CS]"),
+            text: "circle: [rd][a] 's [CS]",
             arguments: {
               rd: {
                 type: Scratch.ArgumentType.STRING,
@@ -704,15 +696,11 @@
             opcode: "words",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: Scratch.translate(
-              "sort unique words in [text] as [language]"
-            ),
+            text: "sort unique words in [text] as [language]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate(
-                  "movie dog restaurant book school"
-                ),
+                defaultValue: "movie dog restaurant book school",
               },
               language: {
                 type: Scratch.ArgumentType.STRING,
@@ -724,13 +712,13 @@
           {
             opcode: "true",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("true"),
+            text: "true",
             disableMonitor: true,
           },
           {
             opcode: "false",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("false"),
+            text: "false",
             disableMonitor: true,
           },
           {
@@ -769,11 +757,11 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("radius (r)"),
+                text: "radius (r)",
                 value: "r",
               },
               {
-                text: Scratch.translate("diameter (d)"),
+                text: "diameter (d)",
                 value: "d",
               },
             ],
@@ -782,11 +770,11 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("square (s)"),
+                text: "square (s)",
                 value: "s",
               },
               {
-                text: Scratch.translate("circumference (c)"),
+                text: "circumference (c)",
                 value: "c",
               },
             ],
@@ -795,11 +783,11 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("English (en)"),
+                text: "English (en)",
                 value: "en",
               },
               {
-                text: Scratch.translate("Chinese (zh)"),
+                text: "Chinese (zh)",
                 value: "zh",
               },
             ],
@@ -808,11 +796,11 @@
             acceptReporters: false,
             items: [
               {
-                text: Scratch.translate("global (g)"),
+                text: "global (g)",
                 value: "g",
               },
               {
-                text: Scratch.translate("ignoring case (i)"),
+                text: "ignoring case (i)",
                 value: "i",
               },
             ],

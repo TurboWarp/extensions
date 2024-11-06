@@ -423,7 +423,7 @@
           {
             opcode: "encode",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("encode [string] in [code]"),
+            text: Scratch.translate("Encode [string] in [code]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -439,11 +439,11 @@
           {
             opcode: "decode",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("decode [string] with [code]"),
+            text: Scratch.translate("Decode [string] with [code]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: this._btoa("apple"),
+                defaultValue: btoa("apple"), // don't translate because btoa() will error in Chinese ...
               },
               code: {
                 type: Scratch.ArgumentType.STRING,
@@ -455,7 +455,7 @@
           {
             opcode: "hash",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("hash [string] with [hash]"),
+            text: Scratch.translate("Hash [string] with [hash]"),
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
@@ -475,7 +475,7 @@
             opcode: "Conversioncodes",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "convert the character [string] to [CodeList]"
+              "Convert the character [string] to [CodeList]"
             ),
             arguments: {
               string: {
@@ -514,7 +514,7 @@
             opcode: "Randomstrings",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "randomly generated [position] character string"
+              "Randomly generated [position] character string"
             ),
             arguments: {
               position: {
@@ -527,7 +527,7 @@
             opcode: "Fontgenerationstring",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "use [wordbank] to generate a random [position] character string"
+              "Use [wordbank] to generate a random [position] character string"
             ),
             arguments: {
               wordbank: {
@@ -572,7 +572,7 @@
       string = Scratch.Cast.toString(string);
       switch (code) {
         case "Base64":
-          return this._btoa(string);
+          return btoa(string);
         case "URL":
           return encodeURIComponent(string);
       }
@@ -583,7 +583,7 @@
       switch (code) {
         case "Base64":
           try {
-            return this._atob(string);
+            return atob(string);
           } catch (error) {
             console.error("invalid base 64", error);
             return "";
@@ -635,18 +635,6 @@
         string += t.charAt(Math.floor(Math.random() * a));
       }
       return string;
-    }
-    _btoa(unicode) {
-      let bytes = new TextEncoder().encode(unicode);
-      let binString = Array.from(bytes, (byte) =>
-        String.fromCodePoint(byte)
-      ).join("");
-      return btoa(binString);
-    }
-    _atob(base64) {
-      let binString = atob(base64);
-      let bytes = Uint8Array.from(binString, (m) => m.codePointAt(0));
-      return new TextDecoder().decode(bytes);
     }
   }
   Scratch.extensions.register(new Encoding());

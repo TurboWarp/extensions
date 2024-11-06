@@ -18,14 +18,14 @@
           {
             opcode: "startRecording",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("start recording"),
+            text: Scratch.translate("Start recording"),
             blockIconURI: icon,
             arguments: {},
           },
           {
             opcode: "stopRecording",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("stop recording"),
+            text: Scratch.translate("Stop recording"),
             blockIconURI: icon,
             arguments: {},
           },
@@ -33,7 +33,7 @@
             opcode: "stopRecordingAndDownload",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "stop recording and download with [name] as filename"
+              "Stop recording and download with [name] as filename"
             ),
             blockIconURI: icon,
             arguments: {
@@ -50,7 +50,7 @@
           {
             opcode: "isRecording",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("recording?"),
+            text: Scratch.translate("Recording?"),
             blockIconURI: icon,
             arguments: {},
           },

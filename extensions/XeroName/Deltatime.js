@@ -1,4 +1,4 @@
-// Name: Delta Time
+// Name: Deltatime
 // ID: dtbyxeroname
 // Description: Precise delta timing blocks.
 // By: XeroName <https://scratch.mit.edu/users/plant2014/>
@@ -21,15 +21,7 @@
 
   vm.runtime.on("BEFORE_EXECUTE", () => {
     const now = performance.now();
-
-    if (previousTime === 0) {
-      // First frame. We used to always return 0 here, but that can break projects that
-      // expect delta time to always be non-zero. Instead we'll make our best guess.
-      deltaTime = 1 / vm.runtime.frameLoop.framerate;
-    } else {
-      deltaTime = (now - previousTime) / 1000;
-    }
-
+    deltaTime = previousTime === 0 ? 0 : (now - previousTime) / 1000;
     previousTime = now;
   });
 
@@ -37,7 +29,7 @@
     getInfo() {
       return {
         id: "dtbyxeroname",
-        name: Scratch.translate("Delta Time"),
+        name: "Deltatime",
         color1: "#333333",
         color2: "#444444",
         color3: "#ffffff",

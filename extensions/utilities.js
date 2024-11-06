@@ -42,7 +42,7 @@
     getInfo() {
       return {
         id: "utilities",
-        name: Scratch.translate("Utilities"),
+        name: "Utilities",
 
         color1: "#8BC34A",
         color2: "#7CB342",
@@ -56,7 +56,7 @@
 
             blockType: Scratch.BlockType.BOOLEAN,
 
-            text: Scratch.translate("is [A] exactly [B]?"),
+            text: "is [A] exactly [B]?",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -103,19 +103,13 @@
           {
             opcode: "trueBlock",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate({
-              default: "true",
-              description: "Block that returns true",
-            }),
+            text: "true",
             disableMonitor: true,
           },
           {
             opcode: "falseBlock",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate({
-              default: "false",
-              description: "Block that returns false",
-            }),
+            text: "false",
             disableMonitor: true,
           },
           {
@@ -136,17 +130,14 @@
           {
             opcode: "pi",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "pi",
-              description: "Block that returns 3.1415...",
-            }),
+            text: "pi",
           },
           {
             opcode: "ternaryOperator",
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: Scratch.translate("if [A] then [B] else [C]"),
+            text: "if [A] then [B] else [C]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -167,7 +158,7 @@
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: Scratch.translate("letters [START] to [END] of [STRING]"),
+            text: "letters [START] to [END] of [STRING]",
             arguments: {
               START: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -188,7 +179,7 @@
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: Scratch.translate("clamp [INPUT] between [MIN] and [MAX]"),
+            text: "clamp [INPUT] between [MIN] and [MAX]",
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -207,14 +198,14 @@
           {
             opcode: "currentMillisecond",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("current millisecond"),
+            text: "current millisecond",
           },
           {
             opcode: "fetchFrom",
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: Scratch.translate("content from [URL]"),
+            text: "get content from [URL]",
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -227,11 +218,7 @@
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: Scratch.translate({
-              default: "[PATH] of [JSON_STRING]",
-              description:
-                'PATH is a string like "fruit/apples" and JSON_STRING is an object like {"fruit":{"apples":3}}. 3 would be reported in this example.',
-            }),
+            text: "[PATH] of [JSON_STRING]",
             arguments: {
               PATH: {
                 type: Scratch.ArgumentType.STRING,
@@ -269,9 +256,7 @@
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: Scratch.translate(
-              "replace [STRING] using the rule [REGEX] with [NEWSTRING]"
-            ),
+            text: "replace [STRING] using the rule [REGEX] with [NEWSTRING]",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,

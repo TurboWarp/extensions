@@ -64,7 +64,7 @@
           {
             opcode: "NumericalEncode",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("encode [DATA] to numbers"),
+            text: Scratch.translate("Encode [DATA] to numbers"),
             arguments: {
               DATA: {
                 type: Scratch.ArgumentType.STRING,
@@ -75,7 +75,7 @@
           {
             opcode: "NumericalDecode",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("decode [ENCODED] back to text"),
+            text: Scratch.translate("Decode [ENCODED] back to text"),
             arguments: {
               ENCODED: {
                 type: Scratch.ArgumentType.STRING,

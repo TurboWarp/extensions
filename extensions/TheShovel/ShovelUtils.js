@@ -39,7 +39,7 @@
           {
             opcode: "importImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("import image from [TEXT] name [NAME]"),
+            text: "import image from [TEXT] name [NAME]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -54,7 +54,7 @@
           {
             opcode: "getlist",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("list [TEXT] as array"),
+            text: "get list [TEXT] as array",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -65,7 +65,7 @@
           {
             opcode: "setlist",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set list [NAME] to [TEXT]"),
+            text: "set list [NAME] to [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -80,18 +80,18 @@
           {
             opcode: "importSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("import sprite from [TEXT]"),
+            text: "import sprite from [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Link or data URI here"),
+                defaultValue: "Link or data uri here",
               },
             },
           },
           {
             opcode: "importSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("import sound from [TEXT] name [NAME]"),
+            text: "import sound from [TEXT] name [NAME]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -106,7 +106,7 @@
           {
             opcode: "importProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("import project from [TEXT]"),
+            text: "import project from [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -118,7 +118,7 @@
           {
             opcode: "loadExtension",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("load extension from [TEXT]"),
+            text: "load extension from [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -130,7 +130,7 @@
           {
             opcode: "restartProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("restart project"),
+            text: "restart project",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -141,7 +141,7 @@
           {
             opcode: "deleteSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete sprite [SPRITE]"),
+            text: "delete sprite [SPRITE]",
             arguments: {
               SPRITE: {
                 type: Scratch.ArgumentType.STRING,
@@ -152,7 +152,7 @@
           {
             opcode: "deleteImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete costume [COSNAME] in [SPRITE]"),
+            text: "delete costume [COSNAME] in [SPRITE]",
             arguments: {
               COSNAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -167,7 +167,7 @@
           {
             opcode: "setedtarget",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set editing target to [NAME]"),
+            text: "set editing target to [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -179,7 +179,7 @@
           {
             opcode: "brightnessByColor",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("brightness of [color]"),
+            text: "brightness of [color]",
             arguments: {
               color: {
                 type: Scratch.ArgumentType.STRING,
@@ -191,12 +191,12 @@
           {
             opcode: "getAllSprites",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("all sprites"),
+            text: "all sprites",
           },
           {
             opcode: "getfps",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("fps"),
+            text: "fps",
           },
         ],
       };

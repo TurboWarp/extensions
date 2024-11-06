@@ -1,7 +1,7 @@
 // Name: Ask Before Closing Tab
 // ID: xmerclosecontrol
 // Description: Show a prompt when someone tries to close the tab.
-// By: XmerOriginals <https://scratch.mit.edu/users/XmerOriginals/>
+// By: XmerOriginals
 // License: MPL-2.0
 
 (function (Scratch) {

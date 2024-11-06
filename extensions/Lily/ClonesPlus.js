@@ -48,7 +48,7 @@
     getInfo() {
       return {
         id: "lmsclonesplus",
-        name: Scratch.translate("Clones+"),
+        name: "Clones+",
         color1: "#FFAB19",
         color2: "#EC9C13",
         color3: "#CF8B17",
@@ -57,9 +57,7 @@
           {
             opcode: "whenCloneStartsWithVar",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate(
-              "when I start as a clone with [INPUTA] set to [INPUTB]"
-            ),
+            text: "when I start as a clone with [INPUTA] set to [INPUTB]",
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -76,9 +74,7 @@
           {
             opcode: "createCloneWithVar",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "create clone with [INPUTA] set to [INPUTB]"
-            ),
+            text: "create clone with [INPUTA] set to [INPUTB]",
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -98,9 +94,7 @@
           {
             opcode: "touchingCloneWithVar",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate(
-              "touching clone with [INPUTA] set to [INPUTB]?"
-            ),
+            text: "touching clone with [INPUTA] set to [INPUTB]?",
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -117,7 +111,7 @@
           {
             opcode: "touchingMainSprite",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("touching main sprite?"),
+            text: "touching main sprite?",
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             extensions: ["colours_control"],
@@ -128,9 +122,7 @@
           {
             opcode: "setVariableOfClone",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set variable [INPUTA] to [INPUTB] for clones with [INPUTC] set to [INPUTD]"
-            ),
+            text: "set variable [INPUTA] to [INPUTB] for clones with [INPUTC] set to [INPUTD]",
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -155,9 +147,7 @@
           {
             opcode: "getVariableOfClone",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "variable [INPUTA] of clone with [INPUTB] set to [INPUTC]"
-            ),
+            text: "variable [INPUTA] of clone with [INPUTB] set to [INPUTC]",
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
@@ -179,9 +169,7 @@
           {
             opcode: "setVariableOfMainSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set variable [INPUTA] to [INPUTB] for main sprite"
-            ),
+            text: "set variable [INPUTA] to [INPUTB] for main sprite",
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -198,7 +186,7 @@
           {
             opcode: "getVariableOfMainSprite",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("variable [INPUT] of main sprite"),
+            text: "variable [INPUT] of main sprite",
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
@@ -215,9 +203,7 @@
           {
             opcode: "cloneExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate(
-              "clone with [INPUTA] set to [INPUTB] exists?"
-            ),
+            text: "clone with [INPUTA] set to [INPUTB] exists?",
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -234,14 +220,13 @@
           {
             opcode: "getThingOfClone",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "[INPUTA] of clone with [INPUTB] set to [INPUTC]"
-            ),
+            text: "[INPUTA] of clone with [INPUTB] set to [INPUTC]",
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
+                defaultValue: "x position",
                 menu: "thingOfMenu",
               },
               INPUTB: {
@@ -258,12 +243,13 @@
           {
             opcode: "getThingOfMainSprite",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[INPUT] of main sprite"),
+            text: "[INPUT] of main sprite",
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
+                defaultValue: "x position",
                 menu: "thingOfMenu",
               },
             },
@@ -275,7 +261,7 @@
           {
             opcode: "stopScriptsInSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("stop scripts in [INPUT]"),
+            text: "stop scripts in [INPUT]",
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -287,9 +273,7 @@
           {
             opcode: "stopScriptsInClone",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "stop scripts in clones with [INPUTA] set to [INPUTB]"
-            ),
+            text: "stop scripts in clones with [INPUTA] set to [INPUTB]",
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -306,7 +290,7 @@
           {
             opcode: "stopScriptsInMainSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("stop scripts in main sprite"),
+            text: "stop scripts in main sprite",
             filter: [Scratch.TargetType.SPRITE],
             extensions: ["colours_control"],
           },
@@ -316,7 +300,7 @@
           {
             opcode: "deleteClonesInSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete clones in [INPUT]"),
+            text: "delete clones in [INPUT]",
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -328,9 +312,7 @@
           {
             opcode: "deleteCloneWithVar",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "delete clones with [INPUTA] set to [INPUTB]"
-            ),
+            text: "delete clones with [INPUTA] set to [INPUTB]",
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -350,7 +332,7 @@
           {
             opcode: "isClone",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is clone?"),
+            text: "is clone?",
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             extensions: ["colours_control"],
@@ -361,13 +343,13 @@
           {
             opcode: "cloneCount",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("clone count"),
+            text: "clone count",
             extensions: ["colours_control"],
           },
           {
             opcode: "spriteCloneCount",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("clone count of [INPUT]"),
+            text: "clone count of [INPUT]",
             disableMonitor: true,
             arguments: {
               INPUT: {
@@ -392,31 +374,31 @@
             acceptReporters: false,
             items: [
               {
-                text: Scratch.translate("x position"),
+                text: "x position",
                 value: "x position",
               },
               {
-                text: Scratch.translate("y position"),
+                text: "y position",
                 value: "y position",
               },
               {
-                text: Scratch.translate("direction"),
+                text: "direction",
                 value: "direction",
               },
               {
-                text: Scratch.translate("costume #"),
+                text: "costume #",
                 value: "costume num",
               },
               {
-                text: Scratch.translate("costume name"),
+                text: "costume name",
                 value: "costume name",
               },
               {
-                text: Scratch.translate("size"),
+                text: "size",
                 value: "size",
               },
               {
-                text: Scratch.translate("volume"),
+                text: "volume",
                 value: "volume",
               },
             ],
@@ -643,20 +625,17 @@
     getSprites() {
       let spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
-      const editingTarget = Scratch.vm.runtime.getEditingTarget();
+      const myself = Scratch.vm.runtime.getEditingTarget().sprite.name;
       for (let index = 1; index < targets.length; index++) {
-        const curTarget = targets[index];
-        let display = curTarget.getName();
-        if (editingTarget === curTarget) {
-          display = Scratch.translate({
-            default: "myself",
-            description: "Item in a dropdown that refers to the current sprite",
-          });
+        const curTarget = targets[index].sprite;
+        let display = curTarget.name;
+        if (myself === curTarget.name) {
+          display = "myself";
         }
         if (targets[index].isOriginal) {
           const jsonOBJ = {
             text: display,
-            value: curTarget.getName(),
+            value: curTarget.name,
           };
           spriteNames.push(jsonOBJ);
         }
