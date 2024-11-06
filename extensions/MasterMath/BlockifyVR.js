@@ -94,12 +94,11 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       .getObject3D("mesh").material;
     const canvas = document.getElementById("scratchcanvas");
     if (material && material.map) {
-      material.map.dispose(); // Dispose of the old texture to free up memory, replace with the resized texture
+      material.map.dispose();
     }
     material.map = new THREE.Texture(canvas);
-    material.map.needsUpdate = true; //re-update the texture with the newly scaled canvas.
-
-    scaleDisplayPlane(); //re-scale the plane in case the ratio of the scratch stage has changed.
+    material.map.needsUpdate = true;
+    scaleDisplayPlane();
   });
 
   resizeObserver.observe(document.getElementById("scratchcanvas"));
@@ -167,9 +166,9 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       this.material = this.el.getObject3D("mesh").material;
     },
     tick: function () {
-      runtime.frameLoop.stepCallback();
+      runtime.frameLoop.stepCallback(); //sync frameloops
       if (this.material && this.material.map) {
-        this.material.map.needsUpdate = true;
+        this.material.map.needsUpdate = true; //update plane texture
       }
     },
   });
@@ -285,7 +284,6 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
     },
   });
 
-  //TODO: Add event hat arguments.
   AFRAME.registerComponent("right-controller-manager", {
     init: function () {
       let el = this.el;
@@ -304,7 +302,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("triggerdown", function () {
         rightTriggerPressed = true;
         lastButtonPressed = "right trigger";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("triggerup", function () {
@@ -314,7 +317,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("thumbstickdown", function () {
         rightThumbstickPressed = true;
         lastButtonPressed = "right thumbstick";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("thumbstickup", function () {
@@ -324,7 +332,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("trackpaddown", function () {
         rightTrackpadButtonPressed = true;
         lastButtonPressed = "right trackpad";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("trackpadup", function () {
@@ -334,7 +347,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("gripdown", function () {
         rightGripPressed = true;
         lastButtonPressed = "right grip";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("gripup", function () {
@@ -345,7 +363,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("abuttondown", function () {
         aButtonPressed = true;
         lastButtonPressed = "A";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("abuttonup", function () {
@@ -355,7 +378,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("bbuttondown", function () {
         bButtonPressed = true;
         lastButtonPressed = "B";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("bbuttonup", function () {
@@ -366,7 +394,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("systemdown", function () {
         systemButtonPressed = true;
         lastButtonPressed = "System";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("systemup", function () {
@@ -425,7 +458,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("triggerdown", function () {
         leftTriggerPressed = true;
         lastButtonPressed = "left trigger";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("triggerup", function () {
@@ -435,7 +473,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("thumbstickdown", function () {
         leftThumbstickPressed = true;
         lastButtonPressed = "left thumbstick";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("thumbstickup", function () {
@@ -445,7 +488,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("trackpaddown", function () {
         leftTrackpadButtonPressed = true;
         lastButtonPressed = "left trackpad";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("trackpadup", function () {
@@ -455,7 +503,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("gripdown", function () {
         leftGripPressed = true;
         lastButtonPressed = "left grip";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("gripup", function () {
@@ -465,7 +518,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("xbuttondown", function () {
         xButtonPressed = true;
         lastButtonPressed = "X";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("xbuttonup", function () {
@@ -475,7 +533,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("ybuttondown", function () {
         yButtonPressed = true;
         lastButtonPressed = "Y";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("ybuttonup", function () {
@@ -485,7 +548,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       el.addEventListener("menubuttonup", function () {
         menuButtonPressed = true;
         lastButtonPressed = "Menu";
-        runtime.startHats("blockifyvr_whenAnyButtonPressed");
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: lastButtonPressed,
+        });
       });
 
       el.addEventListener("menubuttondown", function () {
@@ -539,7 +607,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         name: "BlockifyVR",
         menuIconURI: icon,
         blockIconURI: icon,
-        //docsURI: 'https://extensions.turbowarp.org/-MasterMath-/BlockifyVR', //TODO: update this URL when the extension is finished. Create a Turbowarp documentation page and include an optional link to the documentation on the website.
+        //docsURI: 'https://extensions.turbowarp.org/MasterMath/BlockifyVR', //TODO: update this URL when the extension is finished.
         blocks: [
           {
             blockType: "label",
@@ -578,23 +646,6 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
                 type: Scratch.ArgumentType.STRING,
                 menu: "controllerMenu",
                 defaultValue: "left controller",
-              },
-            },
-          },
-          //* Matrix block code from the Augmented Reality extension.
-          {
-            opcode: "getMatrix",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "item [ITEM] of [MATRIX] matrix",
-            arguments: {
-              ITEM: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
-              },
-              MATRIX: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "matrix",
-                defaultValue: "combined",
               },
             },
           },
@@ -649,16 +700,40 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
               },
             },
           },
+          //* Matrix block code from the Augmented Reality extension.
+          {
+            opcode: "getMatrix",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "item [ITEM] of [MATRIX] matrix",
+            arguments: {
+              ITEM: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+              MATRIX: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "matrix",
+                defaultValue: "combined",
+              },
+            },
+          },
           "---",
           {
             blockType: "label",
             text: "Controller Input",
           },
           {
-            opcode: "whenAnyButtonPressed",
+            opcode: "whenButtonPressed",
             blockType: Scratch.BlockType.EVENT,
-            text: "when any button pressed",
+            text: "when [button] button pressed",
             isEdgeActivated: false,
+            arguments: {
+              button: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "any",
+                menu: "buttonMenu",
+              },
+            },
           },
           {
             opcode: "isButtonPressed",
@@ -667,7 +742,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
             arguments: {
               button: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "left trigger",
+                defaultValue: "any",
                 menu: "buttonMenu",
               },
             },
@@ -750,6 +825,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
           buttonMenu: {
             acceptReporters: false,
             items: [
+              "any",
               "left trigger",
               "right trigger",
               "left grip",
@@ -946,10 +1022,6 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         return rightGripPressed;
       }
 
-      if (button == "left trigger") {
-        return leftTriggerPressed;
-      }
-
       if (button == "left thumbstick") {
         return leftThumbstickPressed;
       }
@@ -988,6 +1060,29 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
       if (button == "system") {
         return systemButtonPressed;
+      }
+
+      if (button == "any") {
+        if (
+          leftTriggerPressed ||
+          rightTriggerPressed ||
+          leftGripPressed ||
+          rightGripPressed ||
+          leftThumbstickPressed ||
+          rightThumbstickPressed ||
+          aButtonPressed ||
+          bButtonPressed ||
+          xButtonPressed ||
+          yButtonPressed ||
+          leftTrackpadButtonPressed ||
+          rightTrackpadButtonPressed ||
+          menuButtonPressed ||
+          systemButtonPressed
+        ) {
+          return true;
+        } else {
+          return false;
+        }
       }
     }
 
