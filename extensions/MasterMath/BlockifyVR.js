@@ -63,8 +63,9 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       const canvasAspect = canvas.width / canvas.height;
       const stageAspect = runtime.stageWidth / runtime.stageHeight;
       const material = plane.getObject3D("mesh").material;
+      const distance = 0.5; //in meters
 
-      let height = 2 * Math.tan(fov / 2) * 1;
+      let height = 2 * Math.tan(fov / 2) * distance;
       let width = height * stageAspect;
 
       if (width < height * canvasAspect) {
@@ -73,7 +74,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       }
 
       plane.object3D.scale.set(width, height, 1);
-      plane.object3D.position.set(0, 0, -1);
+      plane.object3D.position.set(0, 0, -distance);
       material.map.needsUpdate = true;
     });
   }
@@ -105,19 +106,17 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
   //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   let inVR = false;
 
-  let cameraOrientationX, cameraOrientationY, cameraOrientationZ;
+  let cameraRotationX, cameraRotationY, cameraRotationZ;
 
   let cameraPosX, cameraPosY, cameraPosZ;
 
-  let leftControllerOrientationX,
-    leftControllerOrientationY,
-    leftControllerOrientationZ;
+  let leftControllerRotationX, leftControllerRotationY, leftControllerRotationZ;
 
   let leftControllerPositionX, leftControllerPositionY, leftControllerPositionZ;
 
-  let rightControllerOrientationX,
-    rightControllerOrientationY,
-    rightControllerOrientationZ;
+  let rightControllerRotationX,
+    rightControllerRotationY,
+    rightControllerRotationZ;
 
   let rightControllerPositionX,
     rightControllerPositionY,
@@ -166,9 +165,9 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       this.material = this.el.getObject3D("mesh").material;
     },
     tick: function () {
-      runtime.frameLoop.stepCallback(); //sync frameloops
+      runtime.frameLoop.stepCallback();
       if (this.material && this.material.map) {
-        this.material.map.needsUpdate = true; //update plane texture
+        this.material.map.needsUpdate = true;
       }
     },
   });
@@ -254,9 +253,9 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         THREE.MathUtils.degToRad(rotation.z)
       );
       rotation = this.el.getAttribute("rotation");
-      cameraOrientationX = rotation.x;
-      cameraOrientationY = rotation.y;
-      cameraOrientationZ = rotation.z;
+      cameraRotationX = rotation.x;
+      cameraRotationY = rotation.y;
+      cameraRotationZ = rotation.z;
       cameraPosX = this.el.object3D.position.x;
       cameraPosY = this.el.object3D.position.y;
       cameraPosZ = this.el.object3D.position.z;
@@ -288,7 +287,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
     init: function () {
       let el = this.el;
       el.addEventListener("thumbstickmoved", this.logThumbstick);
-      el.addEventListener("trackpadmoved", this.logTrackpad); //only supported on vive-focus-controls and windows-motion-controls
+      el.addEventListener("trackpadmoved", this.logTrackpad);
       el.addEventListener("triggerchanged", this.logTrigger);
       el.addEventListener("gripchanged", this.logGrip);
 
@@ -359,7 +358,6 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         rightGripPressed = false;
       });
 
-      //A, B, X, and Y and Surface buttons quest-touch-controls only
       el.addEventListener("abuttondown", function () {
         aButtonPressed = true;
         lastButtonPressed = "A";
@@ -408,9 +406,15 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
     },
 
     tick: function () {
-      rightControllerOrientationX = this.el.object3D.rotation.x;
-      rightControllerOrientationY = this.el.object3D.rotation.y;
-      rightControllerOrientationZ = this.el.object3D.rotation.z;
+      rightControllerRotationX = THREE.MathUtils.radToDeg(
+        this.el.object3D.rotation.x
+      );
+      rightControllerRotationY = THREE.MathUtils.radToDeg(
+        this.el.object3D.rotation.y
+      );
+      rightControllerRotationZ = THREE.MathUtils.radToDeg(
+        this.el.object3D.rotation.z
+      );
 
       rightControllerPositionX = this.el.object3D.position.x;
       rightControllerPositionY = this.el.object3D.position.y;
@@ -444,7 +448,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
     init: function () {
       let el = this.el;
       el.addEventListener("thumbstickmoved", this.logThumbstick);
-      el.addEventListener("trackpadmoved", this.logTrackpad); //only supported on vive-focus-controls and windows-motion-controls
+      el.addEventListener("trackpadmoved", this.logTrackpad);
       el.addEventListener("triggerchanged", this.logTrigger);
       el.addEventListener("gripchanged", this.logGrip);
 
@@ -562,9 +566,15 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
     },
 
     tick: function () {
-      leftControllerOrientationX = this.el.object3D.rotation.x;
-      leftControllerOrientationY = this.el.object3D.rotation.y;
-      leftControllerOrientationZ = this.el.object3D.rotation.z;
+      leftControllerRotationX = THREE.MathUtils.degToRad(
+        this.el.object3D.rotation.x
+      );
+      leftControllerRotationY = THREE.MathUtils.degToRad(
+        this.el.object3D.rotation.y
+      );
+      leftControllerRotationZ = THREE.MathUtils.degToRad(
+        this.el.object3D.rotation.z
+      );
 
       leftControllerPositionX = this.el.object3D.position.x;
       leftControllerPositionY = this.el.object3D.position.y;
@@ -608,6 +618,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         menuIconURI: icon,
         blockIconURI: icon,
         //docsURI: 'https://extensions.turbowarp.org/MasterMath/BlockifyVR', //TODO: update this URL when the extension is finished.
+        //TODO: Add "Give Feedback" button.
         blocks: [
           {
             blockType: "label",
@@ -969,39 +980,39 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
     rotationOf({ direction, device }) {
       if (direction == "x-rotation" && device == "headset") {
-        return cameraOrientationX;
+        return cameraRotationX;
       }
 
       if (direction == "y-rotation" && device == "headset") {
-        return cameraOrientationY;
+        return cameraRotationY;
       }
 
       if (direction == "z-rotation" && device == "headset") {
-        return cameraOrientationZ;
+        return cameraRotationZ;
       }
 
       if (direction == "x-rotation" && device == "left controller") {
-        return leftControllerOrientationX;
+        return leftControllerRotationX;
       }
 
       if (direction == "y-rotation" && device == "left controller") {
-        return leftControllerOrientationY;
+        return leftControllerRotationY;
       }
 
       if (direction == "z-rotation" && device == "left controller") {
-        return leftControllerOrientationZ;
+        return leftControllerRotationZ;
       }
 
       if (direction == "x-rotation" && device == "right controller") {
-        return rightControllerOrientationX;
+        return rightControllerRotationX;
       }
 
       if (direction == "y-rotation" && device == "right controller") {
-        return rightControllerOrientationY;
+        return rightControllerRotationY;
       }
 
       if (direction == "z-rotation" && device == "right controller") {
-        return rightControllerOrientationZ;
+        return rightControllerRotationZ;
       }
     }
 
