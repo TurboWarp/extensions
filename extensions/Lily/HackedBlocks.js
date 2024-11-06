@@ -12,7 +12,7 @@
     getInfo() {
       return {
         id: "lmsHackedBlocks",
-        name: Scratch.translate("Hidden Blocks"),
+        name: "Hidden Blocks",
         docsURI: "https://en.scratch-wiki.info/wiki/Hidden_Blocks#Events",
         blocks: [
           // Use the sensing_touchingobjectmenu instead of event_ to also list sprites, since the block supports it

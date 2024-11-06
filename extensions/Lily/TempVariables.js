@@ -10,7 +10,7 @@
     getInfo() {
       return {
         id: "lmstempvars",
-        name: Scratch.translate("Temporary Variables"),
+        name: "Temporary Variables",
         color1: "#FF791A",
         color2: "#E15D00",
         menuIconURI: menuIconURI,
@@ -18,7 +18,7 @@
           {
             opcode: "setVariableTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set variable [INPUTA] to [INPUTB]"),
+            text: "set variable [INPUTA] to [INPUTB]",
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -33,7 +33,7 @@
           {
             opcode: "changeVariableBy",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("change variable [INPUTA] by [INPUTB]"),
+            text: "change variable [INPUTA] by [INPUTB]",
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
@@ -48,7 +48,7 @@
           {
             opcode: "getVariable",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("variable [INPUT]"),
+            text: "variable [INPUT]",
             disableMonitor: true,
             arguments: {
               INPUT: {
@@ -63,7 +63,7 @@
           {
             opcode: "deleteVariable",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete variable [INPUT]"),
+            text: "delete variable [INPUT]",
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -74,12 +74,12 @@
           {
             opcode: "deleteAllVariables",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete all variables"),
+            text: "delete all variables",
           },
           {
             opcode: "listVariables",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("list active variables"),
+            text: "list active variables",
             disableMonitor: true,
           },
         ],

@@ -117,7 +117,7 @@
                 defaultValue: "wss://echoserver.redman13.repl.co",
               },
             },
-            text: Scratch.translate("connect to [URL]"),
+            text: "connect to [URL]",
           },
           "---",
           {
@@ -125,12 +125,12 @@
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
-            text: Scratch.translate("when connected"),
+            text: "when connected",
           },
           {
             opcode: "isConnected",
             blockType: BlockType.BOOLEAN,
-            text: Scratch.translate("is connected?"),
+            text: "is connected?",
             disableMonitor: true,
           },
           "---",
@@ -139,12 +139,12 @@
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
-            text: Scratch.translate("when message received"),
+            text: "when message received",
           },
           {
             opcode: "messageData",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("received message data"),
+            text: "received message data",
             disableMonitor: true,
           },
           "---",
@@ -154,10 +154,10 @@
             arguments: {
               PAYLOAD: {
                 type: ArgumentType.STRING,
-                defaultValue: "Hello!",
+                defaultValue: "hello!",
               },
             },
-            text: Scratch.translate("send message [PAYLOAD]"),
+            text: "send message [PAYLOAD]",
           },
           "---",
           {
@@ -165,12 +165,12 @@
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
-            text: Scratch.translate("when connection errors"),
+            text: "when connection errors",
           },
           {
             opcode: "hasErrored",
             blockType: BlockType.BOOLEAN,
-            text: Scratch.translate("connection errored?"),
+            text: "has connection errored?",
             disableMonitor: true,
           },
           "---",
@@ -179,30 +179,30 @@
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
-            text: Scratch.translate("when connection closes"),
+            text: "when connection closes",
           },
           {
             opcode: "isClosed",
             blockType: BlockType.BOOLEAN,
-            text: Scratch.translate("is connection closed?"),
+            text: "is connection closed?",
             disableMonitor: true,
           },
           {
             opcode: "closeCode",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("closing code"),
+            text: "closing code",
             disableMonitor: true,
           },
           {
             opcode: "closeMessage",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("closing message"),
+            text: "closing message",
             disableMonitor: true,
           },
           {
             opcode: "closeWithoutReason",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate("close connection"),
+            text: "close connection",
           },
           {
             opcode: "closeWithCode",
@@ -213,7 +213,7 @@
                 defaultValue: "1000",
               },
             },
-            text: Scratch.translate("close connection with code [CODE]"),
+            text: "close connection with code [CODE]",
           },
           {
             opcode: "closeWithReason",
@@ -228,9 +228,7 @@
                 defaultValue: "fulfilled",
               },
             },
-            text: Scratch.translate(
-              "close connection with reason [REASON] and code [CODE]"
-            ),
+            text: "close connection with reason [REASON] and code [CODE]",
           },
         ],
       };

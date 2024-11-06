@@ -523,25 +523,25 @@
           {
             opcode: "enterAR",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate("enter AR mode"),
+            text: "enter AR mode",
             arguments: {},
           },
           {
             opcode: "exitAR",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate("exit AR mode"),
+            text: "exit AR mode",
             arguments: {},
           },
           {
             opcode: "isInAR",
             blockType: BlockType.BOOLEAN,
-            text: Scratch.translate("is in AR?"),
+            text: "is in AR?",
             arguments: {},
           },
           {
             opcode: "isFeatureAvailible", // unfixable typo
             blockType: BlockType.BOOLEAN,
-            text: Scratch.translate("is [FEATURE] available?"),
+            text: "is [FEATURE] available?",
             arguments: {
               FEATURE: {
                 type: ArgumentType.STRING,
@@ -554,20 +554,20 @@
           {
             opcode: "getStageWidth",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("stage width"),
+            text: "stage width",
             arguments: {},
           },
           {
             opcode: "getStageHeight",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("stage height"),
+            text: "stage height",
             arguments: {},
           },
           "---",
           {
             opcode: "getMatrixItem",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("item [ITEM] of [MATRIX] matrix"),
+            text: "item [ITEM] of [MATRIX] matrix",
             arguments: {
               MATRIX: {
                 type: ArgumentType.STRING,
@@ -583,7 +583,7 @@
           {
             opcode: "getPosition",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("position [POSITION_COMPONENT]"),
+            text: "position [POSITION_COMPONENT]",
             arguments: {
               POSITION_COMPONENT: {
                 type: ArgumentType.STRING,
@@ -595,7 +595,7 @@
           {
             opcode: "getOrientation",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("orientation [ORIENTATION_COMPONENT]"),
+            text: "orientation [ORIENTATION_COMPONENT]",
             arguments: {
               ORIENTATION_COMPONENT: {
                 type: ArgumentType.STRING,
@@ -608,7 +608,7 @@
           {
             opcode: "getHitPosition",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("hit position [POSITION_COMPONENT]"),
+            text: "hit position [POSITION_COMPONENT]",
             arguments: {
               POSITION_COMPONENT: {
                 type: ArgumentType.STRING,
@@ -621,7 +621,7 @@
           {
             opcode: "moveSpaceBy",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate("move everything by x:[X] y:[Y] z:[Z]"),
+            text: "move everything by x:[X] y:[Y] z:[Z]",
             arguments: {
               X: {
                 type: ArgumentType.NUMBER,
@@ -640,9 +640,7 @@
           {
             opcode: "turnSpaceBy",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate(
-              "turn everything by r:[R] i:[I] j:[J] k:[K]"
-            ),
+            text: "turn everything by r:[R] i:[I] j:[J] k:[K]",
             arguments: {
               R: {
                 type: ArgumentType.NUMBER,
@@ -666,7 +664,7 @@
           {
             opcode: "setResolution",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate("set resolution [RESOLUTION]"),
+            text: "set resolution [RESOLUTION]",
             arguments: {
               RESOLUTION: {
                 type: ArgumentType.NUMBER,
@@ -716,26 +714,11 @@
           },
           xrMatrix: {
             acceptReporters: false,
-            items: [
-              { text: Scratch.translate("combined"), value: "combined" },
-              { text: Scratch.translate("projection"), value: "projection" },
-              { text: Scratch.translate("view"), value: "view" },
-              {
-                text: Scratch.translate("inverse view"),
-                value: "inverse view",
-              },
-            ],
+            items: ["combined", "projection", "view", "inverse view"],
           },
           xrFeature: {
             acceptReporters: false,
-            items: [
-              { text: Scratch.translate("ar"), value: "ar" },
-              { text: Scratch.translate("pose"), value: "pose" },
-              {
-                text: Scratch.translate("hit position"),
-                value: "hit position",
-              },
-            ],
+            items: ["ar", "pose", "hit position"],
           },
         },
       };

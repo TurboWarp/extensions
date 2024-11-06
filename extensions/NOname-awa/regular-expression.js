@@ -8,12 +8,12 @@
         color2: "#0067a9",
         color3: "#0067a9",
         id: "nonameawaregex",
-        name: Scratch.translate("Regular Expression"),
+        name: "Regular Expression",
         blocks: [
           {
             opcode: "set",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set a: [one] b: [two] c: [three]"),
+            text: "set a: [one] b: [two] c: [three]",
             arguments: {
               one: {
                 type: Scratch.ArgumentType.STRING,
@@ -32,7 +32,7 @@
           {
             opcode: "matchText",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("match text: b in a [flags]"),
+            text: "matchText: b in a [flags]",
             arguments: {
               flags: {
                 type: Scratch.ArgumentType.STRING,
@@ -43,18 +43,18 @@
           {
             opcode: "searchText",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("search text: b in a"),
+            text: "searchText: b in a",
           },
           {
             opcode: "replaceText",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("replace text: b in a with c"),
+            text: "replaceText: b in a with c",
           },
           "---",
           {
             opcode: "matchTextWithPattern",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("match [pattern] in [text] - [flags]"),
+            text: "match [pattern] in [text] - [flags]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -73,7 +73,7 @@
           {
             opcode: "searchTextWithPattern",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("search [pattern] in [text] "),
+            text: "search [pattern] in [text] ",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -88,9 +88,7 @@
           {
             opcode: "replaceTextWithPattern",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "replace [pattern] in [text] with [replacement]"
-            ),
+            text: "replace [pattern] in [text] with [replacement]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -140,11 +138,11 @@
             acceptReporters: false,
             items: [
               {
-                text: Scratch.translate("global (g)"),
+                text: "global (g)",
                 value: "g",
               },
               {
-                text: Scratch.translate("ignore case (i)"),
+                text: "ignore case (i)",
                 value: "i",
               },
             ],
@@ -153,47 +151,47 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("english"),
+                text: "english",
                 value: "[a-zA-Z]",
               },
               {
-                text: Scratch.translate("english uppercase"),
+                text: "english uppercase",
                 value: "[A-Z]",
               },
               {
-                text: Scratch.translate("english lowercase"),
+                text: "english lowercase",
                 value: "[a-z]",
               },
               {
-                text: Scratch.translate("number"),
+                text: "number",
                 value: "[0-9]",
               },
               {
-                text: Scratch.translate("numeric integer"),
+                text: "numeric integer",
                 value: "^-?[1-9]\\d*$",
               },
               {
-                text: Scratch.translate("positive integer"),
+                text: "positive integer",
                 value: "^[1-9]\\d*$",
               },
               {
-                text: Scratch.translate("negative integer"),
+                text: "negative integer",
                 value: "^-[1-9]\\d*$",
               },
               {
-                text: Scratch.translate("non-negative integers"),
+                text: "non-negative integers",
                 value: "^[1-9]\\d*|0$",
               },
               {
-                text: Scratch.translate("non-positive integer"),
+                text: "non-positive integer",
                 value: "^-[1-9]\\d*|0$",
               },
               {
-                text: Scratch.translate("chinese"),
+                text: "chinese",
                 value: "[\u4e00-\u9fa5]",
               },
               {
-                text: Scratch.translate("double-byte"),
+                text: "double-byte",
                 value: "[^\x00-\xff]",
               },
             ],

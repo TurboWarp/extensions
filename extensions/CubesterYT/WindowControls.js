@@ -19,32 +19,6 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  const isFullscreenEnabled = () => {
-    if (typeof document.fullscreenElement !== "undefined") {
-      return document.fullscreenElement !== null;
-    }
-    if (typeof document.webkitFullscreenElement !== "undefined") {
-      return document.webkitFullscreenElement !== null;
-    }
-    return false;
-  };
-
-  const enterFullscreen = () => {
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen();
-    } else if (document.documentElement.webkitRequestFullscreen) {
-      document.documentElement.webkitRequestFullscreen();
-    }
-  };
-
-  const exitFullscreen = () => {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    }
-  };
-
   class WindowControls {
     getInfo() {
       return {
@@ -541,17 +515,17 @@
       return document.title;
     }
     enterFullscreen() {
-      if (!isFullscreenEnabled()) {
-        enterFullscreen();
+      if (document.fullscreenElement == null) {
+        document.documentElement.requestFullscreen();
       }
     }
     exitFullscreen() {
-      if (isFullscreenEnabled()) {
-        exitFullscreen();
+      if (document.fullscreenElement !== null) {
+        document.exitFullscreen();
       }
     }
     isFullscreen() {
-      return isFullscreenEnabled();
+      return document.fullscreenElement !== null;
     }
     closeWindow() {
       const editorConfirmation = Scratch.translate({
