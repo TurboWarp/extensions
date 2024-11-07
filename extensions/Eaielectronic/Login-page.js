@@ -19,7 +19,7 @@
       return {
         id: "usermanagement",
         name: "User Management",
-        color1: "#ff3f00", // Slightly darker blue
+        color1: "#ff3f00",
         blocks: [
           {
             opcode: "openForm",
@@ -74,11 +74,12 @@
 
     openForm(args) {
       const { ACTION } = args;
-      this.turbowarp = ACTION; // Update the form state
-      this.hideForm(false); // Hide the previous form if open
+      this.turbowarp = ACTION;
+      this.hideForm();
 
+      // Créer le formulaire en tant qu'élément HTML
       const form = document.createElement("form");
-      form.style.position = "absolute";
+      form.style.position = "fixed";
       form.style.top = "50%";
       form.style.left = "50%";
       form.style.transform = "translate(-50%, -50%)";
@@ -88,9 +89,10 @@
       form.style.borderRadius = "8px";
       form.style.width = "300px";
       form.style.fontFamily = "Arial, sans-serif";
+      form.style.zIndex = "1000"; // S'assure que le formulaire reste au-dessus
 
       const closeButton = document.createElement("span");
-      closeButton.textContent = "â";
+      closeButton.textContent = "✖";
       closeButton.style.position = "absolute";
       closeButton.style.top = "10px";
       closeButton.style.right = "10px";
@@ -157,34 +159,6 @@
       submitButton.style.cursor = "pointer";
       form.appendChild(submitButton);
 
-      const resetPasswordLink = document.createElement("a");
-      resetPasswordLink.textContent = "Reset password";
-      resetPasswordLink.style.display = "block";
-      resetPasswordLink.style.textAlign = "center";
-      resetPasswordLink.style.marginTop = "10px";
-      resetPasswordLink.style.color = "#007BFF";
-      resetPasswordLink.style.cursor = "pointer";
-      resetPasswordLink.addEventListener("click", () => {
-        this.hideForm(false);
-        this.openForm({ ACTION: "recover password" });
-      });
-      form.appendChild(resetPasswordLink);
-
-      const createAccountLink = document.createElement("a");
-      createAccountLink.textContent = "Account creation";
-      createAccountLink.style.display = "block";
-      createAccountLink.style.textAlign = "center";
-      createAccountLink.style.marginTop = "10px";
-      createAccountLink.style.color = "#007BFF";
-      createAccountLink.style.cursor = "pointer";
-      createAccountLink.addEventListener("click", () => {
-        this.hideForm(false);
-        this.openForm({ ACTION: "create account" });
-      });
-      form.appendChild(createAccountLink);
-
-      document.body.appendChild(form);
-
       form.addEventListener("submit", (event) => {
         event.preventDefault();
         const formData = new FormData(form);
@@ -204,8 +178,10 @@
           this.recoverPassword({ EMAIL: this.email });
         }
 
-        this.hideForm(false);
+        this.hideForm();
       });
+
+      document.body.appendChild(form);
     }
 
     hideForm() {
@@ -226,12 +202,12 @@
     login(args) {
       const { USERNAME, PASSWORD } = args;
       const user = this.users.find(
-        (u) => u.username === USERNAME && u.password === PASSWORD,
+        (u) => u.username === USERNAME && u.password === PASSWORD
       );
       console.log(
         user
           ? `Login successful for ${USERNAME}`
-          : "Incorrect username or password.",
+          : "Incorrect username or password."
       );
     }
 
@@ -239,7 +215,7 @@
       const { EMAIL } = args;
       const user = this.users.find((u) => u.email === EMAIL);
       console.log(
-        user ? `Your password is: ${user.password}` : "Email not found.",
+        user ? `Your password is: ${user.password}` : "Email not found."
       );
     }
 
