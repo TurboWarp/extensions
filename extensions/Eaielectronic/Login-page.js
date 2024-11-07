@@ -181,6 +181,37 @@
         this.hideForm();
       });
 
+      // Ajouter les liens pour naviguer entre les formulaires
+      if (ACTION === "login" || ACTION === "create account") {
+        const resetPasswordLink = document.createElement("a");
+        resetPasswordLink.textContent = "Reset password";
+        resetPasswordLink.style.display = "block";
+        resetPasswordLink.style.textAlign = "center";
+        resetPasswordLink.style.marginTop = "10px";
+        resetPasswordLink.style.color = "#007BFF";
+        resetPasswordLink.style.cursor = "pointer";
+        resetPasswordLink.addEventListener("click", () => {
+          this.hideForm(false);
+          this.openForm({ ACTION: "recover password" });
+        });
+        form.appendChild(resetPasswordLink);
+      }
+
+      if (ACTION === "login" || ACTION === "recover password") {
+        const createAccountLink = document.createElement("a");
+        createAccountLink.textContent = "Create account";
+        createAccountLink.style.display = "block";
+        createAccountLink.style.textAlign = "center";
+        createAccountLink.style.marginTop = "10px";
+        createAccountLink.style.color = "#007BFF";
+        createAccountLink.style.cursor = "pointer";
+        createAccountLink.addEventListener("click", () => {
+          this.hideForm(false);
+          this.openForm({ ACTION: "create account" });
+        });
+        form.appendChild(createAccountLink);
+      }
+
       document.body.appendChild(form);
     }
 
