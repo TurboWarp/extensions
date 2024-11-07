@@ -566,13 +566,13 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
     },
 
     tick: function () {
-      leftControllerRotationX = THREE.MathUtils.degToRad(
+      leftControllerRotationX = THREE.MathUtils.radToDeg(
         this.el.object3D.rotation.x
       );
-      leftControllerRotationY = THREE.MathUtils.degToRad(
+      leftControllerRotationY = THREE.MathUtils.radToDeg(
         this.el.object3D.rotation.y
       );
-      leftControllerRotationZ = THREE.MathUtils.degToRad(
+      leftControllerRotationZ = THREE.MathUtils.radToDeg(
         this.el.object3D.rotation.z
       );
 
