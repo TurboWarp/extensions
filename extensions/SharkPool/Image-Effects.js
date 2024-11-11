@@ -1209,7 +1209,7 @@
 
     numPixels(args) {
       const img = new Image();
-      img.src = this.confirmAsset(args.URI, "png");
+      img.src = this.convertAsset(args.URI, "png");
       return new Promise((resolve) => {
         img.crossOrigin = "Anonymous";
         img.onload = () => {
