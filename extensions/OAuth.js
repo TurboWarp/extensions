@@ -162,7 +162,7 @@
                 console.log(`Received authorization code: ${authorizationCode}`);
 
                 // Exchange the authorization code for an access token
-                fetch('https://example.com/oauth/token', {
+                Scratch.fetch('https://example.com/oauth/token', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -222,7 +222,7 @@
         }
 
         giveFeedback() {
-            window.open('https://scratch.mit.edu/users/Thebloxers998/');
+            Scratch.openWindow('https://scratch.mit.edu/users/Thebloxers998/');
         }
     }
 
