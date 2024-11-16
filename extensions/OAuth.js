@@ -6,7 +6,9 @@
 // License: MPL-2.0
 (function (Scratch) {
     'use strict';
-
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error('This extension must run unsandboxed');
+  }
     let clientId = '';
     let clientSecret = '';
     let redirectUri = '';
@@ -132,8 +134,7 @@
                         text: 'Give Feedback'
                     }
                 ],
-                menus: {},
-                unrestricted: true // Enable unsandboxed mode
+                menus: {}
             };
         }
 
