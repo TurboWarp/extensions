@@ -3,7 +3,7 @@
 // Description: Customize and Organize Lists Monitors.
 // By: SharkPool
 
-// Version 2.0.11
+// Version 2.1.0
 
 (function (Scratch) {
   "use strict";
@@ -100,6 +100,15 @@
             text: "delete list [LIST]",
             arguments: {
               LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" }
+            },
+          },
+          {
+            opcode: "setVis",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "[VIS] list [LIST]",
+            arguments: {
+              LIST: { type: Scratch.ArgumentType.STRING, menu: "lists" },
+              VIS: { type: Scratch.ArgumentType.STRING, menu: "VISIBLE" }
             },
           },
           "---",
@@ -287,6 +296,7 @@
           listTypes: ["globally", "for this sprite only"],
           listUtils: ["click events", "text highlighting", "numbered items", "+ and = buttons"],
           ON_OFF: ["on", "off"],
+          VISIBLE: { acceptReporters: true, items: ["show", "hide"] },
           ATTS: { acceptReporters: true, items: ["width", "height"] },
           ALIGN: { acceptReporters: true, items: ["left", "right", "center"] }
         }
@@ -392,6 +402,14 @@
       runtime.getTargetForStage().deleteVariable(id)
       util.target.deleteVariable(id);
       return this.refresh();
+    }
+
+    setVis(args, util) {
+      const id = this.getListID(args.LIST, util);
+      if (!id) return;
+      runtime.monitorBlocks.changeBlock({
+        id, element: "checkbox", value: args.VIS === "show"
+      }, runtime);
     }
 
     renderList(args, util) {
