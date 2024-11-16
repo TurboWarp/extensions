@@ -154,7 +154,7 @@
         registerAccount() {
             const fullAuthUrl = `${authUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
 
-            window.open(fullAuthUrl, '_blank');
+            Scratch.openWindow(fullAuthUrl, '_blank');
 
             window.addEventListener('message', (event) => {
                 if (event.origin !== redirectUri) return;
@@ -191,7 +191,7 @@
             const service = args.SERVICE;
             const fullAuthUrl = `${authUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token`;
 
-            window.open(fullAuthUrl, '_blank');
+            Scratch.openWindow(fullAuthUrl, '_blank');
 
             window.addEventListener('message', (event) => {
                 if (event.origin !== redirectUri) return;
