@@ -53,17 +53,29 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
   const AScene = document.querySelector("a-scene");
 
+  //TODO: Another thing that could happen is combining the "touched" and "pressed" blocks into one block with a dropdown that switches. The "button" input would have to be dynamic so that when switching to "touched" only Oculus Touch buttons can be used. This may prove to be difficult and cause extra problems, so for now I've just seperated them into two different blocks.
+
+  //! Fix bug where pressing the create new myblock button causes the page to crash
+  //! Verify that the "controller connected" blocks are properly working.
   function scaleDisplayPlane() {
     requestAnimationFrame(() => {
       const plane = document.getElementById("scratchStageVRDisplay");
-      const canvas = AScene.renderer.domElement;
+      const material = plane.getObject3D("mesh").material;
+      let canvas = document.getElementById("scratchcanvas");
+      // prevents a WebGL error where changing texture res causes confliction w/ cached texture in GPU.
+      if (material && material.map) {
+        material.map.dispose();
+      }
+      material.map = new THREE.Texture(canvas);
+      material.map.needsUpdate = true;
+
+      canvas = AScene.renderer.domElement;
       const fov = THREE.MathUtils.degToRad(
         document.getElementById("AframeCamera").components.camera.data.fov
-      );
+      ); //TODO: Try doing something similar to this for the controllers to retrieve their GamepadAPI ID and use it for controller vibrations. components.controller.data.id
       const canvasAspect = canvas.width / canvas.height;
       const stageAspect = runtime.stageWidth / runtime.stageHeight;
-      const material = plane.getObject3D("mesh").material;
-      const distance = 0.5; //in meters
+      const distance = 0.5;
 
       let height = 2 * Math.tan(fov / 2) * distance;
       let width = height * stageAspect;
@@ -88,17 +100,8 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
     inVR = false;
   });
 
-  //handle source texture resizes to prevent WebGL memory errors
+  //handle source texture changing resolution
   const resizeObserver = new ResizeObserver(() => {
-    const material = document
-      .getElementById("scratchStageVRDisplay")
-      .getObject3D("mesh").material;
-    const canvas = document.getElementById("scratchcanvas");
-    if (material && material.map) {
-      material.map.dispose();
-    }
-    material.map = new THREE.Texture(canvas);
-    material.map.needsUpdate = true;
     scaleDisplayPlane();
   });
 
@@ -137,6 +140,23 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
     leftTrackpadButtonPressed,
     rightTrackpadButtonPressed = false;
 
+  let lastButtonPressed;
+
+  let rightTriggerTouched,
+    leftTriggerTouched,
+    rightThumbstickTouched,
+    leftThumbstickTouched,
+    rightGripTouched,
+    leftGripTouched,
+    aButtonTouched,
+    bButtonTouched,
+    xButtonTouched,
+    yButtonTouched,
+    leftSurfaceTouched,
+    rightSurfaceTouched = false;
+
+  let lastButtonTouched;
+
   let leftThumbstickX,
     leftThumbstickY,
     rightThumbstickX,
@@ -153,8 +173,6 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
     leftTriggerAmount,
     rightGripAmount,
     leftGripAmount;
-
-  let lastButtonPressed;
 
   let rightControllerConnected,
     leftControllerConnected = false;
@@ -173,8 +191,8 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
   });
 
   let xrProjectionMatrix, xrTransform, xrCombinedMatrix;
+  //TODO: Optimize this, too many const declarations per tick cause garbage collection & FPS drops
   //Matrix processing code from the AR extension.
-  //TODO: Optimize this
   AFRAME.registerComponent("pose-matrices", {
     tick: function () {
       if (inVR == true) {
@@ -313,6 +331,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         rightTriggerPressed = false;
       });
 
+      el.addEventListener("triggertouchstart", function () {
+        rightTriggerTouched = true;
+        lastButtonTouched = "right trigger";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("triggertouchend", function () {
+        rightTriggerTouched = false;
+      });
+
       el.addEventListener("thumbstickdown", function () {
         rightThumbstickPressed = true;
         lastButtonPressed = "right thumbstick";
@@ -326,6 +359,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
       el.addEventListener("thumbstickup", function () {
         rightThumbstickPressed = false;
+      });
+
+      el.addEventListener("thumbsticktouchstart", function () {
+        rightThumbstickTouched = true;
+        lastButtonTouched = "right thumbstick";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("thumbsticktouchend", function () {
+        rightThumbstickTouched = false;
       });
 
       el.addEventListener("trackpaddown", function () {
@@ -358,6 +406,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         rightGripPressed = false;
       });
 
+      el.addEventListener("griptouchstart", function () {
+        rightGripTouched = true;
+        lastButtonTouched = "right grip";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("griptouchend", function () {
+        rightGripTouched = false;
+      });
+
       el.addEventListener("abuttondown", function () {
         aButtonPressed = true;
         lastButtonPressed = "A";
@@ -371,6 +434,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
       el.addEventListener("abuttonup", function () {
         aButtonPressed = false;
+      });
+
+      el.addEventListener("abuttontouchstart", function () {
+        aButtonTouched = true;
+        lastButtonTouched = "A";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("abuttontouchend", function () {
+        rightThumbstickTouched = false;
       });
 
       el.addEventListener("bbuttondown", function () {
@@ -388,6 +466,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         bButtonPressed = false;
       });
 
+      el.addEventListener("bbuttontouchstart", function () {
+        bButtonTouched = true;
+        lastButtonTouched = "B";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("bbuttontouchend", function () {
+        bButtonTouched = false;
+      });
+
       //vive-controls only
       el.addEventListener("systemdown", function () {
         systemButtonPressed = true;
@@ -402,6 +495,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
       el.addEventListener("systemup", function () {
         systemButtonPressed = false;
+      });
+
+      el.addEventListener("surfacetouchstart", function () {
+        rightSurfaceTouched = true;
+        lastButtonTouched = "right surface";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("surfacetouchend", function () {
+        rightSurfaceTouched = false;
       });
     },
 
@@ -474,6 +582,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         leftTriggerPressed = false;
       });
 
+      el.addEventListener("triggertouchstart", function () {
+        leftTriggerTouched = true;
+        lastButtonTouched = "left trigger";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("triggertouchend", function () {
+        leftTriggerTouched = false;
+      });
+
       el.addEventListener("thumbstickdown", function () {
         leftThumbstickPressed = true;
         lastButtonPressed = "left thumbstick";
@@ -487,6 +610,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
       el.addEventListener("thumbstickup", function () {
         leftThumbstickPressed = false;
+      });
+
+      el.addEventListener("thumbsticktouchstart", function () {
+        leftThumbstickTouched = true;
+        lastButtonTouched = "left thumbstick";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("thumbsticktouchend", function () {
+        leftThumbstickTouched = false;
       });
 
       el.addEventListener("trackpaddown", function () {
@@ -519,6 +657,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         leftGripPressed = false;
       });
 
+      el.addEventListener("griptouchstart", function () {
+        leftGripTouched = true;
+        lastButtonTouched = "left grip";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("griptouchend", function () {
+        leftGripTouched = false;
+      });
+
       el.addEventListener("xbuttondown", function () {
         xButtonPressed = true;
         lastButtonPressed = "X";
@@ -532,6 +685,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
       el.addEventListener("xbuttonup", function () {
         xButtonPressed = false;
+      });
+
+      el.addEventListener("xbuttontouchstart", function () {
+        xButtonTouched = true;
+        lastButtonTouched = "X";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("xbuttontouchend", function () {
+        xButtonTouched = false;
       });
 
       el.addEventListener("ybuttondown", function () {
@@ -549,6 +717,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         yButtonPressed = false;
       });
 
+      el.addEventListener("ybuttontouchstart", function () {
+        yButtonTouched = true;
+        lastButtonTouched = "Y";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("ybuttontouchend", function () {
+        yButtonTouched = false;
+      });
+
       el.addEventListener("menubuttonup", function () {
         menuButtonPressed = true;
         lastButtonPressed = "Menu";
@@ -562,6 +745,21 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
       el.addEventListener("menubuttondown", function () {
         menuButtonPressed = false;
+      });
+
+      el.addEventListener("surfacetouchstart", function () {
+        leftSurfaceTouched = true;
+        lastButtonTouched = "left surface";
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: "any",
+        });
+        runtime.startHats("blockifyvr_whenButtonTouched", {
+          button: lastButtonTouched,
+        });
+      });
+
+      el.addEventListener("surfacetouchend", function () {
+        leftSurfaceTouched = false;
       });
     },
 
@@ -731,18 +929,31 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
           "---",
           {
             blockType: "label",
-            text: "Controller Input",
+            text: "Controllers",
           },
           {
             opcode: "whenButtonPressed",
             blockType: Scratch.BlockType.EVENT,
-            text: "when [button] button pressed",
+            text: "when [button] pressed",
             isEdgeActivated: false,
             arguments: {
               button: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "any",
                 menu: "buttonMenu",
+              },
+            },
+          },
+          {
+            opcode: "whenButtonTouched",
+            blockType: Scratch.BlockType.EVENT,
+            text: "when [button] touched",
+            isEdgeActivated: false,
+            arguments: {
+              button: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "any",
+                menu: "oculusButtons",
               },
             },
           },
@@ -759,6 +970,30 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
             },
           },
           {
+            opcode: "isButtonTouched",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "button [button] touched?",
+            arguments: {
+              button: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "any",
+                menu: "oculusButtons",
+              },
+            },
+          },
+          {
+            opcode: "lastButtonPressed",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "last button pressed",
+            disableMonitor: true,
+          },
+          {
+            opcode: "lastButtonTouched",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "last button touched",
+            disableMonitor: true,
+          },
+          {
             opcode: "triggerGripValue",
             blockType: Scratch.BlockType.REPORTER,
             text: "[button] value",
@@ -769,12 +1004,6 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
                 menu: "floatButtonMenu",
               },
             },
-          },
-          {
-            opcode: "lastButtonPressed",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "last button pressed",
-            disableMonitor: true,
           },
           {
             opcode: "thumbstickTrackpadInfo",
@@ -851,6 +1080,24 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
               "right trackpad",
               "menu",
               "system",
+            ],
+          },
+          oculusButtons: {
+            acceptReporters: false,
+            items: [
+              "any",
+              "left trigger",
+              "right trigger",
+              "left grip",
+              "right grip",
+              "A",
+              "B",
+              "X",
+              "Y",
+              "left thumbstick",
+              "right thumbstick",
+              "left surface",
+              "right surface",
             ],
           },
           floatButtonMenu: {
@@ -1097,6 +1344,77 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       }
     }
 
+    isButtonTouched({ button }) {
+      if (button == "left trigger") {
+        return leftTriggerTouched;
+      }
+
+      if (button == "right trigger") {
+        return rightTriggerTouched;
+      }
+
+      if (button == "left grip") {
+        return leftGripTouched;
+      }
+
+      if (button == "right grip") {
+        return rightGripTouched;
+      }
+
+      if (button == "left thumbstick") {
+        return leftThumbstickTouched;
+      }
+
+      if (button == "right thumbstick") {
+        return rightThumbstickTouched;
+      }
+
+      if (button == "A") {
+        return aButtonTouched;
+      }
+
+      if (button == "B") {
+        return bButtonTouched;
+      }
+
+      if (button == "X") {
+        return xButtonTouched;
+      }
+
+      if (button == "Y") {
+        return yButtonTouched;
+      }
+
+      if (button == "left surface") {
+        return leftSurfaceTouched;
+      }
+
+      if (button == "right surface") {
+        return rightSurfaceTouched;
+      }
+
+      if (button == "any") {
+        if (
+          leftTriggerTouched ||
+          rightTriggerTouched ||
+          leftGripTouched ||
+          rightGripTouched ||
+          leftThumbstickTouched ||
+          rightThumbstickTouched ||
+          aButtonTouched ||
+          bButtonTouched ||
+          xButtonTouched ||
+          yButtonTouched ||
+          leftSurfaceTouched ||
+          rightSurfaceTouched
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+
     triggerGripValue({ button }) {
       if (button == "left trigger") {
         return leftTriggerAmount;
@@ -1198,6 +1516,10 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
     lastButtonPressed() {
       return lastButtonPressed;
+    }
+
+    lastButtonTouched() {
+      return lastButtonTouched;
     }
   }
 
