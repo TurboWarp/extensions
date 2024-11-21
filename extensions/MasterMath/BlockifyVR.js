@@ -40,7 +40,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
   // prettier-ignore
   const htmlcode = `
-  <a-scene renderer="highRefreshRate: true; multiviewStereo: true; foveationLevel: 0.25;" background="color: white" pose-matrices embedded style="display: none !important;">
+  <a-scene renderer="highRefreshRate: true; multiviewStereo: true; foveationLevel: 0.25;" background="color: black" pose-matrices embedded style="display: none">
     <a-entity camera look-controls id="AframeCamera" camera-logger>
       <a-plane id="scratchStageVRDisplay" material="shader: flat; src: #scratchcanvas;" update-display></a-plane>
     </a-entity>
@@ -48,15 +48,13 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
     <a-entity cross-platform-controls="hand: right" right-controller-manager visible="false"></a-entity>
   </a-scene>
   `;
+  document.body.prepend(
+    document.createRange().createContextualFragment(htmlcode)
+  );
   gl.canvas.setAttribute("id", "scratchcanvas");
-  document.head.innerHTML += htmlcode;
-
   const AScene = document.querySelector("a-scene");
+  //! Fix bug where pressing the Oculus button causes the texture to zoom.
 
-  //TODO: Another thing that could happen is combining the "touched" and "pressed" blocks into one block with a dropdown that switches. The "button" input would have to be dynamic so that when switching to "touched" only Oculus Touch buttons can be used. This may prove to be difficult and cause extra problems, so for now I've just seperated them into two different blocks.
-
-  //! Fix bug where pressing the create new myblock button causes the page to crash
-  //! Verify that the "controller connected" blocks are properly working.
   function scaleDisplayPlane() {
     requestAnimationFrame(() => {
       const plane = document.getElementById("scratchStageVRDisplay");
@@ -72,7 +70,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
       canvas = AScene.renderer.domElement;
       const fov = THREE.MathUtils.degToRad(
         document.getElementById("AframeCamera").components.camera.data.fov
-      ); //TODO: Try doing something similar to this for the controllers to retrieve their GamepadAPI ID and use it for controller vibrations. components.controller.data.id
+      );
       const canvasAspect = canvas.width / canvas.height;
       const stageAspect = runtime.stageWidth / runtime.stageHeight;
       const distance = 0.5;
@@ -311,9 +309,19 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
       this.el.addEventListener("controllerconnected", function () {
         rightControllerConnected = true;
+
+        runtime.startHats("blockifyvr_whenControllerConnected", {
+          controller: "right controller",
+          connection: "connected",
+        });
       });
       this.el.addEventListener("controllerdisconnected", function () {
         rightControllerConnected = false;
+
+        runtime.startHats("blockifyvr_whenControllerConnected", {
+          controller: "right controller",
+          connection: "disconnected",
+        });
       });
 
       el.addEventListener("triggerdown", function () {
@@ -562,9 +570,19 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
       el.addEventListener("controllerconnected", function () {
         leftControllerConnected = true;
+
+        runtime.startHats("blockifyvr_whenControllerConnected", {
+          controller: "left controller",
+          connection: "connected",
+        });
       });
       el.addEventListener("controllerdisconnected", function () {
         leftControllerConnected = false;
+
+        runtime.startHats("blockifyvr_whenControllerConnected", {
+          controller: "left controller",
+          connection: "disconnected",
+        });
       });
 
       el.addEventListener("triggerdown", function () {
@@ -847,18 +865,6 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
             disableMonitor: "true",
           },
           {
-            opcode: "controllerConnected",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "is controller [controller] connected?",
-            arguments: {
-              controller: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "controllerMenu",
-                defaultValue: "left controller",
-              },
-            },
-          },
-          {
             opcode: "getStageWidth",
             blockType: Scratch.BlockType.REPORTER,
             text: "stage width",
@@ -930,6 +936,36 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
           {
             blockType: "label",
             text: "Controllers",
+          },
+          {
+            opcode: "controllerConnected",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is [controller] connected?",
+            arguments: {
+              controller: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "controllerMenu",
+                defaultValue: "left controller",
+              },
+            },
+          },
+          {
+            opcode: "whenControllerConnected",
+            blockType: Scratch.BlockType.EVENT,
+            text: "when [controller] [connection]",
+            isEdgeActivated: false,
+            arguments: {
+              controller: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "controllerMenu",
+                defaultValue: "left controller",
+              },
+              connection: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "connectionMenu",
+                defaultValue: "connected",
+              },
+            },
           },
           {
             opcode: "whenButtonPressed",
@@ -1124,6 +1160,10 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
               "left trackpad",
               "right trackpad",
             ],
+          },
+          connectionMenu: {
+            acceptReporters: false,
+            items: ["connected", "disconnected"],
           },
         },
       };
