@@ -68,7 +68,7 @@
         registerUser(args) {
             const username = args.USERNAME;
             const password = args.PASSWORD;
-            fetch('https://6741abede4647499008e694e.mockapi.io/authapi/v1/turbowarp/authentication', {
+            Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/authapi/v1/turbowarp/authentication', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -87,7 +87,7 @@
         loginUser(args) {
             const username = args.USERNAME;
             const password = args.PASSWORD;
-            fetch('https://6741abede4647499008e694e.mockapi.io/authapi/v1/turbowarp/authentication')
+            Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/authapi/v1/turbowarp/authentication')
             .then(response => response.json())
             .then(users => {
                 const user = users.find(u => u.username === username && u.password === password);
@@ -106,5 +106,5 @@
 
     // Also, this extension is server-sided, so yeah!
 
-    Scratch.extensions.register(new AuthExtension());
+    Scratch.extensions.register(new ServerAuthExtension());
 })(Scratch);
