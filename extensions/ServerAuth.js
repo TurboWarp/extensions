@@ -85,17 +85,23 @@
         }
 
         loginUser(args) {
-            const username = args.USERNAME;
-            const password = args.PASSWORD;
-            Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/authapi/v1/turbowarp/authentication')
-            .then(response => response.json())
-            .then(users => {
-                const user = users.find(u => u.username === username && u.password === password);
-            })
-            .catch(error => {
-                this.setDebugMessage('Error: ' + error.message);
-            });
+    const username = args.USERNAME;
+    const password = args.PASSWORD;
+    Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/authapi/v1/turbowarp/authentication')
+    .then(response => response.json())
+    .then(users => {
+        const user = users.find(u => u.username === username && u.password === password);
+        if (user) {
+            this.setDebugMessage('Login successful for user: ' + username);
+        } else {
+            this.setDebugMessage('Login failed for user: ' + username);
         }
+    })
+    .catch(error => {
+        this.setDebugMessage('Error: ' + error.message);
+    });
+}
+
 
         
         
