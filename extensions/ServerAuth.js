@@ -1,4 +1,4 @@
-// Name: serverAuth
+// Name: ServerAuth 
 // ID: authExtension
 // Description: Uses the server for authentication and registration 
 // By: Thebloxers998 <https://scratch.mit.edu/users/Thebloxers998/>
@@ -8,11 +8,15 @@
 (function(Scratch) {
     'use strict';
 
+
     class ServerAuthExtension {
         getInfo() {
             return {
                 id: 'serverAuth',
                 name: 'ServerAuth',
+                color1: '#ADD8E6', 
+                color2: '#87CEEB', 
+                color3: '#B0E0E6', 
                 blocks: [
                     {
                         opcode: 'registerUser',
@@ -87,13 +91,6 @@
             .then(response => response.json())
             .then(users => {
                 const user = users.find(u => u.username === username && u.password === password);
-                if (user) {
-                    this.setDebugMessage('Login successful. Please verify 2FA.');
-                    // Generate and send 2FA code
-                    this.send2FACode(username);
-                } else {
-                    this.setDebugMessage('Invalid credentials');
-                }
             })
             .catch(error => {
                 this.setDebugMessage('Error: ' + error.message);
@@ -106,6 +103,8 @@
             return this.lastDebugMessage;
         }
     }
+
+    // Also, this extension is server-sided, so yeah!
 
     Scratch.extensions.register(new AuthExtension());
 })(Scratch);
