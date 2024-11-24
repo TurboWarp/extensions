@@ -2,8 +2,9 @@
 // ID: SPspriteEffects
 // Description: Apply New Non-Vanilla Effects to Sprites and the Canvas!
 // By: SharkPool
+// License: MIT
 
-// Version V.1.7.1
+// Version V.1.7.2
 
 (function (Scratch) {
   "use strict";
@@ -31,7 +32,7 @@
     // if it isnt, we DOMPurify the filter before returning
     const input = container.getBlock(blockID).inputs.FILTER;
     const filterInput = container.getBlock(input.block).opcode;
-    string = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><filter filterUnits="userSpaceOnUse" id="${id}">${string}</filter></svg>`;
+    string = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><filter id="${id}">${string}</filter></svg>`;
     if (filterInput.startsWith("SPspriteEffects_") && !filterInput.includes("applyCustom")) {
       // applyCustom is the only block that has user inputted filter support
       return string;
@@ -50,7 +51,7 @@
     filter attributes are amplified for some reason :/
   */
   let canvas = render.canvas.parentNode.parentNode.parentNode;
-  let sprite = true, supportM = false, distortionScale = true;
+  let sprite = true, supportM = false, distortionScale = false;
   let allFilters = [], nameOffset = 0;
   let maskOptions = [0, 0, 100];
 
@@ -83,15 +84,22 @@
     return true;
   };
 
-  const xmlEscape = function (unsafe) {
-    // when this is used, most unsafe characters are safe in filter IDs
-    return cast.toString(unsafe).replace(/[" ]/g, c => {
-      switch (c) {
-        case "\"": return "-'";
-        case " ": return "_";
-      }
-    });
-  };
+  // the way I made this extension originally sucked, now I have to componsate for it
+  const genDualBlock = (json) => {
+    const imgCopy = structuredClone(json);
+    imgCopy.opcode = imgCopy.opcode.replace("Sprite", "Image").replace("sprite", "image").replace("SPR", "IMG");
+    if (!imgCopy.opcode.includes("mage") && !imgCopy.opcode.includes("IMG")) imgCopy.opcode += "2";
+    imgCopy.hideFromPalette = sprite;
+
+    const args = imgCopy.arguments;
+    args.SPRITE.defaultValue = "</svg> or data.uri";
+    delete args.SPRITE.menu;
+    if (args.SPRITE2) {
+      args.SPRITE2.defaultValue = "</svg> or data.uri";
+      delete args.SPRITE2.menu;
+    }
+    return [json, imgCopy];
+  }
 
   class SPspriteEffects {
     getInfo() {
@@ -105,10 +113,10 @@
           {
             func: "sourceSwitch",
             blockType: Scratch.BlockType.BUTTON,
-            text: "Switch Effect Sources"
+            text: "Switch Effect Targets"
           },
           { blockType: Scratch.BlockType.LABEL, text: "Filters and Effects" },
-          {
+          ...genDualBlock({
             opcode: "setSpriteBlend",
             blockType: Scratch.BlockType.REPORTER,
             text: "set blend mode of [SPRITE] to [BLEND]",
@@ -117,18 +125,8 @@
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               BLEND: { type: Scratch.ArgumentType.STRING, menu: "BLENDING" },
             },
-          },
-          {
-            opcode: "setImageBlend",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "set blend mode of [SPRITE] to [BLEND]",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              BLEND: { type: Scratch.ArgumentType.STRING, menu: "BLENDING" },
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "setSpriteEffect",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply [EFFECT] effect to [SPRITE] at [NUM]%",
@@ -138,19 +136,8 @@
               EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECTS" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 }
             },
-          },
-          {
-            opcode: "setImageEffect",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply [EFFECT] effect to [SPRITE] at [NUM]%",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECTS" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "setSpriteMotion",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply motion blur to [SPRITE] at x [X] y [Y]",
@@ -160,19 +147,8 @@
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
-          },
-          {
-            opcode: "setImageMotion",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply motion blur to [SPRITE] at x [X]% y [Y]%",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "hueSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply hue [COLOR] to [SPRITE]",
@@ -181,18 +157,8 @@
               COLOR: { type: Scratch.ArgumentType.COLOR },
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
-          },
-          {
-            opcode: "hueImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply hue [COLOR] to [SPRITE]",
-            hideFromPalette: sprite,
-            arguments: {
-              COLOR: { type: Scratch.ArgumentType.COLOR },
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "splitSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply [EFFECT] effect to [SPRITE] at x [X] y [Y] with colors [COLOR1] [COLOR2] and [COLOR3]",
@@ -206,23 +172,8 @@
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
-          },
-          {
-            opcode: "splitImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply [EFFECT] effect to [SPRITE] at x [X] y [Y] with colors [COLOR1] [COLOR2] and [COLOR3]",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              COLOR1: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
-              COLOR2: { type: Scratch.ArgumentType.COLOR, defaultValue: "#00ff00" },
-              COLOR3: { type: Scratch.ArgumentType.COLOR, defaultValue: "#0000ff" },
-              EFFECT: { type: Scratch.ArgumentType.STRING, menu: "SPLITTING" },
-              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "applyCustomSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply [EFFECT] effect with ID [ID] to [SPRITE]",
@@ -232,20 +183,9 @@
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-filter" },
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
-          },
-          {
-            opcode: "applyCustomImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply [EFFECT] effect with ID [ID] to [SPRITE]",
-            hideFromPalette: sprite,
-            arguments: {
-              EFFECT: { type: Scratch.ArgumentType.STRING, defaultValue: "custom-svg-filter" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "my-filter" },
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" }
-            },
-          },
+          }),
           "---",
-          {
+          ...genDualBlock({
             opcode: "waveSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply wave effect to [SPRITE] on [axis] with seed [SEED] at x [NUM] y [Y]",
@@ -257,21 +197,8 @@
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
               SEED: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
             },
-          },
-          {
-            opcode: "waveImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply wave effect to [SPRITE] on [axis] with seed [SEED] at [NUM] y [Y]",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              axis: { type: Scratch.ArgumentType.STRING, menu: "AXISES" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-              SEED: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "glitchSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply glitch effect to [SPRITE] with [LINE] lines offset x [X] y [Y] thickness [NUM] on [axis]",
@@ -284,22 +211,8 @@
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
-          },
-          {
-            opcode: "glitchImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply glitch effect to [SPRITE] with [LINE] lines offset x [X] y [Y] thickness [NUM] on [axis]",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              axis: { type: Scratch.ArgumentType.STRING, menu: "AXISES" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-              LINE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "tileSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply mosaic effect to [SPRITE] at x [x] y [y] size [NUM]%",
@@ -310,20 +223,8 @@
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
-          },
-          {
-            opcode: "tileImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply mosaic effect to [SPRITE] at x [x] y [y] size [NUM]%",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
-              x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "vhsSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply vhs effect to [SPRITE] offset x [X] y [Y] on [axis] at [NUM]%",
@@ -335,21 +236,8 @@
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
-          },
-          {
-            opcode: "vhsImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply vhs effect to [SPRITE] offset x [X] y [Y] on [axis] at [NUM]%",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              axis: { type: Scratch.ArgumentType.STRING, menu: "AXISES" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "ditherSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply dither effect to [SPRITE] width [W] height [H]",
@@ -359,20 +247,9 @@
               W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
               H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
             },
-          },
-          {
-            opcode: "ditherImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply dither effect to [SPRITE] width [W] height [H]",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-              H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
-            },
-          },
+          }),
           "---",
-          {
+          ...genDualBlock({
             opcode: "distortSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply [EFFECT] distortion to [SPRITE] at x [X] y [Y] at [NUM]%",
@@ -384,46 +261,20 @@
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
-          },
-          {
-            opcode: "distortImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply [EFFECT] distortion to [SPRITE] at x [X] y [Y] at [NUM]%",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              EFFECT: { type: Scratch.ArgumentType.STRING, menu: "DISTORTION" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
-              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "distortSpriteImage",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply [EFFECT] distortion to [SPRITE] at x [X] y [Y] at [NUM]%",
             hideFromPalette: !sprite,
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS2" },
-              EFFECT: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
+              EFFECT: { type: Scratch.ArgumentType.STRING, defaultValue: "</svg> or data.uri" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
-          },
-          {
-            opcode: "distortImageImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply [EFFECT] distortion to [SPRITE] at x [X] y [Y] at [NUM]%",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              EFFECT: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
-              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            },
-          },
+          }),
           {
             opcode: "distortPreset",
             blockType: Scratch.BlockType.REPORTER,
@@ -433,36 +284,27 @@
             },
           },
           {
-            opcode: "toggleDistScale", blockType: Scratch.BlockType.COMMAND,
-            text: "toggle distortion scaling [ON_OFF]", hideFromPalette: true, // deprecated for now
-            arguments: { ON_OFF: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" } },
+            opcode: "toggleDistScale",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "toggle distortion scaling [ON_OFF]",
+            arguments: {
+              ON_OFF: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" }
+            },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Formatting" },
-          {
+          ...genDualBlock({
             opcode: "patternSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "replace [COLOR] with pattern [PAT] scale [SIZE] in [SPRITE]",
             hideFromPalette: !sprite,
             arguments: {
-              PAT: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
+              PAT: { type: Scratch.ArgumentType.STRING, defaultValue: "</svg> or data.uri" },
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               SIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
             },
-          },
-          {
-            opcode: "patternImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "replace [COLOR] with pattern [PAT] scale [SIZE] in [SPRITE]",
-            hideFromPalette: sprite,
-            arguments: {
-              PAT: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              SIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
-              COLOR: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "outlineSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "add [OUTLINE] outline to [SPRITE] at [NUM]% colored [COLOR]",
@@ -473,20 +315,8 @@
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               COLOR: { type: Scratch.ArgumentType.COLOR }
             },
-          },
-          {
-            opcode: "outlineImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "add [OUTLINE] outline to [SPRITE] at [NUM]% colored [COLOR]",
-            hideFromPalette: sprite,
-            arguments: {
-              OUTLINE: { type: Scratch.ArgumentType.STRING, menu: "OUTLINES" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              COLOR: { type: Scratch.ArgumentType.COLOR }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "spriteShadow",
             blockType: Scratch.BlockType.REPORTER,
             text: "add shadow to [SPRITE] at x [X] y [Y] colored [COLOR] at [NUM]%",
@@ -498,21 +328,8 @@
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
-          },
-          {
-            opcode: "imageShadow",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "add shadow to [SPRITE] at x [X] y [Y] colored [COLOR] at [NUM]%",
-            hideFromPalette: sprite,
-            arguments: {
-              COLOR: { type: Scratch.ArgumentType.COLOR },
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
-              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "applySpriteLight",
             blockType: Scratch.BlockType.REPORTER,
             text: "add lighting to [SPRITE] tinted [COLOR] at x [X] y [Y] at [NUM]%",
@@ -524,21 +341,8 @@
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
-          },
-          {
-            opcode: "applyImageLight",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "add lighting to [SPRITE] tinted [COLOR] at x [X] y [Y] at [NUM]%",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              COLOR: { type: Scratch.ArgumentType.COLOR },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
-              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "advSpriteLight",
             blockType: Scratch.BlockType.REPORTER,
             text: "apply light to [SPRITE] using map [MAP] with mode [BLEND]",
@@ -546,22 +350,11 @@
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS2" },
               BLEND: { type: Scratch.ArgumentType.STRING, menu: "BLENDING2" },
-              MAP: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" }
+              MAP: { type: Scratch.ArgumentType.STRING, defaultValue: "</svg> or data.uri" }
             },
-          },
-          {
-            opcode: "advImageLight",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "apply light to [SPRITE] using map [MAP] with mode [BLEND]",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              BLEND: { type: Scratch.ArgumentType.STRING, menu: "BLENDING2" },
-              MAP: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" }
-            },
-          },
+          }),
           "---",
-          {
+          ...genDualBlock({
             opcode: "maskSprite",
             blockType: Scratch.BlockType.REPORTER,
             text: "mask [TYPE] [SPRITE2] from [SPRITE]",
@@ -571,18 +364,7 @@
               SPRITE2: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "MASKING" }
             },
-          },
-          {
-            opcode: "maskImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "mask [TYPE] [SPRITE2] from [SPRITE]",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              SPRITE2: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              TYPE: { type: Scratch.ArgumentType.STRING, menu: "MASKING" }
-            },
-          },
+          }),
           {
             opcode: "setMaskXY",
             blockType: Scratch.BlockType.COMMAND,
@@ -610,7 +392,7 @@
             },
           },
           "---",
-          {
+          ...genDualBlock({
             opcode: "unClipSPR",
             blockType: Scratch.BlockType.REPORTER,
             text: "resize viewbox of [SPRITE] by [NUM]%",
@@ -618,18 +400,9 @@
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
             },
-          },
-          {
-            opcode: "unClipIMG",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "resize viewbox of [SPRITE] by [NUM]%",
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
-            },
-          },
+          }),
           "---",
-          {
+          ...genDualBlock({
             opcode: "setXY",
             blockType: Scratch.BlockType.REPORTER,
             text: "set [SPRITE] x [x] y [y]",
@@ -639,19 +412,8 @@
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
-          },
-          {
-            opcode: "setXY2",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "set [SPRITE] x [x] y [y]",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "setDIR",
             blockType: Scratch.BlockType.REPORTER,
             text: "point [SPRITE] in direction [DIR]",
@@ -660,18 +422,8 @@
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               DIR: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 }
             },
-          },
-          {
-            opcode: "setDIR2",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "point [SPRITE] in direction [DIR]",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              DIR: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "setSCALE",
             blockType: Scratch.BlockType.REPORTER,
             text: "stretch [SPRITE] to x [x] y [y]",
@@ -681,19 +433,8 @@
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 200 },
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
             },
-          },
-          {
-            opcode: "setSCALE2",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "stretch [SPRITE] to x [x] y [y]",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 200 },
-              y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
-            },
-          },
-          {
+          }),
+          ...genDualBlock({
             opcode: "setSKEW",
             blockType: Scratch.BlockType.REPORTER,
             text: "skew [SPRITE] to x [x] y [y]",
@@ -703,24 +444,8 @@
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
               y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
             },
-          },
-          {
-            opcode: "setSKEW2",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "skew [SPRITE] to x [x] y [y]",
-            hideFromPalette: sprite,
-            arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: "data URI or <svg content>" },
-              x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            },
-          },
+          }),
           { blockType: Scratch.BlockType.LABEL, text: "Canvas Filters" },
-          {
-            func: "filterWarn",
-            blockType: Scratch.BlockType.BUTTON,
-            text: "Canvas Filter Disclaimer"
-          },
           {
             opcode: "addCanvasFilter",
             blockType: Scratch.BlockType.COMMAND,
@@ -814,10 +539,6 @@
     }
 
     // Helper Funcs
-    filterWarn() {
-      alert(`Unfortunately, due to various limitations, not ALL effects (like some Formatting Blocks) will work on the Canvas...
-        \nYou are welcome to experiment by making your own svg filters and using them on the canvas!`);
-    }
     canvasWarn() {
       alert(`Canvas Effects, created by TheShovel, was coded to not work with extensions like Sprite Effects,
         \nToggling Compatibility "off" will cause Sprite Effects Canvas Filters to not Work with Canvas Effects
@@ -831,19 +552,67 @@
       canvas = supportM ?  render.canvas : render.canvas.parentNode.parentNode.parentNode;
     }
 
+    getTargets(includeCanvas) {
+      const spriteNames = [{ text: "myself", value: "_myself_" }];
+      if (includeCanvas) spriteNames.push({ text: "Canvas", value: "_canvas_" });
+      spriteNames.push({ text: "Stage", value: "_stage_" });
+      const targets = runtime.targets;
+      for (let i = 1; i < targets.length; i++) {
+        const target = targets[i];
+        if (target.isOriginal) spriteNames.push({ text: target.getName(), value: target.getName() });
+      }
+      return spriteNames.length > 0 ? spriteNames : [""];
+    }
+
+    hexMap(hex) {
+      hex = hex.replace(/^#/, "");
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+      return [
+        r / 255, 0, 0, 0, 0,
+        0, g / 255, 0, 0, 0,
+        0, 0, b / 255, 0, 0,
+        0, 0, 0, 1, 0
+      ].join(" ");
+    }
+
+    filterApplier(svg, filter, name) {
+      nameOffset++;
+      if (nameOffset > 100) nameOffset = 0;
+      // add filter to body
+      let svgTag = svg.indexOf(">");
+      if (svgTag < 0) return svg;
+      filter = filter.replace("<filter", `<filter filterUnits="userSpaceOnUse"`);
+      svg = `${svg.substring(0, svgTag + 1)}${filter.replace(/\s+$/, "").slice(0, -1)}${svg.slice(svgTag)}`;
+
+      // create group and add filter string
+      const oldFilters = svg.match(/<g filter="url\([^"]+\)">/g);
+      const filterInd = svg.lastIndexOf("</filter>") + 9;
+      let match, group = "";
+      if (oldFilters === null) {
+        group = `<g filter="url(#${name})">`;
+        svg = `${svg.substring(0, svg.indexOf("</svg>"))}</g></svg>`;
+      } else {
+        match = oldFilters[0];
+        svg = svg.replace(match, `${match.substring(0, match.indexOf("\">"))} url(#${name})">`);
+      }
+      return `${svg.substring(0, filterInd)}${group}${svg.slice(filterInd)}`;
+    }
+
     async getSVG(input) {
       input = cast.toString(input);
       const target = input === "_stage_" ? runtime.getTargetForStage() : runtime.getSpriteTargetByName(input);
       if (!target) {
-        if (!reqPackagedRAM()) return "<svg></svg>";
         // Assume the user inputted a SVG instead of a sprite
         if (input.startsWith("<svg") && input.includes("</svg>")) return input;
+        else if (!reqPackagedRAM()) return "<svg></svg>";
         else return "<svg></svg>";
       }
       const costume = target.getCostumes()[target.currentCostume];
       //if bitmap, convert to svg
       if (costume.dataFormat === "png") return await this.getImage(costume.asset.encodeDataURI());
-      else return costume.asset.decodeText()
+      else return costume.asset.decodeText();
     }
 
     async getImage(image) {
@@ -892,140 +661,32 @@
       });
     }
 
-    getTargets(includeCanvas) {
-      const spriteNames = [{ text : "myself", value: "_myself_" }];
-      if (includeCanvas) spriteNames.push({ text : "Canvas", value: "_canvas_" });
-      spriteNames.push({ text : "Stage", value: "_stage_" });
-      const targets = runtime.targets;
-      for (let i = 1; i < targets.length; i++) {
-        const target = targets[i];
-        if (target.isOriginal) spriteNames.push({ text : target.getName(), value : target.getName() });
-      }
-      return spriteNames.length > 0 ? spriteNames : [""];
-    }
-
-    hexMap(hex) {
-      hex = hex.replace(/^#/, "");
-      const r = parseInt(hex.slice(0, 2), 16);
-      const g = parseInt(hex.slice(2, 4), 16);
-      const b = parseInt(hex.slice(4, 6), 16);
-      return [
-        r / 255, 0, 0, 0, 0,
-        0, g / 255, 0, 0, 0,
-        0, 0, b / 255, 0, 0,
-        0, 0, 0, 1, 0
-      ].join(" ");
-    }
-
-    filterApplier(svg, filter, name) {
-      nameOffset++;
-      if (nameOffset > 100) nameOffset = 0;
-      // add filter to body
-      let svgTag = svg.indexOf(">");
-      if (svgTag < 0) return svg;
-      filter = filter.replace("<filter", `<filter filterUnits="userSpaceOnUse"`);
-      svg = `${svg.substring(0, svgTag + 1)}${filter.replace(/\s+$/, "").slice(0, -1)}${svg.slice(svgTag)}`;
-
-      // create group and add filter string
-      const oldFilters = svg.match(/<g filter="url\([^"]+\)">/g);
-      const filterInd = svg.lastIndexOf("</filter>") + 9;
-      let match, group = "";
-      if (oldFilters === null) {
-        group = `<g filter="url(#${name})">`;
-        svg = `${svg.substring(0, svg.indexOf("</svg>"))}</g></svg>`;
-      } else {
-        match = oldFilters[0];
-        svg = svg.replace(match, `${match.substring(0, match.indexOf("\">"))} url(#${name})">`);
-      }
-      return `${svg.substring(0, filterInd)}${group}${svg.slice(filterInd)}`;
-    }
-
     // Block Funcs
     setSpriteEffect(args, util) { return this.setMainEffect(args, false, util) }
     async setImageEffect(args) { return await this.setMainEffect(args, true) }
-    applyCustomSprite(args, util) { return this.customFilter(args, false, util) }
-    async applyCustomImage(args) { return await this.customFilter(args, true) }
-
-    setSpriteMotion(args, util) { return this.motionBlur(args, false, util) }
-    async setImageMotion(args) { return await this.motionBlur(args, true) }
-
-    setSpriteBlend(args, util) { return this.blendType(args, false, util) }
-    async setImageBlend(args) { return await this.blendType(args, true) }
-    hueSprite(args, util) { return this.setHue(args, false, util) }
-    async hueImage(args) { return await this.setHue(args, true) }
-
-    splitSprite(args, util) { return this.colorSplit(args, false, util) }
-    async splitImage(args) { return await this.colorSplit(args, true) }
-
-    distortSprite(args, util) { return this.setDistort(args, false, false, util) }
-    async distortImage(args) { return await this.setDistort(args, true, false) }
-    distortSpriteImage(args, util) { return this.setDistort(args, false, true, util) }
-    async distortImageImage(args) { return await this.setDistort(args, true, true) }
-    waveSprite(args, util) { return this.waveEffect(args, false, util) }
-    async waveImage(args) { return await this.waveEffect(args, true) }
-
-    glitchSprite(args, util) { return this.setGlitch(args, false, util) }
-    async glitchImage(args) { return await this.setGlitch(args, true) }
-    tileSprite(args, util) { return this.addTile(args, false, util) }
-    async tileImage(args) { return await this.addTile(args, true) }
-    vhsSprite(args, util) { return this.setVHS(args, false, util) }
-    async vhsImage(args) { return await this.setVHS(args, true) }
-    ditherSprite(args, util) { return this.dither(args, false, util) }
-    async ditherImage(args) { return await this.dither(args, true) }
-    patternSprite(args, util) { return this.addPattern(args, false, util) }
-    async patternImage(args) { return await this.addPattern(args, true) }
-
-    outlineSprite(args, util) { return this.addOutline(args, false, util) }
-    async outlineImage(args) { return await this.addOutline(args, true) }
-    applySpriteLight(args, util) { return this.lighting(args, false, util) }
-    async applyImageLight(args) { return await this.lighting(args, true) }
-    advSpriteLight(args, util) { return this.advLighting(args, false, util) }
-    async advImageLight(args) { return await this.advLighting(args, true) }
-    spriteShadow(args, util) { return this.addShadow(args, false, util) }
-    async imageShadow(args) { return await this.addShadow(args, true) }
-
-    maskSprite(args, util) { return this.mask(args, false, util) }
-    async maskImage(args) { return await this.mask(args, true) }
-    unClipSPR(args, util) { return this.updateView(args, false, util) }
-    async unClipIMG(args) { return await this.updateView(args, true) }
-
-    setXY(args, util) { return this.setATT(args, false, 0, util) }
-    async setXY2(args) { return await this.setATT(args, true, 0) }
-    setDIR(args, util) { return this.setATT(args, false, 1, util) }
-    async setDIR2(args) { return await this.setATT(args, true, 1) }
-    setSCALE(args, util) { return this.setATT(args, false, 2, util) }
-    async setSCALE2(args) { return await this.setATT(args, true, 2) }
-    setSKEW(args, util) { return this.setATT(args, false, 3, util) }
-    async setSKEW2(args) { return await this.setATT(args, true, 3) }
-
-    setMaskXY(args) { maskOptions[0] = cast.toNumber(args.x); maskOptions[1] = cast.toNumber(args.y) * -1 }
-    setMaskSZ(args) { maskOptions[2] = cast.toNumber(args.SIZE) }
-    maskATT(args) { return maskOptions[args.ATT] }
-
     async setMainEffect(args, isImage, util) {
-      let svg;
+      let svg, filter, scaleFactor, tableValue;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
         let amtIn = cast.toNumber(args.NUM);
-        let filter, scaleFactor, tableValue;
         switch (args.EFFECT) {
           case "saturation":
             filter = `<filter id="saturation"><feColorMatrix type="saturate" values="${amtIn / 100}"></feColorMatrix></filter>`;
             break;
           case "sepia":
-            scaleFactor = amtIn / 100;
-            filter = `<filter id="sepia"><feColorMatrix type="matrix" values="${0.393 * scaleFactor} ${0.769 * scaleFactor} ${0.189 * scaleFactor} 0 0 ${0.349 * scaleFactor} ${0.686 * scaleFactor} ${0.168 * scaleFactor} 0 0 ${0.272 * scaleFactor} ${0.534 * scaleFactor} ${0.131 * scaleFactor} 0 0 0 0 0 1 0"></feColorMatrix></filter>`;
+            amtIn /= 100;
+            filter = `<filter id="sepia"><feColorMatrix type="matrix" values="${0.393 * amtIn} ${0.769 * amtIn} ${0.189 * amtIn} 0 0 ${0.349 * amtIn} ${0.686 * amtIn} ${0.168 * amtIn} 0 0 ${0.272 * amtIn} ${0.534 * amtIn} ${0.131 * amtIn} 0 0 0 0 0 1 0"></feColorMatrix></filter>`;
             break;
           case "amplify":
-            amtIn = amtIn + 100;
+            amtIn += 100;
             filter = `<filter id="amplify"><feComponentTransfer><feFuncR type="linear" slope="${amtIn / 100}"></feFuncR><feFuncG type="linear" slope="${amtIn / 100}"></feFuncG><feFuncB type="linear" slope="${amtIn / 100}"></feFuncB></feComponentTransfer></filter>`;
             break;
           case "inflate":
             filter = `<filter id="inflate"><feMorphology in="SourceGraphic" operator="dilate" radius="${Math.abs(amtIn / 10)}"></feMorphology></filter>`;
             break;
           case "contrast":
-            amtIn = amtIn + 100;
+            amtIn += 100;
             filter = `<filter id="contrast"><feComponentTransfer><feFuncR type="gamma" exponent="${amtIn / 100}" amplitude="${amtIn / 100}" offset="0" /><feFuncG type="gamma" exponent="${amtIn / 100}" amplitude="${amtIn / 100}" offset="0" /><feFuncB type="gamma" exponent="${amtIn / 100}" amplitude="${amtIn / 100}" offset="0" /></feComponentTransfer></filter>`
             break;
           case "discrete":
@@ -1076,11 +737,13 @@
           default:
             filter = `<filter id="blur"><feGaussianBlur stdDeviation="${Math.abs(amtIn)}" in="SourceGraphic" result="BLUR"></feGaussianBlur></filter>`;
         }
-        return this.filterApplier(svg, filter, args.EFFECT.replaceAll(" ", "-"));
+        return this.filterApplier(svg, filter, cast.toString(args.EFFECT).replaceAll(" ", "-"));
       }
       return svg;
     }
 
+    setSpriteMotion(args, util) { return this.motionBlur(args, false, util) }
+    async setImageMotion(args) { return await this.motionBlur(args, true) }
     async motionBlur(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1092,6 +755,8 @@
       return svg;
     }
 
+    setSpriteBlend(args, util) { return this.blendType(args, false, util) }
+    async setImageBlend(args) { return await this.blendType(args, true) }
     async blendType(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1103,6 +768,8 @@
       return svg;
     }
 
+    applyCustomSprite(args, util) { return this.customFilter(args, false, util) }
+    async applyCustomImage(args) { return await this.customFilter(args, true) }
     async customFilter(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1111,6 +778,8 @@
       return svg;
     }
 
+    hueSprite(args, util) { return this.setHue(args, false, util) }
+    async hueImage(args) { return await this.setHue(args, true) }
     async setHue(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1122,6 +791,8 @@
       return svg;
     }
 
+    spriteShadow(args, util) { return this.addShadow(args, false, util) }
+    async imageShadow(args) { return await this.addShadow(args, true) }
     async addShadow(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1134,47 +805,49 @@
       return svg;
     }
 
+    outlineSprite(args, util) { return this.addOutline(args, false, util) }
+    async outlineImage(args) { return await this.addOutline(args, true) }
     async addOutline(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
-        let filter, effect;
-        const rgbColor = cast.toRgbColorObject(args.COLOR);
+        let filter, rgbColor = cast.toRgbColorObject(args.COLOR);
         if (args.OUTLINE === "filled") {
-          effect = "filled-outline";
           if (supportM) filter = `<filter id="filled-outline"><feMorphology operator="erode" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="xor" in="flood" in2="thickened" result="frame"/><feComposite operator="atop" in="frame" in2="SourceGraphic"/></filter>`;
           else filter = `<filter id="filled-outline"><feMorphology operator="dilate" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="in" in="flood" in2="thickened"/><feComposite operator="over" in="SourceGraphic" /></filter>`
+          return this.filterApplier(svg, filter, "filled-outline");
         } else {
-          effect = "solid-outline";
           filter = `<filter id="solid-outline"><feMorphology operator="dilate" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feComposite operator="over" in="SourceGraphic" in2="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="in" in="flood" in2="thickened"/></filter>`;
+          return this.filterApplier(svg, filter, "solid-outline");
         }
-        return this.filterApplier(svg, filter, effect);
       }
       return svg;
     }
 
+    splitSprite(args, util) { return this.colorSplit(args, false, util) }
+    async splitImage(args) { return await this.colorSplit(args, true) }
     async colorSplit(args, isImage, util) {
-      let svg;
+      let svg, filter;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
-        let filter, effect;
         if (args.EFFECT.includes("color")) {
-          effect = "color-split";
           filter = `<filter id="color-split"><feFlood flood-color="${args.COLOR1}" flood-opacity="0.5" result="RED"/><feFlood flood-color="${args.COLOR2}" flood-opacity="0.5" result="GREEN"/><feFlood flood-color="${args.COLOR3}" flood-opacity="0.5" result="BLUE"/><feComposite operator="in" in="RED" in2="SourceAlpha" result="RED"/><feComposite operator="in" in="GREEN" in2="SourceAlpha" result="GREEN"/><feComposite operator="in" in="BLUE" in2="SourceAlpha" result="BLUE"/><feOffset in="RED" dx="${args.X * -1}" dy="${args.Y}" result="RED_OFF"/><feOffset in="GREEN" dx="${args.X}" dy="${args.Y * -1}" result="GREEN_OFF"/><feOffset in="BLUE" dx="0" dy="0" result="BLUE_OFF"/><feBlend mode="screen" in="RED_OFF" in2="GREEN_OFF" result="RG"/><feBlend mode="screen" in="RG" in2="BLUE_OFF" result="FINAL_RESULT"/></filter>`;
+          return this.filterApplier(svg, filter, "color-split");
         } else if (args.EFFECT.includes("chromatic")) {
-          effect = "chromatic-abberation";
           filter = `<filter id="chromatic-abberation"><feOffset in="SourceGraphic" dx="${args.X}" dy="${args.Y}" result="layer-one" /><feColorMatrix in="layer-one" result="customColor1" type="matrix" values="${this.hexMap(args.COLOR1)}"></feColorMatrix><feOffset in="SourceGraphic" dx="${args.X * -1}" dy="${args.Y * -1}" result="layer-two" /><feColorMatrix in="layer-two" result="customColor2" type="matrix" values="${this.hexMap(args.COLOR2)}"></feColorMatrix><feBlend in="customColor1" in2="customColor2" mode="screen" result="color-split" /></filter>`;
+          return this.filterApplier(svg, filter, "chromatic-abberation");
         } else {
-          effect = "abberation";
           filter = `<filter id="abberation"><feFlood flood-color="${args.COLOR1}" flood-opacity="0.5" result="RED"/><feFlood flood-color="${args.COLOR2}" flood-opacity="0.5" result="GREEN"/><feComposite operator="in" in="SourceGraphic" in2="SourceAlpha" result="BLUE" /><feComposite operator="in" in="RED" in2="SourceAlpha" result="RED"/><feComposite operator="in" in="GREEN" in2="SourceAlpha" result="GREEN"/><feComposite operator="in" in="BLUE" in2="SourceAlpha" result="BLUE"/><feOffset in="RED" dx="${args.X * -1}" dy="${args.Y}" result="RED_OFF"/><feOffset in="GREEN" dx="${args.X}" dy="${args.Y * -1}" result="GREEN_OFF"/><feOffset in="BLUE" dx="0" dy="0" result="BLUE_OFF"/><feBlend mode="screen" in="RED_OFF" in2="GREEN_OFF" result="RG"/><feBlend mode="screen" in="RG" in2="BLUE_OFF" result="FINAL_RESULT"/><feComposite operator="over" in="SourceGraphic" in2="FINAL_RESULT" /></filter>`;
+          return this.filterApplier(svg, filter, "abberation");
         }
-        return this.filterApplier(svg, filter, effect);
       }
       return svg;
     }
 
+    waveSprite(args, util) { return this.waveEffect(args, false, util) }
+    async waveImage(args) { return await this.waveEffect(args, true) }
     async waveEffect(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1187,6 +860,8 @@
       return svg;
     }
 
+    tileSprite(args, util) { return this.addTile(args, false, util) }
+    async tileImage(args) { return await this.addTile(args, true) }
     async addTile(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1208,6 +883,8 @@
       return svg;
     }
 
+    patternSprite(args, util) { return this.addPattern(args, false, util) }
+    async patternImage(args) { return await this.addPattern(args, true) }
     async addPattern(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1220,25 +897,16 @@
           cast.toNumber(atts[1] ? parseFloat(atts[1][1]) : 100),
           cast.toNumber(args.SIZE) / 100
         ];
-        const nameGen = `pat-${Math.random()}`; // People may use multiple patterns
-        const pattern =`<defs><pattern id="${nameGen}" patternUnits="userSpaceOnUse" width="${atts[0]}" height="${atts[1]}" patternTransform="scale(${atts[2]})"><image xlink:href="${await this.svgToBitmap(svg2, atts[0], atts[1])}" width="${atts[0]}" height="${atts[1]}" /></pattern></defs>`;
-        return this.patternApply(svg, pattern, nameGen, args.COLOR);
-      }
-      return svg;
-    }
-    patternApply(svg, pattern, name, color) {
-      if (nameOffset > 100) nameOffset = 0;
-      let svgTag = svg.indexOf(">");
-      if (svgTag > -1) {
-        svgTag = svg.indexOf(">");
-        let newSVG = `${svg.substring(0, svgTag)} >${pattern.slice(0, -1)}${svg.slice(svgTag)}`;
-        newSVG = newSVG.replaceAll(color, `url(#${name})`);
-        // replace needs to be repeated twice to avoid the new name being used in other namespaces
-        return newSVG.replace(`#${name})`, `#${name}${nameOffset})`).replace(`"${name}"`, `"${name}${nameOffset}"`);
+        const name = `pat-${Math.random()}`; // People may use multiple patterns
+        const pattern =`<defs><pattern id="${name}" patternUnits="userSpaceOnUse" width="${atts[0]}" height="${atts[1]}" patternTransform="scale(${atts[2]})"><image xlink:href="${await this.svgToBitmap(svg2, atts[0], atts[1])}" width="${atts[0]}" height="${atts[1]}" /></pattern></defs>`;
+        const svgTag = svg.indexOf(">");
+        return (`${svg.substring(0, svgTag + 1)}${pattern}${svg.substring(svgTag + 1, svg.length)}`).replaceAll(args.COLOR, `url(#${name})`);
       }
       return svg;
     }
 
+    applySpriteLight(args, util) { return this.lighting(args, false, util) }
+    async applyImageLight(args) { return await this.lighting(args, true) }
     async lighting(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1256,6 +924,8 @@
       return svg;
     }
 
+    advSpriteLight(args, util) { return this.advLighting(args, false, util) }
+    async advImageLight(args) { return await this.advLighting(args, true) }
     async advLighting(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1274,37 +944,52 @@
       return svg;
     }
 
+    distortSprite(args, util) { return this.setDistort(args, false, false, util) }
+    async distortImage(args) { return await this.setDistort(args, true, false) }
+    distortSpriteImage(args, util) { return this.setDistort(args, false, true, util) }
+    async distortImageImage(args) { return await this.setDistort(args, true, true) }
     async setDistort(args, isImage, override, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
-        let source, tableValue;
-        if (override) source = args.EFFECT.startsWith("data:image/") ? args.EFFECT : `data:image/svg+xml;base64,${btoa(args.EFFECT)}`;
-        else source = args.EFFECT === "bulge" ? 0 : args.EFFECT === "whirl" ? 1 : args.EFFECT === "ripple" ? 2 : 3;
-        const mul = args.SPRITE === "_canvas_" ? render.canvas.width / runtime.stageWidth * 2 : 1;
-        const amts = [cast.toNumber(args.NUM), cast.toNumber(args.X), cast.toNumber(args.Y)];
-        if (!distortionScale) {
-          if (args.SPRITE === "_canvas_") tableValue = [render.canvas.width / 2, render.canvas.height / 2];
-          else tableValue = [100, 0];
+        let source, tableValue, effect = cast.toString(args.EFFECT);
+        if (override) source = effect.startsWith("data:image/") ? effect : `data:image/svg+xml;base64,${btoa(effect)}`;
+        else source = effect === "bulge" ? 0 : effect === "whirl" ? 1 : effect === "ripple" ? 2 : 3;
+        const isCanvas = args.SPRITE === "_canvas_";
+        const computed = isCanvas ? window.getComputedStyle(render.canvas) : {};
+        const mul = isCanvas ? parseFloat(computed.width) / runtime.stageWidth : 1;
+        const amts = [cast.toNumber(args.NUM), cast.toNumber(args.X) * mul, cast.toNumber(args.Y) * mul];
+        if (isCanvas) {
+          tableValue = [parseFloat(computed.width), parseFloat(computed.height)];
+          // TODO improve this maybe?
+          if (typeof scaffolding !== "undefined") amts[1] += tableValue[0] / (1 + (render.canvas.width / runtime.stageWidth));
         } else {
-          // deprecated feature, for now...
-          tableValue = [render.canvas.width / 2, render.canvas.height / 2];
+          tableValue = [/width="([^"]*)"/.exec(svg), /height="([^"]*)"/.exec(svg)];
+          if (tableValue[0] === null || tableValue[1] === null) return svg;
+          else tableValue = [parseFloat(tableValue[0][1]), parseFloat(tableValue[1][1])];
         }
-        const filter =`<filter id="${override ? "customDistort" : args.EFFECT}" xmlns:xlink="http://www.w3.org/1999/xlink">
-          <feImage id="dMapS" xlink:href="${override ? source : displaceSrCs[source]}" x="${-tableValue[0] + amts[1]}" y="${(tableValue[1] / -4) - amts[2]}" width="${tableValue[0]}%" height="${tableValue[1]}%" result="distortImg" />
+        if (distortionScale || effect === "ripple" || effect === "shockwave") {
+          const value = amts[0] / 100;
+          const og = [...tableValue];
+          tableValue[0] *= 1 - value; tableValue[1] *= 1 - value;
+          amts[1] += (og[0] - tableValue[0]) / 2; amts[2] -= (og[1] - tableValue[1]) / 2;
+        }
+        const filter =`<filter id="${override ? "customDistort" : effect}" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <feImage id="dMapS" xlink:href="${override ? source : displaceSrCs[source]}" x="${amts[1]}" y="${-amts[2]}" width="${Math.abs(tableValue[0])}" height="${Math.abs(tableValue[1])}" result="distortImg" />
           <feDisplacementMap id="dMapRes" xChannelSelector="R" yChannelSelector="G" in="SourceGraphic" in2="distortImg" result="displacementMap" color-interpolation-filters="sRGB" scale="${amts[0] * mul}" /><feComposite operator="in" in2="distortImg"></feComposite>
-        ${amts[0] < 0 && args.EFFECT !== "ripple" ? "" : `<feComposite operator="over" in2="SourceGraphic"></feComposite>`}</filter>`;
-        return this.filterApplier(svg, filter, override ? "customDistort" : args.EFFECT);
+        ${amts[0] < 0 && effect !== "ripple" ? "" : `<feComposite operator="over" in2="SourceGraphic"></feComposite>`}</filter>`;
+        return this.filterApplier(svg, filter, override ? "customDistort" : effect);
       }
       return svg;
     }
 
     distortPreset(args) {
-      const source = { bulge : 0, whirl : 1, ripple : 2, shockwave : 3 };
-      return displaceSrCs[source[args.TYPE]] || "";
+      return displaceSrCs[{ bulge: 0, whirl: 1, ripple: 2, shockwave: 3 }[args.TYPE]] || "";
     }
 
+    glitchSprite(args, util) { return this.setGlitch(args, false, util) }
+    async glitchImage(args) { return await this.setGlitch(args, true) }
     async setGlitch(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1323,6 +1008,8 @@
       return svg;
     }
 
+    vhsSprite(args, util) { return this.setVHS(args, false, util) }
+    async vhsImage(args) { return await this.setVHS(args, true) }
     async setVHS(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1341,6 +1028,8 @@
       return svg;
     }
 
+    ditherSprite(args, util) { return this.dither(args, false, util) }
+    async ditherImage(args) { return await this.dither(args, true) }
     async dither(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1353,6 +1042,8 @@
       return svg;
     }
 
+    maskSprite(args, util) { return this.mask(args, false, util) }
+    async maskImage(args) { return await this.mask(args, true) }
     async mask(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1373,13 +1064,47 @@
       return svg;
     }
 
-    async setATT(args, isImage, type, util) {
+    setMaskXY(args) { maskOptions[cast.toNumber(args.x), cast.toNumber(args.y) * -1, maskOptions[2]] }
+    setMaskSZ(args) { maskOptions[2] = cast.toNumber(args.SIZE) }
+    maskATT(args) { return maskOptions[args.ATT] }
+
+    unClipSPR(args, util) { return this.updateView(args, false, util) }
+    async unClipIMG(args) { return await this.updateView(args, true) }
+    async updateView(args, isImage, util) {
       let svg;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
-        // Note: We Do Not Check if Translate Exists Since We Override it
-        let transform = "";
+        let vals, viewboxVals = -1, translateVals = -1;
+        const viewboxMatch = svg.match(/viewBox="([^"]+)"/);
+        if (viewboxMatch) viewboxVals = viewboxMatch[1].split(/\s*,\s*/).map(parseFloat);
+        const translateMatch = svg.match(/<g transform="translate\((-?[\d.]+),(-?[\d.]+)\)/);
+        if (translateMatch) translateVals = [parseFloat(translateMatch[1]), parseFloat(translateMatch[2])];
+        vals = (`${viewboxVals},${translateVals}`).split(",").map(item => cast.toNumber(item));
+        const num = cast.toNumber(args.NUM);
+        if (vals.length > 3) {
+          svg = svg.replace(/viewBox="([^"]+)"/, `viewBox="${vals[0]},${vals[1]},${vals[2] + (num * 2)},${vals[3] + (num * 2)}"`)
+            .replace(/width="([^"]+)"/, `width="${vals[2] + (num * 2)}"`)
+            .replace(/height="([^"]+)"/, `height="${vals[3] + (num * 2)}"`)
+            .replace(/<g transform="([^"]+)"/, `<g transform="translate(${vals[4] + num},${vals[5] + num})"`);
+        }
+      }
+      return svg;
+    }
+
+    setXY(args, util) { return this.setATT(args, false, 0, util) }
+    async setXY2(args) { return await this.setATT(args, true, 0) }
+    setDIR(args, util) { return this.setATT(args, false, 1, util) }
+    async setDIR2(args) { return await this.setATT(args, true, 1) }
+    setSCALE(args, util) { return this.setATT(args, false, 2, util) }
+    async setSCALE2(args) { return await this.setATT(args, true, 2) }
+    setSKEW(args, util) { return this.setATT(args, false, 3, util) }
+    async setSKEW2(args) { return await this.setATT(args, true, 3) }
+    async setATT(args, isImage, type, util) {
+      let svg, transform;
+      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
+      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
+      if (svg) {
         const curTranslate = /translate\(([^,]+),([^)]+)\)/.exec(svg);
         const currentX = curTranslate ? parseFloat(curTranslate[1]) : 0;
         const currentY = curTranslate ? parseFloat(curTranslate[2]) : 0;
@@ -1391,10 +1116,8 @@
         const x = cast.toNumber(args.x ? args.x : 0) / 100;
         const y = cast.toNumber(args.y ? args.y : 0) / 100;
         let con = svg.includes("style=\"transform-origin: center; transform:");
-        if (type === 0) {
-          const newPos = [currentX + (x * 100), currentY + (y * -100)];
-          return svg.replace(/translate\([^)]*\)/, `translate(${newPos[0]},${newPos[1]})`);
-        } else if (type === 1) {
+        if (type === 0) return svg.replace(/translate\([^)]*\)/, `translate(${currentX + (x * 100)},${currentY + (y * -100)})`);
+        else if (type === 1) {
           if (con) svg = svg.replace(/(style="[^"]*transform:[^"]*)/, `$1 rotate(${cast.toNumber(args.DIR) - 90}deg)`);
           else svg = svg.replace(`width="${width}" height="${height}"`, `width="${width}" height="${height}" style="transform-origin: center; transform: rotate(${cast.toNumber(args.DIR) - 90}deg)"`);
         } else if (type === 2) {
@@ -1402,10 +1125,10 @@
           const viewboxMatch = svg.match(/viewBox="([^"]+)"/);
           if (viewboxMatch) vals = viewboxMatch[1].split(/\s*,\s*/);
           if (vals.length > 1) {
-            svg = svg.replace(`width="${width}" height="${height}"`, `width="${width * Math.abs(x)}" height="${height * Math.abs(y)}"`);
-            svg = svg.replace(/viewBox="([^"]+)"/, `viewBox="${vals[0]},${vals[1]},${width * Math.abs(x)},${height * Math.abs(y)}"`);
-            svg = svg.replace(`(${currentX},`, `(${currentX * (x) + (args.x < 0 ? width * Math.abs(x) : 0)},`);
-            svg = svg.replace(`,${currentY})`, `,${currentY * (y) + (args.y < 0 ? height * Math.abs(y) : 0)})`);
+            svg = svg.replace(`width="${width}" height="${height}"`, `width="${width * Math.abs(x)}" height="${height * Math.abs(y)}"`)
+              .replace(/viewBox="([^"]+)"/, `viewBox="${vals[0]},${vals[1]},${width * Math.abs(x)},${height * Math.abs(y)}"`)
+              .replace(`(${currentX},`, `(${currentX * (x) + (args.x < 0 ? width * Math.abs(x) : 0)},`)
+              .replace(`,${currentY})`, `,${currentY * (y) + (args.y < 0 ? height * Math.abs(y) : 0)})`);
             transform = `scale(${x}, ${y})`;
           }
         } else {
@@ -1414,31 +1137,7 @@
         }
         let curTransform = /transform="([^"]*)"/.exec(svg);
         curTransform = curTransform ? curTransform[1] : "";
-        const newTransform = curTransform ? `${curTransform} ${transform}` : transform;
-        return svg.replace(/transform="([^"]*)"/, `transform="${newTransform}"`);
-      }
-      return svg;
-    }
-
-    async updateView(args, isImage, util) {
-      let svg;
-      if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
-      else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
-      if (svg) {
-        let vals, viewboxVals = -1, translateVals = -1;
-        const viewboxMatch = svg.match(/viewBox="([^"]+)"/);
-        if (viewboxMatch) viewboxVals = viewboxMatch[1].split(/\s*,\s*/).map(parseFloat);
-        const translateMatch = svg.match(/<g transform="translate\((-?[\d.]+),(-?[\d.]+)\)/);
-        if (translateMatch) translateVals = [parseFloat(translateMatch[1]), parseFloat(translateMatch[2])];
-        vals = `${viewboxVals},${translateVals}`;
-        vals = vals.split(",").map(item => cast.toNumber(item));
-        const num = cast.toNumber(args.NUM);
-        if (vals.length > 3) {
-          svg = svg.replace(/viewBox="([^"]+)"/, `viewBox="${vals[0]},${vals[1]},${vals[2] + (num * 2)},${vals[3] + (num * 2)}"`);
-          svg = svg.replace(/width="([^"]+)"/, `width="${vals[2] + (num * 2)}"`);
-          svg = svg.replace(/height="([^"]+)"/, `height="${vals[3] + (num * 2)}"`);
-          svg = svg.replace(/<g transform="([^"]+)"/, `<g transform="translate(${vals[4] + num},${vals[5] + num})"`);
-        }
+        return svg.replace(/transform="([^"]*)"/, `transform="${curTransform ? `${curTransform} ${transform}` : transform}"`);
       }
       return svg;
     }
@@ -1450,16 +1149,16 @@
       const match = filter.match(/<filter(?:\s[^>]*)?>((?:.|\n)*?)<\/filter>/i);
       if (match && match[1]) {
         filter = match[1].replace(/\s+$/, "");
-        const name = xmlEscape(args.NAME);
+        const name = cast.toString(args.NAME).replaceAll("\"", "-'").replaceAll(" ", "_");
         const oldFilter = document.querySelector(`div[id^="SP-canvas-${name}"]`);
         if (oldFilter) {
           oldFilter.innerHTML = tryPure(filter, name, thisBlock, container);
-          oldFilter.id = `SP-canvas-${name}`; // the DOM will un-xmlEscape the ID
+          oldFilter.id = `SP-canvas-${name}`; // the DOM will un-patch the ID
           return;
         }
         const svg = document.createElement("div");
         svg.innerHTML = tryPure(filter, name, thisBlock, container);
-        svg.id = `SP-canvas-${name}`; // the DOM will un-xmlEscape the ID
+        svg.id = `SP-canvas-${name}`; // the DOM will un-patch the ID
         document.body.appendChild(svg);
         allFilters.push(name);
         const curFilter = canvas.style.filter;
@@ -1469,7 +1168,7 @@
 
     removeCanvasFilter(args) {
       const curFilter = canvas.style.filter;
-      const name = xmlEscape(args.NAME);
+      const name = cast.toString(args.NAME).replaceAll("\"", "-'").replaceAll(" ", "_");
       if (curFilter.includes(`url("#${name}")`)) {
         canvas.style.filter = curFilter.replaceAll(`url("#${name}")`, "").trim();
         const filterSel = document.querySelector(`div[id^="SP-canvas-${name}"]`);
