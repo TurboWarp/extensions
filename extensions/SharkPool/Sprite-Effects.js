@@ -665,7 +665,7 @@
     setSpriteEffect(args, util) { return this.setMainEffect(args, false, util) }
     async setImageEffect(args) { return await this.setMainEffect(args, true) }
     async setMainEffect(args, isImage, util) {
-      let svg, filter, scaleFactor, tableValue;
+      let svg, filter, tableValue;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
@@ -702,7 +702,6 @@
             filter = `<filter id="liquify" width="150%" height="160%" x="-25%" y="-25%"><feTurbulence baseFrequency="0.05" type="fractalNoise" numOctaves="1" seed="${Math.round(Math.abs(Math.sin(Date.now() / 5) * 10))}" result="BOTTOM-SPLASH_10"></feTurbulence><feGaussianBlur stdDeviation="${amtIn}" in="SourceGraphic" result="BOTTOM-SPLASH_20"></feGaussianBlur><feDisplacementMap scale="${amtIn * 10}" in="BOTTOM-SPLASH_20" in2="BOTTOM-SPLASH_10" result="BOTTOM-SPLASH_30"></feDisplacementMap><feComposite operator="in" in="BOTTOM-SPLASH_30" in2="SourceGraphic" result="BOTTOM-SPLASH_40"></feComposite><feTurbulence baseFrequency="0.1" type="fractalNoise" numOctaves="1" seed="${Math.round(Math.abs(Math.sin(Date.now() / 5) * 10))}" result="MIDDLE-SPLASH_10"></feTurbulence><feGaussianBlur in="SourceGraphic" stdDeviation="${amtIn * 0.01}" result="MIDDLE-SPLASH_20"></feGaussianBlur><feDisplacementMap in="MIDDLE-SPLASH_20" in2="MIDDLE-SPLASH_10" scale="${amtIn * 2.5}" result="MIDDLE-SPLASH_30"></feDisplacementMap><feComposite in="MIDDLE-SPLASH_30" in2="SourceGraphic" operator="in" result="MIDDLE-SPLASH_40"></feComposite><feTurbulence baseFrequency="0.07" type="fractalNoise" numOctaves="1" seed="${Math.round(Math.abs(Math.sin(Date.now() / 5) * 10))}" result="TOP-SPLASH_10"></feTurbulence><feGaussianBlur stdDeviation="${amtIn * 0.035}" in="SourceGraphic" result="TOP-SPLASH_20"></feGaussianBlur><feDisplacementMap scale="${amtIn * 22}" in="TOP-SPLASH_20" in2="TOP-SPLASH_10" result="TOP-SPLASH_30"></feDisplacementMap><feComposite operator="in" in="TOP-SPLASH_30" in2="SourceGraphic" result="TOP-SPLASH_40"></feComposite></filter>`;
             break;
           case "ripple":
-            scaleFactor = (amtIn * 1.5).toFixed(2);
             tableValue = [100 + 2 * (100 - amtIn) / 2];
             tableValue[1] = (100 - tableValue[0]) / 2;
             filter = `<filter id="ripple" xmlns:xlink="http://www.w3.org/1999/xlink"><feImage xlink:href="${displaceSrCs[2]}" x="${tableValue[1]}%" y="${tableValue[1]}%" width="${tableValue[0]}%" height="${tableValue[0]}%" result="rippleImage" /><feDisplacementMap xChannelSelector="R" yChannelSelector="G" in="SourceGraphic" in2="rippleImage" result="displacementMap" color-interpolation-filters="sRGB" scale="${amtIn}" /><feComposite operator="in" in2="rippleImage"></feComposite><feComposite operator="over" in2="SourceGraphic"></feComposite></filter>`;
