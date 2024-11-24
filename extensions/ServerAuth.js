@@ -43,7 +43,7 @@
                     },
                     {
                         blockType: Scratch.BlockType.LABEL,
-                        text: 'Authantication & Registration'
+                        text: 'Authentication & Registration'
                     },
                     {
                         opcode: 'registerUser',
