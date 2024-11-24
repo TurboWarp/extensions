@@ -178,17 +178,17 @@
             if (service === 'Google') {
                 if (action === 'Register' || action === 'Authenticate') {
                     this.setDebugMessage(`${action} with Google...`);
-                    window.open(`https://accounts.google.com/o/oauth2/auth?client_id=${this.clientId}&redirect_uri=${this.redirectUri}&response_type=token&scope=email`, '_blank');
+                    Scratch.openWindow(`https://accounts.google.com/o/oauth2/auth?client_id=${this.clientId}&redirect_uri=${this.redirectUri}&response_type=token&scope=email`, '_blank');
                 }
             } else if (service === 'Microsoft') {
                 if (action === 'Register' || action === 'Authenticate') {
                     this.setDebugMessage(`${action} with Microsoft...`);
-                    window.open(`https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${this.clientId}&response_type=token&redirect_uri=${this.redirectUri}&scope=openid email profile`, '_blank');
+                    Scratch.openWindow(`https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${this.clientId}&response_type=token&redirect_uri=${this.redirectUri}&scope=openid email profile`, '_blank');
                 }
             } else if (service === 'Custom') {
                 if (action === 'Register' || action === 'Authenticate') {
                     this.setDebugMessage(`${action} with Custom service...`);
-                    // Add custom service logic here
+                    // Not done yet
                 }
             } else {
                 this.setDebugMessage('Unknown service or action.');
