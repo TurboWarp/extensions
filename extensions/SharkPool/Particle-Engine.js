@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.1
+// Version V.1.0.2
 
 (function (Scratch) {
   "use strict";
@@ -38,6 +38,8 @@
     sStreX: { val: 100, inf: 0 }, eStreX: { val: 100, inf: 0 },
     sStreY: { val: 100, inf: 0 }, eStreY: { val: 100, inf: 0 },
     accelRad: { val: 0, inf: 0 }, accelTan: { val: 0, inf: 0 },
+    sinW: { val: 0, inf: 0 }, cosW: { val: 0, inf: 0 },
+    sinS: { val: 1, inf: 0 }, cosS: { val: 1, inf: 0 },
     fIn: { val: 0, inf: 5 }, fOut: { val: 15, inf: 2 },
     sCol: { val: { h: 0.83, s: 1, l: 0.5 }, inf: 0 }, eCol: { val: { h: 0.5, s: 1, l: 0.5 }, inf: 0 }
   };
@@ -108,7 +110,7 @@
 
   const tintTexture = (texture, rgb, a, emitter) => {
     if (rgb === "rgb(255, 255, 255)") return texture;
-    // TODO this should be improved
+    // TODO this could be improved
     const cacheKey = rgb + a;
     if (emitter.tintCache.has(cacheKey)) return emitter.tintCache.get(cacheKey);
     const canvas = document.createElement("canvas");
@@ -225,14 +227,14 @@
       const { texture, pos, opts } = emitter;
       emitter.frameCnt++;
       if (!texture) continue;
-      const delta = interpolate ? deltaTime * fps : 1;
+      const delta = interpolate ? deltaTime * fps: 1;
       const maxP = Math.round(rng(opts.maxP.val, opts.maxP.inf));
       const emit = (maxP + 1) - Math.round(rng(opts.emission.val, opts.emission.inf));
       const rPos = [pos[0] - (texture.width / 4), pos[1] + (texture.height / 4)];
       if (!data[key]) data[key] = [];
       while (emitter.frameCnt % emit === 0 && data[key].length < maxP) {
         const life = rng(opts.time.val, opts.time.inf);
-        data[key].push({
+        const obj = {
           ind: 0, conLife: life * 100, life, speed: rng(opts.speed.val, opts.speed.inf),
           x: rPos[0] + rng(opts.xPos.val, opts.xPos.inf), y: rPos[1] + rng(opts.yPos.val * -1, opts.yPos.inf),
           dir: rng(opts.sDir.val - 90, opts.sDir.inf), eDir: rng(opts.eDir.val - 90, opts.eDir.inf),
@@ -242,16 +244,21 @@
           streY: rng(opts.sStreY.val, opts.sStreY.inf) / 100, eStreY: rng(opts.eStreY.val, opts.eStreY.inf) / 100,
           gravX: rng(opts.gravX.val, opts.gravX.inf), gravY: rng(opts.gravY.val, opts.gravY.inf),
           accelRad: rng(opts.accelRad.val, opts.accelRad.inf), accelTan: rng(opts.accelTan.val, opts.accelTan.inf),
+          sinW: rng(opts.sinW.val, opts.sinW.inf), cosW: rng(opts.cosW.val, opts.cosW.inf),
+          sinS: rng(opts.sinS.val, opts.sinS.inf), cosS: rng(opts.cosS.val, opts.cosS.inf),
           fIn: rng(opts.fIn.val, opts.fIn.inf), fOut: rng(opts.fOut.val, opts.fOut.inf),
           sCol: opts.sCol, eCol: opts.eCol
-        });
+        };
+        obj.ogPos = [obj.x, obj.y];
+        data[key].push(obj);
         emitter.frameCnt++; // force frameCnt++ to not spawn multiple in one frame
       }
       for (let i = data[key].length - 1; i >= 0; i--) {
         const particle = data[key][i];
         let {
-          ind, conLife, x, y, dir, eDir, eSize, eStreX, eStreY,
-          eSpin, accelRad, accelTan, fIn, fOut, sCol, eCol
+          ind, conLife, x, y, ogPos, dir, eDir, eSize, eSpin, 
+          eStreX, eStreY, accelRad, accelTan, sinW, sinS,
+          cosW, cosS, fIn, fOut, sCol, eCol
         } = particle;
         const angle2Cen = Math.atan2(y - (pos[1] + height / 2), x - (pos[0] + width / 2));
         const radAccelX = Math.cos(angle2Cen) * accelRad * ind;
@@ -260,10 +267,13 @@
         const tanAccelX = Math.cos(tanAngle) * accelTan * ind;
         const tanAccelY = Math.sin(tanAngle) * accelTan * ind;
   
-        particle.x += (Math.cos((dir * Math.PI) / 180) * particle.speed + radAccelX + tanAccelX) * delta;
-        particle.y += (Math.sin((dir * Math.PI) / 180) * particle.speed + radAccelY + tanAccelY) * delta;
-        particle.x -= particle.gravX * ind * delta;
-        particle.y -= particle.gravY * ind * delta;
+        ogPos[0] += (Math.cos((dir * Math.PI) / 180) * particle.speed + radAccelX + tanAccelX) * delta;
+        ogPos[1] += (Math.sin((dir * Math.PI) / 180) * particle.speed + radAccelY + tanAccelY) * delta;
+        ogPos[0] -= particle.gravX * ind * delta;
+        ogPos[1] -= particle.gravY * ind * delta;
+
+        particle.x = ogPos[0] + Math.sin((conLife - particle.life) * sinS) * sinW * delta;
+        particle.y = ogPos[1] + Math.cos((conLife - particle.life) * cosS) * cosW * delta;
 
         let opacity = 1;
         if (ind < fIn) opacity = ind / fIn;
@@ -326,7 +336,7 @@
   });
   runtime.on("AFTER_EXECUTE", () => {
     if (tabBlured || runtime.ioDevices.clock._paused) return;
-    const fps = runtime.frameLoop.framerate;
+    const fps = +(1 / deltaTime).toFixed(2);
     const frameTime = 1000 / fps;
     const engines = Object.values(allEngines);
     for (let i = 0; i < engines.length; i++) {
@@ -341,7 +351,7 @@
         }
         if (remainingTime > 0) updateEngine(engine, fps);
       } else {
-        updateEngine(engine, fps);
+        updateEngine(engine, 1);
       }
       engine.skin.setContent(engine.canvas);
     }
@@ -546,6 +556,26 @@
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
+          { blockType: Scratch.BlockType.LABEL, text: "Advanced" },
+          {
+            opcode: "importEmit",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "import data [DATA] to emitter [NAME] in [TARGET]",
+            arguments: {
+              DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "{}" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            },
+          },
+          {
+            opcode: "exportEmit",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "export emitter [NAME] in [TARGET]",
+            arguments: {
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            },
+          }
         ],
         menus: {
           TARGETS: { acceptReporters: true, items: this.getTargets(false) },
@@ -591,8 +621,9 @@
         { text: "start size", value: "sSize" }, { text: "end size", value: "eSize" },
         { text: "start stretch x", value: "sStreX" }, { text: "end stretch x", value: "eStreX" },
         { text: "start stretch y", value: "sStreY" }, { text: "end stretch y", value: "eStreY" },
-        { text: "acceleration radius", value: "accelRad" },
-        { text: "acceleration tan", value: "accelTan" },
+        { text: "acceleration radius", value: "accelRad" }, { text: "acceleration tan", value: "accelTan" },
+        { text: "sine wave", value: "sinW" }, { text: "sine speed", value: "sinS" },
+        { text: "cosine wave", value: "cosW" },{ text: "cosine speed", value: "cosS" },
         { text: "fade in", value: "fIn" }, { text: "fade out", value: "fOut" }
       ];
       if (optAll) items.push({ text: "start color", value: "sCol" }, { text: "end color", value: "eCol" });
@@ -770,6 +801,39 @@
         }
       }
       return "";
+    }
+
+    importEmit(args) {
+      const target = this.getSprite(args.TARGET);
+      if (target && target[engineTag]) {
+        const engine = target[engineTag];
+        if (engine.emitters[args.NAME]) {
+          try {
+            const rawOpts = JSON.parse(args.DATA);
+            if (rawOpts.constructor.name !== "Object") return;
+            const whiteKeys = ["maxP","emission","time","speed","xPos","yPos","gravX","gravY","sDir","eDir","sSpin","eSpin","sSize","eSize","sStreX","eStreX","sStreY","eStreY","accelRad","accelTan","sinW","cosW","sinS","cosS","fIn","fOut","sCol","eCol"];
+            const entries = Object.entries(rawOpts);
+            if (whiteKeys.length !== entries.length) return;
+            for (let i = 0; i < entries.length; i++) {
+              const entry = entries[i][1];
+              if (typeof entry.inf === "number" &&
+                (entries[i][0].includes("Col") ? entry.val && entry.val.constructor.name === "Object" : typeof entry.val === "number")
+              ) continue;
+              else return;
+            }
+            engine.emitters[args.NAME].opts = rawOpts;
+          } catch {}
+        }
+      }
+    }
+
+    exportEmit(args) {
+      const target = this.getSprite(args.TARGET);
+      if (target && target[engineTag]) {
+        const engine = target[engineTag];
+        if (engine.emitters[args.NAME]) return JSON.stringify(engine.emitters[args.NAME].opts);
+      }
+      return "{}";
     }
   }
 
