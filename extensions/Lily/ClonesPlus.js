@@ -22,14 +22,22 @@
       return "";
     }
     switch (thing) {
-      case "x position": return target.x;
-      case "y position": return target.y;
-      case "direction": return target.direction;
-      case "costume num": return target.currentCostume + 1;
-      case "costume name": return target.getCostumes()[target.currentCostume].name;
-      case "size": return target.size;
-      case "volume": return target.volume;
-      default: return ""; // this should never happen
+      case "x position":
+        return target.x;
+      case "y position":
+        return target.y;
+      case "direction":
+        return target.direction;
+      case "costume num":
+        return target.currentCostume + 1;
+      case "costume name":
+        return target.getCostumes()[target.currentCostume].name;
+      case "size":
+        return target.size;
+      case "volume":
+        return target.volume;
+      default:
+        return ""; // this should never happen
     }
   };
 
