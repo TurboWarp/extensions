@@ -1,3 +1,10 @@
+// Name: ServerAuth
+// ID: serverAuth 
+// Description: Uses the server for authentication and registration 
+// By: Thebloxers998 <https://scratch.mit.edu/users/Thebloxers998/>
+// Original: Thebloxers998 
+// License: MPL-2.0
+
 (function(Scratch) {
     'use strict';
 
