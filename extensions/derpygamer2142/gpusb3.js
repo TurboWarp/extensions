@@ -4,6 +4,10 @@
 // By: derpygamer2142 <https://scratch.mit.edu/users/insanetaco2000/>
 // License: MPL-2.0
 
+/**
+ * This project is dual licensed under MPL-2.0 and MIT.
+ */
+
 (function (Scratch) {
   "use strict";
 
