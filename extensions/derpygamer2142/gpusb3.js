@@ -7,6 +7,7 @@
 (function (Scratch) {
   "use strict";
 
+
   const vm = Scratch.vm;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("This extension must run unsandboxed.");
@@ -3170,7 +3171,7 @@ ${blocks[i + 2].length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth + 
       return output;
     }
 
-    compileStart(args, util) {
+    async compileStart(args, util) {
       console.log(util);
       // helpful error site: https://toji.dev/webgpu-best-practices/error-handling.html
       // seems to be one of the only places to explain this in human readable terms
@@ -3196,7 +3197,7 @@ ${blocks[i + 2].length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth + 
       //threads = vm.runtime.threads.filter((i) => util.thread.blockContainer._blocks[i.topBlock].opcode === "gpusb3_compileHat")
       //console.log(threads)
       if (threads.length > 0) {
-        threads.forEach(async (t) => {
+        await threads.forEach(async (t) => {
           t.tryCompile(); // this doesn't do anything =D
 
           const arraycompiled = this.compile(
@@ -3244,12 +3245,15 @@ ${blocks[i + 2].length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth + 
 
             this.device.pushErrorScope("internal");
             this.device.pushErrorScope("validation");
+            
             const shaderModule = this.device.createShaderModule({
               label: `Shader "${funcname}"`,
               code: compiled,
             });
+            let errored = false
+
             this.device.popErrorScope().then((error) => {
-              if (error)
+              if (error) {
                 this.throwError(
                   "ShaderCreationError",
                   error.message,
@@ -3257,17 +3261,26 @@ ${blocks[i + 2].length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth + 
                   error,
                   util
                 );
+                errored = true;
+              }
             });
             this.device.popErrorScope().then((error) => {
-              if (error)
-                this.throwError(
+              if (error) {
+                  this.throwError(
                   "ShaderCreationError",
                   error.message,
                   "ShaderModuleCreation",
                   error,
                   util
-                );
+                ); 
+                errored = true;
+              }
             });
+
+            shaders[funcname] = {
+              name: funcname,
+            };
+            let shader = shaders[funcname];
 
             const compilationinfo = await shaderModule.getCompilationInfo();
             console.log(compilationinfo);
@@ -3279,12 +3292,8 @@ ${blocks[i + 2].length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth + 
                 `ShaderCreation`,
                 `Error parsing WGSL in shader "${funcname}": ${message.message} - Line ${message.lineNum}:${message.linePos} ${compiled.substring(Math.max(0, message.offset - 15), message.offset)}**${compiled.substring(message.offset, message.offset + message.length)}**${compiled.substring(message.offset + message.length, Math.min(compiled.length, message.offset + message.length + 15))}`
               );
+              errored = true;
             }
-
-            shaders[funcname] = {
-              name: funcname,
-            };
-            let shader = shaders[funcname];
 
             this.device.pushErrorScope("validation");
             this.device.pushErrorScope("internal");
@@ -3300,17 +3309,19 @@ ${blocks[i + 2].length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth + 
               },
             });
             this.device.popErrorScope().then((error) => {
-              if (error)
+              if (error) {
                 this.throwError(
                   "ComputePipelineError",
                   error.message,
                   "ComputePipelineCreation",
                   error,
                   util
-                );
+                ); 
+                errored = true;
+              }
             });
             this.device.popErrorScope().then((error) => {
-              if (error)
+              if (error) {
                 this.throwError(
                   "ComputePipelineError",
                   error.message,
@@ -3318,7 +3329,12 @@ ${blocks[i + 2].length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth + 
                   error,
                   util
                 );
+                errored = true;
+              }
             });
+
+            // if (errored) delete shaders[funcname]
+            console.log(errored)
           }
         });
 
@@ -4325,7 +4341,7 @@ ${blocks[i + 2].length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth + 
       );
       if (i !== -1) {
         // not using the properties that are causing stupid errors so who cares
-
+        
         textureData = this.skinToArray(
           // @ts-ignore
           vm.renderer._allSkins[util.target.sprite.costumes[i].skinId]
