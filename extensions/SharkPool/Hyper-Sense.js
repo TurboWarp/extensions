@@ -3,7 +3,7 @@
 // Description: Cool New Sensing Blocks
 // By: SharkPool
 
-// Version 3.0.2 (TW Ver)
+// Version 3.0.21 (TW Ver)
 
 (function (Scratch) {
   "use strict";
@@ -16,7 +16,7 @@
   const runtime = vm.runtime;
   const render = vm.renderer;
 
-  let curPressKey = null, pressedKeys = {};
+  let curPressKey = "", pressedKeys = {};
   let mousePos = [0, 0, 0, 0], scrollDist = 0, oldScroll = [0, 0];
   let publicVars = {}, askAs = "sprite", loudnessArray = [];
 
@@ -36,13 +36,13 @@
         ]
       });
       window.addEventListener("keydown", (event) => {
-        const name = event.key.toUpperCase();
+        const name = this.toProperKey(event.key, false);
         if (pressedKeys[name] === undefined) pressedKeys[name] = 0;
         curPressKey = name;
       });
       window.addEventListener("keyup", (event) => {
-        delete pressedKeys[event.key.toUpperCase()];
-        curPressKey = Object.keys(pressedKeys).pop() || null;
+        delete pressedKeys[this.toProperKey(event.key, false)];
+        curPressKey = Object.keys(pressedKeys).pop() || "";
       });
     }
     getInfo() {
@@ -437,20 +437,31 @@
       if (this.scrollWheelBool({ EVENT:"down", SECRET: true })) runtime.startHats("HyperSenseSP_scrollWheelHat", { EVENT: "down" });
     };
 
-    keyHandler(key, loop) {
-      if (key === "Any") {
-        if (curPressKey === null) return false;
-        key = curPressKey;
+    toProperKey(key, reverse) {
+      if (reverse) {
+        if (key === "CAPSLOCK") return "Caps Lock";
+        key = Scratch.Cast.toString(key).replace("DIGIT", "").toLowerCase();
+        if (key.includes("arrow")) key = key.replace("arrow", "") + " Arrow";
+        if (key.includes("page")) key = "Page " + key.charAt(4).toUpperCase() + key.slice(5);
+        key = key.charAt(0).toUpperCase() + key.slice(1);
+      } else {
+        if (key === " ") return "SPACE";
+        key = key.toUpperCase().replaceAll(" ", "");
+        if (!isNaN(parseFloat(key))) return "DIGIT" + key;
+        if (key.includes("ARROW")) key = key.replace("ARROW", "") + "ARROW";
       }
-      if (isNaN(parseFloat(key))) key = key.toUpperCase();
-      let pressedKey = this.currentKey().toUpperCase();
-      if (pressedKey !== " ") pressedKey = pressedKey.replaceAll(" ", "");
-      if (
-        ((key === "SPACE" && pressedKey === " ") || key === pressedKey ||
-        (key.startsWith("DIGIT") && key.slice(5) === pressedKey))
-      ) {
-        key = (key === "SPACE") ? " " : key;
-        return loop ? true : pressedKeys[key] <= 0.1;
+      return key;
+    }
+
+    keyHandler(key, loop) {
+      key = this.toProperKey(key, false);
+      if (key === "ANY" && curPressKey !== "") {
+        if (loop) return true;
+        else return pressedKeys[curPressKey] <= 0.1;
+      }
+      if (pressedKeys[key]) {
+        if (loop) return true;
+        else return pressedKeys[key] <= 0.1;
       }
       return false;
     }
@@ -490,32 +501,20 @@
     velX() { return mousePos[2] }
     velY() { return mousePos[3] }
 
-    isKeyHit(args) { return this.keyHandler(Scratch.Cast.toString(args.KEY).replace(" ", ""), false) }
-    whenKeyHit(args) { return this.keyHandler(Scratch.Cast.toString(args.KEY).replace(" ", ""), false) }
+    isKeyHit(args) { return this.keyHandler(Scratch.Cast.toString(args.KEY), false) }
+    whenKeyHit(args) { return this.keyHandler(Scratch.Cast.toString(args.KEY), false) }
 
-    whenKeyPressed(args) { return this.keyHandler(Scratch.Cast.toString(args.KEY).replace(" ", ""), true) }
-    isKeyPressed(args) { return this.keyHandler(Scratch.Cast.toString(args.KEY).replace(" ", ""), true) }
+    whenKeyPressed(args) { return this.keyHandler(Scratch.Cast.toString(args.KEY), true) }
+    isKeyPressed(args) { return this.keyHandler(Scratch.Cast.toString(args.KEY), true) }
 
-    currentKey() {
-      if (curPressKey === null) return "No Keys Pressed";
-      else if (curPressKey.includes("ARROW") || curPressKey === "CAPSLOCK") {
-        return (curPressKey === "CAPSLOCK") ? "Caps Lock" : `${ curPressKey.charAt(5).toUpperCase() + curPressKey.slice(6).toLowerCase() } Arrow`;
-      }
-      return curPressKey.charAt(0).toUpperCase() + curPressKey.slice(1).toLowerCase();
-    }
-
+    currentKey() { return this.toProperKey(curPressKey, true) }
     currentKeys() {
-      return JSON.stringify(Object.keys(pressedKeys).map((key) => {
-        if (key.includes("ARROW") || key === "CAPSLOCK") return (key === "CAPSLOCK") ? "Caps Lock" : `${key.charAt(5).toUpperCase() + key.slice(6).toLowerCase()} Arrow`;
-        return key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
-      }));
+      return JSON.stringify(Object.keys(pressedKeys).map((key) => { return this.toProperKey(key, true) }));
     }
 
     timeKeyPressed(args) {
-      let key = Scratch.Cast.toString(args.KEY).replace(" ", "");
-      if (isNaN(parseFloat(key))) key = key.toUpperCase();
-      if (key === "SPACE") key = " ";
-      if (args.KEY === "Any") return Math.max(0, ...Object.values(pressedKeys));
+      const key = this.toProperKey(Scratch.Cast.toString(args.KEY), false);
+      if (key === "ANY") return Math.max(0, ...Object.values(pressedKeys));
       else return pressedKeys[key] ?? 0;
     }
 
