@@ -3,7 +3,6 @@
 // Description: Expansion of Scratch's clone features.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // License: MIT AND LGPL-3.0
-
 (function (Scratch) {
   "use strict";
 
@@ -49,13 +48,15 @@
         if (clone.isOriginal) return;
         const container = originalTarget.blocks;
         if (!container) return;
-        const scripts = container.getScripts();
-        for (let i = 0; i < scripts.length; i++) {
-          const block = container.getBlock(scripts[i]);
-          if (block.opcode === "lmsclonesplus_whenCloneStartsWithVar") {
-            runtime._pushThread(block.id, clone);
+        runtime.once("AFTER_EXECUTE", () => {
+          const scripts = container.getScripts();
+          for (let i = 0; i < scripts.length; i++) {
+            const block = container.getBlock(scripts[i]);
+            if (block.opcode === "lmsclonesplus_whenCloneStartsWithVar") {
+              runtime._pushThread(block.id, clone);
+            }
           }
-        }
+        })
       });
     }
     getInfo() {
