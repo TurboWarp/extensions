@@ -3,6 +3,7 @@
 // Description: Expansion of Scratch's clone features.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // License: MIT AND LGPL-3.0
+
 (function (Scratch) {
   "use strict";
 
@@ -56,7 +57,7 @@
               runtime._pushThread(block.id, clone);
             }
           }
-        })
+        });
       });
     }
     getInfo() {
