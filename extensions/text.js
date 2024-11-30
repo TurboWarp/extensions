@@ -1,7 +1,7 @@
 // Name: Text
 // ID: strings
 // Description: Manipulate characters and text.
-// Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
+// Original: CST1229 <https://scratch.mit.edu/users/CST1229/> and Man-o-Valor <https://scratch.mit.edu/users/man-o-valor/>
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {
@@ -13,6 +13,9 @@
     MIXEDCASE: "mixedcase",
     TITLECASE: "titlecase",
     EXACTTITLECASE: "exacttitlecase",
+    RANDOMCASE: "randomcase",
+    SENTENCECASE: "sentencecase",
+    CAMELCASE: "camelcase"
   };
 
   let splitCache;
@@ -39,6 +42,13 @@
         },
         {
           text: Scratch.translate({
+            default: "Sentence case",
+            description: "Starts words after ., !, and ? with captialized letters",
+          }),
+          value: CaseParam.SENTENCECASE,
+        },
+        {
+          text: Scratch.translate({
             default: "Title Case",
             description:
               "If your language has Title Case, style it accordingly. 'Abc' is title case and exactly title case but 'ABC' is only title case.",
@@ -60,6 +70,20 @@
               "If your language has mixed case, style it accordingly",
           }),
           value: CaseParam.MIXEDCASE,
+        },
+        {
+          text: Scratch.translate({
+            default: "RAndoMCaSe",
+            description: "If your language has randomcase, style it accordingly",
+          }),
+          value: CaseParam.RANDOMCASE,
+        },
+        {
+          text: Scratch.translate({
+            default: "camelCase",
+            description: "Removes all spaces and capitalizes all words after the first",
+          }),
+          value: CaseParam.CAMELCASE,
         },
       ];
     }
@@ -186,7 +210,47 @@
               },
             },
           },
+          {
+            opcode: 'surround',
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("surround [TEXT] with [QUOTE]"),
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "apple"
+              },
+              QUOTE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "QUOTES" 
+              }
+            },
+          },
 
+          {
+            opcode: 'reverse',
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("reverse [TEXT]"),
+            arguments: {
+                TEXT: { 
+                  type: Scratch.ArgumentType.STRING,
+                  defaultValue: "apple"
+                }
+            },
+          },
+
+          "---",
+
+          {
+            opcode: 'enter',
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("enter"),
+          },
+          {
+            opcode: 'tab',
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("tab"),
+          },
+          
           "---",
 
           {
@@ -377,6 +441,10 @@
           textCase: {
             acceptReporters: true,
             items: this._initCaseMenu(),
+          },
+          quotes: {
+            acceptReporters: true,
+            items: ["\"", "'", "`", "-", "*", "()", "{}", "[]", "<>", "^$"],
           },
         },
       };
@@ -609,10 +677,64 @@
               return word[0].toUpperCase() + word.substring(1).toLowerCase();
             })
             .join("");
+        case CaseParam.SENTENCECASE:
+          let sum = "";
+          let capflag = false
+          for (let i = 0; i < string.length; i++) {
+              if (/^\s*$/.test(string[i-1] ?? " ") && !capflag && string[i].toUpperCase() != string[i].toLowerCase()) {
+                  sum +=string[i].toUpperCase();
+                  capflag = true
+              } else {
+                  if (string[i] == "." || string[i] == "!" || string[i] == "?") {
+                      capflag = false
+                  }
+                  sum += string[i].toLowerCase();
+              }
+          }
+          return sum;
+        case CaseParam.RANDOMCASE:
+          let sum = "";
+          for (let i = 0; i < string.length; i++) {
+              if (Math.random()>0.5) {
+                  sum += string[i].toUpperCase()
+              } else {
+                  sum += string[i].toLowerCase()
+              }
+          }
+          return sum;
+        case CaseParam.CAMELCASE:
+          let sum = "";
+          for (let i = 0; i < string.length; i++) {
+              if (/^\s*$/.test(string[i-1] ?? "x")) {
+                  sum += string[i].toUpperCase();
+              } else {
+                  sum += string[i].toLowerCase();
+              }
+          }
+          return sum.replace(/\s/g, "");
         default:
           return string;
       }
     }
+
+    surround(args) {
+        if (args.QUOTE.length == 0) {
+            return args.TEXT
+        } else if (args.QUOTE.length == 1) {
+            return args.QUOTE + args.TEXT + args.QUOTE
+        } else if (args.QUOTE.length > 1) {
+            return args.QUOTE[0] + args.TEXT + args.QUOTE[1]
+        }
+    }
+  }
+  enter() {
+    return "\n"
+  }
+  tab() {
+    return "    "
+  }
+  reverse(args) {
+    return args.TEXT.split("").reverse().join("")
   }
 
   Scratch.extensions.register(new StringsExt());
