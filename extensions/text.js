@@ -678,40 +678,40 @@
             })
             .join("");
         case CaseParam.SENTENCECASE:
-          let sum = "";
+          let sentencesum = "";
           let capflag = false
           for (let i = 0; i < string.length; i++) {
               if (/^\s*$/.test(string[i-1] ?? " ") && !capflag && string[i].toUpperCase() != string[i].toLowerCase()) {
-                  sum +=string[i].toUpperCase();
+                  sentencesum +=string[i].toUpperCase();
                   capflag = true
               } else {
                   if (string[i] == "." || string[i] == "!" || string[i] == "?") {
                       capflag = false
                   }
-                  sum += string[i].toLowerCase();
+                  sentencesum += string[i].toLowerCase();
               }
           }
-          return sum;
+          return sentencesum;
         case CaseParam.RANDOMCASE:
-          let sum = "";
+          let randomsum = "";
           for (let i = 0; i < string.length; i++) {
               if (Math.random()>0.5) {
-                  sum += string[i].toUpperCase()
+                  randomsum += string[i].toUpperCase()
               } else {
-                  sum += string[i].toLowerCase()
+                  randomsum += string[i].toLowerCase()
               }
           }
-          return sum;
+          return randomsum;
         case CaseParam.CAMELCASE:
-          let sum = "";
+          let camelsum = "";
           for (let i = 0; i < string.length; i++) {
               if (/^\s*$/.test(string[i-1] ?? "x")) {
-                  sum += string[i].toUpperCase();
+                  camelsum += string[i].toUpperCase();
               } else {
-                  sum += string[i].toLowerCase();
+                  camelsum += string[i].toLowerCase();
               }
           }
-          return sum.replace(/\s/g, "");
+          return camelsum.replace(/\s/g, "");
         default:
           return string;
       }
@@ -719,22 +719,22 @@
 
     surround(args) {
         if (args.QUOTE.length == 0) {
-            return args.TEXT
+            return args.TEXT;
         } else if (args.QUOTE.length == 1) {
-            return args.QUOTE + args.TEXT + args.QUOTE
+            return args.QUOTE + args.TEXT + args.QUOTE;
         } else if (args.QUOTE.length > 1) {
-            return args.QUOTE[0] + args.TEXT + args.QUOTE[1]
+            return args.QUOTE[0] + args.TEXT + args.QUOTE[1];
         }
     }
   }
   enter() {
-    return "\n"
+    return "\n";
   }
   tab() {
-    return "    "
+    return "    ";
   }
   reverse(args) {
-    return args.TEXT.split("").reverse().join("")
+    return args.TEXT.split("").reverse().join("");
   }
 
   Scratch.extensions.register(new StringsExt());
