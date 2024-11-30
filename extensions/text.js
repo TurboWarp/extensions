@@ -657,6 +657,7 @@
       const string = args.STRING.toString();
       const textCase = args.TEXTCASE.toString();
       let sum = "";
+      let capflag = false
       switch (textCase) {
         case CaseParam.LOWERCASE:
           return string.toLowerCase();
@@ -685,7 +686,6 @@
             })
             .join("");
         case CaseParam.SENTENCECASE:
-          let capflag = false
           for (let i = 0; i < string.length; i++) {
               if (/^\s*$/.test(string[i-1] ?? " ") && !capflag && string[i].toUpperCase() != string[i].toLowerCase()) {
                   sum +=string[i].toUpperCase();
