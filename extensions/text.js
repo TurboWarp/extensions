@@ -642,6 +642,12 @@
               word[0].toUpperCase() + word.substring(1).toLowerCase();
             return word === titleCased;
           });
+        case CaseParam.CAMELCASE:
+          return string.test(/^[^A-Z\s][^\s]*$/);
+        case CaseParam.RANDOMCASE:
+          return true;
+        case CaseParam.SENTENCECASE:
+          return string.test(/^[A-Z][^?.!]*(?:[?.!]\s+[A-Z][^?.!]*)*$/);
         default:
           return false;
       }
@@ -650,6 +656,7 @@
     toCase(args, util) {
       const string = args.STRING.toString();
       const textCase = args.TEXTCASE.toString();
+      let sum = "";
       switch (textCase) {
         case CaseParam.LOWERCASE:
           return string.toLowerCase();
@@ -678,40 +685,37 @@
             })
             .join("");
         case CaseParam.SENTENCECASE:
-          let sentencesum = "";
           let capflag = false
           for (let i = 0; i < string.length; i++) {
               if (/^\s*$/.test(string[i-1] ?? " ") && !capflag && string[i].toUpperCase() != string[i].toLowerCase()) {
-                  sentencesum +=string[i].toUpperCase();
+                  sum +=string[i].toUpperCase();
                   capflag = true
               } else {
                   if (string[i] == "." || string[i] == "!" || string[i] == "?") {
                       capflag = false
                   }
-                  sentencesum += string[i].toLowerCase();
+                  sum += string[i].toLowerCase();
               }
           }
-          return sentencesum;
+          return sum;
         case CaseParam.RANDOMCASE:
-          let randomsum = "";
           for (let i = 0; i < string.length; i++) {
               if (Math.random()>0.5) {
-                  randomsum += string[i].toUpperCase()
+                  sum += string[i].toUpperCase()
               } else {
-                  randomsum += string[i].toLowerCase()
+                  sum += string[i].toLowerCase()
               }
           }
-          return randomsum;
+          return sum;
         case CaseParam.CAMELCASE:
-          let camelsum = "";
           for (let i = 0; i < string.length; i++) {
               if (/^\s*$/.test(string[i-1] ?? "x")) {
-                  camelsum += string[i].toUpperCase();
+                  sum += string[i].toUpperCase();
               } else {
-                  camelsum += string[i].toLowerCase();
+                  sum += string[i].toLowerCase();
               }
           }
-          return camelsum.replace(/\s/g, "");
+          return sum.replace(/\s/g, "");
         default:
           return string;
       }
