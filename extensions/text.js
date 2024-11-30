@@ -726,15 +726,15 @@
             return args.QUOTE[0] + args.TEXT + args.QUOTE[1];
         }
     }
-  }
-  enter() {
-    return "\n";
-  }
-  tab() {
-    return "    ";
-  }
-  reverse(args) {
-    return args.TEXT.split("").reverse().join("");
+    enter() {
+      return "\n";
+    }
+    tab() {
+      return "    ";
+    }
+    reverse(args) {
+      return args.TEXT.split("").reverse().join("");
+    }
   }
 
   Scratch.extensions.register(new StringsExt());
