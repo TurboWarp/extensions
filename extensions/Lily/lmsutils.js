@@ -1240,19 +1240,20 @@
     }
 
     equalsExactly(args) {
+      // Intentionally not using Cast
       return args.ONE === args.TWO;
     }
 
     notEqualTo(args) {
-      return args.INPUTA != args.INPUTB;
+      return Scratch.Cast.compare(args.INPUTA, args.INPUTB) !== 0;
     }
 
     moreThanEqual(args) {
-      return args.INPUTA >= args.INPUTB;
+      return Scratch.Cast.compare(args.INPUTA, args.INPUTB) >= 0;
     }
 
     lessThanEqual(args) {
-      return args.INPUTA <= args.INPUTB;
+      return Scratch.Cast.compare(args.INPUTA, args.INPUTB) <= 0;
     }
 
     stringCheckBoolean(args) {
@@ -1356,14 +1357,13 @@
 
     setSpriteSVG(args, util) {
       try {
-        Scratch.vm.runtime.renderer.updateSVGSkin(
-          util.target.sprite.costumes[args.INPUTA - 1].skinId,
-          args.INPUTB
-        );
+        const skinId = util.target.sprite.costumes[args.INPUTA - 1].skinId;
+        const renderer = Scratch.vm.runtime.renderer;
+        renderer.updateSVGSkin(skinId, Scratch.Cast.toString(args.INPUTB));
+        renderer._allSkins[skinId].differsFromAsset = true;
       } catch (error) {
-        return;
+        console.error(error);
       }
-      Scratch.vm.emitTargetsUpdate();
     }
 
     alertBlock(args) {

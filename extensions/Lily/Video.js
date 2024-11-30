@@ -2,6 +2,7 @@
 // ID: lmsVideo
 // Description: Play videos from URLs.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// By: SharkPool
 // License: MIT AND LGPL-3.0
 
 // Attribution is not required, but greatly appreciated.
@@ -13,6 +14,21 @@
   const runtime = vm.runtime;
   const renderer = vm.renderer;
   const Cast = Scratch.Cast;
+
+  // In some versions of Chrome, it seems that trying to render a <video> returns pure black
+  // if it's not in the DOM in a place the browser thinks is visible. That means we can't
+  // use display: none.
+  // See https://github.com/TurboWarp/scratch-render/issues/12
+  const elementContainer = document.createElement("div");
+  elementContainer.className = "tw-extensions-lily-videos-container";
+  elementContainer.style.pointerEvents = "none";
+  elementContainer.style.position = "absolute";
+  elementContainer.style.opacity = "0";
+  elementContainer.style.width = "0";
+  elementContainer.style.height = "0";
+  elementContainer.style.visibility = "hidden";
+  elementContainer.ariaHidden = "true";
+  document.body.appendChild(elementContainer);
 
   const BitmapSkin = runtime.renderer.exports.BitmapSkin;
   class VideoSkin extends BitmapSkin {
@@ -48,6 +64,10 @@
       };
       this.videoElement.src = videoSrc;
       this.videoElement.currentTime = 0;
+
+      // <video> must be in the DOM for it to render (see comments above)
+      elementContainer.appendChild(this.videoElement);
+      this.videoElement.tabIndex = -1;
 
       this.videoDirty = true;
 
@@ -105,6 +125,7 @@
     dispose() {
       super.dispose();
       this.videoElement.pause();
+      this.videoElement.remove();
     }
   }
 
@@ -239,6 +260,19 @@
               },
             },
           },
+          {
+            opcode: "getFrame",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "screenshot of video [NAME] at current time"
+            ),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my video",
+              },
+            },
+          },
           "---",
           {
             opcode: "pause",
@@ -293,6 +327,23 @@
               },
             },
           },
+          {
+            opcode: "setPlaybackRate",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "set playback rate of video [NAME] to [RATE]"
+            ),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my video",
+              },
+              RATE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "2",
+              },
+            },
+          },
         ],
         menus: {
           targets: {
@@ -334,6 +385,10 @@
               {
                 text: Scratch.translate("height"),
                 value: "height",
+              },
+              {
+                text: Scratch.translate("playback rate"),
+                value: "playback rate",
               },
             ],
           },
@@ -461,9 +516,34 @@
           return videoSkin.size[0];
         case "height":
           return videoSkin.size[1];
+        case "playback rate":
+          return videoSkin.videoElement.playbackRate;
         default:
           return 0;
       }
+    }
+
+    getFrame(args) {
+      const videoName = Cast.toString(args.NAME);
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return "";
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        console.warn("2D rendering context not available");
+        return "";
+      }
+
+      const videoElement = videoSkin.videoElement;
+      if (videoElement.videoWidth === 0 || videoElement.videoHeight === 0) {
+        return "";
+      }
+
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
+      ctx.drawImage(videoElement, 0, 0);
+      return canvas.toDataURL();
     }
 
     pause(args) {
@@ -496,11 +576,26 @@
 
     setVolume(args) {
       const videoName = Cast.toString(args.NAME);
-      const value = Cast.toNumber(args.VALUE);
       const videoSkin = this.videos[videoName];
       if (!videoSkin) return;
 
-      videoSkin.videoElement.volume = value / 100;
+      const value = Cast.toNumber(args.VALUE);
+      videoSkin.videoElement.volume = Math.min(1, Math.max(0, value / 100));
+    }
+
+    setPlaybackRate(args) {
+      const videoName = Cast.toString(args.NAME);
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
+
+      try {
+        const value = Cast.toNumber(args.RATE);
+        // Supposedly negative values will work in Safari but people probably shouldn't rely
+        // on that since others don't.
+        videoSkin.videoElement.playbackRate = Math.max(0, value);
+      } catch (e) {
+        console.warn(e);
+      }
     }
 
     /** @returns {VM.Target|undefined} */

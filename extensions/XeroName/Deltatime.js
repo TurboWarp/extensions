@@ -21,7 +21,15 @@
 
   vm.runtime.on("BEFORE_EXECUTE", () => {
     const now = performance.now();
-    deltaTime = previousTime === 0 ? 0 : (now - previousTime) / 1000;
+
+    if (previousTime === 0) {
+      // First frame. We used to always return 0 here, but that can break projects that
+      // expect delta time to always be non-zero. Instead we'll make our best guess.
+      deltaTime = 1 / vm.runtime.frameLoop.framerate;
+    } else {
+      deltaTime = (now - previousTime) / 1000;
+    }
+
     previousTime = now;
   });
 
