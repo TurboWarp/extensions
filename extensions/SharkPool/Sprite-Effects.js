@@ -1063,7 +1063,7 @@
       return svg;
     }
 
-    setMaskXY(args) { maskOptions[cast.toNumber(args.x), cast.toNumber(args.y) * -1, maskOptions[2]] }
+    setMaskXY(args) { maskOptions = [cast.toNumber(args.x), cast.toNumber(args.y) * -1, maskOptions[2]] }
     setMaskSZ(args) { maskOptions[2] = cast.toNumber(args.SIZE) }
     maskATT(args) { return maskOptions[args.ATT] }
 
