@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.7.2
+// Version V.1.7.21
 
 (function (Scratch) {
   "use strict";
@@ -811,13 +811,13 @@
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
       else svg = isImage ? await this.getImage(args.SPRITE) : await this.getSVG(args.SPRITE);
       if (svg) {
-        let filter, rgbColor = cast.toRgbColorObject(args.COLOR);
+        let filter;
         if (args.OUTLINE === "filled") {
-          if (supportM) filter = `<filter id="filled-outline"><feMorphology operator="erode" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="xor" in="flood" in2="thickened" result="frame"/><feComposite operator="atop" in="frame" in2="SourceGraphic"/></filter>`;
-          else filter = `<filter id="filled-outline"><feMorphology operator="dilate" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="in" in="flood" in2="thickened"/><feComposite operator="over" in="SourceGraphic" /></filter>`
+          if (supportM) filter = `<filter id="filled-outline"><feMorphology operator="erode" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feFlood flood-color="${args.COLOR}" result="flood"/><feComposite operator="xor" in="flood" in2="thickened" result="frame"/><feComposite operator="atop" in="frame" in2="SourceGraphic"/></filter>`;
+          else filter = `<filter id="filled-outline"><feMorphology operator="dilate" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feFlood flood-color="${args.COLOR}" result="flood"/><feComposite operator="in" in="flood" in2="thickened"/><feComposite operator="over" in="SourceGraphic" /></filter>`
           return this.filterApplier(svg, filter, "filled-outline");
         } else {
-          filter = `<filter id="solid-outline"><feMorphology operator="dilate" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feComposite operator="over" in="SourceGraphic" in2="thickened" /><feFlood flood-color="rgb(${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b})" result="flood"/><feComposite operator="in" in="flood" in2="thickened"/></filter>`;
+          filter = `<filter id="solid-outline"><feMorphology operator="dilate" radius="${args.NUM}" in="SourceAlpha" result="thickened" /><feComposite operator="over" in="SourceGraphic" in2="thickened" /><feFlood flood-color="${args.COLOR}" result="flood"/><feComposite operator="in" in="flood" in2="thickened"/></filter>`;
           return this.filterApplier(svg, filter, "solid-outline");
         }
       }
