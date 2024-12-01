@@ -2,9 +2,8 @@
 // ID: DICandSPmonitorsPlus
 // Description: Expansion of Monitor Types and Variable Blocks.
 // By: SharkPool and DogeIsCut
-// Licence: MIT
 
-// Version 1.4.1
+// Version 1.4.2
 
 (function (Scratch) {
   "use strict";
@@ -309,7 +308,7 @@
 
     // Helper Functions
     getVariables() {
-      const globalVars = Object.values(vm.runtime.getTargetForStage().variables).filter((x) => x.type == "");
+      const globalVars = Object.values(runtime.getTargetForStage().variables).filter((x) => x.type == "");
       const localVars = Object.values(vm.editingTarget.variables).filter((x) => x.type == "");
       const uniqueVars = [...new Set([...globalVars, ...localVars])];
       if (uniqueVars.length === 0) return ["make a variable"];
@@ -519,8 +518,8 @@
                 if (file) {
                   const reader = new FileReader();
                   reader.readAsDataURL(file);
-                  reader.onload = function() { variable.value = reader.result };
-                  reader.onerror = function(error) { console.error("Error: ", error) };
+                  reader.onload = () => { variable.value = reader.result };
+                  reader.onerror = (e) => { console.error(e) };
                 }
               } else variable.value = input.value;
             });
@@ -590,6 +589,7 @@
       const varId = this.findVariable(args.VARIABLE, util);
       const varMonitor = document.querySelector(`div[data-id="${varId}"][class*="monitor"]`);
       if (!varMonitor) return;
+      varMonitor.setAttribute("SPposition", `[${Scratch.Cast.toNumber(args.X)}, ${Scratch.Cast.toNumber(args.Y)}]`);
       let x = Scratch.Cast.toNumber(args.X) + canvas[0] - (varMonitor.offsetWidth / 2);
       let y = (Scratch.Cast.toNumber(args.Y) - canvas[1] + (varMonitor.offsetHeight / 2)) * -1;
       x = x - (parseInt(varMonitor.style.left) || 5);
@@ -612,6 +612,9 @@
       const varId = this.findVariable(args.VARIABLE, util);
       const varMonitor = document.querySelector(`div[data-id="${varId}"][class*="monitor"]`);
       if (!varMonitor) return ""; // Should Report Nothing if Invisible
+      const presetPos = varMonitor.getAttribute("SPposition");
+      // less work is done, plus it retains accuracy
+      if (presetPos) return JSON.parse(presetPos)[args.POSITION === "x" ? 0 : 1];
       const styleAttribute = varMonitor.getAttribute("style");
       if (!styleAttribute) return "";
       const match = styleAttribute.match(/transform\s*:\s*translate\((-?\d+(?:\.\d+)?px),\s*(-?\d+(?:\.\d+)?px)\)/);
@@ -683,9 +686,7 @@
       const varLabels = document.querySelectorAll(`div[data-id="${varId}"][class*="monitor"] [class*="label"]`);
       // No need to xmlEscape, we edit with textContent
       if (varLabels.length > 0) {
-        for (var i = 0; i < varLabels.length; i++) {
-          varLabels[i].textContent = args.NAME;
-        }
+        for (var i = 0; i < varLabels.length; i++) varLabels[i].textContent = args.NAME;
       }
       const btn = document.querySelector(`div[data-id="${varId}"][class*="monitor"] [id="button_${varId}"]`);
       if (btn) btn.value = args.NAME;
@@ -708,8 +709,7 @@
       const varMonitor = document.querySelector(`div[data-id="${varId}"][class*="monitor"]`);
       if (!varMonitor) return;
       let inputs = [
-        ...varMonitor.querySelectorAll("input"),
-        ...varMonitor.querySelectorAll("img")
+        ...varMonitor.querySelectorAll("input"), ...varMonitor.querySelectorAll("img")
       ];
       const value = Scratch.Cast.toString(args.VALUE);
       if (args.THING === "input") {
