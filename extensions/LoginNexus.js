@@ -195,7 +195,7 @@
             const email = args.EMAIL;
 
             try {
-                const response = await Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/authapi/v1/turbowarp/authentication', {
+                const response = await Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/authapi/v1/turbowarp/authentication/1/registration', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
