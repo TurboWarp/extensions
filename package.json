@@ -32,7 +32,7 @@
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
-    "eslint": "^9.15.0",
+    "eslint": "^9.16.0",
     "espree": "^10.3.0",
     "esquery": "^1.6.0",
     "prettier": "^3.3.3",
