@@ -89,7 +89,7 @@
                     },
                     {
                         opcode: 'isUserStatus',
-                        blockType: Scratch.BlockType.REPORTER,
+                        blockType: Scratch.BlockType.BOOLEAN,
                         text: 'is user [USERNAME] [STATUS]?',
                         arguments: {
                             USERNAME: {
@@ -195,7 +195,7 @@
             const email = args.EMAIL;
 
             try {
-                const response = await Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/authapi/v1/turbowarp/authentication/1/registration', {
+                const response = await Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/turbowarp/API/ACCOUNT/accounts', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -221,7 +221,7 @@
             const password = args.PASSWORD;
 
             try {
-                const response = await Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/authapi/v1/turbowarp/authentication');
+                const response = await Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/turbowarp/API/ACCOUNT/accounts');
                 const users = await response.json();
 
                 const user = users.find(u => u.username === username && u.password === password);
@@ -248,6 +248,7 @@
         }
 
         async sendEmail(args) {
+            alert('This block is in development, not recommended to use');
             const email = args.EMAIL;
             const subject = args.SUBJECT;
             const message = args.MESSAGE;
@@ -289,7 +290,8 @@
             } else if (service === 'SSO') {
                 if (action === 'Register' || action === 'Authenticate') {
                     this.setDebugMessage(`${action} with SSO service...`);
-                    // 🔜...
+                    alert('This is in development,  we will open https://extensions.turbowarp.org instead');
+                    Scratch.openWindow(`https://extensions.turbowarp.org`)
                 }
             } else {
                 this.setDebugMessage('Unknown service or action.');
