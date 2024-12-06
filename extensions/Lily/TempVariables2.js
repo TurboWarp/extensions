@@ -16,7 +16,7 @@
 
   class TempVars {
     constructor() {
-      // this.resetRntimeVariables would be preferable but,
+      // this.resetRuntimeVariables would be preferable but,
       // its easier on TS when defined in the constructor,
       // and not abstracted out.
       //
