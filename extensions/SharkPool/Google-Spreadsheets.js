@@ -15,9 +15,6 @@
   const blockIconURI =
 "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MC44OTkiIGhlaWdodD0iNTAuODk5IiB2aWV3Qm94PSIwIDAgNTAuODk5IDUwLjg5OSI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0wIDUwLjg5OXYtNTAuOWg1MC45djUwLjl6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTkuNDUgNDQuMTkxVjYuODU4YzAtMS43NjIgMi4xODUtMy40MDkgMy45NjctMy40MDloMTYuOTJsMTEuMTEzIDExLjA1djI5LjM1OWMwIDEuNzc0LTEuNjMgMy41OTEtNC4xMTcgMy41OTFIMTMuNDE3Yy0xLjkyMiAwLTMuOTY3LTEuMjI3LTMuOTY3LTMuMjU4IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTMwLjM5NyAxNC40MlYzLjQyM0w0MS4zOTQgMTQuNDJ6TTE1LjQwOCAzNS4zNThWMjAuNTI0aDIwdjE0LjgzNHoiIGZpbGw9InNpbHZlciIvPjxwYXRoIGQ9Ik0xNy41IDI2LjUyNHYtNGg2LjgzM3Y0em05IDB2LTRoNi44MzN2NHptLTkgNi4wODR2LTRoNi44MzN2NHptOSAwdi00aDYuODMzdjR6IiBmaWxsPSIjZmZmIi8+PC9nPjwvc3ZnPg==";
 
-  // Forced to use a Proxy since Fetching Sheets only works Client-Side (from user tabs)
-  // We use this Proxy, its fast and reliable
-  const proxy = "https://corsproxy.io?";
   const defaultID = "1fDpOhPA2xNvar_K9mtl2h1XV5AdZnlkOZzmJnZNjHDg";
   const vm = Scratch.vm;
   let encodingType = "2D Array";
