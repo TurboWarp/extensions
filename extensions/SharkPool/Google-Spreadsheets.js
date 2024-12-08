@@ -3,7 +3,7 @@
 // Description: Fetch Spreadsheet Data
 // By: SharkPool
 
-// Version 1.2.01
+// Version 1.2.1
 
 (function (Scratch) {
   "use strict";
@@ -56,10 +56,10 @@
           {
             opcode: "getContentNew",
             blockType: Scratch.BlockType.REPORTER,
-            text: "data from sheet named [NAME] with ID [ID]",
+            text: "data from sheet GID [NAME] with ID [ID]",
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "/d/..." },
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "Sheet1" }
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "0" }
             }
           },
           {
@@ -77,9 +77,20 @@
             text: "Writing Setup"
           },
           {
+            opcode: "write2Sheet",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "write [DATA] into column [COL] from webhook URL [URL]",
+            arguments: {
+              DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "hello world!" },
+              COL: { type: Scratch.ArgumentType.STRING, defaultValue: "messages" },
+              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://script.google.com/macros/..." }
+            }
+          },
+          "---",
+          {
             func: "setup2",
             blockType: Scratch.BlockType.BUTTON,
-            text: "Webhook Setup"
+            text: "Extra Webhook Setup (Optional)"
           }
         ],
         menus: {
@@ -88,10 +99,11 @@
       };
     }
 
+    // Helper Funcs
     disclaimer() { alert(`Please Enable the "Anyone With Link" option in Share > General Access`) }
 
     setup() {
-      const confirm = window.confirm(`To Write Rows and Columns in Spreadsheets, You Must install this Spreads Extension. Do you want to open the link?\n
+      const confirm = window.confirm(`To Write Rows and Columns in Spreadsheets, You Must install this Spreads Addon. Do you want to open the link?\n
       "workspace.google.com/marketplace/webhooks_for_sheets" \n\nFollow the Setup Steps in the "Extensions/Addons" Tab in Your Spread.`);
       if (confirm) Scratch.openWindow("https://workspace.google.com/u/0/marketplace/app/webhooks_for_sheets/860288437469", "_blank");
     }
@@ -106,6 +118,32 @@
       if (confirm3) importExt("https://extensions.turbowarp.org/godslayerakp/http.js");
     }
 
+    tsvParser(tsv) {
+      const fixName = (name) => {
+        return name.endsWith("\r") ? name.substring(0, name.length - 2) : name;
+      };
+      const toItems = (rows, ind, objMode) => {
+        const list = [];
+        for (var i = 1; i < rows.length; i++) {
+          const items = rows[i].split("\t");
+          list.push(fixName(items[ind]))
+        }
+        if (objMode) return Object.assign({}, list);
+        else return list;
+      };
+      const rows = tsv.split("\n");
+      const columns = rows[0].split("\t"); // assume first row is the columns
+      let obj = {};
+      if (encodingType === "2D Array") {
+        obj = [];
+        columns.forEach((item, i) => { obj.push([fixName(item), toItems(rows, i, false)]) });
+      } else {
+        columns.forEach((item, i) => { obj[fixName(item)] = toItems(rows, i, encodingType === "Object") });
+      }
+      return obj;
+    }
+
+    // Block Funcs
     getID(args) {
       const url = Scratch.Cast.toString(args.URL);
       const startIndex = url.indexOf("/d/") + 3;
@@ -121,35 +159,33 @@
     async getSheetData(id, name) {
       const defaultReturn = encodingType === "2D Array" ? "[]" : "{}";
       try {
-        const convert4Item = (obj, ind) => {
-          const items = encodingType.endsWith("Array") ? [] : {};
-          if (encodingType.endsWith("Array")) for (let i = 0; i < obj.length; i++) items.push(obj[i].c[ind].f ?? obj[i].c[ind].v ?? "");
-          else for (let i = 0; i < obj.length; i++) items[i] = obj[i].c[ind].f ?? obj[i].c[ind].v ?? "";
-          return items;
-        };
-
         id = id === "/d/..." ? defaultID : Scratch.Cast.toString(id);
         name = encodeURIComponent(Scratch.Cast.toString(name));
-        const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&sheet=${name}&cache=${Math.random()}`;
-        const response = await Scratch.fetch(`${proxy}${url}`);
+        const url = `https://docs.google.com/spreadsheets/d/${id}/export?format=tsv&id=${id}&gid=${name}&cache=${Math.random()}`;
+        const response = await Scratch.fetch(`${url}`);
         if (!response.ok) return defaultReturn;
-        let csvContent = await response.text();
-        csvContent = JSON.parse(csvContent.substring(csvContent.indexOf(`table":`) + 7, csvContent.length - 25) + "}");
-
-        let obj = [];
-        if (encodingType === "2D Array") csvContent.cols.forEach((item, i) => { obj.push([item.label, convert4Item(csvContent.rows, i)]) });
-        else {
-          obj = {};
-          csvContent.cols.forEach((item, i) => { obj[item.label] = convert4Item(csvContent.rows, i) });
-        }
-        return JSON.stringify(obj);
-      } catch(e) {
+        const content = await response.text();
+        return JSON.stringify(this.tsvParser(content));
+      } catch (e) {
         console.warn(e);
         return defaultReturn;
       }
     }
 
     setEncodeType(args) { encodingType = args.TYPE }
+
+    async write2Sheet(args) {
+      const url = Scratch.Cast.toString(args.URL);
+      if (!url.startsWith("https://script.google.com/macros/")) return console.warn("Invalid URL!");
+      const column = encodeURIComponent(Scratch.Cast.toString(args.COL));
+      const data = encodeURIComponent(Scratch.Cast.toString(args.DATA));
+      try {
+        const response = await Scratch.fetch(`${url}&${column}=${data}&cache=${Math.random()}`);
+        if (!response.ok) console.warn("Failed to Write to Spreadsheet!");
+      } catch (e) {
+        console.warn(e);
+      }
+    }
   }
 
   Scratch.extensions.register(new SPspreads());
