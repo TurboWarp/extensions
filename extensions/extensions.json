@@ -13,6 +13,7 @@
   "local-storage",
   "true-fantom/base",
   "bitwise",
+  "_FN10_/Integers", // Should be next to bigint, just cause the names are close
   "Skyhigh173/bigint",
   "utilities",
   "sound",
