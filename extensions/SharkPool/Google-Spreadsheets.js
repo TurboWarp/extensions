@@ -3,7 +3,7 @@
 // Description: Fetch Spreadsheet Data
 // By: SharkPool
 
-// Version 1.2.1
+// Version 1.2.11
 
 (function (Scratch) {
   "use strict";
@@ -34,7 +34,7 @@
           {
             func: "disclaimer",
             blockType: Scratch.BlockType.BUTTON,
-            text: "Fetch Disclaimer"
+            text: "Reading Disclaimer"
           },
           {
             opcode: "getID",
@@ -117,7 +117,7 @@
 
     tsvParser(tsv) {
       const fixName = (name) => {
-        return name.endsWith("\r") ? name.substring(0, name.length - 2) : name;
+        return name.endsWith("\r") ? name.substring(0, name.length - 1) : name;
       };
       const toItems = (rows, ind, objMode) => {
         const list = [];
