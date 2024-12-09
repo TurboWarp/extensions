@@ -35,7 +35,7 @@
     "eslint": "^9.15.0",
     "espree": "^10.3.0",
     "esquery": "^1.6.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.4.1",
     "spdx-expression-parse": "^4.0.0"
   },
   "private": true
