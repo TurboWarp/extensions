@@ -163,6 +163,7 @@
         }
 
         async registerUser(args) {
+            // I'm confused why it keeps alerting people
             const username = args.USERNAME;
             const password = args.PASSWORD;
 
