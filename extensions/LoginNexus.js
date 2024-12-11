@@ -166,6 +166,11 @@
     const username = args.USERNAME;
     const password = args.PASSWORD;
 
+    if (!username || !password) {
+        this.setDebugMessage('Invalid arguments provided');
+        return;
+    }
+
     try {
         const response = await Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/turbowarp/API/ACCOUNT/accounts', {
             method: 'POST',
@@ -188,36 +193,48 @@
 }
 
 
+
         async loginUser(args) {
-            const username = args.USERNAME;
-            const password = args.PASSWORD;
+    const username = args.USERNAME;
+    const password = args.PASSWORD;
 
-            try {
-                const response = await Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/turbowarp/API/ACCOUNT/accounts');
-                const users = await response.json();
-
-                const user = users.find(u => u.username === username && u.password === password);
-                if (user) {
-                    this.authenticatedUsers.add(username);
-                    this.setDebugMessage('Login successful for user: ' + username);
-                } else {
-                    this.setDebugMessage('Login failed for user: ' + username);
-                }
-            } catch (error) {
-                this.setDebugMessage('Error: ' + error.message);
-            }
+    try {
+        const response = await Scratch.fetch('https://6741abede4647499008e694e.mockapi.io/turbowarp/API/ACCOUNT/accounts');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        const users = await response.json();
+
+        const user = users.find(u => u.username === username && u.password === password);
+        if (user) {
+            this.authenticatedUsers.add(username);
+            this.setDebugMessage('Login successful for user: ' + username);
+        } else {
+            this.setDebugMessage('Login failed for user: ' + username);
+        }
+    } catch (error) {
+        this.setDebugMessage('Error: ' + error.message);
+    }
+}
+
 
         isUserStatus(args) {
-            const username = args.USERNAME;
-            const status = args.STATUS;
-            if (status === 'authenticated') {
-                return this.authenticatedUsers.has(username);
-            } else if (status === 'registered') {
-                return this.registeredUsers.has(username);
-            }
-            return false;
-        }
+    const username = args.USERNAME;
+    const status = args.STATUS;
+
+    if (!username || !status) {
+        this.setDebugMessage('Invalid arguments provided');
+        return false;
+    }
+
+    if (status === 'authenticated') {
+        return this.authenticatedUsers.has(username);
+    } else if (status === 'registered') {
+        return this.registeredUsers.has(username);
+    }
+
+    return false;
+}
 
         
         useService(args) {
