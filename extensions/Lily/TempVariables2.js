@@ -22,7 +22,7 @@
       //
       // Object.create(null) prevents "variable [toString]" from returning a function.
       this.runtimeVariables = Object.create(null);
-      
+
       Scratch.vm.runtime.on("PROJECT_START", () => {
         this.resetRuntimeVariables();
       });
