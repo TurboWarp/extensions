@@ -14,7 +14,6 @@
   const runtime = vm.runtime;
   const renderer = vm.renderer;
   const Cast = Scratch.Cast;
-  const Hls = window.Hls;
   // In some versions of Chrome, it seems that trying to render a <video> returns pure black
   // if it's not in the DOM in a place the browser thinks is visible. That means we can't
   // use display: none.
@@ -63,12 +62,20 @@
         this.markVideoDirty();
       };
 
-      // 判断视频源是否为 m3u8 格式
-      if (videoSrc.endsWith(".m3u8") && ( !this.videoElement.canPlayType('application/vnd.apple.mpegurl') && Hls.isSupported() )){
-        // 使用 hls.js 播放 m3u8 视频流
-        this.hls = new Hls();
-        this.hls.loadSource(videoSrc);
-        this.hls.attachMedia(this.videoElement);
+
+      if (videoSrc.endsWith(".m3u8") && (!this.videoElement.canPlayType('application/vnd.apple.mpegurl'))) {
+        // try use hls.js for m3u8
+        this.loadHlsJsIfNeeded(() => {
+          // @ts-ignore
+          const Hls = window.Hls;
+          if (Hls.isSupported()) {
+            this.hls = new Hls();
+            this.hls.loadSource(videoSrc);
+            this.hls.attachMedia(this.videoElement);
+          } else {
+            this.videoElement.src = videoSrc;
+          }
+        })
       } else {
         this.videoElement.src = videoSrc;
       }
@@ -82,6 +89,28 @@
       this.videoDirty = true;
 
       this.reuploadVideo();
+    }
+
+    // for m3u8 support
+    loadHlsJsIfNeeded(callback) {
+      // @ts-ignore
+      if (window.Hls) {
+        callback();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = "https://cdn.jsdelivr.net/npm/hls.js@1";
+      script.async = true;
+
+      script.onload = () => {
+        if (typeof callback === 'function') {
+          callback();
+        }
+      };
+      script.onerror = () => {
+        console.error('Failed to load HLS.js.');
+      };
+      document.head.appendChild(script);
     }
 
     reuploadVideo() {
