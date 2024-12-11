@@ -14,7 +14,7 @@
   const runtime = vm.runtime;
   const renderer = vm.renderer;
   const Cast = Scratch.Cast;
-
+  const Hls = window.Hls;
   // In some versions of Chrome, it seems that trying to render a <video> returns pure black
   // if it's not in the DOM in a place the browser thinks is visible. That means we can't
   // use display: none.
@@ -62,7 +62,17 @@
         this.readyCallback();
         this.markVideoDirty();
       };
-      this.videoElement.src = videoSrc;
+
+      // 判断视频源是否为 m3u8 格式
+      if (videoSrc.endsWith(".m3u8") && ( !this.videoElement.canPlayType('application/vnd.apple.mpegurl') && Hls.isSupported() )){
+        // 使用 hls.js 播放 m3u8 视频流
+        this.hls = new Hls();
+        this.hls.loadSource(videoSrc);
+        this.hls.attachMedia(this.videoElement);
+      } else {
+        this.videoElement.src = videoSrc;
+      }
+
       this.videoElement.currentTime = 0;
 
       // <video> must be in the DOM for it to render (see comments above)
@@ -126,6 +136,10 @@
       super.dispose();
       this.videoElement.pause();
       this.videoElement.remove();
+      // 如果使用了 hls.js,需要销毁 hls 实例
+      if (this.hls) {
+        this.hls.destroy();
+      }
     }
   }
 
