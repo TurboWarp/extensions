@@ -4,6 +4,7 @@
   "stretch",
   "gamepad",
   "box2d",
+  "BoxedPhysics",
   "files",
   "pointerlock",
   "cursor",
