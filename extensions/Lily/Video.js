@@ -165,7 +165,6 @@
       super.dispose();
       this.videoElement.pause();
       this.videoElement.remove();
-      // 如果使用了 hls.js,需要销毁 hls 实例
       if (this.hls) {
         this.hls.destroy();
       }
