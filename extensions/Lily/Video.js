@@ -96,7 +96,7 @@
     }
 
     // for m3u8 support
-    async loadHlsJsIfNeeded(callback) {
+    loadHlsJsIfNeeded() {
       return new Promise(async (resolve) => {
         // @ts-ignore
         if (window.Hls) {
