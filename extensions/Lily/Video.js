@@ -65,8 +65,10 @@
         this.markVideoDirty();
       };
 
-
-      if (videoSrc.endsWith(".m3u8") && (!this.videoElement.canPlayType('application/vnd.apple.mpegurl'))) {
+      if (
+        videoSrc.endsWith(".m3u8") &&
+        !this.videoElement.canPlayType("application/vnd.apple.mpegurl")
+      ) {
         // try use hls.js for m3u8
         this.loadHlsJsIfNeeded(() => {
           // @ts-ignore
@@ -78,7 +80,7 @@
           } else {
             this.videoElement.src = videoSrc;
           }
-        })
+        });
       } else {
         this.videoElement.src = videoSrc;
       }
@@ -101,17 +103,17 @@
         callback();
         return;
       }
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = "https://cdn.jsdelivr.net/npm/hls.js@1";
       script.async = true;
 
       script.onload = () => {
-        if (typeof callback === 'function') {
+        if (typeof callback === "function") {
           callback();
         }
       };
       script.onerror = () => {
-        console.error('Failed to load HLS.js.');
+        console.error("Failed to load HLS.js.");
       };
       document.head.appendChild(script);
     }
