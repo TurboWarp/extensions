@@ -126,7 +126,7 @@
           const blobUrl = URL.createObjectURL(decompressedBlob);
           return blobUrl;
         }
-        console.log("start load");
+        //console.log("start load");
 
         //hjs.js version: 1.5.17
         const HJSLibCompressed =
@@ -135,7 +135,7 @@
         script.src = await decompressFromB64Text(HJSLibCompressed);
         script.async = true;
         script.onload = () => {
-          console.log("load ok");
+          //console.log("load ok");
           resolve();
         };
         document.head.appendChild(script);
