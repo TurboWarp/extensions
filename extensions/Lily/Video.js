@@ -5,6 +5,9 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
+// This extension uses hls.js to enable m3u8 playback for browsers without native support.
+// hls.js is licensed to this extension under the Apache 2.0 license , see https://github.com/video-dev/hls.js/blob/master/LICENSE .
+
 // Attribution is not required, but greatly appreciated.
 
 (function (Scratch) {
