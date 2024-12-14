@@ -7,7 +7,7 @@ The Steamworks extension lets you use these Steam APIs:
  - DLC
  - Opening URLs in the Steam Overlay
 
-This extension was not created by and is not supported by Valve. This extension should be considered **alpha** until some real games use it.
+This extension was not created by and is not supported by Valve.
 
 ## Enabling Steamworks
 

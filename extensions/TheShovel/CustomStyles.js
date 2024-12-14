@@ -120,7 +120,7 @@
     // We assume all values are sanitized when they are set, so then we can just use them as-is here.
 
     if (monitorText) {
-      css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${monitorText}; }`;
+      css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${monitorText} !important; }`;
     }
     if (monitorBackgroundColor) {
       css += `${monitorRoot}, ${monitorRowsInner} { background: ${monitorBackgroundColor}; }`;
@@ -138,7 +138,7 @@
       css += `${monitorValue}, ${monitorValueLarge} { background: ${variableValueBackground} !important; }`;
     }
     if (variableValueTextColor) {
-      css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor}; }`;
+      css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor} !important; }`;
     }
     if (variableValueRoundness >= 0) {
       css += `${monitorValue} { border-radius: ${variableValueRoundness}px; }`;
@@ -153,7 +153,7 @@
       css += `${monitorRowValueOuter} { background: ${listValueBackground} !important; }`;
     }
     if (listValueText) {
-      css += `${monitorRowValueOuter} { color: ${listValueText}; }`;
+      css += `${monitorRowValueOuter} { color: ${listValueText} !important; }`;
     }
     if (listValueRoundness >= 0) {
       css += `${monitorRowValueOuter} { border-radius: ${listValueRoundness}px; }`;
