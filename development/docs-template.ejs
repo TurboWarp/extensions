@@ -46,6 +46,7 @@
         display: flex;
         max-width: 600px;
         margin: 0 auto;
+        justify-content: space-between;
       }
       nav a {
         display: flex;
@@ -95,6 +96,18 @@
         }
       }
 
+      .view-in-browser {
+        display: none;
+      }
+      .is-desktop .view-in-browser {
+        display: flex;
+      }
+      .is-desktop nav > div, .is-desktop .container {
+        /* Desktop app shows this page in a window, not a browser tab, so don't need to */
+        /* restrict the width of the content for readability. */
+        max-width: 100%;
+      }
+
       code {
         background-color: #eee;
         border-radius: 4px;
@@ -133,10 +146,15 @@
   <body>
     <nav role="navigation">
       <div>
-      <a href="/">
-        <img src="/turbowarp.svg" alt="">
-        <span>TurboWarp Extension Gallery</span>
-      </a>
+        <a href="/">
+          <img src="/turbowarp.svg" alt="">
+          <span>TurboWarp Extension Gallery</span>
+        </a>
+
+        <!-- Only used by desktop app -->
+        <a class="view-in-browser" href="">
+          Read in browser
+        </a>
       </div>
     </nav>
 
