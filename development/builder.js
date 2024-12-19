@@ -799,10 +799,9 @@ class Builder {
       build.files[`/${extensionSlug}.html`] = file;
     }
 
-    const scratchblocksPath = pathUtil.join(
-      __dirname,
-      "../node_modules/@turbowarp/scratchblocks/build/scratchblocks.min.js"
-    );
+    // Don't rely on node_modules being stored in a specific location or having a specific structure
+    // so that this works when we are a dependency in a bigger npm tree.
+    const scratchblocksPath = require.resolve("@turbowarp/scratchblocks");
     build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
       scratchblocksPath
     );
