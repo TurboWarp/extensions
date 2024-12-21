@@ -217,13 +217,17 @@
 
     setThreadVariable(args, util) {
       const thread = util.thread;
-      thread.variables ??= Object.create(null);
+      if (!thread.variables) {
+        thread.variables = Object.create(null);
+      }
       thread.variables[args.VAR] = args.STRING;
     }
 
     changeThreadVariable(args, util) {
       const thread = util.thread;
-      thread.variables ??= Object.create(null);
+      if (!thread.variables) {
+        thread.variables = Object.create(null);
+      }
       const vars = thread.variables;
       const prev = Scratch.Cast.toNumber(vars[args.VAR]);
       const next = Scratch.Cast.toNumber(args.NUM);
@@ -232,21 +236,29 @@
 
     getThreadVariable(args, util) {
       const thread = util.thread;
-      thread.variables ??= Object.create(null);
+      if (!thread.variables) {
+        thread.variables = Object.create(null);
+      }
       return thread.variables[args.VAR] ?? "";
     }
 
     threadVariableExists(args, util) {
       const thread = util.thread;
-      thread.variables ??= Object.create(null);
-      return Object.hasOwn(thread.variables, args.VAR);
+      if (!thread.variables) {
+        thread.variables = Object.create(null);
+      }
+      return Object.prototype.hasOwnProperty.call(thread.variables, args.VAR);
     }
 
     forEachThreadVariable(args, util) {
       const thread = util.thread;
-      thread.variables ??= Object.create(null);
+      if (!thread.variables) {
+        thread.variables = Object.create(null);
+      }
       const vars = thread.variables;
-      util.stackFrame.index ??= 0;
+      if (!Object.prototype.hasOwnProperty.call(util.stackFrame, 'index')) {
+        util.stackFrame.index = 0;
+      }
       if (util.stackFrame.index < Number(args.NUM)) {
         util.stackFrame.index++;
         vars[args.VAR] = util.stackFrame.index;
@@ -256,7 +268,9 @@
 
     listThreadVariables(args, util) {
       const thread = util.thread;
-      thread.variables ??= Object.create(null);
+      if (!thread.variables) {
+        thread.variables = Object.create(null);
+      }
       return Object.keys(thread.variables).join(",");
     }
 
@@ -277,7 +291,7 @@
     }
 
     runtimeVariableExists(args) {
-      return Object.hasOwn(this.runtimeVariables, args.VAR);
+      return Object.prototype.hasOwnProperty.call(this.runtimeVariables, args.VAR);
     }
 
     listRuntimeVariables(args, util) {
@@ -292,8 +306,9 @@
       this.runtimeVariables = Object.create(null);
     }
   }
-  // The expose format follows scratch's convention of `ext_${extensionId}`.
+  // The expose format follows TurboWarp's convention of `ext_${extensionId}`.
   // Expose the extension on runtime for others to use.
-  Scratch.vm.runtime.ext_lmsTempVars2 = new TempVars();
-  Scratch.extensions.register(Scratch.vm.runtime.ext_lmsTempVars2);
+  const extension = new TempVars();
+  Scratch.vm.runtime.ext_lmsTempVars2 = extension;
+  Scratch.extensions.register(extension);
 })(Scratch);
