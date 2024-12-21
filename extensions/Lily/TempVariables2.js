@@ -256,7 +256,7 @@
         thread.variables = Object.create(null);
       }
       const vars = thread.variables;
-      if (!Object.prototype.hasOwnProperty.call(util.stackFrame, 'index')) {
+      if (!Object.prototype.hasOwnProperty.call(util.stackFrame, "index")) {
         util.stackFrame.index = 0;
       }
       if (util.stackFrame.index < Number(args.NUM)) {
@@ -291,7 +291,10 @@
     }
 
     runtimeVariableExists(args) {
-      return Object.prototype.hasOwnProperty.call(this.runtimeVariables, args.VAR);
+      return Object.prototype.hasOwnProperty.call(
+        this.runtimeVariables,
+        args.VAR
+      );
     }
 
     listRuntimeVariables(args, util) {
