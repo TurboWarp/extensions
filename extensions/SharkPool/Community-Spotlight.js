@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.03
+// Version V.1.0.04
 
 (function (Scratch) {
   "use strict";
@@ -185,7 +185,7 @@
       alert(`WARNING: Community Spotlight will NOT earn you any Money.\nScratch projects have numerous Security Issues that make earning Money Impractical.\n\nAll Promotions are Moderated, Free and Acessible to Everyone.`);
     }
 
-    addPromo() { Scratch.openWindow("https://forms.gle/9d5GHEukZva5zeZj8") }
+    addPromo() { Scratch.openWindow("https://community-spotlight.github.io/uploader-site/") }
 
     displayPromo(promo, args) {
       if (promo.id === undefined) return;
