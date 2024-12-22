@@ -218,23 +218,27 @@
   /**
    * @param {string} url a data:, blob:, or same-origin URL
    * @param {string} file
+   * @returns {Promise<void>}
    */
-  const downloadURL = (url, file) => {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = file;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+  const downloadURL = async (url, file) => {
+    if (await Scratch.canDownload(file)) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = file;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
   };
 
   /**
    * @param {Blob} blob Data to download
    * @param {string} file Name of the file
+   * @returns {Promise<void>}
    */
-  const downloadBlob = (blob, file) => {
+  const downloadBlob = async (blob, file) => {
     const url = URL.createObjectURL(blob);
-    downloadURL(url, file);
+    await downloadURL(url, file);
     URL.revokeObjectURL(url);
   };
 
@@ -255,17 +259,14 @@
    * @param {string} url
    * @param {string} file
    */
-  const downloadUntrustedURL = (url, file) => {
-    // Don't want to return a Promise here when not actually needed
+  const downloadUntrustedURL = async (url, file) => {
     if (isDataURL(url)) {
-      downloadURL(url, file);
-    } else {
-      return Scratch.fetch(url)
-        .then((res) => res.blob())
-        .then((blob) => {
-          downloadBlob(blob, file);
-        });
+      return downloadURL(url, file);
     }
+
+    const res = await Scratch.fetch(url);
+    const blob = await res.blob();
+    await downloadBlob(blob, file);
   };
 
   class Files {
@@ -424,18 +425,26 @@
       return showFilePrompt(args.extension, args.as);
     }
 
-    download(args) {
-      downloadBlob(
-        new Blob([Scratch.Cast.toString(args.text)]),
-        Scratch.Cast.toString(args.file)
-      );
+    async download(args) {
+      try {
+        await downloadBlob(
+          new Blob([Scratch.Cast.toString(args.text)]),
+          Scratch.Cast.toString(args.file)
+        );
+      } catch (e) {
+        console.error(e);
+      }
     }
 
-    downloadURL(args) {
-      return downloadUntrustedURL(
-        Scratch.Cast.toString(args.url),
-        Scratch.Cast.toString(args.file)
-      );
+    async downloadURL(args) {
+      try {
+        await downloadUntrustedURL(
+          Scratch.Cast.toString(args.url),
+          Scratch.Cast.toString(args.file)
+        );
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     setOpenMode(args) {
