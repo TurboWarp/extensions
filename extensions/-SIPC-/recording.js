@@ -100,16 +100,13 @@
         const blob = new Blob(recordedChunks, { type: "audio/wav" });
         recordedChunks = [];
 
-        if (await Scratch.canDownload(name)) {
-          const url = URL.createObjectURL(blob);
-          const downloadLink = document.createElement("a");
-          downloadLink.href = url;
-          downloadLink.download = name;
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          document.body.removeChild(downloadLink);
-          URL.revokeObjectURL(url);
+        const url = URL.createObjectURL(blob);
+        try {
+          await Scratch.download(url, name);
+        } catch (e) {
+          console.error(e);
         }
+        URL.revokeObjectURL(url);
       });
       mediaRecorder.stop();
       mediaRecorder = null;

@@ -216,29 +216,17 @@
     });
 
   /**
-   * @param {string} url a data:, blob:, or same-origin URL
-   * @param {string} file
-   * @returns {Promise<void>}
-   */
-  const downloadURL = async (url, file) => {
-    if (await Scratch.canDownload(file)) {
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = file;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
-  };
-
-  /**
    * @param {Blob} blob Data to download
    * @param {string} file Name of the file
    * @returns {Promise<void>}
    */
   const downloadBlob = async (blob, file) => {
     const url = URL.createObjectURL(blob);
-    await downloadURL(url, file);
+    try {
+      await Scratch.download(url, file);
+    } catch (e) {
+      console.error(e);
+    }
     URL.revokeObjectURL(url);
   };
 
@@ -261,7 +249,9 @@
    */
   const downloadUntrustedURL = async (url, file) => {
     if (isDataURL(url)) {
-      return downloadURL(url, file);
+      // TODO: Scratch.fetch's better handling of data: means this is probably not needed anymore
+      // and it the blob: probably works better with big files
+      return Scratch.download(url, file);
     }
 
     const res = await Scratch.fetch(url);
