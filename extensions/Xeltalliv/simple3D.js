@@ -1841,7 +1841,10 @@ void main() {
       text: "Open extra resources",
       func: "openSite",
       def: function () {
-        Scratch.openWindow("https://xeltalliv.github.io/simple3d-extension/");
+        // Exempted from Scratch.openWindow as initiated by user gesture.
+        // docsURI won't ask for permission so it doesn't make sense for this to either.
+        // eslint-disable-next-line no-restricted-syntax
+        window.open("https://xeltalliv.github.io/simple3d-extension/");
       },
     },
     {
