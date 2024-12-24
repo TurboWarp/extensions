@@ -191,7 +191,7 @@
     "nwse-resize",
   ];
 
-  var scrollX = 0;
+  var _scrollX = 0;
   var scrollY = 0;
 
   var scrollDistance = 0;
@@ -206,7 +206,7 @@
 
       canvas.addEventListener("wheel", updateScrollValues);
       function updateScrollValues(event) {
-        scrollX = event.deltaX;
+        _scrollX = event.deltaX;
         scrollY = event.deltaY;
 
         Scratch.vm.runtime.startHats("MouseCursor_whenMouseWheel", {
