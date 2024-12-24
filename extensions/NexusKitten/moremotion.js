@@ -2,6 +2,7 @@
 // ID: nkmoremotion
 // Description: More motion-related blocks.
 // By: NamelessCat <https://scratch.mit.edu/users/NamelessCat/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -28,7 +29,8 @@
             text:
               typeof ScratchBlocks !== "undefined"
                 ? ScratchBlocks.Msg["MOTION_STAGE_SELECTED"]
-                : "Stage selected: no motion blocks",
+                : // This is just fallback for non-editor environments, don't need to translate
+                  "Stage selected: no motion blocks",
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -45,6 +47,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -61,6 +64,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -68,6 +72,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("rotation style"),
             disableMonitor: true,
+            extensions: ["colours_motion"],
           },
           "---",
           {
@@ -79,6 +84,7 @@
               description:
                 "This blocks forces the sprite to be onscreen if it moved offscreen.",
             }),
+            extensions: ["colours_motion"],
           },
           "---",
           {
@@ -100,6 +106,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -122,6 +129,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           "---",
           {
@@ -139,6 +147,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -155,6 +164,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -185,6 +195,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -211,6 +222,7 @@
                 defaultValue: "100",
               },
             },
+            extensions: ["colours_motion"],
           },
         ],
         menus: {

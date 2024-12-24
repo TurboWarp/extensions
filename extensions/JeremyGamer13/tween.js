@@ -2,6 +2,7 @@
 // ID: jeremygamerTweening
 // Description: Easing methods for smooth animations.
 // By: JeremyGamer13 <https://scratch.mit.edu/users/JeremyGamer13/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -255,11 +256,13 @@
     getInfo() {
       return {
         id: "jeremygamerTweening",
-        name: "Tweening",
+        name: Scratch.translate("Tweening"),
         blocks: [
           {
             opcode: "tweenValue",
-            text: "[MODE] ease [DIRECTION] [START] to [END] by [AMOUNT]%",
+            text: Scratch.translate(
+              "[MODE] ease [DIRECTION] [START] to [END] by [AMOUNT]%"
+            ),
             disableMonitor: true,
             blockType: BlockType.REPORTER,
             arguments: {
@@ -287,7 +290,9 @@
           },
           {
             opcode: "tweenVariable",
-            text: "tween variable [VAR] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]",
+            text: Scratch.translate(
+              "tween variable [VAR] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]"
+            ),
             blockType: BlockType.COMMAND,
             arguments: {
               VAR: {
@@ -314,7 +319,9 @@
           },
           {
             opcode: "tweenXY",
-            text: "tween to x: [X] y: [Y] over [SEC] seconds using [MODE] ease [DIRECTION]",
+            text: Scratch.translate(
+              "tween to x: [X] y: [Y] over [SEC] seconds using [MODE] ease [DIRECTION]"
+            ),
             blockType: BlockType.COMMAND,
             arguments: {
               PROPERTY: {
@@ -345,7 +352,9 @@
           },
           {
             opcode: "tweenProperty",
-            text: "tween [PROPERTY] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]",
+            text: Scratch.translate(
+              "tween [PROPERTY] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]"
+            ),
             blockType: BlockType.COMMAND,
             arguments: {
               PROPERTY: {
@@ -374,11 +383,69 @@
         menus: {
           modes: {
             acceptReporters: true,
-            items: Object.keys(EasingMethods),
+            items: [
+              {
+                text: Scratch.translate("linear"),
+                value: "linear",
+              },
+              {
+                text: Scratch.translate("sine"),
+                value: "sine",
+              },
+              {
+                text: Scratch.translate("quad"),
+                value: "quad",
+              },
+              {
+                text: Scratch.translate("cubic"),
+                value: "cubic",
+              },
+              {
+                text: Scratch.translate("quart"),
+                value: "quart",
+              },
+              {
+                text: Scratch.translate("quint"),
+                value: "quint",
+              },
+              {
+                text: Scratch.translate("expo"),
+                value: "expo",
+              },
+              {
+                text: Scratch.translate("circ"),
+                value: "circ",
+              },
+              {
+                text: Scratch.translate("back"),
+                value: "back",
+              },
+              {
+                text: Scratch.translate("elastic"),
+                value: "elastic",
+              },
+              {
+                text: Scratch.translate("bounce"),
+                value: "bounce",
+              },
+            ],
           },
           direction: {
             acceptReporters: true,
-            items: ["in", "out", "in out"],
+            items: [
+              {
+                text: Scratch.translate("in"),
+                value: "in",
+              },
+              {
+                text: Scratch.translate("out"),
+                value: "out",
+              },
+              {
+                text: Scratch.translate("in out"),
+                value: "in out",
+              },
+            ],
           },
           vars: {
             acceptReporters: false, // for Scratch parity
@@ -386,7 +453,24 @@
           },
           properties: {
             acceptReporters: true,
-            items: ["x position", "y position", "direction", "size"],
+            items: [
+              {
+                text: Scratch.translate("x position"),
+                value: "x position",
+              },
+              {
+                text: Scratch.translate("y position"),
+                value: "y position",
+              },
+              {
+                text: Scratch.translate("direction"),
+                value: "direction",
+              },
+              {
+                text: Scratch.translate("size"),
+                value: "size",
+              },
+            ],
           },
         },
       };

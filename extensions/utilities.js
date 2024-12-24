@@ -2,6 +2,7 @@
 // ID: utilities
 // Description: A bunch of interesting blocks.
 // Original: Sheep_maker <https://scratch.mit.edu/users/Sheep_maker/>
+// License: MIT AND MPL-2.0
 
 /*!
  * This is based on:
@@ -41,7 +42,7 @@
     getInfo() {
       return {
         id: "utilities",
-        name: "Utilities",
+        name: Scratch.translate("Utilities"),
 
         color1: "#8BC34A",
         color2: "#7CB342",
@@ -55,7 +56,7 @@
 
             blockType: Scratch.BlockType.BOOLEAN,
 
-            text: "is [A] exactly [B]?",
+            text: Scratch.translate("is [A] exactly [B]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -102,13 +103,19 @@
           {
             opcode: "trueBlock",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "true",
+            text: Scratch.translate({
+              default: "true",
+              description: "Block that returns true",
+            }),
             disableMonitor: true,
           },
           {
             opcode: "falseBlock",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "false",
+            text: Scratch.translate({
+              default: "false",
+              description: "Block that returns false",
+            }),
             disableMonitor: true,
           },
           {
@@ -129,14 +136,17 @@
           {
             opcode: "pi",
             blockType: Scratch.BlockType.REPORTER,
-            text: "pi",
+            text: Scratch.translate({
+              default: "pi",
+              description: "Block that returns 3.1415...",
+            }),
           },
           {
             opcode: "ternaryOperator",
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: "if [A] then [B] else [C]",
+            text: Scratch.translate("if [A] then [B] else [C]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -150,13 +160,14 @@
                 defaultValue: "apple",
               },
             },
+            allowDropAnywhere: true,
           },
           {
             opcode: "letters",
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: "letters [START] to [END] of [STRING]",
+            text: Scratch.translate("letters [START] to [END] of [STRING]"),
             arguments: {
               START: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -177,7 +188,7 @@
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: "clamp [INPUT] between [MIN] and [MAX]",
+            text: Scratch.translate("clamp [INPUT] between [MIN] and [MAX]"),
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -196,14 +207,14 @@
           {
             opcode: "currentMillisecond",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current millisecond",
+            text: Scratch.translate("current millisecond"),
           },
           {
             opcode: "fetchFrom",
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: "get content from [URL]",
+            text: Scratch.translate("content from [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -216,7 +227,11 @@
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: "[PATH] of [JSON_STRING]",
+            text: Scratch.translate({
+              default: "[PATH] of [JSON_STRING]",
+              description:
+                'PATH is a string like "fruit/apples" and JSON_STRING is an object like {"fruit":{"apples":3}}. 3 would be reported in this example.',
+            }),
             arguments: {
               PATH: {
                 type: Scratch.ArgumentType.STRING,
@@ -254,7 +269,9 @@
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: "replace [STRING] using the rule [REGEX] with [NEWSTRING]",
+            text: Scratch.translate(
+              "replace [STRING] using the rule [REGEX] with [NEWSTRING]"
+            ),
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,

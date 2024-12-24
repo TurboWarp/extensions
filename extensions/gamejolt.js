@@ -2,6 +2,7 @@
 // ID: GameJoltAPI
 // Description: Blocks that allow games to interact with the GameJolt API. Unofficial.
 // By: softed <https://scratch.mit.edu/users/softed/>
+// License: MIT
 
 ((Scratch) => {
   "use strict";
@@ -20,9 +21,11 @@
     function hex_md5(a) {
       return rstr2hex(rstr_md5(str2rstr_utf8(a)));
     }
+    // eslint-disable-next-line no-unused-vars
     function hex_hmac_md5(a, b) {
       return rstr2hex(rstr_hmac_md5(str2rstr_utf8(a), str2rstr_utf8(b)));
     }
+    // eslint-disable-next-line no-unused-vars
     function md5_vm_test() {
       return hex_md5("abc").toLowerCase() == "900150983cd24fb0d6963f7d28e17f72";
     }
@@ -1404,8 +1407,8 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate({
               id: "GameJoltAPI_gamejoltBool",
-              default: "On Game Jolt?",
-              description: 'Keep "Game Jolt" as is.',
+              default: "on game jolt?",
+              description: 'Keep "game jolt" as is.',
             }),
           },
           {
@@ -1417,7 +1420,7 @@
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Set game ID to [ID] and private key to [key]"
+              "set game ID to [ID] and private key to [key]"
             ),
             arguments: {
               ID: {
@@ -1453,13 +1456,13 @@
             opcode: "sessionPing",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Ping session"),
+            text: Scratch.translate("ping session"),
           },
           {
             opcode: "sessionSetStatus",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Set session status to [status]"),
+            text: Scratch.translate("set session status to [status]"),
             arguments: {
               status: {
                 type: Scratch.ArgumentType.STRING,
@@ -1472,18 +1475,18 @@
             opcode: "sessionBool",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Session open?"),
+            text: Scratch.translate("session open?"),
             disableMonitor: true,
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("User Blocks"),
+            text: Scratch.translate("user Blocks"),
           },
           {
             opcode: "loginManual",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Login with [username] and [token]"),
+            text: Scratch.translate("login with [username] and [token]"),
             arguments: {
               username: {
                 type: Scratch.ArgumentType.STRING,
@@ -1499,38 +1502,38 @@
             opcode: "loginAuto",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Login automatically"),
+            text: Scratch.translate("login automatically"),
           },
           {
             opcode: "loginAutoBool",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Autologin available?"),
+            text: Scratch.translate("auto login available?"),
           },
           {
             opcode: "logout",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Logout"),
+            text: Scratch.translate("logout"),
           },
           {
             opcode: "loginBool",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Logged in?"),
+            text: Scratch.translate("logged in?"),
           },
           {
             opcode: "loginUser",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Logged in user's username"),
+            text: Scratch.translate("logged in user's username"),
           },
           {
             opcode: "userFetch",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Fetch user's [usernameOrID] by [fetchType]"
+              "fetch user's [usernameOrID] by [fetchType]"
             ),
             arguments: {
               usernameOrID: {
@@ -1548,13 +1551,13 @@
             opcode: "userFetchCurrent",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Fetch logged in user"),
+            text: Scratch.translate("fetch logged in user"),
           },
           {
             opcode: "returnUserData",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched user's [userDataType]"),
+            text: Scratch.translate("fetched user's [userDataType]"),
             arguments: {
               userDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1567,14 +1570,14 @@
             opcode: "returnUserDataJson",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched user's data in JSON"),
+            text: Scratch.translate("fetched user's data in JSON"),
           },
           {
             hideFromPalette: true,
             opcode: "friendsFetch",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched user's friend ID at index[index] (Deprecated)",
+            text: "fetched user's friend ID at index[index] (Deprecated)",
             arguments: {
               index: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1586,13 +1589,13 @@
             opcode: "friendsFetchNew",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Fetch user's friend IDs"),
+            text: Scratch.translate("fetch user's friend IDs"),
           },
           {
             opcode: "friendsReturn",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched user's friend ID at index[index]"),
+            text: Scratch.translate("fetched user's friend ID at index[index]"),
             arguments: {
               index: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1604,7 +1607,7 @@
             opcode: "friendsReturnJson",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched user's friend IDs in JSON"),
+            text: Scratch.translate("fetched user's friend IDs in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -1614,7 +1617,7 @@
             opcode: "trophyAchieve",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Achieve trophy of ID [ID]"),
+            text: Scratch.translate("achieve trophy of ID [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1626,7 +1629,7 @@
             opcode: "trophyRemove",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Remove trophy of ID [ID]"),
+            text: Scratch.translate("remove trophy of ID [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1639,7 +1642,7 @@
             opcode: "trophyFetch",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched trophy [trophyDataType] at [indexOrID][value] (Deprecated)",
+            text: "fetched trophy [trophyDataType] at [indexOrID][value] (Deprecated)",
             arguments: {
               trophyDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1661,7 +1664,7 @@
             opcode: "trophyFetchId",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Fetch trophy of ID[ID]"),
+            text: Scratch.translate("fetch trophy of ID[ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1673,7 +1676,7 @@
             opcode: "trophyFetchAll",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Fetch [trophyFetchGroup] trophies"),
+            text: Scratch.translate("fetch [trophyFetchGroup] trophies"),
             arguments: {
               trophyFetchGroup: {
                 type: Scratch.ArgumentType.STRING,
@@ -1687,7 +1690,7 @@
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "Fetched trophy [trophyDataType] at index [index]"
+              "fetched trophy [trophyDataType] at index [index]"
             ),
             arguments: {
               trophyDataType: {
@@ -1705,7 +1708,7 @@
             opcode: "trophyReturnJson",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched trophies in JSON"),
+            text: Scratch.translate("fetched trophies in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -1716,7 +1719,7 @@
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Add score [value] in table of ID [ID] with text [text] and comment [extraData]"
+              "add score [value] in table of ID [ID] with text [text] and comment [extraData]"
             ),
             arguments: {
               ID: {
@@ -1742,7 +1745,7 @@
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Add [username] score [value] in table of ID [ID] with text [text] and comment [extraData]"
+              "add [username] score [value] in table of ID [ID] with text [text] and comment [extraData]"
             ),
             arguments: {
               ID: {
@@ -1772,7 +1775,7 @@
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Fetch [amount] [globalOrPerUser] score/s in table of ID [ID]"
+              "fetch [amount] [globalOrPerUser] score/s in table of ID [ID]"
             ),
             arguments: {
               amount: {
@@ -1795,7 +1798,7 @@
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Fetch [amount] [globalOrPerUser] score/s [betterOrWorse] than [value] in table of ID [ID]"
+              "fetch [amount] [globalOrPerUser] score/s [betterOrWorse] than [value] in table of ID [ID]"
             ),
             arguments: {
               amount: {
@@ -1827,7 +1830,7 @@
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Fetch [amount] [username] score/s in table of ID [ID]"
+              "fetch [amount] [username] score/s in table of ID [ID]"
             ),
             arguments: {
               amount: {
@@ -1849,7 +1852,7 @@
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Fetch [amount] [username] score/s [betterOrWorse] than [value] in table of ID [ID]"
+              "fetch [amount] [username] score/s [betterOrWorse] than [value] in table of ID [ID]"
             ),
             arguments: {
               amount: {
@@ -1880,7 +1883,7 @@
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "Fetched score [scoreDataType] at index [index]"
+              "fetched score [scoreDataType] at index [index]"
             ),
             arguments: {
               scoreDataType: {
@@ -1898,14 +1901,14 @@
             opcode: "returnScoreDataJson",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched score data in JSON"),
+            text: Scratch.translate("fetched score data in JSON"),
           },
           {
             opcode: "scoreGetRank",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "Fetched rank of [value] in table of ID [ID]"
+              "fetched rank of [value] in table of ID [ID]"
             ),
             arguments: {
               value: {
@@ -1924,7 +1927,7 @@
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "Fetched table [tableDataType] at index[index] (Deprecated)"
+              "fetched table [tableDataType] at index[index] (Deprecated)"
             ),
             arguments: {
               tableDataType: {
@@ -1942,14 +1945,14 @@
             opcode: "scoreFetchTables",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Fetch score tables"),
+            text: Scratch.translate("fetch score tables"),
           },
           {
             opcode: "scoreReturnTables",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "Fetched table [tableDataType] at index [index]"
+              "fetched table [tableDataType] at index [index]"
             ),
             arguments: {
               tableDataType: {
@@ -1967,7 +1970,7 @@
             opcode: "scoreReturnTablesJson",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched tables in JSON"),
+            text: Scratch.translate("fetched tables in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -1978,7 +1981,7 @@
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Set [globalOrPerUser] data at [key] to [data]"
+              "set [globalOrPerUser] data at [key] to [data]"
             ),
             arguments: {
               globalOrPerUser: {
@@ -2000,7 +2003,7 @@
             opcode: "dataStoreFetch",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched [globalOrPerUser] data at [key]"),
+            text: Scratch.translate("fetched [globalOrPerUser] data at [key]"),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -2018,7 +2021,7 @@
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Update [globalOrPerUser] data at [key] by [operationType] [value]"
+              "update [globalOrPerUser] data at [key] by [operationType] [value]"
             ),
             arguments: {
               globalOrPerUser: {
@@ -2045,7 +2048,7 @@
             opcode: "dataStoreRemove",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Remove [globalOrPerUser] data at [key]"),
+            text: Scratch.translate("remove [globalOrPerUser] data at [key]"),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -2063,7 +2066,7 @@
             opcode: "dataStoreGetKey",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetched [globalOrPerUser] keys with pattern [pattern] at index [index] (Deprecated)",
+            text: "fetched [globalOrPerUser] keys with pattern [pattern] at index [index] (Deprecated)",
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -2084,7 +2087,7 @@
             opcode: "dataStoreFetchKeys",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Fetch all [globalOrPerUser] keys"),
+            text: Scratch.translate("fetch all [globalOrPerUser] keys"),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -2098,7 +2101,7 @@
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Fetch [globalOrPerUser] keys matching with [pattern]"
+              "fetch [globalOrPerUser] keys matching with [pattern]"
             ),
             arguments: {
               globalOrPerUser: {
@@ -2116,7 +2119,7 @@
             opcode: "dataStoreReturnKeys",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched key at index [index]"),
+            text: Scratch.translate("fetched key at index [index]"),
             arguments: {
               index: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -2128,7 +2131,7 @@
             opcode: "dataStoreReturnKeysJson",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched keys in JSON"),
+            text: Scratch.translate("fetched keys in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -2139,7 +2142,7 @@
             opcode: "timeFetch",
             blockIconURI: icons.time,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Server's current [timeType] (Deprecated)",
+            text: "server's current [timeType] (Deprecated)",
             arguments: {
               timeType: {
                 type: Scratch.ArgumentType.STRING,
@@ -2152,13 +2155,13 @@
             opcode: "timeFetchNew",
             blockIconURI: icons.time,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Fetch server's time"),
+            text: Scratch.translate("fetch server's time"),
           },
           {
             opcode: "timeReturn",
             blockIconURI: icons.time,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched server's [timeType]"),
+            text: Scratch.translate("fetched server's [timeType]"),
             arguments: {
               timeType: {
                 type: Scratch.ArgumentType.STRING,
@@ -2171,18 +2174,18 @@
             opcode: "timeReturnJson",
             blockIconURI: icons.time,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched server's time in JSON"),
+            text: Scratch.translate("fetched server's time in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Batch Blocks",
+            text: Scratch.translate("Batch Blocks"),
           },
           {
             opcode: "batchAdd",
             blockIconURI: icons.batch,
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Add [namespace] request with [parameters] to batch"
+              "add [namespace] request with [parameters] to batch"
             ),
             arguments: {
               namespace: {
@@ -2199,19 +2202,19 @@
             opcode: "batchClear",
             blockIconURI: icons.batch,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Clear batch"),
+            text: Scratch.translate("clear batch"),
           },
           {
             opcode: "batchJson",
             blockIconURI: icons.batch,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Batch in JSON"),
+            text: Scratch.translate("batch in JSON"),
           },
           {
             opcode: "batchCall",
             blockIconURI: icons.batch,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Fetch batch [parameter]"),
+            text: Scratch.translate("fetch batch [parameter]"),
             arguments: {
               parameter: {
                 type: Scratch.ArgumentType.STRING,
@@ -2224,7 +2227,7 @@
             opcode: "batchReturnJson",
             blockIconURI: icons.batch,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Fetched batch data in JSON"),
+            text: Scratch.translate("fetched batch data in JSON"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -2234,7 +2237,7 @@
             opcode: "debug",
             blockIconURI: icons.debug,
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Turn debug mode [toggle]"),
+            text: Scratch.translate("turn debug mode [toggle]"),
             arguments: {
               toggle: {
                 type: Scratch.ArgumentType.STRING,
@@ -2247,13 +2250,13 @@
             opcode: "debugBool",
             blockIconURI: icons.debug,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("In debug mode?"),
+            text: Scratch.translate("in debug mode?"),
           },
           {
             opcode: "debugLastErr",
             blockIconURI: icons.debug,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Last API error"),
+            text: Scratch.translate("last API error"),
           },
         ],
         menus: {

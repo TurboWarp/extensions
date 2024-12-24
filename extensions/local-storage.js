@@ -1,6 +1,7 @@
 // Name: Local Storage
 // ID: localstorage
 // Description: Store data persistently. Like cookies, but better.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";

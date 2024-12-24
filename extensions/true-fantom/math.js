@@ -2,6 +2,7 @@
 // ID: truefantommath
 // Description: A lot of operators blocks, from exponentiation to trigonometric functions.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+// License: MIT
 
 ((Scratch) => {
   "use strict";
@@ -101,7 +102,7 @@
     getInfo() {
       return {
         id: "truefantommath",
-        name: "Math",
+        name: Scratch.translate("Math"),
 
         color1: "#59c059",
 
@@ -122,6 +123,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "root_block",
@@ -137,6 +139,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "negative_block",
@@ -148,6 +151,7 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -164,6 +168,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "less_or_equal_block",
@@ -179,6 +184,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "not_equal_block",
@@ -194,6 +200,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "exactly_equal_block",
@@ -209,6 +216,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "not_exactly_equal_block",
@@ -224,6 +232,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "almost_equal_block",
@@ -239,6 +248,7 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "not_almost_equal_block",
@@ -254,6 +264,48 @@
                 defaultValue: 50,
               },
             },
+            extensions: ["colours_operators"],
+          },
+          "---",
+          {
+            opcode: "between_or_equal",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "[A] ≤ [B] ≤ [C]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "50",
+              },
+              C: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+            },
+            extensions: ["colours_operators"],
+          },
+          {
+            opcode: "between",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "[A] < [B] < [C]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "50",
+              },
+              C: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+            },
+            extensions: ["colours_operators"],
           },
           "---",
           {
@@ -268,6 +320,7 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "nor_block",
@@ -281,6 +334,7 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "xor_block",
@@ -294,6 +348,7 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "xnor_block",
@@ -307,12 +362,13 @@
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
             opcode: "exactly_cont_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[A] exactly contains [B] ?",
+            text: Scratch.translate("[A] exactly contains [B]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -323,12 +379,13 @@
                 defaultValue: "a",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
             opcode: "clamp_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "clamp [A] between [B] and [C]",
+            text: Scratch.translate("clamp [A] between [B] and [C]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -343,11 +400,14 @@
                 defaultValue: "100",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "scale_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "map [A] from range [m1] - [M1] to range [m2] - [M2]",
+            text: Scratch.translate(
+              "map [A] from range [m1] - [M1] to range [m2] - [M2]"
+            ),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -370,12 +430,13 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
             opcode: "trunc2_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "trunc of [A] with [B] digits after dot",
+            text: Scratch.translate("trunc of [A] with [B] digits after dot"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -386,23 +447,25 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "trunc_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "trunc of [A]",
+            text: Scratch.translate("trunc of [A]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
             opcode: "is_multiple_of_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[A] is multiple of [B] ?",
+            text: Scratch.translate("[A] is multiple of [B]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -413,12 +476,13 @@
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
             opcode: "log_with_base_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "log of [A] with base [B]",
+            text: Scratch.translate("log of [A] with base [B]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -429,68 +493,76 @@
                 defaultValue: 10,
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
             opcode: "pi_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "𝜋",
+            extensions: ["colours_operators"],
           },
           {
             opcode: "e_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "𝘦",
+            extensions: ["colours_operators"],
           },
           {
             opcode: "infinity_block",
             blockType: Scratch.BlockType.REPORTER,
             text: "∞",
+            extensions: ["colours_operators"],
           },
           "---",
           {
             opcode: "is_safe_number_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is safe number [A] ?",
+            text: Scratch.translate("is safe number [A]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           "---",
           {
             opcode: "is_number_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is number [A] ?",
+            text: Scratch.translate("is number [A]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "is_int_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is int [A] ?",
+            text: Scratch.translate("is int [A]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
           {
             opcode: "is_float_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is float [A] ?",
+            text: Scratch.translate("is float [A]?"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "",
               },
             },
+            extensions: ["colours_operators"],
           },
         ],
       };
@@ -539,6 +611,12 @@
     }
     xnor_block({ A, B }) {
       return cast.toBoolean(A) === cast.toBoolean(B);
+    }
+    between_or_equal({ A, B, C }) {
+      return cast.compare(A, B) <= 0 && cast.compare(B, C) <= 0;
+    }
+    between({ A, B, C }) {
+      return cast.compare(A, B) < 0 && cast.compare(B, C) < 0;
     }
     exactly_cont_block({ A, B }) {
       return cast.toString(A).includes(cast.toString(B));

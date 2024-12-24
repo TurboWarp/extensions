@@ -1,6 +1,7 @@
 // Name: Fetch
 // ID: fetch
 // Description: Make requests to the broader internet.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";

@@ -1,6 +1,7 @@
 // Name: Battery
 // ID: battery
 // Description: Access information about the battery of phones or laptops. May not work on all devices and browsers.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -63,6 +64,7 @@
       return {
         name: Scratch.translate("Battery"),
         id: "battery",
+        color1: "#cf8436",
         blocks: [
           {
             opcode: "charging",

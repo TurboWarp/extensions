@@ -1,6 +1,7 @@
 // Name: Runtime Options
 // ID: runtimeoptions
 // Description: Get and modify turbo mode, framerate, interpolation, clone limit, stage size, and more.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -16,6 +17,55 @@
   const REMOVE_FENCING = "remove fencing";
   const REMOVE_MISC_LIMITS = "remove misc limits";
   const HIGH_QUALITY_PEN = "high quality pen";
+  const FRAMERATE = "framerate";
+  const CLONE_LIMIT = "clone limit";
+  const STAGE_SIZE = "stage size";
+  const USERNAME = "username";
+
+  /** @param {string} what */
+  const emitChanged = (what) =>
+    Scratch.vm.runtime.startHats("runtimeoptions_whenChange", {
+      WHAT: what,
+    });
+
+  /**
+   * @template T
+   * @param {T} obj
+   * @returns {T}
+   */
+  const shallowCopy = (obj) => Object.assign({}, obj);
+
+  let previousRuntimeOptions = shallowCopy(Scratch.vm.runtime.runtimeOptions);
+
+  Scratch.vm.on("TURBO_MODE_OFF", () => emitChanged(TURBO_MODE));
+  Scratch.vm.on("TURBO_MODE_ON", () => emitChanged(TURBO_MODE));
+  Scratch.vm.on("INTERPOLATION_CHANGED", () => emitChanged(INTERPOLATION));
+  Scratch.vm.on("RUNTIME_OPTIONS_CHANGED", (newOptions) => {
+    if (newOptions.fencing !== previousRuntimeOptions.fencing) {
+      emitChanged(REMOVE_FENCING);
+    }
+    if (newOptions.miscLimits !== previousRuntimeOptions.miscLimits) {
+      emitChanged(REMOVE_MISC_LIMITS);
+    }
+    if (newOptions.maxClones !== previousRuntimeOptions.maxClones) {
+      emitChanged(CLONE_LIMIT);
+    }
+    previousRuntimeOptions = shallowCopy(newOptions);
+  });
+  Scratch.vm.renderer.on("UseHighQualityRenderChanged", () =>
+    emitChanged(HIGH_QUALITY_PEN)
+  );
+  Scratch.vm.on("FRAMERATE_CHANGED", () => emitChanged(FRAMERATE));
+  Scratch.vm.on("STAGE_SIZE_CHANGED", () => emitChanged(STAGE_SIZE));
+
+  const originalPostData = Scratch.vm.runtime.ioDevices.userData.postData;
+  Scratch.vm.runtime.ioDevices.userData.postData = function (data) {
+    const newUsername = data.username !== this._username;
+    originalPostData.call(this, data);
+    if (newUsername) {
+      emitChanged(USERNAME);
+    }
+  };
 
   class RuntimeOptions {
     getInfo() {
@@ -154,6 +204,18 @@
               },
             },
           },
+
+          "---",
+
+          {
+            opcode: "whenChange",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when [WHAT] changed"),
+            isEdgeActivated: false,
+            arguments: {
+              WHAT: { type: Scratch.ArgumentType.STRING, menu: "changeable" },
+            },
+          },
         ],
         menus: {
           thing: {
@@ -178,6 +240,48 @@
               {
                 text: Scratch.translate("high quality pen"),
                 value: HIGH_QUALITY_PEN,
+              },
+            ],
+          },
+
+          changeable: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("turbo mode"),
+                value: TURBO_MODE,
+              },
+              {
+                text: Scratch.translate("interpolation"),
+                value: INTERPOLATION,
+              },
+              {
+                text: Scratch.translate("remove fencing"),
+                value: REMOVE_FENCING,
+              },
+              {
+                text: Scratch.translate("remove misc limits"),
+                value: REMOVE_MISC_LIMITS,
+              },
+              {
+                text: Scratch.translate("high quality pen"),
+                value: HIGH_QUALITY_PEN,
+              },
+              {
+                text: Scratch.translate("framerate"),
+                value: FRAMERATE,
+              },
+              {
+                text: Scratch.translate("clone limit"),
+                value: CLONE_LIMIT,
+              },
+              {
+                text: Scratch.translate("stage size"),
+                value: STAGE_SIZE,
+              },
+              {
+                text: Scratch.translate("username"),
+                value: USERNAME,
               },
             ],
           },
@@ -276,7 +380,6 @@
     getCloneLimit() {
       return Scratch.vm.runtime.runtimeOptions.maxClones;
     }
-
     setCloneLimit({ limit }) {
       limit = Scratch.Cast.toNumber(limit);
       Scratch.vm.setRuntimeOptions({
@@ -300,8 +403,9 @@
     }
 
     setUsername({ username }) {
-      Scratch.vm.runtime.ioDevices.userData._username =
-        Scratch.Cast.toString(username);
+      Scratch.vm.postIOData("userData", {
+        username: Scratch.Cast.toString(username),
+      });
     }
 
     greenFlag() {
