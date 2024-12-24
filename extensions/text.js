@@ -377,7 +377,7 @@
           {
             opcode: "posWith",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate('[STRING] [POSITION]s with [SUBSTRING]?'),
+            text: Scratch.translate("[STRING] [POSITION]s with [SUBSTRING]?"),
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -460,7 +460,7 @@
                 value: "start",
               },
             ],
-          }
+          },
         },
       };
     }
@@ -709,7 +709,7 @@
     }
     trim(args) {
       const STRING = args.STRING.toString();
-      switch(args.METHOD.toString()) {
+      switch (args.METHOD.toString()) {
         case "start":
           return STRING.trimStart();
         case "end":
