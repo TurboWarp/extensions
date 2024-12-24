@@ -7,6 +7,31 @@
 (function (Scratch) {
   "use strict";
 
+  const defaultIframe = `
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>PostMessageChild</title>
+    <script>
+    window.onload = function() {
+        document.getElementById('click').addEventListener('click', function() {
+            parent.postMessage(msg.value, '*');
+        });
+      }
+      window.addEventListener('message', function(event) {
+        rmsg.value = event.data;
+      });
+</script>
+</head>
+<body>
+    <input type=text id=msg><input type=button id=click value=gsso>
+    <input type=text id=rmsg>
+</body>
+</html>
+
+  `;
+
   /** @type {HTMLIFrameElement|null} */
   let iframe = null;
   let overlay = null;
@@ -53,6 +78,7 @@
   let height = -1; // negative means default
   let interactive = true;
   let resizeBehavior = "scale";
+  let lastMessageFromChild = "";
 
   const updateFrameAttributes = () => {
     if (!iframe) {
@@ -109,6 +135,11 @@
     iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("src", src);
 
+    window.addEventListener('message', function(event) {
+      lastMessageFromChild = event.data;
+      Scratch.vm.runtime.startHats('iframe_whenMessageReceivedFromChild');
+    });
+
     overlay = Scratch.renderer.addOverlay(iframe, getOverlayMode());
     updateFrameAttributes();
   };
@@ -149,7 +180,7 @@
             arguments: {
               HTML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: `<h1>${Scratch.translate("It works!")}</h1>`,
+                defaultValue: defaultIframe,
               },
             },
           },
@@ -247,6 +278,33 @@
               },
             },
           },
+          {
+            opcode: "postMessage",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("post [MESSAGE] to child"),
+            arguments: {
+              MESSAGE: {
+                type: Scratch.ArgumentType.STRING,
+              },
+            },
+          },
+          {
+            blockType: Scratch.BlockType.EVENT,
+            opcode: 'whenMessageReceivedFromChild',
+            text: 'when message is received from child',
+            isEdgeActivated: false, // required boilerplate
+            // arguments: {
+            //   MESSAGE: {
+            //     type: Scratch.ArgumentType.STRING,
+            //   },
+            // },
+          },
+          {
+            blockType: Scratch.BlockType.REPORTER,
+            opcode: 'messageFromChild',
+            text: 'message from child',
+
+          }
         ],
         menus: {
           getMenu: {
@@ -294,14 +352,15 @@
       }
     }
 
-    async displayHTML({ HTML }) {
+    displayHTML({ HTML }) {
       closeFrame();
-      const url = `data:text/html;,${encodeURIComponent(
+      const url = `about:blank`; /* data:text/html;,${encodeURIComponent(
         Scratch.Cast.toString(HTML)
-      )}`;
-      if (await Scratch.canEmbed(url)) {
+      )}`;*/
+      // if (await Scratch.canEmbed(url)) {
         createFrame(url);
-      }
+        iframe.srcdoc = HTML;
+      // }
     }
 
     show() {
@@ -342,6 +401,14 @@
       } else {
         return "";
       }
+    }
+
+    postMessage({ MESSAGE }) {
+      iframe.contentWindow.postMessage(MESSAGE);
+    }
+
+    messageFromChild() {
+      return lastMessageFromChild;
     }
 
     setX({ X }) {
