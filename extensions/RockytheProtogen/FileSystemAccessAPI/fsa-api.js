@@ -2,7 +2,7 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("File System Access API must run unsandboxed");
+    throw new Error("File System Access API must run unsandboxed.");
   }
 
   class rtpfsaapi {
@@ -38,6 +38,75 @@
             arguments: {
               json: {
                 type: "string",
+              },
+            },
+          },
+          {
+            opcode: "isSameEntry",
+            blockType: "Boolean",
+            text: "[handle].isSameEntry([Chandle])",
+            arguments: {
+              handle: {
+                acceptReporters: true,
+              },
+              Chandle: {
+                acceptReporters: true,
+              }
+            },
+          },
+          {
+            opcode: "queryHandlePermission",
+            blockType: "reporter",
+            text: "[handle].queryPermission([permissions])",
+            arguments: {
+              handle: {
+                acceptReporters: true,
+              },
+              permissions: {
+                type: "string"
+              }
+            },
+          },
+          {
+          opcode: "requestHandlePermission",
+          blockType: "command",
+          text: "[handle].requestPermission([permissions])",
+          arguments: {
+              handle: {
+                acceptReporters: true,
+              },
+              permissions: {
+                type: "string"
+              }
+            },
+          },
+          {
+            opcode: "remove",
+            blockType: "command",
+            text: "[handle].remove()",
+            arguments: {
+              handle: {
+                acceptReporters: true,
+              },
+            },
+          },
+          {
+            opcode: "kind",
+            blockType: "reporter",
+            text: "[handle].kind",
+            arguments: {
+              handle: {
+                acceptReporters: true,
+              },
+            },
+          },
+          {
+            opcode: "name",
+            blockType: "reporter",
+            text: "[handle].name",
+            arguments: {
+              handle: {
+                acceptReporters: true,
               },
             },
           },
@@ -146,8 +215,53 @@
     arrayFromArrayBuffer(args) {
       return new Uint8Array(args.arrayBuffer);
     }
-    async arrayFromBlob(args) {
-      return await new Response(args.blob).arrayBuffer();
+    queryHandlePermission(args) {
+      try {
+        let handle;
+        [handle] = args.handle;
+        return handle.queryPermission(JSON.parse(args.permissions))
+      } catch (err) {
+        return err;
+      }
+    }
+    isSameEntry(args) {
+      try {
+        let handle;
+        let Chandle;
+        [handle] = args.handle;
+        [Chandle] = args.Chandle;
+        return handle.isSameEntry(Chandle)
+      } catch (err) {
+        return err;
+      }
+    }
+    remove(args) {
+      let handle;
+      [handle] = args.handle;
+      handle.remove()
+    }
+    requestHandlePermission(args) {
+      let handle;
+      [handle] = args.handle;
+      handle.requestPermission(JSON.parse(args.permissions))
+    }
+    kind(args) {
+      try {
+        let handle;
+        [handle] = args.handle;
+        return handle.kind;
+      } catch (err) {
+        return err;
+      }
+    }
+    name(args) {
+      try {
+        let handle;
+        [handle] = args.handle;
+        return handle.name;
+      } catch (err) {
+        return err;
+      }
     }
   }
   Scratch.extensions.register(new rtpfsaapi());
