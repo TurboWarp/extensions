@@ -2,7 +2,6 @@
 // ID: strings
 // Description: Manipulate characters and text.
 // By: CST1229 <https://scratch.mit.edu/users/CST1229/>
-// By: BludIsAnLemon <https://scratch.mit.edu/users/BludIsAnLemon/>
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {
@@ -375,76 +374,92 @@
           },
 
           "---",
-
           {
-            opcode: 'endsAt',
+            opcode: "posWith",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate('[STRING] ends with [SUBSTRING]?'),
+            text: Scratch.translate('[STRING] [POSITION]s with [SUBSTRING]?'),
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'apple'
+                defaultValue: "turbowarp",
+              },
+              POSITION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "positions",
               },
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'banana'
-              }
-            }
+                defaultValue: "turbo",
+              },
+            },
           },
 
           "---",
 
           {
-            opcode: 'backwards',
+            opcode: "reverse",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('[STRING] backwards'),
+            text: Scratch.translate("reverse text [STRING]"),
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'apple'
-              }
-            }
+                defaultValue: Scratch.translate("apple"),
+              },
+            },
           },
 
           "---",
 
           {
-            opcode: 'trim',
+            opcode: "trim",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('trim [STRING] at [METHOD]'),
+            text: Scratch.translate("trim whitespace [STRING] from [METHOD]"),
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '   apple   '
+                defaultValue: `\t${Scratch.translate("apple")}\t`,
               },
               METHOD: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "trimMethod"
-              }
-            }
-          }
+                menu: "trimMethod",
+              },
+            },
+          },
         ],
         menus: {
           textCase: {
             acceptReporters: true,
             items: this._initCaseMenu(),
           },
+          positions: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("start"),
+                value: "starts",
+              },
+              {
+                text: Scratch.translate("end"),
+                value: "ends",
+              },
+            ],
+          },
           trimMethod: {
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate('both sides'),
-                value: 'both'
+                text: Scratch.translate("both sides"),
+                value: "both",
               },
               {
-                text: Scratch.translate('the end'),
-                value: 'front'
+                text: Scratch.translate("the end"),
+                value: "end",
               },
               {
-                text: Scratch.translate('the start'),
-                value: 'back'
-              }
-            ]
+                text: Scratch.translate("the start"),
+                value: "start",
+              },
+            ],
           }
         },
       };
@@ -681,26 +696,27 @@
           return string;
       }
     }
-    endsAt(args) {
-      let STRING = args.STRING
-      return STRING.endsWith(args.SUBSTRING);
+    posWith(args) {
+      const STRING = args.STRING.toString();
+      const SUBSTRING = args.SUBSTRING.toString();
+      if (args.POSITION.toString() === "starts") {
+        return STRING.startsWith(SUBSTRING);
+      }
+      return STRING.endsWith(SUBSTRING);
     }
-    backwards(args) {
-      let backwardsText = Array.from(args.STRING);
-      backwardsText.reverse();
-      return backwardsText.join('');
+    reverse(args) {
+      return Array.from(args.STRING.toString()).reverse().join("");
     }
     trim(args) {
-      let method = args.METHOD;
-      let STRING = args.STRING;
-      if(method == "both") {
-        return STRING.trim();
-      } else if(method == "front") {
-        return STRING.trimEnd();
-      } else if(method == "back") {
-        return STRING.trimStart();
-      } else {
-        return 'Please select a valid method!';
+      const STRING = args.STRING.toString();
+      switch(args.METHOD.toString()) {
+        case "start":
+          return STRING.trimStart();
+        case "end":
+          return STRING.trimEnd();
+        case "both":
+        default:
+          return STRING.trim();
       }
     }
   }
