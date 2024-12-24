@@ -57,7 +57,9 @@
         _resolve(text);
         Scratch.vm.renderer.removeOverlay(outer);
         Scratch.vm.runtime.off("PROJECT_STOP_ALL", handleProjectStopped);
-        document.body.removeEventListener("keydown", handleKeyDown);
+        document.body.removeEventListener("keydown", handleKeyDown, {
+          capture: true,
+        });
       };
 
       let isReadingFile = false;
@@ -233,10 +235,7 @@
   const downloadBlob = (blob, file) => {
     const url = URL.createObjectURL(blob);
     downloadURL(url, file);
-    // Some old browsers process Blob URLs asynchronously
-    setTimeout(() => {
-      URL.revokeObjectURL(url);
-    }, 1000);
+    URL.revokeObjectURL(url);
   };
 
   /**
