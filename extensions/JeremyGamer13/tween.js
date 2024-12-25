@@ -9,7 +9,6 @@
   const BlockType = Scratch.BlockType;
   const ArgumentType = Scratch.ArgumentType;
   const Cast = Scratch.Cast;
-  const vm = Scratch.vm;
 
   const regeneratedReporters = ["jeremygamerTweening_changeV"];
   if (Scratch.gui) Scratch.gui.getBlockly().then(SB => {
