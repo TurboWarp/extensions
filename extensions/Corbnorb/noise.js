@@ -1,5 +1,5 @@
 // Name: Noise
-// ID: noise
+// ID: noise-corbnorb
 // Description: Adds many types of noises using FastNoiseLite
 // By: Corbnorbs <https://scratch.mit.edu/users/___DemonZ___/>
 // Original: Auburn
@@ -8,12 +8,12 @@
 (function (Scratch) {
   "use strict";
 
-  let noises = new Object();
+  const noises = Object.create(null);
 
   const BlockType = Scratch.BlockType;
   const ArgumentType = Scratch.ArgumentType;
 
-  class PerlinNoise {
+  class Noise {
     constructor() {
       this.noiseSeed = 0;
       this.worleySeed = 0;
@@ -22,7 +22,7 @@
 
     getInfo() {
       return {
-        id: "noise",
+        id: "noise-corbnorb",
         name: "Noise",
         color1: "#b5074c",
         color2: "#990841",
@@ -731,7 +731,7 @@
      * @returns {number}
      */
     static _CubicLerp(a, b, c, d, t) {
-      let p = d - c - (a - b);
+      const p = d - c - (a - b);
       return t * t * t * p + t * t * (a - b - p) + t * (c - a) + b;
     }
 
@@ -3461,5 +3461,5 @@
     }
   }
 
-  Scratch.extensions.register(new PerlinNoise());
+  Scratch.extensions.register(new Noise());
 })((window.Scratch = window.Scratch || {}));
