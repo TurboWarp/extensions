@@ -10,23 +10,15 @@
   const ArgumentType = Scratch.ArgumentType;
   const Cast = Scratch.Cast;
   const vm = Scratch.vm;
+
   const regeneratedReporters = ["jeremygamerTweening_changeV"];
-
-  vm.on("EXTENSION_ADDED", tryUseScratchBlocks);
-  vm.on("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
-
-  tryUseScratchBlocks();
-  function tryUseScratchBlocks() {
-    if (!window.ScratchBlocks) return;
-    vm.removeListener("EXTENSION_ADDED", tryUseScratchBlocks);
-    vm.removeListener("BLOCKSINFO_UPDATE", tryUseScratchBlocks);
-    const originalCheck = ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter;
-    ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
-      const result = originalCheck(block);
-      if (result) return true;
+  if (Scratch.gui) Scratch.gui.getBlockly().then(SB => {
+    const originalCheck = SB.scratchBlocksUtils.isShadowArgumentReporter;
+    SB.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
+      if (originalCheck(block)) return true;
       return block.isShadow() && regeneratedReporters.includes(block.type);
     };
-  }
+  });
 
   /**
    * @param {number} time should be 0-1
@@ -612,7 +604,7 @@
       } else {
         const progress = (now() - state.startTimeMS) / state.durationMS;
         const tweened = state.easingFunction(progress, state.easeDirection);
-        util.thread.stackFrames[0].TweenPars.val =  interpolate(tweened, state.start, state.end);
+        util.thread.stackFrames[0].TweenPars.val = interpolate(tweened, state.start, state.end);
         if (util.stackFrame[id].durationMS !== "stop") util.startBranch(1, true);
       }
     }
