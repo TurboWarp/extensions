@@ -413,7 +413,7 @@
           {
             opcode: "blocktx",
             blockType: Scratch.BlockType.REPORTER,
-            text: "stage to world x: [x]",
+            text: Scratch.translate("stage to world x: [x]"),
             arguments: {
               x: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -424,7 +424,7 @@
           {
             opcode: "blockty",
             blockType: Scratch.BlockType.REPORTER,
-            text: "stage to world y: [y]",
+            text: Scratch.translate("stage to world y: [y]"),
             arguments: {
               y: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -568,10 +568,10 @@
       return cameraDirection;
     }
     blocktx(args) {
-      return _translateX(args.x);
+      return _translateX(Scratch.Cast.toNumber(args.x));
     }
     blockty(args) {
-      return _translateY(args.y);
+      return _translateY(Scratch.Cast.toNumber(args.y));
     }
     setCol(args, util) {
       cameraBG = args.val;
