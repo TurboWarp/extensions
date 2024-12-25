@@ -14,7 +14,6 @@
   const ArgumentType = Scratch.ArgumentType;
 
   class Noise {
-
     getInfo() {
       return {
         id: "noise-corbnorb",
@@ -26,7 +25,9 @@
           {
             opcode: "initNoise",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate("create noise id:[ID] seed:[SEED] type:[TYPE] octaves:[OCTAVES] frequency:[FREQUENCY] fractal:[FRACTAL] inverted?[INVERTED] easing:[EASING]"),
+            text: Scratch.translate(
+              "create noise id:[ID] seed:[SEED] type:[TYPE] octaves:[OCTAVES] frequency:[FREQUENCY] fractal:[FRACTAL] inverted?[INVERTED] easing:[EASING]"
+            ),
             arguments: {
               ID: {
                 type: ArgumentType.STRING,
