@@ -1,6 +1,6 @@
 // Name: Noise
 // ID: noise-corbnorb
-// Description: Adds many types of noises using FastNoiseLite
+// Description: Adds many types of noises using FastNoiseLite.
 // By: Corbnorbs <https://scratch.mit.edu/users/___DemonZ___/>
 // Original: Auburn
 // License: MPL-2.0
@@ -14,16 +14,11 @@
   const ArgumentType = Scratch.ArgumentType;
 
   class Noise {
-    constructor() {
-      this.noiseSeed = 0;
-      this.worleySeed = 0;
-      this.time = performance.now();
-    }
 
     getInfo() {
       return {
         id: "noise-corbnorb",
-        name: "Noise",
+        name: Scratch.translate("Noise"),
         color1: "#b5074c",
         color2: "#990841",
         docsURI: "https://extensions.turbowarp.org/Corbnorb/noise",
@@ -31,7 +26,7 @@
           {
             opcode: "initNoise",
             blockType: BlockType.COMMAND,
-            text: "create noise id:[ID] seed:[SEED] type:[TYPE] octaves:[OCTAVES] frequency:[FREQUENCY] fractal:[FRACTAL] inverted?[INVERTED] easing:[EASING]",
+            text: Scratch.translate("create noise id:[ID] seed:[SEED] type:[TYPE] octaves:[OCTAVES] frequency:[FREQUENCY] fractal:[FRACTAL] inverted?[INVERTED] easing:[EASING]"),
             arguments: {
               ID: {
                 type: ArgumentType.STRING,
@@ -74,7 +69,7 @@
           {
             opcode: "getNoise",
             blockType: BlockType.REPORTER,
-            text: "get noise id:[ID] at x:[X] y:[Y] z:[Z]",
+            text: Scratch.translate("get noise id:[ID] at x:[X] y:[Y] z:[Z]"),
             arguments: {
               ID: {
                 type: ArgumentType.STRING,
@@ -3462,4 +3457,4 @@
   }
 
   Scratch.extensions.register(new Noise());
-})((window.Scratch = window.Scratch || {}));
+})(Scratch);
