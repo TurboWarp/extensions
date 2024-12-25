@@ -1,7 +1,7 @@
 // Name: Text
 // ID: strings
 // Description: Manipulate characters and text.
-// By: CST1229 <https://scratch.mit.edu/users/CST1229/>
+// Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {
@@ -417,7 +417,7 @@
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: `\t${Scratch.translate("apple")}\t`,
+                defaultValue: `    ${Scratch.translate("apple")}    `,
               },
               METHOD: {
                 type: Scratch.ArgumentType.STRING,
