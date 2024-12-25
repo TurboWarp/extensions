@@ -15,7 +15,7 @@
     EXACTTITLECASE: "exacttitlecase",
     RANDOMCASE: "randomcase",
     SENTENCECASE: "sentencecase",
-    CAMELCASE: "camelcase"
+    CAMELCASE: "camelcase",
   };
 
   let splitCache;
@@ -43,7 +43,8 @@
         {
           text: Scratch.translate({
             default: "Sentence case",
-            description: "Starts words after ., !, and ? with captialized letters",
+            description:
+              "Starts words after ., !, and ? with captialized letters",
           }),
           value: CaseParam.SENTENCECASE,
         },
@@ -74,14 +75,16 @@
         {
           text: Scratch.translate({
             default: "RAndoMCaSe",
-            description: "If your language has randomcase, style it accordingly",
+            description:
+              "If your language has randomcase, style it accordingly",
           }),
           value: CaseParam.RANDOMCASE,
         },
         {
           text: Scratch.translate({
             default: "camelCase",
-            description: "Removes all spaces and capitalizes all words after the first",
+            description:
+              "Removes all spaces and capitalizes all words after the first",
           }),
           value: CaseParam.CAMELCASE,
         },
@@ -211,33 +214,33 @@
             },
           },
           {
-            opcode: 'surround',
+            opcode: "surround",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("surround [TEXT] with [QUOTE]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple"
+                defaultValue: "apple",
               },
               QUOTE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "QUOTES" 
-              }
+                menu: "QUOTES",
+              },
             },
           },
 
           {
-            opcode: 'reverse',
+            opcode: "reverse",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("reverse [TEXT]"),
             arguments: {
-                TEXT: { 
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: "apple"
-                }
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "apple",
+              },
             },
           },
-          
+
           "---",
 
           {
@@ -484,7 +487,7 @@
           },
           quotes: {
             acceptReporters: true,
-            items: ["\"", "'", "`", "-", "*", "()", "{}", "[]", "<>", "^$"],
+            items: ['"', "'", "`", "-", "*", "()", "{}", "[]", "<>", "^$"],
           },
           positions: {
             acceptReporters: true,
@@ -727,7 +730,7 @@
       const string = args.STRING.toString();
       const textCase = args.TEXTCASE.toString();
       let sum = "";
-      let capflag = false
+      let capflag = false;
       switch (textCase) {
         case CaseParam.LOWERCASE:
           return string.toLowerCase();
@@ -757,33 +760,37 @@
             .join("");
         case CaseParam.SENTENCECASE:
           for (let i = 0; i < string.length; i++) {
-              if (/^\s*$/.test(string[i-1] ?? " ") && !capflag && string[i].toUpperCase() != string[i].toLowerCase()) {
-                  sum +=string[i].toUpperCase();
-                  capflag = true
-              } else {
-                  if (string[i] == "." || string[i] == "!" || string[i] == "?") {
-                      capflag = false
-                  }
-                  sum += string[i].toLowerCase();
+            if (
+              /^\s*$/.test(string[i - 1] ?? " ") &&
+              !capflag &&
+              string[i].toUpperCase() != string[i].toLowerCase()
+            ) {
+              sum += string[i].toUpperCase();
+              capflag = true;
+            } else {
+              if (string[i] == "." || string[i] == "!" || string[i] == "?") {
+                capflag = false;
               }
+              sum += string[i].toLowerCase();
+            }
           }
           return sum;
         case CaseParam.RANDOMCASE:
           for (let i = 0; i < string.length; i++) {
-              if (Math.random()>0.5) {
-                  sum += string[i].toUpperCase()
-              } else {
-                  sum += string[i].toLowerCase()
-              }
+            if (Math.random() > 0.5) {
+              sum += string[i].toUpperCase();
+            } else {
+              sum += string[i].toLowerCase();
+            }
           }
           return sum;
         case CaseParam.CAMELCASE:
           for (let i = 0; i < string.length; i++) {
-              if (/^\s*$/.test(string[i-1] ?? "x")) {
-                  sum += string[i].toUpperCase();
-              } else {
-                  sum += string[i].toLowerCase();
-              }
+            if (/^\s*$/.test(string[i - 1] ?? "x")) {
+              sum += string[i].toUpperCase();
+            } else {
+              sum += string[i].toLowerCase();
+            }
           }
           return sum.replace(/\s/g, "");
         default:
@@ -791,13 +798,13 @@
       }
     }
     surround(args) {
-        if (args.QUOTE.length == 0) {
-            return args.TEXT;
-        } else if (args.QUOTE.length == 1) {
-            return args.QUOTE + args.TEXT + args.QUOTE;
-        } else if (args.QUOTE.length > 1) {
-            return args.QUOTE[0] + args.TEXT + args.QUOTE[1];
-        }
+      if (args.QUOTE.length == 0) {
+        return args.TEXT;
+      } else if (args.QUOTE.length == 1) {
+        return args.QUOTE + args.TEXT + args.QUOTE;
+      } else if (args.QUOTE.length > 1) {
+        return args.QUOTE[0] + args.TEXT + args.QUOTE[1];
+      }
     }
     posWith(args) {
       const STRING = args.STRING.toString();
