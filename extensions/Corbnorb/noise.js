@@ -454,13 +454,14 @@
 
         switch (this._NoiseType) {
           case FastNoiseLite.NoiseType.OpenSimplex2:
-          case FastNoiseLite.NoiseType.OpenSimplex2S:
+          case FastNoiseLite.NoiseType.OpenSimplex2S: {
             const SQRT3 = 1.7320508075688772935274463415059;
             const F2 = 0.5 * (SQRT3 - 1);
             let t = (x + y) * F2;
             x += t;
             y += t;
             break;
+          }
           default:
             break;
         }
@@ -508,13 +509,14 @@
             y += xz * 0.577350269189626;
             break;
           }
-          case FastNoiseLite.TransformType3D.DefaultOpenSimplex2:
+          case FastNoiseLite.TransformType3D.DefaultOpenSimplex2: {
             const R3 = 2.0 / 3.0;
             let r = (x + y + z) * R3;
             x = r - x;
             y = r - y;
             z = r - z;
             break;
+          }
           default:
             break;
         }
@@ -1329,7 +1331,7 @@
     _SingleOpenSimplex2SR2(seed, x, y) {
       // 2D OpenSimplex2S case is a modified 2D simplex noise.
 
-      const SQRT3 = 1.7320508075688772935274463415059;
+      const SQRT3 = 1.7320508075688772;
       const G2 = (3 - SQRT3) / 6;
 
       /*
@@ -2633,13 +2635,14 @@
         let ys = coord.y;
         switch (this._DomainWarpType) {
           case FastNoiseLite.DomainWarpType.OpenSimplex2:
-          case FastNoiseLite.DomainWarpType.OpenSimplex2Reduced:
-            const SQRT3 = 1.7320508075688772935274463415059;
+          case FastNoiseLite.DomainWarpType.OpenSimplex2Reduced: {
+            const SQRT3 = 1.7320508075688772;
             const F2 = 0.5 * (SQRT3 - 1);
             let t = (xs + ys) * F2;
             xs += t;
             ys += t;
             break;
+          }
           default:
             break;
         }
@@ -2681,13 +2684,14 @@
               ys += xz * 0.577350269189626;
             }
             break;
-          case FastNoiseLite.TransformType3D.DefaultOpenSimplex2:
+          case FastNoiseLite.TransformType3D.DefaultOpenSimplex2: {
             const R3 = 2.0 / 3.0;
             let r = (xs + ys + zs) * R3; // Rotation, not skew
             xs = r - xs;
             ys = r - ys;
             zs = r - zs;
             break;
+          }
           default:
             break;
         }
@@ -2719,13 +2723,14 @@
           let ys = coord.y;
           switch (this._DomainWarpType) {
             case FastNoiseLite.DomainWarpType.OpenSimplex2:
-            case FastNoiseLite.DomainWarpType.OpenSimplex2Reduced:
+            case FastNoiseLite.DomainWarpType.OpenSimplex2Reduced: {
               const SQRT3 = 1.7320508075688772935274463415059;
               const F2 = 0.5 * (SQRT3 - 1);
               let t = (xs + ys) * F2;
               xs += t;
               ys += t;
               break;
+            }
             default:
               break;
           }
@@ -2815,13 +2820,14 @@
         let ys = coord.y;
         switch (this._DomainWarpType) {
           case FastNoiseLite.DomainWarpType.OpenSimplex2:
-          case FastNoiseLite.DomainWarpType.OpenSimplex2Reduced:
-            const SQRT3 = 1.7320508075688772935274463415059;
+          case FastNoiseLite.DomainWarpType.OpenSimplex2Reduced: {
+            const SQRT3 = 1.7320508075688772;
             const F2 = 0.5 * (SQRT3 - 1);
             let t = (xs + ys) * F2;
             xs += t;
             ys += t;
             break;
+          }
           default:
             break;
         }
@@ -3122,7 +3128,7 @@
        * @param {number} y
        */
       let R2 = (seed, warpAmp, frequency, coord, outGradOnly, x, y) => {
-        const SQRT3 = 1.7320508075688772935274463415059;
+        const SQRT3 = 1.7320508075688772;
         const G2 = (3 - SQRT3) / 6;
 
         x *= frequency;
