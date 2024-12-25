@@ -437,6 +437,59 @@
               },
             },
           },
+
+          "---",
+          {
+            opcode: "posWith",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("[STRING] [POSITION]s with [SUBSTRING]?"),
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "turbowarp",
+              },
+              POSITION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "positions",
+              },
+              SUBSTRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "turbo",
+              },
+            },
+          },
+
+          "---",
+
+          {
+            opcode: "reverse",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("reverse text [STRING]"),
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("apple"),
+              },
+            },
+          },
+
+          "---",
+
+          {
+            opcode: "trim",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("trim whitespace [STRING] from [METHOD]"),
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: `    ${Scratch.translate("apple")}    `,
+              },
+              METHOD: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "trimMethod",
+              },
+            },
+          },
         ],
         menus: {
           textCase: {
@@ -446,6 +499,36 @@
           quotes: {
             acceptReporters: true,
             items: ["\"", "'", "`", "-", "*", "()", "{}", "[]", "<>", "^$"],
+          },
+          positions: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("start"),
+                value: "starts",
+              },
+              {
+                text: Scratch.translate("end"),
+                value: "ends",
+              },
+            ],
+          },
+          trimMethod: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("both sides"),
+                value: "both",
+              },
+              {
+                text: Scratch.translate("the end"),
+                value: "end",
+              },
+              {
+                text: Scratch.translate("the start"),
+                value: "start",
+              },
+            ],
           },
         },
       };
@@ -721,7 +804,6 @@
           return string;
       }
     }
-
     surround(args) {
         if (args.QUOTE.length == 0) {
             return args.TEXT;
@@ -731,14 +813,28 @@
             return args.QUOTE[0] + args.TEXT + args.QUOTE[1];
         }
     }
-    enter() {
-      return "\n";
-    }
-    tab() {
-      return "    ";
+    posWith(args) {
+      const STRING = args.STRING.toString();
+      const SUBSTRING = args.SUBSTRING.toString();
+      if (args.POSITION.toString() === "starts") {
+        return STRING.startsWith(SUBSTRING);
+      }
+      return STRING.endsWith(SUBSTRING);
     }
     reverse(args) {
-      return args.TEXT.split("").reverse().join("");
+      return Array.from(args.STRING.toString()).reverse().join("");
+    }
+    trim(args) {
+      const STRING = args.STRING.toString();
+      switch (args.METHOD.toString()) {
+        case "start":
+          return STRING.trimStart();
+        case "end":
+          return STRING.trimEnd();
+        case "both":
+        default:
+          return STRING.trim();
+      }
     }
   }
 

@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.2.0
+// Version: 1.2.1
 
 (function (Scratch) {
   "use strict";
@@ -351,6 +351,15 @@
       if (b) {
         gl.scissor(b.x, b.y, b.w, b.h);
       }
+    }
+    getReadarea() {
+      if (this.readarea) return this.readarea;
+      return {
+        x: 0,
+        y: 0,
+        w: this.width,
+        h: this.height,
+      };
     }
     updateDepth() {
       if (this.depthTest == "everything" && !this.depthWrite) {
@@ -1832,7 +1841,10 @@ void main() {
       text: "Open extra resources",
       func: "openSite",
       def: function () {
-        Scratch.openWindow("https://xeltalliv.github.io/simple3d-extension/");
+        // Exempted from Scratch.openWindow as initiated by user gesture.
+        // docsURI won't ask for permission so it doesn't make sense for this to either.
+        // eslint-disable-next-line no-restricted-syntax
+        window.open("https://xeltalliv.github.io/simple3d-extension/");
       },
     },
     {
@@ -4310,7 +4322,7 @@ void main() {
         );
         if (!list) return;
         if (!currentRenderTarget.checkIfValid()) return;
-        const { x, y, w, h } = currentRenderTarget.readarea;
+        const { x, y, w, h } = currentRenderTarget.getReadarea();
         if (w == 0 || h == 0) return;
         const pixels = new Uint8ClampedArray(w * h * 4);
         gl.readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
@@ -4344,7 +4356,7 @@ void main() {
           return currentRenderTarget.hasDepthBuffer;
         if (PROPERTY == "image as data URI") {
           if (!currentRenderTarget.checkIfValid()) return "";
-          const { x, y, w, h } = currentRenderTarget.readarea;
+          const { x, y, w, h } = currentRenderTarget.getReadarea();
           if (w == 0 || h == 0) return "";
           const pixels = new Uint8ClampedArray(w * h * 4);
           gl.readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
