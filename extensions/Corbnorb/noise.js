@@ -1,3 +1,11 @@
+// Name: Noise
+// ID: noise
+// Description: Adds many types of noises using FastNoiseLite
+// By: Corbnorbs <https://scratch.mit.edu/users/___DemonZ___/>
+// Original: Auburn
+// License: MPL-2.0
+
+
 let noises = new Object();
 
 const BlockType = Scratch.BlockType;
