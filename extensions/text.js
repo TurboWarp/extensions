@@ -229,18 +229,6 @@
             },
           },
 
-          {
-            opcode: "reverse",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("reverse [TEXT]"),
-            arguments: {
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple",
-              },
-            },
-          },
-
           "---",
 
           {
