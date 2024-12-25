@@ -455,7 +455,7 @@
         switch (this._NoiseType) {
           case FastNoiseLite.NoiseType.OpenSimplex2:
           case FastNoiseLite.NoiseType.OpenSimplex2S: {
-            const SQRT3 = 1.7320508075688772935274463415059;
+            const SQRT3 = 1.7320508075688772;
             const F2 = 0.5 * (SQRT3 - 1);
             let t = (x + y) * F2;
             x += t;
@@ -1131,7 +1131,7 @@
      * @returns {number}
      */
     _SingleOpenSimplex2R2(seed, x, y) {
-      const SQRT3 = 1.7320508075688772935274463415059;
+      const SQRT3 = 1.7320508075688772;
       const G2 = (3 - SQRT3) / 6;
 
       let i = Math.floor(x);
@@ -2724,7 +2724,7 @@
           switch (this._DomainWarpType) {
             case FastNoiseLite.DomainWarpType.OpenSimplex2:
             case FastNoiseLite.DomainWarpType.OpenSimplex2Reduced: {
-              const SQRT3 = 1.7320508075688772935274463415059;
+              const SQRT3 = 1.7320508075688772;
               const F2 = 0.5 * (SQRT3 - 1);
               let t = (xs + ys) * F2;
               xs += t;
