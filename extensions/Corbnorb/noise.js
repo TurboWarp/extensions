@@ -120,6 +120,14 @@
     }
 
     initNoise(args) {
+      args.ID = Scratch.Cast.toString(args.ID);
+      args.SEED = Scratch.Cast.toNumber(args.SEED);
+      args.TYPE = Scratch.Cast.toString(args.TYPE);
+      args.OCTAVES = Scratch.Cast.toNumber(args.OCTAVES);
+      args.FREQUENCY = Scratch.Cast.toNumber(args.FREQUENCY);
+      args.FRACTAL = Scratch.Cast.toString(args.FRACTAL);
+      args.INVERTED = Scratch.Cast.toString(args.INVERTED);
+      args.EASING = Scratch.Cast.toString(args.EASING);
       noises[args.ID] = [new FastNoiseLite(args.SEED), 0, 0];
       switch (args.TYPE) {
         case "OpenSimplex2":
@@ -164,6 +172,10 @@
     }
 
     getNoise(args) {
+      args.ID = Scratch.Cast.toString(args.ID);
+      args.X = Scratch.Cast.toNumber(args.X);
+      args.Y = Scratch.Cast.toNumber(args.Y);
+      args.Z = Scratch.Cast.toNumber(args.Z);
       if (args.ID in noises) {
         let value = noises[args.ID][0].GetNoise(args.X, args.Y, args.Z);
         value = noises[args.ID][1] == "true" ? value : -value;
