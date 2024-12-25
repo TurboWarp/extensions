@@ -1,7 +1,7 @@
 // Name: Variable and list
 // ID: qxsckvarandlist
 // Description: More blocks related to variables and lists.
-// By: qxsck
+// By: qxsck <https://scratch.mit.edu/users/qxsck/>
 // License: MIT
 
 (function (Scratch) {

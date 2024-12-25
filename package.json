@@ -2,6 +2,9 @@
   "name": "@turbowarp/extensions",
   "version": "0.0.1",
   "description": "Unsandboxed extensions for TurboWarp",
+  "exports": {
+    "./builder": "./development/builder.js"
+  },
   "scripts": {
     "start": "node development/server.js",
     "dev": "node development/server.js",
@@ -25,17 +28,17 @@
     "@turbowarp/scratchblocks": "^3.6.5",
     "@turbowarp/types": "git+https://github.com/TurboWarp/types-tw.git#tw",
     "adm-zip": "^0.5.16",
-    "chokidar": "^3.6.0",
+    "chokidar": "^4.0.3",
     "ejs": "^3.1.10",
-    "express": "^4.21.1",
-    "image-size": "^1.1.1",
+    "express": "^4.21.2",
+    "image-size": "^1.2.0",
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
-    "eslint": "^9.12.0",
+    "eslint": "^9.17.0",
     "espree": "^9.6.1",
     "esquery": "^1.6.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.4.2",
     "spdx-expression-parse": "^4.0.0"
   },
   "private": true

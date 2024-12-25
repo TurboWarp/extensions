@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.1.0
+// Version: 1.2.1
 
 (function (Scratch) {
   "use strict";
@@ -67,66 +67,111 @@
         0, 0, b, 1
       ];
     },
-    translation(tx, ty, tz) {
-      return [
-        1,  0,  0,  0,
-        0,  1,  0,  0,
-        0,  0,  1,  0,
-        tx, ty, tz, 1,
-      ];
-    },
-    xRotation(angleInRadians) {
-      const c = Math.cos(angleInRadians);
-      const s = Math.sin(angleInRadians);
-      return [
-        1, 0, 0, 0,
-        0, c, s, 0,
-        0, -s, c, 0,
-        0, 0, 0, 1,
-      ];
-    },
-    yRotation(angleInRadians) {
-      const c = Math.cos(angleInRadians);
-      const s = Math.sin(angleInRadians);
-      return [
-        c, 0, -s, 0,
-        0, 1, 0, 0,
-        s, 0, c, 0,
-        0, 0, 0, 1,
-      ];
-    },
-    zRotation(angleInRadians) {
-      const c = Math.cos(angleInRadians);
-      const s = Math.sin(angleInRadians);
-      return [
-        c,  s, 0, 0,
-        -s, c, 0, 0,
-        0,  0, 1, 0,
-        0,  0, 0, 1,
-      ];
-    },
-    scaling(sx, sy, sz) {
-      return [
-        sx, 0,  0,  0,
-        0, sy,  0,  0,
-        0,  0, sz,  0,
-        0,  0,  0,  1,
-      ];
-    },
     translate(m, tx, ty, tz) {
-      return m4.multiply(m, m4.translation(tx, ty, tz));
+      return [
+        m[0],
+        m[1],
+        m[2],
+        m[3],
+        m[4],
+        m[5],
+        m[6],
+        m[7],
+        m[8],
+        m[9],
+        m[10],
+        m[11],
+        tx * m[0] + ty * m[4] + tz * m[8] + m[12],
+        tx * m[1] + ty * m[5] + tz * m[9] + m[13],
+        tx * m[2] + ty * m[6] + tz * m[10] + m[14],
+        tx * m[3] + ty * m[7] + tz * m[11] + m[15],
+      ];
     },
     xRotate(m, angleInRadians) {
-      return m4.multiply(m, m4.xRotation(angleInRadians));
+      const c = Math.cos(angleInRadians);
+      const s = Math.sin(angleInRadians);
+      return [
+        m[0],
+        m[1],
+        m[2],
+        m[3],
+        c * m[4] + s * m[8],
+        c * m[5] + s * m[9],
+        c * m[6] + s * m[10],
+        c * m[7] + s * m[11],
+        c * m[8]  - s * m[4],
+        c * m[9]  - s * m[5],
+        c * m[10] - s * m[6],
+        c * m[11] - s * m[7],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     yRotate(m, angleInRadians) {
-      return m4.multiply(m, m4.yRotation(angleInRadians));
+      const c = Math.cos(angleInRadians);
+      const s = Math.sin(angleInRadians);
+      return [
+        c * m[0] - s * m[8],
+        c * m[1] - s * m[9],
+        c * m[2] - s * m[10],
+        c * m[3] - s * m[11],
+        m[4],
+        m[5],
+        m[6],
+        m[7],
+        s * m[0] + c * m[8],
+        s * m[1] + c * m[9],
+        s * m[2] + c * m[10],
+        s * m[3] + c * m[11],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     zRotate(m, angleInRadians) {
-      return m4.multiply(m, m4.zRotation(angleInRadians));
+      const c = Math.cos(angleInRadians);
+      const s = Math.sin(angleInRadians);
+      return [
+        c * m[0] + s * m[4],
+        c * m[1] + s * m[5],
+        c * m[2] + s * m[6],
+        c * m[3] + s * m[7],
+        c * m[4] - s * m[0],
+        c * m[5] - s * m[1],
+        c * m[6] - s * m[2],
+        c * m[7] - s * m[3],
+        m[8],
+        m[9],
+        m[10],
+        m[11],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     scale(m, sx, sy, sz) {
-      return m4.multiply(m, m4.scaling(sx, sy, sz));
+      return [
+        sx * m[0],
+        sx * m[1],
+        sx * m[2],
+        sx * m[3],
+        sy * m[4],
+        sy * m[5],
+        sy * m[6],
+        sy * m[7],
+        sz * m[8],
+        sz * m[9],
+        sz * m[10],
+        sz * m[11],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     multiply(a, b) {
       const a00 = a[0 * 4 + 0];
@@ -197,10 +242,10 @@
       const a31 = a[3 * 4 + 1];
       const a32 = a[3 * 4 + 2];
       const a33 = a[3 * 4 + 3];
-      const b00 = b[0 * 4 + 0];
-      const b01 = b[0 * 4 + 1];
-      const b02 = b[0 * 4 + 2];
-      const b03 = b[0 * 4 + 3];
+      const b00 = b[0];
+      const b01 = b[1];
+      const b02 = b[2];
+      const b03 = b[3];
       return [
         b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30,
         b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31,
@@ -225,23 +270,24 @@
       ];
     },
     inverse: function(m) {
-      const inv = m4.zero();
-      inv[0]  =  m[5] * m[10] * m[15] - m[5]  * m[11] * m[14] - m[9]  * m[6] * m[15] + m[9] * m[7] * m[14] + m[13] * m[6] * m[11] - m[13] * m[7] * m[10];
-      inv[4]  = -m[4] * m[10] * m[15] + m[4]  * m[11] * m[14] + m[8]  * m[6] * m[15] - m[8] * m[7] * m[14] - m[12] * m[6] * m[11] + m[12] * m[7] * m[10];
-      inv[8]  =  m[4] * m[9]  * m[15] - m[4]  * m[11] * m[13] - m[8]  * m[5] * m[15] + m[8] * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[9];
-      inv[12] = -m[4] * m[9]  * m[14] + m[4]  * m[10] * m[13] + m[8]  * m[5] * m[14] - m[8] * m[6] * m[13] - m[12] * m[5] * m[10] + m[12] * m[6] * m[9];
-      inv[1]  = -m[1] * m[10] * m[15] + m[1]  * m[11] * m[14] + m[9]  * m[2] * m[15] - m[9] * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10];
-      inv[5]  =  m[0] * m[10] * m[15] - m[0]  * m[11] * m[14] - m[8]  * m[2] * m[15] + m[8] * m[3] * m[14] + m[12] * m[2] * m[11] - m[12] * m[3] * m[10];
-      inv[9]  = -m[0] * m[9]  * m[15] + m[0]  * m[11] * m[13] + m[8]  * m[1] * m[15] - m[8] * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[9];
-      inv[13] =  m[0] * m[9]  * m[14] - m[0]  * m[10] * m[13] - m[8]  * m[1] * m[14] + m[8] * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[9];
-      inv[2]  =  m[1] * m[6]  * m[15] - m[1]  * m[7]  * m[14] - m[5]  * m[2] * m[15] + m[5] * m[3] * m[14] + m[13] * m[2] * m[7]  - m[13] * m[3] * m[6];
-      inv[6]  = -m[0] * m[6]  * m[15] + m[0]  * m[7]  * m[14] + m[4]  * m[2] * m[15] - m[4] * m[3] * m[14] - m[12] * m[2] * m[7]  + m[12] * m[3] * m[6];
-      inv[10] =  m[0] * m[5]  * m[15] - m[0]  * m[7]  * m[13] - m[4]  * m[1] * m[15] + m[4] * m[3] * m[13] + m[12] * m[1] * m[7]  - m[12] * m[3] * m[5];
-      inv[14] = -m[0] * m[5]  * m[14] + m[0]  * m[6]  * m[13] + m[4]  * m[1] * m[14] - m[4] * m[2] * m[13] - m[12] * m[1] * m[6]  + m[12] * m[2] * m[5];
-      inv[3]  = -m[1] * m[6]  * m[11] + m[1]  * m[7]  * m[10] + m[5]  * m[2] * m[11] - m[5] * m[3] * m[10] - m[9]  * m[2] * m[7]  + m[9]  * m[3] * m[6];
-      inv[7]  =  m[0] * m[6]  * m[11] - m[0]  * m[7]  * m[10] - m[4]  * m[2] * m[11] + m[4] * m[3] * m[10] + m[8]  * m[2] * m[7]  - m[8]  * m[3] * m[6];
-      inv[11] = -m[0] * m[5]  * m[11] + m[0]  * m[7]  * m[9]  + m[4]  * m[1] * m[11] - m[4] * m[3] * m[9]  - m[8]  * m[1] * m[7]  + m[8]  * m[3] * m[5];
-      inv[15] =  m[0] * m[5]  * m[10] - m[0]  * m[6]  * m[9]  - m[4]  * m[1] * m[10] + m[4] * m[2] * m[9]  + m[8]  * m[1] * m[6]  - m[8]  * m[2] * m[5];
+      const inv = [
+         m[5] * m[10] * m[15] - m[5]  * m[11] * m[14] - m[9]  * m[6] * m[15] + m[9] * m[7] * m[14] + m[13] * m[6] * m[11] - m[13] * m[7] * m[10],
+        -m[1] * m[10] * m[15] + m[1]  * m[11] * m[14] + m[9]  * m[2] * m[15] - m[9] * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10],
+         m[1] * m[6]  * m[15] - m[1]  * m[7]  * m[14] - m[5]  * m[2] * m[15] + m[5] * m[3] * m[14] + m[13] * m[2] * m[7]  - m[13] * m[3] * m[6],
+        -m[1] * m[6]  * m[11] + m[1]  * m[7]  * m[10] + m[5]  * m[2] * m[11] - m[5] * m[3] * m[10] - m[9]  * m[2] * m[7]  + m[9]  * m[3] * m[6],
+        -m[4] * m[10] * m[15] + m[4]  * m[11] * m[14] + m[8]  * m[6] * m[15] - m[8] * m[7] * m[14] - m[12] * m[6] * m[11] + m[12] * m[7] * m[10],
+         m[0] * m[10] * m[15] - m[0]  * m[11] * m[14] - m[8]  * m[2] * m[15] + m[8] * m[3] * m[14] + m[12] * m[2] * m[11] - m[12] * m[3] * m[10],
+        -m[0] * m[6]  * m[15] + m[0]  * m[7]  * m[14] + m[4]  * m[2] * m[15] - m[4] * m[3] * m[14] - m[12] * m[2] * m[7]  + m[12] * m[3] * m[6],
+         m[0] * m[6]  * m[11] - m[0]  * m[7]  * m[10] - m[4]  * m[2] * m[11] + m[4] * m[3] * m[10] + m[8]  * m[2] * m[7]  - m[8]  * m[3] * m[6],
+         m[4] * m[9]  * m[15] - m[4]  * m[11] * m[13] - m[8]  * m[5] * m[15] + m[8] * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[9],
+        -m[0] * m[9]  * m[15] + m[0]  * m[11] * m[13] + m[8]  * m[1] * m[15] - m[8] * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[9],
+         m[0] * m[5]  * m[15] - m[0]  * m[7]  * m[13] - m[4]  * m[1] * m[15] + m[4] * m[3] * m[13] + m[12] * m[1] * m[7]  - m[12] * m[3] * m[5],
+        -m[0] * m[5]  * m[11] + m[0]  * m[7]  * m[9]  + m[4]  * m[1] * m[11] - m[4] * m[3] * m[9]  - m[8]  * m[1] * m[7]  + m[8]  * m[3] * m[5],
+        -m[4] * m[9]  * m[14] + m[4]  * m[10] * m[13] + m[8]  * m[5] * m[14] - m[8] * m[6] * m[13] - m[12] * m[5] * m[10] + m[12] * m[6] * m[9],
+         m[0] * m[9]  * m[14] - m[0]  * m[10] * m[13] - m[8]  * m[1] * m[14] + m[8] * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[9],
+        -m[0] * m[5]  * m[14] + m[0]  * m[6]  * m[13] + m[4]  * m[1] * m[14] - m[4] * m[2] * m[13] - m[12] * m[1] * m[6]  + m[12] * m[2] * m[5],
+         m[0] * m[5]  * m[10] - m[0]  * m[6]  * m[9]  - m[4]  * m[1] * m[10] + m[4] * m[2] * m[9]  + m[8]  * m[1] * m[6]  - m[8]  * m[2] * m[5]
+      ];
       const det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
       if (det == 0) return m4.zero();
       const invDet = 1 / det;
@@ -276,15 +322,44 @@
   class RenderTarget {
     constructor() {
       this.destroyed = false;
+      this.viewport = null;
+      this.scissors = null;
+      this.readarea = null;
     }
     setAsRenderTarget() {
       currentRenderTarget = this;
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.getFramebuffer());
       this.updateViewport();
       this.updateDepth();
+      this.updateScissorsEnabled();
+    }
+    updateScissorsEnabled() {
+      if (this.scissors) {
+        gl.enable(gl.SCISSOR_TEST);
+      } else {
+        gl.disable(gl.SCISSOR_TEST);
+      }
     }
     updateViewport() {
-      gl.viewport(0, 0, this.width, this.height);
+      const a = this.viewport;
+      const b = this.scissors;
+      if (a) {
+        gl.viewport(a.x, a.y, a.w, a.h);
+      } else {
+        gl.viewport(0, 0, this.width, this.height);
+      }
+      if (b) {
+        gl.scissor(b.x, b.y, b.w, b.h);
+      }
+    }
+    getReadarea() {
+      if (this.readarea) return this.readarea;
+      return {
+        x: 0,
+        y: 0,
+        w: this.width,
+        h: this.height,
+      };
     }
     updateDepth() {
       if (this.depthTest == "everything" && !this.depthWrite) {
@@ -651,6 +726,25 @@
       if (length == -1) return false;
       return true;
     }
+    estimateListVRAM() {
+      let sum = 0;
+      for (const name in this.myBuffers) {
+        const buffer = this.myBuffers[name];
+        sum += buffer.length * buffer.size * buffer.bytesPerEl;
+      }
+      return sum;
+    }
+    estimateTextureVRAM() {
+      const texture = this.myData.texture;
+      if (!texture) return 0;
+      let pixelsVRAM = texture.width * texture.height * 4;
+      if (texture.hasDepthBuffer) pixelsVRAM *= 2;
+      if (texture instanceof TextureCube) pixelsVRAM *= 6;
+      return pixelsVRAM;
+    }
+    estimateVRAM() {
+      return this.estimateListVRAM() + this.estimateTextureVRAM();
+    }
     destroy() {
       for (let name in this.myBuffers) {
         this.myBuffers[name].destroy();
@@ -713,10 +807,14 @@
       mesh.data.drawRange && mesh.data.drawRange[0] + mesh.data.drawRange[1],
     "vertex draw range length": (mesh) =>
       mesh.data.drawRange && mesh.data.drawRange[1],
+    "instance draw limit": (mesh) => mesh.data.maxInstances ?? Infinity,
 
     "partial list update enabled": (mesh) => mesh.uploadOffset >= 0,
+    "estimate own VRAM usage": (mesh) => mesh.estimateVRAM(),
+    "estimate own list VRAM usage": (mesh) => mesh.estimateListVRAM(),
+    "estimate own texture VRAM usage": (mesh) => mesh.estimateTextureVRAM(),
   };
-  const workerSrc = `
+  let workerSrc = `
   class OffModelImporter {
     constructor(dataRaw) {
       const dataStr = dataRaw.map(str => str.split("#")[0].replaceAll("\t", " ").trim()).filter(str => str.length);
@@ -880,30 +978,71 @@
   class ModelDecoder {
     constructor() {
       this.worker = null;
-      this.last = new Promise((res) => res());
+      this.timeout = -1;
       this.resolveFn = null;
+      this.queue = [];
+      this.timeLimit = 90000;
+      this.boundHandle = this.handle.bind(this);
     }
-    async decode(type, array, importMatrix) {
+    decode(type, array, importMatrix) {
+      return new Promise((resolve) => {
+        this.queue.push({ data: { type, array, importMatrix }, resolve });
+        this.tryMoveQueue();
+      });
+    }
+    tryMoveQueue() {
+      if (this.busy) return;
+      if (this.queue.length == 0) return;
       if (!this.worker) {
         this.worker = new Worker(
           `data:text/javascript;base64,${btoa(workerSrc)}`
         );
-        this.worker.onmessage = this.handle.bind(this);
+        this.worker.addEventListener("message", this.boundHandle);
       }
-      let onceDone;
-      const previous = this.last;
-      this.last = new Promise((res) => (onceDone = res));
-      await previous;
-      this.worker.postMessage({ type, array, importMatrix });
-      const output = await new Promise((res) => (this.resolveFn = res));
-      onceDone();
-      return output;
+      const { data, resolve } = this.queue.shift();
+      this.resolveFn = resolve;
+      this.busy = true;
+      this.worker.postMessage(data);
+      this.timeout = setTimeout(this.restartWorker.bind(this), this.timeLimit);
     }
     handle(output) {
+      if (this.timeout !== -1) {
+        clearTimeout(this.timeout);
+        this.timeout = -1;
+      }
       this.resolveFn(output.data);
+      this.resolveFn = null;
+      this.busy = false;
+      this.tryMoveQueue();
+    }
+    clear() {
+      for (const { resolve } of this.queue) {
+        resolve(null);
+      }
+      this.queue = [];
     }
     destroy() {
-      if (this.worker) this.worker.terminate();
+      this.clear();
+      this.destroyWorker();
+    }
+    destroyWorker() {
+      if (this.resolveFn) {
+        this.resolveFn(null);
+        this.resolveFn = null;
+      }
+      if (this.worker) {
+        this.worker.removeEventListener("message", this.boundHandle);
+        this.worker.terminate();
+        this.worker = null;
+        this.busy = false;
+      }
+    }
+    restartWorker() {
+      console.warn(
+        "Simple3D: Worker took too long to decode the model and was terminated"
+      );
+      this.destroyWorker();
+      this.tryMoveQueue();
     }
   }
   class SimpleSkin extends Scratch.vm.renderer.exports.Skin {
@@ -1014,8 +1153,10 @@
     }
 
     publicApi.redraw = function () {
-      skin.updateContent(canvas);
-      runtime.requestRedraw();
+      if (canvasDirty) {
+        skin.updateContent(canvas);
+        canvasDirty = false;
+      }
     };
     publicApi.redraw();
   }
@@ -1036,7 +1177,7 @@
     }
     publicApi.redraw = null;
   }
-  const vshSrc = `
+  let vshSrc = `
 #ifdef MSAA_CENTROID
 #define INTERPOLATION centroid
 #endif
@@ -1209,7 +1350,7 @@ void main() {
 #endif
 }
 `;
-  const fshSrc = `
+  let fshSrc = `
 #ifdef MSAA_CENTROID
 #define INTERPOLATION centroid
 #endif
@@ -1477,7 +1618,7 @@ void main() {
     let value = [];
     let restarts = [];
     for (let i = 0; i < list.value.length; i++) {
-      let num = Cast.toNumber(list.value[i]) - 1;
+      let num = Math.floor(Cast.toNumber(list.value[i]) - 1);
       if (num < 0) {
         restarts.push(i);
       } else if (num > maxNum) {
@@ -1486,6 +1627,11 @@ void main() {
       value.push(num);
     }
     let restartIndex, typedArray;
+    if (maxNum > 4294967294) {
+      alert(
+        `Simple3D error: Found vertex index ${maxNum}. The maximum supported value is 4294967295.`
+      );
+    }
     if (maxNum > 65534) {
       typedArray = Uint32Array;
       restartIndex = 4294967295;
@@ -1536,6 +1682,13 @@ void main() {
       );
     }
   }
+  function chunkArray(array, size) {
+    const chunkedArray = [];
+    for (let i = 0; i < array.length; i += size) {
+      chunkedArray.push(array.slice(i, i + size));
+    }
+    return chunkedArray;
+  }
 
   if (!Scratch.extensions.unsandboxed)
     throw new Error("Simple 3D extension must be run unsandboxed");
@@ -1548,6 +1701,7 @@ void main() {
   const runtime = vm.runtime;
 
   const extensionId = "xeltallivSimple3D";
+  let canvasDirty = true;
   let canvas = document.createElement("canvas");
   let gl = canvas.getContext("webgl2");
   if (!gl)
@@ -1672,6 +1826,8 @@ void main() {
     }
     meshes.clear();
     programs.clear();
+    modelDecoder.clear();
+    canvasDirty = true;
     renderer.dirty = true;
     runtime.requestRedraw();
   }
@@ -1685,7 +1841,10 @@ void main() {
       text: "Open extra resources",
       func: "openSite",
       def: function () {
-        Scratch.openWindow("https://xeltalliv.github.io/simple3d-extension/");
+        // Exempted from Scratch.openWindow as initiated by user gesture.
+        // docsURI won't ask for permission so it doesn't make sense for this to either.
+        // eslint-disable-next-line no-restricted-syntax
+        window.open("https://xeltalliv.github.io/simple3d-extension/");
       },
     },
     {
@@ -1737,8 +1896,11 @@ void main() {
           gl.clear(ClearLayers[LAYERS]);
           gl.depthMask(false);
         }
-        renderer.dirty = true; //TODO: only do this when rendering to
-        runtime.requestRedraw(); //TODO: main canvas, not to framebuffers
+        if (currentRenderTarget === canvasRenderTarget) {
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
       },
     },
     {
@@ -2332,33 +2494,50 @@ void main() {
       },
       def: function ({ NAME, TRANSFORMS, MATRIXES }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
+        const myData = mesh.myData;
         const list = target.lookupVariableByNameAndType(
           Cast.toString(MATRIXES),
           "list"
         );
         if (!mesh || !list) return;
         const value = list.value.map(Cast.toNumber);
-        const value2 = [];
-        for (let i = 0; i < value.length; i += 16) {
-          value2.push(value.slice(i, i + 16));
+
+        if (TRANSFORMS == "original") {
+          myData.bonesOrig = chunkArray(value, 16).map(m4.inverse);
+          if (!myData.bonesCurr) {
+            if (myData.bonesCurrRaw) {
+              myData.bonesCurr = chunkArray(myData.bonesCurrRaw, 16);
+              myData.bonesCurrRaw = null;
+            } else {
+              myData.bonesCurr = chunkArray(value, 16);
+            }
+          }
         }
-        if (
-          TRANSFORMS == "original" ||
-          !mesh.bonesOrig ||
-          mesh.bonesOrig.length !== value2.length
-        )
-          mesh.bonesOrig = value2.map(m4.inverse);
-        if (
-          TRANSFORMS == "current" ||
-          !mesh.bonesCurr ||
-          mesh.bonesCurr.length !== value2.length
-        )
-          mesh.bonesCurr = value2;
-        const diff = [];
-        for (let i = 0; i < mesh.bonesCurr.length; i++) {
-          diff.push(m4.multiply(mesh.bonesCurr[i], mesh.bonesOrig[i]));
+        if (TRANSFORMS == "current") {
+          if (myData.bonesOrig) {
+            myData.bonesCurr = chunkArray(value, 16);
+            myData.bonesCurrRaw = null;
+          } else {
+            myData.bonesCurrRaw = value;
+          }
         }
-        mesh.bonesDiff = diff.flat();
+        if (myData.bonesOrig) {
+          const diff = [];
+          const end = Math.min(
+            myData.bonesCurr.length,
+            myData.bonesOrig.length
+          );
+          let i = 0;
+          for (; i < end; i++) {
+            diff.push(m4.multiply(myData.bonesCurr[i], myData.bonesOrig[i]));
+          }
+          for (; i < myData.bonesCurr.length; i++) {
+            diff.push(myData.bonesCurr[i]);
+          }
+          myData.bonesDiff = diff.flat();
+        } else {
+          myData.bonesDiff = myData.bonesCurrRaw;
+        }
         mesh.update();
       },
     },
@@ -2768,6 +2947,29 @@ void main() {
       },
     },
     {
+      opcode: "setMeshInstanceLimit",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] instance draw limit [END]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        END: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 10,
+        },
+      },
+      def: function ({ NAME, END }, { target }) {
+        const mesh = meshes.get(Cast.toString(NAME));
+        let end = Math.floor(Cast.toNumber(END));
+        if (end < 1) end = Infinity;
+        if (!mesh) return;
+        mesh.myData.maxInstances = end;
+        mesh.update();
+      },
+    },
+    {
       opcode: "setMeshTexCoordOffsetUV",
       blockType: BlockType.COMMAND,
       text: "set [NAME] texture coordinate offset UV [U] [V]",
@@ -2835,9 +3037,9 @@ void main() {
           if (fogSpace == "model space") flags.push("FOG_IN_MODEL_SPACE");
           if (fogPosition) flags.push("FOG_POS");
         }
-        if (mesh.buffers.boneIndices && mesh.bonesDiff) {
+        if (mesh.buffers.boneIndices && mesh.data.bonesDiff) {
           flags.push(`SKINNING ${mesh.buffers.boneIndices.size}`);
-          flags.push(`BONE_COUNT ${mesh.bonesDiff.length / 16}`);
+          flags.push(`BONE_COUNT ${mesh.data.bonesDiff.length / 16}`);
         }
         if (mesh.data.interpolation) flags.push(mesh.data.interpolation);
         if (mesh.data.alphaTest > 0) flags.push("ALPHATEST");
@@ -3069,8 +3271,8 @@ void main() {
           gl.uniform1f(program.uloc.u_alpha_threshold, mesh.data.alphaTest);
         }
 
-        if (mesh.bonesDiff) {
-          gl.uniformMatrix4fv(program.uloc.u_bones, false, mesh.bonesDiff);
+        if (mesh.data.bonesDiff) {
+          gl.uniformMatrix4fv(program.uloc.u_bones, false, mesh.data.bonesDiff);
         }
         if (mesh.data.uvOffset) {
           gl.uniform2fv(program.uloc.u_uvOffset, mesh.data.uvOffset);
@@ -3104,6 +3306,13 @@ void main() {
           amount = end - mesh.data.drawRange[0];
         }
         if (mesh.buffers.instanceTransforms) {
+          let instanceCount = mesh.buffers.instanceTransforms.length;
+          if (
+            mesh.data.maxInstances &&
+            mesh.data.maxInstances < instanceCount
+          ) {
+            instanceCount = mesh.data.maxInstances;
+          }
           if (mesh.buffers.indices) {
             const indexTypes = [
               null,
@@ -3117,14 +3326,14 @@ void main() {
               amount,
               indexTypes[mesh.buffers.indices.bytesPerEl],
               start,
-              mesh.buffers.instanceTransforms.length
+              instanceCount
             );
           } else {
             gl.drawArraysInstanced(
               mesh.data.primitives ?? gl.TRIANGLES,
               start,
               amount,
-              mesh.buffers.instanceTransforms.length
+              instanceCount
             );
           }
         } else {
@@ -3146,8 +3355,11 @@ void main() {
             gl.drawArrays(mesh.data.primitives ?? gl.TRIANGLES, start, amount);
           }
         }
-        renderer.dirty = true; //TODO: only do this when rendering to
-        runtime.requestRedraw(); //TODO: main canvas, not to framebuffers
+        if (currentRenderTarget === canvasRenderTarget) {
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
 
         if (mesh.buffers.colors) {
           gl.disableVertexAttribArray(program.aloc.a_color);
@@ -4110,11 +4322,10 @@ void main() {
         );
         if (!list) return;
         if (!currentRenderTarget.checkIfValid()) return;
-        const width = currentRenderTarget.width;
-        const height = currentRenderTarget.height;
-        if (width == 0 || height == 0) return;
-        const pixels = new Uint8ClampedArray(width * height * 4);
-        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        const { x, y, w, h } = currentRenderTarget.getReadarea();
+        if (w == 0 || h == 0) return;
+        const pixels = new Uint8ClampedArray(w * h * 4);
+        gl.readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
         list.value = Array.from(pixels);
         list._monitorUpToDate = false;
       },
@@ -4145,11 +4356,10 @@ void main() {
           return currentRenderTarget.hasDepthBuffer;
         if (PROPERTY == "image as data URI") {
           if (!currentRenderTarget.checkIfValid()) return "";
-          const width = currentRenderTarget.width;
-          const height = currentRenderTarget.height;
-          if (width == 0 || height == 0) return "";
-          const pixels = new Uint8ClampedArray(width * height * 4);
-          gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+          const { x, y, w, h } = currentRenderTarget.getReadarea();
+          if (w == 0 || h == 0) return "";
+          const pixels = new Uint8ClampedArray(w * h * 4);
+          gl.readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
           for (let i = 0; i < pixels.length; i += 4) {
             // Internally we store everything with permultiplied alpha. Undoing it
             const alpha = pixels[i + 3] / 255;
@@ -4158,16 +4368,94 @@ void main() {
             pixels[i + 2] /= alpha;
           }
           const canv = document.createElement("canvas");
-          canv.width = width;
-          canv.height = height;
+          canv.width = w;
+          canv.height = h;
           const ctx = canv.getContext("2d");
-          const imgData = new ImageData(pixels, width, height);
+          const imgData = new ImageData(pixels, w, h);
           ctx.putImageData(imgData, 0, 0);
           return canv.toDataURL();
         }
         if (PROPERTY == "is valid for being drawn to")
           return currentRenderTarget.checkIfValid();
+        if (PROPERTY == "has viewport box")
+          return currentRenderTarget.viewport !== null;
+        if (PROPERTY == "has clipping box")
+          return currentRenderTarget.scissors !== null;
+        if (PROPERTY == "has readback box")
+          return currentRenderTarget.readarea !== null;
         return "";
+      },
+    },
+    {
+      opcode: "setRenderTargetBox",
+      blockType: BlockType.COMMAND,
+      text: "set [BOXTYPE] to X1:[X1] Y1:[Y1] X2:[X2] Y2:[Y2]",
+      arguments: {
+        BOXTYPE: {
+          type: ArgumentType.STRING,
+          menu: "boxType",
+        },
+        X1: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 0,
+        },
+        Y1: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 0,
+        },
+        X2: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 100,
+        },
+        Y2: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 100,
+        },
+      },
+      def: function ({ BOXTYPE, X1, Y1, X2, Y2 }) {
+        X1 = Cast.toNumber(X1);
+        Y1 = Cast.toNumber(Y1);
+        X2 = Cast.toNumber(X2);
+        Y2 = Cast.toNumber(Y2);
+        const x = Math.min(X1, X2);
+        const y = Math.min(Y1, Y2);
+        const w = Math.max(X1, X2) - x;
+        const h = Math.max(Y1, Y2) - y;
+        if (BOXTYPE == "viewport box") {
+          currentRenderTarget.viewport = { x, y, w, h };
+        }
+        if (BOXTYPE == "clipping box") {
+          currentRenderTarget.scissors = { x, y, w, h };
+          currentRenderTarget.updateScissorsEnabled();
+        }
+        if (BOXTYPE == "readback box") {
+          currentRenderTarget.readarea = { x, y, w, h };
+        }
+        currentRenderTarget.updateViewport();
+      },
+    },
+    {
+      opcode: "clearRenderTargetBox",
+      blockType: BlockType.COMMAND,
+      text: "clear [BOXTYPE]",
+      arguments: {
+        BOXTYPE: {
+          type: ArgumentType.STRING,
+          menu: "boxType",
+        },
+      },
+      def: function ({ BOXTYPE }) {
+        if (BOXTYPE == "viewport box") {
+          currentRenderTarget.viewport = null;
+        }
+        if (BOXTYPE == "clipping box") {
+          currentRenderTarget.scissors = null;
+          currentRenderTarget.updateScissorsEnabled();
+        }
+        if (BOXTYPE == "readback box") {
+          currentRenderTarget.readarea = null;
+        }
+        currentRenderTarget.updateViewport();
       },
     },
     {
@@ -4511,6 +4799,9 @@ void main() {
           "has depth storage",
           "image as data URI",
           "is valid for being drawn to",
+          "has viewport box",
+          "has clipping box",
+          "has readback box",
         ],
       },
       powersOfTwo: {
@@ -4536,6 +4827,10 @@ void main() {
           "once at midpoint of covered samples",
           "separately for each sample",
         ],
+      },
+      boxType: {
+        acceptReporters: false,
+        items: ["viewport box", "clipping box", "readback box"],
       },
     },
   };
@@ -4644,6 +4939,46 @@ void main() {
     }
   }
   gl.__proto__ = ogl; //*/
+
+  publicApi.i_will_not_ask_for_help_when_these_break = () => {
+    console.warn(
+      "WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. WHEN your code breaks, do not expect help.\n\nProper stable APIs will be added later."
+    );
+    return {
+      canvas,
+      gl,
+      definitions,
+      meshes,
+      programs,
+      modelDecoder,
+      uploadBuffer,
+      getFshSrc: () => fshSrc,
+      setFshSrc: (src) => {
+        fshSrc = src;
+      },
+      getVshSrc: () => vshSrc,
+      setVshSrc: (src) => {
+        vshSrc = src;
+      },
+      canvasRenderTarget,
+      resetEverything,
+      getTransforms: () => transforms,
+      setTransforms: (t) => {
+        transforms = t;
+      },
+      getSelectedTransform: () => selectedTransform,
+      setSelectedTransform: (t) => {
+        selectedTransform = t;
+      },
+      getWorkerSrc: () => workerSrc,
+      setWorkerSrc: (src) => {
+        workerSrc = src;
+      },
+      extInfo,
+      Extension,
+      Blendings,
+    };
+  };
 
   Scratch.extensions.register(new Extension());
 })(Scratch);

@@ -112,6 +112,14 @@ module.exports = [
       'no-restricted-syntax': [
         'error',
         {
+          selector: 'AssignmentExpression[operator="??="]',
+          message: 'x ??= y syntax is too new; use x = x ?? y intead'
+        },
+        {
+          selector: 'MemberExpression[object.name=Object][property.name=hasOwn]',
+          message: 'Object.hasOwn(...) is too new; use Object.prototype.hasOwnProperty.call(...) instead'
+        },
+        {
           selector: 'CallExpression[callee.name=fetch]',
           message: 'Use Scratch.fetch() instead of fetch()'
         },
