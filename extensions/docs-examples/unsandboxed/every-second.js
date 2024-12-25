@@ -18,6 +18,7 @@
   }
   // highlight-start
   setInterval(() => {
+    // eslint-disable-next-line no-unused-vars
     const startedThreads = Scratch.vm.runtime.startHats('everysecondexample_everySecond');
   }, 1000);
   // highlight-end

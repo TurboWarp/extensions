@@ -1,7 +1,9 @@
 // Name: BigInt
 // ID: skyhigh173BigInt
 // Description: Math blocks that work on infinitely large integers (no decimals).
-// By: Skyhigh173
+// By: Skyhigh173 <https://scratch.mit.edu/users/Skyhigh173/>
+// License: MIT
+// Context: BigInt is short for "Big Integer" which can be infinitely big. "number" refers to normal numbers that have limits.
 
 (function (Scratch) {
   "use strict";
@@ -11,6 +13,9 @@
    * @returns {bigint}
    */
   const bi = (x) => {
+    if (typeof x === "bigint") {
+      return x;
+    }
     if (typeof x === "string") {
       // Try to parse things like '8n'
       if (x.charAt(x.length - 1) === "n") {
@@ -49,13 +54,13 @@
     getInfo() {
       return {
         id: "skyhigh173BigInt",
-        name: "BigInt",
+        name: Scratch.translate("BigInt"),
         color1: "#59C093",
         blocks: [
           {
             opcode: "from",
             blockType: Scratch.BlockType.REPORTER,
-            text: "To BigInt [text]",
+            text: Scratch.translate("convert number [text] to BigInt"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -66,7 +71,7 @@
           {
             opcode: "to",
             blockType: Scratch.BlockType.REPORTER,
-            text: "To Number [text]",
+            text: Scratch.translate("convert BigInt [text] to number"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -74,7 +79,7 @@
               },
             },
           },
-          makeLabel("Arithmetic"),
+          makeLabel(Scratch.translate("Arithmetic")),
           {
             opcode: "add",
             blockType: Scratch.BlockType.REPORTER,
@@ -153,7 +158,10 @@
           {
             opcode: "mod",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[a] mod [b]",
+            text: Scratch.translate({
+              default: "[a] mod [b]",
+              description: "mod refers to modulo",
+            }),
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
@@ -185,7 +193,7 @@
               },
             },
           },
-          makeLabel("Logic"),
+          makeLabel(Scratch.translate("Logic")),
           {
             opcode: "lt",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -276,7 +284,7 @@
               },
             },
           },
-          makeLabel("Bitwise"),
+          makeLabel(Scratch.translate("Bitwise")),
           {
             opcode: "and",
             blockType: Scratch.BlockType.REPORTER,

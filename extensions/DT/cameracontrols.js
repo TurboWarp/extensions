@@ -2,6 +2,7 @@
 // ID: DTcameracontrols
 // Description: Move the visible part of the stage.
 // By: DT
+// License: MIT
 
 ((Scratch) => {
   "use strict";
@@ -73,7 +74,7 @@
   // tell resize to update camera as well
   vm.runtime.on("STAGE_SIZE_CHANGED", (_) => updateCamera());
 
-  vm.runtime.on("PROJECT_LOADED", (_) => {
+  vm.runtime.on("RUNTIME_DISPOSED", (_) => {
     cameraX = 0;
     cameraY = 0;
     cameraZoom = 100;
@@ -234,7 +235,7 @@
     getInfo() {
       return {
         id: "DTcameracontrols",
-        name: "Camera (Very Buggy)",
+        name: Scratch.translate("Camera (Very Buggy)"),
 
         color1: "#ff4da7",
         color2: "#de4391",
@@ -246,7 +247,7 @@
           {
             opcode: "moveSteps",
             blockType: Scratch.BlockType.COMMAND,
-            text: "move camera [val] steps",
+            text: Scratch.translate("move camera [val] steps"),
             arguments: {
               val: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -257,7 +258,7 @@
           {
             opcode: "rotateCW",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn camera [image] [val] degrees",
+            text: Scratch.translate("turn camera [image] [val] degrees"),
             arguments: {
               image: {
                 type: Scratch.ArgumentType.IMAGE,
@@ -272,7 +273,7 @@
           {
             opcode: "rotateCCW",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn camera [image] [val] degrees",
+            text: Scratch.translate("turn camera [image] [val] degrees"),
             arguments: {
               image: {
                 type: Scratch.ArgumentType.IMAGE,
@@ -288,7 +289,7 @@
           {
             opcode: "goTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "move camera to [sprite]",
+            text: Scratch.translate("move camera to [sprite]"),
             arguments: {
               sprite: {
                 type: Scratch.ArgumentType.STRING,
@@ -299,7 +300,7 @@
           {
             opcode: "setBoth",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set camera to x: [x] y: [y]",
+            text: Scratch.translate("set camera to x: [x] y: [y]"),
             arguments: {
               x: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -315,7 +316,7 @@
           {
             opcode: "setDirection",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set camera direction to [val]",
+            text: Scratch.translate("set camera direction to [val]"),
             arguments: {
               val: {
                 type: Scratch.ArgumentType.ANGLE,
@@ -326,7 +327,7 @@
           {
             opcode: "pointTowards",
             blockType: Scratch.BlockType.COMMAND,
-            text: "point camera towards [sprite]",
+            text: Scratch.translate("point camera towards [sprite]"),
             arguments: {
               sprite: {
                 type: Scratch.ArgumentType.STRING,
@@ -338,7 +339,7 @@
           {
             opcode: "changeX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change camera x by [val]",
+            text: Scratch.translate("change camera x by [val]"),
             arguments: {
               val: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -349,7 +350,7 @@
           {
             opcode: "setX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set camera x to [val]",
+            text: Scratch.translate("set camera x to [val]"),
             arguments: {
               val: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -360,7 +361,7 @@
           {
             opcode: "changeY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change camera y by [val]",
+            text: Scratch.translate("change camera y by [val]"),
             arguments: {
               val: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -371,7 +372,7 @@
           {
             opcode: "setY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set camera y to [val]",
+            text: Scratch.translate("set camera y to [val]"),
             arguments: {
               val: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -383,17 +384,17 @@
           {
             opcode: "getX",
             blockType: Scratch.BlockType.REPORTER,
-            text: "camera x",
+            text: Scratch.translate("camera x"),
           },
           {
             opcode: "getY",
             blockType: Scratch.BlockType.REPORTER,
-            text: "camera y",
+            text: Scratch.translate("camera y"),
           },
           {
             opcode: "getDirection",
             blockType: Scratch.BlockType.REPORTER,
-            text: "camera direction",
+            text: Scratch.translate("camera direction"),
           },
           /*
           // debugging blocks
@@ -435,7 +436,7 @@
           {
             opcode: "changeZoom",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change camera zoom by [val]",
+            text: Scratch.translate("change camera zoom by [val]"),
             arguments: {
               val: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -446,7 +447,7 @@
           {
             opcode: "setZoom",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set camera zoom to [val] %",
+            text: Scratch.translate("set camera zoom to [val] %"),
             arguments: {
               val: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -457,13 +458,13 @@
           {
             opcode: "getZoom",
             blockType: Scratch.BlockType.REPORTER,
-            text: "camera zoom",
+            text: Scratch.translate("camera zoom"),
           },
           "---",
           {
             opcode: "setCol",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set background color to [val]",
+            text: Scratch.translate("set background color to [val]"),
             arguments: {
               val: {
                 type: Scratch.ArgumentType.COLOR,
@@ -473,7 +474,7 @@
           {
             opcode: "getCol",
             blockType: Scratch.BlockType.REPORTER,
-            text: "background color",
+            text: Scratch.translate("background color"),
           },
         ],
         menus: {
@@ -498,7 +499,7 @@
         if (e.isOriginal && !e.isStage) sprites.push(e.sprite.name);
       });
       if (sprites.length === 0) {
-        sprites.push("no sprites exist");
+        sprites.push(Scratch.translate("no sprites exist"));
       }
       return sprites;
     }

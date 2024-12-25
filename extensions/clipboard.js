@@ -1,6 +1,7 @@
 // Name: Clipboard
 // ID: clipboard
 // Description: Read and write from the system clipboard.
+// License: Apache-2.0
 
 /*!
  * Copyright 2023 tomyo-code + AdamMady
@@ -44,7 +45,7 @@
     getInfo() {
       return {
         id: "clipboard",
-        name: "Clipboard",
+        name: Scratch.translate("Clipboard"),
         blockIconURI: extensionicon,
         color1: "#008080",
         color2: "#006666",
@@ -52,20 +53,20 @@
           {
             opcode: "whenCopied",
             blockType: Scratch.BlockType.EVENT,
-            text: "when something is copied",
+            text: Scratch.translate("when something is copied"),
             isEdgeActivated: false,
           },
           {
             opcode: "whenPasted",
             blockType: Scratch.BlockType.EVENT,
-            text: "when something is pasted",
+            text: Scratch.translate("when something is pasted"),
             isEdgeActivated: false,
           },
           "---",
           {
             opcode: "setClipboard",
             blockType: Scratch.BlockType.COMMAND,
-            text: "copy to clipboard: [TEXT]",
+            text: Scratch.translate("copy to clipboard: [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -75,19 +76,19 @@
           {
             opcode: "resetClipboard",
             blockType: Scratch.BlockType.COMMAND,
-            text: "reset clipboard",
+            text: Scratch.translate("reset clipboard"),
           },
           "---",
           {
             opcode: "clipboard",
             blockType: Scratch.BlockType.REPORTER,
-            text: "clipboard",
+            text: Scratch.translate("clipboard"),
             disableMonitor: true,
           },
           {
             opcode: "getLastPastedText",
             blockType: Scratch.BlockType.REPORTER,
-            text: "last pasted text",
+            text: Scratch.translate("last pasted text"),
             disableMonitor: true,
           },
         ],
@@ -104,12 +105,16 @@
 
     clipboard() {
       if (navigator.clipboard && navigator.clipboard.readText) {
-        return Scratch.canReadClipboard().then((allowed) => {
-          if (allowed) {
-            return navigator.clipboard.readText();
-          }
-          return "";
-        });
+        return Scratch.canReadClipboard()
+          .then((allowed) => {
+            if (allowed) {
+              return navigator.clipboard.readText() ?? "";
+            }
+            return "";
+          })
+          .catch(() => {
+            return "";
+          });
       }
       return "";
     }

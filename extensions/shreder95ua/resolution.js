@@ -2,6 +2,7 @@
 // ID: shreder95resolution
 // Description: Get the resolution of the primary screen.
 // By: shreder95ua <https://scratch.mit.edu/users/shreder95ua/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -10,19 +11,19 @@
     getInfo() {
       return {
         id: "shreder95resolution",
-        name: "Screen resolution",
+        name: Scratch.translate("Screen resolution"),
         color1: "#FFAB19",
         color2: "#EC9C13",
         color3: "#CF8B17",
         blocks: [
           {
             opcode: "getWidth",
-            text: "primary screen width",
+            text: Scratch.translate("primary screen width"),
             blockType: Scratch.BlockType.REPORTER,
           },
           {
             opcode: "getHeight",
-            text: "primary screen height",
+            text: Scratch.translate("primary screen height"),
             blockType: Scratch.BlockType.REPORTER,
           },
         ],

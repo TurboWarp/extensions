@@ -2,6 +2,7 @@
 // ID: gsaHTTPRequests
 // Description: Comprehensive extension for interacting with external websites.
 // By: RedMan13 <https://scratch.mit.edu/users/RedMan13/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -211,8 +212,8 @@
 
       return defaultRequest;
     }
-    static get defualtResponse() {
-      const defualtResponse = {
+    static get defaultResponse() {
+      const defaultResponse = {
         text: "",
         status: "",
         statusText: "",
@@ -221,7 +222,7 @@
         url: "",
       };
 
-      return defualtResponse;
+      return defaultResponse;
     }
 
     /**
@@ -230,6 +231,10 @@
     constructor() {
       this.clearAll();
       this.showingExtra = false;
+
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this.clearAll();
+      });
     }
     getInfo() {
       return {
@@ -241,38 +246,38 @@
           {
             opcode: "clearAll",
             blockType: BlockType.COMMAND,
-            text: "clear current data",
+            text: Scratch.translate("clear current data"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Response",
+            text: Scratch.translate("Response"),
           },
           {
             opcode: "resData",
             blockType: BlockType.REPORTER,
-            text: "response",
+            text: Scratch.translate("response"),
           },
           {
             opcode: "error",
             blockType: BlockType.REPORTER,
-            text: "error",
+            text: Scratch.translate("error"),
           },
           {
             opcode: "status",
             blockType: BlockType.REPORTER,
-            text: "status",
+            text: Scratch.translate("status"),
           },
           {
             opcode: "statusText",
             blockType: BlockType.REPORTER,
-            text: "status text",
+            text: Scratch.translate("status text"),
           },
           "---",
           {
             opcode: "getHeaderJSON",
             blockType: BlockType.REPORTER,
             disableMonitor: true,
-            text: "get headers as json",
+            text: Scratch.translate("headers as json"),
           },
           {
             opcode: "getHeaderValue",
@@ -280,42 +285,43 @@
             arguments: {
               name: {
                 type: ArgumentType.STRING,
+                defaultValue: "name",
               },
             },
-            text: "get [name] from header",
+            text: Scratch.translate("[name] from header"),
           },
           "---",
           {
             opcode: "requestComplete",
             blockType: BlockType.BOOLEAN,
-            text: "site responded?",
+            text: Scratch.translate("site responded?"),
           },
           {
             opcode: "requestFail",
             blockType: BlockType.BOOLEAN,
-            text: "request failed?",
+            text: Scratch.translate("request failed?"),
           },
           {
             opcode: "requestSuccess",
             blockType: BlockType.BOOLEAN,
-            text: "request succeeded?",
+            text: Scratch.translate("request succeeded?"),
           },
           "---",
           {
             opcode: "onResponse",
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
-            text: "when a site responds",
+            text: Scratch.translate("when a site responds"),
           },
           {
             opcode: "onFail",
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
-            text: "when a request fails",
+            text: Scratch.translate("when a request fails"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Request",
+            text: Scratch.translate("Request"),
           },
           {
             opcode: "setMimeType",
@@ -327,7 +333,7 @@
                 defaultValue: this.request.mimeType,
               },
             },
-            text: "set content type to [type]",
+            text: Scratch.translate("set content type to [type]"),
           },
           {
             opcode: "setRequestmethod",
@@ -339,7 +345,7 @@
                 defaultValue: this.request.method,
               },
             },
-            text: "set request method to [method]",
+            text: Scratch.translate("set request method to [method]"),
           },
           {
             opcode: "setHeaderData",
@@ -354,7 +360,7 @@
                 defaultValue: this.request.mimeType,
               },
             },
-            text: "in header set [name] to [value]",
+            text: Scratch.translate("in header set [name] to [value]"),
           },
           {
             opcode: "setHeaderJSON",
@@ -365,7 +371,7 @@
                 defaultValue: `{"Content-Type": "${this.request.mimeType}"}`,
               },
             },
-            text: "set headers to json [json]",
+            text: Scratch.translate("set headers to json [json]"),
           },
           {
             opcode: "setBody",
@@ -376,13 +382,13 @@
                 default: "Apple!",
               },
             },
-            text: "set request body to [text]",
+            text: Scratch.translate("set request body to [text]"),
           },
           "---",
           {
             opcode: "setBodyToForm",
             blockType: BlockType.COMMAND,
-            text: "set request body to a form",
+            text: Scratch.translate("set request body to a form"),
           },
           {
             opcode: "getFormProperty",
@@ -393,7 +399,7 @@
                 defaultValue: "name",
               },
             },
-            text: "get [name] in request form",
+            text: Scratch.translate("[name] in request form"),
           },
           {
             opcode: "setFormProperty",
@@ -408,7 +414,7 @@
                 defaultValue: "value",
               },
             },
-            text: "set [name] to [value] in request form",
+            text: Scratch.translate("set [name] to [value] in request form"),
           },
           {
             opcode: "deleteFormProperty",
@@ -419,7 +425,7 @@
                 defaultValue: "name",
               },
             },
-            text: "delete [name] from request form",
+            text: Scratch.translate("delete [name] from request form"),
           },
           "---",
           {
@@ -431,18 +437,18 @@
                 defaultValue: "https://extensions.turbowarp.org/hello.txt",
               },
             },
-            text: "send request to [url]",
+            text: Scratch.translate("send request to [url]"),
           },
           {
             func: "showExtra",
             blockType: BlockType.BUTTON,
-            text: "Show Extra",
+            text: Scratch.translate("Show Extra"),
             hideFromPalette: this.showingExtra,
           },
           {
             func: "hideExtra",
             blockType: BlockType.BUTTON,
-            text: "Hide Extra",
+            text: Scratch.translate("Hide Extra"),
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -458,7 +464,7 @@
                 defaultValue: "data",
               },
             },
-            text: "set [path] to [value] in request options",
+            text: Scratch.translate("set [path] to [value] in request options"),
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -474,7 +480,9 @@
                 menu: "jsTypes",
               },
             },
-            text: "set [path] to type [type] in request options",
+            text: Scratch.translate(
+              "set [path] to type [type] in request options"
+            ),
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -486,7 +494,7 @@
                 defaultValue: "path.to.item",
               },
             },
-            text: "get [path] in request options",
+            text: Scratch.translate("[path] in request options"),
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -498,7 +506,7 @@
                 defaultValue: "path.to.item",
               },
             },
-            text: "get type of [path] in request options",
+            text: Scratch.translate("type of [path] in request options"),
             hideFromPalette: !this.showingExtra,
           },
         ],
@@ -548,7 +556,7 @@
 
     clearAll() {
       this.request = WebRequests.defaultRequest;
-      this.response = WebRequests.defualtResponse;
+      this.response = WebRequests.defaultResponse;
     }
 
     /* ------- DATA READING -------- */
@@ -653,7 +661,6 @@
       this.request.body.delete(name);
     }
 
-    // eslint-disable-next-line require-await
     async sendRequest(args) {
       const url = Cast.toString(args.url);
       const options = this.request.options;
