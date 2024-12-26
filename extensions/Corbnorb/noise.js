@@ -13,6 +13,7 @@
   const BlockType = Scratch.BlockType;
   const ArgumentType = Scratch.ArgumentType;
   const Cast = Scratch.Cast;
+  const Translate = Scratch.Translate;
 
   class Noise {
     constructor() {
@@ -32,7 +33,9 @@
           {
             opcode: "initNoise",
             blockType: BlockType.COMMAND,
-            text: "create noise id:[ID] type:[TYPE] frequency:[FREQUENCY] fractal:[FRACTAL] octaves:[OCTAVES] seed:[SEED]",
+            text: Translate(
+                "create noise id:[ID] seed:[SEED] type:[TYPE] octaves:[OCTAVES] frequency:[FREQUENCY] fractal:[FRACTAL] inverted?[INVERTED] easing:[EASING]"
+              ),
             arguments: {
               ID: {
                 type: ArgumentType.STRING,
@@ -65,7 +68,9 @@
           {
             opcode: "getNoise",
             blockType: BlockType.REPORTER,
-            text: "get noise id:[ID] at x:[X] y:[Y] z:[Z] easing:[EASING] inverted?[INVERTED]",
+            text: Translate(
+                "get noise id:[ID] at x:[X] y:[Y] z:[Z] easing:[EASING] inverted?[INVERTED]"
+            ),
             arguments: {
               ID: {
                 type: ArgumentType.STRING,
