@@ -98,7 +98,7 @@
           ],
           menus: {
             NOISE_TYPE: {
-              acceptReporters: false,
+              acceptReporters: true,
               items: [
                 "OpenSimpex2",
                 "OpenSimpex2S",
@@ -109,15 +109,15 @@
               ],
             },
             FRACTAL_TYPE: {
-              acceptReporters: false,
+              acceptReporters: true,
               items: ["None", "FBm", "Ridged", "Ping Pong"],
             },
             INVERTED_MENU: {
               acceptReporters: true,
-              items: ["true", "false"],
+              items: [{text: "true", value: true}, {text: "false", value: false}],
             },
             EASING_TYPE: {
-              acceptReporters: false,
+              acceptReporters: true,
               items: ["Linear", "Squared", "Cubed", "Root"],
             },
           },
@@ -152,6 +152,9 @@
           case "Value":
             noises[id].SetNoiseType(FastNoiseLite.NoiseType.Value);
             break;
+          default:
+            noises[id].SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+            break;
         }
         switch (fractal) {
           case "None":
@@ -166,6 +169,9 @@
           case "Ping Pong":
             noises[id].SetFractalType(FastNoiseLite.FractalType.PingPong);
             break;
+          default:
+            noises[id].SetFractalType(FastNoiseLite.FractalType.None);
+            break;
         }
         noises[id].SetFrequency(frequency);
         noises[id].SetFractalOctaves(octaves);
@@ -174,10 +180,10 @@
       getNoise(args) {
           const id = Cast.toString(args.ID);
           const easing = Cast.toString(args.EASING);
-          const inverted = Cast.toString(args.INVERTED);
+          const inverted = Cast.toBoolean(args.INVERTED);
         if (id in noises) {
           let value = noises[id].GetNoise(args.X, args.Y, args.Z);
-          value = inverted == "true" ? value : -value;
+          value = inverted ? -value : value;
           value = (value + 1) / 2;
           switch (easing) {
             case "Linear":
@@ -190,6 +196,8 @@
               break;
             case "Root":
               value = Math.sqrt(Math.abs(value));
+              break;
+            default:
               break;
           }
           value = value * 2 - 1;
