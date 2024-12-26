@@ -1,5 +1,5 @@
 // Name: LoginNexus
-// ID: thebloxers998-loginNexus 
+// ID: loginNexus 
 // Description: A API-based authentication and registration extension 
 // By: Thebloxers998 <https://scratch.mit.edu/users/Thebloxers998/>
 // License: MPL-2.0
@@ -162,99 +162,94 @@
         setDebugMessage(message) {
             this.lastDebugMessage = message;
             console.log(message);
-        };
+        }
 
         setClientId(args) {
             this.clientId = args.CLIENT_ID;
             this.setDebugMessage('Client ID set to: ' + this.clientId);
-        };
+        }
 
         setRedirectUri(args) {
             this.redirectUri = args.REDIRECT_URI;
             this.setDebugMessage('Redirect URI set to: ' + this.redirectUri);
-        };
+        }
 
-        setApiUri(args) {
-            this.apiUri = args.API_URI;
-            this.setDebugMessage('API URI set to: ' + this.redirectUri);
-        };
+        setApiUrl(args) {
+            this.apiUri = args.API_URL;
+            this.setDebugMessage('API URI set to: ' + this.apiUri);
+        }
 
         async registerUser(args) {
-    const username = args.USERNAME;
-    const password = args.PASSWORD;
+            const username = args.USERNAME;
+            const password = args.PASSWORD;
 
-    if (!username || !password) {
-        this.setDebugMessage('Invalid arguments provided');
-        return;
-    };
+            if (!username || !password) {
+                this.setDebugMessage('Invalid arguments provided');
+                return;
+            }
             
-    try {
-        const response = await Scratch.canFetch(this.apiUrl , {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, password })
-        });
+            try {
+                const response = await Scratch.canFetch(this.apiUri , {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
 
-        const data = await response.json();
-        if (response.ok) {
-            this.registeredUsers.add(username);
-            this.setDebugMessage('Registration successful: ' + JSON.stringify(data)); 
-        } else {
-            this.setDebugMessage('Registration failed: ' + JSON.stringify(data));
+                const data = await response.json();
+                if (response.ok) {
+                    this.registeredUsers.add(username);
+                    this.setDebugMessage('Registration successful: ' + JSON.stringify(data)); 
+                } else {
+                    this.setDebugMessage('Registration failed: ' + JSON.stringify(data));
+                }
+            } catch (error) {
+                this.setDebugMessage('Error: ' + error.message);
+            }
         }
-    } catch (error) {
-        this.setDebugMessage('Error: ' + error.message);
-    }
-};
-
-
 
         async loginUser(args) {
-    const username = args.USERNAME;
-    const password = args.PASSWORD;
+            const username = args.USERNAME;
+            const password = args.PASSWORD;
 
-    try {
-        const response = await Scratch.canFetch(this.apiUrl);
-        if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.statusText}`);
+            try {
+                const response = await Scratch.canFetch(this.apiUri);
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+                const users = await response.json();
+
+                const user = users.find(u => u.username === username && u.password === password);
+                if (user) {
+                    this.authenticatedUsers.add(username);
+                    this.setDebugMessage(`Login successful for user: ${username}`);
+                } else {
+                    this.setDebugMessage(`Login failed for user: ${username}`);
+                }
+            } catch (error) {
+                this.setDebugMessage(`Error: ${error.message}`);
+            }
         }
-        const users = await response.json();
-
-        const user = users.find(u => u.username === username && u.password === password);
-        if (user) {
-            this.authenticatedUsers.add(username);
-            this.setDebugMessage(`Login successful for user: ${username}`);
-        } else {
-            this.setDebugMessage(`Login failed for user: ${username}`);
-        }
-    } catch (error) {
-        this.setDebugMessage(`Error: ${error.message}`);
-    }
-};
-
-
 
         isUserStatus(args) {
-    const username = args.USERNAME;
-    const status = args.STATUS;
+            const username = args.USERNAME;
+            const status = args.STATUS;
 
-    if (!username || !status) {
-        this.setDebugMessage('Invalid arguments provided');
-        return false;
-    };
+            if (!username || !status) {
+                this.setDebugMessage('Invalid arguments provided');
+                return false;
+            }
 
-    if (status === 'authenticated') {
-        return this.authenticatedUsers.has(username);
-    } else if (status === 'registered') {
-        return this.registeredUsers.has(username);
-    }
+            if (status === 'authenticated') {
+                return this.authenticatedUsers.has(username);
+            } else if (status === 'registered') {
+                return this.registeredUsers.has(username);
+            }
 
-    return false;
-};
+            return false;
+        }
 
-        
         useService(args) {
             const service = args.SERVICE;
             const action = args.ACTION;
@@ -267,17 +262,16 @@
             } else if (service === 'Microsoft') {
                 if (action === 'Register' || action === 'Authenticate') {
                     this.setDebugMessage(`${action} with Microsoft...`);
-                    Scratch.openWindow(`https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${this.clientId}&response_type=token&redirect_uri=${this.redirectUri}&scope=openid email profile`, '_blank');
+                    Scratch.openWindow(`https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${this.clientId}&response_type=token&redirect_uri=${this.redirectUri}&scope=openid email`, '_blank');
                 }
-            } 
             } else {
                 this.setDebugMessage('Unknown service or action.');
             }
-        };
+        }
 
         debugMessage() {
             return this.lastDebugMessage;
-        };
+        }
     }
 
     Scratch.extensions.register(new LoginNexusExtension());
