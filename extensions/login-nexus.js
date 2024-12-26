@@ -162,22 +162,22 @@
         setDebugMessage(message) {
             this.lastDebugMessage = message;
             console.log(message);
-        }
+        };
 
         setClientId(args) {
             this.clientId = args.CLIENT_ID;
             this.setDebugMessage('Client ID set to: ' + this.clientId);
-        }
+        };
 
         setRedirectUri(args) {
             this.redirectUri = args.REDIRECT_URI;
             this.setDebugMessage('Redirect URI set to: ' + this.redirectUri);
-        }
+        };
 
         setApiUri(args) {
             this.apiUri = args.API_URI;
             this.setDebugMessage('API URI set to: ' + this.redirectUri);
-        }
+        };
 
         async registerUser(args) {
     const username = args.USERNAME;
@@ -186,8 +186,8 @@
     if (!username || !password) {
         this.setDebugMessage('Invalid arguments provided');
         return;
-    }
-
+    };
+            
     try {
         const response = await Scratch.canFetch(this.apiUrl , {
             method: 'POST',
@@ -207,7 +207,7 @@
     } catch (error) {
         this.setDebugMessage('Error: ' + error.message);
     }
-}
+};
 
 
 
@@ -232,7 +232,7 @@
     } catch (error) {
         this.setDebugMessage(`Error: ${error.message}`);
     }
-}
+};
 
 
 
@@ -243,7 +243,7 @@
     if (!username || !status) {
         this.setDebugMessage('Invalid arguments provided');
         return false;
-    }
+    };
 
     if (status === 'authenticated') {
         return this.authenticatedUsers.has(username);
@@ -252,7 +252,7 @@
     }
 
     return false;
-}
+};
 
         
         useService(args) {
@@ -273,11 +273,11 @@
             } else {
                 this.setDebugMessage('Unknown service or action.');
             }
-        }
+        };
 
         debugMessage() {
             return this.lastDebugMessage;
-        }
+        };
     }
 
     Scratch.extensions.register(new LoginNexusExtension());
