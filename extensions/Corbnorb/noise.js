@@ -34,8 +34,8 @@
             opcode: "initNoise",
             blockType: BlockType.COMMAND,
             text: Translate(
-                "create noise id:[ID] seed:[SEED] type:[TYPE] octaves:[OCTAVES] frequency:[FREQUENCY] fractal:[FRACTAL] inverted?[INVERTED] easing:[EASING]"
-              ),
+              "create noise id:[ID] seed:[SEED] type:[TYPE] octaves:[OCTAVES] frequency:[FREQUENCY] fractal:[FRACTAL] inverted?[INVERTED] easing:[EASING]"
+            ),
             arguments: {
               ID: {
                 type: ArgumentType.STRING,
@@ -69,7 +69,7 @@
             opcode: "getNoise",
             blockType: BlockType.REPORTER,
             text: Translate(
-                "get noise id:[ID] at x:[X] y:[Y] z:[Z] easing:[EASING] inverted?[INVERTED]"
+              "get noise id:[ID] at x:[X] y:[Y] z:[Z] easing:[EASING] inverted?[INVERTED]"
             ),
             arguments: {
               ID: {
@@ -3508,4 +3508,4 @@
   }
 
   Scratch.extensions.register(new Noise());
-})((Scratch));
+})(Scratch);
