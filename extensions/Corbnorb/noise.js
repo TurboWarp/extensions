@@ -16,12 +16,6 @@
   const Translate = Scratch.translate;
 
   class Noise {
-    constructor() {
-      this.noiseSeed = 0;
-      this.worleySeed = 0;
-      this.time = performance.now();
-    }
-
     getInfo() {
       return {
         id: "corbnorbsnoise",
