@@ -6,6 +6,7 @@
 // License: MPL-2.0
 
 (function (Scratch) {
+<<<<<<< HEAD
     "use strict";
   
     const noises = Object.create(null);
@@ -63,6 +64,58 @@
                   menu: "FRACTAL_TYPE",
                   defaultValue: "FBm",
                 },
+=======
+  "use strict";
+
+  const noises = Object.create(null);
+
+  const BlockType = Scratch.BlockType;
+  const ArgumentType = Scratch.ArgumentType;
+  const Cast = Scratch.Cast;
+  const Translate = Scratch.translate;
+
+  class Noise {
+    getInfo() {
+      return {
+        id: "corbnorbsnoise",
+        name: Translate("Noise"),
+        color1: "#b5074c",
+        color2: "#990841",
+        docsURI: "https://extensions.turbowarp.org/Corbnorb/noise",
+        blocks: [
+          {
+            opcode: "initNoise",
+            blockType: BlockType.COMMAND,
+            text: Translate(
+              "create noise id:[ID] seed:[SEED] type:[TYPE] octaves:[OCTAVES] frequency:[FREQUENCY] fractal:[FRACTAL]"
+            ),
+            arguments: {
+              ID: {
+                type: ArgumentType.STRING,
+                defaultValue: "myNoise",
+              },
+              SEED: {
+                type: ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              TYPE: {
+                type: ArgumentType.STRING,
+                menu: "NOISE_TYPE",
+                defaultValue: "Perlin",
+              },
+              OCTAVES: {
+                type: ArgumentType.NUMBER,
+                defaultValue: "1",
+              },
+              FREQUENCY: {
+                type: ArgumentType.NUMBER,
+                defaultValue: "0.01",
+              },
+              FRACTAL: {
+                type: ArgumentType.STRING,
+                menu: "FRACTAL_TYPE",
+                defaultValue: "FBm",
+>>>>>>> 495db9644590021214cca311fc9df2fd6f8c5c88
               },
             },
             {
