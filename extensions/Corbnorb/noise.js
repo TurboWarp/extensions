@@ -1,6 +1,6 @@
 // Name: Noise
 // ID: corbnorbsnoise
-// Description: Adds many types of noises using FastNoiseLite
+// Description: Adds many types of noises using FastNoiseLite.
 // By: Corbnorbs <https://scratch.mit.edu/users/___DemonZ___/>
 // Original: Auburn
 // License: MPL-2.0
