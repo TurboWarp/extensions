@@ -1,5 +1,5 @@
 // Name: LoginNexus
-// ID: loginNexus 
+// ID: thebloxers998-loginNexus 
 // Description: A API-based authentication and registration extension 
 // By: Thebloxers998 <https://scratch.mit.edu/users/Thebloxers998/>
 // License: MPL-2.0
@@ -18,7 +18,7 @@
 
         getInfo() {
             return {
-                id: 'loginNexus',
+                id: 'thebloxers998-loginNexus',
                 name: 'LoginNexus',
                 color1: '#ADD8E6',
                 color2: '#87CEEB',
