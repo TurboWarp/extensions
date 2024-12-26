@@ -34,7 +34,7 @@
             opcode: "initNoise",
             blockType: BlockType.COMMAND,
             text: Translate(
-              "create noise id:[ID] seed:[SEED] type:[TYPE] octaves:[OCTAVES] frequency:[FREQUENCY] fractal:[FRACTAL] inverted?[INVERTED] easing:[EASING]"
+              "create noise id:[ID] seed:[SEED] type:[TYPE] octaves:[OCTAVES] frequency:[FREQUENCY] fractal:[FRACTAL]"
             ),
             arguments: {
               ID: {
