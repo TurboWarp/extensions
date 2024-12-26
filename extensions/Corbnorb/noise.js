@@ -189,7 +189,7 @@
       const inverted = Cast.toBoolean(args.INVERTED);
       if (id in noises) {
         let value = noises[id].GetNoise(args.X, args.Y, args.Z);
-        value = (inverted == true) ? -value : value;
+        value = inverted == true ? -value : value;
         value = (value + 1) / 2;
         switch (easing) {
           case "linear":
