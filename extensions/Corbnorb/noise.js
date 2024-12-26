@@ -25,7 +25,7 @@
     getInfo() {
       return {
         id: "corbnorbsnoise",
-        name: "Noise",
+        name: Translate("Noise"),
         color1: "#b5074c",
         color2: "#990841",
         docsURI: "https://extensions.turbowarp.org/Corbnorb/noise",
@@ -3508,4 +3508,4 @@
   }
 
   Scratch.extensions.register(new Noise());
-})((window.Scratch = window.Scratch || {}));
+})((Scratch));
