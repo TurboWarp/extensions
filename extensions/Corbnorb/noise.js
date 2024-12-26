@@ -1,5 +1,5 @@
 // Name: Noise
-// ID: noise-corbnorb
+// ID: corbnorbsnoise
 // Description: Adds many types of noises using FastNoiseLite
 // By: Corbnorbs <https://scratch.mit.edu/users/___DemonZ___/>
 // Original: Auburn
@@ -12,6 +12,7 @@
   
     const BlockType = Scratch.BlockType;
     const ArgumentType = Scratch.ArgumentType;
+    const Cast = Scratch.Cast;
   
     class Noise {
       constructor() {
@@ -22,7 +23,7 @@
   
       getInfo() {
         return {
-          id: "noise-corbnorb",
+          id: "corbnorbsnoise",
           name: "Noise",
           color1: "#b5074c",
           color2: "#990841",
@@ -31,7 +32,7 @@
             {
               opcode: "initNoise",
               blockType: BlockType.COMMAND,
-              text: "create noise id:[ID] seed:[SEED] type:[TYPE] octaves:[OCTAVES] frequency:[FREQUENCY] fractal:[FRACTAL]",
+              text: "create noise id:[ID] type:[TYPE] frequency:[FREQUENCY] fractal:[FRACTAL] octaves:[OCTAVES] seed:[SEED]",
               arguments: {
                 ID: {
                   type: ArgumentType.STRING,
@@ -64,7 +65,7 @@
             {
               opcode: "getNoise",
               blockType: BlockType.REPORTER,
-              text: "get noise id:[ID] at x:[X] y:[Y] z:[Z] inverted?[INVERTED] easing:[EASING]",
+              text: "get noise id:[ID] at x:[X] y:[Y] z:[Z] easing:[EASING] inverted?[INVERTED]",
               arguments: {
                 ID: {
                   type: ArgumentType.STRING,
@@ -124,11 +125,11 @@
       }
   
       initNoise(args) {
-          const id = args.ID;
-          const seed = args.SEED;
-          const fractal = args.FRACTAL;
-          const frequency = args.FREQUENCY;
-          const octaves = args.OCTAVES;
+          const id = Cast.toString(args.ID);
+          const seed = Cast.toNumber(args.SEED);
+          const fractal = Cast.toString(args.FRACTAL);
+          const frequency = Cast.toNumber(args.FREQUENCY);
+          const octaves = Cast.toNumber(args.OCTAVES);
         noises[id] = new FastNoiseLite(seed);
         switch (args.TYPE) {
           case "OpenSimplex2":
@@ -171,9 +172,9 @@
       }
   
       getNoise(args) {
-          const id = args.ID;
-          const easing = args.EASING;
-          const inverted = args.INVERTED;
+          const id = Cast.toString(args.ID);
+          const easing = Cast.toString(args.EASING);
+          const inverted = Cast.toString(args.INVERTED);
         if (id in noises) {
           let value = noises[id].GetNoise(args.X, args.Y, args.Z);
           value = inverted == "true" ? value : -value;
@@ -194,9 +195,34 @@
           value = value * 2 - 1;
           return value;
         }
+        console.log("ISSUE");
         return 0;
       }
     }
+
+// MIT License
+//
+// Copyright(c) 2023 Jordan Peck (jordan.me2@gmail.com)
+// Copyright(c) 2023 Contributors
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+//
   
     class FastNoiseLite {
       static NoiseType = Object.freeze({
