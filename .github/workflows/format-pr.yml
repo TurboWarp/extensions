@@ -53,7 +53,7 @@ jobs:
           repository: TurboWarp/extensions
           persist-credentials: false
       - name: Checkout pull request
-        run: gh pr checkout $PR_NUM
+        run: gh pr checkout "$PR_NUM"
         env:
           PR_NUM: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
@@ -87,7 +87,7 @@ jobs:
           # Credentials needed at the end to do the push.
           persist-credentials: true
       - name: Checkout pull request
-        run: gh pr checkout $PR_NUM
+        run: gh pr checkout "$PR_NUM"
         env:
           PR_NUM: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
