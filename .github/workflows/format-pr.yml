@@ -21,9 +21,9 @@ jobs:
         with:
           # Credentials needed for pushing changes at the end.
           # This is already the default, but for safety we are being explicit about this.
+          persist-credentials: true
           # Commits made by workflow_dispatch trigger will trigger new workflows to run,
           # so don't need to use SSH deploy key.
-          persist-credentials: true
       - name: Install Node.js
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
         with:
@@ -97,6 +97,9 @@ jobs:
           # for workflows to run that will never run. To workaround this, we use an SSH key
           # instead. It's a GitHub deploy key so it's scoped only to this repository.
           ssh-key: "${{ secrets.FORMAT_PR_DEPLOY_KEY }}"
+          # Credentials needed for pushing changes at the end.
+          # This is already the default, but for safety we are being explicit about this.
+          persist-credentials: true
       - name: Checkout pull request
         run: gh pr checkout "$PR_NUM"
         env:
