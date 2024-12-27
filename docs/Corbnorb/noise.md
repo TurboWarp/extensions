@@ -16,7 +16,7 @@ There are 2 blocks:
 1. [create noise](#createNoise)
 2. [get noise](#getNoise)
 
-Although the [get noise](#getNoise) block has 3D coordinates, you can use just X and Y if you want 2D noise
+Although the [get noise](#getNoise) block has 3D coordinates, leave the Z value blank to use 2D noise instead, which should run roughly twice as fast
 
 ### Create Noise <a name="createNoise"></a>
 
