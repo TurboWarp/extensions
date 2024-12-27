@@ -17,7 +17,7 @@
   var time = 0;
 
   Scratch.vm.runtime.on("AFTER_EXECUTE", () => {
-    if (isMeasure == true) {
+    if (isMeasure) {
       time += 1;
     }
   });
