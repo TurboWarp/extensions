@@ -57,7 +57,11 @@
       // If we are inside "create clone of myself with [ ] set to [ ]" then the variable isn't
       // set yet. startHats() will evaluate the predicate eagerly, so it wouldn't work here.
       if (!isCreatingCloneWithVariable) {
-        Scratch.vm.runtime.startHats('lmsclonesplus_whenCloneStartsWithVar', null, clone);
+        Scratch.vm.runtime.startHats(
+          "lmsclonesplus_whenCloneStartsWithVar",
+          null,
+          clone
+        );
       }
 
       return clone;
@@ -460,8 +464,12 @@
           if (cloneVariable) {
             cloneVariable.value = args.INPUTB;
           }
-  
-          Scratch.vm.runtime.startHats('lmsclonesplus_whenCloneStartsWithVar', null, clone);  
+
+          Scratch.vm.runtime.startHats(
+            "lmsclonesplus_whenCloneStartsWithVar",
+            null,
+            clone
+          );
         }
       } finally {
         isCreatingCloneWithVariable = false;
