@@ -15,9 +15,6 @@ jobs:
 
     # If you are forking and want to set up your own website, adjust the repository and branch
     # below to match your repository or remove the condition entirely.
-    # Because we want this workflow to have workflow_dispatch, this is also a security improvement
-    # as it means extension reviewers can't push a malicious branch then manually deploy it; it
-    # must go through the master branch and its associated review process.
     if: ${{ github.repository == 'TurboWarp/extensions' && github.ref == 'refs/heads/master' }}
 
     steps:
