@@ -5,6 +5,8 @@ on:
   issue_comment:
     types: [created]
 
+permissions: {}
+
 jobs:
   # Handling workflow_dispatch is simple. Just checkout whatever branch it was run on.
   # The workflow will run in that repository's context and thus can safely get write permissions.
@@ -54,7 +56,6 @@ jobs:
         github.event.comment.author_association == 'MEMBER' ||
         github.event.comment.user.id == github.event.issue.user.id
       )
-    permissions: {}
     steps:
       - name: Checkout upstream
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -86,8 +87,6 @@ jobs:
   comment-push:
     runs-on: ubuntu-latest
     needs: comment-format-untrusted
-    permissions:
-      contents: write
     steps:
       - name: Checkout upstream
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
