@@ -83,9 +83,14 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: TurboWarp/extensions
-          persist-credentials: false
+          # Credentials needed at the end to do the push.
+          persist-credentials: true
+      - name: Checkout pull request
+        run: gh pr checkout $PR_NUM
+        env:
+          PR_NUM: ${{ github.event.issue.number }}
       - name: Download formatted code
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
         with:
           name: comment-format-untrusted-artifact
       - name: Commit
