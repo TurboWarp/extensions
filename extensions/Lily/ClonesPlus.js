@@ -447,7 +447,7 @@
 
         // @ts-expect-error - ext_scratch3_control not typed yet
         runtime.ext_scratch3_control._createClone(
-          util.target.sprite.name,
+          '_myself_',
           util.target
         );
 
