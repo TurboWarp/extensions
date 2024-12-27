@@ -47,9 +47,13 @@
       // isEdgeActivated is also slow, so this implements it with the behaviour of an event
       runtime.on("targetWasCreated", (clone, originalTarget) => {
         if (clone.isOriginal) return;
-        const container = originalTarget.blocks;
-        if (!container) return;
-        runtime.once("AFTER_EXECUTE", () => {
+        const ogInitDraw = clone.initDrawable;
+        clone.initDrawable = function (layerGroup) {
+          // let the sprite initialize first
+          ogInitDraw.call(this, layerGroup);
+
+          const container = originalTarget.blocks;
+          if (!container) return;
           const scripts = container.getScripts();
           for (let i = 0; i < scripts.length; i++) {
             const block = container.getBlock(scripts[i]);
@@ -57,7 +61,7 @@
               runtime._pushThread(block.id, clone);
             }
           }
-        });
+        };
       });
     }
     getInfo() {
