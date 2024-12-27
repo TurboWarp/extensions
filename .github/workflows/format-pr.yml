@@ -33,7 +33,7 @@ jobs:
           git config --global user.name "$GITHUB_ACTOR"
           git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git stage .
-          git commit --author "DangoCat[bot] <dangocat@muffin.ink>" -m "[Automated] Format code" || echo "No changes to commit"
+          git commit --author "DangoCat[bot] <dangocat@users.noreply.github.com>" -m "[Automated] Format code" || echo "No changes to commit"
       - name: Push
         run: git push
 
@@ -101,7 +101,7 @@ jobs:
           git config --global user.name "$GITHUB_ACTOR"
           git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git stage .
-          git commit --author "DangoCat[bot] <dangocat@muffin.ink>" -m "[Automated] Format code" || echo "No changes to commit"
+          git commit --author "DangoCat[bot] <dangocat@users.noreply.github.com>" -m "[Automated] Format code" || echo "No changes to commit"
       - name: Push
         run: git push
         # Explicitly set push.default to upstream, otherwise by default git might complain about us being on a
