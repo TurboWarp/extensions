@@ -450,22 +450,19 @@
       try {
         isCreatingCloneWithVariable = true;
 
-        // @ts-expect-error - ext_scratch3_control not typed yet
-        runtime.ext_scratch3_control._createClone(
-          '_myself_',
-          util.target
-        );
+        const original = util.target;
+        const clone = util.target.makeClone();
+        if (clone) {
+          Scratch.vm.runtime.addTarget(clone);
+          clone.goBehindOther(original);
 
-        const clones = util.target.sprite.clones;
-        const cloneNum = clones.length - 1;
-        const clone = clones[cloneNum];
-
-        const cloneVariable = clone.lookupVariableById(args.INPUTA);
-        if (cloneVariable) {
-          cloneVariable.value = args.INPUTB;
+          const cloneVariable = clone.lookupVariableById(args.INPUTA);
+          if (cloneVariable) {
+            cloneVariable.value = args.INPUTB;
+          }
+  
+          Scratch.vm.runtime.startHats('lmsclonesplus_whenCloneStartsWithVar', null, clone);  
         }
-
-        Scratch.vm.runtime.startHats('lmsclonesplus_whenCloneStartsWithVar', null, clone);
       } finally {
         isCreatingCloneWithVariable = false;
       }
