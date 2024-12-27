@@ -44,7 +44,14 @@ jobs:
   # Important to have no permissions for this because the code can't be trusted.
   comment-format-untrusted:
     runs-on: ubuntu-latest
-    if: github.event_name == 'issue_comment' && github.event.issue.pull_request && contains(github.event.comment.body, '!format')
+    if: |
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '!format') &&
+      (
+        github.event.comment.author_association == 'MEMBER' ||
+        github.event.comment.user.id == github.event.issue.user.id
+      )
     permissions: {}
     steps:
       - name: Checkout upstream
@@ -103,7 +110,6 @@ jobs:
           git stage .
           git commit --author "DangoCat[bot] <dangocat@users.noreply.github.com>" -m "[Automated] Format code" || echo "No changes to commit"
       - name: Push
-        run: git push
         # Explicitly set push.default to upstream, otherwise by default git might complain about us being on a
         # branch called "DangoCat/master" but the corresponding branch on remote "DangoCat" is just "master".
         run: |
