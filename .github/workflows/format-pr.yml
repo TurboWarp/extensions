@@ -104,3 +104,8 @@ jobs:
           git commit --author "DangoCat[bot] <dangocat@muffin.ink>" -m "[Automated] Format code" || echo "No changes to commit"
       - name: Push
         run: git push
+        # Explicitly set push.default to upstream, otherwise by default git might complain about us being on a
+        # branch called "DangoCat/master" but the corresponding branch on remote "DangoCat" is just "master".
+        run: |
+          git config --global push.default upstream
+          git push
