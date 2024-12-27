@@ -32,8 +32,7 @@
 
         request.onupgradeneeded = (event) => {
           const db = event.target.result;
-          db.createObjectStore("data",   
- { keyPath: "key" });
+          db.createObjectStore("data", { keyPath: "key" });
         };
       });
     }
@@ -142,7 +141,7 @@
     _importDB(data) {
       return this._deleteAllKeys().then(() => {
         const parsedData = JSON.parse(data);
-        const promises = Object.keys(parsedData).map(key => {
+        const promises = Object.keys(parsedData).map((key) => {
           return this._setValue(key, parsedData[key]);
         });
         return Promise.all(promises);
@@ -152,8 +151,8 @@
     // Merge data into the database, without replacing existing keys
     _mergeDB(data) {
       const parsedData = JSON.parse(data);
-      const promises = Object.keys(parsedData).map(key => {
-        return this._keyExists(key).then(exists => {
+      const promises = Object.keys(parsedData).map((key) => {
+        return this._keyExists(key).then((exists) => {
           if (!exists) {
             return this._setValue(key, parsedData[key]);
           }
@@ -189,8 +188,7 @@
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue:   
- "",
+                defaultValue: "",
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
@@ -240,7 +238,7 @@
             opcode: "exportDB",
             blockType: Scratch.BlockType.REPORTER,
             text: "export db",
-            disableMonitor: true
+            disableMonitor: true,
           },
           {
             opcode: "importDB",
