@@ -41,29 +41,27 @@
     }
   };
 
-  class ClonesPlus {
-    constructor() {
-      // since we are forced to use hats, we cant use `startHats` since they only work for events
-      // isEdgeActivated is also slow, so this implements it with the behaviour of an event
-      runtime.on("targetWasCreated", (clone, originalTarget) => {
-        if (clone.isOriginal) return;
-        const ogInitDraw = clone.initDrawable;
-        clone.initDrawable = function (layerGroup) {
-          // let the sprite initialize first
-          ogInitDraw.call(this, layerGroup);
+  let isCreatingCloneWithVariable = false;
 
-          const container = originalTarget.blocks;
-          if (!container) return;
-          const scripts = container.getScripts();
-          for (let i = 0; i < scripts.length; i++) {
-            const block = container.getBlock(scripts[i]);
-            if (block.opcode === "lmsclonesplus_whenCloneStartsWithVar") {
-              runtime._pushThread(block.id, clone);
-            }
-          }
-        };
-      });
-    }
+  // Implements "when I start as clone with [ ] set to [ ]" using events.
+  // Much faster than edge-activated hat.
+  runtime.on("targetWasCreated", (target) => {
+    const originalMakeClone = target.makeClone;
+    target.makeClone = function () {
+      // makeClone() also starts the vanilla "when I start as clone" blocks.
+      const clone = originalMakeClone.call(this);
+
+      // If we are inside "create clone of myself with [ ] set to [ ]" then the variable isn't
+      // set yet. startHats() will evaluate the predicate eagerly, so it wouldn't work here.
+      if (!isCreatingCloneWithVariable) {
+        Scratch.vm.runtime.startHats('lmsclonesplus_whenCloneStartsWithVar', null, this);
+      }
+
+      return clone;
+    };
+  });
+
+  class ClonesPlus {
     getInfo() {
       return {
         id: "lmsclonesplus",
@@ -444,16 +442,27 @@
     }
 
     createCloneWithVar(args, util) {
-      // @ts-expect-error - not typed yet
-      runtime.ext_scratch3_control._createClone(
-        util.target.sprite.name,
-        util.target
-      );
-      const clones = util.target.sprite.clones;
-      const cloneNum = clones.length - 1;
-      const cloneVariable = clones[cloneNum].lookupVariableById(args.INPUTA);
-      if (cloneVariable) {
-        cloneVariable.value = args.INPUTB;
+      try {
+        isCreatingCloneWithVariable = true;
+
+        // @ts-expect-error - ext_scratch3_control not typed yet
+        runtime.ext_scratch3_control._createClone(
+          util.target.sprite.name,
+          util.target
+        );
+
+        const clones = util.target.sprite.clones;
+        const cloneNum = clones.length - 1;
+        const clone = clones[cloneNum];
+
+        const cloneVariable = clone.lookupVariableById(args.INPUTA);
+        if (cloneVariable) {
+          cloneVariable.value = args.INPUTB;
+        }
+
+        Scratch.vm.runtime.startHats('lmsclonesplus_whenCloneStartsWithVar', null, clone);
+      } finally {
+        isCreatingCloneWithVariable = false;
       }
     }
 
