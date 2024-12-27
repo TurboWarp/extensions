@@ -43,12 +43,15 @@
 
   let isCreatingCloneWithVariable = false;
 
-  // Implements "when I start as clone with [ ] set to [ ]" using events.
-  // Much faster than edge-activated hat.
-  runtime.on("targetWasCreated", (target) => {
+  /**
+   * @param {VM.RenderedTarget} target
+   */
+  const patchMakeClone = (target) => {
+    // Implements "when I start as clone with [ ] set to [ ]" as an event block.
+    // Much faster than edge-activated hat.
     const originalMakeClone = target.makeClone;
     target.makeClone = function () {
-      // makeClone() also starts the vanilla "when I start as clone" blocks.
+      // Original makeClone() also starts the vanilla "when I start as clone" blocks.
       const clone = originalMakeClone.call(this);
 
       // If we are inside "create clone of myself with [ ] set to [ ]" then the variable isn't
@@ -59,7 +62,9 @@
 
       return clone;
     };
-  });
+  };
+  runtime.on("targetWasCreated", patchMakeClone);
+  runtime.targets.forEach(patchMakeClone);
 
   class ClonesPlus {
     getInfo() {
