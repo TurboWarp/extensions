@@ -55,7 +55,7 @@
               FRACTAL: {
                 type: ArgumentType.STRING,
                 menu: "FRACTAL_TYPE",
-                defaultValue: "FBm",
+                defaultValue: "fbm",
               },
             },
           },
