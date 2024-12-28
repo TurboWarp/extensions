@@ -215,21 +215,6 @@
               },
             },
           },
-          {
-            opcode: "surround",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("surround [TEXT] with [QUOTE]"),
-            arguments: {
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple",
-              },
-              QUOTE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "QUOTES",
-              },
-            },
-          },
 
           "---",
 
@@ -474,10 +459,6 @@
           textCase: {
             acceptReporters: true,
             items: this._initCaseMenu(),
-          },
-          quotes: {
-            acceptReporters: true,
-            items: ['"', "'", "`", "-", "*", "()", "{}", "[]", "<>", "^$"],
           },
           positions: {
             acceptReporters: true,
@@ -785,15 +766,6 @@
           return sum.replace(/\s/g, "");
         default:
           return string;
-      }
-    }
-    surround(args) {
-      if (args.QUOTE.length == 0) {
-        return args.TEXT;
-      } else if (args.QUOTE.length == 1) {
-        return args.QUOTE + args.TEXT + args.QUOTE;
-      } else if (args.QUOTE.length > 1) {
-        return args.QUOTE[0] + args.TEXT + args.QUOTE[1];
       }
     }
     posWith(args) {
