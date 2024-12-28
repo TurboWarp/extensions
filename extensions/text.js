@@ -687,7 +687,7 @@
             return word === titleCased;
           });
         case CaseParam.CAMELCASE:
-          return string.test(/^[^A-Z\s][^\s]*$/);
+          return /^[^A-Z\s][^\s]*$/.test(string);
         case CaseParam.RANDOMCASE:
           return true;
         case CaseParam.SENTENCECASE:
