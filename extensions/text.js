@@ -691,7 +691,7 @@
         case CaseParam.RANDOMCASE:
           return true;
         case CaseParam.SENTENCECASE:
-          return string.test(/^[A-Z][^?.!]*(?:[?.!]\s+[A-Z][^?.!]*)*$/);
+          return /^[A-Z][^?.!]*(?:[?.!]\s+[A-Z][^?.!]*)*$/.test(string);
         default:
           return false;
       }
@@ -700,8 +700,8 @@
     toCase(args, util) {
       const string = args.STRING.toString();
       const textCase = args.TEXTCASE.toString();
-      let sum = "";
-      let capflag = false;
+      let workingText = "";
+      let sentenceCapitalFlag = false;
       switch (textCase) {
         case CaseParam.LOWERCASE:
           return string.toLowerCase();
@@ -733,37 +733,37 @@
           for (let i = 0; i < string.length; i++) {
             if (
               /^\s*$/.test(string[i - 1] ?? " ") &&
-              !capflag &&
+              !sentenceCapitalFlag &&
               string[i].toUpperCase() != string[i].toLowerCase()
             ) {
-              sum += string[i].toUpperCase();
-              capflag = true;
+              workingText += string[i].toUpperCase();
+              sentenceCapitalFlag = true;
             } else {
               if (string[i] == "." || string[i] == "!" || string[i] == "?") {
-                capflag = false;
+                sentenceCapitalFlag = false;
               }
-              sum += string[i].toLowerCase();
+              workingText += string[i].toLowerCase();
             }
           }
-          return sum;
+          return workingText;
         case CaseParam.RANDOMCASE:
           for (let i = 0; i < string.length; i++) {
             if (Math.random() > 0.5) {
-              sum += string[i].toUpperCase();
+              workingText += string[i].toUpperCase();
             } else {
-              sum += string[i].toLowerCase();
+              workingText += string[i].toLowerCase();
             }
           }
-          return sum;
+          return workingText;
         case CaseParam.CAMELCASE:
           for (let i = 0; i < string.length; i++) {
             if (/^\s*$/.test(string[i - 1] ?? "x")) {
-              sum += string[i].toUpperCase();
+              workingText += string[i].toUpperCase();
             } else {
-              sum += string[i].toLowerCase();
+              workingText += string[i].toLowerCase();
             }
           }
-          return sum.replace(/\s/g, "");
+          return workingText.replace(/\s/g, "");
         default:
           return string;
       }
