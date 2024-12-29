@@ -3917,9 +3917,6 @@
 
       //?Renderer Freaks out if we don't do this so do it.
 
-      //trying my best to reduce memory usage
-      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-
       //Paratheses because I know some obscure browser will screw this up.
       x1 = Scratch.Cast.toNumber(x1);
       x2 = Scratch.Cast.toNumber(x2);
@@ -3956,9 +3953,6 @@
         : renderer._nativeSize;
 
       //?Renderer Freaks out if we don't do this so do it.
-
-      //trying my best to reduce memory usage
-      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
 
       //Paratheses because I know some obscure browser will screw this up.
       x1 = Scratch.Cast.toNumber(x1);
@@ -4077,7 +4071,7 @@
       if (costIndex >= 0) {
         const curCostume =
           curTarget.sprite.costumes[costIndex].asset.encodeDataURI();
-        return curCostume;
+        return curCostume || 0;
       }
     }
 
@@ -4085,7 +4079,7 @@
       //Just a simple thing to allow for pen drawing
       const costIndex = this.penPlusCostumeLibrary[costume];
       if (costIndex) {
-        return costIndex[dimension];
+        return costIndex[dimension] || "";
       }
     }
 
@@ -4142,11 +4136,13 @@
           y = Math.floor(y - 1);
           const colorIndex = (y * curCostume.width + x) * 4;
           if (textureData[colorIndex] && x < curCostume.width && x >= 0) {
-            return this.colorLib.rgbtoSColor({
-              R: textureData[colorIndex] / 2.55,
-              G: textureData[colorIndex + 1] / 2.55,
-              B: textureData[colorIndex + 2] / 2.55,
-            });
+            return (
+              this.colorLib.rgbtoSColor({
+                R: textureData[colorIndex] / 2.55,
+                G: textureData[colorIndex + 1] / 2.55,
+                B: textureData[colorIndex + 2] / 2.55,
+              }) || "0"
+            );
           }
           return this.colorLib.rgbtoSColor({ R: 100, G: 100, B: 100 });
         }
@@ -4162,7 +4158,7 @@
           curCostume.height
         );
         if (textureData) {
-          return textureData;
+          return textureData || "";
         }
         return "";
       }
@@ -4340,8 +4336,6 @@
       if (!this.programs[shader]) return;
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
-
-      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
 
       //Safe to assume they have a buffer;
       const buffer = this.programs[shader].buffer;
@@ -6041,7 +6035,7 @@
 
       //Ignore reductive values
       if (!(id > 0 && id <= 3)) return def;
-      if (!value) return def;
+      if (typeof value == "undefined") return def;
 
       //Parse it
       let parsed = JSON.parse(def);
