@@ -19,11 +19,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
+          # Commits made by workflow_dispatch trigger can trigger new workflows to run,
+          # so just use the default workflow token.
           # Credentials needed for pushing changes at the end.
           # This is already the default, but it's good to be explicit about this.
           persist-credentials: true
-          # Commits made by workflow_dispatch trigger will trigger new workflows to run,
-          # so don't need to use SSH deploy key.
       - name: Install Node.js
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
         with:
