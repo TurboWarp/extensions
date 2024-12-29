@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           # Credentials needed for pushing changes at the end.
-          # This is already the default, but for safety we are being explicit about this.
+          # This is already the default, but it's good to be explicit about this.
           persist-credentials: true
           # Commits made by workflow_dispatch trigger will trigger new workflows to run,
           # so don't need to use SSH deploy key.
@@ -101,7 +101,7 @@ jobs:
           # @DangoCat account.
           token: "${{ secrets.FORMAT_PR_GH_TOKEN }}"
           # Credentials needed for pushing changes at the end.
-          # This is already the default, but for safety we are being explicit about this.
+          # This is already the default, but it's good to be explicit about this.
           persist-credentials: true
       - name: Checkout pull request
         run: gh pr checkout "$PR_NUM"
