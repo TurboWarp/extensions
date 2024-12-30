@@ -718,6 +718,13 @@
     json_is_valid({ json }) {
       if (typeof json != "string") {
         return false;
+      }
+      json = json.trim();
+      if (
+        (json.slice(0, 1) != "[" || json.slice(-1) != "]") &&
+        (json.slice(0, 1) != "{" || json.slice(-1) != "}")
+      ) {
+        return false;
       } else {
         try {
           JSON.parse(json);
