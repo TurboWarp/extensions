@@ -9,19 +9,7 @@
   let zoom = 1;
   let hasCameraExtension = false;
   const frames = Object.create(null);
-  frames["frame1"] = {
-    x: 0,
-    y: 0,
-    width: 100,
-    height: 100,
-    layout: {
-      spriteOrder: [],
-      spriteMargin: 0,
-      axis: "horizontal", // vertical/horizontal
-      alignX: "left",
-      alignY: "bottom",
-    },
-  };
+  setFrame("frame1", 0, 0, 100, 100);
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("Sprite Frames must run unsandboxed");
@@ -29,10 +17,10 @@
 
   function setFrame(name, x, y, width, height) {
     frames[name] = {
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100,
+      x: x,
+      y: y,
+      width: width,
+      height: height,
       layout: {
         spriteOrder: [],
         spriteMargin: 0,
