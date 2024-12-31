@@ -9,7 +9,7 @@
   
   /* Code Transparancy
    * A* Star Pathfinder was created with the help of AI
-   * Version V.1.4.0
+   * Version V.1.4.1
    */
    
 if (!Scratch.extensions.unsandboxed) throw new Error("A* Pathfinder must run unsandboxed");
@@ -55,7 +55,7 @@ class PriorityQueue {
             smallestIndex = leftIndex;
         }
 
-        if (rightIndex < this.heap.length && this.heap[rightIndex].f < this.heap[smallestIndex].f) {
+        if (rightIndex < this.heap.length && this.heap[rightIndex].f < this.heap.length && this.heap[rightIndex].f < this.heap[smallestIndex].f) {
             smallestIndex = rightIndex;
         }
 
@@ -71,6 +71,29 @@ class PriorityQueue {
 
     isEmpty() {
         return this.heap.length === 0;
+    }
+
+    has(node) {
+        for (const item of this.heap) {
+            if (item.node.x === node.x && item.node.y === node.y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    update(node, g, h, path) {
+        for (let i = 0; i < this.heap.length; i++) {
+            if (this.heap[i].node.x === node.x && this.heap[i].node.y === node.y) {
+                this.heap[i].g = g;
+                this.heap[i].h = h;
+                this.heap[i].f = g + h;
+                this.heap[i].path = path;
+                this.bubbleUp(i);
+                this.bubbleDown(i);
+                return;
+            }
+        }
     }
 }
 
@@ -187,51 +210,44 @@ class AStarExtension {
 
                 const neighbors = this.getNeighbors(grid2D, current.node, gridSize, allowDiagonals);
                 for (let neighbor of neighbors) {
-			if (!allowDiagonals) {
-				let jumpPoint = this.jumpNonDiagonal(grid2D, current.node, neighbor, gridSize);
-				if (!jumpPoint) continue;
-						neighbor = jumpPoint;
-			} else {
-				let jumpPoint = this.jump(grid2D, current.node, neighbor, gridSize);
-				if (!jumpPoint) continue;
-						neighbor = jumpPoint;
-			}
+                    let nextNode = null;
+                    let cost = 1;
 
-			const neighborIndex = this.coordsToIndex(neighbor, gridSize);
-                    if (closedSet.has(neighborIndex) || grid2D[neighbor.y][neighbor.x] === 0) {
+                    if (allowDiagonals) {
+                        nextNode = this.jump(grid2D, current.node, neighbor, gridSize);
+                        if (nextNode && this.isDiagonal(current.node, nextNode)) {
+                            cost = 1.414;
+                        }
+                    } else {
+                        nextNode = this.jumpNonDiagonal(grid2D, current.node, neighbor, gridSize);
+                    }
+
+                    if (!nextNode) continue;
+
+                    const neighborIndex = this.coordsToIndex(nextNode, gridSize);
+
+                    if (closedSet.has(neighborIndex) || grid2D[nextNode.y][nextNode.x] === 0) {
                         continue;
                     }
 
-                    let g = current.g + (this.isDiagonal(current.node, neighbor) ? 1.414 : 1);
+                    let g = current.g + cost;
+
                     if (weights) {
                         g += weights[neighborIndex] - 1;
                     }
 
-                    const h = this.heuristic(neighbor, end2D);
+                    const h = this.heuristic(nextNode, end2D);
                     const f = g + h;
 
-                    //Check if in open set
-                    let inOpenSet = false;
-                    for(let i = 0; i< openSet.heap.length; i++){
-                        if(openSet.heap[i].node.x == neighbor.x && openSet.heap[i].node.y == neighbor.y){
-                            if (g < openSet.heap[i].g) {
-                                openSet.heap[i].g = g;
-                                openSet.heap[i].h = h;
-                                openSet.heap[i].f = f;
-                                openSet.bubbleUp(i);
-                                openSet.heap[i].path = current.path.concat(current.node);
-                            }
-                            inOpenSet = true;
-                            break;
+                    if (!openSet.has(nextNode) || g < current.g) {
+                        openSet.update(nextNode, g, h, current.path.concat(current.node));
+                        if(!openSet.has(nextNode)){
+                            openSet.push({ node: nextNode, g, h, f, path: current.path.concat(current.node) });
                         }
-                    }
-
-                    if(!inOpenSet){
-                        openSet.push({ node: neighbor, g, h, f, path: current.path.concat(current.node) });
                     }
                 }
             }
-
+			
             return ""; //No path found
         } catch (error) {
             return "Error: " + error.message;
@@ -294,25 +310,31 @@ class AStarExtension {
         return neighbors;
     }
 	
-	//Jump Point Search (JPS) optimization
-	jump(grid, current, neighbor, gridSize) {
+	//JPS optimization
+    jump(grid, current, neighbor, gridSize) {
         let dx = neighbor.x - current.x;
         let dy = neighbor.y - current.y;
-
-        let x = current.x + dx;
+        let x = current.x + dx; // Start at the neighbor
         let y = current.y + dy;
 
         while (x >= 0 && x < gridSize && y >= 0 && y < gridSize && grid[y][x] !== 0) {
-            if (x === neighbor.x && y === neighbor.y) return neighbor;
+            if (x === neighbor.x && y === neighbor.y) {
+                return neighbor;
+            }
 
-            if (dx !== 0) {
-                if ((x + dx >= 0 && x + dx < gridSize && grid[y - 1][x] === 0 && grid[y - 1][x + dx] !== 0) ||
-                    (x + dx >= 0 && x + dx < gridSize && grid[y + 1][x] === 0 && grid[y + 1][x + dx] !== 0)) {
+            if (dx !== 0 && dy !== 0) { // Diagonal movement
+                if ((y - dy >= 0 && grid[y - dy][x] === 0 && x+dx < gridSize && grid[y - dy][x + dx] !== 0) ||
+                    (x - dx >= 0 && grid[y][x - dx] === 0 && y+dy < gridSize && grid[y + dy][x - dx] !== 0)) {
                     return { x: x, y: y };
                 }
-            } else {
-                if ((y + dy >= 0 && y + dy < gridSize && grid[y][x - 1] === 0 && grid[y + dy][x - 1] !== 0) ||
-                    (y + dy >= 0 && y + dy < gridSize && grid[y][x + 1] === 0 && grid[y + dy][x + 1] !== 0)) {
+            } else if (dx !== 0) { // Horizontal movement
+                if ((y - 1 >= 0 && grid[y - 1] && x + dx >= 0 && x + dx < gridSize && grid[y - 1][x] === 0 && grid[y - 1][x + dx] !== 0) ||
+                    (y + 1 < gridSize && grid[y+1] && x + dx >= 0 && x + dx < gridSize && grid[y + 1][x] === 0 && grid[y + 1][x + dx] !== 0)) {
+                    return { x: x, y: y };
+                }
+            } else { // Vertical movement
+                if ((x - 1 >= 0 && grid[y] && y + dy >= 0 && y + dy < gridSize && grid[y][x - 1] === 0 && grid[y + dy][x - 1] !== 0) ||
+                    (x + 1 < gridSize && grid[y] && y + dy >= 0 && y + dy < gridSize && grid[y][x + 1] === 0 && grid[y + dy][x + 1] !== 0)) {
                     return { x: x, y: y };
                 }
             }
@@ -320,28 +342,27 @@ class AStarExtension {
             x += dx;
             y += dy;
         }
-
         return null;
     }
-	
-	jumpNonDiagonal(grid, current, neighbor, gridSize) {
+
+    jumpNonDiagonal(grid, current, neighbor, gridSize) {
         let dx = neighbor.x - current.x;
         let dy = neighbor.y - current.y;
-
-        let x = current.x + dx;
+        let x = current.x + dx; // Start at the neighbor
         let y = current.y + dy;
+        
 
         while (x >= 0 && x < gridSize && y >= 0 && y < gridSize && grid[y][x] !== 0) {
             if (x === neighbor.x && y === neighbor.y) return neighbor;
 
             if (dx !== 0) {
-                if ((y - 1 >= 0 && grid[y - 1][x] === 0 && grid[y - 1][x + dx] !== 0) ||
-                    (y + 1 < gridSize && grid[y + 1][x] === 0 && grid[y + 1][x + dx] !== 0)) {
+                if ((y - 1 >= 0 && grid[y-1] && x + dx >= 0 && x + dx < gridSize && grid[y - 1][x] === 0 && grid[y - 1][x + dx] !== 0) ||
+                    (y + 1 < gridSize && grid[y+1] && x + dx >= 0 && x + dx < gridSize && grid[y + 1][x] === 0 && grid[y + 1][x + dx] !== 0)) {
                     return { x: x, y: y };
                 }
             } else {
-                if ((x - 1 >= 0 && grid[y][x - 1] === 0 && grid[y + dy][x - 1] !== 0) ||
-                    (x + 1 < gridSize && grid[y][x + 1] === 0 && grid[y + dy][x + 1] !== 0)) {
+                if ((x - 1 >= 0 && grid[y] && y + dy >= 0 && y + dy < gridSize && grid[y][x - 1] === 0 && grid[y + dy][x - 1] !== 0) ||
+                    (x + 1 < gridSize && grid[y] && y + dy >= 0 && y + dy < gridSize && grid[y][x + 1] === 0 && grid[y + dy][x + 1] !== 0)) {
                     return { x: x, y: y };
                 }
             }
