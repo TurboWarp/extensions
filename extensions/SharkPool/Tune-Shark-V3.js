@@ -750,7 +750,7 @@
       });
     }
 
-    async importMenu(args, util) {
+    importMenu(args, util) {
       const name = Cast.toString(args.SOUND);
       const target = util.target.sprite;
       const sound = target.sounds.find((i) => { return i.name === name });
