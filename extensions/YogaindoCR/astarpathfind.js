@@ -21,11 +21,11 @@ const menuIconURI =
 class AStarExtension {
     getInfo() {
         return {
-			id: 'astarpathfind',
-			name: 'A* Pathfinder',
-			color1: "#43d3dd",
-			color2: "#2b5a68",
-			menuIconURI,
+		id: 'astarpathfind',
+		name: 'A* Pathfinder',
+		color1: "#43d3dd",
+		color2: "#2b5a68",
+		menuIconURI,
             blocks: [
                 {
                     opcode: 'findPath',
@@ -124,7 +124,7 @@ class AStarExtension {
                 const current = openSet.shift();
 
                 if (current.node.x === end2D.x && current.node.y === end2D.y) {
-					return current.path.map(coord => this.coordsToIndex(coord, gridSize)).concat(end).join(" ");
+			return current.path.map(coord => this.coordsToIndex(coord, gridSize)).concat(end).join(" ");
                 }
 
                 closedSet.add(this.coordsToIndex(current.node, gridSize));
