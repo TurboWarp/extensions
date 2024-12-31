@@ -9,6 +9,7 @@
   "use strict";
 
   const noises = Object.create(null);
+  const noiseMenu = [{text: "myNoise", value: "myNoise"}]
 
   const BlockType = Scratch.BlockType;
   const ArgumentType = Scratch.ArgumentType;
@@ -68,7 +69,7 @@
             arguments: {
               ID: {
                 type: ArgumentType.STRING,
-                defaultValue: "myNoise",
+                menu: "NOISES",
               },
               X: {
                 type: ArgumentType.NUMBER,
@@ -96,6 +97,10 @@
           },
         ],
         menus: {
+          NOISES: {
+            acceptReporters: true,
+            items: "getNoises"
+          },
           NOISE_TYPE: {
             acceptReporters: true,
             items: [
@@ -126,6 +131,11 @@
       };
     }
 
+    getNoises()
+    {
+      return noiseMenu;
+    }
+
     initNoise(args) {
       const id = Cast.toString(args.ID);
       const seed = Cast.toNumber(args.SEED);
@@ -133,6 +143,7 @@
       const frequency = Cast.toNumber(args.FREQUENCY);
       const octaves = Cast.toNumber(args.OCTAVES);
       noises[id] = new FastNoiseLite(seed);
+      if(!noiseMenu.some(e => e.value === id)) {noiseMenu.push({text:id, value:id})}
       switch (args.TYPE) {
         case "openSimplex2":
           noises[id].SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
