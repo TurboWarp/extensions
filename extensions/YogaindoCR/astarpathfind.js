@@ -9,7 +9,7 @@
   
   /* Code Transparancy
    * A* Star Pathfinder was created with the help of AI
-   * Version V.1.3.0
+   * Version V.1.4.0
    */
    
 if (!Scratch.extensions.unsandboxed) throw new Error("A* Pathfinder must run unsandboxed");
@@ -17,15 +17,71 @@ if (!Scratch.extensions.unsandboxed) throw new Error("A* Pathfinder must run uns
 const menuIconURI =
 "data:image/png;base64,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"
 
+class PriorityQueue {
+    constructor() {
+        this.heap = [];
+    }
+
+    push(item) {
+        this.heap.push(item);
+        this.bubbleUp(this.heap.length - 1);
+    }
+
+    pop() {
+        if (this.heap.length === 0) return undefined;
+        const top = this.heap[0];
+        const last = this.heap.pop();
+        if (this.heap.length > 0) {
+            this.heap[0] = last;
+            this.bubbleDown(0);
+        }
+        return top;
+    }
+
+    bubbleUp(index) {
+        const parentIndex = Math.floor((index - 1) / 2);
+        if (parentIndex >= 0 && this.heap[index].f < this.heap[parentIndex].f) {
+            this.swap(index, parentIndex);
+            this.bubbleUp(parentIndex);
+        }
+    }
+
+    bubbleDown(index) {
+        const leftIndex = 2 * index + 1;
+        const rightIndex = 2 * index + 2;
+        let smallestIndex = index;
+
+        if (leftIndex < this.heap.length && this.heap[leftIndex].f < this.heap[smallestIndex].f) {
+            smallestIndex = leftIndex;
+        }
+
+        if (rightIndex < this.heap.length && this.heap[rightIndex].f < this.heap[smallestIndex].f) {
+            smallestIndex = rightIndex;
+        }
+
+        if (smallestIndex !== index) {
+            this.swap(index, smallestIndex);
+            this.bubbleDown(smallestIndex);
+        }
+    }
+
+    swap(i, j) {
+        [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+    }
+
+    isEmpty() {
+        return this.heap.length === 0;
+    }
+}
 
 class AStarExtension {
     getInfo() {
         return {
-		id: 'astarpathfind',
-		name: 'A* Pathfinder',
-		color1: "#43d3dd",
-		color2: "#2b5a68",
-		menuIconURI,
+			id: 'astarpathfind',
+			name: 'A* Pathfinder',
+			color1: "#43d3dd",
+			color2: "#2b5a68",
+			menuIconURI,
             blocks: [
                 {
                     opcode: 'findPath',
@@ -116,26 +172,32 @@ class AStarExtension {
             const start2D = this.indexToCoords(start, gridSize);
             const end2D = this.indexToCoords(end, gridSize);
 
-            const openSet = [{ node: start2D, g: 0, h: this.heuristic(start2D, end2D), f: this.heuristic(start2D, end2D), path: [] }];
+            const openSet = new PriorityQueue();
+            openSet.push({ node: start2D, g: 0, h: this.heuristic(start2D, end2D), f: this.heuristic(start2D, end2D), path: [] });
             const closedSet = new Set();
 
-            while (openSet.length > 0) {
-                openSet.sort((a, b) => a.f - b.f);
-                const current = openSet.shift();
+            while (!openSet.isEmpty()) {
+                const current = openSet.pop();
 
                 if (current.node.x === end2D.x && current.node.y === end2D.y) {
-			return current.path.map(coord => this.coordsToIndex(coord, gridSize)).concat(end).join(" ");
+                    return current.path.map(coord => this.coordsToIndex(coord, gridSize)).concat(end).join(" ");
                 }
 
                 closedSet.add(this.coordsToIndex(current.node, gridSize));
 
                 const neighbors = this.getNeighbors(grid2D, current.node, gridSize, allowDiagonals);
                 for (let neighbor of neighbors) {
-                    if (allowDiagonals) {
-                        neighbor = this.jump(grid2D, current.node, neighbor, gridSize);
-                        if (!neighbor) continue;
-                    }
-                    const neighborIndex = this.coordsToIndex(neighbor, gridSize);
+			if (!allowDiagonals) {
+				let jumpPoint = this.jumpNonDiagonal(grid2D, current.node, neighbor, gridSize);
+				if (!jumpPoint) continue;
+						neighbor = jumpPoint;
+			} else {
+				let jumpPoint = this.jump(grid2D, current.node, neighbor, gridSize);
+				if (!jumpPoint) continue;
+						neighbor = jumpPoint;
+			}
+
+			const neighborIndex = this.coordsToIndex(neighbor, gridSize);
                     if (closedSet.has(neighborIndex) || grid2D[neighbor.y][neighbor.x] === 0) {
                         continue;
                     }
@@ -148,17 +210,24 @@ class AStarExtension {
                     const h = this.heuristic(neighbor, end2D);
                     const f = g + h;
 
-                    const existingOpen = openSet.find(item => item.node.x === neighbor.x && item.node.y === neighbor.y);
-
-                    if (!existingOpen || g < existingOpen.g) {
-                        if (existingOpen) {
-                            existingOpen.g = g;
-                            existingOpen.h = h;
-                            existingOpen.f = f;
-                            existingOpen.path = current.path.concat(current.node);
-                        } else {
-                            openSet.push({ node: neighbor, g, h, f, path: current.path.concat(current.node) });
+                    //Check if in open set
+                    let inOpenSet = false;
+                    for(let i = 0; i< openSet.heap.length; i++){
+                        if(openSet.heap[i].node.x == neighbor.x && openSet.heap[i].node.y == neighbor.y){
+                            if (g < openSet.heap[i].g) {
+                                openSet.heap[i].g = g;
+                                openSet.heap[i].h = h;
+                                openSet.heap[i].f = f;
+                                openSet.bubbleUp(i);
+                                openSet.heap[i].path = current.path.concat(current.node);
+                            }
+                            inOpenSet = true;
+                            break;
                         }
+                    }
+
+                    if(!inOpenSet){
+                        openSet.push({ node: neighbor, g, h, f, path: current.path.concat(current.node) });
                     }
                 }
             }
@@ -244,6 +313,35 @@ class AStarExtension {
             } else {
                 if ((y + dy >= 0 && y + dy < gridSize && grid[y][x - 1] === 0 && grid[y + dy][x - 1] !== 0) ||
                     (y + dy >= 0 && y + dy < gridSize && grid[y][x + 1] === 0 && grid[y + dy][x + 1] !== 0)) {
+                    return { x: x, y: y };
+                }
+            }
+
+            x += dx;
+            y += dy;
+        }
+
+        return null;
+    }
+	
+	jumpNonDiagonal(grid, current, neighbor, gridSize) {
+        let dx = neighbor.x - current.x;
+        let dy = neighbor.y - current.y;
+
+        let x = current.x + dx;
+        let y = current.y + dy;
+
+        while (x >= 0 && x < gridSize && y >= 0 && y < gridSize && grid[y][x] !== 0) {
+            if (x === neighbor.x && y === neighbor.y) return neighbor;
+
+            if (dx !== 0) {
+                if ((y - 1 >= 0 && grid[y - 1][x] === 0 && grid[y - 1][x + dx] !== 0) ||
+                    (y + 1 < gridSize && grid[y + 1][x] === 0 && grid[y + 1][x + dx] !== 0)) {
+                    return { x: x, y: y };
+                }
+            } else {
+                if ((x - 1 >= 0 && grid[y][x - 1] === 0 && grid[y + dy][x - 1] !== 0) ||
+                    (x + 1 < gridSize && grid[y][x + 1] === 0 && grid[y + dy][x + 1] !== 0)) {
                     return { x: x, y: y };
                 }
             }
